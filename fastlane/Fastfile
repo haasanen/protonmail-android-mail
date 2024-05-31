@@ -81,7 +81,7 @@ platform :android do
   desc "Publish alpha build to firebase dev group"
   lane :deployToFirebaseDevGroup do
     firebase_app_distribution(
-      app: '1:75309174866:android:d354e9e5da9113aa78cf8b',
+      app: '1:75309174866:android:c4da415c4aa2313578cf8b',
       android_artifact_path: 'app/build/outputs/apk/alpha/release/app-alpha-release.apk',
       # Service account is created on the CI from an env var each run (destroyed when finishing)
       service_credentials_file: '/tmp/service-account.json',
@@ -93,7 +93,7 @@ platform :android do
   desc "Publish nightly alpha build to firebase nightly group"
   lane :deployToFirebaseNightlyGroup do
     firebase_app_distribution(
-      app: '1:75309174866:android:d354e9e5da9113aa78cf8b',
+      app: '1:75309174866:android:c4da415c4aa2313578cf8b',
       android_artifact_path: 'app/build/outputs/apk/alpha/release/app-alpha-release.apk',
       # Service account is created on the CI from an env var each run (destroyed when finishing)
       service_credentials_file: '/tmp/service-account.json',
@@ -105,7 +105,7 @@ platform :android do
   desc "Publish alpha build to firebase alpha group"
   lane :deployToFirebaseInternalAlphaGroup do
     firebase_app_distribution(
-      app: '1:75309174866:android:d354e9e5da9113aa78cf8b',
+      app: '1:75309174866:android:c4da415c4aa2313578cf8b',
       android_artifact_path: 'app/build/outputs/apk/alpha/release/app-alpha-release.apk',
       # Service account is created on the CI from an env var each run (destroyed when finishing)
       service_credentials_file: '/tmp/service-account.json',

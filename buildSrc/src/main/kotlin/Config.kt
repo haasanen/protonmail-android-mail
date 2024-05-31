@@ -17,7 +17,7 @@
  */
 
 object Config {
-    const val applicationId = "ch.protonmail.android"
+    const val applicationId = "ch.protonmail.android.et"
     const val compileSdk = 34
     const val minSdk = 28
     const val targetSdk = 33
