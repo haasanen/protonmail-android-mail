@@ -20,12 +20,11 @@ plugins {
     id("com.android.library")
     kotlin("android")
     kotlin("kapt")
+    kotlin("plugin.serialization") version Versions.Gradle.kotlinGradlePlugin
 }
 
-setAsHiltModule()
-
 android {
-    namespace = "ch.protonmail.android.mailmailbox.dagger"
+    namespace = "ch.protonmail.android.mailcommon.datarust"
     compileSdk = Config.compileSdk
 
     defaultConfig {
@@ -44,10 +43,16 @@ android {
 }
 
 dependencies {
-    implementation(project(":mail-mailbox:data"))
-    implementation(project(":mail-mailbox:data-rust"))
-    implementation(project(":mail-mailbox:domain"))
-    implementation(project(":mail-mailbox:presentation"))
+    kapt(Dependencies.appAnnotationProcessors)
 
-    implementation(KotlinX.coroutinesCore)
+    implementation(Dependencies.moduleDataRustLibs)
+    implementation(AndroidX.AppCompat.appCompat)
+
+    implementation(Proton.Core.labelDomain)
+    implementation(Proton.Core.userDomain)
+
+    implementation(project(":mail-common:domain"))
+
+    testImplementation(Dependencies.testLibs)
+    testImplementation(project(":test:utils"))
 }

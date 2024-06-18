@@ -34,6 +34,7 @@ include(":detekt-rules")
 
 include(":mail-common:dagger")
 include(":mail-common:data")
+include(":mail-common:data-rust")
 include(":mail-common:domain")
 include(":mail-common:presentation")
 
@@ -73,6 +74,7 @@ include(":mail-label:presentation")
 
 include(":mail-mailbox:dagger")
 include(":mail-mailbox:data")
+include(":mail-mailbox:data-rust")
 include(":mail-mailbox:domain")
 include(":mail-mailbox:presentation")
 

@@ -366,6 +366,7 @@ object Proton {
         val reportTest = coreArtifact("report-test", Versions.Proton.core)
         val telemetry = coreArtifact("telemetry", Versions.Proton.core)
         val user = coreArtifact("user", Versions.Proton.core)
+        val userDomain = coreArtifact("user-domain", Versions.Proton.core)
         val userRecovery = coreArtifact("user-recovery", Versions.Proton.core)
         val userRecoveryTest = coreArtifact("user-recovery-test", Versions.Proton.core)
         val userSettings = coreArtifact("user-settings", Versions.Proton.core)

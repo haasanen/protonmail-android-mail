@@ -55,6 +55,7 @@ dependencies {
     implementation(AndroidX.Biometrics.biometric)
 
     implementation(project(":mail-common:data"))
+    implementation(project(":mail-common:data-rust"))
     implementation(project(":mail-common:domain"))
     implementation(project(":mail-settings:domain"))
     implementation(project(":mail-message:data"))
