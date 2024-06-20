@@ -20,11 +20,11 @@ plugins {
     id("com.android.library")
     kotlin("android")
     kotlin("kapt")
-    id("dagger.hilt.android.plugin")
+    kotlin("plugin.serialization") version Versions.Gradle.kotlinGradlePlugin
 }
 
 android {
-    namespace = "ch.protonmail.android.mailmessage.dagger"
+    namespace = "ch.protonmail.android.mailmessage.datarust"
     compileSdk = Config.compileSdk
 
     defaultConfig {
@@ -43,16 +43,21 @@ android {
 }
 
 dependencies {
-    implementation(Proton.Core.network)
+    kapt(Dependencies.appAnnotationProcessors)
+
+    implementation(Dependencies.moduleDataRustLibs)
+    implementation(Proton.Core.userDomain)
     implementation(Proton.Core.labelDomain)
 
-    implementation(project(":mail-common:data"))
+    api(project(":mail-pagination:domain"))
+    implementation(project(":mail-pagination:data"))
+    implementation(project(":mail-common:data-rust"))
     implementation(project(":mail-common:domain"))
-    implementation(project(":mail-message:data"))
-    implementation(project(":mail-message:data-rust"))
+    implementation(project(":mail-common:presentation"))
+    implementation(project(":mail-label:domain"))
     implementation(project(":mail-message:domain"))
-    implementation(project(":mail-message:presentation"))
 
-    implementation(Dagger.hiltAndroid)
-    kapt(Dagger.hiltDaggerCompiler)
+    testImplementation(project(":test:test-data"))
+    testImplementation(Dependencies.testLibs)
+    testImplementation(Proton.Core.testAndroid)
 }

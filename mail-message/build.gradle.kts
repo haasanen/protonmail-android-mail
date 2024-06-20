@@ -33,6 +33,7 @@ android {
 
 dependencies {
     api(project(":mail-message:dagger"))
+    api(project(":mail-message:data-rust"))
     api(project(":mail-message:data"))
     api(project(":mail-message:domain"))
     api(project(":mail-message:presentation"))

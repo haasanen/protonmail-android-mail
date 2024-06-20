@@ -28,8 +28,8 @@ import ch.protonmail.android.mailmessage.data.remote.MessageRemoteDataSource
 import ch.protonmail.android.mailmessage.data.remote.MessageRemoteDataSourceImpl
 import ch.protonmail.android.mailmessage.data.remote.UnreadMessagesCountRemoteDataSource
 import ch.protonmail.android.mailmessage.data.remote.UnreadMessagesCountRemoteDataSourceImpl
-import ch.protonmail.android.mailmessage.data.repository.MessageRepositoryImpl
 import ch.protonmail.android.mailmessage.data.repository.OutboxRepositoryImpl
+import ch.protonmail.android.mailmessage.data.repository.RustMessageRepositoryImpl
 import ch.protonmail.android.mailmessage.data.repository.SearchResultsRepositoryImpl
 import ch.protonmail.android.mailmessage.data.repository.UnreadMessageCountRepositoryImpl
 import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
@@ -47,9 +47,19 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 abstract class MailMessageModule {
 
+    /*
+     * Rust data sources
+     */
     @Binds
     @Singleton
-    abstract fun provideMessageRepositoryImpl(repositoryImpl: MessageRepositoryImpl): MessageRepository
+    abstract fun provideMessageRepositoryImpl(repositoryImpl: RustMessageRepositoryImpl): MessageRepository
+
+    /*
+     * Local data sources
+     */
+//    @Binds
+//    @Singleton
+//    abstract fun provideMessageRepositoryImpl(repositoryImpl: MessageRepositoryImpl): MessageRepository
 
     @Binds
     @Singleton

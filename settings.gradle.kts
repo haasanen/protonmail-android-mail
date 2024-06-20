@@ -54,6 +54,7 @@ include(":mail-pagination:presentation")
 
 include(":mail-message:dagger")
 include(":mail-message:data")
+include(":mail-message:data-rust")
 include(":mail-message:domain")
 include(":mail-message:presentation")
 
