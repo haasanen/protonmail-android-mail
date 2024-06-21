@@ -244,6 +244,7 @@ dependencies {
     implementation(project(":mail-upselling"))
     implementation(project(":mail-onboarding"))
     implementation(project(":mail-sidebar"))
+    implementation(project(":mail-session"))
     implementation(project(":uicomponents"))
 
     debugImplementation(Dependencies.appDebug)

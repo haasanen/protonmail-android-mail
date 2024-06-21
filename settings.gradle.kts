@@ -102,6 +102,11 @@ include(":mail-sidebar:data")
 include(":mail-sidebar:domain")
 include(":mail-sidebar:presentation")
 
+include(":mail-session:dagger")
+include(":mail-session:data-rust")
+include(":mail-session:domain")
+include(":mail-session:presentation")
+
 include(":uicomponents")
 
 include(":test:annotations")

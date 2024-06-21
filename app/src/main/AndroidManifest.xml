@@ -170,6 +170,12 @@
             <meta-data
                 android:name="androidx.lifecycle.ProcessLifecycleInitializer"
                 android:value="androidx.startup" />
+
+            <meta-data
+                android:name="ch.protonmail.android.initializer.RustMailCommonInitializer"
+                android:value="androidx.startup"
+                tools:node="remove" />
+
             <!--
              Left Initializers:
              - androidx.profileinstaller.ProfileInstallerInitializer
