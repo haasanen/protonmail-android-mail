@@ -18,13 +18,46 @@
 
 package ch.protonmail.android.mailsession.data.initializer
 
+import android.content.Context
+import ch.protonmail.android.mailsession.data.keychain.OsKeyChainMock
+import ch.protonmail.android.mailsession.data.model.RustLibConfigParams
+import dagger.hilt.android.qualifiers.ApplicationContext
 import timber.log.Timber
+import uniffi.proton_api_core.ApiEnvConfig
+import uniffi.proton_mail_uniffi.MailSession
+import uniffi.proton_mail_uniffi.MailSessionParams
 import javax.inject.Inject
 
-class InitRustCommonLibrary @Inject constructor() {
+class InitRustCommonLibrary @Inject constructor(
+    @ApplicationContext private val context: Context
+) {
 
-    fun init() {
+    fun init(config: RustLibConfigParams) {
         Timber.d("RustLib: Let the rust begin...")
+
+        val sessionParams = MailSessionParams(
+            context.filesDir.absolutePath,
+            context.filesDir.absolutePath,
+            context.cacheDir.absolutePath,
+            context.filesDir.absolutePath,
+            config.isDebug,
+            ApiEnvConfig(
+                config.appVersion,
+                config.apiUrl,
+                config.userAgent,
+                config.allowInsecureNetworking,
+                config.skipSrpProofValidation
+            )
+        )
+        Timber.d("RustLib: Initializing the Rust Lib with $sessionParams")
+
+        val mailSession = MailSession.create(
+            sessionParams,
+            OsKeyChainMock(context),
+            null
+        )
+        Timber.d("RustLib: Mail session created! (hash: ${mailSession.hashCode()})")
+
 
     }
 }

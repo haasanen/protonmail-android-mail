@@ -20,19 +20,41 @@ package ch.protonmail.android.initializer
 
 import android.content.Context
 import androidx.startup.Initializer
+import ch.protonmail.android.BuildConfig
 import ch.protonmail.android.di.RustMailCommonEntryPoint
+import ch.protonmail.android.mailsession.data.model.RustLibConfigParams
+import ch.protonmail.android.useragent.BuildUserAgent
+import ch.protonmail.android.useragent.GetAndroidVersion
+import ch.protonmail.android.useragent.GetAppVersion
+import ch.protonmail.android.useragent.GetDeviceData
 import dagger.hilt.android.EntryPointAccessors
 
 class RustMailCommonInitializer : Initializer<Unit> {
 
     override fun create(context: Context) {
+        val rustLibConfig = buildRustConfigParams()
+
         EntryPointAccessors.fromApplication(
             context.applicationContext,
             RustMailCommonEntryPoint::class.java
-        ).initRustCommonLibrary().init()
+        ).initRustCommonLibrary().init(rustLibConfig)
     }
 
     override fun dependencies(): List<Class<out Initializer<*>?>> = listOf()
 
+    private fun buildRustConfigParams(): RustLibConfigParams {
+        val getAppVersion = GetAppVersion()
+        val getUserAgent = BuildUserAgent(getAppVersion, GetAndroidVersion(), GetDeviceData())
+
+        val rustLibConfig = RustLibConfigParams(
+            isDebug = BuildConfig.DEBUG,
+            appVersion = getAppVersion(),
+            apiUrl = BuildConfig.HOST,
+            userAgent = getUserAgent(),
+            allowInsecureNetworking = false,
+            skipSrpProofValidation = false
+        )
+        return rustLibConfig
+    }
 
 }

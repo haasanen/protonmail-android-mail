@@ -43,6 +43,7 @@ android {
     }
 
     dependencies {
+        compileOnly(Proton.Common.rustCore)
         implementation(Arrow.core)
         implementation(JakeWharton.timber)
 

@@ -152,6 +152,7 @@ android {
         create("dev") {
             applicationIdSuffix = ".dev"
             versionNameSuffix = "-dev+$gitHash"
+            buildConfigField("String", "HOST", "\"proton.black\"")
             buildConfigField("Boolean", "USE_DEFAULT_PINS", "false")
 
             val protonHost = "proton.black"
@@ -164,9 +165,11 @@ android {
         create("alpha") {
             applicationIdSuffix = ".alpha"
             versionNameSuffix = "-alpha+$gitHash"
+            buildConfigField("String", "HOST", "\"proton.me\"")
             buildConfigField("Boolean", "USE_DEFAULT_PINS", "true")
         }
         create("prod") {
+            buildConfigField("String", "HOST", "\"proton.me\"")
             buildConfigField("Boolean", "USE_DEFAULT_PINS", "true")
         }
     }
