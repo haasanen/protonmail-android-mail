@@ -227,6 +227,8 @@ dependencies {
     implementation(KotlinX.immutableCollections)
     implementation(Proton.Core.proguardRules)
     implementation(AndroidX.Biometrics.biometric)
+    implementation(Java.jna)
+    implementation(Proton.Common.rustCore)
 
     implementation(project(":mail-common"))
     implementation(project(":mail-composer"))

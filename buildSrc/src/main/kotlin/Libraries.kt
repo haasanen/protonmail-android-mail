@@ -258,6 +258,11 @@ object JakeWharton {
     const val timber = "com.jakewharton.timber:timber:${Versions.JakeWharton.timber}"
 }
 
+object Java {
+
+    const val jna = "net.java.dev.jna:jna:${Versions.Java.jna}@aar"
+}
+
 object JavaX {
 
     const val inject = "javax.inject:javax.inject:${Versions.JavaX.inject}"
@@ -319,6 +324,10 @@ object Play {
 }
 
 object Proton {
+
+    object Common {
+        val rustCore = "me.proton.mail.common:lib:${Versions.Proton.rustCore}"
+    }
 
     object Core {
 

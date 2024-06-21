@@ -113,6 +113,11 @@ object Versions {
         const val timber = "5.0.1"
     }
 
+    object Java {
+
+        const val jna = "5.14.0"
+    }
+
     object JavaX {
 
         const val inject = "1"
@@ -167,6 +172,7 @@ object Versions {
 
     object Proton {
 
+        const val rustCore = "0.10.30"
         const val core = "24.1.1"
         const val corePlugin = "1.3.0"
     }

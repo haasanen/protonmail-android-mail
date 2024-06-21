@@ -44,6 +44,7 @@ android {
 
 dependencies {
     kapt(Dependencies.appAnnotationProcessors)
+    compileOnly(Proton.Common.rustCore)
 
     implementation(Dependencies.moduleDataRustLibs)
     implementation(Proton.Core.userDomain)
