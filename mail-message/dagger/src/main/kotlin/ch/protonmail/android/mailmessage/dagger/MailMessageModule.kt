@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.mailmessage.dagger
 
+import ch.protonmail.android.mailcommon.data.BuildConfig
 import ch.protonmail.android.mailmessage.data.local.MessageLocalDataSource
 import ch.protonmail.android.mailmessage.data.local.MessageLocalDataSourceImpl
 import ch.protonmail.android.mailmessage.data.local.SearchResultsLocalDataSource
@@ -28,76 +29,89 @@ import ch.protonmail.android.mailmessage.data.remote.MessageRemoteDataSource
 import ch.protonmail.android.mailmessage.data.remote.MessageRemoteDataSourceImpl
 import ch.protonmail.android.mailmessage.data.remote.UnreadMessagesCountRemoteDataSource
 import ch.protonmail.android.mailmessage.data.remote.UnreadMessagesCountRemoteDataSourceImpl
+import ch.protonmail.android.mailmessage.data.repository.MessageRepositoryImpl
 import ch.protonmail.android.mailmessage.data.repository.OutboxRepositoryImpl
 import ch.protonmail.android.mailmessage.data.repository.RustMessageRepositoryImpl
 import ch.protonmail.android.mailmessage.data.repository.SearchResultsRepositoryImpl
 import ch.protonmail.android.mailmessage.data.repository.UnreadMessageCountRepositoryImpl
+import ch.protonmail.android.mailmessage.data.usecase.ExcludeDraftMessagesAlreadyInOutbox
 import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
 import ch.protonmail.android.mailmessage.domain.repository.OutboxRepository
 import ch.protonmail.android.mailmessage.domain.repository.SearchResultsRepository
 import ch.protonmail.android.mailmessage.domain.repository.UnreadMessagesCountRepository
 import dagger.Binds
 import dagger.Module
+import dagger.Provides
 import dagger.Reusable
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import me.proton.core.util.kotlin.CoroutineScopeProvider
 import javax.inject.Singleton
 
-@Module
+@Module(includes = [MailMessageModule.BindsModule::class])
 @InstallIn(SingletonComponent::class)
-abstract class MailMessageModule {
+object MailMessageModule {
 
-    /*
-     * Rust data sources
-     */
-    @Binds
+    @Provides
     @Singleton
-    abstract fun provideMessageRepositoryImpl(repositoryImpl: RustMessageRepositoryImpl): MessageRepository
+    fun providesMessageRepository(
+        messageRemoteDataSource: MessageRemoteDataSource,
+        messageLocalDataSource: MessageLocalDataSource,
+        excludeDraftMessagesAlreadyInOutbox: ExcludeDraftMessagesAlreadyInOutbox,
+        coroutineScopeProvider: CoroutineScopeProvider
+    ): MessageRepository {
+        return if (BuildConfig.USE_RUST_DATA_LAYER) {
+            RustMessageRepositoryImpl()
+        } else {
+            MessageRepositoryImpl(
+                messageRemoteDataSource,
+                messageLocalDataSource,
+                excludeDraftMessagesAlreadyInOutbox,
+                coroutineScopeProvider
+            )
+        }
+    }
 
-    /*
-     * Local data sources
-     */
-//    @Binds
-//    @Singleton
-//    abstract fun provideMessageRepositoryImpl(repositoryImpl: MessageRepositoryImpl): MessageRepository
+    @Module
+    @InstallIn(SingletonComponent::class)
+    internal interface BindsModule {
 
-    @Binds
-    @Singleton
-    abstract fun provideMessageRemoteDataSource(remoteDataSource: MessageRemoteDataSourceImpl): MessageRemoteDataSource
+        @Binds
+        @Singleton
+        fun provideMessageRemoteDataSource(remoteDataSource: MessageRemoteDataSourceImpl): MessageRemoteDataSource
 
-    @Binds
-    @Singleton
-    abstract fun provideMessageLocalDataSource(localDataSourceImpl: MessageLocalDataSourceImpl): MessageLocalDataSource
+        @Binds
+        @Singleton
+        fun provideMessageLocalDataSource(localDataSourceImpl: MessageLocalDataSourceImpl): MessageLocalDataSource
 
-    @Binds
-    @Singleton
-    abstract fun provideOutboxRepositoryImpl(repositoryImpl: OutboxRepositoryImpl): OutboxRepository
+        @Binds
+        @Singleton
+        fun provideOutboxRepositoryImpl(repositoryImpl: OutboxRepositoryImpl): OutboxRepository
 
-    @Binds
-    @Singleton
-    abstract fun provideSearchResultsRepository(repositoryImpl: SearchResultsRepositoryImpl): SearchResultsRepository
+        @Binds
+        @Singleton
+        fun provideSearchResultsRepository(repositoryImpl: SearchResultsRepositoryImpl): SearchResultsRepository
 
-    @Binds
-    @Singleton
-    abstract fun provideSearchResultsLocalDataSource(
-        localDataSourceImpl: SearchResultsLocalDataSourceImpl
-    ): SearchResultsLocalDataSource
+        @Binds
+        @Singleton
+        fun provideSearchResultsLocalDataSource(
+            localDataSourceImpl: SearchResultsLocalDataSourceImpl
+        ): SearchResultsLocalDataSource
 
-    @Binds
-    @Reusable
-    abstract fun bindsUnreadMessagesCountRepository(
-        impl: UnreadMessageCountRepositoryImpl
-    ): UnreadMessagesCountRepository
+        @Binds
+        @Reusable
+        fun bindsUnreadMessagesCountRepository(impl: UnreadMessageCountRepositoryImpl): UnreadMessagesCountRepository
 
-    @Binds
-    @Reusable
-    abstract fun bindsUnreadMessagesCountRemoteDataSource(
-        impl: UnreadMessagesCountRemoteDataSourceImpl
-    ): UnreadMessagesCountRemoteDataSource
+        @Binds
+        @Reusable
+        fun bindsUnreadMessagesCountRemoteDataSource(
+            impl: UnreadMessagesCountRemoteDataSourceImpl
+        ): UnreadMessagesCountRemoteDataSource
 
-    @Binds
-    @Reusable
-    abstract fun bindsUnreadMessagesCountLocalDataSource(
-        impl: UnreadMessagesCountLocalDataSourceImpl
-    ): UnreadMessagesCountLocalDataSource
+        @Binds
+        @Reusable
+        fun bindsUnreadMessagesCountLocalDataSource(
+            impl: UnreadMessagesCountLocalDataSourceImpl
+        ): UnreadMessagesCountLocalDataSource
+    }
 }
