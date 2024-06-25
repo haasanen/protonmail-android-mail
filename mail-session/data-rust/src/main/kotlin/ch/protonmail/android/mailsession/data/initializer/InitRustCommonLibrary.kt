@@ -21,6 +21,7 @@ package ch.protonmail.android.mailsession.data.initializer
 import android.content.Context
 import ch.protonmail.android.mailsession.data.keychain.OsKeyChainMock
 import ch.protonmail.android.mailsession.data.model.RustLibConfigParams
+import ch.protonmail.android.mailsession.domain.repository.MailSessionRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
 import timber.log.Timber
 import uniffi.proton_api_core.ApiEnvConfig
@@ -29,7 +30,8 @@ import uniffi.proton_mail_uniffi.MailSessionParams
 import javax.inject.Inject
 
 class InitRustCommonLibrary @Inject constructor(
-    @ApplicationContext private val context: Context
+    @ApplicationContext private val context: Context,
+    private val mailSessionRepository: MailSessionRepository
 ) {
 
     fun init(config: RustLibConfigParams) {
@@ -57,7 +59,8 @@ class InitRustCommonLibrary @Inject constructor(
             null
         )
         Timber.d("RustLib: Mail session created! (hash: ${mailSession.hashCode()})")
+        Timber.d("RustLib: Storing mail session to In Memory Session Repository...")
 
-
+        mailSessionRepository.setMailSession(mailSession)
     }
 }
