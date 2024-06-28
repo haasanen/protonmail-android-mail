@@ -130,6 +130,17 @@ object Dependencies {
         add(Squareup.retrofit)
     }
 
+    val moduleDataRustLibs = mutableListOf<String>().apply {
+        add(AndroidX.DataStore.preferences)
+        add(AndroidX.Work.runtimeKtx)
+        add(Arrow.core)
+        add(Dagger.hiltCore)
+        add(Dagger.hiltAndroid)
+        add(JakeWharton.timber)
+        add(JavaX.inject)
+        add(KotlinX.serializationJson)
+    }
+
     val modulePresentationLibs = mutableListOf<String>().apply {
         add(Accompanist.webview)
         add(Accompanist.permissions)

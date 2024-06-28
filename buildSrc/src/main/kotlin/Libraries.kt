@@ -258,6 +258,11 @@ object JakeWharton {
     const val timber = "com.jakewharton.timber:timber:${Versions.JakeWharton.timber}"
 }
 
+object Java {
+
+    const val jna = "net.java.dev.jna:jna:${Versions.Java.jna}@aar"
+}
+
 object JavaX {
 
     const val inject = "javax.inject:javax.inject:${Versions.JavaX.inject}"
@@ -320,6 +325,10 @@ object Play {
 
 object Proton {
 
+    object Common {
+        val rustCore = "me.proton.mail.common:lib:${Versions.Proton.rustCore}"
+    }
+
     object Core {
 
         val account = coreArtifact("account", Versions.Proton.core)
@@ -366,6 +375,7 @@ object Proton {
         val reportTest = coreArtifact("report-test", Versions.Proton.core)
         val telemetry = coreArtifact("telemetry", Versions.Proton.core)
         val user = coreArtifact("user", Versions.Proton.core)
+        val userDomain = coreArtifact("user-domain", Versions.Proton.core)
         val userRecovery = coreArtifact("user-recovery", Versions.Proton.core)
         val userRecoveryTest = coreArtifact("user-recovery-test", Versions.Proton.core)
         val userSettings = coreArtifact("user-settings", Versions.Proton.core)

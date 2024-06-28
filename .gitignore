@@ -46,6 +46,9 @@ private.properties
 # Sentry properties
 sentry.properties
 
+# Rust lib build properties
+rust.properties
+
 # Test users credentials
 **/users.json
 **/internal_api.json
@@ -75,6 +78,8 @@ scripts/uitests/AssetsFile.lock.bak
 .idea/**/shelf
 .idea/runConfigurations.xml
 .idea/misc.xml
+.idea/deploymentTargetSelector.xml
+.idea/other.xml
 
 # Generated files
 .idea/**/contentModel.xml

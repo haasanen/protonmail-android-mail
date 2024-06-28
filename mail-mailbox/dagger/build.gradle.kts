@@ -45,6 +45,7 @@ android {
 
 dependencies {
     implementation(project(":mail-mailbox:data"))
+    implementation(project(":mail-mailbox:data-rust"))
     implementation(project(":mail-mailbox:domain"))
     implementation(project(":mail-mailbox:presentation"))
 

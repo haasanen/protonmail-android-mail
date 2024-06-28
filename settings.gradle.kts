@@ -34,6 +34,7 @@ include(":detekt-rules")
 
 include(":mail-common:dagger")
 include(":mail-common:data")
+include(":mail-common:data-rust")
 include(":mail-common:domain")
 include(":mail-common:presentation")
 
@@ -53,11 +54,13 @@ include(":mail-pagination:presentation")
 
 include(":mail-message:dagger")
 include(":mail-message:data")
+include(":mail-message:data-rust")
 include(":mail-message:domain")
 include(":mail-message:presentation")
 
 include(":mail-conversation:dagger")
 include(":mail-conversation:data")
+include(":mail-conversation:data-rust")
 include(":mail-conversation:domain")
 include(":mail-conversation:presentation")
 
@@ -73,6 +76,7 @@ include(":mail-label:presentation")
 
 include(":mail-mailbox:dagger")
 include(":mail-mailbox:data")
+include(":mail-mailbox:data-rust")
 include(":mail-mailbox:domain")
 include(":mail-mailbox:presentation")
 
@@ -97,6 +101,11 @@ include(":mail-sidebar:dagger")
 include(":mail-sidebar:data")
 include(":mail-sidebar:domain")
 include(":mail-sidebar:presentation")
+
+include(":mail-session:dagger")
+include(":mail-session:data-rust")
+include(":mail-session:domain")
+include(":mail-session:presentation")
 
 include(":uicomponents")
 

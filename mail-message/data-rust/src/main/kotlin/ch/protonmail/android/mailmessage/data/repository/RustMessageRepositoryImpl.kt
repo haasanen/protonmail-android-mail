@@ -1,0 +1,206 @@
+/*
+ * Copyright (c) 2022 Proton Technologies AG
+ * This file is part of Proton Technologies AG and Proton Mail.
+ *
+ * Proton Mail is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Proton Mail is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+package ch.protonmail.android.mailmessage.data.repository
+
+import arrow.core.Either
+import arrow.core.Nel
+import ch.protonmail.android.mailcommon.domain.model.ConversationId
+import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
+import ch.protonmail.android.mailmessage.domain.model.Message
+import ch.protonmail.android.mailmessage.domain.model.MessageAttachment
+import ch.protonmail.android.mailmessage.domain.model.MessageId
+import ch.protonmail.android.mailmessage.domain.model.MessageWithBody
+import ch.protonmail.android.mailmessage.domain.model.RefreshedMessageWithBody
+import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
+import ch.protonmail.android.mailpagination.domain.model.PageKey
+import kotlinx.coroutines.flow.Flow
+import me.proton.core.domain.entity.UserId
+import me.proton.core.label.domain.entity.LabelId
+import javax.inject.Inject
+
+@Suppress("NotImplementedDeclaration", "TooManyFunctions")
+class RustMessageRepositoryImpl @Inject constructor() : MessageRepository {
+
+    override suspend fun getLocalMessages(userId: UserId, pageKey: PageKey): List<Message> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getLocalMessages(userId: UserId, messages: List<MessageId>): List<Message> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun isLocalPageValid(
+        userId: UserId,
+        pageKey: PageKey,
+        items: List<Message>
+    ): Boolean {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getRemoteMessages(userId: UserId, pageKey: PageKey): Either<DataError.Remote, List<Message>> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun markAsStale(userId: UserId, labelId: LabelId) {
+        TODO("Not yet implemented")
+    }
+
+    override fun observeCachedMessage(userId: UserId, messageId: MessageId): Flow<Either<DataError.Local, Message>> {
+        TODO("Not yet implemented")
+    }
+
+    override fun observeCachedMessages(
+        userId: UserId,
+        messageIds: List<MessageId>
+    ): Flow<Either<DataError.Local, List<Message>>> {
+        TODO("Not yet implemented")
+    }
+
+    override fun observeCachedMessages(
+        userId: UserId,
+        conversationId: ConversationId
+    ): Flow<Either<DataError.Local, Nel<Message>>> {
+        TODO("Not yet implemented")
+    }
+
+    override fun observeCachedMessagesForConversations(
+        userId: UserId,
+        conversationIds: List<ConversationId>
+    ): Flow<List<Message>> {
+        TODO("Not yet implemented")
+    }
+
+    override fun observeMessageWithBody(
+        userId: UserId,
+        messageId: MessageId
+    ): Flow<Either<DataError, MessageWithBody>> {
+        TODO("Not yet implemented")
+    }
+
+    override fun observeMessageAttachments(userId: UserId, messageId: MessageId): Flow<List<MessageAttachment>> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getMessageWithBody(userId: UserId, messageId: MessageId): Either<DataError, MessageWithBody> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getLocalMessageWithBody(userId: UserId, messageId: MessageId): MessageWithBody? {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getRefreshedMessageWithBody(userId: UserId, messageId: MessageId): RefreshedMessageWithBody? {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun upsertMessageWithBody(userId: UserId, messageWithBody: MessageWithBody): Boolean {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun moveTo(
+        userId: UserId,
+        messageId: MessageId,
+        fromLabel: LabelId?,
+        toLabel: LabelId
+    ): Either<DataError.Local, Message> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun moveTo(
+        userId: UserId,
+        messageWithExclusiveLabel: Map<MessageId, LabelId?>,
+        toLabel: LabelId
+    ): Either<DataError.Local, List<Message>> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun markUnread(userId: UserId, messageId: MessageId): Either<DataError.Local, Message> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun markUnread(
+        userId: UserId,
+        messageIds: List<MessageId>
+    ): Either<DataError.Local, List<Message>> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun markRead(userId: UserId, messageId: MessageId): Either<DataError.Local, Message> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun markRead(userId: UserId, messageIds: List<MessageId>): Either<DataError.Local, List<Message>> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun isMessageRead(userId: UserId, messageId: MessageId): Either<DataError.Local, Boolean> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun relabel(
+        userId: UserId,
+        messageId: MessageId,
+        labelsToBeRemoved: List<LabelId>,
+        labelsToBeAdded: List<LabelId>
+    ): Either<DataError.Local, Message> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun relabel(
+        userId: UserId,
+        messageIds: List<MessageId>,
+        labelsToBeRemoved: List<LabelId>,
+        labelsToBeAdded: List<LabelId>
+    ): Either<DataError.Local, List<Message>> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun updateDraftRemoteIds(
+        userId: UserId,
+        localDraftId: MessageId,
+        apiAssignedId: MessageId,
+        conversationId: ConversationId
+    ) {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun deleteMessages(
+        userId: UserId,
+        messageIds: List<MessageId>,
+        currentLabelId: LabelId
+    ): Either<DataError, Unit> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun deleteMessages(userId: UserId, labelId: LabelId) {
+        TODO("Not yet implemented")
+    }
+
+    override fun observeClearLabelOperation(userId: UserId, labelId: LabelId): Flow<Boolean> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun reportPhishing(
+        userId: UserId,
+        decryptedMessageBody: DecryptedMessageBody
+    ): Either<DataError, Unit> {
+        TODO("Not yet implemented")
+    }
+}

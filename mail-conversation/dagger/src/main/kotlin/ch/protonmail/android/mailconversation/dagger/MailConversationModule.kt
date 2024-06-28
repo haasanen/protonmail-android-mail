@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.mailconversation.dagger
 
+import ch.protonmail.android.mailcommon.data.BuildConfig
 import ch.protonmail.android.mailcommon.data.worker.Enqueuer
 import ch.protonmail.android.mailcommon.domain.benchmark.BenchmarkTracer
 import ch.protonmail.android.mailconversation.data.local.ConversationDatabase
@@ -28,6 +29,7 @@ import ch.protonmail.android.mailconversation.data.remote.ConversationRemoteData
 import ch.protonmail.android.mailconversation.data.remote.UnreadConversationsCountRemoteDataSource
 import ch.protonmail.android.mailconversation.data.remote.UnreadConversationsCountRemoteDataSourceImpl
 import ch.protonmail.android.mailconversation.data.repository.ConversationRepositoryImpl
+import ch.protonmail.android.mailconversation.data.repository.RustConversationRepositoryImpl
 import ch.protonmail.android.mailconversation.data.repository.UnreadConversationsCountRepositoryImpl
 import ch.protonmail.android.mailconversation.domain.repository.ConversationLocalDataSource
 import ch.protonmail.android.mailconversation.domain.repository.ConversationRemoteDataSource
@@ -57,13 +59,19 @@ object MailConversationModule {
         coroutineScopeProvider: CoroutineScopeProvider,
         messageLocalDataSource: MessageLocalDataSource,
         excludeDraftMessagesAlreadyInOutbox: ExcludeDraftMessagesAlreadyInOutbox
-    ): ConversationRepository = ConversationRepositoryImpl(
-        conversationRemoteDataSource = conversationRemoteDataSource,
-        conversationLocalDataSource = conversationLocalDataSource,
-        coroutineScopeProvider = coroutineScopeProvider,
-        messageLocalDataSource = messageLocalDataSource,
-        excludeDraftMessagesAlreadyInOutbox = excludeDraftMessagesAlreadyInOutbox
-    )
+    ): ConversationRepository {
+        return if (BuildConfig.USE_RUST_DATA_LAYER) {
+            RustConversationRepositoryImpl()
+        } else {
+            ConversationRepositoryImpl(
+                conversationRemoteDataSource = conversationRemoteDataSource,
+                conversationLocalDataSource = conversationLocalDataSource,
+                coroutineScopeProvider = coroutineScopeProvider,
+                messageLocalDataSource = messageLocalDataSource,
+                excludeDraftMessagesAlreadyInOutbox = excludeDraftMessagesAlreadyInOutbox
+            )
+        }
+    }
 
     @Provides
     @Singleton

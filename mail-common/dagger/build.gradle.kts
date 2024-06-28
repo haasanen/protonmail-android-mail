@@ -48,6 +48,7 @@ dependencies {
     implementation(Proton.Core.label)
 
     implementation(project(":mail-common:data"))
+    implementation(project(":mail-common:data-rust"))
     implementation(project(":mail-common:domain"))
     implementation(project(":mail-common:presentation"))
 }

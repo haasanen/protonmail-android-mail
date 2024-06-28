@@ -152,6 +152,7 @@ android {
         create("dev") {
             applicationIdSuffix = ".dev"
             versionNameSuffix = "-dev+$gitHash"
+            buildConfigField("String", "HOST", "\"proton.black\"")
             buildConfigField("Boolean", "USE_DEFAULT_PINS", "false")
 
             val protonHost = "proton.black"
@@ -164,9 +165,11 @@ android {
         create("alpha") {
             applicationIdSuffix = ".alpha"
             versionNameSuffix = "-alpha+$gitHash"
+            buildConfigField("String", "HOST", "\"proton.me\"")
             buildConfigField("Boolean", "USE_DEFAULT_PINS", "true")
         }
         create("prod") {
+            buildConfigField("String", "HOST", "\"proton.me\"")
             buildConfigField("Boolean", "USE_DEFAULT_PINS", "true")
         }
     }
@@ -227,6 +230,8 @@ dependencies {
     implementation(KotlinX.immutableCollections)
     implementation(Proton.Core.proguardRules)
     implementation(AndroidX.Biometrics.biometric)
+    implementation(Java.jna)
+    implementation(Proton.Common.rustCore)
 
     implementation(project(":mail-common"))
     implementation(project(":mail-composer"))
@@ -242,6 +247,7 @@ dependencies {
     implementation(project(":mail-upselling"))
     implementation(project(":mail-onboarding"))
     implementation(project(":mail-sidebar"))
+    implementation(project(":mail-session"))
     implementation(project(":uicomponents"))
 
     debugImplementation(Dependencies.appDebug)
