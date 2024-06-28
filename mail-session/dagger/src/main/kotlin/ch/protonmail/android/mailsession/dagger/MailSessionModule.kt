@@ -18,19 +18,35 @@
 
 package ch.protonmail.android.mailsession.dagger
 
+import ch.protonmail.android.mailsession.data.RepositoryFlowCoroutineScope
 import ch.protonmail.android.mailsession.data.repository.InMemoryMailSessionRepository
 import ch.protonmail.android.mailsession.domain.repository.MailSessionRepository
 import dagger.Binds
 import dagger.Module
+import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import javax.inject.Singleton
 
-@Module
+@Module(includes = [MailSessionModule.BindsModule::class])
 @InstallIn(SingletonComponent::class)
-interface MailSessionModule {
+object MailSessionModule {
 
-    @Binds
+    @Provides
     @Singleton
-    fun bindMailSessionRepository(impl: InMemoryMailSessionRepository): MailSessionRepository
+    @RepositoryFlowCoroutineScope
+    fun provideRepositoryFlowCoroutineScope(): CoroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
+
+
+    @Module
+    @InstallIn(SingletonComponent::class)
+    interface BindsModule {
+
+        @Binds
+        @Singleton
+        fun bindMailSessionRepository(impl: InMemoryMailSessionRepository): MailSessionRepository
+    }
 }
