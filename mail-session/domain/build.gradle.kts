@@ -44,6 +44,7 @@ android {
 }
 
 dependencies {
+    compileOnly(Proton.Common.rustCore)
     implementation(Arrow.core)
 
     testImplementation(project(":test:test-data"))

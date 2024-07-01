@@ -49,6 +49,8 @@ android {
 
         implementation(project(":mail-session:domain"))
 
+        testImplementation(project(":test:utils"))
+        testImplementation(Proton.Common.rustCore)
         testImplementation(Cash.turbine)
         testImplementation(Kotlin.test)
         testImplementation(Mockk.mockk)
