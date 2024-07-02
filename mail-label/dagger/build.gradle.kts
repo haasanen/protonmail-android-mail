@@ -47,8 +47,10 @@ dependencies {
     implementation(KotlinX.coroutinesCore)
     implementation(Proton.Core.labelDomain)
 
-    implementation(project(":mail-common:data"))
     implementation(project(":mail-label:data"))
     implementation(project(":mail-label:domain"))
     implementation(project(":mail-label:presentation"))
+
+    implementation(project(":mail-session:domain"))
+    implementation(project(":mail-common:data"))
 }

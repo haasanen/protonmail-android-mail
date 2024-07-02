@@ -18,24 +18,50 @@
 
 package ch.protonmail.android.maillabel.data.repository
 
+import ch.protonmail.android.maillabel.data.local.LabelDataSource
+import ch.protonmail.android.maillabel.data.mapper.toLabel
 import ch.protonmail.android.maillabel.domain.repository.LabelRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
 import me.proton.core.domain.arch.DataResult
+import me.proton.core.domain.arch.ResponseSource
 import me.proton.core.domain.entity.UserId
 import me.proton.core.label.domain.entity.Label
 import me.proton.core.label.domain.entity.LabelId
 import me.proton.core.label.domain.entity.LabelType
 import me.proton.core.label.domain.entity.NewLabel
+import timber.log.Timber
+import javax.inject.Inject
 
 @SuppressWarnings("NotImplementedDeclaration")
-class RustLabelRepository : LabelRepository {
+class RustLabelRepository @Inject constructor(
+    private val labelDataSource: LabelDataSource
+) : LabelRepository {
 
     override fun observeLabels(
         userId: UserId,
         type: LabelType,
         refresh: Boolean
     ): Flow<DataResult<List<Label>>> {
-        TODO("Not yet implemented")
+        return when (type) {
+            LabelType.SystemFolder -> labelDataSource.observeSystemLabels().map { localLabels ->
+                localLabels.map { it.toLabel() }
+            }.convertToDataResultFlow()
+
+            LabelType.MessageLabel -> labelDataSource.observeMessageLabels().map { localLabels ->
+                localLabels.map { it.toLabel() }
+            }.convertToDataResultFlow()
+
+            LabelType.MessageFolder -> labelDataSource.observeMessageFolders().map { localLabels ->
+                localLabels.map { it.toLabel() }
+            }.convertToDataResultFlow()
+
+            else -> {
+                Timber.w("rustLib:LabelRepository Unsupported label type: $type")
+                flowOf(DataResult.Error.Local("Unsupported label type $type", null))
+            }
+        }
     }
 
     override suspend fun getLabels(
@@ -82,5 +108,15 @@ class RustLabelRepository : LabelRepository {
 
     override fun markAsStale(userId: UserId, type: LabelType) {
         TODO("Not yet implemented")
+    }
+
+    private fun Flow<List<Label>>.convertToDataResultFlow(): Flow<DataResult<List<Label>>> {
+        return this.map { labels ->
+            if (labels.isNotEmpty()) {
+                DataResult.Success(ResponseSource.Remote, labels)
+            } else {
+                DataResult.Error.Local("No Labels Found", null)
+            }
+        }
     }
 }

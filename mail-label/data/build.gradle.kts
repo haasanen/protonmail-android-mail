@@ -40,10 +40,15 @@ android {
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_17.toString()
     }
+
+    packaging {
+        resources.excludes.add("META-INF/LICENSE*")
+    }
 }
 
 dependencies {
     kapt(Dependencies.appAnnotationProcessors)
+    compileOnly(Proton.Common.rustCore)
 
     implementation(Dependencies.moduleDataRustLibs)
 
@@ -51,6 +56,15 @@ dependencies {
     implementation(Proton.Core.labelDomain)
 
     implementation(project(":mail-label:domain"))
+    implementation(project(":mail-session:domain"))
+    implementation(project(":mail-common:domain"))
 
     testImplementation(Dependencies.testLibs)
+
+    androidTestImplementation(Proton.Common.rustCore)
+    androidTestImplementation(Mockk.mockk)
+    androidTestImplementation(Cash.turbine)
+    androidTestImplementation(Kotlin.test)
+    androidTestImplementation(Kotlin.testJunit)
+    androidTestImplementation(KotlinX.coroutinesTest)
 }

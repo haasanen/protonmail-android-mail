@@ -20,7 +20,9 @@ package ch.protonmail.android.mailsession.dagger
 
 import ch.protonmail.android.mailsession.data.RepositoryFlowCoroutineScope
 import ch.protonmail.android.mailsession.data.repository.InMemoryMailSessionRepository
+import ch.protonmail.android.mailsession.data.repository.UserSessionRepositoryImpl
 import ch.protonmail.android.mailsession.domain.repository.MailSessionRepository
+import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -48,5 +50,9 @@ object MailSessionModule {
         @Binds
         @Singleton
         fun bindMailSessionRepository(impl: InMemoryMailSessionRepository): MailSessionRepository
+
+        @Binds
+        @Singleton
+        fun bindUserSessionRepository(impl: UserSessionRepositoryImpl): UserSessionRepository
     }
 }
