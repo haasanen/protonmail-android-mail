@@ -18,10 +18,28 @@
 
 package ch.protonmail.android.maillabel.dagger
 
+import ch.protonmail.android.mailcommon.data.BuildConfig
+import ch.protonmail.android.maillabel.data.repository.CoreLabelRepository
+import ch.protonmail.android.maillabel.data.repository.RustLabelRepository
+import me.proton.core.label.domain.repository.LabelRepository as CoreLibsLabelRepository
+import ch.protonmail.android.maillabel.domain.repository.LabelRepository
 import dagger.Module
+import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object MailLabelModule
+object MailLabelModule {
+
+    @Provides
+    @Singleton
+    fun providesLabelRepository(coreLabelRepository: CoreLibsLabelRepository): LabelRepository {
+        return if (BuildConfig.USE_RUST_DATA_LAYER) {
+            RustLabelRepository()
+        } else {
+            CoreLabelRepository(coreLabelRepository)
+        }
+    }
+}

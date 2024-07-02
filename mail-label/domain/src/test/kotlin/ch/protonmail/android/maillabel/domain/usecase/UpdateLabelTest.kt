@@ -28,7 +28,7 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import me.proton.core.label.domain.repository.LabelRepository
+import ch.protonmail.android.maillabel.domain.repository.LabelRepository
 import org.junit.Test
 import kotlin.test.assertEquals
 

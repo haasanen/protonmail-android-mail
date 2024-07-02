@@ -25,7 +25,7 @@ import kotlinx.coroutines.flow.mapLatest
 import me.proton.core.domain.entity.UserId
 import me.proton.core.label.domain.entity.Label
 import me.proton.core.label.domain.entity.LabelType
-import me.proton.core.label.domain.repository.LabelRepository
+import ch.protonmail.android.maillabel.domain.repository.LabelRepository
 import javax.inject.Inject
 
 class ObserveContactGroupLabels @Inject constructor(

@@ -28,7 +28,7 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import me.proton.core.domain.entity.UserId
 import me.proton.core.label.domain.entity.LabelType
-import me.proton.core.label.domain.repository.LabelRepository
+import ch.protonmail.android.maillabel.domain.repository.LabelRepository
 import me.proton.core.user.domain.extension.hasSubscription
 import timber.log.Timber
 import javax.inject.Inject

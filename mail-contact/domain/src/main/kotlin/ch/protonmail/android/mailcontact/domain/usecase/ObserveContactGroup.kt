@@ -29,7 +29,7 @@ import me.proton.core.contact.domain.repository.ContactRepository
 import me.proton.core.domain.entity.UserId
 import me.proton.core.label.domain.entity.LabelId
 import me.proton.core.label.domain.entity.LabelType
-import me.proton.core.label.domain.repository.LabelRepository
+import ch.protonmail.android.maillabel.domain.repository.LabelRepository
 import javax.inject.Inject
 
 class ObserveContactGroup @Inject constructor(

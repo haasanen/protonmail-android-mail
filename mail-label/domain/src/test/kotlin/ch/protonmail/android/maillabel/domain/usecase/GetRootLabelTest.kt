@@ -25,7 +25,7 @@ import io.mockk.confirmVerified
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import me.proton.core.label.domain.entity.LabelType
-import me.proton.core.label.domain.repository.LabelRepository
+import ch.protonmail.android.maillabel.domain.repository.LabelRepository
 import org.junit.Test
 import kotlin.test.assertEquals
 

@@ -32,7 +32,7 @@ import me.proton.core.label.domain.entity.Label
 import me.proton.core.label.domain.entity.LabelId
 import me.proton.core.label.domain.entity.LabelType
 import me.proton.core.label.domain.entity.NewLabel
-import me.proton.core.label.domain.repository.LabelRepository
+import ch.protonmail.android.maillabel.domain.repository.LabelRepository
 import me.proton.core.network.domain.ApiException
 import me.proton.core.network.domain.ApiResult
 import org.junit.Test

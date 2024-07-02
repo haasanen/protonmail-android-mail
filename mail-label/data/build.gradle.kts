@@ -45,9 +45,10 @@ android {
 dependencies {
     kapt(Dependencies.appAnnotationProcessors)
 
-    implementation(Dependencies.moduleDataLibs)
+    implementation(Dependencies.moduleDataRustLibs)
 
-    implementation(Proton.Core.user)
+    implementation(Proton.Core.userDomain)
+    implementation(Proton.Core.labelDomain)
 
     implementation(project(":mail-label:domain"))
 

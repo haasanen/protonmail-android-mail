@@ -36,7 +36,7 @@ import kotlinx.coroutines.test.runTest
 import me.proton.core.domain.arch.DataResult
 import me.proton.core.domain.arch.ResponseSource
 import me.proton.core.label.domain.entity.LabelType
-import me.proton.core.label.domain.repository.LabelRepository
+import ch.protonmail.android.maillabel.domain.repository.LabelRepository
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
