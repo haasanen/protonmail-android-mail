@@ -47,6 +47,8 @@ val privateProperties = Properties().apply {
 val accountSentryDSN: String = privateProperties.getProperty("accountSentryDSN") ?: ""
 val sentryDSN: String = privateProperties.getProperty("sentryDSN") ?: ""
 val proxyToken: String? = privateProperties.getProperty("PROXY_TOKEN")
+val fakeRustSessionUser: String? = privateProperties.getProperty("fakeRustSessionUser")
+val fakeRustSessionPass: String? = privateProperties.getProperty("fakeRustSessionPass")
 
 android {
     namespace = "ch.protonmail.android"
@@ -75,6 +77,8 @@ android {
         buildConfigField("String", "SENTRY_DSN", sentryDSN.toBuildConfigValue())
         buildConfigField("String", "ACCOUNT_SENTRY_DSN", accountSentryDSN.toBuildConfigValue())
         buildConfigField("String", "PROXY_TOKEN", proxyToken.toBuildConfigValue())
+        buildConfigField("String", "FAKE_RUST_SESSION_USER", fakeRustSessionUser.toBuildConfigValue())
+        buildConfigField("String", "FAKE_RUST_SESSION_PASS", fakeRustSessionPass.toBuildConfigValue())
 
         setAssetLinksResValue("proton.me")
     }

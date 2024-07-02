@@ -19,6 +19,7 @@
 package ch.protonmail.android.di
 
 import ch.protonmail.android.mailsession.data.initializer.InitRustCommonLibrary
+import ch.protonmail.android.mailsession.data.initializer.InjectFakeRustSession
 import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
@@ -28,4 +29,6 @@ import dagger.hilt.components.SingletonComponent
 interface RustMailCommonEntryPoint {
 
     fun initRustCommonLibrary(): InitRustCommonLibrary
+
+    fun injectFakeRustSession(): InjectFakeRustSession
 }

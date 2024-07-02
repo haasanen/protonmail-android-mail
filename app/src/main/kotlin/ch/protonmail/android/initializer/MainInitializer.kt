@@ -83,7 +83,8 @@ class MainInitializer : Initializer<Unit> {
         NotificationHandlersInitializer::class.java,
         OutboxInitializer::class.java,
         AutoLockHandlerInitializer::class.java,
-        RustMailCommonInitializer::class.java
+        RustMailCommonInitializer::class.java,
+        FakeRustSessionInitializer::class.java
     )
 
     companion object {

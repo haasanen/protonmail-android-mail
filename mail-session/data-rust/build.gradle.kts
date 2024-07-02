@@ -47,6 +47,7 @@ android {
         implementation(Arrow.core)
         implementation(JakeWharton.timber)
 
+        implementation(project(":mail-common:data"))
         implementation(project(":mail-session:domain"))
 
         testImplementation(project(":test:utils"))
