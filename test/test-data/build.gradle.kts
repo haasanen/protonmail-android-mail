@@ -41,6 +41,8 @@ android {
 }
 
 dependencies {
+    compileOnly(Proton.Common.rustCore)
+    
     implementation(KotlinX.immutableCollections)
 
     implementation(Proton.Core.account)
@@ -60,4 +62,5 @@ dependencies {
     implementation(project(":mail-mailbox"))
     implementation(project(":mail-message"))
     implementation(project(":mail-detail"))
+
 }

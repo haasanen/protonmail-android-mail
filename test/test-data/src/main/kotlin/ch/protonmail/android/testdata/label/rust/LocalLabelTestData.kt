@@ -16,10 +16,10 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.testdata
+package ch.protonmail.android.testdata.label.rust
 
+import uniffi.proton_api_mail.LabelType
 import uniffi.proton_mail_common.LocalLabelWithCount
-import uniffi.proton_api_mail.LabelType as RustLabelType
 
 object LocalLabelTestData {
     val localSystemLabelWithCount = LocalLabelWithCount(
@@ -29,7 +29,7 @@ object LocalLabelTestData {
         name = "Inbox",
         "path",
         "color",
-        RustLabelType.SYSTEM,
+        LabelType.SYSTEM,
         1.toUInt(),
         false,
         false,
@@ -45,7 +45,7 @@ object LocalLabelTestData {
         name = "CustomMessageLabel",
         "path",
         "color",
-        RustLabelType.LABEL,
+        LabelType.LABEL,
         1.toUInt(),
         false,
         false,
@@ -61,7 +61,7 @@ object LocalLabelTestData {
         name = "CustomMessageFolder",
         "path",
         "color",
-        RustLabelType.FOLDER,
+        LabelType.FOLDER,
         1.toUInt(),
         false,
         false,

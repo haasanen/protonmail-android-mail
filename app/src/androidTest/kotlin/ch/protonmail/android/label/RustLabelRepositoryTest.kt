@@ -21,8 +21,8 @@ package ch.protonmail.android.label
 import app.cash.turbine.test
 import ch.protonmail.android.maillabel.data.local.LabelDataSource
 import ch.protonmail.android.maillabel.data.repository.RustLabelRepository
-import ch.protonmail.android.testdata.LabelTestData
-import ch.protonmail.android.testdata.LocalLabelTestData
+import ch.protonmail.android.testdata.label.LabelTestData
+import ch.protonmail.android.testdata.label.rust.LocalLabelTestData
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.flowOf

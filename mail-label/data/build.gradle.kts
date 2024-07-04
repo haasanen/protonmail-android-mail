@@ -59,12 +59,8 @@ dependencies {
     implementation(project(":mail-session:domain"))
     implementation(project(":mail-common:domain"))
 
+    testImplementation(project(":test:utils"))
+    testImplementation(project(":test:test-data"))
+    testImplementation(Proton.Common.rustCore)
     testImplementation(Dependencies.testLibs)
-
-    androidTestImplementation(Proton.Common.rustCore)
-    androidTestImplementation(Mockk.mockk)
-    androidTestImplementation(Cash.turbine)
-    androidTestImplementation(Kotlin.test)
-    androidTestImplementation(Kotlin.testJunit)
-    androidTestImplementation(KotlinX.coroutinesTest)
 }
