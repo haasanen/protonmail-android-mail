@@ -38,4 +38,32 @@ object LabelTestData {
         false,
         false
     )
+
+    val messageLabel = Label(
+        UserId("fake"),
+        LabelId("100"),
+        parentId = null,
+        "CustomMessageLabel",
+        LabelType.MessageLabel,
+        "path",
+        "color",
+        1,
+        false,
+        false,
+        false
+    )
+
+    val messageFolder = Label(
+        UserId("fake"),
+        LabelId("200"),
+        parentId = null,
+        "CustomMessageFolder",
+        LabelType.MessageFolder,
+        "path",
+        "color",
+        1,
+        false,
+        false,
+        false
+    )
 }

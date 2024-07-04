@@ -37,4 +37,36 @@ object LocalLabelTestData {
         totalCount = 2.toULong(),
         unreadCount = 0.toULong()
     )
+
+    val localMessageLabelWithCount = LocalLabelWithCount(
+        100.toULong(),
+        rid = "remoteMessageLabelId",
+        parentId = null,
+        name = "CustomMessageLabel",
+        "path",
+        "color",
+        RustLabelType.LABEL,
+        1.toUInt(),
+        false,
+        false,
+        false,
+        totalCount = 1.toULong(),
+        unreadCount = 0.toULong()
+    )
+
+    val localMessageFolderWithCount = LocalLabelWithCount(
+        200.toULong(),
+        rid = "remoteMessageFolderId",
+        parentId = null,
+        name = "CustomMessageFolder",
+        "path",
+        "color",
+        RustLabelType.FOLDER,
+        1.toUInt(),
+        false,
+        false,
+        false,
+        totalCount = 1.toULong(),
+        unreadCount = 0.toULong()
+    )
 }

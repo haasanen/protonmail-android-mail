@@ -54,8 +54,40 @@ class RustLabelRepositoryTest {
             assertEquals(listOf(expectedLabel), resultOrNull(awaitItem()))
             awaitComplete()
         }
-
     }
+
+    @Test
+    fun observeMessageLabelsFromRustDataSource() = runTest {
+        // Given
+        val localLabelWithCount = LocalLabelTestData.localMessageLabelWithCount
+        val expectedLabel = LabelTestData.messageLabel
+
+        every { labelDataSource.observeMessageLabels() } returns flowOf(listOf(localLabelWithCount))
+
+        // When
+        labelRepository.observeLabels(UserId("anyuser"), LabelType.MessageLabel).test {
+            // Then
+            assertEquals(listOf(expectedLabel), resultOrNull(awaitItem()))
+            awaitComplete()
+        }
+    }
+
+    @Test
+    fun observeMessageFolderFromRustDataSource() = runTest {
+        // Given
+        val localLabelWithCount = LocalLabelTestData.localMessageFolderWithCount
+        val expectedLabel = LabelTestData.messageFolder
+
+        every { labelDataSource.observeMessageFolders() } returns flowOf(listOf(localLabelWithCount))
+
+        // When
+        labelRepository.observeLabels(UserId("anyuser"), LabelType.MessageFolder).test {
+            // Then
+            assertEquals(listOf(expectedLabel), resultOrNull(awaitItem()))
+            awaitComplete()
+        }
+    }
+
 
     private fun resultOrNull(dataResult: DataResult<List<Label>>): List<Label>? = when (dataResult) {
         is DataResult.Success -> dataResult.value
