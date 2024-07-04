@@ -61,7 +61,7 @@ class RustLabelDataSourceTest {
             // When
             labelDataSource.observeSystemLabels().test {
                 // Then
-                loggingTestRule.assertErrorLogged("rustLib: system labels: trying to load messages with a null session")
+                loggingTestRule.assertErrorLogged("rustLib: system labels: trying to load labels with a null session")
                 expectNoEvents()
             }
         }
@@ -86,6 +86,77 @@ class RustLabelDataSourceTest {
             // Then
             assertEquals(expected, awaitItem())
         }
+    }
 
+    @Test
+    fun `observe message custom labels fails and logs error when session is invalid`() =
+        runTest(mainDispatcherRule.testDispatcher) {
+            // Given
+            every { userSessionRepository.observeCurrentUserSession() } returns flowOf(null)
+
+            // When
+            labelDataSource.observeMessageLabels().test {
+                // Then
+                loggingTestRule.assertErrorLogged("rustLib: message labels: trying to load labels with a null session")
+                expectNoEvents()
+            }
+        }
+
+    @Test
+    fun `observe message custom labels emits items when returned by the rust library`() = runTest {
+        // Given
+        val expected = listOf(LocalLabelTestData.localMessageLabelWithCount)
+        val messageLabelsCallbackSlot = slot<MailboxLiveQueryUpdatedCallback>()
+        val userSessionMock = mockk<MailUserSession> {
+            val liveQueryMock = mockk<MailLabelsLiveQuery> {
+                every { value() } returns expected
+            }
+            every { this@mockk.newLabelLabelsObservedQuery(capture(messageLabelsCallbackSlot)) } returns liveQueryMock
+        }
+        every { userSessionRepository.observeCurrentUserSession() } returns flowOf(userSessionMock)
+
+        labelDataSource.observeMessageLabels().test {
+            // When
+            messageLabelsCallbackSlot.captured.onUpdated()
+
+            // Then
+            assertEquals(expected, awaitItem())
+        }
+    }
+
+    @Test
+    fun `observe message custom folders fails and logs error when session is invalid`() =
+        runTest(mainDispatcherRule.testDispatcher) {
+            // Given
+            every { userSessionRepository.observeCurrentUserSession() } returns flowOf(null)
+
+            // When
+            labelDataSource.observeMessageFolders().test {
+                // Then
+                loggingTestRule.assertErrorLogged("rustLib: message folders: trying to load labels with a null session")
+                expectNoEvents()
+            }
+        }
+
+    @Test
+    fun `observe message custom folders emits items when returned by the rust library`() = runTest {
+        // Given
+        val expected = listOf(LocalLabelTestData.localMessageFolderWithCount)
+        val messageFoldersCallbackSlot = slot<MailboxLiveQueryUpdatedCallback>()
+        val userSessionMock = mockk<MailUserSession> {
+            val liveQueryMock = mockk<MailLabelsLiveQuery> {
+                every { value() } returns expected
+            }
+            every { this@mockk.newFolderLabelsObservedQuery(capture(messageFoldersCallbackSlot)) } returns liveQueryMock
+        }
+        every { userSessionRepository.observeCurrentUserSession() } returns flowOf(userSessionMock)
+
+        labelDataSource.observeMessageFolders().test {
+            // When
+            messageFoldersCallbackSlot.captured.onUpdated()
+
+            // Then
+            assertEquals(expected, awaitItem())
+        }
     }
 }

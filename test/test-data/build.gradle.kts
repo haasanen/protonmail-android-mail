@@ -42,7 +42,7 @@ android {
 
 dependencies {
     compileOnly(Proton.Common.rustCore)
-    
+
     implementation(KotlinX.immutableCollections)
 
     implementation(Proton.Core.account)
