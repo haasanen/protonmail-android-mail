@@ -56,9 +56,13 @@ dependencies {
     implementation(project(":mail-common:domain"))
     implementation(project(":mail-common:presentation"))
     implementation(project(":mail-label:domain"))
+    implementation(project(":mail-label:data"))
     implementation(project(":mail-message:domain"))
+    implementation(project(":mail-session:domain"))
 
+    testImplementation(project(":test:utils"))
     testImplementation(project(":test:test-data"))
+    testImplementation(Proton.Common.rustCore)
     testImplementation(Dependencies.testLibs)
-    testImplementation(Proton.Core.testAndroid)
+
 }

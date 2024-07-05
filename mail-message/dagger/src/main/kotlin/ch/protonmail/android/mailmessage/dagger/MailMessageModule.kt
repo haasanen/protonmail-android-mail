@@ -19,6 +19,7 @@
 package ch.protonmail.android.mailmessage.dagger
 
 import ch.protonmail.android.mailcommon.data.BuildConfig
+import ch.protonmail.android.mailmessage.data.MessageRustCoroutineScope
 import ch.protonmail.android.mailmessage.data.local.MessageLocalDataSource
 import ch.protonmail.android.mailmessage.data.local.MessageLocalDataSourceImpl
 import ch.protonmail.android.mailmessage.data.local.SearchResultsLocalDataSource
@@ -45,12 +46,20 @@ import dagger.Provides
 import dagger.Reusable
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import me.proton.core.util.kotlin.CoroutineScopeProvider
 import javax.inject.Singleton
 
 @Module(includes = [MailMessageModule.BindsModule::class])
 @InstallIn(SingletonComponent::class)
 object MailMessageModule {
+
+    @Provides
+    @Singleton
+    @MessageRustCoroutineScope
+    fun provideMessageRustCoroutineScope(): CoroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
     @Provides
     @Singleton
