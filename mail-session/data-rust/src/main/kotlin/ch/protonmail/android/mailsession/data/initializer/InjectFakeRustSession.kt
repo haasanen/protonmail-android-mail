@@ -18,43 +18,71 @@
 
 package ch.protonmail.android.mailsession.data.initializer
 
-import ch.protonmail.android.mailsession.data.RepositoryFlowCoroutineScope
 import ch.protonmail.android.mailsession.domain.repository.MailSessionRepository
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.runBlocking
 import timber.log.Timber
+import uniffi.proton_mail_uniffi.MailSession
+import uniffi.proton_mail_uniffi.MailUserSessionInitializationCallback
+import uniffi.proton_mail_uniffi.MailUserSessionInitializationStage
 import uniffi.proton_mail_uniffi.SessionCallback
 import uniffi.proton_mail_uniffi.SessionError
 import javax.inject.Inject
 
 class InjectFakeRustSession @Inject constructor(
-    private val mailSessionRepository: MailSessionRepository,
-    @RepositoryFlowCoroutineScope private val coroutineScope: CoroutineScope
+    private val mailSessionRepository: MailSessionRepository
 ) {
 
-    fun withUser(username: String, password: String) = coroutineScope.launch {
+    @SuppressWarnings("MagicNumber")
+    fun withUser(username: String, password: String) = runBlocking {
         val mailSession = mailSessionRepository.getMailSession()
-        val newLoginFlow = mailSession.newLoginFlow(
-            object : SessionCallback {
-                override fun onError(err: SessionError) {
-                    Timber.w("RustLib: fake login flow failed.")
-                }
+        val storedSessionExists = mailSession.storedSessions().isNotEmpty()
+        if (storedSessionExists) {
+            Timber.d("RustLib: Existing session found in rust lib. Fake login skipped")
+            return@runBlocking
+        }
 
-                override fun onRefreshFailed(e: SessionError) {
-                    Timber.w("RustLib: fake login flow failed.")
-                }
-
-                override fun onSessionDeleted() {
-                    Timber.w("RustLib: fake login session deleted.")
-                }
-
-                override fun onSessionRefresh() {
-                }
-
-            }
-        )
+        val newLoginFlow = buildLoginFlow(mailSession)
         newLoginFlow.login(username, password)
         Timber.d("RustLib: Fake login with $username performed")
+
+        Timber.d("RustLib: Initializing user context for $username...")
+
+        var initCompleted = false
+        newLoginFlow.toUserContext().initialize(
+            object : MailUserSessionInitializationCallback {
+                override fun onStage(stage: MailUserSessionInitializationStage) {
+                    Timber.d("rustLib: rust-session onStage: $stage")
+                    if (stage == MailUserSessionInitializationStage.FINISHED) {
+                        initCompleted = true
+                    }
+                }
+            }
+        )
+        while (!initCompleted) {
+            delay(1000)
+        }
+        Timber.d("rustLib: rust-session initialization completed successfully")
     }
+
+    private fun buildLoginFlow(mailSession: MailSession) = mailSession.newLoginFlow(
+        object : SessionCallback {
+            override fun onError(err: SessionError) {
+                Timber.w("RustLib: fake login flow failed.")
+            }
+
+            override fun onRefreshFailed(e: SessionError) {
+                Timber.w("RustLib: fake login flow failed.")
+            }
+
+            override fun onSessionDeleted() {
+                Timber.w("RustLib: fake login session deleted.")
+            }
+
+            override fun onSessionRefresh() {
+            }
+
+        }
+    )
 
 }

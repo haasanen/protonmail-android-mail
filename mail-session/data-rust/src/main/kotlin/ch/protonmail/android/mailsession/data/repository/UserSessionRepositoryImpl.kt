@@ -49,6 +49,7 @@ class UserSessionRepositoryImpl @Inject constructor(
         val storedUserSession = mailSession.storedSessions().firstOrNull()
 
         if (storedUserSession == null) {
+            Timber.w("RustLib: no stored user session found from userSessionRepository")
             mutableUserSessionFlow.emit(null)
             return
         }
