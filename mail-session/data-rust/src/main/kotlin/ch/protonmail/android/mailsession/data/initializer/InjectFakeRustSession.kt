@@ -38,21 +38,21 @@ class InjectFakeRustSession @Inject constructor(
         val mailSession = mailSessionRepository.getMailSession()
         val storedSessionExists = mailSession.storedSessions().isNotEmpty()
         if (storedSessionExists) {
-            Timber.d("RustLib: Existing session found in rust lib. Fake login skipped")
+            Timber.d("rust-session: Existing session found in rust lib. Fake login skipped")
             return@runBlocking
         }
 
         val newLoginFlow = buildLoginFlow(mailSession)
         newLoginFlow.login(username, password)
-        Timber.d("RustLib: Fake login with $username performed")
+        Timber.v("rust-session: Fake login with $username performed")
 
-        Timber.d("RustLib: Initializing user context for $username...")
+        Timber.v("rust-session: Initializing user context for $username...")
 
         var initCompleted = false
         newLoginFlow.toUserContext().initialize(
             object : MailUserSessionInitializationCallback {
                 override fun onStage(stage: MailUserSessionInitializationStage) {
-                    Timber.d("rustLib: rust-session onStage: $stage")
+                    Timber.v("rust-session: rust-session onStage: $stage")
                     if (stage == MailUserSessionInitializationStage.FINISHED) {
                         initCompleted = true
                     }
@@ -62,24 +62,25 @@ class InjectFakeRustSession @Inject constructor(
         while (!initCompleted) {
             delay(1000)
         }
-        Timber.d("rustLib: rust-session initialization completed successfully")
+        Timber.d("rust-session: rust-session initialization completed successfully")
     }
 
     private fun buildLoginFlow(mailSession: MailSession) = mailSession.newLoginFlow(
         object : SessionCallback {
             override fun onError(err: SessionError) {
-                Timber.w("RustLib: fake login flow failed.")
+                Timber.w("rust-session: fake login flow failed.")
             }
 
             override fun onRefreshFailed(e: SessionError) {
-                Timber.w("RustLib: fake login flow failed.")
+                Timber.w("rust-session: fake login flow failed.")
             }
 
             override fun onSessionDeleted() {
-                Timber.w("RustLib: fake login session deleted.")
+                Timber.d("rust-session: fake login session deleted.")
             }
 
             override fun onSessionRefresh() {
+                Timber.d("rust-session: fake login session refreshed.")
             }
 
         }

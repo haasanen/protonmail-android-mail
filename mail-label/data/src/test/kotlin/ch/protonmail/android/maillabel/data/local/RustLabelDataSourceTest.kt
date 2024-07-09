@@ -61,7 +61,7 @@ class RustLabelDataSourceTest {
             // When
             labelDataSource.observeSystemLabels().test {
                 // Then
-                loggingTestRule.assertErrorLogged("rustLib: system labels: trying to load labels with a null session")
+                loggingTestRule.assertErrorLogged("rust-label: trying to load labels with a null session")
                 expectNoEvents()
             }
         }
@@ -97,7 +97,7 @@ class RustLabelDataSourceTest {
             // When
             labelDataSource.observeMessageLabels().test {
                 // Then
-                loggingTestRule.assertErrorLogged("rustLib: message labels: trying to load labels with a null session")
+                loggingTestRule.assertErrorLogged("rust-label: trying to load labels with a null session")
                 expectNoEvents()
             }
         }
@@ -133,7 +133,7 @@ class RustLabelDataSourceTest {
             // When
             labelDataSource.observeMessageFolders().test {
                 // Then
-                loggingTestRule.assertErrorLogged("rustLib: message folders: trying to load labels with a null session")
+                loggingTestRule.assertErrorLogged("rust-label: trying to load labels with a null session")
                 expectNoEvents()
             }
         }

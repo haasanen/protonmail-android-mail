@@ -59,7 +59,7 @@ class RustLabelDataSource @Inject constructor(
 
 
     override fun observeSystemLabels(): Flow<List<LocalLabelWithCount>> {
-        Timber.d("rustLib: observeSystemLabels called")
+        Timber.v("rust-label: observeSystemLabels called")
         if (systemLabelsLiveQueryNotInitialised()) {
             initSystemLabelsLiveQuery()
         }
@@ -68,7 +68,7 @@ class RustLabelDataSource @Inject constructor(
     }
 
     override fun observeMessageLabels(): Flow<List<LocalLabelWithCount>> {
-        Timber.d("rustLib: observeMessageLabels called")
+        Timber.v("rust-label: observeMessageLabels called")
         if (messageLabelsLiveQueryNotInitialised()) {
             initMessageLabelsLiveQuery()
         }
@@ -77,7 +77,7 @@ class RustLabelDataSource @Inject constructor(
     }
 
     override fun observeMessageFolders(): Flow<List<LocalLabelWithCount>> {
-        Timber.d("rustLib: observeMessageFolders called")
+        Timber.v("rust-label: observeMessageFolders called")
         if (messageFoldersLiveQueryNotInitialised()) {
             initMessageFoldersLiveQuery()
         }
@@ -91,90 +91,90 @@ class RustLabelDataSource @Inject constructor(
 
     private fun initMessageLabelsLiveQuery() {
         coroutineScope.launch {
-            Timber.d("rustLib: message label: initilizing message labels live query")
+            Timber.v("rust-label: initializing message labels live query")
 
             val session = userSessionRepository.observeCurrentUserSession().firstOrNull()
             if (session == null) {
-                Timber.e("rustLib: message labels: trying to load labels with a null session")
+                Timber.e("rust-label: trying to load labels with a null session")
                 return@launch
             }
 
             val messageLabelsUpdatedCallback = object : MailboxLiveQueryUpdatedCallback {
                 override fun onUpdated() {
                     mutableMessageLabelsFlow.value = messageLabelsLiveQuery?.value() ?: emptyList()
-                    Timber.d("rustLib: message labels updated: ${mutableMessageLabelsFlow.value}")
+                    Timber.v("rust-label: message labels updated: ${mutableMessageLabelsFlow.value}")
                 }
             }
 
             messageLabelsLiveQuery?.let { destroyMessageLabelsLiveQuery() }
             messageLabelsLiveQuery = session.newLabelLabelsObservedQuery(messageLabelsUpdatedCallback)
 
-            Timber.d("rustLib: label: created message labels live query")
+            Timber.d("rust-label: created message labels live query")
         }
     }
 
     private fun initMessageFoldersLiveQuery() {
         coroutineScope.launch {
-            Timber.d("rustLib: message folders: initilizing message folders live query")
+            Timber.v("rust-label: initializing message folders live query")
 
             val session = userSessionRepository.observeCurrentUserSession().firstOrNull()
             if (session == null) {
-                Timber.e("rustLib: message folders: trying to load labels with a null session")
+                Timber.e("rust-label: trying to load labels with a null session")
                 return@launch
             }
 
             val messageFoldersUpdatedCallback = object : MailboxLiveQueryUpdatedCallback {
                 override fun onUpdated() {
                     mutableMessageFoldersFlow.value = messageFoldersLiveQuery?.value() ?: emptyList()
-                    Timber.d("rustLib: message folders updated: ${mutableMessageFoldersFlow.value}")
+                    Timber.v("rust-label: message folders updated: ${mutableMessageFoldersFlow.value}")
                 }
             }
 
             messageFoldersLiveQuery?.let { destroyMessageFoldersLiveQuery() }
             messageFoldersLiveQuery = session.newFolderLabelsObservedQuery(messageFoldersUpdatedCallback)
 
-            Timber.d("rustLib: label: created message folders live query")
+            Timber.d("rust-label: created message folders live query")
         }
     }
 
     private fun initSystemLabelsLiveQuery() {
         coroutineScope.launch {
-            Timber.d("rustLib: systemlabel: initilizing system labels live query")
+            Timber.v("rust-label: initializing system labels live query")
 
             val session = userSessionRepository.observeCurrentUserSession().firstOrNull()
             if (session == null) {
-                Timber.e("rustLib: system labels: trying to load labels with a null session")
+                Timber.e("rust-label: trying to load labels with a null session")
                 return@launch
             }
 
             val systemLabelsUpdatedCallback = object : MailboxLiveQueryUpdatedCallback {
                 override fun onUpdated() {
                     mutableSystemLabelsFlow.value = systemLabelsLiveQuery?.value() ?: emptyList()
-                    Timber.d("rustLib: system labels updated: ${mutableSystemLabelsFlow.value}")
+                    Timber.v("rust-label: system labels updated: ${mutableSystemLabelsFlow.value}")
                 }
             }
 
             systemLabelsLiveQuery?.let { destroySystemLabelsLiveQuery() }
             systemLabelsLiveQuery = session.newSystemLabelsObservedQuery(systemLabelsUpdatedCallback)
 
-            Timber.d("rustLib: label: created systemLabelsLiveQuery")
+            Timber.d("rust-label: created systemLabelsLiveQuery")
         }
     }
 
     private fun destroySystemLabelsLiveQuery() {
-        Timber.d("rustLib: label: destroySystemLabelsLiveQuery")
+        Timber.v("rust-label: destroySystemLabelsLiveQuery")
         systemLabelsLiveQuery?.disconnect()
         systemLabelsLiveQuery = null
     }
 
     private fun destroyMessageLabelsLiveQuery() {
-        Timber.d("rustLib: label: destroyMessageLabelsLiveQuery")
+        Timber.v("rust-label: label: destroyMessageLabelsLiveQuery")
         messageLabelsLiveQuery?.disconnect()
         messageLabelsLiveQuery = null
     }
 
     private fun destroyMessageFoldersLiveQuery() {
-        Timber.d("rustLib: label: destroyMessageFoldersLiveQuery")
+        Timber.v("rust-label: label: destroyMessageFoldersLiveQuery")
         messageFoldersLiveQuery?.disconnect()
         messageFoldersLiveQuery = null
     }

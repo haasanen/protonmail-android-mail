@@ -35,7 +35,7 @@ class InitRustCommonLibrary @Inject constructor(
 ) {
 
     fun init(config: RustLibConfigParams) {
-        Timber.d("RustLib: Let the rust begin...")
+        Timber.v("rust-session: Let the rust begin...")
 
         val sessionParams = MailSessionParams(
             context.filesDir.absolutePath,
@@ -51,15 +51,15 @@ class InitRustCommonLibrary @Inject constructor(
                 config.skipSrpProofValidation
             )
         )
-        Timber.d("RustLib: Initializing the Rust Lib with $sessionParams")
+        Timber.d("rust-session: Initializing the Rust Lib with $sessionParams")
 
         val mailSession = MailSession.create(
             sessionParams,
             OsKeyChainMock(context),
             null
         )
-        Timber.d("RustLib: Mail session created! (hash: ${mailSession.hashCode()})")
-        Timber.d("RustLib: Storing mail session to In Memory Session Repository...")
+        Timber.v("rust-session: Mail session created! (hash: ${mailSession.hashCode()})")
+        Timber.v("rust-session: Storing mail session to In Memory Session Repository...")
 
         mailSessionRepository.setMailSession(mailSession)
     }

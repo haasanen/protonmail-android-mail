@@ -58,7 +58,7 @@ class RustLabelRepository @Inject constructor(
             }.convertToDataResultFlow()
 
             else -> {
-                Timber.w("rustLib:LabelRepository Unsupported label type: $type")
+                Timber.w("rust-label: LabelRepository Unsupported label type: $type")
                 flowOf(DataResult.Error.Local("Unsupported label type $type", null))
             }
         }

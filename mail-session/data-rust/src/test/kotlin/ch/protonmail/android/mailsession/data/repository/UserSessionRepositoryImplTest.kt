@@ -108,7 +108,7 @@ class UserSessionRepositoryImplTest {
             sessionCallbackCaptor.captured.onError(expectedError)
             // Then
             assertEquals(null, awaitItem())
-            loggingRule.assertErrorLogged("Session error: ${expectedError.name}")
+            loggingRule.assertErrorLogged("rust-session: error: ${expectedError.name}")
         }
     }
 
@@ -131,7 +131,7 @@ class UserSessionRepositoryImplTest {
             sessionCallbackCaptor.captured.onRefreshFailed(expectedError)
             // Then
             assertEquals(null, awaitItem())
-            loggingRule.assertWarningLogged("Session refresh failed: ${expectedError.name}")
+            loggingRule.assertWarningLogged("rust-session: refresh failed: ${expectedError.name}")
         }
     }
 

@@ -49,7 +49,7 @@ class UserSessionRepositoryImpl @Inject constructor(
         val storedUserSession = mailSession.storedSessions().firstOrNull()
 
         if (storedUserSession == null) {
-            Timber.w("RustLib: no stored user session found from userSessionRepository")
+            Timber.e("rust-session: no stored user session found from userSessionRepository")
             mutableUserSessionFlow.emit(null)
             return
         }
@@ -58,12 +58,12 @@ class UserSessionRepositoryImpl @Inject constructor(
             storedUserSession,
             object : SessionCallback {
                 override fun onError(err: SessionError) {
-                    Timber.e("Session error: ${err.name}")
+                    Timber.e("rust-session: error: ${err.name}")
                     coroutineScope.launch { mutableUserSessionFlow.emit(null) }
                 }
 
                 override fun onRefreshFailed(e: SessionError) {
-                    Timber.w("Session refresh failed: ${e.name}")
+                    Timber.w("rust-session: refresh failed: ${e.name}")
                     coroutineScope.launch { mutableUserSessionFlow.emit(null) }
                 }
 
