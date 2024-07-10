@@ -109,7 +109,7 @@ class ConversationRepositoryImpl @Inject constructor(
     override suspend fun markAsStale(userId: UserId, labelId: LabelId) =
         conversationLocalDataSource.markAsStale(userId, labelId)
 
-    override fun observeConversation(
+    override suspend fun observeConversation(
         userId: UserId,
         id: ConversationId,
         refreshData: Boolean

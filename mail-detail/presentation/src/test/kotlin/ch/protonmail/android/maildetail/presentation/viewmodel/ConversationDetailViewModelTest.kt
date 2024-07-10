@@ -216,7 +216,7 @@ class ConversationDetailViewModelTest {
         every { this@mockk(userId = UserIdSample.Primary) } returns flowOf(emptyList<Contact>().right())
     }
     private val observeConversation: ObserveConversation = mockk {
-        every { this@mockk(UserIdSample.Primary, ConversationIdSample.WeatherForecast, any()) } returns
+        coEvery { this@mockk(UserIdSample.Primary, ConversationIdSample.WeatherForecast, any()) } returns
             flowOf(ConversationSample.WeatherForecast.right())
     }
     private val observeMessage = mockk<ObserveMessage>()
@@ -229,7 +229,7 @@ class ConversationDetailViewModelTest {
         )
     }
     private val observeConversationDetailActions = mockk<ObserveConversationDetailActions> {
-        every {
+        coEvery {
             this@mockk(UserIdSample.Primary, ConversationIdSample.WeatherForecast, any())
         } returns flowOf(
             listOf(Action.Archive, Action.MarkUnread).right()
@@ -467,7 +467,7 @@ class ConversationDetailViewModelTest {
                 message = TextUiModel(string.detail_error_loading_conversation)
             )
         )
-        every {
+        coEvery {
             observeConversation(UserIdSample.Primary, ConversationIdSample.WeatherForecast, any())
         } returns
             flowOf(DataError.Local.NoDataCached.left())
@@ -507,7 +507,7 @@ class ConversationDetailViewModelTest {
             )
         )
 
-        every {
+        coEvery {
             observeConversation(UserIdSample.Primary, ConversationIdSample.WeatherForecast, any())
         } returns flow {
             emit(ConversationSample.WeatherForecast.right())
@@ -670,7 +670,7 @@ class ConversationDetailViewModelTest {
         val actions = listOf(Action.Archive)
         val actionUiModels = listOf(ActionUiModelTestData.archive).toImmutableList()
         val expected = initialState.copy(bottomBarState = BottomBarState.Data.Shown(actionUiModels))
-        every {
+        coEvery {
             observeConversationDetailActions(UserIdSample.Primary, ConversationIdSample.WeatherForecast, any())
         } returns flowOf(actions.right())
         every {
@@ -704,7 +704,7 @@ class ConversationDetailViewModelTest {
             )
         } returns messages.first()
         val expected = initialState.copy(bottomBarState = BottomBarState.Error.FailedLoadingActions)
-        every {
+        coEvery {
             observeConversationDetailActions(UserIdSample.Primary, ConversationIdSample.WeatherForecast, any())
         } returns flowOf(DataError.Local.NoDataCached.left())
         every {
@@ -1836,7 +1836,7 @@ class ConversationDetailViewModelTest {
             advanceUntilIdle()
 
             // Then
-            verify { observeConversationDetailActions(any(), any(), refreshConversations = false) }
+            coVerify { observeConversationDetailActions(any(), any(), refreshConversations = false) }
             cancelAndIgnoreRemainingEvents()
         }
     }
@@ -1860,7 +1860,7 @@ class ConversationDetailViewModelTest {
             advanceUntilIdle()
 
             // Then
-            verify { observeConversation(any(), any(), refreshData = true) }
+            coVerify { observeConversation(any(), any(), refreshData = true) }
             cancelAndIgnoreRemainingEvents()
         }
     }

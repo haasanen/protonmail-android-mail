@@ -28,7 +28,7 @@ import ch.protonmail.android.mailconversation.domain.usecase.ObserveConversation
 import ch.protonmail.android.maildetail.domain.usecase.ObserveConversationDetailActions
 import ch.protonmail.android.testdata.conversation.ConversationTestData
 import ch.protonmail.android.testdata.user.UserIdTestData.userId
-import io.mockk.every
+import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
@@ -38,7 +38,7 @@ import kotlin.test.assertEquals
 internal class ObserveConversationDetailActionsTest {
 
     private val observeConversation = mockk<ObserveConversation> {
-        every {
+        coEvery {
             this@mockk.invoke(userId, ConversationId(ConversationTestData.RAW_CONVERSATION_ID), true)
         } returns flowOf(ConversationTestData.conversation.right())
     }
@@ -70,7 +70,7 @@ internal class ObserveConversationDetailActionsTest {
         // Given
         val conversationId = ConversationId(ConversationTestData.RAW_CONVERSATION_ID)
         val conversation = ConversationTestData.trashAndSpamConversation
-        every { observeConversation.invoke(userId, conversationId, true) } returns flowOf(conversation.right())
+        coEvery { observeConversation.invoke(userId, conversationId, true) } returns flowOf(conversation.right())
         // When
         observeDetailActions.invoke(userId, conversationId, true).test {
             // Then
@@ -91,7 +91,7 @@ internal class ObserveConversationDetailActionsTest {
             // Given
             val conversationId = ConversationId(ConversationTestData.RAW_CONVERSATION_ID)
             val conversation = ConversationTestData.trashConversationWithAllSentAllDrafts
-            every {
+            coEvery {
                 observeConversation.invoke(
                     userId,
                     conversationId,
@@ -116,7 +116,7 @@ internal class ObserveConversationDetailActionsTest {
     fun `returns data error when failing to get conversation`() = runTest {
         // Given
         val conversationId = ConversationId(ConversationTestData.RAW_CONVERSATION_ID)
-        every { observeConversation.invoke(userId, conversationId, refreshData = true) } returns flowOf(
+        coEvery { observeConversation.invoke(userId, conversationId, refreshData = true) } returns flowOf(
             DataError.Local.NoDataCached.left()
         )
         // When

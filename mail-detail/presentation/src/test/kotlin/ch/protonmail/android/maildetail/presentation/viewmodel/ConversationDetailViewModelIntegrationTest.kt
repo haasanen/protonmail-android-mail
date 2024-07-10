@@ -218,7 +218,7 @@ class ConversationDetailViewModelIntegrationTest {
         every { this@mockk(userId = UserIdSample.Primary) } returns flowOf(emptyList<Contact>().right())
     }
     private val observeConversationUseCase: ObserveConversation = mockk {
-        every { this@mockk(UserIdSample.Primary, ConversationIdSample.WeatherForecast, any()) } returns
+        coEvery { this@mockk(UserIdSample.Primary, ConversationIdSample.WeatherForecast, any()) } returns
             flowOf(ConversationSample.WeatherForecast.right())
     }
     private val observeMessage = mockk<ObserveMessage>()
@@ -231,7 +231,7 @@ class ConversationDetailViewModelIntegrationTest {
         )
     }
     private val observeConversationDetailActions = mockk<ObserveConversationDetailActions> {
-        every { this@mockk(UserIdSample.Primary, ConversationIdSample.WeatherForecast, any()) } returns flowOf(
+        coEvery { this@mockk(UserIdSample.Primary, ConversationIdSample.WeatherForecast, any()) } returns flowOf(
             listOf(Action.Archive, Action.MarkUnread).right()
         )
     }
