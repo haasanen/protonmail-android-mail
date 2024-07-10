@@ -21,8 +21,13 @@ package ch.protonmail.android.mailconversation.dagger
 import ch.protonmail.android.mailcommon.data.BuildConfig
 import ch.protonmail.android.mailcommon.data.worker.Enqueuer
 import ch.protonmail.android.mailcommon.domain.benchmark.BenchmarkTracer
+import ch.protonmail.android.mailconversation.data.ConversationRustCoroutineScope
 import ch.protonmail.android.mailconversation.data.local.ConversationDatabase
 import ch.protonmail.android.mailconversation.data.local.ConversationLocalDataSourceImpl
+import ch.protonmail.android.mailconversation.data.local.RustConversationDataSource
+import ch.protonmail.android.mailconversation.data.local.RustConversationDataSourceImpl
+import ch.protonmail.android.mailconversation.data.local.RustConversationQuery
+import ch.protonmail.android.mailconversation.data.local.RustConversationQueryImpl
 import ch.protonmail.android.mailconversation.data.local.UnreadConversationsCountLocalDataSource
 import ch.protonmail.android.mailconversation.data.local.UnreadConversationsCountLocalDataSourceImpl
 import ch.protonmail.android.mailconversation.data.remote.ConversationRemoteDataSourceImpl
@@ -43,6 +48,9 @@ import dagger.Provides
 import dagger.Reusable
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import me.proton.core.network.data.ApiProvider
 import me.proton.core.util.kotlin.CoroutineScopeProvider
 import javax.inject.Singleton
@@ -51,6 +59,12 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object MailConversationModule {
 
+    @Provides
+    @Singleton
+    @ConversationRustCoroutineScope
+    fun provideConversationRustCoroutineScope(): CoroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
+
+    @Suppress("LongParameterList")
     @Provides
     @Singleton
     fun provideConversationRepositoryImpl(
@@ -111,5 +125,14 @@ object MailConversationModule {
         fun bindsUnreadConvoCountLocalDataSource(
             impl: UnreadConversationsCountLocalDataSourceImpl
         ): UnreadConversationsCountLocalDataSource
+
+        @Binds
+        @Singleton
+        fun bindsRustConversationDataSource(impl: RustConversationDataSourceImpl): RustConversationDataSource
+
+
+        @Binds
+        @Singleton
+        fun bindsRustConversationQuery(impl: RustConversationQueryImpl): RustConversationQuery
     }
 }
