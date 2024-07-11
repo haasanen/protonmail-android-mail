@@ -20,8 +20,8 @@ package ch.protonmail.android.maildetail.domain.usecase
 
 import me.proton.core.domain.entity.UserId
 import me.proton.core.mailsettings.domain.entity.ShowImage
-import me.proton.core.mailsettings.domain.repository.MailSettingsRepository
-import me.proton.core.mailsettings.domain.repository.getMailSettingsOrNull
+import ch.protonmail.android.mailsettings.domain.repository.MailSettingsRepository
+import ch.protonmail.android.mailsettings.domain.repository.getMailSettingsOrNull
 import javax.inject.Inject
 
 class ShouldShowRemoteContent @Inject constructor(

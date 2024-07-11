@@ -34,8 +34,8 @@ import kotlinx.coroutines.runBlocking
 import me.proton.core.auth.domain.entity.SessionInfo
 import me.proton.core.auth.domain.testing.LoginTestHelper
 import me.proton.core.configuration.EnvironmentConfiguration
-import me.proton.core.mailsettings.domain.repository.MailSettingsRepository
-import me.proton.core.mailsettings.domain.repository.getMailSettingsOrNull
+import ch.protonmail.android.mailsettings.domain.repository.MailSettingsRepository
+import ch.protonmail.android.mailsettings.domain.repository.getMailSettingsOrNull
 import me.proton.core.test.android.instrumented.utils.Shell.setupDeviceForAutomation
 import me.proton.core.test.quark.Quark
 import me.proton.core.test.quark.data.User

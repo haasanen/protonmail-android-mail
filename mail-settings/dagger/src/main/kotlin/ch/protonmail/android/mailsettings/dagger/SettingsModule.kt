@@ -19,6 +19,7 @@
 package ch.protonmail.android.mailsettings.dagger
 
 import android.content.Context
+import ch.protonmail.android.mailcommon.data.BuildConfig
 import ch.protonmail.android.mailcommon.domain.repository.AppLocaleRepository
 import ch.protonmail.android.mailsettings.data.MailSettingsDataStoreProvider
 import ch.protonmail.android.mailsettings.data.repository.AddressIdentityRepositoryImpl
@@ -28,10 +29,12 @@ import ch.protonmail.android.mailsettings.data.repository.AutoLockRepositoryImpl
 import ch.protonmail.android.mailsettings.data.repository.BackgroundSyncSettingRepositoryImpl
 import ch.protonmail.android.mailsettings.data.repository.BiometricsSystemStateRepositoryImpl
 import ch.protonmail.android.mailsettings.data.repository.CombinedContactsRepositoryImpl
+import ch.protonmail.android.mailsettings.data.repository.CoreMailSettingsRepository
 import ch.protonmail.android.mailsettings.data.repository.LocalStorageDataRepositoryImpl
 import ch.protonmail.android.mailsettings.data.repository.MobileFooterRepositoryImpl
 import ch.protonmail.android.mailsettings.data.repository.NotificationsSettingsRepositoryImpl
 import ch.protonmail.android.mailsettings.data.repository.PreventScreenshotsRepositoryImpl
+import ch.protonmail.android.mailsettings.data.repository.RustMailSettingsRepository
 import ch.protonmail.android.mailsettings.data.repository.ThemeRepositoryImpl
 import ch.protonmail.android.mailsettings.data.repository.local.AddressIdentityLocalDataSource
 import ch.protonmail.android.mailsettings.data.repository.local.AddressIdentityLocalDataSourceImpl
@@ -51,6 +54,7 @@ import ch.protonmail.android.mailsettings.domain.repository.BackgroundSyncSettin
 import ch.protonmail.android.mailsettings.domain.repository.BiometricsSystemStateRepository
 import ch.protonmail.android.mailsettings.domain.repository.CombinedContactsRepository
 import ch.protonmail.android.mailsettings.domain.repository.LocalStorageDataRepository
+import ch.protonmail.android.mailsettings.domain.repository.MailSettingsRepository
 import ch.protonmail.android.mailsettings.domain.repository.MobileFooterRepository
 import ch.protonmail.android.mailsettings.domain.repository.NotificationsSettingsRepository
 import ch.protonmail.android.mailsettings.domain.repository.PreventScreenshotsRepository
@@ -67,6 +71,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import javax.inject.Singleton
+import me.proton.core.mailsettings.domain.repository.MailSettingsRepository as CoreLibsMailSettingsRepository
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -121,6 +126,18 @@ object SettingsModule {
     @Singleton
     @ThemeObserverCoroutineScope
     fun provideThemeObserverCoroutineScope(): CoroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
+
+    @Provides
+    @Singleton
+    fun provideMailSettingsRepository(
+        coreMailSettingsRepository: CoreLibsMailSettingsRepository
+    ): MailSettingsRepository {
+        return if (BuildConfig.USE_RUST_DATA_LAYER) {
+            RustMailSettingsRepository()
+        } else {
+            CoreMailSettingsRepository(coreMailSettingsRepository)
+        }
+    }
 
     @Module
     @InstallIn(SingletonComponent::class)

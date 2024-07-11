@@ -25,7 +25,7 @@ import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import me.proton.core.domain.type.IntEnum
 import me.proton.core.mailsettings.domain.entity.ShowImage
-import me.proton.core.mailsettings.domain.repository.MailSettingsRepository
+import ch.protonmail.android.mailsettings.domain.repository.MailSettingsRepository
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

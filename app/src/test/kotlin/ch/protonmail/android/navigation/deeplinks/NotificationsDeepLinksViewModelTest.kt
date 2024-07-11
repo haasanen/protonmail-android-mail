@@ -48,7 +48,7 @@ import me.proton.core.domain.entity.UserId
 import me.proton.core.domain.type.IntEnum
 import me.proton.core.mailsettings.domain.entity.MailSettings
 import me.proton.core.mailsettings.domain.entity.ViewMode
-import me.proton.core.mailsettings.domain.repository.MailSettingsRepository
+import ch.protonmail.android.mailsettings.domain.repository.MailSettingsRepository
 import me.proton.core.network.domain.NetworkManager
 import me.proton.core.network.domain.NetworkStatus
 import org.junit.Before

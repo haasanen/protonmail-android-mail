@@ -19,7 +19,7 @@
 package ch.protonmail.android.mailsettings.domain.usecase
 
 import me.proton.core.domain.entity.UserId
-import me.proton.core.mailsettings.domain.repository.MailSettingsRepository
+import ch.protonmail.android.mailsettings.domain.repository.MailSettingsRepository
 import javax.inject.Inject
 
 class UpdateInheritFolderColor @Inject constructor(

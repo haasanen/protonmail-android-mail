@@ -38,7 +38,7 @@ import kotlinx.coroutines.test.setMain
 import me.proton.core.accountmanager.domain.AccountManager
 import me.proton.core.mailsettings.domain.entity.MailSettings
 import me.proton.core.mailsettings.domain.entity.ViewMode.NoConversationGrouping
-import me.proton.core.mailsettings.domain.repository.MailSettingsRepository
+import ch.protonmail.android.mailsettings.domain.repository.MailSettingsRepository
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals

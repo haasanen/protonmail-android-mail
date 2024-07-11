@@ -24,7 +24,7 @@ import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUserId
 import kotlinx.coroutines.flow.firstOrNull
-import me.proton.core.mailsettings.domain.repository.MailSettingsRepository
+import ch.protonmail.android.mailsettings.domain.repository.MailSettingsRepository
 import javax.inject.Inject
 
 class UpdateShowRemoteContentSetting @Inject constructor(

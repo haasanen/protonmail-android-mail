@@ -22,7 +22,7 @@ import ch.protonmail.android.mailsettings.domain.model.FolderColorSettings
 import kotlinx.coroutines.flow.mapLatest
 import me.proton.core.domain.arch.mapSuccessValueOrNull
 import me.proton.core.domain.entity.UserId
-import me.proton.core.mailsettings.domain.repository.MailSettingsRepository
+import ch.protonmail.android.mailsettings.domain.repository.MailSettingsRepository
 import javax.inject.Inject
 
 class ObserveFolderColorSettings @Inject constructor(

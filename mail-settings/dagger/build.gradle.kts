@@ -49,5 +49,8 @@ dependencies {
     implementation(project(":mail-settings:presentation"))
     implementation(project(":mail-common:domain"))
 
+    implementation(project(":mail-common:data"))
+
     implementation(KotlinX.coroutinesCore)
+    implementation(Proton.Core.mailSettings)
 }

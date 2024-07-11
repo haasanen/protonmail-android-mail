@@ -32,7 +32,7 @@ import me.proton.core.domain.arch.DataResult.Error
 import me.proton.core.domain.arch.DataResult.Success
 import me.proton.core.domain.arch.ResponseSource.Local
 import me.proton.core.mailsettings.domain.entity.MailSettings
-import me.proton.core.mailsettings.domain.repository.MailSettingsRepository
+import ch.protonmail.android.mailsettings.domain.repository.MailSettingsRepository
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals

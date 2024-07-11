@@ -26,7 +26,7 @@ import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import me.proton.core.mailsettings.domain.entity.SwipeAction
-import me.proton.core.mailsettings.domain.repository.MailSettingsRepository
+import ch.protonmail.android.mailsettings.domain.repository.MailSettingsRepository
 import kotlin.test.Test
 
 internal class UpdateSwipeActionPreferenceTest {
