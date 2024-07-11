@@ -63,7 +63,7 @@ interface ConversationRepository {
      * Returns any conversation data that is available locally right away.
      * Message metadata is fetched and returned as available
      */
-    suspend fun observeConversation(
+    fun observeConversation(
         userId: UserId,
         id: ConversationId,
         refreshData: Boolean
