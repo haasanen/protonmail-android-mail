@@ -44,6 +44,7 @@ android {
 
 dependencies {
     kapt(Dependencies.appAnnotationProcessors)
+    compileOnly(Proton.Common.rustCore)
 
     implementation(Dependencies.moduleDataLibs)
     implementation(AndroidX.Hilt.work)
@@ -61,6 +62,10 @@ dependencies {
     implementation(project(":mail-message:data"))
     implementation(project(":mail-pagination:data"))
     implementation(project(":mail-conversation:domain"))
+    implementation(project(":mail-session:domain"))
 
+    testImplementation(Proton.Common.rustCore)
     testImplementation(Dependencies.testLibs)
+    testImplementation(project(":test:utils"))
+    testImplementation(project(":test:test-data"))
 }
