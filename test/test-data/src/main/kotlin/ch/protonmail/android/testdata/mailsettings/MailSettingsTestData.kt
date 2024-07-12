@@ -19,6 +19,7 @@
 package ch.protonmail.android.testdata.mailsettings
 
 import ch.protonmail.android.testdata.user.UserIdTestData
+import me.proton.core.domain.entity.UserId
 import me.proton.core.domain.type.IntEnum
 import me.proton.core.domain.type.StringEnum
 import me.proton.core.mailsettings.domain.entity.ComposerMode
@@ -37,27 +38,39 @@ object MailSettingsTestData {
 
     val mailSettings = buildMailSettings()
 
+    val mailSettingsFromRust = buildMailSettings(
+        userId = UserId("fakeUserId"),
+        showImages = IntEnum(0, ShowImage.None),
+        showMoved = IntEnum(3, ShowMoved.Both),
+        swipeRight = SwipeAction.Archive,
+        swipeLeft = SwipeAction.Trash,
+        pgpScheme = IntEnum(16, PackageType.PgpMime)
+    )
+
     fun buildMailSettings(
+        userId: UserId = UserIdTestData.userId,
         showImages: IntEnum<ShowImage>? = null,
+        showMoved: IntEnum<ShowMoved> = IntEnum(1, ShowMoved.Drafts),
         swipeLeft: SwipeAction? = null,
         swipeRight: SwipeAction? = null,
         enableFolderColor: Boolean = true,
         inheritParentFolderColor: Boolean = true,
-        confirmLink: Boolean = true
+        confirmLink: Boolean = true,
+        pgpScheme: IntEnum<PackageType> = IntEnum(1, PackageType.ProtonMail)
     ) = MailSettings(
-        userId = UserIdTestData.userId,
+        userId = userId,
         displayName = "displayName",
         signature = "Signature",
         autoSaveContacts = true,
         composerMode = IntEnum(1, ComposerMode.Maximized),
         messageButtons = IntEnum(1, MessageButtons.UnreadFirst),
         showImages = showImages,
-        showMoved = IntEnum(1, ShowMoved.Drafts),
+        showMoved = showMoved,
         viewMode = IntEnum(1, ViewMode.NoConversationGrouping),
         viewLayout = IntEnum(1, ViewLayout.Row),
         swipeLeft = swipeLeft?.let { IntEnum(it.value, it) },
         swipeRight = swipeRight?.let { IntEnum(it.value, it) },
-        shortcuts = true,
+        shortcuts = false,
         pmSignature = IntEnum(1, PMSignature.Disabled),
         numMessagePerPage = 1,
         draftMimeType = StringEnum("text/plain", MimeType.PlainText),
@@ -68,7 +81,7 @@ object MailSettingsTestData {
         rightToLeft = true,
         attachPublicKey = true,
         sign = true,
-        pgpScheme = IntEnum(1, PackageType.ProtonMail),
+        pgpScheme = pgpScheme,
         promptPin = true,
         stickyLabels = true,
         confirmLink = confirmLink

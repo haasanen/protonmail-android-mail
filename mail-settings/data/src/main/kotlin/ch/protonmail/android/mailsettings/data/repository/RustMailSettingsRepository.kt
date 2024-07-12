@@ -18,9 +18,14 @@
 
 package ch.protonmail.android.mailsettings.data.repository
 
+import ch.protonmail.android.mailsettings.data.local.MailSettingsDataSource
+import ch.protonmail.android.mailsettings.data.mapper.MailSettingsMapper.toMailSettings
 import ch.protonmail.android.mailsettings.domain.repository.MailSettingsRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.map
 import me.proton.core.domain.arch.DataResult
+import me.proton.core.domain.arch.ResponseSource
 import me.proton.core.domain.entity.UserId
 import me.proton.core.mailsettings.domain.entity.ComposerMode
 import me.proton.core.mailsettings.domain.entity.MailSettings
@@ -33,115 +38,161 @@ import me.proton.core.mailsettings.domain.entity.ShowMoved
 import me.proton.core.mailsettings.domain.entity.SwipeAction
 import me.proton.core.mailsettings.domain.entity.ViewLayout
 import me.proton.core.mailsettings.domain.entity.ViewMode
+import timber.log.Timber
 
 @SuppressWarnings("NotImplementedDeclaration", "TooManyFunctions", "ComplexInterface")
-class RustMailSettingsRepository : MailSettingsRepository {
+class RustMailSettingsRepository(
+    private val mailSettingsDataSource: MailSettingsDataSource
+) : MailSettingsRepository {
 
-    override fun getMailSettingsFlow(userId: UserId, refresh: Boolean): Flow<DataResult<MailSettings>> {
-        TODO("Not yet implemented")
-    }
+    override fun getMailSettingsFlow(userId: UserId, refresh: Boolean) =
+        mailSettingsDataSource.observeMailSettings().map { localSettings ->
+            localSettings.toMailSettings()
+        }.convertToDataResultFlow()
 
+    @Throws(NoSuchElementException::class)
     override suspend fun getMailSettings(userId: UserId, refresh: Boolean): MailSettings {
-        TODO("Not yet implemented")
+        return getMailSettingsFlow(userId).firstOrNull().successOrNull()
+            ?: throw NoSuchElementException("No Mail Settings found")
     }
 
     override suspend fun updateMailSettings(mailSettings: MailSettings) {
-        TODO("Not yet implemented")
+        Timber.e("updateMailSettings function not implemented. Rust implementation should come.")
     }
 
     override suspend fun updateDisplayName(userId: UserId, displayName: String): MailSettings {
-        TODO("Not yet implemented")
+        Timber.e("updateDisplayName function not implemented, rust implementation should come")
+        throw NotImplementedError()
     }
 
     override suspend fun updateSignature(userId: UserId, signature: String): MailSettings {
-        TODO("Not yet implemented")
+        Timber.e("updateSignature function not implemented, rust implementation should come")
+        throw NotImplementedError()
     }
 
     override suspend fun updateAutoSaveContacts(userId: UserId, autoSaveContacts: Boolean): MailSettings {
-        TODO("Not yet implemented")
+        Timber.e("updateAutoSaveContacts function not implemented, rust implementation should come")
+        throw NotImplementedError()
     }
 
     override suspend fun updateComposerMode(userId: UserId, composerMode: ComposerMode): MailSettings {
-        TODO("Not yet implemented")
+        Timber.e("updateComposerMode function not implemented, rust implementation should come")
+        throw NotImplementedError()
     }
 
     override suspend fun updateMessageButtons(userId: UserId, messageButtons: MessageButtons): MailSettings {
-        TODO("Not yet implemented")
+        Timber.e("updateMessageButtons function not implemented, rust implementation should come")
+        throw NotImplementedError()
     }
 
     override suspend fun updateShowImages(userId: UserId, showImage: ShowImage): MailSettings {
-        TODO("Not yet implemented")
+        Timber.e("updateShowImages function not implemented, rust implementation should come")
+        throw NotImplementedError()
     }
 
     override suspend fun updateShowMoved(userId: UserId, showMoved: ShowMoved): MailSettings {
-        TODO("Not yet implemented")
+        Timber.e("updateShowMoved function not implemented, rust implementation should come")
+        throw NotImplementedError()
     }
 
     override suspend fun updateViewMode(userId: UserId, viewMode: ViewMode): MailSettings {
-        TODO("Not yet implemented")
+        Timber.e("updateViewMode function not implemented, rust implementation should come")
+        throw NotImplementedError()
     }
 
     override suspend fun updateViewLayout(userId: UserId, viewLayout: ViewLayout): MailSettings {
-        TODO("Not yet implemented")
+        Timber.e("updateViewLayout function not implemented, rust implementation should come")
+        throw NotImplementedError()
     }
 
     override suspend fun updateSwipeLeft(userId: UserId, swipeAction: SwipeAction): MailSettings {
-        TODO("Not yet implemented")
+        Timber.e("updateSwipeLeft function not implemented, rust implementation should come")
+        throw NotImplementedError()
     }
 
     override suspend fun updateSwipeRight(userId: UserId, swipeAction: SwipeAction): MailSettings {
-        TODO("Not yet implemented")
+        Timber.e("updateSwipeRight function not implemented, rust implementation should come")
+        throw NotImplementedError()
     }
 
     override suspend fun updatePMSignature(userId: UserId, pmSignature: PMSignature): MailSettings {
-        TODO("Not yet implemented")
+        Timber.e("updatePMSignature function not implemented, rust implementation should come")
+        throw NotImplementedError()
     }
 
     override suspend fun updateDraftMimeType(userId: UserId, mimeType: MimeType): MailSettings {
-        TODO("Not yet implemented")
+        Timber.e("updateDraftMimeType function not implemented, rust implementation should come")
+        throw NotImplementedError()
     }
 
     override suspend fun updateReceiveMimeType(userId: UserId, mimeType: MimeType): MailSettings {
-        TODO("Not yet implemented")
+        Timber.e("updateReceiveMimeType function not implemented, rust implementation should come")
+        throw NotImplementedError()
     }
 
     override suspend fun updateShowMimeType(userId: UserId, mimeType: MimeType): MailSettings {
-        TODO("Not yet implemented")
+        Timber.e("updateShowMimeType function not implemented, rust implementation should come")
+        throw NotImplementedError()
     }
 
     override suspend fun updateRightToLeft(userId: UserId, rightToLeft: Boolean): MailSettings {
-        TODO("Not yet implemented")
+        Timber.e("updateRightToLeft function not implemented, rust implementation should come")
+        throw NotImplementedError()
     }
 
     override suspend fun updateAttachPublicKey(userId: UserId, attachPublicKey: Boolean): MailSettings {
-        TODO("Not yet implemented")
+        Timber.e("updateAttachPublicKey function not implemented, rust implementation should come")
+        throw NotImplementedError()
     }
 
     override suspend fun updateSign(userId: UserId, sign: Boolean): MailSettings {
-        TODO("Not yet implemented")
+        Timber.e("updateSign function not implemented, rust implementation should come")
+        throw NotImplementedError()
     }
 
     override suspend fun updatePGPScheme(userId: UserId, packageType: PackageType): MailSettings {
-        TODO("Not yet implemented")
+        Timber.e("updatePGPScheme function not implemented, rust implementation should come")
+        throw NotImplementedError()
     }
 
     override suspend fun updatePromptPin(userId: UserId, promptPin: Boolean): MailSettings {
-        TODO("Not yet implemented")
+        Timber.e("updatePromptPin function not implemented, rust implementation should come")
+        throw NotImplementedError()
     }
 
     override suspend fun updateStickyLabels(userId: UserId, stickyLabels: Boolean): MailSettings {
-        TODO("Not yet implemented")
+        Timber.e("updateStickyLabels function not implemented, rust implementation should come")
+        throw NotImplementedError()
     }
 
     override suspend fun updateConfirmLink(userId: UserId, confirmLinks: Boolean): MailSettings {
-        TODO("Not yet implemented")
+        Timber.e("updateConfirmLink function not implemented, rust implementation should come")
+        throw NotImplementedError()
     }
 
     override suspend fun updateInheritFolderColor(userId: UserId, inherit: Boolean): MailSettings {
-        TODO("Not yet implemented")
+        Timber.e("updateInheritFolderColor function not implemented, rust implementation should come")
+        throw NotImplementedError()
     }
 
     override suspend fun updateEnableFolderColor(userId: UserId, enable: Boolean): MailSettings {
-        TODO("Not yet implemented")
+        Timber.e("updateEnableFolderColor function not implemented, rust implementation should come")
+        throw NotImplementedError()
     }
+
+    private fun Flow<MailSettings?>.convertToDataResultFlow(): Flow<DataResult<MailSettings>> {
+        return this.map { settings ->
+            if (settings != null) {
+                DataResult.Success(ResponseSource.Remote, settings)
+            } else {
+                DataResult.Error.Local("No Mail Settings Found", null)
+            }
+        }
+    }
+
+    private fun DataResult<MailSettings>?.successOrNull() = when (this) {
+        is DataResult.Success -> this.value
+        else -> null
+    }
+
 }

@@ -22,6 +22,8 @@ import android.content.Context
 import ch.protonmail.android.mailcommon.data.BuildConfig
 import ch.protonmail.android.mailcommon.domain.repository.AppLocaleRepository
 import ch.protonmail.android.mailsettings.data.MailSettingsDataStoreProvider
+import ch.protonmail.android.mailsettings.data.local.MailSettingsDataSource
+import ch.protonmail.android.mailsettings.data.local.RustMailSettingsDataSource
 import ch.protonmail.android.mailsettings.data.repository.AddressIdentityRepositoryImpl
 import ch.protonmail.android.mailsettings.data.repository.AlternativeRoutingRepositoryImpl
 import ch.protonmail.android.mailsettings.data.repository.AppLanguageRepositoryImpl
@@ -130,10 +132,11 @@ object SettingsModule {
     @Provides
     @Singleton
     fun provideMailSettingsRepository(
-        coreMailSettingsRepository: CoreLibsMailSettingsRepository
+        coreMailSettingsRepository: CoreLibsMailSettingsRepository,
+        mailSettingsDataSource: MailSettingsDataSource
     ): MailSettingsRepository {
         return if (BuildConfig.USE_RUST_DATA_LAYER) {
-            RustMailSettingsRepository()
+            RustMailSettingsRepository(mailSettingsDataSource)
         } else {
             CoreMailSettingsRepository(coreMailSettingsRepository)
         }
@@ -185,5 +188,8 @@ object SettingsModule {
         fun bindBiometricsSystemStateRepository(
             impl: BiometricsSystemStateRepositoryImpl
         ): BiometricsSystemStateRepository
+
+        @Binds
+        fun bindsMailSettingsDataSource(impl: RustMailSettingsDataSource): MailSettingsDataSource
     }
 }
