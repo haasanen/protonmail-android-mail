@@ -40,6 +40,7 @@ import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
 import me.proton.core.domain.entity.UserId
 import me.proton.core.label.domain.entity.LabelId
 import uniffi.proton_mail_common.LocalLabelId
@@ -80,7 +81,7 @@ class RustMessageRepositoryImpl @Inject constructor(
     }
 
     override suspend fun markAsStale(userId: UserId, labelId: LabelId) {
-        TODO("Not yet implemented")
+        // Mailbox requires this function to be implemented
     }
 
     override fun observeCachedMessage(userId: UserId, messageId: MessageId): Flow<Either<DataError.Local, Message>> =
@@ -224,9 +225,8 @@ class RustMessageRepositoryImpl @Inject constructor(
         TODO("Not yet implemented")
     }
 
-    override fun observeClearLabelOperation(userId: UserId, labelId: LabelId): Flow<Boolean> {
-        TODO("Not yet implemented")
-    }
+    // Mailbox requires this function to be implemented
+    override fun observeClearLabelOperation(userId: UserId, labelId: LabelId): Flow<Boolean> = flowOf(false)
 
     override suspend fun reportPhishing(
         userId: UserId,
