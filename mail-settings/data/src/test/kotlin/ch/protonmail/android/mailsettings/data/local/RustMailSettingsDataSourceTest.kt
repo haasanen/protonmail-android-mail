@@ -52,7 +52,32 @@ class RustMailSettingsDataSourceTest {
         }
 
     @Test
-    fun `observe mail settings emits items when returned by the rust library`() = runTest {
+    fun `observe mail settings emits items when updated by the rust library`() = runTest {
+        // Given
+        val expected = LocalMailSettingsTestData.mailSettings
+        val expectedUpdated = LocalMailSettingsTestData.mailSettings.copy(displayName = "updated display name")
+        val mailSettingsCallbackSlot = slot<MailSettingsUpdated>()
+        val userSessionMock = mockk<MailUserSession>()
+        every { userSessionRepository.observeCurrentUserSession() } returns flowOf(userSessionMock)
+        val liveQueryMock = mockk<MailUserSettings> {
+            every { value() } returns expected
+        }
+        every { createRustMailSettings(userSessionMock, capture(mailSettingsCallbackSlot)) } returns liveQueryMock
+
+        mailSettingsDataSource.observeMailSettings().test {
+            // Given
+            assertEquals(expected, awaitItem()) // Initial value
+            every { liveQueryMock.value() } returns expectedUpdated
+            // When
+            mailSettingsCallbackSlot.captured.onUpdated()
+
+            // Then
+            assertEquals(expectedUpdated, awaitItem())
+        }
+    }
+
+    @Test
+    fun `observe mail settings emits initial value from the rust library`() = runTest {
         // Given
         val expected = LocalMailSettingsTestData.mailSettings
         val mailSettingsCallbackSlot = slot<MailSettingsUpdated>()
@@ -64,12 +89,11 @@ class RustMailSettingsDataSourceTest {
         every { createRustMailSettings(userSessionMock, capture(mailSettingsCallbackSlot)) } returns liveQueryMock
 
         mailSettingsDataSource.observeMailSettings().test {
-            // When
-            mailSettingsCallbackSlot.captured.onUpdated()
 
             // Then
             assertEquals(expected, awaitItem())
         }
     }
+
 
 }

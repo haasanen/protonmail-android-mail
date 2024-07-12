@@ -75,6 +75,8 @@ class RustMailSettingsDataSource @Inject constructor(
             mailSettingsLiveQuery?.let { destroyMailSettingsLiveQuery() }
             mailSettingsLiveQuery = createRustMailSettings(session, settingsCallback)
 
+            mutableMailSettingsFlow.value = mailSettingsLiveQuery?.value()
+
             Timber.d("rust-settings: created mail settings live query")
         }
     }
