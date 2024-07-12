@@ -16,10 +16,9 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.label
+package ch.protonmail.android.maillabel.data.local
 
 import app.cash.turbine.test
-import ch.protonmail.android.maillabel.data.local.LabelDataSource
 import ch.protonmail.android.maillabel.data.repository.RustLabelRepository
 import ch.protonmail.android.testdata.label.LabelTestData
 import ch.protonmail.android.testdata.label.rust.LocalLabelTestData
@@ -41,7 +40,7 @@ class RustLabelRepositoryTest {
     private val labelRepository = RustLabelRepository(labelDataSource)
 
     @Test
-    fun observeSystemLabelsFromRustDataSource() = runTest {
+    fun `observe system labels from rust data source`() = runTest {
         // Given
         val localLabelWithCount = LocalLabelTestData.localSystemLabelWithCount
         val expectedLabel = LabelTestData.systemLabel
@@ -57,7 +56,7 @@ class RustLabelRepositoryTest {
     }
 
     @Test
-    fun observeMessageLabelsFromRustDataSource() = runTest {
+    fun `observe message labels from rust data source`() = runTest {
         // Given
         val localLabelWithCount = LocalLabelTestData.localMessageLabelWithCount
         val expectedLabel = LabelTestData.messageLabel
@@ -73,7 +72,7 @@ class RustLabelRepositoryTest {
     }
 
     @Test
-    fun observeMessageFolderFromRustDataSource() = runTest {
+    fun `observe message folder from rust data source`() = runTest {
         // Given
         val localLabelWithCount = LocalLabelTestData.localMessageFolderWithCount
         val expectedLabel = LabelTestData.messageFolder
