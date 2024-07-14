@@ -22,6 +22,7 @@ import ch.protonmail.android.maillabel.data.local.LabelDataSource
 import ch.protonmail.android.maillabel.data.mapper.toLabel
 import ch.protonmail.android.maillabel.domain.repository.LabelRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import me.proton.core.domain.arch.DataResult
@@ -69,7 +70,13 @@ class RustLabelRepository @Inject constructor(
         type: LabelType,
         refresh: Boolean
     ): List<Label> {
-        TODO("Not yet implemented")
+        observeLabels(userId, type, refresh).firstOrNull().let {
+            return if (it is DataResult.Success) {
+                it.value
+            } else {
+                emptyList()
+            }
+        }
     }
 
     override suspend fun getLabel(
