@@ -96,18 +96,6 @@ class RustConversationQueryImplTest {
     }
 
     @Test
-    fun `observing conversations without labelId does not switch mailbox`() = runTest {
-        // Given & When
-        rustConversationQuery.observeConversations().test {
-            val conversationList = awaitItem()
-
-            // Then
-            assertNotNull(conversationList)
-            coVerify(exactly = 0) { rustMailbox.switchToMailbox(any()) }
-        }
-    }
-
-    @Test
     fun `new conversation list is emitted when mailbox live query callback is called`() = runTest {
         // Given
         val labelId: LocalLabelId = 1u

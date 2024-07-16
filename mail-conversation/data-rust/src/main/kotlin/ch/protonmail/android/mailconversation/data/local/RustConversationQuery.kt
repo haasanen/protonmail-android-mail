@@ -24,6 +24,5 @@ import uniffi.proton_mail_common.LocalLabelId
 
 interface RustConversationQuery {
     fun observeConversations(labelId: LocalLabelId): Flow<List<LocalConversation>>
-    fun observeConversations(): Flow<List<LocalConversation>>
     fun disconnect()
 }

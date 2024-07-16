@@ -40,14 +40,17 @@ class RustConversationQueryImpl @Inject constructor(
 
     private var conversationLiveQuery: MailboxConversationLiveQuery? = null
 
-    private val _conversationsStatusFlow = MutableStateFlow<List<LocalConversation>>(emptyList())
-    private val conversationsStatusFlow: Flow<List<LocalConversation>> = _conversationsStatusFlow.asStateFlow()
+    private val conversationsMutableStatusFlow = MutableStateFlow<List<LocalConversation>>(emptyList())
+    private val conversationsStatusFlow: Flow<List<LocalConversation>> = conversationsMutableStatusFlow.asStateFlow()
 
     private val conversationsUpdatedCallback = object : MailboxLiveQueryUpdatedCallback {
         override fun onUpdated() {
-            _conversationsStatusFlow.value = conversationLiveQuery?.value() ?: emptyList()
+            conversationsMutableStatusFlow.value = conversationLiveQuery?.value() ?: emptyList()
 
-            Timber.d("rust-conversation-query: onUpdated, item count: ${_conversationsStatusFlow.value.size}")
+            Timber.d(
+                "rust-conversation-query: onUpdated, item count: " +
+                    "${conversationsMutableStatusFlow.value.size}"
+            )
         }
     }
 
@@ -70,7 +73,7 @@ class RustConversationQueryImpl @Inject constructor(
     private fun destroy() {
         Timber.d("rust-conversation-query: destroy")
         disconnect()
-        _conversationsStatusFlow.value = emptyList()
+        conversationsMutableStatusFlow.value = emptyList()
     }
 
     override fun disconnect() {
@@ -84,8 +87,6 @@ class RustConversationQueryImpl @Inject constructor(
 
         return conversationsStatusFlow
     }
-
-    override fun observeConversations(): Flow<List<LocalConversation>> = conversationsStatusFlow
 
     companion object {
 
