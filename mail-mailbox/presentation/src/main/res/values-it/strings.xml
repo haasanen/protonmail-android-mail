@@ -34,7 +34,7 @@
   </plurals>
   <string name="mailbox_default_recipient">(Nessun destinatario)</string>
   <string name="mailbox_default_sender">(Nessun mittente)</string>
-  <string name="mailbox_error_message_offline">Sei offline. Impossibile caricare gli elementi.</string>
+  <string name="mailbox_error_message_offline">Sei offline. Caricamento dei messaggi non riuscito.</string>
   <string name="mailbox_error_message_generic">Caricamento della casella di posta non riuscito</string>
   <string name="mailbox_error_message_unexpected">Si è verificato un errore imprevisto</string>
   <string name="mailbox_is_empty_title">Nessun messaggio</string>
@@ -88,7 +88,6 @@
   <string name="mailbox_action_clear_spam_dialog_title">Svuota la cartella spam</string>
   <string name="mailbox_action_clear_trash_dialog_body_message">Sei sicuro di voler eliminare definitivamente tutti i messaggi presenti nel cestino?</string>
   <string name="mailbox_action_clear_spam_dialog_body_message">Sei sicuro di voler eliminare definitivamente tutti i messaggi presenti nella cartella spam?</string>
-  <string name="mailbox_action_clear_trash_dialog_body_conversation">Sei sicuro di voler eliminare definitivamente tutte le conversazioni presenti nel cestino?</string>
   <string name="mailbox_action_clear_spam_dialog_body_conversation">Sei sicuro di voler eliminare definitivamente tutte le conversazioni presenti nella cartella spam?</string>
   <string name="mailbox_action_clear_operation_scheduled">"Lo svuotamento è programmato"</string>
   <!--    Storage Limit Warning-->

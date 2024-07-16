@@ -25,10 +25,14 @@ import ch.protonmail.android.mailcommon.domain.sample.LabelIdSample
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailcommon.presentation.Effect
+import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
+import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcontact.domain.model.ContactGroup
 import ch.protonmail.android.mailcontact.domain.usecase.SearchContactGroups
 import ch.protonmail.android.mailcontact.domain.usecase.SearchContacts
-import ch.protonmail.android.mailcontact.presentation.model.ContactSearchUiModel
+import ch.protonmail.android.mailcontact.presentation.model.ContactGroupItemUiModel
+import ch.protonmail.android.mailcontact.presentation.model.ContactListItemUiModel
+import ch.protonmail.android.mailcontact.presentation.model.ContactListItemUiModelMapper
 import ch.protonmail.android.mailcontact.presentation.model.ContactSearchUiModelMapper
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
 import ch.protonmail.android.testdata.contact.ContactEmailSample
@@ -61,6 +65,7 @@ class ContactSearchViewModelTest {
     private val reducer = ContactSearchReducer()
 
     private val contactSearchUiModelMapper = mockk<ContactSearchUiModelMapper>()
+    private val contactListItemUiModelMapper = mockk<ContactListItemUiModelMapper>()
     private val searchContactsMock = mockk<SearchContacts>()
     private val searchContactGroupsMock = mockk<SearchContactGroups>()
 
@@ -68,6 +73,7 @@ class ContactSearchViewModelTest {
         ContactSearchViewModel(
             reducer,
             contactSearchUiModelMapper,
+            contactListItemUiModelMapper,
             searchContactsMock,
             searchContactGroupsMock,
             observePrimaryUserId
@@ -86,25 +92,25 @@ class ContactSearchViewModelTest {
         )
     )
     private val expectedContactSearchUiModels = listOf(
-        ContactSearchUiModel.Contact(
+        ContactListItemUiModel.Contact(
             expectedContacts[0].id,
             expectedContacts[0].name,
-            expectedContacts[0].contactEmails.first().email,
-            "S"
+            TextUiModel.Text(expectedContacts[0].contactEmails.first().email),
+            AvatarUiModel.ParticipantInitial("S")
         ),
-        ContactSearchUiModel.Contact(
+        ContactListItemUiModel.Contact(
             expectedContacts[1].id,
             expectedContacts[1].name,
-            expectedContacts[1].contactEmails.first().email,
-            "F"
+            TextUiModel.Text(expectedContacts[1].contactEmails.first().email),
+            AvatarUiModel.ParticipantInitial("F")
         )
     )
     private val expectedContactGroupsSearchUiModels = listOf(
-        ContactSearchUiModel.ContactGroup(
+        ContactGroupItemUiModel(
             expectedContactGroups[0].labelId,
             expectedContactGroups[0].name,
-            Color.Red,
-            emailCount = 1
+            memberCount = 1,
+            color = Color.Red
         )
     )
 
@@ -123,7 +129,8 @@ class ContactSearchViewModelTest {
             val actual = awaitItem()
             val expected = ContactSearchState(
                 close = Effect.empty(),
-                uiModels = null,
+                contactUiModels = null,
+                groupUiModels = null,
                 searchValue = ""
             )
 
@@ -147,7 +154,7 @@ class ContactSearchViewModelTest {
             returnEmpty = true
         )
 
-        expectContactSearchUiModelMapper(expectedContacts, expectedContactSearchUiModels)
+        expectContactUiModelMapper(expectedContacts, expectedContactSearchUiModels)
 
         expectContactGroupsSearchUiModelMapper(expectedContactGroups, expectedContactGroupsSearchUiModels)
 
@@ -158,10 +165,10 @@ class ContactSearchViewModelTest {
             // Then
             val actual = awaitItem()
 
-            assertNotNull(actual.uiModels)
-            assertTrue(actual.uiModels!!.contains(expectedContactSearchUiModels[0]))
-            assertTrue(actual.uiModels!!.contains(expectedContactSearchUiModels[1]))
-            assertTrue(actual.uiModels!!.contains(expectedContactGroupsSearchUiModels[0]))
+            assertNotNull(actual.contactUiModels)
+            assertTrue(actual.contactUiModels!!.contains(expectedContactSearchUiModels[0]))
+            assertTrue(actual.contactUiModels!!.contains(expectedContactSearchUiModels[1]))
+            assertTrue(actual.groupUiModels!!.contains(expectedContactGroupsSearchUiModels[0]))
         }
     }
 
@@ -181,7 +188,7 @@ class ContactSearchViewModelTest {
             returnEmpty = true
         )
 
-        expectContactSearchUiModelMapper(expectedContacts, expectedContactSearchUiModels)
+        expectContactUiModelMapper(expectedContacts, expectedContactSearchUiModels)
 
         expectContactGroupsSearchUiModelMapper(expectedContactGroups, expectedContactGroupsSearchUiModels)
 
@@ -194,7 +201,8 @@ class ContactSearchViewModelTest {
             // Then
             val actual = awaitItem()
 
-            assertNull(actual.uiModels)
+            assertNull(actual.contactUiModels)
+            assertNull(actual.groupUiModels)
         }
     }
 
@@ -204,7 +212,7 @@ class ContactSearchViewModelTest {
         expectedContacts: List<Contact>
     ): List<Contact> {
         coEvery {
-            searchContactsMock.invoke(expectedUserId, expectedSearchTerm)
+            searchContactsMock.invoke(expectedUserId, expectedSearchTerm, false)
         } returns flowOf(expectedContacts.right())
         return expectedContacts
     }
@@ -221,16 +229,13 @@ class ContactSearchViewModelTest {
         return expectedContactGroups
     }
 
-    private fun expectContactSearchUiModelMapper(
-        contacts: List<Contact>,
-        expected: List<ContactSearchUiModel.Contact>
-    ) {
-        every { contactSearchUiModelMapper.contactsToContactSearchUiModelList(contacts) } returns expected
+    private fun expectContactUiModelMapper(contacts: List<Contact>, expected: List<ContactListItemUiModel.Contact>) {
+        every { contactListItemUiModelMapper.toContactListItemUiModel(contacts) } returns expected
     }
 
     private fun expectContactGroupsSearchUiModelMapper(
         contacts: List<ContactGroup>,
-        expected: List<ContactSearchUiModel.ContactGroup>
+        expected: List<ContactGroupItemUiModel>
     ) {
         every { contactSearchUiModelMapper.contactGroupsToContactSearchUiModelList(contacts) } returns expected
     }

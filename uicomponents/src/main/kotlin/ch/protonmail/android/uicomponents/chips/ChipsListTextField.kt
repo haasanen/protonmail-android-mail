@@ -2,6 +2,7 @@ package ch.protonmail.android.uicomponents.chips
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -9,12 +10,13 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.requiredSizeIn
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
@@ -23,7 +25,6 @@ import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -54,24 +55,22 @@ import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.PopupProperties
+import ch.protonmail.android.uicomponents.verticalScrollbar
 import me.proton.core.compose.theme.ProtonDimens
 import me.proton.core.compose.theme.ProtonTheme
 import me.proton.core.compose.theme.defaultNorm
 import me.proton.core.compose.theme.defaultSmallNorm
 import me.proton.core.compose.theme.defaultSmallWeak
 import me.proton.core.util.kotlin.takeIfNotBlank
-import kotlin.math.roundToInt
 
 @Stable
 sealed class ChipItem(open val value: String) {
@@ -121,6 +120,7 @@ fun ChipsListTextField(
 
     val focusManager = LocalFocusManager.current
     val localDensity = LocalDensity.current
+    val localConfiguration = LocalConfiguration.current
     var textMaxWidth by remember { mutableStateOf(Dp.Unspecified) }
     FlowRow(
         modifier = modifier
@@ -174,6 +174,7 @@ fun ChipsListTextField(
                     .onFocusChanged { focusChange ->
                         state.typeWord(state.getTypedText())
                         state.setFocusState(focusChange.isFocused)
+                        if (!focusChange.hasFocus) actions.onSuggestionsDismissed()
                     }
                     .menuAnchor(),
                 value = state.getTypedText(),
@@ -200,26 +201,41 @@ fun ChipsListTextField(
                 textStyle = textStyle
             )
 
-            var suggestionItemSize by remember { mutableStateOf(IntSize.Zero) }
+            val suggestionScrollState = rememberScrollState(initial = 0)
+
+            val dropDownMenuBackground = if (isSystemInDarkTheme()) {
+                ProtonTheme.colors.backgroundSecondary
+            } else {
+                ProtonTheme.colors.backgroundNorm
+            }
+
+            LaunchedEffect(localConfiguration.orientation) {
+                if (contactSuggestionState.areSuggestionsExpanded) {
+                    actions.onSuggestionsDismissed()
+                }
+            }
 
             if (contactSuggestionState.contactSuggestionItems.isNotEmpty()) {
-                DropdownMenu(
+                LaunchedEffect(contactSuggestionState) {
+                    // auto-scroll to first item on each contact suggestions change
+                    //
+                    // we do it also when suggestions visibility changes,
+                    // because we want to scroll even if the results are the same
+                    suggestionScrollState.animateScrollTo(0)
+                }
+
+                ExposedDropdownMenu(
                     modifier = Modifier
-                        .background(ProtonTheme.colors.backgroundNorm)
-                        .width(textMaxWidth)
+                        .background(dropDownMenuBackground)
                         .exposedDropdownSize(false)
-                        .requiredSizeIn(
-                            maxHeight =
-                            suggestionsDropdownMaxHeight(
-                                localDensity,
-                                suggestionItemSize
-                            )
-                        ),
-                    properties = PopupProperties(focusable = false),
+                        .fillMaxWidth(DROP_DOWN_WIDTH_PERCENT)
+                        .fillMaxHeight(DROP_DOWN_HEIGHT_PERCENT)
+                        .verticalScrollbar(suggestionScrollState),
                     expanded = contactSuggestionState.areSuggestionsExpanded,
                     onDismissRequest = {
                         actions.onSuggestionsDismissed()
-                    }
+                    },
+                    scrollState = suggestionScrollState
                 ) {
                     contactSuggestionState.contactSuggestionItems.forEach { selectionOption ->
                         DropdownMenuItem(
@@ -248,10 +264,7 @@ fun ChipsListTextField(
                                 }
                                 actions.onSuggestionsDismissed()
                             },
-                            contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
-                            modifier = Modifier.onSizeChanged {
-                                suggestionItemSize = it
-                            }
+                            contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
                         )
                     }
                 }
@@ -470,17 +483,10 @@ internal class ChipsListState(
     }
 }
 
-private fun suggestionsDropdownMaxHeight(localDensity: Density, suggestionItemSize: IntSize): Dp {
-    val dropdownVerticalPadding = (2 * 8).dp // "DropdownMenuVerticalPadding" is internal in Menu.kt
-
-    val factor = 1.0 + 0.35 // full item + 35% of height for peek
-
-    return with(localDensity) {
-        (suggestionItemSize.height * factor).roundToInt().toDp()
-    } + dropdownVerticalPadding
-}
-
 private val chipShape = RoundedCornerShape(16.dp)
+
+private const val DROP_DOWN_HEIGHT_PERCENT = 0.8f
+private const val DROP_DOWN_WIDTH_PERCENT = 0.9f
 
 @Stable
 internal sealed class ChipItemsList {

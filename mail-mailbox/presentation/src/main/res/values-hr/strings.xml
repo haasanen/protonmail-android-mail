@@ -67,8 +67,8 @@
   </plurals>
   <plurals name="mailbox_action_delete_message_dialog_message">
     <item quantity="one">Jeste li sigurni da želite trajno izbrisati ovu poruku?</item>
-    <item quantity="few">Are you sure you want to permanently delete these messages?</item>
-    <item quantity="other">Are you sure you want to permanently delete these messages?</item>
+    <item quantity="few">Are you sure you want to permanently delete these message?</item>
+    <item quantity="other">Are you sure you want to permanently delete these message?</item>
   </plurals>
   <plurals name="mailbox_action_delete_message">
     <item quantity="one">Message permanently deleted</item>
@@ -97,7 +97,6 @@
   <string name="mailbox_action_clear_spam_dialog_title">Empty Spam folder</string>
   <string name="mailbox_action_clear_trash_dialog_body_message">Are you sure you want to permanently delete all messages within ‘Trash’?</string>
   <string name="mailbox_action_clear_spam_dialog_body_message">Are you sure you want to permanently delete all messages within ‘Spam’?</string>
-  <string name="mailbox_action_clear_trash_dialog_body_conversation">Are you sure you want to permanently delete all conversations within ‘Trash’?</string>
   <string name="mailbox_action_clear_spam_dialog_body_conversation">Are you sure you want to permanently delete all conversations within ‘Spam’?</string>
   <string name="mailbox_action_clear_operation_scheduled">"Clear operation is scheduled"</string>
   <!--    Storage Limit Warning-->
