@@ -81,6 +81,7 @@ val MailLabelUiModel.Custom.testTag: String
 
 @Immutable
 data class MailLabelsUiModel(
+    @Deprecated("Replaced by dynamic system labelIds. Will be removed")
     val systems: List<MailLabelUiModel.System>,
     val dynamicSystems: List<MailLabelUiModel.DynamicSystem>,
     val folders: List<MailLabelUiModel.Custom>,

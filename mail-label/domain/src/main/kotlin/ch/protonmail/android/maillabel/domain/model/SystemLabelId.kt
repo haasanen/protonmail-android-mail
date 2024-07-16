@@ -90,12 +90,16 @@ enum class SystemLabelId(val labelId: LabelId) {
 
         private val map = entries.associateBy { stringOf(it) }
 
+        @Deprecated("Replaced by dynamic system labelIds. Will be removed")
         val displayedList = listOf(Inbox, Drafts, Sent, Starred, Archive, Spam, Trash, AllMail)
 
+        @Deprecated("Replaced by dynamic system labelIds. Will be removed")
         val exclusiveDestinationList = listOf(Inbox, Archive, Spam, Trash)
 
+        @Deprecated("Replaced by dynamic system labelIds. Will be removed")
         val exclusiveList = exclusiveDestinationList + Drafts + Sent
 
+        @Deprecated("Replaced by dynamic system labelIds. Will be removed")
         val unmodifiableByUserList = listOf(AllMail, AlmostAllMail, AllDrafts, AllSent, AllScheduled, Outbox, Snoozed)
 
         private fun stringOf(value: SystemLabelId): String = value.labelId.id
@@ -104,6 +108,7 @@ enum class SystemLabelId(val labelId: LabelId) {
 }
 
 @Suppress("ComplexMethod")
+@Deprecated("Replaced by dynamic system labelIds. Will be removed")
 fun SystemLabelId.toMailLabelSystem(): MailLabel.System = when (this) {
     SystemLabelId.Inbox -> MailLabel.System(Inbox)
     SystemLabelId.AllDrafts -> MailLabel.System(AllDrafts)
@@ -121,6 +126,8 @@ fun SystemLabelId.toMailLabelSystem(): MailLabel.System = when (this) {
     SystemLabelId.Snoozed -> MailLabel.System(Snoozed)
 }
 
+@Deprecated("Replaced by dynamic system labelIds. Will be removed")
 fun LabelId.isReservedSystemLabelId() = id in SystemLabelId.entries.map { it.labelId.id }
 
+@Deprecated("Replaced by dynamic system labelIds. Will be removed")
 fun List<LabelId>.filterUnmodifiableLabels(): List<LabelId> = this - unmodifiableByUserList.map { it.labelId }.toSet()

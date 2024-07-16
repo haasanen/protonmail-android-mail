@@ -24,6 +24,7 @@ sealed class MailLabelId(
     open val labelId: LabelId
 ) {
 
+    @Deprecated("Replaced by dynamic system labelIds. Will be removed")
     sealed class System(
         val systemLabelId: SystemLabelId
     ) : MailLabelId(systemLabelId.labelId) {
@@ -68,6 +69,7 @@ sealed class MailLabel(
     open val id: MailLabelId
 ) {
 
+    @Deprecated("Replaced by dynamic system labelIds. Will be removed")
     data class System(
         override val id: MailLabelId.System
     ) : MailLabel(id)
@@ -91,6 +93,7 @@ sealed class MailLabel(
 }
 
 data class MailLabels(
+    @Deprecated("Replaced by dynamic system labelIds. Will be removed")
     val systemLabels: List<MailLabel.System>,
     val dynamicSystemLabels: List<MailLabel.DynamicSystemLabel>,
     val folders: List<MailLabel.Custom>,
