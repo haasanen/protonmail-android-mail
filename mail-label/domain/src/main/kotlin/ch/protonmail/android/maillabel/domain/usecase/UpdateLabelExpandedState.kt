@@ -36,7 +36,8 @@ class UpdateLabelExpandedState @Inject constructor(
         val type = when (labelId) {
             is MailLabelId.Custom.Folder -> LabelType.MessageFolder
             is MailLabelId.Custom.Label -> LabelType.MessageLabel
-            is MailLabelId.System -> throw UnsupportedOperationException()
+            is MailLabelId.System,
+            is MailLabelId.DynamicSystemLabelId -> throw UnsupportedOperationException()
         }
         labelRepository.updateLabelIsExpanded(userId, type, labelId.labelId, isExpanded)
     }

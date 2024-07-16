@@ -22,8 +22,10 @@ import ch.protonmail.android.mailcommon.domain.coroutines.DefaultDispatcher
 import ch.protonmail.android.maillabel.domain.model.MailLabels
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.maillabel.domain.model.isReservedSystemLabelId
+import ch.protonmail.android.maillabel.domain.model.toDynamicSystemMailLabel
 import ch.protonmail.android.maillabel.domain.model.toMailLabelCustom
 import ch.protonmail.android.maillabel.domain.model.toMailLabelSystem
+import ch.protonmail.android.maillabel.domain.repository.LabelRepository
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flowOf
@@ -35,7 +37,6 @@ import me.proton.core.domain.entity.UserId
 import me.proton.core.label.domain.entity.LabelType
 import me.proton.core.label.domain.entity.LabelType.MessageFolder
 import me.proton.core.label.domain.entity.LabelType.MessageLabel
-import ch.protonmail.android.maillabel.domain.repository.LabelRepository
 import javax.inject.Inject
 
 class ObserveMailLabels @Inject constructor(
@@ -46,15 +47,20 @@ class ObserveMailLabels @Inject constructor(
 
     operator fun invoke(userId: UserId) = combine(
         observeSystemLabelIds().map { it.toMailLabelSystem() },
+        observeDynamicSystemLabels(userId).map { it.toDynamicSystemMailLabel() },
         observeCustomLabels(userId, MessageLabel).map { it.toMailLabelCustom() },
         observeCustomLabels(userId, MessageFolder).map { it.toMailLabelCustom() }
-    ) { defaults, labels, folders ->
+    ) { defaults, dynamicSystemLables, labels, folders ->
         MailLabels(
             systemLabels = defaults,
+            dynamicSystemLabels = dynamicSystemLables,
             labels = labels,
             folders = folders
         )
     }.flowOn(dispatcher)
+
+    private fun observeDynamicSystemLabels(userId: UserId) = labelRepository.observeSystemLabels(userId)
+        .flowOn(dispatcher)
 
     private fun observeSystemLabelIds() = flowOf(SystemLabelId.displayedList)
 

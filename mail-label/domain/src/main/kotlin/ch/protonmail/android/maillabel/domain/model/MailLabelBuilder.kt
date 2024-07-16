@@ -26,6 +26,14 @@ import me.proton.core.label.domain.entity.LabelType
 
 fun List<SystemLabelId>.toMailLabelSystem(): List<MailLabel.System> = map { it.toMailLabelSystem() }
 
+fun List<LabelWithSystemLabelId>.toDynamicSystemMailLabel(): List<MailLabel.DynamicSystemLabel> = map {
+    MailLabel.DynamicSystemLabel(
+        id = MailLabelId.DynamicSystemLabelId(it.label.labelId),
+        systemLabelId = it.systemLabelId,
+        order = it.label.order
+    )
+}
+
 fun List<Label>.toMailLabelCustom(): List<MailLabel.Custom> {
     val labelById = associateBy { it.labelId }
     val groupByParentId = groupBy { it.parentId }

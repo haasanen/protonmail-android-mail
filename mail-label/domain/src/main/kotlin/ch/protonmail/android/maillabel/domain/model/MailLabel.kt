@@ -46,6 +46,10 @@ sealed class MailLabelId(
         fun toMailLabel() = MailLabel.System(id = this)
     }
 
+    data class DynamicSystemLabelId(
+        override val labelId: LabelId
+    ) : MailLabelId(labelId)
+
     sealed class Custom(
         override val labelId: LabelId
     ) : MailLabelId(labelId) {
@@ -68,6 +72,12 @@ sealed class MailLabel(
         override val id: MailLabelId.System
     ) : MailLabel(id)
 
+    data class DynamicSystemLabel(
+        override val id: MailLabelId.DynamicSystemLabelId,
+        val systemLabelId: SystemLabelId,
+        val order: Int
+    ) : MailLabel(id)
+
     data class Custom(
         override val id: MailLabelId.Custom,
         val parent: Custom?,
@@ -82,16 +92,18 @@ sealed class MailLabel(
 
 data class MailLabels(
     val systemLabels: List<MailLabel.System>,
+    val dynamicSystemLabels: List<MailLabel.DynamicSystemLabel>,
     val folders: List<MailLabel.Custom>,
     val labels: List<MailLabel.Custom>
 ) {
 
-    val allById = (systemLabels + folders + labels).associateBy { item -> item.id }
+    val allById = (systemLabels + dynamicSystemLabels + folders + labels).associateBy { item -> item.id }
 
     companion object {
 
         val Initial = MailLabels(
             systemLabels = emptyList(),
+            dynamicSystemLabels = emptyList(),
             folders = emptyList(),
             labels = emptyList()
         )

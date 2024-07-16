@@ -39,6 +39,17 @@ sealed interface MailLabelUiModel {
     val count: Int?
 
     @Immutable
+    data class DynamicSystem(
+        override val id: MailLabelId.DynamicSystemLabelId,
+        override val text: TextUiModel.TextRes,
+        override val icon: Int,
+        override val iconTint: Color?,
+        override val isSelected: Boolean,
+        override val count: Int?
+    ) : MailLabelUiModel
+
+    @Deprecated("Replaced by dynamic system labelIds. Will be removed")
+    @Immutable
     data class System(
         override val id: MailLabelId.System,
         override val text: TextUiModel.TextRes,

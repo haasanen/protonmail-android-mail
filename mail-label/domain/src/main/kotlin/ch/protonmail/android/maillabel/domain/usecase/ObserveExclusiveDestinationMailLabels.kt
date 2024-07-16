@@ -42,6 +42,7 @@ class ObserveExclusiveDestinationMailLabels @Inject constructor(
     ) { defaults, folders ->
         MailLabels(
             systemLabels = defaults,
+            dynamicSystemLabels = emptyList(),
             labels = emptyList(),
             folders = folders
         )
