@@ -21,6 +21,7 @@ package ch.protonmail.android.mailconversation.data.remote.resource
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailconversation.domain.entity.Conversation
 import ch.protonmail.android.mailconversation.domain.entity.ConversationWithContext
+import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.mailmessage.data.remote.resource.AttachmentsInfoResource
 import ch.protonmail.android.mailmessage.data.remote.resource.RecipientResource
 import ch.protonmail.android.mailmessage.data.remote.resource.toAttachmentsCount
@@ -67,7 +68,8 @@ data class ConversationResource(
         numMessages = numMessages,
         numUnread = numUnread,
         numAttachments = numAttachments,
-        attachmentCount = attachmentsInfo.toAttachmentsCount()
+        attachmentCount = attachmentsInfo.toAttachmentsCount(),
+        starred = labels.any { it.id == SystemLabelId.Starred.labelId.id }
     )
 
     fun toConversationWithContext(userId: UserId, contextLabelId: LabelId) = ConversationWithContext(

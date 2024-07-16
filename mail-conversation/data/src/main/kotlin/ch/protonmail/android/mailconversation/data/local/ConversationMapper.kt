@@ -22,6 +22,7 @@ import ch.protonmail.android.mailconversation.data.local.entity.ConversationEnti
 import ch.protonmail.android.mailconversation.data.local.relation.ConversationWithLabels
 import ch.protonmail.android.mailconversation.domain.entity.Conversation
 import ch.protonmail.android.mailconversation.domain.entity.ConversationWithContext
+import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.mailmessage.data.mapper.toDomainModel
 import ch.protonmail.android.mailmessage.data.mapper.toEntity
 import me.proton.core.label.domain.entity.LabelId
@@ -43,7 +44,8 @@ fun ConversationWithLabels.toConversation() = Conversation(
     numMessages = conversation.numMessages,
     numUnread = conversation.numUnread,
     numAttachments = conversation.numAttachments,
-    attachmentCount = conversation.attachmentCount.toDomainModel()
+    attachmentCount = conversation.attachmentCount.toDomainModel(),
+    starred = labels.any { it.labelId == SystemLabelId.Starred.labelId }
 )
 
 fun Conversation.toEntity() = ConversationEntity(

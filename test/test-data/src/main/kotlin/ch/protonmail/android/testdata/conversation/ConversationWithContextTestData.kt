@@ -89,7 +89,8 @@ object ConversationWithContextTestData {
             numMessages = 1,
             numUnread = 0,
             numAttachments = numAttachments,
-            attachmentCount = attachmentCount
+            attachmentCount = attachmentCount,
+            starred = false
         ),
         contextLabelId = contextLabelId
     )
@@ -117,7 +118,8 @@ object ConversationWithContextTestData {
         numMessages = 1,
         numUnread = 0,
         numAttachments = numAttachments,
-        attachmentCount = attachmentCount
+        attachmentCount = attachmentCount,
+        starred = false
     )
 
     private fun Conversation.withContext(contextLabelId: LabelId = LabelId("0")) = ConversationWithContext(

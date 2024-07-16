@@ -133,7 +133,8 @@ object ConversationTestData {
         numMessages = numMessages,
         numUnread = numUnRead,
         numAttachments = numAttachments,
-        attachmentCount = attachmentCount
+        attachmentCount = attachmentCount,
+        starred = false
     )
 
     private fun buildConversationWithConversationLabels(
@@ -157,7 +158,8 @@ object ConversationTestData {
         numMessages = numMessages,
         numUnread = 0,
         numAttachments = numAttachments,
-        attachmentCount = attachmentCount
+        attachmentCount = attachmentCount,
+        starred = false
     )
 
     private fun buildConversationLabel(

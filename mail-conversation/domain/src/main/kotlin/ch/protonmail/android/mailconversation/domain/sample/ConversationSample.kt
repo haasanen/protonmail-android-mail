@@ -93,6 +93,7 @@ object ConversationSample {
         recipients = recipients,
         senders = senders,
         subject = subject,
-        userId = userId
+        userId = userId,
+        starred = false
     )
 }

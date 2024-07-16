@@ -36,5 +36,6 @@ data class Conversation(
     val numMessages: Int,
     val numUnread: Int,
     val numAttachments: Int,
-    val attachmentCount: AttachmentCount
+    val attachmentCount: AttachmentCount,
+    val starred: Boolean
 )
