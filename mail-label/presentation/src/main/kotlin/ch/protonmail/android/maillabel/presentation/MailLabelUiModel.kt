@@ -82,6 +82,7 @@ val MailLabelUiModel.Custom.testTag: String
 @Immutable
 data class MailLabelsUiModel(
     val systems: List<MailLabelUiModel.System>,
+    val dynamicSystems: List<MailLabelUiModel.DynamicSystem>,
     val folders: List<MailLabelUiModel.Custom>,
     val labels: List<MailLabelUiModel.Custom>
 ) {
@@ -90,6 +91,7 @@ data class MailLabelsUiModel(
 
         val Loading = MailLabelsUiModel(
             systems = emptyList(),
+            dynamicSystems = emptyList(),
             folders = emptyList(),
             labels = emptyList()
         )
@@ -104,6 +106,7 @@ data class MailLabelsUiModel(
                         selected = MailLabelId.System.Trash
                     )
                 },
+                dynamicSystems = emptyList(),
                 folders = emptyList(),
                 labels = emptyList()
             )
