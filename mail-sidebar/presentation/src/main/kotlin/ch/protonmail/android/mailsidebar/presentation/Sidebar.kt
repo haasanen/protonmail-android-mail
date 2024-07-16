@@ -27,6 +27,7 @@ import androidx.compose.material.Divider
 import androidx.compose.material.DrawerState
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
@@ -51,7 +52,6 @@ import me.proton.core.compose.component.ProtonSidebarReportBugItem
 import me.proton.core.compose.component.ProtonSidebarSettingsItem
 import me.proton.core.compose.component.ProtonSidebarSignOutItem
 import me.proton.core.compose.component.ProtonSidebarSubscriptionItem
-import me.proton.core.compose.flow.rememberAsState
 import me.proton.core.compose.theme.ProtonDimens
 import me.proton.core.compose.theme.ProtonTheme
 import me.proton.core.domain.entity.UserId
@@ -77,7 +77,7 @@ fun Sidebar(
         viewState.drawerState.close()
     }
 
-    when (val viewModelState = rememberAsState(viewModel.state, viewModel.initialState).value) {
+    when (val viewModelState = viewModel.state.collectAsState().value) {
         is Disabled -> Unit
         is Enabled -> {
             viewState.isSubscriptionVisible = viewModelState.canChangeSubscription
@@ -163,7 +163,7 @@ fun Sidebar(
         modifier = modifier.testTag(SidebarMenuTestTags.Root),
         drawerState = viewState.drawerState
     ) {
-        sidebarSystemLabelItems(viewState.mailLabels.systems, actions.onLabelAction)
+        sidebarSystemLabelItems(viewState.mailLabels.dynamicSystems, actions.onLabelAction)
         item { Divider() }
         sidebarFolderItems(viewState.mailLabels.folders, actions.onLabelAction)
         item { Divider() }

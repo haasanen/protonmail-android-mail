@@ -33,8 +33,8 @@ import ch.protonmail.android.mailmailbox.domain.usecase.ObserveUnreadCounters
 import ch.protonmail.android.mailmessage.domain.model.UnreadCounter
 import ch.protonmail.android.mailsettings.domain.usecase.ObserveFolderColorSettings
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
@@ -58,7 +58,7 @@ class SidebarViewModel @Inject constructor(
     observeUnreadCounters: ObserveUnreadCounters
 ) : ViewModel() {
 
-    val initialState = State.Disabled
+    private val initialState = State.Disabled
 
     private val primaryUser = observePrimaryUser().stateIn(
         scope = viewModelScope,
@@ -66,7 +66,7 @@ class SidebarViewModel @Inject constructor(
         initialValue = null
     )
 
-    val state: Flow<State> = primaryUser.flatMapLatest { user ->
+    val state: StateFlow<State> = primaryUser.flatMapLatest { user ->
         if (user == null) {
             return@flatMapLatest flowOf(State.Disabled)
         }
