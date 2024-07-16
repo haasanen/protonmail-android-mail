@@ -274,5 +274,20 @@ interface MessageDatabase : Database, PageIntervalDatabase {
                 database.execSQL("CREATE INDEX IF NOT EXISTS `index_MessageEntity_messageId` ON `MessageEntity` (`messageId`)")
             }
         }
+
+        val MIGRATION_8 = object : DatabaseMigration {
+            override fun migrate(database: SupportSQLiteDatabase) {
+
+                // Delete the old table
+                database.execSQL("DROP TABLE `MessageEntity`")
+
+                // Create the new table.
+                database.execSQL("CREATE TABLE IF NOT EXISTS `MessageEntity` (`userId` TEXT NOT NULL, `messageId` TEXT NOT NULL, `conversationId` TEXT NOT NULL, `order` INTEGER NOT NULL, `subject` TEXT NOT NULL, `unread` INTEGER NOT NULL, `toList` TEXT NOT NULL, `ccList` TEXT NOT NULL, `bccList` TEXT NOT NULL, `time` INTEGER NOT NULL, `size` INTEGER NOT NULL, `expirationTime` INTEGER NOT NULL, `isReplied` INTEGER NOT NULL, `isRepliedAll` INTEGER NOT NULL, `isForwarded` INTEGER NOT NULL, `addressId` TEXT NOT NULL, `externalId` TEXT, `numAttachments` INTEGER NOT NULL, `flags` INTEGER NOT NULL, `attachmentCount` TEXT NOT NULL, `sender_address` TEXT NOT NULL, `sender_name` TEXT NOT NULL, `sender_isProton` INTEGER NOT NULL, `sender_group` TEXT, `sender_bimiSelector` TEXT, PRIMARY KEY(`userId`, `messageId`), FOREIGN KEY(`userId`) REFERENCES `UserEntity`(`userId`) ON UPDATE NO ACTION ON DELETE CASCADE )")
+
+                // Create indices
+                database.execSQL("CREATE INDEX IF NOT EXISTS `index_MessageEntity_userId` ON `MessageEntity` (`userId`)")
+                database.execSQL("CREATE INDEX IF NOT EXISTS `index_MessageEntity_messageId` ON `MessageEntity` (`messageId`)")
+            }
+        }
     }
 }
