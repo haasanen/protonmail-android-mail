@@ -18,9 +18,13 @@
 
 package ch.protonmail.android.maillabel.data.repository
 
+import ch.protonmail.android.maillabel.domain.model.LabelWithSystemLabelId
+import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.maillabel.domain.repository.LabelRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.mapLatest
 import me.proton.core.domain.arch.DataResult
+import me.proton.core.domain.arch.mapSuccessValueOrNull
 import me.proton.core.domain.entity.UserId
 import me.proton.core.label.domain.entity.Label
 import me.proton.core.label.domain.entity.LabelId
@@ -29,6 +33,7 @@ import me.proton.core.label.domain.entity.NewLabel
 import javax.inject.Inject
 import me.proton.core.label.domain.repository.LabelRepository as CoreLibsLabelRepository
 
+@Deprecated("Core Libs are deprecated in favor of rust lib", ReplaceWith("RustLabelRepository"))
 class CoreLabelRepository @Inject constructor(
     private val labelRepository: CoreLibsLabelRepository
 ) : LabelRepository {
@@ -38,6 +43,28 @@ class CoreLabelRepository @Inject constructor(
         type: LabelType,
         refresh: Boolean
     ): Flow<DataResult<List<Label>>> = labelRepository.observeLabels(userId, type, refresh)
+
+    override fun observeCustomLabels(userId: UserId): Flow<List<Label>> =
+        labelRepository.observeLabels(userId, LabelType.MessageLabel, false)
+            .mapSuccessValueOrNull()
+            .mapLatest { it.orEmpty() }
+
+    override fun observeCustomFolders(userId: UserId): Flow<List<Label>> =
+        labelRepository.observeLabels(userId, LabelType.MessageFolder, false)
+            .mapSuccessValueOrNull()
+            .mapLatest { it.orEmpty() }
+
+    override fun observeSystemLabels(userId: UserId): Flow<List<LabelWithSystemLabelId>> =
+        labelRepository.observeLabels(userId, LabelType.SystemFolder, false)
+            .mapSuccessValueOrNull()
+            .mapLatest { labels ->
+                labels?.map {
+                    LabelWithSystemLabelId(
+                        it,
+                        SystemLabelId.enumOf(it.labelId.id)
+                    )
+                }.orEmpty()
+            }
 
     override suspend fun getLabels(
         userId: UserId,

@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.maillabel.domain.repository
 
+import ch.protonmail.android.maillabel.domain.model.LabelWithSystemLabelId
 import kotlinx.coroutines.flow.Flow
 import me.proton.core.domain.arch.DataResult
 import me.proton.core.domain.entity.UserId
@@ -31,11 +32,23 @@ interface LabelRepository {
     /**
      * Observe all [Label] for [userId], by [type].
      */
+    @Deprecated(
+        "Deprecated to ease the introduction of dynamic system folders",
+        replaceWith = ReplaceWith(
+            "One of LabelRepository.observeCustomLabels || .observeCustomFolders || observeSystemFolders"
+        )
+    )
     fun observeLabels(
         userId: UserId,
         type: LabelType,
         refresh: Boolean = false
     ): Flow<DataResult<List<Label>>>
+
+    fun observeCustomLabels(userId: UserId): Flow<List<Label>>
+
+    fun observeCustomFolders(userId: UserId): Flow<List<Label>>
+
+    fun observeSystemLabels(userId: UserId): Flow<List<LabelWithSystemLabelId>>
 
     /**
      * Get all [Label] for [userId], by [type].

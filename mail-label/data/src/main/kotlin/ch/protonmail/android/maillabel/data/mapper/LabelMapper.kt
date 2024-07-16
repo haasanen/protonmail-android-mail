@@ -19,6 +19,8 @@
 package ch.protonmail.android.maillabel.data.mapper
 
 import ch.protonmail.android.mailcommon.domain.model.FAKE_USER_ID
+import ch.protonmail.android.maillabel.domain.model.LabelWithSystemLabelId
+import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import me.proton.core.label.domain.entity.Label
 import me.proton.core.label.domain.entity.LabelId
 import me.proton.core.label.domain.entity.LabelType
@@ -60,5 +62,23 @@ fun LocalLabelWithCount.toLabel(): Label {
         isSticky = this.sticky,
         parentId = this.parentId?.toLabelId()
 
+    )
+}
+fun LocalLabelWithCount.toLabelWithSystemLabelId(): LabelWithSystemLabelId {
+    return LabelWithSystemLabelId(
+        Label(
+            userId = FAKE_USER_ID,
+            labelId = this.id.toLabelId(),
+            name = this.name,
+            type = this.labelType.toLabelType(),
+            path = this.path ?: "",
+            color = this.color,
+            order = this.order.toInt(),
+            isNotified = this.notified,
+            isExpanded = this.expanded,
+            isSticky = this.sticky,
+            parentId = this.parentId?.toLabelId()
+        ),
+        SystemLabelId.enumOf(this.rid)
     )
 }

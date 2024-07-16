@@ -20,6 +20,8 @@ package ch.protonmail.android.maillabel.data.repository
 
 import ch.protonmail.android.maillabel.data.local.LabelDataSource
 import ch.protonmail.android.maillabel.data.mapper.toLabel
+import ch.protonmail.android.maillabel.data.mapper.toLabelWithSystemLabelId
+import ch.protonmail.android.maillabel.domain.model.LabelWithSystemLabelId
 import ch.protonmail.android.maillabel.domain.repository.LabelRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
@@ -40,6 +42,12 @@ class RustLabelRepository @Inject constructor(
     private val labelDataSource: LabelDataSource
 ) : LabelRepository {
 
+    @Deprecated(
+        "Deprecated to ease the introduction of dynamic system folders",
+        replaceWith = ReplaceWith(
+            "One of labelRepository.observeCustomLabels || .observeCustomFolders || .observeSystemFolders"
+        )
+    )
     override fun observeLabels(
         userId: UserId,
         type: LabelType,
@@ -64,6 +72,21 @@ class RustLabelRepository @Inject constructor(
             }
         }
     }
+
+    override fun observeCustomLabels(userId: UserId): Flow<List<Label>> =
+        labelDataSource.observeMessageLabels().map { localLabels ->
+            localLabels.map { it.toLabel() }
+        }
+
+    override fun observeCustomFolders(userId: UserId): Flow<List<Label>> =
+        labelDataSource.observeMessageFolders().map { localLabels ->
+            localLabels.map { it.toLabel() }
+        }
+
+    override fun observeSystemLabels(userId: UserId): Flow<List<LabelWithSystemLabelId>> =
+        labelDataSource.observeSystemLabels().map { localLabels ->
+            localLabels.map { it.toLabelWithSystemLabelId() }
+        }
 
     override suspend fun getLabels(
         userId: UserId,
