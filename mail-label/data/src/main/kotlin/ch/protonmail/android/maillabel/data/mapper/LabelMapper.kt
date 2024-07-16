@@ -18,7 +18,7 @@
 
 package ch.protonmail.android.maillabel.data.mapper
 
-import me.proton.core.domain.entity.UserId
+import ch.protonmail.android.mailcommon.domain.model.FAKE_USER_ID
 import me.proton.core.label.domain.entity.Label
 import me.proton.core.label.domain.entity.LabelId
 import me.proton.core.label.domain.entity.LabelType
@@ -48,7 +48,7 @@ fun LabelType.toRustLabelType(): uniffi.proton_api_mail.LabelType {
 }
 fun LocalLabelWithCount.toLabel(): Label {
     return Label(
-        userId = UserId("fake"),
+        userId = FAKE_USER_ID,
         labelId = this.id.toLabelId(),
         name = this.name,
         type = this.labelType.toLabelType(),
