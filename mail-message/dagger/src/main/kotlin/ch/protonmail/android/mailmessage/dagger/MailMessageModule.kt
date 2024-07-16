@@ -19,9 +19,16 @@
 package ch.protonmail.android.mailmessage.dagger
 
 import ch.protonmail.android.mailcommon.data.BuildConfig
+import ch.protonmail.android.maillabel.data.usecase.FindLocalLabelId
 import ch.protonmail.android.mailmessage.data.MessageRustCoroutineScope
 import ch.protonmail.android.mailmessage.data.local.MessageLocalDataSource
 import ch.protonmail.android.mailmessage.data.local.MessageLocalDataSourceImpl
+import ch.protonmail.android.mailmessage.data.local.RustMailbox
+import ch.protonmail.android.mailmessage.data.local.RustMailboxImpl
+import ch.protonmail.android.mailmessage.data.local.RustMessageDataSource
+import ch.protonmail.android.mailmessage.data.local.RustMessageDataSourceImpl
+import ch.protonmail.android.mailmessage.data.local.RustMessageQuery
+import ch.protonmail.android.mailmessage.data.local.RustMessageQueryImpl
 import ch.protonmail.android.mailmessage.data.local.SearchResultsLocalDataSource
 import ch.protonmail.android.mailmessage.data.local.SearchResultsLocalDataSourceImpl
 import ch.protonmail.android.mailmessage.data.local.UnreadMessagesCountLocalDataSource
@@ -61,16 +68,19 @@ object MailMessageModule {
     @MessageRustCoroutineScope
     fun provideMessageRustCoroutineScope(): CoroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
+    @Suppress("LongParameterList")
     @Provides
     @Singleton
     fun providesMessageRepository(
         messageRemoteDataSource: MessageRemoteDataSource,
         messageLocalDataSource: MessageLocalDataSource,
         excludeDraftMessagesAlreadyInOutbox: ExcludeDraftMessagesAlreadyInOutbox,
-        coroutineScopeProvider: CoroutineScopeProvider
+        coroutineScopeProvider: CoroutineScopeProvider,
+        rustMessageDataSource: RustMessageDataSource,
+        findLocalLabelId: FindLocalLabelId
     ): MessageRepository {
         return if (BuildConfig.USE_RUST_DATA_LAYER) {
-            RustMessageRepositoryImpl()
+            RustMessageRepositoryImpl(rustMessageDataSource, findLocalLabelId)
         } else {
             MessageRepositoryImpl(
                 messageRemoteDataSource,
@@ -122,5 +132,17 @@ object MailMessageModule {
         fun bindsUnreadMessagesCountLocalDataSource(
             impl: UnreadMessagesCountLocalDataSourceImpl
         ): UnreadMessagesCountLocalDataSource
+
+        @Binds
+        @Singleton
+        fun bindRustMailbox(impl: RustMailboxImpl): RustMailbox
+
+        @Binds
+        @Singleton
+        fun bindRustMessageQuery(impl: RustMessageQueryImpl): RustMessageQuery
+
+        @Binds
+        @Singleton
+        fun bindRustMessageDataSource(impl: RustMessageDataSourceImpl): RustMessageDataSource
     }
 }

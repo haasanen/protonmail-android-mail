@@ -52,6 +52,7 @@ dependencies {
     implementation(project(":mail-message:data-rust"))
     implementation(project(":mail-message:domain"))
     implementation(project(":mail-message:presentation"))
+    implementation(project(":mail-label:data"))
 
     implementation(Dagger.hiltAndroid)
     kapt(Dagger.hiltDaggerCompiler)

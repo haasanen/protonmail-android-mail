@@ -20,8 +20,16 @@ package ch.protonmail.android.mailmessage.data.repository
 
 import arrow.core.Either
 import arrow.core.Nel
+import arrow.core.left
+import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
+import ch.protonmail.android.maillabel.data.usecase.FindLocalLabelId
+import ch.protonmail.android.mailmessage.data.local.RustMessageDataSource
+import ch.protonmail.android.mailmessage.data.mapper.toLocalMessageId
+import ch.protonmail.android.mailmessage.data.mapper.toMessage
+import ch.protonmail.android.mailmessage.data.mapper.toMessageBody
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.model.Message
 import ch.protonmail.android.mailmessage.domain.model.MessageAttachment
@@ -31,15 +39,28 @@ import ch.protonmail.android.mailmessage.domain.model.RefreshedMessageWithBody
 import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import me.proton.core.domain.entity.UserId
 import me.proton.core.label.domain.entity.LabelId
+import uniffi.proton_mail_common.LocalLabelId
 import javax.inject.Inject
 
 @Suppress("NotImplementedDeclaration", "TooManyFunctions")
-class RustMessageRepositoryImpl @Inject constructor() : MessageRepository {
+class RustMessageRepositoryImpl @Inject constructor(
+    private val rustMessageDataSource: RustMessageDataSource,
+    private val findLocalLabelId: FindLocalLabelId
+) : MessageRepository {
 
     override suspend fun getLocalMessages(userId: UserId, pageKey: PageKey): List<Message> {
-        TODO("Not yet implemented")
+        val rustLocalLabelId: LocalLabelId? =
+            if (pageKey.filter.isSystemFolder) findLocalLabelId(pageKey.filter.labelId)
+            else pageKey.filter.labelId.toLocalLabelId()
+
+        return rustLocalLabelId?.let { labelId ->
+            rustMessageDataSource.getMessages(labelId).map { it.toMessage() }
+        } // after pagination + dynamic label implementation, this should be removed
+            // and error handling should be implemented
+            ?: emptyList()
     }
 
     override suspend fun getLocalMessages(userId: UserId, messages: List<MessageId>): List<Message> {
@@ -62,9 +83,12 @@ class RustMessageRepositoryImpl @Inject constructor() : MessageRepository {
         TODO("Not yet implemented")
     }
 
-    override fun observeCachedMessage(userId: UserId, messageId: MessageId): Flow<Either<DataError.Local, Message>> {
-        TODO("Not yet implemented")
-    }
+    override fun observeCachedMessage(userId: UserId, messageId: MessageId): Flow<Either<DataError.Local, Message>> =
+        flow {
+            val message = rustMessageDataSource.getMessage(messageId.toLocalMessageId())?.toMessage()
+
+            emit(message?.right() ?: DataError.Local.NoDataCached.left())
+        }
 
     override fun observeCachedMessages(
         userId: UserId,
@@ -90,20 +114,27 @@ class RustMessageRepositoryImpl @Inject constructor() : MessageRepository {
     override fun observeMessageWithBody(
         userId: UserId,
         messageId: MessageId
-    ): Flow<Either<DataError, MessageWithBody>> {
-        TODO("Not yet implemented")
+    ): Flow<Either<DataError, MessageWithBody>> = flow {
+        emit(getMessageWithBody(userId, messageId))
     }
 
     override fun observeMessageAttachments(userId: UserId, messageId: MessageId): Flow<List<MessageAttachment>> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getMessageWithBody(userId: UserId, messageId: MessageId): Either<DataError, MessageWithBody> {
-        TODO("Not yet implemented")
-    }
+    override suspend fun getMessageWithBody(userId: UserId, messageId: MessageId): Either<DataError, MessageWithBody> =
+        getLocalMessageWithBody(userId, messageId)?.right() ?: DataError.Local.NoDataCached.left()
 
     override suspend fun getLocalMessageWithBody(userId: UserId, messageId: MessageId): MessageWithBody? {
-        TODO("Not yet implemented")
+        val localMessageId = messageId.toLocalMessageId()
+        val message = rustMessageDataSource.getMessage(localMessageId)?.toMessage()
+        val body = rustMessageDataSource.getMessageBody(localMessageId)
+
+        return if (message != null && body != null) {
+            MessageWithBody(message, body.toMessageBody(messageId))
+        } else {
+            null
+        }
     }
 
     override suspend fun getRefreshedMessageWithBody(userId: UserId, messageId: MessageId): RefreshedMessageWithBody? {
