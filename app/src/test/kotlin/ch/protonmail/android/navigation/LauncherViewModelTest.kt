@@ -183,7 +183,7 @@ class LauncherViewModelTest {
     @Test
     fun `when addAccount is called, startAddAccountWorkflow`() = runTest {
         // WHEN
-        viewModel.submit(LauncherViewModel.Action.AddAccount)
+        viewModel.submit(BaseLauncherViewModel.Action.AddAccount)
         // THEN
         verify {
             authOrchestrator.startAddAccountWorkflow(
@@ -197,7 +197,7 @@ class LauncherViewModelTest {
     @Test
     fun `when signIn is called, startLoginWorkflow`() = runTest {
         // WHEN
-        viewModel.submit(LauncherViewModel.Action.SignIn(userId = null))
+        viewModel.submit(BaseLauncherViewModel.Action.SignIn(userId = null))
         // THEN
         verify { authOrchestrator.startLoginWorkflow(Internal, any(), any()) }
     }
@@ -207,7 +207,7 @@ class LauncherViewModelTest {
         // GIVEN
         every { accountManager.getAccount(userId) } returns flowOf(AccountTestData.readyAccount)
         // WHEN
-        viewModel.submit(LauncherViewModel.Action.SignIn(userId))
+        viewModel.submit(BaseLauncherViewModel.Action.SignIn(userId))
         // THEN
         verify { authOrchestrator.startLoginWorkflow(Internal, user1Username) }
     }
@@ -217,7 +217,7 @@ class LauncherViewModelTest {
         // GIVEN
         every { accountManager.getAccount(userId) } returns flowOf(AccountTestData.disabledAccount)
         // WHEN
-        viewModel.submit(LauncherViewModel.Action.Switch(userId))
+        viewModel.submit(BaseLauncherViewModel.Action.Switch(userId))
         // THEN
         verify { authOrchestrator.startLoginWorkflow(Internal, user1Username) }
     }
@@ -227,7 +227,7 @@ class LauncherViewModelTest {
         // GIVEN
         every { accountManager.getAccount(userId) } returns flowOf(AccountTestData.readyAccount)
         // WHEN
-        viewModel.submit(LauncherViewModel.Action.Switch(userId))
+        viewModel.submit(BaseLauncherViewModel.Action.Switch(userId))
         // THEN
         coVerify { accountManager.setAsPrimary(userId) }
     }
@@ -273,7 +273,7 @@ class LauncherViewModelTest {
         every { accountManager.getPrimaryUserId() } returns flowOf(userId)
 
         // WHEN
-        viewModel.submit(LauncherViewModel.Action.OpenPasswordManagement)
+        viewModel.submit(BaseLauncherViewModel.Action.OpenPasswordManagement)
 
         // THEN
         verify { userSettingsOrchestrator.startPasswordManagementWorkflow(userId) }
@@ -285,7 +285,7 @@ class LauncherViewModelTest {
         every { accountManager.getPrimaryUserId() } returns flowOf(userId)
 
         // when
-        viewModel.submit(LauncherViewModel.Action.OpenRecoveryEmail)
+        viewModel.submit(BaseLauncherViewModel.Action.OpenRecoveryEmail)
 
         // then
         verify { userSettingsOrchestrator.startUpdateRecoveryEmailWorkflow(userId) }

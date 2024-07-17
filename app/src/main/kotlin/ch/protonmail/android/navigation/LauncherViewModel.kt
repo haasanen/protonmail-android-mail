@@ -20,7 +20,6 @@ package ch.protonmail.android.navigation
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ch.protonmail.android.mailnotifications.permissions.NotificationsPermissionsOrchestrator
 import ch.protonmail.android.mailnotifications.permissions.NotificationsPermissionsOrchestrator.Companion.PermissionResult
@@ -66,9 +65,9 @@ class LauncherViewModel @Inject constructor(
     private val reportOrchestrator: ReportOrchestrator,
     private val userSettingsOrchestrator: UserSettingsOrchestrator,
     private val notificationsPermissionsOrchestrator: NotificationsPermissionsOrchestrator
-) : ViewModel() {
+) : BaseLauncherViewModel() {
 
-    val state: StateFlow<LauncherState> = accountManager.getAccounts().combine(
+    override val state: StateFlow<LauncherState> = accountManager.getAccounts().combine(
         notificationsPermissionsOrchestrator.permissionResult()
     ) { accounts, permissionResult ->
         when {
@@ -93,7 +92,7 @@ class LauncherViewModel @Inject constructor(
         initialValue = Processing
     )
 
-    fun register(context: AppCompatActivity) {
+    override fun register(context: AppCompatActivity) {
         authOrchestrator.register(context)
         plansOrchestrator.register(context)
         reportOrchestrator.register(context)
@@ -116,21 +115,7 @@ class LauncherViewModel @Inject constructor(
             .onAccountCreateAddressNeeded { authOrchestrator.startChooseAddressWorkflow(it) }
     }
 
-    fun submit(action: Action) {
-        viewModelScope.launch {
-            when (action) {
-                Action.AddAccount -> onAddAccount()
-                Action.OpenPasswordManagement -> onOpenPasswordManagement()
-                Action.OpenRecoveryEmail -> onOpenRecoveryEmail()
-                Action.OpenReport -> onOpenReport()
-                Action.OpenSubscription -> onOpenSubscription()
-                is Action.SignIn -> onSignIn(action.userId)
-                is Action.Switch -> onSwitch(action.userId)
-            }
-        }
-    }
-
-    private fun onAddAccount() {
+    override fun onAddAccount() {
         authOrchestrator.startAddAccountWorkflow(
             requiredAccountType = AccountType.Internal,
             creatableAccountType = AccountType.Internal,
@@ -138,34 +123,36 @@ class LauncherViewModel @Inject constructor(
         )
     }
 
-    private suspend fun onOpenPasswordManagement() {
+    override suspend fun onOpenPasswordManagement() {
         getPrimaryUserIdOrNull()?.let {
             userSettingsOrchestrator.startPasswordManagementWorkflow(it)
         }
     }
 
-    private suspend fun onOpenRecoveryEmail() {
+    override suspend fun onOpenRecoveryEmail() {
         getPrimaryUserIdOrNull()?.let {
             userSettingsOrchestrator.startUpdateRecoveryEmailWorkflow(it)
         }
     }
 
-    private suspend fun onOpenReport() = viewModelScope.launch {
-        reportOrchestrator.startBugReport()
+    override suspend fun onOpenReport() {
+        viewModelScope.launch {
+            reportOrchestrator.startBugReport()
+        }
     }
 
-    private suspend fun onOpenSubscription() {
+    override suspend fun onOpenSubscription() {
         getPrimaryUserIdOrNull()?.let {
             plansOrchestrator.showCurrentPlanWorkflow(it)
         }
     }
 
-    private suspend fun onSignIn(userId: UserId?) {
+    override suspend fun onSignIn(userId: UserId?) {
         val account = userId?.let { getAccountOrNull(it) }
         authOrchestrator.startLoginWorkflow(requiredAccountType, username = account?.username)
     }
 
-    private suspend fun onSwitch(userId: UserId) {
+    override suspend fun onSwitch(userId: UserId) {
         val account = getAccountOrNull(userId) ?: return
         when {
             account.isDisabled() -> onSignIn(userId)
@@ -176,14 +163,4 @@ class LauncherViewModel @Inject constructor(
     private suspend fun getAccountOrNull(it: UserId) = accountManager.getAccount(it).firstOrNull()
     private suspend fun getPrimaryUserIdOrNull() = accountManager.getPrimaryUserId().firstOrNull()
 
-    sealed interface Action {
-
-        object AddAccount : Action
-        object OpenPasswordManagement : Action
-        object OpenRecoveryEmail : Action
-        object OpenReport : Action
-        object OpenSubscription : Action
-        data class SignIn(val userId: UserId?) : Action
-        data class Switch(val userId: UserId) : Action
-    }
 }

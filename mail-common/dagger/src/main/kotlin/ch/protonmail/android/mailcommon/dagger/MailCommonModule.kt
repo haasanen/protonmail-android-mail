@@ -29,6 +29,7 @@ import ch.protonmail.android.mailcommon.domain.coroutines.IODispatcher
 import ch.protonmail.android.mailcommon.domain.coroutines.MainDispatcher
 import ch.protonmail.android.mailcommon.domain.repository.AppLocaleRepository
 import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUserId
+import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -45,8 +46,8 @@ object MailCommonModule {
 
     @Provides
     @Singleton
-    fun provideObservePrimaryUserId(accountManager: AccountManager) =
-        ObservePrimaryUserId(accountManager, BuildConfig.USE_RUST_DATA_LAYER)
+    fun provideObservePrimaryUserId(accountManager: AccountManager, userSessionRepository: UserSessionRepository) =
+        ObservePrimaryUserId(accountManager, BuildConfig.USE_RUST_DATA_LAYER, userSessionRepository)
 
     @Provides
     @DefaultDispatcher

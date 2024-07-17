@@ -7,14 +7,16 @@ import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
+import me.proton.core.accountmanager.domain.AccountManager
 import org.junit.Test
 import kotlin.test.assertEquals
 
 class ObservePrimaryUserIdTest {
 
     private val userSessionRepository = mockk<UserSessionRepository>()
+    private val accountManager = mockk<AccountManager>()
 
-    private val observePrimaryUserId = ObservePrimaryUserId(userSessionRepository)
+    private val observePrimaryUserId = ObservePrimaryUserId(accountManager, true, userSessionRepository)
 
     @Test
     fun `observes current user id from user session repository`() = runTest {
