@@ -57,7 +57,7 @@ class RustMailSettingsDataSource @Inject constructor(
 
     private fun initMailSettingsLiveQuery() {
         coroutineScope.launch {
-            Timber.v("rust-label: initializing mail settings live query")
+            Timber.v("rust-settings: initializing mail settings live query")
 
             val session = userSessionRepository.observeCurrentUserSession().firstOrNull()
             if (session == null) {

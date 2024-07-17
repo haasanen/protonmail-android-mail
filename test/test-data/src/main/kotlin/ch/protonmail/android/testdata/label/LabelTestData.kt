@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.testdata.label
 
+import ch.protonmail.android.mailcommon.domain.model.FAKE_USER_ID
 import ch.protonmail.android.maillabel.domain.model.MailLabel
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.testdata.user.UserIdTestData
@@ -44,7 +45,7 @@ object LabelTestData {
     )
 
     val systemLabel = Label(
-        UserId("fake"),
+        FAKE_USER_ID,
         LabelId("1"),
         parentId = null,
         "Inbox",
@@ -58,7 +59,7 @@ object LabelTestData {
     )
 
     val messageLabel = Label(
-        UserId("fake"),
+        FAKE_USER_ID,
         LabelId("100"),
         parentId = null,
         "CustomMessageLabel",
@@ -72,7 +73,7 @@ object LabelTestData {
     )
 
     val messageFolder = Label(
-        UserId("fake"),
+        FAKE_USER_ID,
         LabelId("200"),
         parentId = null,
         "CustomMessageFolder",

@@ -18,7 +18,7 @@
 
 package ch.protonmail.android.mailsettings.data.mapper
 
-import me.proton.core.domain.entity.UserId
+import ch.protonmail.android.mailcommon.domain.model.FAKE_USER_ID
 import me.proton.core.domain.type.IntEnum
 import me.proton.core.mailsettings.domain.entity.ComposerMode
 import me.proton.core.mailsettings.domain.entity.MailSettings
@@ -47,7 +47,7 @@ object MailSettingsMapper {
 
     fun RustMailSettings.toMailSettings(): MailSettings {
         return MailSettings(
-            userId = UserId("fakeUserId"),
+            userId = FAKE_USER_ID,
             displayName = displayName,
             signature = signature,
             autoSaveContacts = autoSaveContacts,
