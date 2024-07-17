@@ -46,6 +46,7 @@ android {
         compileOnly(Proton.Common.rustCore)
         implementation(Arrow.core)
         implementation(JakeWharton.timber)
+        implementation(Proton.Core.accountManager)
 
         implementation(project(":mail-common:data"))
         implementation(project(":mail-session:domain"))

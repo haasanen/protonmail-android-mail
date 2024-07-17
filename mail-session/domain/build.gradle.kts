@@ -45,6 +45,7 @@ android {
 
 dependencies {
     compileOnly(Proton.Common.rustCore)
+    implementation(Proton.Core.userDomain)
     implementation(Arrow.core)
 
     testImplementation(project(":test:test-data"))

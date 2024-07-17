@@ -44,7 +44,11 @@ android {
 }
 
 dependencies {
+    implementation(Proton.Core.accountManager)
+
     implementation(project(":mail-session:data-rust"))
     implementation(project(":mail-session:domain"))
     implementation(project(":mail-session:presentation"))
+
+    implementation(project(":mail-common:data"))
 }

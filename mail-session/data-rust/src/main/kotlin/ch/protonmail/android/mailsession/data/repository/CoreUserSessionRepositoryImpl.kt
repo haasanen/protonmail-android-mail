@@ -16,16 +16,34 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailcommon.domain.usecase
+package ch.protonmail.android.mailsession.data.repository
 
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
+import me.proton.core.accountmanager.domain.AccountManager
 import me.proton.core.domain.entity.UserId
+import timber.log.Timber
+import uniffi.proton_mail_uniffi.MailUserSession
 import javax.inject.Inject
 
-class ObservePrimaryUserId @Inject constructor(
-    private val userSessionRepository: UserSessionRepository
-) {
+@Deprecated(
+    """
+    In place to allow compilation and basic features with old core libs.
+    Newer methods might be stubbed or not at all implemented. 
+    New usages shouldn't be added anywhere.
+    """,
+    ReplaceWith("UserSessionRepositoryImpl")
+)
+class CoreUserSessionRepositoryImpl @Inject constructor(
+    private val accountManager: AccountManager
+) : UserSessionRepository {
 
-    operator fun invoke(): Flow<UserId?> = userSessionRepository.observeCurrentUserId()
+    override fun observeCurrentUserSession(): Flow<MailUserSession?> {
+        Timber.w("mail-session: calling stubbed observeCurrentSession method! This won't work.")
+        return flowOf(null)
+    }
+
+    override fun observeCurrentUserId(): Flow<UserId?> = accountManager.getPrimaryUserId()
+
 }

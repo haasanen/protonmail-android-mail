@@ -25,8 +25,10 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
+import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.MailUserSession
 import uniffi.proton_mail_uniffi.SessionCallback
@@ -43,6 +45,14 @@ class UserSessionRepositoryImpl @Inject constructor(
     override fun observeCurrentUserSession(): Flow<MailUserSession?> = mutableUserSessionFlow
         .asStateFlow()
         .onStart { initUserSessionFlow() }
+
+    override fun observeCurrentUserId(): Flow<UserId?> = flow {
+        val mailSession = mailSessionRepository.getMailSession()
+        val storedUserSession = mailSession.storedSessions().firstOrNull()
+
+        val userId = storedUserSession?.userId()?.let { UserId(it) }
+        emit(userId)
+    }
 
     private suspend fun initUserSessionFlow() {
         val mailSession = mailSessionRepository.getMailSession()

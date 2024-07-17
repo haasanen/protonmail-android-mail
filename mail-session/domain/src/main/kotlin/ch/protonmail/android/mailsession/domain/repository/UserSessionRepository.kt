@@ -19,9 +19,12 @@
 package ch.protonmail.android.mailsession.domain.repository
 
 import kotlinx.coroutines.flow.Flow
+import me.proton.core.domain.entity.UserId
 import uniffi.proton_mail_uniffi.MailUserSession
 
 interface UserSessionRepository {
 
     fun observeCurrentUserSession(): Flow<MailUserSession?>
+
+    fun observeCurrentUserId(): Flow<UserId?>
 }

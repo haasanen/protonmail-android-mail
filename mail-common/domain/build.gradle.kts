@@ -45,6 +45,7 @@ android {
 }
 
 dependencies {
+    compileOnly(Proton.Common.rustCore)
     kapt(Dependencies.appAnnotationProcessors)
 
     implementation(Proton.Core.key)
@@ -56,7 +57,10 @@ dependencies {
 
     implementation(Dependencies.moduleDomainLibs)
 
+    implementation(project(":mail-session:domain"))
+
     testImplementation(Dependencies.testLibs)
+    testImplementation(Proton.Common.rustCore)
     testImplementation(project(":test:test-data"))
     testImplementation(project(":test:utils"))
 }
