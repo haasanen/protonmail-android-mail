@@ -35,7 +35,12 @@ class NotificationInitializer : Initializer<Unit> {
         ).notificationProvider().initNotificationChannels()
     }
 
-    override fun dependencies(): List<Class<out Initializer<*>>> = listOf(AppInBackgroundCheckerInitializer::class.java)
+    override fun dependencies(): List<Class<out Initializer<*>>> = listOf(
+        AppInBackgroundCheckerInitializer::class.java,
+        // Avoids that NotificationProvider (SessionAwareNotificationProvider) is triggered before the
+        // rust mail session is ready, which would lead to a crash
+        RustMailCommonInitializer::class.java
+    )
 
     @EntryPoint
     @InstallIn(SingletonComponent::class)
