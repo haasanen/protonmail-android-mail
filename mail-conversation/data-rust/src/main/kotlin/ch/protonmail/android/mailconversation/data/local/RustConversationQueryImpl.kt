@@ -26,6 +26,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import uniffi.proton_mail_common.LocalConversation
 import uniffi.proton_mail_common.LocalLabelId
@@ -81,7 +82,7 @@ class RustConversationQueryImpl @Inject constructor(
         conversationLiveQuery = null
     }
 
-    override fun observeConversations(labelId: LocalLabelId): Flow<List<LocalConversation>> {
+    override fun observeConversations(userId: UserId, labelId: LocalLabelId): Flow<List<LocalConversation>> {
 
         rustMailbox.switchToMailbox(labelId)
 

@@ -19,28 +19,40 @@
 package ch.protonmail.android.mailconversation.data.local
 
 import kotlinx.coroutines.flow.Flow
+import me.proton.core.domain.entity.UserId
 import uniffi.proton_api_mail.LabelId
 import uniffi.proton_mail_common.LocalConversation
 import uniffi.proton_mail_common.LocalConversationId
 import uniffi.proton_mail_common.LocalLabelId
 
 interface RustConversationDataSource {
-    suspend fun getConversations(labelId: LocalLabelId): List<LocalConversation>
-    suspend fun deleteConversations(conversations: List<LocalConversationId>)
-    suspend fun markRead(conversations: List<LocalConversationId>)
-    suspend fun markUnread(conversations: List<LocalConversationId>)
-    suspend fun starConversations(conversations: List<LocalConversationId>)
-    suspend fun unStarConversations(conversations: List<LocalConversationId>)
-    fun observeConversations(conversationIds: List<LocalConversationId>): Flow<List<LocalConversation>>
+
+    suspend fun getConversations(userId: UserId, labelId: LocalLabelId): List<LocalConversation>
+    suspend fun deleteConversations(userId: UserId, conversations: List<LocalConversationId>)
+    suspend fun markRead(userId: UserId, conversations: List<LocalConversationId>)
+    suspend fun markUnread(userId: UserId, conversations: List<LocalConversationId>)
+    suspend fun starConversations(userId: UserId, conversations: List<LocalConversationId>)
+    suspend fun unStarConversations(userId: UserId, conversations: List<LocalConversationId>)
+    fun observeConversations(userId: UserId, conversationIds: List<LocalConversationId>): Flow<List<LocalConversation>>
     suspend fun relabel(
+        userId: UserId,
         conversationIds: List<LocalConversationId>,
         labelsToBeRemoved: List<LocalLabelId>,
         labelsToBeAdded: List<LocalLabelId>
     )
-    suspend fun getConversation(conversationId: LocalConversationId): LocalConversation?
 
-    suspend fun moveConversations(conversationIds: List<LocalConversationId>, toLabelId: LocalLabelId)
-    suspend fun moveConversationsWithRemoteId(conversationIds: List<LocalConversationId>, toRemoteLabelId: LabelId)
+    suspend fun getConversation(userId: UserId, conversationId: LocalConversationId): LocalConversation?
+
+    suspend fun moveConversations(
+        userId: UserId,
+        conversationIds: List<LocalConversationId>,
+        toLabelId: LocalLabelId
+    )
+    suspend fun moveConversationsWithRemoteId(
+        userId: UserId,
+        conversationIds: List<LocalConversationId>,
+        toRemoteLabelId: LabelId
+    )
 
     fun getSenderImage(address: String, bimi: String?): ByteArray?
 

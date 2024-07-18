@@ -23,6 +23,7 @@ import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
 import ch.protonmail.android.testdata.conversation.rust.LocalConversationIdSample
 import ch.protonmail.android.testdata.conversation.rust.LocalConversationTestData
+import ch.protonmail.android.testdata.user.UserIdTestData
 import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -48,10 +49,7 @@ class RustConversationDataSourceImplTest {
     val mainDispatcherRule = MainDispatcherRule()
     private val testCoroutineScope = CoroutineScope(mainDispatcherRule.testDispatcher)
 
-    private val userSession = mockk<MailUserSession>()
-    private val sessionManager: UserSessionRepository = mockk {
-        every { observeCurrentUserSession() } returns flowOf(userSession)
-    }
+    private val sessionManager = mockk<UserSessionRepository>()
 
     private val rustMailbox: RustMailbox = mockk()
     private val rustConversationQuery: RustConversationQuery = mockk()
@@ -62,35 +60,41 @@ class RustConversationDataSourceImplTest {
     @Test
     fun `get conversations should return list of conversations`() = runTest {
         // Given
+        val userId = UserIdTestData.userId
+        val userSession = mockk<MailUserSession>()
         val labelId: LocalLabelId = 1uL
         val conversations = listOf(
             LocalConversationTestData.AugConversation,
             LocalConversationTestData.SepConversation,
             LocalConversationTestData.OctConversation
         )
-        coEvery { rustConversationQuery.observeConversations(labelId) } returns flowOf(conversations)
+        coEvery { rustConversationQuery.observeConversations(userId, labelId) } returns flowOf(conversations)
+        coEvery { sessionManager.getUserSession(userId) } returns userSession
 
         // When
-        val result = dataSource.getConversations(labelId)
+        val result = dataSource.getConversations(userId, labelId)
 
         // Then
-        coVerify { rustConversationQuery.observeConversations(labelId) }
+        coVerify { rustConversationQuery.observeConversations(userId, labelId) }
         assertEquals(conversations, result)
     }
 
     @Test
     fun `get conversation should return the conversation for the given id`() = runTest {
         // Given
+        val userId = UserIdTestData.userId
+        val userSession = mockk<MailUserSession>()
         val conversationId = LocalConversationIdSample.AugConversation
         coEvery {
             userSession.conversationWithIdWithAllMailContext(conversationId)
         } returns LocalConversationTestData.AugConversation
+        coEvery { sessionManager.getUserSession(userId) } returns userSession
 
         // When
-        val result = dataSource.getConversation(conversationId)
+        val result = dataSource.getConversation(userId, conversationId)
 
         // Then
-        coVerify { sessionManager.observeCurrentUserSession() }
+        coVerify { sessionManager.getUserSession(userId) }
         coVerify { userSession.conversationWithIdWithAllMailContext(conversationId) }
         assertEquals(LocalConversationTestData.AugConversation, result)
     }
@@ -98,22 +102,27 @@ class RustConversationDataSourceImplTest {
     @Test
     fun `get conversation should handle mailbox exception`() = runTest {
         // Given
+        val userId = UserIdTestData.userId
+        val userSession = mockk<MailUserSession>()
         val conversationId = LocalConversationIdSample.AugConversation
         coEvery {
             userSession.conversationWithIdWithAllMailContext(conversationId)
         } throws MailboxException.Db("DB Exception")
+        coEvery { sessionManager.getUserSession(userId) } returns userSession
 
         // When
-        val result = dataSource.getConversation(conversationId)
+        val result = dataSource.getConversation(userId, conversationId)
 
         // Then
-        verify { sessionManager.observeCurrentUserSession() }
+        coVerify { sessionManager.getUserSession(userId) }
         assertNull(result)
     }
 
     @Test
     fun `delete conversations should delete conversations`() = runTest {
         // Given
+        val userId = UserIdTestData.userId
+        val userSession = mockk<MailUserSession>()
         val conversationIds = listOf(
             LocalConversationIdSample.AugConversation,
             LocalConversationIdSample.SepConversation
@@ -123,9 +132,10 @@ class RustConversationDataSourceImplTest {
         }
         every { rustMailbox.observeConversationMailbox() } returns flowOf(mailbox)
         coEvery { userSession.executePendingActions() } just Runs
+        coEvery { sessionManager.getUserSession(userId) } returns userSession
 
         // When
-        dataSource.deleteConversations(conversationIds)
+        dataSource.deleteConversations(userId, conversationIds)
 
         // Then
         verify { rustMailbox.observeConversationMailbox() }
@@ -136,6 +146,8 @@ class RustConversationDataSourceImplTest {
     @Test
     fun `mark conversations read should mark conversations as read`() = runTest {
         // Given
+        val userId = UserIdTestData.userId
+        val userSession = mockk<MailUserSession>()
         val conversationIds = listOf(
             LocalConversationIdSample.AugConversation, LocalConversationIdSample.SepConversation
         )
@@ -144,9 +156,10 @@ class RustConversationDataSourceImplTest {
         }
         every { rustMailbox.observeConversationMailbox() } returns flowOf(mailbox)
         coEvery { userSession.executePendingActions() } just Runs
+        coEvery { sessionManager.getUserSession(userId) } returns userSession
 
         // When
-        dataSource.markRead(conversationIds)
+        dataSource.markRead(userId, conversationIds)
 
         // Then
         verify { rustMailbox.observeConversationMailbox() }
@@ -157,6 +170,8 @@ class RustConversationDataSourceImplTest {
     @Test
     fun `mark conversations unread should mark conversations as unread`() = runTest {
         // Given
+        val userId = UserIdTestData.userId
+        val userSession = mockk<MailUserSession>()
         val conversationIds = listOf(
             LocalConversationIdSample.AugConversation, LocalConversationIdSample.SepConversation
         )
@@ -165,9 +180,10 @@ class RustConversationDataSourceImplTest {
         }
         every { rustMailbox.observeConversationMailbox() } returns flowOf(mailbox)
         coEvery { userSession.executePendingActions() } just Runs
+        coEvery { sessionManager.getUserSession(userId) } returns userSession
 
         // When
-        dataSource.markUnread(conversationIds)
+        dataSource.markUnread(userId, conversationIds)
 
         // Then
         verify { rustMailbox.observeConversationMailbox() }
@@ -178,6 +194,8 @@ class RustConversationDataSourceImplTest {
     @Test
     fun `star conversations should star conversations`() = runTest {
         // Given
+        val userId = UserIdTestData.userId
+        val userSession = mockk<MailUserSession>()
         val conversationIds = listOf(
             LocalConversationIdSample.AugConversation, LocalConversationIdSample.SepConversation
         )
@@ -186,9 +204,10 @@ class RustConversationDataSourceImplTest {
         }
         every { rustMailbox.observeConversationMailbox() } returns flowOf(mailbox)
         coEvery { userSession.executePendingActions() } just Runs
+        coEvery { sessionManager.getUserSession(userId) } returns userSession
 
         // When
-        dataSource.starConversations(conversationIds)
+        dataSource.starConversations(userId, conversationIds)
 
         // Then
         verify { rustMailbox.observeConversationMailbox() }
@@ -199,6 +218,8 @@ class RustConversationDataSourceImplTest {
     @Test
     fun `unstar conversations should unstar conversations`() = runTest {
         // Given
+        val userId = UserIdTestData.userId
+        val userSession = mockk<MailUserSession>()
         val conversationIds = listOf(
             LocalConversationIdSample.AugConversation, LocalConversationIdSample.SepConversation
         )
@@ -207,9 +228,10 @@ class RustConversationDataSourceImplTest {
         }
         every { rustMailbox.observeConversationMailbox() } returns flowOf(mailbox)
         coEvery { userSession.executePendingActions() } just Runs
+        coEvery { sessionManager.getUserSession(userId) } returns userSession
 
         // When
-        dataSource.unStarConversations(conversationIds)
+        dataSource.unStarConversations(userId, conversationIds)
 
         // Then
         verify { rustMailbox.observeConversationMailbox() }
@@ -220,6 +242,8 @@ class RustConversationDataSourceImplTest {
     @Test
     fun `relabel conversations should update labels`() = runTest {
         // Given
+        val userId = UserIdTestData.userId
+        val userSession = mockk<MailUserSession>()
         val conversationIds = listOf(
             LocalConversationIdSample.AugConversation, LocalConversationIdSample.SepConversation
         )
@@ -231,9 +255,10 @@ class RustConversationDataSourceImplTest {
         }
         every { rustMailbox.observeConversationMailbox() } returns flowOf(mailbox)
         coEvery { userSession.executePendingActions() } just Runs
+        coEvery { sessionManager.getUserSession(userId) } returns userSession
 
         // When
-        dataSource.relabel(conversationIds, labelsToBeRemoved, labelsToBeAdded)
+        dataSource.relabel(userId, conversationIds, labelsToBeRemoved, labelsToBeAdded)
 
         // Then
         verify { rustMailbox.observeConversationMailbox() }

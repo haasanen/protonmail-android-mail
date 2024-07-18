@@ -58,7 +58,7 @@ class RustConversationRepositoryImpl @Inject constructor(
         Timber.d("rust-conversation: getConversations, pageKey: $pageKey rustLocalLabelId: $rustLocalLabelId")
 
         return rustLocalLabelId?.let { labelId ->
-            rustConversationDataSource.getConversations(labelId).map {
+            rustConversationDataSource.getConversations(userId, labelId).map {
                 it.toConversationWithContext(pageKey.filter.labelId)
             }
         } // after pagination + dynamic label implementation, this should be removed
@@ -89,7 +89,7 @@ class RustConversationRepositoryImpl @Inject constructor(
         refreshData: Boolean
     ): Flow<Either<DataError, Conversation>> = flow {
         emit(
-            rustConversationDataSource.getConversation(id.toLocalConversationId())
+            rustConversationDataSource.getConversation(userId, id.toLocalConversationId())
                 ?.toConversation()
                 ?.right()
                 ?: DataError.Local.NoDataCached.left()
@@ -97,7 +97,7 @@ class RustConversationRepositoryImpl @Inject constructor(
     }
 
     override fun observeCachedConversations(userId: UserId, ids: List<ConversationId>): Flow<List<Conversation>> {
-        return rustConversationDataSource.observeConversations(ids.map { it.toLocalConversationId() })
+        return rustConversationDataSource.observeConversations(userId, ids.map { it.toLocalConversationId() })
             .map { localConversations ->
                 localConversations.map { it.toConversation() }
             }

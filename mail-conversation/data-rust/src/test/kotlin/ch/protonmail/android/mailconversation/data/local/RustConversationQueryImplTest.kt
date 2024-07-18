@@ -22,6 +22,7 @@ import app.cash.turbine.test
 import ch.protonmail.android.mailmessage.data.local.RustMailbox
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
 import ch.protonmail.android.testdata.conversation.rust.LocalConversationTestData
+import ch.protonmail.android.testdata.user.UserIdTestData
 import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -82,11 +83,12 @@ class RustConversationQueryImplTest {
     @Test
     fun `observing conversations with labelId switches mailbox if needed`() = runTest {
         // Given
+        val userId = UserIdTestData.userId
         val labelId: LocalLabelId = 1u
         coEvery { rustMailbox.switchToMailbox(labelId) } just Runs
 
         // When
-        rustConversationQuery.observeConversations(labelId).test {
+        rustConversationQuery.observeConversations(userId, labelId).test {
             val conversationList = awaitItem()
 
             // Then
@@ -98,10 +100,11 @@ class RustConversationQueryImplTest {
     @Test
     fun `new conversation list is emitted when mailbox live query callback is called`() = runTest {
         // Given
+        val userId = UserIdTestData.userId
         val labelId: LocalLabelId = 1u
         every { rustMailbox.switchToMailbox(labelId) } just Runs
 
-        rustConversationQuery.observeConversations(labelId).test {
+        rustConversationQuery.observeConversations(userId, labelId).test {
             // When
             mailboxCallbackSlot.captured.onUpdated()
 
@@ -116,13 +119,14 @@ class RustConversationQueryImplTest {
     @Test
     fun `disconnect nullifies conversation live query and disconnects it`() = runTest {
         // Given
+        val userId = UserIdTestData.userId
         val labelId: LocalLabelId = 1u
         every { rustMailbox.switchToMailbox(labelId) } just Runs
         every { conversationLiveQuery.disconnect() } just Runs
 
         // When
         rustConversationQuery.disconnect()
-        rustConversationQuery.observeConversations(labelId).test {
+        rustConversationQuery.observeConversations(userId, labelId).test {
             mailboxCallbackSlot.captured.onUpdated()
 
             // Then

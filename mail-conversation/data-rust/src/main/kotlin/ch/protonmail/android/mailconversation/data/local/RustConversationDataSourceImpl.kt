@@ -23,12 +23,12 @@ import ch.protonmail.android.mailmessage.data.local.RustMailbox
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.launch
+import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import uniffi.proton_api_mail.LabelId
 import uniffi.proton_mail_common.LocalConversation
@@ -45,54 +45,58 @@ class RustConversationDataSourceImpl @Inject constructor(
     @ConversationRustCoroutineScope private val coroutineScope: CoroutineScope
 ) : RustConversationDataSource {
 
-    override suspend fun getConversations(labelId: LocalLabelId): List<LocalConversation> =
-        rustConversationQuery.observeConversations(labelId).first()
+    override suspend fun getConversations(userId: UserId, labelId: LocalLabelId): List<LocalConversation> =
+        rustConversationQuery.observeConversations(userId, labelId).first()
 
-    override suspend fun deleteConversations(conversations: List<LocalConversationId>) {
+    override suspend fun deleteConversations(userId: UserId, conversations: List<LocalConversationId>) {
 
-        executeAction({ mailbox ->
+        executeAction(userId, { mailbox ->
             mailbox.deleteConversations(conversations)
         }, "delete conversations")
     }
 
-    override suspend fun markRead(conversations: List<LocalConversationId>) {
+    override suspend fun markRead(userId: UserId, conversations: List<LocalConversationId>) {
 
-        executeAction({ mailbox ->
+        executeAction(userId, { mailbox ->
             mailbox.markConversationsRead(conversations)
         }, "mark as read")
 
     }
 
-    override suspend fun markUnread(conversations: List<LocalConversationId>) {
+    override suspend fun markUnread(userId: UserId, conversations: List<LocalConversationId>) {
 
-        executeAction({ mailbox ->
+        executeAction(userId, { mailbox ->
             mailbox.markConversationsUnread(conversations)
         }, "mark as unread")
     }
 
-    override suspend fun starConversations(conversations: List<LocalConversationId>) {
+    override suspend fun starConversations(userId: UserId, conversations: List<LocalConversationId>) {
 
-        executeAction({ mailbox ->
+        executeAction(userId, { mailbox ->
             mailbox.starConversations(conversations)
         }, "star conversations")
     }
 
-    override suspend fun unStarConversations(conversations: List<LocalConversationId>) {
+    override suspend fun unStarConversations(userId: UserId, conversations: List<LocalConversationId>) {
 
-        executeAction({ mailbox ->
+        executeAction(userId, { mailbox ->
             mailbox.unstarConversations(conversations)
         }, "unstar conversations")
     }
 
-    override fun observeConversations(conversationIds: List<LocalConversationId>): Flow<List<LocalConversation>> {
+    override fun observeConversations(
+        userId: UserId,
+        conversationIds: List<LocalConversationId>
+    ): Flow<List<LocalConversation>> {
         Timber.d("rust-conversation: observeConversations for conversationIds: $conversationIds")
 
-        return combine(
-            rustMailbox.observeConversationMailbox(),
-            sessionManager.observeCurrentUserSession().filterNotNull()
-        ) { mailbox, userSession ->
-
+        return rustMailbox.observeConversationMailbox().mapLatest { mailbox ->
             try {
+                val userSession = sessionManager.getUserSession(userId)
+                if (userSession == null) {
+                    Timber.d("rust-conversation: observeConversations failed due to null session for $userId")
+                    return@mapLatest emptyList()
+                }
                 val currentLabelId = mailbox.labelId()
                 val conversationList = mutableListOf<LocalConversation>()
 
@@ -110,13 +114,10 @@ class RustConversationDataSourceImpl @Inject constructor(
         }
     }
 
-    override suspend fun getConversation(conversationId: LocalConversationId): LocalConversation? {
+    override suspend fun getConversation(userId: UserId, conversationId: LocalConversationId): LocalConversation? {
         return try {
-            sessionManager.observeCurrentUserSession()
-                .mapLatest { userSession ->
-                    userSession?.conversationWithIdWithAllMailContext(conversationId)
-                }
-                .firstOrNull()
+            val userSession = sessionManager.getUserSession(userId)
+            userSession?.conversationWithIdWithAllMailContext(conversationId)
         } catch (e: MailboxException) {
             Timber.e(e, "rust-conversation: failed to get conversation for conversationId: $conversationId")
             null
@@ -124,12 +125,13 @@ class RustConversationDataSourceImpl @Inject constructor(
     }
 
     override suspend fun relabel(
+        userId: UserId,
         conversationIds: List<LocalConversationId>,
         labelsToBeRemoved: List<LocalLabelId>,
         labelsToBeAdded: List<LocalLabelId>
     ) {
 
-        executeAction({ mailbox ->
+        executeAction(userId, { mailbox ->
             labelsToBeRemoved.forEach { localLabelId ->
                 mailbox.unlabelConversations(localLabelId, conversationIds)
             }
@@ -141,6 +143,7 @@ class RustConversationDataSourceImpl @Inject constructor(
     }
 
     override suspend fun moveConversationsWithRemoteId(
+        userId: UserId,
         conversationIds: List<LocalConversationId>,
         toRemoteLabelId: LabelId
     ) {
@@ -148,7 +151,7 @@ class RustConversationDataSourceImpl @Inject constructor(
             rustMailbox.observeConversationMailbox()
                 .mapLatest { mailbox ->
                     mailbox.moveConversationsWithRemoteId(toRemoteLabelId, conversationIds)
-                    executePendingActions()
+                    executePendingActions(userId)
                 }
                 .launchIn(coroutineScope)
         } catch (e: MailboxException) {
@@ -159,9 +162,13 @@ class RustConversationDataSourceImpl @Inject constructor(
     // ET - Missing Implementation. This function requires Rust settings integration
     override fun getSenderImage(address: String, bimi: String?): ByteArray? = null
 
-    override suspend fun moveConversations(conversationIds: List<LocalConversationId>, toLabelId: LocalLabelId) {
+    override suspend fun moveConversations(
+        userId: UserId,
+        conversationIds: List<LocalConversationId>,
+        toLabelId: LocalLabelId
+    ) {
 
-        executeAction({ mailbox ->
+        executeAction(userId, { mailbox ->
             mailbox.moveConversations(toLabelId, conversationIds)
         }, "move conversations")
     }
@@ -170,7 +177,11 @@ class RustConversationDataSourceImpl @Inject constructor(
         rustConversationQuery.disconnect()
     }
 
-    private suspend fun executeAction(action: (Mailbox) -> Unit, actionName: String) {
+    private suspend fun executeAction(
+        userId: UserId,
+        action: (Mailbox) -> Unit,
+        actionName: String
+    ) {
         val mailbox = rustMailbox.observeConversationMailbox().firstOrNull()
         if (mailbox == null) {
             Timber.e("rust-conversation: Failed to delete conversations, null mailbox")
@@ -179,17 +190,15 @@ class RustConversationDataSourceImpl @Inject constructor(
 
         try {
             action(mailbox)
-            executePendingActions()
+            executePendingActions(userId)
         } catch (e: MailboxException) {
             Timber.e(e, "rust-conversation: Failed to perform $actionName")
         }
     }
 
-    private fun executePendingActions() {
-        sessionManager.observeCurrentUserSession()
-            .mapLatest { session ->
-                session?.executePendingActions()
-            }
-            .launchIn(coroutineScope)
+    private fun executePendingActions(userId: UserId) {
+        coroutineScope.launch {
+            sessionManager.getUserSession(userId)?.executePendingActions()
+        }
     }
 }
