@@ -30,16 +30,26 @@ import ch.protonmail.android.mailmailbox.presentation.paging.exception.DataError
 import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
 import ch.protonmail.android.mailpagination.domain.AdjacentPageKeys
 import ch.protonmail.android.mailpagination.domain.GetAdjacentPageKeys
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 
-@AssistedFactory
-interface MailboxItemRemoteMediatorFactory {
+class MailboxItemRemoteMediatorFactory(
+    private val messageRepository: MessageRepository,
+    private val conversationRepository: ConversationRepository,
+    private val getAdjacentPageKeys: GetAdjacentPageKeys,
+    private val useRustDataLayer: Boolean
+) {
 
-    fun create(mailboxPageKey: MailboxPageKey, type: MailboxItemType): MailboxItemRemoteMediator
+    fun create(mailboxPageKey: MailboxPageKey, type: MailboxItemType): MailboxItemRemoteMediator? {
+        return if (!useRustDataLayer) {
+            MailboxItemRemoteMediator(
+                messageRepository, conversationRepository, getAdjacentPageKeys, mailboxPageKey, type
+            )
+        } else {
+            null
+        }
+    }
 }
 
 @OptIn(ExperimentalPagingApi::class)
@@ -47,8 +57,8 @@ class MailboxItemRemoteMediator @AssistedInject constructor(
     private val messageRepository: MessageRepository,
     private val conversationRepository: ConversationRepository,
     private val getAdjacentPageKeys: GetAdjacentPageKeys,
-    @Assisted private val mailboxPageKey: MailboxPageKey,
-    @Assisted private val type: MailboxItemType
+    private val mailboxPageKey: MailboxPageKey,
+    private val type: MailboxItemType
 ) : RemoteMediator<MailboxPageKey, MailboxItem>() {
 
     override suspend fun initialize() = InitializeAction.LAUNCH_INITIAL_REFRESH

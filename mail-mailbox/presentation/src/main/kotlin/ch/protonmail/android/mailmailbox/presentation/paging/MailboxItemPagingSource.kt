@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.mailmailbox.presentation.paging
 
+import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import androidx.room.RoomDatabase
 import arrow.core.getOrElse
@@ -26,30 +27,48 @@ import ch.protonmail.android.mailmailbox.domain.model.MailboxItemType
 import ch.protonmail.android.mailmailbox.domain.model.MailboxPageKey
 import ch.protonmail.android.mailmailbox.domain.usecase.GetMultiUserMailboxItems
 import ch.protonmail.android.mailmailbox.domain.usecase.IsMultiUserLocalPageValid
+import ch.protonmail.android.mailmessage.domain.paging.RustInvalidationTracker
 import ch.protonmail.android.mailpagination.domain.GetAdjacentPageKeys
 import ch.protonmail.android.mailpagination.domain.getRefreshPageKey
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailpagination.presentation.paging.InvalidationTrackerPagingSource
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedFactory
-import dagger.assisted.AssistedInject
+import ch.protonmail.android.mailpagination.presentation.paging.RustPagingSource
 import me.proton.core.util.kotlin.takeIfNotEmpty
 import timber.log.Timber
 import kotlin.math.max
 
-@AssistedFactory
-interface MailboxItemPagingSourceFactory {
+class MailboxItemPagingSourceFactory(
 
-    fun create(mailboxPageKey: MailboxPageKey, type: MailboxItemType): MailboxItemPagingSource
+    private val roomDatabase: RoomDatabase,
+    private val getMailboxItems: GetMultiUserMailboxItems,
+    private val getAdjacentPageKeys: GetAdjacentPageKeys,
+    private val isMultiUserLocalPageValid: IsMultiUserLocalPageValid,
+    private val rustInvalidationTracker: RustInvalidationTracker,
+    private val useRustDataLayer: Boolean
+) {
+
+    fun create(mailboxPageKey: MailboxPageKey, type: MailboxItemType): PagingSource<MailboxPageKey, MailboxItem> =
+        if (useRustDataLayer) {
+            RustMailboxItemPagingSource(getMailboxItems, rustInvalidationTracker, mailboxPageKey, type)
+        } else {
+            MailboxItemPagingSource(
+                roomDatabase,
+                getMailboxItems,
+                getAdjacentPageKeys,
+                isMultiUserLocalPageValid,
+                mailboxPageKey,
+                type
+            )
+        }
 }
 
-class MailboxItemPagingSource @AssistedInject constructor(
+class MailboxItemPagingSource(
     roomDatabase: RoomDatabase,
     private val getMailboxItems: GetMultiUserMailboxItems,
     private val getAdjacentPageKeys: GetAdjacentPageKeys,
     private val isMultiUserLocalPageValid: IsMultiUserLocalPageValid,
-    @Assisted private val mailboxPageKey: MailboxPageKey,
-    @Assisted private val type: MailboxItemType
+    private val mailboxPageKey: MailboxPageKey,
+    private val type: MailboxItemType
 ) : InvalidationTrackerPagingSource<MailboxPageKey, MailboxItem>(
     db = roomDatabase,
     tables = GetMultiUserMailboxItems.getInvolvedTables(type)
@@ -149,4 +168,36 @@ class MailboxItemPagingSource @AssistedInject constructor(
      * (Compose LazyList unique id violated)
      */
     private fun MailboxPageKey.doNotTakeWhenEqualToNext(nextKey: MailboxPageKey) = takeUnless { this == nextKey }
+}
+
+
+class RustMailboxItemPagingSource(
+    private val getMailboxItems: GetMultiUserMailboxItems,
+    private val rustInvalidationTracker: RustInvalidationTracker,
+    private val mailboxPageKey: MailboxPageKey,
+    private val type: MailboxItemType
+) : RustPagingSource<MailboxPageKey, MailboxItem>(
+    rustInvalidationTracker = rustInvalidationTracker
+) {
+
+    override suspend fun loadPage(params: LoadParams<MailboxPageKey>): LoadResult<MailboxPageKey, MailboxItem> {
+        val key = params.key ?: mailboxPageKey
+        val size = max(key.pageKey.size, params.loadSize)
+        val pageKey = key.pageKey.copy(size = size)
+
+        val items = getMailboxItems(type, key.copy(pageKey = pageKey)).getOrElse {
+            Timber.e("Paging: loadItems: Error $it")
+            return LoadResult.Page(emptyList(), null, null)
+        }
+        Timber.d("Paging: loadItems: ${items.size}/$size (${params.javaClass.simpleName})-> $pageKey")
+
+        return LoadResult.Page(
+            data = items,
+            prevKey = null,
+            nextKey = null
+        )
+    }
+
+    override fun getRefreshKey(state: PagingState<MailboxPageKey, MailboxItem>): MailboxPageKey? = null
+
 }

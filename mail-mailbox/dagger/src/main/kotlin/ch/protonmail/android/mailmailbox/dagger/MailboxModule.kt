@@ -32,6 +32,16 @@ import ch.protonmail.android.mailmailbox.domain.repository.InMemoryMailboxReposi
 import ch.protonmail.android.mailmailbox.domain.repository.OnboardingRepository
 import ch.protonmail.android.mailmailbox.domain.repository.StorageLimitRepository
 import ch.protonmail.android.mailmailbox.domain.repository.UnreadCountersRepository
+import androidx.room.RoomDatabase
+import ch.protonmail.android.mailcommon.data.BuildConfig
+import ch.protonmail.android.mailconversation.domain.repository.ConversationRepository
+import ch.protonmail.android.mailmailbox.domain.usecase.GetMultiUserMailboxItems
+import ch.protonmail.android.mailmailbox.domain.usecase.IsMultiUserLocalPageValid
+import ch.protonmail.android.mailmailbox.presentation.paging.MailboxItemPagingSourceFactory
+import ch.protonmail.android.mailmailbox.presentation.paging.MailboxItemRemoteMediatorFactory
+import ch.protonmail.android.mailmessage.domain.paging.RustInvalidationTracker
+import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
+import ch.protonmail.android.mailpagination.domain.GetAdjacentPageKeys
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -44,6 +54,33 @@ import javax.inject.Singleton
 @Module(includes = [MailboxModule.BindsModule::class])
 @InstallIn(SingletonComponent::class)
 object MailboxModule {
+
+    @Provides
+    @Singleton
+    fun providesMailboxItemPagingSourceFactory(
+        roomDatabase: RoomDatabase,
+        getMailboxItems: GetMultiUserMailboxItems,
+        getAdjacentPageKeys: GetAdjacentPageKeys,
+        isMultiUserLocalPageValid: IsMultiUserLocalPageValid,
+        rustInvalidationTracker: RustInvalidationTracker
+    ): MailboxItemPagingSourceFactory = MailboxItemPagingSourceFactory(
+        roomDatabase,
+        getMailboxItems,
+        getAdjacentPageKeys,
+        isMultiUserLocalPageValid,
+        rustInvalidationTracker,
+        BuildConfig.USE_RUST_DATA_LAYER
+    )
+
+    @Provides
+    @Singleton
+    fun providesMailboxItemRemoteMediatorFactory(
+        messageRepository: MessageRepository,
+        conversationRepository: ConversationRepository,
+        getAdjacentPageKeys: GetAdjacentPageKeys
+    ): MailboxItemRemoteMediatorFactory = MailboxItemRemoteMediatorFactory(
+        messageRepository, conversationRepository, getAdjacentPageKeys, BuildConfig.USE_RUST_DATA_LAYER
+    )
 
     @Provides
     @Singleton
