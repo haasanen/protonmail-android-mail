@@ -29,12 +29,12 @@ import ch.protonmail.android.mailmessage.data.mapper.toLocalMessageId
 import ch.protonmail.android.mailmessage.data.mapper.toMessage
 import ch.protonmail.android.mailmessage.data.mapper.toMessageBody
 import ch.protonmail.android.mailmessage.domain.model.MessageId
-import ch.protonmail.android.mailmessage.domain.model.MimeType
 import ch.protonmail.android.mailpagination.domain.model.PageFilter
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.testdata.label.rust.LocalLabelTestData
 import ch.protonmail.android.testdata.message.rust.LocalMessageIdSample
 import ch.protonmail.android.testdata.message.rust.LocalMessageTestData
+import ch.protonmail.android.testdata.user.UserIdTestData
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -68,6 +68,7 @@ class RustMessageRepositoryImplTest {
     @Test
     fun `getLocalMessages should return list of messages`() = runTest {
         // Given
+        val userId = UserIdTestData.userId
         val pageFilter = PageFilter(labelId = systemLabelId, isSystemFolder = true)
         val pageKey = PageKey(filter = pageFilter)
 
@@ -76,13 +77,13 @@ class RustMessageRepositoryImplTest {
             LocalMessageTestData.SepWeatherForecast,
             LocalMessageTestData.OctWeatherForecast
         )
-        coEvery { rustMessageDataSource.getMessages(any()) } returns expectedMessages
+        coEvery { rustMessageDataSource.getMessages(userId, any()) } returns expectedMessages
 
         // When
         val result = repository.getLocalMessages(userId, pageKey)
 
         // Then
-        coVerify { rustMessageDataSource.getMessages(any()) }
+        coVerify { rustMessageDataSource.getMessages(userId, any()) }
         assertEquals(expectedMessages.size, result.size)
         result.forEachIndexed { index, message ->
             assertEquals(expectedMessages[index].subject, message.subject)
@@ -92,10 +93,11 @@ class RustMessageRepositoryImplTest {
     @Test
     fun `observe cached message should return the local message`() = runTest {
         // Given
+        val userId = UserIdTestData.userId
         val messageId = MessageId(LocalMessageIdSample.AugWeatherForecast.toString())
         val expectedMessage = LocalMessageTestData.AugWeatherForecast.toMessage()
         coEvery {
-            rustMessageDataSource.getMessage(messageId.toLocalMessageId())
+            rustMessageDataSource.getMessage(userId, messageId.toLocalMessageId())
         } returns LocalMessageTestData.AugWeatherForecast
 
         // When
@@ -104,7 +106,7 @@ class RustMessageRepositoryImplTest {
 
             // Then
             assertEquals(expectedMessage, result)
-            coVerify { rustMessageDataSource.getMessage(messageId.toLocalMessageId()) }
+            coVerify { rustMessageDataSource.getMessage(userId, messageId.toLocalMessageId()) }
 
             awaitComplete()
         }
@@ -113,16 +115,17 @@ class RustMessageRepositoryImplTest {
     @Test
     fun `observe cached message should return DataError when no message not found`() = runTest {
         // Given
+        val userId = UserIdTestData.userId
         val messageId = MessageId(LocalMessageIdSample.AugWeatherForecast.toString())
 
-        coEvery { rustMessageDataSource.getMessage(messageId.toLocalMessageId()) } returns null
+        coEvery { rustMessageDataSource.getMessage(userId, messageId.toLocalMessageId()) } returns null
 
         // When
         repository.observeCachedMessage(userId, messageId).test {
             val result = awaitItem()
 
             // Then
-            coVerify { rustMessageDataSource.getMessage(messageId.toLocalMessageId()) }
+            coVerify { rustMessageDataSource.getMessage(userId, messageId.toLocalMessageId()) }
             assert(result.isLeft())
             assertEquals(DataError.Local.NoDataCached, result.swap().getOrElse { null })
             awaitComplete()
@@ -132,6 +135,7 @@ class RustMessageRepositoryImplTest {
     @Test
     fun `getMessageWithBody should return message with body`() = runTest {
         // Given
+        val userId = UserIdTestData.userId
         val messageId = MessageId(LocalMessageIdSample.AugWeatherForecast.toString())
         val localMessage = LocalMessageTestData.AugWeatherForecast
         val localMessageBody = mockk<uniffi.proton_mail_uniffi.DecryptedMessageBody> {
@@ -139,8 +143,8 @@ class RustMessageRepositoryImplTest {
             every { mimeType() } returns uniffi.proton_api_mail.MimeType.TEXT_PLAIN
         }
         val expectedMessageWithBody = localMessageBody.toMessageBody(messageId)
-        coEvery { rustMessageDataSource.getMessage(messageId.toLocalMessageId()) } returns localMessage
-        coEvery { rustMessageDataSource.getMessageBody(messageId.toLocalMessageId()) } returns localMessageBody
+        coEvery { rustMessageDataSource.getMessage(userId, messageId.toLocalMessageId()) } returns localMessage
+        coEvery { rustMessageDataSource.getMessageBody(userId, messageId.toLocalMessageId()) } returns localMessageBody
 
         // When
         val result = repository.getMessageWithBody(userId, messageId).getOrNull()
@@ -149,8 +153,8 @@ class RustMessageRepositoryImplTest {
         assertNotNull(result)
         assertEquals(localMessage.toMessage(), result.message)
         assertEquals(expectedMessageWithBody, result.messageBody)
-        coVerify { rustMessageDataSource.getMessage(messageId.toLocalMessageId()) }
-        coVerify { rustMessageDataSource.getMessageBody(messageId.toLocalMessageId()) }
+        coVerify { rustMessageDataSource.getMessage(userId, messageId.toLocalMessageId()) }
+        coVerify { rustMessageDataSource.getMessageBody(userId, messageId.toLocalMessageId()) }
     }
 
 }

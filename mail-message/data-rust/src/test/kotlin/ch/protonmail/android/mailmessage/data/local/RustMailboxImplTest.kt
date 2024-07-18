@@ -22,12 +22,12 @@ import app.cash.turbine.test
 import ch.protonmail.android.mailmessage.data.usecase.CreateMailbox
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
+import ch.protonmail.android.testdata.user.UserIdTestData
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
@@ -58,20 +58,20 @@ class RustMailboxImplTest {
         coEvery { this@mockk.invoke(any(), any()) } returns messageMailbox
     }
 
-    private val mailUserSession = mockk<MailUserSession>()
-    private val userSessionRepository: UserSessionRepository = mockk {
-        every { observeCurrentUserSession() } returns flowOf(mailUserSession)
-    }
+    private val userSessionRepository = mockk<UserSessionRepository>()
 
-    private val rustMailbox: RustMailbox = RustMailboxImpl(userSessionRepository, createMailbox, testCoroutineScope)
+    private val rustMailbox = RustMailboxImpl(userSessionRepository, createMailbox, testCoroutineScope)
 
     @Test
     fun `switchToMailbox should initialise the mailbox when there is no mailbox created`() = runTest {
         // Given
+        val userId = UserIdTestData.userId
+        val mailUserSession = mockk<MailUserSession>()
         val labelId: LocalLabelId = 1u
+        coEvery { userSessionRepository.getUserSession(userId) } returns mailUserSession
 
         // When
-        rustMailbox.switchToMailbox(labelId)
+        rustMailbox.switchToMailbox(userId, labelId)
         rustMailbox.observeMessageMailbox().test {
 
             // Then
@@ -83,8 +83,11 @@ class RustMailboxImplTest {
     @Test
     fun `observeMessageMailbox returns message mailbox flow`() = runTest {
         // Given
+        val userId = UserIdTestData.userId
+        val mailUserSession = mockk<MailUserSession>()
         val labelId: LocalLabelId = 1u
-        rustMailbox.switchToMailbox(labelId)
+        coEvery { userSessionRepository.getUserSession(userId) } returns mailUserSession
+        rustMailbox.switchToMailbox(userId, labelId)
 
         // When
         rustMailbox.observeMessageMailbox().test {
@@ -97,9 +100,12 @@ class RustMailboxImplTest {
     @Test
     fun `observeConversationMailbox returns conversation mailbox flow`() = runTest {
         // Given
+        val userId = UserIdTestData.userId
+        val mailUserSession = mockk<MailUserSession>()
         val labelId: LocalLabelId = 1u
         coEvery { createMailbox(any(), labelId) } returns conversationMailbox
-        rustMailbox.switchToMailbox(labelId)
+        coEvery { userSessionRepository.getUserSession(userId) } returns mailUserSession
+        rustMailbox.switchToMailbox(userId, labelId)
 
         // When
         rustMailbox.observeConversationMailbox().test {
@@ -113,17 +119,21 @@ class RustMailboxImplTest {
     @Test
     fun `switchToMailbox should not switch the mailbox if it's already in the given label`() = runTest {
         // Given
+        val userId = UserIdTestData.userId
+        val mailUserSession = mockk<MailUserSession>()
         val labelId: LocalLabelId = 1u
+        coEvery { createMailbox(any(), labelId) } returns conversationMailbox
+        coEvery { userSessionRepository.getUserSession(userId) } returns mailUserSession
 
         // When: First call to switchToMailbox
-        rustMailbox.switchToMailbox(labelId)
+        rustMailbox.switchToMailbox(userId, labelId)
 
         // Then: Verify the mailbox is initialized
         coVerify { createMailbox(mailUserSession, labelId) }
         advanceUntilIdle()
 
         // When: Second call to switchToMailbox with the same labelId
-        rustMailbox.switchToMailbox(labelId)
+        rustMailbox.switchToMailbox(userId, labelId)
 
         // Then: Verify that userSessionRepository.observeCurrentUserSession is not called again
         coVerify(exactly = 1) { createMailbox(mailUserSession, labelId) }
@@ -132,10 +142,14 @@ class RustMailboxImplTest {
     @Test
     fun `switchToMailbox should switch to a new mailbox when label changes`() = runTest {
         // Given
+        val userId = UserIdTestData.userId
+        val mailUserSession = mockk<MailUserSession>()
         val firstLabelId: LocalLabelId = 1u
+        coEvery { createMailbox(any(), firstLabelId) } returns conversationMailbox
+        coEvery { userSessionRepository.getUserSession(userId) } returns mailUserSession
 
         // When: First call to switchToMailbox
-        rustMailbox.switchToMailbox(firstLabelId)
+        rustMailbox.switchToMailbox(userId, firstLabelId)
 
         // Then: Verify the mailbox is initialized
         coVerify { createMailbox(mailUserSession, firstLabelId) }
@@ -145,7 +159,7 @@ class RustMailboxImplTest {
         val secondLabelId: LocalLabelId = 2u
 
         // When: Second call to switchToMailbox with the same labelId
-        rustMailbox.switchToMailbox(secondLabelId)
+        rustMailbox.switchToMailbox(userId, secondLabelId)
 
         // Then
         coVerify { createMailbox(mailUserSession, secondLabelId) }

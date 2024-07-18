@@ -85,7 +85,7 @@ class RustConversationQueryImplTest {
         // Given
         val userId = UserIdTestData.userId
         val labelId: LocalLabelId = 1u
-        coEvery { rustMailbox.switchToMailbox(labelId) } just Runs
+        coEvery { rustMailbox.switchToMailbox(userId, labelId) } just Runs
 
         // When
         rustConversationQuery.observeConversations(userId, labelId).test {
@@ -93,7 +93,7 @@ class RustConversationQueryImplTest {
 
             // Then
             assertNotNull(conversationList)
-            coVerify { rustMailbox.switchToMailbox(labelId) }
+            coVerify { rustMailbox.switchToMailbox(userId, labelId) }
         }
     }
 
@@ -102,7 +102,7 @@ class RustConversationQueryImplTest {
         // Given
         val userId = UserIdTestData.userId
         val labelId: LocalLabelId = 1u
-        every { rustMailbox.switchToMailbox(labelId) } just Runs
+        every { rustMailbox.switchToMailbox(userId, labelId) } just Runs
 
         rustConversationQuery.observeConversations(userId, labelId).test {
             // When
@@ -121,7 +121,7 @@ class RustConversationQueryImplTest {
         // Given
         val userId = UserIdTestData.userId
         val labelId: LocalLabelId = 1u
-        every { rustMailbox.switchToMailbox(labelId) } just Runs
+        every { rustMailbox.switchToMailbox(userId, labelId) } just Runs
         every { conversationLiveQuery.disconnect() } just Runs
 
         // When

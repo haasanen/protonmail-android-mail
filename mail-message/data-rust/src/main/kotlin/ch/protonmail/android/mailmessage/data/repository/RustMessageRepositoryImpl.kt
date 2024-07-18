@@ -57,7 +57,7 @@ class RustMessageRepositoryImpl @Inject constructor(
             else pageKey.filter.labelId.toLocalLabelId()
 
         return rustLocalLabelId?.let { labelId ->
-            rustMessageDataSource.getMessages(labelId).map { it.toMessage() }
+            rustMessageDataSource.getMessages(userId, labelId).map { it.toMessage() }
         } // after pagination + dynamic label implementation, this should be removed
             // and error handling should be implemented
             ?: emptyList()
@@ -85,7 +85,7 @@ class RustMessageRepositoryImpl @Inject constructor(
 
     override fun observeCachedMessage(userId: UserId, messageId: MessageId): Flow<Either<DataError.Local, Message>> =
         flow {
-            val message = rustMessageDataSource.getMessage(messageId.toLocalMessageId())?.toMessage()
+            val message = rustMessageDataSource.getMessage(userId, messageId.toLocalMessageId())?.toMessage()
 
             emit(message?.right() ?: DataError.Local.NoDataCached.left())
         }
@@ -127,8 +127,8 @@ class RustMessageRepositoryImpl @Inject constructor(
 
     override suspend fun getLocalMessageWithBody(userId: UserId, messageId: MessageId): MessageWithBody? {
         val localMessageId = messageId.toLocalMessageId()
-        val message = rustMessageDataSource.getMessage(localMessageId)?.toMessage()
-        val body = rustMessageDataSource.getMessageBody(localMessageId)
+        val message = rustMessageDataSource.getMessage(userId, localMessageId)?.toMessage()
+        val body = rustMessageDataSource.getMessageBody(userId, localMessageId)
 
         return if (message != null && body != null) {
             MessageWithBody(message, body.toMessageBody(messageId))

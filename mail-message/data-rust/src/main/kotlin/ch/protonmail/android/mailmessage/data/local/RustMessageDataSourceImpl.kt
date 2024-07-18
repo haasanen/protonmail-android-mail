@@ -22,6 +22,7 @@ import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.mapLatest
+import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import uniffi.proton_mail_common.LocalLabelId
 import uniffi.proton_mail_common.LocalMessageId
@@ -37,13 +38,10 @@ class RustMessageDataSourceImpl @Inject constructor(
     private val rustMessageQuery: RustMessageQuery
 ) : RustMessageDataSource {
 
-    override suspend fun getMessage(messageId: LocalMessageId): LocalMessageMetadata? {
+    override suspend fun getMessage(userId: UserId, messageId: LocalMessageId): LocalMessageMetadata? {
         return try {
-            userSessionRepository.observeCurrentUserSession()
-                .mapLatest { userSession ->
-                    userSession?.messageMetadata(messageId)
-                }
-                .firstOrNull()
+            val userSession = userSessionRepository.getUserSession(userId)
+            userSession?.messageMetadata(messageId)
         } catch (e: MailSessionException) {
             Timber.e(e, "rust-message: Failed to get message")
             null
@@ -51,7 +49,7 @@ class RustMessageDataSourceImpl @Inject constructor(
     }
 
 
-    override suspend fun getMessageBody(messageId: LocalMessageId): DecryptedMessageBody? {
+    override suspend fun getMessageBody(userId: UserId, messageId: LocalMessageId): DecryptedMessageBody? {
         return try {
             rustMailbox.observeMessageMailbox()
                 .mapLatest { mailbox ->
@@ -64,9 +62,9 @@ class RustMessageDataSourceImpl @Inject constructor(
         }
     }
 
-    override suspend fun getMessages(labelId: LocalLabelId): List<LocalMessageMetadata> {
+    override suspend fun getMessages(userId: UserId, labelId: LocalLabelId): List<LocalMessageMetadata> {
         Timber.d("rust-message: getMessages for labelId: $labelId")
-        return rustMessageQuery.observeMessages(labelId)
+        return rustMessageQuery.observeMessages(userId, labelId)
             .mapLatest { messageList -> messageList }
             .first()
     }

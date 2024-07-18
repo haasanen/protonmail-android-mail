@@ -19,10 +19,11 @@
 package ch.protonmail.android.mailmessage.data.local
 
 import kotlinx.coroutines.flow.Flow
+import me.proton.core.domain.entity.UserId
 import uniffi.proton_mail_common.LocalLabelId
 import uniffi.proton_mail_common.LocalMessageMetadata
 
 interface RustMessageQuery {
-    fun observeMessages(labelId: LocalLabelId): Flow<List<LocalMessageMetadata>>
+    fun observeMessages(userId: UserId, labelId: LocalLabelId): Flow<List<LocalMessageMetadata>>
     fun disconnect()
 }

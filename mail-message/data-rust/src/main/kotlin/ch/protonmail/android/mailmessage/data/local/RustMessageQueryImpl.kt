@@ -25,6 +25,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import uniffi.proton_mail_common.LocalLabelId
 import uniffi.proton_mail_common.LocalMessageMetadata
@@ -76,9 +77,9 @@ class RustMessageQueryImpl @Inject constructor(
         messageLiveQuery = null
     }
 
-    override fun observeMessages(labelId: LocalLabelId): Flow<List<LocalMessageMetadata>> {
+    override fun observeMessages(userId: UserId, labelId: LocalLabelId): Flow<List<LocalMessageMetadata>> {
 
-        rustMailbox.switchToMailbox(labelId)
+        rustMailbox.switchToMailbox(userId, labelId)
 
         return messagesStatusFlow
     }

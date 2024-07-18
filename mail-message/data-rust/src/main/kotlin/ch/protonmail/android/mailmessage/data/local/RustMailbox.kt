@@ -19,12 +19,13 @@
 package ch.protonmail.android.mailmessage.data.local
 
 import kotlinx.coroutines.flow.Flow
+import me.proton.core.domain.entity.UserId
 import uniffi.proton_mail_common.LocalLabelId
 import uniffi.proton_mail_uniffi.Mailbox
 
 interface RustMailbox {
 
-    fun switchToMailbox(labelId: LocalLabelId)
+    fun switchToMailbox(userId: UserId, labelId: LocalLabelId)
     fun observeConversationMailbox(): Flow<Mailbox>
     fun observeMessageMailbox(): Flow<Mailbox>
 }

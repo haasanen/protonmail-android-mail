@@ -18,14 +18,15 @@
 
 package ch.protonmail.android.mailmessage.data.local
 
+import me.proton.core.domain.entity.UserId
 import uniffi.proton_mail_common.LocalLabelId
 import uniffi.proton_mail_common.LocalMessageId
 import uniffi.proton_mail_common.LocalMessageMetadata
 import uniffi.proton_mail_uniffi.DecryptedMessageBody
 
 interface RustMessageDataSource {
-    suspend fun getMessage(messageId: LocalMessageId): LocalMessageMetadata?
-    suspend fun getMessageBody(messageId: LocalMessageId): DecryptedMessageBody?
-    suspend fun getMessages(labelId: LocalLabelId): List<LocalMessageMetadata>
+    suspend fun getMessage(userId: UserId, messageId: LocalMessageId): LocalMessageMetadata?
+    suspend fun getMessageBody(userId: UserId, messageId: LocalMessageId): DecryptedMessageBody?
+    suspend fun getMessages(userId: UserId, labelId: LocalLabelId): List<LocalMessageMetadata>
     fun disconnect()
 }

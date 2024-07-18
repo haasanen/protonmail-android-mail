@@ -28,8 +28,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.launch
+import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import uniffi.proton_api_mail.MailSettingsViewMode
 import uniffi.proton_mail_common.LocalLabelId
@@ -52,21 +52,25 @@ class RustMailboxImpl @Inject constructor(
         .filterNotNull()
         .filter { it.viewMode() == MailSettingsViewMode.MESSAGES }
 
-    override fun switchToMailbox(labelId: LocalLabelId) {
-        if (shouldSwitchMailbox(labelId)) {
-            userSessionRepository.observeCurrentUserSession()
-                .filterNotNull()
-                .mapLatest { userSession ->
-                    Timber.d("rust-mailbox: Mailbox created for label: $labelId")
-                    val mailbox = createMailbox(userSession, labelId)
+    override fun switchToMailbox(userId: UserId, labelId: LocalLabelId) {
+        if (!shouldSwitchMailbox(labelId)) {
+            return
+        }
 
-                    // Wait for the mailbox to be created & initialized
-                    // Rust team will work on this issue, then we can remove this delay
-                    delay(MAILBOX_INIT_DELAY)
+        coroutineScope.launch {
+            val userSession = userSessionRepository.getUserSession(userId)
+            if (userSession == null) {
+                Timber.w("rust-mailbox: switchMailbox failed, no session for $userId")
+                return@launch
+            }
+            Timber.d("rust-mailbox: Mailbox created for label: $labelId")
+            val mailbox = createMailbox(userSession, labelId)
 
-                    mailboxMutableStatusFlow.value = mailbox
-                }
-                .launchIn(coroutineScope)
+            // Wait for the mailbox to be created & initialized
+            // Rust team will work on this issue, then we can remove this delay
+            delay(MAILBOX_INIT_DELAY)
+
+            mailboxMutableStatusFlow.value = mailbox
         }
     }
 
@@ -74,8 +78,7 @@ class RustMailboxImpl @Inject constructor(
 
     override fun observeMessageMailbox(): Flow<Mailbox> = messageMailboxFlow
 
-    private fun shouldSwitchMailbox(labelId: LocalLabelId?): Boolean =
-        labelId?.let { mailboxMutableStatusFlow.value?.labelId() != it } ?: (mailboxMutableStatusFlow.value != null)
+    private fun shouldSwitchMailbox(labelId: LocalLabelId) = mailboxMutableStatusFlow.value?.labelId() != labelId
 
     companion object {
 

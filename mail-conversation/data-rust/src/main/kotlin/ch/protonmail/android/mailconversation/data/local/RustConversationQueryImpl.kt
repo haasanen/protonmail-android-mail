@@ -84,7 +84,7 @@ class RustConversationQueryImpl @Inject constructor(
 
     override fun observeConversations(userId: UserId, labelId: LocalLabelId): Flow<List<LocalConversation>> {
 
-        rustMailbox.switchToMailbox(labelId)
+        rustMailbox.switchToMailbox(userId, labelId)
 
         return conversationsStatusFlow
     }
