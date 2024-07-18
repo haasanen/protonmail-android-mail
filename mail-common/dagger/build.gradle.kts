@@ -46,6 +46,7 @@ android {
 dependencies {
     implementation(KotlinX.coroutinesCore)
     implementation(Proton.Core.label)
+    implementation(Proton.Core.accountManager)
 
     implementation(project(":mail-common:data"))
     implementation(project(":mail-common:data-rust"))

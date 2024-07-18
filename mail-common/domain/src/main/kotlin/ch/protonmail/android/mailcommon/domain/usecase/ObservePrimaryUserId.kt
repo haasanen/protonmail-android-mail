@@ -18,14 +18,18 @@
 
 package ch.protonmail.android.mailcommon.domain.usecase
 
-import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import kotlinx.coroutines.flow.Flow
+import me.proton.core.accountmanager.domain.AccountManager
 import me.proton.core.domain.entity.UserId
-import javax.inject.Inject
+import ch.protonmail.android.mailcommon.domain.model.FAKE_USER_ID
+import kotlinx.coroutines.flow.flow
 
-class ObservePrimaryUserId @Inject constructor(
-    private val userSessionRepository: UserSessionRepository
+class ObservePrimaryUserId(
+    private val accountManager: AccountManager,
+    private val useRustDataLayer: Boolean
 ) {
 
-    operator fun invoke(): Flow<UserId?> = userSessionRepository.observeCurrentUserId()
+    operator fun invoke(): Flow<UserId?> = if (useRustDataLayer) flow {
+        emit(FAKE_USER_ID)
+    } else accountManager.getPrimaryUserId()
 }
