@@ -24,8 +24,7 @@ import uniffi.proton_mail_uniffi.MailUserSession
 
 interface UserSessionRepository {
 
-    fun observeCurrentUserSession(): Flow<MailUserSession?>
-
     fun observeCurrentUserId(): Flow<UserId?>
+
     suspend fun getUserSession(userId: UserId): MailUserSession?
 }

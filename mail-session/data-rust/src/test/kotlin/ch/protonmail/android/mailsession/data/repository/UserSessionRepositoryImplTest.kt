@@ -11,7 +11,6 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.slot
 import io.mockk.verify
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.test.runTest
 import me.proton.core.domain.entity.UserId
 import org.junit.Rule
@@ -32,12 +31,8 @@ class UserSessionRepositoryImplTest {
     val loggingRule = LoggingTestRule()
 
     private val mailSessionRepository = mockk<MailSessionRepository>()
-    private val scope = CoroutineScope(mainDispatcherRule.testDispatcher)
 
-    private val userSessionRepository = UserSessionRepositoryImpl(
-        mailSessionRepository,
-        scope
-    )
+    private val userSessionRepository = UserSessionRepositoryImpl(mailSessionRepository)
 
     @Test
     fun `initializes session from repository and returns it when not already active`() = runTest {
@@ -66,7 +61,6 @@ class UserSessionRepositoryImplTest {
         // Then
         assertEquals(expectedMailUserSession, actual)
         // When
-        val newValue = userSessionRepository.getUserSession(userId)
         assertEquals(expectedMailUserSession, actual)
         coVerify(exactly = 1) { mailSessionRepository.getMailSession() }
     }

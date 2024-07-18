@@ -20,7 +20,6 @@ package ch.protonmail.android.mailsession.data.repository
 
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOf
 import me.proton.core.accountmanager.domain.AccountManager
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
@@ -38,11 +37,6 @@ import javax.inject.Inject
 class CoreUserSessionRepositoryImpl @Inject constructor(
     private val accountManager: AccountManager
 ) : UserSessionRepository {
-
-    override fun observeCurrentUserSession(): Flow<MailUserSession?> {
-        Timber.w("mail-session: calling stubbed observeCurrentSession method! This won't work.")
-        return flowOf(null)
-    }
 
     override suspend fun getUserSession(userId: UserId): MailUserSession? {
         Timber.w("mail-session: calling stubbed observeCurrentSession method! This won't work.")

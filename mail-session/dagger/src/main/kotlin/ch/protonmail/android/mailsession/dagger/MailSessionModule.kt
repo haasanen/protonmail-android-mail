@@ -49,11 +49,10 @@ object MailSessionModule {
     @Singleton
     fun providesUserRepository(
         accountManager: AccountManager,
-        mailSessionRepository: MailSessionRepository,
-        @RepositoryFlowCoroutineScope coroutineScope: CoroutineScope
+        mailSessionRepository: MailSessionRepository
     ): UserSessionRepository {
         return if (BuildConfig.USE_RUST_DATA_LAYER) {
-            UserSessionRepositoryImpl(mailSessionRepository, coroutineScope)
+            UserSessionRepositoryImpl(mailSessionRepository)
         } else {
             CoreUserSessionRepositoryImpl(accountManager)
         }
