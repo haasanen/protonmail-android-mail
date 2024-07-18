@@ -20,6 +20,7 @@ package ch.protonmail.android.mailconversation.data.local
 
 import app.cash.turbine.test
 import ch.protonmail.android.mailmessage.data.local.RustMailbox
+import ch.protonmail.android.mailmessage.domain.paging.RustInvalidationTracker
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
 import ch.protonmail.android.testdata.conversation.rust.LocalConversationTestData
 import ch.protonmail.android.testdata.user.UserIdTestData
@@ -69,7 +70,11 @@ class RustConversationQueryImplTest {
         every { observeConversationMailbox() } returns flowOf(mailbox)
     }
 
-    private val rustConversationQuery = RustConversationQueryImpl(rustMailbox, testCoroutineScope)
+    private val invalidationTracker: RustInvalidationTracker = mockk {
+        every { notifyInvalidation(any()) } just Runs
+    }
+
+    private val rustConversationQuery = RustConversationQueryImpl(rustMailbox, invalidationTracker, testCoroutineScope)
 
     @Test
     fun `query initializes the mailbox and creates live query when created`() = runTest {
@@ -113,6 +118,7 @@ class RustConversationQueryImplTest {
             val conversationList = awaitItem()
 
             assertEquals(conversations, conversationList)
+            verify { invalidationTracker.notifyInvalidation(any()) }
         }
     }
 

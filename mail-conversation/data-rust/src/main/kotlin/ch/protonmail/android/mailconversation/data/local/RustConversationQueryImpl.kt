@@ -20,6 +20,8 @@ package ch.protonmail.android.mailconversation.data.local
 
 import ch.protonmail.android.mailcommon.domain.coroutines.AppScope
 import ch.protonmail.android.mailmessage.data.local.RustMailbox
+import ch.protonmail.android.mailmessage.domain.paging.RustDataSourceId
+import ch.protonmail.android.mailmessage.domain.paging.RustInvalidationTracker
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -36,6 +38,7 @@ import javax.inject.Inject
 
 class RustConversationQueryImpl @Inject constructor(
     private val rustMailbox: RustMailbox,
+    private val invalidationTracker: RustInvalidationTracker,
     @AppScope private val coroutineScope: CoroutineScope
 ) : RustConversationQuery {
 
@@ -47,6 +50,13 @@ class RustConversationQueryImpl @Inject constructor(
     private val conversationsUpdatedCallback = object : MailboxLiveQueryUpdatedCallback {
         override fun onUpdated() {
             conversationsMutableStatusFlow.value = conversationLiveQuery?.value() ?: emptyList()
+
+            invalidationTracker.notifyInvalidation(
+                setOf(
+                    RustDataSourceId.CONVERSATION,
+                    RustDataSourceId.LABELS
+                )
+            )
 
             Timber.d(
                 "rust-conversation-query: onUpdated, item count: " +
