@@ -62,6 +62,7 @@ dependencies {
 
     implementation(Dependencies.modulePresentationLibs)
 
+    implementation(project(":mail-message:domain"))
     implementation(project(":mail-pagination:domain"))
 
     testImplementation(Dependencies.testLibs)

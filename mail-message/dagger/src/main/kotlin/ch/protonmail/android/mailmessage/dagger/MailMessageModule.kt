@@ -43,6 +43,8 @@ import ch.protonmail.android.mailmessage.data.repository.RustMessageRepositoryIm
 import ch.protonmail.android.mailmessage.data.repository.SearchResultsRepositoryImpl
 import ch.protonmail.android.mailmessage.data.repository.UnreadMessageCountRepositoryImpl
 import ch.protonmail.android.mailmessage.data.usecase.ExcludeDraftMessagesAlreadyInOutbox
+import ch.protonmail.android.mailmessage.domain.paging.RustInvalidationTracker
+import ch.protonmail.android.mailmessage.domain.paging.RustInvalidationTrackerImpl
 import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
 import ch.protonmail.android.mailmessage.domain.repository.OutboxRepository
 import ch.protonmail.android.mailmessage.domain.repository.SearchResultsRepository
@@ -144,5 +146,10 @@ object MailMessageModule {
         @Binds
         @Singleton
         fun bindRustMessageDataSource(impl: RustMessageDataSourceImpl): RustMessageDataSource
+
+        @Binds
+        @Singleton
+        fun bindsRustInvalidationTracker(impl: RustInvalidationTrackerImpl): RustInvalidationTracker
+
     }
 }
