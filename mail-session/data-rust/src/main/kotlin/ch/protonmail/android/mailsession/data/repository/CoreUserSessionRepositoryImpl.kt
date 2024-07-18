@@ -44,6 +44,11 @@ class CoreUserSessionRepositoryImpl @Inject constructor(
         return flowOf(null)
     }
 
+    override suspend fun getUserSession(userId: UserId): MailUserSession? {
+        Timber.w("mail-session: calling stubbed observeCurrentSession method! This won't work.")
+        return null
+    }
+
     override fun observeCurrentUserId(): Flow<UserId?> = accountManager.getPrimaryUserId()
 
 }

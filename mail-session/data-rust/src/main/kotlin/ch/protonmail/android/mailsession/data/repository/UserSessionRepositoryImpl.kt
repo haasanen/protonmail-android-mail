@@ -19,6 +19,7 @@
 package ch.protonmail.android.mailsession.data.repository
 
 import ch.protonmail.android.mailsession.data.RepositoryFlowCoroutineScope
+import ch.protonmail.android.mailsession.data.mapper.toLocalUserId
 import ch.protonmail.android.mailsession.domain.repository.MailSessionRepository
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import kotlinx.coroutines.CoroutineScope
@@ -40,11 +41,21 @@ class UserSessionRepositoryImpl @Inject constructor(
     @RepositoryFlowCoroutineScope private val coroutineScope: CoroutineScope
 ) : UserSessionRepository {
 
+    private val activeUserSessions = mutableMapOf<UserId, MailUserSession?>()
     private val mutableUserSessionFlow = MutableStateFlow<MailUserSession?>(null)
 
+    @Deprecated("To be removed by following commit")
     override fun observeCurrentUserSession(): Flow<MailUserSession?> = mutableUserSessionFlow
         .asStateFlow()
         .onStart { initUserSessionFlow() }
+
+    override suspend fun getUserSession(userId: UserId): MailUserSession? {
+        if (sessionNotInitialised(userId)) {
+            initUserSession(userId)
+        }
+
+        return activeUserSessions[userId]
+    }
 
     override fun observeCurrentUserId(): Flow<UserId?> = flow {
         val mailSession = mailSessionRepository.getMailSession()
@@ -53,6 +64,46 @@ class UserSessionRepositoryImpl @Inject constructor(
         val userId = storedUserSession?.userId()?.let { UserId(it) }
         emit(userId)
     }
+
+    private suspend fun initUserSession(userId: UserId) {
+        val mailSession = mailSessionRepository.getMailSession()
+        val storedSessions = mailSession.storedSessions()
+        val storedUserSession = storedSessions.find { it.userId() == userId.toLocalUserId() }
+
+        if (storedUserSession == null) {
+            Timber.e("rust-session: no stored user session found for $userId in userSessionRepository")
+            activeUserSessions[userId] = null
+            return
+        }
+
+        val userSession = mailSession.userContextFromSession(
+            storedUserSession,
+            object : SessionCallback {
+                override fun onError(err: SessionError) {
+                    Timber.e("rust-session: error: ${err.name}")
+                    activeUserSessions[userId] = null
+                }
+
+                override fun onRefreshFailed(e: SessionError) {
+                    Timber.w("rust-session: refresh failed: ${e.name}")
+                    activeUserSessions[userId] = null
+                }
+
+                override fun onSessionDeleted() {
+                    Timber.d("rust-session: deleted for $userId")
+                    activeUserSessions[userId] = null
+                }
+
+                override fun onSessionRefresh() {
+                    Timber.d("rust-session: refreshed for $userId")
+                }
+
+            }
+        )
+        activeUserSessions[userId] = userSession
+    }
+
+    private fun sessionNotInitialised(userId: UserId) = activeUserSessions.containsKey(userId).not()
 
     private suspend fun initUserSessionFlow() {
         val mailSession = mailSessionRepository.getMailSession()

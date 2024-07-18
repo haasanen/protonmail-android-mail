@@ -16,16 +16,9 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailsession.domain.repository
+package ch.protonmail.android.mailsession.data.mapper
 
-import kotlinx.coroutines.flow.Flow
 import me.proton.core.domain.entity.UserId
-import uniffi.proton_mail_uniffi.MailUserSession
+import uniffi.proton_api_core.UserId as LocalUserId
 
-interface UserSessionRepository {
-
-    fun observeCurrentUserSession(): Flow<MailUserSession?>
-
-    fun observeCurrentUserId(): Flow<UserId?>
-    suspend fun getUserSession(userId: UserId): MailUserSession?
-}
+fun UserId.toLocalUserId(): LocalUserId = this.id
