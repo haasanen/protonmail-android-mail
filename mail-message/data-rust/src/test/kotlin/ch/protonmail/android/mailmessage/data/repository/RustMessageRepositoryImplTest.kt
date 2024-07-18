@@ -50,10 +50,11 @@ class RustMessageRepositoryImplTest {
 
     private val rustMessageDataSource: RustMessageDataSource = mockk()
 
+    private val userId = UserId("userId")
     // We are unable to mock FindLocalLabelId because of this issue: https://github.com/mockk/mockk/issues/544
     private val systemLabelId = SystemLabelId.Archive.labelId
     private val rustLabelDataSource: RustLabelDataSource = mockk {
-        every { observeSystemLabels() } returns flowOf(
+        every { observeSystemLabels(userId) } returns flowOf(
             listOf(
                 LocalLabelTestData.localSystemLabelWithCount.copy(
                     rid = systemLabelId.id
@@ -67,7 +68,6 @@ class RustMessageRepositoryImplTest {
     @Test
     fun `getLocalMessages should return list of messages`() = runTest {
         // Given
-        val userId = UserId("userId")
         val pageFilter = PageFilter(labelId = systemLabelId, isSystemFolder = true)
         val pageKey = PageKey(filter = pageFilter)
 
@@ -92,7 +92,6 @@ class RustMessageRepositoryImplTest {
     @Test
     fun `observe cached message should return the local message`() = runTest {
         // Given
-        val userId = UserId("userId")
         val messageId = MessageId(LocalMessageIdSample.AugWeatherForecast.toString())
         val expectedMessage = LocalMessageTestData.AugWeatherForecast.toMessage()
         coEvery {
@@ -114,7 +113,6 @@ class RustMessageRepositoryImplTest {
     @Test
     fun `observe cached message should return DataError when no message not found`() = runTest {
         // Given
-        val userId = UserId("userId")
         val messageId = MessageId(LocalMessageIdSample.AugWeatherForecast.toString())
 
         coEvery { rustMessageDataSource.getMessage(messageId.toLocalMessageId()) } returns null
@@ -134,7 +132,6 @@ class RustMessageRepositoryImplTest {
     @Test
     fun `getMessageWithBody should return message with body`() = runTest {
         // Given
-        val userId = UserId("userId")
         val messageId = MessageId(LocalMessageIdSample.AugWeatherForecast.toString())
         val localMessage = LocalMessageTestData.AugWeatherForecast
         val localMessageBody = mockk<uniffi.proton_mail_uniffi.DecryptedMessageBody> {

@@ -19,15 +19,20 @@
 package ch.protonmail.android.maillabel.data.local
 
 import app.cash.turbine.test
-import ch.protonmail.android.testdata.label.rust.LocalLabelTestData
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import ch.protonmail.android.test.utils.rule.LoggingTestRule
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
+import ch.protonmail.android.testdata.label.rust.LocalLabelTestData
+import ch.protonmail.android.testdata.user.UserIdTestData
+import io.mockk.Runs
+import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
 import io.mockk.slot
+import io.mockk.verify
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import org.junit.Test
@@ -56,10 +61,11 @@ class RustLabelDataSourceTest {
     fun `observe system labels fails and logs error when session is invalid`() =
         runTest(mainDispatcherRule.testDispatcher) {
             // Given
-            every { userSessionRepository.observeCurrentUserSession() } returns flowOf(null)
+            val userId = UserIdTestData.userId
+            coEvery { userSessionRepository.getUserSession(userId) } returns null
 
             // When
-            labelDataSource.observeSystemLabels().test {
+            labelDataSource.observeSystemLabels(userId).test {
                 // Then
                 loggingTestRule.assertErrorLogged("rust-label: trying to load labels with a null session")
                 expectNoEvents()
@@ -69,6 +75,7 @@ class RustLabelDataSourceTest {
     @Test
     fun `observe system labels emits items when returned by the rust library`() = runTest {
         // Given
+        val userId = UserIdTestData.userId
         val expected = listOf(LocalLabelTestData.localSystemLabelWithCount)
         val systemLabelsCallbackSlot = slot<MailboxLiveQueryUpdatedCallback>()
         val userSessionMock = mockk<MailUserSession> {
@@ -77,9 +84,9 @@ class RustLabelDataSourceTest {
             }
             every { this@mockk.newSystemLabelsObservedQuery(capture(systemLabelsCallbackSlot)) } returns liveQueryMock
         }
-        every { userSessionRepository.observeCurrentUserSession() } returns flowOf(userSessionMock)
+        coEvery { userSessionRepository.getUserSession(userId) } returns userSessionMock
 
-        labelDataSource.observeSystemLabels().test {
+        labelDataSource.observeSystemLabels(userId).test {
             // When
             systemLabelsCallbackSlot.captured.onUpdated()
 
@@ -89,13 +96,45 @@ class RustLabelDataSourceTest {
     }
 
     @Test
+    fun `re initializes system labels query when userId changes`() = runTest {
+        // Given
+        val firstUserId = UserIdTestData.userId
+        val secondUserId = UserIdTestData.userId1
+        val expected = listOf(LocalLabelTestData.localSystemLabelWithCount)
+        val firstLiveQueryMock = mockk<MailLabelsLiveQuery> {
+            every { value() } returns expected
+            every { disconnect() } just Runs
+        }
+        val firstUserSessionMock = mockk<MailUserSession> {
+            every { this@mockk.newSystemLabelsObservedQuery(any()) } returns firstLiveQueryMock
+        }
+        val secondUserSessionMock = mockk<MailUserSession> {
+            val liveQueryMock = mockk<MailLabelsLiveQuery> {
+                every { value() } returns expected
+            }
+            every { this@mockk.newSystemLabelsObservedQuery(any()) } returns liveQueryMock
+        }
+        coEvery { userSessionRepository.getUserSession(firstUserId) } returns firstUserSessionMock
+        coEvery { userSessionRepository.getUserSession(secondUserId) } returns secondUserSessionMock
+
+        labelDataSource.observeSystemLabels(firstUserId)
+        // When
+        labelDataSource.observeSystemLabels(secondUserId)
+        // Then
+        verify { firstLiveQueryMock.disconnect() }
+        coVerify { userSessionRepository.getUserSession(firstUserId) }
+        coVerify { userSessionRepository.getUserSession(secondUserId) }
+    }
+
+    @Test
     fun `observe message custom labels fails and logs error when session is invalid`() =
         runTest(mainDispatcherRule.testDispatcher) {
             // Given
-            every { userSessionRepository.observeCurrentUserSession() } returns flowOf(null)
+            val userId = UserIdTestData.userId
+            coEvery { userSessionRepository.getUserSession(userId) } returns null
 
             // When
-            labelDataSource.observeMessageLabels().test {
+            labelDataSource.observeMessageLabels(userId).test {
                 // Then
                 loggingTestRule.assertErrorLogged("rust-label: trying to load labels with a null session")
                 expectNoEvents()
@@ -105,6 +144,7 @@ class RustLabelDataSourceTest {
     @Test
     fun `observe message custom labels emits items when returned by the rust library`() = runTest {
         // Given
+        val userId = UserIdTestData.userId
         val expected = listOf(LocalLabelTestData.localMessageLabelWithCount)
         val messageLabelsCallbackSlot = slot<MailboxLiveQueryUpdatedCallback>()
         val userSessionMock = mockk<MailUserSession> {
@@ -113,9 +153,9 @@ class RustLabelDataSourceTest {
             }
             every { this@mockk.newLabelLabelsObservedQuery(capture(messageLabelsCallbackSlot)) } returns liveQueryMock
         }
-        every { userSessionRepository.observeCurrentUserSession() } returns flowOf(userSessionMock)
+        coEvery { userSessionRepository.getUserSession(userId) } returns userSessionMock
 
-        labelDataSource.observeMessageLabels().test {
+        labelDataSource.observeMessageLabels(userId).test {
             // When
             messageLabelsCallbackSlot.captured.onUpdated()
 
@@ -125,13 +165,45 @@ class RustLabelDataSourceTest {
     }
 
     @Test
+    fun `re initializes message custom labels query when userId changes`() = runTest {
+        // Given
+        val firstUserId = UserIdTestData.userId
+        val secondUserId = UserIdTestData.userId1
+        val expected = listOf(LocalLabelTestData.localMessageLabelWithCount)
+        val firstLiveQueryMock = mockk<MailLabelsLiveQuery> {
+            every { value() } returns expected
+            every { disconnect() } just Runs
+        }
+        val firstUserSessionMock = mockk<MailUserSession> {
+            every { this@mockk.newLabelLabelsObservedQuery(any()) } returns firstLiveQueryMock
+        }
+        val secondUserSessionMock = mockk<MailUserSession> {
+            val liveQueryMock = mockk<MailLabelsLiveQuery> {
+                every { value() } returns expected
+            }
+            every { this@mockk.newLabelLabelsObservedQuery(any()) } returns liveQueryMock
+        }
+        coEvery { userSessionRepository.getUserSession(firstUserId) } returns firstUserSessionMock
+        coEvery { userSessionRepository.getUserSession(secondUserId) } returns secondUserSessionMock
+
+        labelDataSource.observeMessageLabels(firstUserId)
+        // When
+        labelDataSource.observeMessageLabels(secondUserId)
+        // Then
+        verify { firstLiveQueryMock.disconnect() }
+        coVerify { userSessionRepository.getUserSession(firstUserId) }
+        coVerify { userSessionRepository.getUserSession(secondUserId) }
+    }
+
+    @Test
     fun `observe message custom folders fails and logs error when session is invalid`() =
         runTest(mainDispatcherRule.testDispatcher) {
             // Given
-            every { userSessionRepository.observeCurrentUserSession() } returns flowOf(null)
+            val userId = UserIdTestData.userId
+            coEvery { userSessionRepository.getUserSession(userId) } returns null
 
             // When
-            labelDataSource.observeMessageFolders().test {
+            labelDataSource.observeMessageFolders(userId).test {
                 // Then
                 loggingTestRule.assertErrorLogged("rust-label: trying to load labels with a null session")
                 expectNoEvents()
@@ -141,6 +213,7 @@ class RustLabelDataSourceTest {
     @Test
     fun `observe message custom folders emits items when returned by the rust library`() = runTest {
         // Given
+        val userId = UserIdTestData.userId
         val expected = listOf(LocalLabelTestData.localMessageFolderWithCount)
         val messageFoldersCallbackSlot = slot<MailboxLiveQueryUpdatedCallback>()
         val userSessionMock = mockk<MailUserSession> {
@@ -149,14 +222,45 @@ class RustLabelDataSourceTest {
             }
             every { this@mockk.newFolderLabelsObservedQuery(capture(messageFoldersCallbackSlot)) } returns liveQueryMock
         }
-        every { userSessionRepository.observeCurrentUserSession() } returns flowOf(userSessionMock)
+        coEvery { userSessionRepository.getUserSession(userId) } returns userSessionMock
 
-        labelDataSource.observeMessageFolders().test {
+        labelDataSource.observeMessageFolders(userId).test {
             // When
             messageFoldersCallbackSlot.captured.onUpdated()
 
             // Then
             assertEquals(expected, awaitItem())
         }
+    }
+
+    @Test
+    fun `re initializes message custom folders query when userId changes`() = runTest {
+        // Given
+        val firstUserId = UserIdTestData.userId
+        val secondUserId = UserIdTestData.userId1
+        val expected = listOf(LocalLabelTestData.localMessageFolderWithCount)
+        val firstLiveQueryMock = mockk<MailLabelsLiveQuery> {
+            every { value() } returns expected
+            every { disconnect() } just Runs
+        }
+        val firstUserSessionMock = mockk<MailUserSession> {
+            every { this@mockk.newFolderLabelsObservedQuery(any()) } returns firstLiveQueryMock
+        }
+        val secondUserSessionMock = mockk<MailUserSession> {
+            val liveQueryMock = mockk<MailLabelsLiveQuery> {
+                every { value() } returns expected
+            }
+            every { this@mockk.newFolderLabelsObservedQuery(any()) } returns liveQueryMock
+        }
+        coEvery { userSessionRepository.getUserSession(firstUserId) } returns firstUserSessionMock
+        coEvery { userSessionRepository.getUserSession(secondUserId) } returns secondUserSessionMock
+
+        labelDataSource.observeMessageFolders(firstUserId)
+        // When
+        labelDataSource.observeMessageFolders(secondUserId)
+        // Then
+        verify { firstLiveQueryMock.disconnect() }
+        coVerify { userSessionRepository.getUserSession(firstUserId) }
+        coVerify { userSessionRepository.getUserSession(secondUserId) }
     }
 }

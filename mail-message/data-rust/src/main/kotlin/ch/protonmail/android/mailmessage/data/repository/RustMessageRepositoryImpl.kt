@@ -53,7 +53,7 @@ class RustMessageRepositoryImpl @Inject constructor(
 
     override suspend fun getLocalMessages(userId: UserId, pageKey: PageKey): List<Message> {
         val rustLocalLabelId: LocalLabelId? =
-            if (pageKey.filter.isSystemFolder) findLocalLabelId(pageKey.filter.labelId)
+            if (pageKey.filter.isSystemFolder) findLocalLabelId(userId, pageKey.filter.labelId)
             else pageKey.filter.labelId.toLocalLabelId()
 
         return rustLocalLabelId?.let { labelId ->

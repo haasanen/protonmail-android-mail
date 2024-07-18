@@ -22,12 +22,12 @@ import app.cash.turbine.test
 import ch.protonmail.android.maillabel.data.repository.RustLabelRepository
 import ch.protonmail.android.testdata.label.LabelTestData
 import ch.protonmail.android.testdata.label.rust.LocalLabelTestData
+import ch.protonmail.android.testdata.user.UserIdTestData
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import me.proton.core.domain.arch.DataResult
-import me.proton.core.domain.entity.UserId
 import me.proton.core.label.domain.entity.Label
 import me.proton.core.label.domain.entity.LabelType
 import kotlin.test.Test
@@ -42,13 +42,14 @@ class RustLabelRepositoryTest {
     @Test
     fun `observe system labels from rust data source`() = runTest {
         // Given
+        val userId = UserIdTestData.userId
         val localLabelWithCount = LocalLabelTestData.localSystemLabelWithCount
         val expectedLabel = LabelTestData.systemLabel
 
-        every { labelDataSource.observeSystemLabels() } returns flowOf(listOf(localLabelWithCount))
+        every { labelDataSource.observeSystemLabels(userId) } returns flowOf(listOf(localLabelWithCount))
 
         // When
-        labelRepository.observeLabels(UserId("anyuser"), LabelType.SystemFolder).test {
+        labelRepository.observeLabels(userId, LabelType.SystemFolder).test {
             // Then
             assertEquals(listOf(expectedLabel), resultOrNull(awaitItem()))
             awaitComplete()
@@ -58,13 +59,14 @@ class RustLabelRepositoryTest {
     @Test
     fun `observe message labels from rust data source`() = runTest {
         // Given
+        val userId = UserIdTestData.userId
         val localLabelWithCount = LocalLabelTestData.localMessageLabelWithCount
         val expectedLabel = LabelTestData.messageLabel
 
-        every { labelDataSource.observeMessageLabels() } returns flowOf(listOf(localLabelWithCount))
+        every { labelDataSource.observeMessageLabels(userId) } returns flowOf(listOf(localLabelWithCount))
 
         // When
-        labelRepository.observeLabels(UserId("anyuser"), LabelType.MessageLabel).test {
+        labelRepository.observeLabels(userId, LabelType.MessageLabel).test {
             // Then
             assertEquals(listOf(expectedLabel), resultOrNull(awaitItem()))
             awaitComplete()
@@ -74,13 +76,14 @@ class RustLabelRepositoryTest {
     @Test
     fun `observe message folder from rust data source`() = runTest {
         // Given
+        val userId = UserIdTestData.userId
         val localLabelWithCount = LocalLabelTestData.localMessageFolderWithCount
         val expectedLabel = LabelTestData.messageFolder
 
-        every { labelDataSource.observeMessageFolders() } returns flowOf(listOf(localLabelWithCount))
+        every { labelDataSource.observeMessageFolders(userId) } returns flowOf(listOf(localLabelWithCount))
 
         // When
-        labelRepository.observeLabels(UserId("anyuser"), LabelType.MessageFolder).test {
+        labelRepository.observeLabels(userId, LabelType.MessageFolder).test {
             // Then
             assertEquals(listOf(expectedLabel), resultOrNull(awaitItem()))
             awaitComplete()

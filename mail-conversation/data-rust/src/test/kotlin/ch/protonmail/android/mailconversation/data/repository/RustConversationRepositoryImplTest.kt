@@ -45,10 +45,11 @@ class RustConversationRepositoryImplTest {
 
     private val rustConversationDataSource: RustConversationDataSource = mockk()
 
+    private val userId = UserId("test_user")
     // We are unable to mock FindLocalLabelId because of this issue: https://github.com/mockk/mockk/issues/544
     private val systemLabelId = SystemLabelId.Archive.labelId
     private val rustLabelDataSource: RustLabelDataSource = mockk {
-        every { observeSystemLabels() } returns flowOf(
+        every { observeSystemLabels(userId) } returns flowOf(
             listOf(
                 LocalLabelTestData.localSystemLabelWithCount.copy(
                     rid = systemLabelId.id
@@ -64,7 +65,6 @@ class RustConversationRepositoryImplTest {
     @Test
     fun `getLocalConversations should return conversations`() = runTest {
         // Given
-        val userId = UserId("test_user")
         val pageFilter = PageFilter(labelId = systemLabelId, isSystemFolder = true)
         val pageKey = PageKey(filter = pageFilter)
         val localConversations = listOf(
@@ -84,7 +84,6 @@ class RustConversationRepositoryImplTest {
     @Test
     fun `observeConversation should return the conversation for the given id`() = runTest {
         // Given
-        val userId = UserId("test_user")
         val conversationId = ConversationId(LocalConversationIdSample.AugConversation.toString())
         val localConversation = LocalConversationTestData.AugConversation
         val expected = localConversation.toConversation()
@@ -106,7 +105,6 @@ class RustConversationRepositoryImplTest {
     @Test
     fun `observeConversation should return error when rust provides no conversation `() = runTest {
         // Given
-        val userId = UserId("test_user")
         val conversationId = ConversationId(LocalConversationIdSample.AugConversation.toString())
 
         coEvery { rustConversationDataSource.getConversation(any()) } returns null
@@ -127,7 +125,6 @@ class RustConversationRepositoryImplTest {
     @Test
     fun `observing cached conversations should return conversatons`() = runTest {
         // Given
-        val userId = UserId("test_user")
         val conversationIds = listOf(ConversationId(LocalConversationIdSample.AugConversation.toString()))
         val localConversations = listOf(
             LocalConversationTestData.AugConversation, LocalConversationTestData.SepConversation

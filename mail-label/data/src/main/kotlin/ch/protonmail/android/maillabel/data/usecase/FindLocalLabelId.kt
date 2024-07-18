@@ -21,6 +21,7 @@ package ch.protonmail.android.maillabel.data.usecase
 import ch.protonmail.android.maillabel.data.local.LabelDataSource
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
+import me.proton.core.domain.entity.UserId
 import me.proton.core.label.domain.entity.LabelId
 import uniffi.proton_mail_common.LocalLabelId
 import javax.inject.Inject
@@ -28,8 +29,8 @@ import javax.inject.Inject
 class FindLocalLabelId @Inject constructor(
     private val labelDataSource: LabelDataSource
 ) {
-    suspend operator fun invoke(systemLabelId: LabelId): LocalLabelId? {
-        labelDataSource.observeSystemLabels().filter { it.isNotEmpty() }.first().let { labels ->
+    suspend operator fun invoke(userId: UserId, systemLabelId: LabelId): LocalLabelId? {
+        labelDataSource.observeSystemLabels(userId).filter { it.isNotEmpty() }.first().let { labels ->
             return labels.find { it.rid == systemLabelId.id }?.id
 
         }

@@ -45,15 +45,15 @@ class RustLabelRepository @Inject constructor(
         refresh: Boolean
     ): Flow<DataResult<List<Label>>> {
         return when (type) {
-            LabelType.SystemFolder -> labelDataSource.observeSystemLabels().map { localLabels ->
+            LabelType.SystemFolder -> labelDataSource.observeSystemLabels(userId).map { localLabels ->
                 localLabels.map { it.toLabel() }
             }.convertToDataResultFlow()
 
-            LabelType.MessageLabel -> labelDataSource.observeMessageLabels().map { localLabels ->
+            LabelType.MessageLabel -> labelDataSource.observeMessageLabels(userId).map { localLabels ->
                 localLabels.map { it.toLabel() }
             }.convertToDataResultFlow()
 
-            LabelType.MessageFolder -> labelDataSource.observeMessageFolders().map { localLabels ->
+            LabelType.MessageFolder -> labelDataSource.observeMessageFolders(userId).map { localLabels ->
                 localLabels.map { it.toLabel() }
             }.convertToDataResultFlow()
 

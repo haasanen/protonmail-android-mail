@@ -52,7 +52,7 @@ class RustConversationRepositoryImpl @Inject constructor(
 
     override suspend fun getLocalConversations(userId: UserId, pageKey: PageKey): List<ConversationWithContext> {
         val rustLocalLabelId =
-            if (pageKey.filter.isSystemFolder) findLocalLabelId(pageKey.filter.labelId)
+            if (pageKey.filter.isSystemFolder) findLocalLabelId(userId, pageKey.filter.labelId)
             else pageKey.filter.labelId.toLocalLabelId()
 
         Timber.d("rust-conversation: getConversations, pageKey: $pageKey rustLocalLabelId: $rustLocalLabelId")
