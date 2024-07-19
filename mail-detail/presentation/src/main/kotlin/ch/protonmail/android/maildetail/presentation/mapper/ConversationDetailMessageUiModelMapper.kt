@@ -25,7 +25,6 @@ import ch.protonmail.android.mailcommon.presentation.mapper.ExpirationTimeMapper
 import ch.protonmail.android.mailcommon.presentation.usecase.FormatShortTime
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMessageUiModel
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
-import ch.protonmail.android.maillabel.domain.model.isReservedSystemLabelId
 import ch.protonmail.android.maillabel.presentation.model.LabelUiModel
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.model.MessageWithLabels
@@ -167,7 +166,7 @@ class ConversationDetailMessageUiModelMapper @Inject constructor(
     }
 
     private fun toLabelUiModels(labels: List<Label>): ImmutableList<LabelUiModel> =
-        labels.filter { it.type == LabelType.MessageLabel && !it.labelId.isReservedSystemLabelId() }.map { label ->
+        labels.filter { it.type == LabelType.MessageLabel }.map { label ->
             LabelUiModel(
                 name = label.name,
                 color = colorMapper.toColor(label.color).getOrElse { Color.Unspecified },

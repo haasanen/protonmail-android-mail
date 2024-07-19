@@ -21,11 +21,11 @@ package ch.protonmail.android.maillabel.domain.usecase
 import arrow.core.Either
 import ch.protonmail.android.mailcommon.domain.mapper.mapToEither
 import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.maillabel.domain.repository.LabelRepository
 import kotlinx.coroutines.flow.Flow
 import me.proton.core.domain.entity.UserId
 import me.proton.core.label.domain.entity.Label
 import me.proton.core.label.domain.entity.LabelType
-import ch.protonmail.android.maillabel.domain.repository.LabelRepository
 import javax.inject.Inject
 
 class ObserveLabels @Inject constructor(

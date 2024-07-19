@@ -21,7 +21,6 @@ package ch.protonmail.android.maillabel.domain.usecase
 import ch.protonmail.android.mailcommon.domain.coroutines.DefaultDispatcher
 import ch.protonmail.android.maillabel.domain.model.MailLabels
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
-import ch.protonmail.android.maillabel.domain.model.isReservedSystemLabelId
 import ch.protonmail.android.maillabel.domain.model.toDynamicSystemMailLabel
 import ch.protonmail.android.maillabel.domain.model.toMailLabelCustom
 import ch.protonmail.android.maillabel.domain.model.toMailLabelSystem
@@ -32,11 +31,7 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
-import me.proton.core.domain.arch.mapSuccessValueOrNull
 import me.proton.core.domain.entity.UserId
-import me.proton.core.label.domain.entity.LabelType
-import me.proton.core.label.domain.entity.LabelType.MessageFolder
-import me.proton.core.label.domain.entity.LabelType.MessageLabel
 import javax.inject.Inject
 
 class ObserveMailLabels @Inject constructor(
@@ -48,8 +43,8 @@ class ObserveMailLabels @Inject constructor(
     operator fun invoke(userId: UserId) = combine(
         observeSystemLabelIds().map { it.toMailLabelSystem() },
         observeDynamicSystemLabels(userId).map { it.toDynamicSystemMailLabel() },
-        observeCustomLabels(userId, MessageLabel).map { it.toMailLabelCustom() },
-        observeCustomLabels(userId, MessageFolder).map { it.toMailLabelCustom() }
+        observeCustomLabels(userId).map { it.toMailLabelCustom() },
+        observeCustomFolders(userId).map { it.toMailLabelCustom() }
     ) { defaults, dynamicSystemLables, labels, folders ->
         MailLabels(
             systemLabels = defaults,
@@ -64,11 +59,17 @@ class ObserveMailLabels @Inject constructor(
 
     private fun observeSystemLabelIds() = flowOf(SystemLabelId.displayedList)
 
-    private fun observeCustomLabels(userId: UserId, type: LabelType) = labelRepository.observeLabels(userId, type)
-        .mapSuccessValueOrNull()
+    private fun observeCustomFolders(userId: UserId) = labelRepository.observeCustomFolders(userId)
         .mapLatest { list ->
-            list.orEmpty()
-                .filter { !it.labelId.isReservedSystemLabelId() }
+            list
+                .sortedBy { it.order }
+                .map { it.copy(isExpanded = true) } // Temporary fix until folder hierarchy is supported
+        }
+        .flowOn(dispatcher)
+
+    private fun observeCustomLabels(userId: UserId) = labelRepository.observeCustomLabels(userId)
+        .mapLatest { list ->
+            list
                 .sortedBy { it.order }
                 .map { it.copy(isExpanded = true) } // Temporary fix until folder hierarchy is supported
         }

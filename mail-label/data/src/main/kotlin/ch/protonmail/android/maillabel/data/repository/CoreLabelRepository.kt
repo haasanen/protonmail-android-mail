@@ -38,6 +38,12 @@ class CoreLabelRepository @Inject constructor(
     private val labelRepository: CoreLibsLabelRepository
 ) : LabelRepository {
 
+    @Deprecated(
+        "Deprecated to ease the introduction of dynamic system folders",
+        replaceWith = ReplaceWith(
+            "One of LabelRepository.observeCustomLabels || .observeCustomFolders || observeSystemFolders"
+        )
+    )
     override fun observeLabels(
         userId: UserId,
         type: LabelType,

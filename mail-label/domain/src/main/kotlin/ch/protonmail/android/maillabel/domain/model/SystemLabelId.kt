@@ -127,7 +127,4 @@ fun SystemLabelId.toMailLabelSystem(): MailLabel.System = when (this) {
 }
 
 @Deprecated("Replaced by dynamic system labelIds. Will be removed")
-fun LabelId.isReservedSystemLabelId() = id in SystemLabelId.entries.map { it.labelId.id }
-
-@Deprecated("Replaced by dynamic system labelIds. Will be removed")
 fun List<LabelId>.filterUnmodifiableLabels(): List<LabelId> = this - unmodifiableByUserList.map { it.labelId }.toSet()

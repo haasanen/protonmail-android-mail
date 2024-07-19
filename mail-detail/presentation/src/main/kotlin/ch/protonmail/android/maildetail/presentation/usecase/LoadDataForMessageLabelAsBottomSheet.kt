@@ -20,7 +20,6 @@ package ch.protonmail.android.maildetail.presentation.usecase
 
 import arrow.core.getOrElse
 import ch.protonmail.android.maildetail.domain.usecase.ObserveMessageWithLabels
-import ch.protonmail.android.maillabel.domain.model.isReservedSystemLabelId
 import ch.protonmail.android.maillabel.domain.usecase.ObserveCustomMailLabels
 import ch.protonmail.android.maillabel.presentation.toCustomUiModel
 import ch.protonmail.android.mailmessage.domain.model.MessageId
@@ -55,7 +54,7 @@ class LoadDataForMessageLabelAsBottomSheet @Inject constructor(
             ifLeft = { emptyList() },
             ifRight = { messageWithLabels ->
                 messageWithLabels.labels
-                    .filter { it.type == LabelType.MessageLabel && !it.labelId.isReservedSystemLabelId() }
+                    .filter { it.type == LabelType.MessageLabel }
                     .map { it.labelId }
             }
         )

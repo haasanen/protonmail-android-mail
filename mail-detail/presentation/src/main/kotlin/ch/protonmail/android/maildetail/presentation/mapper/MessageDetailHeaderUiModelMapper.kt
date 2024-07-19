@@ -30,7 +30,6 @@ import ch.protonmail.android.maildetail.presentation.R
 import ch.protonmail.android.maildetail.presentation.model.MessageDetailHeaderUiModel
 import ch.protonmail.android.maildetail.presentation.model.MessageIdUiModel
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
-import ch.protonmail.android.maillabel.domain.model.isReservedSystemLabelId
 import ch.protonmail.android.maillabel.presentation.model.LabelUiModel
 import ch.protonmail.android.mailmessage.domain.model.Message
 import ch.protonmail.android.mailmessage.domain.model.MessageId
@@ -112,7 +111,7 @@ class MessageDetailHeaderUiModelMapper @Inject constructor(
     }
 
     private fun toLabelUiModels(labels: List<Label>): ImmutableList<LabelUiModel> =
-        labels.filter { it.type == LabelType.MessageLabel && !it.labelId.isReservedSystemLabelId() }.map { label ->
+        labels.filter { it.type == LabelType.MessageLabel }.map { label ->
             LabelUiModel(
                 name = label.name,
                 color = colorMapper.toColor(label.color).getOrElse { Color.Unspecified },
