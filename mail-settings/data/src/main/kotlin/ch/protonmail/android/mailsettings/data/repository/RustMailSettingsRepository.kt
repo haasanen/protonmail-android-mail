@@ -46,7 +46,7 @@ class RustMailSettingsRepository(
 ) : MailSettingsRepository {
 
     override fun getMailSettingsFlow(userId: UserId, refresh: Boolean) =
-        mailSettingsDataSource.observeMailSettings().map { localSettings ->
+        mailSettingsDataSource.observeMailSettings(userId).map { localSettings ->
             localSettings.toMailSettings()
         }.convertToDataResultFlow()
 

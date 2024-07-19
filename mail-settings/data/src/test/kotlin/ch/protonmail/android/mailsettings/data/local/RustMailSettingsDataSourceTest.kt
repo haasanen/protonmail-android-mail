@@ -6,11 +6,12 @@ import ch.protonmail.android.mailsettings.data.usecase.CreateRustUserMailSetting
 import ch.protonmail.android.test.utils.rule.LoggingTestRule
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
 import ch.protonmail.android.testdata.mailsettings.rust.LocalMailSettingsTestData
+import ch.protonmail.android.testdata.user.UserIdTestData
+import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.slot
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import org.junit.Test
@@ -41,10 +42,11 @@ class RustMailSettingsDataSourceTest {
     fun `observe mail settings fails and logs error when session is invalid`() =
         runTest(mainDispatcherRule.testDispatcher) {
             // Given
-            every { userSessionRepository.observeCurrentUserSession() } returns flowOf(null)
+            val userId = UserIdTestData.userId
+            coEvery { userSessionRepository.getUserSession(userId) } returns null
 
             // When
-            mailSettingsDataSource.observeMailSettings().test {
+            mailSettingsDataSource.observeMailSettings(userId).test {
                 // Then
                 loggingTestRule.assertErrorLogged("rust-settings: trying to load settings with a null session")
                 expectNoEvents()
@@ -54,17 +56,18 @@ class RustMailSettingsDataSourceTest {
     @Test
     fun `observe mail settings emits items when updated by the rust library`() = runTest {
         // Given
+        val userId = UserIdTestData.userId
         val expected = LocalMailSettingsTestData.mailSettings
         val expectedUpdated = LocalMailSettingsTestData.mailSettings.copy(displayName = "updated display name")
         val mailSettingsCallbackSlot = slot<MailSettingsUpdated>()
         val userSessionMock = mockk<MailUserSession>()
-        every { userSessionRepository.observeCurrentUserSession() } returns flowOf(userSessionMock)
+        coEvery { userSessionRepository.getUserSession(userId) } returns userSessionMock
         val liveQueryMock = mockk<MailUserSettings> {
             every { value() } returns expected
         }
         every { createRustMailSettings(userSessionMock, capture(mailSettingsCallbackSlot)) } returns liveQueryMock
 
-        mailSettingsDataSource.observeMailSettings().test {
+        mailSettingsDataSource.observeMailSettings(userId).test {
             // Given
             assertEquals(expected, awaitItem()) // Initial value
             every { liveQueryMock.value() } returns expectedUpdated
@@ -79,16 +82,17 @@ class RustMailSettingsDataSourceTest {
     @Test
     fun `observe mail settings emits initial value from the rust library`() = runTest {
         // Given
+        val userId = UserIdTestData.userId
         val expected = LocalMailSettingsTestData.mailSettings
         val mailSettingsCallbackSlot = slot<MailSettingsUpdated>()
         val userSessionMock = mockk<MailUserSession>()
-        every { userSessionRepository.observeCurrentUserSession() } returns flowOf(userSessionMock)
+        coEvery { userSessionRepository.getUserSession(userId) } returns userSessionMock
         val liveQueryMock = mockk<MailUserSettings> {
             every { value() } returns expected
         }
         every { createRustMailSettings(userSessionMock, capture(mailSettingsCallbackSlot)) } returns liveQueryMock
 
-        mailSettingsDataSource.observeMailSettings().test {
+        mailSettingsDataSource.observeMailSettings(userId).test {
 
             // Then
             assertEquals(expected, awaitItem())

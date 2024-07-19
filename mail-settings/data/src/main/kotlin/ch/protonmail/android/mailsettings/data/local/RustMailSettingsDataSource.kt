@@ -26,8 +26,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
+import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import uniffi.proton_api_mail.MailSettings
 import uniffi.proton_mail_uniffi.MailSettingsUpdated
@@ -45,21 +45,21 @@ class RustMailSettingsDataSource @Inject constructor(
         .asStateFlow()
         .filterNotNull()
 
-    private var mailSettingsLiveQuery: MailUserSettings? = null
+    private var mailSettingsLiveQuery: MailUserSettingsLiveQueryByUserId? = null
 
-    override fun observeMailSettings(): Flow<MailSettings> {
+    override fun observeMailSettings(userId: UserId): Flow<MailSettings> {
         if (isMailSettingsLiveQueryNotInitialised()) {
-            initMailSettingsLiveQuery()
+            initMailSettingsLiveQuery(userId)
         }
 
         return mailSettingsFlow
     }
 
-    private fun initMailSettingsLiveQuery() {
+    private fun initMailSettingsLiveQuery(userId: UserId) {
         coroutineScope.launch {
             Timber.v("rust-settings: initializing mail settings live query")
 
-            val session = userSessionRepository.observeCurrentUserSession().firstOrNull()
+            val session = userSessionRepository.getUserSession(userId)
             if (session == null) {
                 Timber.e("rust-settings: trying to load settings with a null session")
                 return@launch
@@ -67,15 +67,18 @@ class RustMailSettingsDataSource @Inject constructor(
 
             val settingsCallback = object : MailSettingsUpdated {
                 override fun onUpdated() {
-                    mutableMailSettingsFlow.value = mailSettingsLiveQuery?.value()
+                    mutableMailSettingsFlow.value = mailSettingsLiveQuery?.liveQuery?.value()
                     Timber.v("rust-settings: mail settings updated: ${mutableMailSettingsFlow.value}")
                 }
             }
 
             mailSettingsLiveQuery?.let { destroyMailSettingsLiveQuery() }
-            mailSettingsLiveQuery = createRustMailSettings(session, settingsCallback)
+            mailSettingsLiveQuery = MailUserSettingsLiveQueryByUserId(
+                userId,
+                createRustMailSettings(session, settingsCallback)
+            )
 
-            mutableMailSettingsFlow.value = mailSettingsLiveQuery?.value()
+            mutableMailSettingsFlow.value = mailSettingsLiveQuery?.liveQuery?.value()
 
             Timber.d("rust-settings: created mail settings live query")
         }
@@ -85,7 +88,12 @@ class RustMailSettingsDataSource @Inject constructor(
 
     private fun destroyMailSettingsLiveQuery() {
         Timber.v("rust-settings: destroyMailSettingsLiveQuery")
-        mailSettingsLiveQuery?.destroy()
+        mailSettingsLiveQuery?.liveQuery?.destroy()
         mailSettingsLiveQuery = null
     }
+
+    private data class MailUserSettingsLiveQueryByUserId(
+        val userId: UserId,
+        val liveQuery: MailUserSettings
+    )
 }
