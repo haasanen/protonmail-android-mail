@@ -16,11 +16,15 @@
  */
 
 plugins {
-    alias(commonLibs.plugins.android.application) apply false
-    alias(libs.plugins.jetbrains.kotlin.android) apply false
-    alias(libs.plugins.paparazzi) apply false
-    alias(libs.plugins.core.coverage)
-    alias(libs.plugins.core.detekt)
-    alias(libs.plugins.core.tests)
-    id("me.proton.core.root") // local plugin
+    coreAndroidComposeUiLibrary
+}
+
+android {
+    namespace = "me.proton.core.auth.presentation"
+}
+
+dependencies {
+    implementation(libs.constraintlayout.compose)
+    implementation(libs.proton.core.legacy.presentation.asProvider())
+    implementation(libs.proton.core.legacy.presentation.compose)
 }

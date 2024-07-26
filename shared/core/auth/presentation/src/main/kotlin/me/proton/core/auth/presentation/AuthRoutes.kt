@@ -15,37 +15,26 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-pluginManagement {
-    includeBuild("../plugins")
-    repositories {
-        google {
-            content {
-                includeGroupByRegex("com\\.android.*")
-                includeGroupByRegex("com\\.google.*")
-                includeGroupByRegex("androidx.*")
-            }
-        }
-        mavenCentral()
-        gradlePluginPortal()
+package me.proton.core.auth.presentation
+
+import androidx.navigation.NavGraphBuilder
+import androidx.navigation.compose.composable
+import me.proton.core.auth.presentation.ui.WelcomeScreen
+import me.proton.core.auth.presentation.ui.WelcomeScreenMail
+
+internal fun NavGraphBuilder.addWelcomeScreenMail(
+    actions: WelcomeScreen.Actions
+) {
+    composable(
+        route = Route.WelcomeMail.ROUTE
+    ) {
+        WelcomeScreenMail(actions = actions)
     }
 }
 
-dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.PREFER_SETTINGS)
-    repositories {
-        google()
-        mavenCentral()
-    }
-    versionCatalogs {
-        create("commonLibs") {
-            from(files("../common.versions.toml"))
-        }
+internal object Route {
+    object WelcomeMail {
+        const val ROUTE = "welcome/mail"
+        fun get() = ROUTE
     }
 }
-
-rootProject.name = "Core"
-
-include(
-    ":auth:presentation",
-    ":coverage",
-)

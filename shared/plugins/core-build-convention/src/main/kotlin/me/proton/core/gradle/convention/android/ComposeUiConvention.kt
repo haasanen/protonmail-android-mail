@@ -26,6 +26,7 @@ import com.android.build.api.dsl.LibraryExtension
 import me.proton.core.gradle.convention.BuildConvention
 import org.gradle.api.Project
 import org.gradle.api.artifacts.VersionCatalog
+import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.findByType
 import kotlin.jvm.optionals.getOrNull
 
@@ -33,6 +34,17 @@ internal class ComposeUiConvention : BuildConvention<Unit> {
     override fun apply(target: Project, settings: Unit) {
         target.extensions.findByType<ApplicationExtension>()?.applyConvention(target.commonLibs)
         target.extensions.findByType<LibraryExtension>()?.applyConvention(target.commonLibs)
+        target.libs.findLibrary("compose-bom").getOrNull()?.let { lib ->
+            target.dependencies {
+                add("implementation", platform(lib))
+            }
+        }
+        target.libs.findLibrary("compose-ui-tooling").getOrNull()?.let { lib ->
+            target.dependencies.add("debugImplementation", lib)
+        }
+        target.libs.findLibrary("compose-ui-tooling-preview").getOrNull()?.let { lib ->
+            target.dependencies.add("implementation", lib)
+        }
         target.libs.findLibrary("proton-core-legacy-presentation-compose").getOrNull()?.let { lib ->
             target.dependencies.add("implementation", lib)
         }
