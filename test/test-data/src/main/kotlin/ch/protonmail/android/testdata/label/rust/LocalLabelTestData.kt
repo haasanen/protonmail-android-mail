@@ -69,4 +69,20 @@ object LocalLabelTestData {
         totalCount = 1.toULong(),
         unreadCount = 0.toULong()
     )
+
+    fun buildSystem(remoteId: String) = LocalLabelWithCount(
+        1000.toULong(),
+        rid = remoteId,
+        parentId = null,
+        name = "name",
+        "path",
+        "color",
+        LabelType.SYSTEM,
+        1.toUInt(),
+        false,
+        false,
+        false,
+        totalCount = 1.toULong(),
+        unreadCount = 1.toULong()
+    )
 }

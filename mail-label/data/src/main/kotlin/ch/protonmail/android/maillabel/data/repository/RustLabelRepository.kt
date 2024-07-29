@@ -74,17 +74,17 @@ class RustLabelRepository @Inject constructor(
     }
 
     override fun observeCustomLabels(userId: UserId): Flow<List<Label>> =
-        labelDataSource.observeMessageLabels().map { localLabels ->
+        labelDataSource.observeMessageLabels(userId).map { localLabels ->
             localLabels.map { it.toLabel() }
         }
 
     override fun observeCustomFolders(userId: UserId): Flow<List<Label>> =
-        labelDataSource.observeMessageFolders().map { localLabels ->
+        labelDataSource.observeMessageFolders(userId).map { localLabels ->
             localLabels.map { it.toLabel() }
         }
 
     override fun observeSystemLabels(userId: UserId): Flow<List<LabelWithSystemLabelId>> =
-        labelDataSource.observeSystemLabels().map { localLabels ->
+        labelDataSource.observeSystemLabels(userId).map { localLabels ->
             localLabels.map { it.toLabelWithSystemLabelId() }
         }
 

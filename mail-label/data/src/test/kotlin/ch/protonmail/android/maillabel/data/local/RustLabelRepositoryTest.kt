@@ -20,6 +20,7 @@ package ch.protonmail.android.maillabel.data.local
 
 import app.cash.turbine.test
 import ch.protonmail.android.maillabel.data.repository.RustLabelRepository
+import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.testdata.label.LabelTestData
 import ch.protonmail.android.testdata.label.rust.LocalLabelTestData
 import ch.protonmail.android.testdata.user.UserIdTestData
@@ -30,9 +31,13 @@ import kotlinx.coroutines.test.runTest
 import me.proton.core.domain.arch.DataResult
 import me.proton.core.label.domain.entity.Label
 import me.proton.core.label.domain.entity.LabelType
+import org.junit.experimental.runners.Enclosed
+import org.junit.runner.RunWith
+import org.junit.runners.Parameterized
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
+@RunWith(Enclosed::class)
 class RustLabelRepositoryTest {
 
     private val labelDataSource = mockk<LabelDataSource>()
@@ -90,10 +95,111 @@ class RustLabelRepositoryTest {
         }
     }
 
-
     private fun resultOrNull(dataResult: DataResult<List<Label>>): List<Label>? = when (dataResult) {
         is DataResult.Success -> dataResult.value
         else -> null
     }
+
+    @RunWith(Parameterized::class)
+    class SystemLabelTest(
+        @Suppress("unused") private val testName: String,
+        private val input: TestInput
+    ) {
+
+        private val labelDataSource = mockk<LabelDataSource>()
+
+        private val labelRepository = RustLabelRepository(labelDataSource)
+
+        @Test
+        fun `test label with system label id is mapped correctly`() = runTest {
+            // Given
+            val userId = UserIdTestData.userId
+            val localLabelWithCount = LocalLabelTestData.buildSystem(input.systemLabelRawId)
+            every { labelDataSource.observeSystemLabels(userId) } returns flowOf(listOf(localLabelWithCount))
+
+            // When
+            labelRepository.observeSystemLabels(userId).test {
+
+                // Then
+                assertEquals(input.expected, awaitItem().first().systemLabelId)
+                awaitComplete()
+            }
+        }
+
+        companion object {
+
+            val inputs = listOf(
+                TestInput(
+                    SystemLabelId.Inbox.labelId.id,
+                    SystemLabelId.Inbox
+                ),
+                TestInput(
+                    SystemLabelId.Archive.labelId.id,
+                    SystemLabelId.Archive
+                ),
+                TestInput(
+                    SystemLabelId.AllDrafts.labelId.id,
+                    SystemLabelId.AllDrafts
+                ),
+                TestInput(
+                    SystemLabelId.AllSent.labelId.id,
+                    SystemLabelId.AllSent
+                ),
+                TestInput(
+                    SystemLabelId.Trash.labelId.id,
+                    SystemLabelId.Trash
+                ),
+                TestInput(
+                    SystemLabelId.Spam.labelId.id,
+                    SystemLabelId.Spam
+                ),
+                TestInput(
+                    SystemLabelId.AllMail.labelId.id,
+                    SystemLabelId.AllMail
+                ),
+                TestInput(
+                    SystemLabelId.Sent.labelId.id,
+                    SystemLabelId.Sent
+                ),
+                TestInput(
+                    SystemLabelId.Drafts.labelId.id,
+                    SystemLabelId.Drafts
+                ),
+                TestInput(
+                    SystemLabelId.Outbox.labelId.id,
+                    SystemLabelId.Outbox
+                ),
+                TestInput(
+                    SystemLabelId.Starred.labelId.id,
+                    SystemLabelId.Starred
+                ),
+                TestInput(
+                    SystemLabelId.AllScheduled.labelId.id,
+                    SystemLabelId.AllScheduled
+                ),
+                TestInput(
+                    SystemLabelId.Snoozed.labelId.id,
+                    SystemLabelId.Snoozed
+                )
+            )
+
+            @JvmStatic
+            @Parameterized.Parameters(name = "{0}")
+            fun data() = inputs
+                .map { testInput ->
+                    val testName = """
+                        Raw system label Id: ${testInput.systemLabelRawId}
+                        Expected: ${testInput.expected}
+                    """.trimIndent()
+                    arrayOf(testName, testInput)
+                }
+        }
+
+        data class TestInput(
+            val systemLabelRawId: String,
+            val expected: SystemLabelId
+        )
+    }
+
 
 }
