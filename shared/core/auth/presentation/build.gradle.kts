@@ -27,4 +27,7 @@ dependencies {
     implementation(libs.constraintlayout.compose)
     implementation(libs.proton.core.legacy.presentation.asProvider())
     implementation(libs.proton.core.legacy.presentation.compose)
+
+    testImplementation(kotlin("test"))
+    testImplementation(libs.junit)
 }

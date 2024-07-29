@@ -244,7 +244,7 @@ public data object WelcomeScreen {
 @Preview(name = "Tablet", device = Devices.PIXEL_C)
 @Preview(name = "Horizontal", widthDp = 800, heightDp = 360)
 @Composable
-private fun WelcomeScreenMailPreview() {
+internal fun WelcomeScreenMailPreview() {
     ProtonTheme {
         WelcomeScreenMail(actions = WelcomeScreen.Actions.empty())
     }
