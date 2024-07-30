@@ -67,7 +67,8 @@ class CreateEmptyDraft @Inject constructor() {
                 SystemLabelId.Drafts.labelId,
                 SystemLabelId.AllDrafts.labelId,
                 SystemLabelId.AllMail.labelId
-            )
+            ),
+            isStarred = false
         ),
         messageBody = MessageBody(
             userId = userId,

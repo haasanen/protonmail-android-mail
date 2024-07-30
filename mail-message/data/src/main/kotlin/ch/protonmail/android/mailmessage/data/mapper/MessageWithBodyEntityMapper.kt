@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.mailmessage.data.mapper
 
+import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.mailmessage.data.local.entity.MailToEntity
 import ch.protonmail.android.mailmessage.data.local.entity.MessageBodyEntity
 import ch.protonmail.android.mailmessage.data.local.entity.MimeTypeEntity
@@ -60,7 +61,8 @@ class MessageWithBodyEntityMapper @Inject constructor() {
                         externalId = externalId,
                         numAttachments = numAttachments,
                         flags = flags,
-                        attachmentCount = attachmentCount.toDomainModel()
+                        attachmentCount = attachmentCount.toDomainModel(),
+                        isStarred = labelIds.any { it == SystemLabelId.Starred.labelId }
                     )
                 },
                 messageBody = with(messageBody) {

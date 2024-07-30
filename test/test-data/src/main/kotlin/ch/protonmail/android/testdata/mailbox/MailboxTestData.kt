@@ -25,6 +25,7 @@ import ch.protonmail.android.mailcommon.domain.sample.LabelSample
 import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
+import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.maillabel.presentation.model.LabelUiModel
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItem
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItemType
@@ -92,7 +93,8 @@ object MailboxTestData {
         numMessages = numMessages,
         hasNonCalendarAttachments = hasAttachments,
         expirationTime = expirationTime,
-        calendarAttachmentCount = calendarAttachmentCount
+        calendarAttachmentCount = calendarAttachmentCount,
+        isStarred = labelIds.contains(SystemLabelId.Starred.labelId)
     )
 
     private fun buildMessageMailboxItem(
@@ -123,7 +125,8 @@ object MailboxTestData {
         numMessages = 1,
         hasNonCalendarAttachments = false,
         expirationTime = 0,
-        calendarAttachmentCount = 0
+        calendarAttachmentCount = 0,
+        isStarred = false
     )
 
     private fun buildConversationMailboxItem(id: String) = MailboxItem(
@@ -146,7 +149,8 @@ object MailboxTestData {
         numMessages = 3,
         hasNonCalendarAttachments = false,
         expirationTime = 0,
-        calendarAttachmentCount = 0
+        calendarAttachmentCount = 0,
+        isStarred = false
     )
 
 }

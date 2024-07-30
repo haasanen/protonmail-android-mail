@@ -60,7 +60,8 @@ fun LocalMessageMetadata.toMessage(): Message {
         externalId = this.externalId,
         numAttachments = this.numAttachments.toInt(),
         flags = this.flags.toLong(),
-        attachmentCount = AttachmentCount(this.attachments?.size ?: 0)
+        attachmentCount = AttachmentCount(this.attachments?.size ?: 0),
+        isStarred = this.starred
     )
 }
 

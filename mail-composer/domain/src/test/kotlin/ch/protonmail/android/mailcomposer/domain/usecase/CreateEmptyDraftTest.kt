@@ -64,7 +64,8 @@ class CreateEmptyDraftTest {
                     SystemLabelId.Drafts.labelId,
                     SystemLabelId.AllDrafts.labelId,
                     SystemLabelId.AllMail.labelId
-                )
+                ),
+                isStarred = false
             ),
             messageBody = MessageBody(
                 userId = expectedUserId,

@@ -76,7 +76,7 @@ class MailboxItemUiModelMapper @Inject constructor(
             shouldShowRepliedAllIcon = shouldShowRepliedAllIcon(mailboxItem),
             shouldShowForwardedIcon = shouldShowForwardedIcon(mailboxItem),
             numMessages = mailboxItem.numMessages.takeIf { it >= 2 },
-            showStar = mailboxItem.labelIds.contains(SystemLabelId.Starred.labelId),
+            showStar = mailboxItem.isStarred,
             locations = getLocationIconsToDisplay(mailboxItem, folderColorSettings, isShowingSearchResults),
             shouldShowAttachmentIcon = mailboxItem.hasNonCalendarAttachments,
             shouldShowExpirationLabel = hasExpirationTime(mailboxItem),

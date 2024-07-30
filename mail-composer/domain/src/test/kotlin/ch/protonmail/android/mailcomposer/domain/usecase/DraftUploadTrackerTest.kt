@@ -222,7 +222,8 @@ class DraftUploadTrackerTest {
             externalId = null,
             numAttachments = 0,
             flags = 0,
-            attachmentCount = AttachmentCount(0)
+            attachmentCount = AttachmentCount(0),
+            isStarred = false
         )
     }
 

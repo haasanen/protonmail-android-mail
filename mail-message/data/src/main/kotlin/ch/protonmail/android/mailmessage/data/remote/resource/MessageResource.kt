@@ -19,6 +19,7 @@
 package ch.protonmail.android.mailmessage.data.remote.resource
 
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
+import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.mailmessage.domain.model.Message
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import kotlinx.serialization.SerialName
@@ -95,6 +96,7 @@ data class MessageResource(
         externalId = externalId,
         numAttachments = numAttachments,
         flags = flags,
-        attachmentCount = attachmentsInfo.toAttachmentsCount()
+        attachmentCount = attachmentsInfo.toAttachmentsCount(),
+        isStarred = labelIds.any { it == SystemLabelId.Starred.labelId.id }
     )
 }

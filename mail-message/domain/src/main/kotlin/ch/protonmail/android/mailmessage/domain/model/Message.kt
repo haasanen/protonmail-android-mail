@@ -54,6 +54,7 @@ data class Message(
     val isReplied: Boolean,
     val isRepliedAll: Boolean,
     val isForwarded: Boolean,
+    val isStarred: Boolean,
     val addressId: AddressId,
     val externalId: String?,
     val numAttachments: Int,

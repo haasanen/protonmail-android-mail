@@ -54,6 +54,7 @@ data class MailboxItem(
     val isReplied: Boolean,
     val isRepliedAll: Boolean,
     val isForwarded: Boolean,
+    val isStarred: Boolean,
     val numMessages: Int,
     val hasNonCalendarAttachments: Boolean,
     val expirationTime: Long,

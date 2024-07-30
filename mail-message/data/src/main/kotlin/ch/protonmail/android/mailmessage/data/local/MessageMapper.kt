@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.mailmessage.data.local
 
+import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.mailmessage.data.local.entity.MessageEntity
 import ch.protonmail.android.mailmessage.data.local.relation.MessageWithLabelIds
 import ch.protonmail.android.mailmessage.data.mapper.toDomainModel
@@ -46,7 +47,8 @@ fun MessageWithLabelIds.toMessage() = Message(
     externalId = message.externalId,
     numAttachments = message.numAttachments,
     flags = message.flags,
-    attachmentCount = message.attachmentCount.toDomainModel()
+    attachmentCount = message.attachmentCount.toDomainModel(),
+    isStarred = labelIds.any { it == SystemLabelId.Starred.labelId }
 )
 
 fun Message.toEntity() = MessageEntity(

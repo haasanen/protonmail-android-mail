@@ -266,7 +266,8 @@ object MessageSample {
         subject = subject,
         time = time,
         unread = unread,
-        userId = userId
+        userId = userId,
+        isStarred = false
     )
 
     fun Message.moveTo(labelId: LabelId): Message = copy(
