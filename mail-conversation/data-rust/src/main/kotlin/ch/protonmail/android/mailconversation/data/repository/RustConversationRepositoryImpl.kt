@@ -166,9 +166,13 @@ class RustConversationRepositoryImpl @Inject constructor(
         userId: UserId,
         conversationIds: List<ConversationId>,
         contextLabelId: LabelId
-    ): Either<DataError, List<Conversation>> = DataError.Local.Unknown.left()
+    ): Either<DataError, List<Conversation>> {
+        rustConversationDataSource.markUnread(userId, conversationIds.map { it.toLocalConversationId() })
 
-    // It will be implemented later on
+        return emptyList<Conversation>().right()
+    }
+
+    // This function is not used
     override suspend fun markRead(userId: UserId, conversationId: ConversationId): Either<DataError, Conversation> =
         DataError.Local.Unknown.left()
 
@@ -176,7 +180,11 @@ class RustConversationRepositoryImpl @Inject constructor(
     override suspend fun markRead(
         userId: UserId,
         conversationIds: List<ConversationId>
-    ): Either<DataError, List<Conversation>> = DataError.Local.Unknown.left()
+    ): Either<DataError, List<Conversation>> {
+        rustConversationDataSource.markRead(userId, conversationIds.map { it.toLocalConversationId() })
+
+        return emptyList<Conversation>().right()
+    }
 
     // It will be implemented later on
     override suspend fun isCachedConversationRead(

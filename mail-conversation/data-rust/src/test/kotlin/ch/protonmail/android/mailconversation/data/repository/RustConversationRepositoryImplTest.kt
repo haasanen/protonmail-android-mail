@@ -23,6 +23,7 @@ import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailconversation.data.local.RustConversationDataSource
 import ch.protonmail.android.mailconversation.data.mapper.toConversation
 import ch.protonmail.android.mailconversation.data.mapper.toConversationWithContext
+import ch.protonmail.android.mailconversation.data.mapper.toLocalConversationId
 import ch.protonmail.android.maillabel.data.local.RustLabelDataSource
 import ch.protonmail.android.maillabel.data.usecase.FindLocalLabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
@@ -31,9 +32,11 @@ import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.testdata.conversation.rust.LocalConversationIdSample
 import ch.protonmail.android.testdata.conversation.rust.LocalConversationTestData
 import ch.protonmail.android.testdata.label.rust.LocalLabelTestData
+import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
@@ -144,5 +147,33 @@ class RustConversationRepositoryImplTest {
             awaitComplete()
         }
 
+    }
+
+    @Test
+    fun `markRead should mark conversations as read`() = runTest {
+        // Given
+        val conversationIds = listOf(ConversationId(LocalConversationIdSample.AugConversation.toString()))
+        coEvery { rustConversationDataSource.markRead(userId, any()) } just Runs
+
+        // When
+        val result = rustConversationRepository.markRead(userId, conversationIds)
+
+        // Then
+        coVerify { rustConversationDataSource.markRead(userId, conversationIds.map { it.toLocalConversationId() }) }
+        assertEquals(emptyList(), result.getOrNull())
+    }
+
+    @Test
+    fun `markUnread should mark conversations as unread`() = runTest {
+        // Given
+        val conversationIds = listOf(ConversationId(LocalConversationIdSample.AugConversation.toString()))
+        coEvery { rustConversationDataSource.markUnread(userId, any()) } just Runs
+
+        // When
+        val result = rustConversationRepository.markUnread(userId, conversationIds, systemLabelId)
+
+        // Then
+        coVerify { rustConversationDataSource.markUnread(userId, conversationIds.map { it.toLocalConversationId() }) }
+        assertEquals(emptyList(), result.getOrNull())
     }
 }
