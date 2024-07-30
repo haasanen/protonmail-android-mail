@@ -28,5 +28,8 @@ interface RustMessageDataSource {
     suspend fun getMessage(userId: UserId, messageId: LocalMessageId): LocalMessageMetadata?
     suspend fun getMessageBody(userId: UserId, messageId: LocalMessageId): DecryptedMessageBody?
     suspend fun getMessages(userId: UserId, labelId: LocalLabelId): List<LocalMessageMetadata>
+    suspend fun markRead(userId: UserId, messages: List<LocalMessageId>)
+    suspend fun markUnread(userId: UserId, messages: List<LocalMessageId>)
+
     fun disconnect()
 }

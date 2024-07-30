@@ -69,6 +69,14 @@ class RustMessageDataSourceImpl @Inject constructor(
             .first()
     }
 
+    override suspend fun markRead(userId: UserId, messages: List<LocalMessageId>) {
+        throw UnsupportedOperationException("rust-message: markRead has not been implemented by Rust")
+    }
+
+    override suspend fun markUnread(userId: UserId, messages: List<LocalMessageId>) {
+        throw UnsupportedOperationException("rust-message: markUnread has not been implemented by Rust")
+    }
+
     override fun disconnect() {
         rustMessageQuery.disconnect()
     }

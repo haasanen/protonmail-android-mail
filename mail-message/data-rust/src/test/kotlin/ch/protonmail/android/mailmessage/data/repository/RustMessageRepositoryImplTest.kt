@@ -35,9 +35,11 @@ import ch.protonmail.android.testdata.label.rust.LocalLabelTestData
 import ch.protonmail.android.testdata.message.rust.LocalMessageIdSample
 import ch.protonmail.android.testdata.message.rust.LocalMessageTestData
 import ch.protonmail.android.testdata.user.UserIdTestData
+import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
@@ -157,4 +159,31 @@ class RustMessageRepositoryImplTest {
         coVerify { rustMessageDataSource.getMessageBody(userId, messageId.toLocalMessageId()) }
     }
 
+    @Test
+    fun `markRead should mark conversations as read`() = runTest {
+        // Given
+        val messageIds = listOf(MessageId(LocalMessageIdSample.AugWeatherForecast.toString()))
+        coEvery { rustMessageDataSource.markRead(userId, any()) } just Runs
+
+        // When
+        val result = repository.markRead(userId, messageIds)
+
+        // Then
+        coVerify { rustMessageDataSource.markRead(userId, messageIds.map { it.toLocalMessageId() }) }
+        assertEquals(emptyList(), result.getOrNull())
+    }
+
+    @Test
+    fun `markUnread should mark conversations as unread`() = runTest {
+        // Given
+        val messageIds = listOf(MessageId(LocalMessageIdSample.AugWeatherForecast.toString()))
+        coEvery { rustMessageDataSource.markUnread(userId, any()) } just Runs
+
+        // When
+        val result = repository.markUnread(userId, messageIds)
+
+        // Then
+        coVerify { rustMessageDataSource.markUnread(userId, messageIds.map { it.toLocalMessageId() }) }
+        assertEquals(emptyList(), result.getOrNull())
+    }
 }
