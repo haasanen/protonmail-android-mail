@@ -31,6 +31,7 @@ import ch.protonmail.android.mailconversation.domain.repository.ConversationRemo
 import ch.protonmail.android.mailconversation.domain.repository.ConversationRepository
 import ch.protonmail.android.maillabel.domain.extension.isSpam
 import ch.protonmail.android.maillabel.domain.extension.isTrash
+import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.maillabel.domain.model.filterUnmodifiableLabels
 import ch.protonmail.android.mailmessage.data.local.MessageLocalDataSource
 import ch.protonmail.android.mailmessage.data.usecase.ExcludeDraftMessagesAlreadyInOutbox
@@ -232,6 +233,16 @@ class ConversationRepositoryImpl @Inject constructor(
             conversationRemoteDataSource.markRead(userId, conversationIds)
         }
     }
+
+    override suspend fun star(
+        userId: UserId,
+        conversationIds: List<ConversationId>
+    ): Either<DataError, List<Conversation>> = addLabel(userId, conversationIds, SystemLabelId.Starred.labelId)
+
+    override suspend fun unStar(
+        userId: UserId,
+        conversationIds: List<ConversationId>
+    ): Either<DataError, List<Conversation>> = removeLabel(userId, conversationIds, SystemLabelId.Starred.labelId)
 
     override suspend fun isCachedConversationRead(
         userId: UserId,

@@ -19,11 +19,13 @@
 package ch.protonmail.android.mailconversation.data.repository
 
 import app.cash.turbine.test
+import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailconversation.data.local.RustConversationDataSource
 import ch.protonmail.android.mailconversation.data.mapper.toConversation
 import ch.protonmail.android.mailconversation.data.mapper.toConversationWithContext
 import ch.protonmail.android.mailconversation.data.mapper.toLocalConversationId
+import ch.protonmail.android.mailconversation.domain.entity.Conversation
 import ch.protonmail.android.maillabel.data.local.RustLabelDataSource
 import ch.protonmail.android.maillabel.data.usecase.FindLocalLabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
@@ -175,5 +177,52 @@ class RustConversationRepositoryImplTest {
         // Then
         coVerify { rustConversationDataSource.markUnread(userId, conversationIds.map { it.toLocalConversationId() }) }
         assertEquals(emptyList(), result.getOrNull())
+    }
+
+    fun `should star conversations`() = runTest {
+        // Given
+        val conversationIds = listOf(
+            ConversationId(LocalConversationIdSample.AugConversation.toString()),
+            ConversationId(LocalConversationIdSample.SepConversation.toString())
+        )
+        coEvery { rustConversationDataSource.starConversations(userId, any()) } returns Unit
+
+        // When
+        val result = rustConversationRepository.star(userId, conversationIds)
+
+        // Then
+        coVerify {
+            rustConversationDataSource.starConversations(
+                userId,
+                conversationIds.map {
+                    it.toLocalConversationId()
+                }
+            )
+        }
+        assertEquals(emptyList<Conversation>().right(), result)
+    }
+
+    @Test
+    fun `should unStar conversations`() = runTest {
+        // Given
+        val conversationIds = listOf(
+            ConversationId(LocalConversationIdSample.AugConversation.toString()),
+            ConversationId(LocalConversationIdSample.SepConversation.toString())
+        )
+        coEvery { rustConversationDataSource.unStarConversations(userId, any()) } returns Unit
+
+        // When
+        val result = rustConversationRepository.unStar(userId, conversationIds)
+
+        // Then
+        coVerify {
+            rustConversationDataSource.unStarConversations(
+                userId,
+                conversationIds.map {
+                    it.toLocalConversationId()
+                }
+            )
+        }
+        assertEquals(emptyList<Conversation>().right(), result)
     }
 }

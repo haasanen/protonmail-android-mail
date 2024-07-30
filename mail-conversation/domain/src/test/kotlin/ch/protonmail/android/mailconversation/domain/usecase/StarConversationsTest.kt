@@ -22,7 +22,6 @@ import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailconversation.domain.repository.ConversationRepository
-import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.testdata.conversation.ConversationTestData
 import ch.protonmail.android.testdata.user.UserIdTestData
 import io.mockk.coEvery
@@ -39,7 +38,7 @@ class StarConversationsTest {
 
     private val conversationRepository: ConversationRepository = mockk {
         coEvery {
-            addLabel(userId, conversationIds, SystemLabelId.Starred.labelId)
+            star(userId, conversationIds)
         } returns listOf(ConversationTestData.starredConversation).right()
     }
 
@@ -52,10 +51,9 @@ class StarConversationsTest {
 
         // Then
         coVerify {
-            conversationRepository.addLabel(
+            conversationRepository.star(
                 UserIdTestData.userId,
-                conversationIds,
-                SystemLabelId.Starred.labelId
+                conversationIds
             )
         }
     }
@@ -74,7 +72,7 @@ class StarConversationsTest {
         // Given
         val localError = DataError.Local.NoDataCached
         coEvery {
-            conversationRepository.addLabel(userId, conversationIds, SystemLabelId.Starred.labelId)
+            conversationRepository.star(userId, conversationIds)
         } returns localError.left()
 
         // When

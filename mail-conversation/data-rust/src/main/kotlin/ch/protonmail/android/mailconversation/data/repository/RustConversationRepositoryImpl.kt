@@ -175,6 +175,25 @@ class RustConversationRepositoryImpl @Inject constructor(
         return emptyList<Conversation>().right()
     }
 
+    override suspend fun star(
+        userId: UserId,
+        conversationIds: List<ConversationId>
+    ): Either<DataError, List<Conversation>> {
+        rustConversationDataSource.starConversations(userId, conversationIds.map { it.toLocalConversationId() })
+
+        return emptyList<Conversation>().right()
+    }
+
+    override suspend fun unStar(
+        userId: UserId,
+        conversationIds: List<ConversationId>
+    ): Either<DataError, List<Conversation>> {
+
+        rustConversationDataSource.unStarConversations(userId, conversationIds.map { it.toLocalConversationId() })
+
+        return emptyList<Conversation>().right()
+    }
+
     // It will be implemented later on
     override suspend fun isCachedConversationRead(
         userId: UserId,

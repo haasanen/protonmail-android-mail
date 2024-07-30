@@ -130,6 +130,10 @@ interface ConversationRepository {
 
     suspend fun markRead(userId: UserId, conversationIds: List<ConversationId>): Either<DataError, List<Conversation>>
 
+    suspend fun star(userId: UserId, conversationIds: List<ConversationId>): Either<DataError, List<Conversation>>
+
+    suspend fun unStar(userId: UserId, conversationIds: List<ConversationId>): Either<DataError, List<Conversation>>
+
     suspend fun isCachedConversationRead(userId: UserId, conversationId: ConversationId): Either<DataError, Boolean>
 
     suspend fun relabel(

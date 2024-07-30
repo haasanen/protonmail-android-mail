@@ -23,7 +23,6 @@ import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailconversation.domain.entity.Conversation
 import ch.protonmail.android.mailconversation.domain.repository.ConversationRepository
-import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 
@@ -34,7 +33,6 @@ class StarConversations @Inject constructor(
     suspend operator fun invoke(
         userId: UserId,
         conversationIds: List<ConversationId>
-    ): Either<DataError, List<Conversation>> =
-        conversationRepository.addLabel(userId, conversationIds, SystemLabelId.Starred.labelId)
+    ): Either<DataError, List<Conversation>> = conversationRepository.star(userId, conversationIds)
 
 }

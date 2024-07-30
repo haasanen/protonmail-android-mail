@@ -23,7 +23,6 @@ import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailconversation.domain.repository.ConversationRepository
-import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.testdata.conversation.ConversationTestData
 import ch.protonmail.android.testdata.user.UserIdTestData
 import io.mockk.coEvery
@@ -40,7 +39,7 @@ class UnStarConversationsTest {
 
     private val conversationRepository: ConversationRepository = mockk {
         coEvery {
-            removeLabel(any(), any<List<ConversationId>>(), any())
+            unStar(any(), any<List<ConversationId>>())
         } returns listOf(ConversationTestData.conversation).right()
     }
 
@@ -52,7 +51,7 @@ class UnStarConversationsTest {
         unStarConversations(userId, conversationIds)
 
         // Then
-        coVerify { conversationRepository.removeLabel(userId, conversationIds, SystemLabelId.Starred.labelId) }
+        coVerify { conversationRepository.unStar(userId, conversationIds) }
     }
 
     @Test
@@ -68,7 +67,7 @@ class UnStarConversationsTest {
         // Given
         val localError = DataError.Local.NoDataCached
         coEvery {
-            conversationRepository.removeLabel(userId, conversationIds, SystemLabelId.Starred.labelId)
+            conversationRepository.unStar(userId, conversationIds)
         } returns localError.left()
         // When
         val actual = unStarConversations(userId, conversationIds)
