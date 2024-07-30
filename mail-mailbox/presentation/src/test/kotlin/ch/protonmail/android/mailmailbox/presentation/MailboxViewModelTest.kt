@@ -2986,6 +2986,7 @@ class MailboxViewModelTest {
 
         val initialState = createMailboxDataState()
         val expectedActionItems = listOf(
+            ActionUiModelSample.build(Action.Unstar),
             ActionUiModelSample.build(Action.Archive),
             ActionUiModelSample.build(Action.Spam)
         )
@@ -3083,6 +3084,7 @@ class MailboxViewModelTest {
 
         val initialState = createMailboxDataState()
         val expectedActionItems = listOf(
+            ActionUiModelSample.build(Action.Unstar),
             ActionUiModelSample.build(Action.Archive),
             ActionUiModelSample.build(Action.Spam)
         )

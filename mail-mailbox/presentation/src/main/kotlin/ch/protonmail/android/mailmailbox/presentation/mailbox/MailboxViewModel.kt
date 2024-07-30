@@ -902,12 +902,10 @@ class MailboxViewModel @Inject constructor(
         }
         emitNewStateFrom(operation)
 
-        val usedStarAction = if (getPreferredViewMode() == ViewMode.NoConversationGrouping) {
-            when (selectionState.selectedMailboxItems.all { it.isStarred }) {
-                true -> Action.Unstar
-                false -> Action.Star
-            }
-        } else null
+        val usedStarAction = when (selectionState.selectedMailboxItems.all { it.isStarred }) {
+            true -> Action.Unstar
+            false -> Action.Star
+        }
 
         emitNewStateFrom(
             MailboxEvent.MailboxBottomSheetEvent(
