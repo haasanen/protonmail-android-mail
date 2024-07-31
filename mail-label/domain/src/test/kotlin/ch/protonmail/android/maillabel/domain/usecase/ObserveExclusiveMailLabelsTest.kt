@@ -57,7 +57,7 @@ internal class ObserveExclusiveMailLabelsTest {
     private val observeExclusiveDestinationMailLabels = mockk<ObserveExclusiveDestinationMailLabels> {
         every { this@mockk.invoke(userId) } returns flowOf(
             MailLabels(
-                dynamicSystemLabels = labelWithSystemLabelIds.toDynamicSystemMailLabel(),
+                system = labelWithSystemLabelIds.toDynamicSystemMailLabel(),
                 folders = customsFolders,
                 labels = emptyList()
             )
@@ -70,7 +70,7 @@ internal class ObserveExclusiveMailLabelsTest {
         ObserveExclusiveMailLabels(observeExclusiveDestinationMailLabels).invoke(userId).test {
             // Then
             val item = awaitItem()
-            assertEquals(labelWithSystemLabelIds.toDynamicSystemMailLabel(), item.dynamicSystemLabels)
+            assertEquals(labelWithSystemLabelIds.toDynamicSystemMailLabel(), item.system)
             cancelAndIgnoreRemainingEvents()
         }
     }

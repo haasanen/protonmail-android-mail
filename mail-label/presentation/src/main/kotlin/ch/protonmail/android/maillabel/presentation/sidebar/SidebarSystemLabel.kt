@@ -36,7 +36,7 @@ import me.proton.core.compose.component.ProtonSidebarLazy
 import me.proton.core.compose.theme.ProtonTheme
 
 fun LazyListScope.sidebarSystemLabelItems(
-    items: List<MailLabelUiModel.DynamicSystem>,
+    items: List<MailLabelUiModel.System>,
     onLabelAction: (SidebarLabelAction) -> Unit
 ) {
     items(items = items, key = { it.id.labelId.id }) {
@@ -51,7 +51,7 @@ fun LazyListScope.sidebarSystemLabelItems(
 @Composable
 private fun SidebarSystemLabel(
     modifier: Modifier = Modifier,
-    item: MailLabelUiModel.DynamicSystem,
+    item: MailLabelUiModel.System,
     onLabelAction: (SidebarLabelAction) -> Unit
 ) {
     SidebarItemWithCounter(
@@ -78,7 +78,7 @@ fun PreviewSidebarSystemLabelItems() {
     ProtonTheme {
         ProtonSidebarLazy {
             sidebarSystemLabelItems(
-                items = MailLabelsUiModel.PreviewForTesting.dynamicSystems,
+                items = MailLabelsUiModel.PreviewForTesting.systemLabels,
                 onLabelAction = {}
             )
         }

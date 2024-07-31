@@ -33,7 +33,7 @@ import me.proton.core.label.domain.entity.LabelId
 
 object MailLabelUiModelTestData {
 
-    val spamFolder = MailLabelUiModel.DynamicSystem(
+    val spamFolder = MailLabelUiModel.System(
         id = MailLabelTestData.spamSystemLabel.id,
         text = TextUiModel.TextRes(SystemLabelId.Spam.textRes()),
         icon = SystemLabelId.Spam.iconRes(),
@@ -109,7 +109,7 @@ object MailLabelUiModelTestData {
         )
     ).toImmutableList()
     val archiveAndCustomFolder = listOf(
-        MailLabelUiModel.DynamicSystem(
+        MailLabelUiModel.System(
             id = MailLabelTestData.archiveSystemLabel.id,
             text = TextUiModel.TextRes(SystemLabelId.Archive.textRes()),
             icon = SystemLabelId.Archive.iconRes(),

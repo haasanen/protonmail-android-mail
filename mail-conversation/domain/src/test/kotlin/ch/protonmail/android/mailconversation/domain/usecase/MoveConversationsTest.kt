@@ -236,7 +236,7 @@ class MoveConversationsTest {
     private fun expectObserveExclusiveMailLabelSucceeds() {
         every { observeExclusiveMailLabels(userId) } returns flowOf(
             MailLabels(
-                dynamicSystemLabels = exclusiveMailLabels,
+                system = exclusiveMailLabels,
                 folders = emptyList(),
                 labels = emptyList()
             )
@@ -246,7 +246,7 @@ class MoveConversationsTest {
     private fun expectObserveMailLabelsSucceeds() {
         every { observeMailLabels(userId) } returns flowOf(
             MailLabels(
-                dynamicSystemLabels = exclusiveMailLabels,
+                system = exclusiveMailLabels,
                 folders = emptyList(),
                 labels = emptyList()
             )

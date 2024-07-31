@@ -48,7 +48,7 @@ class ObserveExclusiveDestinationMailLabels @Inject constructor(
         observeMessageFolders(userId).map { it.toMailLabelCustom() }
     ) { system, folders ->
         MailLabels(
-            dynamicSystemLabels = system,
+            system = system,
             folders = folders,
             labels = emptyList()
         )

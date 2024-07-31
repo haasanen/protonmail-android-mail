@@ -150,7 +150,7 @@ class UndoMoveConversationsTest {
     private fun expectObserveExclusiveMailLabelSucceeds() {
         every { observeExclusiveMailLabels(userId) } returns flowOf(
             MailLabels(
-                dynamicSystemLabels = exclusiveSystemLabels,
+                system = exclusiveSystemLabels,
                 folders = emptyList(),
                 labels = emptyList()
             )
@@ -160,7 +160,7 @@ class UndoMoveConversationsTest {
     private fun expectObserveMailLabelsSucceeds() {
         every { observeMailLabels(userId) } returns flowOf(
             MailLabels(
-                dynamicSystemLabels = exclusiveSystemLabels,
+                system = exclusiveSystemLabels,
                 folders = emptyList(),
                 labels = emptyList()
             )

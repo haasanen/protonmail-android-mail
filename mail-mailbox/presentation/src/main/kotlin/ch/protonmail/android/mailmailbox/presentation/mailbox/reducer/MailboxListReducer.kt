@@ -440,7 +440,7 @@ class MailboxListReducer @Inject constructor() {
                             MailboxListState.Data.ClearState.Visible.Banner
                         } else {
                             MailboxListState.Data.ClearState.Visible.Button(
-                                if (currentState.currentMailLabel is MailLabel.DynamicSystemLabel) {
+                                if (currentState.currentMailLabel is MailLabel.System) {
                                     when (currentState.currentMailLabel.systemLabelId) {
                                         SystemLabelId.Trash -> TextUiModel(R.string.mailbox_action_button_clear_trash)
                                         SystemLabelId.Spam -> TextUiModel(R.string.mailbox_action_button_clear_spam)
@@ -460,6 +460,6 @@ class MailboxListReducer @Inject constructor() {
             else -> currentState
         }
 
-    private fun MailLabel.isClearableLocation() = this is MailLabel.DynamicSystemLabel &&
+    private fun MailLabel.isClearableLocation() = this is MailLabel.System &&
         (this.systemLabelId == SystemLabelId.Trash || this.systemLabelId == SystemLabelId.Spam)
 }

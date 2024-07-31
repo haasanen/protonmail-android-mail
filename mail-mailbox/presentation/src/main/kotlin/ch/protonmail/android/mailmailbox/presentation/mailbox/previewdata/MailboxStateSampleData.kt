@@ -45,14 +45,14 @@ import me.proton.core.label.domain.entity.LabelId
 
 object MailboxStateSampleData {
 
-    private val inboxDynamicLabel = MailLabel.DynamicSystemLabel(
-        MailLabelId.DynamicSystemLabelId(LabelId("inbox")),
+    private val inboxDynamicLabel = MailLabel.System(
+        MailLabelId.System(LabelId("inbox")),
         SystemLabelId.Inbox,
         0
     )
 
-    private val allMailDynamicLabel = MailLabel.DynamicSystemLabel(
-        MailLabelId.DynamicSystemLabelId(LabelId("allmail")),
+    private val allMailDynamicLabel = MailLabel.System(
+        MailLabelId.System(LabelId("allmail")),
         SystemLabelId.AllMail,
         0
     )

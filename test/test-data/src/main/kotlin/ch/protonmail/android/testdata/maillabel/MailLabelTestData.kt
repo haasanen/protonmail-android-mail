@@ -129,8 +129,8 @@ object MailLabelTestData {
      * **NOTE that in here, the two ids have been kept the same for the sake of allowing
      * existing unit tests that are based on mocked, static data to keep working**
      */
-    private fun buildDynamicLabelId(systemLabelId: SystemLabelId) = MailLabel.DynamicSystemLabel(
-        MailLabelId.DynamicSystemLabelId(systemLabelId.labelId),
+    private fun buildDynamicLabelId(systemLabelId: SystemLabelId) = MailLabel.System(
+        MailLabelId.System(systemLabelId.labelId),
         systemLabelId,
         0
     )

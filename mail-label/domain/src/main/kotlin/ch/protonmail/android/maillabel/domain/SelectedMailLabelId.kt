@@ -52,6 +52,6 @@ class SelectedMailLabelId @Inject constructor(
     }
 
     companion object {
-        val InboxMailLabelId = MailLabelId.DynamicSystemLabelId(SystemLabelId.Inbox.labelId)
+        val InboxMailLabelId = MailLabelId.System(SystemLabelId.Inbox.labelId)
     }
 }

@@ -921,7 +921,7 @@ private fun MailboxEmpty(
             )
         } else {
             when (val currentMailLabelId = listState.currentMailLabel) {
-                is MailLabel.DynamicSystemLabel -> {
+                is MailLabel.System -> {
                     when (currentMailLabelId.systemLabelId) {
                         SystemLabelId.Inbox -> Triple(
                             R.drawable.illustration_empty_mailbox_no_messages,

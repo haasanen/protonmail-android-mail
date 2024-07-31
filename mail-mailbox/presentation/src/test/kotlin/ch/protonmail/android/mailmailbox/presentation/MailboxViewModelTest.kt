@@ -201,7 +201,7 @@ class MailboxViewModelTest {
     private val observeMailLabels = mockk<ObserveMailLabels> {
         every { this@mockk.invoke(any()) } returns MutableStateFlow(
             MailLabels(
-                dynamicSystemLabels = MailLabelTestData.dynamicSystemLabels,
+                system = MailLabelTestData.dynamicSystemLabels,
                 folders = emptyList(),
                 labels = listOf(MailLabelTestData.customLabelOne)
             )
@@ -733,7 +733,7 @@ class MailboxViewModelTest {
         )
         val mailLabelsFlow = MutableStateFlow(
             MailLabels(
-                dynamicSystemLabels = MailLabelTestData.dynamicSystemLabels,
+                system = MailLabelTestData.dynamicSystemLabels,
                 folders = emptyList(),
                 labels = listOf(
                     MailLabelTestData.customLabelOne,
@@ -789,7 +789,7 @@ class MailboxViewModelTest {
         )
         val mailLabelsFlow = MutableStateFlow(
             MailLabels(
-                dynamicSystemLabels = MailLabelTestData.dynamicSystemLabels,
+                system = MailLabelTestData.dynamicSystemLabels,
                 folders = emptyList(),
                 labels = listOf(MailLabelTestData.customLabelOne, MailLabelTestData.customLabelTwo)
             )
@@ -809,7 +809,7 @@ class MailboxViewModelTest {
 
             mailLabelsFlow.emit(
                 MailLabels(
-                    dynamicSystemLabels = MailLabelTestData.dynamicSystemLabels,
+                    system = MailLabelTestData.dynamicSystemLabels,
                     folders = emptyList(),
                     labels = listOf(MailLabelTestData.customLabelTwo)
                 )
@@ -2493,7 +2493,7 @@ class MailboxViewModelTest {
         val selectedItemsList = listOf(item, secondItem)
 
         val expectedMailLabels = MailLabels(
-            dynamicSystemLabels = emptyList(),
+            system = emptyList(),
             folders = MailLabelTestData.listOfCustomLabels,
             labels = emptyList()
         )
@@ -2547,7 +2547,7 @@ class MailboxViewModelTest {
         val selectedItemsList = listOf(item, secondItem)
 
         val expectedMailLabels = MailLabels(
-            dynamicSystemLabels = emptyList(),
+            system = emptyList(),
             folders = MailLabelTestData.listOfCustomLabels,
             labels = emptyList()
         )
@@ -2643,7 +2643,7 @@ class MailboxViewModelTest {
         val selectedItemsList = listOf(item, secondItem)
 
         val expectedMailLabels = MailLabels(
-            dynamicSystemLabels = emptyList(),
+            system = emptyList(),
             folders = MailLabelTestData.listOfCustomLabels,
             labels = emptyList()
         )
@@ -3564,12 +3564,12 @@ class MailboxViewModelTest {
         openEffect: Effect<OpenMailboxItemRequest> = Effect.empty(),
         scrollToMailboxTop: Effect<MailLabelId> = Effect.empty(),
         unreadFilterState: Boolean = false,
-        selectedMailLabelId: MailLabelId.DynamicSystemLabelId = initialLocationMailLabelId,
+        selectedMailLabelId: MailLabelId.System = initialLocationMailLabelId,
         selectedSystemMailLabelId: SystemLabelId = SystemLabelId.Inbox
     ): MailboxState {
         return MailboxStateSampleData.Loading.copy(
             mailboxListState = MailboxListState.Data.ViewMode(
-                currentMailLabel = MailLabel.DynamicSystemLabel(
+                currentMailLabel = MailLabel.System(
                     selectedMailLabelId,
                     selectedSystemMailLabelId,
                     0

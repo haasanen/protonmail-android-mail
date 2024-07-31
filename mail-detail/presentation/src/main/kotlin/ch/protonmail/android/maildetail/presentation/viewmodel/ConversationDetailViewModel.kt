@@ -473,7 +473,7 @@ class ConversationDetailViewModel @Inject constructor(
                 ConversationDetailEvent.ConversationBottomSheetEvent(
                     MoveToBottomSheetState.MoveToBottomSheetEvent.ActionData(
                         moveToDestinations = folders.toUiModels(color).let {
-                            it.folders + it.dynamicSystems
+                            it.folders + it.systemLabels
                         }.toImmutableList(),
                         messageIdInConversation = when (initialEvent) {
                             is ConversationDetailViewAction.RequestMessageMoveToBottomSheet -> initialEvent.messageId

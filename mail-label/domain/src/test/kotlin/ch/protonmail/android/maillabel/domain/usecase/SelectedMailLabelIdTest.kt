@@ -46,7 +46,7 @@ class SelectedMailLabelIdTest {
 
     // Hardcoded to "0" (Inbox label remote ID) as arbitrary value while removing all usages of system.
     // to be updated to dynamically pick inbox from the dynamic system labels
-    private val initialSystemLabel = MailLabelId.DynamicSystemLabelId(SystemLabelId.Inbox.labelId)
+    private val initialSystemLabel = MailLabelId.System(SystemLabelId.Inbox.labelId)
 
     private val selectedMailLabelId by lazy {
         SelectedMailLabelId(

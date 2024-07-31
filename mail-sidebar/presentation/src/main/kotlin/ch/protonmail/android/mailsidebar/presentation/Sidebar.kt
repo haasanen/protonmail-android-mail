@@ -163,7 +163,7 @@ fun Sidebar(
         modifier = modifier.testTag(SidebarMenuTestTags.Root),
         drawerState = viewState.drawerState
     ) {
-        sidebarSystemLabelItems(viewState.mailLabels.dynamicSystems, actions.onLabelAction)
+        sidebarSystemLabelItems(viewState.mailLabels.systemLabels, actions.onLabelAction)
         item { Divider() }
         sidebarFolderItems(viewState.mailLabels.folders, actions.onLabelAction)
         item { Divider() }

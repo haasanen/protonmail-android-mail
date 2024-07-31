@@ -90,7 +90,7 @@ internal class ObserveExclusiveDestinationMailLabelsTest {
             assertEquals(3, item.folders.size)
             assertEquals(
                 expected = MailLabels(
-                    dynamicSystemLabels = labelWithSystemLabelIds.toDynamicSystemMailLabel(),
+                    system = labelWithSystemLabelIds.toDynamicSystemMailLabel(),
                     folders = listOf(
                         buildCustomFolder("0", order = 0),
                         buildCustomFolder("1", order = 1),

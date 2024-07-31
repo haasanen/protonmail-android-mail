@@ -239,7 +239,7 @@ class ConversationDetailViewModelTest {
     private val observeMailLabels = mockk<ObserveExclusiveDestinationMailLabels> {
         every { this@mockk.invoke(UserIdSample.Primary) } returns flowOf(
             MailLabels(
-                dynamicSystemLabels = listOf(MailLabelTestData.spamSystemLabel),
+                system = listOf(MailLabelTestData.spamSystemLabel),
                 folders = listOf(MailLabelTestData.buildCustomFolder(id = "folder1")),
                 labels = listOf()
             )

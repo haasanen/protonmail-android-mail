@@ -24,9 +24,9 @@ import me.proton.core.label.domain.entity.Label
 import me.proton.core.label.domain.entity.LabelId
 import me.proton.core.label.domain.entity.LabelType
 
-fun List<LabelWithSystemLabelId>.toDynamicSystemMailLabel(): List<MailLabel.DynamicSystemLabel> = map {
-    MailLabel.DynamicSystemLabel(
-        id = MailLabelId.DynamicSystemLabelId(it.label.labelId),
+fun List<LabelWithSystemLabelId>.toDynamicSystemMailLabel(): List<MailLabel.System> = map {
+    MailLabel.System(
+        id = MailLabelId.System(it.label.labelId),
         systemLabelId = it.systemLabelId,
         order = it.label.order
     )

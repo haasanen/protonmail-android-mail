@@ -36,8 +36,8 @@ sealed interface MailLabelUiModel {
     val count: Int?
 
     @Immutable
-    data class DynamicSystem(
-        override val id: MailLabelId.DynamicSystemLabelId,
+    data class System(
+        override val id: MailLabelId.System,
         override val text: TextUiModel.TextRes,
         override val icon: Int,
         override val iconTint: Color?,
@@ -67,7 +67,7 @@ val MailLabelUiModel.Custom.testTag: String
 
 @Immutable
 data class MailLabelsUiModel(
-    val dynamicSystems: List<MailLabelUiModel.DynamicSystem>,
+    val systemLabels: List<MailLabelUiModel.System>,
     val folders: List<MailLabelUiModel.Custom>,
     val labels: List<MailLabelUiModel.Custom>
 ) {
@@ -75,7 +75,7 @@ data class MailLabelsUiModel(
     companion object {
 
         val Loading = MailLabelsUiModel(
-            dynamicSystems = emptyList(),
+            systemLabels = emptyList(),
             folders = emptyList(),
             labels = emptyList()
         )
@@ -83,7 +83,7 @@ data class MailLabelsUiModel(
         @VisibleForTesting
         val PreviewForTesting by lazy {
             MailLabelsUiModel(
-                dynamicSystems = emptyList(),
+                systemLabels = emptyList(),
                 folders = emptyList(),
                 labels = emptyList()
             )

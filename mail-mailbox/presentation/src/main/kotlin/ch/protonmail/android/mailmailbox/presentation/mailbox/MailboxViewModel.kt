@@ -213,7 +213,7 @@ class MailboxViewModel @Inject constructor(
                 } ?: run {
                     emitNewStateFrom(
                         MailboxEvent.SelectedLabelChanged(
-                            MailLabel.DynamicSystemLabel(
+                            MailLabel.System(
                                 SelectedMailLabelId.InboxMailLabelId,
                                 SystemLabelId.Inbox,
                                 0
@@ -537,7 +537,7 @@ class MailboxViewModel @Inject constructor(
                     selectedMailLabelId = if (query.isEmpty()) {
                         selectedMailLabel.id
                     } else {
-                        mailLabels.dynamicSystemLabels.find { it.systemLabelId == SystemLabelId.AllMail }?.id
+                        mailLabels.system.find { it.systemLabelId == SystemLabelId.AllMail }?.id
                             ?: selectedMailLabel.id
                     },
                     filterUnread = unreadFilterEnabled,
@@ -840,7 +840,7 @@ class MailboxViewModel @Inject constructor(
 
             val event = MailboxEvent.MailboxBottomSheetEvent(
                 MoveToBottomSheetState.MoveToBottomSheetEvent.ActionData(
-                    destinationFolder.toUiModels(color).let { it.folders + it.dynamicSystems }.toImmutableList()
+                    destinationFolder.toUiModels(color).let { it.folders + it.systemLabels }.toImmutableList()
                 )
             )
             emitNewStateFrom(event)

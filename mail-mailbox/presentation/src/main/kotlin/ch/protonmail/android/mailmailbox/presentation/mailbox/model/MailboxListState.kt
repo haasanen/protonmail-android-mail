@@ -55,8 +55,7 @@ sealed interface MailboxListState {
             val refreshRequested: Boolean
         ) : Data {
 
-            fun isInInboxLabel() =
-                (currentMailLabel as? MailLabel.DynamicSystemLabel)?.systemLabelId == SystemLabelId.Inbox
+            fun isInInboxLabel() = (currentMailLabel as? MailLabel.System)?.systemLabelId == SystemLabelId.Inbox
         }
 
         data class SelectionMode(

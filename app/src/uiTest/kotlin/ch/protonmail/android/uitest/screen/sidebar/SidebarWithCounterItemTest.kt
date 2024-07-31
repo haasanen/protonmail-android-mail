@@ -118,7 +118,7 @@ internal class SidebarWithCounterItemTest : HiltInstrumentedTest() {
                 ProtonSidebarLazy {
                     when (item) {
                         is MailLabelUiModel.Custom -> sidebarLabelItems(listOf(item)) {}
-                        is MailLabelUiModel.DynamicSystem -> sidebarSystemLabelItems(listOf(item)) {}
+                        is MailLabelUiModel.System -> sidebarSystemLabelItems(listOf(item)) {}
                     }
                 }
             }
