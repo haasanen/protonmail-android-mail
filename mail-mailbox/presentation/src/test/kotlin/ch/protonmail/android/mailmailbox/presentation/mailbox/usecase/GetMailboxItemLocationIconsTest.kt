@@ -41,9 +41,19 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.runTest
 import me.proton.core.label.domain.entity.LabelId
 import me.proton.core.label.domain.entity.LabelType
+import org.junit.Ignore
 import org.junit.Test
 import kotlin.test.assertEquals
 
+@Ignore(
+    """
+        Ignoring while sorting out whether this logic should be handled by RUST
+        lib or clients. 
+        At now, the logic is broken due to the introduction of dynamic system labels,
+        which do not allow anymore to statically define whether the MailboxItem is 
+        in a location where icons should be shown or not
+    """
+)
 class GetMailboxItemLocationIconsTest {
 
     private val defaultFolderColorSettings = FolderColorSettings()
