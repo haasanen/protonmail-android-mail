@@ -21,6 +21,7 @@ package ch.protonmail.android.mailmailbox.domain.usecase
 import app.cash.turbine.test
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.mailsettings.domain.usecase.ObserveMailSettings
+import ch.protonmail.android.testdata.maillabel.MailLabelTestData
 import ch.protonmail.android.testdata.user.UserIdTestData.userId
 import io.mockk.every
 import io.mockk.mockk
@@ -114,49 +115,73 @@ internal class ObserveCurrentViewModeTest(
 
             Params(
                 testName = "conversation enabled in Inbox",
-                input = Params.Input(isConversationSettingEnabled = true, MailLabelId.System.Inbox),
+                input = Params.Input(
+                    isConversationSettingEnabled = true,
+                    MailLabelTestData.inboxSystemLabel.id
+                ),
                 expected = ViewMode.ConversationGrouping
             ),
 
             Params(
                 testName = "conversation enabled in Drafts",
-                input = Params.Input(isConversationSettingEnabled = true, MailLabelId.System.Drafts),
+                input = Params.Input(
+                    isConversationSettingEnabled = true,
+                    MailLabelTestData.draftsSystemLabel.id
+                ),
                 expected = ViewMode.NoConversationGrouping
             ),
 
             Params(
                 testName = "conversation enabled in Sent",
-                input = Params.Input(isConversationSettingEnabled = true, MailLabelId.System.Sent),
+                input = Params.Input(
+                    isConversationSettingEnabled = true,
+                    MailLabelTestData.sentSystemLabel.id
+                ),
                 expected = ViewMode.NoConversationGrouping
             ),
 
             Params(
                 testName = "conversation enabled in Starred",
-                input = Params.Input(isConversationSettingEnabled = true, MailLabelId.System.Starred),
+                input = Params.Input(
+                    isConversationSettingEnabled = true,
+                    MailLabelTestData.starredSystemLabel.id
+                ),
                 expected = ViewMode.ConversationGrouping
             ),
 
             Params(
                 testName = "conversation enabled in Archive",
-                input = Params.Input(isConversationSettingEnabled = true, MailLabelId.System.Archive),
+                input = Params.Input(
+                    isConversationSettingEnabled = true,
+                    MailLabelTestData.archiveSystemLabel.id
+                ),
                 expected = ViewMode.ConversationGrouping
             ),
 
             Params(
                 testName = "conversation enabled in Spam",
-                input = Params.Input(isConversationSettingEnabled = true, MailLabelId.System.Spam),
+                input = Params.Input(
+                    isConversationSettingEnabled = true,
+                    MailLabelTestData.spamSystemLabel.id
+                ),
                 expected = ViewMode.ConversationGrouping
             ),
 
             Params(
                 testName = "conversation enabled in Trash",
-                input = Params.Input(isConversationSettingEnabled = true, MailLabelId.System.Trash),
+                input = Params.Input(
+                    isConversationSettingEnabled = true,
+                    MailLabelTestData.trashSystemLabel.id
+                ),
                 expected = ViewMode.ConversationGrouping
             ),
 
             Params(
                 testName = "conversation enabled in AllMail",
-                input = Params.Input(isConversationSettingEnabled = true, MailLabelId.System.AllMail),
+                input = Params.Input(
+                    isConversationSettingEnabled = true,
+                    MailLabelTestData.allMailSystemLabel.id
+                ),
                 expected = ViewMode.ConversationGrouping
             ),
 
@@ -174,49 +199,73 @@ internal class ObserveCurrentViewModeTest(
 
             Params(
                 testName = "conversation disabled in Inbox",
-                input = Params.Input(isConversationSettingEnabled = false, MailLabelId.System.Inbox),
+                input = Params.Input(
+                    isConversationSettingEnabled = false,
+                    MailLabelTestData.inboxSystemLabel.id
+                ),
                 expected = ViewMode.NoConversationGrouping
             ),
 
             Params(
                 testName = "conversation disabled in Drafts",
-                input = Params.Input(isConversationSettingEnabled = false, MailLabelId.System.Drafts),
+                input = Params.Input(
+                    isConversationSettingEnabled = false,
+                    MailLabelTestData.draftsSystemLabel.id
+                ),
                 expected = ViewMode.NoConversationGrouping
             ),
 
             Params(
                 testName = "conversation disabled in Sent",
-                input = Params.Input(isConversationSettingEnabled = false, MailLabelId.System.Sent),
+                input = Params.Input(
+                    isConversationSettingEnabled = false,
+                    MailLabelTestData.sentSystemLabel.id
+                ),
                 expected = ViewMode.NoConversationGrouping
             ),
 
             Params(
                 testName = "conversation disabled in Starred",
-                input = Params.Input(isConversationSettingEnabled = false, MailLabelId.System.Starred),
+                input = Params.Input(
+                    isConversationSettingEnabled = false,
+                    MailLabelTestData.starredSystemLabel.id
+                ),
                 expected = ViewMode.NoConversationGrouping
             ),
 
             Params(
                 testName = "conversation disabled in Archive",
-                input = Params.Input(isConversationSettingEnabled = false, MailLabelId.System.Archive),
+                input = Params.Input(
+                    isConversationSettingEnabled = false,
+                    MailLabelTestData.archiveSystemLabel.id
+                ),
                 expected = ViewMode.NoConversationGrouping
             ),
 
             Params(
                 testName = "conversation disabled in Spam",
-                input = Params.Input(isConversationSettingEnabled = false, MailLabelId.System.Spam),
+                input = Params.Input(
+                    isConversationSettingEnabled = false,
+                    MailLabelTestData.spamSystemLabel.id
+                ),
                 expected = ViewMode.NoConversationGrouping
             ),
 
             Params(
                 testName = "conversation disabled in Trash",
-                input = Params.Input(isConversationSettingEnabled = false, MailLabelId.System.Trash),
+                input = Params.Input(
+                    isConversationSettingEnabled = false,
+                    MailLabelTestData.trashSystemLabel.id
+                ),
                 expected = ViewMode.NoConversationGrouping
             ),
 
             Params(
                 testName = "conversation disabled in AllMail",
-                input = Params.Input(isConversationSettingEnabled = false, MailLabelId.System.AllMail),
+                input = Params.Input(
+                    isConversationSettingEnabled = false,
+                    MailLabelTestData.allMailSystemLabel.id
+                ),
                 expected = ViewMode.NoConversationGrouping
             ),
 

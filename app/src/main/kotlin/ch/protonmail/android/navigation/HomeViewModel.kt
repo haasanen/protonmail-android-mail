@@ -35,7 +35,6 @@ import ch.protonmail.android.mailcomposer.domain.usecase.DiscardDraft
 import ch.protonmail.android.mailcomposer.domain.usecase.ObserveSendingMessagesStatus
 import ch.protonmail.android.mailcomposer.domain.usecase.ResetSendingMessagesStatus
 import ch.protonmail.android.maillabel.domain.SelectedMailLabelId
-import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.mailmailbox.domain.usecase.RecordMailboxScreenView
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.model.MessageId
@@ -111,15 +110,16 @@ class HomeViewModel @Inject constructor(
      * - we are in Mailbox but not in Drafts
      */
     fun shouldNavigateToDraftsOnSendingFailure(currentNavDestination: NavDestination?): Boolean =
-        currentNavDestination?.route != Destination.Screen.Mailbox.route ||
-            selectedMailLabelId.flow.value.labelId != MailLabelId.System.AllDrafts.labelId &&
-            selectedMailLabelId.flow.value.labelId != MailLabelId.System.Drafts.labelId
+        currentNavDestination?.route != Destination.Screen.Mailbox.route
 
     fun navigateToDrafts(navController: NavController) {
         if (navController.currentDestination?.route != Destination.Screen.Mailbox.route) {
             navController.popBackStack(Destination.Screen.Mailbox.route, inclusive = false)
         }
-        selectedMailLabelId.set(MailLabelId.System.Drafts)
+        Timber.e("Not navigating to drafts, missing implementation")
+        // Removed with dynamic system labels feature. Need to observe mail labels to know what's draft location ID
+        // in order to navigate
+//        selectedMailLabelId.set()
     }
 
     fun discardDraft(messageId: MessageId) {

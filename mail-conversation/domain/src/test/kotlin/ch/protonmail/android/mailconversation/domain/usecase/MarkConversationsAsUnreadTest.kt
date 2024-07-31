@@ -29,7 +29,7 @@ import ch.protonmail.android.mailconversation.domain.repository.ConversationRepo
 import ch.protonmail.android.mailconversation.domain.sample.ConversationLabelSample
 import ch.protonmail.android.mailconversation.domain.sample.ConversationSample
 import ch.protonmail.android.maillabel.domain.SelectedMailLabelId
-import ch.protonmail.android.maillabel.domain.model.MailLabelId
+import ch.protonmail.android.testdata.maillabel.MailLabelTestData
 import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -45,7 +45,7 @@ class MarkConversationsAsUnreadTest {
 
     private val userId = UserIdSample.Primary
     private val conversationIds = listOf(ConversationIdSample.WeatherForecast, ConversationIdSample.AlphaAppFeedback)
-    private val mailLabel = MailLabelId.System.Archive
+    private val mailLabel = MailLabelTestData.archiveSystemLabel.id
 
     private val conversationRepository: ConversationRepository = mockk()
     private val selectedMailLabelId: SelectedMailLabelId = mockk {

@@ -22,7 +22,6 @@ import androidx.compose.ui.graphics.Color
 import arrow.core.getOrElse
 import ch.protonmail.android.mailcommon.presentation.mapper.ColorMapper
 import ch.protonmail.android.maillabel.domain.SelectedMailLabelId
-import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.maillabel.domain.usecase.GetRootLabel
 import ch.protonmail.android.maillabel.presentation.iconRes
@@ -108,9 +107,10 @@ class GetMailboxItemLocationIcons @Inject constructor(
     private fun currentLocationShouldShowIcons(): Boolean {
         val currentLocation = selectedMailLabelId.flow.value
 
-        return currentLocation is MailLabelId.System.Starred ||
-            currentLocation is MailLabelId.System.AllMail ||
-            currentLocation is MailLabelId.Custom.Label
+        // Should show when starred, all mail or custom label
+        // Removed when introducing dynamic system folders.
+        // Now Need getting mail labels to check for system folders Ids.
+        return false
     }
 
     sealed interface Result {

@@ -29,7 +29,7 @@ import ch.protonmail.android.mailcommon.presentation.usecase.FormatShortTime
 import ch.protonmail.android.maildetail.presentation.R
 import ch.protonmail.android.maildetail.presentation.model.MessageDetailHeaderUiModel
 import ch.protonmail.android.maildetail.presentation.model.MessageIdUiModel
-import ch.protonmail.android.maillabel.domain.model.MailLabelId
+import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.maillabel.presentation.model.LabelUiModel
 import ch.protonmail.android.mailmessage.domain.model.Message
 import ch.protonmail.android.mailmessage.domain.model.MessageId
@@ -96,7 +96,11 @@ class MessageDetailHeaderUiModelMapper @Inject constructor(
 
     private fun Message.hasNonCalendarAttachments() = numAttachments > attachmentCount.calendar
 
-    private fun Message.isStarred() = labelIds.any { it == MailLabelId.System.Starred.labelId }
+    @Deprecated(
+        "labelIds are now dynamically defined by rust. This logic is probably broken.",
+        replaceWith = ReplaceWith("Rust's exposed isStarred boolean")
+    )
+    private fun Message.isStarred() = labelIds.any { it == SystemLabelId.Starred.labelId }
 
     private fun Message.hasUndisclosedRecipients() = (toList + ccList + bccList).isEmpty()
 

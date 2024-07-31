@@ -23,7 +23,7 @@ import ch.protonmail.android.mailcommon.domain.model.FAKE_USER_ID
 import ch.protonmail.android.mailconversation.domain.entity.Conversation
 import ch.protonmail.android.mailconversation.domain.entity.ConversationLabel
 import ch.protonmail.android.mailconversation.domain.entity.ConversationWithContext
-import ch.protonmail.android.maillabel.domain.model.MailLabelId
+import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.mailmessage.data.mapper.toParticipant
 import ch.protonmail.android.mailmessage.domain.model.AttachmentCount
 import me.proton.core.label.domain.entity.LabelId
@@ -81,7 +81,7 @@ private fun getDefaultLabel(
 ): ConversationLabel {
     return ConversationLabel(
         conversationId = conversationId,
-        labelId = LabelId(MailLabelId.System.AllMail.toString()),
+        labelId = SystemLabelId.AllMail.labelId,
         contextNumMessages = contextNumMessages,
         contextNumUnread = contextNumUnread,
         contextNumAttachments = contextNumAttachments,

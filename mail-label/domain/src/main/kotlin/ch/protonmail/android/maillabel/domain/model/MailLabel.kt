@@ -24,29 +24,6 @@ sealed class MailLabelId(
     open val labelId: LabelId
 ) {
 
-    @Deprecated("Replaced by dynamic system labelIds. Will be removed")
-    sealed class System(
-        val systemLabelId: SystemLabelId
-    ) : MailLabelId(systemLabelId.labelId) {
-
-        object Inbox : System(SystemLabelId.Inbox)
-        object AllDrafts : System(SystemLabelId.AllDrafts)
-        object AllSent : System(SystemLabelId.AllSent)
-        object Trash : System(SystemLabelId.Trash)
-        object Spam : System(SystemLabelId.Spam)
-        object AllMail : System(SystemLabelId.AllMail)
-        object Archive : System(SystemLabelId.Archive)
-        object Sent : System(SystemLabelId.Sent)
-        object Drafts : System(SystemLabelId.Drafts)
-        object Outbox : System(SystemLabelId.Outbox)
-        object Starred : System(SystemLabelId.Starred)
-        object AllScheduled : System(SystemLabelId.AllScheduled)
-        object AlmostAllMail : System(SystemLabelId.AlmostAllMail)
-        object Snoozed : System(SystemLabelId.Snoozed)
-
-        fun toMailLabel() = MailLabel.System(id = this)
-    }
-
     data class DynamicSystemLabelId(
         override val labelId: LabelId
     ) : MailLabelId(labelId)
@@ -69,11 +46,6 @@ sealed class MailLabel(
     open val id: MailLabelId
 ) {
 
-    @Deprecated("Replaced by dynamic system labelIds. Will be removed")
-    data class System(
-        override val id: MailLabelId.System
-    ) : MailLabel(id)
-
     data class DynamicSystemLabel(
         override val id: MailLabelId.DynamicSystemLabelId,
         val systemLabelId: SystemLabelId,
@@ -93,19 +65,16 @@ sealed class MailLabel(
 }
 
 data class MailLabels(
-    @Deprecated("Replaced by dynamic system labelIds. Will be removed")
-    val systemLabels: List<MailLabel.System>,
     val dynamicSystemLabels: List<MailLabel.DynamicSystemLabel>,
     val folders: List<MailLabel.Custom>,
     val labels: List<MailLabel.Custom>
 ) {
 
-    val allById = (systemLabels + dynamicSystemLabels + folders + labels).associateBy { item -> item.id }
+    val allById = (dynamicSystemLabels + folders + labels).associateBy { item -> item.id }
 
     companion object {
 
         val Initial = MailLabels(
-            systemLabels = emptyList(),
             dynamicSystemLabels = emptyList(),
             folders = emptyList(),
             labels = emptyList()

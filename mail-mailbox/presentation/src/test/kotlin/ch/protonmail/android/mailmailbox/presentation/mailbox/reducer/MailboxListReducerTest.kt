@@ -20,10 +20,6 @@ package ch.protonmail.android.mailmailbox.presentation.mailbox.reducer
 
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
-import ch.protonmail.android.maillabel.domain.model.MailLabel
-import ch.protonmail.android.maillabel.domain.model.MailLabelId
-import ch.protonmail.android.maillabel.domain.model.SystemLabelId
-import ch.protonmail.android.maillabel.domain.model.toMailLabelSystem
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItemId
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItemType
 import ch.protonmail.android.mailmailbox.domain.model.OpenMailboxItemRequest
@@ -63,7 +59,7 @@ internal class MailboxListReducerTest(
     companion object {
 
         private val listStateWithSearchModeNone = MailboxListState.Data.ViewMode(
-            currentMailLabel = MailLabel.System(MailLabelId.System.Inbox),
+            currentMailLabel = MailLabelTestData.inboxSystemLabel,
             openItemEffect = Effect.empty(),
             scrollToMailboxTop = Effect.empty(),
             offlineEffect = Effect.empty(),
@@ -84,7 +80,7 @@ internal class MailboxListReducerTest(
         )
 
         private val listStateWithSearchSelectionMode = MailboxListState.Data.SelectionMode(
-            currentMailLabel = MailLabel.System(MailLabelId.System.Inbox),
+            currentMailLabel = MailLabelTestData.inboxSystemLabel,
             selectedMailboxItems = setOf(
                 SelectedMailboxItem(
                     userId = UserIdTestData.userId,
@@ -127,9 +123,9 @@ internal class MailboxListReducerTest(
             ),
             TestInput(
                 currentState = MailboxListState.Loading,
-                operation = MailboxEvent.SelectedLabelChanged(MailLabel.System(MailLabelId.System.Trash)),
+                operation = MailboxEvent.SelectedLabelChanged(MailLabelTestData.trashSystemLabel),
                 expectedState = MailboxListState.Data.ViewMode(
-                    currentMailLabel = MailLabel.System(MailLabelId.System.Trash),
+                    currentMailLabel = MailLabelTestData.trashSystemLabel,
                     openItemEffect = Effect.empty(),
                     scrollToMailboxTop = Effect.empty(),
                     offlineEffect = Effect.empty(),
@@ -142,9 +138,9 @@ internal class MailboxListReducerTest(
             ),
             TestInput(
                 currentState = MailboxListState.Loading,
-                operation = MailboxEvent.SelectedLabelChanged(MailLabel.System(MailLabelId.System.Spam)),
+                operation = MailboxEvent.SelectedLabelChanged(MailLabelTestData.spamSystemLabel),
                 expectedState = MailboxListState.Data.ViewMode(
-                    currentMailLabel = MailLabel.System(MailLabelId.System.Spam),
+                    currentMailLabel = MailLabelTestData.spamSystemLabel,
                     openItemEffect = Effect.empty(),
                     scrollToMailboxTop = Effect.empty(),
                     offlineEffect = Effect.empty(),
@@ -172,9 +168,9 @@ internal class MailboxListReducerTest(
             ),
             TestInput(
                 currentState = MailboxListState.Loading,
-                operation = MailboxEvent.NewLabelSelected(MailLabel.System(MailLabelId.System.Spam), UNREAD_COUNT),
+                operation = MailboxEvent.NewLabelSelected(MailLabelTestData.spamSystemLabel, UNREAD_COUNT),
                 expectedState = MailboxListState.Data.ViewMode(
-                    currentMailLabel = MailLabel.System(MailLabelId.System.Spam),
+                    currentMailLabel = MailLabelTestData.spamSystemLabel,
                     openItemEffect = Effect.empty(),
                     scrollToMailboxTop = Effect.empty(),
                     offlineEffect = Effect.empty(),
@@ -187,9 +183,9 @@ internal class MailboxListReducerTest(
             ),
             TestInput(
                 currentState = MailboxListState.Loading,
-                operation = MailboxEvent.NewLabelSelected(MailLabel.System(MailLabelId.System.Trash), UNREAD_COUNT),
+                operation = MailboxEvent.NewLabelSelected(MailLabelTestData.trashSystemLabel, UNREAD_COUNT),
                 expectedState = MailboxListState.Data.ViewMode(
-                    currentMailLabel = MailLabel.System(MailLabelId.System.Trash),
+                    currentMailLabel = MailLabelTestData.trashSystemLabel,
                     openItemEffect = Effect.empty(),
                     scrollToMailboxTop = Effect.empty(),
                     offlineEffect = Effect.empty(),
@@ -281,7 +277,7 @@ internal class MailboxListReducerTest(
             ),
             TestInput(
                 currentState = MailboxListState.Data.ViewMode(
-                    currentMailLabel = SystemLabelId.Trash.toMailLabelSystem(),
+                    currentMailLabel = MailLabelTestData.trashSystemLabel,
                     openItemEffect = Effect.empty(),
                     scrollToMailboxTop = Effect.empty(),
                     offlineEffect = Effect.empty(),
@@ -293,7 +289,7 @@ internal class MailboxListReducerTest(
                 ),
                 operation = MailboxEvent.ClearAllOperationStatus(false),
                 expectedState = MailboxListState.Data.ViewMode(
-                    currentMailLabel = SystemLabelId.Trash.toMailLabelSystem(),
+                    currentMailLabel = MailLabelTestData.trashSystemLabel,
                     openItemEffect = Effect.empty(),
                     scrollToMailboxTop = Effect.empty(),
                     offlineEffect = Effect.empty(),
@@ -308,7 +304,7 @@ internal class MailboxListReducerTest(
             ),
             TestInput(
                 currentState = MailboxListState.Data.ViewMode(
-                    currentMailLabel = SystemLabelId.Trash.toMailLabelSystem(),
+                    currentMailLabel = MailLabelTestData.trashSystemLabel,
                     openItemEffect = Effect.empty(),
                     scrollToMailboxTop = Effect.empty(),
                     offlineEffect = Effect.empty(),
@@ -320,7 +316,7 @@ internal class MailboxListReducerTest(
                 ),
                 operation = MailboxEvent.ClearAllOperationStatus(true),
                 expectedState = MailboxListState.Data.ViewMode(
-                    currentMailLabel = SystemLabelId.Trash.toMailLabelSystem(),
+                    currentMailLabel = MailLabelTestData.trashSystemLabel,
                     openItemEffect = Effect.empty(),
                     scrollToMailboxTop = Effect.empty(),
                     offlineEffect = Effect.empty(),
@@ -333,7 +329,7 @@ internal class MailboxListReducerTest(
             ),
             TestInput(
                 currentState = MailboxListState.Data.ViewMode(
-                    currentMailLabel = SystemLabelId.Spam.toMailLabelSystem(),
+                    currentMailLabel = MailLabelTestData.spamSystemLabel,
                     openItemEffect = Effect.empty(),
                     scrollToMailboxTop = Effect.empty(),
                     offlineEffect = Effect.empty(),
@@ -345,7 +341,7 @@ internal class MailboxListReducerTest(
                 ),
                 operation = MailboxEvent.ClearAllOperationStatus(false),
                 expectedState = MailboxListState.Data.ViewMode(
-                    currentMailLabel = SystemLabelId.Spam.toMailLabelSystem(),
+                    currentMailLabel = MailLabelTestData.spamSystemLabel,
                     openItemEffect = Effect.empty(),
                     scrollToMailboxTop = Effect.empty(),
                     offlineEffect = Effect.empty(),
@@ -360,7 +356,7 @@ internal class MailboxListReducerTest(
             ),
             TestInput(
                 currentState = MailboxListState.Data.ViewMode(
-                    currentMailLabel = SystemLabelId.Spam.toMailLabelSystem(),
+                    currentMailLabel = MailLabelTestData.spamSystemLabel,
                     openItemEffect = Effect.empty(),
                     scrollToMailboxTop = Effect.empty(),
                     offlineEffect = Effect.empty(),
@@ -372,7 +368,7 @@ internal class MailboxListReducerTest(
                 ),
                 operation = MailboxEvent.ClearAllOperationStatus(true),
                 expectedState = MailboxListState.Data.ViewMode(
-                    currentMailLabel = SystemLabelId.Spam.toMailLabelSystem(),
+                    currentMailLabel = MailLabelTestData.spamSystemLabel,
                     openItemEffect = Effect.empty(),
                     scrollToMailboxTop = Effect.empty(),
                     offlineEffect = Effect.empty(),

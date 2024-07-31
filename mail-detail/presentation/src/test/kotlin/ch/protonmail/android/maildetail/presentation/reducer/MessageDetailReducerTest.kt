@@ -34,7 +34,6 @@ import ch.protonmail.android.maildetail.presentation.model.MessageDetailState
 import ch.protonmail.android.maildetail.presentation.model.MessageMetadataState
 import ch.protonmail.android.maildetail.presentation.model.MessageViewAction
 import ch.protonmail.android.maildetail.presentation.model.ReportPhishingDialogState
-import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.mailmessage.domain.model.AttachmentId
 import ch.protonmail.android.mailmessage.domain.model.AttachmentWorkerStatus
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
@@ -50,6 +49,7 @@ import ch.protonmail.android.testdata.action.ActionUiModelTestData
 import ch.protonmail.android.testdata.maildetail.MessageBannersUiModelTestData.messageBannersUiModel
 import ch.protonmail.android.testdata.maildetail.MessageDetailFooterUiModelTestData
 import ch.protonmail.android.testdata.maildetail.MessageDetailHeaderUiModelTestData
+import ch.protonmail.android.testdata.maillabel.MailLabelTestData
 import ch.protonmail.android.testdata.maillabel.MailLabelUiModelTestData
 import ch.protonmail.android.testdata.message.MessageBodyUiModelTestData
 import ch.protonmail.android.testdata.message.MessageDetailActionBarUiModelTestData
@@ -329,7 +329,7 @@ class MessageDetailReducerTest(
                 shouldReducePhishingLinkConfirmation = false
             ),
             TestInput(
-                MessageViewAction.MoveToDestinationSelected(MailLabelId.System.Spam),
+                MessageViewAction.MoveToDestinationSelected(MailLabelTestData.spamSystemLabel.id),
                 shouldReduceMessageMetadataState = false,
                 shouldReduceMessageBannersState = false,
                 shouldReduceMessageBodyState = false,

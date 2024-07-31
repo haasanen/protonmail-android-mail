@@ -24,7 +24,6 @@ import ch.protonmail.android.mailcommon.domain.sample.LabelIdSample
 import ch.protonmail.android.mailcommon.domain.sample.LabelSample
 import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
-import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.maillabel.presentation.model.LabelUiModel
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItem
@@ -35,7 +34,6 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.model.Participants
 import ch.protonmail.android.mailmessage.domain.model.Recipient
 import ch.protonmail.android.mailmessage.domain.model.Sender
 import ch.protonmail.android.testdata.R
-import ch.protonmail.android.mailmailbox.R.string as mailboxStrings
 import ch.protonmail.android.testdata.label.LabelTestData.buildLabel
 import ch.protonmail.android.testdata.user.UserIdTestData
 import ch.protonmail.android.testdata.user.UserIdTestData.userId
@@ -44,6 +42,7 @@ import kotlinx.collections.immutable.persistentListOf
 import me.proton.core.domain.entity.UserId
 import me.proton.core.label.domain.entity.Label
 import me.proton.core.label.domain.entity.LabelId
+import ch.protonmail.android.mailmailbox.R.string as mailboxStrings
 
 object MailboxTestData {
 
@@ -64,7 +63,7 @@ object MailboxTestData {
         userId: UserId = UserIdTestData.userId,
         id: String = "itemId",
         time: Long = 0,
-        labelIds: List<LabelId> = listOf(MailLabelId.System.Inbox.labelId),
+        labelIds: List<LabelId> = listOf(SystemLabelId.Inbox.labelId),
         labels: List<Label> = labelIds.map { buildLabel(userId = userId, id = it.id) },
         type: MailboxItemType = MailboxItemType.Message,
         senders: List<Sender> = emptyList(),

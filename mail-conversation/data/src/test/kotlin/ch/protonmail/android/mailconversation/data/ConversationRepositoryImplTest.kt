@@ -35,7 +35,6 @@ import ch.protonmail.android.mailconversation.domain.entity.ConversationWithMess
 import ch.protonmail.android.mailconversation.domain.repository.ConversationLocalDataSource
 import ch.protonmail.android.mailconversation.domain.repository.ConversationRemoteDataSource
 import ch.protonmail.android.mailconversation.domain.sample.ConversationSample
-import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.mailmessage.data.local.MessageLocalDataSource
 import ch.protonmail.android.mailmessage.data.usecase.ExcludeDraftMessagesAlreadyInOutbox
@@ -70,7 +69,7 @@ import kotlin.test.assertTrue
 class ConversationRepositoryImplTest {
 
     private val userId = UserIdSample.Primary
-    private val contextLabelId = MailLabelId.System.Inbox.labelId
+    private val contextLabelId = SystemLabelId.Inbox.labelId
 
     private val conversationLocalDataSource = mockk<ConversationLocalDataSource>(relaxUnitFun = true) {
         coEvery { this@mockk.getConversations(any(), any<PageKey>()) } returns emptyList()

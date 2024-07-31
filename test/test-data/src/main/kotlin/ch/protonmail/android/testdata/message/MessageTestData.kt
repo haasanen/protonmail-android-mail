@@ -250,6 +250,6 @@ object MessageTestData {
         numAttachments = numAttachments,
         flags = flags,
         attachmentCount = attachmentCount,
-        isStarred = labelIds.contains(MailLabelId.System.Starred.labelId.id)
+        isStarred = labelIds.contains(SystemLabelId.Starred.labelId.id)
     )
 }

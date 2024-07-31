@@ -20,9 +20,36 @@ package ch.protonmail.android.testdata.maillabel
 
 import ch.protonmail.android.maillabel.domain.model.MailLabel
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
+import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import me.proton.core.label.domain.entity.LabelId
 
 object MailLabelTestData {
+
+    val inboxSystemLabel = buildDynamicLabelId(SystemLabelId.Inbox)
+    val archiveSystemLabel = buildDynamicLabelId(SystemLabelId.Archive)
+    val spamSystemLabel = buildDynamicLabelId(SystemLabelId.Spam)
+    val draftsSystemLabel = buildDynamicLabelId(SystemLabelId.Drafts)
+    val trashSystemLabel = buildDynamicLabelId(SystemLabelId.Trash)
+    val allMailSystemLabel = buildDynamicLabelId(SystemLabelId.AllMail)
+    val sentSystemLabel = buildDynamicLabelId(SystemLabelId.Sent)
+    val starredSystemLabel = buildDynamicLabelId(SystemLabelId.Starred)
+    val allDraftsSystemLabel = buildDynamicLabelId(SystemLabelId.AllDrafts)
+    val allSentSystemLabel = buildDynamicLabelId(SystemLabelId.AllSent)
+    val outboxSystemLabel = buildDynamicLabelId(SystemLabelId.Outbox)
+
+    val dynamicSystemLabels = listOf(
+        inboxSystemLabel,
+        draftsSystemLabel,
+        allMailSystemLabel,
+        archiveSystemLabel,
+        trashSystemLabel,
+        starredSystemLabel,
+        sentSystemLabel,
+        spamSystemLabel,
+        allDraftsSystemLabel,
+        allSentSystemLabel,
+        outboxSystemLabel
+    )
 
     val customLabelOne = buildCustomLabel("customLabel1")
     val customLabelTwo = buildCustomLabel("customLabel2")
@@ -92,4 +119,20 @@ object MailLabelTestData {
         order = order,
         children = children
     )
+
+    /**
+     * Utility method to create a dynamic label id.
+     * The point of "dynamic" is that the local id is defined by rust lib (and is arbitrary).
+     * We pass along the remote systemLabelId for system locations to be able to know
+     * which location is which statically (as needed by some logic).
+     *
+     * **NOTE that in here, the two ids have been kept the same for the sake of allowing
+     * existing unit tests that are based on mocked, static data to keep working**
+     */
+    private fun buildDynamicLabelId(systemLabelId: SystemLabelId) = MailLabel.DynamicSystemLabel(
+        MailLabelId.DynamicSystemLabelId(systemLabelId.labelId),
+        systemLabelId,
+        0
+    )
+
 }

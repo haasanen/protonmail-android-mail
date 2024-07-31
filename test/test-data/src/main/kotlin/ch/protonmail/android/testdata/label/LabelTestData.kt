@@ -19,8 +19,6 @@
 package ch.protonmail.android.testdata.label
 
 import ch.protonmail.android.mailcommon.domain.model.FAKE_USER_ID
-import ch.protonmail.android.maillabel.domain.model.MailLabel
-import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.testdata.user.UserIdTestData
 import me.proton.core.domain.entity.UserId
 import me.proton.core.label.domain.entity.Label
@@ -29,20 +27,6 @@ import me.proton.core.label.domain.entity.LabelType
 import me.proton.core.label.domain.entity.NewLabel
 
 object LabelTestData {
-
-    val systemLabels = listOf(
-        MailLabel.System(MailLabelId.System.Inbox),
-        MailLabel.System(MailLabelId.System.AllDrafts),
-        MailLabel.System(MailLabelId.System.AllSent),
-        MailLabel.System(MailLabelId.System.Trash),
-        MailLabel.System(MailLabelId.System.Spam),
-        MailLabel.System(MailLabelId.System.AllMail),
-        MailLabel.System(MailLabelId.System.Archive),
-        MailLabel.System(MailLabelId.System.Sent),
-        MailLabel.System(MailLabelId.System.Drafts),
-        MailLabel.System(MailLabelId.System.Outbox),
-        MailLabel.System(MailLabelId.System.Starred)
-    )
 
     val systemLabel = Label(
         FAKE_USER_ID,

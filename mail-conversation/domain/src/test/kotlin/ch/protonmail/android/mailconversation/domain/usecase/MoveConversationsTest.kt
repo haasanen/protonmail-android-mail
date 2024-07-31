@@ -32,10 +32,9 @@ import ch.protonmail.android.mailconversation.domain.repository.ConversationRepo
 import ch.protonmail.android.mailconversation.domain.sample.ConversationLabelSample
 import ch.protonmail.android.mailconversation.domain.sample.ConversationSample
 import ch.protonmail.android.maillabel.domain.model.MailLabels
-import ch.protonmail.android.maillabel.domain.model.SystemLabelId
-import ch.protonmail.android.maillabel.domain.model.toMailLabelSystem
 import ch.protonmail.android.maillabel.domain.usecase.ObserveExclusiveMailLabels
 import ch.protonmail.android.maillabel.domain.usecase.ObserveMailLabels
+import ch.protonmail.android.testdata.maillabel.MailLabelTestData
 import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -52,7 +51,14 @@ class MoveConversationsTest {
 
     private val userId = UserIdSample.Primary
     private val conversationIds = listOf(ConversationIdSample.Invoices, ConversationIdSample.WeatherForecast)
-    private val exclusiveMailLabels = SystemLabelId.exclusiveList.map { it.toMailLabelSystem() }
+    private val exclusiveMailLabels = listOf(
+        MailLabelTestData.inboxSystemLabel,
+        MailLabelTestData.archiveSystemLabel,
+        MailLabelTestData.spamSystemLabel,
+        MailLabelTestData.trashSystemLabel,
+        MailLabelTestData.draftsSystemLabel,
+        MailLabelTestData.sentSystemLabel
+    )
 
     private val conversationRepository = mockk<ConversationRepository>()
     private val observeMailLabels = mockk<ObserveMailLabels>()
@@ -230,7 +236,7 @@ class MoveConversationsTest {
     private fun expectObserveExclusiveMailLabelSucceeds() {
         every { observeExclusiveMailLabels(userId) } returns flowOf(
             MailLabels(
-                systemLabels = exclusiveMailLabels,
+                dynamicSystemLabels = exclusiveMailLabels,
                 folders = emptyList(),
                 labels = emptyList()
             )
@@ -240,7 +246,7 @@ class MoveConversationsTest {
     private fun expectObserveMailLabelsSucceeds() {
         every { observeMailLabels(userId) } returns flowOf(
             MailLabels(
-                systemLabels = exclusiveMailLabels,
+                dynamicSystemLabels = exclusiveMailLabels,
                 folders = emptyList(),
                 labels = emptyList()
             )

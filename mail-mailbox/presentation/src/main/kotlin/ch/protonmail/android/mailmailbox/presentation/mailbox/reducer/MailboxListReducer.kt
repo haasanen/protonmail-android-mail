@@ -21,7 +21,7 @@ package ch.protonmail.android.mailmailbox.presentation.mailbox.reducer
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.maillabel.domain.model.MailLabel
-import ch.protonmail.android.maillabel.domain.model.MailLabelId
+import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItemId
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItemType
 import ch.protonmail.android.mailmailbox.domain.model.OpenMailboxItemRequest
@@ -440,10 +440,14 @@ class MailboxListReducer @Inject constructor() {
                             MailboxListState.Data.ClearState.Visible.Banner
                         } else {
                             MailboxListState.Data.ClearState.Visible.Button(
-                                when (currentState.currentMailLabel.id) {
-                                    MailLabelId.System.Trash -> TextUiModel(R.string.mailbox_action_button_clear_trash)
-                                    MailLabelId.System.Spam -> TextUiModel(R.string.mailbox_action_button_clear_spam)
-                                    else -> TextUiModel.Text("")
+                                if (currentState.currentMailLabel is MailLabel.DynamicSystemLabel) {
+                                    when (currentState.currentMailLabel.systemLabelId) {
+                                        SystemLabelId.Trash -> TextUiModel(R.string.mailbox_action_button_clear_trash)
+                                        SystemLabelId.Spam -> TextUiModel(R.string.mailbox_action_button_clear_spam)
+                                        else -> TextUiModel.Text("")
+                                    }
+                                } else {
+                                    TextUiModel.Text("")
                                 }
                             )
                         }
@@ -456,6 +460,6 @@ class MailboxListReducer @Inject constructor() {
             else -> currentState
         }
 
-    private fun MailLabel.isClearableLocation() =
-        this.id == MailLabelId.System.Trash || this.id == MailLabelId.System.Spam
+    private fun MailLabel.isClearableLocation() = this is MailLabel.DynamicSystemLabel &&
+        (this.systemLabelId == SystemLabelId.Trash || this.systemLabelId == SystemLabelId.Spam)
 }

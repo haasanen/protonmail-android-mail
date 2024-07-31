@@ -30,7 +30,7 @@ import ch.protonmail.android.mailcommon.domain.sample.ConversationIdSample
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.mailconversation.data.remote.ConversationApi
 import ch.protonmail.android.mailconversation.data.remote.resource.MarkConversationAsUnreadBody
-import ch.protonmail.android.maillabel.domain.model.MailLabelId
+import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.mailmessage.data.remote.response.MarkUnreadResponse
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -47,7 +47,7 @@ import kotlin.test.assertEquals
 
 internal class MarkConversationAsUnreadWorkerTest {
 
-    private val contextLabelId = MailLabelId.System.Archive.labelId
+    private val contextLabelId = SystemLabelId.Archive.labelId
 
     private val userId = UserIdSample.Primary
     private val conversationIds = listOf(ConversationIdSample.WeatherForecast)

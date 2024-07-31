@@ -18,10 +18,11 @@
 
 package ch.protonmail.android.maildetail.presentation.reducer
 
+import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.BottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MoveToBottomSheetState
-import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.mailmessage.presentation.reducer.MoveToBottomSheetReducer
+import ch.protonmail.android.testdata.maillabel.MailLabelTestData
 import ch.protonmail.android.testdata.maillabel.MailLabelUiModelTestData
 import me.proton.core.label.domain.entity.LabelId
 import org.junit.Test
@@ -85,7 +86,7 @@ internal class MoveToBottomSheetReducerTest(
             TestInput(
                 currentState = BottomSheetState(MoveToBottomSheetState.Data(destinations, null, null)),
                 operation = MoveToBottomSheetState.MoveToBottomSheetAction.MoveToDestinationSelected(
-                    MailLabelId.System.Spam
+                    MailLabelTestData.spamSystemLabel.id
                 ),
                 expectedState = BottomSheetState(
                     MoveToBottomSheetState.Data(

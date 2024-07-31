@@ -23,6 +23,8 @@ import ch.protonmail.android.mailcommon.domain.sample.UserSample
 import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUser
 import ch.protonmail.android.maillabel.domain.SelectedMailLabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
+import ch.protonmail.android.maillabel.domain.model.SystemLabelId
+import ch.protonmail.android.testdata.maillabel.MailLabelTestData
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -41,6 +43,11 @@ class SelectedMailLabelIdTest {
     private val observePrimaryUser: ObservePrimaryUser = mockk {
         every { this@mockk() } returns emptyFlow()
     }
+
+    // Hardcoded to "0" (Inbox label remote ID) as arbitrary value while removing all usages of system.
+    // to be updated to dynamically pick inbox from the dynamic system labels
+    private val initialSystemLabel = MailLabelId.DynamicSystemLabelId(SystemLabelId.Inbox.labelId)
+
     private val selectedMailLabelId by lazy {
         SelectedMailLabelId(
             appScope = appScope,
@@ -51,31 +58,40 @@ class SelectedMailLabelIdTest {
     @Test
     fun `initial selected mailLabelId is inbox by default`() = runTest {
         selectedMailLabelId.flow.test {
-            assertEquals(MailLabelId.System.Inbox, awaitItem())
+            assertEquals(initialSystemLabel, awaitItem())
         }
     }
 
     @Test
     fun `emits newly selected mailLabelId when it changes`() = runTest {
+        // Given
+        val draftsSystemLabel = MailLabelTestData.draftsSystemLabel.id
+
+        // When
         selectedMailLabelId.flow.test {
-            assertEquals(MailLabelId.System.Inbox, awaitItem())
+            assertEquals(initialSystemLabel, awaitItem())
 
-            selectedMailLabelId.set(MailLabelId.System.Drafts)
+            selectedMailLabelId.set(draftsSystemLabel)
 
-            assertEquals(MailLabelId.System.Drafts, awaitItem())
+            assertEquals(draftsSystemLabel, awaitItem())
         }
     }
 
     @Test
     fun `does not emit same mailLabelId twice`() = runTest {
-        selectedMailLabelId.flow.test {
-            assertEquals(MailLabelId.System.Inbox, awaitItem())
+        // Given
+        val archiveSystemLabel = MailLabelTestData.archiveSystemLabel.id
 
-            selectedMailLabelId.set(MailLabelId.System.Archive)
-            selectedMailLabelId.set(MailLabelId.System.Archive)
+        // When
+        selectedMailLabelId.flow.test {
+            // Then
+            assertEquals(initialSystemLabel, awaitItem())
+
+            selectedMailLabelId.set(archiveSystemLabel)
+            selectedMailLabelId.set(archiveSystemLabel)
             selectedMailLabelId.set(MailLabelId.Custom.Label(LabelId("lId1")))
 
-            assertEquals(MailLabelId.System.Archive, awaitItem())
+            assertEquals(archiveSystemLabel, awaitItem())
             assertEquals(MailLabelId.Custom.Label(LabelId("lId1")), awaitItem())
         }
     }
@@ -84,19 +100,20 @@ class SelectedMailLabelIdTest {
     fun `emits inbox when primary user changes`() = runTest {
         // given
         val userFlow = MutableStateFlow<User?>(null)
+        val archiveSystemLabel = MailLabelTestData.archiveSystemLabel.id
         every { observePrimaryUser() } returns userFlow
 
         selectedMailLabelId.flow.test {
-            assertEquals(MailLabelId.System.Inbox, awaitItem())
-            selectedMailLabelId.set(MailLabelId.System.Archive)
-            assertEquals(MailLabelId.System.Archive, awaitItem())
+            assertEquals(initialSystemLabel, awaitItem())
+            selectedMailLabelId.set(archiveSystemLabel)
+            assertEquals(archiveSystemLabel, awaitItem())
 
             // when
             userFlow.emit(UserSample.Primary)
             appScope.advanceUntilIdle()
 
             // then
-            assertEquals(MailLabelId.System.Inbox, awaitItem())
+            assertEquals(initialSystemLabel, awaitItem())
         }
     }
 }

@@ -95,7 +95,8 @@ import ch.protonmail.android.mailcommon.presentation.compose.UndoableOperationSn
 import ch.protonmail.android.mailcommon.presentation.model.string
 import ch.protonmail.android.mailcommon.presentation.ui.BottomActionBar
 import ch.protonmail.android.mailcommon.presentation.ui.delete.DeleteDialog
-import ch.protonmail.android.maillabel.domain.model.MailLabelId
+import ch.protonmail.android.maillabel.domain.model.MailLabel
+import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.mailmailbox.domain.model.OpenMailboxItemRequest
 import ch.protonmail.android.mailmailbox.presentation.R
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxItemUiModel
@@ -104,7 +105,6 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxSearc
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxTopAppBarState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxViewAction
-import ch.protonmail.android.mailonboarding.presentation.model.OnboardingState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.UnreadFilterState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.previewdata.MailboxPreview
 import ch.protonmail.android.mailmailbox.presentation.mailbox.previewdata.MailboxPreviewProvider
@@ -121,6 +121,7 @@ import ch.protonmail.android.mailmessage.presentation.ui.bottomsheet.MailboxUpse
 import ch.protonmail.android.mailmessage.presentation.ui.bottomsheet.MoreActionBottomSheetContent
 import ch.protonmail.android.mailmessage.presentation.ui.bottomsheet.MoveToBottomSheetContent
 import ch.protonmail.android.mailonboarding.presentation.OnboardingScreen
+import ch.protonmail.android.mailonboarding.presentation.model.OnboardingState
 import ch.protonmail.android.mailupselling.presentation.ui.bottomsheet.UpsellingBottomSheet
 import ch.protonmail.android.uicomponents.bottomsheet.bottomSheetHeightConstrainedContent
 import ch.protonmail.android.uicomponents.snackbar.DismissableSnackbarHost
@@ -919,30 +920,39 @@ private fun MailboxEmpty(
                 R.string.mailbox_is_empty_description
             )
         } else {
-            when (listState.currentMailLabel.id) {
-                MailLabelId.System.Inbox -> Triple(
-                    R.drawable.illustration_empty_mailbox_no_messages,
-                    R.string.mailbox_is_empty_title,
-                    R.string.mailbox_is_empty_description
-                )
+            when (val currentMailLabelId = listState.currentMailLabel) {
+                is MailLabel.DynamicSystemLabel -> {
+                    when (currentMailLabelId.systemLabelId) {
+                        SystemLabelId.Inbox -> Triple(
+                            R.drawable.illustration_empty_mailbox_no_messages,
+                            R.string.mailbox_is_empty_title,
+                            R.string.mailbox_is_empty_description
+                        )
+                        SystemLabelId.Spam -> Triple(
+                            R.drawable.illustration_empty_mailbox_spam,
+                            R.string.mailbox_is_empty_title,
+                            R.string.mailbox_is_empty_spam_description
+                        )
 
-                MailLabelId.System.Spam -> Triple(
-                    R.drawable.illustration_empty_mailbox_spam,
-                    R.string.mailbox_is_empty_title,
-                    R.string.mailbox_is_empty_spam_description
-                )
+                        SystemLabelId.Trash -> Triple(
+                            R.drawable.illustration_empty_mailbox_trash,
+                            R.string.mailbox_is_empty_title,
+                            R.string.mailbox_is_empty_trash_description
+                        )
 
-                MailLabelId.System.Trash -> Triple(
-                    R.drawable.illustration_empty_mailbox_trash,
-                    R.string.mailbox_is_empty_title,
-                    R.string.mailbox_is_empty_trash_description
-                )
-
+                        else -> Triple(
+                            R.drawable.illustration_empty_mailbox_folder,
+                            R.string.mailbox_is_empty_title,
+                            R.string.mailbox_is_empty_folder_description
+                        )
+                    }
+                }
                 else -> Triple(
                     R.drawable.illustration_empty_mailbox_folder,
                     R.string.mailbox_is_empty_title,
                     R.string.mailbox_is_empty_folder_description
                 )
+
             }
         }
     Column(

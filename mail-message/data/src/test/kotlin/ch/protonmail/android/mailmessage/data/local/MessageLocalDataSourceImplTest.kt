@@ -29,7 +29,6 @@ import ch.protonmail.android.mailcommon.domain.sample.ConversationIdSample
 import ch.protonmail.android.mailcommon.domain.sample.DataErrorSample
 import ch.protonmail.android.mailcommon.domain.sample.LabelIdSample
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
-import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.mailmessage.data.getMessage
 import ch.protonmail.android.mailmessage.data.getMessageWithLabels
@@ -951,7 +950,7 @@ class MessageLocalDataSourceImplTest {
     fun `should mark unread last read messages from conversations with the current label`() = runTest {
         // Given
         val userId = userId1
-        val contextLabelId = MailLabelId.System.Inbox.labelId
+        val contextLabelId = SystemLabelId.Inbox.labelId
         val conversationId = ConversationIdSample.AlphaAppFeedback
         val messages = listOf(
             MessageWithLabelIds(

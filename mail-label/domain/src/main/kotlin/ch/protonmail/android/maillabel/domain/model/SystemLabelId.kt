@@ -18,20 +18,6 @@
 
 package ch.protonmail.android.maillabel.domain.model
 
-import ch.protonmail.android.maillabel.domain.model.MailLabelId.System.AllDrafts
-import ch.protonmail.android.maillabel.domain.model.MailLabelId.System.AllMail
-import ch.protonmail.android.maillabel.domain.model.MailLabelId.System.AllScheduled
-import ch.protonmail.android.maillabel.domain.model.MailLabelId.System.AllSent
-import ch.protonmail.android.maillabel.domain.model.MailLabelId.System.AlmostAllMail
-import ch.protonmail.android.maillabel.domain.model.MailLabelId.System.Archive
-import ch.protonmail.android.maillabel.domain.model.MailLabelId.System.Drafts
-import ch.protonmail.android.maillabel.domain.model.MailLabelId.System.Inbox
-import ch.protonmail.android.maillabel.domain.model.MailLabelId.System.Outbox
-import ch.protonmail.android.maillabel.domain.model.MailLabelId.System.Sent
-import ch.protonmail.android.maillabel.domain.model.MailLabelId.System.Snoozed
-import ch.protonmail.android.maillabel.domain.model.MailLabelId.System.Spam
-import ch.protonmail.android.maillabel.domain.model.MailLabelId.System.Starred
-import ch.protonmail.android.maillabel.domain.model.MailLabelId.System.Trash
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId.Companion.unmodifiableByUserList
 import me.proton.core.label.domain.entity.LabelId
 
@@ -91,13 +77,7 @@ enum class SystemLabelId(val labelId: LabelId) {
         private val map = entries.associateBy { stringOf(it) }
 
         @Deprecated("Replaced by dynamic system labelIds. Will be removed")
-        val displayedList = listOf(Inbox, Drafts, Sent, Starred, Archive, Spam, Trash, AllMail)
-
-        @Deprecated("Replaced by dynamic system labelIds. Will be removed")
-        val exclusiveDestinationList = listOf(Inbox, Archive, Spam, Trash)
-
-        @Deprecated("Replaced by dynamic system labelIds. Will be removed")
-        val exclusiveList = exclusiveDestinationList + Drafts + Sent
+        val exclusiveList = listOf(Inbox, Archive, Spam, Trash, Drafts, Sent)
 
         @Deprecated("Replaced by dynamic system labelIds. Will be removed")
         val unmodifiableByUserList = listOf(AllMail, AlmostAllMail, AllDrafts, AllSent, AllScheduled, Outbox, Snoozed)
@@ -105,25 +85,6 @@ enum class SystemLabelId(val labelId: LabelId) {
         private fun stringOf(value: SystemLabelId): String = value.labelId.id
         fun enumOf(value: String?): SystemLabelId = map[value] ?: Inbox
     }
-}
-
-@Suppress("ComplexMethod")
-@Deprecated("Replaced by dynamic system labelIds. Will be removed")
-fun SystemLabelId.toMailLabelSystem(): MailLabel.System = when (this) {
-    SystemLabelId.Inbox -> MailLabel.System(Inbox)
-    SystemLabelId.AllDrafts -> MailLabel.System(AllDrafts)
-    SystemLabelId.AllSent -> MailLabel.System(AllSent)
-    SystemLabelId.Trash -> MailLabel.System(Trash)
-    SystemLabelId.Spam -> MailLabel.System(Spam)
-    SystemLabelId.AllMail -> MailLabel.System(AllMail)
-    SystemLabelId.Archive -> MailLabel.System(Archive)
-    SystemLabelId.Sent -> MailLabel.System(Sent)
-    SystemLabelId.Drafts -> MailLabel.System(Drafts)
-    SystemLabelId.Outbox -> MailLabel.System(Outbox)
-    SystemLabelId.Starred -> MailLabel.System(Starred)
-    SystemLabelId.AllScheduled -> MailLabel.System(AllScheduled)
-    SystemLabelId.AlmostAllMail -> MailLabel.System(AlmostAllMail)
-    SystemLabelId.Snoozed -> MailLabel.System(Snoozed)
 }
 
 @Deprecated("Replaced by dynamic system labelIds. Will be removed")

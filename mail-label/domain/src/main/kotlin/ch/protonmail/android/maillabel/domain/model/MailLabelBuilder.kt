@@ -24,9 +24,6 @@ import me.proton.core.label.domain.entity.Label
 import me.proton.core.label.domain.entity.LabelId
 import me.proton.core.label.domain.entity.LabelType
 
-@Deprecated("Replaced by dynamic system labelIds. Will be removed")
-fun List<SystemLabelId>.toMailLabelSystem(): List<MailLabel.System> = map { it.toMailLabelSystem() }
-
 fun List<LabelWithSystemLabelId>.toDynamicSystemMailLabel(): List<MailLabel.DynamicSystemLabel> = map {
     MailLabel.DynamicSystemLabel(
         id = MailLabelId.DynamicSystemLabelId(it.label.labelId),

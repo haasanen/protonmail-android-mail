@@ -18,23 +18,24 @@
 
 package ch.protonmail.android.maillabel.domain.usecase
 
-import ch.protonmail.android.maillabel.domain.model.SystemLabelId
-import ch.protonmail.android.maillabel.domain.model.toMailLabelSystem
-import kotlinx.coroutines.flow.map
 import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 
+@Deprecated(
+    """
+   With the introduction of dynamic system labels, the behavior of this use case changed
+    and it's now returning the full list of system labels as exposed by rust
+    with no filtering on the "exclusiveness" anymore. 
+    
+    **This will break any functionality that relied on such list being filtered, such as move-to etc.**
+   Those functionalities will need adaptation to work with rust anyways thus leaving this change for then.
+   This should be updated (likely, dropped) as those features are implemented)
+"""
+)
 class ObserveExclusiveMailLabels @Inject constructor(
     private val exclusiveDestinationMailFolders: ObserveExclusiveDestinationMailLabels
 ) {
 
-    operator fun invoke(userId: UserId) = exclusiveDestinationMailFolders(userId).map {
-        it.copy(
-            systemLabels = it.systemLabels + listOf(
-                SystemLabelId.Drafts.toMailLabelSystem(),
-                SystemLabelId.Sent.toMailLabelSystem()
-            )
-        )
-    }
+    operator fun invoke(userId: UserId) = exclusiveDestinationMailFolders(userId)
 
 }

@@ -21,7 +21,7 @@ package ch.protonmail.android.maillabel.domain
 import ch.protonmail.android.mailcommon.domain.coroutines.AppScope
 import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUser
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
-import ch.protonmail.android.maillabel.domain.model.MailLabelId.System
+import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -37,17 +37,21 @@ class SelectedMailLabelId @Inject constructor(
     observePrimaryUser: ObservePrimaryUser
 ) {
 
-    private val mutableFlow = MutableStateFlow<MailLabelId>(System.Inbox)
+    private val mutableFlow = MutableStateFlow<MailLabelId>(InboxMailLabelId)
 
     val flow: StateFlow<MailLabelId> = mutableFlow.asStateFlow()
 
     init {
         observePrimaryUser()
-            .onEach { set(System.Inbox) }
+            .onEach { set(InboxMailLabelId) }
             .launchIn(appScope)
     }
 
     fun set(value: MailLabelId) {
         mutableFlow.value = value
+    }
+
+    companion object {
+        val InboxMailLabelId = MailLabelId.DynamicSystemLabelId(SystemLabelId.Inbox.labelId)
     }
 }

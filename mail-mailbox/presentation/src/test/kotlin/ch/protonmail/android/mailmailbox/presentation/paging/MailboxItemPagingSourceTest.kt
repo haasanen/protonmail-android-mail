@@ -29,7 +29,6 @@ import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
-import ch.protonmail.android.maillabel.domain.model.MailLabelId.System.Inbox
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItem
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItemType
 import ch.protonmail.android.mailmailbox.domain.model.MailboxPageKey
@@ -43,6 +42,7 @@ import ch.protonmail.android.mailpagination.domain.model.PageFilter
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailpagination.domain.model.ReadStatus
 import ch.protonmail.android.testdata.mailbox.MailboxTestData.buildMailboxItem
+import ch.protonmail.android.testdata.maillabel.MailLabelTestData
 import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -343,7 +343,7 @@ class MailboxItemPagingSourceTest {
     @Test
     fun `paging source get refresh key returns key which maintains existing page filter`() = runTest {
         // Given
-        val archiveUnreadPageKey = buildPageKey(ReadStatus.Unread, MailLabelId.System.Archive)
+        val archiveUnreadPageKey = buildPageKey(ReadStatus.Unread, MailLabelTestData.archiveSystemLabel.id)
 
         // When
         val refreshKey = buildPagingSource(archiveUnreadPageKey).getRefreshKey(
@@ -493,7 +493,7 @@ class MailboxItemPagingSourceTest {
 
     private fun buildPageKey(
         readState: ReadStatus = ReadStatus.All,
-        selectedLabelId: MailLabelId = Inbox,
+        selectedLabelId: MailLabelId = MailLabelTestData.inboxSystemLabel.id,
         filter: PageFilter = PageFilter(labelId = selectedLabelId.labelId, read = readState)
     ) = PageKey(filter = filter)
 

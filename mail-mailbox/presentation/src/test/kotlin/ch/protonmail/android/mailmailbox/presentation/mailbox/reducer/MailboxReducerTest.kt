@@ -24,8 +24,6 @@ import ch.protonmail.android.mailcommon.presentation.model.BottomBarState
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcommon.presentation.reducer.BottomBarReducer
 import ch.protonmail.android.mailcommon.presentation.ui.delete.DeleteDialogState
-import ch.protonmail.android.maillabel.domain.model.MailLabel
-import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.presentation.text
 import ch.protonmail.android.mailmailbox.domain.model.StorageLimitPreference
 import ch.protonmail.android.mailmailbox.domain.model.UserAccountStorageStatus
@@ -37,17 +35,17 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxOpera
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxTopAppBarState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxViewAction
-import ch.protonmail.android.mailonboarding.presentation.model.OnboardingState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.StorageLimitState
-import ch.protonmail.android.mailmailbox.presentation.mailbox.model.UpgradeStorageState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.UnreadFilterState
+import ch.protonmail.android.mailmailbox.presentation.mailbox.model.UpgradeStorageState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.previewdata.MailboxSearchStateSampleData
 import ch.protonmail.android.mailmailbox.presentation.mailbox.previewdata.MailboxStateSampleData
 import ch.protonmail.android.mailmessage.presentation.reducer.BottomSheetReducer
+import ch.protonmail.android.mailonboarding.presentation.model.OnboardingState
 import ch.protonmail.android.mailonboarding.presentation.reducer.OnboardingReducer
-import ch.protonmail.android.testdata.label.LabelTestData
 import ch.protonmail.android.testdata.mailbox.MailboxItemUiModelTestData
 import ch.protonmail.android.testdata.mailbox.UnreadCountersTestData
+import ch.protonmail.android.testdata.maillabel.MailLabelTestData
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -182,7 +180,7 @@ internal class MailboxReducerTest(
 
     companion object {
 
-        private val spamLabel = MailLabel.System(MailLabelId.System.Spam)
+        private val spamLabel = MailLabelTestData.spamSystemLabel
         private val currentState = MailboxStateSampleData.Loading
         private val reducedState = MailboxState(
             mailboxListState = MailboxListState.Data.ViewMode(
@@ -349,7 +347,7 @@ internal class MailboxReducerTest(
                 shouldReduceStorageLimitState = false
             ),
             TestInput(
-                MailboxViewAction.MoveToDestinationSelected(MailLabelId.System.Archive),
+                MailboxViewAction.MoveToDestinationSelected(MailLabelTestData.archiveSystemLabel.id),
                 shouldReduceMailboxListState = false,
                 shouldReduceTopAppBarState = false,
                 shouldReduceUnreadFilterState = false,
@@ -514,7 +512,7 @@ internal class MailboxReducerTest(
             ),
             TestInput(
                 MailboxEvent.NewLabelSelected(
-                    selectedLabel = LabelTestData.systemLabels.first(),
+                    selectedLabel = MailLabelTestData.dynamicSystemLabels.first(),
                     selectedLabelCount = UnreadCountersTestData.systemUnreadCounters.first().count
                 ),
                 shouldReduceMailboxListState = true,
@@ -527,7 +525,7 @@ internal class MailboxReducerTest(
                 shouldReduceStorageLimitState = false
             ),
             TestInput(
-                MailboxEvent.SelectedLabelChanged(LabelTestData.systemLabels.first()),
+                MailboxEvent.SelectedLabelChanged(MailLabelTestData.dynamicSystemLabels.first()),
                 shouldReduceMailboxListState = true,
                 shouldReduceTopAppBarState = true,
                 shouldReduceUnreadFilterState = false,

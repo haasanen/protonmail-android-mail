@@ -18,14 +18,13 @@
 
 package ch.protonmail.android.mailmailbox.presentation.mailbox.reducer
 
-import ch.protonmail.android.maillabel.domain.model.MailLabel
-import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.presentation.text
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxEvent
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxOperation
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxTopAppBarState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxViewAction
 import ch.protonmail.android.testdata.mailbox.MailboxItemUiModelTestData.readMailboxItemUiModel
+import ch.protonmail.android.testdata.maillabel.MailLabelTestData
 import me.proton.core.mailsettings.domain.entity.ViewMode
 import me.proton.core.util.kotlin.EMPTY_STRING
 import org.junit.Test
@@ -50,8 +49,8 @@ internal class MailboxTopAppBarReducerTest(
 
     companion object {
 
-        private val inboxLabel = MailLabel.System(MailLabelId.System.Inbox)
-        private val trashLabel = MailLabel.System(MailLabelId.System.Trash)
+        private val inboxLabel = MailLabelTestData.inboxSystemLabel
+        private val trashLabel = MailLabelTestData.trashSystemLabel
 
         private val transitionsFromLoadingState = listOf(
             TestInput(

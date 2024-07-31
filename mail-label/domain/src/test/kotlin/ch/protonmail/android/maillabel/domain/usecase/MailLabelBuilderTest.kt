@@ -19,11 +19,7 @@
 package ch.protonmail.android.maillabel.domain.usecase
 
 import android.graphics.Color
-import ch.protonmail.android.maillabel.domain.model.MailLabel
-import ch.protonmail.android.maillabel.domain.model.MailLabelId.System
-import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.maillabel.domain.model.toMailLabelCustom
-import ch.protonmail.android.maillabel.domain.model.toMailLabelSystem
 import ch.protonmail.android.testdata.label.LabelTestData.buildLabel
 import ch.protonmail.android.testdata.maillabel.MailLabelTestData.buildCustomFolder
 import ch.protonmail.android.testdata.user.UserIdTestData
@@ -50,37 +46,6 @@ class MailLabelBuilderTest {
     @After
     fun tearDown() {
         unmockkStatic(Color::parseColor)
-    }
-
-    @Test
-    fun `return correct system labels`() = runTest {
-        // Given
-        val items = listOf(
-            SystemLabelId.Inbox,
-            SystemLabelId.Drafts,
-            SystemLabelId.Sent,
-            SystemLabelId.Starred,
-            SystemLabelId.Archive,
-            SystemLabelId.Spam,
-            SystemLabelId.Trash,
-            SystemLabelId.AllMail
-        )
-
-        // When
-        val actual = items.toMailLabelSystem()
-
-        // Then
-        val expected = listOf(
-            MailLabel.System(System.Inbox),
-            MailLabel.System(System.Drafts),
-            MailLabel.System(System.Sent),
-            MailLabel.System(System.Starred),
-            MailLabel.System(System.Archive),
-            MailLabel.System(System.Spam),
-            MailLabel.System(System.Trash),
-            MailLabel.System(System.AllMail)
-        )
-        assertEquals(expected, actual)
     }
 
     @Test

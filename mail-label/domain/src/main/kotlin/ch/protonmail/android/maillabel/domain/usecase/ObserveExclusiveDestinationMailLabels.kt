@@ -19,39 +19,44 @@
 package ch.protonmail.android.maillabel.domain.usecase
 
 import ch.protonmail.android.maillabel.domain.model.MailLabels
-import ch.protonmail.android.maillabel.domain.model.SystemLabelId
+import ch.protonmail.android.maillabel.domain.model.toDynamicSystemMailLabel
 import ch.protonmail.android.maillabel.domain.model.toMailLabelCustom
-import ch.protonmail.android.maillabel.domain.model.toMailLabelSystem
+import ch.protonmail.android.maillabel.domain.repository.LabelRepository
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
-import me.proton.core.domain.arch.mapSuccessValueOrNull
 import me.proton.core.domain.entity.UserId
-import me.proton.core.label.domain.entity.LabelType
-import ch.protonmail.android.maillabel.domain.repository.LabelRepository
 import javax.inject.Inject
 
+@Deprecated(
+    """
+   With the introduction of dynamic system labels, the behavior of this use case changed
+    and it's now returning the full list of system labels as exposed by rust
+    with no filtering on the "exclusiveness" anymore. 
+    
+    **This will break any functionality that relied on such list being filtered, such as move-to etc.**
+   Those functionalities will need adaptation to work with rust anyways thus leaving this change for then.
+   This should be updated (likely, dropped) as those features are implemented)
+"""
+)
 class ObserveExclusiveDestinationMailLabels @Inject constructor(
     private val labelRepository: LabelRepository
 ) {
 
     operator fun invoke(userId: UserId) = combine(
-        observeSystemLabelIds().map { it.toMailLabelSystem() },
+        observeSystemLabelIds(userId).map { it.toDynamicSystemMailLabel() },
         observeMessageFolders(userId).map { it.toMailLabelCustom() }
-    ) { defaults, folders ->
+    ) { system, folders ->
         MailLabels(
-            systemLabels = defaults,
-            dynamicSystemLabels = emptyList(),
-            labels = emptyList(),
-            folders = folders
+            dynamicSystemLabels = system,
+            folders = folders,
+            labels = emptyList()
         )
     }
 
-    private fun observeSystemLabelIds() = flowOf(SystemLabelId.exclusiveDestinationList)
+    private fun observeSystemLabelIds(userId: UserId) = labelRepository.observeSystemLabels(userId)
 
-    private fun observeMessageFolders(userId: UserId) = labelRepository.observeLabels(userId, LabelType.MessageFolder)
-        .mapSuccessValueOrNull()
-        .mapLatest { list -> list.orEmpty().sortedBy { it.order } }
+    private fun observeMessageFolders(userId: UserId) = labelRepository.observeCustomFolders(userId)
+        .mapLatest { list -> list.sortedBy { it.order } }
 
 }

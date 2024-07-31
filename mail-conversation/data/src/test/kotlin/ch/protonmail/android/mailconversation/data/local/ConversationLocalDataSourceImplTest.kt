@@ -38,7 +38,7 @@ import ch.protonmail.android.mailconversation.data.sample.ConversationEntitySamp
 import ch.protonmail.android.mailconversation.data.sample.ConversationWithLabelsSample
 import ch.protonmail.android.mailconversation.domain.sample.ConversationLabelSample
 import ch.protonmail.android.mailconversation.domain.sample.ConversationSample
-import ch.protonmail.android.maillabel.domain.model.MailLabelId
+import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.mailpagination.data.local.dao.PageIntervalDao
 import ch.protonmail.android.mailpagination.data.local.upsertPageInterval
 import ch.protonmail.android.mailpagination.domain.model.OrderDirection
@@ -71,7 +71,7 @@ import kotlin.test.assertNull
 
 class ConversationLocalDataSourceImplTest {
 
-    private val contextLabelId = MailLabelId.System.Archive.labelId
+    private val contextLabelId = SystemLabelId.Archive.labelId
 
     private val conversationDao = mockk<ConversationDao> {
         coEvery { this@mockk.insertOrUpdate(entities = anyVararg()) } just Runs
@@ -477,7 +477,7 @@ class ConversationLocalDataSourceImplTest {
     @Test
     fun `mark unread increments the unread count for the given context label only`() = runTest {
         // given
-        val contextLabelId = MailLabelId.System.Inbox.labelId
+        val contextLabelId = SystemLabelId.Inbox.labelId
         val conversationId = ConversationIdSample.AlphaAppFeedback
         val conversation = ConversationWithLabelsSample.AlphaAppFeedback.copy(
             conversation = ConversationEntitySample.AlphaAppFeedback.copy(

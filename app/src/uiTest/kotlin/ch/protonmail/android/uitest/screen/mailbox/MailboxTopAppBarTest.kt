@@ -29,12 +29,12 @@ import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
 import ch.protonmail.android.R
 import ch.protonmail.android.maillabel.domain.model.MailLabel
-import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.presentation.text
 import ch.protonmail.android.mailmailbox.presentation.mailbox.MailboxTopAppBar
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxTopAppBarState.Data
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.UpgradeStorageState
 import ch.protonmail.android.test.annotations.suite.RegressionTest
+import ch.protonmail.android.testdata.maillabel.MailLabelTestData
 import ch.protonmail.android.uitest.util.HiltInstrumentedTest
 import ch.protonmail.android.uitest.util.InstrumentationHolder
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -275,7 +275,7 @@ internal class MailboxTopAppBarTest : HiltInstrumentedTest() {
 
     private companion object TestData {
 
-        val MAIL_LABEL_INBOX = MailLabel.System(MailLabelId.System.Inbox)
+        val MAIL_LABEL_INBOX = MailLabelTestData.inboxSystemLabel
         const val MAIL_LABEL_INBOX_TEXT = "Inbox"
         const val SELECTED_COUNT_TEN = 10
     }

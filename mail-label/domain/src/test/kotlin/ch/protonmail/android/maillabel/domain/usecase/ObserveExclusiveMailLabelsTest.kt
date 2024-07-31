@@ -19,15 +19,18 @@
 package ch.protonmail.android.maillabel.domain.usecase
 
 import app.cash.turbine.test
+import ch.protonmail.android.maillabel.domain.model.LabelWithSystemLabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabels
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
-import ch.protonmail.android.maillabel.domain.model.toMailLabelSystem
+import ch.protonmail.android.maillabel.domain.model.toDynamicSystemMailLabel
+import ch.protonmail.android.testdata.label.LabelTestData.buildLabel
 import ch.protonmail.android.testdata.maillabel.MailLabelTestData.buildCustomFolder
 import ch.protonmail.android.testdata.user.UserIdTestData
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
+import me.proton.core.label.domain.entity.LabelType
 import org.junit.Test
 import kotlin.test.assertEquals
 
@@ -35,14 +38,27 @@ internal class ObserveExclusiveMailLabelsTest {
 
     private val userId = UserIdTestData.userId
 
+    private val labelWithSystemLabelIds = listOf(
+        LabelWithSystemLabelId(
+            buildLabel(userId = userId, type = LabelType.SystemFolder, id = "6", order = 1),
+            SystemLabelId.Archive
+        ),
+        LabelWithSystemLabelId(
+            buildLabel(userId = userId, type = LabelType.SystemFolder, id = "10", order = 1),
+            SystemLabelId.Starred
+        )
+    )
+
+    private val customsFolders = listOf(
+        buildCustomFolder("custom1"),
+        buildCustomFolder("custom2")
+    )
+
     private val observeExclusiveDestinationMailLabels = mockk<ObserveExclusiveDestinationMailLabels> {
         every { this@mockk.invoke(userId) } returns flowOf(
             MailLabels(
-                systemLabels = SystemLabelId.exclusiveDestinationList.map { it.toMailLabelSystem() },
-                folders = listOf(
-                    buildCustomFolder("custom1"),
-                    buildCustomFolder("custom2")
-                ),
+                dynamicSystemLabels = labelWithSystemLabelIds.toDynamicSystemMailLabel(),
+                folders = customsFolders,
                 labels = emptyList()
             )
         )
@@ -54,7 +70,7 @@ internal class ObserveExclusiveMailLabelsTest {
         ObserveExclusiveMailLabels(observeExclusiveDestinationMailLabels).invoke(userId).test {
             // Then
             val item = awaitItem()
-            assertEquals(SystemLabelId.exclusiveList.map { it.toMailLabelSystem() }, item.systemLabels)
+            assertEquals(labelWithSystemLabelIds.toDynamicSystemMailLabel(), item.dynamicSystemLabels)
             cancelAndIgnoreRemainingEvents()
         }
     }

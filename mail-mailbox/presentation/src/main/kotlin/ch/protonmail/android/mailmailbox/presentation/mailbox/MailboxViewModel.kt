@@ -70,9 +70,9 @@ import ch.protonmail.android.mailmailbox.domain.usecase.ObserveOnboarding
 import ch.protonmail.android.mailmailbox.domain.usecase.ObservePrimaryUserAccountStorageStatus
 import ch.protonmail.android.mailmailbox.domain.usecase.ObserveStorageLimitPreference
 import ch.protonmail.android.mailmailbox.domain.usecase.ObserveUnreadCounters
+import ch.protonmail.android.mailmailbox.domain.usecase.RecordRatingBoosterTriggered
 import ch.protonmail.android.mailmailbox.domain.usecase.RelabelConversations
 import ch.protonmail.android.mailmailbox.domain.usecase.RelabelMessages
-import ch.protonmail.android.mailmailbox.domain.usecase.RecordRatingBoosterTriggered
 import ch.protonmail.android.mailmailbox.domain.usecase.SaveOnboarding
 import ch.protonmail.android.mailmailbox.domain.usecase.SaveStorageLimitPreference
 import ch.protonmail.android.mailmailbox.domain.usecase.ShouldShowRatingBooster
@@ -211,7 +211,15 @@ class MailboxViewModel @Inject constructor(
                 currentMailLabel?.let {
                     emitNewStateFrom(MailboxEvent.SelectedLabelChanged(currentMailLabel))
                 } ?: run {
-                    emitNewStateFrom(MailboxEvent.SelectedLabelChanged(MailLabelId.System.Inbox.toMailLabel()))
+                    emitNewStateFrom(
+                        MailboxEvent.SelectedLabelChanged(
+                            MailLabel.DynamicSystemLabel(
+                                SelectedMailLabelId.InboxMailLabelId,
+                                SystemLabelId.Inbox,
+                                0
+                            )
+                        )
+                    )
                 }
             }
             .filterNotNull()
@@ -374,7 +382,8 @@ class MailboxViewModel @Inject constructor(
                 is MailboxViewAction.DeleteAllConfirmed -> handleClearAllConfirmedAction()
                 is MailboxViewAction.DeleteAllDialogDismissed -> handleClearAllDialogDismissed(viewAction)
                 is MailboxViewAction.RequestUpsellingBottomSheet -> showUpsellingBottomSheet(viewAction)
-                is MailboxViewAction.NavigateToInboxLabel -> selectedMailLabelId.set(MailLabelId.System.Inbox)
+                is MailboxViewAction.NavigateToInboxLabel ->
+                    selectedMailLabelId.set(SelectedMailLabelId.InboxMailLabelId)
                 is MailboxViewAction.ShowRatingBooster -> showRatingBooster(viewAction)
             }.exhaustive
         }
@@ -520,11 +529,17 @@ class MailboxViewModel @Inject constructor(
                 state.observeMailLabelChanges(),
                 state.observeUnreadFilterState(),
                 observeViewModeByLocation(),
-                state.observeSearchQuery()
-            ) { selectedMailLabel, unreadFilterEnabled, viewMode, query ->
+                state.observeSearchQuery(),
+                observeMailLabels()
+            ) { selectedMailLabel, unreadFilterEnabled, viewMode, query, mailLabels ->
                 mailboxPagerFactory.create(
                     userIds = listOf(userId),
-                    selectedMailLabelId = if (query.isEmpty()) selectedMailLabel.id else MailLabelId.System.AllMail,
+                    selectedMailLabelId = if (query.isEmpty()) {
+                        selectedMailLabel.id
+                    } else {
+                        mailLabels.dynamicSystemLabels.find { it.systemLabelId == SystemLabelId.AllMail }?.id
+                            ?: selectedMailLabel.id
+                    },
                     filterUnread = unreadFilterEnabled,
                     type = if (query.isEmpty()) viewMode.toMailboxItemType() else MailboxItemType.Message,
                     searchQuery = query
@@ -825,7 +840,7 @@ class MailboxViewModel @Inject constructor(
 
             val event = MailboxEvent.MailboxBottomSheetEvent(
                 MoveToBottomSheetState.MoveToBottomSheetEvent.ActionData(
-                    destinationFolder.toUiModels(color).let { it.folders + it.systems }.toImmutableList()
+                    destinationFolder.toUiModels(color).let { it.folders + it.dynamicSystems }.toImmutableList()
                 )
             )
             emitNewStateFrom(event)

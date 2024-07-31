@@ -20,9 +20,11 @@ package ch.protonmail.android.maillabel.domain.usecase
 
 import android.graphics.Color
 import app.cash.turbine.test
+import ch.protonmail.android.maillabel.domain.model.LabelWithSystemLabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabels
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
-import ch.protonmail.android.maillabel.domain.model.toMailLabelSystem
+import ch.protonmail.android.maillabel.domain.model.toDynamicSystemMailLabel
+import ch.protonmail.android.maillabel.domain.repository.LabelRepository
 import ch.protonmail.android.testdata.label.LabelTestData.buildLabel
 import ch.protonmail.android.testdata.maillabel.MailLabelTestData.buildCustomFolder
 import ch.protonmail.android.testdata.user.UserIdTestData
@@ -31,12 +33,8 @@ import io.mockk.mockk
 import io.mockk.mockkStatic
 import io.mockk.unmockkStatic
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runTest
-import me.proton.core.domain.arch.DataResult
-import me.proton.core.domain.arch.ResponseSource
 import me.proton.core.label.domain.entity.LabelType
-import ch.protonmail.android.maillabel.domain.repository.LabelRepository
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -46,23 +44,31 @@ internal class ObserveExclusiveDestinationMailLabelsTest {
 
     private val userId = UserIdTestData.userId
 
+    private val labelWithSystemLabelIds = listOf(
+        LabelWithSystemLabelId(
+            buildLabel(userId = userId, type = LabelType.SystemFolder, id = "6", order = 1),
+            SystemLabelId.Archive
+        ),
+        LabelWithSystemLabelId(
+            buildLabel(userId = userId, type = LabelType.SystemFolder, id = "10", order = 1),
+            SystemLabelId.Starred
+        )
+    )
+
     private val labelRepository = mockk<LabelRepository> {
-        every { observeLabels(any(), type = LabelType.MessageFolder) } returns flowOf(
-            DataResult.Success(
-                source = ResponseSource.Local,
-                value = listOf(
-                    buildLabel(userId = userId, type = LabelType.MessageFolder, id = "0", order = 0),
-                    buildLabel(userId = userId, type = LabelType.MessageFolder, id = "1", order = 1),
-                    buildLabel(userId = userId, type = LabelType.MessageFolder, id = "2", order = 2)
-                )
+        every { observeCustomFolders(any()) } returns flowOf(
+            listOf(
+                buildLabel(userId = userId, type = LabelType.MessageFolder, id = "0", order = 0),
+                buildLabel(userId = userId, type = LabelType.MessageFolder, id = "1", order = 1),
+                buildLabel(userId = userId, type = LabelType.MessageFolder, id = "2", order = 2)
             )
         )
+        every { observeSystemLabels(any()) } returns flowOf(labelWithSystemLabelIds)
     }
 
-    private val TestScope.observeMailLabels
-        get() = ObserveExclusiveDestinationMailLabels(
-            labelRepository = labelRepository
-        )
+    private val observeMailLabels = ObserveExclusiveDestinationMailLabels(
+        labelRepository = labelRepository
+    )
 
     @Before
     fun setUp() {
@@ -84,7 +90,7 @@ internal class ObserveExclusiveDestinationMailLabelsTest {
             assertEquals(3, item.folders.size)
             assertEquals(
                 expected = MailLabels(
-                    systemLabels = SystemLabelId.exclusiveDestinationList.map { it.toMailLabelSystem() },
+                    dynamicSystemLabels = labelWithSystemLabelIds.toDynamicSystemMailLabel(),
                     folders = listOf(
                         buildCustomFolder("0", order = 0),
                         buildCustomFolder("1", order = 1),
@@ -108,12 +114,7 @@ internal class ObserveExclusiveDestinationMailLabelsTest {
             buildLabel(userId = userId, type = LabelType.MessageFolder, id = "0.2.1", order = 0, parentId = "0.2"),
             buildLabel(userId = userId, type = LabelType.MessageFolder, id = "0.2.2", order = 1, parentId = "0.2")
         )
-        every { labelRepository.observeLabels(any(), type = LabelType.MessageFolder) } returns flowOf(
-            DataResult.Success(
-                source = ResponseSource.Local,
-                value = labels
-            )
-        )
+        every { labelRepository.observeCustomFolders(any()) } returns flowOf(labels)
 
         // When
         observeMailLabels.invoke(userId).test {
@@ -136,16 +137,13 @@ internal class ObserveExclusiveDestinationMailLabelsTest {
     @Test
     fun `return correct folders order on success`() = runTest {
         // Given
-        every { labelRepository.observeLabels(any(), type = LabelType.MessageFolder) } returns flowOf(
-            DataResult.Success(
-                source = ResponseSource.Local,
-                value = listOf(
-                    buildLabel(userId = userId, type = LabelType.MessageFolder, id = "0.1", order = 1, parentId = "0"),
-                    buildLabel(userId = userId, type = LabelType.MessageFolder, id = "0.0", order = 0, parentId = "0"),
-                    buildLabel(userId = userId, type = LabelType.MessageFolder, id = "2", order = 2),
-                    buildLabel(userId = userId, type = LabelType.MessageFolder, id = "0", order = 0),
-                    buildLabel(userId = userId, type = LabelType.MessageFolder, id = "1", order = 1)
-                )
+        every { labelRepository.observeCustomFolders(any()) } returns flowOf(
+            listOf(
+                buildLabel(userId = userId, type = LabelType.MessageFolder, id = "0.1", order = 1, parentId = "0"),
+                buildLabel(userId = userId, type = LabelType.MessageFolder, id = "0.0", order = 0, parentId = "0"),
+                buildLabel(userId = userId, type = LabelType.MessageFolder, id = "2", order = 2),
+                buildLabel(userId = userId, type = LabelType.MessageFolder, id = "0", order = 0),
+                buildLabel(userId = userId, type = LabelType.MessageFolder, id = "1", order = 1)
             )
         )
 

@@ -33,7 +33,6 @@ import ch.protonmail.android.mailconversation.data.remote.worker.DeleteConversat
 import ch.protonmail.android.mailconversation.data.remote.worker.MarkConversationAsReadWorker
 import ch.protonmail.android.mailconversation.data.remote.worker.MarkConversationAsUnreadWorker
 import ch.protonmail.android.mailconversation.data.remote.worker.RemoveLabelConversationWorker
-import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.mailpagination.domain.model.OrderBy
 import ch.protonmail.android.mailpagination.domain.model.OrderDirection
@@ -63,7 +62,7 @@ import kotlin.test.assertNotNull
 
 class ConversationRemoteDataSourceImplTest {
 
-    private val contextLabelId = MailLabelId.System.Archive.labelId
+    private val contextLabelId = SystemLabelId.Archive.labelId
 
     private val sessionProvider = mockk<SessionProvider> {
         coEvery { getSessionId(userId) } returns SessionId("testSessionId")

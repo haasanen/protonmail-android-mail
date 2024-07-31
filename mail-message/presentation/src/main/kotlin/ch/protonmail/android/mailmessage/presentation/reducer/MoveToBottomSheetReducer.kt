@@ -78,7 +78,6 @@ class MoveToBottomSheetReducer @Inject constructor() {
 
     private fun MailLabelUiModel.setSelectedIfLabelIdMatch(mailLabelId: MailLabelId) = when (this) {
         is MailLabelUiModel.Custom -> copy(isSelected = id == mailLabelId)
-        is MailLabelUiModel.System -> copy(isSelected = id == mailLabelId)
         is MailLabelUiModel.DynamicSystem -> copy(isSelected = id == mailLabelId)
     }
 

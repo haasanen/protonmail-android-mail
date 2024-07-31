@@ -53,7 +53,6 @@ import ch.protonmail.android.mailconversation.domain.usecase.UnStarConversations
 import ch.protonmail.android.maillabel.domain.SelectedMailLabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabel
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
-import ch.protonmail.android.maillabel.domain.model.MailLabelId.System.Archive
 import ch.protonmail.android.maillabel.domain.model.MailLabels
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.maillabel.domain.usecase.ObserveCustomMailLabels
@@ -77,9 +76,9 @@ import ch.protonmail.android.mailmailbox.domain.usecase.ObserveOnboarding
 import ch.protonmail.android.mailmailbox.domain.usecase.ObservePrimaryUserAccountStorageStatus
 import ch.protonmail.android.mailmailbox.domain.usecase.ObserveStorageLimitPreference
 import ch.protonmail.android.mailmailbox.domain.usecase.ObserveUnreadCounters
+import ch.protonmail.android.mailmailbox.domain.usecase.RecordRatingBoosterTriggered
 import ch.protonmail.android.mailmailbox.domain.usecase.RelabelConversations
 import ch.protonmail.android.mailmailbox.domain.usecase.RelabelMessages
-import ch.protonmail.android.mailmailbox.domain.usecase.RecordRatingBoosterTriggered
 import ch.protonmail.android.mailmailbox.domain.usecase.SaveOnboarding
 import ch.protonmail.android.mailmailbox.domain.usecase.SaveStorageLimitPreference
 import ch.protonmail.android.mailmailbox.domain.usecase.ShouldShowRatingBooster
@@ -94,7 +93,6 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxOpera
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxTopAppBarState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxViewAction
-import ch.protonmail.android.mailonboarding.presentation.model.OnboardingState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.StorageLimitState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.SwipeActionsUiModel
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.UnreadFilterState
@@ -124,12 +122,12 @@ import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.LabelAsB
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MailboxMoreActionsBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MoveToBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.UpsellingBottomSheetState
+import ch.protonmail.android.mailonboarding.presentation.model.OnboardingState
 import ch.protonmail.android.mailsettings.domain.model.FolderColorSettings
 import ch.protonmail.android.mailsettings.domain.model.SwipeActionsPreference
 import ch.protonmail.android.mailsettings.domain.usecase.ObserveFolderColorSettings
 import ch.protonmail.android.mailsettings.domain.usecase.ObserveSwipeActionsPreference
 import ch.protonmail.android.testdata.contact.ContactTestData
-import ch.protonmail.android.testdata.label.LabelTestData
 import ch.protonmail.android.testdata.mailbox.MailboxItemUiModelTestData.buildMailboxUiModelItem
 import ch.protonmail.android.testdata.mailbox.MailboxItemUiModelTestData.draftMailboxItemUiModel
 import ch.protonmail.android.testdata.mailbox.MailboxItemUiModelTestData.readMailboxItemUiModel
@@ -188,7 +186,7 @@ import ch.protonmail.android.mailmessage.domain.model.Message as DomainMessage
 class MailboxViewModelTest {
 
     private val defaultFolderColorSettings = FolderColorSettings()
-    private val initialLocationMailLabelId = Archive
+    private val initialLocationMailLabelId = MailLabelTestData.archiveSystemLabel.id
     private val actionUiModelMapper = ActionUiModelMapper()
     private val swipeActionsMapper = SwipeActionsMapper()
 
@@ -203,7 +201,7 @@ class MailboxViewModelTest {
     private val observeMailLabels = mockk<ObserveMailLabels> {
         every { this@mockk.invoke(any()) } returns MutableStateFlow(
             MailLabels(
-                systemLabels = LabelTestData.systemLabels,
+                dynamicSystemLabels = MailLabelTestData.dynamicSystemLabels,
                 folders = emptyList(),
                 labels = listOf(MailLabelTestData.customLabelOne)
             )
@@ -604,13 +602,13 @@ class MailboxViewModelTest {
     @Test
     fun `when new location selected, new state is created and emitted`() = runTest {
         // Given
-        val expectedMailLabel = MailLabel.System(MailLabelId.System.Spam)
+        val expectedMailLabel = MailLabelTestData.spamSystemLabel
         val expectedCount = UnreadCountersTestData.labelToCounterMap[expectedMailLabel.id.labelId]
         val expectedState = createMailboxDataState(
             selectedMailLabelId = expectedMailLabel.id,
             scrollToMailboxTop = Effect.of(expectedMailLabel.id)
         )
-        val currentLocationFlow = MutableStateFlow<MailLabelId>(MailLabelId.System.Inbox)
+        val currentLocationFlow = MutableStateFlow<MailLabelId>(MailLabelTestData.inboxSystemLabel.id)
         every { selectedMailLabelId.flow } returns currentLocationFlow
         every {
             mailboxReducer.newStateFrom(
@@ -634,7 +632,7 @@ class MailboxViewModelTest {
     @Test
     fun `when new location selected, new bottom bar state is created and emitted`() = runTest {
         // Given
-        val expectedMailLabel = MailLabel.System(MailLabelId.System.Spam)
+        val expectedMailLabel = MailLabelTestData.spamSystemLabel
         val expectedCount = UnreadCountersTestData.labelToCounterMap[expectedMailLabel.id.labelId]
         val intermediateState = MailboxStateSampleData.createSelectionMode(
             currentMailLabel = expectedMailLabel,
@@ -648,7 +646,7 @@ class MailboxViewModelTest {
                 ).toImmutableList()
             )
         )
-        val currentLocationFlow = MutableStateFlow<MailLabelId>(MailLabelId.System.Inbox)
+        val currentLocationFlow = MutableStateFlow<MailLabelId>(MailLabelTestData.inboxSystemLabel.id)
         every { selectedMailLabelId.flow } returns currentLocationFlow
         every {
             mailboxReducer.newStateFrom(
@@ -735,7 +733,7 @@ class MailboxViewModelTest {
         )
         val mailLabelsFlow = MutableStateFlow(
             MailLabels(
-                systemLabels = LabelTestData.systemLabels,
+                dynamicSystemLabels = MailLabelTestData.dynamicSystemLabels,
                 folders = emptyList(),
                 labels = listOf(
                     MailLabelTestData.customLabelOne,
@@ -778,7 +776,7 @@ class MailboxViewModelTest {
         val initialMailLabel = MailLabelTestData.customLabelOne
         val expectedState = MailboxStateSampleData.Loading.copy(
             mailboxListState = MailboxListState.Data.ViewMode(
-                currentMailLabel = MailLabelId.System.Inbox.toMailLabel(),
+                currentMailLabel = MailLabelTestData.inboxSystemLabel,
                 openItemEffect = Effect.empty(),
                 scrollToMailboxTop = Effect.of(initialMailLabel.id),
                 offlineEffect = Effect.empty(),
@@ -791,7 +789,7 @@ class MailboxViewModelTest {
         )
         val mailLabelsFlow = MutableStateFlow(
             MailLabels(
-                systemLabels = LabelTestData.systemLabels,
+                dynamicSystemLabels = MailLabelTestData.dynamicSystemLabels,
                 folders = emptyList(),
                 labels = listOf(MailLabelTestData.customLabelOne, MailLabelTestData.customLabelTwo)
             )
@@ -802,7 +800,7 @@ class MailboxViewModelTest {
         every {
             mailboxReducer.newStateFrom(
                 any(),
-                MailboxEvent.SelectedLabelChanged(MailLabelId.System.Inbox.toMailLabel())
+                MailboxEvent.SelectedLabelChanged(MailLabelTestData.inboxSystemLabel)
             )
         } returns expectedState
 
@@ -811,7 +809,7 @@ class MailboxViewModelTest {
 
             mailLabelsFlow.emit(
                 MailLabels(
-                    systemLabels = LabelTestData.systemLabels,
+                    dynamicSystemLabels = MailLabelTestData.dynamicSystemLabels,
                     folders = emptyList(),
                     labels = listOf(MailLabelTestData.customLabelTwo)
                 )
@@ -859,7 +857,7 @@ class MailboxViewModelTest {
         )
         val currentCountersFlow = MutableStateFlow(UnreadCountersTestData.systemUnreadCounters)
         val modifiedCounters = UnreadCountersTestData.systemUnreadCounters
-            .update(MailLabelId.System.Spam.labelId, expectedCount)
+            .update(SystemLabelId.Spam.labelId, expectedCount)
         coEvery { observeUnreadCounters(userId) } returns currentCountersFlow
         every {
             mailboxReducer.newStateFrom(
@@ -1128,7 +1126,7 @@ class MailboxViewModelTest {
         // Given
         val expectedState = MailboxStateSampleData.Loading.copy(
             topAppBarState = MailboxTopAppBarState.Data.DefaultMode(
-                currentLabelName = MailLabel.System(initialLocationMailLabelId).text()
+                currentLabelName = MailLabelTestData.inboxSystemLabel.text()
             )
         )
         every {
@@ -1152,7 +1150,7 @@ class MailboxViewModelTest {
         // Given
         val currentLocationFlow = MutableStateFlow<MailLabelId>(initialLocationMailLabelId)
         val initialMailboxState = createMailboxDataState()
-        val expectedState = createMailboxDataState(selectedMailLabelId = MailLabelId.System.Spam)
+        val expectedState = createMailboxDataState(selectedMailLabelId = MailLabelTestData.spamSystemLabel.id)
         val userIds = listOf(userId)
         every { selectedMailLabelId.flow } returns currentLocationFlow
         every { pagerFactory.create(userIds, any(), false, Message, any()) } returns mockk mockPager@{
@@ -1163,8 +1161,8 @@ class MailboxViewModelTest {
             mailboxReducer.newStateFrom(
                 initialMailboxState,
                 MailboxEvent.NewLabelSelected(
-                    MailLabelId.System.Spam.toMailLabel(),
-                    UnreadCountersTestData.labelToCounterMap[MailLabelId.System.Spam.labelId]!!
+                    MailLabelTestData.spamSystemLabel,
+                    UnreadCountersTestData.labelToCounterMap[MailLabelTestData.spamSystemLabel.id.labelId]!!
                 )
             )
         } returns expectedState
@@ -1176,11 +1174,11 @@ class MailboxViewModelTest {
             verify { pagerFactory.create(userIds, initialLocationMailLabelId, false, Message, any()) }
 
             // When
-            currentLocationFlow.emit(MailLabelId.System.Spam)
+            currentLocationFlow.emit(MailLabelTestData.spamSystemLabel.id)
 
             // Then
             awaitItem()
-            verify { pagerFactory.create(userIds, MailLabelId.System.Spam, false, Message, any()) }
+            verify { pagerFactory.create(userIds, MailLabelTestData.spamSystemLabel.id, false, Message, any()) }
             cancelAndIgnoreRemainingEvents()
         }
     }
@@ -1235,7 +1233,9 @@ class MailboxViewModelTest {
             )
         } returns unreadMailboxItemUiModelWithLabel
 
-        every { pagerFactory.create(listOf(userId), Archive, false, any(), any()) } returns mockk {
+        every {
+            pagerFactory.create(listOf(userId), MailLabelTestData.archiveSystemLabel.id, false, any(), any())
+        } returns mockk {
             val pagingData = PagingData.from(listOf(unreadMailboxItemWithLabel))
             every { this@mockk.flow } returns flowOf(pagingData)
         }
@@ -1317,9 +1317,9 @@ class MailboxViewModelTest {
     fun `when item action to open composer submitted in draft, new state is produced and emitted`() = runTest {
         // Given
         val item = buildMailboxUiModelItem("id", Message, shouldOpenInComposer = true)
-        val intermediateState = createMailboxDataState(selectedMailLabelId = MailLabelId.System.Drafts)
+        val intermediateState = createMailboxDataState(selectedMailLabelId = MailLabelTestData.draftsSystemLabel.id)
         val expectedState = createMailboxDataState(
-            selectedMailLabelId = MailLabelId.System.Drafts,
+            selectedMailLabelId = MailLabelTestData.draftsSystemLabel.id,
             openEffect = Effect.of(OpenMailboxItemRequest(MailboxItemId(item.id), Conversation, true))
         )
         expectViewMode(NoConversationGrouping)
@@ -1344,7 +1344,7 @@ class MailboxViewModelTest {
         // Given
         val expectedState = MailboxStateSampleData.Loading.copy(
             mailboxListState = MailboxListState.Data.ViewMode(
-                currentMailLabel = MailLabel.System(initialLocationMailLabelId),
+                currentMailLabel = MailLabelTestData.inboxSystemLabel,
                 openItemEffect = Effect.empty(),
                 scrollToMailboxTop = Effect.empty(),
                 offlineEffect = Effect.of(Unit),
@@ -1375,7 +1375,7 @@ class MailboxViewModelTest {
         // Given
         val expectedState = MailboxStateSampleData.Loading.copy(
             mailboxListState = MailboxListState.Data.ViewMode(
-                currentMailLabel = MailLabel.System(initialLocationMailLabelId),
+                currentMailLabel = MailLabelTestData.inboxSystemLabel,
                 openItemEffect = Effect.empty(),
                 scrollToMailboxTop = Effect.empty(),
                 offlineEffect = Effect.empty(),
@@ -1406,7 +1406,7 @@ class MailboxViewModelTest {
         // Given
         val expectedState = MailboxStateSampleData.Loading.copy(
             mailboxListState = MailboxListState.Data.ViewMode(
-                currentMailLabel = MailLabel.System(initialLocationMailLabelId),
+                currentMailLabel = MailLabelTestData.inboxSystemLabel,
                 openItemEffect = Effect.empty(),
                 scrollToMailboxTop = Effect.empty(),
                 offlineEffect = Effect.of(Unit),
@@ -1501,7 +1501,9 @@ class MailboxViewModelTest {
         // Given
         val expectedMailBoxState = createMailboxDataState(unreadFilterState = false)
         every { mailboxReducer.newStateFrom(any(), any()) } returns expectedMailBoxState
-        every { pagerFactory.create(listOf(userId), Archive, any(), Message, any()) } returns mockk mockPager@{
+        every {
+            pagerFactory.create(listOf(userId), MailLabelTestData.archiveSystemLabel.id, any(), Message, any())
+        } returns mockk mockPager@{
             every { this@mockPager.flow } returns flowOf(PagingData.from(listOf(unreadMailboxItem)))
         }
         every { mailboxReducer.newStateFrom(expectedMailBoxState, MailboxViewAction.EnableUnreadFilter) } returns
@@ -1512,14 +1514,18 @@ class MailboxViewModelTest {
 
             // Then
             awaitItem()
-            verify(exactly = 1) { pagerFactory.create(listOf(userId), Archive, false, Message, any()) }
+            verify(exactly = 1) {
+                pagerFactory.create(listOf(userId), MailLabelTestData.archiveSystemLabel.id, false, Message, any())
+            }
 
             // When
             mailboxViewModel.submit(MailboxViewAction.EnableUnreadFilter)
 
             // Then
             awaitItem()
-            verify(exactly = 1) { pagerFactory.create(listOf(userId), Archive, true, Message, any()) }
+            verify(exactly = 1) {
+                pagerFactory.create(listOf(userId), MailLabelTestData.archiveSystemLabel.id, true, Message, any())
+            }
             cancelAndIgnoreRemainingEvents()
         }
     }
@@ -1528,9 +1534,9 @@ class MailboxViewModelTest {
     fun `mailbox pager is recreated when selected mail label state changes`() = runTest {
         // Given
         val expectedMailBoxState = createMailboxDataState(selectedMailLabelId = initialLocationMailLabelId)
-        val inboxLabel = MailLabelId.System.Inbox
+        val inboxLabel = MailLabelTestData.inboxSystemLabel
         val currentLocationFlow = MutableStateFlow<MailLabelId>(initialLocationMailLabelId)
-        val expectedState = createMailboxDataState(selectedMailLabelId = inboxLabel)
+        val expectedState = createMailboxDataState(selectedMailLabelId = inboxLabel.id)
         every { selectedMailLabelId.flow } returns currentLocationFlow
         every { mailboxReducer.newStateFrom(any(), any()) } returns expectedMailBoxState
         every { pagerFactory.create(any(), any(), any(), any(), any()) } returns mockk mockPager@{
@@ -1540,8 +1546,8 @@ class MailboxViewModelTest {
             mailboxReducer.newStateFrom(
                 expectedMailBoxState,
                 MailboxEvent.NewLabelSelected(
-                    inboxLabel.toMailLabel(),
-                    UnreadCountersTestData.labelToCounterMap[inboxLabel.labelId]!!
+                    inboxLabel,
+                    UnreadCountersTestData.labelToCounterMap[inboxLabel.id.labelId]!!
                 )
             )
         } returns expectedState
@@ -1552,15 +1558,17 @@ class MailboxViewModelTest {
 
             // Then
             awaitItem()
-            verify(exactly = 1) { pagerFactory.create(listOf(userId), Archive, false, Message, any()) }
+            verify(exactly = 1) {
+                pagerFactory.create(listOf(userId), MailLabelTestData.archiveSystemLabel.id, false, Message, any())
+            }
 
             // When
-            currentLocationFlow.emit(inboxLabel)
+            currentLocationFlow.emit(inboxLabel.id)
 
             // Then
             awaitItem()
             // mailbox pager is recreated only once when view mode for the newly selected location does not change
-            verify(exactly = 1) { pagerFactory.create(listOf(userId), inboxLabel, false, Message, any()) }
+            verify(exactly = 1) { pagerFactory.create(listOf(userId), inboxLabel.id, false, Message, any()) }
             cancelAndIgnoreRemainingEvents()
         }
     }
@@ -1595,7 +1603,9 @@ class MailboxViewModelTest {
             mailboxViewModel.items.test {
                 // When
                 awaitItem()
-                verify(exactly = 1) { pagerFactory.create(listOf(userId), Archive, false, Message, any()) }
+                verify(exactly = 1) {
+                    pagerFactory.create(listOf(userId), MailLabelTestData.archiveSystemLabel.id, false, Message, any())
+                }
 
                 mailboxViewModel.submit(MailboxViewAction.ItemClicked(unreadMailboxItemUiModel))
 
@@ -1617,7 +1627,9 @@ class MailboxViewModelTest {
             // When
             awaitItem()
             // Then
-            verify(exactly = 1) { pagerFactory.create(listOf(userId), Archive, false, Message, any()) }
+            verify(exactly = 1) {
+                pagerFactory.create(listOf(userId), MailLabelTestData.archiveSystemLabel.id, false, Message, any())
+            }
         }
 
         mailboxViewModel.items.test {
@@ -1889,7 +1901,7 @@ class MailboxViewModelTest {
         val initialState = createMailboxDataState()
         val intermediateState = MailboxStateSampleData.createSelectionMode(
             listOf(item, secondItem),
-            currentMailLabel = MailLabel.System(MailLabelId.System.Trash)
+            currentMailLabel = MailLabelTestData.trashSystemLabel
         )
         expectViewModeForCurrentLocation(ConversationGrouping)
         expectedSelectedLabelCountStateChange(initialState)
@@ -1934,7 +1946,7 @@ class MailboxViewModelTest {
         val initialState = createMailboxDataState()
         val intermediateState = MailboxStateSampleData.createSelectionMode(
             listOf(item, secondItem),
-            currentMailLabel = MailLabel.System(MailLabelId.System.Trash)
+            currentMailLabel = MailLabelTestData.trashSystemLabel
         )
         expectedSelectedLabelCountStateChange(initialState)
         returnExpectedStateWhenEnterSelectionMode(initialState, item, intermediateState)
@@ -1974,7 +1986,7 @@ class MailboxViewModelTest {
     @Test
     fun `when delete all is triggered from trash for no conversation grouping, then reducer is called`() = runTest {
         // Given
-        val currentMailLabel = MailLabelId.System.Trash
+        val currentMailLabel = MailLabelTestData.trashSystemLabel.id
         val initialState = createMailboxDataState(selectedMailLabelId = currentMailLabel)
         every { selectedMailLabelId.flow } returns MutableStateFlow(currentMailLabel)
         expectedSelectedLabelCountStateChange(initialState)
@@ -2001,7 +2013,7 @@ class MailboxViewModelTest {
     @Test
     fun `when delete all is triggered from spam for no conversation grouping, then reducer is called`() = runTest {
         // Given
-        val currentMailLabel = MailLabelId.System.Spam
+        val currentMailLabel = MailLabelTestData.spamSystemLabel.id
         val initialState = createMailboxDataState(selectedMailLabelId = currentMailLabel)
         every { selectedMailLabelId.flow } returns MutableStateFlow(currentMailLabel)
         expectedSelectedLabelCountStateChange(initialState)
@@ -2028,8 +2040,8 @@ class MailboxViewModelTest {
     @Test
     fun `when delete all is triggered from non spam or trash location, then no new state is emitted`() = runTest {
         // Given
-        val initialState = createMailboxDataState(selectedMailLabelId = MailLabelId.System.Inbox)
-        every { selectedMailLabelId.flow } returns MutableStateFlow(MailLabelId.System.Inbox)
+        val initialState = createMailboxDataState(selectedMailLabelId = MailLabelTestData.inboxSystemLabel.id)
+        every { selectedMailLabelId.flow } returns MutableStateFlow(MailLabelTestData.inboxSystemLabel.id)
         expectedSelectedLabelCountStateChange(initialState)
 
         mailboxViewModel.state.test {
@@ -2051,8 +2063,8 @@ class MailboxViewModelTest {
     fun `when delete all is triggered for no conversation grouping then delete messages is called with label`() =
         runTest {
             // Given
-            val initialState = createMailboxDataState(selectedMailLabelId = MailLabelId.System.Trash)
-            every { selectedMailLabelId.flow } returns MutableStateFlow(MailLabelId.System.Trash)
+            val initialState = createMailboxDataState(selectedMailLabelId = MailLabelTestData.trashSystemLabel.id)
+            every { selectedMailLabelId.flow } returns MutableStateFlow(MailLabelTestData.trashSystemLabel.id)
             expectedSelectedLabelCountStateChange(initialState)
             expectDeleteMessagesSucceeds(userId, SystemLabelId.Trash.labelId)
             expectViewModeForCurrentLocation(NoConversationGrouping)
@@ -2078,8 +2090,8 @@ class MailboxViewModelTest {
     fun `when delete all is triggered for conversation grouping then delete conversation is called with label`() =
         runTest {
             // Given
-            val initialState = createMailboxDataState(selectedMailLabelId = MailLabelId.System.Trash)
-            every { selectedMailLabelId.flow } returns MutableStateFlow(MailLabelId.System.Trash)
+            val initialState = createMailboxDataState(selectedMailLabelId = MailLabelTestData.trashSystemLabel.id)
+            every { selectedMailLabelId.flow } returns MutableStateFlow(MailLabelTestData.trashSystemLabel.id)
             expectedSelectedLabelCountStateChange(initialState)
             expectDeleteConversationsSucceeds(userId, SystemLabelId.Trash.labelId)
             expectViewModeForCurrentLocation(ConversationGrouping)
@@ -2104,8 +2116,8 @@ class MailboxViewModelTest {
     @Test
     fun `when delete all is triggered from non spam and trash location no action is performed`() = runTest {
         // Given
-        val initialState = createMailboxDataState(selectedMailLabelId = MailLabelId.System.Inbox)
-        every { selectedMailLabelId.flow } returns MutableStateFlow(MailLabelId.System.Inbox)
+        val initialState = createMailboxDataState(selectedMailLabelId = MailLabelTestData.inboxSystemLabel.id)
+        every { selectedMailLabelId.flow } returns MutableStateFlow(MailLabelTestData.inboxSystemLabel.id)
         expectedSelectedLabelCountStateChange(initialState)
         returnExpectedStateForDeleteAllDismissed(initialState)
 
@@ -2139,7 +2151,7 @@ class MailboxViewModelTest {
         val bottomSheetShownState = createMailboxStateWithLabelAsBottomSheet(selectedItemsList, false)
         val intermediateState = MailboxStateSampleData.createSelectionMode(
             listOf(item),
-            currentMailLabel = MailLabel.System(MailLabelId.System.Trash)
+            currentMailLabel = MailLabelTestData.trashSystemLabel
         )
         expectViewModeForCurrentLocation(NoConversationGrouping)
         expectedSelectedLabelCountStateChange(initialState)
@@ -2197,7 +2209,7 @@ class MailboxViewModelTest {
         val bottomSheetShownState = createMailboxStateWithLabelAsBottomSheet(selectedItemsList, false)
         val intermediateState = MailboxStateSampleData.createSelectionMode(
             listOf(item, secondItem),
-            currentMailLabel = MailLabel.System(MailLabelId.System.Trash)
+            currentMailLabel = MailLabelTestData.trashSystemLabel
         )
         expectViewModeForCurrentLocation(NoConversationGrouping)
         expectedSelectedLabelCountStateChange(initialState)
@@ -2269,7 +2281,7 @@ class MailboxViewModelTest {
                 createMailboxStateWithLabelAsBottomSheet(selectedItemsList, false)
             val intermediateState = MailboxStateSampleData.createSelectionMode(
                 listOf(item, secondItem),
-                currentMailLabel = MailLabel.System(MailLabelId.System.Trash)
+                currentMailLabel = MailLabelTestData.trashSystemLabel
             )
             expectViewModeForCurrentLocation(NoConversationGrouping)
             expectedSelectedLabelCountStateChange(initialState)
@@ -2345,7 +2357,7 @@ class MailboxViewModelTest {
             createMailboxStateWithLabelAsBottomSheet(selectedItemsList, false)
         val intermediateState = MailboxStateSampleData.createSelectionMode(
             listOf(item, secondItem),
-            currentMailLabel = MailLabel.System(MailLabelId.System.Trash)
+            currentMailLabel = MailLabelTestData.trashSystemLabel
         )
         expectViewModeForCurrentLocation(ConversationGrouping)
         expectedSelectedLabelCountStateChange(initialState)
@@ -2420,7 +2432,7 @@ class MailboxViewModelTest {
                 createMailboxStateWithLabelAsBottomSheet(selectedItemsList, false)
             val intermediateState = MailboxStateSampleData.createSelectionMode(
                 listOf(item, secondItem),
-                currentMailLabel = MailLabel.System(MailLabelId.System.Trash)
+                currentMailLabel = MailLabelTestData.trashSystemLabel
             )
             expectViewModeForCurrentLocation(ConversationGrouping)
             expectedSelectedLabelCountStateChange(initialState)
@@ -2481,7 +2493,7 @@ class MailboxViewModelTest {
         val selectedItemsList = listOf(item, secondItem)
 
         val expectedMailLabels = MailLabels(
-            systemLabels = emptyList(),
+            dynamicSystemLabels = emptyList(),
             folders = MailLabelTestData.listOfCustomLabels,
             labels = emptyList()
         )
@@ -2495,7 +2507,7 @@ class MailboxViewModelTest {
         )
         val intermediateState = MailboxStateSampleData.createSelectionMode(
             listOf(item, secondItem),
-            currentMailLabel = MailLabel.System(MailLabelId.System.Trash)
+            currentMailLabel = MailLabelTestData.trashSystemLabel
         )
         expectViewModeForCurrentLocation(NoConversationGrouping)
         expectedSelectedLabelCountStateChange(initialState)
@@ -2503,9 +2515,9 @@ class MailboxViewModelTest {
         returnExpectedStateForBottomBarEvent(expectedState = intermediateState)
         expectDestinationMailLabelsSucceeds(expectedMailLabels)
         expectedMoveToBottomSheetRequestedStateChange(expectedMailLabelUiModel, bottomSheetShownState)
-        expectedMoveToStateChange(MailLabelId.System.Spam, bottomSheetShownStateWithSelectedItem)
+        expectedMoveToStateChange(MailLabelTestData.spamSystemLabel.id, bottomSheetShownStateWithSelectedItem)
         expectedMoveToConfirmed(initialState)
-        expectMoveMessagesSucceeds(userId, selectedItemsList, MailLabelId.System.Spam.labelId)
+        expectMoveMessagesSucceeds(userId, selectedItemsList, SystemLabelId.Spam.labelId)
 
         mailboxViewModel.state.test {
             awaitItem() // First emission for selected user
@@ -2515,13 +2527,13 @@ class MailboxViewModelTest {
             assertEquals(intermediateState, awaitItem())
             mailboxViewModel.submit(MailboxViewAction.RequestMoveToBottomSheet)
             assertEquals(bottomSheetShownState, awaitItem())
-            mailboxViewModel.submit(MailboxViewAction.MoveToDestinationSelected(MailLabelId.System.Spam))
+            mailboxViewModel.submit(MailboxViewAction.MoveToDestinationSelected(MailLabelTestData.spamSystemLabel.id))
             assertEquals(bottomSheetShownStateWithSelectedItem, awaitItem())
             mailboxViewModel.submit(MailboxViewAction.MoveToConfirmed)
 
             assertEquals(initialState, awaitItem())
             coVerify(exactly = 1) {
-                moveMessages(userId, selectedItemsList.map { MessageId(it.id) }, MailLabelId.System.Spam.labelId)
+                moveMessages(userId, selectedItemsList.map { MessageId(it.id) }, SystemLabelId.Spam.labelId)
             }
             coVerify { moveConversations wasNot Called }
         }
@@ -2535,7 +2547,7 @@ class MailboxViewModelTest {
         val selectedItemsList = listOf(item, secondItem)
 
         val expectedMailLabels = MailLabels(
-            systemLabels = emptyList(),
+            dynamicSystemLabels = emptyList(),
             folders = MailLabelTestData.listOfCustomLabels,
             labels = emptyList()
         )
@@ -2549,7 +2561,7 @@ class MailboxViewModelTest {
         )
         val intermediateState = MailboxStateSampleData.createSelectionMode(
             listOf(item, secondItem),
-            currentMailLabel = MailLabel.System(MailLabelId.System.Trash)
+            currentMailLabel = MailLabelTestData.trashSystemLabel
         )
         expectViewModeForCurrentLocation(ConversationGrouping)
         expectedSelectedLabelCountStateChange(initialState)
@@ -2557,9 +2569,9 @@ class MailboxViewModelTest {
         returnExpectedStateForBottomBarEvent(expectedState = intermediateState)
         expectDestinationMailLabelsSucceeds(expectedMailLabels)
         expectedMoveToBottomSheetRequestedStateChange(expectedMailLabelUiModel, bottomSheetShownState)
-        expectedMoveToStateChange(MailLabelId.System.Spam, bottomSheetShownStateWithSelectedItem)
+        expectedMoveToStateChange(MailLabelTestData.spamSystemLabel.id, bottomSheetShownStateWithSelectedItem)
         expectedMoveToConfirmed(initialState)
-        expectMoveConversationsSucceeds(userId, selectedItemsList, MailLabelId.System.Spam.labelId)
+        expectMoveConversationsSucceeds(userId, selectedItemsList, SystemLabelId.Spam.labelId)
 
         mailboxViewModel.state.test {
             awaitItem() // First emission for selected user
@@ -2569,7 +2581,7 @@ class MailboxViewModelTest {
             assertEquals(intermediateState, awaitItem())
             mailboxViewModel.submit(MailboxViewAction.RequestMoveToBottomSheet)
             assertEquals(bottomSheetShownState, awaitItem())
-            mailboxViewModel.submit(MailboxViewAction.MoveToDestinationSelected(MailLabelId.System.Spam))
+            mailboxViewModel.submit(MailboxViewAction.MoveToDestinationSelected(MailLabelTestData.spamSystemLabel.id))
             assertEquals(bottomSheetShownStateWithSelectedItem, awaitItem())
             mailboxViewModel.submit(MailboxViewAction.MoveToConfirmed)
 
@@ -2578,7 +2590,7 @@ class MailboxViewModelTest {
                 moveConversations(
                     userId = userId,
                     conversationIds = selectedItemsList.map { ConversationId(it.id) },
-                    labelId = MailLabelId.System.Spam.labelId
+                    labelId = SystemLabelId.Spam.labelId
                 )
             }
             coVerify { moveMessages wasNot Called }
@@ -2595,11 +2607,11 @@ class MailboxViewModelTest {
         val initialState = createMailboxDataState()
         val intermediateState = MailboxStateSampleData.createSelectionMode(
             selectedItemsList,
-            currentMailLabel = MailLabel.System(MailLabelId.System.Trash)
+            currentMailLabel = MailLabelTestData.trashSystemLabel
         )
         val expectedState = MailboxStateSampleData.createSelectionMode(
             selectedItemsList,
-            currentMailLabel = MailLabel.System(MailLabelId.System.Trash),
+            currentMailLabel = MailLabelTestData.trashSystemLabel,
             error = Effect.of(TextUiModel(R.string.mailbox_action_move_messages_failed_retrieving_folders))
         )
         expectViewMode(ConversationGrouping)
@@ -2631,7 +2643,7 @@ class MailboxViewModelTest {
         val selectedItemsList = listOf(item, secondItem)
 
         val expectedMailLabels = MailLabels(
-            systemLabels = emptyList(),
+            dynamicSystemLabels = emptyList(),
             folders = MailLabelTestData.listOfCustomLabels,
             labels = emptyList()
         )
@@ -2639,11 +2651,11 @@ class MailboxViewModelTest {
         val initialState = createMailboxDataState()
         val intermediateState = MailboxStateSampleData.createSelectionMode(
             selectedItemsList,
-            currentMailLabel = MailLabel.System(MailLabelId.System.Trash)
+            currentMailLabel = MailLabelTestData.trashSystemLabel
         )
         val expectedState = MailboxStateSampleData.createSelectionMode(
             selectedItemsList,
-            currentMailLabel = MailLabel.System(MailLabelId.System.Trash),
+            currentMailLabel = MailLabelTestData.trashSystemLabel,
             error = Effect.of(TextUiModel(R.string.mailbox_action_move_messages_failed_retrieving_folders))
         )
         expectViewMode(ConversationGrouping)
@@ -2688,7 +2700,7 @@ class MailboxViewModelTest {
             createMailboxStateWithMoreActionBottomSheet(selectedItemsList, expectedBottomSheetContent)
         val intermediateState = MailboxStateSampleData.createSelectionMode(
             listOf(item, secondItem),
-            currentMailLabel = MailLabel.System(MailLabelId.System.Trash)
+            currentMailLabel = MailLabelTestData.trashSystemLabel
         )
         expectViewModeForCurrentLocation(NoConversationGrouping)
         expectedSelectedLabelCountStateChange(initialState)
@@ -2728,7 +2740,7 @@ class MailboxViewModelTest {
             createMailboxStateWithMoreActionBottomSheet(selectedItemsList, expectedBottomSheetContent)
         val intermediateState = MailboxStateSampleData.createSelectionMode(
             listOf(item, secondItem),
-            currentMailLabel = MailLabel.System(MailLabelId.System.Trash)
+            currentMailLabel = MailLabelTestData.trashSystemLabel
         )
         expectViewModeForCurrentLocation(NoConversationGrouping)
         expectedSelectedLabelCountStateChange(initialState)
@@ -2768,7 +2780,7 @@ class MailboxViewModelTest {
             createMailboxStateWithMoreActionBottomSheet(selectedItemsList, expectedBottomSheetContent)
         val intermediateState = MailboxStateSampleData.createSelectionMode(
             listOf(item, secondItem),
-            currentMailLabel = MailLabel.System(MailLabelId.System.Trash)
+            currentMailLabel = MailLabelTestData.trashSystemLabel
         )
         expectViewModeForCurrentLocation(NoConversationGrouping)
         expectedSelectedLabelCountStateChange(initialState)
@@ -2814,7 +2826,7 @@ class MailboxViewModelTest {
 //            createMailboxStateWithMoreActionBottomSheet(selectedItemsList, expectedBottomSheetContent)
 //        val intermediateState = MailboxStateSampleData.createSelectionMode(
 //            listOf(item, secondItem),
-//            currentMailLabel = MailLabel.System(MailLabelId.System.Trash)
+//            currentMailLabel = MailLabelTestData.trashSystemLabel
 //        )
 //        expectViewModeForCurrentLocation(ConversationGrouping)
 //        expectedSelectedLabelCountStateChange(initialState)
@@ -2860,7 +2872,7 @@ class MailboxViewModelTest {
             createMailboxStateWithMoreActionBottomSheet(selectedItemsList, expectedBottomSheetContent)
         val intermediateState = MailboxStateSampleData.createSelectionMode(
             listOf(item, secondItem),
-            currentMailLabel = MailLabel.System(MailLabelId.System.Trash)
+            currentMailLabel = MailLabelTestData.trashSystemLabel
         )
         expectViewModeForCurrentLocation(NoConversationGrouping)
         expectedSelectedLabelCountStateChange(initialState)
@@ -2886,51 +2898,6 @@ class MailboxViewModelTest {
         verify { unStarConversations wasNot Called }
     }
 
-//    @Test
-//    fun `when star action is triggered for conversation grouping then star conversations is called`() = runTest {
-//        // Given
-//        val item = readMailboxItemUiModel.copy(id = MessageIdSample.Invoice.id, showStar = true)
-//        val secondItem = unreadMailboxItemUiModel.copy(id = MessageIdSample.AlphaAppQAReport.id, showStar = false)
-//        val selectedItemsList = listOf(item, secondItem)
-//
-//        val initialState = createMailboxDataState()
-//        val expectedActionItems = listOf(
-//            ActionUiModelSample.build(Action.Archive),
-//            ActionUiModelSample.build(Action.Spam)
-//        )
-//        val expectedBottomSheetContent = MoreActionsBottomSheetState.Data(
-//            actionUiModels = expectedActionItems.toImmutableList()
-//        )
-//        val bottomSheetShownState =
-//            createMailboxStateWithMoreActionBottomSheet(selectedItemsList, expectedBottomSheetContent)
-//        val intermediateState = MailboxStateSampleData.createSelectionMode(
-//            listOf(item, secondItem),
-//            currentMailLabel = MailLabel.System(MailLabelId.System.Trash)
-//        )
-//        expectViewModeForCurrentLocation(ConversationGrouping)
-//        expectedSelectedLabelCountStateChange(initialState)
-//        returnExpectedStateForBottomBarEvent(expectedState = intermediateState)
-//        returnExpectedStateWhenEnterSelectionMode(initialState, item, intermediateState)
-//        expectedMoreActionBottomSheetRequestedStateChange(expectedActionItems, bottomSheetShownState)
-//        expectedStarConversationsSucceeds(userId, selectedItemsList)
-//        returnExpectedStateWhenStarringSucceeds(intermediateState)
-//
-//
-//        mailboxViewModel.state.test {
-//            awaitItem() // First emission for selected user
-//
-//            // When + Then
-//            mailboxViewModel.submit(MailboxViewAction.OnItemAvatarClicked(item))
-//            assertEquals(intermediateState, awaitItem())
-//            mailboxViewModel.submit(MailboxViewAction.RequestMoreActionsBottomSheet)
-//            assertEquals(bottomSheetShownState, awaitItem())
-//            mailboxViewModel.submit(MailboxViewAction.Star)
-//            assertEquals(intermediateState, awaitItem())
-//            coVerify(exactly = 1) { starConversations(userId, selectedItemsList.map { ConversationId(it.id) }) }
-//            verify { starMessages wasNot Called }
-//        }
-//    }
-
     @Test
     fun `when move to archive is triggered for no-conversation grouping then move messages is called`() = runTest {
         // Given
@@ -2951,7 +2918,7 @@ class MailboxViewModelTest {
             createMailboxStateWithMoreActionBottomSheet(selectedItemsList, expectedBottomSheetContent)
         val intermediateState = MailboxStateSampleData.createSelectionMode(
             listOf(item, secondItem),
-            currentMailLabel = MailLabel.System(MailLabelId.System.Trash)
+            currentMailLabel = MailLabelTestData.trashSystemLabel
         )
         expectViewModeForCurrentLocation(NoConversationGrouping)
         expectedSelectedLabelCountStateChange(initialState)
@@ -3000,7 +2967,7 @@ class MailboxViewModelTest {
             )
         val intermediateState = MailboxStateSampleData.createSelectionMode(
             listOf(item, secondItem),
-            currentMailLabel = MailLabel.System(MailLabelId.System.Trash)
+            currentMailLabel = MailLabelTestData.trashSystemLabel
         )
         expectViewMode(ConversationGrouping)
         expectViewModeForCurrentLocation(ConversationGrouping)
@@ -3049,7 +3016,7 @@ class MailboxViewModelTest {
             createMailboxStateWithMoreActionBottomSheet(selectedItemsList, expectedBottomSheetContent)
         val intermediateState = MailboxStateSampleData.createSelectionMode(
             listOf(item, secondItem),
-            currentMailLabel = MailLabel.System(MailLabelId.System.Trash)
+            currentMailLabel = MailLabelTestData.trashSystemLabel
         )
         expectViewModeForCurrentLocation(NoConversationGrouping)
         expectedSelectedLabelCountStateChange(initialState)
@@ -3098,7 +3065,7 @@ class MailboxViewModelTest {
             )
         val intermediateState = MailboxStateSampleData.createSelectionMode(
             listOf(item, secondItem),
-            currentMailLabel = MailLabel.System(MailLabelId.System.Trash)
+            currentMailLabel = MailLabelTestData.trashSystemLabel
         )
         expectViewMode(ConversationGrouping)
         expectViewModeForCurrentLocation(ConversationGrouping)
@@ -3299,7 +3266,7 @@ class MailboxViewModelTest {
     @Test
     fun `when swipe archive is called for no conversation grouping then move is called`() = runTest {
         // Given
-        val initialState = createMailboxDataState(selectedMailLabelId = MailLabelId.System.Inbox)
+        val initialState = createMailboxDataState(selectedMailLabelId = MailLabelTestData.inboxSystemLabel.id)
         val itemId = "itemId"
         val expectedLabelId = SystemLabelId.Archive.labelId
         val expectedViewAction = MailboxViewAction.SwipeArchiveAction(userId, itemId)
@@ -3323,7 +3290,7 @@ class MailboxViewModelTest {
     @Test
     fun `when swipe archive is called for conversation grouping then move is called`() = runTest {
         // Given
-        val initialState = createMailboxDataState(selectedMailLabelId = MailLabelId.System.Inbox)
+        val initialState = createMailboxDataState(selectedMailLabelId = MailLabelTestData.inboxSystemLabel.id)
         val expectedItemId = "itemId"
         val expectedLabelId = SystemLabelId.Archive.labelId
         val expectedViewAction = MailboxViewAction.SwipeArchiveAction(userId, expectedItemId)
@@ -3348,7 +3315,7 @@ class MailboxViewModelTest {
     @Test
     fun `when swipe archive is called when current label is archive, no action is performed`() = runTest {
         // Given
-        val initialState = createMailboxDataState(selectedMailLabelId = MailLabelId.System.Archive)
+        val initialState = createMailboxDataState(selectedMailLabelId = MailLabelTestData.archiveSystemLabel.id)
         val expectedItemId = "itemId"
         val expectedViewAction = MailboxViewAction.SwipeArchiveAction(userId, expectedItemId)
 
@@ -3368,7 +3335,7 @@ class MailboxViewModelTest {
     @Test
     fun `when swipe spam is called for no conversation grouping then move is called`() = runTest {
         // Given
-        val initialState = createMailboxDataState(selectedMailLabelId = MailLabelId.System.Inbox)
+        val initialState = createMailboxDataState(selectedMailLabelId = MailLabelTestData.inboxSystemLabel.id)
         val itemId = "itemId"
         val expectedLabelId = SystemLabelId.Spam.labelId
         val expectedViewAction = MailboxViewAction.SwipeSpamAction(userId, itemId)
@@ -3392,7 +3359,7 @@ class MailboxViewModelTest {
     @Test
     fun `when swipe spam is called for conversation grouping then move is called`() = runTest {
         // Given
-        val initialState = createMailboxDataState(selectedMailLabelId = MailLabelId.System.Inbox)
+        val initialState = createMailboxDataState(selectedMailLabelId = MailLabelTestData.inboxSystemLabel.id)
         val expectedItemId = "itemId"
         val expectedLabelId = SystemLabelId.Spam.labelId
         val expectedViewAction = MailboxViewAction.SwipeSpamAction(userId, expectedItemId)
@@ -3415,7 +3382,7 @@ class MailboxViewModelTest {
     @Test
     fun `when swipe spam is called when current label is spam, no action is performed`() = runTest {
         // Given
-        val initialState = createMailboxDataState(selectedMailLabelId = MailLabelId.System.Spam)
+        val initialState = createMailboxDataState(selectedMailLabelId = MailLabelTestData.spamSystemLabel.id)
         val expectedItemId = "itemId"
         val expectedViewAction = MailboxViewAction.SwipeSpamAction(userId, expectedItemId)
 
@@ -3435,7 +3402,7 @@ class MailboxViewModelTest {
     @Test
     fun `when swipe trash is called for no conversation grouping then move is called`() = runTest {
         // Given
-        val initialState = createMailboxDataState(selectedMailLabelId = MailLabelId.System.Inbox)
+        val initialState = createMailboxDataState(selectedMailLabelId = MailLabelTestData.inboxSystemLabel.id)
         val itemId = "itemId"
         val expectedLabelId = SystemLabelId.Trash.labelId
         val expectedViewAction = MailboxViewAction.SwipeTrashAction(userId, itemId)
@@ -3458,7 +3425,7 @@ class MailboxViewModelTest {
     @Test
     fun `when swipe trash is called for conversation grouping then move is called`() = runTest {
         // Given
-        val initialState = createMailboxDataState(selectedMailLabelId = MailLabelId.System.Inbox)
+        val initialState = createMailboxDataState(selectedMailLabelId = MailLabelTestData.inboxSystemLabel.id)
         val expectedItemId = "itemId"
         val expectedLabelId = SystemLabelId.Trash.labelId
         val expectedViewAction = MailboxViewAction.SwipeTrashAction(userId, expectedItemId)
@@ -3481,7 +3448,7 @@ class MailboxViewModelTest {
     @Test
     fun `when swipe trash is called when current label is trash, no action is performed`() = runTest {
         // Given
-        val initialState = createMailboxDataState(selectedMailLabelId = MailLabelId.System.Trash)
+        val initialState = createMailboxDataState(selectedMailLabelId = MailLabelTestData.trashSystemLabel.id)
         val expectedItemId = "itemId"
         val expectedViewAction = MailboxViewAction.SwipeTrashAction(userId, expectedItemId)
 
@@ -3597,11 +3564,16 @@ class MailboxViewModelTest {
         openEffect: Effect<OpenMailboxItemRequest> = Effect.empty(),
         scrollToMailboxTop: Effect<MailLabelId> = Effect.empty(),
         unreadFilterState: Boolean = false,
-        selectedMailLabelId: MailLabelId.System = initialLocationMailLabelId
+        selectedMailLabelId: MailLabelId.DynamicSystemLabelId = initialLocationMailLabelId,
+        selectedSystemMailLabelId: SystemLabelId = SystemLabelId.Inbox
     ): MailboxState {
         return MailboxStateSampleData.Loading.copy(
             mailboxListState = MailboxListState.Data.ViewMode(
-                currentMailLabel = MailLabel.System(selectedMailLabelId),
+                currentMailLabel = MailLabel.DynamicSystemLabel(
+                    selectedMailLabelId,
+                    selectedSystemMailLabelId,
+                    0
+                ),
                 openItemEffect = openEffect,
                 scrollToMailboxTop = scrollToMailboxTop,
                 offlineEffect = Effect.empty(),
@@ -3680,7 +3652,7 @@ class MailboxViewModelTest {
         // Given
         val expectedState = MailboxStateSampleData.Inbox.copy(
             mailboxListState = MailboxListState.Data.ViewMode(
-                currentMailLabel = MailLabel.System(MailLabelId.System.AllMail),
+                currentMailLabel = MailLabelTestData.allMailSystemLabel,
                 openItemEffect = Effect.empty(),
                 scrollToMailboxTop = Effect.empty(),
                 offlineEffect = Effect.empty(),
@@ -3712,7 +3684,7 @@ class MailboxViewModelTest {
         // Given
         val expectedState = MailboxStateSampleData.Inbox.copy(
             mailboxListState = MailboxListState.Data.ViewMode(
-                currentMailLabel = MailLabel.System(MailLabelId.System.Inbox),
+                currentMailLabel = MailLabelTestData.inboxSystemLabel,
                 openItemEffect = Effect.empty(),
                 scrollToMailboxTop = Effect.empty(),
                 offlineEffect = Effect.empty(),
@@ -3747,7 +3719,7 @@ class MailboxViewModelTest {
         val queryText = "query"
         val expectedState = MailboxStateSampleData.Loading.copy(
             mailboxListState = MailboxListState.Data.ViewMode(
-                currentMailLabel = MailLabel.System(initialLocationMailLabelId),
+                currentMailLabel = MailLabelTestData.inboxSystemLabel,
                 openItemEffect = Effect.empty(),
                 scrollToMailboxTop = Effect.empty(),
                 offlineEffect = Effect.empty(),
@@ -3779,7 +3751,7 @@ class MailboxViewModelTest {
         // Given
         val expectedState = MailboxStateSampleData.Loading.copy(
             mailboxListState = MailboxListState.Data.ViewMode(
-                currentMailLabel = MailLabel.System(initialLocationMailLabelId),
+                currentMailLabel = MailLabelTestData.inboxSystemLabel,
                 openItemEffect = Effect.empty(),
                 scrollToMailboxTop = Effect.empty(),
                 offlineEffect = Effect.empty(),
@@ -3841,7 +3813,7 @@ class MailboxViewModelTest {
 
             // Then
             awaitItem()
-            verify { pagerFactory.create(userIds, MailLabelId.System.AllMail, false, any(), queryText) }
+            verify { pagerFactory.create(userIds, MailLabelTestData.allMailSystemLabel.id, false, any(), queryText) }
 
             // When
             mailboxViewModel.submit(MailboxViewAction.ExitSearchMode)
@@ -3885,13 +3857,13 @@ class MailboxViewModelTest {
     @Test
     fun `navigate to inbox label will trigger selected mail label use case`() = runTest {
         // Given
-        coJustRun { selectedMailLabelId.set(MailLabelId.System.Inbox) }
+        coJustRun { selectedMailLabelId.set(MailLabelTestData.inboxSystemLabel.id) }
 
         // When
         mailboxViewModel.submit(MailboxViewAction.NavigateToInboxLabel)
 
         // Then
-        coVerify { selectedMailLabelId.set(MailLabelId.System.Inbox) }
+        coVerify { selectedMailLabelId.set(MailLabelTestData.inboxSystemLabel.id) }
     }
 
     @Test
@@ -4259,7 +4231,7 @@ class MailboxViewModelTest {
         selected: Boolean
     ) = MailboxStateSampleData.createSelectionMode(
         selectedMailboxItemUiModels = selectedMailboxItems,
-        currentMailLabel = MailLabel.System(MailLabelId.System.Trash),
+        currentMailLabel = MailLabelTestData.trashSystemLabel,
         bottomSheetState = BottomSheetState(
             LabelAsBottomSheetState.Data(
                 listOf(
@@ -4292,7 +4264,7 @@ class MailboxViewModelTest {
         selectedItem: MailLabelUiModel? = null
     ) = MailboxStateSampleData.createSelectionMode(
         selectedMailboxItemUiModels = selectedMailboxItems,
-        currentMailLabel = MailLabel.System(MailLabelId.System.Trash),
+        currentMailLabel = MailLabelTestData.trashSystemLabel,
         bottomSheetState = BottomSheetState(
             MoveToBottomSheetState.Data(MailLabelUiModelTestData.customLabelList, selectedItem, null)
         )
@@ -4303,7 +4275,7 @@ class MailboxViewModelTest {
         expectedBottomSheetContent: MailboxMoreActionsBottomSheetState
     ) = MailboxStateSampleData.createSelectionMode(
         selectedMailboxItemUiModels = selectedMailboxItems,
-        currentMailLabel = MailLabel.System(MailLabelId.System.Trash),
+        currentMailLabel = MailLabelTestData.trashSystemLabel,
         bottomSheetState = BottomSheetState(expectedBottomSheetContent)
     )
 }

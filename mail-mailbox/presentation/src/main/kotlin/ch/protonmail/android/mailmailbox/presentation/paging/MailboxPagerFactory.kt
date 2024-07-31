@@ -64,7 +64,7 @@ class MailboxPagerFactory @Inject constructor(
                 keyword = searchQuery,
                 labelId = selectedMailLabelId.labelId,
                 read = if (filterUnread) ReadStatus.Unread else ReadStatus.All,
-                isSystemFolder = selectedMailLabelId is MailLabelId.System
+                isSystemFolder = selectedMailLabelId is MailLabelId.DynamicSystemLabelId
             )
         )
     )

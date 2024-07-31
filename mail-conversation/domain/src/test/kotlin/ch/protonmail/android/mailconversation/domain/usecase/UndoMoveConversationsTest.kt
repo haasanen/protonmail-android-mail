@@ -14,10 +14,9 @@ import ch.protonmail.android.mailconversation.domain.entity.Conversation
 import ch.protonmail.android.mailconversation.domain.repository.ConversationRepository
 import ch.protonmail.android.mailconversation.domain.sample.ConversationSample
 import ch.protonmail.android.maillabel.domain.model.MailLabels
-import ch.protonmail.android.maillabel.domain.model.SystemLabelId
-import ch.protonmail.android.maillabel.domain.model.toMailLabelSystem
 import ch.protonmail.android.maillabel.domain.usecase.ObserveExclusiveMailLabels
 import ch.protonmail.android.maillabel.domain.usecase.ObserveMailLabels
+import ch.protonmail.android.testdata.maillabel.MailLabelTestData
 import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -34,7 +33,14 @@ import kotlin.test.Test
 class UndoMoveConversationsTest {
 
     private val userId = UserIdSample.Primary
-    private val exclusiveMailLabels = SystemLabelId.exclusiveList.map { it.toMailLabelSystem() }
+    private val exclusiveSystemLabels = listOf(
+        MailLabelTestData.inboxSystemLabel,
+        MailLabelTestData.archiveSystemLabel,
+        MailLabelTestData.spamSystemLabel,
+        MailLabelTestData.trashSystemLabel,
+        MailLabelTestData.draftsSystemLabel,
+        MailLabelTestData.sentSystemLabel
+    )
 
     private val conversationRepository = mockk<ConversationRepository>()
     private val observeMailLabels = mockk<ObserveMailLabels>()
@@ -135,7 +141,7 @@ class UndoMoveConversationsTest {
         conversationIds: List<ConversationId>,
         expectedList: List<Conversation>? = emptyList()
     ) {
-        val exclusiveList = exclusiveMailLabels.map { it.id.labelId }
+        val exclusiveList = exclusiveSystemLabels.map { it.id.labelId }
         coEvery {
             conversationRepository.move(userId, conversationIds, exclusiveList, exclusiveList, destinationLabel)
         } returns expectedList!!.right()
@@ -144,7 +150,7 @@ class UndoMoveConversationsTest {
     private fun expectObserveExclusiveMailLabelSucceeds() {
         every { observeExclusiveMailLabels(userId) } returns flowOf(
             MailLabels(
-                systemLabels = exclusiveMailLabels,
+                dynamicSystemLabels = exclusiveSystemLabels,
                 folders = emptyList(),
                 labels = emptyList()
             )
@@ -154,7 +160,7 @@ class UndoMoveConversationsTest {
     private fun expectObserveMailLabelsSucceeds() {
         every { observeMailLabels(userId) } returns flowOf(
             MailLabels(
-                systemLabels = exclusiveMailLabels,
+                dynamicSystemLabels = exclusiveSystemLabels,
                 folders = emptyList(),
                 labels = emptyList()
             )

@@ -281,7 +281,7 @@ class MessageDetailViewModel @Inject constructor(
             }
 
             val currentExclusiveLabel = messageWithLabels.message.labelIds
-                .firstOrNull { labelId -> labelId in exclusiveLabels.systemLabels.map { it.id.labelId } }
+                .firstOrNull { labelId -> labelId in exclusiveLabels.dynamicSystemLabels.map { it.id.labelId } }
 
             if (currentExclusiveLabel == null) {
                 Timber.d("Applicable exclusive label not found")
@@ -482,7 +482,7 @@ class MessageDetailViewModel @Inject constructor(
             ) { folders, color ->
                 MessageDetailEvent.MessageBottomSheetEvent(
                     MoveToBottomSheetState.MoveToBottomSheetEvent.ActionData(
-                        folders.toUiModels(color).let { it.folders + it.systems }.toImmutableList()
+                        folders.toUiModels(color).let { it.folders + it.dynamicSystems }.toImmutableList()
                     )
                 )
             }

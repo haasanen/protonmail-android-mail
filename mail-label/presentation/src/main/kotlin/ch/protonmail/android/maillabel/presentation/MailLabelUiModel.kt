@@ -24,9 +24,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
-import ch.protonmail.android.maillabel.domain.model.SystemLabelId
-import ch.protonmail.android.maillabel.domain.model.toMailLabelSystem
-import me.proton.core.label.domain.entity.LabelId
 
 @Immutable
 sealed interface MailLabelUiModel {
@@ -41,17 +38,6 @@ sealed interface MailLabelUiModel {
     @Immutable
     data class DynamicSystem(
         override val id: MailLabelId.DynamicSystemLabelId,
-        override val text: TextUiModel.TextRes,
-        override val icon: Int,
-        override val iconTint: Color?,
-        override val isSelected: Boolean,
-        override val count: Int?
-    ) : MailLabelUiModel
-
-    @Deprecated("Replaced by dynamic system labelIds. Will be removed")
-    @Immutable
-    data class System(
-        override val id: MailLabelId.System,
         override val text: TextUiModel.TextRes,
         override val icon: Int,
         override val iconTint: Color?,
@@ -81,8 +67,6 @@ val MailLabelUiModel.Custom.testTag: String
 
 @Immutable
 data class MailLabelsUiModel(
-    @Deprecated("Replaced by dynamic system labelIds. Will be removed")
-    val systems: List<MailLabelUiModel.System>,
     val dynamicSystems: List<MailLabelUiModel.DynamicSystem>,
     val folders: List<MailLabelUiModel.Custom>,
     val labels: List<MailLabelUiModel.Custom>
@@ -91,7 +75,6 @@ data class MailLabelsUiModel(
     companion object {
 
         val Loading = MailLabelsUiModel(
-            systems = emptyList(),
             dynamicSystems = emptyList(),
             folders = emptyList(),
             labels = emptyList()
@@ -100,13 +83,6 @@ data class MailLabelsUiModel(
         @VisibleForTesting
         val PreviewForTesting by lazy {
             MailLabelsUiModel(
-                systems = SystemLabelId.displayedList.map {
-                    it.toMailLabelSystem().toSystemUiModel(
-                        settings = ch.protonmail.android.mailsettings.domain.model.FolderColorSettings(),
-                        counters = mapOf(LabelId("0") to 12),
-                        selected = MailLabelId.System.Trash
-                    )
-                },
                 dynamicSystems = emptyList(),
                 folders = emptyList(),
                 labels = emptyList()

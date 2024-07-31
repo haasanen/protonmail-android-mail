@@ -84,8 +84,6 @@ import ch.protonmail.android.maildetail.presentation.usecase.GetEmbeddedImageAvo
 import ch.protonmail.android.maildetail.presentation.usecase.LoadDataForMessageLabelAsBottomSheet
 import ch.protonmail.android.maildetail.presentation.usecase.OnMessageLabelAsConfirmed
 import ch.protonmail.android.maildetail.presentation.usecase.PrintMessage
-import ch.protonmail.android.maillabel.domain.model.MailLabel
-import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabels
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.maillabel.domain.usecase.ObserveExclusiveDestinationMailLabels
@@ -125,8 +123,8 @@ import ch.protonmail.android.mailmessage.presentation.reducer.DetailMoreActionsB
 import ch.protonmail.android.mailmessage.presentation.reducer.LabelAsBottomSheetReducer
 import ch.protonmail.android.mailmessage.presentation.reducer.MailboxMoreActionsBottomSheetReducer
 import ch.protonmail.android.mailmessage.presentation.reducer.MoveToBottomSheetReducer
-import ch.protonmail.android.mailmessage.presentation.usecase.InjectCssIntoDecryptedMessageBody
 import ch.protonmail.android.mailmessage.presentation.reducer.UpsellingBottomSheetReducer
+import ch.protonmail.android.mailmessage.presentation.usecase.InjectCssIntoDecryptedMessageBody
 import ch.protonmail.android.mailsettings.domain.model.FolderColorSettings
 import ch.protonmail.android.mailsettings.domain.model.PrivacySettings
 import ch.protonmail.android.mailsettings.domain.usecase.ObserveFolderColorSettings
@@ -239,7 +237,7 @@ class MessageDetailViewModelTest {
     private val observeMailLabels = mockk<ObserveExclusiveDestinationMailLabels> {
         every { this@mockk.invoke(userId) } returns flowOf(
             MailLabels(
-                systemLabels = listOf(MailLabel.System(MailLabelId.System.Spam)),
+                dynamicSystemLabels = listOf(MailLabelTestData.spamSystemLabel),
                 folders = listOf(buildCustomFolder(id = "folder1")),
                 labels = listOf()
             )
@@ -910,10 +908,10 @@ class MessageDetailViewModelTest {
             advanceUntilIdle()
             viewModel.submit(MessageViewAction.RequestMoveToBottomSheet)
             advanceUntilIdle()
-            viewModel.submit(MessageViewAction.MoveToDestinationSelected(MailLabelId.System.Spam))
+            viewModel.submit(MessageViewAction.MoveToDestinationSelected(MailLabelTestData.spamSystemLabel.id))
             advanceUntilIdle()
             val actual = assertIs<MoveToBottomSheetState.Data>(lastEmittedItem().bottomSheetState?.contentState)
-            assertTrue { actual.moveToDestinations.first { it.id == MailLabelId.System.Spam }.isSelected }
+            assertTrue { actual.moveToDestinations.first { it.id == MailLabelTestData.spamSystemLabel.id }.isSelected }
         }
     }
 
@@ -924,7 +922,7 @@ class MessageDetailViewModelTest {
             moveMessage(
                 userId,
                 messageId,
-                MailLabelId.System.Spam.labelId
+                SystemLabelId.Spam.labelId
             )
         } returns Unit.right()
 
@@ -933,14 +931,14 @@ class MessageDetailViewModelTest {
             advanceUntilIdle()
             viewModel.submit(MessageViewAction.RequestMoveToBottomSheet)
             advanceUntilIdle()
-            viewModel.submit(MessageViewAction.MoveToDestinationSelected(MailLabelId.System.Spam))
+            viewModel.submit(MessageViewAction.MoveToDestinationSelected(MailLabelTestData.spamSystemLabel.id))
             advanceUntilIdle()
             viewModel.submit(MessageViewAction.MoveToDestinationConfirmed("spam"))
             advanceUntilIdle()
 
             // Then
             assertNotNull(lastEmittedItem().exitScreenWithMessageEffect.consume())
-            coVerify { moveMessage.invoke(userId, messageId, MailLabelId.System.Spam.labelId) }
+            coVerify { moveMessage.invoke(userId, messageId, SystemLabelId.Spam.labelId) }
         }
     }
 

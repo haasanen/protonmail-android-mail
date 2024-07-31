@@ -19,12 +19,12 @@
 package ch.protonmail.android.mailmailbox.presentation.paging
 
 import app.cash.turbine.test
-import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItemType
 import ch.protonmail.android.mailmailbox.domain.model.MailboxPageKey
 import ch.protonmail.android.mailpagination.domain.model.PageFilter
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailpagination.domain.model.ReadStatus
+import ch.protonmail.android.testdata.maillabel.MailLabelTestData
 import ch.protonmail.android.testdata.user.UserIdTestData.userId
 import io.mockk.every
 import io.mockk.mockk
@@ -36,7 +36,7 @@ class MailboxPagerFactoryTest {
 
     private val remoteMediatorFactory = mockk<MailboxItemRemoteMediatorFactory>()
     private val pagingSourceFactory = mockk<MailboxItemPagingSourceFactory>()
-    private val selectedMailLabelId = MailLabelId.System.Starred
+    private val selectedMailLabelId = MailLabelTestData.starredSystemLabel.id
     private val readStatus = ReadStatus.All
     private val pageKey = PageKey(filter = PageFilter(labelId = selectedMailLabelId.labelId, read = readStatus))
 

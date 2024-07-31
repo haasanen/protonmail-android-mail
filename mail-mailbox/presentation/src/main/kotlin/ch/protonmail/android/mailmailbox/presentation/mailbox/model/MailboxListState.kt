@@ -22,6 +22,7 @@ import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.maillabel.domain.model.MailLabel
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
+import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.mailmailbox.domain.model.OpenMailboxItemRequest
 import me.proton.core.domain.entity.UserId
 
@@ -54,7 +55,8 @@ sealed interface MailboxListState {
             val refreshRequested: Boolean
         ) : Data {
 
-            fun isInInboxLabel() = currentMailLabel.id == MailLabelId.System.Inbox
+            fun isInInboxLabel() =
+                (currentMailLabel as? MailLabel.DynamicSystemLabel)?.systemLabelId == SystemLabelId.Inbox
         }
 
         data class SelectionMode(

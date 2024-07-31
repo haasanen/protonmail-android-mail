@@ -26,13 +26,13 @@ import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.mailcommon.domain.usecase.RegisterUndoableOperation
 import ch.protonmail.android.maillabel.domain.model.MailLabels
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
-import ch.protonmail.android.maillabel.domain.model.toMailLabelSystem
 import ch.protonmail.android.maillabel.domain.usecase.ObserveExclusiveMailLabels
 import ch.protonmail.android.mailmessage.domain.model.Message
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
 import ch.protonmail.android.mailmessage.domain.sample.MessageSample
+import ch.protonmail.android.testdata.maillabel.MailLabelTestData
 import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -50,7 +50,7 @@ class MoveMessagesTest {
 
     private val userId = UserIdSample.Primary
     private val messageIds = listOf(MessageIdSample.AugWeatherForecast, MessageIdSample.Invoice)
-    private val exclusiveMailLabels = SystemLabelId.exclusiveList.map { it.toMailLabelSystem() }
+    private val exclusiveMailLabels = listOf(MailLabelTestData.inboxSystemLabel, MailLabelTestData.archiveSystemLabel)
 
     private val messageRepository = mockk<MessageRepository>()
     private val decrementUnreadCount = mockk<DecrementUnreadCount>()
@@ -145,7 +145,7 @@ class MoveMessagesTest {
     private fun expectObserveExclusiveMailLabelSucceeds() {
         every { observeExclusiveMailLabels(userId) } returns flowOf(
             MailLabels(
-                systemLabels = exclusiveMailLabels,
+                dynamicSystemLabels = exclusiveMailLabels,
                 folders = emptyList(),
                 labels = emptyList()
             )

@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.maildetail.presentation.R
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
+import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.maillabel.presentation.MailLabelUiModel
 import ch.protonmail.android.maillabel.presentation.iconRes
 import ch.protonmail.android.maillabel.presentation.textRes
@@ -32,10 +33,10 @@ import me.proton.core.label.domain.entity.LabelId
 
 object MailLabelUiModelTestData {
 
-    val spamFolder = MailLabelUiModel.System(
-        id = MailLabelId.System.Spam,
-        text = TextUiModel.TextRes(MailLabelId.System.Spam.systemLabelId.textRes()),
-        icon = MailLabelId.System.Spam.systemLabelId.iconRes(),
+    val spamFolder = MailLabelUiModel.DynamicSystem(
+        id = MailLabelTestData.spamSystemLabel.id,
+        text = TextUiModel.TextRes(SystemLabelId.Spam.textRes()),
+        icon = SystemLabelId.Spam.iconRes(),
         iconTint = null,
         isSelected = false,
         count = null
@@ -108,10 +109,10 @@ object MailLabelUiModelTestData {
         )
     ).toImmutableList()
     val archiveAndCustomFolder = listOf(
-        MailLabelUiModel.System(
-            id = MailLabelId.System.Archive,
-            text = TextUiModel.TextRes(MailLabelId.System.Archive.systemLabelId.textRes()),
-            icon = MailLabelId.System.Archive.systemLabelId.iconRes(),
+        MailLabelUiModel.DynamicSystem(
+            id = MailLabelTestData.archiveSystemLabel.id,
+            text = TextUiModel.TextRes(SystemLabelId.Archive.textRes()),
+            icon = SystemLabelId.Archive.iconRes(),
             iconTint = null,
             isSelected = false,
             count = null

@@ -26,6 +26,7 @@ import ch.protonmail.android.mailcommon.presentation.sample.ActionUiModelSample
 import ch.protonmail.android.mailcommon.presentation.ui.delete.DeleteDialogState
 import ch.protonmail.android.maillabel.domain.model.MailLabel
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
+import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.maillabel.presentation.text
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxItemUiModel
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxListState
@@ -40,8 +41,21 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.model.UpgradeStora
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.BottomSheetState
 import ch.protonmail.android.mailonboarding.presentation.model.OnboardingState
 import kotlinx.collections.immutable.toImmutableList
+import me.proton.core.label.domain.entity.LabelId
 
 object MailboxStateSampleData {
+
+    private val inboxDynamicLabel = MailLabel.DynamicSystemLabel(
+        MailLabelId.DynamicSystemLabelId(LabelId("inbox")),
+        SystemLabelId.Inbox,
+        0
+    )
+
+    private val allMailDynamicLabel = MailLabel.DynamicSystemLabel(
+        MailLabelId.DynamicSystemLabelId(LabelId("allmail")),
+        SystemLabelId.AllMail,
+        0
+    )
 
     val Loading = MailboxState(
         mailboxListState = MailboxListState.Loading,
@@ -61,7 +75,7 @@ object MailboxStateSampleData {
 
     val Inbox = MailboxState(
         mailboxListState = MailboxListState.Data.ViewMode(
-            currentMailLabel = MailLabel.System(MailLabelId.System.Inbox),
+            currentMailLabel = inboxDynamicLabel,
             openItemEffect = Effect.empty(),
             scrollToMailboxTop = Effect.empty(),
             offlineEffect = Effect.empty(),
@@ -75,7 +89,7 @@ object MailboxStateSampleData {
             clearState = MailboxListState.Data.ClearState.Hidden
         ),
         topAppBarState = MailboxTopAppBarState.Data.DefaultMode(
-            currentLabelName = MailLabel.System(MailLabelId.System.Inbox).text()
+            currentLabelName = inboxDynamicLabel.text()
         ),
         upgradeStorageState = UpgradeStorageState(notificationDotVisible = false),
         unreadFilterState = UnreadFilterState.Data(
@@ -97,7 +111,7 @@ object MailboxStateSampleData {
 
     val AllMail = MailboxState(
         mailboxListState = MailboxListState.Data.ViewMode(
-            currentMailLabel = MailLabel.System(MailLabelId.System.AllMail),
+            currentMailLabel = allMailDynamicLabel,
             openItemEffect = Effect.empty(),
             scrollToMailboxTop = Effect.empty(),
             offlineEffect = Effect.empty(),
@@ -111,7 +125,7 @@ object MailboxStateSampleData {
             clearState = MailboxListState.Data.ClearState.Hidden
         ),
         topAppBarState = MailboxTopAppBarState.Data.DefaultMode(
-            currentLabelName = MailLabel.System(MailLabelId.System.AllMail).text()
+            currentLabelName = allMailDynamicLabel.text()
         ),
         upgradeStorageState = UpgradeStorageState(notificationDotVisible = false),
         unreadFilterState = UnreadFilterState.Data(
@@ -150,7 +164,7 @@ object MailboxStateSampleData {
     fun createSelectionMode(
         selectedMailboxItemUiModels: List<MailboxItemUiModel>,
         bottomBarAction: List<ActionUiModel> = listOf(ActionUiModelSample.Archive),
-        currentMailLabel: MailLabel = MailLabel.System(MailLabelId.System.Inbox),
+        currentMailLabel: MailLabel = inboxDynamicLabel,
         bottomSheetState: BottomSheetState? = null,
         error: Effect<TextUiModel> = Effect.empty()
     ) = MailboxState(
@@ -167,7 +181,7 @@ object MailboxStateSampleData {
             clearState = MailboxListState.Data.ClearState.Hidden
         ),
         topAppBarState = MailboxTopAppBarState.Data.SelectionMode(
-            currentLabelName = MailLabel.System(MailLabelId.System.Inbox).text(),
+            currentLabelName = inboxDynamicLabel.text(),
             selectedCount = selectedMailboxItemUiModels.size
         ),
         upgradeStorageState = UpgradeStorageState(notificationDotVisible = false),

@@ -23,8 +23,6 @@ import ch.protonmail.android.mailcommon.domain.AppInformation
 import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUser
 import ch.protonmail.android.maillabel.domain.SelectedMailLabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
-import ch.protonmail.android.maillabel.domain.model.MailLabelId.System.Archive
-import ch.protonmail.android.maillabel.domain.model.MailLabelId.System.Inbox
 import ch.protonmail.android.maillabel.domain.model.MailLabels
 import ch.protonmail.android.maillabel.domain.usecase.ObserveMailLabels
 import ch.protonmail.android.maillabel.domain.usecase.UpdateLabelExpandedState
@@ -39,6 +37,7 @@ import ch.protonmail.android.mailsettings.domain.usecase.ObserveFolderColorSetti
 import ch.protonmail.android.mailsidebar.presentation.SidebarViewModel.Action.LabelAction
 import ch.protonmail.android.mailsidebar.presentation.SidebarViewModel.State.Disabled
 import ch.protonmail.android.mailsidebar.presentation.SidebarViewModel.State.Enabled
+import ch.protonmail.android.testdata.maillabel.MailLabelTestData
 import ch.protonmail.android.testdata.user.UserIdTestData
 import ch.protonmail.android.testdata.user.UserTestData
 import io.mockk.coEvery
@@ -65,7 +64,7 @@ class SidebarViewModelTest {
     private val appInformation = mockk<AppInformation>()
 
     private val selectedMailLabelId = mockk<SelectedMailLabelId> {
-        every { this@mockk.flow } returns MutableStateFlow<MailLabelId>(Inbox)
+        every { this@mockk.flow } returns MutableStateFlow<MailLabelId>(SelectedMailLabelId.InboxMailLabelId)
         every { this@mockk.set(any()) } returns Unit
     }
 
@@ -123,7 +122,7 @@ class SidebarViewModelTest {
             // Then
             val actual = awaitItem() as Enabled
             val expected = Enabled(
-                selectedMailLabelId = Inbox,
+                selectedMailLabelId = SelectedMailLabelId.InboxMailLabelId,
                 canChangeSubscription = true,
                 mailLabels = MailLabelsUiModel.Loading
             )
@@ -144,7 +143,7 @@ class SidebarViewModelTest {
             // Then
             val actual = awaitItem() as Enabled
             val expected = Enabled(
-                selectedMailLabelId = Inbox,
+                selectedMailLabelId = SelectedMailLabelId.InboxMailLabelId,
                 canChangeSubscription = true,
                 mailLabels = MailLabelsUiModel.Loading
             )
@@ -165,7 +164,7 @@ class SidebarViewModelTest {
             // Then
             val actual = awaitItem() as Enabled
             val expected = Enabled(
-                selectedMailLabelId = Inbox,
+                selectedMailLabelId = SelectedMailLabelId.InboxMailLabelId,
                 canChangeSubscription = false,
                 mailLabels = MailLabelsUiModel.Loading
             )
@@ -176,10 +175,10 @@ class SidebarViewModelTest {
     @Test
     fun `onSidebarLabelAction Select Archive, set selectedMailLabelId`() = runTest {
         // When
-        sidebarViewModel.submit(LabelAction(Select(Archive)))
+        sidebarViewModel.submit(LabelAction(Select(MailLabelTestData.archiveSystemLabel.id)))
 
         // Then
-        verify { selectedMailLabelId.set(Archive) }
+        verify { selectedMailLabelId.set(MailLabelTestData.archiveSystemLabel.id) }
     }
 
     @Test

@@ -119,8 +119,6 @@ import ch.protonmail.android.maildetail.presentation.usecase.GetEmbeddedImageAvo
 import ch.protonmail.android.maildetail.presentation.usecase.LoadDataForMessageLabelAsBottomSheet
 import ch.protonmail.android.maildetail.presentation.usecase.OnMessageLabelAsConfirmed
 import ch.protonmail.android.maildetail.presentation.usecase.PrintMessage
-import ch.protonmail.android.maillabel.domain.model.MailLabel
-import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabels
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.maillabel.domain.usecase.GetRootLabel
@@ -241,7 +239,7 @@ class ConversationDetailViewModelIntegrationTest {
     private val observeMailLabels = mockk<ObserveExclusiveDestinationMailLabels> {
         every { this@mockk.invoke(UserIdSample.Primary) } returns flowOf(
             MailLabels(
-                systemLabels = listOf(MailLabel.System(MailLabelId.System.Spam)),
+                dynamicSystemLabels = listOf(MailLabelTestData.spamSystemLabel),
                 folders = listOf(MailLabelTestData.buildCustomFolder(id = "folder1")),
                 labels = listOf()
             )
@@ -1905,7 +1903,7 @@ class ConversationDetailViewModelIntegrationTest {
         coEvery {
             observeMessageWithLabels(userId, messageId)
         } returns flowOf(MessageWithLabelsSample.InvoiceWithLabel.right())
-        coEvery { moveMessage(userId, messageId, MailLabelId.System.Archive.labelId) } returns Unit.right()
+        coEvery { moveMessage(userId, messageId, SystemLabelId.Archive.labelId) } returns Unit.right()
         coEvery {
             relabelMessage(userId, messageId, messageLabels, newMessageLabels)
         } returns MessageWithLabelsSample.InvoiceWithLabel.message.right()
@@ -1948,7 +1946,7 @@ class ConversationDetailViewModelIntegrationTest {
                 BottomSheetVisibilityEffect.Hide, awaitItem().bottomSheetState?.bottomSheetVisibilityEffect?.consume()
             )
             coVerifySequence {
-                moveMessage(userId, messageId, MailLabelId.System.Archive.labelId)
+                moveMessage(userId, messageId, SystemLabelId.Archive.labelId)
                 relabelMessage(userId, messageId, messageLabels, newMessageLabels)
             }
 
@@ -2105,10 +2103,10 @@ class ConversationDetailViewModelIntegrationTest {
             assertEquals(
                 MoveToBottomSheetState.Data(
                     MailLabels(
-                        systemLabels = listOf(MailLabel.System(MailLabelId.System.Spam)),
+                        dynamicSystemLabels = listOf(MailLabelTestData.spamSystemLabel),
                         folders = listOf(MailLabelTestData.buildCustomFolder(id = "folder1")),
                         labels = listOf()
-                    ).toUiModels(defaultFolderColorSettings).let { it.folders + it.systems }.toImmutableList(),
+                    ).toUiModels(defaultFolderColorSettings).let { it.folders + it.dynamicSystems }.toImmutableList(),
                     null,
                     messageId
                 ),
@@ -2135,7 +2133,7 @@ class ConversationDetailViewModelIntegrationTest {
         coEvery {
             observeMessageWithLabels(userId, messageId)
         } returns flowOf(MessageWithLabelsSample.InvoiceWithLabel.right())
-        coEvery { moveMessage(userId, messageId, MailLabelId.System.Spam.labelId) } returns Unit.right()
+        coEvery { moveMessage(userId, messageId, SystemLabelId.Spam.labelId) } returns Unit.right()
 
         // When
         val viewModel = buildConversationDetailViewModel()
@@ -2148,11 +2146,13 @@ class ConversationDetailViewModelIntegrationTest {
             skipItems(2)
             viewModel.submit(ConversationDetailViewAction.RequestMessageMoveToBottomSheet(messageId))
             skipItems(2)
-            viewModel.submit(ConversationDetailViewAction.MoveToDestinationSelected(MailLabelId.System.Spam))
+            viewModel.submit(
+                ConversationDetailViewAction.MoveToDestinationSelected(MailLabelTestData.spamSystemLabel.id)
+            )
             skipItems(1)
             viewModel.submit(
                 ConversationDetailViewAction.MoveToDestinationConfirmed(
-                    MailLabelId.System.Spam.toString(),
+                    SystemLabelId.Spam.toString(),
                     messageId
                 )
             )
@@ -2162,7 +2162,7 @@ class ConversationDetailViewModelIntegrationTest {
                 BottomSheetVisibilityEffect.Hide, awaitItem().bottomSheetState?.bottomSheetVisibilityEffect?.consume()
             )
             coVerify {
-                moveMessage(userId, messageId, MailLabelId.System.Spam.labelId)
+                moveMessage(userId, messageId, SystemLabelId.Spam.labelId)
             }
 
             cancelAndIgnoreRemainingEvents()

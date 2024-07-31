@@ -20,8 +20,7 @@ package ch.protonmail.android.mailmailbox.domain.usecase
 
 import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.Action
-import ch.protonmail.android.maillabel.domain.model.MailLabel
-import ch.protonmail.android.maillabel.domain.model.MailLabelId
+import ch.protonmail.android.testdata.maillabel.MailLabelTestData
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -33,7 +32,7 @@ class ObserveMailboxActionsTest {
     @Test
     fun `returns default actions for non-trash or non-spam labels`() = runTest {
         // Given
-        val currentMailLabel = MailLabel.System(MailLabelId.System.Inbox)
+        val currentMailLabel = MailLabelTestData.inboxSystemLabel
         val expected = listOf(Action.MarkUnread, Action.Trash, Action.Move, Action.Label, Action.More)
 
         // When
@@ -46,7 +45,7 @@ class ObserveMailboxActionsTest {
     @Test
     fun `returns delete actions for trash label`() = runTest {
         // Given
-        val currentMailLabel = MailLabel.System(MailLabelId.System.Trash)
+        val currentMailLabel = MailLabelTestData.trashSystemLabel
         val expected = listOf(Action.MarkUnread, Action.Delete, Action.Move, Action.Label, Action.More)
 
         // When
@@ -59,7 +58,7 @@ class ObserveMailboxActionsTest {
     @Test
     fun `returns delete actions for spam label`() = runTest {
         // Given
-        val currentMailLabel = MailLabel.System(MailLabelId.System.Spam)
+        val currentMailLabel = MailLabelTestData.spamSystemLabel
         val expected = listOf(Action.MarkUnread, Action.Delete, Action.Move, Action.Label, Action.More)
 
         // When
@@ -72,7 +71,7 @@ class ObserveMailboxActionsTest {
     @Test
     fun `returns mark as read when all items are unread`() = runTest {
         // Given
-        val currentMailLabel = MailLabel.System(MailLabelId.System.Inbox)
+        val currentMailLabel = MailLabelTestData.inboxSystemLabel
         val expected = listOf(Action.MarkRead, Action.Trash, Action.Move, Action.Label, Action.More)
 
         // When
@@ -85,7 +84,7 @@ class ObserveMailboxActionsTest {
     @Test
     fun `returns delete and mark as read when all items are unread in spam`() = runTest {
         // Given
-        val currentMailLabel = MailLabel.System(MailLabelId.System.Spam)
+        val currentMailLabel = MailLabelTestData.spamSystemLabel
         val expected = listOf(Action.MarkRead, Action.Delete, Action.Move, Action.Label, Action.More)
 
         // When
@@ -98,7 +97,7 @@ class ObserveMailboxActionsTest {
     @Test
     fun `returns delete and mark as read when all items are unread in trash`() = runTest {
         // Given
-        val currentMailLabel = MailLabel.System(MailLabelId.System.Trash)
+        val currentMailLabel = MailLabelTestData.trashSystemLabel
         val expected = listOf(Action.MarkRead, Action.Delete, Action.Move, Action.Label, Action.More)
 
         // When

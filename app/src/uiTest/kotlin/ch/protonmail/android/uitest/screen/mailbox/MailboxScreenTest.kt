@@ -26,7 +26,6 @@ import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.ActionUiModel
 import ch.protonmail.android.mailcommon.presentation.model.BottomBarState
 import ch.protonmail.android.mailcommon.presentation.ui.delete.DeleteDialogState
-import ch.protonmail.android.maillabel.domain.model.MailLabel
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.presentation.sample.LabelUiModelSample
 import ch.protonmail.android.maillabel.presentation.text
@@ -43,8 +42,8 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.previewdata.Mailbo
 import ch.protonmail.android.mailmailbox.presentation.mailbox.previewdata.MailboxStateSampleData
 import ch.protonmail.android.mailonboarding.presentation.model.OnboardingState
 import ch.protonmail.android.test.annotations.suite.RegressionTest
-import ch.protonmail.android.uitest.util.HiltInstrumentedTest
 import ch.protonmail.android.testdata.mailbox.MailboxItemUiModelTestData
+import ch.protonmail.android.testdata.maillabel.MailLabelTestData
 import ch.protonmail.android.uitest.models.avatar.AvatarInitial
 import ch.protonmail.android.uitest.models.folders.MailLabelEntry
 import ch.protonmail.android.uitest.models.mailbox.MailboxListItemEntry
@@ -55,6 +54,7 @@ import ch.protonmail.android.uitest.robot.mailbox.section.emptyListSection
 import ch.protonmail.android.uitest.robot.mailbox.section.listSection
 import ch.protonmail.android.uitest.robot.mailbox.section.progressListSection
 import ch.protonmail.android.uitest.robot.mailbox.section.verify
+import ch.protonmail.android.uitest.util.HiltInstrumentedTest
 import ch.protonmail.android.uitest.util.ManagedState
 import ch.protonmail.android.uitest.util.StateManager
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -87,7 +87,7 @@ internal class MailboxScreenTest : HiltInstrumentedTest() {
     @Test
     fun whenLoadingCompletedThenItemsAreDisplayed() {
         val mailboxListState = MailboxListState.Data.ViewMode(
-            currentMailLabel = MailLabel.System(MailLabelId.System.Inbox),
+            currentMailLabel = MailLabelTestData.inboxSystemLabel,
             openItemEffect = Effect.empty(),
             scrollToMailboxTop = Effect.empty(),
             offlineEffect = Effect.empty(),
@@ -111,7 +111,7 @@ internal class MailboxScreenTest : HiltInstrumentedTest() {
     @Test
     fun whenLoadingCompletedThenItemsLabelsAreDisplayed() {
         val mailboxListState = MailboxListState.Data.ViewMode(
-            currentMailLabel = MailLabel.System(MailLabelId.System.Inbox),
+            currentMailLabel = MailLabelTestData.inboxSystemLabel,
             openItemEffect = Effect.empty(),
             scrollToMailboxTop = Effect.empty(),
             offlineEffect = Effect.empty(),
@@ -145,7 +145,7 @@ internal class MailboxScreenTest : HiltInstrumentedTest() {
     ) // MAILANDR-330
     fun givenLoadingCompletedWhenNoItemThenEmptyMailboxIsDisplayed() {
         val mailboxListState = MailboxListState.Data.ViewMode(
-            currentMailLabel = MailLabel.System(MailLabelId.System.Inbox),
+            currentMailLabel = MailLabelTestData.inboxSystemLabel,
             openItemEffect = Effect.empty(),
             scrollToMailboxTop = Effect.empty(),
             offlineEffect = Effect.empty(),
@@ -165,7 +165,7 @@ internal class MailboxScreenTest : HiltInstrumentedTest() {
     @Ignore("How to verify SwipeRefresh is refreshing?") // MAILANDR-330
     fun givenEmptyMailboxIsDisplayedWhenSwipeDownThenRefreshIsTriggered() {
         val mailboxListState = MailboxListState.Data.ViewMode(
-            currentMailLabel = MailLabel.System(MailLabelId.System.Inbox),
+            currentMailLabel = MailLabelTestData.inboxSystemLabel,
             openItemEffect = Effect.empty(),
             scrollToMailboxTop = Effect.empty(),
             offlineEffect = Effect.empty(),
@@ -191,15 +191,15 @@ internal class MailboxScreenTest : HiltInstrumentedTest() {
         }
         val itemsFlow = flowOf(PagingData.from(items))
         val states = nonEmptyListOf(
-            MailLabelId.System.Trash to false,
-            MailLabelId.System.AllMail to true,
-            MailLabelId.System.Trash to true
+            MailLabelTestData.trashSystemLabel to false,
+            MailLabelTestData.allMailSystemLabel to true,
+            MailLabelTestData.trashSystemLabel to true
         ).map { (systemLabel, shouldScrollToTop) ->
             val scrollToTopEffect: Effect<MailLabelId> =
-                if (shouldScrollToTop) Effect.of(systemLabel) else Effect.empty()
+                if (shouldScrollToTop) Effect.of(systemLabel.id) else Effect.empty()
             MailboxState(
                 mailboxListState = MailboxListState.Data.ViewMode(
-                    currentMailLabel = MailLabel.System(systemLabel),
+                    currentMailLabel = systemLabel,
                     openItemEffect = Effect.empty(),
                     scrollToMailboxTop = scrollToTopEffect,
                     offlineEffect = Effect.empty(),
@@ -210,7 +210,7 @@ internal class MailboxScreenTest : HiltInstrumentedTest() {
                     clearState = MailboxListState.Data.ClearState.Hidden
                 ),
                 topAppBarState = MailboxTopAppBarState.Data.DefaultMode(
-                    currentLabelName = MailLabel.System(systemLabel).text()
+                    currentLabelName = systemLabel.text()
                 ),
                 upgradeStorageState = UpgradeStorageState(notificationDotVisible = false),
                 unreadFilterState = UnreadFilterState.Loading,

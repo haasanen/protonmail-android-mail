@@ -50,8 +50,6 @@ import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcommon.presentation.model.string
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.presentation.MailLabelUiModel
-import ch.protonmail.android.maillabel.presentation.iconRes
-import ch.protonmail.android.maillabel.presentation.textRes
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.presentation.R
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MoveToBottomSheetState
@@ -197,14 +195,6 @@ fun MoveToBottomSheetContentPreview() {
         dataState = MoveToBottomSheetState.Data(
             selected = null,
             moveToDestinations = listOf(
-                MailLabelUiModel.System(
-                    id = MailLabelId.System.Spam,
-                    text = TextUiModel.TextRes(MailLabelId.System.Spam.systemLabelId.textRes()),
-                    icon = MailLabelId.System.Spam.systemLabelId.iconRes(),
-                    iconTint = null,
-                    isSelected = true,
-                    count = null
-                ),
                 MailLabelUiModel.Custom(
                     id = MailLabelId.Custom.Folder(LabelId("folder1")),
                     text = TextUiModel.Text("Folder1"),

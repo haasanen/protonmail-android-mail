@@ -33,7 +33,6 @@ fun MailLabels.toUiModels(
     counters: Map<LabelId, Int?>,
     selected: MailLabelId
 ): MailLabelsUiModel = MailLabelsUiModel(
-    systems = systemLabels.map { it.toSystemUiModel(settings, counters, selected) },
     dynamicSystems = dynamicSystemLabels.map { it.toDynamicSystemUiModel(settings, counters, selected) },
     folders = folders.map { it.toCustomUiModel(settings, counters, selected) },
     labels = labels.map { it.toCustomUiModel(settings, counters, selected) }
@@ -44,13 +43,11 @@ fun MailLabel.toUiModel(
     counters: Map<LabelId, Int?>,
     selected: MailLabelId
 ): MailLabelUiModel = when (this) {
-    is MailLabel.System -> toSystemUiModel(settings, counters, selected)
     is MailLabel.Custom -> toCustomUiModel(settings, counters, selected)
     is MailLabel.DynamicSystemLabel -> toDynamicSystemUiModel(settings, counters, selected)
 }
 
 fun MailLabels.toUiModels(settings: FolderColorSettings): MailLabelsUiModel = MailLabelsUiModel(
-    systems = systemLabels.map { it.toSystemUiModel(settings, emptyMap(), null) },
     dynamicSystems = dynamicSystemLabels.map { it.toDynamicSystemUiModel(settings, emptyMap(), null) },
     folders = folders.map { it.toCustomUiModel(settings, emptyMap(), null) },
     labels = labels.map { it.toCustomUiModel(settings, emptyMap(), null) }
@@ -61,20 +58,6 @@ fun MailLabel.DynamicSystemLabel.toDynamicSystemUiModel(
     counters: Map<LabelId, Int?>,
     selected: MailLabelId?
 ): MailLabelUiModel.DynamicSystem = MailLabelUiModel.DynamicSystem(
-    id = id,
-    text = text() as TextUiModel.TextRes,
-    icon = iconRes(settings),
-    iconTint = iconTintColor(settings),
-    isSelected = id.labelId == selected?.labelId,
-    count = counters[id.labelId]
-)
-
-@Deprecated("Replaced by dynamic system labelIds. Will be removed")
-fun MailLabel.System.toSystemUiModel(
-    settings: FolderColorSettings,
-    counters: Map<LabelId, Int?>,
-    selected: MailLabelId?
-): MailLabelUiModel.System = MailLabelUiModel.System(
     id = id,
     text = text() as TextUiModel.TextRes,
     icon = iconRes(settings),
@@ -100,14 +83,12 @@ fun MailLabel.Custom.toCustomUiModel(
 )
 
 fun MailLabel.text(): TextUiModel = when (this) {
-    is MailLabel.System -> TextUiModel.TextRes(id.systemLabelId.textRes())
     is MailLabel.Custom -> TextUiModel.Text(text)
     is MailLabel.DynamicSystemLabel -> TextUiModel.TextRes(systemLabelId.textRes())
 }
 
 @DrawableRes
 fun MailLabel.iconRes(settings: FolderColorSettings): Int = when (this) {
-    is MailLabel.System -> id.systemLabelId.iconRes()
     is MailLabel.Custom -> when (id) {
         is MailLabelId.Custom.Label -> R.drawable.ic_proton_circle_filled
         is MailLabelId.Custom.Folder -> when {
@@ -125,7 +106,6 @@ fun MailLabel.iconRes(settings: FolderColorSettings): Int = when (this) {
 }
 
 fun MailLabel.iconTintColor(settings: FolderColorSettings): Color? = when (this) {
-    is MailLabel.System -> null
     is MailLabel.Custom -> when (id) {
         is MailLabelId.Custom.Label -> color
         is MailLabelId.Custom.Folder -> when {
