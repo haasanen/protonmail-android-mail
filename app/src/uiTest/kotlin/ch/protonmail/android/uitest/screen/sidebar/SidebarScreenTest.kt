@@ -120,6 +120,7 @@ internal class SidebarScreenTest : HiltInstrumentedTest() {
     private fun someLabelsSidebarState() = buildSidebarState(
         mailLabels = MailLabelsUiModel(
             systems = emptyList(),
+            dynamicSystems = emptyList(),
             folders = listOf(
                 buildMailLabelFolderUiModel("Folder1"),
                 buildMailLabelFolderUiModel("Folder2"),
