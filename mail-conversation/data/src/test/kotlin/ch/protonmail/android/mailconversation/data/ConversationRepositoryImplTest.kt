@@ -694,7 +694,7 @@ class ConversationRepositoryImplTest {
         } returns listOf(MessageSample.build()).right()
 
         // when
-        val result = conversationRepository.markUnread(userId, conversationId, contextLabelId)
+        val result = conversationRepository.markUnread(userId, listOf(conversationId), contextLabelId)
 
         // then
         assertEquals(error, result)
@@ -717,10 +717,10 @@ class ConversationRepositoryImplTest {
         } returns listOf(MessageSample.build()).right()
 
         // when
-        val result = conversationRepository.markUnread(userId, conversationId, contextLabelId)
+        val result = conversationRepository.markUnread(userId, listOf(conversationId), contextLabelId)
 
         // then
-        assertEquals(updatedConversation.right(), result)
+        assertEquals(listOf(updatedConversation).right(), result)
     }
 
     @Test
@@ -739,7 +739,7 @@ class ConversationRepositoryImplTest {
         } returns listOf(MessageSample.build()).right()
 
         // when
-        conversationRepository.markUnread(userId, conversationId, contextLabelId)
+        conversationRepository.markUnread(userId, listOf(conversationId), contextLabelId)
 
         // then
         coVerify {
@@ -767,7 +767,7 @@ class ConversationRepositoryImplTest {
         } returns listOf(MessageSample.build()).right()
 
         // when
-        conversationRepository.markUnread(userId, conversationId, contextLabelId)
+        conversationRepository.markUnread(userId, listOf(conversationId), contextLabelId)
 
         // then
         coVerify { conversationRemoteDataSource.markUnread(userId, listOf(conversationId), contextLabelId) }
@@ -898,7 +898,7 @@ class ConversationRepositoryImplTest {
         } returns listOf(MessageSample.build()).right()
 
         // when
-        val result = conversationRepository.markRead(userId, conversationId)
+        val result = conversationRepository.markRead(userId, listOf(conversationId))
 
         // then
         assertEquals(error, result)
@@ -917,10 +917,10 @@ class ConversationRepositoryImplTest {
         } returns listOf(MessageSample.build()).right()
 
         // when
-        val result = conversationRepository.markRead(userId, conversationId)
+        val result = conversationRepository.markRead(userId, listOf(conversationId))
 
         // then
-        assertEquals(updatedConversation.right(), result)
+        assertEquals(listOf(updatedConversation).right(), result)
     }
 
     @Test
@@ -935,7 +935,7 @@ class ConversationRepositoryImplTest {
         } returns listOf(MessageSample.build()).right()
 
         // when
-        conversationRepository.markRead(userId, conversationId)
+        conversationRepository.markRead(userId, listOf(conversationId))
 
         // then
         coVerify { conversationRemoteDataSource.markRead(userId, listOf(conversationId)) }
@@ -953,7 +953,7 @@ class ConversationRepositoryImplTest {
         } returns listOf(MessageSample.build()).right()
 
         // when
-        conversationRepository.markRead(userId, conversationId)
+        conversationRepository.markRead(userId, listOf(conversationId))
 
         // then
         coVerify { messageLocalDataSource.markMessagesInConversationsRead(userId, listOf(conversationId)) }

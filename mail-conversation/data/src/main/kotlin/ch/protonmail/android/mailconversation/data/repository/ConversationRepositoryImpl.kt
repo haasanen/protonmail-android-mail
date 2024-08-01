@@ -214,13 +214,6 @@ class ConversationRepositoryImpl @Inject constructor(
 
     override suspend fun markUnread(
         userId: UserId,
-        conversationId: ConversationId,
-        contextLabelId: LabelId
-    ): Either<DataError, Conversation> = markUnread(userId, listOf(conversationId), contextLabelId)
-        .map { it.first() }
-
-    override suspend fun markUnread(
-        userId: UserId,
         conversationIds: List<ConversationId>,
         contextLabelId: LabelId
     ): Either<DataError, List<Conversation>> {
@@ -229,9 +222,6 @@ class ConversationRepositoryImpl @Inject constructor(
             conversationRemoteDataSource.markUnread(userId, conversationIds, contextLabelId)
         }
     }
-
-    override suspend fun markRead(userId: UserId, conversationId: ConversationId): Either<DataError, Conversation> =
-        markRead(userId, listOf(conversationId)).map { it.first() }
 
     override suspend fun markRead(
         userId: UserId,

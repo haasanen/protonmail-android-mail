@@ -157,13 +157,6 @@ class RustConversationRepositoryImpl @Inject constructor(
     // It will be implemented later on
     override suspend fun markUnread(
         userId: UserId,
-        conversationId: ConversationId,
-        contextLabelId: LabelId
-    ): Either<DataError, Conversation> = DataError.Local.Unknown.left()
-
-    // It will be implemented later on
-    override suspend fun markUnread(
-        userId: UserId,
         conversationIds: List<ConversationId>,
         contextLabelId: LabelId
     ): Either<DataError, List<Conversation>> {
@@ -171,10 +164,6 @@ class RustConversationRepositoryImpl @Inject constructor(
 
         return emptyList<Conversation>().right()
     }
-
-    // This function is not used
-    override suspend fun markRead(userId: UserId, conversationId: ConversationId): Either<DataError, Conversation> =
-        DataError.Local.Unknown.left()
 
     // It will be implemented later on
     override suspend fun markRead(
