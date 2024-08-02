@@ -18,9 +18,7 @@
 
 package ch.protonmail.android.mailcommon.dagger
 
-import me.proton.core.accountmanager.domain.AccountManager
 import android.content.Context
-import ch.protonmail.android.mailcommon.data.BuildConfig
 import ch.protonmail.android.mailcommon.data.dagger.MailCommonDataModule
 import ch.protonmail.android.mailcommon.data.repository.AppLocaleRepositoryImpl
 import ch.protonmail.android.mailcommon.domain.coroutines.AppScope
@@ -28,8 +26,6 @@ import ch.protonmail.android.mailcommon.domain.coroutines.DefaultDispatcher
 import ch.protonmail.android.mailcommon.domain.coroutines.IODispatcher
 import ch.protonmail.android.mailcommon.domain.coroutines.MainDispatcher
 import ch.protonmail.android.mailcommon.domain.repository.AppLocaleRepository
-import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUserId
-import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -43,11 +39,6 @@ import javax.inject.Singleton
 @Module(includes = [MailCommonDataModule::class])
 @InstallIn(SingletonComponent::class)
 object MailCommonModule {
-
-    @Provides
-    @Singleton
-    fun provideObservePrimaryUserId(accountManager: AccountManager, userSessionRepository: UserSessionRepository) =
-        ObservePrimaryUserId(accountManager, BuildConfig.USE_RUST_DATA_LAYER, userSessionRepository)
 
     @Provides
     @DefaultDispatcher

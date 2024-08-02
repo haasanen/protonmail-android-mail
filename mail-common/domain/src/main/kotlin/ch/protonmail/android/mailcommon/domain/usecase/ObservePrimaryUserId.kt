@@ -20,16 +20,12 @@ package ch.protonmail.android.mailcommon.domain.usecase
 
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import kotlinx.coroutines.flow.Flow
-import me.proton.core.accountmanager.domain.AccountManager
 import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 
 class ObservePrimaryUserId @Inject constructor(
-    private val accountManager: AccountManager,
-    private val useRustDataLayer: Boolean,
     private val userSessionRepository: UserSessionRepository
 ) {
 
-    operator fun invoke(): Flow<UserId?> = if (useRustDataLayer)
-        userSessionRepository.observeCurrentUserId() else accountManager.getPrimaryUserId()
+    operator fun invoke(): Flow<UserId?> = userSessionRepository.observeCurrentUserId()
 }
