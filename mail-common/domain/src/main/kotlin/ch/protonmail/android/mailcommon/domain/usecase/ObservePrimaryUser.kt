@@ -24,6 +24,15 @@ import me.proton.core.accountmanager.domain.AccountManager
 import me.proton.core.user.domain.UserManager
 import javax.inject.Inject
 
+@Deprecated(
+    """
+        Not valid anymore with Rust library's logic, will never emit!
+        This should either be dropped (many usages could be changed to 
+        using observePrimaryUserId instead) or updated in the same way 
+        as observePrimaryUserId to apply different logic depending on 
+        rust / core data layer.
+    """
+)
 class ObservePrimaryUser @Inject constructor(
     val accountManager: AccountManager,
     val userManager: UserManager

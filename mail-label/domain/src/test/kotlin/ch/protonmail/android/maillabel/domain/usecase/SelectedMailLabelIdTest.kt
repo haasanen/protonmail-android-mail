@@ -19,8 +19,8 @@
 package ch.protonmail.android.maillabel.domain.usecase
 
 import app.cash.turbine.test
-import ch.protonmail.android.mailcommon.domain.sample.UserSample
-import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUser
+import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
+import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.maillabel.domain.SelectedMailLabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
@@ -32,15 +32,15 @@ import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
+import me.proton.core.domain.entity.UserId
 import me.proton.core.label.domain.entity.LabelId
-import me.proton.core.user.domain.entity.User
 import org.junit.Test
 import kotlin.test.assertEquals
 
 class SelectedMailLabelIdTest {
 
     private val appScope = TestScope()
-    private val observePrimaryUser: ObservePrimaryUser = mockk {
+    private val observePrimaryUserId: ObservePrimaryUserId = mockk {
         every { this@mockk() } returns emptyFlow()
     }
 
@@ -51,7 +51,7 @@ class SelectedMailLabelIdTest {
     private val selectedMailLabelId by lazy {
         SelectedMailLabelId(
             appScope = appScope,
-            observePrimaryUser = observePrimaryUser
+            observePrimaryUserId = observePrimaryUserId
         )
     }
 
@@ -99,9 +99,9 @@ class SelectedMailLabelIdTest {
     @Test
     fun `emits inbox when primary user changes`() = runTest {
         // given
-        val userFlow = MutableStateFlow<User?>(null)
+        val userIdFlow = MutableStateFlow<UserId?>(null)
         val archiveSystemLabel = MailLabelTestData.archiveSystemLabel.id
-        every { observePrimaryUser() } returns userFlow
+        every { observePrimaryUserId() } returns userIdFlow
 
         selectedMailLabelId.flow.test {
             assertEquals(initialSystemLabel, awaitItem())
@@ -109,7 +109,7 @@ class SelectedMailLabelIdTest {
             assertEquals(archiveSystemLabel, awaitItem())
 
             // when
-            userFlow.emit(UserSample.Primary)
+            userIdFlow.emit(UserIdSample.Primary)
             appScope.advanceUntilIdle()
 
             // then

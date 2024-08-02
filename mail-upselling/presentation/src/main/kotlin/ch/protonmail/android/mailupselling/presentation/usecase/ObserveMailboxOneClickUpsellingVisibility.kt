@@ -18,7 +18,7 @@
 
 package ch.protonmail.android.mailupselling.presentation.usecase
 
-import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUser
+import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailupselling.domain.annotations.OneClickUpsellingAlwaysShown
 import ch.protonmail.android.mailupselling.domain.usecase.UserHasAvailablePlans
 import ch.protonmail.android.mailupselling.domain.usecase.UserHasPendingPurchases
@@ -31,7 +31,7 @@ import me.proton.core.plan.domain.usecase.CanUpgradeFromMobile
 import javax.inject.Inject
 
 class ObserveMailboxOneClickUpsellingVisibility @Inject constructor(
-    private val observePrimaryUser: ObservePrimaryUser,
+    private val observePrimaryUserId: ObservePrimaryUserId,
     private val purchaseManager: PurchaseManager,
     private val observeOneClickUpsellingEnabled: ObserveOneClickUpsellingEnabled,
     private val observeUpsellingOneClickOnCooldown: ObserveUpsellingOneClickOnCooldown,
@@ -42,17 +42,17 @@ class ObserveMailboxOneClickUpsellingVisibility @Inject constructor(
 ) {
 
     operator fun invoke(): Flow<Boolean> = combine(
-        observePrimaryUser().distinctUntilChanged(),
+        observePrimaryUserId().distinctUntilChanged(),
         purchaseManager.observePurchases(),
         observeUpsellingOneClickOnCooldown(),
         observeOneClickUpsellingEnabled(null)
-    ) { user, purchases, isOneClickOnCooldown, isOneClickUpsellingEnabled ->
-        if (user == null) return@combine false
+    ) { userId, purchases, isOneClickOnCooldown, isOneClickUpsellingEnabled ->
+        if (userId == null) return@combine false
         if (!canUpgradeFromMobile()) return@combine false
         if (isOneClickUpsellingEnabled == null || !isOneClickUpsellingEnabled.value) return@combine false
         if (isOneClickOnCooldown && !alwaysShowOneClickUpselling) return@combine false
-        if (userHasPendingPurchases(purchases, user.userId)) return@combine false
+        if (userHasPendingPurchases(purchases, userId)) return@combine false
 
-        userHasAvailablePlans(user.userId)
+        userHasAvailablePlans(userId)
     }
 }

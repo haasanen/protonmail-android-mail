@@ -21,7 +21,7 @@ package ch.protonmail.android.mailsidebar.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ch.protonmail.android.mailcommon.domain.AppInformation
-import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUser
+import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.maillabel.domain.SelectedMailLabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.domain.usecase.ObserveMailLabels
@@ -52,7 +52,7 @@ class SidebarViewModel @Inject constructor(
     private val selectedMailLabelId: SelectedMailLabelId,
     private val updateLabelExpandedState: UpdateLabelExpandedState,
     private val paymentManager: PaymentManager,
-    observePrimaryUser: ObservePrimaryUser,
+    observePrimaryUserId: ObservePrimaryUserId,
     observeFolderColors: ObserveFolderColorSettings,
     observeMailLabels: ObserveMailLabels,
     observeUnreadCounters: ObserveUnreadCounters
@@ -60,26 +60,26 @@ class SidebarViewModel @Inject constructor(
 
     private val initialState = State.Disabled
 
-    private val primaryUser = observePrimaryUser().stateIn(
+    private val primaryUser = observePrimaryUserId().stateIn(
         scope = viewModelScope,
         started = SharingStarted.Eagerly,
         initialValue = null
     )
 
-    val state: StateFlow<State> = primaryUser.flatMapLatest { user ->
-        if (user == null) {
+    val state: StateFlow<State> = primaryUser.flatMapLatest { userId ->
+        if (userId == null) {
             return@flatMapLatest flowOf(State.Disabled)
         }
 
         combine(
             selectedMailLabelId.flow,
-            observeFolderColors(user.userId),
-            observeMailLabels(user.userId),
-            observeUnreadCounters(user.userId)
+            observeFolderColors(userId),
+            observeMailLabels(userId),
+            observeUnreadCounters(userId)
         ) { selectedMailLabelId, folderColors, mailLabels, counters ->
             State.Enabled(
                 selectedMailLabelId = selectedMailLabelId,
-                canChangeSubscription = paymentManager.isSubscriptionAvailable(user.userId),
+                canChangeSubscription = paymentManager.isSubscriptionAvailable(userId),
                 mailLabels = mailLabels.toUiModels(folderColors, counters.toMap(), selectedMailLabelId)
             )
         }
@@ -108,8 +108,8 @@ class SidebarViewModel @Inject constructor(
     }
 
     private fun onUpdateLabelExpandedState(labelId: MailLabelId, isExpanded: Boolean) = viewModelScope.launch {
-        primaryUser.value?.let {
-            updateLabelExpandedState(it.userId, labelId, isExpanded)
+        primaryUser.value?.let { userId ->
+            updateLabelExpandedState(userId, labelId, isExpanded)
         }
     }
 

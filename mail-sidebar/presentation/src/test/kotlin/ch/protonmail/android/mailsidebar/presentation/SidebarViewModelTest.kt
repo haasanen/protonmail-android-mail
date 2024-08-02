@@ -20,7 +20,7 @@ package ch.protonmail.android.mailsidebar.presentation
 
 import app.cash.turbine.test
 import ch.protonmail.android.mailcommon.domain.AppInformation
-import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUser
+import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.maillabel.domain.SelectedMailLabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabels
@@ -54,7 +54,6 @@ import kotlinx.coroutines.test.setMain
 import me.proton.core.domain.entity.UserId
 import me.proton.core.label.domain.entity.LabelId
 import me.proton.core.payment.domain.PaymentManager
-import me.proton.core.user.domain.entity.User
 import org.junit.Before
 import org.junit.Test
 import kotlin.test.assertEquals
@@ -68,9 +67,9 @@ class SidebarViewModelTest {
         every { this@mockk.set(any()) } returns Unit
     }
 
-    private val primaryUser = MutableStateFlow<User?>(null)
-    private val observePrimaryUser = mockk<ObservePrimaryUser> {
-        every { this@mockk() } returns primaryUser
+    private val primaryUserId = MutableStateFlow<UserId?>(null)
+    private val observePrimaryUserId = mockk<ObservePrimaryUserId> {
+        every { this@mockk() } returns primaryUserId
     }
 
     private val mailboxLabels = MutableStateFlow(MailLabels.Initial)
@@ -102,7 +101,7 @@ class SidebarViewModelTest {
             selectedMailLabelId = selectedMailLabelId,
             updateLabelExpandedState = updateLabelExpandedState,
             paymentManager = paymentManager,
-            observePrimaryUser = observePrimaryUser,
+            observePrimaryUserId = observePrimaryUserId,
             observeFolderColors = observeFolderColors,
             observeMailLabels = observeMailboxLabels,
             observeUnreadCounters = observeUnreadCounters
@@ -117,7 +116,7 @@ class SidebarViewModelTest {
             assertEquals(Disabled, awaitItem())
 
             // Given
-            primaryUser.emit(UserTestData.Primary)
+            primaryUserId.emit(UserIdTestData.Primary)
 
             // Then
             val actual = awaitItem() as Enabled
@@ -138,7 +137,7 @@ class SidebarViewModelTest {
 
             // Given
             coEvery { paymentManager.isSubscriptionAvailable(UserIdTestData.userId) } returns true
-            primaryUser.emit(UserTestData.Primary)
+            primaryUserId.emit(UserIdTestData.Primary)
 
             // Then
             val actual = awaitItem() as Enabled
@@ -159,7 +158,7 @@ class SidebarViewModelTest {
 
             // Given
             coEvery { paymentManager.isSubscriptionAvailable(UserIdTestData.adminUserId) } returns false
-            primaryUser.emit(UserTestData.orgMemberUser)
+            primaryUserId.emit(UserIdTestData.adminUserId)
 
             // Then
             val actual = awaitItem() as Enabled
@@ -185,7 +184,7 @@ class SidebarViewModelTest {
     fun `onSidebarLabelAction Collapse, call updateLabelExpandedState`() = runTest {
         // Given
         val mailLabelId = MailLabelId.Custom.Folder(LabelId("folder"))
-        primaryUser.emit(UserTestData.Primary)
+        primaryUserId.emit(UserIdTestData.Primary)
 
         // When
         sidebarViewModel.submit(LabelAction(Collapse(mailLabelId)))
@@ -198,7 +197,7 @@ class SidebarViewModelTest {
     fun `onSidebarLabelAction Expand, call updateLabelExpandedState`() = runTest {
         // Given
         val mailLabelId = MailLabelId.Custom.Folder(LabelId("folder"))
-        primaryUser.emit(UserTestData.Primary)
+        primaryUserId.emit(UserIdTestData.Primary)
 
         // When
         sidebarViewModel.submit(LabelAction(Expand(mailLabelId)))
