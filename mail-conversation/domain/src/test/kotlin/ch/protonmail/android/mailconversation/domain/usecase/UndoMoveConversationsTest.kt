@@ -45,8 +45,6 @@ class UndoMoveConversationsTest {
     private val conversationRepository = mockk<ConversationRepository>()
     private val observeMailLabels = mockk<ObserveMailLabels>()
     private val observeExclusiveMailLabels = mockk<ObserveExclusiveMailLabels>()
-    private val decrementUnreadCount: DecrementUnreadCount = mockk()
-    private val incrementUnreadCount: IncrementUnreadCount = mockk()
     private val registerUndoableOperation = mockk<RegisterUndoableOperation>()
     private val undoableOperationRepository = mockk<UndoableOperationRepository>()
 
@@ -55,8 +53,6 @@ class UndoMoveConversationsTest {
             conversationRepository = conversationRepository,
             observeExclusiveMailLabels = observeExclusiveMailLabels,
             observeMailLabels = observeMailLabels,
-            incrementUnreadCount = incrementUnreadCount,
-            decrementUnreadCount = decrementUnreadCount,
             registerUndoableOperation = registerUndoableOperation
         )
     )

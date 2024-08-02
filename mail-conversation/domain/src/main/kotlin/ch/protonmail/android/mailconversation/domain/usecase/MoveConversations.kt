@@ -26,8 +26,6 @@ import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.model.UndoableOperation
 import ch.protonmail.android.mailcommon.domain.usecase.RegisterUndoableOperation
-import ch.protonmail.android.mailconversation.domain.entity.Conversation
-import ch.protonmail.android.mailconversation.domain.entity.ConversationLabel
 import ch.protonmail.android.mailconversation.domain.repository.ConversationRepository
 import ch.protonmail.android.maillabel.domain.usecase.ObserveExclusiveMailLabels
 import ch.protonmail.android.maillabel.domain.usecase.ObserveMailLabels
@@ -41,8 +39,6 @@ class MoveConversations @Inject constructor(
     private val conversationRepository: ConversationRepository,
     private val observeExclusiveMailLabels: ObserveExclusiveMailLabels,
     private val observeMailLabels: ObserveMailLabels,
-    private val incrementUnreadCount: IncrementUnreadCount,
-    private val decrementUnreadCount: DecrementUnreadCount,
     private val registerUndoableOperation: RegisterUndoableOperation
 ) {
 
@@ -54,11 +50,9 @@ class MoveConversations @Inject constructor(
         val allLabelIds = observeMailLabels(userId).first().allById.mapNotNull { it.key.labelId }
         val exclusiveMailLabels = observeExclusiveMailLabels(userId).first().allById.mapNotNull { it.key.labelId }
         val undoableOperation = defineUndoableOperation(userId, conversationIds, exclusiveMailLabels)
-        decrementUnreadConversationsCount(userId, conversationIds, exclusiveMailLabels)
         conversationRepository
             .move(userId, conversationIds, allLabelIds, exclusiveMailLabels, toLabelId = labelId)
             .onRight {
-                incrementUnreadConversationsCount(userId, conversationIds, labelId)
                 registerUndoableOperation(undoableOperation)
             }
             .bind()
@@ -94,38 +88,4 @@ class MoveConversations @Inject constructor(
         }
     }
 
-    private suspend fun decrementUnreadConversationsCount(
-        userId: UserId,
-        conversationIds: List<ConversationId>,
-        fromLabelIds: List<LabelId>
-    ) {
-        conversationRepository.observeCachedConversations(userId, conversationIds)
-            .firstOrNull()
-            ?.onEach { conversation ->
-                fromLabelIds.forEach { fromLabelId ->
-                    if (conversation.hasUnreadMessagesInlabel(fromLabelId)) {
-                        decrementUnreadCount(userId, listOf(fromLabelId))
-                    }
-                }
-            }
-    }
-
-    private suspend fun incrementUnreadConversationsCount(
-        userId: UserId,
-        conversationIds: List<ConversationId>,
-        toLabelId: LabelId
-    ) {
-        conversationRepository.observeCachedConversations(userId, conversationIds)
-            .firstOrNull()
-            ?.onEach { conversation ->
-                if (conversation.hasUnreadMessagesInlabel(toLabelId)) {
-                    incrementUnreadCount(userId, listOf(toLabelId))
-                }
-            }
-    }
-
-    private fun Conversation.hasUnreadMessagesInlabel(contextLabelId: LabelId) =
-        this.labels.find { it.labelId == contextLabelId }.hasUnreadMessages()
-
-    private fun ConversationLabel?.hasUnreadMessages() = this?.let { it.contextNumUnread > 0 } ?: false
 }
