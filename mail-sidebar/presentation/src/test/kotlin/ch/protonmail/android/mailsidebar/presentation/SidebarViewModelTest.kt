@@ -56,6 +56,7 @@ import me.proton.core.label.domain.entity.LabelId
 import me.proton.core.payment.domain.PaymentManager
 import org.junit.Before
 import org.junit.Test
+import kotlin.test.Ignore
 import kotlin.test.assertEquals
 
 class SidebarViewModelTest {
@@ -88,7 +89,7 @@ class SidebarViewModelTest {
         coEvery { this@mockk.invoke(any()) } returns flowOf(emptyList<UnreadCounter>())
     }
     private val paymentManager = mockk<PaymentManager> {
-        coEvery { this@mockk.isSubscriptionAvailable(userId = any()) } returns true
+        coEvery { this@mockk.isSubscriptionAvailable(userId = any()) } returns false
     }
 
     private lateinit var sidebarViewModel: SidebarViewModel
@@ -100,7 +101,6 @@ class SidebarViewModelTest {
             appInformation = appInformation,
             selectedMailLabelId = selectedMailLabelId,
             updateLabelExpandedState = updateLabelExpandedState,
-            paymentManager = paymentManager,
             observePrimaryUserId = observePrimaryUserId,
             observeFolderColors = observeFolderColors,
             observeMailLabels = observeMailboxLabels,
@@ -121,8 +121,8 @@ class SidebarViewModelTest {
             // Then
             val actual = awaitItem() as Enabled
             val expected = Enabled(
-                selectedMailLabelId = SelectedMailLabelId.InboxMailLabelId,
-                canChangeSubscription = true,
+                selectedMailLabelId = MailLabelId.System(SystemLabelId.Inbox.labelId),
+                canChangeSubscription = false,
                 mailLabels = MailLabelsUiModel.Loading
             )
             assertEquals(expected, actual)
@@ -130,6 +130,7 @@ class SidebarViewModelTest {
     }
 
     @Test
+    @Ignore("can change subscription is hardcoded awaiting for account to expose it through rust lib")
     fun `state is can change subscriptions when payment manager subscription available is true`() = runTest {
         sidebarViewModel.state.test {
             // Initial state is Disabled.
@@ -142,7 +143,7 @@ class SidebarViewModelTest {
             // Then
             val actual = awaitItem() as Enabled
             val expected = Enabled(
-                selectedMailLabelId = SelectedMailLabelId.InboxMailLabelId,
+                selectedMailLabelId = MailLabelId.System(SystemLabelId.Inbox.labelId),
                 canChangeSubscription = true,
                 mailLabels = MailLabelsUiModel.Loading
             )
@@ -163,7 +164,7 @@ class SidebarViewModelTest {
             // Then
             val actual = awaitItem() as Enabled
             val expected = Enabled(
-                selectedMailLabelId = SelectedMailLabelId.InboxMailLabelId,
+                selectedMailLabelId = MailLabelId.System(SystemLabelId.Inbox.labelId),
                 canChangeSubscription = false,
                 mailLabels = MailLabelsUiModel.Loading
             )

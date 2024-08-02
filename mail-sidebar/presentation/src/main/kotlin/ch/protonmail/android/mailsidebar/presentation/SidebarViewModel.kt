@@ -42,7 +42,6 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import me.proton.core.compose.viewmodel.stopTimeoutMillis
 import me.proton.core.label.domain.entity.LabelId
-import me.proton.core.payment.domain.PaymentManager
 import me.proton.core.util.kotlin.exhaustive
 import javax.inject.Inject
 
@@ -51,7 +50,6 @@ class SidebarViewModel @Inject constructor(
     val appInformation: AppInformation,
     private val selectedMailLabelId: SelectedMailLabelId,
     private val updateLabelExpandedState: UpdateLabelExpandedState,
-    private val paymentManager: PaymentManager,
     observePrimaryUserId: ObservePrimaryUserId,
     observeFolderColors: ObserveFolderColorSettings,
     observeMailLabels: ObserveMailLabels,
@@ -79,7 +77,10 @@ class SidebarViewModel @Inject constructor(
         ) { selectedMailLabelId, folderColors, mailLabels, counters ->
             State.Enabled(
                 selectedMailLabelId = selectedMailLabelId,
-                canChangeSubscription = paymentManager.isSubscriptionAvailable(userId),
+                // Pending Account team to migrate "paymentManager" to rust
+                // (current implementation isn't aware of the rust session and throws
+                // exception crashing the app if no user is logged into "core"
+                canChangeSubscription = false,
                 mailLabels = mailLabels.toUiModels(folderColors, counters.toMap(), selectedMailLabelId)
             )
         }
