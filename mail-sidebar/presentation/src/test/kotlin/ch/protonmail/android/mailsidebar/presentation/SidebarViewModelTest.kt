@@ -24,6 +24,7 @@ import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.maillabel.domain.SelectedMailLabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabels
+import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.maillabel.domain.usecase.ObserveMailLabels
 import ch.protonmail.android.maillabel.domain.usecase.UpdateLabelExpandedState
 import ch.protonmail.android.maillabel.presentation.MailLabelsUiModel
@@ -64,7 +65,7 @@ class SidebarViewModelTest {
     private val appInformation = mockk<AppInformation>()
 
     private val selectedMailLabelId = mockk<SelectedMailLabelId> {
-        every { this@mockk.flow } returns MutableStateFlow<MailLabelId>(SelectedMailLabelId.InboxMailLabelId)
+        every { this@mockk.flow } returns MutableStateFlow<MailLabelId>(MailLabelId.System(SystemLabelId.Inbox.labelId))
         every { this@mockk.set(any()) } returns Unit
     }
 

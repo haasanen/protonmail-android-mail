@@ -214,7 +214,7 @@ class MailboxViewModel @Inject constructor(
                     emitNewStateFrom(
                         MailboxEvent.SelectedLabelChanged(
                             MailLabel.System(
-                                SelectedMailLabelId.InboxMailLabelId,
+                                MailLabelId.System(SystemLabelId.Inbox.labelId),
                                 SystemLabelId.Inbox,
                                 0
                             )
@@ -383,7 +383,7 @@ class MailboxViewModel @Inject constructor(
                 is MailboxViewAction.DeleteAllDialogDismissed -> handleClearAllDialogDismissed(viewAction)
                 is MailboxViewAction.RequestUpsellingBottomSheet -> showUpsellingBottomSheet(viewAction)
                 is MailboxViewAction.NavigateToInboxLabel ->
-                    selectedMailLabelId.set(SelectedMailLabelId.InboxMailLabelId)
+                    selectedMailLabelId.set(MailLabelId.System(SystemLabelId.Inbox.labelId))
                 is MailboxViewAction.ShowRatingBooster -> showRatingBooster(viewAction)
             }.exhaustive
         }
