@@ -31,7 +31,7 @@ class ObserveConversation @Inject constructor(
     private val conversationRepository: ConversationRepository
 ) {
 
-    suspend operator fun invoke(
+    operator fun invoke(
         userId: UserId,
         conversationId: ConversationId,
         refreshData: Boolean
