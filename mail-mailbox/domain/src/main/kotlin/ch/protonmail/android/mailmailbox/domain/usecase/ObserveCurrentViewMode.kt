@@ -19,10 +19,12 @@
 package ch.protonmail.android.mailmailbox.domain.usecase
 
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
+import ch.protonmail.android.maillabel.domain.usecase.ObserveMessageOnlyLabelIds
 import ch.protonmail.android.mailsettings.domain.usecase.ObserveMailSettings
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.mapLatest
 import me.proton.core.domain.entity.UserId
@@ -30,13 +32,16 @@ import me.proton.core.mailsettings.domain.entity.ViewMode
 import javax.inject.Inject
 
 class ObserveCurrentViewMode @Inject constructor(
-    private val observeMailSettings: ObserveMailSettings
+    private val observeMailSettings: ObserveMailSettings,
+    private val observeMessageOnlyLabelIds: ObserveMessageOnlyLabelIds
 ) {
 
     operator fun invoke(userId: UserId, selectedMailLabelId: MailLabelId): Flow<ViewMode> =
-        if (selectedMailLabelId.labelId in MessageOnlyLabelIds.messagesOnlyLabelsIds) {
-            flowOf(ViewMode.NoConversationGrouping)
-        } else invoke(userId)
+        observeMessageOnlyLabelIds(userId).flatMapLatest { messageOnlyLabelIds ->
+            if (selectedMailLabelId.labelId in messageOnlyLabelIds) {
+                flowOf(ViewMode.NoConversationGrouping)
+            } else invoke(userId)
+        }
 
     operator fun invoke(userId: UserId): Flow<ViewMode> = observeMailSettings(userId)
         .filterNotNull()

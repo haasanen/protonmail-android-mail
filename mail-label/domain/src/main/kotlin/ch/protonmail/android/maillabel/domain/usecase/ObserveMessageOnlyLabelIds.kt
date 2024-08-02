@@ -16,16 +16,35 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailmailbox.domain.usecase
+package ch.protonmail.android.maillabel.domain.usecase
 
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
+import ch.protonmail.android.maillabel.domain.repository.LabelRepository
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.mapLatest
+import me.proton.core.domain.entity.UserId
+import me.proton.core.label.domain.entity.LabelId
+import javax.inject.Inject
 
-object MessageOnlyLabelIds {
+/**
+ * Returns the list of local labelIds where only messages can be displayed
+ */
+class ObserveMessageOnlyLabelIds @Inject constructor(
+    private val labelRepository: LabelRepository
+) {
 
-    val messagesOnlyLabelsIds = listOf(
+    private val messagesOnlyLabelsIds = listOf(
         SystemLabelId.Drafts,
         SystemLabelId.AllDrafts,
         SystemLabelId.Sent,
         SystemLabelId.AllSent
     ).map { it.labelId }
+
+    operator fun invoke(userId: UserId): Flow<List<LabelId>> = labelRepository.observeSystemLabels(userId)
+        .mapLatest { systemLabels ->
+            systemLabels
+                .filter { it.systemLabelId.labelId in messagesOnlyLabelsIds }
+                .map { it.label.labelId }
+
+        }
 }

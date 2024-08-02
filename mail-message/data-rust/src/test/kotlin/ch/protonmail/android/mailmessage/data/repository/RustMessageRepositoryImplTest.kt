@@ -21,7 +21,6 @@ package ch.protonmail.android.mailmessage.data.repository
 import app.cash.turbine.test
 import arrow.core.getOrElse
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.maillabel.data.local.RustLabelDataSource
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.mailmessage.data.local.RustMessageDataSource
 import ch.protonmail.android.mailmessage.data.mapper.toLocalMessageId
@@ -30,7 +29,6 @@ import ch.protonmail.android.mailmessage.data.mapper.toMessageBody
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailpagination.domain.model.PageFilter
 import ch.protonmail.android.mailpagination.domain.model.PageKey
-import ch.protonmail.android.testdata.label.rust.LocalLabelTestData
 import ch.protonmail.android.testdata.message.rust.LocalMessageIdSample
 import ch.protonmail.android.testdata.message.rust.LocalMessageTestData
 import ch.protonmail.android.testdata.user.UserIdTestData
@@ -40,7 +38,6 @@ import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import me.proton.core.domain.entity.UserId
 import org.junit.Test
@@ -52,25 +49,13 @@ class RustMessageRepositoryImplTest {
     private val rustMessageDataSource: RustMessageDataSource = mockk()
 
     private val userId = UserId("userId")
-    // We are unable to mock FindLocalLabelId because of this issue: https://github.com/mockk/mockk/issues/544
-    private val systemLabelId = SystemLabelId.Archive.labelId
-    private val rustLabelDataSource: RustLabelDataSource = mockk {
-        every { observeSystemLabels(userId) } returns flowOf(
-            listOf(
-                LocalLabelTestData.localSystemLabelWithCount.copy(
-                    rid = systemLabelId.id
-                )
-            )
-        )
-    }
-    private val findLocalLabelId: FindLocalLabelId = FindLocalLabelId(rustLabelDataSource)
-    private val repository = RustMessageRepositoryImpl(rustMessageDataSource, findLocalLabelId)
+    private val repository = RustMessageRepositoryImpl(rustMessageDataSource)
 
     @Test
     fun `getLocalMessages should return list of messages`() = runTest {
         // Given
         val userId = UserIdTestData.userId
-        val pageFilter = PageFilter(labelId = systemLabelId)
+        val pageFilter = PageFilter(labelId = SystemLabelId.Archive.labelId)
         val pageKey = PageKey(filter = pageFilter)
 
         val expectedMessages = listOf(

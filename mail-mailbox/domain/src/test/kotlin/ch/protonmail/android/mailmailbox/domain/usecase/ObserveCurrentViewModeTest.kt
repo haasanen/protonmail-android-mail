@@ -20,6 +20,8 @@ package ch.protonmail.android.mailmailbox.domain.usecase
 
 import app.cash.turbine.test
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
+import ch.protonmail.android.maillabel.domain.model.SystemLabelId
+import ch.protonmail.android.maillabel.domain.usecase.ObserveMessageOnlyLabelIds
 import ch.protonmail.android.mailsettings.domain.usecase.ObserveMailSettings
 import ch.protonmail.android.testdata.maillabel.MailLabelTestData
 import ch.protonmail.android.testdata.user.UserIdTestData.userId
@@ -47,7 +49,17 @@ internal class ObserveCurrentViewModeTest(
         every { this@mockk(userId) } returns
             flowOf(buildMailSettings(isConversationSettingEnabled = input.isConversationSettingEnabled))
     }
-    private val observeCurrentViewMode = ObserveCurrentViewMode(observeMailSettings)
+    private val observeMessageOnlyLabelIds = mockk<ObserveMessageOnlyLabelIds> {
+        every { this@mockk.invoke(userId) } returns flowOf(
+            listOf(
+                SystemLabelId.Drafts,
+                SystemLabelId.AllDrafts,
+                SystemLabelId.Sent,
+                SystemLabelId.AllSent
+            ).map { it.labelId }
+        )
+    }
+    private val observeCurrentViewMode = ObserveCurrentViewMode(observeMailSettings, observeMessageOnlyLabelIds)
 
     @Test
     fun test() = runTest {

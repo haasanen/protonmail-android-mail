@@ -21,6 +21,7 @@ package ch.protonmail.android.mailmailbox.domain.usecase
 import app.cash.turbine.test
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
+import ch.protonmail.android.maillabel.domain.usecase.ObserveMessageOnlyLabelIds
 import ch.protonmail.android.mailmailbox.domain.model.UnreadCounters
 import ch.protonmail.android.mailmailbox.domain.repository.UnreadCountersRepository
 import ch.protonmail.android.mailmessage.domain.model.UnreadCounter
@@ -38,8 +39,13 @@ class ObserveUnreadCountersTest {
 
     private val repository = mockk<UnreadCountersRepository>()
     private val observeCurrentViewMode = mockk<ObserveCurrentViewMode>()
+    private val observeMessageOnlyLabelIds = mockk<ObserveMessageOnlyLabelIds>()
 
-    private val observeUnreadCounters = ObserveUnreadCounters(repository, observeCurrentViewMode)
+    private val observeUnreadCounters = ObserveUnreadCounters(
+        repository,
+        observeCurrentViewMode,
+        observeMessageOnlyLabelIds
+    )
 
     @Test
     fun `when view mode is message mode return the messages counters`() = runTest {
@@ -48,6 +54,7 @@ class ObserveUnreadCountersTest {
             UnreadCounters(emptyList(), messageUnreadCounters)
         )
         every { observeCurrentViewMode(userId) } returns flowOf(ViewMode.NoConversationGrouping)
+        every { observeMessageOnlyLabelIds(userId) } returns flowOf(messagesOnlyLabelsIds)
 
         // When
         observeUnreadCounters(userId).test {
@@ -71,6 +78,7 @@ class ObserveUnreadCountersTest {
                 UnreadCounters(conversationUnreadCounters, messageUnreadCounters)
             )
             every { observeCurrentViewMode(userId) } returns flowOf(ViewMode.ConversationGrouping)
+            every { observeMessageOnlyLabelIds(userId) } returns flowOf(messagesOnlyLabelsIds)
 
             // When
             observeUnreadCounters(userId).test {
@@ -84,6 +92,12 @@ class ObserveUnreadCountersTest {
 
     companion object TestData {
         private val userId = UserIdSample.Primary
+        private val messagesOnlyLabelsIds = listOf(
+            SystemLabelId.Drafts,
+            SystemLabelId.AllDrafts,
+            SystemLabelId.Sent,
+            SystemLabelId.AllSent
+        ).map { it.labelId }
 
         val messageUnreadCounters = listOf(
             UnreadCounter(SystemLabelId.Inbox.labelId, 2),
