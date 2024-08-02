@@ -41,9 +41,9 @@ class ObserveMailLabels @Inject constructor(
         observeDynamicSystemLabels(userId).map { it.toDynamicSystemMailLabel() },
         observeCustomLabels(userId).map { it.toMailLabelCustom() },
         observeCustomFolders(userId).map { it.toMailLabelCustom() }
-    ) { dynamicSystemLables, labels, folders ->
+    ) { system, labels, folders ->
         MailLabels(
-            system = dynamicSystemLables,
+            system = system,
             folders = folders,
             labels = labels
         )

@@ -26,18 +26,14 @@ import ch.protonmail.android.mailconversation.data.mapper.toConversation
 import ch.protonmail.android.mailconversation.data.mapper.toConversationWithContext
 import ch.protonmail.android.mailconversation.data.mapper.toLocalConversationId
 import ch.protonmail.android.mailconversation.domain.entity.Conversation
-import ch.protonmail.android.maillabel.data.local.RustLabelDataSource
-import ch.protonmail.android.maillabel.data.usecase.FindLocalLabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.mailpagination.domain.model.PageFilter
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.testdata.conversation.rust.LocalConversationIdSample
 import ch.protonmail.android.testdata.conversation.rust.LocalConversationTestData
-import ch.protonmail.android.testdata.label.rust.LocalLabelTestData
 import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.coVerify
-import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
 import kotlinx.coroutines.flow.flowOf
@@ -51,31 +47,21 @@ class RustConversationRepositoryImplTest {
     private val rustConversationDataSource: RustConversationDataSource = mockk()
 
     private val userId = UserId("test_user")
-    // We are unable to mock FindLocalLabelId because of this issue: https://github.com/mockk/mockk/issues/544
-    private val systemLabelId = SystemLabelId.Archive.labelId
-    private val rustLabelDataSource: RustLabelDataSource = mockk {
-        every { observeSystemLabels(userId) } returns flowOf(
-            listOf(
-                LocalLabelTestData.localSystemLabelWithCount.copy(
-                    rid = systemLabelId.id
-                )
-            )
-        )
-    }
-    private val findLocalLabelId: FindLocalLabelId = FindLocalLabelId(rustLabelDataSource)
     private val rustConversationRepository = RustConversationRepositoryImpl(
-        rustConversationDataSource, findLocalLabelId
+        rustConversationDataSource
     )
 
     @Test
     fun `getLocalConversations should return conversations`() = runTest {
         // Given
-        val pageFilter = PageFilter(labelId = systemLabelId, isSystemFolder = true)
+        val pageFilter = PageFilter(labelId = SystemLabelId.Archive.labelId)
         val pageKey = PageKey(filter = pageFilter)
         val localConversations = listOf(
             LocalConversationTestData.AugConversation, LocalConversationTestData.SepConversation
         )
-        val expectedConversations = localConversations.map { it.toConversationWithContext(systemLabelId) }
+        val expectedConversations = localConversations.map {
+            it.toConversationWithContext(SystemLabelId.Archive.labelId)
+        }
         coEvery { rustConversationDataSource.getConversations(userId, any()) } returns localConversations
 
         // When
@@ -172,13 +158,14 @@ class RustConversationRepositoryImplTest {
         coEvery { rustConversationDataSource.markUnread(userId, any()) } just Runs
 
         // When
-        val result = rustConversationRepository.markUnread(userId, conversationIds, systemLabelId)
+        val result = rustConversationRepository.markUnread(userId, conversationIds, SystemLabelId.Archive.labelId)
 
         // Then
         coVerify { rustConversationDataSource.markUnread(userId, conversationIds.map { it.toLocalConversationId() }) }
         assertEquals(emptyList(), result.getOrNull())
     }
 
+    @Test
     fun `should star conversations`() = runTest {
         // Given
         val conversationIds = listOf(

@@ -22,7 +22,6 @@ import app.cash.turbine.test
 import arrow.core.getOrElse
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.maillabel.data.local.RustLabelDataSource
-import ch.protonmail.android.maillabel.data.usecase.FindLocalLabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.mailmessage.data.local.RustMessageDataSource
 import ch.protonmail.android.mailmessage.data.mapper.toLocalMessageId
@@ -71,7 +70,7 @@ class RustMessageRepositoryImplTest {
     fun `getLocalMessages should return list of messages`() = runTest {
         // Given
         val userId = UserIdTestData.userId
-        val pageFilter = PageFilter(labelId = systemLabelId, isSystemFolder = true)
+        val pageFilter = PageFilter(labelId = systemLabelId)
         val pageKey = PageKey(filter = pageFilter)
 
         val expectedMessages = listOf(

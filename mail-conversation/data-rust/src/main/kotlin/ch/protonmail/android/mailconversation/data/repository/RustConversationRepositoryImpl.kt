@@ -31,7 +31,6 @@ import ch.protonmail.android.mailconversation.domain.entity.Conversation
 import ch.protonmail.android.mailconversation.domain.entity.ConversationWithContext
 import ch.protonmail.android.mailconversation.domain.repository.ConversationRepository
 import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
-import ch.protonmail.android.maillabel.data.usecase.FindLocalLabelId
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -46,24 +45,17 @@ import javax.inject.Singleton
 @Singleton
 @Suppress("NotImplementedDeclaration", "TooManyFunctions")
 class RustConversationRepositoryImpl @Inject constructor(
-    private val rustConversationDataSource: RustConversationDataSource,
-    private val findLocalLabelId: FindLocalLabelId
+    private val rustConversationDataSource: RustConversationDataSource
 ) : ConversationRepository {
 
     override suspend fun getLocalConversations(userId: UserId, pageKey: PageKey): List<ConversationWithContext> {
-        val rustLocalLabelId =
-            if (pageKey.filter.isSystemFolder) findLocalLabelId(userId, pageKey.filter.labelId)
-            else pageKey.filter.labelId.toLocalLabelId()
+        val rustLocalLabelId = pageKey.filter.labelId.toLocalLabelId()
 
         Timber.d("rust-conversation: getConversations, pageKey: $pageKey rustLocalLabelId: $rustLocalLabelId")
 
-        return rustLocalLabelId?.let { labelId ->
-            rustConversationDataSource.getConversations(userId, labelId).map {
-                it.toConversationWithContext(pageKey.filter.labelId)
-            }
-        } // after pagination + dynamic label implementation, this should be removed
-            // and error handling should be implemented
-            ?: emptyList()
+        return rustConversationDataSource.getConversations(userId, rustLocalLabelId).map {
+            it.toConversationWithContext(pageKey.filter.labelId)
+        }
     }
 
     // This function should be handled after rust-pagination is released

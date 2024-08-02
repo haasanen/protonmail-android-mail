@@ -40,7 +40,6 @@ import ch.protonmail.android.mailconversation.domain.repository.ConversationLoca
 import ch.protonmail.android.mailconversation.domain.repository.ConversationRemoteDataSource
 import ch.protonmail.android.mailconversation.domain.repository.ConversationRepository
 import ch.protonmail.android.mailconversation.domain.repository.UnreadConversationsCountRepository
-import ch.protonmail.android.maillabel.data.usecase.FindLocalLabelId
 import ch.protonmail.android.mailmessage.data.local.MessageLocalDataSource
 import ch.protonmail.android.mailmessage.data.usecase.ExcludeDraftMessagesAlreadyInOutbox
 import dagger.Binds
@@ -74,14 +73,10 @@ object MailConversationModule {
         coroutineScopeProvider: CoroutineScopeProvider,
         messageLocalDataSource: MessageLocalDataSource,
         excludeDraftMessagesAlreadyInOutbox: ExcludeDraftMessagesAlreadyInOutbox,
-        rustConversationDataSource: RustConversationDataSource,
-        findLocalLabelId: FindLocalLabelId
+        rustConversationDataSource: RustConversationDataSource
     ): ConversationRepository {
         return if (BuildConfig.USE_RUST_DATA_LAYER) {
-            RustConversationRepositoryImpl(
-                rustConversationDataSource = rustConversationDataSource,
-                findLocalLabelId = findLocalLabelId
-            )
+            RustConversationRepositoryImpl(rustConversationDataSource = rustConversationDataSource)
         } else {
             ConversationRepositoryImpl(
                 conversationRemoteDataSource = conversationRemoteDataSource,

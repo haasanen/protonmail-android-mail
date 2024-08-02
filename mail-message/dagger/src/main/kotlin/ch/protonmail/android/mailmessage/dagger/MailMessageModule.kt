@@ -19,7 +19,6 @@
 package ch.protonmail.android.mailmessage.dagger
 
 import ch.protonmail.android.mailcommon.data.BuildConfig
-import ch.protonmail.android.maillabel.data.usecase.FindLocalLabelId
 import ch.protonmail.android.mailmessage.data.MessageRustCoroutineScope
 import ch.protonmail.android.mailmessage.data.local.MessageLocalDataSource
 import ch.protonmail.android.mailmessage.data.local.MessageLocalDataSourceImpl
@@ -78,11 +77,10 @@ object MailMessageModule {
         messageLocalDataSource: MessageLocalDataSource,
         excludeDraftMessagesAlreadyInOutbox: ExcludeDraftMessagesAlreadyInOutbox,
         coroutineScopeProvider: CoroutineScopeProvider,
-        rustMessageDataSource: RustMessageDataSource,
-        findLocalLabelId: FindLocalLabelId
+        rustMessageDataSource: RustMessageDataSource
     ): MessageRepository {
         return if (BuildConfig.USE_RUST_DATA_LAYER) {
-            RustMessageRepositoryImpl(rustMessageDataSource, findLocalLabelId)
+            RustMessageRepositoryImpl(rustMessageDataSource)
         } else {
             MessageRepositoryImpl(
                 messageRemoteDataSource,

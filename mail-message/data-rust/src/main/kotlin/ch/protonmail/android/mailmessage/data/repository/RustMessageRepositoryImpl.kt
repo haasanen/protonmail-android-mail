@@ -25,7 +25,6 @@ import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
-import ch.protonmail.android.maillabel.data.usecase.FindLocalLabelId
 import ch.protonmail.android.mailmessage.data.local.RustMessageDataSource
 import ch.protonmail.android.mailmessage.data.mapper.toLocalMessageId
 import ch.protonmail.android.mailmessage.data.mapper.toMessage
@@ -43,25 +42,17 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import me.proton.core.domain.entity.UserId
 import me.proton.core.label.domain.entity.LabelId
-import uniffi.proton_mail_common.LocalLabelId
 import javax.inject.Inject
 
 @Suppress("NotImplementedDeclaration", "TooManyFunctions")
 class RustMessageRepositoryImpl @Inject constructor(
-    private val rustMessageDataSource: RustMessageDataSource,
-    private val findLocalLabelId: FindLocalLabelId
+    private val rustMessageDataSource: RustMessageDataSource
 ) : MessageRepository {
 
     override suspend fun getLocalMessages(userId: UserId, pageKey: PageKey): List<Message> {
-        val rustLocalLabelId: LocalLabelId? =
-            if (pageKey.filter.isSystemFolder) findLocalLabelId(userId, pageKey.filter.labelId)
-            else pageKey.filter.labelId.toLocalLabelId()
-
-        return rustLocalLabelId?.let { labelId ->
-            rustMessageDataSource.getMessages(userId, labelId).map { it.toMessage() }
-        } // after pagination + dynamic label implementation, this should be removed
-            // and error handling should be implemented
-            ?: emptyList()
+        val rustLocalLabelId = pageKey.filter.labelId.toLocalLabelId()
+        return rustMessageDataSource.getMessages(userId, rustLocalLabelId)
+            .map { it.toMessage() }
     }
 
     override suspend fun getLocalMessages(userId: UserId, messages: List<MessageId>): List<Message> {

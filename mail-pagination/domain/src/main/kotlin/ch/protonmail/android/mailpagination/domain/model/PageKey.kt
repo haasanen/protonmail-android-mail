@@ -61,8 +61,7 @@ data class PageFilter(
     val minOrder: Long = Long.MIN_VALUE,
     val maxOrder: Long = Long.MAX_VALUE,
     val minId: String? = null,
-    val maxId: String? = null,
-    val isSystemFolder: Boolean = true
+    val maxId: String? = null
 )
 
 /**
