@@ -21,8 +21,6 @@ package ch.protonmail.android.mailmailbox.domain.usecase
 import app.cash.turbine.test
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
-import ch.protonmail.android.maillabel.domain.usecase.ObserveMessageOnlyLabelIds
-import ch.protonmail.android.mailmailbox.domain.model.UnreadCounters
 import ch.protonmail.android.mailmailbox.domain.repository.UnreadCountersRepository
 import ch.protonmail.android.mailmessage.domain.model.UnreadCounter
 import io.mockk.every
@@ -30,7 +28,6 @@ import io.mockk.mockk
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import me.proton.core.label.domain.entity.LabelId
-import me.proton.core.mailsettings.domain.entity.ViewMode
 import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -38,68 +35,28 @@ import kotlin.test.assertTrue
 class ObserveUnreadCountersTest {
 
     private val repository = mockk<UnreadCountersRepository>()
-    private val observeCurrentViewMode = mockk<ObserveCurrentViewMode>()
-    private val observeMessageOnlyLabelIds = mockk<ObserveMessageOnlyLabelIds>()
 
-    private val observeUnreadCounters = ObserveUnreadCounters(
-        repository,
-        observeCurrentViewMode,
-        observeMessageOnlyLabelIds
-    )
+    private val observeUnreadCounters = ObserveUnreadCounters(repository)
 
     @Test
-    fun `when view mode is message mode return the messages counters`() = runTest {
+    fun `returns counters from repository`() = runTest {
         // Given
-        every { repository.observeUnreadCounters(userId) } returns flowOf(
-            UnreadCounters(emptyList(), messageUnreadCounters)
-        )
-        every { observeCurrentViewMode(userId) } returns flowOf(ViewMode.NoConversationGrouping)
-        every { observeMessageOnlyLabelIds(userId) } returns flowOf(messagesOnlyLabelsIds)
+        every { repository.observeUnreadCounters(userId) } returns flowOf(unreadCounters)
 
         // When
         observeUnreadCounters(userId).test {
             // Then
             val actual = awaitItem()
-            assertTrue(messageUnreadCounters.containsAll(actual))
-            assertEquals(messageUnreadCounters.count(), actual.count())
+            assertTrue(unreadCounters.containsAll(actual))
+            assertEquals(unreadCounters.count(), actual.count())
             awaitComplete()
         }
     }
 
-    @Test
-    fun `when view mode is conversation mode return the conversation counters except for message-only labels`() =
-        runTest {
-            // Given
-            val expected = conversationUnreadCounters.toMutableList()
-            expected.removeAll { it.labelId in listOf(SystemLabelId.Sent.labelId, SystemLabelId.Drafts.labelId) }
-            expected.add(UnreadCounter(SystemLabelId.Drafts.labelId, 0))
-            expected.add(UnreadCounter(SystemLabelId.Sent.labelId, 0))
-            every { repository.observeUnreadCounters(userId) } returns flowOf(
-                UnreadCounters(conversationUnreadCounters, messageUnreadCounters)
-            )
-            every { observeCurrentViewMode(userId) } returns flowOf(ViewMode.ConversationGrouping)
-            every { observeMessageOnlyLabelIds(userId) } returns flowOf(messagesOnlyLabelsIds)
-
-            // When
-            observeUnreadCounters(userId).test {
-                // Then
-                val actual = awaitItem()
-                assertTrue(actual.containsAll(expected))
-                assertEquals(actual.count(), expected.count())
-                awaitComplete()
-            }
-        }
-
     companion object TestData {
         private val userId = UserIdSample.Primary
-        private val messagesOnlyLabelsIds = listOf(
-            SystemLabelId.Drafts,
-            SystemLabelId.AllDrafts,
-            SystemLabelId.Sent,
-            SystemLabelId.AllSent
-        ).map { it.labelId }
 
-        val messageUnreadCounters = listOf(
+        val unreadCounters = listOf(
             UnreadCounter(SystemLabelId.Inbox.labelId, 2),
             UnreadCounter(SystemLabelId.Archive.labelId, 7),
             UnreadCounter(SystemLabelId.Drafts.labelId, 0),
@@ -108,17 +65,6 @@ class ObserveUnreadCountersTest {
             UnreadCounter(SystemLabelId.AllMail.labelId, 10),
             UnreadCounter(LabelId("custom-label"), 0),
             UnreadCounter(LabelId("custom-folder"), 0)
-        )
-
-        val conversationUnreadCounters = listOf(
-            UnreadCounter(SystemLabelId.Inbox.labelId, 1),
-            UnreadCounter(SystemLabelId.Archive.labelId, 2),
-            UnreadCounter(SystemLabelId.Drafts.labelId, 1),
-            UnreadCounter(SystemLabelId.Sent.labelId, 0),
-            UnreadCounter(SystemLabelId.Trash.labelId, 1),
-            UnreadCounter(SystemLabelId.AllMail.labelId, 6),
-            UnreadCounter(LabelId("custom-label"), 0),
-            UnreadCounter(LabelId("custom-folder"), 1)
         )
     }
 }

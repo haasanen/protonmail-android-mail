@@ -18,25 +18,28 @@
 
 package ch.protonmail.android.mailmailbox.data.repository
 
-import ch.protonmail.android.mailmailbox.domain.model.UnreadCounters
-import ch.protonmail.android.mailconversation.domain.repository.UnreadConversationsCountRepository
+import ch.protonmail.android.maillabel.data.local.LabelDataSource
+import ch.protonmail.android.maillabel.data.mapper.toLabelId
 import ch.protonmail.android.mailmailbox.domain.repository.UnreadCountersRepository
-import ch.protonmail.android.mailmessage.domain.repository.UnreadMessagesCountRepository
+import ch.protonmail.android.mailmessage.domain.model.UnreadCounter
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 
 class UnreadCountersRepositoryImpl @Inject constructor(
-    private val messagesCountRepository: UnreadMessagesCountRepository,
-    private val conversationsCountRepository: UnreadConversationsCountRepository
+    private val labelDataSource: LabelDataSource
 ) : UnreadCountersRepository {
 
-    override fun observeUnreadCounters(userId: UserId): Flow<UnreadCounters> = combine(
-        messagesCountRepository.observeUnreadCounters(userId),
-        conversationsCountRepository.observeUnreadCounters(userId)
-    ) { messageCounters, conversationCounters ->
-        return@combine UnreadCounters(conversationCounters, messageCounters)
+    override fun observeUnreadCounters(userId: UserId): Flow<List<UnreadCounter>> = combine(
+        labelDataSource.observeSystemLabels(userId),
+        labelDataSource.observeMessageLabels(userId),
+        labelDataSource.observeMessageFolders(userId)
+    ) { system, labels, folders ->
+        (system + labels + folders).map {
+            UnreadCounter(it.id.toLabelId(), it.unreadCount.toInt())
+        }
+
     }
 
 }

@@ -20,9 +20,9 @@ package ch.protonmail.android.mailmailbox.data.repository
 
 import app.cash.turbine.test
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
-import ch.protonmail.android.mailconversation.domain.repository.UnreadConversationsCountRepository
+import ch.protonmail.android.maillabel.data.local.LabelDataSource
 import ch.protonmail.android.mailmessage.domain.model.UnreadCounter
-import ch.protonmail.android.mailmessage.domain.repository.UnreadMessagesCountRepository
+import ch.protonmail.android.testdata.label.rust.LocalLabelTestData
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.flow.flowOf
@@ -33,30 +33,29 @@ import kotlin.test.assertEquals
 
 class UnreadCountersRepositoryImplTest {
 
-    private val messageUnreadCountRepository = mockk<UnreadMessagesCountRepository>()
-    private val conversationUnreadCountRepository = mockk<UnreadConversationsCountRepository>()
+    private val labelDataSource = mockk<LabelDataSource>()
 
-    private val repository = UnreadCountersRepositoryImpl(
-        messageUnreadCountRepository,
-        conversationUnreadCountRepository
-    )
+    private val repository = UnreadCountersRepositoryImpl(labelDataSource)
 
     @Test
-    fun `combines messages and conversations unread counters`() = runTest {
+    fun `combines system labels and folders unread counters`() = runTest {
         // Given
-        val expectedMessages = listOf(inboxUnreadMessageCounter)
-        val expectedConversations = listOf(inboxUnreadConversationCounter)
-        coEvery { messageUnreadCountRepository.observeUnreadCounters(userId) } returns flowOf(expectedMessages)
-        coEvery {
-            conversationUnreadCountRepository.observeUnreadCounters(userId)
-        } returns flowOf(expectedConversations)
+        val expectedCounters = listOf(systemUnreadMessageCounter, labelUnreadMessageCounter, folderUnreadMessageCounter)
+        coEvery { labelDataSource.observeSystemLabels(userId) } returns flowOf(
+            listOf(LocalLabelTestData.localSystemLabelWithCount)
+        )
+        coEvery { labelDataSource.observeMessageLabels(userId) } returns flowOf(
+            listOf(LocalLabelTestData.localMessageLabelWithCount)
+        )
+        coEvery { labelDataSource.observeMessageFolders(userId) } returns flowOf(
+            listOf(LocalLabelTestData.localMessageFolderWithCount)
+        )
 
         // When
         repository.observeUnreadCounters(userId).test {
             // Then
             val actual = awaitItem()
-            assertEquals(expectedMessages, actual.messagesUnreadCount)
-            assertEquals(expectedConversations, actual.conversationsUnreadCount)
+            assertEquals(expectedCounters, actual)
             awaitComplete()
         }
 
@@ -65,8 +64,8 @@ class UnreadCountersRepositoryImplTest {
     companion object TestData {
         private val userId = UserIdSample.Primary
 
-        val inboxUnreadConversationCounter = UnreadCounter(LabelId("0"), 10)
-
-        val inboxUnreadMessageCounter = UnreadCounter(LabelId("0"), 2)
+        val systemUnreadMessageCounter = UnreadCounter(LabelId("1"), 0)
+        val labelUnreadMessageCounter = UnreadCounter(LabelId("100"), 0)
+        val folderUnreadMessageCounter = UnreadCounter(LabelId("200"), 7)
     }
 }

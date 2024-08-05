@@ -44,6 +44,7 @@ android {
 
 dependencies {
     kapt(Dependencies.appAnnotationProcessors)
+    compileOnly(Proton.Common.rustCore)
 
     implementation(Dependencies.moduleDataLibs)
     implementation(Proton.Core.labelDomain)
@@ -54,6 +55,9 @@ dependencies {
     implementation(project(":mail-mailbox:domain"))
     implementation(project(":mail-common:data"))
     implementation(project(":mail-common:domain"))
+    implementation(project(":mail-label:data"))
 
     testImplementation(Dependencies.testLibs)
+    testImplementation(Proton.Common.rustCore)
+    testImplementation(project(":test:test-data"))
 }

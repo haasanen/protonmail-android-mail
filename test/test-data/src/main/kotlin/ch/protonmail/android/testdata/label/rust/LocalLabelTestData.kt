@@ -66,8 +66,8 @@ object LocalLabelTestData {
         false,
         false,
         false,
-        totalCount = 1.toULong(),
-        unreadCount = 0.toULong()
+        totalCount = 10.toULong(),
+        unreadCount = 7.toULong()
     )
 
     fun buildSystem(remoteId: String) = LocalLabelWithCount(
