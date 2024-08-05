@@ -50,6 +50,7 @@ import ch.protonmail.android.maillabel.domain.model.MailLabel
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabels
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
+import ch.protonmail.android.maillabel.domain.usecase.FindLocalSystemLabelId
 import ch.protonmail.android.maillabel.domain.usecase.ObserveCustomMailLabels
 import ch.protonmail.android.maillabel.domain.usecase.ObserveExclusiveDestinationMailLabels
 import ch.protonmail.android.maillabel.domain.usecase.ObserveMailLabels
@@ -189,7 +190,8 @@ class MailboxViewModel @Inject constructor(
     private val shouldUpgradeStorage: ShouldUpgradeStorage,
     private val shouldShowRatingBooster: ShouldShowRatingBooster,
     private val showRatingBooster: ShowRatingBooster,
-    private val recordRatingBoosterTriggered: RecordRatingBoosterTriggered
+    private val recordRatingBoosterTriggered: RecordRatingBoosterTriggered,
+    private val findLocalSystemLabelId: FindLocalSystemLabelId
 ) : ViewModel() {
 
     private val primaryUserId = observePrimaryUserId()
@@ -211,15 +213,15 @@ class MailboxViewModel @Inject constructor(
                 currentMailLabel?.let {
                     emitNewStateFrom(MailboxEvent.SelectedLabelChanged(currentMailLabel))
                 } ?: run {
-                    emitNewStateFrom(
-                        MailboxEvent.SelectedLabelChanged(
-                            MailLabel.System(
-                                MailLabelId.System(SystemLabelId.Inbox.labelId),
-                                SystemLabelId.Inbox,
-                                0
+                    primaryUserId.firstOrNull()?.let { userId ->
+                        findLocalSystemLabelId(userId, SystemLabelId.Inbox)?.let { inboxLabelId ->
+                            emitNewStateFrom(
+                                MailboxEvent.SelectedLabelChanged(
+                                    MailLabel.System(inboxLabelId, SystemLabelId.Inbox, 0)
+                                )
                             )
-                        )
-                    )
+                        }
+                    }
                 }
             }
             .filterNotNull()

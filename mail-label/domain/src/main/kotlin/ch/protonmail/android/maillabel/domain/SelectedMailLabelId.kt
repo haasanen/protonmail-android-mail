@@ -22,13 +22,12 @@ import ch.protonmail.android.mailcommon.domain.coroutines.AppScope
 import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
-import ch.protonmail.android.maillabel.domain.usecase.ObserveMailLabels
+import ch.protonmail.android.maillabel.domain.usecase.FindLocalSystemLabelId
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -39,7 +38,7 @@ import javax.inject.Singleton
 @Singleton
 class SelectedMailLabelId @Inject constructor(
     @AppScope private val appScope: CoroutineScope,
-    private val observeMailLabels: ObserveMailLabels,
+    private val findLocalSystemLabelId: FindLocalSystemLabelId,
     observePrimaryUserId: ObservePrimaryUserId
 ) {
 
@@ -70,13 +69,7 @@ class SelectedMailLabelId @Inject constructor(
         appScope.launch { mutableFlow.emit(value) }
     }
 
-    private suspend fun getInitialLabelId(userId: UserId): MailLabelId.System? {
-        return observeMailLabels(userId).firstOrNull()?.let { mailLabels ->
-            mailLabels.system.firstOrNull {
-                it.systemLabelId.labelId == SystemLabelId.Inbox.labelId
-            }
-        }?.id
-    }
+    private suspend fun getInitialLabelId(userId: UserId) = findLocalSystemLabelId(userId, SystemLabelId.Inbox)
 
 
 }

@@ -25,6 +25,7 @@ import ch.protonmail.android.maillabel.domain.SelectedMailLabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.testdata.maillabel.MailLabelTestData
+import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -43,6 +44,9 @@ class SelectedMailLabelIdTest {
     private val observePrimaryUserId: ObservePrimaryUserId = mockk {
         every { this@mockk() } returns emptyFlow()
     }
+    private val findLocalSystemLabelId = mockk<FindLocalSystemLabelId> {
+        coEvery { this@mockk.invoke(any(), SystemLabelId.Inbox) } returns MailLabelId.System(LabelId("0"))
+    }
 
     // Hardcoded to "0" (Inbox label remote ID) as arbitrary value while removing all usages of system.
     // to be updated to dynamically pick inbox from the dynamic system labels
@@ -51,6 +55,7 @@ class SelectedMailLabelIdTest {
     private val selectedMailLabelId by lazy {
         SelectedMailLabelId(
             appScope = appScope,
+            findLocalSystemLabelId = findLocalSystemLabelId,
             observePrimaryUserId = observePrimaryUserId
         )
     }
@@ -63,7 +68,7 @@ class SelectedMailLabelIdTest {
     }
 
     @Test
-    fun `emits newly selected mailLabelId when it changes`() = runTest {
+    fun `emits newly selected mailLabelId when it changes`() = runTest(appScope.testScheduler) {
         // Given
         val draftsSystemLabel = MailLabelTestData.draftsSystemLabel.id
 
@@ -78,7 +83,7 @@ class SelectedMailLabelIdTest {
     }
 
     @Test
-    fun `does not emit same mailLabelId twice`() = runTest {
+    fun `does not emit same mailLabelId twice`() = runTest(appScope.testScheduler) {
         // Given
         val archiveSystemLabel = MailLabelTestData.archiveSystemLabel.id
 
@@ -97,7 +102,7 @@ class SelectedMailLabelIdTest {
     }
 
     @Test
-    fun `emits inbox when primary user changes`() = runTest {
+    fun `emits inbox when primary user changes`() = runTest(appScope.testScheduler) {
         // given
         val userIdFlow = MutableStateFlow<UserId?>(null)
         val archiveSystemLabel = MailLabelTestData.archiveSystemLabel.id

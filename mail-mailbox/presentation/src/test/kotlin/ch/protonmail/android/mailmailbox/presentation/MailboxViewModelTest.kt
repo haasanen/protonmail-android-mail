@@ -55,6 +55,7 @@ import ch.protonmail.android.maillabel.domain.model.MailLabel
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabels
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
+import ch.protonmail.android.maillabel.domain.usecase.FindLocalSystemLabelId
 import ch.protonmail.android.maillabel.domain.usecase.ObserveCustomMailLabels
 import ch.protonmail.android.maillabel.domain.usecase.ObserveExclusiveDestinationMailLabels
 import ch.protonmail.android.maillabel.domain.usecase.ObserveMailLabels
@@ -252,6 +253,7 @@ class MailboxViewModelTest {
     private val observeOnboarding = mockk<ObserveOnboarding> {
         every { this@mockk() } returns flowOf(OnboardingPreference(display = false).right())
     }
+    private val findLocalSystemLabelId = mockk<FindLocalSystemLabelId>()
 
     private val saveOnboarding: SaveOnboarding = mockk()
 
@@ -335,7 +337,8 @@ class MailboxViewModelTest {
             shouldUpgradeStorage = shouldUpgradeStorage,
             shouldShowRatingBooster = shouldShowRatingBooster,
             showRatingBooster = showRatingBooster,
-            recordRatingBoosterTriggered = recordRatingBoosterTriggered
+            recordRatingBoosterTriggered = recordRatingBoosterTriggered,
+            findLocalSystemLabelId = findLocalSystemLabelId
         )
     }
 
@@ -803,6 +806,8 @@ class MailboxViewModelTest {
                 MailboxEvent.SelectedLabelChanged(MailLabelTestData.inboxSystemLabel)
             )
         } returns expectedState
+
+        coEvery { findLocalSystemLabelId(userId, SystemLabelId.Inbox) } returns MailLabelId.System(LabelId("0"))
 
         mailboxViewModel.state.test {
             awaitItem()
