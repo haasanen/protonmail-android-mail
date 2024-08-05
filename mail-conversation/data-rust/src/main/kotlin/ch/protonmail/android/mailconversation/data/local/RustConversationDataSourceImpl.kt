@@ -25,12 +25,10 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.launch
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
-import uniffi.proton_api_mail.LabelId
 import uniffi.proton_mail_common.LocalConversation
 import uniffi.proton_mail_common.LocalConversationId
 import uniffi.proton_mail_common.LocalLabelId
@@ -140,23 +138,6 @@ class RustConversationDataSourceImpl @Inject constructor(
                 mailbox.labelConversations(localLabelId, conversationIds)
             }
         }, "relabel conversations")
-    }
-
-    override suspend fun moveConversationsWithRemoteId(
-        userId: UserId,
-        conversationIds: List<LocalConversationId>,
-        toRemoteLabelId: LabelId
-    ) {
-        try {
-            rustMailbox.observeConversationMailbox()
-                .mapLatest { mailbox ->
-                    mailbox.moveConversationsWithRemoteId(toRemoteLabelId, conversationIds)
-                    executePendingActions(userId)
-                }
-                .launchIn(coroutineScope)
-        } catch (e: MailboxException) {
-            Timber.e(e, "rust-conversation: Failed to move conversations")
-        }
     }
 
     // ET - Missing Implementation. This function requires Rust settings integration

@@ -20,7 +20,6 @@ package ch.protonmail.android.mailconversation.data.local
 
 import kotlinx.coroutines.flow.Flow
 import me.proton.core.domain.entity.UserId
-import uniffi.proton_api_mail.LabelId
 import uniffi.proton_mail_common.LocalConversation
 import uniffi.proton_mail_common.LocalConversationId
 import uniffi.proton_mail_common.LocalLabelId
@@ -47,11 +46,6 @@ interface RustConversationDataSource {
         userId: UserId,
         conversationIds: List<LocalConversationId>,
         toLabelId: LocalLabelId
-    )
-    suspend fun moveConversationsWithRemoteId(
-        userId: UserId,
-        conversationIds: List<LocalConversationId>,
-        toRemoteLabelId: LabelId
     )
 
     fun getSenderImage(address: String, bimi: String?): ByteArray?
