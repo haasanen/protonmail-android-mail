@@ -144,7 +144,17 @@ class RustConversationRepositoryImpl @Inject constructor(
         allLabelIds: List<LabelId>,
         fromLabelIds: List<LabelId>,
         toLabelId: LabelId
-    ): Either<DataError, List<Conversation>> = DataError.Local.Unknown.left()
+    ): Either<DataError, List<Conversation>> {
+        rustConversationDataSource.moveConversations(
+            userId,
+            conversationIds.map {
+                it.toLocalConversationId()
+            },
+            toLabelId.toLocalLabelId()
+        )
+
+        return emptyList<Conversation>().right()
+    }
 
     // It will be implemented later on
     override suspend fun markUnread(

@@ -21,11 +21,13 @@ package ch.protonmail.android.mailconversation.data.repository
 import app.cash.turbine.test
 import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
+import ch.protonmail.android.mailcommon.domain.sample.LabelIdSample
 import ch.protonmail.android.mailconversation.data.local.RustConversationDataSource
 import ch.protonmail.android.mailconversation.data.mapper.toConversation
 import ch.protonmail.android.mailconversation.data.mapper.toConversationWithContext
 import ch.protonmail.android.mailconversation.data.mapper.toLocalConversationId
 import ch.protonmail.android.mailconversation.domain.entity.Conversation
+import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.mailpagination.domain.model.PageFilter
 import ch.protonmail.android.mailpagination.domain.model.PageKey
@@ -39,6 +41,7 @@ import io.mockk.mockk
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import me.proton.core.domain.entity.UserId
+import me.proton.core.label.domain.entity.LabelId
 import org.junit.Test
 import kotlin.test.assertEquals
 
@@ -208,6 +211,36 @@ class RustConversationRepositoryImplTest {
                 conversationIds.map {
                     it.toLocalConversationId()
                 }
+            )
+        }
+        assertEquals(emptyList<Conversation>().right(), result)
+    }
+
+    @Test
+    fun `move should call rust data source function and return empty list when successful`() = runTest {
+        // Given
+        val conversationIds = listOf(ConversationId("1"), ConversationId("2"))
+        val allLabelIds = emptyList<LabelId>()
+        val fromLabelIds = emptyList<LabelId>()
+        val toLabelId = LabelIdSample.Trash
+
+        coEvery {
+            rustConversationDataSource.moveConversations(
+                userId,
+                conversationIds.map { it.toLocalConversationId() },
+                toLabelId.toLocalLabelId()
+            )
+        } just Runs
+
+        // When
+        val result = rustConversationRepository.move(userId, conversationIds, allLabelIds, fromLabelIds, toLabelId)
+
+        // Then
+        coVerify {
+            rustConversationDataSource.moveConversations(
+                userId,
+                conversationIds.map { it.toLocalConversationId() },
+                toLabelId.toLocalLabelId()
             )
         }
         assertEquals(emptyList<Conversation>().right(), result)
