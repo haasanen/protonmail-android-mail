@@ -28,11 +28,13 @@ import ch.protonmail.android.mailconversation.data.mapper.toConversationWithCont
 import ch.protonmail.android.mailconversation.data.mapper.toLocalConversationId
 import ch.protonmail.android.mailconversation.domain.entity.Conversation
 import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
+import ch.protonmail.android.maillabel.domain.model.LabelWithSystemLabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.mailpagination.domain.model.PageFilter
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.testdata.conversation.rust.LocalConversationIdSample
 import ch.protonmail.android.testdata.conversation.rust.LocalConversationTestData
+import ch.protonmail.android.testdata.label.LabelTestData
 import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -50,6 +52,9 @@ class RustConversationRepositoryImplTest {
     private val rustConversationDataSource: RustConversationDataSource = mockk()
 
     private val userId = UserId("test_user")
+    private val labelWithSystemLabelId = LabelWithSystemLabelId(
+        LabelTestData.systemLabel, systemLabelId = SystemLabelId.Archive
+    )
     private val rustConversationRepository = RustConversationRepositoryImpl(
         rustConversationDataSource
     )
@@ -57,13 +62,13 @@ class RustConversationRepositoryImplTest {
     @Test
     fun `getLocalConversations should return conversations`() = runTest {
         // Given
-        val pageFilter = PageFilter(labelId = SystemLabelId.Archive.labelId)
+        val pageFilter = PageFilter(labelId = labelWithSystemLabelId.label.labelId)
         val pageKey = PageKey(filter = pageFilter)
         val localConversations = listOf(
             LocalConversationTestData.AugConversation, LocalConversationTestData.SepConversation
         )
         val expectedConversations = localConversations.map {
-            it.toConversationWithContext(SystemLabelId.Archive.labelId)
+            it.toConversationWithContext(labelWithSystemLabelId.label.labelId)
         }
         coEvery { rustConversationDataSource.getConversations(userId, any()) } returns localConversations
 
@@ -161,7 +166,10 @@ class RustConversationRepositoryImplTest {
         coEvery { rustConversationDataSource.markUnread(userId, any()) } just Runs
 
         // When
-        val result = rustConversationRepository.markUnread(userId, conversationIds, SystemLabelId.Archive.labelId)
+        val result = rustConversationRepository.markUnread(
+            userId, conversationIds,
+            labelWithSystemLabelId.label.labelId
+        )
 
         // Then
         coVerify { rustConversationDataSource.markUnread(userId, conversationIds.map { it.toLocalConversationId() }) }
