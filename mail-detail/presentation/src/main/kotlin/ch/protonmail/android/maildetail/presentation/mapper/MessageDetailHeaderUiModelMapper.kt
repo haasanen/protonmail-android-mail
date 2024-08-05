@@ -29,7 +29,6 @@ import ch.protonmail.android.mailcommon.presentation.usecase.FormatShortTime
 import ch.protonmail.android.maildetail.presentation.R
 import ch.protonmail.android.maildetail.presentation.model.MessageDetailHeaderUiModel
 import ch.protonmail.android.maildetail.presentation.model.MessageIdUiModel
-import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.maillabel.presentation.model.LabelUiModel
 import ch.protonmail.android.mailmessage.domain.model.Message
 import ch.protonmail.android.mailmessage.domain.model.MessageId
@@ -67,7 +66,7 @@ class MessageDetailHeaderUiModelMapper @Inject constructor(
             sender = participantUiModelMapper.senderToUiModel(messageWithLabels.message.sender, contacts),
             shouldShowTrackerProtectionIcon = true,
             shouldShowAttachmentIcon = messageWithLabels.message.hasNonCalendarAttachments(),
-            shouldShowStar = messageWithLabels.message.isStarred(),
+            shouldShowStar = messageWithLabels.message.isStarred,
             location = messageLocationUiModelMapper(
                 messageWithLabels.message.labelIds,
                 messageWithLabels.labels,
@@ -95,12 +94,6 @@ class MessageDetailHeaderUiModelMapper @Inject constructor(
     }
 
     private fun Message.hasNonCalendarAttachments() = numAttachments > attachmentCount.calendar
-
-    @Deprecated(
-        "labelIds are now dynamically defined by rust. This logic is probably broken.",
-        replaceWith = ReplaceWith("Rust's exposed isStarred boolean")
-    )
-    private fun Message.isStarred() = labelIds.any { it == SystemLabelId.Starred.labelId }
 
     private fun Message.hasUndisclosedRecipients() = (toList + ccList + bccList).isEmpty()
 

@@ -35,7 +35,6 @@ import ch.protonmail.android.maildetail.presentation.model.MessageDetailHeaderUi
 import ch.protonmail.android.maildetail.presentation.model.MessageIdUiModel
 import ch.protonmail.android.maildetail.presentation.model.MessageLocationUiModel
 import ch.protonmail.android.maildetail.presentation.model.ParticipantUiModel
-import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.maillabel.presentation.sample.LabelUiModelSample
 import ch.protonmail.android.mailmessage.domain.model.AttachmentCount
 import ch.protonmail.android.mailmessage.domain.model.MessageWithLabels
@@ -213,12 +212,7 @@ class MessageDetailHeaderUiModelMapperTest {
     fun `when the message is not starred, don't show star icon`() = runTest {
         // Given
         val messageWithLabels = messageWithLabels.copy(
-            message = message.copy(
-                labelIds = listOf(
-                    SystemLabelId.Archive.labelId,
-                    SystemLabelId.AllMail.labelId
-                )
-            )
+            message = message.copy(isStarred = false)
         )
         val expectedResult = expectedResult.copy(shouldShowStar = false)
         // When
