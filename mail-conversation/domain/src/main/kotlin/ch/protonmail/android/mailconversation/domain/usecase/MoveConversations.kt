@@ -87,5 +87,4 @@ class MoveConversations @Inject constructor(
             return@UndoMoveConversations Unit.right()
         }
     }
-
 }

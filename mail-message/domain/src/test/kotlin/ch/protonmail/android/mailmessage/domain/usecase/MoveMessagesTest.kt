@@ -36,7 +36,6 @@ import ch.protonmail.android.testdata.maillabel.MailLabelTestData
 import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.coVerify
-import io.mockk.coVerifySequence
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
@@ -53,15 +52,11 @@ class MoveMessagesTest {
     private val exclusiveMailLabels = listOf(MailLabelTestData.inboxSystemLabel, MailLabelTestData.archiveSystemLabel)
 
     private val messageRepository = mockk<MessageRepository>()
-    private val decrementUnreadCount = mockk<DecrementUnreadCount>()
-    private val incrementUnreadCount = mockk<IncrementUnreadCount>()
     private val observeExclusiveMailLabels = mockk<ObserveExclusiveMailLabels>()
     private val registerUndoableOperation = mockk<RegisterUndoableOperation>()
 
     private val moveMessages = MoveMessages(
         messageRepository,
-        decrementUnreadCount,
-        incrementUnreadCount,
         observeExclusiveMailLabels,
         registerUndoableOperation
     )
@@ -94,31 +89,6 @@ class MoveMessagesTest {
         // Then
         assertEquals(DataError.Local.NoDataCached.left(), actual)
     }
-
-    @Test
-    fun `for each unread message moved decrement unread count of 'from' label and increment it of 'to' label'`() =
-        runTest {
-            // given
-            val toLabel = SystemLabelId.Trash.labelId
-            val unreadMessage = MessageSample.UnreadInvoice
-            val messages = listOf(MessageSample.Invoice, MessageSample.HtmlInvoice, unreadMessage)
-            val expectedMap = messages.associate { it.messageId to it.labelIds.first() }
-            expectObserveExclusiveMailLabelSucceeds()
-            expectGetLocalMessagesSucceeds(messages)
-            expectMoveSucceeds(toLabel, messages, expectedMap)
-            expectRegisterUndoOperationSucceeds()
-            coEvery { decrementUnreadCount(userId, unreadMessage.labelIds) } returns Unit.right()
-            coEvery { incrementUnreadCount(userId, unreadMessage.labelIds) } returns Unit.right()
-
-            // when
-            moveMessages(userId, messageIds, toLabel)
-
-            // then
-            coVerifySequence {
-                decrementUnreadCount(userId, unreadMessage.labelIds)
-                incrementUnreadCount(userId, unreadMessage.labelIds)
-            }
-        }
 
     @Test
     fun `store undoable operation when moving messages locally succeeds`() = runTest {

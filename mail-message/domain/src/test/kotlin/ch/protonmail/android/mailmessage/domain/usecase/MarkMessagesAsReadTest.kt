@@ -26,7 +26,6 @@ import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
 import ch.protonmail.android.mailmessage.domain.sample.MessageSample
 import io.mockk.coEvery
-import io.mockk.coVerifySequence
 import io.mockk.mockk
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
@@ -39,9 +38,8 @@ class MarkMessagesAsReadTest {
     private val messageIds = listOf(MessageIdSample.Invoice, MessageIdSample.PlainTextMessage)
 
     private val messageRepository = mockk<MessageRepository>()
-    private val decrementUnreadCount = mockk<DecrementUnreadCount>()
 
-    private val markRead = MarkMessagesAsRead(messageRepository, decrementUnreadCount)
+    private val markRead = MarkMessagesAsRead(messageRepository)
 
     @Test
     fun `when repository fails then error is returned`() = runTest {
@@ -71,19 +69,4 @@ class MarkMessagesAsReadTest {
         assertEquals(messages, result)
     }
 
-    @Test
-    fun `decrement unread messages count for each unread message that is marked as read`() = runTest {
-        // given
-        val unreadMessage = MessageSample.UnreadInvoice
-        val messages = listOf(MessageSample.Invoice, MessageSample.HtmlInvoice, unreadMessage).right()
-        coEvery { messageRepository.markRead(userId, messageIds) } returns messages
-        coEvery { messageRepository.observeCachedMessages(userId, messageIds) } returns flowOf(messages)
-        coEvery { decrementUnreadCount(userId, unreadMessage.labelIds) } returns Unit.right()
-
-        // when
-        markRead(userId, messageIds)
-
-        // then
-        coVerifySequence { decrementUnreadCount(userId, unreadMessage.labelIds) }
-    }
 }

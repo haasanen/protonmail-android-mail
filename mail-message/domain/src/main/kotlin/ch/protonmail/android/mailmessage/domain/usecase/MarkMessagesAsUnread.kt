@@ -23,28 +23,14 @@ import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailmessage.domain.model.Message
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
-import kotlinx.coroutines.flow.firstOrNull
 import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 
 class MarkMessagesAsUnread @Inject constructor(
-    private val messageRepository: MessageRepository,
-    private val incrementUnreadCount: IncrementUnreadCount
+    private val messageRepository: MessageRepository
 ) {
 
-    suspend operator fun invoke(userId: UserId, messageIds: List<MessageId>): Either<DataError.Local, List<Message>> {
-        incrementUnreadMessagesCount(userId, messageIds)
-        return messageRepository.markUnread(userId, messageIds)
-    }
-
-    private suspend fun incrementUnreadMessagesCount(userId: UserId, messageIds: List<MessageId>) {
-        messageRepository.observeCachedMessages(userId, messageIds).firstOrNull()?.map { messages ->
-            messages.onEach { message ->
-                if (message.read) {
-                    incrementUnreadCount(userId, message.labelIds)
-                }
-            }
-        }
-    }
+    suspend operator fun invoke(userId: UserId, messageIds: List<MessageId>): Either<DataError.Local, List<Message>> =
+        messageRepository.markUnread(userId, messageIds)
 
 }

@@ -61,8 +61,6 @@ class UndoMoveMessagesTest {
     )
 
     private val messageRepository = mockk<MessageRepository>()
-    private val decrementUnreadCount = mockk<DecrementUnreadCount>()
-    private val incrementUnreadCount = mockk<IncrementUnreadCount>()
     private val observeExclusiveMailLabels = mockk<ObserveExclusiveMailLabels>()
     private val registerUndoableOperation = mockk<RegisterUndoableOperation>()
     private val undoableOperationRepository = mockk<UndoableOperationRepository>()
@@ -70,8 +68,6 @@ class UndoMoveMessagesTest {
     private val moveMessages = spyk(
         MoveMessages(
             messageRepository,
-            decrementUnreadCount,
-            incrementUnreadCount,
             observeExclusiveMailLabels,
             registerUndoableOperation
         )

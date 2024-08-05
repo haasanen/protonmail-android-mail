@@ -26,7 +26,6 @@ import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.model.UndoableOperation
 import ch.protonmail.android.mailcommon.domain.usecase.RegisterUndoableOperation
 import ch.protonmail.android.maillabel.domain.usecase.ObserveExclusiveMailLabels
-import ch.protonmail.android.mailmessage.domain.model.Message
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
 import kotlinx.coroutines.flow.first
@@ -36,8 +35,6 @@ import javax.inject.Inject
 
 class MoveMessages @Inject constructor(
     private val messageRepository: MessageRepository,
-    private val decrementUnreadCount: DecrementUnreadCount,
-    private val incrementUnreadCount: IncrementUnreadCount,
     private val observeExclusiveMailLabels: ObserveExclusiveMailLabels,
     private val registerUndoableOperation: RegisterUndoableOperation
 ) {
@@ -51,11 +48,9 @@ class MoveMessages @Inject constructor(
         val messagesWithExclusiveLabels = messageRepository.getLocalMessages(userId, messageIds).associateWith {
             it.labelIds.firstOrNull { labelId -> labelId in exclusiveMailLabels }
         }
-        decrementUnreadCountInOriginLabel(userId, messagesWithExclusiveLabels.keys)
         val messageIdsWithExclusiveLabels = messagesWithExclusiveLabels.mapKeys { it.key.messageId }
         messageRepository.moveTo(userId, messageIdsWithExclusiveLabels, labelId)
             .onRight { messages ->
-                incrementUnreadCountInDestinationLabel(userId, messages)
                 registerUndoableOperations(userId, messageIdsWithExclusiveLabels)
             }
             .bind()
@@ -78,18 +73,6 @@ class MoveMessages @Inject constructor(
                 return@UndoMoveMessages Unit.right()
             }
         )
-    }
-
-    private suspend fun incrementUnreadCountInDestinationLabel(userId: UserId, messages: List<Message>) {
-        messages
-            .filter { it.unread }
-            .forEach { incrementUnreadCount(userId, it.labelIds) }
-    }
-
-    private suspend fun decrementUnreadCountInOriginLabel(userId: UserId, messages: Set<Message>) {
-        messages
-            .filter { it.unread }
-            .forEach { decrementUnreadCount(userId, it.labelIds) }
     }
 
 }
