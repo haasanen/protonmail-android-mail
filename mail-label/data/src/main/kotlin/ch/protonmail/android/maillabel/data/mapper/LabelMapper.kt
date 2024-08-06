@@ -18,67 +18,68 @@
 
 package ch.protonmail.android.maillabel.data.mapper
 
+import ch.protonmail.android.mailcommon.domain.mapper.LocalLabel
+import ch.protonmail.android.mailcommon.domain.mapper.LocalLabelId
+import ch.protonmail.android.mailcommon.domain.mapper.LocalLabelType
 import ch.protonmail.android.mailcommon.domain.model.FAKE_USER_ID
 import ch.protonmail.android.maillabel.domain.model.LabelWithSystemLabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import me.proton.core.label.domain.entity.Label
 import me.proton.core.label.domain.entity.LabelId
 import me.proton.core.label.domain.entity.LabelType
-import uniffi.proton_mail_common.LocalLabelId
-import uniffi.proton_mail_common.LocalLabelWithCount
 
 fun LabelId.toLocalLabelId(): LocalLabelId = this.id.toULong()
 fun LocalLabelId.toLabelId(): LabelId = LabelId(this.toString())
-fun uniffi.proton_api_mail.LabelType.toLabelType(): LabelType {
+fun LocalLabelType.toLabelType(): LabelType {
     return when (this) {
-        uniffi.proton_api_mail.LabelType.LABEL -> LabelType.MessageLabel
-        uniffi.proton_api_mail.LabelType.SYSTEM -> LabelType.SystemFolder
-        uniffi.proton_api_mail.LabelType.CONTACT_GROUP -> LabelType.ContactGroup
-        uniffi.proton_api_mail.LabelType.FOLDER -> LabelType.MessageFolder
+        LocalLabelType.LABEL -> LabelType.MessageLabel
+        LocalLabelType.SYSTEM -> LabelType.SystemFolder
+        LocalLabelType.CONTACT_GROUP -> LabelType.ContactGroup
+        LocalLabelType.FOLDER -> LabelType.MessageFolder
         else -> LabelType.MessageLabel
     }
 }
 
-fun LabelType.toRustLabelType(): uniffi.proton_api_mail.LabelType {
+fun LabelType.toRustLabelType(): LocalLabelType {
     return when (this) {
-        LabelType.MessageLabel -> uniffi.proton_api_mail.LabelType.LABEL
-        LabelType.SystemFolder -> uniffi.proton_api_mail.LabelType.SYSTEM
-        LabelType.ContactGroup -> uniffi.proton_api_mail.LabelType.CONTACT_GROUP
-        LabelType.MessageFolder -> uniffi.proton_api_mail.LabelType.FOLDER
+        LabelType.MessageLabel -> LocalLabelType.LABEL
+        LabelType.SystemFolder -> LocalLabelType.SYSTEM
+        LabelType.ContactGroup -> LocalLabelType.CONTACT_GROUP
+        LabelType.MessageFolder -> LocalLabelType.FOLDER
     }
 
 }
-fun LocalLabelWithCount.toLabel(): Label {
+fun LocalLabel.toLabel(): Label {
     return Label(
         userId = FAKE_USER_ID,
-        labelId = this.id.toLabelId(),
+        labelId = this.localId?.toLabelId() ?: LabelId("0"),
         name = this.name,
         type = this.labelType.toLabelType(),
         path = this.path ?: "",
-        color = this.color,
-        order = this.order.toInt(),
-        isNotified = this.notified,
+        color = this.color.value,
+        order = this.displayOrder.toInt(),
+        isNotified = this.notify,
         isExpanded = this.expanded,
         isSticky = this.sticky,
-        parentId = this.parentId?.toLabelId()
+        parentId = this.localParentId?.toLabelId()
 
     )
 }
-fun LocalLabelWithCount.toLabelWithSystemLabelId(): LabelWithSystemLabelId {
+fun LocalLabel.toLabelWithSystemLabelId(): LabelWithSystemLabelId {
     return LabelWithSystemLabelId(
         Label(
             userId = FAKE_USER_ID,
-            labelId = this.id.toLabelId(),
+            labelId = this.localId?.toLabelId() ?: LabelId("0"),
             name = this.name,
             type = this.labelType.toLabelType(),
             path = this.path ?: "",
-            color = this.color,
-            order = this.order.toInt(),
-            isNotified = this.notified,
+            color = this.color.value,
+            order = this.displayOrder.toInt(),
+            isNotified = this.notify,
             isExpanded = this.expanded,
             isSticky = this.sticky,
-            parentId = this.parentId?.toLabelId()
+            parentId = this.localParentId?.toLabelId()
         ),
-        SystemLabelId.enumOf(this.rid)
+        SystemLabelId.enumOf(this.remoteId?.value?.value ?: "0")
     )
 }

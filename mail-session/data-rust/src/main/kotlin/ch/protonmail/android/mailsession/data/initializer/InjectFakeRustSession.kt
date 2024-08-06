@@ -23,11 +23,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.LoginFlow
-import uniffi.proton_mail_uniffi.MailSession
 import uniffi.proton_mail_uniffi.MailUserSessionInitializationCallback
 import uniffi.proton_mail_uniffi.MailUserSessionInitializationStage
-import uniffi.proton_mail_uniffi.SessionCallback
-import uniffi.proton_mail_uniffi.SessionError
 import javax.inject.Inject
 
 class InjectFakeRustSession @Inject constructor(
@@ -48,7 +45,7 @@ class InjectFakeRustSession @Inject constructor(
         run {
             for (i in 0..MaxFakeLoginRetries) {
                 runCatching {
-                    newLoginFlow = buildLoginFlow(mailSession)
+                    newLoginFlow = mailSession.newLoginFlow()
                     newLoginFlow.login(username, password)
                 }.onFailure { exception ->
                     Timber.v("rust-session: Fake login Failure due to $exception")
@@ -79,27 +76,6 @@ class InjectFakeRustSession @Inject constructor(
         }
         Timber.d("rust-session: rust-session initialization completed successfully")
     }
-
-    private fun buildLoginFlow(mailSession: MailSession) = mailSession.newLoginFlow(
-        object : SessionCallback {
-            override fun onError(err: SessionError) {
-                Timber.w("rust-session: fake login flow failed.")
-            }
-
-            override fun onRefreshFailed(e: SessionError) {
-                Timber.w("rust-session: fake login flow failed.")
-            }
-
-            override fun onSessionDeleted() {
-                Timber.d("rust-session: fake login session deleted.")
-            }
-
-            override fun onSessionRefresh() {
-                Timber.d("rust-session: fake login session refreshed.")
-            }
-
-        }
-    )
 
     companion object {
 

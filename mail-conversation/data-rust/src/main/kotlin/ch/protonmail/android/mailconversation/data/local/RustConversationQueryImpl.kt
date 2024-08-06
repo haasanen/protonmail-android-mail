@@ -18,31 +18,28 @@
 
 package ch.protonmail.android.mailconversation.data.local
 
+import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.domain.coroutines.AppScope
+import ch.protonmail.android.mailcommon.domain.mapper.LocalConversation
 import ch.protonmail.android.mailmessage.data.local.RustMailbox
-import ch.protonmail.android.mailmessage.domain.paging.RustDataSourceId
 import ch.protonmail.android.mailmessage.domain.paging.RustInvalidationTracker
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.flowOf
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
-import uniffi.proton_mail_common.LocalConversation
-import uniffi.proton_mail_common.LocalLabelId
-import uniffi.proton_mail_uniffi.MailboxConversationLiveQuery
-import uniffi.proton_mail_uniffi.MailboxLiveQueryUpdatedCallback
 import javax.inject.Inject
 
+@SuppressWarnings("UnusedPrivateMember", "ExpressionBodySyntax")
+@MissingRustApi
+// RUST REMOVED LIVE QUERY
 class RustConversationQueryImpl @Inject constructor(
     private val rustMailbox: RustMailbox,
     private val invalidationTracker: RustInvalidationTracker,
     @AppScope private val coroutineScope: CoroutineScope
 ) : RustConversationQuery {
 
-    private var conversationLiveQuery: MailboxConversationLiveQuery? = null
+   /* private var conversationLiveQuery: MailboxConversationLiveQuery? = null
 
     private val conversationsMutableStatusFlow = MutableStateFlow<List<LocalConversation>>(emptyList())
     private val conversationsStatusFlow: Flow<List<LocalConversation>> = conversationsMutableStatusFlow.asStateFlow()
@@ -79,24 +76,24 @@ class RustConversationQueryImpl @Inject constructor(
                 )
             }
             .launchIn(coroutineScope)
-    }
+    }*/
 
     private fun destroy() {
         Timber.d("rust-conversation-query: destroy")
-        disconnect()
-        conversationsMutableStatusFlow.value = emptyList()
+       /* disconnect()
+        conversationsMutableStatusFlow.value = emptyList()*/
     }
 
     override fun disconnect() {
-        conversationLiveQuery?.disconnect()
-        conversationLiveQuery = null
+       /* conversationLiveQuery?.disconnect()
+        conversationLiveQuery = null*/
     }
 
-    override fun observeConversations(userId: UserId, labelId: LocalLabelId): Flow<List<LocalConversation>> {
+    override fun observeConversations(userId: UserId, labelId: ULong): Flow<List<LocalConversation>> {
+        /*rustMailbox.switchToMailbox(userId, labelId)
 
-        rustMailbox.switchToMailbox(userId, labelId)
-
-        return conversationsStatusFlow
+        return conversationsStatusFlow */
+        return flowOf(emptyList())
     }
 
     companion object {

@@ -18,7 +18,7 @@
 
 package ch.protonmail.android.mailsession.data.repository
 
-import ch.protonmail.android.mailsession.data.mapper.toLocalUserId
+import ch.protonmail.android.mailsession.data.mapper.toRemoteId
 import ch.protonmail.android.mailsession.domain.repository.MailSessionRepository
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import kotlinx.coroutines.flow.Flow
@@ -26,8 +26,6 @@ import kotlinx.coroutines.flow.flow
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.MailUserSession
-import uniffi.proton_mail_uniffi.SessionCallback
-import uniffi.proton_mail_uniffi.SessionError
 import javax.inject.Inject
 
 class UserSessionRepositoryImpl @Inject constructor(
@@ -48,14 +46,14 @@ class UserSessionRepositoryImpl @Inject constructor(
         val mailSession = mailSessionRepository.getMailSession()
         val storedUserSession = mailSession.storedSessions().firstOrNull()
 
-        val userId = storedUserSession?.userId()?.let { UserId(it) }
+        val userId = storedUserSession?.userId()?.let { UserId(it.value) }
         emit(userId)
     }
 
     private suspend fun initUserSession(userId: UserId) {
         val mailSession = mailSessionRepository.getMailSession()
         val storedSessions = mailSession.storedSessions()
-        val storedUserSession = storedSessions.find { it.userId() == userId.toLocalUserId() }
+        val storedUserSession = storedSessions.find { it.userId() == userId.toRemoteId() }
 
         if (storedUserSession == null) {
             Timber.e("rust-session: no stored user session found for $userId in userSessionRepository")
@@ -63,30 +61,7 @@ class UserSessionRepositoryImpl @Inject constructor(
             return
         }
 
-        val userSession = mailSession.userContextFromSession(
-            storedUserSession,
-            object : SessionCallback {
-                override fun onError(err: SessionError) {
-                    Timber.e("rust-session: error: ${err.name}")
-                    activeUserSessions[userId] = null
-                }
-
-                override fun onRefreshFailed(e: SessionError) {
-                    Timber.w("rust-session: refresh failed: ${e.name}")
-                    activeUserSessions[userId] = null
-                }
-
-                override fun onSessionDeleted() {
-                    Timber.d("rust-session: deleted for $userId")
-                    activeUserSessions[userId] = null
-                }
-
-                override fun onSessionRefresh() {
-                    Timber.d("rust-session: refreshed for $userId")
-                }
-
-            }
-        )
+        val userSession = mailSession.userContextFromSession(storedUserSession)
         activeUserSessions[userId] = userSession
     }
 

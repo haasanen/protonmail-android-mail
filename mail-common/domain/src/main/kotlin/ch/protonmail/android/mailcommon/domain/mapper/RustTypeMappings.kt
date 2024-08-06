@@ -16,15 +16,19 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailmessage.data.usecase
+package ch.protonmail.android.mailcommon.domain.mapper
 
-import ch.protonmail.android.mailcommon.domain.mapper.LocalLabelId
-import uniffi.proton_mail_uniffi.MailUserSession
-import uniffi.proton_mail_uniffi.Mailbox
-import javax.inject.Inject
+import uniffi.proton_mail_uniffi.Conversation
+import uniffi.proton_mail_uniffi.Label
+import uniffi.proton_mail_uniffi.LabelType
+import uniffi.proton_mail_uniffi.Message
+import uniffi.proton_mail_uniffi.ViewMode
 
-class CreateMailbox @Inject constructor() {
-
-    suspend operator fun invoke(mailUserSession: MailUserSession, labelId: LocalLabelId) =
-        Mailbox.withLocalId(mailUserSession, labelId)
-}
+typealias LocalConversation = Conversation
+typealias LocalConversationId = ULong
+typealias LocalLabelId = ULong
+typealias LocalViewMode = ViewMode
+typealias LocalLabelType = LabelType
+typealias LocalLabel = Label
+typealias LocalMessageId = ULong
+typealias LocalMessageMetadata = Message

@@ -18,11 +18,11 @@
 
 package ch.protonmail.android.mailconversation.data.local
 
+import ch.protonmail.android.mailcommon.domain.mapper.LocalConversation
+import ch.protonmail.android.mailcommon.domain.mapper.LocalConversationId
+import ch.protonmail.android.mailcommon.domain.mapper.LocalLabelId
 import kotlinx.coroutines.flow.Flow
 import me.proton.core.domain.entity.UserId
-import uniffi.proton_mail_common.LocalConversation
-import uniffi.proton_mail_common.LocalConversationId
-import uniffi.proton_mail_common.LocalLabelId
 
 interface RustConversationDataSource {
 

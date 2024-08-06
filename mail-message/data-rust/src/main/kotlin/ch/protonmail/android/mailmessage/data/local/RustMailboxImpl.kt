@@ -18,6 +18,8 @@
 
 package ch.protonmail.android.mailmessage.data.local
 
+import ch.protonmail.android.mailcommon.domain.mapper.LocalLabelId
+import ch.protonmail.android.mailcommon.domain.mapper.LocalViewMode
 import ch.protonmail.android.mailmessage.data.MessageRustCoroutineScope
 import ch.protonmail.android.mailmessage.data.usecase.CreateMailbox
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
@@ -31,8 +33,6 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
-import uniffi.proton_api_mail.MailSettingsViewMode
-import uniffi.proton_mail_common.LocalLabelId
 import uniffi.proton_mail_uniffi.Mailbox
 import javax.inject.Inject
 
@@ -46,11 +46,11 @@ class RustMailboxImpl @Inject constructor(
 
     private val conversationMailboxFlow: Flow<Mailbox> = mailboxMutableStatusFlow.asStateFlow()
         .filterNotNull()
-        .filter { it.viewMode() == MailSettingsViewMode.CONVERSATIONS }
+        .filter { it.viewMode() == LocalViewMode.CONVERSATIONS }
 
     private val messageMailboxFlow: Flow<Mailbox> = mailboxMutableStatusFlow.asStateFlow()
         .filterNotNull()
-        .filter { it.viewMode() == MailSettingsViewMode.MESSAGES }
+        .filter { it.viewMode() == LocalViewMode.MESSAGES }
 
     override fun switchToMailbox(userId: UserId, labelId: LocalLabelId) {
         if (!shouldSwitchMailbox(labelId)) {

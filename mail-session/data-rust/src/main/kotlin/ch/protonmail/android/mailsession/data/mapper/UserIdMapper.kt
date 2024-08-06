@@ -19,6 +19,6 @@
 package ch.protonmail.android.mailsession.data.mapper
 
 import me.proton.core.domain.entity.UserId
-import uniffi.proton_api_core.UserId as LocalUserId
+import uniffi.proton_mail_uniffi.RemoteId
 
-fun UserId.toLocalUserId(): LocalUserId = this.id
+fun UserId.toRemoteId(): RemoteId = RemoteId(this.id)

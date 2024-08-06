@@ -18,16 +18,16 @@
 
 package ch.protonmail.android.maillabel.data.local
 
+import ch.protonmail.android.mailcommon.domain.mapper.LocalLabel
 import kotlinx.coroutines.flow.Flow
 import me.proton.core.domain.entity.UserId
-import uniffi.proton_mail_common.LocalLabelWithCount
 
 interface LabelDataSource {
 
-    fun observeSystemLabels(userId: UserId): Flow<List<LocalLabelWithCount>>
+    fun observeSystemLabels(userId: UserId): Flow<List<LocalLabel>>
 
-    fun observeMessageLabels(userId: UserId): Flow<List<LocalLabelWithCount>>
+    fun observeMessageLabels(userId: UserId): Flow<List<LocalLabel>>
 
-    fun observeMessageFolders(userId: UserId): Flow<List<LocalLabelWithCount>>
+    fun observeMessageFolders(userId: UserId): Flow<List<LocalLabel>>
 
 }

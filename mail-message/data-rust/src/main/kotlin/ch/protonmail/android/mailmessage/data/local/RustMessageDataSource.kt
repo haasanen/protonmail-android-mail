@@ -25,6 +25,10 @@ import uniffi.proton_mail_common.LocalConversationId
 import uniffi.proton_mail_common.LocalLabelId
 import uniffi.proton_mail_common.LocalMessageId
 import uniffi.proton_mail_common.LocalMessageMetadata
+import ch.protonmail.android.mailcommon.domain.mapper.LocalLabelId
+import ch.protonmail.android.mailcommon.domain.mapper.LocalMessageId
+import ch.protonmail.android.mailcommon.domain.mapper.LocalMessageMetadata
+import me.proton.core.domain.entity.UserId
 import uniffi.proton_mail_uniffi.DecryptedMessageBody
 
 interface RustMessageDataSource {
