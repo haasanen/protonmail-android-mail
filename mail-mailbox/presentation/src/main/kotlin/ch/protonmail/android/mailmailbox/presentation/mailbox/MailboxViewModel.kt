@@ -877,13 +877,19 @@ class MailboxViewModel @Inject constructor(
         }
         val userId = primaryUserId.filterNotNull().first()
         val targetLabel = when (viewAction) {
-            is MailboxViewAction.MoveToArchive -> SystemLabelId.Archive.labelId
-            is MailboxViewAction.MoveToSpam -> SystemLabelId.Spam.labelId
+            is MailboxViewAction.MoveToArchive -> findLocalSystemLabelId(userId, SystemLabelId.Archive)?.labelId
+            is MailboxViewAction.MoveToSpam -> findLocalSystemLabelId(userId, SystemLabelId.Spam)?.labelId
             else -> {
                 Timber.e("Unsupported action: $viewAction")
-                return
+                null
             }
         }
+
+        if (targetLabel == null) {
+            Timber.e("Move to action failed!")
+            return
+        }
+
         handleMoveOperation(userId, selectionState, targetLabel)
     }
 
@@ -998,18 +1004,23 @@ class MailboxViewModel @Inject constructor(
             return
         }
         val userId = primaryUserId.filterNotNull().first()
+        val trashLocalLabelId = findLocalSystemLabelId(userId, SystemLabelId.Trash)?.labelId
+        if (trashLocalLabelId == null) {
+            Timber.e("Local label id cannot be found for SystemLabelId.Trash!")
+            return
+        }
         val viewMode = getViewModeForCurrentLocation(selectedMailLabelId.flow.value)
         when (viewMode) {
             ViewMode.ConversationGrouping -> moveConversations(
                 userId = userId,
                 conversationIds = selectionModeDataState.selectedMailboxItems.map { ConversationId(it.id) },
-                labelId = SystemLabelId.Trash.labelId
+                labelId = trashLocalLabelId
             )
 
             ViewMode.NoConversationGrouping -> moveMessages(
                 userId = userId,
                 messageIds = selectionModeDataState.selectedMailboxItems.map { MessageId(it.id) },
-                labelId = SystemLabelId.Trash.labelId
+                labelId = trashLocalLabelId
             )
         }
         emitNewStateFrom(MailboxEvent.Trash(selectionModeDataState.selectedMailboxItems.size))

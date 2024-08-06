@@ -1824,12 +1824,14 @@ class MailboxViewModelTest {
         val secondItem = unreadMailboxItemUiModel
         val initialState = createMailboxDataState()
         val intermediateState = MailboxStateSampleData.createSelectionMode(listOf(item, secondItem))
+        val trashLocalLabelId = LabelId("3")
         expectViewModeForCurrentLocation(ConversationGrouping)
         expectedSelectedLabelCountStateChange(initialState)
         returnExpectedStateWhenEnterSelectionMode(initialState, item, intermediateState)
         returnExpectedStateForBottomBarEvent(expectedState = intermediateState)
         returnExpectedStateForTrash(intermediateState, initialState, 2)
         expectMoveConversationsSucceeds(userId, listOf(item, secondItem), SystemLabelId.Trash.labelId)
+        coEvery { findLocalSystemLabelId(userId, SystemLabelId.Trash) } returns MailLabelId.System(trashLocalLabelId)
 
         mailboxViewModel.state.test {
             // Given
@@ -1853,7 +1855,7 @@ class MailboxViewModelTest {
                 moveConversations(
                     userId,
                     listOf(ConversationId(item.id), ConversationId(secondItem.id)),
-                    SystemLabelId.Trash.labelId
+                    trashLocalLabelId
                 )
             }
             coVerify { moveMessages wasNot Called }
@@ -1866,12 +1868,16 @@ class MailboxViewModelTest {
         val secondItem = unreadMailboxItemUiModel
         val initialState = createMailboxDataState()
         val intermediateState = MailboxStateSampleData.createSelectionMode(listOf(item, secondItem))
+        val trashLocalLabelId = LabelId("3")
         expectViewModeForCurrentLocation(NoConversationGrouping)
         expectedSelectedLabelCountStateChange(initialState)
         returnExpectedStateWhenEnterSelectionMode(initialState, item, intermediateState)
         returnExpectedStateForBottomBarEvent(expectedState = intermediateState)
         returnExpectedStateForTrash(intermediateState, initialState, 2)
-        expectMoveMessagesSucceeds(userId, listOf(item, secondItem), SystemLabelId.Trash.labelId)
+        expectMoveMessagesSucceeds(userId, listOf(item, secondItem), trashLocalLabelId)
+        coEvery {
+            findLocalSystemLabelId(userId, SystemLabelId.Trash)
+        } returns MailLabelId.System(trashLocalLabelId)
 
         mailboxViewModel.state.test {
             // Given
@@ -1892,7 +1898,7 @@ class MailboxViewModelTest {
             // Then
             assertEquals(initialState, awaitItem())
             coVerify(exactly = 1) {
-                moveMessages(userId, listOf(MessageId(item.id), MessageId(secondItem.id)), SystemLabelId.Trash.labelId)
+                moveMessages(userId, listOf(MessageId(item.id), MessageId(secondItem.id)), trashLocalLabelId)
             }
             coVerify { moveConversations wasNot Called }
         }
@@ -2909,7 +2915,7 @@ class MailboxViewModelTest {
         val item = readMailboxItemUiModel.copy(id = MessageIdSample.Invoice.id, showStar = true)
         val secondItem = unreadMailboxItemUiModel.copy(id = MessageIdSample.AlphaAppQAReport.id, showStar = true)
         val selectedItemsList = listOf(item, secondItem)
-
+        val archiveLocalLabelId = LabelId("5")
         val initialState = createMailboxDataState()
         val expectedActionItems = listOf(
             ActionUiModelSample.build(Action.Unstar),
@@ -2930,9 +2936,11 @@ class MailboxViewModelTest {
         returnExpectedStateForBottomBarEvent(expectedState = intermediateState)
         returnExpectedStateWhenEnterSelectionMode(initialState, item, intermediateState)
         expectedMoreActionBottomSheetRequestedStateChange(expectedActionItems, bottomSheetShownState)
-        expectMoveMessagesSucceeds(userId, selectedItemsList, SystemLabelId.Archive.labelId)
+        expectMoveMessagesSucceeds(userId, selectedItemsList, archiveLocalLabelId)
         expectedReducerResult(MailboxViewAction.MoveToConfirmed, initialState)
-
+        coEvery {
+            findLocalSystemLabelId(userId, SystemLabelId.Archive)
+        } returns MailLabelId.System(archiveLocalLabelId)
 
         mailboxViewModel.state.test {
             awaitItem() // First emission for selected user
@@ -2945,7 +2953,7 @@ class MailboxViewModelTest {
             mailboxViewModel.submit(MailboxViewAction.MoveToArchive)
             assertEquals(initialState, awaitItem())
         }
-        coVerify { moveMessages(userId, selectedItemsList.map { MessageId(it.id) }, SystemLabelId.Archive.labelId) }
+        coVerify { moveMessages(userId, selectedItemsList.map { MessageId(it.id) }, archiveLocalLabelId) }
         coVerify { moveConversations wasNot Called }
     }
 
@@ -2955,7 +2963,7 @@ class MailboxViewModelTest {
         val item = readMailboxItemUiModel.copy(id = MessageIdSample.Invoice.id, showStar = true)
         val secondItem = unreadMailboxItemUiModel.copy(id = MessageIdSample.AlphaAppQAReport.id, showStar = true)
         val selectedItemsList = listOf(item, secondItem)
-
+        val archiveLocalLabelId = LabelId("5")
         val initialState = createMailboxDataState()
         val expectedActionItems = listOf(
             ActionUiModelSample.build(Action.Unstar),
@@ -2980,9 +2988,11 @@ class MailboxViewModelTest {
         returnExpectedStateForBottomBarEvent(expectedState = intermediateState)
         returnExpectedStateWhenEnterSelectionMode(initialState, item, intermediateState)
         expectedMoreActionBottomSheetRequestedStateChange(expectedActionItems, bottomSheetShownState)
-        expectMoveConversationsSucceeds(userId, selectedItemsList, SystemLabelId.Archive.labelId)
+        expectMoveConversationsSucceeds(userId, selectedItemsList, archiveLocalLabelId)
         expectedReducerResult(MailboxViewAction.MoveToConfirmed, initialState)
-
+        coEvery {
+            findLocalSystemLabelId(userId, SystemLabelId.Archive)
+        } returns MailLabelId.System(archiveLocalLabelId)
 
         mailboxViewModel.state.test {
             awaitItem() // First emission for selected user
@@ -2996,7 +3006,7 @@ class MailboxViewModelTest {
             assertEquals(initialState, awaitItem())
         }
         coVerify {
-            moveConversations(userId, selectedItemsList.map { ConversationId(it.id) }, SystemLabelId.Archive.labelId)
+            moveConversations(userId, selectedItemsList.map { ConversationId(it.id) }, archiveLocalLabelId)
         }
         coVerify { moveMessages wasNot Called }
     }
@@ -3007,6 +3017,7 @@ class MailboxViewModelTest {
         val item = readMailboxItemUiModel.copy(id = MessageIdSample.Invoice.id, showStar = true)
         val secondItem = unreadMailboxItemUiModel.copy(id = MessageIdSample.AlphaAppQAReport.id, showStar = true)
         val selectedItemsList = listOf(item, secondItem)
+        val spamLocalLabelId = LabelId("7")
 
         val initialState = createMailboxDataState()
         val expectedActionItems = listOf(
@@ -3028,9 +3039,11 @@ class MailboxViewModelTest {
         returnExpectedStateForBottomBarEvent(expectedState = intermediateState)
         returnExpectedStateWhenEnterSelectionMode(initialState, item, intermediateState)
         expectedMoreActionBottomSheetRequestedStateChange(expectedActionItems, bottomSheetShownState)
-        expectMoveMessagesSucceeds(userId, selectedItemsList, SystemLabelId.Spam.labelId)
+        expectMoveMessagesSucceeds(userId, selectedItemsList, spamLocalLabelId)
         expectedReducerResult(MailboxViewAction.MoveToConfirmed, initialState)
-
+        coEvery {
+            findLocalSystemLabelId(userId, SystemLabelId.Spam)
+        } returns MailLabelId.System(spamLocalLabelId)
 
         mailboxViewModel.state.test {
             awaitItem() // First emission for selected user
@@ -3043,7 +3056,7 @@ class MailboxViewModelTest {
             mailboxViewModel.submit(MailboxViewAction.MoveToSpam)
             assertEquals(initialState, awaitItem())
         }
-        coVerify { moveMessages(userId, selectedItemsList.map { MessageId(it.id) }, SystemLabelId.Spam.labelId) }
+        coVerify { moveMessages(userId, selectedItemsList.map { MessageId(it.id) }, spamLocalLabelId) }
         coVerify { moveConversations wasNot Called }
     }
 
@@ -3053,6 +3066,7 @@ class MailboxViewModelTest {
         val item = readMailboxItemUiModel.copy(id = MessageIdSample.Invoice.id, showStar = true)
         val secondItem = unreadMailboxItemUiModel.copy(id = MessageIdSample.AlphaAppQAReport.id, showStar = true)
         val selectedItemsList = listOf(item, secondItem)
+        val spamLocalLabelId = LabelId("7")
 
         val initialState = createMailboxDataState()
         val expectedActionItems = listOf(
@@ -3078,9 +3092,11 @@ class MailboxViewModelTest {
         returnExpectedStateForBottomBarEvent(expectedState = intermediateState)
         returnExpectedStateWhenEnterSelectionMode(initialState, item, intermediateState)
         expectedMoreActionBottomSheetRequestedStateChange(expectedActionItems, bottomSheetShownState)
-        expectMoveConversationsSucceeds(userId, selectedItemsList, SystemLabelId.Spam.labelId)
+        expectMoveConversationsSucceeds(userId, selectedItemsList, spamLocalLabelId)
         expectedReducerResult(MailboxViewAction.MoveToConfirmed, initialState)
-
+        coEvery {
+            findLocalSystemLabelId(userId, SystemLabelId.Spam)
+        } returns MailLabelId.System(spamLocalLabelId)
 
         mailboxViewModel.state.test {
             awaitItem() // First emission for selected user
@@ -3094,7 +3110,7 @@ class MailboxViewModelTest {
             assertEquals(initialState, awaitItem())
         }
         coVerify {
-            moveConversations(userId, selectedItemsList.map { ConversationId(it.id) }, SystemLabelId.Spam.labelId)
+            moveConversations(userId, selectedItemsList.map { ConversationId(it.id) }, spamLocalLabelId)
         }
         coVerify { moveMessages wasNot Called }
     }
