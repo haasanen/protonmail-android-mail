@@ -25,7 +25,6 @@ import ch.protonmail.android.mailmessage.data.local.dao.MessageBodyDao
 import ch.protonmail.android.mailmessage.data.local.dao.MessageDao
 import ch.protonmail.android.mailmessage.data.local.dao.MessageLabelDao
 import ch.protonmail.android.mailmessage.data.local.dao.OutboxDao
-import ch.protonmail.android.mailmessage.data.local.dao.UnreadMessagesCountDao
 import ch.protonmail.android.mailpagination.data.local.PageIntervalDatabase
 import me.proton.core.data.room.db.Database
 import me.proton.core.data.room.db.extension.addTableColumn
@@ -41,7 +40,6 @@ interface MessageDatabase : Database, PageIntervalDatabase {
     fun messageAttachmentDao(): MessageAttachmentDao
     fun messageAttachmentMetadataDao(): MessageAttachmentMetadataDao
     fun outboxDao(): OutboxDao
-    fun unreadMessagesCountDao(): UnreadMessagesCountDao
 
     companion object {
 
@@ -289,5 +287,15 @@ interface MessageDatabase : Database, PageIntervalDatabase {
                 database.execSQL("CREATE INDEX IF NOT EXISTS `index_MessageEntity_messageId` ON `MessageEntity` (`messageId`)")
             }
         }
+
+        val MIGRATION_9 = object : DatabaseMigration {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                // Removed UnreadMessagesCountEntity.
+                database.execSQL("DROP INDEX IF EXISTS `index_UnreadMessagesCountEntity_labelId`")
+                database.execSQL("DROP INDEX IF EXISTS `index_UnreadMessagesCountEntity_userId`")
+                database.execSQL("DROP TABLE IF EXISTS `UnreadMessagesCountEntity`")
+            }
+        }
+
     }
 }

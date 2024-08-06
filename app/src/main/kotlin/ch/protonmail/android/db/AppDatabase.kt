@@ -31,7 +31,6 @@ import ch.protonmail.android.mailconversation.data.local.converters.Conversation
 import ch.protonmail.android.mailconversation.data.local.converters.MapConverters
 import ch.protonmail.android.mailconversation.data.local.entity.ConversationEntity
 import ch.protonmail.android.mailconversation.data.local.entity.ConversationLabelEntity
-import ch.protonmail.android.mailconversation.data.local.entity.UnreadConversationsCountEntity
 import ch.protonmail.android.mailmessage.data.local.MessageConverters
 import ch.protonmail.android.mailmessage.data.local.MessageDatabase
 import ch.protonmail.android.mailmessage.data.local.SearchResultsDatabase
@@ -45,7 +44,6 @@ import ch.protonmail.android.mailmessage.data.local.entity.MessageBodyEntity
 import ch.protonmail.android.mailmessage.data.local.entity.MessageEntity
 import ch.protonmail.android.mailmessage.data.local.entity.MessageLabelEntity
 import ch.protonmail.android.mailmessage.data.local.entity.SearchResultEntity
-import ch.protonmail.android.mailmessage.data.local.entity.UnreadMessagesCountEntity
 import ch.protonmail.android.mailpagination.data.local.PageIntervalDatabase
 import ch.protonmail.android.mailpagination.data.local.entity.PageIntervalEntity
 import me.proton.core.account.data.db.AccountConverters
@@ -190,9 +188,6 @@ import me.proton.core.usersettings.data.entity.UserSettingsEntity
         AttachmentStateEntity::class,
         MessagePasswordEntity::class,
         MessageExpirationTimeEntity::class,
-        // Unread counts
-        UnreadMessagesCountEntity::class,
-        UnreadConversationsCountEntity::class,
         // Search results
         SearchResultEntity::class
     ],
@@ -253,7 +248,7 @@ abstract class AppDatabase :
     companion object {
 
         const val name = "db-mail"
-        const val version = 35
+        const val version = 36
 
         internal val migrations = listOf(
             AppDatabaseMigrations.MIGRATION_1_2,
@@ -289,7 +284,8 @@ abstract class AppDatabase :
             AppDatabaseMigrations.MIGRATION_31_32,
             AppDatabaseMigrations.MIGRATION_32_33,
             AppDatabaseMigrations.MIGRATION_33_34,
-            AppDatabaseMigrations.MIGRATION_34_35
+            AppDatabaseMigrations.MIGRATION_34_35,
+            AppDatabaseMigrations.MIGRATION_35_36
         )
 
         fun buildDatabase(context: Context): AppDatabase = databaseBuilder<AppDatabase>(context, name)

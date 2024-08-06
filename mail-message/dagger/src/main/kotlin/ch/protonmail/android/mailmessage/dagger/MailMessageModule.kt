@@ -29,24 +29,17 @@ import ch.protonmail.android.mailmessage.data.local.RustMessageQuery
 import ch.protonmail.android.mailmessage.data.local.RustMessageQueryImpl
 import ch.protonmail.android.mailmessage.data.local.SearchResultsLocalDataSource
 import ch.protonmail.android.mailmessage.data.local.SearchResultsLocalDataSourceImpl
-import ch.protonmail.android.mailmessage.data.local.UnreadMessagesCountLocalDataSource
-import ch.protonmail.android.mailmessage.data.local.UnreadMessagesCountLocalDataSourceImpl
-import ch.protonmail.android.mailmessage.data.remote.UnreadMessagesCountRemoteDataSource
-import ch.protonmail.android.mailmessage.data.remote.UnreadMessagesCountRemoteDataSourceImpl
 import ch.protonmail.android.mailmessage.data.repository.OutboxRepositoryImpl
 import ch.protonmail.android.mailmessage.data.repository.RustMessageRepositoryImpl
 import ch.protonmail.android.mailmessage.data.repository.SearchResultsRepositoryImpl
-import ch.protonmail.android.mailmessage.data.repository.UnreadMessageCountRepositoryImpl
 import ch.protonmail.android.mailmessage.domain.paging.RustInvalidationTracker
 import ch.protonmail.android.mailmessage.domain.paging.RustInvalidationTrackerImpl
 import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
 import ch.protonmail.android.mailmessage.domain.repository.OutboxRepository
 import ch.protonmail.android.mailmessage.domain.repository.SearchResultsRepository
-import ch.protonmail.android.mailmessage.domain.repository.UnreadMessagesCountRepository
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
-import dagger.Reusable
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineScope
@@ -90,22 +83,6 @@ object MailMessageModule {
         fun provideSearchResultsLocalDataSource(
             localDataSourceImpl: SearchResultsLocalDataSourceImpl
         ): SearchResultsLocalDataSource
-
-        @Binds
-        @Reusable
-        fun bindsUnreadMessagesCountRepository(impl: UnreadMessageCountRepositoryImpl): UnreadMessagesCountRepository
-
-        @Binds
-        @Reusable
-        fun bindsUnreadMessagesCountRemoteDataSource(
-            impl: UnreadMessagesCountRemoteDataSourceImpl
-        ): UnreadMessagesCountRemoteDataSource
-
-        @Binds
-        @Reusable
-        fun bindsUnreadMessagesCountLocalDataSource(
-            impl: UnreadMessagesCountLocalDataSourceImpl
-        ): UnreadMessagesCountLocalDataSource
 
         @Binds
         @Singleton

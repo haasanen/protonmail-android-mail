@@ -25,19 +25,12 @@ import ch.protonmail.android.mailconversation.data.local.RustConversationDataSou
 import ch.protonmail.android.mailconversation.data.local.RustConversationDataSourceImpl
 import ch.protonmail.android.mailconversation.data.local.RustConversationQuery
 import ch.protonmail.android.mailconversation.data.local.RustConversationQueryImpl
-import ch.protonmail.android.mailconversation.data.local.UnreadConversationsCountLocalDataSource
-import ch.protonmail.android.mailconversation.data.local.UnreadConversationsCountLocalDataSourceImpl
-import ch.protonmail.android.mailconversation.data.remote.UnreadConversationsCountRemoteDataSource
-import ch.protonmail.android.mailconversation.data.remote.UnreadConversationsCountRemoteDataSourceImpl
 import ch.protonmail.android.mailconversation.data.repository.RustConversationRepositoryImpl
-import ch.protonmail.android.mailconversation.data.repository.UnreadConversationsCountRepositoryImpl
 import ch.protonmail.android.mailconversation.domain.repository.ConversationLocalDataSource
 import ch.protonmail.android.mailconversation.domain.repository.ConversationRepository
-import ch.protonmail.android.mailconversation.domain.repository.UnreadConversationsCountRepository
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
-import dagger.Reusable
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineScope
@@ -62,24 +55,6 @@ object MailConversationModule {
     @Module
     @InstallIn(SingletonComponent::class)
     internal interface BindsModule {
-
-        @Binds
-        @Reusable
-        fun bindsUnreadConvoCountRepository(
-            impl: UnreadConversationsCountRepositoryImpl
-        ): UnreadConversationsCountRepository
-
-        @Binds
-        @Reusable
-        fun bindsUnreadConvoCountRemoteDataSource(
-            impl: UnreadConversationsCountRemoteDataSourceImpl
-        ): UnreadConversationsCountRemoteDataSource
-
-        @Binds
-        @Reusable
-        fun bindsUnreadConvoCountLocalDataSource(
-            impl: UnreadConversationsCountLocalDataSourceImpl
-        ): UnreadConversationsCountLocalDataSource
 
         @Binds
         @Singleton
