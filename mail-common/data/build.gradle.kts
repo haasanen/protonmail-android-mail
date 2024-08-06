@@ -35,7 +35,6 @@ val rustProperties = Properties().apply {
     }
 }
 
-val useRustDataLayer: String = rustProperties.getProperty("useRustDataLayer") ?: "false"
 val injectFakeRustSession: String = rustProperties.getProperty("injectFakeRustSession") ?: "false"
 
 android {
@@ -46,7 +45,6 @@ android {
         minSdk = Config.minSdk
         lint.targetSdk = Config.targetSdk
 
-        buildConfigField("Boolean", "USE_RUST_DATA_LAYER", useRustDataLayer)
         buildConfigField("Boolean", "INJECT_FAKE_RUST_SESSION", injectFakeRustSession)
     }
 

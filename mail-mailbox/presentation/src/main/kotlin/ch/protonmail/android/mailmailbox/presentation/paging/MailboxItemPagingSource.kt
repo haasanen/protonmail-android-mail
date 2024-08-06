@@ -38,28 +38,12 @@ import timber.log.Timber
 import kotlin.math.max
 
 class MailboxItemPagingSourceFactory(
-
-    private val roomDatabase: RoomDatabase,
     private val getMailboxItems: GetMultiUserMailboxItems,
-    private val getAdjacentPageKeys: GetAdjacentPageKeys,
-    private val isMultiUserLocalPageValid: IsMultiUserLocalPageValid,
-    private val rustInvalidationTracker: RustInvalidationTracker,
-    private val useRustDataLayer: Boolean
+    private val rustInvalidationTracker: RustInvalidationTracker
 ) {
 
     fun create(mailboxPageKey: MailboxPageKey, type: MailboxItemType): PagingSource<MailboxPageKey, MailboxItem> =
-        if (useRustDataLayer) {
-            RustMailboxItemPagingSource(getMailboxItems, rustInvalidationTracker, mailboxPageKey, type)
-        } else {
-            MailboxItemPagingSource(
-                roomDatabase,
-                getMailboxItems,
-                getAdjacentPageKeys,
-                isMultiUserLocalPageValid,
-                mailboxPageKey,
-                type
-            )
-        }
+        RustMailboxItemPagingSource(getMailboxItems, rustInvalidationTracker, mailboxPageKey, type)
 }
 
 class MailboxItemPagingSource(

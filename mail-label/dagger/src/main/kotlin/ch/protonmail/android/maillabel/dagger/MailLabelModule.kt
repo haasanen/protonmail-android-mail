@@ -18,11 +18,9 @@
 
 package ch.protonmail.android.maillabel.dagger
 
-import ch.protonmail.android.mailcommon.data.BuildConfig
 import ch.protonmail.android.maillabel.data.MailLabelRustCoroutineScope
 import ch.protonmail.android.maillabel.data.local.LabelDataSource
 import ch.protonmail.android.maillabel.data.local.RustLabelDataSource
-import ch.protonmail.android.maillabel.data.repository.CoreLabelRepository
 import ch.protonmail.android.maillabel.data.repository.RustLabelRepository
 import ch.protonmail.android.maillabel.domain.repository.LabelRepository
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
@@ -34,7 +32,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import javax.inject.Singleton
-import me.proton.core.label.domain.repository.LabelRepository as CoreLibsLabelRepository
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -54,14 +51,6 @@ object MailLabelModule {
 
     @Provides
     @Singleton
-    fun providesLabelRepository(
-        coreLabelRepository: CoreLibsLabelRepository,
-        rustLabelDataSource: LabelDataSource
-    ): LabelRepository {
-        return if (BuildConfig.USE_RUST_DATA_LAYER) {
-            RustLabelRepository(rustLabelDataSource)
-        } else {
-            CoreLabelRepository(coreLabelRepository)
-        }
-    }
+    fun providesLabelRepository(rustLabelDataSource: LabelDataSource): LabelRepository =
+        RustLabelRepository(rustLabelDataSource)
 }

@@ -18,7 +18,6 @@
 
 package ch.protonmail.android.mailmessage.dagger
 
-import ch.protonmail.android.mailcommon.data.BuildConfig
 import ch.protonmail.android.mailmessage.data.MessageRustCoroutineScope
 import ch.protonmail.android.mailmessage.data.local.MessageLocalDataSource
 import ch.protonmail.android.mailmessage.data.local.MessageLocalDataSourceImpl
@@ -36,12 +35,10 @@ import ch.protonmail.android.mailmessage.data.remote.MessageRemoteDataSource
 import ch.protonmail.android.mailmessage.data.remote.MessageRemoteDataSourceImpl
 import ch.protonmail.android.mailmessage.data.remote.UnreadMessagesCountRemoteDataSource
 import ch.protonmail.android.mailmessage.data.remote.UnreadMessagesCountRemoteDataSourceImpl
-import ch.protonmail.android.mailmessage.data.repository.MessageRepositoryImpl
 import ch.protonmail.android.mailmessage.data.repository.OutboxRepositoryImpl
 import ch.protonmail.android.mailmessage.data.repository.RustMessageRepositoryImpl
 import ch.protonmail.android.mailmessage.data.repository.SearchResultsRepositoryImpl
 import ch.protonmail.android.mailmessage.data.repository.UnreadMessageCountRepositoryImpl
-import ch.protonmail.android.mailmessage.data.usecase.ExcludeDraftMessagesAlreadyInOutbox
 import ch.protonmail.android.mailmessage.domain.paging.RustInvalidationTracker
 import ch.protonmail.android.mailmessage.domain.paging.RustInvalidationTrackerImpl
 import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
@@ -57,7 +54,6 @@ import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import me.proton.core.util.kotlin.CoroutineScopeProvider
 import javax.inject.Singleton
 
 @Module(includes = [MailMessageModule.BindsModule::class])
@@ -72,24 +68,8 @@ object MailMessageModule {
     @Suppress("LongParameterList")
     @Provides
     @Singleton
-    fun providesMessageRepository(
-        messageRemoteDataSource: MessageRemoteDataSource,
-        messageLocalDataSource: MessageLocalDataSource,
-        excludeDraftMessagesAlreadyInOutbox: ExcludeDraftMessagesAlreadyInOutbox,
-        coroutineScopeProvider: CoroutineScopeProvider,
-        rustMessageDataSource: RustMessageDataSource
-    ): MessageRepository {
-        return if (BuildConfig.USE_RUST_DATA_LAYER) {
-            RustMessageRepositoryImpl(rustMessageDataSource)
-        } else {
-            MessageRepositoryImpl(
-                messageRemoteDataSource,
-                messageLocalDataSource,
-                excludeDraftMessagesAlreadyInOutbox,
-                coroutineScopeProvider
-            )
-        }
-    }
+    fun providesMessageRepository(rustMessageDataSource: RustMessageDataSource): MessageRepository =
+        RustMessageRepositoryImpl(rustMessageDataSource)
 
     @Module
     @InstallIn(SingletonComponent::class)

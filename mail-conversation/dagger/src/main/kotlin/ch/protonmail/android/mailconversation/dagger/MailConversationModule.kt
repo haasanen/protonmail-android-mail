@@ -18,7 +18,6 @@
 
 package ch.protonmail.android.mailconversation.dagger
 
-import ch.protonmail.android.mailcommon.data.BuildConfig
 import ch.protonmail.android.mailcommon.data.worker.Enqueuer
 import ch.protonmail.android.mailcommon.domain.benchmark.BenchmarkTracer
 import ch.protonmail.android.mailconversation.data.ConversationRustCoroutineScope
@@ -33,15 +32,12 @@ import ch.protonmail.android.mailconversation.data.local.UnreadConversationsCoun
 import ch.protonmail.android.mailconversation.data.remote.ConversationRemoteDataSourceImpl
 import ch.protonmail.android.mailconversation.data.remote.UnreadConversationsCountRemoteDataSource
 import ch.protonmail.android.mailconversation.data.remote.UnreadConversationsCountRemoteDataSourceImpl
-import ch.protonmail.android.mailconversation.data.repository.ConversationRepositoryImpl
 import ch.protonmail.android.mailconversation.data.repository.RustConversationRepositoryImpl
 import ch.protonmail.android.mailconversation.data.repository.UnreadConversationsCountRepositoryImpl
 import ch.protonmail.android.mailconversation.domain.repository.ConversationLocalDataSource
 import ch.protonmail.android.mailconversation.domain.repository.ConversationRemoteDataSource
 import ch.protonmail.android.mailconversation.domain.repository.ConversationRepository
 import ch.protonmail.android.mailconversation.domain.repository.UnreadConversationsCountRepository
-import ch.protonmail.android.mailmessage.data.local.MessageLocalDataSource
-import ch.protonmail.android.mailmessage.data.usecase.ExcludeDraftMessagesAlreadyInOutbox
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -52,7 +48,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import me.proton.core.network.data.ApiProvider
-import me.proton.core.util.kotlin.CoroutineScopeProvider
 import javax.inject.Singleton
 
 @Module(includes = [MailConversationModule.BindsModule::class])
@@ -68,25 +63,8 @@ object MailConversationModule {
     @Provides
     @Singleton
     fun provideConversationRepositoryImpl(
-        conversationLocalDataSource: ConversationLocalDataSource,
-        conversationRemoteDataSource: ConversationRemoteDataSource,
-        coroutineScopeProvider: CoroutineScopeProvider,
-        messageLocalDataSource: MessageLocalDataSource,
-        excludeDraftMessagesAlreadyInOutbox: ExcludeDraftMessagesAlreadyInOutbox,
         rustConversationDataSource: RustConversationDataSource
-    ): ConversationRepository {
-        return if (BuildConfig.USE_RUST_DATA_LAYER) {
-            RustConversationRepositoryImpl(rustConversationDataSource = rustConversationDataSource)
-        } else {
-            ConversationRepositoryImpl(
-                conversationRemoteDataSource = conversationRemoteDataSource,
-                conversationLocalDataSource = conversationLocalDataSource,
-                coroutineScopeProvider = coroutineScopeProvider,
-                messageLocalDataSource = messageLocalDataSource,
-                excludeDraftMessagesAlreadyInOutbox = excludeDraftMessagesAlreadyInOutbox
-            )
-        }
-    }
+    ): ConversationRepository = RustConversationRepositoryImpl(rustConversationDataSource = rustConversationDataSource)
 
     @Provides
     @Singleton

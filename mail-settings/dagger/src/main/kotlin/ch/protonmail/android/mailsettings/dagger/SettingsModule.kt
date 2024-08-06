@@ -19,7 +19,6 @@
 package ch.protonmail.android.mailsettings.dagger
 
 import android.content.Context
-import ch.protonmail.android.mailcommon.data.BuildConfig
 import ch.protonmail.android.mailcommon.domain.repository.AppLocaleRepository
 import ch.protonmail.android.mailsettings.data.MailSettingsDataStoreProvider
 import ch.protonmail.android.mailsettings.data.local.MailSettingsDataSource
@@ -31,7 +30,6 @@ import ch.protonmail.android.mailsettings.data.repository.AutoLockRepositoryImpl
 import ch.protonmail.android.mailsettings.data.repository.BackgroundSyncSettingRepositoryImpl
 import ch.protonmail.android.mailsettings.data.repository.BiometricsSystemStateRepositoryImpl
 import ch.protonmail.android.mailsettings.data.repository.CombinedContactsRepositoryImpl
-import ch.protonmail.android.mailsettings.data.repository.CoreMailSettingsRepository
 import ch.protonmail.android.mailsettings.data.repository.LocalStorageDataRepositoryImpl
 import ch.protonmail.android.mailsettings.data.repository.MobileFooterRepositoryImpl
 import ch.protonmail.android.mailsettings.data.repository.NotificationsSettingsRepositoryImpl
@@ -73,7 +71,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import javax.inject.Singleton
-import me.proton.core.mailsettings.domain.repository.MailSettingsRepository as CoreLibsMailSettingsRepository
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -131,16 +128,8 @@ object SettingsModule {
 
     @Provides
     @Singleton
-    fun provideMailSettingsRepository(
-        coreMailSettingsRepository: CoreLibsMailSettingsRepository,
-        mailSettingsDataSource: MailSettingsDataSource
-    ): MailSettingsRepository {
-        return if (BuildConfig.USE_RUST_DATA_LAYER) {
-            RustMailSettingsRepository(mailSettingsDataSource)
-        } else {
-            CoreMailSettingsRepository(coreMailSettingsRepository)
-        }
-    }
+    fun provideMailSettingsRepository(mailSettingsDataSource: MailSettingsDataSource): MailSettingsRepository =
+        RustMailSettingsRepository(mailSettingsDataSource)
 
     @Module
     @InstallIn(SingletonComponent::class)

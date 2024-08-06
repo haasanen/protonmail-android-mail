@@ -37,19 +37,11 @@ import timber.log.Timber
 class MailboxItemRemoteMediatorFactory(
     private val messageRepository: MessageRepository,
     private val conversationRepository: ConversationRepository,
-    private val getAdjacentPageKeys: GetAdjacentPageKeys,
-    private val useRustDataLayer: Boolean
+    private val getAdjacentPageKeys: GetAdjacentPageKeys
 ) {
 
-    fun create(mailboxPageKey: MailboxPageKey, type: MailboxItemType): MailboxItemRemoteMediator? {
-        return if (!useRustDataLayer) {
-            MailboxItemRemoteMediator(
-                messageRepository, conversationRepository, getAdjacentPageKeys, mailboxPageKey, type
-            )
-        } else {
-            null
-        }
-    }
+    @SuppressWarnings("FunctionOnlyReturningConstant")
+    fun create(mailboxPageKey: MailboxPageKey, type: MailboxItemType): MailboxItemRemoteMediator? = null
 }
 
 @OptIn(ExperimentalPagingApi::class)

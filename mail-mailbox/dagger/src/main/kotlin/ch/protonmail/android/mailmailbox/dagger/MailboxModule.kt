@@ -19,6 +19,7 @@
 package ch.protonmail.android.mailmailbox.dagger
 
 import android.content.Context
+import ch.protonmail.android.mailconversation.domain.repository.ConversationRepository
 import ch.protonmail.android.mailmailbox.data.MailMailboxDataStoreProvider
 import ch.protonmail.android.mailmailbox.data.local.OnboardingLocalDataSource
 import ch.protonmail.android.mailmailbox.data.local.OnboardingLocalDataSourceImpl
@@ -32,11 +33,7 @@ import ch.protonmail.android.mailmailbox.domain.repository.InMemoryMailboxReposi
 import ch.protonmail.android.mailmailbox.domain.repository.OnboardingRepository
 import ch.protonmail.android.mailmailbox.domain.repository.StorageLimitRepository
 import ch.protonmail.android.mailmailbox.domain.repository.UnreadCountersRepository
-import androidx.room.RoomDatabase
-import ch.protonmail.android.mailcommon.data.BuildConfig
-import ch.protonmail.android.mailconversation.domain.repository.ConversationRepository
 import ch.protonmail.android.mailmailbox.domain.usecase.GetMultiUserMailboxItems
-import ch.protonmail.android.mailmailbox.domain.usecase.IsMultiUserLocalPageValid
 import ch.protonmail.android.mailmailbox.presentation.paging.MailboxItemPagingSourceFactory
 import ch.protonmail.android.mailmailbox.presentation.paging.MailboxItemRemoteMediatorFactory
 import ch.protonmail.android.mailmessage.domain.paging.RustInvalidationTracker
@@ -58,18 +55,11 @@ object MailboxModule {
     @Provides
     @Singleton
     fun providesMailboxItemPagingSourceFactory(
-        roomDatabase: RoomDatabase,
         getMailboxItems: GetMultiUserMailboxItems,
-        getAdjacentPageKeys: GetAdjacentPageKeys,
-        isMultiUserLocalPageValid: IsMultiUserLocalPageValid,
         rustInvalidationTracker: RustInvalidationTracker
     ): MailboxItemPagingSourceFactory = MailboxItemPagingSourceFactory(
-        roomDatabase,
         getMailboxItems,
-        getAdjacentPageKeys,
-        isMultiUserLocalPageValid,
-        rustInvalidationTracker,
-        BuildConfig.USE_RUST_DATA_LAYER
+        rustInvalidationTracker
     )
 
     @Provides
@@ -79,7 +69,7 @@ object MailboxModule {
         conversationRepository: ConversationRepository,
         getAdjacentPageKeys: GetAdjacentPageKeys
     ): MailboxItemRemoteMediatorFactory = MailboxItemRemoteMediatorFactory(
-        messageRepository, conversationRepository, getAdjacentPageKeys, BuildConfig.USE_RUST_DATA_LAYER
+        messageRepository, conversationRepository, getAdjacentPageKeys
     )
 
     @Provides
