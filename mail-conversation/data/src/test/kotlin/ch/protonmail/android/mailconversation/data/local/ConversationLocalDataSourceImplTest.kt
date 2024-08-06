@@ -28,9 +28,6 @@ import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.sample.ConversationIdSample
 import ch.protonmail.android.mailcommon.domain.sample.DataErrorSample
 import ch.protonmail.android.mailcommon.domain.sample.LabelIdSample
-import ch.protonmail.android.mailconversation.data.TestConversationLabel
-import ch.protonmail.android.mailconversation.data.getConversation
-import ch.protonmail.android.mailconversation.data.getConversationWithLabels
 import ch.protonmail.android.mailconversation.data.local.dao.ConversationDao
 import ch.protonmail.android.mailconversation.data.local.dao.ConversationLabelDao
 import ch.protonmail.android.mailconversation.data.local.entity.ConversationLabelEntity
@@ -48,7 +45,6 @@ import ch.protonmail.android.testdata.conversation.ConversationTestData
 import ch.protonmail.android.testdata.conversation.ConversationWithContextTestData
 import ch.protonmail.android.testdata.conversation.ConversationWithLabelTestData
 import ch.protonmail.android.testdata.user.UserIdTestData.userId
-import ch.protonmail.android.testdata.user.UserIdTestData.userId1
 import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.coInvoke
@@ -100,34 +96,6 @@ class ConversationLocalDataSourceImplTest {
     fun setUp() {
         mockkStatic(PageIntervalDao::upsertPageInterval)
         conversationLocalDataSource = ConversationLocalDataSourceImpl(db)
-    }
-
-    @Test
-    fun `upsert conversations and corresponding labels, from arbitrary users`() = runTest {
-        // Given
-        val conversations = listOf(
-            // userId
-            getConversation(userId, "1", time = 1000, labelIds = emptyList()),
-            getConversation(userId, "2", time = 2000, labelIds = listOf("4")),
-            getConversation(userId, "3", time = 3000, labelIds = listOf("0", "1")),
-            // userId1
-            getConversation(userId1, "1", time = 1000, labelIds = listOf("3"))
-        )
-        val user1conversationIds =
-            listOf(ConversationId("1"), ConversationId("2"), ConversationId("3"))
-        val user2conversationIds = listOf(ConversationId("1"))
-
-        // When
-        val result = conversationLocalDataSource.upsertConversations(conversations)
-
-        // Then
-        assertTrue(result.isRight())
-        coVerify { db.inTransaction(any()) }
-        coVerify { labelDao.deleteAll(userId, user1conversationIds) }
-        coVerify { labelDao.deleteAll(userId1, user2conversationIds) }
-        coVerify(exactly = 1) { conversationDao.insertOrUpdate(entities = anyVararg()) }
-        coVerify(exactly = 4) { labelDao.insertOrUpdate(entities = anyVararg()) }
-        coVerify(exactly = 0) { pageIntervalDao.upsertPageInterval(any(), any(), any(), any()) }
     }
 
     @Test
@@ -252,7 +220,7 @@ class ConversationLocalDataSourceImplTest {
     fun `observe conversation returns conversation from db when existing`() = runTest {
         // Given
         val conversationId = ConversationId("convId1")
-        val conversationWithLabels = getConversationWithLabels(userId, conversationId.id)
+        val conversationWithLabels = ConversationWithLabelTestData.conversationWithLabel(userId, conversationId)
         val conversation = conversationWithLabels.toConversation()
         coEvery { conversationDao.observe(userId, conversationId) } returns flowOf(conversationWithLabels)
         // When
@@ -292,27 +260,6 @@ class ConversationLocalDataSourceImplTest {
             assertEquals(cachedConversationWithLabels.map { it.toConversation() }, awaitItem())
             awaitComplete()
         }
-    }
-
-    @Test
-    fun `upsert conversation inserts or updates conversation and labels in the DB`() = runTest {
-        // Given
-        val conversationId = ConversationId("convId1")
-        val conversation = getConversation(userId, conversationId.id, labelIds = listOf("0", "10"))
-
-        // When
-        val result = conversationLocalDataSource.upsertConversation(userId, conversation)
-
-        // Then
-        val expectedLabels = listOf(
-            TestConversationLabel.createConversationLabel(conversationId, conversation, LabelId("0")),
-            TestConversationLabel.createConversationLabel(conversationId, conversation, LabelId("10"))
-        )
-        assertTrue(result.isRight())
-        coVerify { conversationDao.insertOrUpdate(conversation.toEntity()) }
-        coVerify { labelDao.deleteAll(userId, listOf(conversation.conversationId)) }
-        coVerify { labelDao.insertOrUpdate(expectedLabels.first()) }
-        coVerify { labelDao.insertOrUpdate(expectedLabels.last()) }
     }
 
     @Test

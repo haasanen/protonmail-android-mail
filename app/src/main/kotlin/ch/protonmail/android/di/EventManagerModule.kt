@@ -18,10 +18,8 @@
 
 package ch.protonmail.android.di
 
-import ch.protonmail.android.mailconversation.data.ConversationEventListener
 import ch.protonmail.android.mailconversation.data.UnreadConversationsCountEventListener
 import ch.protonmail.android.mailmessage.data.UnreadMessagesCountEventListener
-import ch.protonmail.android.mailmessage.data.MessageEventListener
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -57,8 +55,6 @@ object EventManagerModule {
         contactEventListener: ContactEventListener,
         contactEmailEventListener: ContactEmailEventListener,
         labelEventListener: LabelEventListener,
-        messageEventListener: MessageEventListener,
-        conversationEventListener: ConversationEventListener,
         notificationEventListener: NotificationEventListener,
         pushEventListener: PushEventListener,
         unreadMessagesCountEventListener: UnreadMessagesCountEventListener,
@@ -71,8 +67,6 @@ object EventManagerModule {
         contactEventListener,
         contactEmailEventListener,
         labelEventListener,
-        messageEventListener,
-        conversationEventListener,
         notificationEventListener,
         pushEventListener,
         unreadMessagesCountEventListener,

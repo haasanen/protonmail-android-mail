@@ -30,8 +30,6 @@ import ch.protonmail.android.mailcommon.domain.sample.DataErrorSample
 import ch.protonmail.android.mailcommon.domain.sample.LabelIdSample
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
-import ch.protonmail.android.mailmessage.data.getMessage
-import ch.protonmail.android.mailmessage.data.getMessageWithLabels
 import ch.protonmail.android.mailmessage.data.local.dao.MessageAttachmentDao
 import ch.protonmail.android.mailmessage.data.local.dao.MessageBodyDao
 import ch.protonmail.android.mailmessage.data.local.dao.MessageDao
@@ -50,10 +48,7 @@ import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
 import ch.protonmail.android.mailmessage.domain.sample.MessageSample
 import ch.protonmail.android.mailpagination.data.local.dao.PageIntervalDao
 import ch.protonmail.android.mailpagination.data.local.upsertPageInterval
-import ch.protonmail.android.mailpagination.domain.model.OrderDirection
-import ch.protonmail.android.mailpagination.domain.model.PageFilter
 import ch.protonmail.android.mailpagination.domain.model.PageItemType
-import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.testdata.message.MessageAttachmentEntityTestData
 import ch.protonmail.android.testdata.message.MessageBodyEntityTestData
 import ch.protonmail.android.testdata.message.MessageBodyTestData
@@ -144,144 +139,6 @@ class MessageLocalDataSourceImplTest {
             attachmentFileStorage = attachmentFileStorage,
             searchResultsLocalDataSource = searchResultsLocalDataSource
         )
-    }
-
-    @Test
-    fun `upsert messages and corresponding labels, from arbitrary users`() = runTest {
-        // Given
-        val messages = listOf(
-            // userId1
-            getMessage(userId1, "1", time = 1000, labelIds = emptyList()),
-            getMessage(userId1, "2", time = 2000, labelIds = listOf("4")),
-            getMessage(userId1, "3", time = 3000, labelIds = listOf("0", "1")),
-            // userId2
-            getMessage(userId2, "1", time = 1000, labelIds = listOf("3"))
-        )
-        val user1MessageIds = listOf(MessageId("1"), MessageId("2"), MessageId("3"))
-        val user2MessageIds = listOf(MessageId("1"))
-
-        // When
-        messageLocalDataSource.upsertMessages(messages)
-
-        // Then
-        coVerify { db.inTransaction(any()) }
-        coVerify { labelDao.deleteAll(userId1, user1MessageIds) }
-        coVerify { labelDao.deleteAll(userId2, user2MessageIds) }
-        coVerify(exactly = 1) { messageDao.insertOrUpdate(entities = anyVararg()) }
-        coVerify(exactly = 4) { labelDao.insertOrUpdate(entities = anyVararg()) }
-        coVerify(exactly = 0) { pageIntervalDao.upsertPageInterval(any(), any(), any(), any()) }
-    }
-
-    @Test
-    fun `with userId1 and pageKey, upsert messages and corresponding interval`() = runTest {
-        // Given
-        val pageKey = PageKey(orderDirection = OrderDirection.Ascending, size = 3)
-        val messages = listOf(
-            // userId1
-            getMessage(userId1, "1", time = 1000, labelIds = emptyList()),
-            getMessage(userId1, "2", time = 2000, labelIds = listOf("4")),
-            getMessage(userId1, "3", time = 3000, labelIds = listOf("0", "1"))
-        )
-        val user1MessageIds = listOf(MessageId("1"), MessageId("2"), MessageId("3"))
-
-        // When
-        messageLocalDataSource.upsertMessages(userId1, pageKey, messages)
-
-        // Then
-        coVerify { db.inTransaction(any()) }
-        coVerify { labelDao.deleteAll(userId1, user1MessageIds) }
-        coVerify(exactly = 1) { messageDao.insertOrUpdate(entities = anyVararg()) }
-        coVerify(exactly = 3) { labelDao.insertOrUpdate(entities = anyVararg()) }
-        coVerify(exactly = 1) { pageIntervalDao.upsertPageInterval(any(), any(), any(), any()) }
-    }
-
-    @Test
-    fun `in search mode upsert messages to search results data source`() = runTest {
-        // Given
-        val keyword = "search query"
-        val pageKey = PageKey(
-            orderDirection = OrderDirection.Ascending, size = 3,
-            filter = PageFilter(keyword = keyword)
-        )
-        val messages = listOf(
-            // userId1
-            getMessage(userId1, "1", time = 1000, labelIds = emptyList()),
-            getMessage(userId1, "2", time = 2000, labelIds = listOf("4")),
-            getMessage(userId1, "3", time = 3000, labelIds = listOf("0", "1"))
-        )
-        val user1MessageIds = listOf(MessageId("1"), MessageId("2"), MessageId("3"))
-
-        // When
-        messageLocalDataSource.upsertMessages(userId1, pageKey, messages)
-
-        // Then
-        coVerify { db.inTransaction(any()) }
-        coVerify { labelDao.deleteAll(userId1, user1MessageIds) }
-        coVerify(exactly = 1) { messageDao.insertOrUpdate(entities = anyVararg()) }
-        coVerify(exactly = 3) { labelDao.insertOrUpdate(entities = anyVararg()) }
-        coVerify(exactly = 1) { pageIntervalDao.upsertPageInterval(any(), any(), any(), any()) }
-        coVerify(exactly = 1) {
-            searchResultsLocalDataSource.upsertResults(
-                userId1,
-                keyword,
-                messages
-            )
-        }
-    }
-
-    @Test
-    fun `in search mode get messages should return search results`() = runTest {
-        // Given
-        val keyword = "search query"
-        val pageKey = PageKey(
-            orderDirection = OrderDirection.Ascending, size = 3,
-            filter = PageFilter(keyword = keyword)
-        )
-        val messages = listOf(
-            getMessageWithLabels(userId1, "1"),
-            getMessageWithLabels(userId1, "2"),
-            getMessageWithLabels(userId1, "3")
-        )
-        val searchResults = listOf(
-            getMessageWithLabels(userId1, "2"),
-            getMessageWithLabels(userId1, "3")
-        )
-        coEvery { messageDao.observeAll(userId1, pageKey) } returns flowOf(messages)
-        coEvery { messageDao.observeSearchResults(userId1, pageKey) } returns flowOf(searchResults)
-
-        // When
-        messageLocalDataSource.getMessages(userId1, pageKey)
-
-        // Then
-        coVerify(exactly = 0) { messageDao.observeAll(any(), any()) }
-        coVerify(exactly = 1) { messageDao.observeSearchResults(userId1, pageKey) }
-    }
-
-    @Test
-    fun `in non-search mode get messages should return messages in local db`() = runTest {
-        // Given
-        val pageKey = PageKey(
-            orderDirection = OrderDirection.Ascending, size = 3
-        )
-
-        val messages = listOf(
-            getMessageWithLabels(userId1, "1"),
-            getMessageWithLabels(userId1, "2"),
-            getMessageWithLabels(userId1, "3")
-        )
-        val searchResults = listOf(
-            getMessageWithLabels(userId1, "2"),
-            getMessageWithLabels(userId1, "3")
-        )
-        coEvery { messageDao.observeAll(userId1, pageKey) } returns flowOf(messages)
-        coEvery { messageDao.observeSearchResults(userId1, pageKey) } returns flowOf(searchResults)
-
-        // When
-        messageLocalDataSource.getMessages(userId1, pageKey)
-
-        // Then
-        coVerify(exactly = 1) { messageDao.observeAll(userId1, pageKey) }
-        coVerify(exactly = 0) { messageDao.observeSearchResults(any(), any()) }
     }
 
     @Test
@@ -479,22 +336,6 @@ class MessageLocalDataSourceImplTest {
     }
 
     @Test
-    fun `observe message returns local message when existing`() = runTest {
-        // Given
-        val messageId = MessageId("MessageId")
-        val messageWithLabels = getMessageWithLabels(userId1, "1")
-        val message = messageWithLabels.toMessage()
-        coEvery { messageDao.observe(userId1, messageId) } returns flowOf(messageWithLabels)
-
-        // When
-        messageLocalDataSource.observeMessage(userId1, messageId).test {
-            // Then
-            assertEquals(message, awaitItem())
-            awaitComplete()
-        }
-    }
-
-    @Test
     fun `observe message returns null when message does not exist locally`() = runTest {
         // Given
         val messageId = MessageId("MessageId")
@@ -506,26 +347,6 @@ class MessageLocalDataSourceImplTest {
             assertNull(awaitItem())
             awaitComplete()
         }
-    }
-
-    @Test
-    fun `get messages for conversations returns returns local message when existing`() = runTest {
-        // Given
-        val conversationIds = listOf(ConversationId("ConversationId"))
-        val expected = listOf(getMessage(userId1, "1"))
-
-        val messageWithLabels = listOf(getMessageWithLabels(userId1, "1"))
-        coEvery {
-            messageDao.observeMessageWithLabelsInConversations(userId1, conversationIds)
-        } returns flowOf(messageWithLabels)
-
-        // When
-        messageLocalDataSource.observeMessagesForConversation(userId1, conversationIds).test {
-            // Then
-            assertEquals(expected, awaitItem())
-            awaitComplete()
-        }
-
     }
 
     @Test

@@ -21,40 +21,14 @@ package ch.protonmail.android.mailconversation.data.remote
 import ch.protonmail.android.mailconversation.data.remote.resource.ConversationActionBody
 import ch.protonmail.android.mailconversation.data.remote.resource.MarkConversationAsReadBody
 import ch.protonmail.android.mailconversation.data.remote.resource.MarkConversationAsUnreadBody
-import ch.protonmail.android.mailconversation.data.remote.response.GetConversationResponse
-import ch.protonmail.android.mailconversation.data.remote.response.GetConversationsResponse
 import ch.protonmail.android.mailconversation.data.remote.response.MarkConversationReadResponse
 import ch.protonmail.android.mailmessage.data.remote.response.MarkUnreadResponse
 import ch.protonmail.android.mailmessage.data.remote.response.PutLabelResponse
 import me.proton.core.network.data.protonApi.BaseRetrofitApi
 import retrofit2.http.Body
-import retrofit2.http.GET
 import retrofit2.http.PUT
-import retrofit2.http.Path
-import retrofit2.http.Query
 
 interface ConversationApi : BaseRetrofitApi {
-
-    @GET("mail/v4/conversations")
-    suspend fun getConversations(
-        @Query("Page") page: Int = 0,
-        @Query("PageSize") pageSize: Int = 50,
-        @Query("Limit") limit: Int = pageSize,
-        @Query("LabelID") labelIds: List<String> = emptyList(),
-        @Query("Sort") sort: String = "Time",
-        /* 0:ASC, 1:DESC */
-        @Query("Desc") desc: Int = 1,
-        @Query("Begin") beginTime: Long? = null,
-        @Query("BeginID") beginId: String? = null,
-        @Query("End") endTime: Long? = null,
-        @Query("EndID") endId: String? = null,
-        /* Keyword search of To, CC, BCC, From, Subject */
-        @Query("Keyword") keyword: String? = null,
-        @Query("Unread") unread: Int? = null
-    ): GetConversationsResponse
-
-    @GET("mail/v4/conversations/{conversationId}")
-    suspend fun getConversation(@Path("conversationId") conversationId: String): GetConversationResponse
 
     @PUT("mail/v4/conversations/label")
     suspend fun addLabel(@Body labelBody: ConversationActionBody): PutLabelResponse
@@ -70,9 +44,4 @@ interface ConversationApi : BaseRetrofitApi {
 
     @PUT("mail/v4/conversations/delete")
     suspend fun deleteConversations(@Body deleteBody: ConversationActionBody): PutLabelResponse
-
-    companion object {
-
-        const val maxPageSize = 150
-    }
 }

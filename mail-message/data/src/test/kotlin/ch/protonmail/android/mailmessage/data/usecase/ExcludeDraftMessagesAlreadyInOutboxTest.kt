@@ -20,13 +20,13 @@ package ch.protonmail.android.mailmessage.data.usecase
 
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
-import ch.protonmail.android.mailmessage.data.getMessage
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.model.DraftState
 import ch.protonmail.android.mailmessage.domain.model.DraftSyncState
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.repository.OutboxRepository
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
+import ch.protonmail.android.testdata.message.MessageTestData
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -42,13 +42,13 @@ class ExcludeDraftMessagesAlreadyInOutboxTest {
     private val draftLabel = SystemLabelId.AllDrafts.labelId.id
     private val sentLabel = SystemLabelId.AllSent.labelId.id
     private val entities = listOf(
-        getMessage(
+        MessageTestData.buildMessage(
             id = MessageIdSample.Invoice.id, labelIds = listOf(allMailLabel, sentLabel)
         ),
-        getMessage(
+        MessageTestData.buildMessage(
             id = MessageIdSample.NewDraftWithSubjectAndBody.id, labelIds = listOf(allMailLabel, draftLabel)
         ),
-        getMessage(
+        MessageTestData.buildMessage(
             id = MessageIdSample.SepWeatherForecast.id, labelIds = listOf(allMailLabel, sentLabel)
         )
     )

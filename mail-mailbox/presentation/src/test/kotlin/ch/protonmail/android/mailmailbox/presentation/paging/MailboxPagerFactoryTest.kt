@@ -34,13 +34,12 @@ import org.junit.Test
 
 class MailboxPagerFactoryTest {
 
-    private val remoteMediatorFactory = mockk<MailboxItemRemoteMediatorFactory>()
     private val pagingSourceFactory = mockk<MailboxItemPagingSourceFactory>()
     private val selectedMailLabelId = MailLabelTestData.starredSystemLabel.id
     private val readStatus = ReadStatus.All
     private val pageKey = PageKey(filter = PageFilter(labelId = selectedMailLabelId.labelId, read = readStatus))
 
-    private val mailboxPagerFactory = MailboxPagerFactory(pagingSourceFactory, remoteMediatorFactory)
+    private val mailboxPagerFactory = MailboxPagerFactory(pagingSourceFactory)
 
     @Test
     fun `pager content is returned from mailbox paging source factory`() = runTest {
@@ -48,8 +47,6 @@ class MailboxPagerFactoryTest {
         val userIds = listOf(userId)
         val type = MailboxItemType.Message
         val mailboxPageKey = MailboxPageKey(userIds, pageKey)
-        // Mediator mock needs to be relaxed to avoid exception "Failed to transform androidx/mediator"
-        every { remoteMediatorFactory.create(mailboxPageKey, type) } returns mockk(relaxed = true)
         // The test works without the explicit mock for pagingSourceFactory.create method, but it should
         // not! We assume that the pager constructor somehow swallows the "mockk - missing method mock" exceptions
         every { pagingSourceFactory.create(mailboxPageKey, type) } returns mockk(relaxed = true)
@@ -65,7 +62,6 @@ class MailboxPagerFactoryTest {
 
         // Then
         pager.flow.test {
-            verify { remoteMediatorFactory.create(mailboxPageKey, type) }
             verify { pagingSourceFactory.create(mailboxPageKey, type) }
             cancelAndConsumeRemainingEvents()
         }

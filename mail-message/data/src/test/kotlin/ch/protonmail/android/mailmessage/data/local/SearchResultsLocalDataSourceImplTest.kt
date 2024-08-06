@@ -18,9 +18,7 @@
 
 package ch.protonmail.android.mailmessage.data.local
 
-import ch.protonmail.android.mailmessage.data.getMessage
 import ch.protonmail.android.mailmessage.data.local.dao.SearchResultDao
-import ch.protonmail.android.mailmessage.data.local.entity.SearchResultEntity
 import io.mockk.coEvery
 import io.mockk.coInvoke
 import io.mockk.coVerify
@@ -51,21 +49,6 @@ class SearchResultsLocalDataSourceImplTest {
     @Before
     fun setUp() {
         searchResultsLocalDataSource = SearchResultsLocalDataSourceImpl(db)
-    }
-
-    @Test
-    fun `upsert search results with given parameters`() = runTest {
-        // Given
-        val message = getMessage(userId, "1", time = 1000)
-        val searchResult = SearchResultEntity(userId, "keyword", message.messageId)
-        coEvery { searchResultDao.insertOrUpdate(searchResult) } just runs
-
-        // When
-        searchResultsLocalDataSource.upsertResults(userId, "keyword", listOf(message))
-
-        // Then
-        coVerify { db.inTransaction(any()) }
-        coVerify(exactly = 1) { searchResultDao.insertOrUpdate(searchResult) }
     }
 
     @Test

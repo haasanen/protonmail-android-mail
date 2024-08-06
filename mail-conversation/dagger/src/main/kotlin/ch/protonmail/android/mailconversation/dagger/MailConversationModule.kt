@@ -18,8 +18,6 @@
 
 package ch.protonmail.android.mailconversation.dagger
 
-import ch.protonmail.android.mailcommon.data.worker.Enqueuer
-import ch.protonmail.android.mailcommon.domain.benchmark.BenchmarkTracer
 import ch.protonmail.android.mailconversation.data.ConversationRustCoroutineScope
 import ch.protonmail.android.mailconversation.data.local.ConversationDatabase
 import ch.protonmail.android.mailconversation.data.local.ConversationLocalDataSourceImpl
@@ -29,13 +27,11 @@ import ch.protonmail.android.mailconversation.data.local.RustConversationQuery
 import ch.protonmail.android.mailconversation.data.local.RustConversationQueryImpl
 import ch.protonmail.android.mailconversation.data.local.UnreadConversationsCountLocalDataSource
 import ch.protonmail.android.mailconversation.data.local.UnreadConversationsCountLocalDataSourceImpl
-import ch.protonmail.android.mailconversation.data.remote.ConversationRemoteDataSourceImpl
 import ch.protonmail.android.mailconversation.data.remote.UnreadConversationsCountRemoteDataSource
 import ch.protonmail.android.mailconversation.data.remote.UnreadConversationsCountRemoteDataSourceImpl
 import ch.protonmail.android.mailconversation.data.repository.RustConversationRepositoryImpl
 import ch.protonmail.android.mailconversation.data.repository.UnreadConversationsCountRepositoryImpl
 import ch.protonmail.android.mailconversation.domain.repository.ConversationLocalDataSource
-import ch.protonmail.android.mailconversation.domain.repository.ConversationRemoteDataSource
 import ch.protonmail.android.mailconversation.domain.repository.ConversationRepository
 import ch.protonmail.android.mailconversation.domain.repository.UnreadConversationsCountRepository
 import dagger.Binds
@@ -47,7 +43,6 @@ import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import me.proton.core.network.data.ApiProvider
 import javax.inject.Singleton
 
 @Module(includes = [MailConversationModule.BindsModule::class])
@@ -65,18 +60,6 @@ object MailConversationModule {
     fun provideConversationRepositoryImpl(
         rustConversationDataSource: RustConversationDataSource
     ): ConversationRepository = RustConversationRepositoryImpl(rustConversationDataSource = rustConversationDataSource)
-
-    @Provides
-    @Singleton
-    fun provideConversationRemoteDataSource(
-        apiProvider: ApiProvider,
-        enqueuer: Enqueuer,
-        benchmarkTracer: BenchmarkTracer
-    ): ConversationRemoteDataSource = ConversationRemoteDataSourceImpl(
-        apiProvider = apiProvider,
-        enqueuer = enqueuer,
-        benchmarkTracer = benchmarkTracer
-    )
 
     @Provides
     @Singleton

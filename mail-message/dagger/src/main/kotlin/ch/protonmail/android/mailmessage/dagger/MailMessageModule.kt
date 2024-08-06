@@ -31,8 +31,6 @@ import ch.protonmail.android.mailmessage.data.local.SearchResultsLocalDataSource
 import ch.protonmail.android.mailmessage.data.local.SearchResultsLocalDataSourceImpl
 import ch.protonmail.android.mailmessage.data.local.UnreadMessagesCountLocalDataSource
 import ch.protonmail.android.mailmessage.data.local.UnreadMessagesCountLocalDataSourceImpl
-import ch.protonmail.android.mailmessage.data.remote.MessageRemoteDataSource
-import ch.protonmail.android.mailmessage.data.remote.MessageRemoteDataSourceImpl
 import ch.protonmail.android.mailmessage.data.remote.UnreadMessagesCountRemoteDataSource
 import ch.protonmail.android.mailmessage.data.remote.UnreadMessagesCountRemoteDataSourceImpl
 import ch.protonmail.android.mailmessage.data.repository.OutboxRepositoryImpl
@@ -74,10 +72,6 @@ object MailMessageModule {
     @Module
     @InstallIn(SingletonComponent::class)
     internal interface BindsModule {
-
-        @Binds
-        @Singleton
-        fun provideMessageRemoteDataSource(remoteDataSource: MessageRemoteDataSourceImpl): MessageRemoteDataSource
 
         @Binds
         @Singleton
