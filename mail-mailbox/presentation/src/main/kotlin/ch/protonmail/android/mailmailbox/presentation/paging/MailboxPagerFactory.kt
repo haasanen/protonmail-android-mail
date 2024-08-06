@@ -18,7 +18,6 @@
 
 package ch.protonmail.android.mailmailbox.presentation.paging
 
-import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
@@ -31,10 +30,8 @@ import ch.protonmail.android.mailpagination.domain.model.ReadStatus
 import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 
-@OptIn(ExperimentalPagingApi::class)
 class MailboxPagerFactory @Inject constructor(
-    private val pagingSourceFactory: MailboxItemPagingSourceFactory,
-    private val remoteMediatorFactory: MailboxItemRemoteMediatorFactory
+    private val pagingSourceFactory: MailboxItemPagingSourceFactory
 ) {
 
     fun create(
@@ -47,7 +44,6 @@ class MailboxPagerFactory @Inject constructor(
         val mailboxPageKey = buildPageKey(filterUnread, selectedMailLabelId, userIds, searchQuery)
         return Pager(
             config = PagingConfig(PageKey.defaultPageSize),
-            remoteMediator = remoteMediatorFactory.create(mailboxPageKey, type),
             pagingSourceFactory = { pagingSourceFactory.create(mailboxPageKey, type) }
         )
     }

@@ -19,7 +19,6 @@
 package ch.protonmail.android.mailmailbox.dagger
 
 import android.content.Context
-import ch.protonmail.android.mailconversation.domain.repository.ConversationRepository
 import ch.protonmail.android.mailmailbox.data.MailMailboxDataStoreProvider
 import ch.protonmail.android.mailmailbox.data.local.OnboardingLocalDataSource
 import ch.protonmail.android.mailmailbox.data.local.OnboardingLocalDataSourceImpl
@@ -35,10 +34,7 @@ import ch.protonmail.android.mailmailbox.domain.repository.StorageLimitRepositor
 import ch.protonmail.android.mailmailbox.domain.repository.UnreadCountersRepository
 import ch.protonmail.android.mailmailbox.domain.usecase.GetMultiUserMailboxItems
 import ch.protonmail.android.mailmailbox.presentation.paging.MailboxItemPagingSourceFactory
-import ch.protonmail.android.mailmailbox.presentation.paging.MailboxItemRemoteMediatorFactory
 import ch.protonmail.android.mailmessage.domain.paging.RustInvalidationTracker
-import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
-import ch.protonmail.android.mailpagination.domain.GetAdjacentPageKeys
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -60,16 +56,6 @@ object MailboxModule {
     ): MailboxItemPagingSourceFactory = MailboxItemPagingSourceFactory(
         getMailboxItems,
         rustInvalidationTracker
-    )
-
-    @Provides
-    @Singleton
-    fun providesMailboxItemRemoteMediatorFactory(
-        messageRepository: MessageRepository,
-        conversationRepository: ConversationRepository,
-        getAdjacentPageKeys: GetAdjacentPageKeys
-    ): MailboxItemRemoteMediatorFactory = MailboxItemRemoteMediatorFactory(
-        messageRepository, conversationRepository, getAdjacentPageKeys
     )
 
     @Provides
