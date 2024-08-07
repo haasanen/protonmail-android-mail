@@ -17,6 +17,7 @@
 
 plugins {
     coreAndroidComposeUiLibrary
+    coreDagger
 }
 
 android {
@@ -24,10 +25,16 @@ android {
 }
 
 dependencies {
+    compileOnly(commonLibs.proton.common.mail)
+
     implementation(libs.constraintlayout.compose)
     implementation(libs.proton.core.legacy.presentation.asProvider())
     implementation(libs.proton.core.legacy.presentation.compose)
 
+    testImplementation(commonLibs.proton.common.mail)
     testImplementation(kotlin("test"))
+    testImplementation(libs.coroutines.test)
     testImplementation(libs.junit)
+    testImplementation(libs.mockk)
+    testImplementation(libs.turbine)
 }

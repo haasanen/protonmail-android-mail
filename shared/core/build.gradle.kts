@@ -17,6 +17,7 @@
 
 plugins {
     alias(commonLibs.plugins.android.application) apply false
+    alias(libs.plugins.hilt.android) apply false
     alias(libs.plugins.jetbrains.kotlin.android) apply false
     alias(libs.plugins.paparazzi) apply false
     alias(libs.plugins.core.coverage)
