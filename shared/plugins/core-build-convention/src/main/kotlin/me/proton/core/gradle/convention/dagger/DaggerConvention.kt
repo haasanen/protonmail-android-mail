@@ -27,8 +27,8 @@ import org.jetbrains.kotlin.gradle.plugin.KaptExtension
 internal class DaggerConvention : BuildConvention<DaggerConventionSettings> {
     override fun apply(target: Project, settings: DaggerConventionSettings) {
         target.dependencies {
-            add("implementation", target.libs.findLibrary("hilt-android").get().toString())
-            add("kapt", target.libs.findPlugin("hilt-compiler").get())
+            add("implementation", target.libs.findLibrary("hilt-android").get())
+            add("kapt", target.libs.findLibrary("hilt-compiler").get())
         }
 
         target.extensions.getByType(KaptExtension::class).apply {
