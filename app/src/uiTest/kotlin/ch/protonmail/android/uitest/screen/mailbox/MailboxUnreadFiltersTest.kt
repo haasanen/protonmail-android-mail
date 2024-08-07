@@ -23,12 +23,14 @@ import androidx.compose.ui.test.onNodeWithTag
 import ch.protonmail.android.mailmailbox.presentation.mailbox.UnreadItemsFilter
 import ch.protonmail.android.mailmailbox.presentation.mailbox.UnreadItemsFilterTestTags
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.UnreadFilterState
+import ch.protonmail.android.test.annotations.suite.RustReadyTest
 import ch.protonmail.android.test.annotations.suite.SmokeTest
 import ch.protonmail.android.uitest.util.HiltInstrumentedTest
 import dagger.hilt.android.testing.HiltAndroidTest
 import me.proton.core.compose.theme.ProtonTheme
 import org.junit.Test
 
+@RustReadyTest
 @SmokeTest
 @HiltAndroidTest
 internal class MailboxUnreadFiltersTest : HiltInstrumentedTest() {

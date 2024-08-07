@@ -47,6 +47,8 @@ val privateProperties = Properties().apply {
 val accountSentryDSN: String = privateProperties.getProperty("accountSentryDSN") ?: ""
 val sentryDSN: String = privateProperties.getProperty("sentryDSN") ?: ""
 val proxyToken: String? = privateProperties.getProperty("PROXY_TOKEN")
+val fakeRustSessionBlackUser: String? = privateProperties.getProperty("fakeRustSessionBlackUser")
+val fakeRustSessionBlackPass: String? = privateProperties.getProperty("fakeRustSessionBlackPass")
 val fakeRustSessionUser: String? = privateProperties.getProperty("fakeRustSessionUser")
 val fakeRustSessionPass: String? = privateProperties.getProperty("fakeRustSessionPass")
 
@@ -158,6 +160,8 @@ android {
             versionNameSuffix = "-dev+$gitHash"
             buildConfigField("String", "HOST", "\"https://mail-api.proton.black\"")
             buildConfigField("Boolean", "USE_DEFAULT_PINS", "false")
+            buildConfigField("String", "FAKE_RUST_SESSION_USER", fakeRustSessionBlackUser.toBuildConfigValue())
+            buildConfigField("String", "FAKE_RUST_SESSION_PASS", fakeRustSessionBlackPass.toBuildConfigValue())
 
             val protonHost = "proton.black"
             protonEnvironment {
