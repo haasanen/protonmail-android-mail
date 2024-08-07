@@ -45,6 +45,14 @@ case $1 in
   test_targets='filter ch.protonmail.android.uitest.filters.CoreLibraryTestFilter'
   timeout=20m
   ;;
+
+'rust-test')
+  device_config=smokeTest
+  shards=2
+  flaky_attempts=1
+  test_targets='filter ch.protonmail.android.uitest.filters.RustReadyTestFilter'
+  timeout=15m
+  ;;
 *)
   printf 'Invalid argument, specify a valid test suite.'
   exit 1
