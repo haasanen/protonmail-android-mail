@@ -25,6 +25,7 @@ import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
@@ -33,8 +34,8 @@ import ch.protonmail.android.mailcommon.presentation.system.LocalDeviceCapabilit
 import ch.protonmail.android.maildetail.domain.model.OpenAttachmentIntentValues
 import ch.protonmail.android.maildetail.domain.model.OpenProtonCalendarIntentValues
 import ch.protonmail.android.maildetail.presentation.util.ProtonCalendarUtil
-import ch.protonmail.android.navigation.BaseLauncherViewModel
 import ch.protonmail.android.navigation.Launcher
+import ch.protonmail.android.navigation.LauncherViewModel
 import ch.protonmail.android.navigation.model.LauncherState
 import ch.protonmail.android.navigation.share.ShareIntentObserver
 import dagger.hilt.android.AndroidEntryPoint
@@ -56,8 +57,7 @@ class MainActivity : AppCompatActivity() {
     @Inject
     lateinit var shareIntentObserver: ShareIntentObserver
 
-    @Inject
-    lateinit var launcherViewModel: BaseLauncherViewModel
+    private val launcherViewModel: LauncherViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen().setKeepOnScreenCondition {

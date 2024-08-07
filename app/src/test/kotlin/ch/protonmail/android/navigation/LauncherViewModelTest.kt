@@ -33,7 +33,7 @@ import org.junit.Rule
 import kotlin.test.Test
 
 @ExperimentalCoroutinesApi
-class RustLauncherViewModelTest {
+class LauncherViewModelTest {
 
 
     @get:Rule
@@ -41,7 +41,7 @@ class RustLauncherViewModelTest {
 
     private val userSessionRepository: UserSessionRepository = mockk()
 
-    private lateinit var viewModel: RustLauncherViewModel
+    private lateinit var viewModel: LauncherViewModel
 
     @Test
     fun `state should be AccountNeeded when userSession is not available`() =
@@ -50,7 +50,7 @@ class RustLauncherViewModelTest {
             every { userSessionRepository.observeCurrentUserId() } returns flowOf(null)
 
             // When
-            viewModel = RustLauncherViewModel(userSessionRepository)
+            viewModel = LauncherViewModel(userSessionRepository)
 
             // Then
             viewModel.state.test {
@@ -64,7 +64,7 @@ class RustLauncherViewModelTest {
         every { userSessionRepository.observeCurrentUserId() } returns flowOf(UserIdSample.Primary)
 
         // When
-        viewModel = RustLauncherViewModel(userSessionRepository)
+        viewModel = LauncherViewModel(userSessionRepository)
 
         // Then
         viewModel.state.test {

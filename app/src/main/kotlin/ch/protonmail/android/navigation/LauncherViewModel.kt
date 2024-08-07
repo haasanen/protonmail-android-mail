@@ -19,6 +19,7 @@
 package ch.protonmail.android.navigation
 
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import ch.protonmail.android.navigation.model.LauncherState
@@ -37,11 +38,11 @@ import javax.inject.Inject
 
 @HiltViewModel
 @SuppressWarnings("NotImplementedDeclaration", "UnusedPrivateMember")
-class RustLauncherViewModel @Inject constructor(
+class LauncherViewModel @Inject constructor(
     userSessionRepository: UserSessionRepository
-) : BaseLauncherViewModel() {
+) : ViewModel() {
 
-    override val state: StateFlow<LauncherState> = userSessionRepository.observeCurrentUserId()
+    val state: StateFlow<LauncherState> = userSessionRepository.observeCurrentUserId()
         .mapLatest { userId ->
             if (userId == null) {
                 Timber.d("rust-launcher: User session not found!")
@@ -57,11 +58,11 @@ class RustLauncherViewModel @Inject constructor(
             initialValue = Processing
         )
 
-    override fun register(context: AppCompatActivity) {
+    fun register(context: AppCompatActivity) {
         Timber.d("rust-launcher: Not implemented in ET.")
     }
 
-    override fun submit(action: Action) {
+    fun submit(action: Action) {
         viewModelScope.launch {
             when (action) {
                 Action.AddAccount -> onAddAccount()
@@ -75,32 +76,42 @@ class RustLauncherViewModel @Inject constructor(
         }
     }
 
-    override fun onAddAccount() {
+    fun onAddAccount() {
         TODO("ET - Not yet implemented")
     }
 
-    override suspend fun onOpenPasswordManagement() {
+    suspend fun onOpenPasswordManagement() {
         TODO("ET - Not yet implemented")
     }
 
-    override suspend fun onOpenRecoveryEmail() {
+    suspend fun onOpenRecoveryEmail() {
         TODO("ET - Not yet implemented")
     }
 
-    override suspend fun onOpenReport() {
+    suspend fun onOpenReport() {
         TODO("ET - Not yet implemented")
     }
 
-    override suspend fun onOpenSubscription() {
+    suspend fun onOpenSubscription() {
         TODO("ET - Not yet implemented")
     }
 
-    override suspend fun onSignIn(userId: UserId?) {
+    suspend fun onSignIn(userId: UserId?) {
         TODO("ET - Not yet implemented")
     }
 
-    override suspend fun onSwitch(userId: UserId) {
+    suspend fun onSwitch(userId: UserId) {
         TODO("ET - Not yet implemented")
     }
 
+    sealed interface Action {
+
+        object AddAccount : Action
+        object OpenPasswordManagement : Action
+        object OpenRecoveryEmail : Action
+        object OpenReport : Action
+        object OpenSubscription : Action
+        data class SignIn(val userId: UserId?) : Action
+        data class Switch(val userId: UserId) : Action
+    }
 }

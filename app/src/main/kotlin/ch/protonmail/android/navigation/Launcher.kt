@@ -23,26 +23,27 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
 import ch.protonmail.android.MainActivity
 import ch.protonmail.android.navigation.model.LauncherState
 import me.proton.core.compose.component.ProtonCenteredProgress
 import me.proton.core.domain.entity.UserId
 
 @Composable
-fun Launcher(activityActions: MainActivity.Actions, viewModel: BaseLauncherViewModel) {
+fun Launcher(activityActions: MainActivity.Actions, viewModel: LauncherViewModel = hiltViewModel()) {
     val state by viewModel.state.collectAsState(LauncherState.Processing)
 
     when (state) {
-        LauncherState.AccountNeeded -> viewModel.submit(BaseLauncherViewModel.Action.AddAccount)
+        LauncherState.AccountNeeded -> viewModel.submit(LauncherViewModel.Action.AddAccount)
         LauncherState.PrimaryExist -> Home(
             activityActions = activityActions,
             launcherActions = Launcher.Actions(
-                onPasswordManagement = { viewModel.submit(BaseLauncherViewModel.Action.OpenPasswordManagement) },
-                onRecoveryEmail = { viewModel.submit(BaseLauncherViewModel.Action.OpenRecoveryEmail) },
-                onReportBug = { viewModel.submit(BaseLauncherViewModel.Action.OpenReport) },
-                onSignIn = { viewModel.submit(BaseLauncherViewModel.Action.SignIn(it)) },
-                onSubscription = { viewModel.submit(BaseLauncherViewModel.Action.OpenSubscription) },
-                onSwitchAccount = { viewModel.submit(BaseLauncherViewModel.Action.Switch(it)) }
+                onPasswordManagement = { viewModel.submit(LauncherViewModel.Action.OpenPasswordManagement) },
+                onRecoveryEmail = { viewModel.submit(LauncherViewModel.Action.OpenRecoveryEmail) },
+                onReportBug = { viewModel.submit(LauncherViewModel.Action.OpenReport) },
+                onSignIn = { viewModel.submit(LauncherViewModel.Action.SignIn(it)) },
+                onSubscription = { viewModel.submit(LauncherViewModel.Action.OpenSubscription) },
+                onSwitchAccount = { viewModel.submit(LauncherViewModel.Action.Switch(it)) }
             )
         )
         LauncherState.Processing,
