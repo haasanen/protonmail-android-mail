@@ -33,11 +33,11 @@ class FakeRustSessionInitializer : Initializer<Unit> {
         }
 
         val username = AppBuildConfig.FAKE_RUST_SESSION_USER
-        val password = AppBuildConfig.FAKE_RUST_SESSION_PASS
+        val pass = AppBuildConfig.FAKE_RUST_SESSION_PASS
         EntryPointAccessors.fromApplication(
             context.applicationContext,
             RustMailCommonEntryPoint::class.java
-        ).injectFakeRustSession().withUser(username, password)
+        ).injectFakeRustSession().withUser(username, pass)
     }
 
     override fun dependencies(): List<Class<out Initializer<*>?>> = listOf(
