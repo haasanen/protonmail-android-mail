@@ -18,19 +18,10 @@
 
 package ch.protonmail.android.mailsettings.data.repository
 
-import androidx.work.Constraints
-import app.cash.turbine.test
-import ch.protonmail.android.mailcommon.data.worker.Enqueuer
 import ch.protonmail.android.mailmessage.data.local.AttachmentLocalDataSource
-import ch.protonmail.android.mailmessage.data.local.MessageLocalDataSource
-import ch.protonmail.android.mailsettings.data.local.ClearLocalDataWorker
-import ch.protonmail.android.mailsettings.domain.model.ClearDataAction
 import io.mockk.coEvery
-import io.mockk.every
 import io.mockk.mockk
 import io.mockk.unmockkAll
-import io.mockk.verify
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import me.proton.core.domain.entity.UserId
 import org.junit.After
@@ -39,30 +30,14 @@ import org.junit.Test
 
 internal class LocalStorageDataRepositoryImplTest {
 
-    private val enqueuer = mockk<Enqueuer>()
     private val attachmentLocalDataSource = mockk<AttachmentLocalDataSource>()
-    private val messageLocalDataSource = mockk<MessageLocalDataSource>()
     private val localDataRepository = LocalStorageDataRepositoryImpl(
-        messageLocalDataSource,
-        attachmentLocalDataSource,
-        enqueuer
+        attachmentLocalDataSource
     )
 
     @After
     fun teardown() {
         unmockkAll()
-    }
-
-    @Test
-    fun `should propagate data correctly when message data size is observed`() = runTest {
-        // Given
-        every { messageLocalDataSource.observeCachedMessagesTotalSize() } returns flowOf(BaseSize)
-
-        // When + Then
-        localDataRepository.observeMessageDataTotalRawSize().test {
-            assertEquals(BaseSize, awaitItem())
-            awaitComplete()
-        }
     }
 
     @Test
@@ -105,39 +80,9 @@ internal class LocalStorageDataRepositoryImplTest {
         assertEquals(BaseSize, expected)
     }
 
-    @Test
-    fun `should enqueue a worker with the correct params when perform clear data is invoked`() {
-        // Given
-        every {
-            enqueuer.enqueueUniqueWork<ClearLocalDataWorker>(
-                userId = BaseUserId,
-                workerId = BaseWorkerId,
-                params = BaseParams,
-                constraints = BaseConstraints
-            )
-        } returns Unit
-
-        // When
-        localDataRepository.performClearData(BaseUserId, BaseClearAction)
-
-        // Then
-        verify(exactly = 1) {
-            enqueuer.enqueueUniqueWork<ClearLocalDataWorker>(
-                userId = BaseUserId,
-                workerId = BaseWorkerId,
-                params = BaseParams,
-                constraints = BaseConstraints
-            )
-        }
-    }
-
     private companion object {
 
         const val BaseSize: Long = 10L
         val BaseUserId = UserId("userId")
-        val BaseClearAction = ClearDataAction.ClearAll
-        val BaseWorkerId = "ClearLocalDataWorker-${BaseClearAction.hashCode()}"
-        val BaseConstraints = Constraints.Builder().build()
-        val BaseParams = ClearLocalDataWorker.params(BaseClearAction)
     }
 }

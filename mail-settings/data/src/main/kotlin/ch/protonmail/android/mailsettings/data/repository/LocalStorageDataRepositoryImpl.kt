@@ -18,24 +18,19 @@
 
 package ch.protonmail.android.mailsettings.data.repository
 
-import androidx.work.Constraints
-import ch.protonmail.android.mailcommon.data.worker.Enqueuer
 import ch.protonmail.android.mailmessage.data.local.AttachmentLocalDataSource
-import ch.protonmail.android.mailmessage.data.local.MessageLocalDataSource
-import ch.protonmail.android.mailsettings.data.local.ClearLocalDataWorker
 import ch.protonmail.android.mailsettings.domain.model.ClearDataAction
 import ch.protonmail.android.mailsettings.domain.repository.LocalStorageDataRepository
 import kotlinx.coroutines.flow.Flow
 import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 
+@SuppressWarnings("NotImplementedDeclaration")
 class LocalStorageDataRepositoryImpl @Inject constructor(
-    private val messageLocalDataSource: MessageLocalDataSource,
-    private val attachmentLocalDataSource: AttachmentLocalDataSource,
-    private val enqueuer: Enqueuer
+    private val attachmentLocalDataSource: AttachmentLocalDataSource
 ) : LocalStorageDataRepository {
 
-    override fun observeMessageDataTotalRawSize(): Flow<Long> = messageLocalDataSource.observeCachedMessagesTotalSize()
+    override fun observeMessageDataTotalRawSize(): Flow<Long> = TODO("Missing rust implementation")
 
     override suspend fun getAttachmentDataSizeForUserId(userId: UserId): Long {
         val folder = attachmentLocalDataSource.getAttachmentFolderForUserId(userId) ?: return 0
@@ -44,11 +39,6 @@ class LocalStorageDataRepositoryImpl @Inject constructor(
     }
 
     override fun performClearData(userId: UserId, clearDataAction: ClearDataAction) {
-        enqueuer.enqueueUniqueWork<ClearLocalDataWorker>(
-            userId = userId,
-            params = ClearLocalDataWorker.params(clearDataAction),
-            workerId = ClearLocalDataWorker.id(clearDataAction),
-            constraints = Constraints.Builder().build() // No specific constraints.
-        )
+        TODO("Missing rust implementation")
     }
 }

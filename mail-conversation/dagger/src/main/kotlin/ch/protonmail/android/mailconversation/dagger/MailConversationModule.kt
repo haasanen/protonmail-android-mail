@@ -19,14 +19,11 @@
 package ch.protonmail.android.mailconversation.dagger
 
 import ch.protonmail.android.mailconversation.data.ConversationRustCoroutineScope
-import ch.protonmail.android.mailconversation.data.local.ConversationDatabase
-import ch.protonmail.android.mailconversation.data.local.ConversationLocalDataSourceImpl
 import ch.protonmail.android.mailconversation.data.local.RustConversationDataSource
 import ch.protonmail.android.mailconversation.data.local.RustConversationDataSourceImpl
 import ch.protonmail.android.mailconversation.data.local.RustConversationQuery
 import ch.protonmail.android.mailconversation.data.local.RustConversationQueryImpl
 import ch.protonmail.android.mailconversation.data.repository.RustConversationRepositoryImpl
-import ch.protonmail.android.mailconversation.domain.repository.ConversationLocalDataSource
 import ch.protonmail.android.mailconversation.domain.repository.ConversationRepository
 import dagger.Binds
 import dagger.Module
@@ -46,11 +43,6 @@ object MailConversationModule {
     @Singleton
     @ConversationRustCoroutineScope
     fun provideConversationRustCoroutineScope(): CoroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
-
-    @Provides
-    @Singleton
-    fun provideConversationLocalDataSource(db: ConversationDatabase): ConversationLocalDataSource =
-        ConversationLocalDataSourceImpl(db)
 
     @Module
     @InstallIn(SingletonComponent::class)
