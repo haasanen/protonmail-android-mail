@@ -48,6 +48,7 @@ local.properties
 .idea/**/dictionaries/**
 .idea/misc.xml
 .idea/vcs.xml
+.idea/androidTestResultsUserPreferences.xml
 # Do not exclude project Dictionary
 !.idea/**/dictionaries/project.xml
 .idea/**/shelf
@@ -58,6 +59,7 @@ local.properties
 .idea/deploymentTargetDropDown.xml
 .idea/deploymentTargetSelector.xml
 .idea/kotlinc.xml
+.idea/other.xml
 
 # Default ignored files
 
