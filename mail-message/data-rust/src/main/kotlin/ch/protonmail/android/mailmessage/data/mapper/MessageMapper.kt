@@ -30,10 +30,13 @@ import ch.protonmail.android.mailmessage.domain.model.Recipient
 import me.proton.core.label.domain.entity.LabelId
 import me.proton.core.user.domain.entity.AddressId
 import uniffi.proton_api_mail.MessageAddress
+import uniffi.proton_mail_common.LocalConversationId
 import uniffi.proton_api_mail.MimeType as RustMimeType
 import uniffi.proton_mail_common.LocalMessageId
 import uniffi.proton_mail_common.LocalMessageMetadata
 import uniffi.proton_mail_uniffi.DecryptedMessageBody
+
+fun ConversationId.toLocalConversationId(): LocalConversationId = this.id.toULong()
 
 fun MessageId.toLocalMessageId(): LocalMessageId = this.id.toULong()
 

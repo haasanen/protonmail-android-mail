@@ -20,15 +20,20 @@ package ch.protonmail.android.mailmessage.data.repository
 
 import app.cash.turbine.test
 import arrow.core.getOrElse
+import arrow.core.left
+import arrow.core.toNonEmptyListOrNull
+import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.mailmessage.data.local.RustMessageDataSource
+import ch.protonmail.android.mailmessage.data.mapper.toLocalConversationId
 import ch.protonmail.android.mailmessage.data.mapper.toLocalMessageId
 import ch.protonmail.android.mailmessage.data.mapper.toMessage
 import ch.protonmail.android.mailmessage.data.mapper.toMessageBody
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailpagination.domain.model.PageFilter
 import ch.protonmail.android.mailpagination.domain.model.PageKey
+import ch.protonmail.android.testdata.conversation.rust.LocalConversationIdSample
 import ch.protonmail.android.testdata.message.rust.LocalMessageIdSample
 import ch.protonmail.android.testdata.message.rust.LocalMessageTestData
 import ch.protonmail.android.testdata.user.UserIdTestData
@@ -38,6 +43,7 @@ import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import me.proton.core.domain.entity.UserId
 import org.junit.Test
@@ -169,5 +175,64 @@ class RustMessageRepositoryImplTest {
         // Then
         coVerify { rustMessageDataSource.markUnread(userId, messageIds.map { it.toLocalMessageId() }) }
         assertEquals(emptyList(), result.getOrNull())
+    }
+
+    @Test
+    fun `observeCachedMessages should return list of messages`() = runTest {
+        // Given
+        val userId = UserIdTestData.userId
+        val conversationId = ConversationId(LocalConversationIdSample.AugConversation.toString())
+        val localMessages = listOf(
+            LocalMessageTestData.AugWeatherForecast,
+            LocalMessageTestData.SepWeatherForecast,
+            LocalMessageTestData.OctWeatherForecast
+        )
+        val expectedMessages = localMessages.map { it.toMessage() }.toNonEmptyListOrNull()
+
+        coEvery {
+            rustMessageDataSource.observeConversationMessages(userId, conversationId.toLocalConversationId())
+        } returns flowOf(localMessages)
+
+        // When
+        repository.observeCachedMessages(userId, conversationId).test {
+            val result = awaitItem().getOrElse { null }
+
+            // Then
+            assertEquals(expectedMessages, result)
+            coVerify {
+                rustMessageDataSource.observeConversationMessages(
+                    userId,
+                    conversationId.toLocalConversationId()
+                )
+            }
+            awaitComplete()
+        }
+    }
+
+    @Test
+    fun `observeCachedMessages should return DataError when no messages found`() = runTest {
+        // Given
+        val userId = UserIdTestData.userId
+        val conversationId = ConversationId(LocalConversationIdSample.AugConversation.toString())
+        val expectedError = DataError.Local.NoDataCached.left()
+
+        coEvery {
+            rustMessageDataSource.observeConversationMessages(userId, conversationId.toLocalConversationId())
+        } returns flowOf(emptyList())
+
+        // When
+        repository.observeCachedMessages(userId, conversationId).test {
+            val result = awaitItem()
+
+            // Then
+            assertEquals(expectedError, result)
+            coVerify {
+                rustMessageDataSource.observeConversationMessages(
+                    userId,
+                    conversationId.toLocalConversationId()
+                )
+            }
+            awaitComplete()
+        }
     }
 }

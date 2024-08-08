@@ -19,13 +19,15 @@
 package ch.protonmail.android.mailmessage.data.repository
 
 import arrow.core.Either
-import arrow.core.Nel
+import arrow.core.NonEmptyList
 import arrow.core.left
 import arrow.core.right
+import arrow.core.toNonEmptyListOrNull
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
 import ch.protonmail.android.mailmessage.data.local.RustMessageDataSource
+import ch.protonmail.android.mailmessage.data.mapper.toLocalConversationId
 import ch.protonmail.android.mailmessage.data.mapper.toLocalMessageId
 import ch.protonmail.android.mailmessage.data.mapper.toMessage
 import ch.protonmail.android.mailmessage.data.mapper.toMessageBody
@@ -40,6 +42,7 @@ import ch.protonmail.android.mailpagination.domain.model.PageKey
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
 import me.proton.core.domain.entity.UserId
 import me.proton.core.label.domain.entity.LabelId
 import javax.inject.Inject
@@ -92,8 +95,13 @@ class RustMessageRepositoryImpl @Inject constructor(
     override fun observeCachedMessages(
         userId: UserId,
         conversationId: ConversationId
-    ): Flow<Either<DataError.Local, Nel<Message>>> {
-        TODO("Not yet implemented")
+    ): Flow<Either<DataError.Local, NonEmptyList<Message>>> {
+        return rustMessageDataSource.observeConversationMessages(userId, conversationId.toLocalConversationId())
+            .map { messages ->
+                messages.toNonEmptyListOrNull()?.map {
+                    it.toMessage()
+                }?.right() ?: DataError.Local.NoDataCached.left()
+            }
     }
 
     override fun observeCachedMessagesForConversations(
