@@ -50,7 +50,7 @@ class InitRustCommonLibrary @Inject constructor(
             config.isDebug,
             ApiEnvConfig(
                 config.appVersion,
-                baseApiUrl.toString(),
+                baseApiUrl.toString().removeSuffix("/"),
                 config.userAgent,
                 allowInsecureNetworking,
                 skipSrpProofValidation
