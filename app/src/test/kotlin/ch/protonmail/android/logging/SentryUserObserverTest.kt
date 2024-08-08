@@ -19,7 +19,9 @@
 package ch.protonmail.android.logging
 
 import java.util.UUID
+import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import ch.protonmail.android.testdata.user.UserIdTestData
+import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
@@ -33,7 +35,6 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
-import me.proton.core.accountmanager.domain.AccountManager
 import me.proton.core.test.kotlin.TestCoroutineScopeProvider
 import me.proton.core.test.kotlin.TestDispatcherProvider
 import org.junit.After
@@ -44,8 +45,8 @@ import kotlin.test.assertTrue
 
 class SentryUserObserverTest {
 
-    private val accountManager = mockk<AccountManager> {
-        every { this@mockk.getPrimaryUserId() } returns flowOf(UserIdTestData.userId)
+    private val sessionRepository = mockk<UserSessionRepository> {
+        coEvery { this@mockk.observeCurrentUserId() } returns flowOf(UserIdTestData.userId)
     }
 
     private lateinit var sentryUserObserver: SentryUserObserver
@@ -56,7 +57,7 @@ class SentryUserObserverTest {
         mockkStatic(Sentry::class)
         sentryUserObserver = SentryUserObserver(
             scopeProvider = TestCoroutineScopeProvider(),
-            accountManager = accountManager
+            sessionRepository = sessionRepository
         )
     }
 
@@ -79,7 +80,7 @@ class SentryUserObserverTest {
     @Test
     fun `register random UUID in Sentry when no primary account available`() = runTest {
         // Given
-        every { accountManager.getPrimaryUserId() } returns flowOf(null)
+        every { sessionRepository.observeCurrentUserId() } returns flowOf(null)
         // When
         sentryUserObserver.start().join()
         // Then
