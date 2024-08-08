@@ -21,6 +21,8 @@ package ch.protonmail.android.mailmessage.dagger
 import ch.protonmail.android.mailmessage.data.MessageRustCoroutineScope
 import ch.protonmail.android.mailmessage.data.local.MessageLocalDataSource
 import ch.protonmail.android.mailmessage.data.local.MessageLocalDataSourceImpl
+import ch.protonmail.android.mailmessage.data.local.RustConversationMessageQuery
+import ch.protonmail.android.mailmessage.data.local.RustConversationMessageQueryImpl
 import ch.protonmail.android.mailmessage.data.local.RustMailbox
 import ch.protonmail.android.mailmessage.data.local.RustMailboxImpl
 import ch.protonmail.android.mailmessage.data.local.RustMessageDataSource
@@ -40,6 +42,7 @@ import ch.protonmail.android.mailmessage.domain.repository.SearchResultsReposito
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
+import dagger.Reusable
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineScope
@@ -91,6 +94,10 @@ object MailMessageModule {
         @Binds
         @Singleton
         fun bindRustMessageQuery(impl: RustMessageQueryImpl): RustMessageQuery
+
+        @Binds
+        @Reusable
+        fun bindRustConversationMessageQuery(impl: RustConversationMessageQueryImpl): RustConversationMessageQuery
 
         @Binds
         @Singleton
