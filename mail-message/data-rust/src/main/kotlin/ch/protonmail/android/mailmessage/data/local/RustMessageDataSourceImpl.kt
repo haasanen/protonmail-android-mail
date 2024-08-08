@@ -19,11 +19,13 @@
 package ch.protonmail.android.mailmessage.data.local
 
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.mapLatest
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
+import uniffi.proton_mail_common.LocalConversationId
 import uniffi.proton_mail_common.LocalLabelId
 import uniffi.proton_mail_common.LocalMessageId
 import uniffi.proton_mail_common.LocalMessageMetadata
@@ -35,7 +37,8 @@ import javax.inject.Inject
 class RustMessageDataSourceImpl @Inject constructor(
     private val userSessionRepository: UserSessionRepository,
     private val rustMailbox: RustMailbox,
-    private val rustMessageQuery: RustMessageQuery
+    private val rustMessageQuery: RustMessageQuery,
+    private val rustConversationMessageQuery: RustConversationMessageQuery
 ) : RustMessageDataSource {
 
     override suspend fun getMessage(userId: UserId, messageId: LocalMessageId): LocalMessageMetadata? {
@@ -47,7 +50,6 @@ class RustMessageDataSourceImpl @Inject constructor(
             null
         }
     }
-
 
     override suspend fun getMessageBody(userId: UserId, messageId: LocalMessageId): DecryptedMessageBody? {
         return try {
@@ -75,6 +77,16 @@ class RustMessageDataSourceImpl @Inject constructor(
 
     override suspend fun markUnread(userId: UserId, messages: List<LocalMessageId>) {
         throw UnsupportedOperationException("rust-message: markUnread has not been implemented by Rust")
+    }
+
+    override fun observeConversationMessages(
+        userId: UserId,
+        conversationId: LocalConversationId
+    ): Flow<List<LocalMessageMetadata>> {
+        return rustConversationMessageQuery.observeConversationMessages(
+            userId,
+            conversationId
+        )
     }
 
     override fun disconnect() {

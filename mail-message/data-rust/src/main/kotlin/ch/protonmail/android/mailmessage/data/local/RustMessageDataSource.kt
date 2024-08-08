@@ -18,7 +18,9 @@
 
 package ch.protonmail.android.mailmessage.data.local
 
+import kotlinx.coroutines.flow.Flow
 import me.proton.core.domain.entity.UserId
+import uniffi.proton_mail_common.LocalConversationId
 import uniffi.proton_mail_common.LocalLabelId
 import uniffi.proton_mail_common.LocalMessageId
 import uniffi.proton_mail_common.LocalMessageMetadata
@@ -30,6 +32,11 @@ interface RustMessageDataSource {
     suspend fun getMessages(userId: UserId, labelId: LocalLabelId): List<LocalMessageMetadata>
     suspend fun markRead(userId: UserId, messages: List<LocalMessageId>)
     suspend fun markUnread(userId: UserId, messages: List<LocalMessageId>)
+
+    fun observeConversationMessages(
+        userId: UserId,
+        conversationId: LocalConversationId
+    ): Flow<List<LocalMessageMetadata>>
 
     fun disconnect()
 }
