@@ -49,10 +49,7 @@ class RustMailCommonInitializer : Initializer<Unit> {
         val rustLibConfig = RustLibConfigParams(
             isDebug = BuildConfig.DEBUG,
             appVersion = "Other", // Rust lib currently only supports "Other"
-            apiUrl = BuildConfig.HOST,
-            userAgent = getUserAgent(),
-            allowInsecureNetworking = false,
-            skipSrpProofValidation = false
+            userAgent = getUserAgent()
         )
         return rustLibConfig
     }

@@ -21,6 +21,7 @@ package ch.protonmail.android.uitest.e2e.mailbox
 import ch.protonmail.android.di.ServerProofModule
 import ch.protonmail.android.networkmocks.mockwebserver.combineWith
 import ch.protonmail.android.test.annotations.suite.RegressionTest
+import ch.protonmail.android.test.annotations.suite.RustReadyTest
 import ch.protonmail.android.uitest.MockedNetworkTest
 import ch.protonmail.android.uitest.helpers.core.navigation.Destination
 import ch.protonmail.android.uitest.helpers.core.navigation.navigator

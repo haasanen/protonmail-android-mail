@@ -21,8 +21,5 @@ package ch.protonmail.android.mailsession.data.model
 data class RustLibConfigParams(
     val isDebug: Boolean,
     val appVersion: String,
-    val apiUrl: String,
-    val userAgent: String,
-    val allowInsecureNetworking: Boolean,
-    val skipSrpProofValidation: Boolean
+    val userAgent: String
 )

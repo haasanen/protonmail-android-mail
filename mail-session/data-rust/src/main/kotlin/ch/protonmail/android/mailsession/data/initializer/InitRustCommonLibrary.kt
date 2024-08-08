@@ -23,6 +23,8 @@ import ch.protonmail.android.mailsession.data.keychain.OsKeyChainMock
 import ch.protonmail.android.mailsession.data.model.RustLibConfigParams
 import ch.protonmail.android.mailsession.domain.repository.MailSessionRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
+import me.proton.core.network.data.di.BaseProtonApiUrl
+import okhttp3.HttpUrl
 import timber.log.Timber
 import uniffi.proton_api_core.ApiEnvConfig
 import uniffi.proton_mail_uniffi.MailSession
@@ -31,12 +33,15 @@ import javax.inject.Inject
 
 class InitRustCommonLibrary @Inject constructor(
     @ApplicationContext private val context: Context,
-    private val mailSessionRepository: MailSessionRepository
+    private val mailSessionRepository: MailSessionRepository,
+    @BaseProtonApiUrl private val baseApiUrl: HttpUrl
 ) {
 
     fun init(config: RustLibConfigParams) {
         Timber.v("rust-session: Let the rust begin...")
 
+        val skipSrpProofValidation = isRunningAgainstMockWebserver(baseApiUrl)
+        val allowInsecureNetworking = isRunningAgainstMockWebserver(baseApiUrl)
         val sessionParams = MailSessionParams(
             context.filesDir.absolutePath,
             context.filesDir.absolutePath,
@@ -45,10 +50,10 @@ class InitRustCommonLibrary @Inject constructor(
             config.isDebug,
             ApiEnvConfig(
                 config.appVersion,
-                config.apiUrl,
+                baseApiUrl.toString(),
                 config.userAgent,
-                config.allowInsecureNetworking,
-                config.skipSrpProofValidation
+                allowInsecureNetworking,
+                skipSrpProofValidation
             )
         )
         Timber.d("rust-session: Initializing the Rust Lib with $sessionParams")
@@ -63,4 +68,6 @@ class InitRustCommonLibrary @Inject constructor(
 
         mailSessionRepository.setMailSession(mailSession)
     }
+
+    private fun isRunningAgainstMockWebserver(baseApiUrl: HttpUrl) = baseApiUrl.host == "localhost"
 }

@@ -50,6 +50,9 @@ object NetworkConfigTestModule {
             runBlocking {
                 withContext(Dispatchers.IO) {
                     mockWebServer.url("/")
+                        .newBuilder()
+                        .scheme("http")
+                        .build()
                 }
             }
         } else {

@@ -158,7 +158,6 @@ android {
         create("dev") {
             applicationIdSuffix = ".dev"
             versionNameSuffix = "-dev+$gitHash"
-            buildConfigField("String", "HOST", "\"https://mail-api.proton.black\"")
             buildConfigField("Boolean", "USE_DEFAULT_PINS", "false")
             buildConfigField("String", "FAKE_RUST_SESSION_USER", fakeRustSessionBlackUser.toBuildConfigValue())
             buildConfigField("String", "FAKE_RUST_SESSION_PASS", fakeRustSessionBlackPass.toBuildConfigValue())
@@ -173,11 +172,9 @@ android {
         create("alpha") {
             applicationIdSuffix = ".alpha"
             versionNameSuffix = "-alpha+$gitHash"
-            buildConfigField("String", "HOST", "\"https://mail-api.proton.me\"")
             buildConfigField("Boolean", "USE_DEFAULT_PINS", "true")
         }
         create("prod") {
-            buildConfigField("String", "HOST", "\"https://mail-api.proton.me\"")
             buildConfigField("Boolean", "USE_DEFAULT_PINS", "true")
         }
     }
