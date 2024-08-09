@@ -18,8 +18,28 @@
 
 package ch.protonmail.android.mailcontact.domain.usecase
 
+import app.cash.turbine.test
+import arrow.core.Either
+import ch.protonmail.android.testdata.user.UserIdTestData
+import kotlinx.coroutines.test.runTest
+import me.proton.core.contact.domain.entity.Contact
+import org.junit.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertIs
+
 class ObserveContactsTest {
 
     private val observeContacts = ObserveContacts()
+
+    @Test
+    fun ` returns empty list until Rust contact repository is implemented`() = runTest {
+        // When
+        observeContacts(UserIdTestData.userId).test {
+            // Then
+            val actual = assertIs<Either.Right<List<Contact>>>(awaitItem())
+            assertEquals(emptyList(), actual.value)
+            awaitComplete()
+        }
+    }
 
 }
