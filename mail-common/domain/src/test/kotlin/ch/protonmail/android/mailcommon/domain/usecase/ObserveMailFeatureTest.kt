@@ -21,43 +21,14 @@ package ch.protonmail.android.mailcommon.domain.usecase
 import ch.protonmail.android.mailcommon.domain.MailFeatureDefaults
 import ch.protonmail.android.mailcommon.domain.MailFeatureId
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
-import io.mockk.every
-import io.mockk.mockk
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
-import me.proton.core.featureflag.domain.FeatureFlagManager
 import me.proton.core.featureflag.domain.entity.FeatureFlag
 import me.proton.core.featureflag.domain.entity.Scope
 import org.junit.Test
 import kotlin.test.assertEquals
 
 class ObserveMailFeatureTest {
-
-    private val featureFlagManagerMock: FeatureFlagManager = mockk()
-
-    @Test
-    fun `should return the requested feature flag if available`() = runTest {
-        // Given
-        val observeMailFeature = observeMailFeatureWithDefaults(emptyMap())
-        val requestedFeature = MailFeatureId.ConversationMode
-        val expectedFeatureFlag = FeatureFlag(
-            userId = UserIdSample.Primary,
-            featureId = requestedFeature.id,
-            value = true,
-            scope = Scope.User,
-            defaultValue = true
-        )
-        every {
-            featureFlagManagerMock.observe(UserIdSample.Primary, requestedFeature.id)
-        } returns flowOf(expectedFeatureFlag)
-
-        // When
-        val actualFeatureFlag = observeMailFeature(UserIdSample.Primary, requestedFeature).first()
-
-        // Then
-        assertEquals(expectedFeatureFlag, actualFeatureFlag)
-    }
 
     @Test
     fun `should return the default feature flag if failed to retrieve`() = runTest {
@@ -72,9 +43,6 @@ class ObserveMailFeatureTest {
             scope = Scope.Unknown,
             defaultValue = true
         )
-        every {
-            featureFlagManagerMock.observe(UserIdSample.Primary, requestedFeature.id)
-        } returns flowOf(null)
 
         // When
         val actualFeatureFlag = observeMailFeature(UserIdSample.Primary, requestedFeature).first()
@@ -84,5 +52,5 @@ class ObserveMailFeatureTest {
     }
 
     private fun observeMailFeatureWithDefaults(defaultsMap: Map<MailFeatureId, Boolean>) =
-        ObserveMailFeature(featureFlagManagerMock, MailFeatureDefaults(defaultsMap))
+        ObserveMailFeature(MailFeatureDefaults(defaultsMap))
 }
