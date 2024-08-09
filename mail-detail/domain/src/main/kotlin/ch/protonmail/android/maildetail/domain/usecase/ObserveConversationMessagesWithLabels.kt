@@ -21,7 +21,6 @@ package ch.protonmail.android.maildetail.domain.usecase
 import arrow.core.Either
 import arrow.core.NonEmptyList
 import arrow.core.raise.either
-import ch.protonmail.android.mailcommon.domain.mapper.mapToEither
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailmessage.domain.model.MessageWithLabels
@@ -29,7 +28,6 @@ import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import me.proton.core.domain.entity.UserId
-import me.proton.core.label.domain.entity.LabelType
 import ch.protonmail.android.maillabel.domain.repository.LabelRepository
 import javax.inject.Inject
 
@@ -42,12 +40,13 @@ class ObserveConversationMessagesWithLabels @Inject constructor(
         userId: UserId,
         conversationId: ConversationId
     ): Flow<Either<DataError, NonEmptyList<MessageWithLabels>>> = combine(
-        labelRepository.observeLabels(userId, type = LabelType.MessageLabel).mapToEither(),
-        labelRepository.observeLabels(userId, type = LabelType.MessageFolder).mapToEither(),
+        labelRepository.observeCustomLabels(userId),
+        labelRepository.observeCustomFolders(userId),
         messageRepository.observeCachedMessages(userId, conversationId)
-    ) { labelsEither, foldersEither, messagesEither ->
+    ) { labels, folders, messagesEither ->
+
         either {
-            val allLabelsAndFolders = (labelsEither.bind() + foldersEither.bind()).sortedBy { it.order }
+            val allLabelsAndFolders = (labels + folders).sortedBy { it.order }
             val messages = messagesEither.bind()
             messages.map { message ->
                 val messageLabels = allLabelsAndFolders.filter { label ->
