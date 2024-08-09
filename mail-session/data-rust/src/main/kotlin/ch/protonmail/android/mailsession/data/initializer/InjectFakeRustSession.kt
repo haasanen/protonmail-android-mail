@@ -35,6 +35,7 @@ class InjectFakeRustSession @Inject constructor(
 
     @SuppressWarnings("MagicNumber")
     fun withUser(username: String, password: String) = runBlocking {
+        Timber.v("rust-session: Begin injection of fake rust session with for $username...")
         val mailSession = mailSessionRepository.getMailSession()
         val storedSessionExists = mailSession.storedSessions().isNotEmpty()
         if (storedSessionExists) {

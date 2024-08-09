@@ -27,14 +27,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
-import me.proton.core.auth.presentation.MissingScopeInitializer
-import me.proton.core.crypto.validator.presentation.init.CryptoValidatorInitializer
-import me.proton.core.humanverification.presentation.HumanVerificationInitializer
-import me.proton.core.network.presentation.init.UnAuthSessionFetcherInitializer
-import me.proton.core.paymentiap.presentation.GooglePurchaseHandlerInitializer
-import me.proton.core.plan.presentation.PurchaseHandlerInitializer
-import me.proton.core.plan.presentation.UnredeemedPurchaseInitializer
-import me.proton.core.userrecovery.presentation.compose.DeviceRecoveryInitializer
 
 class MainInitializer : Initializer<Unit> {
 
@@ -44,11 +36,7 @@ class MainInitializer : Initializer<Unit> {
             // No-op needed
         }
 
-        override fun dependencies() = coreDependencies() + mailDependencies() + releaseOnlyDependenciesIfNeeded()
-
-        private fun coreDependencies() = listOf(
-            FeatureFlagInitializer::class.java
-        )
+        override fun dependencies() = mailDependencies() + releaseOnlyDependenciesIfNeeded()
 
         private fun mailDependencies(): List<Class<out Initializer<*>?>> = emptyList()
 
@@ -60,28 +48,14 @@ class MainInitializer : Initializer<Unit> {
         // No-op needed
     }
 
-    override fun dependencies() = coreDependencies() + mailDependencies()
-
-    private fun coreDependencies() = listOf(
-        CryptoValidatorInitializer::class.java,
-        DeviceRecoveryInitializer::class.java,
-        PurchaseHandlerInitializer::class.java,
-        GooglePurchaseHandlerInitializer::class.java,
-        HumanVerificationInitializer::class.java,
-        MissingScopeInitializer::class.java,
-        UnredeemedPurchaseInitializer::class.java,
-        UnAuthSessionFetcherInitializer::class.java
-    )
+    override fun dependencies() = mailDependencies()
 
     private fun mailDependencies() = listOf(
-        AccountStateHandlerInitializer::class.java,
-        EventManagerInitializer::class.java,
         LoggerInitializer::class.java,
         StrictModeInitializer::class.java,
         ThemeObserverInitializer::class.java,
         NotificationInitializer::class.java,
         NotificationHandlersInitializer::class.java,
-        OutboxInitializer::class.java,
         AutoLockHandlerInitializer::class.java,
         RustMailCommonInitializer::class.java,
         FakeRustSessionInitializer::class.java
