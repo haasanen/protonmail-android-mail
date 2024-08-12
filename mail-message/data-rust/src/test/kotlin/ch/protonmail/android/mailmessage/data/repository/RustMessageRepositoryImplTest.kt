@@ -21,15 +21,16 @@ package ch.protonmail.android.mailmessage.data.repository
 import app.cash.turbine.test
 import arrow.core.getOrElse
 import arrow.core.left
-import arrow.core.toNonEmptyListOrNull
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.mailmessage.data.local.RustMessageDataSource
+import ch.protonmail.android.mailmessage.data.mapper.toConversationMessagesWithMessageToOpen
 import ch.protonmail.android.mailmessage.data.mapper.toLocalConversationId
 import ch.protonmail.android.mailmessage.data.mapper.toLocalMessageId
 import ch.protonmail.android.mailmessage.data.mapper.toMessage
 import ch.protonmail.android.mailmessage.data.mapper.toMessageBody
+import ch.protonmail.android.mailmessage.data.model.LocalConversationMessages
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailpagination.domain.model.PageFilter
 import ch.protonmail.android.mailpagination.domain.model.PageKey
@@ -178,7 +179,7 @@ class RustMessageRepositoryImplTest {
     }
 
     @Test
-    fun `observeCachedMessages should return list of messages`() = runTest {
+    fun `observeConversationMessages should return list of messages`() = runTest {
         // Given
         val userId = UserIdTestData.userId
         val conversationId = ConversationId(LocalConversationIdSample.AugConversation.toString())
@@ -187,18 +188,22 @@ class RustMessageRepositoryImplTest {
             LocalMessageTestData.SepWeatherForecast,
             LocalMessageTestData.OctWeatherForecast
         )
-        val expectedMessages = localMessages.map { it.toMessage() }.toNonEmptyListOrNull()
+        val localConversationMessages = LocalConversationMessages(
+            messageIdToOpen = LocalMessageIdSample.AugWeatherForecast,
+            messages = localMessages
+        )
+        val expectedConversationMessages = localConversationMessages.toConversationMessagesWithMessageToOpen()
 
         coEvery {
             rustMessageDataSource.observeConversationMessages(userId, conversationId.toLocalConversationId())
-        } returns flowOf(localMessages)
+        } returns flowOf(localConversationMessages)
 
         // When
         repository.observeConversationMessages(userId, conversationId).test {
             val result = awaitItem().getOrElse { null }
 
             // Then
-            assertEquals(expectedMessages, result)
+            assertEquals(expectedConversationMessages, result)
             coVerify {
                 rustMessageDataSource.observeConversationMessages(
                     userId,
@@ -218,7 +223,7 @@ class RustMessageRepositoryImplTest {
 
         coEvery {
             rustMessageDataSource.observeConversationMessages(userId, conversationId.toLocalConversationId())
-        } returns flowOf(emptyList())
+        } returns flowOf(LocalConversationMessages(LocalMessageIdSample.AugWeatherForecast, emptyList()))
 
         // When
         repository.observeConversationMessages(userId, conversationId).test {

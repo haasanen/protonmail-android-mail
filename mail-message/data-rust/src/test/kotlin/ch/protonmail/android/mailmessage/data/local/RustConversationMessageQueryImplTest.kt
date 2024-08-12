@@ -19,8 +19,10 @@
 package ch.protonmail.android.mailmessage.data.local
 
 import app.cash.turbine.test
+import ch.protonmail.android.mailmessage.data.model.LocalConversationMessages
 import ch.protonmail.android.mailmessage.domain.paging.RustInvalidationTracker
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
+import ch.protonmail.android.testdata.message.rust.LocalMessageIdSample
 import ch.protonmail.android.testdata.message.rust.LocalMessageTestData
 import ch.protonmail.android.testdata.user.UserIdTestData
 import kotlinx.coroutines.CoroutineScope
@@ -52,6 +54,10 @@ class RustConversationMessageQueryImplTest {
         LocalMessageTestData.AugWeatherForecast,
         LocalMessageTestData.SepWeatherForecast,
         LocalMessageTestData.OctWeatherForecast
+    )
+    val localConversationMessages = LocalConversationMessages(
+        messageIdToOpen = LocalMessageIdSample.AugWeatherForecast,
+        messages = messages
     )
 
     private val conversationMessagesLiveQueryResult: ConversationMessagesLiveQueryResult = mockk {
@@ -109,7 +115,7 @@ class RustConversationMessageQueryImplTest {
 
             // Then
             val result = awaitItem()
-            assertEquals(messages, result)
+            assertEquals(localConversationMessages, result)
             verify { invalidationTracker.notifyInvalidation(any()) }
         }
     }

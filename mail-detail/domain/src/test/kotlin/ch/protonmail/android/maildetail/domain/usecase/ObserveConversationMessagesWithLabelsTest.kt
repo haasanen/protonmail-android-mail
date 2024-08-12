@@ -27,6 +27,7 @@ import ch.protonmail.android.mailcommon.domain.sample.ConversationIdSample
 import ch.protonmail.android.mailcommon.domain.sample.LabelIdSample
 import ch.protonmail.android.mailcommon.domain.sample.LabelSample
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
+import ch.protonmail.android.maildetail.domain.model.ConversationMessagesWithLabels
 import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
 import ch.protonmail.android.mailmessage.domain.sample.MessageSample
 import ch.protonmail.android.mailmessage.domain.sample.MessageWithLabelsSample
@@ -35,6 +36,8 @@ import io.mockk.mockk
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import ch.protonmail.android.maillabel.domain.repository.LabelRepository
+import ch.protonmail.android.mailmessage.domain.model.ConversationMessages
+import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -46,9 +49,13 @@ internal class ObserveConversationMessagesWithLabelsTest {
         every { observeCustomLabels(userId = UserIdSample.Primary) } returns messageLabelsFlow
         every { observeCustomFolders(userId = UserIdSample.Primary) } returns messageFoldersFlow
     }
+    private val conversationMessages = ConversationMessages(
+        nonEmptyListOf(MessageSample.AugWeatherForecast),
+        MessageIdSample.AugWeatherForecast
+    )
     private val messageRepository: MessageRepository = mockk {
         every { observeConversationMessages(UserIdSample.Primary, ConversationIdSample.WeatherForecast) } returns
-            flowOf(nonEmptyListOf(MessageSample.AugWeatherForecast).right())
+            flowOf(conversationMessages.right())
     }
     private val observeConversationMessagesWithLabels = ObserveConversationMessagesWithLabels(
         labelRepository = labelRepository,
@@ -58,7 +65,10 @@ internal class ObserveConversationMessagesWithLabelsTest {
     @Test
     fun `when messages and labels are emitted, right model is emitted`() = runTest {
         // given
-        val expected = nonEmptyListOf(MessageWithLabelsSample.AugWeatherForecast).right()
+        val expected = ConversationMessagesWithLabels(
+            nonEmptyListOf(MessageWithLabelsSample.AugWeatherForecast),
+            MessageWithLabelsSample.AugWeatherForecast.message.messageId
+        ).right()
         every { labelRepository.observeCustomLabels(UserIdSample.Primary) } returns flowOf(emptyList())
         every { labelRepository.observeCustomFolders(UserIdSample.Primary) } returns flowOf(emptyList())
 
@@ -88,14 +98,17 @@ internal class ObserveConversationMessagesWithLabelsTest {
         val allFolders = listOf(LabelSample.Archive, LabelSample.Inbox)
         every { labelRepository.observeCustomLabels(UserIdSample.Primary) } returns flowOf(allLabels)
         every { labelRepository.observeCustomFolders(UserIdSample.Primary) } returns flowOf(allFolders)
-        val expected = nonEmptyListOf(messageWithLabels).right()
+        val expected = ConversationMessagesWithLabels(
+            nonEmptyListOf(messageWithLabels),
+            messageWithLabels.message.messageId
+        ).right()
 
         every {
             messageRepository.observeConversationMessages(
                 UserIdSample.Primary, ConversationIdSample.Invoices
             )
         } returns
-            flowOf(nonEmptyListOf(message).right())
+            flowOf(ConversationMessages(nonEmptyListOf(message), MessageSample.Invoice.messageId).right())
 
         // when
         observeConversationMessagesWithLabels(

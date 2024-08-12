@@ -19,6 +19,7 @@
 package ch.protonmail.android.mailmessage.data.local
 
 import app.cash.turbine.test
+import ch.protonmail.android.mailmessage.data.model.LocalConversationMessages
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import ch.protonmail.android.testdata.message.rust.LocalMessageIdSample
 import ch.protonmail.android.testdata.message.rust.LocalMessageTestData
@@ -165,7 +166,7 @@ class RustMessageDataSourceImplTest {
     }
 
     @Test
-    fun `observeConversationMessages should return list of message metadata`() = runTest {
+    fun `observeConversationMessages should return conversation messages`() = runTest {
         // Given
         val userId = UserIdTestData.userId
         val conversationId: LocalConversationId = 1uL
@@ -174,11 +175,15 @@ class RustMessageDataSourceImplTest {
             LocalMessageTestData.SepWeatherForecast,
             LocalMessageTestData.OctWeatherForecast
         )
+        val localConversationMessages = LocalConversationMessages(
+            messageIdToOpen = LocalMessageIdSample.AugWeatherForecast,
+            messages = messages
+        )
         coEvery {
             rustConversationMessageQuery.observeConversationMessages(
                 userId, conversationId
             )
-        } returns flowOf(messages)
+        } returns flowOf(localConversationMessages)
 
         // When
         dataSource.observeConversationMessages(userId, conversationId).test {
@@ -186,7 +191,7 @@ class RustMessageDataSourceImplTest {
             // Then
             // skipItems(1) // skip empty list
             val result = awaitItem()
-            assertEquals(messages, result)
+            assertEquals(localConversationMessages, result)
             coVerify { rustConversationMessageQuery.observeConversationMessages(userId, conversationId) }
 
             awaitComplete()
