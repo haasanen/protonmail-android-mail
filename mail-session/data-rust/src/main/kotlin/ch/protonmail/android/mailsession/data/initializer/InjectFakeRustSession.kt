@@ -50,6 +50,26 @@ class InjectFakeRustSession @Inject constructor(
                 runCatching {
                     newLoginFlow = buildLoginFlow(mailSession)
                     newLoginFlow.login(username, password)
+
+                    Timber.v("rust-session: Fake login with $username performed")
+
+                    Timber.v("rust-session: Initializing user context for $username...")
+
+                    var initCompleted = false
+                    newLoginFlow.toUserContext().initialize(
+                        object : MailUserSessionInitializationCallback {
+                            override fun onStage(stage: MailUserSessionInitializationStage) {
+                                Timber.v("rust-session: rust-session onStage: $stage")
+                                if (stage == MailUserSessionInitializationStage.FINISHED) {
+                                    initCompleted = true
+                                }
+                            }
+                        }
+                    )
+                    while (!initCompleted) {
+                        delay(1000)
+                    }
+                    Timber.d("rust-session: rust-session initialization completed successfully")
                 }.onFailure { exception ->
                     Timber.v("rust-session: Fake login Failure due to $exception")
                     delay(500)
@@ -59,25 +79,6 @@ class InjectFakeRustSession @Inject constructor(
                 }
             }
         }
-        Timber.v("rust-session: Fake login with $username performed")
-
-        Timber.v("rust-session: Initializing user context for $username...")
-
-        var initCompleted = false
-        newLoginFlow.toUserContext().initialize(
-            object : MailUserSessionInitializationCallback {
-                override fun onStage(stage: MailUserSessionInitializationStage) {
-                    Timber.v("rust-session: rust-session onStage: $stage")
-                    if (stage == MailUserSessionInitializationStage.FINISHED) {
-                        initCompleted = true
-                    }
-                }
-            }
-        )
-        while (!initCompleted) {
-            delay(1000)
-        }
-        Timber.d("rust-session: rust-session initialization completed successfully")
     }
 
     private fun buildLoginFlow(mailSession: MailSession) = mailSession.newLoginFlow(
