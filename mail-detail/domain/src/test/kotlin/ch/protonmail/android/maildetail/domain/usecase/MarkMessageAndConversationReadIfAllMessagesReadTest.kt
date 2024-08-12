@@ -106,7 +106,7 @@ class MarkMessageAndConversationReadIfAllMessagesReadTest {
         coEvery { markMessageAsRead.invoke(userId, sampleMessage.messageId) } returns sampleMessage.right()
         coEvery { conversationRepository.isCachedConversationRead(userId, sampleConversation.conversationId) } returns
             false.right()
-        coEvery { messageRepository.observeCachedMessages(userId, sampleConversation.conversationId) } returns
+        coEvery { messageRepository.observeConversationMessages(userId, sampleConversation.conversationId) } returns
             flowOf(error.left())
 
         // when
@@ -123,7 +123,7 @@ class MarkMessageAndConversationReadIfAllMessagesReadTest {
         val sampleConversation = ConversationTestData.conversation
         val error = DataError.Local.NoDataCached
         coEvery { messageRepository.isMessageRead(userId, sampleMessage.messageId) } returns false.right()
-        coEvery { messageRepository.observeCachedMessages(userId, sampleConversation.conversationId) } returns
+        coEvery { messageRepository.observeConversationMessages(userId, sampleConversation.conversationId) } returns
             flowOf(nonEmptyListOf(sampleMessage).right())
         coEvery { markMessageAsRead.invoke(userId, sampleMessage.messageId) } returns sampleMessage.right()
         coEvery { conversationRepository.isCachedConversationRead(userId, sampleConversation.conversationId) } returns
@@ -145,7 +145,7 @@ class MarkMessageAndConversationReadIfAllMessagesReadTest {
         val sampleMessage = MessageSample.Invoice.copy(unread = false)
         val sampleConversation = ConversationTestData.conversation
         coEvery { messageRepository.isMessageRead(userId, sampleMessage.messageId) } returns false.right()
-        coEvery { messageRepository.observeCachedMessages(userId, sampleConversation.conversationId) } returns
+        coEvery { messageRepository.observeConversationMessages(userId, sampleConversation.conversationId) } returns
             flowOf(nonEmptyListOf(sampleMessage).right())
         coEvery { markMessageAsRead.invoke(userId, sampleMessage.messageId) } returns sampleMessage.right()
         coEvery { conversationRepository.isCachedConversationRead(userId, sampleConversation.conversationId) } returns
@@ -170,7 +170,7 @@ class MarkMessageAndConversationReadIfAllMessagesReadTest {
         val sampleConversation = ConversationTestData.conversation
         val otherMessage = MessageSample.Invoice.copy(messageId = MessageId("other"), unread = true)
         coEvery { messageRepository.isMessageRead(userId, any()) } returns false.right()
-        coEvery { messageRepository.observeCachedMessages(userId, sampleConversation.conversationId) } returns
+        coEvery { messageRepository.observeConversationMessages(userId, sampleConversation.conversationId) } returns
             flowOf(nonEmptyListOf(sampleMessage, otherMessage).right())
         coEvery { markMessageAsRead.invoke(userId, sampleMessage.messageId) } returns sampleMessage.right()
         coEvery {
@@ -192,7 +192,7 @@ class MarkMessageAndConversationReadIfAllMessagesReadTest {
         val sampleMessage = MessageSample.Invoice.copy(unread = true)
         val sampleConversation = ConversationTestData.conversation
         coEvery { messageRepository.isMessageRead(userId, sampleMessage.messageId) } returns false.right()
-        coEvery { messageRepository.observeCachedMessages(userId, sampleConversation.conversationId) } returns
+        coEvery { messageRepository.observeConversationMessages(userId, sampleConversation.conversationId) } returns
             flowOf(nonEmptyListOf(sampleMessage).right())
         coEvery { markMessageAsRead.invoke(userId, sampleMessage.messageId) } returns sampleMessage.right()
         coEvery { conversationRepository.isCachedConversationRead(userId, sampleConversation.conversationId) } returns

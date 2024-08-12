@@ -99,7 +99,8 @@ class MarkMessageAndConversationReadIfAllMessagesRead @Inject constructor(
     private suspend fun getConversationMessages(
         userId: UserId,
         conversationId: ConversationId
-    ): Either<DataSourceError, NonEmptyList<Message>> = messageRepository.observeCachedMessages(userId, conversationId)
-        .first()
-        .mapLeft { error -> DataSourceError(error) }
+    ): Either<DataSourceError, NonEmptyList<Message>> =
+        messageRepository.observeConversationMessages(userId, conversationId)
+            .first()
+            .mapLeft { error -> DataSourceError(error) }
 }

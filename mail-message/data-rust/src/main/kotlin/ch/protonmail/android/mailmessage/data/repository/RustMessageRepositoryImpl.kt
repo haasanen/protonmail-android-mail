@@ -92,7 +92,7 @@ class RustMessageRepositoryImpl @Inject constructor(
         TODO("Not yet implemented")
     }
 
-    override fun observeCachedMessages(
+    override fun observeConversationMessages(
         userId: UserId,
         conversationId: ConversationId
     ): Flow<Either<DataError.Local, NonEmptyList<Message>>> {

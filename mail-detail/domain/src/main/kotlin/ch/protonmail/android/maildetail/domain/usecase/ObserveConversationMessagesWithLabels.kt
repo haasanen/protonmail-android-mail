@@ -42,7 +42,7 @@ class ObserveConversationMessagesWithLabels @Inject constructor(
     ): Flow<Either<DataError, NonEmptyList<MessageWithLabels>>> = combine(
         labelRepository.observeCustomLabels(userId),
         labelRepository.observeCustomFolders(userId),
-        messageRepository.observeCachedMessages(userId, conversationId)
+        messageRepository.observeConversationMessages(userId, conversationId)
     ) { labels, folders, messagesEither ->
 
         either {

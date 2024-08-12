@@ -194,7 +194,7 @@ class RustMessageRepositoryImplTest {
         } returns flowOf(localMessages)
 
         // When
-        repository.observeCachedMessages(userId, conversationId).test {
+        repository.observeConversationMessages(userId, conversationId).test {
             val result = awaitItem().getOrElse { null }
 
             // Then
@@ -221,7 +221,7 @@ class RustMessageRepositoryImplTest {
         } returns flowOf(emptyList())
 
         // When
-        repository.observeCachedMessages(userId, conversationId).test {
+        repository.observeConversationMessages(userId, conversationId).test {
             val result = awaitItem()
 
             // Then

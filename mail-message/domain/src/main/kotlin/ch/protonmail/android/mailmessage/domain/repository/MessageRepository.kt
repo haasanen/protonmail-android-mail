@@ -86,7 +86,7 @@ interface MessageRepository {
     /**
      * Get all the [Message]s metadata for a given [ConversationId], for [userId] from the local storage
      */
-    fun observeCachedMessages(
+    fun observeConversationMessages(
         userId: UserId,
         conversationId: ConversationId
     ): Flow<Either<DataError.Local, Nel<Message>>>

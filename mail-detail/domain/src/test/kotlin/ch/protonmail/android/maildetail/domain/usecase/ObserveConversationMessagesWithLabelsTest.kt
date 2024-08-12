@@ -47,7 +47,7 @@ internal class ObserveConversationMessagesWithLabelsTest {
         every { observeCustomFolders(userId = UserIdSample.Primary) } returns messageFoldersFlow
     }
     private val messageRepository: MessageRepository = mockk {
-        every { observeCachedMessages(UserIdSample.Primary, ConversationIdSample.WeatherForecast) } returns
+        every { observeConversationMessages(UserIdSample.Primary, ConversationIdSample.WeatherForecast) } returns
             flowOf(nonEmptyListOf(MessageSample.AugWeatherForecast).right())
     }
     private val observeConversationMessagesWithLabels = ObserveConversationMessagesWithLabels(
@@ -90,7 +90,11 @@ internal class ObserveConversationMessagesWithLabelsTest {
         every { labelRepository.observeCustomFolders(UserIdSample.Primary) } returns flowOf(allFolders)
         val expected = nonEmptyListOf(messageWithLabels).right()
 
-        every { messageRepository.observeCachedMessages(UserIdSample.Primary, ConversationIdSample.Invoices) } returns
+        every {
+            messageRepository.observeConversationMessages(
+                UserIdSample.Primary, ConversationIdSample.Invoices
+            )
+        } returns
             flowOf(nonEmptyListOf(message).right())
 
         // when
@@ -110,7 +114,7 @@ internal class ObserveConversationMessagesWithLabelsTest {
         // given
         val error = DataError.Local.NoDataCached.left()
         every {
-            messageRepository.observeCachedMessages(
+            messageRepository.observeConversationMessages(
                 UserIdSample.Primary,
                 ConversationIdSample.WeatherForecast
             )
