@@ -22,6 +22,7 @@ import ch.protonmail.android.mailsession.domain.repository.MailSessionRepository
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import timber.log.Timber
+import uniffi.proton_mail_uniffi.LoginFlow
 import uniffi.proton_mail_uniffi.MailSession
 import uniffi.proton_mail_uniffi.MailUserSessionInitializationCallback
 import uniffi.proton_mail_uniffi.MailUserSessionInitializationStage
@@ -43,8 +44,21 @@ class InjectFakeRustSession @Inject constructor(
             return@runBlocking
         }
 
-        val newLoginFlow = buildLoginFlow(mailSession)
-        newLoginFlow.login(username, password)
+        lateinit var newLoginFlow: LoginFlow
+        run {
+            for (i in 0..MaxFakeLoginRetries) {
+                runCatching {
+                    newLoginFlow = buildLoginFlow(mailSession)
+                    newLoginFlow.login(username, password)
+                }.onFailure { exception ->
+                    Timber.v("rust-session: Fake login Failure due to $exception")
+                    delay(500)
+                }.onSuccess {
+                    Timber.v("rust-session: Fake login Success. Moving on...")
+                    return@run
+                }
+            }
+        }
         Timber.v("rust-session: Fake login with $username performed")
 
         Timber.v("rust-session: Initializing user context for $username...")
@@ -86,5 +100,10 @@ class InjectFakeRustSession @Inject constructor(
 
         }
     )
+
+    companion object {
+
+        private const val MaxFakeLoginRetries = 5
+    }
 
 }
