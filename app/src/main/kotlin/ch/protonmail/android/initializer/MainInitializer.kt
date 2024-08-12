@@ -38,7 +38,9 @@ class MainInitializer : Initializer<Unit> {
 
         override fun dependencies() = mailDependencies() + releaseOnlyDependenciesIfNeeded()
 
-        private fun mailDependencies(): List<Class<out Initializer<*>?>> = emptyList()
+        private fun mailDependencies(): List<Class<out Initializer<*>?>> = listOf(
+            FakeRustSessionInitializer::class.java
+        )
 
         private fun releaseOnlyDependenciesIfNeeded() =
             if (BuildConfig.DEBUG) emptyList() else listOf(SentryInitializer::class.java)
@@ -57,8 +59,7 @@ class MainInitializer : Initializer<Unit> {
         NotificationInitializer::class.java,
         NotificationHandlersInitializer::class.java,
         AutoLockHandlerInitializer::class.java,
-        RustMailCommonInitializer::class.java,
-        FakeRustSessionInitializer::class.java
+        RustMailCommonInitializer::class.java
     )
 
     companion object {
