@@ -54,13 +54,6 @@ object MailConversationModule {
     @ConversationRustCoroutineScope
     fun provideConversationRustCoroutineScope(): CoroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
-    @Suppress("LongParameterList")
-    @Provides
-    @Singleton
-    fun provideConversationRepositoryImpl(
-        rustConversationDataSource: RustConversationDataSource
-    ): ConversationRepository = RustConversationRepositoryImpl(rustConversationDataSource = rustConversationDataSource)
-
     @Provides
     @Singleton
     fun provideConversationLocalDataSource(db: ConversationDatabase): ConversationLocalDataSource =
@@ -96,5 +89,10 @@ object MailConversationModule {
         @Binds
         @Singleton
         fun bindsRustConversationQuery(impl: RustConversationQueryImpl): RustConversationQuery
+
+        @Binds
+        @Singleton
+        fun bindsConversationRepositoryImpl(impl: RustConversationRepositoryImpl): ConversationRepository
+
     }
 }

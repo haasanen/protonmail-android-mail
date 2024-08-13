@@ -80,27 +80,27 @@ class LauncherViewModel @Inject constructor(
         Timber.d("rust-launcher: Add account not implemented in ET.")
     }
 
-    suspend fun onOpenPasswordManagement() {
+    fun onOpenPasswordManagement() {
         TODO("ET - Not yet implemented")
     }
 
-    suspend fun onOpenRecoveryEmail() {
+    fun onOpenRecoveryEmail() {
         TODO("ET - Not yet implemented")
     }
 
-    suspend fun onOpenReport() {
+    fun onOpenReport() {
         TODO("ET - Not yet implemented")
     }
 
-    suspend fun onOpenSubscription() {
+    fun onOpenSubscription() {
         TODO("ET - Not yet implemented")
     }
 
-    suspend fun onSignIn(userId: UserId?) {
+    fun onSignIn(userId: UserId?) {
         TODO("ET - Not yet implemented")
     }
 
-    suspend fun onSwitch(userId: UserId) {
+    fun onSwitch(userId: UserId) {
         TODO("ET - Not yet implemented")
     }
 
