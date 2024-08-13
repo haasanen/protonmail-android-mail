@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.mailmessage.data.local
 
+import ch.protonmail.android.mailmessage.data.model.LocalConversationMessages
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
@@ -82,7 +83,7 @@ class RustMessageDataSourceImpl @Inject constructor(
     override fun observeConversationMessages(
         userId: UserId,
         conversationId: LocalConversationId
-    ): Flow<List<LocalMessageMetadata>> {
+    ): Flow<LocalConversationMessages> {
         return rustConversationMessageQuery.observeConversationMessages(
             userId,
             conversationId

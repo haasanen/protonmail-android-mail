@@ -19,9 +19,9 @@
 package ch.protonmail.android.mailmessage.domain.repository
 
 import arrow.core.Either
-import arrow.core.Nel
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailmessage.domain.model.ConversationMessages
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.model.Message
 import ch.protonmail.android.mailmessage.domain.model.MessageAttachment
@@ -89,7 +89,7 @@ interface MessageRepository {
     fun observeConversationMessages(
         userId: UserId,
         conversationId: ConversationId
-    ): Flow<Either<DataError.Local, Nel<Message>>>
+    ): Flow<Either<DataError.Local, ConversationMessages>>
 
     /**
      * Observe the [MessageWithBody] for a given [MessageId], for [userId]

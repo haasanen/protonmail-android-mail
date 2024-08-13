@@ -19,10 +19,10 @@
 package ch.protonmail.android.maildetail.domain.usecase
 
 import arrow.core.Either
-import arrow.core.NonEmptyList
 import arrow.core.raise.either
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.maildetail.domain.model.ConversationMessagesWithLabels
 import ch.protonmail.android.mailmessage.domain.model.MessageWithLabels
 import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
 import kotlinx.coroutines.flow.Flow
@@ -39,21 +39,24 @@ class ObserveConversationMessagesWithLabels @Inject constructor(
     operator fun invoke(
         userId: UserId,
         conversationId: ConversationId
-    ): Flow<Either<DataError, NonEmptyList<MessageWithLabels>>> = combine(
+    ): Flow<Either<DataError, ConversationMessagesWithLabels>> = combine(
         labelRepository.observeCustomLabels(userId),
         labelRepository.observeCustomFolders(userId),
         messageRepository.observeConversationMessages(userId, conversationId)
-    ) { labels, folders, messagesEither ->
+    ) { labels, folders, conversationMessagesEither ->
 
         either {
             val allLabelsAndFolders = (labels + folders).sortedBy { it.order }
-            val messages = messagesEither.bind()
-            messages.map { message ->
-                val messageLabels = allLabelsAndFolders.filter { label ->
-                    label.labelId in message.labelIds
-                }
-                MessageWithLabels(message = message, labels = messageLabels)
-            }
+            val conversationMessages = conversationMessagesEither.bind()
+            ConversationMessagesWithLabels(
+                messages = conversationMessages.messages.map { message ->
+                    val messageLabels = allLabelsAndFolders.filter { label ->
+                        label.labelId in message.labelIds
+                    }
+                    MessageWithLabels(message = message, labels = messageLabels)
+                },
+                messageIdToOpen = conversationMessages.messageIdToOpen
+            )
         }
     }
 }

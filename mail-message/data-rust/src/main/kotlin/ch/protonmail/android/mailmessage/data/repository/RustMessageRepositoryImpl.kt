@@ -19,18 +19,18 @@
 package ch.protonmail.android.mailmessage.data.repository
 
 import arrow.core.Either
-import arrow.core.NonEmptyList
 import arrow.core.left
 import arrow.core.right
-import arrow.core.toNonEmptyListOrNull
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
 import ch.protonmail.android.mailmessage.data.local.RustMessageDataSource
+import ch.protonmail.android.mailmessage.data.mapper.toConversationMessagesWithMessageToOpen
 import ch.protonmail.android.mailmessage.data.mapper.toLocalConversationId
 import ch.protonmail.android.mailmessage.data.mapper.toLocalMessageId
 import ch.protonmail.android.mailmessage.data.mapper.toMessage
 import ch.protonmail.android.mailmessage.data.mapper.toMessageBody
+import ch.protonmail.android.mailmessage.domain.model.ConversationMessages
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.model.Message
 import ch.protonmail.android.mailmessage.domain.model.MessageAttachment
@@ -95,14 +95,16 @@ class RustMessageRepositoryImpl @Inject constructor(
     override fun observeConversationMessages(
         userId: UserId,
         conversationId: ConversationId
-    ): Flow<Either<DataError.Local, NonEmptyList<Message>>> {
+    ): Flow<Either<DataError.Local, ConversationMessages>> {
         return rustMessageDataSource.observeConversationMessages(userId, conversationId.toLocalConversationId())
-            .map { messages ->
-                messages.toNonEmptyListOrNull()?.map {
-                    it.toMessage()
-                }?.right() ?: DataError.Local.NoDataCached.left()
+            .map { conversationMessages ->
+                conversationMessages
+                    .toConversationMessagesWithMessageToOpen()
+                    ?.right()
+                    ?: DataError.Local.NoDataCached.left()
             }
     }
+
 
     override fun observeCachedMessagesForConversations(
         userId: UserId,

@@ -50,11 +50,12 @@ import ch.protonmail.android.mailconversation.domain.usecase.DeleteConversations
 import ch.protonmail.android.mailconversation.domain.usecase.ObserveConversation
 import ch.protonmail.android.mailconversation.domain.usecase.StarConversations
 import ch.protonmail.android.mailconversation.domain.usecase.UnStarConversations
-import ch.protonmail.android.maildetail.domain.usecase.DelayedMarkMessageAndConversationReadIfAllMessagesRead
+import ch.protonmail.android.maildetail.domain.model.ConversationMessagesWithLabels
 import ch.protonmail.android.maildetail.domain.usecase.GetAttachmentIntentValues
 import ch.protonmail.android.maildetail.domain.usecase.GetDownloadingAttachmentsForMessages
 import ch.protonmail.android.maildetail.domain.usecase.IsProtonCalendarInstalled
 import ch.protonmail.android.maildetail.domain.usecase.MarkConversationAsUnread
+import ch.protonmail.android.maildetail.domain.usecase.MarkMessageAsRead
 import ch.protonmail.android.maildetail.domain.usecase.MarkMessageAsUnread
 import ch.protonmail.android.maildetail.domain.usecase.MoveConversation
 import ch.protonmail.android.maildetail.domain.usecase.MoveMessage
@@ -66,7 +67,6 @@ import ch.protonmail.android.maildetail.domain.usecase.ObserveMessageWithLabels
 import ch.protonmail.android.maildetail.domain.usecase.RelabelConversation
 import ch.protonmail.android.maildetail.domain.usecase.ReportPhishingMessage
 import ch.protonmail.android.maildetail.domain.usecase.SetMessageViewState
-import ch.protonmail.android.maildetail.presentation.GetMessageIdToExpand
 import ch.protonmail.android.maildetail.presentation.R.string
 import ch.protonmail.android.maildetail.presentation.mapper.ConversationDetailMessageUiModelMapper
 import ch.protonmail.android.maildetail.presentation.mapper.ConversationDetailMetadataUiModelMapper
@@ -103,6 +103,7 @@ import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.MimeType
 import ch.protonmail.android.mailmessage.domain.model.Participant
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
+import ch.protonmail.android.mailmessage.domain.sample.MessageSample
 import ch.protonmail.android.mailmessage.domain.sample.MessageWithLabelsSample
 import ch.protonmail.android.mailmessage.domain.usecase.GetDecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.usecase.ObserveMessage
@@ -221,9 +222,12 @@ class ConversationDetailViewModelTest {
     private val observeMessage = mockk<ObserveMessage>()
     private val observeConversationMessagesWithLabels: ObserveConversationMessagesWithLabels = mockk {
         every { this@mockk(UserIdSample.Primary, ConversationIdSample.WeatherForecast) } returns flowOf(
-            nonEmptyListOf(
-                MessageWithLabelsSample.InvoiceWithLabel,
-                MessageWithLabelsSample.InvoiceWithTwoLabels
+            ConversationMessagesWithLabels(
+                nonEmptyListOf(
+                    MessageWithLabelsSample.InvoiceWithLabel,
+                    MessageWithLabelsSample.InvoiceWithTwoLabels
+                ),
+                MessageWithLabelsSample.InvoiceWithLabel.message.messageId
             ).right()
         )
     }
@@ -283,9 +287,9 @@ class ConversationDetailViewModelTest {
     private val observeMessageWithLabels = mockk<ObserveMessageWithLabels> {
         every { this@mockk.invoke(UserIdSample.Primary, any()) } returns mockk()
     }
-    private val markMessageAndConversationReadIfAllRead: DelayedMarkMessageAndConversationReadIfAllMessagesRead =
+    private val markMessageAsRead: MarkMessageAsRead =
         mockk {
-            coEvery { this@mockk.invoke(any(), any(), any()) } returns Unit
+            coEvery { this@mockk.invoke(any(), any()) } returns MessageSample.AugWeatherForecast.right()
         }
 
     private val findContactByEmail: FindContactByEmail = mockk<FindContactByEmail> {
@@ -317,9 +321,6 @@ class ConversationDetailViewModelTest {
     private val isProtonCalendarInstalled = mockk<IsProtonCalendarInstalled>()
     private val printMessage = mockk<PrintMessage>()
     private val markMessageAsUnread = mockk<MarkMessageAsUnread>()
-    private val getMessageIdToExpand = mockk<GetMessageIdToExpand> {
-        coEvery { this@mockk.invoke(any(), any()) } returns MessageIdSample.build()
-    }
     private val loadDataForMessageLabelAsBottomSheet = mockk<LoadDataForMessageLabelAsBottomSheet>()
     private val onMessageLabelAsConfirmed = mockk<OnMessageLabelAsConfirmed>()
     private val moveMessage = mockk<MoveMessage>()
@@ -353,7 +354,7 @@ class ConversationDetailViewModelTest {
             unStarConversations = unStarConversations,
             savedStateHandle = savedStateHandle,
             getDecryptedMessageBody = getDecryptedMessageBody,
-            markMessageAsRead = markMessageAndConversationReadIfAllRead,
+            markMessageAsRead = markMessageAsRead,
             setMessageViewState = setMessageViewState,
             observeConversationViewState = observeConversationViewState,
             getAttachmentIntentValues = getAttachmentIntentValues,
@@ -368,7 +369,6 @@ class ConversationDetailViewModelTest {
             printMessage = printMessage,
             markMessageAsUnread = markMessageAsUnread,
             findContactByEmail = findContactByEmail,
-            getMessageIdToExpand = getMessageIdToExpand,
             loadDataForMessageLabelAsBottomSheet = loadDataForMessageLabelAsBottomSheet,
             onMessageLabelAsConfirmed = onMessageLabelAsConfirmed,
             moveMessage = moveMessage,
@@ -1082,9 +1082,12 @@ class ConversationDetailViewModelTest {
         )
 
         coEvery { observeConversationMessagesWithLabels(userId, conversationId) } returns flowOf(
-            nonEmptyListOf(
-                MessageWithLabelsSample.InvoiceWithTwoLabels,
-                MessageWithLabelsSample.InvoiceWithLabel
+            ConversationMessagesWithLabels(
+                nonEmptyListOf(
+                    MessageWithLabelsSample.InvoiceWithTwoLabels,
+                    MessageWithLabelsSample.InvoiceWithLabel
+                ),
+                MessageWithLabelsSample.InvoiceWithLabel.message.messageId
             ).right()
         )
 
@@ -1149,9 +1152,12 @@ class ConversationDetailViewModelTest {
         } returns ConversationSample.WeatherForecast.right()
 
         coEvery { observeConversationMessagesWithLabels(userId, conversationId) } returns flowOf(
-            nonEmptyListOf(
-                MessageWithLabelsSample.InvoiceWithoutLabels,
-                MessageWithLabelsSample.AnotherInvoiceWithoutLabels
+            ConversationMessagesWithLabels(
+                nonEmptyListOf(
+                    MessageWithLabelsSample.InvoiceWithoutLabels,
+                    MessageWithLabelsSample.AnotherInvoiceWithoutLabels
+                ),
+                MessageWithLabelsSample.InvoiceWithoutLabels.message.messageId
             ).right()
         )
         coEvery {
@@ -1256,9 +1262,12 @@ class ConversationDetailViewModelTest {
             } returns Unit.right()
 
             coEvery { observeConversationMessagesWithLabels(userId, conversationId) } returns flowOf(
-                nonEmptyListOf(
-                    MessageWithLabelsSample.InvoiceWithoutLabels,
-                    MessageWithLabelsSample.AnotherInvoiceWithoutLabels
+                ConversationMessagesWithLabels(
+                    nonEmptyListOf(
+                        MessageWithLabelsSample.InvoiceWithoutLabels,
+                        MessageWithLabelsSample.AnotherInvoiceWithoutLabels
+                    ),
+                    MessageWithLabelsSample.InvoiceWithoutLabels.message.messageId
                 ).right()
             )
             coEvery {
@@ -1366,9 +1375,12 @@ class ConversationDetailViewModelTest {
         } returns ConversationSample.WeatherForecast.right()
 
         coEvery { observeConversationMessagesWithLabels(userId, conversationId) } returns flowOf(
-            nonEmptyListOf(
-                MessageWithLabelsSample.InvoiceWithLabel,
-                MessageWithLabelsSample.InvoiceWithTwoLabels
+            ConversationMessagesWithLabels(
+                nonEmptyListOf(
+                    MessageWithLabelsSample.InvoiceWithLabel,
+                    MessageWithLabelsSample.InvoiceWithTwoLabels
+                ),
+                MessageWithLabelsSample.InvoiceWithLabel.message.messageId
             ).right()
         )
         coEvery {
@@ -1526,9 +1538,8 @@ class ConversationDetailViewModelTest {
 
             // then
             coVerify {
-                markMessageAndConversationReadIfAllRead(
-                    userId, MessageId(expectedExpanded.messageId.id),
-                    any()
+                markMessageAsRead(
+                    userId, MessageId(expectedExpanded.messageId.id)
                 )
             }
             cancelAndIgnoreRemainingEvents()
@@ -1912,9 +1923,12 @@ class ConversationDetailViewModelTest {
         )
 
         coEvery { observeConversationMessagesWithLabels(userId, conversationId) } returns flowOf(
-            nonEmptyListOf(
-                MessageWithLabelsSample.InvoiceWithTwoLabels,
-                MessageWithLabelsSample.InvoiceWithLabel
+            ConversationMessagesWithLabels(
+                nonEmptyListOf(
+                    MessageWithLabelsSample.InvoiceWithTwoLabels,
+                    MessageWithLabelsSample.InvoiceWithLabel
+                ),
+                MessageWithLabelsSample.InvoiceWithLabel.message.messageId
             ).right()
         )
 
@@ -1973,7 +1987,12 @@ class ConversationDetailViewModelTest {
                 UserIdSample.Primary,
                 ConversationIdSample.WeatherForecast
             )
-        } returns flowOf(nonEmptyListOf(invoiceMessage, MessageWithLabelsSample.AugWeatherForecast).right())
+        } returns flowOf(
+            ConversationMessagesWithLabels(
+                nonEmptyListOf(invoiceMessage, MessageWithLabelsSample.AugWeatherForecast),
+                invoiceMessage.message.messageId
+            ).right()
+        )
 
         // This is no bueno, the order of the mocks here is important
         every {

@@ -39,6 +39,7 @@ import ch.protonmail.android.mailconversation.domain.usecase.DeleteConversations
 import ch.protonmail.android.mailconversation.domain.usecase.ObserveConversation
 import ch.protonmail.android.mailconversation.domain.usecase.StarConversations
 import ch.protonmail.android.mailconversation.domain.usecase.UnStarConversations
+import ch.protonmail.android.maildetail.domain.model.ConversationMessagesWithLabels
 import ch.protonmail.android.maildetail.domain.model.OpenProtonCalendarIntentValues
 import ch.protonmail.android.maildetail.domain.repository.InMemoryConversationStateRepository
 import ch.protonmail.android.maildetail.domain.usecase.GetAttachmentIntentValues
@@ -105,7 +106,6 @@ import ch.protonmail.android.mailmessage.domain.usecase.GetDecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.usecase.ObserveMessage
 import ch.protonmail.android.maildetail.domain.usecase.ReportPhishingMessage
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMetadataState
-import ch.protonmail.android.maildetail.presentation.GetMessageIdToExpand
 import ch.protonmail.android.maildetail.presentation.usecase.LoadDataForMessageLabelAsBottomSheet
 import ch.protonmail.android.maildetail.presentation.usecase.OnMessageLabelAsConfirmed
 import ch.protonmail.android.maildetail.presentation.usecase.PrintMessage
@@ -190,7 +190,6 @@ class ConversationDetailViewModel @Inject constructor(
     private val printMessage: PrintMessage,
     private val markMessageAsUnread: MarkMessageAsUnread,
     private val findContactByEmail: FindContactByEmail,
-    private val getMessageIdToExpand: GetMessageIdToExpand,
     private val loadDataForMessageLabelAsBottomSheet: LoadDataForMessageLabelAsBottomSheet,
     private val onMessageLabelAsConfirmed: OnMessageLabelAsConfirmed,
     private val moveMessage: MoveMessage,
@@ -330,28 +329,25 @@ class ConversationDetailViewModel @Inject constructor(
                         Timber.i("Failed getting contacts for displaying initials. Fallback to display name")
                         emptyList()
                     }
-                    val messages = messagesEither.getOrElse {
+                    val conversationMessages = messagesEither.getOrElse {
                         return@combine ConversationDetailEvent.ErrorLoadingMessages
                     }
-                    val messagesLabelIds = messages.associate { it.message.messageId to it.message.labelIds }
+                    val messagesLabelIds = conversationMessages.messages.associate {
+                        it.message.messageId to it.message.labelIds
+                    }
                     val messagesUiModels = buildMessagesUiModels(
-                        messages = messages,
+                        messages = conversationMessages.messages,
                         contacts = contacts,
                         folderColorSettings = folderColorSettings,
                         currentViewState = conversationViewState
                     ).toImmutableList()
 
                     val initialScrollTo = initialScrollToMessageId
-                        ?: getMessageIdToExpand(messages, filterByLocation)
-                            ?.let { messageIdUiModelMapper.toUiModel(it) }
-                    if (
-                        stateIsLoading() && initialScrollTo != null && allCollapsed(conversationViewState.messagesState)
-                    ) {
+                        ?: conversationMessages.messageIdToOpen
+                            .let { messageIdUiModelMapper.toUiModel(it) }
+                    if (stateIsLoading() && allCollapsed(conversationViewState.messagesState)) {
                         ConversationDetailEvent.MessagesData(
-                            messagesUiModels,
-                            messagesLabelIds,
-                            initialScrollTo,
-                            filterByLocation,
+                            messagesUiModels, messagesLabelIds, initialScrollTo, filterByLocation,
                             conversationViewState.shouldHideMessagesBasedOnTrashFilter
                         )
                     } else {
@@ -558,21 +554,22 @@ class ConversationDetailViewModel @Inject constructor(
                 Timber.e("Error while observing custom labels")
             }.getOrElse { emptyList() }
 
-            val messagesWithLabels = conversationWithMessagesAndLabels.onLeft {
+            conversationWithMessagesAndLabels.onLeft {
                 Timber.e("Error while observing conversation messages")
-            }.getOrElse { emptyList() }
+            }.getOrElse { null }
+                ?.run {
+                    val (selectedLabels, partiallySelectedLabels) = mappedLabels.getLabelSelectionState(messages)
 
-            val (selectedLabels, partiallySelectedLabels) = mappedLabels.getLabelSelectionState(messagesWithLabels)
-
-            val event = ConversationDetailEvent.ConversationBottomSheetEvent(
-                LabelAsBottomSheetState.LabelAsBottomSheetEvent.ActionData(
-                    customLabelList = mappedLabels.map { it.toCustomUiModel(color, emptyMap(), null) }
-                        .toImmutableList(),
-                    selectedLabels = selectedLabels.toImmutableList(),
-                    partiallySelectedLabels = partiallySelectedLabels.toImmutableList()
-                )
-            )
-            emitNewStateFrom(event)
+                    val event = ConversationDetailEvent.ConversationBottomSheetEvent(
+                        LabelAsBottomSheetState.LabelAsBottomSheetEvent.ActionData(
+                            customLabelList = mappedLabels.map { it.toCustomUiModel(color, emptyMap(), null) }
+                                .toImmutableList(),
+                            selectedLabels = selectedLabels.toImmutableList(),
+                            partiallySelectedLabels = partiallySelectedLabels.toImmutableList()
+                        )
+                    )
+                    emitNewStateFrom(event)
+                }
         }
     }
 
@@ -631,9 +628,14 @@ class ConversationDetailViewModel @Inject constructor(
             }.getOrElse { emptyList() }
             val messagesWithLabels = observeConversationMessages(userId, conversationId).first().onLeft {
                 Timber.e("Error while observing conversation message when relabeling got confirmed: $it")
-            }.getOrElse { emptyList() }
+            }.getOrElse { null }
 
-            val previousSelection = labels.getLabelSelectionState(messagesWithLabels)
+            if (messagesWithLabels == null) {
+                Timber.e("Error while observing conversation message when relabeling got confirmed")
+                return@launch
+            }
+
+            val previousSelection = labels.getLabelSelectionState(messagesWithLabels.messages)
 
             val labelAsData = mutableDetailState.value.bottomSheetState?.contentState as? LabelAsBottomSheetState.Data
                 ?: throw IllegalStateException("BottomSheetState is not LabelAsBottomSheetState.Data")
@@ -1118,8 +1120,8 @@ private fun isDeletable(it: ConversationLabel) =
  * Filters [DataError.Local] from messages flow, as we don't want to show them to the user, because the fetch is being
  *  done on the conversation flow.
  */
-private fun Flow<Either<DataError, NonEmptyList<MessageWithLabels>>>.ignoreLocalErrors():
-    Flow<Either<DataError, NonEmptyList<MessageWithLabels>>> =
+private fun Flow<Either<DataError, ConversationMessagesWithLabels>>.ignoreLocalErrors():
+    Flow<Either<DataError, ConversationMessagesWithLabels>> =
     filter { either ->
         either.fold(
             ifLeft = { error -> error !is DataError.Local },

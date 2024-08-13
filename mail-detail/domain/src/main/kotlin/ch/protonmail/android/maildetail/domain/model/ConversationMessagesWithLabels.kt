@@ -16,19 +16,13 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailmessage.data.local
+package ch.protonmail.android.maildetail.domain.model
 
-import ch.protonmail.android.mailmessage.data.model.LocalConversationMessages
-import kotlinx.coroutines.flow.Flow
-import me.proton.core.domain.entity.UserId
-import uniffi.proton_mail_common.LocalConversationId
+import arrow.core.NonEmptyList
+import ch.protonmail.android.mailmessage.domain.model.MessageId
+import ch.protonmail.android.mailmessage.domain.model.MessageWithLabels
 
-interface RustConversationMessageQuery {
-
-    fun observeConversationMessages(
-        userId: UserId,
-        conversationId: LocalConversationId
-    ): Flow<LocalConversationMessages>
-
-    fun disconnect()
-}
+data class ConversationMessagesWithLabels(
+    val messages: NonEmptyList<MessageWithLabels>,
+    val messageIdToOpen: MessageId
+)

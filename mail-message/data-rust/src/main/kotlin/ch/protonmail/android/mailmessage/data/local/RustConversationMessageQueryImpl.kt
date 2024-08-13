@@ -28,12 +28,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import uniffi.proton_mail_common.LocalConversationId
-import uniffi.proton_mail_common.LocalMessageMetadata
 import uniffi.proton_mail_uniffi.ConversationMessagesLiveQueryResult
 import uniffi.proton_mail_uniffi.MailboxLiveQueryUpdatedCallback
 import javax.inject.Inject
@@ -108,18 +106,9 @@ class RustConversationMessageQueryImpl @Inject constructor(
     override fun observeConversationMessages(
         userId: UserId,
         conversationId: LocalConversationId
-    ): Flow<List<LocalMessageMetadata>> {
+    ): Flow<LocalConversationMessages> {
         initConversationMessagesLiveQuery(conversationId)
 
         return conversationMessagesStatusFlow
-            .map { conversationMessages ->
-                conversationMessages.messages
-            }
     }
-
-    companion object {
-
-        private const val MAX_MESSAGE_COUNT = 50L
-    }
-
 }

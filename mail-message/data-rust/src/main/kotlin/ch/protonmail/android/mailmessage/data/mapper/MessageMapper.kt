@@ -18,9 +18,12 @@
 
 package ch.protonmail.android.mailmessage.data.mapper
 
+import arrow.core.toNonEmptyListOrNull
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.FAKE_USER_ID
+import ch.protonmail.android.mailmessage.data.model.LocalConversationMessages
 import ch.protonmail.android.mailmessage.domain.model.AttachmentCount
+import ch.protonmail.android.mailmessage.domain.model.ConversationMessages
 import ch.protonmail.android.mailmessage.domain.model.Message
 import ch.protonmail.android.mailmessage.domain.model.MessageBody
 import ch.protonmail.android.mailmessage.domain.model.MessageId
@@ -39,6 +42,8 @@ import uniffi.proton_mail_uniffi.DecryptedMessageBody
 fun ConversationId.toLocalConversationId(): LocalConversationId = this.id.toULong()
 
 fun MessageId.toLocalMessageId(): LocalMessageId = this.id.toULong()
+
+fun LocalMessageId.toMessageId(): MessageId = MessageId(this.toString())
 
 fun LocalMessageMetadata.toMessage(): Message {
     return Message(
@@ -105,4 +110,13 @@ fun DecryptedMessageBody.toMessageBody(messageId: MessageId): MessageBody {
         replyTos = emptyList(),
         unsubscribeMethods = null
     )
+}
+
+fun LocalConversationMessages.toConversationMessagesWithMessageToOpen(): ConversationMessages? {
+    return messages.toNonEmptyListOrNull()?.map { it.toMessage() }?.let { messageList ->
+        ConversationMessages(
+            messages = messageList,
+            messageIdToOpen = messageIdToOpen.toMessageId()
+        )
+    }
 }
