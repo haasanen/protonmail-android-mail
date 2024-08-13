@@ -69,6 +69,7 @@ import ch.protonmail.android.maildetail.domain.usecase.GetAttachmentIntentValues
 import ch.protonmail.android.maildetail.domain.usecase.GetDownloadingAttachmentsForMessages
 import ch.protonmail.android.maildetail.domain.usecase.IsProtonCalendarInstalled
 import ch.protonmail.android.maildetail.domain.usecase.MarkConversationAsUnread
+import ch.protonmail.android.maildetail.domain.usecase.MarkMessageAsRead
 import ch.protonmail.android.maildetail.domain.usecase.MarkMessageAsUnread
 import ch.protonmail.android.maildetail.domain.usecase.MoveConversation
 import ch.protonmail.android.maildetail.domain.usecase.MoveMessage
@@ -302,9 +303,9 @@ class ConversationDetailViewModelIntegrationTest {
         ).right()
     }
 
-    private val markMessageAndConversationReadIfAllRead: DelayedMarkMessageAndConversationReadIfAllMessagesRead =
+    private val markMessageAsRead: MarkMessageAsRead =
         mockk {
-            coEvery { this@mockk.invoke(any(), any(), any()) } returns Unit
+            coEvery { this@mockk.invoke(any(), any()) } returns MessageSample.AugWeatherForecast.right()
         }
     private val getCurrentEpochTimeDuration: GetCurrentEpochTimeDuration = mockk {
         coEvery { this@mockk.invoke() } returns Duration.parse("PT0S")
@@ -2372,8 +2373,8 @@ class ConversationDetailViewModelIntegrationTest {
         star: StarConversations = starConversations,
         unStar: UnStarConversations = unStarConversations,
         decryptedMessageBody: GetDecryptedMessageBody = getDecryptedMessageBody,
-        markMessageAndConversationRead: DelayedMarkMessageAndConversationReadIfAllMessagesRead =
-            markMessageAndConversationReadIfAllRead,
+        markMessageAndConversationRead: MarkMessageAsRead =
+            markMessageAsRead,
         getIntentValues: GetAttachmentIntentValues = getAttachmentIntentValues,
         ioDispatcher: CoroutineDispatcher = testDispatcher!!,
         networkMgmt: NetworkManager = networkManager,
@@ -2405,7 +2406,7 @@ class ConversationDetailViewModelIntegrationTest {
         unStarConversations = unStar,
         savedStateHandle = savedState,
         getDecryptedMessageBody = decryptedMessageBody,
-        markMessageAndConversationReadIfAllMessagesRead = markMessageAndConversationRead,
+        markMessageAsRead = markMessageAndConversationRead,
         setMessageViewState = setMessageViewState,
         observeConversationViewState = observeConversationViewState,
         getAttachmentIntentValues = getIntentValues,

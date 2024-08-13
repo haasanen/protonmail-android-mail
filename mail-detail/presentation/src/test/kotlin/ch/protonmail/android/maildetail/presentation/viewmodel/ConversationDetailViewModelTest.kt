@@ -353,7 +353,7 @@ class ConversationDetailViewModelTest {
             unStarConversations = unStarConversations,
             savedStateHandle = savedStateHandle,
             getDecryptedMessageBody = getDecryptedMessageBody,
-            markMessageAndConversationReadIfAllMessagesRead = markMessageAndConversationReadIfAllRead,
+            markMessageAsRead = markMessageAndConversationReadIfAllRead,
             setMessageViewState = setMessageViewState,
             observeConversationViewState = observeConversationViewState,
             getAttachmentIntentValues = getAttachmentIntentValues,
