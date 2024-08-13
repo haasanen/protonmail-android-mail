@@ -20,20 +20,20 @@ package ch.protonmail.android.mailcommon.domain.usecase
 
 import ch.protonmail.android.mailcommon.domain.MailFeatureDefaults
 import ch.protonmail.android.mailcommon.domain.MailFeatureId
+import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.domain.flow.mapIfNull
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import me.proton.core.domain.entity.UserId
-import me.proton.core.featureflag.domain.FeatureFlagManager
 import me.proton.core.featureflag.domain.entity.FeatureFlag
 import me.proton.core.featureflag.domain.entity.Scope
 import javax.inject.Inject
 
 class ObserveMailFeature @Inject constructor(
-    private val featureFlagManager: FeatureFlagManager,
     private val mailFeatureDefaults: MailFeatureDefaults
 ) {
 
+    @MissingRustApi
     operator fun invoke(userId: UserId, feature: MailFeatureId): Flow<FeatureFlag> = flowOf(null)
         .mapIfNull {
             val defaultValue = mailFeatureDefaults[feature]

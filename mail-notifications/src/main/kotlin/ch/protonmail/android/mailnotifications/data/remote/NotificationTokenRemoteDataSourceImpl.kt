@@ -21,6 +21,7 @@ package ch.protonmail.android.mailnotifications.data.remote
 import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
+import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -35,6 +36,7 @@ internal class NotificationTokenRemoteDataSourceImpl @Inject constructor(
 
     override suspend fun fetchToken() = fetchFirebaseToken()
 
+    @MissingRustApi
     override suspend fun bindTokenToUser(userId: UserId, token: String) {
         Timber.w("rust-notifications: Token not bound to user as feature is not yet exposed by Rust")
     }
