@@ -263,8 +263,8 @@ class MailboxListReducer @Inject constructor() {
 
             ViewMode.NoConversationGrouping -> {
                 OpenMailboxItemRequest(
-                    itemId = MailboxItemId(operation.item.id),
-                    itemType = operation.item.type,
+                    itemId = MailboxItemId(operation.item.conversationId.id),
+                    itemType = MailboxItemType.Conversation,
                     shouldOpenInComposer = false
                 )
             }

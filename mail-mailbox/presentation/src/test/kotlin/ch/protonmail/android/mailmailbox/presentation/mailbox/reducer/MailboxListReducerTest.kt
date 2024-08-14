@@ -459,8 +459,8 @@ internal class MailboxListReducerTest(
                     currentMailLabel = MailLabelTestData.customLabelOne,
                     openItemEffect = Effect.of(
                         OpenMailboxItemRequest(
-                            itemId = MailboxItemId(MailboxItemUiModelTestData.readMailboxItemUiModel.id),
-                            itemType = MailboxItemType.Message,
+                            itemId = MailboxItemId(MailboxItemUiModelTestData.readMailboxItemUiModel.conversationId.id),
+                            itemType = MailboxItemType.Conversation,
                             shouldOpenInComposer = false
                         )
                     ),

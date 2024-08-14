@@ -173,6 +173,7 @@ object MailboxItemUiModelTestData {
 
     val readMailboxItemUiModel = buildMailboxUiModelItem(
         id = "2",
+        conversationId = "conversationId-2",
         type = MailboxItemType.Message,
         subject = "Second message",
         isRead = true
@@ -193,13 +194,14 @@ object MailboxItemUiModelTestData {
         isRead: Boolean = true,
         labels: ImmutableList<LabelUiModel> = persistentListOf(),
         locations: ImmutableList<MailboxItemLocationUiModel> = persistentListOf(),
-        shouldOpenInComposer: Boolean = false
+        shouldOpenInComposer: Boolean = false,
+        conversationId: String = "conversationId"
     ) = MailboxItemUiModel(
         avatar = AvatarUiModel.ParticipantInitial("T"),
         type = type,
         id = id,
         userId = userId,
-        conversationId = ConversationId(id),
+        conversationId = ConversationId(conversationId),
         time = TextUiModel.Text("10:42"),
         isRead = isRead,
         labels = labels,
