@@ -198,17 +198,15 @@ internal class MailboxListReducerTest(
             ),
             TestInput(
                 currentState = MailboxListState.Loading,
-                operation = MailboxEvent.ItemClicked.ItemDetailsOpenedInViewMode(
-                    item = MailboxItemUiModelTestData.readMailboxItemUiModel,
-                    preferredViewMode = ViewMode.ConversationGrouping
+                operation = MailboxEvent.ItemClicked.ItemDetailsOpened(
+                    item = MailboxItemUiModelTestData.readMailboxItemUiModel
                 ),
                 expectedState = MailboxListState.Loading
             ),
             TestInput(
                 currentState = MailboxListState.Loading,
-                operation = MailboxEvent.ItemClicked.ItemDetailsOpenedInViewMode(
-                    item = MailboxItemUiModelTestData.readMailboxItemUiModel,
-                    preferredViewMode = ViewMode.NoConversationGrouping
+                operation = MailboxEvent.ItemClicked.ItemDetailsOpened(
+                    item = MailboxItemUiModelTestData.readMailboxItemUiModel
                 ),
                 expectedState = MailboxListState.Loading
             ),
@@ -416,9 +414,8 @@ internal class MailboxListReducerTest(
                     searchState = MailboxSearchStateSampleData.NotSearching,
                     clearState = MailboxListState.Data.ClearState.Hidden
                 ),
-                operation = MailboxEvent.ItemClicked.ItemDetailsOpenedInViewMode(
-                    item = MailboxItemUiModelTestData.readMailboxItemUiModel,
-                    preferredViewMode = ViewMode.ConversationGrouping
+                operation = MailboxEvent.ItemClicked.ItemDetailsOpened(
+                    item = MailboxItemUiModelTestData.readMailboxItemUiModel
                 ),
                 expectedState = MailboxListState.Data.ViewMode(
                     currentMailLabel = MailLabelTestData.customLabelOne,
@@ -451,17 +448,16 @@ internal class MailboxListReducerTest(
                     searchState = MailboxSearchStateSampleData.NotSearching,
                     clearState = MailboxListState.Data.ClearState.Hidden
                 ),
-                operation = MailboxEvent.ItemClicked.ItemDetailsOpenedInViewMode(
-                    item = MailboxItemUiModelTestData.readMailboxItemUiModel,
-                    preferredViewMode = ViewMode.NoConversationGrouping
+                operation = MailboxEvent.ItemClicked.ItemDetailsOpened(
+                    item = MailboxItemUiModelTestData.readMailboxItemUiModel
                 ),
                 expectedState = MailboxListState.Data.ViewMode(
                     currentMailLabel = MailLabelTestData.customLabelOne,
                     openItemEffect = Effect.of(
                         OpenMailboxItemRequest(
                             itemId = MailboxItemId(MailboxItemUiModelTestData.readMailboxItemUiModel.conversationId.id),
-                            itemType = MailboxItemType.Conversation,
-                            shouldOpenInComposer = false
+                            shouldOpenInComposer = false,
+                            filterByLocation = MailLabelTestData.customLabelOne
                         )
                     ),
                     scrollToMailboxTop = Effect.empty(),
@@ -1233,7 +1229,7 @@ internal class MailboxListReducerTest(
                         Current state: ${testInput.currentState}
                         Operation: ${testInput.operation}
                         Next state: ${testInput.expectedState}
-                        
+
                     """.trimIndent()
                     arrayOf(testName, testInput)
                 }

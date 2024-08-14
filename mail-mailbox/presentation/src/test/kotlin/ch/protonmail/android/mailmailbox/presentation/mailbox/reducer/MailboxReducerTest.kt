@@ -471,9 +471,8 @@ internal class MailboxReducerTest(
 
         private val events = listOf(
             TestInput(
-                MailboxEvent.ItemClicked.ItemDetailsOpenedInViewMode(
-                    item = MailboxItemUiModelTestData.readMailboxItemUiModel,
-                    preferredViewMode = ViewMode.NoConversationGrouping
+                MailboxEvent.ItemClicked.ItemDetailsOpened(
+                    item = MailboxItemUiModelTestData.readMailboxItemUiModel
                 ),
                 shouldReduceMailboxListState = true,
                 shouldReduceTopAppBarState = false,

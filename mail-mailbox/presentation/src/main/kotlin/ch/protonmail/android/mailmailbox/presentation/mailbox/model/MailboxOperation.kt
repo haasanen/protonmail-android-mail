@@ -207,9 +207,8 @@ internal sealed interface MailboxEvent : MailboxOperation {
 
         val item: MailboxItemUiModel
 
-        data class ItemDetailsOpenedInViewMode(
-            override val item: MailboxItemUiModel,
-            val preferredViewMode: ViewMode
+        data class ItemDetailsOpened(
+            override val item: MailboxItemUiModel
         ) : ItemClicked, AffectingMailboxList
 
         data class OpenComposer(

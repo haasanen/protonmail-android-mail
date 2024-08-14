@@ -1306,7 +1306,7 @@ class MailboxViewModelTest {
         every {
             mailboxReducer.newStateFrom(
                 intermediateState,
-                MailboxEvent.ItemClicked.ItemDetailsOpenedInViewMode(item, NoConversationGrouping)
+                MailboxEvent.ItemClicked.ItemDetailsOpened(item)
             )
         } returns expectedState
 
@@ -1452,7 +1452,7 @@ class MailboxViewModelTest {
         every {
             mailboxReducer.newStateFrom(
                 intermediateState,
-                MailboxEvent.ItemClicked.ItemDetailsOpenedInViewMode(item, ConversationGrouping)
+                MailboxEvent.ItemClicked.ItemDetailsOpened(item)
             )
         } returns expectedState
 
@@ -1590,9 +1590,8 @@ class MailboxViewModelTest {
             every {
                 mailboxReducer.newStateFrom(
                     expectedMailBoxState,
-                    MailboxEvent.ItemClicked.ItemDetailsOpenedInViewMode(
-                        unreadMailboxItemUiModel,
-                        NoConversationGrouping
+                    MailboxEvent.ItemClicked.ItemDetailsOpened(
+                        unreadMailboxItemUiModel
                     )
                 )
             } returns createMailboxDataState(

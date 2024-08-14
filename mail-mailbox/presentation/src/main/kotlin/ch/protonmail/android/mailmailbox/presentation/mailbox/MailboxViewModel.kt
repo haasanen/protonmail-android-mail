@@ -475,7 +475,7 @@ class MailboxViewModel @Inject constructor(
         if (item.shouldOpenInComposer) {
             emitNewStateFrom(MailboxEvent.ItemClicked.OpenComposer(item))
         } else {
-            emitNewStateFrom(MailboxEvent.ItemClicked.ItemDetailsOpenedInViewMode(item, getPreferredViewMode()))
+            emitNewStateFrom(MailboxEvent.ItemClicked.ItemDetailsOpened(item))
         }
     }
 

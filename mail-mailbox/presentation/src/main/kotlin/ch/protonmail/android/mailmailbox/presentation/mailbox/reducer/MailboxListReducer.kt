@@ -34,7 +34,6 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxOpera
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxSearchMode
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxSearchState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxViewAction
-import me.proton.core.mailsettings.domain.entity.ViewMode
 import javax.inject.Inject
 
 class MailboxListReducer @Inject constructor() {
@@ -48,7 +47,7 @@ class MailboxListReducer @Inject constructor() {
             is MailboxEvent.SelectedLabelChanged -> reduceSelectedLabelChanged(operation, currentState)
             is MailboxEvent.NewLabelSelected -> reduceNewLabelSelected(operation, currentState)
             is MailboxEvent.SwipeActionsChanged -> reduceSwipeActionsChanged(operation, currentState)
-            is MailboxEvent.ItemClicked.ItemDetailsOpenedInViewMode -> reduceItemDetailOpened(operation, currentState)
+            is MailboxEvent.ItemClicked.ItemDetailsOpened -> reduceItemDetailOpened(operation, currentState)
             is MailboxEvent.ItemClicked.OpenComposer -> reduceOpenComposer(operation, currentState)
             is MailboxEvent.EnterSelectionMode -> reduceEnterSelectionMode(operation.item, currentState)
             is MailboxEvent.ItemClicked.ItemAddedToSelection -> reduceItemAddedToSelection(operation, currentState)
@@ -222,53 +221,31 @@ class MailboxListReducer @Inject constructor() {
     }
 
     private fun reduceItemDetailOpened(
-        operation: MailboxEvent.ItemClicked.ItemDetailsOpenedInViewMode,
+        operation: MailboxEvent.ItemClicked.ItemDetailsOpened,
         currentState: MailboxListState
     ): MailboxListState {
-        val request = when (operation.preferredViewMode) {
-            ViewMode.ConversationGrouping -> {
-                // in search mode, subItemId is set to scroll to the searched item
-                val searchedItemId =
-                    if (currentState is MailboxListState.Data.ViewMode && currentState.searchState.isInSearch()) {
-                        MailboxItemId(operation.item.id)
-                    } else {
-                        null
-                    }
-
-                val currentLocation = if (currentState is MailboxListState.Data) {
-                    currentState.currentMailLabel
-                } else {
-                    null
-                }
-
-                val isSentMessageWithNoAssignedConvId = operation.item.conversationId.id.isEmpty()
-                if (isSentMessageWithNoAssignedConvId) {
-                    OpenMailboxItemRequest(
-                        itemId = MailboxItemId(operation.item.id),
-                        itemType = MailboxItemType.Message,
-                        shouldOpenInComposer = false,
-                        subItemId = searchedItemId,
-                        filterByLocation = currentLocation
-                    )
-                } else {
-                    OpenMailboxItemRequest(
-                        itemId = MailboxItemId(operation.item.conversationId.id),
-                        itemType = MailboxItemType.Conversation,
-                        shouldOpenInComposer = false,
-                        subItemId = searchedItemId,
-                        filterByLocation = currentLocation
-                    )
-                }
+        // in search mode, subItemId is set to scroll to the searched item
+        val searchedItemId =
+            if (currentState is MailboxListState.Data.ViewMode && currentState.searchState.isInSearch()) {
+                MailboxItemId(operation.item.id)
+            } else {
+                null
             }
 
-            ViewMode.NoConversationGrouping -> {
-                OpenMailboxItemRequest(
-                    itemId = MailboxItemId(operation.item.conversationId.id),
-                    itemType = MailboxItemType.Conversation,
-                    shouldOpenInComposer = false
-                )
-            }
+        val currentLocation = if (currentState is MailboxListState.Data) {
+            currentState.currentMailLabel
+        } else {
+            null
         }
+
+
+        val request = OpenMailboxItemRequest(
+            itemId = MailboxItemId(operation.item.conversationId.id),
+            itemType = MailboxItemType.Conversation,
+            shouldOpenInComposer = false,
+            subItemId = searchedItemId,
+            filterByLocation = currentLocation
+        )
 
         return when (currentState) {
             is MailboxListState.Data.ViewMode -> currentState.copy(openItemEffect = Effect.of(request))
