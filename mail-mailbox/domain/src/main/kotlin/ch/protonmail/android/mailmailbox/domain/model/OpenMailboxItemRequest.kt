@@ -22,7 +22,6 @@ import ch.protonmail.android.maillabel.domain.model.MailLabel
 
 data class OpenMailboxItemRequest(
     val itemId: MailboxItemId,
-    val itemType: MailboxItemType,
     val shouldOpenInComposer: Boolean,
     val subItemId: MailboxItemId? = null,
     val filterByLocation: MailLabel? = null

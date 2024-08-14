@@ -23,7 +23,6 @@ import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.maillabel.domain.model.MailLabel
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItemId
-import ch.protonmail.android.mailmailbox.domain.model.MailboxItemType
 import ch.protonmail.android.mailmailbox.domain.model.OpenMailboxItemRequest
 import ch.protonmail.android.mailmailbox.presentation.R
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxEvent
@@ -241,7 +240,6 @@ class MailboxListReducer @Inject constructor() {
 
         val request = OpenMailboxItemRequest(
             itemId = MailboxItemId(operation.item.conversationId.id),
-            itemType = MailboxItemType.Conversation,
             shouldOpenInComposer = false,
             subItemId = searchedItemId,
             filterByLocation = currentLocation
@@ -367,7 +365,6 @@ class MailboxListReducer @Inject constructor() {
                 openItemEffect = Effect.of(
                     OpenMailboxItemRequest(
                         itemId = MailboxItemId(operation.item.id),
-                        itemType = operation.item.type,
                         shouldOpenInComposer = true
                     )
                 )

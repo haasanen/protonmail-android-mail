@@ -21,7 +21,6 @@ package ch.protonmail.android.mailmailbox.presentation.mailbox.reducer
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItemId
-import ch.protonmail.android.mailmailbox.domain.model.MailboxItemType
 import ch.protonmail.android.mailmailbox.domain.model.OpenMailboxItemRequest
 import ch.protonmail.android.mailmailbox.presentation.R
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxEvent
@@ -422,7 +421,6 @@ internal class MailboxListReducerTest(
                     openItemEffect = Effect.of(
                         OpenMailboxItemRequest(
                             itemId = MailboxItemId(MailboxItemUiModelTestData.readMailboxItemUiModel.conversationId.id),
-                            itemType = MailboxItemType.Conversation,
                             shouldOpenInComposer = false,
                             filterByLocation = MailLabelTestData.customLabelOne
                         )
@@ -489,7 +487,6 @@ internal class MailboxListReducerTest(
                     openItemEffect = Effect.of(
                         OpenMailboxItemRequest(
                             itemId = MailboxItemId(MailboxItemUiModelTestData.draftMailboxItemUiModel.id),
-                            itemType = MailboxItemType.Message,
                             shouldOpenInComposer = true
                         )
                     ),
@@ -522,7 +519,6 @@ internal class MailboxListReducerTest(
                     openItemEffect = Effect.of(
                         OpenMailboxItemRequest(
                             itemId = MailboxItemId(MailboxItemUiModelTestData.draftMailboxItemUiModel.id),
-                            itemType = MailboxItemType.Message,
                             shouldOpenInComposer = true
                         )
                     ),

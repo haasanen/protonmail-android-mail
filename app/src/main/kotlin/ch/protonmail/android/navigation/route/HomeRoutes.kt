@@ -46,7 +46,6 @@ import ch.protonmail.android.maillabel.presentation.folderlist.FolderListScreen
 import ch.protonmail.android.maillabel.presentation.folderparentlist.ParentFolderListScreen
 import ch.protonmail.android.maillabel.presentation.labelform.LabelFormScreen
 import ch.protonmail.android.maillabel.presentation.labellist.LabelListScreen
-import ch.protonmail.android.mailmailbox.domain.model.MailboxItemType
 import ch.protonmail.android.mailmailbox.presentation.mailbox.MailboxScreen
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.model.MessageId
@@ -77,17 +76,13 @@ internal fun NavGraphBuilder.addMailbox(
                 navigateToMailboxItem = { request ->
                     val destination = when (request.shouldOpenInComposer) {
                         true -> Destination.Screen.EditDraftComposer(MessageId(request.itemId.value))
-                        false -> when (request.itemType) {
-                            MailboxItemType.Message -> Destination.Screen.Message(MessageId(request.itemId.value))
-                            MailboxItemType.Conversation ->
-                                Destination.Screen.Conversation(
-                                    ConversationId(request.itemId.value),
-                                    request.subItemId?.let { mailboxItemId ->
-                                        MessageId(mailboxItemId.value)
-                                    },
-                                    request.filterByLocation
-                                )
-                        }
+                        false -> Destination.Screen.Conversation(
+                            ConversationId(request.itemId.value),
+                            request.subItemId?.let { mailboxItemId ->
+                                MessageId(mailboxItemId.value)
+                            },
+                            request.filterByLocation
+                        )
                     }
                     navController.navigate(destination)
                 },

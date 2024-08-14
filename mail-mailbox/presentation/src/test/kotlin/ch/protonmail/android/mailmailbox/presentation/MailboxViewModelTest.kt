@@ -1299,7 +1299,7 @@ class MailboxViewModelTest {
         val item = buildMailboxUiModelItem("id", Message)
         val intermediateState = createMailboxDataState()
         val expectedState = createMailboxDataState(
-            openEffect = Effect.of(OpenMailboxItemRequest(MailboxItemId(item.id), Conversation, false))
+            openEffect = Effect.of(OpenMailboxItemRequest(MailboxItemId(item.id), false))
         )
         expectViewMode(NoConversationGrouping)
         expectedSelectedLabelCountStateChange(intermediateState)
@@ -1325,7 +1325,7 @@ class MailboxViewModelTest {
         val intermediateState = createMailboxDataState(selectedMailLabelId = MailLabelTestData.draftsSystemLabel.id)
         val expectedState = createMailboxDataState(
             selectedMailLabelId = MailLabelTestData.draftsSystemLabel.id,
-            openEffect = Effect.of(OpenMailboxItemRequest(MailboxItemId(item.id), Conversation, true))
+            openEffect = Effect.of(OpenMailboxItemRequest(MailboxItemId(item.id), true))
         )
         expectViewMode(NoConversationGrouping)
         expectedSelectedLabelCountStateChange(intermediateState)
@@ -1443,7 +1443,7 @@ class MailboxViewModelTest {
         val item = buildMailboxUiModelItem("id", Conversation)
         val intermediateState = createMailboxDataState()
         val expectedState = createMailboxDataState(
-            openEffect = Effect.of(OpenMailboxItemRequest(MailboxItemId(item.id), Conversation, false))
+            openEffect = Effect.of(OpenMailboxItemRequest(MailboxItemId(item.id), false))
         )
 
         every { observeCurrentViewMode(userId = any()) } returns flowOf(ConversationGrouping)
@@ -1598,7 +1598,6 @@ class MailboxViewModelTest {
                 Effect.of(
                     OpenMailboxItemRequest(
                         MailboxItemId(unreadMailboxItem.id),
-                        unreadMailboxItem.type,
                         false
                     )
                 )
