@@ -49,10 +49,9 @@ import ch.protonmail.android.mailcommon.presentation.model.ActionResult
 import ch.protonmail.android.mailcommon.presentation.ui.CommonTestTags
 import ch.protonmail.android.mailcomposer.domain.model.MessageSendingStatus
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetail
-import ch.protonmail.android.maildetail.presentation.ui.MessageDetail
-import ch.protonmail.android.mailsidebar.presentation.Sidebar
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.model.MessageId
+import ch.protonmail.android.mailsidebar.presentation.Sidebar
 import ch.protonmail.android.navigation.model.Destination.Dialog
 import ch.protonmail.android.navigation.model.Destination.Screen
 import ch.protonmail.android.navigation.model.HomeState
@@ -81,7 +80,6 @@ import ch.protonmail.android.navigation.route.addLabelList
 import ch.protonmail.android.navigation.route.addLanguageSettings
 import ch.protonmail.android.navigation.route.addMailbox
 import ch.protonmail.android.navigation.route.addManageMembers
-import ch.protonmail.android.navigation.route.addMessageDetail
 import ch.protonmail.android.navigation.route.addNotificationsSettings
 import ch.protonmail.android.navigation.route.addParentFolderList
 import ch.protonmail.android.navigation.route.addPrivacySettings
@@ -325,46 +323,6 @@ fun Home(
                     showOfflineSnackbar = { showOfflineSnackbar() },
                     showNormalSnackbar = { showNormalSnackbar(it) },
                     showErrorSnackbar = { showErrorSnackbar(it) }
-                )
-                addMessageDetail(
-                    actions = MessageDetail.Actions(
-                        onExit = { notifyUserMessage ->
-                            navController.navigateBack()
-                            notifyUserMessage?.let { showUndoableOperationSnackbar(it) }
-                            viewModel.recordViewOfMailboxScreen()
-                        },
-                        openMessageBodyLink = activityActions.openInActivityInNewTask,
-                        openAttachment = activityActions.openIntentChooser,
-                        handleProtonCalendarRequest = activityActions.openProtonCalendarIntentValues,
-                        onAddLabel = { navController.navigate(Screen.LabelList.route) },
-                        onAddFolder = { navController.navigate(Screen.FolderList.route) },
-                        showFeatureMissingSnackbar = { showFeatureMissingSnackbar() },
-                        onReply = { navController.navigate(Screen.MessageActionComposer(DraftAction.Reply(it))) },
-                        onReplyAll = { navController.navigate(Screen.MessageActionComposer(DraftAction.ReplyAll(it))) },
-                        onForward = { navController.navigate(Screen.MessageActionComposer(DraftAction.Forward(it))) },
-                        onViewContactDetails = { navController.navigate(Screen.ContactDetails(it)) },
-                        onAddContact = { basicContactInfo ->
-                            navController.navigate(Screen.AddContact(basicContactInfo))
-                        },
-                        onComposeNewMessage = {
-                            navController.navigate(
-                                Screen.MessageActionComposer(
-                                    DraftAction.ComposeToAddresses(
-                                        listOf(it)
-                                    )
-                                )
-                            )
-                        },
-                        showSnackbar = { message ->
-                            scope.launch {
-                                snackbarHostNormState.showSnackbar(
-                                    message = message,
-                                    type = ProtonSnackbarType.NORM
-                                )
-                            }
-                        },
-                        recordMailboxScreenView = { viewModel.recordViewOfMailboxScreen() }
-                    )
                 )
                 addComposer(
                     navController,

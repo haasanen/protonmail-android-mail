@@ -20,21 +20,15 @@ package ch.protonmail.android.uitest.screen.detail
 
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMetadataState
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailState
-import ch.protonmail.android.maildetail.presentation.model.MessageDetailState
-import ch.protonmail.android.maildetail.presentation.model.MessageMetadataState
 import ch.protonmail.android.maildetail.presentation.previewdata.ConversationDetailsPreviewData
-import ch.protonmail.android.maildetail.presentation.previewdata.MessageDetailsPreviewData
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen
 import ch.protonmail.android.maildetail.presentation.ui.DetailScreenTopBar
-import ch.protonmail.android.maildetail.presentation.ui.MessageDetailScreen
 import ch.protonmail.android.test.annotations.suite.RegressionTest
-import ch.protonmail.android.uitest.util.HiltInstrumentedTest
 import ch.protonmail.android.uitest.robot.detail.ConversationDetailRobot
-import ch.protonmail.android.uitest.robot.detail.MessageDetailRobot
 import ch.protonmail.android.uitest.robot.detail.conversationDetailRobot
-import ch.protonmail.android.uitest.robot.detail.messageDetailRobot
 import ch.protonmail.android.uitest.robot.detail.section.detailTopBarSection
 import ch.protonmail.android.uitest.robot.detail.section.verify
+import ch.protonmail.android.uitest.util.HiltInstrumentedTest
 import dagger.hilt.android.testing.HiltAndroidTest
 import org.junit.Test
 
@@ -46,20 +40,6 @@ internal class DetailScreenTopBarTest : HiltInstrumentedTest() {
     fun whenConversationIsLoadingThenSubjectContainsABlankString() {
         // given
         val state = ConversationDetailsPreviewData.Loading
-
-        // when
-        val robot = setupScreen(state = state)
-
-        // then
-        robot.detailTopBarSection {
-            verify { hasSubject(DetailScreenTopBar.NoTitle) }
-        }
-    }
-
-    @Test
-    fun whenMessageIsLoadingThenSubjectContainsABlankString() {
-        // given
-        val state = MessageDetailsPreviewData.Loading
 
         // when
         val robot = setupScreen(state = state)
@@ -85,21 +65,6 @@ internal class DetailScreenTopBarTest : HiltInstrumentedTest() {
         }
     }
 
-    @Test
-    fun whenMessageIsLoadedThenSubjectIsDisplayed() {
-        // given
-        val state = MessageDetailsPreviewData.Message
-        val messageState = state.messageMetadataState as MessageMetadataState.Data
-
-        // when
-        val robot = setupScreen(state = state)
-
-        // then
-        robot.detailTopBarSection {
-            verify { hasSubject(messageState.messageDetailActionBar.subject) }
-        }
-    }
-
     private fun setupScreen(
         state: ConversationDetailState,
         actions: ConversationDetailScreen.Actions = ConversationDetailScreen.Actions.Empty
@@ -109,12 +74,4 @@ internal class DetailScreenTopBarTest : HiltInstrumentedTest() {
         }
     }
 
-    private fun setupScreen(
-        state: MessageDetailState,
-        actions: MessageDetailScreen.Actions = MessageDetailScreen.Actions.Empty
-    ): MessageDetailRobot = messageDetailRobot {
-        this@DetailScreenTopBarTest.composeTestRule.setContent {
-            MessageDetailScreen(state = state, actions = actions)
-        }
-    }
 }

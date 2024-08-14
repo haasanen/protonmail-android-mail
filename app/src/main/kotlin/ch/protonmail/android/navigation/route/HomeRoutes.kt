@@ -39,8 +39,6 @@ import ch.protonmail.android.mailcontact.presentation.contactsearch.ContactSearc
 import ch.protonmail.android.mailcontact.presentation.managemembers.ManageMembersScreen
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetail
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen
-import ch.protonmail.android.maildetail.presentation.ui.MessageDetail
-import ch.protonmail.android.maildetail.presentation.ui.MessageDetailScreen
 import ch.protonmail.android.maillabel.presentation.folderform.FolderFormScreen
 import ch.protonmail.android.maillabel.presentation.folderlist.FolderListScreen
 import ch.protonmail.android.maillabel.presentation.folderparentlist.ParentFolderListScreen
@@ -95,12 +93,6 @@ internal fun NavGraphBuilder.addMailbox(
                 onAddFolder = { navController.navigate(Destination.Screen.CreateFolder.route) }
             )
         )
-    }
-}
-
-internal fun NavGraphBuilder.addMessageDetail(actions: MessageDetail.Actions) {
-    composable(route = Destination.Screen.Message.route) {
-        MessageDetailScreen(actions = actions)
     }
 }
 

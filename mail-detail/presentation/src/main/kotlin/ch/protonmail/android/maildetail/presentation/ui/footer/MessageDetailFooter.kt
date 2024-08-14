@@ -45,7 +45,6 @@ import ch.protonmail.android.maildetail.presentation.previewdata.MessageDetailFo
 import ch.protonmail.android.maildetail.presentation.previewdata.MessageDetailFooterPreviewProvider
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailItem
 import ch.protonmail.android.maildetail.presentation.ui.MessageBodyTestTags
-import ch.protonmail.android.maildetail.presentation.ui.MessageDetailContent
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import me.proton.core.compose.theme.ProtonDimens
 import me.proton.core.compose.theme.ProtonTheme
@@ -136,12 +135,6 @@ object MessageDetailFooter {
                 onReply = {},
                 onReplyAll = {},
                 onForward = {}
-            )
-
-            fun fromMessageDetailContentActions(actions: MessageDetailContent.Actions) = Actions(
-                onReply = actions.onReply,
-                onReplyAll = actions.onReplyAll,
-                onForward = actions.onForward
             )
 
             fun fromConversationDetailItemActions(actions: ConversationDetailItem.Actions) = Actions(

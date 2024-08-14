@@ -31,10 +31,10 @@ import ch.protonmail.android.mailconversation.domain.sample.ConversationSample
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
 import ch.protonmail.android.mailmessage.domain.sample.MessageSample.AlphaAppQAReport
+import ch.protonmail.android.mailsettings.domain.repository.MailSettingsRepository
 import ch.protonmail.android.navigation.deeplinks.NotificationsDeepLinksViewModel.State.NavigateToComposerForReply
 import ch.protonmail.android.navigation.deeplinks.NotificationsDeepLinksViewModel.State.NavigateToConversation
 import ch.protonmail.android.navigation.deeplinks.NotificationsDeepLinksViewModel.State.NavigateToInbox
-import ch.protonmail.android.navigation.deeplinks.NotificationsDeepLinksViewModel.State.NavigateToMessageDetails
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -48,7 +48,6 @@ import me.proton.core.domain.entity.UserId
 import me.proton.core.domain.type.IntEnum
 import me.proton.core.mailsettings.domain.entity.MailSettings
 import me.proton.core.mailsettings.domain.entity.ViewMode
-import ch.protonmail.android.mailsettings.domain.repository.MailSettingsRepository
 import me.proton.core.network.domain.NetworkManager
 import me.proton.core.network.domain.NetworkStatus
 import org.junit.Before
@@ -123,7 +122,7 @@ class NotificationsDeepLinksViewModelTest {
     }
 
     @Test
-    fun `Should emit navigate to message details when conversation mode is not enabled`() = runTest {
+    fun `Should emit navigate to conversation details when conversation mode is not enabled`() = runTest {
         // Given
         val messageId = UUID.randomUUID().toString()
         val userId = UUID.randomUUID().toString()
@@ -131,6 +130,15 @@ class NotificationsDeepLinksViewModelTest {
         coEvery { mailSettings.viewMode } returns IntEnum(ViewMode.NoConversationGrouping.value, null)
         coEvery { messageRepository.observeCachedMessage(UserId(userId), MessageId(messageId)) } returns flowOf(
             AlphaAppQAReport.right()
+        )
+        coEvery {
+            conversationRepository.observeConversation(
+                UserId(userId),
+                AlphaAppQAReport.conversationId,
+                true
+            )
+        } returns flowOf(
+            ConversationSample.AlphaAppFeedback.right()
         )
         val viewModel = buildViewModel()
 
@@ -140,7 +148,7 @@ class NotificationsDeepLinksViewModelTest {
         // Then
         viewModel.state.test {
             assertEquals(
-                NavigateToMessageDetails(AlphaAppQAReport.messageId),
+                NavigateToConversation(AlphaAppQAReport.conversationId),
                 awaitItem()
             )
         }
@@ -322,9 +330,8 @@ class NotificationsDeepLinksViewModelTest {
     private fun buildViewModel() = NotificationsDeepLinksViewModel(
         networkManager = networkManager,
         accountManager = accountManager,
+        getPrimaryAddress = getPrimaryAddress,
         messageRepository = messageRepository,
-        conversationRepository = conversationRepository,
-        mailSettingsRepository = mailSettingsRepository,
-        getPrimaryAddress = getPrimaryAddress
+        conversationRepository = conversationRepository
     )
 }

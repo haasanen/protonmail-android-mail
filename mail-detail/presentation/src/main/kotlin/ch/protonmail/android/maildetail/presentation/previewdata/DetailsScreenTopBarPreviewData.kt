@@ -49,34 +49,6 @@ object DetailsScreenTopBarPreviewData {
         messageCount = ConversationDetailsUiModelPreviewData.WeatherForecast.messageCount,
         isExpanded = false
     )
-
-    val FirstWeekOfAugWeatherForecastExpanded = DetailsScreenTopBarPreview(
-        title = MessageDetailActionBarUiModelPreviewData.FirstWeekOfAugWeatherForecast.subject,
-        isStarred = MessageDetailActionBarUiModelPreviewData.FirstWeekOfAugWeatherForecast.isStarred,
-        messageCount = null,
-        isExpanded = true
-    )
-
-    val FirstWeekOfAugWeatherForecastCollapsed = DetailsScreenTopBarPreview(
-        title = MessageDetailActionBarUiModelPreviewData.FirstWeekOfAugWeatherForecast.subject,
-        isStarred = MessageDetailActionBarUiModelPreviewData.FirstWeekOfAugWeatherForecast.isStarred,
-        messageCount = null,
-        isExpanded = false
-    )
-
-    val LoremIpsum30wordsExpanded = DetailsScreenTopBarPreview(
-        title = MessageDetailActionBarUiModelPreviewData.LoremIpsum30words.subject,
-        isStarred = MessageDetailActionBarUiModelPreviewData.LoremIpsum30words.isStarred,
-        messageCount = null,
-        isExpanded = true
-    )
-
-    val LoremIpsum30wordsCollapsed = DetailsScreenTopBarPreview(
-        title = MessageDetailActionBarUiModelPreviewData.LoremIpsum30words.subject,
-        isStarred = MessageDetailActionBarUiModelPreviewData.LoremIpsum30words.isStarred,
-        messageCount = null,
-        isExpanded = false
-    )
 }
 
 data class DetailsScreenTopBarPreview(
@@ -92,10 +64,6 @@ class DetailsScreenTopBarPreviewProvider : PreviewParameterProvider<DetailsScree
         DetailsScreenTopBarPreviewData.LoadingExpanded,
         DetailsScreenTopBarPreviewData.LoadingCollapsed,
         DetailsScreenTopBarPreviewData.WeatherForecastExpanded,
-        DetailsScreenTopBarPreviewData.WeatherForecastCollapsed,
-        DetailsScreenTopBarPreviewData.FirstWeekOfAugWeatherForecastExpanded,
-        DetailsScreenTopBarPreviewData.FirstWeekOfAugWeatherForecastCollapsed,
-        DetailsScreenTopBarPreviewData.LoremIpsum30wordsExpanded,
-        DetailsScreenTopBarPreviewData.LoremIpsum30wordsCollapsed
+        DetailsScreenTopBarPreviewData.WeatherForecastCollapsed
     )
 }

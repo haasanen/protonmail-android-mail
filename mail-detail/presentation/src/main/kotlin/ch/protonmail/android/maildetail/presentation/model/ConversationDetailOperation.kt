@@ -126,7 +126,7 @@ sealed interface ConversationDetailEvent : ConversationDetailOperation {
         val messageId: MessageIdUiModel,
         val attachmentId: AttachmentId,
         val status: AttachmentWorkerStatus
-    ) : MessageDetailEvent, AffectingMessages
+    ) : ConversationDetailEvent, AffectingMessages
 
     data class OpenAttachmentEvent(val values: OpenAttachmentIntentValues) : ConversationDetailEvent
     data class ReportPhishingRequested(

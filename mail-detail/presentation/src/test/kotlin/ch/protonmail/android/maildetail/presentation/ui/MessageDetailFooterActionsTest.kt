@@ -35,36 +35,6 @@ internal class MessageDetailFooterActionsTest {
     )
 
     @Test
-    fun `should map the message details content actions correctly`() {
-        val actions = MessageDetailContent.Actions(
-            onExpandCollapseButtonClicked = {},
-            onMessageBodyLinkClicked = {},
-            onShowAllAttachmentsClicked = {},
-            onAttachmentClicked = {},
-            loadEmbeddedImage = { _, _ -> null },
-            onReply = replyLambda,
-            onReplyAll = replyAllLambda,
-            onForward = forwardLambda,
-            onMoreActionsClick = {},
-            onReload = {},
-            onLoadRemoteContent = {},
-            onLoadEmbeddedImages = {},
-            onLoadRemoteAndEmbeddedContent = {},
-            onOpenInProtonCalendar = {},
-            showFeatureMissingSnackbar = {},
-            onPrint = {},
-            onAvatarClicked = { _, _ -> },
-            onParticipantClicked = { _, _ -> }
-        )
-
-        // When
-        val actual = MessageDetailFooter.Actions.fromMessageDetailContentActions(actions)
-
-        // Then
-        assertEquals(expected, actual)
-    }
-
-    @Test
     fun `should map the conversation detail item actions correctly`() {
         val actions = ConversationDetailItem.Actions(
             onMessageBodyLinkClicked = { _, _ -> },

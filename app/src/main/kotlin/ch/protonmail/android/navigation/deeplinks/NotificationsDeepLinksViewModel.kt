@@ -41,8 +41,6 @@ import me.proton.core.account.domain.entity.AccountState
 import me.proton.core.accountmanager.domain.AccountManager
 import me.proton.core.accountmanager.domain.getAccounts
 import me.proton.core.domain.entity.UserId
-import me.proton.core.mailsettings.domain.entity.ViewMode
-import ch.protonmail.android.mailsettings.domain.repository.MailSettingsRepository
 import me.proton.core.network.domain.NetworkManager
 import me.proton.core.network.domain.NetworkStatus
 import timber.log.Timber
@@ -55,8 +53,7 @@ class NotificationsDeepLinksViewModel @Inject constructor(
     private val accountManager: AccountManager,
     private val getPrimaryAddress: GetPrimaryAddress,
     private val messageRepository: MessageRepository,
-    private val conversationRepository: ConversationRepository,
-    private val mailSettingsRepository: MailSettingsRepository
+    private val conversationRepository: ConversationRepository
 ) : ViewModel() {
 
     private val _state = MutableStateFlow<State>(State.Launched)
@@ -154,11 +151,7 @@ class NotificationsDeepLinksViewModel @Inject constructor(
                         if (it != DataError.Local.NoDataCached) navigateToInbox(userId.id)
                     }
                     .onRight { message ->
-                        if (isConversationModeEnabled(userId)) {
-                            navigateToConversation(message, userId, switchedAccountEmail)
-                        } else {
-                            _state.value = State.NavigateToMessageDetails(message.messageId, switchedAccountEmail)
-                        }
+                        navigateToConversation(message, userId, switchedAccountEmail)
                         coroutineContext.cancel()
                     }
             }
@@ -178,11 +171,6 @@ class NotificationsDeepLinksViewModel @Inject constructor(
             AccountSwitchResult.AccountSwitched(targetAccount.userId, emailAddress ?: "")
         }
     }
-
-    private suspend fun isConversationModeEnabled(userId: UserId): Boolean =
-        mailSettingsRepository.getMailSettings(userId)
-            .viewMode
-            ?.value == ViewMode.ConversationGrouping.value
 
     private suspend fun navigateToConversation(
         message: Message,
@@ -218,11 +206,6 @@ class NotificationsDeepLinksViewModel @Inject constructor(
             object ActiveUser : NavigateToInbox
             data class ActiveUserSwitched(val email: String) : NavigateToInbox
         }
-
-        data class NavigateToMessageDetails(
-            val messageId: MessageId,
-            val userSwitchedEmail: String? = null
-        ) : State
 
         data class NavigateToConversation(
             val conversationId: ConversationId,

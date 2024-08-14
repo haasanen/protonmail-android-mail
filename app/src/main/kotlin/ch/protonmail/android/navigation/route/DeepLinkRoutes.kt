@@ -90,13 +90,6 @@ internal fun NavGraphBuilder.addDeepLinkHandler(navController: NavHostController
                     showUserSwitchedEmailIfRequired(context, state.email)
                 }
 
-                is NotificationsDeepLinksViewModel.State.NavigateToMessageDetails -> {
-                    navController.navigate(Destination.Screen.Message(state.messageId)) {
-                        popUpTo(Destination.Screen.Mailbox.route) { inclusive = false }
-                    }
-                    showUserSwitchedEmailIfRequired(context, state.userSwitchedEmail)
-                }
-
                 is NotificationsDeepLinksViewModel.State.NavigateToConversation -> {
                     navController.navigate(Destination.Screen.Conversation(conversationId = state.conversationId)) {
                         popUpTo(Destination.Screen.Mailbox.route) { inclusive = false }
