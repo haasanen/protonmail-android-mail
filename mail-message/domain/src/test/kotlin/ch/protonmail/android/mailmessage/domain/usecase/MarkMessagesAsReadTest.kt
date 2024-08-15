@@ -68,5 +68,4 @@ class MarkMessagesAsReadTest {
         // then
         assertEquals(messages, result)
     }
-
 }

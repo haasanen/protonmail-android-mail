@@ -74,5 +74,4 @@ class MoveMessages @Inject constructor(
             }
         )
     }
-
 }
