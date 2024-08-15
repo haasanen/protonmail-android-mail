@@ -95,8 +95,8 @@
   <!-- Swipe Actions -->
   <string name="mail_settings_swipe_actions_title">Azioni di scorrimento</string>
   <string name="mail_settings_swipe_actions_subtitle">Configura i gesti di scorrimento per accedere alle azioni più usate.</string>
-  <string name="mail_settings_swipe_right_name">Da sinistra a destra</string>
-  <string name="mail_settings_swipe_left_name">Da destra a sinistra</string>
+  <string name="mail_settings_swipe_right_name">Sinistra-destra</string>
+  <string name="mail_settings_swipe_left_name">Destra-sinistra</string>
   <string name="mail_settings_swipe_action_archive_title">Archivio</string>
   <string name="mail_settings_swipe_action_read_title">Letto</string>
   <string name="mail_settings_swipe_action_spam_title">Spam</string>
@@ -154,12 +154,12 @@
   <string name="mail_settings_pin_insertion_created_success">Codice PIN applicato</string>
   <string name="mail_settings_pin_insertion_changed_success">Codice PIN cambiato</string>
   <!-- Local storage -->
-  <string name="mail_settings_clearing_cached_data">Cancellazione della cache locale in corso</string>
+  <string name="mail_settings_clearing_cached_data">Cancellazione della cache in corso</string>
   <!-- Error messages -->
   <string name="mail_settings_generic_error_message">Si è verificato un errore. Riprova.</string>
   <!-- strings used for biometric enrollment -->
   <string name="no_biometric_data_enrolled">Nessuna biometria registrata</string>
-  <string name="log_in_using_biometric_credential">Sblocca con le credenziali biometriche</string>
+  <string name="log_in_using_biometric_credential">Sblocca con la biometria</string>
   <string name="unlock_using_biometrics">Sblocco con la biometria</string>
   <string name="biometric_error_hw_not_available">Hardware biometrico non disponibile</string>
 </resources>

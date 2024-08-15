@@ -85,6 +85,7 @@ import ch.protonmail.android.maildetail.presentation.model.ConversationDetailVie
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailsMessagesState
 import ch.protonmail.android.maildetail.presentation.model.MessageIdUiModel
 import ch.protonmail.android.maildetail.presentation.model.ParticipantUiModel
+import ch.protonmail.android.maildetail.presentation.model.TrashedMessagesBannerState
 import ch.protonmail.android.maildetail.presentation.previewdata.ConversationDetailsPreviewProvider
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen.scrollOffsetDp
 import ch.protonmail.android.maildetail.presentation.ui.dialog.ReportPhishingDialog
@@ -349,6 +350,9 @@ fun ConversationDetailScreen(
                             avatarUiModel
                         )
                     )
+                },
+                onTrashedMessagesBannerClick = {
+                    viewModel.submit(ConversationDetailViewAction.ChangeVisibilityOfMessages)
                 }
             ),
             scrollToMessageId = state.scrollToMessage?.id
@@ -534,9 +538,11 @@ fun ConversationDetailScreen(
                 )
                 MessagesContent(
                     uiModels = state.messagesState.messages,
+                    trashedMessagesBannerState = state.trashedMessagesBannerState,
                     padding = innerPadding,
                     scrollToMessageId = scrollToMessageId,
                     actions = conversationDetailItemActions,
+                    onTrashedMessagesBannerClick = actions.onTrashedMessagesBannerClick,
                     paddingOffsetDp = scrollBehavior.state.heightOffset.pxToDp()
                 )
             }
@@ -563,10 +569,12 @@ fun ConversationDetailScreen(
 @Suppress("LongParameterList", "ComplexMethod")
 private fun MessagesContent(
     uiModels: ImmutableList<ConversationDetailMessageUiModel>,
+    trashedMessagesBannerState: TrashedMessagesBannerState,
     padding: PaddingValues,
     scrollToMessageId: String?,
     modifier: Modifier = Modifier,
     actions: ConversationDetailItem.Actions,
+    onTrashedMessagesBannerClick: () -> Unit,
     paddingOffsetDp: Dp = 0f.dp
 ) {
     val listState = rememberLazyListState()
@@ -668,6 +676,18 @@ private fun MessagesContent(
         state = listState
     ) {
 
+        when (trashedMessagesBannerState) {
+            is TrashedMessagesBannerState.Shown -> {
+                item {
+                    TrashedMessagesBanner(
+                        uiModel = trashedMessagesBannerState.trashedMessagesBannerUiModel,
+                        onActionClick = onTrashedMessagesBannerClick
+                    )
+                }
+            }
+            is TrashedMessagesBannerState.Hidden -> Unit
+        }
+
         itemsIndexed(uiModels) { index, uiModel ->
             val isLastItem = index == uiModels.size - 1
 
@@ -746,6 +766,7 @@ object ConversationDetailScreen {
 
     const val ConversationIdKey = "conversation id"
     const val ScrollToMessageIdKey = "scroll to message id"
+    const val FilterByLocationKey = "opened from location"
 
     val scrollOffsetDp: Dp = (-30).dp
 
@@ -783,7 +804,8 @@ object ConversationDetailScreen {
         val onOpenComposer: (MessageIdUiModel) -> Unit,
         val onPrint: (MessageId) -> Unit,
         val onAvatarClicked: (ParticipantUiModel, AvatarUiModel) -> Unit,
-        val onParticipantClicked: (ParticipantUiModel, AvatarUiModel) -> Unit
+        val onParticipantClicked: (ParticipantUiModel, AvatarUiModel) -> Unit,
+        val onTrashedMessagesBannerClick: () -> Unit
     ) {
 
         companion object {
@@ -822,7 +844,8 @@ object ConversationDetailScreen {
                 onOpenComposer = {},
                 onPrint = { _ -> },
                 onAvatarClicked = { _, _ -> },
-                onParticipantClicked = { _, _ -> }
+                onParticipantClicked = { _, _ -> },
+                onTrashedMessagesBannerClick = {}
             )
         }
     }

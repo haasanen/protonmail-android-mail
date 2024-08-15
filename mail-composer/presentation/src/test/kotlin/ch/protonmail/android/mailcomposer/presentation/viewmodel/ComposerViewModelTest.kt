@@ -89,6 +89,7 @@ import ch.protonmail.android.mailcomposer.presentation.usecase.ConvertHtmlToPlai
 import ch.protonmail.android.mailcomposer.presentation.usecase.FormatMessageSendingError
 import ch.protonmail.android.mailcomposer.presentation.usecase.InjectAddressSignature
 import ch.protonmail.android.mailcomposer.presentation.usecase.ParentMessageToDraftFields
+import ch.protonmail.android.mailcomposer.presentation.usecase.SortContactsForSuggestions
 import ch.protonmail.android.mailcomposer.presentation.usecase.StyleQuotedHtml
 import ch.protonmail.android.mailcontact.domain.DeviceContactsSuggestionsPrompt
 import ch.protonmail.android.mailcontact.domain.model.ContactGroup
@@ -214,6 +215,7 @@ class ComposerViewModelTest {
     private val convertHtmlToPlainText = mockk<ConvertHtmlToPlainText>()
 
     private val attachmentUiModelMapper = AttachmentUiModelMapper()
+    private val sortContactsForSuggestions = SortContactsForSuggestions()
     private val reducer = ComposerReducer(attachmentUiModelMapper)
 
     private val viewModel by lazy {
@@ -230,6 +232,7 @@ class ComposerViewModelTest {
             searchDeviceContactsMock,
             deviceContactsSuggestionsPromptMock,
             searchContactGroupsMock,
+            sortContactsForSuggestions,
             participantMapperMock,
             reducer,
             isValidEmailAddressMock,
@@ -806,10 +809,6 @@ class ComposerViewModelTest {
         assertEquals(
             mapOf(
                 ContactSuggestionsField.BCC to listOf(
-                    ContactSuggestionUiModel.ContactGroup(
-                        expectedContactGroups[0].name,
-                        expectedContactGroups[0].members.map { it.email }
-                    ),
                     ContactSuggestionUiModel.Contact(
                         expectedContacts[0].contactEmails.first().name,
                         expectedContacts[0].contactEmails.first().email
@@ -817,6 +816,10 @@ class ComposerViewModelTest {
                     ContactSuggestionUiModel.Contact(
                         expectedContacts[1].contactEmails.first().name,
                         expectedContacts[1].contactEmails.first().email
+                    ),
+                    ContactSuggestionUiModel.ContactGroup(
+                        expectedContactGroups[0].name,
+                        expectedContactGroups[0].members.map { it.email }
                     )
                 )
             ),

@@ -274,6 +274,7 @@ object AppDatabaseMigrations {
         override fun migrate(db: SupportSQLiteDatabase) {
             MessageDatabase.MIGRATION_9.migrate(db)
             ConversationDatabase.MIGRATION_1.migrate(db)
+            ContactDatabase.MIGRATION_2.migrate(db)
         }
     }
 }

@@ -96,6 +96,7 @@ import ch.protonmail.android.maildetail.presentation.mapper.MessageIdUiModelMapp
 import ch.protonmail.android.maildetail.presentation.mapper.MessageLocationUiModelMapper
 import ch.protonmail.android.maildetail.presentation.mapper.ParticipantUiModelMapper
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMessageUiModel.Collapsed
+import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMessageUiModel.Hidden
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMessageUiModel.Expanded
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMessageUiModel.Expanding
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMetadataState
@@ -112,6 +113,7 @@ import ch.protonmail.android.maildetail.presentation.reducer.ConversationDetailM
 import ch.protonmail.android.maildetail.presentation.reducer.ConversationDetailMetadataReducer
 import ch.protonmail.android.maildetail.presentation.reducer.ConversationDetailReducer
 import ch.protonmail.android.maildetail.presentation.reducer.ConversationReportPhishingDialogReducer
+import ch.protonmail.android.maildetail.presentation.reducer.TrashedMessagesBannerReducer
 import ch.protonmail.android.maildetail.presentation.sample.ConversationDetailMessageUiModelSample
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen
 import ch.protonmail.android.maildetail.presentation.usecase.ExtractMessageBodyWithoutQuote
@@ -119,6 +121,7 @@ import ch.protonmail.android.maildetail.presentation.usecase.GetEmbeddedImageAvo
 import ch.protonmail.android.maildetail.presentation.usecase.LoadDataForMessageLabelAsBottomSheet
 import ch.protonmail.android.maildetail.presentation.usecase.OnMessageLabelAsConfirmed
 import ch.protonmail.android.maildetail.presentation.usecase.PrintMessage
+import ch.protonmail.android.maildetail.presentation.usecase.ShouldMessageBeHidden
 import ch.protonmail.android.maillabel.domain.model.MailLabels
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.maillabel.domain.usecase.GetRootLabel
@@ -287,6 +290,9 @@ class ConversationDetailViewModelIntegrationTest {
     private val savedStateHandle: SavedStateHandle = mockk {
         every { get<String>(ConversationDetailScreen.ConversationIdKey) } returns conversationId.id
         every { get<String>(ConversationDetailScreen.ScrollToMessageIdKey) } returns "null"
+        every {
+            get<String>(ConversationDetailScreen.FilterByLocationKey)
+        } returns SystemLabelId.Archive.labelId.id
     }
     private val starConversations: StarConversations = mockk()
     private val unStarConversations: UnStarConversations = mockk()
@@ -328,6 +334,7 @@ class ConversationDetailViewModelIntegrationTest {
     private val onMessageLabelAsConfirmed = OnMessageLabelAsConfirmed(
         moveMessage, observeMessageWithLabels, relabelMessage
     )
+    private val shouldMessageBeHidden = ShouldMessageBeHidden()
     // endregion
 
     // region mappers
@@ -406,7 +413,8 @@ class ConversationDetailViewModelIntegrationTest {
             upsellingBottomSheetReducer = UpsellingBottomSheetReducer()
         ),
         deleteDialogReducer = ConversationDeleteDialogReducer(),
-        reportPhishingDialogReducer = ConversationReportPhishingDialogReducer()
+        reportPhishingDialogReducer = ConversationReportPhishingDialogReducer(),
+        trashedMessagesBannerReducer = TrashedMessagesBannerReducer()
     )
 
     private val inMemoryConversationStateRepository = FakeInMemoryConversationStateRepository()
@@ -2169,6 +2177,176 @@ class ConversationDetailViewModelIntegrationTest {
         }
     }
 
+    @Test
+    fun `should emit hidden trashed messages when opening the conversation from a non-trashed location`() = runTest {
+        // Given
+        val message1 = MessageWithLabelsSample.build(
+            message = MessageSample.build(
+                messageId = MessageIdSample.AugWeatherForecast,
+                labelIds = listOf(SystemLabelId.Archive.labelId)
+            )
+        )
+        val message2 = MessageWithLabelsSample.build(
+            message = MessageSample.build(
+                messageId = MessageIdSample.SepWeatherForecast,
+                labelIds = listOf(SystemLabelId.Trash.labelId)
+            )
+        )
+        val messages = nonEmptyListOf(message1, message2)
+        coEvery { observeConversationMessagesWithLabels(userId, any()) } returns flowOf(messages.right())
+        coEvery {
+            observeMessage(userId, MessageIdSample.AugWeatherForecast)
+        } returns flowOf(message1.message.right())
+        coEvery {
+            observeMessageWithLabels(userId, MessageIdSample.AugWeatherForecast)
+        } returns flowOf(message1.right())
+
+        // When
+        val viewModel = buildConversationDetailViewModel()
+
+        viewModel.state.test {
+            skipItems(3)
+            val item = (awaitItem().messagesState as ConversationDetailsMessagesState.Data).messages
+
+            // Then
+            assertIs<Collapsed>(item[0])
+            assertIs<Hidden>(item[1])
+
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `emit shown trashed messages when opening the conversation from a non-trash location after show action`() =
+        runTest {
+            // Given
+            val message1 = MessageWithLabelsSample.build(
+                message = MessageSample.build(
+                    messageId = MessageIdSample.AugWeatherForecast,
+                    labelIds = listOf(SystemLabelId.Archive.labelId)
+                )
+            )
+            val message2 = MessageWithLabelsSample.build(
+                message = MessageSample.build(
+                    messageId = MessageIdSample.SepWeatherForecast,
+                    labelIds = listOf(SystemLabelId.Trash.labelId)
+                )
+            )
+            val messages = nonEmptyListOf(message1, message2)
+            coEvery { observeConversationMessagesWithLabels(userId, any()) } returns flowOf(messages.right())
+            coEvery {
+                observeMessage(userId, MessageIdSample.AugWeatherForecast)
+            } returns flowOf(message1.message.right())
+            coEvery {
+                observeMessageWithLabels(userId, MessageIdSample.AugWeatherForecast)
+            } returns flowOf(message1.right())
+
+            val viewModel = buildConversationDetailViewModel()
+
+            viewModel.state.test {
+                skipItems(4)
+
+                // When
+                viewModel.submit(ConversationDetailViewAction.ChangeVisibilityOfMessages)
+
+                val item = (awaitItem().messagesState as ConversationDetailsMessagesState.Data).messages
+
+                // Then
+                assertIs<Collapsed>(item[0])
+                assertIs<Collapsed>(item[1])
+
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
+    @Test
+    fun `should emit hidden non-trashed messages when opening the conversation from the trash location`() = runTest {
+        // Given
+        val message1 = MessageWithLabelsSample.build(
+            message = MessageSample.build(
+                messageId = MessageIdSample.AugWeatherForecast,
+                labelIds = listOf(SystemLabelId.Archive.labelId)
+            )
+        )
+        val message2 = MessageWithLabelsSample.build(
+            message = MessageSample.build(
+                messageId = MessageIdSample.SepWeatherForecast,
+                labelIds = listOf(SystemLabelId.Trash.labelId)
+            )
+        )
+        val messages = nonEmptyListOf(message1, message2)
+        every {
+            savedStateHandle.get<String>(ConversationDetailScreen.FilterByLocationKey)
+        } returns SystemLabelId.Trash.labelId.id
+        coEvery { observeConversationMessagesWithLabels(userId, any()) } returns flowOf(messages.right())
+        coEvery {
+            observeMessage(userId, MessageIdSample.AugWeatherForecast)
+        } returns flowOf(message1.message.right())
+        coEvery {
+            observeMessageWithLabels(userId, MessageIdSample.AugWeatherForecast)
+        } returns flowOf(message1.right())
+
+        // When
+        val viewModel = buildConversationDetailViewModel()
+
+        viewModel.state.test {
+            skipItems(3)
+            val item = (awaitItem().messagesState as ConversationDetailsMessagesState.Data).messages
+
+            // Then
+            assertIs<Hidden>(item[0])
+            assertIs<Collapsed>(item[1])
+
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `emit shown non-trashed messages when opening the conversation from the trash location after show action`() =
+        runTest {
+            // Given
+            val message1 = MessageWithLabelsSample.build(
+                message = MessageSample.build(
+                    messageId = MessageIdSample.AugWeatherForecast,
+                    labelIds = listOf(SystemLabelId.Archive.labelId)
+                )
+            )
+            val message2 = MessageWithLabelsSample.build(
+                message = MessageSample.build(
+                    messageId = MessageIdSample.SepWeatherForecast,
+                    labelIds = listOf(SystemLabelId.Trash.labelId)
+                )
+            )
+            val messages = nonEmptyListOf(message1, message2)
+            every {
+                savedStateHandle.get<String>(ConversationDetailScreen.FilterByLocationKey)
+            } returns SystemLabelId.Trash.labelId.id
+            coEvery { observeConversationMessagesWithLabels(userId, any()) } returns flowOf(messages.right())
+            coEvery {
+                observeMessage(userId, MessageIdSample.AugWeatherForecast)
+            } returns flowOf(message1.message.right())
+            coEvery {
+                observeMessageWithLabels(userId, MessageIdSample.AugWeatherForecast)
+            } returns flowOf(message1.right())
+
+            val viewModel = buildConversationDetailViewModel()
+
+            viewModel.state.test {
+                skipItems(4)
+
+                // When
+                viewModel.submit(ConversationDetailViewAction.ChangeVisibilityOfMessages)
+
+                val item = (awaitItem().messagesState as ConversationDetailsMessagesState.Data).messages
+
+                // Then
+                assertIs<Collapsed>(item[0])
+                assertIs<Collapsed>(item[1])
+
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
     @Suppress("LongParameterList")
     private fun buildConversationDetailViewModel(
         observePrimaryUser: ObservePrimaryUserId = observePrimaryUserId,
@@ -2244,7 +2422,8 @@ class ConversationDetailViewModelIntegrationTest {
         getMessageIdToExpand = getMessageToExpand,
         loadDataForMessageLabelAsBottomSheet = loadDataForMessageLabelAsBottomSheet,
         onMessageLabelAsConfirmed = onMessageLabelAsConfirmed,
-        moveMessage = moveMessage
+        moveMessage = moveMessage,
+        shouldMessageBeHidden = shouldMessageBeHidden
     )
 
     private fun aMessageAttachment(id: String): MessageAttachment = MessageAttachment(

@@ -90,6 +90,7 @@ import ch.protonmail.android.maildetail.presentation.usecase.GetEmbeddedImageAvo
 import ch.protonmail.android.maildetail.presentation.usecase.LoadDataForMessageLabelAsBottomSheet
 import ch.protonmail.android.maildetail.presentation.usecase.OnMessageLabelAsConfirmed
 import ch.protonmail.android.maildetail.presentation.usecase.PrintMessage
+import ch.protonmail.android.maildetail.presentation.usecase.ShouldMessageBeHidden
 import ch.protonmail.android.maillabel.domain.model.MailLabels
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.maillabel.domain.usecase.ObserveCustomMailLabels
@@ -264,6 +265,7 @@ class ConversationDetailViewModelTest {
     private val savedStateHandle: SavedStateHandle = mockk {
         every { get<String>(ConversationDetailScreen.ConversationIdKey) } returns conversationId.id
         every { get<String>(ConversationDetailScreen.ScrollToMessageIdKey) } returns null
+        every { get<String>(ConversationDetailScreen.FilterByLocationKey) } returns null
     }
     private val starConversations: StarConversations = mockk {
         coEvery { this@mockk.invoke(any(), any()) } returns listOf(ConversationTestData.starredConversation).right()
@@ -316,11 +318,14 @@ class ConversationDetailViewModelTest {
     private val printMessage = mockk<PrintMessage>()
     private val markMessageAsUnread = mockk<MarkMessageAsUnread>()
     private val getMessageIdToExpand = mockk<GetMessageIdToExpand> {
-        coEvery { this@mockk.invoke(any()) } returns MessageIdSample.build()
+        coEvery { this@mockk.invoke(any(), any()) } returns MessageIdSample.build()
     }
     private val loadDataForMessageLabelAsBottomSheet = mockk<LoadDataForMessageLabelAsBottomSheet>()
     private val onMessageLabelAsConfirmed = mockk<OnMessageLabelAsConfirmed>()
     private val moveMessage = mockk<MoveMessage>()
+    private val shouldMessageBeHidden = mockk<ShouldMessageBeHidden> {
+        every { this@mockk.invoke(any(), any(), any()) } returns false
+    }
 
     private val viewModel by lazy {
         ConversationDetailViewModel(
@@ -366,7 +371,8 @@ class ConversationDetailViewModelTest {
             getMessageIdToExpand = getMessageIdToExpand,
             loadDataForMessageLabelAsBottomSheet = loadDataForMessageLabelAsBottomSheet,
             onMessageLabelAsConfirmed = onMessageLabelAsConfirmed,
-            moveMessage = moveMessage
+            moveMessage = moveMessage,
+            shouldMessageBeHidden = shouldMessageBeHidden
         )
     }
 
@@ -2043,7 +2049,7 @@ class ConversationDetailViewModelTest {
             )
         } returns
             InvoiceWithLabelExpanded
-        every { conversationMessageMapper.toUiModel(any()) } returns
+        every { conversationMessageMapper.toUiModel(any<ConversationDetailMessageUiModel.Collapsed>()) } returns
             InvoiceWithLabelExpanding
         return Pair(allCollapsed.map { it.messageId }, InvoiceWithLabelExpanded)
     }

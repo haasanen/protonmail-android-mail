@@ -109,6 +109,7 @@ import ch.protonmail.android.maildetail.presentation.GetMessageIdToExpand
 import ch.protonmail.android.maildetail.presentation.usecase.LoadDataForMessageLabelAsBottomSheet
 import ch.protonmail.android.maildetail.presentation.usecase.OnMessageLabelAsConfirmed
 import ch.protonmail.android.maildetail.presentation.usecase.PrintMessage
+import ch.protonmail.android.maildetail.presentation.usecase.ShouldMessageBeHidden
 import ch.protonmail.android.mailmessage.domain.model.Participant
 import ch.protonmail.android.mailmessage.domain.usecase.ResolveParticipantName
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.ContactActionsBottomSheetState
@@ -192,13 +193,15 @@ class ConversationDetailViewModel @Inject constructor(
     private val getMessageIdToExpand: GetMessageIdToExpand,
     private val loadDataForMessageLabelAsBottomSheet: LoadDataForMessageLabelAsBottomSheet,
     private val onMessageLabelAsConfirmed: OnMessageLabelAsConfirmed,
-    private val moveMessage: MoveMessage
+    private val moveMessage: MoveMessage,
+    private val shouldMessageBeHidden: ShouldMessageBeHidden
 ) : ViewModel() {
 
     private val primaryUserId: Flow<UserId> = observePrimaryUserId().filterNotNull()
     private val mutableDetailState = MutableStateFlow(initialState)
     private val conversationId = requireConversationId()
     private val initialScrollToMessageId = getInitialScrollToMessageId()
+    private val filterByLocation = getFilterByLocation()
     private val observedAttachments = mutableListOf<AttachmentId>()
 
     val state: StateFlow<ConversationDetailState> = mutableDetailState.asStateFlow()
@@ -245,6 +248,8 @@ class ConversationDetailViewModel @Inject constructor(
             is ConversationDetailViewAction.TrashMessage -> handleTrashMessage(action)
             is ConversationDetailViewAction.ArchiveMessage -> handleArchiveMessage(action)
             is ConversationDetailViewAction.MoveMessageToSpam -> handleMoveMessageToSpam(action)
+
+            is ConversationDetailViewAction.ChangeVisibilityOfMessages -> handleChangeVisibilityOfMessages()
 
             is ConversationDetailViewAction.DeleteRequested,
             is ConversationDetailViewAction.DeleteDialogDismissed,
@@ -328,6 +333,7 @@ class ConversationDetailViewModel @Inject constructor(
                     val messages = messagesEither.getOrElse {
                         return@combine ConversationDetailEvent.ErrorLoadingMessages
                     }
+                    val messagesLabelIds = messages.associate { it.message.messageId to it.message.labelIds }
                     val messagesUiModels = buildMessagesUiModels(
                         messages = messages,
                         contacts = contacts,
@@ -336,13 +342,27 @@ class ConversationDetailViewModel @Inject constructor(
                     ).toImmutableList()
 
                     val initialScrollTo = initialScrollToMessageId
-                        ?: getMessageIdToExpand(messages)
+                        ?: getMessageIdToExpand(messages, filterByLocation)
                             ?.let { messageIdUiModelMapper.toUiModel(it) }
-                    if (stateIsLoading() && initialScrollTo != null && allCollapsed(conversationViewState)) {
-                        ConversationDetailEvent.MessagesData(messagesUiModels, initialScrollTo)
+                    if (
+                        stateIsLoading() && initialScrollTo != null && allCollapsed(conversationViewState.messagesState)
+                    ) {
+                        ConversationDetailEvent.MessagesData(
+                            messagesUiModels,
+                            messagesLabelIds,
+                            initialScrollTo,
+                            filterByLocation,
+                            conversationViewState.shouldHideMessagesBasedOnTrashFilter
+                        )
                     } else {
-                        val requestScrollTo = requestScrollToMessageId(conversationViewState)
-                        ConversationDetailEvent.MessagesData(messagesUiModels, requestScrollTo)
+                        val requestScrollTo = requestScrollToMessageId(conversationViewState.messagesState)
+                        ConversationDetailEvent.MessagesData(
+                            messagesUiModels,
+                            messagesLabelIds,
+                            requestScrollTo,
+                            filterByLocation,
+                            conversationViewState.shouldHideMessagesBasedOnTrashFilter
+                        )
                     }
                 }
             }
@@ -364,26 +384,38 @@ class ConversationDetailViewModel @Inject constructor(
         messages: NonEmptyList<MessageWithLabels>,
         contacts: List<Contact>,
         folderColorSettings: FolderColorSettings,
-        currentViewState: Map<MessageId, InMemoryConversationStateRepository.MessageState>
+        currentViewState: InMemoryConversationStateRepository.MessagesState
     ): NonEmptyList<ConversationDetailMessageUiModel> {
         val messagesList = messages.map { messageWithLabels ->
             val existingMessageState = getExistingExpandedMessageUiState(messageWithLabels.message.messageId)
 
-            when (val viewState = currentViewState[messageWithLabels.message.messageId]) {
-                is InMemoryConversationStateRepository.MessageState.Expanding ->
-                    buildExpandingMessage(buildCollapsedMessage(messageWithLabels, contacts, folderColorSettings))
+            if (
+                shouldMessageBeHidden(
+                    filterByLocation,
+                    messageWithLabels.message.labelIds,
+                    currentViewState.shouldHideMessagesBasedOnTrashFilter
+                )
+            ) {
+                buildHiddenMessage(messageWithLabels)
+            } else {
+                when (val viewState = currentViewState.messagesState[messageWithLabels.message.messageId]) {
+                    is InMemoryConversationStateRepository.MessageState.Expanding ->
+                        buildExpandingMessage(buildCollapsedMessage(messageWithLabels, contacts, folderColorSettings))
 
-                is InMemoryConversationStateRepository.MessageState.Expanded -> {
-                    buildExpandedMessage(
-                        messageWithLabels,
-                        existingMessageState,
-                        contacts,
-                        viewState.decryptedBody,
-                        folderColorSettings
-                    )
+                    is InMemoryConversationStateRepository.MessageState.Expanded -> {
+                        buildExpandedMessage(
+                            messageWithLabels,
+                            existingMessageState,
+                            contacts,
+                            viewState.decryptedBody,
+                            folderColorSettings
+                        )
+                    }
+
+                    else -> {
+                        buildCollapsedMessage(messageWithLabels, contacts, folderColorSettings)
+                    }
                 }
-
-                else -> buildCollapsedMessage(messageWithLabels, contacts, folderColorSettings)
             }
         }
         return messagesList
@@ -414,6 +446,9 @@ class ConversationDetailViewModel @Inject constructor(
         }
         return requestScrollTo
     }
+
+    private fun buildHiddenMessage(messageWithLabels: MessageWithLabels): ConversationDetailMessageUiModel.Hidden =
+        conversationMessageMapper.toUiModel(messageWithLabels)
 
     private suspend fun buildCollapsedMessage(
         messageWithLabels: MessageWithLabels,
@@ -712,6 +747,11 @@ class ConversationDetailViewModel @Inject constructor(
         return messageIdStr?.let { if (it == "null") null else MessageIdUiModel(it) }
     }
 
+    private fun getFilterByLocation(): LabelId? {
+        val labelId = savedStateHandle.get<String>(ConversationDetailScreen.FilterByLocationKey)
+        return labelId?.let { LabelId(it) }
+    }
+
     private suspend fun emitNewStateFrom(event: ConversationDetailOperation) {
         val newState: ConversationDetailState = reducer.newStateFrom(state.value.copy(), event)
         mutableDetailState.emit(newState)
@@ -856,6 +896,12 @@ class ConversationDetailViewModel @Inject constructor(
 
     private fun onCollapseMessage(messageId: MessageIdUiModel) {
         viewModelScope.launch { setMessageViewState.collapsed(MessageId(messageId.id)) }
+    }
+
+    private fun handleChangeVisibilityOfMessages() {
+        viewModelScope.launch {
+            setMessageViewState.switchTrashedMessagesFilter()
+        }
     }
 
     private fun onDoNotAskLinkConfirmationChecked() {

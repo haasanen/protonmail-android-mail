@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 36,
-    "identityHash": "5fefc47b5aebbd2f2f3a676dec76bc4a",
+    "identityHash": "c8053e2418e320e50549c60b2a48a9d0",
     "entities": [
       {
         "tableName": "AccountEntity",
@@ -2102,7 +2102,7 @@
       },
       {
         "tableName": "ContactEmailEntity",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`userId` TEXT NOT NULL, `contactEmailId` TEXT NOT NULL, `name` TEXT NOT NULL, `email` TEXT NOT NULL, `defaults` INTEGER NOT NULL, `order` INTEGER NOT NULL, `contactId` TEXT NOT NULL, `canonicalEmail` TEXT, `isProton` INTEGER, PRIMARY KEY(`contactEmailId`), FOREIGN KEY(`userId`) REFERENCES `UserEntity`(`userId`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`contactId`) REFERENCES `ContactEntity`(`contactId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`userId` TEXT NOT NULL, `contactEmailId` TEXT NOT NULL, `name` TEXT NOT NULL, `email` TEXT NOT NULL, `defaults` INTEGER NOT NULL, `order` INTEGER NOT NULL, `contactId` TEXT NOT NULL, `canonicalEmail` TEXT, `isProton` INTEGER, `lastUsedTime` INTEGER NOT NULL, PRIMARY KEY(`contactEmailId`), FOREIGN KEY(`userId`) REFERENCES `UserEntity`(`userId`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`contactId`) REFERENCES `ContactEntity`(`contactId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "userId",
@@ -2157,6 +2157,12 @@
             "columnName": "isProton",
             "affinity": "INTEGER",
             "notNull": false
+          },
+          {
+            "fieldPath": "lastUsedTime",
+            "columnName": "lastUsedTime",
+            "affinity": "INTEGER",
+            "notNull": true
           }
         ],
         "primaryKey": {
@@ -4672,7 +4678,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '5fefc47b5aebbd2f2f3a676dec76bc4a')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'c8053e2418e320e50549c60b2a48a9d0')"
     ]
   }
 }

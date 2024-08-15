@@ -34,7 +34,8 @@ object ContactEmailSample {
         ContactIdTestData.contactId1,
         "canonical email (contact email 1)",
         listOf(LabelSample.GroupCoworkers.labelId.id),
-        false
+        false,
+        lastUsedTime = 0
     )
 
     val contactEmail2 = ContactEmail(
@@ -47,7 +48,8 @@ object ContactEmailSample {
         ContactIdTestData.contactId1,
         "canonical email (contact email 2)",
         listOf(LabelSample.GroupCoworkers.labelId.id),
-        false
+        false,
+        lastUsedTime = 0
     )
 
     val contactEmail3 = ContactEmail(
@@ -60,7 +62,8 @@ object ContactEmailSample {
         ContactIdTestData.contactId3,
         "canonical email (contact email 3)",
         emptyList(),
-        false
+        false,
+        lastUsedTime = 0
     )
 
     val contactEmail4 = ContactEmail(
@@ -73,6 +76,35 @@ object ContactEmailSample {
         ContactIdTestData.contactId4,
         "canonical email (contact email 4)",
         emptyList(),
-        false
+        false,
+        lastUsedTime = 0
+    )
+
+    val contactEmailLastUsedRecently = ContactEmail(
+        UserIdTestData.Primary,
+        ContactIdTestData.contactEmailId5,
+        "Testing LastUsedTime",
+        "testing@last.used.time -- recently",
+        0,
+        2,
+        ContactIdTestData.contactId5,
+        "canonical testing@last.used.time",
+        emptyList(),
+        false,
+        lastUsedTime = 100
+    )
+
+    val contactEmailLastUsedLongTimeAgo = ContactEmail(
+        UserIdTestData.Primary,
+        ContactIdTestData.contactEmailId6,
+        "Testing LastUsedTime",
+        "testing@last.used.time -- long time ago",
+        0,
+        2,
+        ContactIdTestData.contactId6,
+        "canonical testing@last.used.time",
+        emptyList(),
+        false,
+        lastUsedTime = 1
     )
 }

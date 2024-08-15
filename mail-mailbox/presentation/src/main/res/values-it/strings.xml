@@ -17,11 +17,11 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
-  <string name="mailbox_toolbar_compose_button_content_description">Scrivi un nuovo messaggio</string>
-  <string name="mailbox_toolbar_exit_selection_mode_button_content_description">Esci dalla modalità di selezione</string>
+  <string name="mailbox_toolbar_compose_button_content_description">Scrivi un messaggio</string>
+  <string name="mailbox_toolbar_exit_selection_mode_button_content_description">Chiudi la modalità di selezione</string>
   <string name="mailbox_toolbar_menu_button_content_description">Menu</string>
   <string name="mailbox_toolbar_search_button_content_description">Cerca</string>
-  <string name="mailbox_toolbar_exit_search_mode_content_description">Esci dalla modalità di ricerca</string>
+  <string name="mailbox_toolbar_exit_search_mode_content_description">Chiudi la modalità di ricerca</string>
   <string name="mailbox_toolbar_searchview_clear_search_query_content_description">Cancella la parola chiave</string>
   <string name="mailbox_toolbar_searchview_query_text_field_content_description">Inserisci una parola chiave</string>
   <plurals name="mailbox_toolbar_selected_count">
@@ -35,7 +35,7 @@
   <string name="mailbox_default_recipient">(Nessun destinatario)</string>
   <string name="mailbox_default_sender">(Nessun mittente)</string>
   <string name="mailbox_error_message_offline">Sei offline. Caricamento dei messaggi non riuscito.</string>
-  <string name="mailbox_error_message_generic">Caricamento della casella di posta non riuscito</string>
+  <string name="mailbox_error_message_generic">Caricamento dei messaggi non riuscito</string>
   <string name="mailbox_error_message_unexpected">Si è verificato un errore imprevisto</string>
   <string name="mailbox_is_empty_title">Nessun messaggio</string>
   <string name="mailbox_is_empty_description">Niente di nuovo qui</string>

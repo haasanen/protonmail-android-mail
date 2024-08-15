@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 35,
-    "identityHash": "9bfbc4fed21b1bdc31085ef21dd2e2fa",
+    "identityHash": "206d6e3f49e053d03ded9c9e6303e062",
     "entities": [
       {
         "tableName": "AccountEntity",
@@ -2937,7 +2937,7 @@
       },
       {
         "tableName": "MessageEntity",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`userId` TEXT NOT NULL, `messageId` TEXT NOT NULL, `conversationId` TEXT NOT NULL, `order` INTEGER NOT NULL, `subject` TEXT NOT NULL, `unread` INTEGER NOT NULL, `toList` TEXT NOT NULL, `ccList` TEXT NOT NULL, `bccList` TEXT NOT NULL, `time` INTEGER NOT NULL, `size` INTEGER NOT NULL, `expirationTime` INTEGER NOT NULL, `isReplied` INTEGER NOT NULL, `isRepliedAll` INTEGER NOT NULL, `isForwarded` INTEGER NOT NULL, `addressId` TEXT NOT NULL, `externalId` TEXT, `numAttachments` INTEGER NOT NULL, `flags` INTEGER NOT NULL, `attachmentCount` TEXT NOT NULL, `sender_address` TEXT NOT NULL, `sender_name` TEXT NOT NULL, `sender_isProton` INTEGER NOT NULL, `sender_group` TEXT, `sender_bimiSelector` TEXT, PRIMARY KEY(`userId`, `messageId`), FOREIGN KEY(`userId`) REFERENCES `UserEntity`(`userId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`userId` TEXT NOT NULL, `messageId` TEXT NOT NULL, `conversationId` TEXT NOT NULL, `order` INTEGER NOT NULL, `subject` TEXT NOT NULL, `unread` INTEGER NOT NULL, `toList` TEXT NOT NULL, `ccList` TEXT NOT NULL, `bccList` TEXT NOT NULL, `time` INTEGER NOT NULL, `size` INTEGER NOT NULL, `expirationTime` INTEGER NOT NULL, `isReplied` INTEGER NOT NULL, `isRepliedAll` INTEGER NOT NULL, `isForwarded` INTEGER NOT NULL, `addressId` TEXT NOT NULL, `externalId` TEXT, `numAttachments` INTEGER NOT NULL, `flags` INTEGER NOT NULL, `attachmentCount` TEXT NOT NULL, `sender_address` TEXT NOT NULL, `sender_name` TEXT NOT NULL, `sender_isProton` INTEGER NOT NULL, `sender_group` TEXT, PRIMARY KEY(`userId`, `messageId`), FOREIGN KEY(`userId`) REFERENCES `UserEntity`(`userId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "userId",
@@ -3080,12 +3080,6 @@
           {
             "fieldPath": "sender.group",
             "columnName": "sender_group",
-            "affinity": "TEXT",
-            "notNull": false
-          },
-          {
-            "fieldPath": "sender.bimiSelector",
-            "columnName": "sender_bimiSelector",
             "affinity": "TEXT",
             "notNull": false
           }
@@ -4812,7 +4806,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '9bfbc4fed21b1bdc31085ef21dd2e2fa')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '206d6e3f49e053d03ded9c9e6303e062')"
     ]
   }
 }

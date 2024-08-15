@@ -24,7 +24,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface InMemoryConversationStateRepository {
 
-    val conversationState: Flow<Map<MessageId, MessageState>>
+    val conversationState: Flow<MessagesState>
 
     suspend fun expandMessage(messageId: MessageId, decryptedBody: DecryptedMessageBody)
 
@@ -32,9 +32,16 @@ interface InMemoryConversationStateRepository {
 
     suspend fun collapseMessage(messageId: MessageId)
 
+    suspend fun switchTrashedMessagesFilter()
+
+    data class MessagesState(
+        val messagesState: Map<MessageId, MessageState>,
+        val shouldHideMessagesBasedOnTrashFilter: Boolean
+    )
+
     sealed class MessageState {
-        object Collapsed : MessageState()
-        object Expanding : MessageState()
+        data object Collapsed : MessageState()
+        data object Expanding : MessageState()
         data class Expanded(val decryptedBody: DecryptedMessageBody) : MessageState()
     }
 }
