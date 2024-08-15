@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.mailmessage.data.local
 
+import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailmessage.data.model.LocalConversationMessages
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import kotlinx.coroutines.flow.Flow
@@ -52,9 +53,19 @@ class RustMessageDataSourceImpl @Inject constructor(
         }
     }
 
-    override suspend fun getMessageBody(userId: UserId, messageId: LocalMessageId): DecryptedMessageBody? {
-        return try {
+    override suspend fun getMessageBody(
+        userId: UserId,
+        messageId: LocalMessageId,
+        labelId: LocalLabelId?
+    ): DecryptedMessageBody? {
+        val mailboxFlow = if (labelId != null) {
+            rustMailbox.observeMailbox(labelId)
+        } else {
             rustMailbox.observeMessageMailbox()
+        }
+
+        return try {
+            mailboxFlow
                 .mapLatest { mailbox ->
                     mailbox.messageBody(messageId)
                 }
@@ -72,10 +83,12 @@ class RustMessageDataSourceImpl @Inject constructor(
             .first()
     }
 
+    @MissingRustApi
     override suspend fun markRead(userId: UserId, messages: List<LocalMessageId>) {
-        throw UnsupportedOperationException("rust-message: markRead has not been implemented by Rust")
+        Timber.w("rust-message: markRead has not been implemented by Rust")
     }
 
+    @MissingRustApi
     override suspend fun markUnread(userId: UserId, messages: List<LocalMessageId>) {
         throw UnsupportedOperationException("rust-message: markUnread has not been implemented by Rust")
     }

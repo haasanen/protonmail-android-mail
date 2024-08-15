@@ -57,6 +57,9 @@ class RustMailboxImpl @Inject constructor(
             return
         }
 
+        // Reset mailbox to avoid using wrong mailbox while the new one is being created
+        mailboxMutableStatusFlow.value = null
+
         coroutineScope.launch {
             val userSession = userSessionRepository.getUserSession(userId)
             if (userSession == null) {
@@ -77,6 +80,10 @@ class RustMailboxImpl @Inject constructor(
     override fun observeConversationMailbox(): Flow<Mailbox> = conversationMailboxFlow
 
     override fun observeMessageMailbox(): Flow<Mailbox> = messageMailboxFlow
+
+    override fun observeMailbox(labelId: LocalLabelId): Flow<Mailbox> = mailboxMutableStatusFlow.asStateFlow()
+        .filterNotNull()
+        .filter { it.labelId() == labelId }
 
     private fun shouldSwitchMailbox(labelId: LocalLabelId) = mailboxMutableStatusFlow.value?.labelId() != labelId
 

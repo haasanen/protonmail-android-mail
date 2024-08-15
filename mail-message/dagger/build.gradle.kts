@@ -55,5 +55,6 @@ dependencies {
     implementation(project(":mail-label:data"))
 
     implementation(Dagger.hiltAndroid)
+    implementation(project(":mail-label:domain"))
     kapt(Dagger.hiltDaggerCompiler)
 }

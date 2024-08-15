@@ -28,8 +28,14 @@ import uniffi.proton_mail_common.LocalMessageMetadata
 import uniffi.proton_mail_uniffi.DecryptedMessageBody
 
 interface RustMessageDataSource {
+
     suspend fun getMessage(userId: UserId, messageId: LocalMessageId): LocalMessageMetadata?
-    suspend fun getMessageBody(userId: UserId, messageId: LocalMessageId): DecryptedMessageBody?
+    suspend fun getMessageBody(
+        userId: UserId,
+        messageId: LocalMessageId,
+        labelId: LocalLabelId? = null
+    ): DecryptedMessageBody?
+
     suspend fun getMessages(userId: UserId, labelId: LocalLabelId): List<LocalMessageMetadata>
     suspend fun markRead(userId: UserId, messages: List<LocalMessageId>)
     suspend fun markUnread(userId: UserId, messages: List<LocalMessageId>)

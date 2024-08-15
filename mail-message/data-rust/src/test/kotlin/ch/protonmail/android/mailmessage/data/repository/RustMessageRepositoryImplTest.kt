@@ -23,6 +23,9 @@ import arrow.core.getOrElse
 import arrow.core.left
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
+import ch.protonmail.android.maillabel.domain.SelectedMailLabelId
+import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.mailmessage.data.local.RustMessageDataSource
 import ch.protonmail.android.mailmessage.data.mapper.toConversationMessagesWithMessageToOpen
@@ -44,6 +47,8 @@ import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import me.proton.core.domain.entity.UserId
@@ -54,9 +59,10 @@ import kotlin.test.assertNotNull
 class RustMessageRepositoryImplTest {
 
     private val rustMessageDataSource: RustMessageDataSource = mockk()
+    private val selectedMailLabelId: SelectedMailLabelId = mockk()
 
     private val userId = UserId("userId")
-    private val repository = RustMessageRepositoryImpl(rustMessageDataSource)
+    private val repository = RustMessageRepositoryImpl(rustMessageDataSource, selectedMailLabelId)
 
     @Test
     fun `getLocalMessages should return list of messages`() = runTest {
@@ -137,8 +143,16 @@ class RustMessageRepositoryImplTest {
         }
         val expectedMessageWithBody = localMessageBody.toMessageBody(messageId)
         coEvery { rustMessageDataSource.getMessage(userId, messageId.toLocalMessageId()) } returns localMessage
-        coEvery { rustMessageDataSource.getMessageBody(userId, messageId.toLocalMessageId()) } returns localMessageBody
-
+        coEvery {
+            rustMessageDataSource.getMessageBody(
+                userId,
+                messageId.toLocalMessageId(),
+                SystemLabelId.Inbox.labelId.toLocalLabelId()
+            )
+        } returns localMessageBody
+        coEvery {
+            selectedMailLabelId.flow
+        } returns MutableStateFlow(MailLabelId.System(SystemLabelId.Inbox.labelId)).asStateFlow()
         // When
         val result = repository.getMessageWithBody(userId, messageId).getOrNull()
 
@@ -147,7 +161,13 @@ class RustMessageRepositoryImplTest {
         assertEquals(localMessage.toMessage(), result.message)
         assertEquals(expectedMessageWithBody, result.messageBody)
         coVerify { rustMessageDataSource.getMessage(userId, messageId.toLocalMessageId()) }
-        coVerify { rustMessageDataSource.getMessageBody(userId, messageId.toLocalMessageId()) }
+        coVerify {
+            rustMessageDataSource.getMessageBody(
+                userId,
+                messageId.toLocalMessageId(),
+                SystemLabelId.Inbox.labelId.toLocalLabelId()
+            )
+        }
     }
 
     @Test

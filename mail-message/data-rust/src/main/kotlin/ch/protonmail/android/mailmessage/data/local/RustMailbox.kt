@@ -28,4 +28,5 @@ interface RustMailbox {
     fun switchToMailbox(userId: UserId, labelId: LocalLabelId)
     fun observeConversationMailbox(): Flow<Mailbox>
     fun observeMessageMailbox(): Flow<Mailbox>
+    fun observeMailbox(labelId: LocalLabelId): Flow<Mailbox>
 }

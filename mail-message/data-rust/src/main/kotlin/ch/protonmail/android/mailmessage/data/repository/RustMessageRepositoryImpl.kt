@@ -24,6 +24,7 @@ import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
+import ch.protonmail.android.maillabel.domain.SelectedMailLabelId
 import ch.protonmail.android.mailmessage.data.local.RustMessageDataSource
 import ch.protonmail.android.mailmessage.data.mapper.toConversationMessagesWithMessageToOpen
 import ch.protonmail.android.mailmessage.data.mapper.toLocalConversationId
@@ -49,7 +50,8 @@ import javax.inject.Inject
 
 @Suppress("NotImplementedDeclaration", "TooManyFunctions")
 class RustMessageRepositoryImpl @Inject constructor(
-    private val rustMessageDataSource: RustMessageDataSource
+    private val rustMessageDataSource: RustMessageDataSource,
+    private val selectedMailLabelId: SelectedMailLabelId
 ) : MessageRepository {
 
     override suspend fun getLocalMessages(userId: UserId, pageKey: PageKey): List<Message> {
@@ -130,7 +132,8 @@ class RustMessageRepositoryImpl @Inject constructor(
     override suspend fun getLocalMessageWithBody(userId: UserId, messageId: MessageId): MessageWithBody? {
         val localMessageId = messageId.toLocalMessageId()
         val message = rustMessageDataSource.getMessage(userId, localMessageId)?.toMessage()
-        val body = rustMessageDataSource.getMessageBody(userId, localMessageId)
+        val currentLabelId = selectedMailLabelId.flow.value.labelId.toLocalLabelId()
+        val body = rustMessageDataSource.getMessageBody(userId, localMessageId, currentLabelId)
 
         return if (message != null && body != null) {
             MessageWithBody(message, body.toMessageBody(messageId))
