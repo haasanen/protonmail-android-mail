@@ -21,6 +21,7 @@ package ch.protonmail.android.mailmessage.domain.usecase
 import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailcommon.domain.model.FAKE_USER_ADDRESS
 import ch.protonmail.android.mailmessage.domain.model.AttachmentId
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.model.GetDecryptedMessageBodyError
@@ -28,30 +29,13 @@ import ch.protonmail.android.mailmessage.domain.model.MessageAttachment
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.MessageWithBody
 import ch.protonmail.android.mailmessage.domain.model.MimeType
-import ch.protonmail.android.mailmessage.domain.repository.AttachmentRepository
 import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
 import ch.protonmail.android.testdata.message.MessageBodyTestData
 import ch.protonmail.android.testdata.message.MessageTestData
 import ch.protonmail.android.testdata.user.UserIdTestData
 import io.mockk.coEvery
-import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.JsonPrimitive
-import me.proton.core.crypto.common.context.CryptoContext
-import me.proton.core.crypto.common.keystore.EncryptedByteArray
-import me.proton.core.crypto.common.keystore.PlainByteArray
-import me.proton.core.crypto.common.pgp.DecryptedMimeAttachment
-import me.proton.core.crypto.common.pgp.DecryptedMimeBody
-import me.proton.core.crypto.common.pgp.DecryptedMimeMessage
-import me.proton.core.crypto.common.pgp.PGPCrypto
-import me.proton.core.crypto.common.pgp.decryptTextOrNull
-import me.proton.core.crypto.common.pgp.exception.CryptoException
-import me.proton.core.key.domain.entity.key.PrivateKey
-import me.proton.core.user.domain.UserAddressManager
-import me.proton.core.user.domain.entity.UserAddress
-import me.proton.core.user.domain.entity.UserAddressKey
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 import kotlin.test.Test
@@ -64,75 +48,22 @@ class GetDecryptedMessageBodyTest(
 ) {
 
     private val messageId = MessageId("messageId")
-    private val decryptedMessageBody = "Decrypted message body."
-    private val armoredPrivateKey = "armoredPrivateKey"
-    private val armoredPublicKey = "armoredPublicKey"
-    private val encryptedPassphrase = EncryptedByteArray("encryptedPassphrase".encodeToByteArray())
-    private val decryptedPassphrase = PlainByteArray("decryptedPassPhrase".encodeToByteArray())
-    private val unlockedPrivateKey = "unlockedPrivateKey".encodeToByteArray()
-
-    private val pgpCryptoMock = mockk<PGPCrypto> {
-        every { getPublicKey(armoredPrivateKey) } returns armoredPublicKey
-        every { unlock(armoredPrivateKey, decryptedPassphrase.array) } returns mockk(relaxUnitFun = true) {
-            every { value } returns unlockedPrivateKey
-        }
-    }
-    private val cryptoContext = mockk<CryptoContext> {
-        every { pgpCrypto } returns pgpCryptoMock
-        every { keyStoreCrypto } returns mockk {
-            every { decrypt(encryptedPassphrase) } returns decryptedPassphrase
-        }
-    }
-    private val userAddressKey = mockk<UserAddressKey> {
-        every { privateKey } returns PrivateKey(
-            key = armoredPrivateKey,
-            isPrimary = true,
-            isActive = true,
-            canEncrypt = true,
-            canVerify = true,
-            passphrase = encryptedPassphrase
-        )
-    }
-    private val userAddressManager = mockk<UserAddressManager>()
-    private val parseMimeAttachmentHeaders = mockk<ParseMimeAttachmentHeaders> {
-        every { this@mockk.invoke(decryptedMimeAttachment.headers) } returns parsedMimeAttachmentHeaders
-    }
-    private val provideNewAttachmentId = mockk<ProvideNewAttachmentId> {
-        every { this@mockk.invoke() } returns mimeAttachmentId
-    }
-    private val attachmentRepository = mockk<AttachmentRepository> {
-        coEvery {
-            saveMimeAttachment(
-                UserIdTestData.userId,
-                MessageBodyTestData.multipartMixedMessageBody.messageId,
-                mimeAttachmentId,
-                mimeAttachmentContent,
-                mimeMessageAttachment
-            )
-        } returns Unit.right()
-    }
     private val messageRepository = mockk<MessageRepository>()
 
     private val getDecryptedMessageBody = GetDecryptedMessageBody(
-        attachmentRepository,
-        cryptoContext,
-        messageRepository,
-        parseMimeAttachmentHeaders,
-        provideNewAttachmentId,
-        userAddressManager
+        messageRepository
     )
 
     @Test
     fun `when repository gets message body and decryption is successful then the decrypted message body is returned`() =
         runTest {
             // Given
-            val expectedUserAddress = mockGetUserAddressSucceeds()
-            mockDecryptionIsSuccessful()
+            val expectedUserAddress = FAKE_USER_ADDRESS
             val expected = DecryptedMessageBody(
-                testInput.messageWithBody.message.messageId,
-                decryptedMessageBody,
-                testInput.mimeType,
-                testInput.mimeAttachments,
+                messageId,
+                testInput.messageWithBody.messageBody.body,
+                testInput.messageWithBody.messageBody.mimeType,
+                testInput.messageWithBody.messageBody.attachments,
                 expectedUserAddress
             ).right()
             coEvery {
@@ -145,44 +76,6 @@ class GetDecryptedMessageBodyTest(
             // Then
             assertEquals(expected, actual, testName)
         }
-
-    @Test
-    fun `when repository gets message body and decryption has failed then a decryption error is returned`() = runTest {
-        // Given
-        val expected = GetDecryptedMessageBodyError.Decryption(
-            messageId, MessageBodyTestData.RAW_ENCRYPTED_MESSAGE_BODY
-        ).left()
-        coEvery {
-            messageRepository.getMessageWithBody(UserIdTestData.userId, messageId)
-        } returns testInput.messageWithBody.right()
-        mockGetUserAddressSucceeds()
-        mockDecryptionFails()
-
-        // When
-        val actual = getDecryptedMessageBody(UserIdTestData.userId, messageId)
-
-        // Then
-        assertEquals(expected, actual, testName)
-    }
-
-    @Test
-    fun `when repository gets message body and user address is null then a decryption error is returned`() = runTest {
-        // Given
-        val expected = GetDecryptedMessageBodyError.Decryption(
-            messageId,
-            MessageBodyTestData.RAW_ENCRYPTED_MESSAGE_BODY
-        ).left()
-        coEvery {
-            messageRepository.getMessageWithBody(UserIdTestData.userId, messageId)
-        } returns testInput.messageWithBody.right()
-        expectGetUserAddressFails()
-
-        // When
-        val actual = getDecryptedMessageBody(UserIdTestData.userId, messageId)
-
-        // Then
-        assertEquals(expected, actual, testName)
-    }
 
     @Test
     fun `when repository method returns an error then the use case returns the error`() = runTest {
@@ -199,68 +92,10 @@ class GetDecryptedMessageBodyTest(
         assertEquals(expected, actual, testName)
     }
 
-    private fun mockDecryptionIsSuccessful() {
-        if (testInput.mimeType == MimeType.MultipartMixed) {
-            every {
-                pgpCryptoMock.decryptMimeMessage(
-                    message = MessageBodyTestData.RAW_ENCRYPTED_MESSAGE_BODY,
-                    unlockedKeys = any()
-                )
-            } returns DecryptedMimeMessage(
-                emptyList(),
-                DecryptedMimeBody(testInput.mimeType.value, decryptedMessageBody),
-                listOf(decryptedMimeAttachment)
-            )
-        } else {
-            every {
-                pgpCryptoMock.decryptTextOrNull(
-                    message = MessageBodyTestData.RAW_ENCRYPTED_MESSAGE_BODY,
-                    unlockedKey = any()
-                )
-            } returns decryptedMessageBody
-        }
-    }
-
-    private fun mockGetUserAddressSucceeds(): UserAddress {
-        val expectedUserAddress = mockk<UserAddress> {
-            every { keys } returns listOf(userAddressKey)
-        }
-        coEvery {
-            userAddressManager.getAddress(UserIdTestData.userId, MessageTestData.message.addressId)
-        } returns expectedUserAddress
-        return expectedUserAddress
-    }
-
-    private fun expectGetUserAddressFails() {
-        coEvery {
-            userAddressManager.getAddress(UserIdTestData.userId, MessageTestData.message.addressId)
-        } returns null
-    }
-
-    private fun mockDecryptionFails() {
-        if (testInput.mimeType == MimeType.MultipartMixed) {
-            every {
-                pgpCryptoMock.decryptMimeMessage(
-                    message = MessageBodyTestData.RAW_ENCRYPTED_MESSAGE_BODY,
-                    unlockedKeys = any()
-                )
-            } throws CryptoException()
-        } else {
-            every {
-                pgpCryptoMock.decryptTextOrNull(
-                    message = MessageBodyTestData.RAW_ENCRYPTED_MESSAGE_BODY,
-                    unlockedKey = any()
-                )
-            } throws CryptoException()
-        }
-    }
-
     companion object {
 
         private val mimeAttachmentId = AttachmentId("attachmentId")
-        private const val mimeAttachmentHeaders = "mimeAttachmentHeaders"
         private val mimeAttachmentContent = "mimeAttachmentContent".encodeToByteArray()
-        private val decryptedMimeAttachment = DecryptedMimeAttachment(mimeAttachmentHeaders, mimeAttachmentContent)
         private val mimeMessageAttachment = MessageAttachment(
             attachmentId = mimeAttachmentId,
             name = "image.png",
@@ -271,15 +106,6 @@ class GetDecryptedMessageBodyTest(
             signature = null,
             encSignature = null,
             headers = emptyMap()
-        )
-        private val parsedMimeAttachmentHeaders = JsonObject(
-            mapOf(
-                "Content-Disposition" to JsonPrimitive("attachment"),
-                "filename" to JsonPrimitive("image.png"),
-                "Content-Transfer-Encoding" to JsonPrimitive("base64"),
-                "Content-Type" to JsonPrimitive("image/png"),
-                "name" to JsonPrimitive("image.png")
-            )
         )
 
         private val testInputList = listOf(
