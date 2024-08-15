@@ -107,6 +107,7 @@ class RustConversationMessageQueryImpl @Inject constructor(
         userId: UserId,
         conversationId: LocalConversationId
     ): Flow<LocalConversationMessages> {
+        destroy()
         initConversationMessagesLiveQuery(conversationId)
 
         return conversationMessagesStatusFlow
