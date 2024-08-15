@@ -95,7 +95,7 @@ class RustMessageQueryImpl @Inject constructor(
 
     companion object {
 
-        private const val MAX_MESSAGE_COUNT = 50L
+        private const val MAX_MESSAGE_COUNT = 250L
     }
 
 }

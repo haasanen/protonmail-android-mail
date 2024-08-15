@@ -101,6 +101,6 @@ class RustConversationQueryImpl @Inject constructor(
 
     companion object {
 
-        private const val MAX_CONVERSATION_COUNT = 50L
+        private const val MAX_CONVERSATION_COUNT = 200L
     }
 }
