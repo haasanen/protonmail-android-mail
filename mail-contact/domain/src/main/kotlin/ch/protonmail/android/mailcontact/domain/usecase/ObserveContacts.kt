@@ -20,15 +20,20 @@ package ch.protonmail.android.mailcontact.domain.usecase
 
 import arrow.core.Either
 import arrow.core.right
+import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcontact.domain.model.GetContactError
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import me.proton.core.contact.domain.entity.Contact
 import me.proton.core.domain.entity.UserId
+import timber.log.Timber
 import javax.inject.Inject
 
 class ObserveContacts @Inject constructor() {
 
+    @MissingRustApi
     operator fun invoke(userId: UserId): Flow<Either<GetContactError, List<Contact>>> =
-        flowOf(emptyList<Contact>().right())
+        flowOf(emptyList<Contact>().right()).also {
+            Timber.w("rust-contacts: Contacts not exposed by rust. Returning empty contacts list")
+        }
 }

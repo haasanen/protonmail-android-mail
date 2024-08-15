@@ -27,6 +27,7 @@ import kotlinx.coroutines.flow.flowOf
 import me.proton.core.domain.entity.UserId
 import me.proton.core.featureflag.domain.entity.FeatureFlag
 import me.proton.core.featureflag.domain.entity.Scope
+import timber.log.Timber
 import javax.inject.Inject
 
 class ObserveMailFeature @Inject constructor(
@@ -36,6 +37,7 @@ class ObserveMailFeature @Inject constructor(
     @MissingRustApi
     operator fun invoke(userId: UserId, feature: MailFeatureId): Flow<FeatureFlag> = flowOf(null)
         .mapIfNull {
+            Timber.w("rust-feature: Feature flags not exposed by rust. Returning from default values...")
             val defaultValue = mailFeatureDefaults[feature]
             FeatureFlag(
                 userId = userId,
