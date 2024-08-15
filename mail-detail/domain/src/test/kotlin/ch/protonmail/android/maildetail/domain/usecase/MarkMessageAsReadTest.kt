@@ -26,6 +26,7 @@ import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
 import ch.protonmail.android.mailmessage.domain.sample.MessageSample
 import ch.protonmail.android.mailmessage.domain.usecase.MarkMessagesAsRead
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
@@ -53,15 +54,15 @@ internal class MarkMessageAsReadTest {
     }
 
     @Test
-    fun `when repository succeed then message is returned`() = runTest {
+    fun `markRead calls markMessagesAsRead use case `() = runTest {
         // given
         val message = MessageSample.Invoice
         coEvery { markMessagesAsRead(userId, listOf(messageId)) } returns listOf(message).right()
 
         // when
-        val result = markRead(userId, messageId)
+        markRead(userId, messageId)
 
         // then
-        assertEquals(message.right(), result)
+        coVerify { markMessagesAsRead(userId, listOf(messageId)) }
     }
 }

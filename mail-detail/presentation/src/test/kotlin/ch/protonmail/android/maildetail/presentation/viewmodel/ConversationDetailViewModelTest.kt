@@ -103,7 +103,6 @@ import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.MimeType
 import ch.protonmail.android.mailmessage.domain.model.Participant
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
-import ch.protonmail.android.mailmessage.domain.sample.MessageSample
 import ch.protonmail.android.mailmessage.domain.sample.MessageWithLabelsSample
 import ch.protonmail.android.mailmessage.domain.usecase.GetDecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.usecase.ObserveMessage
@@ -289,7 +288,7 @@ class ConversationDetailViewModelTest {
     }
     private val markMessageAsRead: MarkMessageAsRead =
         mockk {
-            coEvery { this@mockk.invoke(any(), any()) } returns MessageSample.AugWeatherForecast.right()
+            coEvery { this@mockk.invoke(any(), any()) } returns Unit.right()
         }
 
     private val findContactByEmail: FindContactByEmail = mockk<FindContactByEmail> {

@@ -307,7 +307,7 @@ class ConversationDetailViewModelIntegrationTest {
 
     private val markMessageAsRead: MarkMessageAsRead =
         mockk {
-            coEvery { this@mockk.invoke(any(), any()) } returns MessageSample.AugWeatherForecast.right()
+            coEvery { this@mockk.invoke(any(), any()) } returns Unit.right()
         }
     private val getCurrentEpochTimeDuration: GetCurrentEpochTimeDuration = mockk {
         coEvery { this@mockk.invoke() } returns Duration.parse("PT0S")

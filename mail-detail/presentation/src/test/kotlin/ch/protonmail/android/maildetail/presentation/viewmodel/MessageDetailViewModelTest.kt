@@ -252,7 +252,7 @@ class MessageDetailViewModelTest {
         coEvery { this@mockk(userId, messageId) } returns MessageSample.Invoice.right()
     }
     private val markRead = mockk<MarkMessageAsRead> {
-        coEvery { this@mockk(userId, messageId) } returns MessageSample.Invoice.right()
+        coEvery { this@mockk(userId, messageId) } returns Unit.right()
     }
     private val getContacts = mockk<GetContacts> {
         coEvery { this@mockk.invoke(userId) } returns ContactTestData.contacts.right()
