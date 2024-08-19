@@ -18,6 +18,8 @@
 
 package ch.protonmail.android.mailmailbox.data.repository
 
+import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
+import ch.protonmail.android.mailcommon.domain.mapper.LocalLabel
 import ch.protonmail.android.maillabel.data.local.LabelDataSource
 import ch.protonmail.android.maillabel.data.mapper.toLabelId
 import ch.protonmail.android.mailmailbox.domain.repository.UnreadCountersRepository
@@ -31,13 +33,15 @@ class UnreadCountersRepositoryImpl @Inject constructor(
     private val labelDataSource: LabelDataSource
 ) : UnreadCountersRepository {
 
+    @MissingRustApi
     override fun observeUnreadCounters(userId: UserId): Flow<List<UnreadCounter>> = combine(
         labelDataSource.observeSystemLabels(userId),
         labelDataSource.observeMessageLabels(userId),
         labelDataSource.observeMessageFolders(userId)
     ) { system, labels, folders ->
-        (system + labels + folders).map {
-            UnreadCounter(it.id.toLabelId(), it.unreadCount.toInt())
+        (system + labels + folders).map { localLabel: LocalLabel ->
+            // Needs fixing once rust exposes a unified "counter" taking care of view mode internally
+            UnreadCounter(localLabel.localId.toLabelId(), localLabel.unreadMsg.toInt())
         }
 
     }

@@ -69,7 +69,7 @@ fun LocalLabel.toLabelWithSystemLabelId(): LabelWithSystemLabelId {
     return LabelWithSystemLabelId(
         Label(
             userId = FAKE_USER_ID,
-            labelId = this.localId?.toLabelId() ?: LabelId("0"),
+            labelId = this.localId.toLabelId(),
             name = this.name,
             type = this.labelType.toLabelType(),
             path = this.path ?: "",
@@ -80,6 +80,6 @@ fun LocalLabel.toLabelWithSystemLabelId(): LabelWithSystemLabelId {
             isSticky = this.sticky,
             parentId = this.localParentId?.toLabelId()
         ),
-        SystemLabelId.enumOf(this.remoteId?.value?.value ?: "0")
+        SystemLabelId.fromRustSystemLabelEnum()
     )
 }
