@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package me.proton.core.auth.presentation.widget
+package me.proton.android.core.auth.presentation.widget
 
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -24,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import me.proton.core.presentation.R
+import me.proton.android.core.auth.presentation.R as AuthR
 
 @Composable
 public fun ProtonCloseButton(
@@ -36,7 +37,7 @@ public fun ProtonCloseButton(
     ) {
         Icon(
             painterResource(id = R.drawable.ic_proton_close),
-            contentDescription = stringResource(id = me.proton.core.auth.presentation.R.string.login_help_close)
+            contentDescription = stringResource(id = AuthR.string.login_help_close)
         )
     }
 }

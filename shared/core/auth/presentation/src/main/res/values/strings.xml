@@ -38,4 +38,9 @@
     <string name="auth_password_placeholder">Password</string>
     <string name="auth_login_assistive_text">Please enter your Proton email or username.</string>
     <string name="auth_account_details">Enter your Proton Account details.</string>
+
+    <string name="auth_login_error_invalid_action_cannot_unlock_keys">Wrong password, passphrase or key salt.</string>
+    <string name="auth_login_error_invalid_action_human_verification_challenge">A human verification is needed.</string>
+    <string name="auth_login_error_invalid_action_invalid_credentials">Incorrect login credentials. Please try again.</string>
+    <string name="auth_login_error_invalid_action_unsupported_tfa">Unsupported two factor.</string>
 </resources>

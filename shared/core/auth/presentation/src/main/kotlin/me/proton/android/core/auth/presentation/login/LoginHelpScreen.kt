@@ -15,9 +15,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package me.proton.core.auth.presentation.ui
+package me.proton.android.core.auth.presentation.login
 
-import android.content.Context
 import android.content.res.Configuration
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
@@ -40,52 +39,43 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import me.proton.core.auth.presentation.R
-import me.proton.core.auth.presentation.widget.ProtonCloseButton
+import me.proton.android.core.auth.presentation.R
+import me.proton.android.core.auth.presentation.widget.ProtonCloseButton
 import me.proton.core.compose.component.appbar.ProtonTopAppBar
 import me.proton.core.compose.theme.LocalColors
 import me.proton.core.compose.theme.LocalTypography
 import me.proton.core.compose.theme.ProtonDimens
 import me.proton.core.compose.theme.ProtonTheme
-import me.proton.core.presentation.utils.openBrowserLink
 import me.proton.core.presentation.R as CoreR
 
 @Composable
 public fun LoginHelpScreen(
-    onCloseClicked: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    LoginHelpScreen(
-        actions = LoginHelpScreen.Actions.default(
-            LocalContext.current,
-            onCloseClicked = onCloseClicked
-        ),
-        modifier = modifier
-    )
-}
-
-@Composable
-public fun LoginHelpScreen(
-    actions: LoginHelpScreen.Actions,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onCloseClicked: () -> Unit = {},
+    onCustomerSupportClicked: () -> Unit = {},
+    onForgotPasswordClicked: () -> Unit = {},
+    onForgotUsernameClicked: () -> Unit = {},
+    onOtherLoginIssuesClicked: () -> Unit = {}
 ) {
     Scaffold(
         modifier = modifier,
         topBar = {
             ProtonTopAppBar(
                 title = {},
-                navigationIcon = { ProtonCloseButton(onCloseClicked = actions.onCloseClicked) },
+                navigationIcon = { ProtonCloseButton(onCloseClicked = onCloseClicked) },
                 backgroundColor = LocalColors.current.backgroundNorm
             )
         }
     ) { paddingValues ->
         Box(modifier = Modifier.fillMaxWidth()) {
             HelpColumn(
-                actions = actions,
+                onCustomerSupportClicked = onCustomerSupportClicked,
+                onForgotPasswordClicked = onForgotPasswordClicked,
+                onForgotUsernameClicked = onForgotUsernameClicked,
+                onOtherLoginIssuesClicked = onOtherLoginIssuesClicked,
                 modifier = Modifier.padding(paddingValues)
             )
         }
@@ -94,8 +84,11 @@ public fun LoginHelpScreen(
 
 @Composable
 private fun HelpColumn(
-    actions: LoginHelpScreen.Actions,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onCustomerSupportClicked: () -> Unit = {},
+    onForgotPasswordClicked: () -> Unit = {},
+    onForgotUsernameClicked: () -> Unit = {},
+    onOtherLoginIssuesClicked: () -> Unit = {}
 ) {
     Column(
         modifier = modifier.verticalScroll(rememberScrollState())
@@ -111,17 +104,17 @@ private fun HelpColumn(
         HelpItem(
             icon = CoreR.drawable.ic_proton_user_circle,
             text = R.string.login_help_forgot_username,
-            onClick = actions.onForgotUsernameClicked
+            onClick = onForgotUsernameClicked
         )
         HelpItem(
             icon = CoreR.drawable.ic_proton_key,
             text = R.string.login_help_forgot_password,
-            onClick = actions.onForgotPasswordClicked
+            onClick = onForgotPasswordClicked
         )
         HelpItem(
             icon = CoreR.drawable.ic_proton_question_circle,
             text = R.string.login_help_other_issues,
-            onClick = actions.onOtherLoginIssuesClicked
+            onClick = onOtherLoginIssuesClicked
         )
         Text(
             text = stringResource(id = R.string.login_help_contact_needed),
@@ -135,7 +128,7 @@ private fun HelpColumn(
         HelpItem(
             icon = painterResource(id = CoreR.drawable.ic_proton_speech_bubble),
             text = stringResource(id = R.string.login_help_customer_support),
-            onClick = actions.onCustomerSupportClicked,
+            onClick = onCustomerSupportClicked,
             modifier = Modifier.padding(top = ProtonDimens.MediumSpacing)
         )
         Spacer(
@@ -192,55 +185,12 @@ private fun HelpItem(
     }
 }
 
-public data object LoginHelpScreen {
-    public data class Actions(
-        val onCloseClicked: () -> Unit,
-        val onCustomerSupportClicked: () -> Unit,
-        val onForgotPasswordClicked: () -> Unit,
-        val onForgotUsernameClicked: () -> Unit,
-        val onOtherLoginIssuesClicked: () -> Unit,
-    ) {
-        public companion object {
-            public fun default(
-                context: Context,
-                onCloseClicked: () -> Unit
-            ): Actions = Actions(
-                onCloseClicked = onCloseClicked,
-                onCustomerSupportClicked = {
-                    context.openBrowserLink(R.string.login_help_link_customer_support)
-                },
-                onForgotPasswordClicked = {
-                    context.openBrowserLink(R.string.login_help_link_forgot_password)
-                },
-                onForgotUsernameClicked = {
-                    context.openBrowserLink(R.string.login_help_link_forgot_username)
-                },
-                onOtherLoginIssuesClicked = {
-                    context.openBrowserLink(R.string.login_help_link_other_issues)
-                },
-            )
-
-            public fun empty(): Actions = Actions(
-                onCloseClicked = {},
-                onCustomerSupportClicked = {},
-                onForgotPasswordClicked = {},
-                onForgotUsernameClicked = {},
-                onOtherLoginIssuesClicked = {},
-            )
-
-            private fun Context.openBrowserLink(
-                @StringRes link: Int
-            ) = openBrowserLink(getString(link))
-        }
-    }
-}
-
 @Preview(name = "Light mode")
 @Preview(name = "Dark mode", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview(name = "Horizontal", widthDp = 800, heightDp = 360)
 @Composable
 internal fun LoginHelpScreenPreview() {
     ProtonTheme {
-        LoginHelpScreen(actions = LoginHelpScreen.Actions.empty())
+        LoginHelpScreen()
     }
 }

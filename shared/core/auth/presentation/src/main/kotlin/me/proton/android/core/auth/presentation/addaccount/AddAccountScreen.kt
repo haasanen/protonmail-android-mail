@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package me.proton.core.auth.presentation.ui
+package me.proton.android.core.auth.presentation.addaccount
 
 import android.content.res.Configuration
 import androidx.annotation.DrawableRes
@@ -44,7 +44,7 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
-import me.proton.core.auth.presentation.R
+import me.proton.android.core.auth.presentation.R
 import me.proton.core.compose.component.ProtonSolidButton
 import me.proton.core.compose.component.ProtonTextButton
 import me.proton.core.compose.theme.LocalColors
@@ -57,66 +57,48 @@ import me.proton.core.presentation.R as CoreR
 public const val SMALL_SCREEN_HEIGHT: Int = 680
 
 @Composable
-public fun WelcomeScreenMail(
-    actions: WelcomeScreen.Actions,
+public fun AddAccountScreenMail(
     modifier: Modifier = Modifier,
+    onSignUpClicked: () -> Unit = {},
+    onSignInClicked: () -> Unit = {},
 ) {
-    WelcomeScreen(
-        welcomeImage = R.drawable.welcome_header_mail,
+    AddAccountScreen(
+        appHeader = R.drawable.welcome_header_mail,
         appLogoWithName = CoreR.drawable.logo_mail_with_text,
-        appNameContentDescription = R.string.app_name_mail,
-        subtitleText = R.string.welcome_subtitle_mail,
-        actions = actions,
+        appLogoContentDescription = R.string.app_name_mail,
+        appSubtitle = R.string.welcome_subtitle_mail,
+        onSignUpClicked = onSignUpClicked,
+        onSignInClicked = onSignInClicked,
         modifier = modifier,
     )
 }
 
 @Composable
-public fun WelcomeScreen(
-    @DrawableRes welcomeImage: Int,
+public fun AddAccountScreen(
+    @DrawableRes appHeader: Int,
     @DrawableRes appLogoWithName: Int,
-    @StringRes appNameContentDescription: Int,
-    @StringRes subtitleText: Int,
-    actions: WelcomeScreen.Actions,
+    @StringRes appLogoContentDescription: Int,
+    @StringRes appSubtitle: Int,
     modifier: Modifier = Modifier,
-) {
-    WelcomeScreen(
-        welcomePainter = painterResource(id = welcomeImage),
-        appLogoWithNamePainter = painterResource(id = appLogoWithName),
-        appNameContentDescription = stringResource(id = appNameContentDescription),
-        subtitleText = stringResource(id = subtitleText),
-        onSignUpClicked = actions.onSignUpClicked,
-        onSignInClicked = actions.onSignInClicked,
-        modifier = modifier,
-    )
-}
-
-@Composable
-public fun WelcomeScreen(
-    welcomePainter: Painter,
-    appLogoWithNamePainter: Painter,
-    appNameContentDescription: String,
-    subtitleText: String,
-    onSignUpClicked: () -> Unit,
-    onSignInClicked: () -> Unit,
-    modifier: Modifier = Modifier,
+    onSignUpClicked: () -> Unit = {},
+    onSignInClicked: () -> Unit = {},
 ) {
     BoxWithConstraints(modifier = modifier.background(LocalColors.current.backgroundNorm)) {
         val isSmallHeight = maxHeight <= SMALL_SCREEN_HEIGHT.dp
 
         ConstraintLayout(Modifier.fillMaxSize()) {
-            val (welcomeImage, content, footer) = createRefs()
+            val (header, content, footer) = createRefs()
             val (bottomImageSpacer, middleSpacer) = createRefs()
             val contentTopBarrier = createTopBarrier(bottomImageSpacer, middleSpacer)
             val middleGuideline = createGuidelineFromTop(0.5f)
             val bottomGuideline = createGuidelineFromBottom(ProtonDimens.MediumSpacing)
 
             Image(
-                painter = welcomePainter,
+                painter = painterResource(appHeader),
                 contentDescription = null,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .constrainAs(welcomeImage) {
+                    .constrainAs(header) {
                         start.linkTo(parent.start)
                         end.linkTo(parent.end)
                         if (this@BoxWithConstraints.maxWidth > this@BoxWithConstraints.maxHeight) {
@@ -134,13 +116,13 @@ public fun WelcomeScreen(
                 top.linkTo(middleGuideline)
             })
             Spacer(modifier = Modifier.constrainAs(bottomImageSpacer) {
-                top.linkTo(welcomeImage.bottom)
+                top.linkTo(header.bottom)
             })
 
-            WelcomeScreenContent(
-                appLogoWithNamePainter = appLogoWithNamePainter,
-                appNameContentDescription = appNameContentDescription,
-                subtitleText = subtitleText,
+            AddAccountScreenContent(
+                appLogoWithNamePainter = painterResource(appLogoWithName),
+                appNameContentDescription = stringResource(appLogoContentDescription),
+                subtitleText = stringResource(appSubtitle),
                 onSignUpClicked = onSignUpClicked,
                 onSignInClicked = onSignInClicked,
                 modifier = Modifier
@@ -176,7 +158,7 @@ public fun WelcomeScreen(
 }
 
 @Composable
-private fun WelcomeScreenContent(
+private fun AddAccountScreenContent(
     appLogoWithNamePainter: Painter,
     appNameContentDescription: String,
     subtitleText: String,
@@ -223,20 +205,6 @@ private fun WelcomeScreenContent(
     }
 }
 
-public data object WelcomeScreen {
-    public data class Actions(
-        val onSignInClicked: () -> Unit,
-        val onSignUpClicked: () -> Unit,
-    ) {
-        public companion object {
-            public fun empty(): Actions = Actions(
-                onSignInClicked = {},
-                onSignUpClicked = {},
-            )
-        }
-    }
-}
-
 @Preview(name = "Light mode")
 @Preview(name = "Dark mode", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview(name = "Small screen height", heightDp = SMALL_SCREEN_HEIGHT)
@@ -246,6 +214,6 @@ public data object WelcomeScreen {
 @Composable
 internal fun WelcomeScreenMailPreview() {
     ProtonTheme {
-        WelcomeScreenMail(actions = WelcomeScreen.Actions.empty())
+        AddAccountScreenMail()
     }
 }

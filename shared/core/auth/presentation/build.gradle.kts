@@ -16,25 +16,63 @@
  */
 
 plugins {
-    coreAndroidComposeUiLibrary
-    coreDagger
+    id("com.android.library")
+    kotlin("android")
+    kotlin("kapt")
+    id("dagger.hilt.android.plugin")
+    id("app.cash.paparazzi")
 }
 
 android {
-    namespace = "me.proton.core.auth.presentation"
+    namespace = "me.proton.android.core.auth.presentation"
+
+    compileSdk = Config.compileSdk
+
+    defaultConfig {
+        minSdk = Config.minSdk
+        lint.targetSdk = Config.targetSdk
+        testInstrumentationRunner = Config.testInstrumentationRunner
+    }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_17.toString()
+    }
+
+    buildFeatures {
+        compose = true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = Versions.AndroidX.composeCompiler
+    }
 }
 
 dependencies {
-    compileOnly(commonLibs.proton.common.mail)
+    compileOnly("me.proton.mail.common:lib:${Versions.Proton.rustCore}")
 
-    implementation(libs.constraintlayout.compose)
-    implementation(libs.proton.core.legacy.presentation.asProvider())
-    implementation(libs.proton.core.legacy.presentation.compose)
+    implementation("androidx.constraintlayout:constraintlayout-compose:${Versions.AndroidX.constraintLayoutCompose}")
+    implementation("androidx.compose.ui:ui-tooling-preview-android:${Versions.AndroidX.compose}")
+    debugImplementation("androidx.compose.ui:ui-tooling:${Versions.AndroidX.compose}")
 
-    testImplementation(commonLibs.proton.common.mail)
+    implementation("me.proton.core:presentation:${Versions.Proton.core}")
+    implementation("me.proton.core:presentation-compose:${Versions.Proton.core}")
+    implementation("me.proton.core:util-kotlin:${Versions.Proton.core}")
+
+    implementation("com.google.dagger:hilt-android:${Versions.Dagger.dagger}")
+    kapt("com.google.dagger:hilt-compiler:${Versions.Dagger.dagger}")
+
+    implementation("androidx.hilt:hilt-navigation-compose:${Versions.AndroidX.hilt}")
+    kapt("androidx.hilt:hilt-compiler:${Versions.AndroidX.hilt}")
+
     testImplementation(kotlin("test"))
-    testImplementation(libs.coroutines.test)
-    testImplementation(libs.junit)
-    testImplementation(libs.mockk)
-    testImplementation(libs.turbine)
+    testImplementation("me.proton.mail.common:lib:${Versions.Proton.rustCore}")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:${Versions.KotlinX.coroutines}")
+    testImplementation("junit:junit:${Versions.Junit.junit}")
+    testImplementation("io.mockk:mockk:${Versions.Mockk.mockk}")
+    testImplementation("app.cash.turbine:turbine:${Versions.Cash.turbine}")
 }

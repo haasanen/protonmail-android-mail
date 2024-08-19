@@ -15,9 +15,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package me.proton.core.auth.presentation.ui
+package me.proton.android.core.auth.presentation.login
 
-import android.content.Context
 import android.content.res.Configuration
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
@@ -27,30 +26,34 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import me.proton.core.auth.presentation.R
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import me.proton.android.core.auth.presentation.R
+import me.proton.android.core.auth.presentation.addaccount.SMALL_SCREEN_HEIGHT
 import me.proton.core.compose.component.ProtonOutlinedTextFieldWithError
+import me.proton.core.compose.component.ProtonPasswordOutlinedTextFieldWithError
 import me.proton.core.compose.component.ProtonSolidButton
 import me.proton.core.compose.component.ProtonTextButton
 import me.proton.core.compose.component.appbar.ProtonTopAppBar
@@ -61,6 +64,7 @@ import me.proton.core.compose.theme.ProtonTheme
 import me.proton.core.compose.theme.ProtonTypography
 import me.proton.core.compose.theme.defaultSmallWeak
 import me.proton.core.compose.theme.defaultStrongNorm
+import uniffi.proton_mail_uniffi.MailUserSession
 import me.proton.core.presentation.R as CoreR
 
 internal const val PASSWORD_FIELD_TAG = "PASSWORD_FIELD_TAG" // gitleaks:allow
@@ -68,37 +72,66 @@ internal const val USERNAME_FIELD_TAG = "USERNAME_FIELD_TAG"
 
 @Composable
 public fun LoginScreen(
-    @DrawableRes protonLogo: Int,
-    @StringRes protonNameContentDescription: Int,
-    @StringRes titleText: Int,
-    @StringRes subtitleText: Int,
-    onLoginClicked: () -> Unit,
+    modifier: Modifier = Modifier,
     onCloseClicked: () -> Unit,
     onHelpClicked: () -> Unit,
-    modifier: Modifier = Modifier,
+    onErrorMessage: (String?) -> Unit = {},
+    onLoggedIn: (MailUserSession) -> Unit = {},
+    viewModel: LoginViewModel = hiltViewModel()
 ) {
+    val state by viewModel.state.collectAsStateWithLifecycle()
     LoginScreen(
         modifier = modifier,
-        actions = LoginScreen.Actions(
-            onCloseClicked = onCloseClicked,
-            onHelpClicked = onHelpClicked,
-            onLoginClicked = onLoginClicked
-        ),
-        protonLogoWithNamePainter = painterResource(id = protonLogo),
-        protonNameContentDescription = stringResource(id = protonNameContentDescription),
-        titleText = stringResource(id = titleText),
-        subtitleText = stringResource(id = subtitleText)
+        onCloseClicked = onCloseClicked,
+        onHelpClicked = onHelpClicked,
+        onLoginClicked = { viewModel.submit(it) },
+        onErrorMessage = onErrorMessage,
+        onLoggedIn = onLoggedIn,
+        state = state
     )
 }
 
 @Composable
 public fun LoginScreen(
     modifier: Modifier = Modifier,
-    actions: LoginScreen.Actions,
-    protonLogoWithNamePainter: Painter,
-    protonNameContentDescription: String,
-    titleText: String,
-    subtitleText: String
+    onCloseClicked: () -> Unit = {},
+    onHelpClicked: () -> Unit = {},
+    onLoginClicked: (LoginAction.Login) -> Unit = {},
+    onErrorMessage: (String?) -> Unit = {},
+    onLoggedIn: (MailUserSession) -> Unit = {},
+    onNextStep: (String) -> Unit = {},
+    state: LoginViewState = LoginViewState.Idle
+) {
+    LaunchedEffect(state) {
+        when (state) {
+            is LoginViewState.Error.LoginFlow -> onErrorMessage(state.error)
+            is LoginViewState.LoggedIn -> onLoggedIn(state.session)
+            is LoginViewState.Awaiting2fa -> onNextStep(state.userId)
+            is LoginViewState.Awaiting2Pass -> onNextStep(state.userId)
+            else -> Unit
+        }
+    }
+    LoginScaffold(
+        modifier = modifier,
+        onCloseClicked = onCloseClicked,
+        onHelpClicked = onHelpClicked,
+        onLoginClicked = onLoginClicked,
+        isUsernameError = state is LoginViewState.Error.Validation,
+        isLoading = state is LoginViewState.LoggingIn
+    )
+}
+
+@Composable
+public fun LoginScaffold(
+    modifier: Modifier = Modifier,
+    onCloseClicked: () -> Unit = {},
+    onHelpClicked: () -> Unit = {},
+    onLoginClicked: (LoginAction.Login) -> Unit = {},
+    @DrawableRes protonLogo: Int = R.drawable.ic_logo_proton,
+    @StringRes titleText: Int = R.string.auth_sign_in,
+    @StringRes subtitleText: Int = R.string.auth_account_details,
+    isUsernameError: Boolean = false,
+    isLoading: Boolean = false
 ) {
     Scaffold(
         modifier = modifier,
@@ -106,7 +139,7 @@ public fun LoginScreen(
             ProtonTopAppBar(
                 title = {},
                 navigationIcon = {
-                    IconButton(onClick = actions.onCloseClicked) {
+                    IconButton(onClick = onCloseClicked) {
                         Icon(
                             painterResource(id = CoreR.drawable.ic_proton_close),
                             contentDescription = stringResource(id = R.string.auth_login_close)
@@ -115,7 +148,7 @@ public fun LoginScreen(
                 },
                 actions = {
                     ProtonTextButton(
-                        onClick = actions.onHelpClicked
+                        onClick = onHelpClicked
                     ) {
                         Text(
                             text = stringResource(id = R.string.auth_login_help),
@@ -129,18 +162,22 @@ public fun LoginScreen(
         }
     ) { paddingValues ->
         Box(modifier = Modifier.padding(paddingValues)) {
-            Column(modifier = Modifier.padding(top = ProtonDimens.SmallSpacing)) {
+            Column(
+                modifier = Modifier
+                    .padding(top = ProtonDimens.SmallSpacing)
+                    .verticalScroll(rememberScrollState())
+            ) {
                 Image(
                     modifier = Modifier
                         .height(64.dp)
                         .align(Alignment.CenterHorizontally),
-                    painter = protonLogoWithNamePainter,
-                    contentDescription = protonNameContentDescription,
+                    painter = painterResource(protonLogo),
+                    contentDescription = null,
                     alignment = Alignment.Center
                 )
 
                 Text(
-                    text = titleText,
+                    text = stringResource(titleText),
                     style = ProtonTypography.Default.headline,
                     textAlign = TextAlign.Center,
                     modifier = Modifier
@@ -149,7 +186,7 @@ public fun LoginScreen(
                 )
 
                 Text(
-                    text = subtitleText,
+                    text = stringResource(subtitleText),
                     style = ProtonTypography.Default.defaultSmallWeak,
                     textAlign = TextAlign.Center,
                     modifier = Modifier
@@ -157,10 +194,10 @@ public fun LoginScreen(
                         .padding(top = ProtonDimens.SmallSpacing)
                 )
 
-                LoginScreenForm(
-                    enabled = true,
-                    onLoginClicked = actions.onLoginClicked,
-                    usernameError = stringResource(id = R.string.auth_login_assistive_text)
+                LoginForm(
+                    enabled = !isLoading,
+                    onLoginClicked = onLoginClicked,
+                    usernameError = if (isUsernameError) stringResource(id = R.string.auth_login_assistive_text) else null
                 )
             }
         }
@@ -168,13 +205,13 @@ public fun LoginScreen(
 }
 
 @Composable
-private fun LoginScreenForm(
-    onLoginClicked: () -> Unit,
-    usernameError: String,
+private fun LoginForm(
+    onLoginClicked: (LoginAction.Login) -> Unit,
+    usernameError: String? = null,
     enabled: Boolean
 ) {
-    var username by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
+    var username by rememberSaveable { mutableStateOf("") }
+    var password by rememberSaveable { mutableStateOf("") }
     Column(
         modifier = Modifier.padding(16.dp)
     ) {
@@ -191,16 +228,12 @@ private fun LoginScreenForm(
                 .testTag(USERNAME_FIELD_TAG)
         )
 
-        ProtonOutlinedTextFieldWithError(
+        ProtonPasswordOutlinedTextFieldWithError(
             text = password,
             onValueChanged = { password = it },
             enabled = enabled,
             label = { Text(text = stringResource(id = R.string.auth_password)) },
             singleLine = true,
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Password
-            ),
-            visualTransformation = PasswordVisualTransformation(),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = DefaultSpacing)
@@ -209,7 +242,9 @@ private fun LoginScreenForm(
 
         ProtonSolidButton(
             contained = false,
-            onClick = onLoginClicked,
+            enabled = enabled,
+            loading = !enabled,
+            onClick = { onLoginClicked(LoginAction.Login(username, password)) },
             modifier = Modifier
                 .padding(top = ProtonDimens.MediumSpacing)
                 .height(ProtonDimens.DefaultButtonMinHeight)
@@ -218,24 +253,6 @@ private fun LoginScreenForm(
         }
     }
 }
-
-public data object LoginScreen {
-    public data class Actions(
-        val onCloseClicked: () -> Unit,
-        val onHelpClicked: () -> Unit,
-        val onLoginClicked: () -> Unit
-    ) {
-        public companion object {
-            public fun empty(): Actions =
-                Actions(
-                    onCloseClicked = {},
-                    onHelpClicked = {},
-                    onLoginClicked = {}
-                )
-        }
-    }
-}
-
 
 @Preview(name = "Light mode")
 @Preview(name = "Dark mode", uiMode = Configuration.UI_MODE_NIGHT_YES)
@@ -246,13 +263,7 @@ public data object LoginScreen {
 @Composable
 internal fun LoginScreenPreview() {
     ProtonTheme {
-        LoginScreen(
-            actions = LoginScreen.Actions.empty(),
-            protonLogoWithNamePainter = painterResource(CoreR.drawable.ic_logo_proton),
-            protonNameContentDescription = stringResource(R.string.app_name_mail),
-            titleText = stringResource(R.string.auth_sign_in),
-            subtitleText = stringResource(R.string.auth_account_details)
-        )
+        LoginScreen()
     }
 }
 
@@ -265,7 +276,7 @@ internal fun LoginScreenPreview() {
 @Composable
 internal fun LoginScreenFormPreview() {
     ProtonTheme {
-        LoginScreenForm(
+        LoginForm(
             enabled = true,
             onLoginClicked = {},
             usernameError = stringResource(id = R.string.auth_login_assistive_text)

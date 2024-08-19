@@ -15,26 +15,18 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package me.proton.core.auth.presentation
+package me.proton.android.core.auth.presentation.login
 
-import androidx.navigation.NavGraphBuilder
-import androidx.navigation.compose.composable
-import me.proton.core.auth.presentation.ui.WelcomeScreen
-import me.proton.core.auth.presentation.ui.WelcomeScreenMail
+import uniffi.proton_mail_uniffi.MailUserSession
 
-internal fun NavGraphBuilder.addWelcomeScreenMail(
-    actions: WelcomeScreen.Actions
-) {
-    composable(
-        route = Route.WelcomeMail.ROUTE
-    ) {
-        WelcomeScreenMail(actions = actions)
-    }
-}
-
-internal object Route {
-    object WelcomeMail {
-        const val ROUTE = "welcome/mail"
-        fun get() = ROUTE
+sealed interface LoginViewState {
+    data object Idle : LoginViewState
+    data object LoggingIn : LoginViewState
+    data class Awaiting2fa(val userId: String) : LoginViewState
+    data class Awaiting2Pass(val userId: String) : LoginViewState
+    data class LoggedIn(val session: MailUserSession) : LoginViewState
+    sealed interface Error {
+        data object Validation : LoginViewState
+        data class LoginFlow(val error: String) : LoginViewState
     }
 }

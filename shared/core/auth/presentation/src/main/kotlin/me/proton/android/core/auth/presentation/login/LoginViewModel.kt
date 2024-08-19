@@ -1,0 +1,126 @@
+/*
+ * Copyright (C) 2024 Proton AG
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+package me.proton.android.core.auth.presentation.login
+
+import android.content.Context
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
+import me.proton.android.core.auth.presentation.session.UserSessionInitializationCallback
+import uniffi.proton_mail_uniffi.MailSessionInterface
+import uniffi.proton_mail_uniffi.MailUserSession
+import uniffi.proton_mail_uniffi.UserLoginFlowArcLoginFlowResult
+import uniffi.proton_mail_uniffi.UserLoginFlowArcMailUserSessionResult
+import uniffi.proton_mail_uniffi.UserLoginFlowError
+import uniffi.proton_mail_uniffi.UserLoginFlowStringResult
+import uniffi.proton_mail_uniffi.UserLoginFlowVoidResult
+import javax.inject.Inject
+
+@HiltViewModel
+class LoginViewModel @Inject constructor(
+    @ApplicationContext
+    private val context: Context,
+    private val sessionInterface: MailSessionInterface,
+    private val callback: UserSessionInitializationCallback
+) : ViewModel() {
+
+    private val loginFlowResult = viewModelScope.async { sessionInterface.newLoginFlow() }
+    private val mutableState: MutableStateFlow<LoginViewState> = MutableStateFlow(LoginViewState.Idle)
+
+    val state: StateFlow<LoginViewState> = mutableState.asStateFlow()
+
+    fun submit(action: LoginAction) = viewModelScope.launch {
+        when (action) {
+            is LoginAction.Login -> onLogin(action)
+            is LoginAction.Close -> onClose()
+        }
+    }
+
+    private suspend fun getLoginFlow() = (loginFlowResult.await() as UserLoginFlowArcLoginFlowResult.Ok).v1
+
+    private suspend fun onLogin(action: LoginAction.Login) {
+        val loginFlowResult = loginFlowResult.await()
+        return when {
+            action.username.isBlank() -> mutableState.emit(LoginViewState.Error.Validation)
+            loginFlowResult is UserLoginFlowArcLoginFlowResult.Error -> onError(loginFlowResult.v1)
+            else -> {
+                mutableState.emit(LoginViewState.LoggingIn)
+                when (val result = getLoginFlow().login(email = action.username, password = action.password)) {
+                    is UserLoginFlowVoidResult.Error -> onError(result.v1)
+                    is UserLoginFlowVoidResult.Ok -> onSuccess()
+                }
+            }
+        }
+    }
+
+    private suspend fun onSuccess() {
+        mutableState.emit(getLoginViewState())
+    }
+
+    private suspend fun onError(error: UserLoginFlowError) {
+        mutableState.emit(getError(error))
+    }
+
+    private fun getError(error: UserLoginFlowError): LoginViewState {
+        return LoginViewState.Error.LoginFlow(error.getErrorMessage(context))
+    }
+
+    private suspend fun getLoginViewState(): LoginViewState {
+        val userId = when (val result = getLoginFlow().userId()) {
+            is UserLoginFlowStringResult.Error -> return getError(result.v1)
+            is UserLoginFlowStringResult.Ok -> result.v1
+        }
+        return when {
+            getLoginFlow().isAwaitingMailboxPassword() -> onTwoPass(userId)
+            getLoginFlow().isAwaiting2fa() -> onTwoFa(userId)
+            getLoginFlow().isLoggedIn() -> onLoggedIn()
+            else -> LoginViewState.Idle
+        }
+    }
+
+    private fun onTwoPass(userId: String): LoginViewState.Awaiting2Pass {
+        return LoginViewState.Awaiting2Pass(userId)
+    }
+
+    private fun onTwoFa(userId: String): LoginViewState.Awaiting2fa {
+        return LoginViewState.Awaiting2fa(userId)
+    }
+
+    private suspend fun onLoggedIn(): LoginViewState {
+        return when (val result = getLoginFlow().toUserContext()) {
+            is UserLoginFlowArcMailUserSessionResult.Error -> LoginViewState.Error.LoginFlow("${result.v1}")
+            is UserLoginFlowArcMailUserSessionResult.Ok -> onLoggedInSuccess(result.v1)
+        }
+    }
+
+    private suspend fun onLoggedInSuccess(mailUserSession: MailUserSession): LoginViewState.LoggedIn {
+        mailUserSession.initialize(callback)
+        callback.waitFinished()
+        return LoginViewState.LoggedIn(mailUserSession)
+    }
+
+    private suspend fun onClose() {
+        getLoginFlow().destroy()
+    }
+}
