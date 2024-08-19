@@ -18,10 +18,23 @@
 
 package ch.protonmail.android.mailcommon.domain.mapper
 
+import uniffi.proton_mail_uniffi.AttachmentMetadata
+import uniffi.proton_mail_uniffi.ComposerDirection
+import uniffi.proton_mail_uniffi.ComposerMode
 import uniffi.proton_mail_uniffi.Conversation
+import uniffi.proton_mail_uniffi.CustomLabel
+import uniffi.proton_mail_uniffi.DecryptedMessage
 import uniffi.proton_mail_uniffi.Label
 import uniffi.proton_mail_uniffi.LabelType
 import uniffi.proton_mail_uniffi.Message
+import uniffi.proton_mail_uniffi.MessageButtons
+import uniffi.proton_mail_uniffi.MimeType
+import uniffi.proton_mail_uniffi.PgpScheme
+import uniffi.proton_mail_uniffi.PmSignature
+import uniffi.proton_mail_uniffi.ShowImages
+import uniffi.proton_mail_uniffi.ShowMoved
+import uniffi.proton_mail_uniffi.SwipeAction
+import uniffi.proton_mail_uniffi.ViewLayout
 import uniffi.proton_mail_uniffi.ViewMode
 
 typealias LocalConversation = Conversation
@@ -32,3 +45,17 @@ typealias LocalLabelType = LabelType
 typealias LocalLabel = Label
 typealias LocalMessageId = ULong
 typealias LocalMessageMetadata = Message
+typealias LocalDecryptedMessage = DecryptedMessage
+typealias LocalAttachmentMetadata = AttachmentMetadata
+typealias LocalMimeType = MimeType
+typealias LocalCustomLabel = CustomLabel
+typealias LocalMailSettings = MailSettings
+typealias LocalPmSignature = PmSignature
+typealias LocalComposerMode = ComposerMode
+typealias LocalMessageButtons = MessageButtons
+typealias LocalShowImages = ShowImages
+typealias LocalShowMoved = ShowMoved
+typealias LocalViewLayout = ViewLayout
+typealias LocalSwipeAction = SwipeAction
+typealias LocalPgpScheme = PgpScheme
+typealias LocalComposerDirection = ComposerDirection

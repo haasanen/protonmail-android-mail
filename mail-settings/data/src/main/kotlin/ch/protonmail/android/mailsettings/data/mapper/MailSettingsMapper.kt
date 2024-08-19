@@ -18,8 +18,21 @@
 
 package ch.protonmail.android.mailsettings.data.mapper
 
+import ch.protonmail.android.mailcommon.domain.mapper.LocalComposerDirection
+import ch.protonmail.android.mailcommon.domain.mapper.LocalComposerMode
+import ch.protonmail.android.mailcommon.domain.mapper.LocalMailSettings
+import ch.protonmail.android.mailcommon.domain.mapper.LocalMessageButtons
+import ch.protonmail.android.mailcommon.domain.mapper.LocalMimeType
+import ch.protonmail.android.mailcommon.domain.mapper.LocalPgpScheme
+import ch.protonmail.android.mailcommon.domain.mapper.LocalPmSignature
+import ch.protonmail.android.mailcommon.domain.mapper.LocalShowImages
+import ch.protonmail.android.mailcommon.domain.mapper.LocalShowMoved
+import ch.protonmail.android.mailcommon.domain.mapper.LocalSwipeAction
+import ch.protonmail.android.mailcommon.domain.mapper.LocalViewLayout
+import ch.protonmail.android.mailcommon.domain.mapper.LocalViewMode
 import ch.protonmail.android.mailcommon.domain.model.FAKE_USER_ID
 import me.proton.core.domain.type.IntEnum
+import me.proton.core.domain.type.StringEnum
 import me.proton.core.mailsettings.domain.entity.ComposerMode
 import me.proton.core.mailsettings.domain.entity.MailSettings
 import me.proton.core.mailsettings.domain.entity.MessageButtons
@@ -31,21 +44,11 @@ import me.proton.core.mailsettings.domain.entity.ShowMoved
 import me.proton.core.mailsettings.domain.entity.SwipeAction
 import me.proton.core.mailsettings.domain.entity.ViewLayout
 import me.proton.core.mailsettings.domain.entity.ViewMode
-import uniffi.proton_api_mail.MailSettingsComposerDirection
-import uniffi.proton_api_mail.MailSettingsComposerMode
-import uniffi.proton_api_mail.MailSettingsMessageButtons
-import uniffi.proton_api_mail.MailSettingsPgpScheme
-import uniffi.proton_api_mail.MailSettingsPmSignature
-import uniffi.proton_api_mail.MailSettingsShowImages
-import uniffi.proton_api_mail.MailSettingsShowMoved
-import uniffi.proton_api_mail.MailSettingsSwipeAction
-import uniffi.proton_api_mail.MailSettingsViewLayout
-import uniffi.proton_api_mail.MailSettingsViewMode
-import uniffi.proton_api_mail.MailSettings as RustMailSettings
+import timber.log.Timber
 
 object MailSettingsMapper {
 
-    fun RustMailSettings.toMailSettings(): MailSettings {
+    fun LocalMailSettings.toMailSettings(): MailSettings {
         return MailSettings(
             userId = FAKE_USER_ID,
             displayName = displayName,
@@ -62,9 +65,9 @@ object MailSettingsMapper {
             shortcuts = shortcuts,
             pmSignature = pmSignature.toPMSignature(),
             numMessagePerPage = numMessagePerPage.toInt(),
-            draftMimeType = MimeType.enumOf(draftMimeType),
-            receiveMimeType = MimeType.enumOf(receiveMimeType),
-            showMimeType = MimeType.enumOf(showMimeType),
+            draftMimeType = draftMimeType.toMimeType(),
+            receiveMimeType = receiveMimeType.toMimeType(),
+            showMimeType = showMimeType.toMimeType(),
             enableFolderColor = enableFolderColor,
             inheritParentFolderColor = inheritParentFolderColor,
             rightToLeft = rightToLeft.toAndroidComposerDirection(),
@@ -77,34 +80,49 @@ object MailSettingsMapper {
         )
     }
 
-    private fun MailSettingsComposerMode.toComposerMode(): IntEnum<ComposerMode>? =
-        ComposerMode.enumOf(this.value.toInt())
+    private fun LocalComposerMode.toComposerMode(): IntEnum<ComposerMode>? = ComposerMode.enumOf(this.value.toInt())
 
-    private fun MailSettingsMessageButtons.toMessageButtons(): IntEnum<MessageButtons>? =
+    private fun LocalMessageButtons.toMessageButtons(): IntEnum<MessageButtons>? =
         MessageButtons.enumOf(this.value.toInt())
 
-    private fun MailSettingsShowImages.toShowImage(): IntEnum<ShowImage>? = ShowImage.enumOf(this.value.toInt())
+    private fun LocalShowImages.toShowImage(): IntEnum<ShowImage>? = ShowImage.enumOf(this.value.toInt())
 
-    private fun MailSettingsShowMoved.toShowMoved(): IntEnum<ShowMoved>? = ShowMoved.enumOf(this.value.toInt())
+    private fun LocalShowMoved.toShowMoved(): IntEnum<ShowMoved>? = ShowMoved.enumOf(this.value.toInt())
 
-    private fun MailSettingsViewMode.toViewMode(): IntEnum<ViewMode>? = ViewMode.enumOf(this.value.toInt())
+    private fun LocalViewMode.toViewMode(): IntEnum<ViewMode>? = ViewMode.enumOf(this.value.toInt())
 
-    private fun MailSettingsViewLayout.toViewLayout(): IntEnum<ViewLayout>? = ViewLayout.enumOf(this.value.toInt())
+    private fun LocalViewLayout.toViewLayout(): IntEnum<ViewLayout>? = ViewLayout.enumOf(this.value.toInt())
 
-    private fun MailSettingsSwipeAction.toSwipeAction(): IntEnum<SwipeAction>? = SwipeAction.enumOf(this.value.toInt())
+    private fun LocalSwipeAction.toSwipeAction(): IntEnum<SwipeAction>? = SwipeAction.enumOf(this.value.toInt())
 
-    private fun MailSettingsPgpScheme.toPackageType(): IntEnum<PackageType>? = PackageType.enumOf(this.value.toInt())
+    private fun LocalPgpScheme.toPackageType(): IntEnum<PackageType>? = PackageType.enumOf(this.value.toInt())
 
-    private fun MailSettingsComposerDirection.toAndroidComposerDirection(): Boolean? {
+    private fun LocalComposerDirection.toAndroidComposerDirection(): Boolean? {
         return when (this) {
-            MailSettingsComposerDirection.LEFT_TO_RIGHT -> false
-            MailSettingsComposerDirection.RIGHT_TO_LEFT -> true
+            LocalComposerDirection.LEFT_TO_RIGHT -> false
+            LocalComposerDirection.RIGHT_TO_LEFT -> true
             else -> null
         }
     }
 
-    private fun MailSettingsPmSignature.toPMSignature(): IntEnum<PMSignature>? {
+    private fun LocalPmSignature.toPMSignature(): IntEnum<PMSignature>? {
         val intValue = this.value.toInt()
         return PMSignature.enumOf(intValue)
+    }
+
+    private fun LocalMimeType.toMimeType(): StringEnum<MimeType>? {
+        val mimeType = when (this) {
+            uniffi.proton_mail_uniffi.MimeType.TEXT_HTML -> MimeType.Html
+            uniffi.proton_mail_uniffi.MimeType.TEXT_PLAIN -> MimeType.PlainText
+            uniffi.proton_mail_uniffi.MimeType.MULTIPART_MIXED -> MimeType.Mixed
+            uniffi.proton_mail_uniffi.MimeType.APPLICATION_JSON,
+            uniffi.proton_mail_uniffi.MimeType.APPLICATION_PDF,
+            uniffi.proton_mail_uniffi.MimeType.MESSAGE_RFC822,
+            uniffi.proton_mail_uniffi.MimeType.MULTIPART_RELATED -> {
+                Timber.w("rust-mail-settings: Mapping from unsupported Mime type $this. Fallback to text/plain")
+                MimeType.PlainText
+            }
+        }
+        return MimeType.enumOf(mimeType.value)
     }
 }

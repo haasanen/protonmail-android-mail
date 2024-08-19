@@ -18,14 +18,18 @@
 
 package ch.protonmail.android.testdata.message.rust
 
-import uniffi.proton_api_mail.ExternalId
-import uniffi.proton_api_mail.MessageAddress
-import uniffi.proton_api_mail.MessageFlags
-import uniffi.proton_mail_common.AvatarInformation
-import uniffi.proton_mail_common.LocalAttachmentMetadata
-import uniffi.proton_mail_common.LocalInlineLabelInfo
-import uniffi.proton_mail_common.LocalMessageId
-import uniffi.proton_mail_common.LocalMessageMetadata
+import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
+import ch.protonmail.android.mailcommon.domain.mapper.LocalAttachmentMetadata
+import ch.protonmail.android.mailcommon.domain.mapper.LocalMessageId
+import ch.protonmail.android.mailcommon.domain.mapper.LocalMessageMetadata
+import ch.protonmail.android.mailcommon.domain.mapper.LocalMimeType
+import uniffi.proton_mail_uniffi.CustomLabel
+import uniffi.proton_mail_uniffi.LabelColor
+import uniffi.proton_mail_uniffi.MessageAddress
+import uniffi.proton_mail_uniffi.MessageAddresses
+import uniffi.proton_mail_uniffi.MessageFlags
+import uniffi.proton_mail_uniffi.ParsedHeaders
+import uniffi.proton_mail_uniffi.RemoteId
 
 object LocalMessageTestData {
     const val RAW_SUBJECT = "Subject"
@@ -110,7 +114,7 @@ object LocalMessageTestData {
         to = listOf(recipient1),
         cc = emptyList(),
         bcc = emptyList(),
-        labels = listOf(LocalInlineLabelInfo(2uL, "Trash", "red")),
+        labels = listOf(CustomLabel(2uL, "Trash", LabelColor("red"))),
         time = 1667924198uL
     )
 
@@ -122,8 +126,8 @@ object LocalMessageTestData {
         cc = emptyList(),
         bcc = emptyList(),
         labels = listOf(
-            LocalInlineLabelInfo(2uL, "Trash", "red"),
-            LocalInlineLabelInfo(3uL, "Travel", "blue")
+            CustomLabel(2uL, "Trash", LabelColor("red")),
+            CustomLabel(3uL, "Travel", LabelColor("blue"))
         ),
         time = 1667924198uL
     )
@@ -135,7 +139,7 @@ object LocalMessageTestData {
         to = listOf(recipient1),
         cc = emptyList(),
         bcc = emptyList(),
-        labels = listOf(LocalInlineLabelInfo(4uL, "Spam", "yellow")),
+        labels = listOf(CustomLabel(4uL, "Spam", LabelColor("yellow"))),
         time = 1667924198uL
     )
 
@@ -146,7 +150,7 @@ object LocalMessageTestData {
         to = listOf(recipient1),
         cc = listOf(recipient2),
         bcc = emptyList(),
-        labels = listOf(LocalInlineLabelInfo(4uL, "Spam", "yellow")),
+        labels = listOf(CustomLabel(4uL, "Spam", LabelColor("yellow"))),
         time = 1667924198uL
     )
 
@@ -157,7 +161,10 @@ object LocalMessageTestData {
         to = listOf(recipient1),
         cc = emptyList(),
         bcc = emptyList(),
-        labels = listOf(LocalInlineLabelInfo(1uL, "Inbox", "green"), LocalInlineLabelInfo(5uL, "Starred", "yellow")),
+        labels = listOf(
+            CustomLabel(1uL, "Inbox", LabelColor("green")),
+            CustomLabel(5uL, "Starred", LabelColor("yellow"))
+        ),
         time = 1667924198uL
     )
 
@@ -168,9 +175,9 @@ object LocalMessageTestData {
             sender = sender,
             to = listOf(recipient1),
             labels = listOf(
-                LocalInlineLabelInfo(1uL, "Inbox", "green"),
-                LocalInlineLabelInfo(5uL, "Starred", "yellow"),
-                LocalInlineLabelInfo(11uL, "Custom", "blue")
+                CustomLabel(1uL, "Inbox", LabelColor("green")),
+                CustomLabel(5uL, "Starred", LabelColor("yellow")),
+                CustomLabel(11uL, "Custom", LabelColor("blue"))
             ),
             time = 1667924198uL
         ),
@@ -180,9 +187,9 @@ object LocalMessageTestData {
             sender = sender,
             to = listOf(recipient2),
             labels = listOf(
-                LocalInlineLabelInfo(1uL, "Inbox", "green"),
-                LocalInlineLabelInfo(5uL, "Starred", "yellow"),
-                LocalInlineLabelInfo(11uL, "Custom", "blue")
+                CustomLabel(1uL, "Inbox", LabelColor("green")),
+                CustomLabel(5uL, "Starred", LabelColor("yellow")),
+                CustomLabel(11uL, "Custom", LabelColor("blue"))
             ),
             time = 1667924198uL
         ),
@@ -192,13 +199,14 @@ object LocalMessageTestData {
             sender = sender,
             to = listOf(recipient3),
             labels = listOf(
-                LocalInlineLabelInfo(1uL, "Inbox", "green"),
-                LocalInlineLabelInfo(5uL, "Starred", "yellow")
+                CustomLabel(1uL, "Inbox", LabelColor("green")),
+                CustomLabel(5uL, "Starred", LabelColor("yellow"))
             ),
             time = 1667924198uL
         )
     )
 
+    @MissingRustApi
     fun buildMessage(
         id: LocalMessageId,
         subject: String,
@@ -206,7 +214,7 @@ object LocalMessageTestData {
         to: List<MessageAddress>,
         cc: List<MessageAddress> = emptyList(),
         bcc: List<MessageAddress> = emptyList(),
-        labels: List<LocalInlineLabelInfo> = listOf(LocalInlineLabelInfo(1uL, "Inbox", "green")),
+        labels: List<CustomLabel> = listOf(CustomLabel(1uL, "Inbox", LabelColor("green"))),
         time: ULong,
         size: ULong = 0uL,
         expirationTime: ULong = 0uL,
@@ -214,24 +222,19 @@ object LocalMessageTestData {
         isReplied: Boolean = false,
         isRepliedAll: Boolean = false,
         isForwarded: Boolean = false,
-        externalId: ExternalId? = null,
         numAttachments: UInt = 0u,
-        flags: MessageFlags = 0uL,
+        flags: MessageFlags = MessageFlags(0uL),
         starred: Boolean = false,
-        attachments: List<LocalAttachmentMetadata>? = null,
-        avatarInformation: AvatarInformation = AvatarInformation("A", "blue")
+        attachments: List<LocalAttachmentMetadata> = emptyList()
+//        avatarInformation: AvatarInformation = AvatarInformation("A", "blue")
     ) = LocalMessageMetadata(
-        id = id,
-        rid = null,
-        conversationId = 1uL,
-        addressId = "1",
-        order = 1uL,
+        localId = id,
+        localConversationId = 50.toULong(),
+        addressId = RemoteId("1"),
+        displayOrder = 1uL,
         subject = subject,
         unread = false,
         sender = sender,
-        to = to,
-        cc = cc,
-        bcc = bcc,
         time = time,
         size = size,
         expirationTime = expirationTime,
@@ -239,12 +242,20 @@ object LocalMessageTestData {
         isReplied = isReplied,
         isRepliedAll = isRepliedAll,
         isForwarded = isForwarded,
-        externalId = externalId,
         numAttachments = numAttachments,
         flags = flags,
         starred = starred,
-        attachments = attachments,
-        labels = labels,
-        avatarInformation = avatarInformation
+        toList = MessageAddresses(to),
+        ccList = MessageAddresses(cc),
+        bccList = MessageAddresses(bcc),
+        attachmentsMetadata = attachments,
+        customLabels = labels,
+        remoteConversationId = null,
+        deleted = false,
+        exclusiveLocation = null,
+        header = "",
+        mimeType = LocalMimeType.TEXT_PLAIN,
+        replyTos = MessageAddresses(emptyList()),
+        parsedHeaders = ParsedHeaders(emptyMap())
     )
 }

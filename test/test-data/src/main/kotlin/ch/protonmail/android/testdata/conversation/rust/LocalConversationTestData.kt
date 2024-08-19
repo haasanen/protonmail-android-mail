@@ -18,12 +18,14 @@
 
 package ch.protonmail.android.testdata.conversation.rust
 
-import uniffi.proton_api_mail.MessageAddress
-import uniffi.proton_mail_common.AvatarInformation
-import uniffi.proton_mail_common.LocalAttachmentMetadata
-import uniffi.proton_mail_common.LocalConversation
-import uniffi.proton_mail_common.LocalConversationId
-import uniffi.proton_mail_common.LocalInlineLabelInfo
+import ch.protonmail.android.mailcommon.domain.mapper.LocalAttachmentMetadata
+import ch.protonmail.android.mailcommon.domain.mapper.LocalConversation
+import ch.protonmail.android.mailcommon.domain.mapper.LocalConversationId
+import uniffi.proton_mail_uniffi.AvatarInformation
+import uniffi.proton_mail_uniffi.CustomLabel
+import uniffi.proton_mail_uniffi.LabelColor
+import uniffi.proton_mail_uniffi.MessageAddress
+import uniffi.proton_mail_uniffi.MessageAddresses
 
 object LocalConversationTestData {
     const val RAW_SUBJECT = "Conversation Subject"
@@ -97,19 +99,7 @@ object LocalConversationTestData {
         subject = "Trashed conversation",
         senders = listOf(sender),
         recipients = listOf(recipient1),
-        labels = listOf(LocalInlineLabelInfo(2uL, "Trash", "red")),
-        time = 1667924198uL
-    )
-
-    val trashedConversationWithCustomLabels = buildConversation(
-        id = RAW_CONVERSATION_ID,
-        subject = "Trashed conversation with custom labels",
-        senders = listOf(sender),
-        recipients = listOf(recipient1),
-        labels = listOf(
-            LocalInlineLabelInfo(2uL, "Trash", "red"),
-            LocalInlineLabelInfo(3uL, "Travel", "blue")
-        ),
+        labels = listOf(CustomLabel(2uL, "Trash", LabelColor("red"))),
         time = 1667924198uL
     )
 
@@ -118,7 +108,7 @@ object LocalConversationTestData {
         subject = RAW_SUBJECT,
         senders = listOf(sender),
         recipients = listOf(recipient1),
-        labels = listOf(LocalInlineLabelInfo(4uL, "Spam", "yellow")),
+        labels = listOf(CustomLabel(4uL, "Spam", LabelColor("yellow"))),
         time = 1667924198uL
     )
 
@@ -127,7 +117,7 @@ object LocalConversationTestData {
         subject = RAW_SUBJECT,
         senders = listOf(sender),
         recipients = listOf(recipient1),
-        labels = listOf(LocalInlineLabelInfo(4uL, "Spam", "yellow")),
+        labels = listOf(CustomLabel(4uL, "Spam", LabelColor("yellow"))),
         time = 1667924198uL
     )
 
@@ -136,7 +126,10 @@ object LocalConversationTestData {
         subject = RAW_SUBJECT,
         senders = listOf(sender),
         recipients = listOf(recipient1),
-        labels = listOf(LocalInlineLabelInfo(1uL, "Inbox", "green"), LocalInlineLabelInfo(5uL, "Starred", "yellow")),
+        labels = listOf(
+            CustomLabel(1uL, "Inbox", LabelColor("green")),
+            CustomLabel(5uL, "Starred", LabelColor("yellow"))
+        ),
         time = 1667924198uL
     )
 
@@ -147,9 +140,9 @@ object LocalConversationTestData {
             senders = listOf(sender),
             recipients = listOf(recipient1),
             labels = listOf(
-                LocalInlineLabelInfo(1uL, "Inbox", "green"),
-                LocalInlineLabelInfo(5uL, "Starred", "yellow"),
-                LocalInlineLabelInfo(11uL, "Custom", "blue")
+                CustomLabel(1uL, "Inbox", LabelColor("green")),
+                CustomLabel(5uL, "Starred", LabelColor("yellow")),
+                CustomLabel(11uL, "Custom", LabelColor("blue"))
             ),
             time = 1667924198uL
         ),
@@ -159,9 +152,9 @@ object LocalConversationTestData {
             senders = listOf(sender),
             recipients = listOf(recipient2),
             labels = listOf(
-                LocalInlineLabelInfo(1uL, "Inbox", "green"),
-                LocalInlineLabelInfo(5uL, "Starred", "yellow"),
-                LocalInlineLabelInfo(11uL, "Custom", "blue")
+                CustomLabel(1uL, "Inbox", LabelColor("green")),
+                CustomLabel(5uL, "Starred", LabelColor("yellow")),
+                CustomLabel(11uL, "Custom", LabelColor("blue"))
             ),
             time = 1667924198uL
         ),
@@ -171,8 +164,8 @@ object LocalConversationTestData {
             senders = listOf(sender),
             recipients = listOf(recipient3),
             labels = listOf(
-                LocalInlineLabelInfo(1uL, "Inbox", "green"),
-                LocalInlineLabelInfo(5uL, "Starred", "yellow")
+                CustomLabel(1uL, "Inbox", LabelColor("green")),
+                CustomLabel(5uL, "Starred", LabelColor("yellow"))
             ),
             time = 1667924198uL
         )
@@ -183,7 +176,7 @@ object LocalConversationTestData {
         subject: String,
         senders: List<MessageAddress>,
         recipients: List<MessageAddress>,
-        labels: List<LocalInlineLabelInfo> = listOf(LocalInlineLabelInfo(1uL, "Inbox", "green")),
+        labels: List<CustomLabel> = listOf(CustomLabel(1uL, "Inbox", LabelColor("green"))),
         time: ULong,
         size: ULong = 0uL,
         expirationTime: ULong = 0uL,
@@ -193,26 +186,24 @@ object LocalConversationTestData {
         numUnread: ULong = 0uL,
         numAttachments: ULong = 0uL,
         starred: Boolean = false,
-        attachments: List<LocalAttachmentMetadata>? = emptyList(),
+        attachments: List<LocalAttachmentMetadata> = emptyList(),
         avatarInformation: AvatarInformation = AvatarInformation("A", "blue")
     ) = LocalConversation(
-        id = id,
-        remoteId = null,
-        order = 1uL,
+        localId = id,
+        displayOrder = 1uL,
         subject = subject,
-        senders = senders,
-        recipients = recipients,
+        senders = MessageAddresses(senders),
+        recipients = MessageAddresses(recipients),
         numMessages = numMessages,
-        numMessagesCtx = numMessagesCtx,
         numUnread = numUnread,
         numAttachments = numAttachments,
         expirationTime = expirationTime,
-        snoozeTime = snoozeTime,
         size = size,
         time = time,
-        labels = labels,
-        starred = starred,
-        attachments = attachments,
-        avatarInformation = avatarInformation
+        customLabels = labels,
+        isStarred = starred,
+        displaySnoozeReminder = false,
+        exclusiveLocation = null,
+        attachmentsMetadata = attachments
     )
 }

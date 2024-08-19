@@ -18,10 +18,10 @@
 
 package ch.protonmail.android.mailmessage.data.local
 
+import ch.protonmail.android.mailcommon.domain.mapper.LocalLabelId
+import ch.protonmail.android.mailcommon.domain.mapper.LocalMessageMetadata
 import kotlinx.coroutines.flow.Flow
 import me.proton.core.domain.entity.UserId
-import uniffi.proton_mail_common.LocalLabelId
-import uniffi.proton_mail_common.LocalMessageMetadata
 
 interface RustMessageQuery {
     fun observeMessages(userId: UserId, labelId: LocalLabelId): Flow<List<LocalMessageMetadata>>

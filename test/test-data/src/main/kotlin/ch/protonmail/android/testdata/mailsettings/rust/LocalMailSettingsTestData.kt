@@ -18,53 +18,55 @@
 
 package ch.protonmail.android.testdata.mailsettings.rust
 
-import uniffi.proton_api_mail.MailSettings
-import uniffi.proton_api_mail.MailSettingsAlmostAllMail
-import uniffi.proton_api_mail.MailSettingsComposerDirection
-import uniffi.proton_api_mail.MailSettingsComposerMode
-import uniffi.proton_api_mail.MailSettingsMessageButtons
-import uniffi.proton_api_mail.MailSettingsNextMessageOnMove
-import uniffi.proton_api_mail.MailSettingsPgpScheme
-import uniffi.proton_api_mail.MailSettingsPmSignature
-import uniffi.proton_api_mail.MailSettingsShowImages
-import uniffi.proton_api_mail.MailSettingsShowMoved
-import uniffi.proton_api_mail.MailSettingsSwipeAction
-import uniffi.proton_api_mail.MailSettingsViewLayout
-import uniffi.proton_api_mail.MailSettingsViewMode
+import ch.protonmail.android.mailcommon.domain.mapper.LocalComposerDirection
+import ch.protonmail.android.mailcommon.domain.mapper.LocalComposerMode
+import ch.protonmail.android.mailcommon.domain.mapper.LocalMailSettings
+import ch.protonmail.android.mailcommon.domain.mapper.LocalMessageButtons
+import ch.protonmail.android.mailcommon.domain.mapper.LocalMimeType
+import ch.protonmail.android.mailcommon.domain.mapper.LocalPgpScheme
+import ch.protonmail.android.mailcommon.domain.mapper.LocalPmSignature
+import ch.protonmail.android.mailcommon.domain.mapper.LocalShowImages
+import ch.protonmail.android.mailcommon.domain.mapper.LocalShowMoved
+import ch.protonmail.android.mailcommon.domain.mapper.LocalSwipeAction
+import ch.protonmail.android.mailcommon.domain.mapper.LocalViewLayout
+import ch.protonmail.android.mailcommon.domain.mapper.LocalViewMode
+import uniffi.proton_mail_uniffi.AlmostAllMail
+import uniffi.proton_mail_uniffi.NextMessageOnMove
 
 object LocalMailSettingsTestData {
 
-    val mailSettings = MailSettings(
+    val mailSettings = LocalMailSettings(
+        localId = 1.toULong(),
         displayName = "displayName",
         signature = "Signature",
         theme = "theme",
         autoSaveContacts = true,
-        composerMode = MailSettingsComposerMode.MAXIMIZED,
-        messageButtons = MailSettingsMessageButtons.UNREAD_FIRST,
-        showImages = MailSettingsShowImages.DO_NOT_AUTO_LOAD,
-        showMoved = MailSettingsShowMoved.KEEP_BOTH,
+        composerMode = LocalComposerMode.MAXIMIZED,
+        messageButtons = LocalMessageButtons.UNREAD_FIRST,
+        showImages = LocalShowImages.DO_NOT_AUTO_LOAD,
+        showMoved = LocalShowMoved.KEEP_BOTH,
         autoDeleteSpamAndTrashDays = 0.toUInt(),
-        almostAllMail = MailSettingsAlmostAllMail.ALL_MAIL,
-        nextMessageOnMove = MailSettingsNextMessageOnMove.DISABLED_EXPLICIT,
-        viewMode = MailSettingsViewMode.MESSAGES,
-        viewLayout = MailSettingsViewLayout.ROW,
-        swipeLeft = MailSettingsSwipeAction.TRASH,
-        swipeRight = MailSettingsSwipeAction.ARCHIVE,
+        almostAllMail = AlmostAllMail.ALL_MAIL,
+        nextMessageOnMove = NextMessageOnMove.DISABLED_EXPLICIT,
+        viewMode = LocalViewMode.MESSAGES,
+        viewLayout = LocalViewLayout.ROW,
+        swipeLeft = LocalSwipeAction.TRASH,
+        swipeRight = LocalSwipeAction.ARCHIVE,
         shortcuts = false,
-        pmSignature = MailSettingsPmSignature.ENABLED,
+        pmSignature = LocalPmSignature.ENABLED,
         pmSignatureReferralLink = false,
         imageProxy = 0.toUInt(),
         numMessagePerPage = 1.toUInt(),
-        draftMimeType = "text/plain",
-        receiveMimeType = "text/plain",
-        showMimeType = "text/plain",
+        draftMimeType = LocalMimeType.TEXT_PLAIN,
+        receiveMimeType = LocalMimeType.TEXT_PLAIN,
+        showMimeType = LocalMimeType.TEXT_PLAIN,
         enableFolderColor = true,
         inheritParentFolderColor = true,
         submissionAccess = false,
-        rightToLeft = MailSettingsComposerDirection.RIGHT_TO_LEFT,
+        rightToLeft = LocalComposerDirection.RIGHT_TO_LEFT,
         attachPublicKey = true,
         sign = true,
-        pgpScheme = MailSettingsPgpScheme.MIME,
+        pgpScheme = LocalPgpScheme.MIME,
         promptPin = true,
         stickyLabels = true,
         confirmLink = true,

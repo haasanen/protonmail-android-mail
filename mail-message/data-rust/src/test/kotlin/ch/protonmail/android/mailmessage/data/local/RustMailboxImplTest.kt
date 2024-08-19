@@ -19,6 +19,8 @@
 package ch.protonmail.android.mailmessage.data.local
 
 import app.cash.turbine.test
+import ch.protonmail.android.mailcommon.domain.mapper.LocalLabelId
+import ch.protonmail.android.mailcommon.domain.mapper.LocalViewMode
 import ch.protonmail.android.mailmessage.data.usecase.CreateMailbox
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
@@ -31,8 +33,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
-import uniffi.proton_api_mail.MailSettingsViewMode
-import uniffi.proton_mail_common.LocalLabelId
 import uniffi.proton_mail_uniffi.MailUserSession
 import uniffi.proton_mail_uniffi.Mailbox
 import kotlin.test.Test
@@ -46,12 +46,12 @@ class RustMailboxImplTest {
 
     private val messageMailbox: Mailbox = mockk {
         every { labelId() } returns 1u
-        every { viewMode() } returns MailSettingsViewMode.MESSAGES
+        every { viewMode() } returns LocalViewMode.MESSAGES
     }
 
     private val conversationMailbox: Mailbox = mockk {
         every { labelId() } returns 1u
-        every { viewMode() } returns MailSettingsViewMode.CONVERSATIONS
+        every { viewMode() } returns LocalViewMode.CONVERSATIONS
     }
 
     private val createMailbox = mockk<CreateMailbox> {

@@ -21,25 +21,18 @@ package ch.protonmail.android.mailmessage.data.local
 import ch.protonmail.android.mailmessage.data.model.LocalConversationMessages
 import kotlinx.coroutines.flow.Flow
 import me.proton.core.domain.entity.UserId
-import uniffi.proton_mail_common.LocalConversationId
-import uniffi.proton_mail_common.LocalLabelId
-import uniffi.proton_mail_common.LocalMessageId
-import uniffi.proton_mail_common.LocalMessageMetadata
+import ch.protonmail.android.mailcommon.domain.mapper.LocalConversationId
+import ch.protonmail.android.mailcommon.domain.mapper.LocalDecryptedMessage
 import ch.protonmail.android.mailcommon.domain.mapper.LocalLabelId
 import ch.protonmail.android.mailcommon.domain.mapper.LocalMessageId
 import ch.protonmail.android.mailcommon.domain.mapper.LocalMessageMetadata
+import kotlinx.coroutines.flow.Flow
 import me.proton.core.domain.entity.UserId
-import uniffi.proton_mail_uniffi.DecryptedMessageBody
 
 interface RustMessageDataSource {
 
-    suspend fun getMessage(userId: UserId, messageId: LocalMessageId): LocalMessageMetadata?
-    suspend fun getMessageBody(
-        userId: UserId,
-        messageId: LocalMessageId,
-        labelId: LocalLabelId? = null
-    ): DecryptedMessageBody?
-
+  suspend fun getMessage(userId: UserId, messageId: LocalMessageId): LocalMessageMetadata?
+    suspend fun getMessageBody(userId: UserId, messageId: LocalMessageId): LocalDecryptedMessage?
     suspend fun getMessages(userId: UserId, labelId: LocalLabelId): List<LocalMessageMetadata>
     suspend fun markRead(userId: UserId, messages: List<LocalMessageId>)
     suspend fun markUnread(userId: UserId, messages: List<LocalMessageId>)

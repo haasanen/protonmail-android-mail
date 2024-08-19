@@ -19,6 +19,7 @@
 package ch.protonmail.android.mailmessage.data.local
 
 import app.cash.turbine.test
+import ch.protonmail.android.mailcommon.domain.mapper.LocalLabelId
 import ch.protonmail.android.mailmessage.domain.paging.RustInvalidationTracker
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
 import ch.protonmail.android.testdata.message.rust.LocalMessageTestData
@@ -36,7 +37,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
-import uniffi.proton_mail_common.LocalLabelId
 import uniffi.proton_mail_uniffi.Mailbox
 import uniffi.proton_mail_uniffi.MailboxLiveQueryUpdatedCallback
 import uniffi.proton_mail_uniffi.MailboxMessageLiveQuery
