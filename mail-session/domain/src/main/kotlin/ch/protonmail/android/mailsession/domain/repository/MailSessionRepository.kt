@@ -24,5 +24,5 @@ interface MailSessionRepository {
 
     fun setMailSession(mailSession: MailSession)
 
-    suspend fun getMailSession(): MailSession
+    fun getMailSession(): MailSession
 }

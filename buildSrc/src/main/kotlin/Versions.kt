@@ -75,6 +75,7 @@ object Versions {
     object Cash {
 
         const val turbine = "1.0.0"
+        const val paparazzi = "1.3.4"
     }
 
     object Coil {
@@ -178,7 +179,7 @@ object Versions {
     object Proton {
 
         const val rustCore = "0.14.0"
-        const val core = "27.1.0"
+        const val core = "27.2.0"
         const val corePlugin = "1.3.0"
     }
 

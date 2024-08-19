@@ -46,6 +46,7 @@ fun Launcher(activityActions: MainActivity.Actions, viewModel: LauncherViewModel
                 onSwitchAccount = { viewModel.submit(LauncherViewModel.Action.Switch(it)) }
             )
         )
+
         LauncherState.Processing,
         LauncherState.StepNeeded -> ProtonCenteredProgress(Modifier.fillMaxSize())
     }

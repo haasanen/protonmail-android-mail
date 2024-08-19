@@ -19,37 +19,46 @@
 package ch.protonmail.android.navigation
 
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import ch.protonmail.android.mailsession.data.mapper.toLocalUserId
+import ch.protonmail.android.mailsession.domain.model.AccountState
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
+import ch.protonmail.android.mailsession.presentation.observe
+import ch.protonmail.android.mailsession.presentation.onAccountTwoFactorNeeded
+import ch.protonmail.android.mailsession.presentation.onAccountTwoPasswordNeeded
 import ch.protonmail.android.navigation.model.LauncherState
 import ch.protonmail.android.navigation.model.LauncherState.AccountNeeded
 import ch.protonmail.android.navigation.model.LauncherState.PrimaryExist
 import ch.protonmail.android.navigation.model.LauncherState.Processing
+import ch.protonmail.android.navigation.model.LauncherState.StepNeeded
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import me.proton.android.core.auth.presentation.AuthOrchestrator
+import me.proton.android.core.auth.presentation.onAddAccountResult
 import me.proton.core.domain.entity.UserId
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
 @SuppressWarnings("NotImplementedDeclaration", "UnusedPrivateMember")
 class LauncherViewModel @Inject constructor(
-    userSessionRepository: UserSessionRepository
+    private val authOrchestrator: AuthOrchestrator,
+    private val userSessionRepository: UserSessionRepository
 ) : ViewModel() {
 
-    val state: StateFlow<LauncherState> = userSessionRepository.observeCurrentUserId()
-        .mapLatest { userId ->
-            if (userId == null) {
-                Timber.d("rust-launcher: User session not found!")
-                AccountNeeded
-            } else {
-                Timber.d("rust-launcher: User session found.")
-                PrimaryExist
+    val state: StateFlow<LauncherState> = userSessionRepository.observeAccounts()
+        .mapLatest { accounts ->
+            when {
+                accounts.isEmpty() || accounts.all { it.state == AccountState.Disabled } -> AccountNeeded
+                accounts.any { it.state == AccountState.TwoPasswordNeeded } -> StepNeeded
+                accounts.any { it.state == AccountState.TwoFactorNeeded } -> StepNeeded
+                accounts.any { it.state == AccountState.Ready } -> PrimaryExist
+                else -> Processing
             }
         }
         .stateIn(
@@ -58,18 +67,29 @@ class LauncherViewModel @Inject constructor(
             initialValue = Processing
         )
 
+    override fun onCleared() {
+        authOrchestrator.unregister()
+        super.onCleared()
+    }
+
     fun register(context: AppCompatActivity) {
-        Timber.d("rust-launcher: Not implemented in ET.")
+        with(authOrchestrator) {
+            register(context)
+            onAddAccountResult { result -> if (!result) context.finish() }
+            userSessionRepository.observe(context.lifecycle, minActiveState = Lifecycle.State.CREATED)
+                .onAccountTwoFactorNeeded { startSecondFactorWorkflow(it.userId.toLocalUserId()) }
+                .onAccountTwoPasswordNeeded { startTwoPassModeWorkflow(it.userId.toLocalUserId()) }
+        }
     }
 
     fun submit(action: Action) {
         viewModelScope.launch {
             when (action) {
-                Action.AddAccount -> onAddAccount()
-                Action.OpenPasswordManagement -> onOpenPasswordManagement()
-                Action.OpenRecoveryEmail -> onOpenRecoveryEmail()
-                Action.OpenReport -> onOpenReport()
-                Action.OpenSubscription -> onOpenSubscription()
+                is Action.AddAccount -> onAddAccount()
+                is Action.OpenPasswordManagement -> onOpenPasswordManagement()
+                is Action.OpenRecoveryEmail -> onOpenRecoveryEmail()
+                is Action.OpenReport -> onOpenReport()
+                is Action.OpenSubscription -> onOpenSubscription()
                 is Action.SignIn -> onSignIn(action.userId)
                 is Action.Switch -> onSwitch(action.userId)
             }
@@ -77,7 +97,7 @@ class LauncherViewModel @Inject constructor(
     }
 
     fun onAddAccount() {
-        Timber.d("rust-launcher: Add account not implemented in ET.")
+        authOrchestrator.startAddAccountWorkflow()
     }
 
     fun onOpenPasswordManagement() {

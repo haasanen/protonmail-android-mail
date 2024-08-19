@@ -25,7 +25,23 @@ plugins {
 includeCoreBuild {
     branch.set("main")
     includeBuild("gopenpgp")
+
+    // Adding temporary https://gitlab.protontech.ch/amorral/et-protoncore.
+    includeRepo("et-protoncore") {
+        if (System.getenv("CI").toBoolean()) {
+            val token = System.getenv("ACCOUNT_REPO_READ_TOKEN")
+            val server = "gitlab.protontech.ch"
+            uri.set("https://${token}@${server}/amorral/et-protoncore.git")
+        } else {
+            authentication { sshWithPublicKey() }
+            uri.set("git@gitlab.protontech.ch:amorral/et-protoncore.git")
+        }
+        branch.set("develop")
+        checkoutDirectory.set(file("./account-core"))
+    }
 }
+
+include("account-core:platform:android:core:auth:presentation")
 
 include(":app")
 include(":benchmark")

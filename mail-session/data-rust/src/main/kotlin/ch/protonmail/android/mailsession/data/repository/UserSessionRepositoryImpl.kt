@@ -21,35 +21,90 @@ package ch.protonmail.android.mailsession.data.repository
 import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
+import ch.protonmail.android.mailsession.data.RepositoryFlowCoroutineScope
+import ch.protonmail.android.mailsession.data.mapper.toAccount
 import ch.protonmail.android.mailsession.data.mapper.toLocalUserId
-import ch.protonmail.android.mailsession.domain.repository.MailSessionRepository
-import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
-import me.proton.core.domain.entity.UserId
+import ch.protonmail.android.mailsession.domain.model.Account
+import ch.protonmail.android.mailsession.domain.model.AccountState
 import ch.protonmail.android.mailsession.domain.model.ForkedSessionId
 import ch.protonmail.android.mailsession.domain.model.SessionError
+import ch.protonmail.android.mailsession.domain.repository.MailSessionRepository
+import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
+import me.proton.core.domain.entity.UserId
 import timber.log.Timber
+import uniffi.proton_mail_uniffi.LiveQueryCallback
 import uniffi.proton_mail_uniffi.MailUserSession
+import uniffi.proton_mail_uniffi.StoredAccount
+import uniffi.proton_mail_uniffi.WatchedAccounts
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class UserSessionRepositoryImpl @Inject constructor(
-    private val mailSessionRepository: MailSessionRepository
+    mailSessionRepository: MailSessionRepository,
+    @RepositoryFlowCoroutineScope coroutineScope: CoroutineScope
 ) : UserSessionRepository {
 
-    private val activeUserSessions = mutableMapOf<UserId, MailUserSession?>()
-    private val lock = Mutex()
+    private val mailSession by lazy { mailSessionRepository.getMailSession() }
+
+    private val storedAccountsStateFlow: Flow<List<StoredAccount>?> = callbackFlow {
+        var watchedStoredAccounts: WatchedAccounts? = null
+        watchedStoredAccounts = mailSession.watchAccounts(
+            object : LiveQueryCallback {
+                override fun onUpdate() {
+                    launch { send(mailSession.getAccounts()) }
+                }
+            }
+        )
+
+        send(watchedStoredAccounts.accounts)
+
+        awaitClose {
+            watchedStoredAccounts.handle.disconnect()
+            watchedStoredAccounts.handle.destroy()
+            watchedStoredAccounts.destroy()
+        }
+    }.stateIn(coroutineScope, SharingStarted.Lazily, initialValue = null)
+
+    private suspend fun getStoredAccount(userId: UserId) = mailSession.getAccount(userId.toLocalUserId())
+
+    override fun observeAccounts(): Flow<List<Account>> = storedAccountsStateFlow
+        // Skip null initialValue.
+        .filterNotNull()
+        .mapLatest { accounts -> accounts.map { it.toAccount() } }
+
+    override fun observePrimaryUserId(): Flow<UserId?> = observeAccounts()
+        .map { list ->
+            val primaryUserId = mailSession.getPrimaryAccount()?.userId()
+            list.firstOrNull { it.state == AccountState.Ready && primaryUserId == it.userId.toLocalUserId() }
+        }
+        .map { account -> account?.userId }
+        .distinctUntilChanged()
+
+    override suspend fun getAccount(userId: UserId): Account? = getStoredAccount(userId)?.toAccount()
+
+    override suspend fun deleteAccount(userId: UserId) {
+        mailSession.deleteAccount(userId.toLocalUserId())
+    }
+
+    override suspend fun disableAccount(userId: UserId) {
+        mailSession.logoutAccount(userId.toLocalUserId())
+    }
 
     override suspend fun getUserSession(userId: UserId): MailUserSession? {
-        lock.withLock {
-            if (sessionNotInitialised(userId)) {
-                initUserSession(userId)
-            }
-
-            return activeUserSessions[userId]
-        }
+        val session = getStoredAccount(userId)?.let { mailSession.getSessions(it).firstOrNull() }
+        return session?.let { mailSession.userContextFromSession(it) }
     }
 
     override suspend fun forkSession(userId: UserId): Either<SessionError, ForkedSessionId> {
@@ -67,36 +122,4 @@ class UserSessionRepositoryImpl @Inject constructor(
             }
         )
     }
-
-    override fun observeCurrentUserId(): Flow<UserId?> = flow {
-        val mailSession = mailSessionRepository.getMailSession()
-        val storedAccount = mailSession.getPrimaryAccount()
-
-        val userId = storedAccount?.userId()?.let { UserId(it) }
-        emit(userId)
-    }
-
-    private suspend fun initUserSession(userId: UserId) {
-        val mailSession = mailSessionRepository.getMailSession()
-        val storedAccounts = mailSession.getAccounts()
-        val storedUserAccount = storedAccounts.find { it.userId() == userId.toLocalUserId() }
-
-        if (storedUserAccount == null) {
-            Timber.e("rust-session: no stored user account found for $userId in userSessionRepository")
-            activeUserSessions[userId] = null
-            return
-        }
-
-        val storedSession = mailSession.getSessions(storedUserAccount).find { it.userId() == userId.toLocalUserId() }
-        if (storedSession == null) {
-            Timber.e("rust-session: no stored session found for $userId in userSessionRepository")
-            activeUserSessions[userId] = null
-            return
-        }
-        val userSession = mailSession.userContextFromSession(storedSession)
-        activeUserSessions[userId] = userSession
-    }
-
-    private fun sessionNotInitialised(userId: UserId) = activeUserSessions.containsKey(userId).not()
-
 }

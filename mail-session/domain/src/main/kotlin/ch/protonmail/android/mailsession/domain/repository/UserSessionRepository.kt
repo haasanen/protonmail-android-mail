@@ -19,17 +19,36 @@
 package ch.protonmail.android.mailsession.domain.repository
 
 import arrow.core.Either
-import kotlinx.coroutines.flow.Flow
-import me.proton.core.domain.entity.UserId
+import ch.protonmail.android.mailsession.domain.model.Account
+import ch.protonmail.android.mailsession.domain.model.AccountState
 import ch.protonmail.android.mailsession.domain.model.ForkedSessionId
 import ch.protonmail.android.mailsession.domain.model.SessionError
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.drop
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.transform
+import me.proton.core.domain.entity.UserId
 import uniffi.proton_mail_uniffi.MailUserSession
 
 interface UserSessionRepository {
 
-    fun observeCurrentUserId(): Flow<UserId?>
+    fun observeAccounts(): Flow<List<Account>>
+
+    fun observePrimaryUserId(): Flow<UserId?>
+
+    suspend fun getAccount(userId: UserId): Account?
+
+    suspend fun deleteAccount(userId: UserId)
+
+    suspend fun disableAccount(userId: UserId)
 
     suspend fun getUserSession(userId: UserId): MailUserSession?
 
     suspend fun forkSession(userId: UserId): Either<SessionError, ForkedSessionId>
 }
+
+fun UserSessionRepository.onAccountState(state: AccountState, initialState: Boolean = true): Flow<Account> =
+    observeAccounts()
+        .transform { accounts -> accounts.forEach { emit(it) } }
+        .filter { it.state == state }
+        .drop(if (initialState) 0 else 1)

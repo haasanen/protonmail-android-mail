@@ -1,5 +1,3 @@
-import java.util.Properties
-
 /*
  * Copyright (c) 2022 Proton Technologies AG
  * This file is part of Proton Technologies AG and Proton Mail.
@@ -25,18 +23,6 @@ plugins {
     kotlin("plugin.serialization") version Versions.Gradle.kotlinGradlePlugin
 }
 
-val rustProperties = Properties().apply {
-    @Suppress("SwallowedException")
-    try {
-        load(rootDir.resolve("rust.properties").inputStream())
-    } catch (exception: java.io.FileNotFoundException) {
-        // Provide empty properties to allow the app to be built without secrets
-        Properties()
-    }
-}
-
-val injectFakeRustSession: String = rustProperties.getProperty("injectFakeRustSession") ?: "false"
-
 android {
     namespace = "ch.protonmail.android.mailcommon.data"
     compileSdk = Config.compileSdk
@@ -44,8 +30,6 @@ android {
     defaultConfig {
         minSdk = Config.minSdk
         lint.targetSdk = Config.targetSdk
-
-        buildConfigField("Boolean", "INJECT_FAKE_RUST_SESSION", injectFakeRustSession)
     }
 
     compileOptions {

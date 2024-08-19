@@ -22,3 +22,5 @@ import ch.protonmail.android.mailcommon.datarust.mapper.LocalUserId
 import me.proton.core.domain.entity.UserId
 
 fun UserId.toLocalUserId(): LocalUserId = this.id
+
+fun LocalUserId.toUserId(): UserId = UserId(this)

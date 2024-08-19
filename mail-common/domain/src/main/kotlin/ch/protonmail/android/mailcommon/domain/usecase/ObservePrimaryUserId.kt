@@ -27,5 +27,5 @@ class ObservePrimaryUserId @Inject constructor(
     private val userSessionRepository: UserSessionRepository
 ) {
 
-    operator fun invoke(): Flow<UserId?> = userSessionRepository.observeCurrentUserId()
+    operator fun invoke(): Flow<UserId?> = userSessionRepository.observePrimaryUserId()
 }

@@ -18,16 +18,22 @@
 
 package ch.protonmail.android.mailsession.domain.usecase
 
+import androidx.annotation.VisibleForTesting
 import ch.protonmail.android.mailsession.domain.coroutines.EventLoopScope
+import ch.protonmail.android.mailsession.domain.model.Account
+import ch.protonmail.android.mailsession.domain.model.AccountState.Disabled
+import ch.protonmail.android.mailsession.domain.model.AccountState.Ready
 import ch.protonmail.android.mailsession.domain.repository.EventLoopRepository
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
+import ch.protonmail.android.mailsession.domain.repository.onAccountState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
+import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -37,23 +43,32 @@ class RustEventManagerStarter @Inject constructor(
     @EventLoopScope private val coroutineScope: CoroutineScope
 ) {
 
-    private var eventLoopJob: Job? = null
+    @VisibleForTesting
+    internal var eventLoopJobs = hashMapOf<UserId, Job>()
 
     fun start() {
-        Timber.d("rust-event Starting event loop...")
+        Timber.d("rust-event Starting event loops(s)...")
+        with(userSessionRepository) {
+            onAccountState(Disabled).onEach { stopEventLoop(it) }.launchIn(coroutineScope)
+            onAccountState(Ready).onEach { startEventLoop(it) }.launchIn(coroutineScope)
+        }
+    }
 
-        eventLoopJob = userSessionRepository.observeCurrentUserId().filterNotNull().onEach { userId ->
+    private fun stopEventLoop(account: Account) {
+        eventLoopJobs[account.userId]?.cancel()
+    }
 
-            while (coroutineScope.isActive) {
-
-                eventLoopRepository.trigger(userId)
+    private fun startEventLoop(account: Account) {
+        eventLoopJobs[account.userId] = coroutineScope.launch {
+            while (isActive) {
                 delay(EVENT_LOOP_DELAY)
+                eventLoopRepository.trigger(account.userId)
             }
-
-        }.launchIn(coroutineScope)
+        }
     }
 
     companion object {
-        private const val EVENT_LOOP_DELAY = 30_000L
+
+        internal const val EVENT_LOOP_DELAY = 30_000L
     }
 }
