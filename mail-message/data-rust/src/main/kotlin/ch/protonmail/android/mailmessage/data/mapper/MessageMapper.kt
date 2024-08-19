@@ -19,6 +19,10 @@
 package ch.protonmail.android.mailmessage.data.mapper
 
 import arrow.core.toNonEmptyListOrNull
+import ch.protonmail.android.mailcommon.domain.mapper.LocalConversationId
+import ch.protonmail.android.mailcommon.domain.mapper.LocalMessageId
+import ch.protonmail.android.mailcommon.domain.mapper.LocalMessageMetadata
+import ch.protonmail.android.mailcommon.domain.mapper.LocalMimeType
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.FAKE_USER_ID
 import ch.protonmail.android.mailmessage.data.model.LocalConversationMessages
@@ -32,12 +36,9 @@ import ch.protonmail.android.mailmessage.domain.model.Participant
 import ch.protonmail.android.mailmessage.domain.model.Recipient
 import me.proton.core.label.domain.entity.LabelId
 import me.proton.core.user.domain.entity.AddressId
-import uniffi.proton_api_mail.MessageAddress
-import uniffi.proton_mail_common.LocalConversationId
-import uniffi.proton_api_mail.MimeType as RustMimeType
-import uniffi.proton_mail_common.LocalMessageId
-import uniffi.proton_mail_common.LocalMessageMetadata
-import uniffi.proton_mail_uniffi.DecryptedMessageBody
+import timber.log.Timber
+import uniffi.proton_mail_uniffi.DecryptedMessage
+import uniffi.proton_mail_uniffi.MessageAddress
 
 fun ConversationId.toLocalConversationId(): LocalConversationId = this.id.toULong()
 
@@ -48,28 +49,28 @@ fun LocalMessageId.toMessageId(): MessageId = MessageId(this.toString())
 fun LocalMessageMetadata.toMessage(): Message {
     return Message(
         userId = FAKE_USER_ID,
-        messageId = MessageId(this.id.toString()),
-        conversationId = ConversationId(this.conversationId.toString()),
+        messageId = MessageId(this.localId.toString()),
+        conversationId = ConversationId(this.localConversationId.toString()),
         time = this.time.toLong(),
         size = this.size.toLong(),
-        order = this.order.toLong(),
-        labelIds = this.labels?.map { LabelId(it.id.toString()) } ?: emptyList(),
+        order = this.displayOrder.toLong(),
+        labelIds = this.customLabels.map { LabelId(it.localId.toString()) },
         subject = this.subject,
         unread = this.unread,
         sender = this.sender.toParticipant(),
-        toList = this.to.map { it.toRecipient() },
-        ccList = this.cc.map { it.toRecipient() },
-        bccList = this.bcc.map { it.toRecipient() },
+        toList = this.toList.value.map { it.toRecipient() },
+        ccList = this.ccList.value.map { it.toRecipient() },
+        bccList = this.bccList.value.map { it.toRecipient() },
         expirationTime = this.expirationTime.toLong(),
         isReplied = this.isReplied,
         isRepliedAll = this.isRepliedAll,
         isForwarded = this.isForwarded,
-        addressId = AddressId(this.addressId),
-        externalId = this.externalId,
+        addressId = AddressId(this.addressId.value),
         numAttachments = this.numAttachments.toInt(),
-        flags = this.flags.toLong(),
-        attachmentCount = AttachmentCount(this.attachments?.size ?: 0),
-        isStarred = this.starred
+        flags = this.flags.value.toLong(),
+        attachmentCount = AttachmentCount(this.numAttachments.toInt()),
+        isStarred = this.starred,
+        externalId = null
     )
 }
 
@@ -87,17 +88,22 @@ fun MessageAddress.toRecipient(): Recipient {
     )
 }
 
-fun RustMimeType.toAndroidMimeType(): MimeType {
+fun LocalMimeType.toAndroidMimeType(): MimeType {
     return when (this) {
-        RustMimeType.MESSAGE_RFC822 -> MimeType.PlainText
-        RustMimeType.TEXT_PLAIN -> MimeType.PlainText
-        RustMimeType.TEXT_HTML -> MimeType.Html
-        RustMimeType.MULTIPART_MIXED -> MimeType.MultipartMixed
-        RustMimeType.MULTIPART_RELATED -> MimeType.MultipartMixed
+        LocalMimeType.MESSAGE_RFC822 -> MimeType.PlainText
+        LocalMimeType.TEXT_PLAIN -> MimeType.PlainText
+        LocalMimeType.TEXT_HTML -> MimeType.Html
+        LocalMimeType.MULTIPART_MIXED -> MimeType.MultipartMixed
+        LocalMimeType.MULTIPART_RELATED -> MimeType.MultipartMixed
+        LocalMimeType.APPLICATION_JSON,
+        LocalMimeType.APPLICATION_PDF -> {
+            Timber.w("rust-message-mapper: Received unsupported mime type $this. Fallback to plaintext")
+            MimeType.PlainText
+        }
     }
 }
 
-fun DecryptedMessageBody.toMessageBody(messageId: MessageId): MessageBody {
+fun DecryptedMessage.toMessageBody(messageId: MessageId): MessageBody {
     return MessageBody(
         userId = FAKE_USER_ID,
         messageId = messageId,

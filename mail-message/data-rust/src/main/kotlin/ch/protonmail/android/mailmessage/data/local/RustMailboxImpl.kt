@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.mailmessage.data.local
 
+import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.domain.mapper.LocalLabelId
 import ch.protonmail.android.mailcommon.domain.mapper.LocalViewMode
 import ch.protonmail.android.mailmessage.data.MessageRustCoroutineScope
@@ -52,6 +53,7 @@ class RustMailboxImpl @Inject constructor(
         .filterNotNull()
         .filter { it.viewMode() == LocalViewMode.MESSAGES }
 
+    @MissingRustApi
     override fun switchToMailbox(userId: UserId, labelId: LocalLabelId) {
         if (!shouldSwitchMailbox(labelId)) {
             return
