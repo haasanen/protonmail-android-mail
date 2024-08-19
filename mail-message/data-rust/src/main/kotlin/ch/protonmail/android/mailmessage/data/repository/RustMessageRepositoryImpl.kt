@@ -46,6 +46,9 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import me.proton.core.domain.entity.UserId
 import me.proton.core.label.domain.entity.LabelId
+import uniffi.proton_mail_uniffi.BlockQuote
+import uniffi.proton_mail_uniffi.RemoteContent
+import uniffi.proton_mail_uniffi.TransformOpts
 import javax.inject.Inject
 
 @Suppress("NotImplementedDeclaration", "TooManyFunctions")
@@ -133,10 +136,11 @@ class RustMessageRepositoryImpl @Inject constructor(
         val localMessageId = messageId.toLocalMessageId()
         val message = rustMessageDataSource.getMessage(userId, localMessageId)?.toMessage()
         val currentLabelId = selectedMailLabelId.flow.value.labelId.toLocalLabelId()
-        val body = rustMessageDataSource.getMessageBody(userId, localMessageId, currentLabelId)
+        val decryptedBody = rustMessageDataSource.getMessageBody(userId, localMessageId, currentLabelId)
 
-        return if (message != null && body != null) {
-            MessageWithBody(message, body.toMessageBody(messageId))
+        return if (message != null && decryptedBody != null) {
+            val bodyOutput = decryptedBody.body(TransformOpts(BlockQuote.STRIP, RemoteContent.DEFAULT))
+            MessageWithBody(message, bodyOutput.toMessageBody(messageId))
         } else {
             null
         }

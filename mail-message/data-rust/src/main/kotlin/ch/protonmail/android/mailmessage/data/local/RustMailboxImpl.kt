@@ -54,6 +54,7 @@ class RustMailboxImpl @Inject constructor(
         .filter { it.viewMode() == LocalViewMode.MESSAGES }
 
     @MissingRustApi
+    // The delay should go
     override fun switchToMailbox(userId: UserId, labelId: LocalLabelId) {
         if (!shouldSwitchMailbox(labelId)) {
             return

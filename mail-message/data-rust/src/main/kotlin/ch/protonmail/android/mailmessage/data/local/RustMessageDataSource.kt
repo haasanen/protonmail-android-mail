@@ -31,8 +31,12 @@ import me.proton.core.domain.entity.UserId
 
 interface RustMessageDataSource {
 
-  suspend fun getMessage(userId: UserId, messageId: LocalMessageId): LocalMessageMetadata?
-    suspend fun getMessageBody(userId: UserId, messageId: LocalMessageId): LocalDecryptedMessage?
+    suspend fun getMessage(userId: UserId, messageId: LocalMessageId): LocalMessageMetadata?
+    suspend fun getMessageBody(
+        userId: UserId,
+        messageId: LocalMessageId,
+        labelId: LocalLabelId?
+    ): LocalDecryptedMessage?
     suspend fun getMessages(userId: UserId, labelId: LocalLabelId): List<LocalMessageMetadata>
     suspend fun markRead(userId: UserId, messages: List<LocalMessageId>)
     suspend fun markUnread(userId: UserId, messages: List<LocalMessageId>)

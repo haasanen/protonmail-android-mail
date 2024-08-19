@@ -19,6 +19,7 @@
 package ch.protonmail.android.mailmessage.data.mapper
 
 import arrow.core.toNonEmptyListOrNull
+import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.domain.mapper.LocalConversationId
 import ch.protonmail.android.mailcommon.domain.mapper.LocalMessageId
 import ch.protonmail.android.mailcommon.domain.mapper.LocalMessageMetadata
@@ -37,7 +38,7 @@ import ch.protonmail.android.mailmessage.domain.model.Recipient
 import me.proton.core.label.domain.entity.LabelId
 import me.proton.core.user.domain.entity.AddressId
 import timber.log.Timber
-import uniffi.proton_mail_uniffi.DecryptedMessage
+import uniffi.proton_mail_uniffi.BodyOutput
 import uniffi.proton_mail_uniffi.MessageAddress
 
 fun ConversationId.toLocalConversationId(): LocalConversationId = this.id.toULong()
@@ -103,14 +104,16 @@ fun LocalMimeType.toAndroidMimeType(): MimeType {
     }
 }
 
-fun DecryptedMessage.toMessageBody(messageId: MessageId): MessageBody {
+@MissingRustApi
+// Mime type hardcoded as not coming through as part of decrypted message anymore...
+fun BodyOutput.toMessageBody(messageId: MessageId): MessageBody {
     return MessageBody(
         userId = FAKE_USER_ID,
         messageId = messageId,
-        body = this.body(),
+        body = this.body,
         header = "",
         attachments = emptyList(),
-        mimeType = this.mimeType().toAndroidMimeType(),
+        mimeType = LocalMimeType.TEXT_PLAIN.toAndroidMimeType(),
         spamScore = "",
         replyTo = Recipient("", ""),
         replyTos = emptyList(),

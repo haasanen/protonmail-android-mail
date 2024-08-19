@@ -18,10 +18,8 @@
 
 package ch.protonmail.android.mailmessage.data.local
 
-import ch.protonmail.android.mailmessage.data.model.LocalConversationMessages
-import kotlinx.coroutines.flow.Flow
-import me.proton.core.domain.entity.UserId
 import ch.protonmail.android.mailcommon.domain.mapper.LocalConversationId
+import ch.protonmail.android.mailmessage.data.model.LocalConversationMessages
 import kotlinx.coroutines.flow.Flow
 import me.proton.core.domain.entity.UserId
 

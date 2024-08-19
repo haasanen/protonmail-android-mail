@@ -20,11 +20,12 @@ package ch.protonmail.android.mailmessage.data.local
 
 import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailmessage.data.model.LocalConversationMessages
+import ch.protonmail.android.mailcommon.domain.mapper.LocalConversationId
 import ch.protonmail.android.mailcommon.domain.mapper.LocalDecryptedMessage
 import ch.protonmail.android.mailcommon.domain.mapper.LocalLabelId
 import ch.protonmail.android.mailcommon.domain.mapper.LocalMessageId
 import ch.protonmail.android.mailcommon.domain.mapper.LocalMessageMetadata
-import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
+import ch.protonmail.android.mailsession.domain.repository.MailSessionRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
@@ -33,10 +34,11 @@ import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.MailSessionException
 import uniffi.proton_mail_uniffi.MailboxException
+import uniffi.proton_mail_uniffi.message
 import javax.inject.Inject
 
 class RustMessageDataSourceImpl @Inject constructor(
-    private val userSessionRepository: UserSessionRepository,
+    private val mailSessionRepository: MailSessionRepository,
     private val rustMailbox: RustMailbox,
     private val rustMessageQuery: RustMessageQuery,
     private val rustConversationMessageQuery: RustConversationMessageQuery
@@ -44,19 +46,29 @@ class RustMessageDataSourceImpl @Inject constructor(
 
     override suspend fun getMessage(userId: UserId, messageId: LocalMessageId): LocalMessageMetadata? {
         return try {
-            val userSession = userSessionRepository.getUserSession(userId)
-            userSession?.messageMetadata(messageId)
+            val mailSession = mailSessionRepository.getMailSession()
+            message(mailSession, messageId)
         } catch (e: MailSessionException) {
             Timber.e(e, "rust-message: Failed to get message")
             null
         }
     }
 
-    override suspend fun getMessageBody(userId: UserId, messageId: LocalMessageId): LocalDecryptedMessage? {
+    override suspend fun getMessageBody(
+        userId: UserId,
+        messageId: LocalMessageId,
+        labelId: LocalLabelId?
+    ): LocalDecryptedMessage? {
+        val mailboxFlow = if (labelId != null) {
+            rustMailbox.observeMailbox(labelId)
+        } else {
+            rustMailbox.observeMessageMailbox()
+        }
+
         return try {
             mailboxFlow
                 .mapLatest { mailbox ->
-                    mailbox.messageBody(messageId)
+                    uniffi.proton_mail_uniffi.getMessageBody(mailbox, messageId)
                 }
                 .firstOrNull()
         } catch (e: MailboxException) {

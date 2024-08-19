@@ -18,36 +18,38 @@
 
 package ch.protonmail.android.mailmessage.data.local
 
+import ch.protonmail.android.mailcommon.domain.mapper.LocalLabelId
+import ch.protonmail.android.mailcommon.domain.mapper.LocalMessageMetadata
 import ch.protonmail.android.mailmessage.data.MessageRustCoroutineScope
 import ch.protonmail.android.mailmessage.domain.paging.RustDataSourceId
 import ch.protonmail.android.mailmessage.domain.paging.RustInvalidationTracker
+import ch.protonmail.android.mailsession.domain.repository.MailSessionRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
-import uniffi.proton_mail_common.LocalLabelId
-import uniffi.proton_mail_common.LocalMessageMetadata
-import uniffi.proton_mail_uniffi.MailboxLiveQueryUpdatedCallback
-import uniffi.proton_mail_uniffi.MailboxMessageLiveQuery
+import uniffi.proton_mail_uniffi.LiveQueryCallback
+import uniffi.proton_mail_uniffi.WatchedMessages
+import uniffi.proton_mail_uniffi.watchMessagesForLabel
 import javax.inject.Inject
 
 class RustMessageQueryImpl @Inject constructor(
-    private val rustMailbox: RustMailbox,
+    private val mailSessionRepository: MailSessionRepository,
     private val invalidationTracker: RustInvalidationTracker,
     @MessageRustCoroutineScope private val coroutineScope: CoroutineScope
 ) : RustMessageQuery {
 
-    private var messageLiveQuery: MailboxMessageLiveQuery? = null
-    private var _messagesStatusFlow = MutableStateFlow<List<LocalMessageMetadata>>(emptyList())
-    private val messagesStatusFlow: Flow<List<LocalMessageMetadata>> = _messagesStatusFlow.asStateFlow()
+    private var messagesWatcher: WatchedMessages? = null
 
-    private val messagesUpdatedCallback = object : MailboxLiveQueryUpdatedCallback {
-        override fun onUpdated() {
-            _messagesStatusFlow.value = messageLiveQuery?.value() ?: emptyList()
+    private val mutableMessageStatusFlow = MutableStateFlow<List<LocalMessageMetadata>>(emptyList())
+    private val messagesStatusFlow: Flow<List<LocalMessageMetadata>> = mutableMessageStatusFlow.asStateFlow()
+
+    private val messagesUpdatedCallback = object : LiveQueryCallback {
+        override fun onUpdate() {
+            mutableMessageStatusFlow.value = messagesWatcher?.messages ?: emptyList()
 
             invalidationTracker.notifyInvalidation(
                 setOf(
@@ -55,47 +57,31 @@ class RustMessageQueryImpl @Inject constructor(
                     RustDataSourceId.LABELS
                 )
             )
-            Timber.d("rust-message: onUpdated, item count: ${_messagesStatusFlow.value.size}")
+            Timber.d("rust-message: onUpdated, item count: ${mutableMessageStatusFlow.value.size}")
         }
     }
 
-    init {
-        Timber.d("rust-message-query: init")
+    override fun observeMessages(userId: UserId, labelId: LocalLabelId): Flow<List<LocalMessageMetadata>> {
+        coroutineScope.launch {
+            val mailSession = mailSessionRepository.getMailSession()
+            Timber.v("rust-message: got MailSession instance to watch messages for $userId")
 
-        rustMailbox
-            .observeMessageMailbox()
-            .onEach { mailbox ->
-                destroy()
+            destroy()
+            messagesWatcher = watchMessagesForLabel(mailSession, labelId, messagesUpdatedCallback)
+        }
 
-                messageLiveQuery = mailbox.newMessageLiveQuery(
-                    MAX_MESSAGE_COUNT,
-                    messagesUpdatedCallback
-                )
-            }
-            .launchIn(coroutineScope)
+        return messagesStatusFlow
+    }
+
+    override fun disconnect() {
+        messagesWatcher?.handle?.disconnect()
+        messagesWatcher = null
     }
 
     private fun destroy() {
         Timber.d("rust-message-query: destroy")
         disconnect()
-        _messagesStatusFlow.value = emptyList()
-    }
-
-    override fun disconnect() {
-        messageLiveQuery?.disconnect()
-        messageLiveQuery = null
-    }
-
-    override fun observeMessages(userId: UserId, labelId: LocalLabelId): Flow<List<LocalMessageMetadata>> {
-
-        rustMailbox.switchToMailbox(userId, labelId)
-
-        return messagesStatusFlow
-    }
-
-    companion object {
-
-        private const val MAX_MESSAGE_COUNT = 250L
+        mutableMessageStatusFlow.value = emptyList()
     }
 
 }

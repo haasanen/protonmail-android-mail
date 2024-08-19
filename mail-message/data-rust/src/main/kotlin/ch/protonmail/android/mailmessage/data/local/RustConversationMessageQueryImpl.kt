@@ -18,6 +18,9 @@
 
 package ch.protonmail.android.mailmessage.data.local
 
+import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
+import ch.protonmail.android.mailcommon.domain.mapper.LocalConversationId
+import ch.protonmail.android.mailcommon.domain.mapper.LocalMessageMetadata
 import ch.protonmail.android.mailmessage.data.MessageRustCoroutineScope
 import ch.protonmail.android.mailmessage.data.model.LocalConversationMessages
 import ch.protonmail.android.mailmessage.domain.paging.RustDataSourceId
@@ -31,27 +34,29 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
-import uniffi.proton_mail_common.LocalConversationId
-import uniffi.proton_mail_uniffi.ConversationMessagesLiveQueryResult
-import uniffi.proton_mail_uniffi.MailboxLiveQueryUpdatedCallback
+import uniffi.proton_mail_uniffi.LiveQueryCallback
+import uniffi.proton_mail_uniffi.WatchedConversation
+import uniffi.proton_mail_uniffi.watchConversation
 import javax.inject.Inject
 
+@SuppressWarnings("ForbiddenComment")
 class RustConversationMessageQueryImpl @Inject constructor(
     private val rustMailbox: RustMailbox,
     private val invalidationTracker: RustInvalidationTracker,
     @MessageRustCoroutineScope private val coroutineScope: CoroutineScope
 ) : RustConversationMessageQuery {
 
-    private var conversationMessagesLiveQueryResult: ConversationMessagesLiveQueryResult? = null
+    private var conversationWatcher: WatchedConversation? = null
     private var conversationMessagesMutableStatusFlow = MutableStateFlow<LocalConversationMessages?>(null)
     private val conversationMessagesStatusFlow: Flow<LocalConversationMessages> = conversationMessagesMutableStatusFlow
         .asStateFlow()
         .filterNotNull()
 
-    private val conversationMessagesLiveQueryCallback = object : MailboxLiveQueryUpdatedCallback {
-        override fun onUpdated() {
-            val messages = conversationMessagesLiveQueryResult?.query?.value()
-            val messageIdToOpen = conversationMessagesLiveQueryResult?.messageIdToOpen
+    private val conversationMessagesLiveQueryCallback = object : LiveQueryCallback {
+        override fun onUpdate() {
+            val messages = conversationWatcher?.messages
+            // TODO: get message to open from rust when exposed
+            val messageIdToOpen = conversationWatcher?.messages?.first()?.localId
 
             if (messages != null && messageIdToOpen != null) {
                 conversationMessagesMutableStatusFlow.value = LocalConversationMessages(messageIdToOpen, messages)
@@ -70,20 +75,19 @@ class RustConversationMessageQueryImpl @Inject constructor(
 
     }
 
+    @MissingRustApi
+    // MessageIdToOpen not returned with conversations anymore?
     private fun initConversationMessagesLiveQuery(conversationId: LocalConversationId) {
         rustMailbox
             .observeConversationMailbox()
             .onEach { mailbox ->
                 destroy()
 
-                conversationMessagesLiveQueryResult = mailbox.newConversationMessagesLiveQuery(
-                    conversationId,
-                    conversationMessagesLiveQueryCallback
-                )
+                conversationWatcher = watchConversation(mailbox, conversationId, conversationMessagesLiveQueryCallback)
 
-                val value = conversationMessagesLiveQueryResult?.let {
-                    val messages = it.query.value()
-                    val messageIdToOpen = it.messageIdToOpen
+                val value = conversationWatcher?.let {
+                    val messages = it.messages
+                    val messageIdToOpen = it.messages.first().localId
 
                     LocalConversationMessages(messageIdToOpen, messages)
 
@@ -100,7 +104,8 @@ class RustConversationMessageQueryImpl @Inject constructor(
     }
 
     override fun disconnect() {
-        conversationMessagesLiveQueryResult?.query?.disconnect()
+        conversationWatcher?.messagesHandle?.disconnect()
+        conversationWatcher?.conversationHandle?.disconnect()
     }
 
     override fun observeConversationMessages(
