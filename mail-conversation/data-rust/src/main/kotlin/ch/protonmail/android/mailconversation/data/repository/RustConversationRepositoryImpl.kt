@@ -34,7 +34,6 @@ import ch.protonmail.android.mailconversation.domain.repository.ConversationRepo
 import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import me.proton.core.domain.entity.UserId
@@ -81,14 +80,9 @@ class RustConversationRepositoryImpl @Inject constructor(
         userId: UserId,
         id: ConversationId,
         refreshData: Boolean
-    ): Flow<Either<DataError, Conversation>> = flow {
-        emit(
-            rustConversationDataSource.observeConversation(userId, id.toLocalConversationId())
-                ?.toConversation()
-                ?.right()
-                ?: DataError.Local.NoDataCached.left()
-        )
-    }
+    ): Flow<Either<DataError, Conversation>> = rustConversationDataSource
+        .observeConversation(userId, id.toLocalConversationId())
+        .map { it.toConversation().right() }
 
     @Deprecated("All usages seem to get .first(), could be replaced with getConversations()")
     override fun observeCachedConversations(userId: UserId, ids: List<ConversationId>): Flow<List<Conversation>> {

@@ -74,7 +74,7 @@ class RustConversationQueryImplTest {
         every { notifyInvalidation(any()) } just Runs
     }
 
-    private val rustConversationQuery = RustConversationQueryImpl(rustMailbox, invalidationTracker, testCoroutineScope)
+    private val rustConversationQuery = RustConversationQueryImpl(rustMailbox, testCoroutineScope)
 
     @Test
     fun `query initializes the mailbox and creates live query when created`() = runTest {

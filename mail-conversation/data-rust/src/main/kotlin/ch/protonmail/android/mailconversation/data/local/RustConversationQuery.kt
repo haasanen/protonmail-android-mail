@@ -19,10 +19,12 @@
 package ch.protonmail.android.mailconversation.data.local
 
 import ch.protonmail.android.mailcommon.domain.mapper.LocalConversation
+import ch.protonmail.android.mailcommon.domain.mapper.LocalConversationId
 import kotlinx.coroutines.flow.Flow
 import me.proton.core.domain.entity.UserId
 
 interface RustConversationQuery {
+    fun observeConversation(userId: UserId, conversationId: LocalConversationId): Flow<LocalConversation>
     fun observeConversations(userId: UserId, labelId: ULong): Flow<List<LocalConversation>>
     fun disconnect()
 }

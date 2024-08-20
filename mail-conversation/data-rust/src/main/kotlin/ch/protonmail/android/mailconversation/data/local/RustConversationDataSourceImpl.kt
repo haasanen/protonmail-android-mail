@@ -87,10 +87,8 @@ class RustConversationDataSourceImpl @Inject constructor(
         return flowOf()
     }
 
-    override suspend fun observeConversation(
-        userId: UserId,
-        conversationId: LocalConversationId
-    ): Flow<LocalConversation> = flowOf()
+    override fun observeConversation(userId: UserId, conversationId: LocalConversationId): Flow<LocalConversation> =
+        rustConversationQuery.observeConversation(userId, conversationId)
 
     override suspend fun deleteConversations(userId: UserId, conversations: List<LocalConversationId>) {
         executeMailboxAction(

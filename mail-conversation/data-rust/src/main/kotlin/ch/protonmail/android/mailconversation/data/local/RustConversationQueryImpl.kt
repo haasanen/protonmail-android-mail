@@ -21,63 +21,55 @@ package ch.protonmail.android.mailconversation.data.local
 import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.domain.coroutines.AppScope
 import ch.protonmail.android.mailcommon.domain.mapper.LocalConversation
+import ch.protonmail.android.mailcommon.domain.mapper.LocalConversationId
 import ch.protonmail.android.mailmessage.data.local.RustMailbox
-import ch.protonmail.android.mailmessage.domain.paging.RustInvalidationTracker
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.launch
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
+import uniffi.proton_mail_uniffi.LiveQueryCallback
+import uniffi.proton_mail_uniffi.WatchedConversation
+import uniffi.proton_mail_uniffi.watchConversation
 import javax.inject.Inject
 
-@SuppressWarnings("UnusedPrivateMember", "ExpressionBodySyntax")
-@MissingRustApi
-// RUST REMOVED LIVE QUERY
 class RustConversationQueryImpl @Inject constructor(
     private val rustMailbox: RustMailbox,
-    private val invalidationTracker: RustInvalidationTracker,
     @AppScope private val coroutineScope: CoroutineScope
 ) : RustConversationQuery {
 
-   /* private var conversationLiveQuery: MailboxConversationLiveQuery? = null
+    private var conversationWatcher: WatchedConversation? = null
 
-    private val conversationsMutableStatusFlow = MutableStateFlow<List<LocalConversation>>(emptyList())
-    private val conversationsStatusFlow: Flow<List<LocalConversation>> = conversationsMutableStatusFlow.asStateFlow()
+    private val conversationMutableStatusFlow = MutableStateFlow<LocalConversation?>(null)
 
-    private val conversationsUpdatedCallback = object : MailboxLiveQueryUpdatedCallback {
-        override fun onUpdated() {
-            conversationsMutableStatusFlow.value = conversationLiveQuery?.value() ?: emptyList()
-
-            invalidationTracker.notifyInvalidation(
-                setOf(
-                    RustDataSourceId.CONVERSATION,
-                    RustDataSourceId.LABELS
-                )
-            )
-
-            Timber.d(
-                "rust-conversation-query: onUpdated, item count: " +
-                    "${conversationsMutableStatusFlow.value.size}"
-            )
+    private val conversationUpdatedCallback = object : LiveQueryCallback {
+        override fun onUpdate() {
+            conversationMutableStatusFlow.value = conversationWatcher?.conversation
+            Timber.d("rust-conversation-query: onUpdated, item ${conversationMutableStatusFlow.value}")
         }
     }
 
-    init {
-        Timber.d("rust-conversation-query: init")
+    override fun observeConversation(userId: UserId, conversationId: LocalConversationId): Flow<LocalConversation> {
+        coroutineScope.launch {
+            destroy()
 
-        rustMailbox
-            .observeConversationMailbox()
-            .onEach { mailbox ->
-                destroy()
-
-                conversationLiveQuery = mailbox.newConversationLiveQuery(
-                    MAX_CONVERSATION_COUNT,
-                    conversationsUpdatedCallback
-                )
+            val mailbox = rustMailbox.observeConversationMailbox().firstOrNull()
+            if (mailbox == null) {
+                Timber.e("rust-conversation: Failed to observe conversation, null mailbox")
+                return@launch
             }
-            .launchIn(coroutineScope)
-    }*/
 
+            watchConversation(mailbox, conversationId, conversationUpdatedCallback)
+        }
+
+        return conversationMutableStatusFlow.filterNotNull()
+    }
+
+    @SuppressWarnings("ExpressionBodySyntax")
     override fun observeConversations(userId: UserId, labelId: ULong): Flow<List<LocalConversation>> {
         /*rustMailbox.switchToMailbox(userId, labelId)
 
@@ -86,18 +78,14 @@ class RustConversationQueryImpl @Inject constructor(
     }
 
     override fun disconnect() {
-        /* conversationLiveQuery?.disconnect()
-         conversationLiveQuery = null*/
+        conversationWatcher?.conversationHandle?.disconnect()
+        conversationWatcher = null
     }
 
     private fun destroy() {
         Timber.d("rust-conversation-query: destroy")
-        /* disconnect()
-         conversationsMutableStatusFlow.value = emptyList()*/
+        disconnect()
+        conversationMutableStatusFlow.value = null
     }
 
-    companion object {
-
-        private const val MAX_CONVERSATION_COUNT = 200L
-    }
 }

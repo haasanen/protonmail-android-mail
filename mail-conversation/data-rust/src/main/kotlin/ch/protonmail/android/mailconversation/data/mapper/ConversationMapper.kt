@@ -18,18 +18,17 @@
 
 package ch.protonmail.android.mailconversation.data.mapper
 
+import ch.protonmail.android.mailcommon.domain.mapper.LocalConversation
+import ch.protonmail.android.mailcommon.domain.mapper.LocalConversationId
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.FAKE_USER_ID
 import ch.protonmail.android.mailconversation.domain.entity.Conversation
 import ch.protonmail.android.mailconversation.domain.entity.ConversationLabel
 import ch.protonmail.android.mailconversation.domain.entity.ConversationWithContext
-import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.mailmessage.data.mapper.toParticipant
 import ch.protonmail.android.mailmessage.domain.model.AttachmentCount
 import me.proton.core.label.domain.entity.LabelId
-import uniffi.proton_mail_common.LocalConversation
-import uniffi.proton_mail_common.LocalConversationId
-import uniffi.proton_mail_common.LocalInlineLabelInfo
+import uniffi.proton_mail_uniffi.CustomLabel
 
 fun ConversationId.toLocalConversationId(): LocalConversationId = this.id.toULong()
 
@@ -40,30 +39,26 @@ fun LocalConversation.toConversation(): Conversation {
     val contextTime = this.time.toLong()
     val contextSize = this.size.toLong()
 
-    val labels = this.labels?.map {
+    val labels = this.customLabels.map {
         it.toConversationLabel(
-            this.id.toConversationId(), numMessages, numUnread, numAttachments, contextTime, contextSize
+            this.localId.toConversationId(), numMessages, numUnread, numAttachments, contextTime, contextSize
         )
-    } ?: listOf(
-        getDefaultLabel(
-            this.id.toConversationId(), numMessages, numUnread, numAttachments, contextTime, contextSize
-        )
-    )
+    }
 
     return Conversation(
-        conversationId = this.id.toConversationId(),
+        conversationId = this.localId.toConversationId(),
         userId = FAKE_USER_ID,
-        order = this.order.toLong(),
+        order = this.displayOrder.toLong(),
         subject = this.subject,
-        senders = this.senders.map { it.toParticipant() },
-        recipients = this.recipients.map { it.toParticipant() },
+        senders = this.senders.value.map { it.toParticipant() },
+        recipients = this.recipients.value.map { it.toParticipant() },
         numMessages = this.numMessages.toInt(),
         numUnread = this.numUnread.toInt(),
         numAttachments = this.numAttachments.toInt(),
         expirationTime = this.expirationTime.toLong(),
         labels = labels,
         attachmentCount = AttachmentCount(this.numAttachments.toInt()),
-        starred = this.starred
+        starred = this.isStarred
     )
 }
 
@@ -71,7 +66,7 @@ fun LocalConversation.toConversationWithContext(contextLabelId: LabelId): Conver
     ConversationWithContext(this.toConversation(), contextLabelId)
 
 @Suppress("LongParameterList")
-private fun getDefaultLabel(
+fun CustomLabel.toConversationLabel(
     conversationId: ConversationId,
     contextNumMessages: Int,
     contextNumUnread: Int,
@@ -81,27 +76,7 @@ private fun getDefaultLabel(
 ): ConversationLabel {
     return ConversationLabel(
         conversationId = conversationId,
-        labelId = SystemLabelId.AllMail.labelId,
-        contextNumMessages = contextNumMessages,
-        contextNumUnread = contextNumUnread,
-        contextNumAttachments = contextNumAttachments,
-        contextTime = contextTime,
-        contextSize = contextSize
-    )
-}
-
-@Suppress("LongParameterList")
-fun LocalInlineLabelInfo.toConversationLabel(
-    conversationId: ConversationId,
-    contextNumMessages: Int,
-    contextNumUnread: Int,
-    contextNumAttachments: Int,
-    contextTime: Long,
-    contextSize: Long
-): ConversationLabel {
-    return ConversationLabel(
-        conversationId = conversationId,
-        labelId = LabelId(this.id.toString()),
+        labelId = LabelId(this.localId.toString()),
         contextNumMessages = contextNumMessages,
         contextNumUnread = contextNumUnread,
         contextNumAttachments = contextNumAttachments,
