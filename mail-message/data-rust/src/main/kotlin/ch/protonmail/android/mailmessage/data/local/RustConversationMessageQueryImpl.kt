@@ -20,7 +20,6 @@ package ch.protonmail.android.mailmessage.data.local
 
 import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.domain.mapper.LocalConversationId
-import ch.protonmail.android.mailcommon.domain.mapper.LocalMessageMetadata
 import ch.protonmail.android.mailmessage.data.MessageRustCoroutineScope
 import ch.protonmail.android.mailmessage.data.model.LocalConversationMessages
 import ch.protonmail.android.mailmessage.domain.paging.RustDataSourceId

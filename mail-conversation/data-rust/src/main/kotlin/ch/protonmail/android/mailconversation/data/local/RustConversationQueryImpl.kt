@@ -18,7 +18,6 @@
 
 package ch.protonmail.android.mailconversation.data.local
 
-import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.domain.coroutines.AppScope
 import ch.protonmail.android.mailcommon.domain.mapper.LocalConversation
 import ch.protonmail.android.mailcommon.domain.mapper.LocalConversationId

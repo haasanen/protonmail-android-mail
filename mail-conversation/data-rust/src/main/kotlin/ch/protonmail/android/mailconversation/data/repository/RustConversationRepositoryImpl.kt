@@ -43,7 +43,6 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-@Suppress("NotImplementedDeclaration", "TooManyFunctions")
 class RustConversationRepositoryImpl @Inject constructor(
     private val rustConversationDataSource: RustConversationDataSource
 ) : ConversationRepository {
@@ -58,18 +57,13 @@ class RustConversationRepositoryImpl @Inject constructor(
         }
     }
 
+    @MissingRustApi
     // This function should be handled after rust-pagination is released
     override suspend fun isLocalPageValid(
         userId: UserId,
         pageKey: PageKey,
         items: List<ConversationWithContext>
     ): Boolean = true
-
-    // It will be implemented later on
-    override suspend fun getRemoteConversations(
-        userId: UserId,
-        pageKey: PageKey
-    ): Either<DataError.Remote, List<ConversationWithContext>> = DataError.Remote.Unknown.left()
 
     override suspend fun markAsStale(userId: UserId, labelId: LabelId) {
         // It will be implemented later on
@@ -86,10 +80,10 @@ class RustConversationRepositoryImpl @Inject constructor(
 
     @Deprecated("All usages seem to get .first(), could be replaced with getConversations()")
     override fun observeCachedConversations(userId: UserId, ids: List<ConversationId>): Flow<List<Conversation>> {
-        return rustConversationDataSource.observeConversations(userId, ids.map { it.toLocalConversationId() })
-            .map { localConversations ->
-                localConversations.map { it.toConversation() }
-            }
+//        return rustConversationDataSource.observeConversations(userId, ids.map { it.toLocalConversationId() })
+//            .map { localConversations ->
+//                localConversations.map { it.toConversation() }
+//            }
     }
 
     // It will be implemented later on

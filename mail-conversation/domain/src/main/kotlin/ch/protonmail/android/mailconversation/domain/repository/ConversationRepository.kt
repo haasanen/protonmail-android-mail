@@ -46,14 +46,6 @@ interface ConversationRepository {
     ): Boolean
 
     /**
-     * Fetch all [Conversation] from network for [userId] filtered by [PageKey].
-     */
-    suspend fun getRemoteConversations(
-        userId: UserId,
-        pageKey: PageKey
-    ): Either<DataError.Remote, List<ConversationWithContext>>
-
-    /**
      * Mark local data as stale for [userId], by [labelId].
      */
     suspend fun markAsStale(userId: UserId, labelId: LabelId)
@@ -133,8 +125,6 @@ interface ConversationRepository {
     suspend fun star(userId: UserId, conversationIds: List<ConversationId>): Either<DataError, List<Conversation>>
 
     suspend fun unStar(userId: UserId, conversationIds: List<ConversationId>): Either<DataError, List<Conversation>>
-
-    suspend fun isCachedConversationRead(userId: UserId, conversationId: ConversationId): Either<DataError, Boolean>
 
     suspend fun relabel(
         userId: UserId,
