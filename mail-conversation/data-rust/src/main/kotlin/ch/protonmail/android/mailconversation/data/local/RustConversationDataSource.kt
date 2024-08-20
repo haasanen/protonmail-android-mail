@@ -26,7 +26,6 @@ import me.proton.core.domain.entity.UserId
 
 interface RustConversationDataSource {
 
-    fun observeConversations(userId: UserId, conversationIds: List<LocalConversationId>): Flow<List<LocalConversation>>
     fun observeConversation(userId: UserId, conversationId: LocalConversationId): Flow<LocalConversation>
 
     suspend fun getConversations(userId: UserId, labelId: LocalLabelId): List<LocalConversation>

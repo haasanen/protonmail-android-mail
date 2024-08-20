@@ -30,7 +30,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
@@ -51,41 +50,13 @@ class RustConversationDataSourceImpl @Inject constructor(
     @ConversationRustCoroutineScope private val coroutineScope: CoroutineScope
 ) : RustConversationDataSource {
 
+    /**
+     * Gets the first x conversations for this labelId.
+     * Adds in an Invalidation Observer on the label that will be fired when any conversation
+     * in the label changes
+     */
     override suspend fun getConversations(userId: UserId, labelId: LocalLabelId): List<LocalConversation> =
         rustConversationQuery.observeConversations(userId, labelId).first()
-
-    override fun observeConversations(
-        userId: UserId,
-        conversationIds: List<LocalConversationId>
-    ): Flow<List<LocalConversation>> {
-        Timber.d("rust-conversation: observeConversations for conversationIds: $conversationIds")
-
-
-        /*  return rustMailbox.observeConversationMailbox().mapLatest { mailbox ->
-              try {
-                  val userSession = sessionManager.getUserSession(userId)
-                  if (userSession == null) {
-                      Timber.d("rust-conversation: observeConversations failed due to null session for $userId")
-                      return@mapLatest emptyList()
-                  }
-                  val currentLabelId = mailbox.labelId()
-                  val conversationList = mutableListOf<LocalConversation>()
-
-                  conversationIds.forEach { conversationId ->
-                      userSession.conversationWithIdAndContext(conversationId, currentLabelId)?.let { conversation ->
-                          conversationList.add(conversation)
-                      }
-                  }
-
-                  conversationList
-              } catch (e: MailboxException) {
-                  Timber.e(e,
-                  "rust-conversation: Failed to observe conversations for conversationIds: $conversationIds")
-                  emptyList()
-              }
-          }*/
-        return flowOf()
-    }
 
     override fun observeConversation(userId: UserId, conversationId: LocalConversationId): Flow<LocalConversation> =
         rustConversationQuery.observeConversation(userId, conversationId)

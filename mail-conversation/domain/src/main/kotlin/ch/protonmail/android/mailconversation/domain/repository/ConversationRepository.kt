@@ -65,6 +65,7 @@ interface ConversationRepository {
      * Get a list of conversations.
      * Returns any conversation data that is available locally right away.
      */
+    @Deprecated("Usages of this are part of features that were replaced by higher level rust functions")
     fun observeCachedConversations(userId: UserId, ids: List<ConversationId>): Flow<List<Conversation>>
 
     /**

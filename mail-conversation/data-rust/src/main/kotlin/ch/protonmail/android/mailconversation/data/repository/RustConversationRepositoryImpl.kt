@@ -78,12 +78,11 @@ class RustConversationRepositoryImpl @Inject constructor(
         .observeConversation(userId, id.toLocalConversationId())
         .map { it.toConversation().right() }
 
-    @Deprecated("All usages seem to get .first(), could be replaced with getConversations()")
+    @MissingRustApi
+    @Deprecated("Usages of this are part of features that were replaced by higher level rust functions")
     override fun observeCachedConversations(userId: UserId, ids: List<ConversationId>): Flow<List<Conversation>> {
-//        return rustConversationDataSource.observeConversations(userId, ids.map { it.toLocalConversationId() })
-//            .map { localConversations ->
-//                localConversations.map { it.toConversation() }
-//            }
+        Timber.e("Not implemented; Features relying on this should switch to use other rust-provided methods")
+        return flowOf(emptyList())
     }
 
     // It will be implemented later on
@@ -186,12 +185,6 @@ class RustConversationRepositoryImpl @Inject constructor(
 
         return emptyList<Conversation>().right()
     }
-
-    // It will be implemented later on
-    override suspend fun isCachedConversationRead(
-        userId: UserId,
-        conversationId: ConversationId
-    ): Either<DataError, Boolean> = DataError.Local.Unknown.left()
 
     // It will be implemented later on
     override suspend fun relabel(
