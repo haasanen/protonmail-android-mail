@@ -52,9 +52,9 @@ class RustConversationDataSourceImplTest {
     private val sessionManager = mockk<UserSessionRepository>()
 
     private val rustMailbox: RustMailbox = mockk()
-    private val rustConversationQuery: RustConversationQuery = mockk()
+    private val rustConversationDetailQuery: RustConversationDetailQuery = mockk()
     private val dataSource = RustConversationDataSourceImpl(
-        sessionManager, rustMailbox, rustConversationQuery, testCoroutineScope
+        sessionManager, rustMailbox, rustConversationDetailQuery, testCoroutineScope
     )
 
     @Test
@@ -68,14 +68,14 @@ class RustConversationDataSourceImplTest {
             LocalConversationTestData.SepConversation,
             LocalConversationTestData.OctConversation
         )
-        coEvery { rustConversationQuery.observeConversations(userId, labelId) } returns flowOf(conversations)
+        coEvery { rustConversationDetailQuery.observeConversations(userId, labelId) } returns flowOf(conversations)
         coEvery { sessionManager.getUserSession(userId) } returns userSession
 
         // When
         val result = dataSource.getConversations(userId, labelId)
 
         // Then
-        coVerify { rustConversationQuery.observeConversations(userId, labelId) }
+        coVerify { rustConversationDetailQuery.observeConversations(userId, labelId) }
         assertEquals(conversations, result)
     }
 
@@ -270,12 +270,12 @@ class RustConversationDataSourceImplTest {
     @Test
     fun `disconnect should call disconnect on rustConversationQuery`() {
         // Given
-        every { rustConversationQuery.disconnect() } just Runs
+        every { rustConversationDetailQuery.disconnect() } just Runs
 
         // When
         dataSource.disconnect()
 
         // Then
-        verify { rustConversationQuery.disconnect() }
+        verify { rustConversationDetailQuery.disconnect() }
     }
 }

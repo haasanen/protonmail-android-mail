@@ -35,10 +35,10 @@ import uniffi.proton_mail_uniffi.WatchedConversation
 import uniffi.proton_mail_uniffi.watchConversation
 import javax.inject.Inject
 
-class RustConversationQueryImpl @Inject constructor(
+class RustConversationDetailQueryImpl @Inject constructor(
     private val rustMailbox: RustMailbox,
     @AppScope private val coroutineScope: CoroutineScope
-) : RustConversationQuery {
+) : RustConversationDetailQuery {
 
     private var conversationWatcher: WatchedConversation? = null
 

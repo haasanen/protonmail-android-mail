@@ -44,7 +44,7 @@ import uniffi.proton_mail_uniffi.MailboxLiveQueryUpdatedCallback
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class RustConversationQueryImplTest {
+class RustConversationDetailQueryImplTest {
 
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
@@ -74,7 +74,7 @@ class RustConversationQueryImplTest {
         every { notifyInvalidation(any()) } just Runs
     }
 
-    private val rustConversationQuery = RustConversationQueryImpl(rustMailbox, testCoroutineScope)
+    private val rustConversationQuery = RustConversationDetailQueryImpl(rustMailbox, testCoroutineScope)
 
     @Test
     fun `query initializes the mailbox and creates live query when created`() = runTest {

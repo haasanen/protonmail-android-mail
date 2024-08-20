@@ -46,7 +46,7 @@ class RustConversationDataSourceImpl @Inject constructor(
     private val sessionManager: UserSessionRepository,
     private val mailSessionRepository: MailSessionRepository,
     private val rustMailbox: RustMailbox,
-    private val rustConversationQuery: RustConversationQuery,
+    private val rustConversationDetailQuery: RustConversationDetailQuery,
     private val rustConversationsQuery: RustConversationsQuery,
     @ConversationRustCoroutineScope private val coroutineScope: CoroutineScope
 ) : RustConversationDataSource {
@@ -60,7 +60,7 @@ class RustConversationDataSourceImpl @Inject constructor(
         rustConversationsQuery.observeConversationsByLabel(userId, labelId).first()
 
     override fun observeConversation(userId: UserId, conversationId: LocalConversationId): Flow<LocalConversation> =
-        rustConversationQuery.observeConversation(userId, conversationId)
+        rustConversationDetailQuery.observeConversation(userId, conversationId)
 
     override suspend fun deleteConversations(userId: UserId, conversations: List<LocalConversationId>) {
         executeMailboxAction(
@@ -140,7 +140,7 @@ class RustConversationDataSourceImpl @Inject constructor(
     }
 
     override fun disconnect() {
-        rustConversationQuery.disconnect()
+        rustConversationDetailQuery.disconnect()
     }
 
     private suspend fun executeMailboxAction(

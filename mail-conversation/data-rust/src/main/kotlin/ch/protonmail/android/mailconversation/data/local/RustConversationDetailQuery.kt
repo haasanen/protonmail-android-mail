@@ -23,7 +23,7 @@ import ch.protonmail.android.mailcommon.domain.mapper.LocalConversationId
 import kotlinx.coroutines.flow.Flow
 import me.proton.core.domain.entity.UserId
 
-interface RustConversationQuery {
+interface RustConversationDetailQuery {
     fun observeConversation(userId: UserId, conversationId: LocalConversationId): Flow<LocalConversation>
     fun disconnect()
 }
