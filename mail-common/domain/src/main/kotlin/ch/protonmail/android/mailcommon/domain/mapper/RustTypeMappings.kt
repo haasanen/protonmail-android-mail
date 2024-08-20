@@ -26,6 +26,7 @@ import uniffi.proton_mail_uniffi.CustomLabel
 import uniffi.proton_mail_uniffi.DecryptedMessage
 import uniffi.proton_mail_uniffi.Label
 import uniffi.proton_mail_uniffi.LabelType
+import uniffi.proton_mail_uniffi.MailSettings
 import uniffi.proton_mail_uniffi.Message
 import uniffi.proton_mail_uniffi.MessageButtons
 import uniffi.proton_mail_uniffi.MimeType

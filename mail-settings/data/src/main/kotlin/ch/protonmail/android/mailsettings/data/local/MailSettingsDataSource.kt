@@ -18,10 +18,10 @@
 
 package ch.protonmail.android.mailsettings.data.local
 
+import ch.protonmail.android.mailcommon.domain.mapper.LocalMailSettings
 import kotlinx.coroutines.flow.Flow
 import me.proton.core.domain.entity.UserId
-import uniffi.proton_api_mail.MailSettings
 
 interface MailSettingsDataSource {
-    fun observeMailSettings(userId: UserId): Flow<MailSettings>
+    fun observeMailSettings(userId: UserId): Flow<LocalMailSettings>
 }

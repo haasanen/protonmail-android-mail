@@ -18,12 +18,13 @@
 
 package ch.protonmail.android.mailsettings.data.usecase
 
-import uniffi.proton_mail_uniffi.MailSettingsUpdated
+import uniffi.proton_mail_uniffi.LiveQueryCallback
 import uniffi.proton_mail_uniffi.MailUserSession
-import uniffi.proton_mail_uniffi.MailUserSettings
+import uniffi.proton_mail_uniffi.watchMailSettings
 import javax.inject.Inject
 
 class CreateRustUserMailSettings @Inject constructor() {
 
-    operator fun invoke(session: MailUserSession, callback: MailSettingsUpdated) = MailUserSettings(session, callback)
+    suspend operator fun invoke(session: MailUserSession, callback: LiveQueryCallback) =
+        watchMailSettings(session, callback)
 }

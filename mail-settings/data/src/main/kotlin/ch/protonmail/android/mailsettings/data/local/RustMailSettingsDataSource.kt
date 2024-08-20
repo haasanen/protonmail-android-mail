@@ -19,6 +19,7 @@
 package ch.protonmail.android.mailsettings.data.local
 
 import ch.protonmail.android.mailcommon.domain.coroutines.AppScope
+import ch.protonmail.android.mailcommon.domain.mapper.LocalMailSettings
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import ch.protonmail.android.mailsettings.data.usecase.CreateRustUserMailSettings
 import kotlinx.coroutines.CoroutineScope
@@ -29,9 +30,8 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
-import uniffi.proton_api_mail.MailSettings
-import uniffi.proton_mail_uniffi.MailSettingsUpdated
-import uniffi.proton_mail_uniffi.MailUserSettings
+import uniffi.proton_mail_uniffi.LiveQueryCallback
+import uniffi.proton_mail_uniffi.SettingsWatcher
 import javax.inject.Inject
 
 class RustMailSettingsDataSource @Inject constructor(
@@ -40,14 +40,14 @@ class RustMailSettingsDataSource @Inject constructor(
     @AppScope private val coroutineScope: CoroutineScope
 ) : MailSettingsDataSource {
 
-    private val mutableMailSettingsFlow = MutableStateFlow<MailSettings?>(null)
-    private val mailSettingsFlow: Flow<MailSettings> = mutableMailSettingsFlow
+    private val mutableMailSettingsFlow = MutableStateFlow<LocalMailSettings?>(null)
+    private val mailSettingsFlow: Flow<LocalMailSettings> = mutableMailSettingsFlow
         .asStateFlow()
         .filterNotNull()
 
-    private var mailSettingsLiveQuery: MailUserSettingsLiveQueryByUserId? = null
+    private var mailSettingsWatcherByUserId: MailUserSettingsWatcherByUserId? = null
 
-    override fun observeMailSettings(userId: UserId): Flow<MailSettings> {
+    override fun observeMailSettings(userId: UserId): Flow<LocalMailSettings> {
         if (isMailSettingsLiveQueryNotInitialised()) {
             initMailSettingsLiveQuery(userId)
         }
@@ -65,35 +65,35 @@ class RustMailSettingsDataSource @Inject constructor(
                 return@launch
             }
 
-            val settingsCallback = object : MailSettingsUpdated {
-                override fun onUpdated() {
-                    mutableMailSettingsFlow.value = mailSettingsLiveQuery?.liveQuery?.value()
+            val settingsCallback = object : LiveQueryCallback {
+                override fun onUpdate() {
+                    mutableMailSettingsFlow.value = mailSettingsWatcherByUserId?.watcher?.settings
                     Timber.v("rust-settings: mail settings updated: ${mutableMailSettingsFlow.value}")
                 }
             }
 
-            mailSettingsLiveQuery?.let { destroyMailSettingsLiveQuery() }
-            mailSettingsLiveQuery = MailUserSettingsLiveQueryByUserId(
+            mailSettingsWatcherByUserId?.let { destroyMailSettingsLiveQuery() }
+            mailSettingsWatcherByUserId = MailUserSettingsWatcherByUserId(
                 userId,
                 createRustMailSettings(session, settingsCallback)
             )
 
-            mutableMailSettingsFlow.value = mailSettingsLiveQuery?.liveQuery?.value()
+            mutableMailSettingsFlow.value = mailSettingsWatcherByUserId?.watcher?.settings
 
             Timber.d("rust-settings: created mail settings live query")
         }
     }
 
-    private fun isMailSettingsLiveQueryNotInitialised() = mailSettingsLiveQuery == null
+    private fun isMailSettingsLiveQueryNotInitialised() = mailSettingsWatcherByUserId == null
 
     private fun destroyMailSettingsLiveQuery() {
         Timber.v("rust-settings: destroyMailSettingsLiveQuery")
-        mailSettingsLiveQuery?.liveQuery?.destroy()
-        mailSettingsLiveQuery = null
+        mailSettingsWatcherByUserId?.watcher?.destroy()
+        mailSettingsWatcherByUserId = null
     }
 
-    private data class MailUserSettingsLiveQueryByUserId(
+    private data class MailUserSettingsWatcherByUserId(
         val userId: UserId,
-        val liveQuery: MailUserSettings
+        val watcher: SettingsWatcher
     )
 }
