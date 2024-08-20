@@ -26,21 +26,21 @@ import me.proton.core.domain.entity.UserId
 
 interface RustConversationDataSource {
 
+    fun observeConversations(userId: UserId, conversationIds: List<LocalConversationId>): Flow<List<LocalConversation>>
+    suspend fun getConversation(userId: UserId, conversationId: LocalConversationId): LocalConversation?
+
     suspend fun getConversations(userId: UserId, labelId: LocalLabelId): List<LocalConversation>
     suspend fun deleteConversations(userId: UserId, conversations: List<LocalConversationId>)
     suspend fun markRead(userId: UserId, conversations: List<LocalConversationId>)
     suspend fun markUnread(userId: UserId, conversations: List<LocalConversationId>)
     suspend fun starConversations(userId: UserId, conversations: List<LocalConversationId>)
     suspend fun unStarConversations(userId: UserId, conversations: List<LocalConversationId>)
-    fun observeConversations(userId: UserId, conversationIds: List<LocalConversationId>): Flow<List<LocalConversation>>
     suspend fun relabel(
         userId: UserId,
         conversationIds: List<LocalConversationId>,
         labelsToBeRemoved: List<LocalLabelId>,
         labelsToBeAdded: List<LocalLabelId>
     )
-
-    suspend fun getConversation(userId: UserId, conversationId: LocalConversationId): LocalConversation?
 
     suspend fun moveConversations(
         userId: UserId,

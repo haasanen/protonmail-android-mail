@@ -21,6 +21,7 @@ package ch.protonmail.android.mailconversation.data.repository
 import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
+import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailconversation.data.local.RustConversationDataSource
@@ -75,6 +76,7 @@ class RustConversationRepositoryImpl @Inject constructor(
         // It will be implemented later on
     }
 
+    @MissingRustApi
     override fun observeConversation(
         userId: UserId,
         id: ConversationId,
@@ -88,6 +90,7 @@ class RustConversationRepositoryImpl @Inject constructor(
         )
     }
 
+    @Deprecated("All usages seem to get .first(), could be replaced with getConversations()")
     override fun observeCachedConversations(userId: UserId, ids: List<ConversationId>): Flow<List<Conversation>> {
         return rustConversationDataSource.observeConversations(userId, ids.map { it.toLocalConversationId() })
             .map { localConversations ->

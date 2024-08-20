@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.mailconversation.data.local
 
+import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.domain.mapper.LocalConversation
 import ch.protonmail.android.mailcommon.domain.mapper.LocalConversationId
 import ch.protonmail.android.mailcommon.domain.mapper.LocalLabelId
@@ -29,19 +30,17 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.MailSession
 import uniffi.proton_mail_uniffi.Mailbox
 import uniffi.proton_mail_uniffi.MailboxException
-import uniffi.proton_mail_uniffi.delete
-import uniffi.proton_mail_uniffi.load
-import uniffi.proton_mail_uniffi.markAsRead
-import uniffi.proton_mail_uniffi.markAsUnread
-import uniffi.proton_mail_uniffi.star
-import uniffi.proton_mail_uniffi.unstar
+import uniffi.proton_mail_uniffi.applyLabelToConversations
+import uniffi.proton_mail_uniffi.markConversationsAsUnread
+import uniffi.proton_mail_uniffi.markConverstionsAsRead
+import uniffi.proton_mail_uniffi.removeLabelFromConversations
 import javax.inject.Inject
 
 class RustConversationDataSourceImpl @Inject constructor(
@@ -55,84 +54,89 @@ class RustConversationDataSourceImpl @Inject constructor(
     override suspend fun getConversations(userId: UserId, labelId: LocalLabelId): List<LocalConversation> =
         rustConversationQuery.observeConversations(userId, labelId).first()
 
-    override suspend fun deleteConversations(userId: UserId, conversations: List<LocalConversationId>) {
-
-        executeMailboxAction(userId, { mailbox ->
-            delete(mailbox, conversations)
-        }, "delete conversations")
-    }
-
-    override suspend fun markRead(userId: UserId, conversations: List<LocalConversationId>) {
-
-        executeMailSessionAction(userId, { mailSession ->
-            markAsRead(mailSession, conversations)
-        }, "mark as read")
-
-    }
-
-    override suspend fun markUnread(userId: UserId, conversations: List<LocalConversationId>) {
-
-        executeMailSessionAction(userId, { mailSession ->
-            markAsUnread(mailSession, conversations)
-        }, "mark as unread")
-    }
-
-    override suspend fun starConversations(userId: UserId, conversations: List<LocalConversationId>) {
-
-        executeMailSessionAction(userId, { mailSession ->
-            star(mailSession, conversations)
-        }, "star conversations")
-    }
-
-    override suspend fun unStarConversations(userId: UserId, conversations: List<LocalConversationId>) {
-
-        executeMailSessionAction(userId, { mailSession ->
-            unstar(mailSession, conversations)
-        }, "unstar conversations")
-    }
-
     override fun observeConversations(
         userId: UserId,
         conversationIds: List<LocalConversationId>
     ): Flow<List<LocalConversation>> {
         Timber.d("rust-conversation: observeConversations for conversationIds: $conversationIds")
 
-        return flow {
-            val mailSession = mailSessionRepository.getMailSession()
-            load(mailSession, conversationIds)
-        }
-      /*  return rustMailbox.observeConversationMailbox().mapLatest { mailbox ->
-            try {
-                val userSession = sessionManager.getUserSession(userId)
-                if (userSession == null) {
-                    Timber.d("rust-conversation: observeConversations failed due to null session for $userId")
-                    return@mapLatest emptyList()
-                }
-                val currentLabelId = mailbox.labelId()
-                val conversationList = mutableListOf<LocalConversation>()
 
-                conversationIds.forEach { conversationId ->
-                    userSession.conversationWithIdAndContext(conversationId, currentLabelId)?.let { conversation ->
-                        conversationList.add(conversation)
-                    }
-                }
+        /*  return rustMailbox.observeConversationMailbox().mapLatest { mailbox ->
+              try {
+                  val userSession = sessionManager.getUserSession(userId)
+                  if (userSession == null) {
+                      Timber.d("rust-conversation: observeConversations failed due to null session for $userId")
+                      return@mapLatest emptyList()
+                  }
+                  val currentLabelId = mailbox.labelId()
+                  val conversationList = mutableListOf<LocalConversation>()
 
-                conversationList
-            } catch (e: MailboxException) {
-                Timber.e(e, "rust-conversation: Failed to observe conversations for conversationIds: $conversationIds")
-                emptyList()
-            }
-        }*/
+                  conversationIds.forEach { conversationId ->
+                      userSession.conversationWithIdAndContext(conversationId, currentLabelId)?.let { conversation ->
+                          conversationList.add(conversation)
+                      }
+                  }
+
+                  conversationList
+              } catch (e: MailboxException) {
+                  Timber.e(e,
+                  "rust-conversation: Failed to observe conversations for conversationIds: $conversationIds")
+                  emptyList()
+              }
+          }*/
+        return flowOf()
     }
 
     override suspend fun getConversation(userId: UserId, conversationId: LocalConversationId): LocalConversation? {
         return try {
-            val userSession = sessionManager.getUserSession(userId)
-            userSession?.conversationWithIdWithAllMailContext(conversationId)
+//            val userSession = sessionManager.getUserSession(userId)
+//            watchConversation()
+            return null
+
         } catch (e: MailboxException) {
             Timber.e(e, "rust-conversation: failed to get conversation for conversationId: $conversationId")
             null
         }
+    }
+
+    override suspend fun deleteConversations(userId: UserId, conversations: List<LocalConversationId>) {
+        executeMailboxAction(
+            userId = userId,
+            action = { deleteConversations(userId, conversations) },
+            actionName = "delete conversations"
+        )
+    }
+
+    override suspend fun markRead(userId: UserId, conversations: List<LocalConversationId>) {
+        executeMailSessionAction(
+            userId = userId,
+            action = { mailSession -> markConverstionsAsRead(mailSession, conversations) },
+            actionName = "mark as read"
+        )
+    }
+
+    override suspend fun markUnread(userId: UserId, conversations: List<LocalConversationId>) {
+        executeMailSessionAction(
+            userId = userId,
+            action = { mailSession -> markConversationsAsUnread(mailSession, conversations) },
+            actionName = "mark as unread"
+        )
+    }
+
+    override suspend fun starConversations(userId: UserId, conversations: List<LocalConversationId>) {
+        executeMailSessionAction(
+            userId = userId,
+            action = { starConversations(userId, conversations) },
+            actionName = "star conversations"
+        )
+    }
+
+    override suspend fun unStarConversations(userId: UserId, conversations: List<LocalConversationId>) {
+        executeMailSessionAction(
+            userId = userId,
+            action = { unStarConversations(userId, conversations) },
+            actionName = "unstar conversations"
+        )
     }
 
     override suspend fun relabel(
@@ -141,18 +145,22 @@ class RustConversationDataSourceImpl @Inject constructor(
         labelsToBeRemoved: List<LocalLabelId>,
         labelsToBeAdded: List<LocalLabelId>
     ) {
+        executeMailSessionAction(
+            userId = userId,
+            action = { session ->
+                labelsToBeRemoved.forEach { localLabelId ->
+                    removeLabelFromConversations(session, localLabelId, conversationIds)
+                }
 
-        executeAction(userId, { mailbox ->
-            labelsToBeRemoved.forEach { localLabelId ->
-                mailbox.unlabelConversations(localLabelId, conversationIds)
-            }
-
-            labelsToBeAdded.forEach { localLabelId ->
-                mailbox.labelConversations(localLabelId, conversationIds)
-            }
-        }, "relabel conversations")
+                labelsToBeAdded.forEach { localLabelId ->
+                    applyLabelToConversations(session, localLabelId, conversationIds)
+                }
+            },
+            actionName = "relabel conversations"
+        )
     }
 
+    @MissingRustApi
     // ET - Missing Implementation. This function requires Rust settings integration
     override fun getSenderImage(address: String, bimi: String?): ByteArray? = null
 
@@ -161,10 +169,11 @@ class RustConversationDataSourceImpl @Inject constructor(
         conversationIds: List<LocalConversationId>,
         toLabelId: LocalLabelId
     ) {
-
-        executeAction(userId, { mailbox ->
-            mailbox.moveConversations(toLabelId, conversationIds)
-        }, "move conversations")
+        executeMailboxAction(
+            userId = userId,
+            action = { moveConversations(userId, conversationIds, toLabelId) },
+            actionName = "move conversations"
+        )
     }
 
     override fun disconnect() {
@@ -178,7 +187,7 @@ class RustConversationDataSourceImpl @Inject constructor(
     ) {
         val mailbox = rustMailbox.observeConversationMailbox().firstOrNull()
         if (mailbox == null) {
-            Timber.e("rust-conversation: Failed to delete conversations, null mailbox")
+            Timber.e("rust-conversation: Failed to perform $actionName, null mailbox")
             return
         }
 

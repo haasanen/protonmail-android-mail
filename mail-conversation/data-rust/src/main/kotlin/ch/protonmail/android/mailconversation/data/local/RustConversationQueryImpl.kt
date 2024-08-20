@@ -78,22 +78,22 @@ class RustConversationQueryImpl @Inject constructor(
             .launchIn(coroutineScope)
     }*/
 
-    private fun destroy() {
-        Timber.d("rust-conversation-query: destroy")
-       /* disconnect()
-        conversationsMutableStatusFlow.value = emptyList()*/
-    }
-
-    override fun disconnect() {
-       /* conversationLiveQuery?.disconnect()
-        conversationLiveQuery = null*/
-    }
-
     override fun observeConversations(userId: UserId, labelId: ULong): Flow<List<LocalConversation>> {
         /*rustMailbox.switchToMailbox(userId, labelId)
 
         return conversationsStatusFlow */
         return flowOf(emptyList())
+    }
+
+    override fun disconnect() {
+        /* conversationLiveQuery?.disconnect()
+         conversationLiveQuery = null*/
+    }
+
+    private fun destroy() {
+        Timber.d("rust-conversation-query: destroy")
+        /* disconnect()
+         conversationsMutableStatusFlow.value = emptyList()*/
     }
 
     companion object {
