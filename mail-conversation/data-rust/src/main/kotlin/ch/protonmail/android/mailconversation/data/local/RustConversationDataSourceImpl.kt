@@ -47,6 +47,7 @@ class RustConversationDataSourceImpl @Inject constructor(
     private val mailSessionRepository: MailSessionRepository,
     private val rustMailbox: RustMailbox,
     private val rustConversationQuery: RustConversationQuery,
+    private val rustConversationsQuery: RustConversationsQuery,
     @ConversationRustCoroutineScope private val coroutineScope: CoroutineScope
 ) : RustConversationDataSource {
 
@@ -56,7 +57,7 @@ class RustConversationDataSourceImpl @Inject constructor(
      * in the label changes
      */
     override suspend fun getConversations(userId: UserId, labelId: LocalLabelId): List<LocalConversation> =
-        rustConversationQuery.observeConversations(userId, labelId).first()
+        rustConversationsQuery.observeConversationsByLabel(userId, labelId).first()
 
     override fun observeConversation(userId: UserId, conversationId: LocalConversationId): Flow<LocalConversation> =
         rustConversationQuery.observeConversation(userId, conversationId)

@@ -27,7 +27,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
@@ -66,14 +65,6 @@ class RustConversationQueryImpl @Inject constructor(
         }
 
         return conversationMutableStatusFlow.filterNotNull()
-    }
-
-    @SuppressWarnings("ExpressionBodySyntax")
-    override fun observeConversations(userId: UserId, labelId: ULong): Flow<List<LocalConversation>> {
-        /*rustMailbox.switchToMailbox(userId, labelId)
-
-        return conversationsStatusFlow */
-        return flowOf(emptyList())
     }
 
     override fun disconnect() {
