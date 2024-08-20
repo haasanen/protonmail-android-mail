@@ -35,6 +35,7 @@ import uniffi.proton_mail_uniffi.PmSignature
 import uniffi.proton_mail_uniffi.ShowImages
 import uniffi.proton_mail_uniffi.ShowMoved
 import uniffi.proton_mail_uniffi.SwipeAction
+import uniffi.proton_mail_uniffi.SystemLabel
 import uniffi.proton_mail_uniffi.ViewLayout
 import uniffi.proton_mail_uniffi.ViewMode
 
@@ -60,3 +61,4 @@ typealias LocalViewLayout = ViewLayout
 typealias LocalSwipeAction = SwipeAction
 typealias LocalPgpScheme = PgpScheme
 typealias LocalComposerDirection = ComposerDirection
+typealias LocalSystemLabel = SystemLabel

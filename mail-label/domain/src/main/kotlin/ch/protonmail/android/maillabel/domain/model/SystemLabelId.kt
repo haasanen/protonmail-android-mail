@@ -18,7 +18,6 @@
 
 package ch.protonmail.android.maillabel.domain.model
 
-import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId.Companion.unmodifiableByUserList
 import me.proton.core.label.domain.entity.LabelId
 
@@ -85,10 +84,6 @@ enum class SystemLabelId(val labelId: LabelId) {
 
         private fun stringOf(value: SystemLabelId): String = value.labelId.id
         fun enumOf(value: String?): SystemLabelId = map[value] ?: Inbox
-
-        @MissingRustApi
-        // Needs fixing once rust provides the list of static labelIds -> system locations
-        fun fromRustSystemLabelEnum() = Inbox
     }
 }
 

@@ -66,7 +66,7 @@ fun LocalMessageMetadata.toMessage(): Message {
         isReplied = this.isReplied,
         isRepliedAll = this.isRepliedAll,
         isForwarded = this.isForwarded,
-        addressId = AddressId(this.addressId.value),
+        addressId = AddressId(this.addressId.toString()),
         numAttachments = this.numAttachments.toInt(),
         flags = this.flags.value.toLong(),
         attachmentCount = AttachmentCount(this.numAttachments.toInt()),

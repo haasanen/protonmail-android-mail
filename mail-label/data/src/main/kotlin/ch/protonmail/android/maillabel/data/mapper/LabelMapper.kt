@@ -21,21 +21,24 @@ package ch.protonmail.android.maillabel.data.mapper
 import ch.protonmail.android.mailcommon.domain.mapper.LocalLabel
 import ch.protonmail.android.mailcommon.domain.mapper.LocalLabelId
 import ch.protonmail.android.mailcommon.domain.mapper.LocalLabelType
+import ch.protonmail.android.mailcommon.domain.mapper.LocalSystemLabel
 import ch.protonmail.android.mailcommon.domain.model.FAKE_USER_ID
 import ch.protonmail.android.maillabel.domain.model.LabelWithSystemLabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import me.proton.core.label.domain.entity.Label
 import me.proton.core.label.domain.entity.LabelId
 import me.proton.core.label.domain.entity.LabelType
+import timber.log.Timber
+import uniffi.proton_mail_uniffi.LabelDescription
 
 fun LabelId.toLocalLabelId(): LocalLabelId = this.id.toULong()
 fun LocalLabelId.toLabelId(): LabelId = LabelId(this.toString())
-fun LocalLabelType.toLabelType(): LabelType {
+fun LabelDescription.toLabelType(): LabelType {
     return when (this) {
-        LocalLabelType.LABEL -> LabelType.MessageLabel
-        LocalLabelType.SYSTEM -> LabelType.SystemFolder
-        LocalLabelType.CONTACT_GROUP -> LabelType.ContactGroup
-        LocalLabelType.FOLDER -> LabelType.MessageFolder
+        is LabelDescription.Label -> LabelType.MessageLabel
+        is LabelDescription.System -> LabelType.SystemFolder
+        is LabelDescription.ContactGroup -> LabelType.ContactGroup
+        is LabelDescription.Folder -> LabelType.MessageFolder
         else -> LabelType.MessageLabel
     }
 }
@@ -52,9 +55,9 @@ fun LabelType.toRustLabelType(): LocalLabelType {
 fun LocalLabel.toLabel(): Label {
     return Label(
         userId = FAKE_USER_ID,
-        labelId = this.localId?.toLabelId() ?: LabelId("0"),
+        labelId = this.localId.toLabelId(),
         name = this.name,
-        type = this.labelType.toLabelType(),
+        type = this.labelDescription.toLabelType(),
         path = this.path ?: "",
         color = this.color.value,
         order = this.displayOrder.toInt(),
@@ -66,12 +69,17 @@ fun LocalLabel.toLabel(): Label {
     )
 }
 fun LocalLabel.toLabelWithSystemLabelId(): LabelWithSystemLabelId {
+    val systemLabelDescription = this.labelDescription
+    if (systemLabelDescription !is LabelDescription.System) {
+        Timber.w("rust-label: Mapping a non-system labelId to a system one. This is illegal.")
+        throw IllegalStateException("Mapping a non-system label to system")
+    }
     return LabelWithSystemLabelId(
         Label(
             userId = FAKE_USER_ID,
             labelId = this.localId.toLabelId(),
             name = this.name,
-            type = this.labelType.toLabelType(),
+            type = systemLabelDescription.toLabelType(),
             path = this.path ?: "",
             color = this.color.value,
             order = this.displayOrder.toInt(),
@@ -80,6 +88,31 @@ fun LocalLabel.toLabelWithSystemLabelId(): LabelWithSystemLabelId {
             isSticky = this.sticky,
             parentId = this.localParentId?.toLabelId()
         ),
-        SystemLabelId.fromRustSystemLabelEnum()
+        systemLabelDescription.v1?.toSystemLabel() ?: SystemLabelId.AllMail
     )
+}
+
+fun LocalSystemLabel.toSystemLabel() = when (this) {
+    LocalSystemLabel.INBOX -> SystemLabelId.Inbox
+    LocalSystemLabel.ALL_DRAFTS -> SystemLabelId.AllDrafts
+    LocalSystemLabel.ALL_SENT -> SystemLabelId.AllSent
+    LocalSystemLabel.TRASH -> SystemLabelId.Trash
+    LocalSystemLabel.SPAM -> SystemLabelId.Spam
+    LocalSystemLabel.ALL_MAIL -> SystemLabelId.AllMail
+    LocalSystemLabel.ARCHIVE -> SystemLabelId.Archive
+    LocalSystemLabel.SENT -> SystemLabelId.Sent
+    LocalSystemLabel.DRAFTS -> SystemLabelId.Drafts
+    LocalSystemLabel.OUTBOX -> SystemLabelId.Outbox
+    LocalSystemLabel.STARRED -> SystemLabelId.Starred
+    LocalSystemLabel.SCHEDULED -> SystemLabelId.AllScheduled
+    LocalSystemLabel.ALMOST_ALL_MAIL -> SystemLabelId.AlmostAllMail
+    LocalSystemLabel.SNOOZED -> SystemLabelId.Snoozed
+    LocalSystemLabel.CATEGORY_SOCIAL,
+    LocalSystemLabel.CATEGORY_PROMOTIONS,
+    LocalSystemLabel.CATERGORY_UPDATES,
+    LocalSystemLabel.CATEGORY_FORUMS,
+    LocalSystemLabel.CATEGORY_DEFAULT -> {
+        Timber.w("rust-label: mapping from unknown system label ID $this. Fallback to all mail")
+        SystemLabelId.AllMail
+    }
 }
