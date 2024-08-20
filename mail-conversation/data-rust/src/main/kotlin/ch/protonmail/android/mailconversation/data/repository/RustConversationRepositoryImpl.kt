@@ -83,7 +83,7 @@ class RustConversationRepositoryImpl @Inject constructor(
         refreshData: Boolean
     ): Flow<Either<DataError, Conversation>> = flow {
         emit(
-            rustConversationDataSource.getConversation(userId, id.toLocalConversationId())
+            rustConversationDataSource.observeConversation(userId, id.toLocalConversationId())
                 ?.toConversation()
                 ?.right()
                 ?: DataError.Local.NoDataCached.left()

@@ -86,7 +86,7 @@ class RustConversationRepositoryImplTest {
         val conversationId = ConversationId(LocalConversationIdSample.AugConversation.toString())
         val localConversation = LocalConversationTestData.AugConversation
         val expected = localConversation.toConversation()
-        coEvery { rustConversationDataSource.getConversation(userId, any()) } returns localConversation
+        coEvery { rustConversationDataSource.observeConversation(userId, any()) } returns localConversation
 
         // When
         rustConversationRepository.observeConversation(userId, conversationId, refreshData = false).test {
@@ -94,7 +94,7 @@ class RustConversationRepositoryImplTest {
 
             // Then
             assertEquals(expected, result)
-            coVerify { rustConversationDataSource.getConversation(userId, any()) }
+            coVerify { rustConversationDataSource.observeConversation(userId, any()) }
 
             awaitComplete()
         }
@@ -106,7 +106,7 @@ class RustConversationRepositoryImplTest {
         // Given
         val conversationId = ConversationId(LocalConversationIdSample.AugConversation.toString())
 
-        coEvery { rustConversationDataSource.getConversation(userId, any()) } returns null
+        coEvery { rustConversationDataSource.observeConversation(userId, any()) } returns null
 
         // When
         rustConversationRepository.observeConversation(userId, conversationId, refreshData = false).test {
@@ -114,7 +114,7 @@ class RustConversationRepositoryImplTest {
 
             // Then
             assertEquals(null, result)
-            coVerify { rustConversationDataSource.getConversation(userId, any()) }
+            coVerify { rustConversationDataSource.observeConversation(userId, any()) }
 
             awaitComplete()
         }

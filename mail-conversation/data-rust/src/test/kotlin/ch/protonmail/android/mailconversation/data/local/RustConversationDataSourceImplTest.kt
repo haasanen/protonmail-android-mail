@@ -91,7 +91,7 @@ class RustConversationDataSourceImplTest {
         coEvery { sessionManager.getUserSession(userId) } returns userSession
 
         // When
-        val result = dataSource.getConversation(userId, conversationId)
+        val result = dataSource.observeConversation(userId, conversationId)
 
         // Then
         coVerify { sessionManager.getUserSession(userId) }
@@ -111,7 +111,7 @@ class RustConversationDataSourceImplTest {
         coEvery { sessionManager.getUserSession(userId) } returns userSession
 
         // When
-        val result = dataSource.getConversation(userId, conversationId)
+        val result = dataSource.observeConversation(userId, conversationId)
 
         // Then
         coVerify { sessionManager.getUserSession(userId) }

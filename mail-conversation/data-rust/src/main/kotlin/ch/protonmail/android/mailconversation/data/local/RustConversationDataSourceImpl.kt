@@ -87,17 +87,10 @@ class RustConversationDataSourceImpl @Inject constructor(
         return flowOf()
     }
 
-    override suspend fun getConversation(userId: UserId, conversationId: LocalConversationId): LocalConversation? {
-        return try {
-//            val userSession = sessionManager.getUserSession(userId)
-//            watchConversation()
-            return null
-
-        } catch (e: MailboxException) {
-            Timber.e(e, "rust-conversation: failed to get conversation for conversationId: $conversationId")
-            null
-        }
-    }
+    override suspend fun observeConversation(
+        userId: UserId,
+        conversationId: LocalConversationId
+    ): Flow<LocalConversation> = flowOf()
 
     override suspend fun deleteConversations(userId: UserId, conversations: List<LocalConversationId>) {
         executeMailboxAction(
