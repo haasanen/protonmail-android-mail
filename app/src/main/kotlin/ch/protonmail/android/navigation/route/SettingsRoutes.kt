@@ -25,8 +25,6 @@ import androidx.navigation.compose.composable
 import ch.protonmail.android.LockScreenActivity
 import ch.protonmail.android.mailcommon.presentation.extension.navigateBack
 import ch.protonmail.android.mailsettings.domain.model.SwipeActionDirection
-import ch.protonmail.android.mailsettings.presentation.accountsettings.defaultaddress.ui.EditDefaultAddressScreen
-import ch.protonmail.android.mailsettings.presentation.accountsettings.identity.ui.EditAddressIdentityScreen
 import ch.protonmail.android.mailsettings.presentation.settings.alternativerouting.AlternativeRoutingSettingScreen
 import ch.protonmail.android.mailsettings.presentation.settings.autolock.ui.AutoLockSettingsScreen
 import ch.protonmail.android.mailsettings.presentation.settings.autolock.ui.pin.AutoLockPinScreen
@@ -55,25 +53,6 @@ internal fun NavGraphBuilder.addCombinedContactsSetting(navController: NavHostCo
         CombinedContactsSettingScreen(
             modifier = Modifier,
             onBackClick = { navController.navigateBack() }
-        )
-    }
-}
-
-internal fun NavGraphBuilder.addDefaultEmailSettings(navController: NavHostController) {
-    composable(route = Screen.DefaultEmailSettings.route) {
-        EditDefaultAddressScreen(
-            modifier = Modifier,
-            onBackClick = { navController.navigateBack() }
-        )
-    }
-}
-
-internal fun NavGraphBuilder.addDisplayNameSettings(navController: NavHostController) {
-    composable(route = Screen.DisplayNameSettings.route) {
-        EditAddressIdentityScreen(
-            modifier = Modifier,
-            onBackClick = { navController.navigateBack() },
-            onCloseScreen = { navController.navigateBack() }
         )
     }
 }

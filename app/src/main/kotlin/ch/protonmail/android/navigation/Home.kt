@@ -68,8 +68,6 @@ import ch.protonmail.android.navigation.route.addContactSearch
 import ch.protonmail.android.navigation.route.addContacts
 import ch.protonmail.android.navigation.route.addConversationDetail
 import ch.protonmail.android.navigation.route.addDeepLinkHandler
-import ch.protonmail.android.navigation.route.addDefaultEmailSettings
-import ch.protonmail.android.navigation.route.addDisplayNameSettings
 import ch.protonmail.android.navigation.route.addEditSwipeActionsSettings
 import ch.protonmail.android.navigation.route.addFolderForm
 import ch.protonmail.android.navigation.route.addFolderList
@@ -528,8 +526,6 @@ fun Home(
                 )
                 addAlternativeRoutingSetting(navController)
                 addCombinedContactsSetting(navController)
-                addDefaultEmailSettings(navController)
-                addDisplayNameSettings(navController)
                 addEditSwipeActionsSettings(navController)
                 addLanguageSettings(navController)
                 addPrivacySettings(navController)
