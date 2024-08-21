@@ -55,7 +55,6 @@ import ch.protonmail.android.mailsidebar.presentation.Sidebar
 import ch.protonmail.android.navigation.model.Destination.Dialog
 import ch.protonmail.android.navigation.model.Destination.Screen
 import ch.protonmail.android.navigation.model.HomeState
-import ch.protonmail.android.navigation.route.addAccountSettings
 import ch.protonmail.android.navigation.route.addAlternativeRoutingSetting
 import ch.protonmail.android.navigation.route.addAutoLockPinScreen
 import ch.protonmail.android.navigation.route.addAutoLockSettings
@@ -410,8 +409,6 @@ fun Home(
                         }
                     }
                 )
-                // settings
-                addAccountSettings(navController, launcherActions, activityActions)
                 addContacts(
                     navController,
                     showErrorSnackbar = { message ->
