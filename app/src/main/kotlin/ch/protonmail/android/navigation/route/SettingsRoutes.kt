@@ -25,7 +25,6 @@ import androidx.navigation.compose.composable
 import ch.protonmail.android.LockScreenActivity
 import ch.protonmail.android.mailcommon.presentation.extension.navigateBack
 import ch.protonmail.android.mailsettings.domain.model.SwipeActionDirection
-import ch.protonmail.android.mailsettings.presentation.accountsettings.conversationmode.ConversationModeSettingScreen
 import ch.protonmail.android.mailsettings.presentation.accountsettings.defaultaddress.ui.EditDefaultAddressScreen
 import ch.protonmail.android.mailsettings.presentation.accountsettings.identity.ui.EditAddressIdentityScreen
 import ch.protonmail.android.mailsettings.presentation.settings.alternativerouting.AlternativeRoutingSettingScreen
@@ -54,15 +53,6 @@ internal fun NavGraphBuilder.addAlternativeRoutingSetting(navController: NavHost
 internal fun NavGraphBuilder.addCombinedContactsSetting(navController: NavHostController) {
     composable(route = Screen.CombinedContactsSettings.route) {
         CombinedContactsSettingScreen(
-            modifier = Modifier,
-            onBackClick = { navController.navigateBack() }
-        )
-    }
-}
-
-internal fun NavGraphBuilder.addConversationModeSettings(navController: NavHostController) {
-    composable(route = Screen.ConversationModeSettings.route) {
-        ConversationModeSettingScreen(
             modifier = Modifier,
             onBackClick = { navController.navigateBack() }
         )
