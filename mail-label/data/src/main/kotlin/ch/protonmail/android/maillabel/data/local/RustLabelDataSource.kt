@@ -121,6 +121,8 @@ class RustLabelDataSource @Inject constructor(
                 sidebar.watchLabels(LabelType.LABEL, messageLabelsUpdatedCallback)
             )
 
+            Timber.v("rust-label: Setting initial value for labels: ${sidebar.customLabels()}")
+            mutableMessageLabelsFlow.value = sidebar.customLabels()
             Timber.d("rust-label: created message labels live query")
         }
     }
@@ -151,6 +153,8 @@ class RustLabelDataSource @Inject constructor(
                 sidebar.watchLabels(LabelType.FOLDER, messageFoldersUpdatedCallback)
             )
 
+            Timber.v("rust-label: Setting initial value for folders: ${sidebar.customFolders(null)}")
+            mutableMessageFoldersFlow.value = sidebar.customFolders(null)
             Timber.d("rust-label: created message folders live query")
         }
     }
@@ -180,6 +184,8 @@ class RustLabelDataSource @Inject constructor(
                 sidebar.watchLabels(LabelType.SYSTEM, systemLabelsUpdatedCallback)
             )
 
+            Timber.v("rust-label: Setting initial value for system folders ${sidebar.systemLabels()}")
+            mutableSystemLabelsFlow.value = sidebar.systemLabels()
             Timber.d("rust-label: created systemLabelsLiveQuery")
         }
     }

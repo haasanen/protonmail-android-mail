@@ -37,7 +37,7 @@ class ObserveMailFeature @Inject constructor(
     @MissingRustApi
     operator fun invoke(userId: UserId, feature: MailFeatureId): Flow<FeatureFlag> = flowOf(null)
         .mapIfNull {
-            Timber.w("rust-feature: Feature flags not exposed by rust. Returning from default values...")
+            Timber.w("rust-feature: FeatFlags not exposed by rust. Returning $feature from default values...")
             val defaultValue = mailFeatureDefaults[feature]
             FeatureFlag(
                 userId = userId,
