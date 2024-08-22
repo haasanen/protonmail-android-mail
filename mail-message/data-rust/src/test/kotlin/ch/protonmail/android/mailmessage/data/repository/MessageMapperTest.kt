@@ -41,7 +41,6 @@ import uniffi.proton_mail_uniffi.MessageAddresses
 import uniffi.proton_mail_uniffi.MessageFlags
 import uniffi.proton_mail_uniffi.MimeType
 import uniffi.proton_mail_uniffi.ParsedHeaders
-import uniffi.proton_mail_uniffi.RemoteId
 
 class MessageMapperTest {
 
@@ -140,7 +139,7 @@ class MessageMapperTest {
         val isReplied = false
         val isRepliedAll = false
         val isForwarded = false
-        val addressId = RemoteId("addressId")
+        val addressId = 1.toULong()
         val externalId = "externalId"
         val numAttachments = 0u
         val flags = MessageFlags(1897uL)
@@ -176,7 +175,6 @@ class MessageMapperTest {
             header = "",
             parsedHeaders = ParsedHeaders(emptyMap()),
             mimeType = MimeType.TEXT_HTML,
-            remoteConversationId = RemoteId("convId"),
             replyTos = to
 
         )
@@ -201,8 +199,8 @@ class MessageMapperTest {
         assertFalse(message.isReplied)
         assertFalse(message.isRepliedAll)
         assertFalse(message.isForwarded)
-        assertEquals(AddressId(addressId.value), message.addressId)
-        assertEquals(externalId, message.externalId)
+        assertEquals(AddressId(addressId.toString()), message.addressId)
+        assertEquals(null, message.externalId)
         assertEquals(numAttachments.toInt(), message.numAttachments)
         assertEquals(flags.value.toLong(), message.flags)
         assertEquals(AttachmentCount(numAttachments.toInt()), message.attachmentCount)

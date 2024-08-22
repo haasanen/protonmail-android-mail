@@ -29,7 +29,6 @@ import uniffi.proton_mail_uniffi.MessageAddress
 import uniffi.proton_mail_uniffi.MessageAddresses
 import uniffi.proton_mail_uniffi.MessageFlags
 import uniffi.proton_mail_uniffi.ParsedHeaders
-import uniffi.proton_mail_uniffi.RemoteId
 
 object LocalMessageTestData {
     const val RAW_SUBJECT = "Subject"
@@ -230,7 +229,7 @@ object LocalMessageTestData {
     ) = LocalMessageMetadata(
         localId = id,
         localConversationId = 50.toULong(),
-        addressId = RemoteId("1"),
+        addressId = 1.toULong(),
         displayOrder = 1uL,
         subject = subject,
         unread = false,
@@ -250,7 +249,6 @@ object LocalMessageTestData {
         bccList = MessageAddresses(bcc),
         attachmentsMetadata = attachments,
         customLabels = labels,
-        remoteConversationId = null,
         deleted = false,
         exclusiveLocation = null,
         header = "",

@@ -21,6 +21,7 @@ package ch.protonmail.android.mailmessage.data.repository
 import app.cash.turbine.test
 import arrow.core.getOrElse
 import arrow.core.left
+import ch.protonmail.android.mailcommon.domain.mapper.LocalMimeType
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
@@ -53,6 +54,7 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import me.proton.core.domain.entity.UserId
 import org.junit.Test
+import uniffi.proton_mail_uniffi.BodyOutput
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 
@@ -137,11 +139,13 @@ class RustMessageRepositoryImplTest {
         val userId = UserIdTestData.userId
         val messageId = MessageId(LocalMessageIdSample.AugWeatherForecast.toString())
         val localMessage = LocalMessageTestData.AugWeatherForecast
-        val localMessageBody = mockk<uniffi.proton_mail_uniffi.DecryptedMessageBody> {
-            every { body() } returns "message body"
-            every { mimeType() } returns uniffi.proton_api_mail.MimeType.TEXT_PLAIN
+        val bodyOutput = BodyOutput("message body")
+        val localMimeType = LocalMimeType.TEXT_PLAIN
+        val localMessageBody = mockk<uniffi.proton_mail_uniffi.DecryptedMessage> {
+            coEvery { body(any()) } returns bodyOutput
+            every { mimeType() } returns localMimeType
         }
-        val expectedMessageWithBody = localMessageBody.toMessageBody(messageId)
+        val expectedMessageWithBody = bodyOutput.toMessageBody(messageId, localMimeType)
         coEvery { rustMessageDataSource.getMessage(userId, messageId.toLocalMessageId()) } returns localMessage
         coEvery {
             rustMessageDataSource.getMessageBody(

@@ -19,10 +19,12 @@
 package ch.protonmail.android.mailmessage.data.local
 
 import app.cash.turbine.test
-import ch.protonmail.android.mailmessage.data.model.LocalConversationMessages
 import ch.protonmail.android.mailcommon.domain.mapper.LocalConversationId
 import ch.protonmail.android.mailcommon.domain.mapper.LocalLabelId
-import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
+import ch.protonmail.android.mailmessage.data.model.LocalConversationMessages
+import ch.protonmail.android.mailmessage.data.usecase.CreateRustMessageAccessor
+import ch.protonmail.android.mailmessage.data.usecase.CreateRustMessageBodyAccessor
+import ch.protonmail.android.mailsession.domain.repository.MailSessionRepository
 import ch.protonmail.android.testdata.message.rust.LocalMessageIdSample
 import ch.protonmail.android.testdata.message.rust.LocalMessageTestData
 import ch.protonmail.android.testdata.user.UserIdTestData
@@ -34,8 +36,8 @@ import io.mockk.verify
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
+import uniffi.proton_mail_uniffi.MailSession
 import uniffi.proton_mail_uniffi.MailSessionException
-import uniffi.proton_mail_uniffi.MailUserSession
 import uniffi.proton_mail_uniffi.Mailbox
 import uniffi.proton_mail_uniffi.MailboxException
 import kotlin.test.assertEquals
@@ -43,31 +45,35 @@ import kotlin.test.assertNull
 
 class RustMessageDataSourceImplTest {
 
-    private val userSessionRepository = mockk<UserSessionRepository>()
+    private val mailSessionRepository = mockk<MailSessionRepository>()
 
     private val rustMailbox: RustMailbox = mockk()
     private val rustMessageQuery: RustMessageQuery = mockk()
     private val rustConversationMessageQuery: RustConversationMessageQuery = mockk()
+    private val createRustMessageAccessor = mockk<CreateRustMessageAccessor>()
+    private val createRustMessageBodyAccessor = mockk<CreateRustMessageBodyAccessor>()
     private val dataSource = RustMessageDataSourceImpl(
-        userSessionRepository,
-        rustMailbox, rustMessageQuery, rustConversationMessageQuery
+        mailSessionRepository,
+        rustMailbox,
+        rustMessageQuery,
+        rustConversationMessageQuery,
+        createRustMessageAccessor,
+        createRustMessageBodyAccessor
     )
 
     @Test
     fun `get message should return message metadata`() = runTest {
         // Given
         val userId = UserIdTestData.userId
-        val userSession = mockk<MailUserSession>()
+        val mailSession = mockk<MailSession>()
         val messageId = LocalMessageIdSample.AugWeatherForecast
-        every { userSession.messageMetadata(messageId) } returns LocalMessageTestData.AugWeatherForecast
-        coEvery { userSessionRepository.getUserSession(userId) } returns userSession
+        coEvery { mailSessionRepository.getMailSession() } returns mailSession
+        coEvery { createRustMessageAccessor(mailSession, messageId) } returns LocalMessageTestData.AugWeatherForecast
 
         // When
         val result = dataSource.getMessage(userId, messageId)
 
         // Then
-        coVerify { userSessionRepository.getUserSession(userId) }
-        verify { userSession.messageMetadata(messageId) }
         assertEquals(LocalMessageTestData.AugWeatherForecast, result)
     }
 
@@ -75,16 +81,17 @@ class RustMessageDataSourceImplTest {
     fun `get message should handle session exception`() = runTest {
         // Given
         val userId = UserIdTestData.userId
-        val userSession = mockk<MailUserSession>()
-        coEvery { userSessionRepository.getUserSession(userId) } returns userSession
+        val mailSession = mockk<MailSession>()
+        coEvery { mailSessionRepository.getMailSession() } returns mailSession
         val messageId = LocalMessageIdSample.AugWeatherForecast
-        every { userSession.messageMetadata(messageId) } throws MailSessionException.Db("DB Exception")
+        coEvery {
+            createRustMessageAccessor.invoke(mailSession, messageId)
+        } throws MailSessionException.Io("Db failure")
 
         // When
         val result = dataSource.getMessage(userId, messageId)
 
         // Then
-        coVerify { userSessionRepository.getUserSession(userId) }
         assertNull(result)
     }
 
@@ -92,20 +99,20 @@ class RustMessageDataSourceImplTest {
     fun `get message body should return decrypted message body`() = runTest {
         // Given
         val userId = UserIdTestData.userId
-        val userSession = mockk<MailUserSession>()
-        coEvery { userSessionRepository.getUserSession(userId) } returns userSession
+        val mailSession = mockk<MailSession>()
+        val labelId: LocalLabelId = 1uL
         val messageId = LocalMessageIdSample.AugWeatherForecast
-        val messageMailbox = mockk<Mailbox> {
-            coEvery { messageBody(messageId) } returns mockk()
-        }
-        every { rustMailbox.observeMessageMailbox() } returns flowOf(messageMailbox)
+        val mailbox = mockk<Mailbox>()
+        coEvery { mailSessionRepository.getMailSession() } returns mailSession
+        every { rustMailbox.observeMailbox(labelId) } returns flowOf(mailbox)
+        coEvery { createRustMessageBodyAccessor(mailbox, messageId) } returns mockk()
 
         // When
-        val result = dataSource.getMessageBody(userId, messageId)
+        val result = dataSource.getMessageBody(userId, messageId, labelId)
 
         // Then
-        verify { rustMailbox.observeMessageMailbox() }
-        coVerify { messageMailbox.messageBody(messageId) }
+        verify { rustMailbox.observeMailbox(labelId) }
+        coVerify { createRustMessageBodyAccessor(mailbox, messageId) }
         assert(result != null)
     }
 
@@ -113,15 +120,12 @@ class RustMessageDataSourceImplTest {
     fun `get message body should handle mailbox exception`() = runTest {
         // Given
         val userId = UserIdTestData.userId
-        val userSession = mockk<MailUserSession>()
-        coEvery { userSessionRepository.getUserSession(userId) } returns userSession
         val messageId = LocalMessageIdSample.AugWeatherForecast
-        val messageMailbox = mockk<Mailbox> {
-            coEvery { messageBody(messageId) } throws MailboxException.Db("DB Exception")
-        }
-        every { rustMailbox.observeMessageMailbox() } returns flowOf(messageMailbox)
+        val mailbox = mockk<Mailbox>()
+        every { rustMailbox.observeMessageMailbox() } returns flowOf(mailbox)
+        coEvery { createRustMessageBodyAccessor(mailbox, messageId) } throws MailboxException.Io("DB Exception")
         // When
-        val result = dataSource.getMessageBody(userId, messageId)
+        val result = dataSource.getMessageBody(userId, messageId, null)
 
         // Then
         verify { rustMailbox.observeMessageMailbox() }
@@ -132,8 +136,8 @@ class RustMessageDataSourceImplTest {
     fun `get messages should return list of message metadata`() = runTest {
         // Given
         val userId = UserIdTestData.userId
-        val userSession = mockk<MailUserSession>()
-        coEvery { userSessionRepository.getUserSession(userId) } returns userSession
+        val mailSession = mockk<MailSession>()
+        coEvery { mailSessionRepository.getMailSession() } returns mailSession
         val labelId: LocalLabelId = 1uL
         val messages = listOf(
             LocalMessageTestData.AugWeatherForecast,
@@ -153,9 +157,8 @@ class RustMessageDataSourceImplTest {
     @Test
     fun `disconnect should call disconnect on rustMessageQuery`() {
         // Given
-        val userId = UserIdTestData.userId
-        val userSession = mockk<MailUserSession>()
-        coEvery { userSessionRepository.getUserSession(userId) } returns userSession
+        val mailSession = mockk<MailSession>()
+        coEvery { mailSessionRepository.getMailSession() } returns mailSession
         every { rustMessageQuery.disconnect() } returns Unit
 
         // When

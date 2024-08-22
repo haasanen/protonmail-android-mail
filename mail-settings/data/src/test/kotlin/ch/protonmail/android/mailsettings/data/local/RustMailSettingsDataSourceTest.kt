@@ -15,9 +15,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import org.junit.Test
-import uniffi.proton_mail_uniffi.MailSettingsUpdated
+import uniffi.proton_mail_uniffi.LiveQueryCallback
 import uniffi.proton_mail_uniffi.MailUserSession
-import uniffi.proton_mail_uniffi.MailUserSettings
+import uniffi.proton_mail_uniffi.SettingsWatcher
 import kotlin.test.assertEquals
 
 class RustMailSettingsDataSourceTest {
@@ -59,20 +59,20 @@ class RustMailSettingsDataSourceTest {
         val userId = UserIdTestData.userId
         val expected = LocalMailSettingsTestData.mailSettings
         val expectedUpdated = LocalMailSettingsTestData.mailSettings.copy(displayName = "updated display name")
-        val mailSettingsCallbackSlot = slot<MailSettingsUpdated>()
+        val mailSettingsCallbackSlot = slot<LiveQueryCallback>()
         val userSessionMock = mockk<MailUserSession>()
         coEvery { userSessionRepository.getUserSession(userId) } returns userSessionMock
-        val liveQueryMock = mockk<MailUserSettings> {
-            every { value() } returns expected
+        val watcherMock = mockk<SettingsWatcher> {
+            every { settings } returns expected
         }
-        every { createRustMailSettings(userSessionMock, capture(mailSettingsCallbackSlot)) } returns liveQueryMock
+        coEvery { createRustMailSettings(userSessionMock, capture(mailSettingsCallbackSlot)) } returns watcherMock
 
         mailSettingsDataSource.observeMailSettings(userId).test {
             // Given
             assertEquals(expected, awaitItem()) // Initial value
-            every { liveQueryMock.value() } returns expectedUpdated
+            every { watcherMock.settings } returns expectedUpdated
             // When
-            mailSettingsCallbackSlot.captured.onUpdated()
+            mailSettingsCallbackSlot.captured.onUpdate()
 
             // Then
             assertEquals(expectedUpdated, awaitItem())
@@ -84,13 +84,13 @@ class RustMailSettingsDataSourceTest {
         // Given
         val userId = UserIdTestData.userId
         val expected = LocalMailSettingsTestData.mailSettings
-        val mailSettingsCallbackSlot = slot<MailSettingsUpdated>()
+        val mailSettingsCallbackSlot = slot<LiveQueryCallback>()
         val userSessionMock = mockk<MailUserSession>()
         coEvery { userSessionRepository.getUserSession(userId) } returns userSessionMock
-        val liveQueryMock = mockk<MailUserSettings> {
-            every { value() } returns expected
+        val watcherMock = mockk<SettingsWatcher> {
+            every { settings } returns expected
         }
-        every { createRustMailSettings(userSessionMock, capture(mailSettingsCallbackSlot)) } returns liveQueryMock
+        coEvery { createRustMailSettings(userSessionMock, capture(mailSettingsCallbackSlot)) } returns watcherMock
 
         mailSettingsDataSource.observeMailSettings(userId).test {
 

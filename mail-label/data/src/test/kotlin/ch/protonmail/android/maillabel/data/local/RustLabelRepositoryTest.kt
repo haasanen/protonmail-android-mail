@@ -19,6 +19,7 @@
 package ch.protonmail.android.maillabel.data.local
 
 import app.cash.turbine.test
+import ch.protonmail.android.mailcommon.domain.mapper.LocalSystemLabel
 import ch.protonmail.android.maillabel.data.repository.RustLabelRepository
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.testdata.label.LabelTestData
@@ -114,7 +115,7 @@ class RustLabelRepositoryTest {
         fun `test label with system label id is mapped correctly`() = runTest {
             // Given
             val userId = UserIdTestData.userId
-            val localLabelWithCount = LocalLabelTestData.buildSystem(input.systemLabelRawId)
+            val localLabelWithCount = LocalLabelTestData.buildSystem(input.localSystemLabel)
             every { labelDataSource.observeSystemLabels(userId) } returns flowOf(listOf(localLabelWithCount))
 
             // When
@@ -130,55 +131,55 @@ class RustLabelRepositoryTest {
 
             val inputs = listOf(
                 TestInput(
-                    SystemLabelId.Inbox.labelId.id,
+                    LocalSystemLabel.INBOX,
                     SystemLabelId.Inbox
                 ),
                 TestInput(
-                    SystemLabelId.Archive.labelId.id,
+                    LocalSystemLabel.ARCHIVE,
                     SystemLabelId.Archive
                 ),
                 TestInput(
-                    SystemLabelId.AllDrafts.labelId.id,
+                    LocalSystemLabel.ALL_DRAFTS,
                     SystemLabelId.AllDrafts
                 ),
                 TestInput(
-                    SystemLabelId.AllSent.labelId.id,
+                    LocalSystemLabel.ALL_SENT,
                     SystemLabelId.AllSent
                 ),
                 TestInput(
-                    SystemLabelId.Trash.labelId.id,
+                    LocalSystemLabel.TRASH,
                     SystemLabelId.Trash
                 ),
                 TestInput(
-                    SystemLabelId.Spam.labelId.id,
+                    LocalSystemLabel.SPAM,
                     SystemLabelId.Spam
                 ),
                 TestInput(
-                    SystemLabelId.AllMail.labelId.id,
+                    LocalSystemLabel.ALL_MAIL,
                     SystemLabelId.AllMail
                 ),
                 TestInput(
-                    SystemLabelId.Sent.labelId.id,
+                    LocalSystemLabel.SENT,
                     SystemLabelId.Sent
                 ),
                 TestInput(
-                    SystemLabelId.Drafts.labelId.id,
+                    LocalSystemLabel.DRAFTS,
                     SystemLabelId.Drafts
                 ),
                 TestInput(
-                    SystemLabelId.Outbox.labelId.id,
+                    LocalSystemLabel.OUTBOX,
                     SystemLabelId.Outbox
                 ),
                 TestInput(
-                    SystemLabelId.Starred.labelId.id,
+                    LocalSystemLabel.STARRED,
                     SystemLabelId.Starred
                 ),
                 TestInput(
-                    SystemLabelId.AllScheduled.labelId.id,
+                    LocalSystemLabel.SCHEDULED,
                     SystemLabelId.AllScheduled
                 ),
                 TestInput(
-                    SystemLabelId.Snoozed.labelId.id,
+                    LocalSystemLabel.SNOOZED,
                     SystemLabelId.Snoozed
                 )
             )
@@ -188,7 +189,7 @@ class RustLabelRepositoryTest {
             fun data() = inputs
                 .map { testInput ->
                     val testName = """
-                        Raw system label Id: ${testInput.systemLabelRawId}
+                        Raw system label Id: ${testInput.localSystemLabel}
                         Expected: ${testInput.expected}
                     """.trimIndent()
                     arrayOf(testName, testInput)
@@ -196,7 +197,7 @@ class RustLabelRepositoryTest {
         }
 
         data class TestInput(
-            val systemLabelRawId: String,
+            val localSystemLabel: LocalSystemLabel,
             val expected: SystemLabelId
         )
     }

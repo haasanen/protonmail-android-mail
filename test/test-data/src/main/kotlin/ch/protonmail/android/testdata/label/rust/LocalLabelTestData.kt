@@ -20,17 +20,17 @@ package ch.protonmail.android.testdata.label.rust
 
 import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.domain.mapper.LocalLabel
-import ch.protonmail.android.mailcommon.domain.mapper.LocalLabelType
+import ch.protonmail.android.mailcommon.domain.mapper.LocalSystemLabel
 import uniffi.proton_mail_uniffi.LabelColor
+import uniffi.proton_mail_uniffi.LabelDescription
 
 object LocalLabelTestData {
     val localSystemLabelWithCount = LocalLabel(
         localId = 1.toULong(),
-        remoteParentId = null,
         name = "Inbox",
         path = "path",
         color = LabelColor("color"),
-        labelType = LocalLabelType.SYSTEM,
+        labelDescription = LabelDescription.System(LocalSystemLabel.INBOX),
         displayOrder = 1.toUInt(),
         initializedMsg = false,
         initializedConv = false,
@@ -47,11 +47,10 @@ object LocalLabelTestData {
 
     val localMessageLabelWithCount = LocalLabel(
         localId = 100.toULong(),
-        remoteParentId = null,
         name = "CustomMessageLabel",
         path = "path",
         color = LabelColor("color"),
-        labelType = LocalLabelType.LABEL,
+        labelDescription = LabelDescription.Label,
         displayOrder = 1.toUInt(),
         initializedMsg = false,
         initializedConv = false,
@@ -68,11 +67,10 @@ object LocalLabelTestData {
 
     val localMessageFolderWithCount = LocalLabel(
         localId = 200.toULong(),
-        remoteParentId = null,
         name = "CustomMessageFolder",
         path = "path",
         color = LabelColor("color"),
-        labelType = LocalLabelType.FOLDER,
+        labelDescription = LabelDescription.Folder,
         displayOrder = 1.toUInt(),
         initializedMsg = false,
         initializedConv = false,
@@ -84,19 +82,18 @@ object LocalLabelTestData {
         totalConv = 2.toULong(),
         totalMsg = 0.toULong(),
         unreadConv = 0.toULong(),
-        unreadMsg = 0.toULong()
+        unreadMsg = 7.toULong()
     )
 
     @MissingRustApi
     // Not valid anymore since rust doesn't provide a remote Id in the new API.
     // it will expose an enum in the next version which we can use in a similar way
-    fun buildSystem(remoteId: String) = LocalLabel(
+    fun buildSystem(localSystemLabel: LocalSystemLabel) = LocalLabel(
         localId = 1000.toULong(),
-        remoteParentId = null,
         name = "CustomMessageFolder",
         path = "path",
         color = LabelColor("color"),
-        labelType = LocalLabelType.FOLDER,
+        labelDescription = LabelDescription.System(localSystemLabel),
         displayOrder = 1.toUInt(),
         initializedMsg = false,
         initializedConv = false,

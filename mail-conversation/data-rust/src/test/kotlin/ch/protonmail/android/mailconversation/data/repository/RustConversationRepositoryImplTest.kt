@@ -20,6 +20,7 @@ package ch.protonmail.android.mailconversation.data.repository
 
 import app.cash.turbine.test
 import arrow.core.right
+import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.sample.LabelIdSample
 import ch.protonmail.android.mailconversation.data.local.RustConversationDataSource
@@ -44,6 +45,7 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import me.proton.core.domain.entity.UserId
 import me.proton.core.label.domain.entity.LabelId
+import org.junit.Ignore
 import org.junit.Test
 import kotlin.test.assertEquals
 
@@ -86,7 +88,7 @@ class RustConversationRepositoryImplTest {
         val conversationId = ConversationId(LocalConversationIdSample.AugConversation.toString())
         val localConversation = LocalConversationTestData.AugConversation
         val expected = localConversation.toConversation()
-        coEvery { rustConversationDataSource.observeConversation(userId, any()) } returns localConversation
+        coEvery { rustConversationDataSource.observeConversation(userId, any()) } returns flowOf(localConversation)
 
         // When
         rustConversationRepository.observeConversation(userId, conversationId, refreshData = false).test {
@@ -102,11 +104,13 @@ class RustConversationRepositoryImplTest {
     }
 
     @Test
+    @MissingRustApi
+    @Ignore("Pending rust to expose errors when observing data fails")
     fun `observeConversation should return error when rust provides no conversation `() = runTest {
         // Given
         val conversationId = ConversationId(LocalConversationIdSample.AugConversation.toString())
 
-        coEvery { rustConversationDataSource.observeConversation(userId, any()) } returns null
+        coEvery { rustConversationDataSource.observeConversation(userId, any()) } throws Exception("fail")
 
         // When
         rustConversationRepository.observeConversation(userId, conversationId, refreshData = false).test {
@@ -118,31 +122,6 @@ class RustConversationRepositoryImplTest {
 
             awaitComplete()
         }
-    }
-
-
-    @Test
-    fun `observing cached conversations should return conversations`() = runTest {
-        // Given
-        val conversationIds = listOf(ConversationId(LocalConversationIdSample.AugConversation.toString()))
-        val localConversations = listOf(
-            LocalConversationTestData.AugConversation, LocalConversationTestData.SepConversation
-        )
-        val conversations = localConversations.map { it.toConversation() }
-
-        coEvery { rustConversationDataSource.observeConversations(userId, any()) } returns flowOf(localConversations)
-
-        // When
-        rustConversationRepository.observeCachedConversations(userId, conversationIds).test {
-            val result = awaitItem()
-
-            // Then
-            assertEquals(conversations, result)
-            coVerify { rustConversationDataSource.observeConversations(userId, any()) }
-
-            awaitComplete()
-        }
-
     }
 
     @Test

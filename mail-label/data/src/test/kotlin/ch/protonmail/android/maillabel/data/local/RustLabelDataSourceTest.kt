@@ -19,6 +19,7 @@
 package ch.protonmail.android.maillabel.data.local
 
 import app.cash.turbine.test
+import ch.protonmail.android.maillabel.data.usecase.CreateRustSidebar
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import ch.protonmail.android.test.utils.rule.LoggingTestRule
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
@@ -36,9 +37,11 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import org.junit.Test
-import uniffi.proton_mail_uniffi.MailLabelsLiveQuery
+import uniffi.proton_mail_uniffi.LabelType
+import uniffi.proton_mail_uniffi.LiveQueryCallback
 import uniffi.proton_mail_uniffi.MailUserSession
-import uniffi.proton_mail_uniffi.MailboxLiveQueryUpdatedCallback
+import uniffi.proton_mail_uniffi.Sidebar
+import uniffi.proton_mail_uniffi.WatchHandle
 import kotlin.test.assertEquals
 
 class RustLabelDataSourceTest {
@@ -51,9 +54,11 @@ class RustLabelDataSourceTest {
 
     private val userSessionRepository = mockk<UserSessionRepository>()
     private val testCoroutineScope = CoroutineScope(mainDispatcherRule.testDispatcher)
+    private val createRustSidebar = mockk<CreateRustSidebar>()
 
     private val labelDataSource = RustLabelDataSource(
         userSessionRepository,
+        createRustSidebar,
         testCoroutineScope
     )
 
@@ -77,18 +82,19 @@ class RustLabelDataSourceTest {
         // Given
         val userId = UserIdTestData.userId
         val expected = listOf(LocalLabelTestData.localSystemLabelWithCount)
-        val systemLabelsCallbackSlot = slot<MailboxLiveQueryUpdatedCallback>()
-        val userSessionMock = mockk<MailUserSession> {
-            val liveQueryMock = mockk<MailLabelsLiveQuery> {
-                every { value() } returns expected
-            }
-            every { this@mockk.newSystemLabelsObservedQuery(capture(systemLabelsCallbackSlot)) } returns liveQueryMock
-        }
+        val systemCallbackSlot = slot<LiveQueryCallback>()
+        val userSessionMock = mockk<MailUserSession>()
+        val labelsWatcherMock = mockk<WatchHandle>()
         coEvery { userSessionRepository.getUserSession(userId) } returns userSessionMock
+        val sidebarMock = mockk<Sidebar> {
+            coEvery { this@mockk.systemLabels() } returns expected
+            coEvery { this@mockk.watchLabels(LabelType.SYSTEM, capture(systemCallbackSlot)) } returns labelsWatcherMock
+        }
+        every { createRustSidebar(userSessionMock) } returns sidebarMock
 
         labelDataSource.observeSystemLabels(userId).test {
             // When
-            systemLabelsCallbackSlot.captured.onUpdated()
+            systemCallbackSlot.captured.onUpdate()
 
             // Then
             assertEquals(expected, awaitItem())
@@ -101,19 +107,17 @@ class RustLabelDataSourceTest {
         val firstUserId = UserIdTestData.userId
         val secondUserId = UserIdTestData.userId1
         val expected = listOf(LocalLabelTestData.localSystemLabelWithCount)
-        val firstLiveQueryMock = mockk<MailLabelsLiveQuery> {
-            every { value() } returns expected
+        val watcherMock = mockk<WatchHandle> {
             every { disconnect() } just Runs
         }
-        val firstUserSessionMock = mockk<MailUserSession> {
-            every { this@mockk.newSystemLabelsObservedQuery(any()) } returns firstLiveQueryMock
+        val firstUserSessionMock = mockk<MailUserSession>()
+        val secondUserSessionMock = mockk<MailUserSession>()
+        val sidebarMock = mockk<Sidebar> {
+            coEvery { this@mockk.systemLabels() } returns expected
+            coEvery { this@mockk.watchLabels(LabelType.SYSTEM, any()) } returns watcherMock
         }
-        val secondUserSessionMock = mockk<MailUserSession> {
-            val liveQueryMock = mockk<MailLabelsLiveQuery> {
-                every { value() } returns expected
-            }
-            every { this@mockk.newSystemLabelsObservedQuery(any()) } returns liveQueryMock
-        }
+        every { createRustSidebar(firstUserSessionMock) } returns sidebarMock
+        every { createRustSidebar(secondUserSessionMock) } returns sidebarMock
         coEvery { userSessionRepository.getUserSession(firstUserId) } returns firstUserSessionMock
         coEvery { userSessionRepository.getUserSession(secondUserId) } returns secondUserSessionMock
 
@@ -121,9 +125,9 @@ class RustLabelDataSourceTest {
         // When
         labelDataSource.observeSystemLabels(secondUserId)
         // Then
-        verify { firstLiveQueryMock.disconnect() }
-        coVerify { userSessionRepository.getUserSession(firstUserId) }
-        coVerify { userSessionRepository.getUserSession(secondUserId) }
+        verify { watcherMock.disconnect() }
+        coVerify { createRustSidebar(firstUserSessionMock) }
+        coVerify { createRustSidebar(secondUserSessionMock) }
     }
 
     @Test
@@ -146,18 +150,25 @@ class RustLabelDataSourceTest {
         // Given
         val userId = UserIdTestData.userId
         val expected = listOf(LocalLabelTestData.localMessageLabelWithCount)
-        val messageLabelsCallbackSlot = slot<MailboxLiveQueryUpdatedCallback>()
-        val userSessionMock = mockk<MailUserSession> {
-            val liveQueryMock = mockk<MailLabelsLiveQuery> {
-                every { value() } returns expected
-            }
-            every { this@mockk.newLabelLabelsObservedQuery(capture(messageLabelsCallbackSlot)) } returns liveQueryMock
-        }
+        val messageLabelsCallbackSlot = slot<LiveQueryCallback>()
+        val userSessionMock = mockk<MailUserSession>()
+        val labelsWatcherMock = mockk<WatchHandle>()
         coEvery { userSessionRepository.getUserSession(userId) } returns userSessionMock
+        val sidebarMock = mockk<Sidebar> {
+            coEvery { this@mockk.customLabels() } returns expected
+            coEvery {
+                this@mockk.watchLabels(
+                    LabelType.LABEL,
+                    capture(messageLabelsCallbackSlot)
+                )
+            } returns labelsWatcherMock
+        }
+        every { createRustSidebar(userSessionMock) } returns sidebarMock
+
 
         labelDataSource.observeMessageLabels(userId).test {
             // When
-            messageLabelsCallbackSlot.captured.onUpdated()
+            messageLabelsCallbackSlot.captured.onUpdate()
 
             // Then
             assertEquals(expected, awaitItem())
@@ -170,19 +181,17 @@ class RustLabelDataSourceTest {
         val firstUserId = UserIdTestData.userId
         val secondUserId = UserIdTestData.userId1
         val expected = listOf(LocalLabelTestData.localMessageLabelWithCount)
-        val firstLiveQueryMock = mockk<MailLabelsLiveQuery> {
-            every { value() } returns expected
+        val watcherMock = mockk<WatchHandle> {
             every { disconnect() } just Runs
         }
-        val firstUserSessionMock = mockk<MailUserSession> {
-            every { this@mockk.newLabelLabelsObservedQuery(any()) } returns firstLiveQueryMock
+        val firstUserSessionMock = mockk<MailUserSession>()
+        val secondUserSessionMock = mockk<MailUserSession>()
+        val sidebarMock = mockk<Sidebar> {
+            coEvery { this@mockk.customLabels() } returns expected
+            coEvery { this@mockk.watchLabels(LabelType.LABEL, any()) } returns watcherMock
         }
-        val secondUserSessionMock = mockk<MailUserSession> {
-            val liveQueryMock = mockk<MailLabelsLiveQuery> {
-                every { value() } returns expected
-            }
-            every { this@mockk.newLabelLabelsObservedQuery(any()) } returns liveQueryMock
-        }
+        every { createRustSidebar(firstUserSessionMock) } returns sidebarMock
+        every { createRustSidebar(secondUserSessionMock) } returns sidebarMock
         coEvery { userSessionRepository.getUserSession(firstUserId) } returns firstUserSessionMock
         coEvery { userSessionRepository.getUserSession(secondUserId) } returns secondUserSessionMock
 
@@ -190,9 +199,9 @@ class RustLabelDataSourceTest {
         // When
         labelDataSource.observeMessageLabels(secondUserId)
         // Then
-        verify { firstLiveQueryMock.disconnect() }
-        coVerify { userSessionRepository.getUserSession(firstUserId) }
-        coVerify { userSessionRepository.getUserSession(secondUserId) }
+        verify { watcherMock.disconnect() }
+        coVerify { createRustSidebar(firstUserSessionMock) }
+        coVerify { createRustSidebar(secondUserSessionMock) }
     }
 
     @Test
@@ -215,18 +224,22 @@ class RustLabelDataSourceTest {
         // Given
         val userId = UserIdTestData.userId
         val expected = listOf(LocalLabelTestData.localMessageFolderWithCount)
-        val messageFoldersCallbackSlot = slot<MailboxLiveQueryUpdatedCallback>()
-        val userSessionMock = mockk<MailUserSession> {
-            val liveQueryMock = mockk<MailLabelsLiveQuery> {
-                every { value() } returns expected
-            }
-            every { this@mockk.newFolderLabelsObservedQuery(capture(messageFoldersCallbackSlot)) } returns liveQueryMock
-        }
+        val messageFoldersCallbackSlot = slot<LiveQueryCallback>()
+        val userSessionMock = mockk<MailUserSession>()
+        val labelsWatcherMock = mockk<WatchHandle>()
         coEvery { userSessionRepository.getUserSession(userId) } returns userSessionMock
+        val sidebarMock = mockk<Sidebar> {
+            coEvery { this@mockk.customFolders(null) } returns expected
+            coEvery {
+                this@mockk.watchLabels(LabelType.FOLDER, capture(messageFoldersCallbackSlot))
+            } returns labelsWatcherMock
+        }
+        every { createRustSidebar(userSessionMock) } returns sidebarMock
+
 
         labelDataSource.observeMessageFolders(userId).test {
             // When
-            messageFoldersCallbackSlot.captured.onUpdated()
+            messageFoldersCallbackSlot.captured.onUpdate()
 
             // Then
             assertEquals(expected, awaitItem())
@@ -239,19 +252,17 @@ class RustLabelDataSourceTest {
         val firstUserId = UserIdTestData.userId
         val secondUserId = UserIdTestData.userId1
         val expected = listOf(LocalLabelTestData.localMessageFolderWithCount)
-        val firstLiveQueryMock = mockk<MailLabelsLiveQuery> {
-            every { value() } returns expected
+        val watcherMock = mockk<WatchHandle> {
             every { disconnect() } just Runs
         }
-        val firstUserSessionMock = mockk<MailUserSession> {
-            every { this@mockk.newFolderLabelsObservedQuery(any()) } returns firstLiveQueryMock
+        val firstUserSessionMock = mockk<MailUserSession>()
+        val secondUserSessionMock = mockk<MailUserSession>()
+        val sidebarMock = mockk<Sidebar> {
+            coEvery { this@mockk.customFolders(null) } returns expected
+            coEvery { this@mockk.watchLabels(LabelType.FOLDER, any()) } returns watcherMock
         }
-        val secondUserSessionMock = mockk<MailUserSession> {
-            val liveQueryMock = mockk<MailLabelsLiveQuery> {
-                every { value() } returns expected
-            }
-            every { this@mockk.newFolderLabelsObservedQuery(any()) } returns liveQueryMock
-        }
+        every { createRustSidebar(firstUserSessionMock) } returns sidebarMock
+        every { createRustSidebar(secondUserSessionMock) } returns sidebarMock
         coEvery { userSessionRepository.getUserSession(firstUserId) } returns firstUserSessionMock
         coEvery { userSessionRepository.getUserSession(secondUserId) } returns secondUserSessionMock
 
@@ -259,8 +270,8 @@ class RustLabelDataSourceTest {
         // When
         labelDataSource.observeMessageFolders(secondUserId)
         // Then
-        verify { firstLiveQueryMock.disconnect() }
-        coVerify { userSessionRepository.getUserSession(firstUserId) }
-        coVerify { userSessionRepository.getUserSession(secondUserId) }
+        verify { watcherMock.disconnect() }
+        coVerify { createRustSidebar(firstUserSessionMock) }
+        coVerify { createRustSidebar(secondUserSessionMock) }
     }
 }
