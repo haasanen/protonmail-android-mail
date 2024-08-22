@@ -19,12 +19,14 @@
 package ch.protonmail.android.mailmessage.data.local
 
 import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
-import ch.protonmail.android.mailmessage.data.model.LocalConversationMessages
 import ch.protonmail.android.mailcommon.domain.mapper.LocalConversationId
 import ch.protonmail.android.mailcommon.domain.mapper.LocalDecryptedMessage
 import ch.protonmail.android.mailcommon.domain.mapper.LocalLabelId
 import ch.protonmail.android.mailcommon.domain.mapper.LocalMessageId
 import ch.protonmail.android.mailcommon.domain.mapper.LocalMessageMetadata
+import ch.protonmail.android.mailmessage.data.model.LocalConversationMessages
+import ch.protonmail.android.mailmessage.data.usecase.CreateRustMessageAccessor
+import ch.protonmail.android.mailmessage.data.usecase.CreateRustMessageBodyAccessor
 import ch.protonmail.android.mailsession.domain.repository.MailSessionRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
@@ -34,20 +36,21 @@ import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.MailSessionException
 import uniffi.proton_mail_uniffi.MailboxException
-import uniffi.proton_mail_uniffi.message
 import javax.inject.Inject
 
 class RustMessageDataSourceImpl @Inject constructor(
     private val mailSessionRepository: MailSessionRepository,
     private val rustMailbox: RustMailbox,
     private val rustMessageQuery: RustMessageQuery,
-    private val rustConversationMessageQuery: RustConversationMessageQuery
+    private val rustConversationMessageQuery: RustConversationMessageQuery,
+    private val createRustMessageAccessor: CreateRustMessageAccessor,
+    private val createRustMessageBodyAccessor: CreateRustMessageBodyAccessor
 ) : RustMessageDataSource {
 
     override suspend fun getMessage(userId: UserId, messageId: LocalMessageId): LocalMessageMetadata? {
         return try {
             val mailSession = mailSessionRepository.getMailSession()
-            message(mailSession, messageId)
+            createRustMessageAccessor(mailSession, messageId)
         } catch (e: MailSessionException) {
             Timber.e(e, "rust-message: Failed to get message")
             null
@@ -68,7 +71,7 @@ class RustMessageDataSourceImpl @Inject constructor(
         return try {
             mailboxFlow
                 .mapLatest { mailbox ->
-                    uniffi.proton_mail_uniffi.getMessageBody(mailbox, messageId)
+                    createRustMessageBodyAccessor(mailbox, messageId)
                 }
                 .firstOrNull()
         } catch (e: MailboxException) {

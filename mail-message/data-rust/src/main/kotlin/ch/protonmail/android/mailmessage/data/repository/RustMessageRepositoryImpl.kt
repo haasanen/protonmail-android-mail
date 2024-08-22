@@ -140,7 +140,7 @@ class RustMessageRepositoryImpl @Inject constructor(
 
         return if (message != null && decryptedBody != null) {
             val bodyOutput = decryptedBody.body(TransformOpts(BlockQuote.STRIP, RemoteContent.DEFAULT))
-            MessageWithBody(message, bodyOutput.toMessageBody(messageId))
+            MessageWithBody(message, bodyOutput.toMessageBody(messageId, decryptedBody.mimeType()))
         } else {
             null
         }

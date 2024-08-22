@@ -106,7 +106,7 @@ fun LocalMimeType.toAndroidMimeType(): MimeType {
 
 @MissingRustApi
 // Mime type hardcoded as not coming through as part of decrypted message anymore...
-fun BodyOutput.toMessageBody(messageId: MessageId): MessageBody {
+fun BodyOutput.toMessageBody(messageId: MessageId, mimeType: LocalMimeType): MessageBody {
     return MessageBody(
         userId = FAKE_USER_ID,
         messageId = messageId,

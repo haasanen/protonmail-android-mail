@@ -22,6 +22,7 @@ import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.domain.mapper.LocalConversationId
 import ch.protonmail.android.mailmessage.data.MessageRustCoroutineScope
 import ch.protonmail.android.mailmessage.data.model.LocalConversationMessages
+import ch.protonmail.android.mailmessage.data.usecase.CreateRustConversationMessagesWatcher
 import ch.protonmail.android.mailmessage.domain.paging.RustDataSourceId
 import ch.protonmail.android.mailmessage.domain.paging.RustInvalidationTracker
 import kotlinx.coroutines.CoroutineScope
@@ -35,12 +36,12 @@ import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.LiveQueryCallback
 import uniffi.proton_mail_uniffi.WatchedConversation
-import uniffi.proton_mail_uniffi.watchConversation
 import javax.inject.Inject
 
 @SuppressWarnings("ForbiddenComment")
 class RustConversationMessageQueryImpl @Inject constructor(
     private val rustMailbox: RustMailbox,
+    private val createRustConversationMessagesWatcher: CreateRustConversationMessagesWatcher,
     private val invalidationTracker: RustInvalidationTracker,
     @MessageRustCoroutineScope private val coroutineScope: CoroutineScope
 ) : RustConversationMessageQuery {
@@ -55,7 +56,7 @@ class RustConversationMessageQueryImpl @Inject constructor(
         override fun onUpdate() {
             val messages = conversationWatcher?.messages
             // TODO: get message to open from rust when exposed
-            val messageIdToOpen = conversationWatcher?.messages?.first()?.localId
+            val messageIdToOpen = conversationWatcher?.messages?.firstOrNull()?.localId
 
             if (messages != null && messageIdToOpen != null) {
                 conversationMessagesMutableStatusFlow.value = LocalConversationMessages(messageIdToOpen, messages)
@@ -74,6 +75,21 @@ class RustConversationMessageQueryImpl @Inject constructor(
 
     }
 
+    override fun observeConversationMessages(
+        userId: UserId,
+        conversationId: LocalConversationId
+    ): Flow<LocalConversationMessages> {
+        destroy()
+        initConversationMessagesLiveQuery(conversationId)
+
+        return conversationMessagesStatusFlow
+    }
+
+    override fun disconnect() {
+        conversationWatcher?.messagesHandle?.disconnect()
+        conversationWatcher?.conversationHandle?.disconnect()
+    }
+
     @MissingRustApi
     // MessageIdToOpen not returned with conversations anymore?
     private fun initConversationMessagesLiveQuery(conversationId: LocalConversationId) {
@@ -82,11 +98,15 @@ class RustConversationMessageQueryImpl @Inject constructor(
             .onEach { mailbox ->
                 destroy()
 
-                conversationWatcher = watchConversation(mailbox, conversationId, conversationMessagesLiveQueryCallback)
+                conversationWatcher = createRustConversationMessagesWatcher(
+                    mailbox,
+                    conversationId,
+                    conversationMessagesLiveQueryCallback
+                )
 
                 val value = conversationWatcher?.let {
                     val messages = it.messages
-                    val messageIdToOpen = it.messages.first().localId
+                    val messageIdToOpen = it.messages.firstOrNull()?.localId ?: 0uL
 
                     LocalConversationMessages(messageIdToOpen, messages)
 
@@ -100,20 +120,5 @@ class RustConversationMessageQueryImpl @Inject constructor(
         Timber.d("rust-message-query: destroy")
         disconnect()
         conversationMessagesMutableStatusFlow.value = null
-    }
-
-    override fun disconnect() {
-        conversationWatcher?.messagesHandle?.disconnect()
-        conversationWatcher?.conversationHandle?.disconnect()
-    }
-
-    override fun observeConversationMessages(
-        userId: UserId,
-        conversationId: LocalConversationId
-    ): Flow<LocalConversationMessages> {
-        destroy()
-        initConversationMessagesLiveQuery(conversationId)
-
-        return conversationMessagesStatusFlow
     }
 }

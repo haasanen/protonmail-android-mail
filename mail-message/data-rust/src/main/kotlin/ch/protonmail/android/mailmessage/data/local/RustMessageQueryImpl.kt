@@ -21,6 +21,7 @@ package ch.protonmail.android.mailmessage.data.local
 import ch.protonmail.android.mailcommon.domain.mapper.LocalLabelId
 import ch.protonmail.android.mailcommon.domain.mapper.LocalMessageMetadata
 import ch.protonmail.android.mailmessage.data.MessageRustCoroutineScope
+import ch.protonmail.android.mailmessage.data.usecase.CreateRustMessagesWatcher
 import ch.protonmail.android.mailmessage.domain.paging.RustDataSourceId
 import ch.protonmail.android.mailmessage.domain.paging.RustInvalidationTracker
 import ch.protonmail.android.mailsession.domain.repository.MailSessionRepository
@@ -33,12 +34,12 @@ import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.LiveQueryCallback
 import uniffi.proton_mail_uniffi.WatchedMessages
-import uniffi.proton_mail_uniffi.watchMessagesForLabel
 import javax.inject.Inject
 
 class RustMessageQueryImpl @Inject constructor(
     private val mailSessionRepository: MailSessionRepository,
     private val invalidationTracker: RustInvalidationTracker,
+    private val createRustMessagesWatcher: CreateRustMessagesWatcher,
     @MessageRustCoroutineScope private val coroutineScope: CoroutineScope
 ) : RustMessageQuery {
 
@@ -67,7 +68,7 @@ class RustMessageQueryImpl @Inject constructor(
             Timber.v("rust-message: got MailSession instance to watch messages for $userId")
 
             destroy()
-            messagesWatcher = watchMessagesForLabel(mailSession, labelId, messagesUpdatedCallback)
+            messagesWatcher = createRustMessagesWatcher(mailSession, labelId, messagesUpdatedCallback)
         }
 
         return messagesStatusFlow

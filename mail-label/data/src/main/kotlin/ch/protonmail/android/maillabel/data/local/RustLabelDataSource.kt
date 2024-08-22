@@ -20,6 +20,7 @@ package ch.protonmail.android.maillabel.data.local
 
 import ch.protonmail.android.mailcommon.domain.mapper.LocalLabel
 import ch.protonmail.android.maillabel.data.MailLabelRustCoroutineScope
+import ch.protonmail.android.maillabel.data.usecase.CreateRustSidebar
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -31,12 +32,12 @@ import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.LabelType
 import uniffi.proton_mail_uniffi.LiveQueryCallback
-import uniffi.proton_mail_uniffi.Sidebar
 import uniffi.proton_mail_uniffi.WatchHandle
 import javax.inject.Inject
 
 class RustLabelDataSource @Inject constructor(
     private val userSessionRepository: UserSessionRepository,
+    private val createRustSidebar: CreateRustSidebar,
     @MailLabelRustCoroutineScope private val coroutineScope: CoroutineScope
 ) : LabelDataSource {
 
@@ -104,7 +105,7 @@ class RustLabelDataSource @Inject constructor(
                 Timber.e("rust-label: trying to load labels with a null session")
                 return@launch
             }
-            val sidebar = Sidebar(session)
+            val sidebar = createRustSidebar(session)
 
             val messageLabelsUpdatedCallback = object : LiveQueryCallback {
                 override fun onUpdate() {
@@ -136,7 +137,7 @@ class RustLabelDataSource @Inject constructor(
                 Timber.e("rust-label: trying to load labels with a null session")
                 return@launch
             }
-            val sidebar = Sidebar(session)
+            val sidebar = createRustSidebar(session)
 
             val messageFoldersUpdatedCallback = object : LiveQueryCallback {
                 override fun onUpdate() {
@@ -168,7 +169,7 @@ class RustLabelDataSource @Inject constructor(
                 Timber.e("rust-label: trying to load labels with a null session")
                 return@launch
             }
-            val sidebar = Sidebar(session)
+            val sidebar = createRustSidebar(session)
 
             val systemLabelsUpdatedCallback = object : LiveQueryCallback {
                 override fun onUpdate() {

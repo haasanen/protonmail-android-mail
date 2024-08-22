@@ -22,6 +22,7 @@ import ch.protonmail.android.maillabel.data.MailLabelRustCoroutineScope
 import ch.protonmail.android.maillabel.data.local.LabelDataSource
 import ch.protonmail.android.maillabel.data.local.RustLabelDataSource
 import ch.protonmail.android.maillabel.data.repository.RustLabelRepository
+import ch.protonmail.android.maillabel.data.usecase.CreateRustSidebar
 import ch.protonmail.android.maillabel.domain.repository.LabelRepository
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import dagger.Module
@@ -46,8 +47,9 @@ object MailLabelModule {
     @Singleton
     fun provideRustLabelDataSource(
         userSessionRepository: UserSessionRepository,
+        createRustSidebar: CreateRustSidebar,
         @MailLabelRustCoroutineScope coroutineScope: CoroutineScope
-    ): LabelDataSource = RustLabelDataSource(userSessionRepository, coroutineScope)
+    ): LabelDataSource = RustLabelDataSource(userSessionRepository, createRustSidebar, coroutineScope)
 
     @Provides
     @Singleton

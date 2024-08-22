@@ -21,6 +21,7 @@ package ch.protonmail.android.mailconversation.data.local
 import ch.protonmail.android.mailcommon.domain.coroutines.AppScope
 import ch.protonmail.android.mailcommon.domain.mapper.LocalConversation
 import ch.protonmail.android.mailcommon.domain.mapper.LocalConversationId
+import ch.protonmail.android.mailconversation.data.usecase.CreateRustConversationWatcher
 import ch.protonmail.android.mailmessage.data.local.RustMailbox
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -32,11 +33,11 @@ import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.LiveQueryCallback
 import uniffi.proton_mail_uniffi.WatchedConversation
-import uniffi.proton_mail_uniffi.watchConversation
 import javax.inject.Inject
 
 class RustConversationDetailQueryImpl @Inject constructor(
     private val rustMailbox: RustMailbox,
+    private val createRustConversationWatcher: CreateRustConversationWatcher,
     @AppScope private val coroutineScope: CoroutineScope
 ) : RustConversationDetailQuery {
 
@@ -61,7 +62,7 @@ class RustConversationDetailQueryImpl @Inject constructor(
                 return@launch
             }
 
-            watchConversation(mailbox, conversationId, conversationUpdatedCallback)
+            conversationWatcher = createRustConversationWatcher(mailbox, conversationId, conversationUpdatedCallback)
         }
 
         return conversationMutableStatusFlow.filterNotNull()
