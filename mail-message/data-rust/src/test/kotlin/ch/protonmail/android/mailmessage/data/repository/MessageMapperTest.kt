@@ -18,11 +18,15 @@
 
 package ch.protonmail.android.mailmessage.data.repository
 
+import ch.protonmail.android.mailcommon.domain.mapper.LocalAddressId
 import ch.protonmail.android.mailcommon.domain.mapper.LocalAttachmentMetadata
 import ch.protonmail.android.mailcommon.domain.mapper.LocalConversationId
 import ch.protonmail.android.mailcommon.domain.mapper.LocalCustomLabel
+import ch.protonmail.android.mailcommon.domain.mapper.LocalLabelId
+import ch.protonmail.android.mailcommon.domain.mapper.LocalMessageId
 import ch.protonmail.android.mailcommon.domain.mapper.LocalMessageMetadata
-import ch.protonmail.android.mailcommon.domain.model.ConversationId
+import ch.protonmail.android.mailmessage.data.mapper.toAddressId
+import ch.protonmail.android.mailmessage.data.mapper.toConversationId
 import ch.protonmail.android.mailmessage.data.mapper.toMessage
 import ch.protonmail.android.mailmessage.data.mapper.toParticipant
 import ch.protonmail.android.mailmessage.data.mapper.toRecipient
@@ -32,15 +36,11 @@ import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertFalse
 import junit.framework.TestCase.assertTrue
 import me.proton.core.label.domain.entity.LabelId
-import me.proton.core.user.domain.entity.AddressId
 import org.junit.Test
 import uniffi.proton_mail_uniffi.AvatarInformation
 import uniffi.proton_mail_uniffi.LabelColor
 import uniffi.proton_mail_uniffi.MessageAddress
-import uniffi.proton_mail_uniffi.MessageAddresses
 import uniffi.proton_mail_uniffi.MessageFlags
-import uniffi.proton_mail_uniffi.MimeType
-import uniffi.proton_mail_uniffi.ParsedHeaders
 
 class MessageMapperTest {
 
@@ -107,39 +107,34 @@ class MessageMapperTest {
         // Given
         val id = 111uL
         val rid = "RemoteId"
-        val conversationId: LocalConversationId = 99uL
+        val conversationId = LocalConversationId(99uL)
         val time = 1625234000000uL
         val snoozeTime = 1625888000000uL
         val size = 1024uL
         val order = 1uL
-        val labels = listOf(LocalCustomLabel(localId = 1u, name = "Test Label", color = LabelColor("0xFF0000")))
+        val labels = listOf(
+            LocalCustomLabel(id = LocalLabelId(1u), name = "Test Label", color = LabelColor("0xFF0000"))
+        )
         val subject = "Test Subject"
         val unread = true
         val sender = MessageAddress("sender@test.com", "Sender", true, false, false, "bimiSelector")
-        val to = MessageAddresses(
-            listOf(
-                MessageAddress("to1@test.com", "To1", true, false, false, "bimiSelector"),
-                MessageAddress("to2@test.com", "To2", false, false, false, "bimiSelector")
-            )
+        val to = listOf(
+            MessageAddress("to1@test.com", "To1", true, false, false, "bimiSelector"),
+            MessageAddress("to2@test.com", "To2", false, false, false, "bimiSelector")
         )
-        val cc = MessageAddresses(
-            listOf(
-                MessageAddress("cc1@test.com", "Cc1", true, false, false, "bimiSelector"),
-                MessageAddress("cc2@test.com", "Cc2", false, false, false, "bimiSelector")
-            )
+        val cc = listOf(
+            MessageAddress("cc1@test.com", "Cc1", true, false, false, "bimiSelector"),
+            MessageAddress("cc2@test.com", "Cc2", false, false, false, "bimiSelector")
         )
-        val bcc = MessageAddresses(
-
-            listOf(
-                MessageAddress("bcc1@test.com", "Bcc1", true, false, false, "bimiSelector"),
-                MessageAddress("bcc2@test.com", "Bcc2", false, false, false, "bimiSelector")
-            )
+        val bcc = listOf(
+            MessageAddress("bcc1@test.com", "Bcc1", true, false, false, "bimiSelector"),
+            MessageAddress("bcc2@test.com", "Bcc2", false, false, false, "bimiSelector")
         )
         val expirationTime = 1625235000000u
         val isReplied = false
         val isRepliedAll = false
         val isForwarded = false
-        val addressId = 1.toULong()
+        val addressId = LocalAddressId(1.toULong())
         val externalId = "externalId"
         val numAttachments = 0u
         val flags = MessageFlags(1897uL)
@@ -148,8 +143,8 @@ class MessageMapperTest {
         val avatarInformation: AvatarInformation = AvatarInformation("A", "blue")
 
         val localMessageMetadata = LocalMessageMetadata(
-            localId = id,
-            localConversationId = conversationId,
+            id = LocalMessageId(id),
+            conversationId = conversationId,
             time = time,
             size = size,
             displayOrder = order,
@@ -170,13 +165,10 @@ class MessageMapperTest {
             flags = flags,
             starred = starred,
             attachmentsMetadata = attachments,
-            deleted = false,
             exclusiveLocation = null,
             header = "",
-            parsedHeaders = ParsedHeaders(emptyMap()),
-            mimeType = MimeType.TEXT_HTML,
-            replyTos = to
-
+            replyTos = to,
+            avatar = avatarInformation
         )
 
         // When
@@ -184,22 +176,22 @@ class MessageMapperTest {
 
         // Then
         assertEquals(MessageId(id.toString()), message.messageId)
-        assertEquals(ConversationId(conversationId.toString()), message.conversationId)
+        assertEquals(conversationId.toConversationId(), message.conversationId)
         assertEquals(time.toLong(), message.time)
         assertEquals(size.toLong(), message.size)
         assertEquals(order.toLong(), message.order)
-        assertEquals(labels.map { LabelId(it.localId.toString()) }, message.labelIds)
+        assertEquals(labels.map { LabelId(it.id.value.toString()) }, message.labelIds)
         assertEquals(subject, message.subject)
         assertTrue(message.unread)
         assertEquals(sender.toParticipant(), message.sender)
-        assertEquals(to.value.map { it.toRecipient() }, message.toList)
-        assertEquals(cc.value.map { it.toRecipient() }, message.ccList)
-        assertEquals(bcc.value.map { it.toRecipient() }, message.bccList)
+        assertEquals(to.map { it.toRecipient() }, message.toList)
+        assertEquals(cc.map { it.toRecipient() }, message.ccList)
+        assertEquals(bcc.map { it.toRecipient() }, message.bccList)
         assertEquals(expirationTime.toLong(), message.expirationTime)
         assertFalse(message.isReplied)
         assertFalse(message.isRepliedAll)
         assertFalse(message.isForwarded)
-        assertEquals(AddressId(addressId.toString()), message.addressId)
+        assertEquals(addressId.toAddressId(), message.addressId)
         assertEquals(null, message.externalId)
         assertEquals(numAttachments.toInt(), message.numAttachments)
         assertEquals(flags.value.toLong(), message.flags)

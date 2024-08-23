@@ -19,16 +19,17 @@
 package ch.protonmail.android.testdata.message.rust
 
 import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
+import ch.protonmail.android.mailcommon.domain.mapper.LocalAddressId
 import ch.protonmail.android.mailcommon.domain.mapper.LocalAttachmentMetadata
+import ch.protonmail.android.mailcommon.domain.mapper.LocalConversationId
+import ch.protonmail.android.mailcommon.domain.mapper.LocalLabelId
 import ch.protonmail.android.mailcommon.domain.mapper.LocalMessageId
 import ch.protonmail.android.mailcommon.domain.mapper.LocalMessageMetadata
-import ch.protonmail.android.mailcommon.domain.mapper.LocalMimeType
+import uniffi.proton_mail_uniffi.AvatarInformation
 import uniffi.proton_mail_uniffi.CustomLabel
 import uniffi.proton_mail_uniffi.LabelColor
 import uniffi.proton_mail_uniffi.MessageAddress
-import uniffi.proton_mail_uniffi.MessageAddresses
 import uniffi.proton_mail_uniffi.MessageFlags
-import uniffi.proton_mail_uniffi.ParsedHeaders
 
 object LocalMessageTestData {
     const val RAW_SUBJECT = "Subject"
@@ -97,7 +98,7 @@ object LocalMessageTestData {
 
 
     val multipleRecipientsMessage = buildMessage(
-        id = RAW_MESSAGE_ID,
+        id = LocalMessageId(RAW_MESSAGE_ID),
         subject = "Multiple recipients message",
         sender = sender,
         to = listOf(recipient1, recipient2),
@@ -107,99 +108,99 @@ object LocalMessageTestData {
     )
 
     val trashedMessage = buildMessage(
-        id = RAW_MESSAGE_ID,
+        id = LocalMessageId(RAW_MESSAGE_ID),
         subject = "Trashed message",
         sender = sender,
         to = listOf(recipient1),
         cc = emptyList(),
         bcc = emptyList(),
-        labels = listOf(CustomLabel(2uL, "Trash", LabelColor("red"))),
+        labels = listOf(CustomLabel(LocalLabelId(2uL), "Trash", LabelColor("red"))),
         time = 1667924198uL
     )
 
     val trashedMessageWithCustomLabels = buildMessage(
-        id = RAW_MESSAGE_ID,
+        id = LocalMessageId(RAW_MESSAGE_ID),
         subject = "Trashed message with custom labels",
         sender = sender,
         to = listOf(recipient1),
         cc = emptyList(),
         bcc = emptyList(),
         labels = listOf(
-            CustomLabel(2uL, "Trash", LabelColor("red")),
-            CustomLabel(3uL, "Travel", LabelColor("blue"))
+            CustomLabel(LocalLabelId(2uL), "Trash", LabelColor("red")),
+            CustomLabel(LocalLabelId(3uL), "Travel", LabelColor("blue"))
         ),
         time = 1667924198uL
     )
 
     val spamMessage = buildMessage(
-        id = RAW_MESSAGE_ID,
+        id = LocalMessageId(RAW_MESSAGE_ID),
         subject = RAW_SUBJECT,
         sender = sender,
         to = listOf(recipient1),
         cc = emptyList(),
         bcc = emptyList(),
-        labels = listOf(CustomLabel(4uL, "Spam", LabelColor("yellow"))),
+        labels = listOf(CustomLabel(LocalLabelId(4uL), "Spam", LabelColor("yellow"))),
         time = 1667924198uL
     )
 
     val spamMessageWithMultipleRecipients = buildMessage(
-        id = RAW_MESSAGE_ID,
+        id = LocalMessageId(RAW_MESSAGE_ID),
         subject = RAW_SUBJECT,
         sender = sender,
         to = listOf(recipient1),
         cc = listOf(recipient2),
         bcc = emptyList(),
-        labels = listOf(CustomLabel(4uL, "Spam", LabelColor("yellow"))),
+        labels = listOf(CustomLabel(LocalLabelId(4uL), "Spam", LabelColor("yellow"))),
         time = 1667924198uL
     )
 
     val starredMessage = buildMessage(
-        id = RAW_MESSAGE_ID,
+        id = LocalMessageId(RAW_MESSAGE_ID),
         subject = RAW_SUBJECT,
         sender = sender,
         to = listOf(recipient1),
         cc = emptyList(),
         bcc = emptyList(),
         labels = listOf(
-            CustomLabel(1uL, "Inbox", LabelColor("green")),
-            CustomLabel(5uL, "Starred", LabelColor("yellow"))
+            CustomLabel(LocalLabelId(1uL), "Inbox", LabelColor("green")),
+            CustomLabel(LocalLabelId(5uL), "Starred", LabelColor("yellow"))
         ),
         time = 1667924198uL
     )
 
     val starredMessagesWithCustomLabel = listOf(
         buildMessage(
-            id = 123uL,
+            id = LocalMessageId(123uL),
             subject = "Message 123",
             sender = sender,
             to = listOf(recipient1),
             labels = listOf(
-                CustomLabel(1uL, "Inbox", LabelColor("green")),
-                CustomLabel(5uL, "Starred", LabelColor("yellow")),
-                CustomLabel(11uL, "Custom", LabelColor("blue"))
+                CustomLabel(LocalLabelId(1uL), "Inbox", LabelColor("green")),
+                CustomLabel(LocalLabelId(5uL), "Starred", LabelColor("yellow")),
+                CustomLabel(LocalLabelId(11uL), "Custom", LabelColor("blue"))
             ),
             time = 1667924198uL
         ),
         buildMessage(
-            id = 124uL,
+            id = LocalMessageId(124uL),
             subject = "Message 124",
             sender = sender,
             to = listOf(recipient2),
             labels = listOf(
-                CustomLabel(1uL, "Inbox", LabelColor("green")),
-                CustomLabel(5uL, "Starred", LabelColor("yellow")),
-                CustomLabel(11uL, "Custom", LabelColor("blue"))
+                CustomLabel(LocalLabelId(1uL), "Inbox", LabelColor("green")),
+                CustomLabel(LocalLabelId(5uL), "Starred", LabelColor("yellow")),
+                CustomLabel(LocalLabelId(11uL), "Custom", LabelColor("blue"))
             ),
             time = 1667924198uL
         ),
         buildMessage(
-            id = 125uL,
+            id = LocalMessageId(125uL),
             subject = "Message 125",
             sender = sender,
             to = listOf(recipient3),
             labels = listOf(
-                CustomLabel(1uL, "Inbox", LabelColor("green")),
-                CustomLabel(5uL, "Starred", LabelColor("yellow"))
+                CustomLabel(LocalLabelId(1uL), "Inbox", LabelColor("green")),
+                CustomLabel(LocalLabelId(5uL), "Starred", LabelColor("yellow"))
             ),
             time = 1667924198uL
         )
@@ -213,7 +214,7 @@ object LocalMessageTestData {
         to: List<MessageAddress>,
         cc: List<MessageAddress> = emptyList(),
         bcc: List<MessageAddress> = emptyList(),
-        labels: List<CustomLabel> = listOf(CustomLabel(1uL, "Inbox", LabelColor("green"))),
+        labels: List<CustomLabel> = listOf(CustomLabel(LocalLabelId(1uL), "Inbox", LabelColor("green"))),
         time: ULong,
         size: ULong = 0uL,
         expirationTime: ULong = 0uL,
@@ -224,12 +225,12 @@ object LocalMessageTestData {
         numAttachments: UInt = 0u,
         flags: MessageFlags = MessageFlags(0uL),
         starred: Boolean = false,
-        attachments: List<LocalAttachmentMetadata> = emptyList()
-//        avatarInformation: AvatarInformation = AvatarInformation("A", "blue")
+        attachments: List<LocalAttachmentMetadata> = emptyList(),
+        avatarInformation: AvatarInformation = AvatarInformation("A", "blue")
     ) = LocalMessageMetadata(
-        localId = id,
-        localConversationId = 50.toULong(),
-        addressId = 1.toULong(),
+        id = id,
+        conversationId = LocalConversationId(50.toULong()),
+        addressId = LocalAddressId(1.toULong()),
         displayOrder = 1uL,
         subject = subject,
         unread = false,
@@ -244,16 +245,14 @@ object LocalMessageTestData {
         numAttachments = numAttachments,
         flags = flags,
         starred = starred,
-        toList = MessageAddresses(to),
-        ccList = MessageAddresses(cc),
-        bccList = MessageAddresses(bcc),
+        toList = to,
+        ccList = cc,
+        bccList = bcc,
         attachmentsMetadata = attachments,
         customLabels = labels,
-        deleted = false,
         exclusiveLocation = null,
         header = "",
-        mimeType = LocalMimeType.TEXT_PLAIN,
-        replyTos = MessageAddresses(emptyList()),
-        parsedHeaders = ParsedHeaders(emptyMap())
+        replyTos = emptyList(),
+        avatar = avatarInformation
     )
 }

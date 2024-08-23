@@ -18,7 +18,7 @@
 
 package ch.protonmail.android.mailsession.data.repository
 
-import ch.protonmail.android.mailsession.data.mapper.toRemoteId
+import ch.protonmail.android.mailsession.data.mapper.toLocalUserId
 import ch.protonmail.android.mailsession.domain.repository.MailSessionRepository
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import kotlinx.coroutines.flow.Flow
@@ -46,14 +46,14 @@ class UserSessionRepositoryImpl @Inject constructor(
         val mailSession = mailSessionRepository.getMailSession()
         val storedUserSession = mailSession.storedSessions().firstOrNull()
 
-        val userId = storedUserSession?.userId()?.let { UserId(it.value) }
+        val userId = storedUserSession?.userId()?.let { UserId(it) }
         emit(userId)
     }
 
     private suspend fun initUserSession(userId: UserId) {
         val mailSession = mailSessionRepository.getMailSession()
         val storedSessions = mailSession.storedSessions()
-        val storedUserSession = storedSessions.find { it.userId() == userId.toRemoteId() }
+        val storedUserSession = storedSessions.find { it.userId() == userId.toLocalUserId() }
 
         if (storedUserSession == null) {
             Timber.e("rust-session: no stored user session found for $userId in userSessionRepository")

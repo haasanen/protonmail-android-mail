@@ -20,12 +20,14 @@ package ch.protonmail.android.mailmessage.data.mapper
 
 import arrow.core.toNonEmptyListOrNull
 import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
+import ch.protonmail.android.mailcommon.domain.mapper.LocalAddressId
 import ch.protonmail.android.mailcommon.domain.mapper.LocalConversationId
 import ch.protonmail.android.mailcommon.domain.mapper.LocalMessageId
 import ch.protonmail.android.mailcommon.domain.mapper.LocalMessageMetadata
 import ch.protonmail.android.mailcommon.domain.mapper.LocalMimeType
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.FAKE_USER_ID
+import ch.protonmail.android.maillabel.data.mapper.toLabelId
 import ch.protonmail.android.mailmessage.data.model.LocalConversationMessages
 import ch.protonmail.android.mailmessage.domain.model.AttachmentCount
 import ch.protonmail.android.mailmessage.domain.model.ConversationMessages
@@ -35,38 +37,41 @@ import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.MimeType
 import ch.protonmail.android.mailmessage.domain.model.Participant
 import ch.protonmail.android.mailmessage.domain.model.Recipient
-import me.proton.core.label.domain.entity.LabelId
 import me.proton.core.user.domain.entity.AddressId
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.BodyOutput
 import uniffi.proton_mail_uniffi.MessageAddress
 
-fun ConversationId.toLocalConversationId(): LocalConversationId = this.id.toULong()
+fun ConversationId.toLocalConversationId(): LocalConversationId = LocalConversationId(this.id.toULong())
 
-fun MessageId.toLocalMessageId(): LocalMessageId = this.id.toULong()
+fun MessageId.toLocalMessageId(): LocalMessageId = LocalMessageId(this.id.toULong())
 
-fun LocalMessageId.toMessageId(): MessageId = MessageId(this.toString())
+fun LocalMessageId.toMessageId(): MessageId = MessageId(this.value.toString())
+
+fun LocalConversationId.toConversationId(): ConversationId = ConversationId(this.value.toString())
+
+fun LocalAddressId.toAddressId(): AddressId = AddressId(this.value.toString())
 
 fun LocalMessageMetadata.toMessage(): Message {
     return Message(
         userId = FAKE_USER_ID,
-        messageId = MessageId(this.localId.toString()),
-        conversationId = ConversationId(this.localConversationId.toString()),
+        messageId = this.id.toMessageId(),
+        conversationId = this.conversationId.toConversationId(),
         time = this.time.toLong(),
         size = this.size.toLong(),
         order = this.displayOrder.toLong(),
-        labelIds = this.customLabels.map { LabelId(it.localId.toString()) },
+        labelIds = this.customLabels.map { it.id.toLabelId() },
         subject = this.subject,
         unread = this.unread,
         sender = this.sender.toParticipant(),
-        toList = this.toList.value.map { it.toRecipient() },
-        ccList = this.ccList.value.map { it.toRecipient() },
-        bccList = this.bccList.value.map { it.toRecipient() },
+        toList = this.toList.map { it.toRecipient() },
+        ccList = this.ccList.map { it.toRecipient() },
+        bccList = this.bccList.map { it.toRecipient() },
         expirationTime = this.expirationTime.toLong(),
         isReplied = this.isReplied,
         isRepliedAll = this.isRepliedAll,
         isForwarded = this.isForwarded,
-        addressId = AddressId(this.addressId.toString()),
+        addressId = this.addressId.toAddressId(),
         numAttachments = this.numAttachments.toInt(),
         flags = this.flags.value.toLong(),
         attachmentCount = AttachmentCount(this.numAttachments.toInt()),
@@ -113,7 +118,7 @@ fun BodyOutput.toMessageBody(messageId: MessageId, mimeType: LocalMimeType): Mes
         body = this.body,
         header = "",
         attachments = emptyList(),
-        mimeType = LocalMimeType.TEXT_PLAIN.toAndroidMimeType(),
+        mimeType = mimeType.toAndroidMimeType(),
         spamScore = "",
         replyTo = Recipient("", ""),
         replyTos = emptyList(),

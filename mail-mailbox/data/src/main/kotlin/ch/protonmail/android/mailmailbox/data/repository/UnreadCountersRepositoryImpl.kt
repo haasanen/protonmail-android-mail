@@ -40,8 +40,7 @@ class UnreadCountersRepositoryImpl @Inject constructor(
         labelDataSource.observeMessageFolders(userId)
     ) { system, labels, folders ->
         (system + labels + folders).map { localLabel: LocalLabel ->
-            // Needs fixing once rust exposes a unified "counter" taking care of view mode internally
-            UnreadCounter(localLabel.localId.toLabelId(), localLabel.unreadMsg.toInt())
+            UnreadCounter(localLabel.id.toLabelId(), localLabel.unread.toInt())
         }
 
     }

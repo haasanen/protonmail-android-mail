@@ -24,7 +24,7 @@ import ch.protonmail.android.mailmessage.data.MessageRustCoroutineScope
 import ch.protonmail.android.mailmessage.data.usecase.CreateRustMessagesWatcher
 import ch.protonmail.android.mailmessage.domain.paging.RustDataSourceId
 import ch.protonmail.android.mailmessage.domain.paging.RustInvalidationTracker
-import ch.protonmail.android.mailsession.domain.repository.MailSessionRepository
+import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -38,7 +38,7 @@ import uniffi.proton_mail_uniffi.WatchedMessages
 import javax.inject.Inject
 
 class RustMessageQueryImpl @Inject constructor(
-    private val mailSessionRepository: MailSessionRepository,
+    private val userSessionRepository: UserSessionRepository,
     private val invalidationTracker: RustInvalidationTracker,
     private val createRustMessagesWatcher: CreateRustMessagesWatcher,
     private val rustMailbox: RustMailbox,
@@ -68,13 +68,17 @@ class RustMessageQueryImpl @Inject constructor(
 
     override fun observeMessages(userId: UserId, labelId: LocalLabelId): Flow<List<LocalMessageMetadata>> {
         coroutineScope.launch {
-            val mailSession = mailSessionRepository.getMailSession()
+            val session = userSessionRepository.getUserSession(userId)
+            if (session == null) {
+                Timber.e("rust-message: trying to load message with a null session")
+                return@launch
+            }
             Timber.v("rust-message: got MailSession instance to watch messages for $userId")
             rustMailbox.switchToMailbox(userId, labelId)
             Timber.v("rust-message: switching mailbox to $labelId if needed...")
 
             destroy()
-            messagesWatcher = createRustMessagesWatcher(mailSession, labelId, messagesUpdatedCallback)
+            messagesWatcher = createRustMessagesWatcher(session, labelId, messagesUpdatedCallback)
             mutableMessageStatusFlow.value = messagesWatcher?.messages
         }
 

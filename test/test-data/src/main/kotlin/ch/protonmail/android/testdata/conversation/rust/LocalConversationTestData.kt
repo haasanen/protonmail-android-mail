@@ -21,11 +21,11 @@ package ch.protonmail.android.testdata.conversation.rust
 import ch.protonmail.android.mailcommon.domain.mapper.LocalAttachmentMetadata
 import ch.protonmail.android.mailcommon.domain.mapper.LocalConversation
 import ch.protonmail.android.mailcommon.domain.mapper.LocalConversationId
+import ch.protonmail.android.mailcommon.domain.mapper.LocalLabelId
 import uniffi.proton_mail_uniffi.AvatarInformation
 import uniffi.proton_mail_uniffi.CustomLabel
 import uniffi.proton_mail_uniffi.LabelColor
 import uniffi.proton_mail_uniffi.MessageAddress
-import uniffi.proton_mail_uniffi.MessageAddresses
 
 object LocalConversationTestData {
     const val RAW_SUBJECT = "Conversation Subject"
@@ -87,7 +87,7 @@ object LocalConversationTestData {
     )
 
     val multipleRecipientsConversation = buildConversation(
-        id = RAW_CONVERSATION_ID,
+        id = LocalConversationId(RAW_CONVERSATION_ID),
         subject = "Multiple recipients conversation",
         senders = listOf(sender),
         recipients = listOf(recipient1, recipient2),
@@ -95,77 +95,77 @@ object LocalConversationTestData {
     )
 
     val trashedConversation = buildConversation(
-        id = RAW_CONVERSATION_ID,
+        id = LocalConversationId(RAW_CONVERSATION_ID),
         subject = "Trashed conversation",
         senders = listOf(sender),
         recipients = listOf(recipient1),
-        labels = listOf(CustomLabel(2uL, "Trash", LabelColor("red"))),
+        labels = listOf(CustomLabel(LocalLabelId(2uL), "Trash", LabelColor("red"))),
         time = 1667924198uL
     )
 
     val spamConversation = buildConversation(
-        id = RAW_CONVERSATION_ID,
+        id = LocalConversationId(RAW_CONVERSATION_ID),
         subject = RAW_SUBJECT,
         senders = listOf(sender),
         recipients = listOf(recipient1),
-        labels = listOf(CustomLabel(4uL, "Spam", LabelColor("yellow"))),
+        labels = listOf(CustomLabel(LocalLabelId(4uL), "Spam", LabelColor("yellow"))),
         time = 1667924198uL
     )
 
     val spamConversationWithMultipleRecipients = buildConversation(
-        id = RAW_CONVERSATION_ID,
+        id = LocalConversationId(RAW_CONVERSATION_ID),
         subject = RAW_SUBJECT,
         senders = listOf(sender),
         recipients = listOf(recipient1),
-        labels = listOf(CustomLabel(4uL, "Spam", LabelColor("yellow"))),
+        labels = listOf(CustomLabel(LocalLabelId(4uL), "Spam", LabelColor("yellow"))),
         time = 1667924198uL
     )
 
     val starredConversation = buildConversation(
-        id = RAW_CONVERSATION_ID,
+        id = LocalConversationId(RAW_CONVERSATION_ID),
         subject = RAW_SUBJECT,
         senders = listOf(sender),
         recipients = listOf(recipient1),
         labels = listOf(
-            CustomLabel(1uL, "Inbox", LabelColor("green")),
-            CustomLabel(5uL, "Starred", LabelColor("yellow"))
+            CustomLabel(LocalLabelId(1uL), "Inbox", LabelColor("green")),
+            CustomLabel(LocalLabelId(5uL), "Starred", LabelColor("yellow"))
         ),
         time = 1667924198uL
     )
 
     val starredConversationsWithCustomLabel = listOf(
         buildConversation(
-            id = 123uL,
+            id = LocalLabelId(123uL),
             subject = "Conversation 123",
             senders = listOf(sender),
             recipients = listOf(recipient1),
             labels = listOf(
-                CustomLabel(1uL, "Inbox", LabelColor("green")),
-                CustomLabel(5uL, "Starred", LabelColor("yellow")),
-                CustomLabel(11uL, "Custom", LabelColor("blue"))
+                CustomLabel(LocalLabelId(1uL), "Inbox", LabelColor("green")),
+                CustomLabel(LocalLabelId(5uL), "Starred", LabelColor("yellow")),
+                CustomLabel(LocalLabelId(11uL), "Custom", LabelColor("blue"))
             ),
             time = 1667924198uL
         ),
         buildConversation(
-            id = 124uL,
+            id = LocalConversationId(124uL),
             subject = "Conversation 124",
             senders = listOf(sender),
             recipients = listOf(recipient2),
             labels = listOf(
-                CustomLabel(1uL, "Inbox", LabelColor("green")),
-                CustomLabel(5uL, "Starred", LabelColor("yellow")),
-                CustomLabel(11uL, "Custom", LabelColor("blue"))
+                CustomLabel(LocalLabelId(1uL), "Inbox", LabelColor("green")),
+                CustomLabel(LocalLabelId(5uL), "Starred", LabelColor("yellow")),
+                CustomLabel(LocalLabelId(11uL), "Custom", LabelColor("blue"))
             ),
             time = 1667924198uL
         ),
         buildConversation(
-            id = 125uL,
+            id = LocalConversationId(125uL),
             subject = "Conversation 125",
             senders = listOf(sender),
             recipients = listOf(recipient3),
             labels = listOf(
-                CustomLabel(1uL, "Inbox", LabelColor("green")),
-                CustomLabel(5uL, "Starred", LabelColor("yellow"))
+                CustomLabel(LocalLabelId(1uL), "Inbox", LabelColor("green")),
+                CustomLabel(LocalLabelId(5uL), "Starred", LabelColor("yellow"))
             ),
             time = 1667924198uL
         )
@@ -176,7 +176,7 @@ object LocalConversationTestData {
         subject: String,
         senders: List<MessageAddress>,
         recipients: List<MessageAddress>,
-        labels: List<CustomLabel> = listOf(CustomLabel(1uL, "Inbox", LabelColor("green"))),
+        labels: List<CustomLabel> = listOf(CustomLabel(LocalLabelId(1uL), "Inbox", LabelColor("green"))),
         time: ULong,
         size: ULong = 0uL,
         expirationTime: ULong = 0uL,
@@ -189,11 +189,11 @@ object LocalConversationTestData {
         attachments: List<LocalAttachmentMetadata> = emptyList(),
         avatarInformation: AvatarInformation = AvatarInformation("A", "blue")
     ) = LocalConversation(
-        localId = id,
+        id = id,
         displayOrder = 1uL,
         subject = subject,
-        senders = MessageAddresses(senders),
-        recipients = MessageAddresses(recipients),
+        senders = senders,
+        recipients = recipients,
         numMessages = numMessages,
         numUnread = numUnread,
         numAttachments = numAttachments,
@@ -204,6 +204,7 @@ object LocalConversationTestData {
         isStarred = starred,
         displaySnoozeReminder = false,
         exclusiveLocation = null,
+        avatar = avatarInformation,
         attachmentsMetadata = attachments
     )
 }

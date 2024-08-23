@@ -19,9 +19,10 @@
 package ch.protonmail.android.mailconversation.data.local
 
 import ch.protonmail.android.mailcommon.domain.mapper.LocalConversation
+import ch.protonmail.android.mailcommon.domain.mapper.LocalLabelId
 import kotlinx.coroutines.flow.Flow
 import me.proton.core.domain.entity.UserId
 
 interface RustConversationsQuery {
-    fun observeConversationsByLabel(userId: UserId, labelId: ULong): Flow<List<LocalConversation>>
+    fun observeConversationsByLabel(userId: UserId, labelId: LocalLabelId): Flow<List<LocalConversation>>
 }

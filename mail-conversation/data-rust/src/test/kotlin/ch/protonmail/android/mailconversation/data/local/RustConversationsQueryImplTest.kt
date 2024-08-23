@@ -5,7 +5,7 @@ import ch.protonmail.android.mailcommon.domain.mapper.LocalLabelId
 import ch.protonmail.android.mailconversation.data.usecase.CreateRustConversationForLabelWatcher
 import ch.protonmail.android.mailmessage.data.local.RustMailbox
 import ch.protonmail.android.mailmessage.domain.paging.RustInvalidationTracker
-import ch.protonmail.android.mailsession.domain.repository.MailSessionRepository
+import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
 import ch.protonmail.android.testdata.conversation.rust.LocalConversationTestData
 import ch.protonmail.android.testdata.user.UserIdTestData
@@ -20,7 +20,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import uniffi.proton_mail_uniffi.LiveQueryCallback
-import uniffi.proton_mail_uniffi.MailSession
+import uniffi.proton_mail_uniffi.MailUserSession
 import uniffi.proton_mail_uniffi.WatchedConversations
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -37,14 +37,14 @@ class RustConversationsQueryImplTest {
     )
 
     private val rustMailbox: RustMailbox = mockk()
-    private val mailSessionRepository = mockk<MailSessionRepository>()
+    private val userSessionRepository = mockk<UserSessionRepository>()
     private val createRustConversationForLabelWatcher = mockk<CreateRustConversationForLabelWatcher>()
     private val invalidationTracker: RustInvalidationTracker = mockk {
         every { notifyInvalidation(any()) } just Runs
     }
 
     private val rustConversationMessageQuery = RustConversationsQueryImpl(
-        mailSessionRepository,
+        userSessionRepository,
         invalidationTracker,
         createRustConversationForLabelWatcher,
         rustMailbox,
@@ -55,9 +55,14 @@ class RustConversationsQueryImplTest {
     fun `switches mailbox to the current label id when observe is called`() {
         // Given
         val userId = UserIdTestData.userId
-        val mailSession = mockk<MailSession>()
-        val labelId: LocalLabelId = 1uL
-        coEvery { mailSessionRepository.getMailSession() } returns mailSession
+        val mailSession = mockk<MailUserSession>()
+        val labelId = LocalLabelId(1uL)
+        val mockWatcher = mockk<WatchedConversations> {
+            coEvery { this@mockk.conversations } returns expectedConversations
+        }
+        coEvery { userSessionRepository.getUserSession(userId) } returns mailSession
+        coEvery { rustMailbox.switchToMailbox(userId, labelId) } just Runs
+        coEvery { createRustConversationForLabelWatcher(mailSession, labelId, any()) } returns mockWatcher
 
         // When
         rustConversationMessageQuery.observeConversationsByLabel(userId, labelId)
@@ -70,14 +75,14 @@ class RustConversationsQueryImplTest {
     fun `emits initial value from watcher when observe conversations watcher is initialised`() = runTest {
         // Given
         val userId = UserIdTestData.userId
-        val mailSession = mockk<MailSession>()
-        val labelId: LocalLabelId = 1uL
+        val mailSession = mockk<MailUserSession>()
+        val labelId = LocalLabelId(1uL)
         val mockWatcher = mockk<WatchedConversations> {
             coEvery { this@mockk.conversations } returns expectedConversations
         }
         val callbackSlot = slot<LiveQueryCallback>()
         coEvery { rustMailbox.switchToMailbox(userId, labelId) } just Runs
-        coEvery { mailSessionRepository.getMailSession() } returns mailSession
+        coEvery { userSessionRepository.getUserSession(userId) } returns mailSession
         coEvery {
             createRustConversationForLabelWatcher(mailSession, labelId, capture(callbackSlot))
         } returns mockWatcher

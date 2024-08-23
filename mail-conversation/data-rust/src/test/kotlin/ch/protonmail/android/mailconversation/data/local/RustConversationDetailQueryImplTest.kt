@@ -79,7 +79,7 @@ class RustConversationDetailQueryImplTest {
     fun `new conversation is emitted when mailbox live query callback is called`() = runTest {
         // Given
         val userId = UserIdTestData.userId
-        val conversationId: LocalConversationId = 1u
+        val conversationId = LocalConversationId(1u)
         val mailbox = mockk<Mailbox>()
         val callbackSlot = slot<LiveQueryCallback>()
         val expectedConversation = LocalConversationTestData.AugConversation

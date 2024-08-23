@@ -20,11 +20,12 @@ package ch.protonmail.android.mailconversation.data.local
 
 import ch.protonmail.android.mailcommon.domain.coroutines.AppScope
 import ch.protonmail.android.mailcommon.domain.mapper.LocalConversation
+import ch.protonmail.android.mailcommon.domain.mapper.LocalLabelId
 import ch.protonmail.android.mailconversation.data.usecase.CreateRustConversationForLabelWatcher
 import ch.protonmail.android.mailmessage.data.local.RustMailbox
 import ch.protonmail.android.mailmessage.domain.paging.RustDataSourceId
 import ch.protonmail.android.mailmessage.domain.paging.RustInvalidationTracker
-import ch.protonmail.android.mailsession.domain.repository.MailSessionRepository
+import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -38,7 +39,7 @@ import uniffi.proton_mail_uniffi.WatchedConversations
 import javax.inject.Inject
 
 class RustConversationsQueryImpl @Inject constructor(
-    private val mailSessionRepository: MailSessionRepository,
+    private val userSessionRepository: UserSessionRepository,
     private val invalidationTracker: RustInvalidationTracker,
     private val createRustConversationForLabelWatcher: CreateRustConversationForLabelWatcher,
     private val rustMailbox: RustMailbox,
@@ -68,12 +69,16 @@ class RustConversationsQueryImpl @Inject constructor(
         }
     }
 
-    override fun observeConversationsByLabel(userId: UserId, labelId: ULong): Flow<List<LocalConversation>> {
+    override fun observeConversationsByLabel(userId: UserId, labelId: LocalLabelId): Flow<List<LocalConversation>> {
         coroutineScope.launch {
             destroy()
             rustMailbox.switchToMailbox(userId, labelId)
 
-            val session = mailSessionRepository.getMailSession()
+            val session = userSessionRepository.getUserSession(userId)
+            if (session == null) {
+                Timber.e("rust-conversation-query: trying to load message with a null session")
+                return@launch
+            }
             conversationsWatcher = createRustConversationForLabelWatcher(session, labelId, conversationsUpdatedCallback)
 
             conversationsMutableStatusFlow.value = conversationsWatcher?.conversations

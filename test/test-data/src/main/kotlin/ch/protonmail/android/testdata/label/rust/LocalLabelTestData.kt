@@ -18,93 +18,74 @@
 
 package ch.protonmail.android.testdata.label.rust
 
-import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.domain.mapper.LocalLabel
+import ch.protonmail.android.mailcommon.domain.mapper.LocalLabelId
 import ch.protonmail.android.mailcommon.domain.mapper.LocalSystemLabel
 import uniffi.proton_mail_uniffi.LabelColor
 import uniffi.proton_mail_uniffi.LabelDescription
 
 object LocalLabelTestData {
     val localSystemLabelWithCount = LocalLabel(
-        localId = 1.toULong(),
+        id = LocalLabelId(1uL),
         name = "Inbox",
         path = "path",
         color = LabelColor("color"),
         labelDescription = LabelDescription.System(LocalSystemLabel.INBOX),
         displayOrder = 1.toUInt(),
-        initializedMsg = false,
-        initializedConv = false,
-        localParentId = 3.toULong(),
+        parentId = LocalLabelId(2uL),
         display = false,
         expanded = false,
         notify = false,
         sticky = false,
-        totalConv = 2.toULong(),
-        totalMsg = 0.toULong(),
-        unreadConv = 0.toULong(),
-        unreadMsg = 0.toULong()
+        total = 2.toULong(),
+        unread = 0.toULong()
     )
 
     val localMessageLabelWithCount = LocalLabel(
-        localId = 100.toULong(),
+        id = LocalLabelId(100uL),
         name = "CustomMessageLabel",
         path = "path",
         color = LabelColor("color"),
         labelDescription = LabelDescription.Label,
         displayOrder = 1.toUInt(),
-        initializedMsg = false,
-        initializedConv = false,
-        localParentId = 3.toULong(),
+        parentId = LocalLabelId(3uL),
         display = false,
         expanded = false,
         notify = false,
         sticky = false,
-        totalConv = 2.toULong(),
-        totalMsg = 0.toULong(),
-        unreadConv = 0.toULong(),
-        unreadMsg = 0.toULong()
+        total = 2.toULong(),
+        unread = 0.toULong()
     )
 
     val localMessageFolderWithCount = LocalLabel(
-        localId = 200.toULong(),
+        id = LocalLabelId(200uL),
         name = "CustomMessageFolder",
         path = "path",
         color = LabelColor("color"),
         labelDescription = LabelDescription.Folder,
         displayOrder = 1.toUInt(),
-        initializedMsg = false,
-        initializedConv = false,
-        localParentId = 3.toULong(),
+        parentId = LocalLabelId(3uL),
         display = false,
         expanded = false,
         notify = false,
         sticky = false,
-        totalConv = 2.toULong(),
-        totalMsg = 0.toULong(),
-        unreadConv = 0.toULong(),
-        unreadMsg = 7.toULong()
+        total = 2.toULong(),
+        unread = 7.toULong()
     )
 
-    @MissingRustApi
-    // Not valid anymore since rust doesn't provide a remote Id in the new API.
-    // it will expose an enum in the next version which we can use in a similar way
     fun buildSystem(localSystemLabel: LocalSystemLabel) = LocalLabel(
-        localId = 1000.toULong(),
-        name = "CustomMessageFolder",
+        id = LocalLabelId(1000.toULong()),
+        name = "SomeSystemFolder",
         path = "path",
         color = LabelColor("color"),
         labelDescription = LabelDescription.System(localSystemLabel),
         displayOrder = 1.toUInt(),
-        initializedMsg = false,
-        initializedConv = false,
-        localParentId = 3.toULong(),
+        parentId = LocalLabelId(3uL),
         display = false,
         expanded = false,
         notify = false,
         sticky = false,
-        totalConv = 2.toULong(),
-        totalMsg = 0.toULong(),
-        unreadConv = 0.toULong(),
-        unreadMsg = 0.toULong()
+        total = 2.toULong(),
+        unread = 7.toULong()
     )
 }

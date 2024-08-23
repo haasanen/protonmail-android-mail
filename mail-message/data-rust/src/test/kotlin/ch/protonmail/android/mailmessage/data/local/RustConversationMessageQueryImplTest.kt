@@ -20,6 +20,7 @@ package ch.protonmail.android.mailmessage.data.local
 
 import app.cash.turbine.test
 import ch.protonmail.android.mailcommon.domain.mapper.LocalConversationId
+import ch.protonmail.android.mailcommon.domain.mapper.LocalMessageId
 import ch.protonmail.android.mailmessage.data.model.LocalConversationMessages
 import ch.protonmail.android.mailmessage.data.usecase.CreateRustConversationMessagesWatcher
 import ch.protonmail.android.mailmessage.domain.paging.RustInvalidationTracker
@@ -76,10 +77,12 @@ class RustConversationMessageQueryImplTest {
     @Test
     fun `initializes the watcher and emits initial items when called`() = runTest {
         // Given
-        val conversationId: LocalConversationId = 1uL
+        val conversationId = LocalConversationId(1uL)
+        val messageIdToOpen = LocalMessageId(1uL)
         val mailboxCallbackSlot = slot<LiveQueryCallback>()
         val conversationMessagesWatcher = mockk<WatchedConversation> {
             coEvery { this@mockk.messages } returns expectedMessages
+            coEvery { this@mockk.messageIdToOpen } returns messageIdToOpen
         }
         coEvery {
             createRustConversationMessagesWatcher.invoke(mailbox, any(), capture(mailboxCallbackSlot))
@@ -91,7 +94,7 @@ class RustConversationMessageQueryImplTest {
             // Then
             verify { rustMailbox.observeConversationMailbox() }
             coVerify { createRustConversationMessagesWatcher(mailbox, conversationId, any()) }
-            val expected = LocalConversationMessages(1uL, expectedMessages)
+            val expected = LocalConversationMessages(messageIdToOpen, expectedMessages)
             assertEquals(expected, awaitItem())
         }
     }
@@ -99,14 +102,16 @@ class RustConversationMessageQueryImplTest {
     @Test
     fun `observeConversationMessages emits new message list when callback is called`() = runTest {
         // Given
-        val conversationId: LocalConversationId = 1uL
+        val conversationId = LocalConversationId(1uL)
+        val messageIdToOpen = LocalMessageIdSample.AugWeatherForecast
         val localConversationMessages = LocalConversationMessages(
-            messageIdToOpen = LocalMessageIdSample.AugWeatherForecast,
+            messageIdToOpen = messageIdToOpen,
             messages = expectedMessages
         )
         val mailboxCallbackSlot = slot<LiveQueryCallback>()
         val conversationMessagesWatcher = mockk<WatchedConversation> {
             coEvery { this@mockk.messages } returns expectedMessages
+            coEvery { this@mockk.messageIdToOpen } returns messageIdToOpen
         }
         coEvery {
             createRustConversationMessagesWatcher.invoke(mailbox, any(), capture(mailboxCallbackSlot))

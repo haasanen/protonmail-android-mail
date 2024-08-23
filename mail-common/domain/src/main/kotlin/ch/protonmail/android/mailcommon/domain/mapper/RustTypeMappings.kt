@@ -24,6 +24,7 @@ import uniffi.proton_mail_uniffi.ComposerMode
 import uniffi.proton_mail_uniffi.Conversation
 import uniffi.proton_mail_uniffi.CustomLabel
 import uniffi.proton_mail_uniffi.DecryptedMessage
+import uniffi.proton_mail_uniffi.Id
 import uniffi.proton_mail_uniffi.Label
 import uniffi.proton_mail_uniffi.LabelType
 import uniffi.proton_mail_uniffi.MailSettings
@@ -39,13 +40,14 @@ import uniffi.proton_mail_uniffi.SystemLabel
 import uniffi.proton_mail_uniffi.ViewLayout
 import uniffi.proton_mail_uniffi.ViewMode
 
+typealias LocalUserId = String
 typealias LocalConversation = Conversation
-typealias LocalConversationId = ULong
-typealias LocalLabelId = ULong
+typealias LocalConversationId = Id
+typealias LocalLabelId = Id
 typealias LocalViewMode = ViewMode
 typealias LocalLabelType = LabelType
 typealias LocalLabel = Label
-typealias LocalMessageId = ULong
+typealias LocalMessageId = Id
 typealias LocalMessageMetadata = Message
 typealias LocalDecryptedMessage = DecryptedMessage
 typealias LocalAttachmentMetadata = AttachmentMetadata
@@ -62,3 +64,4 @@ typealias LocalSwipeAction = SwipeAction
 typealias LocalPgpScheme = PgpScheme
 typealias LocalComposerDirection = ComposerDirection
 typealias LocalSystemLabel = SystemLabel
+typealias LocalAddressId = Id

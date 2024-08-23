@@ -18,8 +18,10 @@
 
 package ch.protonmail.android.testdata.conversation.rust
 
+import ch.protonmail.android.mailcommon.domain.mapper.LocalConversationId
+
 object LocalConversationIdSample {
-    const val AugConversation = 1uL
-    const val SepConversation = 2uL
-    const val OctConversation = 3uL
+    val AugConversation = LocalConversationId(1uL)
+    val SepConversation = LocalConversationId(2uL)
+    val OctConversation = LocalConversationId(3uL)
 }

@@ -20,14 +20,14 @@ package ch.protonmail.android.mailmessage.data.usecase
 
 import ch.protonmail.android.mailcommon.domain.mapper.LocalLabelId
 import uniffi.proton_mail_uniffi.LiveQueryCallback
-import uniffi.proton_mail_uniffi.MailSession
+import uniffi.proton_mail_uniffi.MailUserSession
 import uniffi.proton_mail_uniffi.watchMessagesForLabel
 import javax.inject.Inject
 
 class CreateRustMessagesWatcher @Inject constructor() {
 
     suspend operator fun invoke(
-        session: MailSession,
+        session: MailUserSession,
         labelId: LocalLabelId,
         callback: LiveQueryCallback
     ) = watchMessagesForLabel(session, labelId, callback)

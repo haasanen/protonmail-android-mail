@@ -18,7 +18,7 @@
 
 package ch.protonmail.android.mailmessage.data.usecase
 
-import ch.protonmail.android.mailcommon.domain.mapper.LocalLabelId
+import ch.protonmail.android.mailcommon.domain.mapper.LocalConversationId
 import uniffi.proton_mail_uniffi.LiveQueryCallback
 import uniffi.proton_mail_uniffi.Mailbox
 import uniffi.proton_mail_uniffi.watchConversation
@@ -28,7 +28,7 @@ class CreateRustConversationMessagesWatcher @Inject constructor() {
 
     suspend operator fun invoke(
         mailbox: Mailbox,
-        labelId: LocalLabelId,
+        conversationId: LocalConversationId,
         callback: LiveQueryCallback
-    ) = watchConversation(mailbox, labelId, callback)
+    ) = watchConversation(mailbox, conversationId, callback)
 }

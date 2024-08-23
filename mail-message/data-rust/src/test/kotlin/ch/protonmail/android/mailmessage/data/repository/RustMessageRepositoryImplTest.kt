@@ -22,20 +22,20 @@ import app.cash.turbine.test
 import arrow.core.getOrElse
 import arrow.core.left
 import ch.protonmail.android.mailcommon.domain.mapper.LocalMimeType
-import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
 import ch.protonmail.android.maillabel.domain.SelectedMailLabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.mailmessage.data.local.RustMessageDataSource
+import ch.protonmail.android.mailmessage.data.mapper.toConversationId
 import ch.protonmail.android.mailmessage.data.mapper.toConversationMessagesWithMessageToOpen
 import ch.protonmail.android.mailmessage.data.mapper.toLocalConversationId
 import ch.protonmail.android.mailmessage.data.mapper.toLocalMessageId
 import ch.protonmail.android.mailmessage.data.mapper.toMessage
 import ch.protonmail.android.mailmessage.data.mapper.toMessageBody
+import ch.protonmail.android.mailmessage.data.mapper.toMessageId
 import ch.protonmail.android.mailmessage.data.model.LocalConversationMessages
-import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailpagination.domain.model.PageFilter
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.testdata.conversation.rust.LocalConversationIdSample
@@ -95,7 +95,7 @@ class RustMessageRepositoryImplTest {
     fun `observe cached message should return the local message`() = runTest {
         // Given
         val userId = UserIdTestData.userId
-        val messageId = MessageId(LocalMessageIdSample.AugWeatherForecast.toString())
+        val messageId = LocalMessageIdSample.AugWeatherForecast.toMessageId()
         val expectedMessage = LocalMessageTestData.AugWeatherForecast.toMessage()
         coEvery {
             rustMessageDataSource.getMessage(userId, messageId.toLocalMessageId())
@@ -117,7 +117,7 @@ class RustMessageRepositoryImplTest {
     fun `observe cached message should return DataError when no message not found`() = runTest {
         // Given
         val userId = UserIdTestData.userId
-        val messageId = MessageId(LocalMessageIdSample.AugWeatherForecast.toString())
+        val messageId = LocalMessageIdSample.AugWeatherForecast.toMessageId()
 
         coEvery { rustMessageDataSource.getMessage(userId, messageId.toLocalMessageId()) } returns null
 
@@ -137,9 +137,9 @@ class RustMessageRepositoryImplTest {
     fun `getMessageWithBody should return message with body`() = runTest {
         // Given
         val userId = UserIdTestData.userId
-        val messageId = MessageId(LocalMessageIdSample.AugWeatherForecast.toString())
+        val messageId = LocalMessageIdSample.AugWeatherForecast.toMessageId()
         val localMessage = LocalMessageTestData.AugWeatherForecast
-        val bodyOutput = BodyOutput("message body")
+        val bodyOutput = BodyOutput("message body", false, 0uL, 0uL)
         val localMimeType = LocalMimeType.TEXT_PLAIN
         val localMessageBody = mockk<uniffi.proton_mail_uniffi.DecryptedMessage> {
             coEvery { body(any()) } returns bodyOutput
@@ -177,7 +177,7 @@ class RustMessageRepositoryImplTest {
     @Test
     fun `markRead should mark conversations as read`() = runTest {
         // Given
-        val messageIds = listOf(MessageId(LocalMessageIdSample.AugWeatherForecast.toString()))
+        val messageIds = listOf(LocalMessageIdSample.AugWeatherForecast.toMessageId())
         coEvery { rustMessageDataSource.markRead(userId, any()) } just Runs
 
         // When
@@ -191,7 +191,7 @@ class RustMessageRepositoryImplTest {
     @Test
     fun `markUnread should mark conversations as unread`() = runTest {
         // Given
-        val messageIds = listOf(MessageId(LocalMessageIdSample.AugWeatherForecast.toString()))
+        val messageIds = listOf(LocalMessageIdSample.AugWeatherForecast.toMessageId())
         coEvery { rustMessageDataSource.markUnread(userId, any()) } just Runs
 
         // When
@@ -206,7 +206,7 @@ class RustMessageRepositoryImplTest {
     fun `observeConversationMessages should return list of messages`() = runTest {
         // Given
         val userId = UserIdTestData.userId
-        val conversationId = ConversationId(LocalConversationIdSample.AugConversation.toString())
+        val conversationId = LocalConversationIdSample.AugConversation.toConversationId()
         val localMessages = listOf(
             LocalMessageTestData.AugWeatherForecast,
             LocalMessageTestData.SepWeatherForecast,
@@ -242,7 +242,7 @@ class RustMessageRepositoryImplTest {
     fun `observeCachedMessages should return DataError when no messages found`() = runTest {
         // Given
         val userId = UserIdTestData.userId
-        val conversationId = ConversationId(LocalConversationIdSample.AugConversation.toString())
+        val conversationId = LocalConversationIdSample.AugConversation.toConversationId()
         val expectedError = DataError.Local.NoDataCached.left()
 
         coEvery {

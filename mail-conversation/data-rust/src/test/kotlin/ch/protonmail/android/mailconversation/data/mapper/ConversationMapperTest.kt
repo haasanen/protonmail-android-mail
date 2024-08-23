@@ -21,6 +21,7 @@ package ch.protonmail.android.mailconversation.data.mapper
 import ch.protonmail.android.mailcommon.domain.mapper.LocalAttachmentMetadata
 import ch.protonmail.android.mailcommon.domain.mapper.LocalConversation
 import ch.protonmail.android.mailcommon.domain.mapper.LocalConversationId
+import ch.protonmail.android.mailcommon.domain.mapper.LocalLabelId
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.FAKE_USER_ID
 import ch.protonmail.android.mailmessage.data.mapper.toParticipant
@@ -31,9 +32,9 @@ import uniffi.proton_mail_uniffi.AttachmentMimeType
 import uniffi.proton_mail_uniffi.AvatarInformation
 import uniffi.proton_mail_uniffi.CustomLabel
 import uniffi.proton_mail_uniffi.Disposition
+import uniffi.proton_mail_uniffi.Id
 import uniffi.proton_mail_uniffi.LabelColor
 import uniffi.proton_mail_uniffi.MessageAddress
-import uniffi.proton_mail_uniffi.MessageAddresses
 import uniffi.proton_mail_uniffi.MimeTypeCategory
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -43,7 +44,7 @@ class ConversationMapperTest {
     @Test
     fun `local conversation to conversation should convert correctly`() {
         // Given
-        val id: LocalConversationId = 123uL
+        val id = LocalConversationId(123uL)
         val order = 1uL
         val subject = "Test Subject"
         val senders = listOf(
@@ -61,12 +62,12 @@ class ConversationMapperTest {
         val size = 1024uL
         val time = 1625250000000uL
         val labels = listOf(
-            CustomLabel(1uL, "Test Label", LabelColor("0xFF0000"))
+            CustomLabel(LocalLabelId(1uL), "Test Label", LabelColor("0xFF0000"))
         )
         val starred = false
         val attachments = listOf(
             LocalAttachmentMetadata(
-                localId = 123uL,
+                id = Id(123uL),
                 name = "file.txt",
                 mimeType = AttachmentMimeType("text/plain", MimeTypeCategory.TEXT),
                 size = 123uL,
@@ -76,11 +77,11 @@ class ConversationMapperTest {
         val avatarInformation = AvatarInformation("A", "blue")
 
         val localConversation = LocalConversation(
-            localId = id,
+            id = id,
             displayOrder = order,
             subject = subject,
-            senders = MessageAddresses(senders),
-            recipients = MessageAddresses(recipients),
+            senders = senders,
+            recipients = recipients,
             numMessages = numMessages,
             numUnread = numUnread,
             numAttachments = numAttachments,
@@ -91,8 +92,8 @@ class ConversationMapperTest {
             isStarred = starred,
             attachmentsMetadata = attachments,
             displaySnoozeReminder = false,
-            exclusiveLocation = null
-//            avatarInformation = avatarInformation
+            exclusiveLocation = null,
+            avatar = avatarInformation
         )
 
         // When
@@ -129,7 +130,7 @@ class ConversationMapperTest {
     @Test
     fun `LocalConversation to ConversationWithContext should convert correctly`() {
         // Given
-        val id: LocalConversationId = 123uL
+        val id = LocalConversationId(123uL)
         val order = 1uL
         val subject = "Test Subject"
         val senders = listOf(
@@ -147,12 +148,12 @@ class ConversationMapperTest {
         val size = 1024uL
         val time = 1625250000000uL
         val labels = listOf(
-            CustomLabel(1uL, "Test Label", LabelColor("0xFF0000"))
+            CustomLabel(LocalLabelId(1uL), "Test Label", LabelColor("0xFF0000"))
         )
         val starred = false
         val attachments = listOf(
             LocalAttachmentMetadata(
-                localId = 123uL,
+                id = Id(123uL),
                 name = "file.txt",
                 mimeType = AttachmentMimeType("text/plain", MimeTypeCategory.TEXT),
                 size = 123uL,
@@ -163,11 +164,11 @@ class ConversationMapperTest {
         val contextLabelId = LabelId("contextLabelId")
 
         val localConversation = LocalConversation(
-            localId = id,
+            id = id,
             displayOrder = order,
             subject = subject,
-            senders = MessageAddresses(senders),
-            recipients = MessageAddresses(recipients),
+            senders = senders,
+            recipients = recipients,
             numMessages = numMessages,
             numUnread = numUnread,
             numAttachments = numAttachments,
@@ -178,8 +179,8 @@ class ConversationMapperTest {
             isStarred = starred,
             attachmentsMetadata = attachments,
             displaySnoozeReminder = false,
-            exclusiveLocation = null
-//            avatarInformation = avatarInformation
+            exclusiveLocation = null,
+            avatar = avatarInformation
         )
 
         // When
@@ -219,7 +220,7 @@ class ConversationMapperTest {
     fun `CustomLabel to ConversationLabel should convert correctly`() {
         // Given
         val customLabel = CustomLabel(
-            localId = 1uL,
+            id = LocalLabelId(1uL),
             name = "Test Label",
             color = LabelColor("0xFF0000")
         )
@@ -242,7 +243,7 @@ class ConversationMapperTest {
 
         // Then
         assertEquals(conversationId, conversationLabel.conversationId)
-        assertEquals(LabelId(customLabel.localId.toString()), conversationLabel.labelId)
+        assertEquals(LabelId(customLabel.id.value.toString()), conversationLabel.labelId)
         assertEquals(contextNumMessages, conversationLabel.contextNumMessages)
         assertEquals(contextNumUnread, conversationLabel.contextNumUnread)
         assertEquals(contextNumAttachments, conversationLabel.contextNumAttachments)

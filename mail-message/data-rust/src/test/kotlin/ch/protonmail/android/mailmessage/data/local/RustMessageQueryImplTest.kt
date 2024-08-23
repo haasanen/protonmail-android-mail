@@ -20,9 +20,10 @@ package ch.protonmail.android.mailmessage.data.local
 
 import app.cash.turbine.test
 import ch.protonmail.android.mailcommon.domain.mapper.LocalLabelId
+import ch.protonmail.android.mailcommon.domain.mapper.LocalMessageId
 import ch.protonmail.android.mailmessage.data.usecase.CreateRustMessagesWatcher
 import ch.protonmail.android.mailmessage.domain.paging.RustInvalidationTracker
-import ch.protonmail.android.mailsession.domain.repository.MailSessionRepository
+import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
 import ch.protonmail.android.testdata.message.rust.LocalMessageTestData
 import ch.protonmail.android.testdata.user.UserIdTestData
@@ -39,7 +40,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import uniffi.proton_mail_uniffi.LiveQueryCallback
-import uniffi.proton_mail_uniffi.MailSession
+import uniffi.proton_mail_uniffi.MailUserSession
 import uniffi.proton_mail_uniffi.WatchedMessages
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -49,7 +50,6 @@ class RustMessageQueryImplTest {
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
     private val testCoroutineScope = CoroutineScope(mainDispatcherRule.testDispatcher)
-    private val mailSession = mockk<MailSession>()
 
     private val expectedMessages = listOf(
         LocalMessageTestData.AugWeatherForecast,
@@ -61,16 +61,14 @@ class RustMessageQueryImplTest {
 
     private val rustMailbox: RustMailbox = mockk()
     private val createRustMessagesWatcher: CreateRustMessagesWatcher = mockk()
-    private val mailSessionRepository: MailSessionRepository = mockk {
-        coEvery { this@mockk.getMailSession() } returns mailSession
-    }
+    private val userSessionRepository = mockk<UserSessionRepository>()
 
     private val invalidationTracker: RustInvalidationTracker = mockk {
         every { notifyInvalidation(any()) } just Runs
     }
 
     private val rustMessageQuery = RustMessageQueryImpl(
-        mailSessionRepository,
+        userSessionRepository,
         invalidationTracker,
         createRustMessagesWatcher,
         rustMailbox,
@@ -82,11 +80,13 @@ class RustMessageQueryImplTest {
         // Given
         val mailboxCallbackSlot = slot<LiveQueryCallback>()
         val userId = UserIdTestData.userId
-        val labelId: LocalLabelId = 1u
+        val labelId = LocalLabelId(1u)
+        val userSession = mockk<MailUserSession>()
+        coEvery { userSessionRepository.getUserSession(userId) } returns userSession
         every { messagesWatcher.messages } returns expectedMessages
         coEvery {
             createRustMessagesWatcher.invoke(
-                mailSession,
+                userSession,
                 labelId,
                 capture(mailboxCallbackSlot)
             )
@@ -97,7 +97,7 @@ class RustMessageQueryImplTest {
         rustMessageQuery.observeMessages(userId, labelId).test {
             // Then
             assertEquals(expectedMessages, awaitItem())
-            coVerify { createRustMessagesWatcher(mailSession, labelId, mailboxCallbackSlot.captured) }
+            coVerify { createRustMessagesWatcher(userSession, labelId, mailboxCallbackSlot.captured) }
         }
     }
 
@@ -105,10 +105,12 @@ class RustMessageQueryImplTest {
     fun `observing messages with labelId switches mailbox if needed`() = runTest {
         // Given
         val userId = UserIdTestData.userId
-        val labelId: LocalLabelId = 1u
+        val labelId = LocalLabelId(1u)
+        val userSession = mockk<MailUserSession>()
+        coEvery { userSessionRepository.getUserSession(userId) } returns userSession
         coEvery { rustMailbox.switchToMailbox(userId, labelId) } just Runs
         every { messagesWatcher.messages } returns expectedMessages
-        coEvery { createRustMessagesWatcher.invoke(mailSession, labelId, any()) } returns messagesWatcher
+        coEvery { createRustMessagesWatcher.invoke(userSession, labelId, any()) } returns messagesWatcher
 
         // When
         rustMessageQuery.observeMessages(userId, labelId).test {
@@ -125,12 +127,14 @@ class RustMessageQueryImplTest {
         // Given
         val userId = UserIdTestData.userId
         val mailboxCallbackSlot = slot<LiveQueryCallback>()
-        val labelId: LocalLabelId = 1u
+        val labelId = LocalLabelId(1u)
+        val userSession = mockk<MailUserSession>()
+        coEvery { userSessionRepository.getUserSession(userId) } returns userSession
         coEvery { rustMailbox.switchToMailbox(userId, labelId) } just Runs
         every { messagesWatcher.messages } returns emptyList()
         coEvery {
             createRustMessagesWatcher.invoke(
-                mailSession,
+                userSession,
                 labelId,
                 capture(mailboxCallbackSlot)
             )
@@ -138,7 +142,7 @@ class RustMessageQueryImplTest {
 
         rustMessageQuery.observeMessages(userId, labelId).test {
             skipItems(1) // first emission
-            val updatedMessages = expectedMessages.onEach { it.localId = Math.random().toULong() }
+            val updatedMessages = expectedMessages.onEach { it.id = LocalMessageId(Math.random().toULong()) }
             every { messagesWatcher.messages } returns updatedMessages
             // When
             mailboxCallbackSlot.captured.onUpdate()

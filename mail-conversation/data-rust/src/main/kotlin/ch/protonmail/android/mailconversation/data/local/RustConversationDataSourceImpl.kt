@@ -34,16 +34,17 @@ import kotlinx.coroutines.launch
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.MailSession
+import uniffi.proton_mail_uniffi.MailUserSession
 import uniffi.proton_mail_uniffi.Mailbox
 import uniffi.proton_mail_uniffi.MailboxException
 import uniffi.proton_mail_uniffi.applyLabelToConversations
+import uniffi.proton_mail_uniffi.markConversationsAsRead
 import uniffi.proton_mail_uniffi.markConversationsAsUnread
-import uniffi.proton_mail_uniffi.markConverstionsAsRead
 import uniffi.proton_mail_uniffi.removeLabelFromConversations
 import javax.inject.Inject
 
 class RustConversationDataSourceImpl @Inject constructor(
-    private val sessionManager: UserSessionRepository,
+    private val userSessionRepository: UserSessionRepository,
     private val mailSessionRepository: MailSessionRepository,
     private val rustMailbox: RustMailbox,
     private val rustConversationDetailQuery: RustConversationDetailQuery,
@@ -71,17 +72,17 @@ class RustConversationDataSourceImpl @Inject constructor(
     }
 
     override suspend fun markRead(userId: UserId, conversations: List<LocalConversationId>) {
-        executeMailSessionAction(
+        executeUserSessionAction(
             userId = userId,
-            action = { mailSession -> markConverstionsAsRead(mailSession, conversations) },
+            action = { userSession -> markConversationsAsRead(userSession, conversations) },
             actionName = "mark as read"
         )
     }
 
     override suspend fun markUnread(userId: UserId, conversations: List<LocalConversationId>) {
-        executeMailSessionAction(
+        executeUserSessionAction(
             userId = userId,
-            action = { mailSession -> markConversationsAsUnread(mailSession, conversations) },
+            action = { userSession -> markConversationsAsUnread(userSession, conversations) },
             actionName = "mark as unread"
         )
     }
@@ -108,15 +109,15 @@ class RustConversationDataSourceImpl @Inject constructor(
         labelsToBeRemoved: List<LocalLabelId>,
         labelsToBeAdded: List<LocalLabelId>
     ) {
-        executeMailSessionAction(
+        executeUserSessionAction(
             userId = userId,
-            action = { session ->
+            action = { userSession ->
                 labelsToBeRemoved.forEach { localLabelId ->
-                    removeLabelFromConversations(session, localLabelId, conversationIds)
+                    removeLabelFromConversations(userSession, localLabelId, conversationIds)
                 }
 
                 labelsToBeAdded.forEach { localLabelId ->
-                    applyLabelToConversations(session, localLabelId, conversationIds)
+                    applyLabelToConversations(userSession, localLabelId, conversationIds)
                 }
             },
             actionName = "relabel conversations"
@@ -143,6 +144,24 @@ class RustConversationDataSourceImpl @Inject constructor(
         rustConversationDetailQuery.disconnect()
     }
 
+    private suspend fun executeUserSessionAction(
+        userId: UserId,
+        action: suspend (MailUserSession) -> Unit,
+        actionName: String
+    ) {
+        val userSession = userSessionRepository.getUserSession(userId)
+        if (userSession == null) {
+            Timber.e("rust-conversation: Failed to perform $actionName, null user session")
+            return
+        }
+
+        try {
+            action(userSession)
+            executePendingActions(userId)
+        } catch (e: MailboxException) {
+            Timber.e(e, "rust-conversation: Failed to perform $actionName")
+        }
+    }
     private suspend fun executeMailboxAction(
         userId: UserId,
         action: suspend (Mailbox) -> Unit,
@@ -179,7 +198,7 @@ class RustConversationDataSourceImpl @Inject constructor(
 
     private fun executePendingActions(userId: UserId) {
         coroutineScope.launch {
-            sessionManager.getUserSession(userId)?.executePendingActions()
+            userSessionRepository.getUserSession(userId)?.executePendingActions()
         }
     }
 }

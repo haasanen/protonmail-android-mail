@@ -36,7 +36,6 @@ import uniffi.proton_mail_uniffi.NextMessageOnMove
 object LocalMailSettingsTestData {
 
     val mailSettings = LocalMailSettings(
-        localId = 1.toULong(),
         displayName = "displayName",
         signature = "Signature",
         theme = "theme",

@@ -25,12 +25,13 @@ import ch.protonmail.android.mailcommon.domain.model.FAKE_USER_ID
 import ch.protonmail.android.mailconversation.domain.entity.Conversation
 import ch.protonmail.android.mailconversation.domain.entity.ConversationLabel
 import ch.protonmail.android.mailconversation.domain.entity.ConversationWithContext
+import ch.protonmail.android.maillabel.data.mapper.toLabelId
 import ch.protonmail.android.mailmessage.data.mapper.toParticipant
 import ch.protonmail.android.mailmessage.domain.model.AttachmentCount
 import me.proton.core.label.domain.entity.LabelId
 import uniffi.proton_mail_uniffi.CustomLabel
 
-fun ConversationId.toLocalConversationId(): LocalConversationId = this.id.toULong()
+fun ConversationId.toLocalConversationId(): LocalConversationId = LocalConversationId(this.id.toULong())
 
 fun LocalConversation.toConversation(): Conversation {
     val numMessages = this.numMessages.toInt()
@@ -41,17 +42,17 @@ fun LocalConversation.toConversation(): Conversation {
 
     val labels = this.customLabels.map {
         it.toConversationLabel(
-            this.localId.toConversationId(), numMessages, numUnread, numAttachments, contextTime, contextSize
+            this.id.toConversationId(), numMessages, numUnread, numAttachments, contextTime, contextSize
         )
     }
 
     return Conversation(
-        conversationId = this.localId.toConversationId(),
+        conversationId = this.id.toConversationId(),
         userId = FAKE_USER_ID,
         order = this.displayOrder.toLong(),
         subject = this.subject,
-        senders = this.senders.value.map { it.toParticipant() },
-        recipients = this.recipients.value.map { it.toParticipant() },
+        senders = this.senders.map { it.toParticipant() },
+        recipients = this.recipients.map { it.toParticipant() },
         numMessages = this.numMessages.toInt(),
         numUnread = this.numUnread.toInt(),
         numAttachments = this.numAttachments.toInt(),
@@ -76,7 +77,7 @@ fun CustomLabel.toConversationLabel(
 ): ConversationLabel {
     return ConversationLabel(
         conversationId = conversationId,
-        labelId = LabelId(this.localId.toString()),
+        labelId = this.id.toLabelId(),
         contextNumMessages = contextNumMessages,
         contextNumUnread = contextNumUnread,
         contextNumAttachments = contextNumAttachments,

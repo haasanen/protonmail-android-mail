@@ -45,12 +45,12 @@ class RustMailboxImplTest {
     private val testCoroutineScope = CoroutineScope(mainDispatcherRule.testDispatcher)
 
     private val messageMailbox: Mailbox = mockk {
-        every { labelId() } returns 1u
+        every { labelId() } returns LocalLabelId(1u)
         every { viewMode() } returns LocalViewMode.MESSAGES
     }
 
     private val conversationMailbox: Mailbox = mockk {
-        every { labelId() } returns 1u
+        every { labelId() } returns LocalLabelId(1u)
         every { viewMode() } returns LocalViewMode.CONVERSATIONS
     }
 
@@ -67,7 +67,7 @@ class RustMailboxImplTest {
         // Given
         val userId = UserIdTestData.userId
         val mailUserSession = mockk<MailUserSession>()
-        val labelId: LocalLabelId = 1u
+        val labelId = LocalLabelId(1u)
         coEvery { userSessionRepository.getUserSession(userId) } returns mailUserSession
 
         // When
@@ -85,7 +85,7 @@ class RustMailboxImplTest {
         // Given
         val userId = UserIdTestData.userId
         val mailUserSession = mockk<MailUserSession>()
-        val labelId: LocalLabelId = 1u
+        val labelId = LocalLabelId(1u)
         coEvery { userSessionRepository.getUserSession(userId) } returns mailUserSession
         rustMailbox.switchToMailbox(userId, labelId)
 
@@ -102,7 +102,7 @@ class RustMailboxImplTest {
         // Given
         val userId = UserIdTestData.userId
         val mailUserSession = mockk<MailUserSession>()
-        val labelId: LocalLabelId = 1u
+        val labelId = LocalLabelId(1u)
         coEvery { createMailbox(any(), labelId) } returns conversationMailbox
         coEvery { userSessionRepository.getUserSession(userId) } returns mailUserSession
         rustMailbox.switchToMailbox(userId, labelId)
@@ -121,7 +121,7 @@ class RustMailboxImplTest {
         // Given
         val userId = UserIdTestData.userId
         val mailUserSession = mockk<MailUserSession>()
-        val labelId: LocalLabelId = 1u
+        val labelId = LocalLabelId(1u)
         coEvery { createMailbox(any(), labelId) } returns conversationMailbox
         coEvery { userSessionRepository.getUserSession(userId) } returns mailUserSession
 
@@ -144,7 +144,7 @@ class RustMailboxImplTest {
         // Given
         val userId = UserIdTestData.userId
         val mailUserSession = mockk<MailUserSession>()
-        val firstLabelId: LocalLabelId = 1u
+        val firstLabelId = LocalLabelId(1u)
         coEvery { createMailbox(any(), firstLabelId) } returns conversationMailbox
         coEvery { userSessionRepository.getUserSession(userId) } returns mailUserSession
 
@@ -156,7 +156,7 @@ class RustMailboxImplTest {
         advanceUntilIdle()
 
         // Given
-        val secondLabelId: LocalLabelId = 2u
+        val secondLabelId = LocalLabelId(2u)
 
         // When: Second call to switchToMailbox with the same labelId
         rustMailbox.switchToMailbox(userId, secondLabelId)

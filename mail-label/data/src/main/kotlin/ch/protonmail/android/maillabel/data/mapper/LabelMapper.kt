@@ -31,8 +31,8 @@ import me.proton.core.label.domain.entity.LabelType
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.LabelDescription
 
-fun LabelId.toLocalLabelId(): LocalLabelId = this.id.toULong()
-fun LocalLabelId.toLabelId(): LabelId = LabelId(this.toString())
+fun LabelId.toLocalLabelId(): LocalLabelId = LocalLabelId(this.id.toULong())
+fun LocalLabelId.toLabelId(): LabelId = LabelId(this.value.toString())
 fun LabelDescription.toLabelType(): LabelType {
     return when (this) {
         is LabelDescription.Label -> LabelType.MessageLabel
@@ -55,16 +55,16 @@ fun LabelType.toRustLabelType(): LocalLabelType {
 fun LocalLabel.toLabel(): Label {
     return Label(
         userId = FAKE_USER_ID,
-        labelId = this.localId.toLabelId(),
+        labelId = this.id.toLabelId(),
         name = this.name,
         type = this.labelDescription.toLabelType(),
         path = this.path ?: "",
-        color = this.color.value,
+        color = this.color?.value ?: "#fff",
         order = this.displayOrder.toInt(),
         isNotified = this.notify,
         isExpanded = this.expanded,
         isSticky = this.sticky,
-        parentId = this.localParentId?.toLabelId()
+        parentId = this.parentId?.toLabelId()
 
     )
 }
@@ -77,16 +77,16 @@ fun LocalLabel.toLabelWithSystemLabelId(): LabelWithSystemLabelId {
     return LabelWithSystemLabelId(
         Label(
             userId = FAKE_USER_ID,
-            labelId = this.localId.toLabelId(),
+            labelId = this.id.toLabelId(),
             name = this.name,
             type = systemLabelDescription.toLabelType(),
             path = this.path ?: "",
-            color = this.color.value,
+            color = this.color?.value ?: "#fff",
             order = this.displayOrder.toInt(),
             isNotified = this.notify,
             isExpanded = this.expanded,
             isSticky = this.sticky,
-            parentId = this.localParentId?.toLabelId()
+            parentId = this.parentId?.toLabelId()
         ),
         systemLabelDescription.v1?.toSystemLabel() ?: SystemLabelId.AllMail
     )

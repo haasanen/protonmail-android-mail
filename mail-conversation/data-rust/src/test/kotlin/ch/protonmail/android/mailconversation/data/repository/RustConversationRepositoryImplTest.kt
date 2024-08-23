@@ -30,6 +30,7 @@ import ch.protonmail.android.mailconversation.domain.entity.Conversation
 import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
 import ch.protonmail.android.maillabel.domain.model.LabelWithSystemLabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
+import ch.protonmail.android.mailmessage.data.mapper.toConversationId
 import ch.protonmail.android.mailpagination.domain.model.PageFilter
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.testdata.conversation.rust.LocalConversationIdSample
@@ -83,7 +84,7 @@ class RustConversationRepositoryImplTest {
     @Test
     fun `observeConversation should return the conversation for the given id`() = runTest {
         // Given
-        val conversationId = ConversationId(LocalConversationIdSample.AugConversation.toString())
+        val conversationId = LocalConversationIdSample.AugConversation.toConversationId()
         val localConversation = LocalConversationTestData.AugConversation
         val expected = localConversation.toConversation()
         coEvery { rustConversationDataSource.observeConversation(userId, any()) } returns flowOf(localConversation)
@@ -104,7 +105,7 @@ class RustConversationRepositoryImplTest {
     @Test
     fun `observeConversation should return error when rust provides no conversation `() = runTest {
         // Given
-        val conversationId = ConversationId(LocalConversationIdSample.AugConversation.toString())
+        val conversationId = LocalConversationIdSample.AugConversation.toConversationId()
 
         coEvery { rustConversationDataSource.observeConversation(userId, any()) } returns null
 
@@ -123,7 +124,7 @@ class RustConversationRepositoryImplTest {
     @Test
     fun `markRead should mark conversations as read`() = runTest {
         // Given
-        val conversationIds = listOf(ConversationId(LocalConversationIdSample.AugConversation.toString()))
+        val conversationIds = listOf(LocalConversationIdSample.AugConversation.toConversationId())
         coEvery { rustConversationDataSource.markRead(userId, any()) } just Runs
 
         // When
@@ -137,7 +138,7 @@ class RustConversationRepositoryImplTest {
     @Test
     fun `markUnread should mark conversations as unread`() = runTest {
         // Given
-        val conversationIds = listOf(ConversationId(LocalConversationIdSample.AugConversation.toString()))
+        val conversationIds = listOf(LocalConversationIdSample.AugConversation.toConversationId())
         coEvery { rustConversationDataSource.markUnread(userId, any()) } just Runs
 
         // When
@@ -155,8 +156,8 @@ class RustConversationRepositoryImplTest {
     fun `should star conversations`() = runTest {
         // Given
         val conversationIds = listOf(
-            ConversationId(LocalConversationIdSample.AugConversation.toString()),
-            ConversationId(LocalConversationIdSample.SepConversation.toString())
+            LocalConversationIdSample.AugConversation.toConversationId(),
+            LocalConversationIdSample.SepConversation.toConversationId()
         )
         coEvery { rustConversationDataSource.starConversations(userId, any()) } returns Unit
 
@@ -179,8 +180,8 @@ class RustConversationRepositoryImplTest {
     fun `should unStar conversations`() = runTest {
         // Given
         val conversationIds = listOf(
-            ConversationId(LocalConversationIdSample.AugConversation.toString()),
-            ConversationId(LocalConversationIdSample.SepConversation.toString())
+            LocalConversationIdSample.AugConversation.toConversationId(),
+            LocalConversationIdSample.SepConversation.toConversationId()
         )
         coEvery { rustConversationDataSource.unStarConversations(userId, any()) } returns Unit
 

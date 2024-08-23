@@ -18,7 +18,6 @@
 
 package ch.protonmail.android.mailmessage.data.local
 
-import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.domain.mapper.LocalConversationId
 import ch.protonmail.android.mailmessage.data.MessageRustCoroutineScope
 import ch.protonmail.android.mailmessage.data.model.LocalConversationMessages
@@ -54,8 +53,7 @@ class RustConversationMessageQueryImpl @Inject constructor(
     private val conversationMessagesLiveQueryCallback = object : LiveQueryCallback {
         override fun onUpdate() {
             val messages = conversationWatcher?.messages
-            // TODO: get message to open from rust when exposed
-            val messageIdToOpen = conversationWatcher?.messages?.firstOrNull()?.localId
+            val messageIdToOpen = conversationWatcher?.messageIdToOpen ?: messages?.last()?.id
 
             if (messages != null && messageIdToOpen != null) {
                 conversationMessagesMutableStatusFlow.value = LocalConversationMessages(messageIdToOpen, messages)
@@ -89,8 +87,6 @@ class RustConversationMessageQueryImpl @Inject constructor(
         conversationWatcher?.conversationHandle?.disconnect()
     }
 
-    @MissingRustApi
-    // MessageIdToOpen not returned with conversations anymore?
     private fun initConversationMessagesLiveQuery(conversationId: LocalConversationId) {
         rustMailbox
             .observeConversationMailbox()
@@ -105,7 +101,7 @@ class RustConversationMessageQueryImpl @Inject constructor(
 
                 val value = conversationWatcher?.let {
                     val messages = it.messages
-                    val messageIdToOpen = it.messages.firstOrNull()?.localId ?: 0uL
+                    val messageIdToOpen = it.messageIdToOpen ?: it.messages.last().id
 
                     LocalConversationMessages(messageIdToOpen, messages)
 

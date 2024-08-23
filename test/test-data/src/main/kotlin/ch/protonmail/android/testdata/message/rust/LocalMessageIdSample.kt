@@ -18,9 +18,10 @@
 
 package ch.protonmail.android.testdata.message.rust
 
+import ch.protonmail.android.mailcommon.domain.mapper.LocalMessageId
 
 object LocalMessageIdSample {
-    const val AugWeatherForecast = 1uL
-    const val SepWeatherForecast = 2uL
-    const val OctWeatherForecast = 3uL
+    val AugWeatherForecast = LocalMessageId(1uL)
+    val SepWeatherForecast = LocalMessageId(2uL)
+    val OctWeatherForecast = LocalMessageId(3uL)
 }

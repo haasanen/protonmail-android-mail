@@ -13,7 +13,6 @@ import me.proton.core.domain.entity.UserId
 import org.junit.Rule
 import uniffi.proton_mail_uniffi.MailSession
 import uniffi.proton_mail_uniffi.MailUserSession
-import uniffi.proton_mail_uniffi.RemoteId
 import uniffi.proton_mail_uniffi.StoredSession
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -84,7 +83,7 @@ class UserSessionRepositoryImplTest {
         expectedMailUserSession: MailUserSession
     ) = mockk<MailSession> {
         val storedSession = mockk<StoredSession> {
-            every { userId() } returns RemoteId(expectedSessionUserId.id)
+            every { userId() } returns expectedSessionUserId.id
         }
         coEvery { storedSessions() } returns listOf(storedSession)
         coEvery { userContextFromSession(storedSession) } returns expectedMailUserSession
