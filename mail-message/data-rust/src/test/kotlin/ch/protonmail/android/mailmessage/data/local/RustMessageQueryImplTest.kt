@@ -37,7 +37,6 @@ import io.mockk.verify
 import junit.framework.TestCase.assertNotNull
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.test.runTest
-import org.junit.Ignore
 import org.junit.Rule
 import uniffi.proton_mail_uniffi.LiveQueryCallback
 import uniffi.proton_mail_uniffi.MailSession
@@ -45,7 +44,6 @@ import uniffi.proton_mail_uniffi.WatchedMessages
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-@Ignore("TODO after rust lib bump to 0.11.* completed")
 class RustMessageQueryImplTest {
 
     @get:Rule
@@ -59,9 +57,7 @@ class RustMessageQueryImplTest {
         LocalMessageTestData.OctWeatherForecast
     )
 
-    private val messagesWatcher: WatchedMessages = mockk {
-        every { this@mockk.messages } returns expectedMessages
-    }
+    private val messagesWatcher: WatchedMessages = mockk()
 
     private val rustMailbox: RustMailbox = mockk()
     private val createRustMessagesWatcher: CreateRustMessagesWatcher = mockk()
@@ -77,14 +73,17 @@ class RustMessageQueryImplTest {
         mailSessionRepository,
         invalidationTracker,
         createRustMessagesWatcher,
+        rustMailbox,
         testCoroutineScope
     )
 
     @Test
-    fun `query initializes the mailbox and creates live query when created`() = runTest {
+    fun `emits initial value from watcher when messages watcher is initialized`() = runTest {
         // Given
         val mailboxCallbackSlot = slot<LiveQueryCallback>()
+        val userId = UserIdTestData.userId
         val labelId: LocalLabelId = 1u
+        every { messagesWatcher.messages } returns expectedMessages
         coEvery {
             createRustMessagesWatcher.invoke(
                 mailSession,
@@ -92,12 +91,14 @@ class RustMessageQueryImplTest {
                 capture(mailboxCallbackSlot)
             )
         } returns messagesWatcher
+        coEvery { rustMailbox.switchToMailbox(userId, labelId) } just Runs
 
         // When
-        // TODO once compiling, trigger observing here and rename this test....
-
-        // Then
-        coVerify { createRustMessagesWatcher(mailSession, labelId, mailboxCallbackSlot.captured) }
+        rustMessageQuery.observeMessages(userId, labelId).test {
+            // Then
+            assertEquals(expectedMessages, awaitItem())
+            coVerify { createRustMessagesWatcher(mailSession, labelId, mailboxCallbackSlot.captured) }
+        }
     }
 
     @Test
@@ -106,6 +107,8 @@ class RustMessageQueryImplTest {
         val userId = UserIdTestData.userId
         val labelId: LocalLabelId = 1u
         coEvery { rustMailbox.switchToMailbox(userId, labelId) } just Runs
+        every { messagesWatcher.messages } returns expectedMessages
+        coEvery { createRustMessagesWatcher.invoke(mailSession, labelId, any()) } returns messagesWatcher
 
         // When
         rustMessageQuery.observeMessages(userId, labelId).test {
@@ -124,6 +127,7 @@ class RustMessageQueryImplTest {
         val mailboxCallbackSlot = slot<LiveQueryCallback>()
         val labelId: LocalLabelId = 1u
         coEvery { rustMailbox.switchToMailbox(userId, labelId) } just Runs
+        every { messagesWatcher.messages } returns emptyList()
         coEvery {
             createRustMessagesWatcher.invoke(
                 mailSession,
@@ -133,42 +137,17 @@ class RustMessageQueryImplTest {
         } returns messagesWatcher
 
         rustMessageQuery.observeMessages(userId, labelId).test {
+            skipItems(1) // first emission
+            val updatedMessages = expectedMessages.onEach { it.localId = Math.random().toULong() }
+            every { messagesWatcher.messages } returns updatedMessages
             // When
             mailboxCallbackSlot.captured.onUpdate()
 
             // Then
             val messageList = awaitItem()
 
-            assertEquals(expectedMessages, messageList)
+            assertEquals(updatedMessages, messageList)
             verify { invalidationTracker.notifyInvalidation(any()) }
-        }
-    }
-
-    @Test
-    fun `disconnect nullifies message live query and disconnects it`() = runTest {
-        // Given
-        val userId = UserIdTestData.userId
-        val mailboxCallbackSlot = slot<LiveQueryCallback>()
-        val labelId: LocalLabelId = 1u
-        coEvery {
-            createRustMessagesWatcher.invoke(
-                mailSession,
-                labelId,
-                capture(mailboxCallbackSlot)
-            )
-        } returns messagesWatcher
-        coEvery { rustMailbox.switchToMailbox(userId, labelId) } just Runs
-        every { messagesWatcher.handle.disconnect() } just Runs
-
-        rustMessageQuery.observeMessages(userId, labelId).test {
-            awaitItem()
-
-            // When
-            rustMessageQuery.disconnect()
-            // Then
-            val messageList = awaitItem()
-            coVerify { messagesWatcher.handle.disconnect() }
-            assertEquals(emptyList(), messageList)
         }
     }
 }

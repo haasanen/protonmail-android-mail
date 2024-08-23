@@ -70,13 +70,15 @@ class RustConversationRepositoryImpl @Inject constructor(
     }
 
     @MissingRustApi
+    // Awaiting for rust to add structured error handling
     override fun observeConversation(
         userId: UserId,
         id: ConversationId,
         refreshData: Boolean
     ): Flow<Either<DataError, Conversation>> = rustConversationDataSource
         .observeConversation(userId, id.toLocalConversationId())
-        .map { it.toConversation().right() }
+        ?.map { it.toConversation().right() }
+        ?: flowOf(DataError.Local.Unknown.left())
 
     @MissingRustApi
     @Deprecated("Usages of this are part of features that were replaced by higher level rust functions")

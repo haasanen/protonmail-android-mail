@@ -59,8 +59,8 @@ class RustConversationDataSourceImpl @Inject constructor(
     override suspend fun getConversations(userId: UserId, labelId: LocalLabelId): List<LocalConversation> =
         rustConversationsQuery.observeConversationsByLabel(userId, labelId).first()
 
-    override fun observeConversation(userId: UserId, conversationId: LocalConversationId): Flow<LocalConversation> =
-        rustConversationDetailQuery.observeConversation(userId, conversationId)
+    override fun observeConversation(userId: UserId, conversationId: LocalConversationId): Flow<LocalConversation>? =
+        runCatching { rustConversationDetailQuery.observeConversation(userId, conversationId) }.getOrNull()
 
     override suspend fun deleteConversations(userId: UserId, conversations: List<LocalConversationId>) {
         executeMailboxAction(

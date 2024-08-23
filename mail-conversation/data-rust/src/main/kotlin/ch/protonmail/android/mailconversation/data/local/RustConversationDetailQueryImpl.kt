@@ -26,6 +26,7 @@ import ch.protonmail.android.mailmessage.data.local.RustMailbox
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
@@ -44,6 +45,9 @@ class RustConversationDetailQueryImpl @Inject constructor(
     private var conversationWatcher: WatchedConversation? = null
 
     private val conversationMutableStatusFlow = MutableStateFlow<LocalConversation?>(null)
+    private val conversationStatusFlow = conversationMutableStatusFlow
+        .asStateFlow()
+        .filterNotNull()
 
     private val conversationUpdatedCallback = object : LiveQueryCallback {
         override fun onUpdate() {
@@ -63,9 +67,10 @@ class RustConversationDetailQueryImpl @Inject constructor(
             }
 
             conversationWatcher = createRustConversationWatcher(mailbox, conversationId, conversationUpdatedCallback)
+            conversationMutableStatusFlow.value = conversationWatcher?.conversation
         }
 
-        return conversationMutableStatusFlow.filterNotNull()
+        return conversationStatusFlow
     }
 
     override fun disconnect() {

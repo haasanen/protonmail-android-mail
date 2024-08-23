@@ -29,6 +29,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
@@ -40,13 +41,16 @@ class RustMessageQueryImpl @Inject constructor(
     private val mailSessionRepository: MailSessionRepository,
     private val invalidationTracker: RustInvalidationTracker,
     private val createRustMessagesWatcher: CreateRustMessagesWatcher,
+    private val rustMailbox: RustMailbox,
     @MessageRustCoroutineScope private val coroutineScope: CoroutineScope
 ) : RustMessageQuery {
 
     private var messagesWatcher: WatchedMessages? = null
 
-    private val mutableMessageStatusFlow = MutableStateFlow<List<LocalMessageMetadata>>(emptyList())
-    private val messagesStatusFlow: Flow<List<LocalMessageMetadata>> = mutableMessageStatusFlow.asStateFlow()
+    private val mutableMessageStatusFlow = MutableStateFlow<List<LocalMessageMetadata>?>(null)
+    private val messagesStatusFlow: Flow<List<LocalMessageMetadata>> = mutableMessageStatusFlow
+        .asStateFlow()
+        .filterNotNull()
 
     private val messagesUpdatedCallback = object : LiveQueryCallback {
         override fun onUpdate() {
@@ -58,7 +62,7 @@ class RustMessageQueryImpl @Inject constructor(
                     RustDataSourceId.LABELS
                 )
             )
-            Timber.d("rust-message: onUpdated, item count: ${mutableMessageStatusFlow.value.size}")
+            Timber.d("rust-message: onUpdated, item count: ${mutableMessageStatusFlow.value?.size}")
         }
     }
 
@@ -66,9 +70,12 @@ class RustMessageQueryImpl @Inject constructor(
         coroutineScope.launch {
             val mailSession = mailSessionRepository.getMailSession()
             Timber.v("rust-message: got MailSession instance to watch messages for $userId")
+            rustMailbox.switchToMailbox(userId, labelId)
+            Timber.v("rust-message: switching mailbox to $labelId if needed...")
 
             destroy()
             messagesWatcher = createRustMessagesWatcher(mailSession, labelId, messagesUpdatedCallback)
+            mutableMessageStatusFlow.value = messagesWatcher?.messages
         }
 
         return messagesStatusFlow
@@ -82,7 +89,7 @@ class RustMessageQueryImpl @Inject constructor(
     private fun destroy() {
         Timber.d("rust-message-query: destroy")
         disconnect()
-        mutableMessageStatusFlow.value = emptyList()
+        mutableMessageStatusFlow.value = null
     }
 
 }

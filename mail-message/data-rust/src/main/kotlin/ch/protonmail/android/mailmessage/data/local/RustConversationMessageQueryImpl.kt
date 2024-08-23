@@ -38,7 +38,6 @@ import uniffi.proton_mail_uniffi.LiveQueryCallback
 import uniffi.proton_mail_uniffi.WatchedConversation
 import javax.inject.Inject
 
-@SuppressWarnings("ForbiddenComment")
 class RustConversationMessageQueryImpl @Inject constructor(
     private val rustMailbox: RustMailbox,
     private val createRustConversationMessagesWatcher: CreateRustConversationMessagesWatcher,

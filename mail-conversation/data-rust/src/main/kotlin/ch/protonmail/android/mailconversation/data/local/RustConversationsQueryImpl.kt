@@ -20,30 +20,37 @@ package ch.protonmail.android.mailconversation.data.local
 
 import ch.protonmail.android.mailcommon.domain.coroutines.AppScope
 import ch.protonmail.android.mailcommon.domain.mapper.LocalConversation
+import ch.protonmail.android.mailconversation.data.usecase.CreateRustConversationForLabelWatcher
+import ch.protonmail.android.mailmessage.data.local.RustMailbox
 import ch.protonmail.android.mailmessage.domain.paging.RustDataSourceId
 import ch.protonmail.android.mailmessage.domain.paging.RustInvalidationTracker
 import ch.protonmail.android.mailsession.domain.repository.MailSessionRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.LiveQueryCallback
 import uniffi.proton_mail_uniffi.WatchedConversations
-import uniffi.proton_mail_uniffi.watchConversationsForLabel
 import javax.inject.Inject
 
 class RustConversationsQueryImpl @Inject constructor(
     private val mailSessionRepository: MailSessionRepository,
     private val invalidationTracker: RustInvalidationTracker,
+    private val createRustConversationForLabelWatcher: CreateRustConversationForLabelWatcher,
+    private val rustMailbox: RustMailbox,
     @AppScope private val coroutineScope: CoroutineScope
 ) : RustConversationsQuery {
 
     private var conversationsWatcher: WatchedConversations? = null
 
     private val conversationsMutableStatusFlow = MutableStateFlow<List<LocalConversation>?>(null)
+    private val conversationsStatusFlow = conversationsMutableStatusFlow
+        .asStateFlow()
+        .filterNotNull()
 
     private val conversationsUpdatedCallback = object : LiveQueryCallback {
         override fun onUpdate() {
@@ -64,12 +71,15 @@ class RustConversationsQueryImpl @Inject constructor(
     override fun observeConversationsByLabel(userId: UserId, labelId: ULong): Flow<List<LocalConversation>> {
         coroutineScope.launch {
             destroy()
+            rustMailbox.switchToMailbox(userId, labelId)
 
             val session = mailSessionRepository.getMailSession()
-            conversationsWatcher = watchConversationsForLabel(session, labelId, conversationsUpdatedCallback)
+            conversationsWatcher = createRustConversationForLabelWatcher(session, labelId, conversationsUpdatedCallback)
+
+            conversationsMutableStatusFlow.value = conversationsWatcher?.conversations
         }
 
-        return conversationsMutableStatusFlow.filterNotNull()
+        return conversationsStatusFlow
     }
 
 

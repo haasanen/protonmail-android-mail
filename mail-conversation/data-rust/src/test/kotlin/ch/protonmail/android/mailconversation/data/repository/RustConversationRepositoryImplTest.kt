@@ -20,7 +20,6 @@ package ch.protonmail.android.mailconversation.data.repository
 
 import app.cash.turbine.test
 import arrow.core.right
-import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.sample.LabelIdSample
 import ch.protonmail.android.mailconversation.data.local.RustConversationDataSource
@@ -45,7 +44,6 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import me.proton.core.domain.entity.UserId
 import me.proton.core.label.domain.entity.LabelId
-import org.junit.Ignore
 import org.junit.Test
 import kotlin.test.assertEquals
 
@@ -104,13 +102,11 @@ class RustConversationRepositoryImplTest {
     }
 
     @Test
-    @MissingRustApi
-    @Ignore("Pending rust to expose errors when observing data fails")
     fun `observeConversation should return error when rust provides no conversation `() = runTest {
         // Given
         val conversationId = ConversationId(LocalConversationIdSample.AugConversation.toString())
 
-        coEvery { rustConversationDataSource.observeConversation(userId, any()) } throws Exception("fail")
+        coEvery { rustConversationDataSource.observeConversation(userId, any()) } returns null
 
         // When
         rustConversationRepository.observeConversation(userId, conversationId, refreshData = false).test {

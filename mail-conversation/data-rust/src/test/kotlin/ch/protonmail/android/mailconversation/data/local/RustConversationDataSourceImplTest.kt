@@ -18,7 +18,6 @@
 
 package ch.protonmail.android.mailconversation.data.local
 
-import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.domain.mapper.LocalLabelId
 import ch.protonmail.android.mailmessage.data.local.RustMailbox
 import ch.protonmail.android.mailsession.domain.repository.MailSessionRepository
@@ -38,7 +37,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
-import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import uniffi.proton_mail_uniffi.MailSession
@@ -90,7 +88,7 @@ class RustConversationDataSourceImplTest {
     }
 
     @Test
-    fun `get conversation should return the conversation for the given id`() = runTest {
+    fun `observe conversation should return the conversation for the given id`() = runTest {
         // Given
         val userId = UserIdTestData.userId
         val mailSession = mockk<MailSession>()
@@ -101,16 +99,14 @@ class RustConversationDataSourceImplTest {
         } returns flowOf(LocalConversationTestData.AugConversation)
 
         // When
-        val result = dataSource.observeConversation(userId, conversationId).first()
+        val result = dataSource.observeConversation(userId, conversationId)?.first()
 
         // Then
         assertEquals(LocalConversationTestData.AugConversation, result)
     }
 
     @Test
-    @MissingRustApi
-    @Ignore("Missing error handling from rust")
-    fun `get conversation should handle mailbox exception`() = runTest {
+    fun `observe conversation should handle mailbox exception`() = runTest {
         // Given
         val userId = UserIdTestData.userId
         val mailSession = mockk<MailSession>()
@@ -124,7 +120,6 @@ class RustConversationDataSourceImplTest {
         val result = dataSource.observeConversation(userId, conversationId)
 
         // Then
-        coVerify { sessionManager.getUserSession(userId) }
         assertNull(result)
     }
 

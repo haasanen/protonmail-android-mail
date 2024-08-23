@@ -38,16 +38,13 @@ import io.mockk.verify
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
-import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import uniffi.proton_mail_uniffi.LiveQueryCallback
 import uniffi.proton_mail_uniffi.Mailbox
 import uniffi.proton_mail_uniffi.WatchedConversation
 import kotlin.test.assertEquals
-import kotlin.test.fail
 
-@Ignore("Tests pending infinitely after switching from live query to watcher (issue with mocking it).")
 class RustConversationMessageQueryImplTest {
 
     @get:Rule
@@ -77,16 +74,16 @@ class RustConversationMessageQueryImplTest {
     )
 
     @Test
-    fun `init initializes the mailbox and creates live query when called`() = runTest {
+    fun `initializes the watcher and emits initial items when called`() = runTest {
         // Given
         val conversationId: LocalConversationId = 1uL
         val mailboxCallbackSlot = slot<LiveQueryCallback>()
-        val conversationMessagesWatcher: WatchedConversation = mockk()
+        val conversationMessagesWatcher = mockk<WatchedConversation> {
+            coEvery { this@mockk.messages } returns expectedMessages
+        }
         coEvery {
             createRustConversationMessagesWatcher.invoke(mailbox, any(), capture(mailboxCallbackSlot))
         } returns conversationMessagesWatcher
-        every { conversationMessagesWatcher.messages } returns expectedMessages
-        every { conversationMessagesWatcher.messageIdToOpen } returns 1uL
 
         // When
         rustConversationMessageQuery.observeConversationMessages(UserIdTestData.userId, conversationId).test {
@@ -94,6 +91,8 @@ class RustConversationMessageQueryImplTest {
             // Then
             verify { rustMailbox.observeConversationMailbox() }
             coVerify { createRustConversationMessagesWatcher(mailbox, conversationId, any()) }
+            val expected = LocalConversationMessages(1uL, expectedMessages)
+            assertEquals(expected, awaitItem())
         }
     }
 
@@ -106,9 +105,8 @@ class RustConversationMessageQueryImplTest {
             messages = expectedMessages
         )
         val mailboxCallbackSlot = slot<LiveQueryCallback>()
-        val conversationMessagesWatcher: WatchedConversation = mockk {
-            every { messages } returns expectedMessages
-            every { messageIdToOpen } returns 1uL
+        val conversationMessagesWatcher = mockk<WatchedConversation> {
+            coEvery { this@mockk.messages } returns expectedMessages
         }
         coEvery {
             createRustConversationMessagesWatcher.invoke(mailbox, any(), capture(mailboxCallbackSlot))
@@ -125,15 +123,5 @@ class RustConversationMessageQueryImplTest {
             assertEquals(localConversationMessages, result)
             verify { invalidationTracker.notifyInvalidation(any()) }
         }
-    }
-
-    @Test
-    fun `emits messages list from watcher when just initialised`() {
-        fail("Not implemented")
-    }
-
-    @Test
-    fun `switches mailbox to the current label id when observe is called`() {
-        fail("Not implemented")
     }
 }

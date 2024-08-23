@@ -56,6 +56,26 @@ class RustConversationDetailQueryImplTest {
     )
 
     @Test
+    fun `initializes the watcher and emits initial items when called`() = runTest {
+        // Given
+        val conversationId = LocalConversationId(1uL)
+        val mailbox = mockk<Mailbox>()
+        val callbackSlot = slot<LiveQueryCallback>()
+        val expectedConversation = LocalConversationTestData.AugConversation
+        val watcherMock = mockk<WatchedConversation> {
+            every { conversation } returns expectedConversation
+        }
+        every { rustMailbox.observeConversationMailbox() } returns flowOf(mailbox)
+        coEvery { createRustConversationWatcher(mailbox, conversationId, capture(callbackSlot)) } returns watcherMock
+
+        // When
+        rustConversationQuery.observeConversation(UserIdTestData.userId, conversationId).test {
+            // Then
+            assertEquals(expectedConversation, awaitItem())
+        }
+    }
+
+    @Test
     fun `new conversation is emitted when mailbox live query callback is called`() = runTest {
         // Given
         val userId = UserIdTestData.userId
@@ -70,11 +90,14 @@ class RustConversationDetailQueryImplTest {
         coEvery { createRustConversationWatcher(mailbox, conversationId, capture(callbackSlot)) } returns watcherMock
 
         rustConversationQuery.observeConversation(userId, conversationId).test {
+            skipItems(1)
             // When
+            val updatedConversation = expectedConversation.copy(isStarred = true)
+            every { watcherMock.conversation } returns updatedConversation
             callbackSlot.captured.onUpdate()
 
             // Then
-            assertEquals(expectedConversation, awaitItem())
+            assertEquals(updatedConversation, awaitItem())
         }
     }
 }
