@@ -16,20 +16,18 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailsession.domain.repository
+package ch.protonmail.android.mailsession.data.mapper
 
-import arrow.core.Either
-import kotlinx.coroutines.flow.Flow
-import me.proton.core.domain.entity.UserId
-import ch.protonmail.android.mailsession.domain.model.ForkedSessionId
 import ch.protonmail.android.mailsession.domain.model.SessionError
-import uniffi.proton_mail_uniffi.MailUserSession
+import uniffi.proton_mail_uniffi.SessionError as LocalSessionError
 
-interface UserSessionRepository {
-
-    fun observeCurrentUserId(): Flow<UserId?>
-
-    suspend fun getUserSession(userId: UserId): MailUserSession?
-
-    suspend fun forkSession(userId: UserId): Either<SessionError, ForkedSessionId>
+fun LocalSessionError.toSessionError(): SessionError {
+    return when (this) {
+        LocalSessionError.DB -> SessionError.Local.DbError
+        LocalSessionError.CRYPTO -> SessionError.Local.CryptoError
+        LocalSessionError.KEY_CHAIN -> SessionError.Local.KeyChainError
+        LocalSessionError.KEY_CHAIN_HAS_NO_KEY -> SessionError.Local.KeyChainHasNoKey
+        LocalSessionError.HTTP -> SessionError.Remote.HttpError
+        LocalSessionError.OTHER -> SessionError.Local.Unknown
+    }
 }

@@ -16,20 +16,33 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailsession.domain.repository
+package ch.protonmail.android.mailsession.domain.model
 
-import arrow.core.Either
-import kotlinx.coroutines.flow.Flow
-import me.proton.core.domain.entity.UserId
-import ch.protonmail.android.mailsession.domain.model.ForkedSessionId
-import ch.protonmail.android.mailsession.domain.model.SessionError
-import uniffi.proton_mail_uniffi.MailUserSession
+sealed interface SessionError {
 
-interface UserSessionRepository {
+    /**
+     * Errors related to Local operations, like database and keychain.
+     */
+    sealed interface Local : SessionError {
 
-    fun observeCurrentUserId(): Flow<UserId?>
+        object DbError : Local
 
-    suspend fun getUserSession(userId: UserId): MailUserSession?
+        object CryptoError : Local
 
-    suspend fun forkSession(userId: UserId): Either<SessionError, ForkedSessionId>
+        object KeyChainError : Local
+
+        object KeyChainHasNoKey : Local
+
+        object Unknown : Local
+    }
+
+    /**
+     * Errors related to Remote operations, like HTTP requests.
+     */
+    sealed interface Remote : SessionError {
+
+        object HttpError : Remote
+
+        object Unknown : Remote
+    }
 }

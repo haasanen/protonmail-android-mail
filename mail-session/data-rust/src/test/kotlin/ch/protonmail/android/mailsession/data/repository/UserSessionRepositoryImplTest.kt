@@ -8,12 +8,10 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.runTest
 import me.proton.core.domain.entity.UserId
+import ch.protonmail.android.mailsession.domain.model.ForkedSessionId
+import ch.protonmail.android.mailsession.domain.model.SessionError
 import org.junit.Rule
 import uniffi.proton_mail_uniffi.MailSession
 import uniffi.proton_mail_uniffi.MailUserSession
@@ -79,33 +77,58 @@ class UserSessionRepositoryImplTest {
     }
 
     @Test
-    fun `ensures session is initialized only once with concurrent access`() = runTest {
+    fun `fork session should return session id on success`() = runTest {
         // Given
         val userId = UserIdTestData.userId
-        val expectedMailUserSession = mockk<MailUserSession>()
+        val expectedSessionId = "forked-session-id"
+        val expectedMailUserSession = mockk<MailUserSession> {
+            coEvery { fork() } returns expectedSessionId
+        }
         val mailSession = mailSessionWithUserSessionStored(userId, expectedMailUserSession)
-
         coEvery { mailSessionRepository.getMailSession() } returns mailSession
 
-        coEvery { mailSessionRepository.getMailSession() } coAnswers {
-            delay(100)
-            mailSession
-        }
-
         // When
-        coroutineScope {
-            val deferredResults = (1..10).map {
-                async {
-                    userSessionRepository.getUserSession(userId)
-                }
-            }
-            deferredResults.awaitAll()
-        }
+        val result = userSessionRepository.forkSession(userId)
 
         // Then
-        // Ensure that the session was initialized only once
-        coVerify(exactly = 1) { mailSessionRepository.getMailSession() }
-        assertEquals(expectedMailUserSession, userSessionRepository.getUserSession(userId))
+        assert(result.isRight())
+        assertEquals(ForkedSessionId(expectedSessionId), result.getOrNull())
+        coVerify { expectedMailUserSession.fork() }
+    }
+
+    @Test
+    fun `forkSession should return SessionError when session is null`() = runTest {
+        // Given
+        val userId = UserIdTestData.userId
+        val mailSession = mailSessionWithNoUserSessionsStored()
+        coEvery { mailSessionRepository.getMailSession() } returns mailSession
+
+        // When
+        val result = userSessionRepository.forkSession(userId)
+
+        // Then
+        assert(result.isLeft())
+        assertEquals(SessionError.Local.Unknown, result.swap().getOrNull())
+    }
+
+    @Test
+    fun `forkSession should return SessionError when fork operation fails`() = runTest {
+        // Given
+        val userId = UserIdTestData.userId
+        val exception = RuntimeException("Fork failed")
+        val expectedMailUserSession = mockk<MailUserSession> {
+            coEvery { fork() } throws exception
+        }
+        val mailSession = mailSessionWithUserSessionStored(userId, expectedMailUserSession)
+        coEvery { mailSessionRepository.getMailSession() } returns mailSession
+
+        // When
+        val result = userSessionRepository.forkSession(userId)
+
+        // Then
+        assert(result.isLeft())
+        assertEquals(SessionError.Local.Unknown, result.swap().getOrNull())
+        coVerify { expectedMailUserSession.fork() }
     }
 
 

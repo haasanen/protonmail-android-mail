@@ -18,6 +18,9 @@
 
 package ch.protonmail.android.mailsession.data.repository
 
+import arrow.core.Either
+import arrow.core.left
+import arrow.core.right
 import ch.protonmail.android.mailsession.data.mapper.toLocalUserId
 import ch.protonmail.android.mailsession.domain.repository.MailSessionRepository
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
@@ -26,6 +29,8 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import me.proton.core.domain.entity.UserId
+import ch.protonmail.android.mailsession.domain.model.ForkedSessionId
+import ch.protonmail.android.mailsession.domain.model.SessionError
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.MailUserSession
 import javax.inject.Inject
@@ -45,6 +50,22 @@ class UserSessionRepositoryImpl @Inject constructor(
 
             return activeUserSessions[userId]
         }
+    }
+
+    override suspend fun forkSession(userId: UserId): Either<SessionError, ForkedSessionId> {
+        val userSession = getUserSession(userId) ?: return SessionError.Local.Unknown.left()
+
+        runCatching {
+            userSession.fork()
+        }.fold(
+            onSuccess = { sessionId ->
+                return ForkedSessionId(sessionId).right()
+            },
+            onFailure = { throwable ->
+                Timber.e(throwable, "rust-session: Forking session failed")
+                return SessionError.Local.Unknown.left()
+            }
+        )
     }
 
     override fun observeCurrentUserId(): Flow<UserId?> = flow {
