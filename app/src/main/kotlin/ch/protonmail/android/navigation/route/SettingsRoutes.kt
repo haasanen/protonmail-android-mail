@@ -36,8 +36,21 @@ import ch.protonmail.android.mailsettings.presentation.settings.swipeactions.Edi
 import ch.protonmail.android.mailsettings.presentation.settings.swipeactions.EditSwipeActionPreferenceScreen.SWIPE_DIRECTION_KEY
 import ch.protonmail.android.mailsettings.presentation.settings.swipeactions.SwipeActionsPreferenceScreen
 import ch.protonmail.android.mailsettings.presentation.settings.theme.ThemeSettingsScreen
+import ch.protonmail.android.mailsettings.presentation.webaccountsettings.WebAccountSettingScreen
+import ch.protonmail.android.navigation.Launcher
 import ch.protonmail.android.navigation.model.Destination.Screen
 import me.proton.core.compose.navigation.require
+
+
+fun NavGraphBuilder.addWebAccountSettings(navController: NavHostController, launcherActions: Launcher.Actions) {
+    composable(route = Screen.AccountSettings.route) {
+        WebAccountSettingScreen(
+            actions = WebAccountSettingScreen.Actions(
+                onBackClick = { navController.popBackStack() }
+            )
+        )
+    }
+}
 
 internal fun NavGraphBuilder.addAlternativeRoutingSetting(navController: NavHostController) {
     composable(route = Screen.AlternativeRoutingSettings.route) {

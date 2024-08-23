@@ -47,6 +47,7 @@ dependencies {
     implementation(Proton.Core.userSettings)
     implementation(Proton.Core.accountManager)
     implementation(Proton.Core.mailSettings)
+    implementation(Proton.Core.configData)
 
     implementation(project(":mail-common:domain"))
 

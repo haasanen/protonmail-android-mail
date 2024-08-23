@@ -59,6 +59,7 @@ android {
 }
 
 dependencies {
+    testImplementation(project(":test:utils"))
     debugImplementation(Dependencies.composeDebugLibs)
 
     implementation(Dependencies.modulePresentationLibs)
@@ -72,9 +73,12 @@ dependencies {
     implementation(project(":mail-common:presentation"))
     implementation(project(":mail-message:data"))
     implementation(project(":mail-settings:domain"))
+    implementation(project(":mail-session:domain"))
+
     implementation(project(":uicomponents"))
 
     testImplementation(Dependencies.testLibs)
     testImplementation(Proton.Core.network)
     testImplementation(project(":test:test-data"))
+    testImplementation(Proton.Common.rustCore)
 }

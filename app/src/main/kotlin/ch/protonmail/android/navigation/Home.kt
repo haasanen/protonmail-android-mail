@@ -85,6 +85,7 @@ import ch.protonmail.android.navigation.route.addSettings
 import ch.protonmail.android.navigation.route.addSignOutAccountDialog
 import ch.protonmail.android.navigation.route.addSwipeActionsSettings
 import ch.protonmail.android.navigation.route.addThemeSettings
+import ch.protonmail.android.navigation.route.addWebAccountSettings
 import ch.protonmail.android.uicomponents.snackbar.DismissableSnackbarHost
 import io.sentry.compose.withSentryObservableEffect
 import kotlinx.coroutines.launch
@@ -406,6 +407,8 @@ fun Home(
                         }
                     }
                 )
+                // settings
+                addWebAccountSettings(navController, launcherActions)
                 addContacts(
                     navController,
                     showErrorSnackbar = { message ->
