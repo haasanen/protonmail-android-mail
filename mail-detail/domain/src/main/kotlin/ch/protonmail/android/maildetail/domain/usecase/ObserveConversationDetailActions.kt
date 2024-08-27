@@ -19,14 +19,13 @@
 package ch.protonmail.android.maildetail.domain.usecase
 
 import arrow.core.Either
+import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.domain.model.Action
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailconversation.domain.entity.Conversation
-import ch.protonmail.android.mailconversation.domain.entity.ConversationLabel
 import ch.protonmail.android.mailconversation.domain.usecase.ObserveConversation
 import ch.protonmail.android.maildetail.domain.model.BottomBarDefaults
-import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.mapLatest
 import me.proton.core.domain.entity.UserId
@@ -52,25 +51,9 @@ class ObserveConversationDetailActions @Inject constructor(
             }
         }
 
-    private fun Conversation.allMessagesAreSpamOrTrash() = labels
-        .ignoringAllMail()
-        .ignoringAllSent()
-        .ignoringAllDrafts()
-        .areAllTrashOrSpam()
-
-    private fun List<ConversationLabel>.areAllTrashOrSpam() = this.all {
-        it.labelId == SystemLabelId.Spam.labelId || it.labelId == SystemLabelId.Trash.labelId
-    }
-
-    private fun List<ConversationLabel>.ignoringAllMail() = this.filterNot {
-        it.labelId == SystemLabelId.AllMail.labelId
-    }
-
-    private fun List<ConversationLabel>.ignoringAllSent() = this.filterNot {
-        it.labelId == SystemLabelId.AllSent.labelId
-    }
-
-    private fun List<ConversationLabel>.ignoringAllDrafts() = this.filterNot {
-        it.labelId == SystemLabelId.AllDrafts.labelId
-    }
+    @MissingRustApi
+    @SuppressWarnings("FunctionOnlyReturningConstant")
+    // Since all of the labels of a conversation are not exposed anymore, we can't run this
+    // bit of logic. Rust will expose the list of actions to show for a given conversation.
+    private fun Conversation.allMessagesAreSpamOrTrash() = false
 }

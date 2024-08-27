@@ -19,7 +19,7 @@
 package ch.protonmail.android.mailmailbox.domain.usecase
 
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
-import ch.protonmail.android.mailconversation.domain.entity.ConversationWithContext
+import ch.protonmail.android.mailconversation.domain.entity.Conversation
 import ch.protonmail.android.mailconversation.domain.repository.ConversationRepository
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItemType
 import ch.protonmail.android.mailmessage.domain.model.Message
@@ -116,7 +116,7 @@ class IsLocalPageValidTest {
     fun `given load conversation does not contain items but is valid, then return true`() = runTest {
         // Given
         val pageKey = PageKey()
-        val items = emptyList<ConversationWithContext>()
+        val items = emptyList<Conversation>()
         coEvery { conversationRepository.getLocalConversations(userId, pageKey) } returns items
         coEvery { conversationRepository.isLocalPageValid(userId, pageKey, items) } returns true
 

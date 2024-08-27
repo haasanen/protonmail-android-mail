@@ -24,27 +24,18 @@ import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.FAKE_USER_ID
 import ch.protonmail.android.mailconversation.domain.entity.Conversation
 import ch.protonmail.android.mailconversation.domain.entity.ConversationLabel
-import ch.protonmail.android.mailconversation.domain.entity.ConversationWithContext
 import ch.protonmail.android.maillabel.data.mapper.toLabelId
 import ch.protonmail.android.mailmessage.data.mapper.toParticipant
 import ch.protonmail.android.mailmessage.domain.model.AttachmentCount
-import me.proton.core.label.domain.entity.LabelId
-import uniffi.proton_mail_uniffi.CustomLabel
+import me.proton.core.label.domain.entity.Label
+import me.proton.core.label.domain.entity.LabelType
+import uniffi.proton_mail_uniffi.InlineCustomLabel
 
 fun ConversationId.toLocalConversationId(): LocalConversationId = LocalConversationId(this.id.toULong())
 
 fun LocalConversation.toConversation(): Conversation {
-    val numMessages = this.numMessages.toInt()
-    val numUnread = this.numUnread.toInt()
-    val numAttachments = this.numAttachments.toInt()
-    val contextTime = this.time.toLong()
-    val contextSize = this.size.toLong()
 
-    val labels = this.customLabels.map {
-        it.toConversationLabel(
-            this.id.toConversationId(), numMessages, numUnread, numAttachments, contextTime, contextSize
-        )
-    }
+    val labels = emptyList<ConversationLabel>()
 
     return Conversation(
         conversationId = this.id.toConversationId(),
@@ -59,32 +50,26 @@ fun LocalConversation.toConversation(): Conversation {
         expirationTime = this.expirationTime.toLong(),
         labels = labels,
         attachmentCount = AttachmentCount(this.numAttachments.toInt()),
-        starred = this.isStarred
+        starred = this.isStarred,
+        time = time.toLong(),
+        size = size.toLong(),
+        customLabels = this.customLabels.map { it.toLabel() }
     )
 }
 
-fun LocalConversation.toConversationWithContext(contextLabelId: LabelId): ConversationWithContext =
-    ConversationWithContext(this.toConversation(), contextLabelId)
-
-@Suppress("LongParameterList")
-fun CustomLabel.toConversationLabel(
-    conversationId: ConversationId,
-    contextNumMessages: Int,
-    contextNumUnread: Int,
-    contextNumAttachments: Int,
-    contextTime: Long,
-    contextSize: Long
-): ConversationLabel {
-    return ConversationLabel(
-        conversationId = conversationId,
-        labelId = this.id.toLabelId(),
-        contextNumMessages = contextNumMessages,
-        contextNumUnread = contextNumUnread,
-        contextNumAttachments = contextNumAttachments,
-        contextTime = contextTime,
-        contextSize = contextSize
-    )
-}
+fun InlineCustomLabel.toLabel() = Label(
+    userId = FAKE_USER_ID,
+    labelId = this.id.toLabelId(),
+    parentId = null,
+    name = this.name,
+    type = LabelType.MessageLabel,
+    path = "",
+    color = this.color.value,
+    order = 0,
+    isNotified = null,
+    isExpanded = null,
+    isSticky = null
+)
 
 private fun LocalConversationId.toConversationId(): ConversationId = ConversationId(this.toString())
 

@@ -75,8 +75,8 @@ object LabelTestData {
         userId: UserId = UserIdTestData.userId,
         type: LabelType = LabelType.MessageLabel,
         name: String = id,
-        order: Int = 0,
-        color: String = "#338AF3",
+        order: Int = id.hashCode(),
+        color: String = "",
         parentId: String? = null,
         isNotified: Boolean? = null,
         isExpanded: Boolean? = null

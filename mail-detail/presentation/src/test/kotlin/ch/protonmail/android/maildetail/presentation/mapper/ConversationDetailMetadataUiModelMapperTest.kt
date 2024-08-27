@@ -37,7 +37,7 @@ class ConversationDetailMetadataUiModelMapperTest {
     }
 
     @Test
-    fun `map conversation with starred label to starred conversation ui model`() {
+    fun `map starred conversation to starred conversation ui model`() {
         // When
         val actual = mapper.toUiModel(ConversationTestData.starredConversation)
         // Then

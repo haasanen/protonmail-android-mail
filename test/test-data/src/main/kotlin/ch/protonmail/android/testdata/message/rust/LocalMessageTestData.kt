@@ -26,7 +26,7 @@ import ch.protonmail.android.mailcommon.domain.mapper.LocalLabelId
 import ch.protonmail.android.mailcommon.domain.mapper.LocalMessageId
 import ch.protonmail.android.mailcommon.domain.mapper.LocalMessageMetadata
 import uniffi.proton_mail_uniffi.AvatarInformation
-import uniffi.proton_mail_uniffi.CustomLabel
+import uniffi.proton_mail_uniffi.InlineCustomLabel
 import uniffi.proton_mail_uniffi.LabelColor
 import uniffi.proton_mail_uniffi.MessageAddress
 import uniffi.proton_mail_uniffi.MessageFlags
@@ -114,11 +114,11 @@ object LocalMessageTestData {
         to = listOf(recipient1),
         cc = emptyList(),
         bcc = emptyList(),
-        labels = listOf(CustomLabel(LocalLabelId(2uL), "Trash", LabelColor("red"))),
+        labels = listOf(InlineCustomLabel(LocalLabelId(2uL), "Trash", LabelColor("red"))),
         time = 1667924198uL
     )
 
-    val trashedMessageWithCustomLabels = buildMessage(
+    val trashedMessageWithInlineCustomLabels = buildMessage(
         id = LocalMessageId(RAW_MESSAGE_ID),
         subject = "Trashed message with custom labels",
         sender = sender,
@@ -126,8 +126,8 @@ object LocalMessageTestData {
         cc = emptyList(),
         bcc = emptyList(),
         labels = listOf(
-            CustomLabel(LocalLabelId(2uL), "Trash", LabelColor("red")),
-            CustomLabel(LocalLabelId(3uL), "Travel", LabelColor("blue"))
+            InlineCustomLabel(LocalLabelId(2uL), "Trash", LabelColor("red")),
+            InlineCustomLabel(LocalLabelId(3uL), "Travel", LabelColor("blue"))
         ),
         time = 1667924198uL
     )
@@ -139,7 +139,7 @@ object LocalMessageTestData {
         to = listOf(recipient1),
         cc = emptyList(),
         bcc = emptyList(),
-        labels = listOf(CustomLabel(LocalLabelId(4uL), "Spam", LabelColor("yellow"))),
+        labels = listOf(InlineCustomLabel(LocalLabelId(4uL), "Spam", LabelColor("yellow"))),
         time = 1667924198uL
     )
 
@@ -150,7 +150,7 @@ object LocalMessageTestData {
         to = listOf(recipient1),
         cc = listOf(recipient2),
         bcc = emptyList(),
-        labels = listOf(CustomLabel(LocalLabelId(4uL), "Spam", LabelColor("yellow"))),
+        labels = listOf(InlineCustomLabel(LocalLabelId(4uL), "Spam", LabelColor("yellow"))),
         time = 1667924198uL
     )
 
@@ -162,22 +162,22 @@ object LocalMessageTestData {
         cc = emptyList(),
         bcc = emptyList(),
         labels = listOf(
-            CustomLabel(LocalLabelId(1uL), "Inbox", LabelColor("green")),
-            CustomLabel(LocalLabelId(5uL), "Starred", LabelColor("yellow"))
+            InlineCustomLabel(LocalLabelId(1uL), "Inbox", LabelColor("green")),
+            InlineCustomLabel(LocalLabelId(5uL), "Starred", LabelColor("yellow"))
         ),
         time = 1667924198uL
     )
 
-    val starredMessagesWithCustomLabel = listOf(
+    val starredMessagesWithInlineCustomLabel = listOf(
         buildMessage(
             id = LocalMessageId(123uL),
             subject = "Message 123",
             sender = sender,
             to = listOf(recipient1),
             labels = listOf(
-                CustomLabel(LocalLabelId(1uL), "Inbox", LabelColor("green")),
-                CustomLabel(LocalLabelId(5uL), "Starred", LabelColor("yellow")),
-                CustomLabel(LocalLabelId(11uL), "Custom", LabelColor("blue"))
+                InlineCustomLabel(LocalLabelId(1uL), "Inbox", LabelColor("green")),
+                InlineCustomLabel(LocalLabelId(5uL), "Starred", LabelColor("yellow")),
+                InlineCustomLabel(LocalLabelId(11uL), "Custom", LabelColor("blue"))
             ),
             time = 1667924198uL
         ),
@@ -187,9 +187,9 @@ object LocalMessageTestData {
             sender = sender,
             to = listOf(recipient2),
             labels = listOf(
-                CustomLabel(LocalLabelId(1uL), "Inbox", LabelColor("green")),
-                CustomLabel(LocalLabelId(5uL), "Starred", LabelColor("yellow")),
-                CustomLabel(LocalLabelId(11uL), "Custom", LabelColor("blue"))
+                InlineCustomLabel(LocalLabelId(1uL), "Inbox", LabelColor("green")),
+                InlineCustomLabel(LocalLabelId(5uL), "Starred", LabelColor("yellow")),
+                InlineCustomLabel(LocalLabelId(11uL), "Custom", LabelColor("blue"))
             ),
             time = 1667924198uL
         ),
@@ -199,8 +199,8 @@ object LocalMessageTestData {
             sender = sender,
             to = listOf(recipient3),
             labels = listOf(
-                CustomLabel(LocalLabelId(1uL), "Inbox", LabelColor("green")),
-                CustomLabel(LocalLabelId(5uL), "Starred", LabelColor("yellow"))
+                InlineCustomLabel(LocalLabelId(1uL), "Inbox", LabelColor("green")),
+                InlineCustomLabel(LocalLabelId(5uL), "Starred", LabelColor("yellow"))
             ),
             time = 1667924198uL
         )
@@ -214,7 +214,7 @@ object LocalMessageTestData {
         to: List<MessageAddress>,
         cc: List<MessageAddress> = emptyList(),
         bcc: List<MessageAddress> = emptyList(),
-        labels: List<CustomLabel> = listOf(CustomLabel(LocalLabelId(1uL), "Inbox", LabelColor("green"))),
+        labels: List<InlineCustomLabel> = listOf(InlineCustomLabel(LocalLabelId(1uL), "Inbox", LabelColor("green"))),
         time: ULong,
         size: ULong = 0uL,
         expirationTime: ULong = 0uL,

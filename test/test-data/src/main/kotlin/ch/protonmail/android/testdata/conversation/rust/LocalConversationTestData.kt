@@ -23,7 +23,7 @@ import ch.protonmail.android.mailcommon.domain.mapper.LocalConversation
 import ch.protonmail.android.mailcommon.domain.mapper.LocalConversationId
 import ch.protonmail.android.mailcommon.domain.mapper.LocalLabelId
 import uniffi.proton_mail_uniffi.AvatarInformation
-import uniffi.proton_mail_uniffi.CustomLabel
+import uniffi.proton_mail_uniffi.InlineCustomLabel
 import uniffi.proton_mail_uniffi.LabelColor
 import uniffi.proton_mail_uniffi.MessageAddress
 
@@ -99,7 +99,7 @@ object LocalConversationTestData {
         subject = "Trashed conversation",
         senders = listOf(sender),
         recipients = listOf(recipient1),
-        labels = listOf(CustomLabel(LocalLabelId(2uL), "Trash", LabelColor("red"))),
+        labels = listOf(InlineCustomLabel(LocalLabelId(2uL), "Trash", LabelColor("red"))),
         time = 1667924198uL
     )
 
@@ -108,7 +108,7 @@ object LocalConversationTestData {
         subject = RAW_SUBJECT,
         senders = listOf(sender),
         recipients = listOf(recipient1),
-        labels = listOf(CustomLabel(LocalLabelId(4uL), "Spam", LabelColor("yellow"))),
+        labels = listOf(InlineCustomLabel(LocalLabelId(4uL), "Spam", LabelColor("yellow"))),
         time = 1667924198uL
     )
 
@@ -117,7 +117,7 @@ object LocalConversationTestData {
         subject = RAW_SUBJECT,
         senders = listOf(sender),
         recipients = listOf(recipient1),
-        labels = listOf(CustomLabel(LocalLabelId(4uL), "Spam", LabelColor("yellow"))),
+        labels = listOf(InlineCustomLabel(LocalLabelId(4uL), "Spam", LabelColor("yellow"))),
         time = 1667924198uL
     )
 
@@ -127,8 +127,8 @@ object LocalConversationTestData {
         senders = listOf(sender),
         recipients = listOf(recipient1),
         labels = listOf(
-            CustomLabel(LocalLabelId(1uL), "Inbox", LabelColor("green")),
-            CustomLabel(LocalLabelId(5uL), "Starred", LabelColor("yellow"))
+            InlineCustomLabel(LocalLabelId(1uL), "Inbox", LabelColor("green")),
+            InlineCustomLabel(LocalLabelId(5uL), "Starred", LabelColor("yellow"))
         ),
         time = 1667924198uL
     )
@@ -140,9 +140,9 @@ object LocalConversationTestData {
             senders = listOf(sender),
             recipients = listOf(recipient1),
             labels = listOf(
-                CustomLabel(LocalLabelId(1uL), "Inbox", LabelColor("green")),
-                CustomLabel(LocalLabelId(5uL), "Starred", LabelColor("yellow")),
-                CustomLabel(LocalLabelId(11uL), "Custom", LabelColor("blue"))
+                InlineCustomLabel(LocalLabelId(1uL), "Inbox", LabelColor("green")),
+                InlineCustomLabel(LocalLabelId(5uL), "Starred", LabelColor("yellow")),
+                InlineCustomLabel(LocalLabelId(11uL), "Custom", LabelColor("blue"))
             ),
             time = 1667924198uL
         ),
@@ -152,9 +152,9 @@ object LocalConversationTestData {
             senders = listOf(sender),
             recipients = listOf(recipient2),
             labels = listOf(
-                CustomLabel(LocalLabelId(1uL), "Inbox", LabelColor("green")),
-                CustomLabel(LocalLabelId(5uL), "Starred", LabelColor("yellow")),
-                CustomLabel(LocalLabelId(11uL), "Custom", LabelColor("blue"))
+                InlineCustomLabel(LocalLabelId(1uL), "Inbox", LabelColor("green")),
+                InlineCustomLabel(LocalLabelId(5uL), "Starred", LabelColor("yellow")),
+                InlineCustomLabel(LocalLabelId(11uL), "Custom", LabelColor("blue"))
             ),
             time = 1667924198uL
         ),
@@ -164,8 +164,8 @@ object LocalConversationTestData {
             senders = listOf(sender),
             recipients = listOf(recipient3),
             labels = listOf(
-                CustomLabel(LocalLabelId(1uL), "Inbox", LabelColor("green")),
-                CustomLabel(LocalLabelId(5uL), "Starred", LabelColor("yellow"))
+                InlineCustomLabel(LocalLabelId(1uL), "Inbox", LabelColor("green")),
+                InlineCustomLabel(LocalLabelId(5uL), "Starred", LabelColor("yellow"))
             ),
             time = 1667924198uL
         )
@@ -176,7 +176,7 @@ object LocalConversationTestData {
         subject: String,
         senders: List<MessageAddress>,
         recipients: List<MessageAddress>,
-        labels: List<CustomLabel> = listOf(CustomLabel(LocalLabelId(1uL), "Inbox", LabelColor("green"))),
+        labels: List<InlineCustomLabel> = listOf(InlineCustomLabel(LocalLabelId(1uL), "Inbox", LabelColor("green"))),
         time: ULong,
         size: ULong = 0uL,
         expirationTime: ULong = 0uL,

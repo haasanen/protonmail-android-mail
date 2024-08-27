@@ -18,51 +18,46 @@
 
 package ch.protonmail.android.testdata.label.rust
 
-import ch.protonmail.android.mailcommon.domain.mapper.LocalLabel
 import ch.protonmail.android.mailcommon.domain.mapper.LocalLabelId
 import ch.protonmail.android.mailcommon.domain.mapper.LocalSystemLabel
 import uniffi.proton_mail_uniffi.LabelColor
 import uniffi.proton_mail_uniffi.LabelDescription
+import uniffi.proton_mail_uniffi.SidebarCustomFolder
+import uniffi.proton_mail_uniffi.SidebarCustomLabel
+import uniffi.proton_mail_uniffi.SidebarSystemLabel
 
 object LocalLabelTestData {
-    val localSystemLabelWithCount = LocalLabel(
+    val localSystemLabelWithCount = SidebarSystemLabel(
         id = LocalLabelId(1uL),
         name = "Inbox",
-        path = "path",
-        color = LabelColor("color"),
-        labelDescription = LabelDescription.System(LocalSystemLabel.INBOX),
+        description = LabelDescription.System(LocalSystemLabel.INBOX),
         displayOrder = 1.toUInt(),
-        parentId = LocalLabelId(2uL),
         display = false,
-        expanded = false,
         notify = false,
         sticky = false,
         total = 2.toULong(),
         unread = 0.toULong()
     )
 
-    val localMessageLabelWithCount = LocalLabel(
+    val localMessageLabelWithCount = SidebarCustomLabel(
         id = LocalLabelId(100uL),
         name = "CustomMessageLabel",
-        path = "path",
         color = LabelColor("color"),
-        labelDescription = LabelDescription.Label,
+        description = LabelDescription.Label,
         displayOrder = 1.toUInt(),
-        parentId = LocalLabelId(3uL),
         display = false,
-        expanded = false,
         notify = false,
         sticky = false,
         total = 2.toULong(),
         unread = 0.toULong()
     )
 
-    val localMessageFolderWithCount = LocalLabel(
+    val localMessageFolderWithCount = SidebarCustomFolder(
         id = LocalLabelId(200uL),
         name = "CustomMessageFolder",
         path = "path",
         color = LabelColor("color"),
-        labelDescription = LabelDescription.Folder,
+        description = LabelDescription.Folder,
         displayOrder = 1.toUInt(),
         parentId = LocalLabelId(3uL),
         display = false,
@@ -70,19 +65,16 @@ object LocalLabelTestData {
         notify = false,
         sticky = false,
         total = 2.toULong(),
-        unread = 7.toULong()
+        unread = 7.toULong(),
+        children = emptyList()
     )
 
-    fun buildSystem(localSystemLabel: LocalSystemLabel) = LocalLabel(
+    fun buildSystem(localSystemLabel: LocalSystemLabel) = SidebarSystemLabel(
         id = LocalLabelId(1000.toULong()),
         name = "SomeSystemFolder",
-        path = "path",
-        color = LabelColor("color"),
-        labelDescription = LabelDescription.System(localSystemLabel),
+        description = LabelDescription.System(localSystemLabel),
         displayOrder = 1.toUInt(),
-        parentId = LocalLabelId(3uL),
         display = false,
-        expanded = false,
         notify = false,
         sticky = false,
         total = 2.toULong(),

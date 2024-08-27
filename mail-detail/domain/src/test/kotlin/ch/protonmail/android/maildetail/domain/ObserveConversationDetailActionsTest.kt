@@ -37,11 +37,7 @@ import kotlin.test.assertEquals
 
 internal class ObserveConversationDetailActionsTest {
 
-    private val observeConversation = mockk<ObserveConversation> {
-        every {
-            this@mockk.invoke(userId, ConversationId(ConversationTestData.RAW_CONVERSATION_ID), true)
-        } returns flowOf(ConversationTestData.conversation.right())
-    }
+    private val observeConversation = mockk<ObserveConversation>()
 
     private val observeDetailActions = ObserveConversationDetailActions(
         observeConversation = observeConversation
@@ -51,6 +47,9 @@ internal class ObserveConversationDetailActionsTest {
     fun `returns default actions list for conversation`() = runTest {
         // Given
         val conversationId = ConversationId(ConversationTestData.RAW_CONVERSATION_ID)
+        every {
+            observeConversation.invoke(userId, conversationId, true)
+        } returns flowOf(ConversationTestData.conversation.right())
         // When
         observeDetailActions.invoke(userId, conversationId, refreshConversations = true).test {
             // Then
@@ -64,53 +63,6 @@ internal class ObserveConversationDetailActionsTest {
             awaitComplete()
         }
     }
-
-    @Test
-    fun `returns delete action when all messages in conversation are trash or spam`() = runTest {
-        // Given
-        val conversationId = ConversationId(ConversationTestData.RAW_CONVERSATION_ID)
-        val conversation = ConversationTestData.trashAndSpamConversation
-        every { observeConversation.invoke(userId, conversationId, true) } returns flowOf(conversation.right())
-        // When
-        observeDetailActions.invoke(userId, conversationId, true).test {
-            // Then
-            val expected = listOf(
-                Action.MarkUnread,
-                Action.Move,
-                Action.Delete,
-                Action.Label
-            )
-            assertEquals(expected.right(), awaitItem())
-            awaitComplete()
-        }
-    }
-
-    @Test
-    fun `returns delete action when all messages in conversation are trash and have all_drafts or all_sent labels`() =
-        runTest {
-            // Given
-            val conversationId = ConversationId(ConversationTestData.RAW_CONVERSATION_ID)
-            val conversation = ConversationTestData.trashConversationWithAllSentAllDrafts
-            every {
-                observeConversation.invoke(
-                    userId,
-                    conversationId,
-                    refreshData = true
-                )
-            } returns flowOf(conversation.right())
-            // When
-            observeDetailActions.invoke(userId, conversationId, refreshConversations = true).test {
-                // Then
-                val expected = listOf(
-                    Action.MarkUnread,
-                    Action.Move,
-                    Action.Delete,
-                    Action.Label
-                )
-                assertEquals(expected.right(), awaitItem())
-                awaitComplete()
-            }
-        }
 
     @Test
     fun `returns data error when failing to get conversation`() = runTest {

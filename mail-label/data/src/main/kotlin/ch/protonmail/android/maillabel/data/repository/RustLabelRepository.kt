@@ -55,7 +55,7 @@ class RustLabelRepository @Inject constructor(
     ): Flow<DataResult<List<Label>>> {
         return when (type) {
             LabelType.SystemFolder -> labelDataSource.observeSystemLabels(userId).map { localLabels ->
-                localLabels.map { it.toLabel() }
+                localLabels.map { it.toLabelWithSystemLabelId().label }
             }.convertToDataResultFlow()
 
             LabelType.MessageLabel -> labelDataSource.observeMessageLabels(userId).map { localLabels ->
@@ -74,18 +74,18 @@ class RustLabelRepository @Inject constructor(
     }
 
     override fun observeCustomLabels(userId: UserId): Flow<List<Label>> =
-        labelDataSource.observeMessageLabels(userId).map { localLabels ->
-            localLabels.map { it.toLabel() }
+        labelDataSource.observeMessageLabels(userId).map { customLabels ->
+            customLabels.map { it.toLabel() }
         }
 
     override fun observeCustomFolders(userId: UserId): Flow<List<Label>> =
-        labelDataSource.observeMessageFolders(userId).map { localLabels ->
-            localLabels.map { it.toLabel() }
+        labelDataSource.observeMessageFolders(userId).map { customFolders ->
+            customFolders.map { it.toLabel() }
         }
 
     override fun observeSystemLabels(userId: UserId): Flow<List<LabelWithSystemLabelId>> =
-        labelDataSource.observeSystemLabels(userId).map { localLabels ->
-            localLabels.map { it.toLabelWithSystemLabelId() }
+        labelDataSource.observeSystemLabels(userId).map { systemLabels ->
+            systemLabels.map { it.toLabelWithSystemLabelId() }
         }
 
     override suspend fun getLabels(

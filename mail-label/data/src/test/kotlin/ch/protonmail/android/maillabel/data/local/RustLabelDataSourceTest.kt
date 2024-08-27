@@ -229,7 +229,7 @@ class RustLabelDataSourceTest {
         val labelsWatcherMock = mockk<WatchHandle>()
         coEvery { userSessionRepository.getUserSession(userId) } returns userSessionMock
         val sidebarMock = mockk<Sidebar> {
-            coEvery { this@mockk.customFolders(null) } returns expected
+            coEvery { this@mockk.allCustomFolders() } returns expected
             coEvery {
                 this@mockk.watchLabels(LabelType.FOLDER, capture(messageFoldersCallbackSlot))
             } returns labelsWatcherMock
@@ -258,7 +258,7 @@ class RustLabelDataSourceTest {
         val firstUserSessionMock = mockk<MailUserSession>()
         val secondUserSessionMock = mockk<MailUserSession>()
         val sidebarMock = mockk<Sidebar> {
-            coEvery { this@mockk.customFolders(null) } returns expected
+            coEvery { this@mockk.allCustomFolders() } returns expected
             coEvery { this@mockk.watchLabels(LabelType.FOLDER, any()) } returns watcherMock
         }
         every { createRustSidebar(firstUserSessionMock) } returns sidebarMock

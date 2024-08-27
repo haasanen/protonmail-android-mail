@@ -31,6 +31,7 @@ import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import me.proton.core.domain.entity.UserId
 import me.proton.core.label.domain.entity.LabelType
+import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -59,6 +60,7 @@ class GetMailboxItems @Inject constructor(
             }
 
             MailboxItemType.Conversation -> conversationRepository.getLocalConversations(userId, pageKey).let { list ->
+                Timber.i("rust-conversation: GetMailboxItems received list of local convos $list")
                 list.map { conversationMailboxItemMapper.toMailboxItem(it, labelsMaps) }
             }
         }

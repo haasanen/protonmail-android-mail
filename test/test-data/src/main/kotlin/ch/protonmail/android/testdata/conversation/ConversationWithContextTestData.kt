@@ -20,51 +20,51 @@ package ch.protonmail.android.testdata.conversation
 
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailconversation.domain.entity.Conversation
-import ch.protonmail.android.mailconversation.domain.entity.ConversationLabel
-import ch.protonmail.android.mailconversation.domain.entity.ConversationWithContext
 import ch.protonmail.android.mailmessage.domain.model.AttachmentCount
 import ch.protonmail.android.testdata.user.UserIdTestData.userId
 import ch.protonmail.android.testdata.user.UserIdTestData.userId1
 import me.proton.core.domain.entity.UserId
+import me.proton.core.label.domain.entity.Label
 import me.proton.core.label.domain.entity.LabelId
+import me.proton.core.label.domain.entity.LabelType
 
 object ConversationWithContextTestData {
 
-    val conversation1 = buildConversation(userId = userId, id = "1", time = 1000).withContext()
-    val conversation2 = buildConversation(userId = userId, id = "2", time = 2000).withContext()
-    val conversation3 = buildConversation(userId = userId, id = "3", time = 3000).withContext()
-    val conversation4 = buildConversation(userId = userId, id = "4", time = 4000).withContext()
+    val conversation1 = buildConversation(userId = userId, id = "1", time = 1000)
+    val conversation2 = buildConversation(userId = userId, id = "2", time = 2000)
+    val conversation3 = buildConversation(userId = userId, id = "3", time = 3000)
+    val conversation4 = buildConversation(userId = userId, id = "4", time = 4000)
 
     val conversation1NoLabels = buildConversation(
         userId = userId, id = "1", time = 1000, labelIds = emptyList()
-    ).withContext()
+    )
     val conversation1Labeled = buildConversation(
         userId = userId, id = "1", time = 1000, labelIds = listOf("0")
-    ).withContext()
+    )
     val conversation2Labeled = buildConversation(
         userId = userId, id = "2", time = 2000, labelIds = listOf("4")
-    ).withContext()
+    )
     val conversation3Labeled = buildConversation(
         userId = userId, id = "3", time = 3000, labelIds = listOf("0", "1")
-    ).withContext()
+    )
 
-    val conversation1Ordered = buildConversation(userId = userId, id = "1", order = 1000).withContext()
-    val conversation2Ordered = buildConversation(userId = userId, id = "2", order = 2000).withContext()
+    val conversation1Ordered = buildConversation(userId = userId, id = "1", order = 1000)
+    val conversation2Ordered = buildConversation(userId = userId, id = "2", order = 2000)
 
     object User2 {
 
         val conversation1Labeled = buildConversation(
             userId = userId1, id = "1", time = 1000, labelIds = listOf("0")
-        ).withContext()
+        )
         val conversation2Labeled = buildConversation(
             userId = userId1, id = "2", time = 2000, labelIds = listOf("4")
-        ).withContext()
+        )
         val conversation3Labeled = buildConversation(
             userId = userId1, id = "3", time = 3000, labelIds = listOf("0", "1")
-        ).withContext()
+        )
     }
 
-    fun getConversationWithContext(
+    fun getConversation(
         userId: UserId,
         id: String,
         order: Long = 0,
@@ -74,25 +74,15 @@ object ConversationWithContextTestData {
         numAttachments: Int = 0,
         expirationTime: Long = 0,
         attachmentCount: AttachmentCount = AttachmentCount(0)
-    ) = ConversationWithContext(
-        conversation = Conversation(
-            userId = userId,
-            conversationId = ConversationId(id),
-            order = order,
-            labels = labelIds.map {
-                ConversationLabel(ConversationId(id), LabelId(it), time, 0, 0, 0, 0)
-            },
-            subject = "subject",
-            senders = emptyList(),
-            recipients = emptyList(),
-            expirationTime = expirationTime,
-            numMessages = 1,
-            numUnread = 0,
-            numAttachments = numAttachments,
-            attachmentCount = attachmentCount,
-            starred = false
-        ),
-        contextLabelId = contextLabelId
+    ) = buildConversation(
+        userId = userId,
+        id = id,
+        order = order,
+        labelIds = labelIds,
+        expirationTime = expirationTime,
+        numAttachments = numAttachments,
+        attachmentCount = attachmentCount,
+        time = 0.toLong()
     )
 
     private fun buildConversation(
@@ -108,9 +98,7 @@ object ConversationWithContextTestData {
         userId = userId,
         conversationId = ConversationId(id),
         order = order,
-        labels = labelIds.map {
-            ConversationLabel(ConversationId(id), LabelId(it), time, 0, 0, 0, 0)
-        },
+        labels = emptyList(),
         subject = "subject",
         senders = emptyList(),
         recipients = emptyList(),
@@ -119,12 +107,24 @@ object ConversationWithContextTestData {
         numUnread = 0,
         numAttachments = numAttachments,
         attachmentCount = attachmentCount,
-        starred = false
+        starred = false,
+        time = time,
+        size = 0.toLong(),
+        customLabels = labelIds.map { buildLabel(it) }
     )
 
-    private fun Conversation.withContext(contextLabelId: LabelId = LabelId("0")) = ConversationWithContext(
-        this,
-        contextLabelId
+    private fun buildLabel(labelId: String) = Label(
+        userId = userId,
+        labelId = LabelId(labelId),
+        parentId = null,
+        name = labelId,
+        type = LabelType.MessageLabel,
+        path = labelId,
+        color = "",
+        order = labelId.hashCode(),
+        isNotified = null,
+        isExpanded = null,
+        isSticky = null
     )
 
 }

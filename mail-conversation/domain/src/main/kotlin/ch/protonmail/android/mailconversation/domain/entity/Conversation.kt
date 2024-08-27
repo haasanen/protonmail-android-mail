@@ -23,6 +23,7 @@ import ch.protonmail.android.mailmessage.domain.model.AttachmentCount
 import ch.protonmail.android.mailmessage.domain.model.Recipient
 import ch.protonmail.android.mailmessage.domain.model.Sender
 import me.proton.core.domain.entity.UserId
+import me.proton.core.label.domain.entity.Label
 
 data class Conversation(
     val userId: UserId,
@@ -37,5 +38,8 @@ data class Conversation(
     val numUnread: Int,
     val numAttachments: Int,
     val attachmentCount: AttachmentCount,
-    val starred: Boolean
+    val starred: Boolean,
+    val time: Long,
+    val size: Long,
+    val customLabels: List<Label>
 )

@@ -22,10 +22,8 @@ import uniffi.proton_mail_uniffi.AttachmentMetadata
 import uniffi.proton_mail_uniffi.ComposerDirection
 import uniffi.proton_mail_uniffi.ComposerMode
 import uniffi.proton_mail_uniffi.Conversation
-import uniffi.proton_mail_uniffi.CustomLabel
 import uniffi.proton_mail_uniffi.DecryptedMessage
 import uniffi.proton_mail_uniffi.Id
-import uniffi.proton_mail_uniffi.Label
 import uniffi.proton_mail_uniffi.LabelType
 import uniffi.proton_mail_uniffi.MailSettings
 import uniffi.proton_mail_uniffi.Message
@@ -46,13 +44,11 @@ typealias LocalConversationId = Id
 typealias LocalLabelId = Id
 typealias LocalViewMode = ViewMode
 typealias LocalLabelType = LabelType
-typealias LocalLabel = Label
 typealias LocalMessageId = Id
 typealias LocalMessageMetadata = Message
 typealias LocalDecryptedMessage = DecryptedMessage
 typealias LocalAttachmentMetadata = AttachmentMetadata
 typealias LocalMimeType = MimeType
-typealias LocalCustomLabel = CustomLabel
 typealias LocalMailSettings = MailSettings
 typealias LocalPmSignature = PmSignature
 typealias LocalComposerMode = ComposerMode

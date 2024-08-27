@@ -26,10 +26,8 @@ import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailconversation.data.local.RustConversationDataSource
 import ch.protonmail.android.mailconversation.data.mapper.toConversation
-import ch.protonmail.android.mailconversation.data.mapper.toConversationWithContext
 import ch.protonmail.android.mailconversation.data.mapper.toLocalConversationId
 import ch.protonmail.android.mailconversation.domain.entity.Conversation
-import ch.protonmail.android.mailconversation.domain.entity.ConversationWithContext
 import ch.protonmail.android.mailconversation.domain.repository.ConversationRepository
 import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
 import ch.protonmail.android.mailpagination.domain.model.PageKey
@@ -47,14 +45,12 @@ class RustConversationRepositoryImpl @Inject constructor(
     private val rustConversationDataSource: RustConversationDataSource
 ) : ConversationRepository {
 
-    override suspend fun getLocalConversations(userId: UserId, pageKey: PageKey): List<ConversationWithContext> {
+    override suspend fun getLocalConversations(userId: UserId, pageKey: PageKey): List<Conversation> {
         val rustLocalLabelId = pageKey.filter.labelId.toLocalLabelId()
 
         Timber.d("rust-conversation: getConversations, pageKey: $pageKey rustLocalLabelId: $rustLocalLabelId")
 
-        return rustConversationDataSource.getConversations(userId, rustLocalLabelId).map {
-            it.toConversationWithContext(pageKey.filter.labelId)
-        }
+        return rustConversationDataSource.getConversations(userId, rustLocalLabelId).map { it.toConversation() }
     }
 
     @MissingRustApi
@@ -62,7 +58,7 @@ class RustConversationRepositoryImpl @Inject constructor(
     override suspend fun isLocalPageValid(
         userId: UserId,
         pageKey: PageKey,
-        items: List<ConversationWithContext>
+        items: List<Conversation>
     ): Boolean = true
 
     override suspend fun markAsStale(userId: UserId, labelId: LabelId) {

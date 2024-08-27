@@ -18,7 +18,6 @@
 
 package ch.protonmail.android.maillabel.data.mapper
 
-import ch.protonmail.android.mailcommon.domain.mapper.LocalLabel
 import ch.protonmail.android.mailcommon.domain.mapper.LocalLabelId
 import ch.protonmail.android.mailcommon.domain.mapper.LocalLabelType
 import ch.protonmail.android.mailcommon.domain.mapper.LocalSystemLabel
@@ -30,6 +29,9 @@ import me.proton.core.label.domain.entity.LabelId
 import me.proton.core.label.domain.entity.LabelType
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.LabelDescription
+import uniffi.proton_mail_uniffi.SidebarCustomFolder
+import uniffi.proton_mail_uniffi.SidebarCustomLabel
+import uniffi.proton_mail_uniffi.SidebarSystemLabel
 
 fun LabelId.toLocalLabelId(): LocalLabelId = LocalLabelId(this.id.toULong())
 fun LocalLabelId.toLabelId(): LabelId = LabelId(this.value.toString())
@@ -52,12 +54,12 @@ fun LabelType.toRustLabelType(): LocalLabelType {
     }
 
 }
-fun LocalLabel.toLabel(): Label {
+fun SidebarCustomFolder.toLabel(): Label {
     return Label(
         userId = FAKE_USER_ID,
         labelId = this.id.toLabelId(),
         name = this.name,
-        type = this.labelDescription.toLabelType(),
+        type = this.description.toLabelType(),
         path = this.path ?: "",
         color = this.color?.value ?: "#fff",
         order = this.displayOrder.toInt(),
@@ -68,8 +70,25 @@ fun LocalLabel.toLabel(): Label {
 
     )
 }
-fun LocalLabel.toLabelWithSystemLabelId(): LabelWithSystemLabelId {
-    val systemLabelDescription = this.labelDescription
+fun SidebarCustomLabel.toLabel(): Label {
+    return Label(
+        userId = FAKE_USER_ID,
+        labelId = this.id.toLabelId(),
+        name = this.name,
+        type = this.description.toLabelType(),
+        path = "",
+        color = this.color.value,
+        order = this.displayOrder.toInt(),
+        isNotified = this.notify,
+        isExpanded = null,
+        isSticky = this.sticky,
+        parentId = null
+
+    )
+}
+
+fun SidebarSystemLabel.toLabelWithSystemLabelId(): LabelWithSystemLabelId {
+    val systemLabelDescription = this.description
     if (systemLabelDescription !is LabelDescription.System) {
         Timber.w("rust-label: Mapping a non-system labelId to a system one. This is illegal.")
         throw IllegalStateException("Mapping a non-system label to system")
@@ -80,13 +99,13 @@ fun LocalLabel.toLabelWithSystemLabelId(): LabelWithSystemLabelId {
             labelId = this.id.toLabelId(),
             name = this.name,
             type = systemLabelDescription.toLabelType(),
-            path = this.path ?: "",
-            color = this.color?.value ?: "#fff",
+            path = "",
+            color = "",
             order = this.displayOrder.toInt(),
             isNotified = this.notify,
-            isExpanded = this.expanded,
+            isExpanded = null,
             isSticky = this.sticky,
-            parentId = this.parentId?.toLabelId()
+            parentId = null
         ),
         systemLabelDescription.v1?.toSystemLabel() ?: SystemLabelId.AllMail
     )

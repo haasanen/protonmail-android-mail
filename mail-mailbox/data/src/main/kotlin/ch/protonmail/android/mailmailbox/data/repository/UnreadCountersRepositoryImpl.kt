@@ -19,14 +19,15 @@
 package ch.protonmail.android.mailmailbox.data.repository
 
 import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
-import ch.protonmail.android.mailcommon.domain.mapper.LocalLabel
 import ch.protonmail.android.maillabel.data.local.LabelDataSource
 import ch.protonmail.android.maillabel.data.mapper.toLabelId
 import ch.protonmail.android.mailmailbox.domain.repository.UnreadCountersRepository
 import ch.protonmail.android.mailmessage.domain.model.UnreadCounter
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.mapLatest
 import me.proton.core.domain.entity.UserId
+import me.proton.core.label.domain.entity.LabelId
 import javax.inject.Inject
 
 class UnreadCountersRepositoryImpl @Inject constructor(
@@ -35,14 +36,40 @@ class UnreadCountersRepositoryImpl @Inject constructor(
 
     @MissingRustApi
     override fun observeUnreadCounters(userId: UserId): Flow<List<UnreadCounter>> = combine(
-        labelDataSource.observeSystemLabels(userId),
-        labelDataSource.observeMessageLabels(userId),
-        labelDataSource.observeMessageFolders(userId)
+        observeSystemLabelsUnreadCounts(userId),
+        observeCustomLabelsUnreadCounts(userId),
+        observeCustomFoldersUnreadCounts(userId)
     ) { system, labels, folders ->
-        (system + labels + folders).map { localLabel: LocalLabel ->
-            UnreadCounter(localLabel.id.toLabelId(), localLabel.unread.toInt())
+        (system + labels + folders).map { labelIdWithCount: LabelIdWithCount ->
+            UnreadCounter(labelIdWithCount.labelId, labelIdWithCount.count)
         }
 
     }
+
+    private fun observeCustomFoldersUnreadCounts(userId: UserId) = labelDataSource.observeMessageFolders(userId)
+        .mapLatest { messageFolders ->
+            messageFolders.map { folder ->
+                LabelIdWithCount(folder.id.toLabelId(), folder.unread.toInt())
+            }
+        }
+
+    private fun observeCustomLabelsUnreadCounts(userId: UserId) = labelDataSource.observeMessageLabels(userId)
+        .mapLatest { messageLabels ->
+            messageLabels.map { label ->
+                LabelIdWithCount(label.id.toLabelId(), label.unread.toInt())
+            }
+        }
+
+    private fun observeSystemLabelsUnreadCounts(userId: UserId) = labelDataSource.observeSystemLabels(userId)
+        .mapLatest { systemLabels ->
+            systemLabels.map { system ->
+                LabelIdWithCount(system.id.toLabelId(), system.unread.toInt())
+            }
+        }
+
+    private data class LabelIdWithCount(
+        val labelId: LabelId,
+        val count: Int
+    )
 
 }

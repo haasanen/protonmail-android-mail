@@ -22,7 +22,6 @@ import arrow.core.Either
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailconversation.domain.entity.Conversation
-import ch.protonmail.android.mailconversation.domain.entity.ConversationWithContext
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import kotlinx.coroutines.flow.Flow
 import me.proton.core.domain.entity.UserId
@@ -34,7 +33,7 @@ interface ConversationRepository {
     /**
      * Load all [Conversation] from local cache for [userId].
      */
-    suspend fun getLocalConversations(userId: UserId, pageKey: PageKey = PageKey()): List<ConversationWithContext>
+    suspend fun getLocalConversations(userId: UserId, pageKey: PageKey = PageKey()): List<Conversation>
 
     /**
      * Return true if all [Conversation] are considered locally valid according the given [pageKey].
@@ -42,7 +41,7 @@ interface ConversationRepository {
     suspend fun isLocalPageValid(
         userId: UserId,
         pageKey: PageKey,
-        items: List<ConversationWithContext>
+        items: List<Conversation>
     ): Boolean
 
     /**

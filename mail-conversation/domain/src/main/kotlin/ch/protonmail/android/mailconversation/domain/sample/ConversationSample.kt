@@ -82,18 +82,21 @@ object ConversationSample {
         userId: UserId = UserIdSample.Primary,
         numMessages: Int = 0
     ) = Conversation(
-        attachmentCount = attachmentCount,
+        userId = userId,
         conversationId = conversationId,
-        expirationTime = 0,
+        order = 0,
         labels = labels,
-        numAttachments = 0,
+        subject = subject,
+        senders = senders,
+        recipients = recipients,
+        expirationTime = 0,
         numMessages = numMessages,
         numUnread = 0,
-        order = 0,
-        recipients = recipients,
-        senders = senders,
-        subject = subject,
-        userId = userId,
-        starred = false
+        numAttachments = 0,
+        attachmentCount = attachmentCount,
+        starred = false,
+        time = 0,
+        size = 0,
+        customLabels = emptyList()
     )
 }

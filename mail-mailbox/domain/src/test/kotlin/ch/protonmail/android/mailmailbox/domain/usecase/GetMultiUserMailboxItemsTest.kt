@@ -24,7 +24,6 @@ import ch.protonmail.android.mailconversation.domain.repository.ConversationRepo
 import ch.protonmail.android.maillabel.domain.usecase.GetLabels
 import ch.protonmail.android.mailmailbox.domain.mapper.ConversationMailboxItemMapper
 import ch.protonmail.android.mailmailbox.domain.mapper.MessageMailboxItemMapper
-import ch.protonmail.android.mailmailbox.domain.model.MailboxItemType.Conversation
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItemType.Message
 import ch.protonmail.android.mailmailbox.domain.model.MailboxPageKey
 import ch.protonmail.android.mailmessage.domain.model.Sender
@@ -186,76 +185,6 @@ class GetMultiUserMailboxItemsTest {
                 labelIds = listOf(LabelId("0"), LabelId("1")),
                 type = Message,
                 senders = senders
-            )
-        )
-        assertEquals(expected = mailboxItemsOrderedByTimeAscending, actual = mailboxItems)
-    }
-
-    @Test
-    fun `invoke for Conversation, getLabels and loadConversations`() = runTest {
-        // Given
-        val pageKey = PageKey(orderDirection = OrderDirection.Ascending, size = 6)
-        val mailboxPageKey = MailboxPageKey(listOf(userId, userId1), pageKey)
-
-        // When
-        val mailboxItems = usecase.invoke(Conversation, mailboxPageKey)
-            .getOrHandle(::error)
-
-        // Then
-        coVerify { getLabels(userId, MessageLabel) }
-        coVerify { getLabels(userId1, MessageLabel) }
-        coVerify { getLabels(userId, LabelType.MessageFolder) }
-        coVerify { getLabels(userId1, LabelType.MessageFolder) }
-        coVerify { conversationRepository.getLocalConversations(userId, pageKey) }
-        coVerify { conversationRepository.getLocalConversations(userId1, pageKey) }
-        val mailboxItemsOrderedByTimeAscending = listOf(
-            buildMailboxItem(
-                userId = userId,
-                id = "1",
-                time = 1000,
-                labelIds = listOf(LabelId("0")),
-                type = Conversation,
-                hasAttachments = true
-            ),
-            buildMailboxItem(
-                userId = userId1,
-                id = "1",
-                time = 1000,
-                labelIds = listOf(LabelId("0")),
-                type = Conversation,
-                hasAttachments = true
-            ),
-            buildMailboxItem(
-                userId = userId,
-                id = "2",
-                time = 2000,
-                labelIds = listOf(LabelId("4")),
-                type = Conversation,
-                hasAttachments = true
-            ),
-            buildMailboxItem(
-                userId = userId1,
-                id = "2",
-                time = 2000,
-                labelIds = listOf(LabelId("4")),
-                type = Conversation,
-                hasAttachments = true
-            ),
-            buildMailboxItem(
-                userId = userId,
-                id = "3",
-                time = 3000,
-                labelIds = listOf(LabelId("0"), LabelId("1")),
-                type = Conversation,
-                hasAttachments = true
-            ),
-            buildMailboxItem(
-                userId = userId1,
-                id = "3",
-                time = 3000,
-                labelIds = listOf(LabelId("0"), LabelId("1")),
-                type = Conversation,
-                hasAttachments = true
             )
         )
         assertEquals(expected = mailboxItemsOrderedByTimeAscending, actual = mailboxItems)

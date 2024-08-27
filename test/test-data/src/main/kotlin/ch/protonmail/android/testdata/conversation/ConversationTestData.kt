@@ -20,13 +20,14 @@ package ch.protonmail.android.testdata.conversation
 
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailconversation.domain.entity.Conversation
-import ch.protonmail.android.mailconversation.domain.entity.ConversationLabel
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.mailmessage.domain.model.AttachmentCount
 import ch.protonmail.android.mailmessage.domain.model.Sender
 import ch.protonmail.android.testdata.user.UserIdTestData.userId
 import me.proton.core.domain.entity.UserId
+import me.proton.core.label.domain.entity.Label
 import me.proton.core.label.domain.entity.LabelId
+import me.proton.core.label.domain.entity.LabelType
 
 object ConversationTestData {
 
@@ -76,7 +77,8 @@ object ConversationTestData {
             SystemLabelId.Inbox.labelId.id,
             SystemLabelId.Starred.labelId.id
         ),
-        numMessages = 1
+        numMessages = 1,
+        isStarred = true
     )
 
     val trashAndSpamConversation = buildConversation(
@@ -105,10 +107,7 @@ object ConversationTestData {
         userId = userId,
         id = RAW_CONVERSATION_ID,
         subject = RAW_SUBJECT,
-        conversationLabels = listOf(
-            buildConversationLabel(RAW_CONVERSATION_ID, "1", time = 0),
-            buildConversationLabel(RAW_CONVERSATION_ID, "2", time = 10)
-        )
+        labels = listOf(buildLabel(RAW_CONVERSATION_ID), buildLabel(RAW_CONVERSATION_ID))
     )
 
     private fun buildConversation(
@@ -120,12 +119,13 @@ object ConversationTestData {
         numAttachments: Int = 0,
         expirationTime: Long = 0,
         attachmentCount: AttachmentCount = AttachmentCount(0),
-        numUnRead: Int = 0
+        numUnRead: Int = 0,
+        isStarred: Boolean = false
     ) = Conversation(
         userId = userId,
         conversationId = ConversationId(id),
         order = 0,
-        labels = labelIds.map { buildConversationLabel(id, it, numMessages = numMessages) },
+        labels = emptyList(),
         subject = subject,
         senders = listOf(Sender("address", "name")),
         recipients = emptyList(),
@@ -134,7 +134,10 @@ object ConversationTestData {
         numUnread = numUnRead,
         numAttachments = numAttachments,
         attachmentCount = attachmentCount,
-        starred = false
+        starred = isStarred,
+        time = 0.toLong(),
+        size = 0.toLong(),
+        customLabels = labelIds.map { buildLabel(id) }
     )
 
     private fun buildConversationWithConversationLabels(
@@ -142,7 +145,7 @@ object ConversationTestData {
         id: String,
         subject: String,
         numMessages: Int = 1,
-        conversationLabels: List<ConversationLabel>,
+        labels: List<Label>,
         numAttachments: Int = 0,
         expirationTime: Long = 0,
         attachmentCount: AttachmentCount = AttachmentCount(0)
@@ -150,7 +153,7 @@ object ConversationTestData {
         userId = userId,
         conversationId = ConversationId(id),
         order = 0,
-        labels = conversationLabels,
+        labels = emptyList(),
         subject = subject,
         senders = listOf(Sender("address", "name")),
         recipients = emptyList(),
@@ -159,22 +162,23 @@ object ConversationTestData {
         numUnread = 0,
         numAttachments = numAttachments,
         attachmentCount = attachmentCount,
-        starred = false
+        starred = false,
+        time = 0.toLong(),
+        size = 0.toLong(),
+        customLabels = labels
     )
 
-    private fun buildConversationLabel(
-        conversationId: String,
-        labelId: String,
-        time: Long = 0,
-        size: Long = 0,
-        numMessages: Int = 0
-    ) = ConversationLabel(
-        conversationId = ConversationId(conversationId),
+    private fun buildLabel(labelId: String) = Label(
+        userId = userId,
         labelId = LabelId(labelId),
-        contextTime = time,
-        contextSize = size,
-        contextNumMessages = numMessages,
-        contextNumUnread = 0,
-        contextNumAttachments = 0
+        parentId = null,
+        name = "",
+        type = LabelType.MessageLabel,
+        path = "",
+        color = "",
+        order = 0,
+        isNotified = null,
+        isExpanded = null,
+        isSticky = null
     )
 }

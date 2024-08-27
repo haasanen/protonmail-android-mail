@@ -21,7 +21,6 @@ package ch.protonmail.android.mailmessage.data.repository
 import ch.protonmail.android.mailcommon.domain.mapper.LocalAddressId
 import ch.protonmail.android.mailcommon.domain.mapper.LocalAttachmentMetadata
 import ch.protonmail.android.mailcommon.domain.mapper.LocalConversationId
-import ch.protonmail.android.mailcommon.domain.mapper.LocalCustomLabel
 import ch.protonmail.android.mailcommon.domain.mapper.LocalLabelId
 import ch.protonmail.android.mailcommon.domain.mapper.LocalMessageId
 import ch.protonmail.android.mailcommon.domain.mapper.LocalMessageMetadata
@@ -38,6 +37,7 @@ import junit.framework.TestCase.assertTrue
 import me.proton.core.label.domain.entity.LabelId
 import org.junit.Test
 import uniffi.proton_mail_uniffi.AvatarInformation
+import uniffi.proton_mail_uniffi.InlineCustomLabel
 import uniffi.proton_mail_uniffi.LabelColor
 import uniffi.proton_mail_uniffi.MessageAddress
 import uniffi.proton_mail_uniffi.MessageFlags
@@ -113,7 +113,7 @@ class MessageMapperTest {
         val size = 1024uL
         val order = 1uL
         val labels = listOf(
-            LocalCustomLabel(id = LocalLabelId(1u), name = "Test Label", color = LabelColor("0xFF0000"))
+            InlineCustomLabel(id = LocalLabelId(1u), name = "Test Label", color = LabelColor("0xFF0000"))
         )
         val subject = "Test Subject"
         val unread = true

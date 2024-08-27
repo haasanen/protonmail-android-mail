@@ -18,7 +18,6 @@
 
 package ch.protonmail.android.maillabel.data.local
 
-import ch.protonmail.android.mailcommon.domain.mapper.LocalLabel
 import ch.protonmail.android.maillabel.data.MailLabelRustCoroutineScope
 import ch.protonmail.android.maillabel.data.usecase.CreateRustSidebar
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
@@ -32,6 +31,9 @@ import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.LabelType
 import uniffi.proton_mail_uniffi.LiveQueryCallback
+import uniffi.proton_mail_uniffi.SidebarCustomFolder
+import uniffi.proton_mail_uniffi.SidebarCustomLabel
+import uniffi.proton_mail_uniffi.SidebarSystemLabel
 import uniffi.proton_mail_uniffi.WatchHandle
 import javax.inject.Inject
 
@@ -41,18 +43,18 @@ class RustLabelDataSource @Inject constructor(
     @MailLabelRustCoroutineScope private val coroutineScope: CoroutineScope
 ) : LabelDataSource {
 
-    private val mutableSystemLabelsFlow = MutableStateFlow<List<LocalLabel>?>(null)
-    private val systemLabelsFlow: Flow<List<LocalLabel>> = mutableSystemLabelsFlow
+    private val mutableSystemLabelsFlow = MutableStateFlow<List<SidebarSystemLabel>?>(null)
+    private val systemLabelsFlow: Flow<List<SidebarSystemLabel>> = mutableSystemLabelsFlow
         .asStateFlow()
         .filterNotNull()
 
-    private val mutableMessageLabelsFlow = MutableStateFlow<List<LocalLabel>?>(null)
-    private val messageLabelsFlow: Flow<List<LocalLabel>> = mutableMessageLabelsFlow
+    private val mutableMessageLabelsFlow = MutableStateFlow<List<SidebarCustomLabel>?>(null)
+    private val messageLabelsFlow: Flow<List<SidebarCustomLabel>> = mutableMessageLabelsFlow
         .asStateFlow()
         .filterNotNull()
 
-    private val mutableMessageFoldersFlow = MutableStateFlow<List<LocalLabel>?>(null)
-    private val messageFoldersFlow: Flow<List<LocalLabel>> = mutableMessageFoldersFlow
+    private val mutableMessageFoldersFlow = MutableStateFlow<List<SidebarCustomFolder>?>(null)
+    private val messageFoldersFlow: Flow<List<SidebarCustomFolder>> = mutableMessageFoldersFlow
         .asStateFlow()
         .filterNotNull()
 
@@ -60,7 +62,7 @@ class RustLabelDataSource @Inject constructor(
     private var messageLabelsWatchHandle: MailLabelsWatchHandleByUserId? = null
     private var messageFoldersWatchHandle: MailLabelsWatchHandleByUserId? = null
 
-    override fun observeSystemLabels(userId: UserId): Flow<List<LocalLabel>> {
+    override fun observeSystemLabels(userId: UserId): Flow<List<SidebarSystemLabel>> {
         Timber.v("rust-label: observeSystemLabels called")
         if (systemLabelsLiveQueryNotInitialised(userId)) {
             initSystemLabelsLiveQuery(userId)
@@ -69,7 +71,7 @@ class RustLabelDataSource @Inject constructor(
         return systemLabelsFlow
     }
 
-    override fun observeMessageLabels(userId: UserId): Flow<List<LocalLabel>> {
+    override fun observeMessageLabels(userId: UserId): Flow<List<SidebarCustomLabel>> {
         Timber.v("rust-label: observeMessageLabels called")
         if (messageLabelsLiveQueryNotInitialised(userId)) {
             initMessageLabelsLiveQuery(userId)
@@ -78,7 +80,7 @@ class RustLabelDataSource @Inject constructor(
         return messageLabelsFlow
     }
 
-    override fun observeMessageFolders(userId: UserId): Flow<List<LocalLabel>> {
+    override fun observeMessageFolders(userId: UserId): Flow<List<SidebarCustomFolder>> {
         Timber.v("rust-label: observeMessageFolders called")
         if (messageFoldersLiveQueryNotInitialised(userId)) {
             initMessageFoldersLiveQuery(userId)
@@ -142,7 +144,7 @@ class RustLabelDataSource @Inject constructor(
             val messageFoldersUpdatedCallback = object : LiveQueryCallback {
                 override fun onUpdate() {
                     coroutineScope.launch {
-                        mutableMessageFoldersFlow.value = sidebar.customFolders(null)
+                        mutableMessageFoldersFlow.value = sidebar.allCustomFolders()
                         Timber.v("rust-label: message folders updated: ${mutableMessageFoldersFlow.value}")
                     }
                 }
@@ -154,8 +156,8 @@ class RustLabelDataSource @Inject constructor(
                 sidebar.watchLabels(LabelType.FOLDER, messageFoldersUpdatedCallback)
             )
 
-            Timber.v("rust-label: Setting initial value for folders: ${sidebar.customFolders(null)}")
-            mutableMessageFoldersFlow.value = sidebar.customFolders(null)
+            Timber.v("rust-label: Setting initial value for folders: ${sidebar.allCustomFolders()}")
+            mutableMessageFoldersFlow.value = sidebar.allCustomFolders()
             Timber.d("rust-label: created message folders live query")
         }
     }

@@ -24,7 +24,6 @@ import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.sample.LabelIdSample
 import ch.protonmail.android.mailconversation.data.local.RustConversationDataSource
 import ch.protonmail.android.mailconversation.data.mapper.toConversation
-import ch.protonmail.android.mailconversation.data.mapper.toConversationWithContext
 import ch.protonmail.android.mailconversation.data.mapper.toLocalConversationId
 import ch.protonmail.android.mailconversation.domain.entity.Conversation
 import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
@@ -68,9 +67,7 @@ class RustConversationRepositoryImplTest {
         val localConversations = listOf(
             LocalConversationTestData.AugConversation, LocalConversationTestData.SepConversation
         )
-        val expectedConversations = localConversations.map {
-            it.toConversationWithContext(labelWithSystemLabelId.label.labelId)
-        }
+        val expectedConversations = localConversations.map { it.toConversation() }
         coEvery { rustConversationDataSource.getConversations(userId, any()) } returns localConversations
 
         // When
