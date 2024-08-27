@@ -67,7 +67,12 @@ class RustConversationDetailQueryImpl @Inject constructor(
             }
 
             conversationWatcher = createRustConversationWatcher(mailbox, conversationId, conversationUpdatedCallback)
-            conversationMutableStatusFlow.value = conversationWatcher?.conversation
+            val conversation = conversationWatcher?.conversation ?: run {
+                Timber.w("rust-conversation: init value for $conversationId from $conversationWatcher is null")
+                null
+            }
+            conversationMutableStatusFlow.value = conversation
+            Timber.d("rust-conversation: conversation watcher created, initial value is $conversation")
         }
 
         return conversationStatusFlow

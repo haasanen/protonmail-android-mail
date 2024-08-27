@@ -54,7 +54,7 @@ class RustMessageQueryImpl @Inject constructor(
 
     private val messagesUpdatedCallback = object : LiveQueryCallback {
         override fun onUpdate() {
-            mutableMessageStatusFlow.value = messagesWatcher?.messages ?: emptyList()
+            mutableMessageStatusFlow.value = messagesWatcher?.messages
 
             invalidationTracker.notifyInvalidation(
                 setOf(

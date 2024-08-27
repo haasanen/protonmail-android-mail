@@ -71,5 +71,5 @@ fun InlineCustomLabel.toLabel() = Label(
     isSticky = null
 )
 
-private fun LocalConversationId.toConversationId(): ConversationId = ConversationId(this.toString())
+private fun LocalConversationId.toConversationId(): ConversationId = ConversationId(this.value.toString())
 

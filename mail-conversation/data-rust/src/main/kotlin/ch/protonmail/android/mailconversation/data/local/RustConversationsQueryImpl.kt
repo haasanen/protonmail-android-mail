@@ -71,6 +71,7 @@ class RustConversationsQueryImpl @Inject constructor(
 
     override fun observeConversationsByLabel(userId: UserId, labelId: LocalLabelId): Flow<List<LocalConversation>> {
         coroutineScope.launch {
+            Timber.v("rust-conversation-query: observe conversations for labelId $labelId")
             destroy()
             rustMailbox.switchToMailbox(userId, labelId)
 

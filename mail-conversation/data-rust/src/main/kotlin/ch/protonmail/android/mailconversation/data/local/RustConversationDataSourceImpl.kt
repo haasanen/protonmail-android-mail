@@ -61,7 +61,9 @@ class RustConversationDataSourceImpl @Inject constructor(
         rustConversationsQuery.observeConversationsByLabel(userId, labelId).first()
 
     override fun observeConversation(userId: UserId, conversationId: LocalConversationId): Flow<LocalConversation>? =
-        runCatching { rustConversationDetailQuery.observeConversation(userId, conversationId) }.getOrNull()
+        runCatching { rustConversationDetailQuery.observeConversation(userId, conversationId) }
+            .onFailure { Timber.w("rust-conversation: failed to observe conversation $it") }
+            .getOrNull()
 
     override suspend fun deleteConversations(userId: UserId, conversations: List<LocalConversationId>) {
         executeMailboxAction(

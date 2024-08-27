@@ -172,7 +172,7 @@ object Versions {
 
     object Proton {
 
-        const val rustCore = "0.11.19"
+        const val rustCore = "0.11.20"
         const val core = "26.0.1"
         const val corePlugin = "1.3.0"
     }

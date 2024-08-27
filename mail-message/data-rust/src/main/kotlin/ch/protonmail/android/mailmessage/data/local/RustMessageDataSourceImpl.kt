@@ -104,12 +104,8 @@ class RustMessageDataSourceImpl @Inject constructor(
     override fun observeConversationMessages(
         userId: UserId,
         conversationId: LocalConversationId
-    ): Flow<LocalConversationMessages> {
-        return rustConversationMessageQuery.observeConversationMessages(
-            userId,
-            conversationId
-        )
-    }
+    ): Flow<LocalConversationMessages> =
+        rustConversationMessageQuery.observeConversationMessages(userId, conversationId)
 
     override fun disconnect() {
         rustMessageQuery.disconnect()

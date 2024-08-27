@@ -18,7 +18,9 @@
 
 package ch.protonmail.android.mailmessage.data.local
 
+import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.domain.mapper.LocalConversationId
+import ch.protonmail.android.mailcommon.domain.mapper.LocalMessageId
 import ch.protonmail.android.mailmessage.data.MessageRustCoroutineScope
 import ch.protonmail.android.mailmessage.data.model.LocalConversationMessages
 import ch.protonmail.android.mailmessage.data.usecase.CreateRustConversationMessagesWatcher
@@ -52,15 +54,19 @@ class RustConversationMessageQueryImpl @Inject constructor(
 
     private val conversationMessagesLiveQueryCallback = object : LiveQueryCallback {
         override fun onUpdate() {
+            Timber.v("rust-conversation-messages: received onUpdate callback for conversation")
             val messages = conversationWatcher?.messages
             val messageIdToOpen = conversationWatcher?.messageIdToOpen ?: messages?.last()?.id
 
             if (messages != null && messageIdToOpen != null) {
-                conversationMessagesMutableStatusFlow.value = LocalConversationMessages(messageIdToOpen, messages)
+                val localConversationMessages = LocalConversationMessages(messageIdToOpen, messages)
+                conversationMessagesMutableStatusFlow.value = localConversationMessages
+                Timber.d("rust-conversation-messages: new messages value is $localConversationMessages")
             } else {
                 Timber.w("rust-conversation-messages: Failed to update conversation messages!")
             }
 
+            Timber.v("rust-conversation-messages: notifying invalidation of rust data sources")
             invalidationTracker.notifyInvalidation(
                 setOf(
                     RustDataSourceId.CONVERSATION,
@@ -76,7 +82,7 @@ class RustConversationMessageQueryImpl @Inject constructor(
         userId: UserId,
         conversationId: LocalConversationId
     ): Flow<LocalConversationMessages> {
-        destroy()
+        Timber.v("rust-conversation-messages: Observe conversation query starting...")
         initConversationMessagesLiveQuery(conversationId)
 
         return conversationMessagesStatusFlow
@@ -87,32 +93,36 @@ class RustConversationMessageQueryImpl @Inject constructor(
         conversationWatcher?.conversationHandle?.disconnect()
     }
 
+    @MissingRustApi
+    // MessageIDToOpen is optional and absent, the fallback causes a crash when opening a convo (no messages)
     private fun initConversationMessagesLiveQuery(conversationId: LocalConversationId) {
         rustMailbox
             .observeConversationMailbox()
             .onEach { mailbox ->
                 destroy()
 
+                Timber.v("rust-conversation-messages: creating query with mailbox ${mailbox.labelId()}")
                 conversationWatcher = createRustConversationMessagesWatcher(
                     mailbox,
                     conversationId,
                     conversationMessagesLiveQueryCallback
                 )
 
-                val value = conversationWatcher?.let {
+                val convMessages = conversationWatcher?.let {
                     val messages = it.messages
-                    val messageIdToOpen = it.messageIdToOpen ?: it.messages.last().id
+                    val messageIdToOpen = it.messageIdToOpen ?: it.messages.lastOrNull()?.id ?: LocalMessageId(0uL)
 
                     LocalConversationMessages(messageIdToOpen, messages)
 
                 }
-                conversationMessagesMutableStatusFlow.value = value
+                conversationMessagesMutableStatusFlow.value = convMessages
+                Timber.d("rust-conversation-messages: Init msg watcher for $conversationId init val is $convMessages")
             }
             .launchIn(coroutineScope)
     }
 
     private fun destroy() {
-        Timber.d("rust-message-query: destroy")
+        Timber.d("rust-conversation-messages: destroy")
         disconnect()
         conversationMessagesMutableStatusFlow.value = null
     }

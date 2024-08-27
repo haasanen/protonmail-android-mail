@@ -19,7 +19,6 @@
 package ch.protonmail.android.mailmessage.data.mapper
 
 import arrow.core.toNonEmptyListOrNull
-import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.domain.mapper.LocalAddressId
 import ch.protonmail.android.mailcommon.domain.mapper.LocalConversationId
 import ch.protonmail.android.mailcommon.domain.mapper.LocalMessageId
@@ -109,8 +108,6 @@ fun LocalMimeType.toAndroidMimeType(): MimeType {
     }
 }
 
-@MissingRustApi
-// Mime type hardcoded as not coming through as part of decrypted message anymore...
 fun BodyOutput.toMessageBody(messageId: MessageId, mimeType: LocalMimeType): MessageBody {
     return MessageBody(
         userId = FAKE_USER_ID,
