@@ -343,7 +343,23 @@ fun Home(
                 addLabelForm(
                     navController,
                     showLabelSavedSnackbar = { showLabelSavedSnackbar() },
-                    showLabelDeletedSnackbar = { showLabelDeletedSnackbar() }
+                    showLabelDeletedSnackbar = { showLabelDeletedSnackbar() },
+                    showNormalSnackbar = { message ->
+                        scope.launch {
+                            snackbarHostNormState.showSnackbar(
+                                message = message,
+                                type = ProtonSnackbarType.NORM
+                            )
+                        }
+                    },
+                    showErrorSnackbar = { message ->
+                        scope.launch {
+                            snackbarHostErrorState.showSnackbar(
+                                message = message,
+                                type = ProtonSnackbarType.ERROR
+                            )
+                        }
+                    }
                 )
                 addFolderList(
                     navController,
