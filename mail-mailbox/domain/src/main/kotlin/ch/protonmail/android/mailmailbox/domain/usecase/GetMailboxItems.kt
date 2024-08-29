@@ -60,7 +60,7 @@ class GetMailboxItems @Inject constructor(
             }
 
             MailboxItemType.Conversation -> conversationRepository.getLocalConversations(userId, pageKey).let { list ->
-                Timber.i("rust-conversation: GetMailboxItems received list of local convos $list")
+                Timber.d("rust-conversation: GetMailboxItems received list of local convos $list")
                 list.map { conversationMailboxItemMapper.toMailboxItem(it, labelsMaps) }
             }
         }

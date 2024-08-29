@@ -48,7 +48,7 @@ class RustConversationRepositoryImpl @Inject constructor(
     override suspend fun getLocalConversations(userId: UserId, pageKey: PageKey): List<Conversation> {
         val rustLocalLabelId = pageKey.filter.labelId.toLocalLabelId()
 
-        Timber.d("rust-conversation: getConversations, pageKey: $pageKey rustLocalLabelId: $rustLocalLabelId")
+        Timber.v("rust-conversation-repo: getConversations, pageKey: $pageKey rustLocalLabelId: $rustLocalLabelId")
 
         return rustConversationDataSource.getConversations(userId, rustLocalLabelId).map { it.toConversation() }
     }

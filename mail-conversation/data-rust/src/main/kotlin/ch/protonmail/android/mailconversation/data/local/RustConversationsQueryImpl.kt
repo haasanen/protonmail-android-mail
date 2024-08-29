@@ -71,8 +71,8 @@ class RustConversationsQueryImpl @Inject constructor(
 
     override fun observeConversationsByLabel(userId: UserId, labelId: LocalLabelId): Flow<List<LocalConversation>> {
         coroutineScope.launch {
-            Timber.v("rust-conversation-query: observe conversations for labelId $labelId")
             destroy()
+            Timber.v("rust-conversation-query: observe conversations for labelId $labelId")
             rustMailbox.switchToMailbox(userId, labelId)
 
             val session = userSessionRepository.getUserSession(userId)
@@ -82,7 +82,9 @@ class RustConversationsQueryImpl @Inject constructor(
             }
             conversationsWatcher = createRustConversationForLabelWatcher(session, labelId, conversationsUpdatedCallback)
 
-            conversationsMutableStatusFlow.value = conversationsWatcher?.conversations
+            val conversations = conversationsWatcher?.conversations
+            conversationsMutableStatusFlow.value = conversations
+            Timber.v("rust-conversation-query: init value for conversations is $conversations")
         }
 
         return conversationsStatusFlow
@@ -90,7 +92,7 @@ class RustConversationsQueryImpl @Inject constructor(
 
 
     private fun destroy() {
-        Timber.d("rust-conversation-query: destroy")
+        Timber.v("rust-conversation-query: disconnecting and destroying watcher")
         conversationsWatcher?.handle?.disconnect()
         conversationsWatcher = null
         conversationsMutableStatusFlow.value = null
