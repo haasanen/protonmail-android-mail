@@ -18,20 +18,15 @@
 
 package ch.protonmail.android.mailmessage.data.local
 
-import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.domain.mapper.LocalLabelId
 import ch.protonmail.android.mailcommon.domain.mapper.LocalViewMode
-import ch.protonmail.android.mailmessage.data.MessageRustCoroutineScope
 import ch.protonmail.android.mailmessage.data.usecase.CreateMailbox
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.launch
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.Mailbox
@@ -39,8 +34,7 @@ import javax.inject.Inject
 
 class RustMailboxImpl @Inject constructor(
     private val userSessionRepository: UserSessionRepository,
-    private val createMailbox: CreateMailbox,
-    @MessageRustCoroutineScope private val coroutineScope: CoroutineScope
+    private val createMailbox: CreateMailbox
 ) : RustMailbox {
 
     private val mailboxMutableStatusFlow = MutableStateFlow<Mailbox?>(null)
@@ -53,9 +47,7 @@ class RustMailboxImpl @Inject constructor(
         .filterNotNull()
         .filter { it.viewMode() == LocalViewMode.MESSAGES }
 
-    @MissingRustApi
-    // The delay should go
-    override fun switchToMailbox(userId: UserId, labelId: LocalLabelId) {
+    override suspend fun switchToMailbox(userId: UserId, labelId: LocalLabelId) {
         if (!shouldSwitchMailbox(labelId)) {
             return
         }
@@ -63,21 +55,15 @@ class RustMailboxImpl @Inject constructor(
         // Reset mailbox to avoid using wrong mailbox while the new one is being created
         mailboxMutableStatusFlow.value = null
 
-        coroutineScope.launch {
-            val userSession = userSessionRepository.getUserSession(userId)
-            if (userSession == null) {
-                Timber.w("rust-mailbox: switchMailbox failed, no session for $userId")
-                return@launch
-            }
-            Timber.d("rust-mailbox: Mailbox created for label: $labelId")
-            val mailbox = createMailbox(userSession, labelId)
-
-            // Wait for the mailbox to be created & initialized
-            // Rust team will work on this issue, then we can remove this delay
-            delay(MAILBOX_INIT_DELAY)
-
-            mailboxMutableStatusFlow.value = mailbox
+        val userSession = userSessionRepository.getUserSession(userId)
+        if (userSession == null) {
+            Timber.w("rust-mailbox: switchMailbox failed, no session for $userId")
+            return
         }
+        Timber.d("rust-mailbox: Mailbox created for label: $labelId")
+        val mailbox = createMailbox(userSession, labelId)
+
+        mailboxMutableStatusFlow.value = mailbox
     }
 
     override fun observeConversationMailbox(): Flow<Mailbox> = conversationMailboxFlow

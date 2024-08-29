@@ -25,7 +25,7 @@ import uniffi.proton_mail_uniffi.Mailbox
 
 interface RustMailbox {
 
-    fun switchToMailbox(userId: UserId, labelId: LocalLabelId)
+    suspend fun switchToMailbox(userId: UserId, labelId: LocalLabelId)
     fun observeConversationMailbox(): Flow<Mailbox>
     fun observeMessageMailbox(): Flow<Mailbox>
     fun observeMailbox(labelId: LocalLabelId): Flow<Mailbox>

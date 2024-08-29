@@ -29,7 +29,6 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
@@ -42,7 +41,6 @@ class RustMailboxImplTest {
 
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
-    private val testCoroutineScope = CoroutineScope(mainDispatcherRule.testDispatcher)
 
     private val messageMailbox: Mailbox = mockk {
         every { labelId() } returns LocalLabelId(1u)
@@ -60,7 +58,7 @@ class RustMailboxImplTest {
 
     private val userSessionRepository = mockk<UserSessionRepository>()
 
-    private val rustMailbox = RustMailboxImpl(userSessionRepository, createMailbox, testCoroutineScope)
+    private val rustMailbox = RustMailboxImpl(userSessionRepository, createMailbox)
 
     @Test
     fun `switchToMailbox should initialise the mailbox when there is no mailbox created`() = runTest {

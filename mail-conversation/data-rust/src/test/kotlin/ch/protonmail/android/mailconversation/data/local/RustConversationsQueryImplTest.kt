@@ -11,11 +11,11 @@ import ch.protonmail.android.testdata.conversation.rust.LocalConversationTestDat
 import ch.protonmail.android.testdata.user.UserIdTestData
 import io.mockk.Runs
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
 import io.mockk.slot
-import io.mockk.verify
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
@@ -68,7 +68,7 @@ class RustConversationsQueryImplTest {
         rustConversationMessageQuery.observeConversationsByLabel(userId, labelId)
 
         // Then
-        verify { rustMailbox.switchToMailbox(userId, labelId) }
+        coVerify { rustMailbox.switchToMailbox(userId, labelId) }
     }
 
     @Test
