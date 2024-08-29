@@ -5,6 +5,7 @@ import kotlinx.coroutines.test.runTest
 import uniffi.proton_mail_uniffi.MailSession
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 
 class InMemoryMailSessionRepositoryTest {
 
@@ -21,6 +22,15 @@ class InMemoryMailSessionRepositoryTest {
 
         // Then
         assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `throws when mail session is not present`() = runTest {
+        // Then
+        assertFailsWith<IllegalStateException> {
+            // When
+            mailSessionRepository.getMailSession()
+        }
     }
 
 }

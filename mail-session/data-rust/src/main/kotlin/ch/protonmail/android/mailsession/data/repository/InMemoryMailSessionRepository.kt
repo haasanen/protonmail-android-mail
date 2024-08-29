@@ -18,20 +18,26 @@
 
 package ch.protonmail.android.mailsession.data.repository
 
+import java.lang.IllegalStateException
 import ch.protonmail.android.mailsession.domain.repository.MailSessionRepository
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.first
 import uniffi.proton_mail_uniffi.MailSession
 import javax.inject.Inject
 
 class InMemoryMailSessionRepository @Inject constructor() : MailSessionRepository {
 
-    private val rustMailSessionFlow = MutableStateFlow<MailSession?>(null)
+    private var rustMailSession: MailSession? = null
 
     override fun setMailSession(mailSession: MailSession) {
-        rustMailSessionFlow.value = mailSession
+        rustMailSession = mailSession
     }
 
-    override suspend fun getMailSession(): MailSession = rustMailSessionFlow.filterNotNull().first()
+    override suspend fun getMailSession(): MailSession {
+        val currentMailSession = rustMailSession
+            ?: throw IllegalStateException(
+                "Mail Session isn't available in memory. This is illegal."
+            )
+        return currentMailSession
+    }
+
+
 }
