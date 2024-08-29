@@ -29,8 +29,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.launch
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.LiveQueryCallback
@@ -81,6 +81,7 @@ class RustConversationMessageQueryImpl @Inject constructor(
         conversationId: LocalConversationId
     ): Flow<LocalConversationMessages> {
         Timber.v("rust-conversation-messages: Observe conversation query starting...")
+        destroy()
         initConversationMessagesLiveQuery(conversationId)
 
         return conversationMessagesStatusFlow
@@ -92,29 +93,30 @@ class RustConversationMessageQueryImpl @Inject constructor(
     }
 
     private fun initConversationMessagesLiveQuery(conversationId: LocalConversationId) {
-        rustMailbox
-            .observeConversationMailbox()
-            .onEach { mailbox ->
-                destroy()
-
-                Timber.v("rust-conversation-messages: creating query with mailbox ${mailbox.labelId()}")
-                conversationWatcher = createRustConversationMessagesWatcher(
-                    mailbox,
-                    conversationId,
-                    conversationMessagesLiveQueryCallback
-                )
-
-                val convMessages = conversationWatcher?.let {
-                    val messages = it.messages
-                    val messageIdToOpen = it.messageIdToOpen
-
-                    LocalConversationMessages(messageIdToOpen, messages)
-
-                }
-                conversationMessagesMutableStatusFlow.value = convMessages
-                Timber.d("rust-conversation-messages: Init msg watcher for $conversationId init val is $convMessages")
+        coroutineScope.launch {
+            val mailbox = rustMailbox.observeConversationMailbox().firstOrNull()
+            if (mailbox == null) {
+                Timber.e("rust-conversation: Failed to observe conversation, null mailbox")
+                return@launch
             }
-            .launchIn(coroutineScope)
+
+            Timber.v("rust-conversation-messages: creating query with mailbox ${mailbox.labelId()}")
+            conversationWatcher = createRustConversationMessagesWatcher(
+                mailbox,
+                conversationId,
+                conversationMessagesLiveQueryCallback
+            )
+
+            val convMessages = conversationWatcher?.let {
+                val messages = it.messages
+                val messageIdToOpen = it.messageIdToOpen
+
+                LocalConversationMessages(messageIdToOpen, messages)
+
+            }
+            conversationMessagesMutableStatusFlow.value = convMessages
+            Timber.d("rust-conversation-messages: Init msg watcher for $conversationId init val is $convMessages")
+        }
     }
 
     private fun destroy() {

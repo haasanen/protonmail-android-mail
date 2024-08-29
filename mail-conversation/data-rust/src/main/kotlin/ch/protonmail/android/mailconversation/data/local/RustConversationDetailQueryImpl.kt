@@ -57,8 +57,9 @@ class RustConversationDetailQueryImpl @Inject constructor(
     }
 
     override fun observeConversation(userId: UserId, conversationId: LocalConversationId): Flow<LocalConversation> {
+        destroy()
+
         coroutineScope.launch {
-            destroy()
 
             val mailbox = rustMailbox.observeConversationMailbox().firstOrNull()
             if (mailbox == null) {
