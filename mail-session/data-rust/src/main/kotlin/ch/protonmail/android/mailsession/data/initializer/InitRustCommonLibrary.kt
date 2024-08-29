@@ -19,15 +19,12 @@
 package ch.protonmail.android.mailsession.data.initializer
 
 import android.content.Context
-import ch.protonmail.android.mailcommon.domain.coroutines.AppScope
 import ch.protonmail.android.mailsession.data.keychain.OsKeyChainMock
 import ch.protonmail.android.mailsession.data.model.RustLibConfigParams
 import ch.protonmail.android.mailsession.domain.repository.MailSessionRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
 import me.proton.core.network.data.di.BaseProtonApiUrl
 import okhttp3.HttpUrl
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.ApiConfig
 import uniffi.proton_mail_uniffi.MailSession
@@ -37,8 +34,7 @@ import javax.inject.Inject
 class InitRustCommonLibrary @Inject constructor(
     @ApplicationContext private val context: Context,
     private val mailSessionRepository: MailSessionRepository,
-    @BaseProtonApiUrl private val baseApiUrl: HttpUrl,
-    @AppScope private val coroutineScope: CoroutineScope
+    @BaseProtonApiUrl private val baseApiUrl: HttpUrl
 ) {
 
     fun init(config: RustLibConfigParams) {
@@ -63,17 +59,15 @@ class InitRustCommonLibrary @Inject constructor(
         )
         Timber.d("rust-session: Initializing the Rust Lib with $sessionParams")
 
-        coroutineScope.launch {
-            val mailSession = MailSession.create(
-                sessionParams,
-                OsKeyChainMock(context),
-                null
-            )
-            Timber.v("rust-session: Mail session created! (hash: ${mailSession.hashCode()})")
-            Timber.v("rust-session: Storing mail session to In Memory Session Repository...")
+        val mailSession = MailSession.create(
+            sessionParams,
+            OsKeyChainMock(context),
+            null
+        )
+        Timber.v("rust-session: Mail session created! (hash: ${mailSession.hashCode()})")
+        Timber.v("rust-session: Storing mail session to In Memory Session Repository...")
 
-            mailSessionRepository.setMailSession(mailSession)
-        }
+        mailSessionRepository.setMailSession(mailSession)
 
     }
 

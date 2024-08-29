@@ -18,9 +18,7 @@
 
 package ch.protonmail.android.mailmessage.data.local
 
-import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.domain.mapper.LocalConversationId
-import ch.protonmail.android.mailcommon.domain.mapper.LocalMessageId
 import ch.protonmail.android.mailmessage.data.MessageRustCoroutineScope
 import ch.protonmail.android.mailmessage.data.model.LocalConversationMessages
 import ch.protonmail.android.mailmessage.data.usecase.CreateRustConversationMessagesWatcher
@@ -56,7 +54,7 @@ class RustConversationMessageQueryImpl @Inject constructor(
         override fun onUpdate() {
             Timber.v("rust-conversation-messages: received onUpdate callback for conversation")
             val messages = conversationWatcher?.messages
-            val messageIdToOpen = conversationWatcher?.messageIdToOpen ?: messages?.last()?.id
+            val messageIdToOpen = conversationWatcher?.messageIdToOpen
 
             if (messages != null && messageIdToOpen != null) {
                 val localConversationMessages = LocalConversationMessages(messageIdToOpen, messages)
@@ -93,8 +91,6 @@ class RustConversationMessageQueryImpl @Inject constructor(
         conversationWatcher?.conversationHandle?.disconnect()
     }
 
-    @MissingRustApi
-    // MessageIDToOpen is optional and absent, the fallback causes a crash when opening a convo (no messages)
     private fun initConversationMessagesLiveQuery(conversationId: LocalConversationId) {
         rustMailbox
             .observeConversationMailbox()
@@ -110,7 +106,7 @@ class RustConversationMessageQueryImpl @Inject constructor(
 
                 val convMessages = conversationWatcher?.let {
                     val messages = it.messages
-                    val messageIdToOpen = it.messageIdToOpen ?: it.messages.lastOrNull()?.id ?: LocalMessageId(0uL)
+                    val messageIdToOpen = it.messageIdToOpen
 
                     LocalConversationMessages(messageIdToOpen, messages)
 
