@@ -67,6 +67,8 @@ class RustMessageQueryImpl @Inject constructor(
     }
 
     override fun observeMessages(userId: UserId, labelId: LocalLabelId): Flow<List<LocalMessageMetadata>> {
+        destroy()
+
         coroutineScope.launch {
             val session = userSessionRepository.getUserSession(userId)
             if (session == null) {
@@ -77,11 +79,14 @@ class RustMessageQueryImpl @Inject constructor(
             rustMailbox.switchToMailbox(userId, labelId)
             Timber.v("rust-message: switching mailbox to $labelId if needed...")
 
-            destroy()
             messagesWatcher = createRustMessagesWatcher(session, labelId, messagesUpdatedCallback)
-            mutableMessageStatusFlow.value = messagesWatcher?.messages
+
+            val messages = messagesWatcher?.messages
+            Timber.v("rust-message: init value for messages is $messages")
+            mutableMessageStatusFlow.value = messages
         }
 
+        Timber.v("rust-messages: returning messages status flow...")
         return messagesStatusFlow
     }
 

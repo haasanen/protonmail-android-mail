@@ -60,8 +60,9 @@ class RustMailboxImpl @Inject constructor(
             Timber.w("rust-mailbox: switchMailbox failed, no session for $userId")
             return
         }
-        Timber.d("rust-mailbox: Mailbox created for label: $labelId")
+        Timber.v("rust-mailbox: mailbox creation started... ${System.currentTimeMillis()}")
         val mailbox = createMailbox(userSession, labelId)
+        Timber.d("rust-mailbox: Mailbox created for label: $labelId at ${System.currentTimeMillis()}")
 
         mailboxMutableStatusFlow.value = mailbox
     }
@@ -75,9 +76,4 @@ class RustMailboxImpl @Inject constructor(
         .filter { it.labelId() == labelId }
 
     private fun shouldSwitchMailbox(labelId: LocalLabelId) = mailboxMutableStatusFlow.value?.labelId() != labelId
-
-    companion object {
-
-        private const val MAILBOX_INIT_DELAY = 50L
-    }
 }

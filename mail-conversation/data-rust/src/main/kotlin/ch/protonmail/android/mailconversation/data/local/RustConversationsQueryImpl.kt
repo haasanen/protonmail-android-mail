@@ -55,6 +55,7 @@ class RustConversationsQueryImpl @Inject constructor(
 
     private val conversationsUpdatedCallback = object : LiveQueryCallback {
         override fun onUpdate() {
+            Timber.v("rust-conversations-query: callback fired")
             val conversations = conversationsWatcher?.conversations
             conversationsMutableStatusFlow.value = conversations
 
@@ -70,8 +71,9 @@ class RustConversationsQueryImpl @Inject constructor(
     }
 
     override fun observeConversationsByLabel(userId: UserId, labelId: LocalLabelId): Flow<List<LocalConversation>> {
+        destroy()
+
         coroutineScope.launch {
-            destroy()
             Timber.v("rust-conversation-query: observe conversations for labelId $labelId")
             rustMailbox.switchToMailbox(userId, labelId)
 
@@ -83,10 +85,11 @@ class RustConversationsQueryImpl @Inject constructor(
             conversationsWatcher = createRustConversationForLabelWatcher(session, labelId, conversationsUpdatedCallback)
 
             val conversations = conversationsWatcher?.conversations
-            conversationsMutableStatusFlow.value = conversations
             Timber.v("rust-conversation-query: init value for conversations is $conversations")
+            conversationsMutableStatusFlow.value = conversations
         }
 
+        Timber.v("rust-conversation-query: returning conversation status flow...")
         return conversationsStatusFlow
     }
 
