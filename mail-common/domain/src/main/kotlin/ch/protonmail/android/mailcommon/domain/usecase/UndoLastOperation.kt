@@ -20,23 +20,16 @@ package ch.protonmail.android.mailcommon.domain.usecase
 
 import arrow.core.Either
 import arrow.core.left
+import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import timber.log.Timber
 import javax.inject.Inject
 
-class UndoLastOperation @Inject constructor(
-    private val getUndoableOperation: GetUndoableOperation
-) {
+class UndoLastOperation @Inject constructor() {
 
+    @MissingRustApi
     suspend operator fun invoke(): Either<Error, Unit> {
-        val operation = getUndoableOperation()
-
-        if (operation == null) {
-            Timber.w("Undo operation requested but no operation to undo was found")
-            return Error.NoOperationToUndo.left()
-        }
-
-        return operation.undo()
-            .mapLeft { Error.UndoFailed }
+        Timber.w("Undo operation requested, but not yet implemented. (Need rust API)")
+        return Error.UndoFailed.left()
     }
 
     sealed interface Error {
