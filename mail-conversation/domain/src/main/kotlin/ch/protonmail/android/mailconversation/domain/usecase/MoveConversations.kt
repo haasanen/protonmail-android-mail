@@ -19,27 +19,16 @@
 package ch.protonmail.android.mailconversation.domain.usecase
 
 import arrow.core.Either
-import arrow.core.left
 import arrow.core.raise.either
-import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailcommon.domain.model.UndoableOperation
-import ch.protonmail.android.mailcommon.domain.usecase.RegisterUndoableOperation
 import ch.protonmail.android.mailconversation.domain.repository.ConversationRepository
-import ch.protonmail.android.maillabel.domain.usecase.ObserveExclusiveMailLabels
-import ch.protonmail.android.maillabel.domain.usecase.ObserveMailLabels
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.firstOrNull
 import me.proton.core.domain.entity.UserId
 import me.proton.core.label.domain.entity.LabelId
 import javax.inject.Inject
 
 class MoveConversations @Inject constructor(
-    private val conversationRepository: ConversationRepository,
-    private val observeExclusiveMailLabels: ObserveExclusiveMailLabels,
-    private val observeMailLabels: ObserveMailLabels,
-    private val registerUndoableOperation: RegisterUndoableOperation
+    private val conversationRepository: ConversationRepository
 ) {
 
     suspend operator fun invoke(
@@ -47,44 +36,9 @@ class MoveConversations @Inject constructor(
         conversationIds: List<ConversationId>,
         labelId: LabelId
     ): Either<DataError, Unit> = either {
-        val allLabelIds = observeMailLabels(userId).first().allById.mapNotNull { it.key.labelId }
-        val exclusiveMailLabels = observeExclusiveMailLabels(userId).first().allById.mapNotNull { it.key.labelId }
-        val undoableOperation = defineUndoableOperation(userId, conversationIds, exclusiveMailLabels)
         conversationRepository
-            .move(userId, conversationIds, allLabelIds, exclusiveMailLabels, toLabelId = labelId)
-            .onRight {
-                registerUndoableOperation(undoableOperation)
-            }
+            .move(userId, conversationIds, toLabelId = labelId)
             .bind()
     }
 
-    private suspend fun defineUndoableOperation(
-        userId: UserId,
-        conversationIds: List<ConversationId>,
-        exclusiveLabelIds: List<LabelId>
-    ): UndoableOperation {
-        val conversationToOriginLabelIdMap = conversationRepository
-            .observeCachedConversations(userId, conversationIds)
-            .firstOrNull()
-            ?.associate { conversation ->
-                Pair(
-                    conversation.conversationId,
-                    conversation.labels.firstOrNull { it.labelId in exclusiveLabelIds }?.labelId
-                )
-            }
-
-        val labelIdToConversationIds = conversationToOriginLabelIdMap?.keys?.groupBy {
-            conversationToOriginLabelIdMap[it]
-        }
-
-        return UndoableOperation.UndoMoveConversations {
-            labelIdToConversationIds?.forEach { entry ->
-                entry.key?.let { labelId ->
-                    this@MoveConversations(userId, entry.value, labelId)
-                        .onLeft { return@UndoMoveConversations it.left() }
-                }
-            }
-            return@UndoMoveConversations Unit.right()
-        }
-    }
 }

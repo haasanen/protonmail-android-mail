@@ -141,12 +141,9 @@ class RustConversationRepositoryImpl @Inject constructor(
         labelIds: List<LabelId>
     ): Either<DataError, List<Conversation>> = DataError.Local.Unknown.left()
 
-    // It will be implemented later on
     override suspend fun move(
         userId: UserId,
         conversationIds: List<ConversationId>,
-        allLabelIds: List<LabelId>,
-        fromLabelIds: List<LabelId>,
         toLabelId: LabelId
     ): Either<DataError, List<Conversation>> {
         rustConversationDataSource.moveConversations(

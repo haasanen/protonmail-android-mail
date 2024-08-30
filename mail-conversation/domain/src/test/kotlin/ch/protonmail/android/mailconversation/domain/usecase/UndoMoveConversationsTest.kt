@@ -50,10 +50,7 @@ class UndoMoveConversationsTest {
 
     private val moveConversations: MoveConversations = spyk(
         MoveConversations(
-            conversationRepository = conversationRepository,
-            observeExclusiveMailLabels = observeExclusiveMailLabels,
-            observeMailLabels = observeMailLabels,
-            registerUndoableOperation = registerUndoableOperation
+            conversationRepository = conversationRepository
         )
     )
 
@@ -139,7 +136,7 @@ class UndoMoveConversationsTest {
     ) {
         val exclusiveList = exclusiveSystemLabels.map { it.id.labelId }
         coEvery {
-            conversationRepository.move(userId, conversationIds, exclusiveList, exclusiveList, destinationLabel)
+            conversationRepository.move(userId, conversationIds, destinationLabel)
         } returns expectedList!!.right()
     }
 

@@ -285,7 +285,7 @@ class RustConversationRepositoryImplTest {
         } just Runs
 
         // When
-        val result = rustConversationRepository.move(userId, conversationIds, allLabelIds, fromLabelIds, toLabelId)
+        val result = rustConversationRepository.move(userId, conversationIds, toLabelId)
 
         // Then
         coVerify {

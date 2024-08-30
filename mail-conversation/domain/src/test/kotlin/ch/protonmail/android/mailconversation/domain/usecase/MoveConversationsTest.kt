@@ -21,22 +21,12 @@ package ch.protonmail.android.mailconversation.domain.usecase
 import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailcommon.domain.model.UndoableOperation
 import ch.protonmail.android.mailcommon.domain.sample.ConversationIdSample
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
-import ch.protonmail.android.mailcommon.domain.usecase.RegisterUndoableOperation
 import ch.protonmail.android.mailconversation.domain.entity.Conversation
 import ch.protonmail.android.mailconversation.domain.repository.ConversationRepository
 import ch.protonmail.android.mailconversation.domain.sample.ConversationSample
-import ch.protonmail.android.maillabel.domain.model.MailLabels
-import ch.protonmail.android.maillabel.domain.usecase.ObserveExclusiveMailLabels
-import ch.protonmail.android.maillabel.domain.usecase.ObserveMailLabels
-import ch.protonmail.android.testdata.maillabel.MailLabelTestData
-import io.mockk.Runs
 import io.mockk.coEvery
-import io.mockk.coVerify
-import io.mockk.every
-import io.mockk.just
 import io.mockk.mockk
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
@@ -48,28 +38,10 @@ class MoveConversationsTest {
 
     private val userId = UserIdSample.Primary
     private val conversationIds = listOf(ConversationIdSample.Invoices, ConversationIdSample.WeatherForecast)
-    private val exclusiveMailLabels = listOf(
-        MailLabelTestData.inboxSystemLabel,
-        MailLabelTestData.archiveSystemLabel,
-        MailLabelTestData.spamSystemLabel,
-        MailLabelTestData.trashSystemLabel,
-        MailLabelTestData.draftsSystemLabel,
-        MailLabelTestData.sentSystemLabel
-    )
 
     private val conversationRepository = mockk<ConversationRepository>()
-    private val observeMailLabels = mockk<ObserveMailLabels>()
-    private val observeExclusiveMailLabels = mockk<ObserveExclusiveMailLabels>()
-    private val registerUndoableOperation = mockk<RegisterUndoableOperation>()
 
-    private val moveConversations by lazy {
-        MoveConversations(
-            conversationRepository = conversationRepository,
-            observeExclusiveMailLabels = observeExclusiveMailLabels,
-            observeMailLabels = observeMailLabels,
-            registerUndoableOperation = registerUndoableOperation
-        )
-    }
+    private val moveConversations = MoveConversations(conversationRepository = conversationRepository)
 
     @Test
     fun `when move succeeds then Unit is returned`() = runTest {
@@ -77,10 +49,7 @@ class MoveConversationsTest {
         val destinationLabel = LabelId("labelId")
         val expectedConversations = listOf(ConversationSample.WeatherForecast, ConversationSample.AlphaAppFeedback)
 
-        expectObserveMailLabelsSucceeds()
-        expectObserveExclusiveMailLabelSucceeds()
         expectMoveSucceeds(destinationLabel, expectedConversations)
-        expectRegisterUndoOperationSucceeds()
         coEvery { conversationRepository.observeCachedConversations(userId, conversationIds) } returns flowOf()
 
         // When
@@ -95,8 +64,6 @@ class MoveConversationsTest {
         // Given
         val destinationLabel = LabelId("labelId")
 
-        expectObserveMailLabelsSucceeds()
-        expectObserveExclusiveMailLabelSucceeds()
         expectMoveFails(destinationLabel)
         coEvery { conversationRepository.observeCachedConversations(userId, conversationIds) } returns flowOf()
 
@@ -107,62 +74,16 @@ class MoveConversationsTest {
         assertEquals(DataError.Local.NoDataCached.left(), result)
     }
 
-    @Test
-    fun `store undoable operation when moving conversation locally succeeds`() = runTest {
-        // given
-        val destinationLabel = LabelId("labelId")
-        val alphaAppConversation = ConversationSample.AlphaAppFeedback
-        val conversations = listOf(alphaAppConversation)
-        expectObserveMailLabelsSucceeds()
-        expectObserveExclusiveMailLabelSucceeds()
-        expectMoveSucceeds(destinationLabel, conversations)
-        expectRegisterUndoOperationSucceeds()
-        coEvery {
-            conversationRepository.observeCachedConversations(userId, conversationIds)
-        } returns flowOf(conversations)
-
-        // when
-        moveConversations(userId, conversationIds, destinationLabel)
-
-        // then
-        coVerify { registerUndoableOperation(any<UndoableOperation.UndoMoveConversations>()) }
-    }
-
-    private fun expectRegisterUndoOperationSucceeds() {
-        coEvery { registerUndoableOperation(any<UndoableOperation.UndoMoveConversations>()) } just Runs
-    }
-
     private fun expectMoveSucceeds(destinationLabel: LabelId, expectedList: List<Conversation>) {
-        val exclusiveList = exclusiveMailLabels.map { it.id.labelId }
         coEvery {
-            conversationRepository.move(userId, conversationIds, exclusiveList, exclusiveList, destinationLabel)
+            conversationRepository.move(userId, conversationIds, destinationLabel)
         } returns expectedList.right()
     }
 
     private fun expectMoveFails(destinationLabel: LabelId) {
-        val exclusiveList = exclusiveMailLabels.map { it.id.labelId }
         coEvery {
-            conversationRepository.move(userId, conversationIds, exclusiveList, exclusiveList, destinationLabel)
+            conversationRepository.move(userId, conversationIds, destinationLabel)
         } returns DataError.Local.NoDataCached.left()
     }
 
-    private fun expectObserveExclusiveMailLabelSucceeds() {
-        every { observeExclusiveMailLabels(userId) } returns flowOf(
-            MailLabels(
-                system = exclusiveMailLabels,
-                folders = emptyList(),
-                labels = emptyList()
-            )
-        )
-    }
-
-    private fun expectObserveMailLabelsSucceeds() {
-        every { observeMailLabels(userId) } returns flowOf(
-            MailLabels(
-                system = exclusiveMailLabels,
-                folders = emptyList(),
-                labels = emptyList()
-            )
-        )
-    }
 }
