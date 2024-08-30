@@ -18,8 +18,8 @@
 
 package ch.protonmail.android.mailmessage.data.model
 
-import ch.protonmail.android.mailcommon.domain.mapper.LocalMessageId
-import ch.protonmail.android.mailcommon.domain.mapper.LocalMessageMetadata
+import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageId
+import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageMetadata
 
 data class LocalConversationMessages(
     val messageIdToOpen: LocalMessageId,

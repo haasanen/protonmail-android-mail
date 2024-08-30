@@ -20,7 +20,8 @@ package ch.protonmail.android.mailmessage.data.repository
 
 import app.cash.turbine.test
 import arrow.core.getOrElse
-import ch.protonmail.android.mailcommon.domain.mapper.LocalMimeType
+import arrow.core.left
+import ch.protonmail.android.mailcommon.datarust.mapper.LocalMimeType
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
 import ch.protonmail.android.maillabel.domain.SelectedMailLabelId

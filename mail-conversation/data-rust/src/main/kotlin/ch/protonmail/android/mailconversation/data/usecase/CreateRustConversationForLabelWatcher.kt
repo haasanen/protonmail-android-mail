@@ -18,7 +18,7 @@
 
 package ch.protonmail.android.mailconversation.data.usecase
 
-import ch.protonmail.android.mailcommon.domain.mapper.LocalLabelId
+import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
 import uniffi.proton_mail_uniffi.LiveQueryCallback
 import uniffi.proton_mail_uniffi.MailUserSession
 import uniffi.proton_mail_uniffi.watchConversationsForLabel

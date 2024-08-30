@@ -43,6 +43,7 @@ android {
 }
 
 dependencies {
+    compileOnly(Proton.Common.rustCore)
     kapt(Dependencies.appAnnotationProcessors)
 
     implementation(Dependencies.moduleDataRustLibs)

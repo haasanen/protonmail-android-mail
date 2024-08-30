@@ -19,8 +19,8 @@
 package ch.protonmail.android.mailconversation.data.local
 
 import app.cash.turbine.test
-import ch.protonmail.android.mailcommon.domain.mapper.LocalConversationId
-import ch.protonmail.android.mailcommon.domain.mapper.LocalMessageId
+import ch.protonmail.android.mailcommon.datarust.mapper.LocalConversationId
+import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageId
 import ch.protonmail.android.mailconversation.data.usecase.CreateRustConversationWatcher
 import ch.protonmail.android.mailmessage.data.local.RustMailbox
 import ch.protonmail.android.mailmessage.data.model.LocalConversationMessages

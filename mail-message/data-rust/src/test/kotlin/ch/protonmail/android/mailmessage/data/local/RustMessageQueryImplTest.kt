@@ -19,8 +19,8 @@
 package ch.protonmail.android.mailmessage.data.local
 
 import app.cash.turbine.test
-import ch.protonmail.android.mailcommon.domain.mapper.LocalLabelId
-import ch.protonmail.android.mailcommon.domain.mapper.LocalMessageId
+import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
+import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageId
 import ch.protonmail.android.mailmessage.data.usecase.CreateRustMessagesWatcher
 import ch.protonmail.android.mailmessage.domain.paging.RustInvalidationTracker
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository

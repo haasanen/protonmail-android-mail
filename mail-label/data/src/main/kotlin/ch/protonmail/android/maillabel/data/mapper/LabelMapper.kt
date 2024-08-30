@@ -18,9 +18,9 @@
 
 package ch.protonmail.android.maillabel.data.mapper
 
-import ch.protonmail.android.mailcommon.domain.mapper.LocalLabelId
-import ch.protonmail.android.mailcommon.domain.mapper.LocalLabelType
-import ch.protonmail.android.mailcommon.domain.mapper.LocalSystemLabel
+import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
+import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelType
+import ch.protonmail.android.mailcommon.datarust.mapper.LocalSystemLabel
 import ch.protonmail.android.mailcommon.domain.model.FAKE_USER_ID
 import ch.protonmail.android.maillabel.domain.model.LabelWithSystemLabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId

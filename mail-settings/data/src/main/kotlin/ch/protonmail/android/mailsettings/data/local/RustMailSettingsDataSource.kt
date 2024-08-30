@@ -19,7 +19,7 @@
 package ch.protonmail.android.mailsettings.data.local
 
 import ch.protonmail.android.mailcommon.domain.coroutines.AppScope
-import ch.protonmail.android.mailcommon.domain.mapper.LocalMailSettings
+import ch.protonmail.android.mailcommon.datarust.mapper.LocalMailSettings
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import ch.protonmail.android.mailsettings.data.usecase.CreateRustUserMailSettings
 import kotlinx.coroutines.CoroutineScope

@@ -18,7 +18,7 @@
 
 package ch.protonmail.android.testdata.conversation.rust
 
-import ch.protonmail.android.mailcommon.domain.mapper.LocalConversationId
+import ch.protonmail.android.mailcommon.datarust.mapper.LocalConversationId
 
 object LocalConversationIdSample {
     val AugConversation = LocalConversationId(1uL)

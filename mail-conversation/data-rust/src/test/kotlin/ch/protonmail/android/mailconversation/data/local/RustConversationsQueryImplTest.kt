@@ -1,7 +1,7 @@
 package ch.protonmail.android.mailconversation.data.local
 
 import app.cash.turbine.test
-import ch.protonmail.android.mailcommon.domain.mapper.LocalLabelId
+import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
 import ch.protonmail.android.mailconversation.data.usecase.CreateRustConversationForLabelWatcher
 import ch.protonmail.android.mailmessage.data.local.RustMailbox
 import ch.protonmail.android.mailmessage.domain.paging.RustInvalidationTracker

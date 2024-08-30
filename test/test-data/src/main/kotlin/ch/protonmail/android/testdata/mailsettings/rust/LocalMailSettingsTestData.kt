@@ -18,18 +18,18 @@
 
 package ch.protonmail.android.testdata.mailsettings.rust
 
-import ch.protonmail.android.mailcommon.domain.mapper.LocalComposerDirection
-import ch.protonmail.android.mailcommon.domain.mapper.LocalComposerMode
-import ch.protonmail.android.mailcommon.domain.mapper.LocalMailSettings
-import ch.protonmail.android.mailcommon.domain.mapper.LocalMessageButtons
-import ch.protonmail.android.mailcommon.domain.mapper.LocalMimeType
-import ch.protonmail.android.mailcommon.domain.mapper.LocalPgpScheme
-import ch.protonmail.android.mailcommon.domain.mapper.LocalPmSignature
-import ch.protonmail.android.mailcommon.domain.mapper.LocalShowImages
-import ch.protonmail.android.mailcommon.domain.mapper.LocalShowMoved
-import ch.protonmail.android.mailcommon.domain.mapper.LocalSwipeAction
-import ch.protonmail.android.mailcommon.domain.mapper.LocalViewLayout
-import ch.protonmail.android.mailcommon.domain.mapper.LocalViewMode
+import ch.protonmail.android.mailcommon.datarust.mapper.LocalComposerDirection
+import ch.protonmail.android.mailcommon.datarust.mapper.LocalComposerMode
+import ch.protonmail.android.mailcommon.datarust.mapper.LocalMailSettings
+import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageButtons
+import ch.protonmail.android.mailcommon.datarust.mapper.LocalMimeType
+import ch.protonmail.android.mailcommon.datarust.mapper.LocalPgpScheme
+import ch.protonmail.android.mailcommon.datarust.mapper.LocalPmSignature
+import ch.protonmail.android.mailcommon.datarust.mapper.LocalShowImages
+import ch.protonmail.android.mailcommon.datarust.mapper.LocalShowMoved
+import ch.protonmail.android.mailcommon.datarust.mapper.LocalSwipeAction
+import ch.protonmail.android.mailcommon.datarust.mapper.LocalViewLayout
+import ch.protonmail.android.mailcommon.datarust.mapper.LocalViewMode
 import uniffi.proton_mail_uniffi.AlmostAllMail
 import uniffi.proton_mail_uniffi.NextMessageOnMove
 

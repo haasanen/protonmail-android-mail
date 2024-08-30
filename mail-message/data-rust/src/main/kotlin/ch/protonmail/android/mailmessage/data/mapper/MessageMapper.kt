@@ -19,11 +19,11 @@
 package ch.protonmail.android.mailmessage.data.mapper
 
 import arrow.core.toNonEmptyListOrNull
-import ch.protonmail.android.mailcommon.domain.mapper.LocalAddressId
-import ch.protonmail.android.mailcommon.domain.mapper.LocalConversationId
-import ch.protonmail.android.mailcommon.domain.mapper.LocalMessageId
-import ch.protonmail.android.mailcommon.domain.mapper.LocalMessageMetadata
-import ch.protonmail.android.mailcommon.domain.mapper.LocalMimeType
+import ch.protonmail.android.mailcommon.datarust.mapper.LocalAddressId
+import ch.protonmail.android.mailcommon.datarust.mapper.LocalConversationId
+import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageId
+import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageMetadata
+import ch.protonmail.android.mailcommon.datarust.mapper.LocalMimeType
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.FAKE_USER_ID
 import ch.protonmail.android.maillabel.data.mapper.toLabelId

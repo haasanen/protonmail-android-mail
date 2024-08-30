@@ -18,12 +18,12 @@
 
 package ch.protonmail.android.mailmessage.data.repository
 
-import ch.protonmail.android.mailcommon.domain.mapper.LocalAddressId
-import ch.protonmail.android.mailcommon.domain.mapper.LocalAttachmentMetadata
-import ch.protonmail.android.mailcommon.domain.mapper.LocalConversationId
-import ch.protonmail.android.mailcommon.domain.mapper.LocalLabelId
-import ch.protonmail.android.mailcommon.domain.mapper.LocalMessageId
-import ch.protonmail.android.mailcommon.domain.mapper.LocalMessageMetadata
+import ch.protonmail.android.mailcommon.datarust.mapper.LocalAddressId
+import ch.protonmail.android.mailcommon.datarust.mapper.LocalAttachmentMetadata
+import ch.protonmail.android.mailcommon.datarust.mapper.LocalConversationId
+import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
+import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageId
+import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageMetadata
 import ch.protonmail.android.mailmessage.data.mapper.toAddressId
 import ch.protonmail.android.mailmessage.data.mapper.toConversationId
 import ch.protonmail.android.mailmessage.data.mapper.toMessage

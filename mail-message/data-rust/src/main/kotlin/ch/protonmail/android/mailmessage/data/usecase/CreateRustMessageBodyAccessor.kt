@@ -18,7 +18,7 @@
 
 package ch.protonmail.android.mailmessage.data.usecase
 
-import ch.protonmail.android.mailcommon.domain.mapper.LocalMessageId
+import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageId
 import uniffi.proton_mail_uniffi.Mailbox
 import uniffi.proton_mail_uniffi.getMessageBody
 import javax.inject.Inject
