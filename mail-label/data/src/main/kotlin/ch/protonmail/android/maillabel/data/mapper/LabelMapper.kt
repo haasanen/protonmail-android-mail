@@ -61,7 +61,7 @@ fun SidebarCustomFolder.toLabel(): Label {
         name = this.name,
         type = this.description.toLabelType(),
         path = this.path ?: "",
-        color = this.color?.value ?: "#fff",
+        color = this.color?.value ?: "#00000000",
         order = this.displayOrder.toInt(),
         isNotified = this.notify,
         isExpanded = this.expanded,
