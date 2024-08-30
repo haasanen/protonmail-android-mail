@@ -147,7 +147,7 @@ class RustMessageRepositoryImpl @Inject constructor(
 
     override suspend fun moveTo(
         userId: UserId,
-        messageWithExclusiveLabel: Map<MessageId, LabelId?>,
+        messageIds: List<MessageId>,
         toLabel: LabelId
     ): Either<DataError.Local, List<Message>> {
         TODO("Not yet implemented")

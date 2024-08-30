@@ -67,9 +67,7 @@ class UndoMoveMessagesTest {
 
     private val moveMessages = spyk(
         MoveMessages(
-            messageRepository,
-            observeExclusiveMailLabels,
-            registerUndoableOperation
+            messageRepository
         )
     )
     private val getUndoableOperation = GetUndoableOperation(undoableOperationRepository)
@@ -87,12 +85,12 @@ class UndoMoveMessagesTest {
         expectMoveSucceeds(
             SystemLabelId.Spam.labelId,
             expectedMessages,
-            mapOf(MessageIdSample.AugWeatherForecast to LabelIdSample.Archive)
+            listOf(MessageIdSample.AugWeatherForecast)
         )
         expectMoveSucceeds(
             SystemLabelId.Archive.labelId,
             expectedMessages,
-            mapOf(MessageIdSample.AugWeatherForecast to destinationLabel)
+            listOf(MessageIdSample.AugWeatherForecast)
         )
         expectRegisterUndoOperationSucceeds()
 
@@ -123,12 +121,12 @@ class UndoMoveMessagesTest {
         expectMoveSucceeds(
             SystemLabelId.Trash.labelId,
             expectedMessages,
-            expectedMessages.associate { it.messageId to LabelIdSample.Archive }
+            messageIds
         )
         expectMoveSucceeds(
             SystemLabelId.Archive.labelId,
             expectedMessages,
-            expectedMessages.associate { it.messageId to destinationLabel }
+            messageIds
         )
         expectRegisterUndoOperationSucceeds()
 
@@ -167,7 +165,7 @@ class UndoMoveMessagesTest {
     private fun expectMoveSucceeds(
         destinationLabel: LabelId,
         expectedMessages: List<Message>,
-        messageIdToLabel: Map<MessageId, LabelId?>
+        messageIdToLabel: List<MessageId>
     ) {
         coEvery {
             messageRepository.moveTo(userId, messageIdToLabel, destinationLabel)

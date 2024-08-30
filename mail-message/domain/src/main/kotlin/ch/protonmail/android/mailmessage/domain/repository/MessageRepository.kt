@@ -127,12 +127,12 @@ interface MessageRepository {
     /**
      * Moves the given [messageIds] from the optional exclusive label to the [toLabel]
      * @param userId the user id of the affected messages
-     * @param messageWithExclusiveLabel the messages to move with their optional exclusive label
+     * @param messageIds the messages to move with their optional exclusive label
      * @param toLabel the label to move the messages to
      */
     suspend fun moveTo(
         userId: UserId,
-        messageWithExclusiveLabel: Map<MessageId, LabelId?>,
+        messageIds: List<MessageId>,
         toLabel: LabelId
     ): Either<DataError.Local, List<Message>>
 

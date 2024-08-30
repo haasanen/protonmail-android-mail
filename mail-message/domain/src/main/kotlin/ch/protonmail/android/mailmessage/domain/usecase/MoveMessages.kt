@@ -19,24 +19,16 @@
 package ch.protonmail.android.mailmessage.domain.usecase
 
 import arrow.core.Either
-import arrow.core.left
 import arrow.core.raise.either
-import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailcommon.domain.model.UndoableOperation
-import ch.protonmail.android.mailcommon.domain.usecase.RegisterUndoableOperation
-import ch.protonmail.android.maillabel.domain.usecase.ObserveExclusiveMailLabels
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
-import kotlinx.coroutines.flow.first
 import me.proton.core.domain.entity.UserId
 import me.proton.core.label.domain.entity.LabelId
 import javax.inject.Inject
 
 class MoveMessages @Inject constructor(
-    private val messageRepository: MessageRepository,
-    private val observeExclusiveMailLabels: ObserveExclusiveMailLabels,
-    private val registerUndoableOperation: RegisterUndoableOperation
+    private val messageRepository: MessageRepository
 ) {
 
     suspend operator fun invoke(
@@ -44,34 +36,7 @@ class MoveMessages @Inject constructor(
         messageIds: List<MessageId>,
         labelId: LabelId
     ): Either<DataError.Local, Unit> = either {
-        val exclusiveMailLabels = observeExclusiveMailLabels(userId).first().allById.mapKeys { it.key.labelId }
-        val messagesWithExclusiveLabels = messageRepository.getLocalMessages(userId, messageIds).associateWith {
-            it.labelIds.firstOrNull { labelId -> labelId in exclusiveMailLabels }
-        }
-        val messageIdsWithExclusiveLabels = messagesWithExclusiveLabels.mapKeys { it.key.messageId }
-        messageRepository.moveTo(userId, messageIdsWithExclusiveLabels, labelId)
-            .onRight { messages ->
-                registerUndoableOperations(userId, messageIdsWithExclusiveLabels)
-            }
-            .bind()
+        messageRepository.moveTo(userId, messageIds, labelId).bind()
     }
 
-    private suspend fun registerUndoableOperations(
-        userId: UserId,
-        messageIdsWithOriginLabel: Map<MessageId, LabelId?>
-    ) {
-        val labelIdToMessagesIds = messageIdsWithOriginLabel.keys.groupBy { messageIdsWithOriginLabel[it] }
-
-        registerUndoableOperation(
-            UndoableOperation.UndoMoveMessages {
-                labelIdToMessagesIds.forEach { entry ->
-                    entry.key?.let { labelId ->
-                        this@MoveMessages(userId, entry.value, labelId)
-                            .onLeft { return@UndoMoveMessages it.left() }
-                    }
-                }
-                return@UndoMoveMessages Unit.right()
-            }
-        )
-    }
 }
