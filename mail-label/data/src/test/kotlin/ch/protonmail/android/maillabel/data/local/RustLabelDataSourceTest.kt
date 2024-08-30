@@ -115,6 +115,7 @@ class RustLabelDataSourceTest {
         val sidebarMock = mockk<Sidebar> {
             coEvery { this@mockk.systemLabels() } returns expected
             coEvery { this@mockk.watchLabels(LabelType.SYSTEM, any()) } returns watcherMock
+            coEvery { this@mockk.destroy() } just Runs
         }
         every { createRustSidebar(firstUserSessionMock) } returns sidebarMock
         every { createRustSidebar(secondUserSessionMock) } returns sidebarMock
@@ -126,6 +127,7 @@ class RustLabelDataSourceTest {
         labelDataSource.observeSystemLabels(secondUserId)
         // Then
         verify { watcherMock.disconnect() }
+        coVerify { sidebarMock.destroy() }
         coVerify { createRustSidebar(firstUserSessionMock) }
         coVerify { createRustSidebar(secondUserSessionMock) }
     }
@@ -189,6 +191,7 @@ class RustLabelDataSourceTest {
         val sidebarMock = mockk<Sidebar> {
             coEvery { this@mockk.customLabels() } returns expected
             coEvery { this@mockk.watchLabels(LabelType.LABEL, any()) } returns watcherMock
+            coEvery { this@mockk.destroy() } just Runs
         }
         every { createRustSidebar(firstUserSessionMock) } returns sidebarMock
         every { createRustSidebar(secondUserSessionMock) } returns sidebarMock
@@ -200,6 +203,7 @@ class RustLabelDataSourceTest {
         labelDataSource.observeMessageLabels(secondUserId)
         // Then
         verify { watcherMock.disconnect() }
+        coVerify { sidebarMock.destroy() }
         coVerify { createRustSidebar(firstUserSessionMock) }
         coVerify { createRustSidebar(secondUserSessionMock) }
     }
@@ -260,6 +264,7 @@ class RustLabelDataSourceTest {
         val sidebarMock = mockk<Sidebar> {
             coEvery { this@mockk.allCustomFolders() } returns expected
             coEvery { this@mockk.watchLabels(LabelType.FOLDER, any()) } returns watcherMock
+            coEvery { this@mockk.destroy() } just Runs
         }
         every { createRustSidebar(firstUserSessionMock) } returns sidebarMock
         every { createRustSidebar(secondUserSessionMock) } returns sidebarMock
@@ -271,6 +276,7 @@ class RustLabelDataSourceTest {
         labelDataSource.observeMessageFolders(secondUserId)
         // Then
         verify { watcherMock.disconnect() }
+        coVerify { sidebarMock.destroy() }
         coVerify { createRustSidebar(firstUserSessionMock) }
         coVerify { createRustSidebar(secondUserSessionMock) }
     }
