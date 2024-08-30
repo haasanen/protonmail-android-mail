@@ -37,7 +37,6 @@ import javax.inject.Inject
 /**
  * Get MailboxItems for a user, according a [PageKey].
  *
- * @see GetMultiUserMailboxItems
  */
 class GetMailboxItems @Inject constructor(
     private val getLabels: GetLabels,

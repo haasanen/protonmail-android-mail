@@ -24,14 +24,14 @@ import arrow.core.getOrElse
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItem
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItemType
 import ch.protonmail.android.mailmailbox.domain.model.MailboxPageKey
-import ch.protonmail.android.mailmailbox.domain.usecase.GetMultiUserMailboxItems
+import ch.protonmail.android.mailmailbox.domain.usecase.GetMailboxItems
 import ch.protonmail.android.mailmessage.domain.paging.RustInvalidationTracker
 import ch.protonmail.android.mailpagination.presentation.paging.RustPagingSource
 import timber.log.Timber
 import kotlin.math.max
 
 class MailboxItemPagingSourceFactory(
-    private val getMailboxItems: GetMultiUserMailboxItems,
+    private val getMailboxItems: GetMailboxItems,
     private val rustInvalidationTracker: RustInvalidationTracker
 ) {
 
@@ -40,7 +40,7 @@ class MailboxItemPagingSourceFactory(
 }
 
 class RustMailboxItemPagingSource(
-    private val getMailboxItems: GetMultiUserMailboxItems,
+    private val getMailboxItems: GetMailboxItems,
     private val rustInvalidationTracker: RustInvalidationTracker,
     private val mailboxPageKey: MailboxPageKey,
     private val type: MailboxItemType
@@ -50,10 +50,14 @@ class RustMailboxItemPagingSource(
 
     override suspend fun loadPage(params: LoadParams<MailboxPageKey>): LoadResult<MailboxPageKey, MailboxItem> {
         val key = params.key ?: mailboxPageKey
+        val userId = key.userIds.firstOrNull() ?: run {
+            Timber.e("Paging: load page error, no userId found")
+            return LoadResult.Error(IllegalStateException("Loading Mailbox page with no user ID"))
+        }
         val size = max(key.pageKey.size, params.loadSize)
         val pageKey = key.pageKey.copy(size = size)
 
-        val items = getMailboxItems(type, key.copy(pageKey = pageKey)).getOrElse {
+        val items = getMailboxItems(userId, type, pageKey).getOrElse {
             Timber.e("Paging: loadItems: Error $it")
             return LoadResult.Page(emptyList(), null, null)
         }

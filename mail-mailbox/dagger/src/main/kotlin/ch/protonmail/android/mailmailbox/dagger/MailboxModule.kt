@@ -32,7 +32,7 @@ import ch.protonmail.android.mailmailbox.domain.repository.InMemoryMailboxReposi
 import ch.protonmail.android.mailmailbox.domain.repository.OnboardingRepository
 import ch.protonmail.android.mailmailbox.domain.repository.StorageLimitRepository
 import ch.protonmail.android.mailmailbox.domain.repository.UnreadCountersRepository
-import ch.protonmail.android.mailmailbox.domain.usecase.GetMultiUserMailboxItems
+import ch.protonmail.android.mailmailbox.domain.usecase.GetMailboxItems
 import ch.protonmail.android.mailmailbox.presentation.paging.MailboxItemPagingSourceFactory
 import ch.protonmail.android.mailmessage.domain.paging.RustInvalidationTracker
 import dagger.Binds
@@ -51,7 +51,7 @@ object MailboxModule {
     @Provides
     @Singleton
     fun providesMailboxItemPagingSourceFactory(
-        getMailboxItems: GetMultiUserMailboxItems,
+        getMailboxItems: GetMailboxItems,
         rustInvalidationTracker: RustInvalidationTracker
     ): MailboxItemPagingSourceFactory = MailboxItemPagingSourceFactory(
         getMailboxItems,
