@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.maillabel.domain.usecase
 
+import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.maillabel.domain.model.MailLabels
 import ch.protonmail.android.maillabel.domain.model.toDynamicSystemMailLabel
 import ch.protonmail.android.maillabel.domain.model.toMailLabelCustom
@@ -39,6 +40,9 @@ import javax.inject.Inject
    This should be updated (likely, dropped) as those features are implemented)
 """
 )
+@MissingRustApi
+// This use case could be adapted to get the "exclusive locations" from rust
+// based on a (listOf) messageId or conversationIds
 class ObserveExclusiveDestinationMailLabels @Inject constructor(
     private val labelRepository: LabelRepository
 ) {

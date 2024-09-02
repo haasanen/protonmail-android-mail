@@ -85,7 +85,6 @@ object ConversationSample {
         userId = userId,
         conversationId = conversationId,
         order = 0,
-        labels = labels,
         subject = subject,
         senders = senders,
         recipients = recipients,

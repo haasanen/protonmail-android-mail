@@ -20,6 +20,7 @@ package ch.protonmail.android.maildetail.presentation.mapper
 
 import androidx.compose.ui.graphics.Color
 import arrow.core.getOrElse
+import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.presentation.mapper.ColorMapper
 import ch.protonmail.android.maildetail.presentation.R
 import ch.protonmail.android.maildetail.presentation.model.MessageLocationUiModel
@@ -38,6 +39,8 @@ class MessageLocationUiModelMapper @Inject constructor(
     private val getRootLabel: GetRootLabel
 ) {
 
+    @MissingRustApi
+    // To be fixed once message has "exclusiveLocation" info exposed by rust)
     suspend operator fun invoke(
         labelIds: List<LabelId>,
         labels: List<Label>,

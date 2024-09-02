@@ -23,7 +23,6 @@ package ch.protonmail.android.maildetail.presentation.sample
 import ch.protonmail.android.mailconversation.domain.entity.Conversation
 import ch.protonmail.android.mailconversation.domain.sample.ConversationSample
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMetadataUiModel
-import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 
 object ConversationDetailMetadataUiModelSample {
 
@@ -31,7 +30,7 @@ object ConversationDetailMetadataUiModelSample {
 
     fun build(conversation: Conversation = ConversationSample.build()) = ConversationDetailMetadataUiModel(
         conversationId = conversation.conversationId,
-        isStarred = conversation.labels.any { it.labelId == SystemLabelId.Starred.labelId },
+        isStarred = conversation.starred,
         messageCount = conversation.numMessages,
         subject = conversation.subject
     )

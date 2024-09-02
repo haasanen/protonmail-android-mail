@@ -53,7 +53,6 @@ import ch.protonmail.android.mailcommon.presentation.usecase.FormatShortTime
 import ch.protonmail.android.mailcommon.presentation.usecase.GetInitial
 import ch.protonmail.android.mailcontact.domain.usecase.FindContactByEmail
 import ch.protonmail.android.mailcontact.domain.usecase.ObserveContacts
-import ch.protonmail.android.mailconversation.domain.sample.ConversationLabelSample
 import ch.protonmail.android.mailconversation.domain.sample.ConversationSample
 import ch.protonmail.android.mailconversation.domain.usecase.DeleteConversations
 import ch.protonmail.android.mailconversation.domain.usecase.ObserveConversation
@@ -200,6 +199,7 @@ import me.proton.core.network.domain.NetworkManager
 import me.proton.core.network.domain.NetworkStatus
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
+import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
@@ -1312,15 +1312,14 @@ class ConversationDetailViewModelIntegrationTest {
     }
 
     @Test
+    @Ignore("MissingRustApi, see viewModel's handleDeleteConfirmed")
     fun `verify delete is executed when delete confirmed is called`() = runTest {
         // Given
         val expectedMessage = ActionResult.DefinitiveActionResult(TextUiModel(R.string.conversation_deleted))
         coEvery {
             observeConversationUseCase(userId, conversationId, false)
         } returns flowOf(
-            ConversationSample.WeatherForecast.copy(
-                labels = listOf(ConversationLabelSample.build(labelId = LabelIdSample.Trash))
-            ).right()
+            ConversationSample.WeatherForecast.right()
         )
         coJustRun { deleteConversations(userId, listOf(conversationId), LabelIdSample.Trash) }
 

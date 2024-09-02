@@ -25,6 +25,7 @@ import androidx.lifecycle.viewModelScope
 import arrow.core.Either
 import arrow.core.NonEmptyList
 import arrow.core.getOrElse
+import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.domain.coroutines.IODispatcher
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
@@ -34,7 +35,6 @@ import ch.protonmail.android.mailcommon.presentation.mapper.ActionUiModelMapper
 import ch.protonmail.android.mailcommon.presentation.model.BottomBarEvent
 import ch.protonmail.android.mailcontact.domain.usecase.FindContactByEmail
 import ch.protonmail.android.mailcontact.domain.usecase.ObserveContacts
-import ch.protonmail.android.mailconversation.domain.entity.ConversationLabel
 import ch.protonmail.android.mailconversation.domain.usecase.DeleteConversations
 import ch.protonmail.android.mailconversation.domain.usecase.ObserveConversation
 import ch.protonmail.android.mailconversation.domain.usecase.StarConversations
@@ -55,12 +55,14 @@ import ch.protonmail.android.maildetail.domain.usecase.ObserveConversationMessag
 import ch.protonmail.android.maildetail.domain.usecase.ObserveConversationViewState
 import ch.protonmail.android.maildetail.domain.usecase.ObserveMessageAttachmentStatus
 import ch.protonmail.android.maildetail.domain.usecase.RelabelConversation
+import ch.protonmail.android.maildetail.domain.usecase.ReportPhishingMessage
 import ch.protonmail.android.maildetail.domain.usecase.SetMessageViewState
 import ch.protonmail.android.maildetail.presentation.mapper.ConversationDetailMessageUiModelMapper
 import ch.protonmail.android.maildetail.presentation.mapper.ConversationDetailMetadataUiModelMapper
 import ch.protonmail.android.maildetail.presentation.mapper.MessageIdUiModelMapper
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMessageUiModel
+import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMetadataState
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailOperation
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailState
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction
@@ -74,8 +76,8 @@ import ch.protonmail.android.maildetail.presentation.model.ConversationDetailVie
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction.MessageBodyLinkClicked
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction.MoveToDestinationConfirmed
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction.MoveToDestinationSelected
-import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction.RequestConversationLabelAsBottomSheet
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction.RequestContactActionsBottomSheet
+import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction.RequestConversationLabelAsBottomSheet
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction.RequestMoveToBottomSheet
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction.RequestScrollTo
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction.ScrollRequestCompleted
@@ -88,6 +90,10 @@ import ch.protonmail.android.maildetail.presentation.model.MessageIdUiModel
 import ch.protonmail.android.maildetail.presentation.reducer.ConversationDetailReducer
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen
 import ch.protonmail.android.maildetail.presentation.usecase.GetEmbeddedImageAvoidDuplicatedExecution
+import ch.protonmail.android.maildetail.presentation.usecase.LoadDataForMessageLabelAsBottomSheet
+import ch.protonmail.android.maildetail.presentation.usecase.OnMessageLabelAsConfirmed
+import ch.protonmail.android.maildetail.presentation.usecase.PrintMessage
+import ch.protonmail.android.maildetail.presentation.usecase.ShouldMessageBeHidden
 import ch.protonmail.android.maillabel.domain.model.MailLabel
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.maillabel.domain.usecase.ObserveCustomMailLabels
@@ -102,15 +108,9 @@ import ch.protonmail.android.mailmessage.domain.model.LabelSelectionList
 import ch.protonmail.android.mailmessage.domain.model.MessageAttachment
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.MessageWithLabels
+import ch.protonmail.android.mailmessage.domain.model.Participant
 import ch.protonmail.android.mailmessage.domain.usecase.GetDecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.usecase.ObserveMessage
-import ch.protonmail.android.maildetail.domain.usecase.ReportPhishingMessage
-import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMetadataState
-import ch.protonmail.android.maildetail.presentation.usecase.LoadDataForMessageLabelAsBottomSheet
-import ch.protonmail.android.maildetail.presentation.usecase.OnMessageLabelAsConfirmed
-import ch.protonmail.android.maildetail.presentation.usecase.PrintMessage
-import ch.protonmail.android.maildetail.presentation.usecase.ShouldMessageBeHidden
-import ch.protonmail.android.mailmessage.domain.model.Participant
 import ch.protonmail.android.mailmessage.domain.usecase.ResolveParticipantName
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.ContactActionsBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.DetailMoreActionsBottomSheetState
@@ -802,6 +802,9 @@ class ConversationDetailViewModel @Inject constructor(
         }.launchIn(viewModelScope)
     }
 
+    @MissingRustApi
+    // Need conversation model to expose "exclusive location" in a way that it can be mapped
+    // back to deleteConversation as a labelId. Rust will perform checks to see "isDeletable"
     private fun handleDeleteConfirmed(action: ConversationDetailViewAction) {
         viewModelScope.launch {
             val userId = primaryUserId.first()
@@ -812,7 +815,7 @@ class ConversationDetailViewModel @Inject constructor(
                 return@launch
             }
 
-            val currentDeletableLabel = conversation.labels.firstOrNull { isDeletable(it) }
+            val currentDeletableLabel: LabelId? = null
 
             if (currentDeletableLabel == null) {
                 Timber.e("Failed to delete conversation: no applicable folder")
@@ -820,7 +823,7 @@ class ConversationDetailViewModel @Inject constructor(
                 return@launch
             } else {
                 emitNewStateFrom(action)
-                deleteConversations(userId, listOf(conversationId), currentDeletableLabel.labelId)
+                deleteConversations(userId, listOf(conversationId), currentDeletableLabel)
             }
 
         }
@@ -1112,9 +1115,6 @@ class ConversationDetailViewModel @Inject constructor(
         val initialState = ConversationDetailState.Loading
     }
 }
-
-private fun isDeletable(it: ConversationLabel) =
-    it.labelId == SystemLabelId.Trash.labelId || it.labelId == SystemLabelId.Spam.labelId
 
 /**
  * Filters [DataError.Local] from messages flow, as we don't want to show them to the user, because the fetch is being

@@ -23,7 +23,6 @@ import ch.protonmail.android.mailcommon.datarust.mapper.LocalConversationId
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.FAKE_USER_ID
 import ch.protonmail.android.mailconversation.domain.entity.Conversation
-import ch.protonmail.android.mailconversation.domain.entity.ConversationLabel
 import ch.protonmail.android.maillabel.data.mapper.toLabelId
 import ch.protonmail.android.mailmessage.data.mapper.toParticipant
 import ch.protonmail.android.mailmessage.domain.model.AttachmentCount
@@ -31,29 +30,23 @@ import me.proton.core.label.domain.entity.Label
 import me.proton.core.label.domain.entity.LabelType
 import uniffi.proton_mail_uniffi.InlineCustomLabel
 
-fun LocalConversation.toConversation(): Conversation {
-
-    val labels = emptyList<ConversationLabel>()
-
-    return Conversation(
-        conversationId = this.id.toConversationId(),
-        userId = FAKE_USER_ID,
-        order = this.displayOrder.toLong(),
-        subject = this.subject,
-        senders = this.senders.map { it.toParticipant() },
-        recipients = this.recipients.map { it.toParticipant() },
-        numMessages = this.numMessages.toInt(),
-        numUnread = this.numUnread.toInt(),
-        numAttachments = this.numAttachments.toInt(),
-        expirationTime = this.expirationTime.toLong(),
-        labels = labels,
-        attachmentCount = AttachmentCount(this.numAttachments.toInt()),
-        starred = this.isStarred,
-        time = time.toLong(),
-        size = size.toLong(),
-        customLabels = this.customLabels.map { it.toLabel() }
-    )
-}
+fun LocalConversation.toConversation() = Conversation(
+    userId = FAKE_USER_ID,
+    conversationId = this.id.toConversationId(),
+    order = this.displayOrder.toLong(),
+    subject = this.subject,
+    senders = this.senders.map { it.toParticipant() },
+    recipients = this.recipients.map { it.toParticipant() },
+    expirationTime = this.expirationTime.toLong(),
+    numMessages = this.numMessages.toInt(),
+    numUnread = this.numUnread.toInt(),
+    numAttachments = this.numAttachments.toInt(),
+    attachmentCount = AttachmentCount(this.numAttachments.toInt()),
+    starred = this.isStarred,
+    time = time.toLong(),
+    size = size.toLong(),
+    customLabels = this.customLabels.map { it.toLabel() }
+)
 
 fun InlineCustomLabel.toLabel() = Label(
     userId = FAKE_USER_ID,

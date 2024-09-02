@@ -42,8 +42,6 @@ object ConversationTestData {
         numMessages = 1
     )
 
-    val conversationWithoutLabels = conversation.copy(labels = emptyList())
-
     val conversationWithArchiveLabel = buildConversation(
         userId = userId,
         id = RAW_CONVERSATION_ID,
@@ -125,7 +123,6 @@ object ConversationTestData {
         userId = userId,
         conversationId = ConversationId(id),
         order = 0,
-        labels = emptyList(),
         subject = subject,
         senders = listOf(Sender("address", "name")),
         recipients = emptyList(),
@@ -153,7 +150,6 @@ object ConversationTestData {
         userId = userId,
         conversationId = ConversationId(id),
         order = 0,
-        labels = emptyList(),
         subject = subject,
         senders = listOf(Sender("address", "name")),
         recipients = emptyList(),

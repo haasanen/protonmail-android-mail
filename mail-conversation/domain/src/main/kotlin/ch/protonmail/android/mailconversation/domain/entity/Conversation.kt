@@ -29,7 +29,6 @@ data class Conversation(
     val userId: UserId,
     val conversationId: ConversationId,
     val order: Long,
-    val labels: List<ConversationLabel>,
     val subject: String,
     val senders: List<Sender>,
     val recipients: List<Recipient>,

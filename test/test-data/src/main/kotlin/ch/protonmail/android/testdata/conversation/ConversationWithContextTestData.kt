@@ -98,7 +98,6 @@ object ConversationWithContextTestData {
         userId = userId,
         conversationId = ConversationId(id),
         order = order,
-        labels = emptyList(),
         subject = "subject",
         senders = emptyList(),
         recipients = emptyList(),
