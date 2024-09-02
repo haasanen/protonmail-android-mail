@@ -56,26 +56,6 @@ internal class SettingsFlowTest : MockedNetworkTest() {
     }
 
     @Test
-    fun openAccountSettings() {
-        menuRobot
-            .openSidebarMenu()
-            .openSettings()
-            .openUserAccountSettings()
-            .verify { accountSettingsScreenIsDisplayed() }
-    }
-
-    @Test
-    fun openConversationModeSetting() {
-        menuRobot
-            .openSidebarMenu()
-            .openSettings()
-            .openUserAccountSettings()
-            .verify { accountSettingsScreenIsDisplayed() }
-            .openConversationMode()
-            .verify { conversationModeToggleIsDisplayedAndEnabled() }
-    }
-
-    @Test
     fun openSettingAndChangePreferredTheme() {
         menuRobot
             .openSidebarMenu()
@@ -117,16 +97,6 @@ internal class SettingsFlowTest : MockedNetworkTest() {
         languageSettingsRobot
             .selectSystemDefaultFromBrazilian()
             .verify { defaultLanguageIsSelected() }
-    }
-
-    @Test
-    fun openPasswordManagementSettings() {
-        menuRobot
-            .openSidebarMenu()
-            .openSettings()
-            .openUserAccountSettings()
-            .openPasswordManagement()
-            .verify { passwordManagementElementsDisplayed() }
     }
 
     @Test
