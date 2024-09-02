@@ -38,7 +38,7 @@ class ConversationMailboxItemMapperTest {
         // Given
         val conversation = ConversationWithContextTestData.getConversation(userId, "id")
         // When
-        val actual = mapper.toMailboxItem(conversation, emptyMap())
+        val actual = mapper.toMailboxItem(conversation)
         // Then
         assertFalse(actual.isReplied)
         assertFalse(actual.isRepliedAll)
@@ -51,7 +51,7 @@ class ConversationMailboxItemMapperTest {
         val labelIds = listOf("customLabel", "0", "5", "10")
         val conversation = ConversationWithContextTestData.getConversation(userId, "id", labelIds = labelIds)
         // When
-        val actual = mapper.toMailboxItem(conversation, emptyMap())
+        val actual = mapper.toMailboxItem(conversation)
         // Then
         val expected = labelIds.map { LabelId(it) }
         assertEquals(expected, actual.labels.map { it.labelId })
@@ -63,7 +63,7 @@ class ConversationMailboxItemMapperTest {
         val labelIds = listOf("5", "0", "10")
         val conversation = ConversationWithContextTestData.getConversation(userId, "id", labelIds = labelIds)
         // When
-        val actual = mapper.toMailboxItem(conversation = conversation, labels = emptyMap())
+        val actual = mapper.toMailboxItem(conversation = conversation)
         // Then
         val expected = listOf("0", "5", "10").map(::buildLabel)
         assertEquals(expected, actual.labels)
@@ -74,7 +74,7 @@ class ConversationMailboxItemMapperTest {
         // Given
         val conversation = ConversationWithContextTestData.getConversation(userId, "id", numAttachments = 3)
         // When
-        val actual = mapper.toMailboxItem(conversation, emptyMap())
+        val actual = mapper.toMailboxItem(conversation)
         // Then
         assertTrue(actual.hasNonCalendarAttachments)
     }
@@ -84,7 +84,7 @@ class ConversationMailboxItemMapperTest {
         // Given
         val conversation = ConversationWithContextTestData.getConversation(userId, "id", numAttachments = 0)
         // When
-        val actual = mapper.toMailboxItem(conversation, emptyMap())
+        val actual = mapper.toMailboxItem(conversation)
         // Then
         assertFalse(actual.hasNonCalendarAttachments)
     }
@@ -99,7 +99,7 @@ class ConversationMailboxItemMapperTest {
             attachmentCount = AttachmentCount(calendar = 1)
         )
         // When
-        val actual = mapper.toMailboxItem(conversation, emptyMap())
+        val actual = mapper.toMailboxItem(conversation)
         // Then
         assertFalse(actual.hasNonCalendarAttachments)
     }
@@ -112,7 +112,7 @@ class ConversationMailboxItemMapperTest {
             userId, "id", expirationTime = expirationTime
         )
         // When
-        val mailboxItem = mapper.toMailboxItem(conversation, emptyMap())
+        val mailboxItem = mapper.toMailboxItem(conversation)
         // Then
         assertEquals(expirationTime, mailboxItem.expirationTime)
     }
@@ -127,7 +127,7 @@ class ConversationMailboxItemMapperTest {
             attachmentCount = AttachmentCount(calendar = calendarAttachmentCount)
         )
         // When
-        val mailboxItem = mapper.toMailboxItem(conversation, emptyMap())
+        val mailboxItem = mapper.toMailboxItem(conversation)
         // Then
         assertEquals(calendarAttachmentCount, mailboxItem.calendarAttachmentCount)
     }

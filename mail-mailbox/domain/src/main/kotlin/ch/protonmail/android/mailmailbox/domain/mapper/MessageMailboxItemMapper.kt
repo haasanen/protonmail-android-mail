@@ -22,13 +22,11 @@ import ch.protonmail.android.mailmailbox.domain.model.MailboxItem
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItemType
 import ch.protonmail.android.mailmessage.domain.model.Message
 import me.proton.core.domain.arch.Mapper
-import me.proton.core.label.domain.entity.Label
-import me.proton.core.label.domain.entity.LabelId
 import javax.inject.Inject
 
 class MessageMailboxItemMapper @Inject constructor() : Mapper<Message, MailboxItem> {
 
-    fun toMailboxItem(message: Message, labels: Map<LabelId, Label>) = MailboxItem(
+    fun toMailboxItem(message: Message) = MailboxItem(
         type = MailboxItemType.Message,
         id = message.messageId.id,
         userId = message.userId,
@@ -38,7 +36,7 @@ class MessageMailboxItemMapper @Inject constructor() : Mapper<Message, MailboxIt
         read = message.read,
         labelIds = message.labelIds,
         conversationId = message.conversationId,
-        labels = message.labelIds.mapNotNull { labels[it] }.sortedBy { it.order },
+        labels = message.customLabels.sortedBy { it.order },
         subject = message.subject,
         senders = listOf(message.sender),
         recipients = message.toList + message.ccList + message.bccList,

@@ -43,12 +43,13 @@ fun MessageWithLabelIds.toMessage() = Message(
     isReplied = message.isReplied,
     isRepliedAll = message.isRepliedAll,
     isForwarded = message.isForwarded,
+    isStarred = labelIds.any { it == SystemLabelId.Starred.labelId },
     addressId = message.addressId,
     externalId = message.externalId,
     numAttachments = message.numAttachments,
     flags = message.flags,
     attachmentCount = message.attachmentCount.toDomainModel(),
-    isStarred = labelIds.any { it == SystemLabelId.Starred.labelId }
+    customLabels = emptyList()
 )
 
 fun Message.toEntity() = MessageEntity(

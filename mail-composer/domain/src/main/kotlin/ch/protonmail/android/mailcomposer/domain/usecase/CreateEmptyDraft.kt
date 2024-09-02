@@ -45,30 +45,31 @@ class CreateEmptyDraft @Inject constructor() {
             userId = userId,
             messageId = messageId,
             conversationId = ConversationId(EMPTY_STRING),
+            time = Instant.now().epochSecond,
+            size = 0L,
             order = 0,
+            labelIds = listOf(
+                SystemLabelId.Drafts.labelId,
+                SystemLabelId.AllDrafts.labelId,
+                SystemLabelId.AllMail.labelId
+            ),
             subject = EMPTY_STRING,
             unread = false,
             sender = Sender(userAddress.email, userAddress.displayName.orEmpty()),
             toList = emptyList(),
             ccList = emptyList(),
             bccList = emptyList(),
-            time = Instant.now().epochSecond,
-            size = 0L,
             expirationTime = 0L,
             isReplied = false,
             isRepliedAll = false,
             isForwarded = false,
+            isStarred = false,
             addressId = userAddress.addressId,
             externalId = null,
             numAttachments = 0,
             flags = 0L,
             attachmentCount = AttachmentCount(0),
-            labelIds = listOf(
-                SystemLabelId.Drafts.labelId,
-                SystemLabelId.AllDrafts.labelId,
-                SystemLabelId.AllMail.labelId
-            ),
-            isStarred = false
+            customLabels = emptyList()
         ),
         messageBody = MessageBody(
             userId = userId,

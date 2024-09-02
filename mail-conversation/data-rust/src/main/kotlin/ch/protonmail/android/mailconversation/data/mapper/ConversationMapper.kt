@@ -23,12 +23,9 @@ import ch.protonmail.android.mailcommon.datarust.mapper.LocalConversationId
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.FAKE_USER_ID
 import ch.protonmail.android.mailconversation.domain.entity.Conversation
-import ch.protonmail.android.maillabel.data.mapper.toLabelId
+import ch.protonmail.android.maillabel.data.mapper.toLabel
 import ch.protonmail.android.mailmessage.data.mapper.toParticipant
 import ch.protonmail.android.mailmessage.domain.model.AttachmentCount
-import me.proton.core.label.domain.entity.Label
-import me.proton.core.label.domain.entity.LabelType
-import uniffi.proton_mail_uniffi.InlineCustomLabel
 
 fun LocalConversation.toConversation() = Conversation(
     userId = FAKE_USER_ID,
@@ -46,20 +43,6 @@ fun LocalConversation.toConversation() = Conversation(
     time = time.toLong(),
     size = size.toLong(),
     customLabels = this.customLabels.map { it.toLabel() }
-)
-
-fun InlineCustomLabel.toLabel() = Label(
-    userId = FAKE_USER_ID,
-    labelId = this.id.toLabelId(),
-    parentId = null,
-    name = this.name,
-    type = LabelType.MessageLabel,
-    path = "",
-    color = this.color.value,
-    order = 0,
-    isNotified = null,
-    isExpanded = null,
-    isSticky = null
 )
 
 private fun LocalConversationId.toConversationId(): ConversationId = ConversationId(this.value.toString())

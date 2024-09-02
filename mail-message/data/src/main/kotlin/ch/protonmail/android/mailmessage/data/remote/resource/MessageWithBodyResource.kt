@@ -120,12 +120,13 @@ data class MessageWithBodyResource(
             isReplied = isReplied.toBooleanOrFalse(),
             isRepliedAll = isRepliedAll.toBooleanOrFalse(),
             isForwarded = isForwarded.toBooleanOrFalse(),
+            isStarred = labelIds.any { it == SystemLabelId.Starred.labelId.id },
             addressId = AddressId(addressId),
             externalId = externalId,
             numAttachments = numAttachments,
             flags = flags,
             attachmentCount = attachmentsInfo.toAttachmentsCount(),
-            isStarred = labelIds.any { it == SystemLabelId.Starred.labelId.id }
+            customLabels = emptyList()
         ),
         messageBody = MessageBody(
             userId = userId,

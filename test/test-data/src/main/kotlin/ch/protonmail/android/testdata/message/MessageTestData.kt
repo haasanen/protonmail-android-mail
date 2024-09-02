@@ -38,6 +38,7 @@ import ch.protonmail.android.mailmessage.domain.model.Sender
 import ch.protonmail.android.testdata.user.UserIdTestData
 import ch.protonmail.android.testdata.user.UserIdTestData.userId
 import me.proton.core.domain.entity.UserId
+import me.proton.core.label.domain.entity.Label
 import me.proton.core.label.domain.entity.LabelId
 import me.proton.core.user.domain.entity.AddressId
 
@@ -226,7 +227,8 @@ object MessageTestData {
         ccList: List<Recipient> = emptyList(),
         bccList: List<Recipient> = emptyList(),
         conversationId: ConversationId = ConversationId(id),
-        flags: Long = 0
+        flags: Long = 0,
+        customLabels: List<Label> = emptyList()
     ) = Message(
         userId = userId,
         messageId = MessageId(id),
@@ -245,11 +247,12 @@ object MessageTestData {
         isReplied = false,
         isRepliedAll = false,
         isForwarded = false,
+        isStarred = labelIds.contains(SystemLabelId.Starred.labelId.id),
         addressId = AddressId("1"),
         externalId = null,
         numAttachments = numAttachments,
         flags = flags,
         attachmentCount = attachmentCount,
-        isStarred = labelIds.contains(SystemLabelId.Starred.labelId.id)
+        customLabels = customLabels
     )
 }

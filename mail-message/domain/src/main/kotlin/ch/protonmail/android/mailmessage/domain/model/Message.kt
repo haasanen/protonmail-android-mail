@@ -23,6 +23,7 @@ import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.mailpagination.domain.model.PageItem
 import kotlinx.serialization.Serializable
 import me.proton.core.domain.entity.UserId
+import me.proton.core.label.domain.entity.Label
 import me.proton.core.label.domain.entity.LabelId
 import me.proton.core.user.domain.entity.AddressId
 import kotlin.time.Duration
@@ -59,7 +60,8 @@ data class Message(
     val externalId: String?,
     val numAttachments: Int,
     val flags: Long,
-    val attachmentCount: AttachmentCount
+    val attachmentCount: AttachmentCount,
+    val customLabels: List<Label>
 ) : PageItem {
 
     override val id: String = messageId.id

@@ -57,12 +57,13 @@ class MessageWithBodyEntityMapper @Inject constructor() {
                         isReplied = isReplied,
                         isRepliedAll = isRepliedAll,
                         isForwarded = isForwarded,
+                        isStarred = labelIds.any { it == SystemLabelId.Starred.labelId },
                         addressId = addressId,
                         externalId = externalId,
                         numAttachments = numAttachments,
                         flags = flags,
                         attachmentCount = attachmentCount.toDomainModel(),
-                        isStarred = labelIds.any { it == SystemLabelId.Starred.labelId }
+                        customLabels = emptyList()
                     )
                 },
                 messageBody = with(messageBody) {

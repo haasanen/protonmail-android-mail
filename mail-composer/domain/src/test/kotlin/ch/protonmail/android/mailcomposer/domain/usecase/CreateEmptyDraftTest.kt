@@ -42,30 +42,31 @@ class CreateEmptyDraftTest {
                 userId = expectedUserId,
                 messageId = expectedMessageId,
                 conversationId = ConversationId(EMPTY_STRING),
+                time = expectedCurrentTimestamp,
+                size = 0L,
                 order = 0,
+                labelIds = listOf(
+                    SystemLabelId.Drafts.labelId,
+                    SystemLabelId.AllDrafts.labelId,
+                    SystemLabelId.AllMail.labelId
+                ),
                 subject = EMPTY_STRING,
                 unread = false,
                 sender = Sender(expectedUserAddress.email, expectedUserAddress.displayName!!),
                 toList = emptyList(),
                 ccList = emptyList(),
                 bccList = emptyList(),
-                time = expectedCurrentTimestamp,
-                size = 0L,
                 expirationTime = 0L,
                 isReplied = false,
                 isRepliedAll = false,
                 isForwarded = false,
+                isStarred = false,
                 addressId = expectedUserAddress.addressId,
                 externalId = null,
                 numAttachments = 0,
                 flags = 0L,
                 attachmentCount = AttachmentCount(0),
-                labelIds = listOf(
-                    SystemLabelId.Drafts.labelId,
-                    SystemLabelId.AllDrafts.labelId,
-                    SystemLabelId.AllMail.labelId
-                ),
-                isStarred = false
+                customLabels = emptyList()
             ),
             messageBody = MessageBody(
                 userId = expectedUserId,

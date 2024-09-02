@@ -218,12 +218,13 @@ class DraftUploadTrackerTest {
             isReplied = false,
             isRepliedAll = false,
             isForwarded = false,
+            isStarred = false,
             addressId = AddressId("testAddressId"),
             externalId = null,
             numAttachments = 0,
             flags = 0,
             attachmentCount = AttachmentCount(0),
-            isStarred = false
+            customLabels = emptyList()
         )
     }
 

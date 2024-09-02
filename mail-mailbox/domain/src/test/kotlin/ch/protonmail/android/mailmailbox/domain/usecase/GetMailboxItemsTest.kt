@@ -19,12 +19,7 @@
 package ch.protonmail.android.mailmailbox.domain.usecase
 
 import arrow.core.getOrHandle
-import arrow.core.left
-import arrow.core.right
-import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailcommon.domain.model.NetworkError
 import ch.protonmail.android.mailconversation.domain.repository.ConversationRepository
-import ch.protonmail.android.maillabel.domain.usecase.GetLabels
 import ch.protonmail.android.mailmailbox.domain.mapper.ConversationMailboxItemMapper
 import ch.protonmail.android.mailmailbox.domain.mapper.MessageMailboxItemMapper
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItemType
@@ -32,7 +27,7 @@ import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
 import ch.protonmail.android.mailpagination.domain.model.OrderDirection
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.testdata.conversation.ConversationWithContextTestData
-import ch.protonmail.android.testdata.label.LabelTestData.buildLabel
+import ch.protonmail.android.testdata.label.LabelTestData
 import ch.protonmail.android.testdata.message.MessageTestData.buildMessage
 import ch.protonmail.android.testdata.user.UserIdTestData.userId
 import io.mockk.coEvery
@@ -50,9 +45,9 @@ class GetMailboxItemsTest {
     private val messageRepository = mockk<MessageRepository> {
         coEvery { getLocalMessages(any<UserId>(), any<PageKey>()) } returns listOf(
             // userId1
-            buildMessage(userId, "1", time = 1000, labelIds = emptyList()),
-            buildMessage(userId, "2", time = 2000, labelIds = listOf("4")),
-            buildMessage(userId, "3", time = 3000, labelIds = listOf("0", "1"))
+            buildMessage(userId, "1", time = 1000, customLabels = emptyList()),
+            buildMessage(userId, "2", time = 2000, customLabels = listOf("4").map(::buildLabel)),
+            buildMessage(userId, "3", time = 3000, customLabels = listOf("0", "1").map(::buildLabel))
         )
     }
     private val conversationRepository = mockk<ConversationRepository> {
@@ -63,15 +58,6 @@ class GetMailboxItemsTest {
             ConversationWithContextTestData.conversation3Labeled
         )
     }
-    private val getLabels = mockk<GetLabels> {
-        coEvery { this@mockk(any(), any()) } returns listOf(
-            buildLabel(userId = userId, type = LabelType.MessageLabel, id = "0"),
-            buildLabel(userId = userId, type = LabelType.MessageLabel, id = "1"),
-            buildLabel(userId = userId, type = LabelType.MessageLabel, id = "2"),
-            buildLabel(userId = userId, type = LabelType.MessageLabel, id = "3"),
-            buildLabel(userId = userId, type = LabelType.MessageLabel, id = "4")
-        ).right()
-    }
 
     private val messageMailboxItemMapper = MessageMailboxItemMapper()
     private val conversationMailboxItemMapper = ConversationMailboxItemMapper()
@@ -81,7 +67,6 @@ class GetMailboxItemsTest {
     @Before
     fun setUp() {
         usecase = GetMailboxItems(
-            getLabels,
             messageRepository,
             conversationRepository,
             messageMailboxItemMapper,
@@ -99,8 +84,6 @@ class GetMailboxItemsTest {
             .getOrHandle(::error)
 
         // Then
-        coVerify { getLabels(userId, LabelType.MessageLabel) }
-        coVerify { getLabels(userId, LabelType.MessageLabel) }
         coVerify { messageRepository.getLocalMessages(userId, pageKey) }
         assertEquals(3, mailboxItems.size)
         assertEquals(0, mailboxItems[0].labels.size)
@@ -123,8 +106,6 @@ class GetMailboxItemsTest {
             .getOrHandle(::error)
 
         // Then
-        coVerify { getLabels(userId, LabelType.MessageLabel) }
-        coVerify { getLabels(userId, LabelType.MessageFolder) }
         coVerify { conversationRepository.getLocalConversations(userId, pageKey) }
         assertEquals(3, mailboxItems.size)
         assertEquals(1, mailboxItems[0].labels.size)
@@ -137,29 +118,10 @@ class GetMailboxItemsTest {
         }
     }
 
-    @Test
-    fun `return data error when failing to get folders`() = runTest {
-        // Given
-        val remoteError = DataError.Remote.Http(NetworkError.NoNetwork)
-        coEvery { getLabels.invoke(userId, LabelType.MessageFolder) } returns remoteError.left()
-
-        // When
-        val actual = usecase.invoke(userId, MailboxItemType.Message)
-
-        // Then
-        assertEquals(remoteError.left(), actual)
-    }
-
-    @Test
-    fun `return data error when failing to get labels`() = runTest {
-        // Given
-        val remoteError = DataError.Remote.Http(NetworkError.ServerError)
-        coEvery { getLabels.invoke(userId, LabelType.MessageLabel) } returns remoteError.left()
-
-        // When
-        val actual = usecase.invoke(userId, MailboxItemType.Conversation)
-
-        // Then
-        assertEquals(remoteError.left(), actual)
-    }
+    private fun buildLabel(value: String) = LabelTestData.buildLabel(
+        userId = userId,
+        id = value,
+        type = LabelType.MessageLabel,
+        order = value.hashCode()
+    )
 }
