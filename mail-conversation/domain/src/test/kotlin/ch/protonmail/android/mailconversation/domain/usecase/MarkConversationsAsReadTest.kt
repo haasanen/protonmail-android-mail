@@ -27,7 +27,6 @@ import ch.protonmail.android.mailconversation.domain.repository.ConversationRepo
 import ch.protonmail.android.mailconversation.domain.sample.ConversationSample
 import io.mockk.coEvery
 import io.mockk.mockk
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -46,7 +45,6 @@ class MarkConversationsAsReadTest {
         // given
         val error = DataErrorSample.NoCache.left()
         coEvery { conversationRepository.markRead(userId, conversationIds) } returns error
-        coEvery { conversationRepository.observeCachedConversations(userId, conversationIds) } returns flowOf()
 
         // when
         val result = markRead(userId, conversationIds)
@@ -60,7 +58,6 @@ class MarkConversationsAsReadTest {
         // given
         val conversation = listOf(ConversationSample.WeatherForecast, ConversationSample.AlphaAppFeedback).right()
         coEvery { conversationRepository.markRead(userId, conversationIds) } returns conversation
-        coEvery { conversationRepository.observeCachedConversations(userId, conversationIds) } returns flowOf()
 
         // when
         val result = markRead(userId, conversationIds)

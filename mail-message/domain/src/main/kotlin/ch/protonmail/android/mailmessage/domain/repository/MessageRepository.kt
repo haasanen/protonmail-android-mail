@@ -40,8 +40,6 @@ interface MessageRepository {
      */
     suspend fun getLocalMessages(userId: UserId, pageKey: PageKey = PageKey()): List<Message>
 
-    suspend fun getLocalMessages(userId: UserId, messages: List<MessageId>): List<Message>
-
     /**
      * Return true if all [Message] are considered locally valid according the given [pageKey].
      */

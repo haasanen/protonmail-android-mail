@@ -71,13 +71,6 @@ interface ConversationRepository {
     ): Flow<Either<DataError.Local, ConversationMessages>>
 
     /**
-     * Get a list of conversations.
-     * Returns any conversation data that is available locally right away.
-     */
-    @Deprecated("Usages of this are part of features that were replaced by higher level rust functions")
-    fun observeCachedConversations(userId: UserId, ids: List<ConversationId>): Flow<List<Conversation>>
-
-    /**
      * Adds the given [labelId] to the message with the given [conversationId]
      */
     suspend fun addLabel(

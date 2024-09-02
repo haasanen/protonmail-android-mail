@@ -59,10 +59,6 @@ class RustMessageRepositoryImpl @Inject constructor(
             .map { it.toMessage() }
     }
 
-    override suspend fun getLocalMessages(userId: UserId, messages: List<MessageId>): List<Message> {
-        TODO("Not yet implemented")
-    }
-
     override suspend fun isLocalPageValid(
         userId: UserId,
         pageKey: PageKey,

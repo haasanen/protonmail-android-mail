@@ -26,7 +26,6 @@ import ch.protonmail.android.mailconversation.domain.repository.ConversationRepo
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 
@@ -46,7 +45,6 @@ class DeleteConversationsTest {
         coEvery {
             conversationRepository.deleteConversations(userId, conversationIds, currentLabel)
         } returns Unit.right()
-        coEvery { conversationRepository.observeCachedConversations(userId, conversationIds) } returns flowOf()
 
         // When
         deleteConversations(userId, conversationIds, currentLabel)

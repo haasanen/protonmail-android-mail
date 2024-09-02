@@ -47,7 +47,6 @@ class MoveMessagesTest {
     @Test
     fun `when move succeeds then Unit is returned`() = runTest {
         // Given
-        expectGetLocalMessagesSucceeds()
         expectMoveSucceeds(SystemLabelId.Spam.labelId, listOf(MessageSample.AugWeatherForecast))
 
         // When
@@ -60,7 +59,6 @@ class MoveMessagesTest {
     @Test
     fun `when move fails then DataError is returned`() = runTest {
         // Given
-        expectGetLocalMessagesSucceeds()
         expectMoveFails(SystemLabelId.Spam.labelId)
 
         // When
@@ -68,14 +66,6 @@ class MoveMessagesTest {
 
         // Then
         assertEquals(DataError.Local.NoDataCached.left(), actual)
-    }
-
-    private fun expectGetLocalMessagesSucceeds(withMessages: List<Message>? = null) {
-        val returnedMessages = withMessages ?: listOf(
-            MessageSample.AugWeatherForecast.copy(labelIds = listOf(SystemLabelId.Archive.labelId)),
-            MessageSample.Invoice.copy(labelIds = listOf(SystemLabelId.Inbox.labelId))
-        )
-        coEvery { messageRepository.getLocalMessages(userId, messageIds) } returns returnedMessages
     }
 
     private fun expectMoveSucceeds(

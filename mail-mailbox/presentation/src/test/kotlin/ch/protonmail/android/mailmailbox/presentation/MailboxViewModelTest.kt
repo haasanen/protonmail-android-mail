@@ -40,10 +40,7 @@ import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcommon.presentation.sample.ActionUiModelSample
 import ch.protonmail.android.mailcommon.presentation.ui.delete.DeleteDialogState
 import ch.protonmail.android.mailcontact.domain.usecase.GetContacts
-import ch.protonmail.android.mailconversation.domain.entity.ConversationWithLabels
-import ch.protonmail.android.mailconversation.domain.sample.ConversationSample
 import ch.protonmail.android.mailconversation.domain.usecase.DeleteConversations
-import ch.protonmail.android.mailconversation.domain.usecase.GetConversationsWithLabels
 import ch.protonmail.android.mailconversation.domain.usecase.MarkConversationsAsRead
 import ch.protonmail.android.mailconversation.domain.usecase.MarkConversationsAsUnread
 import ch.protonmail.android.mailconversation.domain.usecase.MoveConversations
@@ -106,12 +103,9 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.usecase.ShowRating
 import ch.protonmail.android.mailmailbox.presentation.paging.MailboxPagerFactory
 import ch.protonmail.android.mailmessage.domain.model.LabelSelectionList
 import ch.protonmail.android.mailmessage.domain.model.MessageId
-import ch.protonmail.android.mailmessage.domain.model.MessageWithLabels
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
-import ch.protonmail.android.mailmessage.domain.sample.MessageSample
 import ch.protonmail.android.mailmessage.domain.usecase.DeleteMessages
 import ch.protonmail.android.mailmessage.domain.usecase.DeleteSearchResults
-import ch.protonmail.android.mailmessage.domain.usecase.GetMessagesWithLabels
 import ch.protonmail.android.mailmessage.domain.usecase.MarkMessagesAsRead
 import ch.protonmail.android.mailmessage.domain.usecase.MarkMessagesAsUnread
 import ch.protonmail.android.mailmessage.domain.usecase.MoveMessages
@@ -219,8 +213,6 @@ class MailboxViewModelTest {
     private val observeMessageClearOperation = mockk<ObserveClearMessageOperation> {
         every { this@mockk(userId, any()) } returns flowOf(false)
     }
-    private val getMessagesWithLabels = mockk<GetMessagesWithLabels>()
-    private val getConversationsWithLabels = mockk<GetConversationsWithLabels>()
 
     private val observeCurrentViewMode = mockk<ObserveCurrentViewMode> {
         coEvery { this@mockk(userId = any()) } returns flowOf(NoConversationGrouping)
@@ -305,8 +297,6 @@ class MailboxViewModelTest {
             selectedMailLabelId = selectedMailLabelId,
             observeUnreadCounters = observeUnreadCounters,
             observeFolderColorSettings = observeFolderColorSettings,
-            getMessagesWithLabels = getMessagesWithLabels,
-            getConversationsWithLabels = getConversationsWithLabels,
             getMailboxActions = observeMailboxActions,
             actionUiModelMapper = actionUiModelMapper,
             mailboxItemMapper = mailboxItemMapper,
@@ -2167,7 +2157,6 @@ class MailboxViewModelTest {
         returnExpectedStateWhenEnterSelectionMode(initialState, item, intermediateState)
         returnExpectedStateForBottomBarEvent(expectedState = intermediateState)
         expectObserveCustomMailLabelSucceeds(expectedCustomLabels)
-        expectGetMessagesWithLabelsSucceeds(selectedItemsList.map { MessageId(it.id) })
         expectedLabelAsBottomSheetRequestedStateChange(expectedCustomUiLabels, bottomSheetShownState)
         expectedLabelAsBottomSheetDismissed(initialState)
 
@@ -2225,7 +2214,6 @@ class MailboxViewModelTest {
         returnExpectedStateWhenEnterSelectionMode(initialState, item, intermediateState)
         returnExpectedStateForBottomBarEvent(expectedState = intermediateState)
         expectObserveCustomMailLabelSucceeds(expectedCustomLabels)
-        expectGetMessagesWithLabelsSucceeds(selectedItemsList.map { MessageId(it.id) })
         expectedLabelAsBottomSheetRequestedStateChange(expectedCustomUiLabels, bottomSheetShownState)
         expectedLabelAsStateChange(selectedItemsList, LabelIdSample.Label2022)
         expectedLabelAsConfirmed(intermediateState)
@@ -2297,7 +2285,6 @@ class MailboxViewModelTest {
             returnExpectedStateWhenEnterSelectionMode(initialState, item, intermediateState)
             returnExpectedStateForBottomBarEvent(expectedState = intermediateState)
             expectObserveCustomMailLabelSucceeds(expectedCustomLabels)
-            expectGetMessagesWithLabelsSucceeds(selectedItemsList.map { MessageId(it.id) })
             expectedLabelAsBottomSheetRequestedStateChange(expectedCustomUiLabels, bottomSheetShownState)
             expectedLabelAsStateChange(selectedItemsList, LabelIdSample.Label2022)
             expectedLabelAsConfirmed(intermediateState, true)
@@ -2373,7 +2360,6 @@ class MailboxViewModelTest {
         returnExpectedStateWhenEnterSelectionMode(initialState, item, intermediateState)
         returnExpectedStateForBottomBarEvent(expectedState = intermediateState)
         expectObserveCustomMailLabelSucceeds(expectedCustomLabels)
-        expectGetConversationMessagesWithLabelsSucceeds(selectedItemsList.map { ConversationId(it.id) })
         expectedLabelAsBottomSheetRequestedStateChange(expectedCustomUiLabels, bottomSheetShownState)
         expectedLabelAsStateChange(selectedItemsList, LabelIdSample.Label2022)
         expectedLabelAsConfirmed(intermediateState)
@@ -2448,7 +2434,6 @@ class MailboxViewModelTest {
             returnExpectedStateWhenEnterSelectionMode(initialState, item, intermediateState)
             returnExpectedStateForBottomBarEvent(expectedState = intermediateState)
             expectObserveCustomMailLabelSucceeds(expectedCustomLabels)
-            expectGetConversationMessagesWithLabelsSucceeds(selectedItemsList.map { ConversationId(it.id) })
             expectedLabelAsBottomSheetRequestedStateChange(expectedCustomUiLabels, bottomSheetShownState)
             expectedLabelAsStateChange(selectedItemsList, LabelIdSample.Label2022)
             expectedLabelAsConfirmed(intermediateState, true)
@@ -4081,32 +4066,6 @@ class MailboxViewModelTest {
 
     private fun expectFolderColorSettingsFails() {
         every { observeFolderColorSettings(userId) } returns flowOf()
-    }
-
-    private fun expectGetMessagesWithLabelsSucceeds(messageIds: List<MessageId>) {
-        coEvery { getMessagesWithLabels(userId, messageIds) } returns listOf(
-            MessageWithLabels(
-                message = MessageSample.Invoice,
-                labels = listOf()
-            ),
-            MessageWithLabels(
-                message = MessageSample.AlphaAppQAReport,
-                labels = listOf()
-            )
-        ).right()
-    }
-
-    private fun expectGetConversationMessagesWithLabelsSucceeds(conversationIds: List<ConversationId>) {
-        coEvery { getConversationsWithLabels(userId, conversationIds) } returns listOf(
-            ConversationWithLabels(
-                conversation = ConversationSample.AlphaAppFeedback,
-                labels = listOf()
-            ),
-            ConversationWithLabels(
-                conversation = ConversationSample.WeatherForecast,
-                labels = listOf()
-            )
-        ).right()
     }
 
     private fun returnExpectedStateForMarkAsRead(intermediateState: MailboxState, expectedState: MailboxState) {

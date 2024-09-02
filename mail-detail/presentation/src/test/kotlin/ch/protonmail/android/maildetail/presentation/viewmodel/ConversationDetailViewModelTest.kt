@@ -63,7 +63,6 @@ import ch.protonmail.android.maildetail.domain.usecase.ObserveConversationDetail
 import ch.protonmail.android.maildetail.domain.usecase.ObserveConversationMessagesWithLabels
 import ch.protonmail.android.maildetail.domain.usecase.ObserveConversationViewState
 import ch.protonmail.android.maildetail.domain.usecase.ObserveMessageAttachmentStatus
-import ch.protonmail.android.maildetail.domain.usecase.ObserveMessageWithLabels
 import ch.protonmail.android.maildetail.domain.usecase.RelabelConversation
 import ch.protonmail.android.maildetail.domain.usecase.ReportPhishingMessage
 import ch.protonmail.android.maildetail.domain.usecase.SetMessageViewState
@@ -282,9 +281,6 @@ class ConversationDetailViewModelTest {
         coEvery { this@mockk.invoke(any(), any()) } returns DecryptedMessageBody(
             MessageIdSample.build(), "", MimeType.Html, emptyList(), UserAddressSample.PrimaryAddress
         ).right()
-    }
-    private val observeMessageWithLabels = mockk<ObserveMessageWithLabels> {
-        every { this@mockk.invoke(UserIdSample.Primary, any()) } returns mockk()
     }
     private val markMessageAsRead: MarkMessageAsRead =
         mockk {
@@ -2054,7 +2050,6 @@ class ConversationDetailViewModelTest {
             messagesState = ConversationDetailsMessagesState.Data(firstExpanding)
         )
 
-        coEvery { observeMessageWithLabels(userId, any()) } returns flowOf(invoiceMessage.right())
         coEvery { conversationMessageMapper.toUiModel(any(), any(), defaultFolderColorSettings) } returns
             ConversationDetailMessageUiModelSample.InvoiceWithLabel
         coEvery {

@@ -3,18 +3,14 @@ package ch.protonmail.android.maildetail.presentation.usecase
 import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.maildetail.domain.usecase.ObserveMessageWithLabels
 import ch.protonmail.android.maillabel.domain.usecase.ObserveCustomMailLabels
 import ch.protonmail.android.maillabel.presentation.MailLabelUiModel
 import ch.protonmail.android.maillabel.presentation.toUiModel
-import ch.protonmail.android.mailmessage.domain.model.MessageWithLabels
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.LabelAsBottomSheetState
 import ch.protonmail.android.mailsettings.domain.model.FolderColorSettings
 import ch.protonmail.android.mailsettings.domain.usecase.ObserveFolderColorSettings
-import ch.protonmail.android.testdata.label.LabelTestData
 import ch.protonmail.android.testdata.maillabel.MailLabelTestData
-import ch.protonmail.android.testdata.message.MessageTestData
 import ch.protonmail.android.testdata.user.UserIdTestData
 import io.mockk.coEvery
 import io.mockk.every
@@ -42,63 +38,14 @@ class LoadDataForMessageLabelAsBottomSheetTest {
     private val observeFolderColorSettings = mockk<ObserveFolderColorSettings> {
         every { this@mockk.invoke(userId) } returns flowOf(FolderColorSettings())
     }
-    private val observeMessageWithLabels = mockk<ObserveMessageWithLabels> {
-        every { this@mockk.invoke(userId, messageId) } returns flowOf(
-            MessageWithLabels(
-                MessageTestData.message,
-                listOf(LabelTestData.buildLabel(MailLabelTestData.customLabelOne.id.labelId.id))
-            ).right()
-        )
-    }
 
     private val loadDataForMessageLabelAsBottomSheet = LoadDataForMessageLabelAsBottomSheet(
         observeCustomMailLabels,
-        observeFolderColorSettings,
-        observeMessageWithLabels
+        observeFolderColorSettings
     )
 
     @Test
     fun `should return bottom sheet action data when all operations succeeded`() = runTest {
-        // When
-        val actual = loadDataForMessageLabelAsBottomSheet(userId, messageId)
-
-        // Then
-        val expected = LabelAsBottomSheetState.LabelAsBottomSheetEvent.ActionData(
-            customLabelList = listOf(
-                MailLabelTestData.customLabelOne, MailLabelTestData.customLabelTwo
-            ).map {
-                it.toUiModel(
-                    FolderColorSettings(), emptyMap(), MailLabelTestData.inboxSystemLabel.id
-                ) as MailLabelUiModel.Custom
-            }.toImmutableList(),
-            selectedLabels = listOf(MailLabelTestData.customLabelOne.id.labelId).toImmutableList(),
-            messageIdInConversation = messageId
-        )
-        assertEquals(expected, actual)
-    }
-
-    @Test
-    fun `should return empty bottom sheet action data when observing labels failed`() = runTest {
-        // Given
-        coEvery { observeCustomMailLabels(userId) } returns flowOf(DataError.Local.NoDataCached.left())
-
-        // When
-        val actual = loadDataForMessageLabelAsBottomSheet(userId, messageId)
-
-        // Then
-        val expected = LabelAsBottomSheetState.LabelAsBottomSheetEvent.ActionData(
-            customLabelList = emptyList<MailLabelUiModel.Custom>().toImmutableList(),
-            selectedLabels = listOf(MailLabelTestData.customLabelOne.id.labelId).toImmutableList(),
-            messageIdInConversation = messageId
-        )
-        assertEquals(expected, actual)
-    }
-
-    @Test
-    fun `should return empty selected labels list when observing the message failed`() = runTest {
-        // Given
-        every { observeMessageWithLabels(userId, messageId) } returns flowOf(DataError.Local.NoDataCached.left())
-
         // When
         val actual = loadDataForMessageLabelAsBottomSheet(userId, messageId)
 
@@ -116,4 +63,22 @@ class LoadDataForMessageLabelAsBottomSheetTest {
         )
         assertEquals(expected, actual)
     }
+
+    @Test
+    fun `should return empty bottom sheet action data when observing labels failed`() = runTest {
+        // Given
+        coEvery { observeCustomMailLabels(userId) } returns flowOf(DataError.Local.NoDataCached.left())
+
+        // When
+        val actual = loadDataForMessageLabelAsBottomSheet(userId, messageId)
+
+        // Then
+        val expected = LabelAsBottomSheetState.LabelAsBottomSheetEvent.ActionData(
+            customLabelList = emptyList<MailLabelUiModel.Custom>().toImmutableList(),
+            selectedLabels = emptyList<LabelId>().toImmutableList(),
+            messageIdInConversation = messageId
+        )
+        assertEquals(expected, actual)
+    }
+
 }

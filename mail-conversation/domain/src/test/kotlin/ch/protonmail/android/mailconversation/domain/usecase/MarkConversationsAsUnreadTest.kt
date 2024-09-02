@@ -30,7 +30,6 @@ import ch.protonmail.android.testdata.maillabel.MailLabelTestData
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -56,7 +55,6 @@ class MarkConversationsAsUnreadTest {
         // given
         val error = DataErrorSample.NoCache.left()
         coEvery { conversationRepository.markUnread(userId, conversationIds, mailLabel.labelId) } returns error
-        coEvery { conversationRepository.observeCachedConversations(userId, conversationIds) } returns flowOf()
 
         // when
         val result = markUnread(userId, conversationIds)
@@ -70,7 +68,6 @@ class MarkConversationsAsUnreadTest {
         // given
         val conversation = listOf(ConversationSample.WeatherForecast, ConversationSample.AlphaAppFeedback).right()
         coEvery { conversationRepository.markUnread(userId, conversationIds, mailLabel.labelId) } returns conversation
-        coEvery { conversationRepository.observeCachedConversations(userId, conversationIds) } returns flowOf()
 
         // when
         val result = markUnread(userId, conversationIds)

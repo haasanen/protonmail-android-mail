@@ -25,6 +25,7 @@ import me.proton.core.domain.entity.UserId
 import ch.protonmail.android.mailsettings.domain.repository.MailSettingsRepository
 import javax.inject.Inject
 
+@Deprecated("Rust lib is now returning color optionally considering this preference. No need to check anymore")
 class ObserveFolderColorSettings @Inject constructor(
     private val mailSettingsRepository: MailSettingsRepository
 ) {

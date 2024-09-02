@@ -28,7 +28,6 @@ import ch.protonmail.android.mailconversation.domain.repository.ConversationRepo
 import ch.protonmail.android.mailconversation.domain.sample.ConversationSample
 import io.mockk.coEvery
 import io.mockk.mockk
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import me.proton.core.label.domain.entity.LabelId
 import kotlin.test.Test
@@ -50,7 +49,6 @@ class MoveConversationsTest {
         val expectedConversations = listOf(ConversationSample.WeatherForecast, ConversationSample.AlphaAppFeedback)
 
         expectMoveSucceeds(destinationLabel, expectedConversations)
-        coEvery { conversationRepository.observeCachedConversations(userId, conversationIds) } returns flowOf()
 
         // When
         val result = moveConversations(userId, conversationIds, destinationLabel)
@@ -65,7 +63,6 @@ class MoveConversationsTest {
         val destinationLabel = LabelId("labelId")
 
         expectMoveFails(destinationLabel)
-        coEvery { conversationRepository.observeCachedConversations(userId, conversationIds) } returns flowOf()
 
         // When
         val result = moveConversations(userId, conversationIds, destinationLabel)

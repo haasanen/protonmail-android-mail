@@ -92,13 +92,6 @@ class RustConversationRepositoryImpl @Inject constructor(
             }
     }
 
-    @MissingRustApi
-    @Deprecated("Usages of this are part of features that were replaced by higher level rust functions")
-    override fun observeCachedConversations(userId: UserId, ids: List<ConversationId>): Flow<List<Conversation>> {
-        Timber.e("Not implemented; Features relying on this should switch to use other rust-provided methods")
-        return flowOf(emptyList())
-    }
-
     // It will be implemented later on
     override suspend fun addLabel(
         userId: UserId,

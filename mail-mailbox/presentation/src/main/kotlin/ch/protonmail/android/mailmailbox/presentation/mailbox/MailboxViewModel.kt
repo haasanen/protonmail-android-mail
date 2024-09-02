@@ -27,6 +27,7 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.map
 import arrow.core.getOrElse
+import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.domain.model.Action
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUserId
@@ -38,7 +39,6 @@ import ch.protonmail.android.mailcommon.presentation.model.BottomBarState
 import ch.protonmail.android.mailcommon.presentation.ui.delete.DeleteDialogState
 import ch.protonmail.android.mailcontact.domain.usecase.GetContacts
 import ch.protonmail.android.mailconversation.domain.usecase.DeleteConversations
-import ch.protonmail.android.mailconversation.domain.usecase.GetConversationsWithLabels
 import ch.protonmail.android.mailconversation.domain.usecase.MarkConversationsAsRead
 import ch.protonmail.android.mailconversation.domain.usecase.MarkConversationsAsUnread
 import ch.protonmail.android.mailconversation.domain.usecase.MoveConversations
@@ -90,7 +90,6 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxViewA
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.StorageLimitState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.UnreadFilterState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.UpgradeStorageState
-import ch.protonmail.android.mailmailbox.presentation.mailbox.model.UsedLabels
 import ch.protonmail.android.mailmailbox.presentation.mailbox.reducer.MailboxReducer
 import ch.protonmail.android.mailmailbox.presentation.mailbox.usecase.ShowRatingBooster
 import ch.protonmail.android.mailmailbox.presentation.paging.MailboxPagerFactory
@@ -99,7 +98,6 @@ import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.UnreadCounter
 import ch.protonmail.android.mailmessage.domain.usecase.DeleteMessages
 import ch.protonmail.android.mailmessage.domain.usecase.DeleteSearchResults
-import ch.protonmail.android.mailmessage.domain.usecase.GetMessagesWithLabels
 import ch.protonmail.android.mailmessage.domain.usecase.MarkMessagesAsRead
 import ch.protonmail.android.mailmessage.domain.usecase.MarkMessagesAsUnread
 import ch.protonmail.android.mailmessage.domain.usecase.MoveMessages
@@ -158,8 +156,6 @@ class MailboxViewModel @Inject constructor(
     private val selectedMailLabelId: SelectedMailLabelId,
     private val observeUnreadCounters: ObserveUnreadCounters,
     private val observeFolderColorSettings: ObserveFolderColorSettings,
-    private val getMessagesWithLabels: GetMessagesWithLabels,
-    private val getConversationsWithLabels: GetConversationsWithLabels,
     private val getMailboxActions: GetMailboxActions,
     private val actionUiModelMapper: ActionUiModelMapper,
     private val mailboxItemMapper: MailboxItemUiModelMapper,
@@ -461,7 +457,7 @@ class MailboxViewModel @Inject constructor(
         }
     }
 
-    private suspend fun handleItemClick(item: MailboxItemUiModel) {
+    private fun handleItemClick(item: MailboxItemUiModel) {
         when (state.value.mailboxListState) {
             is MailboxListState.Data.SelectionMode -> handleItemClickInSelectionMode(item)
             is MailboxListState.Data.ViewMode -> handleItemClickInViewMode(item)
@@ -471,7 +467,7 @@ class MailboxViewModel @Inject constructor(
         }
     }
 
-    private suspend fun handleItemClickInViewMode(item: MailboxItemUiModel) {
+    private fun handleItemClickInViewMode(item: MailboxItemUiModel) {
         if (item.shouldOpenInComposer) {
             emitNewStateFrom(MailboxEvent.ItemClicked.OpenComposer(item))
         } else {
@@ -722,6 +718,8 @@ class MailboxViewModel @Inject constructor(
         }
     }
 
+    @MissingRustApi
+    // selectedLabels and partiallySelected labels to be received from rust
     private fun showLabelAsBottomSheetAndLoadData(operation: MailboxViewAction) {
         val selectionMode = state.value.mailboxListState as? MailboxListState.Data.SelectionMode
         if (selectionMode == null) {
@@ -749,15 +747,12 @@ class MailboxViewModel @Inject constructor(
                 Timber.e("Error while observing custom labels")
             }.getOrElse { emptyList() }
 
-            val usedLabels = getUsedLabels(userId, selectionMode.selectedMailboxItems)
-
-            val (selectedLabels, partiallySelectedLabels) = mappedLabels.getLabelSelectionState(usedLabels)
             val event = MailboxEvent.MailboxBottomSheetEvent(
                 LabelAsBottomSheetState.LabelAsBottomSheetEvent.ActionData(
                     customLabelList = mappedLabels.map { it.toCustomUiModel(color, emptyMap(), null) }
                         .toImmutableList(),
-                    selectedLabels = selectedLabels.toImmutableList(),
-                    partiallySelectedLabels = partiallySelectedLabels.toImmutableList()
+                    selectedLabels = emptyList<LabelId>().toImmutableList(),
+                    partiallySelectedLabels = emptyList<LabelId>().toImmutableList()
                 )
             )
             emitNewStateFrom(event)
@@ -780,9 +775,6 @@ class MailboxViewModel @Inject constructor(
                 return@launch
             }
 
-            val usedLabels = getUsedLabels(userId, selectionState.selectedMailboxItems)
-
-            val previousSelection = labels.getLabelSelectionState(usedLabels)
             val labelAsData = state.value.bottomSheetState?.contentState as? LabelAsBottomSheetState.Data
                 ?: throw IllegalStateException("BottomSheetState is not LabelAsBottomSheetState.Data")
 
@@ -809,7 +801,7 @@ class MailboxViewModel @Inject constructor(
                 userId = userId,
                 viewMode = viewMode,
                 selectedItems = selectionState.selectedMailboxItems,
-                currentSelectionList = previousSelection,
+                currentSelectionList = LabelSelectionList(emptyList(), emptyList()),
                 updatedSelectionList = updatedSelection,
                 archiveSelected = archiveSelected
             )
@@ -917,7 +909,7 @@ class MailboxViewModel @Inject constructor(
         ).let { emitNewStateFrom(it) }
     }
 
-    private suspend fun showMoreBottomSheet(operation: MailboxViewAction) {
+    private fun showMoreBottomSheet(operation: MailboxViewAction) {
         val selectionState = state.value.mailboxListState as? MailboxListState.Data.SelectionMode
         if (selectionState == null) {
             Timber.d("MailboxListState is not in SelectionMode")
@@ -939,20 +931,6 @@ class MailboxViewModel @Inject constructor(
                 )
             )
         )
-    }
-
-    private suspend fun getUsedLabels(userId: UserId, selectedItems: Set<SelectedMailboxItem>): List<UsedLabels> {
-        return when (getViewModeForCurrentLocation(selectedMailLabelId.flow.value)) {
-            ViewMode.ConversationGrouping ->
-                getConversationsWithLabels(userId, selectedItems.map { ConversationId(it.id) }).map { list ->
-                    list.map { UsedLabels(it.labels) }
-                }
-
-            ViewMode.NoConversationGrouping ->
-                getMessagesWithLabels(userId, selectedItems.map { MessageId(it.id) }).map { list ->
-                    list.map { UsedLabels(it.labels) }
-                }
-        }.onLeft { Timber.e("Error while observing messages with labels") }.getOrElse { emptyList() }
     }
 
     private suspend fun handleRelabelOperation(
@@ -1258,22 +1236,6 @@ class MailboxViewModel @Inject constructor(
             .mapNotNull { it?.selectedMailboxItems }
             .distinctUntilChanged()
 
-    private fun List<MailLabel.Custom>.getLabelSelectionState(mappedLabels: List<UsedLabels>): LabelSelectionList {
-        val previousSelectedLabels = mutableListOf<LabelId>()
-        val previousPartiallySelectedLabels = mutableListOf<LabelId>()
-        this.forEach { label ->
-            if (mappedLabels.allContainsLabel(label.id.labelId)) {
-                previousSelectedLabels.add(label.id.labelId)
-            } else if (mappedLabels.partiallyContainsLabel(label.id.labelId)) {
-                previousPartiallySelectedLabels.add(label.id.labelId)
-            }
-        }
-        return LabelSelectionList(
-            selectedLabels = previousSelectedLabels,
-            partiallySelectionLabels = previousPartiallySelectedLabels
-        )
-    }
-
     private fun LabelAsBottomSheetState.Data.getLabelSelectionState(): LabelSelectionList {
         val selectedLabels = this.labelUiModelsWithSelectedState
             .filter { it.selectedState == LabelSelectedState.Selected }
@@ -1286,18 +1248,6 @@ class MailboxViewModel @Inject constructor(
             selectedLabels = selectedLabels,
             partiallySelectionLabels = partiallySelectedLabels
         )
-    }
-
-    private fun List<UsedLabels>.allContainsLabel(labelId: LabelId): Boolean {
-        return this.all { usedLabels ->
-            usedLabels.labels.any { it.labelId == labelId }
-        }
-    }
-
-    private fun List<UsedLabels>.partiallyContainsLabel(labelId: LabelId): Boolean {
-        return this.any { messageWithLabel ->
-            messageWithLabel.labels.any { it.labelId == labelId }
-        }
     }
 
     private fun isActionAllowedForCurrentLabel(labelId: LabelId): Boolean {
