@@ -60,7 +60,7 @@ fun LocalMessageMetadata.toMessage(): Message {
         size = this.size.toLong(),
         order = this.displayOrder.toLong(),
         subject = this.subject,
-        unread = this.unread,
+        isUnread = this.unread,
         sender = this.sender.toParticipant(),
         toList = this.toList.map { it.toRecipient() },
         ccList = this.ccList.map { it.toRecipient() },

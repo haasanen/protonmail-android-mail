@@ -42,7 +42,7 @@ data class Message(
     val size: Long,
     val order: Long,
     val subject: String,
-    val unread: Boolean,
+    val isUnread: Boolean,
     val sender: Sender,
     val toList: List<Recipient>,
     val ccList: List<Recipient>,

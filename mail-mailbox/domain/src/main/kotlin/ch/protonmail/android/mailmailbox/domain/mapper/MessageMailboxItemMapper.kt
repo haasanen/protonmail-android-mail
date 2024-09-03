@@ -33,7 +33,7 @@ class MessageMailboxItemMapper @Inject constructor() : Mapper<Message, MailboxIt
         time = message.time,
         size = message.size,
         order = message.order,
-        read = message.unread.not(),
+        read = message.isUnread.not(),
         labelIds = emptyList(),
         conversationId = message.conversationId,
         labels = message.customLabels.sortedBy { it.order },

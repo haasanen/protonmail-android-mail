@@ -297,7 +297,7 @@ class MessageLocalDataSourceImpl @Inject constructor(
             ?: return DataError.Local.NoDataCached.left()
         val updatedMessages = messages.map {
             it.copy(
-                unread = true
+                isUnread = true
             )
         }
         upsertMessages(updatedMessages)
@@ -318,7 +318,7 @@ class MessageLocalDataSourceImpl @Inject constructor(
         val messages = observeMessages(userId, messageIds).first()
             .takeIf { it.isNotEmpty() }
             ?: return DataError.Local.NoDataCached.left()
-        val updatedMessages = messages.map { it.copy(unread = false) }
+        val updatedMessages = messages.map { it.copy(isUnread = false) }
         upsertMessages(updatedMessages)
         return updatedMessages.right()
     }
@@ -334,7 +334,7 @@ class MessageLocalDataSourceImpl @Inject constructor(
     override suspend fun isMessageRead(userId: UserId, messageId: MessageId): Either<DataError.Local, Boolean> {
         val message = observeMessage(userId, messageId).first()
             ?: return DataError.Local.NoDataCached.left()
-        return message.unread.not().right()
+        return message.isUnread.not().right()
     }
 
     override suspend fun updateDraftRemoteIds(

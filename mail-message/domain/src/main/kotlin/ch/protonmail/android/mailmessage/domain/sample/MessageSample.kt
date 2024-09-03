@@ -254,7 +254,7 @@ object MessageSample {
         size = 0,
         order = order,
         subject = subject,
-        unread = unread,
+        isUnread = unread,
         sender = sender,
         toList = toList,
         ccList = ccList,

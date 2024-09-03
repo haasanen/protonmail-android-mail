@@ -45,7 +45,7 @@ class CreateEmptyDraftTest {
                 size = 0L,
                 order = 0,
                 subject = EMPTY_STRING,
-                unread = false,
+                isUnread = false,
                 sender = Sender(expectedUserAddress.email, expectedUserAddress.displayName!!),
                 toList = emptyList(),
                 ccList = emptyList(),

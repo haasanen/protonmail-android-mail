@@ -71,7 +71,7 @@ class ConversationDetailMessageUiModelMapper @Inject constructor(
             forwardedIcon = getForwardedIcon(isForwarded = message.isForwarded),
             hasAttachments = message.numAttachments > message.attachmentCount.calendar,
             isStarred = message.isStarred,
-            isUnread = message.unread,
+            isUnread = message.isUnread,
             locationIcon = messageLocationUiModelMapper(emptyList(), emptyList(), folderColorSettings),
             repliedIcon = getRepliedIcon(isReplied = message.isReplied, isRepliedAll = message.isRepliedAll),
             sender = participantUiModelMapper.senderToUiModel(message.sender, contacts),
@@ -98,7 +98,7 @@ class ConversationDetailMessageUiModelMapper @Inject constructor(
             )
         return ConversationDetailMessageUiModel.Expanded(
             messageId = messageIdUiModelMapper.toUiModel(message.messageId),
-            isUnread = message.unread,
+            isUnread = message.isUnread,
             messageDetailHeaderUiModel = messageDetailHeaderUiModelMapper.toUiModel(
                 message,
                 contacts,
@@ -131,7 +131,7 @@ class ConversationDetailMessageUiModelMapper @Inject constructor(
         folderColorSettings: FolderColorSettings
     ): ConversationDetailMessageUiModel.Expanded {
         return messageUiModel.copy(
-            isUnread = message.unread,
+            isUnread = message.isUnread,
             messageDetailHeaderUiModel = messageDetailHeaderUiModelMapper.toUiModel(
                 message,
                 contacts,
@@ -150,7 +150,7 @@ class ConversationDetailMessageUiModelMapper @Inject constructor(
     fun toUiModel(message: Message): ConversationDetailMessageUiModel.Hidden {
         return ConversationDetailMessageUiModel.Hidden(
             messageId = messageIdUiModelMapper.toUiModel(message.messageId),
-            isUnread = message.unread
+            isUnread = message.isUnread
         )
     }
 

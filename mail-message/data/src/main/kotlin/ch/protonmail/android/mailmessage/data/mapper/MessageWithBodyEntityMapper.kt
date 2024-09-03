@@ -47,7 +47,7 @@ class MessageWithBodyEntityMapper @Inject constructor() {
                         size = size,
                         order = order,
                         subject = subject,
-                        unread = unread,
+                        isUnread = unread,
                         sender = sender,
                         toList = toList,
                         ccList = ccList,

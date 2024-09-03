@@ -86,7 +86,7 @@ class DraftRemoteDataSourceImpl @Inject constructor(
 
     private fun MessageWithBody.toDraftMessageResource() = DraftMessageResource(
         subject = this.message.subject,
-        this.message.unread.toInt(),
+        this.message.isUnread.toInt(),
         with(this.message.sender) { RecipientResource(address, name) },
         this.message.toList.map { RecipientResource(it.address, it.name) },
         this.message.ccList.map { RecipientResource(it.address, it.name) },

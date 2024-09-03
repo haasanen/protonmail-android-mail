@@ -110,7 +110,7 @@ data class MessageWithBodyResource(
             size = size,
             order = order,
             subject = subject,
-            unread = unread.toBooleanOrFalse(),
+            isUnread = unread.toBooleanOrFalse(),
             sender = sender.toRecipient(),
             toList = toList.map { it.toRecipient() },
             ccList = ccList.map { it.toRecipient() },

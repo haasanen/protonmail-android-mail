@@ -181,7 +181,7 @@ class MessageMapperTest {
         assertEquals(order.toLong(), message.order)
         assertEquals(labels.map { it.toLabel() }, message.customLabels)
         assertEquals(subject, message.subject)
-        assertTrue(message.unread)
+        assertTrue(message.isUnread)
         assertEquals(sender.toParticipant(), message.sender)
         assertEquals(to.map { it.toRecipient() }, message.toList)
         assertEquals(cc.map { it.toRecipient() }, message.ccList)

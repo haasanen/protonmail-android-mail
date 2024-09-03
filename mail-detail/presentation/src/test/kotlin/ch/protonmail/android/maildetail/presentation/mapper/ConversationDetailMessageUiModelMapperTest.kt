@@ -195,7 +195,7 @@ internal class ConversationDetailMessageUiModelMapperTest {
         )
 
         // then
-        assertEquals(result.isUnread, message.unread)
+        assertEquals(result.isUnread, message.isUnread)
         assertEquals(result.messageId.id, message.messageId.id)
         coVerify { messageDetailHeaderUiModelMapper.toUiModel(message, contactsList, folderColorSettings) }
         coVerify { messageBodyUiModelMapper.toUiModel(message.userId, decryptedMessageBody) }
@@ -206,7 +206,7 @@ internal class ConversationDetailMessageUiModelMapperTest {
         // Given
         val message = MessageSample.AugWeatherForecast
         val expectedResult = ConversationDetailMessageUiModel.Hidden(
-            MessageIdUiModel(message.messageId.id), message.unread
+            MessageIdUiModel(message.messageId.id), message.isUnread
         )
 
         // When
@@ -319,7 +319,7 @@ internal class ConversationDetailMessageUiModelMapperTest {
     fun `when message is updated then unread and header is updated`() = runTest {
         // Given
         val previousMessage = ConversationDetailMessageUiModelSample.InvoiceWithoutLabelsCustomFolderExpanded
-        val message = MessageSample.Invoice.copy(unread = true)
+        val message = MessageSample.Invoice.copy(isUnread = true)
         val folderColorSettings = FolderColorSettings(useFolderColor = false)
 
         // When

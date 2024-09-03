@@ -197,7 +197,7 @@ object MessageTestData {
         size = size,
         order = order,
         subject = subject,
-        unread = false,
+        isUnread = false,
         sender = sender,
         toList = toList,
         ccList = ccList,

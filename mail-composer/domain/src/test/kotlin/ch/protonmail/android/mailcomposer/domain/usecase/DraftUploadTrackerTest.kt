@@ -205,7 +205,7 @@ class DraftUploadTrackerTest {
             size = 100,
             order = 1,
             subject = "Test Subject",
-            unread = true,
+            isUnread = true,
             sender = Sender("sender@example.com", "Sender Name", false),
             toList = listOf(Recipient("to@example.com", "Recipient Name", false)),
             ccList = emptyList(),

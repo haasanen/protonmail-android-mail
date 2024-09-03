@@ -42,7 +42,7 @@ object MessageWithBodyResourceSample {
             order = message.order,
             conversationId = message.conversationId.id,
             subject = message.subject,
-            unread = message.unread.toInt(),
+            unread = message.isUnread.toInt(),
             sender = with(message.sender) { RecipientResource(address, name) },
             toList = message.toList.map { RecipientResource(it.address, it.name) },
             ccList = message.ccList.map { RecipientResource(it.address, it.name) },

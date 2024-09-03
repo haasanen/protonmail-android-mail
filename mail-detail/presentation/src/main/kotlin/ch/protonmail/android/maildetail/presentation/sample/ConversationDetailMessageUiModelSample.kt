@@ -199,7 +199,7 @@ object ConversationDetailMessageUiModelSample {
         forwardedIcon = forwardedIcon,
         hasAttachments = message.numAttachments > message.attachmentCount.calendar,
         isStarred = isStarred,
-        isUnread = message.unread,
+        isUnread = message.isUnread,
         locationIcon = MessageLocationUiModelSample.AllMail,
         repliedIcon = repliedIcon,
         sender = ParticipantUiModel(message.sender.name, message.sender.address, R.drawable.ic_proton_lock, false),
@@ -216,7 +216,7 @@ object ConversationDetailMessageUiModelSample {
         messageBodyUiModel: MessageBodyUiModel = MessageDetailBodyUiModelSample.build(UUID.randomUUID().toString()),
         locationUiModel: MessageLocationUiModel = MessageLocationUiModelSample.AllMail
     ): ConversationDetailMessageUiModel.Expanded = ConversationDetailMessageUiModel.Expanded(
-        isUnread = message.unread,
+        isUnread = message.isUnread,
         messageId = MessageIdUiModel(message.messageId.id),
         messageDetailHeaderUiModel = MessageDetailHeaderUiModelSample.build(
             avatar = avatar,

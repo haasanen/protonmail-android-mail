@@ -48,7 +48,7 @@ class CreateEmptyDraft @Inject constructor() {
             size = 0L,
             order = 0,
             subject = EMPTY_STRING,
-            unread = false,
+            isUnread = false,
             sender = Sender(userAddress.email, userAddress.displayName.orEmpty()),
             toList = emptyList(),
             ccList = emptyList(),

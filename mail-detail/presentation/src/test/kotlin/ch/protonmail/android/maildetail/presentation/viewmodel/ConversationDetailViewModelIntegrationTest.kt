@@ -701,7 +701,7 @@ class ConversationDetailViewModelIntegrationTest {
     fun `should emit mapped messages as they're emitted`() = runTest {
         // Given
         val initialMessage = MessageSample.AugWeatherForecast.copy(customLabels = listOf(LabelSample.Label2021))
-        val updatedMessage = initialMessage.copy(unread = true)
+        val updatedMessage = initialMessage.copy(isUnread = true)
         val updatedConversationWithLabels = ConversationMessages(
             messages = nonEmptyListOf(updatedMessage),
             messageIdToOpen = updatedMessage.messageId
@@ -721,7 +721,7 @@ class ConversationDetailViewModelIntegrationTest {
             assertEquals(1, actual.messages.size)
             with(actual.messages.first() as Collapsed) {
                 assertEquals(expected.messageId.id, messageId.id)
-                assertEquals(expected.unread, isUnread)
+                assertEquals(expected.isUnread, isUnread)
                 assertEquals(expected.customLabels.size, labels.size)
             }
         }
