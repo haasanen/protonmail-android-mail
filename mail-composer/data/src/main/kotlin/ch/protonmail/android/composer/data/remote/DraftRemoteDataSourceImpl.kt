@@ -91,7 +91,7 @@ class DraftRemoteDataSourceImpl @Inject constructor(
         this.message.toList.map { RecipientResource(it.address, it.name) },
         this.message.ccList.map { RecipientResource(it.address, it.name) },
         this.message.bccList.map { RecipientResource(it.address, it.name) },
-        this.message.externalId,
+        null,
         this.message.flags,
         this.messageBody.body,
         this.messageBody.mimeType.value

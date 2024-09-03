@@ -45,7 +45,6 @@ fun MessageWithLabelIds.toMessage() = Message(
     isForwarded = message.isForwarded,
     isStarred = labelIds.any { it == SystemLabelId.Starred.labelId },
     addressId = message.addressId,
-    externalId = message.externalId,
     numAttachments = message.numAttachments,
     flags = message.flags,
     attachmentCount = message.attachmentCount.toDomainModel(),
@@ -71,7 +70,7 @@ fun Message.toEntity() = MessageEntity(
     isRepliedAll = isRepliedAll,
     isForwarded = isForwarded,
     addressId = addressId,
-    externalId = externalId,
+    externalId = null,
     numAttachments = numAttachments,
     flags = flags,
     attachmentCount = attachmentCount.toEntity()

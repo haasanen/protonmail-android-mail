@@ -56,7 +56,6 @@ class CreateEmptyDraftTest {
                 isForwarded = false,
                 isStarred = false,
                 addressId = expectedUserAddress.addressId,
-                externalId = null,
                 numAttachments = 0,
                 flags = 0L,
                 attachmentCount = AttachmentCount(0),

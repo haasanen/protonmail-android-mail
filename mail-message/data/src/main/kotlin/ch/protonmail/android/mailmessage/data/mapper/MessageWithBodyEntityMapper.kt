@@ -58,7 +58,6 @@ class MessageWithBodyEntityMapper @Inject constructor() {
                         isForwarded = isForwarded,
                         isStarred = labelIds.any { it == SystemLabelId.Starred.labelId },
                         addressId = addressId,
-                        externalId = externalId,
                         numAttachments = numAttachments,
                         flags = flags,
                         attachmentCount = attachmentCount.toDomainModel(),

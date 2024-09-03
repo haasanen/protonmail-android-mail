@@ -71,7 +71,6 @@ fun LocalMessageMetadata.toMessage(): Message {
         isForwarded = this.isForwarded,
         isStarred = this.starred,
         addressId = this.addressId.toAddressId(),
-        externalId = null,
         numAttachments = this.numAttachments.toInt(),
         flags = this.flags.value.toLong(),
         attachmentCount = AttachmentCount(this.numAttachments.toInt()),

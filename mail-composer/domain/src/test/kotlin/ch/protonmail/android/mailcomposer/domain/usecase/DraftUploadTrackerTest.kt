@@ -90,7 +90,6 @@ class DraftUploadTrackerTest {
         sampleDraft.copy(message = sampleDraft.message.copy(conversationId = ConversationId("new_conversation"))),
         sampleDraft.copy(message = sampleDraft.message.copy(expirationTime = System.currentTimeMillis() + 6_000)),
         sampleDraft.copy(message = sampleDraft.message.copy(addressId = AddressId("new_address"))),
-        sampleDraft.copy(message = sampleDraft.message.copy(externalId = "new_external_id")),
         sampleDraft.copy(message = sampleDraft.message.copy(numAttachments = 1)),
         sampleDraft.copy(message = sampleDraft.message.copy(attachmentCount = AttachmentCount(1))),
 
@@ -217,7 +216,6 @@ class DraftUploadTrackerTest {
             isForwarded = false,
             isStarred = false,
             addressId = AddressId("testAddressId"),
-            externalId = null,
             numAttachments = 0,
             flags = 0,
             attachmentCount = AttachmentCount(0),

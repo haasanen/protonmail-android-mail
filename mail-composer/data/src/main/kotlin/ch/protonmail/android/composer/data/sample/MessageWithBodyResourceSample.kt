@@ -55,7 +55,7 @@ object MessageWithBodyResourceSample {
             isForwarded = message.isForwarded.toInt(),
             addressId = message.addressId.id,
             labelIds = emptyList(),
-            externalId = message.externalId,
+            externalId = null,
             numAttachments = message.numAttachments,
             flags = message.flags,
             body = messageBody.body,

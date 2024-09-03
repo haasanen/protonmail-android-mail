@@ -106,7 +106,6 @@ class MessageMapperTest {
     fun `LocalMessageMetadata toMessage should convert correctly`() {
         // Given
         val id = 111uL
-        val rid = "RemoteId"
         val conversationId = LocalConversationId(99uL)
         val time = 1625234000000uL
         val snoozeTime = 1625888000000uL
@@ -192,7 +191,6 @@ class MessageMapperTest {
         assertFalse(message.isRepliedAll)
         assertFalse(message.isForwarded)
         assertEquals(addressId.toAddressId(), message.addressId)
-        assertEquals(null, message.externalId)
         assertEquals(numAttachments.toInt(), message.numAttachments)
         assertEquals(flags.value.toLong(), message.flags)
         assertEquals(AttachmentCount(numAttachments.toInt()), message.attachmentCount)

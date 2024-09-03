@@ -59,7 +59,6 @@ class CreateEmptyDraft @Inject constructor() {
             isForwarded = false,
             isStarred = false,
             addressId = userAddress.addressId,
-            externalId = null,
             numAttachments = 0,
             flags = 0L,
             attachmentCount = AttachmentCount(0),

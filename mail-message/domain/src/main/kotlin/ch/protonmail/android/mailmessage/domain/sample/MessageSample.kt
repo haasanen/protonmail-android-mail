@@ -265,7 +265,6 @@ object MessageSample {
         isForwarded = false,
         isStarred = false,
         addressId = addressId,
-        externalId = null,
         numAttachments = numAttachments,
         flags = 0,
         attachmentCount = attachmentCount,

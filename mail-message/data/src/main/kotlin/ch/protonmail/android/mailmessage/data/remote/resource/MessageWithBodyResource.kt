@@ -121,7 +121,6 @@ data class MessageWithBodyResource(
             isForwarded = isForwarded.toBooleanOrFalse(),
             isStarred = labelIds.any { it == SystemLabelId.Starred.labelId.id },
             addressId = AddressId(addressId),
-            externalId = externalId,
             numAttachments = numAttachments,
             flags = flags,
             attachmentCount = attachmentsInfo.toAttachmentsCount(),

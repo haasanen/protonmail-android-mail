@@ -208,7 +208,6 @@ object MessageTestData {
         isForwarded = false,
         isStarred = isStarred,
         addressId = AddressId("1"),
-        externalId = null,
         numAttachments = numAttachments,
         flags = flags,
         attachmentCount = attachmentCount,

@@ -53,7 +53,6 @@ data class Message(
     val isForwarded: Boolean,
     val isStarred: Boolean,
     val addressId: AddressId,
-    val externalId: String?,
     val numAttachments: Int,
     val flags: Long,
     val attachmentCount: AttachmentCount,
