@@ -34,7 +34,6 @@ class MessageMailboxItemMapper @Inject constructor() : Mapper<Message, MailboxIt
         size = message.size,
         order = message.order,
         read = message.isUnread.not(),
-        labelIds = emptyList(),
         conversationId = message.conversationId,
         labels = message.customLabels.sortedBy { it.order },
         subject = message.subject,
@@ -43,11 +42,11 @@ class MessageMailboxItemMapper @Inject constructor() : Mapper<Message, MailboxIt
         isReplied = message.isReplied,
         isRepliedAll = message.isRepliedAll,
         isForwarded = message.isForwarded,
+        isStarred = message.isStarred,
         numMessages = 1,
         hasNonCalendarAttachments = message.numAttachments > message.attachmentCount.calendar,
         expirationTime = message.expirationTime,
-        calendarAttachmentCount = message.attachmentCount.calendar,
-        isStarred = message.isStarred
+        calendarAttachmentCount = message.attachmentCount.calendar
     )
 
 }

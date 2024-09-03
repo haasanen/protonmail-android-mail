@@ -24,7 +24,6 @@ import ch.protonmail.android.mailmessage.domain.model.Sender
 import ch.protonmail.android.mailpagination.domain.model.PageItem
 import me.proton.core.domain.entity.UserId
 import me.proton.core.label.domain.entity.Label
-import me.proton.core.label.domain.entity.LabelId
 import me.proton.core.mailsettings.domain.entity.ViewMode
 
 enum class MailboxItemType {
@@ -45,7 +44,6 @@ data class MailboxItem(
     override val size: Long,
     override val order: Long,
     override val read: Boolean,
-    override val labelIds: List<LabelId>,
     val conversationId: ConversationId,
     val labels: List<Label>,
     val subject: String,

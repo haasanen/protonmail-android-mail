@@ -35,7 +35,6 @@ class ConversationMailboxItemMapper @Inject constructor() : Mapper<Conversation,
             size = size,
             order = order,
             read = numUnread == 0,
-            labelIds = customLabels.map { it.labelId },
             conversationId = conversationId,
             labels = customLabels.sortedBy { it.order },
             subject = subject,
@@ -44,11 +43,11 @@ class ConversationMailboxItemMapper @Inject constructor() : Mapper<Conversation,
             isReplied = false,
             isRepliedAll = false,
             isForwarded = false,
+            isStarred = isStarred,
             numMessages = numMessages,
             hasNonCalendarAttachments = numAttachments > attachmentCount.calendar,
             expirationTime = expirationTime,
-            calendarAttachmentCount = attachmentCount.calendar,
-            isStarred = isStarred
+            calendarAttachmentCount = attachmentCount.calendar
         )
     }
 

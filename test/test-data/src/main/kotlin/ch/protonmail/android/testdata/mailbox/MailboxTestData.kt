@@ -20,7 +20,6 @@ package ch.protonmail.android.testdata.mailbox
 
 import androidx.compose.ui.graphics.Color
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
-import ch.protonmail.android.mailcommon.domain.sample.LabelIdSample
 import ch.protonmail.android.mailcommon.domain.sample.LabelSample
 import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
@@ -49,7 +48,7 @@ object MailboxTestData {
     val unreadMailboxItem = buildMessageMailboxItem("1", isRead = false)
     val readMailboxItem = buildMessageMailboxItem("2", isRead = true)
     val unreadMailboxItemWithLabel =
-        unreadMailboxItem.copy(labelIds = listOf(LabelIdSample.Folder2021), labels = listOf(LabelSample.Folder2021))
+        unreadMailboxItem.copy(labels = listOf(LabelSample.Folder2021))
 
     val repliedMailboxItem = buildMessageMailboxItem("3", isReplied = true)
     val repliedAllMailboxItem = buildMessageMailboxItem("4", isReplied = true, isRepliedAll = true)
@@ -80,7 +79,6 @@ object MailboxTestData {
         size = 0,
         order = 1000,
         read = true,
-        labelIds = labelIds,
         conversationId = ConversationId(id),
         labels = labels,
         subject = "subject",
@@ -89,11 +87,11 @@ object MailboxTestData {
         isReplied = false,
         isRepliedAll = false,
         isForwarded = false,
+        isStarred = labelIds.contains(SystemLabelId.Starred.labelId),
         numMessages = numMessages,
         hasNonCalendarAttachments = hasAttachments,
         expirationTime = expirationTime,
-        calendarAttachmentCount = calendarAttachmentCount,
-        isStarred = labelIds.contains(SystemLabelId.Starred.labelId)
+        calendarAttachmentCount = calendarAttachmentCount
     )
 
     private fun buildMessageMailboxItem(
@@ -112,7 +110,6 @@ object MailboxTestData {
         size = 0,
         order = 0,
         read = isRead,
-        labelIds = labelIds,
         conversationId = ConversationId("2"),
         labels = labels,
         subject = "First message",
@@ -121,11 +118,11 @@ object MailboxTestData {
         isReplied = isReplied,
         isRepliedAll = isRepliedAll,
         isForwarded = isForwarded,
+        isStarred = false,
         numMessages = 1,
         hasNonCalendarAttachments = false,
         expirationTime = 0,
-        calendarAttachmentCount = 0,
-        isStarred = false
+        calendarAttachmentCount = 0
     )
 
     private fun buildConversationMailboxItem(id: String) = MailboxItem(
@@ -136,7 +133,6 @@ object MailboxTestData {
         size = 0,
         order = 0,
         read = false,
-        labelIds = emptyList(),
         conversationId = ConversationId("2"),
         labels = emptyList(),
         subject = "First message",
@@ -145,11 +141,11 @@ object MailboxTestData {
         isReplied = false,
         isRepliedAll = false,
         isForwarded = false,
+        isStarred = false,
         numMessages = 3,
         hasNonCalendarAttachments = false,
         expirationTime = 0,
-        calendarAttachmentCount = 0,
-        isStarred = false
+        calendarAttachmentCount = 0
     )
 
 }

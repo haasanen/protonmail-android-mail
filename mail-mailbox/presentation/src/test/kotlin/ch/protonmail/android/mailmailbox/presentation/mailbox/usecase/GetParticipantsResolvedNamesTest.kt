@@ -19,10 +19,8 @@
 package ch.protonmail.android.mailmailbox.presentation.mailbox.usecase
 
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
-import ch.protonmail.android.mailmailbox.domain.model.MailboxItemType
 import ch.protonmail.android.mailmailbox.domain.usecase.GetParticipantsResolvedNames
 import ch.protonmail.android.mailmailbox.domain.usecase.ParticipantsResolvedNamesResult
-import ch.protonmail.android.mailmessage.domain.model.Recipient
 import ch.protonmail.android.mailmessage.domain.model.Sender
 import ch.protonmail.android.mailmessage.domain.usecase.ResolveParticipantName
 import ch.protonmail.android.mailmessage.domain.usecase.ResolveParticipantNameResult
@@ -58,35 +56,6 @@ class GetParticipantsResolvedNamesTest {
         val actual = useCase(mailboxItem, ContactTestData.contacts)
         // Then
         val expected = ParticipantsResolvedNamesResult.Senders(
-            listOf(
-                resolveParticipant1NameResult,
-                resolveParticipant2NameResult
-            )
-        )
-        assertEquals(expected, actual)
-    }
-
-    @Test
-    fun `when message is in all sent or all drafts ui model shows recipients names as participants`() {
-        // Given
-        val recipient1Name = "recipient"
-        val recipient2Name = "recipient1"
-        val resolveParticipant1NameResult = ResolveParticipantNameResult(recipient1Name, isProton = false)
-        val resolveParticipant2NameResult = ResolveParticipantNameResult(recipient2Name, isProton = true)
-        val recipient = Recipient("recipient@proton.ch", recipient1Name)
-        val recipient1 = Recipient("recipient1@proton.ch", recipient2Name)
-        val recipients = listOf(recipient, recipient1)
-        val mailboxItem = buildMailboxItem(
-            type = MailboxItemType.Message,
-            labelIds = listOf(SystemLabelId.AllSent.labelId),
-            recipients = recipients
-        )
-        every { resolveParticipantName(recipient, ContactTestData.contacts) } returns resolveParticipant1NameResult
-        every { resolveParticipantName(recipient1, ContactTestData.contacts) } returns resolveParticipant2NameResult
-        // When
-        val actual = useCase(mailboxItem, ContactTestData.contacts)
-        // Then
-        val expected = ParticipantsResolvedNamesResult.Recipients(
             listOf(
                 resolveParticipant1NameResult,
                 resolveParticipant2NameResult

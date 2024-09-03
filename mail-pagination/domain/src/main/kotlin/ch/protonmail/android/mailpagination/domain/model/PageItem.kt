@@ -19,7 +19,6 @@
 package ch.protonmail.android.mailpagination.domain.model
 
 import me.proton.core.domain.entity.UserId
-import me.proton.core.label.domain.entity.LabelId
 
 interface PageItem {
     val userId: UserId
@@ -28,7 +27,6 @@ interface PageItem {
     val size: Long
     val order: Long
     val read: Boolean
-    val labelIds: List<LabelId>
     val keywords: String
 }
 

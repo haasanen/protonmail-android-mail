@@ -34,22 +34,6 @@ class MailboxAvatarUiModelMapperTest {
     private val mailboxAvatarUiModelMapper = MailboxAvatarUiModelMapper(getInitial)
 
     @Test
-    fun `avatar should show draft icon for all drafts in message mode`() {
-        // Given
-        val mailboxItem = buildMailboxItem(
-            type = MailboxItemType.Message,
-            labelIds = listOf(SystemLabelId.AllDrafts.labelId)
-        )
-        val expectedResult = AvatarUiModel.DraftIcon
-
-        // When
-        val result = mailboxAvatarUiModelMapper(mailboxItem, participantsResolvedNames)
-
-        // Then
-        assertEquals(expectedResult, result)
-    }
-
-    @Test
     fun `avatar should show first letter of first participant for all sent messages in message mode`() {
         // Given
         val mailboxItem = buildMailboxItem(

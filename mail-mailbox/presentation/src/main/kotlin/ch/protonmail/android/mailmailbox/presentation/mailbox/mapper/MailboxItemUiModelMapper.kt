@@ -20,10 +20,10 @@ package ch.protonmail.android.mailmailbox.presentation.mailbox.mapper
 
 import androidx.compose.ui.graphics.Color
 import arrow.core.getOrElse
+import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.presentation.mapper.ColorMapper
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcommon.presentation.usecase.FormatShortTime
-import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.maillabel.presentation.model.LabelUiModel
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItem
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItemType
@@ -52,6 +52,8 @@ class MailboxItemUiModelMapper @Inject constructor(
     private val getParticipantsResolvedNames: GetParticipantsResolvedNames
 ) : Mapper<MailboxItem, MailboxItemUiModel> {
 
+    @MissingRustApi
+    // Rust to expose whether message is a draft (allows setting shouldOpenInComposer)
     suspend fun toUiModel(
         mailboxItem: MailboxItem,
         contacts: List<Contact>,
@@ -80,8 +82,7 @@ class MailboxItemUiModelMapper @Inject constructor(
             shouldShowAttachmentIcon = mailboxItem.hasNonCalendarAttachments,
             shouldShowExpirationLabel = hasExpirationTime(mailboxItem),
             shouldShowCalendarIcon = hasCalendarAttachment(mailboxItem),
-            shouldOpenInComposer = mailboxItem.labelIds.contains(SystemLabelId.AllDrafts.labelId) &&
-                mailboxItem.type == MailboxItemType.Message
+            shouldOpenInComposer = false
         )
     }
 

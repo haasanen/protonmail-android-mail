@@ -69,7 +69,7 @@ class GetMailboxItemLocationIconsTest {
     }
 
     private val getMailboxItemLocationIcons =
-        GetMailboxItemLocationIcons(selectedMailLabelId, colorMapper, getRootLabel)
+        GetMailboxItemLocationIcons(selectedMailLabelId)
 
     @Test
     fun `location icons are displayed when current location is 'starred' 'all mail' or 'custom label'`() = runTest {

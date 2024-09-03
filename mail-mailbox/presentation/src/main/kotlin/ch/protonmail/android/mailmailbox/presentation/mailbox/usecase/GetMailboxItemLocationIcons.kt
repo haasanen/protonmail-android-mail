@@ -18,21 +18,11 @@
 
 package ch.protonmail.android.mailmailbox.presentation.mailbox.usecase
 
-import androidx.compose.ui.graphics.Color
-import arrow.core.getOrElse
 import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
-import ch.protonmail.android.mailcommon.presentation.mapper.ColorMapper
 import ch.protonmail.android.maillabel.domain.SelectedMailLabelId
-import ch.protonmail.android.maillabel.domain.model.SystemLabelId
-import ch.protonmail.android.maillabel.domain.usecase.GetRootLabel
-import ch.protonmail.android.maillabel.presentation.iconRes
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItem
-import ch.protonmail.android.mailmailbox.presentation.R
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxItemLocationUiModel
 import ch.protonmail.android.mailsettings.domain.model.FolderColorSettings
-import me.proton.core.domain.entity.UserId
-import me.proton.core.label.domain.entity.Label
-import me.proton.core.label.domain.entity.LabelType
 import javax.inject.Inject
 
 /**
@@ -41,9 +31,7 @@ import javax.inject.Inject
  */
 @MissingRustApi
 class GetMailboxItemLocationIcons @Inject constructor(
-    private val selectedMailLabelId: SelectedMailLabelId,
-    private val colorMapper: ColorMapper,
-    private val getRootLabel: GetRootLabel
+    private val selectedMailLabelId: SelectedMailLabelId
 ) {
 
     suspend operator fun invoke(
@@ -55,7 +43,7 @@ class GetMailboxItemLocationIcons @Inject constructor(
             return Result.None
         }
 
-        val icons = getLocationIcons(mailboxItem, folderColorSettings)
+        val icons = getLocationIcons(mailboxItem)
         if (icons.isEmpty()) {
             // Having no icons can happen when an item was in a custom folder which got
             // deleted. Such item is now only in all mail and no other location.
@@ -65,45 +53,12 @@ class GetMailboxItemLocationIcons @Inject constructor(
         return Result.Icons(icons.first(), icons.getOrNull(1), icons.getOrNull(2))
     }
 
-    private suspend fun getLocationIcons(
-        mailboxItem: MailboxItem,
-        folderColorSettings: FolderColorSettings
-    ): MutableList<MailboxItemLocationUiModel> {
+    @MissingRustApi
+    // Need rust to expose exclusiveLocation, which will allow mailboxItem to define its own location
+    private suspend fun getLocationIcons(mailboxItem: MailboxItem): MutableList<MailboxItemLocationUiModel> {
         val icons = mutableListOf<MailboxItemLocationUiModel>()
-        SystemLabelId.exclusiveList.forEach { systemLabelId ->
-            if (mailboxItem.labelIds.contains(systemLabelId.labelId)) {
-                val iconDrawable = SystemLabelId.enumOf(systemLabelId.labelId.id).iconRes()
-                icons.add(MailboxItemLocationUiModel(iconDrawable))
-            }
-
-            if (systemLabelId == SystemLabelId.Spam) {
-                mailboxItem.labels.firstOrNull { it.type == LabelType.MessageFolder }?.let {
-                    when (folderColorSettings.useFolderColor) {
-                        true -> icons.add(
-                            MailboxItemLocationUiModel(
-                                icon = R.drawable.ic_proton_folder_filled,
-                                color = getLocationIconColor(it.userId, it, folderColorSettings)
-                            )
-                        )
-                        false -> icons.add(MailboxItemLocationUiModel(R.drawable.ic_proton_folder))
-                    }
-                }
-            }
-        }
 
         return icons
-    }
-
-    private suspend fun getLocationIconColor(
-        userId: UserId,
-        label: Label,
-        folderColorSettings: FolderColorSettings
-    ): Color {
-        val colorToMap = when {
-            folderColorSettings.inheritParentFolderColor -> getRootLabel(userId, label).color
-            else -> label.color
-        }
-        return colorMapper.toColor(colorToMap).getOrElse { Color.Unspecified }
     }
 
     @MissingRustApi

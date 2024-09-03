@@ -193,7 +193,7 @@ class AdjacentPageKeysTest {
         override val size: Long = 1000,
         override val order: Long = time,
         override val read: Boolean = false,
-        override val labelIds: List<LabelId> = emptyList(),
+        val labelIds: List<LabelId> = emptyList(),
         override val keywords: String = ""
     ) : PageItem
 }
