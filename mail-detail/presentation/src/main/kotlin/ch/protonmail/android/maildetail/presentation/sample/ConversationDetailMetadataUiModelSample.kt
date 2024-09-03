@@ -30,7 +30,7 @@ object ConversationDetailMetadataUiModelSample {
 
     fun build(conversation: Conversation = ConversationSample.build()) = ConversationDetailMetadataUiModel(
         conversationId = conversation.conversationId,
-        isStarred = conversation.starred,
+        isStarred = conversation.isStarred,
         messageCount = conversation.numMessages,
         subject = conversation.subject
     )

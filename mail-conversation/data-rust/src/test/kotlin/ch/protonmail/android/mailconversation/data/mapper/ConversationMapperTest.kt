@@ -117,7 +117,7 @@ class ConversationMapperTest {
             conversation.customLabels
         )
         assertEquals(AttachmentCount(numAttachments.toInt()), conversation.attachmentCount)
-        assertTrue(!conversation.starred)
+        assertTrue(!conversation.isStarred)
     }
 
     @Test

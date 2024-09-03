@@ -106,7 +106,7 @@ object ConversationWithContextTestData {
         numUnread = 0,
         numAttachments = numAttachments,
         attachmentCount = attachmentCount,
-        starred = false,
+        isStarred = false,
         time = time,
         size = 0.toLong(),
         customLabels = labelIds.map { buildLabel(it) }

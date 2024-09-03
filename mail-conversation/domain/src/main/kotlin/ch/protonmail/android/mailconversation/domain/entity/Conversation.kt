@@ -37,7 +37,7 @@ data class Conversation(
     val numUnread: Int,
     val numAttachments: Int,
     val attachmentCount: AttachmentCount,
-    val starred: Boolean,
+    val isStarred: Boolean,
     val time: Long,
     val size: Long,
     val customLabels: List<Label>

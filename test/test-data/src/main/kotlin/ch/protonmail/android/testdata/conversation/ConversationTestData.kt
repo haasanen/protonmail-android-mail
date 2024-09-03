@@ -131,7 +131,7 @@ object ConversationTestData {
         numUnread = numUnRead,
         numAttachments = numAttachments,
         attachmentCount = attachmentCount,
-        starred = isStarred,
+        isStarred = isStarred,
         time = 0.toLong(),
         size = 0.toLong(),
         customLabels = labelIds.map { buildLabel(id) }
@@ -158,7 +158,7 @@ object ConversationTestData {
         numUnread = 0,
         numAttachments = numAttachments,
         attachmentCount = attachmentCount,
-        starred = false,
+        isStarred = false,
         time = 0.toLong(),
         size = 0.toLong(),
         customLabels = labels

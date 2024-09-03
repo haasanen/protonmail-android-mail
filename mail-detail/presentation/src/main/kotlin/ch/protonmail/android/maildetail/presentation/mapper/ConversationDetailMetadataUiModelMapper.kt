@@ -29,7 +29,7 @@ class ConversationDetailMetadataUiModelMapper @Inject constructor() :
     fun toUiModel(conversation: Conversation) = ConversationDetailMetadataUiModel(
         conversationId = conversation.conversationId,
         subject = conversation.subject,
-        isStarred = conversation.starred,
+        isStarred = conversation.isStarred,
         messageCount = conversation.numMessages
     )
 }

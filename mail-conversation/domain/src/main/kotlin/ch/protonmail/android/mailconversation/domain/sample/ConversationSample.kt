@@ -93,7 +93,7 @@ object ConversationSample {
         numUnread = 0,
         numAttachments = 0,
         attachmentCount = attachmentCount,
-        starred = false,
+        isStarred = false,
         time = 0,
         size = 0,
         customLabels = emptyList()
