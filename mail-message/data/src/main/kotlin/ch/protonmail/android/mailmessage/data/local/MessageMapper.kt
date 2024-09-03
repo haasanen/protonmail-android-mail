@@ -25,6 +25,7 @@ import ch.protonmail.android.mailmessage.data.mapper.toDomainModel
 import ch.protonmail.android.mailmessage.data.mapper.toEntity
 import ch.protonmail.android.mailmessage.domain.model.Message
 
+@Deprecated("To go away with MessageLocalDataSource / DAO")
 fun MessageWithLabelIds.toMessage() = Message(
     userId = message.userId,
     messageId = message.messageId,
@@ -32,7 +33,6 @@ fun MessageWithLabelIds.toMessage() = Message(
     time = message.time,
     size = message.size,
     order = message.order,
-    labelIds = labelIds,
     subject = message.subject,
     unread = message.unread,
     sender = message.sender,
@@ -52,6 +52,7 @@ fun MessageWithLabelIds.toMessage() = Message(
     customLabels = emptyList()
 )
 
+@Deprecated("To go away with MessageLocalDataSource / DAO")
 fun Message.toEntity() = MessageEntity(
     userId = userId,
     messageId = messageId,

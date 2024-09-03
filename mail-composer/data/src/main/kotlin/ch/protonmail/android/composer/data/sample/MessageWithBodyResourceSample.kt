@@ -30,8 +30,6 @@ import me.proton.core.util.kotlin.toInt
 
 object MessageWithBodyResourceSample {
 
-    val NewDraftWithSubject = MessageWithBodySample.NewDraftWithSubject.asResource()
-
     val NewDraftWithAttachments = MessageWithBodySample.MessageWithInvoiceAttachment.asResource()
 
     val NewDraftWithSubjectAndBody = MessageWithBodySample.NewDraftWithSubjectAndBody.asResource()
@@ -40,7 +38,7 @@ object MessageWithBodyResourceSample {
 
     private fun MessageWithBody.asResource() = with(this) {
         MessageWithBodyResource(
-            id = message.id,
+            id = message.messageId.id,
             order = message.order,
             conversationId = message.conversationId.id,
             subject = message.subject,
@@ -56,7 +54,7 @@ object MessageWithBodyResourceSample {
             isRepliedAll = message.isRepliedAll.toInt(),
             isForwarded = message.isForwarded.toInt(),
             addressId = message.addressId.id,
-            labelIds = message.labelIds.map { it.id },
+            labelIds = emptyList(),
             externalId = message.externalId,
             numAttachments = message.numAttachments,
             flags = message.flags,

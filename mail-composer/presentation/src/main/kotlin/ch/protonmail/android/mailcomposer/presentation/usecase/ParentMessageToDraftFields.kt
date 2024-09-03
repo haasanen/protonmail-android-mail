@@ -23,6 +23,7 @@ import arrow.core.Either
 import arrow.core.getOrElse
 import arrow.core.left
 import arrow.core.right
+import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.usecase.ObserveUserAddresses
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
@@ -57,6 +58,9 @@ import timber.log.Timber
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.seconds
 
+@MissingRustApi
+// Rust logic is expected to return `toList` correctly depending on whether message was sent (toList) or not (replyTo)
+// (logic client side can't exist without LabelIds: can't check for `AllSent` to define "message sent" status)
 class ParentMessageToDraftFields @Inject constructor(
     @ApplicationContext private val context: Context,
     private val observeUserAddresses: ObserveUserAddresses,
@@ -85,7 +89,7 @@ class ParentMessageToDraftFields @Inject constructor(
             buildQuotedPlainTextBody(message, decryptedBody, senderAddressSignature, mobileFooter),
             RecipientsTo(recipientsForAction(action, messageWithDecryptedBody.messageWithBody, sender)),
             RecipientsCc(ccRecipientsForAction(action, message)),
-            RecipientsBcc(bccRecipientsForAction(action, message)),
+            RecipientsBcc(emptyList()),
             buildQuotedHtmlBody(message, decryptedBody)
         ).right()
     }
@@ -194,11 +198,7 @@ class ParentMessageToDraftFields @Inject constructor(
             is DraftAction.ComposeToAddresses, // will be handled via VM
             is DraftAction.Forward -> emptyList()
 
-            is DraftAction.Reply -> if (messageWithBody.message.isSent()) {
-                messageWithBody.message.toList
-            } else {
-                listOf(messageWithBody.messageBody.replyTo)
-            }
+            is DraftAction.Reply -> listOf(messageWithBody.messageBody.replyTo)
             is DraftAction.ReplyAll -> listOf(messageWithBody.messageBody.replyTo) + messageWithBody.message.toList
         }
         return allRecipients.filterNot { it.address == senderEmail.value }
@@ -212,16 +212,6 @@ class ParentMessageToDraftFields @Inject constructor(
         is DraftAction.Reply -> emptyList()
 
         is DraftAction.ReplyAll -> message.ccList
-    }
-
-    private fun bccRecipientsForAction(action: DraftAction, message: Message) = when (action) {
-        is DraftAction.PrefillForShare,
-        is DraftAction.Compose,
-        is DraftAction.ComposeToAddresses,
-        is DraftAction.Forward,
-        is DraftAction.Reply -> emptyList()
-
-        is DraftAction.ReplyAll -> if (message.isSent()) message.bccList else emptyList()
     }
 
     companion object {

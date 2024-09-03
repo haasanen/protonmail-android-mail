@@ -19,6 +19,7 @@
 package ch.protonmail.android.maildetail.presentation.sample
 
 import java.util.UUID
+import ch.protonmail.android.mailcommon.domain.sample.LabelSample
 import ch.protonmail.android.mailcommon.domain.sample.UserAddressSample
 import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
@@ -31,8 +32,7 @@ import ch.protonmail.android.maildetail.presentation.model.MessageLocationUiMode
 import ch.protonmail.android.maildetail.presentation.model.ParticipantUiModel
 import ch.protonmail.android.maillabel.presentation.model.LabelUiModel
 import ch.protonmail.android.mailmessage.domain.model.Message
-import ch.protonmail.android.mailmessage.domain.model.MessageWithLabels
-import ch.protonmail.android.mailmessage.domain.sample.MessageWithLabelsSample
+import ch.protonmail.android.mailmessage.domain.sample.MessageSample
 import ch.protonmail.android.mailmessage.presentation.model.AttachmentGroupUiModel
 import ch.protonmail.android.mailmessage.presentation.model.MessageBodyExpandCollapseMode
 import ch.protonmail.android.mailmessage.presentation.model.MessageBodyUiModel
@@ -43,68 +43,78 @@ import kotlinx.collections.immutable.toImmutableList
 object ConversationDetailMessageUiModelSample {
 
     val AugWeatherForecast = buildCollapsed(
-        messageWithLabels = MessageWithLabelsSample.AugWeatherForecast
+        message = MessageSample.AugWeatherForecast
     )
 
     val AugWeatherForecastExpanded = buildExpanded(
-        messageWithLabels = MessageWithLabelsSample.AugWeatherForecast
+        message = MessageSample.AugWeatherForecast
     )
 
     val AugWeatherForecastExpanding = buildExpanding(AugWeatherForecast)
 
     val EmptyDraft = buildCollapsed(
-        messageWithLabels = MessageWithLabelsSample.EmptyDraft,
+        message = MessageSample.EmptyDraft,
         avatar = AvatarUiModel.DraftIcon
     )
 
     val ExpiringInvitation = buildCollapsed(
-        messageWithLabels = MessageWithLabelsSample.ExpiringInvitation,
+        message = MessageSample.ExpiringInvitation,
         expiration = TextUiModel("12h")
     )
 
     val InvoiceForwarded = buildCollapsed(
-        messageWithLabels = MessageWithLabelsSample.Invoice,
+        message = MessageSample.Invoice,
         forwardedIcon = ConversationDetailMessageUiModel.ForwardedIcon.Forwarded
     )
 
     val InvoiceReplied = buildCollapsed(
-        messageWithLabels = MessageWithLabelsSample.Invoice,
+        message = MessageSample.Invoice,
         repliedIcon = ConversationDetailMessageUiModel.RepliedIcon.Replied
     )
 
     val InvoiceRepliedAll = buildCollapsed(
-        messageWithLabels = MessageWithLabelsSample.Invoice,
+        message = MessageSample.Invoice,
         repliedIcon = ConversationDetailMessageUiModel.RepliedIcon.RepliedAll
     )
 
     val LotteryScam = buildCollapsed(
-        messageWithLabels = MessageWithLabelsSample.LotteryScam
+        message = MessageSample.LotteryScam
     )
 
     val SepWeatherForecast = buildCollapsed(
-        messageWithLabels = MessageWithLabelsSample.SepWeatherForecast
+        message = MessageSample.SepWeatherForecast
     )
 
     val StarredInvoice = buildCollapsed(
-        messageWithLabels = MessageWithLabelsSample.Invoice,
-        message = MessageWithLabelsSample.Invoice.message,
+        message = MessageSample.Invoice,
         isStarred = true
     )
 
     val UnreadInvoice = buildCollapsed(
-        messageWithLabels = MessageWithLabelsSample.UnreadInvoice
+        message = MessageSample.UnreadInvoice
     )
 
     val InvoiceWithTwoLabels = buildCollapsed(
-        messageWithLabels = MessageWithLabelsSample.InvoiceWithTwoLabels
+        message = MessageSample.Invoice.copy(
+            customLabels = listOf(
+                LabelSample.Document,
+                LabelSample.Label2021,
+                LabelSample.Label2022
+            )
+        )
     )
 
     val InvoiceWithLabel = buildCollapsed(
-        messageWithLabels = MessageWithLabelsSample.InvoiceWithLabel
+        message = MessageSample.Invoice.copy(
+            customLabels = listOf(
+                LabelSample.Document,
+                LabelSample.Label2021
+            )
+        )
     )
 
     val InvoiceWithLabelExpanded = buildExpanded(
-        messageWithLabels = MessageWithLabelsSample.InvoiceWithLabel
+        message = MessageSample.Invoice
     )
 
     val InvoiceWithLabelExpanding = buildExpanding(
@@ -116,50 +126,50 @@ object ConversationDetailMessageUiModelSample {
     )
 
     val InvoiceWithoutLabels = buildCollapsed(
-        messageWithLabels = MessageWithLabelsSample.InvoiceWithoutLabels
+        message = MessageSample.Invoice
     )
 
     val InvoiceWithoutLabelsCustomFolderExpanded = buildExpanded(
-        messageWithLabels = MessageWithLabelsSample.InvoiceWithoutLabels,
+        message = MessageSample.Invoice,
         locationUiModel = MessageLocationUiModelSample.CustomFolder
     )
 
     val AnotherInvoiceWithoutLabels = buildCollapsed(
-        messageWithLabels = MessageWithLabelsSample.AnotherInvoiceWithoutLabels
+        message = MessageSample.Invoice
     )
 
     val MessageWithRemoteContentBlocked = buildExpanded(
-        messageWithLabels = MessageWithLabelsSample.LotteryScam,
+        message = MessageSample.LotteryScam,
         messageBodyUiModel = MessageDetailBodyUiModelSample.withBlockedRemoteContent
     )
 
     val MessageWithRemoteContentLoaded = buildExpanded(
-        messageWithLabels = MessageWithLabelsSample.LotteryScam,
+        message = MessageSample.LotteryScam,
         messageBodyUiModel = MessageDetailBodyUiModelSample.withAllowedRemoteContent
     )
 
     val MessageWithEmbeddedImagesBlocked = buildExpanded(
-        messageWithLabels = MessageWithLabelsSample.AugWeatherForecast,
+        message = MessageSample.AugWeatherForecast,
         messageBodyUiModel = MessageDetailBodyUiModelSample.withBlockedEmbeddedImages
     )
 
     val MessageWithEmbeddedImagesLoaded = buildExpanded(
-        messageWithLabels = MessageWithLabelsSample.AugWeatherForecast,
+        message = MessageSample.AugWeatherForecast,
         messageBodyUiModel = MessageDetailBodyUiModelSample.withAllowedEmbeddedImages
     )
 
     val WithRemoteAndEmbeddedContentBlocked = buildExpanded(
-        messageWithLabels = MessageWithLabelsSample.InvoiceWithTwoLabels,
+        message = MessageSample.Invoice,
         messageBodyUiModel = MessageDetailBodyUiModelSample.withBlockedContent
     )
 
     val WithRemoteAndEmbeddedContentLoaded = buildExpanded(
-        messageWithLabels = MessageWithLabelsSample.InvoiceWithTwoLabels,
+        message = MessageSample.Invoice,
         messageBodyUiModel = MessageDetailBodyUiModelSample.withAllowedContent
     )
 
     fun invoiceExpandedWithAttachments(limit: Int) = buildExpanded(
-        messageWithLabels = MessageWithLabelsSample.InvoiceWithLabel,
+        message = MessageSample.Invoice,
         messageBodyUiModel = MessageDetailBodyUiModelSample.build(
             messageBody = "Invoice",
             attachments = AttachmentGroupUiModel(
@@ -174,23 +184,9 @@ object ConversationDetailMessageUiModelSample {
         )
     )
 
-    fun calendarInviteExpandedWithAttachments(limit: Int) = buildExpanded(
-        messageWithLabels = MessageWithLabelsSample.CalendarWithoutLabels,
-        messageBodyUiModel = MessageDetailBodyUiModelSample.build(
-            messageBody = "Calendar Invite",
-            attachments = AttachmentGroupUiModel(
-                limit = limit,
-                attachments = listOf(
-                    AttachmentUiModelSample.calendar
-                )
-            )
-        )
-    )
-
     @Suppress("LongParameterList")
     private fun buildCollapsed(
-        messageWithLabels: MessageWithLabels = MessageWithLabelsSample.build(),
-        message: Message = messageWithLabels.message,
+        message: Message = MessageSample.build(),
         avatar: AvatarUiModel = AvatarUiModel.ParticipantInitial(message.sender.name.substring(0, 1)),
         expiration: TextUiModel? = null,
         forwardedIcon: ConversationDetailMessageUiModel.ForwardedIcon =
@@ -210,12 +206,11 @@ object ConversationDetailMessageUiModelSample {
         shortTime = TextUiModel("10:00"),
         labels = emptyList<LabelUiModel>().toImmutableList(),
         messageId = MessageIdUiModel(message.messageId.id),
-        isDraft = message.isDraft()
+        isDraft = false
     )
 
     private fun buildExpanded(
-        messageWithLabels: MessageWithLabels = MessageWithLabelsSample.build(),
-        message: Message = messageWithLabels.message,
+        message: Message = MessageSample.build(),
         avatar: AvatarUiModel = AvatarUiModel.ParticipantInitial(message.sender.name.substring(0, 1)),
         isStarred: Boolean = false,
         messageBodyUiModel: MessageBodyUiModel = MessageDetailBodyUiModelSample.build(UUID.randomUUID().toString()),

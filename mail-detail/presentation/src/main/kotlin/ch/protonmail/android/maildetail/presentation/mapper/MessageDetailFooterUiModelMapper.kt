@@ -20,15 +20,15 @@ package ch.protonmail.android.maildetail.presentation.mapper
 
 import ch.protonmail.android.maildetail.presentation.model.MessageDetailFooterUiModel
 import ch.protonmail.android.maildetail.presentation.model.MessageIdUiModel
-import ch.protonmail.android.mailmessage.domain.model.MessageWithLabels
+import ch.protonmail.android.mailmessage.domain.model.Message
 import javax.inject.Inject
 
 class MessageDetailFooterUiModelMapper @Inject constructor() {
 
-    fun toUiModel(messageWithLabels: MessageWithLabels): MessageDetailFooterUiModel {
-        val shouldShowReplyAll = messageWithLabels.message.allRecipients.size > 1
+    fun toUiModel(message: Message): MessageDetailFooterUiModel {
+        val shouldShowReplyAll = message.allRecipients.size > 1
         return MessageDetailFooterUiModel(
-            MessageIdUiModel(messageWithLabels.message.messageId.id),
+            MessageIdUiModel(message.messageId.id),
             shouldShowReplyAll = shouldShowReplyAll
         )
     }

@@ -20,13 +20,11 @@ package ch.protonmail.android.mailmessage.data.local
 
 import arrow.core.Either
 import arrow.core.left
-import arrow.core.raise.either
 import arrow.core.right
 import ch.protonmail.android.mailcommon.data.db.dao.upsertOrError
 import ch.protonmail.android.mailcommon.data.file.shouldBeStoredAsFile
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailmessage.data.local.entity.MessageLabelEntity
 import ch.protonmail.android.mailmessage.data.local.relation.MessageWithBodyEntity
 import ch.protonmail.android.mailmessage.data.mapper.MessageAttachmentEntityMapper
 import ch.protonmail.android.mailmessage.data.mapper.MessageWithBodyEntityMapper
@@ -35,8 +33,6 @@ import ch.protonmail.android.mailmessage.domain.model.MessageAttachment
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.MessageWithBody
 import ch.protonmail.android.mailpagination.data.local.getClippedPageKey
-import ch.protonmail.android.mailpagination.data.local.isLocalPageValid
-import ch.protonmail.android.mailpagination.data.local.upsertPageInterval
 import ch.protonmail.android.mailpagination.domain.model.PageItemType
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import kotlinx.coroutines.flow.Flow
@@ -49,6 +45,7 @@ import me.proton.core.label.domain.entity.LabelId
 import timber.log.Timber
 import javax.inject.Inject
 
+@Deprecated("Replaced by rust owned DB. Usages of this class will lead to invalid or no data.")
 @Suppress("TooManyFunctions")
 class MessageLocalDataSourceImpl @Inject constructor(
     private val db: MessageDatabase,
@@ -135,11 +132,12 @@ class MessageLocalDataSourceImpl @Inject constructor(
         }
     }
 
+    @Deprecated("Hardcoded implementation. should go away along with message local data source.")
     override suspend fun isLocalPageValid(
         userId: UserId,
         pageKey: PageKey,
         items: List<Message>
-    ): Boolean = pageIntervalDao.isLocalPageValid(userId, PageItemType.Message, pageKey, items)
+    ): Boolean = false
 
     override suspend fun markAsStale(userId: UserId, labelId: LabelId) =
         pageIntervalDao.deleteAll(userId, PageItemType.Message, labelId)
@@ -236,24 +234,21 @@ class MessageLocalDataSourceImpl @Inject constructor(
         }
     }
 
+    @Deprecated("Hardcoded implementation. should go away along with message local data source.")
     override suspend fun addLabel(
         userId: UserId,
         messageId: MessageId,
         labelId: LabelId
     ): Either<DataError.Local, Message> = addLabels(userId, messageId, listOf(labelId))
 
+    @Deprecated("Hardcoded implementation. should go away along with message local data source.")
     override suspend fun addLabels(
         userId: UserId,
         messageId: MessageId,
         labelIds: List<LabelId>
     ): Either<DataError.Local, Message> {
-        val message = observeMessage(userId, messageId).first()
-            ?: return DataError.Local.NoDataCached.left()
-        val updatedMessage = message.copy(
-            labelIds = message.labelIds.toMutableSet().apply { addAll(labelIds) }.toList()
-        )
-        upsertMessage(updatedMessage)
-        return updatedMessage.right()
+        Timber.w("Implementation is faked. This will not work.")
+        return DataError.Local.Unknown.left()
     }
 
     override suspend fun removeLabel(
@@ -262,33 +257,25 @@ class MessageLocalDataSourceImpl @Inject constructor(
         labelId: LabelId
     ): Either<DataError.Local, Message> = removeLabels(userId, messageId, listOf(labelId))
 
+    @Deprecated("Hardcoded implementation. should go away along with message local data source.")
     override suspend fun removeLabels(
         userId: UserId,
         messageId: MessageId,
         labelIds: List<LabelId>
     ): Either<DataError.Local, Message> {
-        val message = observeMessage(userId, messageId).first()
-            ?: return DataError.Local.NoDataCached.left()
-        val updatedMessage = message.copy(
-            labelIds = message.labelIds - labelIds
-        )
-        upsertMessage(updatedMessage)
-        return updatedMessage.right()
+        Timber.w("Implementation is faked. This will not work.")
+        return DataError.Local.Unknown.left()
     }
 
+    @Deprecated("Hardcoded implementation. should go away along with message local data source.")
     override suspend fun relabelMessages(
         userId: UserId,
         messageIds: List<MessageId>,
         labelIdsToRemove: Set<LabelId>,
         labelIdsToAdd: Set<LabelId>
     ): Either<DataError.Local, List<Message>> {
-        val messages = observeMessages(userId, messageIds).first().takeIf { it.isNotEmpty() }
-            ?: return DataError.Local.NoDataCached.left()
-        val updatedMessages = messages.map { message ->
-            message.copy(labelIds = (message.labelIds - labelIdsToRemove).union(labelIdsToAdd).toList())
-        }
-        upsertMessages(updatedMessages)
-        return updatedMessages.right()
+        Timber.w("Implementation is faked. This will not work.")
+        return DataError.Local.Unknown.left()
     }
 
     override suspend fun relabelMessagesInConversations(
@@ -317,23 +304,14 @@ class MessageLocalDataSourceImpl @Inject constructor(
         return updatedMessages.right()
     }
 
+    @Deprecated("Hardcoded implementation. should go away along with message local data source.")
     override suspend fun markUnreadLastReadMessageInConversations(
         userId: UserId,
         conversationIds: List<ConversationId>,
         contextLabelId: LabelId
-    ): Either<DataError.Local, List<Message>> = db.inTransaction {
-        either {
-            conversationIds.map { conversationId ->
-                observeMessages(userId, conversationId).first()
-                    .filter { message -> message.read && message.labelIds.contains(contextLabelId) }
-                    .maxByOrNull { message -> message.time }
-                    .let { message ->
-                        markUnread(userId, message?.let { listOf(it.messageId) } ?: emptyList())
-                    }
-                    .map { it.first() }
-                    .bind()
-            }
-        }
+    ): Either<DataError.Local, List<Message>> {
+        Timber.w("Implementation is faked. This will not work.")
+        return DataError.Local.Unknown.left()
     }
 
     override suspend fun markRead(userId: UserId, messageIds: List<MessageId>): Either<DataError.Local, List<Message>> {
@@ -372,15 +350,15 @@ class MessageLocalDataSourceImpl @Inject constructor(
     override fun observeCachedMessagesTotalSize(): Flow<Long> = messageDao.observeCachedMessagesTotalSize()
 
     private suspend fun updateLabels(messages: List<Message>) = with(groupByUserId(messages)) {
-        deleteLabels()
-        insertLabels()
+        Timber.w("Implementation is faked. This will not work.")
     }
 
+    @Deprecated("Hardcoded implementation. should go away along with message local data source.")
     private suspend fun upsertPageInterval(
         userId: UserId,
         pageKey: PageKey,
         messages: List<Message>
-    ) = pageIntervalDao.upsertPageInterval(userId, PageItemType.Message, pageKey, messages)
+    ) { Timber.w("Implementation is faked. This will not work.") }
 
     private suspend fun upsertSearchResults(
         userId: UserId,
@@ -393,24 +371,6 @@ class MessageLocalDataSourceImpl @Inject constructor(
     ) { acc, message ->
         acc.apply { getOrPut(message.userId) { mutableListOf() }.add(message) }
     }.toMap()
-
-    private suspend fun Map<UserId, MutableList<Message>>.insertLabels() {
-        entries.forEach { (userId, messages) ->
-            messages.forEach { message ->
-                message.labelIds.forEach { labelId ->
-                    messageLabelDao.insertOrUpdate(
-                        MessageLabelEntity(userId, labelId, message.messageId)
-                    )
-                }
-            }
-        }
-    }
-
-    private suspend fun Map<UserId, MutableList<Message>>.deleteLabels() {
-        entries.forEach { (userId, messages) ->
-            messageLabelDao.deleteAll(userId, messages.map { it.messageId })
-        }
-    }
 
     private suspend fun MessageWithBodyEntity.withBodyFromFileIfNeeded(userId: UserId) = if (messageBody.body == null) {
         copy(

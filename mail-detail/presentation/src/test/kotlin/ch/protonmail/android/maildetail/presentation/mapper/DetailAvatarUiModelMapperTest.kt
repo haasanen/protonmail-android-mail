@@ -20,46 +20,23 @@ package ch.protonmail.android.maildetail.presentation.mapper
 
 import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
 import ch.protonmail.android.mailcommon.presentation.usecase.GetInitial
-import ch.protonmail.android.maillabel.domain.model.SystemLabelId
-import ch.protonmail.android.testdata.message.MessageTestData
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class DetailAvatarUiModelMapperTest {
 
-    private val messageId = "messageId"
     private val senderResolvedName = "Sender"
     private val getInitial = GetInitial()
 
     private val detailAvatarUiModelMapper = DetailAvatarUiModelMapper(getInitial)
 
     @Test
-    fun `avatar should show draft icon for all drafts`() {
-        // Given
-        val message = MessageTestData.buildMessage(
-            id = messageId,
-            labelIds = listOf(SystemLabelId.AllDrafts.labelId.id)
-        )
-        val expectedResult = AvatarUiModel.DraftIcon
-
-        // When
-        val result = detailAvatarUiModelMapper(message, senderResolvedName)
-
-        // Then
-        assertEquals(expectedResult, result)
-    }
-
-    @Test
     fun `avatar should show first letter of sender for non-draft message`() {
         // Given
-        val message = MessageTestData.buildMessage(
-            id = messageId,
-            labelIds = listOf(SystemLabelId.Inbox.labelId.id)
-        )
         val expectedResult = AvatarUiModel.ParticipantInitial(value = "S")
 
         // When
-        val result = detailAvatarUiModelMapper(message, senderResolvedName)
+        val result = detailAvatarUiModelMapper(senderResolvedName)
 
         // Then
         assertEquals(expectedResult, result)
@@ -68,15 +45,11 @@ class DetailAvatarUiModelMapperTest {
     @Test
     fun `avatar should show question mark when the given sender name is empty`() {
         // Given
-        val message = MessageTestData.buildMessage(
-            id = messageId,
-            labelIds = listOf(SystemLabelId.Inbox.labelId.id)
-        )
         val emptySenderName = ""
         val expectedResult = AvatarUiModel.ParticipantInitial(value = "?")
 
         // When
-        val result = detailAvatarUiModelMapper(message, emptySenderName)
+        val result = detailAvatarUiModelMapper(emptySenderName)
 
         // Then
         assertEquals(expectedResult, result)

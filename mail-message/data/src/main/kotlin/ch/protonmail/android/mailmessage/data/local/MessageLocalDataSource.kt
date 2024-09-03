@@ -31,6 +31,7 @@ import kotlinx.coroutines.flow.Flow
 import me.proton.core.domain.entity.UserId
 import me.proton.core.label.domain.entity.LabelId
 
+@Deprecated("Replaced by rust owned DB. Usages of this class will lead to invalid or no data.")
 @Suppress("TooManyFunctions", "ComplexInterface")
 interface MessageLocalDataSource {
 

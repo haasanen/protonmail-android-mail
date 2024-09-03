@@ -21,7 +21,7 @@ package ch.protonmail.android.mailmessage.domain.sample
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.sample.AddressIdSample
 import ch.protonmail.android.mailcommon.domain.sample.ConversationIdSample
-import ch.protonmail.android.mailcommon.domain.sample.LabelIdSample
+import ch.protonmail.android.mailcommon.domain.sample.LabelSample
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.mailmessage.domain.model.AttachmentCount
 import ch.protonmail.android.mailmessage.domain.model.Message
@@ -29,7 +29,7 @@ import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.Recipient
 import ch.protonmail.android.mailmessage.domain.model.Sender
 import me.proton.core.domain.entity.UserId
-import me.proton.core.label.domain.entity.LabelId
+import me.proton.core.label.domain.entity.Label
 import me.proton.core.user.domain.entity.AddressId
 
 object MessageSample {
@@ -37,7 +37,6 @@ object MessageSample {
     val AugWeatherForecast = build(
         conversationId = ConversationIdSample.WeatherForecast,
         messageId = MessageIdSample.AugWeatherForecast,
-        labelIds = listOf(LabelIdSample.Archive),
         sender = RecipientSample.PreciWeather,
         subject = "August weather forecast",
         time = Aug2022
@@ -46,43 +45,37 @@ object MessageSample {
     val AugWeatherForecastFolder2021 = build(
         conversationId = ConversationIdSample.WeatherForecast,
         messageId = MessageIdSample.AugWeatherForecast,
-        labelIds = listOf(LabelIdSample.Folder2021),
         sender = RecipientSample.PreciWeather,
         subject = "August weather forecast",
         time = Aug2022
     )
 
     val EmptyDraft = build(
-        subject = "",
-        labelIds = listOf(LabelIdSample.AllDraft)
+        subject = ""
     )
 
     val NewDraftWithSubject = build(
         messageId = MessageIdSample.NewDraftWithSubject,
-        subject = "New draft, just typed the subject",
-        labelIds = listOf(LabelIdSample.AllDraft),
-        sender = RecipientSample.John
+        sender = RecipientSample.John,
+        subject = "New draft, just typed the subject"
     )
 
     val NewDraftWithSubjectAndBody = build(
         messageId = MessageIdSample.NewDraftWithSubjectAndBody,
-        subject = "New draft, just typed the subject and the body",
-        labelIds = listOf(LabelIdSample.AllDraft),
-        sender = RecipientSample.John
+        sender = RecipientSample.John,
+        subject = "New draft, just typed the subject and the body"
     )
 
     val RemoteDraft = build(
         messageId = MessageIdSample.RemoteDraft,
-        subject = "Remote draft, known to the API",
-        labelIds = listOf(LabelIdSample.AllDraft),
-        sender = RecipientSample.John
+        sender = RecipientSample.John,
+        subject = "Remote draft, known to the API"
     )
 
     val RemoteDraftWith4RecipientTypes = build(
         messageId = MessageIdSample.RemoteDraft,
-        subject = "Remote draft, known to the API, 4 recipients total in TO, CC and BCC",
-        labelIds = listOf(LabelIdSample.AllDraft),
         sender = RecipientSample.John,
+        subject = "Remote draft, known to the API, 4 recipients total in TO, CC and BCC",
         toList = listOf(RecipientSample.Doe),
         ccList = listOf(RecipientSample.PreciWeather),
         bccList = listOf(RecipientSample.Scammer, RecipientSample.ExternalEncrypted)
@@ -90,14 +83,13 @@ object MessageSample {
 
     val ExpiringInvitation = build(
         attachmentCount = AttachmentCountSample.CalendarInvite,
-        numAttachments = AttachmentCountSample.CalendarInvite.calendar,
-        expirationTime = Aug2022
+        expirationTime = Aug2022,
+        numAttachments = AttachmentCountSample.CalendarInvite.calendar
     )
 
     val HtmlInvoice = build(
         conversationId = ConversationIdSample.Invoices,
         messageId = MessageIdSample.HtmlInvoice,
-        labelIds = listOf(LabelIdSample.Inbox),
         numAttachments = 0,
         subject = "Invoice in html format"
     )
@@ -105,15 +97,24 @@ object MessageSample {
     val Invoice = build(
         conversationId = ConversationIdSample.Invoices,
         messageId = MessageIdSample.Invoice,
-        labelIds = listOf(LabelIdSample.Archive, LabelIdSample.Document),
         numAttachments = 1,
         subject = "Invoice"
+    )
+
+    val InvoiceWithTwoLabels = build(
+        conversationId = ConversationIdSample.Invoices,
+        messageId = MessageIdSample.Invoice,
+        numAttachments = 1,
+        subject = "Invoice",
+        customLabels = listOf(
+            LabelSample.Label2021,
+            LabelSample.Label2022
+        )
     )
 
     val UnreadInvoice = build(
         conversationId = ConversationIdSample.Invoices,
         messageId = MessageIdSample.Invoice,
-        labelIds = listOf(LabelIdSample.Archive, LabelIdSample.Document),
         numAttachments = 1,
         subject = "Invoice",
         unread = true
@@ -126,7 +127,6 @@ object MessageSample {
     val OctWeatherForecast = build(
         conversationId = ConversationIdSample.WeatherForecast,
         messageId = MessageIdSample.OctWeatherForecast,
-        labelIds = listOf(LabelIdSample.Archive),
         sender = RecipientSample.PreciWeather,
         subject = "October weather forecast",
         time = Oct2022
@@ -135,7 +135,6 @@ object MessageSample {
     val SepWeatherForecast = build(
         conversationId = ConversationIdSample.WeatherForecast,
         messageId = MessageIdSample.SepWeatherForecast,
-        labelIds = listOf(LabelIdSample.Archive),
         sender = RecipientSample.PreciWeather,
         subject = "September weather forecast",
         time = Sep2022
@@ -144,7 +143,6 @@ object MessageSample {
     val AlphaAppInfoRequest = build(
         conversationId = ConversationIdSample.AlphaAppFeedback,
         messageId = MessageIdSample.AlphaAppInfoRequest,
-        labelIds = listOf(LabelIdSample.Inbox),
         sender = RecipientSample.John,
         subject = "Request for details on features to test",
         time = Jan2023
@@ -153,7 +151,6 @@ object MessageSample {
     val AlphaAppQAReport = build(
         conversationId = ConversationIdSample.AlphaAppFeedback,
         messageId = MessageIdSample.AlphaAppQAReport,
-        labelIds = listOf(LabelIdSample.Inbox),
         sender = RecipientSample.John,
         subject = "QA testing session findings",
         time = Feb2023
@@ -162,7 +159,6 @@ object MessageSample {
     val AlphaAppArchivedFeedback = build(
         conversationId = ConversationIdSample.AlphaAppFeedback,
         messageId = MessageIdSample.AlphaAppQAReport,
-        labelIds = listOf(LabelIdSample.Archive),
         sender = RecipientSample.Doe,
         subject = "Is this a known issue?",
         time = Feb2023
@@ -182,45 +178,45 @@ object MessageSample {
     val CalendarInvite = build(
         messageId = MessageIdSample.CalendarInvite,
         numAttachments = 1,
-        subject = "Calendar invite",
         sender = RecipientSample.John,
+        subject = "Calendar invite",
         toList = listOf(RecipientSample.Bob)
     )
 
     val ReadMessageMayFirst = build(
         messageId = MessageIdSample.ReadMessageMayFirst,
-        unread = false,
-        time = MayFirst2023
+        time = MayFirst2023,
+        unread = false
     )
 
     val ReadMessageMaySecond = build(
         messageId = MessageIdSample.ReadMessageMaySecond,
-        unread = false,
-        time = MaySecond2023
+        time = MaySecond2023,
+        unread = false
     )
 
     val ReadMessageMayThird = build(
         messageId = MessageIdSample.UnreadMessageMayThird,
-        unread = false,
-        time = MayThird2023
+        time = MayThird2023,
+        unread = false
     )
 
     val UnreadMessageMayFirst = build(
         messageId = MessageIdSample.UnreadMessageMayFirst,
-        unread = true,
-        time = MayFirst2023
+        time = MayFirst2023,
+        unread = true
     )
 
     val UnreadMessageMaySecond = build(
         messageId = MessageIdSample.UnreadMessageMaySecond,
-        unread = true,
-        time = MaySecond2023
+        time = MaySecond2023,
+        unread = true
     )
 
     val UnreadMessageMayThird = build(
         messageId = MessageIdSample.UnreadMessageMayThird,
-        unread = true,
-        time = MayThird2023
+        time = MayThird2023,
+        unread = true
     )
 
     private val MayFirst2023 get() = 1_682_899_200L
@@ -239,7 +235,6 @@ object MessageSample {
         expirationTime: Long = 0,
         isReplied: Boolean = false,
         messageId: MessageId = MessageIdSample.build(),
-        labelIds: List<LabelId> = listOf(LabelIdSample.build()),
         numAttachments: Int = 0,
         order: Long = messageId.id.first().code.toLong(),
         sender: Sender = RecipientSample.John,
@@ -249,7 +244,8 @@ object MessageSample {
         ccList: List<Recipient> = emptyList(),
         bccList: List<Recipient> = emptyList(),
         userId: UserId = UserIdSample.Primary,
-        unread: Boolean = false
+        unread: Boolean = false,
+        customLabels: List<Label> = emptyList()
     ) = Message(
         userId = userId,
         messageId = messageId,
@@ -257,7 +253,6 @@ object MessageSample {
         time = time,
         size = 0,
         order = order,
-        labelIds = labelIds,
         subject = subject,
         unread = unread,
         sender = sender,
@@ -274,14 +269,6 @@ object MessageSample {
         numAttachments = numAttachments,
         flags = 0,
         attachmentCount = attachmentCount,
-        customLabels = emptyList()
-    )
-
-    fun Message.moveTo(labelId: LabelId): Message = copy(
-        labelIds = labelIds + labelId
-    )
-
-    fun Message.labelAs(labelIds: List<LabelId>): Message = copy(
-        labelIds = labelIds
+        customLabels = customLabels
     )
 }

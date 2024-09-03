@@ -36,7 +36,6 @@ import ch.protonmail.android.maildetail.presentation.viewmodel.EmailBodyTestSamp
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.model.MimeType
 import ch.protonmail.android.mailmessage.domain.sample.MessageSample
-import ch.protonmail.android.mailmessage.domain.sample.MessageWithLabelsSample
 import ch.protonmail.android.mailmessage.domain.sample.RecipientSample
 import ch.protonmail.android.mailmessage.domain.usecase.ResolveParticipantName
 import ch.protonmail.android.mailmessage.domain.usecase.ResolveParticipantNameResult
@@ -64,10 +63,7 @@ internal class ConversationDetailMessageUiModelMapperTest {
     private val folderColorSettings: FolderColorSettings = FolderColorSettings(useFolderColor = false)
 
     private val avatarUiModelMapper: DetailAvatarUiModelMapper = mockk {
-        every { this@mockk(message = any(), senderResolvedName = any()) } returns
-            ConversationDetailMessageUiModelSample.AugWeatherForecast.avatar
-        every { this@mockk(message = MessageSample.ExpiringInvitation, senderResolvedName = any()) } returns
-            ConversationDetailMessageUiModelSample.ExpiringInvitation.avatar
+        every { this@mockk(any()) } returns ConversationDetailMessageUiModelSample.AugWeatherForecast.avatar
     }
     private val expirationTimeMapper: ExpirationTimeMapper = mockk {
         every { toUiModel(epochTime = any()) } returns
@@ -163,12 +159,12 @@ internal class ConversationDetailMessageUiModelMapperTest {
     @Test
     fun `map to ui model returns collapsed model`() = runTest {
         // given
-        val messageWithLabels = MessageWithLabelsSample.AugWeatherForecast
+        val message = MessageSample.AugWeatherForecast
         val expected = ConversationDetailMessageUiModelSample.AugWeatherForecast
 
         // when
-        val result = mapper.toUiModel(
-            messageWithLabels = messageWithLabels,
+        val result: ConversationDetailMessageUiModel.Collapsed = mapper.toUiModel(
+            message = message,
             contacts = emptyList(),
             folderColorSettings = folderColorSettings
         )
@@ -180,10 +176,10 @@ internal class ConversationDetailMessageUiModelMapperTest {
     @Test
     fun `map to ui model returns expanded model`() = runTest {
         // given
-        val messageWithLabels = MessageWithLabelsSample.AugWeatherForecast
+        val message = MessageSample.AugWeatherForecast
         val contactsList = listOf(ContactSample.John, ContactSample.Doe)
         val decryptedMessageBody = DecryptedMessageBody(
-            messageWithLabels.message.messageId,
+            message.messageId,
             UUID.randomUUID().toString(),
             MimeType.Html,
             userAddress = UserAddressSample.PrimaryAddress
@@ -191,7 +187,7 @@ internal class ConversationDetailMessageUiModelMapperTest {
 
         // when
         val result = mapper.toUiModel(
-            messageWithLabels,
+            message,
             contacts = contactsList,
             decryptedMessageBody = decryptedMessageBody,
             folderColorSettings = folderColorSettings,
@@ -199,22 +195,22 @@ internal class ConversationDetailMessageUiModelMapperTest {
         )
 
         // then
-        assertEquals(result.isUnread, messageWithLabels.message.unread)
-        assertEquals(result.messageId.id, messageWithLabels.message.messageId.id)
-        coVerify { messageDetailHeaderUiModelMapper.toUiModel(messageWithLabels, contactsList, folderColorSettings) }
-        coVerify { messageBodyUiModelMapper.toUiModel(messageWithLabels.message.userId, decryptedMessageBody) }
+        assertEquals(result.isUnread, message.unread)
+        assertEquals(result.messageId.id, message.messageId.id)
+        coVerify { messageDetailHeaderUiModelMapper.toUiModel(message, contactsList, folderColorSettings) }
+        coVerify { messageBodyUiModelMapper.toUiModel(message.userId, decryptedMessageBody) }
     }
 
     @Test
     fun `map to ui model returns hidden model`() = runTest {
         // Given
-        val messageWithLabels = MessageWithLabelsSample.AugWeatherForecast
+        val message = MessageSample.AugWeatherForecast
         val expectedResult = ConversationDetailMessageUiModel.Hidden(
-            MessageIdUiModel(messageWithLabels.message.messageId.id), messageWithLabels.message.unread
+            MessageIdUiModel(message.messageId.id), message.unread
         )
 
         // When
-        val result = mapper.toUiModel(messageWithLabels)
+        val result = mapper.toUiModel(message)
 
         // Then
         assertEquals(expectedResult, result)
@@ -224,7 +220,6 @@ internal class ConversationDetailMessageUiModelMapperTest {
     fun `when message is forwarded, ui model contains forwarded icon`() = runTest {
         // given
         val message = MessageSample.AugWeatherForecast.copy(isForwarded = true)
-        val messageWithLabels = MessageWithLabelsSample.AugWeatherForecast.copy(message = message)
         val expected = with(ConversationDetailMessageUiModelSample) {
             AugWeatherForecast.copy(
                 forwardedIcon = ConversationDetailMessageUiModel.ForwardedIcon.Forwarded
@@ -232,7 +227,7 @@ internal class ConversationDetailMessageUiModelMapperTest {
         }
 
         // when
-        val result = mapper.toUiModel(messageWithLabels, contacts = emptyList(), folderColorSettings)
+        val result = mapper.toUiModel(message, contacts = emptyList(), folderColorSettings)
 
         // then
         assertEquals(expected, result)
@@ -242,7 +237,6 @@ internal class ConversationDetailMessageUiModelMapperTest {
     fun `when message is replied, ui model contains replied icon`() = runTest {
         // given
         val message = MessageSample.AugWeatherForecast.copy(isReplied = true)
-        val messageWithLabels = MessageWithLabelsSample.AugWeatherForecast.copy(message = message)
         val expected = with(ConversationDetailMessageUiModelSample) {
             AugWeatherForecast.copy(
                 repliedIcon = ConversationDetailMessageUiModel.RepliedIcon.Replied
@@ -250,7 +244,7 @@ internal class ConversationDetailMessageUiModelMapperTest {
         }
 
         // when
-        val result = mapper.toUiModel(messageWithLabels, contacts = emptyList(), folderColorSettings)
+        val result = mapper.toUiModel(message, contacts = emptyList(), folderColorSettings)
 
         // then
         assertEquals(expected, result)
@@ -260,7 +254,6 @@ internal class ConversationDetailMessageUiModelMapperTest {
     fun `when message is replied all, ui model contains replied all icon`() = runTest {
         // given
         val message = MessageSample.AugWeatherForecast.copy(isRepliedAll = true)
-        val messageWithLabels = MessageWithLabelsSample.AugWeatherForecast.copy(message = message)
         val expected = with(ConversationDetailMessageUiModelSample) {
             AugWeatherForecast.copy(
                 repliedIcon = ConversationDetailMessageUiModel.RepliedIcon.RepliedAll
@@ -268,7 +261,7 @@ internal class ConversationDetailMessageUiModelMapperTest {
         }
 
         // when
-        val result = mapper.toUiModel(messageWithLabels, contacts = emptyList(), folderColorSettings)
+        val result = mapper.toUiModel(message, contacts = emptyList(), folderColorSettings)
 
         // then
         assertEquals(expected, result)
@@ -281,7 +274,6 @@ internal class ConversationDetailMessageUiModelMapperTest {
             isReplied = true,
             isRepliedAll = true
         )
-        val messageWithLabels = MessageWithLabelsSample.AugWeatherForecast.copy(message = message)
         val expected = with(ConversationDetailMessageUiModelSample) {
             AugWeatherForecast.copy(
                 repliedIcon = ConversationDetailMessageUiModel.RepliedIcon.RepliedAll
@@ -289,7 +281,7 @@ internal class ConversationDetailMessageUiModelMapperTest {
         }
 
         // when
-        val result = mapper.toUiModel(messageWithLabels, contacts = emptyList(), folderColorSettings)
+        val result = mapper.toUiModel(message, contacts = emptyList(), folderColorSettings)
 
         // then
         assertEquals(expected, result)
@@ -299,11 +291,11 @@ internal class ConversationDetailMessageUiModelMapperTest {
     fun `when message has expiration, ui model contains formatted time`() = runTest {
         // given
         val message = MessageSample.ExpiringInvitation
-        val messageWithLabels = MessageWithLabelsSample.ExpiringInvitation.copy(message = message)
         val expected = ConversationDetailMessageUiModelSample.ExpiringInvitation
+        every { avatarUiModelMapper(any()) } returns ConversationDetailMessageUiModelSample.ExpiringInvitation.avatar
 
         // when
-        val result = mapper.toUiModel(messageWithLabels, contacts = emptyList(), folderColorSettings)
+        val result = mapper.toUiModel(message, contacts = emptyList(), folderColorSettings)
 
         // then
         assertEquals(expected, result)
@@ -313,11 +305,11 @@ internal class ConversationDetailMessageUiModelMapperTest {
     fun `when message has only calendar attachments, ui model has not attachments`() = runTest {
         // given
         val message = MessageSample.ExpiringInvitation
-        val messageWithLabels = MessageWithLabelsSample.ExpiringInvitation.copy(message = message)
         val expected = ConversationDetailMessageUiModelSample.ExpiringInvitation
+        every { avatarUiModelMapper(any()) } returns ConversationDetailMessageUiModelSample.ExpiringInvitation.avatar
 
         // when
-        val result = mapper.toUiModel(messageWithLabels, contacts = emptyList(), folderColorSettings)
+        val result = mapper.toUiModel(message, contacts = emptyList(), folderColorSettings)
 
         // then
         assertEquals(expected, result)
@@ -327,18 +319,13 @@ internal class ConversationDetailMessageUiModelMapperTest {
     fun `when message is updated then unread and header is updated`() = runTest {
         // Given
         val previousMessage = ConversationDetailMessageUiModelSample.InvoiceWithoutLabelsCustomFolderExpanded
-
-        val messageWithLabels = MessageWithLabelsSample.InvoiceWithoutLabels.copy(
-            message = MessageWithLabelsSample.InvoiceWithoutLabels.message.copy(
-                unread = true
-            )
-        )
+        val message = MessageSample.Invoice.copy(unread = true)
         val folderColorSettings = FolderColorSettings(useFolderColor = false)
 
         // When
         val result = mapper.toUiModel(
-            message = previousMessage,
-            messageWithLabels = messageWithLabels,
+            messageUiModel = previousMessage,
+            message = message,
             contacts = listOf(ContactSample.John),
             folderColorSettings = folderColorSettings
         )
@@ -351,10 +338,10 @@ internal class ConversationDetailMessageUiModelMapperTest {
     @Test
     fun `should retain the body quote expanded or collapsed state`() = runTest {
         // given
-        val messageWithLabels = MessageWithLabelsSample.AugWeatherForecast
+        val message = MessageSample.AugWeatherForecast
         val contactsList = listOf(ContactSample.John, ContactSample.Doe)
         val decryptedMessageBody = DecryptedMessageBody(
-            messageWithLabels.message.messageId,
+            message.messageId,
             UUID.randomUUID().toString(),
             MimeType.Html,
             userAddress = UserAddressSample.PrimaryAddress
@@ -363,7 +350,7 @@ internal class ConversationDetailMessageUiModelMapperTest {
 
         // when
         val result = mapper.toUiModel(
-            messageWithLabels,
+            message,
             contacts = contactsList,
             decryptedMessageBody = decryptedMessageBody,
             folderColorSettings = folderColorSettings,
@@ -375,7 +362,7 @@ internal class ConversationDetailMessageUiModelMapperTest {
         assertEquals(MessageBodyExpandCollapseMode.Expanded, result.expandCollapseMode)
         coVerify {
             messageBodyUiModelMapper.toUiModel(
-                messageWithLabels.message.userId, decryptedMessageBody,
+                message.userId, decryptedMessageBody,
                 previousState.messageBodyUiModel
             )
         }

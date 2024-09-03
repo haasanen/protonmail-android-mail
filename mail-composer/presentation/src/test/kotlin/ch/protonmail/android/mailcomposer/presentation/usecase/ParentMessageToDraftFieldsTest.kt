@@ -26,7 +26,6 @@ import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.mailcommon.domain.usecase.ObserveUserAddresses
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcommon.presentation.usecase.FormatExtendedTime
-import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailcomposer.domain.model.MessageWithDecryptedBody
 import ch.protonmail.android.mailcomposer.domain.model.SenderEmail
 import ch.protonmail.android.mailcomposer.domain.model.Subject
@@ -36,6 +35,7 @@ import ch.protonmail.android.mailcomposer.presentation.usecase.ParentMessageToDr
 import ch.protonmail.android.mailcomposer.presentation.usecase.ParentMessageToDraftFields.Companion.LineBreak
 import ch.protonmail.android.mailcomposer.presentation.usecase.ParentMessageToDraftFields.Companion.ProtonMailBlockquote
 import ch.protonmail.android.mailcomposer.presentation.usecase.ParentMessageToDraftFields.Companion.ProtonMailQuote
+import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
 import ch.protonmail.android.mailmessage.domain.sample.MessageSample
 import ch.protonmail.android.mailmessage.domain.sample.MessageWithBodySample
@@ -54,7 +54,6 @@ import io.mockk.unmockkAll
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import me.proton.core.domain.entity.UserId
-import me.proton.core.label.domain.entity.LabelId
 import me.proton.core.user.domain.entity.UserAddress
 import org.junit.After
 import kotlin.test.Test
@@ -466,62 +465,6 @@ class ParentMessageToDraftFieldsTest {
         // Then
         val expected = listOf(RecipientSample.Billing, RecipientSample.Alice)
         assertEquals(expected, actual.recipientsTo.value)
-    }
-
-    @Test
-    fun `returns draft fields with TO recipients from original message when replying to a sent message`() = runTest {
-        // Given
-        val userId = UserIdSample.Primary
-        val johnUserAddress = UserAddressSample.build(email = RecipientSample.John.address)
-        val expectedAction = DraftAction.Reply(MessageIdSample.HtmlInvoice)
-        val expectedDecryptedMessage = MessageWithDecryptedBody(
-            MessageWithBodySample.HtmlInvoice.copy(
-                message = MessageWithBodySample.Invoice.message.copy(
-                    toList = listOf(RecipientSample.John, RecipientSample.Billing, RecipientSample.Alice),
-                    labelIds = MessageWithBodySample.Invoice.message.labelIds + LabelId("2")
-                )
-            ),
-            DecryptedMessageBodyTestData.htmlInvoice
-        )
-        expectedUserAddresses(userId) { listOf(johnUserAddress) }
-        expectFormattedTime(MessageSample.HtmlInvoice.time.seconds) { TextUiModel.Text("Sep 13, 2023 3:36 PM") }
-        expectBlankSignatureForSenderAddress(userId, SenderEmail(johnUserAddress.email))
-        expectMobileFooter(userId, isUserPaid = true)
-
-        // When
-        val actual = parentMessageToDraftFields(userId, expectedDecryptedMessage, expectedAction).getOrNull()!!
-
-        // Then
-        val expected = listOf(RecipientSample.Billing, RecipientSample.Alice)
-        assertEquals(expected, actual.recipientsTo.value)
-    }
-
-    @Test
-    fun `returns draft fields with BCC recipients from original message when reply all to a sent message`() = runTest {
-        // Given
-        val userId = UserIdSample.Primary
-        val johnUserAddress = UserAddressSample.build(email = RecipientSample.John.address)
-        val expectedAction = DraftAction.ReplyAll(MessageIdSample.HtmlInvoice)
-        val expectedDecryptedMessage = MessageWithDecryptedBody(
-            MessageWithBodySample.HtmlInvoice.copy(
-                message = MessageWithBodySample.Invoice.message.copy(
-                    bccList = listOf(RecipientSample.Billing, RecipientSample.Alice),
-                    labelIds = MessageWithBodySample.Invoice.message.labelIds + LabelId("2")
-                )
-            ),
-            DecryptedMessageBodyTestData.htmlInvoice
-        )
-        expectedUserAddresses(userId) { listOf(johnUserAddress) }
-        expectFormattedTime(MessageSample.HtmlInvoice.time.seconds) { TextUiModel.Text("Sep 13, 2023 3:36 PM") }
-        expectBlankSignatureForSenderAddress(userId, SenderEmail(johnUserAddress.email))
-        expectMobileFooter(userId, isUserPaid = true)
-
-        // When
-        val actual = parentMessageToDraftFields(userId, expectedDecryptedMessage, expectedAction).getOrNull()!!
-
-        // Then
-        val expected = listOf(RecipientSample.Billing, RecipientSample.Alice)
-        assertEquals(expected, actual.recipientsBcc.value)
     }
 
     private fun expectFormattedTime(timestamp: Duration, result: () -> TextUiModel.Text) = result().also {

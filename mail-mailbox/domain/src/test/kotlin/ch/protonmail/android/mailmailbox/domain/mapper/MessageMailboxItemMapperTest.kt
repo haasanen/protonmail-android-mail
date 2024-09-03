@@ -18,11 +18,11 @@
 
 package ch.protonmail.android.mailmailbox.domain.mapper
 
+import ch.protonmail.android.mailcommon.domain.sample.LabelSample
 import ch.protonmail.android.mailmessage.domain.model.AttachmentCount
 import ch.protonmail.android.testdata.label.LabelTestData
 import ch.protonmail.android.testdata.message.MessageTestData
 import ch.protonmail.android.testdata.user.UserIdTestData.userId
-import me.proton.core.label.domain.entity.LabelId
 import me.proton.core.label.domain.entity.LabelType
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -44,15 +44,14 @@ class MessageMailboxItemMapperTest {
     }
 
     @Test
-    fun `when mapping message to mailbox item all labelIds are preserved`() {
+    fun `when mapping message to mailbox item all custom labels are preserved`() {
         // Given
-        val labelIds = listOf("0", "5", "10", "customLabel")
-        val message = MessageTestData.buildMessage(userId, "id", labelIds = labelIds)
+        val expectedLabels = listOf(LabelSample.Label2021, LabelSample.Label2022)
+        val message = MessageTestData.buildMessage(userId, "id", customLabels = expectedLabels)
         // When
         val actual = mapper.toMailboxItem(message)
         // Then
-        val expected = labelIds.map { LabelId(it) }
-        assertEquals(expected, actual.labelIds)
+        assertEquals(expectedLabels, actual.labels)
     }
 
     @Test

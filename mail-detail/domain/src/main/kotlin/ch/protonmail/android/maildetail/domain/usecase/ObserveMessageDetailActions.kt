@@ -19,10 +19,10 @@
 package ch.protonmail.android.maildetail.domain.usecase
 
 import arrow.core.Either
+import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.domain.model.Action
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.maildetail.domain.model.BottomBarDefaults
-import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.mailmessage.domain.model.Message
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.usecase.ObserveMessage
@@ -47,7 +47,10 @@ class ObserveMessageDetailActions @Inject constructor(
             }
         }
 
-    private fun Message.messageIsSpamOrTrash() = labelIds.any {
-        it == SystemLabelId.Spam.labelId || it == SystemLabelId.Trash.labelId
-    }
+    @MissingRustApi
+    @SuppressWarnings("FunctionOnlyReturningConstant")
+    // Since all of the labels of a message are not exposed anymore, we can't run this
+    // bit of logic. Rust will expose the list of actions to show for a given message, alternatively
+    // this logic can be adapted to use `exclusiveLocation` once rust exposes it
+    private fun Message.messageIsSpamOrTrash() = false
 }

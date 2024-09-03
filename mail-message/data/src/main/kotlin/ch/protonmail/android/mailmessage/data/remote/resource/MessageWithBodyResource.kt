@@ -33,10 +33,10 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonElement
 import me.proton.core.domain.entity.UserId
-import me.proton.core.label.domain.entity.LabelId
 import me.proton.core.user.domain.entity.AddressId
 import me.proton.core.util.kotlin.toBooleanOrFalse
 
+@Deprecated("To go away with MessageLocal/Remote Data sources")
 @Serializable
 data class MessageWithBodyResource(
     @SerialName("ID")
@@ -109,7 +109,6 @@ data class MessageWithBodyResource(
             time = time,
             size = size,
             order = order,
-            labelIds = labelIds.map { LabelId(it) },
             subject = subject,
             unread = unread.toBooleanOrFalse(),
             sender = sender.toRecipient(),

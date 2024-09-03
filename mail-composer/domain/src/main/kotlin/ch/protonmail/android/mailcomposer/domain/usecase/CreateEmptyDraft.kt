@@ -20,7 +20,6 @@ package ch.protonmail.android.mailcomposer.domain.usecase
 
 import java.time.Instant
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
-import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.mailmessage.domain.model.AttachmentCount
 import ch.protonmail.android.mailmessage.domain.model.Message
 import ch.protonmail.android.mailmessage.domain.model.MessageBody
@@ -48,11 +47,6 @@ class CreateEmptyDraft @Inject constructor() {
             time = Instant.now().epochSecond,
             size = 0L,
             order = 0,
-            labelIds = listOf(
-                SystemLabelId.Drafts.labelId,
-                SystemLabelId.AllDrafts.labelId,
-                SystemLabelId.AllMail.labelId
-            ),
             subject = EMPTY_STRING,
             unread = false,
             sender = Sender(userAddress.email, userAddress.displayName.orEmpty()),

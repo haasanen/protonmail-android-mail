@@ -24,6 +24,7 @@ import ch.protonmail.android.mailcommon.datarust.mapper.LocalConversationId
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageId
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageMetadata
+import ch.protonmail.android.maillabel.data.mapper.toLabel
 import ch.protonmail.android.mailmessage.data.mapper.toAddressId
 import ch.protonmail.android.mailmessage.data.mapper.toConversationId
 import ch.protonmail.android.mailmessage.data.mapper.toMessage
@@ -34,7 +35,6 @@ import ch.protonmail.android.mailmessage.domain.model.MessageId
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertFalse
 import junit.framework.TestCase.assertTrue
-import me.proton.core.label.domain.entity.LabelId
 import org.junit.Test
 import uniffi.proton_mail_uniffi.AvatarInformation
 import uniffi.proton_mail_uniffi.InlineCustomLabel
@@ -180,7 +180,7 @@ class MessageMapperTest {
         assertEquals(time.toLong(), message.time)
         assertEquals(size.toLong(), message.size)
         assertEquals(order.toLong(), message.order)
-        assertEquals(labels.map { LabelId(it.id.value.toString()) }, message.labelIds)
+        assertEquals(labels.map { it.toLabel() }, message.customLabels)
         assertEquals(subject, message.subject)
         assertTrue(message.unread)
         assertEquals(sender.toParticipant(), message.sender)

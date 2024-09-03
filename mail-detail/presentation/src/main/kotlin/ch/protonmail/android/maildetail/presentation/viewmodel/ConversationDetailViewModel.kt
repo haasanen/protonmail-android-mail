@@ -39,7 +39,6 @@ import ch.protonmail.android.mailconversation.domain.usecase.DeleteConversations
 import ch.protonmail.android.mailconversation.domain.usecase.ObserveConversation
 import ch.protonmail.android.mailconversation.domain.usecase.StarConversations
 import ch.protonmail.android.mailconversation.domain.usecase.UnStarConversations
-import ch.protonmail.android.maildetail.domain.model.ConversationMessagesWithLabels
 import ch.protonmail.android.maildetail.domain.model.OpenProtonCalendarIntentValues
 import ch.protonmail.android.maildetail.domain.repository.InMemoryConversationStateRepository
 import ch.protonmail.android.maildetail.domain.usecase.GetAttachmentIntentValues
@@ -51,7 +50,7 @@ import ch.protonmail.android.maildetail.domain.usecase.MarkMessageAsUnread
 import ch.protonmail.android.maildetail.domain.usecase.MoveConversation
 import ch.protonmail.android.maildetail.domain.usecase.MoveMessage
 import ch.protonmail.android.maildetail.domain.usecase.ObserveConversationDetailActions
-import ch.protonmail.android.maildetail.domain.usecase.ObserveConversationMessagesWithLabels
+import ch.protonmail.android.maildetail.domain.usecase.ObserveConversationMessages
 import ch.protonmail.android.maildetail.domain.usecase.ObserveConversationViewState
 import ch.protonmail.android.maildetail.domain.usecase.ObserveMessageAttachmentStatus
 import ch.protonmail.android.maildetail.domain.usecase.RelabelConversation
@@ -93,8 +92,6 @@ import ch.protonmail.android.maildetail.presentation.usecase.GetEmbeddedImageAvo
 import ch.protonmail.android.maildetail.presentation.usecase.LoadDataForMessageLabelAsBottomSheet
 import ch.protonmail.android.maildetail.presentation.usecase.OnMessageLabelAsConfirmed
 import ch.protonmail.android.maildetail.presentation.usecase.PrintMessage
-import ch.protonmail.android.maildetail.presentation.usecase.ShouldMessageBeHidden
-import ch.protonmail.android.maillabel.domain.model.MailLabel
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.maillabel.domain.usecase.ObserveCustomMailLabels
 import ch.protonmail.android.maillabel.domain.usecase.ObserveExclusiveDestinationMailLabels
@@ -102,12 +99,13 @@ import ch.protonmail.android.maillabel.presentation.model.LabelSelectedState
 import ch.protonmail.android.maillabel.presentation.toCustomUiModel
 import ch.protonmail.android.maillabel.presentation.toUiModels
 import ch.protonmail.android.mailmessage.domain.model.AttachmentId
+import ch.protonmail.android.mailmessage.domain.model.ConversationMessages
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.model.GetDecryptedMessageBodyError
 import ch.protonmail.android.mailmessage.domain.model.LabelSelectionList
+import ch.protonmail.android.mailmessage.domain.model.Message
 import ch.protonmail.android.mailmessage.domain.model.MessageAttachment
 import ch.protonmail.android.mailmessage.domain.model.MessageId
-import ch.protonmail.android.mailmessage.domain.model.MessageWithLabels
 import ch.protonmail.android.mailmessage.domain.model.Participant
 import ch.protonmail.android.mailmessage.domain.usecase.GetDecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.usecase.ObserveMessage
@@ -162,7 +160,7 @@ class ConversationDetailViewModel @Inject constructor(
     private val relabelConversation: RelabelConversation,
     private val observeContacts: ObserveContacts,
     private val observeConversation: ObserveConversation,
-    private val observeConversationMessages: ObserveConversationMessagesWithLabels,
+    private val observeConversationMessages: ObserveConversationMessages,
     private val observeDetailActions: ObserveConversationDetailActions,
     private val observeDestinationMailLabels: ObserveExclusiveDestinationMailLabels,
     private val observeFolderColor: ObserveFolderColorSettings,
@@ -192,8 +190,7 @@ class ConversationDetailViewModel @Inject constructor(
     private val findContactByEmail: FindContactByEmail,
     private val loadDataForMessageLabelAsBottomSheet: LoadDataForMessageLabelAsBottomSheet,
     private val onMessageLabelAsConfirmed: OnMessageLabelAsConfirmed,
-    private val moveMessage: MoveMessage,
-    private val shouldMessageBeHidden: ShouldMessageBeHidden
+    private val moveMessage: MoveMessage
 ) : ViewModel() {
 
     private val primaryUserId: Flow<UserId> = observePrimaryUserId().filterNotNull()
@@ -332,9 +329,6 @@ class ConversationDetailViewModel @Inject constructor(
                     val conversationMessages = messagesEither.getOrElse {
                         return@combine ConversationDetailEvent.ErrorLoadingMessages
                     }
-                    val messagesLabelIds = conversationMessages.messages.associate {
-                        it.message.messageId to it.message.labelIds
-                    }
                     val messagesUiModels = buildMessagesUiModels(
                         messages = conversationMessages.messages,
                         contacts = contacts,
@@ -347,14 +341,14 @@ class ConversationDetailViewModel @Inject constructor(
                             .let { messageIdUiModelMapper.toUiModel(it) }
                     if (stateIsLoading() && allCollapsed(conversationViewState.messagesState)) {
                         ConversationDetailEvent.MessagesData(
-                            messagesUiModels, messagesLabelIds, initialScrollTo, filterByLocation,
+                            messagesUiModels, emptyMap(), initialScrollTo, filterByLocation,
                             conversationViewState.shouldHideMessagesBasedOnTrashFilter
                         )
                     } else {
                         val requestScrollTo = requestScrollToMessageId(conversationViewState.messagesState)
                         ConversationDetailEvent.MessagesData(
                             messagesUiModels,
-                            messagesLabelIds,
+                            emptyMap(),
                             requestScrollTo,
                             filterByLocation,
                             conversationViewState.shouldHideMessagesBasedOnTrashFilter
@@ -377,40 +371,30 @@ class ConversationDetailViewModel @Inject constructor(
         viewState.values.all { it == InMemoryConversationStateRepository.MessageState.Collapsed }
 
     private suspend fun buildMessagesUiModels(
-        messages: NonEmptyList<MessageWithLabels>,
+        messages: NonEmptyList<Message>,
         contacts: List<Contact>,
         folderColorSettings: FolderColorSettings,
         currentViewState: InMemoryConversationStateRepository.MessagesState
     ): NonEmptyList<ConversationDetailMessageUiModel> {
-        val messagesList = messages.map { messageWithLabels ->
-            val existingMessageState = getExistingExpandedMessageUiState(messageWithLabels.message.messageId)
+        val messagesList = messages.map { message ->
+            val existingMessageState = getExistingExpandedMessageUiState(message.messageId)
 
-            if (
-                shouldMessageBeHidden(
-                    filterByLocation,
-                    messageWithLabels.message.labelIds,
-                    currentViewState.shouldHideMessagesBasedOnTrashFilter
-                )
-            ) {
-                buildHiddenMessage(messageWithLabels)
-            } else {
-                when (val viewState = currentViewState.messagesState[messageWithLabels.message.messageId]) {
-                    is InMemoryConversationStateRepository.MessageState.Expanding ->
-                        buildExpandingMessage(buildCollapsedMessage(messageWithLabels, contacts, folderColorSettings))
+            when (val viewState = currentViewState.messagesState[message.messageId]) {
+                is InMemoryConversationStateRepository.MessageState.Expanding ->
+                    buildExpandingMessage(buildCollapsedMessage(message, contacts, folderColorSettings))
 
-                    is InMemoryConversationStateRepository.MessageState.Expanded -> {
-                        buildExpandedMessage(
-                            messageWithLabels,
-                            existingMessageState,
-                            contacts,
-                            viewState.decryptedBody,
-                            folderColorSettings
-                        )
-                    }
+                is InMemoryConversationStateRepository.MessageState.Expanded -> {
+                    buildExpandedMessage(
+                        message,
+                        existingMessageState,
+                        contacts,
+                        viewState.decryptedBody,
+                        folderColorSettings
+                    )
+                }
 
-                    else -> {
-                        buildCollapsedMessage(messageWithLabels, contacts, folderColorSettings)
-                    }
+                else -> {
+                    buildCollapsedMessage(message, contacts, folderColorSettings)
                 }
             }
         }
@@ -443,15 +427,12 @@ class ConversationDetailViewModel @Inject constructor(
         return requestScrollTo
     }
 
-    private fun buildHiddenMessage(messageWithLabels: MessageWithLabels): ConversationDetailMessageUiModel.Hidden =
-        conversationMessageMapper.toUiModel(messageWithLabels)
-
     private suspend fun buildCollapsedMessage(
-        messageWithLabels: MessageWithLabels,
+        message: Message,
         contacts: List<Contact>,
         folderColorSettings: FolderColorSettings
     ): ConversationDetailMessageUiModel.Collapsed = conversationMessageMapper.toUiModel(
-        messageWithLabels,
+        message,
         contacts,
         folderColorSettings
     )
@@ -463,13 +444,13 @@ class ConversationDetailViewModel @Inject constructor(
     )
 
     private suspend fun buildExpandedMessage(
-        messageWithLabels: MessageWithLabels,
+        message: Message,
         existingMessageUiState: ConversationDetailMessageUiModel.Expanded?,
         contacts: List<Contact>,
         decryptedBody: DecryptedMessageBody,
         folderColorSettings: FolderColorSettings
     ): ConversationDetailMessageUiModel.Expanded = conversationMessageMapper.toUiModel(
-        messageWithLabels,
+        message,
         contacts,
         decryptedBody,
         folderColorSettings,
@@ -558,14 +539,13 @@ class ConversationDetailViewModel @Inject constructor(
                 Timber.e("Error while observing conversation messages")
             }.getOrElse { null }
                 ?.run {
-                    val (selectedLabels, partiallySelectedLabels) = mappedLabels.getLabelSelectionState(messages)
 
                     val event = ConversationDetailEvent.ConversationBottomSheetEvent(
                         LabelAsBottomSheetState.LabelAsBottomSheetEvent.ActionData(
                             customLabelList = mappedLabels.map { it.toCustomUiModel(color, emptyMap(), null) }
                                 .toImmutableList(),
-                            selectedLabels = selectedLabels.toImmutableList(),
-                            partiallySelectedLabels = partiallySelectedLabels.toImmutableList()
+                            selectedLabels = emptyList<LabelId>().toImmutableList(),
+                            partiallySelectedLabels = emptyList<LabelId>().toImmutableList()
                         )
                     )
                     emitNewStateFrom(event)
@@ -623,9 +603,6 @@ class ConversationDetailViewModel @Inject constructor(
     private fun onConversationLabelAsConfirmed(archiveSelected: Boolean) {
         viewModelScope.launch {
             val userId = primaryUserId.first()
-            val labels = observeCustomMailLabels(userId).first().onLeft {
-                Timber.e("Error while observing custom labels when relabeling got confirmed: $it")
-            }.getOrElse { emptyList() }
             val messagesWithLabels = observeConversationMessages(userId, conversationId).first().onLeft {
                 Timber.e("Error while observing conversation message when relabeling got confirmed: $it")
             }.getOrElse { null }
@@ -634,8 +611,6 @@ class ConversationDetailViewModel @Inject constructor(
                 Timber.e("Error while observing conversation message when relabeling got confirmed")
                 return@launch
             }
-
-            val previousSelection = labels.getLabelSelectionState(messagesWithLabels.messages)
 
             val labelAsData = mutableDetailState.value.bottomSheetState?.contentState as? LabelAsBottomSheetState.Data
                 ?: throw IllegalStateException("BottomSheetState is not LabelAsBottomSheetState.Data")
@@ -652,7 +627,7 @@ class ConversationDetailViewModel @Inject constructor(
             val operation = relabelConversation(
                 userId = userId,
                 conversationId = conversationId,
-                currentSelections = previousSelection,
+                currentSelections = LabelSelectionList(emptyList(), emptyList()),
                 updatedSelections = updatedSelections
             ).fold(
                 ifLeft = {
@@ -665,21 +640,6 @@ class ConversationDetailViewModel @Inject constructor(
         }
     }
 
-    private fun List<MailLabel.Custom>.getLabelSelectionState(messages: List<MessageWithLabels>): LabelSelectionList {
-        val previousSelectedLabels = mutableListOf<LabelId>()
-        val previousPartiallySelectedLabels = mutableListOf<LabelId>()
-        this.forEach { label ->
-            if (messages.allContainsLabel(label.id.labelId)) {
-                previousSelectedLabels.add(label.id.labelId)
-            } else if (messages.partiallyContainsLabel(label.id.labelId)) {
-                previousPartiallySelectedLabels.add(label.id.labelId)
-            }
-        }
-        return LabelSelectionList(
-            selectedLabels = previousSelectedLabels,
-            partiallySelectionLabels = previousPartiallySelectedLabels
-        )
-    }
 
     private fun LabelAsBottomSheetState.Data.getLabelSelectionState(): LabelSelectionList {
         val selectedLabels = this.labelUiModelsWithSelectedState
@@ -693,18 +653,6 @@ class ConversationDetailViewModel @Inject constructor(
             selectedLabels = selectedLabels,
             partiallySelectionLabels = partiallySelectedLabels
         )
-    }
-
-    private fun List<MessageWithLabels>.allContainsLabel(labelId: LabelId): Boolean {
-        return this.all { messageWithLabel ->
-            messageWithLabel.labels.any { it.labelId == labelId }
-        }
-    }
-
-    private fun List<MessageWithLabels>.partiallyContainsLabel(labelId: LabelId): Boolean {
-        return this.any { messageWithLabel ->
-            messageWithLabel.labels.any { it.labelId == labelId }
-        }
     }
 
     private fun showMoreActionsBottomSheetAndLoadData(
@@ -1120,8 +1068,8 @@ class ConversationDetailViewModel @Inject constructor(
  * Filters [DataError.Local] from messages flow, as we don't want to show them to the user, because the fetch is being
  *  done on the conversation flow.
  */
-private fun Flow<Either<DataError, ConversationMessagesWithLabels>>.ignoreLocalErrors():
-    Flow<Either<DataError, ConversationMessagesWithLabels>> =
+private fun Flow<Either<DataError, ConversationMessages>>.ignoreLocalErrors():
+    Flow<Either<DataError, ConversationMessages>> =
     filter { either ->
         either.fold(
             ifLeft = { error -> error !is DataError.Local },

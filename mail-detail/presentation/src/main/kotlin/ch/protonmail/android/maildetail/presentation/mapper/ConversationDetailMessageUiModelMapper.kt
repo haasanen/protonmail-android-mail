@@ -24,10 +24,9 @@ import ch.protonmail.android.mailcommon.presentation.mapper.ColorMapper
 import ch.protonmail.android.mailcommon.presentation.mapper.ExpirationTimeMapper
 import ch.protonmail.android.mailcommon.presentation.usecase.FormatShortTime
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMessageUiModel
-import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.maillabel.presentation.model.LabelUiModel
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
-import ch.protonmail.android.mailmessage.domain.model.MessageWithLabels
+import ch.protonmail.android.mailmessage.domain.model.Message
 import ch.protonmail.android.mailmessage.domain.usecase.ResolveParticipantName
 import ch.protonmail.android.mailmessage.presentation.model.MessageBodyExpandCollapseMode
 import ch.protonmail.android.mailmessage.presentation.model.MessageBodyUiModel
@@ -59,41 +58,38 @@ class ConversationDetailMessageUiModelMapper @Inject constructor(
 ) {
 
     suspend fun toUiModel(
-        messageWithLabels: MessageWithLabels,
+        message: Message,
         contacts: List<Contact>,
         folderColorSettings: FolderColorSettings
     ): ConversationDetailMessageUiModel.Collapsed {
-        val (message, labels) = messageWithLabels
         val senderResolvedName = resolveParticipantName(message.sender, contacts)
         return ConversationDetailMessageUiModel.Collapsed(
             avatar = avatarUiModelMapper(
-                message,
                 senderResolvedName = senderResolvedName.name
             ),
             expiration = message.expirationTimeOrNull()?.let(expirationTimeMapper::toUiModel),
             forwardedIcon = getForwardedIcon(isForwarded = message.isForwarded),
             hasAttachments = message.numAttachments > message.attachmentCount.calendar,
-            isStarred = SystemLabelId.Starred.labelId in message.labelIds,
+            isStarred = message.isStarred,
             isUnread = message.unread,
-            locationIcon = messageLocationUiModelMapper(message.labelIds, labels, folderColorSettings),
+            locationIcon = messageLocationUiModelMapper(emptyList(), emptyList(), folderColorSettings),
             repliedIcon = getRepliedIcon(isReplied = message.isReplied, isRepliedAll = message.isRepliedAll),
             sender = participantUiModelMapper.senderToUiModel(message.sender, contacts),
             shortTime = formatShortTime(message.time.seconds),
-            labels = toLabelUiModels(messageWithLabels.labels),
+            labels = toLabelUiModels(message.customLabels),
             messageId = messageIdUiModelMapper.toUiModel(message.messageId),
-            isDraft = message.isDraft()
+            isDraft = false
         )
     }
 
     suspend fun toUiModel(
-        messageWithLabels: MessageWithLabels,
+        message: Message,
         contacts: List<Contact>,
         decryptedMessageBody: DecryptedMessageBody,
         folderColorSettings: FolderColorSettings,
         userAddress: UserAddress,
         existingMessageUiState: ConversationDetailMessageUiModel.Expanded? = null
     ): ConversationDetailMessageUiModel.Expanded {
-        val (message, _) = messageWithLabels
         val uiModel =
             messageBodyUiModelMapper.toUiModel(
                 message.userId,
@@ -104,11 +100,11 @@ class ConversationDetailMessageUiModelMapper @Inject constructor(
             messageId = messageIdUiModelMapper.toUiModel(message.messageId),
             isUnread = message.unread,
             messageDetailHeaderUiModel = messageDetailHeaderUiModelMapper.toUiModel(
-                messageWithLabels,
+                message,
                 contacts,
                 folderColorSettings
             ),
-            messageDetailFooterUiModel = messageDetailFooterUiModelMapper.toUiModel(messageWithLabels),
+            messageDetailFooterUiModel = messageDetailFooterUiModelMapper.toUiModel(message),
             messageBannersUiModel = messageBannersUiModelMapper.createMessageBannersUiModel(message),
             requestPhishingLinkConfirmation = message.isPhishing(),
             messageBodyUiModel = uiModel,
@@ -129,15 +125,15 @@ class ConversationDetailMessageUiModelMapper @Inject constructor(
     }
 
     suspend fun toUiModel(
-        message: ConversationDetailMessageUiModel.Expanded,
-        messageWithLabels: MessageWithLabels,
+        messageUiModel: ConversationDetailMessageUiModel.Expanded,
+        message: Message,
         contacts: List<Contact>,
         folderColorSettings: FolderColorSettings
     ): ConversationDetailMessageUiModel.Expanded {
-        return message.copy(
-            isUnread = messageWithLabels.message.unread,
+        return messageUiModel.copy(
+            isUnread = message.unread,
             messageDetailHeaderUiModel = messageDetailHeaderUiModelMapper.toUiModel(
-                messageWithLabels,
+                message,
                 contacts,
                 folderColorSettings
             )
@@ -151,10 +147,10 @@ class ConversationDetailMessageUiModelMapper @Inject constructor(
         )
     }
 
-    fun toUiModel(messageWithLabels: MessageWithLabels): ConversationDetailMessageUiModel.Hidden {
+    fun toUiModel(message: Message): ConversationDetailMessageUiModel.Hidden {
         return ConversationDetailMessageUiModel.Hidden(
-            messageId = messageIdUiModelMapper.toUiModel(messageWithLabels.message.messageId),
-            isUnread = messageWithLabels.message.unread
+            messageId = messageIdUiModelMapper.toUiModel(message.messageId),
+            isUnread = message.unread
         )
     }
 

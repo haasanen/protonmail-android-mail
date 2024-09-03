@@ -42,7 +42,6 @@ import io.mockk.mockk
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import me.proton.core.domain.entity.UserId
-import me.proton.core.label.domain.entity.LabelId
 import me.proton.core.user.domain.entity.AddressId
 import org.junit.Test
 import kotlin.test.assertFalse
@@ -87,7 +86,6 @@ class DraftUploadTrackerTest {
         ),
         sampleDraft.copy(message = sampleDraft.message.copy(order = 2L)),
         sampleDraft.copy(message = sampleDraft.message.copy(flags = 1L)),
-        sampleDraft.copy(message = sampleDraft.message.copy(labelIds = listOf(LabelId("new_label")))),
         sampleDraft.copy(message = sampleDraft.message.copy(size = 150L)),
         sampleDraft.copy(message = sampleDraft.message.copy(conversationId = ConversationId("new_conversation"))),
         sampleDraft.copy(message = sampleDraft.message.copy(expirationTime = System.currentTimeMillis() + 6_000)),
@@ -207,7 +205,6 @@ class DraftUploadTrackerTest {
             time = System.currentTimeMillis(),
             size = 100,
             order = 1,
-            labelIds = emptyList(),
             subject = "Test Subject",
             unread = true,
             sender = Sender("sender@example.com", "Sender Name", false),

@@ -21,8 +21,6 @@ package ch.protonmail.android.testdata.message
 import java.time.Instant
 import java.time.temporal.ChronoUnit
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
-import ch.protonmail.android.maillabel.domain.model.MailLabelId
-import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId.AllDrafts
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId.AllMail
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId.AllScheduled
@@ -39,7 +37,6 @@ import ch.protonmail.android.testdata.user.UserIdTestData
 import ch.protonmail.android.testdata.user.UserIdTestData.userId
 import me.proton.core.domain.entity.UserId
 import me.proton.core.label.domain.entity.Label
-import me.proton.core.label.domain.entity.LabelId
 import me.proton.core.user.domain.entity.AddressId
 
 object MessageTestData {
@@ -56,37 +53,32 @@ object MessageTestData {
     val unmodifiableLabels = listOf(AllMail, AlmostAllMail, AllDrafts, AllSent, AllScheduled, Outbox, Snoozed)
 
     val message = buildMessage(
-        userId = userId, id = RAW_MESSAGE_ID, subject = RAW_SUBJECT, labelIds = listOf(SystemLabelId.Inbox.labelId.id)
+        userId = userId, id = RAW_MESSAGE_ID, subject = RAW_SUBJECT
     )
 
     val multipleRecipientsMessage = buildMessage(
         userId = userId,
         id = RAW_MESSAGE_ID,
         subject = RAW_SUBJECT,
-        labelIds = listOf(SystemLabelId.Inbox.labelId.id),
         toList = listOf(recipient1, recipient2)
     )
 
     val trashedMessage = buildMessage(
-        userId = userId, id = RAW_MESSAGE_ID, subject = RAW_SUBJECT, labelIds = listOf(SystemLabelId.Trash.labelId.id)
+        userId = userId, id = RAW_MESSAGE_ID, subject = RAW_SUBJECT
     )
 
     val trashedMessageWithCustomLabels = buildMessage(
-        userId = userId, id = RAW_MESSAGE_ID, subject = RAW_SUBJECT,
-        labelIds = listOf(
-            SystemLabelId.Trash.labelId.id, MailLabelId.Custom.Label(LabelId("Travel")).labelId.id
-        )
+        userId = userId, id = RAW_MESSAGE_ID, subject = RAW_SUBJECT
     )
 
     val spamMessage = buildMessage(
-        userId = userId, id = RAW_MESSAGE_ID, subject = RAW_SUBJECT, labelIds = listOf(SystemLabelId.Spam.labelId.id)
+        userId = userId, id = RAW_MESSAGE_ID, subject = RAW_SUBJECT
     )
 
     val spamMessageWithMultipleRecipients = buildMessage(
         userId = userId,
         id = RAW_MESSAGE_ID,
         subject = RAW_SUBJECT,
-        labelIds = listOf(SystemLabelId.Spam.labelId.id),
         toList = listOf(recipient1),
         ccList = listOf(recipient2)
     )
@@ -94,23 +86,18 @@ object MessageTestData {
     val starredMessageInArchiveWithAttachments = buildMessage(
         userId = userId,
         id = RAW_MESSAGE_ID,
-        sender = sender,
+        time = 1_667_924_198L,
         subject = RAW_SUBJECT,
-        labelIds = listOf(
-            SystemLabelId.Archive.labelId.id, SystemLabelId.AllMail.labelId.id, SystemLabelId.Starred.labelId.id
-        ),
+        sender = sender,
         numAttachments = 2,
         attachmentCount = AttachmentCount(1),
-        time = 1_667_924_198L,
         toList = listOf(recipient1, recipient2),
-        ccList = listOf(recipient3)
+        ccList = listOf(recipient3),
+        isStarred = true
     )
 
     val starredMessage = buildMessage(
-        userId = userId, id = RAW_MESSAGE_ID, subject = RAW_SUBJECT,
-        labelIds = listOf(
-            SystemLabelId.Inbox.labelId.id, SystemLabelId.Starred.labelId.id
-        )
+        userId = userId, id = RAW_MESSAGE_ID, subject = RAW_SUBJECT
     )
 
     val unStarredMessagesByConversation = listOf(
@@ -122,40 +109,31 @@ object MessageTestData {
         buildMessage(id = "123", conversationId = ConversationId("conversation")),
         buildMessage(id = "124", conversationId = ConversationId("conversation")),
         buildMessage(
-            id = "125", conversationId = ConversationId("conversation"),
-            labelIds = listOf(
-                SystemLabelId.Inbox.labelId.id, SystemLabelId.Starred.labelId.id
-            )
+            id = "125", conversationId = ConversationId("conversation")
         )
     )
 
     val starredMessagesWithPartiallySetLabels = listOf(
         buildMessage(
-            id = "123",
-            labelIds = listOf(SystemLabelId.Inbox.labelId.id, SystemLabelId.Starred.labelId.id, LabelId("11").id)
+            id = "123"
         ),
         buildMessage(
-            id = "124",
-            labelIds = listOf(SystemLabelId.Inbox.labelId.id, SystemLabelId.Starred.labelId.id, LabelId("11").id)
+            id = "124"
         ),
         buildMessage(
-            id = "125",
-            labelIds = listOf(SystemLabelId.Inbox.labelId.id, SystemLabelId.Starred.labelId.id)
+            id = "125"
         )
     )
 
     val starredMessagesWithCustomLabel = listOf(
         buildMessage(
-            id = "123",
-            labelIds = listOf(SystemLabelId.Inbox.labelId.id, SystemLabelId.Starred.labelId.id, LabelId("11").id)
+            id = "123"
         ),
         buildMessage(
-            id = "124",
-            labelIds = listOf(SystemLabelId.Inbox.labelId.id, SystemLabelId.Starred.labelId.id, LabelId("11").id)
+            id = "124"
         ),
         buildMessage(
-            id = "125",
-            labelIds = listOf(SystemLabelId.Inbox.labelId.id, SystemLabelId.Starred.labelId.id, LabelId("11").id)
+            id = "125"
         )
     )
 
@@ -165,42 +143,24 @@ object MessageTestData {
 
     val starredMessagesByConversation = listOf(
         buildMessage(
-            id = "123", conversationId = ConversationId("conversation"),
-            labelIds = listOf(
-                SystemLabelId.Inbox.labelId.id, SystemLabelId.Starred.labelId.id
-            )
+            id = "123", conversationId = ConversationId("conversation")
         ),
         buildMessage(
-            id = "124", conversationId = ConversationId("conversation"),
-            labelIds = listOf(
-                SystemLabelId.Inbox.labelId.id, SystemLabelId.Starred.labelId.id
-            )
+            id = "124", conversationId = ConversationId("conversation")
         ),
         buildMessage(
-            id = "125", conversationId = ConversationId("conversation"),
-            labelIds = listOf(
-                SystemLabelId.Inbox.labelId.id, SystemLabelId.Starred.labelId.id
-            )
+            id = "125", conversationId = ConversationId("conversation")
         )
     )
     val starredMsgByConversationWithUnStarredMsg = listOf(
         buildMessage(
-            id = "123", conversationId = ConversationId("conversation"),
-            labelIds = listOf(
-                SystemLabelId.Inbox.labelId.id, SystemLabelId.Starred.labelId.id
-            )
+            id = "123", conversationId = ConversationId("conversation")
         ),
         buildMessage(
-            id = "124", conversationId = ConversationId("conversation"),
-            labelIds = listOf(
-                SystemLabelId.Inbox.labelId.id, SystemLabelId.Starred.labelId.id
-            )
+            id = "124", conversationId = ConversationId("conversation")
         ),
         buildMessage(
-            id = "124", conversationId = ConversationId("conversation"),
-            labelIds = listOf(
-                SystemLabelId.Inbox.labelId.id
-            )
+            id = "124", conversationId = ConversationId("conversation")
         )
     )
 
@@ -217,7 +177,6 @@ object MessageTestData {
         order: Long = 1000,
         time: Long = 1000,
         size: Long = 0,
-        labelIds: List<String> = listOf(SystemLabelId.Inbox.labelId.id),
         subject: String = "subject",
         sender: Sender = Sender("address", "name"),
         numAttachments: Int = 0,
@@ -228,7 +187,8 @@ object MessageTestData {
         bccList: List<Recipient> = emptyList(),
         conversationId: ConversationId = ConversationId(id),
         flags: Long = 0,
-        customLabels: List<Label> = emptyList()
+        customLabels: List<Label> = emptyList(),
+        isStarred: Boolean = false
     ) = Message(
         userId = userId,
         messageId = MessageId(id),
@@ -236,7 +196,6 @@ object MessageTestData {
         time = time,
         size = size,
         order = order,
-        labelIds = labelIds.map { LabelId(it) },
         subject = subject,
         unread = false,
         sender = sender,
@@ -247,7 +206,7 @@ object MessageTestData {
         isReplied = false,
         isRepliedAll = false,
         isForwarded = false,
-        isStarred = labelIds.contains(SystemLabelId.Starred.labelId.id),
+        isStarred = isStarred,
         addressId = AddressId("1"),
         externalId = null,
         numAttachments = numAttachments,

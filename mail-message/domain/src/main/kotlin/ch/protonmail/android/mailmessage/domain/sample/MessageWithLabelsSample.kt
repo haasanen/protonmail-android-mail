@@ -18,7 +18,6 @@
 
 package ch.protonmail.android.mailmessage.domain.sample
 
-import ch.protonmail.android.mailcommon.domain.sample.LabelSample
 import ch.protonmail.android.mailmessage.domain.model.Message
 import ch.protonmail.android.mailmessage.domain.model.MessageWithLabels
 import me.proton.core.label.domain.entity.Label
@@ -29,65 +28,16 @@ object MessageWithLabelsSample {
         message = MessageSample.AugWeatherForecast
     )
 
-    val AugWeatherForecastWithFolder = build(
-        message = MessageSample.AugWeatherForecastFolder2021,
-        labels = listOf(LabelSample.Folder2021)
-    )
-
     val EmptyDraft = build(
         message = MessageSample.EmptyDraft
-    )
-
-    val ExpiringInvitation = build(
-        message = MessageSample.ExpiringInvitation
     )
 
     val Invoice = build(
         message = MessageSample.Invoice
     )
 
-    val UnreadInvoice = build(
-        message = MessageSample.UnreadInvoice
-    )
-
-    val LotteryScam = build(
-        message = MessageSample.LotteryScam
-    )
-
     val SepWeatherForecast = build(
         message = MessageSample.SepWeatherForecast
-    )
-
-    val InvoiceWithTwoLabels = build(
-        message = MessageSample.Invoice,
-        labels = listOf(
-            LabelSample.Document,
-            LabelSample.Label2021,
-            LabelSample.Label2022
-        )
-    )
-
-    val InvoiceWithLabel = build(
-        message = MessageSample.Invoice,
-        labels = listOf(
-            LabelSample.Document,
-            LabelSample.Label2021
-        )
-    )
-
-    val InvoiceWithoutLabels = build(
-        message = MessageSample.Invoice,
-        labels = emptyList()
-    )
-
-    val AnotherInvoiceWithoutLabels = build(
-        message = MessageSample.Invoice,
-        labels = emptyList()
-    )
-
-    val CalendarWithoutLabels = build(
-        message = MessageSample.CalendarInvite,
-        labels = emptyList()
     )
 
     fun build(message: Message = MessageSample.build(), labels: List<Label> = emptyList()) = MessageWithLabels(

@@ -16,20 +16,21 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.maildetail.presentation.usecase
+package ch.protonmail.android.maildetail.domain.usecase
 
-import ch.protonmail.android.maillabel.domain.model.SystemLabelId
-import me.proton.core.label.domain.entity.LabelId
+import arrow.core.Either
+import ch.protonmail.android.mailcommon.domain.model.ConversationId
+import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailconversation.domain.repository.ConversationRepository
+import ch.protonmail.android.mailmessage.domain.model.ConversationMessages
+import kotlinx.coroutines.flow.Flow
+import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 
-class ShouldMessageBeHidden @Inject constructor() {
+class ObserveConversationMessages @Inject constructor(
+    private val conversationRepository: ConversationRepository
+) {
 
-    operator fun invoke(
-        filterByLocation: LabelId?,
-        labelIds: List<LabelId>,
-        shouldHideMessagesBasedOnTrashFilter: Boolean
-    ) = shouldHideMessagesBasedOnTrashFilter && (
-        filterByLocation == SystemLabelId.Trash.labelId && labelIds.contains(SystemLabelId.Trash.labelId).not() ||
-            filterByLocation != SystemLabelId.Trash.labelId && labelIds.contains(SystemLabelId.Trash.labelId)
-        )
+    operator fun invoke(userId: UserId, conversationId: ConversationId): Flow<Either<DataError, ConversationMessages>> =
+        conversationRepository.observeConversationMessages(userId, conversationId)
 }

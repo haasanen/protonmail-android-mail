@@ -27,7 +27,6 @@ import ch.protonmail.android.mailcommon.datarust.mapper.LocalMimeType
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.FAKE_USER_ID
 import ch.protonmail.android.maillabel.data.mapper.toLabel
-import ch.protonmail.android.maillabel.data.mapper.toLabelId
 import ch.protonmail.android.mailmessage.data.model.LocalConversationMessages
 import ch.protonmail.android.mailmessage.domain.model.AttachmentCount
 import ch.protonmail.android.mailmessage.domain.model.ConversationMessages
@@ -60,7 +59,6 @@ fun LocalMessageMetadata.toMessage(): Message {
         time = this.time.toLong(),
         size = this.size.toLong(),
         order = this.displayOrder.toLong(),
-        labelIds = this.customLabels.map { it.id.toLabelId() },
         subject = this.subject,
         unread = this.unread,
         sender = this.sender.toParticipant(),
@@ -71,13 +69,13 @@ fun LocalMessageMetadata.toMessage(): Message {
         isReplied = this.isReplied,
         isRepliedAll = this.isRepliedAll,
         isForwarded = this.isForwarded,
+        isStarred = this.starred,
         addressId = this.addressId.toAddressId(),
+        externalId = null,
         numAttachments = this.numAttachments.toInt(),
         flags = this.flags.value.toLong(),
         attachmentCount = AttachmentCount(this.numAttachments.toInt()),
-        isStarred = this.starred,
-        externalId = null,
-        customLabels = this.customLabels.map { it.toLabel() }
+        customLabels = customLabels.map { it.toLabel() }
     )
 }
 

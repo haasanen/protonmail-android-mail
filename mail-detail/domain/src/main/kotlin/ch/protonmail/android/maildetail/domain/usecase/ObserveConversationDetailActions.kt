@@ -54,6 +54,8 @@ class ObserveConversationDetailActions @Inject constructor(
     @MissingRustApi
     @SuppressWarnings("FunctionOnlyReturningConstant")
     // Since all of the labels of a conversation are not exposed anymore, we can't run this
-    // bit of logic. Rust will expose the list of actions to show for a given conversation.
+    // bit of logic. Rust will expose the list of actions to show for a given conversation, alternatively
+    // this logic can be adapted to use `exclusiveLocation` once rust exposes it
     private fun Conversation.allMessagesAreSpamOrTrash() = false
+
 }

@@ -21,7 +21,6 @@ package ch.protonmail.android.maildetail.presentation.mapper
 import ch.protonmail.android.maildetail.presentation.model.MessageDetailFooterUiModel
 import ch.protonmail.android.maildetail.presentation.model.MessageIdUiModel
 import ch.protonmail.android.mailmessage.domain.sample.MessageSample
-import ch.protonmail.android.mailmessage.domain.sample.MessageWithLabelsSample
 import ch.protonmail.android.mailmessage.domain.sample.RecipientSample
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -33,14 +32,12 @@ internal class MessageDetailFooterUiModelMapperTest {
     @Test
     fun `should show reply all if recipients size is greater than one`() {
         // Given
-        val multipleRecipientsMessage = MessageWithLabelsSample.build(
-            MessageSample.build(
-                toList = listOf(RecipientSample.John, RecipientSample.Doe)
-            )
+        val multipleRecipientsMessage = MessageSample.build(
+            toList = listOf(RecipientSample.John, RecipientSample.Doe)
         )
 
         val expected = MessageDetailFooterUiModel(
-            messageId = MessageIdUiModel(multipleRecipientsMessage.message.messageId.id),
+            messageId = MessageIdUiModel(multipleRecipientsMessage.messageId.id),
             shouldShowReplyAll = true
         )
 
@@ -54,12 +51,10 @@ internal class MessageDetailFooterUiModelMapperTest {
     @Test
     fun `should not show reply all if recipients size is not greater than one`() {
         // Given
-        val singleRecipientMessage = MessageWithLabelsSample.build(
-            MessageSample.build(toList = listOf(RecipientSample.John))
-        )
+        val singleRecipientMessage = MessageSample.build(toList = listOf(RecipientSample.John))
 
         val expected = MessageDetailFooterUiModel(
-            messageId = MessageIdUiModel(singleRecipientMessage.message.messageId.id),
+            messageId = MessageIdUiModel(singleRecipientMessage.messageId.id),
             shouldShowReplyAll = false
         )
 

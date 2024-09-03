@@ -19,7 +19,6 @@
 package ch.protonmail.android.mailmessage.data.usecase
 
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
-import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.model.DraftState
 import ch.protonmail.android.mailmessage.domain.model.DraftSyncState
@@ -38,18 +37,15 @@ import kotlin.test.assertEquals
 class ExcludeDraftMessagesAlreadyInOutboxTest {
 
     private val userId = UserIdSample.Primary
-    private val allMailLabel = SystemLabelId.AllMail.labelId.id
-    private val draftLabel = SystemLabelId.AllDrafts.labelId.id
-    private val sentLabel = SystemLabelId.AllSent.labelId.id
     private val entities = listOf(
         MessageTestData.buildMessage(
-            id = MessageIdSample.Invoice.id, labelIds = listOf(allMailLabel, sentLabel)
+            id = MessageIdSample.Invoice.id
         ),
         MessageTestData.buildMessage(
-            id = MessageIdSample.NewDraftWithSubjectAndBody.id, labelIds = listOf(allMailLabel, draftLabel)
+            id = MessageIdSample.NewDraftWithSubjectAndBody.id
         ),
         MessageTestData.buildMessage(
-            id = MessageIdSample.SepWeatherForecast.id, labelIds = listOf(allMailLabel, sentLabel)
+            id = MessageIdSample.SepWeatherForecast.id
         )
     )
     private val outboxStateList = listOf(
@@ -117,17 +113,4 @@ class ExcludeDraftMessagesAlreadyInOutboxTest {
         coVerify(exactly = 1) { outboxRepository.observeAll(userId) }
     }
 
-    @Test
-    fun `should not filter out sent messages when they are also in outbox messages`() = runTest {
-        // Given
-        coEvery { outboxRepository.observeAll(userId) } returns
-            flowOf(outboxStateList.filter { it.state == DraftSyncState.Sent })
-
-        // When
-        val result = excludeDraftMessagesAlreadyInOutbox.invoke(userId, entities)
-
-        // Then
-        assertEquals(allMailEntityCount, result.size)
-        coVerify(exactly = 1) { outboxRepository.observeAll(userId) }
-    }
 }

@@ -19,12 +19,9 @@
 package ch.protonmail.android.mailmessage.domain.model
 
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
-import ch.protonmail.android.maillabel.domain.model.SystemLabelId
-import ch.protonmail.android.mailpagination.domain.model.PageItem
 import kotlinx.serialization.Serializable
 import me.proton.core.domain.entity.UserId
 import me.proton.core.label.domain.entity.Label
-import me.proton.core.label.domain.entity.LabelId
 import me.proton.core.user.domain.entity.AddressId
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
@@ -38,13 +35,12 @@ data class MessageId(val id: String)
  *  @see expirationTimeOrNull
  */
 data class Message(
-    override val userId: UserId,
+    val userId: UserId,
     val messageId: MessageId,
     val conversationId: ConversationId,
-    override val time: Long,
-    override val size: Long,
-    override val order: Long,
-    override val labelIds: List<LabelId>,
+    val time: Long,
+    val size: Long,
+    val order: Long,
     val subject: String,
     val unread: Boolean,
     val sender: Sender,
@@ -62,20 +58,11 @@ data class Message(
     val flags: Long,
     val attachmentCount: AttachmentCount,
     val customLabels: List<Label>
-) : PageItem {
-
-    override val id: String = messageId.id
-    override val read: Boolean by lazy { !unread }
-    override val keywords: String by lazy { subject + sender + toList + ccList + bccList }
-
+) {
     val allRecipients = toList + ccList + bccList
     val allRecipientsDeduplicated = allRecipients.toSet()
 
     fun expirationTimeOrNull(): Duration? = expirationTime.takeIf { it > 0 }?.seconds
-
-    fun isDraft() = labelIds.any { it == SystemLabelId.AllDrafts.labelId }
-
-    fun isSent() = labelIds.any { it == SystemLabelId.AllSent.labelId }
 
     fun isPhishing() = flags.and(FLAG_PHISHING_AUTO) == FLAG_PHISHING_AUTO
 

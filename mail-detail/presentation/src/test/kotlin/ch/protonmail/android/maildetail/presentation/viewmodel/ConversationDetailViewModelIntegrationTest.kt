@@ -58,7 +58,6 @@ import ch.protonmail.android.mailconversation.domain.usecase.DeleteConversations
 import ch.protonmail.android.mailconversation.domain.usecase.ObserveConversation
 import ch.protonmail.android.mailconversation.domain.usecase.StarConversations
 import ch.protonmail.android.mailconversation.domain.usecase.UnStarConversations
-import ch.protonmail.android.maildetail.domain.model.ConversationMessagesWithLabels
 import ch.protonmail.android.maildetail.domain.model.OpenAttachmentIntentValues
 import ch.protonmail.android.maildetail.domain.model.OpenProtonCalendarIntentValues.OpenIcsInProtonCalendar
 import ch.protonmail.android.maildetail.domain.model.OpenProtonCalendarIntentValues.OpenProtonCalendarOnPlayStore
@@ -73,7 +72,7 @@ import ch.protonmail.android.maildetail.domain.usecase.MarkMessageAsUnread
 import ch.protonmail.android.maildetail.domain.usecase.MoveConversation
 import ch.protonmail.android.maildetail.domain.usecase.MoveMessage
 import ch.protonmail.android.maildetail.domain.usecase.ObserveConversationDetailActions
-import ch.protonmail.android.maildetail.domain.usecase.ObserveConversationMessagesWithLabels
+import ch.protonmail.android.maildetail.domain.usecase.ObserveConversationMessages
 import ch.protonmail.android.maildetail.domain.usecase.ObserveConversationViewState
 import ch.protonmail.android.maildetail.domain.usecase.ObserveMessageAttachmentStatus
 import ch.protonmail.android.maildetail.domain.usecase.RelabelConversation
@@ -96,7 +95,6 @@ import ch.protonmail.android.maildetail.presentation.mapper.ParticipantUiModelMa
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMessageUiModel.Collapsed
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMessageUiModel.Expanded
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMessageUiModel.Expanding
-import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMessageUiModel.Hidden
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMetadataState
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailState
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction
@@ -119,7 +117,6 @@ import ch.protonmail.android.maildetail.presentation.usecase.GetEmbeddedImageAvo
 import ch.protonmail.android.maildetail.presentation.usecase.LoadDataForMessageLabelAsBottomSheet
 import ch.protonmail.android.maildetail.presentation.usecase.OnMessageLabelAsConfirmed
 import ch.protonmail.android.maildetail.presentation.usecase.PrintMessage
-import ch.protonmail.android.maildetail.presentation.usecase.ShouldMessageBeHidden
 import ch.protonmail.android.maillabel.domain.model.MailLabels
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.maillabel.domain.usecase.GetRootLabel
@@ -129,16 +126,16 @@ import ch.protonmail.android.maillabel.presentation.model.LabelSelectedState
 import ch.protonmail.android.maillabel.presentation.sample.LabelUiModelWithSelectedStateSample
 import ch.protonmail.android.maillabel.presentation.toUiModels
 import ch.protonmail.android.mailmessage.domain.model.AttachmentId
+import ch.protonmail.android.mailmessage.domain.model.ConversationMessages
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.model.GetDecryptedMessageBodyError
+import ch.protonmail.android.mailmessage.domain.model.Message
 import ch.protonmail.android.mailmessage.domain.model.MessageAttachment
 import ch.protonmail.android.mailmessage.domain.model.MessageId
-import ch.protonmail.android.mailmessage.domain.model.MessageWithLabels
 import ch.protonmail.android.mailmessage.domain.model.MimeType
 import ch.protonmail.android.mailmessage.domain.sample.MessageAttachmentSample
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
 import ch.protonmail.android.mailmessage.domain.sample.MessageSample
-import ch.protonmail.android.mailmessage.domain.sample.MessageWithLabelsSample
 import ch.protonmail.android.mailmessage.domain.usecase.GetDecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.usecase.GetEmbeddedImageResult
 import ch.protonmail.android.mailmessage.domain.usecase.ObserveMessage
@@ -223,14 +220,14 @@ class ConversationDetailViewModelIntegrationTest {
             flowOf(ConversationSample.WeatherForecast.right())
     }
     private val observeMessage = mockk<ObserveMessage>()
-    private val observeConversationMessagesWithLabels: ObserveConversationMessagesWithLabels = mockk {
+    private val observeConversationMessages: ObserveConversationMessages = mockk {
         every { this@mockk(UserIdSample.Primary, ConversationIdSample.WeatherForecast) } returns flowOf(
-            ConversationMessagesWithLabels(
+            ConversationMessages(
                 messages = nonEmptyListOf(
-                    MessageWithLabelsSample.InvoiceWithLabel,
-                    MessageWithLabelsSample.InvoiceWithTwoLabels
+                    MessageSample.Invoice,
+                    MessageSample.UnreadInvoice
                 ),
-                messageIdToOpen = MessageWithLabelsSample.InvoiceWithLabel.message.messageId
+                messageIdToOpen = MessageSample.Invoice.messageId
             ).right()
         )
     }
@@ -335,7 +332,6 @@ class ConversationDetailViewModelIntegrationTest {
     private val onMessageLabelAsConfirmed = OnMessageLabelAsConfirmed(
         moveMessage, relabelMessage
     )
-    private val shouldMessageBeHidden = ShouldMessageBeHidden()
     // endregion
 
     // region mappers
@@ -704,32 +700,29 @@ class ConversationDetailViewModelIntegrationTest {
     @Test
     fun `should emit mapped messages as they're emitted`() = runTest {
         // Given
-        val initialMessage = MessageWithLabelsSample.AugWeatherForecast
-        val updatedMessage = initialMessage.copy(
-            message = initialMessage.message.copy(unread = true),
-            labels = listOf(LabelSample.Label2021)
-        )
-        val updatedConversationWithLabels = ConversationMessagesWithLabels(
+        val initialMessage = MessageSample.AugWeatherForecast.copy(customLabels = listOf(LabelSample.Label2021))
+        val updatedMessage = initialMessage.copy(unread = true)
+        val updatedConversationWithLabels = ConversationMessages(
             messages = nonEmptyListOf(updatedMessage),
-            messageIdToOpen = updatedMessage.message.messageId
+            messageIdToOpen = updatedMessage.messageId
         )
 
         val conversationWithLabelsFlow = MutableStateFlow(
-            ConversationMessagesWithLabels(
+            ConversationMessages(
                 messages = nonEmptyListOf(initialMessage),
-                messageIdToOpen = initialMessage.message.messageId
+                messageIdToOpen = initialMessage.messageId
             ).right()
         )
-        val observeConversationMessagesMock = mockk<ObserveConversationMessagesWithLabels> {
-            every { this@mockk(userId, initialMessage.message.conversationId) } returns conversationWithLabelsFlow
+        val observeConversationMessagesMock = mockk<ObserveConversationMessages> {
+            every { this@mockk(userId, initialMessage.conversationId) } returns conversationWithLabelsFlow
         }
 
-        fun assertCorrectMessagesEmitted(actual: ConversationDetailsMessagesState.Data, expected: MessageWithLabels) {
+        fun assertCorrectMessagesEmitted(actual: ConversationDetailsMessagesState.Data, expected: Message) {
             assertEquals(1, actual.messages.size)
             with(actual.messages.first() as Collapsed) {
-                assertEquals(expected.message.messageId.id, messageId.id)
-                assertEquals(expected.message.unread, isUnread)
-                assertEquals(expected.labels.size, labels.size)
+                assertEquals(expected.messageId.id, messageId.id)
+                assertEquals(expected.unread, isUnread)
+                assertEquals(expected.customLabels.size, labels.size)
             }
         }
 
@@ -765,73 +758,18 @@ class ConversationDetailViewModelIntegrationTest {
     }
 
     @Test
-    fun `should emit mapped header as folder color is emitted`() = runTest {
-        // Given
-        val message = MessageWithLabelsSample.AugWeatherForecastWithFolder
-
-        val conversationWithLabelsFlow = MutableStateFlow(
-            ConversationMessagesWithLabels(
-                nonEmptyListOf(message),
-                message.message.messageId
-            ).right()
-        )
-        val observeConversationMessagesMock = mockk<ObserveConversationMessagesWithLabels> {
-            every { this@mockk(userId, message.message.conversationId) } returns conversationWithLabelsFlow
-        }
-        val folderColorSettingsFlow = MutableStateFlow(defaultFolderColorSettings)
-        val observeFolderColorSettingsMock = mockk<ObserveFolderColorSettings> {
-            every { this@mockk(userId) } returns folderColorSettingsFlow
-        }
-
-        fun assertCorrectFolderColor(actual: ConversationDetailsMessagesState.Data, expected: FolderColorSettings) {
-            assertEquals(1, actual.messages.size)
-            with(actual.messages.first() as Collapsed) {
-                when {
-                    expected.useFolderColor -> assertNotNull(this.locationIcon.color)
-                    else -> assertNull(this.locationIcon.color)
-                }
-            }
-        }
-
-        // When
-        buildConversationDetailViewModel(
-            observeConversationMessages = observeConversationMessagesMock,
-            observeFolderColor = observeFolderColorSettingsMock
-        ).state.test {
-            // The initial states
-            skipItems(3)
-
-            // Then
-            // The initial expanded message
-            val actualFirstMessagesState = awaitItem().messagesState as ConversationDetailsMessagesState.Data
-            assertCorrectFolderColor(actualFirstMessagesState, expected = defaultFolderColorSettings)
-
-            // When
-            // Emit updated message
-            val updatedFolderColorSettings = FolderColorSettings(useFolderColor = false)
-            folderColorSettingsFlow.emit(updatedFolderColorSettings)
-
-            // Then
-            val actualUpdatedMessagesState = awaitItem().messagesState as ConversationDetailsMessagesState.Data
-            assertCorrectFolderColor(actualUpdatedMessagesState, expected = updatedFolderColorSettings)
-
-            cancelAndIgnoreRemainingEvents()
-        }
-    }
-
-    @Test
     fun `should emit first non draft message as Collapsed`() = runTest {
         // given
-        val expectedCollapsed = MessageWithLabelsSample.AugWeatherForecast
-        val messages = ConversationMessagesWithLabels(
+        val expectedCollapsed = MessageSample.AugWeatherForecast
+        val messages = ConversationMessages(
             nonEmptyListOf(
                 expectedCollapsed,
-                MessageWithLabelsSample.InvoiceWithLabel,
-                MessageWithLabelsSample.EmptyDraft
+                MessageSample.Invoice,
+                MessageSample.EmptyDraft
             ),
-            expectedCollapsed.message.messageId
+            expectedCollapsed.messageId
         )
-        coEvery { observeConversationMessagesWithLabels(userId, any()) } returns flowOf(messages.right())
+        coEvery { observeConversationMessages(userId, any()) } returns flowOf(messages.right())
 
         // When
         buildConversationDetailViewModel().state.test {
@@ -841,7 +779,7 @@ class ConversationDetailViewModelIntegrationTest {
             val collapsedState = awaitItem()
             val collapsedMessage = (collapsedState.messagesState as ConversationDetailsMessagesState.Data)
                 .messages
-                .first { it.messageId.id == expectedCollapsed.message.messageId.id }
+                .first { it.messageId.id == expectedCollapsed.messageId.id }
             assertIs<Collapsed>(collapsedMessage)
 
             cancelAndIgnoreRemainingEvents()
@@ -851,17 +789,17 @@ class ConversationDetailViewModelIntegrationTest {
     @Test
     fun `should emit scroll to message id only on start but not when expanding a second message`() = runTest {
         // given
-        val expectedScrolledTo = MessageWithLabelsSample.AugWeatherForecast
-        val expectedExpandedNotScrolled = MessageWithLabelsSample.InvoiceWithLabel
-        val messages = ConversationMessagesWithLabels(
+        val expectedScrolledTo = MessageSample.AugWeatherForecast
+        val expectedExpandedNotScrolled = MessageSample.Invoice
+        val messages = ConversationMessages(
             nonEmptyListOf(
                 expectedScrolledTo,
                 expectedExpandedNotScrolled,
-                MessageWithLabelsSample.EmptyDraft
+                MessageSample.EmptyDraft
             ),
-            expectedScrolledTo.message.messageId
+            expectedScrolledTo.messageId
         )
-        coEvery { observeConversationMessagesWithLabels(userId, any()) } returns flowOf(messages.right())
+        coEvery { observeConversationMessages(userId, any()) } returns flowOf(messages.right())
 
         // When
         val viewModel = buildConversationDetailViewModel()
@@ -871,9 +809,9 @@ class ConversationDetailViewModelIntegrationTest {
             var conversationState: ConversationDetailState = awaitItem()
             val collapsedMessage = (conversationState.messagesState as ConversationDetailsMessagesState.Data)
                 .messages
-                .first { it.messageId.id == expectedScrolledTo.message.messageId.id }
+                .first { it.messageId.id == expectedScrolledTo.messageId.id }
             assertIs<Collapsed>(collapsedMessage)
-            assertTrue { conversationState.scrollToMessage?.id == expectedScrolledTo.message.messageId.id }
+            assertTrue { conversationState.scrollToMessage?.id == expectedScrolledTo.messageId.id }
 
             // when
             // scroll request completed, clear scroll msg id in state
@@ -887,7 +825,7 @@ class ConversationDetailViewModelIntegrationTest {
             viewModel.submit(
                 ExpandMessage(
                     messageIdUiModelMapper.toUiModel(
-                        MessageWithLabelsSample.InvoiceWithLabel.message.messageId
+                        MessageSample.Invoice.messageId
                     )
                 )
             )
@@ -896,7 +834,7 @@ class ConversationDetailViewModelIntegrationTest {
             conversationState = awaitItem()
             val expandMessage = (conversationState.messagesState as ConversationDetailsMessagesState.Data)
                 .messages
-                .first { it.messageId.id == expectedExpandedNotScrolled.message.messageId.id }
+                .first { it.messageId.id == expectedExpandedNotScrolled.messageId.id }
             assertIs<Expanded>(expandMessage)
             // If there is only one expanded message that item  is scrolled to
             // (according to View Model requestScrollToMessageId)
@@ -909,22 +847,22 @@ class ConversationDetailViewModelIntegrationTest {
     @Test
     fun `should emit expanding and expanded states when expanding a message`() = runTest {
         // given
-        val defaultExpanded = MessageWithLabelsSample.AugWeatherForecast
-        val expectedExpanded = MessageWithLabelsSample.InvoiceWithLabel
-        val messages = ConversationMessagesWithLabels(
+        val defaultExpanded = MessageSample.AugWeatherForecast
+        val expectedExpanded = MessageSample.Invoice
+        val messages = ConversationMessages(
             nonEmptyListOf(
                 defaultExpanded,
                 expectedExpanded
             ),
-            defaultExpanded.message.messageId
+            defaultExpanded.messageId
         )
-        coEvery { observeConversationMessagesWithLabels(userId, any()) } returns flowOf(messages.right())
+        coEvery { observeConversationMessages(userId, any()) } returns flowOf(messages.right())
         coEvery { getDecryptedMessageBody.invoke(any(), any()) } coAnswers {
             // Add a delay, so we're able to receive the `Expanding` state.
             // Without it, we'd only get the final `Expanded` state.
             delay(1)
             DecryptedMessageBody(
-                messageId = defaultExpanded.message.messageId,
+                messageId = defaultExpanded.messageId,
                 value = "",
                 mimeType = MimeType.Html,
                 userAddress = UserAddressSample.PrimaryAddress
@@ -934,7 +872,7 @@ class ConversationDetailViewModelIntegrationTest {
         val viewModel = buildConversationDetailViewModel()
 
         // when
-        viewModel.submit(ExpandMessage(messageIdUiModelMapper.toUiModel(expectedExpanded.message.messageId)))
+        viewModel.submit(ExpandMessage(messageIdUiModelMapper.toUiModel(expectedExpanded.messageId)))
 
         viewModel.state.test {
             skipItems(3)
@@ -943,14 +881,14 @@ class ConversationDetailViewModelIntegrationTest {
             val expandingState = awaitItem()
             val expandingMessage = (expandingState.messagesState as ConversationDetailsMessagesState.Data)
                 .messages
-                .first { it.messageId.id == expectedExpanded.message.messageId.id }
+                .first { it.messageId.id == expectedExpanded.messageId.id }
             assertIs<Expanding>(expandingMessage)
 
             val expandedState = awaitItem()
             println(expandedState)
             val expandedMessage = (expandedState.messagesState as ConversationDetailsMessagesState.Data)
                 .messages
-                .first { it.messageId.id == expectedExpanded.message.messageId.id }
+                .first { it.messageId.id == expectedExpanded.messageId.id }
             assertIs<Expanded>(expandedMessage)
             cancelAndIgnoreRemainingEvents()
         }
@@ -959,15 +897,15 @@ class ConversationDetailViewModelIntegrationTest {
     @Test
     fun `should emit collapsed message when collapsing it`() = runTest {
         // given
-        val defaultExpanded = MessageWithLabelsSample.AugWeatherForecast
-        val messages = ConversationMessagesWithLabels(
+        val defaultExpanded = MessageSample.AugWeatherForecast
+        val messages = ConversationMessages(
             nonEmptyListOf(
                 defaultExpanded,
-                MessageWithLabelsSample.InvoiceWithLabel
+                MessageSample.Invoice
             ),
-            defaultExpanded.message.messageId
+            defaultExpanded.messageId
         )
-        coEvery { observeConversationMessagesWithLabels(userId, any()) } returns flowOf(messages.right())
+        coEvery { observeConversationMessages(userId, any()) } returns flowOf(messages.right())
 
         val viewModel = buildConversationDetailViewModel()
 
@@ -977,7 +915,7 @@ class ConversationDetailViewModelIntegrationTest {
             // when
             viewModel.submit(
                 ConversationDetailViewAction.CollapseMessage(
-                    messageIdUiModelMapper.toUiModel(defaultExpanded.message.messageId)
+                    messageIdUiModelMapper.toUiModel(defaultExpanded.messageId)
                 )
             )
 
@@ -985,7 +923,7 @@ class ConversationDetailViewModelIntegrationTest {
             val collapsedState = awaitItem()
             val collapsedMessage = (collapsedState.messagesState as ConversationDetailsMessagesState.Data)
                 .messages
-                .first { it.messageId.id == defaultExpanded.message.messageId.id }
+                .first { it.messageId.id == defaultExpanded.messageId.id }
             assertIs<Collapsed>(collapsedMessage)
 
             cancelAndIgnoreRemainingEvents()
@@ -995,25 +933,25 @@ class ConversationDetailViewModelIntegrationTest {
     @Test
     fun `should emit scroll to message id when requested`() = runTest {
         // given
-        val defaultExpanded = MessageWithLabelsSample.AugWeatherForecast
-        val messages = ConversationMessagesWithLabels(
+        val defaultExpanded = MessageSample.AugWeatherForecast
+        val messages = ConversationMessages(
             nonEmptyListOf(
                 defaultExpanded,
-                MessageWithLabelsSample.InvoiceWithLabel
+                MessageSample.Invoice
             ),
-            defaultExpanded.message.messageId
+            defaultExpanded.messageId
         )
-        coEvery { observeConversationMessagesWithLabels(userId, any()) } returns flowOf(messages.right())
+        coEvery { observeConversationMessages(userId, any()) } returns flowOf(messages.right())
 
         val viewModel = buildConversationDetailViewModel()
 
         viewModel.state.test {
             skipItems(3)
             // when
-            viewModel.submit(RequestScrollTo(messageIdUiModelMapper.toUiModel(defaultExpanded.message.messageId)))
+            viewModel.submit(RequestScrollTo(messageIdUiModelMapper.toUiModel(defaultExpanded.messageId)))
 
             // then
-            assertEquals(defaultExpanded.message.id, awaitItem().scrollToMessage?.id)
+            assertEquals(defaultExpanded.messageId.id, awaitItem().scrollToMessage?.id)
             cancelAndIgnoreRemainingEvents()
         }
     }
@@ -1022,19 +960,19 @@ class ConversationDetailViewModelIntegrationTest {
     fun `should emit show all attachment when view action is triggered`() = runTest {
         // given
         val expectedAttachmentCount = 5
-        val defaultExpanded = MessageWithLabelsSample.AugWeatherForecast
-        val expectedExpanded = MessageWithLabelsSample.InvoiceWithLabel
-        val messages = ConversationMessagesWithLabels(
+        val defaultExpanded = MessageSample.AugWeatherForecast
+        val expectedExpanded = MessageSample.Invoice
+        val messages = ConversationMessages(
             nonEmptyListOf(
                 defaultExpanded,
                 expectedExpanded
             ),
-            defaultExpanded.message.messageId
+            defaultExpanded.messageId
         )
-        coEvery { observeConversationMessagesWithLabels(userId, any()) } returns flowOf(messages.right())
-        coEvery { getDecryptedMessageBody.invoke(any(), expectedExpanded.message.messageId) } returns
+        coEvery { observeConversationMessages(userId, any()) } returns flowOf(messages.right())
+        coEvery { getDecryptedMessageBody.invoke(any(), expectedExpanded.messageId) } returns
             DecryptedMessageBody(
-                messageId = expectedExpanded.message.messageId,
+                messageId = expectedExpanded.messageId,
                 value = "",
                 mimeType = MimeType.Html,
                 attachments = (0 until expectedAttachmentCount).map {
@@ -1048,14 +986,14 @@ class ConversationDetailViewModelIntegrationTest {
 
         viewModel.state.test {
             skipItems(4)
-            viewModel.submit(ExpandMessage(messageIdUiModelMapper.toUiModel(expectedExpanded.message.messageId)))
+            viewModel.submit(ExpandMessage(messageIdUiModelMapper.toUiModel(expectedExpanded.messageId)))
             advanceUntilIdle()
 
             // When
             viewModel.submit(
                 ShowAllAttachmentsForMessage(
                     messageIdUiModelMapper.toUiModel(
-                        expectedExpanded.message.messageId
+                        expectedExpanded.messageId
                     )
                 )
             )
@@ -1065,7 +1003,7 @@ class ConversationDetailViewModelIntegrationTest {
             // Then
             val messagesState = (newItem.messagesState as ConversationDetailsMessagesState.Data).messages
             val expandedInvoice =
-                messagesState.first { it.messageId.id == expectedExpanded.message.messageId.id } as Expanded
+                messagesState.first { it.messageId.id == expectedExpanded.messageId.id } as Expanded
             assertEquals(expectedAttachmentCount, expandedInvoice.messageBodyUiModel.attachments!!.attachments.size)
             cancelAndIgnoreRemainingEvents()
         }
@@ -1075,17 +1013,17 @@ class ConversationDetailViewModelIntegrationTest {
     fun `verify get attachment is called when attachment is clicked`() = runTest {
         // given
         val expectedAttachmentCount = 5
-        val defaultExpanded = MessageWithLabelsSample.AugWeatherForecast
-        val expectedExpanded = MessageWithLabelsSample.InvoiceWithLabel
-        val messages = ConversationMessagesWithLabels(
+        val defaultExpanded = MessageSample.AugWeatherForecast
+        val expectedExpanded = MessageSample.Invoice
+        val messages = ConversationMessages(
             nonEmptyListOf(
                 defaultExpanded,
                 expectedExpanded
             ),
-            defaultExpanded.message.messageId
+            defaultExpanded.messageId
         )
-        val expandedMessageId = expectedExpanded.message.messageId
-        coEvery { observeConversationMessagesWithLabels(userId, any()) } returns flowOf(messages.right())
+        val expandedMessageId = expectedExpanded.messageId
+        coEvery { observeConversationMessages(userId, any()) } returns flowOf(messages.right())
         coEvery { getDecryptedMessageBody.invoke(any(), expandedMessageId) } returns
             DecryptedMessageBody(
                 messageId = expandedMessageId,
@@ -1100,7 +1038,7 @@ class ConversationDetailViewModelIntegrationTest {
         coEvery {
             getDownloadingAttachmentsForMessages(
                 userId,
-                listOf(defaultExpanded.message.messageId, expandedMessageId)
+                listOf(defaultExpanded.messageId, expandedMessageId)
             )
         } returns listOf()
         coEvery {
@@ -1111,19 +1049,19 @@ class ConversationDetailViewModelIntegrationTest {
 
         viewModel.state.test {
             skipItems(4)
-            viewModel.submit(ExpandMessage(messageIdUiModelMapper.toUiModel(expectedExpanded.message.messageId)))
+            viewModel.submit(ExpandMessage(messageIdUiModelMapper.toUiModel(expectedExpanded.messageId)))
 
             // When
             viewModel.submit(
                 OnAttachmentClicked(
-                    messageIdUiModelMapper.toUiModel(expectedExpanded.message.messageId),
+                    messageIdUiModelMapper.toUiModel(expectedExpanded.messageId),
                     AttachmentId(0.toString())
                 )
             )
             awaitItem()
 
             // Then
-            val expectedMessageId = expectedExpanded.message.messageId
+            val expectedMessageId = expectedExpanded.messageId
 
             coVerify { getAttachmentIntentValues(userId, expectedMessageId, AttachmentId(0.toString())) }
             cancelAndIgnoreRemainingEvents()
@@ -1135,17 +1073,17 @@ class ConversationDetailViewModelIntegrationTest {
         runTest {
             // given
             val expectedAttachmentCount = 5
-            val defaultExpanded = MessageWithLabelsSample.AugWeatherForecast
-            val expectedExpanded = MessageWithLabelsSample.InvoiceWithLabel
-            val messages = ConversationMessagesWithLabels(
+            val defaultExpanded = MessageSample.AugWeatherForecast
+            val expectedExpanded = MessageSample.Invoice
+            val messages = ConversationMessages(
                 nonEmptyListOf(
                     defaultExpanded,
                     expectedExpanded
                 ),
-                defaultExpanded.message.messageId
+                defaultExpanded.messageId
             )
-            val expandedMessageId = expectedExpanded.message.messageId
-            coEvery { observeConversationMessagesWithLabels(userId, any()) } returns flowOf(messages.right())
+            val expandedMessageId = expectedExpanded.messageId
+            coEvery { observeConversationMessages(userId, any()) } returns flowOf(messages.right())
             coEvery { getDecryptedMessageBody.invoke(any(), expandedMessageId) } returns
                 DecryptedMessageBody(
                     messageId = expandedMessageId,
@@ -1160,7 +1098,7 @@ class ConversationDetailViewModelIntegrationTest {
             coEvery {
                 getDownloadingAttachmentsForMessages(
                     userId,
-                    listOf(defaultExpanded.message.messageId, expandedMessageId)
+                    listOf(defaultExpanded.messageId, expandedMessageId)
                 )
             } returns listOf(MessageAttachmentMetadataTestData.buildMessageAttachmentMetadata())
 
@@ -1168,12 +1106,12 @@ class ConversationDetailViewModelIntegrationTest {
 
             viewModel.state.test {
                 skipItems(4)
-                viewModel.submit(ExpandMessage(messageIdUiModelMapper.toUiModel(expectedExpanded.message.messageId)))
+                viewModel.submit(ExpandMessage(messageIdUiModelMapper.toUiModel(expectedExpanded.messageId)))
                 skipItems(1)
                 // When
                 viewModel.submit(
                     OnAttachmentClicked(
-                        messageIdUiModelMapper.toUiModel(expectedExpanded.message.messageId),
+                        messageIdUiModelMapper.toUiModel(expectedExpanded.messageId),
                         AttachmentId(0.toString())
                     )
                 )
@@ -1190,13 +1128,13 @@ class ConversationDetailViewModelIntegrationTest {
     fun `verify error is shown when getting attachment failed`() = runTest {
         // given
         val expectedAttachmentCount = Random().nextInt(100)
-        val defaultExpanded = MessageWithLabelsSample.AugWeatherForecast
-        val expectedExpanded = MessageWithLabelsSample.InvoiceWithLabel
+        val defaultExpanded = MessageSample.AugWeatherForecast
+        val expectedExpanded = MessageSample.Invoice
         val messages = nonEmptyListOf(
             defaultExpanded,
             expectedExpanded
         )
-        val expandedMessageId = expectedExpanded.message.messageId
+        val expandedMessageId = expectedExpanded.messageId
         mockAttachmentDownload(
             messages = messages,
             expandedMessageId = expandedMessageId,
@@ -1209,20 +1147,20 @@ class ConversationDetailViewModelIntegrationTest {
 
         viewModel.state.test {
             skipItems(4)
-            viewModel.submit(ExpandMessage(messageIdUiModelMapper.toUiModel(expectedExpanded.message.messageId)))
+            viewModel.submit(ExpandMessage(messageIdUiModelMapper.toUiModel(expectedExpanded.messageId)))
             skipItems(1)
 
             // When
             viewModel.submit(
                 OnAttachmentClicked(
-                    messageIdUiModelMapper.toUiModel(expectedExpanded.message.messageId),
+                    messageIdUiModelMapper.toUiModel(expectedExpanded.messageId),
                     AttachmentId(0.toString())
                 )
             )
             val actualState = awaitItem()
 
             // Then
-            val expectedMessageId = expectedExpanded.message.messageId
+            val expectedMessageId = expectedExpanded.messageId
 
             coVerify { getAttachmentIntentValues(userId, expectedMessageId, AttachmentId(0.toString())) }
             assertEquals(Effect.of(TextUiModel(R.string.error_get_attachment_failed)), actualState.error)
@@ -1235,13 +1173,13 @@ class ConversationDetailViewModelIntegrationTest {
         runTest {
             // given
             val expectedAttachmentCount = Random().nextInt(100)
-            val defaultExpanded = MessageWithLabelsSample.AugWeatherForecast
-            val expectedExpanded = MessageWithLabelsSample.InvoiceWithLabel
+            val defaultExpanded = MessageSample.AugWeatherForecast
+            val expectedExpanded = MessageSample.Invoice
             val messages = nonEmptyListOf(
                 defaultExpanded,
                 expectedExpanded
             )
-            val expandedMessageId = expectedExpanded.message.messageId
+            val expandedMessageId = expectedExpanded.messageId
             mockAttachmentDownload(
                 messages = messages,
                 expandedMessageId = expandedMessageId,
@@ -1254,20 +1192,20 @@ class ConversationDetailViewModelIntegrationTest {
 
             viewModel.state.test {
                 skipItems(4)
-                viewModel.submit(ExpandMessage(messageIdUiModelMapper.toUiModel(expectedExpanded.message.messageId)))
+                viewModel.submit(ExpandMessage(messageIdUiModelMapper.toUiModel(expectedExpanded.messageId)))
                 skipItems(1)
 
                 // When
                 viewModel.submit(
                     OnAttachmentClicked(
-                        messageIdUiModelMapper.toUiModel(expectedExpanded.message.messageId),
+                        messageIdUiModelMapper.toUiModel(expectedExpanded.messageId),
                         AttachmentId(0.toString())
                     )
                 )
                 val actualState = awaitItem()
 
                 // Then
-                val expectedMessageId = expectedExpanded.message.messageId
+                val expectedMessageId = expectedExpanded.messageId
 
                 coVerify { getAttachmentIntentValues(userId, expectedMessageId, AttachmentId(0.toString())) }
                 assertEquals(Effect.of(TextUiModel(R.string.error_get_attachment_not_enough_memory)), actualState.error)
@@ -1372,18 +1310,18 @@ class ConversationDetailViewModelIntegrationTest {
     @Test
     fun `should initially scroll to the message id assigned by the navigator in search mode`() = runTest {
         // given
-        val searchedItem = MessageWithLabelsSample.AugWeatherForecast
-        val messages = ConversationMessagesWithLabels(
+        val searchedItem = MessageSample.AugWeatherForecast
+        val messages = ConversationMessages(
             nonEmptyListOf(
-                MessageWithLabelsSample.SepWeatherForecast,
+                MessageSample.SepWeatherForecast,
                 searchedItem,
-                MessageWithLabelsSample.InvoiceWithLabel
+                MessageSample.Invoice
             ),
-            searchedItem.message.messageId
+            searchedItem.messageId
         )
-        coEvery { observeConversationMessagesWithLabels(userId, any()) } returns flowOf(messages.right())
+        coEvery { observeConversationMessages(userId, any()) } returns flowOf(messages.right())
         coEvery { savedStateHandle.get<String>(ConversationDetailScreen.ScrollToMessageIdKey) } returns
-            searchedItem.message.messageId.id
+            searchedItem.messageId.id
 
         // When
         val viewModel = buildConversationDetailViewModel()
@@ -1392,21 +1330,21 @@ class ConversationDetailViewModelIntegrationTest {
 
             // then
             val conversationState: ConversationDetailState = awaitItem()
-            assertEquals(searchedItem.message.messageId.id, conversationState.scrollToMessage?.id)
+            assertEquals(searchedItem.messageId.id, conversationState.scrollToMessage?.id)
 
             cancelAndIgnoreRemainingEvents()
         }
     }
 
     private fun mockAttachmentDownload(
-        messages: NonEmptyList<MessageWithLabels>,
+        messages: NonEmptyList<Message>,
         expandedMessageId: MessageId,
         expectedAttachmentCount: Int,
-        defaultExpanded: MessageWithLabels,
+        defaultExpanded: Message,
         expectedError: DataError.Local
     ) {
-        coEvery { observeConversationMessagesWithLabels(userId, any()) } returns flowOf(
-            ConversationMessagesWithLabels(messages, expandedMessageId).right()
+        coEvery { observeConversationMessages(userId, any()) } returns flowOf(
+            ConversationMessages(messages, expandedMessageId).right()
         )
         coEvery { getDecryptedMessageBody.invoke(any(), expandedMessageId) } returns
             DecryptedMessageBody(
@@ -1422,7 +1360,7 @@ class ConversationDetailViewModelIntegrationTest {
         coEvery {
             getDownloadingAttachmentsForMessages(
                 userId,
-                listOf(defaultExpanded.message.messageId, expandedMessageId)
+                listOf(defaultExpanded.messageId, expandedMessageId)
             )
         } returns listOf()
         coEvery {
@@ -1433,20 +1371,20 @@ class ConversationDetailViewModelIntegrationTest {
     @Test
     fun `Should emit expanding and then collapse state if the message is not decrypted`() = runTest {
         // Given
-        val defaultExpanded = MessageWithLabelsSample.AugWeatherForecast
-        val messages = ConversationMessagesWithLabels(
+        val defaultExpanded = MessageSample.AugWeatherForecast
+        val messages = ConversationMessages(
             nonEmptyListOf(
                 defaultExpanded,
-                MessageWithLabelsSample.EmptyDraft
+                MessageSample.EmptyDraft
             ),
-            defaultExpanded.message.messageId
+            defaultExpanded.messageId
         )
-        coEvery { observeConversationMessagesWithLabels(userId, any()) } returns flowOf(messages.right())
+        coEvery { observeConversationMessages(userId, any()) } returns flowOf(messages.right())
         coEvery { getDecryptedMessageBody.invoke(any(), any()) } coAnswers {
             // Add a delay, so we're able to receive the `Expanding` state.
             // Without it, we'd only get the final `Expanded` state.
             delay(1)
-            GetDecryptedMessageBodyError.Decryption(defaultExpanded.message.messageId, "").left()
+            GetDecryptedMessageBodyError.Decryption(defaultExpanded.messageId, "").left()
         }
 
         val viewModel = buildConversationDetailViewModel()
@@ -1459,23 +1397,23 @@ class ConversationDetailViewModelIntegrationTest {
             // Then
             var message = (initialCollapsedState.messagesState as ConversationDetailsMessagesState.Data)
                 .messages
-                .first { it.messageId.id == defaultExpanded.message.messageId.id }
+                .first { it.messageId.id == defaultExpanded.messageId.id }
             assertIs<Collapsed>(message)
 
             // When
-            viewModel.submit(ExpandMessage(messageIdUiModelMapper.toUiModel(defaultExpanded.message.messageId)))
+            viewModel.submit(ExpandMessage(messageIdUiModelMapper.toUiModel(defaultExpanded.messageId)))
             val expandingState = awaitItem()
 
             // Then
             message = (expandingState.messagesState as ConversationDetailsMessagesState.Data)
                 .messages
-                .first { it.messageId.id == defaultExpanded.message.messageId.id }
+                .first { it.messageId.id == defaultExpanded.messageId.id }
             assertIs<Expanding>(message)
 
             val collapsedState = awaitItem()
             message = (collapsedState.messagesState as ConversationDetailsMessagesState.Data)
                 .messages
-                .first { it.messageId.id == defaultExpanded.message.messageId.id }
+                .first { it.messageId.id == defaultExpanded.messageId.id }
             assertIs<Collapsed>(message)
 
             cancelAndIgnoreRemainingEvents()
@@ -1615,11 +1553,11 @@ class ConversationDetailViewModelIntegrationTest {
         runTest {
             // Given
             val expectedUri = mockk<Uri>()
-            val message = MessageWithLabelsSample.CalendarWithoutLabels
-            val messages = ConversationMessagesWithLabels(nonEmptyListOf(message), message.message.messageId)
+            val message = MessageSample.CalendarInvite
+            val messages = ConversationMessages(nonEmptyListOf(message), message.messageId)
 
-            val messageId = message.message.messageId
-            coEvery { observeConversationMessagesWithLabels(userId, any()) } returns flowOf(messages.right())
+            val messageId = message.messageId
+            coEvery { observeConversationMessages(userId, any()) } returns flowOf(messages.right())
             coEvery { getDecryptedMessageBody.invoke(userId, messageId) } returns DecryptedMessageBody(
                 messageId = messageId,
                 value = EmailBodyTestSamples.BodyWithoutQuotes,
@@ -1649,7 +1587,7 @@ class ConversationDetailViewModelIntegrationTest {
                 val calendarIntentValues = actual.openProtonCalendarIntent.consume() as? OpenIcsInProtonCalendar
                 assertNotNull(calendarIntentValues)
                 assertEquals(expectedUri, calendarIntentValues.uriToIcsAttachment)
-                assertEquals(message.message.sender.address, calendarIntentValues.sender)
+                assertEquals(message.sender.address, calendarIntentValues.sender)
                 assertEquals(UserAddressSample.PrimaryAddress.email, calendarIntentValues.recipient)
             }
         }
@@ -1658,11 +1596,11 @@ class ConversationDetailViewModelIntegrationTest {
     fun `when a user click open proton calendar and calendar is not installed, then open play store is called`() =
         runTest {
             // Given
-            val message = MessageWithLabelsSample.CalendarWithoutLabels
-            val messages = ConversationMessagesWithLabels(nonEmptyListOf(message), message.message.messageId)
+            val message = MessageSample.CalendarInvite
+            val messages = ConversationMessages(nonEmptyListOf(message), message.messageId)
 
-            val messageId = message.message.messageId
-            coEvery { observeConversationMessagesWithLabels(userId, any()) } returns flowOf(messages.right())
+            val messageId = message.messageId
+            coEvery { observeConversationMessages(userId, any()) } returns flowOf(messages.right())
             coEvery { getDecryptedMessageBody.invoke(userId, messageId) } returns DecryptedMessageBody(
                 messageId = messageId,
                 value = EmailBodyTestSamples.BodyWithoutQuotes,
@@ -1691,22 +1629,22 @@ class ConversationDetailViewModelIntegrationTest {
     @Test
     fun `emit the correct state when switching of view mode has been requested`() = runTest {
         // Given
-        val messages = ConversationMessagesWithLabels(
+        val messages = ConversationMessages(
             nonEmptyListOf(
-                MessageWithLabelsSample.AugWeatherForecast,
-                MessageWithLabelsSample.InvoiceWithLabel,
-                MessageWithLabelsSample.EmptyDraft
+                MessageSample.AugWeatherForecast,
+                MessageSample.Invoice,
+                MessageSample.EmptyDraft
             ),
-            MessageWithLabelsSample.AugWeatherForecast.message.messageId
+            MessageSample.AugWeatherForecast.messageId
         )
-        coEvery { observeConversationMessagesWithLabels(userId, any()) } returns flowOf(messages.right())
+        coEvery { observeConversationMessages(userId, any()) } returns flowOf(messages.right())
 
         // When
         val viewModel = buildConversationDetailViewModel()
 
         viewModel.submit(
             ExpandMessage(
-                messageIdUiModelMapper.toUiModel(MessageWithLabelsSample.InvoiceWithLabel.message.messageId)
+                messageIdUiModelMapper.toUiModel(MessageSample.Invoice.messageId)
             )
         )
 
@@ -1715,7 +1653,7 @@ class ConversationDetailViewModelIntegrationTest {
 
             viewModel.submit(
                 ConversationDetailViewAction.SwitchViewMode(
-                    MessageWithLabelsSample.InvoiceWithLabel.message.messageId,
+                    MessageSample.Invoice.messageId,
                     ViewModePreference.LightMode
                 )
             )
@@ -1723,7 +1661,7 @@ class ConversationDetailViewModelIntegrationTest {
             // then
             val state = awaitItem().messagesState as ConversationDetailsMessagesState.Data
             val expandedMessage = state.messages.find {
-                it.messageId.id == MessageWithLabelsSample.InvoiceWithLabel.message.messageId.id
+                it.messageId.id == MessageSample.Invoice.messageId.id
             } as Expanded
             val actual = expandedMessage.messageBodyUiModel.viewModePreference
             assertEquals(ViewModePreference.LightMode, actual)
@@ -1735,22 +1673,22 @@ class ConversationDetailViewModelIntegrationTest {
     @Test
     fun `emit the correct state when printing the message has been requested`() = runTest {
         // Given
-        val messages = ConversationMessagesWithLabels(
+        val messages = ConversationMessages(
             nonEmptyListOf(
-                MessageWithLabelsSample.AugWeatherForecast,
-                MessageWithLabelsSample.InvoiceWithLabel,
-                MessageWithLabelsSample.EmptyDraft
+                MessageSample.AugWeatherForecast,
+                MessageSample.Invoice,
+                MessageSample.EmptyDraft
             ),
-            MessageWithLabelsSample.AugWeatherForecast.message.messageId
+            MessageSample.AugWeatherForecast.messageId
         )
-        coEvery { observeConversationMessagesWithLabels(userId, any()) } returns flowOf(messages.right())
+        coEvery { observeConversationMessages(userId, any()) } returns flowOf(messages.right())
 
         // When
         val viewModel = buildConversationDetailViewModel()
 
         viewModel.submit(
             ExpandMessage(
-                messageIdUiModelMapper.toUiModel(MessageWithLabelsSample.InvoiceWithLabel.message.messageId)
+                messageIdUiModelMapper.toUiModel(MessageSample.Invoice.messageId)
             )
         )
 
@@ -1759,7 +1697,7 @@ class ConversationDetailViewModelIntegrationTest {
 
             viewModel.submit(
                 ConversationDetailViewAction.PrintRequested(
-                    MessageWithLabelsSample.InvoiceWithLabel.message.messageId
+                    MessageSample.Invoice.messageId
                 )
             )
 
@@ -1771,7 +1709,7 @@ class ConversationDetailViewModelIntegrationTest {
 
             val messagesState = item.messagesState as ConversationDetailsMessagesState.Data
             val expandedMessage = messagesState.messages.find {
-                it.messageId.id == MessageWithLabelsSample.InvoiceWithLabel.message.messageId.id
+                it.messageId.id == MessageSample.Invoice.messageId.id
             } as Expanded
             val actual = expandedMessage.messageBodyUiModel.printEffect
             assertEquals(Effect.of(Unit), actual)
@@ -1784,15 +1722,15 @@ class ConversationDetailViewModelIntegrationTest {
     fun `should call the print message use case in order to print a message`() = runTest {
         // Given
         val context = mockk<Context>()
-        val messages = ConversationMessagesWithLabels(
+        val messages = ConversationMessages(
             nonEmptyListOf(
-                MessageWithLabelsSample.AugWeatherForecast,
-                MessageWithLabelsSample.InvoiceWithLabel,
-                MessageWithLabelsSample.EmptyDraft
+                MessageSample.AugWeatherForecast,
+                MessageSample.Invoice,
+                MessageSample.EmptyDraft
             ),
-            MessageWithLabelsSample.AugWeatherForecast.message.messageId
+            MessageSample.AugWeatherForecast.messageId
         )
-        coEvery { observeConversationMessagesWithLabels(userId, any()) } returns flowOf(messages.right())
+        coEvery { observeConversationMessages(userId, any()) } returns flowOf(messages.right())
         every { printMessage(any(), any(), any(), any(), any(), any()) } just runs
 
         // When
@@ -1800,7 +1738,7 @@ class ConversationDetailViewModelIntegrationTest {
 
         viewModel.submit(
             ExpandMessage(
-                messageIdUiModelMapper.toUiModel(MessageWithLabelsSample.InvoiceWithLabel.message.messageId)
+                messageIdUiModelMapper.toUiModel(MessageSample.Invoice.messageId)
             )
         )
 
@@ -1808,14 +1746,14 @@ class ConversationDetailViewModelIntegrationTest {
             skipItems(4)
 
             viewModel.submit(
-                ConversationDetailViewAction.Print(context, MessageWithLabelsSample.InvoiceWithLabel.message.messageId)
+                ConversationDetailViewAction.Print(context, MessageSample.Invoice.messageId)
             )
 
             // then
             val conversationState = viewModel.state.value.conversationState as ConversationDetailMetadataState.Data
             val messagesState = viewModel.state.value.messagesState as ConversationDetailsMessagesState.Data
             val messageState = messagesState.messages.find {
-                it.messageId.id == MessageWithLabelsSample.InvoiceWithLabel.message.messageId.id
+                it.messageId.id == MessageSample.Invoice.messageId.id
             } as Expanded
             verify {
                 printMessage(
@@ -1835,28 +1773,28 @@ class ConversationDetailViewModelIntegrationTest {
     @Test
     fun `should close bottom sheet, collapse message and call use case when marking a message as unread`() = runTest {
         // Given
-        val messages = ConversationMessagesWithLabels(
+        val messages = ConversationMessages(
             nonEmptyListOf(
-                MessageWithLabelsSample.AugWeatherForecast,
-                MessageWithLabelsSample.InvoiceWithLabel,
-                MessageWithLabelsSample.EmptyDraft
+                MessageSample.AugWeatherForecast,
+                MessageSample.Invoice,
+                MessageSample.EmptyDraft
             ),
-            MessageWithLabelsSample.AugWeatherForecast.message.messageId
+            MessageSample.AugWeatherForecast.messageId
         )
-        coEvery { observeConversationMessagesWithLabels(userId, any()) } returns flowOf(messages.right())
+        coEvery { observeConversationMessages(userId, any()) } returns flowOf(messages.right())
         coEvery {
-            observeMessage(userId, MessageWithLabelsSample.InvoiceWithLabel.message.messageId)
-        } returns flowOf(MessageWithLabelsSample.InvoiceWithLabel.message.right())
+            observeMessage(userId, MessageSample.Invoice.messageId)
+        } returns flowOf(MessageSample.Invoice.right())
         coEvery {
-            markMessageAsUnread(userId, MessageWithLabelsSample.InvoiceWithLabel.message.messageId)
-        } returns MessageWithLabelsSample.InvoiceWithLabel.message.right()
+            markMessageAsUnread(userId, MessageSample.Invoice.messageId)
+        } returns MessageSample.Invoice.right()
 
         // When
         val viewModel = buildConversationDetailViewModel()
 
         viewModel.submit(
             ExpandMessage(
-                messageIdUiModelMapper.toUiModel(MessageWithLabelsSample.InvoiceWithLabel.message.messageId)
+                messageIdUiModelMapper.toUiModel(MessageSample.Invoice.messageId)
             )
         )
 
@@ -1865,13 +1803,13 @@ class ConversationDetailViewModelIntegrationTest {
 
             viewModel.submit(
                 ConversationDetailViewAction.RequestMoreActionsBottomSheet(
-                    MessageWithLabelsSample.InvoiceWithLabel.message.messageId
+                    MessageSample.Invoice.messageId
                 )
             )
             skipItems(2)
             viewModel.submit(
                 ConversationDetailViewAction.MarkMessageUnread(
-                    MessageWithLabelsSample.InvoiceWithLabel.message.messageId
+                    MessageSample.Invoice.messageId
                 )
             )
 
@@ -1882,10 +1820,10 @@ class ConversationDetailViewModelIntegrationTest {
             val item = awaitItem()
             val messagesState = item.messagesState as ConversationDetailsMessagesState.Data
             val message = messagesState.messages.find {
-                it.messageId.id == MessageWithLabelsSample.InvoiceWithLabel.message.messageId.id
+                it.messageId.id == MessageSample.Invoice.messageId.id
             }
             assertIs<Collapsed>(message)
-            coVerify { markMessageAsUnread(userId, MessageWithLabelsSample.InvoiceWithLabel.message.messageId) }
+            coVerify { markMessageAsUnread(userId, MessageSample.Invoice.messageId) }
 
             cancelAndIgnoreRemainingEvents()
         }
@@ -1894,25 +1832,25 @@ class ConversationDetailViewModelIntegrationTest {
     @Test
     fun `should show message label as bottom sheet and load data when it is requested`() = runTest {
         // Given
-        val messages = ConversationMessagesWithLabels(
+        val messages = ConversationMessages(
             nonEmptyListOf(
-                MessageWithLabelsSample.AugWeatherForecast,
-                MessageWithLabelsSample.InvoiceWithLabel,
-                MessageWithLabelsSample.EmptyDraft
+                MessageSample.AugWeatherForecast,
+                MessageSample.Invoice,
+                MessageSample.EmptyDraft
             ),
-            MessageWithLabelsSample.AugWeatherForecast.message.messageId
+            MessageSample.AugWeatherForecast.messageId
         )
-        coEvery { observeConversationMessagesWithLabels(userId, any()) } returns flowOf(messages.right())
+        coEvery { observeConversationMessages(userId, any()) } returns flowOf(messages.right())
         coEvery {
-            observeMessage(userId, MessageWithLabelsSample.InvoiceWithLabel.message.messageId)
-        } returns flowOf(MessageWithLabelsSample.InvoiceWithLabel.message.right())
+            observeMessage(userId, MessageSample.Invoice.messageId)
+        } returns flowOf(MessageSample.Invoice.right())
 
         // When
         val viewModel = buildConversationDetailViewModel()
 
         viewModel.submit(
             ExpandMessage(
-                messageIdUiModelMapper.toUiModel(MessageWithLabelsSample.InvoiceWithLabel.message.messageId)
+                messageIdUiModelMapper.toUiModel(MessageSample.Invoice.messageId)
             )
         )
 
@@ -1921,13 +1859,13 @@ class ConversationDetailViewModelIntegrationTest {
 
             viewModel.submit(
                 ConversationDetailViewAction.RequestMoreActionsBottomSheet(
-                    MessageWithLabelsSample.InvoiceWithLabel.message.messageId
+                    MessageSample.Invoice.messageId
                 )
             )
             skipItems(2)
             viewModel.submit(
                 ConversationDetailViewAction.RequestMessageLabelAsBottomSheet(
-                    MessageWithLabelsSample.InvoiceWithLabel.message.messageId
+                    MessageSample.Invoice.messageId
                 )
             )
 
@@ -1946,7 +1884,7 @@ class ConversationDetailViewModelIntegrationTest {
             assertEquals(
                 LabelAsBottomSheetState.Data(
                     labelUiModelsWithSelectedState,
-                    MessageWithLabelsSample.InvoiceWithLabel.message.messageId
+                    MessageSample.Invoice.messageId
                 ),
                 bottomSheetContentState
             )
@@ -1958,33 +1896,33 @@ class ConversationDetailViewModelIntegrationTest {
     @Test
     fun `should relabel and move message when label as is confirmed and archive is selected`() = runTest {
         // Given
-        val messages = ConversationMessagesWithLabels(
+        val messages = ConversationMessages(
             nonEmptyListOf(
-                MessageWithLabelsSample.AugWeatherForecast,
-                MessageWithLabelsSample.InvoiceWithLabel,
-                MessageWithLabelsSample.EmptyDraft
+                MessageSample.AugWeatherForecast,
+                MessageSample.Invoice,
+                MessageSample.EmptyDraft
             ),
-            MessageWithLabelsSample.AugWeatherForecast.message.messageId
+            MessageSample.AugWeatherForecast.messageId
         )
-        val messageId = MessageWithLabelsSample.InvoiceWithLabel.message.messageId
+        val messageId = MessageSample.Invoice.messageId
         val newMessageLabels = buildList {
             add(LabelSample.Label2022.labelId)
         }
-        coEvery { observeConversationMessagesWithLabels(userId, any()) } returns flowOf(messages.right())
+        coEvery { observeConversationMessages(userId, any()) } returns flowOf(messages.right())
         coEvery {
             observeMessage(userId, messageId)
-        } returns flowOf(MessageWithLabelsSample.InvoiceWithLabel.message.right())
+        } returns flowOf(MessageSample.Invoice.right())
         coEvery { moveMessage(userId, messageId, SystemLabelId.Archive.labelId) } returns Unit.right()
         coEvery {
             relabelMessage(userId, messageId, emptyList(), newMessageLabels)
-        } returns MessageWithLabelsSample.InvoiceWithLabel.message.right()
+        } returns MessageSample.Invoice.right()
 
         // When
         val viewModel = buildConversationDetailViewModel()
 
         viewModel.submit(
             ExpandMessage(
-                messageIdUiModelMapper.toUiModel(MessageWithLabelsSample.InvoiceWithLabel.message.messageId)
+                messageIdUiModelMapper.toUiModel(MessageSample.Invoice.messageId)
             )
         )
 
@@ -1992,13 +1930,13 @@ class ConversationDetailViewModelIntegrationTest {
             skipItems(4)
             viewModel.submit(
                 ConversationDetailViewAction.RequestMoreActionsBottomSheet(
-                    MessageWithLabelsSample.InvoiceWithLabel.message.messageId
+                    MessageSample.Invoice.messageId
                 )
             )
             skipItems(2)
             viewModel.submit(
                 ConversationDetailViewAction.RequestMessageLabelAsBottomSheet(
-                    MessageWithLabelsSample.InvoiceWithLabel.message.messageId
+                    MessageSample.Invoice.messageId
                 )
             )
             skipItems(1)
@@ -2007,7 +1945,7 @@ class ConversationDetailViewModelIntegrationTest {
             viewModel.submit(
                 ConversationDetailViewAction.LabelAsConfirmed(
                     true,
-                    MessageWithLabelsSample.InvoiceWithLabel.message.messageId
+                    MessageSample.Invoice.messageId
                 )
             )
             skipItems(1)
@@ -2028,19 +1966,19 @@ class ConversationDetailViewModelIntegrationTest {
     @Test
     fun `should close bottom sheet and call use case when moving a message to trash`() = runTest {
         // Given
-        val messageId = MessageWithLabelsSample.InvoiceWithLabel.message.messageId
-        val messages = ConversationMessagesWithLabels(
+        val messageId = MessageSample.Invoice.messageId
+        val messages = ConversationMessages(
             nonEmptyListOf(
-                MessageWithLabelsSample.AugWeatherForecast,
-                MessageWithLabelsSample.InvoiceWithLabel,
-                MessageWithLabelsSample.EmptyDraft
+                MessageSample.AugWeatherForecast,
+                MessageSample.Invoice,
+                MessageSample.EmptyDraft
             ),
-            MessageWithLabelsSample.AugWeatherForecast.message.messageId
+            MessageSample.AugWeatherForecast.messageId
         )
-        coEvery { observeConversationMessagesWithLabels(userId, any()) } returns flowOf(messages.right())
+        coEvery { observeConversationMessages(userId, any()) } returns flowOf(messages.right())
         coEvery {
             observeMessage(userId, messageId)
-        } returns flowOf(MessageWithLabelsSample.InvoiceWithLabel.message.right())
+        } returns flowOf(MessageSample.Invoice.right())
         coEvery { moveMessage(userId, messageId, SystemLabelId.Trash.labelId) } returns Unit.right()
 
         // When
@@ -2068,19 +2006,19 @@ class ConversationDetailViewModelIntegrationTest {
     @Test
     fun `should close bottom sheet and call use case when moving a message to archive`() = runTest {
         // Given
-        val messageId = MessageWithLabelsSample.InvoiceWithLabel.message.messageId
-        val messages = ConversationMessagesWithLabels(
+        val messageId = MessageSample.Invoice.messageId
+        val messages = ConversationMessages(
             nonEmptyListOf(
-                MessageWithLabelsSample.AugWeatherForecast,
-                MessageWithLabelsSample.InvoiceWithLabel,
-                MessageWithLabelsSample.EmptyDraft
+                MessageSample.AugWeatherForecast,
+                MessageSample.Invoice,
+                MessageSample.EmptyDraft
             ),
-            MessageWithLabelsSample.AugWeatherForecast.message.messageId
+            MessageSample.AugWeatherForecast.messageId
         )
-        coEvery { observeConversationMessagesWithLabels(userId, any()) } returns flowOf(messages.right())
+        coEvery { observeConversationMessages(userId, any()) } returns flowOf(messages.right())
         coEvery {
             observeMessage(userId, messageId)
-        } returns flowOf(MessageWithLabelsSample.InvoiceWithLabel.message.right())
+        } returns flowOf(MessageSample.Invoice.right())
         coEvery { moveMessage(userId, messageId, SystemLabelId.Archive.labelId) } returns Unit.right()
 
         // When
@@ -2108,19 +2046,19 @@ class ConversationDetailViewModelIntegrationTest {
     @Test
     fun `should close bottom sheet and call use case when moving a message to spam`() = runTest {
         // Given
-        val messageId = MessageWithLabelsSample.InvoiceWithLabel.message.messageId
-        val messages = ConversationMessagesWithLabels(
+        val messageId = MessageSample.Invoice.messageId
+        val messages = ConversationMessages(
             nonEmptyListOf(
-                MessageWithLabelsSample.AugWeatherForecast,
-                MessageWithLabelsSample.InvoiceWithLabel,
-                MessageWithLabelsSample.EmptyDraft
+                MessageSample.AugWeatherForecast,
+                MessageSample.Invoice,
+                MessageSample.EmptyDraft
             ),
-            MessageWithLabelsSample.AugWeatherForecast.message.messageId
+            MessageSample.AugWeatherForecast.messageId
         )
-        coEvery { observeConversationMessagesWithLabels(userId, any()) } returns flowOf(messages.right())
+        coEvery { observeConversationMessages(userId, any()) } returns flowOf(messages.right())
         coEvery {
             observeMessage(userId, messageId)
-        } returns flowOf(MessageWithLabelsSample.InvoiceWithLabel.message.right())
+        } returns flowOf(MessageSample.Invoice.right())
         coEvery { moveMessage(userId, messageId, SystemLabelId.Spam.labelId) } returns Unit.right()
 
         // When
@@ -2148,19 +2086,19 @@ class ConversationDetailViewModelIntegrationTest {
     @Test
     fun `should show message move to bottom sheet and load data when it is requested`() = runTest {
         // Given
-        val messageId = MessageWithLabelsSample.InvoiceWithLabel.message.messageId
-        val messages = ConversationMessagesWithLabels(
+        val messageId = MessageSample.Invoice.messageId
+        val messages = ConversationMessages(
             nonEmptyListOf(
-                MessageWithLabelsSample.AugWeatherForecast,
-                MessageWithLabelsSample.InvoiceWithLabel,
-                MessageWithLabelsSample.EmptyDraft
+                MessageSample.AugWeatherForecast,
+                MessageSample.Invoice,
+                MessageSample.EmptyDraft
             ),
-            MessageWithLabelsSample.AugWeatherForecast.message.messageId
+            MessageSample.AugWeatherForecast.messageId
         )
-        coEvery { observeConversationMessagesWithLabels(userId, any()) } returns flowOf(messages.right())
+        coEvery { observeConversationMessages(userId, any()) } returns flowOf(messages.right())
         coEvery {
             observeMessage(userId, messageId)
-        } returns flowOf(MessageWithLabelsSample.InvoiceWithLabel.message.right())
+        } returns flowOf(MessageSample.Invoice.right())
 
         // When
         val viewModel = buildConversationDetailViewModel()
@@ -2200,19 +2138,19 @@ class ConversationDetailViewModelIntegrationTest {
     @Test
     fun `should move message when move to is confirmed`() = runTest {
         // Given
-        val messages = ConversationMessagesWithLabels(
+        val messages = ConversationMessages(
             nonEmptyListOf(
-                MessageWithLabelsSample.AugWeatherForecast,
-                MessageWithLabelsSample.InvoiceWithLabel,
-                MessageWithLabelsSample.EmptyDraft
+                MessageSample.AugWeatherForecast,
+                MessageSample.Invoice,
+                MessageSample.EmptyDraft
             ),
-            MessageWithLabelsSample.AugWeatherForecast.message.messageId
+            MessageSample.AugWeatherForecast.messageId
         )
-        val messageId = MessageWithLabelsSample.InvoiceWithLabel.message.messageId
-        coEvery { observeConversationMessagesWithLabels(userId, any()) } returns flowOf(messages.right())
+        val messageId = MessageSample.Invoice.messageId
+        coEvery { observeConversationMessages(userId, any()) } returns flowOf(messages.right())
         coEvery {
             observeMessage(userId, messageId)
-        } returns flowOf(MessageWithLabelsSample.InvoiceWithLabel.message.right())
+        } returns flowOf(MessageSample.Invoice.right())
         coEvery { moveMessage(userId, messageId, SystemLabelId.Spam.labelId) } returns Unit.right()
 
         // When
@@ -2249,184 +2187,6 @@ class ConversationDetailViewModelIntegrationTest {
         }
     }
 
-    @Test
-    fun `should emit hidden trashed messages when opening the conversation from a non-trashed location`() = runTest {
-        // Given
-        val message1 = MessageWithLabelsSample.build(
-            message = MessageSample.build(
-                messageId = MessageIdSample.AugWeatherForecast,
-                labelIds = listOf(SystemLabelId.Archive.labelId)
-            )
-        )
-        val message2 = MessageWithLabelsSample.build(
-            message = MessageSample.build(
-                messageId = MessageIdSample.SepWeatherForecast,
-                labelIds = listOf(SystemLabelId.Trash.labelId)
-            )
-        )
-        val messages = ConversationMessagesWithLabels(
-            nonEmptyListOf(
-                message1, message2
-            ),
-            MessageWithLabelsSample.AugWeatherForecast.message.messageId
-        )
-        coEvery { observeConversationMessagesWithLabels(userId, any()) } returns flowOf(messages.right())
-        coEvery {
-            observeMessage(userId, MessageIdSample.AugWeatherForecast)
-        } returns flowOf(message1.message.right())
-
-        // When
-        val viewModel = buildConversationDetailViewModel()
-
-        viewModel.state.test {
-            skipItems(3)
-            val item = (awaitItem().messagesState as ConversationDetailsMessagesState.Data).messages
-
-            // Then
-            assertIs<Collapsed>(item[0])
-            assertIs<Hidden>(item[1])
-
-            cancelAndIgnoreRemainingEvents()
-        }
-    }
-
-    @Test
-    fun `emit shown trashed messages when opening the conversation from a non-trash location after show action`() =
-        runTest {
-            // Given
-            val message1 = MessageWithLabelsSample.build(
-                message = MessageSample.build(
-                    messageId = MessageIdSample.AugWeatherForecast,
-                    labelIds = listOf(SystemLabelId.Archive.labelId)
-                )
-            )
-            val message2 = MessageWithLabelsSample.build(
-                message = MessageSample.build(
-                    messageId = MessageIdSample.SepWeatherForecast,
-                    labelIds = listOf(SystemLabelId.Trash.labelId)
-                )
-            )
-            val messages = ConversationMessagesWithLabels(
-                nonEmptyListOf(
-                    message1, message2
-                ),
-                MessageWithLabelsSample.AugWeatherForecast.message.messageId
-            )
-            coEvery { observeConversationMessagesWithLabels(userId, any()) } returns flowOf(messages.right())
-            coEvery {
-                observeMessage(userId, MessageIdSample.AugWeatherForecast)
-            } returns flowOf(message1.message.right())
-
-            val viewModel = buildConversationDetailViewModel()
-
-            viewModel.state.test {
-                skipItems(4)
-
-                // When
-                viewModel.submit(ConversationDetailViewAction.ChangeVisibilityOfMessages)
-
-                val item = (awaitItem().messagesState as ConversationDetailsMessagesState.Data).messages
-
-                // Then
-                assertIs<Collapsed>(item[0])
-                assertIs<Collapsed>(item[1])
-
-                cancelAndIgnoreRemainingEvents()
-            }
-        }
-
-    @Test
-    fun `should emit hidden non-trashed messages when opening the conversation from the trash location`() = runTest {
-        // Given
-        val message1 = MessageWithLabelsSample.build(
-            message = MessageSample.build(
-                messageId = MessageIdSample.AugWeatherForecast,
-                labelIds = listOf(SystemLabelId.Archive.labelId)
-            )
-        )
-        val message2 = MessageWithLabelsSample.build(
-            message = MessageSample.build(
-                messageId = MessageIdSample.SepWeatherForecast,
-                labelIds = listOf(SystemLabelId.Trash.labelId)
-            )
-        )
-        val messages = ConversationMessagesWithLabels(
-            nonEmptyListOf(
-                message1, message2
-            ),
-            MessageWithLabelsSample.AugWeatherForecast.message.messageId
-        )
-        every {
-            savedStateHandle.get<String>(ConversationDetailScreen.FilterByLocationKey)
-        } returns SystemLabelId.Trash.labelId.id
-        coEvery { observeConversationMessagesWithLabels(userId, any()) } returns flowOf(messages.right())
-        coEvery {
-            observeMessage(userId, MessageIdSample.AugWeatherForecast)
-        } returns flowOf(message1.message.right())
-
-        // When
-        val viewModel = buildConversationDetailViewModel()
-
-        viewModel.state.test {
-            skipItems(3)
-            val item = (awaitItem().messagesState as ConversationDetailsMessagesState.Data).messages
-
-            // Then
-            assertIs<Hidden>(item[0])
-            assertIs<Collapsed>(item[1])
-
-            cancelAndIgnoreRemainingEvents()
-        }
-    }
-
-    @Test
-    fun `emit shown non-trashed messages when opening the conversation from the trash location after show action`() =
-        runTest {
-            // Given
-            val message1 = MessageWithLabelsSample.build(
-                message = MessageSample.build(
-                    messageId = MessageIdSample.AugWeatherForecast,
-                    labelIds = listOf(SystemLabelId.Archive.labelId)
-                )
-            )
-            val message2 = MessageWithLabelsSample.build(
-                message = MessageSample.build(
-                    messageId = MessageIdSample.SepWeatherForecast,
-                    labelIds = listOf(SystemLabelId.Trash.labelId)
-                )
-            )
-            val messages = ConversationMessagesWithLabels(
-                nonEmptyListOf(
-                    message1, message2
-                ),
-                MessageWithLabelsSample.AugWeatherForecast.message.messageId
-            )
-            every {
-                savedStateHandle.get<String>(ConversationDetailScreen.FilterByLocationKey)
-            } returns SystemLabelId.Trash.labelId.id
-            coEvery { observeConversationMessagesWithLabels(userId, any()) } returns flowOf(messages.right())
-            coEvery {
-                observeMessage(userId, MessageIdSample.AugWeatherForecast)
-            } returns flowOf(message1.message.right())
-
-            val viewModel = buildConversationDetailViewModel()
-
-            viewModel.state.test {
-                skipItems(4)
-
-                // When
-                viewModel.submit(ConversationDetailViewAction.ChangeVisibilityOfMessages)
-
-                val item = (awaitItem().messagesState as ConversationDetailsMessagesState.Data).messages
-
-                // Then
-                assertIs<Collapsed>(item[0])
-                assertIs<Collapsed>(item[1])
-
-                cancelAndIgnoreRemainingEvents()
-            }
-        }
-
     @Suppress("LongParameterList")
     private fun buildConversationDetailViewModel(
         observePrimaryUser: ObservePrimaryUserId = observePrimaryUserId,
@@ -2440,7 +2200,7 @@ class ConversationDetailViewModelIntegrationTest {
         report: ReportPhishingMessage = reportPhishingMessage,
         contacts: ObserveContacts = observeContacts,
         observeConversation: ObserveConversation = observeConversationUseCase,
-        observeConversationMessages: ObserveConversationMessagesWithLabels = observeConversationMessagesWithLabels,
+        observeConversationMessages: ObserveConversationMessages = this.observeConversationMessages,
         observeDetailActions: ObserveConversationDetailActions = observeConversationDetailActions,
         observeDestinationMailLabels: ObserveExclusiveDestinationMailLabels = observeMailLabels,
         observeFolderColor: ObserveFolderColorSettings = observeFolderColorSettings,
@@ -2469,7 +2229,6 @@ class ConversationDetailViewModelIntegrationTest {
         moveConversation = moveConversation,
         deleteConversations = delete,
         relabelConversation = relabel,
-        reportPhishingMessage = report,
         observeContacts = contacts,
         observeConversation = observeConversation,
         observeConversationMessages = observeConversationMessages,
@@ -2494,6 +2253,7 @@ class ConversationDetailViewModelIntegrationTest {
         observePrivacySettings = observePrivacySettings,
         updateLinkConfirmationSetting = updateLinkConfirmationSetting,
         resolveParticipantName = resolveParticipantName,
+        reportPhishingMessage = report,
         isProtonCalendarInstalled = protonCalendarInstalled,
         networkManager = networkMgmt,
         printMessage = printMessage,
@@ -2501,8 +2261,7 @@ class ConversationDetailViewModelIntegrationTest {
         findContactByEmail = findContactByEmailAddress,
         loadDataForMessageLabelAsBottomSheet = loadDataForMessageLabelAsBottomSheet,
         onMessageLabelAsConfirmed = onMessageLabelAsConfirmed,
-        moveMessage = moveMessage,
-        shouldMessageBeHidden = shouldMessageBeHidden
+        moveMessage = moveMessage
     )
 
     private fun aMessageAttachment(id: String): MessageAttachment = MessageAttachment(

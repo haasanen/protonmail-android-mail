@@ -18,22 +18,20 @@
 
 package ch.protonmail.android.maildetail.presentation.mapper
 
+import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
 import ch.protonmail.android.mailcommon.presentation.usecase.GetInitial
-import ch.protonmail.android.mailmessage.domain.model.Message
 import javax.inject.Inject
 
+@MissingRustApi
+// Rust to provide data to choose when to show draft icon and when initials
 class DetailAvatarUiModelMapper @Inject constructor(
     private val getInitial: GetInitial
 ) {
 
-    operator fun invoke(message: Message, senderResolvedName: String): AvatarUiModel {
-        return if (message.isDraft()) {
-            AvatarUiModel.DraftIcon
-        } else {
-            val initial = getInitial(senderResolvedName) ?: UnknownParticipant
-            AvatarUiModel.ParticipantInitial(initial)
-        }
+    operator fun invoke(senderResolvedName: String): AvatarUiModel {
+        val initial = getInitial(senderResolvedName) ?: UnknownParticipant
+        return AvatarUiModel.ParticipantInitial(initial)
     }
 
     companion object {

@@ -50,7 +50,6 @@ import ch.protonmail.android.mailconversation.domain.usecase.DeleteConversations
 import ch.protonmail.android.mailconversation.domain.usecase.ObserveConversation
 import ch.protonmail.android.mailconversation.domain.usecase.StarConversations
 import ch.protonmail.android.mailconversation.domain.usecase.UnStarConversations
-import ch.protonmail.android.maildetail.domain.model.ConversationMessagesWithLabels
 import ch.protonmail.android.maildetail.domain.usecase.GetAttachmentIntentValues
 import ch.protonmail.android.maildetail.domain.usecase.GetDownloadingAttachmentsForMessages
 import ch.protonmail.android.maildetail.domain.usecase.IsProtonCalendarInstalled
@@ -60,7 +59,7 @@ import ch.protonmail.android.maildetail.domain.usecase.MarkMessageAsUnread
 import ch.protonmail.android.maildetail.domain.usecase.MoveConversation
 import ch.protonmail.android.maildetail.domain.usecase.MoveMessage
 import ch.protonmail.android.maildetail.domain.usecase.ObserveConversationDetailActions
-import ch.protonmail.android.maildetail.domain.usecase.ObserveConversationMessagesWithLabels
+import ch.protonmail.android.maildetail.domain.usecase.ObserveConversationMessages
 import ch.protonmail.android.maildetail.domain.usecase.ObserveConversationViewState
 import ch.protonmail.android.maildetail.domain.usecase.ObserveMessageAttachmentStatus
 import ch.protonmail.android.maildetail.domain.usecase.RelabelConversation
@@ -89,12 +88,12 @@ import ch.protonmail.android.maildetail.presentation.usecase.GetEmbeddedImageAvo
 import ch.protonmail.android.maildetail.presentation.usecase.LoadDataForMessageLabelAsBottomSheet
 import ch.protonmail.android.maildetail.presentation.usecase.OnMessageLabelAsConfirmed
 import ch.protonmail.android.maildetail.presentation.usecase.PrintMessage
-import ch.protonmail.android.maildetail.presentation.usecase.ShouldMessageBeHidden
 import ch.protonmail.android.maillabel.domain.model.MailLabels
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.maillabel.domain.usecase.ObserveCustomMailLabels
 import ch.protonmail.android.maillabel.domain.usecase.ObserveExclusiveDestinationMailLabels
 import ch.protonmail.android.maillabel.presentation.sample.LabelUiModelWithSelectedStateSample
+import ch.protonmail.android.mailmessage.domain.model.ConversationMessages
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.model.GetDecryptedMessageBodyError
 import ch.protonmail.android.mailmessage.domain.model.LabelSelectionList
@@ -102,7 +101,7 @@ import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.MimeType
 import ch.protonmail.android.mailmessage.domain.model.Participant
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
-import ch.protonmail.android.mailmessage.domain.sample.MessageWithLabelsSample
+import ch.protonmail.android.mailmessage.domain.sample.MessageSample
 import ch.protonmail.android.mailmessage.domain.usecase.GetDecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.usecase.ObserveMessage
 import ch.protonmail.android.mailmessage.domain.usecase.ResolveParticipantName
@@ -169,7 +168,7 @@ class ConversationDetailViewModelTest {
     private val conversationMessageMapper: ConversationDetailMessageUiModelMapper = mockk {
         coEvery {
             toUiModel(
-                messageWithLabels = MessageWithLabelsSample.InvoiceWithLabel,
+                message = MessageSample.Invoice,
                 contacts = any(),
                 folderColorSettings = defaultFolderColorSettings
             )
@@ -177,7 +176,7 @@ class ConversationDetailViewModelTest {
             ConversationDetailMessageUiModelSample.InvoiceWithLabel
         coEvery {
             toUiModel(
-                messageWithLabels = MessageWithLabelsSample.InvoiceWithTwoLabels,
+                message = MessageSample.Invoice,
                 contacts = any(),
                 folderColorSettings = defaultFolderColorSettings
             )
@@ -185,7 +184,7 @@ class ConversationDetailViewModelTest {
             ConversationDetailMessageUiModelSample.InvoiceWithTwoLabels
         coEvery {
             toUiModel(
-                messageWithLabels = MessageWithLabelsSample.InvoiceWithoutLabels,
+                message = MessageSample.Invoice,
                 contacts = any(),
                 folderColorSettings = defaultFolderColorSettings
             )
@@ -193,7 +192,7 @@ class ConversationDetailViewModelTest {
             ConversationDetailMessageUiModelSample.InvoiceWithoutLabels
         coEvery {
             toUiModel(
-                messageWithLabels = MessageWithLabelsSample.AnotherInvoiceWithoutLabels,
+                message = MessageSample.Invoice,
                 contacts = any(),
                 folderColorSettings = defaultFolderColorSettings
             )
@@ -218,14 +217,14 @@ class ConversationDetailViewModelTest {
             flowOf(ConversationSample.WeatherForecast.right())
     }
     private val observeMessage = mockk<ObserveMessage>()
-    private val observeConversationMessagesWithLabels: ObserveConversationMessagesWithLabels = mockk {
+    private val observeConversationMessages: ObserveConversationMessages = mockk {
         every { this@mockk(UserIdSample.Primary, ConversationIdSample.WeatherForecast) } returns flowOf(
-            ConversationMessagesWithLabels(
+            ConversationMessages(
                 nonEmptyListOf(
-                    MessageWithLabelsSample.InvoiceWithLabel,
-                    MessageWithLabelsSample.InvoiceWithTwoLabels
+                    MessageSample.Invoice,
+                    MessageSample.Invoice
                 ),
-                MessageWithLabelsSample.InvoiceWithLabel.message.messageId
+                MessageSample.Invoice.messageId
             ).right()
         )
     }
@@ -319,9 +318,6 @@ class ConversationDetailViewModelTest {
     private val loadDataForMessageLabelAsBottomSheet = mockk<LoadDataForMessageLabelAsBottomSheet>()
     private val onMessageLabelAsConfirmed = mockk<OnMessageLabelAsConfirmed>()
     private val moveMessage = mockk<MoveMessage>()
-    private val shouldMessageBeHidden = mockk<ShouldMessageBeHidden> {
-        every { this@mockk.invoke(any(), any(), any()) } returns false
-    }
 
     private val viewModel by lazy {
         ConversationDetailViewModel(
@@ -336,7 +332,7 @@ class ConversationDetailViewModelTest {
             relabelConversation = relabelConversation,
             observeContacts = observeContacts,
             observeConversation = observeConversation,
-            observeConversationMessages = observeConversationMessagesWithLabels,
+            observeConversationMessages = observeConversationMessages,
             observeDetailActions = observeConversationDetailActions,
             observeDestinationMailLabels = observeMailLabels,
             observeFolderColor = observeFolderColorSettings,
@@ -358,16 +354,15 @@ class ConversationDetailViewModelTest {
             observePrivacySettings = observePrivacySettings,
             updateLinkConfirmationSetting = updateLinkConfirmationSetting,
             resolveParticipantName = resolveParticipantsName,
-            networkManager = networkManager,
             reportPhishingMessage = reportPhishingMessage,
             isProtonCalendarInstalled = isProtonCalendarInstalled,
+            networkManager = networkManager,
             printMessage = printMessage,
             markMessageAsUnread = markMessageAsUnread,
             findContactByEmail = findContactByEmail,
             loadDataForMessageLabelAsBottomSheet = loadDataForMessageLabelAsBottomSheet,
             onMessageLabelAsConfirmed = onMessageLabelAsConfirmed,
-            moveMessage = moveMessage,
-            shouldMessageBeHidden = shouldMessageBeHidden
+            moveMessage = moveMessage
         )
     }
 
@@ -387,7 +382,7 @@ class ConversationDetailViewModelTest {
         val messages = nonEmptyListOf(ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded)
         coEvery {
             conversationMessageMapper.toUiModel(
-                messageWithLabels = any(),
+                message = any(),
                 any(),
                 any(),
                 any(),
@@ -420,7 +415,7 @@ class ConversationDetailViewModelTest {
         val messages = nonEmptyListOf(ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded)
         coEvery {
             conversationMessageMapper.toUiModel(
-                messageWithLabels = any(),
+                message = any(),
                 contacts = any(),
                 decryptedMessageBody = any(),
                 folderColorSettings = defaultFolderColorSettings,
@@ -454,7 +449,7 @@ class ConversationDetailViewModelTest {
         val messages = nonEmptyListOf(ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded)
         coEvery {
             conversationMessageMapper.toUiModel(
-                messageWithLabels = any(),
+                message = any(),
                 contacts = any(),
                 decryptedMessageBody = any(),
                 folderColorSettings = defaultFolderColorSettings,
@@ -493,7 +488,7 @@ class ConversationDetailViewModelTest {
         val messages = nonEmptyListOf(ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded)
         coEvery {
             conversationMessageMapper.toUiModel(
-                messageWithLabels = any(),
+                message = any(),
                 contacts = any(),
                 decryptedMessageBody = any(),
                 folderColorSettings = defaultFolderColorSettings,
@@ -546,7 +541,7 @@ class ConversationDetailViewModelTest {
         } returns expectedState
         coEvery {
             conversationMessageMapper.toUiModel(
-                messageWithLabels = any(),
+                message = any(),
                 contacts = any(),
                 decryptedMessageBody = any(),
                 folderColorSettings = defaultFolderColorSettings,
@@ -584,7 +579,7 @@ class ConversationDetailViewModelTest {
         } returns expectedState
         coEvery {
             conversationMessageMapper.toUiModel(
-                messageWithLabels = any(), // Model here has 3 labels, sample models only have one or two
+                message = any(), // Model here has 3 labels, sample models only have one or two
                 contacts = emptyList(),
                 decryptedMessageBody = any(),
                 folderColorSettings = any(),
@@ -612,7 +607,7 @@ class ConversationDetailViewModelTest {
             )
         )
         every {
-            observeConversationMessagesWithLabels(UserIdSample.Primary, ConversationIdSample.WeatherForecast)
+            observeConversationMessages(UserIdSample.Primary, ConversationIdSample.WeatherForecast)
         } returns flowOf(DataError.Remote.Http(NetworkError.NoNetwork).left())
         every {
             reducer.newStateFrom(
@@ -635,7 +630,7 @@ class ConversationDetailViewModelTest {
     fun `conversation messages state does not change when use case fails with local error`() = runTest {
         // given
         every {
-            observeConversationMessagesWithLabels(UserIdSample.Primary, ConversationIdSample.WeatherForecast)
+            observeConversationMessages(UserIdSample.Primary, ConversationIdSample.WeatherForecast)
         } returns flowOf(DataError.Local.NoDataCached.left())
         every {
             reducer.newStateFrom(
@@ -659,7 +654,7 @@ class ConversationDetailViewModelTest {
         val messages = nonEmptyListOf(ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded)
         coEvery {
             conversationMessageMapper.toUiModel(
-                messageWithLabels = any(),
+                message = any(),
                 contacts = any(),
                 decryptedMessageBody = any(),
                 folderColorSettings = defaultFolderColorSettings,
@@ -695,7 +690,7 @@ class ConversationDetailViewModelTest {
         val messages = nonEmptyListOf(ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded)
         coEvery {
             conversationMessageMapper.toUiModel(
-                messageWithLabels = any(),
+                message = any(),
                 contacts = any(),
                 decryptedMessageBody = any(),
                 folderColorSettings = defaultFolderColorSettings,
@@ -729,7 +724,7 @@ class ConversationDetailViewModelTest {
         val messages = nonEmptyListOf(ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded)
         coEvery {
             conversationMessageMapper.toUiModel(
-                messageWithLabels = any(),
+                message = any(),
                 contacts = any(),
                 decryptedMessageBody = any(),
                 folderColorSettings = defaultFolderColorSettings,
@@ -757,7 +752,7 @@ class ConversationDetailViewModelTest {
         val messages = nonEmptyListOf(ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded)
         coEvery {
             conversationMessageMapper.toUiModel(
-                messageWithLabels = any(),
+                message = any(),
                 contacts = any(),
                 decryptedMessageBody = any(),
                 folderColorSettings = defaultFolderColorSettings,
@@ -794,7 +789,7 @@ class ConversationDetailViewModelTest {
         val messages = nonEmptyListOf(ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded)
         coEvery {
             conversationMessageMapper.toUiModel(
-                messageWithLabels = any(),
+                message = any(),
                 contacts = any(),
                 decryptedMessageBody = any(),
                 folderColorSettings = defaultFolderColorSettings,
@@ -831,7 +826,7 @@ class ConversationDetailViewModelTest {
         val messages = nonEmptyListOf(ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded)
         coEvery {
             conversationMessageMapper.toUiModel(
-                messageWithLabels = any(),
+                message = any(),
                 contacts = any(),
                 decryptedMessageBody = any(),
                 folderColorSettings = defaultFolderColorSettings,
@@ -867,7 +862,7 @@ class ConversationDetailViewModelTest {
         val messages = nonEmptyListOf(ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded)
         coEvery {
             conversationMessageMapper.toUiModel(
-                messageWithLabels = any(),
+                message = any(),
                 contacts = any(),
                 decryptedMessageBody = any(),
                 folderColorSettings = defaultFolderColorSettings,
@@ -903,7 +898,7 @@ class ConversationDetailViewModelTest {
         val messages = nonEmptyListOf(ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded)
         coEvery {
             conversationMessageMapper.toUiModel(
-                messageWithLabels = any(),
+                message = any(),
                 contacts = any(),
                 decryptedMessageBody = any(),
                 folderColorSettings = defaultFolderColorSettings,
@@ -943,7 +938,7 @@ class ConversationDetailViewModelTest {
         val messages = nonEmptyListOf(ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded)
         coEvery {
             conversationMessageMapper.toUiModel(
-                messageWithLabels = any(),
+                message = any(),
                 contacts = any(),
                 decryptedMessageBody = any(),
                 folderColorSettings = defaultFolderColorSettings,
@@ -985,7 +980,7 @@ class ConversationDetailViewModelTest {
         val messages = nonEmptyListOf(ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded)
         coEvery {
             conversationMessageMapper.toUiModel(
-                messageWithLabels = any(),
+                message = any(),
                 contacts = any(),
                 decryptedMessageBody = any(),
                 folderColorSettings = defaultFolderColorSettings,
@@ -1049,70 +1044,12 @@ class ConversationDetailViewModelTest {
     }
 
     @Test
-    fun `verify label as action data is build according to the labels of messages`() = runTest {
-        // Given
-        val messages = nonEmptyListOf(ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded)
-        coEvery {
-            conversationMessageMapper.toUiModel(
-                messageWithLabels = any(),
-                contacts = any(),
-                decryptedMessageBody = any(),
-                folderColorSettings = defaultFolderColorSettings,
-                userAddress = UserAddressSample.PrimaryAddress
-            )
-        } returns messages.first()
-        val event = LabelAsBottomSheetState.LabelAsBottomSheetEvent.ActionData(
-            customLabelList = MailLabelUiModelTestData.customLabelList,
-            selectedLabels = listOf(LabelSample.Document.labelId, LabelSample.Label2021.labelId).toImmutableList(),
-            partiallySelectedLabels = listOf(LabelSample.Label2022.labelId).toImmutableList()
-        )
-
-        val expectedResult = ConversationDetailState.Loading.copy(
-            bottomSheetState = BottomSheetState(
-                LabelAsBottomSheetState.Data(
-                    LabelUiModelWithSelectedStateSample.customLabelListWithPartialSelection.toImmutableList(),
-                    null
-                )
-            )
-        )
-
-        coEvery { observeConversationMessagesWithLabels(userId, conversationId) } returns flowOf(
-            ConversationMessagesWithLabels(
-                nonEmptyListOf(
-                    MessageWithLabelsSample.InvoiceWithTwoLabels,
-                    MessageWithLabelsSample.InvoiceWithLabel
-                ),
-                MessageWithLabelsSample.InvoiceWithLabel.message.messageId
-            ).right()
-        )
-
-        coEvery {
-            reducer.newStateFrom(
-                any(),
-                ConversationDetailEvent.ConversationBottomSheetEvent(event)
-            )
-        } returns expectedResult
-
-        // When
-        viewModel.state.test {
-            viewModel.submit(ConversationDetailViewAction.RequestConversationLabelAsBottomSheet)
-            // Request bottom Sheet call, we can ignore that
-            awaitItem()
-
-            // Then
-            val lastItem = awaitItem()
-            assertEquals(expectedResult, lastItem)
-            cancelAndIgnoreRemainingEvents()
-        }
-    }
-
-    @Test
     fun `verify relabel is called and exit is not called when labels get confirmed`() = runTest {
         // Given
         val messages = nonEmptyListOf(ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded)
         coEvery {
             conversationMessageMapper.toUiModel(
-                messageWithLabels = any(),
+                message = any(),
                 contacts = any(),
                 decryptedMessageBody = any(),
                 folderColorSettings = defaultFolderColorSettings,
@@ -1146,13 +1083,13 @@ class ConversationDetailViewModelTest {
             )
         } returns ConversationSample.WeatherForecast.right()
 
-        coEvery { observeConversationMessagesWithLabels(userId, conversationId) } returns flowOf(
-            ConversationMessagesWithLabels(
+        coEvery { observeConversationMessages(userId, conversationId) } returns flowOf(
+            ConversationMessages(
                 nonEmptyListOf(
-                    MessageWithLabelsSample.InvoiceWithoutLabels,
-                    MessageWithLabelsSample.AnotherInvoiceWithoutLabels
+                    MessageSample.Invoice,
+                    MessageSample.Invoice
                 ),
-                MessageWithLabelsSample.InvoiceWithoutLabels.message.messageId
+                MessageSample.Invoice.messageId
             ).right()
         )
         coEvery {
@@ -1211,7 +1148,7 @@ class ConversationDetailViewModelTest {
             val messages = nonEmptyListOf(ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded)
             coEvery {
                 conversationMessageMapper.toUiModel(
-                    messageWithLabels = any(),
+                    message = any(),
                     contacts = any(),
                     decryptedMessageBody = any(),
                     folderColorSettings = defaultFolderColorSettings,
@@ -1256,13 +1193,13 @@ class ConversationDetailViewModelTest {
                 )
             } returns Unit.right()
 
-            coEvery { observeConversationMessagesWithLabels(userId, conversationId) } returns flowOf(
-                ConversationMessagesWithLabels(
+            coEvery { observeConversationMessages(userId, conversationId) } returns flowOf(
+                ConversationMessages(
                     nonEmptyListOf(
-                        MessageWithLabelsSample.InvoiceWithoutLabels,
-                        MessageWithLabelsSample.AnotherInvoiceWithoutLabels
+                        MessageSample.Invoice,
+                        MessageSample.Invoice
                     ),
-                    MessageWithLabelsSample.InvoiceWithoutLabels.message.messageId
+                    MessageSample.Invoice.messageId
                 ).right()
             )
             coEvery {
@@ -1328,7 +1265,7 @@ class ConversationDetailViewModelTest {
         val messages = nonEmptyListOf(ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded)
         coEvery {
             conversationMessageMapper.toUiModel(
-                messageWithLabels = any(),
+                message = any(),
                 contacts = any(),
                 decryptedMessageBody = any(),
                 folderColorSettings = defaultFolderColorSettings,
@@ -1355,8 +1292,8 @@ class ConversationDetailViewModelTest {
                 userId,
                 conversationId,
                 currentSelections = LabelSelectionList(
-                    selectedLabels = listOf(LabelSample.Document.labelId, LabelSample.Label2021.labelId),
-                    partiallySelectionLabels = listOf(LabelSample.Label2022.labelId)
+                    selectedLabels = emptyList(),
+                    partiallySelectionLabels = emptyList()
                 ),
                 updatedSelections = LabelSelectionList(
                     selectedLabels = listOf(
@@ -1369,13 +1306,13 @@ class ConversationDetailViewModelTest {
             )
         } returns ConversationSample.WeatherForecast.right()
 
-        coEvery { observeConversationMessagesWithLabels(userId, conversationId) } returns flowOf(
-            ConversationMessagesWithLabels(
+        coEvery { observeConversationMessages(userId, conversationId) } returns flowOf(
+            ConversationMessages(
                 nonEmptyListOf(
-                    MessageWithLabelsSample.InvoiceWithLabel,
-                    MessageWithLabelsSample.InvoiceWithTwoLabels
+                    MessageSample.Invoice,
+                    MessageSample.Invoice
                 ),
-                MessageWithLabelsSample.InvoiceWithLabel.message.messageId
+                MessageSample.Invoice.messageId
             ).right()
         )
         coEvery {
@@ -1410,8 +1347,8 @@ class ConversationDetailViewModelTest {
                     userId,
                     conversationId,
                     currentSelections = LabelSelectionList(
-                        selectedLabels = listOf(LabelSample.Document.labelId, LabelSample.Label2021.labelId),
-                        partiallySelectionLabels = listOf(LabelSample.Label2022.labelId)
+                        selectedLabels = emptyList(),
+                        partiallySelectionLabels = emptyList()
                     ),
                     updatedSelections = LabelSelectionList(
                         selectedLabels = listOf(
@@ -1434,7 +1371,7 @@ class ConversationDetailViewModelTest {
         val messages = nonEmptyListOf(ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded)
         coEvery {
             conversationMessageMapper.toUiModel(
-                messageWithLabels = any(),
+                message = any(),
                 contacts = any(),
                 decryptedMessageBody = any(),
                 folderColorSettings = defaultFolderColorSettings,
@@ -1457,7 +1394,7 @@ class ConversationDetailViewModelTest {
         val messages = nonEmptyListOf(ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded)
         coEvery {
             conversationMessageMapper.toUiModel(
-                messageWithLabels = any(),
+                message = any(),
                 contacts = any(),
                 decryptedMessageBody = any(),
                 folderColorSettings = defaultFolderColorSettings,
@@ -1491,7 +1428,7 @@ class ConversationDetailViewModelTest {
         val messages = nonEmptyListOf(ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded)
         coEvery {
             conversationMessageMapper.toUiModel(
-                messageWithLabels = any(),
+                message = any(),
                 contacts = any(),
                 decryptedMessageBody = any(),
                 folderColorSettings = defaultFolderColorSettings,
@@ -1548,7 +1485,7 @@ class ConversationDetailViewModelTest {
         val messages = nonEmptyListOf(ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded)
         coEvery {
             conversationMessageMapper.toUiModel(
-                messageWithLabels = any(),
+                message = any(),
                 contacts = any(),
                 decryptedMessageBody = any(),
                 folderColorSettings = defaultFolderColorSettings,
@@ -1672,7 +1609,7 @@ class ConversationDetailViewModelTest {
         ).toImmutableList()
         coEvery {
             conversationMessageMapper.toUiModel(
-                messageWithLabels = any(),
+                message = any(),
                 contacts = any(),
                 decryptedMessageBody = any(),
                 folderColorSettings = defaultFolderColorSettings,
@@ -1717,7 +1654,7 @@ class ConversationDetailViewModelTest {
             ).toImmutableList()
             coEvery {
                 conversationMessageMapper.toUiModel(
-                    messageWithLabels = any(),
+                    message = any(),
                     contacts = any(),
                     decryptedMessageBody = any(),
                     folderColorSettings = defaultFolderColorSettings,
@@ -1769,7 +1706,7 @@ class ConversationDetailViewModelTest {
         ).toImmutableList()
         coEvery {
             conversationMessageMapper.toUiModel(
-                messageWithLabels = any(),
+                message = any(),
                 contacts = any(),
                 decryptedMessageBody = any(),
                 folderColorSettings = defaultFolderColorSettings,
@@ -1833,7 +1770,7 @@ class ConversationDetailViewModelTest {
         val messages = nonEmptyListOf(ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded)
         coEvery {
             conversationMessageMapper.toUiModel(
-                messageWithLabels = any(),
+                message = any(),
                 contacts = any(),
                 decryptedMessageBody = any(),
                 folderColorSettings = defaultFolderColorSettings,
@@ -1857,7 +1794,7 @@ class ConversationDetailViewModelTest {
         val messages = nonEmptyListOf(ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded)
         coEvery {
             conversationMessageMapper.toUiModel(
-                messageWithLabels = any(),
+                message = any(),
                 contacts = any(),
                 decryptedMessageBody = any(),
                 folderColorSettings = defaultFolderColorSettings,
@@ -1881,7 +1818,7 @@ class ConversationDetailViewModelTest {
         val messages = nonEmptyListOf(ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded)
         coEvery {
             conversationMessageMapper.toUiModel(
-                messageWithLabels = any(),
+                message = any(),
                 contacts = any(),
                 decryptedMessageBody = any(),
                 folderColorSettings = defaultFolderColorSettings,
@@ -1917,13 +1854,13 @@ class ConversationDetailViewModelTest {
             )
         )
 
-        coEvery { observeConversationMessagesWithLabels(userId, conversationId) } returns flowOf(
-            ConversationMessagesWithLabels(
+        coEvery { observeConversationMessages(userId, conversationId) } returns flowOf(
+            ConversationMessages(
                 nonEmptyListOf(
-                    MessageWithLabelsSample.InvoiceWithTwoLabels,
-                    MessageWithLabelsSample.InvoiceWithLabel
+                    MessageSample.Invoice,
+                    MessageSample.Invoice
                 ),
-                MessageWithLabelsSample.InvoiceWithLabel.message.messageId
+                MessageSample.Invoice.messageId
             ).right()
         )
 
@@ -1957,9 +1894,9 @@ class ConversationDetailViewModelTest {
         withUnreadMessage: Boolean = false
     ): Pair<List<MessageIdUiModel>, ConversationDetailMessageUiModel> {
         val (invoiceUiMessage, invoiceMessage) = if (withUnreadMessage) {
-            Pair(ConversationDetailMessageUiModelSample.UnreadInvoice, MessageWithLabelsSample.UnreadInvoice)
+            Pair(ConversationDetailMessageUiModelSample.UnreadInvoice, MessageSample.UnreadInvoice)
         } else {
-            Pair(ConversationDetailMessageUiModelSample.InvoiceWithLabel, MessageWithLabelsSample.InvoiceWithLabel)
+            Pair(ConversationDetailMessageUiModelSample.InvoiceWithLabel, MessageSample.Invoice)
         }
         val allCollapsed = nonEmptyListOf(
             invoiceUiMessage,
@@ -1978,14 +1915,14 @@ class ConversationDetailViewModelTest {
             ConversationDetailMessageUiModelSample.AugWeatherForecast
         ).toImmutableList()
         every {
-            observeConversationMessagesWithLabels(
+            observeConversationMessages(
                 UserIdSample.Primary,
                 ConversationIdSample.WeatherForecast
             )
         } returns flowOf(
-            ConversationMessagesWithLabels(
-                nonEmptyListOf(invoiceMessage, MessageWithLabelsSample.AugWeatherForecast),
-                invoiceMessage.message.messageId
+            ConversationMessages(
+                nonEmptyListOf(invoiceMessage, MessageSample.AugWeatherForecast),
+                invoiceMessage.messageId
             ).right()
         )
 
@@ -2054,7 +1991,7 @@ class ConversationDetailViewModelTest {
             ConversationDetailMessageUiModelSample.InvoiceWithLabel
         coEvery {
             conversationMessageMapper.toUiModel(
-                messageWithLabels = any(),
+                message = any(),
                 contacts = any(),
                 decryptedMessageBody = any(),
                 folderColorSettings = defaultFolderColorSettings,

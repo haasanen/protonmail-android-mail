@@ -37,7 +37,6 @@ import ch.protonmail.android.maildetail.presentation.model.MessageLocationUiMode
 import ch.protonmail.android.maildetail.presentation.model.ParticipantUiModel
 import ch.protonmail.android.maillabel.presentation.sample.LabelUiModelSample
 import ch.protonmail.android.mailmessage.domain.model.AttachmentCount
-import ch.protonmail.android.mailmessage.domain.model.MessageWithLabels
 import ch.protonmail.android.mailmessage.domain.usecase.ResolveParticipantName
 import ch.protonmail.android.mailmessage.domain.usecase.ResolveParticipantNameResult
 import ch.protonmail.android.mailsettings.domain.model.FolderColorSettings
@@ -73,15 +72,13 @@ class MessageDetailHeaderUiModelMapperTest {
     private val participant3UiModel =
         ParticipantUiModel("Recipient3", "recipient3@pm.com", ic_proton_lock, shouldShowOfficialBadge = false)
 
-    private val message = MessageTestData.starredMessageInArchiveWithAttachments
     private val labels = listOf(
         LabelTestData.buildLabel(id = "id1"),
         LabelTestData.buildLabel(id = "id2"),
         LabelTestData.buildLabel(id = "id3")
     )
-    private val messageWithLabels = MessageWithLabels(
-        message = message,
-        labels = labels
+    private val message = MessageTestData.starredMessageInArchiveWithAttachments.copy(
+        customLabels = labels
     )
     private val expectedResult = MessageDetailHeaderUiModel(
         avatar = avatarUiModel,
@@ -101,7 +98,7 @@ class MessageDetailHeaderUiModelMapperTest {
         size = "12 MB",
         encryptionPadlock = ic_proton_lock,
         encryptionInfo = "End-to-end encrypted and signed message",
-        messageIdUiModel = MessageIdUiModel(message.id)
+        messageIdUiModel = MessageIdUiModel(message.messageId.id)
     )
 
     private val colorMapper: ColorMapper = mockk {
@@ -109,7 +106,7 @@ class MessageDetailHeaderUiModelMapperTest {
     }
     private val context: Context = mockk()
     private val detailAvatarUiModelMapper: DetailAvatarUiModelMapper = mockk {
-        every { this@mockk(any(), MessageTestData.sender.name) } returns avatarUiModel
+        every { this@mockk(MessageTestData.sender.name) } returns avatarUiModel
     }
     private val formatExtendedTime: FormatExtendedTime = mockk {
         every { this@mockk(message.time.seconds) } returns extendedTimeTestUiModel
@@ -179,7 +176,7 @@ class MessageDetailHeaderUiModelMapperTest {
     fun `map to ui model returns a correct model`() = runTest {
         // When
         val result = messageDetailHeaderUiModelMapper.toUiModel(
-            messageWithLabels = messageWithLabels,
+            message = message,
             contacts = ContactTestData.contacts,
             folderColorSettings = folderColorSettings
         )
@@ -190,17 +187,14 @@ class MessageDetailHeaderUiModelMapperTest {
     @Test
     fun `when there are no attachments that are not calendar attachments, don't show attachment icon`() = runTest {
         // Given
-        val messageWithLabels =
-            messageWithLabels.copy(
-                message = message.copy(
-                    numAttachments = 1,
-                    attachmentCount = AttachmentCount(1)
-                )
-            )
+        val message = message.copy(
+            numAttachments = 1,
+            attachmentCount = AttachmentCount(1)
+        )
         val expectedResult = expectedResult.copy(shouldShowAttachmentIcon = false)
         // When
         val result = messageDetailHeaderUiModelMapper.toUiModel(
-            messageWithLabels = messageWithLabels,
+            message = message,
             contacts = ContactTestData.contacts,
             folderColorSettings = folderColorSettings
         )
@@ -211,13 +205,11 @@ class MessageDetailHeaderUiModelMapperTest {
     @Test
     fun `when the message is not starred, don't show star icon`() = runTest {
         // Given
-        val messageWithLabels = messageWithLabels.copy(
-            message = message.copy(isStarred = false)
-        )
+        val message = message.copy(isStarred = false)
         val expectedResult = expectedResult.copy(shouldShowStar = false)
         // When
         val result = messageDetailHeaderUiModelMapper.toUiModel(
-            messageWithLabels = messageWithLabels,
+            message = message,
             contacts = ContactTestData.contacts,
             folderColorSettings = folderColorSettings
         )
@@ -228,11 +220,9 @@ class MessageDetailHeaderUiModelMapperTest {
     @Test
     fun `when TO, CC and BCC lists are empty, show undisclosed recipients`() = runTest {
         // Given
-        val messageWithLabels = messageWithLabels.copy(
-            message = message.copy(
-                toList = emptyList(),
-                ccList = emptyList()
-            )
+        val message = message.copy(
+            toList = emptyList(),
+            ccList = emptyList()
         )
         val expectedResult = expectedResult.copy(
             shouldShowUndisclosedRecipients = true,
@@ -242,7 +232,7 @@ class MessageDetailHeaderUiModelMapperTest {
         )
         // When
         val result = messageDetailHeaderUiModelMapper.toUiModel(
-            messageWithLabels = messageWithLabels,
+            message = message,
             contacts = ContactTestData.contacts,
             folderColorSettings = folderColorSettings
         )
@@ -253,8 +243,8 @@ class MessageDetailHeaderUiModelMapperTest {
     @Test
     fun `ui models contains the correct labels, without folders`() = runTest {
         // Given
-        val input = messageWithLabels.copy(
-            labels = listOf(
+        val input = message.copy(
+            customLabels = listOf(
                 LabelSample.Archive,
                 LabelSample.Document,
                 LabelSample.Inbox,

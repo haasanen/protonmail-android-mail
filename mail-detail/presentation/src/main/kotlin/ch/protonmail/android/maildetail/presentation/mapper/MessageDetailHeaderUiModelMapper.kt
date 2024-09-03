@@ -32,7 +32,6 @@ import ch.protonmail.android.maildetail.presentation.model.MessageIdUiModel
 import ch.protonmail.android.maillabel.presentation.model.LabelUiModel
 import ch.protonmail.android.mailmessage.domain.model.Message
 import ch.protonmail.android.mailmessage.domain.model.MessageId
-import ch.protonmail.android.mailmessage.domain.model.MessageWithLabels
 import ch.protonmail.android.mailmessage.domain.usecase.ResolveParticipantName
 import ch.protonmail.android.mailsettings.domain.model.FolderColorSettings
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -56,40 +55,40 @@ class MessageDetailHeaderUiModelMapper @Inject constructor(
 ) {
 
     suspend fun toUiModel(
-        messageWithLabels: MessageWithLabels,
+        message: Message,
         contacts: List<Contact>,
         folderColorSettings: FolderColorSettings
     ): MessageDetailHeaderUiModel {
-        val senderResolvedName = resolveParticipantName(messageWithLabels.message.sender, contacts)
+        val senderResolvedName = resolveParticipantName(message.sender, contacts)
         return MessageDetailHeaderUiModel(
-            avatar = detailAvatarUiModelMapper(messageWithLabels.message, senderResolvedName.name),
-            sender = participantUiModelMapper.senderToUiModel(messageWithLabels.message.sender, contacts),
+            avatar = detailAvatarUiModelMapper(senderResolvedName.name),
+            sender = participantUiModelMapper.senderToUiModel(message.sender, contacts),
             shouldShowTrackerProtectionIcon = true,
-            shouldShowAttachmentIcon = messageWithLabels.message.hasNonCalendarAttachments(),
-            shouldShowStar = messageWithLabels.message.isStarred,
+            shouldShowAttachmentIcon = message.hasNonCalendarAttachments(),
+            shouldShowStar = message.isStarred,
             location = messageLocationUiModelMapper(
-                messageWithLabels.message.labelIds,
-                messageWithLabels.labels,
+                emptyList(),
+                emptyList(),
                 folderColorSettings
             ),
-            time = formatShortTime(messageWithLabels.message.time.seconds),
-            extendedTime = formatExtendedTime(messageWithLabels.message.time.seconds),
-            shouldShowUndisclosedRecipients = messageWithLabels.message.hasUndisclosedRecipients(),
-            allRecipients = messageWithLabels.message.allRecipients(contacts),
-            toRecipients = messageWithLabels.message.toList.map {
+            time = formatShortTime(message.time.seconds),
+            extendedTime = formatExtendedTime(message.time.seconds),
+            shouldShowUndisclosedRecipients = message.hasUndisclosedRecipients(),
+            allRecipients = message.allRecipients(contacts),
+            toRecipients = message.toList.map {
                 participantUiModelMapper.recipientToUiModel(it, contacts)
             }.toImmutableList(),
-            ccRecipients = messageWithLabels.message.ccList.map {
+            ccRecipients = message.ccList.map {
                 participantUiModelMapper.recipientToUiModel(it, contacts)
             }.toImmutableList(),
-            bccRecipients = messageWithLabels.message.bccList.map {
+            bccRecipients = message.bccList.map {
                 participantUiModelMapper.recipientToUiModel(it, contacts)
             }.toImmutableList(),
-            labels = toLabelUiModels(messageWithLabels.labels),
-            size = Formatter.formatShortFileSize(context, messageWithLabels.message.size),
+            labels = toLabelUiModels(message.customLabels),
+            size = Formatter.formatShortFileSize(context, message.size),
             encryptionPadlock = R.drawable.ic_proton_lock,
             encryptionInfo = "End-to-end encrypted and signed message",
-            messageIdUiModel = toMessageUiModel(messageWithLabels.message.messageId)
+            messageIdUiModel = toMessageUiModel(message.messageId)
         )
     }
 

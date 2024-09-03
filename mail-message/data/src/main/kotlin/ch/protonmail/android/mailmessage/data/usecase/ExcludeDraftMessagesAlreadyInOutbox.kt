@@ -18,7 +18,6 @@
 
 package ch.protonmail.android.mailmessage.data.usecase
 
-import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.mailmessage.domain.model.Message
 import ch.protonmail.android.mailmessage.domain.repository.OutboxRepository
 import kotlinx.coroutines.flow.firstOrNull
@@ -45,7 +44,7 @@ class ExcludeDraftMessagesAlreadyInOutbox @Inject constructor(
             entities
         } else {
             entities.filter { message ->
-                !(message.labelIds.contains(SystemLabelId.AllDrafts.labelId) && message.id in outboxMessages)
+                message.messageId.id !in outboxMessages
             }
         }
     }

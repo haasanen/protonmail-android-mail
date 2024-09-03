@@ -8,7 +8,6 @@ import ch.protonmail.android.maillabel.presentation.model.LabelSelectedState
 import ch.protonmail.android.maillabel.presentation.sample.LabelUiModelWithSelectedStateSample
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
 import ch.protonmail.android.mailmessage.domain.sample.MessageSample
-import ch.protonmail.android.testdata.maillabel.MailLabelTestData
 import ch.protonmail.android.testdata.user.UserIdTestData
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -39,12 +38,7 @@ class OnMessageLabelAsConfirmedTest {
                 updatedLabelIds = any()
             )
         } returns with(MessageSample) {
-            Invoice.labelAs(
-                listOf(
-                    MailLabelTestData.customLabelOne.id.labelId,
-                    MailLabelTestData.customLabelTwo.id.labelId
-                )
-            )
+            Invoice
         }.right()
     }
 
