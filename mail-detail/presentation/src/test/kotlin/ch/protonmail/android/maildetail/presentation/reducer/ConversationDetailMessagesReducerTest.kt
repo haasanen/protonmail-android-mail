@@ -110,7 +110,6 @@ class ConversationDetailMessagesReducerTest(
                 currentState = ConversationDetailsMessagesState.Loading,
                 operation = ConversationDetailEvent.MessagesData(
                     messagesUiModels = allMessages,
-                    messagesLabelIds = emptyMap(),
                     requestScrollToMessageId = null,
                     filterByLocation = null,
                     shouldHideMessagesBasedOnTrashFilter = false
@@ -136,7 +135,6 @@ class ConversationDetailMessagesReducerTest(
                 currentState = ConversationDetailsMessagesState.Loading,
                 operation = ConversationDetailEvent.MessagesData(
                     messagesUiModels = allMessagesFirstExpanded,
-                    messagesLabelIds = emptyMap(),
                     requestScrollToMessageId = allMessagesFirstExpanded.first().messageId,
                     filterByLocation = null,
                     shouldHideMessagesBasedOnTrashFilter = false
@@ -173,7 +171,6 @@ class ConversationDetailMessagesReducerTest(
                 ),
                 operation = ConversationDetailEvent.MessagesData(
                     messagesUiModels = allMessages,
-                    messagesLabelIds = emptyMap(),
                     requestScrollToMessageId = null,
                     filterByLocation = null,
                     shouldHideMessagesBasedOnTrashFilter = false
@@ -210,7 +207,6 @@ class ConversationDetailMessagesReducerTest(
                 ),
                 operation = ConversationDetailEvent.MessagesData(
                     messagesUiModels = allMessages,
-                    messagesLabelIds = emptyMap(),
                     requestScrollToMessageId = null,
                     filterByLocation = null,
                     shouldHideMessagesBasedOnTrashFilter = false

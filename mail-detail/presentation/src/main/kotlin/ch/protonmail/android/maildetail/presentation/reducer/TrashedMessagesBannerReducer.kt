@@ -18,12 +18,12 @@
 
 package ch.protonmail.android.maildetail.presentation.reducer
 
+import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.maildetail.presentation.R
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailOperation
 import ch.protonmail.android.maildetail.presentation.model.TrashedMessagesBannerState
 import ch.protonmail.android.maildetail.presentation.model.TrashedMessagesBannerUiModel
-import ch.protonmail.android.maillabel.domain.model.SystemLabelId.Trash
 import javax.inject.Inject
 
 class TrashedMessagesBannerReducer @Inject constructor() {
@@ -32,9 +32,14 @@ class TrashedMessagesBannerReducer @Inject constructor() {
         is ConversationDetailEvent.MessagesData -> reduceMessagesData(operation)
     }
 
+    @MissingRustApi
+    // Need rust to expose data on when to show the banner
     private fun reduceMessagesData(operation: ConversationDetailEvent.MessagesData) = with(operation) {
+        val locationIsTrashAndConvoContainsTrash = false
+        val locationIsSpamAndConvoContainsSpam = false
+
         when {
-            filterByLocation == Trash.labelId && messagesLabelIds.any { it.value.contains(Trash.labelId).not() } -> {
+            locationIsTrashAndConvoContainsTrash -> {
                 when {
                     shouldHideMessagesBasedOnTrashFilter -> TrashedMessagesBannerState.Shown(
                         TrashedMessagesBannerUiModel(R.string.non_trashed_messages_banner, R.string.show)
@@ -44,7 +49,7 @@ class TrashedMessagesBannerReducer @Inject constructor() {
                     )
                 }
             }
-            filterByLocation != Trash.labelId && messagesLabelIds.any { it.value.contains(Trash.labelId) } -> {
+            locationIsSpamAndConvoContainsSpam -> {
                 when {
                     shouldHideMessagesBasedOnTrashFilter -> TrashedMessagesBannerState.Shown(
                         TrashedMessagesBannerUiModel(R.string.trashed_messages_banner, R.string.show)

@@ -1,15 +1,12 @@
 package ch.protonmail.android.maildetail.presentation.reducer
 
-import ch.protonmail.android.maildetail.presentation.R
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMessageUiModel
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailOperation
 import ch.protonmail.android.maildetail.presentation.model.TrashedMessagesBannerState
-import ch.protonmail.android.maildetail.presentation.model.TrashedMessagesBannerUiModel
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId.Archive
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId.Inbox
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId.Trash
-import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
 import kotlinx.collections.immutable.toImmutableList
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
@@ -41,67 +38,42 @@ class TrashedMessagesBannerReducerTest(
             TestInput(
                 operation = ConversationDetailEvent.MessagesData(
                     messagesUiModels = emptyList<ConversationDetailMessageUiModel>().toImmutableList(),
-                    messagesLabelIds = mapOf(MessageIdSample.Invoice to listOf(Archive.labelId)),
                     requestScrollToMessageId = null,
                     filterByLocation = Trash.labelId,
                     shouldHideMessagesBasedOnTrashFilter = true
                 ),
-                expectedState = TrashedMessagesBannerState.Shown(
-                    TrashedMessagesBannerUiModel(
-                        message = R.string.non_trashed_messages_banner,
-                        action = R.string.show
-                    )
-                )
+                expectedState = TrashedMessagesBannerState.Hidden
             ),
             TestInput(
                 operation = ConversationDetailEvent.MessagesData(
                     messagesUiModels = emptyList<ConversationDetailMessageUiModel>().toImmutableList(),
-                    messagesLabelIds = mapOf(MessageIdSample.Invoice to listOf(Trash.labelId)),
                     requestScrollToMessageId = null,
                     filterByLocation = Archive.labelId,
                     shouldHideMessagesBasedOnTrashFilter = true
                 ),
-                expectedState = TrashedMessagesBannerState.Shown(
-                    TrashedMessagesBannerUiModel(
-                        message = R.string.trashed_messages_banner,
-                        action = R.string.show
-                    )
-                )
+                expectedState = TrashedMessagesBannerState.Hidden
             ),
             TestInput(
                 operation = ConversationDetailEvent.MessagesData(
                     messagesUiModels = emptyList<ConversationDetailMessageUiModel>().toImmutableList(),
-                    messagesLabelIds = mapOf(MessageIdSample.Invoice to listOf(Archive.labelId)),
                     requestScrollToMessageId = null,
                     filterByLocation = Trash.labelId,
                     shouldHideMessagesBasedOnTrashFilter = false
                 ),
-                expectedState = TrashedMessagesBannerState.Shown(
-                    TrashedMessagesBannerUiModel(
-                        message = R.string.non_trashed_messages_banner,
-                        action = R.string.hide
-                    )
-                )
+                expectedState = TrashedMessagesBannerState.Hidden
             ),
             TestInput(
                 operation = ConversationDetailEvent.MessagesData(
                     messagesUiModels = emptyList<ConversationDetailMessageUiModel>().toImmutableList(),
-                    messagesLabelIds = mapOf(MessageIdSample.Invoice to listOf(Trash.labelId)),
                     requestScrollToMessageId = null,
                     filterByLocation = Archive.labelId,
                     shouldHideMessagesBasedOnTrashFilter = false
                 ),
-                expectedState = TrashedMessagesBannerState.Shown(
-                    TrashedMessagesBannerUiModel(
-                        message = R.string.trashed_messages_banner,
-                        action = R.string.hide
-                    )
-                )
+                expectedState = TrashedMessagesBannerState.Hidden
             ),
             TestInput(
                 operation = ConversationDetailEvent.MessagesData(
                     messagesUiModels = emptyList<ConversationDetailMessageUiModel>().toImmutableList(),
-                    messagesLabelIds = mapOf(MessageIdSample.Invoice to listOf(Inbox.labelId)),
                     requestScrollToMessageId = null,
                     filterByLocation = Inbox.labelId,
                     shouldHideMessagesBasedOnTrashFilter = true

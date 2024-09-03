@@ -66,7 +66,6 @@ sealed interface ConversationDetailEvent : ConversationDetailOperation {
 
     data class MessagesData(
         val messagesUiModels: ImmutableList<ConversationDetailMessageUiModel>,
-        val messagesLabelIds: Map<MessageId, List<LabelId>>,
         val requestScrollToMessageId: MessageIdUiModel?,
         val filterByLocation: LabelId?,
         val shouldHideMessagesBasedOnTrashFilter: Boolean

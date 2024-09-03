@@ -246,14 +246,12 @@ class ConversationDetailReducerTest(
             ConversationDetailEvent.ErrorLabelingConversation affects ErrorBar,
             ConversationDetailEvent.MessagesData(
                 emptyList<ConversationDetailMessageUiModel>().toImmutableList(),
-                emptyMap(),
                 null,
                 null,
                 false
             ) affects listOf(Messages, TrashedMessagesBanner),
             ConversationDetailEvent.MessagesData(
                 allMessagesFirstExpanded,
-                emptyMap(),
                 allMessagesFirstExpanded.first().messageId,
                 null,
                 false

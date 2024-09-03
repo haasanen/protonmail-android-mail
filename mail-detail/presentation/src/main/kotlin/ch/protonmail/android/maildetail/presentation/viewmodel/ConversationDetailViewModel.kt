@@ -341,14 +341,15 @@ class ConversationDetailViewModel @Inject constructor(
                             .let { messageIdUiModelMapper.toUiModel(it) }
                     if (stateIsLoading() && allCollapsed(conversationViewState.messagesState)) {
                         ConversationDetailEvent.MessagesData(
-                            messagesUiModels, emptyMap(), initialScrollTo, filterByLocation,
+                            messagesUiModels,
+                            initialScrollTo,
+                            filterByLocation,
                             conversationViewState.shouldHideMessagesBasedOnTrashFilter
                         )
                     } else {
                         val requestScrollTo = requestScrollToMessageId(conversationViewState.messagesState)
                         ConversationDetailEvent.MessagesData(
                             messagesUiModels,
-                            emptyMap(),
                             requestScrollTo,
                             filterByLocation,
                             conversationViewState.shouldHideMessagesBasedOnTrashFilter
