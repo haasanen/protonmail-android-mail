@@ -52,4 +52,9 @@
     <string name="auth_second_factor_recovery_label">Recovery code</string>
     <string name="auth_second_factor_switch_to_recovery">Use recovery code</string>
     <string name="auth_second_factor_switch_to_totp">Use two-factor code</string>
+    <string name="auth_two_pass_title">Unlock your mailbox</string>
+    <string name="auth_two_pass_input_label">Mailbox password</string>
+    <string name="auth_two_pass_unlock">Unlock</string>
+    <string name="auth_two_pass_forgot_password">Forgot password</string>
+    <string name="auth_two_pass_input_empty">Password cannot be empty</string>
 </resources>
