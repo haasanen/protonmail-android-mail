@@ -19,25 +19,21 @@
 package ch.protonmail.android.mailcontact.data
 
 import arrow.core.Either
-import arrow.core.raise.either
-import ch.protonmail.android.mailcontact.data.local.ContactDetailLocalDataSource
-import ch.protonmail.android.mailcontact.data.remote.ContactDetailRemoteDataSource
+import arrow.core.left
+import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcontact.domain.repository.ContactDetailRepository
 import ch.protonmail.android.mailcontact.domain.repository.ContactDetailRepository.ContactDetailErrors
 import me.proton.core.contact.domain.entity.ContactId
 import me.proton.core.domain.entity.UserId
+import timber.log.Timber
 import javax.inject.Inject
 
-class ContactDetailRepositoryImpl @Inject constructor(
-    private val contactDetailLocalDataSource: ContactDetailLocalDataSource,
-    private val contactDetailRemoteDataSource: ContactDetailRemoteDataSource
-) : ContactDetailRepository {
+@MissingRustApi
+// Bind this to rust lib when functionality is available
+class ContactDetailRepositoryImpl @Inject constructor() : ContactDetailRepository {
 
-    override suspend fun deleteContact(userId: UserId, contactId: ContactId): Either<ContactDetailErrors, Unit> =
-        either {
-            Either.catch { contactDetailLocalDataSource.deleteContact(contactId) }
-                .mapLeft { ContactDetailErrors.ContactDetailLocalDataSourceError }
-                .bind()
-            contactDetailRemoteDataSource.deleteContact(userId, contactId)
-        }
+    override suspend fun deleteContact(userId: UserId, contactId: ContactId): Either<ContactDetailErrors, Unit> {
+        Timber.w("Not implemented")
+        return ContactDetailErrors.ContactDetailLocalDataSourceError.left()
+    }
 }

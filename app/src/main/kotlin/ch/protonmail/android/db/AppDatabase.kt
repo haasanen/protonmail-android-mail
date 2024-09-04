@@ -21,10 +21,6 @@ package ch.protonmail.android.db
 import android.content.Context
 import androidx.room.Database
 import androidx.room.TypeConverters
-import ch.protonmail.android.mailmessage.data.local.converters.AttachmentWorkerStatusConverters
-import ch.protonmail.android.mailmessage.data.local.converters.UriConverter
-import ch.protonmail.android.mailpagination.data.local.PageIntervalDatabase
-import ch.protonmail.android.mailpagination.data.local.entity.PageIntervalEntity
 import me.proton.core.account.data.db.AccountConverters
 import me.proton.core.account.data.db.AccountDatabase
 import me.proton.core.account.data.entity.AccountEntity
@@ -141,8 +137,6 @@ import me.proton.core.usersettings.data.entity.UserSettingsEntity
         NotificationEntity::class,
         // push
         PushEntity::class,
-        // mail-pagination
-        PageIntervalEntity::class,
         // in app purchase
         GooglePurchaseEntity::class,
         PurchaseEntity::class,
@@ -169,9 +163,7 @@ import me.proton.core.usersettings.data.entity.UserSettingsEntity
     LabelConverters::class,
     ChallengeConverters::class,
     NotificationConverters::class,
-    PushConverters::class,
-    AttachmentWorkerStatusConverters::class,
-    UriConverter::class
+    PushConverters::class
 )
 @Suppress("UnnecessaryAbstractClass")
 abstract class AppDatabase :
@@ -190,7 +182,6 @@ abstract class AppDatabase :
     LabelDatabase,
     FeatureFlagDatabase,
     ChallengeDatabase,
-    PageIntervalDatabase,
     PaymentDatabase,
     ObservabilityDatabase,
     KeyTransparencyDatabase,

@@ -59,7 +59,6 @@ include(":mail-message:domain")
 include(":mail-message:presentation")
 
 include(":mail-conversation:dagger")
-include(":mail-conversation:data")
 include(":mail-conversation:data-rust")
 include(":mail-conversation:domain")
 include(":mail-conversation:presentation")

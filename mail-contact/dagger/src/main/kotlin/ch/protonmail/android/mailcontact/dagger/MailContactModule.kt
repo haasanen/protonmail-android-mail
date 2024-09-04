@@ -22,14 +22,6 @@ import ch.protonmail.android.mailcontact.data.ContactDetailRepositoryImpl
 import ch.protonmail.android.mailcontact.data.ContactGroupRepositoryImpl
 import ch.protonmail.android.mailcontact.data.DeviceContactsRepositoryImpl
 import ch.protonmail.android.mailcontact.data.DeviceContactsSuggestionsPromptImpl
-import ch.protonmail.android.mailcontact.data.local.ContactDetailLocalDataSource
-import ch.protonmail.android.mailcontact.data.local.ContactDetailLocalDataSourceImpl
-import ch.protonmail.android.mailcontact.data.local.ContactGroupLocalDataSource
-import ch.protonmail.android.mailcontact.data.local.ContactGroupLocalDataSourceImpl
-import ch.protonmail.android.mailcontact.data.remote.ContactDetailRemoteDataSource
-import ch.protonmail.android.mailcontact.data.remote.ContactDetailRemoteDataSourceImpl
-import ch.protonmail.android.mailcontact.data.remote.ContactGroupRemoteDataSource
-import ch.protonmail.android.mailcontact.data.remote.ContactGroupRemoteDataSourceImpl
 import ch.protonmail.android.mailcontact.domain.DeviceContactsSuggestionsPrompt
 import ch.protonmail.android.mailcontact.domain.repository.ContactDetailRepository
 import ch.protonmail.android.mailcontact.domain.repository.ContactGroupRepository
@@ -47,25 +39,7 @@ abstract class MailContactModule {
 
     @Binds
     @Reusable
-    abstract fun bindContactDetailLocalDataSource(impl: ContactDetailLocalDataSourceImpl): ContactDetailLocalDataSource
-
-    @Binds
-    @Reusable
-    abstract fun bindContactDetailRemoteDataSource(
-        impl: ContactDetailRemoteDataSourceImpl
-    ): ContactDetailRemoteDataSource
-
-    @Binds
-    @Reusable
     abstract fun bindContactDetailRepository(impl: ContactDetailRepositoryImpl): ContactDetailRepository
-
-    @Binds
-    @Reusable
-    abstract fun bindContactGroupLocalDataSource(impl: ContactGroupLocalDataSourceImpl): ContactGroupLocalDataSource
-
-    @Binds
-    @Reusable
-    abstract fun bindContactGroupRemoteDataSource(impl: ContactGroupRemoteDataSourceImpl): ContactGroupRemoteDataSource
 
     @Binds
     @Reusable
