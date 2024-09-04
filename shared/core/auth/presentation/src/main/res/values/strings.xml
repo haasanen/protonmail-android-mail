@@ -43,4 +43,13 @@
     <string name="auth_login_error_invalid_action_human_verification_challenge">A human verification is needed.</string>
     <string name="auth_login_error_invalid_action_invalid_credentials">Incorrect login credentials. Please try again.</string>
     <string name="auth_login_error_invalid_action_unsupported_tfa">Unsupported two factor.</string>
+
+    <string name="auth_second_factor_title">Two-factor authentication</string>
+    <string name="auth_second_factor_authenticate">Authenticate</string>
+    <string name="auth_second_factor_totp_input_help">Enter the 6-digit code.</string>
+    <string name="auth_second_factor_totp_input_label">Two-factor code</string>
+    <string name="auth_second_factor_recovery_help">Enter an 8-character recovery code.</string>
+    <string name="auth_second_factor_recovery_label">Recovery code</string>
+    <string name="auth_second_factor_switch_to_recovery">Use recovery code</string>
+    <string name="auth_second_factor_switch_to_totp">Use two-factor code</string>
 </resources>

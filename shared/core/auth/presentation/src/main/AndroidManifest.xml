@@ -33,6 +33,10 @@
             android:name=".login.LoginHelpActivity"
             android:windowSoftInputMode="adjustResize" />
 
+        <activity
+            android:name=".secondfactor.SecondFactorActivity"
+            android:windowSoftInputMode="adjustResize" />
+
     </application>
 
 </manifest>
