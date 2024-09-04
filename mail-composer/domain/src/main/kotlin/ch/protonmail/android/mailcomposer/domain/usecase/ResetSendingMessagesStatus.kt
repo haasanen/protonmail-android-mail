@@ -18,26 +18,16 @@
 
 package ch.protonmail.android.mailcomposer.domain.usecase
 
-import ch.protonmail.android.mailmessage.domain.model.DraftSyncState
-import ch.protonmail.android.mailmessage.domain.repository.DraftStateRepository
-import kotlinx.coroutines.flow.firstOrNull
+import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import me.proton.core.domain.entity.UserId
+import timber.log.Timber
 import javax.inject.Inject
 
-class ResetSendingMessagesStatus @Inject constructor(
-    private val draftStateRepository: DraftStateRepository,
-    private val resetDraftStateError: ResetDraftStateError,
-    private val confirmSendingMessageStatus: ConfirmSendingMessageStatus
-) {
+@MissingRustApi
+// To be bound to rust or dropped when implementing send
+class ResetSendingMessagesStatus @Inject constructor() {
 
     suspend operator fun invoke(userId: UserId) {
-        draftStateRepository.observeAll(userId).firstOrNull()?.map {
-            if (it.state == DraftSyncState.ErrorSending || it.state == DraftSyncState.ErrorUploadAttachments) {
-                resetDraftStateError(it.userId, it.messageId)
-                confirmSendingMessageStatus(it.userId, it.messageId)
-            } else if (it.state == DraftSyncState.Sent) {
-                confirmSendingMessageStatus(it.userId, it.messageId)
-            }
-        }
+        Timber.w("Not implemented")
     }
 }

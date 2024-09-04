@@ -20,10 +20,6 @@ package ch.protonmail.android.db
 
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
-import ch.protonmail.android.composer.data.local.DraftStateDatabase
-import ch.protonmail.android.mailconversation.data.local.ConversationDatabase
-import ch.protonmail.android.mailmessage.data.local.MessageDatabase
-import ch.protonmail.android.mailmessage.data.local.SearchResultsDatabase
 import me.proton.core.account.data.db.AccountDatabase
 import me.proton.core.contact.data.local.db.ContactDatabase
 import me.proton.core.eventmanager.data.db.EventMetadataDatabase
@@ -44,7 +40,6 @@ object AppDatabaseMigrations {
 
     val MIGRATION_1_2 = object : Migration(1, 2) {
         override fun migrate(db: SupportSQLiteDatabase) {
-            MessageDatabase.MIGRATION_0.migrate(db)
         }
     }
 
@@ -63,7 +58,6 @@ object AppDatabaseMigrations {
 
     val MIGRATION_4_5 = object : Migration(4, 5) {
         override fun migrate(db: SupportSQLiteDatabase) {
-            MessageDatabase.MIGRATION_1.migrate(db)
         }
 
     }
@@ -90,19 +84,16 @@ object AppDatabaseMigrations {
 
     val MIGRATION_8_9 = object : Migration(8, 9) {
         override fun migrate(db: SupportSQLiteDatabase) {
-            MessageDatabase.MIGRATION_2.migrate(db)
         }
     }
 
     val MIGRATION_9_10 = object : Migration(9, 10) {
         override fun migrate(db: SupportSQLiteDatabase) {
-            MessageDatabase.MIGRATION_3.migrate(db)
         }
     }
 
     val MIGRATION_10_11 = object : Migration(10, 11) {
         override fun migrate(db: SupportSQLiteDatabase) {
-            DraftStateDatabase.MIGRATION_0.migrate(db)
         }
     }
 
@@ -115,8 +106,6 @@ object AppDatabaseMigrations {
 
     val MIGRATION_12_13 = object : Migration(12, 13) {
         override fun migrate(db: SupportSQLiteDatabase) {
-            MessageDatabase.MIGRATION_4.migrate(db)
-            DraftStateDatabase.MIGRATION_1.migrate(db)
         }
     }
 
@@ -136,19 +125,16 @@ object AppDatabaseMigrations {
 
     val MIGRATION_15_16 = object : Migration(15, 16) {
         override fun migrate(db: SupportSQLiteDatabase) {
-            DraftStateDatabase.MIGRATION_2.migrate(db)
         }
     }
 
     val MIGRATION_16_17 = object : Migration(16, 17) {
         override fun migrate(db: SupportSQLiteDatabase) {
-            DraftStateDatabase.MIGRATION_3.migrate(db)
         }
     }
 
     val MIGRATION_17_18 = object : Migration(17, 18) {
         override fun migrate(db: SupportSQLiteDatabase) {
-            MessageDatabase.MIGRATION_5.migrate(db)
         }
 
     }
@@ -167,49 +153,37 @@ object AppDatabaseMigrations {
 
     val MIGRATION_20_21 = object : Migration(20, 21) {
         override fun migrate(db: SupportSQLiteDatabase) {
-            DraftStateDatabase.MIGRATION_4.migrate(db)
         }
     }
 
     val MIGRATION_21_22 = object : Migration(21, 22) {
         override fun migrate(db: SupportSQLiteDatabase) {
-            // Empty migration as UnreadCountDatabase was deleted
-            // when tables were distributed to message and conversation DBs (migration 23->24)
         }
     }
 
     val MIGRATION_22_23 = object : Migration(22, 23) {
         override fun migrate(db: SupportSQLiteDatabase) {
-            DraftStateDatabase.MIGRATION_5.migrate(db)
         }
     }
 
     val MIGRATION_23_24 = object : Migration(23, 24) {
         override fun migrate(db: SupportSQLiteDatabase) {
-            // Add UnreadMessageCount Table
-            MessageDatabase.MIGRATION_6.migrate(db)
-            // Add UnreadConversationsCount Table
-            ConversationDatabase.MIGRATION_0.migrate(db)
         }
     }
-
 
     val MIGRATION_24_25 = object : Migration(24, 25) {
         override fun migrate(db: SupportSQLiteDatabase) {
             // Create SearchResults Table
-            SearchResultsDatabase.MIGRATION_0.migrate(db)
         }
     }
 
     val MIGRATION_25_26 = object : Migration(25, 26) {
         override fun migrate(db: SupportSQLiteDatabase) {
-            DraftStateDatabase.MIGRATION_6.migrate(db)
         }
     }
 
     val MIGRATION_26_27 = object : Migration(26, 27) {
         override fun migrate(db: SupportSQLiteDatabase) {
-            DraftStateDatabase.MIGRATION_7.migrate(db)
         }
     }
 
@@ -223,13 +197,11 @@ object AppDatabaseMigrations {
 
     val MIGRATION_28_29 = object : Migration(28, 29) {
         override fun migrate(db: SupportSQLiteDatabase) {
-            DraftStateDatabase.MIGRATION_8.migrate(db)
         }
     }
 
     val MIGRATION_29_30 = object : Migration(29, 30) {
         override fun migrate(db: SupportSQLiteDatabase) {
-            MessageDatabase.MIGRATION_7.migrate(db)
         }
     }
 
@@ -262,7 +234,6 @@ object AppDatabaseMigrations {
 
     val MIGRATION_34_35 = object : Migration(34, 35) {
         override fun migrate(db: SupportSQLiteDatabase) {
-            MessageDatabase.MIGRATION_8.migrate(db)
             AccountDatabase.MIGRATION_8.migrate(db)
             UserSettingsDatabase.MIGRATION_7.migrate(db)
             PublicAddressDatabase.MIGRATION_3.migrate(db)
@@ -272,8 +243,6 @@ object AppDatabaseMigrations {
 
     val MIGRATION_35_36 = object : Migration(35, 36) {
         override fun migrate(db: SupportSQLiteDatabase) {
-            MessageDatabase.MIGRATION_9.migrate(db)
-            ConversationDatabase.MIGRATION_1.migrate(db)
             ContactDatabase.MIGRATION_2.migrate(db)
         }
     }

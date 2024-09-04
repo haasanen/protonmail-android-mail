@@ -18,22 +18,22 @@
 
 package ch.protonmail.android.mailcomposer.domain.usecase
 
+import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailmessage.domain.model.MessageId
-import ch.protonmail.android.mailmessage.domain.repository.DraftStateRepository
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.transformLatest
+import ch.protonmail.android.mailmessage.domain.model.SendingError
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
 import me.proton.core.domain.entity.UserId
+import timber.log.Timber
 import javax.inject.Inject
 
-class ObserveMessageSendingError @Inject constructor(
-    private val draftStateRepository: DraftStateRepository
-) {
+@MissingRustApi
+// To be bound to rust or dropped when implementing send
+class ObserveMessageSendingError @Inject constructor() {
 
-    operator fun invoke(userId: UserId, messageId: MessageId) =
-        draftStateRepository.observe(userId, messageId).transformLatest { draftState ->
-            draftState.getOrNull()?.sendingError?.let { sendingError ->
-                emit(sendingError)
-            }
-        }.distinctUntilChanged()
+    operator fun invoke(userId: UserId, messageId: MessageId): Flow<SendingError> {
+        Timber.w("ObserveMessageSendingError Not implemented")
+        return flowOf()
+    }
 
 }

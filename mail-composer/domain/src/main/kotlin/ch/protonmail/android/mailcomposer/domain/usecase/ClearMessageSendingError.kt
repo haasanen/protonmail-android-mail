@@ -18,16 +18,22 @@
 
 package ch.protonmail.android.mailcomposer.domain.usecase
 
+import arrow.core.Either
+import arrow.core.left
+import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
+import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailmessage.domain.model.MessageId
-import ch.protonmail.android.mailmessage.domain.repository.DraftStateRepository
 import me.proton.core.domain.entity.UserId
+import timber.log.Timber
 import javax.inject.Inject
 
-class ClearMessageSendingError @Inject constructor(
-    private val draftStateRepository: DraftStateRepository
-) {
+@MissingRustApi
+// To be bound to rust error handling (send error) or dropped when implementing send
+class ClearMessageSendingError @Inject constructor() {
 
-    suspend operator fun invoke(userId: UserId, messageId: MessageId) =
-        draftStateRepository.updateSendingError(userId, messageId, null)
+    suspend operator fun invoke(userId: UserId, messageId: MessageId): Either<DataError, Unit> {
+        Timber.w("Not implemented")
+        return DataError.Local.Unknown.left()
+    }
 
 }

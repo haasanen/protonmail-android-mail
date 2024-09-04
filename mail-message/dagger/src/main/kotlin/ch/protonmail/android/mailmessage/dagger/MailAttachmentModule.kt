@@ -18,10 +18,6 @@
 
 package ch.protonmail.android.mailmessage.dagger
 
-import ch.protonmail.android.mailmessage.data.local.AttachmentLocalDataSource
-import ch.protonmail.android.mailmessage.data.local.AttachmentLocalDataSourceImpl
-import ch.protonmail.android.mailmessage.data.remote.AttachmentRemoteDataSource
-import ch.protonmail.android.mailmessage.data.remote.AttachmentRemoteDataSourceImpl
 import ch.protonmail.android.mailmessage.data.repository.AttachmentRepositoryImpl
 import ch.protonmail.android.mailmessage.domain.repository.AttachmentRepository
 import dagger.Binds
@@ -33,18 +29,6 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class MailAttachmentModule {
-
-    @Binds
-    @Singleton
-    abstract fun bindAttachmentLocalDataSource(
-        localDataSourceImpl: AttachmentLocalDataSourceImpl
-    ): AttachmentLocalDataSource
-
-    @Binds
-    @Singleton
-    abstract fun bindAttachmentRemoteDataSource(
-        remoteDataSourceImpl: AttachmentRemoteDataSourceImpl
-    ): AttachmentRemoteDataSource
 
     @Binds
     @Singleton

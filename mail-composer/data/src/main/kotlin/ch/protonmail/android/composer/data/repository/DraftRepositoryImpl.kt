@@ -18,54 +18,25 @@
 
 package ch.protonmail.android.composer.data.repository
 
-import androidx.work.ExistingWorkPolicy
-import androidx.work.WorkManager
-import ch.protonmail.android.composer.data.remote.UploadAttachmentsWorker
-import ch.protonmail.android.composer.data.remote.UploadDraftWorker
-import ch.protonmail.android.mailcommon.data.worker.Enqueuer
+import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcomposer.domain.repository.DraftRepository
-import ch.protonmail.android.mailcomposer.domain.usecase.DraftUploadTracker
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import javax.inject.Inject
 
-class DraftRepositoryImpl @Inject constructor(
-    private val enqueuer: Enqueuer,
-    private val workerManager: WorkManager,
-    private val draftUploadTracker: DraftUploadTracker
-) : DraftRepository {
+@MissingRustApi
+class DraftRepositoryImpl @Inject constructor() : DraftRepository {
 
     override suspend fun upload(userId: UserId, messageId: MessageId) {
-        if (draftUploadTracker.uploadRequired(userId, messageId)) {
-            val uniqueWorkId = UploadDraftWorker.id(messageId)
-
-            enqueuer.enqueueUniqueWork<UploadDraftWorker>(
-                userId = userId,
-                workerId = uniqueWorkId,
-                params = UploadDraftWorker.params(userId, messageId),
-                existingWorkPolicy = ExistingWorkPolicy.KEEP
-            )
-        } else {
-            Timber.v("Draft: Upload skipped for $messageId")
-        }
+        Timber.w("rust-draft: missing implementation!")
     }
 
     override suspend fun forceUpload(userId: UserId, messageId: MessageId) {
-        Timber.d("Draft force upload: Adding work to upload $messageId")
-        val uniqueWorkId = UploadDraftWorker.id(messageId)
-
-        enqueuer.enqueueInChain<UploadDraftWorker, UploadAttachmentsWorker>(
-            userId = userId,
-            uniqueWorkId = uniqueWorkId,
-            params1 = UploadDraftWorker.params(userId, messageId),
-            params2 = UploadAttachmentsWorker.params(userId, messageId),
-            existingWorkPolicy = ExistingWorkPolicy.APPEND_OR_REPLACE
-        )
+        Timber.w("rust-draft: missing implementation!")
     }
 
     override fun cancelUploadDraft(messageId: MessageId) {
-        val uniqueWorkId = UploadDraftWorker.id(messageId)
-        workerManager.cancelUniqueWork(uniqueWorkId)
+        Timber.w("rust-draft: missing implementation!")
     }
 }

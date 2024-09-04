@@ -18,16 +18,14 @@
 
 package ch.protonmail.android.mailcomposer.domain.usecase
 
+import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.domain.coroutines.DefaultDispatcher
-import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailcomposer.domain.repository.DraftRepository
-import ch.protonmail.android.mailmessage.domain.repository.DraftStateRepository
+import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import javax.inject.Inject
@@ -35,8 +33,9 @@ import javax.inject.Singleton
 import kotlin.time.Duration.Companion.seconds
 
 @Singleton
+@MissingRustApi
+// To be bound to rust or dropped when implementing send
 class DraftUploader @Inject constructor(
-    private val draftStateRepository: DraftStateRepository,
     private val draftRepository: DraftRepository,
     @DefaultDispatcher
     private val dispatcher: CoroutineDispatcher
@@ -50,20 +49,11 @@ class DraftUploader @Inject constructor(
         action: DraftAction,
         scope: CoroutineScope
     ) {
-        syncJob?.cancel()
-        syncJob = scope.launch(dispatcher) {
-            draftStateRepository.createOrUpdateLocalState(userId, messageId, action)
-            while (true) {
-                delay(SyncInterval)
-                Timber.d("Draft syncer: syncing draft $messageId")
-                draftRepository.upload(userId, messageId)
-            }
-        }
+        Timber.w("Not implemented")
     }
 
     suspend fun upload(userId: UserId, messageId: MessageId) {
-        Timber.d("Draft syncer: Forcing upload of draft for $messageId")
-        draftRepository.forceUpload(userId, messageId)
+        Timber.w("Not implemented")
     }
 
     fun stopContinuousUpload() {

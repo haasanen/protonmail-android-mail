@@ -18,34 +18,21 @@
 
 package ch.protonmail.android.mailcomposer.domain.usecase
 
-import ch.protonmail.android.mailmessage.domain.model.DraftSyncState
+import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcomposer.domain.model.MessageSendingStatus
-import ch.protonmail.android.mailmessage.domain.repository.DraftStateRepository
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
 import me.proton.core.domain.entity.UserId
+import timber.log.Timber
 import javax.inject.Inject
 
-class ObserveSendingMessagesStatus @Inject constructor(
-    private val draftStateRepository: DraftStateRepository
-) {
+@MissingRustApi
+// To be bound to rust or dropped when implementing send
+class ObserveSendingMessagesStatus @Inject constructor() {
 
-    operator fun invoke(userId: UserId) = draftStateRepository.observeAll(userId).map { draftStates ->
-        val unconfirmedDraftStates = draftStates.filter { !it.sendingStatusConfirmed }
-
-        if (unconfirmedDraftStates.any { it.state == DraftSyncState.ErrorSending }) {
-            return@map MessageSendingStatus.SendMessageError
-        }
-
-        if (unconfirmedDraftStates.any { it.state == DraftSyncState.ErrorUploadAttachments }) {
-            return@map MessageSendingStatus.UploadAttachmentsError
-        }
-
-        if (unconfirmedDraftStates.any { it.state == DraftSyncState.Sent }) {
-            return@map MessageSendingStatus.MessageSent
-        }
-
-        MessageSendingStatus.None
-    }.distinctUntilChanged()
+    operator fun invoke(userId: UserId): Flow<MessageSendingStatus> {
+        Timber.w("ObserveMessageSendingError Not implemented")
+        return flowOf()
+    }
 
 }

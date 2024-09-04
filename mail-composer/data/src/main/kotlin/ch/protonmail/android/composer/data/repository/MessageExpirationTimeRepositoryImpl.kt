@@ -19,25 +19,31 @@
 package ch.protonmail.android.composer.data.repository
 
 import arrow.core.Either
-import ch.protonmail.android.composer.data.local.MessageExpirationTimeLocalDataSource
+import arrow.core.left
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcomposer.domain.model.MessageExpirationTime
 import ch.protonmail.android.mailcomposer.domain.repository.MessageExpirationTimeRepository
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
 import me.proton.core.domain.entity.UserId
+import timber.log.Timber
 import javax.inject.Inject
 
-class MessageExpirationTimeRepositoryImpl @Inject constructor(
-    private val messageExpirationTimeLocalDataSource: MessageExpirationTimeLocalDataSource
-) : MessageExpirationTimeRepository {
+class MessageExpirationTimeRepositoryImpl @Inject constructor() : MessageExpirationTimeRepository {
 
     override suspend fun saveMessageExpirationTime(
         messageExpirationTime: MessageExpirationTime
-    ): Either<DataError.Local, Unit> = messageExpirationTimeLocalDataSource.save(messageExpirationTime)
+    ): Either<DataError.Local, Unit> {
+        Timber.w("Not implemented")
+        return DataError.Local.Unknown.left()
+    }
 
     override suspend fun observeMessageExpirationTime(
         userId: UserId,
         messageId: MessageId
-    ): Flow<MessageExpirationTime?> = messageExpirationTimeLocalDataSource.observe(userId, messageId)
+    ): Flow<MessageExpirationTime?> {
+        Timber.w("Not implemented")
+        return flowOf(null)
+    }
 }

@@ -18,27 +18,30 @@
 
 package ch.protonmail.android.mailsettings.data.repository
 
-import ch.protonmail.android.mailmessage.data.local.AttachmentLocalDataSource
+import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailsettings.domain.model.ClearDataAction
 import ch.protonmail.android.mailsettings.domain.repository.LocalStorageDataRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
 import me.proton.core.domain.entity.UserId
+import timber.log.Timber
 import javax.inject.Inject
 
-@SuppressWarnings("NotImplementedDeclaration")
-class LocalStorageDataRepositoryImpl @Inject constructor(
-    private val attachmentLocalDataSource: AttachmentLocalDataSource
-) : LocalStorageDataRepository {
+@MissingRustApi
+// Rust to expose methods to clean the local DB...
+class LocalStorageDataRepositoryImpl @Inject constructor() : LocalStorageDataRepository {
 
-    override fun observeMessageDataTotalRawSize(): Flow<Long> = TODO("Missing rust implementation")
+    override fun observeMessageDataTotalRawSize(): Flow<Long> {
+        Timber.w("rust-settings: Not implemented! Rust to expose methods to get used storage size")
+        return flowOf(-1)
+    }
 
     override suspend fun getAttachmentDataSizeForUserId(userId: UserId): Long {
-        val folder = attachmentLocalDataSource.getAttachmentFolderForUserId(userId) ?: return 0
-        if (folder.isDirectory() && folder.list()?.isEmpty() == true) return 0
-        return folder.length()
+        Timber.w("rust-settings: Not implemented! Rust to expose methods to get attachments size")
+        return -1
     }
 
     override fun performClearData(userId: UserId, clearDataAction: ClearDataAction) {
-        TODO("Missing rust implementation")
+        Timber.w("rust-settings: Not implemented! Rust to expose methods to clear data")
     }
 }

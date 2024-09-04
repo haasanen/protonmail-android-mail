@@ -21,29 +21,8 @@ package ch.protonmail.android.db
 import android.content.Context
 import androidx.room.Database
 import androidx.room.TypeConverters
-import ch.protonmail.android.composer.data.local.DraftStateDatabase
-import ch.protonmail.android.composer.data.local.converters.AttachmentStateConverters
-import ch.protonmail.android.composer.data.local.converters.DraftStateConverters
-import ch.protonmail.android.composer.data.local.entity.MessageExpirationTimeEntity
-import ch.protonmail.android.composer.data.local.entity.MessagePasswordEntity
-import ch.protonmail.android.mailconversation.data.local.ConversationDatabase
-import ch.protonmail.android.mailconversation.data.local.converters.ConversationConverters
-import ch.protonmail.android.mailconversation.data.local.converters.MapConverters
-import ch.protonmail.android.mailconversation.data.local.entity.ConversationEntity
-import ch.protonmail.android.mailconversation.data.local.entity.ConversationLabelEntity
-import ch.protonmail.android.mailmessage.data.local.MessageConverters
-import ch.protonmail.android.mailmessage.data.local.MessageDatabase
-import ch.protonmail.android.mailmessage.data.local.SearchResultsDatabase
 import ch.protonmail.android.mailmessage.data.local.converters.AttachmentWorkerStatusConverters
 import ch.protonmail.android.mailmessage.data.local.converters.UriConverter
-import ch.protonmail.android.mailmessage.data.local.entity.AttachmentStateEntity
-import ch.protonmail.android.mailmessage.data.local.entity.DraftStateEntity
-import ch.protonmail.android.mailmessage.data.local.entity.MessageAttachmentEntity
-import ch.protonmail.android.mailmessage.data.local.entity.MessageAttachmentMetadataEntity
-import ch.protonmail.android.mailmessage.data.local.entity.MessageBodyEntity
-import ch.protonmail.android.mailmessage.data.local.entity.MessageEntity
-import ch.protonmail.android.mailmessage.data.local.entity.MessageLabelEntity
-import ch.protonmail.android.mailmessage.data.local.entity.SearchResultEntity
 import ch.protonmail.android.mailpagination.data.local.PageIntervalDatabase
 import ch.protonmail.android.mailpagination.data.local.entity.PageIntervalEntity
 import me.proton.core.account.data.db.AccountConverters
@@ -164,15 +143,6 @@ import me.proton.core.usersettings.data.entity.UserSettingsEntity
         PushEntity::class,
         // mail-pagination
         PageIntervalEntity::class,
-        // mail-message
-        MessageEntity::class,
-        MessageLabelEntity::class,
-        MessageBodyEntity::class,
-        MessageAttachmentEntity::class,
-        MessageAttachmentMetadataEntity::class,
-        // mail-conversation
-        ConversationEntity::class,
-        ConversationLabelEntity::class,
         // in app purchase
         GooglePurchaseEntity::class,
         PurchaseEntity::class,
@@ -182,14 +152,7 @@ import me.proton.core.usersettings.data.entity.UserSettingsEntity
         TelemetryEventEntity::class,
         // key transparency
         AddressChangeEntity::class,
-        SelfAuditResultEntity::class,
-        // draft state
-        DraftStateEntity::class,
-        AttachmentStateEntity::class,
-        MessagePasswordEntity::class,
-        MessageExpirationTimeEntity::class,
-        // Search results
-        SearchResultEntity::class
+        SelfAuditResultEntity::class
     ],
     version = AppDatabase.version,
     exportSchema = true
@@ -207,13 +170,8 @@ import me.proton.core.usersettings.data.entity.UserSettingsEntity
     ChallengeConverters::class,
     NotificationConverters::class,
     PushConverters::class,
-    MessageConverters::class,
-    ConversationConverters::class,
-    MapConverters::class,
     AttachmentWorkerStatusConverters::class,
-    UriConverter::class,
-    DraftStateConverters::class,
-    AttachmentStateConverters::class
+    UriConverter::class
 )
 @Suppress("UnnecessaryAbstractClass")
 abstract class AppDatabase :
@@ -233,16 +191,12 @@ abstract class AppDatabase :
     FeatureFlagDatabase,
     ChallengeDatabase,
     PageIntervalDatabase,
-    MessageDatabase,
-    ConversationDatabase,
     PaymentDatabase,
     ObservabilityDatabase,
     KeyTransparencyDatabase,
     NotificationDatabase,
     PushDatabase,
     TelemetryDatabase,
-    DraftStateDatabase,
-    SearchResultsDatabase,
     DeviceRecoveryDatabase {
 
     companion object {

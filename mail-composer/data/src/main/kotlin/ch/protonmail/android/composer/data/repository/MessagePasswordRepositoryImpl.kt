@@ -18,31 +18,41 @@
 
 package ch.protonmail.android.composer.data.repository
 
-import ch.protonmail.android.composer.data.local.MessagePasswordLocalDataSource
+import arrow.core.Either
+import arrow.core.left
+import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcomposer.domain.model.MessagePassword
 import ch.protonmail.android.mailcomposer.domain.repository.MessagePasswordRepository
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
 import me.proton.core.domain.entity.UserId
+import timber.log.Timber
 import javax.inject.Inject
 
-class MessagePasswordRepositoryImpl @Inject constructor(
-    private val messagePasswordLocalDataSource: MessagePasswordLocalDataSource
-) : MessagePasswordRepository {
+class MessagePasswordRepositoryImpl @Inject constructor() : MessagePasswordRepository {
 
-    override suspend fun saveMessagePassword(messagePassword: MessagePassword) =
-        messagePasswordLocalDataSource.save(messagePassword)
+    override suspend fun saveMessagePassword(messagePassword: MessagePassword): Either<DataError.Local, Unit> {
+        Timber.w("Not implemented")
+        return DataError.Local.Unknown.left()
+    }
 
     override suspend fun updateMessagePassword(
         userId: UserId,
         messageId: MessageId,
         password: String,
         passwordHint: String?
-    ) = messagePasswordLocalDataSource.update(userId, messageId, password, passwordHint)
+    ): Either<DataError.Local, Unit> {
+        Timber.w("Not implemented")
+        return DataError.Local.Unknown.left()
+    }
 
-    override suspend fun observeMessagePassword(userId: UserId, messageId: MessageId): Flow<MessagePassword?> =
-        messagePasswordLocalDataSource.observe(userId, messageId)
+    override suspend fun observeMessagePassword(userId: UserId, messageId: MessageId): Flow<MessagePassword?> {
+        Timber.w("Not implemented")
+        return flowOf()
+    }
 
-    override suspend fun deleteMessagePassword(userId: UserId, messageId: MessageId) =
-        messagePasswordLocalDataSource.delete(userId, messageId)
+    override suspend fun deleteMessagePassword(userId: UserId, messageId: MessageId) {
+        Timber.w("Not implemented")
+    }
 }

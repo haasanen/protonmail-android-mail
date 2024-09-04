@@ -18,29 +18,17 @@
 
 package ch.protonmail.android.mailcomposer.domain.usecase
 
-import ch.protonmail.android.mailmessage.domain.model.DraftSyncState
-import ch.protonmail.android.mailmessage.domain.repository.DraftStateRepository
-import ch.protonmail.android.mailcomposer.domain.repository.MessageRepository
+import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import javax.inject.Inject
 
-class SendMessage @Inject constructor(
-    private val messageRepository: MessageRepository,
-    private val draftStateRepository: DraftStateRepository,
-    private val moveToSentOptimistically: MoveToSentOptimistically,
-    private val injectAddressPublicKeyIntoMessage: InjectAddressPublicKeyIntoMessage
-) {
+@MissingRustApi
+// To be bound to rust or dropped when implementing send
+class SendMessage @Inject constructor() {
 
     suspend operator fun invoke(userId: UserId, messageId: MessageId) {
-        draftStateRepository.updateDraftSyncState(userId, messageId, DraftSyncState.Sending).onLeft {
-            Timber.e("SendMessage: error updating draft sync state: $it")
-        }
-        moveToSentOptimistically(userId, messageId)
-        injectAddressPublicKeyIntoMessage(userId, messageId).onLeft {
-            Timber.e("SendMessage: error injecting public key: $it")
-        }
-        messageRepository.send(userId, messageId)
+        Timber.w("SendMessage Not implemented")
     }
 }

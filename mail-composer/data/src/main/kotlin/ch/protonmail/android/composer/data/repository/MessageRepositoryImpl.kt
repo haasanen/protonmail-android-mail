@@ -18,60 +18,25 @@
 
 package ch.protonmail.android.composer.data.repository
 
-import androidx.work.ExistingWorkPolicy
 import arrow.core.Either
-import arrow.core.right
-import ch.protonmail.android.composer.data.remote.SendMessageWorker
-import ch.protonmail.android.composer.data.remote.UploadAttachmentsWorker
-import ch.protonmail.android.composer.data.remote.UploadDraftWorker
-import ch.protonmail.android.mailcommon.data.worker.Enqueuer
+import arrow.core.left
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcomposer.domain.repository.MessageRepository
-import ch.protonmail.android.maillabel.domain.model.SystemLabelId
-import ch.protonmail.android.mailmessage.data.local.MessageLocalDataSource
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import javax.inject.Inject
 
-class MessageRepositoryImpl @Inject constructor(
-    private val messageLocalDataSource: MessageLocalDataSource,
-    private val enqueuer: Enqueuer
-) : MessageRepository {
+class MessageRepositoryImpl @Inject constructor() : MessageRepository {
 
     override suspend fun send(userId: UserId, messageId: MessageId) {
         Timber.d("MessageRepository send $messageId")
-
-        enqueuer.enqueueInChain<UploadDraftWorker, UploadAttachmentsWorker, SendMessageWorker>(
-            userId = userId,
-            uniqueWorkId = UploadDraftWorker.id(messageId),
-            params1 = UploadDraftWorker.params(userId, messageId),
-            params2 = UploadAttachmentsWorker.params(userId, messageId),
-            params3 = SendMessageWorker.params(userId, messageId),
-            existingWorkPolicy = ExistingWorkPolicy.APPEND_OR_REPLACE
-        )
     }
 
-    override suspend fun moveMessageFromDraftsToSent(userId: UserId, messageId: MessageId): Either<DataError, Unit> {
-        // optimistically move message to "Sent folder", but only in local DB (for the time of sending)
-        return messageLocalDataSource.relabelMessages(
-            userId,
-            listOf(messageId),
-            labelIdsToAdd = setOf(SystemLabelId.Sent.labelId, SystemLabelId.AllSent.labelId),
-            labelIdsToRemove = setOf(SystemLabelId.Drafts.labelId, SystemLabelId.AllDrafts.labelId)
-        ).map { Unit.right() }
-    }
+    override suspend fun moveMessageFromDraftsToSent(userId: UserId, messageId: MessageId): Either<DataError, Unit> =
+        DataError.Local.Unknown.left()
 
     override suspend fun moveMessageBackFromSentToDrafts(userId: UserId, messageId: MessageId) {
-
-        // move message back from "Sent folder" to "Drafts", but only in local DB (to rollback the optimistic move
-        // to "Sent")
-        messageLocalDataSource.relabelMessages(
-            userId,
-            listOf(messageId),
-            labelIdsToAdd = setOf(SystemLabelId.Drafts.labelId, SystemLabelId.AllDrafts.labelId),
-            labelIdsToRemove = setOf(SystemLabelId.Sent.labelId, SystemLabelId.AllSent.labelId)
-        )
     }
 
 }

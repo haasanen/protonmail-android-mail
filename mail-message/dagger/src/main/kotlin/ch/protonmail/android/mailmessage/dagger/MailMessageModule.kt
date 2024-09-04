@@ -20,24 +20,16 @@ package ch.protonmail.android.mailmessage.dagger
 
 import ch.protonmail.android.maillabel.domain.SelectedMailLabelId
 import ch.protonmail.android.mailmessage.data.MessageRustCoroutineScope
-import ch.protonmail.android.mailmessage.data.local.MessageLocalDataSource
-import ch.protonmail.android.mailmessage.data.local.MessageLocalDataSourceImpl
 import ch.protonmail.android.mailmessage.data.local.RustMailbox
 import ch.protonmail.android.mailmessage.data.local.RustMailboxImpl
 import ch.protonmail.android.mailmessage.data.local.RustMessageDataSource
 import ch.protonmail.android.mailmessage.data.local.RustMessageDataSourceImpl
 import ch.protonmail.android.mailmessage.data.local.RustMessageQuery
 import ch.protonmail.android.mailmessage.data.local.RustMessageQueryImpl
-import ch.protonmail.android.mailmessage.data.local.SearchResultsLocalDataSource
-import ch.protonmail.android.mailmessage.data.local.SearchResultsLocalDataSourceImpl
-import ch.protonmail.android.mailmessage.data.repository.OutboxRepositoryImpl
 import ch.protonmail.android.mailmessage.data.repository.RustMessageRepositoryImpl
-import ch.protonmail.android.mailmessage.data.repository.SearchResultsRepositoryImpl
 import ch.protonmail.android.mailmessage.domain.paging.RustInvalidationTracker
 import ch.protonmail.android.mailmessage.domain.paging.RustInvalidationTrackerImpl
 import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
-import ch.protonmail.android.mailmessage.domain.repository.OutboxRepository
-import ch.protonmail.android.mailmessage.domain.repository.SearchResultsRepository
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -68,24 +60,6 @@ object MailMessageModule {
     @Module
     @InstallIn(SingletonComponent::class)
     internal interface BindsModule {
-
-        @Binds
-        @Singleton
-        fun provideMessageLocalDataSource(localDataSourceImpl: MessageLocalDataSourceImpl): MessageLocalDataSource
-
-        @Binds
-        @Singleton
-        fun provideOutboxRepositoryImpl(repositoryImpl: OutboxRepositoryImpl): OutboxRepository
-
-        @Binds
-        @Singleton
-        fun provideSearchResultsRepository(repositoryImpl: SearchResultsRepositoryImpl): SearchResultsRepository
-
-        @Binds
-        @Singleton
-        fun provideSearchResultsLocalDataSource(
-            localDataSourceImpl: SearchResultsLocalDataSourceImpl
-        ): SearchResultsLocalDataSource
 
         @Binds
         @Singleton

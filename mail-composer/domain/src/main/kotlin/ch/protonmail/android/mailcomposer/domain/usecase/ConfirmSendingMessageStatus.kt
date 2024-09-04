@@ -18,16 +18,17 @@
 
 package ch.protonmail.android.mailcomposer.domain.usecase
 
-import ch.protonmail.android.mailmessage.domain.repository.DraftStateRepository
+import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import me.proton.core.domain.entity.UserId
+import timber.log.Timber
 import javax.inject.Inject
 
-class ConfirmSendingMessageStatus @Inject constructor(
-    private val draftStateRepository: DraftStateRepository
-) {
+@MissingRustApi
+// To be bound to rust or dropped when implementing send
+class ConfirmSendingMessageStatus @Inject constructor() {
 
     suspend operator fun invoke(userId: UserId, messageId: MessageId) {
-        draftStateRepository.updateConfirmDraftSendingStatus(userId, messageId, true)
+        Timber.w("Not implemented")
     }
 }

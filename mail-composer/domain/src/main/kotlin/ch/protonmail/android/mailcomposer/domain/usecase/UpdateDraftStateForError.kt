@@ -18,14 +18,14 @@
 
 package ch.protonmail.android.mailcomposer.domain.usecase
 
+import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcomposer.domain.repository.MessageRepository
 import ch.protonmail.android.mailmessage.domain.model.DraftState
 import ch.protonmail.android.mailmessage.domain.model.DraftSyncState
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.SendingError
-import ch.protonmail.android.mailmessage.domain.repository.DraftStateRepository
-import kotlinx.coroutines.flow.firstOrNull
 import me.proton.core.domain.entity.UserId
+import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -34,8 +34,9 @@ import javax.inject.Inject
  * [sendingError] persisted and the message is moved back to drafts folder.
  * In all other cases, the given newState is applied.
  */
+@MissingRustApi
+// To be bound to rust or dropped when implementing send
 class UpdateDraftStateForError @Inject constructor(
-    private val draftStateRepository: DraftStateRepository,
     private val messageRepository: MessageRepository
 ) {
 
@@ -45,27 +46,6 @@ class UpdateDraftStateForError @Inject constructor(
         newState: DraftSyncState,
         sendingError: SendingError? = null
     ) {
-        val draftState = draftStateRepository.observe(userId, messageId).firstOrNull()?.getOrNull()
-
-        val isMessageAlreadySent = sendingError == SendingError.MessageAlreadySent
-        val isMessageSending = draftState?.state == DraftSyncState.Sending
-
-        when {
-            isMessageAlreadySent -> {
-                draftStateRepository.updateDraftSyncState(userId, messageId, DraftSyncState.Sent)
-            }
-            isMessageSending -> {
-                draftStateRepository.updateDraftSyncState(userId, messageId, DraftSyncState.ErrorSending)
-                draftStateRepository.updateSendingError(userId, messageId, sendingError)
-                draftState?.apiMessageId?.let { messageRepository.moveMessageBackFromSentToDrafts(userId, it) }
-                    ?: messageRepository.moveMessageBackFromSentToDrafts(userId, messageId)
-            }
-            else -> {
-                draftStateRepository.updateDraftSyncState(userId, messageId, newState)
-                if (newState == DraftSyncState.ErrorSending) {
-                    draftStateRepository.updateSendingError(userId, messageId, sendingError)
-                }
-            }
-        }
+        Timber.w("UpdateDraftStateForError Not implemented")
     }
 }

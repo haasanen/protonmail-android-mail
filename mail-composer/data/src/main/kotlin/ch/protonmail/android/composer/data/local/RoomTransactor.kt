@@ -21,16 +21,7 @@ package ch.protonmail.android.composer.data.local
 import ch.protonmail.android.mailcomposer.domain.Transactor
 import javax.inject.Inject
 
-/**
- * Implementation of [Transactor] interface for Room DB.
- * Allows executing the given block in a DB transaction, which ensures both synchronization and atomicity.
- *
- * [DraftStateDatabase] in injected arbitrarily, any table implementing [me.proton.core.data.room.db.Database]
- * will do the same (as this app has a single DB)
- */
-class RoomTransactor @Inject constructor(
-    private val database: DraftStateDatabase
-) : Transactor {
+class RoomTransactor @Inject constructor() : Transactor {
 
-    override suspend fun <T> performTransaction(block: suspend () -> T): T = database.inTransaction { block() }
+    override suspend fun <T> performTransaction(block: suspend () -> T): T = block()
 }

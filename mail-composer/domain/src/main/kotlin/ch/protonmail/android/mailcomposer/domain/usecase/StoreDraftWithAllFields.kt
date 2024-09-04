@@ -20,9 +20,8 @@ package ch.protonmail.android.mailcomposer.domain.usecase
 
 import arrow.core.Either
 import ch.protonmail.android.mailcomposer.domain.Transactor
-import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailcomposer.domain.model.DraftFields
-import ch.protonmail.android.mailmessage.domain.repository.DraftStateRepository
+import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.withContext
@@ -31,7 +30,6 @@ import timber.log.Timber
 import javax.inject.Inject
 
 class StoreDraftWithAllFields @Inject constructor(
-    private val draftStateRepository: DraftStateRepository,
     private val storeDraftWithSubject: StoreDraftWithSubject,
     private val storeDraftWithBody: StoreDraftWithBody,
     private val storeDraftWithRecipients: StoreDraftWithRecipients,
@@ -62,7 +60,6 @@ class StoreDraftWithAllFields @Inject constructor(
                 fields.recipientsBcc.value
             ).logError(draftMessageId)
 
-            draftStateRepository.createOrUpdateLocalState(userId, draftMessageId, action)
             Timber.d("Draft: finished storing draft locally $draftMessageId")
         }
     }

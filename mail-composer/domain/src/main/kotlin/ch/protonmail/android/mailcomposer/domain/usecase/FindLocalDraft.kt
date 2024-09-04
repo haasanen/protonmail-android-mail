@@ -18,35 +18,23 @@
 
 package ch.protonmail.android.mailcomposer.domain.usecase
 
-import ch.protonmail.android.mailmessage.domain.repository.DraftStateRepository
+import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.MessageWithBody
 import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
-import kotlinx.coroutines.flow.first
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import javax.inject.Inject
 
+@MissingRustApi
+// To be bound to rust or dropped when implementing send
 class FindLocalDraft @Inject constructor(
-    private val messageRepository: MessageRepository,
-    private val draftStateRepository: DraftStateRepository
+    private val messageRepository: MessageRepository
 ) {
 
 
     suspend operator fun invoke(userId: UserId, messageId: MessageId): MessageWithBody? {
-        messageRepository.getLocalMessageWithBody(userId, messageId)?.let { messageFoundByMessageId ->
-            return messageFoundByMessageId
-        }
-
-        val apiMessageId = draftStateRepository.observe(userId, messageId).first().onLeft {
-            Timber.d("No draft state found for $messageId")
-        }.getOrNull()?.apiMessageId
-
-        apiMessageId?.let {
-            messageRepository.getLocalMessageWithBody(userId, apiMessageId)?.let { messageFoundByApiMessageId ->
-                return messageFoundByApiMessageId
-            }
-        }
+        Timber.w("Not implemented")
         return null
     }
 }

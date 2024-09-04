@@ -19,8 +19,7 @@
 package ch.protonmail.android.composer.data.repository
 
 import arrow.core.Either
-import arrow.core.raise.either
-import ch.protonmail.android.composer.data.local.AttachmentStateLocalDataSource
+import arrow.core.left
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcomposer.domain.repository.AttachmentStateRepository
 import ch.protonmail.android.mailmessage.domain.model.AttachmentId
@@ -28,27 +27,33 @@ import ch.protonmail.android.mailmessage.domain.model.AttachmentState
 import ch.protonmail.android.mailmessage.domain.model.AttachmentSyncState
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import me.proton.core.domain.entity.UserId
+import timber.log.Timber
 import javax.inject.Inject
 
-class AttachmentStateRepositoryImpl @Inject constructor(
-    private val localDataSource: AttachmentStateLocalDataSource
-) : AttachmentStateRepository {
+class AttachmentStateRepositoryImpl @Inject constructor() : AttachmentStateRepository {
 
     override suspend fun getAttachmentState(
         userId: UserId,
         messageId: MessageId,
         attachmentId: AttachmentId
-    ): Either<DataError, AttachmentState> = localDataSource.getAttachmentState(userId, messageId, attachmentId)
+    ): Either<DataError, AttachmentState> {
+        Timber.w("Not implemented")
+        return DataError.Local.Unknown.left()
+    }
 
-    override suspend fun getAllAttachmentStatesForMessage(userId: UserId, messageId: MessageId): List<AttachmentState> =
-        localDataSource.getAllAttachmentStatesForMessage(userId, messageId)
+    override suspend fun getAllAttachmentStatesForMessage(userId: UserId, messageId: MessageId): List<AttachmentState> {
+        Timber.w("Not implemented")
+        return emptyList()
+    }
 
     override suspend fun createOrUpdateLocalState(
         userId: UserId,
         messageId: MessageId,
         attachmentId: AttachmentId
-    ): Either<DataError, Unit> = localDataSource
-        .createOrUpdate(AttachmentState(userId, messageId, attachmentId, AttachmentSyncState.Local))
+    ): Either<DataError, Unit> {
+        Timber.w("Not implemented")
+        return DataError.Local.Unknown.left()
+    }
 
 
     override suspend fun createOrUpdateLocalStates(
@@ -57,26 +62,25 @@ class AttachmentStateRepositoryImpl @Inject constructor(
         attachmentIds: List<AttachmentId>,
         syncState: AttachmentSyncState
     ): Either<DataError, Unit> {
-        return attachmentIds
-            .map { AttachmentState(userId, messageId, it, syncState) }
-            .let { localDataSource.createOrUpdate(it) }
+        Timber.w("Not implemented")
+        return DataError.Local.Unknown.left()
     }
 
     override suspend fun setAttachmentToUploadState(
         userId: UserId,
         messageId: MessageId,
         attachmentId: AttachmentId
-    ): Either<DataError, Unit> = either {
-        val attachmentState = localDataSource.getAttachmentState(userId, messageId, attachmentId).bind()
-        localDataSource.createOrUpdate(attachmentState.copy(state = AttachmentSyncState.Uploaded))
+    ): Either<DataError, Unit> {
+        Timber.w("Not implemented")
+        return DataError.Local.Unknown.left()
     }
 
     override suspend fun deleteAttachmentState(
         userId: UserId,
         messageId: MessageId,
         attachmentId: AttachmentId
-    ): Either<DataError, Unit> = either {
-        val attachmentState = localDataSource.getAttachmentState(userId, messageId, attachmentId).bind()
-        localDataSource.delete(attachmentState)
+    ): Either<DataError, Unit> {
+        Timber.w("Not implemented")
+        return DataError.Local.Unknown.left()
     }
 }

@@ -18,33 +18,26 @@
 
 package ch.protonmail.android.mailcomposer.domain.usecase
 
+import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcomposer.domain.Transactor
 import ch.protonmail.android.mailcomposer.domain.model.MessageExpirationTime
 import ch.protonmail.android.mailcomposer.domain.repository.MessageExpirationTimeRepository
 import ch.protonmail.android.mailmessage.domain.model.MessageId
-import ch.protonmail.android.mailmessage.domain.repository.DraftStateRepository
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
 import me.proton.core.domain.entity.UserId
+import timber.log.Timber
 import javax.inject.Inject
 
+@MissingRustApi
+// To be bound to rust or dropped when implementing send
 class ObserveMessageExpirationTime @Inject constructor(
-    private val draftStateRepository: DraftStateRepository,
     private val messageExpirationTimeRepository: MessageExpirationTimeRepository,
     private val transactor: Transactor
 ) {
 
-    suspend operator fun invoke(userId: UserId, messageId: MessageId): Flow<MessageExpirationTime?> =
-        transactor.performTransaction {
-            draftStateRepository.observe(userId, messageId)
-                .distinctUntilChanged()
-                .flatMapLatest { draftStateEither ->
-                    val draftState = draftStateEither.getOrNull()
-                    messageExpirationTimeRepository.observeMessageExpirationTime(
-                        userId,
-                        draftState?.apiMessageId ?: messageId
-                    )
-                }
-        }
+    suspend operator fun invoke(userId: UserId, messageId: MessageId): Flow<MessageExpirationTime?> {
+        Timber.w("ObserveMessageExpirationTime Not implemented")
+        return flowOf()
+    }
 }

@@ -18,15 +18,16 @@
 
 package ch.protonmail.android.mailmessage.domain.usecase
 
-import ch.protonmail.android.mailmessage.domain.repository.SearchResultsRepository
+import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import me.proton.core.domain.entity.UserId
+import timber.log.Timber
 import javax.inject.Inject
 
-class DeleteSearchResults @Inject constructor(
-    private val searchResultsRepository: SearchResultsRepository
-) {
+@MissingRustApi
+// Either to be bound to rust, or to be dropped when implementing search
+class DeleteSearchResults @Inject constructor() {
 
     suspend operator fun invoke(userId: UserId, keyword: String) {
-        searchResultsRepository.deleteAll(userId, keyword)
+        Timber.w("Not implemented")
     }
 }

@@ -19,47 +19,26 @@
 package ch.protonmail.android.composer.data.repository
 
 import arrow.core.Either
+import arrow.core.left
 import arrow.core.raise.either
-import arrow.core.right
-import ch.protonmail.android.composer.data.local.AttachmentStateLocalDataSource
-import ch.protonmail.android.composer.data.remote.AttachmentRemoteDataSource
+import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcomposer.domain.repository.AttachmentRepository
-import ch.protonmail.android.mailmessage.data.local.AttachmentLocalDataSource
 import ch.protonmail.android.mailmessage.domain.model.AttachmentId
-import ch.protonmail.android.mailmessage.domain.model.AttachmentState
-import ch.protonmail.android.mailmessage.domain.model.AttachmentSyncState
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import me.proton.core.domain.entity.UserId
+import timber.log.Timber
 import javax.inject.Inject
 
-class AttachmentRepositoryImpl @Inject constructor(
-    private val attachmentStateLocalDataSource: AttachmentStateLocalDataSource,
-    private val attachmentRemoteDataSource: AttachmentRemoteDataSource,
-    private val attachmentLocalDataSource: AttachmentLocalDataSource
-) : AttachmentRepository {
+@MissingRustApi
+class AttachmentRepositoryImpl @Inject constructor() : AttachmentRepository {
 
     override suspend fun deleteAttachment(
         userId: UserId,
         messageId: MessageId,
         attachmentId: AttachmentId
     ): Either<DataError, Unit> = either {
-        val attachmentState = attachmentStateLocalDataSource.getAttachmentState(userId, messageId, attachmentId).bind()
-        when (attachmentState.state) {
-            AttachmentSyncState.ExternalUploaded,
-            AttachmentSyncState.Uploaded -> attachmentRemoteDataSource.deleteAttachmentFromDraft(userId, attachmentId)
-
-            else -> attachmentRemoteDataSource.cancelAttachmentUpload(attachmentId)
-        }
-        when (attachmentState.state) {
-            AttachmentSyncState.ExternalUploaded,
-            AttachmentSyncState.External ->
-                attachmentLocalDataSource
-                    .deleteAttachment(userId, messageId, attachmentId)
-                    .bind()
-
-            else -> attachmentLocalDataSource.deleteAttachmentWithFile(userId, messageId, attachmentId).bind()
-        }
+        Timber.w("rust-attachment: missing implementation!")
     }
 
     override suspend fun createAttachment(
@@ -71,25 +50,8 @@ class AttachmentRepositoryImpl @Inject constructor(
         content: ByteArray
     ): Either<DataError, Unit> = either {
 
-        attachmentLocalDataSource.upsertAttachment(
-            userId,
-            messageId,
-            attachmentId,
-            fileName,
-            mimeType,
-            content
-        ).bind()
-
-        attachmentStateLocalDataSource.createOrUpdate(
-            AttachmentState(
-                userId,
-                messageId,
-                attachmentId,
-                AttachmentSyncState.Local
-            )
-        ).bind()
-
-        return Unit.right()
+        Timber.w("rust-attachment: missing implementation!")
+        return DataError.Local.Unknown.left()
     }
 
 }
