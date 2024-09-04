@@ -24,6 +24,10 @@ import androidx.activity.result.contract.ActivityResultContract
 import me.proton.android.core.auth.presentation.addaccount.AddAccountActivity
 import me.proton.android.core.auth.presentation.login.LoginActivity
 import me.proton.android.core.auth.presentation.login.LoginHelpActivity
+import me.proton.android.core.auth.presentation.secondfactor.SecondFactorActivity
+import me.proton.android.core.auth.presentation.secondfactor.SecondFactorArg
+import me.proton.android.core.auth.presentation.twopass.TwoPassActivity
+import me.proton.android.core.auth.presentation.twopass.TwoPassArg
 
 object StartAddAccount : ActivityResultContract<Unit, Boolean>() {
 
@@ -56,6 +60,32 @@ object StartLoginHelp : ActivityResultContract<Unit, Boolean>() {
     override fun createIntent(context: Context, input: Unit) =
         Intent(context, LoginHelpActivity::class.java).apply {
             addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        }
+
+    override fun parseResult(resultCode: Int, intent: Intent?): Boolean = when (resultCode) {
+        Activity.RESULT_OK -> true
+        else -> false
+    }
+}
+
+object StartSecondFactor : ActivityResultContract<String, Boolean>() {
+
+    override fun createIntent(context: Context, input: String): Intent =
+        Intent(context, SecondFactorActivity::class.java).apply {
+            putExtra(SecondFactorArg.ARG_USER_ID, input)
+        }
+
+    override fun parseResult(resultCode: Int, intent: Intent?): Boolean = when (resultCode) {
+        Activity.RESULT_OK -> true
+        else -> false
+    }
+}
+
+object StartTwoPassMode : ActivityResultContract<String, Boolean>() {
+
+    override fun createIntent(context: Context, input: String): Intent =
+        Intent(context, TwoPassActivity::class.java).apply {
+            putExtra(TwoPassArg.ARG_USER_ID, input)
         }
 
     override fun parseResult(resultCode: Int, intent: Intent?): Boolean = when (resultCode) {

@@ -31,6 +31,11 @@ import me.proton.core.presentation.utils.errorToast
 @AndroidEntryPoint
 class SecondFactorActivity : ProtonActivity() {
 
+    private val userId: String
+        get() = requireNotNull(intent.getStringExtra(SecondFactorArg.ARG_USER_ID)) {
+            "Missing intent argument: ${SecondFactorArg.ARG_USER_ID}"
+        }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         addOnBackPressedCallback { onClose() }

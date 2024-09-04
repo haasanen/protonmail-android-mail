@@ -18,6 +18,7 @@
 
 package me.proton.android.core.auth.presentation.secondfactor.otp
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -29,13 +30,22 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import me.proton.android.core.auth.presentation.secondfactor.SecondFactorArg
 import me.proton.core.presentation.utils.InputValidationResult
 import me.proton.core.presentation.utils.ValidationType
 import uniffi.proton_mail_uniffi.LoginFlowException
 import javax.inject.Inject
 
 @HiltViewModel
-class OneTimePasswordInputViewModel @Inject constructor() : ViewModel() {
+class OneTimePasswordInputViewModel @Inject constructor(
+    private val savedStateHandle: SavedStateHandle
+) : ViewModel() {
+
+    private val userId: String by lazy {
+        requireNotNull(savedStateHandle.get<String>(SecondFactorArg.ARG_USER_ID)) {
+            "Missing state value for key: ${SecondFactorArg.ARG_USER_ID}"
+        }
+    }
 
     private val _mode: MutableStateFlow<OneTimePasswordInputMode> = MutableStateFlow(OneTimePasswordInputMode.Totp)
     val mode: StateFlow<OneTimePasswordInputMode> = _mode.asStateFlow()

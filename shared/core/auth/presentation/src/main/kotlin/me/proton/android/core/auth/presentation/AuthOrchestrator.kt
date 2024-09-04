@@ -27,10 +27,14 @@ class AuthOrchestrator @Inject constructor() {
     private var addAccountWorkflowLauncher: ActivityResultLauncher<Unit>? = null
     private var loginWorkflowLauncher: ActivityResultLauncher<Unit>? = null
     private var loginHelpWorkflowLauncher: ActivityResultLauncher<Unit>? = null
+    private var secondFactorWorkflowLauncher: ActivityResultLauncher<String>? = null
+    private var twoPassModeWorkflowLauncher: ActivityResultLauncher<String>? = null
 
     private var onAddAccountResultListener: ((result: Boolean) -> Unit)? = {}
     private var onLoginResultListener: ((result: Boolean) -> Unit)? = {}
     private var onLoginHelpResultListener: ((result: Boolean) -> Unit)? = {}
+    private var onSecondFactorResultListener: ((result: Boolean) -> Unit)? = {}
+    private var onTwoPassModeResultListener: ((result: Boolean) -> Unit)? = {}
 
     private fun registerAddAccountResult(
         caller: ActivityResultCaller
@@ -50,6 +54,18 @@ class AuthOrchestrator @Inject constructor() {
         onLoginHelpResultListener?.invoke(it)
     }
 
+    private fun registerSecondFactorResult(
+        caller: ActivityResultCaller
+    ): ActivityResultLauncher<String> = caller.registerForActivityResult(StartSecondFactor) {
+        onSecondFactorResultListener?.invoke(it)
+    }
+
+    private fun registerTwoPassModeResult(
+        caller: ActivityResultCaller
+    ): ActivityResultLauncher<String> = caller.registerForActivityResult(StartTwoPassMode) {
+        onTwoPassModeResultListener?.invoke(it)
+    }
+
     private fun <T> checkRegistered(launcher: ActivityResultLauncher<T>?) =
         checkNotNull(launcher) { "You must call register(context) before starting workflow!" }
 
@@ -65,6 +81,14 @@ class AuthOrchestrator @Inject constructor() {
         onLoginHelpResultListener = block
     }
 
+    fun setOnSecondFactorResult(block: (result: Boolean) -> Unit) {
+        onSecondFactorResultListener = block
+    }
+
+    fun setOnTwoPassModeResult(block: (result: Boolean) -> Unit) {
+        onTwoPassModeResultListener = block
+    }
+
     /**
      * Register all needed workflow for internal usage.
      *
@@ -74,6 +98,8 @@ class AuthOrchestrator @Inject constructor() {
         addAccountWorkflowLauncher = registerAddAccountResult(caller)
         loginWorkflowLauncher = registerLoginResult(caller)
         loginHelpWorkflowLauncher = registerLoginHelpResult(caller)
+        secondFactorWorkflowLauncher = registerSecondFactorResult(caller)
+        twoPassModeWorkflowLauncher = registerTwoPassModeResult(caller)
     }
 
     /**
@@ -83,14 +109,20 @@ class AuthOrchestrator @Inject constructor() {
         addAccountWorkflowLauncher?.unregister()
         loginWorkflowLauncher?.unregister()
         loginHelpWorkflowLauncher?.unregister()
+        secondFactorWorkflowLauncher?.unregister()
+        twoPassModeWorkflowLauncher?.unregister()
 
         addAccountWorkflowLauncher = null
         loginWorkflowLauncher = null
         loginHelpWorkflowLauncher = null
+        secondFactorWorkflowLauncher = null
+        twoPassModeWorkflowLauncher = null
 
         onAddAccountResultListener = null
         onLoginResultListener = null
         onLoginHelpResultListener = null
+        onSecondFactorResultListener = null
+        onTwoPassModeResultListener = null
     }
 
     /**
@@ -113,6 +145,20 @@ class AuthOrchestrator @Inject constructor() {
     fun startLoginHelpWorkflow() {
         checkRegistered(loginHelpWorkflowLauncher).launch(Unit)
     }
+
+    /**
+     * Starts the workflow the submitting a second factor.
+     */
+    fun startSecondFactorWorkflow(userId: String) {
+        checkRegistered(secondFactorWorkflowLauncher).launch(userId)
+    }
+
+    /**
+     * Starts the workflow for submitting the second (mailbox) password.
+     */
+    fun startTwoPassModeWorkflow(userId: String) {
+        checkRegistered(twoPassModeWorkflowLauncher).launch(userId)
+    }
 }
 
 fun AuthOrchestrator.onAddAccountResult(
@@ -133,5 +179,19 @@ fun AuthOrchestrator.onLoginHelpResult(
     block: (result: Boolean) -> Unit
 ): AuthOrchestrator {
     setOnLoginHelpResult { block(it) }
+    return this
+}
+
+fun AuthOrchestrator.onSecondFactorResult(
+    block: (result: Boolean) -> Unit
+): AuthOrchestrator {
+    setOnSecondFactorResult { block(it) }
+    return this
+}
+
+fun AuthOrchestrator.onTwoPassModeResult(
+    block: (result: Boolean) -> Unit
+): AuthOrchestrator {
+    setOnTwoPassModeResult { block(it) }
     return this
 }

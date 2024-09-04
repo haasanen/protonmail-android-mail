@@ -29,6 +29,10 @@ import me.proton.core.presentation.utils.errorToast
 import me.proton.core.presentation.utils.openBrowserLink
 
 class TwoPassActivity : ProtonActivity() {
+    private val userId: String
+        get() = requireNotNull(intent.getStringExtra(TwoPassArg.ARG_USER_ID)) {
+            "Missing intent argument: ${TwoPassArg.ARG_USER_ID}"
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -1,5 +1,6 @@
 package me.proton.android.core.auth.presentation.secondfactor.otp
 
+import androidx.lifecycle.SavedStateHandle
 import app.cash.turbine.test
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -19,7 +20,7 @@ class OneTimePasswordInputViewModelTest {
     @BeforeTest
     fun setUp() {
         Dispatchers.setMain(StandardTestDispatcher())
-        tested = OneTimePasswordInputViewModel()
+        tested = OneTimePasswordInputViewModel(SavedStateHandle())
     }
 
     @AfterTest
