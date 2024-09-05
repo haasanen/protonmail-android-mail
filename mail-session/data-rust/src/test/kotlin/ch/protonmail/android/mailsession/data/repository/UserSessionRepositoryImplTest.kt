@@ -8,6 +8,10 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.runTest
 import me.proton.core.domain.entity.UserId
 import org.junit.Rule
@@ -73,6 +77,37 @@ class UserSessionRepositoryImplTest {
         assertEquals(null, actual)
         coVerify(exactly = 0) { mailSession.userContextFromSession(any()) }
     }
+
+    @Test
+    fun `ensures session is initialized only once with concurrent access`() = runTest {
+        // Given
+        val userId = UserIdTestData.userId
+        val expectedMailUserSession = mockk<MailUserSession>()
+        val mailSession = mailSessionWithUserSessionStored(userId, expectedMailUserSession)
+
+        coEvery { mailSessionRepository.getMailSession() } returns mailSession
+
+        coEvery { mailSessionRepository.getMailSession() } coAnswers {
+            delay(100)
+            mailSession
+        }
+
+        // When
+        coroutineScope {
+            val deferredResults = (1..10).map {
+                async {
+                    userSessionRepository.getUserSession(userId)
+                }
+            }
+            deferredResults.awaitAll()
+        }
+
+        // Then
+        // Ensure that the session was initialized only once
+        coVerify(exactly = 1) { mailSessionRepository.getMailSession() }
+        assertEquals(expectedMailUserSession, userSessionRepository.getUserSession(userId))
+    }
+
 
     private fun mailSessionWithNoUserSessionsStored() = mockk<MailSession> {
         coEvery { storedSessions() } returns emptyList()

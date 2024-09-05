@@ -23,6 +23,8 @@ import ch.protonmail.android.mailsession.domain.repository.MailSessionRepository
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.MailUserSession
@@ -33,13 +35,16 @@ class UserSessionRepositoryImpl @Inject constructor(
 ) : UserSessionRepository {
 
     private val activeUserSessions = mutableMapOf<UserId, MailUserSession?>()
+    private val lock = Mutex()
 
     override suspend fun getUserSession(userId: UserId): MailUserSession? {
-        if (sessionNotInitialised(userId)) {
-            initUserSession(userId)
-        }
+        lock.withLock {
+            if (sessionNotInitialised(userId)) {
+                initUserSession(userId)
+            }
 
-        return activeUserSessions[userId]
+            return activeUserSessions[userId]
+        }
     }
 
     override fun observeCurrentUserId(): Flow<UserId?> = flow {
