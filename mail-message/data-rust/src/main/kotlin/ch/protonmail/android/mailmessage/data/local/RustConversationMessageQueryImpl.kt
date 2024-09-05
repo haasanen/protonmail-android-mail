@@ -88,8 +88,7 @@ class RustConversationMessageQueryImpl @Inject constructor(
     }
 
     override fun disconnect() {
-        conversationWatcher?.messagesHandle?.disconnect()
-        conversationWatcher?.conversationHandle?.disconnect()
+        conversationWatcher?.handle?.disconnect()
     }
 
     private fun initConversationMessagesLiveQuery(conversationId: LocalConversationId) {

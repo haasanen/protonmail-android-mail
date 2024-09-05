@@ -80,7 +80,7 @@ class RustConversationDetailQueryImpl @Inject constructor(
     }
 
     override fun disconnect() {
-        conversationWatcher?.conversationHandle?.disconnect()
+        conversationWatcher?.handle?.disconnect()
         conversationWatcher = null
     }
 
