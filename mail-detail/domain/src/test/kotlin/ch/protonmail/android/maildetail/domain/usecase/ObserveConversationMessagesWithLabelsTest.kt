@@ -27,8 +27,8 @@ import ch.protonmail.android.mailcommon.domain.sample.ConversationIdSample
 import ch.protonmail.android.mailcommon.domain.sample.LabelIdSample
 import ch.protonmail.android.mailcommon.domain.sample.LabelSample
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
+import ch.protonmail.android.mailconversation.domain.repository.ConversationRepository
 import ch.protonmail.android.maildetail.domain.model.ConversationMessagesWithLabels
-import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
 import ch.protonmail.android.mailmessage.domain.sample.MessageSample
 import ch.protonmail.android.mailmessage.domain.sample.MessageWithLabelsSample
 import io.mockk.every
@@ -53,13 +53,13 @@ internal class ObserveConversationMessagesWithLabelsTest {
         nonEmptyListOf(MessageSample.AugWeatherForecast),
         MessageIdSample.AugWeatherForecast
     )
-    private val messageRepository: MessageRepository = mockk {
+    private val conversationRepository: ConversationRepository = mockk {
         every { observeConversationMessages(UserIdSample.Primary, ConversationIdSample.WeatherForecast) } returns
             flowOf(conversationMessages.right())
     }
     private val observeConversationMessagesWithLabels = ObserveConversationMessagesWithLabels(
         labelRepository = labelRepository,
-        messageRepository = messageRepository
+        conversationRepository = conversationRepository
     )
 
     @Test
@@ -104,7 +104,7 @@ internal class ObserveConversationMessagesWithLabelsTest {
         ).right()
 
         every {
-            messageRepository.observeConversationMessages(
+            conversationRepository.observeConversationMessages(
                 UserIdSample.Primary, ConversationIdSample.Invoices
             )
         } returns
@@ -127,7 +127,7 @@ internal class ObserveConversationMessagesWithLabelsTest {
         // given
         val error = DataError.Local.NoDataCached.left()
         every {
-            messageRepository.observeConversationMessages(
+            conversationRepository.observeConversationMessages(
                 UserIdSample.Primary,
                 ConversationIdSample.WeatherForecast
             )

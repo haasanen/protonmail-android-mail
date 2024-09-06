@@ -22,6 +22,8 @@ import arrow.core.Either
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailconversation.domain.entity.Conversation
+import ch.protonmail.android.mailmessage.domain.model.ConversationMessages
+import ch.protonmail.android.mailmessage.domain.model.Message
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import kotlinx.coroutines.flow.Flow
 import me.proton.core.domain.entity.UserId
@@ -59,6 +61,14 @@ interface ConversationRepository {
         id: ConversationId,
         refreshData: Boolean
     ): Flow<Either<DataError, Conversation>>
+
+    /**
+     * Get all the [Message]s metadata for a given [ConversationId], for [userId] from the local storage
+     */
+    fun observeConversationMessages(
+        userId: UserId,
+        conversationId: ConversationId
+    ): Flow<Either<DataError.Local, ConversationMessages>>
 
     /**
      * Get a list of conversations.

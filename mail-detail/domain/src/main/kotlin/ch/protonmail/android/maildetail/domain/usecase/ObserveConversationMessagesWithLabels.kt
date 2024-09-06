@@ -22,9 +22,9 @@ import arrow.core.Either
 import arrow.core.raise.either
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailconversation.domain.repository.ConversationRepository
 import ch.protonmail.android.maildetail.domain.model.ConversationMessagesWithLabels
 import ch.protonmail.android.mailmessage.domain.model.MessageWithLabels
-import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import me.proton.core.domain.entity.UserId
@@ -33,7 +33,7 @@ import javax.inject.Inject
 
 class ObserveConversationMessagesWithLabels @Inject constructor(
     private val labelRepository: LabelRepository,
-    private val messageRepository: MessageRepository
+    private val conversationRepository: ConversationRepository
 ) {
 
     operator fun invoke(
@@ -42,7 +42,7 @@ class ObserveConversationMessagesWithLabels @Inject constructor(
     ): Flow<Either<DataError, ConversationMessagesWithLabels>> = combine(
         labelRepository.observeCustomLabels(userId),
         labelRepository.observeCustomFolders(userId),
-        messageRepository.observeConversationMessages(userId, conversationId)
+        conversationRepository.observeConversationMessages(userId, conversationId)
     ) { labels, folders, conversationMessagesEither ->
 
         either {

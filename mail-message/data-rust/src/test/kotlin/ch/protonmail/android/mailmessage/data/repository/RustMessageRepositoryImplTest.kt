@@ -20,7 +20,6 @@ package ch.protonmail.android.mailmessage.data.repository
 
 import app.cash.turbine.test
 import arrow.core.getOrElse
-import arrow.core.left
 import ch.protonmail.android.mailcommon.domain.mapper.LocalMimeType
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
@@ -28,17 +27,12 @@ import ch.protonmail.android.maillabel.domain.SelectedMailLabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.mailmessage.data.local.RustMessageDataSource
-import ch.protonmail.android.mailmessage.data.mapper.toConversationId
-import ch.protonmail.android.mailmessage.data.mapper.toConversationMessagesWithMessageToOpen
-import ch.protonmail.android.mailmessage.data.mapper.toLocalConversationId
 import ch.protonmail.android.mailmessage.data.mapper.toLocalMessageId
 import ch.protonmail.android.mailmessage.data.mapper.toMessage
 import ch.protonmail.android.mailmessage.data.mapper.toMessageBody
 import ch.protonmail.android.mailmessage.data.mapper.toMessageId
-import ch.protonmail.android.mailmessage.data.model.LocalConversationMessages
 import ch.protonmail.android.mailpagination.domain.model.PageFilter
 import ch.protonmail.android.mailpagination.domain.model.PageKey
-import ch.protonmail.android.testdata.conversation.rust.LocalConversationIdSample
 import ch.protonmail.android.testdata.message.rust.LocalMessageIdSample
 import ch.protonmail.android.testdata.message.rust.LocalMessageTestData
 import ch.protonmail.android.testdata.user.UserIdTestData
@@ -50,7 +44,6 @@ import io.mockk.just
 import io.mockk.mockk
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import me.proton.core.domain.entity.UserId
 import org.junit.Test
@@ -200,68 +193,5 @@ class RustMessageRepositoryImplTest {
         // Then
         coVerify { rustMessageDataSource.markUnread(userId, messageIds.map { it.toLocalMessageId() }) }
         assertEquals(emptyList(), result.getOrNull())
-    }
-
-    @Test
-    fun `observeConversationMessages should return list of messages`() = runTest {
-        // Given
-        val userId = UserIdTestData.userId
-        val conversationId = LocalConversationIdSample.AugConversation.toConversationId()
-        val localMessages = listOf(
-            LocalMessageTestData.AugWeatherForecast,
-            LocalMessageTestData.SepWeatherForecast,
-            LocalMessageTestData.OctWeatherForecast
-        )
-        val localConversationMessages = LocalConversationMessages(
-            messageIdToOpen = LocalMessageIdSample.AugWeatherForecast,
-            messages = localMessages
-        )
-        val expectedConversationMessages = localConversationMessages.toConversationMessagesWithMessageToOpen()
-
-        coEvery {
-            rustMessageDataSource.observeConversationMessages(userId, conversationId.toLocalConversationId())
-        } returns flowOf(localConversationMessages)
-
-        // When
-        repository.observeConversationMessages(userId, conversationId).test {
-            val result = awaitItem().getOrElse { null }
-
-            // Then
-            assertEquals(expectedConversationMessages, result)
-            coVerify {
-                rustMessageDataSource.observeConversationMessages(
-                    userId,
-                    conversationId.toLocalConversationId()
-                )
-            }
-            awaitComplete()
-        }
-    }
-
-    @Test
-    fun `observeCachedMessages should return DataError when no messages found`() = runTest {
-        // Given
-        val userId = UserIdTestData.userId
-        val conversationId = LocalConversationIdSample.AugConversation.toConversationId()
-        val expectedError = DataError.Local.NoDataCached.left()
-
-        coEvery {
-            rustMessageDataSource.observeConversationMessages(userId, conversationId.toLocalConversationId())
-        } returns flowOf(LocalConversationMessages(LocalMessageIdSample.AugWeatherForecast, emptyList()))
-
-        // When
-        repository.observeConversationMessages(userId, conversationId).test {
-            val result = awaitItem()
-
-            // Then
-            assertEquals(expectedError, result)
-            coVerify {
-                rustMessageDataSource.observeConversationMessages(
-                    userId,
-                    conversationId.toLocalConversationId()
-                )
-            }
-            awaitComplete()
-        }
     }
 }

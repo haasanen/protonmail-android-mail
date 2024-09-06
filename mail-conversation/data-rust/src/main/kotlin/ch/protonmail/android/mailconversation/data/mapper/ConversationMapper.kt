@@ -31,8 +31,6 @@ import me.proton.core.label.domain.entity.Label
 import me.proton.core.label.domain.entity.LabelType
 import uniffi.proton_mail_uniffi.InlineCustomLabel
 
-fun ConversationId.toLocalConversationId(): LocalConversationId = LocalConversationId(this.id.toULong())
-
 fun LocalConversation.toConversation(): Conversation {
 
     val labels = emptyList<ConversationLabel>()

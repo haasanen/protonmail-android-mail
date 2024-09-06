@@ -24,6 +24,7 @@ import ch.protonmail.android.mailcommon.domain.mapper.LocalConversationId
 import ch.protonmail.android.mailcommon.domain.mapper.LocalLabelId
 import ch.protonmail.android.mailconversation.data.ConversationRustCoroutineScope
 import ch.protonmail.android.mailmessage.data.local.RustMailbox
+import ch.protonmail.android.mailmessage.data.model.LocalConversationMessages
 import ch.protonmail.android.mailsession.domain.repository.MailSessionRepository
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import kotlinx.coroutines.CoroutineScope
@@ -64,6 +65,13 @@ class RustConversationDataSourceImpl @Inject constructor(
         runCatching { rustConversationDetailQuery.observeConversation(userId, conversationId) }
             .onFailure { Timber.w("rust-conversation: failed to observe conversation $it") }
             .getOrNull()
+
+    override fun observeConversationMessages(
+        userId: UserId,
+        conversationId: LocalConversationId
+    ): Flow<LocalConversationMessages> = rustConversationDetailQuery.observeConversationMessages(
+        userId, conversationId
+    )
 
     override suspend fun deleteConversations(userId: UserId, conversations: List<LocalConversationId>) {
         executeMailboxAction(

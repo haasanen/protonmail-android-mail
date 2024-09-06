@@ -21,7 +21,6 @@ package ch.protonmail.android.mailmessage.domain.repository
 import arrow.core.Either
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailmessage.domain.model.ConversationMessages
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.model.Message
 import ch.protonmail.android.mailmessage.domain.model.MessageAttachment
@@ -82,14 +81,6 @@ interface MessageRepository {
         userId: UserId,
         conversationIds: List<ConversationId>
     ): Flow<List<Message>>
-
-    /**
-     * Get all the [Message]s metadata for a given [ConversationId], for [userId] from the local storage
-     */
-    fun observeConversationMessages(
-        userId: UserId,
-        conversationId: ConversationId
-    ): Flow<Either<DataError.Local, ConversationMessages>>
 
     /**
      * Observe the [MessageWithBody] for a given [MessageId], for [userId]

@@ -26,10 +26,12 @@ import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailconversation.data.local.RustConversationDataSource
 import ch.protonmail.android.mailconversation.data.mapper.toConversation
-import ch.protonmail.android.mailconversation.data.mapper.toLocalConversationId
 import ch.protonmail.android.mailconversation.domain.entity.Conversation
 import ch.protonmail.android.mailconversation.domain.repository.ConversationRepository
 import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
+import ch.protonmail.android.mailmessage.data.mapper.toConversationMessagesWithMessageToOpen
+import ch.protonmail.android.mailmessage.data.mapper.toLocalConversationId
+import ch.protonmail.android.mailmessage.domain.model.ConversationMessages
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
@@ -75,6 +77,20 @@ class RustConversationRepositoryImpl @Inject constructor(
         .observeConversation(userId, id.toLocalConversationId())
         ?.map { it.toConversation().right() }
         ?: flowOf(DataError.Local.Unknown.left())
+
+
+    override fun observeConversationMessages(
+        userId: UserId,
+        conversationId: ConversationId
+    ): Flow<Either<DataError.Local, ConversationMessages>> {
+        return rustConversationDataSource.observeConversationMessages(userId, conversationId.toLocalConversationId())
+            .map { conversationMessages ->
+                conversationMessages
+                    .toConversationMessagesWithMessageToOpen()
+                    ?.right()
+                    ?: DataError.Local.NoDataCached.left()
+            }
+    }
 
     @MissingRustApi
     @Deprecated("Usages of this are part of features that were replaced by higher level rust functions")

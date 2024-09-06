@@ -18,10 +18,7 @@
 
 package ch.protonmail.android.mailmessage.data.local
 
-import app.cash.turbine.test
-import ch.protonmail.android.mailcommon.domain.mapper.LocalConversationId
 import ch.protonmail.android.mailcommon.domain.mapper.LocalLabelId
-import ch.protonmail.android.mailmessage.data.model.LocalConversationMessages
 import ch.protonmail.android.mailmessage.data.usecase.CreateRustMessageAccessor
 import ch.protonmail.android.mailmessage.data.usecase.CreateRustMessageBodyAccessor
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
@@ -49,14 +46,12 @@ class RustMessageDataSourceImplTest {
 
     private val rustMailbox: RustMailbox = mockk()
     private val rustMessageQuery: RustMessageQuery = mockk()
-    private val rustConversationMessageQuery: RustConversationMessageQuery = mockk()
     private val createRustMessageAccessor = mockk<CreateRustMessageAccessor>()
     private val createRustMessageBodyAccessor = mockk<CreateRustMessageBodyAccessor>()
     private val dataSource = RustMessageDataSourceImpl(
         userSessionRepository,
         rustMailbox,
         rustMessageQuery,
-        rustConversationMessageQuery,
         createRustMessageAccessor,
         createRustMessageBodyAccessor
     )
@@ -168,38 +163,4 @@ class RustMessageDataSourceImplTest {
         // Then
         verify { rustMessageQuery.disconnect() }
     }
-
-    @Test
-    fun `observeConversationMessages should return conversation messages`() = runTest {
-        // Given
-        val userId = UserIdTestData.userId
-        val conversationId = LocalConversationId(1uL)
-        val messages = listOf(
-            LocalMessageTestData.AugWeatherForecast,
-            LocalMessageTestData.SepWeatherForecast,
-            LocalMessageTestData.OctWeatherForecast
-        )
-        val localConversationMessages = LocalConversationMessages(
-            messageIdToOpen = LocalMessageIdSample.AugWeatherForecast,
-            messages = messages
-        )
-        coEvery {
-            rustConversationMessageQuery.observeConversationMessages(
-                userId, conversationId
-            )
-        } returns flowOf(localConversationMessages)
-
-        // When
-        dataSource.observeConversationMessages(userId, conversationId).test {
-
-            // Then
-            // skipItems(1) // skip empty list
-            val result = awaitItem()
-            assertEquals(localConversationMessages, result)
-            coVerify { rustConversationMessageQuery.observeConversationMessages(userId, conversationId) }
-
-            awaitComplete()
-        }
-    }
-
 }

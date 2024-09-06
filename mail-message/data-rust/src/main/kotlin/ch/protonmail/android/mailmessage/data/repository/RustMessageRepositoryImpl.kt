@@ -26,12 +26,9 @@ import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
 import ch.protonmail.android.maillabel.domain.SelectedMailLabelId
 import ch.protonmail.android.mailmessage.data.local.RustMessageDataSource
-import ch.protonmail.android.mailmessage.data.mapper.toConversationMessagesWithMessageToOpen
-import ch.protonmail.android.mailmessage.data.mapper.toLocalConversationId
 import ch.protonmail.android.mailmessage.data.mapper.toLocalMessageId
 import ch.protonmail.android.mailmessage.data.mapper.toMessage
 import ch.protonmail.android.mailmessage.data.mapper.toMessageBody
-import ch.protonmail.android.mailmessage.domain.model.ConversationMessages
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.model.Message
 import ch.protonmail.android.mailmessage.domain.model.MessageAttachment
@@ -43,7 +40,6 @@ import ch.protonmail.android.mailpagination.domain.model.PageKey
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.map
 import me.proton.core.domain.entity.UserId
 import me.proton.core.label.domain.entity.LabelId
 import uniffi.proton_mail_uniffi.BlockQuote
@@ -96,20 +92,6 @@ class RustMessageRepositoryImpl @Inject constructor(
     ): Flow<Either<DataError.Local, List<Message>>> {
         TODO("Not yet implemented")
     }
-
-    override fun observeConversationMessages(
-        userId: UserId,
-        conversationId: ConversationId
-    ): Flow<Either<DataError.Local, ConversationMessages>> {
-        return rustMessageDataSource.observeConversationMessages(userId, conversationId.toLocalConversationId())
-            .map { conversationMessages ->
-                conversationMessages
-                    .toConversationMessagesWithMessageToOpen()
-                    ?.right()
-                    ?: DataError.Local.NoDataCached.left()
-            }
-    }
-
 
     override fun observeCachedMessagesForConversations(
         userId: UserId,

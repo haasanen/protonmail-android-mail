@@ -18,13 +18,18 @@
 
 package ch.protonmail.android.mailconversation.data.local
 
+import app.cash.turbine.test
+import ch.protonmail.android.mailcommon.domain.mapper.LocalConversationId
 import ch.protonmail.android.mailcommon.domain.mapper.LocalLabelId
 import ch.protonmail.android.mailmessage.data.local.RustMailbox
+import ch.protonmail.android.mailmessage.data.model.LocalConversationMessages
 import ch.protonmail.android.mailsession.domain.repository.MailSessionRepository
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
 import ch.protonmail.android.testdata.conversation.rust.LocalConversationIdSample
 import ch.protonmail.android.testdata.conversation.rust.LocalConversationTestData
+import ch.protonmail.android.testdata.message.rust.LocalMessageIdSample
+import ch.protonmail.android.testdata.message.rust.LocalMessageTestData
 import ch.protonmail.android.testdata.user.UserIdTestData
 import io.mockk.Runs
 import io.mockk.coEvery
@@ -121,6 +126,38 @@ class RustConversationDataSourceImplTest {
 
         // Then
         assertNull(result)
+    }
+
+    @Test
+    fun `observeConversationMessages should return conversation messages`() = runTest {
+        // Given
+        val userId = UserIdTestData.userId
+        val conversationId = LocalConversationId(1uL)
+        val messages = listOf(
+            LocalMessageTestData.AugWeatherForecast,
+            LocalMessageTestData.SepWeatherForecast,
+            LocalMessageTestData.OctWeatherForecast
+        )
+        val localConversationMessages = LocalConversationMessages(
+            messageIdToOpen = LocalMessageIdSample.AugWeatherForecast,
+            messages = messages
+        )
+        coEvery {
+            rustConversationDetailQuery.observeConversationMessages(
+                userId, conversationId
+            )
+        } returns flowOf(localConversationMessages)
+
+        // When
+        dataSource.observeConversationMessages(userId, conversationId).test {
+
+            // Then
+            val result = awaitItem()
+            assertEquals(localConversationMessages, result)
+            coVerify { rustConversationDetailQuery.observeConversationMessages(userId, conversationId) }
+
+            awaitComplete()
+        }
     }
 
     @Test

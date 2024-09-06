@@ -19,16 +19,13 @@
 package ch.protonmail.android.mailmessage.data.local
 
 import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
-import ch.protonmail.android.mailcommon.domain.mapper.LocalConversationId
 import ch.protonmail.android.mailcommon.domain.mapper.LocalDecryptedMessage
 import ch.protonmail.android.mailcommon.domain.mapper.LocalLabelId
 import ch.protonmail.android.mailcommon.domain.mapper.LocalMessageId
 import ch.protonmail.android.mailcommon.domain.mapper.LocalMessageMetadata
-import ch.protonmail.android.mailmessage.data.model.LocalConversationMessages
 import ch.protonmail.android.mailmessage.data.usecase.CreateRustMessageAccessor
 import ch.protonmail.android.mailmessage.data.usecase.CreateRustMessageBodyAccessor
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.mapLatest
@@ -42,7 +39,6 @@ class RustMessageDataSourceImpl @Inject constructor(
     private val userSessionRepository: UserSessionRepository,
     private val rustMailbox: RustMailbox,
     private val rustMessageQuery: RustMessageQuery,
-    private val rustConversationMessageQuery: RustConversationMessageQuery,
     private val createRustMessageAccessor: CreateRustMessageAccessor,
     private val createRustMessageBodyAccessor: CreateRustMessageBodyAccessor
 ) : RustMessageDataSource {
@@ -100,12 +96,6 @@ class RustMessageDataSourceImpl @Inject constructor(
     override suspend fun markUnread(userId: UserId, messages: List<LocalMessageId>) {
         throw UnsupportedOperationException("rust-message: markUnread has not been implemented by Rust")
     }
-
-    override fun observeConversationMessages(
-        userId: UserId,
-        conversationId: LocalConversationId
-    ): Flow<LocalConversationMessages> =
-        rustConversationMessageQuery.observeConversationMessages(userId, conversationId)
 
     override fun disconnect() {
         rustMessageQuery.disconnect()

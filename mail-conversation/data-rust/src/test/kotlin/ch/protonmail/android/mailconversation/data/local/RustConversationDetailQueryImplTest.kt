@@ -20,21 +20,29 @@ package ch.protonmail.android.mailconversation.data.local
 
 import app.cash.turbine.test
 import ch.protonmail.android.mailcommon.domain.mapper.LocalConversationId
+import ch.protonmail.android.mailcommon.domain.mapper.LocalMessageId
 import ch.protonmail.android.mailconversation.data.usecase.CreateRustConversationWatcher
 import ch.protonmail.android.mailmessage.data.local.RustMailbox
+import ch.protonmail.android.mailmessage.data.model.LocalConversationMessages
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
 import ch.protonmail.android.testdata.conversation.rust.LocalConversationTestData
 import ch.protonmail.android.testdata.user.UserIdTestData
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.slot
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import uniffi.proton_mail_uniffi.LiveQueryCallback
 import uniffi.proton_mail_uniffi.Mailbox
+import uniffi.proton_mail_uniffi.WatchHandle
 import uniffi.proton_mail_uniffi.WatchedConversation
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -46,7 +54,6 @@ class RustConversationDetailQueryImplTest {
     private val testCoroutineScope = CoroutineScope(mainDispatcherRule.testDispatcher)
 
     private val createRustConversationWatcher: CreateRustConversationWatcher = mockk()
-
     private val rustMailbox: RustMailbox = mockk()
 
     private val rustConversationQuery = RustConversationDetailQueryImpl(
@@ -56,14 +63,18 @@ class RustConversationDetailQueryImplTest {
     )
 
     @Test
-    fun `initializes the watcher and emits initial items when called`() = runTest {
+    fun `initializes the watcher and emits initial conversation when called`() = runTest {
         // Given
         val conversationId = LocalConversationId(1uL)
+        val messageToOpen = LocalMessageId(100u)
         val mailbox = mockk<Mailbox>()
         val callbackSlot = slot<LiveQueryCallback>()
         val expectedConversation = LocalConversationTestData.AugConversation
+        val expectedMessages = LocalConversationMessages(messageToOpen, listOf(mockk()))
         val watcherMock = mockk<WatchedConversation> {
             every { conversation } returns expectedConversation
+            every { messages } returns expectedMessages.messages
+            every { messageIdToOpen } returns expectedMessages.messageIdToOpen
         }
         every { rustMailbox.observeConversationMailbox() } returns flowOf(mailbox)
         coEvery { createRustConversationWatcher(mailbox, conversationId, capture(callbackSlot)) } returns watcherMock
@@ -73,18 +84,31 @@ class RustConversationDetailQueryImplTest {
             // Then
             assertEquals(expectedConversation, awaitItem())
         }
+
+        // When
+        rustConversationQuery.observeConversationMessages(UserIdTestData.userId, conversationId).test {
+
+            // Then
+            val result = awaitItem()
+            assertEquals(expectedMessages, result)
+            assertEquals(messageToOpen, result.messageIdToOpen)
+        }
     }
 
     @Test
-    fun `new conversation is emitted when mailbox live query callback is called`() = runTest {
+    fun `new conversation and messages are emitted when mailbox live query callback is called`() = runTest {
         // Given
         val userId = UserIdTestData.userId
         val conversationId = LocalConversationId(1u)
+        val messageToOpen = LocalMessageId(100u)
         val mailbox = mockk<Mailbox>()
         val callbackSlot = slot<LiveQueryCallback>()
         val expectedConversation = LocalConversationTestData.AugConversation
+        val expectedMessages = LocalConversationMessages(messageToOpen, listOf(mockk()))
         val watcherMock = mockk<WatchedConversation> {
             every { conversation } returns expectedConversation
+            every { messages } returns expectedMessages.messages
+            every { messageIdToOpen } returns expectedMessages.messageIdToOpen
         }
         every { rustMailbox.observeConversationMailbox() } returns flowOf(mailbox)
         coEvery { createRustConversationWatcher(mailbox, conversationId, capture(callbackSlot)) } returns watcherMock
@@ -93,11 +117,142 @@ class RustConversationDetailQueryImplTest {
             skipItems(1)
             // When
             val updatedConversation = expectedConversation.copy(isStarred = true)
+            val updatedMessageToOpen = LocalMessageId(200u)
+            val updatedMessages = expectedMessages.copy(messageIdToOpen = updatedMessageToOpen)
             every { watcherMock.conversation } returns updatedConversation
+            every { watcherMock.messages } returns updatedMessages.messages
+            every { watcherMock.messageIdToOpen } returns updatedMessages.messageIdToOpen
+
+            // When
             callbackSlot.captured.onUpdate()
 
             // Then
             assertEquals(updatedConversation, awaitItem())
+
+            // When
+            rustConversationQuery.observeConversationMessages(UserIdTestData.userId, conversationId).test {
+
+                // Then
+                val result = awaitItem()
+                assertEquals(updatedMessages, result)
+                assertEquals(updatedMessageToOpen, result.messageIdToOpen)
+            }
         }
     }
+
+    @Test
+    fun `watcher is created only once when observing the same conversation`() = runTest {
+        // Given
+        val userId = UserIdTestData.userId
+        val conversationId = LocalConversationId(1u)
+        val mailbox = mockk<Mailbox>()
+        val callbackSlot = slot<LiveQueryCallback>()
+        val expectedConversation = LocalConversationTestData.AugConversation
+        val expectedMessages = LocalConversationMessages(LocalMessageId(100u), listOf(mockk()))
+
+        val watcherMock = mockk<WatchedConversation> {
+            every { conversation } returns expectedConversation
+            every { messages } returns expectedMessages.messages
+            every { messageIdToOpen } returns expectedMessages.messageIdToOpen
+
+        }
+        every { rustMailbox.observeConversationMailbox() } returns flowOf(mailbox)
+        coEvery { createRustConversationWatcher(mailbox, conversationId, capture(callbackSlot)) } returns watcherMock
+
+        rustConversationQuery.observeConversation(userId, conversationId).test {
+            skipItems(1)
+            rustConversationQuery.observeConversation(userId, conversationId).test {
+                assertEquals(expectedConversation, awaitItem())
+            }
+
+            // Then
+            coVerify(exactly = 1) { createRustConversationWatcher(mailbox, conversationId, any()) }
+        }
+    }
+
+    @Test
+    fun `watcher is re-created when a different conversation id is passed`() = runTest {
+        // Given
+        val userId = UserIdTestData.userId
+        val conversationId1 = LocalConversationId(1u)
+        val conversationId2 = LocalConversationId(2u)
+        val mailbox = mockk<Mailbox>()
+        val callbackSlot = slot<LiveQueryCallback>()
+        val expectedMessages = LocalConversationMessages(LocalMessageId(100u), listOf(mockk()))
+        val expectedConversation1 = LocalConversationTestData.AugConversation
+        val expectedConversation2 = expectedConversation1.copy(id = conversationId2)
+        val watcherMock1 = mockk<WatchedConversation> {
+            every { conversation } returns expectedConversation1
+            every { messages } returns expectedMessages.messages
+            every { messageIdToOpen } returns expectedMessages.messageIdToOpen
+            every { handle } returns mockk<WatchHandle> {
+                every { disconnect() } returns Unit
+            }
+        }
+        val watcherMock2 = mockk<WatchedConversation> {
+            every { conversation } returns expectedConversation2
+            every { messages } returns expectedMessages.messages
+            every { messageIdToOpen } returns expectedMessages.messageIdToOpen
+            every { handle } returns mockk<WatchHandle> {
+                every { disconnect() } returns Unit
+            }
+        }
+        every { rustMailbox.observeConversationMailbox() } returns flowOf(mailbox)
+        coEvery { createRustConversationWatcher(mailbox, conversationId1, capture(callbackSlot)) } returns watcherMock1
+        coEvery { createRustConversationWatcher(mailbox, conversationId2, capture(callbackSlot)) } returns watcherMock2
+
+        // When
+        rustConversationQuery.observeConversation(userId, conversationId1).test {
+            assertEquals(expectedConversation1, awaitItem())
+        }
+
+        rustConversationQuery.observeConversation(userId, conversationId2).test {
+            assertEquals(expectedConversation2, awaitItem())
+        }
+
+        // Then
+        coVerify(exactly = 1) { createRustConversationWatcher(mailbox, conversationId1, any()) }
+        coVerify(exactly = 1) { createRustConversationWatcher(mailbox, conversationId2, any()) }
+    }
+
+    @Test
+    fun `concurrent calls to observeConversation should initialize the watcher only once`() = runTest {
+        // Given
+        val conversationId = LocalConversationId(1uL)
+        val mailbox = mockk<Mailbox>()
+        val callbackSlot = slot<LiveQueryCallback>()
+        val expectedConversation = LocalConversationTestData.AugConversation
+        val expectedMessages = LocalConversationMessages(LocalMessageId(100u), listOf(mockk()))
+        val watcherMock = mockk<WatchedConversation> {
+            every { conversation } returns expectedConversation
+            every { messages } returns expectedMessages.messages
+            every { messageIdToOpen } returns expectedMessages.messageIdToOpen
+            every { handle } returns mockk<WatchHandle> {
+                every { disconnect() } returns Unit
+            }
+        }
+        every { rustMailbox.observeConversationMailbox() } returns flowOf(mailbox)
+        coEvery { createRustConversationWatcher(mailbox, conversationId, capture(callbackSlot)) } coAnswers {
+            delay(100) // Simulate delay to enforce concurrency
+            watcherMock
+        }
+
+        // When
+        val numberOfConcurrentCalls = 10
+        val jobList = mutableListOf<Deferred<Unit>>()
+        repeat(numberOfConcurrentCalls) {
+            val job = async {
+                rustConversationQuery.observeConversation(UserIdTestData.userId, conversationId).test {
+                    assertEquals(expectedConversation, awaitItem())
+                }
+            }
+            jobList.add(job)
+        }
+        jobList.awaitAll()
+
+        // Then
+        coVerify(exactly = 1) { createRustConversationWatcher(mailbox, conversationId, any()) }
+    }
+
 }
+
