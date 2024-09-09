@@ -104,9 +104,7 @@ class IsLabelLimitReachedTest {
         coEvery { observeUser(UserIdTestData.userId) } returns flowOf(UserTestData.freeUser)
         coEvery {
             labelRepository.getLabels(UserIdTestData.userId, LabelType.MessageLabel)
-        } returns LabelTestData.systemLabels.map {
-            LabelTestData.buildLabel(id = it.id.labelId.id)
-        } + listOf(
+        } returns listOf(
             LabelTestData.buildLabel(id = "Custom Label")
         )
 
@@ -126,9 +124,7 @@ class IsLabelLimitReachedTest {
         coEvery { observeUser(UserIdTestData.userId) } returns flowOf(UserTestData.freeUser)
         coEvery {
             labelRepository.getLabels(UserIdTestData.userId, LabelType.MessageLabel)
-        } returns LabelTestData.systemLabels.map {
-            LabelTestData.buildLabel(id = it.id.labelId.id)
-        } + listOf(
+        } returns listOf(
             LabelTestData.buildLabel(id = "Custom Label 1"),
             LabelTestData.buildLabel(id = "Custom Label 2"),
             LabelTestData.buildLabel(id = "Custom Label 3")
