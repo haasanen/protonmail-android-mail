@@ -65,7 +65,7 @@ internal class UpsellingBottomSheetViewModelTest {
     private val expectedUpsellingEntryPoint = UpsellingEntryPoint.ContactGroups
     private val viewModel: UpsellingBottomSheetViewModel by lazy {
         UpsellingBottomSheetViewModel(
-            UpsellingEntryPoint.Mailbox,
+            expectedUpsellingEntryPoint,
             observePrimaryUserId,
             getDynamicPlansAdjustedPrices,
             filterDynamicPlansByUserSubscription,
