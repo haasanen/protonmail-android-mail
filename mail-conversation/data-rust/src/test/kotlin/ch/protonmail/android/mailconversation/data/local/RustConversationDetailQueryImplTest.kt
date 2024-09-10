@@ -96,7 +96,7 @@ class RustConversationDetailQueryImplTest {
     }
 
     @Test
-    fun `new conversation and messages are emitted when mailbox live query callback is called`() = runTest {
+    fun `new conversation and messages are emitted when conversation watcher callback is called`() = runTest {
         // Given
         val userId = UserIdTestData.userId
         val conversationId = LocalConversationId(1u)
