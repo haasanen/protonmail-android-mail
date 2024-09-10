@@ -90,9 +90,9 @@ class RustConversationDataSourceImpl @Inject constructor(
     }
 
     override suspend fun markUnread(userId: UserId, conversations: List<LocalConversationId>) {
-        executeUserSessionAction(
+        executeMailboxAction(
             userId = userId,
-            action = { userSession -> markConversationsAsUnread(userSession, conversations) },
+            action = { mailbox -> markConversationsAsUnread(mailbox, conversations) },
             actionName = "mark as unread"
         )
     }

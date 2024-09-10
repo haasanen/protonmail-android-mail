@@ -23,8 +23,13 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.LoginFlow
+import uniffi.proton_mail_uniffi.MailSession
+import uniffi.proton_mail_uniffi.MailUserSession
 import uniffi.proton_mail_uniffi.MailUserSessionInitializationCallback
 import uniffi.proton_mail_uniffi.MailUserSessionInitializationStage
+import uniffi.proton_mail_uniffi.UserLoginFlowArcLoginFlowResult
+import uniffi.proton_mail_uniffi.UserLoginFlowArcMailUserSessionResult
+import uniffi.proton_mail_uniffi.UserLoginFlowVoidResult
 import javax.inject.Inject
 
 class InjectFakeRustSession @Inject constructor(
@@ -41,27 +46,14 @@ class InjectFakeRustSession @Inject constructor(
             return@runBlocking
         }
 
-        lateinit var newLoginFlow: LoginFlow
-        run {
-            for (i in 0..MaxFakeLoginRetries) {
-                runCatching {
-                    newLoginFlow = mailSession.newLoginFlow()
-                    newLoginFlow.login(username, password)
-                }.onFailure { exception ->
-                    Timber.v("rust-session: Fake login Failure due to $exception")
-                    delay(500)
-                }.onSuccess {
-                    Timber.v("rust-session: Fake login Success. Moving on...")
-                    return@run
-                }
-            }
-        }
-        Timber.v("rust-session: Fake login with $username performed")
+        val loginFlow: LoginFlow = buildLoginInterface(mailSession) ?: return@runBlocking
+        val mailUserSession = loginFlow.performLogin(username, password) ?: return@runBlocking
 
+        Timber.d("rust-session: Fake login with $username performed")
         Timber.v("rust-session: Initializing user context for $username...")
 
         var initCompleted = false
-        newLoginFlow.toUserContext().initialize(
+        mailUserSession.initialize(
             object : MailUserSessionInitializationCallback {
                 override fun onStage(stage: MailUserSessionInitializationStage) {
                     Timber.v("rust-session: rust-session onStage: $stage")
@@ -77,9 +69,47 @@ class InjectFakeRustSession @Inject constructor(
         Timber.d("rust-session: rust-session initialization completed successfully")
     }
 
-    companion object {
+    private suspend fun LoginFlow.performLogin(username: String, password: String): MailUserSession? {
+        Timber.v("rust-session: Performing login for $username ...")
+        when (val result = this.login(username, password)) {
+            is UserLoginFlowVoidResult.Error -> {
+                Timber.v("rust-session: Fake login Failure! reason: $result")
+                return null
+            }
+            is UserLoginFlowVoidResult.Ok -> {
+                Timber.v("rust-session: Fake login Success..")
+                return this.extractUserContext()
+            }
+        }
+    }
 
-        private const val MaxFakeLoginRetries = 5
+    private fun LoginFlow.extractUserContext(): MailUserSession? {
+        return when (val result = this.toUserContext()) {
+            is UserLoginFlowArcMailUserSessionResult.Error -> {
+                Timber.v("rust-session: Login Flow: Failure creating user session! reason: $result")
+                null
+            }
+
+            is UserLoginFlowArcMailUserSessionResult.Ok -> {
+                Timber.v("rust-session: Login Flow: user session creation success..")
+                result.v1
+            }
+        }
+    }
+
+    private suspend fun buildLoginInterface(mailSession: MailSession): LoginFlow? {
+        Timber.v("rust-session: building login interface...")
+        return when (val result = mailSession.newLoginFlow()) {
+            is UserLoginFlowArcLoginFlowResult.Error -> {
+                Timber.v("rust-session: Login Flow: Failure creating interface due to $result")
+                null
+            }
+
+            is UserLoginFlowArcLoginFlowResult.Ok -> {
+                Timber.v("rust-session: Login Flow: interface created...")
+                result.v1
+            }
+        }
     }
 
 }
