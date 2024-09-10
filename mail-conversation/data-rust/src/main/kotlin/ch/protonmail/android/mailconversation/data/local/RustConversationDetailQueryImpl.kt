@@ -78,6 +78,22 @@ class RustConversationDetailQueryImpl @Inject constructor(
 
     override fun observeConversation(userId: UserId, conversationId: LocalConversationId): Flow<LocalConversation> {
 
+        initialiseOrUpdateWatcher(conversationId)
+
+        return conversationStatusFlow
+    }
+
+    override fun observeConversationMessages(
+        userId: UserId,
+        conversationId: LocalConversationId
+    ): Flow<LocalConversationMessages> {
+
+        initialiseOrUpdateWatcher(conversationId)
+
+        return conversationMessagesStatusFlow
+    }
+
+    private fun initialiseOrUpdateWatcher(conversationId: LocalConversationId) {
         coroutineScope.launch {
             mutex.withLock {
                 if (currentConversationId != conversationId || conversationWatcher == null) {
@@ -116,17 +132,6 @@ class RustConversationDetailQueryImpl @Inject constructor(
                 }
             }
         }
-
-        return conversationStatusFlow
-    }
-
-    override fun observeConversationMessages(
-        userId: UserId,
-        conversationId: LocalConversationId
-    ): Flow<LocalConversationMessages> {
-        Timber.v("rust-conversation-detail-query: Observe conversation query starting...")
-
-        return conversationMessagesStatusFlow
     }
 
     private fun disconnect() {
