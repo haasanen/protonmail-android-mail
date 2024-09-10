@@ -31,13 +31,9 @@ import ch.protonmail.android.testdata.conversation.rust.LocalConversationTestDat
 import ch.protonmail.android.testdata.message.rust.LocalMessageIdSample
 import ch.protonmail.android.testdata.message.rust.LocalMessageTestData
 import ch.protonmail.android.testdata.user.UserIdTestData
-import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.coVerify
-import io.mockk.every
-import io.mockk.just
 import io.mockk.mockk
-import io.mockk.verify
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
@@ -158,17 +154,5 @@ class RustConversationDataSourceImplTest {
 
             awaitComplete()
         }
-    }
-
-    @Test
-    fun `disconnect should call disconnect on rustConversationQuery`() {
-        // Given
-        every { rustConversationDetailQuery.disconnect() } just Runs
-
-        // When
-        dataSource.disconnect()
-
-        // Then
-        verify { rustConversationDetailQuery.disconnect() }
     }
 }

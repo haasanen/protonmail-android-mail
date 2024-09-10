@@ -54,5 +54,4 @@ interface RustConversationDataSource {
 
     fun getSenderImage(address: String, bimi: String?): ByteArray?
 
-    fun disconnect()
 }

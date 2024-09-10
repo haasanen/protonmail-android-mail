@@ -129,7 +129,7 @@ class RustConversationDetailQueryImpl @Inject constructor(
         return conversationMessagesStatusFlow
     }
 
-    override fun disconnect() {
+    private fun disconnect() {
         Timber.d(
             "rust-conversation-detail-query: disconnecting conversation watcher for " +
                 "$currentConversationId"

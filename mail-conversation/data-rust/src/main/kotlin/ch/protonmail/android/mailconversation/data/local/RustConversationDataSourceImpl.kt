@@ -150,10 +150,6 @@ class RustConversationDataSourceImpl @Inject constructor(
         )
     }
 
-    override fun disconnect() {
-        rustConversationDetailQuery.disconnect()
-    }
-
     private suspend fun executeUserSessionAction(
         userId: UserId,
         action: suspend (MailUserSession) -> Unit,

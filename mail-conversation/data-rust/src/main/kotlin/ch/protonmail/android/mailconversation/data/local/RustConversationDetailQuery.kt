@@ -30,6 +30,4 @@ interface RustConversationDetailQuery {
         userId: UserId,
         conversationId: LocalConversationId
     ): Flow<LocalConversationMessages>
-
-    fun disconnect()
 }
