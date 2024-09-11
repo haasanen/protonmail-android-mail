@@ -49,10 +49,10 @@ dependencies {
     implementation(Dependencies.moduleDataRustLibs)
     implementation(AndroidX.AppCompat.appCompat)
 
-    implementation(Proton.Core.labelDomain)
     implementation(Proton.Core.userDomain)
 
     implementation(project(":mail-common:domain"))
+    implementation(project(":mail-label:domain"))
 
     testImplementation(Dependencies.testLibs)
     testImplementation(project(":test:utils"))

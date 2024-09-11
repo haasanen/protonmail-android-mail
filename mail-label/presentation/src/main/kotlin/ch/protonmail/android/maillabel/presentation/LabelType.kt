@@ -19,7 +19,7 @@
 package ch.protonmail.android.maillabel.presentation
 
 import androidx.annotation.StringRes
-import me.proton.core.label.domain.entity.LabelType
+import ch.protonmail.android.maillabel.domain.model.LabelType
 
 @StringRes
 fun LabelType.labelTitleRes() = when (this) {

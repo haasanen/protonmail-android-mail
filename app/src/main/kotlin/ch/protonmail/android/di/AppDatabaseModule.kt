@@ -36,7 +36,6 @@ import me.proton.core.humanverification.data.db.HumanVerificationDatabase
 import me.proton.core.key.data.db.KeySaltDatabase
 import me.proton.core.key.data.db.PublicAddressDatabase
 import me.proton.core.keytransparency.data.local.KeyTransparencyDatabase
-import me.proton.core.label.data.local.LabelDatabase
 import me.proton.core.mailsettings.data.db.MailSettingsDatabase
 import me.proton.core.notification.data.local.db.NotificationDatabase
 import me.proton.core.observability.data.db.ObservabilityDatabase
@@ -97,9 +96,6 @@ abstract class AppDatabaseBindsModule {
 
     @Binds
     abstract fun provideEventMetadataDatabase(appDatabase: AppDatabase): EventMetadataDatabase
-
-    @Binds
-    abstract fun provideLabelDatabase(appDatabase: AppDatabase): LabelDatabase
 
     @Binds
     abstract fun provideFeatureFlagDatabase(appDatabase: AppDatabase): FeatureFlagDatabase

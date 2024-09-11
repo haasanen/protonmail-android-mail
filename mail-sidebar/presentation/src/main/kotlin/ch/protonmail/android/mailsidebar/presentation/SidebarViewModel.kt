@@ -41,7 +41,7 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import me.proton.core.compose.viewmodel.stopTimeoutMillis
-import me.proton.core.label.domain.entity.LabelId
+import ch.protonmail.android.maillabel.domain.model.LabelId
 import me.proton.core.util.kotlin.exhaustive
 import javax.inject.Inject
 

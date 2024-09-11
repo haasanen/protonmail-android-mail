@@ -34,8 +34,8 @@ import me.proton.core.contact.domain.entity.ContactEmailId
 import me.proton.core.contact.domain.repository.ContactRepository
 import me.proton.core.domain.arch.DataResult
 import me.proton.core.domain.arch.ResponseSource
-import me.proton.core.label.domain.entity.LabelId
-import me.proton.core.label.domain.entity.LabelType
+import ch.protonmail.android.maillabel.domain.model.LabelId
+import ch.protonmail.android.maillabel.domain.model.LabelType
 import ch.protonmail.android.maillabel.domain.repository.LabelRepository
 import org.junit.Test
 import kotlin.test.assertEquals

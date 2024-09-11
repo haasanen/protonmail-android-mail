@@ -20,9 +20,9 @@ package ch.protonmail.android.mailconversation.domain.sample
 
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.sample.ConversationIdSample
-import ch.protonmail.android.mailcommon.domain.sample.LabelIdSample
+import ch.protonmail.android.maillabel.domain.sample.LabelIdSample
 import ch.protonmail.android.mailconversation.domain.entity.ConversationLabel
-import me.proton.core.label.domain.entity.LabelId
+import ch.protonmail.android.maillabel.domain.model.LabelId
 
 object ConversationLabelSample {
 

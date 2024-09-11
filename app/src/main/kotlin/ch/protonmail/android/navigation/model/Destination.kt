@@ -48,7 +48,7 @@ import ch.protonmail.android.mailsettings.presentation.settings.autolock.ui.pin.
 import ch.protonmail.android.mailsettings.presentation.settings.swipeactions.EditSwipeActionPreferenceScreen.SWIPE_DIRECTION_KEY
 import me.proton.core.contact.domain.entity.ContactId
 import me.proton.core.domain.entity.UserId
-import me.proton.core.label.domain.entity.LabelId
+import ch.protonmail.android.maillabel.domain.model.LabelId
 import me.proton.core.util.kotlin.serialize
 
 sealed class Destination(val route: String) {

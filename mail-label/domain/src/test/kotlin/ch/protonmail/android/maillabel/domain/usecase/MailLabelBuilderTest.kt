@@ -27,7 +27,7 @@ import io.mockk.every
 import io.mockk.mockkStatic
 import io.mockk.unmockkStatic
 import kotlinx.coroutines.test.runTest
-import me.proton.core.label.domain.entity.LabelType
+import ch.protonmail.android.maillabel.domain.model.LabelType
 import org.junit.After
 import org.junit.Before
 import org.junit.Test

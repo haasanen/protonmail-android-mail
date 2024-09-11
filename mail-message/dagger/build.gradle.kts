@@ -44,7 +44,6 @@ android {
 
 dependencies {
     implementation(Proton.Core.network)
-    implementation(Proton.Core.labelDomain)
 
     implementation(project(":mail-common:data"))
     implementation(project(":mail-common:domain"))
@@ -53,6 +52,7 @@ dependencies {
     implementation(project(":mail-message:domain"))
     implementation(project(":mail-message:presentation"))
     implementation(project(":mail-label:data"))
+    implementation(project(":mail-label:domain"))
 
     implementation(Dagger.hiltAndroid)
     implementation(project(":mail-label:domain"))

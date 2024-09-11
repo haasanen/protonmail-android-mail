@@ -72,7 +72,6 @@ dependencies {
     implementation(Proton.Core.account)
     implementation(Proton.Core.accountManagerPresentationCompose)
     implementation(Proton.Core.featureFlag)
-    implementation(Proton.Core.label)
     implementation(Proton.Core.mailSettings)
     implementation(Proton.Core.planCompose)
 

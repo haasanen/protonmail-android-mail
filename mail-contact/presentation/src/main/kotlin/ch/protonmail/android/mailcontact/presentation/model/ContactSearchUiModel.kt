@@ -21,7 +21,7 @@ package ch.protonmail.android.mailcontact.presentation.model
 import androidx.compose.ui.graphics.Color
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import me.proton.core.contact.domain.entity.ContactId
-import me.proton.core.label.domain.entity.LabelId
+import ch.protonmail.android.maillabel.domain.model.LabelId
 
 sealed interface ContactSearchUiModel {
 

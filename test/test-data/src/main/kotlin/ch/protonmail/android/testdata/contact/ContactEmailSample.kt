@@ -18,7 +18,7 @@
 
 package ch.protonmail.android.testdata.contact
 
-import ch.protonmail.android.mailcommon.domain.sample.LabelSample
+import ch.protonmail.android.maillabel.domain.sample.LabelSample
 import ch.protonmail.android.testdata.user.UserIdTestData
 import me.proton.core.contact.domain.entity.ContactEmail
 

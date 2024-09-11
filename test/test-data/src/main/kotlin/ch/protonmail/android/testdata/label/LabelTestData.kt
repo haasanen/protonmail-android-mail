@@ -21,10 +21,10 @@ package ch.protonmail.android.testdata.label
 import ch.protonmail.android.mailcommon.domain.model.FAKE_USER_ID
 import ch.protonmail.android.testdata.user.UserIdTestData
 import me.proton.core.domain.entity.UserId
-import me.proton.core.label.domain.entity.Label
-import me.proton.core.label.domain.entity.LabelId
-import me.proton.core.label.domain.entity.LabelType
-import me.proton.core.label.domain.entity.NewLabel
+import ch.protonmail.android.maillabel.domain.model.Label
+import ch.protonmail.android.maillabel.domain.model.LabelId
+import ch.protonmail.android.maillabel.domain.model.LabelType
+import ch.protonmail.android.maillabel.domain.model.NewLabel
 
 object LabelTestData {
 

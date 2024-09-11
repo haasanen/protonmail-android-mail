@@ -19,8 +19,8 @@
 package ch.protonmail.android.maillabel.presentation.folderform
 
 import androidx.compose.ui.graphics.Color
-import me.proton.core.label.domain.entity.Label
-import me.proton.core.label.domain.entity.LabelId
+import ch.protonmail.android.maillabel.domain.model.Label
+import ch.protonmail.android.maillabel.domain.model.LabelId
 
 sealed interface FolderFormOperation
 

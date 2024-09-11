@@ -50,7 +50,6 @@ dependencies {
 
     implementation(Dependencies.moduleDomainLibs)
     implementation(Proton.Core.user)
-    implementation(Proton.Core.label)
     implementation(Jsoup.jsoup)
     implementation(project(":mail-message:domain"))
     implementation(project(":mail-common:domain"))

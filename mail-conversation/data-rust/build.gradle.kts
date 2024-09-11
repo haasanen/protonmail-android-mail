@@ -50,7 +50,6 @@ dependencies {
     implementation(Dependencies.moduleDataRustLibs)
 
     implementation(Proton.Core.userDomain)
-    implementation(Proton.Core.labelDomain)
 
     api(project(":mail-pagination:domain"))
     implementation(project(":mail-pagination:data"))

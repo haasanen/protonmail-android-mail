@@ -71,7 +71,7 @@ import me.proton.core.compose.theme.captionNorm
 import me.proton.core.compose.theme.defaultNorm
 import me.proton.core.compose.theme.defaultSmallWeak
 import me.proton.core.compose.theme.defaultStrongNorm
-import me.proton.core.label.domain.entity.LabelId
+import ch.protonmail.android.maillabel.domain.model.LabelId
 
 @Composable
 fun LabelListScreen(actions: LabelListScreen.Actions, viewModel: LabelListViewModel = hiltViewModel()) {

@@ -27,7 +27,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.mapLatest
 import me.proton.core.domain.entity.UserId
-import me.proton.core.label.domain.entity.LabelId
+import ch.protonmail.android.maillabel.domain.model.LabelId
 import javax.inject.Inject
 
 class UnreadCountersRepositoryImpl @Inject constructor(

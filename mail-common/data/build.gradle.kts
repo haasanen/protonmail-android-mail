@@ -70,8 +70,6 @@ dependencies {
 
     implementation(Proton.Core.accountData)
     implementation(Proton.Core.featureFlag)
-    implementation(Proton.Core.labelData)
-    implementation(Proton.Core.labelDomain)
     implementation(Proton.Core.user)
 
     implementation(project(":mail-common:domain"))

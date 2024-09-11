@@ -24,7 +24,7 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.model.SwipeActions
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.SwipeUiModel
 import ch.protonmail.android.mailsettings.domain.model.SwipeActionsPreference
 import me.proton.core.compose.theme.ProtonTheme
-import me.proton.core.label.domain.entity.LabelId
+import ch.protonmail.android.maillabel.domain.model.LabelId
 import me.proton.core.mailsettings.domain.entity.SwipeAction
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized

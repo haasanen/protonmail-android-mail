@@ -42,7 +42,7 @@ import io.mockk.Called
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.collections.immutable.toImmutableList
-import me.proton.core.label.domain.entity.LabelId
+import ch.protonmail.android.maillabel.domain.model.LabelId
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized

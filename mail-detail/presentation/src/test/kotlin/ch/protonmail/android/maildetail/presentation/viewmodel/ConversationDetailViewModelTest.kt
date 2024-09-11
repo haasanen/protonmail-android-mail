@@ -31,7 +31,7 @@ import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.model.NetworkError
 import ch.protonmail.android.mailcommon.domain.sample.ConversationIdSample
 import ch.protonmail.android.mailcommon.domain.sample.DataErrorSample
-import ch.protonmail.android.mailcommon.domain.sample.LabelSample
+import ch.protonmail.android.maillabel.domain.sample.LabelSample
 import ch.protonmail.android.mailcommon.domain.sample.UserAddressSample
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUserId
@@ -138,7 +138,7 @@ import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import me.proton.core.contact.domain.entity.Contact
-import me.proton.core.label.domain.entity.LabelId
+import ch.protonmail.android.maillabel.domain.model.LabelId
 import me.proton.core.network.domain.NetworkManager
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest

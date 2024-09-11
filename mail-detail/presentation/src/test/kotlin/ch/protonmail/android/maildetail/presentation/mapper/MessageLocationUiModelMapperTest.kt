@@ -31,8 +31,8 @@ import ch.protonmail.android.testdata.label.LabelTestData
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import me.proton.core.label.domain.entity.LabelId
-import me.proton.core.label.domain.entity.LabelType
+import ch.protonmail.android.maillabel.domain.model.LabelId
+import ch.protonmail.android.maillabel.domain.model.LabelType
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

@@ -64,7 +64,6 @@ dependencies {
     kapt(Dependencies.hiltAnnotationProcessors)
 
     implementation(Proton.Core.domain)
-    implementation(Proton.Core.labelDomain)
     implementation(Proton.Core.mailSettings)
     implementation(Proton.Core.planCompose)
 

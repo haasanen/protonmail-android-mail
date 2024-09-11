@@ -24,9 +24,9 @@ import arrow.core.Either
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.model.NetworkError
 import me.proton.core.domain.entity.UserId
-import me.proton.core.label.domain.entity.Label
-import me.proton.core.label.domain.entity.LabelId
-import me.proton.core.label.domain.entity.LabelType
+import ch.protonmail.android.maillabel.domain.model.Label
+import ch.protonmail.android.maillabel.domain.model.LabelId
+import ch.protonmail.android.maillabel.domain.model.LabelType
 import ch.protonmail.android.maillabel.domain.repository.LabelRepository
 import timber.log.Timber
 import javax.inject.Inject

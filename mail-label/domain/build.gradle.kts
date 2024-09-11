@@ -48,7 +48,6 @@ dependencies {
     kapt(Dependencies.appAnnotationProcessors)
 
     implementation(Proton.Core.accountManager)
-    implementation(Proton.Core.label)
     implementation(Proton.Core.mailSettings)
 
     implementation(Dependencies.moduleDomainLibs)

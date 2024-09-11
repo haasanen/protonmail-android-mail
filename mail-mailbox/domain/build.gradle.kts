@@ -47,7 +47,6 @@ dependencies {
     implementation(Dependencies.moduleDomainLibs)
     implementation(Proton.Core.contact)
     implementation(Proton.Core.user)
-    implementation(Proton.Core.label)
     implementation(Proton.Core.mailSettings)
 
     implementation(project(":mail-label:domain"))

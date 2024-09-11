@@ -19,7 +19,7 @@
 package ch.protonmail.android.mailmessage.domain.usecase
 
 import app.cash.turbine.test
-import ch.protonmail.android.mailcommon.domain.sample.LabelIdSample
+import ch.protonmail.android.maillabel.domain.sample.LabelIdSample
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
 import io.mockk.coEvery

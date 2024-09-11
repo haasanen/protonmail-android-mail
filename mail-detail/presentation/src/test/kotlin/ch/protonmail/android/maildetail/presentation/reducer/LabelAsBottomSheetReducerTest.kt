@@ -24,7 +24,7 @@ import ch.protonmail.android.maillabel.presentation.model.LabelSelectedState
 import ch.protonmail.android.maillabel.presentation.sample.LabelUiModelWithSelectedStateSample
 import ch.protonmail.android.mailmessage.presentation.reducer.LabelAsBottomSheetReducer
 import kotlinx.collections.immutable.toImmutableList
-import me.proton.core.label.domain.entity.LabelId
+import ch.protonmail.android.maillabel.domain.model.LabelId
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized

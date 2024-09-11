@@ -20,7 +20,7 @@ package ch.protonmail.android.testdata.mailbox
 
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.mailmessage.domain.model.UnreadCounter
-import me.proton.core.label.domain.entity.LabelId
+import ch.protonmail.android.maillabel.domain.model.LabelId
 
 object UnreadCountersTestData {
 

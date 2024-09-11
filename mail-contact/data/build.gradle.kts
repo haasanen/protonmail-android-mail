@@ -55,7 +55,6 @@ dependencies {
     implementation(project(":mail-label:domain"))
 
     implementation(Proton.Core.contact)
-    implementation(Proton.Core.label)
 
     implementation(project(":mail-contact:domain"))
 

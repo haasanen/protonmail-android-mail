@@ -19,7 +19,7 @@
 package ch.protonmail.android.maillabel.presentation.labelform
 
 import androidx.compose.ui.graphics.Color
-import me.proton.core.label.domain.entity.LabelId
+import ch.protonmail.android.maillabel.domain.model.LabelId
 
 sealed interface LabelFormOperation
 

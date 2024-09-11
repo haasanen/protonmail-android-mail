@@ -38,7 +38,7 @@ import ch.protonmail.android.uitest.util.awaitDisplayed
 import ch.protonmail.android.uitest.util.awaitHidden
 import ch.protonmail.android.uitest.util.child
 import ch.protonmail.android.uitest.util.getTestString
-import me.proton.core.label.domain.entity.LabelId
+import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.test.R as testR
 
 @AsDsl

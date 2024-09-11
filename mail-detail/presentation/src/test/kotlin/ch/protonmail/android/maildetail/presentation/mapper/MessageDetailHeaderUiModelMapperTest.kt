@@ -22,7 +22,7 @@ import android.content.Context
 import android.text.format.Formatter
 import androidx.compose.ui.graphics.Color
 import arrow.core.right
-import ch.protonmail.android.mailcommon.domain.sample.LabelSample
+import ch.protonmail.android.maillabel.domain.sample.LabelSample
 import ch.protonmail.android.mailcommon.presentation.R.drawable.ic_proton_archive_box
 import ch.protonmail.android.mailcommon.presentation.R.drawable.ic_proton_lock
 import ch.protonmail.android.mailcommon.presentation.mapper.ColorMapper

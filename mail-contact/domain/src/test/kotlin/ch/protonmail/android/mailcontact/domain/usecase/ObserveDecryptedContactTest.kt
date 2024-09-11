@@ -23,7 +23,7 @@ import arrow.core.Either
 import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.model.NetworkError
-import ch.protonmail.android.mailcommon.domain.sample.LabelSample
+import ch.protonmail.android.maillabel.domain.sample.LabelSample
 import ch.protonmail.android.mailcontact.domain.model.ContactGroupLabel
 import ch.protonmail.android.mailcontact.domain.model.DecryptedContact
 import ch.protonmail.android.testdata.contact.ContactWithCardsSample
@@ -36,7 +36,7 @@ import kotlinx.coroutines.test.runTest
 import me.proton.core.contact.domain.repository.ContactRepository
 import me.proton.core.domain.arch.DataResult
 import me.proton.core.domain.arch.ResponseSource
-import me.proton.core.label.domain.entity.LabelType
+import ch.protonmail.android.maillabel.domain.model.LabelType
 import ch.protonmail.android.maillabel.domain.repository.LabelRepository
 import org.junit.Test
 import kotlin.test.assertEquals

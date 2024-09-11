@@ -20,7 +20,7 @@ package ch.protonmail.android.mailmailbox.presentation.mailbox.usecase
 
 import androidx.compose.ui.graphics.Color
 import arrow.core.right
-import ch.protonmail.android.mailcommon.domain.sample.LabelSample
+import ch.protonmail.android.maillabel.domain.sample.LabelSample
 import ch.protonmail.android.mailcommon.presentation.mapper.ColorMapper
 import ch.protonmail.android.maillabel.domain.SelectedMailLabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
@@ -39,8 +39,8 @@ import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.runTest
-import me.proton.core.label.domain.entity.LabelId
-import me.proton.core.label.domain.entity.LabelType
+import ch.protonmail.android.maillabel.domain.model.LabelId
+import ch.protonmail.android.maillabel.domain.model.LabelType
 import org.junit.Ignore
 import org.junit.Test
 import kotlin.test.assertEquals

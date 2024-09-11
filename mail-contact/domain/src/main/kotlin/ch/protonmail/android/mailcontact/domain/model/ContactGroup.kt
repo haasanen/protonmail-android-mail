@@ -20,7 +20,7 @@ package ch.protonmail.android.mailcontact.domain.model
 
 import me.proton.core.contact.domain.entity.ContactEmail
 import me.proton.core.domain.entity.UserId
-import me.proton.core.label.domain.entity.LabelId
+import ch.protonmail.android.maillabel.domain.model.LabelId
 
 data class ContactGroup(
     val userId: UserId,

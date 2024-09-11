@@ -22,8 +22,8 @@ import androidx.compose.ui.graphics.Color
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.maillabel.presentation.folderlist.BottomSheetVisibilityEffect
-import me.proton.core.label.domain.entity.Label
-import me.proton.core.label.domain.entity.LabelId
+import ch.protonmail.android.maillabel.domain.model.Label
+import ch.protonmail.android.maillabel.domain.model.LabelId
 
 sealed interface FolderFormState {
 

@@ -48,9 +48,9 @@ dependencies {
     implementation(Dependencies.moduleDataLibs)
 
     implementation(Proton.Core.user)
-    implementation(Proton.Core.label)
 
     implementation(project(":mail-pagination:domain"))
+    implementation(project(":mail-label:domain"))
 
     testImplementation(Dependencies.testLibs)
 }

@@ -27,7 +27,7 @@ import kotlinx.coroutines.launch
 import me.proton.core.compose.component.ProtonCenteredProgress
 import me.proton.core.compose.component.ProtonModalBottomSheetLayout
 import me.proton.core.contact.domain.entity.ContactId
-import me.proton.core.label.domain.entity.LabelId
+import ch.protonmail.android.maillabel.domain.model.LabelId
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable

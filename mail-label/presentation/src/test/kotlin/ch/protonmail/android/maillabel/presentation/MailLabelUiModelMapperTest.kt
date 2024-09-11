@@ -26,8 +26,7 @@ import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.mailsettings.domain.model.FolderColorSettings
 import ch.protonmail.android.testdata.maillabel.MailLabelTestData.buildCustomFolder
 import me.proton.core.compose.theme.ProtonDimens
-import me.proton.core.label.domain.entity.LabelId
-import me.proton.core.presentation.R
+import ch.protonmail.android.maillabel.domain.model.LabelId
 import org.junit.Test
 import kotlin.test.assertEquals
 

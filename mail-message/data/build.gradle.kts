@@ -48,7 +48,6 @@ dependencies {
     implementation(Dependencies.moduleDataLibs)
     implementation(Dagger.hiltAndroid)
     implementation(Proton.Core.user)
-    implementation(Proton.Core.label)
     implementation(Proton.Core.eventManager)
 
     api(project(":mail-pagination:domain"))

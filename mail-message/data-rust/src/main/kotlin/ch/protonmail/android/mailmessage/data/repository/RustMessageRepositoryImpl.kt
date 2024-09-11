@@ -41,7 +41,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import me.proton.core.domain.entity.UserId
-import me.proton.core.label.domain.entity.LabelId
+import ch.protonmail.android.maillabel.domain.model.LabelId
 import uniffi.proton_mail_uniffi.BlockQuote
 import uniffi.proton_mail_uniffi.RemoteContent
 import uniffi.proton_mail_uniffi.TransformOpts

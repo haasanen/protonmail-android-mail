@@ -19,7 +19,6 @@
 package ch.protonmail.android.maillabel.domain.model
 
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId.Companion.unmodifiableByUserList
-import me.proton.core.label.domain.entity.LabelId
 
 enum class SystemLabelId(val labelId: LabelId) {
     /** Displayed. */

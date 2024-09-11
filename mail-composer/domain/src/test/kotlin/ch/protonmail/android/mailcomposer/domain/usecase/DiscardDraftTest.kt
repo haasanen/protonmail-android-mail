@@ -32,7 +32,7 @@ import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.test.runTest
 import me.proton.core.domain.entity.UserId
-import me.proton.core.label.domain.entity.LabelId
+import ch.protonmail.android.maillabel.domain.model.LabelId
 import kotlin.test.Test
 
 class DiscardDraftTest {

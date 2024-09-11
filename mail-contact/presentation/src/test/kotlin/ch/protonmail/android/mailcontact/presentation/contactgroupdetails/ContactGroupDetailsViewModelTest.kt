@@ -53,7 +53,7 @@ import kotlinx.coroutines.test.setMain
 import me.proton.core.contact.domain.entity.ContactEmail
 import me.proton.core.contact.domain.entity.ContactEmailId
 import me.proton.core.domain.entity.UserId
-import me.proton.core.label.domain.entity.LabelId
+import ch.protonmail.android.maillabel.domain.model.LabelId
 import org.junit.Test
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest

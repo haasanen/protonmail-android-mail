@@ -62,7 +62,6 @@ dependencies {
     debugImplementation(Dependencies.composeDebugLibs)
 
     implementation(Dependencies.modulePresentationLibs)
-    implementation(Proton.Core.label)
     implementation(Proton.Core.mailSettings)
 
     implementation(project(":mail-label:domain"))

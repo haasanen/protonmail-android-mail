@@ -30,7 +30,7 @@ import ch.protonmail.android.mailmessage.domain.model.Participant
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 import me.proton.core.contact.domain.entity.ContactId
-import me.proton.core.label.domain.entity.LabelId
+import ch.protonmail.android.maillabel.domain.model.LabelId
 
 data class BottomSheetState(
     val contentState: BottomSheetContentState?,

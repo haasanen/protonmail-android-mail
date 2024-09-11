@@ -23,7 +23,7 @@ import ch.protonmail.android.mailmessage.domain.model.Recipient
 import ch.protonmail.android.mailmessage.domain.model.Sender
 import ch.protonmail.android.mailpagination.domain.model.PageItem
 import me.proton.core.domain.entity.UserId
-import me.proton.core.label.domain.entity.Label
+import ch.protonmail.android.maillabel.domain.model.Label
 import me.proton.core.mailsettings.domain.entity.ViewMode
 
 enum class MailboxItemType {

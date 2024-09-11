@@ -22,7 +22,7 @@ import androidx.compose.ui.graphics.Color
 import arrow.core.getOrElse
 import ch.protonmail.android.mailcommon.presentation.mapper.ColorMapper
 import me.proton.core.contact.domain.entity.Contact
-import me.proton.core.label.domain.entity.Label
+import ch.protonmail.android.maillabel.domain.model.Label
 import javax.inject.Inject
 
 class ContactGroupItemUiModelMapper @Inject constructor(

@@ -51,7 +51,6 @@ dependencies {
     implementation(Proton.Core.user)
     implementation(Proton.Core.accountManager)
     implementation(Proton.Core.featureFlag)
-    implementation(Proton.Core.labelDomain)
     implementation(Proton.Core.mailSettings)
 
     implementation(Dependencies.moduleDomainLibs)

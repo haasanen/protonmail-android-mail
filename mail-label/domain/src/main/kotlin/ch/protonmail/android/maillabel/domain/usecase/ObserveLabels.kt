@@ -24,8 +24,8 @@ import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.maillabel.domain.repository.LabelRepository
 import kotlinx.coroutines.flow.Flow
 import me.proton.core.domain.entity.UserId
-import me.proton.core.label.domain.entity.Label
-import me.proton.core.label.domain.entity.LabelType
+import ch.protonmail.android.maillabel.domain.model.Label
+import ch.protonmail.android.maillabel.domain.model.LabelType
 import javax.inject.Inject
 
 class ObserveLabels @Inject constructor(

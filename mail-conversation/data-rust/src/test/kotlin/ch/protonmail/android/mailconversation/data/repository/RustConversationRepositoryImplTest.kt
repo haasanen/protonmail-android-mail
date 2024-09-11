@@ -24,7 +24,7 @@ import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailcommon.domain.sample.LabelIdSample
+import ch.protonmail.android.maillabel.domain.sample.LabelIdSample
 import ch.protonmail.android.mailconversation.data.local.RustConversationDataSource
 import ch.protonmail.android.mailconversation.data.mapper.toConversation
 import ch.protonmail.android.mailconversation.domain.entity.Conversation
@@ -51,7 +51,7 @@ import io.mockk.mockk
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import me.proton.core.domain.entity.UserId
-import me.proton.core.label.domain.entity.LabelId
+import ch.protonmail.android.maillabel.domain.model.LabelId
 import org.junit.Test
 import kotlin.test.assertEquals
 

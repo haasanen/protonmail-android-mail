@@ -19,7 +19,7 @@
 package ch.protonmail.android.maillabel.domain.extension
 
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
-import me.proton.core.label.domain.entity.LabelId
+import ch.protonmail.android.maillabel.domain.model.LabelId
 
 fun LabelId.isTrash() = this == SystemLabelId.Trash.labelId
 

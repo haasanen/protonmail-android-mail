@@ -22,7 +22,7 @@ import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.maillabel.presentation.R
 import ch.protonmail.android.maillabel.presentation.folderlist.BottomSheetVisibilityEffect
-import me.proton.core.label.domain.entity.Label
+import ch.protonmail.android.maillabel.domain.model.Label
 import javax.inject.Inject
 
 class FolderFormReducer @Inject constructor() {

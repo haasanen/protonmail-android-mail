@@ -30,7 +30,7 @@ import ch.protonmail.android.mailmessage.domain.model.RefreshedMessageWithBody
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import kotlinx.coroutines.flow.Flow
 import me.proton.core.domain.entity.UserId
-import me.proton.core.label.domain.entity.LabelId
+import ch.protonmail.android.maillabel.domain.model.LabelId
 
 @Suppress("TooManyFunctions", "ComplexInterface")
 interface MessageRepository {

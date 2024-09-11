@@ -20,7 +20,7 @@ package ch.protonmail.android.mailconversation.domain.usecase
 
 import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.sample.ConversationIdSample
-import ch.protonmail.android.mailcommon.domain.sample.LabelIdSample
+import ch.protonmail.android.maillabel.domain.sample.LabelIdSample
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.mailconversation.domain.repository.ConversationRepository
 import io.mockk.coEvery

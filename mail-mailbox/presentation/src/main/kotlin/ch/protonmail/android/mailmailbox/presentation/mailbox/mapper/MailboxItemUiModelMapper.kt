@@ -39,8 +39,8 @@ import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 import me.proton.core.contact.domain.entity.Contact
 import me.proton.core.domain.arch.Mapper
-import me.proton.core.label.domain.entity.Label
-import me.proton.core.label.domain.entity.LabelType
+import ch.protonmail.android.maillabel.domain.model.Label
+import ch.protonmail.android.maillabel.domain.model.LabelType
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.seconds
 

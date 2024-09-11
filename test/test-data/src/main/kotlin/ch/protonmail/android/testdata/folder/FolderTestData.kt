@@ -20,7 +20,7 @@ package ch.protonmail.android.testdata.folder
 
 import androidx.compose.ui.graphics.Color
 import ch.protonmail.android.maillabel.presentation.model.FolderUiModel
-import me.proton.core.label.domain.entity.LabelId
+import ch.protonmail.android.maillabel.domain.model.LabelId
 
 object FolderTestData {
 

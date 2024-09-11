@@ -18,7 +18,6 @@
 
 package ch.protonmail.android.di
 
-import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -26,9 +25,7 @@ import dagger.hilt.components.SingletonComponent
 import dagger.multibindings.ElementsIntoSet
 import me.proton.core.contact.data.ContactEmailEventListener
 import me.proton.core.contact.data.ContactEventListener
-import me.proton.core.eventmanager.data.EventManagerQueryMapProvider
 import me.proton.core.eventmanager.domain.EventListener
-import me.proton.core.label.data.LabelEventListener
 import me.proton.core.mailsettings.data.MailSettingsEventListener
 import me.proton.core.notification.data.NotificationEventListener
 import me.proton.core.push.data.PushEventListener
@@ -37,7 +34,7 @@ import me.proton.core.user.data.UserEventListener
 import me.proton.core.usersettings.data.UserSettingsEventListener
 import javax.inject.Singleton
 
-@Module(includes = [EventManagerModule.BindersModule::class])
+@Module
 @InstallIn(SingletonComponent::class)
 @Suppress("LongParameterList")
 object EventManagerModule {
@@ -52,7 +49,6 @@ object EventManagerModule {
         mailSettingsEventListener: MailSettingsEventListener,
         contactEventListener: ContactEventListener,
         contactEmailEventListener: ContactEmailEventListener,
-        labelEventListener: LabelEventListener,
         notificationEventListener: NotificationEventListener,
         pushEventListener: PushEventListener
     ): Set<EventListener<*, *>> = setOf(
@@ -62,19 +58,8 @@ object EventManagerModule {
         mailSettingsEventListener,
         contactEventListener,
         contactEmailEventListener,
-        labelEventListener,
         notificationEventListener,
         pushEventListener
     )
-
-    @Module
-    @InstallIn(SingletonComponent::class)
-    internal interface BindersModule {
-
-        @Binds
-        @Singleton
-        fun bindsEventManagerQueryMapProvider(impl: MailEventManagerQueryMapProvider): EventManagerQueryMapProvider
-
-    }
 
 }

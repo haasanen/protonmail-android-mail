@@ -81,7 +81,7 @@ import me.proton.core.compose.theme.defaultSmallWeak
 import me.proton.core.compose.theme.defaultStrongNorm
 import me.proton.core.compose.theme.defaultUnspecified
 import me.proton.core.compose.theme.interactionNorm
-import me.proton.core.label.domain.entity.LabelId
+import ch.protonmail.android.maillabel.domain.model.LabelId
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable

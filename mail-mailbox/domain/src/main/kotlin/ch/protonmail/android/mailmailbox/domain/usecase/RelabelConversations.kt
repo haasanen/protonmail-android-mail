@@ -25,7 +25,7 @@ import ch.protonmail.android.mailconversation.domain.entity.Conversation
 import ch.protonmail.android.mailconversation.domain.repository.ConversationRepository
 import ch.protonmail.android.mailmessage.domain.model.LabelSelectionList
 import me.proton.core.domain.entity.UserId
-import me.proton.core.label.domain.entity.LabelId
+import ch.protonmail.android.maillabel.domain.model.LabelId
 import javax.inject.Inject
 
 class RelabelConversations @Inject constructor(

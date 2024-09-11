@@ -20,7 +20,7 @@ package ch.protonmail.android.testdata.mailbox
 
 import androidx.compose.ui.graphics.Color
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
-import ch.protonmail.android.mailcommon.domain.sample.LabelSample
+import ch.protonmail.android.maillabel.domain.sample.LabelSample
 import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
@@ -39,8 +39,8 @@ import ch.protonmail.android.testdata.user.UserIdTestData.userId
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import me.proton.core.domain.entity.UserId
-import me.proton.core.label.domain.entity.Label
-import me.proton.core.label.domain.entity.LabelId
+import ch.protonmail.android.maillabel.domain.model.Label
+import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.mailmailbox.R.string as mailboxStrings
 
 object MailboxTestData {

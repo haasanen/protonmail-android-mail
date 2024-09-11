@@ -57,9 +57,6 @@ import me.proton.core.key.data.entity.PublicAddressKeyEntity
 import me.proton.core.keytransparency.data.local.KeyTransparencyDatabase
 import me.proton.core.keytransparency.data.local.entity.AddressChangeEntity
 import me.proton.core.keytransparency.data.local.entity.SelfAuditResultEntity
-import me.proton.core.label.data.local.LabelConverters
-import me.proton.core.label.data.local.LabelDatabase
-import me.proton.core.label.data.local.LabelEntity
 import me.proton.core.mailsettings.data.db.MailSettingsDatabase
 import me.proton.core.mailsettings.data.entity.MailSettingsEntity
 import me.proton.core.notification.data.local.db.NotificationConverters
@@ -127,8 +124,6 @@ import me.proton.core.usersettings.data.entity.UserSettingsEntity
         ContactEmailLabelEntity::class,
         // event-manager
         EventMetadataEntity::class,
-        // label
-        LabelEntity::class,
         // feature-flag
         FeatureFlagEntity::class,
         // challenge
@@ -160,7 +155,6 @@ import me.proton.core.usersettings.data.entity.UserSettingsEntity
     UserSettingsConverters::class,
     ContactConverters::class,
     EventManagerConverters::class,
-    LabelConverters::class,
     ChallengeConverters::class,
     NotificationConverters::class,
     PushConverters::class
@@ -179,7 +173,6 @@ abstract class AppDatabase :
     OrganizationDatabase,
     ContactDatabase,
     EventMetadataDatabase,
-    LabelDatabase,
     FeatureFlagDatabase,
     ChallengeDatabase,
     PaymentDatabase,

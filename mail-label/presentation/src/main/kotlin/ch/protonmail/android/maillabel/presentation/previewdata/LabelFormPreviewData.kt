@@ -22,7 +22,7 @@ import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.maillabel.presentation.getHexStringFromColor
 import ch.protonmail.android.maillabel.presentation.labelform.LabelFormState
 import ch.protonmail.android.maillabel.presentation.sample.LabelColorListSample.colorListSample
-import me.proton.core.label.domain.entity.LabelId
+import ch.protonmail.android.maillabel.domain.model.LabelId
 
 object LabelFormPreviewData {
 

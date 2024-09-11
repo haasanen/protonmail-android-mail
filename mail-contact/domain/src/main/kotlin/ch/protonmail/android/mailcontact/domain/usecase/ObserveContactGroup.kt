@@ -27,8 +27,8 @@ import kotlinx.coroutines.flow.combine
 import me.proton.core.contact.domain.entity.ContactEmail
 import me.proton.core.contact.domain.repository.ContactRepository
 import me.proton.core.domain.entity.UserId
-import me.proton.core.label.domain.entity.LabelId
-import me.proton.core.label.domain.entity.LabelType
+import ch.protonmail.android.maillabel.domain.model.LabelId
+import ch.protonmail.android.maillabel.domain.model.LabelType
 import ch.protonmail.android.maillabel.domain.repository.LabelRepository
 import javax.inject.Inject
 

@@ -18,7 +18,7 @@
 
 package ch.protonmail.android.mailmailbox.presentation.mailbox.reducer
 
-import ch.protonmail.android.mailcommon.domain.sample.LabelIdSample
+import ch.protonmail.android.maillabel.domain.sample.LabelIdSample
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.BottomBarState
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel

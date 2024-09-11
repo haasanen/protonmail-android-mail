@@ -45,7 +45,6 @@ android {
 
 dependencies {
     implementation(KotlinX.coroutinesCore)
-    implementation(Proton.Core.labelDomain)
 
     implementation(project(":mail-label:data"))
     implementation(project(":mail-label:domain"))

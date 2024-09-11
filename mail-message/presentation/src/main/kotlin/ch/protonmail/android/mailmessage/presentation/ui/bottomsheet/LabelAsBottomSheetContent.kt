@@ -62,7 +62,7 @@ import me.proton.core.compose.theme.ProtonDimens
 import me.proton.core.compose.theme.ProtonTheme
 import me.proton.core.compose.theme.default
 import me.proton.core.compose.theme.interactionNorm
-import me.proton.core.label.domain.entity.LabelId
+import ch.protonmail.android.maillabel.domain.model.LabelId
 
 @Composable
 fun LabelAsBottomSheetContent(state: LabelAsBottomSheetState, actions: LabelAsBottomSheetContent.Actions) {

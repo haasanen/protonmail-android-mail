@@ -140,7 +140,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import me.proton.core.contact.domain.entity.Contact
 import me.proton.core.domain.entity.UserId
-import me.proton.core.label.domain.entity.LabelId
+import ch.protonmail.android.maillabel.domain.model.LabelId
 import me.proton.core.network.domain.NetworkManager
 import me.proton.core.network.domain.NetworkStatus
 import timber.log.Timber

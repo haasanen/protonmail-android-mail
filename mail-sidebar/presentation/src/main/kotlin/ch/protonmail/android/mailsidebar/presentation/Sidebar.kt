@@ -55,7 +55,7 @@ import me.proton.core.compose.component.ProtonSidebarSubscriptionItem
 import me.proton.core.compose.theme.ProtonDimens
 import me.proton.core.compose.theme.ProtonTheme
 import me.proton.core.domain.entity.UserId
-import me.proton.core.label.domain.entity.LabelType
+import ch.protonmail.android.maillabel.domain.model.LabelType
 import me.proton.core.plan.presentation.compose.component.UpgradeStorageInfo
 
 @Composable

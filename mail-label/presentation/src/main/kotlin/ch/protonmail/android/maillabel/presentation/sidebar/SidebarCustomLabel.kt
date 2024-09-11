@@ -55,10 +55,10 @@ import me.proton.core.compose.component.ProtonSidebarItem
 import me.proton.core.compose.component.ProtonSidebarLazy
 import me.proton.core.compose.theme.ProtonDimens
 import me.proton.core.compose.theme.ProtonTheme
-import me.proton.core.label.domain.entity.LabelId
-import me.proton.core.label.domain.entity.LabelType
-import me.proton.core.label.domain.entity.LabelType.MessageFolder
-import me.proton.core.label.domain.entity.LabelType.MessageLabel
+import ch.protonmail.android.maillabel.domain.model.LabelId
+import ch.protonmail.android.maillabel.domain.model.LabelType
+import ch.protonmail.android.maillabel.domain.model.LabelType.MessageFolder
+import ch.protonmail.android.maillabel.domain.model.LabelType.MessageLabel
 
 fun LazyListScope.sidebarLabelItems(items: List<MailLabelUiModel.Custom>, onLabelAction: (SidebarLabelAction) -> Unit) =
     sidebarCustomLabelItems(MessageLabel, items, onLabelAction)

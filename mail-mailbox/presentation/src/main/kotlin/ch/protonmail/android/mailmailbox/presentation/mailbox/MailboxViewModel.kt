@@ -133,7 +133,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import me.proton.core.contact.domain.entity.Contact
 import me.proton.core.domain.entity.UserId
-import me.proton.core.label.domain.entity.LabelId
+import ch.protonmail.android.maillabel.domain.model.LabelId
 import me.proton.core.mailsettings.domain.entity.ViewMode
 import me.proton.core.plan.presentation.compose.usecase.ShouldUpgradeStorage
 import me.proton.core.util.kotlin.DispatcherProvider

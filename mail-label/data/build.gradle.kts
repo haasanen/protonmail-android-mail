@@ -53,7 +53,6 @@ dependencies {
     implementation(Dependencies.moduleDataRustLibs)
 
     implementation(Proton.Core.userDomain)
-    implementation(Proton.Core.labelDomain)
 
     implementation(project(":mail-label:domain"))
     implementation(project(":mail-session:domain"))

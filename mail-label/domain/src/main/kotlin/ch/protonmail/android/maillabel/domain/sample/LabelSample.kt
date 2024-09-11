@@ -16,12 +16,13 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailcommon.domain.sample
+package ch.protonmail.android.maillabel.domain.sample
 
+import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import me.proton.core.domain.entity.UserId
-import me.proton.core.label.domain.entity.Label
-import me.proton.core.label.domain.entity.LabelId
-import me.proton.core.label.domain.entity.LabelType
+import ch.protonmail.android.maillabel.domain.model.Label
+import ch.protonmail.android.maillabel.domain.model.LabelId
+import ch.protonmail.android.maillabel.domain.model.LabelType
 
 object LabelSample {
 

@@ -48,7 +48,6 @@ dependencies {
     kapt(Dependencies.appAnnotationProcessors)
 
     implementation(Dependencies.moduleDomainLibs)
-    implementation(Proton.Core.label)
     implementation(KotlinX.serializationJson)
 
     implementation(project(":mail-pagination:domain"))

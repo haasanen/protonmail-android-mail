@@ -20,7 +20,7 @@ package ch.protonmail.android.maillabel.presentation.sample
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import ch.protonmail.android.mailcommon.domain.sample.LabelIdSample
+import ch.protonmail.android.maillabel.domain.sample.LabelIdSample
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.presentation.MailLabelUiModel
@@ -28,7 +28,7 @@ import ch.protonmail.android.maillabel.presentation.R
 import ch.protonmail.android.maillabel.presentation.model.LabelSelectedState
 import ch.protonmail.android.maillabel.presentation.model.LabelUiModelWithSelectedState
 import kotlinx.collections.immutable.toImmutableList
-import me.proton.core.label.domain.entity.LabelId
+import ch.protonmail.android.maillabel.domain.model.LabelId
 
 object LabelUiModelWithSelectedStateSample {
 

@@ -20,7 +20,7 @@ package ch.protonmail.android.mailnotifications.domain.model
 
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import kotlinx.serialization.Serializable
-import me.proton.core.label.domain.entity.LabelId
+import ch.protonmail.android.maillabel.domain.model.LabelId
 
 @Serializable
 internal sealed class LocalNotificationAction {

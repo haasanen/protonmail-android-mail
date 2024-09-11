@@ -21,7 +21,7 @@ package ch.protonmail.android.mailmessage.domain.usecase
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
 import me.proton.core.domain.entity.UserId
-import me.proton.core.label.domain.entity.LabelId
+import ch.protonmail.android.maillabel.domain.model.LabelId
 import javax.inject.Inject
 
 class DeleteMessages @Inject constructor(

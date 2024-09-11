@@ -81,7 +81,6 @@ dependencies {
     implementation(AndroidX.Work.runtimeKtx)
     implementation(Arrow.core)
     implementation(JakeWharton.timber)
-    implementation(Proton.Core.label)
     implementation(Proton.Core.accountManager)
     kapt(Dependencies.hiltAnnotationProcessors)
 

@@ -41,7 +41,7 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.model.UpgradeStora
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.BottomSheetState
 import ch.protonmail.android.mailonboarding.presentation.model.OnboardingState
 import kotlinx.collections.immutable.toImmutableList
-import me.proton.core.label.domain.entity.LabelId
+import ch.protonmail.android.maillabel.domain.model.LabelId
 
 object MailboxStateSampleData {
 

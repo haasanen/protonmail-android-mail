@@ -64,7 +64,6 @@ dependencies {
     kapt(Dependencies.hiltAnnotationProcessors)
 
     implementation(Proton.Core.contact)
-    implementation(Proton.Core.label)
 
     implementation(project(":mail-common:domain"))
     implementation(project(":mail-common:presentation"))

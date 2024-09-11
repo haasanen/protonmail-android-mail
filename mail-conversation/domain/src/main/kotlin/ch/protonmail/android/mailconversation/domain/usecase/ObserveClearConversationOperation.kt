@@ -20,7 +20,7 @@ package ch.protonmail.android.mailconversation.domain.usecase
 
 import ch.protonmail.android.mailconversation.domain.repository.ConversationRepository
 import me.proton.core.domain.entity.UserId
-import me.proton.core.label.domain.entity.LabelId
+import ch.protonmail.android.maillabel.domain.model.LabelId
 import javax.inject.Inject
 
 class ObserveClearConversationOperation @Inject constructor(val conversationRepository: ConversationRepository) {

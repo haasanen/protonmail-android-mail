@@ -18,8 +18,6 @@
 
 package ch.protonmail.android.maillabel.domain.model
 
-import me.proton.core.label.domain.entity.Label
-
 data class LabelWithSystemLabelId(
     val label: Label,
     val systemLabelId: SystemLabelId

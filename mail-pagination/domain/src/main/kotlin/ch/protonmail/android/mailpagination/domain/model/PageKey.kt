@@ -23,7 +23,7 @@ import ch.protonmail.android.mailpagination.domain.model.OrderDirection.Descendi
 import ch.protonmail.android.mailpagination.domain.model.ReadStatus.All
 import ch.protonmail.android.mailpagination.domain.model.ReadStatus.Read
 import ch.protonmail.android.mailpagination.domain.model.ReadStatus.Unread
-import me.proton.core.label.domain.entity.LabelId
+import ch.protonmail.android.maillabel.domain.model.LabelId
 import me.proton.core.util.kotlin.EMPTY_STRING
 
 /**

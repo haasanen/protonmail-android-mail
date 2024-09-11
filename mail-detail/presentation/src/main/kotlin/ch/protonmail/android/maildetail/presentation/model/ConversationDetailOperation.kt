@@ -38,7 +38,7 @@ import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.presentation.model.ViewModePreference
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.BottomSheetOperation
 import kotlinx.collections.immutable.ImmutableList
-import me.proton.core.label.domain.entity.LabelId
+import ch.protonmail.android.maillabel.domain.model.LabelId
 
 sealed interface ConversationDetailOperation {
 

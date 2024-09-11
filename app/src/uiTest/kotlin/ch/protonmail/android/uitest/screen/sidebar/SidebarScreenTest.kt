@@ -41,7 +41,7 @@ import ch.protonmail.android.uitest.util.HiltInstrumentedTest
 import ch.protonmail.android.uitest.util.onNodeWithText
 import dagger.hilt.android.testing.HiltAndroidTest
 import me.proton.core.compose.theme.ProtonTheme
-import me.proton.core.label.domain.entity.LabelId
+import ch.protonmail.android.maillabel.domain.model.LabelId
 import org.junit.Test
 import ch.protonmail.android.maillabel.R as label
 import me.proton.core.presentation.compose.R as core

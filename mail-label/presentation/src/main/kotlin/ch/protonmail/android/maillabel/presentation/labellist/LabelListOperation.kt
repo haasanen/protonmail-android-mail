@@ -18,7 +18,7 @@
 
 package ch.protonmail.android.maillabel.presentation.labellist
 
-import me.proton.core.label.domain.entity.Label
+import ch.protonmail.android.maillabel.domain.model.Label
 
 sealed interface LabelListOperation
 

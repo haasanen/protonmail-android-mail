@@ -30,10 +30,10 @@ import kotlinx.coroutines.flow.map
 import me.proton.core.domain.arch.DataResult
 import me.proton.core.domain.arch.ResponseSource
 import me.proton.core.domain.entity.UserId
-import me.proton.core.label.domain.entity.Label
-import me.proton.core.label.domain.entity.LabelId
-import me.proton.core.label.domain.entity.LabelType
-import me.proton.core.label.domain.entity.NewLabel
+import ch.protonmail.android.maillabel.domain.model.Label
+import ch.protonmail.android.maillabel.domain.model.LabelId
+import ch.protonmail.android.maillabel.domain.model.LabelType
+import ch.protonmail.android.maillabel.domain.model.NewLabel
 import timber.log.Timber
 import javax.inject.Inject
 

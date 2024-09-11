@@ -23,7 +23,7 @@ import ch.protonmail.android.mailmessage.domain.model.AttachmentCount
 import ch.protonmail.android.mailmessage.domain.model.Recipient
 import ch.protonmail.android.mailmessage.domain.model.Sender
 import me.proton.core.domain.entity.UserId
-import me.proton.core.label.domain.entity.Label
+import ch.protonmail.android.maillabel.domain.model.Label
 
 data class Conversation(
     val userId: UserId,

@@ -20,7 +20,7 @@ package ch.protonmail.android.maillabel.presentation.previewdata
 
 import ch.protonmail.android.maillabel.presentation.model.FolderUiModel
 import ch.protonmail.android.maillabel.presentation.sample.LabelColorListSample.colorListSample
-import me.proton.core.label.domain.entity.LabelId
+import ch.protonmail.android.maillabel.domain.model.LabelId
 
 object FolderListPreviewData {
 

@@ -46,7 +46,6 @@ dependencies {
     kapt(Dependencies.appAnnotationProcessors)
 
     implementation(Dependencies.moduleDataRustLibs)
-    implementation(Proton.Core.labelDomain)
     implementation(Proton.Core.userDomain)
 
     implementation(project(":mail-message:domain"))
@@ -54,6 +53,7 @@ dependencies {
     implementation(project(":mail-mailbox:domain"))
     implementation(project(":mail-common:data-rust"))
     implementation(project(":mail-common:domain"))
+    implementation(project(":mail-label:domain"))
 
     testImplementation(Dependencies.testLibs)
 }

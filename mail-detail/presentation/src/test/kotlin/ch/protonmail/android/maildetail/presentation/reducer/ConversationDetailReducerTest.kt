@@ -19,7 +19,7 @@
 package ch.protonmail.android.maildetail.presentation.reducer
 
 import java.util.UUID
-import ch.protonmail.android.mailcommon.domain.sample.LabelIdSample
+import ch.protonmail.android.maillabel.domain.sample.LabelIdSample
 import ch.protonmail.android.mailcommon.presentation.R
 import ch.protonmail.android.mailcommon.presentation.model.ActionResult
 import ch.protonmail.android.mailcommon.presentation.model.ActionResult.DefinitiveActionResult

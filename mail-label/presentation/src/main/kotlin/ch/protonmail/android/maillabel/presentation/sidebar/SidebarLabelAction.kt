@@ -19,7 +19,7 @@
 package ch.protonmail.android.maillabel.presentation.sidebar
 
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
-import me.proton.core.label.domain.entity.LabelType
+import ch.protonmail.android.maillabel.domain.model.LabelType
 
 sealed interface SidebarLabelAction {
     data class ViewList(val type: LabelType) : SidebarLabelAction

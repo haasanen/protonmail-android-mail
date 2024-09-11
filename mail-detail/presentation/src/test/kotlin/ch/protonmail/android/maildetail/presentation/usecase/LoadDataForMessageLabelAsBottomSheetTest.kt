@@ -18,7 +18,7 @@ import io.mockk.mockk
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
-import me.proton.core.label.domain.entity.LabelId
+import ch.protonmail.android.maillabel.domain.model.LabelId
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

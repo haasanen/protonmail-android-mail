@@ -24,8 +24,8 @@ import ch.protonmail.android.mailcontact.domain.mapper.isAlreadyExistsApiError
 import ch.protonmail.android.maillabel.domain.model.ColorRgbHex
 import me.proton.core.contact.domain.entity.ContactEmailId
 import me.proton.core.domain.entity.UserId
-import me.proton.core.label.domain.entity.LabelType
-import me.proton.core.label.domain.entity.NewLabel
+import ch.protonmail.android.maillabel.domain.model.LabelType
+import ch.protonmail.android.maillabel.domain.model.NewLabel
 import ch.protonmail.android.maillabel.domain.repository.LabelRepository
 import javax.inject.Inject
 

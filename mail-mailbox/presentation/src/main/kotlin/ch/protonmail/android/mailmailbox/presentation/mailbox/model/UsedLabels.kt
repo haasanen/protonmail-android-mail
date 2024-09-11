@@ -18,7 +18,7 @@
 
 package ch.protonmail.android.mailmailbox.presentation.mailbox.model
 
-import me.proton.core.label.domain.entity.Label
+import ch.protonmail.android.maillabel.domain.model.Label
 
 data class UsedLabels(
     val labels: List<Label>

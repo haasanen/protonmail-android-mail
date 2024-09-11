@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 36,
-    "identityHash": "9a59c52ffd07126361c6b878c3d04242",
+    "identityHash": "fd104a138fb0434169cc1354b086d3dc",
     "entities": [
       {
         "tableName": "AccountEntity",
@@ -2377,145 +2377,6 @@
         ]
       },
       {
-        "tableName": "LabelEntity",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`userId` TEXT NOT NULL, `labelId` TEXT NOT NULL, `parentId` TEXT, `name` TEXT NOT NULL, `type` INTEGER NOT NULL, `path` TEXT NOT NULL, `color` TEXT NOT NULL, `order` INTEGER NOT NULL, `isNotified` INTEGER, `isExpanded` INTEGER, `isSticky` INTEGER, PRIMARY KEY(`userId`, `labelId`), FOREIGN KEY(`userId`) REFERENCES `UserEntity`(`userId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
-        "fields": [
-          {
-            "fieldPath": "userId",
-            "columnName": "userId",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "labelId",
-            "columnName": "labelId",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "parentId",
-            "columnName": "parentId",
-            "affinity": "TEXT",
-            "notNull": false
-          },
-          {
-            "fieldPath": "name",
-            "columnName": "name",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "type",
-            "columnName": "type",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "path",
-            "columnName": "path",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "color",
-            "columnName": "color",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "order",
-            "columnName": "order",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "isNotified",
-            "columnName": "isNotified",
-            "affinity": "INTEGER",
-            "notNull": false
-          },
-          {
-            "fieldPath": "isExpanded",
-            "columnName": "isExpanded",
-            "affinity": "INTEGER",
-            "notNull": false
-          },
-          {
-            "fieldPath": "isSticky",
-            "columnName": "isSticky",
-            "affinity": "INTEGER",
-            "notNull": false
-          }
-        ],
-        "primaryKey": {
-          "autoGenerate": false,
-          "columnNames": [
-            "userId",
-            "labelId"
-          ]
-        },
-        "indices": [
-          {
-            "name": "index_LabelEntity_userId",
-            "unique": false,
-            "columnNames": [
-              "userId"
-            ],
-            "orders": [],
-            "createSql": "CREATE INDEX IF NOT EXISTS `index_LabelEntity_userId` ON `${TABLE_NAME}` (`userId`)"
-          },
-          {
-            "name": "index_LabelEntity_labelId",
-            "unique": false,
-            "columnNames": [
-              "labelId"
-            ],
-            "orders": [],
-            "createSql": "CREATE INDEX IF NOT EXISTS `index_LabelEntity_labelId` ON `${TABLE_NAME}` (`labelId`)"
-          },
-          {
-            "name": "index_LabelEntity_parentId",
-            "unique": false,
-            "columnNames": [
-              "parentId"
-            ],
-            "orders": [],
-            "createSql": "CREATE INDEX IF NOT EXISTS `index_LabelEntity_parentId` ON `${TABLE_NAME}` (`parentId`)"
-          },
-          {
-            "name": "index_LabelEntity_name",
-            "unique": false,
-            "columnNames": [
-              "name"
-            ],
-            "orders": [],
-            "createSql": "CREATE INDEX IF NOT EXISTS `index_LabelEntity_name` ON `${TABLE_NAME}` (`name`)"
-          },
-          {
-            "name": "index_LabelEntity_type",
-            "unique": false,
-            "columnNames": [
-              "type"
-            ],
-            "orders": [],
-            "createSql": "CREATE INDEX IF NOT EXISTS `index_LabelEntity_type` ON `${TABLE_NAME}` (`type`)"
-          }
-        ],
-        "foreignKeys": [
-          {
-            "table": "UserEntity",
-            "onDelete": "CASCADE",
-            "onUpdate": "NO ACTION",
-            "columns": [
-              "userId"
-            ],
-            "referencedColumns": [
-              "userId"
-            ]
-          }
-        ]
-      },
-      {
         "tableName": "FeatureFlagEntity",
         "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`userId` TEXT NOT NULL, `featureId` TEXT NOT NULL, `scope` TEXT NOT NULL, `defaultValue` INTEGER NOT NULL, `value` INTEGER NOT NULL, PRIMARY KEY(`userId`, `featureId`))",
         "fields": [
@@ -3179,7 +3040,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '9a59c52ffd07126361c6b878c3d04242')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'fd104a138fb0434169cc1354b086d3dc')"
     ]
   }
 }

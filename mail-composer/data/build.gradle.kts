@@ -49,7 +49,6 @@ dependencies {
     implementation(Dagger.hiltAndroid)
     implementation(AndroidX.Hilt.work)
     implementation(Proton.Core.user)
-    implementation(Proton.Core.label)
     implementation(Proton.Core.mailSendPreferences)
 
     implementation(project(":mail-common:data"))

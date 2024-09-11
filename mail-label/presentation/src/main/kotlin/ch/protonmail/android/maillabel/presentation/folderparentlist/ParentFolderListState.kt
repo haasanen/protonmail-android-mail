@@ -21,7 +21,7 @@ package ch.protonmail.android.maillabel.presentation.folderparentlist
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.maillabel.presentation.model.ParentFolderUiModel
-import me.proton.core.label.domain.entity.LabelId
+import ch.protonmail.android.maillabel.domain.model.LabelId
 
 sealed interface ParentFolderListState {
 

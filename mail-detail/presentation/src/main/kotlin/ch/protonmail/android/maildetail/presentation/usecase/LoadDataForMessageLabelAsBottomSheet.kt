@@ -28,7 +28,7 @@ import ch.protonmail.android.mailsettings.domain.usecase.ObserveFolderColorSetti
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.first
 import me.proton.core.domain.entity.UserId
-import me.proton.core.label.domain.entity.LabelId
+import ch.protonmail.android.maillabel.domain.model.LabelId
 import timber.log.Timber
 import javax.inject.Inject
 

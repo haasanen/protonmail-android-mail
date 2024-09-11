@@ -77,7 +77,7 @@ import me.proton.core.compose.theme.defaultNorm
 import me.proton.core.compose.theme.defaultSmallNorm
 import me.proton.core.compose.theme.defaultSmallWeak
 import me.proton.core.compose.theme.headlineNorm
-import me.proton.core.label.domain.entity.LabelId
+import ch.protonmail.android.maillabel.domain.model.LabelId
 
 @Composable
 fun ContactGroupDetailsScreen(

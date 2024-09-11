@@ -63,7 +63,6 @@ dependencies {
 
     implementation(Dependencies.modulePresentationLibs)
     implementation(Proton.Core.contact)
-    implementation(Proton.Core.label)
 
     implementation(project(":mail-contact:domain"))
     implementation(project(":mail-common:domain"))

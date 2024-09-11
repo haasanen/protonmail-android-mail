@@ -23,8 +23,8 @@ import arrow.core.raise.either
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.maillabel.domain.usecase.DeleteLabel
 import me.proton.core.domain.entity.UserId
-import me.proton.core.label.domain.entity.LabelId
-import me.proton.core.label.domain.entity.LabelType
+import ch.protonmail.android.maillabel.domain.model.LabelId
+import ch.protonmail.android.maillabel.domain.model.LabelType
 import javax.inject.Inject
 
 class DeleteContactGroup @Inject constructor(

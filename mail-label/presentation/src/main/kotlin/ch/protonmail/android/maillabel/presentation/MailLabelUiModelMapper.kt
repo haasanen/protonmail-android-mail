@@ -26,7 +26,7 @@ import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabels
 import ch.protonmail.android.mailsettings.domain.model.FolderColorSettings
 import me.proton.core.compose.theme.ProtonDimens
-import me.proton.core.label.domain.entity.LabelId
+import ch.protonmail.android.maillabel.domain.model.LabelId
 
 fun MailLabels.toUiModels(
     settings: FolderColorSettings,

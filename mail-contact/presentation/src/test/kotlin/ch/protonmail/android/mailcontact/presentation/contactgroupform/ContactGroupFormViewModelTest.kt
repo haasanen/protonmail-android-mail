@@ -56,7 +56,7 @@ import kotlinx.coroutines.test.runTest
 import me.proton.core.contact.domain.entity.ContactEmail
 import me.proton.core.contact.domain.entity.ContactEmailId
 import me.proton.core.domain.entity.UserId
-import me.proton.core.label.domain.entity.LabelId
+import ch.protonmail.android.maillabel.domain.model.LabelId
 import org.junit.Rule
 import org.junit.Test
 import kotlin.test.assertEquals

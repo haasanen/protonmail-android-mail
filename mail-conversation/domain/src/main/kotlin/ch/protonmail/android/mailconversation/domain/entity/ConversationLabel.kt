@@ -19,7 +19,7 @@
 package ch.protonmail.android.mailconversation.domain.entity
 
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
-import me.proton.core.label.domain.entity.LabelId
+import ch.protonmail.android.maillabel.domain.model.LabelId
 
 /**
  * @param conversationId the id of the conversation

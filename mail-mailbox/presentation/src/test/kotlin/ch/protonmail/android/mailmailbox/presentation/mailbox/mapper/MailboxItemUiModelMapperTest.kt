@@ -20,7 +20,7 @@ package ch.protonmail.android.mailmailbox.presentation.mailbox.mapper
 
 import androidx.compose.ui.graphics.Color
 import arrow.core.right
-import ch.protonmail.android.mailcommon.domain.sample.LabelSample
+import ch.protonmail.android.maillabel.domain.sample.LabelSample
 import ch.protonmail.android.mailcommon.presentation.mapper.ColorMapper
 import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
@@ -47,8 +47,8 @@ import io.mockk.mockkConstructor
 import io.mockk.unmockkConstructor
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.test.runTest
-import me.proton.core.label.domain.entity.LabelId
-import me.proton.core.label.domain.entity.LabelType
+import ch.protonmail.android.maillabel.domain.model.LabelId
+import ch.protonmail.android.maillabel.domain.model.LabelType
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test

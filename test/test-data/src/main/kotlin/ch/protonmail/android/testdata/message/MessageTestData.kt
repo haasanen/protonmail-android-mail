@@ -36,7 +36,7 @@ import ch.protonmail.android.mailmessage.domain.model.Sender
 import ch.protonmail.android.testdata.user.UserIdTestData
 import ch.protonmail.android.testdata.user.UserIdTestData.userId
 import me.proton.core.domain.entity.UserId
-import me.proton.core.label.domain.entity.Label
+import ch.protonmail.android.maillabel.domain.model.Label
 import me.proton.core.user.domain.entity.AddressId
 
 object MessageTestData {

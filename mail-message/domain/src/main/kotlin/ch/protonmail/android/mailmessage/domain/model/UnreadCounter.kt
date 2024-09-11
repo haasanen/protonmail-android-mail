@@ -18,7 +18,7 @@
 
 package ch.protonmail.android.mailmessage.domain.model
 
-import me.proton.core.label.domain.entity.LabelId
+import ch.protonmail.android.maillabel.domain.model.LabelId
 
 data class UnreadCounter(
     val labelId: LabelId,

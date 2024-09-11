@@ -47,7 +47,6 @@ dependencies {
     compileOnly(Proton.Common.rustCore)
 
     implementation(Dependencies.moduleDataLibs)
-    implementation(Proton.Core.labelDomain)
     implementation(Proton.Core.user)
 
     implementation(project(":mail-message:domain"))
@@ -56,6 +55,7 @@ dependencies {
     implementation(project(":mail-common:data"))
     implementation(project(":mail-common:domain"))
     implementation(project(":mail-label:data"))
+    implementation(project(":mail-label:domain"))
 
     testImplementation(Dependencies.testLibs)
     testImplementation(Proton.Common.rustCore)

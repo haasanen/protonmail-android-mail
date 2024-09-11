@@ -24,9 +24,9 @@ import ch.protonmail.android.mailcommon.datarust.mapper.LocalSystemLabel
 import ch.protonmail.android.mailcommon.domain.model.FAKE_USER_ID
 import ch.protonmail.android.maillabel.domain.model.LabelWithSystemLabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
-import me.proton.core.label.domain.entity.Label
-import me.proton.core.label.domain.entity.LabelId
-import me.proton.core.label.domain.entity.LabelType
+import ch.protonmail.android.maillabel.domain.model.Label
+import ch.protonmail.android.maillabel.domain.model.LabelId
+import ch.protonmail.android.maillabel.domain.model.LabelType
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.InlineCustomLabel
 import uniffi.proton_mail_uniffi.LabelDescription

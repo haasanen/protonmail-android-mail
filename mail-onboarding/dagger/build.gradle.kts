@@ -45,7 +45,6 @@ android {
 
 dependencies {
     implementation(KotlinX.coroutinesCore)
-    implementation(Proton.Core.label)
 
     implementation(project(":mail-onboarding:data"))
     implementation(project(":mail-onboarding:domain"))

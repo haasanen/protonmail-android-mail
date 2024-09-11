@@ -27,7 +27,7 @@ import ch.protonmail.android.mailcommon.domain.model.FAKE_USER_ID
 import ch.protonmail.android.maillabel.data.mapper.toLabel
 import ch.protonmail.android.mailmessage.data.mapper.toParticipant
 import ch.protonmail.android.mailmessage.domain.model.AttachmentCount
-import me.proton.core.label.domain.entity.LabelId
+import ch.protonmail.android.maillabel.domain.model.LabelId
 import org.junit.Test
 import uniffi.proton_mail_uniffi.AttachmentMimeType
 import uniffi.proton_mail_uniffi.AvatarInformation

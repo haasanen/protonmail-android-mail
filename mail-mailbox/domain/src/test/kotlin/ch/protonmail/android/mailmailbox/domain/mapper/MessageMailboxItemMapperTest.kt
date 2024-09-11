@@ -18,12 +18,12 @@
 
 package ch.protonmail.android.mailmailbox.domain.mapper
 
-import ch.protonmail.android.mailcommon.domain.sample.LabelSample
+import ch.protonmail.android.maillabel.domain.sample.LabelSample
 import ch.protonmail.android.mailmessage.domain.model.AttachmentCount
 import ch.protonmail.android.testdata.label.LabelTestData
 import ch.protonmail.android.testdata.message.MessageTestData
 import ch.protonmail.android.testdata.user.UserIdTestData.userId
-import me.proton.core.label.domain.entity.LabelType
+import ch.protonmail.android.maillabel.domain.model.LabelType
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse

@@ -24,8 +24,8 @@ import arrow.core.getOrElse
 import ch.protonmail.android.mailcommon.presentation.mapper.ColorMapper
 import ch.protonmail.android.maillabel.presentation.R
 import ch.protonmail.android.mailsettings.domain.model.FolderColorSettings
-import me.proton.core.label.domain.entity.Label
-import me.proton.core.label.domain.entity.LabelId
+import ch.protonmail.android.maillabel.domain.model.Label
+import ch.protonmail.android.maillabel.domain.model.LabelId
 
 fun List<Label>.toFolderUiModel(
     folderColorSettings: FolderColorSettings,

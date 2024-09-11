@@ -18,7 +18,7 @@
 
 package ch.protonmail.android.maillabel.presentation.model
 
-import me.proton.core.label.domain.entity.LabelId
+import ch.protonmail.android.maillabel.domain.model.LabelId
 
 fun List<FolderUiModel>.toParentFolderUiModel(labelId: LabelId?, parentLabelId: LabelId?): List<ParentFolderUiModel> {
     return this.mapIndexed { index, folder ->

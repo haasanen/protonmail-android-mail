@@ -18,7 +18,7 @@
 
 package ch.protonmail.android.mailcomposer.presentation.usecase
 
-import ch.protonmail.android.mailcommon.domain.sample.LabelIdSample
+import ch.protonmail.android.maillabel.domain.sample.LabelIdSample
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.mailcomposer.presentation.model.ContactSuggestionUiModel
 import ch.protonmail.android.mailcontact.domain.model.ContactGroup

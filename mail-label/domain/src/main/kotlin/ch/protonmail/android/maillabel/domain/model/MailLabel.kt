@@ -18,8 +18,6 @@
 
 package ch.protonmail.android.maillabel.domain.model
 
-import me.proton.core.label.domain.entity.LabelId
-
 sealed class MailLabelId(
     open val labelId: LabelId
 ) {

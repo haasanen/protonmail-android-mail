@@ -19,7 +19,7 @@
 package ch.protonmail.android.maillabel.presentation.labellist
 
 import ch.protonmail.android.mailcommon.presentation.Effect
-import me.proton.core.label.domain.entity.Label
+import ch.protonmail.android.maillabel.domain.model.Label
 
 sealed interface LabelListState {
 

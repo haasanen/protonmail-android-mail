@@ -28,7 +28,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.transformLatest
 import me.proton.core.domain.entity.UserId
-import me.proton.core.label.domain.entity.Label
+import ch.protonmail.android.maillabel.domain.model.Label
 import me.proton.core.util.kotlin.containsNoCase
 import me.proton.core.util.kotlin.takeIfNotBlank
 import timber.log.Timber

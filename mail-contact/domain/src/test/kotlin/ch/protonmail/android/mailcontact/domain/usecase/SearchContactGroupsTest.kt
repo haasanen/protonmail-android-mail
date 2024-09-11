@@ -22,7 +22,7 @@ import app.cash.turbine.test
 import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
-import ch.protonmail.android.mailcommon.domain.sample.LabelSample
+import ch.protonmail.android.maillabel.domain.sample.LabelSample
 import ch.protonmail.android.mailcontact.domain.model.ContactGroup
 import ch.protonmail.android.mailcontact.domain.model.GetContactError
 import ch.protonmail.android.testdata.contact.ContactEmailSample
@@ -32,8 +32,8 @@ import io.mockk.mockk
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import me.proton.core.domain.entity.UserId
-import me.proton.core.label.domain.entity.Label
-import me.proton.core.label.domain.entity.LabelId
+import ch.protonmail.android.maillabel.domain.model.Label
+import ch.protonmail.android.maillabel.domain.model.LabelId
 import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertIs

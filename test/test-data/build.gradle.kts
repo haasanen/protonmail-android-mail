@@ -49,7 +49,6 @@ dependencies {
     implementation(Proton.Core.contact)
     implementation(Proton.Core.domain)
     implementation(Proton.Core.featureFlag)
-    implementation(Proton.Core.label)
     implementation(Proton.Core.mailSettings)
     implementation(Proton.Core.network)
     implementation(Proton.Core.plan)

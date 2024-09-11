@@ -43,9 +43,9 @@ android {
 }
 
 dependencies {
-    implementation(Proton.Core.label)
-
     implementation(Dependencies.moduleDomainLibs)
+
+    implementation(project(":mail-label:domain"))
 
     testImplementation(Dependencies.testLibs)
 }

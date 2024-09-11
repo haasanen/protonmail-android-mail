@@ -21,7 +21,7 @@ package ch.protonmail.android.maillabel.domain.usecase
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.domain.repository.LabelRepository
 import me.proton.core.domain.entity.UserId
-import me.proton.core.label.domain.entity.LabelType
+import ch.protonmail.android.maillabel.domain.model.LabelType
 import javax.inject.Inject
 
 class UpdateLabelExpandedState @Inject constructor(
