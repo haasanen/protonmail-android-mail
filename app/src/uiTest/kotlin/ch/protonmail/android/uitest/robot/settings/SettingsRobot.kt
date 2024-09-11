@@ -27,10 +27,8 @@ import androidx.compose.ui.test.performScrollToNode
 import ch.protonmail.android.mailsettings.presentation.R.string
 import ch.protonmail.android.mailsettings.presentation.settings.SettingsScreenTestTags
 import ch.protonmail.android.uitest.robot.ComposeRobot
-import ch.protonmail.android.uitest.robot.settings.account.AccountSettingsRobot
 import ch.protonmail.android.uitest.robot.settings.swipeactions.SwipeActionsRobot
 import ch.protonmail.android.uitest.util.awaitDisplayed
-import ch.protonmail.android.uitest.util.awaitProgressIsHidden
 import ch.protonmail.android.uitest.util.hasText
 import ch.protonmail.android.uitest.util.onNodeWithText
 
@@ -62,16 +60,6 @@ internal class SettingsRobot : ComposeRobot() {
         composeTestRule.waitForIdle()
 
         return SwipeActionsRobot()
-    }
-
-    fun openUserAccountSettings(): AccountSettingsRobot {
-        composeTestRule
-            .onNodeWithTag(SettingsScreenTestTags.AccountSettingsItem)
-            .performClick()
-
-        composeTestRule.awaitProgressIsHidden()
-
-        return AccountSettingsRobot()
     }
 
     fun openThemeSettings(): ThemeRobot {
