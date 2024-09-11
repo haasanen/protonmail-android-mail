@@ -110,7 +110,7 @@ class ConversationMapperTest {
         assertEquals(subject, conversation.subject)
         assertEquals(senders.map { it.toParticipant() }, conversation.senders)
         assertEquals(recipients.map { it.toParticipant() }, conversation.recipients)
-        assertEquals(numMessages.toInt(), conversation.numMessages)
+        assertEquals(totalNumMessages.toInt(), conversation.numMessages)
         assertEquals(numUnread.toInt(), conversation.numUnread)
         assertEquals(numAttachments.toInt(), conversation.numAttachments)
         assertEquals(expirationTime.toLong(), conversation.expirationTime)

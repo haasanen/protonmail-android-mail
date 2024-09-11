@@ -58,32 +58,4 @@ class GetMailboxItems @Inject constructor(
             }
         }
     }
-
-    companion object {
-        /**
-         * Define which DB Tables are involved to invalidate [invoke] for [Message].
-         */
-        private val messageTables = arrayOf(
-            "MessageEntity",
-            "MessageLabelEntity",
-            "LabelEntity"
-        )
-
-        /**
-         * Define which DB Tables are involved to invalidate [invoke] for [Conversation].
-         */
-        private val conversationTables = arrayOf(
-            "ConversationEntity",
-            "ConversationLabelEntity",
-            "LabelEntity"
-        )
-
-        /**
-         * Return DB Tables involved to invalidate [invoke] according [type].
-         */
-        fun getInvolvedTables(type: MailboxItemType) = when (type) {
-            MailboxItemType.Message -> messageTables
-            MailboxItemType.Conversation -> conversationTables
-        }
-    }
 }
