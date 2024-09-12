@@ -37,6 +37,7 @@ import ch.protonmail.android.mailsettings.presentation.settings.swipeactions.Edi
 import ch.protonmail.android.mailsettings.presentation.settings.swipeactions.SwipeActionsPreferenceScreen
 import ch.protonmail.android.mailsettings.presentation.settings.theme.ThemeSettingsScreen
 import ch.protonmail.android.mailsettings.presentation.webaccountsettings.WebAccountSettingScreen
+import ch.protonmail.android.mailsettings.presentation.webemailsettings.WebEmailSettingScreen
 import ch.protonmail.android.navigation.Launcher
 import ch.protonmail.android.navigation.model.Destination.Screen
 import me.proton.core.compose.navigation.require
@@ -46,6 +47,17 @@ fun NavGraphBuilder.addWebAccountSettings(navController: NavHostController, laun
     composable(route = Screen.AccountSettings.route) {
         WebAccountSettingScreen(
             actions = WebAccountSettingScreen.Actions(
+                onBackClick = { navController.popBackStack() }
+            )
+        )
+    }
+}
+
+
+fun NavGraphBuilder.addWebEmailSettings(navController: NavHostController, launcherActions: Launcher.Actions) {
+    composable(route = Screen.EmailSettings.route) {
+        WebEmailSettingScreen(
+            actions = WebEmailSettingScreen.Actions(
                 onBackClick = { navController.popBackStack() }
             )
         )

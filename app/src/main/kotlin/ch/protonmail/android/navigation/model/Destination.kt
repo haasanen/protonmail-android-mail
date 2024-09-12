@@ -101,6 +101,7 @@ sealed class Destination(val route: String) {
         object Settings : Destination("settings")
         object AccountSettings : Destination("settings/account")
         object AppSettings : Destination("settings/app")
+        object EmailSettings : Destination("settings/email")
         object AlternativeRoutingSettings : Destination("settings/alternativeRouting")
         object AutoLockSettings : Destination("settings/autolock")
         object AutoLockPinScreen : Destination("settings/autolock/pin/${AutoLockPinModeKey.wrap()}") {

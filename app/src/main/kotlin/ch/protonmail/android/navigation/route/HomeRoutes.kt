@@ -169,6 +169,7 @@ internal fun NavGraphBuilder.addSettings(navController: NavHostController) {
                     navController.navigate(Destination.Screen.AppSettings.route)
                 },
                 onEmailSettingsClick = {
+                    navController.navigate(Destination.Screen.EmailSettings.route)
                 },
                 onBackClick = {
                     navController.navigateBack()

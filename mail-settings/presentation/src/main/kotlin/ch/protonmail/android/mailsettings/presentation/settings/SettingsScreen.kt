@@ -93,7 +93,7 @@ fun MainSettingsScreen(
                 ProtonSettingsItem(
                     name = stringResource(id = string.mail_settings_email),
                     hint = stringResource(id = string.mail_settings_email_hint),
-                    onClick = actions.onAppSettingsClick
+                    onClick = actions.onEmailSettingsClick
                 )
                 Divider()
             }
