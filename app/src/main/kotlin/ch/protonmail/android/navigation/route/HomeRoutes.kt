@@ -174,6 +174,9 @@ internal fun NavGraphBuilder.addSettings(navController: NavHostController) {
                 onFolderAndLabelSettingsClicked = {
                     navController.navigate(Destination.Screen.FolderAndLabelSettings.route)
                 },
+                onSpamFilterSettingsClicked = {
+                    navController.navigate(Destination.Screen.SpamFilterSettings.route)
+                },
                 onBackClick = {
                     navController.navigateBack()
                 }

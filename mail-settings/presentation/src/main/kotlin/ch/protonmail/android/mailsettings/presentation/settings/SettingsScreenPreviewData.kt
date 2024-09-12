@@ -32,6 +32,7 @@ object SettingsScreenPreviewData {
         onAppSettingsClick = {},
         onEmailSettingsClick = {},
         onFolderAndLabelSettingsClicked = {},
+        onSpamFilterSettingsClicked = {},
         onBackClick = {}
     )
 }

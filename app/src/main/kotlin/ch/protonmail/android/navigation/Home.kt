@@ -89,6 +89,7 @@ import ch.protonmail.android.navigation.route.addThemeSettings
 import ch.protonmail.android.navigation.route.addWebAccountSettings
 import ch.protonmail.android.navigation.route.addWebEmailSettings
 import ch.protonmail.android.navigation.route.addWebFolderAndLabelSettings
+import ch.protonmail.android.navigation.route.addWebSpamFilterSettings
 import ch.protonmail.android.uicomponents.snackbar.DismissableSnackbarHost
 import io.sentry.compose.withSentryObservableEffect
 import kotlinx.coroutines.launch
@@ -415,6 +416,7 @@ fun Home(
                 addWebAccountSettings(navController, launcherActions)
                 addWebEmailSettings(navController, launcherActions)
                 addWebFolderAndLabelSettings(navController, launcherActions)
+                addWebSpamFilterSettings(navController, launcherActions)
                 addContacts(
                     navController,
                     showErrorSnackbar = { message ->
