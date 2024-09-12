@@ -20,25 +20,16 @@ package ch.protonmail.android.mailsettings.presentation.settings
 
 import android.content.res.Configuration.UI_MODE_NIGHT_NO
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
-import android.widget.Toast
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Button
 import androidx.compose.material.Divider
 import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
-import ch.protonmail.android.mailsettings.domain.model.AppSettings
-import ch.protonmail.android.mailsettings.domain.model.LocalStorageUsageInformation
 import ch.protonmail.android.mailsettings.presentation.R
 import ch.protonmail.android.mailsettings.presentation.R.string
 import ch.protonmail.android.mailsettings.presentation.settings.SettingsState.Data
@@ -49,11 +40,7 @@ import me.proton.core.compose.component.ProtonSettingsItem
 import me.proton.core.compose.component.ProtonSettingsList
 import me.proton.core.compose.component.ProtonSettingsTopBar
 import me.proton.core.compose.flow.rememberAsState
-import me.proton.core.compose.theme.ProtonDimens
 import me.proton.core.compose.theme.ProtonTheme
-import me.proton.core.presentation.utils.formatByteToHumanReadable
-import me.proton.core.usersettings.presentation.compose.view.CrashReportSettingToggleItem
-import me.proton.core.usersettings.presentation.compose.view.TelemetrySettingToggleItem
 
 @Composable
 fun MainSettingsScreen(
@@ -61,28 +48,17 @@ fun MainSettingsScreen(
     actions: MainSettingsScreen.Actions,
     settingsViewModel: SettingsViewModel = hiltViewModel()
 ) {
-    val context = LocalContext.current
-    val toastText = stringResource(id = string.mail_settings_clearing_cached_data)
-    val showClearDataToast = { Toast.makeText(context, toastText, Toast.LENGTH_LONG).show() }
-
-    val dataActions = actions.copy(
-        onClearCacheClick = {
-            settingsViewModel.clearAllData()
-            showClearDataToast()
-        }
-    )
 
     when (val settingsState = rememberAsState(flow = settingsViewModel.state, Loading).value) {
         is Data -> MainSettingsScreen(
             modifier = modifier,
             state = settingsState,
-            actions = dataActions
+            actions = actions
         )
 
         is Loading -> ProtonCenteredProgress(modifier = Modifier.fillMaxSize())
     }
 }
-
 
 @Composable
 fun MainSettingsScreen(
@@ -112,60 +88,47 @@ fun MainSettingsScreen(
                     onAccountClicked = actions.onAccountClick
                 )
             }
-            item { ProtonSettingsHeader(title = string.mail_settings_app_settings) }
+            item { ProtonSettingsHeader(title = string.mail_settings_preferences) }
             item {
                 ProtonSettingsItem(
-                    name = stringResource(id = string.mail_settings_theme),
-                    onClick = actions.onThemeClick
+                    name = stringResource(id = string.mail_settings_email),
+                    hint = stringResource(id = string.mail_settings_email_hint),
+                    onClick = actions.onAppSettingsClick
                 )
                 Divider()
             }
             item {
                 ProtonSettingsItem(
-                    name = stringResource(id = string.mail_settings_push_notifications),
-                    onClick = actions.onPushNotificationsClick
+                    name = stringResource(id = string.mail_settings_folders_labels),
+                    hint = stringResource(id = string.mail_settings_folders_labels_hint),
+                    onClick = actions.onAppSettingsClick
                 )
                 Divider()
-            }
-            item {
-                AutoLockSettingItem(
-                    appSettings = state.appSettings,
-                    onAutoLockClick = actions.onAutoLockClick
-                )
-            }
-            item {
-                AlternativeRoutingSettingItem(
-                    appSettings = state.appSettings,
-                    onAlternativeRoutingClick = actions.onAlternativeRoutingClick
-                )
-            }
-            item {
-                AppLanguageSettingItem(
-                    appSettings = state.appSettings,
-                    onAppLanguageClick = actions.onAppLanguageClick
-                )
-            }
-            item {
-                CombinedContactsSettingItem(
-                    appSettings = state.appSettings,
-                    onCombinedContactsClick = actions.onCombinedContactsClick
-                )
             }
             item {
                 ProtonSettingsItem(
-                    name = stringResource(id = string.mail_settings_swipe_actions),
-                    onClick = actions.onSwipeActionsClick
+                    name = stringResource(id = string.mail_settings_spam_and_custom_filters),
+                    hint = stringResource(id = string.mail_settings_spam_and_custom_filters_hint),
+                    onClick = actions.onAppSettingsClick
                 )
                 Divider()
             }
             item {
-                ClearLocalCacheItem(
-                    totalSize = state.totalSizeInformation,
-                    onClearCacheClick = actions.onClearCacheClick
+                ProtonSettingsItem(
+                    name = stringResource(id = string.mail_settings_privacy_and_security),
+                    hint = stringResource(id = string.mail_settings_privacy_and_security_hint),
+                    onClick = actions.onAppSettingsClick
                 )
+                Divider()
             }
-            item { TelemetrySettingToggleItem(divider = { Divider() }) }
-            item { CrashReportSettingToggleItem(divider = { Divider() }) }
+            item {
+                ProtonSettingsItem(
+                    name = stringResource(id = string.mail_settings_app),
+                    hint = stringResource(id = string.mail_settings_app_hint),
+                    onClick = actions.onAppSettingsClick
+                )
+                Divider()
+            }
             item { ProtonSettingsHeader(title = string.mail_settings_app_information) }
             item {
                 ProtonSettingsItem(
@@ -176,115 +139,6 @@ fun MainSettingsScreen(
             }
         }
     }
-}
-
-@Composable
-private fun CombinedContactsSettingItem(
-    modifier: Modifier = Modifier,
-    appSettings: AppSettings,
-    onCombinedContactsClick: () -> Unit
-) {
-    val hint = if (appSettings.hasCombinedContacts) {
-        stringResource(id = string.mail_settings_enabled)
-    } else {
-        stringResource(id = string.mail_settings_disabled)
-    }
-    ProtonSettingsItem(
-        modifier = modifier,
-        name = stringResource(id = string.mail_settings_combined_contacts),
-        hint = hint,
-        onClick = onCombinedContactsClick
-    )
-    Divider()
-}
-
-@Composable
-private fun ClearLocalCacheItem(
-    modifier: Modifier = Modifier,
-    totalSize: LocalStorageUsageInformation,
-    onClearCacheClick: () -> Unit
-) {
-    Row(
-        modifier = modifier,
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Start
-    ) {
-
-        ProtonSettingsItem(
-            modifier = Modifier.weight(1f),
-            name = stringResource(id = string.mail_settings_local_cache),
-            hint = stringResource(
-                id = string.mail_settings_local_cache_hint,
-                totalSize.value.formatByteToHumanReadable()
-            ),
-            isClickable = false
-        )
-
-        Button(
-            modifier = Modifier.padding(end = ProtonDimens.DefaultSpacing),
-            onClick = onClearCacheClick
-        ) {
-            Text(text = stringResource(id = string.mail_settings_local_cache_clear_button))
-        }
-    }
-    Divider()
-}
-
-@Composable
-private fun AppLanguageSettingItem(
-    modifier: Modifier = Modifier,
-    appSettings: AppSettings,
-    onAppLanguageClick: () -> Unit
-) {
-    val appLanguage = appSettings.customAppLanguage
-        ?: stringResource(id = string.mail_settings_auto_detect)
-    ProtonSettingsItem(
-        modifier = modifier,
-        name = stringResource(id = string.mail_settings_app_language),
-        hint = appLanguage,
-        onClick = onAppLanguageClick
-    )
-    Divider()
-}
-
-@Composable
-private fun AlternativeRoutingSettingItem(
-    modifier: Modifier = Modifier,
-    appSettings: AppSettings,
-    onAlternativeRoutingClick: () -> Unit
-) {
-    val hint = if (appSettings.hasAlternativeRouting) {
-        stringResource(id = string.mail_settings_allowed)
-    } else {
-        stringResource(id = string.mail_settings_denied)
-    }
-    ProtonSettingsItem(
-        modifier = modifier,
-        name = stringResource(id = string.mail_settings_alternative_routing),
-        hint = hint,
-        onClick = onAlternativeRoutingClick
-    )
-    Divider()
-}
-
-@Composable
-private fun AutoLockSettingItem(
-    modifier: Modifier = Modifier,
-    appSettings: AppSettings,
-    onAutoLockClick: () -> Unit
-) {
-    val hint = if (appSettings.hasAutoLock) {
-        stringResource(id = string.mail_settings_enabled)
-    } else {
-        stringResource(id = string.mail_settings_disabled)
-    }
-    ProtonSettingsItem(
-        modifier = modifier,
-        name = stringResource(id = string.mail_settings_auto_lock),
-        hint = hint,
-        onClick = onAutoLockClick
-    )
-    Divider()
 }
 
 @Composable
@@ -310,14 +164,8 @@ object MainSettingsScreen {
 
     data class Actions(
         val onAccountClick: () -> Unit,
-        val onThemeClick: () -> Unit,
-        val onPushNotificationsClick: () -> Unit,
-        val onAutoLockClick: () -> Unit,
-        val onAlternativeRoutingClick: () -> Unit,
-        val onAppLanguageClick: () -> Unit,
-        val onCombinedContactsClick: () -> Unit,
-        val onSwipeActionsClick: () -> Unit,
-        val onClearCacheClick: () -> Unit,
+        val onAppSettingsClick: () -> Unit,
+        val onEmailSettingsClick: () -> Unit,
         val onBackClick: () -> Unit
     )
 }

@@ -19,35 +19,18 @@
 package ch.protonmail.android.mailsettings.presentation.settings
 
 import ch.protonmail.android.mailcommon.domain.AppInformation
-import ch.protonmail.android.mailsettings.domain.model.AppSettings
-import ch.protonmail.android.mailsettings.domain.model.LocalStorageUsageInformation
 
 object SettingsScreenPreviewData {
 
-    private val sizeInformation = LocalStorageUsageInformation(1000L)
-
     val Data = SettingsState.Data(
         AccountInfo("ProtonUser", "user@proton.ch"),
-        AppSettings(
-            hasAutoLock = false,
-            hasAlternativeRouting = true,
-            customAppLanguage = null,
-            hasCombinedContacts = true
-        ),
-        AppInformation(appVersionName = "6.0.0-alpha"),
-        totalSizeInformation = sizeInformation
+        AppInformation(appVersionName = "6.0.0-alpha")
     )
 
     val Actions = MainSettingsScreen.Actions(
         onAccountClick = {},
-        onThemeClick = {},
-        onPushNotificationsClick = {},
-        onAutoLockClick = {},
-        onAlternativeRoutingClick = {},
-        onAppLanguageClick = {},
-        onCombinedContactsClick = {},
-        onSwipeActionsClick = {},
-        onClearCacheClick = {},
+        onAppSettingsClick = {},
+        onEmailSettingsClick = {},
         onBackClick = {}
     )
 }

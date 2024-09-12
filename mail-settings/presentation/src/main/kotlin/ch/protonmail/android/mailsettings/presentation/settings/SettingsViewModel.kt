@@ -22,17 +22,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ch.protonmail.android.mailcommon.domain.AppInformation
 import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUser
-import ch.protonmail.android.mailsettings.domain.model.ClearDataAction
-import ch.protonmail.android.mailsettings.domain.usecase.ClearLocalStorage
-import ch.protonmail.android.mailsettings.domain.usecase.ObserveAppSettings
-import ch.protonmail.android.mailsettings.domain.usecase.ObserveOverallLocalStorageUsage
 import ch.protonmail.android.mailsettings.presentation.settings.SettingsState.Data
 import ch.protonmail.android.mailsettings.presentation.settings.SettingsState.Loading
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
 import me.proton.core.compose.viewmodel.stopTimeoutMillis
 import me.proton.core.user.domain.entity.User
 import me.proton.core.util.kotlin.takeIfNotEmpty
@@ -41,34 +36,21 @@ import javax.inject.Inject
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
     appInformation: AppInformation,
-    observeAppSettings: ObserveAppSettings,
-    observePrimaryUser: ObservePrimaryUser,
-    observeOverallLocalDataUsage: ObserveOverallLocalStorageUsage,
-    private val clearLocalStorage: ClearLocalStorage
+    observePrimaryUser: ObservePrimaryUser
 ) : ViewModel() {
 
-    val state = combine(
-        observePrimaryUser(),
-        observeAppSettings(),
-        observeOverallLocalDataUsage()
-    ) { user, appSettings, totalDataSize ->
-        Data(
-            buildAccountData(user),
-            appSettings,
-            appInformation,
-            totalDataSize
-        )
-    }.stateIn(
-        viewModelScope,
-        SharingStarted.WhileSubscribed(stopTimeoutMillis),
-        Loading
-    )
-
-    fun clearAllData() {
-        viewModelScope.launch {
-            clearLocalStorage(clearDataAction = ClearDataAction.ClearAll)
+    val state = observePrimaryUser()
+        .map { user ->
+            Data(
+                buildAccountData(user),
+                appInformation
+            )
         }
-    }
+        .stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(stopTimeoutMillis),
+            Loading
+        )
 
     private fun buildAccountData(user: User?) = user?.let {
         AccountInfo(

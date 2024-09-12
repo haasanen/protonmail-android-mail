@@ -21,6 +21,21 @@
     <string name="mail_settings_toolbar_button_content_description">Back</string>
     <!-- Settings items -->
     <string name="mail_settings_account_settings">Account settings</string>
+    <string name="mail_settings_email_settings">Email settings</string>
+    <string name="mail_settings_folder_and_label_settings">Folder and label settings</string>
+    <string name="mail_settings_spam_and_custom_filter_settings">Spam and custom filter settings</string>
+    <string name="mail_settings_privacy_and_security_settings">Privacy and security settings</string>
+    <string name="mail_settings_preferences">Preferences</string>
+    <string name="mail_settings_app">App</string>
+    <string name="mail_settings_email">Email</string>
+    <string name="mail_settings_email_hint">Email and mailbox preferences</string>
+    <string name="mail_settings_folders_labels">Folders and labels</string>
+    <string name="mail_settings_folders_labels_hint">Mailbox organization</string>
+    <string name="mail_settings_spam_and_custom_filters">Spam and custom filters</string>
+    <string name="mail_settings_spam_and_custom_filters_hint">Automatic actions and sorting</string>
+    <string name="mail_settings_privacy_and_security">Privacy and security</string>
+    <string name="mail_settings_privacy_and_security_hint">Email tracking protection</string>
+    <string name="mail_settings_app_hint">Mobile app customizations</string>
     <string name="mail_settings_app_settings">App settings</string>
     <string name="mail_settings_theme">Theme</string>
     <string name="mail_settings_push_notifications">Push notifications</string>
