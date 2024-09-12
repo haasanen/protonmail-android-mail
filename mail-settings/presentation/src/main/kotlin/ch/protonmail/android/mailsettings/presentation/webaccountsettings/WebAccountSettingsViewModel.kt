@@ -22,15 +22,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUserId
-import ch.protonmail.android.mailsession.domain.model.ForkedSessionId
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
-import ch.protonmail.android.mailsettings.domain.model.Theme
-import ch.protonmail.android.mailsettings.domain.model.WebSettingsConfig
 import ch.protonmail.android.mailsettings.domain.repository.ThemeRepository
 import ch.protonmail.android.mailsettings.domain.usecase.ObserveWebSettingsConfig
 import ch.protonmail.android.mailsettings.presentation.websettings.model.WebSettingsAction
 import ch.protonmail.android.mailsettings.presentation.websettings.model.WebSettingsOperation
 import ch.protonmail.android.mailsettings.presentation.websettings.WebSettingsState
+import ch.protonmail.android.mailsettings.presentation.websettings.toAccountSettingsUrl
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -92,15 +90,4 @@ class WebAccountSettingsViewModel @Inject constructor(
     private suspend fun handleCloseSettings() {
         Timber.d("web-settings: Closing account settings, event loop polling will be triggered")
     }
-}
-
-private fun WebSettingsConfig.toAccountSettingsUrl(forkedSessionId: ForkedSessionId, theme: Theme): String =
-    "$baseUrl?action=$accountSettingsAction&theme=${theme.getUriParam()}#selector=${forkedSessionId.id}".also {
-        Timber.d("web-settings: Account settings URL: $it")
-    }
-
-private fun Theme.getUriParam(): String = when (this) {
-    Theme.SYSTEM_DEFAULT -> "0"
-    Theme.LIGHT -> "0"
-    Theme.DARK -> "1"
 }
