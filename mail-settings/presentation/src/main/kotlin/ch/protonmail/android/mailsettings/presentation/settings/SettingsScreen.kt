@@ -117,7 +117,7 @@ fun MainSettingsScreen(
                 ProtonSettingsItem(
                     name = stringResource(id = string.mail_settings_privacy_and_security),
                     hint = stringResource(id = string.mail_settings_privacy_and_security_hint),
-                    onClick = actions.onAppSettingsClick
+                    onClick = actions.onPrivacyAndSecuritySettingsClicked
                 )
                 Divider()
             }
@@ -168,6 +168,7 @@ object MainSettingsScreen {
         val onEmailSettingsClick: () -> Unit,
         val onFolderAndLabelSettingsClicked: () -> Unit,
         val onSpamFilterSettingsClicked: () -> Unit,
+        val onPrivacyAndSecuritySettingsClicked: () -> Unit,
         val onBackClick: () -> Unit
     )
 }

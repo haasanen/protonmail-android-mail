@@ -23,6 +23,9 @@ import ch.protonmail.android.mailsettings.domain.model.Theme
 import ch.protonmail.android.mailsettings.domain.model.WebSettingsConfig
 import timber.log.Timber
 
+fun WebSettingsConfig.toPrivacyAndSecuritySettingsUrl(forkedSessionId: ForkedSessionId, theme: Theme): String =
+    toSettingsUrl(forkedSessionId, theme, privacySecuritySettingsAction)
+
 fun WebSettingsConfig.toSpamFilterSettingsUrl(forkedSessionId: ForkedSessionId, theme: Theme): String =
     toSettingsUrl(forkedSessionId, theme, spamFilterSettingsAction)
 

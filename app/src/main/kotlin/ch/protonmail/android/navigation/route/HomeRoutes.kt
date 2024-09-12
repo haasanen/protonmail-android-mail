@@ -177,6 +177,9 @@ internal fun NavGraphBuilder.addSettings(navController: NavHostController) {
                 onSpamFilterSettingsClicked = {
                     navController.navigate(Destination.Screen.SpamFilterSettings.route)
                 },
+                onPrivacyAndSecuritySettingsClicked = {
+                    navController.navigate(Destination.Screen.PrivacyAndSecuritySettings.route)
+                },
                 onBackClick = {
                     navController.navigateBack()
                 }

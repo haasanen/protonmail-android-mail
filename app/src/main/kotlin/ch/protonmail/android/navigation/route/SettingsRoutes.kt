@@ -39,6 +39,7 @@ import ch.protonmail.android.mailsettings.presentation.settings.theme.ThemeSetti
 import ch.protonmail.android.mailsettings.presentation.webaccountsettings.WebAccountSettingScreen
 import ch.protonmail.android.mailsettings.presentation.webemailsettings.WebEmailSettingScreen
 import ch.protonmail.android.mailsettings.presentation.webfoldersettings.WebFoldersAndLabelsSettingScreen
+import ch.protonmail.android.mailsettings.presentation.webprivacysettings.WebPrivacyAndSecuritySettingsScreen
 import ch.protonmail.android.mailsettings.presentation.webspamsettings.WebSpamFilterSettingsScreen
 import ch.protonmail.android.navigation.Launcher
 import ch.protonmail.android.navigation.model.Destination.Screen
@@ -76,6 +77,18 @@ fun NavGraphBuilder.addWebFolderAndLabelSettings(navController: NavHostControlle
     }
 }
 
+fun NavGraphBuilder.addWebPrivacyAndSecuritySettings(
+    navController: NavHostController,
+    launcherActions: Launcher.Actions
+) {
+    composable(route = Screen.PrivacyAndSecuritySettings.route) {
+        WebPrivacyAndSecuritySettingsScreen(
+            actions = WebPrivacyAndSecuritySettingsScreen.Actions(
+                onBackClick = { navController.popBackStack() }
+            )
+        )
+    }
+}
 
 fun NavGraphBuilder.addWebSpamFilterSettings(navController: NavHostController, launcherActions: Launcher.Actions) {
     composable(route = Screen.SpamFilterSettings.route) {
