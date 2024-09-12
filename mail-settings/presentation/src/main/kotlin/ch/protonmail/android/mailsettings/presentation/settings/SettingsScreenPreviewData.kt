@@ -31,6 +31,7 @@ object SettingsScreenPreviewData {
         onAccountClick = {},
         onAppSettingsClick = {},
         onEmailSettingsClick = {},
+        onFolderAndLabelSettingsClicked = {},
         onBackClick = {}
     )
 }

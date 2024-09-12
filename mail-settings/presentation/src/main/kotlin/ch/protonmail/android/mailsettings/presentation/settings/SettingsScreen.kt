@@ -101,7 +101,7 @@ fun MainSettingsScreen(
                 ProtonSettingsItem(
                     name = stringResource(id = string.mail_settings_folders_labels),
                     hint = stringResource(id = string.mail_settings_folders_labels_hint),
-                    onClick = actions.onAppSettingsClick
+                    onClick = actions.onFolderAndLabelSettingsClicked
                 )
                 Divider()
             }
@@ -166,6 +166,7 @@ object MainSettingsScreen {
         val onAccountClick: () -> Unit,
         val onAppSettingsClick: () -> Unit,
         val onEmailSettingsClick: () -> Unit,
+        val onFolderAndLabelSettingsClicked: () -> Unit,
         val onBackClick: () -> Unit
     )
 }
