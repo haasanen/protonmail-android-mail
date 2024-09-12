@@ -28,8 +28,9 @@ import ch.protonmail.android.mailsettings.domain.model.Theme
 import ch.protonmail.android.mailsettings.domain.model.WebSettingsConfig
 import ch.protonmail.android.mailsettings.domain.repository.ThemeRepository
 import ch.protonmail.android.mailsettings.domain.usecase.ObserveWebSettingsConfig
-import ch.protonmail.android.mailsettings.presentation.webaccountsettings.model.AccountSettingsAction
-import ch.protonmail.android.mailsettings.presentation.webaccountsettings.model.AccountSettingsOperation
+import ch.protonmail.android.mailsettings.presentation.websettings.model.WebSettingsAction
+import ch.protonmail.android.mailsettings.presentation.websettings.model.WebSettingsOperation
+import ch.protonmail.android.mailsettings.presentation.websettings.WebSettingsState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -50,11 +51,10 @@ class WebAccountSettingsViewModel @Inject constructor(
     private val observeWebSettingsConfig: ObserveWebSettingsConfig
 ) : ViewModel() {
 
-    private val _state = MutableStateFlow<WebAccountSettingsState>(WebAccountSettingsState.Loading)
-    val state: StateFlow<WebAccountSettingsState> = _state.asStateFlow()
+    private val _state = MutableStateFlow<WebSettingsState>(WebSettingsState.Loading)
+    val state: StateFlow<WebSettingsState> = _state.asStateFlow()
 
     init {
-        // Combine the two flows
         combine(
             observePrimaryUserId().filterNotNull(),
             themeRepository.observe(),
@@ -63,11 +63,11 @@ class WebAccountSettingsViewModel @Inject constructor(
 
             userSessionRepository.forkSession(userId).fold(
                 ifRight = { forkedSessionId ->
-                    WebAccountSettingsState.Data(webSettingsConfig.toAccountSettingsUrl(forkedSessionId, theme), theme)
+                    WebSettingsState.Data(webSettingsConfig.toAccountSettingsUrl(forkedSessionId, theme), theme)
                 },
                 ifLeft = { sessionError ->
                     Timber.e("web-settings: Forking session failed")
-                    WebAccountSettingsState.Error("Forking session failed due to $sessionError")
+                    WebSettingsState.Error("Forking session failed due to $sessionError")
                 }
             )
         }
@@ -79,10 +79,10 @@ class WebAccountSettingsViewModel @Inject constructor(
             .launchIn(viewModelScope)
     }
 
-    internal fun submit(action: AccountSettingsOperation) {
+    internal fun submit(action: WebSettingsOperation) {
         viewModelScope.launch {
             when (action) {
-                is AccountSettingsAction.OnCloseAccountSettings -> handleCloseSettings()
+                is WebSettingsAction.OnCloseWebSettings -> handleCloseSettings()
 
             }
         }

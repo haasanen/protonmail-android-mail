@@ -25,9 +25,6 @@ import ch.protonmail.android.mailcommon.domain.sample.UserSample
 import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUser
 import ch.protonmail.android.mailsettings.domain.model.AppSettings
 import ch.protonmail.android.mailsettings.domain.model.LocalStorageUsageInformation
-import ch.protonmail.android.mailsettings.domain.usecase.ClearLocalStorage
-import ch.protonmail.android.mailsettings.domain.usecase.ObserveAppSettings
-import ch.protonmail.android.mailsettings.domain.usecase.ObserveOverallLocalStorageUsage
 import ch.protonmail.android.mailsettings.presentation.settings.AccountInfo
 import ch.protonmail.android.mailsettings.presentation.settings.SettingsState
 import ch.protonmail.android.mailsettings.presentation.settings.SettingsState.Data
@@ -39,7 +36,6 @@ import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
@@ -57,15 +53,6 @@ class SettingsViewModelTest {
     }
 
     private val appSettingsFlow = MutableSharedFlow<AppSettings>()
-    private val observeAppSettings = mockk<ObserveAppSettings> {
-        every { this@mockk.invoke() } returns appSettingsFlow
-    }
-    private val overallStorageFlow = flowOf(BaseLocalStorageUsageInformation)
-    private val observeOverallLocalStorageUsage = mockk<ObserveOverallLocalStorageUsage> {
-        every { this@mockk.invoke() } returns overallStorageFlow
-
-    }
-    private val clearLocalStorage = mockk<ClearLocalStorage>()
 
     private val appInformation = AppInformation(appVersionName = "6.0.0-alpha")
 
@@ -77,10 +64,7 @@ class SettingsViewModelTest {
 
         viewModel = SettingsViewModel(
             appInformation,
-            observeAppSettings,
-            observePrimaryUser,
-            observeOverallLocalStorageUsage,
-            clearLocalStorage
+            observePrimaryUser
         )
     }
 
@@ -145,44 +129,6 @@ class SettingsViewModelTest {
             // Then
             val actual = awaitItem() as Data
             assertNull(actual.account)
-        }
-    }
-
-    @Test
-    fun `state has app settings info when get app settings use case returns valid data`() = runTest {
-        viewModel.state.test {
-            // Given
-            initialStateEmitted()
-            userFlow.emit(UserTestData.Primary)
-
-            // When
-            appSettingsFlow.emit(AppSettingsTestData.appSettings)
-
-            // Then
-            val actual = awaitItem() as Data
-            val expected = AppSettings(
-                hasAutoLock = false,
-                hasAlternativeRouting = true,
-                customAppLanguage = null,
-                hasCombinedContacts = true
-            )
-            assertEquals(expected, actual.appSettings)
-        }
-    }
-
-    @Test
-    fun `state has local storage usage info when observe local storage usage succeeds`() = runTest {
-        viewModel.state.test {
-            // Given
-            initialStateEmitted()
-            userFlow.emit(UserTestData.Primary)
-
-            // When
-            appSettingsFlow.emit(AppSettingsTestData.appSettings)
-
-            // Then
-            val actual = awaitItem() as Data
-            assertEquals(BaseLocalStorageUsageInformation, actual.totalSizeInformation)
         }
     }
 

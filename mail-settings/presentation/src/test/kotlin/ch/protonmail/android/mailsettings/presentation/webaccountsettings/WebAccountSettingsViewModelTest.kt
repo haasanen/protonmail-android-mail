@@ -30,6 +30,7 @@ import ch.protonmail.android.mailsettings.domain.model.Theme
 import ch.protonmail.android.mailsettings.domain.model.WebSettingsConfig
 import ch.protonmail.android.mailsettings.domain.repository.ThemeRepository
 import ch.protonmail.android.mailsettings.domain.usecase.ObserveWebSettingsConfig
+import ch.protonmail.android.mailsettings.presentation.websettings.WebSettingsState
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
 import ch.protonmail.android.testdata.user.UserIdTestData
 import io.mockk.coEvery
@@ -94,7 +95,7 @@ class WebAccountSettingsViewModelTest {
 
         // When & Then
         viewModel.state.test {
-            assertEquals(WebAccountSettingsState.Loading, awaitItem())
+            assertEquals(WebSettingsState.Loading, awaitItem())
         }
     }
 
@@ -116,7 +117,7 @@ class WebAccountSettingsViewModelTest {
         viewModel.state.test {
 
             // Then
-            val actualState = awaitItem() as WebAccountSettingsState.Data
+            val actualState = awaitItem() as WebSettingsState.Data
             assertEquals(testTheme, actualState.theme)
         }
     }
@@ -141,7 +142,7 @@ class WebAccountSettingsViewModelTest {
         viewModel.state.test {
 
             // Then
-            assertTrue(awaitItem() is WebAccountSettingsState.Error)
+            assertTrue(awaitItem() is WebSettingsState.Error)
         }
     }
 }

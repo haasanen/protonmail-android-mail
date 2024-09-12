@@ -16,21 +16,10 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailsettings.presentation.webaccountsettings
+package ch.protonmail.android.mailsettings.presentation.websettings.model
 
-import ch.protonmail.android.mailsettings.domain.model.Theme
+sealed interface WebSettingsOperation
 
-sealed interface WebAccountSettingsState {
-
-    data class Data(
-        val accountSettingsUrl: String,
-        val theme: Theme
-    ) : WebAccountSettingsState
-
-    object Loading : WebAccountSettingsState
-    object NotLoggedIn : WebAccountSettingsState
-    data class Error(
-        val errorMessage: String
-    ) : WebAccountSettingsState
-
+internal sealed interface WebSettingsAction : WebSettingsOperation {
+    object OnCloseWebSettings : WebSettingsAction
 }

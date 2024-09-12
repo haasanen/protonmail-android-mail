@@ -18,30 +18,17 @@
 
 package ch.protonmail.android.mailsettings.presentation.webaccountsettings
 
-import android.net.http.SslError
-import android.os.Build
-import android.webkit.SslErrorHandler
-import android.webkit.WebResourceError
-import android.webkit.WebResourceRequest
-import android.webkit.WebResourceResponse
-import android.webkit.WebSettings
-import android.webkit.WebView
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import ch.protonmail.android.mailsettings.presentation.R
-import ch.protonmail.android.mailsettings.presentation.webaccountsettings.model.AccountSettingsAction
-import com.google.accompanist.web.AccompanistWebChromeClient
-import com.google.accompanist.web.AccompanistWebViewClient
-import com.google.accompanist.web.WebView
-import com.google.accompanist.web.rememberWebViewState
+import ch.protonmail.android.mailsettings.presentation.websettings.model.WebSettingsAction
+import ch.protonmail.android.mailsettings.presentation.websettings.SettingWebView
+import ch.protonmail.android.mailsettings.presentation.websettings.WebSettingsState
 import me.proton.core.compose.component.ProtonCenteredProgress
 import me.proton.core.compose.component.ProtonErrorMessage
 import me.proton.core.compose.component.ProtonSettingsTopBar
@@ -58,24 +45,24 @@ fun WebAccountSettingScreen(
     when (
         val settingsState = rememberAsState(
             flow = accountSettingsViewModel.state,
-            WebAccountSettingsState.Loading
+            WebSettingsState.Loading
         ).value
     ) {
-        is WebAccountSettingsState.Data -> WebAccountSettingScreen(
+        is WebSettingsState.Data -> WebAccountSettingScreen(
             modifier = modifier,
             state = settingsState,
             actions = WebAccountSettingScreen.Actions(
                 onBackClick = {
-                    accountSettingsViewModel.submit(AccountSettingsAction.OnCloseAccountSettings)
+                    accountSettingsViewModel.submit(WebSettingsAction.OnCloseWebSettings)
                     actions.onBackClick()
                 }
             )
         )
 
-        is WebAccountSettingsState.Error -> ProtonErrorMessage(errorMessage = settingsState.errorMessage)
+        is WebSettingsState.Error -> ProtonErrorMessage(errorMessage = settingsState.errorMessage)
 
-        WebAccountSettingsState.Loading -> ProtonCenteredProgress()
-        WebAccountSettingsState.NotLoggedIn ->
+        WebSettingsState.Loading -> ProtonCenteredProgress()
+        WebSettingsState.NotLoggedIn ->
             ProtonErrorMessage(errorMessage = stringResource(id = R.string.x_error_not_logged_in))
     }.exhaustive
 
@@ -84,7 +71,7 @@ fun WebAccountSettingScreen(
 @Composable
 fun WebAccountSettingScreen(
     modifier: Modifier = Modifier,
-    state: WebAccountSettingsState.Data,
+    state: WebSettingsState.Data,
     actions: WebAccountSettingScreen.Actions
 ) {
     Timber.d("web-settings: WebAccountSettingScreen: $state")
@@ -97,7 +84,7 @@ fun WebAccountSettingScreen(
             )
         },
         content = { paddingValues ->
-            AccountSettingWebView(
+            SettingWebView(
                 modifier
                     .padding(paddingValues),
                 state = state
@@ -107,85 +94,6 @@ fun WebAccountSettingScreen(
 
     BackHandler {
         actions.onBackClick()
-    }
-}
-
-@Composable
-fun AccountSettingWebView(modifier: Modifier = Modifier, state: WebAccountSettingsState.Data) {
-
-    val client = remember(state) {
-        object : AccompanistWebViewClient() {
-
-            override fun onReceivedSslError(
-                view: WebView?,
-                handler: SslErrorHandler?,
-                error: SslError?
-            ) {
-                Timber.e("web-settings: onReceivedSslError: $error")
-                super.onReceivedSslError(view, handler, error)
-            }
-
-            override fun onReceivedError(
-                view: WebView?,
-                request: WebResourceRequest?,
-                error: WebResourceError?
-            ) {
-                Timber.e("web-settings: onReceivedError: $error")
-                super.onReceivedError(view, request, error)
-            }
-
-            override fun onReceivedHttpError(
-                view: WebView?,
-                request: WebResourceRequest?,
-                errorResponse: WebResourceResponse?
-            ) {
-                errorResponse?.let {
-                    Timber.e("web-settings: HTTP error: ${it.statusCode}, ${it.reasonPhrase}, URL: ${request?.url}")
-                }
-                super.onReceivedHttpError(view, request, errorResponse)
-            }
-        }
-    }
-
-    val chromeClient = remember {
-        object : AccompanistWebChromeClient() {
-            override fun onProgressChanged(view: WebView?, newProgress: Int) {
-                Timber.d("web-settings: onProgressChanged: $newProgress")
-                super.onProgressChanged(view, newProgress)
-            }
-        }
-    }
-
-    val additionalHeaders = mapOf(
-        "x-pm-appversion" to "Other"
-    )
-
-    val webViewState = rememberWebViewState(
-        url = state.accountSettingsUrl,
-        additionalHttpHeaders = additionalHeaders
-    )
-    Column(modifier = modifier.fillMaxSize()) {
-        WebView(
-            onCreated = {
-                it.settings.javaScriptEnabled = true
-                it.settings.domStorageEnabled = true
-                it.settings.loadWithOverviewMode = true
-                it.settings.allowFileAccess = false
-                it.settings.allowContentAccess = true
-                it.settings.useWideViewPort = true
-                it.settings.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
-                it.settings.safeBrowsingEnabled = true
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                    it.settings.isAlgorithmicDarkeningAllowed = true
-                }
-            },
-            captureBackPresses = true,
-            state = webViewState,
-            modifier = Modifier
-                .fillMaxSize(),
-            client = client,
-            chromeClient = chromeClient
-        )
     }
 }
 
