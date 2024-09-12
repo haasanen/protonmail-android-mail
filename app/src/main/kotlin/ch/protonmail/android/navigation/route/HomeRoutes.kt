@@ -47,6 +47,7 @@ import ch.protonmail.android.maillabel.presentation.labellist.LabelListScreen
 import ch.protonmail.android.mailmailbox.presentation.mailbox.MailboxScreen
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.model.MessageId
+import ch.protonmail.android.mailsettings.presentation.appsettings.AppSettingsScreen
 import ch.protonmail.android.mailsettings.presentation.settings.MainSettingsScreen
 import ch.protonmail.android.navigation.model.Destination
 import ch.protonmail.android.navigation.model.SavedStateKey
@@ -164,6 +165,23 @@ internal fun NavGraphBuilder.addSettings(navController: NavHostController) {
                 onAccountClick = {
                     navController.navigate(Destination.Screen.AccountSettings.route)
                 },
+                onAppSettingsClick = {
+                    navController.navigate(Destination.Screen.AppSettings.route)
+                },
+                onEmailSettingsClick = {
+                },
+                onBackClick = {
+                    navController.navigateBack()
+                }
+            )
+        )
+    }
+}
+
+internal fun NavGraphBuilder.addAppSettings(navController: NavHostController) {
+    composable(route = Destination.Screen.AppSettings.route) {
+        AppSettingsScreen(
+            actions = AppSettingsScreen.Actions(
                 onThemeClick = {
                     navController.navigate(Destination.Screen.ThemeSettings.route)
                 },

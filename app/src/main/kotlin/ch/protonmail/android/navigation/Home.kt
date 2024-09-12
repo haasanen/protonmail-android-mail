@@ -56,6 +56,7 @@ import ch.protonmail.android.navigation.model.Destination.Dialog
 import ch.protonmail.android.navigation.model.Destination.Screen
 import ch.protonmail.android.navigation.model.HomeState
 import ch.protonmail.android.navigation.route.addAlternativeRoutingSetting
+import ch.protonmail.android.navigation.route.addAppSettings
 import ch.protonmail.android.navigation.route.addAutoLockPinScreen
 import ch.protonmail.android.navigation.route.addAutoLockSettings
 import ch.protonmail.android.navigation.route.addCombinedContactsSetting
@@ -347,6 +348,7 @@ fun Home(
                 addSignOutAccountDialog(navController)
                 addRemoveAccountDialog(navController)
                 addSettings(navController)
+                addAppSettings(navController)
                 addLabelList(
                     navController,
                     showLabelListErrorLoadingSnackbar = { showLabelListErrorLoadingSnackbar() }
