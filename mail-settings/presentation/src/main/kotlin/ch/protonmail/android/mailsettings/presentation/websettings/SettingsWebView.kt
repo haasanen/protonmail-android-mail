@@ -90,12 +90,11 @@ fun SettingWebView(modifier: Modifier = Modifier, state: WebSettingsState.Data) 
         WebView(
             onCreated = {
                 it.settings.javaScriptEnabled = true
-                it.settings.domStorageEnabled = true
+                it.settings.domStorageEnabled = false
                 it.settings.loadWithOverviewMode = true
                 it.settings.allowFileAccess = false
                 it.settings.allowContentAccess = true
                 it.settings.useWideViewPort = true
-                it.settings.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
                 it.settings.safeBrowsingEnabled = true
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                     it.settings.isAlgorithmicDarkeningAllowed = true
