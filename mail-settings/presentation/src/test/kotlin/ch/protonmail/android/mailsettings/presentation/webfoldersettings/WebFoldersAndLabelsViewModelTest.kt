@@ -18,7 +18,6 @@
 
 package ch.protonmail.android.mailsettings.presentation.webfoldersettings
 
-import java.time.Instant
 import app.cash.turbine.test
 import arrow.core.left
 import arrow.core.right
@@ -36,12 +35,8 @@ import ch.protonmail.android.testdata.user.UserIdTestData
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
-import io.mockk.mockkStatic
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
-import kotlinx.coroutines.test.setMain
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import kotlin.test.assertEquals
@@ -71,12 +66,6 @@ class WebFoldersAndLabelsViewModelTest {
     private val themeRepository = mockk<ThemeRepository>()
     private val observeWebSettingsConfig = mockk<ObserveWebSettingsConfig> {
         every { this@mockk.invoke() } returns flowOf(testWebSettingsConfig)
-    }
-
-    @Before
-    fun setup() {
-        mockkStatic(Instant::class)
-        Dispatchers.setMain(mainDispatcherRule.testDispatcher)
     }
 
     @Test

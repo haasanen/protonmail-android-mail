@@ -27,21 +27,23 @@ import ch.protonmail.android.mailsettings.domain.usecase.ClearLocalStorage
 import ch.protonmail.android.mailsettings.domain.usecase.ObserveAppSettings
 import ch.protonmail.android.mailsettings.domain.usecase.ObserveOverallLocalStorageUsage
 import ch.protonmail.android.mailsettings.presentation.testdata.AppSettingsTestData
+import ch.protonmail.android.test.utils.rule.MainDispatcherRule
 import ch.protonmail.android.testdata.user.UserTestData
 import io.mockk.every
 import io.mockk.mockk
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
-import kotlinx.coroutines.test.setMain
 import me.proton.core.user.domain.entity.User
 import org.junit.Assert.assertEquals
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 
 class AppSettingsViewModelTest {
+
+    @get:Rule
+    val mainDispatcherRule = MainDispatcherRule()
 
     private val userFlow = MutableSharedFlow<User?>()
 
@@ -60,7 +62,6 @@ class AppSettingsViewModelTest {
 
     @Before
     fun setUp() {
-        Dispatchers.setMain(UnconfinedTestDispatcher())
 
         viewModel = AppSettingsViewModel(
             observeAppSettings,
