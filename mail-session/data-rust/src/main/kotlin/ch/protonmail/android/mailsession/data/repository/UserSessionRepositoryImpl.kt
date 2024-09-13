@@ -53,14 +53,12 @@ class UserSessionRepositoryImpl @Inject constructor(
     }
 
     override suspend fun forkSession(userId: UserId): Either<SessionError, ForkedSessionId> {
-        Timber.d("rust-session: Forking session for $userId")
         val userSession = getUserSession(userId) ?: return SessionError.Local.Unknown.left()
 
         runCatching {
             userSession.fork()
         }.fold(
             onSuccess = { sessionId ->
-                Timber.d("rust-session: Forked session for $userId: $sessionId")
                 return ForkedSessionId(sessionId).right()
             },
             onFailure = { throwable ->
