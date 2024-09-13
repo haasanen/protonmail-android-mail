@@ -27,12 +27,12 @@ import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.mapper.ColorMapper
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
+import ch.protonmail.android.maillabel.domain.model.Label
+import ch.protonmail.android.maillabel.domain.model.LabelType
 import ch.protonmail.android.maillabel.domain.usecase.ObserveLabels
 import ch.protonmail.android.maillabel.presentation.R
 import ch.protonmail.android.maillabel.presentation.getHexStringFromColor
 import ch.protonmail.android.maillabel.presentation.model.toFolderUiModel
-import ch.protonmail.android.mailsettings.domain.model.FolderColorSettings
-import ch.protonmail.android.mailsettings.domain.usecase.ObserveFolderColorSettings
 import ch.protonmail.android.mailsettings.domain.usecase.UpdateEnableFolderColor
 import ch.protonmail.android.mailsettings.domain.usecase.UpdateInheritFolderColor
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
@@ -43,8 +43,6 @@ import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
-import ch.protonmail.android.maillabel.domain.model.Label
-import ch.protonmail.android.maillabel.domain.model.LabelType
 import org.junit.Rule
 import org.junit.Test
 import kotlin.test.assertEquals
@@ -59,16 +57,8 @@ class FolderListViewModelTest {
         type = LabelType.MessageFolder,
         color = Color.Red.getHexStringFromColor()
     )
-    private val defaultFolderColorSettings = FolderColorSettings(
-        useFolderColor = true,
-        inheritParentFolderColor = false
-    )
-
     private val observePrimaryUserId = mockk<ObservePrimaryUserId> {
         every { this@mockk.invoke() } returns flowOf(userId)
-    }
-    private val observeFolderColorSettings = mockk<ObserveFolderColorSettings> {
-        every { this@mockk.invoke(userId) } returns flowOf(defaultFolderColorSettings)
     }
     private val observeLabels = mockk<ObserveLabels>()
     private val updateEnableFolderColor = mockk<UpdateEnableFolderColor>()
@@ -81,7 +71,6 @@ class FolderListViewModelTest {
         FolderListViewModel(
             observeLabels,
             reducer,
-            observeFolderColorSettings,
             updateEnableFolderColor,
             updateInheritFolderColor,
             colorMapper,
@@ -100,7 +89,7 @@ class FolderListViewModelTest {
         folderListViewModel.state.test {
             // Then
             val actual = awaitItem()
-            val expected = FolderListState.ListLoaded.Empty(useFolderColor = true, inheritParentFolderColor = false)
+            val expected = FolderListState.ListLoaded.Empty()
 
             assertEquals(expected, actual)
         }
@@ -118,9 +107,7 @@ class FolderListViewModelTest {
             // Then
             val actual = awaitItem()
             val expected = FolderListState.ListLoaded.Data(
-                useFolderColor = true,
-                inheritParentFolderColor = false,
-                folders = listOf(defaultTestFolder).toFolderUiModel(defaultFolderColorSettings, colorMapper)
+                folders = listOf(defaultTestFolder).toFolderUiModel(colorMapper)
             )
 
             assertEquals(expected, actual)
@@ -161,9 +148,7 @@ class FolderListViewModelTest {
 
             val actual = awaitItem()
             val expected = FolderListState.ListLoaded.Data(
-                useFolderColor = true,
-                inheritParentFolderColor = false,
-                folders = listOf(defaultTestFolder).toFolderUiModel(defaultFolderColorSettings, colorMapper),
+                folders = listOf(defaultTestFolder).toFolderUiModel(colorMapper),
                 openFolderForm = Effect.of(Unit)
             )
 
@@ -171,57 +156,4 @@ class FolderListViewModelTest {
         }
     }
 
-    @Test
-    fun `given folder list, when action disable use folder color, then emits updated data state`() = runTest {
-        // Given
-        coEvery {
-            observeLabels(userId = userId, labelType = LabelType.MessageFolder)
-        } returns flowOf(listOf(defaultTestFolder).right())
-        coEvery {
-            updateEnableFolderColor(userId = userId, false)
-        } returns Unit
-
-        // When
-        folderListViewModel.state.test {
-            awaitItem()
-
-            folderListViewModel.submit(FolderListViewAction.OnChangeUseFolderColor(false))
-
-            val actual = awaitItem()
-            val expected = FolderListState.ListLoaded.Data(
-                useFolderColor = false,
-                inheritParentFolderColor = false,
-                folders = listOf(defaultTestFolder).toFolderUiModel(defaultFolderColorSettings, colorMapper)
-            )
-
-            assertEquals(expected, actual)
-        }
-    }
-
-    @Test
-    fun `given folder list, when action enable inherit parent color, then emits updated data state`() = runTest {
-        // Given
-        coEvery {
-            observeLabels(userId = userId, labelType = LabelType.MessageFolder)
-        } returns flowOf(listOf(defaultTestFolder).right())
-        coEvery {
-            updateInheritFolderColor(userId = userId, true)
-        } returns Unit
-
-        // When
-        folderListViewModel.state.test {
-            awaitItem()
-
-            folderListViewModel.submit(FolderListViewAction.OnChangeInheritParentFolderColor(true))
-
-            val actual = awaitItem()
-            val expected = FolderListState.ListLoaded.Data(
-                useFolderColor = true,
-                inheritParentFolderColor = true,
-                folders = listOf(defaultTestFolder).toFolderUiModel(defaultFolderColorSettings, colorMapper)
-            )
-
-            assertEquals(expected, actual)
-        }
-    }
 }

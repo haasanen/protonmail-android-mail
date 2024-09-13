@@ -19,14 +19,13 @@
 package ch.protonmail.android.maillabel.data.mapper
 
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelType
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalSystemLabel
 import ch.protonmail.android.mailcommon.domain.model.FAKE_USER_ID
-import ch.protonmail.android.maillabel.domain.model.LabelWithSystemLabelId
-import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.maillabel.domain.model.Label
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.LabelType
+import ch.protonmail.android.maillabel.domain.model.LabelWithSystemLabelId
+import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.InlineCustomLabel
 import uniffi.proton_mail_uniffi.LabelDescription
@@ -46,15 +45,6 @@ fun LabelDescription.toLabelType(): LabelType {
     }
 }
 
-fun LabelType.toRustLabelType(): LocalLabelType {
-    return when (this) {
-        LabelType.MessageLabel -> LocalLabelType.LABEL
-        LabelType.SystemFolder -> LocalLabelType.SYSTEM
-        LabelType.ContactGroup -> LocalLabelType.CONTACT_GROUP
-        LabelType.MessageFolder -> LocalLabelType.FOLDER
-    }
-
-}
 fun SidebarCustomFolder.toLabel(): Label {
     return Label(
         userId = FAKE_USER_ID,
@@ -62,7 +52,7 @@ fun SidebarCustomFolder.toLabel(): Label {
         name = this.name,
         type = this.description.toLabelType(),
         path = this.path ?: "",
-        color = this.color?.value ?: "#00000000",
+        color = this.color?.value,
         order = this.displayOrder.toInt(),
         isNotified = this.notify,
         isExpanded = this.expanded,

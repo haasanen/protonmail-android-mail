@@ -30,6 +30,7 @@ import me.proton.core.domain.entity.UserId
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.LabelType
 import ch.protonmail.android.maillabel.domain.repository.LabelRepository
+import timber.log.Timber
 import javax.inject.Inject
 
 class ObserveContactGroup @Inject constructor(
@@ -54,11 +55,15 @@ class ObserveContactGroup @Inject constructor(
                     }
                 } ?: raise(GetContactGroupError.GetContactsError)
 
+                val color = label.color ?: run {
+                    Timber.w("contact-group: color for group $labelId is null, this is never expected.")
+                    "#00000000"
+                }
                 ContactGroup(
                     userId = label.userId,
                     labelId = labelId,
                     name = label.name,
-                    color = label.color,
+                    color = color,
                     members = contactGroupMembers
                 )
             }

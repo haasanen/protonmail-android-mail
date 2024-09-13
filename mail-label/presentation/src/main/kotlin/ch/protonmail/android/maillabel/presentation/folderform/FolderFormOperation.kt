@@ -39,12 +39,10 @@ sealed interface FolderFormEvent : FolderFormOperation {
     data class FolderLoaded(
         val labelId: LabelId?,
         val name: String,
-        val color: String,
+        val color: String?,
         val parent: Label?,
         val notifications: Boolean,
-        val colorList: List<Color>,
-        val useFolderColor: Boolean,
-        val inheritParentFolderColor: Boolean
+        val colorList: List<Color>
     ) : FolderFormEvent
     data class UpdateFolderName(
         val name: String

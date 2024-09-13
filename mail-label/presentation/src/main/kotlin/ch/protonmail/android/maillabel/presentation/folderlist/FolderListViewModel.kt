@@ -23,9 +23,9 @@ import androidx.lifecycle.viewModelScope
 import arrow.core.getOrElse
 import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailcommon.presentation.mapper.ColorMapper
+import ch.protonmail.android.maillabel.domain.model.LabelType
 import ch.protonmail.android.maillabel.domain.usecase.ObserveLabels
 import ch.protonmail.android.maillabel.presentation.model.toFolderUiModel
-import ch.protonmail.android.mailsettings.domain.usecase.ObserveFolderColorSettings
 import ch.protonmail.android.mailsettings.domain.usecase.UpdateEnableFolderColor
 import ch.protonmail.android.mailsettings.domain.usecase.UpdateInheritFolderColor
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -33,17 +33,16 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import me.proton.core.domain.entity.UserId
-import ch.protonmail.android.maillabel.domain.model.LabelType
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -51,7 +50,6 @@ import javax.inject.Inject
 class FolderListViewModel @Inject constructor(
     private val observeLabels: ObserveLabels,
     private val reducer: FolderListReducer,
-    private val observeFolderColorSettings: ObserveFolderColorSettings,
     private val updateEnableFolderColor: UpdateEnableFolderColor,
     private val updateInheritFolderColor: UpdateInheritFolderColor,
     private val colorMapper: ColorMapper,
@@ -80,25 +78,16 @@ class FolderListViewModel @Inject constructor(
                     FolderListViewAction.OnAddFolderClick -> emitNewStateFor(FolderListEvent.OpenFolderForm)
                     FolderListViewAction.OnOpenSettingsClick -> emitNewStateFor(FolderListEvent.OpenSettings)
                     FolderListViewAction.OnDismissSettings -> emitNewStateFor(FolderListEvent.DismissSettings)
-                    is FolderListViewAction.OnChangeUseFolderColor -> handleUseFolderColor(action.useFolderColor)
-                    is FolderListViewAction.OnChangeInheritParentFolderColor -> handleInheritParentFolderColor(
-                        action.inheritParentFolderColor
-                    )
                 }
             }
         }
     }
 
     private fun flowFolderListEvent(userId: UserId): Flow<FolderListEvent> {
-        return combine(
-            observeLabels(userId, LabelType.MessageFolder),
-            observeFolderColorSettings(userId)
-        ) { folders, folderColorSettings ->
+        return observeLabels(userId, LabelType.MessageFolder).mapLatest { folders ->
             folders.map {
                 FolderListEvent.FolderListLoaded(
-                    folderList = it.toFolderUiModel(folderColorSettings, colorMapper),
-                    useFolderColor = folderColorSettings.useFolderColor,
-                    inheritParentFolderColor = folderColorSettings.inheritParentFolderColor
+                    folderList = it.toFolderUiModel(colorMapper)
                 )
             }
         }.map {
@@ -107,16 +96,6 @@ class FolderListViewModel @Inject constructor(
                 return@map FolderListEvent.ErrorLoadingFolderList
             }
         }
-    }
-
-    private suspend fun handleUseFolderColor(useFolderColor: Boolean) {
-        updateEnableFolderColor(primaryUserId(), useFolderColor)
-        emitNewStateFor(FolderListEvent.UseFolderColorChanged(useFolderColor))
-    }
-
-    private suspend fun handleInheritParentFolderColor(inheritParentFolderColor: Boolean) {
-        updateInheritFolderColor(primaryUserId(), inheritParentFolderColor)
-        emitNewStateFor(FolderListEvent.InheritParentFolderColorChanged(inheritParentFolderColor))
     }
 
     private fun emitNewStateFor(event: FolderListEvent) {

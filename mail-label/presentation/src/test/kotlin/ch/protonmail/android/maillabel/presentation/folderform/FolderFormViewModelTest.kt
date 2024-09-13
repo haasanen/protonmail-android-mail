@@ -29,6 +29,7 @@ import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.mapper.ColorMapper
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
+import ch.protonmail.android.maillabel.domain.model.LabelType
 import ch.protonmail.android.maillabel.domain.usecase.CreateFolder
 import ch.protonmail.android.maillabel.domain.usecase.DeleteLabel
 import ch.protonmail.android.maillabel.domain.usecase.GetLabel
@@ -39,8 +40,6 @@ import ch.protonmail.android.maillabel.domain.usecase.UpdateLabel
 import ch.protonmail.android.maillabel.presentation.R
 import ch.protonmail.android.maillabel.presentation.folderlist.BottomSheetVisibilityEffect
 import ch.protonmail.android.maillabel.presentation.getHexStringFromColor
-import ch.protonmail.android.mailsettings.domain.model.FolderColorSettings
-import ch.protonmail.android.mailsettings.domain.usecase.ObserveFolderColorSettings
 import ch.protonmail.android.mailupselling.domain.usecase.featureflags.IsUpsellingFoldersEnabled
 import ch.protonmail.android.mailupselling.presentation.usecase.ObserveUpsellingVisibility
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
@@ -52,7 +51,6 @@ import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
-import ch.protonmail.android.maillabel.domain.model.LabelType
 import org.junit.Rule
 import org.junit.Test
 import kotlin.test.assertEquals
@@ -76,10 +74,6 @@ class FolderFormViewModelTest {
         isNotified = true
     )
     private val defaultTestUpdatedName = "UpdatedName"
-    private val defaultFolderColorSettings = FolderColorSettings(
-        useFolderColor = true,
-        inheritParentFolderColor = false
-    )
 
     private val loadedCreateState = FolderFormState.Data.Create(
         isSaveEnabled = false,
@@ -87,10 +81,7 @@ class FolderFormViewModelTest {
         color = defaultTestFolder.color,
         parent = null,
         notifications = true,
-        colorList = listOf(Color.Red),
-        displayColorPicker = true,
-        useFolderColor = defaultFolderColorSettings.useFolderColor,
-        inheritParentFolderColor = defaultFolderColorSettings.inheritParentFolderColor
+        colorList = listOf(Color.Red)
     )
     private val loadedUpdateState = FolderFormState.Data.Update(
         isSaveEnabled = true,
@@ -99,19 +90,12 @@ class FolderFormViewModelTest {
         parent = null,
         notifications = true,
         colorList = listOf(Color.Red),
-        displayColorPicker = true,
-        useFolderColor = defaultFolderColorSettings.useFolderColor,
-        inheritParentFolderColor = defaultFolderColorSettings.inheritParentFolderColor,
         labelId = defaultTestFolder.labelId
     )
 
     private val observePrimaryUserId = mockk<ObservePrimaryUserId> {
         every { this@mockk.invoke() } returns flowOf(userId)
     }
-    private val observeFolderColorSettings = mockk<ObserveFolderColorSettings> {
-        every { this@mockk.invoke(userId) } returns flowOf(defaultFolderColorSettings)
-    }
-
     private val getLabel = mockk<GetLabel>()
     private val createFolder = mockk<CreateFolder> {
         coEvery { this@mockk.invoke(userId, any(), any(), any(), any()) } returns
@@ -127,7 +111,7 @@ class FolderFormViewModelTest {
     }
 
     private val getLabelColors = mockk<GetLabelColors> {
-        every { this@mockk.invoke() } returns listOf(defaultTestFolder.color)
+        every { this@mockk.invoke() } returns listOf(defaultTestFolder.color!!)
     }
 
     private val isLabelNameAllowed = mockk<IsLabelNameAllowed>()
@@ -156,7 +140,6 @@ class FolderFormViewModelTest {
             isLabelLimitReached,
             isUpsellingFoldersEnabled,
             observeUpsellingVisibility,
-            observeFolderColorSettings,
             reducer,
             colorMapper,
             observePrimaryUserId,

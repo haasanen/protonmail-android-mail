@@ -22,7 +22,6 @@ import android.content.Context
 import android.text.format.Formatter
 import androidx.compose.ui.graphics.Color
 import arrow.core.right
-import ch.protonmail.android.maillabel.domain.sample.LabelSample
 import ch.protonmail.android.mailcommon.presentation.R.drawable.ic_proton_archive_box
 import ch.protonmail.android.mailcommon.presentation.R.drawable.ic_proton_lock
 import ch.protonmail.android.mailcommon.presentation.mapper.ColorMapper
@@ -35,11 +34,11 @@ import ch.protonmail.android.maildetail.presentation.model.MessageDetailHeaderUi
 import ch.protonmail.android.maildetail.presentation.model.MessageIdUiModel
 import ch.protonmail.android.maildetail.presentation.model.MessageLocationUiModel
 import ch.protonmail.android.maildetail.presentation.model.ParticipantUiModel
+import ch.protonmail.android.maillabel.domain.sample.LabelSample
 import ch.protonmail.android.maillabel.presentation.sample.LabelUiModelSample
 import ch.protonmail.android.mailmessage.domain.model.AttachmentCount
 import ch.protonmail.android.mailmessage.domain.usecase.ResolveParticipantName
 import ch.protonmail.android.mailmessage.domain.usecase.ResolveParticipantNameResult
-import ch.protonmail.android.mailsettings.domain.model.FolderColorSettings
 import ch.protonmail.android.testdata.contact.ContactTestData
 import ch.protonmail.android.testdata.label.LabelTestData
 import ch.protonmail.android.testdata.message.MessageTestData
@@ -58,7 +57,6 @@ import kotlin.time.Duration.Companion.seconds
 
 class MessageDetailHeaderUiModelMapperTest {
 
-    private val folderColorSettings = FolderColorSettings(useFolderColor = false)
     private val avatarUiModel = AvatarUiModel.ParticipantInitial("S")
     private val messageLocationUiModel = MessageLocationUiModel("Archive", ic_proton_archive_box)
     private val shortTimeTextUiModel = TextUiModel.Text("08/11/2022")
@@ -115,7 +113,7 @@ class MessageDetailHeaderUiModelMapperTest {
         every { this@mockk(message.time.seconds) } returns shortTimeTextUiModel
     }
     private val messageLocationUiModelMapper: MessageLocationUiModelMapper = mockk {
-        coEvery { this@mockk(any(), any(), any()) } returns messageLocationUiModel
+        coEvery { this@mockk(any(), any()) } returns messageLocationUiModel
     }
     private val participantUiModelMapper: ParticipantUiModelMapper = mockk {
         every { senderToUiModel(MessageTestData.sender, ContactTestData.contacts) } returns senderUiModel
@@ -177,8 +175,7 @@ class MessageDetailHeaderUiModelMapperTest {
         // When
         val result = messageDetailHeaderUiModelMapper.toUiModel(
             message = message,
-            contacts = ContactTestData.contacts,
-            folderColorSettings = folderColorSettings
+            contacts = ContactTestData.contacts
         )
         // Then
         assertEquals(expectedResult, result)
@@ -195,8 +192,7 @@ class MessageDetailHeaderUiModelMapperTest {
         // When
         val result = messageDetailHeaderUiModelMapper.toUiModel(
             message = message,
-            contacts = ContactTestData.contacts,
-            folderColorSettings = folderColorSettings
+            contacts = ContactTestData.contacts
         )
         // Then
         assertEquals(expectedResult, result)
@@ -210,8 +206,7 @@ class MessageDetailHeaderUiModelMapperTest {
         // When
         val result = messageDetailHeaderUiModelMapper.toUiModel(
             message = message,
-            contacts = ContactTestData.contacts,
-            folderColorSettings = folderColorSettings
+            contacts = ContactTestData.contacts
         )
         // Then
         assertEquals(expectedResult, result)
@@ -233,8 +228,7 @@ class MessageDetailHeaderUiModelMapperTest {
         // When
         val result = messageDetailHeaderUiModelMapper.toUiModel(
             message = message,
-            contacts = ContactTestData.contacts,
-            folderColorSettings = folderColorSettings
+            contacts = ContactTestData.contacts
         )
         // Then
         assertEquals(expectedResult, result)
@@ -257,7 +251,7 @@ class MessageDetailHeaderUiModelMapperTest {
         )
 
         // When
-        val result = messageDetailHeaderUiModelMapper.toUiModel(input, ContactTestData.contacts, folderColorSettings)
+        val result = messageDetailHeaderUiModelMapper.toUiModel(input, ContactTestData.contacts)
 
         // Then
         assertEquals(expected, result.labels)

@@ -95,7 +95,7 @@ class ObserveDecryptedContactTest {
         val expectedContactGroupLabels = listOf(
             ContactGroupLabel(
                 LabelSample.GroupCoworkers.name,
-                LabelSample.GroupCoworkers.color
+                LabelSample.GroupCoworkers.color!!
             )
         )
 

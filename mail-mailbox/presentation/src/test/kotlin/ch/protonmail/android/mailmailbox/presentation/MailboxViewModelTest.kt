@@ -29,7 +29,6 @@ import ch.protonmail.android.mailcommon.domain.model.Action
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.PreferencesError
 import ch.protonmail.android.mailcommon.domain.sample.ConversationIdSample
-import ch.protonmail.android.maillabel.domain.sample.LabelIdSample
 import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.mapper.ActionUiModelMapper
@@ -48,10 +47,12 @@ import ch.protonmail.android.mailconversation.domain.usecase.ObserveClearConvers
 import ch.protonmail.android.mailconversation.domain.usecase.StarConversations
 import ch.protonmail.android.mailconversation.domain.usecase.UnStarConversations
 import ch.protonmail.android.maillabel.domain.SelectedMailLabelId
+import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabel
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabels
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
+import ch.protonmail.android.maillabel.domain.sample.LabelIdSample
 import ch.protonmail.android.maillabel.domain.usecase.FindLocalSystemLabelId
 import ch.protonmail.android.maillabel.domain.usecase.ObserveCustomMailLabels
 import ch.protonmail.android.maillabel.domain.usecase.ObserveExclusiveDestinationMailLabels
@@ -118,9 +119,7 @@ import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MailboxM
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MoveToBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.UpsellingBottomSheetState
 import ch.protonmail.android.mailonboarding.presentation.model.OnboardingState
-import ch.protonmail.android.mailsettings.domain.model.FolderColorSettings
 import ch.protonmail.android.mailsettings.domain.model.SwipeActionsPreference
-import ch.protonmail.android.mailsettings.domain.usecase.ObserveFolderColorSettings
 import ch.protonmail.android.mailsettings.domain.usecase.ObserveSwipeActionsPreference
 import ch.protonmail.android.testdata.contact.ContactTestData
 import ch.protonmail.android.testdata.mailbox.MailboxItemUiModelTestData.buildMailboxUiModelItem
@@ -128,10 +127,8 @@ import ch.protonmail.android.testdata.mailbox.MailboxItemUiModelTestData.draftMa
 import ch.protonmail.android.testdata.mailbox.MailboxItemUiModelTestData.readMailboxItemUiModel
 import ch.protonmail.android.testdata.mailbox.MailboxItemUiModelTestData.unreadMailboxItemUiModel
 import ch.protonmail.android.testdata.mailbox.MailboxItemUiModelTestData.unreadMailboxItemUiModelWithLabel
-import ch.protonmail.android.testdata.mailbox.MailboxItemUiModelTestData.unreadMailboxItemUiModelWithLabelColored
 import ch.protonmail.android.testdata.mailbox.MailboxTestData.readMailboxItem
 import ch.protonmail.android.testdata.mailbox.MailboxTestData.unreadMailboxItem
-import ch.protonmail.android.testdata.mailbox.MailboxTestData.unreadMailboxItemWithLabel
 import ch.protonmail.android.testdata.mailbox.UnreadCountersTestData
 import ch.protonmail.android.testdata.mailbox.UnreadCountersTestData.update
 import ch.protonmail.android.testdata.maillabel.MailLabelTestData
@@ -164,7 +161,6 @@ import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import me.proton.core.domain.entity.UserId
-import ch.protonmail.android.maillabel.domain.model.LabelId
 import me.proton.core.mailsettings.domain.entity.SwipeAction
 import me.proton.core.mailsettings.domain.entity.ViewMode
 import me.proton.core.mailsettings.domain.entity.ViewMode.ConversationGrouping
@@ -180,7 +176,6 @@ import ch.protonmail.android.mailmessage.domain.model.Message as DomainMessage
 
 class MailboxViewModelTest {
 
-    private val defaultFolderColorSettings = FolderColorSettings()
     private val initialLocationMailLabelId = MailLabelTestData.archiveSystemLabel.id
     private val actionUiModelMapper = ActionUiModelMapper()
     private val swipeActionsMapper = SwipeActionsMapper()
@@ -221,9 +216,6 @@ class MailboxViewModelTest {
 
     private val observeUnreadCounters = mockk<ObserveUnreadCounters> {
         coEvery { this@mockk(userId = any()) } returns flowOf(UnreadCountersTestData.systemUnreadCounters)
-    }
-    private val observeFolderColorSettings = mockk<ObserveFolderColorSettings> {
-        every { this@mockk.invoke(userId) } returns flowOf(defaultFolderColorSettings)
     }
 
     private val getContacts = mockk<GetContacts> {
@@ -296,7 +288,6 @@ class MailboxViewModelTest {
             observeClearConversationOperation = observeConversationClearOperation,
             selectedMailLabelId = selectedMailLabelId,
             observeUnreadCounters = observeUnreadCounters,
-            observeFolderColorSettings = observeFolderColorSettings,
             getMailboxActions = observeMailboxActions,
             actionUiModelMapper = actionUiModelMapper,
             mailboxItemMapper = mailboxItemMapper,
@@ -1182,10 +1173,10 @@ class MailboxViewModelTest {
     fun `mailbox items are mapped to mailbox item ui models`() = runTest {
         // Given
         coEvery {
-            mailboxItemMapper.toUiModel(unreadMailboxItem, ContactTestData.contacts, defaultFolderColorSettings, false)
+            mailboxItemMapper.toUiModel(unreadMailboxItem, ContactTestData.contacts, false)
         } returns unreadMailboxItemUiModel
         coEvery {
-            mailboxItemMapper.toUiModel(readMailboxItem, ContactTestData.contacts, defaultFolderColorSettings, false)
+            mailboxItemMapper.toUiModel(readMailboxItem, ContactTestData.contacts, false)
         } returns readMailboxItemUiModel
         every { pagerFactory.create(any(), any(), any(), any(), any()) } returns mockk {
             val pagingData = PagingData.from(listOf(unreadMailboxItem, readMailboxItem))
@@ -1206,66 +1197,13 @@ class MailboxViewModelTest {
     }
 
     @Test
-    fun `mailbox items are mapped according to folder color setting`() = runTest {
-        // Given
-        val updatedFolderColorSetting = FolderColorSettings(useFolderColor = false)
-        val folderColorFlow = MutableStateFlow(defaultFolderColorSettings)
-        coEvery { observeFolderColorSettings(userId) } returns folderColorFlow
-        coEvery {
-            mailboxItemMapper.toUiModel(
-                mailboxItem = unreadMailboxItemWithLabel,
-                contacts = ContactTestData.contacts,
-                folderColorSettings = defaultFolderColorSettings,
-                isShowingSearchResults = false
-            )
-        } returns unreadMailboxItemUiModelWithLabelColored
-        coEvery {
-            mailboxItemMapper.toUiModel(
-                unreadMailboxItemWithLabel,
-                ContactTestData.contacts,
-                updatedFolderColorSetting,
-                false
-            )
-        } returns unreadMailboxItemUiModelWithLabel
-
-        every {
-            pagerFactory.create(listOf(userId), MailLabelTestData.archiveSystemLabel.id, false, any(), any())
-        } returns mockk {
-            val pagingData = PagingData.from(listOf(unreadMailboxItemWithLabel))
-            every { this@mockk.flow } returns flowOf(pagingData)
-        }
-        every { mailboxReducer.newStateFrom(any(), any()) } returns createMailboxDataState()
-        val differ = MailboxAsyncPagingDataDiffer.differ
-
-        // When
-        mailboxViewModel.items.test {
-            // Then
-            val pagingData = awaitItem()
-            differ.submitData(pagingData)
-
-            val expected = listOf(unreadMailboxItemUiModelWithLabelColored)
-            assertEquals(expected, differ.snapshot().items)
-
-            // When
-            folderColorFlow.emit(updatedFolderColorSetting)
-
-            // Then
-            val updatedPagingData = awaitItem()
-            differ.submitData(updatedPagingData)
-
-            val updatedExpected = listOf(unreadMailboxItemUiModelWithLabel)
-            assertEquals(updatedExpected, differ.snapshot().items)
-        }
-    }
-
-    @Test
     fun `user contacts are used to map mailbox items to ui models`() = runTest {
         // Given
         coEvery {
-            mailboxItemMapper.toUiModel(unreadMailboxItem, ContactTestData.contacts, defaultFolderColorSettings, false)
+            mailboxItemMapper.toUiModel(unreadMailboxItem, ContactTestData.contacts, false)
         } returns unreadMailboxItemUiModel
         coEvery {
-            mailboxItemMapper.toUiModel(readMailboxItem, ContactTestData.contacts, defaultFolderColorSettings, false)
+            mailboxItemMapper.toUiModel(readMailboxItem, ContactTestData.contacts, false)
         } returns readMailboxItemUiModel
         every { pagerFactory.create(any(), any(), any(), any(), any()) } returns mockk {
             val pagingData = PagingData.from(listOf(unreadMailboxItem, readMailboxItem))
@@ -1279,7 +1217,7 @@ class MailboxViewModelTest {
             val pagingData = awaitItem()
             differ.submitData(pagingData)
 
-            coVerify { mailboxItemMapper.toUiModel(any(), ContactTestData.contacts, defaultFolderColorSettings, false) }
+            coVerify { mailboxItemMapper.toUiModel(any(), ContactTestData.contacts, false) }
         }
     }
 
@@ -2614,51 +2552,6 @@ class MailboxViewModelTest {
         returnExpectedStateForBottomBarEvent(expectedState = intermediateState)
         expectedReducerResult(MailboxEvent.ErrorRetrievingDestinationMailFolders, expectedState)
         expectDestinationMailLabelsFails()
-
-        mailboxViewModel.state.test {
-            awaitItem() // First emission for selected user
-
-            // When + Then
-            mailboxViewModel.submit(MailboxViewAction.OnItemAvatarClicked(item))
-            assertEquals(intermediateState, awaitItem())
-            mailboxViewModel.submit(MailboxViewAction.RequestMoveToBottomSheet)
-            assertEquals(expectedState, awaitItem())
-
-            coVerify { moveConversations wasNot Called }
-            coVerify { moveMessages wasNot Called }
-        }
-    }
-
-    @Test
-    fun `show error retrieving color setting when observing color settings failed`() = runTest {
-        // Given
-        val item = readMailboxItemUiModel.copy(id = ConversationIdSample.Invoices.id)
-        val secondItem = unreadMailboxItemUiModel.copy(id = ConversationIdSample.AlphaAppFeedback.id)
-        val selectedItemsList = listOf(item, secondItem)
-
-        val expectedMailLabels = MailLabels(
-            system = emptyList(),
-            folders = MailLabelTestData.listOfCustomLabels,
-            labels = emptyList()
-        )
-
-        val initialState = createMailboxDataState()
-        val intermediateState = MailboxStateSampleData.createSelectionMode(
-            selectedItemsList,
-            currentMailLabel = MailLabelTestData.trashSystemLabel
-        )
-        val expectedState = MailboxStateSampleData.createSelectionMode(
-            selectedItemsList,
-            currentMailLabel = MailLabelTestData.trashSystemLabel,
-            error = Effect.of(TextUiModel(R.string.mailbox_action_move_messages_failed_retrieving_folders))
-        )
-        expectViewMode(ConversationGrouping)
-        expectedSelectedLabelCountStateChange(initialState)
-        returnExpectedStateWhenEnterSelectionMode(initialState, item, intermediateState)
-        returnExpectedStateForBottomBarEvent(expectedState = intermediateState)
-        expectedReducerResult(MailboxEvent.ErrorRetrievingFolderColorSettings, expectedState)
-        expectDestinationMailLabelsSucceeds(expectedMailLabels)
-        expectFolderColorSettingsFails()
 
         mailboxViewModel.state.test {
             awaitItem() // First emission for selected user
@@ -4064,10 +3957,6 @@ class MailboxViewModelTest {
         every { observeDestinationMailLabels(userId) } returns flowOf()
     }
 
-    private fun expectFolderColorSettingsFails() {
-        every { observeFolderColorSettings(userId) } returns flowOf()
-    }
-
     private fun returnExpectedStateForMarkAsRead(intermediateState: MailboxState, expectedState: MailboxState) {
         every { mailboxReducer.newStateFrom(intermediateState, MailboxViewAction.MarkAsRead) } returns expectedState
     }
@@ -4215,7 +4104,7 @@ class MailboxViewModelTest {
                 listOf(
                     LabelUiModelWithSelectedState(
                         labelUiModel = MailLabelTestData.customLabelOne.toCustomUiModel(
-                            defaultFolderColorSettings, emptyMap(), null
+                            emptyMap(), null
                         ),
                         selectedState = when {
                             selected -> LabelSelectedState.Selected
@@ -4224,7 +4113,7 @@ class MailboxViewModelTest {
                     ),
                     LabelUiModelWithSelectedState(
                         labelUiModel = MailLabelTestData.customLabelTwo.toCustomUiModel(
-                            defaultFolderColorSettings, emptyMap(), null
+                            emptyMap(), null
                         ),
                         selectedState = when {
                             selected -> LabelSelectedState.Selected

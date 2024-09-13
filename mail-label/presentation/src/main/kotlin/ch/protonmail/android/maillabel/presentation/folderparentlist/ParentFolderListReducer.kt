@@ -43,8 +43,6 @@ class ParentFolderListReducer @Inject constructor() {
             is ParentFolderListState.Loading -> {
                 if (event.folderList.isNotEmpty()) {
                     ParentFolderListState.ListLoaded.Data(
-                        useFolderColor = event.useFolderColor,
-                        inheritParentFolderColor = event.inheritParentFolderColor,
                         labelId = event.labelId,
                         parentLabelId = event.parentLabelId,
                         folders = event.folderList
@@ -57,8 +55,6 @@ class ParentFolderListReducer @Inject constructor() {
             is ParentFolderListState.ListLoaded -> {
                 if (event.folderList.isNotEmpty()) {
                     ParentFolderListState.ListLoaded.Data(
-                        useFolderColor = event.useFolderColor,
-                        inheritParentFolderColor = event.inheritParentFolderColor,
                         labelId = event.labelId,
                         parentLabelId = event.parentLabelId,
                         folders = event.folderList

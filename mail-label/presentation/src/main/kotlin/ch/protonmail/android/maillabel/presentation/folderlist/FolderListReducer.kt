@@ -32,10 +32,6 @@ class FolderListReducer @Inject constructor() {
             is FolderListEvent.OpenFolderForm -> reduceOpenFolderForm(currentState)
             is FolderListEvent.DismissSettings -> reduceDismissSettings(currentState)
             is FolderListEvent.OpenSettings -> reduceOpenSettings(currentState)
-            is FolderListEvent.UseFolderColorChanged -> reduceUseFolderColorChanged(currentState, event)
-            is FolderListEvent.InheritParentFolderColorChanged -> {
-                reduceInheritParentFolderColorChanged(currentState, event)
-            }
         }
     }
 
@@ -47,29 +43,20 @@ class FolderListReducer @Inject constructor() {
             is FolderListState.Loading -> {
                 if (event.folderList.isNotEmpty()) {
                     FolderListState.ListLoaded.Data(
-                        useFolderColor = event.useFolderColor,
-                        inheritParentFolderColor = event.inheritParentFolderColor,
                         folders = event.folderList
                     )
-                } else FolderListState.ListLoaded.Empty(
-                    useFolderColor = event.useFolderColor,
-                    inheritParentFolderColor = event.inheritParentFolderColor
-                )
+                } else FolderListState.ListLoaded.Empty()
             }
             is FolderListState.ListLoaded -> {
                 if (event.folderList.isNotEmpty()) {
                     FolderListState.ListLoaded.Data(
                         bottomSheetVisibilityEffect = currentState.bottomSheetVisibilityEffect,
-                        useFolderColor = event.useFolderColor,
-                        inheritParentFolderColor = event.inheritParentFolderColor,
                         openFolderForm = currentState.openFolderForm,
                         folders = event.folderList
                     )
                 } else {
                     FolderListState.ListLoaded.Empty(
                         bottomSheetVisibilityEffect = currentState.bottomSheetVisibilityEffect,
-                        useFolderColor = event.useFolderColor,
-                        inheritParentFolderColor = event.inheritParentFolderColor,
                         openFolderForm = currentState.openFolderForm
                     )
                 }
@@ -109,32 +96,6 @@ class FolderListReducer @Inject constructor() {
             is FolderListState.ListLoaded.Empty -> currentState.copy(
                 bottomSheetVisibilityEffect = Effect.of(BottomSheetVisibilityEffect.Hide)
             )
-        }
-    }
-
-    private fun reduceUseFolderColorChanged(
-        currentState: FolderListState,
-        event: FolderListEvent.UseFolderColorChanged
-    ): FolderListState {
-        return when (currentState) {
-            is FolderListState.ListLoaded.Data -> currentState.copy(useFolderColor = event.useFolderColor)
-            is FolderListState.ListLoaded.Empty -> currentState.copy(useFolderColor = event.useFolderColor)
-            is FolderListState.Loading -> currentState
-        }
-    }
-
-    private fun reduceInheritParentFolderColorChanged(
-        currentState: FolderListState,
-        event: FolderListEvent.InheritParentFolderColorChanged
-    ): FolderListState {
-        return when (currentState) {
-            is FolderListState.ListLoaded.Data -> {
-                currentState.copy(inheritParentFolderColor = event.inheritParentFolderColor)
-            }
-            is FolderListState.ListLoaded.Empty -> {
-                currentState.copy(inheritParentFolderColor = event.inheritParentFolderColor)
-            }
-            is FolderListState.Loading -> currentState
         }
     }
 }

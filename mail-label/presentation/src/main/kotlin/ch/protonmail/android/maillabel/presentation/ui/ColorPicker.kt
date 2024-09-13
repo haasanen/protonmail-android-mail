@@ -53,7 +53,7 @@ import me.proton.core.compose.theme.defaultSmallStrongNorm
 @Composable
 fun ColorPicker(
     colors: List<Color>,
-    selectedColor: Color,
+    selectedColor: Color?,
     iconResId: Int? = null,
     onColorClicked: (Color) -> Unit
 ) {

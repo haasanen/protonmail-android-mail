@@ -46,6 +46,7 @@ import ch.protonmail.android.mailconversation.domain.usecase.ObserveClearConvers
 import ch.protonmail.android.mailconversation.domain.usecase.StarConversations
 import ch.protonmail.android.mailconversation.domain.usecase.UnStarConversations
 import ch.protonmail.android.maillabel.domain.SelectedMailLabelId
+import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabel
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabels
@@ -109,7 +110,6 @@ import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MailboxM
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MoveToBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.UpsellingBottomSheetState
 import ch.protonmail.android.mailonboarding.presentation.model.OnboardingState
-import ch.protonmail.android.mailsettings.domain.usecase.ObserveFolderColorSettings
 import ch.protonmail.android.mailsettings.domain.usecase.ObserveSwipeActionsPreference
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.collections.immutable.toImmutableList
@@ -126,6 +126,7 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.onEach
@@ -133,7 +134,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import me.proton.core.contact.domain.entity.Contact
 import me.proton.core.domain.entity.UserId
-import ch.protonmail.android.maillabel.domain.model.LabelId
 import me.proton.core.mailsettings.domain.entity.ViewMode
 import me.proton.core.plan.presentation.compose.usecase.ShouldUpgradeStorage
 import me.proton.core.util.kotlin.DispatcherProvider
@@ -155,7 +155,6 @@ class MailboxViewModel @Inject constructor(
     private val observeClearConversationOperation: ObserveClearConversationOperation,
     private val selectedMailLabelId: SelectedMailLabelId,
     private val observeUnreadCounters: ObserveUnreadCounters,
-    private val observeFolderColorSettings: ObserveFolderColorSettings,
     private val getMailboxActions: GetMailboxActions,
     private val actionUiModelMapper: ActionUiModelMapper,
     private val mailboxItemMapper: MailboxItemUiModelMapper,
@@ -551,13 +550,10 @@ class MailboxViewModel @Inject constructor(
     ): Flow<PagingData<MailboxItemUiModel>> {
         return withContext(dispatchersProvider.Comp) {
             val contacts = getContacts()
-            combine(
-                pager.flow.cachedIn(viewModelScope),
-                observeFolderColorSettings(userId)
-            ) { pagingData, folderColorSettings ->
+            pager.flow.cachedIn(viewModelScope).mapLatest { pagingData ->
                 pagingData.map {
                     withContext(dispatchersProvider.Comp) {
-                        mailboxItemMapper.toUiModel(it, contacts, folderColorSettings, state.value.isInSearchMode())
+                        mailboxItemMapper.toUiModel(it, contacts, state.value.isInSearchMode())
                     }
                 }
             }
@@ -731,15 +727,9 @@ class MailboxViewModel @Inject constructor(
 
             val userId = primaryUserId.filterNotNull().first()
             val labels = observeCustomMailLabels(userId).firstOrNull()
-            val color = observeFolderColorSettings(userId).firstOrNull()
 
             if (labels == null) {
                 emitNewStateFrom(MailboxEvent.ErrorRetrievingCustomMailLabels)
-                return@launch
-            }
-
-            if (color == null) {
-                emitNewStateFrom(MailboxEvent.ErrorRetrievingFolderColorSettings)
                 return@launch
             }
 
@@ -749,7 +739,7 @@ class MailboxViewModel @Inject constructor(
 
             val event = MailboxEvent.MailboxBottomSheetEvent(
                 LabelAsBottomSheetState.LabelAsBottomSheetEvent.ActionData(
-                    customLabelList = mappedLabels.map { it.toCustomUiModel(color, emptyMap(), null) }
+                    customLabelList = mappedLabels.map { it.toCustomUiModel(emptyMap(), null) }
                         .toImmutableList(),
                     selectedLabels = emptyList<LabelId>().toImmutableList(),
                     partiallySelectedLabels = emptyList<LabelId>().toImmutableList()
@@ -820,21 +810,15 @@ class MailboxViewModel @Inject constructor(
 
             val userId = primaryUserId.filterNotNull().first()
             val destinationFolder = observeDestinationMailLabels(userId).firstOrNull()
-            val color = observeFolderColorSettings(userId).firstOrNull()
 
             if (destinationFolder == null) {
                 emitNewStateFrom(MailboxEvent.ErrorRetrievingDestinationMailFolders)
                 return@launch
             }
 
-            if (color == null) {
-                emitNewStateFrom(MailboxEvent.ErrorRetrievingFolderColorSettings)
-                return@launch
-            }
-
             val event = MailboxEvent.MailboxBottomSheetEvent(
                 MoveToBottomSheetState.MoveToBottomSheetEvent.ActionData(
-                    destinationFolder.toUiModels(color).let { it.folders + it.systemLabels }.toImmutableList()
+                    destinationFolder.toUiModels().let { it.folders + it.systemLabels }.toImmutableList()
                 )
             )
             emitNewStateFrom(event)

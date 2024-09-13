@@ -25,6 +25,8 @@ import androidx.lifecycle.viewModelScope
 import arrow.core.getOrElse
 import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailcommon.presentation.mapper.ColorMapper
+import ch.protonmail.android.maillabel.domain.model.LabelId
+import ch.protonmail.android.maillabel.domain.model.LabelType
 import ch.protonmail.android.maillabel.domain.usecase.CreateLabel
 import ch.protonmail.android.maillabel.domain.usecase.DeleteLabel
 import ch.protonmail.android.maillabel.domain.usecase.GetLabel
@@ -43,8 +45,6 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import ch.protonmail.android.maillabel.domain.model.LabelId
-import ch.protonmail.android.maillabel.domain.model.LabelType
 import me.proton.core.util.kotlin.equalsNoCase
 import javax.inject.Inject
 
@@ -132,12 +132,12 @@ class LabelFormViewModel @Inject constructor(
                 when (currentState) {
                     is LabelFormState.Data.Create -> createLabel(
                         cleanName,
-                        currentState.color
+                        currentState.color ?: Color.Black.getHexStringFromColor()
                     )
                     is LabelFormState.Data.Update -> editLabel(
                         currentState.labelId,
                         cleanName,
-                        currentState.color
+                        currentState.color ?: Color.Black.getHexStringFromColor()
                     )
                 }
             }

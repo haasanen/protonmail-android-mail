@@ -83,7 +83,7 @@ object MailLabelTestData {
     fun buildCustomFolder(
         id: String,
         name: String = id,
-        color: Int = 0,
+        color: Int? = 0,
         parent: MailLabel.Custom? = null,
         isExpanded: Boolean = true,
         level: Int = 0,
@@ -103,7 +103,7 @@ object MailLabelTestData {
     private fun buildCustomLabel(
         id: MailLabelId.Custom,
         name: String = id.labelId.id,
-        color: Int = 0,
+        color: Int? = 0,
         parent: MailLabel.Custom? = null,
         isExpanded: Boolean = true,
         level: Int = 0,

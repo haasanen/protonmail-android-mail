@@ -34,8 +34,6 @@ import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.Action
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.sample.ConversationIdSample
-import ch.protonmail.android.maillabel.domain.sample.LabelIdSample
-import ch.protonmail.android.maillabel.domain.sample.LabelSample
 import ch.protonmail.android.mailcommon.domain.sample.UserAddressSample
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.mailcommon.domain.usecase.GetCurrentEpochTimeDuration
@@ -119,6 +117,8 @@ import ch.protonmail.android.maildetail.presentation.usecase.OnMessageLabelAsCon
 import ch.protonmail.android.maildetail.presentation.usecase.PrintMessage
 import ch.protonmail.android.maillabel.domain.model.MailLabels
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
+import ch.protonmail.android.maillabel.domain.sample.LabelIdSample
+import ch.protonmail.android.maillabel.domain.sample.LabelSample
 import ch.protonmail.android.maillabel.domain.usecase.GetRootLabel
 import ch.protonmail.android.maillabel.domain.usecase.ObserveCustomMailLabels
 import ch.protonmail.android.maillabel.domain.usecase.ObserveExclusiveDestinationMailLabels
@@ -158,9 +158,7 @@ import ch.protonmail.android.mailmessage.presentation.reducer.UpsellingBottomShe
 import ch.protonmail.android.mailmessage.presentation.usecase.InjectCssIntoDecryptedMessageBody
 import ch.protonmail.android.mailmessage.presentation.usecase.SanitizeHtmlOfDecryptedMessageBody
 import ch.protonmail.android.mailmessage.presentation.usecase.TransformDecryptedMessageBody
-import ch.protonmail.android.mailsettings.domain.model.FolderColorSettings
 import ch.protonmail.android.mailsettings.domain.model.PrivacySettings
-import ch.protonmail.android.mailsettings.domain.usecase.ObserveFolderColorSettings
 import ch.protonmail.android.mailsettings.domain.usecase.privacy.ObservePrivacySettings
 import ch.protonmail.android.mailsettings.domain.usecase.privacy.UpdateLinkConfirmationSetting
 import ch.protonmail.android.testdata.contact.ContactSample
@@ -209,7 +207,6 @@ class ConversationDetailViewModelIntegrationTest {
 
     private val userId = UserIdSample.Primary
     private val conversationId = ConversationIdSample.WeatherForecast
-    private val defaultFolderColorSettings = FolderColorSettings()
 
     // region mock observe use cases
     private val observeContacts: ObserveContacts = mockk {
@@ -248,10 +245,6 @@ class ConversationDetailViewModelIntegrationTest {
             )
         )
     }
-    private val observeFolderColorSettings =
-        mockk<ObserveFolderColorSettings> {
-            every { this@mockk.invoke(UserIdSample.Primary) } returns flowOf(defaultFolderColorSettings)
-        }
     private val observeCustomMailLabelsUseCase = mockk<ObserveCustomMailLabels> {
         every { this@mockk.invoke(UserIdSample.Primary) } returns flowOf(
             MailLabelTestData.listOfCustomLabels.right()
@@ -327,7 +320,7 @@ class ConversationDetailViewModelIntegrationTest {
     private val doesMessageBodyHaveEmbeddedImages = DoesMessageBodyHaveEmbeddedImages()
     private val doesMessageBodyHaveRemoteContent = DoesMessageBodyHaveRemoteContent()
     private val loadDataForMessageLabelAsBottomSheet = LoadDataForMessageLabelAsBottomSheet(
-        observeCustomMailLabelsUseCase, observeFolderColorSettings
+        observeCustomMailLabelsUseCase
     )
     private val onMessageLabelAsConfirmed = OnMessageLabelAsConfirmed(
         moveMessage, relabelMessage
@@ -338,7 +331,7 @@ class ConversationDetailViewModelIntegrationTest {
     private val actionUiModelMapper = ActionUiModelMapper()
     private val colorMapper = ColorMapper()
     private val resolveParticipantName = ResolveParticipantName()
-    private val messageLocationUiModelMapper = MessageLocationUiModelMapper(colorMapper, getRootLabel)
+    private val messageLocationUiModelMapper = MessageLocationUiModelMapper(colorMapper)
     private val formatShortTime: FormatShortTime =
         mockk { every { this@mockk.invoke(any()) } returns TextUiModel("10:00") }
     private val formatExtendedTime: FormatExtendedTime =
@@ -728,8 +721,7 @@ class ConversationDetailViewModelIntegrationTest {
 
         // When
         buildConversationDetailViewModel(
-            observeConversationMessages = observeConversationMessagesMock,
-            observeFolderColor = observeFolderColorSettings
+            observeConversationMessages = observeConversationMessagesMock
         ).state.test {
             // The initial states
             skipItems(3)
@@ -2124,7 +2116,7 @@ class ConversationDetailViewModelIntegrationTest {
                         system = listOf(MailLabelTestData.spamSystemLabel),
                         folders = listOf(MailLabelTestData.buildCustomFolder(id = "folder1")),
                         labels = listOf()
-                    ).toUiModels(defaultFolderColorSettings).let { it.folders + it.systemLabels }.toImmutableList(),
+                    ).toUiModels().let { it.folders + it.systemLabels }.toImmutableList(),
                     null,
                     messageId
                 ),
@@ -2203,7 +2195,6 @@ class ConversationDetailViewModelIntegrationTest {
         observeConversationMessages: ObserveConversationMessages = this.observeConversationMessages,
         observeDetailActions: ObserveConversationDetailActions = observeConversationDetailActions,
         observeDestinationMailLabels: ObserveExclusiveDestinationMailLabels = observeMailLabels,
-        observeFolderColor: ObserveFolderColorSettings = observeFolderColorSettings,
         observeCustomMailLabels: ObserveCustomMailLabels = observeCustomMailLabelsUseCase,
         observeMessageAttachmentStatus: ObserveMessageAttachmentStatus = observeAttachmentStatus,
         getAttachmentStatus: GetDownloadingAttachmentsForMessages = getDownloadingAttachmentsForMessages,
@@ -2234,7 +2225,6 @@ class ConversationDetailViewModelIntegrationTest {
         observeConversationMessages = observeConversationMessages,
         observeDetailActions = observeDetailActions,
         observeDestinationMailLabels = observeDestinationMailLabels,
-        observeFolderColor = observeFolderColor,
         observeCustomMailLabels = observeCustomMailLabels,
         observeMessage = observeMessage,
         observeMessageAttachmentStatus = observeMessageAttachmentStatus,

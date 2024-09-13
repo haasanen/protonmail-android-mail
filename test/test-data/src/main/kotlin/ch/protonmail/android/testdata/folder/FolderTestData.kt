@@ -24,14 +24,11 @@ import ch.protonmail.android.maillabel.domain.model.LabelId
 
 object FolderTestData {
 
-    val testFolder = buildFolderUiModel(id = LabelId("testFolderId"))
-
     fun buildFolderUiModel(
         id: LabelId,
         parent: FolderUiModel? = null,
         name: String = id.id,
-        color: Color = Color.Red,
-        displayColor: Color? = null,
+        color: Color? = Color.Red,
         level: Int = 0,
         order: Int = 0,
         children: List<LabelId> = emptyList(),
@@ -41,7 +38,6 @@ object FolderTestData {
         parent = parent,
         name = name,
         color = color,
-        displayColor = displayColor,
         level = level,
         order = order,
         children = children,

@@ -58,8 +58,8 @@ import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
 import ch.protonmail.android.mailcommon.presentation.ConsumableTextEffect
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
-import ch.protonmail.android.uicomponents.dismissKeyboard
 import ch.protonmail.android.mailcommon.presentation.ui.CommonTestTags
+import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.presentation.R
 import ch.protonmail.android.maillabel.presentation.folderlist.BottomSheetVisibilityEffect
 import ch.protonmail.android.maillabel.presentation.getColorFromHexString
@@ -71,6 +71,7 @@ import ch.protonmail.android.maillabel.presentation.ui.FormInputField
 import ch.protonmail.android.maillabel.presentation.upselling.FoldersUpsellingBottomSheet
 import ch.protonmail.android.mailupselling.presentation.ui.bottomsheet.UpsellingBottomSheet
 import ch.protonmail.android.uicomponents.bottomsheet.bottomSheetHeightConstrainedContent
+import ch.protonmail.android.uicomponents.dismissKeyboard
 import ch.protonmail.android.uicomponents.snackbar.DismissableSnackbarHost
 import kotlinx.coroutines.launch
 import me.proton.core.compose.component.ProtonCenteredProgress
@@ -86,7 +87,6 @@ import me.proton.core.compose.theme.ProtonTheme
 import me.proton.core.compose.theme.defaultNorm
 import me.proton.core.compose.theme.defaultSmallWeak
 import me.proton.core.compose.theme.defaultStrongNorm
-import ch.protonmail.android.maillabel.domain.model.LabelId
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -267,17 +267,15 @@ fun FolderFormContent(
                     actions.onFolderNotificationsChanged(it)
                 }
             )
-            if (state.displayColorPicker) {
-                Divider()
-                ColorPicker(
-                    colors = state.colorList,
-                    selectedColor = state.color.getColorFromHexString(),
-                    iconResId = R.drawable.ic_proton_folder_filled,
-                    onColorClicked = {
-                        actions.onFolderColorChanged(it)
-                    }
-                )
-            }
+            Divider()
+            ColorPicker(
+                colors = state.colorList,
+                selectedColor = state.color?.getColorFromHexString(),
+                iconResId = R.drawable.ic_proton_folder_filled,
+                onColorClicked = {
+                    actions.onFolderColorChanged(it)
+                }
+            )
         }
         if (state is FolderFormState.Data.Update) {
             FormDeleteButton(

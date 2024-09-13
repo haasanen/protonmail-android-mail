@@ -258,7 +258,7 @@ fun LabelFormContent(
             Divider()
             ColorPicker(
                 colors = state.colorList,
-                selectedColor = state.color.getColorFromHexString(),
+                selectedColor = state.color?.getColorFromHexString(),
                 onColorClicked = {
                     actions.onLabelColorChanged(it)
                 }

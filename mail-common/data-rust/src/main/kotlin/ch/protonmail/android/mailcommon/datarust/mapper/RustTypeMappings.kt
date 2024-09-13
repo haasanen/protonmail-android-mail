@@ -24,7 +24,6 @@ import uniffi.proton_mail_uniffi.ComposerMode
 import uniffi.proton_mail_uniffi.Conversation
 import uniffi.proton_mail_uniffi.DecryptedMessage
 import uniffi.proton_mail_uniffi.Id
-import uniffi.proton_mail_uniffi.LabelType
 import uniffi.proton_mail_uniffi.MailSettings
 import uniffi.proton_mail_uniffi.Message
 import uniffi.proton_mail_uniffi.MessageButtons
@@ -43,7 +42,6 @@ typealias LocalConversation = Conversation
 typealias LocalConversationId = Id
 typealias LocalLabelId = Id
 typealias LocalViewMode = ViewMode
-typealias LocalLabelType = LabelType
 typealias LocalMessageId = Id
 typealias LocalMessageMetadata = Message
 typealias LocalDecryptedMessage = DecryptedMessage

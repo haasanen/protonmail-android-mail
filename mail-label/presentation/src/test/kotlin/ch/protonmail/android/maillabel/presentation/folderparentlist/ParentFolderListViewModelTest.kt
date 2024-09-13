@@ -28,13 +28,14 @@ import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.mapper.ColorMapper
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
+import ch.protonmail.android.maillabel.domain.model.Label
+import ch.protonmail.android.maillabel.domain.model.LabelId
+import ch.protonmail.android.maillabel.domain.model.LabelType
 import ch.protonmail.android.maillabel.domain.usecase.ObserveLabels
 import ch.protonmail.android.maillabel.presentation.R
 import ch.protonmail.android.maillabel.presentation.getHexStringFromColor
 import ch.protonmail.android.maillabel.presentation.model.toFolderUiModel
 import ch.protonmail.android.maillabel.presentation.model.toParentFolderUiModel
-import ch.protonmail.android.mailsettings.domain.model.FolderColorSettings
-import ch.protonmail.android.mailsettings.domain.usecase.ObserveFolderColorSettings
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
 import ch.protonmail.android.testdata.label.LabelTestData
 import ch.protonmail.android.testdata.user.UserIdTestData
@@ -43,9 +44,6 @@ import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
-import ch.protonmail.android.maillabel.domain.model.Label
-import ch.protonmail.android.maillabel.domain.model.LabelId
-import ch.protonmail.android.maillabel.domain.model.LabelType
 import org.junit.Rule
 import org.junit.Test
 import kotlin.test.assertEquals
@@ -62,18 +60,10 @@ class ParentFolderListViewModelTest {
         type = LabelType.MessageFolder,
         color = Color.Red.getHexStringFromColor()
     )
-    private val defaultFolderColorSettings = FolderColorSettings(
-        useFolderColor = true,
-        inheritParentFolderColor = false
-    )
-
     private val observePrimaryUserId = mockk<ObservePrimaryUserId> {
         every { this@mockk.invoke() } returns flowOf(UserIdTestData.userId)
     }
     private val savedStateHandle = mockk<SavedStateHandle>()
-    private val observeFolderColorSettings = mockk<ObserveFolderColorSettings> {
-        every { this@mockk.invoke(UserIdTestData.userId) } returns flowOf(defaultFolderColorSettings)
-    }
     private val observeLabels = mockk<ObserveLabels>()
 
     private val reducer = ParentFolderListReducer()
@@ -82,7 +72,6 @@ class ParentFolderListViewModelTest {
         ParentFolderListViewModel(
             observeLabels,
             reducer,
-            observeFolderColorSettings,
             colorMapper,
             observePrimaryUserId,
             savedStateHandle
@@ -133,10 +122,8 @@ class ParentFolderListViewModelTest {
             val expected = ParentFolderListState.ListLoaded.Data(
                 labelId = null,
                 parentLabelId = null,
-                useFolderColor = true,
-                inheritParentFolderColor = false,
                 folders = listOf(defaultTestFolder)
-                    .toFolderUiModel(defaultFolderColorSettings, colorMapper)
+                    .toFolderUiModel(colorMapper)
                     .toParentFolderUiModel(labelId, parentLabelId)
             )
 
@@ -165,10 +152,8 @@ class ParentFolderListViewModelTest {
             val expected = ParentFolderListState.ListLoaded.Data(
                 labelId = defaultTestFolder.labelId,
                 parentLabelId = parentLabelId,
-                useFolderColor = true,
-                inheritParentFolderColor = false,
                 folders = listOf(defaultTestFolder)
-                    .toFolderUiModel(defaultFolderColorSettings, colorMapper)
+                    .toFolderUiModel(colorMapper)
                     .toParentFolderUiModel(defaultTestFolder.labelId, parentLabelId)
             )
 

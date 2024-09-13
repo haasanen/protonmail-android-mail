@@ -20,9 +20,9 @@ package ch.protonmail.android.maillabel.presentation.folderform
 
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
+import ch.protonmail.android.maillabel.domain.model.Label
 import ch.protonmail.android.maillabel.presentation.R
 import ch.protonmail.android.maillabel.presentation.folderlist.BottomSheetVisibilityEffect
-import ch.protonmail.android.maillabel.domain.model.Label
 import javax.inject.Inject
 
 class FolderFormReducer @Inject constructor() {
@@ -53,11 +53,6 @@ class FolderFormReducer @Inject constructor() {
     }
 
     private fun reduceFolderLoaded(event: FolderFormEvent.FolderLoaded): FolderFormState {
-        val displayColorPicker = displayColorPicker(
-            hasParent = event.parent != null,
-            useFolderColor = event.useFolderColor,
-            inheritParentFolderColor = event.inheritParentFolderColor
-        )
         return if (event.labelId != null) {
             FolderFormState.Data.Update(
                 isSaveEnabled = event.name.isNotEmpty(),
@@ -66,10 +61,7 @@ class FolderFormReducer @Inject constructor() {
                 color = event.color,
                 parent = event.parent,
                 notifications = event.notifications,
-                colorList = event.colorList,
-                displayColorPicker = displayColorPicker,
-                useFolderColor = event.useFolderColor,
-                inheritParentFolderColor = event.inheritParentFolderColor
+                colorList = event.colorList
             )
         } else {
             FolderFormState.Data.Create(
@@ -78,10 +70,7 @@ class FolderFormReducer @Inject constructor() {
                 color = event.color,
                 parent = event.parent,
                 notifications = event.notifications,
-                colorList = event.colorList,
-                displayColorPicker = displayColorPicker,
-                useFolderColor = event.useFolderColor,
-                inheritParentFolderColor = event.inheritParentFolderColor
+                colorList = event.colorList
             )
         }
     }
@@ -105,19 +94,12 @@ class FolderFormReducer @Inject constructor() {
     private fun reduceUpdateFolderParent(currentState: FolderFormState, parent: Label?): FolderFormState {
         return when (currentState) {
             is FolderFormState.Data -> {
-                val displayColorPicker = displayColorPicker(
-                    hasParent = parent != null,
-                    useFolderColor = currentState.useFolderColor,
-                    inheritParentFolderColor = currentState.inheritParentFolderColor
-                )
                 when (currentState) {
                     is FolderFormState.Data.Create -> currentState.copy(
-                        parent = parent,
-                        displayColorPicker = displayColorPicker
+                        parent = parent
                     )
                     is FolderFormState.Data.Update -> currentState.copy(
-                        parent = parent,
-                        displayColorPicker = displayColorPicker
+                        parent = parent
                     )
                 }
             }
@@ -251,12 +233,4 @@ class FolderFormReducer @Inject constructor() {
         }
     }
 
-    private fun displayColorPicker(
-        hasParent: Boolean,
-        useFolderColor: Boolean,
-        inheritParentFolderColor: Boolean
-    ): Boolean {
-        return hasParent && useFolderColor && !inheritParentFolderColor ||
-            !hasParent && useFolderColor
-    }
 }

@@ -23,6 +23,7 @@ import androidx.lifecycle.viewModelScope
 import ch.protonmail.android.mailcommon.domain.AppInformation
 import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.maillabel.domain.SelectedMailLabelId
+import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.domain.usecase.ObserveMailLabels
 import ch.protonmail.android.maillabel.domain.usecase.UpdateLabelExpandedState
@@ -31,7 +32,6 @@ import ch.protonmail.android.maillabel.presentation.sidebar.SidebarLabelAction
 import ch.protonmail.android.maillabel.presentation.toUiModels
 import ch.protonmail.android.mailmailbox.domain.usecase.ObserveUnreadCounters
 import ch.protonmail.android.mailmessage.domain.model.UnreadCounter
-import ch.protonmail.android.mailsettings.domain.usecase.ObserveFolderColorSettings
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -41,7 +41,6 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import me.proton.core.compose.viewmodel.stopTimeoutMillis
-import ch.protonmail.android.maillabel.domain.model.LabelId
 import me.proton.core.util.kotlin.exhaustive
 import javax.inject.Inject
 
@@ -51,7 +50,6 @@ class SidebarViewModel @Inject constructor(
     private val selectedMailLabelId: SelectedMailLabelId,
     private val updateLabelExpandedState: UpdateLabelExpandedState,
     observePrimaryUserId: ObservePrimaryUserId,
-    observeFolderColors: ObserveFolderColorSettings,
     observeMailLabels: ObserveMailLabels,
     observeUnreadCounters: ObserveUnreadCounters
 ) : ViewModel() {
@@ -71,17 +69,16 @@ class SidebarViewModel @Inject constructor(
 
         combine(
             selectedMailLabelId.flow,
-            observeFolderColors(userId),
             observeMailLabels(userId),
             observeUnreadCounters(userId)
-        ) { selectedMailLabelId, folderColors, mailLabels, counters ->
+        ) { selectedMailLabelId, mailLabels, counters ->
             State.Enabled(
                 selectedMailLabelId = selectedMailLabelId,
                 // Pending Account team to migrate "paymentManager" to rust
                 // (current implementation isn't aware of the rust session and throws
                 // exception crashing the app if no user is logged into "core"
                 canChangeSubscription = false,
-                mailLabels = mailLabels.toUiModels(folderColors, counters.toMap(), selectedMailLabelId)
+                mailLabels = mailLabels.toUiModels(counters.toMap(), selectedMailLabelId)
             )
         }
     }.stateIn(

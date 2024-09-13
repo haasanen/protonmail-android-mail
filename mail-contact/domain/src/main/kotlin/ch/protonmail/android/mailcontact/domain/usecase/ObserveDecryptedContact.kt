@@ -33,6 +33,7 @@ import me.proton.core.domain.entity.UserId
 import ch.protonmail.android.maillabel.domain.model.Label
 import ch.protonmail.android.maillabel.domain.model.LabelType
 import ch.protonmail.android.maillabel.domain.repository.LabelRepository
+import timber.log.Timber
 import javax.inject.Inject
 
 class ObserveDecryptedContact @Inject constructor(
@@ -71,9 +72,13 @@ class ObserveDecryptedContact @Inject constructor(
         return allContactLabels.filter {
             allLabelIds.contains(it.labelId.id)
         }.map {
+            val color = it.color ?: run {
+                Timber.w("contact-group: color for group ${it.labelId} is null, this is never expected.")
+                "#00000000"
+            }
             ContactGroupLabel(
                 name = it.name,
-                color = it.color
+                color = color
             )
         }
     }

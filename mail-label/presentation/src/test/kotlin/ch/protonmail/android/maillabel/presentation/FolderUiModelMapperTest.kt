@@ -19,14 +19,13 @@
 package ch.protonmail.android.maillabel.presentation
 
 import ch.protonmail.android.mailcommon.presentation.mapper.ColorMapper
+import ch.protonmail.android.maillabel.domain.model.LabelId
+import ch.protonmail.android.maillabel.domain.model.LabelType
 import ch.protonmail.android.maillabel.presentation.model.toFolderUiModel
-import ch.protonmail.android.mailsettings.domain.model.FolderColorSettings
 import ch.protonmail.android.testdata.folder.FolderTestData
 import ch.protonmail.android.testdata.label.LabelTestData
 import ch.protonmail.android.testdata.user.UserIdTestData
 import kotlinx.coroutines.test.runTest
-import ch.protonmail.android.maillabel.domain.model.LabelId
-import ch.protonmail.android.maillabel.domain.model.LabelType
 import org.junit.Test
 import kotlin.test.assertEquals
 
@@ -39,17 +38,14 @@ class FolderUiModelMapperTest {
     @Test
     fun `return correct folders with parent`() = runTest {
         // Given
-        val settings = FolderColorSettings(
-            useFolderColor = false,
-            inheritParentFolderColor = false
-        )
+        val noFolderColor = null
         val items = listOf(
             LabelTestData.buildLabel(
                 userId = userId,
                 type = LabelType.MessageFolder,
                 id = "0",
                 order = 0,
-                color = "#338AF3"
+                color = noFolderColor
             ),
             LabelTestData.buildLabel(
                 userId = userId,
@@ -57,7 +53,7 @@ class FolderUiModelMapperTest {
                 id = "0.1",
                 order = 0,
                 parentId = "0",
-                color = "#338AF3"
+                color = noFolderColor
             ),
             LabelTestData.buildLabel(
                 userId = userId,
@@ -65,7 +61,7 @@ class FolderUiModelMapperTest {
                 id = "0.2",
                 order = 1,
                 parentId = "0",
-                color = "#338AF3"
+                color = noFolderColor
             ),
             LabelTestData.buildLabel(
                 userId = userId,
@@ -73,7 +69,7 @@ class FolderUiModelMapperTest {
                 id = "0.2.1",
                 order = 0,
                 parentId = "0.2",
-                color = "#338AF3"
+                color = noFolderColor
             ),
             LabelTestData.buildLabel(
                 userId = userId,
@@ -81,36 +77,36 @@ class FolderUiModelMapperTest {
                 id = "0.2.2",
                 order = 1,
                 parentId = "0.2",
-                color = "#338AF3"
+                color = noFolderColor
             )
         )
-        val labelColor = colorMapper.toColor(items.first().color).getOrNull()!!
+        val labelColor = colorMapper.toColor(items.first().color).getOrNull()
 
         // When
-        val actual = items.toFolderUiModel(settings, colorMapper)
+        val actual = items.toFolderUiModel(colorMapper)
 
         // Then
         val f0 = FolderTestData.buildFolderUiModel(
-            id = LabelId("0"), level = 0, order = 0,
-            children = listOf(LabelId("0.1"), LabelId("0.2")),
-            icon = R.drawable.ic_proton_folders, color = labelColor
+            id = LabelId("0"), color = labelColor, level = 0,
+            order = 0,
+            children = listOf(LabelId("0.1"), LabelId("0.2")), icon = R.drawable.ic_proton_folders
         )
         val f01 = FolderTestData.buildFolderUiModel(
-            id = LabelId("0.1"), level = 1, order = 0, parent = f0,
-            icon = R.drawable.ic_proton_folder, color = labelColor
+            id = LabelId("0.1"), parent = f0, color = labelColor, level = 1,
+            order = 0, icon = R.drawable.ic_proton_folder
         )
         val f02 = FolderTestData.buildFolderUiModel(
-            id = LabelId("0.2"), level = 1, order = 1, parent = f0,
-            children = listOf(LabelId("0.2.1"), LabelId("0.2.2")),
-            icon = R.drawable.ic_proton_folders, color = labelColor
+            id = LabelId("0.2"), parent = f0, color = labelColor, level = 1,
+            order = 1,
+            children = listOf(LabelId("0.2.1"), LabelId("0.2.2")), icon = R.drawable.ic_proton_folders
         )
         val f021 = FolderTestData.buildFolderUiModel(
-            id = LabelId("0.2.1"), level = 2, order = 0, parent = f02,
-            icon = R.drawable.ic_proton_folder, color = labelColor
+            id = LabelId("0.2.1"), parent = f02, color = labelColor, level = 2,
+            order = 0, icon = R.drawable.ic_proton_folder
         )
         val f022 = FolderTestData.buildFolderUiModel(
-            id = LabelId("0.2.2"), level = 2, order = 1, parent = f02,
-            icon = R.drawable.ic_proton_folder, color = labelColor
+            id = LabelId("0.2.2"), parent = f02, color = labelColor, level = 2,
+            order = 1, icon = R.drawable.ic_proton_folder
         )
         val expected = listOf(f0, f01, f02, f021, f022)
 
@@ -120,17 +116,14 @@ class FolderUiModelMapperTest {
     @Test
     fun `when a parent does not exist, ignore its children`() = runTest {
         // Given
-        val settings = FolderColorSettings(
-            useFolderColor = false,
-            inheritParentFolderColor = false
-        )
+        val noFolderColor = null
         val items = listOf(
             LabelTestData.buildLabel(
                 userId = userId,
                 type = LabelType.MessageFolder,
                 id = "0",
                 order = 0,
-                color = "#338AF3"
+                color = noFolderColor
             ),
             LabelTestData.buildLabel(
                 userId = userId,
@@ -138,7 +131,7 @@ class FolderUiModelMapperTest {
                 id = "0.1",
                 order = 0,
                 parentId = "0",
-                color = "#338AF3"
+                color = noFolderColor
             ),
             LabelTestData.buildLabel(
                 userId = userId,
@@ -146,7 +139,7 @@ class FolderUiModelMapperTest {
                 id = "0.2.1",
                 order = 0,
                 parentId = "0.2",
-                color = "#338AF3"
+                color = noFolderColor
             ),
             LabelTestData.buildLabel(
                 userId = userId,
@@ -154,23 +147,23 @@ class FolderUiModelMapperTest {
                 id = "0.2.2",
                 order = 1,
                 parentId = "0.2",
-                color = "#338AF3"
+                color = noFolderColor
             )
         )
-        val labelColor = colorMapper.toColor(items.first().color).getOrNull()!!
+        val labelColor = colorMapper.toColor(items.first().color).getOrNull()
 
         // When
-        val actual = items.toFolderUiModel(settings, colorMapper)
+        val actual = items.toFolderUiModel(colorMapper)
 
         // Then
         val f0 = FolderTestData.buildFolderUiModel(
-            id = LabelId("0"), level = 0, order = 0,
-            children = listOf(LabelId("0.1")),
-            icon = R.drawable.ic_proton_folders, color = labelColor
+            id = LabelId("0"), color = labelColor, level = 0,
+            order = 0,
+            children = listOf(LabelId("0.1")), icon = R.drawable.ic_proton_folders
         )
         val f01 = FolderTestData.buildFolderUiModel(
-            id = LabelId("0.1"), level = 1, order = 0, parent = f0,
-            icon = R.drawable.ic_proton_folder, color = labelColor
+            id = LabelId("0.1"), parent = f0, color = labelColor, level = 1,
+            order = 0, icon = R.drawable.ic_proton_folder
         )
         val expected = listOf(f0, f01)
 

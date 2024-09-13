@@ -23,31 +23,17 @@ import ch.protonmail.android.maillabel.presentation.model.FolderUiModel
 sealed interface FolderListOperation
 
 internal sealed interface FolderListViewAction : FolderListOperation {
-    object OnAddFolderClick : FolderListViewAction
-    object OnOpenSettingsClick : FolderListViewAction
-    object OnDismissSettings : FolderListViewAction
-    data class OnChangeUseFolderColor(
-        val useFolderColor: Boolean
-    ) : FolderListViewAction
-    data class OnChangeInheritParentFolderColor(
-        val inheritParentFolderColor: Boolean
-    ) : FolderListViewAction
+    data object OnAddFolderClick : FolderListViewAction
+    data object OnOpenSettingsClick : FolderListViewAction
+    data object OnDismissSettings : FolderListViewAction
 }
 
 sealed interface FolderListEvent : FolderListOperation {
     data class FolderListLoaded(
-        val folderList: List<FolderUiModel>,
-        val useFolderColor: Boolean,
-        val inheritParentFolderColor: Boolean
+        val folderList: List<FolderUiModel>
     ) : FolderListEvent
-    data class UseFolderColorChanged(
-        val useFolderColor: Boolean
-    ) : FolderListEvent
-    data class InheritParentFolderColorChanged(
-        val inheritParentFolderColor: Boolean
-    ) : FolderListEvent
-    object ErrorLoadingFolderList : FolderListEvent
-    object OpenFolderForm : FolderListEvent
-    object OpenSettings : FolderListEvent
-    object DismissSettings : FolderListEvent
+    data object ErrorLoadingFolderList : FolderListEvent
+    data object OpenFolderForm : FolderListEvent
+    data object OpenSettings : FolderListEvent
+    data object DismissSettings : FolderListEvent
 }

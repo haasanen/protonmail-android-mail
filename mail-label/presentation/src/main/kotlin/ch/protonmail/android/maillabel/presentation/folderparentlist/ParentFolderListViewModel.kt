@@ -24,25 +24,24 @@ import androidx.lifecycle.viewModelScope
 import arrow.core.getOrElse
 import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailcommon.presentation.mapper.ColorMapper
+import ch.protonmail.android.maillabel.domain.model.LabelId
+import ch.protonmail.android.maillabel.domain.model.LabelType
 import ch.protonmail.android.maillabel.domain.usecase.ObserveLabels
 import ch.protonmail.android.maillabel.presentation.model.toFolderUiModel
 import ch.protonmail.android.maillabel.presentation.model.toParentFolderUiModel
-import ch.protonmail.android.mailsettings.domain.usecase.ObserveFolderColorSettings
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import me.proton.core.domain.entity.UserId
-import ch.protonmail.android.maillabel.domain.model.LabelId
-import ch.protonmail.android.maillabel.domain.model.LabelType
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -50,7 +49,6 @@ import javax.inject.Inject
 class ParentFolderListViewModel @Inject constructor(
     private val observeLabels: ObserveLabels,
     private val reducer: ParentFolderListReducer,
-    private val observeFolderColorSettings: ObserveFolderColorSettings,
     private val colorMapper: ColorMapper,
     observePrimaryUserId: ObservePrimaryUserId,
     savedStateHandle: SavedStateHandle
@@ -81,20 +79,14 @@ class ParentFolderListViewModel @Inject constructor(
         labelId: LabelId?,
         parentLabelId: LabelId?
     ): Flow<ParentFolderListEvent> {
-        return combine(
-            observeLabels(userId, LabelType.MessageFolder),
-            observeFolderColorSettings(userId)
-        ) { folders, folderColorSettings ->
+        return observeLabels(userId, LabelType.MessageFolder).mapLatest { folders ->
             folders.map {
                 ParentFolderListEvent.FolderListLoaded(
                     folderList = it.toFolderUiModel(
-                        folderColorSettings,
                         colorMapper
                     ).toParentFolderUiModel(labelId, parentLabelId),
                     labelId = labelId,
-                    parentLabelId = parentLabelId,
-                    useFolderColor = folderColorSettings.useFolderColor,
-                    inheritParentFolderColor = folderColorSettings.inheritParentFolderColor
+                    parentLabelId = parentLabelId
                 )
             }
         }.map {

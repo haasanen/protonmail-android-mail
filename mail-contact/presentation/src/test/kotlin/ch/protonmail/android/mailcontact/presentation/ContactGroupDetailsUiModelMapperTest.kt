@@ -91,7 +91,7 @@ class ContactGroupDetailsUiModelMapperTest {
             UserIdTestData.userId,
             label.labelId,
             label.name,
-            label.color,
+            label.color!!,
             listOf(contact.contactEmails[0])
         )
 
@@ -127,7 +127,7 @@ class ContactGroupDetailsUiModelMapperTest {
             UserIdTestData.userId,
             label.labelId,
             label.name,
-            label.color,
+            label.color!!,
             emptyList()
         )
 

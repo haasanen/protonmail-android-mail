@@ -31,22 +31,16 @@ sealed interface FolderListState {
     sealed interface ListLoaded : FolderListState {
 
         val bottomSheetVisibilityEffect: Effect<BottomSheetVisibilityEffect>
-        val useFolderColor: Boolean
-        val inheritParentFolderColor: Boolean
         val openFolderForm: Effect<Unit>
 
         data class Data(
             override val bottomSheetVisibilityEffect: Effect<BottomSheetVisibilityEffect> = Effect.empty(),
-            override val useFolderColor: Boolean,
-            override val inheritParentFolderColor: Boolean,
             override val openFolderForm: Effect<Unit> = Effect.empty(),
             val folders: List<FolderUiModel>
         ) : ListLoaded
 
         data class Empty(
             override val bottomSheetVisibilityEffect: Effect<BottomSheetVisibilityEffect> = Effect.empty(),
-            override val useFolderColor: Boolean,
-            override val inheritParentFolderColor: Boolean,
             override val openFolderForm: Effect<Unit> = Effect.empty()
         ) : ListLoaded
     }

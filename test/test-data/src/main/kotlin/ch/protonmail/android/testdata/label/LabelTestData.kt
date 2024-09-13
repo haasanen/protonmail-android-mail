@@ -76,7 +76,7 @@ object LabelTestData {
         type: LabelType = LabelType.MessageLabel,
         name: String = id,
         order: Int = id.hashCode(),
-        color: String = "",
+        color: String? = "",
         parentId: String? = null,
         isNotified: Boolean? = null,
         isExpanded: Boolean? = null

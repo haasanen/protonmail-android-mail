@@ -18,8 +18,8 @@
 
 package ch.protonmail.android.maillabel.presentation.folderparentlist
 
-import ch.protonmail.android.maillabel.presentation.model.ParentFolderUiModel
 import ch.protonmail.android.maillabel.domain.model.LabelId
+import ch.protonmail.android.maillabel.presentation.model.ParentFolderUiModel
 
 sealed interface ParentFolderListOperation
 
@@ -27,9 +27,7 @@ sealed interface ParentFolderListEvent : ParentFolderListOperation {
     data class FolderListLoaded(
         val folderList: List<ParentFolderUiModel>,
         val labelId: LabelId?,
-        val parentLabelId: LabelId?,
-        val useFolderColor: Boolean,
-        val inheritParentFolderColor: Boolean
+        val parentLabelId: LabelId?
     ) : ParentFolderListEvent
-    object ErrorLoadingFolderList : ParentFolderListEvent
+    data object ErrorLoadingFolderList : ParentFolderListEvent
 }

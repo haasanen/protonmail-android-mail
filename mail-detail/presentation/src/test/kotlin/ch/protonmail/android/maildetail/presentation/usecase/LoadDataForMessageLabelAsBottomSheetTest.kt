@@ -3,22 +3,19 @@ package ch.protonmail.android.maildetail.presentation.usecase
 import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.usecase.ObserveCustomMailLabels
 import ch.protonmail.android.maillabel.presentation.MailLabelUiModel
 import ch.protonmail.android.maillabel.presentation.toUiModel
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.LabelAsBottomSheetState
-import ch.protonmail.android.mailsettings.domain.model.FolderColorSettings
-import ch.protonmail.android.mailsettings.domain.usecase.ObserveFolderColorSettings
 import ch.protonmail.android.testdata.maillabel.MailLabelTestData
 import ch.protonmail.android.testdata.user.UserIdTestData
 import io.mockk.coEvery
-import io.mockk.every
 import io.mockk.mockk
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
-import ch.protonmail.android.maillabel.domain.model.LabelId
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -35,13 +32,8 @@ class LoadDataForMessageLabelAsBottomSheetTest {
             ).right()
         )
     }
-    private val observeFolderColorSettings = mockk<ObserveFolderColorSettings> {
-        every { this@mockk.invoke(userId) } returns flowOf(FolderColorSettings())
-    }
-
     private val loadDataForMessageLabelAsBottomSheet = LoadDataForMessageLabelAsBottomSheet(
-        observeCustomMailLabels,
-        observeFolderColorSettings
+        observeCustomMailLabels
     )
 
     @Test
@@ -55,7 +47,7 @@ class LoadDataForMessageLabelAsBottomSheetTest {
                 MailLabelTestData.customLabelOne, MailLabelTestData.customLabelTwo
             ).map {
                 it.toUiModel(
-                    FolderColorSettings(), emptyMap(), MailLabelTestData.inboxSystemLabel.id
+                    emptyMap(), MailLabelTestData.inboxSystemLabel.id
                 ) as MailLabelUiModel.Custom
             }.toImmutableList(),
             selectedLabels = emptyList<LabelId>().toImmutableList(),

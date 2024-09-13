@@ -59,7 +59,7 @@ private fun Label.toMailLabelCustom(
     return MailLabel.Custom(
         id = labelId.toMailLabelId(type),
         text = name,
-        color = Color.parseColor(color.normalizeColorHex()),
+        color = color?.let { Color.parseColor(it.normalizeColorHex()) },
         parent = parent,
         isExpanded = parent?.isExpanded ?: true && isExpanded ?: true,
         level = level,

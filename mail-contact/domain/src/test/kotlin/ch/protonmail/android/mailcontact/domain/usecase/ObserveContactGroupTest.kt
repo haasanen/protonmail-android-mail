@@ -103,7 +103,7 @@ class ObserveContactGroupTest {
         UserIdTestData.userId,
         label.labelId,
         label.name,
-        label.color,
+        label.color!!,
         listOf(contact.contactEmails[0])
     )
 

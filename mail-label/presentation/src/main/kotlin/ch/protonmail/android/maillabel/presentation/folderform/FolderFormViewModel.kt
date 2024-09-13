@@ -25,6 +25,8 @@ import androidx.lifecycle.viewModelScope
 import arrow.core.getOrElse
 import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailcommon.presentation.mapper.ColorMapper
+import ch.protonmail.android.maillabel.domain.model.LabelId
+import ch.protonmail.android.maillabel.domain.model.LabelType
 import ch.protonmail.android.maillabel.domain.usecase.CreateFolder
 import ch.protonmail.android.maillabel.domain.usecase.DeleteLabel
 import ch.protonmail.android.maillabel.domain.usecase.GetLabel
@@ -33,7 +35,6 @@ import ch.protonmail.android.maillabel.domain.usecase.IsLabelLimitReached
 import ch.protonmail.android.maillabel.domain.usecase.IsLabelNameAllowed
 import ch.protonmail.android.maillabel.domain.usecase.UpdateLabel
 import ch.protonmail.android.maillabel.presentation.getHexStringFromColor
-import ch.protonmail.android.mailsettings.domain.usecase.ObserveFolderColorSettings
 import ch.protonmail.android.mailupselling.domain.usecase.featureflags.IsUpsellingFoldersEnabled
 import ch.protonmail.android.mailupselling.presentation.usecase.ObserveUpsellingVisibility
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -44,8 +45,6 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import ch.protonmail.android.maillabel.domain.model.LabelId
-import ch.protonmail.android.maillabel.domain.model.LabelType
 import me.proton.core.util.kotlin.equalsNoCase
 import javax.inject.Inject
 
@@ -60,7 +59,6 @@ class FolderFormViewModel @Inject constructor(
     private val isLabelLimitReached: IsLabelLimitReached,
     private val isUpsellingLabelsEnabled: IsUpsellingFoldersEnabled,
     private val observeUpsellingVisibility: ObserveUpsellingVisibility,
-    private val observeFolderColorSettings: ObserveFolderColorSettings,
     private val reducer: FolderFormReducer,
     private val colorMapper: ColorMapper,
     observePrimaryUserId: ObservePrimaryUserId,
@@ -80,7 +78,6 @@ class FolderFormViewModel @Inject constructor(
             val colors = getLabelColors().map {
                 colorMapper.toColor(it).getOrElse { Color.Black }
             }
-            val folderColorSettings = observeFolderColorSettings(primaryUserId()).filterNotNull().first()
             if (labelId != null) {
                 val label = getLabel(
                     userId = primaryUserId(),
@@ -101,9 +98,7 @@ class FolderFormViewModel @Inject constructor(
                         color = label.color,
                         parent = parent,
                         notifications = label.isNotified ?: true,
-                        colorList = colors,
-                        useFolderColor = folderColorSettings.useFolderColor,
-                        inheritParentFolderColor = folderColorSettings.inheritParentFolderColor
+                        colorList = colors
                     )
                 )
             } else {
@@ -114,9 +109,7 @@ class FolderFormViewModel @Inject constructor(
                         color = colors.random().getHexStringFromColor(),
                         parent = null,
                         notifications = true,
-                        colorList = colors,
-                        useFolderColor = folderColorSettings.useFolderColor,
-                        inheritParentFolderColor = folderColorSettings.inheritParentFolderColor
+                        colorList = colors
                     )
                 )
             }
@@ -172,7 +165,7 @@ class FolderFormViewModel @Inject constructor(
                     is FolderFormState.Data.Create -> {
                         createFolder(
                             cleanName,
-                            currentState.color,
+                            currentState.color ?: Color.Black.getHexStringFromColor(),
                             currentState.parent?.labelId,
                             currentState.notifications
                         )
@@ -182,7 +175,7 @@ class FolderFormViewModel @Inject constructor(
                         editFolder(
                             currentState.labelId,
                             cleanName,
-                            currentState.color,
+                            currentState.color ?: Color.Black.getHexStringFromColor(),
                             currentState.parent?.labelId,
                             currentState.notifications
                         )

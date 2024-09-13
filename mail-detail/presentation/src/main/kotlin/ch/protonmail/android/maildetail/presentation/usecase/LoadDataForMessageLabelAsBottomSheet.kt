@@ -20,21 +20,19 @@ package ch.protonmail.android.maildetail.presentation.usecase
 
 import arrow.core.getOrElse
 import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
+import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.usecase.ObserveCustomMailLabels
 import ch.protonmail.android.maillabel.presentation.toCustomUiModel
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.LabelAsBottomSheetState
-import ch.protonmail.android.mailsettings.domain.usecase.ObserveFolderColorSettings
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.first
 import me.proton.core.domain.entity.UserId
-import ch.protonmail.android.maillabel.domain.model.LabelId
 import timber.log.Timber
 import javax.inject.Inject
 
 class LoadDataForMessageLabelAsBottomSheet @Inject constructor(
-    private val observeCustomMailLabels: ObserveCustomMailLabels,
-    private val observeFolderColorSettings: ObserveFolderColorSettings
+    private val observeCustomMailLabels: ObserveCustomMailLabels
 ) {
 
     @MissingRustApi
@@ -44,14 +42,13 @@ class LoadDataForMessageLabelAsBottomSheet @Inject constructor(
         messageId: MessageId
     ): LabelAsBottomSheetState.LabelAsBottomSheetEvent.ActionData {
         val labels = observeCustomMailLabels(userId).first()
-        val color = observeFolderColorSettings(userId).first()
 
         val mappedLabels = labels.onLeft {
             Timber.e("Error while observing custom labels")
         }.getOrElse { emptyList() }
 
         return LabelAsBottomSheetState.LabelAsBottomSheetEvent.ActionData(
-            customLabelList = mappedLabels.map { it.toCustomUiModel(color, emptyMap(), null) }
+            customLabelList = mappedLabels.map { it.toCustomUiModel(emptyMap(), null) }
                 .toImmutableList(),
             selectedLabels = emptyList<LabelId>().toImmutableList(),
             messageIdInConversation = messageId

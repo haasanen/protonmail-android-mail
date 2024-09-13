@@ -31,7 +31,6 @@ import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.model.NetworkError
 import ch.protonmail.android.mailcommon.domain.sample.ConversationIdSample
 import ch.protonmail.android.mailcommon.domain.sample.DataErrorSample
-import ch.protonmail.android.maillabel.domain.sample.LabelSample
 import ch.protonmail.android.mailcommon.domain.sample.UserAddressSample
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUserId
@@ -88,8 +87,10 @@ import ch.protonmail.android.maildetail.presentation.usecase.GetEmbeddedImageAvo
 import ch.protonmail.android.maildetail.presentation.usecase.LoadDataForMessageLabelAsBottomSheet
 import ch.protonmail.android.maildetail.presentation.usecase.OnMessageLabelAsConfirmed
 import ch.protonmail.android.maildetail.presentation.usecase.PrintMessage
+import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabels
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
+import ch.protonmail.android.maillabel.domain.sample.LabelSample
 import ch.protonmail.android.maillabel.domain.usecase.ObserveCustomMailLabels
 import ch.protonmail.android.maillabel.domain.usecase.ObserveExclusiveDestinationMailLabels
 import ch.protonmail.android.maillabel.presentation.sample.LabelUiModelWithSelectedStateSample
@@ -111,9 +112,7 @@ import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.BottomSh
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.ContactActionsBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.LabelAsBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MoveToBottomSheetState
-import ch.protonmail.android.mailsettings.domain.model.FolderColorSettings
 import ch.protonmail.android.mailsettings.domain.model.PrivacySettings
-import ch.protonmail.android.mailsettings.domain.usecase.ObserveFolderColorSettings
 import ch.protonmail.android.mailsettings.domain.usecase.privacy.ObservePrivacySettings
 import ch.protonmail.android.mailsettings.domain.usecase.privacy.UpdateLinkConfirmationSetting
 import ch.protonmail.android.testdata.action.ActionUiModelTestData
@@ -138,7 +137,6 @@ import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import me.proton.core.contact.domain.entity.Contact
-import ch.protonmail.android.maillabel.domain.model.LabelId
 import me.proton.core.network.domain.NetworkManager
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
@@ -157,7 +155,6 @@ class ConversationDetailViewModelTest {
     private val userId = UserIdSample.Primary
     private val conversationId = ConversationIdSample.WeatherForecast
     private val initialState = ConversationDetailState.Loading
-    private val defaultFolderColorSettings = FolderColorSettings()
 
     private val actionUiModelMapper = ActionUiModelMapper()
     private val messageIdUiModelMapper = MessageIdUiModelMapper()
@@ -169,32 +166,28 @@ class ConversationDetailViewModelTest {
         coEvery {
             toUiModel(
                 message = MessageSample.Invoice,
-                contacts = any(),
-                folderColorSettings = defaultFolderColorSettings
+                contacts = any()
             )
         } returns
             ConversationDetailMessageUiModelSample.InvoiceWithLabel
         coEvery {
             toUiModel(
                 message = MessageSample.Invoice,
-                contacts = any(),
-                folderColorSettings = defaultFolderColorSettings
+                contacts = any()
             )
         } returns
             ConversationDetailMessageUiModelSample.InvoiceWithTwoLabels
         coEvery {
             toUiModel(
                 message = MessageSample.Invoice,
-                contacts = any(),
-                folderColorSettings = defaultFolderColorSettings
+                contacts = any()
             )
         } returns
             ConversationDetailMessageUiModelSample.InvoiceWithoutLabels
         coEvery {
             toUiModel(
                 message = MessageSample.Invoice,
-                contacts = any(),
-                folderColorSettings = defaultFolderColorSettings
+                contacts = any()
             )
         } returns
             ConversationDetailMessageUiModelSample.AnotherInvoiceWithoutLabels
@@ -247,10 +240,6 @@ class ConversationDetailViewModelTest {
             )
         )
     }
-    private val observeFolderColorSettings =
-        mockk<ObserveFolderColorSettings> {
-            every { this@mockk.invoke(UserIdSample.Primary) } returns flowOf(defaultFolderColorSettings)
-        }
     private val observeCustomMailLabels = mockk<ObserveCustomMailLabels> {
         every { this@mockk.invoke(UserIdSample.Primary) } returns flowOf(
             MailLabelTestData.listOfCustomLabels.right()
@@ -335,7 +324,6 @@ class ConversationDetailViewModelTest {
             observeConversationMessages = observeConversationMessages,
             observeDetailActions = observeConversationDetailActions,
             observeDestinationMailLabels = observeMailLabels,
-            observeFolderColor = observeFolderColorSettings,
             observeCustomMailLabels = observeCustomMailLabels,
             observeMessage = observeMessage,
             observeMessageAttachmentStatus = observeAttachmentStatus,
@@ -418,7 +406,6 @@ class ConversationDetailViewModelTest {
                 message = any(),
                 contacts = any(),
                 decryptedMessageBody = any(),
-                folderColorSettings = defaultFolderColorSettings,
                 userAddress = UserAddressSample.PrimaryAddress
             )
         } returns messages.first()
@@ -452,7 +439,6 @@ class ConversationDetailViewModelTest {
                 message = any(),
                 contacts = any(),
                 decryptedMessageBody = any(),
-                folderColorSettings = defaultFolderColorSettings,
                 userAddress = UserAddressSample.PrimaryAddress
             )
         } returns messages.first()
@@ -491,7 +477,6 @@ class ConversationDetailViewModelTest {
                 message = any(),
                 contacts = any(),
                 decryptedMessageBody = any(),
-                folderColorSettings = defaultFolderColorSettings,
                 userAddress = UserAddressSample.PrimaryAddress
             )
         } returns messages.first()
@@ -544,7 +529,6 @@ class ConversationDetailViewModelTest {
                 message = any(),
                 contacts = any(),
                 decryptedMessageBody = any(),
-                folderColorSettings = defaultFolderColorSettings,
                 userAddress = UserAddressSample.PrimaryAddress
             )
         } returns
@@ -582,7 +566,6 @@ class ConversationDetailViewModelTest {
                 message = any(), // Model here has 3 labels, sample models only have one or two
                 contacts = emptyList(),
                 decryptedMessageBody = any(),
-                folderColorSettings = any(),
                 userAddress = UserAddressSample.PrimaryAddress
             )
         } returns
@@ -657,7 +640,6 @@ class ConversationDetailViewModelTest {
                 message = any(),
                 contacts = any(),
                 decryptedMessageBody = any(),
-                folderColorSettings = defaultFolderColorSettings,
                 userAddress = UserAddressSample.PrimaryAddress
             )
         } returns messages.first()
@@ -693,7 +675,6 @@ class ConversationDetailViewModelTest {
                 message = any(),
                 contacts = any(),
                 decryptedMessageBody = any(),
-                folderColorSettings = defaultFolderColorSettings,
                 userAddress = UserAddressSample.PrimaryAddress
             )
         } returns messages.first()
@@ -727,7 +708,6 @@ class ConversationDetailViewModelTest {
                 message = any(),
                 contacts = any(),
                 decryptedMessageBody = any(),
-                folderColorSettings = defaultFolderColorSettings,
                 userAddress = UserAddressSample.PrimaryAddress
             )
         } returns messages.first()
@@ -755,7 +735,6 @@ class ConversationDetailViewModelTest {
                 message = any(),
                 contacts = any(),
                 decryptedMessageBody = any(),
-                folderColorSettings = defaultFolderColorSettings,
                 userAddress = UserAddressSample.PrimaryAddress
             )
         } returns messages.first()
@@ -792,7 +771,6 @@ class ConversationDetailViewModelTest {
                 message = any(),
                 contacts = any(),
                 decryptedMessageBody = any(),
-                folderColorSettings = defaultFolderColorSettings,
                 userAddress = UserAddressSample.PrimaryAddress
             )
         } returns messages.first()
@@ -829,7 +807,6 @@ class ConversationDetailViewModelTest {
                 message = any(),
                 contacts = any(),
                 decryptedMessageBody = any(),
-                folderColorSettings = defaultFolderColorSettings,
                 userAddress = UserAddressSample.PrimaryAddress
             )
         } returns messages.first()
@@ -865,7 +842,6 @@ class ConversationDetailViewModelTest {
                 message = any(),
                 contacts = any(),
                 decryptedMessageBody = any(),
-                folderColorSettings = defaultFolderColorSettings,
                 userAddress = UserAddressSample.PrimaryAddress
             )
         } returns messages.first()
@@ -901,7 +877,6 @@ class ConversationDetailViewModelTest {
                 message = any(),
                 contacts = any(),
                 decryptedMessageBody = any(),
-                folderColorSettings = defaultFolderColorSettings,
                 userAddress = UserAddressSample.PrimaryAddress
             )
         } returns messages.first()
@@ -941,7 +916,6 @@ class ConversationDetailViewModelTest {
                 message = any(),
                 contacts = any(),
                 decryptedMessageBody = any(),
-                folderColorSettings = defaultFolderColorSettings,
                 userAddress = UserAddressSample.PrimaryAddress
             )
         } returns messages.first()
@@ -983,7 +957,6 @@ class ConversationDetailViewModelTest {
                 message = any(),
                 contacts = any(),
                 decryptedMessageBody = any(),
-                folderColorSettings = defaultFolderColorSettings,
                 userAddress = UserAddressSample.PrimaryAddress
             )
         } returns messages.first()
@@ -1052,7 +1025,6 @@ class ConversationDetailViewModelTest {
                 message = any(),
                 contacts = any(),
                 decryptedMessageBody = any(),
-                folderColorSettings = defaultFolderColorSettings,
                 userAddress = UserAddressSample.PrimaryAddress
             )
         } returns messages.first()
@@ -1151,7 +1123,6 @@ class ConversationDetailViewModelTest {
                     message = any(),
                     contacts = any(),
                     decryptedMessageBody = any(),
-                    folderColorSettings = defaultFolderColorSettings,
                     userAddress = UserAddressSample.PrimaryAddress
                 )
             } returns messages.first()
@@ -1268,7 +1239,6 @@ class ConversationDetailViewModelTest {
                 message = any(),
                 contacts = any(),
                 decryptedMessageBody = any(),
-                folderColorSettings = defaultFolderColorSettings,
                 userAddress = UserAddressSample.PrimaryAddress
             )
         } returns messages.first()
@@ -1374,7 +1344,6 @@ class ConversationDetailViewModelTest {
                 message = any(),
                 contacts = any(),
                 decryptedMessageBody = any(),
-                folderColorSettings = defaultFolderColorSettings,
                 userAddress = UserAddressSample.PrimaryAddress
             )
         } returns messages.first()
@@ -1397,7 +1366,6 @@ class ConversationDetailViewModelTest {
                 message = any(),
                 contacts = any(),
                 decryptedMessageBody = any(),
-                folderColorSettings = defaultFolderColorSettings,
                 userAddress = UserAddressSample.PrimaryAddress
             )
         } returns messages.first()
@@ -1431,7 +1399,6 @@ class ConversationDetailViewModelTest {
                 message = any(),
                 contacts = any(),
                 decryptedMessageBody = any(),
-                folderColorSettings = defaultFolderColorSettings,
                 userAddress = UserAddressSample.PrimaryAddress
             )
         } returns messages.first()
@@ -1488,7 +1455,6 @@ class ConversationDetailViewModelTest {
                 message = any(),
                 contacts = any(),
                 decryptedMessageBody = any(),
-                folderColorSettings = defaultFolderColorSettings,
                 userAddress = UserAddressSample.PrimaryAddress
             )
         } returns messages.first()
@@ -1612,7 +1578,6 @@ class ConversationDetailViewModelTest {
                 message = any(),
                 contacts = any(),
                 decryptedMessageBody = any(),
-                folderColorSettings = defaultFolderColorSettings,
                 userAddress = UserAddressSample.PrimaryAddress
             )
         } returns messages.first()
@@ -1657,7 +1622,6 @@ class ConversationDetailViewModelTest {
                     message = any(),
                     contacts = any(),
                     decryptedMessageBody = any(),
-                    folderColorSettings = defaultFolderColorSettings,
                     userAddress = UserAddressSample.PrimaryAddress
                 )
             } returns expectedUiModel
@@ -1709,7 +1673,6 @@ class ConversationDetailViewModelTest {
                 message = any(),
                 contacts = any(),
                 decryptedMessageBody = any(),
-                folderColorSettings = defaultFolderColorSettings,
                 userAddress = UserAddressSample.PrimaryAddress
             )
         } returns expectedUiModel
@@ -1773,7 +1736,6 @@ class ConversationDetailViewModelTest {
                 message = any(),
                 contacts = any(),
                 decryptedMessageBody = any(),
-                folderColorSettings = defaultFolderColorSettings,
                 userAddress = UserAddressSample.PrimaryAddress
             )
         } returns messages.first()
@@ -1797,7 +1759,6 @@ class ConversationDetailViewModelTest {
                 message = any(),
                 contacts = any(),
                 decryptedMessageBody = any(),
-                folderColorSettings = defaultFolderColorSettings,
                 userAddress = UserAddressSample.PrimaryAddress
             )
         } returns messages.first()
@@ -1821,7 +1782,6 @@ class ConversationDetailViewModelTest {
                 message = any(),
                 contacts = any(),
                 decryptedMessageBody = any(),
-                folderColorSettings = defaultFolderColorSettings,
                 userAddress = UserAddressSample.PrimaryAddress
             )
         } returns messages.first()
@@ -1987,14 +1947,13 @@ class ConversationDetailViewModelTest {
             messagesState = ConversationDetailsMessagesState.Data(firstExpanding)
         )
 
-        coEvery { conversationMessageMapper.toUiModel(any(), any(), defaultFolderColorSettings) } returns
+        coEvery { conversationMessageMapper.toUiModel(any(), any()) } returns
             ConversationDetailMessageUiModelSample.InvoiceWithLabel
         coEvery {
             conversationMessageMapper.toUiModel(
                 message = any(),
                 contacts = any(),
                 decryptedMessageBody = any(),
-                folderColorSettings = defaultFolderColorSettings,
                 userAddress = UserAddressSample.PrimaryAddress
             )
         } returns

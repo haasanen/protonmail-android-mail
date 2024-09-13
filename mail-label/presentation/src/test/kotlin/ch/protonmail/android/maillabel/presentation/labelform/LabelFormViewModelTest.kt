@@ -28,6 +28,7 @@ import ch.protonmail.android.mailcommon.domain.model.NetworkError
 import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.mapper.ColorMapper
+import ch.protonmail.android.maillabel.domain.model.LabelType
 import ch.protonmail.android.maillabel.domain.usecase.CreateLabel
 import ch.protonmail.android.maillabel.domain.usecase.DeleteLabel
 import ch.protonmail.android.maillabel.domain.usecase.GetLabel
@@ -48,7 +49,6 @@ import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
-import ch.protonmail.android.maillabel.domain.model.LabelType
 import org.junit.Rule
 import org.junit.Test
 import kotlin.test.assertEquals
@@ -95,7 +95,7 @@ class LabelFormViewModelTest {
     }
 
     private val getLabelColors = mockk<GetLabelColors> {
-        every { this@mockk.invoke() } returns listOf(defaultTestLabel.color)
+        every { this@mockk.invoke() } returns listOf(defaultTestLabel.color!!)
     }
 
     private val isLabelNameAllowed = mockk<IsLabelNameAllowed>()
@@ -381,7 +381,7 @@ class LabelFormViewModelTest {
         coVerify {
             // Verify that we use the name trimmed from leading and trailing whitespaces
             isLabelNameAllowed.invoke(userId, defaultTestUpdatedName)
-            createLabel.invoke(userId, defaultTestUpdatedName, defaultTestLabel.color)
+            createLabel.invoke(userId, defaultTestUpdatedName, defaultTestLabel.color!!)
         }
     }
 

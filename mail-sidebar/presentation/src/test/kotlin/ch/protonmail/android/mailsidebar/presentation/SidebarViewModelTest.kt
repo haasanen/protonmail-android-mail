@@ -33,8 +33,6 @@ import ch.protonmail.android.maillabel.presentation.sidebar.SidebarLabelAction.E
 import ch.protonmail.android.maillabel.presentation.sidebar.SidebarLabelAction.Select
 import ch.protonmail.android.mailmailbox.domain.usecase.ObserveUnreadCounters
 import ch.protonmail.android.mailmessage.domain.model.UnreadCounter
-import ch.protonmail.android.mailsettings.domain.model.FolderColorSettings
-import ch.protonmail.android.mailsettings.domain.usecase.ObserveFolderColorSettings
 import ch.protonmail.android.mailsidebar.presentation.SidebarViewModel.Action.LabelAction
 import ch.protonmail.android.mailsidebar.presentation.SidebarViewModel.State.Disabled
 import ch.protonmail.android.mailsidebar.presentation.SidebarViewModel.State.Enabled
@@ -81,11 +79,6 @@ class SidebarViewModelTest {
 
     private val updateLabelExpandedState = mockk<UpdateLabelExpandedState>(relaxUnitFun = true)
 
-    private val folderColorSettings = MutableStateFlow(FolderColorSettings())
-    private val observeFolderColors = mockk<ObserveFolderColorSettings> {
-        every { this@mockk(any()) } returns folderColorSettings
-    }
-
     private val observeUnreadCounters = mockk<ObserveUnreadCounters> {
         coEvery { this@mockk.invoke(any()) } returns flowOf(emptyList<UnreadCounter>())
     }
@@ -103,7 +96,6 @@ class SidebarViewModelTest {
             selectedMailLabelId = selectedMailLabelId,
             updateLabelExpandedState = updateLabelExpandedState,
             observePrimaryUserId = observePrimaryUserId,
-            observeFolderColors = observeFolderColors,
             observeMailLabels = observeMailboxLabels,
             observeUnreadCounters = observeUnreadCounters
         )

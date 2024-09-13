@@ -18,33 +18,26 @@
 
 package ch.protonmail.android.maildetail.presentation.mapper
 
-import androidx.compose.ui.graphics.Color
-import arrow.core.getOrElse
 import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.presentation.mapper.ColorMapper
 import ch.protonmail.android.maildetail.presentation.R
 import ch.protonmail.android.maildetail.presentation.model.MessageLocationUiModel
-import ch.protonmail.android.maillabel.domain.model.SystemLabelId
-import ch.protonmail.android.maillabel.domain.usecase.GetRootLabel
-import ch.protonmail.android.maillabel.presentation.iconRes
-import ch.protonmail.android.mailsettings.domain.model.FolderColorSettings
-import me.proton.core.domain.entity.UserId
 import ch.protonmail.android.maillabel.domain.model.Label
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.LabelType
+import ch.protonmail.android.maillabel.domain.model.SystemLabelId
+import ch.protonmail.android.maillabel.presentation.iconRes
 import javax.inject.Inject
 
 class MessageLocationUiModelMapper @Inject constructor(
-    private val colorMapper: ColorMapper,
-    private val getRootLabel: GetRootLabel
+    private val colorMapper: ColorMapper
 ) {
 
     @MissingRustApi
     // To be fixed once message has "exclusiveLocation" info exposed by rust)
     suspend operator fun invoke(
         labelIds: List<LabelId>,
-        labels: List<Label>,
-        colorSettings: FolderColorSettings
+        labels: List<Label>
     ): MessageLocationUiModel {
         SystemLabelId.exclusiveList.forEach { systemLabelId ->
             if (systemLabelId.labelId in labelIds) {
@@ -58,16 +51,14 @@ class MessageLocationUiModelMapper @Inject constructor(
         // Check if the location is a custom folder
         labels.forEach { label ->
             if (label.labelId in labelIds && label.type == LabelType.MessageFolder) {
+                val shouldShowFolderColor = label.color != null
                 return MessageLocationUiModel(
                     name = label.name,
                     icon = when {
-                        colorSettings.useFolderColor -> R.drawable.ic_proton_folder_filled
+                        shouldShowFolderColor -> R.drawable.ic_proton_folder_filled
                         else -> R.drawable.ic_proton_folder
                     },
-                    color = when {
-                        colorSettings.useFolderColor -> getLocationIconColor(label.userId, label, colorSettings)
-                        else -> null
-                    }
+                    color = colorMapper.toColor(label.color).getOrNull()
                 )
             }
         }
@@ -77,17 +68,5 @@ class MessageLocationUiModelMapper @Inject constructor(
             SystemLabelId.AllMail.name,
             SystemLabelId.enumOf(SystemLabelId.AllMail.labelId.id).iconRes()
         )
-    }
-
-    private suspend fun getLocationIconColor(
-        userId: UserId,
-        label: Label,
-        folderColorSettings: FolderColorSettings
-    ): Color {
-        val colorToMap = when {
-            folderColorSettings.inheritParentFolderColor -> getRootLabel(userId, label).color
-            else -> label.color
-        }
-        return colorMapper.toColor(colorToMap).getOrElse { Color.Unspecified }
     }
 }

@@ -42,7 +42,7 @@ data class Label(
     /**
      * Color in RGB format (e.g. "#RRGGBB") - must match default colors.
      */
-    val color: String,
+    val color: String?,
     /**
      * Order of Labels (priority).
      */

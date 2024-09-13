@@ -22,22 +22,18 @@ import androidx.annotation.DrawableRes
 import androidx.compose.ui.graphics.Color
 import arrow.core.getOrElse
 import ch.protonmail.android.mailcommon.presentation.mapper.ColorMapper
-import ch.protonmail.android.maillabel.presentation.R
-import ch.protonmail.android.mailsettings.domain.model.FolderColorSettings
 import ch.protonmail.android.maillabel.domain.model.Label
 import ch.protonmail.android.maillabel.domain.model.LabelId
+import ch.protonmail.android.maillabel.presentation.R
 
-fun List<Label>.toFolderUiModel(
-    folderColorSettings: FolderColorSettings,
-    colorMapper: ColorMapper
-): List<FolderUiModel> {
+fun List<Label>.toFolderUiModel(colorMapper: ColorMapper): List<FolderUiModel> {
     val labelById = associateBy { it.labelId }
     val groupByParentId = groupBy { it.parentId }
     val mailLabels = mutableMapOf<LabelId, FolderUiModel>()
     fun getChildren(labelId: LabelId): List<Label> = groupByParentId[labelId].orEmpty().sortedBy { it.order }
     fun getMailLabel(labelId: LabelId): FolderUiModel = mailLabels.getOrPut(labelId) {
         val label = requireNotNull(labelById[labelId])
-        label.toMailLabelCustom(::getMailLabel, ::getChildren, folderColorSettings, colorMapper)
+        label.toMailLabelCustom(::getMailLabel, ::getChildren, colorMapper)
     }
     return mapNotNull { label ->
         if (label.parentId == null || this.any { label.parentId == it.labelId }) {
@@ -49,42 +45,22 @@ fun List<Label>.toFolderUiModel(
 private fun Label.toMailLabelCustom(
     getMailLabel: (LabelId) -> FolderUiModel,
     getChildren: (LabelId) -> List<Label>,
-    folderColorSettings: FolderColorSettings,
     colorMapper: ColorMapper
 ): FolderUiModel {
     val parent = parentId?.let(getMailLabel)
     val children = getChildren(labelId).map { it.labelId }
     val level = parent?.level?.plus(1) ?: 0
-    val folderColor = colorMapper.toColor(color).getOrElse { Color.Black }
+    val folderColor = color?.let { colorMapper.toColor(it).getOrElse { Color.Black } }
     return FolderUiModel(
         id = labelId,
+        parent = parent,
         name = name,
         color = folderColor,
-        displayColor = getDisplayColor(folderColorSettings, folderColor, parent),
-        parent = parent,
         level = level,
         order = order,
         children = children,
-        icon = getFolderIcon(children.isNotEmpty(), folderColorSettings.useFolderColor)
+        icon = getFolderIcon(children.isNotEmpty(), folderColor != null)
     )
-}
-
-private fun getDisplayColor(
-    folderColorSettings: FolderColorSettings,
-    folderColor: Color,
-    parent: FolderUiModel?
-): Color? {
-    return if (folderColorSettings.useFolderColor &&
-        folderColorSettings.inheritParentFolderColor
-    ) {
-        var parentFolder = parent
-        while (parentFolder?.parent != null) {
-            parentFolder = parentFolder.parent
-        }
-        parentFolder?.color ?: folderColor
-    } else if (folderColorSettings.useFolderColor) {
-        folderColor
-    } else null
 }
 
 @DrawableRes

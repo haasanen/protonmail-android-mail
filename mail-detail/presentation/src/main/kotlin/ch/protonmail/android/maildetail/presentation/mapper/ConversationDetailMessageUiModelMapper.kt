@@ -24,6 +24,8 @@ import ch.protonmail.android.mailcommon.presentation.mapper.ColorMapper
 import ch.protonmail.android.mailcommon.presentation.mapper.ExpirationTimeMapper
 import ch.protonmail.android.mailcommon.presentation.usecase.FormatShortTime
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMessageUiModel
+import ch.protonmail.android.maillabel.domain.model.Label
+import ch.protonmail.android.maillabel.domain.model.LabelType
 import ch.protonmail.android.maillabel.presentation.model.LabelUiModel
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.model.Message
@@ -31,12 +33,9 @@ import ch.protonmail.android.mailmessage.domain.usecase.ResolveParticipantName
 import ch.protonmail.android.mailmessage.presentation.model.MessageBodyExpandCollapseMode
 import ch.protonmail.android.mailmessage.presentation.model.MessageBodyUiModel
 import ch.protonmail.android.mailmessage.presentation.model.isApplicable
-import ch.protonmail.android.mailsettings.domain.model.FolderColorSettings
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 import me.proton.core.contact.domain.entity.Contact
-import ch.protonmail.android.maillabel.domain.model.Label
-import ch.protonmail.android.maillabel.domain.model.LabelType
 import me.proton.core.user.domain.entity.UserAddress
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.seconds
@@ -57,11 +56,7 @@ class ConversationDetailMessageUiModelMapper @Inject constructor(
     private val participantUiModelMapper: ParticipantUiModelMapper
 ) {
 
-    suspend fun toUiModel(
-        message: Message,
-        contacts: List<Contact>,
-        folderColorSettings: FolderColorSettings
-    ): ConversationDetailMessageUiModel.Collapsed {
+    suspend fun toUiModel(message: Message, contacts: List<Contact>): ConversationDetailMessageUiModel.Collapsed {
         val senderResolvedName = resolveParticipantName(message.sender, contacts)
         return ConversationDetailMessageUiModel.Collapsed(
             avatar = avatarUiModelMapper(
@@ -72,7 +67,7 @@ class ConversationDetailMessageUiModelMapper @Inject constructor(
             hasAttachments = message.numAttachments > message.attachmentCount.calendar,
             isStarred = message.isStarred,
             isUnread = message.isUnread,
-            locationIcon = messageLocationUiModelMapper(emptyList(), emptyList(), folderColorSettings),
+            locationIcon = messageLocationUiModelMapper(emptyList(), emptyList()),
             repliedIcon = getRepliedIcon(isReplied = message.isReplied, isRepliedAll = message.isRepliedAll),
             sender = participantUiModelMapper.senderToUiModel(message.sender, contacts),
             shortTime = formatShortTime(message.time.seconds),
@@ -86,7 +81,6 @@ class ConversationDetailMessageUiModelMapper @Inject constructor(
         message: Message,
         contacts: List<Contact>,
         decryptedMessageBody: DecryptedMessageBody,
-        folderColorSettings: FolderColorSettings,
         userAddress: UserAddress,
         existingMessageUiState: ConversationDetailMessageUiModel.Expanded? = null
     ): ConversationDetailMessageUiModel.Expanded {
@@ -101,8 +95,7 @@ class ConversationDetailMessageUiModelMapper @Inject constructor(
             isUnread = message.isUnread,
             messageDetailHeaderUiModel = messageDetailHeaderUiModelMapper.toUiModel(
                 message,
-                contacts,
-                folderColorSettings
+                contacts
             ),
             messageDetailFooterUiModel = messageDetailFooterUiModelMapper.toUiModel(message),
             messageBannersUiModel = messageBannersUiModelMapper.createMessageBannersUiModel(message),
@@ -127,15 +120,13 @@ class ConversationDetailMessageUiModelMapper @Inject constructor(
     suspend fun toUiModel(
         messageUiModel: ConversationDetailMessageUiModel.Expanded,
         message: Message,
-        contacts: List<Contact>,
-        folderColorSettings: FolderColorSettings
+        contacts: List<Contact>
     ): ConversationDetailMessageUiModel.Expanded {
         return messageUiModel.copy(
             isUnread = message.isUnread,
             messageDetailHeaderUiModel = messageDetailHeaderUiModelMapper.toUiModel(
                 message,
-                contacts,
-                folderColorSettings
+                contacts
             )
         )
     }

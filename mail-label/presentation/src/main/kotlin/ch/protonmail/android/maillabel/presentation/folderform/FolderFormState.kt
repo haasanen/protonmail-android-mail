@@ -21,9 +21,9 @@ package ch.protonmail.android.maillabel.presentation.folderform
 import androidx.compose.ui.graphics.Color
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
-import ch.protonmail.android.maillabel.presentation.folderlist.BottomSheetVisibilityEffect
 import ch.protonmail.android.maillabel.domain.model.Label
 import ch.protonmail.android.maillabel.domain.model.LabelId
+import ch.protonmail.android.maillabel.presentation.folderlist.BottomSheetVisibilityEffect
 
 sealed interface FolderFormState {
 
@@ -39,13 +39,10 @@ sealed interface FolderFormState {
     sealed interface Data : FolderFormState {
 
         val name: String
-        val color: String
+        val color: String?
         val parent: Label?
         val notifications: Boolean
         val colorList: List<Color>
-        val displayColorPicker: Boolean
-        val useFolderColor: Boolean
-        val inheritParentFolderColor: Boolean
         val openParentFolderList: Effect<Unit>
         val closeWithSuccess: Effect<TextUiModel>
         val showErrorSnackbar: Effect<TextUiModel>
@@ -53,13 +50,10 @@ sealed interface FolderFormState {
         data class Create(
             override val isSaveEnabled: Boolean,
             override val name: String,
-            override val color: String,
+            override val color: String?,
             override val parent: Label?,
             override val notifications: Boolean,
             override val colorList: List<Color>,
-            override val displayColorPicker: Boolean,
-            override val useFolderColor: Boolean,
-            override val inheritParentFolderColor: Boolean,
             override val openParentFolderList: Effect<Unit> = Effect.empty(),
             override val close: Effect<Unit> = Effect.empty(),
             override val closeWithSuccess: Effect<TextUiModel> = Effect.empty(),
@@ -71,13 +65,10 @@ sealed interface FolderFormState {
         data class Update(
             override val isSaveEnabled: Boolean,
             override val name: String,
-            override val color: String,
+            override val color: String?,
             override val parent: Label?,
             override val notifications: Boolean,
             override val colorList: List<Color>,
-            override val displayColorPicker: Boolean,
-            override val useFolderColor: Boolean,
-            override val inheritParentFolderColor: Boolean,
             override val openParentFolderList: Effect<Unit> = Effect.empty(),
             override val close: Effect<Unit> = Effect.empty(),
             override val closeWithSuccess: Effect<TextUiModel> = Effect.empty(),

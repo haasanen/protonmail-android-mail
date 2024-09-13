@@ -49,6 +49,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import ch.protonmail.android.mailcommon.presentation.ConsumableTextEffect
 import ch.protonmail.android.mailcommon.presentation.NO_CONTENT_DESCRIPTION
+import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.presentation.R
 import ch.protonmail.android.maillabel.presentation.model.ParentFolderUiModel
 import me.proton.core.compose.component.ProtonCenteredProgress
@@ -57,7 +58,6 @@ import me.proton.core.compose.flow.rememberAsState
 import me.proton.core.compose.theme.ProtonDimens
 import me.proton.core.compose.theme.ProtonTheme
 import me.proton.core.compose.theme.defaultNorm
-import ch.protonmail.android.maillabel.domain.model.LabelId
 
 @Composable
 fun ParentFolderListScreen(
@@ -157,7 +157,7 @@ fun ClickableParentFolderItem(
                 end = ProtonDimens.DefaultSpacing
             ),
             painter = painterResource(id = parentFolderUiModel.folder.icon),
-            tint = parentFolderUiModel.folder.displayColor ?: ProtonTheme.colors.iconNorm,
+            tint = parentFolderUiModel.folder.color ?: ProtonTheme.colors.iconNorm,
             contentDescription = NO_CONTENT_DESCRIPTION
         )
         Text(
@@ -198,7 +198,7 @@ fun DisabledParentFolderItem(modifier: Modifier = Modifier, parentFolderUiModel:
                 end = ProtonDimens.DefaultSpacing
             ),
             painter = painterResource(id = parentFolderUiModel.folder.icon),
-            tint = parentFolderUiModel.folder.displayColor?.copy(alpha = 0.5f) ?: ProtonTheme.colors.iconDisabled,
+            tint = parentFolderUiModel.folder.color?.copy(alpha = 0.5f) ?: ProtonTheme.colors.iconDisabled,
             contentDescription = NO_CONTENT_DESCRIPTION
         )
         Text(

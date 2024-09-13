@@ -19,30 +19,27 @@
 package ch.protonmail.android.maildetail.presentation.mapper
 
 import androidx.compose.ui.graphics.Color
+import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.presentation.mapper.ColorMapper
 import ch.protonmail.android.maildetail.presentation.R
 import ch.protonmail.android.maildetail.presentation.model.MessageLocationUiModel
+import ch.protonmail.android.maillabel.domain.model.LabelId
+import ch.protonmail.android.maillabel.domain.model.LabelType
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
-import ch.protonmail.android.maillabel.domain.usecase.GetRootLabel
 import ch.protonmail.android.maillabel.presentation.iconRes
-import ch.protonmail.android.mailsettings.domain.model.FolderColorSettings
 import ch.protonmail.android.testdata.label.LabelTestData
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import ch.protonmail.android.maillabel.domain.model.LabelId
-import ch.protonmail.android.maillabel.domain.model.LabelType
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class MessageLocationUiModelMapperTest {
 
     private val colorMapper: ColorMapper = mockk()
-    private val folderColorSettings = FolderColorSettings(useFolderColor = false)
-    private val getRootLabel = mockk<GetRootLabel>()
 
-    private val messageLocationUiModelMapper = MessageLocationUiModelMapper(colorMapper, getRootLabel)
+    private val messageLocationUiModelMapper = MessageLocationUiModelMapper(colorMapper)
 
     @Test
     fun `when an exclusive system label is found in the list of label ids, its name and icon are returned`() = runTest {
@@ -53,7 +50,7 @@ class MessageLocationUiModelMapperTest {
             SystemLabelId.enumOf(SystemLabelId.Archive.labelId.id).iconRes()
         )
         // When
-        val result = messageLocationUiModelMapper(labelIds, emptyList(), folderColorSettings)
+        val result = messageLocationUiModelMapper(labelIds, emptyList())
         // Then
         assertEquals(expectedResult, result)
     }
@@ -84,7 +81,7 @@ class MessageLocationUiModelMapperTest {
             every { colorMapper.toColor(any()) } returns customFolderColor.right()
 
             // When
-            val result = messageLocationUiModelMapper(labelIds, labels, FolderColorSettings())
+            val result = messageLocationUiModelMapper(labelIds, labels)
 
             // Then
             assertEquals(expectedResult, result)
@@ -96,24 +93,24 @@ class MessageLocationUiModelMapperTest {
         val customLabelId = "customLabelId"
         val customFolderId = "customFolderId"
         val customFolderName = "customFolder"
-        val customFolderColor = Color.Red
         val labelIds = listOf(SystemLabelId.AllMail.labelId, LabelId(id = customLabelId), LabelId(id = customFolderId))
         val labels = listOf(
             LabelTestData.buildLabel(id = customLabelId, type = LabelType.MessageLabel),
             LabelTestData.buildLabel(
                 id = customFolderId,
                 type = LabelType.MessageFolder,
-                name = customFolderName
+                name = customFolderName,
+                color = null
             )
         )
         val expectedResult = MessageLocationUiModel(
             customFolderName,
             R.drawable.ic_proton_folder
         )
-        every { colorMapper.toColor(any()) } returns customFolderColor.right()
+        every { colorMapper.toColor(null) } returns "invalid".left()
 
         // When
-        val result = messageLocationUiModelMapper(labelIds, labels, folderColorSettings)
+        val result = messageLocationUiModelMapper(labelIds, labels)
 
         // Then
         assertEquals(expectedResult, result)
@@ -129,7 +126,7 @@ class MessageLocationUiModelMapperTest {
                 SystemLabelId.enumOf(SystemLabelId.AllMail.labelId.id).iconRes()
             )
             // When
-            val result = messageLocationUiModelMapper(labelIds, emptyList(), folderColorSettings)
+            val result = messageLocationUiModelMapper(labelIds, emptyList())
             // Then
             assertEquals(expectedResult, result)
         }

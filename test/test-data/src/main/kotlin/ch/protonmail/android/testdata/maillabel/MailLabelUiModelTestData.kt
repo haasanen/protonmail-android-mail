@@ -134,7 +134,7 @@ object MailLabelUiModelTestData {
             id = it.id,
             text = TextUiModel.Text(it.text),
             icon = R.drawable.ic_proton_circle_filled,
-            iconTint = Color(it.color),
+            iconTint = Color(it.color!!),
             isSelected = false,
             count = null,
             isVisible = true,

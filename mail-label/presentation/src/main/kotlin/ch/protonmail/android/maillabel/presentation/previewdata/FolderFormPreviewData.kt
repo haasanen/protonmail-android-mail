@@ -18,11 +18,11 @@
 
 package ch.protonmail.android.maillabel.presentation.previewdata
 
+import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.presentation.folderform.FolderFormState
 import ch.protonmail.android.maillabel.presentation.getHexStringFromColor
 import ch.protonmail.android.maillabel.presentation.previewdata.LabelListPreviewData.labelSampleData
 import ch.protonmail.android.maillabel.presentation.sample.LabelColorListSample
-import ch.protonmail.android.maillabel.domain.model.LabelId
 
 object FolderFormPreviewData {
 
@@ -32,10 +32,7 @@ object FolderFormPreviewData {
         color = LabelColorListSample.colorListSample().random().getHexStringFromColor(),
         parent = null,
         notifications = true,
-        colorList = LabelColorListSample.colorListSample(),
-        displayColorPicker = true,
-        useFolderColor = true,
-        inheritParentFolderColor = true
+        colorList = LabelColorListSample.colorListSample()
     )
 
     val editFolderFormState = FolderFormState.Data.Update(
@@ -45,9 +42,6 @@ object FolderFormPreviewData {
         parent = labelSampleData,
         notifications = true,
         colorList = LabelColorListSample.colorListSample(),
-        displayColorPicker = true,
-        useFolderColor = true,
-        inheritParentFolderColor = true,
         labelId = LabelId("Label Id")
     )
 }

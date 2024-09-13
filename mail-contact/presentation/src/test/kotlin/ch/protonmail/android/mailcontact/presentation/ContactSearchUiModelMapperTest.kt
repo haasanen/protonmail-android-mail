@@ -59,7 +59,7 @@ class ContactSearchUiModelMapperTest {
                 UserIdTestData.userId,
                 label.labelId,
                 label.name,
-                label.color,
+                label.color!!,
                 listOf(
                     ContactEmail(
                         UserIdTestData.userId,

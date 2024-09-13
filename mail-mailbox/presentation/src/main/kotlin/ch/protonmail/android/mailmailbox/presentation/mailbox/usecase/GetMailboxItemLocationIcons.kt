@@ -22,7 +22,6 @@ import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.maillabel.domain.SelectedMailLabelId
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItem
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxItemLocationUiModel
-import ch.protonmail.android.mailsettings.domain.model.FolderColorSettings
 import javax.inject.Inject
 
 /**
@@ -34,11 +33,7 @@ class GetMailboxItemLocationIcons @Inject constructor(
     private val selectedMailLabelId: SelectedMailLabelId
 ) {
 
-    suspend operator fun invoke(
-        mailboxItem: MailboxItem,
-        folderColorSettings: FolderColorSettings,
-        isShowingSearchResults: Boolean
-    ): Result {
+    suspend operator fun invoke(mailboxItem: MailboxItem, isShowingSearchResults: Boolean): Result {
         if (!currentLocationShouldShowIcons() && !isShowingSearchResults) {
             return Result.None
         }

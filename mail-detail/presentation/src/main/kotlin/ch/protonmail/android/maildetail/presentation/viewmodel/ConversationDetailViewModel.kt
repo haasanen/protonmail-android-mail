@@ -92,6 +92,7 @@ import ch.protonmail.android.maildetail.presentation.usecase.GetEmbeddedImageAvo
 import ch.protonmail.android.maildetail.presentation.usecase.LoadDataForMessageLabelAsBottomSheet
 import ch.protonmail.android.maildetail.presentation.usecase.OnMessageLabelAsConfirmed
 import ch.protonmail.android.maildetail.presentation.usecase.PrintMessage
+import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.maillabel.domain.usecase.ObserveCustomMailLabels
 import ch.protonmail.android.maillabel.domain.usecase.ObserveExclusiveDestinationMailLabels
@@ -114,8 +115,6 @@ import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.ContactA
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.DetailMoreActionsBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.LabelAsBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MoveToBottomSheetState
-import ch.protonmail.android.mailsettings.domain.model.FolderColorSettings
-import ch.protonmail.android.mailsettings.domain.usecase.ObserveFolderColorSettings
 import ch.protonmail.android.mailsettings.domain.usecase.privacy.ObservePrivacySettings
 import ch.protonmail.android.mailsettings.domain.usecase.privacy.UpdateLinkConfirmationSetting
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -140,7 +139,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import me.proton.core.contact.domain.entity.Contact
 import me.proton.core.domain.entity.UserId
-import ch.protonmail.android.maillabel.domain.model.LabelId
 import me.proton.core.network.domain.NetworkManager
 import me.proton.core.network.domain.NetworkStatus
 import timber.log.Timber
@@ -163,7 +161,6 @@ class ConversationDetailViewModel @Inject constructor(
     private val observeConversationMessages: ObserveConversationMessages,
     private val observeDetailActions: ObserveConversationDetailActions,
     private val observeDestinationMailLabels: ObserveExclusiveDestinationMailLabels,
-    private val observeFolderColor: ObserveFolderColorSettings,
     private val observeCustomMailLabels: ObserveCustomMailLabels,
     private val observeMessage: ObserveMessage,
     private val observeMessageAttachmentStatus: ObserveMessageAttachmentStatus,
@@ -319,9 +316,8 @@ class ConversationDetailViewModel @Inject constructor(
                 combine(
                     observeContacts(userId),
                     observeConversationMessages(userId, conversationId).ignoreLocalErrors(),
-                    observeFolderColor(userId),
                     observeConversationViewState()
-                ) { contactsEither, messagesEither, folderColorSettings, conversationViewState ->
+                ) { contactsEither, messagesEither, conversationViewState ->
                     val contacts = contactsEither.getOrElse {
                         Timber.i("Failed getting contacts for displaying initials. Fallback to display name")
                         emptyList()
@@ -332,7 +328,6 @@ class ConversationDetailViewModel @Inject constructor(
                     val messagesUiModels = buildMessagesUiModels(
                         messages = conversationMessages.messages,
                         contacts = contacts,
-                        folderColorSettings = folderColorSettings,
                         currentViewState = conversationViewState
                     ).toImmutableList()
 
@@ -374,7 +369,6 @@ class ConversationDetailViewModel @Inject constructor(
     private suspend fun buildMessagesUiModels(
         messages: NonEmptyList<Message>,
         contacts: List<Contact>,
-        folderColorSettings: FolderColorSettings,
         currentViewState: InMemoryConversationStateRepository.MessagesState
     ): NonEmptyList<ConversationDetailMessageUiModel> {
         val messagesList = messages.map { message ->
@@ -382,20 +376,19 @@ class ConversationDetailViewModel @Inject constructor(
 
             when (val viewState = currentViewState.messagesState[message.messageId]) {
                 is InMemoryConversationStateRepository.MessageState.Expanding ->
-                    buildExpandingMessage(buildCollapsedMessage(message, contacts, folderColorSettings))
+                    buildExpandingMessage(buildCollapsedMessage(message, contacts))
 
                 is InMemoryConversationStateRepository.MessageState.Expanded -> {
                     buildExpandedMessage(
                         message,
                         existingMessageState,
                         contacts,
-                        viewState.decryptedBody,
-                        folderColorSettings
+                        viewState.decryptedBody
                     )
                 }
 
                 else -> {
-                    buildCollapsedMessage(message, contacts, folderColorSettings)
+                    buildCollapsedMessage(message, contacts)
                 }
             }
         }
@@ -430,12 +423,10 @@ class ConversationDetailViewModel @Inject constructor(
 
     private suspend fun buildCollapsedMessage(
         message: Message,
-        contacts: List<Contact>,
-        folderColorSettings: FolderColorSettings
+        contacts: List<Contact>
     ): ConversationDetailMessageUiModel.Collapsed = conversationMessageMapper.toUiModel(
         message,
-        contacts,
-        folderColorSettings
+        contacts
     )
 
     private fun buildExpandingMessage(
@@ -448,13 +439,11 @@ class ConversationDetailViewModel @Inject constructor(
         message: Message,
         existingMessageUiState: ConversationDetailMessageUiModel.Expanded?,
         contacts: List<Contact>,
-        decryptedBody: DecryptedMessageBody,
-        folderColorSettings: FolderColorSettings
+        decryptedBody: DecryptedMessageBody
     ): ConversationDetailMessageUiModel.Expanded = conversationMessageMapper.toUiModel(
         message,
         contacts,
         decryptedBody,
-        folderColorSettings,
         decryptedBody.userAddress,
         existingMessageUiState
     )
@@ -479,13 +468,10 @@ class ConversationDetailViewModel @Inject constructor(
 
     private fun showMoveToBottomSheetAndLoadData(initialEvent: ConversationDetailViewAction) {
         primaryUserId.flatMapLatest { userId ->
-            combine(
-                observeDestinationMailLabels(userId),
-                observeFolderColor(userId)
-            ) { folders, color ->
+            observeDestinationMailLabels(userId).mapLatest { folders ->
                 ConversationDetailEvent.ConversationBottomSheetEvent(
                     MoveToBottomSheetState.MoveToBottomSheetEvent.ActionData(
-                        moveToDestinations = folders.toUiModels(color).let {
+                        moveToDestinations = folders.toUiModels().let {
                             it.folders + it.systemLabels
                         }.toImmutableList(),
                         messageIdInConversation = when (initialEvent) {
@@ -529,7 +515,6 @@ class ConversationDetailViewModel @Inject constructor(
 
             val userId = primaryUserId.first()
             val labels = observeCustomMailLabels(userId).first()
-            val color = observeFolderColor(userId).first()
             val conversationWithMessagesAndLabels = observeConversationMessages(userId, conversationId).first()
 
             val mappedLabels = labels.onLeft {
@@ -543,7 +528,7 @@ class ConversationDetailViewModel @Inject constructor(
 
                     val event = ConversationDetailEvent.ConversationBottomSheetEvent(
                         LabelAsBottomSheetState.LabelAsBottomSheetEvent.ActionData(
-                            customLabelList = mappedLabels.map { it.toCustomUiModel(color, emptyMap(), null) }
+                            customLabelList = mappedLabels.map { it.toCustomUiModel(emptyMap(), null) }
                                 .toImmutableList(),
                             selectedLabels = emptyList<LabelId>().toImmutableList(),
                             partiallySelectedLabels = emptyList<LabelId>().toImmutableList()

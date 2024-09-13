@@ -54,7 +54,7 @@ sealed class MailLabel(
         override val id: MailLabelId.Custom,
         val parent: Custom?,
         val text: String,
-        val color: Int,
+        val color: Int?,
         val isExpanded: Boolean,
         val level: Int,
         val order: Int,

@@ -21,66 +21,53 @@ package ch.protonmail.android.maillabel.presentation
 import androidx.annotation.DrawableRes
 import androidx.compose.ui.graphics.Color
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
+import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabel
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabels
-import ch.protonmail.android.mailsettings.domain.model.FolderColorSettings
 import me.proton.core.compose.theme.ProtonDimens
-import ch.protonmail.android.maillabel.domain.model.LabelId
 
-fun MailLabels.toUiModels(
-    settings: FolderColorSettings,
-    counters: Map<LabelId, Int?>,
-    selected: MailLabelId
-): MailLabelsUiModel = MailLabelsUiModel(
-    systemLabels = system.map { it.toDynamicSystemUiModel(settings, counters, selected) },
-    folders = folders.map { it.toCustomUiModel(settings, counters, selected) },
-    labels = labels.map { it.toCustomUiModel(settings, counters, selected) }
+fun MailLabels.toUiModels(counters: Map<LabelId, Int?>, selected: MailLabelId): MailLabelsUiModel = MailLabelsUiModel(
+    systemLabels = system.map { it.toDynamicSystemUiModel(counters, selected) },
+    folders = folders.map { it.toCustomUiModel(counters, selected) },
+    labels = labels.map { it.toCustomUiModel(counters, selected) }
 )
 
-fun MailLabel.toUiModel(
-    settings: FolderColorSettings,
-    counters: Map<LabelId, Int?>,
-    selected: MailLabelId
-): MailLabelUiModel = when (this) {
-    is MailLabel.Custom -> toCustomUiModel(settings, counters, selected)
-    is MailLabel.System -> toDynamicSystemUiModel(settings, counters, selected)
+fun MailLabel.toUiModel(counters: Map<LabelId, Int?>, selected: MailLabelId): MailLabelUiModel = when (this) {
+    is MailLabel.Custom -> toCustomUiModel(counters, selected)
+    is MailLabel.System -> toDynamicSystemUiModel(counters, selected)
 }
 
-fun MailLabels.toUiModels(settings: FolderColorSettings): MailLabelsUiModel = MailLabelsUiModel(
-    systemLabels = system.map { it.toDynamicSystemUiModel(settings, emptyMap(), null) },
-    folders = folders.map { it.toCustomUiModel(settings, emptyMap(), null) },
-    labels = labels.map { it.toCustomUiModel(settings, emptyMap(), null) }
+fun MailLabels.toUiModels(): MailLabelsUiModel = MailLabelsUiModel(
+    systemLabels = system.map { it.toDynamicSystemUiModel(emptyMap(), null) },
+    folders = folders.map { it.toCustomUiModel(emptyMap(), null) },
+    labels = labels.map { it.toCustomUiModel(emptyMap(), null) }
 )
 
 fun MailLabel.System.toDynamicSystemUiModel(
-    settings: FolderColorSettings,
     counters: Map<LabelId, Int?>,
     selected: MailLabelId?
 ): MailLabelUiModel.System = MailLabelUiModel.System(
     id = id,
     text = text() as TextUiModel.TextRes,
-    icon = iconRes(settings),
-    iconTint = iconTintColor(settings),
+    icon = iconRes(),
+    iconTint = iconTintColor(),
     isSelected = id.labelId == selected?.labelId,
     count = counters[id.labelId]
 )
 
-fun MailLabel.Custom.toCustomUiModel(
-    settings: FolderColorSettings,
-    counters: Map<LabelId, Int?>,
-    selected: MailLabelId?
-): MailLabelUiModel.Custom = MailLabelUiModel.Custom(
-    id = id,
-    text = text() as TextUiModel.Text,
-    icon = iconRes(settings),
-    iconTint = iconTintColor(settings),
-    isVisible = parent == null || parent?.isExpanded == true,
-    isExpanded = isExpanded,
-    isSelected = id.labelId == selected?.labelId,
-    iconPaddingStart = ProtonDimens.DefaultSpacing * level,
-    count = counters[id.labelId]
-)
+fun MailLabel.Custom.toCustomUiModel(counters: Map<LabelId, Int?>, selected: MailLabelId?): MailLabelUiModel.Custom =
+    MailLabelUiModel.Custom(
+        id = id,
+        text = text() as TextUiModel.Text,
+        icon = iconRes(),
+        iconTint = iconTintColor(),
+        isVisible = parent == null || parent?.isExpanded == true,
+        isExpanded = isExpanded,
+        isSelected = id.labelId == selected?.labelId,
+        iconPaddingStart = ProtonDimens.DefaultSpacing * level,
+        count = counters[id.labelId]
+    )
 
 fun MailLabel.text(): TextUiModel = when (this) {
     is MailLabel.Custom -> TextUiModel.Text(text)
@@ -88,37 +75,30 @@ fun MailLabel.text(): TextUiModel = when (this) {
 }
 
 @DrawableRes
-fun MailLabel.iconRes(settings: FolderColorSettings): Int = when (this) {
+fun MailLabel.iconRes(): Int = when (this) {
     is MailLabel.Custom -> when (id) {
         is MailLabelId.Custom.Label -> R.drawable.ic_proton_circle_filled
-        is MailLabelId.Custom.Folder -> when {
-            settings.useFolderColor -> when {
-                children.isEmpty() -> R.drawable.ic_proton_folder_filled
-                else -> R.drawable.ic_proton_folders_filled
-            }
-            else -> when {
-                children.isEmpty() -> R.drawable.ic_proton_folder
-                else -> R.drawable.ic_proton_folders
+        is MailLabelId.Custom.Folder -> {
+            val useFolderColor = color != null
+            when {
+                useFolderColor -> when {
+                    children.isEmpty() -> R.drawable.ic_proton_folder_filled
+                    else -> R.drawable.ic_proton_folders_filled
+                }
+                else -> when {
+                    children.isEmpty() -> R.drawable.ic_proton_folder
+                    else -> R.drawable.ic_proton_folders
+                }
             }
         }
     }
     is MailLabel.System -> systemLabelId.iconRes()
 }
 
-fun MailLabel.iconTintColor(settings: FolderColorSettings): Color? = when (this) {
+fun MailLabel.iconTintColor(): Color? = when (this) {
     is MailLabel.Custom -> when (id) {
         is MailLabelId.Custom.Label -> color
-        is MailLabelId.Custom.Folder -> when {
-            settings.useFolderColor.not() -> null
-            settings.inheritParentFolderColor -> {
-                var parentFolder = parent
-                while (parentFolder?.parent != null) {
-                    parentFolder = parentFolder.parent
-                }
-                parentFolder?.color ?: color
-            }
-            else -> color
-        }
+        is MailLabelId.Custom.Folder -> color
     }
     is MailLabel.System -> null
 }?.let { Color(it) }

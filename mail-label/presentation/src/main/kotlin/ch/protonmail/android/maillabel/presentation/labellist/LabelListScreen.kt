@@ -72,6 +72,7 @@ import me.proton.core.compose.theme.defaultNorm
 import me.proton.core.compose.theme.defaultSmallWeak
 import me.proton.core.compose.theme.defaultStrongNorm
 import ch.protonmail.android.maillabel.domain.model.LabelId
+import ch.protonmail.android.uicomponents.chips.thenIf
 
 @Composable
 fun LabelListScreen(actions: LabelListScreen.Actions, viewModel: LabelListViewModel = hiltViewModel()) {
@@ -161,12 +162,13 @@ fun LabelListScreenContent(
                     ),
                 verticalAlignment = Alignment.CenterVertically
             ) {
+                val hasLabelColor = label.color != null
                 Box(
                     modifier = Modifier
                         .padding(MailDimens.ListItemCircleFilledPadding)
                         .size(MailDimens.ListItemCircleFilledSize)
                         .clip(CircleShape)
-                        .background(label.color.getColorFromHexString())
+                        .thenIf(hasLabelColor) { this.background(label.color!!.getColorFromHexString()) }
                 )
                 Text(
                     text = label.name,

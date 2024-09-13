@@ -29,17 +29,16 @@ import ch.protonmail.android.mailcommon.presentation.usecase.FormatShortTime
 import ch.protonmail.android.maildetail.presentation.R
 import ch.protonmail.android.maildetail.presentation.model.MessageDetailHeaderUiModel
 import ch.protonmail.android.maildetail.presentation.model.MessageIdUiModel
+import ch.protonmail.android.maillabel.domain.model.Label
+import ch.protonmail.android.maillabel.domain.model.LabelType
 import ch.protonmail.android.maillabel.presentation.model.LabelUiModel
 import ch.protonmail.android.mailmessage.domain.model.Message
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.usecase.ResolveParticipantName
-import ch.protonmail.android.mailsettings.domain.model.FolderColorSettings
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 import me.proton.core.contact.domain.entity.Contact
-import ch.protonmail.android.maillabel.domain.model.Label
-import ch.protonmail.android.maillabel.domain.model.LabelType
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.seconds
 
@@ -54,11 +53,7 @@ class MessageDetailHeaderUiModelMapper @Inject constructor(
     private val resolveParticipantName: ResolveParticipantName
 ) {
 
-    suspend fun toUiModel(
-        message: Message,
-        contacts: List<Contact>,
-        folderColorSettings: FolderColorSettings
-    ): MessageDetailHeaderUiModel {
+    suspend fun toUiModel(message: Message, contacts: List<Contact>): MessageDetailHeaderUiModel {
         val senderResolvedName = resolveParticipantName(message.sender, contacts)
         return MessageDetailHeaderUiModel(
             avatar = detailAvatarUiModelMapper(senderResolvedName.name),
@@ -68,8 +63,7 @@ class MessageDetailHeaderUiModelMapper @Inject constructor(
             shouldShowStar = message.isStarred,
             location = messageLocationUiModelMapper(
                 emptyList(),
-                emptyList(),
-                folderColorSettings
+                emptyList()
             ),
             time = formatShortTime(message.time.seconds),
             extendedTime = formatExtendedTime(message.time.seconds),
