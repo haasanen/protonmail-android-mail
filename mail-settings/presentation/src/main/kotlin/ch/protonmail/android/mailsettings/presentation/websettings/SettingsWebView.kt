@@ -83,13 +83,8 @@ fun SettingWebView(modifier: Modifier = Modifier, state: WebSettingsState.Data) 
         }
     }
 
-    val additionalHeaders = mapOf(
-        "x-pm-appversion" to "Other"
-    )
-
     val webViewState = rememberWebViewState(
-        url = state.webSettingsUrl,
-        additionalHttpHeaders = additionalHeaders
+        url = state.webSettingsUrl
     )
     Column(modifier = modifier.fillMaxSize()) {
         WebView(
