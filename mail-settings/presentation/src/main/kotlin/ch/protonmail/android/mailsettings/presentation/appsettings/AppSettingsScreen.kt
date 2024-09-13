@@ -87,7 +87,7 @@ fun AppSettingsScreen(
     modifier: Modifier = Modifier
 ) {
     Scaffold(
-        modifier = modifier.testTag(SettingsScreenTestTags.RootItem),
+        modifier = modifier.testTag(AppSettingsScreenTestTags.RootItem),
         topBar = {
             ProtonSettingsTopBar(
                 title = stringResource(id = string.mail_settings_app_settings),
@@ -97,7 +97,7 @@ fun AppSettingsScreen(
     ) { contentPadding ->
         ProtonSettingsList(
             modifier = modifier
-                .testTag(SettingsScreenTestTags.SettingsList)
+                .testTag(AppSettingsScreenTestTags.SettingsList)
                 .padding(contentPadding)
         ) {
 
@@ -303,8 +303,7 @@ fun PreviewAppSettingsScreen() {
     }
 }
 
-object SettingsScreenTestTags {
+object AppSettingsScreenTestTags {
     const val RootItem = "SettingsScreenTestTag"
     const val SettingsList = "SettingsListTestTag"
-    const val AccountSettingsItem = "AccountSettingsItemTestTag"
 }
