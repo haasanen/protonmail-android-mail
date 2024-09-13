@@ -24,7 +24,7 @@ import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailsession.domain.model.ForkedSessionId
 import ch.protonmail.android.mailsession.domain.model.SessionError
-import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
+import ch.protonmail.android.mailsession.domain.usecase.ForkSession
 import ch.protonmail.android.mailsettings.domain.model.Theme
 import ch.protonmail.android.mailsettings.domain.model.WebSettingsConfig
 import ch.protonmail.android.mailsettings.domain.repository.ThemeRepository
@@ -62,7 +62,9 @@ class WebFoldersAndLabelsViewModelTest {
     private val primaryUserId = UserIdTestData.Primary
 
     private val observePrimaryUserId = mockk<ObservePrimaryUserId>()
-    private val userSessionRepository = mockk<UserSessionRepository>()
+    private val forkSession = mockk<ForkSession> {
+        coEvery { this@mockk(primaryUserId) } returns forkedSessionId.right()
+    }
     private val themeRepository = mockk<ThemeRepository>()
     private val observeWebSettingsConfig = mockk<ObserveWebSettingsConfig> {
         every { this@mockk.invoke() } returns flowOf(testWebSettingsConfig)
@@ -72,12 +74,11 @@ class WebFoldersAndLabelsViewModelTest {
     fun `emits loading state when initialized`() = runTest {
         // Given
         every { observePrimaryUserId.invoke() } returns flowOf(null)
-        coEvery { userSessionRepository.forkSession(primaryUserId) } returns forkedSessionId.right()
         every { themeRepository.observe() } returns flowOf(testTheme)
         val viewModel =
             WebFoldersAndLabelsViewModel(
                 observePrimaryUserId = observePrimaryUserId,
-                userSessionRepository = userSessionRepository,
+                forkSession = forkSession,
                 themeRepository = themeRepository,
                 observeWebSettingsConfig = observeWebSettingsConfig
             )
@@ -92,12 +93,11 @@ class WebFoldersAndLabelsViewModelTest {
     fun `emits Data state when valid data is provided`() = runTest {
         // Given
         every { observePrimaryUserId.invoke() } returns flowOf(primaryUserId)
-        coEvery { userSessionRepository.forkSession(primaryUserId) } returns forkedSessionId.right()
         every { themeRepository.observe() } returns flowOf(testTheme)
         val viewModel =
             WebFoldersAndLabelsViewModel(
                 observePrimaryUserId = observePrimaryUserId,
-                userSessionRepository = userSessionRepository,
+                forkSession = forkSession,
                 themeRepository = themeRepository,
                 observeWebSettingsConfig = observeWebSettingsConfig
             )
@@ -117,12 +117,12 @@ class WebFoldersAndLabelsViewModelTest {
         every { observePrimaryUserId.invoke() } returns flowOf(primaryUserId)
         every { themeRepository.observe() } returns flowOf(testTheme)
         coEvery {
-            userSessionRepository.forkSession(primaryUserId)
+            forkSession(primaryUserId)
         } returns SessionError.Local.KeyChainError.left()
         val viewModel =
             WebFoldersAndLabelsViewModel(
                 observePrimaryUserId = observePrimaryUserId,
-                userSessionRepository = userSessionRepository,
+                forkSession = forkSession,
                 themeRepository = themeRepository,
                 observeWebSettingsConfig = observeWebSettingsConfig
             )

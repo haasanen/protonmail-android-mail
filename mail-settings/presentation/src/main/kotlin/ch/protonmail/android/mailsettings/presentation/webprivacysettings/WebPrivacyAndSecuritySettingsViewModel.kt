@@ -22,7 +22,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUserId
-import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
+import ch.protonmail.android.mailsession.domain.usecase.ForkSession
 import ch.protonmail.android.mailsettings.domain.repository.ThemeRepository
 import ch.protonmail.android.mailsettings.domain.usecase.ObserveWebSettingsConfig
 import ch.protonmail.android.mailsettings.presentation.websettings.model.WebSettingsAction
@@ -44,7 +44,7 @@ import javax.inject.Inject
 @HiltViewModel
 class WebPrivacyAndSecuritySettingsViewModel @Inject constructor(
     private val observePrimaryUserId: ObservePrimaryUserId,
-    private val userSessionRepository: UserSessionRepository,
+    private val forkSession: ForkSession,
     private val themeRepository: ThemeRepository,
     private val observeWebSettingsConfig: ObserveWebSettingsConfig
 ) : ViewModel() {
@@ -59,7 +59,7 @@ class WebPrivacyAndSecuritySettingsViewModel @Inject constructor(
             observeWebSettingsConfig()
         ) { userId, theme, webSettingsConfig ->
 
-            userSessionRepository.forkSession(userId).fold(
+            forkSession(userId).fold(
                 ifRight = { forkedSessionId ->
                     WebSettingsState.Data(
                         webSettingsConfig.toPrivacyAndSecuritySettingsUrl(
