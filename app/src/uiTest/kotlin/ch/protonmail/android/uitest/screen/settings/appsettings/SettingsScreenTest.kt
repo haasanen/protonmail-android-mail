@@ -26,8 +26,6 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performScrollToNode
 import ch.protonmail.android.mailcommon.domain.AppInformation
-import ch.protonmail.android.mailsettings.domain.model.AppSettings
-import ch.protonmail.android.mailsettings.domain.model.LocalStorageUsageInformation
 import ch.protonmail.android.mailsettings.presentation.R.string
 import ch.protonmail.android.mailsettings.presentation.settings.AccountInfo
 import ch.protonmail.android.mailsettings.presentation.settings.MainSettingsScreen
@@ -49,14 +47,7 @@ internal class SettingsScreenTest : HiltInstrumentedTest() {
 
     private val settingsState = Data(
         AccountInfo("ProtonTest", "user-test@proton.ch"),
-        AppSettings(
-            hasAutoLock = false,
-            hasAlternativeRouting = true,
-            customAppLanguage = null,
-            hasCombinedContacts = true
-        ),
-        AppInformation(appVersionName = "6.0.0-alpha-adf8373a", appVersionCode = 9026),
-        LocalStorageUsageInformation(123L)
+        AppInformation(appVersionName = "6.0.0-alpha-adf8373a", appVersionCode = 9026)
     )
 
     @Before
@@ -67,14 +58,11 @@ internal class SettingsScreenTest : HiltInstrumentedTest() {
                     state = settingsState,
                     actions = MainSettingsScreen.Actions(
                         onAccountClick = {},
-                        onThemeClick = {},
-                        onPushNotificationsClick = {},
-                        onAutoLockClick = {},
-                        onAlternativeRoutingClick = {},
-                        onAppLanguageClick = {},
-                        onCombinedContactsClick = {},
-                        onSwipeActionsClick = {},
-                        onClearCacheClick = {},
+                        onAppSettingsClick = {},
+                        onEmailSettingsClick = {},
+                        onFolderAndLabelSettingsClicked = {},
+                        onSpamFilterSettingsClicked = {},
+                        onPrivacyAndSecuritySettingsClicked = {},
                         onBackClick = {}
                     )
                 )
