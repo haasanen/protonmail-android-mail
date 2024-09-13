@@ -18,7 +18,6 @@
 
 package ch.protonmail.android.mailsettings.presentation.webaccountsettings
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
@@ -91,10 +90,6 @@ fun WebAccountSettingScreen(
             )
         }
     )
-
-    BackHandler {
-        actions.onBackClick()
-    }
 }
 
 object WebAccountSettingScreen {

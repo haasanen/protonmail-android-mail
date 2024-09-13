@@ -18,7 +18,6 @@
 
 package ch.protonmail.android.mailsettings.presentation.webfoldersettings
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
@@ -91,10 +90,6 @@ fun WebFoldersAndLabelsSettingScreen(
             )
         }
     )
-
-    BackHandler {
-        actions.onBackClick()
-    }
 }
 
 object WebFoldersAndLabelsSettingScreen {
