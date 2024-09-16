@@ -525,9 +525,9 @@ class MailboxViewModel @Inject constructor(
             combine(
                 state.observeMailLabelChanges(),
                 state.observeUnreadFilterState(),
-                observeViewModeByLocation(),
                 state.observeSearchQuery()
-            ) { selectedMailLabel, unreadFilterEnabled, viewMode, query ->
+            ) { selectedMailLabel, unreadFilterEnabled, query ->
+                val viewMode = getViewModeForCurrentLocation(selectedMailLabelId.flow.value)
                 mailboxPagerFactory.create(
                     userId = userId,
                     selectedMailLabelId = selectedMailLabel.id,
@@ -1121,10 +1121,6 @@ class MailboxViewModel @Inject constructor(
         } else {
             observeUnreadCounters(userId)
         }
-    }
-
-    private fun observeViewModeByLocation(): Flow<ViewMode> = primaryUserId.filterNotNull().flatMapLatest { userId ->
-        selectedMailLabelId.flow.flatMapLatest { observeCurrentViewMode(userId, it) }.distinctUntilChanged()
     }
 
     private fun observeMailLabels() = primaryUserId.flatMapLatest { userId ->
