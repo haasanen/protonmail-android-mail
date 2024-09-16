@@ -20,10 +20,10 @@ package ch.protonmail.android.mailsettings.presentation.webspamsettings
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailsession.domain.usecase.ForkSession
 import ch.protonmail.android.mailsettings.domain.repository.ThemeRepository
+import ch.protonmail.android.mailsettings.domain.usecase.HandleCloseWebSettings
 import ch.protonmail.android.mailsettings.domain.usecase.ObserveWebSettingsConfig
 import ch.protonmail.android.mailsettings.presentation.websettings.model.WebSettingsAction
 import ch.protonmail.android.mailsettings.presentation.websettings.model.WebSettingsOperation
@@ -46,7 +46,8 @@ class WebSpamFilterSettingsViewModel @Inject constructor(
     private val observePrimaryUserId: ObservePrimaryUserId,
     private val forkSession: ForkSession,
     private val themeRepository: ThemeRepository,
-    private val observeWebSettingsConfig: ObserveWebSettingsConfig
+    private val observeWebSettingsConfig: ObserveWebSettingsConfig,
+    private val handleCloseWebSettings: HandleCloseWebSettings
 ) : ViewModel() {
 
     private val _state = MutableStateFlow<WebSettingsState>(WebSettingsState.Loading)
@@ -80,15 +81,9 @@ class WebSpamFilterSettingsViewModel @Inject constructor(
     internal fun submit(action: WebSettingsOperation) {
         viewModelScope.launch {
             when (action) {
-                is WebSettingsAction.OnCloseWebSettings -> handleCloseSettings()
+                is WebSettingsAction.OnCloseWebSettings -> handleCloseWebSettings()
 
             }
         }
     }
-
-    @MissingRustApi
-    private suspend fun handleCloseSettings() {
-        Timber.d("web-spam-settings: Closing account settings, event loop polling will be triggered")
-    }
 }
-

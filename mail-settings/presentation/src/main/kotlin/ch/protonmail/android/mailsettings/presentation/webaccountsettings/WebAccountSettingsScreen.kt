@@ -27,6 +27,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import ch.protonmail.android.mailsettings.presentation.R
 import ch.protonmail.android.mailsettings.presentation.websettings.model.WebSettingsAction
 import ch.protonmail.android.mailsettings.presentation.websettings.SettingWebView
+import ch.protonmail.android.mailsettings.presentation.websettings.WebSettingsScreenActions
 import ch.protonmail.android.mailsettings.presentation.websettings.WebSettingsState
 import me.proton.core.compose.component.ProtonCenteredProgress
 import me.proton.core.compose.component.ProtonErrorMessage
@@ -37,7 +38,7 @@ import timber.log.Timber
 
 @Composable
 fun WebAccountSettingScreen(
-    actions: WebAccountSettingScreen.Actions,
+    actions: WebSettingsScreenActions,
     modifier: Modifier = Modifier,
     accountSettingsViewModel: WebAccountSettingsViewModel = hiltViewModel()
 ) {
@@ -50,7 +51,7 @@ fun WebAccountSettingScreen(
         is WebSettingsState.Data -> WebAccountSettingScreen(
             modifier = modifier,
             state = settingsState,
-            actions = WebAccountSettingScreen.Actions(
+            actions = WebSettingsScreenActions(
                 onBackClick = {
                     accountSettingsViewModel.submit(WebSettingsAction.OnCloseWebSettings)
                     actions.onBackClick()
@@ -71,7 +72,7 @@ fun WebAccountSettingScreen(
 fun WebAccountSettingScreen(
     modifier: Modifier = Modifier,
     state: WebSettingsState.Data,
-    actions: WebAccountSettingScreen.Actions
+    actions: WebSettingsScreenActions
 ) {
     Timber.d("web-settings: WebAccountSettingScreen: $state")
     Scaffold(
@@ -89,12 +90,5 @@ fun WebAccountSettingScreen(
                 state = state
             )
         }
-    )
-}
-
-object WebAccountSettingScreen {
-
-    data class Actions(
-        val onBackClick: () -> Unit
     )
 }

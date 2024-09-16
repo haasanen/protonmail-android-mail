@@ -28,12 +28,17 @@ import ch.protonmail.android.mailsession.domain.usecase.ForkSession
 import ch.protonmail.android.mailsettings.domain.model.Theme
 import ch.protonmail.android.mailsettings.domain.model.WebSettingsConfig
 import ch.protonmail.android.mailsettings.domain.repository.ThemeRepository
+import ch.protonmail.android.mailsettings.domain.usecase.HandleCloseWebSettings
 import ch.protonmail.android.mailsettings.domain.usecase.ObserveWebSettingsConfig
 import ch.protonmail.android.mailsettings.presentation.websettings.WebSettingsState
+import ch.protonmail.android.mailsettings.presentation.websettings.model.WebSettingsAction
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
 import ch.protonmail.android.testdata.user.UserIdTestData
+import io.mockk.Runs
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
@@ -69,19 +74,24 @@ class WebEmailSettingsViewModelTest {
     private val observeWebSettingsConfig = mockk<ObserveWebSettingsConfig> {
         every { this@mockk.invoke() } returns flowOf(testWebSettingsConfig)
     }
+    private val handleCloseWebSettings = mockk<HandleCloseWebSettings> {
+        coEvery { this@mockk() } just Runs
+    }
+
+    private fun buildViewModel() = WebEmailSettingsViewModel(
+        observePrimaryUserId = observePrimaryUserId,
+        forkSession = forkSession,
+        themeRepository = themeRepository,
+        observeWebSettingsConfig = observeWebSettingsConfig,
+        handleCloseWebSettings = handleCloseWebSettings
+    )
 
     @Test
     fun `emits loading state when initialized`() = runTest {
         // Given
         every { observePrimaryUserId.invoke() } returns flowOf(null)
         every { themeRepository.observe() } returns flowOf(testTheme)
-        val viewModel =
-            WebEmailSettingsViewModel(
-                observePrimaryUserId = observePrimaryUserId,
-                forkSession = forkSession,
-                themeRepository = themeRepository,
-                observeWebSettingsConfig = observeWebSettingsConfig
-            )
+        val viewModel = buildViewModel()
 
         // When & Then
         viewModel.state.test {
@@ -94,13 +104,7 @@ class WebEmailSettingsViewModelTest {
         // Given
         every { observePrimaryUserId.invoke() } returns flowOf(primaryUserId)
         every { themeRepository.observe() } returns flowOf(testTheme)
-        val viewModel =
-            WebEmailSettingsViewModel(
-                observePrimaryUserId = observePrimaryUserId,
-                forkSession = forkSession,
-                themeRepository = themeRepository,
-                observeWebSettingsConfig = observeWebSettingsConfig
-            )
+        val viewModel = buildViewModel()
 
         // When
         viewModel.state.test {
@@ -119,19 +123,31 @@ class WebEmailSettingsViewModelTest {
         coEvery {
             forkSession(primaryUserId)
         } returns SessionError.Local.KeyChainError.left()
-        val viewModel =
-            WebEmailSettingsViewModel(
-                observePrimaryUserId = observePrimaryUserId,
-                forkSession = forkSession,
-                themeRepository = themeRepository,
-                observeWebSettingsConfig = observeWebSettingsConfig
-            )
+        val viewModel = buildViewModel()
 
         // When
         viewModel.state.test {
 
             // Then
             assertTrue(awaitItem() is WebSettingsState.Error)
+        }
+    }
+
+    @Test
+    fun `Calls handleCloseWebSettings use case when settings page is closed`() = runTest {
+        // Given
+        every { observePrimaryUserId.invoke() } returns flowOf(primaryUserId)
+        every { themeRepository.observe() } returns flowOf(testTheme)
+        val viewModel = buildViewModel()
+
+        // When
+        viewModel.submit(WebSettingsAction.OnCloseWebSettings)
+        viewModel.state.test {
+
+            // Then
+            val actualState = awaitItem() as WebSettingsState.Data
+            assertEquals(testTheme, actualState.theme)
+            coVerify(exactly = 1) { handleCloseWebSettings() }
         }
     }
 }

@@ -40,6 +40,7 @@ import ch.protonmail.android.mailsettings.presentation.webaccountsettings.WebAcc
 import ch.protonmail.android.mailsettings.presentation.webemailsettings.WebEmailSettingScreen
 import ch.protonmail.android.mailsettings.presentation.webfoldersettings.WebFoldersAndLabelsSettingScreen
 import ch.protonmail.android.mailsettings.presentation.webprivacysettings.WebPrivacyAndSecuritySettingsScreen
+import ch.protonmail.android.mailsettings.presentation.websettings.WebSettingsScreenActions
 import ch.protonmail.android.mailsettings.presentation.webspamsettings.WebSpamFilterSettingsScreen
 import ch.protonmail.android.navigation.Launcher
 import ch.protonmail.android.navigation.model.Destination.Screen
@@ -49,7 +50,7 @@ import me.proton.core.compose.navigation.require
 fun NavGraphBuilder.addWebAccountSettings(navController: NavHostController, launcherActions: Launcher.Actions) {
     composable(route = Screen.AccountSettings.route) {
         WebAccountSettingScreen(
-            actions = WebAccountSettingScreen.Actions(
+            actions = WebSettingsScreenActions(
                 onBackClick = { navController.popBackStack() }
             )
         )
@@ -60,7 +61,7 @@ fun NavGraphBuilder.addWebAccountSettings(navController: NavHostController, laun
 fun NavGraphBuilder.addWebEmailSettings(navController: NavHostController, launcherActions: Launcher.Actions) {
     composable(route = Screen.EmailSettings.route) {
         WebEmailSettingScreen(
-            actions = WebEmailSettingScreen.Actions(
+            actions = WebSettingsScreenActions(
                 onBackClick = { navController.popBackStack() }
             )
         )
@@ -70,7 +71,7 @@ fun NavGraphBuilder.addWebEmailSettings(navController: NavHostController, launch
 fun NavGraphBuilder.addWebFolderAndLabelSettings(navController: NavHostController, launcherActions: Launcher.Actions) {
     composable(route = Screen.FolderAndLabelSettings.route) {
         WebFoldersAndLabelsSettingScreen(
-            actions = WebFoldersAndLabelsSettingScreen.Actions(
+            actions = WebSettingsScreenActions(
                 onBackClick = { navController.popBackStack() }
             )
         )
@@ -83,7 +84,7 @@ fun NavGraphBuilder.addWebPrivacyAndSecuritySettings(
 ) {
     composable(route = Screen.PrivacyAndSecuritySettings.route) {
         WebPrivacyAndSecuritySettingsScreen(
-            actions = WebPrivacyAndSecuritySettingsScreen.Actions(
+            actions = WebSettingsScreenActions(
                 onBackClick = { navController.popBackStack() }
             )
         )
@@ -93,7 +94,7 @@ fun NavGraphBuilder.addWebPrivacyAndSecuritySettings(
 fun NavGraphBuilder.addWebSpamFilterSettings(navController: NavHostController, launcherActions: Launcher.Actions) {
     composable(route = Screen.SpamFilterSettings.route) {
         WebSpamFilterSettingsScreen(
-            actions = WebSpamFilterSettingsScreen.Actions(
+            actions = WebSettingsScreenActions(
                 onBackClick = { navController.popBackStack() }
             )
         )
