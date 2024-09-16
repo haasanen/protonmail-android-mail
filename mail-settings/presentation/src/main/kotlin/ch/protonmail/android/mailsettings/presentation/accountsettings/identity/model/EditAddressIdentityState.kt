@@ -22,8 +22,8 @@ import ch.protonmail.android.mailcommon.presentation.Effect
 
 sealed interface EditAddressIdentityState {
 
-    object Loading : EditAddressIdentityState
-    object LoadingError : EditAddressIdentityState
+    data object Loading : EditAddressIdentityState
+    data object LoadingError : EditAddressIdentityState
 
     data class DataLoaded(
         val displayNameState: DisplayNameState,

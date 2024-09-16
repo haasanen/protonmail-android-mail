@@ -22,8 +22,8 @@ import ch.protonmail.android.mailcommon.presentation.Effect
 
 sealed interface PushNotificationsSettingsState {
 
-    object Loading : PushNotificationsSettingsState
-    object LoadingError : PushNotificationsSettingsState
+    data object Loading : PushNotificationsSettingsState
+    data object LoadingError : PushNotificationsSettingsState
 
     data class DataLoaded(
         val extendedNotificationState: ExtendedNotificationState,

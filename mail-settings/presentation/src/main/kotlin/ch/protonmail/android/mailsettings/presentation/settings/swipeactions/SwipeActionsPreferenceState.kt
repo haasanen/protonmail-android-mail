@@ -24,7 +24,7 @@ sealed interface SwipeActionsPreferenceState {
         val model: SwipeActionsPreferenceUiModel
     ) : SwipeActionsPreferenceState
 
-    object Loading : SwipeActionsPreferenceState
+    data object Loading : SwipeActionsPreferenceState
 
-    object NotLoggedIn : SwipeActionsPreferenceState
+    data object NotLoggedIn : SwipeActionsPreferenceState
 }

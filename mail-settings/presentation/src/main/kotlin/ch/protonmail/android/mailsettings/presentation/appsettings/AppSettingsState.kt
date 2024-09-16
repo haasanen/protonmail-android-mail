@@ -27,5 +27,5 @@ sealed class AppSettingsState {
         val totalSizeInformation: LocalStorageUsageInformation
     ) : AppSettingsState()
 
-    object Loading : AppSettingsState()
+    data object Loading : AppSettingsState()
 }

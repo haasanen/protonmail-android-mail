@@ -27,5 +27,5 @@ sealed class AlternativeRoutingSettingState {
         val alternativeRoutingSettingErrorEffect: Effect<Unit>
     ) : AlternativeRoutingSettingState()
 
-    object Loading : AlternativeRoutingSettingState()
+    data object Loading : AlternativeRoutingSettingState()
 }

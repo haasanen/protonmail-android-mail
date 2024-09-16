@@ -35,6 +35,6 @@ sealed interface AccountSettingsState {
         val securityKeysVisible: Boolean
     ) : AccountSettingsState
 
-    object Loading : AccountSettingsState
-    object NotLoggedIn : AccountSettingsState
+    data object Loading : AccountSettingsState
+    data object NotLoggedIn : AccountSettingsState
 }

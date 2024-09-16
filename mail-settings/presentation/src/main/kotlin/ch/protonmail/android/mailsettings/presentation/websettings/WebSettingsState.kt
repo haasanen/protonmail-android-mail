@@ -27,8 +27,8 @@ sealed interface WebSettingsState {
         val theme: Theme
     ) : WebSettingsState
 
-    object Loading : WebSettingsState
-    object NotLoggedIn : WebSettingsState
+    data object Loading : WebSettingsState
+    data object NotLoggedIn : WebSettingsState
     data class Error(
         val errorMessage: String
     ) : WebSettingsState

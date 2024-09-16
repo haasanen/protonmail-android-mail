@@ -27,7 +27,7 @@ sealed class ThemeSettingsState {
         val themes: List<ThemeUiModel>
     ) : ThemeSettingsState()
 
-    object Loading : ThemeSettingsState()
+    data object Loading : ThemeSettingsState()
 }
 
 data class ThemeUiModel(

@@ -26,7 +26,7 @@ sealed class SettingsState {
         val appInformation: AppInformation
     ) : SettingsState()
 
-    object Loading : SettingsState()
+    data object Loading : SettingsState()
 }
 
 data class AccountInfo(

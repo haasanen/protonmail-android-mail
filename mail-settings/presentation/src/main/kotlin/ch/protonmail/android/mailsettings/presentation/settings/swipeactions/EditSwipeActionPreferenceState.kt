@@ -24,7 +24,7 @@ sealed interface EditSwipeActionPreferenceState {
         val items: List<EditSwipeActionPreferenceItemUiModel>
     ) : EditSwipeActionPreferenceState
 
-    object Loading : EditSwipeActionPreferenceState
+    data object Loading : EditSwipeActionPreferenceState
 
-    object NotLoggedIn : EditSwipeActionPreferenceState
+    data object NotLoggedIn : EditSwipeActionPreferenceState
 }

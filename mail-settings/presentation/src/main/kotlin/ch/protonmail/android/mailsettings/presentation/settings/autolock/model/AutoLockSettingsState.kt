@@ -22,7 +22,7 @@ import ch.protonmail.android.mailcommon.presentation.Effect
 
 sealed interface AutoLockSettingsState {
 
-    object Loading : AutoLockSettingsState
+    data object Loading : AutoLockSettingsState
 
     data class DataLoaded(
         val autoLockEnabledState: AutoLockEnabledState,

@@ -28,7 +28,7 @@ sealed interface PrivacySettingsState {
         val updateSettingsError: Effect<Unit>
     ) : PrivacySettingsState
 
-    object Loading : PrivacySettingsState
+    data object Loading : PrivacySettingsState
 
-    object LoadingError : PrivacySettingsState
+    data object LoadingError : PrivacySettingsState
 }

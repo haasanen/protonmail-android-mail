@@ -29,8 +29,8 @@ sealed interface PushNotificationSettingsViewAction : PushNotificationsSettingsO
 sealed interface PushNotificationSettingsEvent : PushNotificationsSettingsOperation {
 
     sealed interface Error : PushNotificationSettingsEvent {
-        object LoadingError : Error
-        object UpdateError : Error
+        data object LoadingError : Error
+        data object UpdateError : Error
     }
 
     sealed interface Data : PushNotificationSettingsEvent {

@@ -27,5 +27,5 @@ sealed class CombinedContactsSettingState {
         val combinedContactsSettingErrorEffect: Effect<Unit>
     ) : CombinedContactsSettingState()
 
-    object Loading : CombinedContactsSettingState()
+    data object Loading : CombinedContactsSettingState()
 }

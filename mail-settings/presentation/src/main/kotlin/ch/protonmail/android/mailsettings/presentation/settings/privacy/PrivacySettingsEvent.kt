@@ -23,8 +23,8 @@ import ch.protonmail.android.mailsettings.domain.model.PrivacySettings
 sealed interface PrivacySettingsEvent {
 
     sealed interface Error : PrivacySettingsEvent {
-        object UpdateError : Error
-        object LoadingError : Error
+        data object UpdateError : Error
+        data object LoadingError : Error
     }
 
     sealed interface Data : PrivacySettingsEvent {

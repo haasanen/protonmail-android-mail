@@ -46,12 +46,12 @@ sealed interface EditAddressIdentityViewAction : EditAddressIdentityOperation {
 sealed interface EditAddressIdentityEvent : EditAddressIdentityOperation {
 
     sealed interface Error : EditAddressIdentityEvent {
-        object LoadingError : Error
-        object UpdateError : Error
+        data object LoadingError : Error
+        data object UpdateError : Error
     }
 
     sealed interface Navigation : EditAddressIdentityEvent {
-        object Close : Navigation
+        data object Close : Navigation
     }
 
     sealed class Data : EditAddressIdentityEvent {

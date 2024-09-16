@@ -23,7 +23,7 @@ import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 
 sealed interface AutoLockPinState {
 
-    object Loading : AutoLockPinState
+    data object Loading : AutoLockPinState
 
     data class DataLoaded(
         val topBarState: TopBarState,
