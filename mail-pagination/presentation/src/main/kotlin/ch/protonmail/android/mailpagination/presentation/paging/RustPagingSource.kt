@@ -25,6 +25,7 @@ import ch.protonmail.android.mailmessage.domain.paging.RustInvalidationObserver
 import ch.protonmail.android.mailmessage.domain.paging.RustInvalidationTracker
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 
 abstract class RustPagingSource<Key : Any, Value : Any>(
     private val rustInvalidationTracker: RustInvalidationTracker
@@ -36,6 +37,7 @@ abstract class RustPagingSource<Key : Any, Value : Any>(
         setOf(RustDataSourceId.CONVERSATION, RustDataSourceId.MESSAGE)
     ) {
         override fun onInvalidated(invalidatedDataSources: Set<RustDataSourceId>) {
+            Timber.d("Paging: data sources $invalidatedDataSources invalidated")
             invalidate()
         }
     }

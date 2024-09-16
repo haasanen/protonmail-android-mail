@@ -24,7 +24,6 @@ import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItem
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItemType
 import ch.protonmail.android.mailmailbox.domain.model.MailboxPageKey
-import ch.protonmail.android.mailpagination.domain.model.PageFilter
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailpagination.domain.model.ReadStatus
 import me.proton.core.domain.entity.UserId
@@ -45,7 +44,7 @@ class MailboxPagerFactory @Inject constructor(
         Timber.v("Paging: creating new paginator for ${selectedMailLabelId.labelId}")
         val mailboxPageKey = buildPageKey(filterUnread, selectedMailLabelId, userId, searchQuery)
         return Pager(
-            config = PagingConfig(PageKey.defaultPageSize, initialLoadSize = 1),
+            config = PagingConfig(DEFAULT_PAGE_SIZE, initialLoadSize = 1),
             pagingSourceFactory = { pagingSourceFactory.create(mailboxPageKey, type) }
         )
     }
@@ -58,11 +57,12 @@ class MailboxPagerFactory @Inject constructor(
     ) = MailboxPageKey(
         userId = userId,
         pageKey = PageKey(
-            PageFilter(
-                keyword = searchQuery,
-                labelId = selectedMailLabelId.labelId,
-                read = if (filterUnread) ReadStatus.Unread else ReadStatus.All
-            )
+            labelId = selectedMailLabelId.labelId,
+            read = if (filterUnread) ReadStatus.Unread else ReadStatus.All
         )
     )
+
+    companion object {
+        private const val DEFAULT_PAGE_SIZE = 50
+    }
 }

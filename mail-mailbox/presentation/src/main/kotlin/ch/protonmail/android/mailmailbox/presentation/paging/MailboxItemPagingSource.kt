@@ -26,9 +26,10 @@ import ch.protonmail.android.mailmailbox.domain.model.MailboxItemType
 import ch.protonmail.android.mailmailbox.domain.model.MailboxPageKey
 import ch.protonmail.android.mailmailbox.domain.usecase.GetMailboxItems
 import ch.protonmail.android.mailmessage.domain.paging.RustInvalidationTracker
+import ch.protonmail.android.mailpagination.domain.model.PageKey
+import ch.protonmail.android.mailpagination.domain.model.PageNumber
 import ch.protonmail.android.mailpagination.presentation.paging.RustPagingSource
 import timber.log.Timber
-import kotlin.math.max
 
 class MailboxItemPagingSourceFactory(
     private val getMailboxItems: GetMailboxItems,
@@ -48,25 +49,55 @@ class RustMailboxItemPagingSource(
     rustInvalidationTracker = rustInvalidationTracker
 ) {
 
+    override val keyReuseSupported: Boolean
+        get() = true
+
     override suspend fun loadPage(params: LoadParams<MailboxPageKey>): LoadResult<MailboxPageKey, MailboxItem> {
         val key = params.key ?: mailboxPageKey
-        val userId = key.userId
-        val size = max(key.pageKey.size, params.loadSize)
-        val pageKey = key.pageKey.copy(size = size)
+        val pageKey = key.pageKey
 
-        val items = getMailboxItems(userId, type, pageKey).getOrElse {
+        val items = getMailboxItems(key.userId, type, pageKey).getOrElse {
             Timber.e("Paging: loadItems: Error $it")
             return LoadResult.Page(emptyList(), null, null)
         }
-        Timber.d("Paging: loadItems: ${items.size}/$size (${params.javaClass.simpleName})-> $pageKey")
+
+        val nextPageKey = getNextPageKey(items, key)
+        logPageLoaded(items, params, pageKey, nextPageKey?.pageKey)
 
         return LoadResult.Page(
             data = items,
             prevKey = null,
-            nextKey = null
+            nextKey = nextPageKey
         )
     }
 
-    override fun getRefreshKey(state: PagingState<MailboxPageKey, MailboxItem>): MailboxPageKey? = null
+    private fun getNextPageKey(items: List<MailboxItem>, key: MailboxPageKey): MailboxPageKey? {
+        val hasNoMoreItems = items.isEmpty()
+        if (hasNoMoreItems) {
+            return null
+        }
+        val pageKey = key.pageKey.copy(pageNumber = PageNumber.Next)
+        return key.copy(pageKey = pageKey)
+    }
 
+    override fun getRefreshKey(state: PagingState<MailboxPageKey, MailboxItem>): MailboxPageKey {
+        Timber.d("Paging: getting refresh key")
+        return mailboxPageKey.copy(pageKey = mailboxPageKey.pageKey.copy(pageNumber = PageNumber.All))
+    }
+
+    private fun logPageLoaded(
+        items: List<MailboxItem>,
+        params: LoadParams<MailboxPageKey>,
+        currentPage: PageKey,
+        nextPage: PageKey?
+    ) {
+        val (firstId, lastId) = items.firstOrNull()?.id to items.lastOrNull()?.id
+        Timber.d(
+            """
+                | Paging: loaded ${items.size} items: ($firstId to $lastId) load type ${params.javaClass.simpleName}
+                |   Current:  $currentPage
+                |   Next:     $nextPage
+            """.trimMargin()
+        )
+    }
 }

@@ -33,7 +33,6 @@ import ch.protonmail.android.mailmessage.data.mapper.toMessage
 import ch.protonmail.android.mailmessage.data.mapper.toMessageBody
 import ch.protonmail.android.mailmessage.data.mapper.toMessageId
 import ch.protonmail.android.mailmessage.domain.model.SenderImage
-import ch.protonmail.android.mailpagination.domain.model.PageFilter
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.testdata.message.rust.LocalMessageIdSample
 import ch.protonmail.android.testdata.message.rust.LocalMessageTestData
@@ -66,8 +65,7 @@ class RustMessageRepositoryImplTest {
     fun `getLocalMessages should return list of messages`() = runTest {
         // Given
         val userId = UserIdTestData.userId
-        val pageFilter = PageFilter(labelId = SystemLabelId.Archive.labelId)
-        val pageKey = PageKey(filter = pageFilter)
+        val pageKey = PageKey(labelId = SystemLabelId.Archive.labelId)
 
         val expectedMessages = listOf(
             LocalMessageTestData.AugWeatherForecast,

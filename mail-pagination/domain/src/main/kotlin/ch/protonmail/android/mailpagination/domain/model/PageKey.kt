@@ -18,72 +18,19 @@
 
 package ch.protonmail.android.mailpagination.domain.model
 
-import ch.protonmail.android.mailpagination.domain.model.OrderBy.Time
-import ch.protonmail.android.mailpagination.domain.model.OrderDirection.Descending
+import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.mailpagination.domain.model.ReadStatus.All
 import ch.protonmail.android.mailpagination.domain.model.ReadStatus.Read
 import ch.protonmail.android.mailpagination.domain.model.ReadStatus.Unread
-import ch.protonmail.android.maillabel.domain.model.LabelId
-import me.proton.core.util.kotlin.EMPTY_STRING
 
 /**
  * Page Parameters needed to query/fetch/filter/sort/order a page.
  */
 data class PageKey(
-    val filter: PageFilter = PageFilter(),
-    val orderBy: OrderBy = Time,
-    val orderDirection: OrderDirection = Descending,
-    val size: Int = defaultPageSize
-) {
-    companion object {
-        const val defaultPageSize = 50
-    }
-}
-
-/**
- * Page Filters needed to query a page.
- * @param labelId filters on [PageItem.labelIds], containing the given [labelId]
- * @param keyword filters on [PageItem.keywords], containing [keyword]. Supports wildcard
- * @param read filters on [PageItem.read]
- * @param minTime filters on [PageItem.time], greater or equal
- * @param maxTime filters on [PageItem.time], less or equal
- * @param minOrder filters on [PageItem.order], greater or equal, only if [PageItem.time] equal [minTime]
- * @param maxOrder filters on [PageItem.order], less or equal, only if [PageItem.time] equal [maxTime]
- * @param minId filters on [PageItem.id], excluded, only if [PageItem.time] equal [minTime]
- * @param maxId filters on [PageItem.id], excluded, only if [PageItem.time] equal [maxTime]
- */
-data class PageFilter(
     val labelId: LabelId = LabelId("0"),
-    val keyword: String = EMPTY_STRING,
     val read: ReadStatus = All,
-    val minTime: Long = Long.MIN_VALUE,
-    val maxTime: Long = Long.MAX_VALUE,
-    val minOrder: Long = Long.MIN_VALUE,
-    val maxOrder: Long = Long.MAX_VALUE,
-    val minId: String? = null,
-    val maxId: String? = null
+    val pageNumber: PageNumber = PageNumber.First
 )
-
-/**
- * Order by property (e.g. [PageItem.time]).
- *
- * @see OrderDirection
- */
-enum class OrderBy {
-    /** Order by [PageItem.time] and if equal then by [PageItem.order].*/
-    Time
-    // Size is not supported, BE need to add BeginSize/EndSize parameters.
-}
-
-/**
- * Order direction (ascending, descending).
- *
- * @see OrderBy
- */
-enum class OrderDirection {
-    Ascending,
-    Descending
-}
 
 /**
  * Filter only [Read], [Unread] or [All] items.
@@ -94,4 +41,10 @@ enum class ReadStatus {
     All,
     Read,
     Unread
+}
+
+enum class PageNumber {
+    First,
+    Next,
+    All
 }

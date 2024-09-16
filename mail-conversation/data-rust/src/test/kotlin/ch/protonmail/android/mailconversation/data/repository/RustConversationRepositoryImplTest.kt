@@ -24,18 +24,17 @@ import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.maillabel.domain.sample.LabelIdSample
 import ch.protonmail.android.mailconversation.data.local.RustConversationDataSource
 import ch.protonmail.android.mailconversation.data.mapper.toConversation
 import ch.protonmail.android.mailconversation.domain.entity.Conversation
 import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
 import ch.protonmail.android.maillabel.domain.model.LabelWithSystemLabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
+import ch.protonmail.android.maillabel.domain.sample.LabelIdSample
 import ch.protonmail.android.mailmessage.data.mapper.toConversationId
 import ch.protonmail.android.mailmessage.data.mapper.toConversationMessagesWithMessageToOpen
 import ch.protonmail.android.mailmessage.data.mapper.toLocalConversationId
 import ch.protonmail.android.mailmessage.data.model.LocalConversationMessages
-import ch.protonmail.android.mailpagination.domain.model.PageFilter
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.testdata.conversation.rust.LocalConversationIdSample
 import ch.protonmail.android.testdata.conversation.rust.LocalConversationTestData
@@ -51,7 +50,6 @@ import io.mockk.mockk
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import me.proton.core.domain.entity.UserId
-import ch.protonmail.android.maillabel.domain.model.LabelId
 import org.junit.Test
 import kotlin.test.assertEquals
 
@@ -70,8 +68,7 @@ class RustConversationRepositoryImplTest {
     @Test
     fun `getLocalConversations should return conversations`() = runTest {
         // Given
-        val pageFilter = PageFilter(labelId = labelWithSystemLabelId.label.labelId)
-        val pageKey = PageKey(filter = pageFilter)
+        val pageKey = PageKey(labelId = labelWithSystemLabelId.label.labelId)
         val localConversations = listOf(
             LocalConversationTestData.AugConversation, LocalConversationTestData.SepConversation
         )
@@ -272,8 +269,6 @@ class RustConversationRepositoryImplTest {
     fun `move should call rust data source function and return empty list when successful`() = runTest {
         // Given
         val conversationIds = listOf(ConversationId("1"), ConversationId("2"))
-        val allLabelIds = emptyList<LabelId>()
-        val fromLabelIds = emptyList<LabelId>()
         val toLabelId = LabelIdSample.Trash
 
         coEvery {

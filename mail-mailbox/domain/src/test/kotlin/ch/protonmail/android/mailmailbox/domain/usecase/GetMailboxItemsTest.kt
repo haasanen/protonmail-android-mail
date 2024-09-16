@@ -20,11 +20,11 @@ package ch.protonmail.android.mailmailbox.domain.usecase
 
 import arrow.core.getOrHandle
 import ch.protonmail.android.mailconversation.domain.repository.ConversationRepository
+import ch.protonmail.android.maillabel.domain.model.LabelType
 import ch.protonmail.android.mailmailbox.domain.mapper.ConversationMailboxItemMapper
 import ch.protonmail.android.mailmailbox.domain.mapper.MessageMailboxItemMapper
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItemType
 import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
-import ch.protonmail.android.mailpagination.domain.model.OrderDirection
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.testdata.conversation.ConversationWithContextTestData
 import ch.protonmail.android.testdata.label.LabelTestData
@@ -35,7 +35,6 @@ import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import me.proton.core.domain.entity.UserId
-import ch.protonmail.android.maillabel.domain.model.LabelType
 import org.junit.Before
 import org.junit.Test
 import kotlin.test.assertEquals
@@ -77,7 +76,7 @@ class GetMailboxItemsTest {
     @Test
     fun `invoke for Message, getLabels and loadMessages`() = runTest {
         // Given
-        val pageKey = PageKey(orderDirection = OrderDirection.Ascending, size = 3)
+        val pageKey = PageKey()
 
         // When
         val mailboxItems = usecase.invoke(userId, MailboxItemType.Message, pageKey)
@@ -99,7 +98,7 @@ class GetMailboxItemsTest {
     @Test
     fun `invoke for Conversation, getLabels and getConversations`() = runTest {
         // Given
-        val pageKey = PageKey(orderDirection = OrderDirection.Ascending, size = 3)
+        val pageKey = PageKey()
 
         // When
         val mailboxItems = usecase.invoke(userId, MailboxItemType.Conversation, pageKey)

@@ -78,7 +78,7 @@ class RustMessageQueryImpl @Inject constructor(
             }
             Timber.v("rust-message: got MailSession instance to watch messages for $userId")
 
-            val labelId = pageKey.filter.labelId.toLocalLabelId()
+            val labelId = pageKey.labelId.toLocalLabelId()
             rustMailbox.switchToMailbox(userId, labelId)
             Timber.v("rust-message: switching mailbox to $labelId if needed...")
 

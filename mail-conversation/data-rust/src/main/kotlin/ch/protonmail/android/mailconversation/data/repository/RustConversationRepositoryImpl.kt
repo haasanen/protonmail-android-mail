@@ -29,6 +29,7 @@ import ch.protonmail.android.mailconversation.data.mapper.toConversation
 import ch.protonmail.android.mailconversation.domain.entity.Conversation
 import ch.protonmail.android.mailconversation.domain.repository.ConversationRepository
 import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
+import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.mailmessage.data.mapper.toConversationMessagesWithMessageToOpen
 import ch.protonmail.android.mailmessage.data.mapper.toLocalConversationId
 import ch.protonmail.android.mailmessage.domain.model.ConversationMessages
@@ -37,7 +38,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import me.proton.core.domain.entity.UserId
-import ch.protonmail.android.maillabel.domain.model.LabelId
 import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -48,7 +48,7 @@ class RustConversationRepositoryImpl @Inject constructor(
 ) : ConversationRepository {
 
     override suspend fun getLocalConversations(userId: UserId, pageKey: PageKey): List<Conversation> {
-        val rustLocalLabelId = pageKey.filter.labelId.toLocalLabelId()
+        val rustLocalLabelId = pageKey.labelId.toLocalLabelId()
 
         Timber.v("rust-conversation-repo: getConversations, pageKey: $pageKey rustLocalLabelId: $rustLocalLabelId")
 
