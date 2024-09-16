@@ -34,8 +34,9 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
+import uniffi.proton_mail_uniffi.Id
 import uniffi.proton_mail_uniffi.LiveQueryCallback
-import uniffi.proton_mail_uniffi.WatchedMessages
+import uniffi.proton_mail_uniffi.MessagePaginator
 import javax.inject.Inject
 
 class RustMessageQueryImpl @Inject constructor(
@@ -46,7 +47,7 @@ class RustMessageQueryImpl @Inject constructor(
     @MessageRustCoroutineScope private val coroutineScope: CoroutineScope
 ) : RustMessageQuery {
 
-    private var messagesWatcher: WatchedMessages? = null
+    private var paginator: MessagePaginator? = null
 
     private val mutableMessageStatusFlow = MutableStateFlow<List<LocalMessageMetadata>?>(null)
     private val messagesStatusFlow: Flow<List<LocalMessageMetadata>> = mutableMessageStatusFlow
@@ -55,7 +56,7 @@ class RustMessageQueryImpl @Inject constructor(
 
     private val messagesUpdatedCallback = object : LiveQueryCallback {
         override fun onUpdate() {
-            mutableMessageStatusFlow.value = messagesWatcher?.messages
+            Timber.d("rust-message: messages updated, invalidating pagination...")
 
             invalidationTracker.notifyInvalidation(
                 setOf(
@@ -63,7 +64,6 @@ class RustMessageQueryImpl @Inject constructor(
                     RustDataSourceId.LABELS
                 )
             )
-            Timber.d("rust-message: onUpdated, item count: ${mutableMessageStatusFlow.value?.size}")
         }
     }
 
@@ -77,13 +77,14 @@ class RustMessageQueryImpl @Inject constructor(
                 return@launch
             }
             Timber.v("rust-message: got MailSession instance to watch messages for $userId")
+
             val labelId = pageKey.filter.labelId.toLocalLabelId()
             rustMailbox.switchToMailbox(userId, labelId)
             Timber.v("rust-message: switching mailbox to $labelId if needed...")
 
-            messagesWatcher = createRustMessagesWatcher(session, labelId, messagesUpdatedCallback)
+            paginator = createRustMessagesWatcher(session, Id(labelId.value), messagesUpdatedCallback)
 
-            val messages = messagesWatcher?.messages
+            val messages = paginator?.currentPage()
             Timber.v("rust-message: init value for messages is $messages")
             mutableMessageStatusFlow.value = messages
         }
@@ -93,8 +94,8 @@ class RustMessageQueryImpl @Inject constructor(
     }
 
     override fun disconnect() {
-        messagesWatcher?.handle?.disconnect()
-        messagesWatcher = null
+        paginator?.handle()?.disconnect()
+        paginator = null
     }
 
     private fun destroy() {

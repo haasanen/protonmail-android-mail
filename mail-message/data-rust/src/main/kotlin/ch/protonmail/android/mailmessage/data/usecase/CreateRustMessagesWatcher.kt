@@ -21,7 +21,7 @@ package ch.protonmail.android.mailmessage.data.usecase
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
 import uniffi.proton_mail_uniffi.LiveQueryCallback
 import uniffi.proton_mail_uniffi.MailUserSession
-import uniffi.proton_mail_uniffi.watchMessagesForLabel
+import uniffi.proton_mail_uniffi.paginateMessagesForLabel
 import javax.inject.Inject
 
 class CreateRustMessagesWatcher @Inject constructor() {
@@ -30,5 +30,5 @@ class CreateRustMessagesWatcher @Inject constructor() {
         session: MailUserSession,
         labelId: LocalLabelId,
         callback: LiveQueryCallback
-    ) = watchMessagesForLabel(session, labelId, callback)
+    ) = paginateMessagesForLabel(session, labelId, callback)
 }

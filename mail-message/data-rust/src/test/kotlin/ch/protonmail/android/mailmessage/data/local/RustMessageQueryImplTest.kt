@@ -44,7 +44,7 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import uniffi.proton_mail_uniffi.LiveQueryCallback
 import uniffi.proton_mail_uniffi.MailUserSession
-import uniffi.proton_mail_uniffi.WatchedMessages
+import uniffi.proton_mail_uniffi.MessagePaginator
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -60,7 +60,7 @@ class RustMessageQueryImplTest {
         LocalMessageTestData.OctWeatherForecast
     )
 
-    private val messagesWatcher: WatchedMessages = mockk()
+    private val messagePaginator: MessagePaginator = mockk()
 
     private val rustMailbox: RustMailbox = mockk()
     private val createRustMessagesWatcher: CreateRustMessagesWatcher = mockk()
@@ -87,14 +87,14 @@ class RustMessageQueryImplTest {
         val pageKey = PageKey(filter = PageFilter(labelId = localLabelId.toLabelId()))
         val userSession = mockk<MailUserSession>()
         coEvery { userSessionRepository.getUserSession(userId) } returns userSession
-        every { messagesWatcher.messages } returns expectedMessages
+        coEvery { messagePaginator.currentPage() } returns expectedMessages
         coEvery {
             createRustMessagesWatcher.invoke(
                 userSession,
                 localLabelId,
                 capture(mailboxCallbackSlot)
             )
-        } returns messagesWatcher
+        } returns messagePaginator
         coEvery { rustMailbox.switchToMailbox(userId, localLabelId) } just Runs
 
         // When
@@ -114,8 +114,8 @@ class RustMessageQueryImplTest {
         val userSession = mockk<MailUserSession>()
         coEvery { userSessionRepository.getUserSession(userId) } returns userSession
         coEvery { rustMailbox.switchToMailbox(userId, localLabelId) } just Runs
-        every { messagesWatcher.messages } returns expectedMessages
-        coEvery { createRustMessagesWatcher.invoke(userSession, localLabelId, any()) } returns messagesWatcher
+        coEvery { messagePaginator.currentPage() } returns expectedMessages
+        coEvery { createRustMessagesWatcher.invoke(userSession, localLabelId, any()) } returns messagePaginator
 
         // When
         rustMessageQuery.observeMessages(userId, pageKey).test {
@@ -137,19 +137,19 @@ class RustMessageQueryImplTest {
         val userSession = mockk<MailUserSession>()
         coEvery { userSessionRepository.getUserSession(userId) } returns userSession
         coEvery { rustMailbox.switchToMailbox(userId, localLabelId) } just Runs
-        every { messagesWatcher.messages } returns emptyList()
+        coEvery { messagePaginator.currentPage() } returns emptyList()
         coEvery {
             createRustMessagesWatcher.invoke(
                 userSession,
                 localLabelId,
                 capture(mailboxCallbackSlot)
             )
-        } returns messagesWatcher
+        } returns messagePaginator
 
         rustMessageQuery.observeMessages(userId, pageKey).test {
             skipItems(1) // first emission
             val updatedMessages = expectedMessages.onEach { it.id = LocalMessageId(Math.random().toULong()) }
-            every { messagesWatcher.messages } returns updatedMessages
+            coEvery { messagePaginator.currentPage() } returns updatedMessages
             // When
             mailboxCallbackSlot.captured.onUpdate()
 
