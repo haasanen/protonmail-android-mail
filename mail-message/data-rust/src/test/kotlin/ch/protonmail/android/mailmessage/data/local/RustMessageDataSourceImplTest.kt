@@ -22,6 +22,8 @@ import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
 import ch.protonmail.android.mailmessage.data.usecase.CreateRustMessageAccessor
 import ch.protonmail.android.mailmessage.data.usecase.CreateRustMessageBodyAccessor
 import ch.protonmail.android.mailmessage.data.usecase.GetRustSenderImage
+import ch.protonmail.android.mailpagination.domain.model.PageFilter
+import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import ch.protonmail.android.testdata.message.rust.LocalMessageIdSample
 import ch.protonmail.android.testdata.message.rust.LocalMessageTestData
@@ -136,7 +138,7 @@ class RustMessageDataSourceImplTest {
         val userId = UserIdTestData.userId
         val mailSession = mockk<MailUserSession>()
         coEvery { userSessionRepository.getUserSession(userId) } returns mailSession
-        val labelId = LocalLabelId(1uL)
+        val pageKey = PageKey(filter = PageFilter())
         val messages = listOf(
             LocalMessageTestData.AugWeatherForecast,
             LocalMessageTestData.SepWeatherForecast,
@@ -145,10 +147,10 @@ class RustMessageDataSourceImplTest {
         coEvery { rustMessageQuery.observeMessages(userId, labelId) } returns flowOf(messages)
 
         // When
-        val result = dataSource.getMessages(userId, labelId)
+        val result = dataSource.getMessages(userId, pageKey)
 
         // Then
-        coVerify { rustMessageQuery.observeMessages(userId, labelId) }
+        coVerify { rustMessageQuery.observeMessages(userId, pageKey) }
         assertEquals(messages, result)
     }
 

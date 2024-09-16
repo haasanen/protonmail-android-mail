@@ -18,12 +18,13 @@
 
 package ch.protonmail.android.mailmessage.data.local
 
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageMetadata
+import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
 import ch.protonmail.android.mailmessage.data.MessageRustCoroutineScope
 import ch.protonmail.android.mailmessage.data.usecase.CreateRustMessagesWatcher
 import ch.protonmail.android.mailmessage.domain.paging.RustDataSourceId
 import ch.protonmail.android.mailmessage.domain.paging.RustInvalidationTracker
+import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -66,7 +67,7 @@ class RustMessageQueryImpl @Inject constructor(
         }
     }
 
-    override fun observeMessages(userId: UserId, labelId: LocalLabelId): Flow<List<LocalMessageMetadata>> {
+    override fun observeMessages(userId: UserId, pageKey: PageKey): Flow<List<LocalMessageMetadata>> {
         destroy()
 
         coroutineScope.launch {
@@ -76,6 +77,7 @@ class RustMessageQueryImpl @Inject constructor(
                 return@launch
             }
             Timber.v("rust-message: got MailSession instance to watch messages for $userId")
+            val labelId = pageKey.filter.labelId.toLocalLabelId()
             rustMailbox.switchToMailbox(userId, labelId)
             Timber.v("rust-message: switching mailbox to $labelId if needed...")
 

@@ -26,6 +26,7 @@ import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailmessage.data.usecase.CreateRustMessageAccessor
 import ch.protonmail.android.mailmessage.data.usecase.CreateRustMessageBodyAccessor
 import ch.protonmail.android.mailmessage.data.usecase.GetRustSenderImage
+import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
@@ -82,9 +83,9 @@ class RustMessageDataSourceImpl @Inject constructor(
         }
     }
 
-    override suspend fun getMessages(userId: UserId, labelId: LocalLabelId): List<LocalMessageMetadata> {
-        Timber.d("rust-message: getMessages for labelId: $labelId")
-        return rustMessageQuery.observeMessages(userId, labelId)
+    override suspend fun getMessages(userId: UserId, pageKey: PageKey): List<LocalMessageMetadata> {
+        Timber.d("rust-message: getMessages for pageKey: $pageKey")
+        return rustMessageQuery.observeMessages(userId, pageKey)
             .mapLatest { messageList -> messageList }
             .first()
     }

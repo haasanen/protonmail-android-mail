@@ -22,6 +22,7 @@ import ch.protonmail.android.mailcommon.datarust.mapper.LocalDecryptedMessage
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageId
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageMetadata
+import ch.protonmail.android.mailpagination.domain.model.PageKey
 import me.proton.core.domain.entity.UserId
 
 interface RustMessageDataSource {
@@ -32,7 +33,9 @@ interface RustMessageDataSource {
         messageId: LocalMessageId,
         labelId: LocalLabelId?
     ): LocalDecryptedMessage?
-    suspend fun getMessages(userId: UserId, labelId: LocalLabelId): List<LocalMessageMetadata>
+
+    suspend fun getMessages(userId: UserId, pageKey: PageKey): List<LocalMessageMetadata>
+
     suspend fun getSenderImage(
         userId: UserId,
         address: String,
