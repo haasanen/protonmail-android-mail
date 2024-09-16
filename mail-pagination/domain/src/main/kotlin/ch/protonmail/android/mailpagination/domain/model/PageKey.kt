@@ -36,7 +36,7 @@ data class PageKey(
     val size: Int = defaultPageSize
 ) {
     companion object {
-        const val defaultPageSize = 25
+        const val defaultPageSize = 50
     }
 }
 
