@@ -44,6 +44,4 @@ interface RustMessageDataSource {
 
     suspend fun markRead(userId: UserId, messages: List<LocalMessageId>)
     suspend fun markUnread(userId: UserId, messages: List<LocalMessageId>)
-
-    fun disconnect()
 }

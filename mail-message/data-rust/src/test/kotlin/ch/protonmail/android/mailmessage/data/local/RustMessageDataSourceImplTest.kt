@@ -22,7 +22,6 @@ import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
 import ch.protonmail.android.mailmessage.data.usecase.CreateRustMessageAccessor
 import ch.protonmail.android.mailmessage.data.usecase.CreateRustMessageBodyAccessor
 import ch.protonmail.android.mailmessage.data.usecase.GetRustSenderImage
-import ch.protonmail.android.mailpagination.domain.model.PageFilter
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import ch.protonmail.android.testdata.message.rust.LocalMessageIdSample
@@ -138,7 +137,7 @@ class RustMessageDataSourceImplTest {
         val userId = UserIdTestData.userId
         val mailSession = mockk<MailUserSession>()
         coEvery { userSessionRepository.getUserSession(userId) } returns mailSession
-        val pageKey = PageKey(filter = PageFilter())
+        val pageKey = PageKey()
         val messages = listOf(
             LocalMessageTestData.AugWeatherForecast,
             LocalMessageTestData.SepWeatherForecast,
@@ -152,21 +151,6 @@ class RustMessageDataSourceImplTest {
         // Then
         coVerify { rustMessageQuery.observeMessages(userId, pageKey) }
         assertEquals(messages, result)
-    }
-
-    @Test
-    fun `disconnect should call disconnect on rustMessageQuery`() {
-        // Given
-        val userId = UserIdTestData.userId
-        val mailSession = mockk<MailUserSession>()
-        coEvery { userSessionRepository.getUserSession(userId) } returns mailSession
-        every { rustMessageQuery.disconnect() } returns Unit
-
-        // When
-        dataSource.disconnect()
-
-        // Then
-        verify { rustMessageQuery.disconnect() }
     }
 
     @Test

@@ -85,9 +85,7 @@ class RustMessageDataSourceImpl @Inject constructor(
 
     override suspend fun getMessages(userId: UserId, pageKey: PageKey): List<LocalMessageMetadata> {
         Timber.d("rust-message: getMessages for pageKey: $pageKey")
-        return rustMessageQuery.observeMessages(userId, pageKey)
-            .mapLatest { messageList -> messageList }
-            .first()
+        return rustMessageQuery.observeMessages(userId, pageKey).first()
     }
 
     override suspend fun getSenderImage(
@@ -117,9 +115,5 @@ class RustMessageDataSourceImpl @Inject constructor(
     @MissingRustApi
     override suspend fun markUnread(userId: UserId, messages: List<LocalMessageId>) {
         throw UnsupportedOperationException("rust-message: markUnread has not been implemented by Rust")
-    }
-
-    override fun disconnect() {
-        rustMessageQuery.disconnect()
     }
 }

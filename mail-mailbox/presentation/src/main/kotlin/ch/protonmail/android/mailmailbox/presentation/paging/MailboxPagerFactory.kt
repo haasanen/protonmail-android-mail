@@ -44,7 +44,7 @@ class MailboxPagerFactory @Inject constructor(
         Timber.v("Paging: creating new paginator for ${selectedMailLabelId.labelId}")
         val mailboxPageKey = buildPageKey(filterUnread, selectedMailLabelId, userId, searchQuery)
         return Pager(
-            config = PagingConfig(DEFAULT_PAGE_SIZE, initialLoadSize = 1),
+            config = PagingConfig(pageSize = DEFAULT_PAGE_SIZE, initialLoadSize = INITIAL_LOAD_SIZE),
             pagingSourceFactory = { pagingSourceFactory.create(mailboxPageKey, type) }
         )
     }
@@ -64,5 +64,6 @@ class MailboxPagerFactory @Inject constructor(
 
     companion object {
         private const val DEFAULT_PAGE_SIZE = 50
+        private const val INITIAL_LOAD_SIZE = 1
     }
 }

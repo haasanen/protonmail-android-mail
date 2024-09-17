@@ -25,5 +25,4 @@ import me.proton.core.domain.entity.UserId
 
 interface RustMessageQuery {
     fun observeMessages(userId: UserId, pageKey: PageKey): Flow<List<LocalMessageMetadata>>
-    fun disconnect()
 }

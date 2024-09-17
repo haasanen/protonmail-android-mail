@@ -93,14 +93,10 @@ class RustMessageQueryImpl @Inject constructor(
         return messagesStatusFlow
     }
 
-    override fun disconnect() {
-        paginator?.handle()?.disconnect()
-        paginator = null
-    }
-
     private fun destroy() {
         Timber.d("rust-message-query: destroy")
-        disconnect()
+        paginator?.rustPaginator?.handle()?.disconnect()
+        paginator = null
         mutableMessageStatusFlow.value = null
     }
 
