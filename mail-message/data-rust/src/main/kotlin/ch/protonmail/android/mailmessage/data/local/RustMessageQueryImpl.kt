@@ -18,24 +18,19 @@
 
 package ch.protonmail.android.mailmessage.data.local
 
+import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageMetadata
 import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
-import ch.protonmail.android.mailmessage.data.MessageRustCoroutineScope
 import ch.protonmail.android.mailmessage.data.usecase.CreateRustMessagesWatcher
 import ch.protonmail.android.mailmessage.domain.paging.RustDataSourceId
 import ch.protonmail.android.mailmessage.domain.paging.RustInvalidationTracker
 import ch.protonmail.android.mailpagination.domain.model.PageKey
+import ch.protonmail.android.mailpagination.domain.model.PageNumber
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.launch
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
-import uniffi.proton_mail_uniffi.Id
 import uniffi.proton_mail_uniffi.LiveQueryCallback
+import uniffi.proton_mail_uniffi.MailUserSession
 import uniffi.proton_mail_uniffi.MessagePaginator
 import javax.inject.Inject
 
@@ -43,16 +38,10 @@ class RustMessageQueryImpl @Inject constructor(
     private val userSessionRepository: UserSessionRepository,
     private val invalidationTracker: RustInvalidationTracker,
     private val createRustMessagesWatcher: CreateRustMessagesWatcher,
-    private val rustMailbox: RustMailbox,
-    @MessageRustCoroutineScope private val coroutineScope: CoroutineScope
+    private val rustMailbox: RustMailbox
 ) : RustMessageQuery {
 
-    private var paginator: MessagePaginator? = null
-
-    private val mutableMessageStatusFlow = MutableStateFlow<List<LocalMessageMetadata>?>(null)
-    private val messagesStatusFlow: Flow<List<LocalMessageMetadata>> = mutableMessageStatusFlow
-        .asStateFlow()
-        .filterNotNull()
+    private var paginator: Paginator? = null
 
     private val messagesUpdatedCallback = object : LiveQueryCallback {
         override fun onUpdate() {
@@ -67,37 +56,56 @@ class RustMessageQueryImpl @Inject constructor(
         }
     }
 
-    override fun observeMessages(userId: UserId, pageKey: PageKey): Flow<List<LocalMessageMetadata>> {
-        destroy()
+    @SuppressWarnings("NotImplementedDeclaration")
+    override suspend fun getMessages(userId: UserId, pageKey: PageKey): List<LocalMessageMetadata>? {
+        val session = userSessionRepository.getUserSession(userId)
+        if (session == null) {
+            Timber.e("rust-message: trying to load message with a null session")
+            return null
+        }
+        Timber.v("rust-message: got MailSession instance to watch messages for $userId")
 
-        coroutineScope.launch {
-            val session = userSessionRepository.getUserSession(userId)
-            if (session == null) {
-                Timber.e("rust-message: trying to load message with a null session")
-                return@launch
-            }
-            Timber.v("rust-message: got MailSession instance to watch messages for $userId")
+        val labelId = pageKey.labelId.toLocalLabelId()
+        rustMailbox.switchToMailbox(userId, labelId)
+        Timber.v("rust-message: switching mailbox to $labelId if needed...")
 
-            val labelId = pageKey.labelId.toLocalLabelId()
-            rustMailbox.switchToMailbox(userId, labelId)
-            Timber.v("rust-message: switching mailbox to $labelId if needed...")
+        initPaginator(userId, labelId, session)
 
-            paginator = createRustMessagesWatcher(session, Id(labelId.value), messagesUpdatedCallback)
-
-            val messages = paginator?.currentPage()
-            Timber.v("rust-message: init value for messages is $messages")
-            mutableMessageStatusFlow.value = messages
+        Timber.v("rust-message: Paging: querying ${pageKey.pageNumber.name} page for messages")
+        val messages = when (pageKey.pageNumber) {
+            PageNumber.First -> paginator?.rustPaginator?.currentPage()
+            PageNumber.Next -> paginator?.rustPaginator?.nextPage()
+            PageNumber.All -> TODO("Missing rust impl")
         }
 
-        Timber.v("rust-messages: returning messages status flow...")
-        return messagesStatusFlow
+        Timber.v("rust-message: init value for messages is $messages")
+        return messages
+    }
+
+    private suspend fun initPaginator(
+        userId: UserId,
+        labelId: LocalLabelId,
+        session: MailUserSession
+    ) {
+        if (shouldInitPaginator(userId, labelId)) {
+            Timber.v("rust-message: [destroy and] initialize paginator instance...")
+            destroy()
+            paginator = Paginator(
+                createRustMessagesWatcher(session, labelId, messagesUpdatedCallback),
+                userId,
+                labelId
+            )
+        }
     }
 
     private fun destroy() {
         Timber.d("rust-message-query: destroy")
         paginator?.rustPaginator?.handle()?.disconnect()
         paginator = null
-        mutableMessageStatusFlow.value = null
     }
 
+    private fun shouldInitPaginator(userId: UserId, labelId: LocalLabelId) =
+        paginator == null || paginator?.userId != userId || paginator?.labelId != labelId
+
+    private data class Paginator(val rustPaginator: MessagePaginator, val userId: UserId, val labelId: LocalLabelId)
 }

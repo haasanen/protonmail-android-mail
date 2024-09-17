@@ -143,13 +143,13 @@ class RustMessageDataSourceImplTest {
             LocalMessageTestData.SepWeatherForecast,
             LocalMessageTestData.OctWeatherForecast
         )
-        coEvery { rustMessageQuery.observeMessages(userId, labelId) } returns flowOf(messages)
+        coEvery { rustMessageQuery.getMessages(userId, pageKey) } returns messages
 
         // When
         val result = dataSource.getMessages(userId, pageKey)
 
         // Then
-        coVerify { rustMessageQuery.observeMessages(userId, pageKey) }
+        coVerify { rustMessageQuery.getMessages(userId, pageKey) }
         assertEquals(messages, result)
     }
 

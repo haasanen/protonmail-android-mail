@@ -28,7 +28,6 @@ import ch.protonmail.android.mailmessage.data.usecase.CreateRustMessageBodyAcces
 import ch.protonmail.android.mailmessage.data.usecase.GetRustSenderImage
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.mapLatest
 import me.proton.core.domain.entity.UserId
@@ -85,7 +84,10 @@ class RustMessageDataSourceImpl @Inject constructor(
 
     override suspend fun getMessages(userId: UserId, pageKey: PageKey): List<LocalMessageMetadata> {
         Timber.d("rust-message: getMessages for pageKey: $pageKey")
-        return rustMessageQuery.observeMessages(userId, pageKey).first()
+        return rustMessageQuery.getMessages(userId, pageKey) ?: run {
+            Timber.w("rust-message: paginator returned null result for $pageKey")
+            emptyList()
+        }
     }
 
     override suspend fun getSenderImage(

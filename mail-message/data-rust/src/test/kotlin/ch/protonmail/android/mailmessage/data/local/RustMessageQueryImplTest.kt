@@ -18,13 +18,10 @@
 
 package ch.protonmail.android.mailmessage.data.local
 
-import app.cash.turbine.test
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageId
 import ch.protonmail.android.maillabel.data.mapper.toLabelId
 import ch.protonmail.android.mailmessage.data.usecase.CreateRustMessagesWatcher
 import ch.protonmail.android.mailmessage.domain.paging.RustInvalidationTracker
-import ch.protonmail.android.mailpagination.domain.model.PageFilter
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
@@ -74,8 +71,7 @@ class RustMessageQueryImplTest {
         userSessionRepository,
         invalidationTracker,
         createRustMessagesWatcher,
-        rustMailbox,
-        testCoroutineScope
+        rustMailbox
     )
 
     @Test
@@ -84,7 +80,7 @@ class RustMessageQueryImplTest {
         val mailboxCallbackSlot = slot<LiveQueryCallback>()
         val userId = UserIdTestData.userId
         val localLabelId = LocalLabelId(1u)
-        val pageKey = PageKey(filter = PageFilter(labelId = localLabelId.toLabelId()))
+        val pageKey = PageKey(labelId = localLabelId.toLabelId())
         val userSession = mockk<MailUserSession>()
         coEvery { userSessionRepository.getUserSession(userId) } returns userSession
         coEvery { messagePaginator.currentPage() } returns expectedMessages
@@ -98,11 +94,10 @@ class RustMessageQueryImplTest {
         coEvery { rustMailbox.switchToMailbox(userId, localLabelId) } just Runs
 
         // When
-        rustMessageQuery.observeMessages(userId, pageKey).test {
-            // Then
-            assertEquals(expectedMessages, awaitItem())
-            coVerify { createRustMessagesWatcher(userSession, localLabelId, mailboxCallbackSlot.captured) }
-        }
+        val actual = rustMessageQuery.getMessages(userId, pageKey)
+        // Then
+        assertEquals(expectedMessages, actual)
+        coVerify { createRustMessagesWatcher(userSession, localLabelId, mailboxCallbackSlot.captured) }
     }
 
     @Test
@@ -110,7 +105,7 @@ class RustMessageQueryImplTest {
         // Given
         val userId = UserIdTestData.userId
         val localLabelId = LocalLabelId(1u)
-        val pageKey = PageKey(filter = PageFilter(labelId = localLabelId.toLabelId()))
+        val pageKey = PageKey(labelId = localLabelId.toLabelId())
         val userSession = mockk<MailUserSession>()
         coEvery { userSessionRepository.getUserSession(userId) } returns userSession
         coEvery { rustMailbox.switchToMailbox(userId, localLabelId) } just Runs
@@ -118,22 +113,20 @@ class RustMessageQueryImplTest {
         coEvery { createRustMessagesWatcher.invoke(userSession, localLabelId, any()) } returns messagePaginator
 
         // When
-        rustMessageQuery.observeMessages(userId, pageKey).test {
-            val messageList = awaitItem()
+        val actual = rustMessageQuery.getMessages(userId, pageKey)
 
-            // Then
-            assertNotNull(messageList)
-            coVerify { rustMailbox.switchToMailbox(userId, localLabelId) }
-        }
+        // Then
+        assertNotNull(actual)
+        coVerify { rustMailbox.switchToMailbox(userId, localLabelId) }
     }
 
     @Test
-    fun `new message list is emitted when mailbox live query callback is called`() = runTest {
+    fun `invalidate paging data when mailbox live query callback is called`() = runTest {
         // Given
         val userId = UserIdTestData.userId
         val mailboxCallbackSlot = slot<LiveQueryCallback>()
         val localLabelId = LocalLabelId(1u)
-        val pageKey = PageKey(filter = PageFilter(labelId = localLabelId.toLabelId()))
+        val pageKey = PageKey(labelId = localLabelId.toLabelId())
         val userSession = mockk<MailUserSession>()
         coEvery { userSessionRepository.getUserSession(userId) } returns userSession
         coEvery { rustMailbox.switchToMailbox(userId, localLabelId) } just Runs
@@ -146,18 +139,11 @@ class RustMessageQueryImplTest {
             )
         } returns messagePaginator
 
-        rustMessageQuery.observeMessages(userId, pageKey).test {
-            skipItems(1) // first emission
-            val updatedMessages = expectedMessages.onEach { it.id = LocalMessageId(Math.random().toULong()) }
-            coEvery { messagePaginator.currentPage() } returns updatedMessages
-            // When
-            mailboxCallbackSlot.captured.onUpdate()
+        // When
+        rustMessageQuery.getMessages(userId, pageKey)
+        mailboxCallbackSlot.captured.onUpdate()
 
-            // Then
-            val messageList = awaitItem()
-
-            assertEquals(updatedMessages, messageList)
-            verify { invalidationTracker.notifyInvalidation(any()) }
-        }
+        // Then
+        verify { invalidationTracker.notifyInvalidation(any()) }
     }
 }
