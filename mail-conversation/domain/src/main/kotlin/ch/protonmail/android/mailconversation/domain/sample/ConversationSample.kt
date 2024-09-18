@@ -19,6 +19,7 @@
 package ch.protonmail.android.mailconversation.domain.sample
 
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
+import ch.protonmail.android.mailcommon.domain.sample.AvatarInformationSample
 import ch.protonmail.android.mailcommon.domain.sample.ConversationIdSample
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.mailconversation.domain.entity.Conversation
@@ -96,6 +97,7 @@ object ConversationSample {
         isStarred = false,
         time = 0,
         size = 0,
-        customLabels = emptyList()
+        customLabels = emptyList(),
+        avatarInformation = AvatarInformationSample.avatarSample
     )
 }

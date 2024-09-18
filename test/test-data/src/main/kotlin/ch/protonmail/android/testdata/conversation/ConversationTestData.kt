@@ -19,6 +19,7 @@
 package ch.protonmail.android.testdata.conversation
 
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
+import ch.protonmail.android.mailcommon.domain.sample.AvatarInformationSample
 import ch.protonmail.android.mailconversation.domain.entity.Conversation
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.mailmessage.domain.model.AttachmentCount
@@ -134,7 +135,8 @@ object ConversationTestData {
         isStarred = isStarred,
         time = 0.toLong(),
         size = 0.toLong(),
-        customLabels = labelIds.map { buildLabel(id) }
+        customLabels = labelIds.map { buildLabel(id) },
+        avatarInformation = AvatarInformationSample.avatarSample
     )
 
     private fun buildConversationWithConversationLabels(
@@ -161,7 +163,8 @@ object ConversationTestData {
         isStarred = false,
         time = 0.toLong(),
         size = 0.toLong(),
-        customLabels = labels
+        customLabels = labels,
+        avatarInformation = AvatarInformationSample.avatarSample
     )
 
     private fun buildLabel(labelId: String) = Label(

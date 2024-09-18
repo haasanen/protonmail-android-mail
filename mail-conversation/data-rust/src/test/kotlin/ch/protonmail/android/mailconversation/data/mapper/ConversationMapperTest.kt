@@ -112,6 +112,8 @@ class ConversationMapperTest {
         assertEquals(numUnread.toInt(), conversation.numUnread)
         assertEquals(numAttachments.toInt(), conversation.numAttachments)
         assertEquals(expirationTime.toLong(), conversation.expirationTime)
+        assertEquals(avatarInformation.text, conversation.avatarInformation.initials)
+        assertEquals(avatarInformation.color, conversation.avatarInformation.color)
         assertEquals(
             labels.map { it.toLabel() },
             conversation.customLabels

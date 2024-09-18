@@ -19,6 +19,7 @@
 package ch.protonmail.android.mailcommon.datarust.mapper
 
 import uniffi.proton_mail_uniffi.AttachmentMetadata
+import uniffi.proton_mail_uniffi.AvatarInformation
 import uniffi.proton_mail_uniffi.ComposerDirection
 import uniffi.proton_mail_uniffi.ComposerMode
 import uniffi.proton_mail_uniffi.Conversation
@@ -59,3 +60,4 @@ typealias LocalPgpScheme = PgpScheme
 typealias LocalComposerDirection = ComposerDirection
 typealias LocalSystemLabel = SystemLabel
 typealias LocalAddressId = Id
+typealias LocalAvatarInformation = AvatarInformation

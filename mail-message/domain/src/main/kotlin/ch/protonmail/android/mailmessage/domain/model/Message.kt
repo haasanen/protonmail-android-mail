@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.mailmessage.domain.model
 
+import ch.protonmail.android.mailcommon.domain.model.AvatarInformation
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import kotlinx.serialization.Serializable
 import me.proton.core.domain.entity.UserId
@@ -56,7 +57,8 @@ data class Message(
     val numAttachments: Int,
     val flags: Long,
     val attachmentCount: AttachmentCount,
-    val customLabels: List<Label>
+    val customLabels: List<Label>,
+    val avatarInformation: AvatarInformation
 ) {
     val allRecipients = toList + ccList + bccList
     val allRecipientsDeduplicated = allRecipients.toSet()

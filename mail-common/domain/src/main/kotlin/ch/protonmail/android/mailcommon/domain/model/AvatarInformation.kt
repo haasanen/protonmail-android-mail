@@ -18,26 +18,7 @@
 
 package ch.protonmail.android.mailcommon.domain.model
 
-import me.proton.core.domain.entity.UserId
-import me.proton.core.user.domain.entity.AddressId
-import me.proton.core.user.domain.entity.AddressType
-import me.proton.core.user.domain.entity.UserAddress
-
-val FAKE_USER_ID = UserId("fake-user-id")
-val FAKE_USER_ADDRESS_ID = AddressId("fake-user-address-id")
-val FAKE_USER_ADDRESS = UserAddress(
-    addressId = FAKE_USER_ADDRESS_ID,
-    canReceive = true,
-    canSend = true,
-    displayName = "name",
-    email = "primary-email@pm.m",
-    enabled = true,
-    keys = emptyList(),
-    type = AddressType.Original,
-    order = 0,
-    signature = "signature",
-    signedKeyList = null,
-    userId = FAKE_USER_ID
+data class AvatarInformation(
+    val initials: String,
+    val color: String
 )
-
-const val TRANSPARENT_COLOR_HEX = "#00000000"

@@ -20,6 +20,7 @@ package ch.protonmail.android.mailmessage.domain.sample
 
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.sample.AddressIdSample
+import ch.protonmail.android.mailcommon.domain.sample.AvatarInformationSample
 import ch.protonmail.android.mailcommon.domain.sample.ConversationIdSample
 import ch.protonmail.android.maillabel.domain.sample.LabelSample
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
@@ -268,6 +269,7 @@ object MessageSample {
         numAttachments = numAttachments,
         flags = 0,
         attachmentCount = attachmentCount,
-        customLabels = customLabels
+        customLabels = customLabels,
+        avatarInformation = AvatarInformationSample.avatarSample
     )
 }

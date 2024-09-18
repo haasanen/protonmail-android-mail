@@ -20,10 +20,12 @@ package ch.protonmail.android.mailmessage.data.mapper
 
 import arrow.core.toNonEmptyListOrNull
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalAddressId
+import ch.protonmail.android.mailcommon.datarust.mapper.LocalAvatarInformation
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalConversationId
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageId
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageMetadata
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalMimeType
+import ch.protonmail.android.mailcommon.domain.model.AvatarInformation
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.FAKE_USER_ID
 import ch.protonmail.android.maillabel.data.mapper.toLabel
@@ -40,6 +42,14 @@ import me.proton.core.user.domain.entity.AddressId
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.BodyOutput
 import uniffi.proton_mail_uniffi.MessageAddress
+
+
+fun LocalAvatarInformation.toAvatarInformation(): AvatarInformation {
+    return AvatarInformation(
+        initials = this.text,
+        color = this.color
+    )
+}
 
 fun ConversationId.toLocalConversationId(): LocalConversationId = LocalConversationId(this.id.toULong())
 
@@ -74,7 +84,8 @@ fun LocalMessageMetadata.toMessage(): Message {
         numAttachments = this.numAttachments.toInt(),
         flags = this.flags.value.toLong(),
         attachmentCount = AttachmentCount(this.numAttachments.toInt()),
-        customLabels = customLabels.map { it.toLabel() }
+        customLabels = customLabels.map { it.toLabel() },
+        avatarInformation = this.avatar.toAvatarInformation()
     )
 }
 

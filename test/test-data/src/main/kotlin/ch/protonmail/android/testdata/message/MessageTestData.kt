@@ -21,6 +21,7 @@ package ch.protonmail.android.testdata.message
 import java.time.Instant
 import java.time.temporal.ChronoUnit
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
+import ch.protonmail.android.mailcommon.domain.sample.AvatarInformationSample
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId.AllDrafts
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId.AllMail
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId.AllScheduled
@@ -211,6 +212,7 @@ object MessageTestData {
         numAttachments = numAttachments,
         flags = flags,
         attachmentCount = attachmentCount,
-        customLabels = customLabels
+        customLabels = customLabels,
+        avatarInformation = AvatarInformationSample.avatarSample
     )
 }

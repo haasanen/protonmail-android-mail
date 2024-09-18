@@ -1,7 +1,9 @@
 package ch.protonmail.android.mailcomposer.domain.usecase
 
 import java.time.Instant
+import ch.protonmail.android.mailcommon.domain.model.AvatarInformation
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
+import ch.protonmail.android.mailcommon.domain.model.TRANSPARENT_COLOR_HEX
 import ch.protonmail.android.mailcommon.domain.sample.UserAddressSample
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.mailmessage.domain.model.AttachmentCount
@@ -59,7 +61,8 @@ class CreateEmptyDraftTest {
                 numAttachments = 0,
                 flags = 0L,
                 attachmentCount = AttachmentCount(0),
-                customLabels = emptyList()
+                customLabels = emptyList(),
+                avatarInformation = AvatarInformation("", TRANSPARENT_COLOR_HEX)
             ),
             messageBody = MessageBody(
                 userId = expectedUserId,

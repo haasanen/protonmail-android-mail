@@ -19,6 +19,7 @@
 package ch.protonmail.android.testdata.conversation
 
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
+import ch.protonmail.android.mailcommon.domain.sample.AvatarInformationSample
 import ch.protonmail.android.mailconversation.domain.entity.Conversation
 import ch.protonmail.android.mailmessage.domain.model.AttachmentCount
 import ch.protonmail.android.testdata.user.UserIdTestData.userId
@@ -109,7 +110,8 @@ object ConversationWithContextTestData {
         isStarred = false,
         time = time,
         size = 0.toLong(),
-        customLabels = labelIds.map { buildLabel(it) }
+        customLabels = labelIds.map { buildLabel(it) },
+        avatarInformation = AvatarInformationSample.avatarSample
     )
 
     private fun buildLabel(labelId: String) = Label(

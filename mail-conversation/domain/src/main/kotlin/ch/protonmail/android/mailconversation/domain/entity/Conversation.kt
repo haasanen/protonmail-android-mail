@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.mailconversation.domain.entity
 
+import ch.protonmail.android.mailcommon.domain.model.AvatarInformation
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailmessage.domain.model.AttachmentCount
 import ch.protonmail.android.mailmessage.domain.model.Recipient
@@ -40,5 +41,6 @@ data class Conversation(
     val isStarred: Boolean,
     val time: Long,
     val size: Long,
-    val customLabels: List<Label>
+    val customLabels: List<Label>,
+    val avatarInformation: AvatarInformation
 )
