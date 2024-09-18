@@ -65,7 +65,6 @@ import androidx.constraintlayout.compose.ConstrainedLayoutReference
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.constraintlayout.compose.Visibility
-import ch.protonmail.android.mailcommon.presentation.compose.Avatar
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 import ch.protonmail.android.mailcommon.presentation.compose.OfficialBadge
 import ch.protonmail.android.mailcommon.presentation.compose.SmallNonClickableIcon
@@ -80,6 +79,7 @@ import ch.protonmail.android.maildetail.presentation.previewdata.MessageDetailHe
 import ch.protonmail.android.maillabel.presentation.model.LabelUiModel
 import ch.protonmail.android.maillabel.presentation.ui.LabelsList
 import ch.protonmail.android.mailmessage.domain.model.MessageId
+import ch.protonmail.android.mailmessage.presentation.ui.ParticipantAvatar
 import ch.protonmail.android.uicomponents.chips.thenIf
 import kotlinx.collections.immutable.ImmutableList
 import me.proton.core.compose.theme.ProtonDimens
@@ -171,7 +171,7 @@ private fun MessageDetailHeaderLayout(
             hideDetailsRef
         ) = createRefs()
 
-        Avatar(
+        ParticipantAvatar(
             modifier = modifier.constrainAs(avatarRef) {
                 top.linkTo(parent.top, margin = ProtonDimens.SmallSpacing)
                 start.linkTo(parent.start)
