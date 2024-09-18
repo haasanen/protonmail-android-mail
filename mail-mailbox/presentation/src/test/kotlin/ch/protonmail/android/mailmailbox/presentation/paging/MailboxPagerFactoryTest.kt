@@ -44,16 +44,15 @@ class MailboxPagerFactoryTest {
     @Test
     fun `pager content is returned from mailbox paging source factory`() = runTest {
         // Given
-        val userIds = listOf(userId)
         val type = MailboxItemType.Message
-        val mailboxPageKey = MailboxPageKey(userIds, pageKey)
+        val mailboxPageKey = MailboxPageKey(userId, pageKey)
         // The test works without the explicit mock for pagingSourceFactory.create method, but it should
         // not! We assume that the pager constructor somehow swallows the "mockk - missing method mock" exceptions
         every { pagingSourceFactory.create(mailboxPageKey, type) } returns mockk(relaxed = true)
 
         // When
         val pager = mailboxPagerFactory.create(
-            userIds = userIds,
+            userId = userId,
             selectedMailLabelId = selectedMailLabelId,
             filterUnread = false,
             type = type,

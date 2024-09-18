@@ -526,17 +526,11 @@ class MailboxViewModel @Inject constructor(
                 state.observeMailLabelChanges(),
                 state.observeUnreadFilterState(),
                 observeViewModeByLocation(),
-                state.observeSearchQuery(),
-                observeMailLabels()
-            ) { selectedMailLabel, unreadFilterEnabled, viewMode, query, mailLabels ->
+                state.observeSearchQuery()
+            ) { selectedMailLabel, unreadFilterEnabled, viewMode, query ->
                 mailboxPagerFactory.create(
                     userId = userId,
-                    selectedMailLabelId = if (query.isEmpty()) {
-                        selectedMailLabel.id
-                    } else {
-                        mailLabels.system.find { it.systemLabelId == SystemLabelId.AllMail }?.id
-                            ?: selectedMailLabel.id
-                    },
+                    selectedMailLabelId = selectedMailLabel.id,
                     filterUnread = unreadFilterEnabled,
                     type = if (query.isEmpty()) viewMode.toMailboxItemType() else MailboxItemType.Message,
                     searchQuery = query
