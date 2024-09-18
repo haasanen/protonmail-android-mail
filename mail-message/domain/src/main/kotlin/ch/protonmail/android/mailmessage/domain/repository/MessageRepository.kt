@@ -27,6 +27,7 @@ import ch.protonmail.android.mailmessage.domain.model.MessageAttachment
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.MessageWithBody
 import ch.protonmail.android.mailmessage.domain.model.RefreshedMessageWithBody
+import ch.protonmail.android.mailmessage.domain.model.SenderImage
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import kotlinx.coroutines.flow.Flow
 import me.proton.core.domain.entity.UserId
@@ -34,6 +35,12 @@ import ch.protonmail.android.maillabel.domain.model.LabelId
 
 @Suppress("TooManyFunctions", "ComplexInterface")
 interface MessageRepository {
+
+    suspend fun getSenderImage(
+        userId: UserId,
+        address: String,
+        bimi: String?
+    ): SenderImage?
 
     /**
      * Load all [Message] from local cache for [userId] filtered by [PageKey].

@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.mailmessage.data.repository
 
+import java.io.File
 import app.cash.turbine.test
 import arrow.core.getOrElse
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalMimeType
@@ -31,6 +32,7 @@ import ch.protonmail.android.mailmessage.data.mapper.toLocalMessageId
 import ch.protonmail.android.mailmessage.data.mapper.toMessage
 import ch.protonmail.android.mailmessage.data.mapper.toMessageBody
 import ch.protonmail.android.mailmessage.data.mapper.toMessageId
+import ch.protonmail.android.mailmessage.domain.model.SenderImage
 import ch.protonmail.android.mailpagination.domain.model.PageFilter
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.testdata.message.rust.LocalMessageIdSample
@@ -42,6 +44,7 @@ import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
+import junit.framework.TestCase.assertNull
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.test.runTest
@@ -193,5 +196,41 @@ class RustMessageRepositoryImplTest {
         // Then
         coVerify { rustMessageDataSource.markUnread(userId, messageIds.map { it.toLocalMessageId() }) }
         assertEquals(emptyList(), result.getOrNull())
+    }
+
+    @Test
+    fun `getSenderImage should return sender image when available`() = runTest {
+        // Given
+        val userId = UserIdTestData.userId
+        val address = "test@example.com"
+        val bimi = "bimiSelector"
+        val imagePath = "image.png"
+        val expectedSenderImage = SenderImage(File(imagePath))
+
+        coEvery { rustMessageDataSource.getSenderImage(userId, address, bimi) } returns imagePath
+
+        // When
+        val result = repository.getSenderImage(userId, address, bimi)
+
+        // Then
+        coVerify { rustMessageDataSource.getSenderImage(userId, address, bimi) }
+        assertEquals(expectedSenderImage, result)
+    }
+
+    @Test
+    fun `getSenderImage should return null when sender image is not available`() = runTest {
+        // Given
+        val userId = UserIdTestData.userId
+        val address = "test@example.com"
+        val bimi = "bimiSelector"
+
+        coEvery { rustMessageDataSource.getSenderImage(userId, address, bimi) } returns null
+
+        // When
+        val result = repository.getSenderImage(userId, address, bimi)
+
+        // Then
+        coVerify { rustMessageDataSource.getSenderImage(userId, address, bimi) }
+        assertNull(result)
     }
 }

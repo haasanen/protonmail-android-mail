@@ -33,6 +33,12 @@ interface RustMessageDataSource {
         labelId: LocalLabelId?
     ): LocalDecryptedMessage?
     suspend fun getMessages(userId: UserId, labelId: LocalLabelId): List<LocalMessageMetadata>
+    suspend fun getSenderImage(
+        userId: UserId,
+        address: String,
+        bimi: String?
+    ): String?
+
     suspend fun markRead(userId: UserId, messages: List<LocalMessageId>)
     suspend fun markUnread(userId: UserId, messages: List<LocalMessageId>)
 

@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.mailmessage.data.repository
 
+import java.io.File
 import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
@@ -35,6 +36,7 @@ import ch.protonmail.android.mailmessage.domain.model.MessageAttachment
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.MessageWithBody
 import ch.protonmail.android.mailmessage.domain.model.RefreshedMessageWithBody
+import ch.protonmail.android.mailmessage.domain.model.SenderImage
 import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import kotlinx.coroutines.flow.Flow
@@ -52,6 +54,16 @@ class RustMessageRepositoryImpl @Inject constructor(
     private val rustMessageDataSource: RustMessageDataSource,
     private val selectedMailLabelId: SelectedMailLabelId
 ) : MessageRepository {
+
+    override suspend fun getSenderImage(
+        userId: UserId,
+        address: String,
+        bimi: String?
+    ): SenderImage? {
+        return rustMessageDataSource.getSenderImage(userId, address, bimi)?.let { imageString ->
+            SenderImage(File(imageString))
+        }
+    }
 
     override suspend fun getLocalMessages(userId: UserId, pageKey: PageKey): List<Message> {
         val rustLocalLabelId = pageKey.filter.labelId.toLocalLabelId()

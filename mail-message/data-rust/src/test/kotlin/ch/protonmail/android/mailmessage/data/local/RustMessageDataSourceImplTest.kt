@@ -21,6 +21,7 @@ package ch.protonmail.android.mailmessage.data.local
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
 import ch.protonmail.android.mailmessage.data.usecase.CreateRustMessageAccessor
 import ch.protonmail.android.mailmessage.data.usecase.CreateRustMessageBodyAccessor
+import ch.protonmail.android.mailmessage.data.usecase.GetRustSenderImage
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import ch.protonmail.android.testdata.message.rust.LocalMessageIdSample
 import ch.protonmail.android.testdata.message.rust.LocalMessageTestData
@@ -48,12 +49,14 @@ class RustMessageDataSourceImplTest {
     private val rustMessageQuery: RustMessageQuery = mockk()
     private val createRustMessageAccessor = mockk<CreateRustMessageAccessor>()
     private val createRustMessageBodyAccessor = mockk<CreateRustMessageBodyAccessor>()
+    private val getRustSenderImage = mockk<GetRustSenderImage>()
     private val dataSource = RustMessageDataSourceImpl(
         userSessionRepository,
         rustMailbox,
         rustMessageQuery,
         createRustMessageAccessor,
-        createRustMessageBodyAccessor
+        createRustMessageBodyAccessor,
+        getRustSenderImage
     )
 
     @Test
@@ -163,4 +166,67 @@ class RustMessageDataSourceImplTest {
         // Then
         verify { rustMessageQuery.disconnect() }
     }
+
+    @Test
+    fun `getSenderImage should return sender image when session is available`() = runTest {
+        // Given
+        val userId = UserIdTestData.userId
+        val mailSession = mockk<MailUserSession>()
+        val address = "test@example.com"
+        val bimi = "bimiSelector"
+        val expectedImage = "image.png"
+
+        coEvery { userSessionRepository.getUserSession(userId) } returns mailSession
+        coEvery { getRustSenderImage(userId, mailSession, address, bimi) } returns expectedImage
+
+        // When
+        val result = dataSource.getSenderImage(userId, address, bimi)
+
+        // Then
+        coVerify { getRustSenderImage(userId, mailSession, address, bimi) }
+        assertEquals(expectedImage, result)
+    }
+
+    @Test
+    fun `getSenderImage should return null when session is not available`() = runTest {
+        // Given
+        val userId = UserIdTestData.userId
+        val address = "test@example.com"
+        val bimi = "bimiSelector"
+
+        coEvery { userSessionRepository.getUserSession(userId) } returns null
+
+        // When
+        val result = dataSource.getSenderImage(userId, address, bimi)
+
+        // Then
+        coVerify(exactly = 0) { getRustSenderImage(any(), any(), any(), any()) }
+        assertNull(result)
+    }
+
+    @Test
+    fun `getSenderImage should return null when exception occurs`() = runTest {
+        // Given
+        val userId = UserIdTestData.userId
+        val mailSession = mockk<MailUserSession>()
+        val address = "test@example.com"
+        val bimi = "bimiSelector"
+
+        coEvery { userSessionRepository.getUserSession(userId) } returns mailSession
+        coEvery {
+            getRustSenderImage(
+                userId,
+                mailSession,
+                address,
+                bimi
+            )
+        } throws MailSessionException.Other("Some error")
+
+        // When
+        val result = dataSource.getSenderImage(userId, address, bimi)
+
+        // Then
+        assertNull(result)
+    }
+
 }

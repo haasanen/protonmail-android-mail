@@ -25,6 +25,7 @@ import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageMetadata
 import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailmessage.data.usecase.CreateRustMessageAccessor
 import ch.protonmail.android.mailmessage.data.usecase.CreateRustMessageBodyAccessor
+import ch.protonmail.android.mailmessage.data.usecase.GetRustSenderImage
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
@@ -40,7 +41,8 @@ class RustMessageDataSourceImpl @Inject constructor(
     private val rustMailbox: RustMailbox,
     private val rustMessageQuery: RustMessageQuery,
     private val createRustMessageAccessor: CreateRustMessageAccessor,
-    private val createRustMessageBodyAccessor: CreateRustMessageBodyAccessor
+    private val createRustMessageBodyAccessor: CreateRustMessageBodyAccessor,
+    private val getRustSenderImage: GetRustSenderImage
 ) : RustMessageDataSource {
 
     override suspend fun getMessage(userId: UserId, messageId: LocalMessageId): LocalMessageMetadata? {
@@ -85,6 +87,25 @@ class RustMessageDataSourceImpl @Inject constructor(
         return rustMessageQuery.observeMessages(userId, labelId)
             .mapLatest { messageList -> messageList }
             .first()
+    }
+
+    override suspend fun getSenderImage(
+        userId: UserId,
+        address: String,
+        bimi: String?
+    ): String? {
+        Timber.d("rust-message: getSenderImage for address: $address")
+        return try {
+            val session = userSessionRepository.getUserSession(userId)
+            if (session == null) {
+                Timber.e("rust-message: trying to get sender image with a null session")
+                return null
+            }
+            getRustSenderImage(userId, session, address, bimi)
+        } catch (e: MailSessionException) {
+            Timber.e(e, "rust-message: Failed to get sender image")
+            null
+        }
     }
 
     @MissingRustApi

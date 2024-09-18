@@ -43,6 +43,7 @@ android {
 }
 
 dependencies {
+    implementation(project(":mail-settings:data"))
     kapt(Dependencies.appAnnotationProcessors)
     compileOnly(Proton.Common.rustCore)
 
