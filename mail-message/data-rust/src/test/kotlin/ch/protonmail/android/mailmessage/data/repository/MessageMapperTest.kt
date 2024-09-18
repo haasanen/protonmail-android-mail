@@ -134,12 +134,11 @@ class MessageMapperTest {
         val isRepliedAll = false
         val isForwarded = false
         val addressId = LocalAddressId(1.toULong())
-        val externalId = "externalId"
         val numAttachments = 0u
         val flags = MessageFlags(1897uL)
         val starred = false
         val attachments: List<LocalAttachmentMetadata> = emptyList()
-        val avatarInformation: AvatarInformation = AvatarInformation("A", "blue")
+        val avatarInformation = AvatarInformation("A", "blue")
 
         val localMessageMetadata = LocalMessageMetadata(
             id = LocalMessageId(id),
