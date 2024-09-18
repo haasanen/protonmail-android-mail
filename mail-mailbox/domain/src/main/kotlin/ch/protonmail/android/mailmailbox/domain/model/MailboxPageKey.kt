@@ -22,6 +22,6 @@ import ch.protonmail.android.mailpagination.domain.model.PageKey
 import me.proton.core.domain.entity.UserId
 
 data class MailboxPageKey(
-    val userIds: List<UserId>,
+    val userId: UserId,
     val pageKey: PageKey = PageKey()
 )

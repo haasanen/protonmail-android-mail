@@ -28,6 +28,7 @@ import ch.protonmail.android.mailpagination.domain.model.PageFilter
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailpagination.domain.model.ReadStatus
 import me.proton.core.domain.entity.UserId
+import timber.log.Timber
 import javax.inject.Inject
 
 class MailboxPagerFactory @Inject constructor(
@@ -35,13 +36,14 @@ class MailboxPagerFactory @Inject constructor(
 ) {
 
     fun create(
-        userIds: List<UserId>,
+        userId: UserId,
         selectedMailLabelId: MailLabelId,
         filterUnread: Boolean,
         type: MailboxItemType,
         searchQuery: String
     ): Pager<MailboxPageKey, MailboxItem> {
-        val mailboxPageKey = buildPageKey(filterUnread, selectedMailLabelId, userIds, searchQuery)
+        Timber.v("Paging: creating new paginator for ${selectedMailLabelId.labelId}")
+        val mailboxPageKey = buildPageKey(filterUnread, selectedMailLabelId, userId, searchQuery)
         return Pager(
             config = PagingConfig(PageKey.defaultPageSize),
             pagingSourceFactory = { pagingSourceFactory.create(mailboxPageKey, type) }
@@ -51,10 +53,10 @@ class MailboxPagerFactory @Inject constructor(
     private fun buildPageKey(
         filterUnread: Boolean,
         selectedMailLabelId: MailLabelId,
-        userIds: List<UserId>,
+        userId: UserId,
         searchQuery: String
     ) = MailboxPageKey(
-        userIds = userIds,
+        userId = userId,
         pageKey = PageKey(
             PageFilter(
                 keyword = searchQuery,

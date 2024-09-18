@@ -41,7 +41,7 @@ class MailboxItemPagingSourceFactory(
 
 class RustMailboxItemPagingSource(
     private val getMailboxItems: GetMailboxItems,
-    private val rustInvalidationTracker: RustInvalidationTracker,
+    rustInvalidationTracker: RustInvalidationTracker,
     private val mailboxPageKey: MailboxPageKey,
     private val type: MailboxItemType
 ) : RustPagingSource<MailboxPageKey, MailboxItem>(
@@ -50,10 +50,7 @@ class RustMailboxItemPagingSource(
 
     override suspend fun loadPage(params: LoadParams<MailboxPageKey>): LoadResult<MailboxPageKey, MailboxItem> {
         val key = params.key ?: mailboxPageKey
-        val userId = key.userIds.firstOrNull() ?: run {
-            Timber.e("Paging: load page error, no userId found")
-            return LoadResult.Error(IllegalStateException("Loading Mailbox page with no user ID"))
-        }
+        val userId = key.userId
         val size = max(key.pageKey.size, params.loadSize)
         val pageKey = key.pageKey.copy(size = size)
 

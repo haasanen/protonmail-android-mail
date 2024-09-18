@@ -530,7 +530,7 @@ class MailboxViewModel @Inject constructor(
                 observeMailLabels()
             ) { selectedMailLabel, unreadFilterEnabled, viewMode, query, mailLabels ->
                 mailboxPagerFactory.create(
-                    userIds = listOf(userId),
+                    userId = userId,
                     selectedMailLabelId = if (query.isEmpty()) {
                         selectedMailLabel.id
                     } else {
@@ -541,13 +541,10 @@ class MailboxViewModel @Inject constructor(
                     type = if (query.isEmpty()) viewMode.toMailboxItemType() else MailboxItemType.Message,
                     searchQuery = query
                 )
-            }.flatMapLatest { mapPagingData(userId, it) }
+            }.flatMapLatest { mapPagingData(it) }
         }
 
-    private suspend fun mapPagingData(
-        userId: UserId,
-        pager: Pager<MailboxPageKey, MailboxItem>
-    ): Flow<PagingData<MailboxItemUiModel>> {
+    private suspend fun mapPagingData(pager: Pager<MailboxPageKey, MailboxItem>): Flow<PagingData<MailboxItemUiModel>> {
         return withContext(dispatchersProvider.Comp) {
             val contacts = getContacts()
             pager.flow.cachedIn(viewModelScope).mapLatest { pagingData ->
