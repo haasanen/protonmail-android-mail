@@ -19,10 +19,9 @@
 package ch.protonmail.android.mailconversation.data.local
 
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalConversation
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
-import kotlinx.coroutines.flow.Flow
+import ch.protonmail.android.mailpagination.domain.model.PageKey
 import me.proton.core.domain.entity.UserId
 
 interface RustConversationsQuery {
-    fun observeConversationsByLabel(userId: UserId, labelId: LocalLabelId): Flow<List<LocalConversation>>
+    suspend fun getConversations(userId: UserId, pageKey: PageKey): List<LocalConversation>?
 }

@@ -18,46 +18,35 @@
 
 package ch.protonmail.android.mailconversation.data.local
 
-import ch.protonmail.android.mailcommon.domain.coroutines.AppScope
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalConversation
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
-import ch.protonmail.android.mailconversation.data.usecase.CreateRustConversationForLabelWatcher
+import ch.protonmail.android.mailconversation.data.usecase.CreateRustConversationForLabelPaginator
+import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
 import ch.protonmail.android.mailmessage.data.local.RustMailbox
 import ch.protonmail.android.mailmessage.domain.paging.RustDataSourceId
 import ch.protonmail.android.mailmessage.domain.paging.RustInvalidationTracker
+import ch.protonmail.android.mailpagination.domain.model.PageKey
+import ch.protonmail.android.mailpagination.domain.model.PageNumber
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.launch
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
+import uniffi.proton_mail_uniffi.ConversationPaginator
 import uniffi.proton_mail_uniffi.LiveQueryCallback
-import uniffi.proton_mail_uniffi.WatchedConversations
+import uniffi.proton_mail_uniffi.MailUserSession
 import javax.inject.Inject
 
 class RustConversationsQueryImpl @Inject constructor(
     private val userSessionRepository: UserSessionRepository,
     private val invalidationTracker: RustInvalidationTracker,
-    private val createRustConversationForLabelWatcher: CreateRustConversationForLabelWatcher,
-    private val rustMailbox: RustMailbox,
-    @AppScope private val coroutineScope: CoroutineScope
+    private val createRustConversationForLabelPaginator: CreateRustConversationForLabelPaginator,
+    private val rustMailbox: RustMailbox
 ) : RustConversationsQuery {
 
-    private var conversationsWatcher: WatchedConversations? = null
-
-    private val conversationsMutableStatusFlow = MutableStateFlow<List<LocalConversation>?>(null)
-    private val conversationsStatusFlow = conversationsMutableStatusFlow
-        .asStateFlow()
-        .filterNotNull()
+    private var paginator: Paginator? = null
 
     private val conversationsUpdatedCallback = object : LiveQueryCallback {
         override fun onUpdate() {
-            Timber.v("rust-conversations-query: callback fired")
-            val conversations = conversationsWatcher?.conversations
-            conversationsMutableStatusFlow.value = conversations
+            Timber.d("rust-conversations-query: conversations updated, invalidating paginator...")
 
             invalidationTracker.notifyInvalidation(
                 setOf(
@@ -65,40 +54,61 @@ class RustConversationsQueryImpl @Inject constructor(
                     RustDataSourceId.LABELS
                 )
             )
-
-            Timber.d("rust-conversations-query: onUpdated, item count ${conversations?.count()}")
         }
     }
 
-    override fun observeConversationsByLabel(userId: UserId, labelId: LocalLabelId): Flow<List<LocalConversation>> {
-        destroy()
-
-        coroutineScope.launch {
-            Timber.v("rust-conversation-query: observe conversations for labelId $labelId")
-            rustMailbox.switchToMailbox(userId, labelId)
-
-            val session = userSessionRepository.getUserSession(userId)
-            if (session == null) {
-                Timber.e("rust-conversation-query: trying to load message with a null session")
-                return@launch
-            }
-            conversationsWatcher = createRustConversationForLabelWatcher(session, labelId, conversationsUpdatedCallback)
-
-            val conversations = conversationsWatcher?.conversations
-            Timber.v("rust-conversation-query: init value for conversations is $conversations")
-            conversationsMutableStatusFlow.value = conversations
+    override suspend fun getConversations(userId: UserId, pageKey: PageKey): List<LocalConversation>? {
+        val session = userSessionRepository.getUserSession(userId)
+        if (session == null) {
+            Timber.e("rust-conversation-query: trying to load conversation with a null session")
+            return null
         }
 
-        Timber.v("rust-conversation-query: returning conversation status flow...")
-        return conversationsStatusFlow
+        val labelId = pageKey.labelId.toLocalLabelId()
+        rustMailbox.switchToMailbox(userId, labelId)
+        Timber.v("rust-conversation-query: observe conversations for labelId $labelId")
+
+        initPaginator(userId, labelId, session)
+
+        Timber.v("rust-conversation-query: Paging: querying ${pageKey.pageNumber.name} page for messages")
+        val conversations = when (pageKey.pageNumber) {
+            PageNumber.First -> paginator?.rustPaginator?.currentPage()
+            PageNumber.Next -> paginator?.rustPaginator?.nextPage()
+            PageNumber.All -> paginator?.rustPaginator?.reload()
+        }
+
+        Timber.v("rust-conversation-query: init value for conversation is $conversations")
+        return conversations
     }
 
+    private suspend fun initPaginator(
+        userId: UserId,
+        labelId: LocalLabelId,
+        session: MailUserSession
+    ) {
+        if (shouldInitPaginator(userId, labelId)) {
+            Timber.v("rust-conversation-query: [destroy and] initialize paginator instance...")
+            destroy()
+            paginator = Paginator(
+                createRustConversationForLabelPaginator(session, labelId, conversationsUpdatedCallback),
+                userId,
+                labelId
+            )
+        }
+    }
+
+    private fun shouldInitPaginator(userId: UserId, labelId: LocalLabelId) =
+        paginator == null || paginator?.userId != userId || paginator?.labelId != labelId
 
     private fun destroy() {
         Timber.v("rust-conversation-query: disconnecting and destroying watcher")
-        conversationsWatcher?.handle?.disconnect()
-        conversationsWatcher = null
-        conversationsMutableStatusFlow.value = null
+        paginator?.rustPaginator?.handle()?.disconnect()
+        paginator = null
     }
 
+    private data class Paginator(
+        val rustPaginator: ConversationPaginator,
+        val userId: UserId,
+        val labelId: LocalLabelId
+    )
 }

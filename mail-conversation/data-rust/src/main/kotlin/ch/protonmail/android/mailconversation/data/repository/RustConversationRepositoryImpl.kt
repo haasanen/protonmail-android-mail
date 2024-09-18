@@ -48,11 +48,8 @@ class RustConversationRepositoryImpl @Inject constructor(
 ) : ConversationRepository {
 
     override suspend fun getLocalConversations(userId: UserId, pageKey: PageKey): List<Conversation> {
-        val rustLocalLabelId = pageKey.labelId.toLocalLabelId()
-
-        Timber.v("rust-conversation-repo: getConversations, pageKey: $pageKey rustLocalLabelId: $rustLocalLabelId")
-
-        return rustConversationDataSource.getConversations(userId, rustLocalLabelId).map { it.toConversation() }
+        Timber.v("rust-conversation-repo: getConversations, pageKey: $pageKey")
+        return rustConversationDataSource.getConversations(userId, pageKey).map { it.toConversation() }
     }
 
     @MissingRustApi

@@ -21,14 +21,14 @@ package ch.protonmail.android.mailconversation.data.usecase
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
 import uniffi.proton_mail_uniffi.LiveQueryCallback
 import uniffi.proton_mail_uniffi.MailUserSession
-import uniffi.proton_mail_uniffi.watchConversationsForLabel
+import uniffi.proton_mail_uniffi.paginateConversationsForLabel
 import javax.inject.Inject
 
-class CreateRustConversationForLabelWatcher @Inject constructor() {
+class CreateRustConversationForLabelPaginator @Inject constructor() {
 
     suspend operator fun invoke(
         session: MailUserSession,
         labelId: LocalLabelId,
         callback: LiveQueryCallback
-    ) = watchConversationsForLabel(session, labelId, callback)
+    ) = paginateConversationsForLabel(session, labelId, callback)
 }

@@ -56,7 +56,6 @@ class RustMessageQueryImpl @Inject constructor(
         }
     }
 
-    @SuppressWarnings("NotImplementedDeclaration")
     override suspend fun getMessages(userId: UserId, pageKey: PageKey): List<LocalMessageMetadata>? {
         val session = userSessionRepository.getUserSession(userId)
         if (session == null) {
@@ -75,7 +74,7 @@ class RustMessageQueryImpl @Inject constructor(
         val messages = when (pageKey.pageNumber) {
             PageNumber.First -> paginator?.rustPaginator?.currentPage()
             PageNumber.Next -> paginator?.rustPaginator?.nextPage()
-            PageNumber.All -> TODO("Missing rust impl")
+            PageNumber.All -> paginator?.rustPaginator?.reload()
         }
 
         Timber.v("rust-message: init value for messages is $messages")

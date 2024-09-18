@@ -22,6 +22,7 @@ import ch.protonmail.android.mailcommon.datarust.mapper.LocalConversation
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalConversationId
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
 import ch.protonmail.android.mailmessage.data.model.LocalConversationMessages
+import ch.protonmail.android.mailpagination.domain.model.PageKey
 import kotlinx.coroutines.flow.Flow
 import me.proton.core.domain.entity.UserId
 
@@ -33,7 +34,7 @@ interface RustConversationDataSource {
         userId: UserId,
         conversationId: LocalConversationId
     ): Flow<LocalConversationMessages>
-    suspend fun getConversations(userId: UserId, labelId: LocalLabelId): List<LocalConversation>
+    suspend fun getConversations(userId: UserId, pageKey: PageKey): List<LocalConversation>
     suspend fun deleteConversations(userId: UserId, conversations: List<LocalConversationId>)
     suspend fun markRead(userId: UserId, conversations: List<LocalConversationId>)
     suspend fun markUnread(userId: UserId, conversations: List<LocalConversationId>)

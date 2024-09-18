@@ -25,11 +25,11 @@ import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
 import ch.protonmail.android.mailconversation.data.ConversationRustCoroutineScope
 import ch.protonmail.android.mailmessage.data.local.RustMailbox
 import ch.protonmail.android.mailmessage.data.model.LocalConversationMessages
+import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailsession.domain.repository.MailSessionRepository
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import me.proton.core.domain.entity.UserId
@@ -58,8 +58,8 @@ class RustConversationDataSourceImpl @Inject constructor(
      * Adds in an Invalidation Observer on the label that will be fired when any conversation
      * in the label changes
      */
-    override suspend fun getConversations(userId: UserId, labelId: LocalLabelId): List<LocalConversation> =
-        rustConversationsQuery.observeConversationsByLabel(userId, labelId).first()
+    override suspend fun getConversations(userId: UserId, pageKey: PageKey): List<LocalConversation> =
+        rustConversationsQuery.getConversations(userId, pageKey) ?: emptyList()
 
     override fun observeConversation(userId: UserId, conversationId: LocalConversationId): Flow<LocalConversation>? =
         runCatching { rustConversationDetailQuery.observeConversation(userId, conversationId) }

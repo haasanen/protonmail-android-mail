@@ -21,8 +21,10 @@ package ch.protonmail.android.mailconversation.data.local
 import app.cash.turbine.test
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalConversationId
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
+import ch.protonmail.android.maillabel.data.mapper.toLabelId
 import ch.protonmail.android.mailmessage.data.local.RustMailbox
 import ch.protonmail.android.mailmessage.data.model.LocalConversationMessages
+import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailsession.domain.repository.MailSessionRepository
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
@@ -72,19 +74,20 @@ class RustConversationDataSourceImplTest {
         val userId = UserIdTestData.userId
         val mailSession = mockk<MailSession>()
         val labelId = LocalLabelId(1uL)
+        val pageKey = PageKey(labelId.toLabelId())
         val conversations = listOf(
             LocalConversationTestData.AugConversation,
             LocalConversationTestData.SepConversation,
             LocalConversationTestData.OctConversation
         )
         coEvery { mailSessionRepository.getMailSession() } returns mailSession
-        coEvery { rustConversationsQuery.observeConversationsByLabel(userId, labelId) } returns flowOf(conversations)
+        coEvery { rustConversationsQuery.getConversations(userId, pageKey) } returns conversations
 
         // When
-        val result = dataSource.getConversations(userId, labelId)
+        val result = dataSource.getConversations(userId, pageKey)
 
         // Then
-        coVerify { rustConversationsQuery.observeConversationsByLabel(userId, labelId) }
+        coVerify { rustConversationsQuery.getConversations(userId, pageKey) }
         assertEquals(conversations, result)
     }
 
