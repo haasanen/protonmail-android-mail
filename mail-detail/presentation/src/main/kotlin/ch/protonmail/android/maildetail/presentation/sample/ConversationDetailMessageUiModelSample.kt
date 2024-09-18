@@ -20,6 +20,7 @@ package ch.protonmail.android.maildetail.presentation.sample
 
 import java.util.UUID
 import ch.protonmail.android.maillabel.domain.sample.LabelSample
+import androidx.compose.ui.graphics.Color
 import ch.protonmail.android.mailcommon.domain.sample.UserAddressSample
 import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
@@ -187,7 +188,12 @@ object ConversationDetailMessageUiModelSample {
     @Suppress("LongParameterList")
     private fun buildCollapsed(
         message: Message = MessageSample.build(),
-        avatar: AvatarUiModel = AvatarUiModel.ParticipantInitial(message.sender.name.substring(0, 1)),
+        avatar: AvatarUiModel = AvatarUiModel.ParticipantAvatar(
+            initial = message.avatarInformation.initials,
+            address = message.sender.address,
+            bimiSelector = message.sender.bimiSelector,
+            color = Color.Unspecified
+        ),
         expiration: TextUiModel? = null,
         forwardedIcon: ConversationDetailMessageUiModel.ForwardedIcon =
             ConversationDetailMessageUiModel.ForwardedIcon.None,
@@ -211,7 +217,12 @@ object ConversationDetailMessageUiModelSample {
 
     private fun buildExpanded(
         message: Message = MessageSample.build(),
-        avatar: AvatarUiModel = AvatarUiModel.ParticipantInitial(message.sender.name.substring(0, 1)),
+        avatar: AvatarUiModel = AvatarUiModel.ParticipantAvatar(
+            initial = message.avatarInformation.initials,
+            address = message.sender.address,
+            bimiSelector = message.sender.bimiSelector,
+            color = Color.Unspecified
+        ),
         isStarred: Boolean = false,
         messageBodyUiModel: MessageBodyUiModel = MessageDetailBodyUiModelSample.build(UUID.randomUUID().toString()),
         locationUiModel: MessageLocationUiModel = MessageLocationUiModelSample.AllMail

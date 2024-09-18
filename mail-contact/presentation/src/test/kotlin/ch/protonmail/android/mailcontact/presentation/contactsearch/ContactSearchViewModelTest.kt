@@ -96,13 +96,19 @@ class ContactSearchViewModelTest {
             expectedContacts[0].id,
             expectedContacts[0].name,
             TextUiModel.Text(expectedContacts[0].contactEmails.first().email),
-            AvatarUiModel.ParticipantInitial("S")
+            AvatarUiModel.ParticipantAvatar(
+                "S", expectedContacts[0].contactEmails.first().email,
+                null, Color.Unspecified
+            )
         ),
         ContactListItemUiModel.Contact(
             expectedContacts[1].id,
             expectedContacts[1].name,
             TextUiModel.Text(expectedContacts[1].contactEmails.first().email),
-            AvatarUiModel.ParticipantInitial("F")
+            AvatarUiModel.ParticipantAvatar(
+                "F", expectedContacts[1].contactEmails.first().email,
+                null, Color.Unspecified
+            )
         )
     )
     private val expectedContactGroupsSearchUiModels = listOf(

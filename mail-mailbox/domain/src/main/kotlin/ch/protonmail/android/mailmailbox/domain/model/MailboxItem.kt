@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.mailmailbox.domain.model
 
+import ch.protonmail.android.mailcommon.domain.model.AvatarInformation
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailmessage.domain.model.Recipient
 import ch.protonmail.android.mailmessage.domain.model.Sender
@@ -56,7 +57,8 @@ data class MailboxItem(
     val numMessages: Int,
     val hasNonCalendarAttachments: Boolean,
     val expirationTime: Long,
-    val calendarAttachmentCount: Int
+    val calendarAttachmentCount: Int,
+    val avatarInformation: AvatarInformation
 ) : PageItem {
     override val keywords: String by lazy { subject + senders + recipients }
 }

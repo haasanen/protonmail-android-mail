@@ -22,8 +22,8 @@ import androidx.compose.ui.graphics.Color
 import arrow.core.right
 import ch.protonmail.android.maillabel.domain.sample.LabelSample
 import ch.protonmail.android.mailcommon.presentation.mapper.ColorMapper
-import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
+import ch.protonmail.android.mailcommon.presentation.sample.ParticipantAvatarSample
 import ch.protonmail.android.mailcommon.presentation.usecase.FormatShortTime
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.maillabel.presentation.R
@@ -61,7 +61,7 @@ import kotlin.time.Duration.Companion.seconds
 class MailboxItemUiModelMapperTest {
 
     private val mailboxAvatarUiModelMapper: MailboxAvatarUiModelMapper = mockk {
-        every { this@mockk.invoke(any(), any()) } returns mockk()
+        every { this@mockk.invoke(any()) } returns mockk()
     }
     private val colorMapper: ColorMapper = mockk {
         every { toColor(any()) } returns Color.Unspecified.right()
@@ -309,7 +309,7 @@ class MailboxItemUiModelMapperTest {
     @Test
     fun `avatar ui model should be received from the use case`() = runTest {
         // Given
-        val avatarUiModel = AvatarUiModel.ParticipantInitial(value = "T")
+        val avatarUiModel = ParticipantAvatarSample.ebay
         val mailboxItem = buildMailboxItem()
         val resolvedNames = listOf(
             ResolveParticipantNameResult("contact name", isProton = false),
@@ -318,9 +318,11 @@ class MailboxItemUiModelMapperTest {
         every {
             getParticipantsResolvedNames.invoke(mailboxItem, ContactTestData.contacts)
         } returns ParticipantsResolvedNamesResult.Senders(resolvedNames)
-        every { mailboxAvatarUiModelMapper(mailboxItem, resolvedNames.map { it.name }) } returns avatarUiModel
+        every { mailboxAvatarUiModelMapper.invoke(mailboxItem) } returns avatarUiModel
+
         // When
         val actual = mapper.toUiModel(mailboxItem, ContactTestData.contacts, false)
+
         // Then
         assertEquals(avatarUiModel, actual.avatar)
     }

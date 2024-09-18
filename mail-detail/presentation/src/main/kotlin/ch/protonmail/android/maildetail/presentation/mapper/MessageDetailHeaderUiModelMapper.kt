@@ -54,9 +54,8 @@ class MessageDetailHeaderUiModelMapper @Inject constructor(
 ) {
 
     suspend fun toUiModel(message: Message, contacts: List<Contact>): MessageDetailHeaderUiModel {
-        val senderResolvedName = resolveParticipantName(message.sender, contacts)
         return MessageDetailHeaderUiModel(
-            avatar = detailAvatarUiModelMapper(senderResolvedName.name),
+            avatar = detailAvatarUiModelMapper(message.avatarInformation, message.sender),
             sender = participantUiModelMapper.senderToUiModel(message.sender, contacts),
             shouldShowTrackerProtectionIcon = true,
             shouldShowAttachmentIcon = message.hasNonCalendarAttachments(),
@@ -110,4 +109,5 @@ class MessageDetailHeaderUiModelMapper @Inject constructor(
         }.toImmutableList()
 
     private fun toMessageUiModel(messageId: MessageId) = MessageIdUiModel(messageId.id)
+
 }

@@ -19,10 +19,18 @@
 package ch.protonmail.android.mailcommon.presentation.model
 
 import androidx.compose.runtime.Immutable
+import androidx.compose.ui.graphics.Color
 
 @Immutable
 sealed class AvatarUiModel {
-    data class ParticipantInitial(val value: String) : AvatarUiModel()
+
+    data class ParticipantAvatar(
+        val initial: String,
+        val address: String,
+        val bimiSelector: String?,
+        val color: Color = Color.Unspecified
+    ) : AvatarUiModel()
+
     data class SelectionMode(val selected: Boolean) : AvatarUiModel()
-    object DraftIcon : AvatarUiModel()
+    data object DraftIcon : AvatarUiModel()
 }

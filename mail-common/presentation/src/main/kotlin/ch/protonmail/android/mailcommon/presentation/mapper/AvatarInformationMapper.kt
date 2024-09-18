@@ -16,24 +16,26 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.maildetail.presentation.mapper
+package ch.protonmail.android.mailcommon.presentation.mapper
 
+import androidx.compose.ui.graphics.Color
+import arrow.core.getOrElse
 import ch.protonmail.android.mailcommon.domain.model.AvatarInformation
-import ch.protonmail.android.mailcommon.presentation.mapper.AvatarInformationMapper
 import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
-import ch.protonmail.android.mailmessage.domain.model.Sender
 import javax.inject.Inject
 
-class DetailAvatarUiModelMapper @Inject constructor(
-    private val avatarInformationMapper: AvatarInformationMapper
+class AvatarInformationMapper @Inject constructor(
+    private val colorMapper: ColorMapper
 ) {
 
-    operator fun invoke(avatarInformation: AvatarInformation, sender: Sender): AvatarUiModel {
-
-        return avatarInformationMapper.toUiModel(
-            avatarInformation,
-            sender.address,
-            sender.bimiSelector
-        )
-    }
+    fun toUiModel(
+        avatarInformation: AvatarInformation,
+        address: String,
+        bimiSelector: String?
+    ) = AvatarUiModel.ParticipantAvatar(
+        initial = avatarInformation.initials,
+        address = address,
+        bimiSelector = bimiSelector,
+        color = colorMapper.toColor(avatarInformation.color).getOrElse { Color.Unspecified }
+    )
 }

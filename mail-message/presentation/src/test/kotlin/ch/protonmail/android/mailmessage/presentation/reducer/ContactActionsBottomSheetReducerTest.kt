@@ -18,7 +18,7 @@
 
 package ch.protonmail.android.mailmessage.presentation.reducer
 
-import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
+import ch.protonmail.android.mailcommon.presentation.sample.ParticipantAvatarSample
 import ch.protonmail.android.mailmessage.domain.model.Participant
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.BottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.ContactActionsBottomSheetState
@@ -51,7 +51,7 @@ internal class ContactActionsBottomSheetReducerTest(
 
         private val sampleContact = ContactSample.Stefano
 
-        private val sampleAvatar = AvatarUiModel.ParticipantInitial("S")
+        private val sampleAvatar = ParticipantAvatarSample.ebay
         private val transitionsFromLoadingState = listOf(
             TestInput(
                 currentState = BottomSheetState(ContactActionsBottomSheetState.Loading),

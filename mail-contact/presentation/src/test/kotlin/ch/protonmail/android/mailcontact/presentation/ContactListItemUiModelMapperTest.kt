@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.mailcontact.presentation
 
+import androidx.compose.ui.graphics.Color
 import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcommon.presentation.usecase.GetInitials
@@ -109,20 +110,29 @@ class ContactListItemUiModelMapperTest {
                 id = ContactId("1"),
                 name = "first contact",
                 emailSubtext = TextUiModel("firstcontact+alias@protonmail.com"),
-                avatar = AvatarUiModel.ParticipantInitial("FC")
+                avatar = AvatarUiModel.ParticipantAvatar(
+                    "FC", "firstcontact+alias@protonmail.com",
+                    null, Color.Unspecified
+                )
             ),
             ContactListItemUiModel.Contact(
                 id = ContactId("1.1"),
                 name = "first contact bis",
                 emailSubtext = TextUiModel("firstcontactbis@protonmail.com"),
-                avatar = AvatarUiModel.ParticipantInitial("FB")
+                avatar = AvatarUiModel.ParticipantAvatar(
+                    "FB", "firstcontactbis@protonmail.com",
+                    null, Color.Unspecified
+                )
             ),
             ContactListItemUiModel.Header("S"),
             ContactListItemUiModel.Contact(
                 id = ContactId("2"),
                 name = "second contact",
                 emailSubtext = TextUiModel("secondcontact@protonmail.com"),
-                avatar = AvatarUiModel.ParticipantInitial("SC")
+                avatar = AvatarUiModel.ParticipantAvatar(
+                    "SC", "secondcontact@protonmail.com",
+                    null, Color.Unspecified
+                )
             )
         )
 

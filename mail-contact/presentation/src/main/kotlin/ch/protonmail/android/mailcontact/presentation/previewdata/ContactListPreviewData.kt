@@ -37,7 +37,7 @@ object ContactListPreviewData {
         id = ContactId("Id"),
         name = "Name",
         emailSubtext = TextUiModel("Email, +2"),
-        avatar = AvatarUiModel.ParticipantInitial("JD")
+        avatar = AvatarUiModel.ParticipantAvatar("JD", "test@proton.me", null, Color.Blue)
     )
 
     val contactGroupSampleData = ContactGroupItemUiModel(

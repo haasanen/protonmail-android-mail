@@ -61,7 +61,7 @@ class MailboxItemUiModelMapper @Inject constructor(
         val participantsResolvedNamesResult = getParticipantsResolvedNames(mailboxItem, contacts)
 
         return MailboxItemUiModel(
-            avatar = mailboxAvatarUiModelMapper(mailboxItem, participantsResolvedNamesResult.list.map { it.name }),
+            avatar = mailboxAvatarUiModelMapper(mailboxItem),
             type = mailboxItem.type,
             id = mailboxItem.id,
             userId = mailboxItem.userId,

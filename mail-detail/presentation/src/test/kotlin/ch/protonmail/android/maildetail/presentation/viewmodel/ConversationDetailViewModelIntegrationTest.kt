@@ -40,11 +40,13 @@ import ch.protonmail.android.mailcommon.domain.usecase.GetCurrentEpochTimeDurati
 import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.mapper.ActionUiModelMapper
+import ch.protonmail.android.mailcommon.presentation.mapper.AvatarInformationMapper
 import ch.protonmail.android.mailcommon.presentation.mapper.ColorMapper
 import ch.protonmail.android.mailcommon.presentation.mapper.ExpirationTimeMapper
 import ch.protonmail.android.mailcommon.presentation.model.ActionResult
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcommon.presentation.reducer.BottomBarReducer
+import ch.protonmail.android.mailcommon.presentation.sample.ParticipantAvatarSample
 import ch.protonmail.android.mailcommon.presentation.ui.delete.DeleteDialogState
 import ch.protonmail.android.mailcommon.presentation.usecase.FormatExtendedTime
 import ch.protonmail.android.mailcommon.presentation.usecase.FormatShortTime
@@ -314,6 +316,11 @@ class ConversationDetailViewModelIntegrationTest {
     private val markMessageAsUnread = mockk<MarkMessageAsUnread>()
     private val moveMessage = mockk<MoveMessage>()
     private val relabelMessage = mockk<RelabelMessage>()
+    private val avatarInformationMapper = mockk<AvatarInformationMapper> {
+        every {
+            this@mockk.toUiModel(any(), any(), any())
+        } returns ParticipantAvatarSample.ebay
+    }
 
     private val messageIdUiModelMapper = MessageIdUiModelMapper()
     private val attachmentUiModelMapper = AttachmentUiModelMapper()
@@ -353,16 +360,15 @@ class ConversationDetailViewModelIntegrationTest {
         TransformDecryptedMessageBody(injectCssIntoDecryptedMessageBody, mockk())
     private val extractMessageBodyWithoutQuote = ExtractMessageBodyWithoutQuote()
     private val conversationMessageMapper = ConversationDetailMessageUiModelMapper(
-        avatarUiModelMapper = DetailAvatarUiModelMapper(getInitial),
+        avatarUiModelMapper = DetailAvatarUiModelMapper(avatarInformationMapper),
         expirationTimeMapper = ExpirationTimeMapper(getCurrentEpochTimeDuration),
         colorMapper = colorMapper,
         formatShortTime = formatShortTime,
         messageLocationUiModelMapper = messageLocationUiModelMapper,
-        resolveParticipantName = resolveParticipantName,
         messageDetailHeaderUiModelMapper = MessageDetailHeaderUiModelMapper(
             colorMapper = colorMapper,
             context = mockk(),
-            detailAvatarUiModelMapper = DetailAvatarUiModelMapper(getInitial),
+            detailAvatarUiModelMapper = DetailAvatarUiModelMapper(avatarInformationMapper),
             formatExtendedTime = formatExtendedTime,
             formatShortTime = formatShortTime,
             messageLocationUiModelMapper = messageLocationUiModelMapper,

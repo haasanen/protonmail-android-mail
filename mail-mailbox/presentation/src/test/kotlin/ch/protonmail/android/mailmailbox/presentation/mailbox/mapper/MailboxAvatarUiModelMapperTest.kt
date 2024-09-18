@@ -18,64 +18,86 @@
 
 package ch.protonmail.android.mailmailbox.presentation.mailbox.mapper
 
+import androidx.compose.ui.graphics.Color
+import ch.protonmail.android.mailcommon.domain.model.AvatarInformation
+import ch.protonmail.android.mailcommon.presentation.mapper.AvatarInformationMapper
 import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
-import ch.protonmail.android.mailcommon.presentation.usecase.GetInitial
-import ch.protonmail.android.maillabel.domain.model.SystemLabelId
-import ch.protonmail.android.mailmailbox.domain.model.MailboxItemType
-import ch.protonmail.android.testdata.mailbox.MailboxTestData.buildMailboxItem
+import ch.protonmail.android.mailmessage.domain.model.Sender
+import ch.protonmail.android.testdata.mailbox.MailboxTestData
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.verify
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class MailboxAvatarUiModelMapperTest {
-
-    private val participantsResolvedNames = listOf("Test")
-    private val getInitial = GetInitial()
-
-    private val mailboxAvatarUiModelMapper = MailboxAvatarUiModelMapper(getInitial)
+    private val avatarInformationMapper: AvatarInformationMapper = mockk()
+    private val mailboxAvatarUiModelMapper = MailboxAvatarUiModelMapper(avatarInformationMapper)
 
     @Test
-    fun `avatar should show first letter of first participant for all sent messages in message mode`() {
+    fun `should map MailboxItem to AvatarUiModel correctly`() {
         // Given
-        val mailboxItem = buildMailboxItem(
-            type = MailboxItemType.Message,
-            labelIds = listOf(SystemLabelId.AllSent.labelId)
+        val mailboxItem = MailboxTestData.readMailboxItem.copy(
+            senders = listOf(
+                Sender(
+                    address = "sender@example.com",
+                    name = "Sender Name",
+                    isProton = true,
+                    bimiSelector = "bimiSelector"
+                )
+            ),
+            avatarInformation = AvatarInformation(
+                initials = "SN",
+                color = "#FF5733"
+            )
         )
-        val expectedResult = AvatarUiModel.ParticipantInitial(value = "T")
-
-        // When
-        val result = mailboxAvatarUiModelMapper(mailboxItem, participantsResolvedNames)
-
-        // Then
-        assertEquals(expectedResult, result)
-    }
-
-    @Test
-    fun `avatar should show first letter of first participant for mailbox items in conversation mode`() {
-        // Given
-        val mailboxItem = buildMailboxItem(
-            type = MailboxItemType.Conversation,
-            labelIds = listOf(SystemLabelId.Inbox.labelId)
+        val expectedAvatarUiModel = AvatarUiModel.ParticipantAvatar(
+            initial = "SN",
+            address = "sender@example.com",
+            bimiSelector = "bimiSelector",
+            color = Color(0xFFFF5733)
         )
-        val expectedResult = AvatarUiModel.ParticipantInitial(value = "T")
+        every {
+            avatarInformationMapper.toUiModel(mailboxItem.avatarInformation, "sender@example.com", "bimiSelector")
+        } returns expectedAvatarUiModel
 
         // When
-        val result = mailboxAvatarUiModelMapper(mailboxItem, participantsResolvedNames)
+        val result = mailboxAvatarUiModelMapper(mailboxItem)
 
         // Then
-        assertEquals(expectedResult, result)
+        assertEquals(expectedAvatarUiModel, result)
+        verify {
+            avatarInformationMapper.toUiModel(mailboxItem.avatarInformation, "sender@example.com", "bimiSelector")
+        }
     }
 
     @Test
-    fun `avatar should show question mark if the given list of participants is empty`() {
+    fun `should return default AvatarUiModel when sender is null`() {
         // Given
-        val mailboxItem = buildMailboxItem()
-        val participantsResolvedNames = emptyList<String>()
-        val expectedResult = AvatarUiModel.ParticipantInitial(value = "?")
+        val mailboxItem = MailboxTestData.readMailboxItem.copy(
+            senders = emptyList(),
+            avatarInformation = AvatarInformation(
+                initials = "SN",
+                color = "#FF5733"
+            )
+        )
+        val expectedAvatarUiModel = AvatarUiModel.ParticipantAvatar(
+            initial = "SN",
+            address = "",
+            bimiSelector = null,
+            color = Color(0xFFFF5733)
+        )
+
+        every {
+            avatarInformationMapper.toUiModel(mailboxItem.avatarInformation, "", null)
+        } returns expectedAvatarUiModel
 
         // When
-        val result = mailboxAvatarUiModelMapper(mailboxItem, participantsResolvedNames)
+        val result = mailboxAvatarUiModelMapper(mailboxItem)
 
         // Then
-        assertEquals(expectedResult, result)
+        assertEquals(expectedAvatarUiModel, result)
+        verify { avatarInformationMapper.toUiModel(mailboxItem.avatarInformation, "", null) }
     }
+
 }

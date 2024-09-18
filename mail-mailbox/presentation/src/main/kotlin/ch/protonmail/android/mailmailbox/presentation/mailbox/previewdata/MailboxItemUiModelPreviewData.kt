@@ -35,7 +35,7 @@ import me.proton.core.domain.entity.UserId
 
 object MailboxItemUiModelPreviewData {
 
-    val AccuWeatherAvatar = AvatarUiModel.ParticipantInitial("A")
+    val AccuWeatherAvatar = AvatarUiModel.ParticipantAvatar("A", "test@proton.me", null, Color.Blue)
     const val AccuWeatherName = "AccuWeather"
     val UserId = UserId("user")
     val WeatherForecastConversationId = ConversationId("WeatherForecasts")
@@ -43,7 +43,7 @@ object MailboxItemUiModelPreviewData {
     object Conversation {
 
         val DroidConLondon = MailboxItemUiModel(
-            avatar = AvatarUiModel.ParticipantInitial("D"),
+            avatar = AvatarUiModel.ParticipantAvatar("D", "test@proton.me", null, Color.Blue),
             type = MailboxItemType.Conversation,
             id = "DroidConLondon",
             userId = UserId,
@@ -68,7 +68,7 @@ object MailboxItemUiModelPreviewData {
         )
 
         val DroidConLondonWithZeroMessages = MailboxItemUiModel(
-            avatar = AvatarUiModel.ParticipantInitial("D"),
+            avatar = AvatarUiModel.ParticipantAvatar("D", "test@proton.me", null, Color.Blue),
             type = MailboxItemType.Conversation,
             id = "DroidConLondon",
             userId = UserId,
@@ -121,7 +121,7 @@ object MailboxItemUiModelPreviewData {
         )
 
         val MultipleRecipientWithLabel = MailboxItemUiModel(
-            avatar = AvatarUiModel.ParticipantInitial("D"),
+            avatar = AvatarUiModel.ParticipantAvatar("D", "test@proton.me", null, Color.Blue),
             type = MailboxItemType.Conversation,
             id = "DroidConLondon",
             userId = UserId,

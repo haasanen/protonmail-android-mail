@@ -61,7 +61,7 @@ internal class ConversationDetailMessageUiModelMapperTest {
     private val colorMapper: ColorMapper = mockk()
 
     private val avatarUiModelMapper: DetailAvatarUiModelMapper = mockk {
-        every { this@mockk(any()) } returns ConversationDetailMessageUiModelSample.AugWeatherForecast.avatar
+        every { this@mockk(any(), any()) } returns ConversationDetailMessageUiModelSample.AugWeatherForecast.avatar
     }
     private val expirationTimeMapper: ExpirationTimeMapper = mockk {
         every { toUiModel(epochTime = any()) } returns
@@ -132,7 +132,6 @@ internal class ConversationDetailMessageUiModelMapperTest {
         formatShortTime = formatShortTime,
         colorMapper = colorMapper,
         messageLocationUiModelMapper = messageLocationUiModelMapper,
-        resolveParticipantName = resolveParticipantName,
         messageDetailHeaderUiModelMapper = messageDetailHeaderUiModelMapper,
         messageDetailFooterUiModelMapper = messageDetailFooterUiModelMapper,
         messageBannersUiModelMapper = messageBannersUiModelMapper,
@@ -286,7 +285,12 @@ internal class ConversationDetailMessageUiModelMapperTest {
         // given
         val message = MessageSample.ExpiringInvitation
         val expected = ConversationDetailMessageUiModelSample.ExpiringInvitation
-        every { avatarUiModelMapper(any()) } returns ConversationDetailMessageUiModelSample.ExpiringInvitation.avatar
+        every {
+            avatarUiModelMapper(
+                any(),
+                any()
+            )
+        } returns ConversationDetailMessageUiModelSample.ExpiringInvitation.avatar
 
         // when
         val result = mapper.toUiModel(message, contacts = emptyList())
@@ -300,7 +304,12 @@ internal class ConversationDetailMessageUiModelMapperTest {
         // given
         val message = MessageSample.ExpiringInvitation
         val expected = ConversationDetailMessageUiModelSample.ExpiringInvitation
-        every { avatarUiModelMapper(any()) } returns ConversationDetailMessageUiModelSample.ExpiringInvitation.avatar
+        every {
+            avatarUiModelMapper(
+                any(),
+                any()
+            )
+        } returns ConversationDetailMessageUiModelSample.ExpiringInvitation.avatar
 
         // when
         val result = mapper.toUiModel(message, contacts = emptyList())

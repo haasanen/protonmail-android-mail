@@ -205,7 +205,7 @@ fun ContactActionsBottomSheetContentPreview() {
         ContactActionsBottomSheetContent(
             state = ContactActionsBottomSheetState.Data(
                 participant = Participant(address = "test@protonmail.com", name = "Test User"),
-                avatarUiModel = AvatarUiModel.ParticipantInitial("TU"),
+                avatarUiModel = AvatarUiModel.ParticipantAvatar("TU", "test@protonmail.com", null),
                 contactId = ContactId(id = "1")
             ),
             actions = ContactActionsBottomSheetContent.Actions(

@@ -38,9 +38,9 @@ import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.R
 import ch.protonmail.android.mailcommon.presentation.mapper.ActionUiModelMapper
 import ch.protonmail.android.mailcommon.presentation.model.ActionResult
-import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
 import ch.protonmail.android.mailcommon.presentation.model.BottomBarState
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
+import ch.protonmail.android.mailcommon.presentation.sample.ParticipantAvatarSample
 import ch.protonmail.android.mailcontact.domain.model.GetContactError
 import ch.protonmail.android.mailcontact.domain.usecase.FindContactByEmail
 import ch.protonmail.android.mailcontact.domain.usecase.ObserveContacts
@@ -1796,7 +1796,7 @@ class ConversationDetailViewModelTest {
                 R.drawable.ic_proton_lock,
                 shouldShowOfficialBadge = false
             )
-        val avatar = AvatarUiModel.ParticipantInitial("TU")
+        val avatar = ParticipantAvatarSample.ebay
 
         val event = ContactActionsBottomSheetState.ContactActionsBottomSheetEvent.ActionData(
             participant = participant,

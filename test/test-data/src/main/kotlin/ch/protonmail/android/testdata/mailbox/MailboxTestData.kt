@@ -20,9 +20,9 @@ package ch.protonmail.android.testdata.mailbox
 
 import androidx.compose.ui.graphics.Color
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
-import ch.protonmail.android.maillabel.domain.sample.LabelSample
-import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
+import ch.protonmail.android.mailcommon.domain.sample.AvatarInformationSample
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
+import ch.protonmail.android.mailcommon.presentation.sample.ParticipantAvatarSample
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.maillabel.presentation.model.LabelUiModel
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItem
@@ -41,6 +41,7 @@ import kotlinx.collections.immutable.persistentListOf
 import me.proton.core.domain.entity.UserId
 import ch.protonmail.android.maillabel.domain.model.Label
 import ch.protonmail.android.maillabel.domain.model.LabelId
+import ch.protonmail.android.maillabel.domain.sample.LabelSample
 import ch.protonmail.android.mailmailbox.R.string as mailboxStrings
 
 object MailboxTestData {
@@ -91,7 +92,8 @@ object MailboxTestData {
         numMessages = numMessages,
         hasNonCalendarAttachments = hasAttachments,
         expirationTime = expirationTime,
-        calendarAttachmentCount = calendarAttachmentCount
+        calendarAttachmentCount = calendarAttachmentCount,
+        avatarInformation = AvatarInformationSample.avatarSample
     )
 
     private fun buildMessageMailboxItem(
@@ -122,7 +124,8 @@ object MailboxTestData {
         numMessages = 1,
         hasNonCalendarAttachments = false,
         expirationTime = 0,
-        calendarAttachmentCount = 0
+        calendarAttachmentCount = 0,
+        avatarInformation = AvatarInformationSample.avatarSample
     )
 
     private fun buildConversationMailboxItem(id: String) = MailboxItem(
@@ -145,7 +148,8 @@ object MailboxTestData {
         numMessages = 3,
         hasNonCalendarAttachments = false,
         expirationTime = 0,
-        calendarAttachmentCount = 0
+        calendarAttachmentCount = 0,
+        avatarInformation = AvatarInformationSample.avatarSample
     )
 
 }
@@ -193,7 +197,7 @@ object MailboxItemUiModelTestData {
         shouldOpenInComposer: Boolean = false,
         conversationId: String = "conversationId"
     ) = MailboxItemUiModel(
-        avatar = AvatarUiModel.ParticipantInitial("T"),
+        avatar = ParticipantAvatarSample.amazon,
         type = type,
         id = id,
         userId = userId,

@@ -81,9 +81,9 @@ internal class ConversationDetailScreenTest : HiltInstrumentedTest() {
         val messagesState = state.messagesState as ConversationDetailsMessagesState.Data
         when (val firstMessage = messagesState.messages.first()) {
             is ConversationDetailMessageUiModel.Collapsed -> {
-                val initial = firstMessage.avatar as AvatarUiModel.ParticipantInitial
+                val avatarInfo = firstMessage.avatar as AvatarUiModel.ParticipantAvatar
                 robot.messagesCollapsedSection {
-                    verify { avatarInitialIsDisplayed(index = 0, text = initial.value) }
+                    verify { avatarInitialIsDisplayed(index = 0, text = avatarInfo.initial) }
                 }
             }
 

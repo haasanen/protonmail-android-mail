@@ -25,8 +25,8 @@ import arrow.core.right
 import ch.protonmail.android.mailcommon.presentation.R.drawable.ic_proton_archive_box
 import ch.protonmail.android.mailcommon.presentation.R.drawable.ic_proton_lock
 import ch.protonmail.android.mailcommon.presentation.mapper.ColorMapper
-import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
+import ch.protonmail.android.mailcommon.presentation.sample.ParticipantAvatarSample
 import ch.protonmail.android.mailcommon.presentation.usecase.FormatExtendedTime
 import ch.protonmail.android.mailcommon.presentation.usecase.FormatShortTime
 import ch.protonmail.android.maildetail.presentation.R.string.undisclosed_recipients
@@ -57,7 +57,7 @@ import kotlin.time.Duration.Companion.seconds
 
 class MessageDetailHeaderUiModelMapperTest {
 
-    private val avatarUiModel = AvatarUiModel.ParticipantInitial("S")
+    private val avatarUiModel = ParticipantAvatarSample.amazon
     private val messageLocationUiModel = MessageLocationUiModel("Archive", ic_proton_archive_box)
     private val shortTimeTextUiModel = TextUiModel.Text("08/11/2022")
     private val extendedTimeTestUiModel = TextUiModel.Text("08/11/2022, 17:16")
@@ -104,7 +104,7 @@ class MessageDetailHeaderUiModelMapperTest {
     }
     private val context: Context = mockk()
     private val detailAvatarUiModelMapper: DetailAvatarUiModelMapper = mockk {
-        every { this@mockk(MessageTestData.sender.name) } returns avatarUiModel
+        every { this@mockk(any(), any()) } returns avatarUiModel
     }
     private val formatExtendedTime: FormatExtendedTime = mockk {
         every { this@mockk(message.time.seconds) } returns extendedTimeTestUiModel

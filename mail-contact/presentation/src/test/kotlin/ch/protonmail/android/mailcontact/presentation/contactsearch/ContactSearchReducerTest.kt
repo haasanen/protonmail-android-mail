@@ -52,13 +52,19 @@ internal class ContactSearchReducerTest(
                 id = ContactId("result 1 ID"),
                 name = "result 1 name",
                 emailSubtext = TextUiModel.Text("result1@proton.me"),
-                avatar = AvatarUiModel.ParticipantInitial("R1")
+                avatar = AvatarUiModel.ParticipantAvatar(
+                    "R1", "result1@proton.me",
+                    null, Color.Unspecified
+                )
             ),
             ContactListItemUiModel.Contact(
                 id = ContactId("result 2 ID"),
                 name = "result 2 name",
                 emailSubtext = TextUiModel.Text("result2@proton.me"),
-                avatar = AvatarUiModel.ParticipantInitial("R2")
+                avatar = AvatarUiModel.ParticipantAvatar(
+                    "R2", "result2@proton.me",
+                    null, Color.Unspecified
+                )
             )
         )
 

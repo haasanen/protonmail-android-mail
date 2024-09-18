@@ -18,40 +18,54 @@
 
 package ch.protonmail.android.maildetail.presentation.mapper
 
+import androidx.compose.ui.graphics.Color
+import ch.protonmail.android.mailcommon.domain.model.AvatarInformation
+import ch.protonmail.android.mailcommon.presentation.mapper.AvatarInformationMapper
 import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
-import ch.protonmail.android.mailcommon.presentation.usecase.GetInitial
+import ch.protonmail.android.mailmessage.domain.model.Sender
+import ch.protonmail.android.mailmessage.domain.sample.MessageSample
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.verify
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class DetailAvatarUiModelMapperTest {
 
-    private val senderResolvedName = "Sender"
-    private val getInitial = GetInitial()
-
-    private val detailAvatarUiModelMapper = DetailAvatarUiModelMapper(getInitial)
+    private val avatarInformationMapper: AvatarInformationMapper = mockk()
+    private val detailAvatarUiModelMapper = DetailAvatarUiModelMapper(avatarInformationMapper)
 
     @Test
-    fun `avatar should show first letter of sender for non-draft message`() {
+    fun `should map Message to AvatarUiModel correctly`() {
         // Given
-        val expectedResult = AvatarUiModel.ParticipantInitial(value = "S")
+        val message = MessageSample.AugWeatherForecast.copy(
+            sender = Sender(
+                address = "sender@example.com",
+                name = "Sender Name",
+                isProton = true,
+                bimiSelector = "bimiSelector"
+            ),
+            avatarInformation = AvatarInformation(
+                initials = "SN",
+                color = "#FF5733"
+            )
+        )
+        val expectedAvatarUiModel = AvatarUiModel.ParticipantAvatar(
+            initial = "SN",
+            address = "sender@example.com",
+            bimiSelector = "bimiSelector",
+            color = Color(0xFFFF5733)
+        )
+        every {
+            avatarInformationMapper.toUiModel(message.avatarInformation, "sender@example.com", "bimiSelector")
+        } returns expectedAvatarUiModel
 
         // When
-        val result = detailAvatarUiModelMapper(senderResolvedName)
+        val result = detailAvatarUiModelMapper(message.avatarInformation, message.sender)
 
         // Then
-        assertEquals(expectedResult, result)
+        assertEquals(expectedAvatarUiModel, result)
+        verify { avatarInformationMapper.toUiModel(message.avatarInformation, "sender@example.com", "bimiSelector") }
     }
 
-    @Test
-    fun `avatar should show question mark when the given sender name is empty`() {
-        // Given
-        val emptySenderName = ""
-        val expectedResult = AvatarUiModel.ParticipantInitial(value = "?")
-
-        // When
-        val result = detailAvatarUiModelMapper(emptySenderName)
-
-        // Then
-        assertEquals(expectedResult, result)
-    }
 }

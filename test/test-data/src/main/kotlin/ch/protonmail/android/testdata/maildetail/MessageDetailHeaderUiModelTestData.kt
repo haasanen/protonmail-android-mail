@@ -19,8 +19,8 @@
 package ch.protonmail.android.testdata.maildetail
 
 import ch.protonmail.android.mailcommon.presentation.R
-import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
+import ch.protonmail.android.mailcommon.presentation.sample.ParticipantAvatarSample
 import ch.protonmail.android.maildetail.presentation.model.MessageDetailHeaderUiModel
 import ch.protonmail.android.maildetail.presentation.model.MessageIdUiModel
 import ch.protonmail.android.maildetail.presentation.model.MessageLocationUiModel
@@ -31,7 +31,7 @@ import kotlinx.collections.immutable.toImmutableList
 object MessageDetailHeaderUiModelTestData {
 
     val messageDetailHeaderUiModel = MessageDetailHeaderUiModel(
-        avatar = AvatarUiModel.ParticipantInitial("S"),
+        avatar = ParticipantAvatarSample.ebay,
         sender = ParticipantUiModel(
             "Sender",
             "sender@pm.com",

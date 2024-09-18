@@ -18,31 +18,25 @@
 
 package ch.protonmail.android.mailmailbox.presentation.mailbox.mapper
 
-import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
+import ch.protonmail.android.mailcommon.presentation.mapper.AvatarInformationMapper
 import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
-import ch.protonmail.android.mailcommon.presentation.usecase.GetInitial
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItem
 import javax.inject.Inject
 
 class MailboxAvatarUiModelMapper @Inject constructor(
-    private val getInitial: GetInitial
+    private val avatarInformationMapper: AvatarInformationMapper
 ) {
 
-    @MissingRustApi
-    // Need rust to expose data to define whether message is a draft
-    operator fun invoke(mailboxItem: MailboxItem, participantsResolvedNames: List<String>): AvatarUiModel {
-        val isDraftInMessageMode = false
+    operator fun invoke(mailboxItem: MailboxItem): AvatarUiModel {
+        val sender = mailboxItem.senders.firstOrNull()
+        val address = sender?.address ?: ""
+        val bimiSelector = sender?.bimiSelector
 
-        return if (isDraftInMessageMode) {
-            AvatarUiModel.DraftIcon
-        } else {
-            val firstResolvedName = participantsResolvedNames.firstOrNull() ?: UnknownParticipant
-            val initial = getInitial(firstResolvedName) ?: UnknownParticipant
-            AvatarUiModel.ParticipantInitial(initial)
-        }
+        return avatarInformationMapper.toUiModel(
+            mailboxItem.avatarInformation,
+            address,
+            bimiSelector
+        )
     }
 
-    companion object {
-        private const val UnknownParticipant = "?"
-    }
 }

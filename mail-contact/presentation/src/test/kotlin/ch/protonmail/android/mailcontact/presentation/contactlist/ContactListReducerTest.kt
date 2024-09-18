@@ -55,13 +55,19 @@ internal class ContactListReducerTest(
                 id = ContactId("1"),
                 name = "first contact",
                 emailSubtext = TextUiModel("firstcontact+alias@protonmail.com"),
-                avatar = AvatarUiModel.ParticipantInitial("FC")
+                avatar = AvatarUiModel.ParticipantAvatar(
+                    "FC", "firstcontact+alias@protonmail.com",
+                    null, Color.Unspecified
+                )
             ),
             ContactListItemUiModel.Contact(
                 id = ContactId("1.1"),
                 name = "first contact bis",
                 emailSubtext = TextUiModel("firstcontactbis@protonmail.com"),
-                avatar = AvatarUiModel.ParticipantInitial("FB")
+                avatar = AvatarUiModel.ParticipantAvatar(
+                    "FB", "firstcontactbis@protonmail.com",
+                    null, Color.Unspecified
+                )
             )
         )
         private val loadedContactGroupItemUiModels = listOf(

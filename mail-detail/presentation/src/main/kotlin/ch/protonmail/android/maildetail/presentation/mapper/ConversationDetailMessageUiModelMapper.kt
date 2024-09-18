@@ -29,7 +29,6 @@ import ch.protonmail.android.maillabel.domain.model.LabelType
 import ch.protonmail.android.maillabel.presentation.model.LabelUiModel
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.model.Message
-import ch.protonmail.android.mailmessage.domain.usecase.ResolveParticipantName
 import ch.protonmail.android.mailmessage.presentation.model.MessageBodyExpandCollapseMode
 import ch.protonmail.android.mailmessage.presentation.model.MessageBodyUiModel
 import ch.protonmail.android.mailmessage.presentation.model.isApplicable
@@ -48,7 +47,6 @@ class ConversationDetailMessageUiModelMapper @Inject constructor(
     private val colorMapper: ColorMapper,
     private val formatShortTime: FormatShortTime,
     private val messageLocationUiModelMapper: MessageLocationUiModelMapper,
-    private val resolveParticipantName: ResolveParticipantName,
     private val messageDetailHeaderUiModelMapper: MessageDetailHeaderUiModelMapper,
     private val messageDetailFooterUiModelMapper: MessageDetailFooterUiModelMapper,
     private val messageBannersUiModelMapper: MessageBannersUiModelMapper,
@@ -57,11 +55,8 @@ class ConversationDetailMessageUiModelMapper @Inject constructor(
 ) {
 
     suspend fun toUiModel(message: Message, contacts: List<Contact>): ConversationDetailMessageUiModel.Collapsed {
-        val senderResolvedName = resolveParticipantName(message.sender, contacts)
         return ConversationDetailMessageUiModel.Collapsed(
-            avatar = avatarUiModelMapper(
-                senderResolvedName = senderResolvedName.name
-            ),
+            avatar = avatarUiModelMapper(message.avatarInformation, message.sender),
             expiration = message.expirationTimeOrNull()?.let(expirationTimeMapper::toUiModel),
             forwardedIcon = getForwardedIcon(isForwarded = message.isForwarded),
             hasAttachments = message.numAttachments > message.attachmentCount.calendar,
@@ -168,4 +163,3 @@ class ConversationDetailMessageUiModelMapper @Inject constructor(
             )
         }.toImmutableList()
 }
-

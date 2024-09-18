@@ -91,7 +91,7 @@ fun Avatar(
                     )
                 }
 
-            is AvatarUiModel.ParticipantInitial ->
+            is AvatarUiModel.ParticipantAvatar ->
                 Box(
                     modifier = Modifier
                         .sizeIn(
@@ -108,7 +108,7 @@ fun Avatar(
                         modifier = Modifier
                             .testTag(AvatarTestTags.AvatarText),
                         textAlign = TextAlign.Center,
-                        text = avatarUiModel.value
+                        text = avatarUiModel.initial
                     )
                 }
 

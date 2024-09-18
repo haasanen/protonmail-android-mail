@@ -51,7 +51,11 @@ class ContactListItemUiModelMapper @Inject constructor(
                         id = contact.id,
                         name = contact.name,
                         emailSubtext = getEmailSubtext(contact.contactEmails),
-                        avatar = AvatarUiModel.ParticipantInitial(getInitials(contact.name))
+                        avatar = AvatarUiModel.ParticipantAvatar(
+                            getInitials(contact.name),
+                            contact.contactEmails.firstOrNull()?.email ?: "",
+                            null
+                        )
                     )
                 )
             }

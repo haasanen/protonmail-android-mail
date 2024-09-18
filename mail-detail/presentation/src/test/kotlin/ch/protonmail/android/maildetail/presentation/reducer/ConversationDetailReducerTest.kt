@@ -20,6 +20,7 @@ package ch.protonmail.android.maildetail.presentation.reducer
 
 import java.util.UUID
 import ch.protonmail.android.maillabel.domain.sample.LabelIdSample
+import androidx.compose.ui.graphics.Color
 import ch.protonmail.android.mailcommon.presentation.R
 import ch.protonmail.android.mailcommon.presentation.model.ActionResult
 import ch.protonmail.android.mailcommon.presentation.model.ActionResult.DefinitiveActionResult
@@ -177,7 +178,7 @@ class ConversationDetailReducerTest(
                 R.drawable.ic_proton_lock,
                 shouldShowOfficialBadge = false
             )
-        val avatar = AvatarUiModel.ParticipantInitial("TU")
+        val avatar = AvatarUiModel.ParticipantAvatar("TU", "test@proton.me", null, Color.Red)
 
         val actions = listOf(
             ConversationDetailViewAction.MarkUnread affects Exit,
