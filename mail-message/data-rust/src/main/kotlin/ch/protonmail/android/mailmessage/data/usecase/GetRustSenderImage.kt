@@ -18,28 +18,18 @@
 
 package ch.protonmail.android.mailmessage.data.usecase
 
-import ch.protonmail.android.mailsettings.data.local.MailSettingsDataSource
-import kotlinx.coroutines.flow.firstOrNull
-import me.proton.core.domain.entity.UserId
 import uniffi.proton_mail_uniffi.MailUserSession
 import javax.inject.Inject
 
-class GetRustSenderImage @Inject constructor(
-    private val mailSettingsDataSource: MailSettingsDataSource
-) {
+class GetRustSenderImage @Inject constructor() {
 
     suspend operator fun invoke(
-        userId: UserId,
         mailUserSession: MailUserSession,
         address: String,
         bimi: String?
-    ): String? {
-        return mailSettingsDataSource.observeMailSettings(userId).firstOrNull()?.let { mailSettings ->
-            mailUserSession.imageForSender(
-                mailSettings, address, bimi, !mailSettings.hideSenderImages, null,
-                null, "png"
-            )
-        }
-    }
-
+    ): String? = mailUserSession.imageForSender(
+        address, bimi, true, null,
+        null, "png"
+    )
 }
+

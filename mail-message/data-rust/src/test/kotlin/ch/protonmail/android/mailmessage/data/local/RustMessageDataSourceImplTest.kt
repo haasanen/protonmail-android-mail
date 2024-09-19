@@ -177,13 +177,13 @@ class RustMessageDataSourceImplTest {
         val expectedImage = "image.png"
 
         coEvery { userSessionRepository.getUserSession(userId) } returns mailSession
-        coEvery { getRustSenderImage(userId, mailSession, address, bimi) } returns expectedImage
+        coEvery { getRustSenderImage(mailSession, address, bimi) } returns expectedImage
 
         // When
         val result = dataSource.getSenderImage(userId, address, bimi)
 
         // Then
-        coVerify { getRustSenderImage(userId, mailSession, address, bimi) }
+        coVerify { getRustSenderImage(mailSession, address, bimi) }
         assertEquals(expectedImage, result)
     }
 
@@ -200,7 +200,7 @@ class RustMessageDataSourceImplTest {
         val result = dataSource.getSenderImage(userId, address, bimi)
 
         // Then
-        coVerify(exactly = 0) { getRustSenderImage(any(), any(), any(), any()) }
+        coVerify(exactly = 0) { getRustSenderImage(any(), any(), any()) }
         assertNull(result)
     }
 
@@ -215,7 +215,6 @@ class RustMessageDataSourceImplTest {
         coEvery { userSessionRepository.getUserSession(userId) } returns mailSession
         coEvery {
             getRustSenderImage(
-                userId,
                 mailSession,
                 address,
                 bimi

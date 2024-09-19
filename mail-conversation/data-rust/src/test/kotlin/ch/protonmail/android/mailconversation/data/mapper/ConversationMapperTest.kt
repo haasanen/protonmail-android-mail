@@ -56,6 +56,8 @@ class ConversationMapperTest {
             MessageAddress("recipient1@test.com", "Recipient1", true, false, false, ""),
             MessageAddress("recipient2@test.com", "Recipient2", false, false, false, "")
         )
+        val totalNumMessages = 8uL
+        val totalNumUnread = 3uL
         val numMessages = 5uL
         val numUnread = 2uL
         val numAttachments = 1uL
@@ -94,7 +96,9 @@ class ConversationMapperTest {
             attachmentsMetadata = attachments,
             displaySnoozeReminder = false,
             exclusiveLocation = null,
-            avatar = avatarInformation
+            avatar = avatarInformation,
+            totalMessages = totalNumMessages,
+            totalUnread = totalNumUnread
         )
 
         // When

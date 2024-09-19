@@ -194,7 +194,7 @@ object LocalConversationTestData {
         subject = subject,
         senders = senders,
         recipients = recipients,
-        numMessages = numMessages,
+        numMessages = numMessagesCtx,
         numUnread = numUnread,
         numAttachments = numAttachments,
         expirationTime = expirationTime,
@@ -205,6 +205,8 @@ object LocalConversationTestData {
         displaySnoozeReminder = false,
         exclusiveLocation = null,
         avatar = avatarInformation,
-        attachmentsMetadata = attachments
+        attachmentsMetadata = attachments,
+        totalMessages = numMessages,
+        totalUnread = numUnread
     )
 }

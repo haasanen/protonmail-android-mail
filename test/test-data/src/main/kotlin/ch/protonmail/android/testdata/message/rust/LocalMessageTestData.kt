@@ -251,7 +251,6 @@ object LocalMessageTestData {
         attachmentsMetadata = attachments,
         customLabels = labels,
         exclusiveLocation = null,
-        header = "",
         replyTos = emptyList(),
         avatar = avatarInformation
     )

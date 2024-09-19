@@ -27,13 +27,17 @@ import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertFalse
 import junit.framework.TestCase.assertTrue
 import uniffi.proton_mail_uniffi.ExclusiveLocation
+import uniffi.proton_mail_uniffi.Id
 import uniffi.proton_mail_uniffi.MessageAddress
 import uniffi.proton_mail_uniffi.MessageFlags
+import uniffi.proton_mail_uniffi.SystemLabel
 import kotlin.test.Test
 
 class MessageMapperTest {
     @Test
     fun `should map LocalMessageMetadata to Message correctly`() {
+        val exclusiveLocation = ExclusiveLocation.System(SystemLabel.SENT, Id(100u))
+
         // Given
         val localMessageMetadata = LocalMessageMetadata(
             id = LocalMessageId(1234u),
@@ -74,8 +78,7 @@ class MessageMapperTest {
             avatar = LocalAvatarInformation("SN", "#FFFFFF"),
             attachmentsMetadata = emptyList(),
             customLabels = emptyList(),
-            exclusiveLocation = ExclusiveLocation.Spam,
-            header = "",
+            exclusiveLocation = exclusiveLocation,
             replyTos = emptyList(),
             snoozeTime = 12345u
         )

@@ -101,7 +101,7 @@ class RustMessageDataSourceImpl @Inject constructor(
                 Timber.e("rust-message: trying to get sender image with a null session")
                 return null
             }
-            getRustSenderImage(userId, session, address, bimi)
+            getRustSenderImage(session, address, bimi)
         } catch (e: MailSessionException) {
             Timber.e(e, "rust-message: Failed to get sender image")
             null

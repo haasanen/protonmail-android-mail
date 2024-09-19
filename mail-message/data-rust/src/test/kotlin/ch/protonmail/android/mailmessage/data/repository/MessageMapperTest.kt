@@ -165,7 +165,6 @@ class MessageMapperTest {
             starred = starred,
             attachmentsMetadata = attachments,
             exclusiveLocation = null,
-            header = "",
             replyTos = to,
             avatar = avatarInformation
         )
