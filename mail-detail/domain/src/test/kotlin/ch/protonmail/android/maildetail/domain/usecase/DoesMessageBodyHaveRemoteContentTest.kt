@@ -18,7 +18,6 @@
 
 package ch.protonmail.android.maildetail.domain.usecase
 
-import ch.protonmail.android.mailcommon.domain.sample.UserAddressSample
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.model.MimeType
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
@@ -38,8 +37,7 @@ class DoesMessageBodyHaveRemoteContentTest {
             messageId,
             TestData.plainTextMessageBody,
             MimeType.PlainText,
-            emptyList(),
-            UserAddressSample.PrimaryAddress
+            emptyList()
         )
 
         // When
@@ -57,8 +55,7 @@ class DoesMessageBodyHaveRemoteContentTest {
             messageId,
             TestData.messageBodyWithRemoteUrlInImgElement,
             MimeType.Html,
-            emptyList(),
-            UserAddressSample.PrimaryAddress
+            emptyList()
         )
 
         // When
@@ -76,8 +73,7 @@ class DoesMessageBodyHaveRemoteContentTest {
             messageId,
             TestData.messageBodyWithRemoteUrlInStyleElement,
             MimeType.Html,
-            emptyList(),
-            UserAddressSample.PrimaryAddress
+            emptyList()
         )
 
         // When
@@ -95,8 +91,7 @@ class DoesMessageBodyHaveRemoteContentTest {
             messageId,
             TestData.messageBodyWithRemoteUrlInStyleAttribute,
             MimeType.Html,
-            emptyList(),
-            UserAddressSample.PrimaryAddress
+            emptyList()
         )
 
         // When
@@ -114,8 +109,7 @@ class DoesMessageBodyHaveRemoteContentTest {
             messageId,
             TestData.messageBodyWithoutRemoteContent,
             MimeType.Html,
-            emptyList(),
-            UserAddressSample.PrimaryAddress
+            emptyList()
         )
 
         // When

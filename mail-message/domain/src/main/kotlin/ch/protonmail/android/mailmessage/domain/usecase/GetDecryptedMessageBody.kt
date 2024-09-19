@@ -21,7 +21,6 @@ package ch.protonmail.android.mailmessage.domain.usecase
 import arrow.core.Either
 import arrow.core.flatMap
 import arrow.core.right
-import ch.protonmail.android.mailcommon.domain.model.FAKE_USER_ADDRESS
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.model.GetDecryptedMessageBodyError
 import ch.protonmail.android.mailmessage.domain.model.MessageId
@@ -46,8 +45,7 @@ class GetDecryptedMessageBody @Inject constructor(
                     messageId = messageId,
                     value = messageBody.body,
                     mimeType = messageBody.mimeType,
-                    attachments = messageBody.attachments,
-                    userAddress = FAKE_USER_ADDRESS
+                    attachments = messageBody.attachments
                 ).right()
 
             }

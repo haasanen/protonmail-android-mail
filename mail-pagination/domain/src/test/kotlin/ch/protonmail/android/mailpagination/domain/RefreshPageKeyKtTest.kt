@@ -18,20 +18,18 @@
 
 package ch.protonmail.android.mailpagination.domain
 
+import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.mailpagination.domain.model.OrderBy
 import ch.protonmail.android.mailpagination.domain.model.OrderDirection
 import ch.protonmail.android.mailpagination.domain.model.PageItem
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import kotlinx.coroutines.test.runTest
-import me.proton.core.domain.entity.UserId
-import ch.protonmail.android.maillabel.domain.model.LabelId
 import org.junit.Test
 import kotlin.test.assertEquals
 
 class RefreshPageKeyKtTest {
 
     data class FakeItem(
-        override val userId: UserId = UserId("userId"),
         override val id: String,
         override val time: Long,
         override val size: Long = 1000,

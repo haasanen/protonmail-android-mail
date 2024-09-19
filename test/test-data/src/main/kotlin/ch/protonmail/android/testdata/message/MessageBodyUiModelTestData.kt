@@ -126,18 +126,17 @@ object MessageBodyUiModelTestData {
         viewModePreference: ViewModePreference = ViewModePreference.ThemeDefault
     ): MessageBodyUiModel {
         return MessageBodyUiModel(
+            messageId = messageId,
             messageBody = messageBody,
             messageBodyWithoutQuote = messageBody,
-            messageId = messageId,
             mimeType = mimeType,
             shouldShowEmbeddedImages = shouldShowEmbeddedImages,
             shouldShowRemoteContent = shouldShowRemoteContent,
             shouldShowEmbeddedImagesBanner = shouldShowEmbeddedImagesBanner,
             shouldShowRemoteContentBanner = shouldShowRemoteContentBanner,
+            shouldShowExpandCollapseButton = false,
             shouldShowOpenInProtonCalendar = shouldShowOpenInProtonCalendar,
             attachments = attachments,
-            shouldShowExpandCollapseButton = false,
-            userAddress = userAddress,
             viewModePreference = viewModePreference,
             printEffect = Effect.empty()
         )

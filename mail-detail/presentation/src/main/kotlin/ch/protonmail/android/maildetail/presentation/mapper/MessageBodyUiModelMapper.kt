@@ -96,7 +96,6 @@ class MessageBodyUiModelMapper @Inject constructor(
                     }
                 )
             } else null,
-            userAddress = decryptedMessageBody.userAddress,
             viewModePreference = viewModePreference,
             printEffect = Effect.empty()
         )
@@ -114,7 +113,6 @@ class MessageBodyUiModelMapper @Inject constructor(
         shouldShowExpandCollapseButton = false,
         shouldShowOpenInProtonCalendar = false,
         attachments = null,
-        userAddress = null,
         viewModePreference = ViewModePreference.ThemeDefault,
         printEffect = Effect.empty()
     )

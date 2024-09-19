@@ -1,6 +1,5 @@
 package ch.protonmail.android.mailmailbox.presentation.mailbox.reducer
 
-import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.ActionResult
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
@@ -38,14 +37,13 @@ internal class MailboxActionMessageReducerTest(
                 )
             ),
             TestInput(
-                operation = MailboxViewAction.SwipeTrashAction(UserIdSample.Primary, "itemId"),
+                operation = MailboxViewAction.SwipeTrashAction("itemId"),
                 expectedState = Effect.of(
                     ActionResult.UndoableActionResult(TextUiModel(R.string.mailbox_action_trash_message))
                 )
             ),
             TestInput(
                 operation = MailboxViewAction.SwipeArchiveAction(
-                    UserIdSample.Primary,
                     "itemId"
                 ),
                 expectedState = Effect.of(
@@ -53,7 +51,7 @@ internal class MailboxActionMessageReducerTest(
                 )
             ),
             TestInput(
-                operation = MailboxViewAction.SwipeSpamAction(UserIdSample.Primary, "itemId"),
+                operation = MailboxViewAction.SwipeSpamAction("itemId"),
                 expectedState = Effect.of(
                     ActionResult.UndoableActionResult(TextUiModel(R.string.mailbox_action_spam_message))
                 )

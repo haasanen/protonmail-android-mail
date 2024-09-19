@@ -21,7 +21,6 @@ package ch.protonmail.android.maildetail.presentation.sample
 import java.util.UUID
 import ch.protonmail.android.maillabel.domain.sample.LabelSample
 import androidx.compose.ui.graphics.Color
-import ch.protonmail.android.mailcommon.domain.sample.UserAddressSample
 import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.maildetail.presentation.R
@@ -227,8 +226,8 @@ object ConversationDetailMessageUiModelSample {
         messageBodyUiModel: MessageBodyUiModel = MessageDetailBodyUiModelSample.build(UUID.randomUUID().toString()),
         locationUiModel: MessageLocationUiModel = MessageLocationUiModelSample.AllMail
     ): ConversationDetailMessageUiModel.Expanded = ConversationDetailMessageUiModel.Expanded(
-        isUnread = message.isUnread,
         messageId = MessageIdUiModel(message.messageId.id),
+        isUnread = message.isUnread,
         messageDetailHeaderUiModel = MessageDetailHeaderUiModelSample.build(
             avatar = avatar,
             sender = ParticipantUiModel(
@@ -257,8 +256,7 @@ object ConversationDetailMessageUiModelSample {
         ),
         messageBodyUiModel = messageBodyUiModel,
         requestPhishingLinkConfirmation = false,
-        expandCollapseMode = MessageBodyExpandCollapseMode.Collapsed,
-        userAddress = UserAddressSample.PrimaryAddress
+        expandCollapseMode = MessageBodyExpandCollapseMode.Collapsed
     )
 
     private fun buildExpanding(

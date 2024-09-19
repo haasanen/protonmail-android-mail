@@ -23,7 +23,6 @@ import ch.protonmail.android.mailcommon.datarust.mapper.LocalConversation
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalConversationId
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
-import ch.protonmail.android.mailcommon.domain.model.FAKE_USER_ID
 import ch.protonmail.android.maillabel.data.mapper.toLabel
 import ch.protonmail.android.mailmessage.data.mapper.toParticipant
 import ch.protonmail.android.mailmessage.domain.model.AttachmentCount
@@ -107,7 +106,6 @@ class ConversationMapperTest {
         // Then
         val expectedId = ConversationId(id.value.toString())
         assertEquals(expectedId, conversation.conversationId)
-        assertEquals(FAKE_USER_ID, conversation.userId)
         assertEquals(order.toLong(), conversation.order)
         assertEquals(subject, conversation.subject)
         assertEquals(senders.map { it.toParticipant() }, conversation.senders)

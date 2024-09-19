@@ -20,7 +20,7 @@ package ch.protonmail.android.maildetail.presentation.mapper
 
 import java.util.UUID
 import android.text.format.Formatter
-import ch.protonmail.android.mailcommon.domain.sample.UserAddressSample
+import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.mailcommon.presentation.mapper.ColorMapper
 import ch.protonmail.android.mailcommon.presentation.mapper.ExpirationTimeMapper
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
@@ -170,28 +170,28 @@ internal class ConversationDetailMessageUiModelMapperTest {
     @Test
     fun `map to ui model returns expanded model`() = runTest {
         // given
+        val userId = UserIdSample.Primary
         val message = MessageSample.AugWeatherForecast
         val contactsList = listOf(ContactSample.John, ContactSample.Doe)
         val decryptedMessageBody = DecryptedMessageBody(
             message.messageId,
             UUID.randomUUID().toString(),
-            MimeType.Html,
-            userAddress = UserAddressSample.PrimaryAddress
+            MimeType.Html
         )
 
         // when
         val result = mapper.toUiModel(
+            userId,
             message,
             contacts = contactsList,
-            decryptedMessageBody = decryptedMessageBody,
-            userAddress = UserAddressSample.PrimaryAddress
+            decryptedMessageBody = decryptedMessageBody
         )
 
         // then
         assertEquals(result.isUnread, message.isUnread)
         assertEquals(result.messageId.id, message.messageId.id)
         coVerify { messageDetailHeaderUiModelMapper.toUiModel(message, contactsList) }
-        coVerify { messageBodyUiModelMapper.toUiModel(message.userId, decryptedMessageBody) }
+        coVerify { messageBodyUiModelMapper.toUiModel(userId, decryptedMessageBody) }
     }
 
     @Test
@@ -339,22 +339,22 @@ internal class ConversationDetailMessageUiModelMapperTest {
     @Test
     fun `should retain the body quote expanded or collapsed state`() = runTest {
         // given
+        val userId = UserIdSample.Primary
         val message = MessageSample.AugWeatherForecast
         val contactsList = listOf(ContactSample.John, ContactSample.Doe)
         val decryptedMessageBody = DecryptedMessageBody(
             message.messageId,
             UUID.randomUUID().toString(),
-            MimeType.Html,
-            userAddress = UserAddressSample.PrimaryAddress
+            MimeType.Html
         )
         val previousState = AugWeatherForecastExpanded.copy(expandCollapseMode = MessageBodyExpandCollapseMode.Expanded)
 
         // when
         val result = mapper.toUiModel(
+            userId,
             message,
             contacts = contactsList,
             decryptedMessageBody = decryptedMessageBody,
-            userAddress = UserAddressSample.PrimaryAddress,
             existingMessageUiState = previousState
         )
 
@@ -362,7 +362,7 @@ internal class ConversationDetailMessageUiModelMapperTest {
         assertEquals(MessageBodyExpandCollapseMode.Expanded, result.expandCollapseMode)
         coVerify {
             messageBodyUiModelMapper.toUiModel(
-                message.userId, decryptedMessageBody,
+                userId, decryptedMessageBody,
                 previousState.messageBodyUiModel
             )
         }

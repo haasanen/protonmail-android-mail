@@ -20,6 +20,7 @@ package ch.protonmail.android.mailmailbox.presentation.mailbox.model
 
 import android.content.Context
 import ch.protonmail.android.mailcommon.presentation.model.BottomBarEvent
+import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabel
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.mailmailbox.domain.model.StorageLimitPreference
@@ -36,8 +37,6 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxOpera
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxOperation.AffectingTopAppBar
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxOperation.AffectingUnreadFilter
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.BottomSheetOperation
-import me.proton.core.domain.entity.UserId
-import ch.protonmail.android.maillabel.domain.model.LabelId
 import me.proton.core.mailsettings.domain.entity.ViewMode
 
 internal sealed interface MailboxOperation {
@@ -96,11 +95,11 @@ internal sealed interface MailboxViewAction : MailboxOperation {
     data class LabelAsToggleAction(val label: LabelId) : MailboxViewAction, AffectingBottomSheet
     data class LabelAsConfirmed(val archiveSelected: Boolean) : MailboxViewAction, AffectingBottomSheet
 
-    data class SwipeReadAction(val userId: UserId, val itemId: String, val isRead: Boolean) : MailboxViewAction
-    data class SwipeArchiveAction(val userId: UserId, val itemId: String) : MailboxViewAction, AffectingActionMessage
-    data class SwipeSpamAction(val userId: UserId, val itemId: String) : MailboxViewAction, AffectingActionMessage
-    data class SwipeTrashAction(val userId: UserId, val itemId: String) : MailboxViewAction, AffectingActionMessage
-    data class SwipeStarAction(val userId: UserId, val itemId: String, val isStarred: Boolean) : MailboxViewAction
+    data class SwipeReadAction(val itemId: String, val isRead: Boolean) : MailboxViewAction
+    data class SwipeArchiveAction(val itemId: String) : MailboxViewAction, AffectingActionMessage
+    data class SwipeSpamAction(val itemId: String) : MailboxViewAction, AffectingActionMessage
+    data class SwipeTrashAction(val itemId: String) : MailboxViewAction, AffectingActionMessage
+    data class SwipeStarAction(val itemId: String, val isStarred: Boolean) : MailboxViewAction
 
     object RequestMoveToBottomSheet : MailboxViewAction, AffectingBottomSheet
     data class MoveToDestinationSelected(

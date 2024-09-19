@@ -21,7 +21,6 @@ package ch.protonmail.android.maildetail.data.repository
 import java.util.Random
 import java.util.UUID
 import app.cash.turbine.test
-import ch.protonmail.android.mailcommon.domain.sample.UserAddressSample
 import ch.protonmail.android.maildetail.domain.repository.InMemoryConversationStateRepository.MessageState.Collapsed
 import ch.protonmail.android.maildetail.domain.repository.InMemoryConversationStateRepository.MessageState.Expanded
 import ch.protonmail.android.maildetail.domain.repository.InMemoryConversationStateRepository.MessageState.Expanding
@@ -91,8 +90,7 @@ class InMemoryConversationStateRepositoryImplTest {
         val decryptedBody = DecryptedMessageBody(
             messageId = messageId,
             value = UUID.randomUUID().toString(),
-            mimeType = MimeType.Html,
-            userAddress = UserAddressSample.PrimaryAddress
+            mimeType = MimeType.Html
         )
 
         // When
@@ -115,8 +113,7 @@ class InMemoryConversationStateRepositoryImplTest {
         val decryptedBody = DecryptedMessageBody(
             messageId = messageId,
             value = UUID.randomUUID().toString(),
-            mimeType = MimeType.Html,
-            userAddress = UserAddressSample.PrimaryAddress
+            mimeType = MimeType.Html
         )
 
         // When

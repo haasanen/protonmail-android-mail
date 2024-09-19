@@ -19,7 +19,6 @@
 package ch.protonmail.android.maildetail.domain.usecase
 
 import java.util.UUID
-import ch.protonmail.android.mailcommon.domain.sample.UserAddressSample
 import ch.protonmail.android.maildetail.domain.repository.InMemoryConversationStateRepository
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.model.MessageId
@@ -42,8 +41,7 @@ class SetMessageViewStateTest {
             messageId = messageId,
             value = UUID.randomUUID().toString(),
             mimeType = MimeType.Html,
-            attachments = emptyList(),
-            userAddress = UserAddressSample.PrimaryAddress
+            attachments = emptyList()
         )
 
         // When

@@ -18,7 +18,7 @@
 
 package ch.protonmail.android.testdata.mailsettings
 
-import ch.protonmail.android.mailcommon.domain.model.FAKE_USER_ID
+import ch.protonmail.android.mailcommon.domain.model.DeprecatedId
 import ch.protonmail.android.testdata.user.UserIdTestData
 import me.proton.core.domain.entity.UserId
 import me.proton.core.domain.type.IntEnum
@@ -40,7 +40,7 @@ object MailSettingsTestData {
     val mailSettings = buildMailSettings()
 
     val mailSettingsFromRust = buildMailSettings(
-        userId = FAKE_USER_ID,
+        userId = DeprecatedId.UserId,
         showImages = IntEnum(0, ShowImage.None),
         showMoved = IntEnum(3, ShowMoved.Both),
         swipeRight = SwipeAction.Archive,

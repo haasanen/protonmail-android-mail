@@ -609,24 +609,24 @@ class MailboxViewModel @Inject constructor(
         if (swipeReadAction.isRead) {
             when (getViewModeForCurrentLocation(selectedMailLabelId.flow.value)) {
                 ViewMode.ConversationGrouping -> markConversationsAsUnread(
-                    userId = swipeReadAction.userId,
+                    userId = primaryUserId.filterNotNull().first(),
                     conversationIds = listOf(ConversationId(swipeReadAction.itemId))
                 )
 
                 ViewMode.NoConversationGrouping -> markMessagesAsUnread(
-                    userId = swipeReadAction.userId,
+                    userId = primaryUserId.filterNotNull().first(),
                     messageIds = listOf(MessageId(swipeReadAction.itemId))
                 )
             }
         } else {
             when (getViewModeForCurrentLocation(selectedMailLabelId.flow.value)) {
                 ViewMode.ConversationGrouping -> markConversationsAsRead(
-                    userId = swipeReadAction.userId,
+                    userId = primaryUserId.filterNotNull().first(),
                     conversationIds = listOf(ConversationId(swipeReadAction.itemId))
                 )
 
                 ViewMode.NoConversationGrouping -> markMessagesAsRead(
-                    userId = swipeReadAction.userId,
+                    userId = primaryUserId.filterNotNull().first(),
                     messageIds = listOf(MessageId(swipeReadAction.itemId))
                 )
             }
@@ -638,24 +638,24 @@ class MailboxViewModel @Inject constructor(
         if (swipeStarAction.isStarred) {
             when (getViewModeForCurrentLocation(selectedMailLabelId.flow.value)) {
                 ViewMode.ConversationGrouping -> unStarConversations(
-                    userId = swipeStarAction.userId,
+                    userId = primaryUserId.filterNotNull().first(),
                     conversationIds = listOf(ConversationId(swipeStarAction.itemId))
                 )
 
                 ViewMode.NoConversationGrouping -> unStarMessages(
-                    userId = swipeStarAction.userId,
+                    userId = primaryUserId.filterNotNull().first(),
                     messageIds = listOf(MessageId(swipeStarAction.itemId))
                 )
             }
         } else {
             when (getViewModeForCurrentLocation(selectedMailLabelId.flow.value)) {
                 ViewMode.ConversationGrouping -> starConversations(
-                    userId = swipeStarAction.userId,
+                    userId = primaryUserId.filterNotNull().first(),
                     conversationIds = listOf(ConversationId(swipeStarAction.itemId))
                 )
 
                 ViewMode.NoConversationGrouping -> starMessages(
-                    userId = swipeStarAction.userId,
+                    userId = primaryUserId.filterNotNull().first(),
                     messageIds = listOf(MessageId(swipeStarAction.itemId))
                 )
             }
@@ -666,9 +666,8 @@ class MailboxViewModel @Inject constructor(
     private suspend fun handleSwipeArchiveAction(swipeArchiveAction: MailboxViewAction.SwipeArchiveAction) {
         if (isActionAllowedForCurrentLabel(SystemLabelId.Archive.labelId)) {
             val viewMode = getViewModeForCurrentLocation(selectedMailLabelId.flow.value)
-            swipeArchiveAction.let {
-                moveSingleItemToDestination(it.userId, it.itemId, SystemLabelId.Archive.labelId, viewMode)
-            }
+            val userId = primaryUserId.filterNotNull().first()
+            moveSingleItemToDestination(userId, swipeArchiveAction.itemId, SystemLabelId.Archive.labelId, viewMode)
             emitNewStateFrom(swipeArchiveAction)
         }
     }
@@ -676,9 +675,8 @@ class MailboxViewModel @Inject constructor(
     private suspend fun handleSwipeSpamAction(swipeSpamAction: MailboxViewAction.SwipeSpamAction) {
         if (isActionAllowedForCurrentLabel(SystemLabelId.Spam.labelId)) {
             val viewMode = getViewModeForCurrentLocation(selectedMailLabelId.flow.value)
-            swipeSpamAction.let {
-                moveSingleItemToDestination(it.userId, it.itemId, SystemLabelId.Spam.labelId, viewMode)
-            }
+            val userId = primaryUserId.filterNotNull().first()
+            moveSingleItemToDestination(userId, swipeSpamAction.itemId, SystemLabelId.Spam.labelId, viewMode)
             emitNewStateFrom(swipeSpamAction)
         }
     }
@@ -686,9 +684,8 @@ class MailboxViewModel @Inject constructor(
     private suspend fun handleSwipeTrashAction(swipeTrashAction: MailboxViewAction.SwipeTrashAction) {
         if (isActionAllowedForCurrentLabel(SystemLabelId.Trash.labelId)) {
             val viewMode = getViewModeForCurrentLocation(selectedMailLabelId.flow.value)
-            swipeTrashAction.let {
-                moveSingleItemToDestination(it.userId, it.itemId, SystemLabelId.Trash.labelId, viewMode)
-            }
+            val userId = primaryUserId.filterNotNull().first()
+            moveSingleItemToDestination(userId, swipeTrashAction.itemId, SystemLabelId.Trash.labelId, viewMode)
             emitNewStateFrom(swipeTrashAction)
         }
     }

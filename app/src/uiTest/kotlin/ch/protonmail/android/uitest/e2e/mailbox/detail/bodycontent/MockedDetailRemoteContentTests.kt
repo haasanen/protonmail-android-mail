@@ -20,7 +20,6 @@ package ch.protonmail.android.uitest.e2e.mailbox.detail.bodycontent
 
 import arrow.core.right
 import ch.protonmail.android.di.ServerProofModule
-import ch.protonmail.android.mailcommon.domain.sample.UserAddressSample
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.MimeType
@@ -55,7 +54,6 @@ import io.mockk.coEvery
 import io.mockk.mockk
 import io.mockk.unmockkAll
 import me.proton.core.auth.domain.usecase.ValidateServerProof
-import me.proton.core.user.domain.entity.UserAddress
 import org.junit.Before
 import org.junit.Test
 
@@ -236,8 +234,7 @@ internal class MockedDetailRemoteContentTests : MockedNetworkTest(loginType = Lo
             MessageId("html-message-id"),
             String(content),
             MimeType.Html,
-            emptyList(),
-            UserAddressSample.PrimaryAddress
+            emptyList()
         )
     }
 

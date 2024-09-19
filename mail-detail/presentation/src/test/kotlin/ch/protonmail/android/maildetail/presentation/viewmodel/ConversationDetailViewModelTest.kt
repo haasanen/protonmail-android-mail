@@ -31,7 +31,6 @@ import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.model.NetworkError
 import ch.protonmail.android.mailcommon.domain.sample.ConversationIdSample
 import ch.protonmail.android.mailcommon.domain.sample.DataErrorSample
-import ch.protonmail.android.mailcommon.domain.sample.UserAddressSample
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailcommon.presentation.Effect
@@ -267,7 +266,7 @@ class ConversationDetailViewModelTest {
     }
     private val getDecryptedMessageBody: GetDecryptedMessageBody = mockk {
         coEvery { this@mockk.invoke(any(), any()) } returns DecryptedMessageBody(
-            MessageIdSample.build(), "", MimeType.Html, emptyList(), UserAddressSample.PrimaryAddress
+            MessageIdSample.build(), "", MimeType.Html, emptyList()
         ).right()
     }
     private val markMessageAsRead: MarkMessageAsRead =
@@ -370,11 +369,11 @@ class ConversationDetailViewModelTest {
         val messages = nonEmptyListOf(ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded)
         coEvery {
             conversationMessageMapper.toUiModel(
+                userId = any(),
                 message = any(),
-                any(),
-                any(),
-                any(),
-                any()
+                contacts = any(),
+                decryptedMessageBody = any(),
+                existingMessageUiState = any()
             )
         } returns messages.first()
 
@@ -403,10 +402,10 @@ class ConversationDetailViewModelTest {
         val messages = nonEmptyListOf(ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded)
         coEvery {
             conversationMessageMapper.toUiModel(
+                userId = any(),
                 message = any(),
                 contacts = any(),
-                decryptedMessageBody = any(),
-                userAddress = UserAddressSample.PrimaryAddress
+                decryptedMessageBody = any()
             )
         } returns messages.first()
         val conversationUiModel = ConversationDetailMetadataUiModelSample.WeatherForecast
@@ -436,10 +435,10 @@ class ConversationDetailViewModelTest {
         val messages = nonEmptyListOf(ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded)
         coEvery {
             conversationMessageMapper.toUiModel(
+                userId = any(),
                 message = any(),
                 contacts = any(),
-                decryptedMessageBody = any(),
-                userAddress = UserAddressSample.PrimaryAddress
+                decryptedMessageBody = any()
             )
         } returns messages.first()
         val expectedState = initialState.copy(
@@ -474,10 +473,10 @@ class ConversationDetailViewModelTest {
         val messages = nonEmptyListOf(ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded)
         coEvery {
             conversationMessageMapper.toUiModel(
+                userId = any(),
                 message = any(),
                 contacts = any(),
-                decryptedMessageBody = any(),
-                userAddress = UserAddressSample.PrimaryAddress
+                decryptedMessageBody = any()
             )
         } returns messages.first()
         val dataState = initialState.copy(
@@ -526,10 +525,10 @@ class ConversationDetailViewModelTest {
         } returns expectedState
         coEvery {
             conversationMessageMapper.toUiModel(
+                userId = any(),
                 message = any(),
                 contacts = any(),
-                decryptedMessageBody = any(),
-                userAddress = UserAddressSample.PrimaryAddress
+                decryptedMessageBody = any()
             )
         } returns
             InvoiceWithLabelExpanded
@@ -563,10 +562,10 @@ class ConversationDetailViewModelTest {
         } returns expectedState
         coEvery {
             conversationMessageMapper.toUiModel(
+                userId = any(),
                 message = any(), // Model here has 3 labels, sample models only have one or two
                 contacts = emptyList(),
-                decryptedMessageBody = any(),
-                userAddress = UserAddressSample.PrimaryAddress
+                decryptedMessageBody = any()
             )
         } returns
             InvoiceWithLabelExpanded
@@ -637,10 +636,10 @@ class ConversationDetailViewModelTest {
         val messages = nonEmptyListOf(ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded)
         coEvery {
             conversationMessageMapper.toUiModel(
+                userId = any(),
                 message = any(),
                 contacts = any(),
-                decryptedMessageBody = any(),
-                userAddress = UserAddressSample.PrimaryAddress
+                decryptedMessageBody = any()
             )
         } returns messages.first()
         val actions = listOf(Action.Archive)
@@ -672,10 +671,10 @@ class ConversationDetailViewModelTest {
         val messages = nonEmptyListOf(ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded)
         coEvery {
             conversationMessageMapper.toUiModel(
+                userId = any(),
                 message = any(),
                 contacts = any(),
-                decryptedMessageBody = any(),
-                userAddress = UserAddressSample.PrimaryAddress
+                decryptedMessageBody = any()
             )
         } returns messages.first()
         val expected = initialState.copy(bottomBarState = BottomBarState.Error.FailedLoadingActions)
@@ -705,10 +704,10 @@ class ConversationDetailViewModelTest {
         val messages = nonEmptyListOf(ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded)
         coEvery {
             conversationMessageMapper.toUiModel(
+                userId = any(),
                 message = any(),
                 contacts = any(),
-                decryptedMessageBody = any(),
-                userAddress = UserAddressSample.PrimaryAddress
+                decryptedMessageBody = any()
             )
         } returns messages.first()
         givenReducerReturnsStarredUiModel()
@@ -732,10 +731,10 @@ class ConversationDetailViewModelTest {
         val messages = nonEmptyListOf(ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded)
         coEvery {
             conversationMessageMapper.toUiModel(
+                userId = any(),
                 message = any(),
                 contacts = any(),
-                decryptedMessageBody = any(),
-                userAddress = UserAddressSample.PrimaryAddress
+                decryptedMessageBody = any()
             )
         } returns messages.first()
         val actionUiModels = listOf(
@@ -768,10 +767,10 @@ class ConversationDetailViewModelTest {
         val messages = nonEmptyListOf(ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded)
         coEvery {
             conversationMessageMapper.toUiModel(
+                userId = any(),
                 message = any(),
                 contacts = any(),
-                decryptedMessageBody = any(),
-                userAddress = UserAddressSample.PrimaryAddress
+                decryptedMessageBody = any()
             )
         } returns messages.first()
         coEvery { starConversations.invoke(UserIdSample.Primary, any()) } returns DataError.Local.NoDataCached.left()
@@ -804,10 +803,10 @@ class ConversationDetailViewModelTest {
         val messages = nonEmptyListOf(ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded)
         coEvery {
             conversationMessageMapper.toUiModel(
+                userId = any(),
                 message = any(),
                 contacts = any(),
-                decryptedMessageBody = any(),
-                userAddress = UserAddressSample.PrimaryAddress
+                decryptedMessageBody = any()
             )
         } returns messages.first()
         every {
@@ -839,10 +838,10 @@ class ConversationDetailViewModelTest {
         val messages = nonEmptyListOf(ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded)
         coEvery {
             conversationMessageMapper.toUiModel(
+                userId = any(),
                 message = any(),
                 contacts = any(),
-                decryptedMessageBody = any(),
-                userAddress = UserAddressSample.PrimaryAddress
+                decryptedMessageBody = any()
             )
         } returns messages.first()
         coEvery { unStarConversations.invoke(UserIdSample.Primary, any()) } returns DataError.Local.NoDataCached.left()
@@ -874,10 +873,10 @@ class ConversationDetailViewModelTest {
         val messages = nonEmptyListOf(ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded)
         coEvery {
             conversationMessageMapper.toUiModel(
+                userId = any(),
                 message = any(),
                 contacts = any(),
-                decryptedMessageBody = any(),
-                userAddress = UserAddressSample.PrimaryAddress
+                decryptedMessageBody = any()
             )
         } returns messages.first()
         coEvery {
@@ -913,10 +912,10 @@ class ConversationDetailViewModelTest {
         val messages = nonEmptyListOf(ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded)
         coEvery {
             conversationMessageMapper.toUiModel(
+                userId = any(),
                 message = any(),
                 contacts = any(),
-                decryptedMessageBody = any(),
-                userAddress = UserAddressSample.PrimaryAddress
+                decryptedMessageBody = any()
             )
         } returns messages.first()
         coEvery {
@@ -954,10 +953,10 @@ class ConversationDetailViewModelTest {
         val messages = nonEmptyListOf(ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded)
         coEvery {
             conversationMessageMapper.toUiModel(
+                userId = any(),
                 message = any(),
                 contacts = any(),
-                decryptedMessageBody = any(),
-                userAddress = UserAddressSample.PrimaryAddress
+                decryptedMessageBody = any()
             )
         } returns messages.first()
         coEvery {
@@ -1022,10 +1021,10 @@ class ConversationDetailViewModelTest {
         val messages = nonEmptyListOf(ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded)
         coEvery {
             conversationMessageMapper.toUiModel(
+                userId = any(),
                 message = any(),
                 contacts = any(),
-                decryptedMessageBody = any(),
-                userAddress = UserAddressSample.PrimaryAddress
+                decryptedMessageBody = any()
             )
         } returns messages.first()
         val event = LabelAsBottomSheetState.LabelAsBottomSheetEvent.ActionData(
@@ -1120,10 +1119,10 @@ class ConversationDetailViewModelTest {
             val messages = nonEmptyListOf(ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded)
             coEvery {
                 conversationMessageMapper.toUiModel(
+                    userId = any(),
                     message = any(),
                     contacts = any(),
-                    decryptedMessageBody = any(),
-                    userAddress = UserAddressSample.PrimaryAddress
+                    decryptedMessageBody = any()
                 )
             } returns messages.first()
             val event = LabelAsBottomSheetState.LabelAsBottomSheetEvent.ActionData(
@@ -1236,10 +1235,10 @@ class ConversationDetailViewModelTest {
         val messages = nonEmptyListOf(ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded)
         coEvery {
             conversationMessageMapper.toUiModel(
+                userId = any(),
                 message = any(),
                 contacts = any(),
-                decryptedMessageBody = any(),
-                userAddress = UserAddressSample.PrimaryAddress
+                decryptedMessageBody = any()
             )
         } returns messages.first()
         val event = LabelAsBottomSheetState.LabelAsBottomSheetEvent.ActionData(
@@ -1341,10 +1340,10 @@ class ConversationDetailViewModelTest {
         val messages = nonEmptyListOf(ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded)
         coEvery {
             conversationMessageMapper.toUiModel(
+                userId = any(),
                 message = any(),
                 contacts = any(),
-                decryptedMessageBody = any(),
-                userAddress = UserAddressSample.PrimaryAddress
+                decryptedMessageBody = any()
             )
         } returns messages.first()
         coEvery { markConversationAsUnread(userId, conversationId) } returns ConversationSample.WeatherForecast.right()
@@ -1363,10 +1362,10 @@ class ConversationDetailViewModelTest {
         val messages = nonEmptyListOf(ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded)
         coEvery {
             conversationMessageMapper.toUiModel(
+                userId = any(),
                 message = any(),
                 contacts = any(),
-                decryptedMessageBody = any(),
-                userAddress = UserAddressSample.PrimaryAddress
+                decryptedMessageBody = any()
             )
         } returns messages.first()
         coEvery { markConversationAsUnread(userId, conversationId) } returns ConversationSample.WeatherForecast.right()
@@ -1396,10 +1395,10 @@ class ConversationDetailViewModelTest {
         val messages = nonEmptyListOf(ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded)
         coEvery {
             conversationMessageMapper.toUiModel(
+                userId = any(),
                 message = any(),
                 contacts = any(),
-                decryptedMessageBody = any(),
-                userAddress = UserAddressSample.PrimaryAddress
+                decryptedMessageBody = any()
             )
         } returns messages.first()
         coEvery { markConversationAsUnread(userId, conversationId) } returns DataError.Local.NoDataCached.left()
@@ -1452,10 +1451,10 @@ class ConversationDetailViewModelTest {
         val messages = nonEmptyListOf(ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded)
         coEvery {
             conversationMessageMapper.toUiModel(
+                userId = any(),
                 message = any(),
                 contacts = any(),
-                decryptedMessageBody = any(),
-                userAddress = UserAddressSample.PrimaryAddress
+                decryptedMessageBody = any()
             )
         } returns messages.first()
 
@@ -1575,10 +1574,10 @@ class ConversationDetailViewModelTest {
         ).toImmutableList()
         coEvery {
             conversationMessageMapper.toUiModel(
+                userId = any(),
                 message = any(),
                 contacts = any(),
-                decryptedMessageBody = any(),
-                userAddress = UserAddressSample.PrimaryAddress
+                decryptedMessageBody = any()
             )
         } returns messages.first()
         every {
@@ -1619,10 +1618,10 @@ class ConversationDetailViewModelTest {
             ).toImmutableList()
             coEvery {
                 conversationMessageMapper.toUiModel(
+                    userId = any(),
                     message = any(),
                     contacts = any(),
-                    decryptedMessageBody = any(),
-                    userAddress = UserAddressSample.PrimaryAddress
+                    decryptedMessageBody = any()
                 )
             } returns expectedUiModel
             every {
@@ -1670,10 +1669,10 @@ class ConversationDetailViewModelTest {
         ).toImmutableList()
         coEvery {
             conversationMessageMapper.toUiModel(
+                userId = any(),
                 message = any(),
                 contacts = any(),
-                decryptedMessageBody = any(),
-                userAddress = UserAddressSample.PrimaryAddress
+                decryptedMessageBody = any()
             )
         } returns expectedUiModel
         every {
@@ -1733,10 +1732,10 @@ class ConversationDetailViewModelTest {
         val messages = nonEmptyListOf(ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded)
         coEvery {
             conversationMessageMapper.toUiModel(
+                userId = any(),
                 message = any(),
                 contacts = any(),
-                decryptedMessageBody = any(),
-                userAddress = UserAddressSample.PrimaryAddress
+                decryptedMessageBody = any()
             )
         } returns messages.first()
 
@@ -1756,10 +1755,10 @@ class ConversationDetailViewModelTest {
         val messages = nonEmptyListOf(ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded)
         coEvery {
             conversationMessageMapper.toUiModel(
+                userId = any(),
                 message = any(),
                 contacts = any(),
-                decryptedMessageBody = any(),
-                userAddress = UserAddressSample.PrimaryAddress
+                decryptedMessageBody = any()
             )
         } returns messages.first()
 
@@ -1779,10 +1778,10 @@ class ConversationDetailViewModelTest {
         val messages = nonEmptyListOf(ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded)
         coEvery {
             conversationMessageMapper.toUiModel(
+                userId = any(),
                 message = any(),
                 contacts = any(),
-                decryptedMessageBody = any(),
-                userAddress = UserAddressSample.PrimaryAddress
+                decryptedMessageBody = any()
             )
         } returns messages.first()
         val participant = Participant(
@@ -1951,10 +1950,10 @@ class ConversationDetailViewModelTest {
             ConversationDetailMessageUiModelSample.InvoiceWithLabel
         coEvery {
             conversationMessageMapper.toUiModel(
+                userId = any(),
                 message = any(),
                 contacts = any(),
-                decryptedMessageBody = any(),
-                userAddress = UserAddressSample.PrimaryAddress
+                decryptedMessageBody = any()
             )
         } returns
             InvoiceWithLabelExpanded

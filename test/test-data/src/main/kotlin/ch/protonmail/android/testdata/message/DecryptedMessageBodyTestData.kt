@@ -103,7 +103,6 @@ object DecryptedMessageBodyTestData {
         messageId = messageId,
         value = value,
         mimeType = mimeType,
-        attachments = attachments,
-        userAddress = userAddress
+        attachments = attachments
     )
 }

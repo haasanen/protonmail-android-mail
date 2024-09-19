@@ -21,7 +21,6 @@ package ch.protonmail.android.mailmessage.domain.usecase
 import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailcommon.domain.model.FAKE_USER_ADDRESS
 import ch.protonmail.android.mailmessage.domain.model.AttachmentId
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.model.GetDecryptedMessageBodyError
@@ -58,13 +57,11 @@ class GetDecryptedMessageBodyTest(
     fun `when repository gets message body and decryption is successful then the decrypted message body is returned`() =
         runTest {
             // Given
-            val expectedUserAddress = FAKE_USER_ADDRESS
             val expected = DecryptedMessageBody(
                 messageId,
                 testInput.messageWithBody.messageBody.body,
                 testInput.messageWithBody.messageBody.mimeType,
-                testInput.messageWithBody.messageBody.attachments,
-                expectedUserAddress
+                testInput.messageWithBody.messageBody.attachments
             ).right()
             coEvery {
                 messageRepository.getMessageWithBody(UserIdTestData.userId, messageId)

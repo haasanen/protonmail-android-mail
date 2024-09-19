@@ -30,7 +30,7 @@ import ch.protonmail.android.mailcommon.datarust.mapper.LocalShowMoved
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalSwipeAction
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalViewLayout
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalViewMode
-import ch.protonmail.android.mailcommon.domain.model.FAKE_USER_ID
+import ch.protonmail.android.mailcommon.domain.model.DeprecatedId
 import me.proton.core.domain.type.IntEnum
 import me.proton.core.domain.type.StringEnum
 import me.proton.core.mailsettings.domain.entity.ComposerMode
@@ -50,7 +50,7 @@ object MailSettingsMapper {
 
     fun LocalMailSettings.toMailSettings(): MailSettings {
         return MailSettings(
-            userId = FAKE_USER_ID,
+            userId = DeprecatedId.UserId,
             displayName = displayName,
             signature = signature,
             autoSaveContacts = autoSaveContacts,

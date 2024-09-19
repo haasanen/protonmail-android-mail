@@ -18,7 +18,6 @@
 
 package ch.protonmail.android.maildetail.presentation.mapper
 
-import ch.protonmail.android.mailcommon.domain.sample.UserAddressSample
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.maildetail.domain.usecase.DoesMessageBodyHaveEmbeddedImages
 import ch.protonmail.android.maildetail.domain.usecase.DoesMessageBodyHaveRemoteContent
@@ -104,8 +103,7 @@ class MessageBodyUiModelMapperTest {
         val messageBody = DecryptedMessageBody(
             messageId = messageId,
             value = decryptedMessageBody,
-            mimeType = MimeType.PlainText,
-            userAddress = UserAddressSample.PrimaryAddress
+            mimeType = MimeType.PlainText
         )
         val expected = MessageBodyUiModel(
             messageId = messageId,
@@ -119,7 +117,6 @@ class MessageBodyUiModelMapperTest {
             shouldShowExpandCollapseButton = false,
             shouldShowOpenInProtonCalendar = false,
             attachments = null,
-            userAddress = UserAddressSample.PrimaryAddress,
             viewModePreference = ViewModePreference.ThemeDefault,
             printEffect = Effect.empty()
         )
@@ -143,8 +140,7 @@ class MessageBodyUiModelMapperTest {
                 MessageAttachmentSample.invoice,
                 MessageAttachmentSample.document,
                 MessageAttachmentSample.documentWithMultipleDots
-            ),
-            userAddress = UserAddressSample.PrimaryAddress
+            )
         )
         val expected = MessageBodyUiModel(
             messageId = messageId,
@@ -164,7 +160,6 @@ class MessageBodyUiModelMapperTest {
                     AttachmentUiModelSample.documentWithMultipleDots
                 )
             ),
-            userAddress = UserAddressSample.PrimaryAddress,
             viewModePreference = ViewModePreference.ThemeDefault,
             printEffect = Effect.empty()
         )
@@ -186,8 +181,7 @@ class MessageBodyUiModelMapperTest {
             MimeType.PlainText,
             listOf(
                 MessageAttachmentSample.calendar
-            ),
-            userAddress = UserAddressSample.PrimaryAddress
+            )
         )
         val expected = MessageBodyUiModel(
             messageId = messageId,
@@ -205,7 +199,6 @@ class MessageBodyUiModelMapperTest {
                     AttachmentUiModelSample.calendar
                 )
             ),
-            userAddress = UserAddressSample.PrimaryAddress,
             viewModePreference = ViewModePreference.ThemeDefault,
             printEffect = Effect.empty()
         )
@@ -228,8 +221,7 @@ class MessageBodyUiModelMapperTest {
                 MimeType.PlainText,
                 listOf(
                     MessageAttachmentSample.invoiceWithBinaryContentType
-                ),
-                userAddress = UserAddressSample.PrimaryAddress
+                )
             )
             val expected = MessageBodyUiModel(
                 messageId = messageId,
@@ -247,7 +239,6 @@ class MessageBodyUiModelMapperTest {
                         AttachmentUiModelSample.invoiceWithBinaryContentType
                     )
                 ),
-                userAddress = UserAddressSample.PrimaryAddress,
                 viewModePreference = ViewModePreference.ThemeDefault,
                 printEffect = Effect.empty()
             )
@@ -282,8 +273,7 @@ class MessageBodyUiModelMapperTest {
         val messageBody = DecryptedMessageBody(
             messageId,
             decryptedMessageBody,
-            MimeType.Html,
-            userAddress = UserAddressSample.PrimaryAddress
+            MimeType.Html
         )
         val expected = MessageBodyUiModel(
             messageId = messageId,
@@ -297,7 +287,6 @@ class MessageBodyUiModelMapperTest {
             shouldShowExpandCollapseButton = false,
             shouldShowOpenInProtonCalendar = false,
             attachments = null,
-            userAddress = UserAddressSample.PrimaryAddress,
             viewModePreference = ViewModePreference.ThemeDefault,
             printEffect = Effect.empty()
         )
@@ -317,8 +306,7 @@ class MessageBodyUiModelMapperTest {
             val messageBody = DecryptedMessageBody(
                 messageId,
                 decryptedMessageBody,
-                MimeType.Html,
-                userAddress = UserAddressSample.PrimaryAddress
+                MimeType.Html
             )
             val expected = MessageBodyUiModel(
                 messageId = messageId,
@@ -332,7 +320,6 @@ class MessageBodyUiModelMapperTest {
                 shouldShowExpandCollapseButton = false,
                 shouldShowOpenInProtonCalendar = false,
                 attachments = null,
-                userAddress = UserAddressSample.PrimaryAddress,
                 viewModePreference = ViewModePreference.ThemeDefault,
                 printEffect = Effect.empty()
             )
@@ -354,8 +341,7 @@ class MessageBodyUiModelMapperTest {
             val messageBody = DecryptedMessageBody(
                 messageId,
                 decryptedMessageBody,
-                MimeType.Html,
-                userAddress = UserAddressSample.PrimaryAddress
+                MimeType.Html
             )
             val expected = MessageBodyUiModel(
                 messageId = messageId,
@@ -369,7 +355,6 @@ class MessageBodyUiModelMapperTest {
                 shouldShowExpandCollapseButton = false,
                 shouldShowOpenInProtonCalendar = false,
                 attachments = null,
-                userAddress = UserAddressSample.PrimaryAddress,
                 viewModePreference = ViewModePreference.ThemeDefault,
                 printEffect = Effect.empty()
             )
@@ -391,8 +376,7 @@ class MessageBodyUiModelMapperTest {
             val messageBody = DecryptedMessageBody(
                 messageId,
                 decryptedMessageBody,
-                MimeType.Html,
-                userAddress = UserAddressSample.PrimaryAddress
+                MimeType.Html
             )
             val expected = MessageBodyUiModel(
                 messageId = messageId,
@@ -406,7 +390,6 @@ class MessageBodyUiModelMapperTest {
                 shouldShowExpandCollapseButton = false,
                 shouldShowOpenInProtonCalendar = false,
                 attachments = null,
-                userAddress = UserAddressSample.PrimaryAddress,
                 viewModePreference = ViewModePreference.ThemeDefault,
                 printEffect = Effect.empty()
             )
@@ -428,8 +411,7 @@ class MessageBodyUiModelMapperTest {
             val messageBody = DecryptedMessageBody(
                 messageId,
                 decryptedMessageBody,
-                MimeType.Html,
-                userAddress = UserAddressSample.PrimaryAddress
+                MimeType.Html
             )
             val expected = MessageBodyUiModel(
                 messageId = messageId,
@@ -443,7 +425,6 @@ class MessageBodyUiModelMapperTest {
                 shouldShowExpandCollapseButton = false,
                 shouldShowOpenInProtonCalendar = false,
                 attachments = null,
-                userAddress = UserAddressSample.PrimaryAddress,
                 viewModePreference = ViewModePreference.ThemeDefault,
                 printEffect = Effect.empty()
             )
@@ -474,7 +455,6 @@ class MessageBodyUiModelMapperTest {
             shouldShowExpandCollapseButton = false,
             shouldShowOpenInProtonCalendar = false,
             attachments = null,
-            userAddress = null,
             viewModePreference = ViewModePreference.ThemeDefault,
             printEffect = Effect.empty()
         )
@@ -493,8 +473,7 @@ class MessageBodyUiModelMapperTest {
         val originalMessageBody = DecryptedMessageBody(
             messageId,
             decryptedMessageBody,
-            MimeType.Html,
-            userAddress = UserAddressSample.PrimaryAddress
+            MimeType.Html
         )
         val noQuoteMessageBody = EmailBodyTestSamples.BodyWithoutQuotes
         coEvery { extractMessageBodyWithoutQuote(decryptedMessageBody) } returns
@@ -512,7 +491,6 @@ class MessageBodyUiModelMapperTest {
             shouldShowExpandCollapseButton = true,
             shouldShowOpenInProtonCalendar = false,
             attachments = null,
-            userAddress = UserAddressSample.PrimaryAddress,
             viewModePreference = ViewModePreference.ThemeDefault,
             printEffect = Effect.empty()
         )
@@ -531,8 +509,7 @@ class MessageBodyUiModelMapperTest {
         val messageBody = DecryptedMessageBody(
             messageId,
             decryptedMessageBody,
-            MimeType.Html,
-            userAddress = UserAddressSample.PrimaryAddress
+            MimeType.Html
         )
         val existingState = MessageBodyUiModel(
             messageId = messageId,
@@ -546,7 +523,6 @@ class MessageBodyUiModelMapperTest {
             shouldShowExpandCollapseButton = false,
             shouldShowOpenInProtonCalendar = false,
             attachments = null,
-            userAddress = UserAddressSample.PrimaryAddress,
             viewModePreference = ViewModePreference.DarkMode,
             printEffect = Effect.empty()
         )

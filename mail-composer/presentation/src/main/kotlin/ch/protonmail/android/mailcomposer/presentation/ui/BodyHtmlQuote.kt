@@ -60,7 +60,6 @@ private fun buildFakeMessageBodyUiModel(body: String) = MessageBodyUiModel(
     shouldShowExpandCollapseButton = false,
     shouldShowOpenInProtonCalendar = false,
     attachments = null,
-    userAddress = null,
     viewModePreference = ViewModePreference.ThemeDefault,
     printEffect = Effect.empty()
 )

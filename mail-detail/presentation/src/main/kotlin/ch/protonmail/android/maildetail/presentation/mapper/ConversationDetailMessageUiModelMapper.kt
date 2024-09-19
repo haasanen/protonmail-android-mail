@@ -36,7 +36,6 @@ import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 import me.proton.core.contact.domain.entity.Contact
 import me.proton.core.domain.entity.UserId
-import me.proton.core.user.domain.entity.UserAddress
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.seconds
 
@@ -78,7 +77,6 @@ class ConversationDetailMessageUiModelMapper @Inject constructor(
         message: Message,
         contacts: List<Contact>,
         decryptedMessageBody: DecryptedMessageBody,
-        userAddress: UserAddress,
         existingMessageUiState: ConversationDetailMessageUiModel.Expanded? = null
     ): ConversationDetailMessageUiModel.Expanded {
         val uiModel =
@@ -101,8 +99,7 @@ class ConversationDetailMessageUiModelMapper @Inject constructor(
             expandCollapseMode = existingMessageUiState?.let {
                 if (it.expandCollapseMode.isApplicable()) it.expandCollapseMode
                 else getInitialBodyExpandCollapseMode(uiModel)
-            } ?: getInitialBodyExpandCollapseMode(uiModel),
-            userAddress = userAddress
+            } ?: getInitialBodyExpandCollapseMode(uiModel)
         )
     }
 

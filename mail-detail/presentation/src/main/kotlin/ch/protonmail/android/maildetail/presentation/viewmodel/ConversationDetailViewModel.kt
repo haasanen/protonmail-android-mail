@@ -449,7 +449,6 @@ class ConversationDetailViewModel @Inject constructor(
         message,
         contacts,
         decryptedBody,
-        decryptedBody.userAddress,
         existingMessageUiState
     )
 
@@ -975,9 +974,13 @@ class ConversationDetailViewModel @Inject constructor(
         }
     }
 
+    @MissingRustApi
+    // AddressId not being exposed through with rust Message (for both Message and Participants) resulting in the client
+    // not having enough info to determine with "recipient" is the current user for which to open the invite.
+    // Currently getting "toRecipients.first()" to keep the API unchanged, this won't work in several cases.
     private suspend fun handleOpenInProtonCalendar(messageUiModel: ConversationDetailMessageUiModel.Expanded) {
         val sender = messageUiModel.messageDetailHeaderUiModel.sender.participantAddress
-        val recipient = messageUiModel.userAddress.email
+        val recipient = messageUiModel.messageDetailHeaderUiModel.toRecipients.first().participantAddress
         val firstCalendarAttachment = messageUiModel.messageBodyUiModel
             .attachments
             ?.attachments

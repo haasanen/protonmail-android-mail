@@ -87,7 +87,6 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
-import ch.protonmail.android.mailcommon.domain.model.FAKE_USER_ID
 import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
 import ch.protonmail.android.mailcommon.presentation.ConsumableTextEffect
 import ch.protonmail.android.mailcommon.presentation.NO_CONTENT_DESCRIPTION
@@ -140,7 +139,6 @@ import me.proton.core.compose.theme.defaultSmallWeak
 import me.proton.core.compose.theme.defaultStrongNorm
 import me.proton.core.compose.theme.headlineNorm
 import me.proton.core.compose.theme.headlineSmallNorm
-import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import ch.protonmail.android.mailcommon.presentation.R.string as commonString
 
@@ -203,16 +201,16 @@ fun MailboxScreen(
             onLabelAsClicked = { viewModel.submit(MailboxViewAction.RequestLabelAsBottomSheet) },
             onMoveToClicked = { viewModel.submit(MailboxViewAction.RequestMoveToBottomSheet) },
             onMoreClicked = { viewModel.submit(MailboxViewAction.RequestMoreActionsBottomSheet) },
-            onSwipeRead = { userId, itemId, isRead ->
-                viewModel.submit(MailboxViewAction.SwipeReadAction(userId, itemId, isRead))
+            onSwipeRead = { itemId, isRead ->
+                viewModel.submit(MailboxViewAction.SwipeReadAction(itemId, isRead))
             },
-            onSwipeArchive = { userId, itemId ->
-                viewModel.submit(MailboxViewAction.SwipeArchiveAction(userId, itemId))
+            onSwipeArchive = { itemId ->
+                viewModel.submit(MailboxViewAction.SwipeArchiveAction(itemId))
             },
-            onSwipeSpam = { userId, itemId -> viewModel.submit(MailboxViewAction.SwipeSpamAction(userId, itemId)) },
-            onSwipeTrash = { userId, itemId -> viewModel.submit(MailboxViewAction.SwipeTrashAction(userId, itemId)) },
-            onSwipeStar = { userId, itemId, isStarred ->
-                viewModel.submit(MailboxViewAction.SwipeStarAction(userId, itemId, isStarred))
+            onSwipeSpam = { itemId -> viewModel.submit(MailboxViewAction.SwipeSpamAction(itemId)) },
+            onSwipeTrash = { itemId -> viewModel.submit(MailboxViewAction.SwipeTrashAction(itemId)) },
+            onSwipeStar = { itemId, isStarred ->
+                viewModel.submit(MailboxViewAction.SwipeStarAction(itemId, isStarred))
             },
             onEnterSearchMode = { viewModel.submit(MailboxViewAction.EnterSearchMode) },
             onSearchQuery = { query -> viewModel.submit(MailboxViewAction.SearchQuery(query)) },
@@ -788,17 +786,17 @@ private fun generateSwipeActions(
     item: MailboxItemUiModel
 ): SwipeActions.Actions {
     return SwipeActions.Actions(
-        onTrash = { actions.onSwipeTrash(FAKE_USER_ID, item.id) },
-        onSpam = { actions.onSwipeSpam(FAKE_USER_ID, item.id) },
+        onTrash = { actions.onSwipeTrash(item.id) },
+        onSpam = { actions.onSwipeSpam(item.id) },
         onStar = {
             items.itemSnapshotList.items.firstOrNull { it.id == item.id }?.let {
-                actions.onSwipeStar(FAKE_USER_ID, it.id, it.showStar)
+                actions.onSwipeStar(it.id, it.showStar)
             }
         },
-        onArchive = { actions.onSwipeArchive(FAKE_USER_ID, item.id) },
+        onArchive = { actions.onSwipeArchive(item.id) },
         onMarkRead = {
             items.itemSnapshotList.items.firstOrNull { it.id == item.id }?.let {
-                actions.onSwipeRead(FAKE_USER_ID, it.id, it.isRead)
+                actions.onSwipeRead(it.id, it.isRead)
             }
         }
     )
@@ -1023,11 +1021,11 @@ object MailboxScreen {
         val onMoreClicked: () -> Unit,
         val onAddLabel: () -> Unit,
         val onAddFolder: () -> Unit,
-        val onSwipeRead: (UserId, String, Boolean) -> Unit,
-        val onSwipeArchive: (UserId, String) -> Unit,
-        val onSwipeSpam: (UserId, String) -> Unit,
-        val onSwipeTrash: (UserId, String) -> Unit,
-        val onSwipeStar: (UserId, String, Boolean) -> Unit,
+        val onSwipeRead: (String, Boolean) -> Unit,
+        val onSwipeArchive: (String) -> Unit,
+        val onSwipeSpam: (String) -> Unit,
+        val onSwipeTrash: (String) -> Unit,
+        val onSwipeStar: (String, Boolean) -> Unit,
         val onEnterSearchMode: () -> Unit,
         val onSearchQuery: (String) -> Unit,
         val onSearchResult: () -> Unit,
@@ -1070,11 +1068,11 @@ object MailboxScreen {
                 onMoreClicked = {},
                 onAddLabel = {},
                 onAddFolder = {},
-                onSwipeRead = { _, _, _ -> },
-                onSwipeArchive = { _, _ -> },
-                onSwipeSpam = { _, _ -> },
-                onSwipeTrash = { _, _ -> },
-                onSwipeStar = { _, _, _ -> },
+                onSwipeRead = { _, _ -> },
+                onSwipeArchive = { _ -> },
+                onSwipeSpam = { _ -> },
+                onSwipeTrash = { _ -> },
+                onSwipeStar = { _, _ -> },
                 onExitSearchMode = {},
                 onEnterSearchMode = {},
                 onSearchQuery = {},

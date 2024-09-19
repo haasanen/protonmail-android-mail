@@ -20,7 +20,6 @@ package ch.protonmail.android.mailmessage.presentation.model
 
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailmessage.domain.model.MessageId
-import me.proton.core.user.domain.entity.UserAddress
 
 data class MessageBodyUiModel(
     val messageId: MessageId,
@@ -34,7 +33,6 @@ data class MessageBodyUiModel(
     val shouldShowExpandCollapseButton: Boolean,
     val shouldShowOpenInProtonCalendar: Boolean,
     val attachments: AttachmentGroupUiModel?,
-    val userAddress: UserAddress?,
     val viewModePreference: ViewModePreference,
     val printEffect: Effect<Unit>
 )

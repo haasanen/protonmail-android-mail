@@ -88,10 +88,9 @@ object MessageDetailBodyUiModelSample {
         shouldShowRemoteContent = shouldShowRemoteContent,
         shouldShowEmbeddedImagesBanner = shouldShowEmbeddedImagesBanner,
         shouldShowRemoteContentBanner = shouldShowRemoteContentBanner,
-        shouldShowOpenInProtonCalendar = shouldShowOpenInProtonCalendar,
         shouldShowExpandCollapseButton = false,
+        shouldShowOpenInProtonCalendar = shouldShowOpenInProtonCalendar,
         attachments = attachments,
-        userAddress = userAddress,
         viewModePreference = ViewModePreference.ThemeDefault,
         printEffect = Effect.empty()
     )
