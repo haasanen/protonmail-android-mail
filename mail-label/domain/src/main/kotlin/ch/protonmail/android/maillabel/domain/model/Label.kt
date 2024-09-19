@@ -18,10 +18,7 @@
 
 package ch.protonmail.android.maillabel.domain.model
 
-import me.proton.core.domain.entity.UserId
-
 data class Label(
-    val userId: UserId,
     val labelId: LabelId,
     /**
      * Encrypted label id of parent folder (default: root level).

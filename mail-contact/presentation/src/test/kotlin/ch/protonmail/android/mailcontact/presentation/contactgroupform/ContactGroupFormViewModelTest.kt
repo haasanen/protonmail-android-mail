@@ -71,7 +71,6 @@ class ContactGroupFormViewModelTest {
     private val testLabelId = ContactGroupFormPreviewData.contactGroupFormSampleData.id!!
     private val testColors = listOf(ColorHexWithName(TextUiModel("Red"), Color.Red.getHexStringFromColor()))
     private val testContactGroup = ContactGroup(
-        testUserId,
         testLabelId,
         "Group name",
         Color.Red.getHexStringFromColor(),

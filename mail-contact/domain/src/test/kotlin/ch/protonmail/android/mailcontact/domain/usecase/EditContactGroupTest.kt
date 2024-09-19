@@ -50,17 +50,16 @@ class EditContactGroupTest {
     )
 
     private val existingLabel = Label(
-        userId = userId,
         labelId = contactGroupLabelId,
-        name = contactGroupName,
-        color = contactGroupColor,
-        isNotified = null,
-        isExpanded = null,
-        isSticky = null,
         parentId = null,
+        name = contactGroupName,
         type = LabelType.ContactGroup,
         path = "",
-        order = 666
+        color = contactGroupColor,
+        order = 666,
+        isNotified = null,
+        isExpanded = null,
+        isSticky = null
     )
 
     private val expectedLabel = existingLabel.copy(

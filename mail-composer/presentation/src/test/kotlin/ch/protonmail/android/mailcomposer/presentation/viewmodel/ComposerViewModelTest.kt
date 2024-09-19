@@ -777,7 +777,6 @@ class ComposerViewModelTest {
 
         val expectedContactGroups = listOf(
             ContactGroup(
-                UserIdSample.Primary,
                 LabelIdSample.LabelCoworkers,
                 "Coworkers contact group",
                 "#AABBCC",

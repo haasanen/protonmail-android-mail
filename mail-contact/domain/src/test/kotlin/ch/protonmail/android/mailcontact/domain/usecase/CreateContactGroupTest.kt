@@ -56,7 +56,6 @@ class CreateContactGroupTest {
     )
 
     private val expectedCreatedLabel = Label(
-        userId = userId,
         labelId = contactGroupLabelId,
         parentId = null,
         name = contactGroupName,

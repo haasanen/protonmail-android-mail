@@ -18,10 +18,7 @@
 
 package ch.protonmail.android.mailmessage.domain.model
 
-import me.proton.core.domain.entity.UserId
-
 data class MessageBody(
-    val userId: UserId,
     val messageId: MessageId,
     val body: String,
     val header: String,

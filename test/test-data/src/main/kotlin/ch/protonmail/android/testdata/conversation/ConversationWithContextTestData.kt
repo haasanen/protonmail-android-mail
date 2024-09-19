@@ -96,7 +96,6 @@ object ConversationWithContextTestData {
         expirationTime: Long = 0,
         attachmentCount: AttachmentCount = AttachmentCount(0)
     ) = Conversation(
-        userId = userId,
         conversationId = ConversationId(id),
         order = order,
         subject = "subject",
@@ -115,7 +114,6 @@ object ConversationWithContextTestData {
     )
 
     private fun buildLabel(labelId: String) = Label(
-        userId = userId,
         labelId = LabelId(labelId),
         parentId = null,
         name = labelId,

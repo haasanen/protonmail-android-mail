@@ -23,7 +23,6 @@ import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailmessage.domain.model.Recipient
 import ch.protonmail.android.mailmessage.domain.model.Sender
 import ch.protonmail.android.mailpagination.domain.model.PageItem
-import me.proton.core.domain.entity.UserId
 import ch.protonmail.android.maillabel.domain.model.Label
 import me.proton.core.mailsettings.domain.entity.ViewMode
 
@@ -40,7 +39,6 @@ enum class MailboxItemType {
 data class MailboxItem(
     val type: MailboxItemType,
     override val id: String,
-    override val userId: UserId,
     override val time: Long,
     override val size: Long,
     override val order: Long,

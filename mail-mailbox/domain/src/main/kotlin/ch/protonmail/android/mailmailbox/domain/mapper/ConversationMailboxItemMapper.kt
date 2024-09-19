@@ -30,7 +30,6 @@ class ConversationMailboxItemMapper @Inject constructor() : Mapper<Conversation,
         MailboxItem(
             type = MailboxItemType.Conversation,
             id = conversationId.id,
-            userId = userId,
             time = time,
             size = size,
             order = order,

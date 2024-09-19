@@ -35,7 +35,6 @@ import ch.protonmail.android.mailmessage.domain.model.Sender
 import ch.protonmail.android.testdata.R
 import ch.protonmail.android.testdata.label.LabelTestData.buildLabel
 import ch.protonmail.android.testdata.user.UserIdTestData
-import ch.protonmail.android.testdata.user.UserIdTestData.userId
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import me.proton.core.domain.entity.UserId
@@ -75,7 +74,6 @@ object MailboxTestData {
     ) = MailboxItem(
         type = type,
         id = id,
-        userId = userId,
         time = time,
         size = 0,
         order = 1000,
@@ -107,7 +105,6 @@ object MailboxTestData {
     ) = MailboxItem(
         type = MailboxItemType.Message,
         id = id,
-        userId = UserId("0"),
         time = 0,
         size = 0,
         order = 0,
@@ -131,7 +128,6 @@ object MailboxTestData {
     private fun buildConversationMailboxItem(id: String) = MailboxItem(
         type = MailboxItemType.Conversation,
         id = id,
-        userId = UserId("0"),
         time = 0,
         size = 0,
         order = 0,
@@ -200,7 +196,6 @@ object MailboxItemUiModelTestData {
         avatar = ParticipantAvatarSample.amazon,
         type = type,
         id = id,
-        userId = userId,
         conversationId = ConversationId(conversationId),
         time = TextUiModel.Text("10:42"),
         isRead = isRead,

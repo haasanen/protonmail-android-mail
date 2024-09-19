@@ -326,6 +326,7 @@ class ConversationDetailViewModel @Inject constructor(
                         return@combine ConversationDetailEvent.ErrorLoadingMessages
                     }
                     val messagesUiModels = buildMessagesUiModels(
+                        userId = userId,
                         messages = conversationMessages.messages,
                         contacts = contacts,
                         currentViewState = conversationViewState
@@ -367,6 +368,7 @@ class ConversationDetailViewModel @Inject constructor(
         viewState.values.all { it == InMemoryConversationStateRepository.MessageState.Collapsed }
 
     private suspend fun buildMessagesUiModels(
+        userId: UserId,
         messages: NonEmptyList<Message>,
         contacts: List<Contact>,
         currentViewState: InMemoryConversationStateRepository.MessagesState
@@ -380,6 +382,7 @@ class ConversationDetailViewModel @Inject constructor(
 
                 is InMemoryConversationStateRepository.MessageState.Expanded -> {
                     buildExpandedMessage(
+                        userId,
                         message,
                         existingMessageState,
                         contacts,
@@ -436,11 +439,13 @@ class ConversationDetailViewModel @Inject constructor(
     )
 
     private suspend fun buildExpandedMessage(
+        userId: UserId,
         message: Message,
         existingMessageUiState: ConversationDetailMessageUiModel.Expanded?,
         contacts: List<Contact>,
         decryptedBody: DecryptedMessageBody
     ): ConversationDetailMessageUiModel.Expanded = conversationMessageMapper.toUiModel(
+        userId,
         message,
         contacts,
         decryptedBody,

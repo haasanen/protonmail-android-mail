@@ -56,7 +56,6 @@ class ContactSearchUiModelMapperTest {
 
         val contactGroups = listOf(
             ContactGroup(
-                UserIdTestData.userId,
                 label.labelId,
                 label.name,
                 label.color!!,

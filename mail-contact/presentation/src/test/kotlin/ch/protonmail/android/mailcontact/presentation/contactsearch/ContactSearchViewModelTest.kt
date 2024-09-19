@@ -22,7 +22,6 @@ import androidx.compose.ui.graphics.Color
 import app.cash.turbine.test
 import arrow.core.right
 import ch.protonmail.android.maillabel.domain.sample.LabelIdSample
-import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
@@ -84,7 +83,6 @@ class ContactSearchViewModelTest {
     private val expectedContacts = listOf(ContactSample.Stefano, ContactSample.Francesco)
     private val expectedContactGroups = listOf(
         ContactGroup(
-            UserIdSample.Primary,
             LabelIdSample.LabelCoworkers,
             "Coworkers contact group",
             "#AABBCC",

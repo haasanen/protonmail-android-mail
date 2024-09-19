@@ -43,7 +43,6 @@ class CreateEmptyDraft @Inject constructor() {
         userAddress: UserAddress
     ) = MessageWithBody(
         message = Message(
-            userId = userId,
             messageId = messageId,
             conversationId = ConversationId(EMPTY_STRING),
             time = Instant.now().epochSecond,
@@ -68,7 +67,6 @@ class CreateEmptyDraft @Inject constructor() {
             avatarInformation = AvatarInformation("", TRANSPARENT_COLOR_HEX)
         ),
         messageBody = MessageBody(
-            userId = userId,
             messageId = messageId,
             body = EMPTY_STRING,
             header = EMPTY_STRING,

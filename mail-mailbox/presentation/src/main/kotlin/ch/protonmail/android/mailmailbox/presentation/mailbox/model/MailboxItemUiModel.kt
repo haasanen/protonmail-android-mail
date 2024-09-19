@@ -25,14 +25,12 @@ import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.maillabel.presentation.model.LabelUiModel
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItemType
 import kotlinx.collections.immutable.ImmutableList
-import me.proton.core.domain.entity.UserId
 
 @Immutable
 data class MailboxItemUiModel(
     val avatar: AvatarUiModel,
     val type: MailboxItemType,
     val id: String,
-    val userId: UserId,
     val conversationId: ConversationId,
     val time: TextUiModel,
     val isRead: Boolean,

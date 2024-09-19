@@ -20,7 +20,6 @@ package ch.protonmail.android.maillabel.presentation.previewdata
 
 import ch.protonmail.android.maillabel.presentation.getHexStringFromColor
 import ch.protonmail.android.maillabel.presentation.sample.LabelColorListSample.colorListSample
-import me.proton.core.domain.entity.UserId
 import ch.protonmail.android.maillabel.domain.model.Label
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.LabelType
@@ -28,7 +27,6 @@ import ch.protonmail.android.maillabel.domain.model.LabelType
 object LabelListPreviewData {
 
     val labelSampleData = Label(
-        userId = UserId("userId"),
         labelId = LabelId("labelId"),
         parentId = null,
         name = "Label Name",

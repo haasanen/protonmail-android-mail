@@ -88,7 +88,6 @@ class ContactGroupDetailsUiModelMapperTest {
             )
         )
         val contactGroup = ContactGroup(
-            UserIdTestData.userId,
             label.labelId,
             label.name,
             label.color!!,
@@ -124,7 +123,6 @@ class ContactGroupDetailsUiModelMapperTest {
             color = Color.Red.getHexStringFromColor()
         )
         val contactGroup = ContactGroup(
-            UserIdTestData.userId,
             label.labelId,
             label.name,
             label.color!!,

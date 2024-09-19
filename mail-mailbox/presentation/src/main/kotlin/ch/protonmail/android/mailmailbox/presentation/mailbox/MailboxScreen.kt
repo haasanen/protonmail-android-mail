@@ -87,6 +87,7 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
+import ch.protonmail.android.mailcommon.domain.model.FAKE_USER_ID
 import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
 import ch.protonmail.android.mailcommon.presentation.ConsumableTextEffect
 import ch.protonmail.android.mailcommon.presentation.NO_CONTENT_DESCRIPTION
@@ -787,17 +788,17 @@ private fun generateSwipeActions(
     item: MailboxItemUiModel
 ): SwipeActions.Actions {
     return SwipeActions.Actions(
-        onTrash = { actions.onSwipeTrash(item.userId, item.id) },
-        onSpam = { actions.onSwipeSpam(item.userId, item.id) },
+        onTrash = { actions.onSwipeTrash(FAKE_USER_ID, item.id) },
+        onSpam = { actions.onSwipeSpam(FAKE_USER_ID, item.id) },
         onStar = {
             items.itemSnapshotList.items.firstOrNull { it.id == item.id }?.let {
-                actions.onSwipeStar(it.userId, it.id, it.showStar)
+                actions.onSwipeStar(FAKE_USER_ID, it.id, it.showStar)
             }
         },
-        onArchive = { actions.onSwipeArchive(item.userId, item.id) },
+        onArchive = { actions.onSwipeArchive(FAKE_USER_ID, item.id) },
         onMarkRead = {
             items.itemSnapshotList.items.firstOrNull { it.id == item.id }?.let {
-                actions.onSwipeRead(it.userId, it.id, it.isRead)
+                actions.onSwipeRead(FAKE_USER_ID, it.id, it.isRead)
             }
         }
     )

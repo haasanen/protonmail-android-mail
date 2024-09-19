@@ -55,7 +55,6 @@ class SearchContactGroupsTest {
     )
 
     private val expectedContactGroupCoworkers = ContactGroup(
-        UserIdTestData.userId,
         LabelSample.GroupCoworkers.labelId,
         "Coworkers",
         "#ABCABC",
@@ -66,7 +65,6 @@ class SearchContactGroupsTest {
     )
 
     private val expectedContactGroupFriends = ContactGroup(
-        UserIdTestData.userId,
         LabelSample.GroupFriends.labelId,
         "Friends",
         "#ABCABC",
@@ -110,7 +108,6 @@ class SearchContactGroupsTest {
         expectContactGroupLabelsSuccess(UserIdTestData.userId, expectedLabels)
 
         val expectedEmptyGroupCoworkers = ContactGroup(
-            UserIdTestData.userId,
             LabelSample.GroupCoworkers.labelId,
             "Coworkers",
             "#ABCABC",
@@ -141,7 +138,6 @@ class SearchContactGroupsTest {
         expectContactGroupLabelsSuccess(UserIdTestData.userId, expectedLabels)
 
         val expectedEmptyGroupCoworkers = ContactGroup(
-            UserIdTestData.userId,
             LabelSample.GroupCoworkers.labelId,
             "Coworkers",
             "#ABCABC",

@@ -18,19 +18,11 @@
 
 package ch.protonmail.android.mailpagination.domain.model
 
-import me.proton.core.domain.entity.UserId
-
 interface PageItem {
-    val userId: UserId
     val id: String
     val time: Long
     val size: Long
     val order: Long
     val read: Boolean
     val keywords: String
-}
-
-enum class PageItemType {
-    Message,
-    Conversation
 }

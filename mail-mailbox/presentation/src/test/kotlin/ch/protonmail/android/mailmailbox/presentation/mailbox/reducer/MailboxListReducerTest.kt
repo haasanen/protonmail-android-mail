@@ -33,7 +33,6 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.previewdata.Mailbo
 import ch.protonmail.android.mailmailbox.presentation.mailbox.previewdata.SwipeUiModelSampleData
 import ch.protonmail.android.testdata.mailbox.MailboxItemUiModelTestData
 import ch.protonmail.android.testdata.maillabel.MailLabelTestData
-import ch.protonmail.android.testdata.user.UserIdTestData
 import me.proton.core.mailsettings.domain.entity.ViewMode
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -82,7 +81,6 @@ internal class MailboxListReducerTest(
             currentMailLabel = MailLabelTestData.inboxSystemLabel,
             selectedMailboxItems = setOf(
                 SelectedMailboxItem(
-                    userId = UserIdTestData.userId,
                     id = MailboxItemUiModelTestData.readMailboxItemUiModel.id,
                     isRead = true,
                     isStarred = false
@@ -673,7 +671,6 @@ internal class MailboxListReducerTest(
                     currentMailLabel = MailLabelTestData.customLabelOne,
                     selectedMailboxItems = setOf(
                         SelectedMailboxItem(
-                            userId = UserIdTestData.userId,
                             id = MailboxItemUiModelTestData.readMailboxItemUiModel.id,
                             isRead = true,
                             isStarred = false
@@ -689,7 +686,6 @@ internal class MailboxListReducerTest(
                     currentMailLabel = MailLabelTestData.customLabelOne,
                     selectedMailboxItems = setOf(
                         SelectedMailboxItem(
-                            userId = UserIdTestData.userId,
                             id = MailboxItemUiModelTestData.unreadMailboxItemUiModel.id,
                             isRead = false,
                             isStarred = false
@@ -717,7 +713,6 @@ internal class MailboxListReducerTest(
                     currentMailLabel = MailLabelTestData.customLabelOne,
                     selectedMailboxItems = setOf(
                         SelectedMailboxItem(
-                            userId = UserIdTestData.userId,
                             id = MailboxItemUiModelTestData.readMailboxItemUiModel.id,
                             isRead = false,
                             isStarred = false
@@ -734,13 +729,11 @@ internal class MailboxListReducerTest(
                     currentMailLabel = MailLabelTestData.customLabelOne,
                     selectedMailboxItems = setOf(
                         SelectedMailboxItem(
-                            userId = UserIdTestData.userId,
                             id = MailboxItemUiModelTestData.readMailboxItemUiModel.id,
                             isRead = false,
                             isStarred = false
                         ),
                         SelectedMailboxItem(
-                            userId = UserIdTestData.userId,
                             id = MailboxItemUiModelTestData.unreadMailboxItemUiModel.id,
                             isRead = false,
                             isStarred = false
@@ -756,7 +749,6 @@ internal class MailboxListReducerTest(
                     currentMailLabel = MailLabelTestData.customLabelOne,
                     selectedMailboxItems = setOf(
                         SelectedMailboxItem(
-                            userId = UserIdTestData.userId,
                             id = MailboxItemUiModelTestData.readMailboxItemUiModel.id,
                             isRead = false,
                             isStarred = false
@@ -782,7 +774,6 @@ internal class MailboxListReducerTest(
                     currentMailLabel = MailLabelTestData.customLabelOne,
                     selectedMailboxItems = setOf(
                         SelectedMailboxItem(
-                            userId = UserIdTestData.userId,
                             id = MailboxItemUiModelTestData.readMailboxItemUiModel.id,
                             isRead = false,
                             isStarred = false
@@ -797,7 +788,6 @@ internal class MailboxListReducerTest(
                     currentMailLabel = MailLabelTestData.customLabelOne,
                     selectedMailboxItems = setOf(
                         SelectedMailboxItem(
-                            userId = UserIdTestData.userId,
                             id = MailboxItemUiModelTestData.readMailboxItemUiModel.id,
                             isRead = true,
                             isStarred = false
@@ -813,7 +803,6 @@ internal class MailboxListReducerTest(
                     currentMailLabel = MailLabelTestData.customLabelOne,
                     selectedMailboxItems = setOf(
                         SelectedMailboxItem(
-                            userId = UserIdTestData.userId,
                             id = MailboxItemUiModelTestData.readMailboxItemUiModel.id,
                             isRead = false,
                             isStarred = false
@@ -828,7 +817,6 @@ internal class MailboxListReducerTest(
                     currentMailLabel = MailLabelTestData.customLabelOne,
                     selectedMailboxItems = setOf(
                         SelectedMailboxItem(
-                            userId = UserIdTestData.userId,
                             id = MailboxItemUiModelTestData.readMailboxItemUiModel.id,
                             isRead = false,
                             isStarred = false
@@ -844,7 +832,6 @@ internal class MailboxListReducerTest(
                     currentMailLabel = MailLabelTestData.customLabelOne,
                     selectedMailboxItems = setOf(
                         SelectedMailboxItem(
-                            userId = UserIdTestData.userId,
                             id = MailboxItemUiModelTestData.readMailboxItemUiModel.id,
                             isRead = false,
                             isStarred = true
@@ -872,7 +859,6 @@ internal class MailboxListReducerTest(
                     currentMailLabel = MailLabelTestData.customLabelOne,
                     selectedMailboxItems = setOf(
                         SelectedMailboxItem(
-                            userId = UserIdTestData.userId,
                             id = MailboxItemUiModelTestData.readMailboxItemUiModel.id,
                             isRead = false,
                             isStarred = true
@@ -900,7 +886,6 @@ internal class MailboxListReducerTest(
                     currentMailLabel = MailLabelTestData.customLabelOne,
                     selectedMailboxItems = setOf(
                         SelectedMailboxItem(
-                            userId = UserIdTestData.userId,
                             id = MailboxItemUiModelTestData.readMailboxItemUiModel.id,
                             isRead = false,
                             isStarred = true
@@ -928,7 +913,6 @@ internal class MailboxListReducerTest(
                     currentMailLabel = MailLabelTestData.customLabelOne,
                     selectedMailboxItems = setOf(
                         SelectedMailboxItem(
-                            userId = UserIdTestData.userId,
                             id = MailboxItemUiModelTestData.readMailboxItemUiModel.id,
                             isRead = false,
                             isStarred = true
@@ -954,7 +938,6 @@ internal class MailboxListReducerTest(
                     currentMailLabel = MailLabelTestData.customLabelOne,
                     selectedMailboxItems = setOf(
                         SelectedMailboxItem(
-                            userId = UserIdTestData.userId,
                             id = MailboxItemUiModelTestData.readMailboxItemUiModel.id,
                             isRead = false,
                             isStarred = false
@@ -982,7 +965,6 @@ internal class MailboxListReducerTest(
                     currentMailLabel = MailLabelTestData.customLabelTwo,
                     selectedMailboxItems = setOf(
                         SelectedMailboxItem(
-                            userId = UserIdTestData.userId,
                             id = MailboxItemUiModelTestData.readMailboxItemUiModel.id,
                             isRead = false,
                             isStarred = false
@@ -997,7 +979,6 @@ internal class MailboxListReducerTest(
                     currentMailLabel = MailLabelTestData.customLabelTwo,
                     selectedMailboxItems = setOf(
                         SelectedMailboxItem(
-                            userId = UserIdTestData.userId,
                             id = MailboxItemUiModelTestData.readMailboxItemUiModel.id,
                             isRead = false,
                             isStarred = true
@@ -1013,7 +994,6 @@ internal class MailboxListReducerTest(
                     currentMailLabel = MailLabelTestData.customLabelOne,
                     selectedMailboxItems = setOf(
                         SelectedMailboxItem(
-                            userId = UserIdTestData.userId,
                             id = MailboxItemUiModelTestData.readMailboxItemUiModel.id,
                             isRead = false,
                             isStarred = false
@@ -1028,7 +1008,6 @@ internal class MailboxListReducerTest(
                     currentMailLabel = MailLabelTestData.customLabelOne,
                     selectedMailboxItems = setOf(
                         SelectedMailboxItem(
-                            userId = UserIdTestData.userId,
                             id = MailboxItemUiModelTestData.readMailboxItemUiModel.id,
                             isRead = false,
                             isStarred = true
@@ -1044,7 +1023,6 @@ internal class MailboxListReducerTest(
                     currentMailLabel = MailLabelTestData.customLabelOne,
                     selectedMailboxItems = setOf(
                         SelectedMailboxItem(
-                            userId = UserIdTestData.userId,
                             id = MailboxItemUiModelTestData.readMailboxItemUiModel.id,
                             isRead = false,
                             isStarred = true
@@ -1059,7 +1037,6 @@ internal class MailboxListReducerTest(
                     currentMailLabel = MailLabelTestData.customLabelOne,
                     selectedMailboxItems = setOf(
                         SelectedMailboxItem(
-                            userId = UserIdTestData.userId,
                             id = MailboxItemUiModelTestData.readMailboxItemUiModel.id,
                             isRead = false,
                             isStarred = false
@@ -1075,7 +1052,6 @@ internal class MailboxListReducerTest(
                     currentMailLabel = MailLabelTestData.customLabelOne,
                     selectedMailboxItems = setOf(
                         SelectedMailboxItem(
-                            userId = UserIdTestData.userId,
                             id = MailboxItemUiModelTestData.readMailboxItemUiModel.id,
                             isRead = false,
                             isStarred = false
@@ -1103,7 +1079,6 @@ internal class MailboxListReducerTest(
                     currentMailLabel = MailLabelTestData.customLabelOne,
                     selectedMailboxItems = setOf(
                         SelectedMailboxItem(
-                            userId = UserIdTestData.userId,
                             id = MailboxItemUiModelTestData.readMailboxItemUiModel.id,
                             isRead = false,
                             isStarred = false

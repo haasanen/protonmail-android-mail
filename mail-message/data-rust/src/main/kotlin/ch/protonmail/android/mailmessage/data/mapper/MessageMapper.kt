@@ -27,7 +27,6 @@ import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageMetadata
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalMimeType
 import ch.protonmail.android.mailcommon.domain.model.AvatarInformation
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
-import ch.protonmail.android.mailcommon.domain.model.FAKE_USER_ID
 import ch.protonmail.android.maillabel.data.mapper.toLabel
 import ch.protonmail.android.mailmessage.data.model.LocalConversationMessages
 import ch.protonmail.android.mailmessage.domain.model.AttachmentCount
@@ -63,7 +62,6 @@ fun LocalAddressId.toAddressId(): AddressId = AddressId(this.value.toString())
 
 fun LocalMessageMetadata.toMessage(): Message {
     return Message(
-        userId = FAKE_USER_ID,
         messageId = this.id.toMessageId(),
         conversationId = this.conversationId.toConversationId(),
         time = this.time.toLong(),
@@ -120,7 +118,6 @@ fun LocalMimeType.toAndroidMimeType(): MimeType {
 
 fun BodyOutput.toMessageBody(messageId: MessageId, mimeType: LocalMimeType): MessageBody {
     return MessageBody(
-        userId = FAKE_USER_ID,
         messageId = messageId,
         body = this.body,
         header = "",

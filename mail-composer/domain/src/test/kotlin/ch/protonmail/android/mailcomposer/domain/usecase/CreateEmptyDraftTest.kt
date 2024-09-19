@@ -40,7 +40,6 @@ class CreateEmptyDraftTest {
         val expectedUserAddress = UserAddressSample.build()
         val expectedEmptyDraft = MessageWithBody(
             message = Message(
-                userId = expectedUserId,
                 messageId = expectedMessageId,
                 conversationId = ConversationId(EMPTY_STRING),
                 time = expectedCurrentTimestamp,
@@ -65,7 +64,6 @@ class CreateEmptyDraftTest {
                 avatarInformation = AvatarInformation("", TRANSPARENT_COLOR_HEX)
             ),
             messageBody = MessageBody(
-                userId = expectedUserId,
                 messageId = expectedMessageId,
                 body = EMPTY_STRING,
                 header = EMPTY_STRING,

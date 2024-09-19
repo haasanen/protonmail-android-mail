@@ -64,7 +64,6 @@ class MailboxItemUiModelMapper @Inject constructor(
             avatar = mailboxAvatarUiModelMapper(mailboxItem),
             type = mailboxItem.type,
             id = mailboxItem.id,
-            userId = mailboxItem.userId,
             conversationId = mailboxItem.conversationId,
             time = formatMailboxItemTime(mailboxItem.time.seconds),
             isRead = mailboxItem.read,

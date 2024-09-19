@@ -21,7 +21,6 @@ package ch.protonmail.android.mailconversation.data.mapper
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalConversation
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalConversationId
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
-import ch.protonmail.android.mailcommon.domain.model.FAKE_USER_ID
 import ch.protonmail.android.mailconversation.domain.entity.Conversation
 import ch.protonmail.android.maillabel.data.mapper.toLabel
 import ch.protonmail.android.mailmessage.data.mapper.toAvatarInformation
@@ -29,7 +28,6 @@ import ch.protonmail.android.mailmessage.data.mapper.toParticipant
 import ch.protonmail.android.mailmessage.domain.model.AttachmentCount
 
 fun LocalConversation.toConversation() = Conversation(
-    userId = FAKE_USER_ID,
     conversationId = this.id.toConversationId(),
     order = this.displayOrder.toLong(),
     subject = this.subject,

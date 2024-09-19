@@ -248,7 +248,6 @@ object MessageSample {
         unread: Boolean = false,
         customLabels: List<Label> = emptyList()
     ) = Message(
-        userId = userId,
         messageId = messageId,
         conversationId = conversationId,
         time = time,

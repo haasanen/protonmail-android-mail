@@ -35,6 +35,7 @@ import ch.protonmail.android.mailmessage.presentation.model.isApplicable
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 import me.proton.core.contact.domain.entity.Contact
+import me.proton.core.domain.entity.UserId
 import me.proton.core.user.domain.entity.UserAddress
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.seconds
@@ -73,6 +74,7 @@ class ConversationDetailMessageUiModelMapper @Inject constructor(
     }
 
     suspend fun toUiModel(
+        userId: UserId,
         message: Message,
         contacts: List<Contact>,
         decryptedMessageBody: DecryptedMessageBody,
@@ -81,7 +83,7 @@ class ConversationDetailMessageUiModelMapper @Inject constructor(
     ): ConversationDetailMessageUiModel.Expanded {
         val uiModel =
             messageBodyUiModelMapper.toUiModel(
-                message.userId,
+                userId,
                 decryptedMessageBody,
                 existingMessageUiState?.messageBodyUiModel
             )

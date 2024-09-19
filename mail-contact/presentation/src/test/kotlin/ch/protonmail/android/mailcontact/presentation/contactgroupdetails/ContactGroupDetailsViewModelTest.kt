@@ -64,7 +64,6 @@ class ContactGroupDetailsViewModelTest {
     private val testUserId = UserIdTestData.userId
     private val testLabelId = ContactGroupDetailsPreviewData.contactGroupDetailsSampleData.id
     private val testEmptyContactGroup = ContactGroup(
-        testUserId,
         testLabelId,
         "Group name",
         Color.Red.getHexStringFromColor(),

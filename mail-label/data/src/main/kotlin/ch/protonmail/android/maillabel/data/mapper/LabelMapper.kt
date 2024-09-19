@@ -20,7 +20,6 @@ package ch.protonmail.android.maillabel.data.mapper
 
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalSystemLabel
-import ch.protonmail.android.mailcommon.domain.model.FAKE_USER_ID
 import ch.protonmail.android.maillabel.domain.model.Label
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.LabelType
@@ -47,8 +46,8 @@ fun LabelDescription.toLabelType(): LabelType {
 
 fun SidebarCustomFolder.toLabel(): Label {
     return Label(
-        userId = FAKE_USER_ID,
         labelId = this.id.toLabelId(),
+        parentId = this.parentId?.toLabelId(),
         name = this.name,
         type = this.description.toLabelType(),
         path = this.path ?: "",
@@ -56,15 +55,14 @@ fun SidebarCustomFolder.toLabel(): Label {
         order = this.displayOrder.toInt(),
         isNotified = this.notify,
         isExpanded = this.expanded,
-        isSticky = this.sticky,
-        parentId = this.parentId?.toLabelId()
+        isSticky = this.sticky
 
     )
 }
 fun SidebarCustomLabel.toLabel(): Label {
     return Label(
-        userId = FAKE_USER_ID,
         labelId = this.id.toLabelId(),
+        parentId = null,
         name = this.name,
         type = this.description.toLabelType(),
         path = "",
@@ -72,8 +70,7 @@ fun SidebarCustomLabel.toLabel(): Label {
         order = this.displayOrder.toInt(),
         isNotified = this.notify,
         isExpanded = null,
-        isSticky = this.sticky,
-        parentId = null
+        isSticky = this.sticky
 
     )
 }
@@ -86,8 +83,8 @@ fun SidebarSystemLabel.toLabelWithSystemLabelId(): LabelWithSystemLabelId {
     }
     return LabelWithSystemLabelId(
         Label(
-            userId = FAKE_USER_ID,
             labelId = this.id.toLabelId(),
+            parentId = null,
             name = this.name,
             type = systemLabelDescription.toLabelType(),
             path = "",
@@ -95,8 +92,7 @@ fun SidebarSystemLabel.toLabelWithSystemLabelId(): LabelWithSystemLabelId {
             order = this.displayOrder.toInt(),
             isNotified = this.notify,
             isExpanded = null,
-            isSticky = this.sticky,
-            parentId = null
+            isSticky = this.sticky
         ),
         systemLabelDescription.v1?.toSystemLabel() ?: SystemLabelId.AllMail
     )
@@ -128,7 +124,6 @@ fun LocalSystemLabel.toSystemLabel() = when (this) {
 }
 
 fun InlineCustomLabel.toLabel() = Label(
-    userId = FAKE_USER_ID,
     labelId = this.id.toLabelId(),
     parentId = null,
     name = this.name,

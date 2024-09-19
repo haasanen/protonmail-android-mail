@@ -110,7 +110,6 @@ class ContactGroupItemUiModelMapperTest {
         )
         val contactGroupLabels = listOf(
             Label(
-                userId = UserIdTestData.userId,
                 labelId = LabelId("LabelId1"),
                 parentId = null,
                 name = "Label 1",
@@ -123,7 +122,6 @@ class ContactGroupItemUiModelMapperTest {
                 isSticky = null
             ),
             Label(
-                userId = UserIdTestData.userId,
                 labelId = LabelId("LabelId2"),
                 parentId = null,
                 name = "Label 2",

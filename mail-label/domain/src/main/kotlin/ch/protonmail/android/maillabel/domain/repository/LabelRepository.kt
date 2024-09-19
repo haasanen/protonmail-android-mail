@@ -80,7 +80,7 @@ interface LabelRepository {
     suspend fun updateLabel(userId: UserId, label: Label)
 
     /**
-     * Update [Label.isExpanded] for [userId], locally, then remotely in background.
+     * Update [isExpanded] for [userId], locally, then remotely in background.
      */
     suspend fun updateLabelIsExpanded(
         userId: UserId,

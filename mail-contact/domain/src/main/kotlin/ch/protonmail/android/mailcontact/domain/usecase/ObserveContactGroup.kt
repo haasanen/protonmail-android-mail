@@ -60,7 +60,6 @@ class ObserveContactGroup @Inject constructor(
                     "#00000000"
                 }
                 ContactGroup(
-                    userId = label.userId,
                     labelId = labelId,
                     name = label.name,
                     color = color,

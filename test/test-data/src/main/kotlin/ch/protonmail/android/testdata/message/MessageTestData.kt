@@ -191,7 +191,6 @@ object MessageTestData {
         customLabels: List<Label> = emptyList(),
         isStarred: Boolean = false
     ) = Message(
-        userId = userId,
         messageId = MessageId(id),
         conversationId = conversationId,
         time = time,

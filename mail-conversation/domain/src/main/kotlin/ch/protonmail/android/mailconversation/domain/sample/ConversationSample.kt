@@ -83,7 +83,6 @@ object ConversationSample {
         userId: UserId = UserIdSample.Primary,
         numMessages: Int = 0
     ) = Conversation(
-        userId = userId,
         conversationId = conversationId,
         order = 0,
         subject = subject,

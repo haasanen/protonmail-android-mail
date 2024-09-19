@@ -29,7 +29,6 @@ class MessageMailboxItemMapper @Inject constructor() : Mapper<Message, MailboxIt
     fun toMailboxItem(message: Message) = MailboxItem(
         type = MailboxItemType.Message,
         id = message.messageId.id,
-        userId = message.userId,
         time = message.time,
         size = message.size,
         order = message.order,

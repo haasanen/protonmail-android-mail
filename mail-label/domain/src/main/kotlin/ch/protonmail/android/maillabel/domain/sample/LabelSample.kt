@@ -99,16 +99,15 @@ object LabelSample {
         type: LabelType = LabelType.MessageLabel,
         userId: UserId = UserIdSample.Primary
     ) = Label(
-        color = color,
-        isExpanded = isExpanded,
-        isNotified = null,
-        isSticky = null,
         labelId = labelId,
-        name = name,
-        order = order,
         parentId = parentId,
-        path = labelId.id,
+        name = name,
         type = type,
-        userId = userId
+        path = labelId.id,
+        color = color,
+        order = order,
+        isNotified = null,
+        isExpanded = isExpanded,
+        isSticky = null
     )
 }

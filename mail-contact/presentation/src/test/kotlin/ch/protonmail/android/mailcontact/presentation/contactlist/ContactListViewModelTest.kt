@@ -62,7 +62,6 @@ class ContactListViewModelTest {
     val mainDispatcherRule = MainDispatcherRule()
 
     private val defaultTestContactGroupLabel = Label(
-        userId = UserIdTestData.userId,
         labelId = LabelId("LabelId1"),
         parentId = null,
         name = "Label 1",

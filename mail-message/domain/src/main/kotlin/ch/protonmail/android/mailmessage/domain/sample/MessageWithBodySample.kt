@@ -113,7 +113,6 @@ object MessageWithBodySample {
     ) = MessageWithBody(
         message = message,
         messageBody = MessageBody(
-            userId = message.userId,
             messageId = message.messageId,
             body = body,
             header = "",

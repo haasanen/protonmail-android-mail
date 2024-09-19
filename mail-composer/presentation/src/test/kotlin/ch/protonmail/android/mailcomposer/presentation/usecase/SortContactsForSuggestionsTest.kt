@@ -19,7 +19,6 @@
 package ch.protonmail.android.mailcomposer.presentation.usecase
 
 import ch.protonmail.android.maillabel.domain.sample.LabelIdSample
-import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.mailcomposer.presentation.model.ContactSuggestionUiModel
 import ch.protonmail.android.mailcontact.domain.model.ContactGroup
 import ch.protonmail.android.mailcontact.domain.model.DeviceContact
@@ -59,21 +58,18 @@ class SortContactsForSuggestionsTest {
         )
         val contactGroups = listOf(
             ContactGroup(
-                UserIdSample.Primary,
                 LabelIdSample.LabelCoworkers,
                 "z group",
                 "#AABBCC",
                 listOf(ContactEmailSample.contactEmail1)
             ),
             ContactGroup(
-                UserIdSample.Primary,
                 LabelIdSample.LabelCoworkers,
                 "x group",
                 "#AABBCC",
                 listOf(ContactEmailSample.contactEmail1)
             ),
             ContactGroup(
-                UserIdSample.Primary,
                 LabelIdSample.LabelCoworkers,
                 "a group",
                 "#AABBCC",

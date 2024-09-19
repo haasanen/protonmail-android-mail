@@ -21,7 +21,6 @@ package ch.protonmail.android.mailmessage.domain.model
 import ch.protonmail.android.mailcommon.domain.model.AvatarInformation
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import kotlinx.serialization.Serializable
-import me.proton.core.domain.entity.UserId
 import ch.protonmail.android.maillabel.domain.model.Label
 import me.proton.core.user.domain.entity.AddressId
 import kotlin.time.Duration
@@ -36,7 +35,6 @@ data class MessageId(val id: String)
  *  @see expirationTimeOrNull
  */
 data class Message(
-    val userId: UserId,
     val messageId: MessageId,
     val conversationId: ConversationId,
     val time: Long,

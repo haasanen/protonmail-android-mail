@@ -80,7 +80,6 @@ object MessageBodyTestData {
         replyTos: List<Recipient> = emptyList(),
         unsubscribeMethods: UnsubscribeMethods? = UnsubscribeMethods(null, null, null)
     ) = MessageBody(
-        userId = userId,
         messageId = messageId,
         body = body,
         header = header,

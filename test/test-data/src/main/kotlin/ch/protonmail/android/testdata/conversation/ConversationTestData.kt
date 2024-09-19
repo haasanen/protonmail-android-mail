@@ -121,7 +121,6 @@ object ConversationTestData {
         numUnRead: Int = 0,
         isStarred: Boolean = false
     ) = Conversation(
-        userId = userId,
         conversationId = ConversationId(id),
         order = 0,
         subject = subject,
@@ -149,7 +148,6 @@ object ConversationTestData {
         expirationTime: Long = 0,
         attachmentCount: AttachmentCount = AttachmentCount(0)
     ) = Conversation(
-        userId = userId,
         conversationId = ConversationId(id),
         order = 0,
         subject = subject,
@@ -168,7 +166,6 @@ object ConversationTestData {
     )
 
     private fun buildLabel(labelId: String) = Label(
-        userId = userId,
         labelId = LabelId(labelId),
         parentId = null,
         name = "",
