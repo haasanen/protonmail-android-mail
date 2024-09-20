@@ -20,7 +20,7 @@ package ch.protonmail.android.mailconversation.data.local
 
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalConversation
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
-import ch.protonmail.android.mailconversation.data.usecase.CreateRustConversationForLabelPaginator
+import ch.protonmail.android.mailconversation.data.usecase.CreateRustConversationPaginator
 import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
 import ch.protonmail.android.mailmessage.data.local.RustMailbox
 import ch.protonmail.android.mailmessage.domain.paging.RustDataSourceId
@@ -38,7 +38,7 @@ import javax.inject.Inject
 class RustConversationsQueryImpl @Inject constructor(
     private val userSessionRepository: UserSessionRepository,
     private val invalidationTracker: RustInvalidationTracker,
-    private val createRustConversationForLabelPaginator: CreateRustConversationForLabelPaginator,
+    private val createRustConversationPaginator: CreateRustConversationPaginator,
     private val rustMailbox: RustMailbox
 ) : RustConversationsQuery {
 
@@ -90,7 +90,7 @@ class RustConversationsQueryImpl @Inject constructor(
             Timber.v("rust-conversation-query: [destroy and] initialize paginator instance...")
             destroy()
             paginator = Paginator(
-                createRustConversationForLabelPaginator(session, labelId, conversationsUpdatedCallback),
+                createRustConversationPaginator(session, labelId, conversationsUpdatedCallback),
                 userId,
                 labelId
             )
