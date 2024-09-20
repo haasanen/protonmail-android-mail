@@ -23,62 +23,18 @@ import javax.inject.Inject
 
 class RustInvalidationTrackerImpl @Inject constructor() : RustInvalidationTracker {
 
-    private val observerMap = mutableMapOf<RustInvalidationObserver, ObserverWrapper>()
-
-    internal class WeakObserver(
-        private val tracker: RustInvalidationTracker,
-        delegate: RustInvalidationObserver
-    ) : RustInvalidationObserver(delegate.dataSources) {
-
-        private val delegateRef: WeakReference<RustInvalidationObserver> = WeakReference(delegate)
-        override fun onInvalidated(invalidatedDataSources: Set<RustDataSourceId>) {
-            val observer = delegateRef.get()
-            if (observer == null) {
-                tracker.removeObserver(this)
-            } else {
-                observer.onInvalidated(invalidatedDataSources)
-            }
-        }
-    }
-
-    internal class ObserverWrapper(
-        private val observer: RustInvalidationObserver,
-        private val dataSources: Set<RustDataSourceId>
-    ) {
-
-        /**
-         * Notifies the underlying observer if any of the observed data sources are invalidated
-         */
-        internal fun notifyInvalidStatus(invalidatedDataSources: Set<RustDataSourceId>) {
-            val invalidatedTables = buildSet {
-                dataSources.forEach { dataSource ->
-                    if (invalidatedDataSources.contains(dataSource)) {
-                        add(dataSource)
-                    }
-                }
-            }
-
-            if (invalidatedTables.isNotEmpty()) {
-                observer.onInvalidated(invalidatedTables)
-            }
-        }
-    }
+    private var observerInstance: WeakReference<RustInvalidationObserver>? = null
 
     override fun addObserver(observer: RustInvalidationObserver) {
-        synchronized(observerMap) {
-            observerMap.putIfAbsent(WeakObserver(this, observer), ObserverWrapper(observer, observer.dataSources))
-        }
-    }
-
-    override fun removeObserver(observer: RustInvalidationObserver) {
-        synchronized(observerMap) {
-            observerMap.remove(observer)
-        }
+        observerInstance = WeakReference(observer)
     }
 
     override fun notifyInvalidation(invalidatedDataSources: Set<RustDataSourceId>) {
-        synchronized(observerMap) {
-            observerMap.values.forEach { it.notifyInvalidStatus(invalidatedDataSources) }
+        observerInstance?.get()?.let { observer ->
+            val observedDataSourceChanged = observer.dataSources.any { it in invalidatedDataSources }
+            if (observedDataSourceChanged) {
+                observer.onInvalidated(invalidatedDataSources)
+            }
         }
     }
 }

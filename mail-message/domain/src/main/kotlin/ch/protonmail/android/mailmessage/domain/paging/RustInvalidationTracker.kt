@@ -20,7 +20,6 @@ package ch.protonmail.android.mailmessage.domain.paging
 
 interface RustInvalidationTracker {
     fun addObserver(observer: RustInvalidationObserver)
-    fun removeObserver(observer: RustInvalidationObserver)
 
     fun notifyInvalidation(invalidatedDataSources: Set<RustDataSourceId>)
 }
