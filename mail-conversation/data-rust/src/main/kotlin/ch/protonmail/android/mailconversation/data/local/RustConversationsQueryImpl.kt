@@ -28,6 +28,8 @@ import ch.protonmail.android.mailmessage.domain.paging.RustInvalidationTracker
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailpagination.domain.model.PageNumber
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.ConversationPaginator
@@ -43,10 +45,11 @@ class RustConversationsQueryImpl @Inject constructor(
 ) : RustConversationsQuery {
 
     private var paginator: Paginator? = null
+    private val paginatorMutex = Mutex()
 
     private val conversationsUpdatedCallback = object : LiveQueryCallback {
         override fun onUpdate() {
-            Timber.d("rust-conversations-query: conversations updated, invalidating paginator...")
+            Timber.d("rust-conversation-query: paging: conversations updated, invalidating paginator...")
 
             invalidationTracker.notifyInvalidation(
                 setOf(
@@ -65,7 +68,6 @@ class RustConversationsQueryImpl @Inject constructor(
         }
 
         val labelId = pageKey.labelId.toLocalLabelId()
-        rustMailbox.switchToMailbox(userId, labelId)
         Timber.v("rust-conversation-query: observe conversations for labelId $labelId")
 
         initPaginator(userId, labelId, session)
@@ -85,16 +87,20 @@ class RustConversationsQueryImpl @Inject constructor(
         userId: UserId,
         labelId: LocalLabelId,
         session: MailUserSession
-    ) {
-        if (shouldInitPaginator(userId, labelId)) {
-            Timber.v("rust-conversation-query: [destroy and] initialize paginator instance...")
-            destroy()
-            paginator = Paginator(
-                createRustConversationPaginator(session, labelId, conversationsUpdatedCallback),
-                userId,
-                labelId
-            )
+    ) = paginatorMutex.withLock {
+        if (!shouldInitPaginator(userId, labelId)) {
+            Timber.v("rust-conversation-query: reusing existing paginator instance...")
+            return
         }
+
+        Timber.v("rust-conversation-query: [destroy and] initialize paginator instance...")
+        destroy()
+        rustMailbox.switchToMailbox(userId, labelId)
+        paginator = Paginator(
+            createRustConversationPaginator(session, labelId, conversationsUpdatedCallback),
+            userId,
+            labelId
+        )
     }
 
     private fun shouldInitPaginator(userId: UserId, labelId: LocalLabelId) =

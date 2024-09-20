@@ -27,6 +27,8 @@ import ch.protonmail.android.mailmessage.domain.paging.RustInvalidationTracker
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailpagination.domain.model.PageNumber
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.LiveQueryCallback
@@ -42,6 +44,7 @@ class RustMessageQueryImpl @Inject constructor(
 ) : RustMessageQuery {
 
     private var paginator: Paginator? = null
+    private val paginatorMutex = Mutex()
 
     private val messagesUpdatedCallback = object : LiveQueryCallback {
         override fun onUpdate() {
@@ -65,7 +68,6 @@ class RustMessageQueryImpl @Inject constructor(
         Timber.v("rust-message: got MailSession instance to watch messages for $userId")
 
         val labelId = pageKey.labelId.toLocalLabelId()
-        rustMailbox.switchToMailbox(userId, labelId)
         Timber.v("rust-message: switching mailbox to $labelId if needed...")
 
         initPaginator(userId, labelId, session)
@@ -85,16 +87,19 @@ class RustMessageQueryImpl @Inject constructor(
         userId: UserId,
         labelId: LocalLabelId,
         session: MailUserSession
-    ) {
-        if (shouldInitPaginator(userId, labelId)) {
-            Timber.v("rust-message: [destroy and] initialize paginator instance...")
-            destroy()
-            paginator = Paginator(
-                createRustMessagesWatcher(session, labelId, messagesUpdatedCallback),
-                userId,
-                labelId
-            )
+    ) = paginatorMutex.withLock {
+        if (!shouldInitPaginator(userId, labelId)) {
+            Timber.v("rust-message: reusing existing paginator instance...")
+            return
         }
+        Timber.v("rust-message: [destroy and] initialize paginator instance...")
+        destroy()
+        rustMailbox.switchToMailbox(userId, labelId)
+        paginator = Paginator(
+            createRustMessagesWatcher(session, labelId, messagesUpdatedCallback),
+            userId,
+            labelId
+        )
     }
 
     private fun destroy() {
