@@ -28,4 +28,6 @@ sealed interface ExclusiveLocation {
         val labelId: LabelId,
         val color: String
     ) : ExclusiveLocation
+
+    data object NoLocation : ExclusiveLocation
 }

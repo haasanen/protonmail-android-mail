@@ -22,6 +22,7 @@ import java.time.Instant
 import java.time.temporal.ChronoUnit
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.sample.AvatarInformationSample
+import ch.protonmail.android.maillabel.domain.model.ExclusiveLocation
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId.AllDrafts
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId.AllMail
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId.AllScheduled
@@ -38,6 +39,7 @@ import ch.protonmail.android.testdata.user.UserIdTestData
 import ch.protonmail.android.testdata.user.UserIdTestData.userId
 import me.proton.core.domain.entity.UserId
 import ch.protonmail.android.maillabel.domain.model.Label
+import ch.protonmail.android.maillabel.domain.model.LabelId
 import me.proton.core.user.domain.entity.AddressId
 
 object MessageTestData {
@@ -189,7 +191,8 @@ object MessageTestData {
         conversationId: ConversationId = ConversationId(id),
         flags: Long = 0,
         customLabels: List<Label> = emptyList(),
-        isStarred: Boolean = false
+        isStarred: Boolean = false,
+        exclusiveLocation: ExclusiveLocation = ExclusiveLocation.System(AllMail, LabelId("100"))
     ) = Message(
         messageId = MessageId(id),
         conversationId = conversationId,
@@ -212,6 +215,7 @@ object MessageTestData {
         flags = flags,
         attachmentCount = attachmentCount,
         customLabels = customLabels,
-        avatarInformation = AvatarInformationSample.avatarSample
+        avatarInformation = AvatarInformationSample.avatarSample,
+        exclusiveLocation = exclusiveLocation
     )
 }

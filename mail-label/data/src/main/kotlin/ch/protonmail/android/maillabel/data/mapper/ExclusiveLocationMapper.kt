@@ -23,7 +23,7 @@ import ch.protonmail.android.mailcommon.datarust.mapper.LocalExclusiveLocationCu
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalExclusiveLocationSystem
 import ch.protonmail.android.maillabel.domain.model.ExclusiveLocation
 
-fun LocalExclusiveLocation.toExclusiveLocation(): ExclusiveLocation {
+fun LocalExclusiveLocation?.toExclusiveLocation(): ExclusiveLocation {
     return when (this) {
         is LocalExclusiveLocationSystem -> ExclusiveLocation.System(
             this.name.toSystemLabel(),
@@ -34,5 +34,7 @@ fun LocalExclusiveLocation.toExclusiveLocation(): ExclusiveLocation {
             this.id.toLabelId(),
             this.color.value
         )
+
+        else -> ExclusiveLocation.NoLocation
     }
 }

@@ -6,6 +6,7 @@ import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.TRANSPARENT_COLOR_HEX
 import ch.protonmail.android.mailcommon.domain.sample.UserAddressSample
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
+import ch.protonmail.android.maillabel.domain.model.ExclusiveLocation
 import ch.protonmail.android.mailmessage.domain.model.AttachmentCount
 import ch.protonmail.android.mailmessage.domain.model.Message
 import ch.protonmail.android.mailmessage.domain.model.MessageBody
@@ -61,7 +62,8 @@ class CreateEmptyDraftTest {
                 flags = 0L,
                 attachmentCount = AttachmentCount(0),
                 customLabels = emptyList(),
-                avatarInformation = AvatarInformation("", TRANSPARENT_COLOR_HEX)
+                avatarInformation = AvatarInformation("", TRANSPARENT_COLOR_HEX),
+                exclusiveLocation = ExclusiveLocation.NoLocation
             ),
             messageBody = MessageBody(
                 messageId = expectedMessageId,

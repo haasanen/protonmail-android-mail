@@ -27,6 +27,7 @@ import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageMetadata
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalMimeType
 import ch.protonmail.android.mailcommon.domain.model.AvatarInformation
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
+import ch.protonmail.android.maillabel.data.mapper.toExclusiveLocation
 import ch.protonmail.android.maillabel.data.mapper.toLabel
 import ch.protonmail.android.mailmessage.data.model.LocalConversationMessages
 import ch.protonmail.android.mailmessage.domain.model.AttachmentCount
@@ -83,7 +84,8 @@ fun LocalMessageMetadata.toMessage(): Message {
         flags = this.flags.value.toLong(),
         attachmentCount = AttachmentCount(this.numAttachments.toInt()),
         customLabels = customLabels.map { it.toLabel() },
-        avatarInformation = this.avatar.toAvatarInformation()
+        avatarInformation = this.avatar.toAvatarInformation(),
+        exclusiveLocation = this.exclusiveLocation.toExclusiveLocation()
     )
 }
 

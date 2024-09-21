@@ -21,9 +21,11 @@ package ch.protonmail.android.mailmessage.data.repository
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalAddressId
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalAttachmentMetadata
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalConversationId
+import ch.protonmail.android.mailcommon.datarust.mapper.LocalExclusiveLocationSystem
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageId
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageMetadata
+import ch.protonmail.android.maillabel.data.mapper.toExclusiveLocation
 import ch.protonmail.android.maillabel.data.mapper.toLabel
 import ch.protonmail.android.mailmessage.data.mapper.toAddressId
 import ch.protonmail.android.mailmessage.data.mapper.toConversationId
@@ -41,6 +43,7 @@ import uniffi.proton_mail_uniffi.InlineCustomLabel
 import uniffi.proton_mail_uniffi.LabelColor
 import uniffi.proton_mail_uniffi.MessageAddress
 import uniffi.proton_mail_uniffi.MessageFlags
+import uniffi.proton_mail_uniffi.SystemLabel
 
 class MessageMapperTest {
 
@@ -116,18 +119,39 @@ class MessageMapperTest {
         )
         val subject = "Test Subject"
         val unread = true
-        val sender = MessageAddress("sender@test.com", "Sender", true, false, false, "bimiSelector")
+        val sender = MessageAddress(
+            "sender@test.com", "Sender", true,
+            false, false, "bimiSelector"
+        )
         val to = listOf(
-            MessageAddress("to1@test.com", "To1", true, false, false, "bimiSelector"),
-            MessageAddress("to2@test.com", "To2", false, false, false, "bimiSelector")
+            MessageAddress(
+                "to1@test.com", "To1", true,
+                false, false, "bimiSelector"
+            ),
+            MessageAddress(
+                "to2@test.com", "To2", false,
+                false, false, "bimiSelector"
+            )
         )
         val cc = listOf(
-            MessageAddress("cc1@test.com", "Cc1", true, false, false, "bimiSelector"),
-            MessageAddress("cc2@test.com", "Cc2", false, false, false, "bimiSelector")
+            MessageAddress(
+                "cc1@test.com", "Cc1", true,
+                false, false, "bimiSelector"
+            ),
+            MessageAddress(
+                "cc2@test.com", "Cc2", false,
+                false, false, "bimiSelector"
+            )
         )
         val bcc = listOf(
-            MessageAddress("bcc1@test.com", "Bcc1", true, false, false, "bimiSelector"),
-            MessageAddress("bcc2@test.com", "Bcc2", false, false, false, "bimiSelector")
+            MessageAddress(
+                "bcc1@test.com", "Bcc1", true,
+                false, false, "bimiSelector"
+            ),
+            MessageAddress(
+                "bcc2@test.com", "Bcc2", false,
+                false, false, "bimiSelector"
+            )
         )
         val expirationTime = 1625235000000u
         val isReplied = false
@@ -139,6 +163,10 @@ class MessageMapperTest {
         val starred = false
         val attachments: List<LocalAttachmentMetadata> = emptyList()
         val avatarInformation = AvatarInformation("A", "blue")
+        val exclusiveLocation = LocalExclusiveLocationSystem(
+            name = SystemLabel.SENT,
+            id = LocalLabelId(100u)
+        )
 
         val localMessageMetadata = LocalMessageMetadata(
             id = LocalMessageId(id),
@@ -163,7 +191,7 @@ class MessageMapperTest {
             flags = flags,
             starred = starred,
             attachmentsMetadata = attachments,
-            exclusiveLocation = null,
+            exclusiveLocation = exclusiveLocation,
             replyTos = to,
             avatar = avatarInformation
         )
@@ -192,6 +220,7 @@ class MessageMapperTest {
         assertEquals(numAttachments.toInt(), message.numAttachments)
         assertEquals(flags.value.toLong(), message.flags)
         assertEquals(AttachmentCount(numAttachments.toInt()), message.attachmentCount)
+        assertEquals(exclusiveLocation.toExclusiveLocation(), message.exclusiveLocation)
     }
 }
 
