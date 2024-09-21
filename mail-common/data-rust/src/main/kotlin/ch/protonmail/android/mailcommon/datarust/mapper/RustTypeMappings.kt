@@ -24,6 +24,7 @@ import uniffi.proton_mail_uniffi.ComposerDirection
 import uniffi.proton_mail_uniffi.ComposerMode
 import uniffi.proton_mail_uniffi.Conversation
 import uniffi.proton_mail_uniffi.DecryptedMessage
+import uniffi.proton_mail_uniffi.ExclusiveLocation
 import uniffi.proton_mail_uniffi.Id
 import uniffi.proton_mail_uniffi.MailSettings
 import uniffi.proton_mail_uniffi.Message
@@ -61,3 +62,7 @@ typealias LocalComposerDirection = ComposerDirection
 typealias LocalSystemLabel = SystemLabel
 typealias LocalAddressId = Id
 typealias LocalAvatarInformation = AvatarInformation
+typealias LocalExclusiveLocation = ExclusiveLocation
+typealias LocalExclusiveLocationSystem = ExclusiveLocation.System
+typealias LocalExclusiveLocationCustom = ExclusiveLocation.Custom
+
