@@ -21,6 +21,7 @@ package ch.protonmail.android.testdata.conversation
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.sample.AvatarInformationSample
 import ch.protonmail.android.mailconversation.domain.entity.Conversation
+import ch.protonmail.android.maillabel.domain.model.ExclusiveLocation
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.mailmessage.domain.model.AttachmentCount
 import ch.protonmail.android.mailmessage.domain.model.Sender
@@ -119,7 +120,8 @@ object ConversationTestData {
         expirationTime: Long = 0,
         attachmentCount: AttachmentCount = AttachmentCount(0),
         numUnRead: Int = 0,
-        isStarred: Boolean = false
+        isStarred: Boolean = false,
+        exclusiveLocation: ExclusiveLocation = ExclusiveLocation.System(SystemLabelId.Inbox, LabelId("1"))
     ) = Conversation(
         conversationId = ConversationId(id),
         order = 0,
@@ -135,7 +137,8 @@ object ConversationTestData {
         time = 0.toLong(),
         size = 0.toLong(),
         customLabels = labelIds.map { buildLabel(id) },
-        avatarInformation = AvatarInformationSample.avatarSample
+        avatarInformation = AvatarInformationSample.avatarSample,
+        exclusiveLocation = exclusiveLocation
     )
 
     private fun buildConversationWithConversationLabels(
@@ -146,7 +149,8 @@ object ConversationTestData {
         labels: List<Label>,
         numAttachments: Int = 0,
         expirationTime: Long = 0,
-        attachmentCount: AttachmentCount = AttachmentCount(0)
+        attachmentCount: AttachmentCount = AttachmentCount(0),
+        exclusiveLocation: ExclusiveLocation = ExclusiveLocation.System(SystemLabelId.Inbox, LabelId("1"))
     ) = Conversation(
         conversationId = ConversationId(id),
         order = 0,
@@ -162,7 +166,8 @@ object ConversationTestData {
         time = 0.toLong(),
         size = 0.toLong(),
         customLabels = labels,
-        avatarInformation = AvatarInformationSample.avatarSample
+        avatarInformation = AvatarInformationSample.avatarSample,
+        exclusiveLocation = exclusiveLocation
     )
 
     private fun buildLabel(labelId: String) = Label(

@@ -24,6 +24,9 @@ import ch.protonmail.android.mailcommon.domain.sample.ConversationIdSample
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.mailconversation.domain.entity.Conversation
 import ch.protonmail.android.mailconversation.domain.entity.ConversationLabel
+import ch.protonmail.android.maillabel.domain.model.ExclusiveLocation
+import ch.protonmail.android.maillabel.domain.model.LabelId
+import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.mailmessage.domain.model.AttachmentCount
 import ch.protonmail.android.mailmessage.domain.model.Recipient
 import ch.protonmail.android.mailmessage.domain.model.Sender
@@ -81,7 +84,8 @@ object ConversationSample {
         senders: List<Sender> = listOf(RecipientSample.John),
         subject: String = "subject",
         userId: UserId = UserIdSample.Primary,
-        numMessages: Int = 0
+        numMessages: Int = 0,
+        exclusiveLocation: ExclusiveLocation = ExclusiveLocation.System(SystemLabelId.Inbox, LabelId("1"))
     ) = Conversation(
         conversationId = conversationId,
         order = 0,
@@ -97,6 +101,7 @@ object ConversationSample {
         time = 0,
         size = 0,
         customLabels = emptyList(),
-        avatarInformation = AvatarInformationSample.avatarSample
+        avatarInformation = AvatarInformationSample.avatarSample,
+        exclusiveLocation = exclusiveLocation
     )
 }

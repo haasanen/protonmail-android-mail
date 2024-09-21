@@ -21,6 +21,7 @@ package ch.protonmail.android.testdata.conversation
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.sample.AvatarInformationSample
 import ch.protonmail.android.mailconversation.domain.entity.Conversation
+import ch.protonmail.android.maillabel.domain.model.ExclusiveLocation
 import ch.protonmail.android.mailmessage.domain.model.AttachmentCount
 import ch.protonmail.android.testdata.user.UserIdTestData.userId
 import ch.protonmail.android.testdata.user.UserIdTestData.userId1
@@ -28,6 +29,7 @@ import me.proton.core.domain.entity.UserId
 import ch.protonmail.android.maillabel.domain.model.Label
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.LabelType
+import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 
 object ConversationWithContextTestData {
 
@@ -94,7 +96,8 @@ object ConversationWithContextTestData {
         labelIds: List<String> = listOf(id),
         numAttachments: Int = 2,
         expirationTime: Long = 0,
-        attachmentCount: AttachmentCount = AttachmentCount(0)
+        attachmentCount: AttachmentCount = AttachmentCount(0),
+        exclusiveLocation: ExclusiveLocation = ExclusiveLocation.System(SystemLabelId.Inbox, LabelId("1"))
     ) = Conversation(
         conversationId = ConversationId(id),
         order = order,
@@ -110,7 +113,8 @@ object ConversationWithContextTestData {
         time = time,
         size = 0.toLong(),
         customLabels = labelIds.map { buildLabel(it) },
-        avatarInformation = AvatarInformationSample.avatarSample
+        avatarInformation = AvatarInformationSample.avatarSample,
+        exclusiveLocation = exclusiveLocation
     )
 
     private fun buildLabel(labelId: String) = Label(

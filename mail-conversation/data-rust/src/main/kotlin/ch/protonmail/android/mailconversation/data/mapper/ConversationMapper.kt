@@ -22,6 +22,7 @@ import ch.protonmail.android.mailcommon.datarust.mapper.LocalConversation
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalConversationId
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailconversation.domain.entity.Conversation
+import ch.protonmail.android.maillabel.data.mapper.toExclusiveLocation
 import ch.protonmail.android.maillabel.data.mapper.toLabel
 import ch.protonmail.android.mailmessage.data.mapper.toAvatarInformation
 import ch.protonmail.android.mailmessage.data.mapper.toParticipant
@@ -42,7 +43,8 @@ fun LocalConversation.toConversation() = Conversation(
     time = time.toLong(),
     size = size.toLong(),
     customLabels = this.customLabels.map { it.toLabel() },
-    avatarInformation = this.avatar.toAvatarInformation()
+    avatarInformation = this.avatar.toAvatarInformation(),
+    exclusiveLocation = this.exclusiveLocation.toExclusiveLocation()
 )
 
 private fun LocalConversationId.toConversationId(): ConversationId = ConversationId(this.value.toString())

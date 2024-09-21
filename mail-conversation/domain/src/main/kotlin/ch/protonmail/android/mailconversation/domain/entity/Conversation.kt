@@ -20,6 +20,7 @@ package ch.protonmail.android.mailconversation.domain.entity
 
 import ch.protonmail.android.mailcommon.domain.model.AvatarInformation
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
+import ch.protonmail.android.maillabel.domain.model.ExclusiveLocation
 import ch.protonmail.android.mailmessage.domain.model.AttachmentCount
 import ch.protonmail.android.mailmessage.domain.model.Recipient
 import ch.protonmail.android.mailmessage.domain.model.Sender
@@ -40,5 +41,6 @@ data class Conversation(
     val time: Long,
     val size: Long,
     val customLabels: List<Label>,
-    val avatarInformation: AvatarInformation
+    val avatarInformation: AvatarInformation,
+    val exclusiveLocation: ExclusiveLocation
 )

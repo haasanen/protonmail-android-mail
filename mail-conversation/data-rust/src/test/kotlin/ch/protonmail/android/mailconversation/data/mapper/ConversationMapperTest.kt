@@ -21,8 +21,10 @@ package ch.protonmail.android.mailconversation.data.mapper
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalAttachmentMetadata
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalConversation
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalConversationId
+import ch.protonmail.android.mailcommon.datarust.mapper.LocalExclusiveLocationSystem
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
+import ch.protonmail.android.maillabel.data.mapper.toExclusiveLocation
 import ch.protonmail.android.maillabel.data.mapper.toLabel
 import ch.protonmail.android.mailmessage.data.mapper.toParticipant
 import ch.protonmail.android.mailmessage.domain.model.AttachmentCount
@@ -36,6 +38,7 @@ import uniffi.proton_mail_uniffi.InlineCustomLabel
 import uniffi.proton_mail_uniffi.LabelColor
 import uniffi.proton_mail_uniffi.MessageAddress
 import uniffi.proton_mail_uniffi.MimeTypeCategory
+import uniffi.proton_mail_uniffi.SystemLabel
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
@@ -48,12 +51,24 @@ class ConversationMapperTest {
         val order = 1uL
         val subject = "Test Subject"
         val senders = listOf(
-            MessageAddress("sender1@test.com", "Sender1", true, false, false, ""),
-            MessageAddress("sender2@test.com", "Sender2", false, false, false, "")
+            MessageAddress(
+                "sender1@test.com", "Sender1", true,
+                false, false, ""
+            ),
+            MessageAddress(
+                "sender2@test.com", "Sender2", false,
+                false, false, ""
+            )
         )
         val recipients = listOf(
-            MessageAddress("recipient1@test.com", "Recipient1", true, false, false, ""),
-            MessageAddress("recipient2@test.com", "Recipient2", false, false, false, "")
+            MessageAddress(
+                "recipient1@test.com", "Recipient1", true,
+                false, false, ""
+            ),
+            MessageAddress(
+                "recipient2@test.com", "Recipient2", false,
+                false, false, ""
+            )
         )
         val totalNumMessages = 8uL
         val totalNumUnread = 3uL
@@ -77,7 +92,10 @@ class ConversationMapperTest {
             )
         )
         val avatarInformation = AvatarInformation("A", "blue")
-
+        val exclusiveLocation = LocalExclusiveLocationSystem(
+            name = SystemLabel.TRASH,
+            id = LocalLabelId(1uL)
+        )
         val localConversation = LocalConversation(
             id = id,
             displayOrder = order,
@@ -94,7 +112,7 @@ class ConversationMapperTest {
             isStarred = starred,
             attachmentsMetadata = attachments,
             displaySnoozeReminder = false,
-            exclusiveLocation = null,
+            exclusiveLocation = exclusiveLocation,
             avatar = avatarInformation,
             totalMessages = totalNumMessages,
             totalUnread = totalNumUnread
@@ -122,6 +140,9 @@ class ConversationMapperTest {
         )
         assertEquals(AttachmentCount(numAttachments.toInt()), conversation.attachmentCount)
         assertTrue(!conversation.isStarred)
+        assertEquals(time.toLong(), conversation.time)
+        assertEquals(size.toLong(), conversation.size)
+        assertEquals(exclusiveLocation.toExclusiveLocation(), conversation.exclusiveLocation)
     }
 
     @Test
