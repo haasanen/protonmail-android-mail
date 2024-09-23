@@ -24,7 +24,7 @@ import uniffi.proton_mail_uniffi.MailUserSession
 import uniffi.proton_mail_uniffi.paginateMessagesForLabel
 import javax.inject.Inject
 
-class CreateRustMessagesWatcher @Inject constructor() {
+class CreateRustMessagesPaginator @Inject constructor() {
 
     suspend operator fun invoke(
         session: MailUserSession,

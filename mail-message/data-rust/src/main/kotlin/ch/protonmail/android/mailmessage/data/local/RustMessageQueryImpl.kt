@@ -21,7 +21,7 @@ package ch.protonmail.android.mailmessage.data.local
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageMetadata
 import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
-import ch.protonmail.android.mailmessage.data.usecase.CreateRustMessagesWatcher
+import ch.protonmail.android.mailmessage.data.usecase.CreateRustMessagesPaginator
 import ch.protonmail.android.mailmessage.domain.paging.RustDataSourceId
 import ch.protonmail.android.mailmessage.domain.paging.RustInvalidationTracker
 import ch.protonmail.android.mailpagination.domain.model.PageKey
@@ -39,7 +39,7 @@ import javax.inject.Inject
 class RustMessageQueryImpl @Inject constructor(
     private val userSessionRepository: UserSessionRepository,
     private val invalidationTracker: RustInvalidationTracker,
-    private val createRustMessagesWatcher: CreateRustMessagesWatcher,
+    private val createRustMessagesPaginator: CreateRustMessagesPaginator,
     private val rustMailbox: RustMailbox
 ) : RustMessageQuery {
 
@@ -96,7 +96,7 @@ class RustMessageQueryImpl @Inject constructor(
         destroy()
         rustMailbox.switchToMailbox(userId, labelId)
         paginator = Paginator(
-            createRustMessagesWatcher(session, labelId, messagesUpdatedCallback),
+            createRustMessagesPaginator(session, labelId, messagesUpdatedCallback),
             userId,
             labelId
         )
