@@ -35,7 +35,6 @@ import ch.protonmail.android.mailmailbox.domain.usecase.ParticipantsResolvedName
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxItemLocationUiModel
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.ParticipantUiModel
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.ParticipantsUiModel
-import ch.protonmail.android.mailmailbox.presentation.mailbox.usecase.GetMailboxItemLocationIcons
 import ch.protonmail.android.mailmessage.domain.usecase.ResolveParticipantNameResult
 import ch.protonmail.android.mailsettings.domain.model.FolderColorSettings
 import ch.protonmail.android.testdata.contact.ContactTestData
@@ -50,6 +49,7 @@ import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.test.runTest
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.LabelType
+import ch.protonmail.android.mailmailbox.presentation.mailbox.usecase.GetMailboxItemLocationIcon
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -74,8 +74,13 @@ class MailboxItemUiModelMapperTest {
     private val colorMapper: ColorMapper = mockk {
         every { toColor(any()) } returns Color.Unspecified.right()
     }
-    private val getMailboxItemLocationIcons = mockk<GetMailboxItemLocationIcons> {
-        coEvery { this@mockk(any(), defaultFolderColorSettings, false) } returns GetMailboxItemLocationIcons.Result.None
+    private val getMailboxItemLocationIcons = mockk<GetMailboxItemLocationIcon> {
+        coEvery {
+            this@mockk(
+                userId, any(),
+                defaultFolderColorSettings, false
+            )
+        } returns GetMailboxItemLocationIcon.Result.None
     }
     private val formatMailboxItemTime: FormatShortTime = mockk()
 
@@ -96,7 +101,7 @@ class MailboxItemUiModelMapperTest {
         mailboxAvatarUiModelMapper = mailboxAvatarUiModelMapper,
         colorMapper = colorMapper,
         formatMailboxItemTime = formatMailboxItemTime,
-        getMailboxItemLocationIcons = getMailboxItemLocationIcons,
+        getMailboxItemLocationIcon = getMailboxItemLocationIcons,
         getParticipantsResolvedNames = getParticipantsResolvedNames
     )
 
@@ -266,18 +271,22 @@ class MailboxItemUiModelMapperTest {
     }
 
     @Test
-    fun `when use case returns location icons to be shown they are mapped to the ui model`() = runTest {
+    fun `when use case returns location icon to be shown they are mapped to the ui model`() = runTest {
         // Given
         val labelIds = listOf(SystemLabelId.Inbox.labelId, SystemLabelId.Drafts.labelId)
         val mailboxItem = buildMailboxItem(type = MailboxItemType.Conversation, labelIds = labelIds)
         val inboxIconRes = MailboxItemLocationUiModel(R.drawable.ic_proton_inbox)
-        val draftsIconRes = MailboxItemLocationUiModel(R.drawable.ic_proton_file_lines)
-        val icons = GetMailboxItemLocationIcons.Result.Icons(inboxIconRes, draftsIconRes)
-        coEvery { getMailboxItemLocationIcons.invoke(mailboxItem, defaultFolderColorSettings, false) } returns icons
+        val icons = GetMailboxItemLocationIcon.Result.Icon(inboxIconRes)
+        coEvery {
+            getMailboxItemLocationIcons.invoke(
+                userId,
+                mailboxItem, defaultFolderColorSettings, false
+            )
+        } returns icons
         // When
         val actual = mapper.toUiModel(userId, mailboxItem, ContactTestData.contacts, defaultFolderColorSettings, false)
         // Then
-        val expectedIconsRes = listOf(inboxIconRes, draftsIconRes)
+        val expectedIconsRes = listOf(inboxIconRes)
         assertEquals(expectedIconsRes, actual.locations)
     }
 
@@ -286,8 +295,8 @@ class MailboxItemUiModelMapperTest {
         // Given
         val mailboxItem = buildMailboxItem()
         coEvery {
-            getMailboxItemLocationIcons.invoke(mailboxItem, defaultFolderColorSettings, false)
-        } returns GetMailboxItemLocationIcons.Result.None
+            getMailboxItemLocationIcons.invoke(userId, mailboxItem, defaultFolderColorSettings, false)
+        } returns GetMailboxItemLocationIcon.Result.None
         // When
         val actual = mapper.toUiModel(userId, mailboxItem, ContactTestData.contacts, defaultFolderColorSettings, false)
         // Then

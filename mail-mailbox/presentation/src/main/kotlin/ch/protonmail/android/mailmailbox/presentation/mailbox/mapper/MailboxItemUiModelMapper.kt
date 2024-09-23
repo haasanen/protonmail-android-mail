@@ -33,7 +33,7 @@ import ch.protonmail.android.mailmailbox.presentation.R
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxItemUiModel
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.ParticipantUiModel
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.ParticipantsUiModel
-import ch.protonmail.android.mailmailbox.presentation.mailbox.usecase.GetMailboxItemLocationIcons
+import ch.protonmail.android.mailmailbox.presentation.mailbox.usecase.GetMailboxItemLocationIcon
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 import me.proton.core.contact.domain.entity.Contact
@@ -49,7 +49,7 @@ class MailboxItemUiModelMapper @Inject constructor(
     private val mailboxAvatarUiModelMapper: MailboxAvatarUiModelMapper,
     private val colorMapper: ColorMapper,
     private val formatMailboxItemTime: FormatShortTime,
-    private val getMailboxItemLocationIcons: GetMailboxItemLocationIcons,
+    private val getMailboxItemLocationIcon: GetMailboxItemLocationIcon,
     private val getParticipantsResolvedNames: GetParticipantsResolvedNames
 ) : Mapper<MailboxItem, MailboxItemUiModel> {
 
@@ -79,7 +79,7 @@ class MailboxItemUiModelMapper @Inject constructor(
             shouldShowForwardedIcon = shouldShowForwardedIcon(mailboxItem),
             numMessages = mailboxItem.numMessages.takeIf { it >= 2 },
             showStar = mailboxItem.isStarred,
-            locations = getLocationIconsToDisplay(mailboxItem, folderColorSettings, isShowingSearchResults),
+            locations = getLocationIconsToDisplay(userId, mailboxItem, folderColorSettings, isShowingSearchResults),
             shouldShowAttachmentIcon = mailboxItem.hasNonCalendarAttachments,
             shouldShowExpirationLabel = hasExpirationTime(mailboxItem),
             shouldShowCalendarIcon = hasCalendarAttachment(mailboxItem),
@@ -88,12 +88,18 @@ class MailboxItemUiModelMapper @Inject constructor(
     }
 
     private suspend fun getLocationIconsToDisplay(
+        userId: UserId,
         mailboxItem: MailboxItem,
         folderColorSettings: FolderColorSettings,
         isShowingSearchResults: Boolean
-    ) = when (val icons = getMailboxItemLocationIcons(mailboxItem, folderColorSettings, isShowingSearchResults)) {
-        is GetMailboxItemLocationIcons.Result.None -> emptyList()
-        is GetMailboxItemLocationIcons.Result.Icons -> listOfNotNull(icons.first, icons.second, icons.third)
+    ) = when (
+        val iconResult = getMailboxItemLocationIcon(
+            userId,
+            mailboxItem, folderColorSettings, isShowingSearchResults
+        )
+    ) {
+        is GetMailboxItemLocationIcon.Result.None -> emptyList()
+        is GetMailboxItemLocationIcon.Result.Icon -> listOfNotNull(iconResult.icon)
     }.toImmutableList()
 
     private fun hasCalendarAttachment(mailboxItem: MailboxItem) = mailboxItem.calendarAttachmentCount > 0

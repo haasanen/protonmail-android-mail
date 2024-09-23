@@ -20,196 +20,115 @@ package ch.protonmail.android.mailmailbox.presentation.mailbox.usecase
 
 import androidx.compose.ui.graphics.Color
 import arrow.core.right
+import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.mailcommon.presentation.mapper.ColorMapper
 import ch.protonmail.android.maillabel.domain.SelectedMailLabelId
+import ch.protonmail.android.maillabel.domain.model.ExclusiveLocation
 import ch.protonmail.android.maillabel.domain.model.LabelId
-import ch.protonmail.android.maillabel.domain.model.LabelType
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
-import ch.protonmail.android.maillabel.presentation.R
-import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxItemLocationUiModel
-import ch.protonmail.android.mailmailbox.presentation.mailbox.usecase.GetMailboxItemLocationIcons.Result
+import ch.protonmail.android.mailmailbox.domain.usecase.ShouldShowLocationIndicator
 import ch.protonmail.android.mailsettings.domain.model.FolderColorSettings
-import ch.protonmail.android.testdata.label.LabelTestData.buildLabel
 import ch.protonmail.android.testdata.mailbox.MailboxTestData.buildMailboxItem
-import ch.protonmail.android.testdata.maillabel.MailLabelTestData
-import ch.protonmail.android.testdata.user.UserIdTestData.userId
+import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
+import junit.framework.TestCase.assertEquals
+import junit.framework.TestCase.assertTrue
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.test.runTest
-import org.junit.Ignore
 import org.junit.Test
-import kotlin.test.assertEquals
+import kotlinx.coroutines.test.runTest
+import ch.protonmail.android.maillabel.presentation.R
 
-@Ignore(
-    """
-        Ignoring while sorting out whether this logic should be handled by RUST
-        lib or clients. 
-        At now, the logic is broken due to the introduction of dynamic system labels,
-        which do not allow anymore to statically define whether the MailboxItem is 
-        in a location where icons should be shown or not
-    """
-)
-class GetMailboxItemLocationIconsTest {
+class GetMailboxItemLocationIconTest {
+    private val userId = UserIdSample.Primary
+    private val selectedMailLabelId = mockk<SelectedMailLabelId>()
+    private val shouldShowLocationIndicator = mockk<ShouldShowLocationIndicator>()
+    private val colorMapper = mockk<ColorMapper>()
 
-    private val folderColorSettings = FolderColorSettings(
-        useFolderColor = true,
-        inheritParentFolderColor = false
+    private val getMailboxItemLocationIcon = GetMailboxItemLocationIcon(
+        selectedMailLabelId = selectedMailLabelId,
+        shouldShowLocationIndicator = shouldShowLocationIndicator,
+        colorMapper = colorMapper
     )
-    private val colorMapper: ColorMapper = mockk {
-        every { toColor(any()) } returns Color.Unspecified.right()
-    }
-
-    private val selectedMailLabelId = mockk<SelectedMailLabelId> {
-        every { this@mockk.flow } returns MutableStateFlow<MailLabelId>(MailLabelTestData.inboxSystemLabel.id)
-    }
-    private val getMailboxItemLocationIcons =
-        GetMailboxItemLocationIcons(selectedMailLabelId)
 
     @Test
-    fun `location icons are displayed when current location is 'starred' 'all mail' or 'custom label'`() = runTest {
-        givenCurrentLocationIs(MailLabelTestData.inboxSystemLabel.id)
+    fun `should return None when current location shouldn't show icons and not showing search results`() = runTest {
+        // Given
         val mailboxItem = buildMailboxItem()
+        val folderColorSettings = FolderColorSettings(useFolderColor = true, inheritParentFolderColor = false)
+        val flow = MutableStateFlow(MailLabelId.System(SystemLabelId.Inbox.labelId))
 
-        val actual = getMailboxItemLocationIcons(mailboxItem, folderColorSettings, false)
+        every { selectedMailLabelId.flow } returns flow
+        coEvery { shouldShowLocationIndicator(userId, any()) } returns false
 
-        assertEquals(Result.None, actual)
-    }
-
-    @Test
-    fun `location icons are displayed when showing search results independent from current location`() = runTest {
-        givenCurrentLocationIs(MailLabelTestData.sentSystemLabel.id)
-        val itemLabels =
-            listOf(MailLabelTestData.draftsSystemLabel.id.labelId, MailLabelTestData.sentSystemLabel.id.labelId)
-        val mailboxItem = buildMailboxItem(labelIds = itemLabels)
-
-        val actual = getMailboxItemLocationIcons(mailboxItem, folderColorSettings, true)
-
-        val expected = Result.Icons(
-            MailboxItemLocationUiModel(R.drawable.ic_proton_file_lines),
-            MailboxItemLocationUiModel(R.drawable.ic_proton_paper_plane)
+        // When
+        val result = getMailboxItemLocationIcon(
+            userId,
+            mailboxItem, folderColorSettings, isShowingSearchResults = false
         )
-        assertEquals(expected, actual)
+
+        // Then
+        assertTrue(result is GetMailboxItemLocationIcon.Result.None)
     }
 
     @Test
-    fun `when location is custom label and mailbox item is in inbox show Inbox icon`() = runTest {
-        val customLabelId = LabelId("custom label")
-        givenCurrentLocationIs(MailLabelId.Custom.Label(customLabelId))
-        val itemLabels = listOf(customLabelId, MailLabelTestData.inboxSystemLabel.id.labelId)
-        val mailboxItem = buildMailboxItem(labelIds = itemLabels)
-
-        val actual = getMailboxItemLocationIcons(mailboxItem, folderColorSettings, false)
-
-        assertEquals(Result.Icons(MailboxItemLocationUiModel(R.drawable.ic_proton_inbox)), actual)
-    }
-
-    @Test
-    fun `when location is custom label and mailbox item is in spam show Spam icon`() = runTest {
-        val customLabelId = LabelId("custom label")
-        givenCurrentLocationIs(MailLabelId.Custom.Label(customLabelId))
-        val itemLabels = listOf(customLabelId, SystemLabelId.Spam.labelId)
-        val mailboxItem = buildMailboxItem(labelIds = itemLabels)
-
-        val actual = getMailboxItemLocationIcons(mailboxItem, folderColorSettings, false)
-
-        assertEquals(Result.Icons(MailboxItemLocationUiModel(R.drawable.ic_proton_fire)), actual)
-    }
-
-    @Test
-    fun `when location is starred and item contains messages in inbox and archive show Inbox and Archive icons`() =
-        runTest {
-            givenCurrentLocationIs(MailLabelTestData.starredSystemLabel.id)
-            val itemLabels =
-                listOf(MailLabelTestData.archiveSystemLabel.id.labelId, MailLabelTestData.inboxSystemLabel.id.labelId)
-            val mailboxItem = buildMailboxItem(labelIds = itemLabels)
-
-            val actual = getMailboxItemLocationIcons(mailboxItem, folderColorSettings, false)
-
-            val expected = Result.Icons(
-                MailboxItemLocationUiModel(R.drawable.ic_proton_inbox),
-                MailboxItemLocationUiModel(R.drawable.ic_proton_archive_box)
+    fun `should return Icon with system label icon`() = runTest {
+        // Given
+        val mailboxItem = buildMailboxItem(
+            exclusiveLocation = ExclusiveLocation.System(
+                SystemLabelId.Inbox,
+                LabelId("1")
             )
-            assertEquals(expected, actual)
-        }
-
-    @Test
-    fun `when location is all mail and item contains messages in drafts and sent show Drafts and Sent icons`() =
-        runTest {
-            givenCurrentLocationIs(MailLabelTestData.allMailSystemLabel.id)
-            val itemLabels =
-                listOf(MailLabelTestData.draftsSystemLabel.id.labelId, MailLabelTestData.sentSystemLabel.id.labelId)
-            val mailboxItem = buildMailboxItem(labelIds = itemLabels)
-
-            val actual = getMailboxItemLocationIcons(mailboxItem, folderColorSettings, false)
-
-            val expected = Result.Icons(
-                MailboxItemLocationUiModel(R.drawable.ic_proton_file_lines),
-                MailboxItemLocationUiModel(R.drawable.ic_proton_paper_plane)
-            )
-            assertEquals(expected, actual)
-        }
-
-    @Test
-    fun `when location is all mail and item contains messages in Spam, Custom Folder and Trash show those icons`() =
-        runTest {
-            val colorString = "#FF0000"
-            every { colorMapper.toColor(colorString) } returns Color.Red.right()
-            givenCurrentLocationIs(MailLabelTestData.allMailSystemLabel.id)
-            val folderId = "customFolder"
-            val itemLabelIds = listOf(
-                SystemLabelId.Spam.labelId,
-                MailLabelTestData.trashSystemLabel.id.labelId,
-                LabelId(folderId)
-            )
-            val labels = listOf(
-                buildLabel(userId = userId, type = LabelType.MessageFolder, id = folderId, color = "#FF0000")
-            )
-            val mailboxItem = buildMailboxItem(labelIds = itemLabelIds, labels = labels)
-
-            val actual = getMailboxItemLocationIcons(mailboxItem, folderColorSettings, false)
-
-            val expected = Result.Icons(
-                MailboxItemLocationUiModel(R.drawable.ic_proton_fire),
-                MailboxItemLocationUiModel(R.drawable.ic_proton_folder_filled, Color.Red),
-                MailboxItemLocationUiModel(R.drawable.ic_proton_trash)
-            )
-            assertEquals(expected, actual)
-        }
-
-    @Test
-    fun `when location is all mail and item just contains message in custom folder show folder icon`() = runTest {
-        val colorString = "#FF0000"
-        every { colorMapper.toColor(colorString) } returns Color.Red.right()
-        givenCurrentLocationIs(MailLabelTestData.allMailSystemLabel.id)
-        val folderId = "customFolder"
-        val itemLabelIds = listOf(LabelId(folderId))
-        val labels = listOf(
-            buildLabel(userId = userId, type = LabelType.MessageFolder, id = folderId, color = "#FF0000")
         )
-        val mailboxItem = buildMailboxItem(labelIds = itemLabelIds, labels = labels)
+        val folderColorSettings = FolderColorSettings(useFolderColor = false, inheritParentFolderColor = false)
 
-        val actual = getMailboxItemLocationIcons(mailboxItem, folderColorSettings, false)
+        every { selectedMailLabelId.flow } returns MutableStateFlow(MailLabelId.System(SystemLabelId.AllMail.labelId))
+        coEvery { shouldShowLocationIndicator(userId, any()) } returns true
 
-        val expected = Result.Icons(
-            MailboxItemLocationUiModel(R.drawable.ic_proton_folder_filled, Color.Red)
-        )
-        assertEquals(expected, actual)
+        // When
+        val result = getMailboxItemLocationIcon(userId, mailboxItem, folderColorSettings, isShowingSearchResults = true)
+
+        // Then
+        assertTrue(result is GetMailboxItemLocationIcon.Result.Icon)
     }
 
     @Test
-    fun `when location is all mail and mailbox item contains no message for which to show icons return no icons`() =
-        runTest {
-            givenCurrentLocationIs(MailLabelTestData.allMailSystemLabel.id)
-            val mailboxItem = buildMailboxItem(labelIds = emptyList())
+    fun `should return Icon with custom label and folder color`() = runTest {
+        // Given
+        val mailboxItem = buildMailboxItem(
+            exclusiveLocation = ExclusiveLocation.Folder(LabelId("1"), "#FF5733")
+        )
+        val folderColorSettings = FolderColorSettings(useFolderColor = true, inheritParentFolderColor = false)
 
-            val actual = getMailboxItemLocationIcons(mailboxItem, folderColorSettings, false)
+        every { colorMapper.toColor(any()) } returns Color(0xFFFF5733).right()
+        coEvery { shouldShowLocationIndicator(userId, any()) } returns true
+        every { selectedMailLabelId.flow } returns MutableStateFlow(MailLabelId.System(SystemLabelId.AllMail.labelId))
 
-            assertEquals(Result.None, actual)
-        }
+        // When
+        val result = getMailboxItemLocationIcon(userId, mailboxItem, folderColorSettings, isShowingSearchResults = true)
 
-    private fun givenCurrentLocationIs(location: MailLabelId) {
-        every { selectedMailLabelId.flow } returns MutableStateFlow(location)
+        // Then
+        assertTrue(result is GetMailboxItemLocationIcon.Result.Icon)
+        assertEquals(R.drawable.ic_proton_folder_filled, (result as GetMailboxItemLocationIcon.Result.Icon).icon.icon)
+        assertEquals(Color(0xFFFF5733), result.icon.color)
+    }
+
+    @Test
+    fun `should return Icon with custom label without folder color`() = runTest {
+        // Given
+        val mailboxItem = buildMailboxItem(
+            exclusiveLocation = ExclusiveLocation.Folder(LabelId("1"), "#FF5733")
+        )
+        val folderColorSettings = FolderColorSettings(useFolderColor = false, inheritParentFolderColor = false)
+        coEvery { shouldShowLocationIndicator(userId, any()) } returns true
+        every { selectedMailLabelId.flow } returns MutableStateFlow(MailLabelId.System(SystemLabelId.AllMail.labelId))
+
+        // When
+        val result = getMailboxItemLocationIcon(userId, mailboxItem, folderColorSettings, isShowingSearchResults = true)
+
+        // Then
+        assertTrue(result is GetMailboxItemLocationIcon.Result.Icon)
+        assertEquals(R.drawable.ic_proton_folder, (result as GetMailboxItemLocationIcon.Result.Icon).icon.icon)
     }
 }
