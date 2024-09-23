@@ -95,7 +95,7 @@ class NotificationsDeepLinksViewModelTest {
         val userId = UUID.randomUUID().toString()
         coEvery { accountManager.getPrimaryUserId() } returns flowOf(UserId(userId))
         coEvery { mailSettings.viewMode } returns IntEnum(ViewMode.ConversationGrouping.value, null)
-        coEvery { messageRepository.observeCachedMessage(UserId(userId), MessageId(messageId)) } returns flowOf(
+        coEvery { messageRepository.observeMessage(UserId(userId), MessageId(messageId)) } returns flowOf(
             AlphaAppQAReport.right()
         )
         coEvery {
@@ -128,7 +128,7 @@ class NotificationsDeepLinksViewModelTest {
         val userId = UUID.randomUUID().toString()
         coEvery { accountManager.getPrimaryUserId() } returns flowOf(UserId(userId))
         coEvery { mailSettings.viewMode } returns IntEnum(ViewMode.NoConversationGrouping.value, null)
-        coEvery { messageRepository.observeCachedMessage(UserId(userId), MessageId(messageId)) } returns flowOf(
+        coEvery { messageRepository.observeMessage(UserId(userId), MessageId(messageId)) } returns flowOf(
             AlphaAppQAReport.right()
         )
         coEvery {
@@ -177,7 +177,7 @@ class NotificationsDeepLinksViewModelTest {
         val messageId = UUID.randomUUID().toString()
         val userId = UUID.randomUUID().toString()
         coEvery { mailSettings.viewMode } returns IntEnum(ViewMode.NoConversationGrouping.value, null)
-        coEvery { messageRepository.observeCachedMessage(UserId(userId), MessageId(messageId)) } returns flowOf(
+        coEvery { messageRepository.observeMessage(UserId(userId), MessageId(messageId)) } returns flowOf(
             DataError.Local.Unknown.left()
         )
         val viewModel = buildViewModel()
@@ -197,7 +197,7 @@ class NotificationsDeepLinksViewModelTest {
         val messageId = UUID.randomUUID().toString()
         val userId = UUID.randomUUID().toString()
         coEvery { mailSettings.viewMode } returns IntEnum(ViewMode.ConversationGrouping.value, null)
-        coEvery { messageRepository.observeCachedMessage(UserId(userId), MessageId(messageId)) } returns flowOf(
+        coEvery { messageRepository.observeMessage(UserId(userId), MessageId(messageId)) } returns flowOf(
             AlphaAppQAReport.right()
         )
         coEvery {
@@ -252,7 +252,7 @@ class NotificationsDeepLinksViewModelTest {
         coEvery { accountManager.getAccounts() } returns flowOf(listOf(activeAccount, secondaryAccount))
         coEvery { mailSettings.viewMode } returns IntEnum(ViewMode.ConversationGrouping.value, null)
         coEvery {
-            messageRepository.observeCachedMessage(secondaryAccount.userId, any())
+            messageRepository.observeMessage(secondaryAccount.userId, any())
         } returns flowOf(AlphaAppQAReport.right())
         coEvery {
             conversationRepository.observeConversation(

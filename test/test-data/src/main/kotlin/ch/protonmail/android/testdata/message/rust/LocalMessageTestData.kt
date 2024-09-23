@@ -18,7 +18,6 @@
 
 package ch.protonmail.android.testdata.message.rust
 
-import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalAddressId
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalAttachmentMetadata
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalConversationId
@@ -206,7 +205,6 @@ object LocalMessageTestData {
         )
     )
 
-    @MissingRustApi
     fun buildMessage(
         id: LocalMessageId,
         subject: String,

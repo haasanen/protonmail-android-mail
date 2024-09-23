@@ -48,7 +48,7 @@ class GetMailboxItems @Inject constructor(
         pageKey: PageKey = PageKey()
     ): Either<DataError, List<MailboxItem>> = either {
         return@either when (type) {
-            MailboxItemType.Message -> messageRepository.getLocalMessages(userId, pageKey).let { list ->
+            MailboxItemType.Message -> messageRepository.getMessages(userId, pageKey).let { list ->
                 list.map { messageMailboxItemMapper.toMailboxItem(it) }
             }
 

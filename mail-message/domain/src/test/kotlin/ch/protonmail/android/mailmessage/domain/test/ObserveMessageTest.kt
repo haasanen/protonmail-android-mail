@@ -37,7 +37,7 @@ import kotlin.test.assertEquals
 class ObserveMessageTest {
 
     private val repository = mockk<MessageRepository> {
-        every { this@mockk.observeCachedMessage(userId, any()) } returns flowOf(DataError.Local.NoDataCached.left())
+        every { this@mockk.observeMessage(userId, any()) } returns flowOf(DataError.Local.NoDataCached.left())
     }
 
     private val observeMessage = ObserveMessage(repository)
@@ -47,7 +47,7 @@ class ObserveMessageTest {
         // Given
         val messageId = MessageId(MessageTestData.RAW_MESSAGE_ID)
         val error = DataError.Local.NoDataCached
-        every { repository.observeCachedMessage(userId, messageId) } returns flowOf(error.left())
+        every { repository.observeMessage(userId, messageId) } returns flowOf(error.left())
 
         // When
         observeMessage(userId, messageId).test {
@@ -62,7 +62,7 @@ class ObserveMessageTest {
         // Given
         val messageId = MessageId(MessageTestData.RAW_MESSAGE_ID)
         val message = MessageTestData.message
-        every { repository.observeCachedMessage(userId, messageId) } returns flowOf(message.right())
+        every { repository.observeMessage(userId, messageId) } returns flowOf(message.right())
 
         // When
         observeMessage(userId, messageId).test {

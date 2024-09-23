@@ -75,7 +75,7 @@ class RustMessageRepositoryImplTest {
         coEvery { rustMessageDataSource.getMessages(userId, any()) } returns expectedMessages
 
         // When
-        val result = repository.getLocalMessages(userId, pageKey)
+        val result = repository.getMessages(userId, pageKey)
 
         // Then
         coVerify { rustMessageDataSource.getMessages(userId, any()) }
@@ -96,7 +96,7 @@ class RustMessageRepositoryImplTest {
         } returns LocalMessageTestData.AugWeatherForecast
 
         // When
-        repository.observeCachedMessage(userId, messageId).test {
+        repository.observeMessage(userId, messageId).test {
             val result = awaitItem().getOrElse { null }
 
             // Then
@@ -116,7 +116,7 @@ class RustMessageRepositoryImplTest {
         coEvery { rustMessageDataSource.getMessage(userId, messageId.toLocalMessageId()) } returns null
 
         // When
-        repository.observeCachedMessage(userId, messageId).test {
+        repository.observeMessage(userId, messageId).test {
             val result = awaitItem()
 
             // Then

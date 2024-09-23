@@ -143,7 +143,7 @@ class NotificationsDeepLinksViewModel @Inject constructor(
         userId: UserId,
         switchedAccountEmail: String? = null
     ) {
-        messageRepository.observeCachedMessage(userId, MessageId(messageId))
+        messageRepository.observeMessage(userId, MessageId(messageId))
             .distinctUntilChanged()
             .collectLatest { messageResult ->
                 messageResult

@@ -42,7 +42,7 @@ import kotlin.test.assertEquals
 class GetMailboxItemsTest {
 
     private val messageRepository = mockk<MessageRepository> {
-        coEvery { getLocalMessages(any<UserId>(), any<PageKey>()) } returns listOf(
+        coEvery { getMessages(any<UserId>(), any<PageKey>()) } returns listOf(
             // userId1
             buildMessage(userId, "1", time = 1000, customLabels = emptyList()),
             buildMessage(userId, "2", time = 2000, customLabels = listOf("4").map(::buildLabel)),
@@ -83,7 +83,7 @@ class GetMailboxItemsTest {
             .getOrHandle(::error)
 
         // Then
-        coVerify { messageRepository.getLocalMessages(userId, pageKey) }
+        coVerify { messageRepository.getMessages(userId, pageKey) }
         assertEquals(3, mailboxItems.size)
         assertEquals(0, mailboxItems[0].labels.size)
         assertEquals(1, mailboxItems[1].labels.size)

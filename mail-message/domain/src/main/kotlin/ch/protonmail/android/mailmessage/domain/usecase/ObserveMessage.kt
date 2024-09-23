@@ -32,5 +32,5 @@ class ObserveMessage @Inject constructor(
 ) {
 
     operator fun invoke(userId: UserId, messageId: MessageId): Flow<Either<DataError, Message>> =
-        messageRepository.observeCachedMessage(userId, messageId)
+        messageRepository.observeMessage(userId, messageId)
 }

@@ -45,13 +45,13 @@ interface MessageRepository {
     /**
      * Load all [Message] from local cache for [userId] filtered by [PageKey].
      */
-    suspend fun getLocalMessages(userId: UserId, pageKey: PageKey = PageKey()): List<Message>
+    suspend fun getMessages(userId: UserId, pageKey: PageKey = PageKey()): List<Message>
 
     /**
      * Gets a [Message] metadata for [userId] from the local storage
      * @return either the [Message] or a [DataError.Local]
      */
-    fun observeCachedMessage(userId: UserId, messageId: MessageId): Flow<Either<DataError.Local, Message>>
+    fun observeMessage(userId: UserId, messageId: MessageId): Flow<Either<DataError.Local, Message>>
 
     /**
      * Observe the [MessageWithBody] for a given [MessageId], for [userId]

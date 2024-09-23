@@ -22,6 +22,7 @@ import java.io.File
 import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
+import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
@@ -65,12 +66,14 @@ class RustMessageRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getLocalMessages(userId: UserId, pageKey: PageKey): List<Message> {
+    override suspend fun getMessages(userId: UserId, pageKey: PageKey): List<Message> {
         return rustMessageDataSource.getMessages(userId, pageKey)
             .map { it.toMessage() }
     }
 
-    override fun observeCachedMessage(userId: UserId, messageId: MessageId): Flow<Either<DataError.Local, Message>> =
+    @MissingRustApi
+    // Observing is currently faked! This won't reflect changes to the message after the first emission
+    override fun observeMessage(userId: UserId, messageId: MessageId): Flow<Either<DataError.Local, Message>> =
         flow {
             val message = rustMessageDataSource.getMessage(userId, messageId.toLocalMessageId())?.toMessage()
 
