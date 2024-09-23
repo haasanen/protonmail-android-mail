@@ -33,7 +33,6 @@ internal class NotificationHandlersInitializer : Initializer<Unit> {
     }
 
     override fun dependencies(): List<Class<out Initializer<*>>> = listOf(
-        AccountStateHandlerInitializer::class.java,
         AppInBackgroundCheckerInitializer::class.java
     )
 }
