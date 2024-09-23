@@ -35,7 +35,6 @@ data class PageKey(
 /**
  * Filter only [Read], [Unread] or [All] items.
  *
- * @see [PageItem.read]
  */
 enum class ReadStatus {
     All,

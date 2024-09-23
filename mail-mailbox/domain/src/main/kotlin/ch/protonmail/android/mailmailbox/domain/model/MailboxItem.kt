@@ -20,10 +20,9 @@ package ch.protonmail.android.mailmailbox.domain.model
 
 import ch.protonmail.android.mailcommon.domain.model.AvatarInformation
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
+import ch.protonmail.android.maillabel.domain.model.Label
 import ch.protonmail.android.mailmessage.domain.model.Recipient
 import ch.protonmail.android.mailmessage.domain.model.Sender
-import ch.protonmail.android.mailpagination.domain.model.PageItem
-import ch.protonmail.android.maillabel.domain.model.Label
 import me.proton.core.mailsettings.domain.entity.ViewMode
 
 enum class MailboxItemType {
@@ -38,11 +37,11 @@ enum class MailboxItemType {
  */
 data class MailboxItem(
     val type: MailboxItemType,
-    override val id: String,
-    override val time: Long,
-    override val size: Long,
-    override val order: Long,
-    override val read: Boolean,
+    val id: String,
+    val time: Long,
+    val size: Long,
+    val order: Long,
+    val read: Boolean,
     val conversationId: ConversationId,
     val labels: List<Label>,
     val subject: String,
@@ -57,9 +56,7 @@ data class MailboxItem(
     val expirationTime: Long,
     val calendarAttachmentCount: Int,
     val avatarInformation: AvatarInformation
-) : PageItem {
-    override val keywords: String by lazy { subject + senders + recipients }
-}
+)
 
 fun ViewMode.toMailboxItemType() = when (this) {
     ViewMode.ConversationGrouping -> MailboxItemType.Conversation
