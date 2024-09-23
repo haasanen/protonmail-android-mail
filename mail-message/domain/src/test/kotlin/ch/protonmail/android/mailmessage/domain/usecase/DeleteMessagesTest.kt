@@ -27,7 +27,6 @@ import io.mockk.coEvery
 import io.mockk.coJustRun
 import io.mockk.coVerify
 import io.mockk.mockk
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 
@@ -45,7 +44,6 @@ class DeleteMessagesTest {
     fun `delete messages calls repository with given parameters`() = runTest {
         // Given
         coEvery { messageRepository.deleteMessages(userId, messageIds, currentLabel) } returns Unit.right()
-        coEvery { messageRepository.observeCachedMessages(userId, messageIds) } returns flowOf()
 
         // When
         deleteMessages(userId, messageIds, currentLabel)

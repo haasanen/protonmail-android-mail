@@ -27,7 +27,6 @@ import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
 import ch.protonmail.android.mailmessage.domain.sample.MessageSample
 import io.mockk.coEvery
 import io.mockk.mockk
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -46,7 +45,6 @@ class MarkMessagesAsUnreadTest {
         // given
         val error = DataError.Local.NoDataCached.left()
         coEvery { messageRepository.markUnread(userId, messageIds) } returns error
-        coEvery { messageRepository.observeCachedMessages(userId, messageIds) } returns flowOf()
 
         // when
         val result = markUnread(userId, messageIds)
@@ -60,7 +58,6 @@ class MarkMessagesAsUnreadTest {
         // given
         val messages = listOf(MessageSample.Invoice, MessageSample.HtmlInvoice).right()
         coEvery { messageRepository.markUnread(userId, messageIds) } returns messages
-        coEvery { messageRepository.observeCachedMessages(userId, messageIds) } returns flowOf()
 
         // when
         val result = markUnread(userId, messageIds)

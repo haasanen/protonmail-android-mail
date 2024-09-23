@@ -70,42 +70,12 @@ class RustMessageRepositoryImpl @Inject constructor(
             .map { it.toMessage() }
     }
 
-    override suspend fun isLocalPageValid(
-        userId: UserId,
-        pageKey: PageKey,
-        items: List<Message>
-    ): Boolean {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun getRemoteMessages(userId: UserId, pageKey: PageKey): Either<DataError.Remote, List<Message>> {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun markAsStale(userId: UserId, labelId: LabelId) {
-        // Mailbox requires this function to be implemented
-    }
-
     override fun observeCachedMessage(userId: UserId, messageId: MessageId): Flow<Either<DataError.Local, Message>> =
         flow {
             val message = rustMessageDataSource.getMessage(userId, messageId.toLocalMessageId())?.toMessage()
 
             emit(message?.right() ?: DataError.Local.NoDataCached.left())
         }
-
-    override fun observeCachedMessages(
-        userId: UserId,
-        messageIds: List<MessageId>
-    ): Flow<Either<DataError.Local, List<Message>>> {
-        TODO("Not yet implemented")
-    }
-
-    override fun observeCachedMessagesForConversations(
-        userId: UserId,
-        conversationIds: List<ConversationId>
-    ): Flow<List<Message>> {
-        TODO("Not yet implemented")
-    }
 
     override fun observeMessageWithBody(
         userId: UserId,

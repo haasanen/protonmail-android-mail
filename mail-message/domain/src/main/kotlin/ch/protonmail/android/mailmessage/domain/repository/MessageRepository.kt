@@ -48,44 +48,10 @@ interface MessageRepository {
     suspend fun getLocalMessages(userId: UserId, pageKey: PageKey = PageKey()): List<Message>
 
     /**
-     * Return true if all [Message] are considered locally valid according the given [pageKey].
-     */
-    suspend fun isLocalPageValid(
-        userId: UserId,
-        pageKey: PageKey,
-        items: List<Message>
-    ): Boolean
-
-    /**
-     * Fetch all [Message] from network for [userId] filtered by [PageKey].
-     */
-    suspend fun getRemoteMessages(userId: UserId, pageKey: PageKey): Either<DataError.Remote, List<Message>>
-
-    /**
-     * Mark local data as stale for [userId], by [labelId].
-     */
-    suspend fun markAsStale(userId: UserId, labelId: LabelId)
-
-    /**
      * Gets a [Message] metadata for [userId] from the local storage
      * @return either the [Message] or a [DataError.Local]
      */
     fun observeCachedMessage(userId: UserId, messageId: MessageId): Flow<Either<DataError.Local, Message>>
-
-    /**
-     * Gets a list of [Message] metadata for [userId] from the local storage
-     * @return either the [Message] or a [DataError.Local]
-     */
-    fun observeCachedMessages(userId: UserId, messageIds: List<MessageId>): Flow<Either<DataError.Local, List<Message>>>
-
-    /**
-     * Gets a list of [Message] metadata for [userId] and [conversationIds] from the local storage
-     * @return either the [Message] or a [DataError.Local]
-     */
-    fun observeCachedMessagesForConversations(
-        userId: UserId,
-        conversationIds: List<ConversationId>
-    ): Flow<List<Message>>
 
     /**
      * Observe the [MessageWithBody] for a given [MessageId], for [userId]

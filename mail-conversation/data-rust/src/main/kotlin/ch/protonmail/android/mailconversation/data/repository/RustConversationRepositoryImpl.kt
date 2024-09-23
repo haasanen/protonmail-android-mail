@@ -53,18 +53,6 @@ class RustConversationRepositoryImpl @Inject constructor(
     }
 
     @MissingRustApi
-    // This function should be handled after rust-pagination is released
-    override suspend fun isLocalPageValid(
-        userId: UserId,
-        pageKey: PageKey,
-        items: List<Conversation>
-    ): Boolean = true
-
-    override suspend fun markAsStale(userId: UserId, labelId: LabelId) {
-        // It will be implemented later on
-    }
-
-    @MissingRustApi
     // Awaiting for rust to add structured error handling
     override fun observeConversation(
         userId: UserId,
