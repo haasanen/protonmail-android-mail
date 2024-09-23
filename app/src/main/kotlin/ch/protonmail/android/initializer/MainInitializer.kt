@@ -58,7 +58,8 @@ class MainInitializer : Initializer<Unit> {
         NotificationHandlersInitializer::class.java,
         AutoLockHandlerInitializer::class.java,
         RustMailCommonInitializer::class.java,
-        FakeRustSessionInitializer::class.java
+        FakeRustSessionInitializer::class.java,
+        EventManagerInitializer::class.java
     )
 
     companion object {

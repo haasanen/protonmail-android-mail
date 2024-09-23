@@ -47,6 +47,7 @@ dependencies {
     compileOnly(Proton.Common.rustCore)
     implementation(Proton.Core.userDomain)
     implementation(Arrow.core)
+    implementation(JakeWharton.timber)
 
     testImplementation(project(":test:test-data"))
     testImplementation(Cash.turbine)

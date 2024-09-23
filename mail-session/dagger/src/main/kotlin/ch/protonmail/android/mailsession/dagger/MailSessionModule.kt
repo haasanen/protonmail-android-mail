@@ -20,7 +20,10 @@ package ch.protonmail.android.mailsession.dagger
 
 import ch.protonmail.android.mailsession.data.RepositoryFlowCoroutineScope
 import ch.protonmail.android.mailsession.data.repository.InMemoryMailSessionRepository
+import ch.protonmail.android.mailsession.data.repository.RustEventLoopRepository
 import ch.protonmail.android.mailsession.data.repository.UserSessionRepositoryImpl
+import ch.protonmail.android.mailsession.domain.coroutines.EventLoopScope
+import ch.protonmail.android.mailsession.domain.repository.EventLoopRepository
 import ch.protonmail.android.mailsession.domain.repository.MailSessionRepository
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import dagger.Binds
@@ -47,6 +50,11 @@ object MailSessionModule {
     fun providesUserRepository(mailSessionRepository: MailSessionRepository): UserSessionRepository =
         UserSessionRepositoryImpl(mailSessionRepository)
 
+    @Provides
+    @Singleton
+    @EventLoopScope
+    fun provideEventLoopScope() = CoroutineScope(Dispatchers.IO + SupervisorJob())
+
     @Module
     @InstallIn(SingletonComponent::class)
     interface BindsModule {
@@ -54,5 +62,9 @@ object MailSessionModule {
         @Binds
         @Singleton
         fun bindMailSessionRepository(impl: InMemoryMailSessionRepository): MailSessionRepository
+
+        @Binds
+        @Singleton
+        fun bindEventLoopRepository(impl: RustEventLoopRepository): EventLoopRepository
     }
 }

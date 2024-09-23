@@ -20,11 +20,11 @@ package ch.protonmail.android.initializer
 
 import android.content.Context
 import androidx.startup.Initializer
+import ch.protonmail.android.mailsession.domain.usecase.RustEventManagerStarter
 import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
 import dagger.hilt.android.EntryPointAccessors
 import dagger.hilt.components.SingletonComponent
-import me.proton.core.eventmanager.data.CoreEventManagerStarter
 
 class EventManagerInitializer : Initializer<Unit> {
 
@@ -43,6 +43,6 @@ class EventManagerInitializer : Initializer<Unit> {
     @EntryPoint
     @InstallIn(SingletonComponent::class)
     interface EventManagerInitializerEntryPoint {
-        fun starter(): CoreEventManagerStarter
+        fun starter(): RustEventManagerStarter
     }
 }
