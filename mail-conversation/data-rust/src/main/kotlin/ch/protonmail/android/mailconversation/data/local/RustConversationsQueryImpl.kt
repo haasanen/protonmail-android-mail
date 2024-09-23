@@ -26,7 +26,7 @@ import ch.protonmail.android.mailmessage.data.local.RustMailbox
 import ch.protonmail.android.mailmessage.domain.paging.RustDataSourceId
 import ch.protonmail.android.mailmessage.domain.paging.RustInvalidationTracker
 import ch.protonmail.android.mailpagination.domain.model.PageKey
-import ch.protonmail.android.mailpagination.domain.model.PageNumber
+import ch.protonmail.android.mailpagination.domain.model.PageToLoad
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -72,11 +72,11 @@ class RustConversationsQueryImpl @Inject constructor(
 
         initPaginator(userId, labelId, session)
 
-        Timber.v("rust-conversation-query: Paging: querying ${pageKey.pageNumber.name} page for messages")
-        val conversations = when (pageKey.pageNumber) {
-            PageNumber.First -> paginator?.rustPaginator?.currentPage()
-            PageNumber.Next -> paginator?.rustPaginator?.nextPage()
-            PageNumber.All -> paginator?.rustPaginator?.reload()
+        Timber.v("rust-conversation-query: Paging: querying ${pageKey.pageToLoad.name} page for messages")
+        val conversations = when (pageKey.pageToLoad) {
+            PageToLoad.First -> paginator?.rustPaginator?.currentPage()
+            PageToLoad.Next -> paginator?.rustPaginator?.nextPage()
+            PageToLoad.All -> paginator?.rustPaginator?.reload()
         }
 
         Timber.v("rust-conversation-query: init value for conversation is $conversations")

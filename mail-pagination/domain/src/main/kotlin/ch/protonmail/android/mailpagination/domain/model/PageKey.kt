@@ -29,7 +29,7 @@ import ch.protonmail.android.mailpagination.domain.model.ReadStatus.Unread
 data class PageKey(
     val labelId: LabelId = LabelId("0"),
     val read: ReadStatus = All,
-    val pageNumber: PageNumber = PageNumber.First
+    val pageToLoad: PageToLoad = PageToLoad.First
 )
 
 /**
@@ -42,7 +42,14 @@ enum class ReadStatus {
     Unread
 }
 
-enum class PageNumber {
+/**
+ * Filter which page to load from rust lib, based on the current labelId.
+ *
+ * "First" returns the initial page (most up to date items)
+ * "Next" calls keep returning the following items based on rust-internal tracking logic
+ * "All" returns all the items loaded so far
+ */
+enum class PageToLoad {
     First,
     Next,
     All
