@@ -41,6 +41,7 @@ import me.proton.core.domain.arch.Mapper
 import ch.protonmail.android.maillabel.domain.model.Label
 import ch.protonmail.android.maillabel.domain.model.LabelType
 import ch.protonmail.android.mailsettings.domain.model.FolderColorSettings
+import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.seconds
 
@@ -55,6 +56,7 @@ class MailboxItemUiModelMapper @Inject constructor(
     @MissingRustApi
     // Rust to expose whether message is a draft (allows setting shouldOpenInComposer)
     suspend fun toUiModel(
+        userId: UserId,
         mailboxItem: MailboxItem,
         contacts: List<Contact>,
         folderColorSettings: FolderColorSettings,

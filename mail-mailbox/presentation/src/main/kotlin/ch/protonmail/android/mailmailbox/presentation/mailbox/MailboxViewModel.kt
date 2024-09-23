@@ -536,10 +536,13 @@ class MailboxViewModel @Inject constructor(
                     type = if (query.isEmpty()) viewMode.toMailboxItemType() else MailboxItemType.Message,
                     searchQuery = query
                 )
-            }.flatMapLatest { mapPagingData(it) }
+            }.flatMapLatest { mapPagingData(userId, it) }
         }
 
-    private suspend fun mapPagingData(pager: Pager<MailboxPageKey, MailboxItem>): Flow<PagingData<MailboxItemUiModel>> {
+    private suspend fun mapPagingData(
+        userId: UserId,
+        pager: Pager<MailboxPageKey, MailboxItem>
+    ): Flow<PagingData<MailboxItemUiModel>> {
         return withContext(dispatchersProvider.Comp) {
             val contacts = getContacts()
             combine(
@@ -548,7 +551,10 @@ class MailboxViewModel @Inject constructor(
             ) { pagingData, folderColorSettings ->
                 pagingData.map {
                     withContext(dispatchersProvider.Comp) {
-                        mailboxItemMapper.toUiModel(it, contacts, folderColorSettings, state.value.isInSearchMode())
+                        mailboxItemMapper.toUiModel(
+                            userId, it, contacts, folderColorSettings,
+                            state.value.isInSearchMode()
+                        )
                     }
                 }
             }

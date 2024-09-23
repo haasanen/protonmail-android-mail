@@ -1188,10 +1188,10 @@ class MailboxViewModelTest {
             inheritParentFolderColor = true
         )
         coEvery {
-            mailboxItemMapper.toUiModel(unreadMailboxItem, ContactTestData.contacts, folderColorSettings, false)
+            mailboxItemMapper.toUiModel(userId, unreadMailboxItem, ContactTestData.contacts, folderColorSettings, false)
         } returns unreadMailboxItemUiModel
         coEvery {
-            mailboxItemMapper.toUiModel(readMailboxItem, ContactTestData.contacts, folderColorSettings, false)
+            mailboxItemMapper.toUiModel(userId, readMailboxItem, ContactTestData.contacts, folderColorSettings, false)
         } returns readMailboxItemUiModel
         every { pagerFactory.create(any(), any(), any(), any(), any()) } returns mockk {
             val pagingData = PagingData.from(listOf(unreadMailboxItem, readMailboxItem))
@@ -1220,12 +1220,12 @@ class MailboxViewModelTest {
         )
         coEvery {
             mailboxItemMapper.toUiModel(
-                unreadMailboxItem, ContactTestData.contacts, folderColorSettings, false
+                userId, unreadMailboxItem, ContactTestData.contacts, folderColorSettings, false
             )
         } returns unreadMailboxItemUiModel
         coEvery {
             mailboxItemMapper.toUiModel(
-                readMailboxItem, ContactTestData.contacts, folderColorSettings,
+                userId, readMailboxItem, ContactTestData.contacts, folderColorSettings,
                 false
             )
         } returns readMailboxItemUiModel
@@ -1243,7 +1243,7 @@ class MailboxViewModelTest {
 
             coVerify {
                 mailboxItemMapper.toUiModel(
-                    any(),
+                    userId, any(),
                     ContactTestData.contacts, folderColorSettings, false
                 )
             }
