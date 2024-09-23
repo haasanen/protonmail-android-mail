@@ -75,6 +75,7 @@ public fun LoginScreen(
     modifier: Modifier = Modifier,
     onCloseClicked: () -> Unit,
     onHelpClicked: () -> Unit,
+    initialUsername: String? = null,
     onErrorMessage: (String?) -> Unit = {},
     onSuccess: (String) -> Unit = {},
     viewModel: LoginViewModel = hiltViewModel()
@@ -82,6 +83,7 @@ public fun LoginScreen(
     val state by viewModel.state.collectAsStateWithLifecycle()
     LoginScreen(
         modifier = modifier,
+        initialUsername = initialUsername,
         onCloseClicked = onCloseClicked,
         onHelpClicked = onHelpClicked,
         onLoginClicked = { viewModel.submit(it) },
@@ -94,6 +96,7 @@ public fun LoginScreen(
 @Composable
 public fun LoginScreen(
     modifier: Modifier = Modifier,
+    initialUsername: String? = null,
     onCloseClicked: () -> Unit = {},
     onHelpClicked: () -> Unit = {},
     onLoginClicked: (LoginAction.Login) -> Unit = {},
@@ -112,6 +115,7 @@ public fun LoginScreen(
     }
     LoginScaffold(
         modifier = modifier,
+        initialUsername = initialUsername,
         onCloseClicked = onCloseClicked,
         onHelpClicked = onHelpClicked,
         onLoginClicked = onLoginClicked,
@@ -123,6 +127,7 @@ public fun LoginScreen(
 @Composable
 public fun LoginScaffold(
     modifier: Modifier = Modifier,
+    initialUsername: String? = null,
     onCloseClicked: () -> Unit = {},
     onHelpClicked: () -> Unit = {},
     onLoginClicked: (LoginAction.Login) -> Unit = {},
@@ -196,7 +201,8 @@ public fun LoginScaffold(
                 LoginForm(
                     enabled = !isLoading,
                     onLoginClicked = onLoginClicked,
-                    usernameError = if (isUsernameError) stringResource(R.string.auth_login_assistive_text) else null
+                    usernameError = if (isUsernameError) stringResource(R.string.auth_login_assistive_text) else null,
+                    initialUsername = initialUsername
                 )
             }
         }
@@ -207,9 +213,10 @@ public fun LoginScaffold(
 private fun LoginForm(
     onLoginClicked: (LoginAction.Login) -> Unit,
     usernameError: String? = null,
-    enabled: Boolean
+    enabled: Boolean,
+    initialUsername: String? = null
 ) {
-    var username by rememberSaveable { mutableStateOf("") }
+    var username by rememberSaveable { mutableStateOf(initialUsername ?: "") }
     var password by rememberSaveable { mutableStateOf("") }
     Column(
         modifier = Modifier.padding(16.dp)

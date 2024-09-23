@@ -20,19 +20,21 @@ package me.proton.android.core.auth.presentation
 import androidx.activity.ComponentActivity
 import androidx.activity.result.ActivityResultCaller
 import androidx.activity.result.ActivityResultLauncher
+import me.proton.android.core.auth.presentation.login.LoginInput
+import me.proton.android.core.auth.presentation.login.LoginOutput
 import javax.inject.Inject
 
 class AuthOrchestrator @Inject constructor() {
 
     private var addAccountWorkflowLauncher: ActivityResultLauncher<Unit>? = null
-    private var loginWorkflowLauncher: ActivityResultLauncher<Unit>? = null
+    private var loginWorkflowLauncher: ActivityResultLauncher<LoginInput>? = null
     private var loginHelpWorkflowLauncher: ActivityResultLauncher<Unit>? = null
     private var secondFactorWorkflowLauncher: ActivityResultLauncher<String>? = null
     private var twoPassModeWorkflowLauncher: ActivityResultLauncher<String>? = null
     private var signupWorkflowLauncher: ActivityResultLauncher<Unit>? = null
 
     private var onAddAccountResultListener: ((result: Boolean) -> Unit)? = {}
-    private var onLoginResultListener: ((result: Boolean) -> Unit)? = {}
+    private var onLoginResultListener: ((result: LoginOutput?) -> Unit)? = {}
     private var onLoginHelpResultListener: ((result: Boolean) -> Unit)? = {}
     private var onSecondFactorResultListener: ((result: Boolean) -> Unit)? = {}
     private var onTwoPassModeResultListener: ((result: Boolean) -> Unit)? = {}
@@ -43,7 +45,7 @@ class AuthOrchestrator @Inject constructor() {
             onAddAccountResultListener?.invoke(it)
         }
 
-    private fun registerLoginResult(caller: ActivityResultCaller): ActivityResultLauncher<Unit> =
+    private fun registerLoginResult(caller: ActivityResultCaller): ActivityResultLauncher<LoginInput> =
         caller.registerForActivityResult(StartLogin) {
             onLoginResultListener?.invoke(it)
         }
@@ -75,7 +77,7 @@ class AuthOrchestrator @Inject constructor() {
         onAddAccountResultListener = block
     }
 
-    fun setOnLoginResult(block: (result: Boolean) -> Unit) {
+    fun setOnLoginResult(block: (result: LoginOutput?) -> Unit) {
         onLoginResultListener = block
     }
 
@@ -145,8 +147,8 @@ class AuthOrchestrator @Inject constructor() {
     /**
      * Starts the Login workflow.
      */
-    fun startLoginWorkflow() {
-        checkRegistered(loginWorkflowLauncher).launch(Unit)
+    fun startLoginWorkflow(loginInput: LoginInput = LoginInput()) {
+        checkRegistered(loginWorkflowLauncher).launch(loginInput)
     }
 
     /**
@@ -183,7 +185,7 @@ fun AuthOrchestrator.onAddAccountResult(block: (result: Boolean) -> Unit): AuthO
     return this
 }
 
-fun AuthOrchestrator.onLoginResult(block: (result: Boolean) -> Unit): AuthOrchestrator {
+fun AuthOrchestrator.onLoginResult(block: (result: LoginOutput?) -> Unit): AuthOrchestrator {
     setOnLoginResult { block(it) }
     return this
 }

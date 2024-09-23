@@ -45,7 +45,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import me.proton.android.core.auth.presentation.R
-import me.proton.android.core.auth.presentation.widget.ProtonCloseButton
+import me.proton.core.compose.component.ProtonCloseButton
 import me.proton.core.compose.component.appbar.ProtonTopAppBar
 import me.proton.core.compose.theme.LocalColors
 import me.proton.core.compose.theme.LocalTypography

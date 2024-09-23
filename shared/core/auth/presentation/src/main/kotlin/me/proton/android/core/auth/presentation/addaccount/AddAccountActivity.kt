@@ -47,7 +47,7 @@ class AddAccountActivity : ProtonActivity() {
 
         authOrchestrator.register(this)
         authOrchestrator.onLoginResult { result ->
-            if (result) onSuccess()
+            if (result != null) onSuccess()
         }
 
         setContent {

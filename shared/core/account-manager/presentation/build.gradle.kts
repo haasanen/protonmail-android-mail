@@ -17,15 +17,14 @@
 
 plugins {
     id("com.android.library")
-    kotlin("kapt")
     kotlin("android")
+    kotlin("kapt")
     id("dagger.hilt.android.plugin")
     id("app.cash.paparazzi")
-    id("kotlin-parcelize")
 }
 
 android {
-    namespace = "me.proton.android.core.auth.presentation"
+    namespace = "me.proton.android.core.accountmanager.presentation"
 
     compileSdk = Config.compileSdk
 
@@ -54,23 +53,26 @@ android {
 }
 
 dependencies {
-    kapt(libs.bundles.app.annotationProcessors)
-
     compileOnly(libs.proton.rust.core)
-
-    implementation(libs.dagger.hilt.android)
-    implementation(libs.androidx.constraintlayout.compose)
-    implementation(libs.androidx.compose.ui.tooling.preview)
-    implementation(libs.proton.core.presentation)
-    implementation(libs.proton.core.presentationCompose)
-    implementation(libs.proton.core.utilKotlin)
-    implementation(libs.dagger.hilt.android)
-    implementation(libs.androidx.navigation.compose)
-    implementation(libs.lottie.compose)
 
     debugImplementation(libs.androidx.compose.ui.tooling)
 
+    implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.compose.ui.tooling.preview)
+    implementation(libs.androidx.constraintlayout.compose)
+    implementation(libs.androidx.hilt.navigation.compose)
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.dagger.hilt.android)
+    implementation(libs.proton.core.presentation)
+    implementation(libs.proton.core.utilKotlin)
+
+    implementation(project(":account-core:platform:android:core:account:domain"))
+    implementation(project(":design-system"))
+    implementation(project(":presentation-compose"))
+
+    kapt(libs.bundles.app.annotationProcessors)
+
+    testImplementation(kotlin("test"))
     testImplementation(libs.bundles.test)
     testImplementation(libs.proton.rust.core)
-    testImplementation(kotlin("test"))
 }

@@ -18,8 +18,10 @@
 package me.proton.android.core.auth.presentation.login
 
 import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
+import androidx.core.content.IntentCompat
 import dagger.hilt.android.AndroidEntryPoint
 import me.proton.android.core.auth.presentation.AuthOrchestrator
 import me.proton.android.core.auth.presentation.R
@@ -40,6 +42,9 @@ class LoginActivity : ProtonActivity() {
     private val configuration = ProtectScreenConfiguration(true)
     private val screenProtector by protectScreen(configuration)
 
+    private val input: LoginInput
+        get() = requireNotNull(IntentCompat.getParcelableExtra(intent, ARG_INPUT, LoginInput::class.java))
+
     override fun onDestroy() {
         authOrchestrator.unregister()
         super.onDestroy()
@@ -55,10 +60,11 @@ class LoginActivity : ProtonActivity() {
         setContent {
             ProtonTheme {
                 LoginScreen(
+                    initialUsername = input.username,
                     onCloseClicked = { finish() },
                     onHelpClicked = { authOrchestrator.startLoginHelpWorkflow() },
                     onErrorMessage = { showError(it) },
-                    onSuccess = { onSuccess() }
+                    onSuccess = { onSuccess(it) }
                 )
             }
         }
@@ -68,13 +74,22 @@ class LoginActivity : ProtonActivity() {
         errorToast(message ?: getString(R.string.presentation_error_general))
     }
 
-    private fun onSuccess() {
-        setResult(Activity.RESULT_OK)
+    private fun onSuccess(userId: String) {
+        setResult(
+            Activity.RESULT_OK,
+            Intent().apply { putExtra(ARG_OUTPUT, LoginOutput(userId = userId)) }
+        )
         finish()
     }
 
     private fun onClose() {
         setResult(Activity.RESULT_CANCELED)
         finish()
+    }
+
+    companion object {
+
+        const val ARG_INPUT = "arg.loginInput"
+        const val ARG_OUTPUT = "arg.loginOutput"
     }
 }

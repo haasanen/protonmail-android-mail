@@ -21,9 +21,12 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import androidx.activity.result.contract.ActivityResultContract
+import androidx.core.content.IntentCompat
 import me.proton.android.core.auth.presentation.addaccount.AddAccountActivity
 import me.proton.android.core.auth.presentation.login.LoginActivity
 import me.proton.android.core.auth.presentation.login.LoginHelpActivity
+import me.proton.android.core.auth.presentation.login.LoginInput
+import me.proton.android.core.auth.presentation.login.LoginOutput
 import me.proton.android.core.auth.presentation.secondfactor.SecondFactorActivity
 import me.proton.android.core.auth.presentation.secondfactor.SecondFactorArg
 import me.proton.android.core.auth.presentation.signup.SignUpActivity
@@ -42,16 +45,21 @@ object StartAddAccount : ActivityResultContract<Unit, Boolean>() {
     }
 }
 
-object StartLogin : ActivityResultContract<Unit, Boolean>() {
+object StartLogin : ActivityResultContract<LoginInput, LoginOutput?>() {
 
-    override fun createIntent(context: Context, input: Unit) = Intent(context, LoginActivity::class.java).apply {
+    override fun createIntent(context: Context, input: LoginInput) = Intent(context, LoginActivity::class.java).apply {
         addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        putExtra(LoginActivity.ARG_INPUT, input)
     }
 
-    override fun parseResult(resultCode: Int, intent: Intent?): Boolean = when (resultCode) {
-        Activity.RESULT_OK -> true
-        else -> false
+    override fun parseResult(resultCode: Int, intent: Intent?): LoginOutput? = when (resultCode) {
+        Activity.RESULT_OK -> intent?.let {
+            IntentCompat.getParcelableExtra(it, LoginActivity.ARG_OUTPUT, LoginOutput::class.java)
+        }
+
+        else -> null
     }
+
 }
 
 object StartLoginHelp : ActivityResultContract<Unit, Boolean>() {
