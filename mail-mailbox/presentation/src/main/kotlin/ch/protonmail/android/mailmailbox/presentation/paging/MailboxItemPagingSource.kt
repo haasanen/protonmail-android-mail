@@ -58,7 +58,7 @@ class RustMailboxItemPagingSource(
 
         val items = getMailboxItems(key.userId, type, pageKey).getOrElse {
             Timber.e("Paging: loadItems: Error $it")
-            return LoadResult.Page(emptyList(), null, null)
+            return LoadResult.Error(Exception("Failed loading page: $it"))
         }
 
         val nextPageKey = getNextPageKey(items, key)
