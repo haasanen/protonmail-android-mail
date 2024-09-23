@@ -21,6 +21,7 @@ package ch.protonmail.android.mailmailbox.domain.model
 import ch.protonmail.android.mailcommon.domain.model.AvatarInformation
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.maillabel.domain.model.Label
+import ch.protonmail.android.maillabel.domain.model.ExclusiveLocation
 import ch.protonmail.android.mailmessage.domain.model.Recipient
 import ch.protonmail.android.mailmessage.domain.model.Sender
 import me.proton.core.mailsettings.domain.entity.ViewMode
@@ -55,7 +56,8 @@ data class MailboxItem(
     val hasNonCalendarAttachments: Boolean,
     val expirationTime: Long,
     val calendarAttachmentCount: Int,
-    val avatarInformation: AvatarInformation
+    val avatarInformation: AvatarInformation,
+    val exclusiveLocation: ExclusiveLocation
 )
 
 fun ViewMode.toMailboxItemType() = when (this) {

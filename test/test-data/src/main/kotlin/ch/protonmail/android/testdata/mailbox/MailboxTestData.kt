@@ -23,6 +23,7 @@ import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.sample.AvatarInformationSample
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcommon.presentation.sample.ParticipantAvatarSample
+import ch.protonmail.android.maillabel.domain.model.ExclusiveLocation
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.maillabel.presentation.model.LabelUiModel
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItem
@@ -70,7 +71,8 @@ object MailboxTestData {
         numMessages: Int = 1,
         hasAttachments: Boolean = false,
         expirationTime: Long = 0,
-        calendarAttachmentCount: Int = 0
+        calendarAttachmentCount: Int = 0,
+        exclusiveLocation: ExclusiveLocation = ExclusiveLocation.System(SystemLabelId.Sent, LabelId("1"))
     ) = MailboxItem(
         type = type,
         id = id,
@@ -91,7 +93,8 @@ object MailboxTestData {
         hasNonCalendarAttachments = hasAttachments,
         expirationTime = expirationTime,
         calendarAttachmentCount = calendarAttachmentCount,
-        avatarInformation = AvatarInformationSample.avatarSample
+        avatarInformation = AvatarInformationSample.avatarSample,
+        exclusiveLocation = exclusiveLocation
     )
 
     private fun buildMessageMailboxItem(
@@ -101,7 +104,8 @@ object MailboxTestData {
         isRepliedAll: Boolean = false,
         isForwarded: Boolean = false,
         labelIds: List<LabelId> = emptyList(),
-        labels: List<Label> = emptyList()
+        labels: List<Label> = emptyList(),
+        exclusiveLocation: ExclusiveLocation = ExclusiveLocation.System(SystemLabelId.Inbox, LabelId("1"))
     ) = MailboxItem(
         type = MailboxItemType.Message,
         id = id,
@@ -122,7 +126,8 @@ object MailboxTestData {
         hasNonCalendarAttachments = false,
         expirationTime = 0,
         calendarAttachmentCount = 0,
-        avatarInformation = AvatarInformationSample.avatarSample
+        avatarInformation = AvatarInformationSample.avatarSample,
+        exclusiveLocation = exclusiveLocation
     )
 
     private fun buildConversationMailboxItem(id: String) = MailboxItem(
@@ -145,7 +150,8 @@ object MailboxTestData {
         hasNonCalendarAttachments = false,
         expirationTime = 0,
         calendarAttachmentCount = 0,
-        avatarInformation = AvatarInformationSample.avatarSample
+        avatarInformation = AvatarInformationSample.avatarSample,
+        exclusiveLocation = ExclusiveLocation.System(SystemLabelId.Inbox, LabelId("1"))
     )
 
 }
