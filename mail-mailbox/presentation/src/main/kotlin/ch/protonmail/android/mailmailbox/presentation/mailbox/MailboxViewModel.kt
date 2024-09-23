@@ -110,6 +110,7 @@ import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MailboxM
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MoveToBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.UpsellingBottomSheetState
 import ch.protonmail.android.mailonboarding.presentation.model.OnboardingState
+import ch.protonmail.android.mailsettings.domain.usecase.ObserveFolderColorSettings
 import ch.protonmail.android.mailsettings.domain.usecase.ObserveSwipeActionsPreference
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.collections.immutable.toImmutableList
@@ -126,7 +127,6 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.onEach
@@ -155,6 +155,7 @@ class MailboxViewModel @Inject constructor(
     private val observeClearConversationOperation: ObserveClearConversationOperation,
     private val selectedMailLabelId: SelectedMailLabelId,
     private val observeUnreadCounters: ObserveUnreadCounters,
+    private val observeFolderColorSettings: ObserveFolderColorSettings,
     private val getMailboxActions: GetMailboxActions,
     private val actionUiModelMapper: ActionUiModelMapper,
     private val mailboxItemMapper: MailboxItemUiModelMapper,
@@ -541,10 +542,13 @@ class MailboxViewModel @Inject constructor(
     private suspend fun mapPagingData(pager: Pager<MailboxPageKey, MailboxItem>): Flow<PagingData<MailboxItemUiModel>> {
         return withContext(dispatchersProvider.Comp) {
             val contacts = getContacts()
-            pager.flow.cachedIn(viewModelScope).mapLatest { pagingData ->
+            combine(
+                pager.flow.cachedIn(viewModelScope),
+                observeFolderColorSettings(userId)
+            ) { pagingData, folderColorSettings ->
                 pagingData.map {
                     withContext(dispatchersProvider.Comp) {
-                        mailboxItemMapper.toUiModel(it, contacts, state.value.isInSearchMode())
+                        mailboxItemMapper.toUiModel(it, contacts, folderColorSettings, state.value.isInSearchMode())
                     }
                 }
             }

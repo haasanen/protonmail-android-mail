@@ -119,7 +119,9 @@ import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MailboxM
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MoveToBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.UpsellingBottomSheetState
 import ch.protonmail.android.mailonboarding.presentation.model.OnboardingState
+import ch.protonmail.android.mailsettings.domain.model.FolderColorSettings
 import ch.protonmail.android.mailsettings.domain.model.SwipeActionsPreference
+import ch.protonmail.android.mailsettings.domain.usecase.ObserveFolderColorSettings
 import ch.protonmail.android.mailsettings.domain.usecase.ObserveSwipeActionsPreference
 import ch.protonmail.android.testdata.contact.ContactTestData
 import ch.protonmail.android.testdata.mailbox.MailboxItemUiModelTestData.buildMailboxUiModelItem
@@ -275,6 +277,15 @@ class MailboxViewModelTest {
     private val showRatingBooster = mockk<ShowRatingBooster>(relaxUnitFun = true)
     private val recordRatingBoosterTriggered = mockk<RecordRatingBoosterTriggered>(relaxUnitFun = true)
 
+    private val observeFolderColorSettings = mockk<ObserveFolderColorSettings> {
+        every { this@mockk(userId) } returns flowOf(
+            FolderColorSettings(
+                useFolderColor = true,
+                inheritParentFolderColor = true
+            )
+        )
+    }
+
     private val mailboxViewModel by lazy {
         MailboxViewModel(
             mailboxPagerFactory = pagerFactory,
@@ -319,7 +330,8 @@ class MailboxViewModelTest {
             shouldShowRatingBooster = shouldShowRatingBooster,
             showRatingBooster = showRatingBooster,
             recordRatingBoosterTriggered = recordRatingBoosterTriggered,
-            findLocalSystemLabelId = findLocalSystemLabelId
+            findLocalSystemLabelId = findLocalSystemLabelId,
+            observeFolderColorSettings = observeFolderColorSettings
         )
     }
 
@@ -1171,11 +1183,15 @@ class MailboxViewModelTest {
     @Test
     fun `mailbox items are mapped to mailbox item ui models`() = runTest {
         // Given
+        val folderColorSettings = FolderColorSettings(
+            useFolderColor = true,
+            inheritParentFolderColor = true
+        )
         coEvery {
-            mailboxItemMapper.toUiModel(unreadMailboxItem, ContactTestData.contacts, false)
+            mailboxItemMapper.toUiModel(unreadMailboxItem, ContactTestData.contacts, folderColorSettings, false)
         } returns unreadMailboxItemUiModel
         coEvery {
-            mailboxItemMapper.toUiModel(readMailboxItem, ContactTestData.contacts, false)
+            mailboxItemMapper.toUiModel(readMailboxItem, ContactTestData.contacts, folderColorSettings, false)
         } returns readMailboxItemUiModel
         every { pagerFactory.create(any(), any(), any(), any(), any()) } returns mockk {
             val pagingData = PagingData.from(listOf(unreadMailboxItem, readMailboxItem))
@@ -1198,11 +1214,20 @@ class MailboxViewModelTest {
     @Test
     fun `user contacts are used to map mailbox items to ui models`() = runTest {
         // Given
+        val folderColorSettings = FolderColorSettings(
+            useFolderColor = true,
+            inheritParentFolderColor = true
+        )
         coEvery {
-            mailboxItemMapper.toUiModel(unreadMailboxItem, ContactTestData.contacts, false)
+            mailboxItemMapper.toUiModel(
+                unreadMailboxItem, ContactTestData.contacts, folderColorSettings, false
+            )
         } returns unreadMailboxItemUiModel
         coEvery {
-            mailboxItemMapper.toUiModel(readMailboxItem, ContactTestData.contacts, false)
+            mailboxItemMapper.toUiModel(
+                readMailboxItem, ContactTestData.contacts, folderColorSettings,
+                false
+            )
         } returns readMailboxItemUiModel
         every { pagerFactory.create(any(), any(), any(), any(), any()) } returns mockk {
             val pagingData = PagingData.from(listOf(unreadMailboxItem, readMailboxItem))
@@ -1216,7 +1241,12 @@ class MailboxViewModelTest {
             val pagingData = awaitItem()
             differ.submitData(pagingData)
 
-            coVerify { mailboxItemMapper.toUiModel(any(), ContactTestData.contacts, false) }
+            coVerify {
+                mailboxItemMapper.toUiModel(
+                    any(),
+                    ContactTestData.contacts, folderColorSettings, false
+                )
+            }
         }
     }
 
