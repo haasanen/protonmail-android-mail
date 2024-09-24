@@ -30,12 +30,14 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
@@ -52,6 +54,7 @@ import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
 import ch.protonmail.android.mailmessage.presentation.model.SenderImageState
 import ch.protonmail.android.mailmessage.presentation.viewmodel.SenderImageViewModel
 import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import me.proton.core.compose.theme.ProtonDimens
 import me.proton.core.compose.theme.ProtonTheme
 
@@ -157,18 +160,20 @@ fun ParticipantAvatar(
 
 @Composable
 private fun SenderImageAvatar(imageFile: File, avatarSize: Dp) {
+    val context = LocalContext.current
+    val imageUri = imageFile.toUri()
+
+    // If we do not provide our own cache key, Coil will make disk IO to access File to create a cache key
+    val imageRequest = remember(imageUri) {
+        ImageRequest.Builder(context)
+            .data(imageUri)
+            .memoryCacheKey(imageUri.toString())
+            .build()
+    }
     AsyncImage(
         modifier = Modifier
-            .sizeIn(
-                minWidth = avatarSize,
-                minHeight = avatarSize
-            )
-            .border(
-                width = MailDimens.DefaultBorder,
-                color = ProtonTheme.colors.interactionWeakNorm,
-                shape = ProtonTheme.shapes.medium
-            ),
-        model = imageFile.toUri(),
+            .size(avatarSize),
+        model = imageRequest,
         contentDescription = "",
         contentScale = ContentScale.Fit
     )
