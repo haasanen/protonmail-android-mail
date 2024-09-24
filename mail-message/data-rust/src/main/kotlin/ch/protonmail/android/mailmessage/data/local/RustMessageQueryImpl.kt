@@ -68,7 +68,6 @@ class RustMessageQueryImpl @Inject constructor(
         Timber.v("rust-message: got MailSession instance to watch messages for $userId")
 
         val labelId = pageKey.labelId.toLocalLabelId()
-        Timber.v("rust-message: switching mailbox to $labelId if needed...")
 
         initPaginator(userId, labelId, session)
 
@@ -95,6 +94,7 @@ class RustMessageQueryImpl @Inject constructor(
         Timber.v("rust-message: [destroy and] initialize paginator instance...")
         destroy()
         rustMailbox.switchToMailbox(userId, labelId)
+        Timber.v("rust-message: switching mailbox to $labelId...")
         paginator = Paginator(
             createRustMessagesPaginator(session, labelId, messagesUpdatedCallback),
             userId,
