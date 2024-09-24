@@ -23,15 +23,16 @@ import androidx.lifecycle.viewModelScope
 import ch.protonmail.android.mailmessage.domain.usecase.GetSenderImage
 import ch.protonmail.android.mailmessage.presentation.model.SenderImageState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import me.proton.core.util.kotlin.DispatcherProvider
 import javax.inject.Inject
 
 @HiltViewModel
 class SenderImageViewModel @Inject constructor(
-    private val getSenderImage: GetSenderImage
+    private val getSenderImage: GetSenderImage,
+    private val dispatcherProvider: DispatcherProvider
 ) : ViewModel() {
 
     // Map to keep the state for each email address
@@ -59,7 +60,7 @@ class SenderImageViewModel @Inject constructor(
         }
 
         // Run on IO dispatcher to make File IO operations in a background thread
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(dispatcherProvider.Io) {
             stateFlow.value = SenderImageState.Loading
 
             val senderImage = getSenderImage(address, bimiSelector)
