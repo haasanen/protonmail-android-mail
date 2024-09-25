@@ -47,6 +47,10 @@ class GetMailboxActions @Inject constructor() {
         }
     }
 
-    private fun MailLabel.isTrashOrSpam() =
-        id.labelId == SystemLabelId.Trash.labelId || id.labelId == SystemLabelId.Spam.labelId
+    private fun MailLabel.isTrashOrSpam() = when (this) {
+        is MailLabel.Custom -> false
+        is MailLabel.System ->
+            this.systemLabelId.labelId == SystemLabelId.Trash.labelId ||
+                this.systemLabelId.labelId == SystemLabelId.Spam.labelId
+    }
 }

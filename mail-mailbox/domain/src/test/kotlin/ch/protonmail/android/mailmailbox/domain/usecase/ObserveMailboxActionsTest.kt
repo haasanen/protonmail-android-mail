@@ -33,7 +33,7 @@ class ObserveMailboxActionsTest {
     fun `returns default actions for non-trash or non-spam labels`() = runTest {
         // Given
         val currentMailLabel = MailLabelTestData.inboxSystemLabel
-        val expected = listOf(Action.MarkUnread, Action.Trash, Action.Move, Action.Label, Action.More)
+        val expected = listOf(Action.MarkUnread, Action.Archive, Action.Trash, Action.Move, Action.More)
 
         // When
         val actions = observeMailboxActions(currentMailLabel, false)
@@ -46,7 +46,7 @@ class ObserveMailboxActionsTest {
     fun `returns delete actions for trash label`() = runTest {
         // Given
         val currentMailLabel = MailLabelTestData.trashSystemLabel
-        val expected = listOf(Action.MarkUnread, Action.Delete, Action.Move, Action.Label, Action.More)
+        val expected = listOf(Action.MarkUnread, Action.Archive, Action.Delete, Action.Move, Action.More)
 
         // When
         val actions = observeMailboxActions(currentMailLabel, false)
@@ -59,7 +59,7 @@ class ObserveMailboxActionsTest {
     fun `returns delete actions for spam label`() = runTest {
         // Given
         val currentMailLabel = MailLabelTestData.spamSystemLabel
-        val expected = listOf(Action.MarkUnread, Action.Delete, Action.Move, Action.Label, Action.More)
+        val expected = listOf(Action.MarkUnread, Action.Archive, Action.Delete, Action.Move, Action.More)
 
         // When
         val actions = observeMailboxActions(currentMailLabel, false)
@@ -72,7 +72,7 @@ class ObserveMailboxActionsTest {
     fun `returns mark as read when all items are unread`() = runTest {
         // Given
         val currentMailLabel = MailLabelTestData.inboxSystemLabel
-        val expected = listOf(Action.MarkRead, Action.Trash, Action.Move, Action.Label, Action.More)
+        val expected = listOf(Action.MarkRead, Action.Archive, Action.Trash, Action.Move, Action.More)
 
         // When
         val actions = observeMailboxActions(currentMailLabel, true)
@@ -85,7 +85,7 @@ class ObserveMailboxActionsTest {
     fun `returns delete and mark as read when all items are unread in spam`() = runTest {
         // Given
         val currentMailLabel = MailLabelTestData.spamSystemLabel
-        val expected = listOf(Action.MarkRead, Action.Delete, Action.Move, Action.Label, Action.More)
+        val expected = listOf(Action.MarkRead, Action.Archive, Action.Delete, Action.Move, Action.More)
 
         // When
         val actions = observeMailboxActions(currentMailLabel, true)
@@ -98,7 +98,7 @@ class ObserveMailboxActionsTest {
     fun `returns delete and mark as read when all items are unread in trash`() = runTest {
         // Given
         val currentMailLabel = MailLabelTestData.trashSystemLabel
-        val expected = listOf(Action.MarkRead, Action.Delete, Action.Move, Action.Label, Action.More)
+        val expected = listOf(Action.MarkRead, Action.Archive, Action.Delete, Action.Move, Action.More)
 
         // When
         val actions = observeMailboxActions(currentMailLabel, true)

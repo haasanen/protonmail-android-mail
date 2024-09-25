@@ -243,8 +243,8 @@ class MailboxViewModel @Inject constructor(
             .launchIn(viewModelScope)
 
         selectedMailLabelId.flow.mapToExistingLabel()
-            .combine(state.observeSelectedMailboxItems()) { selectedMailLabelId, selectedMailboxItems ->
-                getMailboxActions(selectedMailLabelId, selectedMailboxItems.none { it.isRead }).fold(
+            .combine(state.observeSelectedMailboxItems()) { selectedMailLabel, selectedMailboxItems ->
+                getMailboxActions(selectedMailLabel, selectedMailboxItems.none { it.isRead }).fold(
                     ifLeft = { MailboxEvent.MessageBottomBarEvent(BottomBarEvent.ErrorLoadingActions) },
                     ifRight = { actions ->
                         MailboxEvent.MessageBottomBarEvent(
