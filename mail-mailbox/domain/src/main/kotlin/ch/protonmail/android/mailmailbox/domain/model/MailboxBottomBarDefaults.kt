@@ -22,6 +22,6 @@ import ch.protonmail.android.mailcommon.domain.model.Action
 
 object MailboxBottomBarDefaults {
 
-    val actions = listOf(Action.MarkUnread, Action.Trash, Action.Move, Action.Label, Action.More)
+    val actions = listOf(Action.MarkUnread, Action.Archive, Action.Trash, Action.Move, Action.More)
 
 }
