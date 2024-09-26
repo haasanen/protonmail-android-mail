@@ -1,0 +1,101 @@
+/*
+ * Copyright (c) 2022 Proton Technologies AG
+ * This file is part of Proton Technologies AG and Proton Mail.
+ *
+ * Proton Mail is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Proton Mail is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+package ch.protonmail.android.mailmessage.data.mapper
+
+import ch.protonmail.android.mailcommon.domain.model.Action
+import ch.protonmail.android.mailcommon.domain.model.AvailableActions
+import timber.log.Timber
+import uniffi.proton_mail_uniffi.GeneralActions
+import uniffi.proton_mail_uniffi.MessageAction
+import uniffi.proton_mail_uniffi.MessageAvailableActions
+import uniffi.proton_mail_uniffi.ReplyAction
+import uniffi.proton_mail_uniffi.SystemFolderAction
+import uniffi.proton_mail_uniffi.SystemLabel
+
+
+fun MessageAvailableActions.toAvailableActions(): AvailableActions {
+    return AvailableActions(
+        this.replyActions.replyActionsToActions(),
+        this.messageActions.MessageActionsToActions().filterNotNull(),
+        this.moveActions.systemFolderActionsToActions().filterNotNull(),
+        this.generalActions.generalActionsToActions()
+    )
+}
+
+private fun List<ReplyAction>.replyActionsToActions() = this.map { replyAction ->
+    when (replyAction) {
+        ReplyAction.REPLY -> Action.Reply
+        ReplyAction.REPLY_ALL -> Action.ReplyAll
+        ReplyAction.FORWARD -> Action.Forward
+    }
+}
+
+private fun List<MessageAction>.MessageActionsToActions() = this.map { messageAction ->
+    when (messageAction) {
+        MessageAction.STAR -> Action.Star
+        MessageAction.UNSTAR -> Action.Unstar
+        MessageAction.LABEL_AS -> Action.Label
+        MessageAction.MARK_READ -> Action.MarkRead
+        MessageAction.MARK_UNREAD -> Action.MarkUnread
+        MessageAction.DELETE -> Action.Delete
+        MessageAction.PIN,
+        MessageAction.UNPIN -> {
+            Timber.i("rust-message: Found unhandled action while mapping: $messageAction")
+            null
+        }
+    }
+}
+
+private fun List<SystemFolderAction>.systemFolderActionsToActions() = this.map { moveAction ->
+    when (moveAction.name) {
+        SystemLabel.TRASH -> Action.Trash
+        SystemLabel.SPAM -> Action.Spam
+        SystemLabel.ARCHIVE -> Action.Archive
+        SystemLabel.INBOX,
+        SystemLabel.ALL_DRAFTS,
+        SystemLabel.ALL_SENT,
+        SystemLabel.ALL_MAIL,
+        SystemLabel.SENT,
+        SystemLabel.DRAFTS,
+        SystemLabel.OUTBOX,
+        SystemLabel.STARRED,
+        SystemLabel.SCHEDULED,
+        SystemLabel.ALMOST_ALL_MAIL,
+        SystemLabel.SNOOZED,
+        SystemLabel.CATEGORY_SOCIAL,
+        SystemLabel.CATEGORY_PROMOTIONS,
+        SystemLabel.CATERGORY_UPDATES,
+        SystemLabel.CATEGORY_FORUMS,
+        SystemLabel.CATEGORY_DEFAULT -> {
+            Timber.i("rust-message: Found unhandled action while mapping: $moveAction")
+            null
+        }
+    }
+}
+
+private fun List<GeneralActions>.generalActionsToActions() = this.map { generalAction ->
+    when (generalAction) {
+        GeneralActions.VIEW_MESSAGE_IN_LIGHT_MODE -> Action.ViewInLightMode
+        GeneralActions.SAVE_AS_PDF -> Action.SavePdf
+        GeneralActions.PRINT -> Action.Print
+        GeneralActions.VIEW_HEADERS -> Action.ViewHeaders
+        GeneralActions.VIEW_HTML -> Action.ViewHtml
+        GeneralActions.REPORT_PHISHING -> Action.ReportPhishing
+    }
+}
