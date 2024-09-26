@@ -22,6 +22,8 @@ import app.cash.turbine.test
 import arrow.core.getOrElse
 import arrow.core.left
 import arrow.core.right
+import ch.protonmail.android.mailcommon.domain.model.Action
+import ch.protonmail.android.mailcommon.domain.model.AvailableActions
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailconversation.data.local.RustConversationDataSource
@@ -51,6 +53,14 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import me.proton.core.domain.entity.UserId
 import org.junit.Test
+import uniffi.proton_mail_uniffi.ConversationAction
+import uniffi.proton_mail_uniffi.ConversationAvailableActions
+import uniffi.proton_mail_uniffi.GeneralActions
+import uniffi.proton_mail_uniffi.Id
+import uniffi.proton_mail_uniffi.IsSelected
+import uniffi.proton_mail_uniffi.ReplyAction
+import uniffi.proton_mail_uniffi.SystemFolderAction
+import uniffi.proton_mail_uniffi.SystemLabel
 import kotlin.test.assertEquals
 
 class RustConversationRepositoryImplTest {
@@ -291,5 +301,101 @@ class RustConversationRepositoryImplTest {
             )
         }
         assertEquals(emptyList<Conversation>().right(), result)
+    }
+
+    @Test
+    fun `get available actions should return available actions when data source exposes them`() = runTest {
+        // Given
+        val userId = UserIdTestData.userId
+        val labelId = SystemLabelId.Inbox.labelId
+        val conversationIds = listOf(ConversationId("1"))
+        val rustAvailableActions = ConversationAvailableActions(
+            listOf(ReplyAction.REPLY, ReplyAction.FORWARD),
+            listOf(ConversationAction.STAR, ConversationAction.LABEL_AS),
+            listOf(
+                SystemFolderAction(Id(5uL), SystemLabel.SPAM, IsSelected.UNSELECTED),
+                SystemFolderAction(Id(10uL), SystemLabel.ARCHIVE, IsSelected.UNSELECTED)
+            ),
+            listOf(GeneralActions.VIEW_HEADERS)
+        )
+
+        coEvery {
+            rustConversationDataSource.getAvailableActions(
+                userId,
+                labelId.toLocalLabelId(),
+                conversationIds.map { it.toLocalConversationId() }
+            )
+        } returns rustAvailableActions
+
+        // When
+        val result = rustConversationRepository.getAvailableActions(userId, labelId, conversationIds)
+
+        // Then
+        val expected = AvailableActions(
+            listOf(Action.Reply, Action.Forward),
+            listOf(Action.Star, Action.Label),
+            listOf(Action.Spam, Action.Archive),
+            listOf(Action.ViewHeaders)
+        )
+        assertEquals(expected.right(), result)
+    }
+
+    @Test
+    fun `get available actions should return error when data source fails`() = runTest {
+        // Given
+        val userId = UserIdTestData.userId
+        val labelId = SystemLabelId.Inbox.labelId
+        val conversationIds = listOf(ConversationId("1"))
+
+        coEvery {
+            rustConversationDataSource.getAvailableActions(
+                userId,
+                labelId.toLocalLabelId(),
+                conversationIds.map { it.toLocalConversationId() }
+            )
+        } returns null
+
+        // When
+        val result = rustConversationRepository.getAvailableActions(userId, labelId, conversationIds)
+
+        // Then
+        assertEquals(DataError.Local.Unknown.left(), result)
+    }
+
+    @Test
+    fun `get available actions skips any unhandled actions returned by the data source`() = runTest {
+        // Given
+        val userId = UserIdTestData.userId
+        val labelId = SystemLabelId.Inbox.labelId
+        val conversationIds = listOf(ConversationId("1"))
+        val rustAvailableActions = ConversationAvailableActions(
+            listOf(ReplyAction.REPLY_ALL),
+            listOf(ConversationAction.PIN),
+            listOf(
+                SystemFolderAction(Id(5uL), SystemLabel.ALL_DRAFTS, IsSelected.UNSELECTED),
+                SystemFolderAction(Id(10uL), SystemLabel.INBOX, IsSelected.UNSELECTED)
+            ),
+            emptyList()
+        )
+
+        coEvery {
+            rustConversationDataSource.getAvailableActions(
+                userId,
+                labelId.toLocalLabelId(),
+                conversationIds.map { it.toLocalConversationId() }
+            )
+        } returns rustAvailableActions
+
+        // When
+        val result = rustConversationRepository.getAvailableActions(userId, labelId, conversationIds)
+
+        // Then
+        val expected = AvailableActions(
+            listOf(Action.ReplyAll),
+            emptyList(),
+            emptyList(),
+            emptyList()
+        )
+        assertEquals(expected.right(), result)
     }
 }

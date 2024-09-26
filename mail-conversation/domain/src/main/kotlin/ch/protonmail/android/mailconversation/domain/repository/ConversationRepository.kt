@@ -19,6 +19,7 @@
 package ch.protonmail.android.mailconversation.domain.repository
 
 import arrow.core.Either
+import ch.protonmail.android.mailcommon.domain.model.AvailableActions
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailconversation.domain.entity.Conversation
@@ -136,4 +137,10 @@ interface ConversationRepository {
     suspend fun deleteConversations(userId: UserId, labelId: LabelId)
 
     fun observeClearLabelOperation(userId: UserId, labelId: LabelId): Flow<Boolean>
+
+    suspend fun getAvailableActions(
+        userId: UserId,
+        labelId: LabelId,
+        conversationIds: List<ConversationId>
+    ): Either<DataError, AvailableActions>
 }

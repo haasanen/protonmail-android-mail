@@ -22,9 +22,11 @@ import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
+import ch.protonmail.android.mailcommon.domain.model.AvailableActions
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailconversation.data.local.RustConversationDataSource
+import ch.protonmail.android.mailconversation.data.mapper.toAvailableActions
 import ch.protonmail.android.mailconversation.data.mapper.toConversation
 import ch.protonmail.android.mailconversation.domain.entity.Conversation
 import ch.protonmail.android.mailconversation.domain.repository.ConversationRepository
@@ -204,4 +206,18 @@ class RustConversationRepositoryImpl @Inject constructor(
     // It will be implemented later on
     override fun observeClearLabelOperation(userId: UserId, labelId: LabelId): Flow<Boolean> = flowOf(false)
 
+    override suspend fun getAvailableActions(
+        userId: UserId,
+        labelId: LabelId,
+        conversationIds: List<ConversationId>
+    ): Either<DataError, AvailableActions> {
+        val availableActions = rustConversationDataSource.getAvailableActions(
+            userId,
+            labelId.toLocalLabelId(),
+            conversationIds.map { it.toLocalConversationId() }
+        ) ?: return DataError.Local.Unknown.left()
+        Timber.v("rust-message: Available actions: $availableActions \n for messages $conversationIds")
+
+        return availableActions.toAvailableActions().right()
+    }
 }

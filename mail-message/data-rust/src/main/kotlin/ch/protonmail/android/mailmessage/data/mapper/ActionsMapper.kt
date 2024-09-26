@@ -38,7 +38,7 @@ fun MessageAvailableActions.toAvailableActions(): AvailableActions {
     )
 }
 
-private fun List<ReplyAction>.replyActionsToActions() = this.map { replyAction ->
+fun List<ReplyAction>.replyActionsToActions() = this.map { replyAction ->
     when (replyAction) {
         ReplyAction.REPLY -> Action.Reply
         ReplyAction.REPLY_ALL -> Action.ReplyAll
@@ -46,23 +46,7 @@ private fun List<ReplyAction>.replyActionsToActions() = this.map { replyAction -
     }
 }
 
-private fun List<MessageAction>.MessageActionsToActions() = this.map { messageAction ->
-    when (messageAction) {
-        MessageAction.STAR -> Action.Star
-        MessageAction.UNSTAR -> Action.Unstar
-        MessageAction.LABEL_AS -> Action.Label
-        MessageAction.MARK_READ -> Action.MarkRead
-        MessageAction.MARK_UNREAD -> Action.MarkUnread
-        MessageAction.DELETE -> Action.Delete
-        MessageAction.PIN,
-        MessageAction.UNPIN -> {
-            Timber.i("rust-message: Found unhandled action while mapping: $messageAction")
-            null
-        }
-    }
-}
-
-private fun List<SystemFolderAction>.systemFolderActionsToActions() = this.map { moveAction ->
+fun List<SystemFolderAction>.systemFolderActionsToActions() = this.map { moveAction ->
     when (moveAction.name) {
         SystemLabel.TRASH -> Action.Trash
         SystemLabel.SPAM -> Action.Spam
@@ -89,7 +73,7 @@ private fun List<SystemFolderAction>.systemFolderActionsToActions() = this.map {
     }
 }
 
-private fun List<GeneralActions>.generalActionsToActions() = this.map { generalAction ->
+fun List<GeneralActions>.generalActionsToActions() = this.map { generalAction ->
     when (generalAction) {
         GeneralActions.VIEW_MESSAGE_IN_LIGHT_MODE -> Action.ViewInLightMode
         GeneralActions.SAVE_AS_PDF -> Action.SavePdf
@@ -99,3 +83,20 @@ private fun List<GeneralActions>.generalActionsToActions() = this.map { generalA
         GeneralActions.REPORT_PHISHING -> Action.ReportPhishing
     }
 }
+
+private fun List<MessageAction>.MessageActionsToActions() = this.map { messageAction ->
+    when (messageAction) {
+        MessageAction.STAR -> Action.Star
+        MessageAction.UNSTAR -> Action.Unstar
+        MessageAction.LABEL_AS -> Action.Label
+        MessageAction.MARK_READ -> Action.MarkRead
+        MessageAction.MARK_UNREAD -> Action.MarkUnread
+        MessageAction.DELETE -> Action.Delete
+        MessageAction.PIN,
+        MessageAction.UNPIN -> {
+            Timber.i("rust-message: Found unhandled action while mapping: $messageAction")
+            null
+        }
+    }
+}
+
