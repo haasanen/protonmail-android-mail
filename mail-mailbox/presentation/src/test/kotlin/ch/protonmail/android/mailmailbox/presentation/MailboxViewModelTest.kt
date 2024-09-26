@@ -26,6 +26,7 @@ import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.Action
+import ch.protonmail.android.mailcommon.domain.model.AvailableActions
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.PreferencesError
 import ch.protonmail.android.mailcommon.domain.sample.ConversationIdSample
@@ -69,6 +70,7 @@ import ch.protonmail.android.mailmailbox.domain.model.OnboardingPreference
 import ch.protonmail.android.mailmailbox.domain.model.OpenMailboxItemRequest
 import ch.protonmail.android.mailmailbox.domain.model.StorageLimitPreference
 import ch.protonmail.android.mailmailbox.domain.model.UserAccountStorageStatus
+import ch.protonmail.android.mailmailbox.domain.usecase.GetBottomSheetActions
 import ch.protonmail.android.mailmailbox.domain.usecase.GetMailboxActions
 import ch.protonmail.android.mailmailbox.domain.usecase.ObserveCurrentViewMode
 import ch.protonmail.android.mailmailbox.domain.usecase.ObserveOnboarding
@@ -258,6 +260,7 @@ class MailboxViewModelTest {
     private val unStarMessages = mockk<UnStarMessages>()
     private val unStarConversations = mockk<UnStarConversations>()
     private val deleteSearchResults = mockk<DeleteSearchResults>()
+    private val getBottomSheetActions = mockk<GetBottomSheetActions>()
     private val observePrimaryUserAccountStorageStatus = mockk<ObservePrimaryUserAccountStorageStatus> {
         every { this@mockk() } returns flowOf()
     }
@@ -299,7 +302,9 @@ class MailboxViewModelTest {
             observeClearConversationOperation = observeConversationClearOperation,
             selectedMailLabelId = selectedMailLabelId,
             observeUnreadCounters = observeUnreadCounters,
+            observeFolderColorSettings = observeFolderColorSettings,
             getMailboxActions = observeMailboxActions,
+            getBottomSheetActions = getBottomSheetActions,
             actionUiModelMapper = actionUiModelMapper,
             mailboxItemMapper = mailboxItemMapper,
             swipeActionsMapper = swipeActionsMapper,
@@ -330,8 +335,7 @@ class MailboxViewModelTest {
             shouldShowRatingBooster = shouldShowRatingBooster,
             showRatingBooster = showRatingBooster,
             recordRatingBoosterTriggered = recordRatingBoosterTriggered,
-            findLocalSystemLabelId = findLocalSystemLabelId,
-            observeFolderColorSettings = observeFolderColorSettings
+            findLocalSystemLabelId = findLocalSystemLabelId
         )
     }
 
@@ -2453,11 +2457,7 @@ class MailboxViewModelTest {
         val secondItem = unreadMailboxItemUiModel.copy(id = MessageIdSample.AlphaAppQAReport.id)
         val selectedItemsList = listOf(item, secondItem)
 
-        val expectedMailLabels = MailLabels(
-            system = emptyList(),
-            folders = MailLabelTestData.listOfCustomLabels,
-            labels = emptyList()
-        )
+        val customLabels = MailLabelTestData.listOfCustomLabels
         val expectedMailLabelUiModel = MailLabelUiModelTestData.customLabelList
 
         val initialState = createMailboxDataState()
@@ -2474,7 +2474,7 @@ class MailboxViewModelTest {
         expectedSelectedLabelCountStateChange(initialState)
         returnExpectedStateWhenEnterSelectionMode(initialState, item, intermediateState)
         returnExpectedStateForBottomBarEvent(expectedState = intermediateState)
-        expectDestinationMailLabelsSucceeds(expectedMailLabels)
+        expectDestinationMailLabelsSucceeds(customLabels)
         expectedMoveToBottomSheetRequestedStateChange(expectedMailLabelUiModel, bottomSheetShownState)
         expectedMoveToStateChange(MailLabelTestData.spamSystemLabel.id, bottomSheetShownStateWithSelectedItem)
         expectedMoveToConfirmed(initialState)
@@ -2507,11 +2507,7 @@ class MailboxViewModelTest {
         val secondItem = unreadMailboxItemUiModel.copy(id = ConversationIdSample.AlphaAppFeedback.id)
         val selectedItemsList = listOf(item, secondItem)
 
-        val expectedMailLabels = MailLabels(
-            system = emptyList(),
-            folders = MailLabelTestData.listOfCustomLabels,
-            labels = emptyList()
-        )
+        val customLabels = MailLabelTestData.listOfCustomLabels
         val expectedMailLabelUiModel = MailLabelUiModelTestData.customLabelList
 
         val initialState = createMailboxDataState()
@@ -2528,7 +2524,7 @@ class MailboxViewModelTest {
         expectedSelectedLabelCountStateChange(initialState)
         returnExpectedStateWhenEnterSelectionMode(initialState, item, intermediateState)
         returnExpectedStateForBottomBarEvent(expectedState = intermediateState)
-        expectDestinationMailLabelsSucceeds(expectedMailLabels)
+        expectDestinationMailLabelsSucceeds(customLabels)
         expectedMoveToBottomSheetRequestedStateChange(expectedMailLabelUiModel, bottomSheetShownState)
         expectedMoveToStateChange(MailLabelTestData.spamSystemLabel.id, bottomSheetShownStateWithSelectedItem)
         expectedMoveToConfirmed(initialState)
@@ -2597,86 +2593,6 @@ class MailboxViewModelTest {
     }
 
     @Test
-    fun `when more action bottom sheet is requested with non-starred items then star action is shown`() = runTest {
-        // Given
-        val item = readMailboxItemUiModel.copy(id = MessageIdSample.Invoice.id, showStar = true)
-        val secondItem = unreadMailboxItemUiModel.copy(id = MessageIdSample.AlphaAppQAReport.id, showStar = false)
-        val selectedItemsList = listOf(item, secondItem)
-
-        val initialState = createMailboxDataState()
-        val expectedActionItems = listOf(
-            ActionUiModelSample.build(Action.Star),
-            ActionUiModelSample.build(Action.Archive),
-            ActionUiModelSample.build(Action.Spam)
-        )
-        val expectedBottomSheetContent = MailboxMoreActionsBottomSheetState.Data(
-            actionUiModels = expectedActionItems.toImmutableList()
-        )
-        val bottomSheetShownState =
-            createMailboxStateWithMoreActionBottomSheet(selectedItemsList, expectedBottomSheetContent)
-        val intermediateState = MailboxStateSampleData.createSelectionMode(
-            listOf(item, secondItem),
-            currentMailLabel = MailLabelTestData.trashSystemLabel
-        )
-        expectViewModeForCurrentLocation(NoConversationGrouping)
-        expectedSelectedLabelCountStateChange(initialState)
-        returnExpectedStateForBottomBarEvent(expectedState = intermediateState)
-        returnExpectedStateWhenEnterSelectionMode(initialState, item, intermediateState)
-        expectedMoreActionBottomSheetRequestedStateChange(expectedActionItems, bottomSheetShownState)
-
-
-        mailboxViewModel.state.test {
-            awaitItem() // First emission for selected user
-
-            // When + Then
-            mailboxViewModel.submit(MailboxViewAction.OnItemAvatarClicked(item))
-            assertEquals(intermediateState, awaitItem())
-            mailboxViewModel.submit(MailboxViewAction.RequestMoreActionsBottomSheet)
-            assertEquals(bottomSheetShownState, awaitItem())
-        }
-    }
-
-    @Test
-    fun `when more action bottom sheet is requested with all items starred then unstar action is shown`() = runTest {
-        // Given
-        val item = readMailboxItemUiModel.copy(id = MessageIdSample.Invoice.id, showStar = true)
-        val secondItem = unreadMailboxItemUiModel.copy(id = MessageIdSample.AlphaAppQAReport.id, showStar = true)
-        val selectedItemsList = listOf(item, secondItem)
-
-        val initialState = createMailboxDataState()
-        val expectedActionItems = listOf(
-            ActionUiModelSample.build(Action.Unstar),
-            ActionUiModelSample.build(Action.Archive),
-            ActionUiModelSample.build(Action.Spam)
-        )
-        val expectedBottomSheetContent = MailboxMoreActionsBottomSheetState.Data(
-            actionUiModels = expectedActionItems.toImmutableList()
-        )
-        val bottomSheetShownState =
-            createMailboxStateWithMoreActionBottomSheet(selectedItemsList, expectedBottomSheetContent)
-        val intermediateState = MailboxStateSampleData.createSelectionMode(
-            listOf(item, secondItem),
-            currentMailLabel = MailLabelTestData.trashSystemLabel
-        )
-        expectViewModeForCurrentLocation(NoConversationGrouping)
-        expectedSelectedLabelCountStateChange(initialState)
-        returnExpectedStateForBottomBarEvent(expectedState = intermediateState)
-        returnExpectedStateWhenEnterSelectionMode(initialState, item, intermediateState)
-        expectedMoreActionBottomSheetRequestedStateChange(expectedActionItems, bottomSheetShownState)
-
-
-        mailboxViewModel.state.test {
-            awaitItem() // First emission for selected user
-
-            // When + Then
-            mailboxViewModel.submit(MailboxViewAction.OnItemAvatarClicked(item))
-            assertEquals(intermediateState, awaitItem())
-            mailboxViewModel.submit(MailboxViewAction.RequestMoreActionsBottomSheet)
-            assertEquals(bottomSheetShownState, awaitItem())
-        }
-    }
-
-    @Test
     fun `when star action is triggered for no-conversation grouping then star messages is called`() = runTest {
         // Given
         val item = readMailboxItemUiModel.copy(id = MessageIdSample.Invoice.id, showStar = true)
@@ -2684,11 +2600,8 @@ class MailboxViewModelTest {
         val selectedItemsList = listOf(item, secondItem)
 
         val initialState = createMailboxDataState()
-        val expectedActionItems = listOf(
-            ActionUiModelSample.build(Action.Star),
-            ActionUiModelSample.build(Action.Archive),
-            ActionUiModelSample.build(Action.Spam)
-        )
+        val expectedActions = listOf(Action.Unstar, Action.Archive, Action.Spam)
+        val expectedActionItems = expectedActions.map { ActionUiModelSample.build(it) }
         val expectedBottomSheetContent = MailboxMoreActionsBottomSheetState.Data(
             actionUiModels = expectedActionItems.toImmutableList()
         )
@@ -2700,6 +2613,12 @@ class MailboxViewModelTest {
         )
         expectViewModeForCurrentLocation(NoConversationGrouping)
         expectedSelectedLabelCountStateChange(initialState)
+        expectBottomSheetActionsSucceeds(
+            expectedActions,
+            selectedMailLabelId.flow.value.labelId,
+            selectedItemsList.map { MailboxItemId(it.id) },
+            NoConversationGrouping
+        )
         returnExpectedStateForBottomBarEvent(expectedState = intermediateState)
         returnExpectedStateWhenEnterSelectionMode(initialState, item, intermediateState)
         expectedMoreActionBottomSheetRequestedStateChange(expectedActionItems, bottomSheetShownState)
@@ -2776,11 +2695,8 @@ class MailboxViewModelTest {
         val selectedItemsList = listOf(item, secondItem)
 
         val initialState = createMailboxDataState()
-        val expectedActionItems = listOf(
-            ActionUiModelSample.build(Action.Unstar),
-            ActionUiModelSample.build(Action.Archive),
-            ActionUiModelSample.build(Action.Spam)
-        )
+        val expectedActions = listOf(Action.Unstar, Action.Archive, Action.Spam)
+        val expectedActionItems = expectedActions.map { ActionUiModelSample.build(it) }
         val expectedBottomSheetContent = MailboxMoreActionsBottomSheetState.Data(
             actionUiModels = expectedActionItems.toImmutableList()
         )
@@ -2792,6 +2708,12 @@ class MailboxViewModelTest {
         )
         expectViewModeForCurrentLocation(NoConversationGrouping)
         expectedSelectedLabelCountStateChange(initialState)
+        expectBottomSheetActionsSucceeds(
+            expectedActions,
+            selectedMailLabelId.flow.value.labelId,
+            selectedItemsList.map { MailboxItemId(it.id) },
+            NoConversationGrouping
+        )
         returnExpectedStateForBottomBarEvent(expectedState = intermediateState)
         returnExpectedStateWhenEnterSelectionMode(initialState, item, intermediateState)
         expectedMoreActionBottomSheetRequestedStateChange(expectedActionItems, bottomSheetShownState)
@@ -2822,11 +2744,8 @@ class MailboxViewModelTest {
         val selectedItemsList = listOf(item, secondItem)
         val archiveLocalLabelId = LabelId("5")
         val initialState = createMailboxDataState()
-        val expectedActionItems = listOf(
-            ActionUiModelSample.build(Action.Unstar),
-            ActionUiModelSample.build(Action.Archive),
-            ActionUiModelSample.build(Action.Spam)
-        )
+        val expectedActions = listOf(Action.Unstar, Action.Archive, Action.Spam)
+        val expectedActionItems = expectedActions.map { ActionUiModelSample.build(it) }
         val expectedBottomSheetContent = MailboxMoreActionsBottomSheetState.Data(
             actionUiModels = expectedActionItems.toImmutableList()
         )
@@ -2838,6 +2757,12 @@ class MailboxViewModelTest {
         )
         expectViewModeForCurrentLocation(NoConversationGrouping)
         expectedSelectedLabelCountStateChange(initialState)
+        expectBottomSheetActionsSucceeds(
+            expectedActions,
+            selectedMailLabelId.flow.value.labelId,
+            selectedItemsList.map { MailboxItemId(it.id) },
+            NoConversationGrouping
+        )
         returnExpectedStateForBottomBarEvent(expectedState = intermediateState)
         returnExpectedStateWhenEnterSelectionMode(initialState, item, intermediateState)
         expectedMoreActionBottomSheetRequestedStateChange(expectedActionItems, bottomSheetShownState)
@@ -2870,11 +2795,8 @@ class MailboxViewModelTest {
         val selectedItemsList = listOf(item, secondItem)
         val archiveLocalLabelId = LabelId("5")
         val initialState = createMailboxDataState()
-        val expectedActionItems = listOf(
-            ActionUiModelSample.build(Action.Unstar),
-            ActionUiModelSample.build(Action.Archive),
-            ActionUiModelSample.build(Action.Spam)
-        )
+        val expectedActions = listOf(Action.Unstar, Action.Archive, Action.Spam)
+        val expectedActionItems = expectedActions.map { ActionUiModelSample.build(it) }
         val expectedBottomSheetContent = MailboxMoreActionsBottomSheetState.Data(
             actionUiModels = expectedActionItems.toImmutableList()
         )
@@ -2893,6 +2815,12 @@ class MailboxViewModelTest {
         returnExpectedStateForBottomBarEvent(expectedState = intermediateState)
         returnExpectedStateWhenEnterSelectionMode(initialState, item, intermediateState)
         expectedMoreActionBottomSheetRequestedStateChange(expectedActionItems, bottomSheetShownState)
+        expectBottomSheetActionsSucceeds(
+            expectedActions,
+            selectedMailLabelId.flow.value.labelId,
+            selectedItemsList.map { MailboxItemId(it.id) },
+            ConversationGrouping
+        )
         expectMoveConversationsSucceeds(userId, selectedItemsList, archiveLocalLabelId)
         expectedReducerResult(MailboxViewAction.MoveToConfirmed, initialState)
         coEvery {
@@ -2925,11 +2853,8 @@ class MailboxViewModelTest {
         val spamLocalLabelId = LabelId("7")
 
         val initialState = createMailboxDataState()
-        val expectedActionItems = listOf(
-            ActionUiModelSample.build(Action.Unstar),
-            ActionUiModelSample.build(Action.Archive),
-            ActionUiModelSample.build(Action.Spam)
-        )
+        val expectedActions = listOf(Action.Unstar, Action.Archive, Action.Spam)
+        val expectedActionItems = expectedActions.map { ActionUiModelSample.build(it) }
         val expectedBottomSheetContent = MailboxMoreActionsBottomSheetState.Data(
             actionUiModels = expectedActionItems.toImmutableList()
         )
@@ -2941,6 +2866,12 @@ class MailboxViewModelTest {
         )
         expectViewModeForCurrentLocation(NoConversationGrouping)
         expectedSelectedLabelCountStateChange(initialState)
+        expectBottomSheetActionsSucceeds(
+            expectedActions,
+            selectedMailLabelId.flow.value.labelId,
+            selectedItemsList.map { MailboxItemId(it.id) },
+            NoConversationGrouping
+        )
         returnExpectedStateForBottomBarEvent(expectedState = intermediateState)
         returnExpectedStateWhenEnterSelectionMode(initialState, item, intermediateState)
         expectedMoreActionBottomSheetRequestedStateChange(expectedActionItems, bottomSheetShownState)
@@ -2974,11 +2905,8 @@ class MailboxViewModelTest {
         val spamLocalLabelId = LabelId("7")
 
         val initialState = createMailboxDataState()
-        val expectedActionItems = listOf(
-            ActionUiModelSample.build(Action.Unstar),
-            ActionUiModelSample.build(Action.Archive),
-            ActionUiModelSample.build(Action.Spam)
-        )
+        val expectedActions = listOf(Action.Unstar, Action.Archive, Action.Spam)
+        val expectedActionItems = expectedActions.map { ActionUiModelSample.build(it) }
         val expectedBottomSheetContent = MailboxMoreActionsBottomSheetState.Data(
             actionUiModels = expectedActionItems.toImmutableList()
         )
@@ -2994,6 +2922,12 @@ class MailboxViewModelTest {
         expectViewMode(ConversationGrouping)
         expectViewModeForCurrentLocation(ConversationGrouping)
         expectedSelectedLabelCountStateChange(initialState)
+        expectBottomSheetActionsSucceeds(
+            expectedActions,
+            selectedMailLabelId.flow.value.labelId,
+            selectedItemsList.map { MailboxItemId(it.id) },
+            ConversationGrouping
+        )
         returnExpectedStateForBottomBarEvent(expectedState = intermediateState)
         returnExpectedStateWhenEnterSelectionMode(initialState, item, intermediateState)
         expectedMoreActionBottomSheetRequestedStateChange(expectedActionItems, bottomSheetShownState)
@@ -3929,8 +3863,24 @@ class MailboxViewModelTest {
         every { observeCustomMailLabels(userId) } returns flowOf(expectedLabels.right())
     }
 
-    private fun expectDestinationMailLabelsSucceeds(expectedMailLabels: MailLabels) {
-        every { observeDestinationMailLabels(userId) } returns flowOf(expectedMailLabels)
+    private fun expectDestinationMailLabelsSucceeds(expectedCustomMailLabels: List<MailLabel.Custom>) {
+        val mailLabels = MailLabels(
+            system = emptyList(),
+            folders = expectedCustomMailLabels,
+            labels = emptyList()
+        )
+        every { observeDestinationMailLabels(userId) } returns flowOf(mailLabels)
+    }
+
+    private fun expectBottomSheetActionsSucceeds(
+        expectedActions: List<Action>,
+        labelId: LabelId,
+        items: List<MailboxItemId>,
+        viewMode: ViewMode
+    ) {
+        println("$userId, $labelId, $items $viewMode")
+        val actions = AvailableActions(expectedActions, emptyList(), emptyList(), emptyList())
+        coEvery { getBottomSheetActions(userId, labelId, items, viewMode) } returns actions.right()
     }
 
     private fun expectDestinationMailLabelsFails() {

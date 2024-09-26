@@ -28,7 +28,6 @@ import androidx.paging.cachedIn
 import androidx.paging.map
 import arrow.core.getOrElse
 import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
-import ch.protonmail.android.mailcommon.domain.model.Action
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailcommon.presentation.Effect
@@ -59,6 +58,7 @@ import ch.protonmail.android.maillabel.presentation.model.LabelSelectedState
 import ch.protonmail.android.maillabel.presentation.toCustomUiModel
 import ch.protonmail.android.maillabel.presentation.toUiModels
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItem
+import ch.protonmail.android.mailmailbox.domain.model.MailboxItemId
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItemType
 import ch.protonmail.android.mailmailbox.domain.model.MailboxPageKey
 import ch.protonmail.android.mailmailbox.domain.model.StorageLimitPreference
@@ -66,6 +66,7 @@ import ch.protonmail.android.mailmailbox.domain.model.UserAccountStorageStatus
 import ch.protonmail.android.mailmailbox.domain.model.isBelowFirstLimit
 import ch.protonmail.android.mailmailbox.domain.model.isBelowSecondLimit
 import ch.protonmail.android.mailmailbox.domain.model.toMailboxItemType
+import ch.protonmail.android.mailmailbox.domain.usecase.GetBottomSheetActions
 import ch.protonmail.android.mailmailbox.domain.usecase.GetMailboxActions
 import ch.protonmail.android.mailmailbox.domain.usecase.ObserveCurrentViewMode
 import ch.protonmail.android.mailmailbox.domain.usecase.ObserveOnboarding
@@ -157,6 +158,7 @@ class MailboxViewModel @Inject constructor(
     private val observeUnreadCounters: ObserveUnreadCounters,
     private val observeFolderColorSettings: ObserveFolderColorSettings,
     private val getMailboxActions: GetMailboxActions,
+    private val getBottomSheetActions: GetBottomSheetActions,
     private val actionUiModelMapper: ActionUiModelMapper,
     private val mailboxItemMapper: MailboxItemUiModelMapper,
     private val swipeActionsMapper: SwipeActionsMapper,
@@ -372,6 +374,7 @@ class MailboxViewModel @Inject constructor(
                 is MailboxViewAction.UnStar -> handleUnStarAction(viewAction)
                 is MailboxViewAction.MoveToArchive,
                 is MailboxViewAction.MoveToSpam -> handleMoveToAction(viewAction)
+
                 is MailboxViewAction.EnterSearchMode -> emitNewStateFrom(viewAction)
                 is MailboxViewAction.ExitSearchMode -> handleExitSearchMode(viewAction)
                 is MailboxViewAction.SearchQuery -> emitNewStateFrom(viewAction)
@@ -382,6 +385,7 @@ class MailboxViewModel @Inject constructor(
                 is MailboxViewAction.RequestUpsellingBottomSheet -> showUpsellingBottomSheet(viewAction)
                 is MailboxViewAction.NavigateToInboxLabel ->
                     selectedMailLabelId.set(MailLabelId.System(SystemLabelId.Inbox.labelId))
+
                 is MailboxViewAction.ShowRatingBooster -> showRatingBooster(viewAction)
             }.exhaustive
         }
@@ -891,7 +895,7 @@ class MailboxViewModel @Inject constructor(
         ).let { emitNewStateFrom(it) }
     }
 
-    private fun showMoreBottomSheet(operation: MailboxViewAction) {
+    private suspend fun showMoreBottomSheet(operation: MailboxViewAction) {
         val selectionState = state.value.mailboxListState as? MailboxListState.Data.SelectionMode
         if (selectionState == null) {
             Timber.d("MailboxListState is not in SelectionMode")
@@ -899,15 +903,26 @@ class MailboxViewModel @Inject constructor(
         }
         emitNewStateFrom(operation)
 
-        val usedStarAction = when (selectionState.selectedMailboxItems.all { it.isStarred }) {
-            true -> Action.Unstar
-            false -> Action.Star
-        }
+        val userId = primaryUserId.filterNotNull().first()
+        val currentMailLabel = selectedMailLabelId.flow.value
+        val viewMode = getViewModeForCurrentLocation(currentMailLabel)
+        val selectedItemIds: List<MailboxItemId> = selectionState.selectedMailboxItems.map { MailboxItemId(it.id) }
+
+        val actions = getBottomSheetActions(userId, currentMailLabel.labelId, selectedItemIds, viewMode)
+            .getOrElse {
+                Timber.e("Mailbox failed to load the bottom-sheet actions: $it")
+                return
+            }
+
+        val mergedActions = actions.replyActions +
+            actions.mailboxItemActions +
+            actions.moveActions +
+            actions.genericActions
 
         emitNewStateFrom(
             MailboxEvent.MailboxBottomSheetEvent(
                 MailboxMoreActionsBottomSheetState.MailboxMoreActionsBottomSheetEvent.ActionData(
-                    listOfNotNull(usedStarAction, Action.Archive, Action.Spam)
+                    mergedActions
                         .map { actionUiModelMapper.toUiModel(it) }
                         .toImmutableList()
                 )
