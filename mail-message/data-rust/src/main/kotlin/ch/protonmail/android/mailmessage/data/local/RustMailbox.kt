@@ -19,6 +19,7 @@
 package ch.protonmail.android.mailmessage.data.local
 
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
+import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import kotlinx.coroutines.flow.Flow
 import me.proton.core.domain.entity.UserId
 import uniffi.proton_mail_uniffi.Mailbox
@@ -29,4 +30,9 @@ interface RustMailbox {
     fun observeConversationMailbox(): Flow<Mailbox>
     fun observeMessageMailbox(): Flow<Mailbox>
     fun observeMailbox(labelId: LocalLabelId): Flow<Mailbox>
+
+    @MissingRustApi
+    // markMessagesRead Rust function requires current label id as a parameter
+    // Therefore this function is added temporarily to get the current label id
+    fun observeCurrentLabelId(): Flow<LocalLabelId>
 }

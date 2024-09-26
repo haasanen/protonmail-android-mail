@@ -27,6 +27,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.map
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.Mailbox
@@ -74,6 +75,10 @@ class RustMailboxImpl @Inject constructor(
     override fun observeMailbox(labelId: LocalLabelId): Flow<Mailbox> = mailboxMutableStatusFlow.asStateFlow()
         .filterNotNull()
         .filter { it.labelId() == labelId }
+
+    override fun observeCurrentLabelId(): Flow<LocalLabelId> = mailboxMutableStatusFlow.asStateFlow()
+        .filterNotNull()
+        .map { it.labelId() }
 
     private fun shouldSwitchMailbox(labelId: LocalLabelId) = mailboxMutableStatusFlow.value?.labelId() != labelId
 }
