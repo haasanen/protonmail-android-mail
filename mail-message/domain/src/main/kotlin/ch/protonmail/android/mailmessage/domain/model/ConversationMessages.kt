@@ -22,5 +22,5 @@ import arrow.core.NonEmptyList
 
 data class ConversationMessages(
     val messages: NonEmptyList<Message>,
-    val messageIdToOpen: MessageId
+    val messageIdToOpen: MessageId?
 )

@@ -334,7 +334,7 @@ class ConversationDetailViewModel @Inject constructor(
 
                     val initialScrollTo = initialScrollToMessageId
                         ?: conversationMessages.messageIdToOpen
-                            .let { messageIdUiModelMapper.toUiModel(it) }
+                            ?.let { messageIdUiModelMapper.toUiModel(it) }
                     if (stateIsLoading() && allCollapsed(conversationViewState.messagesState)) {
                         ConversationDetailEvent.MessagesData(
                             messagesUiModels,
