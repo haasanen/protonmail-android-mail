@@ -18,15 +18,15 @@
 
 package ch.protonmail.android.mailconversation.data.local
 
-import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalConversation
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalConversationId
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
+import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailconversation.data.ConversationRustCoroutineScope
+import ch.protonmail.android.mailconversation.data.usecase.GetRustAvailableConversationActions
 import ch.protonmail.android.mailmessage.data.local.RustMailbox
 import ch.protonmail.android.mailmessage.data.model.LocalConversationMessages
 import ch.protonmail.android.mailpagination.domain.model.PageKey
-import ch.protonmail.android.mailsession.domain.repository.MailSessionRepository
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -34,6 +34,7 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
+import uniffi.proton_mail_uniffi.ConversationAvailableActions
 import uniffi.proton_mail_uniffi.MailUserSession
 import uniffi.proton_mail_uniffi.Mailbox
 import uniffi.proton_mail_uniffi.MailboxException
@@ -43,15 +44,14 @@ import uniffi.proton_mail_uniffi.markConversationsAsUnread
 import uniffi.proton_mail_uniffi.removeLabelFromConversations
 import uniffi.proton_mail_uniffi.starConversations
 import uniffi.proton_mail_uniffi.unstarConversations
-
 import javax.inject.Inject
 
 class RustConversationDataSourceImpl @Inject constructor(
     private val userSessionRepository: UserSessionRepository,
-    private val mailSessionRepository: MailSessionRepository,
     private val rustMailbox: RustMailbox,
     private val rustConversationDetailQuery: RustConversationDetailQuery,
     private val rustConversationsQuery: RustConversationsQuery,
+    private val getRustAvailableConversationActions: GetRustAvailableConversationActions,
     @ConversationRustCoroutineScope private val coroutineScope: CoroutineScope
 ) : RustConversationDataSource {
 
@@ -139,6 +139,20 @@ class RustConversationDataSourceImpl @Inject constructor(
     @MissingRustApi
     // ET - Missing Implementation. This function requires Rust settings integration
     override fun getSenderImage(address: String, bimi: String?): ByteArray? = null
+
+    override suspend fun getAvailableActions(
+        userId: UserId,
+        labelId: LocalLabelId,
+        conversationIds: List<LocalConversationId>
+    ): ConversationAvailableActions? {
+        val mailbox = rustMailbox.observeMailbox(labelId).firstOrNull()
+        if (mailbox == null) {
+            Timber.e("rust-conversation: trying to get available actions for null Mailbox! failing")
+            return null
+        }
+
+        return getRustAvailableConversationActions(mailbox, conversationIds)
+    }
 
     override suspend fun moveConversations(
         userId: UserId,

@@ -29,6 +29,7 @@ import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailmessage.data.usecase.CreateRustMessageAccessor
 import ch.protonmail.android.mailmessage.data.usecase.CreateRustMessageBodyAccessor
+import ch.protonmail.android.mailmessage.data.usecase.GetRustAvailableMessageActions
 import ch.protonmail.android.mailmessage.data.usecase.GetRustSenderImage
 import ch.protonmail.android.mailmessage.data.usecase.RustMarkMessagesRead
 import ch.protonmail.android.mailmessage.data.usecase.RustMarkMessagesUnread
@@ -42,6 +43,7 @@ import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.MailSessionException
 import uniffi.proton_mail_uniffi.MailboxException
+import uniffi.proton_mail_uniffi.MessageAvailableActions
 import javax.inject.Inject
 
 class RustMessageDataSourceImpl @Inject constructor(
@@ -54,7 +56,8 @@ class RustMessageDataSourceImpl @Inject constructor(
     private val rustMarkMessagesRead: RustMarkMessagesRead,
     private val rustMarkMessagesUnread: RustMarkMessagesUnread,
     private val rustStarMessages: RustStarMessages,
-    private val rustUnstarMessages: RustUnstarMessages
+    private val rustUnstarMessages: RustUnstarMessages,
+    private val getRustAvailableMessageActions: GetRustAvailableMessageActions
 ) : RustMessageDataSource {
 
     override suspend fun getMessage(userId: UserId, messageId: LocalMessageId): LocalMessageMetadata? {
@@ -182,5 +185,19 @@ class RustMessageDataSourceImpl @Inject constructor(
             Timber.e(e, "rust-message: Failed to mark message unStarred")
             DataError.Local.Unknown.left()
         }
+    }
+
+    override suspend fun getAvailableActions(
+        userId: UserId,
+        labelId: LocalLabelId,
+        messageIds: List<LocalMessageId>
+    ): MessageAvailableActions? {
+        val mailbox = rustMailbox.observeMailbox(labelId).firstOrNull()
+        if (mailbox == null) {
+            Timber.e("rust-message: trying to get available actions for null Mailbox! failing")
+            return null
+        }
+
+        return getRustAvailableMessageActions(mailbox, messageIds)
     }
 }

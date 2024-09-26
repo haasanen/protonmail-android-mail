@@ -22,6 +22,7 @@ import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageId
 import ch.protonmail.android.mailmessage.data.usecase.CreateRustMessageAccessor
 import ch.protonmail.android.mailmessage.data.usecase.CreateRustMessageBodyAccessor
+import ch.protonmail.android.mailmessage.data.usecase.GetRustAvailableMessageActions
 import ch.protonmail.android.mailmessage.data.usecase.GetRustSenderImage
 import ch.protonmail.android.mailmessage.data.usecase.RustMarkMessagesRead
 import ch.protonmail.android.mailmessage.data.usecase.RustMarkMessagesUnread
@@ -47,6 +48,7 @@ import uniffi.proton_mail_uniffi.MailSessionException
 import uniffi.proton_mail_uniffi.MailUserSession
 import uniffi.proton_mail_uniffi.Mailbox
 import uniffi.proton_mail_uniffi.MailboxException
+import uniffi.proton_mail_uniffi.MessageAvailableActions
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
@@ -64,6 +66,7 @@ class RustMessageDataSourceImplTest {
     private val rustMarkMessagesUnread = mockk<RustMarkMessagesUnread>()
     private val rustStarMessages = mockk<RustStarMessages>()
     private val rustUnstarMessages = mockk<RustUnstarMessages>()
+    private val getRustAvailableMessageActions = mockk<GetRustAvailableMessageActions>()
     private val dataSource = RustMessageDataSourceImpl(
         userSessionRepository,
         rustMailbox,
@@ -74,7 +77,8 @@ class RustMessageDataSourceImplTest {
         rustMarkMessagesRead,
         rustMarkMessagesUnread,
         rustStarMessages,
-        rustUnstarMessages
+        rustUnstarMessages,
+        getRustAvailableMessageActions
     )
 
     @Test
@@ -324,6 +328,7 @@ class RustMessageDataSourceImplTest {
         coVerify { rustMarkMessagesUnread(mailSession, currentLabelId, messageIds) }
     }
 
+    @Test
     fun `should star messages when session is available`() = runTest {
         // Given
         val userId = UserIdTestData.userId
@@ -444,6 +449,25 @@ class RustMessageDataSourceImplTest {
         // Then
         coVerify { rustUnstarMessages(mailSession, messageIds) }
         assert(result.isLeft())
+    }
+
+    @Test
+    fun `get available actions should return available message actions`() = runTest {
+        // Given
+        val userId = UserIdTestData.userId
+        val labelId = LocalLabelId(1uL)
+        val mailbox = mockk<Mailbox>()
+        val messageIds = listOf(LocalMessageIdSample.AugWeatherForecast)
+        val expected = MessageAvailableActions(emptyList(), emptyList(), emptyList(), emptyList())
+
+        every { rustMailbox.observeMailbox(labelId) } returns flowOf(mailbox)
+        coEvery { getRustAvailableMessageActions(mailbox, messageIds) } returns expected
+
+        // When
+        val result = dataSource.getAvailableActions(userId, labelId, messageIds)
+
+        // Then
+        assertEquals(expected, result)
     }
 
 }

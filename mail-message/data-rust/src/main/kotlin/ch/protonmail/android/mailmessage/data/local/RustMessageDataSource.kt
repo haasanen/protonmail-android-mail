@@ -26,6 +26,7 @@ import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageMetadata
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import me.proton.core.domain.entity.UserId
+import uniffi.proton_mail_uniffi.MessageAvailableActions
 
 interface RustMessageDataSource {
 
@@ -49,4 +50,10 @@ interface RustMessageDataSource {
 
     suspend fun starMessages(userId: UserId, messages: List<LocalMessageId>): Either<DataError.Local, Unit>
     suspend fun unStarMessages(userId: UserId, messages: List<LocalMessageId>): Either<DataError.Local, Unit>
+
+    suspend fun getAvailableActions(
+        userId: UserId,
+        labelId: LocalLabelId,
+        messageIds: List<LocalMessageId>
+    ): MessageAvailableActions?
 }

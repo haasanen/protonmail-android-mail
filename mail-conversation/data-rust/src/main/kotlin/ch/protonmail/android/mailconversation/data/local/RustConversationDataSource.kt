@@ -25,6 +25,7 @@ import ch.protonmail.android.mailmessage.data.model.LocalConversationMessages
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import kotlinx.coroutines.flow.Flow
 import me.proton.core.domain.entity.UserId
+import uniffi.proton_mail_uniffi.ConversationAvailableActions
 
 interface RustConversationDataSource {
 
@@ -55,4 +56,9 @@ interface RustConversationDataSource {
 
     fun getSenderImage(address: String, bimi: String?): ByteArray?
 
+    suspend fun getAvailableActions(
+        userId: UserId,
+        labelId: LocalLabelId,
+        conversationIds: List<LocalConversationId>
+    ): ConversationAvailableActions?
 }

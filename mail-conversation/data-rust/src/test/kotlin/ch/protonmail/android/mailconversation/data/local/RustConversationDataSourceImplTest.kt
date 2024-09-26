@@ -21,6 +21,7 @@ package ch.protonmail.android.mailconversation.data.local
 import app.cash.turbine.test
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalConversationId
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
+import ch.protonmail.android.mailconversation.data.usecase.GetRustAvailableConversationActions
 import ch.protonmail.android.maillabel.data.mapper.toLabelId
 import ch.protonmail.android.mailmessage.data.local.RustMailbox
 import ch.protonmail.android.mailmessage.data.model.LocalConversationMessages
@@ -35,6 +36,7 @@ import ch.protonmail.android.testdata.message.rust.LocalMessageTestData
 import ch.protonmail.android.testdata.user.UserIdTestData
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.first
@@ -42,7 +44,9 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import org.junit.Test
+import uniffi.proton_mail_uniffi.ConversationAvailableActions
 import uniffi.proton_mail_uniffi.MailSession
+import uniffi.proton_mail_uniffi.Mailbox
 import uniffi.proton_mail_uniffi.MailboxException
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
@@ -59,12 +63,14 @@ class RustConversationDataSourceImplTest {
     private val rustMailbox: RustMailbox = mockk()
     private val rustConversationDetailQuery: RustConversationDetailQuery = mockk()
     private val rustConversationsQuery: RustConversationsQuery = mockk()
+    private val getRustAvailableConversationActions = mockk<GetRustAvailableConversationActions>()
+
     private val dataSource = RustConversationDataSourceImpl(
         sessionManager,
-        mailSessionRepository,
         rustMailbox,
         rustConversationDetailQuery,
         rustConversationsQuery,
+        getRustAvailableConversationActions,
         testCoroutineScope
     )
 
@@ -158,4 +164,24 @@ class RustConversationDataSourceImplTest {
             awaitComplete()
         }
     }
+
+    @Test
+    fun `get available actions should return available conversation actions`() = runTest {
+        // Given
+        val userId = UserIdTestData.userId
+        val labelId = LocalLabelId(1uL)
+        val mailbox = mockk<Mailbox>()
+        val conversationIds = listOf(LocalConversationIdSample.OctConversation)
+        val expected = ConversationAvailableActions(emptyList(), emptyList(), emptyList(), emptyList())
+
+        every { rustMailbox.observeMailbox(labelId) } returns flowOf(mailbox)
+        coEvery { getRustAvailableConversationActions(mailbox, conversationIds) } returns expected
+
+        // When
+        val result = dataSource.getAvailableActions(userId, labelId, conversationIds)
+
+        // Then
+        assertEquals(expected, result)
+    }
+
 }
