@@ -24,6 +24,8 @@ import arrow.core.getOrElse
 import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalMimeType
+import ch.protonmail.android.mailcommon.domain.model.Action
+import ch.protonmail.android.mailcommon.domain.model.AvailableActions
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
 import ch.protonmail.android.maillabel.domain.SelectedMailLabelId
@@ -34,6 +36,7 @@ import ch.protonmail.android.mailmessage.data.mapper.toLocalMessageId
 import ch.protonmail.android.mailmessage.data.mapper.toMessage
 import ch.protonmail.android.mailmessage.data.mapper.toMessageBody
 import ch.protonmail.android.mailmessage.data.mapper.toMessageId
+import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.SenderImage
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.testdata.message.rust.LocalMessageIdSample
@@ -50,6 +53,14 @@ import kotlinx.coroutines.test.runTest
 import me.proton.core.domain.entity.UserId
 import org.junit.Test
 import uniffi.proton_mail_uniffi.BodyOutput
+import uniffi.proton_mail_uniffi.GeneralActions
+import uniffi.proton_mail_uniffi.Id
+import uniffi.proton_mail_uniffi.IsSelected
+import uniffi.proton_mail_uniffi.MessageAction
+import uniffi.proton_mail_uniffi.MessageAvailableActions
+import uniffi.proton_mail_uniffi.ReplyAction
+import uniffi.proton_mail_uniffi.SystemFolderAction
+import uniffi.proton_mail_uniffi.SystemLabel
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 
@@ -303,4 +314,99 @@ class RustMessageRepositoryImplTest {
         assertEquals(DataError.Local.Unknown, result.swap().getOrElse { null })
     }
 
+    @Test
+    fun `get available actions should return available actions when data source exposes them`() = runTest {
+        // Given
+        val userId = UserIdTestData.userId
+        val labelId = SystemLabelId.Inbox.labelId
+        val messageIds = listOf(MessageId("1"))
+        val rustAvailableActions = MessageAvailableActions(
+            listOf(ReplyAction.REPLY, ReplyAction.FORWARD),
+            listOf(MessageAction.STAR, MessageAction.LABEL_AS),
+            listOf(
+                SystemFolderAction(Id(5uL), SystemLabel.SPAM, IsSelected.UNSELECTED),
+                SystemFolderAction(Id(10uL), SystemLabel.ARCHIVE, IsSelected.UNSELECTED)
+            ),
+            listOf(GeneralActions.VIEW_HEADERS)
+        )
+
+        coEvery {
+            rustMessageDataSource.getAvailableActions(
+                userId,
+                labelId.toLocalLabelId(),
+                messageIds.map { it.toLocalMessageId() }
+            )
+        } returns rustAvailableActions
+
+        // When
+        val result = repository.getAvailableActions(userId, labelId, messageIds)
+
+        // Then
+        val expected = AvailableActions(
+            listOf(Action.Reply, Action.Forward),
+            listOf(Action.Star, Action.Label),
+            listOf(Action.Spam, Action.Archive),
+            listOf(Action.ViewHeaders)
+        )
+        assertEquals(expected.right(), result)
+    }
+
+    @Test
+    fun `get available actions should return error when data source fails`() = runTest {
+        // Given
+        val userId = UserIdTestData.userId
+        val labelId = SystemLabelId.Inbox.labelId
+        val messageIds = listOf(MessageId("1"))
+
+        coEvery {
+            rustMessageDataSource.getAvailableActions(
+                userId,
+                labelId.toLocalLabelId(),
+                messageIds.map { it.toLocalMessageId() }
+            )
+        } returns null
+
+        // When
+        val result = repository.getAvailableActions(userId, labelId, messageIds)
+
+        // Then
+        assertEquals(DataError.Local.Unknown.left(), result)
+    }
+
+    @Test
+    fun `get available actions skips any unhandled actions returned by the data source`() = runTest {
+        // Given
+        val userId = UserIdTestData.userId
+        val labelId = SystemLabelId.Inbox.labelId
+        val messageIds = listOf(MessageId("1"))
+        val rustAvailableActions = MessageAvailableActions(
+            listOf(ReplyAction.REPLY_ALL),
+            listOf(MessageAction.PIN),
+            listOf(
+                SystemFolderAction(Id(5uL), SystemLabel.ALL_DRAFTS, IsSelected.UNSELECTED),
+                SystemFolderAction(Id(10uL), SystemLabel.INBOX, IsSelected.UNSELECTED)
+            ),
+            emptyList()
+        )
+
+        coEvery {
+            rustMessageDataSource.getAvailableActions(
+                userId,
+                labelId.toLocalLabelId(),
+                messageIds.map { it.toLocalMessageId() }
+            )
+        } returns rustAvailableActions
+
+        // When
+        val result = repository.getAvailableActions(userId, labelId, messageIds)
+
+        // Then
+        val expected = AvailableActions(
+            listOf(Action.ReplyAll),
+            emptyList(),
+            emptyList(),
+            emptyList()
+        )
+        assertEquals(expected.right(), result)
+    }
 }

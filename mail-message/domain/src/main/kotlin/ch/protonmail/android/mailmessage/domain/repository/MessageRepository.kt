@@ -19,6 +19,7 @@
 package ch.protonmail.android.mailmessage.domain.repository
 
 import arrow.core.Either
+import ch.protonmail.android.mailcommon.domain.model.AvailableActions
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
@@ -179,4 +180,10 @@ interface MessageRepository {
      * Report a message as phishing
      */
     suspend fun reportPhishing(userId: UserId, decryptedMessageBody: DecryptedMessageBody): Either<DataError, Unit>
+
+    suspend fun getAvailableActions(
+        userId: UserId,
+        labelId: LabelId,
+        messageIds: List<MessageId>
+    ): Either<DataError, AvailableActions>
 }

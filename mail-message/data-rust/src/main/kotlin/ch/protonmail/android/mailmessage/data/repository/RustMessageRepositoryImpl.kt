@@ -23,12 +23,14 @@ import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
+import ch.protonmail.android.mailcommon.domain.model.AvailableActions
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
 import ch.protonmail.android.maillabel.domain.SelectedMailLabelId
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.mailmessage.data.local.RustMessageDataSource
+import ch.protonmail.android.mailmessage.data.mapper.toAvailableActions
 import ch.protonmail.android.mailmessage.data.mapper.toLocalMessageId
 import ch.protonmail.android.mailmessage.data.mapper.toMessage
 import ch.protonmail.android.mailmessage.data.mapper.toMessageBody
@@ -45,6 +47,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import me.proton.core.domain.entity.UserId
+import timber.log.Timber
 import uniffi.proton_mail_uniffi.BlockQuote
 import uniffi.proton_mail_uniffi.RemoteContent
 import uniffi.proton_mail_uniffi.TransformOpts
@@ -196,5 +199,20 @@ class RustMessageRepositoryImpl @Inject constructor(
         decryptedMessageBody: DecryptedMessageBody
     ): Either<DataError, Unit> {
         TODO("Not yet implemented")
+    }
+
+    override suspend fun getAvailableActions(
+        userId: UserId,
+        labelId: LabelId,
+        messageIds: List<MessageId>
+    ): Either<DataError, AvailableActions> {
+        val availableActions = rustMessageDataSource.getAvailableActions(
+            userId,
+            labelId.toLocalLabelId(),
+            messageIds.map { it.toLocalMessageId() }
+        ) ?: return DataError.Local.Unknown.left()
+        Timber.v("rust-message: Available actions: $availableActions \n for messages $messageIds")
+
+        return availableActions.toAvailableActions().right()
     }
 }
