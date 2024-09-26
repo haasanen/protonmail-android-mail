@@ -24,8 +24,10 @@ import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageId
 import ch.protonmail.android.mailconversation.data.usecase.CreateRustConversationWatcher
 import ch.protonmail.android.mailmessage.data.local.RustMailbox
 import ch.protonmail.android.mailmessage.data.model.LocalConversationMessages
+import ch.protonmail.android.mailmessage.data.usecase.GetRustConversationMessages
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
 import ch.protonmail.android.testdata.conversation.rust.LocalConversationTestData
+import ch.protonmail.android.testdata.message.rust.LocalMessageTestData
 import ch.protonmail.android.testdata.user.UserIdTestData
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -40,6 +42,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
+import uniffi.proton_mail_uniffi.ConversationAndMessages
 import uniffi.proton_mail_uniffi.LiveQueryCallback
 import uniffi.proton_mail_uniffi.Mailbox
 import uniffi.proton_mail_uniffi.WatchHandle
@@ -53,12 +56,16 @@ class RustConversationDetailQueryImplTest {
     val mainDispatcherRule = MainDispatcherRule()
     private val testCoroutineScope = CoroutineScope(mainDispatcherRule.testDispatcher)
 
+    private val mailbox = mockk<Mailbox>()
+
     private val createRustConversationWatcher: CreateRustConversationWatcher = mockk()
     private val rustMailbox: RustMailbox = mockk()
+    private val getRustConversationMessages: GetRustConversationMessages = mockk()
 
     private val rustConversationQuery = RustConversationDetailQueryImpl(
         rustMailbox,
         createRustConversationWatcher,
+        getRustConversationMessages,
         testCoroutineScope
     )
 
@@ -67,14 +74,13 @@ class RustConversationDetailQueryImplTest {
         // Given
         val conversationId = LocalConversationId(1uL)
         val messageToOpen = LocalMessageId(100u)
-        val mailbox = mockk<Mailbox>()
         val callbackSlot = slot<LiveQueryCallback>()
         val expectedConversation = LocalConversationTestData.AugConversation
         val expectedMessages = LocalConversationMessages(messageToOpen, listOf(mockk()))
         val watcherMock = mockk<WatchedConversation> {
             every { conversation } returns expectedConversation
             every { messages } returns expectedMessages.messages
-            every { messageIdToOpen } returns expectedMessages.messageIdToOpen
+            every { messageIdToOpen } returns messageToOpen
         }
         every { rustMailbox.observeConversationMailbox() } returns flowOf(mailbox)
         coEvery { createRustConversationWatcher(mailbox, conversationId, capture(callbackSlot)) } returns watcherMock
@@ -101,18 +107,20 @@ class RustConversationDetailQueryImplTest {
         val userId = UserIdTestData.userId
         val conversationId = LocalConversationId(1u)
         val messageToOpen = LocalMessageId(100u)
-        val mailbox = mockk<Mailbox>()
+        val messages = listOf(LocalMessageTestData.AugWeatherForecast)
         val callbackSlot = slot<LiveQueryCallback>()
         val expectedConversation = LocalConversationTestData.AugConversation
-        val expectedMessages = LocalConversationMessages(messageToOpen, listOf(mockk()))
+        val expectedMessages = LocalConversationMessages(messageToOpen, messages)
         val watcherMock = mockk<WatchedConversation> {
-            every { conversation } returns expectedConversation
-            every { messages } returns expectedMessages.messages
-            every { messageIdToOpen } returns expectedMessages.messageIdToOpen
+            every { this@mockk.conversation } returns expectedConversation
+            every { this@mockk.messages } returns expectedMessages.messages
+            every { this@mockk.messageIdToOpen } returns messageToOpen
         }
         every { rustMailbox.observeConversationMailbox() } returns flowOf(mailbox)
         coEvery { createRustConversationWatcher(mailbox, conversationId, capture(callbackSlot)) } returns watcherMock
-
+        coEvery {
+            getRustConversationMessages(mailbox, conversationId)
+        } returns ConversationAndMessages(expectedConversation, messageToOpen, messages)
         rustConversationQuery.observeConversation(userId, conversationId).test {
             skipItems(1)
             // When
@@ -121,7 +129,10 @@ class RustConversationDetailQueryImplTest {
             val updatedMessages = expectedMessages.copy(messageIdToOpen = updatedMessageToOpen)
             every { watcherMock.conversation } returns updatedConversation
             every { watcherMock.messages } returns updatedMessages.messages
-            every { watcherMock.messageIdToOpen } returns updatedMessages.messageIdToOpen
+            every { watcherMock.messageIdToOpen } returns messageToOpen
+            coEvery {
+                getRustConversationMessages(mailbox, conversationId)
+            } returns ConversationAndMessages(updatedConversation, updatedMessageToOpen, updatedMessages.messages)
 
             // When
             callbackSlot.captured.onUpdate()
@@ -145,15 +156,15 @@ class RustConversationDetailQueryImplTest {
         // Given
         val userId = UserIdTestData.userId
         val conversationId = LocalConversationId(1u)
-        val mailbox = mockk<Mailbox>()
+        val messageToOpen = LocalMessageId(100u)
         val callbackSlot = slot<LiveQueryCallback>()
         val expectedConversation = LocalConversationTestData.AugConversation
-        val expectedMessages = LocalConversationMessages(LocalMessageId(100u), listOf(mockk()))
+        val expectedMessages = LocalConversationMessages(messageToOpen, listOf(mockk()))
 
         val watcherMock = mockk<WatchedConversation> {
             every { conversation } returns expectedConversation
             every { messages } returns expectedMessages.messages
-            every { messageIdToOpen } returns expectedMessages.messageIdToOpen
+            every { messageIdToOpen } returns messageToOpen
 
         }
         every { rustMailbox.observeConversationMailbox() } returns flowOf(mailbox)
@@ -176,15 +187,15 @@ class RustConversationDetailQueryImplTest {
         val userId = UserIdTestData.userId
         val conversationId1 = LocalConversationId(1u)
         val conversationId2 = LocalConversationId(2u)
-        val mailbox = mockk<Mailbox>()
+        val messageToOpen = LocalMessageId(100u)
         val callbackSlot = slot<LiveQueryCallback>()
-        val expectedMessages = LocalConversationMessages(LocalMessageId(100u), listOf(mockk()))
+        val expectedMessages = LocalConversationMessages(messageToOpen, listOf(mockk()))
         val expectedConversation1 = LocalConversationTestData.AugConversation
         val expectedConversation2 = expectedConversation1.copy(id = conversationId2)
         val watcherMock1 = mockk<WatchedConversation> {
             every { conversation } returns expectedConversation1
             every { messages } returns expectedMessages.messages
-            every { messageIdToOpen } returns expectedMessages.messageIdToOpen
+            every { messageIdToOpen } returns messageToOpen
             every { handle } returns mockk<WatchHandle> {
                 every { disconnect() } returns Unit
             }
@@ -192,7 +203,7 @@ class RustConversationDetailQueryImplTest {
         val watcherMock2 = mockk<WatchedConversation> {
             every { conversation } returns expectedConversation2
             every { messages } returns expectedMessages.messages
-            every { messageIdToOpen } returns expectedMessages.messageIdToOpen
+            every { messageIdToOpen } returns messageToOpen
             every { handle } returns mockk<WatchHandle> {
                 every { disconnect() } returns Unit
             }
@@ -219,14 +230,14 @@ class RustConversationDetailQueryImplTest {
     fun `concurrent calls to observeConversation should initialize the watcher only once`() = runTest {
         // Given
         val conversationId = LocalConversationId(1uL)
-        val mailbox = mockk<Mailbox>()
+        val messageToOpen = LocalMessageId(100u)
         val callbackSlot = slot<LiveQueryCallback>()
         val expectedConversation = LocalConversationTestData.AugConversation
-        val expectedMessages = LocalConversationMessages(LocalMessageId(100u), listOf(mockk()))
+        val expectedMessages = LocalConversationMessages(messageToOpen, listOf(mockk()))
         val watcherMock = mockk<WatchedConversation> {
             every { conversation } returns expectedConversation
             every { messages } returns expectedMessages.messages
-            every { messageIdToOpen } returns expectedMessages.messageIdToOpen
+            every { messageIdToOpen } returns messageToOpen
             every { handle } returns mockk<WatchHandle> {
                 every { disconnect() } returns Unit
             }
@@ -255,4 +266,5 @@ class RustConversationDetailQueryImplTest {
     }
 
 }
+
 

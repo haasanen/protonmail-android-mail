@@ -20,10 +20,12 @@ package ch.protonmail.android.mailconversation.data.local
 
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalConversation
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalConversationId
+import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageMetadata
 import ch.protonmail.android.mailconversation.data.ConversationRustCoroutineScope
 import ch.protonmail.android.mailconversation.data.usecase.CreateRustConversationWatcher
 import ch.protonmail.android.mailmessage.data.local.RustMailbox
 import ch.protonmail.android.mailmessage.data.model.LocalConversationMessages
+import ch.protonmail.android.mailmessage.data.usecase.GetRustConversationMessages
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -42,6 +44,7 @@ import javax.inject.Inject
 class RustConversationDetailQueryImpl @Inject constructor(
     private val rustMailbox: RustMailbox,
     private val createRustConversationWatcher: CreateRustConversationWatcher,
+    private val getRustConversationMessages: GetRustConversationMessages,
     @ConversationRustCoroutineScope private val coroutineScope: CoroutineScope
 ) : RustConversationDetailQuery {
 
@@ -60,19 +63,23 @@ class RustConversationDetailQueryImpl @Inject constructor(
 
     private val conversationUpdatedCallback = object : LiveQueryCallback {
         override fun onUpdate() {
-            conversationMutableStatusFlow.value = conversationWatcher?.conversation
-            val messages = conversationWatcher?.messages
-            val messageIdToOpen = conversationWatcher?.messageIdToOpen
+            coroutineScope.launch {
+                mutex.withLock {
+                    val mailbox = rustMailbox.observeConversationMailbox().firstOrNull()
+                    if (mailbox != null && currentConversationId != null) {
+                        val conversationAndMessages = getRustConversationMessages(mailbox, currentConversationId!!)
 
-            if (messages != null && messageIdToOpen != null) {
-                val localConversationMessages = LocalConversationMessages(messageIdToOpen, messages)
-                conversationMessagesMutableStatusFlow.value = localConversationMessages
-                Timber.d("rust-conversation-messages: new messages value is $localConversationMessages")
-            } else {
-                Timber.w("rust-conversation-messages: Failed to update conversation messages!")
+                        conversationMutableStatusFlow.value = conversationAndMessages?.conversation
+
+                        val messages: List<LocalMessageMetadata> = conversationAndMessages?.messages ?: emptyList()
+                        val messageIdToOpen = conversationAndMessages?.messageIdToOpen
+                        val localConversationMessages = LocalConversationMessages(messageIdToOpen, messages)
+                        conversationMessagesMutableStatusFlow.value = localConversationMessages
+                    } else {
+                        Timber.w("rust-conversation-messages: Failed to update conversation messages!")
+                    }
+                }
             }
-
-            Timber.d("rust-conversation-detail-query: onUpdated, item ${conversationMutableStatusFlow.value}")
         }
     }
 
