@@ -19,19 +19,24 @@
 package ch.protonmail.android.mailmessage.data.local
 
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
+import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageId
 import ch.protonmail.android.mailmessage.data.usecase.CreateRustMessageAccessor
 import ch.protonmail.android.mailmessage.data.usecase.CreateRustMessageBodyAccessor
 import ch.protonmail.android.mailmessage.data.usecase.GetRustSenderImage
+import ch.protonmail.android.mailmessage.data.usecase.RustMarkMessagesRead
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import ch.protonmail.android.testdata.message.rust.LocalMessageIdSample
 import ch.protonmail.android.testdata.message.rust.LocalMessageTestData
 import ch.protonmail.android.testdata.user.UserIdTestData
+import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
 import io.mockk.verify
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
@@ -51,13 +56,15 @@ class RustMessageDataSourceImplTest {
     private val createRustMessageAccessor = mockk<CreateRustMessageAccessor>()
     private val createRustMessageBodyAccessor = mockk<CreateRustMessageBodyAccessor>()
     private val getRustSenderImage = mockk<GetRustSenderImage>()
+    private val rustMarkMessagesRead = mockk<RustMarkMessagesRead>()
     private val dataSource = RustMessageDataSourceImpl(
         userSessionRepository,
         rustMailbox,
         rustMessageQuery,
         createRustMessageAccessor,
         createRustMessageBodyAccessor,
-        getRustSenderImage
+        getRustSenderImage,
+        rustMarkMessagesRead
     )
 
     @Test
@@ -212,6 +219,75 @@ class RustMessageDataSourceImplTest {
 
         // Then
         assertNull(result)
+    }
+
+    @Test
+    fun `should mark messages as read when session and labelId are available`() = runTest {
+        // Given
+        val userId = UserIdTestData.userId
+        val mailSession = mockk<MailUserSession>()
+        val currentLabelId = LocalLabelId(123uL)
+        val messageIds = listOf(LocalMessageId(1uL), LocalMessageId(2uL))
+
+        coEvery { userSessionRepository.getUserSession(userId) } returns mailSession
+        coEvery { rustMailbox.observeCurrentLabelId() } returns flowOf(currentLabelId)
+        coEvery { rustMarkMessagesRead(mailSession, currentLabelId, messageIds) } just Runs
+
+        // When
+        dataSource.markRead(userId, messageIds)
+
+        // Then
+        coVerify { rustMarkMessagesRead(mailSession, currentLabelId, messageIds) }
+    }
+
+    @Test
+    fun `should not mark messages as read when session is null`() = runTest {
+        // Given
+        val userId = UserIdTestData.userId
+        val messageIds = listOf(LocalMessageId(1uL), LocalMessageId(2uL))
+
+        coEvery { userSessionRepository.getUserSession(userId) } returns null
+
+        // When
+        dataSource.markRead(userId, messageIds)
+
+        // Then
+        coVerify(exactly = 0) { rustMarkMessagesRead(any(), any(), any()) }
+    }
+
+    @Test
+    fun `should not mark messages as read when labelId is null`() = runTest {
+        // Given
+        val userId = UserIdTestData.userId
+        val mailSession = mockk<MailUserSession>()
+        val messageIds = listOf(LocalMessageId(1uL), LocalMessageId(2uL))
+
+        coEvery { userSessionRepository.getUserSession(userId) } returns mailSession
+        coEvery { rustMailbox.observeCurrentLabelId() } returns flowOf()
+
+        // When
+        dataSource.markRead(userId, messageIds)
+
+        // Then
+        coVerify(exactly = 0) { rustMarkMessagesRead(mailSession, any(), messageIds) }
+    }
+
+    @Test
+    fun `should handle exception when marking messages as read`() = runTest {
+        // Given
+        val userId = UserIdTestData.userId
+        val mailSession = mockk<MailUserSession>()
+        val currentLabelId = LocalLabelId(123uL)
+        val messageIds = listOf(LocalMessageId(1uL), LocalMessageId(2uL))
+
+        coEvery { userSessionRepository.getUserSession(userId) } throws MailSessionException.Other("Error")
+        coEvery { rustMailbox.observeCurrentLabelId().firstOrNull() } returns currentLabelId
+
+        // When
+        dataSource.markRead(userId, messageIds)
+
+        // Then
+        coVerify(exactly = 0) { rustMarkMessagesRead(mailSession, currentLabelId, messageIds) }
     }
 
 }

@@ -26,6 +26,7 @@ import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailmessage.data.usecase.CreateRustMessageAccessor
 import ch.protonmail.android.mailmessage.data.usecase.CreateRustMessageBodyAccessor
 import ch.protonmail.android.mailmessage.data.usecase.GetRustSenderImage
+import ch.protonmail.android.mailmessage.data.usecase.RustMarkMessagesRead
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import kotlinx.coroutines.flow.firstOrNull
@@ -42,7 +43,8 @@ class RustMessageDataSourceImpl @Inject constructor(
     private val rustMessageQuery: RustMessageQuery,
     private val createRustMessageAccessor: CreateRustMessageAccessor,
     private val createRustMessageBodyAccessor: CreateRustMessageBodyAccessor,
-    private val getRustSenderImage: GetRustSenderImage
+    private val getRustSenderImage: GetRustSenderImage,
+    private val rustMarkMessagesRead: RustMarkMessagesRead
 ) : RustMessageDataSource {
 
     override suspend fun getMessage(userId: UserId, messageId: LocalMessageId): LocalMessageMetadata? {
@@ -111,7 +113,24 @@ class RustMessageDataSourceImpl @Inject constructor(
 
     @MissingRustApi
     override suspend fun markRead(userId: UserId, messages: List<LocalMessageId>) {
-        Timber.w("rust-message: markRead has not been implemented by Rust")
+        try {
+            val session = userSessionRepository.getUserSession(userId)
+            if (session == null) {
+                Timber.e("rust-message: trying to mark message read with a null session")
+                return
+            }
+
+            val currentLabelId = rustMailbox.observeCurrentLabelId().firstOrNull()
+            if (currentLabelId == null) {
+                Timber.e("rust-message: trying to mark message read with a null labelId")
+                return
+            }
+
+            rustMarkMessagesRead(session, currentLabelId, messages)
+        } catch (e: MailSessionException) {
+            Timber.e(e, "rust-message: Failed to mark message read")
+        }
+
     }
 
     @MissingRustApi
