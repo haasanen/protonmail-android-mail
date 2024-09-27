@@ -64,6 +64,7 @@ fun UnexpectedError.getErrorMessage() = when (this) {
     UnexpectedError.OS -> "OS"
     UnexpectedError.QUEUE -> "QUEUE"
     UnexpectedError.UNKNOWN -> "UNKNOWN"
+    UnexpectedError.API -> "API"
 }.also {
     val error = IllegalStateException("UnexpectedError: $it")
     CoreLogger.e(LogTag.LOGIN, error)

@@ -36,7 +36,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -76,7 +75,7 @@ public fun LoginScreen(
     onCloseClicked: () -> Unit,
     onHelpClicked: () -> Unit,
     onErrorMessage: (String?) -> Unit = {},
-    onLoggedIn: (MailUserSession) -> Unit = {},
+    onSuccess: (String) -> Unit = {},
     viewModel: LoginViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -86,7 +85,7 @@ public fun LoginScreen(
         onHelpClicked = onHelpClicked,
         onLoginClicked = { viewModel.submit(it) },
         onErrorMessage = onErrorMessage,
-        onLoggedIn = onLoggedIn,
+        onSuccess = onSuccess,
         state = state
     )
 }
@@ -98,16 +97,15 @@ public fun LoginScreen(
     onHelpClicked: () -> Unit = {},
     onLoginClicked: (LoginAction.Login) -> Unit = {},
     onErrorMessage: (String?) -> Unit = {},
-    onLoggedIn: (MailUserSession) -> Unit = {},
-    onNextStep: (String) -> Unit = {},
+    onSuccess: (String) -> Unit = {},
     state: LoginViewState = LoginViewState.Idle
 ) {
     LaunchedEffect(state) {
         when (state) {
             is LoginViewState.Error.LoginFlow -> onErrorMessage(state.error)
-            is LoginViewState.LoggedIn -> onLoggedIn(state.session)
-            is LoginViewState.Awaiting2fa -> onNextStep(state.userId)
-            is LoginViewState.Awaiting2Pass -> onNextStep(state.userId)
+            is LoginViewState.LoggedIn -> onSuccess(state.session.userId())
+            is LoginViewState.Awaiting2fa -> onSuccess(state.userId)
+            is LoginViewState.Awaiting2Pass -> onSuccess(state.userId)
             else -> Unit
         }
     }
@@ -117,7 +115,7 @@ public fun LoginScreen(
         onHelpClicked = onHelpClicked,
         onLoginClicked = onLoginClicked,
         isUsernameError = state is LoginViewState.Error.Validation,
-        isLoading = state is LoginViewState.LoggingIn
+        isLoading = state.isLoading
     )
 }
 
@@ -254,7 +252,7 @@ private fun LoginForm(
     }
 }
 
-@Preview(name = "Light mode")
+@Preview(name = "Light mode", showBackground = true)
 @Preview(name = "Dark mode", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview(name = "Small screen height", heightDp = SMALL_SCREEN_HEIGHT)
 @Preview(name = "Foldable", device = Devices.FOLDABLE)
@@ -267,7 +265,7 @@ internal fun LoginScreenPreview() {
     }
 }
 
-@Preview(name = "Light mode")
+@Preview(name = "Light mode", showBackground = true)
 @Preview(name = "Dark mode", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview(name = "Small screen height", heightDp = SMALL_SCREEN_HEIGHT)
 @Preview(name = "Foldable", device = Devices.FOLDABLE)

@@ -18,12 +18,23 @@
 
 package me.proton.android.core.auth.presentation.secondfactor.otp
 
-import uniffi.proton_mail_uniffi.LoginFlowException
-
 sealed interface OneTimePasswordInputState {
     data object Idle : OneTimePasswordInputState
+    data object Closed : OneTimePasswordInputState
     data object Loading : OneTimePasswordInputState
-    data class LoginError(val cause: LoginFlowException) : OneTimePasswordInputState
-    data object CodeIsEmpty : OneTimePasswordInputState
-    data object Success : OneTimePasswordInputState
+    data object Awaiting2Pass : OneTimePasswordInputState
+    data object LoggedIn : OneTimePasswordInputState
+    sealed interface Error : OneTimePasswordInputState {
+        data object Validation : Error
+        data class LoginFlow(val error: String) : Error
+    }
+
+    val isLoading: Boolean
+        get() = when (this) {
+            is Loading -> true
+            is Awaiting2Pass -> true
+            is LoggedIn -> true
+            is Closed -> true
+            else -> false
+        }
 }

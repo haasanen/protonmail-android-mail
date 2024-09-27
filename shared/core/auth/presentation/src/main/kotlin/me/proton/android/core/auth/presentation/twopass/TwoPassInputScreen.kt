@@ -38,9 +38,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import me.proton.android.core.auth.presentation.R
-import me.proton.android.core.auth.presentation.widget.ProtonPasswordOutlinedTextFieldWithError
+import me.proton.android.core.auth.presentation.secondfactor.SecondFactorInputAction
+import me.proton.core.compose.component.ProtonPasswordOutlinedTextFieldWithError
 import me.proton.core.compose.component.ProtonSolidButton
 import me.proton.core.compose.component.ProtonTextButton
 import me.proton.core.compose.component.appbar.ProtonTopAppBar
@@ -48,28 +52,30 @@ import me.proton.core.compose.theme.LocalColors
 import me.proton.core.compose.theme.LocalTypography
 import me.proton.core.compose.theme.ProtonDimens
 import me.proton.core.compose.theme.ProtonTheme
-import me.proton.core.compose.viewmodel.hiltViewModelOrNull
 
 @Composable
 fun TwoPassInputScreen(
-    onBackClicked: () -> Unit,
-    onError: (Throwable) -> Unit,
+    onClose: () -> Unit,
+    onError: (String?) -> Unit,
     onForgotPassword: () -> Unit,
     onSuccess: () -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: TwoPassInputViewModel? = hiltViewModelOrNull()
+    viewModel: TwoPassInputViewModel = hiltViewModel(),
+    externalAction: StateFlow<TwoPassInputAction?> = MutableStateFlow(null)
 ) {
-    val state by viewModel?.state?.collectAsStateWithLifecycle()
-        ?: remember { derivedStateOf { TwoPassInputState.Idle } }
+    val action by externalAction.collectAsStateWithLifecycle()
+    action?.let { viewModel.submit(it) }
+
+    val state by viewModel.state.collectAsStateWithLifecycle()
 
     TwoPassInputScreen(
         state = state,
         modifier = modifier,
-        onBackClicked = onBackClicked,
+        onBackClicked = onClose,
         onError = onError,
         onForgotPassword = onForgotPassword,
         onSuccess = onSuccess,
-        onUnlock = { viewModel?.submit(it) }
+        onUnlock = { viewModel.submit(it) }
     )
 }
 
@@ -78,17 +84,17 @@ fun TwoPassInputScreen(
     state: TwoPassInputState,
     modifier: Modifier = Modifier,
     onBackClicked: () -> Unit = {},
-    onError: (Throwable) -> Unit = {},
+    onError: (String?) -> Unit = {},
     onForgotPassword: () -> Unit = {},
     onSuccess: () -> Unit = {},
     onUnlock: (TwoPassInputAction.Unlock) -> Unit = {}
 ) {
-    val isLoading = state is TwoPassInputState.Loading
+    val isLoading = state.isLoading
     var mailboxPassword by remember { mutableStateOf("") }
 
     LaunchedEffect(state) {
         when (state) {
-            is TwoPassInputState.LoginError -> onError(state.cause)
+            is TwoPassInputState.Error.LoginFlow -> onError(state.error)
             is TwoPassInputState.Success -> onSuccess()
             else -> Unit
         }
@@ -126,7 +132,7 @@ fun TwoPassInputScreen(
                     enabled = !isLoading,
                     modifier = Modifier.padding(top = ProtonDimens.MediumSpacing),
                     errorText = when {
-                        state is TwoPassInputState.PasswordIsEmpty -> stringResource(R.string.auth_two_pass_input_empty)
+                        state is TwoPassInputState.Error.PasswordIsEmpty -> stringResource(R.string.auth_two_pass_input_empty)
                         else -> null
                     }
                 )

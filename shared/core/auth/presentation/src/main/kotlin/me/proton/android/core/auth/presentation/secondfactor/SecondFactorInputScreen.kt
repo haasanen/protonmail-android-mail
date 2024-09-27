@@ -18,8 +18,10 @@
 
 package me.proton.android.core.auth.presentation.secondfactor
 
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.Icon
@@ -27,14 +29,19 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import me.proton.android.core.auth.presentation.R
+import me.proton.android.core.auth.presentation.addaccount.SMALL_SCREEN_HEIGHT
 import me.proton.android.core.auth.presentation.secondfactor.otp.OneTimePasswordInputForm
 import me.proton.core.compose.component.appbar.ProtonTopAppBar
 import me.proton.core.compose.theme.LocalColors
@@ -44,15 +51,43 @@ import me.proton.core.compose.theme.ProtonTheme
 
 @Composable
 fun SecondFactorInputScreen(
-    onBackClicked: () -> Unit,
-    onError: (Throwable) -> Unit,
+    onClose: () -> Unit,
+    onError: (String?) -> Unit,
     onSuccess: () -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: SecondFactorInputViewModel = hiltViewModel()
+    viewModel: SecondFactorInputViewModel = hiltViewModel(),
+    externalAction: StateFlow<SecondFactorInputAction?> = MutableStateFlow(null)
 ) {
+    val action by externalAction.collectAsStateWithLifecycle()
+    action?.let { viewModel.submit(it) }
+
     val state by viewModel.state.collectAsStateWithLifecycle()
     SecondFactorInputScreen(
         state = state,
+        modifier = modifier,
+        onClose = onClose,
+        onError = onError,
+        onSuccess = onSuccess,
+        onBackClicked = { viewModel.submit(SecondFactorInputAction.Close) }
+    )
+}
+
+@Composable
+fun SecondFactorInputScreen(
+    state: SecondFactorInputState,
+    modifier: Modifier = Modifier,
+    onClose: () -> Unit = {},
+    onError: (String?) -> Unit = {},
+    onSuccess: () -> Unit = {},
+    onBackClicked: () -> Unit = {}
+) {
+    LaunchedEffect(state) {
+        when (state) {
+            is SecondFactorInputState.Close -> onClose()
+            is SecondFactorInputState.Idle -> Unit
+        }
+    }
+    SecondFactorInputScaffold(
         modifier = modifier,
         onBackClicked = onBackClicked,
         onError = onError,
@@ -61,11 +96,10 @@ fun SecondFactorInputScreen(
 }
 
 @Composable
-fun SecondFactorInputScreen(
-    state: SecondFactorInputState,
+fun SecondFactorInputScaffold(
     modifier: Modifier = Modifier,
     onBackClicked: () -> Unit = {},
-    onError: (Throwable) -> Unit = {},
+    onError: (String?) -> Unit = {},
     onSuccess: () -> Unit = {}
 ) {
     Scaffold(
@@ -92,6 +126,7 @@ fun SecondFactorInputScreen(
                     style = LocalTypography.current.headline,
                     text = stringResource(R.string.auth_second_factor_title)
                 )
+                Spacer(modifier = Modifier.padding(top = ProtonDimens.MediumSpacing))
                 OneTimePasswordInputForm(
                     onError = onError,
                     onSuccess = onSuccess,
@@ -102,6 +137,12 @@ fun SecondFactorInputScreen(
     }
 }
 
+@Preview(name = "Light mode")
+@Preview(name = "Dark mode", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview(name = "Small screen height", heightDp = SMALL_SCREEN_HEIGHT)
+@Preview(name = "Foldable", device = Devices.FOLDABLE)
+@Preview(name = "Tablet", device = Devices.PIXEL_C)
+@Preview(name = "Horizontal", widthDp = 800, heightDp = 360)
 @Composable
 @Preview
 fun SecondFactorInputScreenPreview() {

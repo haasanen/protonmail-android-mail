@@ -21,6 +21,7 @@ package me.proton.android.core.auth.presentation.secondfactor.otp
 sealed interface OneTimePasswordInputOperation
 
 sealed interface OneTimePasswordInputAction : OneTimePasswordInputOperation {
+    data object Load : OneTimePasswordInputAction
+    data object Close : OneTimePasswordInputAction
     data class Authenticate(val code: String, val mode: OneTimePasswordInputMode) : OneTimePasswordInputAction
-    data class SwitchMode(val mode: OneTimePasswordInputMode) : OneTimePasswordInputAction
 }

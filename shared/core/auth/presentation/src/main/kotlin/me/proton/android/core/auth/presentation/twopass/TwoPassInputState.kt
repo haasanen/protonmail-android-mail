@@ -18,12 +18,21 @@
 
 package me.proton.android.core.auth.presentation.twopass
 
-import uniffi.proton_mail_uniffi.LoginFlowException
-
 sealed interface TwoPassInputState {
     data object Idle : TwoPassInputState
+    data object Closed : TwoPassInputState
     data object Loading : TwoPassInputState
-    data class LoginError(val cause: LoginFlowException) : TwoPassInputState
-    data object PasswordIsEmpty : TwoPassInputState
     data object Success : TwoPassInputState
+    sealed interface Error : TwoPassInputState {
+        data object PasswordIsEmpty : Error
+        data class LoginFlow(val error: String?) : Error
+    }
+
+    val isLoading: Boolean
+        get() = when (this) {
+            is Loading -> true
+            is Success -> true
+            is Closed -> true
+            else -> false
+        }
 }

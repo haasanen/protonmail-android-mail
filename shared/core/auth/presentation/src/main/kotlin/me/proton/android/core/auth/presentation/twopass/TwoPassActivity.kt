@@ -21,6 +21,7 @@ package me.proton.android.core.auth.presentation.twopass
 import android.app.Activity
 import android.os.Bundle
 import androidx.activity.compose.setContent
+import kotlinx.coroutines.flow.MutableStateFlow
 import me.proton.android.core.auth.presentation.R
 import me.proton.core.compose.theme.ProtonTheme
 import me.proton.core.presentation.ui.ProtonActivity
@@ -29,21 +30,22 @@ import me.proton.core.presentation.utils.errorToast
 import me.proton.core.presentation.utils.openBrowserLink
 
 class TwoPassActivity : ProtonActivity() {
-    private val userId: String
-        get() = requireNotNull(intent.getStringExtra(TwoPassArg.ARG_USER_ID)) {
-            "Missing intent argument: ${TwoPassArg.ARG_USER_ID}"
-        }
+
+    private val mutableAction = MutableStateFlow<TwoPassInputAction?>(null)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        addOnBackPressedCallback { onClose() }
+
+        addOnBackPressedCallback { mutableAction.tryEmit(TwoPassInputAction.Close) }
+
         setContent {
             ProtonTheme {
                 TwoPassInputScreen(
-                    onBackClicked = this::onClose,
+                    onClose = this::onClose,
                     onError = this::onError,
                     onForgotPassword = this::onForgotPassword,
-                    onSuccess = this::onSuccess
+                    onSuccess = this::onSuccess,
+                    externalAction = mutableAction
                 )
             }
         }
@@ -54,8 +56,8 @@ class TwoPassActivity : ProtonActivity() {
         finish()
     }
 
-    private fun onError(throwable: Throwable) {
-        errorToast(throwable.localizedMessage ?: getString(R.string.presentation_error_general))
+    private fun onError(message: String?) {
+        errorToast(message ?: getString(R.string.presentation_error_general))
     }
 
     private fun onForgotPassword() {

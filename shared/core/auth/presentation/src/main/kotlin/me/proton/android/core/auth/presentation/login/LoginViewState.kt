@@ -25,8 +25,17 @@ sealed interface LoginViewState {
     data class Awaiting2fa(val userId: String) : LoginViewState
     data class Awaiting2Pass(val userId: String) : LoginViewState
     data class LoggedIn(val session: MailUserSession) : LoginViewState
-    sealed interface Error {
-        data object Validation : LoginViewState
-        data class LoginFlow(val error: String) : LoginViewState
+    sealed interface Error : LoginViewState {
+        data object Validation : Error
+        data class LoginFlow(val error: String) : Error
     }
+
+    val isLoading: Boolean
+        get() = when (this) {
+            is LoggingIn -> true
+            is Awaiting2fa -> true
+            is Awaiting2Pass -> true
+            is LoggedIn -> true
+            else -> false
+        }
 }

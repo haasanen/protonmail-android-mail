@@ -35,6 +35,11 @@ class AddAccountActivity : ProtonActivity() {
     @Inject
     lateinit var authOrchestrator: AuthOrchestrator
 
+    override fun onDestroy() {
+        authOrchestrator.unregister()
+        super.onDestroy()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 

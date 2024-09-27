@@ -40,6 +40,11 @@ class LoginActivity : ProtonActivity() {
     private val configuration = ProtectScreenConfiguration(true)
     private val screenProtector by protectScreen(configuration)
 
+    override fun onDestroy() {
+        authOrchestrator.unregister()
+        super.onDestroy()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -53,7 +58,7 @@ class LoginActivity : ProtonActivity() {
                     onCloseClicked = { finish() },
                     onHelpClicked = { authOrchestrator.startLoginHelpWorkflow() },
                     onErrorMessage = { showError(it) },
-                    onLoggedIn = { onSuccess() }
+                    onSuccess = { onSuccess() }
                 )
             }
         }

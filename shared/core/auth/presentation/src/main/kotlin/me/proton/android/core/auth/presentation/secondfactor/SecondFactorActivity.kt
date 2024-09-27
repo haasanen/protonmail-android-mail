@@ -22,6 +22,7 @@ import android.app.Activity
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.MutableStateFlow
 import me.proton.android.core.auth.presentation.R
 import me.proton.core.compose.theme.ProtonTheme
 import me.proton.core.presentation.ui.ProtonActivity
@@ -31,20 +32,20 @@ import me.proton.core.presentation.utils.errorToast
 @AndroidEntryPoint
 class SecondFactorActivity : ProtonActivity() {
 
-    private val userId: String
-        get() = requireNotNull(intent.getStringExtra(SecondFactorArg.ARG_USER_ID)) {
-            "Missing intent argument: ${SecondFactorArg.ARG_USER_ID}"
-        }
+    private val mutableAction = MutableStateFlow<SecondFactorInputAction?>(null)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        addOnBackPressedCallback { onClose() }
+
+        addOnBackPressedCallback { mutableAction.tryEmit(SecondFactorInputAction.Close) }
+
         setContent {
             ProtonTheme {
                 SecondFactorInputScreen(
-                    onBackClicked = this::onClose,
+                    onClose = this::onClose,
                     onError = this::onError,
-                    onSuccess = this::onSuccess
+                    onSuccess = this::onSuccess,
+                    externalAction = mutableAction
                 )
             }
         }
@@ -55,8 +56,8 @@ class SecondFactorActivity : ProtonActivity() {
         finish()
     }
 
-    private fun onError(throwable: Throwable) {
-        errorToast(throwable.localizedMessage ?: getString(R.string.presentation_error_general))
+    private fun onError(message: String?) {
+        errorToast(message ?: getString(R.string.presentation_error_general))
     }
 
     private fun onSuccess() {

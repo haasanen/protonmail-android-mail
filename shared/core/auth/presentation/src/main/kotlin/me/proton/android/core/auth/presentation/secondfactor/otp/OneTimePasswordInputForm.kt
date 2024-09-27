@@ -18,118 +18,119 @@
 
 package me.proton.android.core.auth.presentation.secondfactor.otp
 
-import androidx.compose.foundation.background
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import me.proton.android.core.auth.presentation.R
+import me.proton.android.core.auth.presentation.addaccount.SMALL_SCREEN_HEIGHT
 import me.proton.core.compose.component.ProtonOutlinedTextFieldWithError
 import me.proton.core.compose.component.ProtonSolidButton
 import me.proton.core.compose.component.ProtonTextButton
-import me.proton.core.compose.theme.LocalColors
 import me.proton.core.compose.theme.ProtonDimens
 import me.proton.core.compose.theme.ProtonTheme
-import me.proton.core.compose.viewmodel.hiltViewModelOrNull
 
 @Composable
 fun OneTimePasswordInputForm(
-    onError: (Throwable) -> Unit,
+    onError: (String?) -> Unit,
     onSuccess: () -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: OneTimePasswordInputViewModel? = hiltViewModelOrNull()
+    viewModel: OneTimePasswordInputViewModel = hiltViewModel()
 ) {
-    val mode by viewModel?.mode?.collectAsStateWithLifecycle()
-        ?: remember { derivedStateOf { OneTimePasswordInputMode.Totp } }
-    val state by viewModel?.state?.collectAsStateWithLifecycle()
-        ?: remember { derivedStateOf { OneTimePasswordInputState.Idle } }
+    val state by viewModel.state.collectAsStateWithLifecycle()
 
     OneTimePasswordInputForm(
-        mode = mode,
         state = state,
         modifier = modifier,
-        onAuthenticate = { viewModel?.submit(it) },
+        onAuthenticate = { viewModel.submit(it) },
         onError = onError,
         onSuccess = onSuccess,
-        onSwitchMode = { viewModel?.submit(it) }
     )
 }
 
 @Composable
 fun OneTimePasswordInputForm(
-    mode: OneTimePasswordInputMode,
     state: OneTimePasswordInputState,
     modifier: Modifier = Modifier,
     onAuthenticate: (OneTimePasswordInputAction.Authenticate) -> Unit = {},
-    onError: (Throwable) -> Unit = {},
+    onError: (String?) -> Unit = {},
     onSuccess: () -> Unit = {},
-    onSwitchMode: (OneTimePasswordInputAction.SwitchMode) -> Unit = {}
+    initialMode: OneTimePasswordInputMode = OneTimePasswordInputMode.Totp
 ) {
+    var mode by remember { mutableStateOf(initialMode) }
     var code by remember { mutableStateOf("") }
-    val isLoading = state is OneTimePasswordInputState.Loading
+    val isLoading = state.isLoading
 
     LaunchedEffect(state) {
         when (state) {
-            is OneTimePasswordInputState.Success -> onSuccess()
-            is OneTimePasswordInputState.LoginError -> onError(state.cause)
+            is OneTimePasswordInputState.Error.LoginFlow -> onError(state.error)
+            is OneTimePasswordInputState.Awaiting2Pass -> onSuccess()
+            is OneTimePasswordInputState.LoggedIn -> onSuccess()
             else -> Unit
         }
     }
 
-    Column(modifier = modifier.background(LocalColors.current.backgroundNorm)) {
+    Column(modifier = modifier) {
         if (mode == OneTimePasswordInputMode.Totp) {
             ProtonOutlinedTextFieldWithError(
                 text = code,
                 onValueChanged = { code = it },
                 singleLine = true,
-                // helpText = stringResource(R.string.auth_totp_input_help), // TODO: uncomment when available in Core
+                helpText = stringResource(R.string.auth_second_factor_totp_input_help),
                 label = { Text(text = stringResource(R.string.auth_second_factor_totp_input_label)) },
-                enabled = !isLoading
+                enabled = !isLoading,
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword),
             )
         } else if (mode == OneTimePasswordInputMode.RecoveryCode) {
             ProtonOutlinedTextFieldWithError(
                 text = code,
                 onValueChanged = { code = it },
                 singleLine = true,
-                // helpText = stringResource(R.string.auth_second_factor_recovery_help), // TODO: uncomment when available in Core
+                helpText = stringResource(R.string.auth_second_factor_recovery_help),
                 label = { Text(text = stringResource(R.string.auth_second_factor_recovery_label)) },
-                enabled = !isLoading
+                enabled = !isLoading,
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
             )
         }
+
+        Spacer(modifier = Modifier.padding(top = ProtonDimens.MediumSpacing))
 
         ProtonSolidButton(
             onClick = { onAuthenticate(OneTimePasswordInputAction.Authenticate(code, mode)) },
             contained = false,
-            modifier = Modifier
-                .height(ProtonDimens.DefaultButtonMinHeight),
+            modifier = Modifier.height(ProtonDimens.DefaultButtonMinHeight),
             loading = isLoading
         ) {
             Text(text = stringResource(R.string.auth_second_factor_authenticate))
         }
         ProtonTextButton(
             onClick = {
-                val nextMode = when (mode) {
+                mode = when (mode) {
                     OneTimePasswordInputMode.Totp -> OneTimePasswordInputMode.RecoveryCode
                     OneTimePasswordInputMode.RecoveryCode -> OneTimePasswordInputMode.Totp
                 }
-                onSwitchMode(OneTimePasswordInputAction.SwitchMode(nextMode))
             },
             contained = false,
             modifier = Modifier
                 .padding(top = ProtonDimens.SmallSpacing)
                 .height(ProtonDimens.DefaultButtonMinHeight),
-            loading = isLoading
+            enabled = !isLoading
         ) {
             Text(
                 text = stringResource(
@@ -143,24 +144,34 @@ fun OneTimePasswordInputForm(
     }
 }
 
+@Preview(name = "Light mode", showBackground = true)
+@Preview(name = "Dark mode", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview(name = "Small screen height", heightDp = SMALL_SCREEN_HEIGHT)
+@Preview(name = "Foldable", device = Devices.FOLDABLE)
+@Preview(name = "Tablet", device = Devices.PIXEL_C)
+@Preview(name = "Horizontal", widthDp = 800, heightDp = 360)
 @Composable
-@Preview
 fun OneTimePasswordInputFormTotpPreview() {
     ProtonTheme {
         OneTimePasswordInputForm(
-            mode = OneTimePasswordInputMode.Totp,
-            state = OneTimePasswordInputState.Idle
+            state = OneTimePasswordInputState.Idle,
+            initialMode = OneTimePasswordInputMode.Totp
         )
     }
 }
 
+@Preview(name = "Light mode", showBackground = true)
+@Preview(name = "Dark mode", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview(name = "Small screen height", heightDp = SMALL_SCREEN_HEIGHT)
+@Preview(name = "Foldable", device = Devices.FOLDABLE)
+@Preview(name = "Tablet", device = Devices.PIXEL_C)
+@Preview(name = "Horizontal", widthDp = 800, heightDp = 360)
 @Composable
-@Preview
 fun OneTimePasswordInputFormRecoveryPreview() {
     ProtonTheme {
         OneTimePasswordInputForm(
-            mode = OneTimePasswordInputMode.RecoveryCode,
-            state = OneTimePasswordInputState.Idle
+            state = OneTimePasswordInputState.Idle,
+            initialMode = OneTimePasswordInputMode.RecoveryCode
         )
     }
 }

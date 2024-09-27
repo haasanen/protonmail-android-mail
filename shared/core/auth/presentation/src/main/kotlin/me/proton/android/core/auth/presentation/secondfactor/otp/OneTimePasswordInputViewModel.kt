@@ -18,64 +18,116 @@
 
 package me.proton.android.core.auth.presentation.secondfactor.otp
 
+import android.content.Context
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted.Companion.WhileSubscribed
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import me.proton.android.core.auth.presentation.secondfactor.SecondFactorArg
-import me.proton.core.presentation.utils.InputValidationResult
-import me.proton.core.presentation.utils.ValidationType
-import uniffi.proton_mail_uniffi.LoginFlowException
+import me.proton.android.core.auth.presentation.login.getErrorMessage
+import me.proton.android.core.auth.presentation.secondfactor.SecondFactorArg.getUserId
+import me.proton.android.core.auth.presentation.secondfactor.otp.OneTimePasswordInputAction.Authenticate
+import me.proton.android.core.auth.presentation.secondfactor.otp.OneTimePasswordInputAction.Close
+import me.proton.android.core.auth.presentation.secondfactor.otp.OneTimePasswordInputAction.Load
+import me.proton.android.core.auth.presentation.secondfactor.otp.OneTimePasswordInputState.Closed
+import me.proton.android.core.auth.presentation.secondfactor.otp.OneTimePasswordInputState.Error
+import me.proton.android.core.auth.presentation.secondfactor.otp.OneTimePasswordInputState.Idle
+import me.proton.android.core.auth.presentation.secondfactor.otp.OneTimePasswordInputState.Loading
+import me.proton.android.core.auth.presentation.secondfactor.otp.OneTimePasswordInputState.LoggedIn
+import me.proton.android.core.auth.presentation.session.UserSessionInitializationCallback
+import me.proton.core.compose.viewmodel.stopTimeoutMillis
+import uniffi.proton_mail_uniffi.LoginFlow
+import uniffi.proton_mail_uniffi.MailSessionInterface
+import uniffi.proton_mail_uniffi.MailUserSession
+import uniffi.proton_mail_uniffi.UserLoginFlowArcLoginFlowResult
+import uniffi.proton_mail_uniffi.UserLoginFlowArcMailUserSessionResult
+import uniffi.proton_mail_uniffi.UserLoginFlowError
+import uniffi.proton_mail_uniffi.UserLoginFlowVoidResult
 import javax.inject.Inject
 
 @HiltViewModel
 class OneTimePasswordInputViewModel @Inject constructor(
-    private val savedStateHandle: SavedStateHandle
+    @ApplicationContext
+    private val context: Context,
+    private val savedStateHandle: SavedStateHandle,
+    private val sessionInterface: MailSessionInterface,
+    private val callback: UserSessionInitializationCallback
 ) : ViewModel() {
 
-    private val userId: String by lazy {
-        requireNotNull(savedStateHandle.get<String>(SecondFactorArg.ARG_USER_ID)) {
-            "Missing state value for key: ${SecondFactorArg.ARG_USER_ID}"
+    private val userId by lazy { savedStateHandle.getUserId() }
+
+    private val mutableAction = MutableStateFlow<OneTimePasswordInputAction>(Load)
+
+    val state: StateFlow<OneTimePasswordInputState> = mutableAction.flatMapLatest { action ->
+        when (action) {
+            is Load -> onLoad()
+            is Close -> onClose()
+            is Authenticate -> onValidateAndAuthenticate(action)
         }
-    }
-
-    private val _mode: MutableStateFlow<OneTimePasswordInputMode> = MutableStateFlow(OneTimePasswordInputMode.Totp)
-    val mode: StateFlow<OneTimePasswordInputMode> = _mode.asStateFlow()
-
-    private val _state: MutableStateFlow<OneTimePasswordInputState> = MutableStateFlow(OneTimePasswordInputState.Idle)
-    val state: StateFlow<OneTimePasswordInputState> = _state.asStateFlow()
+    }.stateIn(viewModelScope, WhileSubscribed(stopTimeoutMillis), Idle)
 
     fun submit(action: OneTimePasswordInputAction) = viewModelScope.launch {
-        when (action) {
-            is OneTimePasswordInputAction.Authenticate -> onAuthenticate(action)
-            is OneTimePasswordInputAction.SwitchMode -> onSwitchMode(action)
+        mutableAction.emit(action)
+    }
+
+    private fun onLoad(): Flow<OneTimePasswordInputState> = flow {
+        emit(Idle)
+    }
+
+    private fun onClose(): Flow<OneTimePasswordInputState> = flow {
+        sessionInterface.deleteAccount(userId)
+        emit(Closed)
+    }
+
+    private fun onValidateAndAuthenticate(action: Authenticate) = flow {
+        emit(Loading)
+        when (action.code.isBlank()) {
+            true -> emit(Error.Validation)
+            false -> emitAll(onAuthenticate(action))
         }
     }
 
-    private fun onAuthenticate(action: OneTimePasswordInputAction.Authenticate) = flow {
-        emit(OneTimePasswordInputState.Loading)
-        check(InputValidationResult(action.code, ValidationType.NotBlank).isValid)
-        TODO()
-        emit(OneTimePasswordInputState.Success)
-    }.catch {
-        when (it) {
-            is IllegalStateException -> emit(OneTimePasswordInputState.CodeIsEmpty)
-            is LoginFlowException -> emit(OneTimePasswordInputState.LoginError(it))
-            else -> throw it
+    private fun onAuthenticate(action: Authenticate): Flow<OneTimePasswordInputState> = flow {
+        emit(Loading)
+        val account = sessionInterface.getAccount(userId)
+        val sessions = account?.let { sessionInterface.getSessions(account) }
+        val session = sessions?.firstOrNull()
+        val loginFlow = session?.let { sessionInterface.resumeLoginFlow(userId, it.sessionId()) }
+        when (loginFlow) {
+            null -> emitAll(onClose())
+            is UserLoginFlowArcLoginFlowResult.Error -> emitAll(onError(loginFlow.v1))
+            is UserLoginFlowArcLoginFlowResult.Ok -> {
+                when (val submit = loginFlow.v1.submitTotp(action.code)) {
+                    is UserLoginFlowVoidResult.Error -> emitAll(onError(submit.v1))
+                    is UserLoginFlowVoidResult.Ok -> emitAll(onSuccess(loginFlow.v1))
+                }
+            }
         }
-    }.onEach {
-        _state.emit(it)
-    }.launchIn(viewModelScope)
+    }
 
-    private suspend fun onSwitchMode(action: OneTimePasswordInputAction.SwitchMode) {
-        _mode.emit(action.mode)
+    private fun onError(error: UserLoginFlowError): Flow<OneTimePasswordInputState> = flow {
+        emit(Error.LoginFlow(error.getErrorMessage(context)))
+    }
+
+    private fun onSuccess(loginFlow: LoginFlow): Flow<OneTimePasswordInputState> = flow {
+        when (val result = loginFlow.toUserContext()) {
+            is UserLoginFlowArcMailUserSessionResult.Error -> emitAll(onError(result.v1))
+            is UserLoginFlowArcMailUserSessionResult.Ok -> onWaitFinished(result.v1)
+        }
+    }
+
+    private fun onWaitFinished(mailUserSession: MailUserSession) = flow {
+        mailUserSession.initialize(callback)
+        callback.waitFinished()
+        emit(LoggedIn)
     }
 }

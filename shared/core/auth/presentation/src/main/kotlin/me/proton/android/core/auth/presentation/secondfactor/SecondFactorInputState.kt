@@ -20,4 +20,5 @@ package me.proton.android.core.auth.presentation.secondfactor
 
 sealed interface SecondFactorInputState {
     data object Idle : SecondFactorInputState
+    data object Close : SecondFactorInputState
 }

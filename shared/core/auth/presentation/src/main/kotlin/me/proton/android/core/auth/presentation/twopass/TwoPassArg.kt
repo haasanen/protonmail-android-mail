@@ -18,7 +18,13 @@
 
 package me.proton.android.core.auth.presentation.twopass
 
+import androidx.lifecycle.SavedStateHandle
+
 internal object TwoPassArg {
 
     const val ARG_USER_ID = "ARG_USER_ID"
+
+    fun SavedStateHandle.getUserId(): String = checkNotNull(get<String>(ARG_USER_ID)) {
+        "Missing '$ARG_USER_ID' key in SavedStateHandle"
+    }
 }

@@ -18,46 +18,112 @@
 
 package me.proton.android.core.auth.presentation.twopass
 
+import android.content.Context
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted.Companion.WhileSubscribed
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import me.proton.android.core.auth.presentation.login.getErrorMessage
+import me.proton.android.core.auth.presentation.session.UserSessionInitializationCallback
+import me.proton.android.core.auth.presentation.twopass.TwoPassArg.getUserId
+import me.proton.android.core.auth.presentation.twopass.TwoPassInputState.Error
+import me.proton.core.compose.viewmodel.stopTimeoutMillis
 import me.proton.core.presentation.utils.InputValidationResult
 import me.proton.core.presentation.utils.ValidationType
-import uniffi.proton_mail_uniffi.LoginFlowException
+import uniffi.proton_mail_uniffi.LoginFlow
+import uniffi.proton_mail_uniffi.MailSessionInterface
+import uniffi.proton_mail_uniffi.MailUserSession
+import uniffi.proton_mail_uniffi.UserLoginFlowArcLoginFlowResult
+import uniffi.proton_mail_uniffi.UserLoginFlowArcMailUserSessionResult
+import uniffi.proton_mail_uniffi.UserLoginFlowError
+import uniffi.proton_mail_uniffi.UserLoginFlowVoidResult
 import javax.inject.Inject
 
 @HiltViewModel
-class TwoPassInputViewModel @Inject constructor() : ViewModel() {
+class TwoPassInputViewModel @Inject constructor(
+    @ApplicationContext
+    private val context: Context,
+    private val savedStateHandle: SavedStateHandle,
+    private val sessionInterface: MailSessionInterface,
+    private val callback: UserSessionInitializationCallback
+) : ViewModel() {
 
-    private val _state: MutableStateFlow<TwoPassInputState> = MutableStateFlow(TwoPassInputState.Idle)
-    val state: StateFlow<TwoPassInputState> = _state.asStateFlow()
+    private val userId by lazy { savedStateHandle.getUserId() }
+
+    private val mutableAction = MutableStateFlow<TwoPassInputAction>(TwoPassInputAction.Load)
+
+    val state: StateFlow<TwoPassInputState> = mutableAction.flatMapLatest { action ->
+        when (action) {
+            is TwoPassInputAction.Load -> onLoad()
+            is TwoPassInputAction.Close -> onClose()
+            is TwoPassInputAction.Unlock -> onValidateAndUnlock(action)
+        }
+    }.stateIn(viewModelScope, WhileSubscribed(stopTimeoutMillis), TwoPassInputState.Idle)
 
     fun submit(action: TwoPassInputAction) = viewModelScope.launch {
-        when (action) {
-            is TwoPassInputAction.Unlock -> onUnlock(action)
+        mutableAction.emit(action)
+    }
+
+    private fun onLoad() = flow {
+        emit(TwoPassInputState.Idle)
+    }
+
+    private fun onClose(): Flow<TwoPassInputState> = flow {
+        sessionInterface.deleteAccount(userId)
+        emit(TwoPassInputState.Closed)
+    }
+
+    private fun onValidateAndUnlock(action: TwoPassInputAction.Unlock) = flow {
+        emit(TwoPassInputState.Loading)
+        when (InputValidationResult(action.mailboxPassword, ValidationType.Password).isValid) {
+            false -> emit(Error.PasswordIsEmpty)
+            true -> emitAll(onUnlock(action))
         }
     }
 
     private fun onUnlock(action: TwoPassInputAction.Unlock) = flow {
         emit(TwoPassInputState.Loading)
-        check(InputValidationResult(action.mailboxPassword, ValidationType.Password).isValid)
-        TODO("Submit mailbox password")
-        emit(TwoPassInputState.Success)
-    }.catch {
-        when (it) {
-            is IllegalStateException -> emit(TwoPassInputState.PasswordIsEmpty)
-            is LoginFlowException -> emit(TwoPassInputState.LoginError(it))
-            else -> throw it
+        val account = sessionInterface.getAccount(userId)
+        val sessions = account?.let { sessionInterface.getSessions(account) }
+        val session = sessions?.firstOrNull()
+        val loginFlow = session?.let { sessionInterface.resumeLoginFlow(userId, it.sessionId()) }
+        when (loginFlow) {
+            null -> emitAll(onClose())
+            is UserLoginFlowArcLoginFlowResult.Error -> emitAll(onError(loginFlow.v1))
+            is UserLoginFlowArcLoginFlowResult.Ok -> {
+                when (val submit = loginFlow.v1.submitMailboxPassword(action.mailboxPassword)) {
+                    is UserLoginFlowVoidResult.Error -> emitAll(onError(submit.v1))
+                    is UserLoginFlowVoidResult.Ok -> emitAll(onSuccess(loginFlow.v1))
+                }
+            }
         }
-    }.onEach {
-        _state.emit(it)
-    }.launchIn(viewModelScope)
+    }
+
+    private fun onError(error: UserLoginFlowError): Flow<TwoPassInputState> = flow {
+        emit(Error.LoginFlow(error.getErrorMessage(context)))
+    }
+
+    private fun onSuccess(loginFlow: LoginFlow): Flow<TwoPassInputState> = flow {
+        when (val result = loginFlow.toUserContext()) {
+            is UserLoginFlowArcMailUserSessionResult.Error -> emitAll(onError(result.v1))
+            is UserLoginFlowArcMailUserSessionResult.Ok -> onWaitFinished(result.v1)
+        }
+    }
+
+    private fun onWaitFinished(mailUserSession: MailUserSession) = flow {
+        mailUserSession.initialize(callback)
+        callback.waitFinished()
+        emit(TwoPassInputState.Success)
+    }
 }

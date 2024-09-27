@@ -37,6 +37,10 @@
             android:name=".secondfactor.SecondFactorActivity"
             android:windowSoftInputMode="adjustResize" />
 
+        <activity
+            android:name=".twopass.TwoPassActivity"
+            android:windowSoftInputMode="adjustResize" />
+
     </application>
 
 </manifest>

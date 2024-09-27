@@ -21,5 +21,7 @@ package me.proton.android.core.auth.presentation.twopass
 sealed interface TwoPassInputOperation
 
 sealed interface TwoPassInputAction : TwoPassInputOperation {
+    data object Load : TwoPassInputAction
+    data object Close : TwoPassInputAction
     data class Unlock(val mailboxPassword: String) : TwoPassInputAction
 }

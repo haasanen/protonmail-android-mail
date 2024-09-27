@@ -18,16 +18,48 @@
 
 package me.proton.android.core.auth.presentation.secondfactor
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted.Companion.WhileSubscribed
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
+import me.proton.android.core.auth.presentation.secondfactor.SecondFactorArg.getUserId
+import me.proton.android.core.auth.presentation.secondfactor.SecondFactorInputAction.Close
+import me.proton.core.compose.viewmodel.stopTimeoutMillis
+import uniffi.proton_mail_uniffi.MailSessionInterface
 import javax.inject.Inject
 
 @HiltViewModel
-class SecondFactorInputViewModel @Inject constructor() : ViewModel() {
+class SecondFactorInputViewModel @Inject constructor(
+    private val savedStateHandle: SavedStateHandle,
+    private val sessionInterface: MailSessionInterface
+) : ViewModel() {
 
-    private val _state: MutableStateFlow<SecondFactorInputState> = MutableStateFlow(SecondFactorInputState.Idle)
-    val state: StateFlow<SecondFactorInputState> = _state.asStateFlow()
+    private val userId by lazy { savedStateHandle.getUserId() }
+
+    private val mutableAction = MutableStateFlow<SecondFactorInputAction?>(null)
+
+    val state: StateFlow<SecondFactorInputState> = mutableAction.flatMapLatest { action ->
+        when (action) {
+            null -> flowOf(SecondFactorInputState.Idle)
+            is Close -> onClose()
+        }
+    }.stateIn(viewModelScope, WhileSubscribed(stopTimeoutMillis), SecondFactorInputState.Idle)
+
+    fun submit(action: SecondFactorInputAction) = viewModelScope.launch {
+        mutableAction.emit(action)
+    }
+
+    private suspend fun onClose(): Flow<SecondFactorInputState> = flow {
+        sessionInterface.deleteAccount(userId)
+        emit(SecondFactorInputState.Close)
+    }
 }
