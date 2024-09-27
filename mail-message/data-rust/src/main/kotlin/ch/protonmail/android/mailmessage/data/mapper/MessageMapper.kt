@@ -136,7 +136,7 @@ fun LocalConversationMessages.toConversationMessagesWithMessageToOpen(): Convers
     return messages.toNonEmptyListOrNull()?.map { it.toMessage() }?.let { messageList ->
         ConversationMessages(
             messages = messageList,
-            messageIdToOpen = messageIdToOpen?.toMessageId()
+            messageIdToOpen = messageIdToOpen.toMessageId()
         )
     }
 }

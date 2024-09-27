@@ -69,12 +69,18 @@ class RustConversationDetailQueryImpl @Inject constructor(
                     if (mailbox != null && currentConversationId != null) {
                         val conversationAndMessages = getRustConversationMessages(mailbox, currentConversationId!!)
 
-                        conversationMutableStatusFlow.value = conversationAndMessages?.conversation
+                        conversationAndMessages?.let {
+                            conversationMutableStatusFlow.value = conversationAndMessages.conversation
 
-                        val messages: List<LocalMessageMetadata> = conversationAndMessages?.messages ?: emptyList()
-                        val messageIdToOpen = conversationAndMessages?.messageIdToOpen
-                        val localConversationMessages = LocalConversationMessages(messageIdToOpen, messages)
-                        conversationMessagesMutableStatusFlow.value = localConversationMessages
+                            val messages: List<LocalMessageMetadata> = conversationAndMessages.messages
+                            val messageIdToOpen = conversationAndMessages.messageIdToOpen
+
+                            conversationMessagesMutableStatusFlow.value = LocalConversationMessages(
+                                messageIdToOpen, messages
+                            )
+                        } ?: Timber.w("rust-conversation-messages: Failed to update conversation messages!")
+
+
                     } else {
                         Timber.w("rust-conversation-messages: Failed to update conversation messages!")
                     }
