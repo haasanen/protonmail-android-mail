@@ -30,9 +30,5 @@ class RustMarkMessagesRead @Inject constructor() {
         mailUserSession: MailUserSession,
         currentLabelId: LocalLabelId,
         messageIds: List<LocalMessageId>
-    ) {
-        markMessagesRead(mailUserSession, currentLabelId, messageIds)
-        mailUserSession.executePendingActions()
-    }
-
+    ) = markMessagesRead(mailUserSession, currentLabelId, messageIds)
 }
