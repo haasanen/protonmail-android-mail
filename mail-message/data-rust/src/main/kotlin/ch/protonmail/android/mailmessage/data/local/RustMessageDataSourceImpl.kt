@@ -69,7 +69,7 @@ class RustMessageDataSourceImpl @Inject constructor(
         val mailboxFlow = if (labelId != null) {
             rustMailbox.observeMailbox(labelId)
         } else {
-            rustMailbox.observeMessageMailbox()
+            rustMailbox.observeMailbox()
         }
 
         return try {

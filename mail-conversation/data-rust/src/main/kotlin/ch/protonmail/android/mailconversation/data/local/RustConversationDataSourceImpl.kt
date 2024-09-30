@@ -173,7 +173,7 @@ class RustConversationDataSourceImpl @Inject constructor(
         action: suspend (Mailbox) -> Unit,
         actionName: String
     ) {
-        val mailbox = rustMailbox.observeConversationMailbox().firstOrNull()
+        val mailbox = rustMailbox.observeMailbox().firstOrNull()
         if (mailbox == null) {
             Timber.e("rust-conversation: Failed to perform $actionName, null mailbox")
             return

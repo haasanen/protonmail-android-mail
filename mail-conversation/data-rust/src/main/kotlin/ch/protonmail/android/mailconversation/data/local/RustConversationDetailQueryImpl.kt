@@ -65,7 +65,7 @@ class RustConversationDetailQueryImpl @Inject constructor(
         override fun onUpdate() {
             coroutineScope.launch {
                 mutex.withLock {
-                    val mailbox = rustMailbox.observeConversationMailbox().firstOrNull()
+                    val mailbox = rustMailbox.observeMailbox().firstOrNull()
                     if (mailbox != null && currentConversationId != null) {
                         val conversationAndMessages = getRustConversationMessages(mailbox, currentConversationId!!)
 
@@ -113,7 +113,7 @@ class RustConversationDetailQueryImpl @Inject constructor(
                     // If the conversationId is different or there's no active watcher, destroy and create a new one
                     destroy()
 
-                    val mailbox = rustMailbox.observeConversationMailbox().firstOrNull()
+                    val mailbox = rustMailbox.observeMailbox().firstOrNull()
                     if (mailbox == null) {
                         Timber.e("rust-conversation-detail-query: Failed to observe conversation, null mailbox")
                         return@withLock

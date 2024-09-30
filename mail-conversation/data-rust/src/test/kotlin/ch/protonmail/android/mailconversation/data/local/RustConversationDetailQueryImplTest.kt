@@ -82,7 +82,7 @@ class RustConversationDetailQueryImplTest {
             every { messages } returns expectedMessages.messages
             every { messageIdToOpen } returns messageToOpen
         }
-        every { rustMailbox.observeConversationMailbox() } returns flowOf(mailbox)
+        every { rustMailbox.observeMailbox() } returns flowOf(mailbox)
         coEvery { createRustConversationWatcher(mailbox, conversationId, capture(callbackSlot)) } returns watcherMock
 
         // When
@@ -116,7 +116,7 @@ class RustConversationDetailQueryImplTest {
             every { this@mockk.messages } returns expectedMessages.messages
             every { this@mockk.messageIdToOpen } returns messageToOpen
         }
-        every { rustMailbox.observeConversationMailbox() } returns flowOf(mailbox)
+        every { rustMailbox.observeMailbox() } returns flowOf(mailbox)
         coEvery { createRustConversationWatcher(mailbox, conversationId, capture(callbackSlot)) } returns watcherMock
         coEvery {
             getRustConversationMessages(mailbox, conversationId)
@@ -167,7 +167,7 @@ class RustConversationDetailQueryImplTest {
             every { messageIdToOpen } returns messageToOpen
 
         }
-        every { rustMailbox.observeConversationMailbox() } returns flowOf(mailbox)
+        every { rustMailbox.observeMailbox() } returns flowOf(mailbox)
         coEvery { createRustConversationWatcher(mailbox, conversationId, capture(callbackSlot)) } returns watcherMock
 
         rustConversationQuery.observeConversation(userId, conversationId).test {
@@ -208,7 +208,7 @@ class RustConversationDetailQueryImplTest {
                 every { disconnect() } returns Unit
             }
         }
-        every { rustMailbox.observeConversationMailbox() } returns flowOf(mailbox)
+        every { rustMailbox.observeMailbox() } returns flowOf(mailbox)
         coEvery { createRustConversationWatcher(mailbox, conversationId1, capture(callbackSlot)) } returns watcherMock1
         coEvery { createRustConversationWatcher(mailbox, conversationId2, capture(callbackSlot)) } returns watcherMock2
 
@@ -242,7 +242,7 @@ class RustConversationDetailQueryImplTest {
                 every { disconnect() } returns Unit
             }
         }
-        every { rustMailbox.observeConversationMailbox() } returns flowOf(mailbox)
+        every { rustMailbox.observeMailbox() } returns flowOf(mailbox)
         coEvery { createRustConversationWatcher(mailbox, conversationId, capture(callbackSlot)) } coAnswers {
             delay(100) // Simulate delay to enforce concurrency
             watcherMock

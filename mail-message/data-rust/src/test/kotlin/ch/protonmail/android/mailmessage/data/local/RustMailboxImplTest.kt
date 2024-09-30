@@ -70,7 +70,7 @@ class RustMailboxImplTest {
 
         // When
         rustMailbox.switchToMailbox(userId, labelId)
-        rustMailbox.observeMessageMailbox().test {
+        rustMailbox.observeMailbox().test {
 
             // Then
             assertEquals(messageMailbox, awaitItem())
@@ -79,7 +79,7 @@ class RustMailboxImplTest {
     }
 
     @Test
-    fun `observeMessageMailbox returns message mailbox flow`() = runTest {
+    fun `observeeMailbox returns message mailbox flow`() = runTest {
         // Given
         val userId = UserIdTestData.userId
         val mailUserSession = mockk<MailUserSession>()
@@ -88,31 +88,12 @@ class RustMailboxImplTest {
         rustMailbox.switchToMailbox(userId, labelId)
 
         // When
-        rustMailbox.observeMessageMailbox().test {
+        rustMailbox.observeMailbox().test {
 
             // Then
             assertEquals(messageMailbox, awaitItem())
         }
     }
-
-    @Test
-    fun `observeConversationMailbox returns conversation mailbox flow`() = runTest {
-        // Given
-        val userId = UserIdTestData.userId
-        val mailUserSession = mockk<MailUserSession>()
-        val labelId = LocalLabelId(1u)
-        coEvery { createMailbox(any(), labelId) } returns conversationMailbox
-        coEvery { userSessionRepository.getUserSession(userId) } returns mailUserSession
-        rustMailbox.switchToMailbox(userId, labelId)
-
-        // When
-        rustMailbox.observeConversationMailbox().test {
-
-            // Then
-            assertEquals(conversationMailbox, awaitItem())
-        }
-    }
-
 
     @Test
     fun `switchToMailbox should not switch the mailbox if it's already in the given label`() = runTest {

@@ -19,7 +19,6 @@
 package ch.protonmail.android.mailmessage.data.local
 
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalViewMode
 import ch.protonmail.android.mailmessage.data.usecase.CreateMailbox
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import kotlinx.coroutines.flow.Flow
@@ -40,13 +39,8 @@ class RustMailboxImpl @Inject constructor(
 
     private val mailboxMutableStatusFlow = MutableStateFlow<Mailbox?>(null)
 
-    private val conversationMailboxFlow: Flow<Mailbox> = mailboxMutableStatusFlow.asStateFlow()
+    private val mailboxFlow: Flow<Mailbox> = mailboxMutableStatusFlow.asStateFlow()
         .filterNotNull()
-        .filter { it.viewMode() == LocalViewMode.CONVERSATIONS }
-
-    private val messageMailboxFlow: Flow<Mailbox> = mailboxMutableStatusFlow.asStateFlow()
-        .filterNotNull()
-        .filter { it.viewMode() == LocalViewMode.MESSAGES }
 
     override suspend fun switchToMailbox(userId: UserId, labelId: LocalLabelId) {
         if (!shouldSwitchMailbox(labelId)) {
@@ -68,9 +62,7 @@ class RustMailboxImpl @Inject constructor(
         mailboxMutableStatusFlow.value = mailbox
     }
 
-    override fun observeConversationMailbox(): Flow<Mailbox> = conversationMailboxFlow
-
-    override fun observeMessageMailbox(): Flow<Mailbox> = messageMailboxFlow
+    override fun observeMailbox(): Flow<Mailbox> = mailboxFlow
 
     override fun observeMailbox(labelId: LocalLabelId): Flow<Mailbox> = mailboxMutableStatusFlow.asStateFlow()
         .filterNotNull()

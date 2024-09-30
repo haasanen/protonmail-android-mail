@@ -128,13 +128,13 @@ class RustMessageDataSourceImplTest {
         val userId = UserIdTestData.userId
         val messageId = LocalMessageIdSample.AugWeatherForecast
         val mailbox = mockk<Mailbox>()
-        every { rustMailbox.observeMessageMailbox() } returns flowOf(mailbox)
+        every { rustMailbox.observeMailbox() } returns flowOf(mailbox)
         coEvery { createRustMessageBodyAccessor(mailbox, messageId) } throws MailboxException.Io("DB Exception")
         // When
         val result = dataSource.getMessageBody(userId, messageId, null)
 
         // Then
-        verify { rustMailbox.observeMessageMailbox() }
+        verify { rustMailbox.observeMailbox() }
         assertNull(result)
     }
 
