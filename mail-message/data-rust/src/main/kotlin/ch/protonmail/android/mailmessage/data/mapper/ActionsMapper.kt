@@ -20,14 +20,26 @@ package ch.protonmail.android.mailmessage.data.mapper
 
 import ch.protonmail.android.mailcommon.domain.model.Action
 import ch.protonmail.android.mailcommon.domain.model.AvailableActions
+import ch.protonmail.android.maillabel.data.mapper.toLabelId
+import ch.protonmail.android.maillabel.data.mapper.toSystemLabel
+import ch.protonmail.android.maillabel.domain.model.MailLabel
+import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.GeneralActions
 import uniffi.proton_mail_uniffi.MessageAction
 import uniffi.proton_mail_uniffi.MessageAvailableActions
+import uniffi.proton_mail_uniffi.MoveAction
 import uniffi.proton_mail_uniffi.ReplyAction
 import uniffi.proton_mail_uniffi.SystemFolderAction
 import uniffi.proton_mail_uniffi.SystemLabel
 
+fun List<MoveAction.SystemFolder>.toMailLabels() = this.map { systemAction ->
+    MailLabel.System(
+        id = MailLabelId.System(systemAction.v1.localId.toLabelId()),
+        systemLabelId = systemAction.v1.name.toSystemLabel(),
+        order = 0
+    )
+}
 
 fun MessageAvailableActions.toAvailableActions(): AvailableActions {
     return AvailableActions(

@@ -24,6 +24,7 @@ import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailconversation.domain.entity.Conversation
 import ch.protonmail.android.maillabel.domain.model.LabelId
+import ch.protonmail.android.maillabel.domain.model.MailLabel
 import ch.protonmail.android.mailmessage.domain.model.ConversationMessages
 import ch.protonmail.android.mailmessage.domain.model.Message
 import ch.protonmail.android.mailpagination.domain.model.PageKey
@@ -143,4 +144,10 @@ interface ConversationRepository {
         labelId: LabelId,
         conversationIds: List<ConversationId>
     ): Either<DataError, AvailableActions>
+
+    suspend fun getAvailableSystemMoveToActions(
+        userId: UserId,
+        labelId: LabelId,
+        conversationIds: List<ConversationId>
+    ): Either<DataError, List<MailLabel.System>>
 }

@@ -22,6 +22,8 @@ import arrow.core.Either
 import ch.protonmail.android.mailcommon.domain.model.AvailableActions
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.maillabel.domain.model.LabelId
+import ch.protonmail.android.maillabel.domain.model.MailLabel
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.model.Message
 import ch.protonmail.android.mailmessage.domain.model.MessageAttachment
@@ -32,7 +34,6 @@ import ch.protonmail.android.mailmessage.domain.model.SenderImage
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import kotlinx.coroutines.flow.Flow
 import me.proton.core.domain.entity.UserId
-import ch.protonmail.android.maillabel.domain.model.LabelId
 
 @Suppress("TooManyFunctions", "ComplexInterface")
 interface MessageRepository {
@@ -186,4 +187,10 @@ interface MessageRepository {
         labelId: LabelId,
         messageIds: List<MessageId>
     ): Either<DataError, AvailableActions>
+
+    suspend fun getAvailableSystemMoveToActions(
+        userId: UserId,
+        labelId: LabelId,
+        messageIds: List<MessageId>
+    ): Either<DataError, List<MailLabel.System>>
 }

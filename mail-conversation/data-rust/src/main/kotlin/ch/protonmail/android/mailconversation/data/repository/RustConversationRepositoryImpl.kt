@@ -32,8 +32,10 @@ import ch.protonmail.android.mailconversation.domain.entity.Conversation
 import ch.protonmail.android.mailconversation.domain.repository.ConversationRepository
 import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
 import ch.protonmail.android.maillabel.domain.model.LabelId
+import ch.protonmail.android.maillabel.domain.model.MailLabel
 import ch.protonmail.android.mailmessage.data.mapper.toConversationMessagesWithMessageToOpen
 import ch.protonmail.android.mailmessage.data.mapper.toLocalConversationId
+import ch.protonmail.android.mailmessage.data.mapper.toMailLabels
 import ch.protonmail.android.mailmessage.domain.model.ConversationMessages
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import kotlinx.coroutines.flow.Flow
@@ -219,5 +221,22 @@ class RustConversationRepositoryImpl @Inject constructor(
         Timber.v("rust-message: Available actions: $availableActions \n for messages $conversationIds")
 
         return availableActions.toAvailableActions().right()
+    }
+
+    override suspend fun getAvailableSystemMoveToActions(
+        userId: UserId,
+        labelId: LabelId,
+        conversationIds: List<ConversationId>
+    ): Either<DataError, List<MailLabel.System>> {
+        val moveToActions = rustConversationDataSource.getAvailableSystemMoveToActions(
+            userId,
+            labelId.toLocalLabelId(),
+            conversationIds.map { it.toLocalConversationId() }
+        ) ?: return DataError.Local.Unknown.left()
+        Timber.v("rust-conversation: Available move to actions: ${moveToActions.joinToString("\n")}")
+
+        val mailLabels = moveToActions.toMailLabels()
+        Timber.v("rust-conversation: Actions to mail labels: ${mailLabels.joinToString("\n")}")
+        return mailLabels.right()
     }
 }

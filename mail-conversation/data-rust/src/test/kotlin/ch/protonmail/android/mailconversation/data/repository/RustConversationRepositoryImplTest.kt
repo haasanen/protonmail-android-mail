@@ -30,7 +30,10 @@ import ch.protonmail.android.mailconversation.data.local.RustConversationDataSou
 import ch.protonmail.android.mailconversation.data.mapper.toConversation
 import ch.protonmail.android.mailconversation.domain.entity.Conversation
 import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
+import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.LabelWithSystemLabelId
+import ch.protonmail.android.maillabel.domain.model.MailLabel
+import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.maillabel.domain.sample.LabelIdSample
 import ch.protonmail.android.mailmessage.data.mapper.toConversationId
@@ -58,6 +61,7 @@ import uniffi.proton_mail_uniffi.ConversationAvailableActions
 import uniffi.proton_mail_uniffi.GeneralActions
 import uniffi.proton_mail_uniffi.Id
 import uniffi.proton_mail_uniffi.IsSelected
+import uniffi.proton_mail_uniffi.MoveAction
 import uniffi.proton_mail_uniffi.ReplyAction
 import uniffi.proton_mail_uniffi.SystemFolderAction
 import uniffi.proton_mail_uniffi.SystemLabel
@@ -397,5 +401,57 @@ class RustConversationRepositoryImplTest {
             emptyList()
         )
         assertEquals(expected.right(), result)
+    }
+
+    @Test
+    fun `get available system move to actions should return actions when data source exposes them`() = runTest {
+        // Given
+        val userId = UserIdTestData.userId
+        val labelId = SystemLabelId.Inbox.labelId
+        val conversationIds = listOf(ConversationId("1"))
+        val rustMoveToActions = listOf(
+            MoveAction.SystemFolder(SystemFolderAction(Id(2uL), SystemLabel.ARCHIVE, IsSelected.UNSELECTED)),
+            MoveAction.SystemFolder(SystemFolderAction(Id(3uL), SystemLabel.TRASH, IsSelected.UNSELECTED))
+        )
+
+        coEvery {
+            rustConversationDataSource.getAvailableSystemMoveToActions(
+                userId,
+                labelId.toLocalLabelId(),
+                conversationIds.map { it.toLocalConversationId() }
+            )
+        } returns rustMoveToActions
+
+        // When
+        val result = rustConversationRepository.getAvailableSystemMoveToActions(userId, labelId, conversationIds)
+
+        // Then
+        val expected = listOf(
+            MailLabel.System(MailLabelId.System(LabelId("2")), SystemLabelId.Archive, 0),
+            MailLabel.System(MailLabelId.System(LabelId("3")), SystemLabelId.Trash, 0)
+        )
+        assertEquals(expected.right(), result)
+    }
+
+    @Test
+    fun `get available system move to actions should return error when data source fails`() = runTest {
+        // Given
+        val userId = UserIdTestData.userId
+        val labelId = SystemLabelId.Inbox.labelId
+        val conversationIds = listOf(ConversationId("1"))
+
+        coEvery {
+            rustConversationDataSource.getAvailableSystemMoveToActions(
+                userId,
+                labelId.toLocalLabelId(),
+                conversationIds.map { it.toLocalConversationId() }
+            )
+        } returns null
+
+        // When
+        val result = rustConversationRepository.getAvailableSystemMoveToActions(userId, labelId, conversationIds)
+
+        // Then
+        assertEquals(DataError.Local.Unknown.left(), result)
     }
 }
