@@ -52,7 +52,6 @@ import ch.protonmail.android.maillabel.domain.model.MailLabels
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.maillabel.domain.usecase.FindLocalSystemLabelId
 import ch.protonmail.android.maillabel.domain.usecase.ObserveCustomMailLabels
-import ch.protonmail.android.maillabel.domain.usecase.ObserveExclusiveDestinationMailLabels
 import ch.protonmail.android.maillabel.domain.usecase.ObserveMailLabels
 import ch.protonmail.android.maillabel.presentation.model.LabelSelectedState
 import ch.protonmail.android.maillabel.presentation.toCustomUiModel
@@ -68,6 +67,7 @@ import ch.protonmail.android.mailmailbox.domain.model.isBelowSecondLimit
 import ch.protonmail.android.mailmailbox.domain.model.toMailboxItemType
 import ch.protonmail.android.mailmailbox.domain.usecase.GetBottomSheetActions
 import ch.protonmail.android.mailmailbox.domain.usecase.GetMailboxActions
+import ch.protonmail.android.mailmailbox.domain.usecase.GetMoveToBottomSheetActions
 import ch.protonmail.android.mailmailbox.domain.usecase.ObserveCurrentViewMode
 import ch.protonmail.android.mailmailbox.domain.usecase.ObserveOnboarding
 import ch.protonmail.android.mailmailbox.domain.usecase.ObservePrimaryUserAccountStorageStatus
@@ -150,7 +150,6 @@ class MailboxViewModel @Inject constructor(
     observePrimaryUserId: ObservePrimaryUserId,
     private val observeMailLabels: ObserveMailLabels,
     private val observeCustomMailLabels: ObserveCustomMailLabels,
-    private val observeDestinationMailLabels: ObserveExclusiveDestinationMailLabels,
     private val observeSwipeActionsPreference: ObserveSwipeActionsPreference,
     private val observeClearMessageOperation: ObserveClearMessageOperation,
     private val observeClearConversationOperation: ObserveClearConversationOperation,
@@ -159,6 +158,7 @@ class MailboxViewModel @Inject constructor(
     private val observeFolderColorSettings: ObserveFolderColorSettings,
     private val getMailboxActions: GetMailboxActions,
     private val getBottomSheetActions: GetBottomSheetActions,
+    private val getMoveToBottomSheetActions: GetMoveToBottomSheetActions,
     private val actionUiModelMapper: ActionUiModelMapper,
     private val mailboxItemMapper: MailboxItemUiModelMapper,
     private val swipeActionsMapper: SwipeActionsMapper,
@@ -811,19 +811,31 @@ class MailboxViewModel @Inject constructor(
             emitNewStateFrom(operation)
 
             val userId = primaryUserId.filterNotNull().first()
-            val destinationFolder = observeDestinationMailLabels(userId).firstOrNull()
+            val currentMailLabel = selectedMailLabelId.flow.value
+            val viewMode = getViewModeForCurrentLocation(currentMailLabel)
+            val selectedItemIds: List<MailboxItemId> = selectionState.selectedMailboxItems.map { MailboxItemId(it.id) }
+            val actionsEither = getMoveToBottomSheetActions(userId, currentMailLabel.labelId, selectedItemIds, viewMode)
+            Timber.d("rust-mailbox move to locations: $actionsEither")
 
-            if (destinationFolder == null) {
-                emitNewStateFrom(MailboxEvent.ErrorRetrievingDestinationMailFolders)
-                return@launch
-            }
+            actionsEither.fold(
+                ifLeft = {
+                    Timber.e("Mailbox failed to load the bottom-sheet actions: $actionsEither")
+                    emitNewStateFrom(MailboxEvent.ErrorRetrievingDestinationMailFolders)
+                },
+                ifRight = { actions ->
+                    val systemActions = actions.filterIsInstance<MailLabel.System>()
+                    val customActions = actions.filterIsInstance<MailLabel.Custom>()
+                    val mailLabels = MailLabels(systemActions, customActions, emptyList())
 
-            val event = MailboxEvent.MailboxBottomSheetEvent(
-                MoveToBottomSheetState.MoveToBottomSheetEvent.ActionData(
-                    destinationFolder.toUiModels().let { it.folders + it.systemLabels }.toImmutableList()
-                )
+                    val event = MailboxEvent.MailboxBottomSheetEvent(
+                        MoveToBottomSheetState.MoveToBottomSheetEvent.ActionData(
+                            mailLabels.toUiModels().let { it.folders + it.systemLabels }.toImmutableList()
+                        )
+                    )
+                    emitNewStateFrom(event)
+                }
             )
-            emitNewStateFrom(event)
+
         }
     }
 
