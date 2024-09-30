@@ -30,6 +30,7 @@ import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailmessage.data.usecase.CreateRustMessageAccessor
 import ch.protonmail.android.mailmessage.data.usecase.CreateRustMessageBodyAccessor
 import ch.protonmail.android.mailmessage.data.usecase.GetRustAvailableMessageActions
+import ch.protonmail.android.mailmessage.data.usecase.GetRustMessageMoveToActions
 import ch.protonmail.android.mailmessage.data.usecase.GetRustSenderImage
 import ch.protonmail.android.mailmessage.data.usecase.RustMarkMessagesRead
 import ch.protonmail.android.mailmessage.data.usecase.RustMarkMessagesUnread
@@ -44,6 +45,7 @@ import timber.log.Timber
 import uniffi.proton_mail_uniffi.MailSessionException
 import uniffi.proton_mail_uniffi.MailboxException
 import uniffi.proton_mail_uniffi.MessageAvailableActions
+import uniffi.proton_mail_uniffi.MoveAction
 import javax.inject.Inject
 
 class RustMessageDataSourceImpl @Inject constructor(
@@ -57,7 +59,8 @@ class RustMessageDataSourceImpl @Inject constructor(
     private val rustMarkMessagesUnread: RustMarkMessagesUnread,
     private val rustStarMessages: RustStarMessages,
     private val rustUnstarMessages: RustUnstarMessages,
-    private val getRustAvailableMessageActions: GetRustAvailableMessageActions
+    private val getRustAvailableMessageActions: GetRustAvailableMessageActions,
+    private val getRustMessageMoveToActions: GetRustMessageMoveToActions
 ) : RustMessageDataSource {
 
     override suspend fun getMessage(userId: UserId, messageId: LocalMessageId): LocalMessageMetadata? {
@@ -197,7 +200,20 @@ class RustMessageDataSourceImpl @Inject constructor(
             Timber.e("rust-message: trying to get available actions for null Mailbox! failing")
             return null
         }
-
         return getRustAvailableMessageActions(mailbox, messageIds)
+    }
+
+    override suspend fun getAvailableSystemMoveToActions(
+        userId: UserId,
+        labelId: LocalLabelId,
+        messageIds: List<LocalMessageId>
+    ): List<MoveAction.SystemFolder>? {
+        val mailbox = rustMailbox.observeMailbox(labelId).firstOrNull()
+        if (mailbox == null) {
+            Timber.e("rust-message: trying to get available actions for null Mailbox! failing")
+            return null
+        }
+        val moveActions = getRustMessageMoveToActions(mailbox, messageIds)
+        return moveActions.filterIsInstance<MoveAction.SystemFolder>()
     }
 }

@@ -23,6 +23,7 @@ import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageId
 import ch.protonmail.android.mailmessage.data.usecase.CreateRustMessageAccessor
 import ch.protonmail.android.mailmessage.data.usecase.CreateRustMessageBodyAccessor
 import ch.protonmail.android.mailmessage.data.usecase.GetRustAvailableMessageActions
+import ch.protonmail.android.mailmessage.data.usecase.GetRustMessageMoveToActions
 import ch.protonmail.android.mailmessage.data.usecase.GetRustSenderImage
 import ch.protonmail.android.mailmessage.data.usecase.RustMarkMessagesRead
 import ch.protonmail.android.mailmessage.data.usecase.RustMarkMessagesUnread
@@ -44,11 +45,18 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
+import uniffi.proton_mail_uniffi.CustomFolderAction
+import uniffi.proton_mail_uniffi.Id
+import uniffi.proton_mail_uniffi.IsSelected
+import uniffi.proton_mail_uniffi.LabelColor
 import uniffi.proton_mail_uniffi.MailSessionException
 import uniffi.proton_mail_uniffi.MailUserSession
 import uniffi.proton_mail_uniffi.Mailbox
 import uniffi.proton_mail_uniffi.MailboxException
 import uniffi.proton_mail_uniffi.MessageAvailableActions
+import uniffi.proton_mail_uniffi.MoveAction
+import uniffi.proton_mail_uniffi.SystemFolderAction
+import uniffi.proton_mail_uniffi.SystemLabel
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
@@ -67,6 +75,7 @@ class RustMessageDataSourceImplTest {
     private val rustStarMessages = mockk<RustStarMessages>()
     private val rustUnstarMessages = mockk<RustUnstarMessages>()
     private val getRustAvailableMessageActions = mockk<GetRustAvailableMessageActions>()
+    private val getRustMessageMoveToActions = mockk<GetRustMessageMoveToActions>()
     private val dataSource = RustMessageDataSourceImpl(
         userSessionRepository,
         rustMailbox,
@@ -78,7 +87,8 @@ class RustMessageDataSourceImplTest {
         rustMarkMessagesUnread,
         rustStarMessages,
         rustUnstarMessages,
-        getRustAvailableMessageActions
+        getRustAvailableMessageActions,
+        getRustMessageMoveToActions
     )
 
     @Test
@@ -465,6 +475,34 @@ class RustMessageDataSourceImplTest {
 
         // When
         val result = dataSource.getAvailableActions(userId, labelId, messageIds)
+
+        // Then
+        assertEquals(expected, result)
+    }
+
+    @Test
+    fun `get available system move to actions should return only available actions towards system folders`() = runTest {
+        // Given
+        val userId = UserIdTestData.userId
+        val labelId = LocalLabelId(1uL)
+        val mailbox = mockk<Mailbox>()
+        val messageIds = listOf(LocalMessageIdSample.AugWeatherForecast)
+        val archive = SystemFolderAction(Id(2uL), SystemLabel.ARCHIVE, IsSelected.UNSELECTED)
+        val customFolder = CustomFolderAction(
+            Id(100uL),
+            "custom",
+            LabelColor("#fff"),
+            emptyList(),
+            IsSelected.UNSELECTED
+        )
+        val allMoveToActions = listOf(MoveAction.SystemFolder(archive), MoveAction.CustomFolder(customFolder))
+        val expected = listOf(MoveAction.SystemFolder(archive))
+
+        every { rustMailbox.observeMailbox(labelId) } returns flowOf(mailbox)
+        coEvery { getRustMessageMoveToActions(mailbox, messageIds) } returns allMoveToActions
+
+        // When
+        val result = dataSource.getAvailableSystemMoveToActions(userId, labelId, messageIds)
 
         // Then
         assertEquals(expected, result)

@@ -26,6 +26,7 @@ import ch.protonmail.android.mailpagination.domain.model.PageKey
 import kotlinx.coroutines.flow.Flow
 import me.proton.core.domain.entity.UserId
 import uniffi.proton_mail_uniffi.ConversationAvailableActions
+import uniffi.proton_mail_uniffi.MoveAction
 
 interface RustConversationDataSource {
 
@@ -35,6 +36,7 @@ interface RustConversationDataSource {
         userId: UserId,
         conversationId: LocalConversationId
     ): Flow<LocalConversationMessages>
+
     suspend fun getConversations(userId: UserId, pageKey: PageKey): List<LocalConversation>
     suspend fun deleteConversations(userId: UserId, conversations: List<LocalConversationId>)
     suspend fun markRead(userId: UserId, conversations: List<LocalConversationId>)
@@ -61,4 +63,10 @@ interface RustConversationDataSource {
         labelId: LocalLabelId,
         conversationIds: List<LocalConversationId>
     ): ConversationAvailableActions?
+
+    suspend fun getAvailableSystemMoveToActions(
+        userId: UserId,
+        labelId: LocalLabelId,
+        conversationIds: List<LocalConversationId>
+    ): List<MoveAction.SystemFolder>?
 }

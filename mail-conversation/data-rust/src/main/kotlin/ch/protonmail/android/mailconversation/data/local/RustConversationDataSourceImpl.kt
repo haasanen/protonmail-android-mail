@@ -24,6 +24,7 @@ import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
 import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailconversation.data.ConversationRustCoroutineScope
 import ch.protonmail.android.mailconversation.data.usecase.GetRustAvailableConversationActions
+import ch.protonmail.android.mailconversation.data.usecase.GetRustConversationMoveToActions
 import ch.protonmail.android.mailmessage.data.local.RustMailbox
 import ch.protonmail.android.mailmessage.data.model.LocalConversationMessages
 import ch.protonmail.android.mailpagination.domain.model.PageKey
@@ -38,6 +39,7 @@ import uniffi.proton_mail_uniffi.ConversationAvailableActions
 import uniffi.proton_mail_uniffi.MailUserSession
 import uniffi.proton_mail_uniffi.Mailbox
 import uniffi.proton_mail_uniffi.MailboxException
+import uniffi.proton_mail_uniffi.MoveAction
 import uniffi.proton_mail_uniffi.applyLabelToConversations
 import uniffi.proton_mail_uniffi.markConversationsAsRead
 import uniffi.proton_mail_uniffi.markConversationsAsUnread
@@ -52,6 +54,7 @@ class RustConversationDataSourceImpl @Inject constructor(
     private val rustConversationDetailQuery: RustConversationDetailQuery,
     private val rustConversationsQuery: RustConversationsQuery,
     private val getRustAvailableConversationActions: GetRustAvailableConversationActions,
+    private val getRustConversationMoveToActions: GetRustConversationMoveToActions,
     @ConversationRustCoroutineScope private val coroutineScope: CoroutineScope
 ) : RustConversationDataSource {
 
@@ -152,6 +155,20 @@ class RustConversationDataSourceImpl @Inject constructor(
         }
 
         return getRustAvailableConversationActions(mailbox, conversationIds)
+    }
+
+    override suspend fun getAvailableSystemMoveToActions(
+        userId: UserId,
+        labelId: LocalLabelId,
+        conversationIds: List<LocalConversationId>
+    ): List<MoveAction.SystemFolder>? {
+        val mailbox = rustMailbox.observeMailbox(labelId).firstOrNull()
+        if (mailbox == null) {
+            Timber.e("rust-conversation: trying to get available actions for null Mailbox! failing")
+            return null
+        }
+        val moveActions = getRustConversationMoveToActions(mailbox, conversationIds)
+        return moveActions.filterIsInstance<MoveAction.SystemFolder>()
     }
 
     override suspend fun moveConversations(

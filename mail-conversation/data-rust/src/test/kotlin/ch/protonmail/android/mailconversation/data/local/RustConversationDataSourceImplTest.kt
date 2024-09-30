@@ -22,6 +22,7 @@ import app.cash.turbine.test
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalConversationId
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
 import ch.protonmail.android.mailconversation.data.usecase.GetRustAvailableConversationActions
+import ch.protonmail.android.mailconversation.data.usecase.GetRustConversationMoveToActions
 import ch.protonmail.android.maillabel.data.mapper.toLabelId
 import ch.protonmail.android.mailmessage.data.local.RustMailbox
 import ch.protonmail.android.mailmessage.data.model.LocalConversationMessages
@@ -45,9 +46,16 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import org.junit.Test
 import uniffi.proton_mail_uniffi.ConversationAvailableActions
+import uniffi.proton_mail_uniffi.CustomFolderAction
+import uniffi.proton_mail_uniffi.Id
+import uniffi.proton_mail_uniffi.IsSelected
+import uniffi.proton_mail_uniffi.LabelColor
 import uniffi.proton_mail_uniffi.MailSession
 import uniffi.proton_mail_uniffi.Mailbox
 import uniffi.proton_mail_uniffi.MailboxException
+import uniffi.proton_mail_uniffi.MoveAction
+import uniffi.proton_mail_uniffi.SystemFolderAction
+import uniffi.proton_mail_uniffi.SystemLabel
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 
@@ -64,6 +72,7 @@ class RustConversationDataSourceImplTest {
     private val rustConversationDetailQuery: RustConversationDetailQuery = mockk()
     private val rustConversationsQuery: RustConversationsQuery = mockk()
     private val getRustAvailableConversationActions = mockk<GetRustAvailableConversationActions>()
+    private val getRustConversationMoveToActions = mockk<GetRustConversationMoveToActions>()
 
     private val dataSource = RustConversationDataSourceImpl(
         sessionManager,
@@ -71,6 +80,7 @@ class RustConversationDataSourceImplTest {
         rustConversationDetailQuery,
         rustConversationsQuery,
         getRustAvailableConversationActions,
+        getRustConversationMoveToActions,
         testCoroutineScope
     )
 
@@ -179,6 +189,34 @@ class RustConversationDataSourceImplTest {
 
         // When
         val result = dataSource.getAvailableActions(userId, labelId, conversationIds)
+
+        // Then
+        assertEquals(expected, result)
+    }
+
+    @Test
+    fun `get available system move to actions should return only available actions towards system folders`() = runTest {
+        // Given
+        val userId = UserIdTestData.userId
+        val labelId = LocalLabelId(1uL)
+        val mailbox = mockk<Mailbox>()
+        val conversationIds = listOf(LocalConversationIdSample.OctConversation)
+        val archive = SystemFolderAction(Id(2uL), SystemLabel.ARCHIVE, IsSelected.UNSELECTED)
+        val customFolder = CustomFolderAction(
+            Id(100uL),
+            "custom",
+            LabelColor("#fff"),
+            emptyList(),
+            IsSelected.UNSELECTED
+        )
+        val allMoveToActions = listOf(MoveAction.SystemFolder(archive), MoveAction.CustomFolder(customFolder))
+        val expected = listOf(MoveAction.SystemFolder(archive))
+
+        every { rustMailbox.observeMailbox(labelId) } returns flowOf(mailbox)
+        coEvery { getRustConversationMoveToActions(mailbox, conversationIds) } returns allMoveToActions
+
+        // When
+        val result = dataSource.getAvailableSystemMoveToActions(userId, labelId, conversationIds)
 
         // Then
         assertEquals(expected, result)

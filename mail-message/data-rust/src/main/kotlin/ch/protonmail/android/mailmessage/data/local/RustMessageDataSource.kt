@@ -27,6 +27,7 @@ import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import me.proton.core.domain.entity.UserId
 import uniffi.proton_mail_uniffi.MessageAvailableActions
+import uniffi.proton_mail_uniffi.MoveAction
 
 interface RustMessageDataSource {
 
@@ -56,4 +57,10 @@ interface RustMessageDataSource {
         labelId: LocalLabelId,
         messageIds: List<LocalMessageId>
     ): MessageAvailableActions?
+
+    suspend fun getAvailableSystemMoveToActions(
+        userId: UserId,
+        labelId: LocalLabelId,
+        messageIds: List<LocalMessageId>
+    ): List<MoveAction.SystemFolder>?
 }
