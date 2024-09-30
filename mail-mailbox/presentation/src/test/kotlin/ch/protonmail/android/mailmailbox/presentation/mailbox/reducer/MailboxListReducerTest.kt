@@ -420,6 +420,7 @@ internal class MailboxListReducerTest(
                         OpenMailboxItemRequest(
                             itemId = MailboxItemId(MailboxItemUiModelTestData.readMailboxItemUiModel.conversationId.id),
                             shouldOpenInComposer = false,
+                            subItemId = MailboxItemId(MailboxItemUiModelTestData.readMailboxItemUiModel.id),
                             filterByLocation = MailLabelTestData.customLabelOne
                         )
                     ),
@@ -453,6 +454,7 @@ internal class MailboxListReducerTest(
                         OpenMailboxItemRequest(
                             itemId = MailboxItemId(MailboxItemUiModelTestData.readMailboxItemUiModel.conversationId.id),
                             shouldOpenInComposer = false,
+                            subItemId = MailboxItemId(MailboxItemUiModelTestData.readMailboxItemUiModel.id),
                             filterByLocation = MailLabelTestData.customLabelOne
                         )
                     ),

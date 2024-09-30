@@ -23,6 +23,7 @@ import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.maillabel.domain.model.MailLabel
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItemId
+import ch.protonmail.android.mailmailbox.domain.model.MailboxItemType
 import ch.protonmail.android.mailmailbox.domain.model.OpenMailboxItemRequest
 import ch.protonmail.android.mailmailbox.presentation.R
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxEvent
@@ -224,12 +225,14 @@ class MailboxListReducer @Inject constructor() {
         currentState: MailboxListState
     ): MailboxListState {
         // in search mode, subItemId is set to scroll to the searched item
-        val searchedItemId =
-            if (currentState is MailboxListState.Data.ViewMode && currentState.searchState.isInSearch()) {
-                MailboxItemId(operation.item.id)
-            } else {
-                null
-            }
+        // in message mode, subItemId is set to open the message
+        val subItemId = if (operation.item.type == MailboxItemType.Message ||
+            currentState is MailboxListState.Data.ViewMode && currentState.searchState.isInSearch()
+        ) {
+            MailboxItemId(operation.item.id)
+        } else {
+            null
+        }
 
         val currentLocation = if (currentState is MailboxListState.Data) {
             currentState.currentMailLabel
@@ -241,7 +244,7 @@ class MailboxListReducer @Inject constructor() {
         val request = OpenMailboxItemRequest(
             itemId = MailboxItemId(operation.item.conversationId.id),
             shouldOpenInComposer = false,
-            subItemId = searchedItemId,
+            subItemId = subItemId,
             filterByLocation = currentLocation
         )
 
