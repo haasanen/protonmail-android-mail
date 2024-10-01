@@ -38,8 +38,8 @@ import ch.protonmail.android.mailmessage.presentation.model.MessageBodyWithType
 import ch.protonmail.android.mailmessage.presentation.model.MimeTypeUiModel
 import ch.protonmail.android.mailmessage.presentation.model.ViewModePreference
 import ch.protonmail.android.mailmessage.presentation.sample.AttachmentUiModelSample
+import ch.protonmail.android.mailmessage.presentation.usecase.InjectCssIntoDecryptedMessageBody
 import ch.protonmail.android.mailmessage.presentation.usecase.SanitizeHtmlOfDecryptedMessageBody
-import ch.protonmail.android.mailmessage.presentation.usecase.TransformDecryptedMessageBody
 import ch.protonmail.android.testdata.message.MessageBodyTestData
 import ch.protonmail.android.testdata.user.UserIdTestData
 import io.mockk.coEvery
@@ -69,9 +69,6 @@ class MessageBodyUiModelMapperTest {
     private val doesMessageBodyHaveRemoteContent = mockk<DoesMessageBodyHaveRemoteContent> {
         every { this@mockk.invoke(any()) } returns false
     }
-    private val transformDecryptedMessageBody = mockk<TransformDecryptedMessageBody> {
-        every { this@mockk.invoke(any()) } returns decryptedMessageBody
-    }
     private val sanitizeHtmlOfDecryptedMessageBody = mockk<SanitizeHtmlOfDecryptedMessageBody> {
         every { this@mockk.invoke(any()) } returns decryptedMessageBody
     }
@@ -85,11 +82,15 @@ class MessageBodyUiModelMapperTest {
         coEvery { this@mockk.invoke(any()) } returns MessageBodyWithoutQuote(decryptedMessageBody, false)
     }
 
+    private val injectCssIntoDecryptedMessageBody = mockk<InjectCssIntoDecryptedMessageBody> {
+        coEvery { this@mockk.invoke(any()) } returns decryptedMessageBody
+    }
+
     private val messageBodyUiModelMapper = MessageBodyUiModelMapper(
         attachmentUiModelMapper = attachmentUiModelMapper,
         doesMessageBodyHaveEmbeddedImages = doesMessageBodyHaveEmbeddedImages,
         doesMessageBodyHaveRemoteContent = doesMessageBodyHaveRemoteContent,
-        transformDecryptedMessageBody = transformDecryptedMessageBody,
+        injectCssIntoDecryptedMessageBody = injectCssIntoDecryptedMessageBody,
         sanitizeHtmlOfDecryptedMessageBody = sanitizeHtmlOfDecryptedMessageBody,
         shouldShowEmbeddedImages = shouldShowEmbeddedImages,
         shouldShowRemoteContent = shouldShowRemoteContent,
@@ -267,7 +268,7 @@ class MessageBodyUiModelMapperTest {
             sanitizeHtmlOfDecryptedMessageBody(decryptedMessageBodyWithType)
         } returns sanitizedDecryptedMessageBody
         every {
-            transformDecryptedMessageBody(sanitizedMessageBodyWithType)
+            injectCssIntoDecryptedMessageBody(sanitizedMessageBodyWithType)
         } returns sanitizedDecryptedMessageBodyWithCss
         val messageId = MessageIdSample.build()
         val messageBody = DecryptedMessageBody(

@@ -159,7 +159,6 @@ import ch.protonmail.android.mailmessage.presentation.reducer.MoveToBottomSheetR
 import ch.protonmail.android.mailmessage.presentation.reducer.UpsellingBottomSheetReducer
 import ch.protonmail.android.mailmessage.presentation.usecase.InjectCssIntoDecryptedMessageBody
 import ch.protonmail.android.mailmessage.presentation.usecase.SanitizeHtmlOfDecryptedMessageBody
-import ch.protonmail.android.mailmessage.presentation.usecase.TransformDecryptedMessageBody
 import ch.protonmail.android.mailsettings.domain.model.PrivacySettings
 import ch.protonmail.android.mailsettings.domain.usecase.privacy.ObservePrivacySettings
 import ch.protonmail.android.mailsettings.domain.usecase.privacy.UpdateLinkConfirmationSetting
@@ -356,8 +355,6 @@ class ConversationDetailViewModelIntegrationTest {
     }
     private val injectCssIntoDecryptedMessageBody = InjectCssIntoDecryptedMessageBody(context)
     private val sanitizeHtmlOfDecryptedMessageBody = SanitizeHtmlOfDecryptedMessageBody()
-    private val transformDecryptedMessageBody =
-        TransformDecryptedMessageBody(injectCssIntoDecryptedMessageBody, mockk())
     private val extractMessageBodyWithoutQuote = ExtractMessageBodyWithoutQuote()
     private val conversationMessageMapper = ConversationDetailMessageUiModelMapper(
         avatarUiModelMapper = DetailAvatarUiModelMapper(avatarInformationMapper),
@@ -381,7 +378,7 @@ class ConversationDetailViewModelIntegrationTest {
             attachmentUiModelMapper = attachmentUiModelMapper,
             doesMessageBodyHaveEmbeddedImages = doesMessageBodyHaveEmbeddedImages,
             doesMessageBodyHaveRemoteContent = doesMessageBodyHaveRemoteContent,
-            transformDecryptedMessageBody = transformDecryptedMessageBody,
+            injectCssIntoDecryptedMessageBody = injectCssIntoDecryptedMessageBody,
             sanitizeHtmlOfDecryptedMessageBody = sanitizeHtmlOfDecryptedMessageBody,
             shouldShowEmbeddedImages = shouldShowEmbeddedImages,
             shouldShowRemoteContent = shouldShowRemoteContent,

@@ -33,8 +33,8 @@ import ch.protonmail.android.mailmessage.presentation.model.MessageBodyUiModel
 import ch.protonmail.android.mailmessage.presentation.model.MessageBodyWithType
 import ch.protonmail.android.mailmessage.presentation.model.MimeTypeUiModel
 import ch.protonmail.android.mailmessage.presentation.model.ViewModePreference
+import ch.protonmail.android.mailmessage.presentation.usecase.InjectCssIntoDecryptedMessageBody
 import ch.protonmail.android.mailmessage.presentation.usecase.SanitizeHtmlOfDecryptedMessageBody
-import ch.protonmail.android.mailmessage.presentation.usecase.TransformDecryptedMessageBody
 import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 
@@ -42,7 +42,7 @@ class MessageBodyUiModelMapper @Inject constructor(
     private val attachmentUiModelMapper: AttachmentUiModelMapper,
     private val doesMessageBodyHaveEmbeddedImages: DoesMessageBodyHaveEmbeddedImages,
     private val doesMessageBodyHaveRemoteContent: DoesMessageBodyHaveRemoteContent,
-    private val transformDecryptedMessageBody: TransformDecryptedMessageBody,
+    private val injectCssIntoDecryptedMessageBody: InjectCssIntoDecryptedMessageBody,
     private val sanitizeHtmlOfDecryptedMessageBody: SanitizeHtmlOfDecryptedMessageBody,
     private val extractMessageBodyWithoutQuote: ExtractMessageBodyWithoutQuote,
     private val shouldShowEmbeddedImages: ShouldShowEmbeddedImages,
@@ -71,7 +71,7 @@ class MessageBodyUiModelMapper @Inject constructor(
             decryptedMessageBody.mimeType.toMimeTypeUiModel()
         )
 
-        val originalMessageBody = transformDecryptedMessageBody(sanitizedMessageBodyWithType)
+        val originalMessageBody = injectCssIntoDecryptedMessageBody(sanitizedMessageBodyWithType)
         val extractQuoteResult = extractMessageBodyWithoutQuote(originalMessageBody)
         val bodyWithoutQuote = if (extractQuoteResult.hasQuote) {
             extractQuoteResult.messageBodyHtmlWithoutQuote
