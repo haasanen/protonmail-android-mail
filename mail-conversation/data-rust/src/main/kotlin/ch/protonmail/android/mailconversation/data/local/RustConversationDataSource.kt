@@ -20,6 +20,7 @@ package ch.protonmail.android.mailconversation.data.local
 
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalConversation
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalConversationId
+import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelAsAction
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
 import ch.protonmail.android.mailmessage.data.model.LocalConversationMessages
 import ch.protonmail.android.mailpagination.domain.model.PageKey
@@ -69,4 +70,10 @@ interface RustConversationDataSource {
         labelId: LocalLabelId,
         conversationIds: List<LocalConversationId>
     ): List<MoveAction.SystemFolder>?
+
+    suspend fun getAvailableLabelAsActions(
+        userId: UserId,
+        labelId: LocalLabelId,
+        conversationIds: List<LocalConversationId>
+    ): List<LocalLabelAsAction>?
 }

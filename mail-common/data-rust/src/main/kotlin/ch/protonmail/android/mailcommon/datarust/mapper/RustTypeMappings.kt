@@ -26,6 +26,7 @@ import uniffi.proton_mail_uniffi.Conversation
 import uniffi.proton_mail_uniffi.DecryptedMessage
 import uniffi.proton_mail_uniffi.ExclusiveLocation
 import uniffi.proton_mail_uniffi.Id
+import uniffi.proton_mail_uniffi.LabelAsAction
 import uniffi.proton_mail_uniffi.MailSettings
 import uniffi.proton_mail_uniffi.Message
 import uniffi.proton_mail_uniffi.MessageButtons
@@ -65,4 +66,5 @@ typealias LocalAvatarInformation = AvatarInformation
 typealias LocalExclusiveLocation = ExclusiveLocation
 typealias LocalExclusiveLocationSystem = ExclusiveLocation.System
 typealias LocalExclusiveLocationCustom = ExclusiveLocation.Custom
+typealias LocalLabelAsAction = LabelAsAction
 

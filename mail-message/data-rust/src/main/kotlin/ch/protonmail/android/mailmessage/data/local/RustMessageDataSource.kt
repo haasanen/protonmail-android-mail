@@ -20,6 +20,7 @@ package ch.protonmail.android.mailmessage.data.local
 
 import arrow.core.Either
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalDecryptedMessage
+import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelAsAction
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageId
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageMetadata
@@ -63,4 +64,10 @@ interface RustMessageDataSource {
         labelId: LocalLabelId,
         messageIds: List<LocalMessageId>
     ): List<MoveAction.SystemFolder>?
+
+    suspend fun getAvailableLabelAsActions(
+        userId: UserId,
+        labelId: LocalLabelId,
+        messageIds: List<LocalMessageId>
+    ): List<LocalLabelAsAction>?
 }

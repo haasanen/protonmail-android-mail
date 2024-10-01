@@ -22,6 +22,7 @@ import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalDecryptedMessage
+import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelAsAction
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageId
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageMetadata
@@ -30,6 +31,7 @@ import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailmessage.data.usecase.CreateRustMessageAccessor
 import ch.protonmail.android.mailmessage.data.usecase.CreateRustMessageBodyAccessor
 import ch.protonmail.android.mailmessage.data.usecase.GetRustAvailableMessageActions
+import ch.protonmail.android.mailmessage.data.usecase.GetRustMessageLabelAsActions
 import ch.protonmail.android.mailmessage.data.usecase.GetRustMessageMoveToActions
 import ch.protonmail.android.mailmessage.data.usecase.GetRustSenderImage
 import ch.protonmail.android.mailmessage.data.usecase.RustMarkMessagesRead
@@ -60,7 +62,8 @@ class RustMessageDataSourceImpl @Inject constructor(
     private val rustStarMessages: RustStarMessages,
     private val rustUnstarMessages: RustUnstarMessages,
     private val getRustAvailableMessageActions: GetRustAvailableMessageActions,
-    private val getRustMessageMoveToActions: GetRustMessageMoveToActions
+    private val getRustMessageMoveToActions: GetRustMessageMoveToActions,
+    private val getRustMessageLabelAsActions: GetRustMessageLabelAsActions
 ) : RustMessageDataSource {
 
     override suspend fun getMessage(userId: UserId, messageId: LocalMessageId): LocalMessageMetadata? {
@@ -215,5 +218,18 @@ class RustMessageDataSourceImpl @Inject constructor(
         }
         val moveActions = getRustMessageMoveToActions(mailbox, messageIds)
         return moveActions.filterIsInstance<MoveAction.SystemFolder>()
+    }
+
+    override suspend fun getAvailableLabelAsActions(
+        userId: UserId,
+        labelId: LocalLabelId,
+        messageIds: List<LocalMessageId>
+    ): List<LocalLabelAsAction>? {
+        val mailbox = rustMailbox.observeMailbox(labelId).firstOrNull()
+        if (mailbox == null) {
+            Timber.e("rust-message: trying to get available label actions for null Mailbox! failing")
+            return null
+        }
+        return getRustMessageLabelAsActions(mailbox, messageIds)
     }
 }

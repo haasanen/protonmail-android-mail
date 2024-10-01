@@ -20,10 +20,12 @@ package ch.protonmail.android.mailconversation.data.local
 
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalConversation
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalConversationId
+import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelAsAction
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
 import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailconversation.data.ConversationRustCoroutineScope
 import ch.protonmail.android.mailconversation.data.usecase.GetRustAvailableConversationActions
+import ch.protonmail.android.mailconversation.data.usecase.GetRustConversationLabelAsActions
 import ch.protonmail.android.mailconversation.data.usecase.GetRustConversationMoveToActions
 import ch.protonmail.android.mailmessage.data.local.RustMailbox
 import ch.protonmail.android.mailmessage.data.model.LocalConversationMessages
@@ -55,6 +57,7 @@ class RustConversationDataSourceImpl @Inject constructor(
     private val rustConversationsQuery: RustConversationsQuery,
     private val getRustAvailableConversationActions: GetRustAvailableConversationActions,
     private val getRustConversationMoveToActions: GetRustConversationMoveToActions,
+    private val getRustConversationLabelAsActions: GetRustConversationLabelAsActions,
     @ConversationRustCoroutineScope private val coroutineScope: CoroutineScope
 ) : RustConversationDataSource {
 
@@ -181,6 +184,19 @@ class RustConversationDataSourceImpl @Inject constructor(
             action = { moveConversations(userId, conversationIds, toLabelId) },
             actionName = "move conversations"
         )
+    }
+
+    override suspend fun getAvailableLabelAsActions(
+        userId: UserId,
+        labelId: LocalLabelId,
+        conversationIds: List<LocalConversationId>
+    ): List<LocalLabelAsAction>? {
+        val mailbox = rustMailbox.observeMailbox(labelId).firstOrNull()
+        if (mailbox == null) {
+            Timber.e("rust-conversation: trying to get available label actions for null Mailbox! failing")
+            return null
+        }
+        return getRustConversationLabelAsActions(mailbox, conversationIds)
     }
 
     private suspend fun executeUserSessionAction(

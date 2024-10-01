@@ -22,6 +22,7 @@ import app.cash.turbine.test
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalConversationId
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
 import ch.protonmail.android.mailconversation.data.usecase.GetRustAvailableConversationActions
+import ch.protonmail.android.mailconversation.data.usecase.GetRustConversationLabelAsActions
 import ch.protonmail.android.mailconversation.data.usecase.GetRustConversationMoveToActions
 import ch.protonmail.android.maillabel.data.mapper.toLabelId
 import ch.protonmail.android.mailmessage.data.local.RustMailbox
@@ -49,6 +50,7 @@ import uniffi.proton_mail_uniffi.ConversationAvailableActions
 import uniffi.proton_mail_uniffi.CustomFolderAction
 import uniffi.proton_mail_uniffi.Id
 import uniffi.proton_mail_uniffi.IsSelected
+import uniffi.proton_mail_uniffi.LabelAsAction
 import uniffi.proton_mail_uniffi.LabelColor
 import uniffi.proton_mail_uniffi.MailSession
 import uniffi.proton_mail_uniffi.Mailbox
@@ -73,6 +75,7 @@ class RustConversationDataSourceImplTest {
     private val rustConversationsQuery: RustConversationsQuery = mockk()
     private val getRustAvailableConversationActions = mockk<GetRustAvailableConversationActions>()
     private val getRustConversationMoveToActions = mockk<GetRustConversationMoveToActions>()
+    private val getRustConversationLabelAsActions = mockk<GetRustConversationLabelAsActions>()
 
     private val dataSource = RustConversationDataSourceImpl(
         sessionManager,
@@ -81,6 +84,7 @@ class RustConversationDataSourceImplTest {
         rustConversationsQuery,
         getRustAvailableConversationActions,
         getRustConversationMoveToActions,
+        getRustConversationLabelAsActions,
         testCoroutineScope
     )
 
@@ -222,4 +226,25 @@ class RustConversationDataSourceImplTest {
         assertEquals(expected, result)
     }
 
+    @Test
+    fun `get available label as actions should return available conversation actions`() = runTest {
+        // Given
+        val userId = UserIdTestData.userId
+        val labelId = LocalLabelId(1uL)
+        val mailbox = mockk<Mailbox>()
+        val conversationIds = listOf(LocalConversationIdSample.AugConversation)
+        val expected = listOf(
+            LabelAsAction(Id(1uL), "label", LabelColor("#fff"), IsSelected.UNSELECTED),
+            LabelAsAction(Id(2uL), "label2", LabelColor("#000"), IsSelected.SELECTED)
+        )
+
+        every { rustMailbox.observeMailbox(labelId) } returns flowOf(mailbox)
+        coEvery { getRustConversationLabelAsActions(mailbox, conversationIds) } returns expected
+
+        // When
+        val result = dataSource.getAvailableLabelAsActions(userId, labelId, conversationIds)
+
+        // Then
+        assertEquals(expected, result)
+    }
 }
