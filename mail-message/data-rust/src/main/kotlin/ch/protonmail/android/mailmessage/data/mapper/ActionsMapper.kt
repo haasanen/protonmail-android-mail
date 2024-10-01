@@ -18,20 +18,50 @@
 
 package ch.protonmail.android.mailmessage.data.mapper
 
+import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelAsAction
 import ch.protonmail.android.mailcommon.domain.model.Action
 import ch.protonmail.android.mailcommon.domain.model.AvailableActions
 import ch.protonmail.android.maillabel.data.mapper.toLabelId
 import ch.protonmail.android.maillabel.data.mapper.toSystemLabel
+import ch.protonmail.android.maillabel.domain.model.Label
+import ch.protonmail.android.maillabel.domain.model.LabelAsActions
+import ch.protonmail.android.maillabel.domain.model.LabelType
 import ch.protonmail.android.maillabel.domain.model.MailLabel
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.GeneralActions
+import uniffi.proton_mail_uniffi.IsSelected
 import uniffi.proton_mail_uniffi.MessageAction
 import uniffi.proton_mail_uniffi.MessageAvailableActions
 import uniffi.proton_mail_uniffi.MoveAction
 import uniffi.proton_mail_uniffi.ReplyAction
 import uniffi.proton_mail_uniffi.SystemFolderAction
 import uniffi.proton_mail_uniffi.SystemLabel
+
+fun List<LocalLabelAsAction>.toLabelAsActions(): LabelAsActions {
+    val labels = this.map { it.toLabel() }
+    val selectedLabelIds = this
+        .filter { it.isSelected == IsSelected.SELECTED }
+        .map { it.labelId.toLabelId() }
+    val partiallySelectedLabelIds = this
+        .filter { it.isSelected == IsSelected.PARTIAL }
+        .map { it.labelId.toLabelId() }
+
+    return LabelAsActions(labels, selectedLabelIds, partiallySelectedLabelIds)
+}
+
+private fun LocalLabelAsAction.toLabel() = Label(
+    labelId = this.labelId.toLabelId(),
+    parentId = null,
+    name = this.name,
+    type = LabelType.MessageLabel,
+    path = "",
+    color = this.color.value,
+    order = 0,
+    isNotified = null,
+    isExpanded = null,
+    isSticky = null
+)
 
 fun List<MoveAction.SystemFolder>.toMailLabels() = this.map { systemAction ->
     MailLabel.System(

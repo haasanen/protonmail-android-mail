@@ -31,9 +31,11 @@ import ch.protonmail.android.mailconversation.data.mapper.toConversation
 import ch.protonmail.android.mailconversation.domain.entity.Conversation
 import ch.protonmail.android.mailconversation.domain.repository.ConversationRepository
 import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
+import ch.protonmail.android.maillabel.domain.model.LabelAsActions
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabel
 import ch.protonmail.android.mailmessage.data.mapper.toConversationMessagesWithMessageToOpen
+import ch.protonmail.android.mailmessage.data.mapper.toLabelAsActions
 import ch.protonmail.android.mailmessage.data.mapper.toLocalConversationId
 import ch.protonmail.android.mailmessage.data.mapper.toMailLabels
 import ch.protonmail.android.mailmessage.domain.model.ConversationMessages
@@ -238,5 +240,20 @@ class RustConversationRepositoryImpl @Inject constructor(
         val mailLabels = moveToActions.toMailLabels()
         Timber.v("rust-conversation: Actions to mail labels: ${mailLabels.joinToString("\n")}")
         return mailLabels.right()
+    }
+
+    override suspend fun getAvailableLabelAsActions(
+        userId: UserId,
+        labelId: LabelId,
+        conversationIds: List<ConversationId>
+    ): Either<DataError, LabelAsActions> {
+        val labelAsActions = rustConversationDataSource.getAvailableLabelAsActions(
+            userId,
+            labelId.toLocalLabelId(),
+            conversationIds.map { it.toLocalConversationId() }
+        ) ?: return DataError.Local.Unknown.left()
+        Timber.v("rust-conversation: Available label as actions: ${labelAsActions.joinToString("\n")}")
+
+        return labelAsActions.toLabelAsActions().right()
     }
 }

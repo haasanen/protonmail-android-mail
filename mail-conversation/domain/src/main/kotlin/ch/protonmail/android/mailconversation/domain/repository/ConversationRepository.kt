@@ -23,6 +23,7 @@ import ch.protonmail.android.mailcommon.domain.model.AvailableActions
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailconversation.domain.entity.Conversation
+import ch.protonmail.android.maillabel.domain.model.LabelAsActions
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabel
 import ch.protonmail.android.mailmessage.domain.model.ConversationMessages
@@ -150,4 +151,10 @@ interface ConversationRepository {
         labelId: LabelId,
         conversationIds: List<ConversationId>
     ): Either<DataError, List<MailLabel.System>>
+
+    suspend fun getAvailableLabelAsActions(
+        userId: UserId,
+        labelId: LabelId,
+        conversationIds: List<ConversationId>
+    ): Either<DataError, LabelAsActions>
 }

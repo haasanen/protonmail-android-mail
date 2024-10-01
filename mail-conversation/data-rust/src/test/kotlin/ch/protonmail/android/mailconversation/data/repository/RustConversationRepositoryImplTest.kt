@@ -30,7 +30,10 @@ import ch.protonmail.android.mailconversation.data.local.RustConversationDataSou
 import ch.protonmail.android.mailconversation.data.mapper.toConversation
 import ch.protonmail.android.mailconversation.domain.entity.Conversation
 import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
+import ch.protonmail.android.maillabel.domain.model.Label
+import ch.protonmail.android.maillabel.domain.model.LabelAsActions
 import ch.protonmail.android.maillabel.domain.model.LabelId
+import ch.protonmail.android.maillabel.domain.model.LabelType
 import ch.protonmail.android.maillabel.domain.model.LabelWithSystemLabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabel
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
@@ -61,6 +64,8 @@ import uniffi.proton_mail_uniffi.ConversationAvailableActions
 import uniffi.proton_mail_uniffi.GeneralActions
 import uniffi.proton_mail_uniffi.Id
 import uniffi.proton_mail_uniffi.IsSelected
+import uniffi.proton_mail_uniffi.LabelAsAction
+import uniffi.proton_mail_uniffi.LabelColor
 import uniffi.proton_mail_uniffi.MoveAction
 import uniffi.proton_mail_uniffi.ReplyAction
 import uniffi.proton_mail_uniffi.SystemFolderAction
@@ -454,4 +459,79 @@ class RustConversationRepositoryImplTest {
         // Then
         assertEquals(DataError.Local.Unknown.left(), result)
     }
+
+    @Test
+    fun `get available label as actions should return actions when data source exposes them`() = runTest {
+        // Given
+        val userId = UserIdTestData.userId
+        val labelId = SystemLabelId.Inbox.labelId
+        val conversationIds = listOf(ConversationId("1"))
+        val rustLabelAsActions = listOf(
+            LabelAsAction(Id(1uL), "unselected", LabelColor("#fff"), IsSelected.UNSELECTED),
+            LabelAsAction(Id(2uL), "selected", LabelColor("#aaa"), IsSelected.SELECTED),
+            LabelAsAction(Id(3uL), "partial", LabelColor("#000"), IsSelected.PARTIAL)
+        )
+
+        coEvery {
+            rustConversationDataSource.getAvailableLabelAsActions(
+                userId,
+                labelId.toLocalLabelId(),
+                conversationIds.map { it.toLocalConversationId() }
+            )
+        } returns rustLabelAsActions
+
+        // When
+        val result = rustConversationRepository.getAvailableLabelAsActions(userId, labelId, conversationIds)
+
+        // Then
+        val expected = LabelAsActions(
+            labels = listOf(
+                fromLabelAction("1", "unselected", "#fff"),
+                fromLabelAction("2", "selected", "#aaa"),
+                fromLabelAction("3", "partial", "#000")
+            ),
+            selected = listOf(LabelId("2")),
+            partiallySelected = listOf(LabelId("3"))
+        )
+        assertEquals(expected.right(), result)
+    }
+
+    @Test
+    fun `get available label as actions should return error when data source fails`() = runTest {
+        // Given
+        val userId = UserIdTestData.userId
+        val labelId = SystemLabelId.Inbox.labelId
+        val conversationIds = listOf(ConversationId("1"))
+
+        coEvery {
+            rustConversationDataSource.getAvailableLabelAsActions(
+                userId,
+                labelId.toLocalLabelId(),
+                conversationIds.map { it.toLocalConversationId() }
+            )
+        } returns null
+
+        // When
+        val result = rustConversationRepository.getAvailableLabelAsActions(userId, labelId, conversationIds)
+
+        // Then
+        assertEquals(DataError.Local.Unknown.left(), result)
+    }
+
+    private fun fromLabelAction(
+        rawId: String,
+        name: String,
+        color: String
+    ) = Label(
+        LabelId(rawId),
+        null,
+        name,
+        LabelType.MessageLabel,
+        "",
+        color,
+        0,
+        null,
+        null,
+        null
+    )
 }
