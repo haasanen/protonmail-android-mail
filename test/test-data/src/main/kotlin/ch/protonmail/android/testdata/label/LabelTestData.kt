@@ -64,11 +64,16 @@ object LabelTestData {
         false
     )
 
+    val unselectedLabelAction = buildLabel(id = "1", name = "unselected", color = "#fff", order = 0, path = "")
+    val selectedLabelAction = buildLabel(id = "2", name = "selected", color = "#aaa", order = 0, path = "")
+    val partialSelectedLabelAction = buildLabel(id = "3", name = "partial", color = "#000", order = 0, path = "")
+
     fun buildLabel(
         id: String,
         type: LabelType = LabelType.MessageLabel,
         name: String = id,
         order: Int = id.hashCode(),
+        path: String = id,
         color: String? = "",
         parentId: String? = null,
         isNotified: Boolean? = null,
@@ -78,7 +83,7 @@ object LabelTestData {
         parentId = parentId?.let { LabelId(it) },
         name = name,
         type = type,
-        path = id,
+        path = path,
         color = color,
         order = order,
         isNotified = isNotified,

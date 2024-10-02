@@ -29,10 +29,8 @@ import ch.protonmail.android.mailcommon.domain.model.AvailableActions
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
 import ch.protonmail.android.maillabel.domain.SelectedMailLabelId
-import ch.protonmail.android.maillabel.domain.model.Label
 import ch.protonmail.android.maillabel.domain.model.LabelAsActions
 import ch.protonmail.android.maillabel.domain.model.LabelId
-import ch.protonmail.android.maillabel.domain.model.LabelType
 import ch.protonmail.android.maillabel.domain.model.MailLabel
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
@@ -44,6 +42,8 @@ import ch.protonmail.android.mailmessage.data.mapper.toMessageId
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.SenderImage
 import ch.protonmail.android.mailpagination.domain.model.PageKey
+import ch.protonmail.android.testdata.label.LabelTestData
+import ch.protonmail.android.testdata.label.rust.LocalLabelAsActionTestData
 import ch.protonmail.android.testdata.message.rust.LocalMessageIdSample
 import ch.protonmail.android.testdata.message.rust.LocalMessageTestData
 import ch.protonmail.android.testdata.user.UserIdTestData
@@ -61,8 +61,6 @@ import uniffi.proton_mail_uniffi.BodyOutput
 import uniffi.proton_mail_uniffi.GeneralActions
 import uniffi.proton_mail_uniffi.Id
 import uniffi.proton_mail_uniffi.IsSelected
-import uniffi.proton_mail_uniffi.LabelAsAction
-import uniffi.proton_mail_uniffi.LabelColor
 import uniffi.proton_mail_uniffi.MessageAction
 import uniffi.proton_mail_uniffi.MessageAvailableActions
 import uniffi.proton_mail_uniffi.MoveAction
@@ -477,9 +475,9 @@ class RustMessageRepositoryImplTest {
         val labelId = SystemLabelId.Inbox.labelId
         val messageIds = listOf(MessageId("1"))
         val rustLabelAsActions = listOf(
-            LabelAsAction(Id(1uL), "unselected", LabelColor("#fff"), IsSelected.UNSELECTED),
-            LabelAsAction(Id(2uL), "selected", LabelColor("#aaa"), IsSelected.SELECTED),
-            LabelAsAction(Id(3uL), "partial", LabelColor("#000"), IsSelected.PARTIAL)
+            LocalLabelAsActionTestData.selectedAction,
+            LocalLabelAsActionTestData.unselectedAction,
+            LocalLabelAsActionTestData.partiallySelectedAction
         )
 
         coEvery {
@@ -496,9 +494,9 @@ class RustMessageRepositoryImplTest {
         // Then
         val expected = LabelAsActions(
             labels = listOf(
-                fromLabelAction("1", "unselected", "#fff"),
-                fromLabelAction("2", "selected", "#aaa"),
-                fromLabelAction("3", "partial", "#000")
+                LabelTestData.selectedLabelAction,
+                LabelTestData.unselectedLabelAction,
+                LabelTestData.partialSelectedLabelAction
             ),
             selected = listOf(LabelId("2")),
             partiallySelected = listOf(LabelId("3"))
@@ -528,20 +526,4 @@ class RustMessageRepositoryImplTest {
         assertEquals(DataError.Local.Unknown.left(), result)
     }
 
-    private fun fromLabelAction(
-        rawId: String,
-        name: String,
-        color: String
-    ) = Label(
-        LabelId(rawId),
-        null,
-        name,
-        LabelType.MessageLabel,
-        "",
-        color,
-        0,
-        null,
-        null,
-        null
-    )
 }
