@@ -45,7 +45,6 @@ class ObserveContactGroupTest {
 
     private val label = LabelTestData.buildLabel(
         "LabelId1",
-        UserIdTestData.userId,
         LabelType.ContactGroup,
         "Label 1"
     )

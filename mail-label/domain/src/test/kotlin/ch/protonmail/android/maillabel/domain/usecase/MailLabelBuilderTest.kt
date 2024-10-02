@@ -52,9 +52,9 @@ class MailLabelBuilderTest {
     fun `return correct simple folders`() = runTest {
         // Given
         val items = listOf(
-            buildLabel(userId = userId, type = LabelType.MessageFolder, id = "0", order = 0),
-            buildLabel(userId = userId, type = LabelType.MessageFolder, id = "1", order = 1),
-            buildLabel(userId = userId, type = LabelType.MessageFolder, id = "2", order = 2)
+            buildLabel(id = "0", type = LabelType.MessageFolder, order = 0),
+            buildLabel(id = "1", type = LabelType.MessageFolder, order = 1),
+            buildLabel(id = "2", type = LabelType.MessageFolder, order = 2)
         )
 
         // When
@@ -73,11 +73,11 @@ class MailLabelBuilderTest {
     fun `return correct folders with parent`() = runTest {
         // Given
         val items = listOf(
-            buildLabel(userId = userId, type = LabelType.MessageFolder, id = "0", order = 0),
-            buildLabel(userId = userId, type = LabelType.MessageFolder, id = "0.1", order = 0, parentId = "0"),
-            buildLabel(userId = userId, type = LabelType.MessageFolder, id = "0.2", order = 1, parentId = "0"),
-            buildLabel(userId = userId, type = LabelType.MessageFolder, id = "0.2.1", order = 0, parentId = "0.2"),
-            buildLabel(userId = userId, type = LabelType.MessageFolder, id = "0.2.2", order = 1, parentId = "0.2")
+            buildLabel(id = "0", type = LabelType.MessageFolder, order = 0),
+            buildLabel(id = "0.1", type = LabelType.MessageFolder, order = 0, parentId = "0"),
+            buildLabel(id = "0.2", type = LabelType.MessageFolder, order = 1, parentId = "0"),
+            buildLabel(id = "0.2.1", type = LabelType.MessageFolder, order = 0, parentId = "0.2"),
+            buildLabel(id = "0.2.2", type = LabelType.MessageFolder, order = 1, parentId = "0.2")
         )
 
         // When
@@ -98,10 +98,10 @@ class MailLabelBuilderTest {
     fun `when a parent does not exist, ignore its children`() = runTest {
         // Given
         val items = listOf(
-            buildLabel(userId = userId, type = LabelType.MessageFolder, id = "0", order = 0),
-            buildLabel(userId = userId, type = LabelType.MessageFolder, id = "0.1", order = 0, parentId = "0"),
-            buildLabel(userId = userId, type = LabelType.MessageFolder, id = "0.2.1", order = 0, parentId = "0.2"),
-            buildLabel(userId = userId, type = LabelType.MessageFolder, id = "0.2.2", order = 1, parentId = "0.2")
+            buildLabel(id = "0", type = LabelType.MessageFolder, order = 0),
+            buildLabel(id = "0.1", type = LabelType.MessageFolder, order = 0, parentId = "0"),
+            buildLabel(id = "0.2.1", type = LabelType.MessageFolder, order = 0, parentId = "0.2"),
+            buildLabel(id = "0.2.2", type = LabelType.MessageFolder, order = 1, parentId = "0.2")
         )
 
         // When
@@ -119,11 +119,11 @@ class MailLabelBuilderTest {
     fun `return correct ordered folders`() = runTest {
         // Given
         val items = listOf(
-            buildLabel(userId = userId, type = LabelType.MessageFolder, id = "0.2.2", order = 1, parentId = "0.2"),
-            buildLabel(userId = userId, type = LabelType.MessageFolder, id = "0.2", order = 1, parentId = "0"),
-            buildLabel(userId = userId, type = LabelType.MessageFolder, id = "0.1", order = 0, parentId = "0"),
-            buildLabel(userId = userId, type = LabelType.MessageFolder, id = "0", order = 0),
-            buildLabel(userId = userId, type = LabelType.MessageFolder, id = "0.2.1", order = 0, parentId = "0.2")
+            buildLabel(id = "0.2.2", type = LabelType.MessageFolder, order = 1, parentId = "0.2"),
+            buildLabel(id = "0.2", type = LabelType.MessageFolder, order = 1, parentId = "0"),
+            buildLabel(id = "0.1", type = LabelType.MessageFolder, order = 0, parentId = "0"),
+            buildLabel(id = "0", type = LabelType.MessageFolder, order = 0),
+            buildLabel(id = "0.2.1", type = LabelType.MessageFolder, order = 0, parentId = "0.2")
         )
 
         // When

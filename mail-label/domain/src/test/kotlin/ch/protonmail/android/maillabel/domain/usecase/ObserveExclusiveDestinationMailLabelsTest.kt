@@ -46,11 +46,11 @@ internal class ObserveExclusiveDestinationMailLabelsTest {
 
     private val labelWithSystemLabelIds = listOf(
         LabelWithSystemLabelId(
-            buildLabel(userId = userId, type = LabelType.SystemFolder, id = "6", order = 1),
+            buildLabel(id = "6", type = LabelType.SystemFolder, order = 1),
             SystemLabelId.Archive
         ),
         LabelWithSystemLabelId(
-            buildLabel(userId = userId, type = LabelType.SystemFolder, id = "10", order = 1),
+            buildLabel(id = "10", type = LabelType.SystemFolder, order = 1),
             SystemLabelId.Starred
         )
     )
@@ -58,9 +58,9 @@ internal class ObserveExclusiveDestinationMailLabelsTest {
     private val labelRepository = mockk<LabelRepository> {
         every { observeCustomFolders(any()) } returns flowOf(
             listOf(
-                buildLabel(userId = userId, type = LabelType.MessageFolder, id = "0", order = 0),
-                buildLabel(userId = userId, type = LabelType.MessageFolder, id = "1", order = 1),
-                buildLabel(userId = userId, type = LabelType.MessageFolder, id = "2", order = 2)
+                buildLabel(id = "0", type = LabelType.MessageFolder, order = 0),
+                buildLabel(id = "1", type = LabelType.MessageFolder, order = 1),
+                buildLabel(id = "2", type = LabelType.MessageFolder, order = 2)
             )
         )
         every { observeSystemLabels(any()) } returns flowOf(labelWithSystemLabelIds)
@@ -108,11 +108,11 @@ internal class ObserveExclusiveDestinationMailLabelsTest {
     fun `return correct folder hierarchy on success`() = runTest {
         // Given
         val labels = listOf(
-            buildLabel(userId = userId, type = LabelType.MessageFolder, id = "0", order = 0),
-            buildLabel(userId = userId, type = LabelType.MessageFolder, id = "0.1", order = 0, parentId = "0"),
-            buildLabel(userId = userId, type = LabelType.MessageFolder, id = "0.2", order = 1, parentId = "0"),
-            buildLabel(userId = userId, type = LabelType.MessageFolder, id = "0.2.1", order = 0, parentId = "0.2"),
-            buildLabel(userId = userId, type = LabelType.MessageFolder, id = "0.2.2", order = 1, parentId = "0.2")
+            buildLabel(id = "0", type = LabelType.MessageFolder, order = 0),
+            buildLabel(id = "0.1", type = LabelType.MessageFolder, order = 0, parentId = "0"),
+            buildLabel(id = "0.2", type = LabelType.MessageFolder, order = 1, parentId = "0"),
+            buildLabel(id = "0.2.1", type = LabelType.MessageFolder, order = 0, parentId = "0.2"),
+            buildLabel(id = "0.2.2", type = LabelType.MessageFolder, order = 1, parentId = "0.2")
         )
         every { labelRepository.observeCustomFolders(any()) } returns flowOf(labels)
 
@@ -139,11 +139,11 @@ internal class ObserveExclusiveDestinationMailLabelsTest {
         // Given
         every { labelRepository.observeCustomFolders(any()) } returns flowOf(
             listOf(
-                buildLabel(userId = userId, type = LabelType.MessageFolder, id = "0.1", order = 1, parentId = "0"),
-                buildLabel(userId = userId, type = LabelType.MessageFolder, id = "0.0", order = 0, parentId = "0"),
-                buildLabel(userId = userId, type = LabelType.MessageFolder, id = "2", order = 2),
-                buildLabel(userId = userId, type = LabelType.MessageFolder, id = "0", order = 0),
-                buildLabel(userId = userId, type = LabelType.MessageFolder, id = "1", order = 1)
+                buildLabel(id = "0.1", type = LabelType.MessageFolder, order = 1, parentId = "0"),
+                buildLabel(id = "0.0", type = LabelType.MessageFolder, order = 0, parentId = "0"),
+                buildLabel(id = "2", type = LabelType.MessageFolder, order = 2),
+                buildLabel(id = "0", type = LabelType.MessageFolder, order = 0),
+                buildLabel(id = "1", type = LabelType.MessageFolder, order = 1)
             )
         )
 

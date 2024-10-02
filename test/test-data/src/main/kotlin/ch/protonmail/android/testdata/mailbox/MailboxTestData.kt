@@ -64,7 +64,7 @@ object MailboxTestData {
         id: String = "itemId",
         time: Long = 0,
         labelIds: List<LabelId> = listOf(SystemLabelId.Inbox.labelId),
-        labels: List<Label> = labelIds.map { buildLabel(userId = userId, id = it.id) },
+        labels: List<Label> = labelIds.map { buildLabel(id = it.id) },
         type: MailboxItemType = MailboxItemType.Message,
         senders: List<Sender> = emptyList(),
         recipients: List<Recipient> = emptyList(),

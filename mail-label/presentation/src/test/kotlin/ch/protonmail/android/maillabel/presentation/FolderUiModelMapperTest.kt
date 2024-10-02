@@ -41,43 +41,38 @@ class FolderUiModelMapperTest {
         val noFolderColor = null
         val items = listOf(
             LabelTestData.buildLabel(
-                userId = userId,
-                type = LabelType.MessageFolder,
                 id = "0",
+                type = LabelType.MessageFolder,
                 order = 0,
                 color = noFolderColor
             ),
             LabelTestData.buildLabel(
-                userId = userId,
-                type = LabelType.MessageFolder,
                 id = "0.1",
+                type = LabelType.MessageFolder,
                 order = 0,
-                parentId = "0",
-                color = noFolderColor
+                color = noFolderColor,
+                parentId = "0"
             ),
             LabelTestData.buildLabel(
-                userId = userId,
-                type = LabelType.MessageFolder,
                 id = "0.2",
+                type = LabelType.MessageFolder,
                 order = 1,
-                parentId = "0",
-                color = noFolderColor
+                color = noFolderColor,
+                parentId = "0"
             ),
             LabelTestData.buildLabel(
-                userId = userId,
-                type = LabelType.MessageFolder,
                 id = "0.2.1",
+                type = LabelType.MessageFolder,
                 order = 0,
-                parentId = "0.2",
-                color = noFolderColor
+                color = noFolderColor,
+                parentId = "0.2"
             ),
             LabelTestData.buildLabel(
-                userId = userId,
-                type = LabelType.MessageFolder,
                 id = "0.2.2",
+                type = LabelType.MessageFolder,
                 order = 1,
-                parentId = "0.2",
-                color = noFolderColor
+                color = noFolderColor,
+                parentId = "0.2"
             )
         )
         val labelColor = colorMapper.toColor(items.first().color).getOrNull()
@@ -119,35 +114,31 @@ class FolderUiModelMapperTest {
         val noFolderColor = null
         val items = listOf(
             LabelTestData.buildLabel(
-                userId = userId,
-                type = LabelType.MessageFolder,
                 id = "0",
+                type = LabelType.MessageFolder,
                 order = 0,
                 color = noFolderColor
             ),
             LabelTestData.buildLabel(
-                userId = userId,
-                type = LabelType.MessageFolder,
                 id = "0.1",
+                type = LabelType.MessageFolder,
                 order = 0,
-                parentId = "0",
-                color = noFolderColor
+                color = noFolderColor,
+                parentId = "0"
             ),
             LabelTestData.buildLabel(
-                userId = userId,
-                type = LabelType.MessageFolder,
                 id = "0.2.1",
+                type = LabelType.MessageFolder,
                 order = 0,
-                parentId = "0.2",
-                color = noFolderColor
+                color = noFolderColor,
+                parentId = "0.2"
             ),
             LabelTestData.buildLabel(
-                userId = userId,
-                type = LabelType.MessageFolder,
                 id = "0.2.2",
+                type = LabelType.MessageFolder,
                 order = 1,
-                parentId = "0.2",
-                color = noFolderColor
+                color = noFolderColor,
+                parentId = "0.2"
             )
         )
         val labelColor = colorMapper.toColor(items.first().color).getOrNull()

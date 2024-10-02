@@ -18,8 +18,6 @@
 
 package ch.protonmail.android.testdata.label
 
-import ch.protonmail.android.testdata.user.UserIdTestData
-import me.proton.core.domain.entity.UserId
 import ch.protonmail.android.maillabel.domain.model.Label
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.LabelType
@@ -68,7 +66,6 @@ object LabelTestData {
 
     fun buildLabel(
         id: String,
-        userId: UserId = UserIdTestData.userId,
         type: LabelType = LabelType.MessageLabel,
         name: String = id,
         order: Int = id.hashCode(),

@@ -48,7 +48,6 @@ class ContactSearchUiModelMapperTest {
     fun `maps list of ContactGroups to list of UiModel`() {
         val label = LabelTestData.buildLabel(
             "LabelId1",
-            UserIdTestData.userId,
             LabelType.ContactGroup,
             "Label 1",
             color = Color.Red.getHexStringFromColor()

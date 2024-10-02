@@ -118,7 +118,6 @@ class GetMailboxItemsTest {
     }
 
     private fun buildLabel(value: String) = LabelTestData.buildLabel(
-        userId = userId,
         id = value,
         type = LabelType.MessageLabel,
         order = value.hashCode()

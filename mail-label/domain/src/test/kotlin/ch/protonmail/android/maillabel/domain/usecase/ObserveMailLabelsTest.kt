@@ -49,16 +49,16 @@ class ObserveMailLabelsTest {
     private val labelRepository = mockk<LabelRepository> {
         every { observeCustomFolders(any()) } returns flowOf(
             listOf(
-                buildLabel(userId = userId, type = LabelType.MessageFolder, id = "id0", order = 0),
-                buildLabel(userId = userId, type = LabelType.MessageFolder, id = "id1", order = 1),
-                buildLabel(userId = userId, type = LabelType.MessageFolder, id = "id2", order = 2)
+                buildLabel(id = "id0", type = LabelType.MessageFolder, order = 0),
+                buildLabel(id = "id1", type = LabelType.MessageFolder, order = 1),
+                buildLabel(id = "id2", type = LabelType.MessageFolder, order = 2)
             )
         )
         every { observeCustomLabels(any()) } returns flowOf(
             listOf(
-                buildLabel(userId = userId, type = LabelType.MessageLabel, id = "id3", order = 0),
-                buildLabel(userId = userId, type = LabelType.MessageLabel, id = "id4", order = 1),
-                buildLabel(userId = userId, type = LabelType.MessageLabel, id = "id5", order = 2)
+                buildLabel(id = "id3", type = LabelType.MessageLabel, order = 0),
+                buildLabel(id = "id4", type = LabelType.MessageLabel, order = 1),
+                buildLabel(id = "id5", type = LabelType.MessageLabel, order = 2)
             )
         )
         every { observeSystemLabels(userId) } returns flowOf(emptyList())
@@ -122,11 +122,11 @@ class ObserveMailLabelsTest {
         every { selectedMailLabelId.flow } returns MutableStateFlow(MailLabelTestData.inboxSystemLabel.id)
 
         val labels = listOf(
-            buildLabel(userId = userId, type = LabelType.MessageFolder, id = "id0", order = 0),
-            buildLabel(userId = userId, type = LabelType.MessageFolder, id = "id0.1", order = 0, parentId = "id0"),
-            buildLabel(userId = userId, type = LabelType.MessageFolder, id = "id0.2", order = 1, parentId = "id0"),
-            buildLabel(userId = userId, type = LabelType.MessageFolder, id = "id0.2.1", order = 0, parentId = "id0.2"),
-            buildLabel(userId = userId, type = LabelType.MessageFolder, id = "id0.2.2", order = 1, parentId = "id0.2")
+            buildLabel(id = "id0", type = LabelType.MessageFolder, order = 0),
+            buildLabel(id = "id0.1", type = LabelType.MessageFolder, order = 0, parentId = "id0"),
+            buildLabel(id = "id0.2", type = LabelType.MessageFolder, order = 1, parentId = "id0"),
+            buildLabel(id = "id0.2.1", type = LabelType.MessageFolder, order = 0, parentId = "id0.2"),
+            buildLabel(id = "id0.2.2", type = LabelType.MessageFolder, order = 1, parentId = "id0.2")
         )
         every { labelRepository.observeCustomFolders(any()) } returns flowOf(labels)
 
@@ -157,22 +157,20 @@ class ObserveMailLabelsTest {
         every { labelRepository.observeCustomFolders(any()) } returns flowOf(
             listOf(
                 buildLabel(
-                    userId = userId,
-                    type = LabelType.MessageFolder,
                     id = "id0.1",
+                    type = LabelType.MessageFolder,
                     order = 1,
                     parentId = "id0"
                 ),
                 buildLabel(
-                    userId = userId,
-                    type = LabelType.MessageFolder,
                     id = "id0.0",
+                    type = LabelType.MessageFolder,
                     order = 0,
                     parentId = "id0"
                 ),
-                buildLabel(userId = userId, type = LabelType.MessageFolder, id = "id2", order = 2),
-                buildLabel(userId = userId, type = LabelType.MessageFolder, id = "id0", order = 0),
-                buildLabel(userId = userId, type = LabelType.MessageFolder, id = "id1", order = 1)
+                buildLabel(id = "id2", type = LabelType.MessageFolder, order = 2),
+                buildLabel(id = "id0", type = LabelType.MessageFolder, order = 0),
+                buildLabel(id = "id1", type = LabelType.MessageFolder, order = 1)
             )
         )
 

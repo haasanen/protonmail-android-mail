@@ -52,7 +52,6 @@ class ContactGroupFormUiModelMapperTest {
     fun `maps ContactGroup to ContactGroupFormUiModel`() {
         val label = LabelTestData.buildLabel(
             "LabelId1",
-            UserIdTestData.userId,
             LabelType.ContactGroup,
             "Label 1",
             color = Color.Red.getHexStringFromColor()
@@ -118,7 +117,6 @@ class ContactGroupFormUiModelMapperTest {
     fun `maps empty ContactGroup members to ContactGroupFormUiModel`() {
         val label = LabelTestData.buildLabel(
             "LabelId1",
-            UserIdTestData.userId,
             LabelType.ContactGroup,
             "Label 1",
             color = Color.Red.getHexStringFromColor()

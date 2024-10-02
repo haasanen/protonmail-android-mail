@@ -42,9 +42,9 @@ class ObserveCustomMailLabelsTest {
     private val labelRepository = mockk<LabelRepository> {
         every { observeCustomLabels(any()) } returns flowOf(
             listOf(
-                buildLabel(userId = userId, type = LabelType.MessageLabel, id = "id0", order = 0),
-                buildLabel(userId = userId, type = LabelType.MessageLabel, id = "id2", order = 2),
-                buildLabel(userId = userId, type = LabelType.MessageLabel, id = "id1", order = 1)
+                buildLabel(id = "id0", type = LabelType.MessageLabel, order = 0),
+                buildLabel(id = "id2", type = LabelType.MessageLabel, order = 2),
+                buildLabel(id = "id1", type = LabelType.MessageLabel, order = 1)
             )
         )
     }
@@ -71,9 +71,9 @@ class ObserveCustomMailLabelsTest {
             assertEquals(3, result.size)
             assertEquals(
                 expected = listOf(
-                    buildLabel(userId = userId, type = LabelType.MessageLabel, id = "id0", order = 0),
-                    buildLabel(userId = userId, type = LabelType.MessageLabel, id = "id1", order = 1),
-                    buildLabel(userId = userId, type = LabelType.MessageLabel, id = "id2", order = 2)
+                    buildLabel(id = "id0", type = LabelType.MessageLabel, order = 0),
+                    buildLabel(id = "id1", type = LabelType.MessageLabel, order = 1),
+                    buildLabel(id = "id2", type = LabelType.MessageLabel, order = 2)
                 ).toMailLabelCustom(),
                 actual = result
             )

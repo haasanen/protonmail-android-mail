@@ -38,9 +38,8 @@ class UpdateLabelExpandedStateTest {
 
     private val labelRepository = mockk<LabelRepository> {
         coEvery { getLabel(any(), any(), any()) } returns buildLabel(
-            userId = userId,
-            type = LabelType.MessageFolder,
             id = folderId.labelId.id,
+            type = LabelType.MessageFolder,
             isExpanded = false
         )
         coEvery { updateLabelIsExpanded(any(), any(), any(), any()) } returns Unit

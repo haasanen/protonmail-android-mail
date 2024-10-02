@@ -43,14 +43,14 @@ internal class GetLabelsTest {
     val loggingTestRule = LoggingTestRule()
 
     private val messageLabels = listOf(
-        buildLabel(userId = userId, type = LabelType.MessageLabel, id = "0"),
-        buildLabel(userId = userId, type = LabelType.MessageLabel, id = "1"),
-        buildLabel(userId = userId, type = LabelType.MessageLabel, id = "2")
+        buildLabel(id = "0", type = LabelType.MessageLabel),
+        buildLabel(id = "1", type = LabelType.MessageLabel),
+        buildLabel(id = "2", type = LabelType.MessageLabel)
     )
     private val messageFolders = listOf(
-        buildLabel(userId = userId, type = LabelType.MessageFolder, id = "3"),
-        buildLabel(userId = userId, type = LabelType.MessageFolder, id = "4"),
-        buildLabel(userId = userId, type = LabelType.MessageFolder, id = "5")
+        buildLabel(id = "3", type = LabelType.MessageFolder),
+        buildLabel(id = "4", type = LabelType.MessageFolder),
+        buildLabel(id = "5", type = LabelType.MessageFolder)
     )
     private val labelRepository = mockk<LabelRepository> {
         coEvery { getLabels(userId, LabelType.MessageLabel) } returns messageLabels

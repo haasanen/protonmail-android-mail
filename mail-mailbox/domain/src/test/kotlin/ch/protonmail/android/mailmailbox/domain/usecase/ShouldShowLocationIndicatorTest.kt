@@ -45,11 +45,11 @@ class ShouldShowLocationIndicatorTest {
 
     private val exclusiveSystemLabels = listOf(
         LabelWithSystemLabelId(
-            buildLabel(type = LabelType.SystemFolder, id = SystemLabelId.Starred.labelId.id),
+            buildLabel(id = SystemLabelId.Starred.labelId.id, type = LabelType.SystemFolder),
             SystemLabelId.Starred
         ),
         LabelWithSystemLabelId(
-            buildLabel(type = LabelType.SystemFolder, id = SystemLabelId.AllMail.labelId.id),
+            buildLabel(id = SystemLabelId.AllMail.labelId.id, type = LabelType.SystemFolder),
             SystemLabelId.AllMail
         )
     )

@@ -40,7 +40,6 @@ class ObserveContactGroupLabelsTest {
     private val contactGroupLabels = listOf(
         LabelTestData.buildLabel(
             "LabelId1",
-            UserIdTestData.userId,
             LabelType.ContactGroup,
             "Label 1"
         )

@@ -134,11 +134,11 @@ class GetMoveToBottomSheetActionsTest {
             conversationRepository.getAvailableSystemMoveToActions(userId, labelId, convoIds)
         } returns systemMoveTo.right()
         val labels = listOf(
-            buildLabel(userId = userId, type = LabelType.MessageFolder, id = "0", order = 0),
-            buildLabel(userId = userId, type = LabelType.MessageFolder, id = "0.1", order = 0, parentId = "0"),
-            buildLabel(userId = userId, type = LabelType.MessageFolder, id = "0.2", order = 1, parentId = "0"),
-            buildLabel(userId = userId, type = LabelType.MessageFolder, id = "0.2.1", order = 0, parentId = "0.2"),
-            buildLabel(userId = userId, type = LabelType.MessageFolder, id = "0.2.2", order = 1, parentId = "0.2")
+            buildLabel(id = "0", type = LabelType.MessageFolder, order = 0),
+            buildLabel(id = "0.1", type = LabelType.MessageFolder, order = 0, parentId = "0"),
+            buildLabel(id = "0.2", type = LabelType.MessageFolder, order = 1, parentId = "0"),
+            buildLabel(id = "0.2.1", type = LabelType.MessageFolder, order = 0, parentId = "0.2"),
+            buildLabel(id = "0.2.2", type = LabelType.MessageFolder, order = 1, parentId = "0.2")
         )
         every { labelRepository.observeCustomFolders(userId) } returns flowOf(labels)
 
@@ -180,7 +180,7 @@ class GetMoveToBottomSheetActionsTest {
         val items = listOf(MailboxItemId("1"))
         val convoIds = items.map { ConversationId(it.value) }
         val viewMode = ViewMode.ConversationGrouping
-        val labels = listOf(buildLabel(userId = userId, type = LabelType.MessageFolder, id = "0", order = 0))
+        val labels = listOf(buildLabel(id = "0", type = LabelType.MessageFolder, order = 0))
         val error = DataError.Local.Unknown.left()
         coEvery { conversationRepository.getAvailableSystemMoveToActions(userId, labelId, convoIds) } returns error
         every { labelRepository.observeCustomFolders(userId) } returns flowOf(labels)
