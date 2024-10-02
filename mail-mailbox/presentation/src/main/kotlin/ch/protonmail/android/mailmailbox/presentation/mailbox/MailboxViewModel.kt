@@ -66,6 +66,7 @@ import ch.protonmail.android.mailmailbox.domain.model.isBelowFirstLimit
 import ch.protonmail.android.mailmailbox.domain.model.isBelowSecondLimit
 import ch.protonmail.android.mailmailbox.domain.model.toMailboxItemType
 import ch.protonmail.android.mailmailbox.domain.usecase.GetBottomSheetActions
+import ch.protonmail.android.mailmailbox.domain.usecase.GetLabelAsBottomSheetContent
 import ch.protonmail.android.mailmailbox.domain.usecase.GetMailboxActions
 import ch.protonmail.android.mailmailbox.domain.usecase.GetMoveToBottomSheetActions
 import ch.protonmail.android.mailmailbox.domain.usecase.ObserveCurrentViewMode
@@ -159,6 +160,7 @@ class MailboxViewModel @Inject constructor(
     private val getMailboxActions: GetMailboxActions,
     private val getBottomSheetActions: GetBottomSheetActions,
     private val getMoveToBottomSheetActions: GetMoveToBottomSheetActions,
+    private val getLabelAsBottomSheetContent: GetLabelAsBottomSheetContent,
     private val actionUiModelMapper: ActionUiModelMapper,
     private val mailboxItemMapper: MailboxItemUiModelMapper,
     private val swipeActionsMapper: SwipeActionsMapper,
