@@ -27,6 +27,7 @@ import ch.protonmail.android.mailmessage.data.usecase.CreateRustMessageAccessor
 import ch.protonmail.android.mailmessage.data.usecase.CreateRustMessageBodyAccessor
 import ch.protonmail.android.mailmessage.data.usecase.GetRustSenderImage
 import ch.protonmail.android.mailmessage.data.usecase.RustMarkMessagesRead
+import ch.protonmail.android.mailmessage.data.usecase.RustMarkMessagesUnread
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import kotlinx.coroutines.flow.firstOrNull
@@ -44,7 +45,8 @@ class RustMessageDataSourceImpl @Inject constructor(
     private val createRustMessageAccessor: CreateRustMessageAccessor,
     private val createRustMessageBodyAccessor: CreateRustMessageBodyAccessor,
     private val getRustSenderImage: GetRustSenderImage,
-    private val rustMarkMessagesRead: RustMarkMessagesRead
+    private val rustMarkMessagesRead: RustMarkMessagesRead,
+    private val rustMarkMessagesUnread: RustMarkMessagesUnread
 ) : RustMessageDataSource {
 
     override suspend fun getMessage(userId: UserId, messageId: LocalMessageId): LocalMessageMetadata? {
@@ -133,8 +135,23 @@ class RustMessageDataSourceImpl @Inject constructor(
 
     }
 
-    @MissingRustApi
     override suspend fun markUnread(userId: UserId, messages: List<LocalMessageId>) {
-        throw UnsupportedOperationException("rust-message: markUnread has not been implemented by Rust")
+        try {
+            val session = userSessionRepository.getUserSession(userId)
+            if (session == null) {
+                Timber.e("rust-message: trying to mark message unread with a null session")
+                return
+            }
+
+            val currentLabelId = rustMailbox.observeCurrentLabelId().firstOrNull()
+            if (currentLabelId == null) {
+                Timber.e("rust-message: trying to mark message unread with a null labelId")
+                return
+            }
+
+            rustMarkMessagesUnread(session, currentLabelId, messages)
+        } catch (e: MailSessionException) {
+            Timber.e(e, "rust-message: Failed to mark message unread")
+        }
     }
 }

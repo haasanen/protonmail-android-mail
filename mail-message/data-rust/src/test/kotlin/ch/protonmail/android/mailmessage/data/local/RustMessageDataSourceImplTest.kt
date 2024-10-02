@@ -24,6 +24,7 @@ import ch.protonmail.android.mailmessage.data.usecase.CreateRustMessageAccessor
 import ch.protonmail.android.mailmessage.data.usecase.CreateRustMessageBodyAccessor
 import ch.protonmail.android.mailmessage.data.usecase.GetRustSenderImage
 import ch.protonmail.android.mailmessage.data.usecase.RustMarkMessagesRead
+import ch.protonmail.android.mailmessage.data.usecase.RustMarkMessagesUnread
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import ch.protonmail.android.testdata.message.rust.LocalMessageIdSample
@@ -57,6 +58,7 @@ class RustMessageDataSourceImplTest {
     private val createRustMessageBodyAccessor = mockk<CreateRustMessageBodyAccessor>()
     private val getRustSenderImage = mockk<GetRustSenderImage>()
     private val rustMarkMessagesRead = mockk<RustMarkMessagesRead>()
+    private val rustMarkMessagesUnread = mockk<RustMarkMessagesUnread>()
     private val dataSource = RustMessageDataSourceImpl(
         userSessionRepository,
         rustMailbox,
@@ -64,7 +66,8 @@ class RustMessageDataSourceImplTest {
         createRustMessageAccessor,
         createRustMessageBodyAccessor,
         getRustSenderImage,
-        rustMarkMessagesRead
+        rustMarkMessagesRead,
+        rustMarkMessagesUnread
     )
 
     @Test
@@ -289,5 +292,75 @@ class RustMessageDataSourceImplTest {
         // Then
         coVerify(exactly = 0) { rustMarkMessagesRead(mailSession, currentLabelId, messageIds) }
     }
+
+    @Test
+    fun `should mark messages as unread when session and labelId are available`() = runTest {
+        // Given
+        val userId = UserIdTestData.userId
+        val mailSession = mockk<MailUserSession>()
+        val currentLabelId = LocalLabelId(123uL)
+        val messageIds = listOf(LocalMessageId(1uL), LocalMessageId(2uL))
+
+        coEvery { userSessionRepository.getUserSession(userId) } returns mailSession
+        coEvery { rustMailbox.observeCurrentLabelId() } returns flowOf(currentLabelId)
+        coEvery { rustMarkMessagesUnread(mailSession, currentLabelId, messageIds) } just Runs
+
+        // When
+        dataSource.markUnread(userId, messageIds)
+
+        // Then
+        coVerify { rustMarkMessagesUnread(mailSession, currentLabelId, messageIds) }
+    }
+
+    @Test
+    fun `should not mark messages as unread when session is null`() = runTest {
+        // Given
+        val userId = UserIdTestData.userId
+        val messageIds = listOf(LocalMessageId(1uL), LocalMessageId(2uL))
+
+        coEvery { userSessionRepository.getUserSession(userId) } returns null
+
+        // When
+        dataSource.markUnread(userId, messageIds)
+
+        // Then
+        coVerify(exactly = 0) { rustMarkMessagesUnread(any(), any(), any()) }
+    }
+
+    @Test
+    fun `should not mark messages as unread when labelId is null`() = runTest {
+        // Given
+        val userId = UserIdTestData.userId
+        val mailSession = mockk<MailUserSession>()
+        val messageIds = listOf(LocalMessageId(1uL), LocalMessageId(2uL))
+
+        coEvery { userSessionRepository.getUserSession(userId) } returns mailSession
+        coEvery { rustMailbox.observeCurrentLabelId() } returns flowOf()
+
+        // When
+        dataSource.markUnread(userId, messageIds)
+
+        // Then
+        coVerify(exactly = 0) { rustMarkMessagesUnread(mailSession, any(), messageIds) }
+    }
+
+    @Test
+    fun `should handle exception when marking messages as unread`() = runTest {
+        // Given
+        val userId = UserIdTestData.userId
+        val mailSession = mockk<MailUserSession>()
+        val currentLabelId = LocalLabelId(123uL)
+        val messageIds = listOf(LocalMessageId(1uL), LocalMessageId(2uL))
+
+        coEvery { userSessionRepository.getUserSession(userId) } throws MailSessionException.Other("Error")
+        coEvery { rustMailbox.observeCurrentLabelId().firstOrNull() } returns currentLabelId
+
+        // When
+        dataSource.markUnread(userId, messageIds)
+
+        // Then
+        coVerify(exactly = 0) { rustMarkMessagesUnread(mailSession, currentLabelId, messageIds) }
+    }
+
 
 }
