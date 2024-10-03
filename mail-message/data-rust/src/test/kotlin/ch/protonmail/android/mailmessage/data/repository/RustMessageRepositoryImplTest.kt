@@ -29,7 +29,6 @@ import ch.protonmail.android.mailcommon.domain.model.AvailableActions
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
 import ch.protonmail.android.maillabel.domain.SelectedMailLabelId
-import ch.protonmail.android.maillabel.domain.model.LabelAsActions
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabel
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
@@ -42,7 +41,7 @@ import ch.protonmail.android.mailmessage.data.mapper.toMessageId
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.SenderImage
 import ch.protonmail.android.mailpagination.domain.model.PageKey
-import ch.protonmail.android.testdata.label.LabelTestData
+import ch.protonmail.android.testdata.label.rust.LabelAsActionsTestData
 import ch.protonmail.android.testdata.label.rust.LocalLabelAsActionTestData
 import ch.protonmail.android.testdata.message.rust.LocalMessageIdSample
 import ch.protonmail.android.testdata.message.rust.LocalMessageTestData
@@ -492,15 +491,7 @@ class RustMessageRepositoryImplTest {
         val result = repository.getAvailableLabelAsActions(userId, labelId, messageIds)
 
         // Then
-        val expected = LabelAsActions(
-            labels = listOf(
-                LabelTestData.selectedLabelAction,
-                LabelTestData.unselectedLabelAction,
-                LabelTestData.partialSelectedLabelAction
-            ),
-            selected = listOf(LabelId("2")),
-            partiallySelected = listOf(LabelId("3"))
-        )
+        val expected = LabelAsActionsTestData.actions
         assertEquals(expected.right(), result)
     }
 

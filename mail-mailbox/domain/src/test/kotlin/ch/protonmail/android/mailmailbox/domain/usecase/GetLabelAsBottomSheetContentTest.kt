@@ -6,12 +6,11 @@ import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.mailconversation.domain.repository.ConversationRepository
-import ch.protonmail.android.maillabel.domain.model.LabelAsActions
 import ch.protonmail.android.maillabel.domain.sample.LabelIdSample
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItemId
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
-import ch.protonmail.android.testdata.label.LabelTestData
+import ch.protonmail.android.testdata.label.rust.LabelAsActionsTestData
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
@@ -37,11 +36,7 @@ class GetLabelAsBottomSheetContentTest {
         val items = listOf(MailboxItemId("1"))
         val messageIds = items.map { MessageId(it.value) }
         val viewMode = ViewMode.NoConversationGrouping
-        val expected = LabelAsActions(
-            listOf(LabelTestData.selectedLabelAction),
-            listOf(LabelTestData.selectedLabelAction.labelId),
-            emptyList()
-        )
+        val expected = LabelAsActionsTestData.onlySelectedActions
         coEvery { messageRepository.getAvailableLabelAsActions(userId, labelId, messageIds) } returns expected.right()
 
         // When
@@ -59,11 +54,7 @@ class GetLabelAsBottomSheetContentTest {
         val items = listOf(MailboxItemId("1"))
         val convoIds = items.map { ConversationId(it.value) }
         val viewMode = ViewMode.ConversationGrouping
-        val expected = LabelAsActions(
-            listOf(LabelTestData.selectedLabelAction),
-            listOf(LabelTestData.selectedLabelAction.labelId),
-            emptyList()
-        )
+        val expected = LabelAsActionsTestData.onlySelectedActions
         coEvery {
             conversationRepository.getAvailableLabelAsActions(userId, labelId, convoIds)
         } returns expected.right()
