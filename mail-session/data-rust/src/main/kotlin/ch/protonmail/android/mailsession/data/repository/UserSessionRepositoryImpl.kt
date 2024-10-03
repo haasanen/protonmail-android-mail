@@ -70,24 +70,30 @@ class UserSessionRepositoryImpl @Inject constructor(
 
     override fun observeCurrentUserId(): Flow<UserId?> = flow {
         val mailSession = mailSessionRepository.getMailSession()
-        val storedUserSession = mailSession.storedSessions().firstOrNull()
+        val storedAccount = mailSession.getPrimaryAccount()
 
-        val userId = storedUserSession?.userId()?.let { UserId(it) }
+        val userId = storedAccount?.userId()?.let { UserId(it) }
         emit(userId)
     }
 
     private suspend fun initUserSession(userId: UserId) {
         val mailSession = mailSessionRepository.getMailSession()
-        val storedSessions = mailSession.storedSessions()
-        val storedUserSession = storedSessions.find { it.userId() == userId.toLocalUserId() }
+        val storedAccounts = mailSession.getAccounts()
+        val storedUserAccount = storedAccounts.find { it.userId() == userId.toLocalUserId() }
 
-        if (storedUserSession == null) {
-            Timber.e("rust-session: no stored user session found for $userId in userSessionRepository")
+        if (storedUserAccount == null) {
+            Timber.e("rust-session: no stored user account found for $userId in userSessionRepository")
             activeUserSessions[userId] = null
             return
         }
 
-        val userSession = mailSession.userContextFromSession(storedUserSession)
+        val storedSession = mailSession.getSessions(storedUserAccount).find { it.userId() == userId.toLocalUserId() }
+        if (storedSession == null) {
+            Timber.e("rust-session: no stored session found for $userId in userSessionRepository")
+            activeUserSessions[userId] = null
+            return
+        }
+        val userSession = mailSession.userContextFromSession(storedSession)
         activeUserSessions[userId] = userSession
     }
 

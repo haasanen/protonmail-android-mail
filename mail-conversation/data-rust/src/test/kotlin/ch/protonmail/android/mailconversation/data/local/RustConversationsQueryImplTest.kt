@@ -71,7 +71,7 @@ class RustConversationsQueryImplTest {
         val pageKey = PageKey(labelId = labelId)
         val session = mockk<MailUserSession>()
         val paginator = mockk<ConversationPaginator> {
-            coEvery { this@mockk.currentPage() } returns expectedConversations
+            coEvery { this@mockk.nextPage() } returns expectedConversations
         }
         coEvery { userSessionRepository.getUserSession(userId) } returns session
         coEvery { createRustConversationPaginator(session, labelId.toLocalLabelId(), any()) } returns paginator
@@ -134,7 +134,7 @@ class RustConversationsQueryImplTest {
         val pageKey = PageKey(labelId = labelId)
         val session = mockk<MailUserSession>()
         val paginator = mockk<ConversationPaginator> {
-            coEvery { this@mockk.currentPage() } returns expectedConversations
+            coEvery { this@mockk.nextPage() } returns expectedConversations
         }
         coEvery { userSessionRepository.getUserSession(userId) } returns session
         coEvery { createRustConversationPaginator(session, labelId.toLocalLabelId(), any()) } returns paginator
@@ -157,14 +157,14 @@ class RustConversationsQueryImplTest {
         val nextPageKey = pageKey.copy(pageToLoad = PageToLoad.Next)
         val session = mockk<MailUserSession>()
         val paginator = mockk<ConversationPaginator> {
-            coEvery { this@mockk.currentPage() } returns firstPage
-            coEvery { this@mockk.nextPage() } returns nextPage
+            coEvery { this@mockk.nextPage() } returns firstPage
         }
         coEvery { userSessionRepository.getUserSession(userId) } returns session
         coEvery { createRustConversationPaginator(session, labelId.toLocalLabelId(), any()) } returns paginator
 
         // When
         rustConversationsQuery.getConversations(userId, pageKey)
+        coEvery { paginator.nextPage() } returns nextPage
         rustConversationsQuery.getConversations(userId, nextPageKey)
 
         // Then
@@ -183,7 +183,7 @@ class RustConversationsQueryImplTest {
         val newPageKey = pageKey.copy(newLabelId)
         val session = mockk<MailUserSession>()
         val paginator = mockk<ConversationPaginator> {
-            coEvery { this@mockk.currentPage() } returns firstPage
+            coEvery { this@mockk.nextPage() } returns firstPage
             coEvery { this@mockk.handle().disconnect() } just Runs
         }
         coEvery { userSessionRepository.getUserSession(userId) } returns session
@@ -214,7 +214,7 @@ class RustConversationsQueryImplTest {
         val pageKey = PageKey(labelId = labelId)
         val session = mockk<MailUserSession>()
         val paginator = mockk<ConversationPaginator> {
-            coEvery { this@mockk.currentPage() } returns firstPage
+            coEvery { this@mockk.nextPage() } returns firstPage
         }
         val callbackSlot = slot<LiveQueryCallback>()
         coEvery { userSessionRepository.getUserSession(userId) } returns session

@@ -15,6 +15,7 @@ import ch.protonmail.android.mailsession.domain.model.SessionError
 import org.junit.Rule
 import uniffi.proton_mail_uniffi.MailSession
 import uniffi.proton_mail_uniffi.MailUserSession
+import uniffi.proton_mail_uniffi.StoredAccount
 import uniffi.proton_mail_uniffi.StoredSession
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -133,18 +134,22 @@ class UserSessionRepositoryImplTest {
 
 
     private fun mailSessionWithNoUserSessionsStored() = mockk<MailSession> {
-        coEvery { storedSessions() } returns emptyList()
+        coEvery { getAccounts() } returns emptyList()
     }
 
     private fun mailSessionWithUserSessionStored(
         expectedSessionUserId: UserId,
         expectedMailUserSession: MailUserSession
     ) = mockk<MailSession> {
+        val storedAccount = mockk<StoredAccount> {
+            every { userId() } returns expectedSessionUserId.id
+        }
         val storedSession = mockk<StoredSession> {
             every { userId() } returns expectedSessionUserId.id
         }
-        coEvery { storedSessions() } returns listOf(storedSession)
         coEvery { userContextFromSession(storedSession) } returns expectedMailUserSession
+        coEvery { getAccounts() } returns listOf(storedAccount)
+        coEvery { getSessions(storedAccount) } returns listOf(storedSession)
     }
 
 }

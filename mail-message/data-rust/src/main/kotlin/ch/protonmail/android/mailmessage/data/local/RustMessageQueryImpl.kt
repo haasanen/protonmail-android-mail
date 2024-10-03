@@ -74,7 +74,7 @@ class RustMessageQueryImpl @Inject constructor(
 
         Timber.v("rust-message: Paging: querying ${pageKey.pageToLoad.name} page for messages")
         val messages = when (pageKey.pageToLoad) {
-            PageToLoad.First -> paginator?.rustPaginator?.currentPage()
+            PageToLoad.First -> paginator?.rustPaginator?.nextPage()
             PageToLoad.Next -> paginator?.rustPaginator?.nextPage()
             PageToLoad.All -> paginator?.rustPaginator?.reload()
         }
