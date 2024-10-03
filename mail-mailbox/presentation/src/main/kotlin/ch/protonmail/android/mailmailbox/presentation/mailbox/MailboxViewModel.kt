@@ -27,7 +27,6 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.map
 import arrow.core.getOrElse
-import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailcommon.presentation.Effect
@@ -50,8 +49,8 @@ import ch.protonmail.android.maillabel.domain.model.MailLabel
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabels
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
+import ch.protonmail.android.maillabel.domain.model.toMailLabelCustom
 import ch.protonmail.android.maillabel.domain.usecase.FindLocalSystemLabelId
-import ch.protonmail.android.maillabel.domain.usecase.ObserveCustomMailLabels
 import ch.protonmail.android.maillabel.domain.usecase.ObserveMailLabels
 import ch.protonmail.android.maillabel.presentation.model.LabelSelectedState
 import ch.protonmail.android.maillabel.presentation.toCustomUiModel
@@ -150,7 +149,6 @@ class MailboxViewModel @Inject constructor(
     private val observeCurrentViewMode: ObserveCurrentViewMode,
     observePrimaryUserId: ObservePrimaryUserId,
     private val observeMailLabels: ObserveMailLabels,
-    private val observeCustomMailLabels: ObserveCustomMailLabels,
     private val observeSwipeActionsPreference: ObserveSwipeActionsPreference,
     private val observeClearMessageOperation: ObserveClearMessageOperation,
     private val observeClearConversationOperation: ObserveClearConversationOperation,
@@ -718,8 +716,6 @@ class MailboxViewModel @Inject constructor(
         }
     }
 
-    @MissingRustApi
-    // selectedLabels and partiallySelected labels to be received from rust
     private fun showLabelAsBottomSheetAndLoadData(operation: MailboxViewAction) {
         val selectionMode = state.value.mailboxListState as? MailboxListState.Data.SelectionMode
         if (selectionMode == null) {
@@ -730,26 +726,28 @@ class MailboxViewModel @Inject constructor(
             emitNewStateFrom(operation)
 
             val userId = primaryUserId.filterNotNull().first()
-            val labels = observeCustomMailLabels(userId).firstOrNull()
+            val currentMailLabel = selectedMailLabelId.flow.value
+            val viewMode = getViewModeForCurrentLocation(currentMailLabel)
+            val selectedItemIds: List<MailboxItemId> = selectionMode.selectedMailboxItems.map { MailboxItemId(it.id) }
+            val contentEither =
+                getLabelAsBottomSheetContent(userId, currentMailLabel.labelId, selectedItemIds, viewMode)
 
-            if (labels == null) {
-                emitNewStateFrom(MailboxEvent.ErrorRetrievingCustomMailLabels)
-                return@launch
-            }
-
-            val mappedLabels = labels.onLeft {
-                Timber.e("Error while observing custom labels")
-            }.getOrElse { emptyList() }
-
-            val event = MailboxEvent.MailboxBottomSheetEvent(
-                LabelAsBottomSheetState.LabelAsBottomSheetEvent.ActionData(
-                    customLabelList = mappedLabels.map { it.toCustomUiModel(emptyMap(), null) }
-                        .toImmutableList(),
-                    selectedLabels = emptyList<LabelId>().toImmutableList(),
-                    partiallySelectedLabels = emptyList<LabelId>().toImmutableList()
-                )
+            contentEither.fold(
+                ifLeft = { emitNewStateFrom(MailboxEvent.ErrorRetrievingCustomMailLabels) },
+                ifRight = { labelAsContent ->
+                    val mailLabels = labelAsContent.labels.toMailLabelCustom()
+                    val event = MailboxEvent.MailboxBottomSheetEvent(
+                        LabelAsBottomSheetState.LabelAsBottomSheetEvent.ActionData(
+                            customLabelList = mailLabels.map {
+                                it.toCustomUiModel(emptyMap(), null)
+                            }.toImmutableList(),
+                            selectedLabels = labelAsContent.selected.toImmutableList(),
+                            partiallySelectedLabels = labelAsContent.partiallySelected.toImmutableList()
+                        )
+                    )
+                    emitNewStateFrom(event)
+                }
             )
-            emitNewStateFrom(event)
         }
     }
 
@@ -761,14 +759,6 @@ class MailboxViewModel @Inject constructor(
         }
         viewModelScope.launch {
             val userId = primaryUserId.filterNotNull().first()
-            val labels = observeCustomMailLabels(userId).firstOrNull()?.onLeft {
-                Timber.e("Error while observing custom labels when relabeling got confirmed: $it")
-            }?.getOrElse { emptyList() }
-            if (labels == null) {
-                emitNewStateFrom(MailboxEvent.ErrorRetrievingCustomMailLabels)
-                return@launch
-            }
-
             val labelAsData = state.value.bottomSheetState?.contentState as? LabelAsBottomSheetState.Data
                 ?: throw IllegalStateException("BottomSheetState is not LabelAsBottomSheetState.Data")
 
