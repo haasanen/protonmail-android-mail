@@ -1346,7 +1346,7 @@ class ConversationDetailViewModelTest {
                 decryptedMessageBody = any()
             )
         } returns messages.first()
-        coEvery { markConversationAsUnread(userId, conversationId) } returns ConversationSample.WeatherForecast.right()
+        coEvery { markConversationAsUnread(userId, conversationId) } returns Unit.right()
 
         // when
         viewModel.submit(ConversationDetailViewAction.MarkUnread)
@@ -1368,7 +1368,7 @@ class ConversationDetailViewModelTest {
                 decryptedMessageBody = any()
             )
         } returns messages.first()
-        coEvery { markConversationAsUnread(userId, conversationId) } returns ConversationSample.WeatherForecast.right()
+        coEvery { markConversationAsUnread(userId, conversationId) } returns Unit.right()
         every {
             reducer.newStateFrom(
                 currentState = ConversationDetailState.Loading,

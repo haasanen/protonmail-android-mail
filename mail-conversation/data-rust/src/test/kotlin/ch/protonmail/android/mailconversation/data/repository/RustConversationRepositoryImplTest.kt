@@ -214,7 +214,7 @@ class RustConversationRepositoryImplTest {
 
         // Then
         coVerify { rustConversationDataSource.markUnread(userId, conversationIds.map { it.toLocalConversationId() }) }
-        assertEquals(emptyList(), result.getOrNull())
+        assertEquals(Unit, result.getOrNull())
     }
 
     @Test

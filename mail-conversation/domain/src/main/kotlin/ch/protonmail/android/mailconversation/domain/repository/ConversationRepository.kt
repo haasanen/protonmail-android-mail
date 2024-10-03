@@ -105,7 +105,7 @@ interface ConversationRepository {
         userId: UserId,
         conversationIds: List<ConversationId>,
         contextLabelId: LabelId
-    ): Either<DataError, List<Conversation>>
+    ): Either<DataError, Unit>
 
     suspend fun markRead(userId: UserId, conversationIds: List<ConversationId>): Either<DataError, List<Conversation>>
 

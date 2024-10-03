@@ -64,16 +64,16 @@ class MarkConversationsAsUnreadTest {
     }
 
     @Test
-    fun `returns updated conversation when repository succeeds`() = runTest {
+    fun `does not return error when repository succeeds`() = runTest {
         // given
         val conversation = listOf(ConversationSample.WeatherForecast, ConversationSample.AlphaAppFeedback).right()
-        coEvery { conversationRepository.markUnread(userId, conversationIds, mailLabel.labelId) } returns conversation
+        coEvery { conversationRepository.markUnread(userId, conversationIds, mailLabel.labelId) } returns Unit.right()
 
         // when
         val result = markUnread(userId, conversationIds)
 
         // then
-        assertEquals(conversation, result)
+        assertEquals(Unit.right(), result)
     }
 
 }

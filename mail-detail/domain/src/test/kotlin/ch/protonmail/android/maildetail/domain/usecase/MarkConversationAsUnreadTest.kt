@@ -57,12 +57,12 @@ internal class MarkConversationAsUnreadTest {
     fun `returns updated conversation when repository succeeds`() = runTest {
         // given
         val conversation = ConversationSample.WeatherForecast
-        coEvery { markConversationsAsUnread(userId, listOf(conversationId)) } returns listOf(conversation).right()
+        coEvery { markConversationsAsUnread(userId, listOf(conversationId)) } returns Unit.right()
 
         // when
         val result = markUnread(userId, conversationId)
 
         // then
-        assertEquals(conversation.right(), result)
+        assertEquals(Unit.right(), result)
     }
 }

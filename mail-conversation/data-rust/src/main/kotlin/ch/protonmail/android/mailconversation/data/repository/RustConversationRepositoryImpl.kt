@@ -135,15 +135,14 @@ class RustConversationRepositoryImpl @Inject constructor(
         return emptyList<Conversation>().right()
     }
 
-    // It will be implemented later on
     override suspend fun markUnread(
         userId: UserId,
         conversationIds: List<ConversationId>,
         contextLabelId: LabelId
-    ): Either<DataError, List<Conversation>> {
+    ): Either<DataError, Unit> {
         rustConversationDataSource.markUnread(userId, conversationIds.map { it.toLocalConversationId() })
 
-        return emptyList<Conversation>().right()
+        return Unit.right()
     }
 
     // It will be implemented later on
