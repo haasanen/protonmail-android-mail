@@ -34,7 +34,6 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
-import uniffi.proton_mail_uniffi.MailSession
 import uniffi.proton_mail_uniffi.MailUserSession
 import uniffi.proton_mail_uniffi.Mailbox
 import uniffi.proton_mail_uniffi.MailboxException
@@ -42,6 +41,9 @@ import uniffi.proton_mail_uniffi.applyLabelToConversations
 import uniffi.proton_mail_uniffi.markConversationsAsRead
 import uniffi.proton_mail_uniffi.markConversationsAsUnread
 import uniffi.proton_mail_uniffi.removeLabelFromConversations
+import uniffi.proton_mail_uniffi.starConversations
+import uniffi.proton_mail_uniffi.unstarConversations
+
 import javax.inject.Inject
 
 class RustConversationDataSourceImpl @Inject constructor(
@@ -98,17 +100,17 @@ class RustConversationDataSourceImpl @Inject constructor(
     }
 
     override suspend fun starConversations(userId: UserId, conversations: List<LocalConversationId>) {
-        executeMailSessionAction(
+        executeUserSessionAction(
             userId = userId,
-            action = { starConversations(userId, conversations) },
+            action = { userSession -> starConversations(userSession, conversations) },
             actionName = "star conversations"
         )
     }
 
     override suspend fun unStarConversations(userId: UserId, conversations: List<LocalConversationId>) {
-        executeMailSessionAction(
+        executeUserSessionAction(
             userId = userId,
-            action = { unStarConversations(userId, conversations) },
+            action = { userSession -> unstarConversations(userSession, conversations) },
             actionName = "unstar conversations"
         )
     }
@@ -181,21 +183,6 @@ class RustConversationDataSourceImpl @Inject constructor(
 
         try {
             action(mailbox)
-            executePendingActions(userId)
-        } catch (e: MailboxException) {
-            Timber.e(e, "rust-conversation: Failed to perform $actionName")
-        }
-    }
-
-    private suspend fun executeMailSessionAction(
-        userId: UserId,
-        action: suspend (MailSession) -> Unit,
-        actionName: String
-    ) {
-        val mailSession = mailSessionRepository.getMailSession()
-
-        try {
-            action(mailSession)
             executePendingActions(userId)
         } catch (e: MailboxException) {
             Timber.e(e, "rust-conversation: Failed to perform $actionName")
