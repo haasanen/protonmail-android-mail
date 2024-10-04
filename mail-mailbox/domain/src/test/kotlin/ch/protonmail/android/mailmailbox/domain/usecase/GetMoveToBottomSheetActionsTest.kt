@@ -150,7 +150,7 @@ class GetMoveToBottomSheetActionsTest {
     }
 
     @Test
-    fun `returns error when getting custom actions fails`() = runTest {
+    fun `shows only system locations when there are no custom ones`() = runTest {
         // Given
         val userId = UserIdSample.Primary
         val labelId = LabelIdSample.Trash
@@ -169,7 +169,7 @@ class GetMoveToBottomSheetActionsTest {
         val actual = getMoveToBottomSheetActions(userId, labelId, items, viewMode)
 
         // Then
-        assertEquals(DataError.Local.NoDataCached.left(), actual)
+        assertEquals(expectedSystemActions.right(), actual)
     }
 
     @Test

@@ -62,7 +62,7 @@ class GetMoveToBottomSheetActions @Inject constructor(
 
         val customActions = either<DataError, List<MailLabel>> {
             val customFolders = labelRepository.observeCustomFolders(userId).firstOrNull()
-                ?: raise(DataError.Local.NoDataCached)
+                ?: emptyList()
             customFolders.toMailLabelCustom()
         }
 
