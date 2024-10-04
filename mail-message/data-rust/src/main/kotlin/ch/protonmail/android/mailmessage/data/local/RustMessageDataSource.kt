@@ -46,4 +46,7 @@ interface RustMessageDataSource {
 
     suspend fun markRead(userId: UserId, messages: List<LocalMessageId>): Either<DataError.Local, Unit>
     suspend fun markUnread(userId: UserId, messages: List<LocalMessageId>): Either<DataError.Local, Unit>
+
+    suspend fun starMessages(userId: UserId, messages: List<LocalMessageId>): Either<DataError.Local, Unit>
+    suspend fun unStarMessages(userId: UserId, messages: List<LocalMessageId>): Either<DataError.Local, Unit>
 }

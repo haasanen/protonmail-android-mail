@@ -32,6 +32,8 @@ import ch.protonmail.android.mailmessage.data.usecase.CreateRustMessageBodyAcces
 import ch.protonmail.android.mailmessage.data.usecase.GetRustSenderImage
 import ch.protonmail.android.mailmessage.data.usecase.RustMarkMessagesRead
 import ch.protonmail.android.mailmessage.data.usecase.RustMarkMessagesUnread
+import ch.protonmail.android.mailmessage.data.usecase.RustStarMessages
+import ch.protonmail.android.mailmessage.data.usecase.RustUnstarMessages
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import kotlinx.coroutines.flow.firstOrNull
@@ -50,7 +52,9 @@ class RustMessageDataSourceImpl @Inject constructor(
     private val createRustMessageBodyAccessor: CreateRustMessageBodyAccessor,
     private val getRustSenderImage: GetRustSenderImage,
     private val rustMarkMessagesRead: RustMarkMessagesRead,
-    private val rustMarkMessagesUnread: RustMarkMessagesUnread
+    private val rustMarkMessagesUnread: RustMarkMessagesUnread,
+    private val rustStarMessages: RustStarMessages,
+    private val rustUnstarMessages: RustUnstarMessages
 ) : RustMessageDataSource {
 
     override suspend fun getMessage(userId: UserId, messageId: LocalMessageId): LocalMessageMetadata? {
@@ -156,6 +160,26 @@ class RustMessageDataSourceImpl @Inject constructor(
             rustMarkMessagesUnread(session, currentLabelId, messages).right()
         } catch (e: MailSessionException) {
             Timber.e(e, "rust-message: Failed to mark message unread")
+            DataError.Local.Unknown.left()
+        }
+    }
+
+    override suspend fun starMessages(userId: UserId, messages: List<LocalMessageId>): Either<DataError.Local, Unit> {
+        val session = userSessionRepository.getUserSession(userId) ?: return DataError.Local.Unknown.left()
+        return try {
+            rustStarMessages(session, messages).right()
+        } catch (e: MailSessionException) {
+            Timber.e(e, "rust-message: Failed to mark message unStarred")
+            DataError.Local.Unknown.left()
+        }
+    }
+
+    override suspend fun unStarMessages(userId: UserId, messages: List<LocalMessageId>): Either<DataError.Local, Unit> {
+        val session = userSessionRepository.getUserSession(userId) ?: return DataError.Local.Unknown.left()
+        return try {
+            rustUnstarMessages(session, messages).right()
+        } catch (e: MailSessionException) {
+            Timber.e(e, "rust-message: Failed to mark message unStarred")
             DataError.Local.Unknown.left()
         }
     }

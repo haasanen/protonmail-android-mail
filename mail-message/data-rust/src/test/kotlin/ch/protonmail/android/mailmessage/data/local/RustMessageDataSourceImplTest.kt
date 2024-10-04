@@ -25,6 +25,8 @@ import ch.protonmail.android.mailmessage.data.usecase.CreateRustMessageBodyAcces
 import ch.protonmail.android.mailmessage.data.usecase.GetRustSenderImage
 import ch.protonmail.android.mailmessage.data.usecase.RustMarkMessagesRead
 import ch.protonmail.android.mailmessage.data.usecase.RustMarkMessagesUnread
+import ch.protonmail.android.mailmessage.data.usecase.RustStarMessages
+import ch.protonmail.android.mailmessage.data.usecase.RustUnstarMessages
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import ch.protonmail.android.testdata.message.rust.LocalMessageIdSample
@@ -60,6 +62,8 @@ class RustMessageDataSourceImplTest {
     private val getRustSenderImage = mockk<GetRustSenderImage>()
     private val rustMarkMessagesRead = mockk<RustMarkMessagesRead>()
     private val rustMarkMessagesUnread = mockk<RustMarkMessagesUnread>()
+    private val rustStarMessages = mockk<RustStarMessages>()
+    private val rustUnstarMessages = mockk<RustUnstarMessages>()
     private val dataSource = RustMessageDataSourceImpl(
         userSessionRepository,
         rustMailbox,
@@ -68,7 +72,9 @@ class RustMessageDataSourceImplTest {
         createRustMessageBodyAccessor,
         getRustSenderImage,
         rustMarkMessagesRead,
-        rustMarkMessagesUnread
+        rustMarkMessagesUnread,
+        rustStarMessages,
+        rustUnstarMessages
     )
 
     @Test
@@ -318,6 +324,23 @@ class RustMessageDataSourceImplTest {
         coVerify { rustMarkMessagesUnread(mailSession, currentLabelId, messageIds) }
     }
 
+    fun `should star messages when session is available`() = runTest {
+        // Given
+        val userId = UserIdTestData.userId
+        val mailSession = mockk<MailUserSession>()
+        val messageIds = listOf(LocalMessageId(1uL), LocalMessageId(2uL))
+
+        coEvery { userSessionRepository.getUserSession(userId) } returns mailSession
+        coEvery { rustStarMessages(mailSession, messageIds) } just Runs
+
+        // When
+        val result = dataSource.starMessages(userId, messageIds)
+
+        // Then
+        coVerify { rustStarMessages(mailSession, messageIds) }
+        assert(result.isRight())
+    }
+
     @Test
     fun `should not mark messages as unread when session is null`() = runTest {
         // Given
@@ -371,5 +394,56 @@ class RustMessageDataSourceImplTest {
         coVerify(exactly = 0) { rustMarkMessagesUnread(mailSession, currentLabelId, messageIds) }
     }
 
+    @Test
+    fun `should unstar messages when session is available`() = runTest {
+        // Given
+        val userId = UserIdTestData.userId
+        val mailSession = mockk<MailUserSession>()
+        val messageIds = listOf(LocalMessageId(1uL), LocalMessageId(2uL))
+
+        coEvery { userSessionRepository.getUserSession(userId) } returns mailSession
+        coEvery { rustUnstarMessages(mailSession, messageIds) } just Runs
+
+        // When
+        val result = dataSource.unStarMessages(userId, messageIds)
+
+        // Then
+        coVerify { rustUnstarMessages(mailSession, messageIds) }
+        assert(result.isRight())
+    }
+
+    @Test
+    fun `should not unstar messages when session is null`() = runTest {
+        // Given
+        val userId = UserIdTestData.userId
+        val messageIds = listOf(LocalMessageId(1uL), LocalMessageId(2uL))
+
+        coEvery { userSessionRepository.getUserSession(userId) } returns null
+
+        // When
+        val result = dataSource.unStarMessages(userId, messageIds)
+
+        // Then
+        coVerify(exactly = 0) { rustUnstarMessages(any(), any()) }
+        assert(result.isLeft())
+    }
+
+    @Test
+    fun `should handle exception when unstarring messages`() = runTest {
+        // Given
+        val userId = UserIdTestData.userId
+        val mailSession = mockk<MailUserSession>()
+        val messageIds = listOf(LocalMessageId(1uL), LocalMessageId(2uL))
+
+        coEvery { userSessionRepository.getUserSession(userId) } returns mailSession
+        coEvery { rustUnstarMessages(mailSession, messageIds) } throws MailSessionException.Other("Error")
+
+        // When
+        val result = dataSource.unStarMessages(userId, messageIds)
+
+        // Then
+        coVerify { rustUnstarMessages(mailSession, messageIds) }
+        assert(result.isLeft())
+    }
 
 }

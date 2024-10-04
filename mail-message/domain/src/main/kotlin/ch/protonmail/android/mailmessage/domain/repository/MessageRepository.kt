@@ -108,6 +108,16 @@ interface MessageRepository {
     ): Either<DataError.Local, List<Message>>
 
     /**
+     * Mark the messages with the given [messageIds] as Starred
+     */
+    suspend fun starMessages(userId: UserId, messageIds: List<MessageId>): Either<DataError.Local, Unit>
+
+    /**
+     * MArk the messages with the given [messageIds] as UnStarred
+     */
+    suspend fun unStarMessages(userId: UserId, messageIds: List<MessageId>): Either<DataError.Local, Unit>
+
+    /**
      * Set the messages with the given [messageIds] as unread
      */
     suspend fun markUnread(userId: UserId, messageIds: List<MessageId>): Either<DataError.Local, Unit>

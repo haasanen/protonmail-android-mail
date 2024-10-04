@@ -21,6 +21,7 @@ package ch.protonmail.android.mailmessage.data.repository
 import java.io.File
 import app.cash.turbine.test
 import arrow.core.getOrElse
+import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalMimeType
 import ch.protonmail.android.mailcommon.domain.model.DataError
@@ -230,4 +231,76 @@ class RustMessageRepositoryImplTest {
         coVerify { rustMessageDataSource.getSenderImage(userId, address, bimi) }
         assertNull(result)
     }
+
+    @Test
+    fun `should star messages when dataSource call is successful`() = runTest {
+        // Given
+        val messageIds = listOf(LocalMessageIdSample.AugWeatherForecast.toMessageId())
+        coEvery {
+            rustMessageDataSource.starMessages(userId, messageIds.map { it.toLocalMessageId() })
+        } returns Unit.right()
+
+        // When
+        val result = repository.starMessages(userId, messageIds)
+
+        // Then
+        coVerify { rustMessageDataSource.starMessages(userId, messageIds.map { it.toLocalMessageId() }) }
+        assert(result.isRight())
+    }
+
+    @Test
+    fun `star action should fail and return error when dataSource call fails`() = runTest {
+        // Given
+        val messageIds = listOf(LocalMessageIdSample.AugWeatherForecast.toMessageId())
+        coEvery {
+            rustMessageDataSource.starMessages(
+                userId,
+                messageIds.map {
+                    it.toLocalMessageId()
+                }
+            )
+        } returns DataError.Local.Unknown.left()
+
+        // When
+        val result = repository.starMessages(userId, messageIds)
+
+        // Then
+        coVerify { rustMessageDataSource.starMessages(userId, messageIds.map { it.toLocalMessageId() }) }
+        assert(result.isLeft())
+        assertEquals(DataError.Local.Unknown, result.swap().getOrElse { null })
+    }
+
+    @Test
+    fun `should unstar messages when dataSource call is successful`() = runTest {
+        // Given
+        val messageIds = listOf(LocalMessageIdSample.AugWeatherForecast.toMessageId())
+        coEvery {
+            rustMessageDataSource.unStarMessages(userId, messageIds.map { it.toLocalMessageId() })
+        } returns Unit.right()
+
+        // When
+        val result = repository.unStarMessages(userId, messageIds)
+
+        // Then
+        coVerify { rustMessageDataSource.unStarMessages(userId, messageIds.map { it.toLocalMessageId() }) }
+        assert(result.isRight())
+    }
+
+    @Test
+    fun `unstar action should fail and return error when dataSource call fails`() = runTest {
+        // Given
+        val messageIds = listOf(LocalMessageIdSample.AugWeatherForecast.toMessageId())
+        coEvery {
+            rustMessageDataSource.unStarMessages(userId, messageIds.map { it.toLocalMessageId() })
+        } returns DataError.Local.Unknown.left()
+
+        // When
+        val result = repository.unStarMessages(userId, messageIds)
+
+        // Then
+        coVerify { rustMessageDataSource.unStarMessages(userId, messageIds.map { it.toLocalMessageId() }) }
+        assert(result.isLeft())
+        assertEquals(DataError.Local.Unknown, result.swap().getOrElse { null })
+    }
+
 }
