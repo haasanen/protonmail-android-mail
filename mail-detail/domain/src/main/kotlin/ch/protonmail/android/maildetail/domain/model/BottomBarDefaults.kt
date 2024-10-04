@@ -23,12 +23,6 @@ import ch.protonmail.android.mailcommon.domain.model.Action
 object BottomBarDefaults {
     object Conversation {
 
-        val actions = listOf(Action.MarkUnread, Action.Move, Action.Trash, Action.Label)
-    }
-
-    object Message {
-
-        val actions = listOf(Action.MarkUnread, Action.Trash, Action.Label, Action.Move)
-
+        val actions = listOf(Action.MarkUnread, Action.Archive, Action.Trash, Action.Move, Action.More)
     }
 }

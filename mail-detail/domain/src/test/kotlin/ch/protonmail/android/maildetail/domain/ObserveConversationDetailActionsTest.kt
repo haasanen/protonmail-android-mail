@@ -48,16 +48,17 @@ internal class ObserveConversationDetailActionsTest {
         // Given
         val conversationId = ConversationId(ConversationTestData.RAW_CONVERSATION_ID)
         every {
-            observeConversation.invoke(userId, conversationId, true)
+            observeConversation.invoke(userId, conversationId, false)
         } returns flowOf(ConversationTestData.conversation.right())
         // When
         observeDetailActions.invoke(userId, conversationId, refreshConversations = true).test {
             // Then
             val expected = listOf(
                 Action.MarkUnread,
-                Action.Move,
+                Action.Archive,
                 Action.Trash,
-                Action.Label
+                Action.Move,
+                Action.More
             )
             assertEquals(expected.right(), awaitItem())
             awaitComplete()
@@ -68,7 +69,7 @@ internal class ObserveConversationDetailActionsTest {
     fun `returns data error when failing to get conversation`() = runTest {
         // Given
         val conversationId = ConversationId(ConversationTestData.RAW_CONVERSATION_ID)
-        every { observeConversation.invoke(userId, conversationId, refreshData = true) } returns flowOf(
+        every { observeConversation.invoke(userId, conversationId, false) } returns flowOf(
             DataError.Local.NoDataCached.left()
         )
         // When
