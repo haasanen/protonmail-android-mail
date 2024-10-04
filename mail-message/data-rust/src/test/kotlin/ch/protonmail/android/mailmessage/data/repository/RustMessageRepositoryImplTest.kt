@@ -21,6 +21,7 @@ package ch.protonmail.android.mailmessage.data.repository
 import java.io.File
 import app.cash.turbine.test
 import arrow.core.getOrElse
+import arrow.core.right
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalMimeType
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
@@ -37,11 +38,9 @@ import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.testdata.message.rust.LocalMessageIdSample
 import ch.protonmail.android.testdata.message.rust.LocalMessageTestData
 import ch.protonmail.android.testdata.user.UserIdTestData
-import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
-import io.mockk.just
 import io.mockk.mockk
 import junit.framework.TestCase.assertNull
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -172,28 +171,28 @@ class RustMessageRepositoryImplTest {
     fun `markRead should mark conversations as read`() = runTest {
         // Given
         val messageIds = listOf(LocalMessageIdSample.AugWeatherForecast.toMessageId())
-        coEvery { rustMessageDataSource.markRead(userId, any()) } just Runs
+        coEvery { rustMessageDataSource.markRead(userId, any()) } returns Unit.right()
 
         // When
         val result = repository.markRead(userId, messageIds)
 
         // Then
         coVerify { rustMessageDataSource.markRead(userId, messageIds.map { it.toLocalMessageId() }) }
-        assertEquals(emptyList(), result.getOrNull())
+        assertEquals(Unit.right(), result)
     }
 
     @Test
     fun `markUnread should mark conversations as unread`() = runTest {
         // Given
         val messageIds = listOf(LocalMessageIdSample.AugWeatherForecast.toMessageId())
-        coEvery { rustMessageDataSource.markUnread(userId, any()) } just Runs
+        coEvery { rustMessageDataSource.markUnread(userId, any()) } returns Unit.right()
 
         // When
         val result = repository.markUnread(userId, messageIds)
 
         // Then
         coVerify { rustMessageDataSource.markUnread(userId, messageIds.map { it.toLocalMessageId() }) }
-        assertEquals(emptyList(), result.getOrNull())
+        assertEquals(Unit.right(), result)
     }
 
     @Test

@@ -3993,13 +3993,13 @@ class MailboxViewModelTest {
     private fun expectMarkMessagesAsReadSucceeds(userId: UserId, items: List<MailboxItemUiModel>) {
         coEvery {
             markMessagesAsRead(userId, items.map { MessageId(it.id) })
-        } returns emptyList<DomainMessage>().right()
+        } returns Unit.right()
     }
 
     private fun expectMarkMessagesAsUnreadSucceeds(userId: UserId, items: List<MailboxItemUiModel>) {
         coEvery {
             markMessagesAsUnread(userId, items.map { MessageId(it.id) })
-        } returns emptyList<DomainMessage>().right()
+        } returns Unit.right()
     }
 
     private fun expectMoveConversationsSucceeds(

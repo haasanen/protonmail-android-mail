@@ -47,6 +47,7 @@ import uniffi.proton_mail_uniffi.Mailbox
 import uniffi.proton_mail_uniffi.MailboxException
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
+import kotlin.test.assertTrue
 
 class RustMessageDataSourceImplTest {
 
@@ -237,9 +238,10 @@ class RustMessageDataSourceImplTest {
         coEvery { rustMarkMessagesRead(mailSession, currentLabelId, messageIds) } just Runs
 
         // When
-        dataSource.markRead(userId, messageIds)
+        val result = dataSource.markRead(userId, messageIds)
 
         // Then
+        assertTrue(result.isRight())
         coVerify { rustMarkMessagesRead(mailSession, currentLabelId, messageIds) }
     }
 
@@ -252,9 +254,10 @@ class RustMessageDataSourceImplTest {
         coEvery { userSessionRepository.getUserSession(userId) } returns null
 
         // When
-        dataSource.markRead(userId, messageIds)
+        val result = dataSource.markRead(userId, messageIds)
 
         // Then
+        assertTrue(result.isLeft())
         coVerify(exactly = 0) { rustMarkMessagesRead(any(), any(), any()) }
     }
 
@@ -269,9 +272,10 @@ class RustMessageDataSourceImplTest {
         coEvery { rustMailbox.observeCurrentLabelId() } returns flowOf()
 
         // When
-        dataSource.markRead(userId, messageIds)
+        val result = dataSource.markRead(userId, messageIds)
 
         // Then
+        assertTrue(result.isLeft())
         coVerify(exactly = 0) { rustMarkMessagesRead(mailSession, any(), messageIds) }
     }
 
@@ -287,9 +291,10 @@ class RustMessageDataSourceImplTest {
         coEvery { rustMailbox.observeCurrentLabelId().firstOrNull() } returns currentLabelId
 
         // When
-        dataSource.markRead(userId, messageIds)
+        val result = dataSource.markRead(userId, messageIds)
 
         // Then
+        assertTrue(result.isLeft())
         coVerify(exactly = 0) { rustMarkMessagesRead(mailSession, currentLabelId, messageIds) }
     }
 
@@ -306,9 +311,10 @@ class RustMessageDataSourceImplTest {
         coEvery { rustMarkMessagesUnread(mailSession, currentLabelId, messageIds) } just Runs
 
         // When
-        dataSource.markUnread(userId, messageIds)
+        val result = dataSource.markUnread(userId, messageIds)
 
         // Then
+        assertTrue(result.isRight())
         coVerify { rustMarkMessagesUnread(mailSession, currentLabelId, messageIds) }
     }
 
@@ -321,9 +327,10 @@ class RustMessageDataSourceImplTest {
         coEvery { userSessionRepository.getUserSession(userId) } returns null
 
         // When
-        dataSource.markUnread(userId, messageIds)
+        val result = dataSource.markUnread(userId, messageIds)
 
         // Then
+        assertTrue(result.isLeft())
         coVerify(exactly = 0) { rustMarkMessagesUnread(any(), any(), any()) }
     }
 
@@ -338,9 +345,10 @@ class RustMessageDataSourceImplTest {
         coEvery { rustMailbox.observeCurrentLabelId() } returns flowOf()
 
         // When
-        dataSource.markUnread(userId, messageIds)
+        val result = dataSource.markUnread(userId, messageIds)
 
         // Then
+        assertTrue(result.isLeft())
         coVerify(exactly = 0) { rustMarkMessagesUnread(mailSession, any(), messageIds) }
     }
 
@@ -356,9 +364,10 @@ class RustMessageDataSourceImplTest {
         coEvery { rustMailbox.observeCurrentLabelId().firstOrNull() } returns currentLabelId
 
         // When
-        dataSource.markUnread(userId, messageIds)
+        val result = dataSource.markUnread(userId, messageIds)
 
         // Then
+        assertTrue(result.isLeft())
         coVerify(exactly = 0) { rustMarkMessagesUnread(mailSession, currentLabelId, messageIds) }
     }
 

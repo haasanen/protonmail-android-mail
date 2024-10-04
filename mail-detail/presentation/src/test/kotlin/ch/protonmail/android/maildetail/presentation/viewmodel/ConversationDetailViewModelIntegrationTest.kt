@@ -1773,7 +1773,7 @@ class ConversationDetailViewModelIntegrationTest {
         } returns flowOf(MessageSample.Invoice.right())
         coEvery {
             markMessageAsUnread(userId, MessageSample.Invoice.messageId)
-        } returns MessageSample.Invoice.right()
+        } returns Unit.right()
 
         // When
         val viewModel = buildConversationDetailViewModel()

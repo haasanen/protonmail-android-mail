@@ -110,12 +110,12 @@ interface MessageRepository {
     /**
      * Set the messages with the given [messageIds] as unread
      */
-    suspend fun markUnread(userId: UserId, messageIds: List<MessageId>): Either<DataError.Local, List<Message>>
+    suspend fun markUnread(userId: UserId, messageIds: List<MessageId>): Either<DataError.Local, Unit>
 
     /**
      * Set the messages with the given [messageIds] as read
      */
-    suspend fun markRead(userId: UserId, messageIds: List<MessageId>): Either<DataError.Local, List<Message>>
+    suspend fun markRead(userId: UserId, messageIds: List<MessageId>): Either<DataError.Local, Unit>
 
     suspend fun isMessageRead(userId: UserId, messageId: MessageId): Either<DataError.Local, Boolean>
 

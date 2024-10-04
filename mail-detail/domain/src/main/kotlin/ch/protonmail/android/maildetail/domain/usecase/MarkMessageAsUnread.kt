@@ -20,7 +20,6 @@ package ch.protonmail.android.maildetail.domain.usecase
 
 import arrow.core.Either
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailmessage.domain.model.Message
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.usecase.MarkMessagesAsUnread
 import me.proton.core.domain.entity.UserId
@@ -30,6 +29,6 @@ class MarkMessageAsUnread @Inject constructor(
     private val markMessagesAsUnread: MarkMessagesAsUnread
 ) {
 
-    suspend operator fun invoke(userId: UserId, messageId: MessageId): Either<DataError.Local, Message> =
-        markMessagesAsUnread.invoke(userId, listOf(messageId)).map { it.first() }
+    suspend operator fun invoke(userId: UserId, messageId: MessageId): Either<DataError.Local, Unit> =
+        markMessagesAsUnread.invoke(userId, listOf(messageId))
 }

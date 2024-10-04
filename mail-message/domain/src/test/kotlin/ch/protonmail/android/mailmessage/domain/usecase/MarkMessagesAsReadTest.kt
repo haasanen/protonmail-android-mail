@@ -24,7 +24,6 @@ import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
-import ch.protonmail.android.mailmessage.domain.sample.MessageSample
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
@@ -54,15 +53,14 @@ class MarkMessagesAsReadTest {
     }
 
     @Test
-    fun `when repository succeed then list of messages is returned`() = runTest {
+    fun `when repository succeed then Unit is returned`() = runTest {
         // given
-        val messages = listOf(MessageSample.Invoice, MessageSample.HtmlInvoice).right()
-        coEvery { messageRepository.markRead(userId, messageIds) } returns messages
+        coEvery { messageRepository.markRead(userId, messageIds) } returns Unit.right()
 
         // when
         val result = markRead(userId, messageIds)
 
         // then
-        assertEquals(messages, result)
+        assertEquals(Unit.right(), result)
     }
 }

@@ -18,10 +18,12 @@
 
 package ch.protonmail.android.mailmessage.data.local
 
+import arrow.core.Either
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalDecryptedMessage
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageId
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageMetadata
+import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import me.proton.core.domain.entity.UserId
 
@@ -42,6 +44,6 @@ interface RustMessageDataSource {
         bimi: String?
     ): String?
 
-    suspend fun markRead(userId: UserId, messages: List<LocalMessageId>)
-    suspend fun markUnread(userId: UserId, messages: List<LocalMessageId>)
+    suspend fun markRead(userId: UserId, messages: List<LocalMessageId>): Either<DataError.Local, Unit>
+    suspend fun markUnread(userId: UserId, messages: List<LocalMessageId>): Either<DataError.Local, Unit>
 }

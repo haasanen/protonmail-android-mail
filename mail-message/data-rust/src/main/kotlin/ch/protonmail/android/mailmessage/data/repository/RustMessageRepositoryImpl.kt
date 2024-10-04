@@ -133,20 +133,11 @@ class RustMessageRepositoryImpl @Inject constructor(
         TODO("Not yet implemented")
     }
 
-    override suspend fun markUnread(
-        userId: UserId,
-        messageIds: List<MessageId>
-    ): Either<DataError.Local, List<Message>> {
+    override suspend fun markUnread(userId: UserId, messageIds: List<MessageId>): Either<DataError.Local, Unit> =
         rustMessageDataSource.markUnread(userId, messageIds.map { it.toLocalMessageId() })
 
-        return emptyList<Message>().right()
-    }
-
-    override suspend fun markRead(userId: UserId, messageIds: List<MessageId>): Either<DataError.Local, List<Message>> {
+    override suspend fun markRead(userId: UserId, messageIds: List<MessageId>): Either<DataError.Local, Unit> =
         rustMessageDataSource.markRead(userId, messageIds.map { it.toLocalMessageId() })
-
-        return emptyList<Message>().right()
-    }
 
     override suspend fun isMessageRead(userId: UserId, messageId: MessageId): Either<DataError.Local, Boolean> {
         TODO("Not yet implemented")

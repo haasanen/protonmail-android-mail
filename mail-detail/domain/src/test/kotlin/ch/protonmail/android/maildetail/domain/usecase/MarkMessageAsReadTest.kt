@@ -23,7 +23,6 @@ import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
-import ch.protonmail.android.mailmessage.domain.sample.MessageSample
 import ch.protonmail.android.mailmessage.domain.usecase.MarkMessagesAsRead
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -56,8 +55,7 @@ internal class MarkMessageAsReadTest {
     @Test
     fun `markRead calls markMessagesAsRead use case `() = runTest {
         // given
-        val message = MessageSample.Invoice
-        coEvery { markMessagesAsRead(userId, listOf(messageId)) } returns listOf(message).right()
+        coEvery { markMessagesAsRead(userId, listOf(messageId)) } returns Unit.right()
 
         // when
         markRead(userId, messageId)
