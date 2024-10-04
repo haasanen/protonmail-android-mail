@@ -435,7 +435,7 @@ class RustMessageRepositoryImplTest {
         } returns rustMoveToActions
 
         // When
-        val result = repository.getAvailableSystemMoveToActions(userId, labelId, messageIds)
+        val result = repository.getSystemMoveToLocations(userId, labelId, messageIds)
 
         // Then
         val expected = listOf(
@@ -461,7 +461,7 @@ class RustMessageRepositoryImplTest {
         } returns null
 
         // When
-        val result = repository.getAvailableSystemMoveToActions(userId, labelId, messageIds)
+        val result = repository.getSystemMoveToLocations(userId, labelId, messageIds)
 
         // Then
         assertEquals(DataError.Local.Unknown.left(), result)

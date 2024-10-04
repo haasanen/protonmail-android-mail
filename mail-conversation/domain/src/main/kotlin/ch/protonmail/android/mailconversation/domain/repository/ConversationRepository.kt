@@ -146,7 +146,7 @@ interface ConversationRepository {
         conversationIds: List<ConversationId>
     ): Either<DataError, AvailableActions>
 
-    suspend fun getAvailableSystemMoveToActions(
+    suspend fun getSystemMoveToLocations(
         userId: UserId,
         labelId: LabelId,
         conversationIds: List<ConversationId>

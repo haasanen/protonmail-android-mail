@@ -32,13 +32,13 @@ import org.junit.Before
 import org.junit.Test
 import kotlin.test.assertEquals
 
-class GetMoveToBottomSheetActionsTest {
+class GetMoveToLocationsTest {
 
     private val conversationRepository = mockk<ConversationRepository>()
     private val messageRepository = mockk<MessageRepository>()
     private val labelRepository = mockk<LabelRepository>()
 
-    private val getMoveToBottomSheetActions = GetMoveToBottomSheetActions(
+    private val getMoveToLocations = GetMoveToLocations(
         messageRepository,
         conversationRepository,
         labelRepository
@@ -68,12 +68,12 @@ class GetMoveToBottomSheetActionsTest {
             MailLabel.System(MailLabelId.System(LabelId("3")), SystemLabelId.Trash, 0)
         )
         coEvery {
-            messageRepository.getAvailableSystemMoveToActions(userId, labelId, messageIds)
+            messageRepository.getSystemMoveToLocations(userId, labelId, messageIds)
         } returns expected.right()
         every { labelRepository.observeCustomFolders(userId) } returns flowOf(emptyList())
 
         // When
-        val actual = getMoveToBottomSheetActions(userId, labelId, items, viewMode)
+        val actual = getMoveToLocations(userId, labelId, items, viewMode)
 
         // Then
         assertEquals(expected.right(), actual)
@@ -92,13 +92,13 @@ class GetMoveToBottomSheetActionsTest {
             MailLabel.System(MailLabelId.System(LabelId("3")), SystemLabelId.Trash, 0)
         )
         coEvery {
-            conversationRepository.getAvailableSystemMoveToActions(userId, labelId, convoIds)
+            conversationRepository.getSystemMoveToLocations(userId, labelId, convoIds)
         } returns expected.right()
         every { labelRepository.observeCustomFolders(userId) } returns flowOf(emptyList())
 
 
         // When
-        val actual = getMoveToBottomSheetActions(userId, labelId, items, viewMode)
+        val actual = getMoveToLocations(userId, labelId, items, viewMode)
 
         // Then
         assertEquals(expected.right(), actual)
@@ -131,7 +131,7 @@ class GetMoveToBottomSheetActionsTest {
             customF022
         )
         coEvery {
-            conversationRepository.getAvailableSystemMoveToActions(userId, labelId, convoIds)
+            conversationRepository.getSystemMoveToLocations(userId, labelId, convoIds)
         } returns systemMoveTo.right()
         val labels = listOf(
             buildLabel(id = "0", type = LabelType.MessageFolder, order = 0),
@@ -143,7 +143,7 @@ class GetMoveToBottomSheetActionsTest {
         every { labelRepository.observeCustomFolders(userId) } returns flowOf(labels)
 
         // When
-        val actual = getMoveToBottomSheetActions(userId, labelId, items, viewMode)
+        val actual = getMoveToLocations(userId, labelId, items, viewMode)
 
         // Then
         assertEquals(expected.right(), actual)
@@ -161,12 +161,12 @@ class GetMoveToBottomSheetActionsTest {
             MailLabel.System(MailLabelId.System(LabelId("2")), SystemLabelId.Archive, 0)
         )
         coEvery {
-            conversationRepository.getAvailableSystemMoveToActions(userId, labelId, convoIds)
+            conversationRepository.getSystemMoveToLocations(userId, labelId, convoIds)
         } returns expectedSystemActions.right()
         every { labelRepository.observeCustomFolders(userId) } returns flowOf()
 
         // When
-        val actual = getMoveToBottomSheetActions(userId, labelId, items, viewMode)
+        val actual = getMoveToLocations(userId, labelId, items, viewMode)
 
         // Then
         assertEquals(expectedSystemActions.right(), actual)
@@ -182,11 +182,11 @@ class GetMoveToBottomSheetActionsTest {
         val viewMode = ViewMode.ConversationGrouping
         val labels = listOf(buildLabel(id = "0", type = LabelType.MessageFolder, order = 0))
         val error = DataError.Local.Unknown.left()
-        coEvery { conversationRepository.getAvailableSystemMoveToActions(userId, labelId, convoIds) } returns error
+        coEvery { conversationRepository.getSystemMoveToLocations(userId, labelId, convoIds) } returns error
         every { labelRepository.observeCustomFolders(userId) } returns flowOf(labels)
 
         // When
-        val actual = getMoveToBottomSheetActions(userId, labelId, items, viewMode)
+        val actual = getMoveToLocations(userId, labelId, items, viewMode)
 
         // Then
         assertEquals(error, actual)

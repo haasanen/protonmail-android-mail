@@ -425,7 +425,7 @@ class RustConversationRepositoryImplTest {
         } returns rustMoveToActions
 
         // When
-        val result = rustConversationRepository.getAvailableSystemMoveToActions(userId, labelId, conversationIds)
+        val result = rustConversationRepository.getSystemMoveToLocations(userId, labelId, conversationIds)
 
         // Then
         val expected = listOf(
@@ -451,7 +451,7 @@ class RustConversationRepositoryImplTest {
         } returns null
 
         // When
-        val result = rustConversationRepository.getAvailableSystemMoveToActions(userId, labelId, conversationIds)
+        val result = rustConversationRepository.getSystemMoveToLocations(userId, labelId, conversationIds)
 
         // Then
         assertEquals(DataError.Local.Unknown.left(), result)

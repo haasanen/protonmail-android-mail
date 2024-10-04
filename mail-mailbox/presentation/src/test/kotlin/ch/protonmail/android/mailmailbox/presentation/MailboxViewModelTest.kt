@@ -74,7 +74,7 @@ import ch.protonmail.android.mailmailbox.domain.model.UserAccountStorageStatus
 import ch.protonmail.android.mailmailbox.domain.usecase.GetBottomSheetActions
 import ch.protonmail.android.mailmailbox.domain.usecase.GetLabelAsBottomSheetContent
 import ch.protonmail.android.mailmailbox.domain.usecase.GetMailboxActions
-import ch.protonmail.android.mailmailbox.domain.usecase.GetMoveToBottomSheetActions
+import ch.protonmail.android.mailmailbox.domain.usecase.GetMoveToLocations
 import ch.protonmail.android.mailmailbox.domain.usecase.ObserveCurrentViewMode
 import ch.protonmail.android.mailmailbox.domain.usecase.ObserveOnboarding
 import ch.protonmail.android.mailmailbox.domain.usecase.ObservePrimaryUserAccountStorageStatus
@@ -263,7 +263,7 @@ class MailboxViewModelTest {
     private val unStarConversations = mockk<UnStarConversations>()
     private val deleteSearchResults = mockk<DeleteSearchResults>()
     private val getBottomSheetActions = mockk<GetBottomSheetActions>()
-    private val getMoveToBottomSheetActions = mockk<GetMoveToBottomSheetActions>()
+    private val getMoveToLocations = mockk<GetMoveToLocations>()
     private val getLabelAsBottomSheetContent = mockk<GetLabelAsBottomSheetContent>()
     private val observePrimaryUserAccountStorageStatus = mockk<ObservePrimaryUserAccountStorageStatus> {
         every { this@mockk() } returns flowOf()
@@ -307,7 +307,7 @@ class MailboxViewModelTest {
             observeFolderColorSettings = observeFolderColorSettings,
             getMailboxActions = observeMailboxActions,
             getBottomSheetActions = getBottomSheetActions,
-            getMoveToBottomSheetActions = getMoveToBottomSheetActions,
+            getMoveToLocations = getMoveToLocations,
             getLabelAsBottomSheetContent = getLabelAsBottomSheetContent,
             actionUiModelMapper = actionUiModelMapper,
             mailboxItemMapper = mailboxItemMapper,
@@ -3767,11 +3767,11 @@ class MailboxViewModelTest {
         items: List<MailboxItemId>,
         viewMode: ViewMode
     ) {
-        coEvery { getMoveToBottomSheetActions(userId, labelId, items, viewMode) } returns expectedActions.right()
+        coEvery { getMoveToLocations(userId, labelId, items, viewMode) } returns expectedActions.right()
     }
 
     private fun expectGetMoveToActionsFails() {
-        coEvery { getMoveToBottomSheetActions(userId, any(), any(), any()) } returns DataError.Local.NoDataCached.left()
+        coEvery { getMoveToLocations(userId, any(), any(), any()) } returns DataError.Local.NoDataCached.left()
     }
 
     private fun expectBottomSheetActionsSucceeds(

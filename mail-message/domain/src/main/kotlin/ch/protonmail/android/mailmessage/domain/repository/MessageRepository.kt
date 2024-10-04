@@ -189,7 +189,7 @@ interface MessageRepository {
         messageIds: List<MessageId>
     ): Either<DataError, AvailableActions>
 
-    suspend fun getAvailableSystemMoveToActions(
+    suspend fun getSystemMoveToLocations(
         userId: UserId,
         labelId: LabelId,
         messageIds: List<MessageId>

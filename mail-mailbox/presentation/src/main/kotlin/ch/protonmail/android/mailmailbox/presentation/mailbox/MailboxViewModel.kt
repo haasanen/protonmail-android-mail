@@ -67,7 +67,7 @@ import ch.protonmail.android.mailmailbox.domain.model.toMailboxItemType
 import ch.protonmail.android.mailmailbox.domain.usecase.GetBottomSheetActions
 import ch.protonmail.android.mailmailbox.domain.usecase.GetLabelAsBottomSheetContent
 import ch.protonmail.android.mailmailbox.domain.usecase.GetMailboxActions
-import ch.protonmail.android.mailmailbox.domain.usecase.GetMoveToBottomSheetActions
+import ch.protonmail.android.mailmailbox.domain.usecase.GetMoveToLocations
 import ch.protonmail.android.mailmailbox.domain.usecase.ObserveCurrentViewMode
 import ch.protonmail.android.mailmailbox.domain.usecase.ObserveOnboarding
 import ch.protonmail.android.mailmailbox.domain.usecase.ObservePrimaryUserAccountStorageStatus
@@ -157,7 +157,7 @@ class MailboxViewModel @Inject constructor(
     private val observeFolderColorSettings: ObserveFolderColorSettings,
     private val getMailboxActions: GetMailboxActions,
     private val getBottomSheetActions: GetBottomSheetActions,
-    private val getMoveToBottomSheetActions: GetMoveToBottomSheetActions,
+    private val getMoveToLocations: GetMoveToLocations,
     private val getLabelAsBottomSheetContent: GetLabelAsBottomSheetContent,
     private val actionUiModelMapper: ActionUiModelMapper,
     private val mailboxItemMapper: MailboxItemUiModelMapper,
@@ -806,15 +806,14 @@ class MailboxViewModel @Inject constructor(
             val currentMailLabel = selectedMailLabelId.flow.value
             val viewMode = getViewModeForCurrentLocation(currentMailLabel)
             val selectedItemIds: List<MailboxItemId> = selectionState.selectedMailboxItems.map { MailboxItemId(it.id) }
-            val actionsEither = getMoveToBottomSheetActions(userId, currentMailLabel.labelId, selectedItemIds, viewMode)
-            Timber.d("rust-mailbox move to locations: $actionsEither")
 
-            actionsEither.fold(
+            getMoveToLocations(userId, currentMailLabel.labelId, selectedItemIds, viewMode).fold(
                 ifLeft = {
-                    Timber.e("Mailbox failed to load the bottom-sheet actions: $actionsEither")
+                    Timber.e("Mailbox failed to load the bottom-sheet actions: $it")
                     emitNewStateFrom(MailboxEvent.ErrorRetrievingDestinationMailFolders)
                 },
                 ifRight = { actions ->
+                    Timber.v("rust-mailbox move to locations: $actions")
                     val systemActions = actions.filterIsInstance<MailLabel.System>()
                     val customActions = actions.filterIsInstance<MailLabel.Custom>()
                     val mailLabels = MailLabels(systemActions, customActions, emptyList())

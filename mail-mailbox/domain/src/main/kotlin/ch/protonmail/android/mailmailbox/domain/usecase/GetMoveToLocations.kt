@@ -36,7 +36,7 @@ import me.proton.core.domain.entity.UserId
 import me.proton.core.mailsettings.domain.entity.ViewMode
 import javax.inject.Inject
 
-class GetMoveToBottomSheetActions @Inject constructor(
+class GetMoveToLocations @Inject constructor(
     private val messageRepository: MessageRepository,
     private val conversationRepository: ConversationRepository,
     private val labelRepository: LabelRepository
@@ -51,12 +51,12 @@ class GetMoveToBottomSheetActions @Inject constructor(
         val systemActions = when (viewMode) {
             ViewMode.ConversationGrouping -> {
                 val conversationIds = mailboxItemIds.map { ConversationId(it.value) }
-                conversationRepository.getAvailableSystemMoveToActions(userId, labelId, conversationIds)
+                conversationRepository.getSystemMoveToLocations(userId, labelId, conversationIds)
             }
 
             ViewMode.NoConversationGrouping -> {
                 val messageIds = mailboxItemIds.map { MessageId(it.value) }
-                messageRepository.getAvailableSystemMoveToActions(userId, labelId, messageIds)
+                messageRepository.getSystemMoveToLocations(userId, labelId, messageIds)
             }
         }
 

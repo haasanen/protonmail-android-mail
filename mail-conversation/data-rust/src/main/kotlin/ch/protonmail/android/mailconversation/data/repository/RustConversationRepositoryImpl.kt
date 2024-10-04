@@ -225,7 +225,7 @@ class RustConversationRepositoryImpl @Inject constructor(
         return availableActions.toAvailableActions().right()
     }
 
-    override suspend fun getAvailableSystemMoveToActions(
+    override suspend fun getSystemMoveToLocations(
         userId: UserId,
         labelId: LabelId,
         conversationIds: List<ConversationId>
