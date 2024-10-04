@@ -222,7 +222,7 @@ class ConversationDetailViewModelTest {
     }
     private val observeConversationDetailActions = mockk<ObserveConversationDetailActions> {
         every {
-            this@mockk(UserIdSample.Primary, ConversationIdSample.WeatherForecast, any())
+            this@mockk(UserIdSample.Primary, ConversationIdSample.WeatherForecast)
         } returns flowOf(
             listOf(Action.Archive, Action.MarkUnread).right()
         )
@@ -646,7 +646,7 @@ class ConversationDetailViewModelTest {
         val actionUiModels = listOf(ActionUiModelTestData.archive).toImmutableList()
         val expected = initialState.copy(bottomBarState = BottomBarState.Data.Shown(actionUiModels))
         every {
-            observeConversationDetailActions(UserIdSample.Primary, ConversationIdSample.WeatherForecast, any())
+            observeConversationDetailActions(UserIdSample.Primary, ConversationIdSample.WeatherForecast)
         } returns flowOf(actions.right())
         every {
             reducer.newStateFrom(
@@ -679,7 +679,7 @@ class ConversationDetailViewModelTest {
         } returns messages.first()
         val expected = initialState.copy(bottomBarState = BottomBarState.Error.FailedLoadingActions)
         every {
-            observeConversationDetailActions(UserIdSample.Primary, ConversationIdSample.WeatherForecast, any())
+            observeConversationDetailActions(UserIdSample.Primary, ConversationIdSample.WeatherForecast)
         } returns flowOf(DataError.Local.NoDataCached.left())
         every {
             reducer.newStateFrom(
@@ -1744,7 +1744,7 @@ class ConversationDetailViewModelTest {
             advanceUntilIdle()
 
             // Then
-            verify { observeConversationDetailActions(any(), any(), refreshConversations = false) }
+            verify { observeConversationDetailActions(any(), any()) }
             cancelAndIgnoreRemainingEvents()
         }
     }

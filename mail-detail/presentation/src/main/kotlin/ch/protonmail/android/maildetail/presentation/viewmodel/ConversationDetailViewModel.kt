@@ -454,7 +454,7 @@ class ConversationDetailViewModel @Inject constructor(
 
     private fun observeBottomBarActions(conversationId: ConversationId) {
         primaryUserId.flatMapLatest { userId ->
-            observeDetailActions(userId, conversationId, refreshConversations = false).mapLatest { either ->
+            observeDetailActions(userId, conversationId).mapLatest { either ->
                 either.fold(
                     ifLeft = { ConversationDetailEvent.ConversationBottomBarEvent(BottomBarEvent.ErrorLoadingActions) },
                     ifRight = { actions ->

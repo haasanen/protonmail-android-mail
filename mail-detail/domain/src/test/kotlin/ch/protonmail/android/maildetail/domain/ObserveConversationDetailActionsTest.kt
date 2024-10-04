@@ -51,7 +51,7 @@ internal class ObserveConversationDetailActionsTest {
             observeConversation.invoke(userId, conversationId, false)
         } returns flowOf(ConversationTestData.conversation.right())
         // When
-        observeDetailActions.invoke(userId, conversationId, refreshConversations = true).test {
+        observeDetailActions.invoke(userId, conversationId).test {
             // Then
             val expected = listOf(
                 Action.MarkUnread,
@@ -73,7 +73,7 @@ internal class ObserveConversationDetailActionsTest {
             DataError.Local.NoDataCached.left()
         )
         // When
-        observeDetailActions.invoke(userId, conversationId, refreshConversations = true).test {
+        observeDetailActions.invoke(userId, conversationId).test {
             // Then
             assertEquals(DataError.Local.NoDataCached.left(), awaitItem())
             awaitComplete()
