@@ -74,7 +74,7 @@ fun List<MoveAction.SystemFolder>.toMailLabels() = this.map { systemAction ->
 fun MessageAvailableActions.toAvailableActions(): AvailableActions {
     return AvailableActions(
         this.replyActions.replyActionsToActions(),
-        this.messageActions.MessageActionsToActions().filterNotNull(),
+        this.messageActions.messageActionsToActions().filterNotNull(),
         this.moveActions.systemFolderActionsToActions().filterNotNull(),
         this.generalActions.generalActionsToActions()
     )
@@ -126,7 +126,7 @@ fun List<GeneralActions>.generalActionsToActions() = this.map { generalAction ->
     }
 }
 
-private fun List<MessageAction>.MessageActionsToActions() = this.map { messageAction ->
+private fun List<MessageAction>.messageActionsToActions() = this.map { messageAction ->
     when (messageAction) {
         MessageAction.STAR -> Action.Star
         MessageAction.UNSTAR -> Action.Unstar
