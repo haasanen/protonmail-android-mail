@@ -75,7 +75,7 @@ internal class ConversationDetailMessageUiModelMapperTest {
         every { this@mockk(duration = any()) } returns TextUiModel("Aug 1, 2021")
     }
     private val messageLocationUiModelMapper: MessageLocationUiModelMapper = mockk {
-        coEvery { this@mockk(labelIds = any(), labels = any()) } returns MessageLocationUiModelSample.AllMail
+        coEvery { this@mockk(messageLocation = any(), labels = any()) } returns MessageLocationUiModelSample.AllMail
     }
     private val resolveParticipantName: ResolveParticipantName = mockk {
         every {

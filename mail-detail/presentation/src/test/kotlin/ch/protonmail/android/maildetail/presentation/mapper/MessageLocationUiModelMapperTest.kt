@@ -24,6 +24,7 @@ import arrow.core.right
 import ch.protonmail.android.mailcommon.presentation.mapper.ColorMapper
 import ch.protonmail.android.maildetail.presentation.R
 import ch.protonmail.android.maildetail.presentation.model.MessageLocationUiModel
+import ch.protonmail.android.maillabel.domain.model.ExclusiveLocation
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.LabelType
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
@@ -44,13 +45,14 @@ class MessageLocationUiModelMapperTest {
     @Test
     fun `when an exclusive system label is found in the list of label ids, its name and icon are returned`() = runTest {
         // Given
-        val labelIds = listOf(SystemLabelId.AllMail.labelId, SystemLabelId.Archive.labelId)
+        val messageLocation = ExclusiveLocation.System(SystemLabelId.Archive, SystemLabelId.Archive.labelId)
         val expectedResult = MessageLocationUiModel(
             SystemLabelId.Archive.name,
             SystemLabelId.enumOf(SystemLabelId.Archive.labelId.id).iconRes()
         )
+
         // When
-        val result = messageLocationUiModelMapper(labelIds, emptyList())
+        val result = messageLocationUiModelMapper(messageLocation, emptyList())
         // Then
         assertEquals(expectedResult, result)
     }
@@ -63,8 +65,7 @@ class MessageLocationUiModelMapperTest {
             val customFolderId = "customFolderId"
             val customFolderName = "customFolder"
             val customFolderColor = Color.Red
-            val labelIds =
-                listOf(SystemLabelId.AllMail.labelId, LabelId(id = customLabelId), LabelId(id = customFolderId))
+            val messageLocation = ExclusiveLocation.Folder(LabelId(customFolderId), "#rrr")
             val labels = listOf(
                 LabelTestData.buildLabel(id = customLabelId, type = LabelType.MessageLabel),
                 LabelTestData.buildLabel(
@@ -81,7 +82,7 @@ class MessageLocationUiModelMapperTest {
             every { colorMapper.toColor(any()) } returns customFolderColor.right()
 
             // When
-            val result = messageLocationUiModelMapper(labelIds, labels)
+            val result = messageLocationUiModelMapper(messageLocation, labels)
 
             // Then
             assertEquals(expectedResult, result)
@@ -93,7 +94,7 @@ class MessageLocationUiModelMapperTest {
         val customLabelId = "customLabelId"
         val customFolderId = "customFolderId"
         val customFolderName = "customFolder"
-        val labelIds = listOf(SystemLabelId.AllMail.labelId, LabelId(id = customLabelId), LabelId(id = customFolderId))
+        val messageLocation = ExclusiveLocation.Folder(LabelId(customFolderId), "#rrr")
         val labels = listOf(
             LabelTestData.buildLabel(id = customLabelId, type = LabelType.MessageLabel),
             LabelTestData.buildLabel(
@@ -110,7 +111,7 @@ class MessageLocationUiModelMapperTest {
         every { colorMapper.toColor(null) } returns "invalid".left()
 
         // When
-        val result = messageLocationUiModelMapper(labelIds, labels)
+        val result = messageLocationUiModelMapper(messageLocation, labels)
 
         // Then
         assertEquals(expectedResult, result)
@@ -120,13 +121,13 @@ class MessageLocationUiModelMapperTest {
     fun `when no exclusive label has been found, then the name and icon of the all mail location are returned`() =
         runTest {
             // Given
-            val labelIds = listOf(SystemLabelId.AllMail.labelId)
+            val messageLocation = ExclusiveLocation.System(SystemLabelId.AllMail, SystemLabelId.AllMail.labelId)
             val expectedResult = MessageLocationUiModel(
                 SystemLabelId.AllMail.name,
                 SystemLabelId.enumOf(SystemLabelId.AllMail.labelId.id).iconRes()
             )
             // When
-            val result = messageLocationUiModelMapper(labelIds, emptyList())
+            val result = messageLocationUiModelMapper(messageLocation, emptyList())
             // Then
             assertEquals(expectedResult, result)
         }

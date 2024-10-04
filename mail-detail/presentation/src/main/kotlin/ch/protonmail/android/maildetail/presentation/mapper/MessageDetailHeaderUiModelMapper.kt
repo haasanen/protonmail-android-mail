@@ -60,10 +60,7 @@ class MessageDetailHeaderUiModelMapper @Inject constructor(
             shouldShowTrackerProtectionIcon = true,
             shouldShowAttachmentIcon = message.hasNonCalendarAttachments(),
             shouldShowStar = message.isStarred,
-            location = messageLocationUiModelMapper(
-                emptyList(),
-                emptyList()
-            ),
+            location = messageLocationUiModelMapper(message.exclusiveLocation, message.customLabels),
             time = formatShortTime(message.time.seconds),
             extendedTime = formatExtendedTime(message.time.seconds),
             shouldShowUndisclosedRecipients = message.hasUndisclosedRecipients(),

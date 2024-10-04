@@ -18,55 +18,54 @@
 
 package ch.protonmail.android.maildetail.presentation.mapper
 
-import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.presentation.mapper.ColorMapper
 import ch.protonmail.android.maildetail.presentation.R
 import ch.protonmail.android.maildetail.presentation.model.MessageLocationUiModel
+import ch.protonmail.android.maillabel.domain.model.ExclusiveLocation
 import ch.protonmail.android.maillabel.domain.model.Label
-import ch.protonmail.android.maillabel.domain.model.LabelId
-import ch.protonmail.android.maillabel.domain.model.LabelType
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.maillabel.presentation.iconRes
+import timber.log.Timber
 import javax.inject.Inject
 
 class MessageLocationUiModelMapper @Inject constructor(
     private val colorMapper: ColorMapper
 ) {
 
-    @MissingRustApi
-    // To be fixed once message has "exclusiveLocation" info exposed by rust)
-    suspend operator fun invoke(
-        labelIds: List<LabelId>,
-        labels: List<Label>
-    ): MessageLocationUiModel {
-        SystemLabelId.exclusiveList.forEach { systemLabelId ->
-            if (systemLabelId.labelId in labelIds) {
-                return MessageLocationUiModel(
-                    systemLabelId.name,
-                    SystemLabelId.enumOf(systemLabelId.labelId.id).iconRes()
+    operator fun invoke(messageLocation: ExclusiveLocation, labels: List<Label>): MessageLocationUiModel {
+
+        return when (messageLocation) {
+            is ExclusiveLocation.System -> {
+                MessageLocationUiModel(
+                    messageLocation.systemLabelId.name,
+                    messageLocation.systemLabelId.iconRes()
                 )
             }
-        }
+            is ExclusiveLocation.Folder -> {
+                val folder = labels.find { it.labelId == messageLocation.labelId }
 
-        // Check if the location is a custom folder
-        labels.forEach { label ->
-            if (label.labelId in labelIds && label.type == LabelType.MessageFolder) {
-                val shouldShowFolderColor = label.color != null
-                return MessageLocationUiModel(
-                    name = label.name,
+                if (folder == null) {
+                    Timber.w("message-location: declared exclusive location not found as a folder")
+                    return allMailLocation()
+                }
+
+                val shouldShowFolderColor = folder.color != null
+
+                MessageLocationUiModel(
+                    name = folder.name,
                     icon = when {
                         shouldShowFolderColor -> R.drawable.ic_proton_folder_filled
                         else -> R.drawable.ic_proton_folder
                     },
-                    color = colorMapper.toColor(label.color).getOrNull()
+                    color = colorMapper.toColor(folder.color).getOrNull()
                 )
             }
+            is ExclusiveLocation.NoLocation -> allMailLocation()
         }
-
-        // If no location has been found, then the message is orphaned and is only in All Mail
-        return MessageLocationUiModel(
-            SystemLabelId.AllMail.name,
-            SystemLabelId.enumOf(SystemLabelId.AllMail.labelId.id).iconRes()
-        )
     }
+
+    private fun allMailLocation() = MessageLocationUiModel(
+        SystemLabelId.AllMail.name,
+        SystemLabelId.enumOf(SystemLabelId.AllMail.labelId.id).iconRes()
+    )
 }

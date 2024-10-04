@@ -62,7 +62,7 @@ class ConversationDetailMessageUiModelMapper @Inject constructor(
             hasAttachments = message.numAttachments > message.attachmentCount.calendar,
             isStarred = message.isStarred,
             isUnread = message.isUnread,
-            locationIcon = messageLocationUiModelMapper(emptyList(), emptyList()),
+            locationIcon = messageLocationUiModelMapper(message.exclusiveLocation, message.customLabels),
             repliedIcon = getRepliedIcon(isReplied = message.isReplied, isRepliedAll = message.isRepliedAll),
             sender = participantUiModelMapper.senderToUiModel(message.sender, contacts),
             shortTime = formatShortTime(message.time.seconds),
