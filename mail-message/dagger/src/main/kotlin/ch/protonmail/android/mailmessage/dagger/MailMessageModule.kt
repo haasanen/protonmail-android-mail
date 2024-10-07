@@ -26,9 +26,11 @@ import ch.protonmail.android.mailmessage.data.local.RustMessageDataSource
 import ch.protonmail.android.mailmessage.data.local.RustMessageDataSourceImpl
 import ch.protonmail.android.mailmessage.data.local.RustMessageQuery
 import ch.protonmail.android.mailmessage.data.local.RustMessageQueryImpl
+import ch.protonmail.android.mailmessage.data.repository.RustMessageActionRepository
 import ch.protonmail.android.mailmessage.data.repository.RustMessageRepositoryImpl
 import ch.protonmail.android.mailmessage.domain.paging.RustInvalidationTracker
 import ch.protonmail.android.mailmessage.domain.paging.RustInvalidationTrackerImpl
+import ch.protonmail.android.mailmessage.domain.repository.MessageActionRepository
 import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
 import dagger.Binds
 import dagger.Module
@@ -49,13 +51,17 @@ object MailMessageModule {
     @MessageRustCoroutineScope
     fun provideMessageRustCoroutineScope(): CoroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
-    @Suppress("LongParameterList")
     @Provides
     @Singleton
     fun providesMessageRepository(
         rustMessageDataSource: RustMessageDataSource,
         selectedMailLabelId: SelectedMailLabelId
     ): MessageRepository = RustMessageRepositoryImpl(rustMessageDataSource, selectedMailLabelId)
+
+    @Provides
+    @Singleton
+    fun providesMessageActionRepository(rustMessageDataSource: RustMessageDataSource): MessageActionRepository =
+        RustMessageActionRepository(rustMessageDataSource)
 
     @Module
     @InstallIn(SingletonComponent::class)

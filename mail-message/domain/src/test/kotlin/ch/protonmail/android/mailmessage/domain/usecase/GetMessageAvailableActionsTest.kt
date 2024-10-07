@@ -7,7 +7,7 @@ import ch.protonmail.android.mailcommon.domain.model.AvailableActions
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.maillabel.domain.sample.LabelIdSample
-import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
+import ch.protonmail.android.mailmessage.domain.repository.MessageActionRepository
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -17,9 +17,9 @@ import kotlin.test.assertEquals
 
 class GetMessageAvailableActionsTest {
 
-    private val messageRepository = mockk<MessageRepository>()
+    private val actionRepository = mockk<MessageActionRepository>()
 
-    private val getMessageAvailableActions = GetMessageAvailableActions(messageRepository)
+    private val getMessageAvailableActions = GetMessageAvailableActions(actionRepository)
 
     @Test
     fun `returns available actions when repo succeeds`() = runTest {
@@ -33,7 +33,7 @@ class GetMessageAvailableActionsTest {
             listOf(Action.Spam, Action.Archive),
             listOf(Action.ViewHeaders)
         )
-        coEvery { messageRepository.getAvailableActions(userId, labelId, messageIds) } returns expected.right()
+        coEvery { actionRepository.getAvailableActions(userId, labelId, messageIds) } returns expected.right()
 
         // When
         val actual = getMessageAvailableActions(userId, labelId, messageIds)
@@ -49,7 +49,7 @@ class GetMessageAvailableActionsTest {
         val labelId = LabelIdSample.Trash
         val messageIds = listOf(MessageIdSample.AlphaAppQAReport)
         val expected = DataError.Local.Unknown.left()
-        coEvery { messageRepository.getAvailableActions(userId, labelId, messageIds) } returns expected
+        coEvery { actionRepository.getAvailableActions(userId, labelId, messageIds) } returns expected
 
         // When
         val actual = getMessageAvailableActions(userId, labelId, messageIds)

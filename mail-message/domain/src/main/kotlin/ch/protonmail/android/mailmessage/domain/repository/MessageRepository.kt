@@ -19,12 +19,9 @@
 package ch.protonmail.android.mailmessage.domain.repository
 
 import arrow.core.Either
-import ch.protonmail.android.mailcommon.domain.model.AvailableActions
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.maillabel.domain.model.LabelAsActions
 import ch.protonmail.android.maillabel.domain.model.LabelId
-import ch.protonmail.android.maillabel.domain.model.MailLabel
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.model.Message
 import ch.protonmail.android.mailmessage.domain.model.MessageAttachment
@@ -182,22 +179,4 @@ interface MessageRepository {
      * Report a message as phishing
      */
     suspend fun reportPhishing(userId: UserId, decryptedMessageBody: DecryptedMessageBody): Either<DataError, Unit>
-
-    suspend fun getAvailableActions(
-        userId: UserId,
-        labelId: LabelId,
-        messageIds: List<MessageId>
-    ): Either<DataError, AvailableActions>
-
-    suspend fun getSystemMoveToLocations(
-        userId: UserId,
-        labelId: LabelId,
-        messageIds: List<MessageId>
-    ): Either<DataError, List<MailLabel.System>>
-
-    suspend fun getAvailableLabelAsActions(
-        userId: UserId,
-        labelId: LabelId,
-        messageIds: List<MessageId>
-    ): Either<DataError, LabelAsActions>
 }

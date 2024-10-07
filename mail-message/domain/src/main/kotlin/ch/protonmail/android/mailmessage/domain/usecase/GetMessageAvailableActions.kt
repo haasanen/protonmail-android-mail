@@ -23,17 +23,17 @@ import ch.protonmail.android.mailcommon.domain.model.AvailableActions
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.mailmessage.domain.model.MessageId
-import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
+import ch.protonmail.android.mailmessage.domain.repository.MessageActionRepository
 import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 
 class GetMessageAvailableActions @Inject constructor(
-    private val messageRepository: MessageRepository
+    private val actionRepository: MessageActionRepository
 ) {
 
     suspend operator fun invoke(
         userId: UserId,
         labelId: LabelId,
         messageIds: List<MessageId>
-    ): Either<DataError, AvailableActions> = messageRepository.getAvailableActions(userId, labelId, messageIds)
+    ): Either<DataError, AvailableActions> = actionRepository.getAvailableActions(userId, labelId, messageIds)
 }

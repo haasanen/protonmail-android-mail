@@ -10,7 +10,7 @@ import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.maillabel.domain.sample.LabelIdSample
 import ch.protonmail.android.maillabel.domain.usecase.ObserveCustomMailFolders
-import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
+import ch.protonmail.android.mailmessage.domain.repository.MessageActionRepository
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
 import ch.protonmail.android.testdata.maillabel.MailLabelTestData.buildCustomFolder
 import io.mockk.coEvery
@@ -23,10 +23,10 @@ import kotlin.test.assertEquals
 
 class GetMessageMoveToLocationsTest {
 
-    private val messageRepository = mockk<MessageRepository>()
+    private val actionRepository = mockk<MessageActionRepository>()
     private val observeCustomMailFolders = mockk<ObserveCustomMailFolders>()
 
-    private val getMessageMoveToLocations = GetMessageMoveToLocations(messageRepository, observeCustomMailFolders)
+    private val getMessageMoveToLocations = GetMessageMoveToLocations(actionRepository, observeCustomMailFolders)
 
     @Test
     fun `returns available move to locations when repo succeeds`() = runTest {
@@ -38,7 +38,7 @@ class GetMessageMoveToLocationsTest {
             MailLabel.System(MailLabelId.System(LabelId("2")), SystemLabelId.Archive, 0),
             MailLabel.System(MailLabelId.System(LabelId("3")), SystemLabelId.Trash, 0)
         )
-        coEvery { messageRepository.getSystemMoveToLocations(userId, labelId, messageIds) } returns expected.right()
+        coEvery { actionRepository.getSystemMoveToLocations(userId, labelId, messageIds) } returns expected.right()
         every { observeCustomMailFolders(userId) } returns flowOf()
 
         // When
@@ -55,7 +55,7 @@ class GetMessageMoveToLocationsTest {
         val labelId = LabelIdSample.Trash
         val messageIds = listOf(MessageIdSample.AlphaAppQAReport)
         val expected = DataError.Local.Unknown.left()
-        coEvery { messageRepository.getSystemMoveToLocations(userId, labelId, messageIds) } returns expected
+        coEvery { actionRepository.getSystemMoveToLocations(userId, labelId, messageIds) } returns expected
         every { observeCustomMailFolders(userId) } returns flowOf()
 
         // When
@@ -80,7 +80,7 @@ class GetMessageMoveToLocationsTest {
         val customFolders = listOf(customF0, customF01)
         val expected = systemMoveTo + customFolders
         coEvery {
-            messageRepository.getSystemMoveToLocations(userId, labelId, messageIds)
+            actionRepository.getSystemMoveToLocations(userId, labelId, messageIds)
         } returns systemMoveTo.right()
         every { observeCustomMailFolders(userId) } returns flowOf(customFolders.right())
 
@@ -101,7 +101,7 @@ class GetMessageMoveToLocationsTest {
             MailLabel.System(MailLabelId.System(LabelId("2")), SystemLabelId.Archive, 0)
         )
         coEvery {
-            messageRepository.getSystemMoveToLocations(userId, labelId, messageIds)
+            actionRepository.getSystemMoveToLocations(userId, labelId, messageIds)
         } returns expectedSystemActions.right()
         every { observeCustomMailFolders(userId) } returns flowOf()
 

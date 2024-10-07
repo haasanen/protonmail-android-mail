@@ -16,38 +16,34 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailmessage.domain.usecase
+package ch.protonmail.android.mailmessage.domain.repository
 
 import arrow.core.Either
-import arrow.core.combine
-import arrow.core.right
+import ch.protonmail.android.mailcommon.domain.model.AvailableActions
 import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.maillabel.domain.model.LabelAsActions
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabel
-import ch.protonmail.android.maillabel.domain.usecase.ObserveCustomMailFolders
 import ch.protonmail.android.mailmessage.domain.model.MessageId
-import ch.protonmail.android.mailmessage.domain.repository.MessageActionRepository
-import kotlinx.coroutines.flow.firstOrNull
 import me.proton.core.domain.entity.UserId
-import javax.inject.Inject
 
-class GetMessageMoveToLocations @Inject constructor(
-    private val actionRepository: MessageActionRepository,
-    private val observeCustomMailFolders: ObserveCustomMailFolders
-) {
+interface MessageActionRepository {
 
-    suspend operator fun invoke(
+    suspend fun getAvailableActions(
         userId: UserId,
         labelId: LabelId,
         messageIds: List<MessageId>
-    ): Either<DataError, List<MailLabel>> {
-        val systemLocations = actionRepository.getSystemMoveToLocations(userId, labelId, messageIds)
-        val customLocations = observeCustomMailFolders(userId).firstOrNull() ?: emptyList<MailLabel.Custom>().right()
+    ): Either<DataError, AvailableActions>
 
-        return systemLocations.combine(
-            customLocations,
-            { systemError, _ -> systemError },
-            { systemLabels, customLabels -> systemLabels + customLabels }
-        )
-    }
+    suspend fun getSystemMoveToLocations(
+        userId: UserId,
+        labelId: LabelId,
+        messageIds: List<MessageId>
+    ): Either<DataError, List<MailLabel.System>>
+
+    suspend fun getAvailableLabelAsActions(
+        userId: UserId,
+        labelId: LabelId,
+        messageIds: List<MessageId>
+    ): Either<DataError, LabelAsActions>
 }
