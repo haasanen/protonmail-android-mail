@@ -7,7 +7,7 @@ import ch.protonmail.android.mailcommon.domain.model.AvailableActions
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
-import ch.protonmail.android.mailconversation.domain.repository.ConversationRepository
+import ch.protonmail.android.mailconversation.domain.usecase.GetConversationAvailableActions
 import ch.protonmail.android.maillabel.domain.sample.LabelIdSample
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItemId
 import ch.protonmail.android.mailmessage.domain.model.MessageId
@@ -21,12 +21,12 @@ import kotlin.test.assertEquals
 
 class GetBottomSheetActionsTest {
 
-    private val conversationRepository = mockk<ConversationRepository>()
+    private val getConversationAvailableActions = mockk<GetConversationAvailableActions>()
     private val getMessageAvailableActions = mockk<GetMessageAvailableActions>()
 
     private val getBottomSheetActions = GetBottomSheetActions(
         getMessageAvailableActions,
-        conversationRepository
+        getConversationAvailableActions
     )
 
     @Test
@@ -66,7 +66,7 @@ class GetBottomSheetActionsTest {
             listOf(Action.Spam, Action.Archive),
             listOf(Action.ViewHeaders)
         )
-        coEvery { conversationRepository.getAvailableActions(userId, labelId, convoIds) } returns expected.right()
+        coEvery { getConversationAvailableActions(userId, labelId, convoIds) } returns expected.right()
 
         // When
         val actual = getBottomSheetActions(userId, labelId, items, viewMode)
@@ -84,7 +84,7 @@ class GetBottomSheetActionsTest {
         val convoIds = items.map { ConversationId(it.value) }
         val viewMode = ViewMode.ConversationGrouping
         val expected = DataError.Local.Unknown.left()
-        coEvery { conversationRepository.getAvailableActions(userId, labelId, convoIds) } returns expected
+        coEvery { getConversationAvailableActions(userId, labelId, convoIds) } returns expected
 
         // When
         val actual = getBottomSheetActions(userId, labelId, items, viewMode)

@@ -1,0 +1,62 @@
+package ch.protonmail.android.mailconversation.domain.usecase
+
+import arrow.core.left
+import arrow.core.right
+import ch.protonmail.android.mailcommon.domain.model.Action
+import ch.protonmail.android.mailcommon.domain.model.AvailableActions
+import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailcommon.domain.sample.ConversationIdSample
+import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
+import ch.protonmail.android.mailconversation.domain.repository.ConversationRepository
+import ch.protonmail.android.maillabel.domain.sample.LabelIdSample
+import io.mockk.coEvery
+import io.mockk.mockk
+import kotlinx.coroutines.test.runTest
+import org.junit.Test
+import kotlin.test.assertEquals
+
+class GetConversationAvailableActionsTest {
+
+    private val conversationRepository = mockk<ConversationRepository>()
+
+    private val getConversationAvailableActions = GetConversationAvailableActions(conversationRepository)
+
+    @Test
+    fun `returns available actions when repo succeeds`() = runTest {
+        // Given
+        val userId = UserIdSample.Primary
+        val labelId = LabelIdSample.Trash
+        val conversationIds = listOf(ConversationIdSample.Newsletter)
+        val expected = AvailableActions(
+            listOf(Action.Reply, Action.Forward),
+            listOf(Action.Star, Action.Label),
+            listOf(Action.Spam, Action.Archive),
+            listOf(Action.ViewHeaders)
+        )
+        coEvery {
+            conversationRepository.getAvailableActions(userId, labelId, conversationIds)
+        } returns expected.right()
+
+        // When
+        val actual = getConversationAvailableActions(userId, labelId, conversationIds)
+
+        // Then
+        assertEquals(expected.right(), actual)
+    }
+
+    @Test
+    fun `returns error when repository fails to get available actions`() = runTest {
+        // Given
+        val userId = UserIdSample.Primary
+        val labelId = LabelIdSample.Trash
+        val conversationIds = listOf(ConversationIdSample.Newsletter)
+        val expected = DataError.Local.Unknown.left()
+        coEvery { conversationRepository.getAvailableActions(userId, labelId, conversationIds) } returns expected
+
+        // When
+        val actual = getConversationAvailableActions(userId, labelId, conversationIds)
+
+        // Then
+        assertEquals(expected, actual)
+    }
+}
