@@ -20,14 +20,13 @@ package ch.protonmail.android.mailmailbox.domain.usecase
 
 import arrow.core.Either
 import arrow.core.combine
-import arrow.core.raise.either
+import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailconversation.domain.repository.ConversationRepository
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabel
-import ch.protonmail.android.maillabel.domain.model.toMailLabelCustom
-import ch.protonmail.android.maillabel.domain.repository.LabelRepository
+import ch.protonmail.android.maillabel.domain.usecase.ObserveCustomMailFolders
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItemId
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
@@ -39,7 +38,7 @@ import javax.inject.Inject
 class GetMoveToLocations @Inject constructor(
     private val messageRepository: MessageRepository,
     private val conversationRepository: ConversationRepository,
-    private val labelRepository: LabelRepository
+    private val observeCustomMailFolders: ObserveCustomMailFolders
 ) {
 
     suspend operator fun invoke(
@@ -60,11 +59,7 @@ class GetMoveToLocations @Inject constructor(
             }
         }
 
-        val customActions = either<DataError, List<MailLabel>> {
-            val customFolders = labelRepository.observeCustomFolders(userId).firstOrNull()
-                ?: emptyList()
-            customFolders.toMailLabelCustom()
-        }
+        val customActions = observeCustomMailFolders(userId).firstOrNull() ?: emptyList<MailLabel.Custom>().right()
 
         return systemActions.combine(
             customActions,

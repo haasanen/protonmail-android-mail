@@ -12,8 +12,8 @@ import ch.protonmail.android.maillabel.domain.model.LabelType
 import ch.protonmail.android.maillabel.domain.model.MailLabel
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
-import ch.protonmail.android.maillabel.domain.repository.LabelRepository
 import ch.protonmail.android.maillabel.domain.sample.LabelIdSample
+import ch.protonmail.android.maillabel.domain.usecase.ObserveCustomMailFolders
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItemId
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
@@ -36,12 +36,12 @@ class GetMoveToLocationsTest {
 
     private val conversationRepository = mockk<ConversationRepository>()
     private val messageRepository = mockk<MessageRepository>()
-    private val labelRepository = mockk<LabelRepository>()
+    private val observeCustomMailFolders = mockk<ObserveCustomMailFolders>()
 
     private val getMoveToLocations = GetMoveToLocations(
         messageRepository,
         conversationRepository,
-        labelRepository
+        observeCustomMailFolders
     )
 
     @Before
@@ -70,7 +70,7 @@ class GetMoveToLocationsTest {
         coEvery {
             messageRepository.getSystemMoveToLocations(userId, labelId, messageIds)
         } returns expected.right()
-        every { labelRepository.observeCustomFolders(userId) } returns flowOf(emptyList())
+        every { observeCustomMailFolders(userId) } returns flowOf(emptyList<MailLabel.Custom>().right())
 
         // When
         val actual = getMoveToLocations(userId, labelId, items, viewMode)
@@ -94,7 +94,7 @@ class GetMoveToLocationsTest {
         coEvery {
             conversationRepository.getSystemMoveToLocations(userId, labelId, convoIds)
         } returns expected.right()
-        every { labelRepository.observeCustomFolders(userId) } returns flowOf(emptyList())
+        every { observeCustomMailFolders(userId) } returns flowOf()
 
 
         // When
@@ -123,24 +123,12 @@ class GetMoveToLocationsTest {
             MailLabel.System(MailLabelId.System(LabelId("2")), SystemLabelId.Archive, 0),
             MailLabel.System(MailLabelId.System(LabelId("3")), SystemLabelId.Trash, 0)
         )
-        val expected = systemMoveTo + listOf(
-            customF0,
-            customF01,
-            customF02,
-            customF021,
-            customF022
-        )
+        val customFolders = listOf(customF0, customF01, customF02, customF021, customF022)
+        val expected = systemMoveTo + customFolders
         coEvery {
             conversationRepository.getSystemMoveToLocations(userId, labelId, convoIds)
         } returns systemMoveTo.right()
-        val labels = listOf(
-            buildLabel(id = "0", type = LabelType.MessageFolder, order = 0),
-            buildLabel(id = "0.1", type = LabelType.MessageFolder, order = 0, parentId = "0"),
-            buildLabel(id = "0.2", type = LabelType.MessageFolder, order = 1, parentId = "0"),
-            buildLabel(id = "0.2.1", type = LabelType.MessageFolder, order = 0, parentId = "0.2"),
-            buildLabel(id = "0.2.2", type = LabelType.MessageFolder, order = 1, parentId = "0.2")
-        )
-        every { labelRepository.observeCustomFolders(userId) } returns flowOf(labels)
+        every { observeCustomMailFolders(userId) } returns flowOf(customFolders.right())
 
         // When
         val actual = getMoveToLocations(userId, labelId, items, viewMode)
@@ -163,7 +151,7 @@ class GetMoveToLocationsTest {
         coEvery {
             conversationRepository.getSystemMoveToLocations(userId, labelId, convoIds)
         } returns expectedSystemActions.right()
-        every { labelRepository.observeCustomFolders(userId) } returns flowOf()
+        every { observeCustomMailFolders(userId) } returns flowOf()
 
         // When
         val actual = getMoveToLocations(userId, labelId, items, viewMode)
@@ -183,7 +171,7 @@ class GetMoveToLocationsTest {
         val labels = listOf(buildLabel(id = "0", type = LabelType.MessageFolder, order = 0))
         val error = DataError.Local.Unknown.left()
         coEvery { conversationRepository.getSystemMoveToLocations(userId, labelId, convoIds) } returns error
-        every { labelRepository.observeCustomFolders(userId) } returns flowOf(labels)
+        every { observeCustomMailFolders(userId) } returns flowOf()
 
         // When
         val actual = getMoveToLocations(userId, labelId, items, viewMode)
