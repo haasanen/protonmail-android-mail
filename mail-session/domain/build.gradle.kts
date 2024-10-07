@@ -50,6 +50,8 @@ dependencies {
     implementation(JakeWharton.timber)
 
     testImplementation(project(":test:test-data"))
+    testImplementation(project(":test:utils"))
+    testImplementation(Proton.Common.rustCore)
     testImplementation(Cash.turbine)
     testImplementation(Kotlin.test)
     testImplementation(Kotlin.testJunit)
