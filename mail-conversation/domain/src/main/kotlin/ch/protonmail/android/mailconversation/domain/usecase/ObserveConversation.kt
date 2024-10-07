@@ -31,10 +31,6 @@ class ObserveConversation @Inject constructor(
     private val conversationRepository: ConversationRepository
 ) {
 
-    operator fun invoke(
-        userId: UserId,
-        conversationId: ConversationId,
-        refreshData: Boolean
-    ): Flow<Either<DataError, Conversation>> =
-        conversationRepository.observeConversation(userId, conversationId, refreshData)
+    operator fun invoke(userId: UserId, conversationId: ConversationId): Flow<Either<DataError, Conversation>> =
+        conversationRepository.observeConversation(userId, conversationId)
 }

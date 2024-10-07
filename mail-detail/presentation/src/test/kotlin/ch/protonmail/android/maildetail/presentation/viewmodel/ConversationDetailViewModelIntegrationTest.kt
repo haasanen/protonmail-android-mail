@@ -220,7 +220,7 @@ class ConversationDetailViewModelIntegrationTest {
         every { this@mockk(userId = UserIdSample.Primary) } returns flowOf(emptyList<Contact>().right())
     }
     private val observeConversationUseCase: ObserveConversation = mockk {
-        every { this@mockk(UserIdSample.Primary, ConversationIdSample.WeatherForecast, any()) } returns
+        every { this@mockk(UserIdSample.Primary, ConversationIdSample.WeatherForecast) } returns
             flowOf(ConversationSample.WeatherForecast.right())
     }
     private val observeMessage = mockk<ObserveMessage>()
@@ -1247,7 +1247,7 @@ class ConversationDetailViewModelIntegrationTest {
         // Given
         val expectedMessage = ActionResult.DefinitiveActionResult(TextUiModel(R.string.conversation_deleted))
         coEvery {
-            observeConversationUseCase(userId, conversationId, false)
+            observeConversationUseCase(userId, conversationId)
         } returns flowOf(
             ConversationSample.WeatherForecast.right()
         )
@@ -1269,7 +1269,7 @@ class ConversationDetailViewModelIntegrationTest {
         // Given
         val expectedMessage = TextUiModel(R.string.error_delete_conversation_failed)
         coEvery {
-            observeConversationUseCase(userId, conversationId, false)
+            observeConversationUseCase(userId, conversationId)
         } returns flowOf(DataError.Local.NoDataCached.left())
 
         val viewModel = buildConversationDetailViewModel()

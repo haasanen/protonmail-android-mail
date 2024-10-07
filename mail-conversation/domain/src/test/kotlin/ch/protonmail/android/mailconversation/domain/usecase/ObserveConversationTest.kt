@@ -39,8 +39,7 @@ class ObserveConversationTest {
         every {
             this@mockk.observeConversation(
                 userId,
-                any(),
-                true
+                any()
             )
         } returns flowOf(DataError.Local.NoDataCached.left())
     }
@@ -52,10 +51,10 @@ class ObserveConversationTest {
         // Given
         val conversationId = ConversationId(ConversationTestData.RAW_CONVERSATION_ID)
         val error = DataError.Local.NoDataCached
-        every { repository.observeConversation(userId, conversationId, true) } returns flowOf(error.left())
+        every { repository.observeConversation(userId, conversationId) } returns flowOf(error.left())
 
         // When
-        observeConversation(userId, conversationId, refreshData = true).test {
+        observeConversation(userId, conversationId).test {
             // Then
             assertEquals(error.left(), awaitItem())
             awaitComplete()
@@ -67,10 +66,10 @@ class ObserveConversationTest {
         // Given
         val conversationId = ConversationId(ConversationTestData.RAW_CONVERSATION_ID)
         val conversation = ConversationTestData.conversation
-        every { repository.observeConversation(userId, conversationId, true) } returns flowOf(conversation.right())
+        every { repository.observeConversation(userId, conversationId) } returns flowOf(conversation.right())
 
         // When
-        observeConversation(userId, conversationId, refreshData = true).test {
+        observeConversation(userId, conversationId).test {
             // Then
             assertEquals(conversation.right(), awaitItem())
             awaitComplete()
@@ -82,10 +81,10 @@ class ObserveConversationTest {
         // Given
         val conversationId = ConversationId(ConversationTestData.RAW_CONVERSATION_ID)
         val conversation = ConversationTestData.conversation
-        every { repository.observeConversation(userId, conversationId, false) } returns flowOf(conversation.right())
+        every { repository.observeConversation(userId, conversationId) } returns flowOf(conversation.right())
 
         // When
-        observeConversation(userId, conversationId, refreshData = false).test {
+        observeConversation(userId, conversationId).test {
             // Then
             assertEquals(conversation.right(), awaitItem())
             awaitComplete()

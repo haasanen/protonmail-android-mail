@@ -291,7 +291,7 @@ class ConversationDetailViewModel @Inject constructor(
 
     private fun observeConversationMetadata(conversationId: ConversationId) {
         primaryUserId.flatMapLatest { userId ->
-            observeConversation(userId, conversationId, refreshData = true)
+            observeConversation(userId, conversationId)
                 .mapLatest { either ->
                     either.fold(
                         ifLeft = {
@@ -764,7 +764,7 @@ class ConversationDetailViewModel @Inject constructor(
     private fun handleDeleteConfirmed(action: ConversationDetailViewAction) {
         viewModelScope.launch {
             val userId = primaryUserId.first()
-            val conversation = observeConversation(userId, conversationId, false).first().getOrNull()
+            val conversation = observeConversation(userId, conversationId).first().getOrNull()
             if (conversation == null) {
                 Timber.e("Failed to get conversation for deletion")
                 emitNewStateFrom(ConversationDetailEvent.ErrorDeletingConversation)

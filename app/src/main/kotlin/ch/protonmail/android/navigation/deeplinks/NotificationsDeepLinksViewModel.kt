@@ -179,8 +179,7 @@ class NotificationsDeepLinksViewModel @Inject constructor(
     ) {
         conversationRepository.observeConversation(
             userId,
-            message.conversationId,
-            true
+            message.conversationId
         ).collectLatest { conversationResult ->
             conversationResult
                 .onLeft {

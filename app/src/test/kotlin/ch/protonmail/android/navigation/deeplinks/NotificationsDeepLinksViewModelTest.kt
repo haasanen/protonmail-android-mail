@@ -101,8 +101,7 @@ class NotificationsDeepLinksViewModelTest {
         coEvery {
             conversationRepository.observeConversation(
                 UserId(userId),
-                AlphaAppQAReport.conversationId,
-                true
+                AlphaAppQAReport.conversationId
             )
         } returns flowOf(
             ConversationSample.AlphaAppFeedback.right()
@@ -134,8 +133,7 @@ class NotificationsDeepLinksViewModelTest {
         coEvery {
             conversationRepository.observeConversation(
                 UserId(userId),
-                AlphaAppQAReport.conversationId,
-                true
+                AlphaAppQAReport.conversationId
             )
         } returns flowOf(
             ConversationSample.AlphaAppFeedback.right()
@@ -203,8 +201,7 @@ class NotificationsDeepLinksViewModelTest {
         coEvery {
             conversationRepository.observeConversation(
                 UserId(userId),
-                AlphaAppQAReport.conversationId,
-                true
+                AlphaAppQAReport.conversationId
             )
         } returns flowOf(DataError.Local.Unknown.left())
         val viewModel = buildViewModel()
@@ -257,8 +254,7 @@ class NotificationsDeepLinksViewModelTest {
         coEvery {
             conversationRepository.observeConversation(
                 secondaryAccount.userId,
-                AlphaAppQAReport.conversationId,
-                true
+                AlphaAppQAReport.conversationId
             )
         } returns flowOf(
             ConversationSample.AlphaAppFeedback.right()

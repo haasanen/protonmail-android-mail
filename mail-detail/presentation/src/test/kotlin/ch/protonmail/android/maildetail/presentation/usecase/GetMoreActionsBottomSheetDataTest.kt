@@ -94,7 +94,7 @@ class GetMoreActionsBottomSheetDataTest {
         coEvery {
             getConversationAvailableActions(userId, labelId, listOf(conversationId))
         } returns availableActions.right()
-        coEvery { observeConversation(userId, conversationId, false) } returns flowOf(conversation.right())
+        coEvery { observeConversation(userId, conversationId) } returns flowOf(conversation.right())
 
         // When
         val actual = getMoreBottomSheetData.forConversation(userId, labelId, conversationId)
@@ -118,7 +118,7 @@ class GetMoreActionsBottomSheetDataTest {
         coEvery {
             getConversationAvailableActions(userId, labelId, listOf(conversationId))
         } returns DataError.Local.NoDataCached.left()
-        coEvery { observeConversation(userId, conversationId, false) } returns flowOf(conversation.right())
+        coEvery { observeConversation(userId, conversationId) } returns flowOf(conversation.right())
 
         // When
         val actual = getMoreBottomSheetData.forConversation(userId, labelId, conversationId)

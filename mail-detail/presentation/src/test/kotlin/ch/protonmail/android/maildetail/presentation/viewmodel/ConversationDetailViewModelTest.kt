@@ -201,7 +201,7 @@ class ConversationDetailViewModelTest {
         every { this@mockk(userId = UserIdSample.Primary) } returns flowOf(emptyList<Contact>().right())
     }
     private val observeConversation: ObserveConversation = mockk {
-        every { this@mockk(UserIdSample.Primary, ConversationIdSample.WeatherForecast, any()) } returns
+        every { this@mockk(UserIdSample.Primary, ConversationIdSample.WeatherForecast) } returns
             flowOf(ConversationSample.WeatherForecast.right())
     }
     private val observeConversationMessages: ObserveConversationMessages = mockk {
@@ -427,7 +427,7 @@ class ConversationDetailViewModelTest {
             )
         )
         every {
-            observeConversation(UserIdSample.Primary, ConversationIdSample.WeatherForecast, any())
+            observeConversation(UserIdSample.Primary, ConversationIdSample.WeatherForecast)
         } returns
             flowOf(DataError.Local.NoDataCached.left())
         every {
@@ -466,7 +466,7 @@ class ConversationDetailViewModelTest {
         )
 
         every {
-            observeConversation(UserIdSample.Primary, ConversationIdSample.WeatherForecast, any())
+            observeConversation(UserIdSample.Primary, ConversationIdSample.WeatherForecast)
         } returns flow {
             emit(ConversationSample.WeatherForecast.right())
             emit(DataError.Remote.Http(NetworkError.NoNetwork).left())
@@ -1747,7 +1747,7 @@ class ConversationDetailViewModelTest {
             advanceUntilIdle()
 
             // Then
-            verify { observeConversation(any(), any(), refreshData = true) }
+            verify { observeConversation(any(), any()) }
             cancelAndIgnoreRemainingEvents()
         }
     }

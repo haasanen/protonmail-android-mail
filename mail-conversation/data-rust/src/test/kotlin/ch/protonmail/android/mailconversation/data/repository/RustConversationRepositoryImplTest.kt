@@ -92,7 +92,7 @@ class RustConversationRepositoryImplTest {
         coEvery { rustConversationDataSource.observeConversation(userId, any()) } returns flowOf(localConversation)
 
         // When
-        rustConversationRepository.observeConversation(userId, conversationId, refreshData = false).test {
+        rustConversationRepository.observeConversation(userId, conversationId).test {
             val result = awaitItem().getOrNull()
 
             // Then
@@ -112,7 +112,7 @@ class RustConversationRepositoryImplTest {
         coEvery { rustConversationDataSource.observeConversation(userId, any()) } returns null
 
         // When
-        rustConversationRepository.observeConversation(userId, conversationId, refreshData = false).test {
+        rustConversationRepository.observeConversation(userId, conversationId).test {
             val result = awaitItem().getOrNull()
 
             // Then

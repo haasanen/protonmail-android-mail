@@ -56,8 +56,7 @@ class RustConversationRepositoryImpl @Inject constructor(
     // Awaiting for rust to add structured error handling
     override fun observeConversation(
         userId: UserId,
-        id: ConversationId,
-        refreshData: Boolean
+        id: ConversationId
     ): Flow<Either<DataError, Conversation>> = rustConversationDataSource
         .observeConversation(userId, id.toLocalConversationId())
         ?.map { it.toConversation().right() }
