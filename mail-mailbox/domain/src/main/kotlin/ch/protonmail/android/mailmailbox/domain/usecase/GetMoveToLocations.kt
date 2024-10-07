@@ -29,14 +29,14 @@ import ch.protonmail.android.maillabel.domain.model.MailLabel
 import ch.protonmail.android.maillabel.domain.usecase.ObserveCustomMailFolders
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItemId
 import ch.protonmail.android.mailmessage.domain.model.MessageId
-import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
+import ch.protonmail.android.mailmessage.domain.usecase.GetMessageMoveToLocations
 import kotlinx.coroutines.flow.firstOrNull
 import me.proton.core.domain.entity.UserId
 import me.proton.core.mailsettings.domain.entity.ViewMode
 import javax.inject.Inject
 
 class GetMoveToLocations @Inject constructor(
-    private val messageRepository: MessageRepository,
+    private val getMessageMoveToLocations: GetMessageMoveToLocations,
     private val conversationRepository: ConversationRepository,
     private val observeCustomMailFolders: ObserveCustomMailFolders
 ) {
@@ -55,7 +55,7 @@ class GetMoveToLocations @Inject constructor(
 
             ViewMode.NoConversationGrouping -> {
                 val messageIds = mailboxItemIds.map { MessageId(it.value) }
-                messageRepository.getSystemMoveToLocations(userId, labelId, messageIds)
+                getMessageMoveToLocations(userId, labelId, messageIds)
             }
         }
 
