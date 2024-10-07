@@ -16,41 +16,24 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailmailbox.domain.usecase
+package ch.protonmail.android.mailmessage.domain.usecase
 
 import arrow.core.Either
-import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailconversation.domain.usecase.GetConversationLabelAsActions
 import ch.protonmail.android.maillabel.domain.model.LabelAsActions
 import ch.protonmail.android.maillabel.domain.model.LabelId
-import ch.protonmail.android.mailmailbox.domain.model.MailboxItemId
 import ch.protonmail.android.mailmessage.domain.model.MessageId
-import ch.protonmail.android.mailmessage.domain.usecase.GetMessageLabelAsActions
+import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
 import me.proton.core.domain.entity.UserId
-import me.proton.core.mailsettings.domain.entity.ViewMode
 import javax.inject.Inject
 
-class GetLabelAsBottomSheetContent @Inject constructor(
-    private val getMessageLabelAsActions: GetMessageLabelAsActions,
-    private val getConversationLabelAsActions: GetConversationLabelAsActions
+class GetMessageLabelAsActions @Inject constructor(
+    private val messageRepository: MessageRepository
 ) {
 
     suspend operator fun invoke(
         userId: UserId,
         labelId: LabelId,
-        mailboxItemIds: List<MailboxItemId>,
-        viewMode: ViewMode
-    ): Either<DataError, LabelAsActions> = when (viewMode) {
-        ViewMode.ConversationGrouping -> {
-            val conversationIds = mailboxItemIds.map { ConversationId(it.value) }
-            getConversationLabelAsActions(userId, labelId, conversationIds)
-        }
-
-        ViewMode.NoConversationGrouping -> {
-            val messageIds = mailboxItemIds.map { MessageId(it.value) }
-            getMessageLabelAsActions(userId, labelId, messageIds)
-        }
-    }
-
+        messageIds: List<MessageId>
+    ): Either<DataError, LabelAsActions> = messageRepository.getAvailableLabelAsActions(userId, labelId, messageIds)
 }

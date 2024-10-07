@@ -9,7 +9,7 @@ import ch.protonmail.android.mailconversation.domain.usecase.GetConversationLabe
 import ch.protonmail.android.maillabel.domain.sample.LabelIdSample
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItemId
 import ch.protonmail.android.mailmessage.domain.model.MessageId
-import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
+import ch.protonmail.android.mailmessage.domain.usecase.GetMessageLabelAsActions
 import ch.protonmail.android.testdata.label.rust.LabelAsActionsTestData
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -21,10 +21,10 @@ import kotlin.test.assertEquals
 class GetLabelAsBottomSheetContentTest {
 
     private val getConversationLabelAsActions = mockk<GetConversationLabelAsActions>()
-    private val messageRepository = mockk<MessageRepository>()
+    private val getMessageLabelAsActions = mockk<GetMessageLabelAsActions>()
 
     private val getLabelAsBottomSheetContent = GetLabelAsBottomSheetContent(
-        messageRepository,
+        getMessageLabelAsActions,
         getConversationLabelAsActions
     )
 
@@ -37,7 +37,7 @@ class GetLabelAsBottomSheetContentTest {
         val messageIds = items.map { MessageId(it.value) }
         val viewMode = ViewMode.NoConversationGrouping
         val expected = LabelAsActionsTestData.onlySelectedActions
-        coEvery { messageRepository.getAvailableLabelAsActions(userId, labelId, messageIds) } returns expected.right()
+        coEvery { getMessageLabelAsActions(userId, labelId, messageIds) } returns expected.right()
 
         // When
         val actual = getLabelAsBottomSheetContent(userId, labelId, items, viewMode)
