@@ -25,7 +25,9 @@ import ch.protonmail.android.mailconversation.data.local.RustConversationDetailQ
 import ch.protonmail.android.mailconversation.data.local.RustConversationDetailQueryImpl
 import ch.protonmail.android.mailconversation.data.local.RustConversationsQuery
 import ch.protonmail.android.mailconversation.data.local.RustConversationsQueryImpl
+import ch.protonmail.android.mailconversation.data.repository.RustConversationActionRepository
 import ch.protonmail.android.mailconversation.data.repository.RustConversationRepositoryImpl
+import ch.protonmail.android.mailconversation.domain.repository.ConversationActionRepository
 import ch.protonmail.android.mailconversation.domain.repository.ConversationRepository
 import dagger.Binds
 import dagger.Module
@@ -66,5 +68,8 @@ object MailConversationModule {
         @Singleton
         fun bindsConversationRepositoryImpl(impl: RustConversationRepositoryImpl): ConversationRepository
 
+        @Binds
+        @Singleton
+        fun bindsConversationActionRepositoryImpl(impl: RustConversationActionRepository): ConversationActionRepository
     }
 }

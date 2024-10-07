@@ -22,19 +22,18 @@ import arrow.core.Either
 import ch.protonmail.android.mailcommon.domain.model.AvailableActions
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailconversation.domain.repository.ConversationRepository
+import ch.protonmail.android.mailconversation.domain.repository.ConversationActionRepository
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 
 class GetConversationAvailableActions @Inject constructor(
-    private val conversationRepository: ConversationRepository
+    private val actionRepository: ConversationActionRepository
 ) {
 
     suspend operator fun invoke(
         userId: UserId,
         labelId: LabelId,
         conversationIds: List<ConversationId>
-    ): Either<DataError, AvailableActions> =
-        conversationRepository.getAvailableActions(userId, labelId, conversationIds)
+    ): Either<DataError, AvailableActions> = actionRepository.getAvailableActions(userId, labelId, conversationIds)
 }

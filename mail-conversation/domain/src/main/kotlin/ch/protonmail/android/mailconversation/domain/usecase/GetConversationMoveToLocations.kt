@@ -23,7 +23,7 @@ import arrow.core.combine
 import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailconversation.domain.repository.ConversationRepository
+import ch.protonmail.android.mailconversation.domain.repository.ConversationActionRepository
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabel
 import ch.protonmail.android.maillabel.domain.usecase.ObserveCustomMailFolders
@@ -32,7 +32,7 @@ import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 
 class GetConversationMoveToLocations @Inject constructor(
-    private val conversationRepository: ConversationRepository,
+    private val actionRepository: ConversationActionRepository,
     private val observeCustomMailFolders: ObserveCustomMailFolders
 ) {
 
@@ -41,7 +41,7 @@ class GetConversationMoveToLocations @Inject constructor(
         labelId: LabelId,
         conversationIds: List<ConversationId>
     ): Either<DataError, List<MailLabel>> {
-        val systemLocations = conversationRepository.getSystemMoveToLocations(userId, labelId, conversationIds)
+        val systemLocations = actionRepository.getSystemMoveToLocations(userId, labelId, conversationIds)
         val customLocations = observeCustomMailFolders(userId).firstOrNull() ?: emptyList<MailLabel.Custom>().right()
 
         return systemLocations.combine(

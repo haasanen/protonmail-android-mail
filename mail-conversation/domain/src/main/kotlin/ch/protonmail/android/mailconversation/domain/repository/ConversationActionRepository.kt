@@ -16,24 +16,34 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailconversation.domain.usecase
+package ch.protonmail.android.mailconversation.domain.repository
 
 import arrow.core.Either
+import ch.protonmail.android.mailcommon.domain.model.AvailableActions
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailconversation.domain.repository.ConversationActionRepository
 import ch.protonmail.android.maillabel.domain.model.LabelAsActions
 import ch.protonmail.android.maillabel.domain.model.LabelId
+import ch.protonmail.android.maillabel.domain.model.MailLabel
 import me.proton.core.domain.entity.UserId
-import javax.inject.Inject
 
-class GetConversationLabelAsActions @Inject constructor(
-    private val actionRepository: ConversationActionRepository
-) {
+interface ConversationActionRepository {
 
-    suspend operator fun invoke(
+    suspend fun getAvailableActions(
         userId: UserId,
         labelId: LabelId,
         conversationIds: List<ConversationId>
-    ): Either<DataError, LabelAsActions> = actionRepository.getAvailableLabelAsActions(userId, labelId, conversationIds)
+    ): Either<DataError, AvailableActions>
+
+    suspend fun getSystemMoveToLocations(
+        userId: UserId,
+        labelId: LabelId,
+        conversationIds: List<ConversationId>
+    ): Either<DataError, List<MailLabel.System>>
+
+    suspend fun getAvailableLabelAsActions(
+        userId: UserId,
+        labelId: LabelId,
+        conversationIds: List<ConversationId>
+    ): Either<DataError, LabelAsActions>
 }

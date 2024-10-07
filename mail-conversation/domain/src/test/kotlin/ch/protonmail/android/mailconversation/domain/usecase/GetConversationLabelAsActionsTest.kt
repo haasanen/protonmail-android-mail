@@ -5,7 +5,7 @@ import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.sample.ConversationIdSample
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
-import ch.protonmail.android.mailconversation.domain.repository.ConversationRepository
+import ch.protonmail.android.mailconversation.domain.repository.ConversationActionRepository
 import ch.protonmail.android.maillabel.domain.sample.LabelIdSample
 import ch.protonmail.android.testdata.label.rust.LabelAsActionsTestData
 import io.mockk.coEvery
@@ -16,9 +16,9 @@ import kotlin.test.assertEquals
 
 class GetConversationLabelAsActionsTest {
 
-    private val conversationRepository = mockk<ConversationRepository>()
+    private val actionRepository = mockk<ConversationActionRepository>()
 
-    private val getConversationLabelAsActions = GetConversationLabelAsActions(conversationRepository)
+    private val getConversationLabelAsActions = GetConversationLabelAsActions(actionRepository)
 
     @Test
     fun `returns available label as actions when repo succeeds`() = runTest {
@@ -28,7 +28,7 @@ class GetConversationLabelAsActionsTest {
         val conversationIds = listOf(ConversationIdSample.Newsletter)
         val expected = LabelAsActionsTestData.onlySelectedActions
         coEvery {
-            conversationRepository.getAvailableLabelAsActions(userId, labelId, conversationIds)
+            actionRepository.getAvailableLabelAsActions(userId, labelId, conversationIds)
         } returns expected.right()
 
         // When
@@ -45,7 +45,7 @@ class GetConversationLabelAsActionsTest {
         val labelId = LabelIdSample.Trash
         val conversationIds = listOf(ConversationIdSample.Newsletter)
         val expected = DataError.Local.Unknown.left()
-        coEvery { conversationRepository.getAvailableLabelAsActions(userId, labelId, conversationIds) } returns expected
+        coEvery { actionRepository.getAvailableLabelAsActions(userId, labelId, conversationIds) } returns expected
 
         // When
         val actual = getConversationLabelAsActions(userId, labelId, conversationIds)
