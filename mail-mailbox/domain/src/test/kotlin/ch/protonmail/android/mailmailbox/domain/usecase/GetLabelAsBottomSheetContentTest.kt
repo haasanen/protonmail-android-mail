@@ -5,7 +5,7 @@ import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
-import ch.protonmail.android.mailconversation.domain.repository.ConversationRepository
+import ch.protonmail.android.mailconversation.domain.usecase.GetConversationLabelAsActions
 import ch.protonmail.android.maillabel.domain.sample.LabelIdSample
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItemId
 import ch.protonmail.android.mailmessage.domain.model.MessageId
@@ -20,12 +20,12 @@ import kotlin.test.assertEquals
 
 class GetLabelAsBottomSheetContentTest {
 
-    private val conversationRepository = mockk<ConversationRepository>()
+    private val getConversationLabelAsActions = mockk<GetConversationLabelAsActions>()
     private val messageRepository = mockk<MessageRepository>()
 
     private val getLabelAsBottomSheetContent = GetLabelAsBottomSheetContent(
         messageRepository,
-        conversationRepository
+        getConversationLabelAsActions
     )
 
     @Test
@@ -55,9 +55,7 @@ class GetLabelAsBottomSheetContentTest {
         val convoIds = items.map { ConversationId(it.value) }
         val viewMode = ViewMode.ConversationGrouping
         val expected = LabelAsActionsTestData.onlySelectedActions
-        coEvery {
-            conversationRepository.getAvailableLabelAsActions(userId, labelId, convoIds)
-        } returns expected.right()
+        coEvery { getConversationLabelAsActions(userId, labelId, convoIds) } returns expected.right()
 
         // When
         val actual = getLabelAsBottomSheetContent(userId, labelId, items, viewMode)
@@ -75,7 +73,7 @@ class GetLabelAsBottomSheetContentTest {
         val convoIds = items.map { ConversationId(it.value) }
         val viewMode = ViewMode.ConversationGrouping
         val expected = DataError.Local.Unknown.left()
-        coEvery { conversationRepository.getAvailableLabelAsActions(userId, labelId, convoIds) } returns expected
+        coEvery { getConversationLabelAsActions(userId, labelId, convoIds) } returns expected
 
         // When
         val actual = getLabelAsBottomSheetContent(userId, labelId, items, viewMode)

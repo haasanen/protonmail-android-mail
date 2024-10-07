@@ -21,7 +21,7 @@ package ch.protonmail.android.mailmailbox.domain.usecase
 import arrow.core.Either
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailconversation.domain.repository.ConversationRepository
+import ch.protonmail.android.mailconversation.domain.usecase.GetConversationLabelAsActions
 import ch.protonmail.android.maillabel.domain.model.LabelAsActions
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItemId
@@ -33,7 +33,7 @@ import javax.inject.Inject
 
 class GetLabelAsBottomSheetContent @Inject constructor(
     private val messageRepository: MessageRepository,
-    private val conversationRepository: ConversationRepository
+    private val getConversationLabelAsActions: GetConversationLabelAsActions
 ) {
 
     suspend operator fun invoke(
@@ -45,7 +45,7 @@ class GetLabelAsBottomSheetContent @Inject constructor(
         val labelAsActions = when (viewMode) {
             ViewMode.ConversationGrouping -> {
                 val conversationIds = mailboxItemIds.map { ConversationId(it.value) }
-                conversationRepository.getAvailableLabelAsActions(userId, labelId, conversationIds)
+                getConversationLabelAsActions(userId, labelId, conversationIds)
             }
 
             ViewMode.NoConversationGrouping -> {
