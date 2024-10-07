@@ -19,22 +19,35 @@
 package ch.protonmail.android.mailmessage.domain.usecase
 
 import arrow.core.Either
+import arrow.core.combine
+import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabel
+import ch.protonmail.android.maillabel.domain.usecase.ObserveCustomMailFolders
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
+import kotlinx.coroutines.flow.firstOrNull
 import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 
 class GetMessageMoveToLocations @Inject constructor(
-    private val messageRepository: MessageRepository
+    private val messageRepository: MessageRepository,
+    private val observeCustomMailFolders: ObserveCustomMailFolders
 ) {
 
     suspend operator fun invoke(
         userId: UserId,
         labelId: LabelId,
         messageIds: List<MessageId>
-    ): Either<DataError, List<MailLabel.System>> =
-        messageRepository.getSystemMoveToLocations(userId, labelId, messageIds)
+    ): Either<DataError, List<MailLabel>> {
+        val systemLocations = messageRepository.getSystemMoveToLocations(userId, labelId, messageIds)
+        val customLocations = observeCustomMailFolders(userId).firstOrNull() ?: emptyList<MailLabel.Custom>().right()
+
+        return systemLocations.combine(
+            customLocations,
+            { systemError, _ -> systemError },
+            { systemLabels, customLabels -> systemLabels + customLabels }
+        )
+    }
 }
