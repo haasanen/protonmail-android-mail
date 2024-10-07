@@ -23,7 +23,7 @@ import arrow.core.combine
 import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailconversation.domain.repository.ConversationRepository
+import ch.protonmail.android.mailconversation.domain.usecase.GetConversationMoveToLocations
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabel
 import ch.protonmail.android.maillabel.domain.usecase.ObserveCustomMailFolders
@@ -37,7 +37,7 @@ import javax.inject.Inject
 
 class GetMoveToLocations @Inject constructor(
     private val getMessageMoveToLocations: GetMessageMoveToLocations,
-    private val conversationRepository: ConversationRepository,
+    private val getConversationMoveToLocations: GetConversationMoveToLocations,
     private val observeCustomMailFolders: ObserveCustomMailFolders
 ) {
 
@@ -50,7 +50,7 @@ class GetMoveToLocations @Inject constructor(
         val systemActions = when (viewMode) {
             ViewMode.ConversationGrouping -> {
                 val conversationIds = mailboxItemIds.map { ConversationId(it.value) }
-                conversationRepository.getSystemMoveToLocations(userId, labelId, conversationIds)
+                getConversationMoveToLocations(userId, labelId, conversationIds)
             }
 
             ViewMode.NoConversationGrouping -> {
