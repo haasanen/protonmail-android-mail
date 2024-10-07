@@ -11,7 +11,7 @@ import ch.protonmail.android.mailconversation.domain.repository.ConversationRepo
 import ch.protonmail.android.maillabel.domain.sample.LabelIdSample
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItemId
 import ch.protonmail.android.mailmessage.domain.model.MessageId
-import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
+import ch.protonmail.android.mailmessage.domain.usecase.GetMessageAvailableActions
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
@@ -22,10 +22,10 @@ import kotlin.test.assertEquals
 class GetBottomSheetActionsTest {
 
     private val conversationRepository = mockk<ConversationRepository>()
-    private val messageRepository = mockk<MessageRepository>()
+    private val getMessageAvailableActions = mockk<GetMessageAvailableActions>()
 
     private val getBottomSheetActions = GetBottomSheetActions(
-        messageRepository,
+        getMessageAvailableActions,
         conversationRepository
     )
 
@@ -43,7 +43,7 @@ class GetBottomSheetActionsTest {
             listOf(Action.Spam, Action.Archive),
             listOf(Action.ViewHeaders)
         )
-        coEvery { messageRepository.getAvailableActions(userId, labelId, messageIds) } returns expected.right()
+        coEvery { getMessageAvailableActions(userId, labelId, messageIds) } returns expected.right()
 
         // When
         val actual = getBottomSheetActions(userId, labelId, items, viewMode)
