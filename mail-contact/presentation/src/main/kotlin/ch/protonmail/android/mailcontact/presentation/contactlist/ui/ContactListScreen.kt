@@ -112,16 +112,11 @@ fun ContactListScreen(listActions: ContactListScreen.Actions, viewModel: Contact
 
                 when (state) {
                     is ContactListState.Loaded.Data -> {
-                        ContactTabLayout(
+                        ContactListScreenContent(
                             modifier = Modifier.padding(paddingValues),
-                            scope = scope,
-                            actions = actions,
-                            state = state
+                            state = state,
+                            actions = actions
                         )
-
-                        ConsumableTextEffect(effect = state.subscriptionError) { message ->
-                            actions.onSubscriptionUpgradeRequired(message)
-                        }
                     }
 
                     is ContactListState.Loaded.Empty -> {

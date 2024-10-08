@@ -41,5 +41,10 @@ internal fun ContactListHeaderItem(modifier: Modifier = Modifier, header: Contac
         style = ProtonTheme.typography.defaultSmallStrongUnspecified,
         color = ProtonTheme.colors.brandNorm
     )
-    Divider()
+    Divider(
+        modifier = Modifier.padding(
+            start = ProtonDimens.DefaultSpacing,
+            end = ProtonDimens.DefaultSpacing
+        )
+    )
 }
