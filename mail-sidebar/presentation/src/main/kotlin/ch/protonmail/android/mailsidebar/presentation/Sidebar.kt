@@ -28,23 +28,17 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
-import ch.protonmail.android.mailcommon.domain.AppInformation
-import ch.protonmail.android.maillabel.presentation.MailLabelsUiModel
-import ch.protonmail.android.maillabel.presentation.sidebar.SidebarLabelAction
-import ch.protonmail.android.maillabel.presentation.sidebar.sidebarFolderItems
-import ch.protonmail.android.maillabel.presentation.sidebar.sidebarLabelItems
-import ch.protonmail.android.maillabel.presentation.sidebar.sidebarSystemLabelItems
-import ch.protonmail.android.mailsidebar.presentation.SidebarViewModel.State.Disabled
-import ch.protonmail.android.mailsidebar.presentation.SidebarViewModel.State.Enabled
-import kotlinx.coroutines.launch
-import me.proton.core.accountmanager.presentation.compose.AccountPrimaryItem
 import ch.protonmail.android.design.compose.component.ProtonSidebarAppVersionItem
 import ch.protonmail.android.design.compose.component.ProtonSidebarItem
 import ch.protonmail.android.design.compose.component.ProtonSidebarLazy
@@ -54,8 +48,19 @@ import ch.protonmail.android.design.compose.component.ProtonSidebarSignOutItem
 import ch.protonmail.android.design.compose.component.ProtonSidebarSubscriptionItem
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import me.proton.core.domain.entity.UserId
+import ch.protonmail.android.mailcommon.domain.AppInformation
 import ch.protonmail.android.maillabel.domain.model.LabelType
+import ch.protonmail.android.maillabel.presentation.MailLabelsUiModel
+import ch.protonmail.android.maillabel.presentation.sidebar.SidebarLabelAction
+import ch.protonmail.android.maillabel.presentation.sidebar.sidebarFolderItems
+import ch.protonmail.android.maillabel.presentation.sidebar.sidebarLabelItems
+import ch.protonmail.android.maillabel.presentation.sidebar.sidebarSystemLabelItems
+import ch.protonmail.android.mailsidebar.presentation.SidebarViewModel.State.Disabled
+import ch.protonmail.android.mailsidebar.presentation.SidebarViewModel.State.Enabled
+import kotlinx.coroutines.launch
+import me.proton.android.core.accountmanager.presentation.switcher.AccountSwitchEvent
+import me.proton.android.core.accountmanager.presentation.switcher.AccountSwitcher
+import me.proton.core.domain.entity.UserId
 import me.proton.core.plan.presentation.compose.component.UpgradeStorageInfo
 
 @Composable
@@ -73,7 +78,6 @@ fun Sidebar(
     )
 
     fun close() = scope.launch {
-        viewState.accountPrimaryState.dismissDialog()
         viewState.drawerState.close()
     }
 
@@ -82,6 +86,8 @@ fun Sidebar(
         is Enabled -> {
             viewState.isSubscriptionVisible = viewModelState.canChangeSubscription
             viewState.mailLabels = viewModelState.mailLabels
+            viewState.primaryAccount = viewModelState.primaryAccount
+            viewState.otherAccounts = viewModelState.otherAccounts
             val actions = navigationActions.toSidebarActions(
                 close = ::close,
                 onLabelAction = { sidebarLabelAction ->
@@ -132,23 +138,46 @@ fun Sidebar(
     actions: Sidebar.Actions
 ) {
     val sidebarColors = requireNotNull(ProtonTheme.colors.sidebarColors)
+    var accountSwitcherExpanded by remember { mutableStateOf(false) }
 
-    if (viewState.hasPrimaryAccount) {
-        AccountPrimaryItem(
-            modifier = Modifier
-                .background(sidebarColors.backgroundNorm)
-                .padding(all = ProtonDimens.Spacing.Standard)
-                .fillMaxWidth(),
-            onRemove = actions.onRemoveAccount,
-            onSignIn = actions.onSignIn,
-            onSignOut = actions.onSignOut,
-            onSwitch = actions.onSwitchAccount,
-            viewState = viewState.accountPrimaryState
-        )
-    }
+    AccountSwitcher(
+        isExpanded = accountSwitcherExpanded,
+        primaryAccount = viewState.primaryAccount,
+        otherAccounts = viewState.otherAccounts,
+        onExpandedChange = { accountSwitcherExpanded = it },
+        onEvent = {
+            accountSwitcherExpanded = false
+            when (it) {
+                is AccountSwitchEvent.OnAccountSelected ->
+                    actions.onSwitchAccount(it.userId)
+
+                is AccountSwitchEvent.OnAddAccount ->
+                    actions.onSignIn(null)
+
+                is AccountSwitchEvent.OnManageAccount ->
+                    actions.onManageAccount()
+
+                is AccountSwitchEvent.OnRemoveAccount ->
+                    actions.onRemoveAccount(it.userId)
+
+                is AccountSwitchEvent.OnSignIn ->
+                    actions.onSignIn(it.userId)
+
+                is AccountSwitchEvent.OnSignOut ->
+                    actions.onSignOut(it.userId)
+
+                is AccountSwitchEvent.OnManageAccounts ->
+                    actions.onManageAccounts()
+            }
+        },
+        modifier = Modifier
+            .background(sidebarColors.backgroundNorm)
+            .fillMaxWidth()
+            .padding(all = ProtonDimens.Spacing.Standard)
+    )
 
     ProtonTheme(
-        colors = ProtonTheme.colors.sidebarColors ?: ProtonTheme.colors
+        colors = sidebarColors
     ) {
         UpgradeStorageInfo(
             modifier = modifier
@@ -225,7 +254,9 @@ object Sidebar {
         val onLabelAction: (SidebarLabelAction) -> Unit,
         val onSubscription: () -> Unit,
         val onContacts: () -> Unit,
-        val onReportBug: () -> Unit
+        val onReportBug: () -> Unit,
+        val onManageAccount: () -> Unit,
+        val onManageAccounts: () -> Unit
     ) {
 
         companion object {
@@ -239,7 +270,9 @@ object Sidebar {
                 onLabelAction = {},
                 onSubscription = {},
                 onContacts = {},
-                onReportBug = {}
+                onReportBug = {},
+                onManageAccount = {},
+                onManageAccounts = {}
             )
         }
     }
@@ -256,7 +289,9 @@ object Sidebar {
         val onFolderAdd: () -> Unit,
         val onSubscription: () -> Unit,
         val onContacts: () -> Unit,
-        val onReportBug: () -> Unit
+        val onReportBug: () -> Unit,
+        val onManageAccount: () -> Unit,
+        val onManageAccounts: () -> Unit
     ) {
 
         fun toSidebarActions(close: () -> Unit, onLabelAction: (SidebarLabelAction) -> Unit) = Actions(
@@ -295,6 +330,14 @@ object Sidebar {
             onReportBug = {
                 onReportBug()
                 close()
+            },
+            onManageAccount = {
+                onManageAccount()
+                close()
+            },
+            onManageAccounts = {
+                onManageAccounts()
+                close()
             }
         )
 
@@ -312,7 +355,9 @@ object Sidebar {
                 onFolderAdd = {},
                 onSubscription = {},
                 onContacts = {},
-                onReportBug = {}
+                onReportBug = {},
+                onManageAccount = {},
+                onManageAccounts = {}
             )
         }
     }
@@ -334,9 +379,8 @@ fun PreviewSidebar() {
     ProtonTheme {
         Sidebar(
             viewState = SidebarState(
-                hasPrimaryAccount = false,
-                isSubscriptionVisible = true,
-                mailLabels = MailLabelsUiModel.PreviewForTesting
+                mailLabels = MailLabelsUiModel.PreviewForTesting,
+                isSubscriptionVisible = true
             ),
             actions = Sidebar.Actions.Empty
         )

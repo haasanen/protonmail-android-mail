@@ -23,8 +23,10 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ch.protonmail.android.mailsession.data.mapper.toLocalUserId
+import ch.protonmail.android.mailsession.data.mapper.toUserId
 import ch.protonmail.android.mailsession.domain.model.AccountState
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
+import ch.protonmail.android.mailsession.domain.usecase.SetPrimaryAccount
 import ch.protonmail.android.mailsession.presentation.observe
 import ch.protonmail.android.mailsession.presentation.onAccountTwoFactorNeeded
 import ch.protonmail.android.mailsession.presentation.onAccountTwoPasswordNeeded
@@ -40,7 +42,9 @@ import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import me.proton.android.core.auth.presentation.AuthOrchestrator
+import me.proton.android.core.auth.presentation.login.LoginInput
 import me.proton.android.core.auth.presentation.onAddAccountResult
+import me.proton.android.core.auth.presentation.onLoginResult
 import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 
@@ -48,6 +52,7 @@ import javax.inject.Inject
 @SuppressWarnings("NotImplementedDeclaration", "UnusedPrivateMember")
 class LauncherViewModel @Inject constructor(
     private val authOrchestrator: AuthOrchestrator,
+    private val setPrimaryAccount: SetPrimaryAccount,
     private val userSessionRepository: UserSessionRepository
 ) : ViewModel() {
 
@@ -76,6 +81,7 @@ class LauncherViewModel @Inject constructor(
         with(authOrchestrator) {
             register(context)
             onAddAccountResult { result -> if (!result) context.finish() }
+            onLoginResult { result -> if (result != null) onSwitchToAccount(result.userId.toUserId()) }
             userSessionRepository.observe(context.lifecycle, minActiveState = Lifecycle.State.CREATED)
                 .onAccountTwoFactorNeeded { startSecondFactorWorkflow(it.userId.toLocalUserId()) }
                 .onAccountTwoPasswordNeeded { startTwoPassModeWorkflow(it.userId.toLocalUserId()) }
@@ -91,7 +97,7 @@ class LauncherViewModel @Inject constructor(
                 is Action.OpenReport -> onOpenReport()
                 is Action.OpenSubscription -> onOpenSubscription()
                 is Action.SignIn -> onSignIn(action.userId)
-                is Action.Switch -> onSwitch(action.userId)
+                is Action.SwitchToAccount -> onSwitchToAccount(action.userId)
             }
         }
     }
@@ -116,12 +122,15 @@ class LauncherViewModel @Inject constructor(
         TODO("ET - Not yet implemented")
     }
 
-    fun onSignIn(userId: UserId?) {
-        TODO("ET - Not yet implemented")
+    fun onSignIn(userId: UserId?) = viewModelScope.launch {
+        val username = userId?.let {
+            userSessionRepository.getAccount(it)?.username
+        }
+        authOrchestrator.startLoginWorkflow(LoginInput(username = username))
     }
 
-    fun onSwitch(userId: UserId) {
-        TODO("ET - Not yet implemented")
+    private fun onSwitchToAccount(userId: UserId) = viewModelScope.launch {
+        setPrimaryAccount(userId)
     }
 
     sealed interface Action {
@@ -132,6 +141,6 @@ class LauncherViewModel @Inject constructor(
         object OpenReport : Action
         object OpenSubscription : Action
         data class SignIn(val userId: UserId?) : Action
-        data class Switch(val userId: UserId) : Action
+        data class SwitchToAccount(val userId: UserId) : Action
     }
 }

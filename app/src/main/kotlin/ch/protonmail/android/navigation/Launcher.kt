@@ -43,7 +43,7 @@ fun Launcher(activityActions: MainActivity.Actions, viewModel: LauncherViewModel
                 onReportBug = { viewModel.submit(LauncherViewModel.Action.OpenReport) },
                 onSignIn = { viewModel.submit(LauncherViewModel.Action.SignIn(it)) },
                 onSubscription = { viewModel.submit(LauncherViewModel.Action.OpenSubscription) },
-                onSwitchAccount = { viewModel.submit(LauncherViewModel.Action.Switch(it)) }
+                onSwitchToAccount = { viewModel.submit(LauncherViewModel.Action.SwitchToAccount(it)) }
             )
         )
 
@@ -59,10 +59,10 @@ object Launcher {
      */
     data class Actions(
         val onSignIn: (UserId?) -> Unit,
-        val onSwitchAccount: (UserId) -> Unit,
         val onSubscription: () -> Unit,
         val onReportBug: () -> Unit,
         val onPasswordManagement: () -> Unit,
-        val onRecoveryEmail: () -> Unit
+        val onRecoveryEmail: () -> Unit,
+        val onSwitchToAccount: (UserId) -> Unit
     )
 }

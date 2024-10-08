@@ -21,7 +21,6 @@ package ch.protonmail.android.mailsession.data.repository
 import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
-import ch.protonmail.android.mailsession.data.RepositoryFlowCoroutineScope
 import ch.protonmail.android.mailsession.data.mapper.toAccount
 import ch.protonmail.android.mailsession.data.mapper.toLocalUserId
 import ch.protonmail.android.mailsession.domain.model.Account
@@ -30,30 +29,21 @@ import ch.protonmail.android.mailsession.domain.model.ForkedSessionId
 import ch.protonmail.android.mailsession.domain.model.SessionError
 import ch.protonmail.android.mailsession.domain.repository.MailSessionRepository
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
-import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
+import me.proton.android.core.account.domain.ObserveStoredAccounts
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
-import uniffi.proton_mail_uniffi.LiveQueryCallback
 import uniffi.proton_mail_uniffi.MailUserSession
-import uniffi.proton_mail_uniffi.StoredAccount
-import uniffi.proton_mail_uniffi.WatchedAccounts
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class UserSessionRepositoryImpl @Inject constructor(
     mailSessionRepository: MailSessionRepository,
-    @RepositoryFlowCoroutineScope coroutineScope: CoroutineScope
+    private val observeStoredAccounts: ObserveStoredAccounts
 ) : UserSessionRepository {
 
     private val mailSession by lazy { mailSessionRepository.getMailSession() }
@@ -61,30 +51,9 @@ class UserSessionRepositoryImpl @Inject constructor(
     // Cache to store MailUserSession per UserId
     private val userSessionCache = mutableMapOf<UserId, MailUserSession>()
 
-    private val storedAccountsStateFlow: Flow<List<StoredAccount>?> = callbackFlow {
-        var watchedStoredAccounts: WatchedAccounts? = null
-        watchedStoredAccounts = mailSession.watchAccounts(
-            object : LiveQueryCallback {
-                override fun onUpdate() {
-                    launch { send(mailSession.getAccounts()) }
-                }
-            }
-        )
-
-        send(watchedStoredAccounts.accounts)
-
-        awaitClose {
-            watchedStoredAccounts.handle.disconnect()
-            watchedStoredAccounts.handle.destroy()
-            watchedStoredAccounts.destroy()
-        }
-    }.stateIn(coroutineScope, SharingStarted.Lazily, initialValue = null)
-
     private suspend fun getStoredAccount(userId: UserId) = mailSession.getAccount(userId.toLocalUserId())
 
-    override fun observeAccounts(): Flow<List<Account>> = storedAccountsStateFlow
-        // Skip null initialValue.
-        .filterNotNull()
+    override fun observeAccounts(): Flow<List<Account>> = observeStoredAccounts()
         .mapLatest { accounts -> accounts.map { it.toAccount() } }
 
     override fun observePrimaryUserId(): Flow<UserId?> = observeAccounts()
@@ -139,6 +108,10 @@ class UserSessionRepositoryImpl @Inject constructor(
                 return SessionError.Local.Unknown.left()
             }
         )
+    }
+
+    override suspend fun setPrimaryAccount(userId: UserId) {
+        mailSession.setPrimaryAccount(userId.toLocalUserId())
     }
 }
 

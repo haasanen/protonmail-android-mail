@@ -16,10 +16,17 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailsession.data
+package ch.protonmail.android.mailsession.domain.usecase
 
-import javax.inject.Qualifier
+import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
+import me.proton.core.domain.entity.UserId
+import javax.inject.Inject
 
-@Qualifier
-@Retention(AnnotationRetention.BINARY)
-annotation class RepositoryFlowCoroutineScope
+class SetPrimaryAccount @Inject constructor(
+    private val userSessionRepository: UserSessionRepository
+) {
+
+    suspend operator fun invoke(userId: UserId) {
+        userSessionRepository.setPrimaryAccount(userId)
+    }
+}

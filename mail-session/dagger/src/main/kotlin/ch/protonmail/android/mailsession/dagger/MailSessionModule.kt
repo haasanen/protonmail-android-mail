@@ -18,7 +18,6 @@
 
 package ch.protonmail.android.mailsession.dagger
 
-import ch.protonmail.android.mailsession.data.RepositoryFlowCoroutineScope
 import ch.protonmail.android.mailsession.data.repository.InMemoryMailSessionRepository
 import ch.protonmail.android.mailsession.data.repository.RustEventLoopRepository
 import ch.protonmail.android.mailsession.data.repository.UserSessionRepositoryImpl
@@ -42,18 +41,6 @@ import javax.inject.Singleton
 @Module(includes = [MailSessionModule.BindsModule::class])
 @InstallIn(SingletonComponent::class)
 object MailSessionModule {
-
-    @Provides
-    @Singleton
-    @RepositoryFlowCoroutineScope
-    fun provideRepositoryFlowCoroutineScope(): CoroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
-
-    @Provides
-    @Singleton
-    fun providesUserRepository(
-        mailSessionRepository: MailSessionRepository,
-        @RepositoryFlowCoroutineScope coroutineScope: CoroutineScope
-    ): UserSessionRepository = UserSessionRepositoryImpl(mailSessionRepository, coroutineScope)
 
     @Provides
     @Singleton
@@ -81,5 +68,9 @@ object MailSessionModule {
         @Binds
         @Singleton
         fun bindInitializationCallback(impl: UserSessionInitializationCallback): MailUserSessionInitializationCallback
+
+        @Binds
+        @Singleton
+        fun bindUserSessionRepository(impl: UserSessionRepositoryImpl): UserSessionRepository
     }
 }

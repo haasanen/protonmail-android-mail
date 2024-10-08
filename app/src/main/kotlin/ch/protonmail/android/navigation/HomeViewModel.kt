@@ -40,6 +40,7 @@ import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.navigation.model.Destination
 import ch.protonmail.android.navigation.model.HomeState
+import ch.protonmail.android.navigation.model.NavigationEffect
 import ch.protonmail.android.navigation.share.ShareIntentObserver
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
@@ -100,8 +101,19 @@ class HomeViewModel @Inject constructor(
             .launchIn(viewModelScope)
     }
 
-    fun navigateTo(navController: NavController, route: String) {
-        navController.navigate(route = route)
+    fun navigateTo(navController: NavController, navigationEffect: NavigationEffect) {
+        when (navigationEffect) {
+            is NavigationEffect.NavigateTo -> navController.navigate(
+                route = navigationEffect.route,
+                navigationEffect.navOptions
+            )
+
+            is NavigationEffect.PopBackStack -> navController.popBackStack()
+            is NavigationEffect.PopBackStackTo -> navController.popBackStack(
+                route = navigationEffect.route,
+                inclusive = navigationEffect.inclusive
+            )
+        }
     }
 
     /**
@@ -160,7 +172,9 @@ class HomeViewModel @Inject constructor(
         val currentState = state.value
         mutableState.value = currentState.copy(
             navigateToEffect = Effect.of(
-                Destination.Screen.ShareFileComposer(DraftAction.PrefillForShare(intentShareInfo.encode()))
+                NavigationEffect.NavigateTo(
+                    Destination.Screen.ShareFileComposer(DraftAction.PrefillForShare(intentShareInfo.encode()))
+                )
             )
         )
     }

@@ -33,5 +33,6 @@ internal fun StoredAccount.toAccount() = Account(
         is StoredAccountState.LoggedOut -> AccountState.Disabled
         is StoredAccountState.NeedMbp -> AccountState.TwoPasswordNeeded
         is StoredAccountState.NeedTfa -> AccountState.TwoFactorNeeded
-    }
+    },
+    username = username()
 )

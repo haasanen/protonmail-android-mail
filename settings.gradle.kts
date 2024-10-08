@@ -58,6 +58,10 @@ includeCoreBuild {
     }
 }
 
+include("account-core:platform:android:core:account-manager:presentation")
+include("account-core:platform:android:core:account:dagger")
+include("account-core:platform:android:core:account:data")
+include("account-core:platform:android:core:account:domain")
 include("account-core:platform:android:core:auth:presentation")
 
 include(":app")

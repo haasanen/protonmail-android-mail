@@ -41,6 +41,8 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import me.proton.android.core.accountmanager.presentation.manager.ObserveAccountListItems
+import me.proton.android.core.accountmanager.presentation.switcher.AccountListItem
 import me.proton.core.util.kotlin.exhaustive
 import javax.inject.Inject
 
@@ -51,7 +53,8 @@ class SidebarViewModel @Inject constructor(
     private val updateLabelExpandedState: UpdateLabelExpandedState,
     observePrimaryUserId: ObservePrimaryUserId,
     observeMailLabels: ObserveMailLabels,
-    observeUnreadCounters: ObserveUnreadCounters
+    observeUnreadCounters: ObserveUnreadCounters,
+    observeAccountListItems: ObserveAccountListItems
 ) : ViewModel() {
 
     private val initialState = State.Disabled
@@ -70,15 +73,19 @@ class SidebarViewModel @Inject constructor(
         combine(
             selectedMailLabelId.flow,
             observeMailLabels(userId),
-            observeUnreadCounters(userId)
-        ) { selectedMailLabelId, mailLabels, counters ->
+            observeUnreadCounters(userId),
+            observeAccountListItems()
+        ) { selectedMailLabelId, mailLabels, counters, accountListItems ->
+            val primaryAccount = accountListItems.filterIsInstance<AccountListItem.Ready.Primary>().firstOrNull()
             State.Enabled(
                 selectedMailLabelId = selectedMailLabelId,
                 // Pending Account team to migrate "paymentManager" to rust
                 // (current implementation isn't aware of the rust session and throws
                 // exception crashing the app if no user is logged into "core"
                 canChangeSubscription = false,
-                mailLabels = mailLabels.toUiModels(counters.toMap(), selectedMailLabelId)
+                mailLabels = mailLabels.toUiModels(counters.toMap(), selectedMailLabelId),
+                primaryAccount = primaryAccount,
+                otherAccounts = accountListItems.filter { it != primaryAccount }
             )
         }
     }.stateIn(
@@ -119,7 +126,9 @@ class SidebarViewModel @Inject constructor(
         data class Enabled(
             val selectedMailLabelId: MailLabelId,
             val canChangeSubscription: Boolean,
-            val mailLabels: MailLabelsUiModel
+            val mailLabels: MailLabelsUiModel,
+            val primaryAccount: AccountListItem.Ready.Primary?,
+            val otherAccounts: List<AccountListItem>
         ) : State()
 
         object Disabled : State()

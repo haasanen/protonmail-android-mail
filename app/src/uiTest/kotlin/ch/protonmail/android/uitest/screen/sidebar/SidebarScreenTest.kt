@@ -161,13 +161,12 @@ internal class SidebarScreenTest : HiltInstrumentedTest() {
         isSubscriptionVisible: Boolean = true,
         mailLabels: MailLabelsUiModel = MailLabelsUiModel.Loading
     ) = SidebarState(
-        isSubscriptionVisible = isSubscriptionVisible,
-        hasPrimaryAccount = false,
         appInformation = AppInformation(
             appName = "Proton Mail",
             appVersionName = "6.0.0-alpha+test"
         ),
-        mailLabels = mailLabels
+        mailLabels = mailLabels,
+        isSubscriptionVisible = isSubscriptionVisible
     )
 
     private fun setupScreenWithState(state: SidebarState) {

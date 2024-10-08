@@ -23,17 +23,18 @@ import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.mailsession.domain.model.Account
 import ch.protonmail.android.mailsession.domain.model.AccountState
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
+import ch.protonmail.android.mailsession.domain.usecase.SetPrimaryAccount
 import ch.protonmail.android.navigation.model.LauncherState
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.flowOf
-import kotlin.test.assertEquals
 import io.mockk.every
 import io.mockk.mockk
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import me.proton.android.core.auth.presentation.AuthOrchestrator
 import org.junit.Rule
 import kotlin.test.Test
+import kotlin.test.assertEquals
 
 @ExperimentalCoroutinesApi
 class LauncherViewModelTest {
@@ -43,6 +44,7 @@ class LauncherViewModelTest {
     val mainDispatcherRule = MainDispatcherRule()
 
     private val authOrchestrator: AuthOrchestrator = mockk()
+    private val setPrimaryAccount: SetPrimaryAccount = mockk()
     private val userSessionRepository: UserSessionRepository = mockk()
 
     private lateinit var viewModel: LauncherViewModel
@@ -54,7 +56,7 @@ class LauncherViewModelTest {
             every { userSessionRepository.observeAccounts() } returns flowOf(emptyList())
 
             // When
-            viewModel = LauncherViewModel(authOrchestrator, userSessionRepository)
+            viewModel = LauncherViewModel(authOrchestrator, setPrimaryAccount, userSessionRepository)
 
             // Then
             viewModel.state.test {
@@ -70,13 +72,14 @@ class LauncherViewModelTest {
                 Account(
                     userId = UserIdSample.Primary,
                     nameOrAddress = "User",
-                    state = AccountState.Ready
+                    state = AccountState.Ready,
+                    username = "user"
                 )
             )
         )
 
         // When
-        viewModel = LauncherViewModel(authOrchestrator, userSessionRepository)
+        viewModel = LauncherViewModel(authOrchestrator, setPrimaryAccount, userSessionRepository)
 
         // Then
         viewModel.state.test {

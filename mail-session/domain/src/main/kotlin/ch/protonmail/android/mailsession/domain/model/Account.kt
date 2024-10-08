@@ -23,7 +23,8 @@ import me.proton.core.domain.entity.UserId
 data class Account(
     val userId: UserId,
     val nameOrAddress: String,
-    val state: AccountState
+    val state: AccountState,
+    val username: String?
 )
 
 enum class AccountState {

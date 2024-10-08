@@ -102,6 +102,7 @@ sealed class Destination(val route: String) {
         }
 
         object Settings : Destination("settings")
+        object AccountsManager : Destination("settings/accountsManager")
         object AccountSettings : Destination("settings/account")
         object AppSettings : Destination("settings/app")
         object EmailSettings : Destination("settings/email")

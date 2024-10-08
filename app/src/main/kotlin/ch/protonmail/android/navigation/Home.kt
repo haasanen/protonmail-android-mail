@@ -44,6 +44,9 @@ import androidx.navigation.compose.rememberNavController
 import ch.protonmail.android.LockScreenActivity
 import ch.protonmail.android.MainActivity
 import ch.protonmail.android.R
+import ch.protonmail.android.design.compose.component.ProtonSnackbarHostState
+import ch.protonmail.android.design.compose.component.ProtonSnackbarType
+import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.compose.UndoableOperationSnackbar
@@ -57,6 +60,7 @@ import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailsidebar.presentation.Sidebar
 import ch.protonmail.android.navigation.model.Destination.Dialog
 import ch.protonmail.android.navigation.model.Destination.Screen
+import ch.protonmail.android.navigation.model.HomeState
 import ch.protonmail.android.navigation.route.addAlternativeRoutingSetting
 import ch.protonmail.android.navigation.route.addAppSettings
 import ch.protonmail.android.navigation.route.addAutoLockPinScreen
@@ -96,10 +100,8 @@ import ch.protonmail.android.navigation.route.addWebSpamFilterSettings
 import ch.protonmail.android.uicomponents.snackbar.DismissableSnackbarHost
 import io.sentry.compose.withSentryObservableEffect
 import kotlinx.coroutines.launch
-import ch.protonmail.android.design.compose.component.ProtonSnackbarHostState
-import ch.protonmail.android.design.compose.component.ProtonSnackbarType
-import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.navigation.model.HomeState
+import me.proton.android.core.accountmanager.presentation.manager.addAccountsManager
+import me.proton.android.core.accountmanager.presentation.switcher.AccountSwitchEvent
 import me.proton.core.network.domain.NetworkStatus
 
 @Composable
@@ -263,7 +265,10 @@ fun Home(
             ModalDrawerSheet {
                 Sidebar(
                     drawerState = drawerState,
-                    navigationActions = buildSidebarActions(navController, launcherActions)
+                    navigationActions = buildSidebarActions(
+                        navController,
+                        launcherActions
+                    )
                 )
             }
 
@@ -575,6 +580,41 @@ fun Home(
                     addThemeSettings(navController)
                     addNotificationsSettings(navController)
                     addDeepLinkHandler(navController)
+                    addAccountsManager(
+                        navController,
+                        route = Screen.AccountsManager.route,
+                        onCloseClicked = { navController.navigateBack() },
+                        onEvent = {
+                            when (it) {
+                                is AccountSwitchEvent.OnAccountSelected -> {
+                                    launcherActions.onSwitchToAccount(it.userId)
+                                    navController.navigate(Screen.Mailbox.route) {
+                                        popUpTo(Screen.Mailbox.route) {
+                                            inclusive = false
+                                        }
+                                    }
+                                }
+
+                                is AccountSwitchEvent.OnAddAccount ->
+                                    launcherActions.onSignIn(null)
+
+                                is AccountSwitchEvent.OnManageAccount ->
+                                    navController.navigate(Screen.AccountSettings.route)
+
+                                is AccountSwitchEvent.OnManageAccounts ->
+                                    navController.navigate(Screen.AccountsManager.route)
+
+                                is AccountSwitchEvent.OnRemoveAccount ->
+                                    navController.navigate(Dialog.RemoveAccount(it.userId))
+
+                                is AccountSwitchEvent.OnSignIn ->
+                                    launcherActions.onSignIn(it.userId)
+
+                                is AccountSwitchEvent.OnSignOut ->
+                                    navController.navigate(Dialog.SignOut(it.userId))
+                            }
+                        }
+                    )
                 }
             }
         }
@@ -586,7 +626,7 @@ private fun buildSidebarActions(navController: NavHostController, launcherAction
         onSignIn = launcherActions.onSignIn,
         onSignOut = { navController.navigate(Dialog.SignOut(it)) },
         onRemoveAccount = { navController.navigate(Dialog.RemoveAccount(it)) },
-        onSwitchAccount = launcherActions.onSwitchAccount,
+        onSwitchAccount = launcherActions.onSwitchToAccount,
         onSettings = { navController.navigate(Screen.Settings.route) },
         onLabelList = { navController.navigate(Screen.LabelList.route) },
         onFolderList = { navController.navigate(Screen.FolderList.route) },
@@ -594,5 +634,7 @@ private fun buildSidebarActions(navController: NavHostController, launcherAction
         onFolderAdd = { navController.navigate(Screen.CreateFolder.route) },
         onSubscription = launcherActions.onSubscription,
         onContacts = { navController.navigate(Screen.Contacts.route) },
-        onReportBug = launcherActions.onReportBug
+        onReportBug = launcherActions.onReportBug,
+        onManageAccount = { navController.navigate(Screen.AccountSettings.route) },
+        onManageAccounts = { navController.navigate(Screen.AccountsManager.route) }
     )

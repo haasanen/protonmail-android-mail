@@ -4,14 +4,13 @@ import ch.protonmail.android.mailsession.domain.model.ForkedSessionId
 import ch.protonmail.android.mailsession.domain.model.SessionError
 import ch.protonmail.android.mailsession.domain.repository.MailSessionRepository
 import ch.protonmail.android.test.utils.rule.LoggingTestRule
-import ch.protonmail.android.test.utils.rule.MainDispatcherRule
 import ch.protonmail.android.testdata.user.UserIdTestData
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
-import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runTest
+import me.proton.android.core.account.domain.ObserveStoredAccounts
 import me.proton.core.domain.entity.UserId
 import org.junit.Rule
 import uniffi.proton_mail_uniffi.MailSession
@@ -24,16 +23,14 @@ import kotlin.test.assertEquals
 class UserSessionRepositoryImplTest {
 
     @get:Rule
-    val mainDispatcherRule = MainDispatcherRule()
-
-    @get:Rule
     val loggingRule = LoggingTestRule()
 
     private val mailSessionRepository = mockk<MailSessionRepository>()
+    private val observeStoredAccounts = mockk<ObserveStoredAccounts>()
 
     private val userSessionRepository = UserSessionRepositoryImpl(
         mailSessionRepository,
-        TestScope(mainDispatcherRule.testDispatcher)
+        observeStoredAccounts
     )
 
     @Test

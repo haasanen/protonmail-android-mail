@@ -30,33 +30,32 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import ch.protonmail.android.mailcommon.domain.AppInformation
 import ch.protonmail.android.maillabel.presentation.MailLabelsUiModel
-import me.proton.core.accountmanager.presentation.compose.AccountPrimaryState
-import me.proton.core.accountmanager.presentation.compose.rememberAccountPrimaryState
+import me.proton.android.core.accountmanager.presentation.switcher.AccountListItem
 
 @Stable
 class SidebarState(
     val appInformation: AppInformation = AppInformation(),
-    val drawerState: DrawerState = DrawerState(Closed),
-    val accountPrimaryState: AccountPrimaryState = AccountPrimaryState(),
-    val hasPrimaryAccount: Boolean = true,
+    val drawerState: DrawerState = DrawerState(DrawerValue.Closed),
     val showContacts: Boolean = true,
     mailLabels: MailLabelsUiModel = MailLabelsUiModel.Loading,
-    isSubscriptionVisible: Boolean = true
+    isSubscriptionVisible: Boolean = true,
+    primaryAccount: AccountListItem.Ready.Primary? = null,
+    otherAccounts: List<AccountListItem> = emptyList()
 ) {
 
     var mailLabels by mutableStateOf(mailLabels)
     var isSubscriptionVisible by mutableStateOf(isSubscriptionVisible)
+    var primaryAccount: AccountListItem.Ready.Primary? by mutableStateOf(primaryAccount)
+    var otherAccounts: List<AccountListItem> by mutableStateOf(otherAccounts)
 }
 
 @Composable
 fun rememberSidebarState(
     appInformation: AppInformation,
-    drawerState: DrawerState = rememberDrawerState(DrawerValue.Closed),
-    accountPrimaryState: AccountPrimaryState = rememberAccountPrimaryState()
+    drawerState: DrawerState = rememberDrawerState(DrawerValue.Closed)
 ): SidebarState = remember {
     SidebarState(
         appInformation = appInformation,
-        drawerState = drawerState,
-        accountPrimaryState = accountPrimaryState
+        drawerState = drawerState
     )
 }

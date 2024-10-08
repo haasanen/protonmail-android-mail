@@ -52,6 +52,9 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import me.proton.core.domain.entity.UserId
 import ch.protonmail.android.maillabel.domain.model.LabelId
+import me.proton.android.core.accountmanager.presentation.manager.ObserveAccountListItems
+import me.proton.android.core.accountmanager.presentation.switcher.AccountItem
+import me.proton.android.core.accountmanager.presentation.switcher.AccountListItem
 import me.proton.core.payment.domain.PaymentManager
 import org.junit.Before
 import org.junit.Test
@@ -79,6 +82,12 @@ class SidebarViewModelTest {
 
     private val updateLabelExpandedState = mockk<UpdateLabelExpandedState>(relaxUnitFun = true)
 
+    private val primaryUserAccountItem = AccountListItem.Ready.Primary(AccountItem(UserId("user_1"), "User1"))
+    private val otherUserAccountItem = AccountListItem.Ready(AccountItem(UserId("user_2"), "User2"))
+    private val observeAccountListItems = mockk<ObserveAccountListItems> {
+        coEvery { this@mockk.invoke() } returns flowOf(listOf(primaryUserAccountItem, otherUserAccountItem))
+    }
+
     private val observeUnreadCounters = mockk<ObserveUnreadCounters> {
         coEvery { this@mockk.invoke(any()) } returns flowOf(emptyList<UnreadCounter>())
     }
@@ -97,7 +106,8 @@ class SidebarViewModelTest {
             updateLabelExpandedState = updateLabelExpandedState,
             observePrimaryUserId = observePrimaryUserId,
             observeMailLabels = observeMailboxLabels,
-            observeUnreadCounters = observeUnreadCounters
+            observeUnreadCounters = observeUnreadCounters,
+            observeAccountListItems = observeAccountListItems
         )
     }
 
@@ -116,7 +126,9 @@ class SidebarViewModelTest {
             val expected = Enabled(
                 selectedMailLabelId = MailLabelId.System(SystemLabelId.Inbox.labelId),
                 canChangeSubscription = false,
-                mailLabels = MailLabelsUiModel.Loading
+                mailLabels = MailLabelsUiModel.Loading,
+                primaryAccount = primaryUserAccountItem,
+                otherAccounts = listOf(otherUserAccountItem)
             )
             assertEquals(expected, actual)
         }
@@ -138,7 +150,9 @@ class SidebarViewModelTest {
             val expected = Enabled(
                 selectedMailLabelId = MailLabelId.System(SystemLabelId.Inbox.labelId),
                 canChangeSubscription = true,
-                mailLabels = MailLabelsUiModel.Loading
+                mailLabels = MailLabelsUiModel.Loading,
+                primaryAccount = primaryUserAccountItem,
+                otherAccounts = listOf(otherUserAccountItem)
             )
             assertEquals(expected, actual)
         }
@@ -159,7 +173,9 @@ class SidebarViewModelTest {
             val expected = Enabled(
                 selectedMailLabelId = MailLabelId.System(SystemLabelId.Inbox.labelId),
                 canChangeSubscription = false,
-                mailLabels = MailLabelsUiModel.Loading
+                mailLabels = MailLabelsUiModel.Loading,
+                primaryAccount = primaryUserAccountItem,
+                otherAccounts = listOf(otherUserAccountItem)
             )
             assertEquals(expected, actual)
         }

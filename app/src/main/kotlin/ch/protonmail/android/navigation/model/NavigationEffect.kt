@@ -18,24 +18,10 @@
 
 package ch.protonmail.android.navigation.model
 
-import ch.protonmail.android.mailcommon.presentation.Effect
-import ch.protonmail.android.mailcomposer.domain.model.MessageSendingStatus
-import me.proton.core.network.domain.NetworkStatus
+import androidx.navigation.NavOptions
 
-data class HomeState(
-    val networkStatusEffect: Effect<NetworkStatus>,
-    val messageSendingStatusEffect: Effect<MessageSendingStatus>,
-    val navigateToEffect: Effect<out NavigationEffect>,
-    val startedFromLauncher: Boolean
-) {
-
-    companion object {
-
-        val Initial = HomeState(
-            networkStatusEffect = Effect.empty(),
-            messageSendingStatusEffect = Effect.empty(),
-            navigateToEffect = Effect.empty(),
-            startedFromLauncher = false
-        )
-    }
+sealed interface NavigationEffect {
+    data class NavigateTo(val route: String, val navOptions: NavOptions? = null) : NavigationEffect
+    data object PopBackStack : NavigationEffect
+    data class PopBackStackTo(val route: String, val inclusive: Boolean) : NavigationEffect
 }

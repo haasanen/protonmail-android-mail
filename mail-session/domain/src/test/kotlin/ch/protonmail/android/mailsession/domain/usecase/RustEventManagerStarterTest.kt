@@ -91,6 +91,7 @@ class RustEventManagerStarterTest {
     private fun makeAccount(state: AccountState, userId: UserId) = Account(
         userId = userId,
         nameOrAddress = "User",
-        state = state
+        state = state,
+        username = "user"
     )
 }

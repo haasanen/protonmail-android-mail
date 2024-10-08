@@ -45,6 +45,8 @@ interface UserSessionRepository {
     suspend fun getUserSession(userId: UserId): MailUserSession?
 
     suspend fun forkSession(userId: UserId): Either<SessionError, ForkedSessionId>
+
+    suspend fun setPrimaryAccount(userId: UserId)
 }
 
 fun UserSessionRepository.onAccountState(state: AccountState, initialState: Boolean = true): Flow<Account> =
