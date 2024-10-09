@@ -55,6 +55,7 @@ import ch.protonmail.android.mailcontact.domain.usecase.FindContactByEmail
 import ch.protonmail.android.mailcontact.domain.usecase.ObserveContacts
 import ch.protonmail.android.mailconversation.domain.sample.ConversationSample
 import ch.protonmail.android.mailconversation.domain.usecase.DeleteConversations
+import ch.protonmail.android.mailconversation.domain.usecase.GetConversationAvailableActions
 import ch.protonmail.android.mailconversation.domain.usecase.GetConversationLabelAsActions
 import ch.protonmail.android.mailconversation.domain.usecase.GetConversationMoveToLocations
 import ch.protonmail.android.mailconversation.domain.usecase.ObserveConversation
@@ -117,6 +118,7 @@ import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen
 import ch.protonmail.android.maildetail.presentation.usecase.ExtractMessageBodyWithoutQuote
 import ch.protonmail.android.maildetail.presentation.usecase.GetEmbeddedImageAvoidDuplicatedExecution
 import ch.protonmail.android.maildetail.presentation.usecase.GetLabelAsBottomSheetData
+import ch.protonmail.android.maildetail.presentation.usecase.GetMoreActionsBottomSheetData
 import ch.protonmail.android.maildetail.presentation.usecase.OnMessageLabelAsConfirmed
 import ch.protonmail.android.maildetail.presentation.usecase.PrintMessage
 import ch.protonmail.android.maillabel.domain.model.MailLabels
@@ -139,6 +141,7 @@ import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
 import ch.protonmail.android.mailmessage.domain.sample.MessageSample
 import ch.protonmail.android.mailmessage.domain.usecase.GetDecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.usecase.GetEmbeddedImageResult
+import ch.protonmail.android.mailmessage.domain.usecase.GetMessageAvailableActions
 import ch.protonmail.android.mailmessage.domain.usecase.GetMessageLabelAsActions
 import ch.protonmail.android.mailmessage.domain.usecase.ObserveMessage
 import ch.protonmail.android.mailmessage.domain.usecase.ResolveParticipantName
@@ -162,6 +165,7 @@ import ch.protonmail.android.mailmessage.presentation.usecase.SanitizeHtmlOfDecr
 import ch.protonmail.android.mailsettings.domain.model.PrivacySettings
 import ch.protonmail.android.mailsettings.domain.usecase.privacy.ObservePrivacySettings
 import ch.protonmail.android.mailsettings.domain.usecase.privacy.UpdateLinkConfirmationSetting
+import ch.protonmail.android.testdata.action.AvailableActionsTestData
 import ch.protonmail.android.testdata.contact.ContactSample
 import ch.protonmail.android.testdata.label.rust.LabelAsActionsTestData
 import ch.protonmail.android.testdata.maillabel.MailLabelTestData
@@ -238,6 +242,8 @@ class ConversationDetailViewModelIntegrationTest {
     private val observePrimaryUserId: ObservePrimaryUserId = mockk {
         every { this@mockk() } returns flowOf(UserIdSample.Primary)
     }
+    private val getConversationAvailableActions = mockk<GetConversationAvailableActions>()
+    private val getMessageAvailableActions = mockk<GetMessageAvailableActions>()
     private val getConversationMoveToLocations = mockk<GetConversationMoveToLocations>()
     private val getConversationLabelAsActions = mockk<GetConversationLabelAsActions>()
     private val getMessageLabelAsActions = mockk<GetMessageLabelAsActions>()
@@ -317,6 +323,9 @@ class ConversationDetailViewModelIntegrationTest {
     private val getLabelAsBottomSheetData = GetLabelAsBottomSheetData(
         getMessageLabelAsActions,
         getConversationLabelAsActions
+    )
+    private val getMoreActionsBottomSheetData = GetMoreActionsBottomSheetData(
+        getMessageAvailableActions, getConversationAvailableActions, observeMessage
     )
     private val onMessageLabelAsConfirmed = OnMessageLabelAsConfirmed(
         moveMessage, relabelMessage
@@ -1436,9 +1445,13 @@ class ConversationDetailViewModelIntegrationTest {
         runTest {
             // Given
             val messageId = MessageId("messageId")
+            val labelId = SystemLabelId.Archive.labelId
             coEvery {
                 observeMessage(userId = userId, messageId = messageId)
             } returns flowOf(MessageSample.AugWeatherForecast.right())
+            coEvery {
+                getMessageAvailableActions(userId, labelId, listOf(messageId))
+            } returns AvailableActionsTestData.replyActionsOnly.right()
 
             // When
             val viewModel = buildConversationDetailViewModel()
@@ -1456,12 +1469,16 @@ class ConversationDetailViewModelIntegrationTest {
         runTest {
             // Given
             val messageId = MessageId("messageId")
+            val labelId = SystemLabelId.Archive.labelId
             coEvery {
                 observeMessage(
                     userId = userId,
                     messageId = messageId
                 )
             } returns flowOf(DataError.Local.NoDataCached.left())
+            coEvery {
+                getMessageAvailableActions(userId, labelId, listOf(messageId))
+            } returns AvailableActionsTestData.replyActionsOnly.right()
 
             // When
             val viewModel = buildConversationDetailViewModel()
@@ -1760,12 +1777,17 @@ class ConversationDetailViewModelIntegrationTest {
             ),
             MessageSample.AugWeatherForecast.messageId
         )
+        val labelId = SystemLabelId.Archive.labelId
+        val messageId = MessageSample.Invoice.messageId
         coEvery { observeConversationMessages(userId, any()) } returns flowOf(messages.right())
         coEvery {
-            observeMessage(userId, MessageSample.Invoice.messageId)
+            observeMessage(userId, messageId)
         } returns flowOf(MessageSample.Invoice.right())
         coEvery {
-            markMessageAsUnread(userId, MessageSample.Invoice.messageId)
+            getMessageAvailableActions(userId, labelId, listOf(messageId))
+        } returns AvailableActionsTestData.replyActionsOnly.right()
+        coEvery {
+            markMessageAsUnread(userId, messageId)
         } returns Unit.right()
 
         // When
@@ -1773,7 +1795,7 @@ class ConversationDetailViewModelIntegrationTest {
 
         viewModel.submit(
             ExpandMessage(
-                messageIdUiModelMapper.toUiModel(MessageSample.Invoice.messageId)
+                messageIdUiModelMapper.toUiModel(messageId)
             )
         )
 
@@ -1782,13 +1804,13 @@ class ConversationDetailViewModelIntegrationTest {
 
             viewModel.submit(
                 ConversationDetailViewAction.RequestMessageMoreActionsBottomSheet(
-                    MessageSample.Invoice.messageId
+                    messageId
                 )
             )
             skipItems(2)
             viewModel.submit(
                 ConversationDetailViewAction.MarkMessageUnread(
-                    MessageSample.Invoice.messageId
+                    messageId
                 )
             )
 
@@ -1799,10 +1821,10 @@ class ConversationDetailViewModelIntegrationTest {
             val item = awaitItem()
             val messagesState = item.messagesState as ConversationDetailsMessagesState.Data
             val message = messagesState.messages.find {
-                it.messageId.id == MessageSample.Invoice.messageId.id
+                it.messageId.id == messageId.id
             }
             assertIs<Collapsed>(message)
-            coVerify { markMessageAsUnread(userId, MessageSample.Invoice.messageId) }
+            coVerify { markMessageAsUnread(userId, messageId) }
 
             cancelAndIgnoreRemainingEvents()
         }
@@ -1829,6 +1851,9 @@ class ConversationDetailViewModelIntegrationTest {
         coEvery {
             getMessageLabelAsActions(userId, labelId, listOf(messageId))
         } returns LabelAsActionsTestData.unselectedActions.right()
+        coEvery {
+            getMessageAvailableActions(userId, labelId, listOf(messageId))
+        } returns AvailableActionsTestData.replyActionsOnly.right()
 
         // When
         val viewModel = buildConversationDetailViewModel()
@@ -1905,6 +1930,9 @@ class ConversationDetailViewModelIntegrationTest {
         coEvery {
             getMessageLabelAsActions(userId, labelId, listOf(messageId))
         } returns LabelAsActionsTestData.unselectedActions.right()
+        coEvery {
+            getMessageAvailableActions(userId, labelId, listOf(messageId))
+        } returns AvailableActionsTestData.replyActionsOnly.right()
 
         // When
         val viewModel = buildConversationDetailViewModel()
@@ -1964,11 +1992,15 @@ class ConversationDetailViewModelIntegrationTest {
             ),
             MessageSample.AugWeatherForecast.messageId
         )
+        val labelId = SystemLabelId.Archive.labelId
         coEvery { observeConversationMessages(userId, any()) } returns flowOf(messages.right())
         coEvery {
             observeMessage(userId, messageId)
         } returns flowOf(MessageSample.Invoice.right())
         coEvery { moveMessage(userId, messageId, SystemLabelId.Trash.labelId) } returns Unit.right()
+        coEvery {
+            getMessageAvailableActions(userId, labelId, listOf(messageId))
+        } returns AvailableActionsTestData.replyActionsOnly.right()
 
         // When
         val viewModel = buildConversationDetailViewModel()
@@ -2004,11 +2036,15 @@ class ConversationDetailViewModelIntegrationTest {
             ),
             MessageSample.AugWeatherForecast.messageId
         )
+        val labelId = SystemLabelId.Archive.labelId
         coEvery { observeConversationMessages(userId, any()) } returns flowOf(messages.right())
         coEvery {
             observeMessage(userId, messageId)
         } returns flowOf(MessageSample.Invoice.right())
         coEvery { moveMessage(userId, messageId, SystemLabelId.Archive.labelId) } returns Unit.right()
+        coEvery {
+            getMessageAvailableActions(userId, labelId, listOf(messageId))
+        } returns AvailableActionsTestData.replyActionsOnly.right()
 
         // When
         val viewModel = buildConversationDetailViewModel()
@@ -2044,11 +2080,15 @@ class ConversationDetailViewModelIntegrationTest {
             ),
             MessageSample.AugWeatherForecast.messageId
         )
+        val labelId = SystemLabelId.Archive.labelId
         coEvery { observeConversationMessages(userId, any()) } returns flowOf(messages.right())
         coEvery {
             observeMessage(userId, messageId)
         } returns flowOf(MessageSample.Invoice.right())
         coEvery { moveMessage(userId, messageId, SystemLabelId.Spam.labelId) } returns Unit.right()
+        coEvery {
+            getMessageAvailableActions(userId, labelId, listOf(messageId))
+        } returns AvailableActionsTestData.replyActionsOnly.right()
 
         // When
         val viewModel = buildConversationDetailViewModel()
@@ -2093,6 +2133,9 @@ class ConversationDetailViewModelIntegrationTest {
             MailLabelTestData.spamSystemLabel,
             MailLabelTestData.buildCustomFolder(id = "folder1")
         ).right()
+        coEvery {
+            getMessageAvailableActions(userId, labelId, listOf(messageId))
+        } returns AvailableActionsTestData.replyActionsOnly.right()
 
         // When
         val viewModel = buildConversationDetailViewModel()
@@ -2151,6 +2194,9 @@ class ConversationDetailViewModelIntegrationTest {
             MailLabelTestData.spamSystemLabel,
             MailLabelTestData.buildCustomFolder(id = "folder1")
         ).right()
+        coEvery {
+            getMessageAvailableActions(userId, labelId, listOf(messageId))
+        } returns AvailableActionsTestData.replyActionsOnly.right()
 
         // When
         val viewModel = buildConversationDetailViewModel()
@@ -2229,7 +2275,6 @@ class ConversationDetailViewModelIntegrationTest {
         observeConversationMessages = observeConversationMessages,
         observeDetailActions = observeDetailActions,
         getConversationMoveToLocations = getConversationMoveToLocations,
-        observeMessage = observeMessage,
         observeMessageAttachmentStatus = observeMessageAttachmentStatus,
         getDownloadingAttachmentsForMessages = getAttachmentStatus,
         reducer = detailReducer,
@@ -2245,7 +2290,6 @@ class ConversationDetailViewModelIntegrationTest {
         ioDispatcher = ioDispatcher,
         observePrivacySettings = observePrivacySettings,
         updateLinkConfirmationSetting = updateLinkConfirmationSetting,
-        resolveParticipantName = resolveParticipantName,
         reportPhishingMessage = report,
         isProtonCalendarInstalled = protonCalendarInstalled,
         networkManager = networkMgmt,
@@ -2253,6 +2297,7 @@ class ConversationDetailViewModelIntegrationTest {
         markMessageAsUnread = markMessageAsUnread,
         findContactByEmail = findContactByEmailAddress,
         getLabelAsBottomSheetData = getLabelAsBottomSheetData,
+        getMoreActionsBottomSheetData = getMoreActionsBottomSheetData,
         onMessageLabelAsConfirmed = onMessageLabelAsConfirmed,
         moveMessage = moveMessage
     )

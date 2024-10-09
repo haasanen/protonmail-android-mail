@@ -85,6 +85,7 @@ import ch.protonmail.android.maildetail.presentation.sample.ConversationDetailMe
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen
 import ch.protonmail.android.maildetail.presentation.usecase.GetEmbeddedImageAvoidDuplicatedExecution
 import ch.protonmail.android.maildetail.presentation.usecase.GetLabelAsBottomSheetData
+import ch.protonmail.android.maildetail.presentation.usecase.GetMoreActionsBottomSheetData
 import ch.protonmail.android.maildetail.presentation.usecase.OnMessageLabelAsConfirmed
 import ch.protonmail.android.maildetail.presentation.usecase.PrintMessage
 import ch.protonmail.android.maillabel.domain.model.LabelId
@@ -101,9 +102,6 @@ import ch.protonmail.android.mailmessage.domain.model.Participant
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
 import ch.protonmail.android.mailmessage.domain.sample.MessageSample
 import ch.protonmail.android.mailmessage.domain.usecase.GetDecryptedMessageBody
-import ch.protonmail.android.mailmessage.domain.usecase.ObserveMessage
-import ch.protonmail.android.mailmessage.domain.usecase.ResolveParticipantName
-import ch.protonmail.android.mailmessage.domain.usecase.ResolveParticipantNameResult
 import ch.protonmail.android.mailmessage.presentation.model.MessageBodyExpandCollapseMode
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.BottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.ContactActionsBottomSheetState
@@ -205,7 +203,6 @@ class ConversationDetailViewModelTest {
         every { this@mockk(UserIdSample.Primary, ConversationIdSample.WeatherForecast, any()) } returns
             flowOf(ConversationSample.WeatherForecast.right())
     }
-    private val observeMessage = mockk<ObserveMessage>()
     private val observeConversationMessages: ObserveConversationMessages = mockk {
         every { this@mockk(UserIdSample.Primary, ConversationIdSample.WeatherForecast) } returns flowOf(
             ConversationMessages(
@@ -275,9 +272,6 @@ class ConversationDetailViewModelTest {
         )
     }
     private val updateLinkConfirmationSetting = mockk<UpdateLinkConfirmationSetting>()
-    private val resolveParticipantsName = mockk<ResolveParticipantName> {
-        coEvery { this@mockk(any(), any(), any()) } returns ResolveParticipantNameResult("Sender", isProton = false)
-    }
 
     private val inMemoryConversationStateRepository = FakeInMemoryConversationStateRepository()
     private val setMessageViewState = SetMessageViewState(inMemoryConversationStateRepository)
@@ -288,6 +282,7 @@ class ConversationDetailViewModelTest {
     private val printMessage = mockk<PrintMessage>()
     private val markMessageAsUnread = mockk<MarkMessageAsUnread>()
     private val getLabelAsBottomSheetData = mockk<GetLabelAsBottomSheetData>()
+    private val getMoreActionsBottomSheetData = mockk<GetMoreActionsBottomSheetData>()
     private val onMessageLabelAsConfirmed = mockk<OnMessageLabelAsConfirmed>()
     private val moveMessage = mockk<MoveMessage>()
 
@@ -307,7 +302,6 @@ class ConversationDetailViewModelTest {
             observeConversationMessages = observeConversationMessages,
             observeDetailActions = observeConversationDetailActions,
             getConversationMoveToLocations = getConversationMoveToLocations,
-            observeMessage = observeMessage,
             observeMessageAttachmentStatus = observeAttachmentStatus,
             getDownloadingAttachmentsForMessages = getAttachmentDownloadStatus,
             reducer = reducer,
@@ -323,7 +317,6 @@ class ConversationDetailViewModelTest {
             ioDispatcher = Dispatchers.Unconfined,
             observePrivacySettings = observePrivacySettings,
             updateLinkConfirmationSetting = updateLinkConfirmationSetting,
-            resolveParticipantName = resolveParticipantsName,
             reportPhishingMessage = reportPhishingMessage,
             isProtonCalendarInstalled = isProtonCalendarInstalled,
             networkManager = networkManager,
@@ -331,6 +324,7 @@ class ConversationDetailViewModelTest {
             markMessageAsUnread = markMessageAsUnread,
             findContactByEmail = findContactByEmail,
             getLabelAsBottomSheetData = getLabelAsBottomSheetData,
+            getMoreActionsBottomSheetData = getMoreActionsBottomSheetData,
             onMessageLabelAsConfirmed = onMessageLabelAsConfirmed,
             moveMessage = moveMessage
         )

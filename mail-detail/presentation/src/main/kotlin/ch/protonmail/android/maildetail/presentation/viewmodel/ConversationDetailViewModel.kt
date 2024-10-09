@@ -91,6 +91,7 @@ import ch.protonmail.android.maildetail.presentation.reducer.ConversationDetailR
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen
 import ch.protonmail.android.maildetail.presentation.usecase.GetEmbeddedImageAvoidDuplicatedExecution
 import ch.protonmail.android.maildetail.presentation.usecase.GetLabelAsBottomSheetData
+import ch.protonmail.android.maildetail.presentation.usecase.GetMoreActionsBottomSheetData
 import ch.protonmail.android.maildetail.presentation.usecase.OnMessageLabelAsConfirmed
 import ch.protonmail.android.maildetail.presentation.usecase.PrintMessage
 import ch.protonmail.android.maillabel.domain.model.LabelId
@@ -109,10 +110,7 @@ import ch.protonmail.android.mailmessage.domain.model.MessageAttachment
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.Participant
 import ch.protonmail.android.mailmessage.domain.usecase.GetDecryptedMessageBody
-import ch.protonmail.android.mailmessage.domain.usecase.ObserveMessage
-import ch.protonmail.android.mailmessage.domain.usecase.ResolveParticipantName
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.ContactActionsBottomSheetState
-import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.DetailMoreActionsBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.LabelAsBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MoveToBottomSheetState
 import ch.protonmail.android.mailsettings.domain.usecase.privacy.ObservePrivacySettings
@@ -160,7 +158,6 @@ class ConversationDetailViewModel @Inject constructor(
     private val observeConversationMessages: ObserveConversationMessages,
     private val observeDetailActions: ObserveConversationDetailActions,
     private val getConversationMoveToLocations: GetConversationMoveToLocations,
-    private val observeMessage: ObserveMessage,
     private val observeMessageAttachmentStatus: ObserveMessageAttachmentStatus,
     private val getDownloadingAttachmentsForMessages: GetDownloadingAttachmentsForMessages,
     private val reducer: ConversationDetailReducer,
@@ -176,7 +173,6 @@ class ConversationDetailViewModel @Inject constructor(
     @IODispatcher private val ioDispatcher: CoroutineDispatcher,
     private val observePrivacySettings: ObservePrivacySettings,
     private val updateLinkConfirmationSetting: UpdateLinkConfirmationSetting,
-    private val resolveParticipantName: ResolveParticipantName,
     private val reportPhishingMessage: ReportPhishingMessage,
     private val isProtonCalendarInstalled: IsProtonCalendarInstalled,
     private val networkManager: NetworkManager,
@@ -184,6 +180,7 @@ class ConversationDetailViewModel @Inject constructor(
     private val markMessageAsUnread: MarkMessageAsUnread,
     private val findContactByEmail: FindContactByEmail,
     private val getLabelAsBottomSheetData: GetLabelAsBottomSheetData,
+    private val getMoreActionsBottomSheetData: GetMoreActionsBottomSheetData,
     private val onMessageLabelAsConfirmed: OnMessageLabelAsConfirmed,
     private val moveMessage: MoveMessage
 ) : ViewModel() {
@@ -643,27 +640,10 @@ class ConversationDetailViewModel @Inject constructor(
             emitNewStateFrom(initialEvent)
 
             val userId = primaryUserId.first()
-            val contacts = observeContacts(userId).first().getOrNull()
-            val message = observeMessage(userId, initialEvent.messageId).first().getOrElse {
-                Timber.e("Unable to fetch message data.")
-                emitNewStateFrom(DismissBottomSheet)
-                return@launch
-            }
-
-            val sender = contacts?.let {
-                return@let resolveParticipantName(message.sender, it)
-            }?.name ?: message.sender.name
-
-            val event = ConversationDetailEvent.ConversationBottomSheetEvent(
-                DetailMoreActionsBottomSheetState.MessageDetailMoreActionsBottomSheetEvent.DataLoaded(
-                    messageSender = sender,
-                    messageSubject = message.subject,
-                    messageId = message.messageId.id,
-                    participantsCount = message.allRecipientsDeduplicated.size
-                )
-            )
-
-            emitNewStateFrom(event)
+            val labelId = filterByLocation ?: return@launch
+            val moreActions = getMoreActionsBottomSheetData.forMessage(userId, labelId, initialEvent.messageId)
+                ?: return@launch
+            emitNewStateFrom(ConversationDetailEvent.ConversationBottomSheetEvent(moreActions))
         }
     }
 

@@ -1,0 +1,71 @@
+/*
+ * Copyright (c) 2022 Proton Technologies AG
+ * This file is part of Proton Technologies AG and Proton Mail.
+ *
+ * Proton Mail is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Proton Mail is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+package ch.protonmail.android.maildetail.presentation.usecase
+
+import ch.protonmail.android.mailcommon.domain.model.AvailableActions
+import ch.protonmail.android.mailcommon.domain.model.ConversationId
+import ch.protonmail.android.mailconversation.domain.usecase.GetConversationAvailableActions
+import ch.protonmail.android.maillabel.domain.model.LabelId
+import ch.protonmail.android.mailmessage.domain.model.MessageId
+import ch.protonmail.android.mailmessage.domain.usecase.GetMessageAvailableActions
+import ch.protonmail.android.mailmessage.domain.usecase.ObserveMessage
+import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.DetailMoreActionsBottomSheetState.MessageDetailMoreActionsBottomSheetEvent
+import kotlinx.coroutines.flow.firstOrNull
+import me.proton.core.domain.entity.UserId
+import javax.inject.Inject
+
+class GetMoreActionsBottomSheetData @Inject constructor(
+    private val getMessageAvailableActions: GetMessageAvailableActions,
+    private val getConversationAvailableActions: GetConversationAvailableActions,
+    private val observeMessage: ObserveMessage
+) {
+
+    suspend fun forMessage(
+        userId: UserId,
+        labelId: LabelId,
+        messageId: MessageId
+    ): MessageDetailMoreActionsBottomSheetEvent.DataLoaded? =
+        getMessageAvailableActions(userId, labelId, listOf(messageId)).map {
+            buildBottomSheetActionData(userId, messageId, it)
+        }.getOrNull()
+
+    suspend fun forConversation(
+        userId: UserId,
+        labelId: LabelId,
+        conversationId: ConversationId
+    ): MessageDetailMoreActionsBottomSheetEvent.DataLoaded? =
+        getConversationAvailableActions(userId, labelId, listOf(conversationId)).map {
+            null
+        }.getOrNull()
+
+    private suspend fun buildBottomSheetActionData(
+        userId: UserId,
+        messageId: MessageId,
+        availableActions: AvailableActions
+    ): MessageDetailMoreActionsBottomSheetEvent.DataLoaded? {
+        val message = observeMessage(userId, messageId).firstOrNull()?.getOrNull() ?: return null
+
+        return MessageDetailMoreActionsBottomSheetEvent.DataLoaded(
+            messageSender = message.sender.name,
+            messageSubject = message.subject,
+            messageId = message.messageId.id,
+            participantsCount = message.allRecipientsDeduplicated.size
+        )
+    }
+}
