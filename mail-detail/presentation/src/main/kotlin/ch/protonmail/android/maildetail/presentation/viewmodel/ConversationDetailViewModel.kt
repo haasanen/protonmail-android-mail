@@ -36,6 +36,7 @@ import ch.protonmail.android.mailcommon.presentation.model.BottomBarEvent
 import ch.protonmail.android.mailcontact.domain.usecase.FindContactByEmail
 import ch.protonmail.android.mailcontact.domain.usecase.ObserveContacts
 import ch.protonmail.android.mailconversation.domain.usecase.DeleteConversations
+import ch.protonmail.android.mailconversation.domain.usecase.GetConversationMoveToLocations
 import ch.protonmail.android.mailconversation.domain.usecase.ObserveConversation
 import ch.protonmail.android.mailconversation.domain.usecase.StarConversations
 import ch.protonmail.android.mailconversation.domain.usecase.UnStarConversations
@@ -93,9 +94,10 @@ import ch.protonmail.android.maildetail.presentation.usecase.LoadDataForMessageL
 import ch.protonmail.android.maildetail.presentation.usecase.OnMessageLabelAsConfirmed
 import ch.protonmail.android.maildetail.presentation.usecase.PrintMessage
 import ch.protonmail.android.maillabel.domain.model.LabelId
+import ch.protonmail.android.maillabel.domain.model.MailLabel
+import ch.protonmail.android.maillabel.domain.model.MailLabels
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.maillabel.domain.usecase.ObserveCustomMailLabels
-import ch.protonmail.android.maillabel.domain.usecase.ObserveExclusiveDestinationMailLabels
 import ch.protonmail.android.maillabel.presentation.model.LabelSelectedState
 import ch.protonmail.android.maillabel.presentation.toCustomUiModel
 import ch.protonmail.android.maillabel.presentation.toUiModels
@@ -134,7 +136,6 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import ch.protonmail.android.mailcontact.domain.model.Contact
@@ -160,7 +161,7 @@ class ConversationDetailViewModel @Inject constructor(
     private val observeConversation: ObserveConversation,
     private val observeConversationMessages: ObserveConversationMessages,
     private val observeDetailActions: ObserveConversationDetailActions,
-    private val observeDestinationMailLabels: ObserveExclusiveDestinationMailLabels,
+    private val getConversationMoveToLocations: GetConversationMoveToLocations,
     private val observeCustomMailLabels: ObserveCustomMailLabels,
     private val observeMessage: ObserveMessage,
     private val observeMessageAttachmentStatus: ObserveMessageAttachmentStatus,
@@ -471,25 +472,39 @@ class ConversationDetailViewModel @Inject constructor(
     }
 
     private fun showMoveToBottomSheetAndLoadData(initialEvent: ConversationDetailViewAction) {
-        primaryUserId.flatMapLatest { userId ->
-            observeDestinationMailLabels(userId).mapLatest { folders ->
-                ConversationDetailEvent.ConversationBottomSheetEvent(
-                    MoveToBottomSheetState.MoveToBottomSheetEvent.ActionData(
-                        moveToDestinations = folders.toUiModels().let {
-                            it.folders + it.systemLabels
-                        }.toImmutableList(),
-                        messageIdInConversation = when (initialEvent) {
-                            is ConversationDetailViewAction.RequestMessageMoveToBottomSheet -> initialEvent.messageId
-                            else -> null
-                        }
-                    )
-                )
-            }
-        }.onStart {
+        viewModelScope.launch {
+            Timber.v("detail-actions: move to bottom sheet requested")
             emitNewStateFrom(initialEvent)
-        }.onEach { event ->
-            emitNewStateFrom(event)
-        }.launchIn(viewModelScope)
+
+            val userId = primaryUserId.first()
+            val labelId = filterByLocation ?: return@launch
+
+            getConversationMoveToLocations(userId, labelId, listOf(conversationId)).fold(
+                ifLeft = {
+                    Timber.e("detail-actions: failed to load the bottom-sheet actions: $it")
+                },
+                ifRight = { actions ->
+                    Timber.v("detail-actions move to locations: $actions")
+                    val systemActions = actions.filterIsInstance<MailLabel.System>()
+                    val customActions = actions.filterIsInstance<MailLabel.Custom>()
+                    val mailLabels = MailLabels(systemActions, customActions, emptyList())
+
+                    val event = ConversationDetailEvent.ConversationBottomSheetEvent(
+                        MoveToBottomSheetState.MoveToBottomSheetEvent.ActionData(
+                            moveToDestinations = mailLabels.toUiModels().let {
+                                it.folders + it.systemLabels
+                            }.toImmutableList(),
+                            messageIdInConversation = when (initialEvent) {
+                                is ConversationDetailViewAction.RequestMessageMoveToBottomSheet ->
+                                    initialEvent.messageId
+                                else -> null
+                            }
+                        )
+                    )
+                    emitNewStateFrom(event)
+                }
+            )
+        }
     }
 
     private fun showContactActionsBottomSheetAndLoadData(action: RequestContactActionsBottomSheet) {
@@ -629,7 +644,6 @@ class ConversationDetailViewModel @Inject constructor(
             emitNewStateFrom(operation)
         }
     }
-
 
     private fun LabelAsBottomSheetState.Data.getLabelSelectionState(): LabelSelectionList {
         val selectedLabels = this.labelUiModelsWithSelectedState

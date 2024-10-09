@@ -45,6 +45,7 @@ import ch.protonmail.android.mailcontact.domain.usecase.FindContactByEmail
 import ch.protonmail.android.mailcontact.domain.usecase.ObserveContacts
 import ch.protonmail.android.mailconversation.domain.sample.ConversationSample
 import ch.protonmail.android.mailconversation.domain.usecase.DeleteConversations
+import ch.protonmail.android.mailconversation.domain.usecase.GetConversationMoveToLocations
 import ch.protonmail.android.mailconversation.domain.usecase.ObserveConversation
 import ch.protonmail.android.mailconversation.domain.usecase.StarConversations
 import ch.protonmail.android.mailconversation.domain.usecase.UnStarConversations
@@ -87,11 +88,9 @@ import ch.protonmail.android.maildetail.presentation.usecase.LoadDataForMessageL
 import ch.protonmail.android.maildetail.presentation.usecase.OnMessageLabelAsConfirmed
 import ch.protonmail.android.maildetail.presentation.usecase.PrintMessage
 import ch.protonmail.android.maillabel.domain.model.LabelId
-import ch.protonmail.android.maillabel.domain.model.MailLabels
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.maillabel.domain.sample.LabelSample
 import ch.protonmail.android.maillabel.domain.usecase.ObserveCustomMailLabels
-import ch.protonmail.android.maillabel.domain.usecase.ObserveExclusiveDestinationMailLabels
 import ch.protonmail.android.maillabel.presentation.sample.LabelUiModelWithSelectedStateSample
 import ch.protonmail.android.mailmessage.domain.model.ConversationMessages
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
@@ -230,15 +229,7 @@ class ConversationDetailViewModelTest {
     private val observePrimaryUserId: ObservePrimaryUserId = mockk {
         every { this@mockk() } returns flowOf(UserIdSample.Primary)
     }
-    private val observeMailLabels = mockk<ObserveExclusiveDestinationMailLabels> {
-        every { this@mockk.invoke(UserIdSample.Primary) } returns flowOf(
-            MailLabels(
-                system = listOf(MailLabelTestData.spamSystemLabel),
-                folders = listOf(MailLabelTestData.buildCustomFolder(id = "folder1")),
-                labels = listOf()
-            )
-        )
-    }
+    private val getConversationMoveToLocations = mockk<GetConversationMoveToLocations>()
     private val observeCustomMailLabels = mockk<ObserveCustomMailLabels> {
         every { this@mockk.invoke(UserIdSample.Primary) } returns flowOf(
             MailLabelTestData.listOfCustomLabels.right()
@@ -322,7 +313,7 @@ class ConversationDetailViewModelTest {
             observeConversation = observeConversation,
             observeConversationMessages = observeConversationMessages,
             observeDetailActions = observeConversationDetailActions,
-            observeDestinationMailLabels = observeMailLabels,
+            getConversationMoveToLocations = getConversationMoveToLocations,
             observeCustomMailLabels = observeCustomMailLabels,
             observeMessage = observeMessage,
             observeMessageAttachmentStatus = observeAttachmentStatus,

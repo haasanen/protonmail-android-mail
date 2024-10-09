@@ -50,11 +50,11 @@ import ch.protonmail.android.mailcommon.presentation.sample.ParticipantAvatarSam
 import ch.protonmail.android.mailcommon.presentation.ui.delete.DeleteDialogState
 import ch.protonmail.android.mailcommon.presentation.usecase.FormatExtendedTime
 import ch.protonmail.android.mailcommon.presentation.usecase.FormatShortTime
-import ch.protonmail.android.mailcommon.presentation.usecase.GetInitial
 import ch.protonmail.android.mailcontact.domain.usecase.FindContactByEmail
 import ch.protonmail.android.mailcontact.domain.usecase.ObserveContacts
 import ch.protonmail.android.mailconversation.domain.sample.ConversationSample
 import ch.protonmail.android.mailconversation.domain.usecase.DeleteConversations
+import ch.protonmail.android.mailconversation.domain.usecase.GetConversationMoveToLocations
 import ch.protonmail.android.mailconversation.domain.usecase.ObserveConversation
 import ch.protonmail.android.mailconversation.domain.usecase.StarConversations
 import ch.protonmail.android.mailconversation.domain.usecase.UnStarConversations
@@ -121,9 +121,7 @@ import ch.protonmail.android.maillabel.domain.model.MailLabels
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.maillabel.domain.sample.LabelIdSample
 import ch.protonmail.android.maillabel.domain.sample.LabelSample
-import ch.protonmail.android.maillabel.domain.usecase.GetRootLabel
 import ch.protonmail.android.maillabel.domain.usecase.ObserveCustomMailLabels
-import ch.protonmail.android.maillabel.domain.usecase.ObserveExclusiveDestinationMailLabels
 import ch.protonmail.android.maillabel.presentation.model.LabelSelectedState
 import ch.protonmail.android.maillabel.presentation.sample.LabelUiModelWithSelectedStateSample
 import ch.protonmail.android.maillabel.presentation.toUiModels
@@ -237,15 +235,7 @@ class ConversationDetailViewModelIntegrationTest {
     private val observePrimaryUserId: ObservePrimaryUserId = mockk {
         every { this@mockk() } returns flowOf(UserIdSample.Primary)
     }
-    private val observeMailLabels = mockk<ObserveExclusiveDestinationMailLabels> {
-        every { this@mockk.invoke(UserIdSample.Primary) } returns flowOf(
-            MailLabels(
-                system = listOf(MailLabelTestData.spamSystemLabel),
-                folders = listOf(MailLabelTestData.buildCustomFolder(id = "folder1")),
-                labels = listOf()
-            )
-        )
-    }
+    private val getConversationMoveToLocations = mockk<GetConversationMoveToLocations>()
     private val observeCustomMailLabelsUseCase = mockk<ObserveCustomMailLabels> {
         every { this@mockk.invoke(UserIdSample.Primary) } returns flowOf(
             MailLabelTestData.listOfCustomLabels.right()
@@ -303,7 +293,6 @@ class ConversationDetailViewModelIntegrationTest {
     private val getCurrentEpochTimeDuration: GetCurrentEpochTimeDuration = mockk {
         coEvery { this@mockk.invoke() } returns Duration.parse("PT0S")
     }
-    private val getRootLabel: GetRootLabel = mockk()
     private val shouldShowEmbeddedImages = mockk<ShouldShowEmbeddedImages> {
         coEvery { this@mockk.invoke(userId) } returns true
     }
@@ -342,7 +331,6 @@ class ConversationDetailViewModelIntegrationTest {
         mockk { every { this@mockk.invoke(any()) } returns TextUiModel("10:00") }
     private val formatExtendedTime: FormatExtendedTime =
         mockk { every { this@mockk.invoke(any()) } returns TextUiModel("10:00") }
-    private val getInitial = GetInitial()
     private val context = mockk<Context> {
         every { resources } returns mockk {
             every {
@@ -2081,10 +2069,15 @@ class ConversationDetailViewModelIntegrationTest {
             ),
             MessageSample.AugWeatherForecast.messageId
         )
+        val labelId = SystemLabelId.Archive.labelId
         coEvery { observeConversationMessages(userId, any()) } returns flowOf(messages.right())
         coEvery {
             observeMessage(userId, messageId)
         } returns flowOf(MessageSample.Invoice.right())
+        coEvery { getConversationMoveToLocations(userId, labelId, listOf(conversationId)) } returns listOf(
+            MailLabelTestData.spamSystemLabel,
+            MailLabelTestData.buildCustomFolder(id = "folder1")
+        ).right()
 
         // When
         val viewModel = buildConversationDetailViewModel()
@@ -2133,11 +2126,16 @@ class ConversationDetailViewModelIntegrationTest {
             MessageSample.AugWeatherForecast.messageId
         )
         val messageId = MessageSample.Invoice.messageId
+        val labelId = SystemLabelId.Archive.labelId
         coEvery { observeConversationMessages(userId, any()) } returns flowOf(messages.right())
         coEvery {
             observeMessage(userId, messageId)
         } returns flowOf(MessageSample.Invoice.right())
         coEvery { moveMessage(userId, messageId, SystemLabelId.Spam.labelId) } returns Unit.right()
+        coEvery { getConversationMoveToLocations(userId, labelId, listOf(conversationId)) } returns listOf(
+            MailLabelTestData.spamSystemLabel,
+            MailLabelTestData.buildCustomFolder(id = "folder1")
+        ).right()
 
         // When
         val viewModel = buildConversationDetailViewModel()
@@ -2188,7 +2186,6 @@ class ConversationDetailViewModelIntegrationTest {
         observeConversation: ObserveConversation = observeConversationUseCase,
         observeConversationMessages: ObserveConversationMessages = this.observeConversationMessages,
         observeDetailActions: ObserveConversationDetailActions = observeConversationDetailActions,
-        observeDestinationMailLabels: ObserveExclusiveDestinationMailLabels = observeMailLabels,
         observeCustomMailLabels: ObserveCustomMailLabels = observeCustomMailLabelsUseCase,
         observeMessageAttachmentStatus: ObserveMessageAttachmentStatus = observeAttachmentStatus,
         getAttachmentStatus: GetDownloadingAttachmentsForMessages = getDownloadingAttachmentsForMessages,
@@ -2218,7 +2215,7 @@ class ConversationDetailViewModelIntegrationTest {
         observeConversation = observeConversation,
         observeConversationMessages = observeConversationMessages,
         observeDetailActions = observeDetailActions,
-        observeDestinationMailLabels = observeDestinationMailLabels,
+        getConversationMoveToLocations = getConversationMoveToLocations,
         observeCustomMailLabels = observeCustomMailLabels,
         observeMessage = observeMessage,
         observeMessageAttachmentStatus = observeMessageAttachmentStatus,
