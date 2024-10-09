@@ -20,7 +20,7 @@ package ch.protonmail.android.mailcomposer.presentation.mapper
 
 import ch.protonmail.android.mailcomposer.presentation.model.RecipientUiModel
 import ch.protonmail.android.mailmessage.domain.model.Participant
-import me.proton.core.contact.domain.entity.Contact
+import ch.protonmail.android.mailcontact.domain.model.Contact
 import me.proton.core.util.kotlin.equalsNoCase
 import me.proton.core.util.kotlin.takeIfNotBlank
 import javax.inject.Inject

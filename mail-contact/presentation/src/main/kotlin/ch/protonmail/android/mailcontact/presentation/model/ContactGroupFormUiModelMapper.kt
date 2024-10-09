@@ -23,7 +23,7 @@ import arrow.core.getOrElse
 import ch.protonmail.android.mailcommon.presentation.mapper.ColorMapper
 import ch.protonmail.android.mailcommon.presentation.usecase.GetInitials
 import ch.protonmail.android.mailcontact.domain.model.ContactGroup
-import me.proton.core.contact.domain.entity.ContactEmail
+import ch.protonmail.android.mailcontact.domain.model.ContactEmail
 import javax.inject.Inject
 
 class ContactGroupFormUiModelMapper @Inject constructor(

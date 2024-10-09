@@ -46,7 +46,6 @@ dependencies {
     implementation(KotlinX.immutableCollections)
 
     implementation(Proton.Core.account)
-    implementation(Proton.Core.contact)
     implementation(Proton.Core.domain)
     implementation(Proton.Core.featureFlag)
     implementation(Proton.Core.mailSettings)
@@ -61,5 +60,6 @@ dependencies {
     implementation(project(":mail-mailbox"))
     implementation(project(":mail-message"))
     implementation(project(":mail-detail"))
+    implementation(project(":mail-contact"))
 
 }

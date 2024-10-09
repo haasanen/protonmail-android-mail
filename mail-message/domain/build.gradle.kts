@@ -44,7 +44,6 @@ android {
 
 dependencies {
     implementation(Dependencies.moduleDomainLibs)
-    implementation(Proton.Core.contact)
     implementation(Proton.Core.user)
     implementation(Proton.Core.mailSendPreferences)
     implementation(KotlinX.serializationJson)
@@ -55,6 +54,8 @@ dependencies {
     implementation(project(":mail-pagination:domain"))
     implementation(project(":mail-common:domain"))
     implementation(project(":mail-label:domain"))
+    implementation(project(":mail-contact:domain"))
+
 
     testImplementation(Dependencies.testLibs)
     testImplementation(project(":test:test-data"))

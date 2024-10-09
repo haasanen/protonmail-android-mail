@@ -26,7 +26,7 @@ import ch.protonmail.android.uicomponents.bottomsheet.bottomSheetHeightConstrain
 import kotlinx.coroutines.launch
 import me.proton.core.compose.component.ProtonCenteredProgress
 import me.proton.core.compose.component.ProtonModalBottomSheetLayout
-import me.proton.core.contact.domain.entity.ContactId
+import ch.protonmail.android.mailcontact.domain.model.ContactId
 import ch.protonmail.android.maillabel.domain.model.LabelId
 
 @OptIn(ExperimentalMaterialApi::class)

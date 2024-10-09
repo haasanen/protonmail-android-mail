@@ -44,7 +44,6 @@ android {
 }
 
 dependencies {
-    implementation(Proton.Core.contact)
 
     implementation(project(":mail-contact:data"))
     implementation(project(":mail-contact:domain"))

@@ -19,8 +19,8 @@
 package ch.protonmail.android.mailcontact.presentation.model
 
 import ch.protonmail.android.mailcommon.presentation.usecase.GetInitials
-import me.proton.core.contact.domain.entity.Contact
-import me.proton.core.contact.domain.entity.ContactEmailId
+import ch.protonmail.android.mailcontact.domain.model.Contact
+import ch.protonmail.android.mailcontact.domain.model.ContactEmailId
 import javax.inject.Inject
 
 class ManageMembersUiModelMapper @Inject constructor(

@@ -19,7 +19,7 @@
 package ch.protonmail.android.mailcontact.presentation.model
 
 import androidx.compose.ui.graphics.Color
-import me.proton.core.contact.domain.entity.ContactEmailId
+import ch.protonmail.android.mailcontact.domain.model.ContactEmailId
 import ch.protonmail.android.maillabel.domain.model.LabelId
 
 data class ContactGroupFormUiModel(

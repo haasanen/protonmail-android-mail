@@ -32,7 +32,7 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import me.proton.core.contact.domain.entity.ContactEmailId
+import ch.protonmail.android.mailcontact.domain.model.ContactEmailId
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import javax.inject.Inject

@@ -66,7 +66,6 @@ dependencies {
     debugImplementation(Dependencies.composeDebugLibs)
 
     implementation(Dependencies.modulePresentationLibs)
-    implementation(Proton.Core.contact)
     implementation(Proton.Core.key)
     implementation(Proton.Core.user)
     implementation(Proton.Core.account)

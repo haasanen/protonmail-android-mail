@@ -21,7 +21,7 @@ package ch.protonmail.android.mailcontact.presentation.model
 import android.graphics.Bitmap
 import androidx.compose.ui.graphics.Color
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
-import me.proton.core.contact.domain.entity.ContactId
+import ch.protonmail.android.mailcontact.domain.model.ContactId
 
 data class ContactDetailsUiModel(
     val id: ContactId,

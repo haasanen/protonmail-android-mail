@@ -25,8 +25,8 @@ import ch.protonmail.android.mailcontact.domain.model.DecryptedContact
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import me.proton.core.contact.domain.entity.ContactCard
-import me.proton.core.contact.domain.repository.ContactRepository
+import ch.protonmail.android.mailcontact.domain.model.ContactCard
+import ch.protonmail.android.mailcontact.domain.repository.ContactRepository
 import me.proton.core.domain.entity.UserId
 import me.proton.core.network.domain.ApiException
 import me.proton.core.network.domain.ApiResult

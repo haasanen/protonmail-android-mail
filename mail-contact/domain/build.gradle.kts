@@ -44,13 +44,12 @@ dependencies {
     implementation(Dependencies.moduleDomainLibs)
     implementation(KotlinX.serializationJson)
 
-    implementation(Proton.Core.contact)
+    implementation(EzVCard.ezVCard)
     implementation(Proton.Core.user)
 
     implementation(project(":mail-common:domain"))
     implementation(project(":mail-label:domain"))
 
     testImplementation(Dependencies.testLibs)
-    testImplementation(Proton.Core.contact)
     testImplementation(project(":test:test-data"))
 }

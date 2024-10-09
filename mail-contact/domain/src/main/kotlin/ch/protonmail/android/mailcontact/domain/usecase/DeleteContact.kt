@@ -21,7 +21,7 @@ package ch.protonmail.android.mailcontact.domain.usecase
 import arrow.core.Either
 import ch.protonmail.android.mailcontact.domain.repository.ContactDetailRepository
 import ch.protonmail.android.mailcontact.domain.usecase.DeleteContact.DeleteContactErrors.FailedToDeleteContact
-import me.proton.core.contact.domain.entity.ContactId
+import ch.protonmail.android.mailcontact.domain.model.ContactId
 import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 

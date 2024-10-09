@@ -22,7 +22,7 @@ import arrow.core.Either
 import arrow.core.raise.either
 import ch.protonmail.android.mailcontact.domain.mapper.isAlreadyExistsApiError
 import ch.protonmail.android.maillabel.domain.model.ColorRgbHex
-import me.proton.core.contact.domain.entity.ContactEmailId
+import ch.protonmail.android.mailcontact.domain.model.ContactEmailId
 import me.proton.core.domain.entity.UserId
 import ch.protonmail.android.maillabel.domain.model.LabelType
 import ch.protonmail.android.maillabel.domain.model.NewLabel

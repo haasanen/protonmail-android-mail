@@ -19,10 +19,10 @@
 package ch.protonmail.android.testdata.contact
 
 import ch.protonmail.android.testdata.user.UserIdTestData
-import me.proton.core.contact.domain.entity.Contact
-import me.proton.core.contact.domain.entity.ContactEmail
-import me.proton.core.contact.domain.entity.ContactEmailId
-import me.proton.core.contact.domain.entity.ContactId
+import ch.protonmail.android.mailcontact.domain.model.Contact
+import ch.protonmail.android.mailcontact.domain.model.ContactEmail
+import ch.protonmail.android.mailcontact.domain.model.ContactEmailId
+import ch.protonmail.android.mailcontact.domain.model.ContactId
 import me.proton.core.domain.entity.UserId
 
 object ContactTestData {

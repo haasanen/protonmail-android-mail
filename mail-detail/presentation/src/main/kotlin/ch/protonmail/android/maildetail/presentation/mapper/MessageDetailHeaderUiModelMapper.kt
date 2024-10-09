@@ -38,7 +38,7 @@ import ch.protonmail.android.mailmessage.domain.usecase.ResolveParticipantName
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
-import me.proton.core.contact.domain.entity.Contact
+import ch.protonmail.android.mailcontact.domain.model.Contact
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.seconds
 

@@ -26,7 +26,7 @@ import ch.protonmail.android.mailcontact.presentation.model.ContactDetailsGroups
 import ch.protonmail.android.mailcontact.presentation.model.ContactDetailsItem
 import ch.protonmail.android.mailcontact.presentation.model.ContactDetailsUiModel
 import ch.protonmail.android.mailcontact.presentation.model.ContactDetailsGroupLabel
-import me.proton.core.contact.domain.entity.ContactId
+import ch.protonmail.android.mailcontact.domain.model.ContactId
 
 object ContactDetailsPreviewData {
 

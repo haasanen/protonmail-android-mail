@@ -25,10 +25,10 @@ import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
-import me.proton.core.contact.domain.entity.Contact
-import me.proton.core.contact.domain.entity.ContactEmail
-import me.proton.core.contact.domain.entity.ContactEmailId
-import me.proton.core.contact.domain.entity.ContactId
+import ch.protonmail.android.mailcontact.domain.model.Contact
+import ch.protonmail.android.mailcontact.domain.model.ContactEmail
+import ch.protonmail.android.mailcontact.domain.model.ContactEmailId
+import ch.protonmail.android.mailcontact.domain.model.ContactId
 import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertIs

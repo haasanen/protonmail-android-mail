@@ -23,7 +23,7 @@ import ch.protonmail.android.mailmailbox.domain.model.MailboxItem
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItemType
 import ch.protonmail.android.mailmessage.domain.usecase.ResolveParticipantName
 import ch.protonmail.android.mailmessage.domain.usecase.ResolveParticipantNameResult
-import me.proton.core.contact.domain.entity.Contact
+import ch.protonmail.android.mailcontact.domain.model.Contact
 import javax.inject.Inject
 
 class GetParticipantsResolvedNames @Inject constructor(

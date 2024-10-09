@@ -24,7 +24,7 @@ import ch.protonmail.android.mailmessage.domain.model.Participant
 import ch.protonmail.android.mailmessage.domain.model.Recipient
 import ch.protonmail.android.mailmessage.domain.model.Sender
 import ch.protonmail.android.mailmessage.domain.usecase.ResolveParticipantName
-import me.proton.core.contact.domain.entity.Contact
+import ch.protonmail.android.mailcontact.domain.model.Contact
 import javax.inject.Inject
 
 class ParticipantUiModelMapper @Inject constructor(

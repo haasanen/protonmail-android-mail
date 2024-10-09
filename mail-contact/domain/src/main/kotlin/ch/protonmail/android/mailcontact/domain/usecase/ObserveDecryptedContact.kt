@@ -26,9 +26,9 @@ import ch.protonmail.android.mailcontact.domain.model.ContactGroupLabel
 import ch.protonmail.android.mailcontact.domain.model.DecryptedContact
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
-import me.proton.core.contact.domain.entity.ContactId
-import me.proton.core.contact.domain.entity.ContactWithCards
-import me.proton.core.contact.domain.repository.ContactRepository
+import ch.protonmail.android.mailcontact.domain.model.ContactId
+import ch.protonmail.android.mailcontact.domain.model.ContactWithCards
+import ch.protonmail.android.mailcontact.domain.repository.ContactRepository
 import me.proton.core.domain.entity.UserId
 import ch.protonmail.android.maillabel.domain.model.Label
 import ch.protonmail.android.maillabel.domain.model.LabelType

@@ -22,8 +22,8 @@ import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcommon.presentation.usecase.GetInitials
 import ch.protonmail.android.mailcontact.presentation.R
-import me.proton.core.contact.domain.entity.Contact
-import me.proton.core.contact.domain.entity.ContactEmail
+import ch.protonmail.android.mailcontact.domain.model.Contact
+import ch.protonmail.android.mailcontact.domain.model.ContactEmail
 import me.proton.core.util.kotlin.takeIfNotBlank
 import javax.inject.Inject
 

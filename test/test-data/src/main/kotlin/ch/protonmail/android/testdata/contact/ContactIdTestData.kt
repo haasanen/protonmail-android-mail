@@ -18,8 +18,8 @@
 
 package ch.protonmail.android.testdata.contact
 
-import me.proton.core.contact.domain.entity.ContactEmailId
-import me.proton.core.contact.domain.entity.ContactId
+import ch.protonmail.android.mailcontact.domain.model.ContactEmailId
+import ch.protonmail.android.mailcontact.domain.model.ContactId
 
 object ContactIdTestData {
 

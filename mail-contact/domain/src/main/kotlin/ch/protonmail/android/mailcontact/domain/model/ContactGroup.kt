@@ -18,7 +18,6 @@
 
 package ch.protonmail.android.mailcontact.domain.model
 
-import me.proton.core.contact.domain.entity.ContactEmail
 import ch.protonmail.android.maillabel.domain.model.LabelId
 
 data class ContactGroup(

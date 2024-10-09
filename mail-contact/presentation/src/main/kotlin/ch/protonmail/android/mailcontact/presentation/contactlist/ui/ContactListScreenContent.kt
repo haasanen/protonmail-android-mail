@@ -56,6 +56,9 @@ internal fun ContactListScreenContent(
                         actions = actions
                     )
                 }
+
+                is ContactListItemUiModel.ContactGroup -> {
+                }
             }
         }
     }

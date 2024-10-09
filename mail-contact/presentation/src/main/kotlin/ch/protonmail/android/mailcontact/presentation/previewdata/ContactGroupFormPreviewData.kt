@@ -21,7 +21,7 @@ package ch.protonmail.android.mailcontact.presentation.previewdata
 import androidx.compose.ui.graphics.Color
 import ch.protonmail.android.mailcontact.presentation.model.ContactGroupFormMember
 import ch.protonmail.android.mailcontact.presentation.model.ContactGroupFormUiModel
-import me.proton.core.contact.domain.entity.ContactEmailId
+import ch.protonmail.android.mailcontact.domain.model.ContactEmailId
 import ch.protonmail.android.maillabel.domain.model.LabelId
 
 object ContactGroupFormPreviewData {

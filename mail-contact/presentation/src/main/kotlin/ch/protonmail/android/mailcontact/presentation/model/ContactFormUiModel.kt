@@ -22,7 +22,7 @@ import java.time.LocalDate
 import android.graphics.Bitmap
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcontact.presentation.R
-import me.proton.core.contact.domain.entity.ContactId
+import ch.protonmail.android.mailcontact.domain.model.ContactId
 import kotlin.random.Random
 
 const val CONTACT_NAME_MAX_LENGTH = 190

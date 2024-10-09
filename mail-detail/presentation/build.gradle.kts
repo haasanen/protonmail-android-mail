@@ -62,7 +62,6 @@ dependencies {
     debugImplementation(Dependencies.composeDebugLibs)
 
     implementation(Dependencies.modulePresentationLibs)
-    implementation(Proton.Core.contactDomain)
 
     implementation(project(":mail-detail:domain"))
     implementation(project(":mail-common:domain"))

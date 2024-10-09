@@ -23,7 +23,7 @@ import arrow.core.getOrElse
 import arrow.core.left
 import ch.protonmail.android.mailcontact.domain.mapper.isContactLimitReachedApiError
 import ch.protonmail.android.mailcontact.domain.model.DecryptedContact
-import me.proton.core.contact.domain.repository.ContactRepository
+import ch.protonmail.android.mailcontact.domain.repository.ContactRepository
 import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 

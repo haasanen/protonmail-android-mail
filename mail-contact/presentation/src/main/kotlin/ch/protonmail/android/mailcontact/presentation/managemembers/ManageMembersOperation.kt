@@ -19,7 +19,7 @@
 package ch.protonmail.android.mailcontact.presentation.managemembers
 
 import ch.protonmail.android.mailcontact.presentation.model.ManageMembersUiModel
-import me.proton.core.contact.domain.entity.ContactEmailId
+import ch.protonmail.android.mailcontact.domain.model.ContactEmailId
 
 sealed interface ManageMembersOperation
 

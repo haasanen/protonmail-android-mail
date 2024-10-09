@@ -19,7 +19,7 @@
 package ch.protonmail.android.mailcontact.domain.repository
 
 import arrow.core.Either
-import me.proton.core.contact.domain.entity.ContactId
+import ch.protonmail.android.mailcontact.domain.model.ContactId
 import me.proton.core.domain.entity.UserId
 
 interface ContactDetailRepository {

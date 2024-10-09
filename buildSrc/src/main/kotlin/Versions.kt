@@ -92,6 +92,11 @@ object Versions {
         const val detekt = "1.23.5"
     }
 
+    object EzVCard {
+
+        const val ezVCard = "0.11.3"
+    }
+
     object Firebase {
 
         const val bom = "32.3.1"

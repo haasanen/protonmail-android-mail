@@ -24,8 +24,8 @@ import ch.protonmail.android.mailcommon.domain.mapper.mapToEither
 import ch.protonmail.android.mailcontact.domain.model.ContactGroup
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
-import me.proton.core.contact.domain.entity.ContactEmail
-import me.proton.core.contact.domain.repository.ContactRepository
+import ch.protonmail.android.mailcontact.domain.model.ContactEmail
+import ch.protonmail.android.mailcontact.domain.repository.ContactRepository
 import me.proton.core.domain.entity.UserId
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.LabelType

@@ -116,7 +116,7 @@ import me.proton.core.compose.component.ProtonSnackbarType
 import me.proton.core.compose.theme.ProtonDimens
 import me.proton.core.compose.theme.ProtonTheme
 import me.proton.core.compose.theme.ProtonTheme3
-import me.proton.core.contact.domain.entity.ContactId
+import ch.protonmail.android.mailcontact.domain.model.ContactId
 import timber.log.Timber
 
 @OptIn(ExperimentalMaterialApi::class)

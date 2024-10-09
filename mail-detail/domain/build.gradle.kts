@@ -47,13 +47,13 @@ android {
 dependencies {
     kapt(Dependencies.appAnnotationProcessors)
 
-    implementation(Proton.Core.contactDomain)
     implementation(Proton.Core.mailSettings)
     implementation(Proton.Core.presentation)
     implementation(Proton.Core.user)
 
     implementation(Dependencies.moduleDomainLibs)
     implementation(AndroidX.Hilt.work)
+    implementation(Jsoup.jsoup)
 
     implementation(project(":mail-conversation:domain"))
     implementation(project(":mail-message:domain"))

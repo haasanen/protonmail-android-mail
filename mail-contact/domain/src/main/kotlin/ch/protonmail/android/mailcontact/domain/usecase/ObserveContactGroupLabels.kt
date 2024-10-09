@@ -19,25 +19,17 @@
 package ch.protonmail.android.mailcontact.domain.usecase
 
 import arrow.core.Either
-import ch.protonmail.android.mailcommon.domain.mapper.mapToEither
+import arrow.core.right
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.mapLatest
 import me.proton.core.domain.entity.UserId
 import ch.protonmail.android.maillabel.domain.model.Label
-import ch.protonmail.android.maillabel.domain.model.LabelType
-import ch.protonmail.android.maillabel.domain.repository.LabelRepository
+import kotlinx.coroutines.flow.flowOf
 import javax.inject.Inject
 
-class ObserveContactGroupLabels @Inject constructor(
-    private val labelRepository: LabelRepository
-) {
+class ObserveContactGroupLabels @Inject constructor() {
 
     operator fun invoke(userId: UserId): Flow<Either<GetContactGroupLabelsError, List<Label>>> =
-        labelRepository.observeLabels(userId, LabelType.ContactGroup)
-            .mapToEither()
-            .mapLatest {
-                it.mapLeft { GetContactGroupLabelsError }
-            }
+        flowOf(emptyList<Label>().right())
 }
 
 object GetContactGroupLabelsError

@@ -45,7 +45,6 @@ android {
 
 dependencies {
     implementation(Dependencies.moduleDomainLibs)
-    implementation(Proton.Core.contact)
     implementation(Proton.Core.user)
     implementation(Proton.Core.mailSettings)
 
@@ -55,6 +54,7 @@ dependencies {
     implementation(project(":mail-common:domain"))
     implementation(project(":mail-message:domain"))
     implementation(project(":mail-settings:domain"))
+    implementation(project(":mail-contact:domain"))
 
     testImplementation(Dependencies.testLibs)
     testImplementation(project(":test:test-data"))

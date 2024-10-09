@@ -21,7 +21,7 @@ package ch.protonmail.android.mailcomposer.presentation.usecase
 import ch.protonmail.android.mailcomposer.presentation.model.ContactSuggestionUiModel
 import ch.protonmail.android.mailcontact.domain.model.ContactGroup
 import ch.protonmail.android.mailcontact.domain.model.DeviceContact
-import me.proton.core.contact.domain.entity.Contact
+import ch.protonmail.android.mailcontact.domain.model.Contact
 import me.proton.core.util.kotlin.takeIfNotBlank
 import javax.inject.Inject
 

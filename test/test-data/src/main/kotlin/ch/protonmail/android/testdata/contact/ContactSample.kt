@@ -19,7 +19,7 @@
 package ch.protonmail.android.testdata.contact
 
 import ch.protonmail.android.testdata.user.UserIdTestData
-import me.proton.core.contact.domain.entity.Contact
+import ch.protonmail.android.mailcontact.domain.model.Contact
 
 object ContactSample {
 

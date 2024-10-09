@@ -54,8 +54,6 @@ dependencies {
     implementation(project(":mail-common:domain"))
     implementation(project(":mail-label:domain"))
 
-    implementation(Proton.Core.contact)
-
     implementation(project(":mail-contact:domain"))
 
     testImplementation(Dependencies.testLibs)

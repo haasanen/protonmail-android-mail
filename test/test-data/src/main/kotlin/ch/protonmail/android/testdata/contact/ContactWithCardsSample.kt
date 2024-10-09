@@ -18,8 +18,8 @@
 
 package ch.protonmail.android.testdata.contact
 
-import me.proton.core.contact.domain.entity.ContactCard
-import me.proton.core.contact.domain.entity.ContactWithCards
+import ch.protonmail.android.mailcontact.domain.model.ContactCard
+import ch.protonmail.android.mailcontact.domain.model.ContactWithCards
 
 object ContactWithCardsSample {
 

@@ -30,12 +30,6 @@ import me.proton.core.account.data.entity.SessionEntity
 import me.proton.core.challenge.data.db.ChallengeConverters
 import me.proton.core.challenge.data.db.ChallengeDatabase
 import me.proton.core.challenge.data.entity.ChallengeFrameEntity
-import me.proton.core.contact.data.local.db.ContactConverters
-import me.proton.core.contact.data.local.db.ContactDatabase
-import me.proton.core.contact.data.local.db.entity.ContactCardEntity
-import me.proton.core.contact.data.local.db.entity.ContactEmailEntity
-import me.proton.core.contact.data.local.db.entity.ContactEmailLabelEntity
-import me.proton.core.contact.data.local.db.entity.ContactEntity
 import me.proton.core.crypto.android.keystore.CryptoConverters
 import me.proton.core.data.room.db.BaseDatabase
 import me.proton.core.data.room.db.CommonConverters
@@ -117,11 +111,6 @@ import me.proton.core.usersettings.data.entity.UserSettingsEntity
         // organization
         OrganizationEntity::class,
         OrganizationKeysEntity::class,
-        // contact
-        ContactEntity::class,
-        ContactCardEntity::class,
-        ContactEmailEntity::class,
-        ContactEmailLabelEntity::class,
         // event-manager
         EventMetadataEntity::class,
         // feature-flag
@@ -153,7 +142,6 @@ import me.proton.core.usersettings.data.entity.UserSettingsEntity
     CryptoConverters::class,
     HumanVerificationConverters::class,
     UserSettingsConverters::class,
-    ContactConverters::class,
     EventManagerConverters::class,
     ChallengeConverters::class,
     NotificationConverters::class,
@@ -171,7 +159,6 @@ abstract class AppDatabase :
     MailSettingsDatabase,
     UserSettingsDatabase,
     OrganizationDatabase,
-    ContactDatabase,
     EventMetadataDatabase,
     FeatureFlagDatabase,
     ChallengeDatabase,

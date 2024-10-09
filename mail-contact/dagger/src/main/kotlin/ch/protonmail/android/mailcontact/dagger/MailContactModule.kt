@@ -22,9 +22,11 @@ import ch.protonmail.android.mailcontact.data.ContactDetailRepositoryImpl
 import ch.protonmail.android.mailcontact.data.ContactGroupRepositoryImpl
 import ch.protonmail.android.mailcontact.data.DeviceContactsRepositoryImpl
 import ch.protonmail.android.mailcontact.data.DeviceContactsSuggestionsPromptImpl
+import ch.protonmail.android.mailcontact.data.repository.ContactRepositoryImpl
 import ch.protonmail.android.mailcontact.domain.DeviceContactsSuggestionsPrompt
 import ch.protonmail.android.mailcontact.domain.repository.ContactDetailRepository
 import ch.protonmail.android.mailcontact.domain.repository.ContactGroupRepository
+import ch.protonmail.android.mailcontact.domain.repository.ContactRepository
 import ch.protonmail.android.mailcontact.domain.repository.DeviceContactsRepository
 import dagger.Binds
 import dagger.Module
@@ -36,6 +38,10 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class MailContactModule {
+
+    @Binds
+    @Reusable
+    abstract fun bindContactRepository(impl: ContactRepositoryImpl): ContactRepository
 
     @Binds
     @Reusable

@@ -23,7 +23,7 @@ import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcontact.domain.model.GetContactError
 import kotlinx.coroutines.flow.firstOrNull
-import me.proton.core.contact.domain.entity.Contact
+import ch.protonmail.android.mailcontact.domain.model.Contact
 import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 

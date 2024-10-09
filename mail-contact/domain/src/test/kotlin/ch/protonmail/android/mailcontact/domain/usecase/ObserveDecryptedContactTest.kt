@@ -33,7 +33,7 @@ import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
-import me.proton.core.contact.domain.repository.ContactRepository
+import ch.protonmail.android.mailcontact.domain.repository.ContactRepository
 import me.proton.core.domain.arch.DataResult
 import me.proton.core.domain.arch.ResponseSource
 import ch.protonmail.android.maillabel.domain.model.LabelType

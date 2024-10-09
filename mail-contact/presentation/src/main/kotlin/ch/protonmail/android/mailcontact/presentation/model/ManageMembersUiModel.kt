@@ -18,7 +18,7 @@
 
 package ch.protonmail.android.mailcontact.presentation.model
 
-import me.proton.core.contact.domain.entity.ContactEmailId
+import ch.protonmail.android.mailcontact.domain.model.ContactEmailId
 
 data class ManageMembersUiModel(
     val id: ContactEmailId,
