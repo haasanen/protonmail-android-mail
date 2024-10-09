@@ -218,8 +218,8 @@ class ConversationDetailViewModel @Inject constructor(
             is RequestConversationLabelAsBottomSheet -> showConversationLabelAsBottomSheet(action)
             is RequestContactActionsBottomSheet -> showContactActionsBottomSheetAndLoadData(action)
             is LabelAsConfirmed -> onLabelAsConfirmed(action)
-            is ConversationDetailViewAction.RequestMoreActionsBottomSheet ->
-                showMoreActionsBottomSheetAndLoadData(action)
+            is ConversationDetailViewAction.RequestMessageMoreActionsBottomSheet ->
+                showMessageMoreActionsBottomSheet(action)
             is ConversationDetailViewAction.RequestMessageLabelAsBottomSheet -> showMessageLabelAsBottomSheet(action)
             is ConversationDetailViewAction.RequestMessageMoveToBottomSheet -> showMoveToBottomSheetAndLoadData(action)
 
@@ -636,8 +636,8 @@ class ConversationDetailViewModel @Inject constructor(
         )
     }
 
-    private fun showMoreActionsBottomSheetAndLoadData(
-        initialEvent: ConversationDetailViewAction.RequestMoreActionsBottomSheet
+    private fun showMessageMoreActionsBottomSheet(
+        initialEvent: ConversationDetailViewAction.RequestMessageMoreActionsBottomSheet
     ) {
         viewModelScope.launch {
             emitNewStateFrom(initialEvent)

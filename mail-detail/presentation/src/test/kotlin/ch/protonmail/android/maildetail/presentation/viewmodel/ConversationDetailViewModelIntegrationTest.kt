@@ -1443,7 +1443,7 @@ class ConversationDetailViewModelIntegrationTest {
             // When
             val viewModel = buildConversationDetailViewModel()
             viewModel.state.test {
-                viewModel.submit(ConversationDetailViewAction.RequestMoreActionsBottomSheet(messageId))
+                viewModel.submit(ConversationDetailViewAction.RequestMessageMoreActionsBottomSheet(messageId))
                 advanceUntilIdle()
 
                 // Then
@@ -1466,7 +1466,7 @@ class ConversationDetailViewModelIntegrationTest {
             // When
             val viewModel = buildConversationDetailViewModel()
             viewModel.state.test {
-                viewModel.submit(ConversationDetailViewAction.RequestMoreActionsBottomSheet(messageId))
+                viewModel.submit(ConversationDetailViewAction.RequestMessageMoreActionsBottomSheet(messageId))
                 advanceUntilIdle()
 
                 // Then
@@ -1781,7 +1781,7 @@ class ConversationDetailViewModelIntegrationTest {
             skipItems(4)
 
             viewModel.submit(
-                ConversationDetailViewAction.RequestMoreActionsBottomSheet(
+                ConversationDetailViewAction.RequestMessageMoreActionsBottomSheet(
                     MessageSample.Invoice.messageId
                 )
             )
@@ -1843,7 +1843,7 @@ class ConversationDetailViewModelIntegrationTest {
             skipItems(4)
 
             viewModel.submit(
-                ConversationDetailViewAction.RequestMoreActionsBottomSheet(
+                ConversationDetailViewAction.RequestMessageMoreActionsBottomSheet(
                     messageId
                 )
             )
@@ -1918,7 +1918,7 @@ class ConversationDetailViewModelIntegrationTest {
         viewModel.state.test {
             skipItems(4)
             viewModel.submit(
-                ConversationDetailViewAction.RequestMoreActionsBottomSheet(
+                ConversationDetailViewAction.RequestMessageMoreActionsBottomSheet(
                     MessageSample.Invoice.messageId
                 )
             )
@@ -1978,7 +1978,7 @@ class ConversationDetailViewModelIntegrationTest {
         viewModel.state.test {
             skipItems(4)
 
-            viewModel.submit(ConversationDetailViewAction.RequestMoreActionsBottomSheet(messageId))
+            viewModel.submit(ConversationDetailViewAction.RequestMessageMoreActionsBottomSheet(messageId))
             skipItems(2)
             viewModel.submit(ConversationDetailViewAction.TrashMessage(messageId))
 
@@ -2018,7 +2018,7 @@ class ConversationDetailViewModelIntegrationTest {
         viewModel.state.test {
             skipItems(4)
 
-            viewModel.submit(ConversationDetailViewAction.RequestMoreActionsBottomSheet(messageId))
+            viewModel.submit(ConversationDetailViewAction.RequestMessageMoreActionsBottomSheet(messageId))
             skipItems(2)
             viewModel.submit(ConversationDetailViewAction.ArchiveMessage(messageId))
 
@@ -2058,7 +2058,7 @@ class ConversationDetailViewModelIntegrationTest {
         viewModel.state.test {
             skipItems(4)
 
-            viewModel.submit(ConversationDetailViewAction.RequestMoreActionsBottomSheet(messageId))
+            viewModel.submit(ConversationDetailViewAction.RequestMessageMoreActionsBottomSheet(messageId))
             skipItems(2)
             viewModel.submit(ConversationDetailViewAction.MoveMessageToSpam(messageId))
 
@@ -2102,7 +2102,7 @@ class ConversationDetailViewModelIntegrationTest {
         viewModel.state.test {
             skipItems(4)
 
-            viewModel.submit(ConversationDetailViewAction.RequestMoreActionsBottomSheet(messageId))
+            viewModel.submit(ConversationDetailViewAction.RequestMessageMoreActionsBottomSheet(messageId))
             skipItems(2)
             viewModel.submit(ConversationDetailViewAction.RequestMessageMoveToBottomSheet(messageId))
 
@@ -2159,7 +2159,7 @@ class ConversationDetailViewModelIntegrationTest {
 
         viewModel.state.test {
             skipItems(4)
-            viewModel.submit(ConversationDetailViewAction.RequestMoreActionsBottomSheet(messageId))
+            viewModel.submit(ConversationDetailViewAction.RequestMessageMoreActionsBottomSheet(messageId))
             skipItems(2)
             viewModel.submit(ConversationDetailViewAction.RequestMessageMoveToBottomSheet(messageId))
             skipItems(2)

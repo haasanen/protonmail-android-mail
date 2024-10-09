@@ -161,7 +161,7 @@ sealed interface ConversationDetailViewAction : ConversationDetailOperation {
         val archiveSelected: Boolean,
         val messageId: MessageId?
     ) : ConversationDetailViewAction, AffectingBottomSheet
-    data class RequestMoreActionsBottomSheet(val messageId: MessageId) :
+    data class RequestMessageMoreActionsBottomSheet(val messageId: MessageId) :
         ConversationDetailViewAction, AffectingBottomSheet
 
     data class ExpandMessage(val messageId: MessageIdUiModel) : ConversationDetailViewAction

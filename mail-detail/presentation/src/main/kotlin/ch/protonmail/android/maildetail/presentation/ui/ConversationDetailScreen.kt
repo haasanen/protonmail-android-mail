@@ -318,7 +318,7 @@ fun ConversationDetailScreen(
                     viewModel.submit(ConversationDetailViewAction.ExpandOrCollapseMessageBody(it))
                 },
                 onMoreActionsClick = { messageId ->
-                    viewModel.submit(ConversationDetailViewAction.RequestMoreActionsBottomSheet(messageId))
+                    viewModel.submit(ConversationDetailViewAction.RequestMessageMoreActionsBottomSheet(messageId))
                 },
                 onLoadRemoteContent = {
                     viewModel.submit(ConversationDetailViewAction.LoadRemoteContent(MessageIdUiModel(it.id)))
