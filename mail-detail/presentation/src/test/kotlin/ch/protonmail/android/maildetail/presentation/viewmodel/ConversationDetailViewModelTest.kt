@@ -84,7 +84,7 @@ import ch.protonmail.android.maildetail.presentation.sample.ConversationDetailMe
 import ch.protonmail.android.maildetail.presentation.sample.ConversationDetailMetadataUiModelSample
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen
 import ch.protonmail.android.maildetail.presentation.usecase.GetEmbeddedImageAvoidDuplicatedExecution
-import ch.protonmail.android.maildetail.presentation.usecase.LoadDataForMessageLabelAsBottomSheet
+import ch.protonmail.android.maildetail.presentation.usecase.GetLabelAsBottomSheetData
 import ch.protonmail.android.maildetail.presentation.usecase.OnMessageLabelAsConfirmed
 import ch.protonmail.android.maildetail.presentation.usecase.PrintMessage
 import ch.protonmail.android.maillabel.domain.model.LabelId
@@ -294,7 +294,7 @@ class ConversationDetailViewModelTest {
     private val isProtonCalendarInstalled = mockk<IsProtonCalendarInstalled>()
     private val printMessage = mockk<PrintMessage>()
     private val markMessageAsUnread = mockk<MarkMessageAsUnread>()
-    private val loadDataForMessageLabelAsBottomSheet = mockk<LoadDataForMessageLabelAsBottomSheet>()
+    private val getLabelAsBottomSheetData = mockk<GetLabelAsBottomSheetData>()
     private val onMessageLabelAsConfirmed = mockk<OnMessageLabelAsConfirmed>()
     private val moveMessage = mockk<MoveMessage>()
 
@@ -338,7 +338,7 @@ class ConversationDetailViewModelTest {
             printMessage = printMessage,
             markMessageAsUnread = markMessageAsUnread,
             findContactByEmail = findContactByEmail,
-            loadDataForMessageLabelAsBottomSheet = loadDataForMessageLabelAsBottomSheet,
+            getLabelAsBottomSheetData = getLabelAsBottomSheetData,
             onMessageLabelAsConfirmed = onMessageLabelAsConfirmed,
             moveMessage = moveMessage
         )

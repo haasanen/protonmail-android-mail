@@ -31,13 +31,13 @@ import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import javax.inject.Inject
 
-class LoadDataForMessageLabelAsBottomSheet @Inject constructor(
+class GetLabelAsBottomSheetData @Inject constructor(
     private val observeCustomMailLabels: ObserveCustomMailLabels
 ) {
 
     @MissingRustApi
     // selectedLabels and partiallySelected labels to be received from rust
-    suspend operator fun invoke(
+    suspend fun forMessage(
         userId: UserId,
         messageId: MessageId
     ): LabelAsBottomSheetState.LabelAsBottomSheetEvent.ActionData {

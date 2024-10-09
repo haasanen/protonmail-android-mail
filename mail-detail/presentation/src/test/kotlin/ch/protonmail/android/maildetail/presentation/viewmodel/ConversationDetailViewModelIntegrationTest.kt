@@ -114,7 +114,7 @@ import ch.protonmail.android.maildetail.presentation.sample.ConversationDetailMe
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen
 import ch.protonmail.android.maildetail.presentation.usecase.ExtractMessageBodyWithoutQuote
 import ch.protonmail.android.maildetail.presentation.usecase.GetEmbeddedImageAvoidDuplicatedExecution
-import ch.protonmail.android.maildetail.presentation.usecase.LoadDataForMessageLabelAsBottomSheet
+import ch.protonmail.android.maildetail.presentation.usecase.GetLabelAsBottomSheetData
 import ch.protonmail.android.maildetail.presentation.usecase.OnMessageLabelAsConfirmed
 import ch.protonmail.android.maildetail.presentation.usecase.PrintMessage
 import ch.protonmail.android.maillabel.domain.model.MailLabels
@@ -314,7 +314,7 @@ class ConversationDetailViewModelIntegrationTest {
     private val attachmentUiModelMapper = AttachmentUiModelMapper()
     private val doesMessageBodyHaveEmbeddedImages = DoesMessageBodyHaveEmbeddedImages()
     private val doesMessageBodyHaveRemoteContent = DoesMessageBodyHaveRemoteContent()
-    private val loadDataForMessageLabelAsBottomSheet = LoadDataForMessageLabelAsBottomSheet(
+    private val getLabelAsBottomSheetData = GetLabelAsBottomSheetData(
         observeCustomMailLabelsUseCase
     )
     private val onMessageLabelAsConfirmed = OnMessageLabelAsConfirmed(
@@ -2240,7 +2240,7 @@ class ConversationDetailViewModelIntegrationTest {
         printMessage = printMessage,
         markMessageAsUnread = markMessageAsUnread,
         findContactByEmail = findContactByEmailAddress,
-        loadDataForMessageLabelAsBottomSheet = loadDataForMessageLabelAsBottomSheet,
+        getLabelAsBottomSheetData = getLabelAsBottomSheetData,
         onMessageLabelAsConfirmed = onMessageLabelAsConfirmed,
         moveMessage = moveMessage
     )

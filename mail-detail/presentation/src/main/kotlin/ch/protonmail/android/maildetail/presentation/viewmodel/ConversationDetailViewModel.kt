@@ -90,7 +90,7 @@ import ch.protonmail.android.maildetail.presentation.model.MessageIdUiModel
 import ch.protonmail.android.maildetail.presentation.reducer.ConversationDetailReducer
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen
 import ch.protonmail.android.maildetail.presentation.usecase.GetEmbeddedImageAvoidDuplicatedExecution
-import ch.protonmail.android.maildetail.presentation.usecase.LoadDataForMessageLabelAsBottomSheet
+import ch.protonmail.android.maildetail.presentation.usecase.GetLabelAsBottomSheetData
 import ch.protonmail.android.maildetail.presentation.usecase.OnMessageLabelAsConfirmed
 import ch.protonmail.android.maildetail.presentation.usecase.PrintMessage
 import ch.protonmail.android.maillabel.domain.model.LabelId
@@ -186,7 +186,7 @@ class ConversationDetailViewModel @Inject constructor(
     private val printMessage: PrintMessage,
     private val markMessageAsUnread: MarkMessageAsUnread,
     private val findContactByEmail: FindContactByEmail,
-    private val loadDataForMessageLabelAsBottomSheet: LoadDataForMessageLabelAsBottomSheet,
+    private val getLabelAsBottomSheetData: GetLabelAsBottomSheetData,
     private val onMessageLabelAsConfirmed: OnMessageLabelAsConfirmed,
     private val moveMessage: MoveMessage
 ) : ViewModel() {
@@ -566,7 +566,7 @@ class ConversationDetailViewModel @Inject constructor(
 
             val userId = primaryUserId.first()
             val event = ConversationDetailEvent.MessageBottomSheetEvent(
-                loadDataForMessageLabelAsBottomSheet(userId, initialEvent.messageId)
+                getLabelAsBottomSheetData.forMessage(userId, initialEvent.messageId)
             )
             emitNewStateFrom(event)
         }

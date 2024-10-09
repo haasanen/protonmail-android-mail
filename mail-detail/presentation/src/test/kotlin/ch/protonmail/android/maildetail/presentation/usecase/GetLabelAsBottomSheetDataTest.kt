@@ -19,7 +19,7 @@ import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class LoadDataForMessageLabelAsBottomSheetTest {
+class GetLabelAsBottomSheetDataTest {
 
     private val userId = UserIdTestData.userId
     private val messageId = MessageIdSample.PlainTextMessage
@@ -32,14 +32,14 @@ class LoadDataForMessageLabelAsBottomSheetTest {
             ).right()
         )
     }
-    private val loadDataForMessageLabelAsBottomSheet = LoadDataForMessageLabelAsBottomSheet(
+    private val getLabelAsBottomSheetData = GetLabelAsBottomSheetData(
         observeCustomMailLabels
     )
 
     @Test
     fun `should return bottom sheet action data when all operations succeeded`() = runTest {
         // When
-        val actual = loadDataForMessageLabelAsBottomSheet(userId, messageId)
+        val actual = loadLabelAsBottomSheetData(userId, messageId)
 
         // Then
         val expected = LabelAsBottomSheetState.LabelAsBottomSheetEvent.ActionData(
@@ -62,7 +62,7 @@ class LoadDataForMessageLabelAsBottomSheetTest {
         coEvery { observeCustomMailLabels(userId) } returns flowOf(DataError.Local.NoDataCached.left())
 
         // When
-        val actual = loadDataForMessageLabelAsBottomSheet(userId, messageId)
+        val actual = loadLabelAsBottomSheetData(userId, messageId)
 
         // Then
         val expected = LabelAsBottomSheetState.LabelAsBottomSheetEvent.ActionData(
