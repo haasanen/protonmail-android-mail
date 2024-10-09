@@ -53,11 +53,16 @@ object MailLabelTestData {
 
     val customLabelOne = buildCustomLabel("customLabel1")
     val customLabelTwo = buildCustomLabel("customLabel2")
+
+    val document = buildCustomLabel("document")
+    val label2021 = buildCustomLabel("Label2021")
+    val label2022 = buildCustomLabel("Label2022")
+
     val listOfCustomLabels = listOf(
         // See LabelIdSample
-        buildCustomLabel("document"),
-        buildCustomLabel("Label2021"),
-        buildCustomLabel("Label2022")
+        document,
+        label2021,
+        label2022
     )
 
     fun buildCustomLabel(

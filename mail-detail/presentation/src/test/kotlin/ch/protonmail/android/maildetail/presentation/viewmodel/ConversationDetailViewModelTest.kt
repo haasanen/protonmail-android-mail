@@ -90,7 +90,6 @@ import ch.protonmail.android.maildetail.presentation.usecase.PrintMessage
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.maillabel.domain.sample.LabelSample
-import ch.protonmail.android.maillabel.domain.usecase.ObserveCustomMailLabels
 import ch.protonmail.android.maillabel.presentation.sample.LabelUiModelWithSelectedStateSample
 import ch.protonmail.android.mailmessage.domain.model.ConversationMessages
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
@@ -117,7 +116,6 @@ import ch.protonmail.android.testdata.action.ActionUiModelTestData
 import ch.protonmail.android.testdata.contact.ContactSample
 import ch.protonmail.android.testdata.conversation.ConversationTestData
 import ch.protonmail.android.testdata.conversation.ConversationUiModelTestData
-import ch.protonmail.android.testdata.maillabel.MailLabelTestData
 import ch.protonmail.android.testdata.maillabel.MailLabelUiModelTestData
 import io.mockk.Called
 import io.mockk.coEvery
@@ -230,11 +228,6 @@ class ConversationDetailViewModelTest {
         every { this@mockk() } returns flowOf(UserIdSample.Primary)
     }
     private val getConversationMoveToLocations = mockk<GetConversationMoveToLocations>()
-    private val observeCustomMailLabels = mockk<ObserveCustomMailLabels> {
-        every { this@mockk.invoke(UserIdSample.Primary) } returns flowOf(
-            MailLabelTestData.listOfCustomLabels.right()
-        )
-    }
     private val observeAttachmentStatus = mockk<ObserveMessageAttachmentStatus>()
     private val getAttachmentIntentValues = mockk<GetAttachmentIntentValues>()
     private val getAttachmentDownloadStatus = mockk<GetDownloadingAttachmentsForMessages>()
@@ -314,7 +307,6 @@ class ConversationDetailViewModelTest {
             observeConversationMessages = observeConversationMessages,
             observeDetailActions = observeConversationDetailActions,
             getConversationMoveToLocations = getConversationMoveToLocations,
-            observeCustomMailLabels = observeCustomMailLabels,
             observeMessage = observeMessage,
             observeMessageAttachmentStatus = observeAttachmentStatus,
             getDownloadingAttachmentsForMessages = getAttachmentDownloadStatus,

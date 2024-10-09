@@ -97,9 +97,7 @@ import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabel
 import ch.protonmail.android.maillabel.domain.model.MailLabels
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
-import ch.protonmail.android.maillabel.domain.usecase.ObserveCustomMailLabels
 import ch.protonmail.android.maillabel.presentation.model.LabelSelectedState
-import ch.protonmail.android.maillabel.presentation.toCustomUiModel
 import ch.protonmail.android.maillabel.presentation.toUiModels
 import ch.protonmail.android.mailmessage.domain.model.AttachmentId
 import ch.protonmail.android.mailmessage.domain.model.ConversationMessages
@@ -162,7 +160,6 @@ class ConversationDetailViewModel @Inject constructor(
     private val observeConversationMessages: ObserveConversationMessages,
     private val observeDetailActions: ObserveConversationDetailActions,
     private val getConversationMoveToLocations: GetConversationMoveToLocations,
-    private val observeCustomMailLabels: ObserveCustomMailLabels,
     private val observeMessage: ObserveMessage,
     private val observeMessageAttachmentStatus: ObserveMessageAttachmentStatus,
     private val getDownloadingAttachmentsForMessages: GetDownloadingAttachmentsForMessages,
@@ -533,28 +530,9 @@ class ConversationDetailViewModel @Inject constructor(
             emitNewStateFrom(initialEvent)
 
             val userId = primaryUserId.first()
-            val labels = observeCustomMailLabels(userId).first()
-            val conversationWithMessagesAndLabels = observeConversationMessages(userId, conversationId).first()
-
-            val mappedLabels = labels.onLeft {
-                Timber.e("Error while observing custom labels")
-            }.getOrElse { emptyList() }
-
-            conversationWithMessagesAndLabels.onLeft {
-                Timber.e("Error while observing conversation messages")
-            }.getOrElse { null }
-                ?.run {
-
-                    val event = ConversationDetailEvent.ConversationBottomSheetEvent(
-                        LabelAsBottomSheetState.LabelAsBottomSheetEvent.ActionData(
-                            customLabelList = mappedLabels.map { it.toCustomUiModel(emptyMap(), null) }
-                                .toImmutableList(),
-                            selectedLabels = emptyList<LabelId>().toImmutableList(),
-                            partiallySelectedLabels = emptyList<LabelId>().toImmutableList()
-                        )
-                    )
-                    emitNewStateFrom(event)
-                }
+            val labelId = filterByLocation ?: return@launch
+            val labelAsData = getLabelAsBottomSheetData.forConversation(userId, labelId, conversationId)
+            emitNewStateFrom(ConversationDetailEvent.ConversationBottomSheetEvent(labelAsData))
         }
     }
 
@@ -565,10 +543,9 @@ class ConversationDetailViewModel @Inject constructor(
             emitNewStateFrom(initialEvent)
 
             val userId = primaryUserId.first()
-            val event = ConversationDetailEvent.MessageBottomSheetEvent(
-                getLabelAsBottomSheetData.forMessage(userId, initialEvent.messageId)
-            )
-            emitNewStateFrom(event)
+            val labelId = filterByLocation ?: return@launch
+            val labelAsData = getLabelAsBottomSheetData.forMessage(userId, labelId, initialEvent.messageId)
+            emitNewStateFrom(ConversationDetailEvent.MessageBottomSheetEvent(labelAsData))
         }
     }
 

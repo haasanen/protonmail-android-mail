@@ -20,6 +20,7 @@ package ch.protonmail.android.testdata.label.rust
 
 import ch.protonmail.android.maillabel.domain.model.LabelAsActions
 import ch.protonmail.android.maillabel.domain.model.LabelId
+import ch.protonmail.android.maillabel.domain.sample.LabelSample
 import ch.protonmail.android.testdata.label.LabelTestData
 
 object LabelAsActionsTestData {
@@ -39,4 +40,15 @@ object LabelAsActionsTestData {
         listOf(LabelTestData.selectedLabelAction.labelId),
         emptyList()
     )
+
+    val unselectedActions = LabelAsActions(
+        labels = listOf(
+            LabelSample.Document,
+            LabelSample.Label2021,
+            LabelSample.Label2022
+        ),
+        selected = emptyList(),
+        partiallySelected = emptyList()
+    )
+
 }

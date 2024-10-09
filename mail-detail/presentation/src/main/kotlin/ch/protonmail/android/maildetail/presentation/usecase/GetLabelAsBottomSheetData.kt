@@ -18,40 +18,58 @@
 
 package ch.protonmail.android.maildetail.presentation.usecase
 
-import arrow.core.getOrElse
-import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
+import ch.protonmail.android.mailcommon.domain.model.ConversationId
+import ch.protonmail.android.mailconversation.domain.usecase.GetConversationLabelAsActions
+import ch.protonmail.android.maillabel.domain.model.LabelAsActions
 import ch.protonmail.android.maillabel.domain.model.LabelId
-import ch.protonmail.android.maillabel.domain.usecase.ObserveCustomMailLabels
+import ch.protonmail.android.maillabel.domain.model.toMailLabelCustom
 import ch.protonmail.android.maillabel.presentation.toCustomUiModel
 import ch.protonmail.android.mailmessage.domain.model.MessageId
+import ch.protonmail.android.mailmessage.domain.usecase.GetMessageLabelAsActions
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.LabelAsBottomSheetState
+import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
-import kotlinx.coroutines.flow.first
 import me.proton.core.domain.entity.UserId
-import timber.log.Timber
 import javax.inject.Inject
 
 class GetLabelAsBottomSheetData @Inject constructor(
-    private val observeCustomMailLabels: ObserveCustomMailLabels
+    private val getMessageLabelAsActions: GetMessageLabelAsActions,
+    private val getConversationLabelAsActions: GetConversationLabelAsActions
 ) {
 
-    @MissingRustApi
-    // selectedLabels and partiallySelected labels to be received from rust
     suspend fun forMessage(
         userId: UserId,
+        labelId: LabelId,
         messageId: MessageId
+    ): LabelAsBottomSheetState.LabelAsBottomSheetEvent.ActionData =
+        getMessageLabelAsActions(userId, labelId, listOf(messageId)).fold(
+            ifLeft = { emptyBottomSheetData() },
+            ifRight = { buildBottomSheetActionData(it) }
+        ).copy(messageIdInConversation = messageId)
+
+    suspend fun forConversation(
+        userId: UserId,
+        labelId: LabelId,
+        conversationId: ConversationId
+    ): LabelAsBottomSheetState.LabelAsBottomSheetEvent.ActionData =
+        getConversationLabelAsActions(userId, labelId, listOf(conversationId)).fold(
+            ifLeft = { emptyBottomSheetData() },
+            ifRight = { buildBottomSheetActionData(it) }
+        )
+
+    private fun emptyBottomSheetData() = LabelAsBottomSheetState.LabelAsBottomSheetEvent.ActionData(
+        persistentListOf(), persistentListOf(), persistentListOf()
+    )
+
+    private fun buildBottomSheetActionData(
+        labelAsContent: LabelAsActions
     ): LabelAsBottomSheetState.LabelAsBottomSheetEvent.ActionData {
-        val labels = observeCustomMailLabels(userId).first()
-
-        val mappedLabels = labels.onLeft {
-            Timber.e("Error while observing custom labels")
-        }.getOrElse { emptyList() }
-
+        val mailLabels = labelAsContent.labels.toMailLabelCustom()
         return LabelAsBottomSheetState.LabelAsBottomSheetEvent.ActionData(
-            customLabelList = mappedLabels.map { it.toCustomUiModel(emptyMap(), null) }
+            customLabelList = mailLabels.map { it.toCustomUiModel(emptyMap(), null) }
                 .toImmutableList(),
-            selectedLabels = emptyList<LabelId>().toImmutableList(),
-            messageIdInConversation = messageId
+            selectedLabels = labelAsContent.selected.toImmutableList(),
+            partiallySelectedLabels = labelAsContent.partiallySelected.toImmutableList()
         )
     }
 }

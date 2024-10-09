@@ -21,6 +21,7 @@ package ch.protonmail.android.maildetail.presentation.viewmodel
 import java.io.ByteArrayInputStream
 import java.util.Random
 import android.content.Context
+import android.graphics.Color
 import android.net.Uri
 import android.text.format.Formatter
 import androidx.lifecycle.SavedStateHandle
@@ -54,6 +55,7 @@ import ch.protonmail.android.mailcontact.domain.usecase.FindContactByEmail
 import ch.protonmail.android.mailcontact.domain.usecase.ObserveContacts
 import ch.protonmail.android.mailconversation.domain.sample.ConversationSample
 import ch.protonmail.android.mailconversation.domain.usecase.DeleteConversations
+import ch.protonmail.android.mailconversation.domain.usecase.GetConversationLabelAsActions
 import ch.protonmail.android.mailconversation.domain.usecase.GetConversationMoveToLocations
 import ch.protonmail.android.mailconversation.domain.usecase.ObserveConversation
 import ch.protonmail.android.mailconversation.domain.usecase.StarConversations
@@ -121,7 +123,6 @@ import ch.protonmail.android.maillabel.domain.model.MailLabels
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.maillabel.domain.sample.LabelIdSample
 import ch.protonmail.android.maillabel.domain.sample.LabelSample
-import ch.protonmail.android.maillabel.domain.usecase.ObserveCustomMailLabels
 import ch.protonmail.android.maillabel.presentation.model.LabelSelectedState
 import ch.protonmail.android.maillabel.presentation.sample.LabelUiModelWithSelectedStateSample
 import ch.protonmail.android.maillabel.presentation.toUiModels
@@ -138,6 +139,7 @@ import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
 import ch.protonmail.android.mailmessage.domain.sample.MessageSample
 import ch.protonmail.android.mailmessage.domain.usecase.GetDecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.usecase.GetEmbeddedImageResult
+import ch.protonmail.android.mailmessage.domain.usecase.GetMessageLabelAsActions
 import ch.protonmail.android.mailmessage.domain.usecase.ObserveMessage
 import ch.protonmail.android.mailmessage.domain.usecase.ResolveParticipantName
 import ch.protonmail.android.mailmessage.presentation.mapper.AttachmentUiModelMapper
@@ -161,6 +163,7 @@ import ch.protonmail.android.mailsettings.domain.model.PrivacySettings
 import ch.protonmail.android.mailsettings.domain.usecase.privacy.ObservePrivacySettings
 import ch.protonmail.android.mailsettings.domain.usecase.privacy.UpdateLinkConfirmationSetting
 import ch.protonmail.android.testdata.contact.ContactSample
+import ch.protonmail.android.testdata.label.rust.LabelAsActionsTestData
 import ch.protonmail.android.testdata.maillabel.MailLabelTestData
 import ch.protonmail.android.testdata.message.MessageAttachmentMetadataTestData
 import io.mockk.Called
@@ -236,11 +239,8 @@ class ConversationDetailViewModelIntegrationTest {
         every { this@mockk() } returns flowOf(UserIdSample.Primary)
     }
     private val getConversationMoveToLocations = mockk<GetConversationMoveToLocations>()
-    private val observeCustomMailLabelsUseCase = mockk<ObserveCustomMailLabels> {
-        every { this@mockk.invoke(UserIdSample.Primary) } returns flowOf(
-            MailLabelTestData.listOfCustomLabels.right()
-        )
-    }
+    private val getConversationLabelAsActions = mockk<GetConversationLabelAsActions>()
+    private val getMessageLabelAsActions = mockk<GetMessageLabelAsActions>()
     private val reportPhishingMessage = mockk<ReportPhishingMessage>()
 
     // Privacy settings for link confirmation dialog
@@ -315,7 +315,8 @@ class ConversationDetailViewModelIntegrationTest {
     private val doesMessageBodyHaveEmbeddedImages = DoesMessageBodyHaveEmbeddedImages()
     private val doesMessageBodyHaveRemoteContent = DoesMessageBodyHaveRemoteContent()
     private val getLabelAsBottomSheetData = GetLabelAsBottomSheetData(
-        observeCustomMailLabelsUseCase
+        getMessageLabelAsActions,
+        getConversationLabelAsActions
     )
     private val onMessageLabelAsConfirmed = OnMessageLabelAsConfirmed(
         moveMessage, relabelMessage
@@ -414,6 +415,9 @@ class ConversationDetailViewModelIntegrationTest {
 
         mockkStatic(Uri::class)
         every { Uri.parse(any()) } returns mockk()
+
+        mockkStatic(Color::parseColor)
+        every { Color.parseColor(any()) } returns 0
     }
 
     @AfterTest
@@ -421,6 +425,7 @@ class ConversationDetailViewModelIntegrationTest {
         Dispatchers.resetMain()
         unmockkStatic(Formatter::formatShortFileSize)
         unmockkStatic(Uri::class)
+        unmockkStatic(Color::parseColor)
     }
 
     @Test
@@ -1806,25 +1811,31 @@ class ConversationDetailViewModelIntegrationTest {
     @Test
     fun `should show message label as bottom sheet and load data when it is requested`() = runTest {
         // Given
+        val messageIdToOpen = MessageSample.AugWeatherForecast.messageId
         val messages = ConversationMessages(
             nonEmptyListOf(
                 MessageSample.AugWeatherForecast,
                 MessageSample.Invoice,
                 MessageSample.EmptyDraft
             ),
-            MessageSample.AugWeatherForecast.messageId
+            messageIdToOpen
         )
+        val messageId = MessageSample.Invoice.messageId
+        val labelId = SystemLabelId.Archive.labelId
         coEvery { observeConversationMessages(userId, any()) } returns flowOf(messages.right())
         coEvery {
-            observeMessage(userId, MessageSample.Invoice.messageId)
+            observeMessage(userId, messageId)
         } returns flowOf(MessageSample.Invoice.right())
+        coEvery {
+            getMessageLabelAsActions(userId, labelId, listOf(messageId))
+        } returns LabelAsActionsTestData.unselectedActions.right()
 
         // When
         val viewModel = buildConversationDetailViewModel()
 
         viewModel.submit(
             ExpandMessage(
-                messageIdUiModelMapper.toUiModel(MessageSample.Invoice.messageId)
+                messageIdUiModelMapper.toUiModel(messageId)
             )
         )
 
@@ -1833,13 +1844,13 @@ class ConversationDetailViewModelIntegrationTest {
 
             viewModel.submit(
                 ConversationDetailViewAction.RequestMoreActionsBottomSheet(
-                    MessageSample.Invoice.messageId
+                    messageId
                 )
             )
             skipItems(2)
             viewModel.submit(
                 ConversationDetailViewAction.RequestMessageLabelAsBottomSheet(
-                    MessageSample.Invoice.messageId
+                    messageId
                 )
             )
 
@@ -1858,7 +1869,7 @@ class ConversationDetailViewModelIntegrationTest {
             assertEquals(
                 LabelAsBottomSheetState.Data(
                     labelUiModelsWithSelectedState,
-                    MessageSample.Invoice.messageId
+                    messageId
                 ),
                 bottomSheetContentState
             )
@@ -1882,6 +1893,7 @@ class ConversationDetailViewModelIntegrationTest {
         val newMessageLabels = buildList {
             add(LabelSample.Label2022.labelId)
         }
+        val labelId = SystemLabelId.Archive.labelId
         coEvery { observeConversationMessages(userId, any()) } returns flowOf(messages.right())
         coEvery {
             observeMessage(userId, messageId)
@@ -1890,6 +1902,9 @@ class ConversationDetailViewModelIntegrationTest {
         coEvery {
             relabelMessage(userId, messageId, emptyList(), newMessageLabels)
         } returns MessageSample.Invoice.right()
+        coEvery {
+            getMessageLabelAsActions(userId, labelId, listOf(messageId))
+        } returns LabelAsActionsTestData.unselectedActions.right()
 
         // When
         val viewModel = buildConversationDetailViewModel()
@@ -2186,7 +2201,6 @@ class ConversationDetailViewModelIntegrationTest {
         observeConversation: ObserveConversation = observeConversationUseCase,
         observeConversationMessages: ObserveConversationMessages = this.observeConversationMessages,
         observeDetailActions: ObserveConversationDetailActions = observeConversationDetailActions,
-        observeCustomMailLabels: ObserveCustomMailLabels = observeCustomMailLabelsUseCase,
         observeMessageAttachmentStatus: ObserveMessageAttachmentStatus = observeAttachmentStatus,
         getAttachmentStatus: GetDownloadingAttachmentsForMessages = getDownloadingAttachmentsForMessages,
         detailReducer: ConversationDetailReducer = reducer,
@@ -2194,8 +2208,7 @@ class ConversationDetailViewModelIntegrationTest {
         star: StarConversations = starConversations,
         unStar: UnStarConversations = unStarConversations,
         decryptedMessageBody: GetDecryptedMessageBody = getDecryptedMessageBody,
-        markMessageAndConversationRead: MarkMessageAsRead =
-            markMessageAsRead,
+        markMessageAndConversationRead: MarkMessageAsRead = markMessageAsRead,
         getIntentValues: GetAttachmentIntentValues = getAttachmentIntentValues,
         ioDispatcher: CoroutineDispatcher = testDispatcher!!,
         networkMgmt: NetworkManager = networkManager,
@@ -2216,7 +2229,6 @@ class ConversationDetailViewModelIntegrationTest {
         observeConversationMessages = observeConversationMessages,
         observeDetailActions = observeDetailActions,
         getConversationMoveToLocations = getConversationMoveToLocations,
-        observeCustomMailLabels = observeCustomMailLabels,
         observeMessage = observeMessage,
         observeMessageAttachmentStatus = observeMessageAttachmentStatus,
         getDownloadingAttachmentsForMessages = getAttachmentStatus,
