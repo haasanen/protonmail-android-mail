@@ -65,7 +65,8 @@ class GetMoreActionsBottomSheetData @Inject constructor(
             messageSender = message.sender.name,
             messageSubject = message.subject,
             messageId = message.messageId.id,
-            participantsCount = message.allRecipientsDeduplicated.size
+            participantsCount = message.allRecipientsDeduplicated.size,
+            availableActions = availableActions
         )
     }
 }

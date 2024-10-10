@@ -18,13 +18,9 @@
 
 package ch.protonmail.android.mailmessage.presentation.mapper
 
-import ch.protonmail.android.mailcommon.domain.model.Action
-import ch.protonmail.android.mailcommon.presentation.model.ActionUiModel
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailmessage.presentation.R
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.DetailMoreActionsBottomSheetState
-import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.toImmutableList
 import javax.inject.Inject
 
 class DetailMoreActionsBottomSheetUiMapper @Inject constructor() {
@@ -38,40 +34,4 @@ class DetailMoreActionsBottomSheetUiMapper @Inject constructor() {
         TextUiModel.TextResWithArgs(R.string.bottom_sheet_more_header_message_from, listOf(messageSender)),
         messageId
     )
-
-    fun mapMoreActionUiModels(senderName: String, recipientsCount: Int): ImmutableList<ActionUiModel> {
-        return mutableListOf<ActionUiModel>().apply {
-            // Show Reply + Reply All only if needed
-            if (recipientsCount > 1) {
-                add(
-                    ActionUiModel(
-                        Action.Reply,
-                        description = TextUiModel.TextResWithArgs(
-                            R.string.action_reply_to_description,
-                            listOf(senderName)
-                        ),
-                        contentDescription = TextUiModel.TextResWithArgs(
-                            R.string.action_reply_to_content_description,
-                            listOf(senderName)
-                        )
-                    )
-                )
-                add(ActionUiModel(Action.ReplyAll))
-            } else {
-                add(ActionUiModel(Action.Reply))
-            }
-
-            add(ActionUiModel(Action.Forward))
-            add(ActionUiModel(Action.MarkUnread))
-            add(ActionUiModel(Action.Label))
-            add(ActionUiModel(Action.ViewInLightMode))
-            add(ActionUiModel(Action.ViewInDarkMode))
-            add(ActionUiModel(Action.Trash))
-            add(ActionUiModel(Action.Archive))
-            add(ActionUiModel(Action.Spam))
-//            add(ActionUiModel(Action.Move))
-            add(ActionUiModel(Action.Print))
-            add(ActionUiModel(Action.ReportPhishing))
-        }.toImmutableList()
-    }
 }

@@ -398,7 +398,8 @@ class ConversationDetailViewModelIntegrationTest {
             labelAsBottomSheetReducer = LabelAsBottomSheetReducer(),
             mailboxMoreActionsBottomSheetReducer = MailboxMoreActionsBottomSheetReducer(),
             detailMoreActionsBottomSheetReducer = DetailMoreActionsBottomSheetReducer(
-                DetailMoreActionsBottomSheetUiMapper()
+                DetailMoreActionsBottomSheetUiMapper(),
+                ActionUiModelMapper()
             ),
             contactActionsBottomSheetReducer = ContactActionsBottomSheetReducer(),
             upsellingBottomSheetReducer = UpsellingBottomSheetReducer()

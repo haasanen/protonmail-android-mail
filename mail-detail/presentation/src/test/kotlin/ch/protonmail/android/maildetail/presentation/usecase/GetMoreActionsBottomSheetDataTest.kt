@@ -39,9 +39,10 @@ class GetMoreActionsBottomSheetDataTest {
         val labelId = SystemLabelId.Archive.labelId
         val messageId = MessageIdSample.PlainTextMessage
         val message = MessageSample.Invoice
+        val availableActions = AvailableActionsTestData.replyActionsOnly
         coEvery {
             getMessageAvailableActions(userId, labelId, listOf(messageId))
-        } returns AvailableActionsTestData.replyActionsOnly.right()
+        } returns availableActions.right()
         coEvery { observeMessage(userId, messageId) } returns flowOf(message.right())
 
         // When
@@ -52,7 +53,8 @@ class GetMoreActionsBottomSheetDataTest {
             messageSender = message.sender.name,
             messageSubject = message.subject,
             messageId = message.messageId.id,
-            participantsCount = message.allRecipientsDeduplicated.size
+            participantsCount = message.allRecipientsDeduplicated.size,
+            availableActions = availableActions
         )
         assertEquals(expected, actual)
     }

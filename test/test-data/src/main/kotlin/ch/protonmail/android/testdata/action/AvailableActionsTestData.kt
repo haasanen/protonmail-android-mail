@@ -29,4 +29,25 @@ object AvailableActionsTestData {
         emptyList(),
         emptyList()
     )
+
+    val replyReportPhishing = AvailableActions(
+        listOf(Action.Reply),
+        emptyList(),
+        emptyList(),
+        listOf(Action.ReportPhishing)
+    )
+
+    val forwardReportPhishingActions = AvailableActions(
+        listOf(Action.Reply),
+        emptyList(),
+        emptyList(),
+        listOf(Action.ReportPhishing)
+    )
+
+    val fullAvailableActions = AvailableActions(
+        listOf(Action.Reply),
+        listOf(Action.MarkRead, Action.Star),
+        listOf(Action.Archive, Action.Trash),
+        listOf(Action.ReportPhishing, Action.SavePdf)
+    )
 }

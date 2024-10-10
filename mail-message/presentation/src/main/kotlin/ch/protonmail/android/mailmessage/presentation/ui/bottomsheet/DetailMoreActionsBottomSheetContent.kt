@@ -41,7 +41,7 @@ import ch.protonmail.android.mailcommon.presentation.ui.MailDivider
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.DetailMoreActionsBottomSheetState
 import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.toImmutableList
+import kotlinx.collections.immutable.persistentListOf
 import me.proton.core.compose.component.ProtonCenteredProgress
 import me.proton.core.compose.component.ProtonRawListItem
 import me.proton.core.compose.theme.ProtonDimens
@@ -58,7 +58,10 @@ fun DetailMoreActionsBottomSheetContent(
     when (state) {
         is DetailMoreActionsBottomSheetState.Data -> DetailMoreActionsBottomSheetContent(
             uiModel = state.messageDataUiModel,
-            actionsUiModel = state.replyActionsUiModel,
+            replyActions = state.replyActions,
+            messageActions = state.messageActions,
+            moveActions = state.moveActions,
+            genericActions = state.genericActions,
             actionCallbacks = actions
         )
 
@@ -69,7 +72,10 @@ fun DetailMoreActionsBottomSheetContent(
 @Composable
 fun DetailMoreActionsBottomSheetContent(
     uiModel: DetailMoreActionsBottomSheetState.MessageDataUiModel,
-    actionsUiModel: ImmutableList<ActionUiModel>,
+    replyActions: ImmutableList<ActionUiModel>,
+    messageActions: ImmutableList<ActionUiModel>,
+    moveActions: ImmutableList<ActionUiModel>,
+    genericActions: ImmutableList<ActionUiModel>,
     actionCallbacks: DetailMoreActionsBottomSheetContent.Actions
 ) {
 
@@ -97,7 +103,7 @@ fun DetailMoreActionsBottomSheetContent(
         MailDivider()
 
         LazyColumn {
-            items(actionsUiModel) { actionItem ->
+            items(replyActions + messageActions + moveActions + genericActions) { actionItem ->
                 if (shouldSkipActionItem(actionItem, isSystemInDarkTheme())) return@items
 
                 ProtonRawListItem(
@@ -180,12 +186,16 @@ private fun BottomSheetContentPreview() {
                     TextUiModel("Message from Antony Hayes"),
                     "123"
                 ),
-                replyActionsUiModel = listOf(
+                replyActions = persistentListOf(
                     ActionUiModel(Action.Reply),
                     ActionUiModel(Action.ReplyAll),
-                    ActionUiModel(Action.Forward),
+                    ActionUiModel(Action.Forward)
+                ),
+                messageActions = persistentListOf(
                     ActionUiModel(Action.ReportPhishing)
-                ).toImmutableList()
+                ),
+                moveActions = persistentListOf(),
+                genericActions = persistentListOf()
             ),
             actions = DetailMoreActionsBottomSheetContent.Actions(
                 onReply = {},

@@ -18,12 +18,9 @@
 
 package ch.protonmail.android.mailmessage.presentation.mapper
 
-import ch.protonmail.android.mailcommon.domain.model.Action
-import ch.protonmail.android.mailcommon.presentation.model.ActionUiModel
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailmessage.presentation.R
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.DetailMoreActionsBottomSheetState
-import okhttp3.internal.toImmutableList
 import org.junit.Test
 import kotlin.test.assertEquals
 
@@ -48,67 +45,6 @@ internal class DetailMoreActionsBottomSheetUiMapperTest {
 
         // Then
         assertEquals(expected, actual)
-    }
-
-    @Test
-    fun `should map the to correct ui model given just one recipient`() {
-        // Given
-        val expectedList = listOf(
-            ActionUiModel(Action.Reply),
-            ActionUiModel(Action.Forward),
-            ActionUiModel(Action.MarkUnread),
-            ActionUiModel(Action.Label),
-            ActionUiModel(Action.ViewInLightMode),
-            ActionUiModel(Action.ViewInDarkMode),
-            ActionUiModel(Action.Trash),
-            ActionUiModel(Action.Archive),
-            ActionUiModel(Action.Spam),
-//            ActionUiModel(Action.Move),
-            ActionUiModel(Action.Print),
-            ActionUiModel(Action.ReportPhishing)
-        ).toImmutableList()
-
-        // When
-        val actual = mapper.mapMoreActionUiModels(ExpectedSender, SingleRecipientCount)
-
-        // Then
-        assertEquals(expectedList, actual)
-    }
-
-    @Test
-    fun `should map the to correct ui model given multiple recipients`() {
-        // Given
-        val expectedList = listOf(
-            ActionUiModel(
-                Action.Reply,
-                description = TextUiModel.TextResWithArgs(
-                    R.string.action_reply_to_description,
-                    listOf(ExpectedSender)
-                ),
-                contentDescription = TextUiModel.TextResWithArgs(
-                    R.string.action_reply_to_content_description,
-                    listOf(ExpectedSender)
-                )
-            ),
-            ActionUiModel(Action.ReplyAll),
-            ActionUiModel(Action.Forward),
-            ActionUiModel(Action.MarkUnread),
-            ActionUiModel(Action.Label),
-            ActionUiModel(Action.ViewInLightMode),
-            ActionUiModel(Action.ViewInDarkMode),
-            ActionUiModel(Action.Trash),
-            ActionUiModel(Action.Archive),
-            ActionUiModel(Action.Spam),
-//            ActionUiModel(Action.Move),
-            ActionUiModel(Action.Print),
-            ActionUiModel(Action.ReportPhishing)
-        ).toImmutableList()
-
-        // When
-        val actual = mapper.mapMoreActionUiModels(ExpectedSender, PluralRecipientCount)
-
-        // Then
-        assertEquals(expectedList, actual)
     }
 
     private companion object {

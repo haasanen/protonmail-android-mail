@@ -18,15 +18,17 @@
 
 package ch.protonmail.android.mailmessage.presentation.reducer
 
+import ch.protonmail.android.mailcommon.presentation.mapper.ActionUiModelMapper
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcommon.presentation.sample.ActionUiModelSample
 import ch.protonmail.android.mailmessage.presentation.mapper.DetailMoreActionsBottomSheetUiMapper
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.BottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.DetailMoreActionsBottomSheetState
+import ch.protonmail.android.testdata.action.AvailableActionsTestData
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.unmockkAll
-import kotlinx.collections.immutable.toImmutableList
+import kotlinx.collections.immutable.persistentListOf
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -41,18 +43,11 @@ internal class DetailMoreActionsBottomSheetReducerTest(
 ) {
 
     private val mapper = mockk<DetailMoreActionsBottomSheetUiMapper>()
-    private val reducer = DetailMoreActionsBottomSheetReducer(mapper)
+    private val actionsUiModelMapper = ActionUiModelMapper()
+    private val reducer = DetailMoreActionsBottomSheetReducer(mapper, actionsUiModelMapper)
 
     @Before
     fun setup() {
-        every {
-            mapper.mapMoreActionUiModels(ExpectedSender, SingleParticipantCount)
-        } returns expectedSingleParticipantAction
-
-        every {
-            mapper.mapMoreActionUiModels(ExpectedSender, MultipleParticipantsCount)
-        } returns expectedMultipleParticipantAction
-
         every {
             mapper.toHeaderUiModel(ExpectedSender, ExpectedSubject, ExpectedMessageId)
         } returns expectedUiModel
@@ -83,11 +78,6 @@ internal class DetailMoreActionsBottomSheetReducerTest(
             headerDescriptionText = TextUiModel(ExpectedSender),
             messageId = ExpectedMessageId
         )
-        private val expectedSingleParticipantAction =
-            listOf(ActionUiModelSample.Reply, ActionUiModelSample.ReportPhishing).toImmutableList()
-        private val expectedMultipleParticipantAction =
-            listOf(ActionUiModelSample.Forward, ActionUiModelSample.ReportPhishing).toImmutableList()
-
         private val transitionsFromLoadingState = listOf(
             TestInput(
                 currentState = BottomSheetState(DetailMoreActionsBottomSheetState.Loading),
@@ -95,12 +85,16 @@ internal class DetailMoreActionsBottomSheetReducerTest(
                     messageSender = ExpectedSender,
                     messageSubject = ExpectedSubject,
                     messageId = ExpectedMessageId,
-                    participantsCount = MultipleParticipantsCount
+                    participantsCount = MultipleParticipantsCount,
+                    availableActions = AvailableActionsTestData.replyReportPhishing
                 ),
                 expectedState = BottomSheetState(
                     contentState = DetailMoreActionsBottomSheetState.Data(
                         messageDataUiModel = expectedUiModel,
-                        replyActionsUiModel = expectedSingleParticipantAction
+                        replyActions = persistentListOf(ActionUiModelSample.Reply),
+                        messageActions = persistentListOf(),
+                        moveActions = persistentListOf(),
+                        genericActions = persistentListOf(ActionUiModelSample.ReportPhishing)
                     )
                 )
             ),
@@ -110,12 +104,37 @@ internal class DetailMoreActionsBottomSheetReducerTest(
                     messageSender = ExpectedSender,
                     messageSubject = ExpectedSubject,
                     messageId = ExpectedMessageId,
-                    participantsCount = SingleParticipantCount
+                    participantsCount = SingleParticipantCount,
+                    availableActions = AvailableActionsTestData.forwardReportPhishingActions
                 ),
                 expectedState = BottomSheetState(
                     contentState = DetailMoreActionsBottomSheetState.Data(
                         messageDataUiModel = expectedUiModel,
-                        replyActionsUiModel = expectedMultipleParticipantAction
+                        replyActions = persistentListOf(ActionUiModelSample.Forward),
+                        messageActions = persistentListOf(),
+                        moveActions = persistentListOf(),
+                        genericActions = persistentListOf(ActionUiModelSample.ReportPhishing)
+                    )
+                )
+            ),
+            TestInput(
+                currentState = BottomSheetState(DetailMoreActionsBottomSheetState.Loading),
+                operation = DetailMoreActionsBottomSheetState.MessageDetailMoreActionsBottomSheetEvent.DataLoaded(
+                    messageSender = ExpectedSender,
+                    messageSubject = ExpectedSubject,
+                    messageId = ExpectedMessageId,
+                    participantsCount = SingleParticipantCount,
+                    availableActions = AvailableActionsTestData.fullAvailableActions
+                ),
+                expectedState = BottomSheetState(
+                    contentState = DetailMoreActionsBottomSheetState.Data(
+                        messageDataUiModel = expectedUiModel,
+                        replyActions = persistentListOf(ActionUiModelSample.Reply),
+                        messageActions = persistentListOf(ActionUiModelSample.MarkRead, ActionUiModelSample.Star),
+                        moveActions = persistentListOf(ActionUiModelSample.Archive, ActionUiModelSample.Trash),
+                        genericActions = persistentListOf(
+                            ActionUiModelSample.ReportPhishing, ActionUiModelSample.SavePdf
+                        )
                     )
                 )
             )

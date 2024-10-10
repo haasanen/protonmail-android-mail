@@ -21,6 +21,8 @@ package ch.protonmail.android.maildetail.presentation.reducer
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.ActionUiModel
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
+import ch.protonmail.android.mailcommon.presentation.sample.ActionUiModelSample
+import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.presentation.MailLabelUiModel
 import ch.protonmail.android.maillabel.presentation.model.LabelUiModelWithSelectedState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.BottomSheetOperation
@@ -38,11 +40,12 @@ import ch.protonmail.android.mailmessage.presentation.reducer.LabelAsBottomSheet
 import ch.protonmail.android.mailmessage.presentation.reducer.MailboxMoreActionsBottomSheetReducer
 import ch.protonmail.android.mailmessage.presentation.reducer.MoveToBottomSheetReducer
 import ch.protonmail.android.mailmessage.presentation.reducer.UpsellingBottomSheetReducer
+import ch.protonmail.android.testdata.action.AvailableActionsTestData
 import io.mockk.Called
 import io.mockk.mockk
 import io.mockk.verify
+import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
-import ch.protonmail.android.maillabel.domain.model.LabelId
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
@@ -265,7 +268,8 @@ internal class BottomSheetReducerTest(
                     messageSender = "Sender",
                     messageSubject = "Subject",
                     messageId = "messageId",
-                    participantsCount = 1
+                    participantsCount = 1,
+                    availableActions = AvailableActionsTestData.replyActionsOnly
                 ),
                 expectedState = BottomSheetState(
                     DetailMoreActionsBottomSheetState.Data(
@@ -274,7 +278,10 @@ internal class BottomSheetReducerTest(
                             headerSubjectText = TextUiModel("Subject"),
                             messageId = "messageId"
                         ),
-                        emptyList<ActionUiModel>().toImmutableList()
+                        persistentListOf(ActionUiModelSample.ReplyAll),
+                        persistentListOf(),
+                        persistentListOf(),
+                        persistentListOf()
                     )
                 ),
                 reducesBottomSheetVisibilityEffects = false,

@@ -28,26 +28,25 @@ import ch.protonmail.android.mailcommon.presentation.model.iconDrawable
 
 object ActionUiModelSample {
 
-    val Reply: ActionUiModel =
-        build(Action.Reply)
+    val Reply: ActionUiModel = build(Action.Reply)
 
-    val ReplyAll: ActionUiModel =
-        build(Action.Reply)
+    val ReplyAll: ActionUiModel = build(Action.Reply)
 
-    val Forward: ActionUiModel =
-        build(Action.Reply)
+    val Forward: ActionUiModel = build(Action.Reply)
 
-    val Archive: ActionUiModel =
-        build(Action.Archive)
+    val Archive: ActionUiModel = build(Action.Archive)
 
-    val MarkUnread: ActionUiModel =
-        build(Action.MarkUnread)
+    val MarkUnread: ActionUiModel = build(Action.MarkUnread)
 
-    val Trash: ActionUiModel =
-        build(Action.Trash)
+    val Trash: ActionUiModel = build(Action.Trash)
 
-    val ReportPhishing: ActionUiModel =
-        build(Action.ReportPhishing)
+    val ReportPhishing: ActionUiModel = build(Action.ReportPhishing)
+
+    val MarkRead: ActionUiModel = build(Action.MarkRead)
+
+    val Star: ActionUiModel = build(Action.Star)
+
+    val SavePdf: ActionUiModel = build(Action.SavePdf)
 
     fun ReplyTo(recipient: String): ActionUiModel = Reply.copy(
         description = TextUiModel.TextResWithArgs(R.string.action_reply_to_description, listOf(recipient)),

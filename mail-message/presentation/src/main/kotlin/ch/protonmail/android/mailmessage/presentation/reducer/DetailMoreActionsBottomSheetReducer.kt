@@ -18,15 +18,19 @@
 
 package ch.protonmail.android.mailmessage.presentation.reducer
 
+import ch.protonmail.android.mailcommon.domain.model.Action
 import ch.protonmail.android.mailcommon.presentation.Effect
+import ch.protonmail.android.mailcommon.presentation.mapper.ActionUiModelMapper
 import ch.protonmail.android.mailmessage.presentation.mapper.DetailMoreActionsBottomSheetUiMapper
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.BottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.DetailMoreActionsBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.DetailMoreActionsBottomSheetState.MessageDetailMoreActionsBottomSheetEvent.DataLoaded
+import kotlinx.collections.immutable.toImmutableList
 import javax.inject.Inject
 
 class DetailMoreActionsBottomSheetReducer @Inject constructor(
-    private val mapper: DetailMoreActionsBottomSheetUiMapper
+    private val mapper: DetailMoreActionsBottomSheetUiMapper,
+    private val actionsUiModelMapper: ActionUiModelMapper
 ) {
 
     fun newStateFrom(
@@ -40,14 +44,23 @@ class DetailMoreActionsBottomSheetReducer @Inject constructor(
 
     private fun DataLoaded.toNewBottomSheetState(currentState: BottomSheetState?): BottomSheetState {
         val headerUiModel = mapper.toHeaderUiModel(messageSender, messageSubject, messageId)
-        val actionsUiModel = mapper.mapMoreActionUiModels(messageSender, participantsCount)
+        val replyActions = availableActions.replyActions.toActionUiModels()
+        val messageActions = availableActions.mailboxItemActions.toActionUiModels()
+        val moveActions = availableActions.moveActions.toActionUiModels()
+        val genericActions = availableActions.genericActions.toActionUiModels()
 
         return BottomSheetState(
             contentState = DetailMoreActionsBottomSheetState.Data(
                 messageDataUiModel = headerUiModel,
-                replyActionsUiModel = actionsUiModel
+                replyActions = replyActions,
+                messageActions = messageActions,
+                moveActions = moveActions,
+                genericActions = genericActions
             ),
             bottomSheetVisibilityEffect = currentState?.bottomSheetVisibilityEffect ?: Effect.empty()
         )
     }
+
+    private fun List<Action>.toActionUiModels() = this.map { actionsUiModelMapper.toUiModel(it) }.toImmutableList()
+
 }
