@@ -19,56 +19,42 @@
 package ch.protonmail.android.mailcontact.domain.usecase
 
 import arrow.core.Either
-import arrow.core.raise.either
-import ch.protonmail.android.mailcommon.domain.mapper.mapToEither
-import ch.protonmail.android.mailcontact.domain.model.ContactGroup
+import arrow.core.left
+import arrow.core.right
+import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.combine
-import ch.protonmail.android.mailcontact.domain.model.ContactEmail
 import ch.protonmail.android.mailcontact.domain.repository.ContactRepository
 import me.proton.core.domain.entity.UserId
 import ch.protonmail.android.maillabel.domain.model.LabelId
-import ch.protonmail.android.maillabel.domain.model.LabelType
-import timber.log.Timber
+import kotlinx.coroutines.flow.transformLatest
 import javax.inject.Inject
 
 class ObserveContactGroup @Inject constructor(
     private val contactRepository: ContactRepository
 ) {
 
-    operator fun invoke(userId: UserId, labelId: LabelId): Flow<Either<GetContactGroupError, ContactGroup>> {
-        return combine(
-            labelRepository.observeLabels(userId, LabelType.ContactGroup).mapToEither(),
-            contactRepository.observeAllContacts(userId).mapToEither()
-        ) { labels, contacts ->
-            either {
-                val label = labels.getOrNull()?.firstOrNull {
-                    it.labelId == labelId
-                } ?: raise(GetContactGroupError.GetLabelsError)
-
-                val contactGroupMembers = arrayListOf<ContactEmail>()
-                contacts.getOrNull()?.forEach { contact ->
-                    contact.contactEmails.forEach { contactEmail ->
-                        if (contactEmail.labelIds.contains(labelId.id)) contactGroupMembers.add(contactEmail)
+    operator fun invoke(
+        userId: UserId,
+        labelId: LabelId
+    ): Flow<Either<GetContactGroupError, ContactMetadata.ContactGroup>> {
+        return contactRepository.observeAllContacts(userId).transformLatest {
+            it.onLeft {
+                emit(GetContactGroupError.GetContactsError.left())
+            }
+            it.onRight { contacts ->
+                val contactGroup = contacts
+                    .filterIsInstance<ContactMetadata.ContactGroup>()
+                    .find { contact ->
+                        contact.labelId == labelId
                     }
-                } ?: raise(GetContactGroupError.GetContactsError)
 
-                val color = label.color ?: run {
-                    Timber.w("contact-group: color for group $labelId is null, this is never expected.")
-                    "#00000000"
-                }
-                ContactGroup(
-                    labelId = labelId,
-                    name = label.name,
-                    color = color,
-                    members = contactGroupMembers
-                )
+                emit(contactGroup?.right() ?: GetContactGroupError.ContactGroupNotFound.left())
             }
         }
     }
 }
 
 sealed interface GetContactGroupError {
-    object GetLabelsError : GetContactGroupError
     object GetContactsError : GetContactGroupError
+    object ContactGroupNotFound : GetContactGroupError
 }
