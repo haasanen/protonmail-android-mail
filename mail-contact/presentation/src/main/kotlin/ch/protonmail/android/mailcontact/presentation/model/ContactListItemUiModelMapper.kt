@@ -18,47 +18,58 @@
 
 package ch.protonmail.android.mailcontact.presentation.model
 
-import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
+import androidx.compose.ui.graphics.Color
+import arrow.core.getOrElse
+import ch.protonmail.android.mailcommon.presentation.mapper.AvatarInformationMapper
+import ch.protonmail.android.mailcommon.presentation.mapper.ColorMapper
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
-import ch.protonmail.android.mailcommon.presentation.usecase.GetInitials
 import ch.protonmail.android.mailcontact.presentation.R
 import ch.protonmail.android.mailcontact.domain.model.ContactEmail
+import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
+import ch.protonmail.android.mailcontact.domain.model.GroupedContacts
 import me.proton.core.util.kotlin.takeIfNotBlank
 import javax.inject.Inject
 
 class ContactListItemUiModelMapper @Inject constructor(
-    private val getInitials: GetInitials
+    private val avatarInformationMapper: AvatarInformationMapper,
+    private val colorMapper: ColorMapper
 ) {
 
-    fun toContactListItemUiModel(contactList: List<Contact>): List<ContactListItemUiModel> {
+    fun toContactListItemUiModel(groupedContactsList: List<GroupedContacts>): List<ContactListItemUiModel> {
         val contacts = arrayListOf<ContactListItemUiModel>()
-        contactList.map {
-            it.copy(name = it.name.trim())
-        }.sortedBy {
-            it.name.uppercase()
-        }.groupBy {
-            it.name.takeIfNotBlank()?.first()?.uppercaseChar() ?: "?"
-        }.forEach { nameGroup ->
-            contacts.add(
-                ContactListItemUiModel.Header(value = nameGroup.key.toString())
-            )
-            nameGroup.value.sortedBy {
-                it.name
-            }.forEach { contact ->
-                contacts.add(
-                    ContactListItemUiModel.Contact(
-                        id = contact.id,
-                        name = contact.name,
-                        emailSubtext = getEmailSubtext(contact.contactEmails),
-                        avatar = AvatarUiModel.ParticipantAvatar(
-                            getInitials(contact.name),
-                            contact.contactEmails.firstOrNull()?.email ?: "",
-                            null
+
+        groupedContactsList.forEach { groupedContacts ->
+
+            ContactListItemUiModel.Header(value = groupedContacts.groupedBy)
+
+            groupedContacts.contacts.forEach { contact ->
+                when (contact) {
+                    is ContactMetadata.Contact -> {
+                        ContactListItemUiModel.Contact(
+                            id = contact.id,
+                            name = contact.name,
+                            emailSubtext = getEmailSubtext(contact.emails),
+                            avatar = avatarInformationMapper.toUiModel(
+                                contact.avatar,
+                                contact.emails.firstOrNull()?.email ?: "",
+                                null
+                            )
                         )
-                    )
-                )
+                    }
+
+                    is ContactMetadata.ContactGroup -> {
+                        ContactListItemUiModel.ContactGroup(
+                            labelId = contact.labelId,
+                            name = contact.name,
+                            memberCount = contact.emails.size,
+                            color = colorMapper.toColor(contact.color).getOrElse { Color.Black }
+                        )
+                    }
+
+                }
             }
         }
+
         return contacts
     }
 
