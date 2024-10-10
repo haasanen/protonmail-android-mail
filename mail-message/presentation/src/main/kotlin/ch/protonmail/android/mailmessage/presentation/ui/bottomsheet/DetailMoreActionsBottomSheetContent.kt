@@ -57,7 +57,7 @@ fun DetailMoreActionsBottomSheetContent(
 ) {
     when (state) {
         is DetailMoreActionsBottomSheetState.Data -> DetailMoreActionsBottomSheetContent(
-            uiModel = state.messageDataUiModel,
+            uiModel = state.detailDataUiModel,
             replyActions = state.replyActions,
             messageActions = state.messageActions,
             moveActions = state.moveActions,
@@ -71,7 +71,7 @@ fun DetailMoreActionsBottomSheetContent(
 
 @Composable
 fun DetailMoreActionsBottomSheetContent(
-    uiModel: DetailMoreActionsBottomSheetState.MessageDataUiModel,
+    uiModel: DetailMoreActionsBottomSheetState.DetailDataUiModel,
     replyActions: ImmutableList<ActionUiModel>,
     messageActions: ImmutableList<ActionUiModel>,
     moveActions: ImmutableList<ActionUiModel>,
@@ -181,7 +181,7 @@ private fun BottomSheetContentPreview() {
     ProtonTheme {
         DetailMoreActionsBottomSheetContent(
             state = DetailMoreActionsBottomSheetState.Data(
-                messageDataUiModel = DetailMoreActionsBottomSheetState.MessageDataUiModel(
+                detailDataUiModel = DetailMoreActionsBottomSheetState.DetailDataUiModel(
                     TextUiModel("Kudos on a Successful Completion of a Challenging Project!"),
                     TextUiModel("Message from Antony Hayes"),
                     "123"

@@ -49,7 +49,7 @@ class GetMoreActionsBottomSheetDataTest {
         val actual = getMoreBottomSheetData.forMessage(userId, labelId, messageId)
 
         // Then
-        val expected = DetailMoreActionsBottomSheetState.MessageDetailMoreActionsBottomSheetEvent.DataLoaded(
+        val expected = DetailMoreActionsBottomSheetState.DetailMoreActionsBottomSheetEvent.DataLoaded(
             messageSender = message.sender.name,
             messageSubject = message.subject,
             messageId = message.messageId.id,

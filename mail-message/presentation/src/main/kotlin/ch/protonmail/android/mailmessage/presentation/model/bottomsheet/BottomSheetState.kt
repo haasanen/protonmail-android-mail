@@ -116,7 +116,7 @@ sealed interface MailboxMoreActionsBottomSheetState : BottomSheetContentState {
 
 sealed interface DetailMoreActionsBottomSheetState : BottomSheetContentState {
     data class Data(
-        val messageDataUiModel: MessageDataUiModel,
+        val detailDataUiModel: DetailDataUiModel,
         val replyActions: ImmutableList<ActionUiModel>,
         val messageActions: ImmutableList<ActionUiModel>,
         val moveActions: ImmutableList<ActionUiModel>,
@@ -125,18 +125,18 @@ sealed interface DetailMoreActionsBottomSheetState : BottomSheetContentState {
 
     object Loading : DetailMoreActionsBottomSheetState
 
-    sealed interface MessageDetailMoreActionsBottomSheetOperation : BottomSheetOperation
-    sealed interface MessageDetailMoreActionsBottomSheetEvent : MessageDetailMoreActionsBottomSheetOperation {
+    sealed interface DetailMoreActionsBottomSheetOperation : BottomSheetOperation
+    sealed interface DetailMoreActionsBottomSheetEvent : DetailMoreActionsBottomSheetOperation {
         data class DataLoaded(
             val messageSender: String,
             val messageSubject: String,
             val messageId: String,
             val participantsCount: Int,
             val availableActions: AvailableActions
-        ) : MessageDetailMoreActionsBottomSheetEvent
+        ) : DetailMoreActionsBottomSheetEvent
     }
 
-    data class MessageDataUiModel(
+    data class DetailDataUiModel(
         val headerSubjectText: TextUiModel,
         val headerDescriptionText: TextUiModel,
         val messageId: String

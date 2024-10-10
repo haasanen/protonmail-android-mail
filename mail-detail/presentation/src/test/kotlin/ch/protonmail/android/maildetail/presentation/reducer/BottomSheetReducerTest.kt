@@ -118,7 +118,7 @@ internal class BottomSheetReducerTest(
                 detailMoreActionsBottomSheetReducer.newStateFrom(
                     currentState,
                     testInput.operation
-                        as DetailMoreActionsBottomSheetState.MessageDetailMoreActionsBottomSheetOperation
+                        as DetailMoreActionsBottomSheetState.DetailMoreActionsBottomSheetOperation
                 )
             }
         } else {
@@ -264,7 +264,7 @@ internal class BottomSheetReducerTest(
         private val detailMoreActionsBottomSheetOperation = listOf(
             TestInput(
                 currentState = BottomSheetState(null, Effect.empty()),
-                operation = DetailMoreActionsBottomSheetState.MessageDetailMoreActionsBottomSheetEvent.DataLoaded(
+                operation = DetailMoreActionsBottomSheetState.DetailMoreActionsBottomSheetEvent.DataLoaded(
                     messageSender = "Sender",
                     messageSubject = "Subject",
                     messageId = "messageId",
@@ -273,7 +273,7 @@ internal class BottomSheetReducerTest(
                 ),
                 expectedState = BottomSheetState(
                     DetailMoreActionsBottomSheetState.Data(
-                        DetailMoreActionsBottomSheetState.MessageDataUiModel(
+                        DetailMoreActionsBottomSheetState.DetailDataUiModel(
                             headerDescriptionText = TextUiModel("Sender"),
                             headerSubjectText = TextUiModel("Subject"),
                             messageId = "messageId"

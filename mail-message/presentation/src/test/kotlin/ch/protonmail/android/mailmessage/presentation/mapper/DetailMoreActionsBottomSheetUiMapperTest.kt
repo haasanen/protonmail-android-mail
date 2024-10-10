@@ -31,7 +31,7 @@ internal class DetailMoreActionsBottomSheetUiMapperTest {
     @Test
     fun `should map to the correct header ui model`() {
         // Given
-        val expected = DetailMoreActionsBottomSheetState.MessageDataUiModel(
+        val expected = DetailMoreActionsBottomSheetState.DetailDataUiModel(
             headerSubjectText = TextUiModel(ExpectedSubject),
             headerDescriptionText = TextUiModel.TextResWithArgs(
                 R.string.bottom_sheet_more_header_message_from,

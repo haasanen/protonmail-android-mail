@@ -53,7 +53,7 @@ class BottomSheetReducer @Inject constructor(
             is MailboxMoreActionsBottomSheetState.MailboxMoreActionsBottomSheetOperation ->
                 mailboxMoreActionsBottomSheetReducer.newStateFrom(currentState, operation)
 
-            is DetailMoreActionsBottomSheetState.MessageDetailMoreActionsBottomSheetEvent.DataLoaded ->
+            is DetailMoreActionsBottomSheetState.DetailMoreActionsBottomSheetEvent.DataLoaded ->
                 detailMoreActionsBottomSheetReducer.newStateFrom(currentState, operation)
 
             is UpsellingBottomSheetState.UpsellingBottomSheetEvent ->

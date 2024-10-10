@@ -73,7 +73,7 @@ internal class DetailMoreActionsBottomSheetReducerTest(
         private const val SingleParticipantCount = 1
         private const val MultipleParticipantsCount = 10
 
-        private val expectedUiModel = DetailMoreActionsBottomSheetState.MessageDataUiModel(
+        private val expectedUiModel = DetailMoreActionsBottomSheetState.DetailDataUiModel(
             headerSubjectText = TextUiModel(ExpectedSubject),
             headerDescriptionText = TextUiModel(ExpectedSender),
             messageId = ExpectedMessageId
@@ -81,7 +81,7 @@ internal class DetailMoreActionsBottomSheetReducerTest(
         private val transitionsFromLoadingState = listOf(
             TestInput(
                 currentState = BottomSheetState(DetailMoreActionsBottomSheetState.Loading),
-                operation = DetailMoreActionsBottomSheetState.MessageDetailMoreActionsBottomSheetEvent.DataLoaded(
+                operation = DetailMoreActionsBottomSheetState.DetailMoreActionsBottomSheetEvent.DataLoaded(
                     messageSender = ExpectedSender,
                     messageSubject = ExpectedSubject,
                     messageId = ExpectedMessageId,
@@ -90,7 +90,7 @@ internal class DetailMoreActionsBottomSheetReducerTest(
                 ),
                 expectedState = BottomSheetState(
                     contentState = DetailMoreActionsBottomSheetState.Data(
-                        messageDataUiModel = expectedUiModel,
+                        detailDataUiModel = expectedUiModel,
                         replyActions = persistentListOf(ActionUiModelSample.Reply),
                         messageActions = persistentListOf(),
                         moveActions = persistentListOf(),
@@ -100,7 +100,7 @@ internal class DetailMoreActionsBottomSheetReducerTest(
             ),
             TestInput(
                 currentState = BottomSheetState(DetailMoreActionsBottomSheetState.Loading),
-                operation = DetailMoreActionsBottomSheetState.MessageDetailMoreActionsBottomSheetEvent.DataLoaded(
+                operation = DetailMoreActionsBottomSheetState.DetailMoreActionsBottomSheetEvent.DataLoaded(
                     messageSender = ExpectedSender,
                     messageSubject = ExpectedSubject,
                     messageId = ExpectedMessageId,
@@ -109,7 +109,7 @@ internal class DetailMoreActionsBottomSheetReducerTest(
                 ),
                 expectedState = BottomSheetState(
                     contentState = DetailMoreActionsBottomSheetState.Data(
-                        messageDataUiModel = expectedUiModel,
+                        detailDataUiModel = expectedUiModel,
                         replyActions = persistentListOf(ActionUiModelSample.Forward),
                         messageActions = persistentListOf(),
                         moveActions = persistentListOf(),
@@ -119,7 +119,7 @@ internal class DetailMoreActionsBottomSheetReducerTest(
             ),
             TestInput(
                 currentState = BottomSheetState(DetailMoreActionsBottomSheetState.Loading),
-                operation = DetailMoreActionsBottomSheetState.MessageDetailMoreActionsBottomSheetEvent.DataLoaded(
+                operation = DetailMoreActionsBottomSheetState.DetailMoreActionsBottomSheetEvent.DataLoaded(
                     messageSender = ExpectedSender,
                     messageSubject = ExpectedSubject,
                     messageId = ExpectedMessageId,
@@ -128,7 +128,7 @@ internal class DetailMoreActionsBottomSheetReducerTest(
                 ),
                 expectedState = BottomSheetState(
                     contentState = DetailMoreActionsBottomSheetState.Data(
-                        messageDataUiModel = expectedUiModel,
+                        detailDataUiModel = expectedUiModel,
                         replyActions = persistentListOf(ActionUiModelSample.Reply),
                         messageActions = persistentListOf(ActionUiModelSample.MarkRead, ActionUiModelSample.Star),
                         moveActions = persistentListOf(ActionUiModelSample.Archive, ActionUiModelSample.Trash),
@@ -155,7 +155,7 @@ internal class DetailMoreActionsBottomSheetReducerTest(
 
     data class TestInput(
         val currentState: BottomSheetState,
-        val operation: DetailMoreActionsBottomSheetState.MessageDetailMoreActionsBottomSheetOperation,
+        val operation: DetailMoreActionsBottomSheetState.DetailMoreActionsBottomSheetOperation,
         val expectedState: BottomSheetState
     )
 }

@@ -25,7 +25,7 @@ import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.usecase.GetMessageAvailableActions
 import ch.protonmail.android.mailmessage.domain.usecase.ObserveMessage
-import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.DetailMoreActionsBottomSheetState.MessageDetailMoreActionsBottomSheetEvent
+import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.DetailMoreActionsBottomSheetState.DetailMoreActionsBottomSheetEvent
 import kotlinx.coroutines.flow.firstOrNull
 import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
@@ -40,7 +40,7 @@ class GetMoreActionsBottomSheetData @Inject constructor(
         userId: UserId,
         labelId: LabelId,
         messageId: MessageId
-    ): MessageDetailMoreActionsBottomSheetEvent.DataLoaded? =
+    ): DetailMoreActionsBottomSheetEvent.DataLoaded? =
         getMessageAvailableActions(userId, labelId, listOf(messageId)).map {
             buildBottomSheetActionData(userId, messageId, it)
         }.getOrNull()
@@ -49,7 +49,7 @@ class GetMoreActionsBottomSheetData @Inject constructor(
         userId: UserId,
         labelId: LabelId,
         conversationId: ConversationId
-    ): MessageDetailMoreActionsBottomSheetEvent.DataLoaded? =
+    ): DetailMoreActionsBottomSheetEvent.DataLoaded? =
         getConversationAvailableActions(userId, labelId, listOf(conversationId)).map {
             null
         }.getOrNull()
@@ -58,10 +58,10 @@ class GetMoreActionsBottomSheetData @Inject constructor(
         userId: UserId,
         messageId: MessageId,
         availableActions: AvailableActions
-    ): MessageDetailMoreActionsBottomSheetEvent.DataLoaded? {
+    ): DetailMoreActionsBottomSheetEvent.DataLoaded? {
         val message = observeMessage(userId, messageId).firstOrNull()?.getOrNull() ?: return null
 
-        return MessageDetailMoreActionsBottomSheetEvent.DataLoaded(
+        return DetailMoreActionsBottomSheetEvent.DataLoaded(
             messageSender = message.sender.name,
             messageSubject = message.subject,
             messageId = message.messageId.id,
