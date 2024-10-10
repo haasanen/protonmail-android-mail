@@ -20,6 +20,7 @@ package ch.protonmail.android.mailcontact.presentation.managemembers
 
 import app.cash.turbine.test
 import arrow.core.right
+import ch.protonmail.android.mailcommon.domain.sample.AvatarInformationSample
 import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcontact.domain.usecase.ObserveContacts
@@ -32,10 +33,10 @@ import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
-import ch.protonmail.android.mailcontact.domain.model.Contact
 import ch.protonmail.android.mailcontact.domain.model.ContactEmail
 import ch.protonmail.android.mailcontact.domain.model.ContactEmailId
 import ch.protonmail.android.mailcontact.domain.model.ContactId
+import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import me.proton.core.test.kotlin.TestDispatcherProvider
 import org.junit.Rule
 import org.junit.Test
@@ -46,11 +47,12 @@ class ManageMembersViewModelTest {
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule(TestDispatcherProvider().Main)
 
-    private val defaultTestContact = Contact(
-        UserIdTestData.userId,
-        ContactId("ContactId1"),
-        "John Doe",
-        listOf(
+    private val defaultTestContact = ContactMetadata.Contact(
+        userId = UserIdTestData.userId,
+        id = ContactId("ContactId1"),
+        name = "John Doe",
+        avatar = AvatarInformationSample.avatarSample,
+        emails = listOf(
             ContactEmail(
                 UserIdTestData.userId,
                 ContactEmailId("ContactEmailId1"),
@@ -228,14 +230,14 @@ class ManageMembersViewModelTest {
         }
     }
 
-    private fun expectContactsData(contacts: List<Contact>) {
+    private fun expectContactsData(contacts: List<ContactMetadata.Contact>) {
         coEvery {
             observeContactsMock(userId = UserIdTestData.userId)
         } returns flowOf(contacts.right())
     }
 
     private fun expectUiModelMapper(
-        contacts: List<Contact>,
+        contacts: List<ContactMetadata.Contact>,
         selectedContactEmailIds: List<ContactEmailId>,
         manageMembersUiModel: List<ManageMembersUiModel>
     ) {

@@ -26,6 +26,7 @@ import ch.protonmail.android.mailcommon.presentation.mapper.ColorMapper
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcommon.presentation.usecase.FormatExtendedTime
 import ch.protonmail.android.mailcommon.presentation.usecase.FormatShortTime
+import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import ch.protonmail.android.maildetail.presentation.R
 import ch.protonmail.android.maildetail.presentation.model.MessageDetailHeaderUiModel
 import ch.protonmail.android.maildetail.presentation.model.MessageIdUiModel
@@ -38,7 +39,6 @@ import ch.protonmail.android.mailmessage.domain.usecase.ResolveParticipantName
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
-import ch.protonmail.android.mailcontact.domain.model.Contact
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.seconds
 
@@ -53,7 +53,7 @@ class MessageDetailHeaderUiModelMapper @Inject constructor(
     private val resolveParticipantName: ResolveParticipantName
 ) {
 
-    suspend fun toUiModel(message: Message, contacts: List<Contact>): MessageDetailHeaderUiModel {
+    suspend fun toUiModel(message: Message, contacts: List<ContactMetadata.Contact>): MessageDetailHeaderUiModel {
         return MessageDetailHeaderUiModel(
             avatar = detailAvatarUiModelMapper(message.avatarInformation, message.sender),
             sender = participantUiModelMapper.senderToUiModel(message.sender, contacts),
@@ -86,7 +86,7 @@ class MessageDetailHeaderUiModelMapper @Inject constructor(
 
     private fun Message.hasUndisclosedRecipients() = (toList + ccList + bccList).isEmpty()
 
-    private fun Message.allRecipients(contacts: List<Contact>): TextUiModel {
+    private fun Message.allRecipients(contacts: List<ContactMetadata.Contact>): TextUiModel {
         val allRecipientsList = toList + ccList + bccList
 
         return if (allRecipientsList.isNotEmpty()) {

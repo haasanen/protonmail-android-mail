@@ -55,6 +55,7 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import ch.protonmail.android.mailcontact.domain.model.ContactEmail
 import ch.protonmail.android.mailcontact.domain.model.ContactEmailId
+import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import me.proton.core.domain.entity.UserId
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import org.junit.Rule
@@ -70,7 +71,7 @@ class ContactGroupFormViewModelTest {
     private val testUserId = UserIdTestData.userId
     private val testLabelId = ContactGroupFormPreviewData.contactGroupFormSampleData.id!!
     private val testColors = listOf(ColorHexWithName(TextUiModel("Red"), Color.Red.getHexStringFromColor()))
-    private val testContactGroup = ContactGroup(
+    private val testContactGroup = ContactMetadata.ContactGroup(
         testLabelId,
         "Group name",
         Color.Red.getHexStringFromColor(),
@@ -149,7 +150,7 @@ class ContactGroupFormViewModelTest {
     fun `given Label ID, when init and observe empty contact group, then emits loaded contact group state`() = runTest {
         // Given
         val expectedContactGroup = testContactGroup.copy(
-            members = emptyList()
+            emails = emptyList()
         )
         val expectedContactGroupFormUiModel = ContactGroupFormPreviewData.contactGroupFormSampleData.copy(
             memberCount = 0,
@@ -317,7 +318,7 @@ class ContactGroupFormViewModelTest {
             expectedContactGroup.labelId,
             expectedContactGroup.name,
             expectedContactGroup.color,
-            expectedContactGroup.members.map { it.id }
+            expectedContactGroup.emails.map { it.id }
         )
 
         expectSavedStateLabelId(testLabelId)
@@ -625,15 +626,15 @@ class ContactGroupFormViewModelTest {
     private fun expectContactGroup(
         userId: UserId,
         labelId: LabelId,
-        contactGroup: ContactGroup?
+        contactGroup: ContactMetadata.ContactGroup?
     ) {
         every {
             observeContactGroupMock.invoke(userId, labelId)
-        } returns flowOf(contactGroup?.right() ?: GetContactGroupError.GetLabelsError.left())
+        } returns flowOf(contactGroup?.right() ?: GetContactGroupError.ContactGroupNotFound.left())
     }
 
     private fun expectContactGroupFormUiModel(
-        contactGroup: ContactGroup,
+        contactGroup: ContactMetadata.ContactGroup,
         expectedContactGroupFormUiModel: ContactGroupFormUiModel
     ) {
         every {

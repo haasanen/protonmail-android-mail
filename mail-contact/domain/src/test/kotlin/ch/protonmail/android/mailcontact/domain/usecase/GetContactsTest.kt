@@ -19,6 +19,7 @@
 package ch.protonmail.android.mailcontact.domain.usecase
 
 import arrow.core.Either
+import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import ch.protonmail.android.mailcontact.domain.model.GetContactError
 import ch.protonmail.android.testdata.contact.ContactTestData
 import ch.protonmail.android.testdata.user.UserIdTestData
@@ -26,7 +27,6 @@ import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
-import ch.protonmail.android.mailcontact.domain.model.Contact
 import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
@@ -44,7 +44,7 @@ class GetContactsTest {
         // When
         val actual = getContacts(UserIdTestData.userId)
         // Then
-        assertIs<Either.Right<List<Contact>>>(actual)
+        assertIs<Either.Right<List<ContactMetadata.Contact>>>(actual)
         assertEquals(ContactTestData.contacts, actual.value)
     }
 

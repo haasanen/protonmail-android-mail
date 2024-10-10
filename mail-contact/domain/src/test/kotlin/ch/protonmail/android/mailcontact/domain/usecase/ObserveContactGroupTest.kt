@@ -102,7 +102,7 @@ class ObserveContactGroupTest {
         label.labelId,
         label.name,
         label.color!!,
-        listOf(contact.contactEmails[0])
+        listOf(contact.emails[0])
     )
 
     private val observeContactGroup = ObserveContactGroup(labelRepository, contactRepository)

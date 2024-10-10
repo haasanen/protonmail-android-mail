@@ -19,27 +19,29 @@
 package ch.protonmail.android.mailcontact.domain.usecase
 
 import arrow.core.Either
+import ch.protonmail.android.mailcommon.domain.sample.AvatarInformationSample
 import ch.protonmail.android.mailcontact.domain.model.GetContactError
 import ch.protonmail.android.testdata.user.UserIdTestData
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
-import ch.protonmail.android.mailcontact.domain.model.Contact
 import ch.protonmail.android.mailcontact.domain.model.ContactEmail
 import ch.protonmail.android.mailcontact.domain.model.ContactEmailId
 import ch.protonmail.android.mailcontact.domain.model.ContactId
+import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
 
 class GetContactEmailsByIdTest {
 
-    private val defaultTestContact = Contact(
-        UserIdTestData.userId,
-        ContactId("ContactId1"),
-        "John Doe",
-        listOf(
+    private val defaultTestContact = ContactMetadata.Contact(
+        userId = UserIdTestData.userId,
+        id = ContactId("ContactId1"),
+        name = "John Doe",
+        avatar = AvatarInformationSample.avatarSample,
+        emails = listOf(
             ContactEmail(
                 UserIdTestData.userId,
                 ContactEmailId("ContactEmailId1"),
@@ -81,7 +83,7 @@ class GetContactEmailsByIdTest {
         val actual = getContactEmailsById(UserIdTestData.userId, listOf("ContactEmailId2"))
         // Then
         assertIs<Either.Right<List<ContactEmail>>>(actual)
-        assertEquals(listOf(defaultTestContact.contactEmails[1]), actual.value)
+        assertEquals(listOf(defaultTestContact.emails[1]), actual.value)
     }
 
     @Test

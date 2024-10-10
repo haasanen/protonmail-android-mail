@@ -21,9 +21,9 @@ package ch.protonmail.android.mailcontact.domain.usecase
 import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
+import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import ch.protonmail.android.mailcontact.domain.model.GetContactError
 import kotlinx.coroutines.flow.firstOrNull
-import ch.protonmail.android.mailcontact.domain.model.Contact
 import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 
@@ -31,7 +31,7 @@ class GetContacts @Inject constructor(
     private val observeContacts: ObserveContacts
 ) {
 
-    suspend operator fun invoke(userId: UserId): Either<GetContactError, List<Contact>> =
+    suspend operator fun invoke(userId: UserId): Either<GetContactError, List<ContactMetadata.Contact>> =
         observeContacts(userId).firstOrNull()?.getOrNull()?.right() ?: GetContactError.left()
 
 }

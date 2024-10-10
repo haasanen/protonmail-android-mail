@@ -64,7 +64,7 @@ class FindContactByEmailTest {
 
         // Then
         assertNotNull(result)
-        assertTrue(result.contactEmails.any { it.email.equals(participantEmail, ignoreCase = true) })
+        assertTrue(result.emails.any { it.email.equals(participantEmail, ignoreCase = true) })
     }
 
     @Test

@@ -29,12 +29,10 @@ import ch.protonmail.android.mailcontact.domain.repository.ContactRepository
 import me.proton.core.domain.entity.UserId
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.LabelType
-import ch.protonmail.android.maillabel.domain.repository.LabelRepository
 import timber.log.Timber
 import javax.inject.Inject
 
 class ObserveContactGroup @Inject constructor(
-    private val labelRepository: LabelRepository,
     private val contactRepository: ContactRepository
 ) {
 

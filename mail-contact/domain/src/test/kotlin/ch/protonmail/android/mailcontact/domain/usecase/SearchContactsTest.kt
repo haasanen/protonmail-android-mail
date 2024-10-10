@@ -20,6 +20,7 @@ package ch.protonmail.android.mailcontact.domain.usecase
 
 import app.cash.turbine.test
 import arrow.core.Either
+import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import ch.protonmail.android.mailcontact.domain.model.GetContactError
 import ch.protonmail.android.testdata.contact.ContactTestData
 import ch.protonmail.android.testdata.user.UserIdTestData
@@ -27,7 +28,6 @@ import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
-import ch.protonmail.android.mailcontact.domain.model.Contact
 import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
@@ -50,7 +50,7 @@ class SearchContactsTest {
         // When
         searchContacts(UserIdTestData.userId, query).test {
             // Then
-            val actual = assertIs<Either.Right<List<Contact>>>(awaitItem())
+            val actual = assertIs<Either.Right<List<ContactMetadata.Contact>>>(awaitItem())
             assertEquals(ContactTestData.contacts, actual.value)
             awaitComplete()
         }
@@ -81,7 +81,7 @@ class SearchContactsTest {
         // When
         searchContacts(UserIdTestData.userId, query).test {
             // Then
-            val actual = assertIs<Either.Right<List<Contact>>>(awaitItem())
+            val actual = assertIs<Either.Right<List<ContactMetadata.Contact>>>(awaitItem())
             assertEquals(listOf(contact), actual.value)
             awaitComplete()
         }
@@ -113,7 +113,7 @@ class SearchContactsTest {
             // When
             searchContacts(UserIdTestData.userId, query, onlyMatchingContactEmails = true).test {
                 // Then
-                val actual = assertIs<Either.Right<List<Contact>>>(awaitItem())
+                val actual = assertIs<Either.Right<List<ContactMetadata.Contact>>>(awaitItem())
                 assertTrue(actual.value.size == 1)
 
                 val matchedContact = actual.value.first()
@@ -122,10 +122,10 @@ class SearchContactsTest {
                 assertEquals(contact.id, matchedContact.id)
                 assertEquals(contact.name, matchedContact.name)
 
-                assertTrue(matchedContact.contactEmails.size == 1)
+                assertTrue(matchedContact.emails.size == 1)
                 assertEquals(
-                    listOf(contact.contactEmails[1]), // return only 2nd ContactEmail
-                    listOf(matchedContact.contactEmails.first())
+                    listOf(contact.emails[1]), // return only 2nd ContactEmail
+                    listOf(matchedContact.emails.first())
                 )
                 awaitComplete()
             }
@@ -157,7 +157,7 @@ class SearchContactsTest {
             // When
             searchContacts(UserIdTestData.userId, query, onlyMatchingContactEmails = false).test {
                 // Then
-                val actual = assertIs<Either.Right<List<Contact>>>(awaitItem())
+                val actual = assertIs<Either.Right<List<ContactMetadata.Contact>>>(awaitItem())
                 assertTrue(actual.value.size == 1)
 
                 val matchedContact = actual.value.first()
@@ -166,14 +166,14 @@ class SearchContactsTest {
                 assertEquals(contact.id, matchedContact.id)
                 assertEquals(contact.name, matchedContact.name)
 
-                assertTrue(matchedContact.contactEmails.size == 2)
+                assertTrue(matchedContact.emails.size == 2)
                 assertEquals(
-                    listOf(contact.contactEmails[0]),
-                    listOf(matchedContact.contactEmails[0])
+                    listOf(contact.emails[0]),
+                    listOf(matchedContact.emails[0])
                 )
                 assertEquals(
-                    listOf(contact.contactEmails[1]),
-                    listOf(matchedContact.contactEmails[1])
+                    listOf(contact.emails[1]),
+                    listOf(matchedContact.emails[1])
                 )
                 awaitComplete()
             }
@@ -187,7 +187,7 @@ class SearchContactsTest {
         // When
         searchContacts(UserIdTestData.userId, query).test {
             // Then
-            val actual = assertIs<Either.Right<List<Contact>>>(awaitItem())
+            val actual = assertIs<Either.Right<List<ContactMetadata.Contact>>>(awaitItem())
             assertEquals(emptyList(), actual.value)
             awaitComplete()
         }

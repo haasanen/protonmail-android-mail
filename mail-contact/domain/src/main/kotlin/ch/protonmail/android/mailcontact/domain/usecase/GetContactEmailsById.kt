@@ -36,7 +36,7 @@ class GetContactEmailsById @Inject constructor(
         selectedContactEmailIds: List<String>
     ): Either<GetContactError, List<ContactEmail>> {
         return observeContacts(userId).firstOrNull()?.getOrNull()?.flatMap { contact ->
-            contact.contactEmails.mapNotNull { contactEmail ->
+            contact.emails.mapNotNull { contactEmail ->
                 contactEmail.takeIf { selectedContactEmailIds.contains(contactEmail.id.id) }
             }
         }?.right() ?: GetContactError.left()

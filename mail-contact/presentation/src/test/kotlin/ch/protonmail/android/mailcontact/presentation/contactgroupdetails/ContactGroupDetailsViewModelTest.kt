@@ -52,6 +52,7 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import ch.protonmail.android.mailcontact.domain.model.ContactEmail
 import ch.protonmail.android.mailcontact.domain.model.ContactEmailId
+import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import me.proton.core.domain.entity.UserId
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import org.junit.Test
@@ -63,7 +64,7 @@ class ContactGroupDetailsViewModelTest {
 
     private val testUserId = UserIdTestData.userId
     private val testLabelId = ContactGroupDetailsPreviewData.contactGroupDetailsSampleData.id
-    private val testEmptyContactGroup = ContactGroup(
+    private val testEmptyContactGroup = ContactMetadata.ContactGroup(
         testLabelId,
         "Group name",
         Color.Red.getHexStringFromColor(),
@@ -141,7 +142,7 @@ class ContactGroupDetailsViewModelTest {
     fun `given Label ID, when init and observe empty contact group, then emits loaded contact group state`() = runTest {
         // Given
         val expectedContactGroup = testEmptyContactGroup.copy(
-            members = emptyList()
+            emails = emptyList()
         )
         val expectedContactGroupDetailsUiModel = ContactGroupDetailsPreviewData.contactGroupDetailsSampleData.copy(
             memberCount = 0,
@@ -440,15 +441,15 @@ class ContactGroupDetailsViewModelTest {
     private fun expectContactGroup(
         userId: UserId,
         labelId: LabelId,
-        contactGroup: ContactGroup?
+        contactGroup: ContactMetadata.ContactGroup?
     ) {
         every {
             observeContactGroupMock.invoke(userId, labelId)
-        } returns flowOf(contactGroup?.right() ?: GetContactGroupError.GetLabelsError.left())
+        } returns flowOf(contactGroup?.right() ?: GetContactGroupError.ContactGroupNotFound.left())
     }
 
     private fun expectContactGroupDetailsUiModel(
-        contactGroup: ContactGroup,
+        contactGroup: ContactMetadata.ContactGroup,
         expectedContactGroupDetailsUiModel: ContactGroupDetailsUiModel
     ) {
         every {

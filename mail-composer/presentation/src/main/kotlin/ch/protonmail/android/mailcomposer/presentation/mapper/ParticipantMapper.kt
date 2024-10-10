@@ -19,17 +19,20 @@
 package ch.protonmail.android.mailcomposer.presentation.mapper
 
 import ch.protonmail.android.mailcomposer.presentation.model.RecipientUiModel
+import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import ch.protonmail.android.mailmessage.domain.model.Participant
-import ch.protonmail.android.mailcontact.domain.model.Contact
 import me.proton.core.util.kotlin.equalsNoCase
 import me.proton.core.util.kotlin.takeIfNotBlank
 import javax.inject.Inject
 
 class ParticipantMapper @Inject constructor() {
 
-    fun recipientUiModelToParticipant(recipient: RecipientUiModel.Valid, contacts: List<Contact>): Participant {
+    fun recipientUiModelToParticipant(
+        recipient: RecipientUiModel.Valid,
+        contacts: List<ContactMetadata.Contact>
+    ): Participant {
         val contactEmail = contacts.firstNotNullOfOrNull { contact ->
-            contact.contactEmails.find {
+            contact.emails.find {
                 // match by email and fallback to canonical version (fallback only makes sense if we actually
                 // get canonical version of inputted address from API, it doesn't happen yet)
                 recipient.address.equalsNoCase(it.email) || recipient.address.equalsNoCase(it.canonicalEmail)

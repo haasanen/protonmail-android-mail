@@ -18,11 +18,29 @@
 
 package ch.protonmail.android.mailcontact.domain.model
 
+import ch.protonmail.android.mailcommon.domain.model.AvatarInformation
+import ch.protonmail.android.maillabel.domain.model.LabelId
 import me.proton.core.domain.entity.UserId
 
-data class Contact(
-    val userId: UserId,
-    val id: ContactId,
-    val name: String,
-    val contactEmails: List<ContactEmail>
-)
+sealed interface ContactMetadata {
+
+    val name: String
+    val emails: List<ContactEmail>
+
+    data class Contact(
+        val userId: UserId,
+        val id: ContactId,
+        val avatar: AvatarInformation,
+        override val name: String,
+        override val emails: List<ContactEmail>
+    ) : ContactMetadata
+
+
+    data class ContactGroup(
+        val labelId: LabelId,
+        override val name: String,
+        val color: String,
+        override val emails: List<ContactEmail>
+    ) : ContactMetadata
+
+}

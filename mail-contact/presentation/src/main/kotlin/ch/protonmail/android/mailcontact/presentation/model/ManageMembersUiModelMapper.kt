@@ -19,8 +19,8 @@
 package ch.protonmail.android.mailcontact.presentation.model
 
 import ch.protonmail.android.mailcommon.presentation.usecase.GetInitials
-import ch.protonmail.android.mailcontact.domain.model.Contact
 import ch.protonmail.android.mailcontact.domain.model.ContactEmailId
+import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import javax.inject.Inject
 
 class ManageMembersUiModelMapper @Inject constructor(
@@ -28,11 +28,11 @@ class ManageMembersUiModelMapper @Inject constructor(
 ) {
 
     fun toManageMembersUiModelList(
-        contacts: List<Contact>,
+        contacts: List<ContactMetadata.Contact>,
         selectedContactEmailIds: List<ContactEmailId>
     ): List<ManageMembersUiModel> {
         return contacts.flatMap { contact ->
-            contact.contactEmails.map { contactEmail ->
+            contact.emails.map { contactEmail ->
                 ManageMembersUiModel(
                     id = contactEmail.id,
                     name = contactEmail.name,

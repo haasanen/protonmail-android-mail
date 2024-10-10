@@ -18,7 +18,7 @@
 
 package ch.protonmail.android.mailcontact.domain.usecase
 
-import ch.protonmail.android.mailcontact.domain.model.Contact
+import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 
@@ -26,12 +26,15 @@ class FindContactByEmail @Inject constructor(
     private val getContacts: GetContacts
 ) {
 
-    suspend operator fun invoke(userId: UserId, emailAddress: String): Contact? = getContacts(userId).fold(
+    suspend operator fun invoke(userId: UserId, emailAddress: String): ContactMetadata.Contact? = getContacts(
+        userId
+    ).fold(
         ifLeft = { null },
         ifRight = { contacts ->
-            contacts.firstOrNull { contact ->
-                contact.contactEmails.any { it.email.equals(emailAddress, ignoreCase = true) }
-            }
+            contacts.filterIsInstance<ContactMetadata.Contact>()
+                .firstOrNull { contact ->
+                    contact.emails.any { it.email.equals(emailAddress, ignoreCase = true) }
+                }
         }
     )
 }

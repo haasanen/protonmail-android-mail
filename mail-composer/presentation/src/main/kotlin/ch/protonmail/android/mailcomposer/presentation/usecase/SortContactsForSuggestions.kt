@@ -19,34 +19,40 @@
 package ch.protonmail.android.mailcomposer.presentation.usecase
 
 import ch.protonmail.android.mailcomposer.presentation.model.ContactSuggestionUiModel
-import ch.protonmail.android.mailcontact.domain.model.ContactGroup
+import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import ch.protonmail.android.mailcontact.domain.model.DeviceContact
-import ch.protonmail.android.mailcontact.domain.model.Contact
 import me.proton.core.util.kotlin.takeIfNotBlank
 import javax.inject.Inject
 
 class SortContactsForSuggestions @Inject constructor() {
 
     operator fun invoke(
-        contacts: List<Contact>,
+        contacts: List<ContactMetadata>,
         deviceContacts: List<DeviceContact>,
-        contactGroups: List<ContactGroup>,
         maxContactAutocompletionCount: Int
     ): List<ContactSuggestionUiModel> {
 
         val fromContacts = contacts.asSequence().flatMap { contact ->
-            contact.contactEmails.map {
-                contact.copy(
-                    contactEmails = listOf(it)
-                ) // flatMap into Contacts containing only one ContactEmail because we need to sort by them
+            when (contact) {
+                is ContactMetadata.Contact -> contact.emails.map {
+                    contact.copy(
+                        emails = listOf(it)
+                    )
+                }
+                is ContactMetadata.ContactGroup -> contact.emails.map {
+                    contact.copy(
+                        emails = listOf(it)
+                    )
+                }
             }
+
         }.sortedBy {
-            val lastUsedTimeDescending = Long.MAX_VALUE - it.contactEmails.first().lastUsedTime
+            val lastUsedTimeDescending = Long.MAX_VALUE - it.emails.first().lastUsedTime
 
             // LastUsedTime, name, email
-            "$lastUsedTimeDescending ${it.name} ${it.contactEmails.first().email ?: ""}"
+            "$lastUsedTimeDescending ${it.name} ${it.emails.first().email ?: ""}"
         }.map { contact ->
-            val contactEmail = contact.contactEmails.first()
+            val contactEmail = contact.emails.first()
             ContactSuggestionUiModel.Contact(
                 name = contactEmail.name.takeIfNotBlank()
                     ?: contact.name.takeIfNotBlank()
@@ -62,18 +68,7 @@ class SortContactsForSuggestions @Inject constructor() {
             )
         }
 
-        val fromContactGroups = contactGroups.asSequence().map { contactGroup ->
-            ContactSuggestionUiModel.ContactGroup(
-                name = contactGroup.name,
-                emails = contactGroup.members.map { it.email }
-            )
-        }
-
-        val fromDeviceAndContactGroups = (fromDeviceContacts + fromContactGroups).sortedBy {
-            it.name
-        }
-
-        return (fromContacts + fromDeviceAndContactGroups)
+        return (fromContacts + fromDeviceContacts)
             .take(maxContactAutocompletionCount)
             .toList()
 

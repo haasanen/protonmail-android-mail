@@ -21,7 +21,6 @@ package ch.protonmail.android.mailcontact.presentation.model
 import androidx.compose.ui.graphics.Color
 import arrow.core.getOrElse
 import ch.protonmail.android.mailcommon.presentation.mapper.ColorMapper
-import ch.protonmail.android.mailcontact.domain.model.Contact
 import ch.protonmail.android.maillabel.domain.model.Label
 import javax.inject.Inject
 

@@ -45,7 +45,7 @@ class EditContactGroupMembers @Inject constructor(
             raise(EditContactGroupMembersError.ObservingContactGroup)
         }
 
-        val groupContactEmailIds = contactGroup.members.map { it.id }.toSet()
+        val groupContactEmailIds = contactGroup.emails.map { it.id }.toSet()
         val contactEmailIdsToAdd = contactEmailIds.subtract(groupContactEmailIds)
         val contactEmailIdsToRemove = groupContactEmailIds.subtract(contactEmailIds)
 

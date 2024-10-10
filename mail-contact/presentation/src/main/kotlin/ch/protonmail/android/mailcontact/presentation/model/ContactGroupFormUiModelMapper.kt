@@ -24,6 +24,7 @@ import ch.protonmail.android.mailcommon.presentation.mapper.ColorMapper
 import ch.protonmail.android.mailcommon.presentation.usecase.GetInitials
 import ch.protonmail.android.mailcontact.domain.model.ContactGroup
 import ch.protonmail.android.mailcontact.domain.model.ContactEmail
+import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import javax.inject.Inject
 
 class ContactGroupFormUiModelMapper @Inject constructor(
@@ -31,13 +32,13 @@ class ContactGroupFormUiModelMapper @Inject constructor(
     private val colorMapper: ColorMapper
 ) {
 
-    fun toContactGroupFormUiModel(contactGroup: ContactGroup): ContactGroupFormUiModel {
+    fun toContactGroupFormUiModel(contactGroup: ContactMetadata.ContactGroup): ContactGroupFormUiModel {
         return ContactGroupFormUiModel(
             id = contactGroup.labelId,
             name = contactGroup.name,
             color = colorMapper.toColor(contactGroup.color).getOrElse { Color.Black },
-            memberCount = contactGroup.members.size,
-            members = contactGroup.members.map { contactEmail ->
+            memberCount = contactGroup.emails.size,
+            members = contactGroup.emails.map { contactEmail ->
                 ContactGroupFormMember(
                     id = contactEmail.id,
                     initials = getInitials(contactEmail.name),

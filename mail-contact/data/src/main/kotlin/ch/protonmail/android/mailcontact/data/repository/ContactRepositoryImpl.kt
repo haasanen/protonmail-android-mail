@@ -18,11 +18,13 @@
 
 package ch.protonmail.android.mailcontact.data.repository
 
-import ch.protonmail.android.mailcontact.domain.model.Contact
+import arrow.core.Either
 import ch.protonmail.android.mailcontact.domain.model.ContactCard
 import ch.protonmail.android.mailcontact.domain.model.ContactEmail
 import ch.protonmail.android.mailcontact.domain.model.ContactId
+import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import ch.protonmail.android.mailcontact.domain.model.ContactWithCards
+import ch.protonmail.android.mailcontact.domain.model.GetContactError
 import ch.protonmail.android.mailcontact.domain.repository.ContactRepository
 import kotlinx.coroutines.flow.Flow
 import me.proton.core.domain.arch.DataResult
@@ -48,11 +50,14 @@ class ContactRepositoryImpl @Inject constructor() : ContactRepository {
         TODO("Not yet implemented")
     }
 
-    override fun observeAllContacts(userId: UserId, refresh: Boolean): Flow<DataResult<List<Contact>>> {
+    override fun observeAllContacts(
+        userId: UserId,
+        refresh: Boolean
+    ): Flow<Either<GetContactError, List<ContactMetadata>>> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getAllContacts(userId: UserId, refresh: Boolean): List<Contact> {
+    override suspend fun getAllContacts(userId: UserId, refresh: Boolean): List<ContactMetadata> {
         TODO("Not yet implemented")
     }
 

@@ -25,7 +25,6 @@ import ch.protonmail.android.mailcontact.domain.model.GetContactError
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.transformLatest
-import ch.protonmail.android.mailcontact.domain.model.Contact
 import me.proton.core.domain.entity.UserId
 import me.proton.core.util.kotlin.containsNoCase
 import me.proton.core.util.kotlin.takeIfNotBlank

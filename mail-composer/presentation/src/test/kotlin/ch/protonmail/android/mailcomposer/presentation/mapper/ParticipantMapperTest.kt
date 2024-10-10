@@ -18,13 +18,14 @@
 
 package ch.protonmail.android.mailcomposer.presentation.mapper
 
+import ch.protonmail.android.mailcommon.domain.sample.AvatarInformationSample
 import ch.protonmail.android.mailcomposer.presentation.model.RecipientUiModel
 import ch.protonmail.android.mailmessage.domain.model.Participant
 import ch.protonmail.android.testdata.contact.ContactIdTestData
 import ch.protonmail.android.testdata.user.UserIdTestData
-import ch.protonmail.android.mailcontact.domain.model.Contact
 import ch.protonmail.android.mailcontact.domain.model.ContactEmail
 import ch.protonmail.android.mailcontact.domain.model.ContactEmailId
+import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -36,9 +37,12 @@ class ParticipantMapperTest {
     private val participantMapper = ParticipantMapper()
 
     private val contacts = listOf(
-        Contact(
-            UserIdTestData.userId, ContactIdTestData.contactId1, "first contact",
-            listOf(
+        ContactMetadata.Contact(
+            userId = UserIdTestData.userId,
+            id = ContactIdTestData.contactId1,
+            name = "first contact",
+            avatar = AvatarInformationSample.avatarSample,
+            emails = listOf(
                 ContactEmail(
                     UserIdTestData.userId,
                     ContactEmailId("contact email id 1"),
@@ -54,9 +58,12 @@ class ParticipantMapperTest {
                 )
             )
         ),
-        Contact(
-            UserIdTestData.userId, ContactIdTestData.contactId2, "",
-            listOf(
+        ContactMetadata.Contact(
+            userId = UserIdTestData.userId,
+            id = ContactIdTestData.contactId2,
+            name = "",
+            avatar = AvatarInformationSample.avatarSample,
+            emails = listOf(
                 ContactEmail(
                     UserIdTestData.userId,
                     ContactEmailId("contact email id 2"),

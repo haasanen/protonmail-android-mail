@@ -22,7 +22,6 @@ import app.cash.turbine.test
 import arrow.core.Either
 import ch.protonmail.android.testdata.user.UserIdTestData
 import kotlinx.coroutines.test.runTest
-import ch.protonmail.android.mailcontact.domain.model.Contact
 import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertIs

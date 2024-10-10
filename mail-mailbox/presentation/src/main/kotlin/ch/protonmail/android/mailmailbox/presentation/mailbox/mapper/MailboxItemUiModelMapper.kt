@@ -24,6 +24,7 @@ import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.presentation.mapper.ColorMapper
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcommon.presentation.usecase.FormatShortTime
+import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import ch.protonmail.android.maillabel.presentation.model.LabelUiModel
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItem
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItemType
@@ -36,7 +37,6 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.model.Participants
 import ch.protonmail.android.mailmailbox.presentation.mailbox.usecase.GetMailboxItemLocationIcon
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
-import ch.protonmail.android.mailcontact.domain.model.Contact
 import me.proton.core.domain.arch.Mapper
 import ch.protonmail.android.maillabel.domain.model.Label
 import ch.protonmail.android.maillabel.domain.model.LabelType
@@ -58,7 +58,7 @@ class MailboxItemUiModelMapper @Inject constructor(
     suspend fun toUiModel(
         userId: UserId,
         mailboxItem: MailboxItem,
-        contacts: List<Contact>,
+        contacts: List<ContactMetadata.Contact>,
         folderColorSettings: FolderColorSettings,
         isShowingSearchResults: Boolean
     ): MailboxItemUiModel {

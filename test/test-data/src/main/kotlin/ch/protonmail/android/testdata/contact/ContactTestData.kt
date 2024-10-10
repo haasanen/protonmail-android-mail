@@ -18,17 +18,31 @@
 
 package ch.protonmail.android.testdata.contact
 
+import ch.protonmail.android.mailcommon.domain.sample.AvatarInformationSample
 import ch.protonmail.android.testdata.user.UserIdTestData
-import ch.protonmail.android.mailcontact.domain.model.Contact
 import ch.protonmail.android.mailcontact.domain.model.ContactEmail
 import ch.protonmail.android.mailcontact.domain.model.ContactEmailId
 import ch.protonmail.android.mailcontact.domain.model.ContactId
+import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import me.proton.core.domain.entity.UserId
 
 object ContactTestData {
 
-    val contact1 = Contact(UserIdTestData.userId, ContactIdTestData.contactId1, "first contact", emptyList())
-    val contact2 = Contact(UserIdTestData.userId, ContactIdTestData.contactId2, "second contact", emptyList())
+    val contact1 =
+        ContactMetadata.Contact(
+            userId = UserIdTestData.userId,
+            id = ContactIdTestData.contactId1,
+            name = "first contact",
+            emails = emptyList(),
+            avatar = AvatarInformationSample.avatarSample
+        )
+    val contact2 = ContactMetadata.Contact(
+        userId = UserIdTestData.userId,
+        id = ContactIdTestData.contactId2,
+        name = "second contact",
+        emails = emptyList(),
+        avatar = AvatarInformationSample.avatarSample
+    )
 
     val contacts = listOf(
         contact1,
@@ -40,11 +54,12 @@ object ContactTestData {
         contactId: ContactId = ContactIdTestData.contactId1,
         contactEmails: List<ContactEmail>,
         name: String? = null
-    ) = Contact(
+    ) = ContactMetadata.Contact(
         userId = userId,
         id = contactId,
         name = name ?: "contact name",
-        contactEmails = contactEmails
+        emails = contactEmails,
+        avatar = AvatarInformationSample.avatarSample
     )
 
     fun buildContactEmailWith(
