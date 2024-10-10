@@ -21,6 +21,7 @@ package ch.protonmail.android.mailcontact.domain.usecase
 import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
+import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import ch.protonmail.android.mailcontact.domain.model.GetContactError
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -39,7 +40,9 @@ class SearchContacts @Inject constructor(
         userId: UserId,
         query: String,
         onlyMatchingContactEmails: Boolean = true
-    ): Flow<Either<GetContactError, List<Contact>>> = observeContacts(userId).distinctUntilChanged().transformLatest {
+    ): Flow<Either<GetContactError, List<ContactMetadata>>> = observeContacts(
+        userId
+    ).distinctUntilChanged().transformLatest {
         it.onLeft {
             Timber.e("SearchContacts, error observing contacts: $it")
             emit(GetContactError.left())
@@ -52,22 +55,25 @@ class SearchContacts @Inject constructor(
     }.distinctUntilChanged()
 
     private fun search(
-        contacts: List<Contact>,
+        contacts: List<ContactMetadata>,
         query: String,
         onlyMatchingContactEmails: Boolean
-    ): List<Contact> = contacts.mapNotNull { contact ->
+    ): List<ContactMetadata> = contacts.mapNotNull { contact ->
         if (contact.name.containsNoCase(query)) { // if Contact's display name matches, return all contactEmails
             contact
         } else {
             if (onlyMatchingContactEmails) {
-                val matchingContactEmails = contact.contactEmails.filter { contactEmail ->
+                val matchingContactEmails = contact.emails.filter { contactEmail ->
                     contactEmail.email.containsNoCase(query)
                 }
                 if (matchingContactEmails.isNotEmpty()) {
-                    contact.copy(contactEmails = matchingContactEmails)
+                    when (contact) {
+                        is ContactMetadata.Contact -> contact.copy(emails = matchingContactEmails)
+                        is ContactMetadata.ContactGroup -> contact.copy(emails = matchingContactEmails)
+                    }
                 } else null
             } else {
-                if (contact.contactEmails.any { it.email.containsNoCase(query) }) {
+                if (contact.emails.any { it.email.containsNoCase(query) }) {
                     contact
                 } else null
             }

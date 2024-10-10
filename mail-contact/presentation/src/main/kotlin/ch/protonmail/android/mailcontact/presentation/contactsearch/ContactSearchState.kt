@@ -19,12 +19,10 @@
 package ch.protonmail.android.mailcontact.presentation.contactsearch
 
 import ch.protonmail.android.mailcommon.presentation.Effect
-import ch.protonmail.android.mailcontact.presentation.model.ContactGroupItemUiModel
 import ch.protonmail.android.mailcontact.presentation.model.ContactListItemUiModel
 
 data class ContactSearchState(
     val close: Effect<Unit> = Effect.empty(),
-    val contactUiModels: List<ContactListItemUiModel.Contact>? = null,
-    val groupUiModels: List<ContactGroupItemUiModel>? = null,
+    val contactUiModels: List<ContactListItemUiModel>? = null,
     val searchValue: String = ""
 )

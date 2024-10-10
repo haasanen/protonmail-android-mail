@@ -64,11 +64,9 @@ internal class ContactSearchReducerTest(
                     "R2", "result2@proton.me",
                     null, Color.Unspecified
                 )
-            )
-        )
-
-        private val searchResultsContactGroups = listOf(
-            ContactGroupItemUiModel(
+            ),
+            // Added ContactGroup to the search results
+            ContactListItemUiModel.ContactGroup(
                 labelId = LabelId("result 3 ID"),
                 name = "result 3 group name",
                 memberCount = 10,
@@ -76,44 +74,35 @@ internal class ContactSearchReducerTest(
             )
         )
 
-        private val emptyState = ContactSearchState()
+        private val emptyState = ContactSearchState(
+            contactUiModels = null,
+            searchValue = ""
+        )
         private val noResultsState = ContactSearchState(
             contactUiModels = emptyList(),
-            groupUiModels = emptyList()
+            searchValue = ""
         )
         private val someResultsContactsState = ContactSearchState(
             contactUiModels = searchResultsContacts,
-            groupUiModels = emptyList()
+            searchValue = ""
         )
-        private val someResultsContactGroupsState = ContactSearchState(
-            contactUiModels = emptyList(),
-            groupUiModels = searchResultsContactGroups
-        )
+
+        // Updated tests to handle ContactsLoaded and ContactsCleared events only
 
         private val transitionsFromEmptyState = listOf(
             TestInput(
                 currentState = emptyState,
                 event = ContactSearchEvent.ContactsLoaded(
-                    contacts = emptyList(),
-                    groups = emptyList()
+                    contacts = emptyList()
                 ),
                 expectedState = noResultsState
             ),
             TestInput(
                 currentState = emptyState,
                 event = ContactSearchEvent.ContactsLoaded(
-                    contacts = searchResultsContacts,
-                    groups = emptyList()
+                    contacts = searchResultsContacts
                 ),
                 expectedState = someResultsContactsState
-            ),
-            TestInput(
-                currentState = emptyState,
-                event = ContactSearchEvent.ContactsLoaded(
-                    contacts = emptyList(),
-                    groups = searchResultsContactGroups
-                ),
-                expectedState = someResultsContactGroupsState
             ),
             TestInput(
                 currentState = emptyState,
@@ -126,26 +115,16 @@ internal class ContactSearchReducerTest(
             TestInput(
                 currentState = noResultsState,
                 event = ContactSearchEvent.ContactsLoaded(
-                    contacts = emptyList(),
-                    groups = emptyList()
+                    contacts = emptyList()
                 ),
                 expectedState = noResultsState
             ),
             TestInput(
                 currentState = noResultsState,
                 event = ContactSearchEvent.ContactsLoaded(
-                    contacts = searchResultsContacts,
-                    groups = emptyList()
+                    contacts = searchResultsContacts
                 ),
                 expectedState = someResultsContactsState
-            ),
-            TestInput(
-                currentState = noResultsState,
-                event = ContactSearchEvent.ContactsLoaded(
-                    contacts = emptyList(),
-                    groups = searchResultsContactGroups
-                ),
-                expectedState = someResultsContactGroupsState
             ),
             TestInput(
                 currentState = noResultsState,
@@ -158,30 +137,17 @@ internal class ContactSearchReducerTest(
             TestInput(
                 currentState = someResultsContactsState,
                 event = ContactSearchEvent.ContactsLoaded(
-                    contacts = emptyList(),
-                    groups = emptyList()
+                    contacts = emptyList()
                 ),
                 expectedState = noResultsState
             ),
             TestInput(
                 currentState = someResultsContactsState,
                 event = ContactSearchEvent.ContactsLoaded(
-                    contacts = searchResultsContacts.take(1),
-                    groups = emptyList()
+                    contacts = searchResultsContacts.take(1)
                 ),
                 expectedState = someResultsContactsState.copy(
                     contactUiModels = searchResultsContacts.take(1)
-                )
-            ),
-            TestInput(
-                currentState = someResultsContactGroupsState,
-                event = ContactSearchEvent.ContactsLoaded(
-                    contacts = emptyList(),
-                    groups = searchResultsContactGroups.take(1)
-                ),
-                expectedState = someResultsContactsState.copy(
-                    contactUiModels = emptyList(),
-                    groupUiModels = searchResultsContactGroups.take(1)
                 )
             ),
             TestInput(
@@ -190,7 +156,6 @@ internal class ContactSearchReducerTest(
                 expectedState = emptyState
             )
         )
-
 
         @JvmStatic
         @Parameterized.Parameters(name = "{0}")
@@ -216,3 +181,4 @@ internal class ContactSearchReducerTest(
         val expectedState: ContactSearchState
     )
 }
+

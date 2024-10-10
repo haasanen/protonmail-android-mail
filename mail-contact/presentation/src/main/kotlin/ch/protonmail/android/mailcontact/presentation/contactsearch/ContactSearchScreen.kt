@@ -54,6 +54,7 @@ import me.proton.core.compose.component.appbar.ProtonTopAppBar
 import me.proton.core.compose.theme.ProtonTheme
 import me.proton.core.compose.theme.defaultSmallWeak
 import ch.protonmail.android.mailcontact.domain.model.ContactId
+import ch.protonmail.android.mailcontact.presentation.model.ContactListItemUiModel
 import ch.protonmail.android.maillabel.domain.model.LabelId
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
@@ -106,7 +107,7 @@ fun ContactSearchContent(
     actions: ContactSearchContent.Actions
 ) {
 
-    if (state.contactUiModels?.isEmpty() == true && state.groupUiModels?.isEmpty() == true) {
+    if (state.contactUiModels?.isEmpty() == true) {
         NoResultsContent()
     }
 
@@ -114,26 +115,31 @@ fun ContactSearchContent(
         modifier = modifier.fillMaxSize()
     ) {
         state.contactUiModels?.let {
-            items(state.contactUiModels) {
-                ContactListItem(
-                    modifier = Modifier.animateItemPlacement(),
-                    contact = it,
-                    actions = ContactListScreen.Actions.fromContactSearchActions(
-                        onContactClick = actions.onContactClick
-                    )
-                )
-            }
-        }
+            items(state.contactUiModels) { contact ->
+                when (contact) {
+                    is ContactListItemUiModel.Contact -> {
+                        ContactListItem(
+                            modifier = Modifier.animateItemPlacement(),
+                            contact = contact,
+                            actions = ContactListScreen.Actions.fromContactSearchActions(
+                                onContactClick = actions.onContactClick
+                            )
+                        )
+                    }
 
-        state.groupUiModels?.let {
-            items(state.groupUiModels) {
-                ContactListGroupItem(
-                    modifier = Modifier.animateItemPlacement(),
-                    contact = it,
-                    actions = ContactListScreen.Actions.fromContactSearchActions(
-                        onContactGroupClick = actions.onContactGroupClick
-                    )
-                )
+                    is ContactListItemUiModel.ContactGroup -> {
+                        ContactListGroupItem(
+                            modifier = Modifier.animateItemPlacement(),
+                            contact = contact,
+                            actions = ContactListScreen.Actions.fromContactSearchActions(
+                                onContactGroupClick = actions.onContactGroupClick
+                            )
+                        )
+                    }
+
+                    else -> {}
+                }
+
             }
         }
     }
@@ -236,8 +242,7 @@ object ContactSearchContent {
 private fun ManageMembersContentPreview() {
     ContactSearchContent(
         state = ContactSearchState(
-            contactUiModels = emptyList(),
-            groupUiModels = emptyList()
+            contactUiModels = emptyList()
         ),
         actions = ContactSearchContent.Actions.Empty
     )
@@ -248,8 +253,7 @@ private fun ManageMembersContentPreview() {
 private fun EmptyManageMembersContentPreview() {
     ContactSearchContent(
         state = ContactSearchState(
-            contactUiModels = emptyList(),
-            groupUiModels = emptyList()
+            contactUiModels = emptyList()
         ),
         actions = ContactSearchContent.Actions.Empty
     )
