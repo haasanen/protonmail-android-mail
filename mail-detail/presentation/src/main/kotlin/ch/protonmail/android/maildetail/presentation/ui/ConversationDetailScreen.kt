@@ -288,6 +288,8 @@ fun ConversationDetailScreen(
                 onLabelAsClick = {
                     viewModel.submit(ConversationDetailViewAction.RequestConversationLabelAsBottomSheet)
                 },
+                onMoreActionsClick = {
+                },
                 onExpandMessage = { viewModel.submit(ConversationDetailViewAction.ExpandMessage(it)) },
                 onCollapseMessage = { viewModel.submit(ConversationDetailViewAction.CollapseMessage(it)) },
                 onMessageBodyLinkClicked = { messageId, uri ->
@@ -317,7 +319,7 @@ fun ConversationDetailScreen(
                 onBodyExpandCollapseButtonClicked = {
                     viewModel.submit(ConversationDetailViewAction.ExpandOrCollapseMessageBody(it))
                 },
-                onMoreActionsClick = { messageId ->
+                onMoreMessageActionsClick = { messageId ->
                     viewModel.submit(ConversationDetailViewAction.RequestMessageMoreActionsBottomSheet(messageId))
                 },
                 onLoadRemoteContent = {
@@ -506,7 +508,7 @@ fun ConversationDetailScreen(
                     onSavePdf = { Timber.d("conversation onSavePdf clicked") },
                     onSenderEmail = { Timber.d("conversation onSenderEmail clicked") },
                     onSaveAttachments = { Timber.d("conversation onSaveAttachments clicked") },
-                    onMore = { Timber.d("conversation onMore clicked") }
+                    onMore = actions.onMoreActionsClick
                 )
             )
         }
@@ -528,7 +530,7 @@ fun ConversationDetailScreen(
                     onForward = actions.onForward,
                     onScrollRequestCompleted = actions.onScrollRequestCompleted,
                     onBodyExpandCollapseButtonClicked = actions.onBodyExpandCollapseButtonClicked,
-                    onMoreActionsClick = actions.onMoreActionsClick,
+                    onMoreMessageActionsClick = actions.onMoreMessageActionsClick,
                     onLoadRemoteContent = actions.onLoadRemoteContent,
                     onLoadEmbeddedImages = actions.onLoadEmbeddedImages,
                     onLoadRemoteAndEmbeddedContent = { actions.onLoadRemoteAndEmbeddedContent(it) },
@@ -783,6 +785,7 @@ object ConversationDetailScreen {
         val onUnreadClick: () -> Unit,
         val onMoveToClick: () -> Unit,
         val onLabelAsClick: () -> Unit,
+        val onMoreActionsClick: () -> Unit,
         val onExpandMessage: (MessageIdUiModel) -> Unit,
         val onCollapseMessage: (MessageIdUiModel) -> Unit,
         val onMessageBodyLinkClicked: (messageId: MessageIdUiModel, uri: Uri) -> Unit,
@@ -800,7 +803,7 @@ object ConversationDetailScreen {
         val onReplyAll: (MessageId) -> Unit,
         val onForward: (MessageId) -> Unit,
         val onBodyExpandCollapseButtonClicked: (MessageIdUiModel) -> Unit,
-        val onMoreActionsClick: (MessageId) -> Unit,
+        val onMoreMessageActionsClick: (MessageId) -> Unit,
         val onLoadRemoteContent: (MessageId) -> Unit,
         val onLoadEmbeddedImages: (MessageId) -> Unit,
         val onLoadRemoteAndEmbeddedContent: (MessageId) -> Unit,
@@ -823,6 +826,7 @@ object ConversationDetailScreen {
                 onUnreadClick = {},
                 onMoveToClick = {},
                 onLabelAsClick = {},
+                onMoreActionsClick = {},
                 onExpandMessage = {},
                 onCollapseMessage = {},
                 onMessageBodyLinkClicked = { _, _ -> },
@@ -840,7 +844,7 @@ object ConversationDetailScreen {
                 onReplyAll = {},
                 onForward = {},
                 onBodyExpandCollapseButtonClicked = {},
-                onMoreActionsClick = {},
+                onMoreMessageActionsClick = {},
                 onLoadRemoteContent = {},
                 onLoadEmbeddedImages = {},
                 onLoadRemoteAndEmbeddedContent = {},

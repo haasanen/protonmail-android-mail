@@ -113,7 +113,7 @@ private fun ConversationDetailExpandedItem(
     val headerActions = MessageDetailHeader.Actions.Empty.copy(
         onReply = actions.onReply,
         onReplyAll = actions.onReplyAll,
-        onMore = actions.onMoreActionsClick,
+        onMore = actions.onMoreMessageActionsClick,
         onAvatarClicked = actions.onAvatarClicked,
         onParticipantClicked = actions.onParticipantClicked,
         onShowFeatureMissingSnackbar = actions.showFeatureMissingSnackbar
@@ -177,7 +177,7 @@ object ConversationDetailItem {
         val onForward: (MessageId) -> Unit,
         val onScrollRequestCompleted: () -> Unit,
         val onBodyExpandCollapseButtonClicked: (MessageIdUiModel) -> Unit,
-        val onMoreActionsClick: (MessageId) -> Unit,
+        val onMoreMessageActionsClick: (MessageId) -> Unit,
         val onLoadRemoteContent: (MessageId) -> Unit,
         val onLoadEmbeddedImages: (MessageId) -> Unit,
         val onLoadRemoteAndEmbeddedContent: (MessageId) -> Unit,
