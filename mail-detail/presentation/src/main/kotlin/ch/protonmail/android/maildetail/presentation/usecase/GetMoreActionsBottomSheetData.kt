@@ -60,7 +60,6 @@ class GetMoreActionsBottomSheetData @Inject constructor(
                 messageSender = conversation.senders.first().name,
                 messageSubject = conversation.subject,
                 messageIdInConversation = null,
-                participantsCount = conversation.recipients.size,
                 availableActions = availableActions
             )
         }.getOrNull()
@@ -76,7 +75,6 @@ class GetMoreActionsBottomSheetData @Inject constructor(
             messageSender = message.sender.name,
             messageSubject = message.subject,
             messageIdInConversation = message.messageId.id,
-            participantsCount = message.allRecipientsDeduplicated.size,
             availableActions = availableActions
         )
     }

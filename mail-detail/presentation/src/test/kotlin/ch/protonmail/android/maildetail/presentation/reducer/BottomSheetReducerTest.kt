@@ -268,7 +268,6 @@ internal class BottomSheetReducerTest(
                     messageSender = "Sender",
                     messageSubject = "Subject",
                     messageIdInConversation = "messageId",
-                    participantsCount = 1,
                     availableActions = AvailableActionsTestData.replyActionsOnly
                 ),
                 expectedState = BottomSheetState(

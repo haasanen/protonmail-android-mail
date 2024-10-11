@@ -85,7 +85,6 @@ internal class DetailMoreActionsBottomSheetReducerTest(
                     messageSender = ExpectedSender,
                     messageSubject = ExpectedSubject,
                     messageIdInConversation = ExpectedMessageId,
-                    participantsCount = MultipleParticipantsCount,
                     availableActions = AvailableActionsTestData.replyReportPhishing
                 ),
                 expectedState = BottomSheetState(
@@ -104,7 +103,6 @@ internal class DetailMoreActionsBottomSheetReducerTest(
                     messageSender = ExpectedSender,
                     messageSubject = ExpectedSubject,
                     messageIdInConversation = ExpectedMessageId,
-                    participantsCount = SingleParticipantCount,
                     availableActions = AvailableActionsTestData.forwardReportPhishingActions
                 ),
                 expectedState = BottomSheetState(
@@ -123,7 +121,6 @@ internal class DetailMoreActionsBottomSheetReducerTest(
                     messageSender = ExpectedSender,
                     messageSubject = ExpectedSubject,
                     messageIdInConversation = ExpectedMessageId,
-                    participantsCount = SingleParticipantCount,
                     availableActions = AvailableActionsTestData.fullAvailableActions
                 ),
                 expectedState = BottomSheetState(

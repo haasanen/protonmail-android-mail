@@ -131,7 +131,6 @@ sealed interface DetailMoreActionsBottomSheetState : BottomSheetContentState {
             val messageSender: String,
             val messageSubject: String,
             val messageIdInConversation: String?,
-            val participantsCount: Int,
             val availableActions: AvailableActions
         ) : DetailMoreActionsBottomSheetEvent
     }
