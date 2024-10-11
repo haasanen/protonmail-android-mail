@@ -28,7 +28,7 @@ class DetailMoreActionsBottomSheetUiMapper @Inject constructor() {
     fun toHeaderUiModel(
         messageSender: String,
         messageSubject: String,
-        messageIdInConversation: String
+        messageIdInConversation: String?
     ) = DetailMoreActionsBottomSheetState.DetailDataUiModel(
         TextUiModel.Text(messageSubject),
         TextUiModel.TextResWithArgs(R.string.bottom_sheet_more_header_message_from, listOf(messageSender)),

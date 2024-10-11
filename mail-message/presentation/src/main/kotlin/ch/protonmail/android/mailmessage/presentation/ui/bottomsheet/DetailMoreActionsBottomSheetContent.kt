@@ -109,7 +109,13 @@ fun DetailMoreActionsBottomSheetContent(
                 ProtonRawListItem(
                     modifier = Modifier
                         .clickable {
-                            callbackForAction(actionItem.action, actionCallbacks).invoke(MessageId(uiModel.messageIdInConversation))
+                            if (uiModel.messageIdInConversation != null) {
+                                callbackForAction(actionItem.action, actionCallbacks).invoke(
+                                    MessageId(uiModel.messageIdInConversation)
+                                )
+                            } else {
+                                callbackForConversation(actionItem.action, actionCallbacks).invoke()
+                            }
                         }
                         .padding(vertical = ProtonDimens.DefaultSpacing)
                 ) {
@@ -130,6 +136,22 @@ fun DetailMoreActionsBottomSheetContent(
     }
 }
 
+private fun callbackForConversation(
+    action: Action,
+    actionCallbacks: DetailMoreActionsBottomSheetContent.Actions
+): () -> Unit = when (action) {
+    Action.MarkUnread -> actionCallbacks.onMarkUnreadConversation
+    Action.Label -> actionCallbacks.onLabelConversation
+    Action.Trash -> actionCallbacks.onMoveToTrashConversation
+    Action.Archive -> actionCallbacks.onMoveToArchiveConversation
+    Action.Spam -> actionCallbacks.onMoveToSpamConversation
+    Action.Move -> actionCallbacks.onMoveConversation
+    Action.Print -> actionCallbacks.onPrintConversation
+
+    else -> {
+        { Timber.d("Action not handled $action.") }
+    }
+}
 private fun callbackForAction(
     action: Action,
     actionCallbacks: DetailMoreActionsBottomSheetContent.Actions
@@ -171,7 +193,14 @@ object DetailMoreActionsBottomSheetContent {
         val onMoveToSpam: (MessageId) -> Unit,
         val onMove: (MessageId) -> Unit,
         val onPrint: (MessageId) -> Unit,
-        val onReportPhishing: (MessageId) -> Unit
+        val onReportPhishing: (MessageId) -> Unit,
+        val onMarkUnreadConversation: () -> Unit,
+        val onLabelConversation: () -> Unit,
+        val onMoveToTrashConversation: () -> Unit,
+        val onMoveToArchiveConversation: () -> Unit,
+        val onMoveToSpamConversation: () -> Unit,
+        val onMoveConversation: () -> Unit,
+        val onPrintConversation: () -> Unit
     )
 }
 
@@ -210,7 +239,14 @@ private fun BottomSheetContentPreview() {
                 onMoveToSpam = {},
                 onMove = {},
                 onPrint = {},
-                onReportPhishing = {}
+                onReportPhishing = {},
+                onMarkUnreadConversation = {},
+                onLabelConversation = {},
+                onMoveToTrashConversation = {},
+                onMoveToArchiveConversation = {},
+                onMoveToSpamConversation = {},
+                onMoveConversation = {},
+                onPrintConversation = {}
             )
         )
     }

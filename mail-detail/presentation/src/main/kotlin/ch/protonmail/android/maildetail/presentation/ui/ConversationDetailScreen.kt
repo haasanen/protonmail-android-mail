@@ -235,7 +235,20 @@ fun ConversationDetailScreen(
                         onMoveToSpam = { viewModel.submit(ConversationDetailViewAction.MoveMessageToSpam(it)) },
                         onMove = { viewModel.submit(ConversationDetailViewAction.RequestMessageMoveToBottomSheet(it)) },
                         onPrint = { viewModel.submit(ConversationDetailViewAction.PrintRequested(it)) },
-                        onReportPhishing = { viewModel.submit(ConversationDetailViewAction.ReportPhishing(it)) }
+                        onReportPhishing = { viewModel.submit(ConversationDetailViewAction.ReportPhishing(it)) },
+
+                        onMarkUnreadConversation = { viewModel.submit(ConversationDetailViewAction.MarkUnread) },
+                        onLabelConversation = {
+                            viewModel.submit(ConversationDetailViewAction.RequestConversationLabelAsBottomSheet)
+                        },
+                        onMoveToTrashConversation = { viewModel.submit(ConversationDetailViewAction.Trash) },
+                        onMoveConversation = {
+                            viewModel.submit(ConversationDetailViewAction.RequestMoveToBottomSheet)
+                        },
+
+                        onMoveToArchiveConversation = { Timber.d("Archive not implemented for conversation") },
+                        onMoveToSpamConversation = { Timber.d("Spam not implemented for conversation") },
+                        onPrintConversation = { Timber.d("Print not implemented for conversation") }
                     )
                 )
 
