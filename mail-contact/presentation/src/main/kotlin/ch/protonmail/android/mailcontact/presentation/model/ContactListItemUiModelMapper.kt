@@ -22,15 +22,12 @@ import androidx.compose.ui.graphics.Color
 import arrow.core.getOrElse
 import ch.protonmail.android.mailcommon.presentation.mapper.AvatarInformationMapper
 import ch.protonmail.android.mailcommon.presentation.mapper.ColorMapper
-import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
-import ch.protonmail.android.mailcontact.presentation.R
-import ch.protonmail.android.mailcontact.domain.model.ContactEmail
 import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import ch.protonmail.android.mailcontact.domain.model.GroupedContacts
-import me.proton.core.util.kotlin.takeIfNotBlank
 import javax.inject.Inject
 
 class ContactListItemUiModelMapper @Inject constructor(
+    private val contactEmailListMapper: ContactEmailListMapper,
     private val avatarInformationMapper: AvatarInformationMapper,
     private val colorMapper: ColorMapper
 ) {
@@ -48,7 +45,7 @@ class ContactListItemUiModelMapper @Inject constructor(
                         ContactListItemUiModel.Contact(
                             id = contact.id,
                             name = contact.name,
-                            emailSubtext = getEmailSubtext(contact.emails),
+                            emailSubtext = contactEmailListMapper.toEmailUiModel(contact.emails),
                             avatar = avatarInformationMapper.toUiModel(
                                 contact.avatar,
                                 contact.emails.firstOrNull()?.email ?: "",
@@ -71,28 +68,5 @@ class ContactListItemUiModelMapper @Inject constructor(
         }
 
         return contacts
-    }
-
-    private fun getEmailSubtext(contactEmails: List<ContactEmail>): TextUiModel {
-        return if (contactEmails.isNotEmpty()) {
-            val sortedContactEmails = contactEmails.sortedBy {
-                it.order
-            }.mapNotNull { contactEmail ->
-                contactEmail.email.takeIfNotBlank()
-            }
-            if (sortedContactEmails.isEmpty()) {
-                TextUiModel(R.string.no_contact_email)
-            } else if (sortedContactEmails.size > 1) {
-                TextUiModel(
-                    R.string.multiple_contact_emails,
-                    sortedContactEmails.first(),
-                    sortedContactEmails.size.minus(1)
-                )
-            } else {
-                TextUiModel(sortedContactEmails.first())
-            }
-        } else {
-            TextUiModel(R.string.no_contact_email)
-        }
     }
 }
