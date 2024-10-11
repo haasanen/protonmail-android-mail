@@ -20,7 +20,6 @@ package ch.protonmail.android.mailcontact.presentation
 
 import androidx.compose.ui.graphics.Color
 import ch.protonmail.android.mailcommon.presentation.mapper.ColorMapper
-import ch.protonmail.android.mailcontact.presentation.model.ContactGroupItemUiModel
 import ch.protonmail.android.mailcontact.presentation.model.ContactGroupItemUiModelMapper
 import ch.protonmail.android.maillabel.presentation.getHexStringFromColor
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
@@ -28,9 +27,9 @@ import ch.protonmail.android.testdata.user.UserIdTestData
 import ch.protonmail.android.mailcontact.domain.model.ContactEmail
 import ch.protonmail.android.mailcontact.domain.model.ContactEmailId
 import ch.protonmail.android.mailcontact.domain.model.ContactId
-import ch.protonmail.android.maillabel.domain.model.Label
+import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
+import ch.protonmail.android.mailcontact.presentation.model.ContactListItemUiModel
 import ch.protonmail.android.maillabel.domain.model.LabelId
-import ch.protonmail.android.maillabel.domain.model.LabelType
 import org.junit.Rule
 import org.junit.Test
 import kotlin.test.assertEquals
@@ -44,116 +43,63 @@ class ContactGroupItemUiModelMapperTest {
     private val contactGroupItemUiModelMapper = ContactGroupItemUiModelMapper(colorMapper)
 
     @Test
-    fun `return correct contact groups`() {
-        val contacts = listOf(
-            Contact(
-                UserIdTestData.userId,
-                ContactId("1"),
-                "first contact",
-                listOf(
-                    ContactEmail(
-                        UserIdTestData.userId,
-                        ContactEmailId("contact email id 1"),
-                        "First contact email",
-                        "firstcontact+alias@protonmail.com",
-                        0,
-                        0,
-                        ContactId("1"),
-                        "firstcontact@protonmail.com",
-                        listOf("LabelId1"),
-                        true,
-                        lastUsedTime = 0
-                    )
+    fun `return correct contact group`() {
+        val contactGroupLabel = ContactMetadata.ContactGroup(
+            labelId = LabelId("LabelId1"),
+            name = "Label 1",
+            color = Color.Red.getHexStringFromColor(),
+            emails = listOf(
+                ContactEmail(
+                    UserIdTestData.userId,
+                    ContactEmailId("contact email id 1"),
+                    "First contact email",
+                    "firstcontact+alias@protonmail.com",
+                    0,
+                    0,
+                    ContactId("1"),
+                    "firstcontact@protonmail.com",
+                    listOf("LabelId1"),
+                    true,
+                    lastUsedTime = 0
+                ),
+                ContactEmail(
+                    UserIdTestData.userId,
+                    ContactEmailId("contact email id 1.1"),
+                    "First contact email bis",
+                    "firstcontactbis@protonmail.com",
+                    0,
+                    1,
+                    ContactId("1.1"),
+                    "firstcontactbis@protonmail.com",
+                    listOf("LabelId1"),
+                    true,
+                    lastUsedTime = 0
+                ),
+                ContactEmail(
+                    UserIdTestData.userId,
+                    ContactEmailId("contact email id 2"),
+                    "Second contact email",
+                    "secondcontact@protonmail.com",
+                    0,
+                    0,
+                    ContactId("2"),
+                    "secondcontact@protonmail.com",
+                    listOf("LabelId1", "LabelId2"),
+                    true,
+                    lastUsedTime = 0
                 )
-            ),
-            Contact(
-                UserIdTestData.userId,
-                ContactId("1.1"),
-                "first contact bis",
-                listOf(
-                    ContactEmail(
-                        UserIdTestData.userId,
-                        ContactEmailId("contact email id 1.1"),
-                        "First contact email bis",
-                        "firstcontactbis@protonmail.com",
-                        0,
-                        1,
-                        ContactId("1.1"),
-                        "firstcontactbis@protonmail.com",
-                        listOf("LabelId1"),
-                        true,
-                        lastUsedTime = 0
-                    )
-                )
-            ),
-            Contact(
-                UserIdTestData.userId,
-                ContactId("2"),
-                "second contact",
-                listOf(
-                    ContactEmail(
-                        UserIdTestData.userId,
-                        ContactEmailId("contact email id 2"),
-                        "Second contact email",
-                        "secondcontact@protonmail.com",
-                        0,
-                        0,
-                        ContactId("2"),
-                        "secondcontact@protonmail.com",
-                        listOf("LabelId1", "LabelId2"),
-                        true,
-                        lastUsedTime = 0
-                    )
-                )
-            )
-        )
-        val contactGroupLabels = listOf(
-            Label(
-                labelId = LabelId("LabelId1"),
-                parentId = null,
-                name = "Label 1",
-                type = LabelType.ContactGroup,
-                path = "",
-                color = Color.Red.getHexStringFromColor(),
-                order = 0,
-                isNotified = null,
-                isExpanded = null,
-                isSticky = null
-            ),
-            Label(
-                labelId = LabelId("LabelId2"),
-                parentId = null,
-                name = "Label 2",
-                type = LabelType.ContactGroup,
-                path = "",
-                color = Color.Blue.getHexStringFromColor(),
-                order = 1,
-                isNotified = null,
-                isExpanded = null,
-                isSticky = null
-            )
+            ).filter { it.labelIds.contains("LabelId1") }
         )
 
-        val actual = contactGroupItemUiModelMapper.toContactGroupItemUiModel(
-            contacts,
-            contactGroupLabels
+        val actual = contactGroupItemUiModelMapper.toContactGroupItemUiModel(contactGroupLabel)
+
+        val expected = ContactListItemUiModel.ContactGroup(
+            labelId = LabelId("LabelId1"),
+            name = "Label 1",
+            memberCount = 3,
+            color = Color.Red
         )
 
-        val expected = listOf(
-            ContactGroupItemUiModel(
-                labelId = LabelId("LabelId1"),
-                name = "Label 1",
-                memberCount = 3,
-                color = Color.Red
-            ),
-            ContactGroupItemUiModel(
-                labelId = LabelId("LabelId2"),
-                name = "Label 2",
-                memberCount = 1,
-                color = Color.Blue
-            )
-        )
-
-        assertEquals(actual, expected)
+        assertEquals(expected, actual)
     }
 }

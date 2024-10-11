@@ -18,18 +18,13 @@
 
 package ch.protonmail.android.mailcontact.presentation.model
 
-import androidx.compose.ui.graphics.Color
-import arrow.core.getOrElse
-import ch.protonmail.android.mailcommon.presentation.mapper.AvatarInformationMapper
-import ch.protonmail.android.mailcommon.presentation.mapper.ColorMapper
 import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import ch.protonmail.android.mailcontact.domain.model.GroupedContacts
 import javax.inject.Inject
 
 class ContactListItemUiModelMapper @Inject constructor(
-    private val contactEmailListMapper: ContactEmailListMapper,
-    private val avatarInformationMapper: AvatarInformationMapper,
-    private val colorMapper: ColorMapper
+    private val contactGroupItemUiModelMapper: ContactGroupItemUiModelMapper,
+    private val contactItemUiModelMapper: ContactItemUiModelMapper
 ) {
 
     fun toContactListItemUiModel(groupedContactsList: List<GroupedContacts>): List<ContactListItemUiModel> {
@@ -37,32 +32,21 @@ class ContactListItemUiModelMapper @Inject constructor(
 
         groupedContactsList.forEach { groupedContacts ->
 
-            ContactListItemUiModel.Header(value = groupedContacts.groupedBy)
+            contacts.add(ContactListItemUiModel.Header(value = groupedContacts.groupedBy))
 
             groupedContacts.contacts.forEach { contact ->
                 when (contact) {
                     is ContactMetadata.Contact -> {
-                        ContactListItemUiModel.Contact(
-                            id = contact.id,
-                            name = contact.name,
-                            emailSubtext = contactEmailListMapper.toEmailUiModel(contact.emails),
-                            avatar = avatarInformationMapper.toUiModel(
-                                contact.avatar,
-                                contact.emails.firstOrNull()?.email ?: "",
-                                null
-                            )
+                        contacts.add(
+                            contactItemUiModelMapper.toContactItemUiModel(contact)
                         )
                     }
 
                     is ContactMetadata.ContactGroup -> {
-                        ContactListItemUiModel.ContactGroup(
-                            labelId = contact.labelId,
-                            name = contact.name,
-                            memberCount = contact.emails.size,
-                            color = colorMapper.toColor(contact.color).getOrElse { Color.Black }
+                        contacts.add(
+                            contactGroupItemUiModelMapper.toContactGroupItemUiModel(contact)
                         )
                     }
-
                 }
             }
         }

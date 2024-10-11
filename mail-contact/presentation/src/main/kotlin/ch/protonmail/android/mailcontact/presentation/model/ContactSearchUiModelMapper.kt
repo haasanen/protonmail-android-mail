@@ -18,25 +18,34 @@
 
 package ch.protonmail.android.mailcontact.presentation.model
 
-import androidx.compose.ui.graphics.Color
-import arrow.core.getOrElse
-import ch.protonmail.android.mailcommon.presentation.mapper.ColorMapper
-import ch.protonmail.android.mailcontact.domain.model.ContactGroup
+import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import javax.inject.Inject
 
 class ContactSearchUiModelMapper @Inject constructor(
-    private val colorMapper: ColorMapper
+    private val contactGroupItemUiModelMapper: ContactGroupItemUiModelMapper,
+    private val contactItemUiModelMapper: ContactItemUiModelMapper
 ) {
 
-    fun contactGroupsToContactSearchUiModelList(contactGroups: List<ContactGroup>): List<ContactGroupItemUiModel> {
-        return contactGroups.map { contactGroup ->
-            ContactGroupItemUiModel(
-                contactGroup.labelId,
-                contactGroup.name,
-                contactGroup.members.size,
-                colorMapper.toColor(contactGroup.color).getOrElse { Color.Black }
-            )
+    fun toContactListItemUiModel(searchResults: List<ContactMetadata>): List<ContactListItemUiModel> {
+        val contacts = arrayListOf<ContactListItemUiModel>()
+
+        searchResults.forEach { contact ->
+            when (contact) {
+                is ContactMetadata.Contact -> {
+                    contacts.add(
+                        contactItemUiModelMapper.toContactItemUiModel(contact)
+                    )
+                }
+
+                is ContactMetadata.ContactGroup -> {
+                    contacts.add(
+                        contactGroupItemUiModelMapper.toContactGroupItemUiModel(contact)
+                    )
+                }
+            }
         }
+
+        return contacts
     }
 }
 

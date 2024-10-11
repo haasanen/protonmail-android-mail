@@ -19,19 +19,23 @@
 package ch.protonmail.android.mailcontact.presentation
 
 import androidx.compose.ui.graphics.Color
+import ch.protonmail.android.mailcommon.domain.sample.AvatarInformationSample
+import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
+import ch.protonmail.android.mailcommon.presentation.mapper.AvatarInformationMapper
 import ch.protonmail.android.mailcommon.presentation.mapper.ColorMapper
-import ch.protonmail.android.mailcontact.domain.model.ContactGroup
-import ch.protonmail.android.mailcontact.presentation.model.ContactGroupItemUiModel
+import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcontact.presentation.model.ContactSearchUiModelMapper
-import ch.protonmail.android.maillabel.presentation.getHexStringFromColor
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
 import ch.protonmail.android.testdata.contact.ContactIdTestData
-import ch.protonmail.android.testdata.label.LabelTestData
-import ch.protonmail.android.testdata.user.UserIdTestData
-import ch.protonmail.android.mailcontact.domain.model.ContactEmail
-import ch.protonmail.android.mailcontact.domain.model.ContactEmailId
+import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
+import ch.protonmail.android.mailcontact.presentation.model.ContactGroupItemUiModelMapper
+import ch.protonmail.android.mailcontact.presentation.model.ContactItemUiModelMapper
+import ch.protonmail.android.mailcontact.presentation.model.ContactListItemUiModel
 import ch.protonmail.android.maillabel.domain.model.LabelId
-import ch.protonmail.android.maillabel.domain.model.LabelType
+import ch.protonmail.android.maillabel.presentation.getHexStringFromColor
+import ch.protonmail.android.testdata.contact.ContactEmailSample
+import io.mockk.every
+import io.mockk.mockk
 import org.junit.Rule
 import org.junit.Test
 import kotlin.test.assertEquals
@@ -42,51 +46,62 @@ class ContactSearchUiModelMapperTest {
     val mainDispatcherRule = MainDispatcherRule()
 
     private val colorMapper = ColorMapper()
-    private val contactSearchUiModelMapper = ContactSearchUiModelMapper(colorMapper)
+    private val avatarInformationMapper = AvatarInformationMapper(colorMapper)
+    private val contactGroupItemUiModelMapper = mockk<ContactGroupItemUiModelMapper>()
+    private val contactItemUiModelMapper = mockk<ContactItemUiModelMapper>()
+
+    private val contactSearchUiModelMapper = ContactSearchUiModelMapper(
+        contactGroupItemUiModelMapper, contactItemUiModelMapper
+    )
 
     @Test
     fun `maps list of ContactGroups to list of UiModel`() {
-        val label = LabelTestData.buildLabel(
-            "LabelId1",
-            LabelType.ContactGroup,
-            "Label 1",
-            color = Color.Red.getHexStringFromColor()
+        // Given
+        val contact = ContactMetadata.Contact(
+            userId = UserIdSample.Primary,
+            id = ContactIdTestData.contactId1,
+            name = "Contact 1",
+            avatar = AvatarInformationSample.avatarSample,
+            emails = listOf(ContactEmailSample.contactEmail4)
         )
-
-        val contactGroups = listOf(
-            ContactGroup(
-                label.labelId,
-                label.name,
-                label.color!!,
-                listOf(
-                    ContactEmail(
-                        UserIdTestData.userId,
-                        ContactEmailId(""),
-                        "",
-                        "",
-                        0,
-                        0,
-                        ContactIdTestData.contactId1,
-                        "",
-                        emptyList(),
-                        true,
-                        lastUsedTime = 0
-                    )
-                )
+        val contactGroup = ContactMetadata.ContactGroup(
+            labelId = LabelId("LabelId1"),
+            name = "Group 1",
+            color = Color.Red.getHexStringFromColor(),
+            emails = listOf(
+                ContactEmailSample.contactEmail1,
+                ContactEmailSample.contactEmail2,
+                ContactEmailSample.contactEmail3
             )
         )
-
-        val actual = contactSearchUiModelMapper.contactGroupsToContactSearchUiModelList(contactGroups)
-
-        val expected = listOf(
-            ContactGroupItemUiModel(
-                labelId = LabelId("LabelId1"),
-                name = label.name,
-                color = Color.Red,
-                memberCount = contactGroups[0].members.size
+        val expectedContactUiModel = ContactListItemUiModel.Contact(
+            id = ContactIdTestData.contactId1,
+            name = "Group 1",
+            emailSubtext = TextUiModel(ContactEmailSample.contactEmail4.email),
+            avatar = avatarInformationMapper.toUiModel(
+                AvatarInformationSample.avatarSample,
+                ContactEmailSample.contactEmail4.email, null
             )
         )
+        val expectedContactGroupUiModel = ContactListItemUiModel.ContactGroup(
+            labelId = LabelId("LabelId1"),
+            name = "Group 1",
+            memberCount = contactGroup.emails.size,
+            color = Color.Red
+        )
+        val expected = listOf(expectedContactUiModel, expectedContactGroupUiModel)
 
+        val contactList = listOf(contact) + listOf(contactGroup)
+        every {
+            contactGroupItemUiModelMapper.toContactGroupItemUiModel(contactGroup)
+        } returns expectedContactGroupUiModel
+        every { contactItemUiModelMapper.toContactItemUiModel(contact) } returns expectedContactUiModel
+
+        // When
+        val actual = contactSearchUiModelMapper.toContactListItemUiModel(contactList)
+
+
+        // Then
         assertEquals(expected, actual)
     }
 }

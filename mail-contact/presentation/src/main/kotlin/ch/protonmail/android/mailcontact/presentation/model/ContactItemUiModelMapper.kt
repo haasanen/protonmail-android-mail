@@ -18,21 +18,24 @@
 
 package ch.protonmail.android.mailcontact.presentation.model
 
-import androidx.compose.ui.graphics.Color
-import arrow.core.getOrElse
-import ch.protonmail.android.mailcommon.presentation.mapper.ColorMapper
+import ch.protonmail.android.mailcommon.presentation.mapper.AvatarInformationMapper
 import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import javax.inject.Inject
 
-class ContactGroupItemUiModelMapper @Inject constructor(
-    private val colorMapper: ColorMapper
+class ContactItemUiModelMapper @Inject constructor(
+    private val contactEmailListMapper: ContactEmailListMapper,
+    private val avatarInformationMapper: AvatarInformationMapper
 ) {
 
-    fun toContactGroupItemUiModel(contactGroup: ContactMetadata.ContactGroup): ContactListItemUiModel.ContactGroup =
-        ContactListItemUiModel.ContactGroup(
-            labelId = contactGroup.labelId,
-            name = contactGroup.name,
-            memberCount = contactGroup.emails.size,
-            color = colorMapper.toColor(contactGroup.color).getOrElse { Color.Black }
+    fun toContactItemUiModel(contact: ContactMetadata.Contact): ContactListItemUiModel.Contact =
+        ContactListItemUiModel.Contact(
+            id = contact.id,
+            name = contact.name,
+            emailSubtext = contactEmailListMapper.toEmailUiModel(contact.emails),
+            avatar = avatarInformationMapper.toUiModel(
+                contact.avatar,
+                contact.emails.firstOrNull()?.email ?: "",
+                null
+            )
         )
 }
