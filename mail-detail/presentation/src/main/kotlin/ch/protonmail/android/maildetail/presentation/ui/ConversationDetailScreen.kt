@@ -302,6 +302,7 @@ fun ConversationDetailScreen(
                     viewModel.submit(ConversationDetailViewAction.RequestConversationLabelAsBottomSheet)
                 },
                 onMoreActionsClick = {
+                    viewModel.submit(ConversationDetailViewAction.RequestConversationMoreActionsBottomSheet)
                 },
                 onExpandMessage = { viewModel.submit(ConversationDetailViewAction.ExpandMessage(it)) },
                 onCollapseMessage = { viewModel.submit(ConversationDetailViewAction.CollapseMessage(it)) },

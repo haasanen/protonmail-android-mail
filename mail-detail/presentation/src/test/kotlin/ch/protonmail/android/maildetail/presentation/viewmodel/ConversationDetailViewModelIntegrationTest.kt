@@ -325,7 +325,7 @@ class ConversationDetailViewModelIntegrationTest {
         getConversationLabelAsActions
     )
     private val getMoreActionsBottomSheetData = GetMoreActionsBottomSheetData(
-        getMessageAvailableActions, getConversationAvailableActions, observeMessage
+        getMessageAvailableActions, getConversationAvailableActions, observeMessage, observeConversationUseCase
     )
     private val onMessageLabelAsConfirmed = OnMessageLabelAsConfirmed(
         moveMessage, relabelMessage

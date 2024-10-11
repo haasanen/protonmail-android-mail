@@ -54,7 +54,7 @@ class RustConversationActionRepository @Inject constructor(
             labelId.toLocalLabelId(),
             conversationIds.map { it.toLocalConversationId() }
         ) ?: return DataError.Local.Unknown.left()
-        Timber.v("rust-message: Available actions: $availableActions \n for messages $conversationIds")
+        Timber.v("rust-conversation: Available actions: $availableActions \n for convos $conversationIds")
 
         return availableActions.toAvailableActions().right()
     }

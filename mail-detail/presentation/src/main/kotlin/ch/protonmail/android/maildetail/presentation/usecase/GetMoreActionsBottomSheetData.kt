@@ -21,6 +21,7 @@ package ch.protonmail.android.maildetail.presentation.usecase
 import ch.protonmail.android.mailcommon.domain.model.AvailableActions
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailconversation.domain.usecase.GetConversationAvailableActions
+import ch.protonmail.android.mailconversation.domain.usecase.ObserveConversation
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.usecase.GetMessageAvailableActions
@@ -33,7 +34,8 @@ import javax.inject.Inject
 class GetMoreActionsBottomSheetData @Inject constructor(
     private val getMessageAvailableActions: GetMessageAvailableActions,
     private val getConversationAvailableActions: GetConversationAvailableActions,
-    private val observeMessage: ObserveMessage
+    private val observeMessage: ObserveMessage,
+    private val observeConversation: ObserveConversation
 ) {
 
     suspend fun forMessage(
@@ -50,8 +52,17 @@ class GetMoreActionsBottomSheetData @Inject constructor(
         labelId: LabelId,
         conversationId: ConversationId
     ): DetailMoreActionsBottomSheetEvent.DataLoaded? =
-        getConversationAvailableActions(userId, labelId, listOf(conversationId)).map {
-            null
+        getConversationAvailableActions(userId, labelId, listOf(conversationId)).map { availableActions ->
+            val conversation = observeConversation(userId, conversationId, false).firstOrNull()?.getOrNull()
+                ?: return null
+
+            return DetailMoreActionsBottomSheetEvent.DataLoaded(
+                messageSender = conversation.senders.first().name,
+                messageSubject = conversation.subject,
+                messageIdInConversation = null,
+                participantsCount = conversation.recipients.size,
+                availableActions = availableActions
+            )
         }.getOrNull()
 
     private suspend fun buildBottomSheetActionData(

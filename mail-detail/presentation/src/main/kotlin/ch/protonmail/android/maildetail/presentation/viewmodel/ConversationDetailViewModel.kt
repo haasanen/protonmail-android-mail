@@ -217,6 +217,8 @@ class ConversationDetailViewModel @Inject constructor(
             is LabelAsConfirmed -> onLabelAsConfirmed(action)
             is ConversationDetailViewAction.RequestMessageMoreActionsBottomSheet ->
                 showMessageMoreActionsBottomSheet(action)
+            is ConversationDetailViewAction.RequestConversationMoreActionsBottomSheet ->
+                showConversationMoreActionsBottomSheet(action)
             is ConversationDetailViewAction.RequestMessageLabelAsBottomSheet -> showMessageLabelAsBottomSheet(action)
             is ConversationDetailViewAction.RequestMessageMoveToBottomSheet -> showMoveToBottomSheetAndLoadData(action)
 
@@ -646,6 +648,24 @@ class ConversationDetailViewModel @Inject constructor(
             emitNewStateFrom(ConversationDetailEvent.ConversationBottomSheetEvent(moreActions))
         }
     }
+
+    private fun showConversationMoreActionsBottomSheet(
+        initialEvent: ConversationDetailViewAction.RequestConversationMoreActionsBottomSheet
+    ) {
+        viewModelScope.launch {
+            Timber.v("more-actions: requesting bottomsheet for convo")
+            emitNewStateFrom(initialEvent)
+
+            val userId = primaryUserId.first()
+            val labelId = filterByLocation ?: return@launch
+            val moreActions = getMoreActionsBottomSheetData.forConversation(userId, labelId, conversationId)
+                ?: return@launch
+
+            Timber.v("more-actions: emitting convo bottom sheet event $moreActions")
+            emitNewStateFrom(ConversationDetailEvent.ConversationBottomSheetEvent(moreActions))
+        }
+    }
+
 
     private fun requireConversationId(): ConversationId {
         val conversationId = savedStateHandle.get<String>(ConversationDetailScreen.ConversationIdKey)
