@@ -76,7 +76,7 @@ internal class DetailMoreActionsBottomSheetReducerTest(
         private val expectedUiModel = DetailMoreActionsBottomSheetState.DetailDataUiModel(
             headerSubjectText = TextUiModel(ExpectedSubject),
             headerDescriptionText = TextUiModel(ExpectedSender),
-            messageId = ExpectedMessageId
+            messageIdInConversation = ExpectedMessageId
         )
         private val transitionsFromLoadingState = listOf(
             TestInput(
@@ -84,7 +84,7 @@ internal class DetailMoreActionsBottomSheetReducerTest(
                 operation = DetailMoreActionsBottomSheetState.DetailMoreActionsBottomSheetEvent.DataLoaded(
                     messageSender = ExpectedSender,
                     messageSubject = ExpectedSubject,
-                    messageId = ExpectedMessageId,
+                    messageIdInConversation = ExpectedMessageId,
                     participantsCount = MultipleParticipantsCount,
                     availableActions = AvailableActionsTestData.replyReportPhishing
                 ),
@@ -103,7 +103,7 @@ internal class DetailMoreActionsBottomSheetReducerTest(
                 operation = DetailMoreActionsBottomSheetState.DetailMoreActionsBottomSheetEvent.DataLoaded(
                     messageSender = ExpectedSender,
                     messageSubject = ExpectedSubject,
-                    messageId = ExpectedMessageId,
+                    messageIdInConversation = ExpectedMessageId,
                     participantsCount = SingleParticipantCount,
                     availableActions = AvailableActionsTestData.forwardReportPhishingActions
                 ),
@@ -122,7 +122,7 @@ internal class DetailMoreActionsBottomSheetReducerTest(
                 operation = DetailMoreActionsBottomSheetState.DetailMoreActionsBottomSheetEvent.DataLoaded(
                     messageSender = ExpectedSender,
                     messageSubject = ExpectedSubject,
-                    messageId = ExpectedMessageId,
+                    messageIdInConversation = ExpectedMessageId,
                     participantsCount = SingleParticipantCount,
                     availableActions = AvailableActionsTestData.fullAvailableActions
                 ),

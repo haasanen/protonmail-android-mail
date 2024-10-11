@@ -37,7 +37,7 @@ internal class DetailMoreActionsBottomSheetUiMapperTest {
                 R.string.bottom_sheet_more_header_message_from,
                 listOf(ExpectedSender)
             ),
-            messageId = ExpectedMessageId
+            messageIdInConversation = ExpectedMessageId
         )
 
         // When

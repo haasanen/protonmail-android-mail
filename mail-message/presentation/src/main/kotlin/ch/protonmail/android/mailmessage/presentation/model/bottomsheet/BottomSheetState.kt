@@ -130,7 +130,7 @@ sealed interface DetailMoreActionsBottomSheetState : BottomSheetContentState {
         data class DataLoaded(
             val messageSender: String,
             val messageSubject: String,
-            val messageId: String,
+            val messageIdInConversation: String?,
             val participantsCount: Int,
             val availableActions: AvailableActions
         ) : DetailMoreActionsBottomSheetEvent
@@ -139,7 +139,7 @@ sealed interface DetailMoreActionsBottomSheetState : BottomSheetContentState {
     data class DetailDataUiModel(
         val headerSubjectText: TextUiModel,
         val headerDescriptionText: TextUiModel,
-        val messageId: String
+        val messageIdInConversation: String?
     )
 }
 

@@ -109,7 +109,7 @@ fun DetailMoreActionsBottomSheetContent(
                 ProtonRawListItem(
                     modifier = Modifier
                         .clickable {
-                            callbackForAction(actionItem.action, actionCallbacks).invoke(MessageId(uiModel.messageId))
+                            callbackForAction(actionItem.action, actionCallbacks).invoke(MessageId(uiModel.messageIdInConversation))
                         }
                         .padding(vertical = ProtonDimens.DefaultSpacing)
                 ) {

@@ -52,7 +52,7 @@ class GetMoreActionsBottomSheetDataTest {
         val expected = DetailMoreActionsBottomSheetState.DetailMoreActionsBottomSheetEvent.DataLoaded(
             messageSender = message.sender.name,
             messageSubject = message.subject,
-            messageId = message.messageId.id,
+            messageIdInConversation = message.messageId.id,
             participantsCount = message.allRecipientsDeduplicated.size,
             availableActions = availableActions
         )

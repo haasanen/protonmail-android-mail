@@ -267,7 +267,7 @@ internal class BottomSheetReducerTest(
                 operation = DetailMoreActionsBottomSheetState.DetailMoreActionsBottomSheetEvent.DataLoaded(
                     messageSender = "Sender",
                     messageSubject = "Subject",
-                    messageId = "messageId",
+                    messageIdInConversation = "messageId",
                     participantsCount = 1,
                     availableActions = AvailableActionsTestData.replyActionsOnly
                 ),
@@ -276,7 +276,7 @@ internal class BottomSheetReducerTest(
                         DetailMoreActionsBottomSheetState.DetailDataUiModel(
                             headerDescriptionText = TextUiModel("Sender"),
                             headerSubjectText = TextUiModel("Subject"),
-                            messageId = "messageId"
+                            messageIdInConversation = "messageId"
                         ),
                         persistentListOf(ActionUiModelSample.ReplyAll),
                         persistentListOf(),
