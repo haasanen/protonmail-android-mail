@@ -19,11 +19,14 @@
 package ch.protonmail.android.mailcontact.domain.usecase
 
 import arrow.core.Either
+import arrow.core.left
+import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import ch.protonmail.android.mailcontact.domain.model.GetContactError
 import ch.protonmail.android.mailcontact.domain.repository.ContactRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 
@@ -32,6 +35,14 @@ class ObserveContacts @Inject constructor(
 ) {
 
     @MissingRustApi
-    operator fun invoke(userId: UserId): Flow<Either<GetContactError, List<ContactMetadata>>> =
-        contactRepository.observeAllContacts(userId)
+    operator fun invoke(userId: UserId): Flow<Either<GetContactError, List<ContactMetadata.Contact>>> =
+        contactRepository.observeAllContacts(userId).map { contactsEither ->
+
+            contactsEither.fold(
+                ifLeft = { it.left() },
+                ifRight = { contacts ->
+                    contacts.filterIsInstance<ContactMetadata.Contact>().right()
+                }
+            )
+        }
 }
