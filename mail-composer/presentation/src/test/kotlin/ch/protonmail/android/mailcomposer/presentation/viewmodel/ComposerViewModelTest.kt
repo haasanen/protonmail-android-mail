@@ -92,7 +92,6 @@ import ch.protonmail.android.mailcomposer.presentation.usecase.ParentMessageToDr
 import ch.protonmail.android.mailcomposer.presentation.usecase.SortContactsForSuggestions
 import ch.protonmail.android.mailcomposer.presentation.usecase.StyleQuotedHtml
 import ch.protonmail.android.mailcontact.domain.DeviceContactsSuggestionsPrompt
-import ch.protonmail.android.mailcontact.domain.model.ContactGroup
 import ch.protonmail.android.mailcontact.domain.model.DeviceContact
 import ch.protonmail.android.mailcontact.domain.usecase.GetContacts
 import ch.protonmail.android.mailcontact.domain.usecase.SearchContacts

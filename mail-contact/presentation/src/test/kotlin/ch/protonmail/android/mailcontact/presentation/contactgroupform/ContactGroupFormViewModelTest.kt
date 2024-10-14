@@ -31,7 +31,6 @@ import ch.protonmail.android.mailcommon.presentation.model.ColorHexWithName
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcommon.presentation.ui.delete.DeleteDialogState
 import ch.protonmail.android.mailcommon.presentation.usecase.GetColorHexWithNameList
-import ch.protonmail.android.mailcontact.domain.model.ContactGroup
 import ch.protonmail.android.mailcontact.domain.usecase.CreateContactGroup
 import ch.protonmail.android.mailcontact.domain.usecase.DeleteContactGroup
 import ch.protonmail.android.mailcontact.domain.usecase.EditContactGroup

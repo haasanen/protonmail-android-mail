@@ -28,7 +28,6 @@ import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcommon.presentation.ui.delete.DeleteDialogState
-import ch.protonmail.android.mailcontact.domain.model.ContactGroup
 import ch.protonmail.android.mailcontact.domain.usecase.DeleteContactGroup
 import ch.protonmail.android.mailcontact.domain.usecase.GetContactGroupError
 import ch.protonmail.android.mailcontact.domain.usecase.ObserveContactGroup

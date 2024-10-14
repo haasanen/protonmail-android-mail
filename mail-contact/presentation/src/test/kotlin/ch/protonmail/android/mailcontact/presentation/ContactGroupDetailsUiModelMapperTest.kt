@@ -21,7 +21,6 @@ package ch.protonmail.android.mailcontact.presentation
 import androidx.compose.ui.graphics.Color
 import ch.protonmail.android.mailcommon.presentation.mapper.ColorMapper
 import ch.protonmail.android.mailcommon.presentation.usecase.GetInitials
-import ch.protonmail.android.mailcontact.domain.model.ContactGroup
 import ch.protonmail.android.mailcontact.presentation.model.ContactGroupDetailsMember
 import ch.protonmail.android.mailcontact.presentation.model.ContactGroupDetailsUiModel
 import ch.protonmail.android.mailcontact.presentation.model.ContactGroupDetailsUiModelMapper
@@ -33,6 +32,7 @@ import ch.protonmail.android.testdata.label.LabelTestData
 import ch.protonmail.android.testdata.user.UserIdTestData
 import ch.protonmail.android.mailcontact.domain.model.ContactEmail
 import ch.protonmail.android.mailcontact.domain.model.ContactEmailId
+import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.LabelType
 import org.junit.Rule
@@ -86,11 +86,11 @@ class ContactGroupDetailsUiModelMapperTest {
                 )
             )
         )
-        val contactGroup = ContactGroup(
+        val contactGroup = ContactMetadata.ContactGroup(
             label.labelId,
             label.name,
             label.color!!,
-            listOf(contact.contactEmails[0])
+            listOf(contact.emails[0])
         )
 
         val actual = contactGroupDetailsUiModelMapper.toContactGroupDetailsUiModel(contactGroup)
@@ -120,7 +120,7 @@ class ContactGroupDetailsUiModelMapperTest {
             "Label 1",
             color = Color.Red.getHexStringFromColor()
         )
-        val contactGroup = ContactGroup(
+        val contactGroup = ContactMetadata.ContactGroup(
             label.labelId,
             label.name,
             label.color!!,
