@@ -196,6 +196,7 @@ import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import ch.protonmail.android.mailcontact.domain.model.Contact
+import ch.protonmail.android.mailmessage.domain.usecase.GetMessageMoveToLocations
 import me.proton.core.network.domain.NetworkManager
 import me.proton.core.network.domain.NetworkStatus
 import kotlin.test.AfterTest
@@ -245,6 +246,7 @@ class ConversationDetailViewModelIntegrationTest {
     private val getConversationAvailableActions = mockk<GetConversationAvailableActions>()
     private val getMessageAvailableActions = mockk<GetMessageAvailableActions>()
     private val getConversationMoveToLocations = mockk<GetConversationMoveToLocations>()
+    private val getMessageMoveToLocations = mockk<GetMessageMoveToLocations>()
     private val getConversationLabelAsActions = mockk<GetConversationLabelAsActions>()
     private val getMessageLabelAsActions = mockk<GetMessageLabelAsActions>()
     private val reportPhishingMessage = mockk<ReportPhishingMessage>()
@@ -2130,7 +2132,7 @@ class ConversationDetailViewModelIntegrationTest {
         coEvery {
             observeMessage(userId, messageId)
         } returns flowOf(MessageSample.Invoice.right())
-        coEvery { getConversationMoveToLocations(userId, labelId, listOf(conversationId)) } returns listOf(
+        coEvery { getMessageMoveToLocations(userId, labelId, listOf(messageId)) } returns listOf(
             MailLabelTestData.spamSystemLabel,
             MailLabelTestData.buildCustomFolder(id = "folder1")
         ).right()
@@ -2191,7 +2193,7 @@ class ConversationDetailViewModelIntegrationTest {
             observeMessage(userId, messageId)
         } returns flowOf(MessageSample.Invoice.right())
         coEvery { moveMessage(userId, messageId, SystemLabelId.Spam.labelId) } returns Unit.right()
-        coEvery { getConversationMoveToLocations(userId, labelId, listOf(conversationId)) } returns listOf(
+        coEvery { getMessageMoveToLocations(userId, labelId, listOf(messageId)) } returns listOf(
             MailLabelTestData.spamSystemLabel,
             MailLabelTestData.buildCustomFolder(id = "folder1")
         ).right()
@@ -2276,6 +2278,7 @@ class ConversationDetailViewModelIntegrationTest {
         observeConversationMessages = observeConversationMessages,
         observeDetailActions = observeDetailActions,
         getConversationMoveToLocations = getConversationMoveToLocations,
+        getMessageMoveToLocations = getMessageMoveToLocations,
         observeMessageAttachmentStatus = observeMessageAttachmentStatus,
         getDownloadingAttachmentsForMessages = getAttachmentStatus,
         reducer = detailReducer,

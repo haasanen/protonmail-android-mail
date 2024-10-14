@@ -131,6 +131,7 @@ import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import ch.protonmail.android.mailcontact.domain.model.Contact
+import ch.protonmail.android.mailmessage.domain.usecase.GetMessageMoveToLocations
 import me.proton.core.network.domain.NetworkManager
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
@@ -225,6 +226,7 @@ class ConversationDetailViewModelTest {
         every { this@mockk() } returns flowOf(UserIdSample.Primary)
     }
     private val getConversationMoveToLocations = mockk<GetConversationMoveToLocations>()
+    private val getMessageMoveToLocations = mockk<GetMessageMoveToLocations>()
     private val observeAttachmentStatus = mockk<ObserveMessageAttachmentStatus>()
     private val getAttachmentIntentValues = mockk<GetAttachmentIntentValues>()
     private val getAttachmentDownloadStatus = mockk<GetDownloadingAttachmentsForMessages>()
@@ -302,6 +304,7 @@ class ConversationDetailViewModelTest {
             observeConversationMessages = observeConversationMessages,
             observeDetailActions = observeConversationDetailActions,
             getConversationMoveToLocations = getConversationMoveToLocations,
+            getMessageMoveToLocations = getMessageMoveToLocations,
             observeMessageAttachmentStatus = observeAttachmentStatus,
             getDownloadingAttachmentsForMessages = getAttachmentDownloadStatus,
             reducer = reducer,
