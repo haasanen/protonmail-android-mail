@@ -99,7 +99,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
@@ -784,26 +783,26 @@ class ComposerViewModel @Inject constructor(
 
         if (searchTerm.isNotBlank()) {
             searchContactsJobs[suggestionsField] =
-                searchContacts(primaryUserId(), searchTerm, onlyMatchingContactEmails = true).map{ contacts ->
+                searchContacts(primaryUserId(), searchTerm, onlyMatchingContactEmails = true).map { contacts ->
 
-                val deviceContacts = if (state.value.isDeviceContactsSuggestionsEnabled) {
-                    searchDeviceContacts(searchTerm).getOrNull() ?: emptyList()
-                } else emptyList()
+                    val deviceContacts = if (state.value.isDeviceContactsSuggestionsEnabled) {
+                        searchDeviceContacts(searchTerm).getOrNull() ?: emptyList()
+                    } else emptyList()
 
-                val suggestions = sortContactsForSuggestions(
-                    contacts.getOrNull() ?: emptyList(),
-                    deviceContacts,
-                    maxContactAutocompletionCount
-                )
-
-                emitNewStateFor(
-                    ComposerEvent.UpdateContactSuggestions(
-                        suggestions,
-                        suggestionsField
+                    val suggestions = sortContactsForSuggestions(
+                        contacts.getOrNull() ?: emptyList(),
+                        deviceContacts,
+                        maxContactAutocompletionCount
                     )
-                )
 
-            }.launchIn(viewModelScope)
+                    emitNewStateFor(
+                        ComposerEvent.UpdateContactSuggestions(
+                            suggestions,
+                            suggestionsField
+                        )
+                    )
+
+                }.launchIn(viewModelScope)
         } else {
             emitNewStateFor(
                 ComposerAction.ContactSuggestionsDismissed(
