@@ -32,34 +32,41 @@ class SortContactsForSuggestions @Inject constructor() {
         maxContactAutocompletionCount: Int
     ): List<ContactSuggestionUiModel> {
 
-        val fromContacts = contacts.asSequence().flatMap { contact ->
-            when (contact) {
-                is ContactMetadata.Contact -> contact.emails.map {
-                    contact.copy(
-                        emails = listOf(it)
-                    )
-                }
-                is ContactMetadata.ContactGroup -> contact.emails.map {
+        val fromContacts = contacts
+            .filterIsInstance<ContactMetadata.Contact>()
+            .asSequence()
+            .flatMap { contact ->
+                contact.emails.map {
                     contact.copy(
                         emails = listOf(it)
                     )
                 }
             }
+            .sortedBy {
+                val lastUsedTimeDescending = Long.MAX_VALUE - it.emails.first().lastUsedTime
 
-        }.sortedBy {
-            val lastUsedTimeDescending = Long.MAX_VALUE - it.emails.first().lastUsedTime
+                // LastUsedTime, name, email
+                "$lastUsedTimeDescending ${it.name} ${it.emails.first().email ?: ""}"
+            }
+            .map { contact ->
+                val contactEmail = contact.emails.first()
+                ContactSuggestionUiModel.Contact(
+                    name = contactEmail.name.takeIfNotBlank()
+                        ?: contact.name.takeIfNotBlank()
+                        ?: contactEmail.email,
+                    email = contactEmail.email
+                )
+            }
 
-            // LastUsedTime, name, email
-            "$lastUsedTimeDescending ${it.name} ${it.emails.first().email ?: ""}"
-        }.map { contact ->
-            val contactEmail = contact.emails.first()
-            ContactSuggestionUiModel.Contact(
-                name = contactEmail.name.takeIfNotBlank()
-                    ?: contact.name.takeIfNotBlank()
-                    ?: contactEmail.email,
-                email = contactEmail.email
-            )
-        }
+        val fromContactGroups = contacts
+            .filterIsInstance<ContactMetadata.ContactGroup>()
+            .asSequence()
+            .map { contactGroup ->
+                ContactSuggestionUiModel.ContactGroup(
+                    name = contactGroup.name,
+                    emails = contactGroup.emails.map { it.email }
+                )
+            }
 
         val fromDeviceContacts = deviceContacts.asSequence().map {
             ContactSuggestionUiModel.Contact(
@@ -67,8 +74,10 @@ class SortContactsForSuggestions @Inject constructor() {
                 email = it.email
             )
         }
-
-        return (fromContacts + fromDeviceContacts)
+        val fromDeviceAndContactGroups = (fromDeviceContacts + fromContactGroups).sortedBy {
+            it.name
+        }
+        return (fromContacts + fromDeviceAndContactGroups)
             .take(maxContactAutocompletionCount)
             .toList()
 

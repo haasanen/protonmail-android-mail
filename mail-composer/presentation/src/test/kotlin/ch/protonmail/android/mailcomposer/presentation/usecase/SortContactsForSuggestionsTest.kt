@@ -20,6 +20,7 @@ package ch.protonmail.android.mailcomposer.presentation.usecase
 
 import ch.protonmail.android.maillabel.domain.sample.LabelIdSample
 import ch.protonmail.android.mailcomposer.presentation.model.ContactSuggestionUiModel
+import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import ch.protonmail.android.mailcontact.domain.model.DeviceContact
 import ch.protonmail.android.testdata.contact.ContactEmailSample
 import ch.protonmail.android.testdata.contact.ContactEmailSample.contactEmailLastUsedLongTimeAgo
@@ -39,7 +40,7 @@ class SortContactsForSuggestionsTest {
         val contacts = listOf(
             ContactSample.Stefano,
             ContactSample.Doe.copy(
-                contactEmails = listOf(
+                emails = listOf(
                     contactEmailLastUsedLongTimeAgo,
                     contactEmailLastUsedRecently
                 )
@@ -56,19 +57,19 @@ class SortContactsForSuggestionsTest {
             )
         )
         val contactGroups = listOf(
-            ContactGroup(
+            ContactMetadata.ContactGroup(
                 LabelIdSample.LabelCoworkers,
                 "z group",
                 "#AABBCC",
                 listOf(ContactEmailSample.contactEmail1)
             ),
-            ContactGroup(
+            ContactMetadata.ContactGroup(
                 LabelIdSample.LabelCoworkers,
                 "x group",
                 "#AABBCC",
                 listOf(ContactEmailSample.contactEmail1)
             ),
-            ContactGroup(
+            ContactMetadata.ContactGroup(
                 LabelIdSample.LabelCoworkers,
                 "a group",
                 "#AABBCC",
@@ -78,29 +79,28 @@ class SortContactsForSuggestionsTest {
 
         // When
         val actual = sut(
-            contacts,
+            contacts + contactGroups,
             deviceContacts,
-            contactGroups,
             7 // one fewer than total
         )
 
         // Then
         val expected = listOf(
             ContactSuggestionUiModel.Contact(
-                contacts[1].contactEmails[1].name,
-                contacts[1].contactEmails[1].email
+                contacts[1].emails[1].name,
+                contacts[1].emails[1].email
             ),
             ContactSuggestionUiModel.Contact(
-                contacts[1].contactEmails[0].name,
-                contacts[1].contactEmails[0].email
+                contacts[1].emails[0].name,
+                contacts[1].emails[0].email
             ),
             ContactSuggestionUiModel.Contact(
-                contacts[0].contactEmails[0].name,
-                contacts[0].contactEmails[0].email
+                contacts[0].emails[0].name,
+                contacts[0].emails[0].email
             ),
             ContactSuggestionUiModel.ContactGroup(
                 contactGroups[2].name,
-                contactGroups[2].members.map { it.email }
+                contactGroups[2].emails.map { it.email }
             ),
             ContactSuggestionUiModel.Contact(
                 deviceContacts[1].name,
@@ -112,7 +112,7 @@ class SortContactsForSuggestionsTest {
             ),
             ContactSuggestionUiModel.ContactGroup(
                 contactGroups[1].name,
-                contactGroups[1].members.map { it.email }
+                contactGroups[1].emails.map { it.email }
             )
         )
 
