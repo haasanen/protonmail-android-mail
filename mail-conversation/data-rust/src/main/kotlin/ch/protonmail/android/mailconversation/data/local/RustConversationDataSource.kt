@@ -61,7 +61,7 @@ interface RustConversationDataSource {
         userId: UserId,
         conversationIds: List<LocalConversationId>,
         toLabelId: LocalLabelId
-    )
+    ): Either<DataError.Local, Unit>
 
     fun getSenderImage(address: String, bimi: String?): ByteArray?
 

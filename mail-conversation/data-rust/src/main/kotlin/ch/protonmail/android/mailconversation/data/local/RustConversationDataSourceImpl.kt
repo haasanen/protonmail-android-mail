@@ -58,6 +58,7 @@ import javax.inject.Inject
 class RustConversationDataSourceImpl @Inject constructor(
     private val userSessionRepository: UserSessionRepository,
     private val rustMailbox: RustMailbox,
+    private val rustMoveConversations: RustMoveConversations,
     private val rustConversationDetailQuery: RustConversationDetailQuery,
     private val rustConversationsQuery: RustConversationsQuery,
     private val getRustAllConversationBottomBarActions: GetRustAllConversationBottomBarActions,
@@ -209,10 +210,11 @@ class RustConversationDataSourceImpl @Inject constructor(
         userId: UserId,
         conversationIds: List<LocalConversationId>,
         toLabelId: LocalLabelId
-    ) {
-        executeMailboxAction(
+    ): Either<DataError.Local, Unit> {
+        Timber.v("rust-conversation: move conversations to $toLabelId executing for: $conversationIds")
+        return executeMailboxAction(
             userId = userId,
-            action = { moveConversations(userId, conversationIds, toLabelId) },
+            action = { rustMoveConversations(it, toLabelId, conversationIds) },
             actionName = "move conversations"
         )
     }
@@ -264,14 +266,17 @@ class RustConversationDataSourceImpl @Inject constructor(
             action(mailbox)
             executePendingActions(userId)
         }.mapLeft {
-            Timber.e(it, "rust-conversation: Failed to perform $actionName")
+            Timber.e("rust-conversation: $actionName failed in rust: $it")
             DataError.Local.Unknown
         }
     }
 
     private fun executePendingActions(userId: UserId) {
         coroutineScope.launch {
-            userSessionRepository.getUserSession(userId)?.executePendingActions()
+            userSessionRepository.getUserSession(userId)?.let {
+                it.executePendingActions()
+                Timber.v("rust-conversation: executing pending actions...")
+            }
         }
     }
 }

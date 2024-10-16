@@ -274,7 +274,7 @@ class RustConversationRepositoryImplTest {
                 conversationIds.map { it.toLocalConversationId() },
                 toLabelId.toLocalLabelId()
             )
-        } just Runs
+        } returns Unit.right()
 
         // When
         val result = rustConversationRepository.move(userId, conversationIds, toLabelId)

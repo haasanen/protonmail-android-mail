@@ -83,10 +83,12 @@ class RustConversationDataSourceImplTest {
     private val getRustConversationMoveToActions = mockk<GetRustConversationMoveToActions>()
     private val getRustConversationLabelAsActions = mockk<GetRustConversationLabelAsActions>()
     private val rustDeleteConversations = mockk<RustDeleteConversations>()
+    private val rustMoveConversations = mockk<RustMoveConversations>()
 
     private val dataSource = RustConversationDataSourceImpl(
         sessionManager,
         rustMailbox,
+        rustMoveConversations,
         rustConversationDetailQuery,
         rustConversationsQuery,
         getRustAllConversationBottomBarActions,
@@ -293,4 +295,20 @@ class RustConversationDataSourceImplTest {
         assertEquals(DataError.Local.Unknown.left(), result)
     }
 
+    @Test
+    fun `move conversations invokes rust move conversations`() = runTest {
+        // Given
+        val userId = UserIdTestData.userId
+        val labelId = LocalLabelId(1uL)
+        val mailbox = mockk<Mailbox>()
+        val conversationIds = listOf(LocalConversationIdSample.AugConversation)
+
+        every { rustMailbox.observeMailbox() } returns flowOf(mailbox)
+
+        // When
+        dataSource.moveConversations(userId, conversationIds, labelId)
+
+        // Then
+        coVerify { rustMoveConversations(mailbox, labelId, conversationIds) }
+    }
 }
