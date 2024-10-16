@@ -105,7 +105,7 @@ interface MessageRepository {
         userId: UserId,
         messageIds: List<MessageId>,
         toLabel: LabelId
-    ): Either<DataError.Local, List<Message>>
+    ): Either<DataError.Local, Unit>
 
     /**
      * Mark the messages with the given [messageIds] as Starred

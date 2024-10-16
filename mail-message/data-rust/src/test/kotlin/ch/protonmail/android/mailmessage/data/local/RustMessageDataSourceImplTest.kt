@@ -34,6 +34,7 @@ import ch.protonmail.android.mailmessage.data.usecase.GetRustSenderImage
 import ch.protonmail.android.mailmessage.data.usecase.RustDeleteMessages
 import ch.protonmail.android.mailmessage.data.usecase.RustMarkMessagesRead
 import ch.protonmail.android.mailmessage.data.usecase.RustMarkMessagesUnread
+import ch.protonmail.android.mailmessage.data.usecase.RustMoveMessages
 import ch.protonmail.android.mailmessage.data.usecase.RustStarMessages
 import ch.protonmail.android.mailmessage.data.usecase.RustUnstarMessages
 import ch.protonmail.android.mailpagination.domain.model.PageKey
@@ -86,6 +87,7 @@ class RustMessageDataSourceImplTest {
     private val rustUnstarMessages = mockk<RustUnstarMessages>()
     private val getRustAllBottomBarActions = mockk<GetRustAllMessageBottomBarActions>()
     private val rustDeleteMessages = mockk<RustDeleteMessages>()
+    private val rustMoveMessages = mockk<RustMoveMessages>()
     private val getRustAvailableMessageActions = mockk<GetRustAvailableMessageActions>()
     private val getRustMessageMoveToActions = mockk<GetRustMessageMoveToActions>()
     private val getRustMessageLabelAsActions = mockk<GetRustMessageLabelAsActions>()
@@ -104,6 +106,7 @@ class RustMessageDataSourceImplTest {
         rustUnstarMessages,
         getRustAllBottomBarActions,
         rustDeleteMessages,
+        rustMoveMessages,
         getRustAvailableMessageActions,
         getRustMessageMoveToActions,
         getRustMessageLabelAsActions
@@ -586,7 +589,7 @@ class RustMessageDataSourceImplTest {
         val mailbox = mockk<Mailbox>()
         val messageIds = listOf(LocalMessageId(1uL), LocalMessageId(2uL))
 
-        coEvery { rustMarkMessagesUnread(mailbox, messageIds) } throws MailSessionException.Other("Error")
+        coEvery { rustDeleteMessages(mailbox, messageIds) } throws MailSessionException.Other("Error")
         coEvery { rustMailbox.observeMailbox() } returns flowOf(mailbox)
 
         // When
@@ -596,4 +599,38 @@ class RustMessageDataSourceImplTest {
         assertEquals(DataError.Local.Unknown.left(), result)
     }
 
+    @Test
+    fun `should not move messages when mailbox is not available`() = runTest {
+        // Given
+        val userId = UserIdTestData.userId
+        val labelId = LocalLabelId(1uL)
+        val messageIds = listOf(LocalMessageId(1uL), LocalMessageId(2uL))
+
+        coEvery { rustMailbox.observeMailbox() } returns flowOf()
+
+        // When
+        val result = dataSource.moveMessages(userId, messageIds, labelId)
+
+        // Then
+        assertTrue(result.isLeft())
+        verify { rustMoveMessages wasNot Called }
+    }
+
+    @Test
+    fun `should handle exception when moving messages`() = runTest {
+        // Given
+        val userId = UserIdTestData.userId
+        val mailbox = mockk<Mailbox>()
+        val labelId = LocalLabelId(1uL)
+        val messageIds = listOf(LocalMessageId(1uL), LocalMessageId(2uL))
+
+        coEvery { rustMoveMessages(mailbox, labelId, messageIds) } throws MailSessionException.Other("Error")
+        coEvery { rustMailbox.observeMailbox() } returns flowOf(mailbox)
+
+        // When
+        val result = dataSource.moveMessages(userId, messageIds, labelId)
+
+        // Then
+        assertEquals(DataError.Local.Unknown.left(), result)
+    }
 }

@@ -54,6 +54,12 @@ interface RustMessageDataSource {
     suspend fun starMessages(userId: UserId, messages: List<LocalMessageId>): Either<DataError.Local, Unit>
     suspend fun unStarMessages(userId: UserId, messages: List<LocalMessageId>): Either<DataError.Local, Unit>
 
+    suspend fun moveMessages(
+        userId: UserId,
+        messageIds: List<LocalMessageId>,
+        toLabelId: LocalLabelId
+    ): Either<DataError.Local, Unit>
+
     suspend fun getAvailableActions(
         userId: UserId,
         labelId: LocalLabelId,

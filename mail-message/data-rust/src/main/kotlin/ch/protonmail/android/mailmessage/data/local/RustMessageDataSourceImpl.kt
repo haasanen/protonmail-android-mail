@@ -39,6 +39,7 @@ import ch.protonmail.android.mailmessage.data.usecase.GetRustSenderImage
 import ch.protonmail.android.mailmessage.data.usecase.RustDeleteMessages
 import ch.protonmail.android.mailmessage.data.usecase.RustMarkMessagesRead
 import ch.protonmail.android.mailmessage.data.usecase.RustMarkMessagesUnread
+import ch.protonmail.android.mailmessage.data.usecase.RustMoveMessages
 import ch.protonmail.android.mailmessage.data.usecase.RustStarMessages
 import ch.protonmail.android.mailmessage.data.usecase.RustUnstarMessages
 import ch.protonmail.android.mailpagination.domain.model.PageKey
@@ -69,6 +70,7 @@ class RustMessageDataSourceImpl @Inject constructor(
     private val rustUnstarMessages: RustUnstarMessages,
     private val getRustAllMessageBottomBarActions: GetRustAllMessageBottomBarActions,
     private val rustDeleteMessages: RustDeleteMessages,
+    private val rustMoveMessages: RustMoveMessages,
     private val getRustAvailableMessageActions: GetRustAvailableMessageActions,
     private val getRustMessageMoveToActions: GetRustMessageMoveToActions,
     private val getRustMessageLabelAsActions: GetRustMessageLabelAsActions
@@ -190,6 +192,20 @@ class RustMessageDataSourceImpl @Inject constructor(
         val session = userSessionRepository.getUserSession(userId) ?: return DataError.Local.Unknown.left()
         return try {
             rustUnstarMessages(session, messages).right()
+        } catch (e: MailSessionException) {
+            Timber.e(e, "rust-message: Failed to mark message unStarred")
+            DataError.Local.Unknown.left()
+        }
+    }
+
+    override suspend fun moveMessages(
+        userId: UserId,
+        messageIds: List<LocalMessageId>,
+        toLabelId: LocalLabelId
+    ): Either<DataError.Local, Unit> {
+        val session = userSessionRepository.getUserSession(userId) ?: return DataError.Local.Unknown.left()
+        return try {
+            rustMoveMessages(session, messageIds).right()
         } catch (e: MailSessionException) {
             Timber.e(e, "rust-message: Failed to mark message unStarred")
             DataError.Local.Unknown.left()
