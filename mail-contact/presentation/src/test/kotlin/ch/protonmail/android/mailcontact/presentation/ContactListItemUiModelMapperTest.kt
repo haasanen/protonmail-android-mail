@@ -31,7 +31,7 @@ import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import ch.protonmail.android.mailcontact.domain.model.GroupedContacts
 import ch.protonmail.android.mailcontact.presentation.model.ContactGroupItemUiModelMapper
 import ch.protonmail.android.mailcontact.presentation.model.ContactItemUiModelMapper
-import ch.protonmail.android.maillabel.domain.model.LabelId
+import ch.protonmail.android.testdata.contact.ContactGroupIdSample
 import ch.protonmail.android.testdata.contact.ContactIdTestData
 import io.mockk.every
 import io.mockk.mockk
@@ -74,7 +74,7 @@ class ContactListItemUiModelMapperTest {
         )
 
         val contactGroup1 = ContactMetadata.ContactGroup(
-            labelId = LabelId("group1"),
+            id = ContactGroupIdSample.Friends,
             name = "Family Group",
             color = "Blue",
             emails = emptyList()
@@ -107,7 +107,7 @@ class ContactListItemUiModelMapperTest {
         every {
             contactGroupItemUiModelMapper.toContactGroupItemUiModel(contactGroup1)
         } returns ContactListItemUiModel.ContactGroup(
-            labelId = contactGroup1.labelId,
+            id = contactGroup1.id,
             name = contactGroup1.name,
             memberCount = 0, // Assume 0 members for simplicity in the test
             color = Color.Blue
@@ -132,7 +132,7 @@ class ContactListItemUiModelMapperTest {
             ),
             ContactListItemUiModel.Header(value = "Groups"),
             ContactListItemUiModel.ContactGroup(
-                labelId = contactGroup1.labelId,
+                id = contactGroup1.id,
                 name = contactGroup1.name,
                 memberCount = 0,
                 color = Color.Blue

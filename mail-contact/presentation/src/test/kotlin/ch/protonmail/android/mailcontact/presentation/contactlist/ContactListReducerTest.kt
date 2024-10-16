@@ -22,10 +22,10 @@ import androidx.compose.ui.graphics.Color
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
+import ch.protonmail.android.mailcontact.domain.model.ContactGroupId
 import ch.protonmail.android.mailcontact.presentation.R
 import ch.protonmail.android.mailcontact.presentation.model.ContactListItemUiModel
 import ch.protonmail.android.mailcontact.domain.model.ContactId
-import ch.protonmail.android.maillabel.domain.model.LabelId
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
@@ -71,13 +71,13 @@ internal class ContactListReducerTest(
 
         private val loadedContactGroupItemUiModels = listOf(
             ContactListItemUiModel.ContactGroup(
-                labelId = LabelId("Id1"),
+                id = ContactGroupId("Id1"),
                 name = "Name 1",
                 memberCount = 2,
                 color = Color.Blue
             ),
             ContactListItemUiModel.ContactGroup(
-                labelId = LabelId("Id2"),
+                id = ContactGroupId("Id2"),
                 name = "Name 2",
                 memberCount = 3,
                 color = Color.Red

@@ -27,6 +27,7 @@ import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailcommon.presentation.mapper.ColorMapper
 import ch.protonmail.android.mailcommon.presentation.model.ColorHexWithName
 import ch.protonmail.android.mailcommon.presentation.usecase.GetColorHexWithNameList
+import ch.protonmail.android.mailcontact.domain.model.ContactGroupId
 import ch.protonmail.android.mailcontact.domain.usecase.CreateContactGroup
 import ch.protonmail.android.mailcontact.domain.usecase.CreateContactGroupError
 import ch.protonmail.android.mailcontact.domain.usecase.DeleteContactGroup
@@ -48,7 +49,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import me.proton.core.domain.entity.UserId
-import ch.protonmail.android.maillabel.domain.model.LabelId
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -75,10 +75,13 @@ class ContactGroupFormViewModel @Inject constructor(
 
     init {
         val colors = getColorHexWithNameList()
-        extractLabelId()?.let { labelId ->
+        extractContactGroupId()?.let { contactGroupId ->
             viewModelScope.launch {
                 emitNewStateFor(
-                    getContactGroupFormEvent(userId = primaryUserId(), labelId = LabelId(labelId), colors = colors)
+                    getContactGroupFormEvent(
+                        userId = primaryUserId(),
+                        contactGroupId = ContactGroupId(contactGroupId), colors = colors
+                    )
                 )
             }
         } ?: run {
@@ -210,7 +213,7 @@ class ContactGroupFormViewModel @Inject constructor(
         viewModelScope.launch {
             deleteContactGroup(
                 userId = primaryUserId(),
-                labelId = currentState.contactGroup.id
+                contactGroupId = currentState.contactGroup.id
             ).getOrElse {
                 return@launch emitNewStateFor(ContactGroupFormEvent.DeletingError)
             }
@@ -231,8 +234,8 @@ class ContactGroupFormViewModel @Inject constructor(
         if (stateValue !is ContactGroupFormState.Data) return
 
         viewModelScope.launch {
-            stateValue.contactGroup.id?.let { labelId ->
-                handleUpdateContactGroup(labelId, stateValue.contactGroup)
+            stateValue.contactGroup.id?.let { contactGroupId ->
+                handleUpdateContactGroup(contactGroupId, stateValue.contactGroup)
             } ?: handleCreateContactGroup(stateValue.contactGroup)
         }
     }
@@ -256,12 +259,15 @@ class ContactGroupFormViewModel @Inject constructor(
         emitNewStateFor(ContactGroupFormEvent.ContactGroupCreated)
     }
 
-    private suspend fun handleUpdateContactGroup(labelId: LabelId, contactGroupFormUiModel: ContactGroupFormUiModel) {
+    private suspend fun handleUpdateContactGroup(
+        contactGroupId: ContactGroupId,
+        contactGroupFormUiModel: ContactGroupFormUiModel
+    ) {
         emitNewStateFor(ContactGroupFormEvent.SavingContactGroup)
 
         editContactGroup(
             userId = primaryUserId(),
-            labelId = labelId,
+            contactGroupId = contactGroupId,
             name = contactGroupFormUiModel.name,
             color = ColorRgbHex(contactGroupFormUiModel.color.getHexStringFromColor()),
             contactEmailIds = contactGroupFormUiModel.members.map { it.id }
@@ -274,10 +280,10 @@ class ContactGroupFormViewModel @Inject constructor(
 
     private suspend fun getContactGroupFormEvent(
         userId: UserId,
-        labelId: LabelId,
+        contactGroupId: ContactGroupId,
         colors: List<ColorHexWithName>
     ): ContactGroupFormEvent {
-        val contactGroup = observeContactGroup(userId, labelId).firstOrNull()?.getOrNull() ?: run {
+        val contactGroup = observeContactGroup(userId, contactGroupId).firstOrNull()?.getOrNull() ?: run {
             Timber.e("Error while observing contact group by id")
             return ContactGroupFormEvent.LoadError
         }
@@ -291,7 +297,8 @@ class ContactGroupFormViewModel @Inject constructor(
 
     private suspend fun primaryUserId() = primaryUserId.first()
 
-    private fun extractLabelId() = savedStateHandle.get<String>(ContactGroupFormScreen.ContactGroupFormLabelIdKey)
+    private fun extractContactGroupId() =
+        savedStateHandle.get<String>(ContactGroupFormScreen.ContactGroupFormGroupIdKey)
 
     private fun emitNewStateFor(event: ContactGroupFormEvent) {
         val currentState = state.value

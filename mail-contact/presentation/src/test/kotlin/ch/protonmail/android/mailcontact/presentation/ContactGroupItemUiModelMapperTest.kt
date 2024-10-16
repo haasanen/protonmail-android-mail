@@ -26,10 +26,10 @@ import ch.protonmail.android.test.utils.rule.MainDispatcherRule
 import ch.protonmail.android.testdata.user.UserIdTestData
 import ch.protonmail.android.mailcontact.domain.model.ContactEmail
 import ch.protonmail.android.mailcontact.domain.model.ContactEmailId
+import ch.protonmail.android.mailcontact.domain.model.ContactGroupId
 import ch.protonmail.android.mailcontact.domain.model.ContactId
 import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import ch.protonmail.android.mailcontact.presentation.model.ContactListItemUiModel
-import ch.protonmail.android.maillabel.domain.model.LabelId
 import org.junit.Rule
 import org.junit.Test
 import kotlin.test.assertEquals
@@ -44,8 +44,8 @@ class ContactGroupItemUiModelMapperTest {
 
     @Test
     fun `return correct contact group`() {
-        val contactGroupLabel = ContactMetadata.ContactGroup(
-            labelId = LabelId("LabelId1"),
+        val contactGroup = ContactMetadata.ContactGroup(
+            id = ContactGroupId("LabelId1"),
             name = "Label 1",
             color = Color.Red.getHexStringFromColor(),
             emails = listOf(
@@ -91,10 +91,10 @@ class ContactGroupItemUiModelMapperTest {
             ).filter { it.labelIds.contains("LabelId1") }
         )
 
-        val actual = contactGroupItemUiModelMapper.toContactGroupItemUiModel(contactGroupLabel)
+        val actual = contactGroupItemUiModelMapper.toContactGroupItemUiModel(contactGroup)
 
         val expected = ContactListItemUiModel.ContactGroup(
-            labelId = LabelId("LabelId1"),
+            id = ContactGroupId("LabelId1"),
             name = "Label 1",
             memberCount = 3,
             color = Color.Red

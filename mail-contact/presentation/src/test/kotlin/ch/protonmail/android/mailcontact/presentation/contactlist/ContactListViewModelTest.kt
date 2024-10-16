@@ -45,6 +45,7 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import ch.protonmail.android.mailcontact.domain.model.ContactEmail
 import ch.protonmail.android.mailcontact.domain.model.ContactEmailId
+import ch.protonmail.android.mailcontact.domain.model.ContactGroupId
 import ch.protonmail.android.mailcontact.domain.model.ContactId
 import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import ch.protonmail.android.mailcontact.domain.model.GroupedContacts
@@ -97,7 +98,7 @@ class ContactListViewModelTest {
         )
     )
     private val defaultTestContactGroupMetadata = ContactMetadata.ContactGroup(
-        labelId = LabelId("label1"),
+        id = ContactGroupId("label1"),
         name = "first contact group",
         color = "#FF0000",
         emails = listOf(

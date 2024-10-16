@@ -44,6 +44,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
+import ch.protonmail.android.mailcontact.domain.model.ContactGroupId
 import ch.protonmail.android.mailcontact.presentation.R
 import ch.protonmail.android.mailcontact.presentation.contactlist.ui.ContactListGroupItem
 import ch.protonmail.android.mailcontact.presentation.contactlist.ui.ContactListItem
@@ -55,7 +56,6 @@ import me.proton.core.compose.theme.ProtonTheme
 import me.proton.core.compose.theme.defaultSmallWeak
 import ch.protonmail.android.mailcontact.domain.model.ContactId
 import ch.protonmail.android.mailcontact.presentation.model.ContactListItemUiModel
-import ch.protonmail.android.maillabel.domain.model.LabelId
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
@@ -205,7 +205,7 @@ object ContactSearchScreen {
 
     data class Actions(
         val onContactSelected: (ContactId) -> Unit,
-        val onContactGroupSelected: (LabelId) -> Unit,
+        val onContactGroupSelected: (ContactGroupId) -> Unit,
         val onClose: () -> Unit
     ) {
 
@@ -224,7 +224,7 @@ object ContactSearchContent {
 
     data class Actions(
         val onContactClick: (ContactId) -> Unit,
-        val onContactGroupClick: (LabelId) -> Unit
+        val onContactGroupClick: (ContactGroupId) -> Unit
     ) {
 
         companion object {

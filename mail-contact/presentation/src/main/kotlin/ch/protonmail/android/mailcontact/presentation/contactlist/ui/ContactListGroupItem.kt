@@ -59,7 +59,7 @@ internal fun ContactListGroupItem(
                 role = Role.Button,
                 enabled = ContactFeatureFlags.ContactGroupDetails.value,
                 onClick = {
-                    actions.onContactGroupSelected(contact.labelId)
+                    actions.onContactGroupSelected(contact.id)
                 }
             )
             .padding(start = ProtonDimens.DefaultSpacing),

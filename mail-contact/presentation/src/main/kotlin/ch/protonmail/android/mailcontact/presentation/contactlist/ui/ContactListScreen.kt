@@ -16,6 +16,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
 import ch.protonmail.android.mailcommon.presentation.ConsumableTextEffect
+import ch.protonmail.android.mailcontact.domain.model.ContactGroupId
 import ch.protonmail.android.mailcontact.presentation.R
 import ch.protonmail.android.mailcontact.presentation.contactlist.BottomSheetVisibilityEffect
 import ch.protonmail.android.mailcontact.presentation.contactlist.ContactListState
@@ -27,7 +28,6 @@ import kotlinx.coroutines.launch
 import me.proton.core.compose.component.ProtonCenteredProgress
 import me.proton.core.compose.component.ProtonModalBottomSheetLayout
 import ch.protonmail.android.mailcontact.domain.model.ContactId
-import ch.protonmail.android.maillabel.domain.model.LabelId
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -152,7 +152,7 @@ object ContactListScreen {
     data class Actions(
         val onBackClick: () -> Unit,
         val onContactSelected: (ContactId) -> Unit,
-        val onContactGroupSelected: (LabelId) -> Unit,
+        val onContactGroupSelected: (ContactGroupId) -> Unit,
         val onNavigateToNewContactForm: () -> Unit,
         val onNavigateToNewGroupForm: () -> Unit,
         val onNavigateToContactSearch: () -> Unit,
@@ -179,7 +179,7 @@ object ContactListScreen {
 
             fun fromContactSearchActions(
                 onContactClick: (ContactId) -> Unit = {},
-                onContactGroupClick: (LabelId) -> Unit = {}
+                onContactGroupClick: (ContactGroupId) -> Unit = {}
             ) = Empty.copy(
                 onContactSelected = onContactClick,
                 onContactGroupSelected = onContactGroupClick

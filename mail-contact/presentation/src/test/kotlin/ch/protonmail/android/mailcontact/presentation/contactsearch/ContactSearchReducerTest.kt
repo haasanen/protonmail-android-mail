@@ -23,7 +23,7 @@ import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcontact.presentation.model.ContactListItemUiModel
 import ch.protonmail.android.mailcontact.domain.model.ContactId
-import ch.protonmail.android.maillabel.domain.model.LabelId
+import ch.protonmail.android.testdata.contact.ContactGroupIdSample
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
@@ -67,7 +67,7 @@ internal class ContactSearchReducerTest(
             ),
             // Added ContactGroup to the search results
             ContactListItemUiModel.ContactGroup(
-                labelId = LabelId("result 3 ID"),
+                id = ContactGroupIdSample.School,
                 name = "result 3 group name",
                 memberCount = 10,
                 color = Color(1f, 1f, 1f)

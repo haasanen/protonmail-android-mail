@@ -434,7 +434,7 @@ fun ContactGroupFormTopBar(
 
 object ContactGroupFormScreen {
 
-    const val ContactGroupFormLabelIdKey = "contact_group_form_label_id"
+    const val ContactGroupFormGroupIdKey = "contact_group_form_group_id"
 
     data class Actions(
         val onClose: () -> Unit,

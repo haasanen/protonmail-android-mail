@@ -31,9 +31,9 @@ import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import ch.protonmail.android.mailcontact.presentation.model.ContactGroupItemUiModelMapper
 import ch.protonmail.android.mailcontact.presentation.model.ContactItemUiModelMapper
 import ch.protonmail.android.mailcontact.presentation.model.ContactListItemUiModel
-import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.presentation.getHexStringFromColor
 import ch.protonmail.android.testdata.contact.ContactEmailSample
+import ch.protonmail.android.testdata.contact.ContactGroupIdSample
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.Rule
@@ -65,7 +65,7 @@ class ContactSearchUiModelMapperTest {
             emails = listOf(ContactEmailSample.contactEmail4)
         )
         val contactGroup = ContactMetadata.ContactGroup(
-            labelId = LabelId("LabelId1"),
+            id = ContactGroupIdSample.Friends,
             name = "Group 1",
             color = Color.Red.getHexStringFromColor(),
             emails = listOf(
@@ -84,7 +84,7 @@ class ContactSearchUiModelMapperTest {
             )
         )
         val expectedContactGroupUiModel = ContactListItemUiModel.ContactGroup(
-            labelId = LabelId("LabelId1"),
+            id = ContactGroupIdSample.Friends,
             name = "Group 1",
             memberCount = contactGroup.emails.size,
             color = Color.Red

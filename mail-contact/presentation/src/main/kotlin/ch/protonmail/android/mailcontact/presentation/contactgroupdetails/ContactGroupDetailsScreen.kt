@@ -59,6 +59,7 @@ import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 import ch.protonmail.android.uicomponents.dismissKeyboard
 import ch.protonmail.android.mailcommon.presentation.ui.CommonTestTags
 import ch.protonmail.android.mailcommon.presentation.ui.delete.DeleteDialogState
+import ch.protonmail.android.mailcontact.domain.model.ContactGroupId
 import ch.protonmail.android.mailcontact.presentation.R
 import ch.protonmail.android.mailcontact.presentation.model.ContactGroupDetailsMember
 import ch.protonmail.android.mailcontact.presentation.previewdata.ContactGroupDetailsPreviewData.contactGroupDetailsSampleData
@@ -77,7 +78,6 @@ import me.proton.core.compose.theme.defaultNorm
 import me.proton.core.compose.theme.defaultSmallNorm
 import me.proton.core.compose.theme.defaultSmallWeak
 import me.proton.core.compose.theme.headlineNorm
-import ch.protonmail.android.maillabel.domain.model.LabelId
 
 @Composable
 fun ContactGroupDetailsScreen(
@@ -352,14 +352,14 @@ fun ContactGroupDetailsTopBar(
 
 object ContactGroupDetailsScreen {
 
-    const val ContactGroupDetailsLabelIdKey = "contact_group_details_label_id"
+    const val ContactGroupDetailsGroupIdKey = "contact_group_details_group_id"
 
     data class Actions(
         val onBackClick: () -> Unit,
         val exitWithErrorMessage: (String) -> Unit,
         val exitWithNormMessage: (String) -> Unit,
         val showErrorMessage: (String) -> Unit,
-        val onEditClick: (LabelId) -> Unit,
+        val onEditClick: (ContactGroupId) -> Unit,
         val navigateToComposer: (List<String>) -> Unit
     ) {
 

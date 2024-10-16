@@ -23,6 +23,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import arrow.core.getOrElse
 import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUserId
+import ch.protonmail.android.mailcontact.domain.model.ContactGroupId
 import ch.protonmail.android.mailcontact.domain.usecase.DeleteContactGroup
 import ch.protonmail.android.mailcontact.domain.usecase.ObserveContactGroup
 import ch.protonmail.android.mailcontact.presentation.model.ContactGroupDetailsUiModelMapper
@@ -39,7 +40,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import me.proton.core.domain.entity.UserId
-import ch.protonmail.android.maillabel.domain.model.LabelId
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -60,9 +60,9 @@ class ContactGroupDetailsViewModel @Inject constructor(
     val state: StateFlow<ContactGroupDetailsState> = mutableState
 
     init {
-        extractLabelId()?.let { labelId ->
+        extractGroupId()?.let { groupId ->
             viewModelScope.launch {
-                flowContactGroupDetailsEvent(userId = primaryUserId(), labelId = LabelId(labelId))
+                flowContactGroupDetailsEvent(userId = primaryUserId(), contactGroupId = ContactGroupId(groupId))
                     .onEach { contactGroupDetailsEvent -> emitNewStateFor(contactGroupDetailsEvent) }
                     .launchIn(viewModelScope)
             }
@@ -111,7 +111,7 @@ class ContactGroupDetailsViewModel @Inject constructor(
         viewModelScope.launch {
             deleteContactGroup(
                 userId = primaryUserId(),
-                labelId = currentState.contactGroup.id
+                contactGroupId = currentState.contactGroup.id
             ).getOrElse {
                 return@launch emitNewStateFor(ContactGroupDetailsEvent.DeletingError)
             }
@@ -127,8 +127,11 @@ class ContactGroupDetailsViewModel @Inject constructor(
         emitNewStateFor(ContactGroupDetailsEvent.DismissDeleteDialog)
     }
 
-    private fun flowContactGroupDetailsEvent(userId: UserId, labelId: LabelId): Flow<ContactGroupDetailsEvent> {
-        return observeContactGroup(userId, labelId).map { contactGroup ->
+    private fun flowContactGroupDetailsEvent(
+        userId: UserId,
+        contactGroupId: ContactGroupId
+    ): Flow<ContactGroupDetailsEvent> {
+        return observeContactGroup(userId, contactGroupId).map { contactGroup ->
             ContactGroupDetailsEvent.ContactGroupLoaded(
                 contactGroupDetailsUiModelMapper.toContactGroupDetailsUiModel(
                     contactGroup.getOrElse {
@@ -142,7 +145,7 @@ class ContactGroupDetailsViewModel @Inject constructor(
 
     private suspend fun primaryUserId() = primaryUserId.first()
 
-    private fun extractLabelId() = savedStateHandle.get<String>(ContactGroupDetailsScreen.ContactGroupDetailsLabelIdKey)
+    private fun extractGroupId() = savedStateHandle.get<String>(ContactGroupDetailsScreen.ContactGroupDetailsGroupIdKey)
 
     private fun emitNewStateFor(event: ContactGroupDetailsEvent) {
         val currentState = state.value

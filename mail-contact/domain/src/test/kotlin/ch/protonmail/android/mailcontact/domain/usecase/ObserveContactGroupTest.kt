@@ -33,15 +33,16 @@ import ch.protonmail.android.mailcontact.domain.model.ContactEmailId
 import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import ch.protonmail.android.mailcontact.domain.model.GetContactError
 import ch.protonmail.android.mailcontact.domain.repository.ContactRepository
-import ch.protonmail.android.maillabel.domain.model.LabelId
+import ch.protonmail.android.testdata.contact.ContactGroupIdSample
 import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
 
 class ObserveContactGroupTest {
 
+    private val testContactGroupId = ContactGroupIdSample.Friends
     private val contactGroup = ContactMetadata.ContactGroup(
-        labelId = LabelId("LabelId1"),
+        id = testContactGroupId,
         name = "Friends",
         color = "#FF0000",
         emails = listOf(
@@ -72,7 +73,7 @@ class ObserveContactGroupTest {
     @Test
     fun `when repository returns contacts, the correct contact group is emitted`() = runTest {
         // When
-        observeContactGroup(UserIdTestData.userId, LabelId("LabelId1")).test {
+        observeContactGroup(UserIdTestData.userId, testContactGroupId).test {
             // Then
             val actual = assertIs<Either.Right<ContactMetadata.ContactGroup>>(awaitItem())
             assertEquals(contactGroup, actual.value)
@@ -86,7 +87,7 @@ class ObserveContactGroupTest {
         every { contactRepository.observeAllContacts(UserIdTestData.userId) } returns flowOf(GetContactError.left())
 
         // When
-        observeContactGroup(UserIdTestData.userId, LabelId("LabelId1")).test {
+        observeContactGroup(UserIdTestData.userId, testContactGroupId).test {
             // Then
             val actual = assertIs<Either.Left<GetContactGroupError.GetContactsError>>(awaitItem())
             awaitComplete()
@@ -96,11 +97,11 @@ class ObserveContactGroupTest {
     @Test
     fun `when contact group is not found, then emit ContactGroupNotFound error`() = runTest {
         // Given
-        val otherLabelId = LabelId("LabelId2")
+        val otherContactGroupId = ContactGroupIdSample.School
         every { contactRepository.observeAllContacts(UserIdTestData.userId) } returns flowOf(GetContactError.left())
 
         // When
-        observeContactGroup(UserIdTestData.userId, otherLabelId).test {
+        observeContactGroup(UserIdTestData.userId, otherContactGroupId).test {
             // Then
             val actual = assertIs<Either.Left<GetContactGroupError.ContactGroupNotFound>>(awaitItem())
             awaitComplete()

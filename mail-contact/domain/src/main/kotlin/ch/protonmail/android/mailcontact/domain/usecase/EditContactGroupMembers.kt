@@ -24,8 +24,8 @@ import arrow.core.raise.either
 import ch.protonmail.android.mailcontact.domain.repository.ContactGroupRepository
 import kotlinx.coroutines.flow.first
 import ch.protonmail.android.mailcontact.domain.model.ContactEmailId
+import ch.protonmail.android.mailcontact.domain.model.ContactGroupId
 import me.proton.core.domain.entity.UserId
-import ch.protonmail.android.maillabel.domain.model.LabelId
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -36,11 +36,11 @@ class EditContactGroupMembers @Inject constructor(
 
     suspend operator fun invoke(
         userId: UserId,
-        labelId: LabelId,
+        contactGroupId: ContactGroupId,
         contactEmailIds: Set<ContactEmailId>
     ): Either<EditContactGroupMembersError, Unit> = either {
 
-        val contactGroup = observeContactGroup(userId, labelId).first().getOrElse {
+        val contactGroup = observeContactGroup(userId, contactGroupId).first().getOrElse {
             Timber.e("Error while observing contact group by id in EditContactGroupMembers")
             raise(EditContactGroupMembersError.ObservingContactGroup)
         }
@@ -52,7 +52,7 @@ class EditContactGroupMembers @Inject constructor(
         if (contactEmailIdsToAdd.isNotEmpty()) {
             contactGroupRepository.addContactEmailIdsToContactGroup(
                 userId,
-                labelId,
+                contactGroupId,
                 contactEmailIdsToAdd
             ).onLeft {
                 Timber.e("Error while adding Members in EditContactGroupMembers")
@@ -63,7 +63,7 @@ class EditContactGroupMembers @Inject constructor(
         if (contactEmailIdsToRemove.isNotEmpty()) {
             contactGroupRepository.removeContactEmailIdsFromContactGroup(
                 userId,
-                labelId,
+                contactGroupId,
                 contactEmailIdsToRemove
             ).onLeft {
                 Timber.e("Error while removing Members in EditContactGroupMembers")

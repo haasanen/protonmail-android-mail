@@ -21,7 +21,6 @@ package ch.protonmail.android.mailcontact.presentation.contactsearch
 import androidx.compose.ui.graphics.Color
 import app.cash.turbine.test
 import arrow.core.right
-import ch.protonmail.android.maillabel.domain.sample.LabelIdSample
 import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
@@ -32,6 +31,7 @@ import ch.protonmail.android.mailcontact.presentation.model.ContactListItemUiMod
 import ch.protonmail.android.mailcontact.presentation.model.ContactSearchUiModelMapper
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
 import ch.protonmail.android.testdata.contact.ContactEmailSample
+import ch.protonmail.android.testdata.contact.ContactGroupIdSample
 import ch.protonmail.android.testdata.contact.ContactSample
 import ch.protonmail.android.testdata.user.UserIdTestData
 import io.mockk.coEvery
@@ -74,7 +74,7 @@ class ContactSearchViewModelTest {
     private val expectedContacts = listOf(ContactSample.Stefano, ContactSample.Francesco)
     private val expectedContactGroups = listOf(
         ContactMetadata.ContactGroup(
-            LabelIdSample.LabelCoworkers,
+            ContactGroupIdSample.Work,
             "Coworkers contact group",
             "#AABBCC",
             listOf(ContactEmailSample.contactEmail1)
@@ -100,7 +100,7 @@ class ContactSearchViewModelTest {
             )
         ),
         ContactListItemUiModel.ContactGroup(
-            expectedContactGroups[0].labelId,
+            expectedContactGroups[0].id,
             expectedContactGroups[0].name,
             memberCount = 1,
             color = Color.Red

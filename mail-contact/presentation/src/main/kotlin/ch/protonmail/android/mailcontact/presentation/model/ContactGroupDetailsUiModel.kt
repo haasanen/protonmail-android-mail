@@ -19,10 +19,10 @@
 package ch.protonmail.android.mailcontact.presentation.model
 
 import androidx.compose.ui.graphics.Color
-import ch.protonmail.android.maillabel.domain.model.LabelId
+import ch.protonmail.android.mailcontact.domain.model.ContactGroupId
 
 data class ContactGroupDetailsUiModel(
-    val id: LabelId,
+    val id: ContactGroupId,
     val name: String,
     val color: Color,
     val memberCount: Int,

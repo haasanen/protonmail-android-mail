@@ -33,8 +33,8 @@ import ch.protonmail.android.testdata.user.UserIdTestData
 import ch.protonmail.android.mailcontact.domain.model.ContactEmail
 import ch.protonmail.android.mailcontact.domain.model.ContactEmailId
 import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
-import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.LabelType
+import ch.protonmail.android.testdata.contact.ContactGroupIdSample
 import org.junit.Rule
 import org.junit.Test
 import kotlin.test.assertEquals
@@ -87,7 +87,7 @@ class ContactGroupFormUiModelMapperTest {
             )
         )
         val contactGroup = ContactMetadata.ContactGroup(
-            label.labelId,
+            ContactGroupIdSample.Work,
             label.name,
             label.color!!,
             listOf(contact.emails[0])
@@ -96,7 +96,7 @@ class ContactGroupFormUiModelMapperTest {
         val actual = contactGroupFormUiModelMapper.toContactGroupFormUiModel(contactGroup)
 
         val expected = ContactGroupFormUiModel(
-            id = LabelId("LabelId1"),
+            id = ContactGroupIdSample.Work,
             name = "Label 1",
             color = Color.Red,
             memberCount = 1,
@@ -122,7 +122,7 @@ class ContactGroupFormUiModelMapperTest {
             color = Color.Red.getHexStringFromColor()
         )
         val contactGroup = ContactMetadata.ContactGroup(
-            label.labelId,
+            ContactGroupIdSample.Work,
             label.name,
             label.color!!,
             emptyList()
@@ -131,7 +131,7 @@ class ContactGroupFormUiModelMapperTest {
         val actual = contactGroupFormUiModelMapper.toContactGroupFormUiModel(contactGroup)
 
         val expected = ContactGroupFormUiModel(
-            id = LabelId("LabelId1"),
+            id = ContactGroupIdSample.Work,
             name = "Label 1",
             color = Color.Red,
             memberCount = 0,

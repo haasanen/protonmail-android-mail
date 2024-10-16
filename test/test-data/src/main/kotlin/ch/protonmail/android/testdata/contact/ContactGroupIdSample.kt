@@ -16,27 +16,18 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailcontact.presentation.previewdata
+package ch.protonmail.android.testdata.contact
 
-import androidx.compose.ui.graphics.Color
 import ch.protonmail.android.mailcontact.domain.model.ContactGroupId
-import ch.protonmail.android.mailcontact.presentation.model.ContactGroupDetailsUiModel
-import ch.protonmail.android.mailcontact.presentation.model.ContactGroupDetailsMember
 
-object ContactGroupDetailsPreviewData {
+object ContactGroupIdSample {
 
-    val contactGroupDetailsSampleData = ContactGroupDetailsUiModel(
-        id = ContactGroupId("Id"),
-        name = "Group name",
-        color = Color.Red,
-        memberCount = 1,
-        members = listOf(
-            ContactGroupDetailsMember(
-                initials = "JD",
-                name = "John Doe",
-                email = "johndoe@proton.me"
-            )
-        )
-    )
+    val Family = ContactGroupId("Family")
+
+    val School = ContactGroupId("School")
+
+    val Work = ContactGroupId("Work")
+
+    val Friends = ContactGroupId("Friends")
+
 }
-

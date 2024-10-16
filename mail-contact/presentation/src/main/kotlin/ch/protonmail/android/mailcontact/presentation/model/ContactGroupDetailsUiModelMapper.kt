@@ -32,7 +32,7 @@ class ContactGroupDetailsUiModelMapper @Inject constructor(
 
     fun toContactGroupDetailsUiModel(contactGroup: ContactMetadata.ContactGroup): ContactGroupDetailsUiModel {
         return ContactGroupDetailsUiModel(
-            id = contactGroup.labelId,
+            id = contactGroup.id,
             name = contactGroup.name,
             color = colorMapper.toColor(contactGroup.color).getOrElse { Color.Black },
             memberCount = contactGroup.emails.size,

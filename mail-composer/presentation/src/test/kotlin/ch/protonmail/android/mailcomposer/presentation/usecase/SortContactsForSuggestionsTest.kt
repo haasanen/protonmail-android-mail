@@ -18,13 +18,13 @@
 
 package ch.protonmail.android.mailcomposer.presentation.usecase
 
-import ch.protonmail.android.maillabel.domain.sample.LabelIdSample
 import ch.protonmail.android.mailcomposer.presentation.model.ContactSuggestionUiModel
 import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import ch.protonmail.android.mailcontact.domain.model.DeviceContact
 import ch.protonmail.android.testdata.contact.ContactEmailSample
 import ch.protonmail.android.testdata.contact.ContactEmailSample.contactEmailLastUsedLongTimeAgo
 import ch.protonmail.android.testdata.contact.ContactEmailSample.contactEmailLastUsedRecently
+import ch.protonmail.android.testdata.contact.ContactGroupIdSample
 import ch.protonmail.android.testdata.contact.ContactSample
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
@@ -58,19 +58,19 @@ class SortContactsForSuggestionsTest {
         )
         val contactGroups = listOf(
             ContactMetadata.ContactGroup(
-                LabelIdSample.LabelCoworkers,
+                ContactGroupIdSample.Friends,
                 "z group",
                 "#AABBCC",
                 listOf(ContactEmailSample.contactEmail1)
             ),
             ContactMetadata.ContactGroup(
-                LabelIdSample.LabelCoworkers,
+                ContactGroupIdSample.Work,
                 "x group",
                 "#AABBCC",
                 listOf(ContactEmailSample.contactEmail1)
             ),
             ContactMetadata.ContactGroup(
-                LabelIdSample.LabelCoworkers,
+                ContactGroupIdSample.School,
                 "a group",
                 "#AABBCC",
                 listOf(ContactEmailSample.contactEmail1)

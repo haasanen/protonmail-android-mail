@@ -23,8 +23,8 @@ import arrow.core.left
 import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcontact.domain.repository.ContactGroupRepository
 import ch.protonmail.android.mailcontact.domain.model.ContactEmailId
+import ch.protonmail.android.mailcontact.domain.model.ContactGroupId
 import me.proton.core.domain.entity.UserId
-import ch.protonmail.android.maillabel.domain.model.LabelId
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -34,7 +34,7 @@ class ContactGroupRepositoryImpl @Inject constructor() : ContactGroupRepository 
 
     override suspend fun addContactEmailIdsToContactGroup(
         userId: UserId,
-        labelId: LabelId,
+        contactGroupId: ContactGroupId,
         contactEmailIds: Set<ContactEmailId>
     ): Either<ContactGroupRepository.ContactGroupErrors, Unit> {
         Timber.w("Not implemented")
@@ -43,7 +43,7 @@ class ContactGroupRepositoryImpl @Inject constructor() : ContactGroupRepository 
 
     override suspend fun removeContactEmailIdsFromContactGroup(
         userId: UserId,
-        labelId: LabelId,
+        contactGroupId: ContactGroupId,
         contactEmailIds: Set<ContactEmailId>
     ): Either<ContactGroupRepository.ContactGroupErrors, Unit> {
         Timber.w("Not implemented")

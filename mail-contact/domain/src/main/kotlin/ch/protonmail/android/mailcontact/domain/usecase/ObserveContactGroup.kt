@@ -21,11 +21,11 @@ package ch.protonmail.android.mailcontact.domain.usecase
 import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
+import ch.protonmail.android.mailcontact.domain.model.ContactGroupId
 import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import kotlinx.coroutines.flow.Flow
 import ch.protonmail.android.mailcontact.domain.repository.ContactRepository
 import me.proton.core.domain.entity.UserId
-import ch.protonmail.android.maillabel.domain.model.LabelId
 import kotlinx.coroutines.flow.transformLatest
 import javax.inject.Inject
 
@@ -35,7 +35,7 @@ class ObserveContactGroup @Inject constructor(
 
     operator fun invoke(
         userId: UserId,
-        labelId: LabelId
+        contactGroupId: ContactGroupId
     ): Flow<Either<GetContactGroupError, ContactMetadata.ContactGroup>> {
         return contactRepository.observeAllContacts(userId).transformLatest {
             it.onLeft {
@@ -45,7 +45,7 @@ class ObserveContactGroup @Inject constructor(
                 val contactGroup = contacts
                     .filterIsInstance<ContactMetadata.ContactGroup>()
                     .find { contact ->
-                        contact.labelId == labelId
+                        contact.id == contactGroupId
                     }
 
                 emit(contactGroup?.right() ?: GetContactGroupError.ContactGroupNotFound.left())

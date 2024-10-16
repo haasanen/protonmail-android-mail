@@ -25,7 +25,6 @@ import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.AppInBackgroundState
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.maillabel.domain.sample.LabelIdSample
 import ch.protonmail.android.mailcommon.domain.sample.UserAddressSample
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.mailcommon.domain.usecase.GetPrimaryAddress
@@ -115,6 +114,7 @@ import ch.protonmail.android.test.idlingresources.ComposerIdlingResource
 import ch.protonmail.android.test.utils.rule.LoggingTestRule
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
 import ch.protonmail.android.testdata.contact.ContactEmailSample
+import ch.protonmail.android.testdata.contact.ContactGroupIdSample
 import ch.protonmail.android.testdata.contact.ContactSample
 import ch.protonmail.android.testdata.contact.ContactTestData
 import ch.protonmail.android.testdata.message.DecryptedMessageBodyTestData
@@ -769,7 +769,7 @@ class ComposerViewModelTest {
 
         val expectedContactGroups = listOf(
             ContactMetadata.ContactGroup(
-                LabelIdSample.LabelCoworkers,
+                ContactGroupIdSample.Work,
                 "Coworkers contact group",
                 "#AABBCC",
                 listOf(ContactEmailSample.contactEmail1)

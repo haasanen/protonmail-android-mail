@@ -387,8 +387,8 @@ internal fun NavGraphBuilder.addContacts(
                 onContactSelected = { contactId ->
                     navController.navigate(Destination.Screen.ContactDetails(contactId))
                 },
-                onContactGroupSelected = { labelId ->
-                    navController.navigate(Destination.Screen.ContactGroupDetails(labelId))
+                onContactGroupSelected = { contactGroupId ->
+                    navController.navigate(Destination.Screen.ContactGroupDetails(contactGroupId))
                 },
                 onBackClick = {
                     navController.navigateBack()

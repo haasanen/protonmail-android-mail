@@ -22,12 +22,12 @@ import androidx.compose.ui.graphics.Color
 import ch.protonmail.android.mailcontact.presentation.model.ContactGroupFormMember
 import ch.protonmail.android.mailcontact.presentation.model.ContactGroupFormUiModel
 import ch.protonmail.android.mailcontact.domain.model.ContactEmailId
-import ch.protonmail.android.maillabel.domain.model.LabelId
+import ch.protonmail.android.mailcontact.domain.model.ContactGroupId
 
 object ContactGroupFormPreviewData {
 
     val contactGroupFormSampleData = ContactGroupFormUiModel(
-        id = LabelId("Id"),
+        id = ContactGroupId("Id"),
         name = "Group name",
         color = Color.Red,
         memberCount = 1,

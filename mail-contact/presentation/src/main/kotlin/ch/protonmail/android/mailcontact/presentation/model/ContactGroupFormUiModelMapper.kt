@@ -33,7 +33,7 @@ class ContactGroupFormUiModelMapper @Inject constructor(
 
     fun toContactGroupFormUiModel(contactGroup: ContactMetadata.ContactGroup): ContactGroupFormUiModel {
         return ContactGroupFormUiModel(
-            id = contactGroup.labelId,
+            id = contactGroup.id,
             name = contactGroup.name,
             color = colorMapper.toColor(contactGroup.color).getOrElse { Color.Black },
             memberCount = contactGroup.emails.size,

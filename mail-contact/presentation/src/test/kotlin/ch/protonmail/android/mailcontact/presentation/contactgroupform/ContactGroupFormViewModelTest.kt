@@ -54,9 +54,9 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import ch.protonmail.android.mailcontact.domain.model.ContactEmail
 import ch.protonmail.android.mailcontact.domain.model.ContactEmailId
+import ch.protonmail.android.mailcontact.domain.model.ContactGroupId
 import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import me.proton.core.domain.entity.UserId
-import ch.protonmail.android.maillabel.domain.model.LabelId
 import org.junit.Rule
 import org.junit.Test
 import kotlin.test.assertEquals
@@ -68,10 +68,10 @@ class ContactGroupFormViewModelTest {
     val mainDispatcherRule = MainDispatcherRule()
 
     private val testUserId = UserIdTestData.userId
-    private val testLabelId = ContactGroupFormPreviewData.contactGroupFormSampleData.id!!
+    private val testContactGroupId = ContactGroupFormPreviewData.contactGroupFormSampleData.id!!
     private val testColors = listOf(ColorHexWithName(TextUiModel("Red"), Color.Red.getHexStringFromColor()))
     private val testContactGroup = ContactMetadata.ContactGroup(
-        testLabelId,
+        testContactGroupId,
         "Group name",
         Color.Red.getHexStringFromColor(),
         listOf(
@@ -130,7 +130,7 @@ class ContactGroupFormViewModelTest {
     @Test
     fun `given null Label ID in SavedState, when init, then emits loaded contact group state`() = runTest {
         // Given
-        expectSavedStateLabelId(null)
+        expectSavedStateGroupId(null)
 
         // When
         contactGroupFormViewModel.state.test {
@@ -155,10 +155,10 @@ class ContactGroupFormViewModelTest {
             memberCount = 0,
             members = emptyList()
         )
-        expectContactGroup(testUserId, testLabelId, expectedContactGroup)
+        expectContactGroup(testUserId, testContactGroupId, expectedContactGroup)
         expectContactGroupFormUiModel(expectedContactGroup, expectedContactGroupFormUiModel)
 
-        expectSavedStateLabelId(testLabelId)
+        expectSavedStateGroupId(testContactGroupId)
 
         // When
         contactGroupFormViewModel.state.test {
@@ -175,15 +175,15 @@ class ContactGroupFormViewModelTest {
     }
 
     @Test
-    fun `given Label ID in SavedState, when init and observe contact group, then emits loaded contact group state`() =
+    fun `given group ID in SavedState, when init and observe contact group, then emits loaded contact group state`() =
         runTest {
             // Given
             val expectedContactGroup = testContactGroup
             val expectedContactGroupFormUiModel = ContactGroupFormPreviewData.contactGroupFormSampleData
-            expectContactGroup(testUserId, testLabelId, expectedContactGroup)
+            expectContactGroup(testUserId, testContactGroupId, expectedContactGroup)
             expectContactGroupFormUiModel(expectedContactGroup, expectedContactGroupFormUiModel)
 
-            expectSavedStateLabelId(testLabelId)
+            expectSavedStateGroupId(testContactGroupId)
 
             // When
             contactGroupFormViewModel.state.test {
@@ -200,15 +200,15 @@ class ContactGroupFormViewModelTest {
         }
 
     @Test
-    fun `given Label ID in SavedState, when init and observe contact group with blank Name, then emits loaded contact group state with Save Button disabled`() =
+    fun `given group ID in SavedState, when init and observe contact group with blank Name, then emits loaded contact group state with Save Button disabled`() =
         runTest {
             // Given
             val expectedContactGroup = testContactGroup
             val expectedContactGroupFormUiModel = ContactGroupFormPreviewData.contactGroupFormSampleData
-            expectContactGroup(testUserId, testLabelId, expectedContactGroup)
+            expectContactGroup(testUserId, testContactGroupId, expectedContactGroup)
             expectContactGroupFormUiModel(expectedContactGroup, expectedContactGroupFormUiModel)
 
-            expectSavedStateLabelId(testLabelId)
+            expectSavedStateGroupId(testContactGroupId)
 
             // When
             contactGroupFormViewModel.state.test {
@@ -225,11 +225,11 @@ class ContactGroupFormViewModelTest {
         }
 
     @Test
-    fun `given Label ID in SavedState, when init and observe contact group fails, then emits error loading`() =
+    fun `given group ID in SavedState, when init and observe contact group fails, then emits error loading`() =
         runTest {
             // Given
-            expectContactGroup(testUserId, testLabelId, null)
-            expectSavedStateLabelId(testLabelId)
+            expectContactGroup(testUserId, testContactGroupId, null)
+            expectSavedStateGroupId(testContactGroupId)
 
             // When
             contactGroupFormViewModel.state.test {
@@ -248,10 +248,10 @@ class ContactGroupFormViewModelTest {
         // Given
         val expectedContactGroup = testContactGroup
         val expectedContactGroupFormUiModel = ContactGroupFormPreviewData.contactGroupFormSampleData
-        expectContactGroup(testUserId, testLabelId, expectedContactGroup)
+        expectContactGroup(testUserId, testContactGroupId, expectedContactGroup)
         expectContactGroupFormUiModel(expectedContactGroup, expectedContactGroupFormUiModel)
 
-        expectSavedStateLabelId(testLabelId)
+        expectSavedStateGroupId(testContactGroupId)
 
         // When
         contactGroupFormViewModel.state.test {
@@ -277,7 +277,7 @@ class ContactGroupFormViewModelTest {
     fun `when create and on save action is submitted, then created event is emitted`() = runTest {
         // Given
         val expectedContactGroup = emptyContactGroupFormUiModel(Color.Red)
-        expectSavedStateLabelId(null)
+        expectSavedStateGroupId(null)
         expectCreateContactGroup(
             testUserId,
             expectedContactGroup.name,
@@ -310,17 +310,17 @@ class ContactGroupFormViewModelTest {
         // Given
         val expectedContactGroup = testContactGroup
         val expectedContactGroupFormUiModel = ContactGroupFormPreviewData.contactGroupFormSampleData
-        expectContactGroup(testUserId, testLabelId, expectedContactGroup)
+        expectContactGroup(testUserId, testContactGroupId, expectedContactGroup)
         expectContactGroupFormUiModel(expectedContactGroup, expectedContactGroupFormUiModel)
         expectEditContactGroup(
             testUserId,
-            expectedContactGroup.labelId,
+            expectedContactGroup.id,
             expectedContactGroup.name,
             expectedContactGroup.color,
             expectedContactGroup.emails.map { it.id }
         )
 
-        expectSavedStateLabelId(testLabelId)
+        expectSavedStateGroupId(testContactGroupId)
 
         // When
         contactGroupFormViewModel.state.test {
@@ -348,10 +348,10 @@ class ContactGroupFormViewModelTest {
         // Given
         val expectedContactGroup = testContactGroup
         val expectedContactGroupFormUiModel = ContactGroupFormPreviewData.contactGroupFormSampleData
-        expectContactGroup(testUserId, testLabelId, expectedContactGroup)
+        expectContactGroup(testUserId, testContactGroupId, expectedContactGroup)
         expectContactGroupFormUiModel(expectedContactGroup, expectedContactGroupFormUiModel)
 
-        expectSavedStateLabelId(testLabelId)
+        expectSavedStateGroupId(testContactGroupId)
 
         // When
         contactGroupFormViewModel.state.test {
@@ -377,10 +377,10 @@ class ContactGroupFormViewModelTest {
         // Given
         val expectedContactGroup = testContactGroup
         val expectedContactGroupFormUiModel = ContactGroupFormPreviewData.contactGroupFormSampleData
-        expectContactGroup(testUserId, testLabelId, expectedContactGroup)
+        expectContactGroup(testUserId, testContactGroupId, expectedContactGroup)
         expectContactGroupFormUiModel(expectedContactGroup, expectedContactGroupFormUiModel)
 
-        expectSavedStateLabelId(testLabelId)
+        expectSavedStateGroupId(testContactGroupId)
 
         // When
         contactGroupFormViewModel.state.test {
@@ -411,10 +411,10 @@ class ContactGroupFormViewModelTest {
         // Given
         val expectedContactGroup = testContactGroup
         val expectedContactGroupFormUiModel = ContactGroupFormPreviewData.contactGroupFormSampleData
-        expectContactGroup(testUserId, testLabelId, expectedContactGroup)
+        expectContactGroup(testUserId, testContactGroupId, expectedContactGroup)
         expectContactGroupFormUiModel(expectedContactGroup, expectedContactGroupFormUiModel)
 
-        expectSavedStateLabelId(testLabelId)
+        expectSavedStateGroupId(testContactGroupId)
 
         // When
         contactGroupFormViewModel.state.test {
@@ -442,10 +442,10 @@ class ContactGroupFormViewModelTest {
         // Given
         val expectedContactGroup = testContactGroup
         val expectedContactGroupFormUiModel = ContactGroupFormPreviewData.contactGroupFormSampleData
-        expectContactGroup(testUserId, testLabelId, expectedContactGroup)
+        expectContactGroup(testUserId, testContactGroupId, expectedContactGroup)
         expectContactGroupFormUiModel(expectedContactGroup, expectedContactGroupFormUiModel)
 
-        expectSavedStateLabelId(testLabelId)
+        expectSavedStateGroupId(testContactGroupId)
 
         // When
         contactGroupFormViewModel.state.test {
@@ -473,10 +473,10 @@ class ContactGroupFormViewModelTest {
         // Given
         val expectedContactGroup = testContactGroup
         val expectedContactGroupFormUiModel = ContactGroupFormPreviewData.contactGroupFormSampleData
-        expectContactGroup(testUserId, testLabelId, expectedContactGroup)
+        expectContactGroup(testUserId, testContactGroupId, expectedContactGroup)
         expectContactGroupFormUiModel(expectedContactGroup, expectedContactGroupFormUiModel)
 
-        expectSavedStateLabelId(testLabelId)
+        expectSavedStateGroupId(testContactGroupId)
 
         // When
         contactGroupFormViewModel.state.test {
@@ -510,11 +510,11 @@ class ContactGroupFormViewModelTest {
             // Given
             val expectedContactGroup = testContactGroup
             val expectedContactGroupFormUiModel = ContactGroupFormPreviewData.contactGroupFormSampleData
-            expectContactGroup(testUserId, testLabelId, expectedContactGroup)
+            expectContactGroup(testUserId, testContactGroupId, expectedContactGroup)
             expectContactGroupFormUiModel(expectedContactGroup, expectedContactGroupFormUiModel)
 
-            expectSavedStateLabelId(testLabelId)
-            expectDeleteContactGroupSuccess(testUserId, testLabelId)
+            expectSavedStateGroupId(testContactGroupId)
+            expectDeleteContactGroupSuccess(testUserId, testContactGroupId)
 
             // When
             contactGroupFormViewModel.state.test {
@@ -547,11 +547,11 @@ class ContactGroupFormViewModelTest {
             // Given
             val expectedContactGroup = testContactGroup
             val expectedContactGroupFormUiModel = ContactGroupFormPreviewData.contactGroupFormSampleData
-            expectContactGroup(testUserId, testLabelId, expectedContactGroup)
+            expectContactGroup(testUserId, testContactGroupId, expectedContactGroup)
             expectContactGroupFormUiModel(expectedContactGroup, expectedContactGroupFormUiModel)
 
-            expectSavedStateLabelId(testLabelId)
-            expectDeleteContactGroupFail(testUserId, testLabelId)
+            expectSavedStateGroupId(testContactGroupId)
+            expectDeleteContactGroupFail(testUserId, testContactGroupId)
 
             // When
             contactGroupFormViewModel.state.test {
@@ -584,11 +584,11 @@ class ContactGroupFormViewModelTest {
         // Given
         val expectedContactGroup = testContactGroup
         val expectedContactGroupFormUiModel = ContactGroupFormPreviewData.contactGroupFormSampleData
-        expectContactGroup(testUserId, testLabelId, expectedContactGroup)
+        expectContactGroup(testUserId, testContactGroupId, expectedContactGroup)
         expectContactGroupFormUiModel(expectedContactGroup, expectedContactGroupFormUiModel)
 
-        expectSavedStateLabelId(testLabelId)
-        expectDeleteContactGroupFail(testUserId, testLabelId)
+        expectSavedStateGroupId(testContactGroupId)
+        expectDeleteContactGroupFail(testUserId, testContactGroupId)
 
         // When
         contactGroupFormViewModel.state.test {
@@ -616,19 +616,19 @@ class ContactGroupFormViewModelTest {
         }
     }
 
-    private fun expectSavedStateLabelId(labelId: LabelId?) {
+    private fun expectSavedStateGroupId(contactGroupId: ContactGroupId?) {
         every {
-            savedStateHandleMock.get<String>(ContactGroupFormScreen.ContactGroupFormLabelIdKey)
-        } returns labelId?.id
+            savedStateHandleMock.get<String>(ContactGroupFormScreen.ContactGroupFormGroupIdKey)
+        } returns contactGroupId?.id
     }
 
     private fun expectContactGroup(
         userId: UserId,
-        labelId: LabelId,
+        contactGroupId: ContactGroupId,
         contactGroup: ContactMetadata.ContactGroup?
     ) {
         every {
-            observeContactGroupMock.invoke(userId, labelId)
+            observeContactGroupMock.invoke(userId, contactGroupId)
         } returns flowOf(contactGroup?.right() ?: GetContactGroupError.ContactGroupNotFound.left())
     }
 
@@ -654,23 +654,23 @@ class ContactGroupFormViewModelTest {
 
     private fun expectEditContactGroup(
         userId: UserId,
-        labelId: LabelId,
+        contactGroupId: ContactGroupId,
         name: String,
         color: String,
         contactEmailIds: List<ContactEmailId>
     ) {
         coEvery {
-            editContactGroupMock.invoke(userId, labelId, name, ColorRgbHex(color), contactEmailIds)
+            editContactGroupMock.invoke(userId, contactGroupId, name, ColorRgbHex(color), contactEmailIds)
         } returns Unit.right()
     }
 
-    private fun expectDeleteContactGroupSuccess(userId: UserId, contactGroupId: LabelId) {
+    private fun expectDeleteContactGroupSuccess(userId: UserId, contactGroupId: ContactGroupId) {
         coEvery {
             deleteContactGroupMock.invoke(userId, contactGroupId)
         } returns Unit.right()
     }
 
-    private fun expectDeleteContactGroupFail(userId: UserId, contactGroupId: LabelId) {
+    private fun expectDeleteContactGroupFail(userId: UserId, contactGroupId: ContactGroupId) {
         coEvery {
             deleteContactGroupMock.invoke(userId, contactGroupId)
         } returns DataErrorSample.Unreachable.left()
