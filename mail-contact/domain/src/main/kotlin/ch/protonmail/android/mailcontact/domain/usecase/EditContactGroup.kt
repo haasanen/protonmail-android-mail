@@ -19,48 +19,26 @@
 package ch.protonmail.android.mailcontact.domain.usecase
 
 import arrow.core.Either
-import arrow.core.raise.either
+import arrow.core.right
+import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.maillabel.domain.model.ColorRgbHex
 import ch.protonmail.android.mailcontact.domain.model.ContactEmailId
+import ch.protonmail.android.mailcontact.domain.model.ContactGroupId
 import me.proton.core.domain.entity.UserId
-import ch.protonmail.android.maillabel.domain.model.LabelId
-import ch.protonmail.android.maillabel.domain.model.LabelType
-import ch.protonmail.android.maillabel.domain.repository.LabelRepository
 import javax.inject.Inject
 
+@MissingRustApi
 class EditContactGroup @Inject constructor(
-    private val labelRepository: LabelRepository,
     private val editContactGroupMembers: EditContactGroupMembers
 ) {
 
     suspend operator fun invoke(
         userId: UserId,
-        labelId: LabelId,
+        contactGroupId: ContactGroupId,
         name: String,
         color: ColorRgbHex,
         contactEmailIds: List<ContactEmailId>
-    ): Either<EditContactGroupError, Unit> = either {
-
-        val contactGroupLabel = labelRepository.getLabel(userId, LabelType.ContactGroup, labelId) ?: raise(
-            EditContactGroupError.LabelNotFound
-        )
-
-        labelRepository.updateLabel(
-            userId,
-            contactGroupLabel.copy(
-                name = name.trim(),
-                color = color.hex
-            )
-        )
-
-        return editContactGroupMembers(
-            userId,
-            labelId,
-            contactEmailIds.toSet()
-        ).mapLeft {
-            EditContactGroupError.EditingMembersError
-        }
-    }
+    ): Either<EditContactGroupError, Unit> = Unit.right()
 
 }
 
