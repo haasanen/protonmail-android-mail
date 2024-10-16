@@ -19,19 +19,15 @@
 package ch.protonmail.android.mailcontact.domain.usecase
 
 import arrow.core.Either
-import arrow.core.raise.either
+import arrow.core.right
+import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.maillabel.domain.usecase.DeleteLabel
+import ch.protonmail.android.mailcontact.domain.model.ContactGroupId
 import me.proton.core.domain.entity.UserId
-import ch.protonmail.android.maillabel.domain.model.LabelId
-import ch.protonmail.android.maillabel.domain.model.LabelType
 import javax.inject.Inject
 
-class DeleteContactGroup @Inject constructor(
-    private val deleteLabel: DeleteLabel
-) {
+@MissingRustApi
+class DeleteContactGroup @Inject constructor() {
 
-    suspend operator fun invoke(userId: UserId, labelId: LabelId): Either<DataError, Unit> = either {
-        deleteLabel.invoke(userId, labelId, LabelType.ContactGroup)
-    }
+    suspend operator fun invoke(userId: UserId, contactGroupId: ContactGroupId): Either<DataError, Unit> = Unit.right()
 }
