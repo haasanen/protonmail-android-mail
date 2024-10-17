@@ -42,7 +42,10 @@ interface RustConversationDataSource {
     ): Flow<LocalConversationMessages>
 
     suspend fun getConversations(userId: UserId, pageKey: PageKey): List<LocalConversation>
-    suspend fun deleteConversations(userId: UserId, conversations: List<LocalConversationId>)
+    suspend fun deleteConversations(
+        userId: UserId,
+        conversations: List<LocalConversationId>
+    ): Either<DataError.Local, Unit>
     suspend fun markRead(userId: UserId, conversations: List<LocalConversationId>)
     suspend fun markUnread(userId: UserId, conversations: List<LocalConversationId>)
     suspend fun starConversations(userId: UserId, conversations: List<LocalConversationId>)

@@ -82,6 +82,7 @@ class RustConversationDataSourceImplTest {
     private val getRustAllConversationBottomBarActions = mockk<GetRustAllConversationBottomBarActions>()
     private val getRustConversationMoveToActions = mockk<GetRustConversationMoveToActions>()
     private val getRustConversationLabelAsActions = mockk<GetRustConversationLabelAsActions>()
+    private val rustDeleteConversations = mockk<RustDeleteConversations>()
 
     private val dataSource = RustConversationDataSourceImpl(
         sessionManager,
@@ -92,6 +93,7 @@ class RustConversationDataSourceImplTest {
         getRustAvailableConversationActions,
         getRustConversationMoveToActions,
         getRustConversationLabelAsActions,
+        rustDeleteConversations,
         testCoroutineScope
     )
 

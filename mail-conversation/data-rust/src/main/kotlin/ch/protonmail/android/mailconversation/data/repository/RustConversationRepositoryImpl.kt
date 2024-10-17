@@ -189,12 +189,14 @@ class RustConversationRepositoryImpl @Inject constructor(
         labelsToBeAdded: List<LabelId>
     ): Either<DataError, List<Conversation>> = DataError.Local.Unknown.left()
 
-    // It will be implemented later on
     override suspend fun deleteConversations(
         userId: UserId,
         conversationIds: List<ConversationId>,
         contextLabelId: LabelId
-    ): Either<DataError, Unit> = DataError.Local.Unknown.left()
+    ): Either<DataError, Unit> = rustConversationDataSource.deleteConversations(
+        userId,
+        conversationIds.map { it.toLocalConversationId() }
+    )
 
     // It will be implemented later on
     override suspend fun deleteConversations(userId: UserId, labelId: LabelId) {

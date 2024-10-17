@@ -64,6 +64,7 @@ class RustConversationDataSourceImpl @Inject constructor(
     private val getRustAvailableConversationActions: GetRustAvailableConversationActions,
     private val getRustConversationMoveToActions: GetRustConversationMoveToActions,
     private val getRustConversationLabelAsActions: GetRustConversationLabelAsActions,
+    private val rustDeleteConversations: RustDeleteConversations,
     @ConversationRustCoroutineScope private val coroutineScope: CoroutineScope
 ) : RustConversationDataSource {
 
@@ -93,13 +94,12 @@ class RustConversationDataSourceImpl @Inject constructor(
         userId, conversationId
     )
 
-    override suspend fun deleteConversations(userId: UserId, conversations: List<LocalConversationId>) {
+    override suspend fun deleteConversations(userId: UserId, conversations: List<LocalConversationId>) =
         executeMailboxAction(
             userId = userId,
-            action = { deleteConversations(userId, conversations) },
+            action = { rustDeleteConversations(it, conversations) },
             actionName = "delete conversations"
         )
-    }
 
     override suspend fun markRead(userId: UserId, conversations: List<LocalConversationId>) {
         executeMailboxAction(
@@ -252,18 +252,20 @@ class RustConversationDataSourceImpl @Inject constructor(
         userId: UserId,
         action: suspend (Mailbox) -> Unit,
         actionName: String
-    ) {
+    ): Either<DataError.Local, Unit> {
+        Timber.v("rust-conversation: executing action $actionName")
         val mailbox = rustMailbox.observeMailbox().firstOrNull()
         if (mailbox == null) {
             Timber.e("rust-conversation: Failed to perform $actionName, null mailbox")
-            return
+            return DataError.Local.NoDataCached.left()
         }
 
-        try {
+        return Either.catch {
             action(mailbox)
             executePendingActions(userId)
-        } catch (e: MailboxException) {
-            Timber.e(e, "rust-conversation: Failed to perform $actionName")
+        }.mapLeft {
+            Timber.e(it, "rust-conversation: Failed to perform $actionName")
+            DataError.Local.Unknown
         }
     }
 
