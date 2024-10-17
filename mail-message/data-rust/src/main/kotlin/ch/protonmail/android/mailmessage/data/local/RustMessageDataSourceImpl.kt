@@ -133,19 +133,13 @@ class RustMessageDataSourceImpl @Inject constructor(
     @MissingRustApi
     override suspend fun markRead(userId: UserId, messages: List<LocalMessageId>): Either<DataError.Local, Unit> {
         return try {
-            val session = userSessionRepository.getUserSession(userId)
-            if (session == null) {
-                Timber.e("rust-message: trying to mark message read with a null session")
+            val mailbox = rustMailbox.observeMailbox().firstOrNull()
+            if (mailbox == null) {
+                Timber.e("rust-message: trying to mark message read with a null mailbox")
                 return DataError.Local.Unknown.left()
             }
 
-            val currentLabelId = rustMailbox.observeCurrentLabelId().firstOrNull()
-            if (currentLabelId == null) {
-                Timber.e("rust-message: trying to mark message read with a null labelId")
-                return DataError.Local.Unknown.left()
-            }
-
-            rustMarkMessagesRead(session, currentLabelId, messages).right()
+            rustMarkMessagesRead(mailbox, messages).right()
         } catch (e: MailSessionException) {
             Timber.e(e, "rust-message: Failed to mark message read")
             DataError.Local.Unknown.left()
@@ -154,19 +148,13 @@ class RustMessageDataSourceImpl @Inject constructor(
 
     override suspend fun markUnread(userId: UserId, messages: List<LocalMessageId>): Either<DataError.Local, Unit> {
         return try {
-            val session = userSessionRepository.getUserSession(userId)
-            if (session == null) {
-                Timber.e("rust-message: trying to mark message unread with a null session")
-                return DataError.Local.Unknown.left()
+            val mailbox = rustMailbox.observeMailbox().firstOrNull()
+            if (mailbox == null) {
+                Timber.e("rust-message: trying to mark unread with null Mailbox! failing")
+                return DataError.Local.NoDataCached.left()
             }
 
-            val currentLabelId = rustMailbox.observeCurrentLabelId().firstOrNull()
-            if (currentLabelId == null) {
-                Timber.e("rust-message: trying to mark message unread with a null labelId")
-                return DataError.Local.Unknown.left()
-            }
-
-            rustMarkMessagesUnread(session, currentLabelId, messages).right()
+            rustMarkMessagesUnread(mailbox, messages).right()
         } catch (e: MailSessionException) {
             Timber.e(e, "rust-message: Failed to mark message unread")
             DataError.Local.Unknown.left()

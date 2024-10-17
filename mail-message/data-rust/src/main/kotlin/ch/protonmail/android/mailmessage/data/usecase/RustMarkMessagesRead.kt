@@ -18,17 +18,13 @@
 
 package ch.protonmail.android.mailmessage.data.usecase
 
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageId
-import uniffi.proton_mail_uniffi.MailUserSession
+import uniffi.proton_mail_uniffi.Mailbox
 import uniffi.proton_mail_uniffi.markMessagesRead
 import javax.inject.Inject
 
 class RustMarkMessagesRead @Inject constructor() {
 
-    suspend operator fun invoke(
-        mailUserSession: MailUserSession,
-        currentLabelId: LocalLabelId,
-        messageIds: List<LocalMessageId>
-    ) = markMessagesRead(mailUserSession, currentLabelId, messageIds)
+    suspend operator fun invoke(mailbox: Mailbox, messageIds: List<LocalMessageId>) =
+        markMessagesRead(mailbox, messageIds)
 }
