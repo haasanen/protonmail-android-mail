@@ -1894,7 +1894,7 @@ class MailboxViewModelTest {
         returnExpectedStateWhenEnterSelectionMode(initialState, item, intermediateState)
         returnExpectedStateForBottomBarEvent(expectedState = intermediateState)
         returnExpectedStateForDeleteConfirmed(intermediateState, initialState, ConversationGrouping, 2)
-        expectDeleteConversationsSucceeds(userId, listOf(item, secondItem), SystemLabelId.Trash.labelId)
+        expectDeleteConversationsSucceeds(userId, listOf(item, secondItem))
 
         mailboxViewModel.state.test {
             // Given
@@ -1917,8 +1917,7 @@ class MailboxViewModelTest {
             coVerify(exactly = 1) {
                 deleteConversations(
                     userId,
-                    listOf(ConversationId(item.id), ConversationId(secondItem.id)),
-                    SystemLabelId.Trash.labelId
+                    listOf(ConversationId(item.id), ConversationId(secondItem.id))
                 )
             }
             coVerify { deleteMessages wasNot Called }
@@ -3812,12 +3811,8 @@ class MailboxViewModelTest {
         coEvery { moveMessages(userId, items.map { MessageId(it.id) }, labelId) } returns Unit.right()
     }
 
-    private fun expectDeleteConversationsSucceeds(
-        userId: UserId,
-        items: List<MailboxItemUiModel>,
-        labelId: LabelId
-    ) {
-        coJustRun { deleteConversations(userId, items.map { ConversationId(it.id) }, labelId) }
+    private fun expectDeleteConversationsSucceeds(userId: UserId, items: List<MailboxItemUiModel>) {
+        coJustRun { deleteConversations(userId, items.map { ConversationId(it.id) }) }
     }
 
     private fun expectDeleteConversationsSucceeds(userId: UserId, labelId: LabelId) {

@@ -207,10 +207,7 @@ class RustConversationRepositoryImplTest {
         coEvery { rustConversationDataSource.markUnread(userId, any()) } just Runs
 
         // When
-        val result = rustConversationRepository.markUnread(
-            userId, conversationIds,
-            labelWithSystemLabelId.label.labelId
-        )
+        val result = rustConversationRepository.markUnread(userId, conversationIds)
 
         // Then
         coVerify { rustConversationDataSource.markUnread(userId, conversationIds.map { it.toLocalConversationId() }) }

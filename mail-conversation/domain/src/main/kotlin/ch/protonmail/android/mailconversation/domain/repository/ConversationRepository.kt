@@ -97,11 +97,7 @@ interface ConversationRepository {
         toLabelId: LabelId
     ): Either<DataError, List<Conversation>>
 
-    suspend fun markUnread(
-        userId: UserId,
-        conversationIds: List<ConversationId>,
-        contextLabelId: LabelId
-    ): Either<DataError, Unit>
+    suspend fun markUnread(userId: UserId, conversationIds: List<ConversationId>): Either<DataError, Unit>
 
     suspend fun markRead(userId: UserId, conversationIds: List<ConversationId>): Either<DataError, List<Conversation>>
 
@@ -123,11 +119,7 @@ interface ConversationRepository {
         labelsToBeAdded: List<LabelId>
     ): Either<DataError, List<Conversation>>
 
-    suspend fun deleteConversations(
-        userId: UserId,
-        conversationIds: List<ConversationId>,
-        contextLabelId: LabelId
-    ): Either<DataError, Unit>
+    suspend fun deleteConversations(userId: UserId, conversationIds: List<ConversationId>): Either<DataError, Unit>
 
     suspend fun deleteConversations(userId: UserId, labelId: LabelId)
 

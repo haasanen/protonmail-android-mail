@@ -20,7 +20,6 @@ package ch.protonmail.android.mailconversation.domain.usecase
 
 import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.sample.ConversationIdSample
-import ch.protonmail.android.maillabel.domain.sample.LabelIdSample
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.mailconversation.domain.repository.ConversationRepository
 import io.mockk.coEvery
@@ -33,7 +32,6 @@ class DeleteConversationsTest {
 
     private val userId = UserIdSample.Primary
     private val conversationIds = listOf(ConversationIdSample.Invoices, ConversationIdSample.WeatherForecast)
-    private val currentLabel = LabelIdSample.Trash
 
     private val conversationRepository = mockk<ConversationRepository>()
 
@@ -43,14 +41,14 @@ class DeleteConversationsTest {
     fun `delete conversations calls repository with given parameters`() = runTest {
         // Given
         coEvery {
-            conversationRepository.deleteConversations(userId, conversationIds, currentLabel)
+            conversationRepository.deleteConversations(userId, conversationIds)
         } returns Unit.right()
 
         // When
-        deleteConversations(userId, conversationIds, currentLabel)
+        deleteConversations(userId, conversationIds)
 
         // Then
-        coVerify { conversationRepository.deleteConversations(userId, conversationIds, currentLabel) }
+        coVerify { conversationRepository.deleteConversations(userId, conversationIds) }
     }
 
 }

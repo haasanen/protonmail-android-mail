@@ -795,7 +795,7 @@ class ConversationDetailViewModel @Inject constructor(
                 observableFlowScope.cancel()
 
                 emitNewStateFrom(action)
-                deleteConversations(userId, listOf(conversationId), currentDeletableLabel)
+                deleteConversations(userId, listOf(conversationId))
             }
 
         }

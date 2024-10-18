@@ -24,11 +24,8 @@ import ch.protonmail.android.mailcommon.domain.sample.ConversationIdSample
 import ch.protonmail.android.mailcommon.domain.sample.DataErrorSample
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.mailconversation.domain.repository.ConversationRepository
-import ch.protonmail.android.mailconversation.domain.sample.ConversationSample
-import ch.protonmail.android.maillabel.domain.SelectedMailLabelId
 import ch.protonmail.android.testdata.maillabel.MailLabelTestData
 import io.mockk.coEvery
-import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
@@ -41,20 +38,16 @@ class MarkConversationsAsUnreadTest {
     private val mailLabel = MailLabelTestData.archiveSystemLabel.id
 
     private val conversationRepository: ConversationRepository = mockk()
-    private val selectedMailLabelId: SelectedMailLabelId = mockk {
-        every { flow.value } returns mailLabel
-    }
 
     private val markUnread = MarkConversationsAsUnread(
-        conversationRepository,
-        selectedMailLabelId
+        conversationRepository
     )
 
     @Test
     fun `returns error when repository fails`() = runTest {
         // given
         val error = DataErrorSample.NoCache.left()
-        coEvery { conversationRepository.markUnread(userId, conversationIds, mailLabel.labelId) } returns error
+        coEvery { conversationRepository.markUnread(userId, conversationIds) } returns error
 
         // when
         val result = markUnread(userId, conversationIds)
@@ -66,8 +59,7 @@ class MarkConversationsAsUnreadTest {
     @Test
     fun `does not return error when repository succeeds`() = runTest {
         // given
-        val conversation = listOf(ConversationSample.WeatherForecast, ConversationSample.AlphaAppFeedback).right()
-        coEvery { conversationRepository.markUnread(userId, conversationIds, mailLabel.labelId) } returns Unit.right()
+        coEvery { conversationRepository.markUnread(userId, conversationIds) } returns Unit.right()
 
         // when
         val result = markUnread(userId, conversationIds)
