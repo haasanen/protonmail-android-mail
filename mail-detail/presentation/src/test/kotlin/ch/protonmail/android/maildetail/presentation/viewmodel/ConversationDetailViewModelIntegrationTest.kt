@@ -203,7 +203,6 @@ import me.proton.core.network.domain.NetworkManager
 import me.proton.core.network.domain.NetworkStatus
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
-import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
@@ -1249,7 +1248,6 @@ class ConversationDetailViewModelIntegrationTest {
     }
 
     @Test
-    @Ignore("MissingRustApi, see viewModel's handleDeleteConfirmed")
     fun `verify delete is executed when delete confirmed is called`() = runTest {
         // Given
         val expectedMessage = ActionResult.DefinitiveActionResult(TextUiModel(R.string.conversation_deleted))
@@ -1296,41 +1294,6 @@ class ConversationDetailViewModelIntegrationTest {
 
         // Then
         assertTrue("Long running scope is not active.") { longRunningScope.isActive }
-    }
-
-    @Test
-    fun `verify error is shown when getting conversation fails`() = runTest {
-        // Given
-        val expectedMessage = TextUiModel(R.string.error_delete_conversation_failed)
-        coEvery {
-            observeConversationUseCase(userId, conversationId)
-        } returns flowOf(DataError.Local.NoDataCached.left())
-
-        val viewModel = buildConversationDetailViewModel()
-
-        // When
-        viewModel.submit(ConversationDetailViewAction.DeleteConfirmed)
-        advanceUntilIdle()
-
-        // Then
-        coVerify { deleteConversations wasNot Called }
-        assertEquals(expectedMessage, viewModel.state.value.error.consume())
-    }
-
-    @Test
-    fun `verify error is shown when conversation is in wrong location `() = runTest {
-        // Given
-        val expectedMessage = TextUiModel(R.string.error_delete_conversation_failed_wrong_folder)
-
-        val viewModel = buildConversationDetailViewModel()
-
-        // When
-        viewModel.submit(ConversationDetailViewAction.DeleteConfirmed)
-        advanceUntilIdle()
-
-        // Then
-        coVerify { deleteConversations wasNot Called }
-        assertEquals(expectedMessage, viewModel.state.value.error.consume())
     }
 
     @Test

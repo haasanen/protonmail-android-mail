@@ -65,10 +65,6 @@ class ConversationDeleteDialogReducerTest(
             TestInput(
                 operation = ConversationDetailEvent.ErrorDeletingConversation,
                 expectedState = DeleteDialogState.Hidden
-            ),
-            TestInput(
-                operation = ConversationDetailEvent.ErrorDeletingNoApplicableFolder,
-                expectedState = DeleteDialogState.Hidden
             )
         )
 

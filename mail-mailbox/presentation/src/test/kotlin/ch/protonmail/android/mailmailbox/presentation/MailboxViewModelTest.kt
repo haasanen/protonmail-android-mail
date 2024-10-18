@@ -69,9 +69,9 @@ import ch.protonmail.android.mailmailbox.domain.model.MailboxItemType.Message
 import ch.protonmail.android.mailmailbox.domain.model.OpenMailboxItemRequest
 import ch.protonmail.android.mailmailbox.domain.model.StorageLimitPreference
 import ch.protonmail.android.mailmailbox.domain.model.UserAccountStorageStatus
+import ch.protonmail.android.mailmailbox.domain.usecase.GetBottomBarActions
 import ch.protonmail.android.mailmailbox.domain.usecase.GetBottomSheetActions
 import ch.protonmail.android.mailmailbox.domain.usecase.GetLabelAsBottomSheetContent
-import ch.protonmail.android.mailmailbox.domain.usecase.GetBottomBarActions
 import ch.protonmail.android.mailmailbox.domain.usecase.GetMoveToLocations
 import ch.protonmail.android.mailmailbox.domain.usecase.ObserveCurrentViewMode
 import ch.protonmail.android.mailmailbox.domain.usecase.ObservePrimaryUserAccountStorageStatus
@@ -3812,7 +3812,7 @@ class MailboxViewModelTest {
     }
 
     private fun expectDeleteConversationsSucceeds(userId: UserId, items: List<MailboxItemUiModel>) {
-        coJustRun { deleteConversations(userId, items.map { ConversationId(it.id) }) }
+        coEvery { deleteConversations(userId, items.map { ConversationId(it.id) }) } returns Unit.right()
     }
 
     private fun expectDeleteConversationsSucceeds(userId: UserId, labelId: LabelId) {
@@ -3824,7 +3824,7 @@ class MailboxViewModelTest {
         items: List<MailboxItemUiModel>,
         labelId: LabelId
     ) {
-        coJustRun { deleteMessages(userId, items.map { MessageId(it.id) }, labelId) }
+        coEvery { deleteMessages(userId, items.map { MessageId(it.id) }, labelId) } returns Unit.right()
     }
 
     private fun expectDeleteMessagesSucceeds(userId: UserId, labelId: LabelId) {

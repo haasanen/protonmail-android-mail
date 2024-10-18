@@ -144,6 +144,7 @@ private fun callbackForConversation(
     Action.Label -> actionCallbacks.onLabelConversation
     Action.Trash -> actionCallbacks.onMoveToTrashConversation
     Action.Archive -> actionCallbacks.onMoveToArchiveConversation
+    Action.Delete -> actionCallbacks.onDeleteConversation
     Action.Spam -> actionCallbacks.onMoveToSpamConversation
     Action.Move -> actionCallbacks.onMoveConversation
     Action.Print -> actionCallbacks.onPrintConversation
@@ -198,6 +199,7 @@ object DetailMoreActionsBottomSheetContent {
         val onLabelConversation: () -> Unit,
         val onMoveToTrashConversation: () -> Unit,
         val onMoveToArchiveConversation: () -> Unit,
+        val onDeleteConversation: () -> Unit,
         val onMoveToSpamConversation: () -> Unit,
         val onMoveConversation: () -> Unit,
         val onPrintConversation: () -> Unit
@@ -246,6 +248,7 @@ private fun BottomSheetContentPreview() {
                 onMoveToArchiveConversation = {},
                 onMoveToSpamConversation = {},
                 onMoveConversation = {},
+                onDeleteConversation = {},
                 onPrintConversation = {}
             )
         )

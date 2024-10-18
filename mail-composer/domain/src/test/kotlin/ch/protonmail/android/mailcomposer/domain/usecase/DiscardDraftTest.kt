@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.mailcomposer.domain.usecase
 
+import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.mailcomposer.domain.repository.DraftRepository
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
@@ -80,7 +81,7 @@ class DiscardDraftTest {
         messageId: MessageId,
         labelId: LabelId
     ) {
-        coEvery { deleteMessages(userId, listOf(messageId), labelId) } returns Unit
+        coEvery { deleteMessages(userId, listOf(messageId), labelId) } returns Unit.right()
     }
 
 }

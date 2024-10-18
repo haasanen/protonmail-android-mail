@@ -90,7 +90,6 @@ sealed interface ConversationDetailEvent : ConversationDetailOperation {
     object ErrorGettingAttachmentNotEnoughSpace : ConversationDetailEvent, AffectingErrorBar
     object ErrorAttachmentDownloadInProgress : ConversationDetailEvent, AffectingErrorBar
     object ErrorDeletingConversation : ConversationDetailEvent, AffectingErrorBar, AffectingDeleteDialog
-    object ErrorDeletingNoApplicableFolder : ConversationDetailEvent, AffectingErrorBar, AffectingDeleteDialog
 
     data class ExpandDecryptedMessage(
         val messageId: MessageIdUiModel,

@@ -275,8 +275,7 @@ class ConversationDetailReducerTest(
                 MessageIdUiModel(UUID.randomUUID().toString())
             ) affects listOf(ErrorBar, Messages),
             ConversationDetailEvent.ErrorGettingAttachment affects ErrorBar,
-            ConversationDetailEvent.ErrorDeletingConversation affects listOf(ErrorBar, DeleteDialog),
-            ConversationDetailEvent.ErrorDeletingNoApplicableFolder affects listOf(ErrorBar, DeleteDialog)
+            ConversationDetailEvent.ErrorDeletingConversation affects listOf(ErrorBar, DeleteDialog)
         )
 
         @JvmStatic

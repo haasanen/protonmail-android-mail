@@ -245,6 +245,7 @@ fun ConversationDetailScreen(
                         onMoveConversation = {
                             viewModel.submit(ConversationDetailViewAction.RequestMoveToBottomSheet)
                         },
+                        onDeleteConversation = { viewModel.submit(ConversationDetailViewAction.DeleteRequested) },
 
                         onMoveToArchiveConversation = { Timber.d("Archive not implemented for conversation") },
                         onMoveToSpamConversation = { Timber.d("Spam not implemented for conversation") },

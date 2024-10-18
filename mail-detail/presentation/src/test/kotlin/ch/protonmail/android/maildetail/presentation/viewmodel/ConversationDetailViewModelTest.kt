@@ -103,6 +103,7 @@ import ch.protonmail.android.mailmessage.domain.model.MimeType
 import ch.protonmail.android.mailmessage.domain.model.Participant
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
 import ch.protonmail.android.mailmessage.domain.sample.MessageSample
+import ch.protonmail.android.mailmessage.domain.usecase.DeleteMessages
 import ch.protonmail.android.mailmessage.domain.usecase.GetDecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.usecase.GetMessageMoveToLocations
 import ch.protonmail.android.mailmessage.presentation.model.MessageBodyExpandCollapseMode
@@ -291,6 +292,7 @@ class ConversationDetailViewModelTest {
     private val getMoreActionsBottomSheetData = mockk<GetMoreActionsBottomSheetData>()
     private val onMessageLabelAsConfirmed = mockk<OnMessageLabelAsConfirmed>()
     private val moveMessage = mockk<MoveMessage>()
+    private val deleteMessages = mockk<DeleteMessages>()
 
     private val testDispatcher: TestDispatcher by lazy {
         StandardTestDispatcher().apply { Dispatchers.setMain(this) }
@@ -342,6 +344,7 @@ class ConversationDetailViewModelTest {
             onMessageLabelAsConfirmed = onMessageLabelAsConfirmed,
             moveMessage = moveMessage,
             observableFlowScope = observableFlowScope,
+            deleteMessages = deleteMessages,
             appScope = longRunningScope
         )
     }

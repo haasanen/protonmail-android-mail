@@ -769,34 +769,15 @@ class ConversationDetailViewModel @Inject constructor(
         }.launchIn(viewModelScope)
     }
 
-    @MissingRustApi
-    // Need conversation model to expose "exclusive location" in a way that it can be mapped
-    // back to deleteConversation as a labelId. Rust will perform checks to see "isDeletable"
     private fun handleDeleteConfirmed(action: ConversationDetailViewAction) {
         appScope.launch {
-            val userId = primaryUserId.first()
-            val conversation = observeConversation(userId, conversationId).first().getOrNull()
-            if (conversation == null) {
-                Timber.e("Failed to get conversation for deletion")
-                emitNewStateFrom(ConversationDetailEvent.ErrorDeletingConversation)
-                return@launch
-            }
+            // We manually cancel the Observer Scope since the following deletion calls cause all the observers
+            // to emit, which could lead to race conditions as the observers re-insert the conversation and/or
+            // the messages in the DB on late changes, making the entry still re-appear in the mailbox list.
+            observableFlowScope.cancel()
 
-            val currentDeletableLabel: LabelId? = null
-
-            if (currentDeletableLabel == null) {
-                Timber.e("Failed to delete conversation: no applicable folder")
-                emitNewStateFrom(ConversationDetailEvent.ErrorDeletingNoApplicableFolder)
-                return@launch
-            } else {
-                // We manually cancel the Observer Scope since the following deletion calls cause all the observers
-                // to emit, which could lead to race conditions as the observers re-insert the conversation and/or
-                // the messages in the DB on late changes, making the entry still re-appear in the mailbox list.
-                observableFlowScope.cancel()
-
-                emitNewStateFrom(action)
-                deleteConversations(userId, listOf(conversationId))
-            }
+            emitNewStateFrom(action)
+            deleteConversations(primaryUserId.first(), listOf(conversationId))
 
         }
     }

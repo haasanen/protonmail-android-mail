@@ -31,7 +31,6 @@ class ConversationDeleteDialogReducer @Inject constructor() {
     internal fun newStateFrom(operation: AffectingDeleteDialog) = when (operation) {
         ConversationDetailViewAction.DeleteRequested -> newStateFromDeleteRequested()
         ConversationDetailEvent.ErrorDeletingConversation,
-        ConversationDetailEvent.ErrorDeletingNoApplicableFolder,
         ConversationDetailViewAction.DeleteConfirmed,
         ConversationDetailViewAction.DeleteDialogDismissed -> DeleteDialogState.Hidden
     }
