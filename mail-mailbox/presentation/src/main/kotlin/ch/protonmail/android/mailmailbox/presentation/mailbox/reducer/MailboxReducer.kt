@@ -185,6 +185,7 @@ class MailboxReducer @Inject constructor(
                 is MailboxEvent.ErrorRetrievingCustomMailLabels,
                 is MailboxEvent.ErrorRetrievingFolderColorSettings,
                 is MailboxEvent.ErrorRetrievingDestinationMailFolders,
+                is MailboxEvent.DeleteConfirmed,
                 is MailboxViewAction.MoveToConfirmed,
                 is MailboxViewAction.LabelAsConfirmed,
                 is MailboxViewAction.Star,
