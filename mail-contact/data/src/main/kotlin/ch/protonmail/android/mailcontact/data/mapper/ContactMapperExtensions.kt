@@ -36,7 +36,7 @@ fun LocalContactEmail.toContactEmail(contactId: ContactId): ContactEmail {
         name = "",
         email = this.email,
         defaults = 0,
-        order=0,
+        order = 0,
         contactId = contactId,
         canonicalEmail = "",
         labelIds = emptyList(),

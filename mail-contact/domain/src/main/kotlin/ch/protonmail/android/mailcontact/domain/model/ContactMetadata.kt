@@ -19,7 +19,6 @@
 package ch.protonmail.android.mailcontact.domain.model
 
 import ch.protonmail.android.mailcommon.domain.model.AvatarInformation
-import me.proton.core.domain.entity.UserId
 
 sealed interface ContactMetadata {
 
@@ -27,7 +26,6 @@ sealed interface ContactMetadata {
     val emails: List<ContactEmail>
 
     data class Contact(
-        val userId: UserId,
         val id: ContactId,
         val avatar: AvatarInformation,
         override val name: String,

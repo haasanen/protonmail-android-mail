@@ -20,7 +20,6 @@ package ch.protonmail.android.testdata.contact
 
 import ch.protonmail.android.mailcommon.domain.sample.AvatarInformationSample
 import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
-import ch.protonmail.android.testdata.user.UserIdTestData
 
 object ContactSample {
 
@@ -28,7 +27,6 @@ object ContactSample {
         emails = emptyList(),
         id = ContactIdSample.Doe,
         name = "Doe",
-        userId = UserIdTestData.Primary,
         avatar = AvatarInformationSample.avatarSample
     )
 
@@ -36,7 +34,6 @@ object ContactSample {
         emails = emptyList(),
         id = ContactIdSample.John,
         name = "John",
-        userId = UserIdTestData.Primary,
         avatar = AvatarInformationSample.avatarSample
     )
 
@@ -47,7 +44,6 @@ object ContactSample {
         ),
         id = ContactIdSample.Mario,
         name = "Mario",
-        userId = UserIdTestData.Primary,
         avatar = AvatarInformationSample.avatarSample
     )
 
@@ -55,7 +51,6 @@ object ContactSample {
         emails = listOf(ContactEmailSample.contactEmail3),
         id = ContactIdSample.Stefano,
         name = "Stefano",
-        userId = UserIdTestData.Primary,
         avatar = AvatarInformationSample.avatarSample
     )
 
@@ -63,7 +58,6 @@ object ContactSample {
         emails = listOf(ContactEmailSample.contactEmail4),
         id = ContactIdSample.Francesco,
         name = "Francesco",
-        userId = UserIdTestData.Primary,
         avatar = AvatarInformationSample.avatarSample
     )
 }

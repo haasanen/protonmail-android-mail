@@ -30,14 +30,12 @@ object ContactTestData {
 
     val contact1 =
         ContactMetadata.Contact(
-            userId = UserIdTestData.userId,
             id = ContactIdTestData.contactId1,
             name = "first contact",
             emails = emptyList(),
             avatar = AvatarInformationSample.avatarSample
         )
     val contact2 = ContactMetadata.Contact(
-        userId = UserIdTestData.userId,
         id = ContactIdTestData.contactId2,
         name = "second contact",
         emails = emptyList(),
@@ -55,7 +53,6 @@ object ContactTestData {
         contactEmails: List<ContactEmail>,
         name: String? = null
     ) = ContactMetadata.Contact(
-        userId = userId,
         id = contactId,
         name = name ?: "contact name",
         emails = contactEmails,

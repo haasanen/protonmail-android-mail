@@ -21,13 +21,11 @@ package ch.protonmail.android.mailcontact.data.mapper
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalContactItemTypeContact
 import ch.protonmail.android.mailcommon.domain.model.AvatarInformation
 import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
-import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 
 class ContactItemMapper @Inject constructor() {
     fun toContact(localContactItem: LocalContactItemTypeContact): ContactMetadata.Contact {
         return ContactMetadata.Contact(
-            userId = UserId(""),
             id = localContactItem.v1.id.toContactId(),
             name = localContactItem.v1.name,
             emails = localContactItem.v1.emails.map { localEmail ->

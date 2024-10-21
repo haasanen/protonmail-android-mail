@@ -19,7 +19,6 @@
 package ch.protonmail.android.mailcontact.data.repository
 
 import arrow.core.Either
-import arrow.core.right
 import ch.protonmail.android.mailcontact.data.local.RustContactDataSource
 import ch.protonmail.android.mailcontact.domain.model.ContactCard
 import ch.protonmail.android.mailcontact.domain.model.ContactEmail
@@ -30,7 +29,6 @@ import ch.protonmail.android.mailcontact.domain.model.GetContactError
 import ch.protonmail.android.mailcontact.domain.model.GroupedContacts
 import ch.protonmail.android.mailcontact.domain.repository.ContactRepository
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOf
 import me.proton.core.domain.arch.DataResult
 import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
