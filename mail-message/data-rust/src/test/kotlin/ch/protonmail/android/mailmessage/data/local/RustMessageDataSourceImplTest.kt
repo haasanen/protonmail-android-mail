@@ -31,6 +31,7 @@ import ch.protonmail.android.mailmessage.data.usecase.GetRustAvailableMessageAct
 import ch.protonmail.android.mailmessage.data.usecase.GetRustMessageLabelAsActions
 import ch.protonmail.android.mailmessage.data.usecase.GetRustMessageMoveToActions
 import ch.protonmail.android.mailmessage.data.usecase.GetRustSenderImage
+import ch.protonmail.android.mailmessage.data.usecase.RustDeleteMessages
 import ch.protonmail.android.mailmessage.data.usecase.RustMarkMessagesRead
 import ch.protonmail.android.mailmessage.data.usecase.RustMarkMessagesUnread
 import ch.protonmail.android.mailmessage.data.usecase.RustStarMessages
@@ -84,6 +85,7 @@ class RustMessageDataSourceImplTest {
     private val rustStarMessages = mockk<RustStarMessages>()
     private val rustUnstarMessages = mockk<RustUnstarMessages>()
     private val getRustAllBottomBarActions = mockk<GetRustAllMessageBottomBarActions>()
+    private val rustDeleteMessages = mockk<RustDeleteMessages>()
     private val getRustAvailableMessageActions = mockk<GetRustAvailableMessageActions>()
     private val getRustMessageMoveToActions = mockk<GetRustMessageMoveToActions>()
     private val getRustMessageLabelAsActions = mockk<GetRustMessageLabelAsActions>()
@@ -101,6 +103,7 @@ class RustMessageDataSourceImplTest {
         rustStarMessages,
         rustUnstarMessages,
         getRustAllBottomBarActions,
+        rustDeleteMessages,
         getRustAvailableMessageActions,
         getRustMessageMoveToActions,
         getRustMessageLabelAsActions
@@ -559,6 +562,39 @@ class RustMessageDataSourceImplTest {
 
         // Then
         assertEquals(expected.left(), result)
+    }
+
+    @Test
+    fun `should not delete messages when mailbox is not available`() = runTest {
+        // Given
+        val userId = UserIdTestData.userId
+        val messageIds = listOf(LocalMessageId(1uL), LocalMessageId(2uL))
+
+        coEvery { rustMailbox.observeMailbox() } returns flowOf()
+
+        // When
+        val result = dataSource.deleteMessages(userId, messageIds)
+
+        // Then
+        assertTrue(result.isLeft())
+        verify { rustDeleteMessages wasNot Called }
+    }
+
+    @Test
+    fun `should handle exception when deleting messages`() = runTest {
+        // Given
+        val userId = UserIdTestData.userId
+        val mailbox = mockk<Mailbox>()
+        val messageIds = listOf(LocalMessageId(1uL), LocalMessageId(2uL))
+
+        coEvery { rustMarkMessagesUnread(mailbox, messageIds) } throws MailSessionException.Other("Error")
+        coEvery { rustMailbox.observeMailbox() } returns flowOf(mailbox)
+
+        // When
+        val result = dataSource.deleteMessages(userId, messageIds)
+
+        // Then
+        assertEquals(DataError.Local.Unknown.left(), result)
     }
 
 }
