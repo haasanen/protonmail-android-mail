@@ -22,9 +22,12 @@ import uniffi.proton_mail_uniffi.AttachmentMetadata
 import uniffi.proton_mail_uniffi.AvatarInformation
 import uniffi.proton_mail_uniffi.ComposerDirection
 import uniffi.proton_mail_uniffi.ComposerMode
+import uniffi.proton_mail_uniffi.ContactEmailItem
+import uniffi.proton_mail_uniffi.ContactItemType
 import uniffi.proton_mail_uniffi.Conversation
 import uniffi.proton_mail_uniffi.DecryptedMessage
 import uniffi.proton_mail_uniffi.ExclusiveLocation
+import uniffi.proton_mail_uniffi.GroupedContacts
 import uniffi.proton_mail_uniffi.Id
 import uniffi.proton_mail_uniffi.LabelAsAction
 import uniffi.proton_mail_uniffi.MailSettings
@@ -67,4 +70,11 @@ typealias LocalExclusiveLocation = ExclusiveLocation
 typealias LocalExclusiveLocationSystem = ExclusiveLocation.System
 typealias LocalExclusiveLocationCustom = ExclusiveLocation.Custom
 typealias LocalLabelAsAction = LabelAsAction
+typealias LocalGroupedContacts = GroupedContacts
+typealias LocalContactId = Id
+typealias LocalContactGroupId = Id
+typealias LocalContactEmail = ContactEmailItem
+typealias LocalContactItemType = ContactItemType
+typealias LocalContactItemTypeContact = ContactItemType.Contact
+typealias LocalContactItemTypeGroup = ContactItemType.Group
 
