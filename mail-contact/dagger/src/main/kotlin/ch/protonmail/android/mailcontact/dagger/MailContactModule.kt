@@ -22,6 +22,8 @@ import ch.protonmail.android.mailcontact.data.ContactDetailRepositoryImpl
 import ch.protonmail.android.mailcontact.data.ContactGroupRepositoryImpl
 import ch.protonmail.android.mailcontact.data.DeviceContactsRepositoryImpl
 import ch.protonmail.android.mailcontact.data.DeviceContactsSuggestionsPromptImpl
+import ch.protonmail.android.mailcontact.data.local.RustContactDataSource
+import ch.protonmail.android.mailcontact.data.local.RustContactDataSourceImpl
 import ch.protonmail.android.mailcontact.data.repository.ContactRepositoryImpl
 import ch.protonmail.android.mailcontact.domain.DeviceContactsSuggestionsPrompt
 import ch.protonmail.android.mailcontact.domain.repository.ContactDetailRepository
@@ -38,6 +40,10 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class MailContactModule {
+
+    @Binds
+    @Reusable
+    abstract fun bindRustContactDataSource(impl: RustContactDataSourceImpl): RustContactDataSource
 
     @Binds
     @Reusable
