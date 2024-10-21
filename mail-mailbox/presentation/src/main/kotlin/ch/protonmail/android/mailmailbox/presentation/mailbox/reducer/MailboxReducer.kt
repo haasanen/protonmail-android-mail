@@ -186,6 +186,7 @@ class MailboxReducer @Inject constructor(
                 is MailboxEvent.ErrorRetrievingFolderColorSettings,
                 is MailboxEvent.ErrorRetrievingDestinationMailFolders,
                 is MailboxEvent.DeleteConfirmed,
+                is MailboxEvent.ErrorDeleting,
                 is MailboxViewAction.MoveToConfirmed,
                 is MailboxViewAction.LabelAsConfirmed,
                 is MailboxViewAction.Star,
@@ -213,6 +214,7 @@ class MailboxReducer @Inject constructor(
                 is MailboxEvent.ErrorRetrievingDestinationMailFolders -> R.string.mailbox_action_move_messages_failed
                 is MailboxEvent.ErrorRetrievingFolderColorSettings ->
                     R.string.mailbox_action_failed_retrieving_colors
+                is MailboxEvent.ErrorDeleting -> R.string.mailbox_action_delete_failed
             }
             Effect.of(TextUiModel(textResource))
         } else {

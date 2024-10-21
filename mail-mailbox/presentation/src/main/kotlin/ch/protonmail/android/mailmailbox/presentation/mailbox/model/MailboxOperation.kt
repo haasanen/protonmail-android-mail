@@ -232,6 +232,7 @@ internal sealed interface MailboxEvent : MailboxOperation {
         val bottomSheetOperation: BottomSheetOperation
     ) : MailboxEvent, AffectingBottomSheet
 
+    object ErrorDeleting : MailboxEvent, AffectingErrorBar, AffectingDeleteDialog, AffectingBottomSheet
     object ErrorLabeling : MailboxEvent, AffectingErrorBar
     object ErrorRetrievingCustomMailLabels : MailboxEvent, AffectingErrorBar, AffectingBottomSheet
     object ErrorRetrievingFolderColorSettings : MailboxEvent, AffectingErrorBar, AffectingBottomSheet

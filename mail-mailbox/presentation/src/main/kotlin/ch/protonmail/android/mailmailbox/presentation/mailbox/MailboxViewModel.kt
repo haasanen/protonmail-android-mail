@@ -1017,8 +1017,11 @@ class MailboxViewModel @Inject constructor(
                     currentLabelId = selectionModeDataState.currentMailLabel.id.labelId
                 )
             }
+        }.onLeft {
+            emitNewStateFrom(MailboxEvent.ErrorDeleting)
+        }.onRight {
+            emitNewStateFrom(MailboxEvent.DeleteConfirmed(viewMode, selectionModeDataState.selectedMailboxItems.size))
         }
-        emitNewStateFrom(MailboxEvent.DeleteConfirmed(viewMode, selectionModeDataState.selectedMailboxItems.size))
     }
 
     private fun handleClearAllDialogDismissed(viewAction: MailboxViewAction) {
