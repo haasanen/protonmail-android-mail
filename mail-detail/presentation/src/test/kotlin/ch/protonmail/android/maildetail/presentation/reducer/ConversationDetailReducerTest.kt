@@ -216,7 +216,8 @@ class ConversationDetailReducerTest(
             ConversationDetailViewAction.RequestScrollTo(messageId) affects MessageScroll,
             ConversationDetailViewAction.DeleteConfirmed affects listOf(
                 DeleteDialog,
-                ExitWithResult(DefinitiveActionResult(TextUiModel(string.conversation_deleted)))
+                ExitWithResult(DefinitiveActionResult(TextUiModel(string.conversation_deleted))),
+                BottomSheet
             ),
             ConversationDetailViewAction.SwitchViewMode(
                 MessageId(messageId.id), ViewModePreference.LightMode

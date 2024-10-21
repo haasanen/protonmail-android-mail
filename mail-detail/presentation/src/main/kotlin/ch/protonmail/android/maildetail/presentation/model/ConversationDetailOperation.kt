@@ -143,7 +143,7 @@ sealed interface ConversationDetailViewAction : ConversationDetailOperation {
     object Trash : ConversationDetailViewAction
     object DeleteRequested : ConversationDetailViewAction, AffectingDeleteDialog
     object DeleteDialogDismissed : ConversationDetailViewAction, AffectingDeleteDialog
-    object DeleteConfirmed : ConversationDetailViewAction, AffectingDeleteDialog
+    object DeleteConfirmed : ConversationDetailViewAction, AffectingDeleteDialog, AffectingBottomSheet
     object RequestMoveToBottomSheet : ConversationDetailViewAction, AffectingBottomSheet
     object DismissBottomSheet : ConversationDetailViewAction, AffectingBottomSheet
     data class MoveToDestinationSelected(
