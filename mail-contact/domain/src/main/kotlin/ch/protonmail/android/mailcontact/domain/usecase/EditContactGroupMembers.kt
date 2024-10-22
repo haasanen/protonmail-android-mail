@@ -19,16 +19,15 @@
 package ch.protonmail.android.mailcontact.domain.usecase
 
 import arrow.core.Either
-import arrow.core.getOrElse
-import arrow.core.raise.either
+import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcontact.domain.repository.ContactGroupRepository
-import kotlinx.coroutines.flow.first
 import ch.protonmail.android.mailcontact.domain.model.ContactEmailId
 import ch.protonmail.android.mailcontact.domain.model.ContactGroupId
 import me.proton.core.domain.entity.UserId
-import timber.log.Timber
 import javax.inject.Inject
 
+@Suppress("NotImplementedDeclaration")
+@MissingRustApi
 class EditContactGroupMembers @Inject constructor(
     private val observeContactGroup: ObserveContactGroup,
     private val contactGroupRepository: ContactGroupRepository
@@ -38,38 +37,8 @@ class EditContactGroupMembers @Inject constructor(
         userId: UserId,
         contactGroupId: ContactGroupId,
         contactEmailIds: Set<ContactEmailId>
-    ): Either<EditContactGroupMembersError, Unit> = either {
-
-        val contactGroup = observeContactGroup(userId, contactGroupId).first().getOrElse {
-            Timber.e("Error while observing contact group by id in EditContactGroupMembers")
-            raise(EditContactGroupMembersError.ObservingContactGroup)
-        }
-
-        val groupContactEmailIds = contactGroup.emails.map { it.id }.toSet()
-        val contactEmailIdsToAdd = contactEmailIds.subtract(groupContactEmailIds)
-        val contactEmailIdsToRemove = groupContactEmailIds.subtract(contactEmailIds)
-
-        if (contactEmailIdsToAdd.isNotEmpty()) {
-            contactGroupRepository.addContactEmailIdsToContactGroup(
-                userId,
-                contactGroupId,
-                contactEmailIdsToAdd
-            ).onLeft {
-                Timber.e("Error while adding Members in EditContactGroupMembers")
-                raise(EditContactGroupMembersError.AddingContactsToGroup)
-            }
-        }
-
-        if (contactEmailIdsToRemove.isNotEmpty()) {
-            contactGroupRepository.removeContactEmailIdsFromContactGroup(
-                userId,
-                contactGroupId,
-                contactEmailIdsToRemove
-            ).onLeft {
-                Timber.e("Error while removing Members in EditContactGroupMembers")
-                raise(EditContactGroupMembersError.RemovingContactsFromGroup)
-            }
-        }
+    ): Either<EditContactGroupMembersError, Unit> {
+        TODO("Not yet implemented")
     }
 
     sealed interface EditContactGroupMembersError {
