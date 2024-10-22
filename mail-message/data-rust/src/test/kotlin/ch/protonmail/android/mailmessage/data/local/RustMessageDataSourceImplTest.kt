@@ -56,9 +56,9 @@ import uniffi.proton_mail_uniffi.MailUserSession
 import uniffi.proton_mail_uniffi.Mailbox
 import uniffi.proton_mail_uniffi.MailboxException
 import uniffi.proton_mail_uniffi.MessageAvailableActions
+import uniffi.proton_mail_uniffi.MovableSystemFolder
+import uniffi.proton_mail_uniffi.MovableSystemFolderAction
 import uniffi.proton_mail_uniffi.MoveAction
-import uniffi.proton_mail_uniffi.SystemFolderAction
-import uniffi.proton_mail_uniffi.SystemLabel
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
@@ -448,7 +448,7 @@ class RustMessageDataSourceImplTest {
         val labelId = LocalLabelId(1uL)
         val mailbox = mockk<Mailbox>()
         val messageIds = listOf(LocalMessageIdSample.AugWeatherForecast)
-        val archive = SystemFolderAction(Id(2uL), SystemLabel.ARCHIVE, IsSelected.UNSELECTED)
+        val archive = MovableSystemFolderAction(Id(2uL), MovableSystemFolder.ARCHIVE, IsSelected.UNSELECTED)
         val customFolder = CustomFolderAction(
             Id(100uL),
             "custom",

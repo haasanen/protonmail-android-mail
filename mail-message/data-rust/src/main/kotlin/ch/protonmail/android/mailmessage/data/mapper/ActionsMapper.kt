@@ -33,10 +33,10 @@ import uniffi.proton_mail_uniffi.GeneralActions
 import uniffi.proton_mail_uniffi.IsSelected
 import uniffi.proton_mail_uniffi.MessageAction
 import uniffi.proton_mail_uniffi.MessageAvailableActions
+import uniffi.proton_mail_uniffi.MovableSystemFolder
+import uniffi.proton_mail_uniffi.MovableSystemFolderAction
 import uniffi.proton_mail_uniffi.MoveAction
 import uniffi.proton_mail_uniffi.ReplyAction
-import uniffi.proton_mail_uniffi.SystemFolderAction
-import uniffi.proton_mail_uniffi.SystemLabel
 
 fun List<LocalLabelAsAction>.toLabelAsActions(): LabelAsActions {
     val labels = this.map { it.toLabel() }
@@ -88,27 +88,12 @@ fun List<ReplyAction>.replyActionsToActions() = this.map { replyAction ->
     }
 }
 
-fun List<SystemFolderAction>.systemFolderActionsToActions() = this.map { moveAction ->
+fun List<MovableSystemFolderAction>.systemFolderActionsToActions() = this.map { moveAction ->
     when (moveAction.name) {
-        SystemLabel.TRASH -> Action.Trash
-        SystemLabel.SPAM -> Action.Spam
-        SystemLabel.ARCHIVE -> Action.Archive
-        SystemLabel.INBOX,
-        SystemLabel.ALL_DRAFTS,
-        SystemLabel.ALL_SENT,
-        SystemLabel.ALL_MAIL,
-        SystemLabel.SENT,
-        SystemLabel.DRAFTS,
-        SystemLabel.OUTBOX,
-        SystemLabel.STARRED,
-        SystemLabel.SCHEDULED,
-        SystemLabel.ALMOST_ALL_MAIL,
-        SystemLabel.SNOOZED,
-        SystemLabel.CATEGORY_SOCIAL,
-        SystemLabel.CATEGORY_PROMOTIONS,
-        SystemLabel.CATERGORY_UPDATES,
-        SystemLabel.CATEGORY_FORUMS,
-        SystemLabel.CATEGORY_DEFAULT -> {
+        MovableSystemFolder.TRASH -> Action.Trash
+        MovableSystemFolder.SPAM -> Action.Spam
+        MovableSystemFolder.ARCHIVE -> Action.Archive
+        MovableSystemFolder.INBOX -> {
             Timber.i("rust-message: Found unhandled action while mapping: $moveAction")
             null
         }
@@ -118,6 +103,7 @@ fun List<SystemFolderAction>.systemFolderActionsToActions() = this.map { moveAct
 fun List<GeneralActions>.generalActionsToActions() = this.map { generalAction ->
     when (generalAction) {
         GeneralActions.VIEW_MESSAGE_IN_LIGHT_MODE -> Action.ViewInLightMode
+        GeneralActions.VIEW_MESSAGE_IN_DARK_MODE -> Action.ViewInDarkMode
         GeneralActions.SAVE_AS_PDF -> Action.SavePdf
         GeneralActions.PRINT -> Action.Print
         GeneralActions.VIEW_HEADERS -> Action.ViewHeaders

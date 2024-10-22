@@ -43,10 +43,10 @@ import uniffi.proton_mail_uniffi.Id
 import uniffi.proton_mail_uniffi.IsSelected
 import uniffi.proton_mail_uniffi.MessageAction
 import uniffi.proton_mail_uniffi.MessageAvailableActions
+import uniffi.proton_mail_uniffi.MovableSystemFolder
+import uniffi.proton_mail_uniffi.MovableSystemFolderAction
 import uniffi.proton_mail_uniffi.MoveAction
 import uniffi.proton_mail_uniffi.ReplyAction
-import uniffi.proton_mail_uniffi.SystemFolderAction
-import uniffi.proton_mail_uniffi.SystemLabel
 import kotlin.test.assertEquals
 
 class RustMessageActionRepositoryTest {
@@ -65,8 +65,8 @@ class RustMessageActionRepositoryTest {
             listOf(ReplyAction.REPLY, ReplyAction.FORWARD),
             listOf(MessageAction.STAR, MessageAction.LABEL_AS),
             listOf(
-                SystemFolderAction(Id(5uL), SystemLabel.SPAM, IsSelected.UNSELECTED),
-                SystemFolderAction(Id(10uL), SystemLabel.ARCHIVE, IsSelected.UNSELECTED)
+                MovableSystemFolderAction(Id(5uL), MovableSystemFolder.SPAM, IsSelected.UNSELECTED),
+                MovableSystemFolderAction(Id(10uL), MovableSystemFolder.ARCHIVE, IsSelected.UNSELECTED)
             ),
             listOf(GeneralActions.VIEW_HEADERS)
         )
@@ -123,10 +123,7 @@ class RustMessageActionRepositoryTest {
         val rustAvailableActions = MessageAvailableActions(
             listOf(ReplyAction.REPLY_ALL),
             listOf(MessageAction.PIN),
-            listOf(
-                SystemFolderAction(Id(5uL), SystemLabel.ALL_DRAFTS, IsSelected.UNSELECTED),
-                SystemFolderAction(Id(10uL), SystemLabel.INBOX, IsSelected.UNSELECTED)
-            ),
+            listOf(MovableSystemFolderAction(Id(10uL), MovableSystemFolder.INBOX, IsSelected.UNSELECTED)),
             emptyList()
         )
 
@@ -158,8 +155,12 @@ class RustMessageActionRepositoryTest {
         val labelId = SystemLabelId.Inbox.labelId
         val messageIds = listOf(MessageId("1"))
         val rustMoveToActions = listOf(
-            MoveAction.SystemFolder(SystemFolderAction(Id(2uL), SystemLabel.ARCHIVE, IsSelected.UNSELECTED)),
-            MoveAction.SystemFolder(SystemFolderAction(Id(3uL), SystemLabel.TRASH, IsSelected.UNSELECTED))
+            MoveAction.SystemFolder(
+                MovableSystemFolderAction(Id(2uL), MovableSystemFolder.ARCHIVE, IsSelected.UNSELECTED)
+            ),
+            MoveAction.SystemFolder(
+                MovableSystemFolderAction(Id(3uL), MovableSystemFolder.TRASH, IsSelected.UNSELECTED)
+            )
         )
 
         coEvery {

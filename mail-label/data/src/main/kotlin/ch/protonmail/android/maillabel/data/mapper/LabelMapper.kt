@@ -28,6 +28,7 @@ import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.InlineCustomLabel
 import uniffi.proton_mail_uniffi.LabelDescription
+import uniffi.proton_mail_uniffi.MovableSystemFolder
 import uniffi.proton_mail_uniffi.SidebarCustomFolder
 import uniffi.proton_mail_uniffi.SidebarCustomLabel
 import uniffi.proton_mail_uniffi.SidebarSystemLabel
@@ -121,6 +122,13 @@ fun LocalSystemLabel.toSystemLabel() = when (this) {
         Timber.w("rust-label: mapping from unknown system label ID $this. Fallback to all mail")
         SystemLabelId.AllMail
     }
+}
+
+fun MovableSystemFolder.toSystemLabel() = when (this) {
+    MovableSystemFolder.INBOX -> SystemLabelId.Inbox
+    MovableSystemFolder.TRASH -> SystemLabelId.Trash
+    MovableSystemFolder.SPAM -> SystemLabelId.Spam
+    MovableSystemFolder.ARCHIVE -> SystemLabelId.Archive
 }
 
 fun InlineCustomLabel.toLabel() = Label(

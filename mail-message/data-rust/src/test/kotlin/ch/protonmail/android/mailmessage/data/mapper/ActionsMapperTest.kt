@@ -7,9 +7,9 @@ import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import org.junit.Test
 import uniffi.proton_mail_uniffi.Id
 import uniffi.proton_mail_uniffi.IsSelected
+import uniffi.proton_mail_uniffi.MovableSystemFolder
+import uniffi.proton_mail_uniffi.MovableSystemFolderAction
 import uniffi.proton_mail_uniffi.MoveAction
-import uniffi.proton_mail_uniffi.SystemFolderAction
-import uniffi.proton_mail_uniffi.SystemLabel
 import kotlin.test.assertEquals
 
 class ActionsMapperTest {
@@ -19,8 +19,8 @@ class ActionsMapperTest {
         // Given
         val archiveLocalId = Id(1uL)
         val spamLocalId = Id(1uL)
-        val archive = SystemFolderAction(archiveLocalId, SystemLabel.ARCHIVE, IsSelected.UNSELECTED)
-        val spam = SystemFolderAction(spamLocalId, SystemLabel.SPAM, IsSelected.UNSELECTED)
+        val archive = MovableSystemFolderAction(archiveLocalId, MovableSystemFolder.ARCHIVE, IsSelected.UNSELECTED)
+        val spam = MovableSystemFolderAction(spamLocalId, MovableSystemFolder.SPAM, IsSelected.UNSELECTED)
         val systemFolderActions = listOf(MoveAction.SystemFolder(archive), MoveAction.SystemFolder(spam))
         val expected = listOf(
             MailLabel.System(MailLabelId.System(archiveLocalId.toLabelId()), SystemLabelId.Archive, 0),
