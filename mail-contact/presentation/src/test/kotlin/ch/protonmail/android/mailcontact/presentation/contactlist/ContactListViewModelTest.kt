@@ -77,21 +77,13 @@ class ContactListViewModelTest {
         isSticky = null
     )
     private val defaultTestContactMetadata = ContactMetadata.Contact(
-        userId = UserIdTestData.userId,
         id = ContactId("1"),
         avatar = AvatarInformationSample.avatarSample,
         name = "first contact",
         emails = listOf(
             ContactEmail(
-                UserIdTestData.userId,
                 ContactEmailId("contact email id 1"),
                 "First contact email",
-                "firstcontact+alias@protonmail.com",
-                0,
-                0,
-                ContactId("1"),
-                "firstcontact@protonmail.com",
-                listOf(defaultTestContactGroupLabel.labelId.id),
                 true,
                 lastUsedTime = 0
             )
@@ -101,20 +93,8 @@ class ContactListViewModelTest {
         id = ContactGroupId("label1"),
         name = "first contact group",
         color = "#FF0000",
-        emails = listOf(
-            ContactEmail(
-                UserIdTestData.userId,
-                ContactEmailId("contact email id 1"),
-                "First contact email",
-                "firstcontact+alias@protonmail.com",
-                0,
-                0,
-                ContactId("1"),
-                "firstcontact@protonmail.com",
-                listOf(defaultTestContactGroupLabel.labelId.id),
-                true,
-                lastUsedTime = 0
-            )
+        members = listOf(
+            defaultTestContactMetadata
         )
     )
     private val defaultTestGroupedContacts = GroupedContacts(

@@ -47,7 +47,7 @@ class ManageMembersReducer @Inject constructor() {
 
     private fun reduceOnDone(currentState: ManageMembersState, event: ManageMembersEvent.OnDone): ManageMembersState {
         return when (currentState) {
-            is ManageMembersState.Data -> currentState.copy(onDone = Effect.of(event.selectedContactEmailIds))
+            is ManageMembersState.Data -> currentState.copy(onDone = Effect.of(event.selectedContactIds))
             is ManageMembersState.Loading -> currentState
         }
     }

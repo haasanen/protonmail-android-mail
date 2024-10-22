@@ -51,8 +51,7 @@ class SortContactsForSuggestions @Inject constructor() {
             .map { contact ->
                 val contactEmail = contact.emails.first()
                 ContactSuggestionUiModel.Contact(
-                    name = contactEmail.name.takeIfNotBlank()
-                        ?: contact.name.takeIfNotBlank()
+                    name = contact.name.takeIfNotBlank()
                         ?: contactEmail.email,
                     email = contactEmail.email
                 )
@@ -64,9 +63,12 @@ class SortContactsForSuggestions @Inject constructor() {
             .map { contactGroup ->
                 ContactSuggestionUiModel.ContactGroup(
                     name = contactGroup.name,
-                    emails = contactGroup.emails.map { it.email }
+                    emails = contactGroup.members.flatMap { member ->
+                        member.emails.map { it.email }
+                    }
                 )
             }
+            .toList()
 
         val fromDeviceContacts = deviceContacts.asSequence().map {
             ContactSuggestionUiModel.Contact(
@@ -80,7 +82,5 @@ class SortContactsForSuggestions @Inject constructor() {
         return (fromContacts + fromDeviceAndContactGroups)
             .take(maxContactAutocompletionCount)
             .toList()
-
     }
-
 }

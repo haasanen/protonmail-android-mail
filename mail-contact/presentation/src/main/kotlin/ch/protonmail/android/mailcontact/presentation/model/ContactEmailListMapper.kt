@@ -28,21 +28,20 @@ class ContactEmailListMapper @Inject constructor() {
 
     fun toEmailUiModel(contactEmails: List<ContactEmail>): TextUiModel {
         return if (contactEmails.isNotEmpty()) {
-            val sortedContactEmails = contactEmails.sortedBy {
-                it.order
-            }.mapNotNull { contactEmail ->
+            val emails = contactEmails.mapNotNull { contactEmail ->
                 contactEmail.email.takeIfNotBlank()
             }
-            if (sortedContactEmails.isEmpty()) {
+
+            if (emails.isEmpty()) {
                 TextUiModel(R.string.no_contact_email)
-            } else if (sortedContactEmails.size > 1) {
+            } else if (emails.size > 1) {
                 TextUiModel(
                     R.string.multiple_contact_emails,
-                    sortedContactEmails.first(),
-                    sortedContactEmails.size.minus(1)
+                    emails.first(),
+                    emails.size.minus(1)
                 )
             } else {
-                TextUiModel(sortedContactEmails.first())
+                TextUiModel(emails.first())
             }
         } else {
             TextUiModel(R.string.no_contact_email)

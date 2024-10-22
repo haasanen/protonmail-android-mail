@@ -23,13 +23,10 @@ import ch.protonmail.android.mailcommon.presentation.mapper.ColorMapper
 import ch.protonmail.android.mailcontact.presentation.model.ContactGroupItemUiModelMapper
 import ch.protonmail.android.maillabel.presentation.getHexStringFromColor
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
-import ch.protonmail.android.testdata.user.UserIdTestData
-import ch.protonmail.android.mailcontact.domain.model.ContactEmail
-import ch.protonmail.android.mailcontact.domain.model.ContactEmailId
 import ch.protonmail.android.mailcontact.domain.model.ContactGroupId
-import ch.protonmail.android.mailcontact.domain.model.ContactId
 import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import ch.protonmail.android.mailcontact.presentation.model.ContactListItemUiModel
+import ch.protonmail.android.testdata.contact.ContactSample
 import org.junit.Rule
 import org.junit.Test
 import kotlin.test.assertEquals
@@ -48,47 +45,11 @@ class ContactGroupItemUiModelMapperTest {
             id = ContactGroupId("LabelId1"),
             name = "Label 1",
             color = Color.Red.getHexStringFromColor(),
-            emails = listOf(
-                ContactEmail(
-                    UserIdTestData.userId,
-                    ContactEmailId("contact email id 1"),
-                    "First contact email",
-                    "firstcontact+alias@protonmail.com",
-                    0,
-                    0,
-                    ContactId("1"),
-                    "firstcontact@protonmail.com",
-                    listOf("LabelId1"),
-                    true,
-                    lastUsedTime = 0
-                ),
-                ContactEmail(
-                    UserIdTestData.userId,
-                    ContactEmailId("contact email id 1.1"),
-                    "First contact email bis",
-                    "firstcontactbis@protonmail.com",
-                    0,
-                    1,
-                    ContactId("1.1"),
-                    "firstcontactbis@protonmail.com",
-                    listOf("LabelId1"),
-                    true,
-                    lastUsedTime = 0
-                ),
-                ContactEmail(
-                    UserIdTestData.userId,
-                    ContactEmailId("contact email id 2"),
-                    "Second contact email",
-                    "secondcontact@protonmail.com",
-                    0,
-                    0,
-                    ContactId("2"),
-                    "secondcontact@protonmail.com",
-                    listOf("LabelId1", "LabelId2"),
-                    true,
-                    lastUsedTime = 0
-                )
-            ).filter { it.labelIds.contains("LabelId1") }
+            members = listOf(
+                ContactSample.Doe,
+                ContactSample.John,
+                ContactSample.Stefano
+            )
         )
 
         val actual = contactGroupItemUiModelMapper.toContactGroupItemUiModel(contactGroup)

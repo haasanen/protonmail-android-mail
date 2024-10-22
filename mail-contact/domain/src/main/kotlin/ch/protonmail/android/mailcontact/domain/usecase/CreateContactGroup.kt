@@ -22,7 +22,7 @@ import arrow.core.Either
 import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.maillabel.domain.model.ColorRgbHex
-import ch.protonmail.android.mailcontact.domain.model.ContactEmailId
+import ch.protonmail.android.mailcontact.domain.model.ContactId
 import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 
@@ -33,7 +33,7 @@ class CreateContactGroup @Inject constructor() {
         userId: UserId,
         name: String,
         color: ColorRgbHex,
-        contactEmailIds: List<ContactEmailId>
+        contactIds: List<ContactId>
     ): Either<CreateContactGroupError, Unit> = Unit.right()
 }
 

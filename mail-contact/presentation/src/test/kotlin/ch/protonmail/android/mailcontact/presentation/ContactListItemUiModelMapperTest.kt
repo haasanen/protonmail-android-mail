@@ -24,7 +24,6 @@ import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcontact.presentation.model.ContactListItemUiModel
 import ch.protonmail.android.mailcontact.presentation.model.ContactListItemUiModelMapper
-import ch.protonmail.android.testdata.user.UserIdTestData
 import ch.protonmail.android.mailcontact.domain.model.ContactEmail
 import ch.protonmail.android.mailcontact.domain.model.ContactEmailId
 import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
@@ -52,21 +51,13 @@ class ContactListItemUiModelMapperTest {
     fun `return correct contact items and group items with headers`() {
         // Arrange: Create mock contact and group objects
         val contact1 = ContactMetadata.Contact(
-            userId = UserIdTestData.userId,
             id = ContactIdTestData.contactId1,
             avatar = AvatarInformationSample.avatarSample,
             name = "first contact",
             emails = listOf(
                 ContactEmail(
-                    UserIdTestData.userId,
                     ContactEmailId("contact email id 1"),
                     "First contact email",
-                    "test1@protonmail.com",
-                    0,
-                    0,
-                    ContactIdTestData.contactId1,
-                    "test1@protonmail.com",
-                    emptyList(),
                     true,
                     lastUsedTime = 0
                 )
@@ -77,7 +68,7 @@ class ContactListItemUiModelMapperTest {
             id = ContactGroupIdSample.Friends,
             name = "Family Group",
             color = "Blue",
-            emails = emptyList()
+            members = emptyList()
         )
 
         val groupedContacts = listOf(

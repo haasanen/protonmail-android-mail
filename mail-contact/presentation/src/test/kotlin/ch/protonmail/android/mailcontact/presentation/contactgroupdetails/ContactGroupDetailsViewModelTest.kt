@@ -37,7 +37,6 @@ import ch.protonmail.android.mailcontact.presentation.model.ContactGroupDetailsU
 import ch.protonmail.android.mailcontact.presentation.model.ContactGroupDetailsUiModelMapper
 import ch.protonmail.android.mailcontact.presentation.previewdata.ContactGroupDetailsPreviewData
 import ch.protonmail.android.maillabel.presentation.getHexStringFromColor
-import ch.protonmail.android.testdata.contact.ContactIdTestData
 import ch.protonmail.android.testdata.user.UserIdTestData
 import io.mockk.coEvery
 import io.mockk.every
@@ -49,10 +48,9 @@ import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
-import ch.protonmail.android.mailcontact.domain.model.ContactEmail
-import ch.protonmail.android.mailcontact.domain.model.ContactEmailId
 import ch.protonmail.android.mailcontact.domain.model.ContactGroupId
 import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
+import ch.protonmail.android.testdata.contact.ContactSample
 import me.proton.core.domain.entity.UserId
 import org.junit.Test
 import kotlin.test.AfterTest
@@ -68,19 +66,7 @@ class ContactGroupDetailsViewModelTest {
         "Group name",
         Color.Red.getHexStringFromColor(),
         listOf(
-            ContactEmail(
-                UserIdTestData.userId,
-                ContactEmailId("contact email id 1"),
-                "First name from contact email",
-                "test1+alias@protonmail.com",
-                0,
-                0,
-                ContactIdTestData.contactId1,
-                "test1@protonmail.com",
-                listOf("LabelId1"),
-                true,
-                lastUsedTime = 0
-            )
+            ContactSample.Doe
         )
     )
 
@@ -141,7 +127,7 @@ class ContactGroupDetailsViewModelTest {
     fun `given Label ID, when init and observe empty contact group, then emits loaded contact group state`() = runTest {
         // Given
         val expectedContactGroup = testEmptyContactGroup.copy(
-            emails = emptyList()
+            members = emptyList()
         )
         val expectedContactGroupDetailsUiModel = ContactGroupDetailsPreviewData.contactGroupDetailsSampleData.copy(
             memberCount = 0,

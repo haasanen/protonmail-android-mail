@@ -18,10 +18,10 @@
 
 package ch.protonmail.android.mailcontact.presentation.model
 
-import ch.protonmail.android.mailcontact.domain.model.ContactEmailId
+import ch.protonmail.android.mailcontact.domain.model.ContactId
 
 data class ManageMembersUiModel(
-    val id: ContactEmailId,
+    val id: ContactId,
     val name: String,
     val email: String,
     val initials: String,

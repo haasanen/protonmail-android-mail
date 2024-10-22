@@ -35,12 +35,12 @@ class ContactGroupDetailsUiModelMapper @Inject constructor(
             id = contactGroup.id,
             name = contactGroup.name,
             color = colorMapper.toColor(contactGroup.color).getOrElse { Color.Black },
-            memberCount = contactGroup.emails.size,
-            members = contactGroup.emails.map { contactEmail ->
+            memberCount = contactGroup.members.size,
+            members = contactGroup.members.map { contactEmail ->
                 ContactGroupDetailsMember(
                     initials = getInitials(contactEmail.name),
                     name = contactEmail.name,
-                    email = contactEmail.email
+                    email = contactEmail.emails.firstOrNull()?.email ?: ""
                 )
             }
         )

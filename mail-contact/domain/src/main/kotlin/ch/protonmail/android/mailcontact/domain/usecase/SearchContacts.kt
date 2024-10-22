@@ -59,18 +59,24 @@ class SearchContacts @Inject constructor(
         query: String,
         onlyMatchingContactEmails: Boolean
     ): List<ContactMetadata> = contacts.mapNotNull { contact ->
-        if (contact.name.containsNoCase(query)) { // if Contact's display name matches, return all contactEmails
-            contact
+        when (contact) {
+            is ContactMetadata.Contact -> searchInContact(contact, query, onlyMatchingContactEmails)
+            is ContactMetadata.ContactGroup -> searchInContactGroup(contact, query, onlyMatchingContactEmails)
+        }
+    }
+
+    private fun searchInContact(
+        contact: ContactMetadata.Contact,
+        query: String,
+        onlyMatchingContactEmails: Boolean
+    ): ContactMetadata.Contact? {
+        return if (contact.name.containsNoCase(query)) {
+            contact // Return the full contact if name matches
         } else {
             if (onlyMatchingContactEmails) {
-                val matchingContactEmails = contact.emails.filter { contactEmail ->
-                    contactEmail.email.containsNoCase(query)
-                }
+                val matchingContactEmails = contact.emails.filter { it.email.containsNoCase(query) }
                 if (matchingContactEmails.isNotEmpty()) {
-                    when (contact) {
-                        is ContactMetadata.Contact -> contact.copy(emails = matchingContactEmails)
-                        is ContactMetadata.ContactGroup -> contact.copy(emails = matchingContactEmails)
-                    }
+                    contact.copy(emails = matchingContactEmails)
                 } else null
             } else {
                 if (contact.emails.any { it.email.containsNoCase(query) }) {
@@ -79,4 +85,21 @@ class SearchContacts @Inject constructor(
             }
         }
     }
+
+    private fun searchInContactGroup(
+        contactGroup: ContactMetadata.ContactGroup,
+        query: String,
+        onlyMatchingContactEmails: Boolean
+    ): ContactMetadata.ContactGroup? {
+        val matchingMembers = contactGroup.members.mapNotNull { member ->
+            searchInContact(member, query, onlyMatchingContactEmails)
+        }
+
+        return if (contactGroup.name.containsNoCase(query) || matchingMembers.isNotEmpty()) {
+            contactGroup.copy(members = matchingMembers)
+        } else {
+            null
+        }
+    }
 }
+

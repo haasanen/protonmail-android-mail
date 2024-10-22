@@ -32,7 +32,7 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import ch.protonmail.android.mailcontact.domain.model.ContactEmailId
+import ch.protonmail.android.mailcontact.domain.model.ContactId
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import javax.inject.Inject
@@ -51,12 +51,12 @@ class ManageMembersViewModel @Inject constructor(
 
     val state: StateFlow<ManageMembersState> = mutableState
 
-    fun initViewModelWithData(selectedContactEmailIds: List<ContactEmailId>) {
+    fun initViewModelWithData(selectedContactIds: List<ContactId>) {
         viewModelScope.launch {
             emitNewStateFor(
                 getManageMembersEvent(
                     userId = primaryUserId(),
-                    selectedContactEmailIds = selectedContactEmailIds
+                    selectedContactIds = selectedContactIds
                 )
             )
         }
@@ -80,7 +80,7 @@ class ManageMembersViewModel @Inject constructor(
         if (stateValue !is ManageMembersState.Data) return
 
         val memberIndex = stateValue.members.indexOfFirst {
-            it.id == action.contactEmailId
+            it.id == action.contactId
         }
         if (memberIndex < 0) return emitNewStateFor(ManageMembersEvent.ErrorUpdatingMember)
 
@@ -112,10 +112,7 @@ class ManageMembersViewModel @Inject constructor(
         )
     }
 
-    private suspend fun getManageMembersEvent(
-        userId: UserId,
-        selectedContactEmailIds: List<ContactEmailId>
-    ): ManageMembersEvent {
+    private suspend fun getManageMembersEvent(userId: UserId, selectedContactIds: List<ContactId>): ManageMembersEvent {
         val contacts = observeContacts(userId).firstOrNull()?.getOrNull() ?: run {
             Timber.e("Error while observing contacts")
             return ManageMembersEvent.LoadMembersError
@@ -123,7 +120,7 @@ class ManageMembersViewModel @Inject constructor(
         return ManageMembersEvent.MembersLoaded(
             manageMembersUiModelMapper.toManageMembersUiModelList(
                 contacts = contacts,
-                selectedContactEmailIds = selectedContactEmailIds
+                selectedContactIds = selectedContactIds
             )
         )
     }
@@ -134,7 +131,7 @@ class ManageMembersViewModel @Inject constructor(
 
         emitNewStateFor(
             ManageMembersEvent.OnDone(
-                selectedContactEmailIds = stateValue.members.mapNotNull { it.takeIf { it.isSelected }?.id }
+                selectedContactIds = stateValue.members.mapNotNull { it.takeIf { it.isSelected }?.id }
             )
         )
     }

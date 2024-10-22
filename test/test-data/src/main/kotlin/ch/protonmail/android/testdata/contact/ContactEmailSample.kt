@@ -18,92 +18,48 @@
 
 package ch.protonmail.android.testdata.contact
 
-import ch.protonmail.android.maillabel.domain.sample.LabelSample
-import ch.protonmail.android.testdata.user.UserIdTestData
 import ch.protonmail.android.mailcontact.domain.model.ContactEmail
 
 object ContactEmailSample {
 
     val contactEmail1 = ContactEmail(
-        UserIdTestData.Primary,
         ContactIdTestData.contactEmailId1,
-        "name (contact email 1)",
         "email (contact email 1)",
-        0,
-        0,
-        ContactIdTestData.contactId1,
-        "canonical email (contact email 1)",
-        listOf(LabelSample.GroupCoworkers.labelId.id),
         false,
         lastUsedTime = 0
     )
 
     val contactEmail2 = ContactEmail(
-        UserIdTestData.Primary,
         ContactIdTestData.contactEmailId2,
-        "name (contact email 2)",
         "email (contact email 2)",
-        0,
-        1,
-        ContactIdTestData.contactId1,
-        "canonical email (contact email 2)",
-        listOf(LabelSample.GroupCoworkers.labelId.id),
         false,
         lastUsedTime = 0
     )
 
     val contactEmail3 = ContactEmail(
-        UserIdTestData.Primary,
         ContactIdTestData.contactEmailId3,
-        "name (contact email 3)",
         "email (contact email 3)",
-        0,
-        2,
-        ContactIdTestData.contactId3,
-        "canonical email (contact email 3)",
-        emptyList(),
         false,
         lastUsedTime = 0
     )
 
     val contactEmail4 = ContactEmail(
-        UserIdTestData.Primary,
         ContactIdTestData.contactEmailId4,
-        "name (contact email 4)",
         "email (contact email 4)",
-        0,
-        2,
-        ContactIdTestData.contactId4,
-        "canonical email (contact email 4)",
-        emptyList(),
         false,
         lastUsedTime = 0
     )
 
     val contactEmailLastUsedRecently = ContactEmail(
-        UserIdTestData.Primary,
         ContactIdTestData.contactEmailId5,
-        "Testing LastUsedTime",
         "testing@last.used.time -- recently",
-        0,
-        2,
-        ContactIdTestData.contactId5,
-        "canonical testing@last.used.time",
-        emptyList(),
         false,
         lastUsedTime = 100
     )
 
     val contactEmailLastUsedLongTimeAgo = ContactEmail(
-        UserIdTestData.Primary,
         ContactIdTestData.contactEmailId6,
-        "Testing LastUsedTime",
         "testing@last.used.time -- long time ago",
-        0,
-        2,
-        ContactIdTestData.contactId6,
-        "canonical testing@last.used.time",
-        emptyList(),
         false,
         lastUsedTime = 1
     )

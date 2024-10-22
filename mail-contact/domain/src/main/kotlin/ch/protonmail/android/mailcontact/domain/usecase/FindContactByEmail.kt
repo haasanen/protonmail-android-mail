@@ -18,23 +18,24 @@
 
 package ch.protonmail.android.mailcontact.domain.usecase
 
+import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 
+@MissingRustApi
 class FindContactByEmail @Inject constructor(
     private val getContacts: GetContacts
 ) {
 
-    suspend operator fun invoke(userId: UserId, emailAddress: String): ContactMetadata.Contact? = getContacts(
-        userId
-    ).fold(
-        ifLeft = { null },
-        ifRight = { contacts ->
-            contacts.filterIsInstance<ContactMetadata.Contact>()
-                .firstOrNull { contact ->
+    suspend operator fun invoke(userId: UserId, emailAddress: String): ContactMetadata.Contact? {
+        return getContacts(userId).fold(
+            ifLeft = { null }, // Handle the case where the left (error) side is returned
+            ifRight = { contacts ->
+                contacts.firstOrNull { contact ->
                     contact.emails.any { it.email.equals(emailAddress, ignoreCase = true) }
                 }
-        }
-    )
+            }
+        )
+    }
 }

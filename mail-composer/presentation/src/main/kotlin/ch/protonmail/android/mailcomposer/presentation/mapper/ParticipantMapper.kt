@@ -31,17 +31,19 @@ class ParticipantMapper @Inject constructor() {
         recipient: RecipientUiModel.Valid,
         contacts: List<ContactMetadata.Contact>
     ): Participant {
-        val contactEmail = contacts.firstNotNullOfOrNull { contact ->
-            contact.emails.find {
-                // match by email and fallback to canonical version (fallback only makes sense if we actually
-                // get canonical version of inputted address from API, it doesn't happen yet)
-                recipient.address.equalsNoCase(it.email) || recipient.address.equalsNoCase(it.canonicalEmail)
+        val contact = contacts.firstOrNull { contact ->
+            contact.emails.any {
+                recipient.address.equalsNoCase(it.email)
             }
+        }
+
+        val contactEmail = contact?.emails?.find {
+            recipient.address.equalsNoCase(it.email)
         }
 
         return Participant(
             recipient.address,
-            contactEmail?.name?.takeIfNotBlank() ?: recipient.address,
+            contact?.name?.takeIfNotBlank() ?: recipient.address,
             contactEmail?.isProton ?: false,
             null
         )

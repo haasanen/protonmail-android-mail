@@ -62,15 +62,12 @@ class SearchContactsTest {
         val query = "impo"
 
         val contact = ContactTestData.buildContactWith(
-            userId = UserIdTestData.userId,
             name = "important contact display name", // <-- match
             contactEmails = listOf(
                 ContactTestData.buildContactEmailWith(
-                    name = "name 1",
                     address = "address1@proton.ch"
                 ),
                 ContactTestData.buildContactEmailWith(
-                    name = "name 2",
                     address = "address2@protonmail.ch"
                 )
             )
@@ -94,15 +91,12 @@ class SearchContactsTest {
             val query = "mail"
 
             val contact = ContactTestData.buildContactWith(
-                userId = UserIdTestData.userId,
                 name = "important contact display name",
                 contactEmails = listOf(
                     ContactTestData.buildContactEmailWith(
-                        name = "name 1",
                         address = "address1@proton.ch"
                     ),
                     ContactTestData.buildContactEmailWith(
-                        name = "name 2",
                         address = "address2@protonmail.ch" // <-- match
                     )
                 )
@@ -118,7 +112,6 @@ class SearchContactsTest {
 
                 val matchedContact = actual.value.first()
 
-                assertEquals(contact.userId, matchedContact.userId)
                 assertEquals(contact.id, matchedContact.id)
                 assertEquals(contact.name, matchedContact.name)
 
@@ -138,15 +131,12 @@ class SearchContactsTest {
             val query = "mail"
 
             val contact = ContactTestData.buildContactWith(
-                userId = UserIdTestData.userId,
                 name = "important contact display name",
                 contactEmails = listOf(
                     ContactTestData.buildContactEmailWith(
-                        name = "name 1",
                         address = "address1@proton.ch"
                     ),
                     ContactTestData.buildContactEmailWith(
-                        name = "name 2",
                         address = "address2@protonmail.ch" // <-- match
                     )
                 )
@@ -162,7 +152,6 @@ class SearchContactsTest {
 
                 val matchedContact = actual.value.first()
 
-                assertEquals(contact.userId, matchedContact.userId)
                 assertEquals(contact.id, matchedContact.id)
                 assertEquals(contact.name, matchedContact.name)
 

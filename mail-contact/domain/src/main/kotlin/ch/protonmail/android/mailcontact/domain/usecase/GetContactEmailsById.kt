@@ -21,9 +21,10 @@ package ch.protonmail.android.mailcontact.domain.usecase
 import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
+import ch.protonmail.android.mailcontact.domain.model.ContactId
+import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import ch.protonmail.android.mailcontact.domain.model.GetContactError
 import kotlinx.coroutines.flow.firstOrNull
-import ch.protonmail.android.mailcontact.domain.model.ContactEmail
 import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 
@@ -33,12 +34,11 @@ class GetContactEmailsById @Inject constructor(
 
     suspend operator fun invoke(
         userId: UserId,
-        selectedContactEmailIds: List<String>
-    ): Either<GetContactError, List<ContactEmail>> {
-        return observeContacts(userId).firstOrNull()?.getOrNull()?.flatMap { contact ->
-            contact.emails.mapNotNull { contactEmail ->
-                contactEmail.takeIf { selectedContactEmailIds.contains(contactEmail.id.id) }
-            }
-        }?.right() ?: GetContactError.left()
+        selectedContactIds: List<ContactId>
+    ): Either<GetContactError, List<ContactMetadata.Contact>> {
+        return observeContacts(userId).firstOrNull()?.getOrNull()?.filter { contact ->
+            selectedContactIds.contains(contact.id)
+        }?.takeIf { it.isNotEmpty() }?.right()
+            ?: GetContactError.left()
     }
 }

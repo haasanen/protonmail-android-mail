@@ -22,7 +22,7 @@ import app.cash.turbine.test
 import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
-import ch.protonmail.android.testdata.contact.ContactIdTestData
+import ch.protonmail.android.mailcommon.domain.sample.AvatarInformationSample
 import ch.protonmail.android.testdata.user.UserIdTestData
 import io.mockk.every
 import io.mockk.mockk
@@ -30,6 +30,7 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import ch.protonmail.android.mailcontact.domain.model.ContactEmail
 import ch.protonmail.android.mailcontact.domain.model.ContactEmailId
+import ch.protonmail.android.mailcontact.domain.model.ContactId
 import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import ch.protonmail.android.mailcontact.domain.model.GetContactError
 import ch.protonmail.android.mailcontact.domain.repository.ContactRepository
@@ -45,19 +46,19 @@ class ObserveContactGroupTest {
         id = testContactGroupId,
         name = "Friends",
         color = "#FF0000",
-        emails = listOf(
-            ContactEmail(
-                UserIdTestData.userId,
-                ContactEmailId("contact email id 1"),
-                "First name from contact email",
-                "test1@protonmail.com",
-                0,
-                0,
-                ContactIdTestData.contactId1,
-                "test1@protonmail.com",
-                emptyList(),
-                true,
-                lastUsedTime = 0
+        members = listOf(
+            ContactMetadata.Contact(
+                id = ContactId("contact id 1"),
+                avatar = AvatarInformationSample.avatarSample,
+                name = "Contact Name",
+                emails = listOf(
+                    ContactEmail(
+                        id = ContactEmailId("contact email id"),
+                        email = "test1@protonmail.com",
+                        isProton = false,
+                        lastUsedTime = 0
+                    )
+                )
             )
         )
     )

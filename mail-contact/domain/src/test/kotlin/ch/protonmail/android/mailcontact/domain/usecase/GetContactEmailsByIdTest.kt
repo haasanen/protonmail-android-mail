@@ -80,7 +80,7 @@ class GetContactEmailsByIdTest {
     @Test
     fun `when observe contacts returns contacts they are successfully emitted`() = runTest {
         // When
-        val actual = getContactEmailsById(UserIdTestData.userId, listOf("ContactEmailId2"))
+        val actual = getContactsById(UserIdTestData.userId, listOf(ContactId("ContactId2")))
         // Then
         assertIs<Either.Right<List<ContactEmail>>>(actual)
         assertEquals(listOf(defaultTestContact.emails[1]), actual.value)
@@ -91,7 +91,7 @@ class GetContactEmailsByIdTest {
         // Given
         coEvery { observeContacts(UserIdTestData.userId) } returns flowOf(Either.Left(GetContactError))
         // When
-        val actual = getContactEmailsById(UserIdTestData.userId, listOf("ContactEmailId2"))
+        val actual = getContactsById(UserIdTestData.userId, listOf(ContactId("ContactId2")))
         // Then
         assertIs<Either.Left<GetContactError>>(actual)
     }

@@ -20,7 +20,6 @@ package ch.protonmail.android.mailcontact.presentation
 
 import androidx.compose.ui.graphics.Color
 import ch.protonmail.android.mailcommon.domain.sample.AvatarInformationSample
-import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.mailcommon.presentation.mapper.AvatarInformationMapper
 import ch.protonmail.android.mailcommon.presentation.mapper.ColorMapper
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
@@ -34,6 +33,7 @@ import ch.protonmail.android.mailcontact.presentation.model.ContactListItemUiMod
 import ch.protonmail.android.maillabel.presentation.getHexStringFromColor
 import ch.protonmail.android.testdata.contact.ContactEmailSample
 import ch.protonmail.android.testdata.contact.ContactGroupIdSample
+import ch.protonmail.android.testdata.contact.ContactSample
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.Rule
@@ -58,7 +58,6 @@ class ContactSearchUiModelMapperTest {
     fun `maps list of ContactGroups to list of UiModel`() {
         // Given
         val contact = ContactMetadata.Contact(
-            userId = UserIdSample.Primary,
             id = ContactIdTestData.contactId1,
             name = "Contact 1",
             avatar = AvatarInformationSample.avatarSample,
@@ -68,10 +67,10 @@ class ContactSearchUiModelMapperTest {
             id = ContactGroupIdSample.Friends,
             name = "Group 1",
             color = Color.Red.getHexStringFromColor(),
-            emails = listOf(
-                ContactEmailSample.contactEmail1,
-                ContactEmailSample.contactEmail2,
-                ContactEmailSample.contactEmail3
+            members = listOf(
+                ContactSample.Stefano,
+                ContactSample.Doe,
+                ContactSample.Mario
             )
         )
         val expectedContactUiModel = ContactListItemUiModel.Contact(
@@ -86,7 +85,7 @@ class ContactSearchUiModelMapperTest {
         val expectedContactGroupUiModel = ContactListItemUiModel.ContactGroup(
             id = ContactGroupIdSample.Friends,
             name = "Group 1",
-            memberCount = contactGroup.emails.size,
+            memberCount = contactGroup.members.size,
             color = Color.Red
         )
         val expected = listOf(expectedContactUiModel, expectedContactGroupUiModel)

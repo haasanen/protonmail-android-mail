@@ -33,15 +33,12 @@ class FindContactByEmailTest {
 
     val userId = UserIdTestData.userId
     val contact = ContactTestData.buildContactWith(
-        userId = userId,
         name = "Test User", // <-- match
         contactEmails = listOf(
             ContactTestData.buildContactEmailWith(
-                name = "Test User 1",
                 address = "test1@proton.ch"
             ),
             ContactTestData.buildContactEmailWith(
-                name = "Test User 2",
                 address = "Test2@protonmail.ch"
             )
         )

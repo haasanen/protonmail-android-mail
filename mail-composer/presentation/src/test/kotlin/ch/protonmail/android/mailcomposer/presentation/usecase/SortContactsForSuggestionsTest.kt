@@ -61,19 +61,37 @@ class SortContactsForSuggestionsTest {
                 ContactGroupIdSample.Friends,
                 "z group",
                 "#AABBCC",
-                listOf(ContactEmailSample.contactEmail1)
+                listOf(
+                    ContactSample.Stefano.copy(
+                        emails = listOf(
+                            ContactEmailSample.contactEmail1
+                        )
+                    )
+                )
             ),
             ContactMetadata.ContactGroup(
                 ContactGroupIdSample.Work,
                 "x group",
                 "#AABBCC",
-                listOf(ContactEmailSample.contactEmail1)
+                listOf(
+                    ContactSample.Mario.copy(
+                        emails = listOf(
+                            ContactEmailSample.contactEmail2
+                        )
+                    )
+                )
             ),
             ContactMetadata.ContactGroup(
                 ContactGroupIdSample.School,
                 "a group",
                 "#AABBCC",
-                listOf(ContactEmailSample.contactEmail1)
+                listOf(
+                    ContactSample.Doe.copy(
+                        emails = listOf(
+                            ContactEmailSample.contactEmail3
+                        )
+                    )
+                )
             )
         )
 
@@ -87,20 +105,20 @@ class SortContactsForSuggestionsTest {
         // Then
         val expected = listOf(
             ContactSuggestionUiModel.Contact(
-                contacts[1].emails[1].name,
+                contacts[1].name,
                 contacts[1].emails[1].email
             ),
             ContactSuggestionUiModel.Contact(
-                contacts[1].emails[0].name,
+                contacts[1].name,
                 contacts[1].emails[0].email
             ),
             ContactSuggestionUiModel.Contact(
-                contacts[0].emails[0].name,
+                contacts[0].name,
                 contacts[0].emails[0].email
             ),
             ContactSuggestionUiModel.ContactGroup(
                 contactGroups[2].name,
-                contactGroups[2].emails.map { it.email }
+                contactGroups[2].members[0].emails.map { it.email }
             ),
             ContactSuggestionUiModel.Contact(
                 deviceContacts[1].name,
@@ -112,7 +130,7 @@ class SortContactsForSuggestionsTest {
             ),
             ContactSuggestionUiModel.ContactGroup(
                 contactGroups[1].name,
-                contactGroups[1].emails.map { it.email }
+                contactGroups[1].members[0].emails.map { it.email }
             )
         )
 

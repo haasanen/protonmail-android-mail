@@ -18,15 +18,14 @@
 
 package ch.protonmail.android.mailcontact.presentation
 
-import ch.protonmail.android.mailcommon.presentation.usecase.GetInitials
+import ch.protonmail.android.mailcommon.domain.model.AvatarInformation
 import ch.protonmail.android.mailcontact.presentation.model.ManageMembersUiModel
 import ch.protonmail.android.mailcontact.presentation.model.ManageMembersUiModelMapper
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
-import ch.protonmail.android.testdata.contact.ContactIdTestData
-import ch.protonmail.android.testdata.contact.ContactTestData
-import ch.protonmail.android.testdata.user.UserIdTestData
 import ch.protonmail.android.mailcontact.domain.model.ContactEmail
 import ch.protonmail.android.mailcontact.domain.model.ContactEmailId
+import ch.protonmail.android.mailcontact.domain.model.ContactId
+import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import org.junit.Rule
 import org.junit.Test
 import kotlin.test.assertEquals
@@ -36,55 +35,51 @@ class ManageMembersUiModelMapperTest {
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
 
-    private val getInitials = GetInitials()
-
-    private val manageMembersUiModelMapper = ManageMembersUiModelMapper(getInitials)
+    private val manageMembersUiModelMapper = ManageMembersUiModelMapper()
 
     @Test
     fun `maps Contacts to ManageMembersUiModel`() {
-        val contact = ContactTestData.buildContactWith(
-            contactEmails = listOf(
-                ContactEmail(
-                    UserIdTestData.userId,
-                    ContactEmailId("contact email id 1"),
-                    "First name from contact email",
-                    "test1+alias@protonmail.com",
-                    0,
-                    0,
-                    ContactIdTestData.contactId1,
-                    "test1@protonmail.com",
-                    listOf("LabelId1"),
-                    true,
-                    lastUsedTime = 0
-                ),
-                ContactEmail(
-                    UserIdTestData.userId,
-                    ContactEmailId("contact email id 2"),
-                    "First name from contact email",
-                    "test2+alias@protonmail.com",
-                    0,
-                    0,
-                    ContactIdTestData.contactId1,
-                    "test2@protonmail.com",
-                    emptyList(),
-                    true,
-                    lastUsedTime = 0
+        val contacts = listOf(
+            ContactMetadata.Contact(
+                id = ContactId("contact id 1"),
+                name = "Contact name 1",
+                avatar = AvatarInformation("FE", "#000000"),
+                emails = listOf(
+                    ContactEmail(
+                        ContactEmailId("contact email id 1"),
+                        "test1+alias@protonmail.com",
+                        true,
+                        lastUsedTime = 0
+                    )
+                )
+            ),
+            ContactMetadata.Contact(
+                id = ContactId("contact id 2"),
+                name = "Contact name 2",
+                avatar = AvatarInformation("FE", "#000000"),
+                emails = listOf(
+                    ContactEmail(
+                        ContactEmailId("contact email id 2"),
+                        "test2+alias@protonmail.com",
+                        true,
+                        lastUsedTime = 0
+                    )
                 )
             )
         )
 
         val expected = listOf(
             ManageMembersUiModel(
-                id = ContactEmailId("contact email id 1"),
-                name = "First name from contact email",
+                id = ContactId("contact id 1"),
+                name = "Contact name 1",
                 email = "test1+alias@protonmail.com",
                 initials = "FE",
                 isSelected = true,
                 isDisplayed = true
             ),
             ManageMembersUiModel(
-                id = ContactEmailId("contact email id 2"),
-                name = "First name from contact email",
+                id = ContactId("contact id 2"),
+                name = "Contact name 2",
                 email = "test2+alias@protonmail.com",
                 initials = "FE",
                 isSelected = false,
@@ -93,8 +88,8 @@ class ManageMembersUiModelMapperTest {
         )
 
         val actual = manageMembersUiModelMapper.toManageMembersUiModelList(
-            listOf(contact),
-            listOf(ContactEmailId("contact email id 1"))
+            contacts,
+            listOf(ContactId("contact id 1"))
         )
 
         assertEquals(expected, actual)

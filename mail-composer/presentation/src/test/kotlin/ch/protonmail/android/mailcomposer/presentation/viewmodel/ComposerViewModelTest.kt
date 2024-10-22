@@ -750,7 +750,6 @@ class ComposerViewModelTest {
             ContactSample.Doe.copy(
                 emails = listOf(
                     ContactTestData.buildContactEmailWith(
-                        name = "doe contact",
                         address = "address1@proton.ch"
                     )
                 )
@@ -758,7 +757,6 @@ class ComposerViewModelTest {
             ContactSample.John.copy(
                 emails = listOf(
                     ContactTestData.buildContactEmailWith(
-                        name = "john contact",
                         address = "address2@proton.ch"
                     )
                 )
@@ -772,7 +770,11 @@ class ComposerViewModelTest {
                 ContactGroupIdSample.Work,
                 "Coworkers contact group",
                 "#AABBCC",
-                listOf(ContactEmailSample.contactEmail1)
+                listOf(
+                    ContactSample.Doe.copy(
+                        emails = listOf(ContactEmailSample.contactEmail1)
+                    )
+                )
             )
         )
         val action = ComposerAction.ContactSuggestionTermChanged(expectedSearchTerm, suggestionField)
@@ -800,16 +802,16 @@ class ComposerViewModelTest {
             mapOf(
                 ContactSuggestionsField.BCC to listOf(
                     ContactSuggestionUiModel.Contact(
-                        expectedContacts[0].emails.first().name,
+                        expectedContacts[0].name,
                         expectedContacts[0].emails.first().email
                     ),
                     ContactSuggestionUiModel.Contact(
-                        expectedContacts[1].emails.first().name,
+                        expectedContacts[1].name,
                         expectedContacts[1].emails.first().email
                     ),
                     ContactSuggestionUiModel.ContactGroup(
                         expectedContactGroups[0].name,
-                        expectedContactGroups[0].emails.map { it.email }
+                        expectedContactGroups[0].members.map { it.emails.first().email }
                     )
                 )
             ),
@@ -891,7 +893,6 @@ class ComposerViewModelTest {
             ContactSample.John.copy(
                 emails = listOf(
                     ContactTestData.buildContactEmailWith(
-                        name = "contact $it",
                         address = "address@proton.ch"
                     )
                 )

@@ -32,7 +32,7 @@ class ContactGroupItemUiModelMapper @Inject constructor(
         ContactListItemUiModel.ContactGroup(
             id = contactGroup.id,
             name = contactGroup.name,
-            memberCount = contactGroup.emails.size,
+            memberCount = contactGroup.members.size,
             color = colorMapper.toColor(contactGroup.color).getOrElse { Color.Black }
         )
 }

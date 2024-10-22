@@ -21,13 +21,10 @@ package ch.protonmail.android.mailcontact.presentation.model
 import androidx.compose.ui.graphics.Color
 import arrow.core.getOrElse
 import ch.protonmail.android.mailcommon.presentation.mapper.ColorMapper
-import ch.protonmail.android.mailcommon.presentation.usecase.GetInitials
-import ch.protonmail.android.mailcontact.domain.model.ContactEmail
 import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import javax.inject.Inject
 
 class ContactGroupFormUiModelMapper @Inject constructor(
-    private val getInitials: GetInitials,
     private val colorMapper: ColorMapper
 ) {
 
@@ -36,25 +33,25 @@ class ContactGroupFormUiModelMapper @Inject constructor(
             id = contactGroup.id,
             name = contactGroup.name,
             color = colorMapper.toColor(contactGroup.color).getOrElse { Color.Black },
-            memberCount = contactGroup.emails.size,
-            members = contactGroup.emails.map { contactEmail ->
+            memberCount = contactGroup.members.size,
+            members = contactGroup.members.map { contact ->
                 ContactGroupFormMember(
-                    id = contactEmail.id,
-                    initials = getInitials(contactEmail.name),
-                    name = contactEmail.name,
-                    email = contactEmail.email
+                    id = contact.id,
+                    initials = contact.avatar.initials,
+                    name = contact.name,
+                    email = contact.emails.firstOrNull()?.email ?: ""
                 )
             }
         )
     }
 
-    fun toContactGroupFormMemberList(contactEmails: List<ContactEmail>): List<ContactGroupFormMember> {
-        return contactEmails.map { contactEmail ->
+    fun toContactGroupFormMemberList(contacts: List<ContactMetadata.Contact>): List<ContactGroupFormMember> {
+        return contacts.map { contact ->
             ContactGroupFormMember(
-                id = contactEmail.id,
-                initials = getInitials(contactEmail.name),
-                name = contactEmail.name,
-                email = contactEmail.email
+                id = contact.id,
+                initials = contact.avatar.initials,
+                name = contact.name,
+                email = contact.emails.firstOrNull()?.email ?: ""
             )
         }
     }

@@ -23,6 +23,7 @@ import androidx.lifecycle.SavedStateHandle
 import app.cash.turbine.test
 import arrow.core.left
 import arrow.core.right
+import ch.protonmail.android.mailcommon.domain.model.AvatarInformation
 import ch.protonmail.android.mailcommon.domain.sample.DataErrorSample
 import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailcommon.presentation.Effect
@@ -31,10 +32,12 @@ import ch.protonmail.android.mailcommon.presentation.model.ColorHexWithName
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcommon.presentation.ui.delete.DeleteDialogState
 import ch.protonmail.android.mailcommon.presentation.usecase.GetColorHexWithNameList
+import ch.protonmail.android.mailcontact.domain.model.ContactEmail
+import ch.protonmail.android.mailcontact.domain.model.ContactEmailId
 import ch.protonmail.android.mailcontact.domain.usecase.CreateContactGroup
 import ch.protonmail.android.mailcontact.domain.usecase.DeleteContactGroup
 import ch.protonmail.android.mailcontact.domain.usecase.EditContactGroup
-import ch.protonmail.android.mailcontact.domain.usecase.GetContactEmailsById
+import ch.protonmail.android.mailcontact.domain.usecase.GetContactsById
 import ch.protonmail.android.mailcontact.domain.usecase.GetContactGroupError
 import ch.protonmail.android.mailcontact.domain.usecase.ObserveContactGroup
 import ch.protonmail.android.mailcontact.presentation.R
@@ -45,16 +48,14 @@ import ch.protonmail.android.mailcontact.presentation.previewdata.ContactGroupFo
 import ch.protonmail.android.maillabel.domain.model.ColorRgbHex
 import ch.protonmail.android.maillabel.presentation.getHexStringFromColor
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
-import ch.protonmail.android.testdata.contact.ContactIdTestData
 import ch.protonmail.android.testdata.user.UserIdTestData
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
-import ch.protonmail.android.mailcontact.domain.model.ContactEmail
-import ch.protonmail.android.mailcontact.domain.model.ContactEmailId
 import ch.protonmail.android.mailcontact.domain.model.ContactGroupId
+import ch.protonmail.android.mailcontact.domain.model.ContactId
 import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import me.proton.core.domain.entity.UserId
 import org.junit.Rule
@@ -75,18 +76,13 @@ class ContactGroupFormViewModelTest {
         "Group name",
         Color.Red.getHexStringFromColor(),
         listOf(
-            ContactEmail(
-                UserIdTestData.userId,
-                ContactEmailId("ContactEmailId"),
-                "John Doe",
-                "johndoe@protonmail.com",
-                0,
-                0,
-                ContactIdTestData.contactId1,
-                "johndoe@protonmail.com",
-                listOf("LabelId1"),
-                true,
-                lastUsedTime = 0
+            ContactMetadata.Contact(
+                id = ContactId("ContactId"),
+                avatar = AvatarInformation(initials = "JD", color = Color.Red.getHexStringFromColor()),
+                name = "John Doe",
+                emails = listOf(
+                    ContactEmail(ContactEmailId("EmailId"), "johndoe@proton.me", false, 0)
+                )
             )
         )
     )
@@ -97,7 +93,7 @@ class ContactGroupFormViewModelTest {
 
     private val contactGroupFormUiModelMapperMock = mockk<ContactGroupFormUiModelMapper>()
     private val observeContactGroupMock = mockk<ObserveContactGroup>()
-    private val getContactEmailsByIdMock = mockk<GetContactEmailsById>()
+    private val getContactsByIdMock = mockk<GetContactsById>()
     private val savedStateHandleMock = mockk<SavedStateHandle>()
     private val createContactGroupMock = mockk<CreateContactGroup>()
     private val editContactGroupMock = mockk<EditContactGroup>()
@@ -114,7 +110,7 @@ class ContactGroupFormViewModelTest {
     private val contactGroupFormViewModel by lazy {
         ContactGroupFormViewModel(
             observeContactGroupMock,
-            getContactEmailsByIdMock,
+            getContactsByIdMock,
             reducer,
             contactGroupFormUiModelMapperMock,
             savedStateHandleMock,
@@ -149,7 +145,7 @@ class ContactGroupFormViewModelTest {
     fun `given Label ID, when init and observe empty contact group, then emits loaded contact group state`() = runTest {
         // Given
         val expectedContactGroup = testContactGroup.copy(
-            emails = emptyList()
+            members = emptyList()
         )
         val expectedContactGroupFormUiModel = ContactGroupFormPreviewData.contactGroupFormSampleData.copy(
             memberCount = 0,
@@ -317,7 +313,7 @@ class ContactGroupFormViewModelTest {
             expectedContactGroup.id,
             expectedContactGroup.name,
             expectedContactGroup.color,
-            expectedContactGroup.emails.map { it.id }
+            expectedContactGroup.members.map { it.id }
         )
 
         expectSavedStateGroupId(testContactGroupId)
@@ -645,10 +641,10 @@ class ContactGroupFormViewModelTest {
         userId: UserId,
         name: String,
         color: String,
-        contactEmailIds: List<ContactEmailId>
+        contactIds: List<ContactId>
     ) {
         coEvery {
-            createContactGroupMock.invoke(userId, name, ColorRgbHex(color), contactEmailIds)
+            createContactGroupMock.invoke(userId, name, ColorRgbHex(color), contactIds)
         } returns Unit.right()
     }
 
@@ -657,10 +653,10 @@ class ContactGroupFormViewModelTest {
         contactGroupId: ContactGroupId,
         name: String,
         color: String,
-        contactEmailIds: List<ContactEmailId>
+        contactIds: List<ContactId>
     ) {
         coEvery {
-            editContactGroupMock.invoke(userId, contactGroupId, name, ColorRgbHex(color), contactEmailIds)
+            editContactGroupMock.invoke(userId, contactGroupId, name, ColorRgbHex(color), contactIds)
         } returns Unit.right()
     }
 

@@ -21,5 +21,5 @@ package ch.protonmail.android.navigation.model
 sealed class SavedStateKey(val key: String) {
 
     object CurrentParentFolderId : SavedStateKey("current_parent_folder_id")
-    object SelectedContactEmailIds : SavedStateKey("selected_contacts_email_ids")
+    object SelectedContactIds : SavedStateKey("selected_contacts_ids")
 }

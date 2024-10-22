@@ -19,6 +19,7 @@
 package ch.protonmail.android.mailcontact.presentation
 
 import androidx.compose.ui.graphics.Color
+import ch.protonmail.android.mailcommon.domain.model.AvatarInformation
 import ch.protonmail.android.mailcommon.presentation.mapper.ColorMapper
 import ch.protonmail.android.mailcommon.presentation.usecase.GetInitials
 import ch.protonmail.android.mailcontact.presentation.model.ContactGroupFormMember
@@ -26,12 +27,10 @@ import ch.protonmail.android.mailcontact.presentation.model.ContactGroupFormUiMo
 import ch.protonmail.android.mailcontact.presentation.model.ContactGroupFormUiModelMapper
 import ch.protonmail.android.maillabel.presentation.getHexStringFromColor
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
-import ch.protonmail.android.testdata.contact.ContactIdTestData
-import ch.protonmail.android.testdata.contact.ContactTestData
 import ch.protonmail.android.testdata.label.LabelTestData
-import ch.protonmail.android.testdata.user.UserIdTestData
 import ch.protonmail.android.mailcontact.domain.model.ContactEmail
 import ch.protonmail.android.mailcontact.domain.model.ContactEmailId
+import ch.protonmail.android.mailcontact.domain.model.ContactId
 import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import ch.protonmail.android.maillabel.domain.model.LabelType
 import ch.protonmail.android.testdata.contact.ContactGroupIdSample
@@ -46,7 +45,7 @@ class ContactGroupFormUiModelMapperTest {
 
     private val getInitials = GetInitials()
     private val colorMapper = ColorMapper()
-    private val contactGroupFormUiModelMapper = ContactGroupFormUiModelMapper(getInitials, colorMapper)
+    private val contactGroupFormUiModelMapper = ContactGroupFormUiModelMapper(colorMapper)
 
     @Test
     fun `maps ContactGroup to ContactGroupFormUiModel`() {
@@ -56,33 +55,31 @@ class ContactGroupFormUiModelMapperTest {
             "Label 1",
             color = Color.Red.getHexStringFromColor()
         )
-        val contact = ContactTestData.buildContactWith(
-            contactEmails = listOf(
-                ContactEmail(
-                    UserIdTestData.userId,
-                    ContactEmailId("contact email id 1"),
-                    "First name from contact email",
-                    "test1+alias@protonmail.com",
-                    0,
-                    0,
-                    ContactIdTestData.contactId1,
-                    "test1@protonmail.com",
-                    listOf("LabelId1"),
-                    true,
-                    lastUsedTime = 0
-                ),
-                ContactEmail(
-                    UserIdTestData.userId,
-                    ContactEmailId("contact email id 2"),
-                    "First name from contact email",
-                    "test2+alias@protonmail.com",
-                    0,
-                    0,
-                    ContactIdTestData.contactId1,
-                    "test2@protonmail.com",
-                    emptyList(),
-                    true,
-                    lastUsedTime = 0
+        val contacts = listOf(
+            ContactMetadata.Contact(
+                id = ContactId("contact id 1"),
+                name = "Contact name 1",
+                avatar = AvatarInformation("FE", "#000000"),
+                emails = listOf(
+                    ContactEmail(
+                        ContactEmailId("contact email id 1"),
+                        "test1+alias@protonmail.com",
+                        true,
+                        lastUsedTime = 0
+                    )
+                )
+            ),
+            ContactMetadata.Contact(
+                id = ContactId("contact id 2"),
+                name = "Contact name 2",
+                avatar = AvatarInformation("FE", "#000000"),
+                emails = listOf(
+                    ContactEmail(
+                        ContactEmailId("contact email id 2"),
+                        "test2+alias@protonmail.com",
+                        true,
+                        lastUsedTime = 0
+                    )
                 )
             )
         )
@@ -90,7 +87,7 @@ class ContactGroupFormUiModelMapperTest {
             ContactGroupIdSample.Work,
             label.name,
             label.color!!,
-            listOf(contact.emails[0])
+            contacts
         )
 
         val actual = contactGroupFormUiModelMapper.toContactGroupFormUiModel(contactGroup)
@@ -99,13 +96,19 @@ class ContactGroupFormUiModelMapperTest {
             id = ContactGroupIdSample.Work,
             name = "Label 1",
             color = Color.Red,
-            memberCount = 1,
+            memberCount = 2,
             members = listOf(
                 ContactGroupFormMember(
-                    id = ContactEmailId("contact email id 1"),
+                    id = ContactId("contact id 1"),
                     initials = "FE",
-                    name = "First name from contact email",
+                    name = "Contact name 1",
                     email = "test1+alias@protonmail.com"
+                ),
+                ContactGroupFormMember(
+                    id = ContactId("contact id 2"),
+                    initials = "FE",
+                    name = "Contact name 2",
+                    email = "test2+alias@protonmail.com"
                 )
             )
         )

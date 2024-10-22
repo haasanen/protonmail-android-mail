@@ -19,12 +19,10 @@
 package ch.protonmail.android.testdata.contact
 
 import ch.protonmail.android.mailcommon.domain.sample.AvatarInformationSample
-import ch.protonmail.android.testdata.user.UserIdTestData
 import ch.protonmail.android.mailcontact.domain.model.ContactEmail
 import ch.protonmail.android.mailcontact.domain.model.ContactEmailId
 import ch.protonmail.android.mailcontact.domain.model.ContactId
 import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
-import me.proton.core.domain.entity.UserId
 
 object ContactTestData {
 
@@ -48,7 +46,6 @@ object ContactTestData {
     )
 
     fun buildContactWith(
-        userId: UserId = UserIdTestData.userId,
         contactId: ContactId = ContactIdTestData.contactId1,
         contactEmails: List<ContactEmail>,
         name: String? = null
@@ -59,24 +56,12 @@ object ContactTestData {
         avatar = AvatarInformationSample.avatarSample
     )
 
-    fun buildContactEmailWith(
-        userId: UserId = UserIdTestData.userId,
-        contactEmailId: ContactEmailId = ContactIdTestData.contactEmailId1,
-        contactId: ContactId = ContactIdTestData.contactId1,
-        name: String,
-        address: String
-    ) = ContactEmail(
-        userId = userId,
-        id = contactEmailId,
-        name = name,
-        email = address,
-        defaults = 0,
-        order = 0,
-        contactId = contactId,
-        canonicalEmail = address,
-        labelIds = emptyList(),
-        isProton = null,
-        lastUsedTime = 0
-    )
+    fun buildContactEmailWith(contactEmailId: ContactEmailId = ContactIdTestData.contactEmailId1, address: String) =
+        ContactEmail(
+            id = contactEmailId,
+            email = address,
+            isProton = false,
+            lastUsedTime = 0
+        )
 }
 
