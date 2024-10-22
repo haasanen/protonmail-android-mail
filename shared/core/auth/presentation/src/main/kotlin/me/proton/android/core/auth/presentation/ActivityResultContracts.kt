@@ -31,10 +31,9 @@ import me.proton.android.core.auth.presentation.twopass.TwoPassArg
 
 object StartAddAccount : ActivityResultContract<Unit, Boolean>() {
 
-    override fun createIntent(context: Context, input: Unit) =
-        Intent(context, AddAccountActivity::class.java).apply {
-            addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        }
+    override fun createIntent(context: Context, input: Unit) = Intent(context, AddAccountActivity::class.java).apply {
+        addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+    }
 
     override fun parseResult(resultCode: Int, intent: Intent?): Boolean = when (resultCode) {
         Activity.RESULT_OK -> true
@@ -44,10 +43,9 @@ object StartAddAccount : ActivityResultContract<Unit, Boolean>() {
 
 object StartLogin : ActivityResultContract<Unit, Boolean>() {
 
-    override fun createIntent(context: Context, input: Unit) =
-        Intent(context, LoginActivity::class.java).apply {
-            addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        }
+    override fun createIntent(context: Context, input: Unit) = Intent(context, LoginActivity::class.java).apply {
+        addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+    }
 
     override fun parseResult(resultCode: Int, intent: Intent?): Boolean = when (resultCode) {
         Activity.RESULT_OK -> true
@@ -57,10 +55,9 @@ object StartLogin : ActivityResultContract<Unit, Boolean>() {
 
 object StartLoginHelp : ActivityResultContract<Unit, Boolean>() {
 
-    override fun createIntent(context: Context, input: Unit) =
-        Intent(context, LoginHelpActivity::class.java).apply {
-            addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        }
+    override fun createIntent(context: Context, input: Unit) = Intent(context, LoginHelpActivity::class.java).apply {
+        addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+    }
 
     override fun parseResult(resultCode: Int, intent: Intent?): Boolean = when (resultCode) {
         Activity.RESULT_OK -> true

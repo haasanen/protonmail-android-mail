@@ -16,6 +16,8 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
+@file:Suppress("UseComposableActions")
+
 package me.proton.android.core.auth.presentation.secondfactor
 
 import android.content.res.Configuration

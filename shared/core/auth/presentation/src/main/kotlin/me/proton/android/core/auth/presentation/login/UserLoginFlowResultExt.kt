@@ -33,6 +33,7 @@ fun UserLoginFlowError.getErrorMessage(context: Context) = when (this) {
     is UserLoginFlowError.Unexpected -> v1.getErrorMessage()
 }
 
+@Suppress("MaxLineLength")
 fun LoginReason.getErrorMessage(context: Context) = when (this) {
     is LoginReason.CantUnlockUserKey -> context.getString(R.string.auth_login_error_invalid_action_cannot_unlock_keys)
     is LoginReason.HumanVerificationChallenge -> context.getString(R.string.auth_login_error_invalid_action_human_verification_challenge)

@@ -47,7 +47,7 @@ class LoginHelpScreenKtTest(
         fun configurations() = listOf(
             DeviceConfig.PIXEL_6,
             DeviceConfig.PIXEL_6.copy(nightMode = NightMode.NIGHT),
-            DeviceConfig.PIXEL_6.copy(orientation = ScreenOrientation.LANDSCAPE),
+            DeviceConfig.PIXEL_6.copy(orientation = ScreenOrientation.LANDSCAPE)
         )
     }
 }

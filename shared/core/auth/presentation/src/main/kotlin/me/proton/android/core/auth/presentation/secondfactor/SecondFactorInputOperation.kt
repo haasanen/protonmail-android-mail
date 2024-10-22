@@ -21,5 +21,5 @@ package me.proton.android.core.auth.presentation.secondfactor
 sealed interface SecondFactorInputOperation
 
 sealed interface SecondFactorInputAction : SecondFactorInputOperation {
-    data object Close: SecondFactorInputAction
+    data object Close : SecondFactorInputAction
 }

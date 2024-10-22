@@ -27,10 +27,7 @@ import me.proton.core.presentation.R
 import me.proton.android.core.auth.presentation.R as AuthR
 
 @Composable
-public fun ProtonCloseButton(
-    onCloseClicked: () -> Unit,
-    modifier: Modifier = Modifier
-) {
+public fun ProtonCloseButton(onCloseClicked: () -> Unit, modifier: Modifier = Modifier) {
     IconButton(
         modifier = modifier,
         onClick = onCloseClicked

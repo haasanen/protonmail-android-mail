@@ -22,8 +22,8 @@ sealed interface LoginOperation
 sealed interface LoginAction : LoginOperation {
     data class Login(
         val username: String,
-        val password: String,
+        val password: String
     ) : LoginAction
 
-    data object Close: LoginAction
+    data object Close : LoginAction
 }

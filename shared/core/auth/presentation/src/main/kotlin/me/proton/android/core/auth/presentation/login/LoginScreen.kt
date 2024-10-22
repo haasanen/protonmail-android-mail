@@ -15,6 +15,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+@file:Suppress("UseComposableActions")
+
 package me.proton.android.core.auth.presentation.login
 
 import android.content.res.Configuration
@@ -63,7 +65,6 @@ import me.proton.core.compose.theme.ProtonTheme
 import me.proton.core.compose.theme.ProtonTypography
 import me.proton.core.compose.theme.defaultSmallWeak
 import me.proton.core.compose.theme.defaultStrongNorm
-import uniffi.proton_mail_uniffi.MailUserSession
 import me.proton.core.presentation.R as CoreR
 
 internal const val PASSWORD_FIELD_TAG = "PASSWORD_FIELD_TAG" // gitleaks:allow
@@ -195,7 +196,7 @@ public fun LoginScaffold(
                 LoginForm(
                     enabled = !isLoading,
                     onLoginClicked = onLoginClicked,
-                    usernameError = if (isUsernameError) stringResource(id = R.string.auth_login_assistive_text) else null
+                    usernameError = if (isUsernameError) stringResource(R.string.auth_login_assistive_text) else null
                 )
             }
         }

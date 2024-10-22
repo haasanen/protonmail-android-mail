@@ -16,6 +16,8 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
+@file:Suppress("UseComposableActions")
+
 package me.proton.android.core.auth.presentation.secondfactor.otp
 
 import android.content.res.Configuration
@@ -60,7 +62,7 @@ fun OneTimePasswordInputForm(
         modifier = modifier,
         onAuthenticate = { viewModel.submit(it) },
         onError = onError,
-        onSuccess = onSuccess,
+        onSuccess = onSuccess
     )
 }
 
@@ -95,7 +97,7 @@ fun OneTimePasswordInputForm(
                 helpText = stringResource(R.string.auth_second_factor_totp_input_help),
                 label = { Text(text = stringResource(R.string.auth_second_factor_totp_input_label)) },
                 enabled = !isLoading,
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword)
             )
         } else if (mode == OneTimePasswordInputMode.RecoveryCode) {
             ProtonOutlinedTextFieldWithError(

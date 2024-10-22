@@ -21,7 +21,6 @@ class OneTimePasswordInputFormKtTest(config: DeviceConfig) {
         paparazzi.snapshot {
             ProtonTheme {
                 OneTimePasswordInputForm(
-                    mode = OneTimePasswordInputMode.Totp,
                     state = OneTimePasswordInputState.Idle
                 )
             }

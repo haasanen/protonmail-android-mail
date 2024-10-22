@@ -82,9 +82,8 @@ class LoginViewModel @Inject constructor(
         mutableState.emit(getError(error))
     }
 
-    private fun getError(error: UserLoginFlowError): LoginViewState {
-        return LoginViewState.Error.LoginFlow(error.getErrorMessage(context))
-    }
+    private fun getError(error: UserLoginFlowError): LoginViewState =
+        LoginViewState.Error.LoginFlow(error.getErrorMessage(context))
 
     private suspend fun getLoginViewState(): LoginViewState {
         val userId = when (val result = getLoginFlow().userId()) {
@@ -99,13 +98,9 @@ class LoginViewModel @Inject constructor(
         }
     }
 
-    private fun onTwoPass(userId: String): LoginViewState.Awaiting2Pass {
-        return LoginViewState.Awaiting2Pass(userId)
-    }
+    private fun onTwoPass(userId: String): LoginViewState.Awaiting2Pass = LoginViewState.Awaiting2Pass(userId)
 
-    private fun onTwoFa(userId: String): LoginViewState.Awaiting2fa {
-        return LoginViewState.Awaiting2fa(userId)
-    }
+    private fun onTwoFa(userId: String): LoginViewState.Awaiting2fa = LoginViewState.Awaiting2fa(userId)
 
     private suspend fun onLoggedIn(): LoginViewState {
         return when (val result = getLoginFlow().toUserContext()) {

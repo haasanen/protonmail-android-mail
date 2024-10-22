@@ -16,6 +16,8 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
+@file:Suppress("UseComposableActions")
+
 package me.proton.android.core.auth.presentation.twopass
 
 import androidx.compose.foundation.layout.Box
@@ -29,7 +31,6 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -43,7 +44,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import me.proton.android.core.auth.presentation.R
-import me.proton.android.core.auth.presentation.secondfactor.SecondFactorInputAction
+import me.proton.android.core.auth.presentation.twopass.TwoPassInputState.Error
 import me.proton.core.compose.component.ProtonPasswordOutlinedTextFieldWithError
 import me.proton.core.compose.component.ProtonSolidButton
 import me.proton.core.compose.component.ProtonTextButton
@@ -94,7 +95,7 @@ fun TwoPassInputScreen(
 
     LaunchedEffect(state) {
         when (state) {
-            is TwoPassInputState.Error.LoginFlow -> onError(state.error)
+            is Error.LoginFlow -> onError(state.error)
             is TwoPassInputState.Success -> onSuccess()
             else -> Unit
         }
@@ -132,7 +133,7 @@ fun TwoPassInputScreen(
                     enabled = !isLoading,
                     modifier = Modifier.padding(top = ProtonDimens.MediumSpacing),
                     errorText = when {
-                        state is TwoPassInputState.Error.PasswordIsEmpty -> stringResource(R.string.auth_two_pass_input_empty)
+                        state is Error.PasswordIsEmpty -> stringResource(R.string.auth_two_pass_input_empty)
                         else -> null
                     }
                 )

@@ -46,7 +46,7 @@ class LoginHelpActivity : ProtonActivity() {
                     },
                     onOtherLoginIssuesClicked = {
                         openBrowserLink(getString(R.string.login_help_link_other_issues))
-                    },
+                    }
                 )
             }
         }

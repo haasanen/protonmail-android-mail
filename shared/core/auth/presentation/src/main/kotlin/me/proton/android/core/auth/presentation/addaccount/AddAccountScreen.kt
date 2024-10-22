@@ -60,7 +60,7 @@ public const val SMALL_SCREEN_HEIGHT: Int = 680
 public fun AddAccountScreenMail(
     modifier: Modifier = Modifier,
     onSignUpClicked: () -> Unit = {},
-    onSignInClicked: () -> Unit = {},
+    onSignInClicked: () -> Unit = {}
 ) {
     AddAccountScreen(
         appHeader = R.drawable.welcome_header_mail,
@@ -69,7 +69,7 @@ public fun AddAccountScreenMail(
         appSubtitle = R.string.welcome_subtitle_mail,
         onSignUpClicked = onSignUpClicked,
         onSignInClicked = onSignInClicked,
-        modifier = modifier,
+        modifier = modifier
     )
 }
 
@@ -81,7 +81,7 @@ public fun AddAccountScreen(
     @StringRes appSubtitle: Int,
     modifier: Modifier = Modifier,
     onSignUpClicked: () -> Unit = {},
-    onSignInClicked: () -> Unit = {},
+    onSignInClicked: () -> Unit = {}
 ) {
     BoxWithConstraints(modifier = modifier.background(LocalColors.current.backgroundNorm)) {
         val isSmallHeight = maxHeight <= SMALL_SCREEN_HEIGHT.dp
@@ -112,12 +112,16 @@ public fun AddAccountScreen(
                 alignment = Alignment.BottomCenter
             )
 
-            Spacer(modifier = Modifier.constrainAs(middleSpacer) {
-                top.linkTo(middleGuideline)
-            })
-            Spacer(modifier = Modifier.constrainAs(bottomImageSpacer) {
-                top.linkTo(header.bottom)
-            })
+            Spacer(
+                modifier = Modifier.constrainAs(middleSpacer) {
+                    top.linkTo(middleGuideline)
+                }
+            )
+            Spacer(
+                modifier = Modifier.constrainAs(bottomImageSpacer) {
+                    top.linkTo(header.bottom)
+                }
+            )
 
             AddAccountScreenContent(
                 appLogoWithNamePainter = painterResource(appLogoWithName),
@@ -198,7 +202,7 @@ private fun AddAccountScreenContent(
             onClick = onSignInClicked,
             modifier = Modifier
                 .padding(vertical = ProtonDimens.DefaultSpacing)
-                .height(ProtonDimens.DefaultButtonMinHeight),
+                .height(ProtonDimens.DefaultButtonMinHeight)
         ) {
             Text(text = stringResource(R.string.welcome_sign_in))
         }
