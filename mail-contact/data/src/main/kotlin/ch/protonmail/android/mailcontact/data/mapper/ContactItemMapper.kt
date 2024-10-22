@@ -29,7 +29,7 @@ class ContactItemMapper @Inject constructor() {
             id = localContactItem.v1.id.toContactId(),
             name = localContactItem.v1.name,
             emails = localContactItem.v1.emails.map { localEmail ->
-                localEmail.toContactEmail(localContactItem.v1.id.toContactId())
+                localEmail.toContactEmail()
             },
             avatar = AvatarInformation(
                 initials = localContactItem.v1.avatarInformation.text,

@@ -21,26 +21,21 @@ package ch.protonmail.android.mailcontact.data.mapper
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalContactEmail
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalContactGroupId
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalContactId
+import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcontact.domain.model.ContactEmail
 import ch.protonmail.android.mailcontact.domain.model.ContactEmailId
 import ch.protonmail.android.mailcontact.domain.model.ContactGroupId
 import ch.protonmail.android.mailcontact.domain.model.ContactId
-import me.proton.core.domain.entity.UserId
 
 fun LocalContactId.toContactId(): ContactId = ContactId(this.value.toString())
 fun LocalContactGroupId.toContactGroupId(): ContactGroupId = ContactGroupId(this.value.toString())
-fun LocalContactEmail.toContactEmail(contactId: ContactId): ContactEmail {
+
+@MissingRustApi
+fun LocalContactEmail.toContactEmail(): ContactEmail {
     return ContactEmail(
-        userId = UserId("userId"),
         id = ContactEmailId(this.id.value.toString()),
-        name = "",
         email = this.email,
-        defaults = 0,
-        order = 0,
-        contactId = contactId,
-        canonicalEmail = "",
-        labelIds = emptyList(),
-        isProton = true,
-        lastUsedTime = 0
+        isProton = false, // This value should be provided by Rust
+        lastUsedTime = 0 // This value should be provided by Rust
     )
 }

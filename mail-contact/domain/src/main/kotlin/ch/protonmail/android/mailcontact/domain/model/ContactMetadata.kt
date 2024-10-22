@@ -23,13 +23,12 @@ import ch.protonmail.android.mailcommon.domain.model.AvatarInformation
 sealed interface ContactMetadata {
 
     val name: String
-    val emails: List<ContactEmail>
 
     data class Contact(
         val id: ContactId,
         val avatar: AvatarInformation,
         override val name: String,
-        override val emails: List<ContactEmail>
+        val emails: List<ContactEmail>
     ) : ContactMetadata
 
 
@@ -37,7 +36,7 @@ sealed interface ContactMetadata {
         val id: ContactGroupId,
         override val name: String,
         val color: String,
-        override val emails: List<ContactEmail>
+        val members: List<Contact>
     ) : ContactMetadata
 
 }
