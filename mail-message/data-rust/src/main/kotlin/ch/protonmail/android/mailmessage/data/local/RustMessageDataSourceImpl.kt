@@ -30,6 +30,7 @@ import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailmessage.data.usecase.CreateRustMessageAccessor
 import ch.protonmail.android.mailmessage.data.usecase.CreateRustMessageBodyAccessor
+import ch.protonmail.android.mailmessage.data.usecase.GetRustAllMessageBottomBarActions
 import ch.protonmail.android.mailmessage.data.usecase.GetRustAvailableMessageActions
 import ch.protonmail.android.mailmessage.data.usecase.GetRustMessageLabelAsActions
 import ch.protonmail.android.mailmessage.data.usecase.GetRustMessageMoveToActions
@@ -44,6 +45,7 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.mapLatest
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
+import uniffi.proton_mail_uniffi.AllBottomBarMessageActions
 import uniffi.proton_mail_uniffi.MailSessionException
 import uniffi.proton_mail_uniffi.MailboxException
 import uniffi.proton_mail_uniffi.MessageAvailableActions
@@ -61,6 +63,7 @@ class RustMessageDataSourceImpl @Inject constructor(
     private val rustMarkMessagesUnread: RustMarkMessagesUnread,
     private val rustStarMessages: RustStarMessages,
     private val rustUnstarMessages: RustUnstarMessages,
+    private val getRustAllMessageBottomBarActions: GetRustAllMessageBottomBarActions,
     private val getRustAvailableMessageActions: GetRustAvailableMessageActions,
     private val getRustMessageMoveToActions: GetRustMessageMoveToActions,
     private val getRustMessageLabelAsActions: GetRustMessageLabelAsActions
@@ -192,6 +195,23 @@ class RustMessageDataSourceImpl @Inject constructor(
             return null
         }
         return getRustAvailableMessageActions(mailbox, messageIds)
+    }
+
+    override suspend fun getAllAvailableBottomBarActions(
+        userId: UserId,
+        labelId: LocalLabelId,
+        messageIds: List<LocalMessageId>
+    ): Either<DataError.Local, AllBottomBarMessageActions> {
+        val mailbox = rustMailbox.observeMailbox(labelId).firstOrNull()
+        if (mailbox == null) {
+            Timber.e("rust-message: trying to get all available actions for null Mailbox! failing")
+            return DataError.Local.NoDataCached.left()
+        }
+        return Either.catch {
+            getRustAllMessageBottomBarActions(mailbox, messageIds)
+        }.mapLeft {
+            DataError.Local.Unknown
+        }
     }
 
     override suspend fun getAvailableSystemMoveToActions(

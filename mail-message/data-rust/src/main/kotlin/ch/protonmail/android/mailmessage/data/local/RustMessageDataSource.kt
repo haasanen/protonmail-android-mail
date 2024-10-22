@@ -27,6 +27,7 @@ import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageMetadata
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import me.proton.core.domain.entity.UserId
+import uniffi.proton_mail_uniffi.AllBottomBarMessageActions
 import uniffi.proton_mail_uniffi.MessageAvailableActions
 import uniffi.proton_mail_uniffi.MoveAction
 
@@ -70,4 +71,10 @@ interface RustMessageDataSource {
         labelId: LocalLabelId,
         messageIds: List<LocalMessageId>
     ): List<LocalLabelAsAction>?
+
+    suspend fun getAllAvailableBottomBarActions(
+        userId: UserId,
+        labelId: LocalLabelId,
+        messageIds: List<LocalMessageId>
+    ): Either<DataError.Local, AllBottomBarMessageActions>
 }
