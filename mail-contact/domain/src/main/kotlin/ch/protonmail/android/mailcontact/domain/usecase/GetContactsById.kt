@@ -22,13 +22,13 @@ import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcontact.domain.model.ContactId
-import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import ch.protonmail.android.mailcontact.domain.model.GetContactError
 import kotlinx.coroutines.flow.firstOrNull
+import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 
-class GetContactEmailsById @Inject constructor(
+class GetContactsById @Inject constructor(
     private val observeContacts: ObserveContacts
 ) {
 
