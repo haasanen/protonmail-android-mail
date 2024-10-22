@@ -19,67 +19,23 @@
 package ch.protonmail.android.mailcontact.domain.usecase
 
 import arrow.core.Either
-import arrow.core.raise.either
-import ch.protonmail.android.mailcommon.domain.mapper.mapToEither
+import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailcontact.domain.model.ContactGroupLabel
 import ch.protonmail.android.mailcontact.domain.model.DecryptedContact
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.combine
 import ch.protonmail.android.mailcontact.domain.model.ContactId
-import ch.protonmail.android.mailcontact.domain.model.ContactWithCards
-import ch.protonmail.android.mailcontact.domain.repository.ContactRepository
 import me.proton.core.domain.entity.UserId
-import ch.protonmail.android.maillabel.domain.model.Label
-import ch.protonmail.android.maillabel.domain.model.LabelType
-import ch.protonmail.android.maillabel.domain.repository.LabelRepository
-import timber.log.Timber
 import javax.inject.Inject
 
-class ObserveDecryptedContact @Inject constructor(
-    private val contactRepository: ContactRepository,
-    private val getDecryptedContact: GetDecryptedContact,
-    private val labelRepository: LabelRepository
-) {
+@MissingRustApi
+@Suppress("NotImplementedDeclaration")
+class ObserveDecryptedContact @Inject constructor() {
 
     operator fun invoke(
         userId: UserId,
         contactId: ContactId,
         refresh: Boolean = false
     ): Flow<Either<DataError, DecryptedContact>> {
-        return combine(
-            contactRepository.observeContactWithCards(userId, contactId, refresh).mapToEither(),
-            labelRepository.observeLabels(userId, LabelType.ContactGroup).mapToEither()
-        ) { contactWithCardsEither, labelsEither ->
-            either {
-
-                val contactWithCards = contactWithCardsEither.bind()
-                val allContactLabels = labelsEither.bind()
-
-                getDecryptedContact(userId, contactWithCards).getOrNull()?.copy(
-                    contactGroupLabels = createContactGroups(contactWithCards, allContactLabels)
-                ) ?: raise(DataError.Local.DecryptionError)
-            }
-        }
-    }
-
-    private fun createContactGroups(
-        contactWithCards: ContactWithCards,
-        allContactLabels: List<Label>
-    ): List<ContactGroupLabel> {
-        val allLabelIds = contactWithCards.contactEmails.flatMap { it.labelIds }
-
-        return allContactLabels.filter {
-            allLabelIds.contains(it.labelId.id)
-        }.map {
-            val color = it.color ?: run {
-                Timber.w("contact-group: color for group ${it.labelId} is null, this is never expected.")
-                "#00000000"
-            }
-            ContactGroupLabel(
-                name = it.name,
-                color = color
-            )
-        }
+        TODO("Not yet implemented")
     }
 }
