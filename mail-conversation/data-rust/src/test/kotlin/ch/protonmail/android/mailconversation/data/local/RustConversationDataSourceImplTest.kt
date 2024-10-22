@@ -19,8 +19,12 @@
 package ch.protonmail.android.mailconversation.data.local
 
 import app.cash.turbine.test
+import arrow.core.left
+import arrow.core.right
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalConversationId
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
+import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailconversation.data.usecase.GetRustAllConversationBottomBarActions
 import ch.protonmail.android.mailconversation.data.usecase.GetRustAvailableConversationActions
 import ch.protonmail.android.mailconversation.data.usecase.GetRustConversationLabelAsActions
 import ch.protonmail.android.mailconversation.data.usecase.GetRustConversationMoveToActions
@@ -46,6 +50,7 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import org.junit.Test
+import uniffi.proton_mail_uniffi.AllBottomBarMessageActions
 import uniffi.proton_mail_uniffi.ConversationAvailableActions
 import uniffi.proton_mail_uniffi.CustomFolderAction
 import uniffi.proton_mail_uniffi.Id
@@ -74,6 +79,7 @@ class RustConversationDataSourceImplTest {
     private val rustConversationDetailQuery: RustConversationDetailQuery = mockk()
     private val rustConversationsQuery: RustConversationsQuery = mockk()
     private val getRustAvailableConversationActions = mockk<GetRustAvailableConversationActions>()
+    private val getRustAllConversationBottomBarActions = mockk<GetRustAllConversationBottomBarActions>()
     private val getRustConversationMoveToActions = mockk<GetRustConversationMoveToActions>()
     private val getRustConversationLabelAsActions = mockk<GetRustConversationLabelAsActions>()
 
@@ -82,6 +88,7 @@ class RustConversationDataSourceImplTest {
         rustMailbox,
         rustConversationDetailQuery,
         rustConversationsQuery,
+        getRustAllConversationBottomBarActions,
         getRustAvailableConversationActions,
         getRustConversationMoveToActions,
         getRustConversationLabelAsActions,
@@ -247,4 +254,42 @@ class RustConversationDataSourceImplTest {
         // Then
         assertEquals(expected, result)
     }
+
+    @Test
+    fun `get all available actions should return all available bottom bar actions`() = runTest {
+        // Given
+        val userId = UserIdTestData.userId
+        val labelId = LocalLabelId(1uL)
+        val mailbox = mockk<Mailbox>()
+        val conversationIds = listOf(LocalConversationIdSample.OctConversation)
+        val expected = AllBottomBarMessageActions(emptyList(), emptyList())
+
+        every { rustMailbox.observeMailbox(labelId) } returns flowOf(mailbox)
+        coEvery { getRustAllConversationBottomBarActions(mailbox, conversationIds) } returns expected
+
+        // When
+        val result = dataSource.getAllAvailableBottomBarActions(userId, labelId, conversationIds)
+
+        // Then
+        assertEquals(expected.right(), result)
+    }
+
+    @Test
+    fun `get all available actions should return error when rust thrown exception`() = runTest {
+        // Given
+        val userId = UserIdTestData.userId
+        val labelId = LocalLabelId(1uL)
+        val mailbox = mockk<Mailbox>()
+        val conversationIds = listOf(LocalConversationIdSample.OctConversation)
+
+        every { rustMailbox.observeMailbox(labelId) } returns flowOf(mailbox)
+        coEvery { getRustAllConversationBottomBarActions(mailbox, conversationIds) } throws MailboxException.Io("fail")
+
+        // When
+        val result = dataSource.getAllAvailableBottomBarActions(userId, labelId, conversationIds)
+
+        // Then
+        assertEquals(DataError.Local.Unknown.left(), result)
+    }
+
 }

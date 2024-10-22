@@ -18,12 +18,16 @@
 
 package ch.protonmail.android.mailconversation.data.local
 
+import arrow.core.Either
+import arrow.core.left
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalConversation
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalConversationId
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelAsAction
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
 import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
+import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailconversation.data.ConversationRustCoroutineScope
+import ch.protonmail.android.mailconversation.data.usecase.GetRustAllConversationBottomBarActions
 import ch.protonmail.android.mailconversation.data.usecase.GetRustAvailableConversationActions
 import ch.protonmail.android.mailconversation.data.usecase.GetRustConversationLabelAsActions
 import ch.protonmail.android.mailconversation.data.usecase.GetRustConversationMoveToActions
@@ -37,6 +41,7 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
+import uniffi.proton_mail_uniffi.AllBottomBarMessageActions
 import uniffi.proton_mail_uniffi.ConversationAvailableActions
 import uniffi.proton_mail_uniffi.MailUserSession
 import uniffi.proton_mail_uniffi.Mailbox
@@ -55,6 +60,7 @@ class RustConversationDataSourceImpl @Inject constructor(
     private val rustMailbox: RustMailbox,
     private val rustConversationDetailQuery: RustConversationDetailQuery,
     private val rustConversationsQuery: RustConversationsQuery,
+    private val getRustAllConversationBottomBarActions: GetRustAllConversationBottomBarActions,
     private val getRustAvailableConversationActions: GetRustAvailableConversationActions,
     private val getRustConversationMoveToActions: GetRustConversationMoveToActions,
     private val getRustConversationLabelAsActions: GetRustConversationLabelAsActions,
@@ -159,6 +165,25 @@ class RustConversationDataSourceImpl @Inject constructor(
 
         return getRustAvailableConversationActions(mailbox, conversationIds)
     }
+
+    override suspend fun getAllAvailableBottomBarActions(
+        userId: UserId,
+        labelId: LocalLabelId,
+        conversationIds: List<LocalConversationId>
+    ): Either<DataError.Local, AllBottomBarMessageActions> {
+        val mailbox = rustMailbox.observeMailbox(labelId).firstOrNull()
+        if (mailbox == null) {
+            Timber.e("rust-conversation: trying to get available actions for null Mailbox! failing")
+            return DataError.Local.NoDataCached.left()
+        }
+
+        return Either.catch {
+            getRustAllConversationBottomBarActions(mailbox, conversationIds)
+        }.mapLeft {
+            DataError.Local.Unknown
+        }
+    }
+
 
     override suspend fun getAvailableSystemMoveToActions(
         userId: UserId,

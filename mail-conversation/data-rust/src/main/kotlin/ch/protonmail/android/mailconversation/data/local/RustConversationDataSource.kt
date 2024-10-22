@@ -18,14 +18,17 @@
 
 package ch.protonmail.android.mailconversation.data.local
 
+import arrow.core.Either
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalConversation
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalConversationId
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelAsAction
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
+import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailmessage.data.model.LocalConversationMessages
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import kotlinx.coroutines.flow.Flow
 import me.proton.core.domain.entity.UserId
+import uniffi.proton_mail_uniffi.AllBottomBarMessageActions
 import uniffi.proton_mail_uniffi.ConversationAvailableActions
 import uniffi.proton_mail_uniffi.MoveAction
 
@@ -76,4 +79,10 @@ interface RustConversationDataSource {
         labelId: LocalLabelId,
         conversationIds: List<LocalConversationId>
     ): List<LocalLabelAsAction>?
+
+    suspend fun getAllAvailableBottomBarActions(
+        userId: UserId,
+        labelId: LocalLabelId,
+        conversationIds: List<LocalConversationId>
+    ): Either<DataError.Local, AllBottomBarMessageActions>
 }
