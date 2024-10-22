@@ -21,6 +21,7 @@ package ch.protonmail.android.mailconversation.data.repository
 import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
+import ch.protonmail.android.mailcommon.domain.model.AllBottomBarActions
 import ch.protonmail.android.mailcommon.domain.model.AvailableActions
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
@@ -31,6 +32,7 @@ import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
 import ch.protonmail.android.maillabel.domain.model.LabelAsActions
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabel
+import ch.protonmail.android.mailmessage.data.mapper.toAllBottomBarActions
 import ch.protonmail.android.mailmessage.data.mapper.toLabelAsActions
 import ch.protonmail.android.mailmessage.data.mapper.toLocalConversationId
 import ch.protonmail.android.mailmessage.data.mapper.toMailLabels
@@ -89,5 +91,20 @@ class RustConversationActionRepository @Inject constructor(
         Timber.v("rust-conversation: Available label as actions: ${labelAsActions.joinToString("\n")}")
 
         return labelAsActions.toLabelAsActions().right()
+    }
+
+    override suspend fun getAllBottomBarActions(
+        userId: UserId,
+        labelId: LabelId,
+        conversationIds: List<ConversationId>
+    ): Either<DataError, AllBottomBarActions> {
+        val allActions = rustConversationDataSource.getAllAvailableBottomBarActions(
+            userId,
+            labelId.toLocalLabelId(),
+            conversationIds.map { it.toLocalConversationId() }
+        )
+        Timber.v("rust-conversation: All bottombar actions: $allActions \n for convo $conversationIds")
+
+        return allActions.map { it.toAllBottomBarActions() }
     }
 }

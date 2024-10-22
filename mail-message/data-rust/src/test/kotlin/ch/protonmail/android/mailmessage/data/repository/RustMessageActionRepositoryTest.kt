@@ -21,6 +21,7 @@ package ch.protonmail.android.mailmessage.data.repository
 import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.Action
+import ch.protonmail.android.mailcommon.domain.model.AllBottomBarActions
 import ch.protonmail.android.mailcommon.domain.model.AvailableActions
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
@@ -38,6 +39,8 @@ import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
+import uniffi.proton_mail_uniffi.AllBottomBarMessageActions
+import uniffi.proton_mail_uniffi.BottomBarActions
 import uniffi.proton_mail_uniffi.GeneralActions
 import uniffi.proton_mail_uniffi.Id
 import uniffi.proton_mail_uniffi.IsSelected
@@ -252,6 +255,56 @@ class RustMessageActionRepositoryTest {
 
         // Then
         assertEquals(DataError.Local.Unknown.left(), result)
+    }
+
+    @Test
+    fun `get all available bottom bar actions should return all actions when data source exposes them`() = runTest {
+        // Given
+        val userId = UserIdTestData.userId
+        val labelId = SystemLabelId.Inbox.labelId
+        val messageIds = listOf(MessageId("1"))
+        val rustAvailableActions = AllBottomBarMessageActions(
+            listOf(BottomBarActions.Star),
+            listOf(BottomBarActions.MarkRead)
+        )
+
+        coEvery {
+            rustMessageDataSource.getAllAvailableBottomBarActions(
+                userId,
+                labelId.toLocalLabelId(),
+                messageIds.map { it.toLocalMessageId() }
+            )
+        } returns rustAvailableActions.right()
+
+        // When
+        val result = repository.getAllBottomBarActions(userId, labelId, messageIds)
+
+        // Then
+        val expected = AllBottomBarActions(listOf(Action.Star), listOf(Action.MarkRead))
+        assertEquals(expected.right(), result)
+    }
+
+    @Test
+    fun `get all available bottom bar actions should return error when data source fails`() = runTest {
+        // Given
+        val userId = UserIdTestData.userId
+        val labelId = SystemLabelId.Inbox.labelId
+        val messageIds = listOf(MessageId("1"))
+        val expected = DataError.Local.Unknown.left()
+
+        coEvery {
+            rustMessageDataSource.getAllAvailableBottomBarActions(
+                userId,
+                labelId.toLocalLabelId(),
+                messageIds.map { it.toLocalMessageId() }
+            )
+        } returns expected
+
+        // When
+        val result = repository.getAllBottomBarActions(userId, labelId, messageIds)
+
+        // Then
+        assertEquals(expected, result)
     }
 
 }

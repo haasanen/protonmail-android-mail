@@ -20,6 +20,7 @@ package ch.protonmail.android.mailmessage.data.mapper
 
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelAsAction
 import ch.protonmail.android.mailcommon.domain.model.Action
+import ch.protonmail.android.mailcommon.domain.model.AllBottomBarActions
 import ch.protonmail.android.mailcommon.domain.model.AvailableActions
 import ch.protonmail.android.maillabel.data.mapper.toLabelId
 import ch.protonmail.android.maillabel.data.mapper.toSystemLabel
@@ -29,6 +30,8 @@ import ch.protonmail.android.maillabel.domain.model.LabelType
 import ch.protonmail.android.maillabel.domain.model.MailLabel
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import timber.log.Timber
+import uniffi.proton_mail_uniffi.AllBottomBarMessageActions
+import uniffi.proton_mail_uniffi.BottomBarActions
 import uniffi.proton_mail_uniffi.GeneralActions
 import uniffi.proton_mail_uniffi.IsSelected
 import uniffi.proton_mail_uniffi.MessageAction
@@ -123,6 +126,31 @@ private fun List<MessageAction>.messageActionsToActions() = this.map { messageAc
         MessageAction.PIN,
         MessageAction.UNPIN -> {
             Timber.i("rust-message: Found unhandled action while mapping: $messageAction")
+            null
+        }
+    }
+}
+
+fun AllBottomBarMessageActions.toAllBottomBarActions(): AllBottomBarActions {
+    return AllBottomBarActions(
+        this.hiddenBottomBarActions.bottombarActionsToActions().filterNotNull(),
+        this.visibleBottomBarActions.bottombarActionsToActions().filterNotNull()
+    )
+}
+
+private fun List<BottomBarActions>.bottombarActionsToActions() = this.map { bottombarAction ->
+    when (bottombarAction) {
+        BottomBarActions.LabelAs -> Action.Label
+        BottomBarActions.MarkRead -> Action.MarkRead
+        BottomBarActions.MarkUnread -> Action.MarkUnread
+        BottomBarActions.More -> Action.More
+        BottomBarActions.MoveTo,
+        is BottomBarActions.MoveToSystemFolder -> Action.Move
+        BottomBarActions.PermanentDelete -> Action.Delete
+        BottomBarActions.Star -> Action.Star
+        BottomBarActions.Unstar -> Action.Unstar
+        BottomBarActions.NotSpam -> {
+            Timber.i("rust-message: Found unhandled action while mapping: $bottombarAction")
             null
         }
     }

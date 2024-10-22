@@ -19,6 +19,7 @@
 package ch.protonmail.android.mailmessage.domain.repository
 
 import arrow.core.Either
+import ch.protonmail.android.mailcommon.domain.model.AllBottomBarActions
 import ch.protonmail.android.mailcommon.domain.model.AvailableActions
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.maillabel.domain.model.LabelAsActions
@@ -46,4 +47,10 @@ interface MessageActionRepository {
         labelId: LabelId,
         messageIds: List<MessageId>
     ): Either<DataError, LabelAsActions>
+
+    suspend fun getAllBottomBarActions(
+        userId: UserId,
+        labelId: LabelId,
+        messageIds: List<MessageId>
+    ): Either<DataError, AllBottomBarActions>
 }

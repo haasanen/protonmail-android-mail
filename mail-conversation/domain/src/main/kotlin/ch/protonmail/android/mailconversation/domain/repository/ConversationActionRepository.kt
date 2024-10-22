@@ -19,6 +19,7 @@
 package ch.protonmail.android.mailconversation.domain.repository
 
 import arrow.core.Either
+import ch.protonmail.android.mailcommon.domain.model.AllBottomBarActions
 import ch.protonmail.android.mailcommon.domain.model.AvailableActions
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
@@ -46,4 +47,10 @@ interface ConversationActionRepository {
         labelId: LabelId,
         conversationIds: List<ConversationId>
     ): Either<DataError, LabelAsActions>
+
+    suspend fun getAllBottomBarActions(
+        userId: UserId,
+        labelId: LabelId,
+        conversationIds: List<ConversationId>
+    ): Either<DataError, AllBottomBarActions>
 }

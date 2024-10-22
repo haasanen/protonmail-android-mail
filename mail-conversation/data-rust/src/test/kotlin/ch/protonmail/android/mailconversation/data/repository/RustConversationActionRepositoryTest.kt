@@ -21,6 +21,7 @@ package ch.protonmail.android.mailconversation.data.repository
 import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.Action
+import ch.protonmail.android.mailcommon.domain.model.AllBottomBarActions
 import ch.protonmail.android.mailcommon.domain.model.AvailableActions
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
@@ -38,6 +39,8 @@ import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
+import uniffi.proton_mail_uniffi.AllBottomBarMessageActions
+import uniffi.proton_mail_uniffi.BottomBarActions
 import uniffi.proton_mail_uniffi.ConversationAction
 import uniffi.proton_mail_uniffi.ConversationAvailableActions
 import uniffi.proton_mail_uniffi.GeneralActions
@@ -255,4 +258,55 @@ class RustConversationActionRepositoryTest {
         // Then
         assertEquals(DataError.Local.Unknown.left(), result)
     }
+
+    @Test
+    fun `get all available bottom bar actions should return all actions when data source exposes them`() = runTest {
+        // Given
+        val userId = UserIdTestData.userId
+        val labelId = SystemLabelId.Inbox.labelId
+        val conversationIds = listOf(ConversationId("1"))
+        val rustAvailableActions = AllBottomBarMessageActions(
+            listOf(BottomBarActions.Star),
+            listOf(BottomBarActions.MarkRead)
+        )
+
+        coEvery {
+            rustConversationDataSource.getAllAvailableBottomBarActions(
+                userId,
+                labelId.toLocalLabelId(),
+                conversationIds.map { it.toLocalConversationId() }
+            )
+        } returns rustAvailableActions.right()
+
+        // When
+        val result = rustConversationRepository.getAllBottomBarActions(userId, labelId, conversationIds)
+
+        // Then
+        val expected = AllBottomBarActions(listOf(Action.Star), listOf(Action.MarkRead))
+        assertEquals(expected.right(), result)
+    }
+
+    @Test
+    fun `get all available bottom bar actions should return error when data source fails`() = runTest {
+        // Given
+        val userId = UserIdTestData.userId
+        val labelId = SystemLabelId.Inbox.labelId
+        val conversationIds = listOf(ConversationId("1"))
+        val expected = DataError.Local.Unknown.left()
+
+        coEvery {
+            rustConversationDataSource.getAllAvailableBottomBarActions(
+                userId,
+                labelId.toLocalLabelId(),
+                conversationIds.map { it.toLocalConversationId() }
+            )
+        } returns expected
+
+        // When
+        val result = rustConversationRepository.getAllBottomBarActions(userId, labelId, conversationIds)
+
+        // Then
+        assertEquals(expected, result)
+    }
+
 }
