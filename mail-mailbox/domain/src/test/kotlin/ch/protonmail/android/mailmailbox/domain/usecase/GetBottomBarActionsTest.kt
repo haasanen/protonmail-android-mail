@@ -33,11 +33,11 @@ import me.proton.core.mailsettings.domain.entity.ViewMode
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class ObserveMailboxActionsTest {
+class GetBottomBarActionsTest {
 
     private val getBottomSheetActions = mockk<GetBottomSheetActions>()
 
-    private val observeMailboxActions = GetMailboxActions(getBottomSheetActions)
+    private val observeMailboxActions = GetBottomBarActions(getBottomSheetActions)
 
     @Test
     fun `returns visible bottom bar actions adding 'More' Action when use case succeeds`() = runTest {

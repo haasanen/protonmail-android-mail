@@ -67,7 +67,7 @@ import ch.protonmail.android.mailmailbox.domain.model.isBelowSecondLimit
 import ch.protonmail.android.mailmailbox.domain.model.toMailboxItemType
 import ch.protonmail.android.mailmailbox.domain.usecase.GetBottomSheetActions
 import ch.protonmail.android.mailmailbox.domain.usecase.GetLabelAsBottomSheetContent
-import ch.protonmail.android.mailmailbox.domain.usecase.GetMailboxActions
+import ch.protonmail.android.mailmailbox.domain.usecase.GetBottomBarActions
 import ch.protonmail.android.mailmailbox.domain.usecase.GetMoveToLocations
 import ch.protonmail.android.mailmailbox.domain.usecase.ObserveCurrentViewMode
 import ch.protonmail.android.mailmailbox.domain.usecase.ObservePrimaryUserAccountStorageStatus
@@ -152,7 +152,7 @@ class MailboxViewModel @Inject constructor(
     private val selectedMailLabelId: SelectedMailLabelId,
     private val observeUnreadCounters: ObserveUnreadCounters,
     private val observeFolderColorSettings: ObserveFolderColorSettings,
-    private val getMailboxActions: GetMailboxActions,
+    private val getBottomBarActions: GetBottomBarActions,
     private val getBottomSheetActions: GetBottomSheetActions,
     private val getMoveToLocations: GetMoveToLocations,
     private val getLabelAsBottomSheetContent: GetLabelAsBottomSheetContent,
@@ -235,7 +235,7 @@ class MailboxViewModel @Inject constructor(
 
         selectedMailLabelId.flow.mapToExistingLabel()
             .combine(state.observeSelectedMailboxItems()) { selectedMailLabel, selectedMailboxItems ->
-                getMailboxActions(
+                getBottomBarActions(
                     primaryUserId.filterNotNull().first(),
                     selectedMailLabel.id.labelId,
                     selectedMailboxItems.map { MailboxItemId(it.id) },

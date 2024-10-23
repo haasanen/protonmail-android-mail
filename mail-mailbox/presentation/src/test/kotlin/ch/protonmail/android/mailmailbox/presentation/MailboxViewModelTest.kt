@@ -71,7 +71,7 @@ import ch.protonmail.android.mailmailbox.domain.model.StorageLimitPreference
 import ch.protonmail.android.mailmailbox.domain.model.UserAccountStorageStatus
 import ch.protonmail.android.mailmailbox.domain.usecase.GetBottomSheetActions
 import ch.protonmail.android.mailmailbox.domain.usecase.GetLabelAsBottomSheetContent
-import ch.protonmail.android.mailmailbox.domain.usecase.GetMailboxActions
+import ch.protonmail.android.mailmailbox.domain.usecase.GetBottomBarActions
 import ch.protonmail.android.mailmailbox.domain.usecase.GetMoveToLocations
 import ch.protonmail.android.mailmailbox.domain.usecase.ObserveCurrentViewMode
 import ch.protonmail.android.mailmailbox.domain.usecase.ObservePrimaryUserAccountStorageStatus
@@ -231,7 +231,7 @@ class MailboxViewModelTest {
         every { newStateFrom(any(), any()) } returns MailboxStateSampleData.Loading
     }
 
-    private val observeMailboxActions = mockk<GetMailboxActions> {
+    private val observeMailboxActions = mockk<GetBottomBarActions> {
         coEvery { this@mockk(any(), any(), any(), any()) } returns listOf(Action.Archive, Action.Trash).right()
     }
 
@@ -294,7 +294,7 @@ class MailboxViewModelTest {
             selectedMailLabelId = selectedMailLabelId,
             observeUnreadCounters = observeUnreadCounters,
             observeFolderColorSettings = observeFolderColorSettings,
-            getMailboxActions = observeMailboxActions,
+            getBottomBarActions = observeMailboxActions,
             getBottomSheetActions = getBottomSheetActions,
             getMoveToLocations = getMoveToLocations,
             getLabelAsBottomSheetContent = getLabelAsBottomSheetContent,

@@ -27,7 +27,7 @@ import me.proton.core.domain.entity.UserId
 import me.proton.core.mailsettings.domain.entity.ViewMode
 import javax.inject.Inject
 
-class GetMailboxActions @Inject constructor(
+class GetBottomBarActions @Inject constructor(
     private val getBottomSheetActions: GetBottomSheetActions
 ) {
 
