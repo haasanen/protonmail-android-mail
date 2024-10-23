@@ -19,6 +19,7 @@
 package ch.protonmail.android.mailmailbox.domain.usecase
 
 import arrow.core.Either
+import ch.protonmail.android.mailcommon.domain.model.Action
 import ch.protonmail.android.mailcommon.domain.model.AllBottomBarActions
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
@@ -44,13 +45,26 @@ class GetBottomSheetActions @Inject constructor(
     ): Either<DataError, AllBottomBarActions> = when (viewMode) {
         ViewMode.ConversationGrouping -> {
             val conversationIds = mailboxItemIds.map { ConversationId(it.value) }
-            getAllConversationBottomBarActions(userId, labelId, conversationIds)
+            getAllConversationBottomBarActions(userId, labelId, conversationIds).removeMoreAction()
         }
 
         ViewMode.NoConversationGrouping -> {
             val messageIds = mailboxItemIds.map { MessageId(it.value) }
-            getAllMessageBottomBarActions(userId, labelId, messageIds)
+            getAllMessageBottomBarActions(userId, labelId, messageIds).removeMoreAction()
         }
+    }
+
+    private fun Either<DataError, AllBottomBarActions>.removeMoreAction() = this.map {
+        it.copy(
+            hiddenActions = it.hiddenActions.removeMoreAction(),
+            visibleActions = it.visibleActions.removeMoreAction()
+        )
+    }
+
+    private fun List<Action>.removeMoreAction(): List<Action> {
+        val mutableActions = this.toMutableList()
+        mutableActions.remove(Action.More)
+        return mutableActions
     }
 
 }

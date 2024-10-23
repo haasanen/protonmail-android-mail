@@ -36,6 +36,6 @@ class GetMailboxActions @Inject constructor(
         labelId: LabelId,
         mailboxItemIds: List<MailboxItemId>,
         viewMode: ViewMode
-    ): Either<DataError, List<Action>> =
-        getBottomSheetActions(userId, labelId, mailboxItemIds, viewMode).map { it.visibleActions }
+    ): Either<DataError, List<Action>> = getBottomSheetActions(userId, labelId, mailboxItemIds, viewMode)
+        .map { it.visibleActions + Action.More }
 }

@@ -89,4 +89,30 @@ class GetBottomSheetActionsTest {
         assertEquals(expected, actual)
     }
 
+    @Test
+    fun `removes 'More' Action from returned list of visible BottomBar actions`() = runTest {
+        // Given
+        val userId = UserIdSample.Primary
+        val labelId = LabelIdSample.Trash
+        val items = listOf(MailboxItemId("1"))
+        val convoIds = items.map { ConversationId(it.value) }
+        val viewMode = ViewMode.ConversationGrouping
+        val allActions = AllBottomBarActions(
+            listOf(Action.Star, Action.Label, Action.More),
+            listOf(Action.Spam, Action.Archive, Action.More)
+        )
+        coEvery { getAllConversationBottomBarActions(userId, labelId, convoIds) } returns allActions.right()
+
+        // When
+        val actual = getBottomSheetActions(userId, labelId, items, viewMode)
+
+        // Then
+        val expected = AllBottomBarActions(
+            listOf(Action.Star, Action.Label),
+            listOf(Action.Spam, Action.Archive)
+        )
+        assertEquals(expected.right(), actual)
+    }
+
+
 }

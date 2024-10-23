@@ -40,7 +40,7 @@ class ObserveMailboxActionsTest {
     private val observeMailboxActions = GetMailboxActions(getBottomSheetActions)
 
     @Test
-    fun `returns visible bottom bar actions when use case succeeds`() = runTest {
+    fun `returns visible bottom bar actions adding 'More' Action when use case succeeds`() = runTest {
         // Given
         val userId = UserIdSample.Primary
         val labelId = LabelTestData.systemLabel.labelId
@@ -56,7 +56,7 @@ class ObserveMailboxActionsTest {
         val actions = observeMailboxActions(userId, labelId, mailboxItems, viewMode)
 
         // Then
-        val expected = visibleItems
+        val expected = visibleItems + Action.More
         assertEquals(expected.right(), actions)
     }
 
