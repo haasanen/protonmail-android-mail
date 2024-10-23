@@ -18,92 +18,62 @@
 
 package ch.protonmail.android.mailmailbox.domain.usecase
 
+import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.Action
-import ch.protonmail.android.testdata.maillabel.MailLabelTestData
+import ch.protonmail.android.mailcommon.domain.model.AllBottomBarActions
+import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
+import ch.protonmail.android.mailmailbox.domain.model.MailboxItemId
+import ch.protonmail.android.testdata.label.LabelTestData
+import io.mockk.coEvery
+import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
+import me.proton.core.mailsettings.domain.entity.ViewMode
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class ObserveMailboxActionsTest {
 
-    private val observeMailboxActions = GetMailboxActions()
+    private val getBottomSheetActions = mockk<GetBottomSheetActions>()
+
+    private val observeMailboxActions = GetMailboxActions(getBottomSheetActions)
 
     @Test
-    fun `returns default actions for non-trash or non-spam labels`() = runTest {
+    fun `returns visible bottom bar actions when use case succeeds`() = runTest {
         // Given
-        val currentMailLabel = MailLabelTestData.inboxSystemLabel
-        val expected = listOf(Action.MarkUnread, Action.Archive, Action.Trash, Action.Move, Action.More)
+        val userId = UserIdSample.Primary
+        val labelId = LabelTestData.systemLabel.labelId
+        val mailboxItems = listOf(MailboxItemId("1"))
+        val viewMode = ViewMode.ConversationGrouping
+        val visibleItems = listOf(Action.MarkUnread, Action.Archive, Action.Trash, Action.Move)
+        coEvery { getBottomSheetActions(userId, labelId, mailboxItems, viewMode) } returns AllBottomBarActions(
+            listOf(Action.MarkRead, Action.Delete),
+            visibleItems
+        ).right()
 
         // When
-        val actions = observeMailboxActions(currentMailLabel, false)
+        val actions = observeMailboxActions(userId, labelId, mailboxItems, viewMode)
 
         // Then
+        val expected = visibleItems
         assertEquals(expected.right(), actions)
     }
 
     @Test
-    fun `returns delete actions for trash label`() = runTest {
+    fun `returns error when use case fails getting bottom bar actions`() = runTest {
         // Given
-        val currentMailLabel = MailLabelTestData.trashSystemLabel
-        val expected = listOf(Action.MarkUnread, Action.Archive, Action.Delete, Action.Move, Action.More)
+        val userId = UserIdSample.Primary
+        val labelId = LabelTestData.systemLabel.labelId
+        val mailboxItems = listOf(MailboxItemId("1"))
+        val viewMode = ViewMode.ConversationGrouping
+        val expected = DataError.Local.Unknown.left()
+        coEvery { getBottomSheetActions(userId, labelId, mailboxItems, viewMode) } returns expected
 
         // When
-        val actions = observeMailboxActions(currentMailLabel, false)
+        val actions = observeMailboxActions(userId, labelId, mailboxItems, viewMode)
 
         // Then
-        assertEquals(expected.right(), actions)
-    }
-
-    @Test
-    fun `returns delete actions for spam label`() = runTest {
-        // Given
-        val currentMailLabel = MailLabelTestData.spamSystemLabel
-        val expected = listOf(Action.MarkUnread, Action.Archive, Action.Delete, Action.Move, Action.More)
-
-        // When
-        val actions = observeMailboxActions(currentMailLabel, false)
-
-        // Then
-        assertEquals(expected.right(), actions)
-    }
-
-    @Test
-    fun `returns mark as read when all items are unread`() = runTest {
-        // Given
-        val currentMailLabel = MailLabelTestData.inboxSystemLabel
-        val expected = listOf(Action.MarkRead, Action.Archive, Action.Trash, Action.Move, Action.More)
-
-        // When
-        val actions = observeMailboxActions(currentMailLabel, true)
-
-        // Then
-        assertEquals(expected.right(), actions)
-    }
-
-    @Test
-    fun `returns delete and mark as read when all items are unread in spam`() = runTest {
-        // Given
-        val currentMailLabel = MailLabelTestData.spamSystemLabel
-        val expected = listOf(Action.MarkRead, Action.Archive, Action.Delete, Action.Move, Action.More)
-
-        // When
-        val actions = observeMailboxActions(currentMailLabel, true)
-
-        // Then
-        assertEquals(expected.right(), actions)
-    }
-
-    @Test
-    fun `returns delete and mark as read when all items are unread in trash`() = runTest {
-        // Given
-        val currentMailLabel = MailLabelTestData.trashSystemLabel
-        val expected = listOf(Action.MarkRead, Action.Archive, Action.Delete, Action.Move, Action.More)
-
-        // When
-        val actions = observeMailboxActions(currentMailLabel, true)
-
-        // Then
-        assertEquals(expected.right(), actions)
+        assertEquals(expected, actions)
     }
 }

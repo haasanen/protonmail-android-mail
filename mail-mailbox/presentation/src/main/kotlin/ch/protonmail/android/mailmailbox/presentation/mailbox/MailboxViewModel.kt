@@ -235,7 +235,12 @@ class MailboxViewModel @Inject constructor(
 
         selectedMailLabelId.flow.mapToExistingLabel()
             .combine(state.observeSelectedMailboxItems()) { selectedMailLabel, selectedMailboxItems ->
-                getMailboxActions(selectedMailLabel, selectedMailboxItems.none { it.isRead }).fold(
+                getMailboxActions(
+                    primaryUserId.filterNotNull().first(),
+                    selectedMailLabel.id.labelId,
+                    selectedMailboxItems.map { MailboxItemId(it.id) },
+                    getViewModeForCurrentLocation(selectedMailLabel.id)
+                ).fold(
                     ifLeft = { MailboxEvent.MessageBottomBarEvent(BottomBarEvent.ErrorLoadingActions) },
                     ifRight = { actions ->
                         MailboxEvent.MessageBottomBarEvent(
@@ -905,15 +910,12 @@ class MailboxViewModel @Inject constructor(
                 return
             }
 
-        val mergedActions = actions.replyActions +
-            actions.mailboxItemActions +
-            actions.moveActions +
-            actions.genericActions
+        val allActions = actions.hiddenActions + actions.visibleActions
 
         emitNewStateFrom(
             MailboxEvent.MailboxBottomSheetEvent(
                 MailboxMoreActionsBottomSheetState.MailboxMoreActionsBottomSheetEvent.ActionData(
-                    mergedActions
+                    allActions
                         .map { actionUiModelMapper.toUiModel(it) }
                         .toImmutableList()
                 )

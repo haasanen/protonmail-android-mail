@@ -3,15 +3,15 @@ package ch.protonmail.android.mailmailbox.domain.usecase
 import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.Action
-import ch.protonmail.android.mailcommon.domain.model.AvailableActions
+import ch.protonmail.android.mailcommon.domain.model.AllBottomBarActions
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
-import ch.protonmail.android.mailconversation.domain.usecase.GetConversationAvailableActions
+import ch.protonmail.android.mailconversation.domain.usecase.GetAllConversationBottomBarActions
 import ch.protonmail.android.maillabel.domain.sample.LabelIdSample
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItemId
 import ch.protonmail.android.mailmessage.domain.model.MessageId
-import ch.protonmail.android.mailmessage.domain.usecase.GetMessageAvailableActions
+import ch.protonmail.android.mailmessage.domain.usecase.GetAllMessageBottomBarActions
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
@@ -21,12 +21,12 @@ import kotlin.test.assertEquals
 
 class GetBottomSheetActionsTest {
 
-    private val getConversationAvailableActions = mockk<GetConversationAvailableActions>()
-    private val getMessageAvailableActions = mockk<GetMessageAvailableActions>()
+    private val getAllConversationBottomBarActions = mockk<GetAllConversationBottomBarActions>()
+    private val getAllMessageBottomBarActions = mockk<GetAllMessageBottomBarActions>()
 
     private val getBottomSheetActions = GetBottomSheetActions(
-        getMessageAvailableActions,
-        getConversationAvailableActions
+        getAllMessageBottomBarActions,
+        getAllConversationBottomBarActions
     )
 
     @Test
@@ -37,13 +37,11 @@ class GetBottomSheetActionsTest {
         val items = listOf(MailboxItemId("1"))
         val messageIds = items.map { MessageId(it.value) }
         val viewMode = ViewMode.NoConversationGrouping
-        val expected = AvailableActions(
-            listOf(Action.Reply, Action.Forward),
+        val expected = AllBottomBarActions(
             listOf(Action.Star, Action.Label),
-            listOf(Action.Spam, Action.Archive),
-            listOf(Action.ViewHeaders)
+            listOf(Action.Spam, Action.Archive)
         )
-        coEvery { getMessageAvailableActions(userId, labelId, messageIds) } returns expected.right()
+        coEvery { getAllMessageBottomBarActions(userId, labelId, messageIds) } returns expected.right()
 
         // When
         val actual = getBottomSheetActions(userId, labelId, items, viewMode)
@@ -60,13 +58,11 @@ class GetBottomSheetActionsTest {
         val items = listOf(MailboxItemId("1"))
         val convoIds = items.map { ConversationId(it.value) }
         val viewMode = ViewMode.ConversationGrouping
-        val expected = AvailableActions(
-            listOf(Action.Reply, Action.Forward),
+        val expected = AllBottomBarActions(
             listOf(Action.Star, Action.Label),
-            listOf(Action.Spam, Action.Archive),
-            listOf(Action.ViewHeaders)
+            listOf(Action.Spam, Action.Archive)
         )
-        coEvery { getConversationAvailableActions(userId, labelId, convoIds) } returns expected.right()
+        coEvery { getAllConversationBottomBarActions(userId, labelId, convoIds) } returns expected.right()
 
         // When
         val actual = getBottomSheetActions(userId, labelId, items, viewMode)
@@ -84,7 +80,7 @@ class GetBottomSheetActionsTest {
         val convoIds = items.map { ConversationId(it.value) }
         val viewMode = ViewMode.ConversationGrouping
         val expected = DataError.Local.Unknown.left()
-        coEvery { getConversationAvailableActions(userId, labelId, convoIds) } returns expected
+        coEvery { getAllConversationBottomBarActions(userId, labelId, convoIds) } returns expected
 
         // When
         val actual = getBottomSheetActions(userId, labelId, items, viewMode)

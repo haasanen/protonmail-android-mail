@@ -19,21 +19,21 @@
 package ch.protonmail.android.mailmailbox.domain.usecase
 
 import arrow.core.Either
-import ch.protonmail.android.mailcommon.domain.model.AvailableActions
+import ch.protonmail.android.mailcommon.domain.model.AllBottomBarActions
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailconversation.domain.usecase.GetConversationAvailableActions
+import ch.protonmail.android.mailconversation.domain.usecase.GetAllConversationBottomBarActions
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItemId
 import ch.protonmail.android.mailmessage.domain.model.MessageId
-import ch.protonmail.android.mailmessage.domain.usecase.GetMessageAvailableActions
+import ch.protonmail.android.mailmessage.domain.usecase.GetAllMessageBottomBarActions
 import me.proton.core.domain.entity.UserId
 import me.proton.core.mailsettings.domain.entity.ViewMode
 import javax.inject.Inject
 
 class GetBottomSheetActions @Inject constructor(
-    private val getMessageAvailableActions: GetMessageAvailableActions,
-    private val getConversationAvailableActions: GetConversationAvailableActions
+    private val getAllMessageBottomBarActions: GetAllMessageBottomBarActions,
+    private val getAllConversationBottomBarActions: GetAllConversationBottomBarActions
 ) {
 
     suspend operator fun invoke(
@@ -41,15 +41,15 @@ class GetBottomSheetActions @Inject constructor(
         labelId: LabelId,
         mailboxItemIds: List<MailboxItemId>,
         viewMode: ViewMode
-    ): Either<DataError, AvailableActions> = when (viewMode) {
+    ): Either<DataError, AllBottomBarActions> = when (viewMode) {
         ViewMode.ConversationGrouping -> {
             val conversationIds = mailboxItemIds.map { ConversationId(it.value) }
-            getConversationAvailableActions(userId, labelId, conversationIds)
+            getAllConversationBottomBarActions(userId, labelId, conversationIds)
         }
 
         ViewMode.NoConversationGrouping -> {
             val messageIds = mailboxItemIds.map { MessageId(it.value) }
-            getMessageAvailableActions(userId, labelId, messageIds)
+            getAllMessageBottomBarActions(userId, labelId, messageIds)
         }
     }
 

@@ -27,7 +27,7 @@ import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.Action
-import ch.protonmail.android.mailcommon.domain.model.AvailableActions
+import ch.protonmail.android.mailcommon.domain.model.AllBottomBarActions
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.sample.ConversationIdSample
@@ -232,7 +232,7 @@ class MailboxViewModelTest {
     }
 
     private val observeMailboxActions = mockk<GetMailboxActions> {
-        coEvery { this@mockk(any(), any()) } returns listOf(Action.Archive, Action.Trash).right()
+        coEvery { this@mockk(any(), any(), any(), any()) } returns listOf(Action.Archive, Action.Trash).right()
     }
 
     private val findLocalSystemLabelId = mockk<FindLocalSystemLabelId>()
@@ -3727,7 +3727,7 @@ class MailboxViewModelTest {
         viewMode: ViewMode
     ) {
         println("$userId, $labelId, $items $viewMode")
-        val actions = AvailableActions(expectedActions, emptyList(), emptyList(), emptyList())
+        val actions = AllBottomBarActions(expectedActions, emptyList())
         coEvery { getBottomSheetActions(userId, labelId, items, viewMode) } returns actions.right()
     }
 

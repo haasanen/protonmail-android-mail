@@ -19,38 +19,23 @@
 package ch.protonmail.android.mailmailbox.domain.usecase
 
 import arrow.core.Either
-import arrow.core.raise.either
 import ch.protonmail.android.mailcommon.domain.model.Action
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.maillabel.domain.model.MailLabel
-import ch.protonmail.android.maillabel.domain.model.SystemLabelId
-import ch.protonmail.android.mailmailbox.domain.model.MailboxBottomBarDefaults
+import ch.protonmail.android.maillabel.domain.model.LabelId
+import ch.protonmail.android.mailmailbox.domain.model.MailboxItemId
+import me.proton.core.domain.entity.UserId
+import me.proton.core.mailsettings.domain.entity.ViewMode
 import javax.inject.Inject
 
-class GetMailboxActions @Inject constructor() {
+class GetMailboxActions @Inject constructor(
+    private val getBottomSheetActions: GetBottomSheetActions
+) {
 
     suspend operator fun invoke(
-        currentMailLabel: MailLabel,
-        areAllItemsUnread: Boolean
-    ): Either<DataError, List<Action>> {
-        return either {
-            val actions = MailboxBottomBarDefaults.actions.toMutableList()
-
-            if (areAllItemsUnread) {
-                actions[actions.indexOf(Action.MarkUnread)] = Action.MarkRead
-            }
-
-            if (currentMailLabel.isTrashOrSpam()) {
-                actions[actions.indexOf(Action.Trash)] = Action.Delete
-            }
-            actions
-        }
-    }
-
-    private fun MailLabel.isTrashOrSpam() = when (this) {
-        is MailLabel.Custom -> false
-        is MailLabel.System ->
-            this.systemLabelId.labelId == SystemLabelId.Trash.labelId ||
-                this.systemLabelId.labelId == SystemLabelId.Spam.labelId
-    }
+        userId: UserId,
+        labelId: LabelId,
+        mailboxItemIds: List<MailboxItemId>,
+        viewMode: ViewMode
+    ): Either<DataError, List<Action>> =
+        getBottomSheetActions(userId, labelId, mailboxItemIds, viewMode).map { it.visibleActions }
 }
