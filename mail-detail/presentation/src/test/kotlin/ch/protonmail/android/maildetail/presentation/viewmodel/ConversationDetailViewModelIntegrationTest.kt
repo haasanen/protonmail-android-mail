@@ -75,7 +75,7 @@ import ch.protonmail.android.maildetail.domain.usecase.MarkMessageAsRead
 import ch.protonmail.android.maildetail.domain.usecase.MarkMessageAsUnread
 import ch.protonmail.android.maildetail.domain.usecase.MoveConversation
 import ch.protonmail.android.maildetail.domain.usecase.MoveMessage
-import ch.protonmail.android.maildetail.domain.usecase.ObserveConversationDetailActions
+import ch.protonmail.android.maildetail.domain.usecase.ObserveDetailBottomBarActions
 import ch.protonmail.android.maildetail.domain.usecase.ObserveConversationMessages
 import ch.protonmail.android.maildetail.domain.usecase.ObserveConversationViewState
 import ch.protonmail.android.maildetail.domain.usecase.ObserveMessageAttachmentStatus
@@ -241,7 +241,7 @@ class ConversationDetailViewModelIntegrationTest {
             ).right()
         )
     }
-    private val observeConversationDetailActions = mockk<ObserveConversationDetailActions> {
+    private val observeDetailBottomBarActions = mockk<ObserveDetailBottomBarActions> {
         every {
             this@mockk(UserIdSample.Primary, filterByLocationLabelId, ConversationIdSample.WeatherForecast)
         } returns flowOf(listOf(Action.Archive, Action.MarkUnread).right())
@@ -2283,7 +2283,7 @@ class ConversationDetailViewModelIntegrationTest {
         contacts: ObserveContacts = observeContacts,
         observeConversation: ObserveConversation = observeConversationUseCase,
         observeConversationMessages: ObserveConversationMessages = this.observeConversationMessages,
-        observeDetailActions: ObserveConversationDetailActions = observeConversationDetailActions,
+        observeDetailActions: ObserveDetailBottomBarActions = observeDetailBottomBarActions,
         observeMessageAttachmentStatus: ObserveMessageAttachmentStatus = observeAttachmentStatus,
         getAttachmentStatus: GetDownloadingAttachmentsForMessages = getDownloadingAttachmentsForMessages,
         detailReducer: ConversationDetailReducer = reducer,

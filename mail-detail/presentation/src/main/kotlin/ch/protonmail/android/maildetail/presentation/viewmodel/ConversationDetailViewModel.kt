@@ -54,7 +54,7 @@ import ch.protonmail.android.maildetail.domain.usecase.MarkMessageAsRead
 import ch.protonmail.android.maildetail.domain.usecase.MarkMessageAsUnread
 import ch.protonmail.android.maildetail.domain.usecase.MoveConversation
 import ch.protonmail.android.maildetail.domain.usecase.MoveMessage
-import ch.protonmail.android.maildetail.domain.usecase.ObserveConversationDetailActions
+import ch.protonmail.android.maildetail.domain.usecase.ObserveDetailBottomBarActions
 import ch.protonmail.android.maildetail.domain.usecase.ObserveConversationMessages
 import ch.protonmail.android.maildetail.domain.usecase.ObserveConversationViewState
 import ch.protonmail.android.maildetail.domain.usecase.ObserveMessageAttachmentStatus
@@ -163,7 +163,7 @@ class ConversationDetailViewModel @Inject constructor(
     private val observeContacts: ObserveContacts,
     private val observeConversation: ObserveConversation,
     private val observeConversationMessages: ObserveConversationMessages,
-    private val observeDetailActions: ObserveConversationDetailActions,
+    private val observeDetailActions: ObserveDetailBottomBarActions,
     private val getConversationMoveToLocations: GetConversationMoveToLocations,
     private val getMessageMoveToLocations: GetMessageMoveToLocations,
     private val observeMessageAttachmentStatus: ObserveMessageAttachmentStatus,

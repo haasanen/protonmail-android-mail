@@ -29,7 +29,7 @@ import kotlinx.coroutines.flow.flow
 import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 
-class ObserveConversationDetailActions @Inject constructor(
+class ObserveDetailBottomBarActions @Inject constructor(
     private val getAllConversationBottomBarActions: GetAllConversationBottomBarActions
 ) {
 

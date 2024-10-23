@@ -58,7 +58,7 @@ import ch.protonmail.android.maildetail.domain.usecase.MarkMessageAsRead
 import ch.protonmail.android.maildetail.domain.usecase.MarkMessageAsUnread
 import ch.protonmail.android.maildetail.domain.usecase.MoveConversation
 import ch.protonmail.android.maildetail.domain.usecase.MoveMessage
-import ch.protonmail.android.maildetail.domain.usecase.ObserveConversationDetailActions
+import ch.protonmail.android.maildetail.domain.usecase.ObserveDetailBottomBarActions
 import ch.protonmail.android.maildetail.domain.usecase.ObserveConversationMessages
 import ch.protonmail.android.maildetail.domain.usecase.ObserveConversationViewState
 import ch.protonmail.android.maildetail.domain.usecase.ObserveMessageAttachmentStatus
@@ -219,7 +219,7 @@ class ConversationDetailViewModelTest {
             ).right()
         )
     }
-    private val observeConversationDetailActions = mockk<ObserveConversationDetailActions> {
+    private val observeDetailBottomBarActions = mockk<ObserveDetailBottomBarActions> {
         every {
             this@mockk(UserIdSample.Primary, any(), ConversationIdSample.WeatherForecast)
         } returns flowOf(
@@ -313,7 +313,7 @@ class ConversationDetailViewModelTest {
             observeContacts = observeContacts,
             observeConversation = observeConversation,
             observeConversationMessages = observeConversationMessages,
-            observeDetailActions = observeConversationDetailActions,
+            observeDetailActions = observeDetailBottomBarActions,
             getConversationMoveToLocations = getConversationMoveToLocations,
             getMessageMoveToLocations = getMessageMoveToLocations,
             observeMessageAttachmentStatus = observeAttachmentStatus,
@@ -641,7 +641,7 @@ class ConversationDetailViewModelTest {
         val expected = initialState.copy(bottomBarState = BottomBarState.Data.Shown(actionUiModels))
         every { savedStateHandle.get<String>(ConversationDetailScreen.FilterByLocationKey) } returns labelId.id
         every {
-            observeConversationDetailActions(UserIdSample.Primary, labelId, ConversationIdSample.WeatherForecast)
+            observeDetailBottomBarActions(UserIdSample.Primary, labelId, ConversationIdSample.WeatherForecast)
         } returns flowOf(actions.right())
         every {
             reducer.newStateFrom(
@@ -676,7 +676,7 @@ class ConversationDetailViewModelTest {
         } returns messages.first()
         every { savedStateHandle.get<String>(ConversationDetailScreen.FilterByLocationKey) } returns labelId.id
         every {
-            observeConversationDetailActions(UserIdSample.Primary, labelId, ConversationIdSample.WeatherForecast)
+            observeDetailBottomBarActions(UserIdSample.Primary, labelId, ConversationIdSample.WeatherForecast)
         } returns flowOf(DataError.Local.NoDataCached.left())
         every {
             reducer.newStateFrom(

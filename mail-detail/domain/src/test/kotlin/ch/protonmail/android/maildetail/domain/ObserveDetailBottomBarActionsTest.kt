@@ -27,7 +27,7 @@ import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.sample.ConversationIdSample
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.mailconversation.domain.usecase.GetAllConversationBottomBarActions
-import ch.protonmail.android.maildetail.domain.usecase.ObserveConversationDetailActions
+import ch.protonmail.android.maildetail.domain.usecase.ObserveDetailBottomBarActions
 import ch.protonmail.android.maillabel.domain.sample.LabelIdSample
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -35,11 +35,11 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Test
 import kotlin.test.assertEquals
 
-internal class ObserveConversationDetailActionsTest {
+internal class ObserveDetailBottomBarActionsTest {
 
     private val getAllConversationBottomBarActions = mockk<GetAllConversationBottomBarActions>()
 
-    private val observeDetailActions = ObserveConversationDetailActions(getAllConversationBottomBarActions)
+    private val observeDetailActions = ObserveDetailBottomBarActions(getAllConversationBottomBarActions)
 
     @Test
     fun `returns visible bottom bar actions when use case succeeds`() = runTest {
