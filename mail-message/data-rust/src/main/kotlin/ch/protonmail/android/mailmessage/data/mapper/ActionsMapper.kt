@@ -91,15 +91,15 @@ fun List<ReplyAction>.replyActionsToActions() = this.map { replyAction ->
     }
 }
 
-fun List<MovableSystemFolderAction>.systemFolderActionsToActions() = this.map { moveAction ->
-    when (moveAction.name) {
-        MovableSystemFolder.TRASH -> Action.Trash
-        MovableSystemFolder.SPAM -> Action.Spam
-        MovableSystemFolder.ARCHIVE -> Action.Archive
-        MovableSystemFolder.INBOX -> {
-            Timber.i("rust-message: Found unhandled action while mapping: $moveAction")
-            null
-        }
+fun List<MovableSystemFolderAction>.systemFolderActionsToActions() = this.map { it.name.toAction() }
+
+private fun MovableSystemFolder.toAction() = when (this) {
+    MovableSystemFolder.TRASH -> Action.Trash
+    MovableSystemFolder.SPAM -> Action.Spam
+    MovableSystemFolder.ARCHIVE -> Action.Archive
+    MovableSystemFolder.INBOX -> {
+        Timber.i("rust-message: Found unhandled action while mapping: $name")
+        null
     }
 }
 
@@ -144,8 +144,8 @@ private fun List<BottomBarActions>.bottombarActionsToActions() = this.map { bott
         BottomBarActions.MarkRead -> Action.MarkRead
         BottomBarActions.MarkUnread -> Action.MarkUnread
         BottomBarActions.More -> Action.More
-        BottomBarActions.MoveTo,
-        is BottomBarActions.MoveToSystemFolder -> Action.Move
+        BottomBarActions.MoveTo -> Action.Move
+        is BottomBarActions.MoveToSystemFolder -> bottombarAction.v1.toAction()
         BottomBarActions.PermanentDelete -> Action.Delete
         BottomBarActions.Star -> Action.Star
         BottomBarActions.Unstar -> Action.Unstar
