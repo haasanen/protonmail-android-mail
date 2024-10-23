@@ -80,7 +80,7 @@ internal fun NavGraphBuilder.addMailbox(
                             request.subItemId?.let { mailboxItemId ->
                                 MessageId(mailboxItemId.value)
                             },
-                            request.filterByLocation
+                            request.openedFromLocation
                         )
                     }
                     navController.navigate(destination)

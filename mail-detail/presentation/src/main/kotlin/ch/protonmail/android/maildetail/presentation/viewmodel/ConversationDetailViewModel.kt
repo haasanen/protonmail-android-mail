@@ -199,7 +199,7 @@ class ConversationDetailViewModel @Inject constructor(
     private val mutableDetailState = MutableStateFlow(initialState)
     private val conversationId = requireConversationId()
     private val initialScrollToMessageId = getInitialScrollToMessageId()
-    private val filterByLocation = getFilterByLocation()
+    private val openedFromLocation = getOpenedFromLocation()
     private val observedAttachments = mutableListOf<AttachmentId>()
     val state: StateFlow<ConversationDetailState> = mutableDetailState.asStateFlow()
 
@@ -345,7 +345,7 @@ class ConversationDetailViewModel @Inject constructor(
                         ConversationDetailEvent.MessagesData(
                             messagesUiModels,
                             initialScrollTo,
-                            filterByLocation,
+                            openedFromLocation,
                             conversationViewState.shouldHideMessagesBasedOnTrashFilter
                         )
                     } else {
@@ -353,7 +353,7 @@ class ConversationDetailViewModel @Inject constructor(
                         ConversationDetailEvent.MessagesData(
                             messagesUiModels,
                             requestScrollTo,
-                            filterByLocation,
+                            openedFromLocation,
                             conversationViewState.shouldHideMessagesBasedOnTrashFilter
                         )
                     }
@@ -462,7 +462,7 @@ class ConversationDetailViewModel @Inject constructor(
     private fun observeBottomBarActions(conversationId: ConversationId) {
         primaryUserId.flatMapLatest { userId ->
             val errorEvent = ConversationDetailEvent.ConversationBottomBarEvent(BottomBarEvent.ErrorLoadingActions)
-            val labelId = filterByLocation ?: return@flatMapLatest flowOf(errorEvent)
+            val labelId = openedFromLocation ?: return@flatMapLatest flowOf(errorEvent)
 
             observeDetailActions(userId, labelId, conversationId).mapLatest { either ->
                 either.fold(
@@ -488,7 +488,7 @@ class ConversationDetailViewModel @Inject constructor(
             emitNewStateFrom(initialEvent)
 
             val userId = primaryUserId.first()
-            val labelId = filterByLocation ?: return@launch
+            val labelId = openedFromLocation ?: return@launch
 
             getMessageMoveToLocations(userId, labelId, listOf(initialEvent.messageId)).fold(
                 ifLeft = {
@@ -509,7 +509,7 @@ class ConversationDetailViewModel @Inject constructor(
             emitNewStateFrom(initialEvent)
 
             val userId = primaryUserId.first()
-            val labelId = filterByLocation ?: return@launch
+            val labelId = openedFromLocation ?: return@launch
 
             getConversationMoveToLocations(userId, labelId, listOf(conversationId)).fold(
                 ifLeft = {
@@ -567,7 +567,7 @@ class ConversationDetailViewModel @Inject constructor(
             emitNewStateFrom(initialEvent)
 
             val userId = primaryUserId.first()
-            val labelId = filterByLocation ?: return@launch
+            val labelId = openedFromLocation ?: return@launch
             val labelAsData = getLabelAsBottomSheetData.forConversation(userId, labelId, conversationId)
             emitNewStateFrom(ConversationDetailEvent.ConversationBottomSheetEvent(labelAsData))
         }
@@ -580,7 +580,7 @@ class ConversationDetailViewModel @Inject constructor(
             emitNewStateFrom(initialEvent)
 
             val userId = primaryUserId.first()
-            val labelId = filterByLocation ?: return@launch
+            val labelId = openedFromLocation ?: return@launch
             val labelAsData = getLabelAsBottomSheetData.forMessage(userId, labelId, initialEvent.messageId)
             emitNewStateFrom(ConversationDetailEvent.MessageBottomSheetEvent(labelAsData))
         }
@@ -680,7 +680,7 @@ class ConversationDetailViewModel @Inject constructor(
             emitNewStateFrom(initialEvent)
 
             val userId = primaryUserId.first()
-            val labelId = filterByLocation ?: return@launch
+            val labelId = openedFromLocation ?: return@launch
             val moreActions = getMoreActionsBottomSheetData.forMessage(userId, labelId, initialEvent.messageId)
                 ?: return@launch
             emitNewStateFrom(ConversationDetailEvent.ConversationBottomSheetEvent(moreActions))
@@ -695,7 +695,7 @@ class ConversationDetailViewModel @Inject constructor(
             emitNewStateFrom(initialEvent)
 
             val userId = primaryUserId.first()
-            val labelId = filterByLocation ?: return@launch
+            val labelId = openedFromLocation ?: return@launch
             val moreActions = getMoreActionsBottomSheetData.forConversation(userId, labelId, conversationId)
                 ?: return@launch
 
@@ -716,8 +716,8 @@ class ConversationDetailViewModel @Inject constructor(
         return messageIdStr?.let { if (it == "null") null else MessageIdUiModel(it) }
     }
 
-    private fun getFilterByLocation(): LabelId? {
-        val labelId = savedStateHandle.get<String>(ConversationDetailScreen.FilterByLocationKey)
+    private fun getOpenedFromLocation(): LabelId? {
+        val labelId = savedStateHandle.get<String>(ConversationDetailScreen.OpenedFromLocationKey)
         return labelId?.let { if (it == "null") null else LabelId(it) }
     }
 

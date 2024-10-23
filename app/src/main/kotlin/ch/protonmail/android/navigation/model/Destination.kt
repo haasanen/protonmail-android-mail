@@ -34,7 +34,7 @@ import ch.protonmail.android.mailcontact.presentation.contactform.ContactFormScr
 import ch.protonmail.android.mailcontact.presentation.contactgroupdetails.ContactGroupDetailsScreen.ContactGroupDetailsGroupIdKey
 import ch.protonmail.android.mailcontact.presentation.contactgroupform.ContactGroupFormScreen.ContactGroupFormGroupIdKey
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen.ConversationIdKey
-import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen.FilterByLocationKey
+import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen.OpenedFromLocationKey
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen.ScrollToMessageIdKey
 import ch.protonmail.android.maillabel.domain.model.MailLabel
 import ch.protonmail.android.maillabel.presentation.folderform.FolderFormScreen.FolderFormLabelIdKey
@@ -59,16 +59,16 @@ sealed class Destination(val route: String) {
 
         object Conversation : Destination(
             "mailbox/conversation/${ConversationIdKey.wrap()}/" +
-                "${ScrollToMessageIdKey.wrap()}/${FilterByLocationKey.wrap()}"
+                "${ScrollToMessageIdKey.wrap()}/${OpenedFromLocationKey.wrap()}"
         ) {
 
             operator fun invoke(
                 conversationId: ConversationId,
                 scrollToMessageId: MessageId? = null,
-                filterByLocation: MailLabel? = null
+                openedFromLocation: MailLabel? = null
             ) = route.replace(ConversationIdKey.wrap(), conversationId.id)
                 .replace(ScrollToMessageIdKey.wrap(), scrollToMessageId?.id ?: "null")
-                .replace(FilterByLocationKey.wrap(), filterByLocation?.id?.labelId?.id ?: "null")
+                .replace(OpenedFromLocationKey.wrap(), openedFromLocation?.id?.labelId?.id ?: "null")
         }
 
         object Composer : Destination("composer")

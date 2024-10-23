@@ -245,7 +245,7 @@ class MailboxListReducer @Inject constructor() {
             itemId = MailboxItemId(operation.item.conversationId.id),
             shouldOpenInComposer = false,
             subItemId = subItemId,
-            filterByLocation = currentLocation
+            openedFromLocation = currentLocation
         )
 
         return when (currentState) {

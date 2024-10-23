@@ -241,7 +241,7 @@ class ConversationDetailViewModelTest {
     private val savedStateHandle: SavedStateHandle = mockk {
         every { get<String>(ConversationDetailScreen.ConversationIdKey) } returns conversationId.id
         every { get<String>(ConversationDetailScreen.ScrollToMessageIdKey) } returns null
-        every { get<String>(ConversationDetailScreen.FilterByLocationKey) } returns null
+        every { get<String>(ConversationDetailScreen.OpenedFromLocationKey) } returns null
     }
     private val starConversations: StarConversations = mockk {
         coEvery { this@mockk.invoke(any(), any()) } returns listOf(ConversationTestData.starredConversation).right()
@@ -639,7 +639,7 @@ class ConversationDetailViewModelTest {
         val actionUiModels = listOf(ActionUiModelTestData.archive).toImmutableList()
         val labelId = LabelIdSample.Archive
         val expected = initialState.copy(bottomBarState = BottomBarState.Data.Shown(actionUiModels))
-        every { savedStateHandle.get<String>(ConversationDetailScreen.FilterByLocationKey) } returns labelId.id
+        every { savedStateHandle.get<String>(ConversationDetailScreen.OpenedFromLocationKey) } returns labelId.id
         every {
             observeDetailBottomBarActions(UserIdSample.Primary, labelId, ConversationIdSample.WeatherForecast)
         } returns flowOf(actions.right())
@@ -674,7 +674,7 @@ class ConversationDetailViewModelTest {
                 decryptedMessageBody = any()
             )
         } returns messages.first()
-        every { savedStateHandle.get<String>(ConversationDetailScreen.FilterByLocationKey) } returns labelId.id
+        every { savedStateHandle.get<String>(ConversationDetailScreen.OpenedFromLocationKey) } returns labelId.id
         every {
             observeDetailBottomBarActions(UserIdSample.Primary, labelId, ConversationIdSample.WeatherForecast)
         } returns flowOf(DataError.Local.NoDataCached.left())
@@ -735,7 +735,7 @@ class ConversationDetailViewModelTest {
                 decryptedMessageBody = any()
             )
         } returns messages.first()
-        every { savedStateHandle.get<String>(ConversationDetailScreen.FilterByLocationKey) } returns labelId.id
+        every { savedStateHandle.get<String>(ConversationDetailScreen.OpenedFromLocationKey) } returns labelId.id
         val actionUiModels = listOf(
             ActionUiModelTestData.archive,
             ActionUiModelTestData.markUnread
