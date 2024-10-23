@@ -218,6 +218,8 @@ class ConversationDetailViewModelIntegrationTest {
 
     private val userId = UserIdSample.Primary
     private val conversationId = ConversationIdSample.WeatherForecast
+    private val filterByLocationLabelId = SystemLabelId.Archive.labelId
+
 
     // region mock observe use cases
     private val observeContacts: ObserveContacts = mockk {
@@ -240,9 +242,9 @@ class ConversationDetailViewModelIntegrationTest {
         )
     }
     private val observeConversationDetailActions = mockk<ObserveConversationDetailActions> {
-        every { this@mockk(UserIdSample.Primary, ConversationIdSample.WeatherForecast) } returns flowOf(
-            listOf(Action.Archive, Action.MarkUnread).right()
-        )
+        every {
+            this@mockk(UserIdSample.Primary, filterByLocationLabelId, ConversationIdSample.WeatherForecast)
+        } returns flowOf(listOf(Action.Archive, Action.MarkUnread).right())
     }
     private val observePrimaryUserId: ObservePrimaryUserId = mockk {
         every { this@mockk() } returns flowOf(UserIdSample.Primary)
@@ -288,7 +290,7 @@ class ConversationDetailViewModelIntegrationTest {
         every { get<String>(ConversationDetailScreen.ScrollToMessageIdKey) } returns "null"
         every {
             get<String>(ConversationDetailScreen.FilterByLocationKey)
-        } returns SystemLabelId.Archive.labelId.id
+        } returns filterByLocationLabelId.id
     }
     private val starConversations: StarConversations = mockk()
     private val unStarConversations: UnStarConversations = mockk()
@@ -1955,20 +1957,19 @@ class ConversationDetailViewModelIntegrationTest {
         val newMessageLabels = buildList {
             add(LabelSample.Label2022.labelId)
         }
-        val labelId = SystemLabelId.Archive.labelId
         coEvery { observeConversationMessages(userId, any()) } returns flowOf(messages.right())
         coEvery {
             observeMessage(userId, messageId)
         } returns flowOf(MessageSample.Invoice.right())
-        coEvery { moveMessage(userId, messageId, SystemLabelId.Archive.labelId) } returns Unit.right()
+        coEvery { moveMessage(userId, messageId, filterByLocationLabelId) } returns Unit.right()
         coEvery {
             relabelMessage(userId, messageId, emptyList(), newMessageLabels)
         } returns MessageSample.Invoice.right()
         coEvery {
-            getMessageLabelAsActions(userId, labelId, listOf(messageId))
+            getMessageLabelAsActions(userId, filterByLocationLabelId, listOf(messageId))
         } returns LabelAsActionsTestData.unselectedActions.right()
         coEvery {
-            getMessageAvailableActions(userId, labelId, listOf(messageId))
+            getMessageAvailableActions(userId, filterByLocationLabelId, listOf(messageId))
         } returns AvailableActionsTestData.replyActionsOnly.right()
 
         // When
@@ -2009,7 +2010,7 @@ class ConversationDetailViewModelIntegrationTest {
                 BottomSheetVisibilityEffect.Hide, awaitItem().bottomSheetState?.bottomSheetVisibilityEffect?.consume()
             )
             coVerifySequence {
-                moveMessage(userId, messageId, SystemLabelId.Archive.labelId)
+                moveMessage(userId, messageId, filterByLocationLabelId)
                 relabelMessage(userId, messageId, emptyList(), newMessageLabels)
             }
 
@@ -2073,14 +2074,13 @@ class ConversationDetailViewModelIntegrationTest {
             ),
             MessageSample.AugWeatherForecast.messageId
         )
-        val labelId = SystemLabelId.Archive.labelId
         coEvery { observeConversationMessages(userId, any()) } returns flowOf(messages.right())
         coEvery {
             observeMessage(userId, messageId)
         } returns flowOf(MessageSample.Invoice.right())
-        coEvery { moveMessage(userId, messageId, SystemLabelId.Archive.labelId) } returns Unit.right()
+        coEvery { moveMessage(userId, messageId, filterByLocationLabelId) } returns Unit.right()
         coEvery {
-            getMessageAvailableActions(userId, labelId, listOf(messageId))
+            getMessageAvailableActions(userId, filterByLocationLabelId, listOf(messageId))
         } returns AvailableActionsTestData.replyActionsOnly.right()
 
         // When
@@ -2099,7 +2099,7 @@ class ConversationDetailViewModelIntegrationTest {
             assertEquals(
                 BottomSheetVisibilityEffect.Hide, awaitItem().bottomSheetState?.bottomSheetVisibilityEffect?.consume()
             )
-            coVerify { moveMessage(userId, messageId, SystemLabelId.Archive.labelId) }
+            coVerify { moveMessage(userId, messageId, filterByLocationLabelId) }
 
             cancelAndIgnoreRemainingEvents()
         }

@@ -135,6 +135,7 @@ import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.mapLatest
@@ -460,9 +461,12 @@ class ConversationDetailViewModel @Inject constructor(
 
     private fun observeBottomBarActions(conversationId: ConversationId) {
         primaryUserId.flatMapLatest { userId ->
-            observeDetailActions(userId, conversationId).mapLatest { either ->
+            val errorEvent = ConversationDetailEvent.ConversationBottomBarEvent(BottomBarEvent.ErrorLoadingActions)
+            val labelId = filterByLocation ?: return@flatMapLatest flowOf(errorEvent)
+
+            observeDetailActions(userId, labelId, conversationId).mapLatest { either ->
                 either.fold(
-                    ifLeft = { ConversationDetailEvent.ConversationBottomBarEvent(BottomBarEvent.ErrorLoadingActions) },
+                    ifLeft = { errorEvent },
                     ifRight = { actions ->
                         val actionUiModels = actions.map { actionUiModelMapper.toUiModel(it) }.toImmutableList()
                         ConversationDetailEvent.ConversationBottomBarEvent(

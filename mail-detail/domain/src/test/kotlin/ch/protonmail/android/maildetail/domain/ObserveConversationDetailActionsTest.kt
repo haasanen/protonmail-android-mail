@@ -22,61 +22,63 @@ import app.cash.turbine.test
 import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.Action
-import ch.protonmail.android.mailcommon.domain.model.ConversationId
+import ch.protonmail.android.mailcommon.domain.model.AllBottomBarActions
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailconversation.domain.usecase.ObserveConversation
+import ch.protonmail.android.mailcommon.domain.sample.ConversationIdSample
+import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
+import ch.protonmail.android.mailconversation.domain.usecase.GetAllConversationBottomBarActions
 import ch.protonmail.android.maildetail.domain.usecase.ObserveConversationDetailActions
-import ch.protonmail.android.testdata.conversation.ConversationTestData
-import ch.protonmail.android.testdata.user.UserIdTestData.userId
-import io.mockk.every
+import ch.protonmail.android.maillabel.domain.sample.LabelIdSample
+import io.mockk.coEvery
 import io.mockk.mockk
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
 import kotlin.test.assertEquals
 
 internal class ObserveConversationDetailActionsTest {
 
-    private val observeConversation = mockk<ObserveConversation>()
+    private val getAllConversationBottomBarActions = mockk<GetAllConversationBottomBarActions>()
 
-    private val observeDetailActions = ObserveConversationDetailActions(
-        observeConversation = observeConversation
-    )
+    private val observeDetailActions = ObserveConversationDetailActions(getAllConversationBottomBarActions)
 
     @Test
-    fun `returns default actions list for conversation`() = runTest {
+    fun `returns visible bottom bar actions when use case succeeds`() = runTest {
         // Given
-        val conversationId = ConversationId(ConversationTestData.RAW_CONVERSATION_ID)
-        every {
-            observeConversation.invoke(userId, conversationId)
-        } returns flowOf(ConversationTestData.conversation.right())
+        val userId = UserIdSample.Primary
+        val labelId = LabelIdSample.Trash
+        val conversationId = ConversationIdSample.Invoices
+        val allActions = AllBottomBarActions(
+            hiddenActions = listOf(Action.Star, Action.Label),
+            visibleActions = listOf(Action.Spam, Action.Archive)
+        )
+        coEvery {
+            getAllConversationBottomBarActions(userId, labelId, listOf(conversationId))
+        } returns allActions.right()
+
         // When
-        observeDetailActions.invoke(userId, conversationId).test {
+        observeDetailActions(userId, labelId, conversationId).test {
             // Then
-            val expected = listOf(
-                Action.MarkUnread,
-                Action.Archive,
-                Action.Trash,
-                Action.Move,
-                Action.More
-            )
+            val expected = listOf(Action.Spam, Action.Archive)
             assertEquals(expected.right(), awaitItem())
             awaitComplete()
         }
     }
 
     @Test
-    fun `returns data error when failing to get conversation`() = runTest {
+    fun `returns error when failing to get available actions`() = runTest {
         // Given
-        val conversationId = ConversationId(ConversationTestData.RAW_CONVERSATION_ID)
-        every { observeConversation.invoke(userId, conversationId) } returns flowOf(
-            DataError.Local.NoDataCached.left()
-        )
+        val userId = UserIdSample.Primary
+        val labelId = LabelIdSample.Trash
+        val conversationId = ConversationIdSample.Invoices
+        val error = DataError.Local.Unknown.left()
+        coEvery { getAllConversationBottomBarActions(userId, labelId, listOf(conversationId)) } returns error
+
         // When
-        observeDetailActions.invoke(userId, conversationId).test {
+        observeDetailActions(userId, labelId, conversationId).test {
             // Then
-            assertEquals(DataError.Local.NoDataCached.left(), awaitItem())
+            assertEquals(error, awaitItem())
             awaitComplete()
         }
     }
+
 }
