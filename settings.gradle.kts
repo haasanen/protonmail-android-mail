@@ -31,7 +31,7 @@ includeCoreBuild {
         if (System.getenv("CI").toBoolean()) {
             val token = System.getenv("ACCOUNT_REPO_READ_TOKEN")
             val server = "gitlab.protontech.ch"
-            uri.set("https://${token}@${server}/amorral/et-protoncore.git")
+            uri.set("https://username:${token}@${server}/amorral/et-protoncore.git")
         } else {
             authentication { sshWithPublicKey() }
             uri.set("git@gitlab.protontech.ch:amorral/et-protoncore.git")
