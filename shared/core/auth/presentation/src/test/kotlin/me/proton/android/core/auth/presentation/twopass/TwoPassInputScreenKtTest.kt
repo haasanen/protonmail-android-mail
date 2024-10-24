@@ -39,7 +39,7 @@ class TwoPassInputScreenKtTest(config: DeviceConfig) {
     fun `password is empty`() {
         paparazzi.snapshot {
             ProtonTheme {
-                TwoPassInputScreen(state = TwoPassInputState.PasswordIsEmpty)
+                TwoPassInputScreen(state = TwoPassInputState.Error.PasswordIsEmpty)
             }
         }
     }
