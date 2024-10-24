@@ -1,3 +1,5 @@
+import java.util.Properties
+
 /*
  * Copyright (c) 2022 Proton Technologies AG
  * This file is part of Proton Technologies AG and Proton Mail.
@@ -22,20 +24,29 @@ plugins {
     id("me.proton.core.gradle-plugins.include-core-build") version "1.3.0"
 }
 
+val localProperties by lazy {
+    Properties().apply { load(file("local.properties").inputStream()) }
+}
+
 includeCoreBuild {
     branch.set("main")
     includeBuild("gopenpgp")
 
     // Adding temporary https://gitlab.protontech.ch/amorral/et-protoncore.
     includeRepo("et-protoncore") {
-        if (System.getenv("CI").toBoolean()) {
-            val token = System.getenv("ACCOUNT_REPO_READ_TOKEN")
-            val server = "gitlab.protontech.ch"
-            uri.set("https://username:${token}@${server}/amorral/et-protoncore.git")
-        } else {
-            authentication { sshWithPublicKey() }
-            uri.set("git@gitlab.protontech.ch:amorral/et-protoncore.git")
+        val tokenKey = "ACCOUNT_REPO_READ_TOKEN"
+        val token = System.getenv(tokenKey) ?: localProperties[tokenKey]
+        if (token == null) {
+            logger.warn(
+                """
+                    Please provide `$tokenKey` as an environment variable, or a value in local.properties file.
+                    Alternatively, uncomment `local.git.et-protoncore=account-core` in gradle.properties file,
+                    and clone the et-protoncore repository into `account-core` directory.
+                """.trimIndent()
+            )
         }
+        val server = "gitlab.protontech.ch"
+        uri.set("https://username:${token}@${server}/amorral/et-protoncore.git")
         branch.set("develop")
         checkoutDirectory.set(file("./account-core"))
     }
