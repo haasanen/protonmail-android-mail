@@ -30,6 +30,7 @@ class CreateRustConversationPaginator @Inject constructor() {
     suspend operator fun invoke(
         session: MailUserSession,
         labelId: LocalLabelId,
+        unread: Boolean,
         callback: LiveQueryCallback
     ) = paginateConversationsForLabel(session, labelId, PaginatorFilter(null), callback)
 }
