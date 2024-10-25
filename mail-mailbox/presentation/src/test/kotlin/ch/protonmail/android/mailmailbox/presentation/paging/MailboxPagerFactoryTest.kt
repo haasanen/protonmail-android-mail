@@ -36,7 +36,7 @@ class MailboxPagerFactoryTest {
     private val pagingSourceFactory = mockk<MailboxItemPagingSourceFactory>()
     private val selectedMailLabelId = MailLabelTestData.starredSystemLabel.id
     private val readStatus = ReadStatus.All
-    private val pageKey = PageKey(labelId = selectedMailLabelId.labelId, read = readStatus)
+    private val pageKey = PageKey.DefaultPageKey(labelId = selectedMailLabelId.labelId, readStatus = readStatus)
 
     private val mailboxPagerFactory = MailboxPagerFactory(pagingSourceFactory)
 

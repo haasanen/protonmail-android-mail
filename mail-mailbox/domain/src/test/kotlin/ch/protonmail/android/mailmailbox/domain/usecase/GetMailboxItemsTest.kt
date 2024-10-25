@@ -76,7 +76,7 @@ class GetMailboxItemsTest {
     @Test
     fun `invoke for Message, getLabels and loadMessages`() = runTest {
         // Given
-        val pageKey = PageKey()
+        val pageKey = PageKey.DefaultPageKey()
 
         // When
         val mailboxItems = usecase.invoke(userId, MailboxItemType.Message, pageKey)
@@ -98,7 +98,7 @@ class GetMailboxItemsTest {
     @Test
     fun `invoke for Conversation, getLabels and getConversations`() = runTest {
         // Given
-        val pageKey = PageKey()
+        val pageKey = PageKey.DefaultPageKey()
 
         // When
         val mailboxItems = usecase.invoke(userId, MailboxItemType.Conversation, pageKey)

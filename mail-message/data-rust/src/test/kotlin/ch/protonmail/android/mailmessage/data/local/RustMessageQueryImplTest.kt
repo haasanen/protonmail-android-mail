@@ -78,14 +78,14 @@ class RustMessageQueryImplTest {
         val mailboxCallbackSlot = slot<LiveQueryCallback>()
         val userId = UserIdTestData.userId
         val localLabelId = LocalLabelId(1u)
-        val pageKey = PageKey(labelId = localLabelId.toLabelId())
+        val pageKey = PageKey.DefaultPageKey(labelId = localLabelId.toLabelId())
         val userSession = mockk<MailUserSession>()
         coEvery { userSessionRepository.getUserSession(userId) } returns userSession
         coEvery { messagePaginator.nextPage() } returns expectedMessages
         coEvery {
             createRustMessagesPaginator.invoke(
                 userSession,
-                localLabelId,
+                localLabelId, false,
                 capture(mailboxCallbackSlot)
             )
         } returns messagePaginator
@@ -103,7 +103,7 @@ class RustMessageQueryImplTest {
         // Given
         val userId = UserIdTestData.userId
         val localLabelId = LocalLabelId(1u)
-        val pageKey = PageKey(labelId = localLabelId.toLabelId())
+        val pageKey = PageKey.DefaultPageKey(labelId = localLabelId.toLabelId())
         val userSession = mockk<MailUserSession>()
         coEvery { userSessionRepository.getUserSession(userId) } returns userSession
         coEvery { rustMailbox.switchToMailbox(userId, localLabelId) } just Runs
@@ -124,7 +124,7 @@ class RustMessageQueryImplTest {
         val userId = UserIdTestData.userId
         val mailboxCallbackSlot = slot<LiveQueryCallback>()
         val localLabelId = LocalLabelId(1u)
-        val pageKey = PageKey(labelId = localLabelId.toLabelId())
+        val pageKey = PageKey.DefaultPageKey(labelId = localLabelId.toLabelId())
         val userSession = mockk<MailUserSession>()
         coEvery { userSessionRepository.getUserSession(userId) } returns userSession
         coEvery { rustMailbox.switchToMailbox(userId, localLabelId) } just Runs
@@ -151,13 +151,13 @@ class RustMessageQueryImplTest {
         val expectedConversations = listOf(LocalMessageTestData.AugWeatherForecast)
         val userId = UserIdSample.Primary
         val labelId = SystemLabelId.Inbox.labelId
-        val pageKey = PageKey(labelId = labelId)
+        val pageKey = PageKey.DefaultPageKey(labelId = labelId)
         val session = mockk<MailUserSession>()
         val paginator = mockk<MessagePaginator> {
             coEvery { this@mockk.nextPage() } returns expectedConversations
         }
         coEvery { userSessionRepository.getUserSession(userId) } returns session
-        coEvery { createRustMessagesPaginator(session, labelId.toLocalLabelId(), any()) } returns paginator
+        coEvery { createRustMessagesPaginator(session, labelId.toLocalLabelId(), false, any()) } returns paginator
 
         // When
         val actual = rustMessageQuery.getMessages(userId, pageKey)
@@ -172,7 +172,7 @@ class RustMessageQueryImplTest {
         val expectedConversations = listOf(LocalMessageTestData.AugWeatherForecast)
         val userId = UserIdSample.Primary
         val labelId = SystemLabelId.Inbox.labelId
-        val pageKey = PageKey(labelId = labelId, pageToLoad = PageToLoad.Next)
+        val pageKey = PageKey.DefaultPageKey(labelId = labelId, pageToLoad = PageToLoad.Next)
         val session = mockk<MailUserSession>()
         val paginator = mockk<MessagePaginator> {
             coEvery { this@mockk.nextPage() } returns expectedConversations
@@ -193,7 +193,7 @@ class RustMessageQueryImplTest {
         val expectedConversations = listOf(LocalMessageTestData.AugWeatherForecast)
         val userId = UserIdSample.Primary
         val labelId = SystemLabelId.Inbox.labelId
-        val pageKey = PageKey(labelId = labelId, pageToLoad = PageToLoad.All)
+        val pageKey = PageKey.DefaultPageKey(labelId = labelId, pageToLoad = PageToLoad.All)
         val session = mockk<MailUserSession>()
         val paginator = mockk<MessagePaginator> {
             coEvery { this@mockk.reload() } returns expectedConversations
@@ -214,7 +214,7 @@ class RustMessageQueryImplTest {
         val expectedConversations = listOf(LocalMessageTestData.AugWeatherForecast)
         val userId = UserIdSample.Primary
         val labelId = SystemLabelId.Inbox.labelId
-        val pageKey = PageKey(labelId = labelId)
+        val pageKey = PageKey.DefaultPageKey(labelId = labelId)
         val session = mockk<MailUserSession>()
         val paginator = mockk<MessagePaginator> {
             coEvery { this@mockk.nextPage() } returns expectedConversations
@@ -236,7 +236,7 @@ class RustMessageQueryImplTest {
         val nextPage = listOf(LocalMessageTestData.AugWeatherForecast)
         val userId = UserIdSample.Primary
         val labelId = SystemLabelId.Inbox.labelId
-        val pageKey = PageKey(labelId = labelId)
+        val pageKey = PageKey.DefaultPageKey(labelId = labelId)
         val nextPageKey = pageKey.copy(pageToLoad = PageToLoad.Next)
         val session = mockk<MailUserSession>()
         val paginator = mockk<MessagePaginator> {
@@ -262,7 +262,7 @@ class RustMessageQueryImplTest {
         val userId = UserIdSample.Primary
         val labelId = SystemLabelId.Inbox.labelId
         val newLabelId = SystemLabelId.Archive.labelId
-        val pageKey = PageKey(labelId = labelId)
+        val pageKey = PageKey.DefaultPageKey(labelId = labelId)
         val newPageKey = pageKey.copy(newLabelId)
         val session = mockk<MailUserSession>()
         val paginator = mockk<MessagePaginator> {

@@ -68,7 +68,7 @@ class RustConversationRepositoryImplTest {
     @Test
     fun `getLocalConversations should return conversations`() = runTest {
         // Given
-        val pageKey = PageKey(labelId = labelWithSystemLabelId.label.labelId)
+        val pageKey = PageKey.DefaultPageKey(labelId = labelWithSystemLabelId.label.labelId)
         val localConversations = listOf(
             LocalConversationTestData.AugConversation, LocalConversationTestData.SepConversation
         )

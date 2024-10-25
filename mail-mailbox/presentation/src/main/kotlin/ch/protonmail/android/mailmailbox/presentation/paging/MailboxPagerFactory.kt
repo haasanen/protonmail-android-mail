@@ -55,13 +55,23 @@ class MailboxPagerFactory @Inject constructor(
         selectedMailLabelId: MailLabelId,
         userId: UserId,
         searchQuery: String
-    ) = MailboxPageKey(
-        userId = userId,
-        pageKey = PageKey(
-            labelId = selectedMailLabelId.labelId,
-            read = if (filterUnread) ReadStatus.Unread else ReadStatus.All
+    ): MailboxPageKey {
+        val pageKey: PageKey = if (searchQuery.isNotEmpty()) {
+            PageKey.PageKeyForSearch(
+                keyword = searchQuery
+            )
+        } else {
+            PageKey.DefaultPageKey(
+                labelId = selectedMailLabelId.labelId,
+                readStatus = if (filterUnread) ReadStatus.Unread else ReadStatus.All
+            )
+        }
+
+        return MailboxPageKey(
+            userId = userId,
+            pageKey = pageKey
         )
-    )
+    }
 
     companion object {
         private const val DEFAULT_PAGE_SIZE = 50

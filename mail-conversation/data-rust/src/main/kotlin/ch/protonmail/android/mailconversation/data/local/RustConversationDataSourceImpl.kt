@@ -72,8 +72,14 @@ class RustConversationDataSourceImpl @Inject constructor(
      * Adds in an Invalidation Observer on the label that will be fired when any conversation
      * in the label changes
      */
-    override suspend fun getConversations(userId: UserId, pageKey: PageKey): List<LocalConversation> =
-        rustConversationsQuery.getConversations(userId, pageKey) ?: emptyList()
+    override suspend fun getConversations(userId: UserId, pageKey: PageKey): List<LocalConversation> {
+        return if (pageKey is PageKey.DefaultPageKey) {
+            rustConversationsQuery.getConversations(userId, pageKey) ?: emptyList()
+        } else {
+            Timber.e("Error: PageKey must be of type DefaultPageKey, received: ${pageKey::class.simpleName}")
+            emptyList()
+        }
+    }
 
     override fun observeConversation(userId: UserId, conversationId: LocalConversationId): Flow<LocalConversation>? =
         runCatching { rustConversationDetailQuery.observeConversation(userId, conversationId) }

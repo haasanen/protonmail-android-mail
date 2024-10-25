@@ -26,11 +26,29 @@ import ch.protonmail.android.mailpagination.domain.model.ReadStatus.Unread
 /**
  * Page Parameters needed to query/fetch/filter/sort/order a page.
  */
-data class PageKey(
-    val labelId: LabelId = LabelId("0"),
-    val read: ReadStatus = All,
-    val pageToLoad: PageToLoad = PageToLoad.First
-)
+sealed interface PageKey {
+
+    val pageToLoad: PageToLoad
+
+    data class DefaultPageKey(
+        val labelId: LabelId = LabelId("0"),
+        val readStatus: ReadStatus = ReadStatus.All,
+        override val pageToLoad: PageToLoad = PageToLoad.First
+    ) : PageKey
+
+    data class PageKeyForSearch(
+        val keyword: String,
+        override val pageToLoad: PageToLoad = PageToLoad.First
+    ) : PageKey
+}
+
+fun PageKey.copyWithNewPageToLoad(pageToLoad: PageToLoad): PageKey {
+    return when (this) {
+        is PageKey.DefaultPageKey -> this.copy(pageToLoad = pageToLoad)
+        is PageKey.PageKeyForSearch -> this.copy(pageToLoad = pageToLoad)
+    }
+}
+
 
 /**
  * Filter only [Read], [Unread] or [All] items.

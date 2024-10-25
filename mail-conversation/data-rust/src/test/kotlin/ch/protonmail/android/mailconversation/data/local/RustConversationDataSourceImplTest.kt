@@ -101,7 +101,7 @@ class RustConversationDataSourceImplTest {
         val userId = UserIdTestData.userId
         val mailSession = mockk<MailSession>()
         val labelId = LocalLabelId(1uL)
-        val pageKey = PageKey(labelId.toLabelId())
+        val pageKey = PageKey.DefaultPageKey(labelId.toLabelId())
         val conversations = listOf(
             LocalConversationTestData.AugConversation,
             LocalConversationTestData.SepConversation,

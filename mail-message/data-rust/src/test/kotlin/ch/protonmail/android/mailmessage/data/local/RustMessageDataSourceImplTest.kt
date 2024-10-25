@@ -180,7 +180,7 @@ class RustMessageDataSourceImplTest {
         val userId = UserIdTestData.userId
         val mailSession = mockk<MailUserSession>()
         coEvery { userSessionRepository.getUserSession(userId) } returns mailSession
-        val pageKey = PageKey()
+        val pageKey = PageKey.DefaultPageKey()
         val messages = listOf(
             LocalMessageTestData.AugWeatherForecast,
             LocalMessageTestData.SepWeatherForecast,

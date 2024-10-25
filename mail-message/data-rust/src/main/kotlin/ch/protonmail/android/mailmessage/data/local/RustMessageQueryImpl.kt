@@ -26,6 +26,7 @@ import ch.protonmail.android.mailmessage.domain.paging.RustDataSourceId
 import ch.protonmail.android.mailmessage.domain.paging.RustInvalidationTracker
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailpagination.domain.model.PageToLoad
+import ch.protonmail.android.mailpagination.domain.model.ReadStatus
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -52,14 +53,13 @@ class RustMessageQueryImpl @Inject constructor(
 
             invalidationTracker.notifyInvalidation(
                 setOf(
-                    RustDataSourceId.MESSAGE,
-                    RustDataSourceId.LABELS
+                    RustDataSourceId.MESSAGE, RustDataSourceId.LABELS
                 )
             )
         }
     }
 
-    override suspend fun getMessages(userId: UserId, pageKey: PageKey): List<LocalMessageMetadata>? {
+    override suspend fun getMessages(userId: UserId, pageKey: PageKey.DefaultPageKey): List<LocalMessageMetadata>? {
         val session = userSessionRepository.getUserSession(userId)
         if (session == null) {
             Timber.e("rust-message: trying to load message with a null session")
@@ -68,8 +68,8 @@ class RustMessageQueryImpl @Inject constructor(
         Timber.v("rust-message: got MailSession instance to watch messages for $userId")
 
         val labelId = pageKey.labelId.toLocalLabelId()
-
-        initPaginator(userId, labelId, session)
+        val unread = pageKey.readStatus == ReadStatus.Unread
+        initPaginator(userId, labelId, unread, session)
 
         Timber.v("rust-message: Paging: querying ${pageKey.pageToLoad.name} page for messages")
         val messages = when (pageKey.pageToLoad) {
@@ -85,9 +85,10 @@ class RustMessageQueryImpl @Inject constructor(
     private suspend fun initPaginator(
         userId: UserId,
         labelId: LocalLabelId,
+        unread: Boolean,
         session: MailUserSession
     ) = paginatorMutex.withLock {
-        if (!shouldInitPaginator(userId, labelId)) {
+        if (!shouldInitPaginator(userId, labelId, unread)) {
             Timber.v("rust-message: reusing existing paginator instance...")
             return
         }
@@ -96,9 +97,7 @@ class RustMessageQueryImpl @Inject constructor(
         rustMailbox.switchToMailbox(userId, labelId)
         Timber.v("rust-message: switching mailbox to $labelId...")
         paginator = Paginator(
-            createRustMessagesPaginator(session, labelId, messagesUpdatedCallback),
-            userId,
-            labelId
+            createRustMessagesPaginator(session, labelId, unread, messagesUpdatedCallback), userId, labelId, unread
         )
     }
 
@@ -108,8 +107,16 @@ class RustMessageQueryImpl @Inject constructor(
         paginator = null
     }
 
-    private fun shouldInitPaginator(userId: UserId, labelId: LocalLabelId) =
-        paginator == null || paginator?.userId != userId || paginator?.labelId != labelId
+    private fun shouldInitPaginator(
+        userId: UserId,
+        labelId: LocalLabelId,
+        unread: Boolean
+    ) = paginator == null || paginator?.userId != userId || paginator?.labelId != labelId || paginator?.unread != unread
 
-    private data class Paginator(val rustPaginator: MessagePaginator, val userId: UserId, val labelId: LocalLabelId)
+    private data class Paginator(
+        val rustPaginator: MessagePaginator,
+        val userId: UserId,
+        val labelId: LocalLabelId,
+        val unread: Boolean
+    )
 }

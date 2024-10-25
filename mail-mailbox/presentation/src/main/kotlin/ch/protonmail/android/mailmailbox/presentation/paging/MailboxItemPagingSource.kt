@@ -28,6 +28,7 @@ import ch.protonmail.android.mailmailbox.domain.usecase.GetMailboxItems
 import ch.protonmail.android.mailmessage.domain.paging.RustInvalidationTracker
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailpagination.domain.model.PageToLoad
+import ch.protonmail.android.mailpagination.domain.model.copyWithNewPageToLoad
 import ch.protonmail.android.mailpagination.presentation.paging.RustPagingSource
 import timber.log.Timber
 
@@ -76,13 +77,13 @@ class RustMailboxItemPagingSource(
         if (hasNoMoreItems) {
             return null
         }
-        val pageKey = key.pageKey.copy(pageToLoad = PageToLoad.Next)
+        val pageKey = key.pageKey.copyWithNewPageToLoad(pageToLoad = PageToLoad.Next)
         return key.copy(pageKey = pageKey)
     }
 
     override fun getRefreshKey(state: PagingState<MailboxPageKey, MailboxItem>): MailboxPageKey {
         Timber.d("Paging: getting refresh key")
-        return mailboxPageKey.copy(pageKey = mailboxPageKey.pageKey.copy(pageToLoad = PageToLoad.All))
+        return mailboxPageKey.copy(pageKey = mailboxPageKey.pageKey.copyWithNewPageToLoad(pageToLoad = PageToLoad.All))
     }
 
     private fun logPageLoaded(

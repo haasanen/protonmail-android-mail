@@ -45,7 +45,7 @@ interface MessageRepository {
     /**
      * Load all [Message] from local cache for [userId] filtered by [PageKey].
      */
-    suspend fun getMessages(userId: UserId, pageKey: PageKey = PageKey()): List<Message>
+    suspend fun getMessages(userId: UserId, pageKey: PageKey = PageKey.DefaultPageKey()): List<Message>
 
     /**
      * Gets a [Message] metadata for [userId] from the local storage
