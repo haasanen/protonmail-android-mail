@@ -18,19 +18,17 @@
 
 package ch.protonmail.android.mailmessage.data.usecase
 
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
 import uniffi.proton_mail_uniffi.LiveQueryCallback
 import uniffi.proton_mail_uniffi.MailUserSession
-import uniffi.proton_mail_uniffi.PaginatorFilter
-import uniffi.proton_mail_uniffi.paginateMessagesForLabel
+import uniffi.proton_mail_uniffi.PaginatorSearchOptions
+import uniffi.proton_mail_uniffi.paginateSearch
 import javax.inject.Inject
 
-class CreateRustMessagesPaginator @Inject constructor() {
+class CreateRustSearchPaginator @Inject constructor() {
 
     suspend operator fun invoke(
         session: MailUserSession,
-        labelId: LocalLabelId,
-        unread: Boolean,
+        keyword: String,
         callback: LiveQueryCallback
-    ) = paginateMessagesForLabel(session, labelId, PaginatorFilter(null), callback)
+    ) = paginateSearch(session, PaginatorSearchOptions(keyword), callback)
 }

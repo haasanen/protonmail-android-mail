@@ -28,6 +28,7 @@ import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageId
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageMetadata
 import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailmessage.data.search.RustMessageSearchQuery
 import ch.protonmail.android.mailmessage.data.usecase.CreateRustMessageAccessor
 import ch.protonmail.android.mailmessage.data.usecase.CreateRustMessageBodyAccessor
 import ch.protonmail.android.mailmessage.data.usecase.GetRustAllMessageBottomBarActions
@@ -56,6 +57,7 @@ class RustMessageDataSourceImpl @Inject constructor(
     private val userSessionRepository: UserSessionRepository,
     private val rustMailbox: RustMailbox,
     private val rustMessageQuery: RustMessageQuery,
+    private val rustMessageSearchQuery: RustMessageSearchQuery,
     private val createRustMessageAccessor: CreateRustMessageAccessor,
     private val createRustMessageBodyAccessor: CreateRustMessageBodyAccessor,
     private val getRustSenderImage: GetRustSenderImage,
@@ -108,7 +110,14 @@ class RustMessageDataSourceImpl @Inject constructor(
 
     override suspend fun getMessages(userId: UserId, pageKey: PageKey): List<LocalMessageMetadata> {
         Timber.d("rust-message: getMessages for pageKey: $pageKey")
-        return rustMessageQuery.getMessages(userId, pageKey) ?: run {
+        return when (pageKey) {
+            is PageKey.PageKeyForSearch -> {
+                rustMessageSearchQuery.getMessages(userId, pageKey)
+            }
+            is PageKey.DefaultPageKey -> {
+                rustMessageQuery.getMessages(userId, pageKey)
+            }
+        } ?: run {
             Timber.w("rust-message: paginator returned null result for $pageKey")
             emptyList()
         }
