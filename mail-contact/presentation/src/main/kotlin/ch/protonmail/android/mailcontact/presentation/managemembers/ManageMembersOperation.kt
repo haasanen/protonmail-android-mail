@@ -19,7 +19,7 @@
 package ch.protonmail.android.mailcontact.presentation.managemembers
 
 import ch.protonmail.android.mailcontact.presentation.model.ManageMembersUiModel
-import ch.protonmail.android.mailcontact.domain.model.ContactEmailId
+import ch.protonmail.android.mailcontact.domain.model.ContactId
 
 sealed interface ManageMembersOperation
 
@@ -27,7 +27,7 @@ sealed interface ManageMembersViewAction : ManageMembersOperation {
     object OnCloseClick : ManageMembersViewAction
     object OnDoneClick : ManageMembersViewAction
     data class OnMemberClick(
-        val contactEmailId: ContactEmailId
+        val contactId: ContactId
     ) : ManageMembersViewAction
     data class OnSearchValueChanged(
         val searchValue: String
@@ -42,6 +42,6 @@ sealed interface ManageMembersEvent : ManageMembersOperation {
     object ErrorUpdatingMember : ManageMembersEvent
     object Close : ManageMembersEvent
     data class OnDone(
-        val selectedContactEmailIds: List<ContactEmailId>
+        val selectedContactIds: List<ContactId>
     ) : ManageMembersEvent
 }

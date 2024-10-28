@@ -35,7 +35,7 @@ import ch.protonmail.android.mailcommon.presentation.model.ActionUiModel
 import ch.protonmail.android.mailcommon.presentation.model.BottomBarEvent
 import ch.protonmail.android.mailcommon.presentation.model.BottomBarState
 import ch.protonmail.android.mailcommon.presentation.ui.delete.DeleteDialogState
-import ch.protonmail.android.mailcontact.domain.model.Contact
+import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import ch.protonmail.android.mailcontact.domain.usecase.GetContacts
 import ch.protonmail.android.mailconversation.domain.usecase.DeleteConversations
 import ch.protonmail.android.mailconversation.domain.usecase.MarkConversationsAsRead
@@ -1135,7 +1135,7 @@ class MailboxViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getContacts(): List<Contact> {
+    private suspend fun getContacts(): List<ContactMetadata.Contact> {
         val userId = primaryUserId.firstOrNull() ?: return emptyList()
 
         return getContacts(userId).getOrElse {

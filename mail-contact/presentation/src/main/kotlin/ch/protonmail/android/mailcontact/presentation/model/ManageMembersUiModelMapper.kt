@@ -18,30 +18,25 @@
 
 package ch.protonmail.android.mailcontact.presentation.model
 
-import ch.protonmail.android.mailcommon.presentation.usecase.GetInitials
-import ch.protonmail.android.mailcontact.domain.model.Contact
-import ch.protonmail.android.mailcontact.domain.model.ContactEmailId
+import ch.protonmail.android.mailcontact.domain.model.ContactId
+import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import javax.inject.Inject
 
-class ManageMembersUiModelMapper @Inject constructor(
-    private val getInitials: GetInitials
-) {
+class ManageMembersUiModelMapper @Inject constructor() {
 
     fun toManageMembersUiModelList(
-        contacts: List<Contact>,
-        selectedContactEmailIds: List<ContactEmailId>
+        contacts: List<ContactMetadata.Contact>,
+        selectedContactIds: List<ContactId>
     ): List<ManageMembersUiModel> {
-        return contacts.flatMap { contact ->
-            contact.contactEmails.map { contactEmail ->
-                ManageMembersUiModel(
-                    id = contactEmail.id,
-                    name = contactEmail.name,
-                    email = contactEmail.email,
-                    initials = getInitials(contactEmail.name),
-                    isSelected = selectedContactEmailIds.any { it == contactEmail.id },
-                    isDisplayed = true
-                )
-            }
+        return contacts.map { contact ->
+            ManageMembersUiModel(
+                id = contact.id,
+                name = contact.name,
+                initials = contact.avatar.initials,
+                email = contact.emails.firstOrNull()?.email ?: "",
+                isSelected = selectedContactIds.any { it == contact.id },
+                isDisplayed = true
+            )
         }
     }
 }

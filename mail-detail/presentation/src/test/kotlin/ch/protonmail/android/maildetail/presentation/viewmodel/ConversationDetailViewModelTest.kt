@@ -40,6 +40,7 @@ import ch.protonmail.android.mailcommon.presentation.model.ActionResult
 import ch.protonmail.android.mailcommon.presentation.model.BottomBarState
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcommon.presentation.sample.ParticipantAvatarSample
+import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import ch.protonmail.android.mailcontact.domain.model.GetContactError
 import ch.protonmail.android.mailcontact.domain.usecase.FindContactByEmail
 import ch.protonmail.android.mailcontact.domain.usecase.ObserveContacts
@@ -133,7 +134,6 @@ import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
-import ch.protonmail.android.mailcontact.domain.model.Contact
 import ch.protonmail.android.mailmessage.domain.usecase.GetMessageMoveToLocations
 import me.proton.core.network.domain.NetworkManager
 import kotlin.test.AfterTest
@@ -201,7 +201,7 @@ class ConversationDetailViewModelTest {
     private val relabelConversation: RelabelConversation = mockk()
     private val deleteConversations: DeleteConversations = mockk()
     private val observeContacts: ObserveContacts = mockk {
-        every { this@mockk(userId = UserIdSample.Primary) } returns flowOf(emptyList<Contact>().right())
+        every { this@mockk(userId = UserIdSample.Primary) } returns flowOf(emptyList<ContactMetadata.Contact>().right())
     }
     private val observeConversation: ObserveConversation = mockk {
         every { this@mockk(UserIdSample.Primary, ConversationIdSample.WeatherForecast) } returns

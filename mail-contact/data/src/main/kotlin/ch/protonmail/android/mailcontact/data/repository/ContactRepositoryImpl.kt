@@ -18,11 +18,15 @@
 
 package ch.protonmail.android.mailcontact.data.repository
 
-import ch.protonmail.android.mailcontact.domain.model.Contact
+import arrow.core.Either
+import ch.protonmail.android.mailcontact.data.local.RustContactDataSource
 import ch.protonmail.android.mailcontact.domain.model.ContactCard
 import ch.protonmail.android.mailcontact.domain.model.ContactEmail
 import ch.protonmail.android.mailcontact.domain.model.ContactId
+import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import ch.protonmail.android.mailcontact.domain.model.ContactWithCards
+import ch.protonmail.android.mailcontact.domain.model.GetContactError
+import ch.protonmail.android.mailcontact.domain.model.GroupedContacts
 import ch.protonmail.android.mailcontact.domain.repository.ContactRepository
 import kotlinx.coroutines.flow.Flow
 import me.proton.core.domain.arch.DataResult
@@ -30,7 +34,9 @@ import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 
 @Suppress("NotImplementedDeclaration")
-class ContactRepositoryImpl @Inject constructor() : ContactRepository {
+class ContactRepositoryImpl @Inject constructor(
+    private val localContactDataSource: RustContactDataSource
+) : ContactRepository {
 
     override fun observeContactWithCards(
         userId: UserId,
@@ -48,11 +54,15 @@ class ContactRepositoryImpl @Inject constructor() : ContactRepository {
         TODO("Not yet implemented")
     }
 
-    override fun observeAllContacts(userId: UserId, refresh: Boolean): Flow<DataResult<List<Contact>>> {
-        TODO("Not yet implemented")
-    }
+    override fun observeAllGroupedContacts(userId: UserId): Flow<Either<GetContactError, List<GroupedContacts>>> =
+        localContactDataSource.observeAllGroupedContacts(userId)
 
-    override suspend fun getAllContacts(userId: UserId, refresh: Boolean): List<Contact> {
+    override fun observeAllContacts(
+        userId: UserId,
+        refresh: Boolean
+    ): Flow<Either<GetContactError, List<ContactMetadata>>> = localContactDataSource.observeAllContacts(userId)
+
+    override suspend fun getAllContacts(userId: UserId, refresh: Boolean): List<ContactMetadata> {
         TODO("Not yet implemented")
     }
 

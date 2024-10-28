@@ -21,7 +21,6 @@ package ch.protonmail.android.mailmessage.domain.usecase
 import ch.protonmail.android.mailmessage.domain.model.Participant
 import ch.protonmail.android.mailmessage.domain.usecase.ResolveParticipantName.FallbackType
 import ch.protonmail.android.testdata.contact.ContactTestData
-import ch.protonmail.android.testdata.user.UserIdTestData
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -32,15 +31,16 @@ class ResolveParticipantNameTest {
     @Test
     fun `when a participant exists as contact then contact name is returned`() {
         // Given
+        val contactName = "contact name"
         val contact = ContactTestData.buildContactWith(
-            userId = UserIdTestData.userId,
+            name = contactName,
             contactEmails = listOf(
                 ContactTestData.buildContactEmailWith(
-                    name = "contact email name",
                     address = "sender@proton.ch"
                 )
             )
         )
+
         val userContacts = listOf(contact, ContactTestData.contact2)
         val participant = Participant("sender@proton.ch", "")
 
@@ -48,7 +48,7 @@ class ResolveParticipantNameTest {
         val actual = resolveParticipantName(participant, userContacts)
 
         // Then
-        val expected = ResolveParticipantNameResult("contact email name", isProton = false)
+        val expected = ResolveParticipantNameResult(contactName, isProton = false)
         assertEquals(expected, actual)
     }
 

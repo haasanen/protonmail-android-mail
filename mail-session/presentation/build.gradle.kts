@@ -56,6 +56,9 @@ android {
 dependencies {
     implementation(JakeWharton.timber)
 
+    implementation(Dependencies.modulePresentationLibs)
+    implementation(project(":mail-session:domain"))
+
     testImplementation(project(":test:test-data"))
 
     testImplementation(Cash.turbine)

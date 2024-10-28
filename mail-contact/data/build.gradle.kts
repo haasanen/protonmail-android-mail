@@ -43,9 +43,11 @@ android {
 }
 
 dependencies {
+    implementation(project(":mail-session:domain"))
     kapt(Dependencies.appAnnotationProcessors)
 
     implementation(Dependencies.moduleDataLibs)
+    compileOnly(Proton.Common.rustCore)
 
     implementation(Dagger.hiltAndroid)
     implementation(AndroidX.Hilt.work)

@@ -28,7 +28,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import ch.protonmail.android.mailcontact.presentation.contactlist.ContactListState
 import ch.protonmail.android.mailcontact.presentation.model.ContactListItemUiModel
-import ch.protonmail.android.mailcontact.presentation.previewdata.ContactListPreviewData.contactGroupSampleData
 import ch.protonmail.android.mailcontact.presentation.previewdata.ContactListPreviewData.contactSampleData
 import ch.protonmail.android.mailcontact.presentation.previewdata.ContactListPreviewData.headerSampleData
 
@@ -75,11 +74,6 @@ private fun ContactListScreenPreview() {
                 contactSampleData,
                 contactSampleData,
                 contactSampleData
-            ),
-            contactGroups = listOf(
-                contactGroupSampleData,
-                contactGroupSampleData,
-                contactGroupSampleData
             ),
             isContactGroupsCrudEnabled = true,
             isContactSearchEnabled = true

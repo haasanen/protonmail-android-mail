@@ -20,6 +20,7 @@ package ch.protonmail.android.feature.account
 
 import app.cash.turbine.test
 import ch.protonmail.android.mailcommon.data.worker.Enqueuer
+import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
 import ch.protonmail.android.testdata.user.UserIdTestData
 import io.mockk.Runs
@@ -31,9 +32,8 @@ import io.mockk.unmockkAll
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.take
+import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.runTest
-import me.proton.core.accountmanager.domain.AccountManager
-import me.proton.core.test.kotlin.TestDispatcherProvider
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -43,15 +43,19 @@ import kotlin.test.assertEquals
 class SignOutAccountViewModelTest {
 
     @get:Rule
-    val mainDispatcherRule = MainDispatcherRule(TestDispatcherProvider().Main)
+    val mainDispatcherRule = MainDispatcherRule(StandardTestDispatcher())
 
-    private val accountManager = mockk<AccountManager>(relaxUnitFun = true)
-    private val enqueuer = mockk<Enqueuer>()
-    private val viewModel = SignOutAccountViewModel(accountManager, enqueuer)
+    private lateinit var enqueuer: Enqueuer
+    private lateinit var userSessionRepository: UserSessionRepository
+    private lateinit var viewModel: SignOutAccountViewModel
 
     @Before
     fun setup() {
-        every { accountManager.getPrimaryUserId() } returns flowOf(BaseUserId)
+        enqueuer = mockk()
+        userSessionRepository = mockk<UserSessionRepository>(relaxUnitFun = true) {
+            every { observePrimaryUserId() } returns flowOf(BaseUserId)
+        }
+        viewModel = SignOutAccountViewModel(userSessionRepository, enqueuer)
     }
 
     @After
@@ -82,8 +86,8 @@ class SignOutAccountViewModelTest {
             assertEquals(SignOutAccountViewModel.State.SigningOut, awaitItem())
             assertEquals(SignOutAccountViewModel.State.SignedOut, awaitItem())
 
-            coVerify { accountManager.disableAccount(BaseUserId) }
-            coVerify(exactly = 0) { accountManager.removeAccount(any()) }
+            coVerify { userSessionRepository.disableAccount(BaseUserId) }
+            coVerify(exactly = 0) { userSessionRepository.deleteAccount(any()) }
         }
     }
 
@@ -103,9 +107,9 @@ class SignOutAccountViewModelTest {
 
             coVerify {
                 enqueuer.cancelAllWork(BaseUserId)
-                accountManager.disableAccount(BaseUserId)
+                userSessionRepository.disableAccount(BaseUserId)
             }
-            coVerify(exactly = 0) { accountManager.removeAccount(any()) }
+            coVerify(exactly = 0) { userSessionRepository.deleteAccount(any()) }
         }
     }
 

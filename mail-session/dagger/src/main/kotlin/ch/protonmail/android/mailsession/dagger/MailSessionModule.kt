@@ -34,6 +34,9 @@ import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import me.proton.android.core.auth.presentation.session.UserSessionInitializationCallback
+import uniffi.proton_mail_uniffi.MailSessionInterface
+import uniffi.proton_mail_uniffi.MailUserSessionInitializationCallback
 import javax.inject.Singleton
 
 @Module(includes = [MailSessionModule.BindsModule::class])
@@ -47,8 +50,15 @@ object MailSessionModule {
 
     @Provides
     @Singleton
-    fun providesUserRepository(mailSessionRepository: MailSessionRepository): UserSessionRepository =
-        UserSessionRepositoryImpl(mailSessionRepository)
+    fun providesUserRepository(
+        mailSessionRepository: MailSessionRepository,
+        @RepositoryFlowCoroutineScope coroutineScope: CoroutineScope
+    ): UserSessionRepository = UserSessionRepositoryImpl(mailSessionRepository, coroutineScope)
+
+    @Provides
+    @Singleton
+    fun provideMailSessionInterface(repository: MailSessionRepository): MailSessionInterface =
+        repository.getMailSession()
 
     @Provides
     @Singleton
@@ -66,5 +76,10 @@ object MailSessionModule {
         @Binds
         @Singleton
         fun bindEventLoopRepository(impl: RustEventLoopRepository): EventLoopRepository
+
+
+        @Binds
+        @Singleton
+        fun bindInitializationCallback(impl: UserSessionInitializationCallback): MailUserSessionInitializationCallback
     }
 }

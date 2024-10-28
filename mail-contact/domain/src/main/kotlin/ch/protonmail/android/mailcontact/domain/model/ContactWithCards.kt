@@ -19,9 +19,9 @@
 package ch.protonmail.android.mailcontact.domain.model
 
 data class ContactWithCards(
-    val contact: Contact,
+    val contact: ContactMetadata.Contact,
     val contactCards: List<ContactCard>
 ) {
     val id = contact.id
-    val contactEmails = contact.contactEmails
+    val contactEmails = contact.emails
 }

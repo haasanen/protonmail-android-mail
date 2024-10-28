@@ -20,20 +20,20 @@ package ch.protonmail.android.mailcontact.domain.repository
 
 import arrow.core.Either
 import ch.protonmail.android.mailcontact.domain.model.ContactEmailId
+import ch.protonmail.android.mailcontact.domain.model.ContactGroupId
 import me.proton.core.domain.entity.UserId
-import ch.protonmail.android.maillabel.domain.model.LabelId
 
 interface ContactGroupRepository {
 
     suspend fun addContactEmailIdsToContactGroup(
         userId: UserId,
-        labelId: LabelId,
+        contactGroupId: ContactGroupId,
         contactEmailIds: Set<ContactEmailId>
     ): Either<ContactGroupErrors, Unit>
 
     suspend fun removeContactEmailIdsFromContactGroup(
         userId: UserId,
-        labelId: LabelId,
+        contactGroupId: ContactGroupId,
         contactEmailIds: Set<ContactEmailId>
     ): Either<ContactGroupErrors, Unit>
 

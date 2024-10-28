@@ -387,8 +387,8 @@ internal fun NavGraphBuilder.addContacts(
                 onContactSelected = { contactId ->
                     navController.navigate(Destination.Screen.ContactDetails(contactId))
                 },
-                onContactGroupSelected = { labelId ->
-                    navController.navigate(Destination.Screen.ContactGroupDetails(labelId))
+                onContactGroupSelected = { contactGroupId ->
+                    navController.navigate(Destination.Screen.ContactGroupDetails(contactGroupId))
                 },
                 onBackClick = {
                     navController.navigateBack()
@@ -515,7 +515,7 @@ internal fun NavGraphBuilder.addContactGroupForm(
         },
         manageMembers = { selectedContactEmailsIds ->
             navController.currentBackStackEntry?.savedStateHandle?.set(
-                SavedStateKey.SelectedContactEmailIds.key,
+                SavedStateKey.SelectedContactIds.key,
                 selectedContactEmailsIds.map { it.id }
             )
             navController.navigate(Destination.Screen.ManageMembers.route)
@@ -531,16 +531,16 @@ internal fun NavGraphBuilder.addContactGroupForm(
     composable(route = Destination.Screen.CreateContactGroup.route) {
         ContactGroupFormScreen(
             actions,
-            selectedContactEmailsIds = navController.currentBackStackEntry?.savedStateHandle?.getLiveData<List<String>>(
-                SavedStateKey.SelectedContactEmailIds.key
+            selectedContactIds = navController.currentBackStackEntry?.savedStateHandle?.getLiveData<List<String>>(
+                SavedStateKey.SelectedContactIds.key
             )?.observeAsState()
         )
     }
     composable(route = Destination.Screen.EditContactGroup.route) {
         ContactGroupFormScreen(
             actions,
-            selectedContactEmailsIds = navController.currentBackStackEntry?.savedStateHandle?.getLiveData<List<String>>(
-                SavedStateKey.SelectedContactEmailIds.key
+            selectedContactIds = navController.currentBackStackEntry?.savedStateHandle?.getLiveData<List<String>>(
+                SavedStateKey.SelectedContactIds.key
             )?.observeAsState()
         )
     }
@@ -553,7 +553,7 @@ internal fun NavGraphBuilder.addManageMembers(
     val actions = ManageMembersScreen.Actions(
         onDone = { selectedContactEmailsIds ->
             navController.previousBackStackEntry?.savedStateHandle?.set(
-                SavedStateKey.SelectedContactEmailIds.key,
+                SavedStateKey.SelectedContactIds.key,
                 selectedContactEmailsIds.map { it.id }
             )
             navController.navigateBack()
@@ -567,10 +567,10 @@ internal fun NavGraphBuilder.addManageMembers(
     composable(route = Destination.Screen.ManageMembers.route) {
         ManageMembersScreen(
             actions,
-            selectedContactEmailsIds = navController
+            selectedContactIds = navController
                 .previousBackStackEntry
                 ?.savedStateHandle
-                ?.getLiveData<List<String>>(SavedStateKey.SelectedContactEmailIds.key)
+                ?.getLiveData<List<String>>(SavedStateKey.SelectedContactIds.key)
                 ?.observeAsState()
         )
     }

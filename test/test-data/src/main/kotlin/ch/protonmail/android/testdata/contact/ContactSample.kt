@@ -18,46 +18,46 @@
 
 package ch.protonmail.android.testdata.contact
 
-import ch.protonmail.android.testdata.user.UserIdTestData
-import ch.protonmail.android.mailcontact.domain.model.Contact
+import ch.protonmail.android.mailcommon.domain.sample.AvatarInformationSample
+import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 
 object ContactSample {
 
-    val Doe = Contact(
-        contactEmails = emptyList(),
+    val Doe = ContactMetadata.Contact(
+        emails = emptyList(),
         id = ContactIdSample.Doe,
         name = "Doe",
-        userId = UserIdTestData.Primary
+        avatar = AvatarInformationSample.avatarSample
     )
 
-    val John = Contact(
-        contactEmails = emptyList(),
+    val John = ContactMetadata.Contact(
+        emails = emptyList(),
         id = ContactIdSample.John,
         name = "John",
-        userId = UserIdTestData.Primary
+        avatar = AvatarInformationSample.avatarSample
     )
 
-    val Mario = Contact(
-        contactEmails = listOf(
+    val Mario = ContactMetadata.Contact(
+        emails = listOf(
             ContactEmailSample.contactEmail1,
             ContactEmailSample.contactEmail2
         ),
         id = ContactIdSample.Mario,
         name = "Mario",
-        userId = UserIdTestData.Primary
+        avatar = AvatarInformationSample.avatarSample
     )
 
-    val Stefano = Contact(
-        contactEmails = listOf(ContactEmailSample.contactEmail3),
+    val Stefano = ContactMetadata.Contact(
+        emails = listOf(ContactEmailSample.contactEmail3),
         id = ContactIdSample.Stefano,
         name = "Stefano",
-        userId = UserIdTestData.Primary
+        avatar = AvatarInformationSample.avatarSample
     )
 
-    val Francesco = Contact(
-        contactEmails = listOf(ContactEmailSample.contactEmail4),
+    val Francesco = ContactMetadata.Contact(
+        emails = listOf(ContactEmailSample.contactEmail4),
         id = ContactIdSample.Francesco,
         name = "Francesco",
-        userId = UserIdTestData.Primary
+        avatar = AvatarInformationSample.avatarSample
     )
 }

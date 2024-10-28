@@ -22,11 +22,10 @@ import androidx.compose.ui.graphics.Color
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
+import ch.protonmail.android.mailcontact.domain.model.ContactGroupId
 import ch.protonmail.android.mailcontact.domain.model.ContactId
 import ch.protonmail.android.mailcontact.presentation.R
-import ch.protonmail.android.mailcontact.presentation.model.ContactGroupItemUiModel
 import ch.protonmail.android.mailcontact.presentation.model.ContactListItemUiModel
-import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.mailupselling.presentation.model.BottomSheetVisibilityEffect
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -49,7 +48,6 @@ internal class ContactListReducerTest(
     }
 
     companion object {
-
         private val loadedContactListItemUiModels = listOf(
             ContactListItemUiModel.Header("F"),
             ContactListItemUiModel.Contact(
@@ -71,15 +69,16 @@ internal class ContactListReducerTest(
                 )
             )
         )
+
         private val loadedContactGroupItemUiModels = listOf(
-            ContactGroupItemUiModel(
-                labelId = LabelId("Id1"),
+            ContactListItemUiModel.ContactGroup(
+                id = ContactGroupId("Id1"),
                 name = "Name 1",
                 memberCount = 2,
                 color = Color.Blue
             ),
-            ContactGroupItemUiModel(
-                labelId = LabelId("Id2"),
+            ContactListItemUiModel.ContactGroup(
+                id = ContactGroupId("Id2"),
                 name = "Name 2",
                 memberCount = 3,
                 color = Color.Red
@@ -93,7 +92,6 @@ internal class ContactListReducerTest(
         private val emptyLoadedState = ContactListState.Loaded.Empty()
         private val dataLoadedState = ContactListState.Loaded.Data(
             contacts = loadedContactListItemUiModels,
-            contactGroups = loadedContactGroupItemUiModels,
             isContactGroupsCrudEnabled = true,
             isContactGroupsUpsellingVisible = true,
             isContactSearchEnabled = true
@@ -104,7 +102,6 @@ internal class ContactListReducerTest(
                 currentState = emptyLoadingState,
                 event = ContactListEvent.ContactListLoaded(
                     loadedContactListItemUiModels,
-                    loadedContactGroupItemUiModels,
                     isContactGroupsCrudEnabled = true,
                     isContactGroupsUpsellingVisible = true,
                     isContactSearchEnabled = true
@@ -114,7 +111,6 @@ internal class ContactListReducerTest(
             TestInput(
                 currentState = emptyLoadingState,
                 event = ContactListEvent.ContactListLoaded(
-                    emptyList(),
                     emptyList(),
                     isContactGroupsCrudEnabled = false,
                     isContactGroupsUpsellingVisible = false,
@@ -164,7 +160,6 @@ internal class ContactListReducerTest(
                 currentState = emptyLoadedState,
                 event = ContactListEvent.ContactListLoaded(
                     loadedContactListItemUiModels,
-                    loadedContactGroupItemUiModels,
                     isContactGroupsCrudEnabled = true,
                     isContactGroupsUpsellingVisible = true,
                     isContactSearchEnabled = true
@@ -176,7 +171,6 @@ internal class ContactListReducerTest(
                     bottomSheetVisibilityEffect = Effect.of(BottomSheetVisibilityEffect.Hide)
                 ),
                 event = ContactListEvent.ContactListLoaded(
-                    emptyList(),
                     emptyList(),
                     isContactGroupsCrudEnabled = false,
                     isContactGroupsUpsellingVisible = false,
@@ -272,7 +266,6 @@ internal class ContactListReducerTest(
                 currentState = dataLoadedState,
                 event = ContactListEvent.ContactListLoaded(
                     loadedContactListItemUiModels,
-                    loadedContactGroupItemUiModels,
                     isContactGroupsCrudEnabled = true,
                     isContactGroupsUpsellingVisible = true,
                     isContactSearchEnabled = true
@@ -282,7 +275,6 @@ internal class ContactListReducerTest(
             TestInput(
                 currentState = dataLoadedState,
                 event = ContactListEvent.ContactListLoaded(
-                    emptyList(),
                     emptyList(),
                     isContactGroupsCrudEnabled = false,
                     isContactGroupsUpsellingVisible = false,

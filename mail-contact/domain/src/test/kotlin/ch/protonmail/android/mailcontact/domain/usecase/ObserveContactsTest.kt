@@ -20,23 +20,31 @@ package ch.protonmail.android.mailcontact.domain.usecase
 
 import app.cash.turbine.test
 import arrow.core.Either
+import arrow.core.right
+import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
+import ch.protonmail.android.mailcontact.domain.repository.ContactRepository
 import ch.protonmail.android.testdata.user.UserIdTestData
+import io.mockk.every
+import io.mockk.mockk
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
-import ch.protonmail.android.mailcontact.domain.model.Contact
 import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
 
 class ObserveContactsTest {
 
-    private val observeContacts = ObserveContacts()
+    private val contactRepository = mockk<ContactRepository> {
+        every { observeAllContacts(UserIdTestData.userId) } returns flowOf(emptyList<ContactMetadata>().right())
+    }
+    private val observeContacts = ObserveContacts(contactRepository)
 
     @Test
     fun ` returns empty list until Rust contact repository is implemented`() = runTest {
         // When
         observeContacts(UserIdTestData.userId).test {
             // Then
-            val actual = assertIs<Either.Right<List<Contact>>>(awaitItem())
+            val actual = assertIs<Either.Right<List<ContactMetadata.Contact>>>(awaitItem())
             assertEquals(emptyList(), actual.value)
             awaitComplete()
         }

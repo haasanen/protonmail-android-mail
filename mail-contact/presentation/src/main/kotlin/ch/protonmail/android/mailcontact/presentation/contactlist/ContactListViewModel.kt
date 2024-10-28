@@ -23,11 +23,9 @@ import androidx.lifecycle.viewModelScope
 import arrow.core.getOrElse
 import ch.protonmail.android.mailcommon.domain.usecase.IsPaidUser
 import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUserId
-import ch.protonmail.android.mailcontact.domain.usecase.ObserveContactGroupLabels
-import ch.protonmail.android.mailcontact.domain.usecase.ObserveContacts
+import ch.protonmail.android.mailcontact.domain.usecase.ObserveGroupedContacts
 import ch.protonmail.android.mailcontact.domain.usecase.featureflags.IsContactGroupsCrudEnabled
 import ch.protonmail.android.mailcontact.domain.usecase.featureflags.IsContactSearchEnabled
-import ch.protonmail.android.mailcontact.presentation.model.ContactGroupItemUiModelMapper
 import ch.protonmail.android.mailcontact.presentation.model.ContactListItemUiModelMapper
 import ch.protonmail.android.mailupselling.domain.model.UpsellingEntryPoint
 import ch.protonmail.android.mailupselling.domain.model.UserUpgradeState
@@ -50,12 +48,10 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ContactListViewModel @Inject constructor(
-    private val observeContacts: ObserveContacts,
-    private val observeContactGroupLabels: ObserveContactGroupLabels,
+    private val observeGroupedContacts: ObserveGroupedContacts,
     private val isPaidUser: IsPaidUser,
     private val reducer: ContactListReducer,
     private val contactListItemUiModelMapper: ContactListItemUiModelMapper,
-    private val contactGroupItemUiModelMapper: ContactGroupItemUiModelMapper,
     private val isContactGroupsCrudEnabled: IsContactGroupsCrudEnabled,
     private val observeUpsellingVisibility: ObserveUpsellingVisibility,
     private val userUpgradeState: UserUpgradeState,
@@ -109,33 +105,29 @@ class ContactListViewModel @Inject constructor(
 
     private fun flowContactListEvent(userId: UserId): Flow<ContactListEvent> {
         return combine(
-            observeContacts(userId),
-            observeContactGroupLabels(userId),
+            observeGroupedContacts(userId),
             observeUpsellingVisibility(UpsellingEntryPoint.BottomSheet.ContactGroups)
-        ) { contacts, contactGroups, isContactGroupsUpsellingVisible ->
+        ) { contactsEither, isContactGroupsUpsellingVisible ->
             val isContactGroupsCrudEnabled = isContactGroupsCrudEnabled()
             val isContactSearchEnabled = isContactSearchEnabled()
-            val contactList = contacts.getOrElse {
-                Timber.e("Error while observing contacts")
-                return@combine ContactListEvent.ErrorLoadingContactList
-            }
-            ContactListEvent.ContactListLoaded(
-                contactList = contactListItemUiModelMapper.toContactListItemUiModel(
-                    contactList
-                ),
-                contactGroups = contactGroupItemUiModelMapper.toContactGroupItemUiModel(
-                    contactList,
-                    contactGroups.getOrElse {
-                        Timber.e("Error while observing contact groups")
-                        return@combine ContactListEvent.ErrorLoadingContactList
-                    }
-                ),
-                isContactGroupsCrudEnabled = isContactGroupsCrudEnabled,
-                isContactGroupsUpsellingVisible = isContactGroupsUpsellingVisible,
-                isContactSearchEnabled = isContactSearchEnabled
+
+            contactsEither.fold(
+                ifRight = { contactList ->
+                    ContactListEvent.ContactListLoaded(
+                        contactList = contactListItemUiModelMapper.toContactListItemUiModel(contactList),
+                        isContactGroupsCrudEnabled = isContactGroupsCrudEnabled,
+                        isContactGroupsUpsellingVisible = isContactGroupsUpsellingVisible,
+                        isContactSearchEnabled = isContactSearchEnabled
+                    )
+                },
+                ifLeft = {
+                    Timber.e("Error while observing contacts")
+                    ContactListEvent.ErrorLoadingContactList
+                }
             )
         }
     }
+
 
     private fun emitNewStateFor(event: ContactListEvent) {
         val currentState = state.value

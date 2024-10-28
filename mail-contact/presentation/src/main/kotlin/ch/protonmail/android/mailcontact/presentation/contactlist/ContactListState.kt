@@ -20,7 +20,6 @@ package ch.protonmail.android.mailcontact.presentation.contactlist
 
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
-import ch.protonmail.android.mailcontact.presentation.model.ContactGroupItemUiModel
 import ch.protonmail.android.mailcontact.presentation.model.ContactListItemUiModel
 import ch.protonmail.android.mailupselling.presentation.model.BottomSheetVisibilityEffect
 
@@ -60,8 +59,7 @@ sealed interface ContactListState {
             override val isContactGroupsUpsellingVisible: Boolean = false,
             override val isContactSearchEnabled: Boolean = false,
             override val bottomSheetType: BottomSheetType = BottomSheetType.Menu,
-            val contacts: List<ContactListItemUiModel>,
-            val contactGroups: List<ContactGroupItemUiModel>
+            val contacts: List<ContactListItemUiModel>
         ) : Loaded
 
         data class Empty(

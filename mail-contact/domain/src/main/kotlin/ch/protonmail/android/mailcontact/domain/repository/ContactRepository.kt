@@ -18,11 +18,14 @@
 
 package ch.protonmail.android.mailcontact.domain.repository
 
-import ch.protonmail.android.mailcontact.domain.model.Contact
+import arrow.core.Either
 import ch.protonmail.android.mailcontact.domain.model.ContactCard
 import ch.protonmail.android.mailcontact.domain.model.ContactEmail
 import ch.protonmail.android.mailcontact.domain.model.ContactId
+import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import ch.protonmail.android.mailcontact.domain.model.ContactWithCards
+import ch.protonmail.android.mailcontact.domain.model.GetContactError
+import ch.protonmail.android.mailcontact.domain.model.GroupedContacts
 import kotlinx.coroutines.flow.Flow
 import me.proton.core.domain.arch.DataResult
 import me.proton.core.domain.entity.UserId
@@ -47,15 +50,24 @@ interface ContactRepository {
         refresh: Boolean = false
     ): ContactWithCards
 
-    /**
-     * Observe all [Contact] from [userId].
-     */
-    fun observeAllContacts(userId: UserId, refresh: Boolean = false): Flow<DataResult<List<Contact>>>
 
     /**
-     * Get all [Contact] from [userId].
+     * Observe all [GroupedContacts] from [userId].
      */
-    suspend fun getAllContacts(userId: UserId, refresh: Boolean = false): List<Contact>
+    fun observeAllGroupedContacts(userId: UserId): Flow<Either<GetContactError, List<GroupedContacts>>>
+
+    /**
+     * Observe all [ContactMetadata] from [userId].
+     */
+    fun observeAllContacts(
+        userId: UserId,
+        refresh: Boolean = false
+    ): Flow<Either<GetContactError, List<ContactMetadata>>>
+
+    /**
+     * Get all [ContactMetadata] from [userId].
+     */
+    suspend fun getAllContacts(userId: UserId, refresh: Boolean = false): List<ContactMetadata>
 
     /**
      * Observe all [ContactEmail] from [userId].

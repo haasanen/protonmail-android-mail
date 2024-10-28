@@ -19,69 +19,62 @@
 package ch.protonmail.android.mailcontact.domain.usecase
 
 import arrow.core.Either
+import ch.protonmail.android.mailcommon.domain.sample.AvatarInformationSample
 import ch.protonmail.android.mailcontact.domain.model.GetContactError
 import ch.protonmail.android.testdata.user.UserIdTestData
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
-import ch.protonmail.android.mailcontact.domain.model.Contact
-import ch.protonmail.android.mailcontact.domain.model.ContactEmail
-import ch.protonmail.android.mailcontact.domain.model.ContactEmailId
 import ch.protonmail.android.mailcontact.domain.model.ContactId
+import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
+import ch.protonmail.android.testdata.contact.ContactEmailSample
 import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
 
-class GetContactEmailsByIdTest {
+class GetContactsByIdTest {
 
-    private val defaultTestContact = Contact(
-        UserIdTestData.userId,
-        ContactId("ContactId1"),
-        "John Doe",
-        listOf(
-            ContactEmail(
-                UserIdTestData.userId,
-                ContactEmailId("ContactEmailId1"),
-                "John Doe",
-                "johndoe+alias@protonmail.com",
-                0,
-                0,
-                ContactId("ContactId1"),
-                "johndoe@protonmail.com",
-                emptyList(),
-                true,
-                lastUsedTime = 0
-            ),
-            ContactEmail(
-                UserIdTestData.userId,
-                ContactEmailId("ContactEmailId2"),
-                "Jane Doe",
-                "janedoe@protonmail.com",
-                0,
-                0,
-                ContactId("ContactId1"),
-                "janedoe@protonmail.com",
-                emptyList(),
-                true,
-                lastUsedTime = 0
+    private val defaultTestContacts = listOf(
+        ContactMetadata.Contact(
+            id = ContactId("ContactId1"),
+            name = "John Doe",
+            avatar = AvatarInformationSample.avatarSample,
+            emails = listOf(
+                ContactEmailSample.contactEmail1
+            )
+        ),
+        ContactMetadata.Contact(
+            id = ContactId("ContactId2"),
+            name = "Jack",
+            avatar = AvatarInformationSample.avatarSample,
+            emails = listOf(
+                ContactEmailSample.contactEmail2
+            )
+        ),
+        ContactMetadata.Contact(
+            id = ContactId("ContactId3"),
+            name = "Contact 3",
+            avatar = AvatarInformationSample.avatarSample,
+            emails = listOf(
+                ContactEmailSample.contactEmail3
             )
         )
     )
 
     private val observeContacts = mockk<ObserveContacts> {
-        coEvery { this@mockk.invoke(UserIdTestData.userId) } returns flowOf(Either.Right(listOf(defaultTestContact)))
+        coEvery { this@mockk.invoke(UserIdTestData.userId) } returns flowOf(Either.Right(defaultTestContacts))
     }
 
-    private val getContactEmailsById = GetContactEmailsById(observeContacts)
+    private val getContactsById = GetContactsById(observeContacts)
 
     @Test
     fun `when observe contacts returns contacts they are successfully emitted`() = runTest {
         // When
-        val actual = getContactEmailsById(UserIdTestData.userId, listOf("ContactEmailId2"))
+        val actual = getContactsById(UserIdTestData.userId, listOf(ContactId("ContactId2")))
         // Then
-        assertIs<Either.Right<List<ContactEmail>>>(actual)
-        assertEquals(listOf(defaultTestContact.contactEmails[1]), actual.value)
+        assertIs<Either.Right<List<ContactMetadata.Contact>>>(actual)
+        assertEquals(listOf(defaultTestContacts[1]), actual.value)
     }
 
     @Test
@@ -89,7 +82,7 @@ class GetContactEmailsByIdTest {
         // Given
         coEvery { observeContacts(UserIdTestData.userId) } returns flowOf(Either.Left(GetContactError))
         // When
-        val actual = getContactEmailsById(UserIdTestData.userId, listOf("ContactEmailId2"))
+        val actual = getContactsById(UserIdTestData.userId, listOf(ContactId("ContactId2")))
         // Then
         assertIs<Either.Left<GetContactError>>(actual)
     }

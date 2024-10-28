@@ -74,12 +74,12 @@ import me.proton.core.compose.theme.ProtonTheme
 import me.proton.core.compose.theme.defaultNorm
 import me.proton.core.compose.theme.defaultSmallWeak
 import me.proton.core.compose.theme.defaultStrongNorm
-import ch.protonmail.android.mailcontact.domain.model.ContactEmailId
+import ch.protonmail.android.mailcontact.domain.model.ContactId
 
 @Composable
 fun ManageMembersScreen(
     actions: ManageMembersScreen.Actions,
-    selectedContactEmailsIds: State<List<String>?>?,
+    selectedContactIds: State<List<String>?>?,
     viewModel: ManageMembersViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
@@ -90,7 +90,7 @@ fun ManageMembersScreen(
 
     if (state !is ManageMembersState.Data) {
         viewModel.initViewModelWithData(
-            selectedContactEmailsIds?.value?.map { ContactEmailId(it) } ?: emptyList()
+            selectedContactIds?.value?.map { ContactId(it) } ?: emptyList()
         )
     }
 
@@ -125,8 +125,8 @@ fun ManageMembersScreen(
                             type = ProtonSnackbarType.ERROR
                         )
                     }
-                    ConsumableLaunchedEffect(effect = state.onDone) { selectedContactEmailIds ->
-                        actions.onDone(selectedContactEmailIds)
+                    ConsumableLaunchedEffect(effect = state.onDone) { selectedContactIds ->
+                        actions.onDone(selectedContactIds)
                     }
                 }
                 is ManageMembersState.Loading -> {
@@ -312,7 +312,7 @@ fun ManageMembersTopBar(
 object ManageMembersScreen {
 
     data class Actions(
-        val onDone: (List<ContactEmailId>) -> Unit,
+        val onDone: (List<ContactId>) -> Unit,
         val onClose: () -> Unit,
         val exitWithErrorMessage: (String) -> Unit
     ) {
@@ -331,7 +331,7 @@ object ManageMembersScreen {
 object ManageMembersContent {
 
     data class Actions(
-        val onMemberClick: (ContactEmailId) -> Unit,
+        val onMemberClick: (ContactId) -> Unit,
         val onSearchValueChange: (String) -> Unit
     ) {
 

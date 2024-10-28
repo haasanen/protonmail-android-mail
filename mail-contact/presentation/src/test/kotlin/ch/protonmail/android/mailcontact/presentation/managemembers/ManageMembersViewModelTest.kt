@@ -20,6 +20,7 @@ package ch.protonmail.android.mailcontact.presentation.managemembers
 
 import app.cash.turbine.test
 import arrow.core.right
+import ch.protonmail.android.mailcommon.domain.sample.AvatarInformationSample
 import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcontact.domain.usecase.ObserveContacts
@@ -32,10 +33,10 @@ import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
-import ch.protonmail.android.mailcontact.domain.model.Contact
 import ch.protonmail.android.mailcontact.domain.model.ContactEmail
 import ch.protonmail.android.mailcontact.domain.model.ContactEmailId
 import ch.protonmail.android.mailcontact.domain.model.ContactId
+import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import me.proton.core.test.kotlin.TestDispatcherProvider
 import org.junit.Rule
 import org.junit.Test
@@ -46,43 +47,29 @@ class ManageMembersViewModelTest {
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule(TestDispatcherProvider().Main)
 
-    private val defaultTestContact = Contact(
-        UserIdTestData.userId,
-        ContactId("ContactId1"),
-        "John Doe",
-        listOf(
+    private val defaultTestContact = ContactMetadata.Contact(
+        id = ContactId("ContactId1"),
+        name = "John Doe",
+        avatar = AvatarInformationSample.avatarSample,
+        emails = listOf(
             ContactEmail(
-                UserIdTestData.userId,
                 ContactEmailId("ContactEmailId1"),
-                "John Doe",
                 "johndoe+alias@protonmail.com",
-                0,
-                0,
-                ContactId("ContactId1"),
-                "johndoe@protonmail.com",
-                emptyList(),
                 true,
                 lastUsedTime = 0
             ),
             ContactEmail(
-                UserIdTestData.userId,
                 ContactEmailId("ContactEmailId2"),
-                "Jane Doe",
                 "janedoe@protonmail.com",
-                0,
-                0,
-                ContactId("ContactId1"),
-                "janedoe@protonmail.com",
-                emptyList(),
                 true,
                 lastUsedTime = 0
             )
         )
     )
-    private val defaultTestSelectedContactEmailIds = listOf(ContactEmailId("ContactEmailId2"))
+    private val defaultTestSelectedContactIds = listOf(ContactId("ContactId2"))
     private val defaultTestManageMembersUiModel = listOf(
         ManageMembersUiModel(
-            id = ContactEmailId("ContactEmailId1"),
+            id = ContactId("ContactId1"),
             name = "John Doe",
             email = "johndoe+alias@protonmail.com",
             initials = "JD",
@@ -90,7 +77,7 @@ class ManageMembersViewModelTest {
             isDisplayed = true
         ),
         ManageMembersUiModel(
-            id = ContactEmailId("ContactEmailId2"),
+            id = ContactId("ContactId2"),
             name = "Jane Doe",
             email = "janedoe@protonmail.com",
             initials = "JD",
@@ -122,13 +109,13 @@ class ManageMembersViewModelTest {
         // Given
         val contacts = listOf(defaultTestContact)
         expectContactsData(contacts)
-        expectUiModelMapper(contacts, defaultTestSelectedContactEmailIds, defaultTestManageMembersUiModel)
+        expectUiModelMapper(contacts, defaultTestSelectedContactIds, defaultTestManageMembersUiModel)
 
         // When
         manageMembersViewModel.state.test {
             awaitItem()
 
-            manageMembersViewModel.initViewModelWithData(defaultTestSelectedContactEmailIds)
+            manageMembersViewModel.initViewModelWithData(defaultTestSelectedContactIds)
 
             // Then
             val actual = awaitItem()
@@ -145,13 +132,13 @@ class ManageMembersViewModelTest {
         // Given
         val contacts = listOf(defaultTestContact)
         expectContactsData(contacts)
-        expectUiModelMapper(contacts, defaultTestSelectedContactEmailIds, defaultTestManageMembersUiModel)
+        expectUiModelMapper(contacts, defaultTestSelectedContactIds, defaultTestManageMembersUiModel)
 
         // When
         manageMembersViewModel.state.test {
             awaitItem()
 
-            manageMembersViewModel.initViewModelWithData(defaultTestSelectedContactEmailIds)
+            manageMembersViewModel.initViewModelWithData(defaultTestSelectedContactIds)
 
             awaitItem()
 
@@ -161,7 +148,7 @@ class ManageMembersViewModelTest {
             val actual = awaitItem()
             val expected = ManageMembersState.Data(
                 members = defaultTestManageMembersUiModel,
-                onDone = Effect.of(listOf(ContactEmailId("ContactEmailId2")))
+                onDone = Effect.of(listOf(ContactId("ContactId2")))
             )
 
             assertEquals(expected, actual)
@@ -173,17 +160,17 @@ class ManageMembersViewModelTest {
         // Given
         val contacts = listOf(defaultTestContact)
         expectContactsData(contacts)
-        expectUiModelMapper(contacts, defaultTestSelectedContactEmailIds, defaultTestManageMembersUiModel)
+        expectUiModelMapper(contacts, defaultTestSelectedContactIds, defaultTestManageMembersUiModel)
 
         // When
         manageMembersViewModel.state.test {
             awaitItem()
 
-            manageMembersViewModel.initViewModelWithData(defaultTestSelectedContactEmailIds)
+            manageMembersViewModel.initViewModelWithData(defaultTestSelectedContactIds)
 
             awaitItem()
 
-            manageMembersViewModel.submit(ManageMembersViewAction.OnMemberClick(ContactEmailId("ContactEmailId1")))
+            manageMembersViewModel.submit(ManageMembersViewAction.OnMemberClick(ContactId("ContactId1")))
 
             // Then
             val actual = awaitItem()
@@ -203,13 +190,13 @@ class ManageMembersViewModelTest {
         // Given
         val contacts = listOf(defaultTestContact)
         expectContactsData(contacts)
-        expectUiModelMapper(contacts, defaultTestSelectedContactEmailIds, defaultTestManageMembersUiModel)
+        expectUiModelMapper(contacts, defaultTestSelectedContactIds, defaultTestManageMembersUiModel)
 
         // When
         manageMembersViewModel.state.test {
             awaitItem()
 
-            manageMembersViewModel.initViewModelWithData(defaultTestSelectedContactEmailIds)
+            manageMembersViewModel.initViewModelWithData(defaultTestSelectedContactIds)
 
             awaitItem()
 
@@ -228,21 +215,21 @@ class ManageMembersViewModelTest {
         }
     }
 
-    private fun expectContactsData(contacts: List<Contact>) {
+    private fun expectContactsData(contacts: List<ContactMetadata.Contact>) {
         coEvery {
             observeContactsMock(userId = UserIdTestData.userId)
         } returns flowOf(contacts.right())
     }
 
     private fun expectUiModelMapper(
-        contacts: List<Contact>,
-        selectedContactEmailIds: List<ContactEmailId>,
+        contacts: List<ContactMetadata.Contact>,
+        selectedContactIds: List<ContactId>,
         manageMembersUiModel: List<ManageMembersUiModel>
     ) {
         every {
             manageMembersUiModelMapperMock.toManageMembersUiModelList(
                 contacts = contacts,
-                selectedContactEmailIds = selectedContactEmailIds
+                selectedContactIds = selectedContactIds
             )
         } returns manageMembersUiModel
     }

@@ -18,8 +18,8 @@
 
 package ch.protonmail.android.mailmessage.domain.usecase
 
+import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import ch.protonmail.android.mailmessage.domain.model.Participant
-import ch.protonmail.android.mailcontact.domain.model.Contact
 import me.proton.core.util.kotlin.EMPTY_STRING
 import me.proton.core.util.kotlin.takeIfNotBlank
 import javax.inject.Inject
@@ -28,14 +28,14 @@ class ResolveParticipantName @Inject constructor() {
 
     operator fun invoke(
         participant: Participant,
-        contacts: List<Contact>,
+        contacts: List<ContactMetadata.Contact>,
         fallbackType: FallbackType = FallbackType.ADDRESS
     ): ResolveParticipantNameResult {
-        val contactEmail = contacts.firstNotNullOfOrNull { contact ->
-            contact.contactEmails.find { it.email == participant.address }
+        val contact = contacts.firstOrNull { contact ->
+            contact.emails.any { it.email == participant.address }
         }
 
-        val participantName = contactEmail?.name?.takeIfNotBlank()
+        val participantName = contact?.name?.takeIfNotBlank()
             ?: participant.name.takeIf { it != participant.address && it.isNotBlank() }
             ?: getFallbackName(participant, fallbackType)
 

@@ -86,12 +86,12 @@ import me.proton.core.compose.theme.defaultNorm
 import me.proton.core.compose.theme.defaultSmallNorm
 import me.proton.core.compose.theme.defaultSmallWeak
 import me.proton.core.compose.theme.defaultStrongNorm
-import ch.protonmail.android.mailcontact.domain.model.ContactEmailId
+import ch.protonmail.android.mailcontact.domain.model.ContactId
 
 @Composable
 fun ContactGroupFormScreen(
     actions: ContactGroupFormScreen.Actions,
-    selectedContactEmailsIds: State<List<String>?>?,
+    selectedContactIds: State<List<String>?>?,
     viewModel: ContactGroupFormViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
@@ -102,8 +102,8 @@ fun ContactGroupFormScreen(
     val selectionSubmitted = remember { mutableStateOf(false) }
 
     if (!selectionSubmitted.value) {
-        selectedContactEmailsIds?.value?.let {
-            viewModel.submit(ContactGroupFormViewAction.OnUpdateMemberList(it))
+        selectedContactIds?.value?.let {
+            viewModel.submit(ContactGroupFormViewAction.OnUpdateMemberList(it.map { ContactId(it) }))
             selectionSubmitted.value = true
         }
     }
@@ -434,7 +434,7 @@ fun ContactGroupFormTopBar(
 
 object ContactGroupFormScreen {
 
-    const val ContactGroupFormLabelIdKey = "contact_group_form_label_id"
+    const val ContactGroupFormGroupIdKey = "contact_group_form_group_id"
 
     data class Actions(
         val onClose: () -> Unit,
@@ -442,7 +442,7 @@ object ContactGroupFormScreen {
         val exitWithSuccessMessage: (String) -> Unit,
         val exitToContactsWithNormMessage: (String) -> Unit,
         val showErrorMessage: (String) -> Unit,
-        val manageMembers: (List<ContactEmailId>) -> Unit
+        val manageMembers: (List<ContactId>) -> Unit
     ) {
 
         companion object {
@@ -463,7 +463,7 @@ object ContactGroupFormContent {
 
     data class Actions(
         val onAddMemberClick: () -> Unit,
-        val onRemoveMemberClick: (ContactEmailId) -> Unit,
+        val onRemoveMemberClick: (ContactId) -> Unit,
         val onUpdateName: (String) -> Unit,
         val onUpdateColor: (Color) -> Unit,
         val onDeleteGroupClick: () -> Unit

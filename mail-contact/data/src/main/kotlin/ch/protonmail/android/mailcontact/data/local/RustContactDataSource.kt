@@ -16,14 +16,16 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailcontact.presentation.model
+package ch.protonmail.android.mailcontact.data.local
 
-import androidx.compose.ui.graphics.Color
-import ch.protonmail.android.maillabel.domain.model.LabelId
+import arrow.core.Either
+import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
+import ch.protonmail.android.mailcontact.domain.model.GetContactError
+import ch.protonmail.android.mailcontact.domain.model.GroupedContacts
+import kotlinx.coroutines.flow.Flow
+import me.proton.core.domain.entity.UserId
 
-data class ContactGroupItemUiModel(
-    val labelId: LabelId,
-    val name: String,
-    val memberCount: Int,
-    val color: Color
-)
+interface RustContactDataSource {
+    fun observeAllContacts(userId: UserId): Flow<Either<GetContactError, List<ContactMetadata>>>
+    fun observeAllGroupedContacts(userId: UserId): Flow<Either<GetContactError, List<GroupedContacts>>>
+}

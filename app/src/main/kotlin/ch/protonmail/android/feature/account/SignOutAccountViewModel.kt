@@ -21,18 +21,18 @@ package ch.protonmail.android.feature.account
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ch.protonmail.android.mailcommon.data.worker.Enqueuer
+import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
-import me.proton.core.accountmanager.domain.AccountManager
 import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 
 @HiltViewModel
 class SignOutAccountViewModel @Inject constructor(
-    private val accountManager: AccountManager,
+    private val userSessionRepository: UserSessionRepository,
     private val enqueuer: Enqueuer
 ) : ViewModel() {
 
@@ -45,16 +45,16 @@ class SignOutAccountViewModel @Inject constructor(
 
         if (removeAccount) {
             mutableState.emit(State.Removing)
-            accountManager.removeAccount(resolvedUserId)
+            userSessionRepository.deleteAccount(resolvedUserId)
             mutableState.emit(State.Removed)
         } else {
             mutableState.emit(State.SigningOut)
-            accountManager.disableAccount(resolvedUserId)
+            userSessionRepository.disableAccount(resolvedUserId)
             mutableState.emit(State.SignedOut)
         }
     }
 
-    private suspend fun getPrimaryUserIdOrNull() = accountManager.getPrimaryUserId().firstOrNull()
+    private suspend fun getPrimaryUserIdOrNull() = userSessionRepository.observePrimaryUserId().firstOrNull()
 
     sealed class State {
         object Initial : State()

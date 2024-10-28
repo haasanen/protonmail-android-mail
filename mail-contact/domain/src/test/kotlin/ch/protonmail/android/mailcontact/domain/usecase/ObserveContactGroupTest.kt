@@ -20,10 +20,9 @@ package ch.protonmail.android.mailcontact.domain.usecase
 
 import app.cash.turbine.test
 import arrow.core.Either
-import ch.protonmail.android.mailcontact.domain.model.ContactGroup
-import ch.protonmail.android.testdata.contact.ContactIdTestData
-import ch.protonmail.android.testdata.contact.ContactTestData
-import ch.protonmail.android.testdata.label.LabelTestData
+import arrow.core.left
+import arrow.core.right
+import ch.protonmail.android.mailcommon.domain.sample.AvatarInformationSample
 import ch.protonmail.android.testdata.user.UserIdTestData
 import io.mockk.every
 import io.mockk.mockk
@@ -31,117 +30,81 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import ch.protonmail.android.mailcontact.domain.model.ContactEmail
 import ch.protonmail.android.mailcontact.domain.model.ContactEmailId
+import ch.protonmail.android.mailcontact.domain.model.ContactId
+import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
+import ch.protonmail.android.mailcontact.domain.model.GetContactError
 import ch.protonmail.android.mailcontact.domain.repository.ContactRepository
-import me.proton.core.domain.arch.DataResult
-import me.proton.core.domain.arch.ResponseSource
-import ch.protonmail.android.maillabel.domain.model.LabelId
-import ch.protonmail.android.maillabel.domain.model.LabelType
-import ch.protonmail.android.maillabel.domain.repository.LabelRepository
+import ch.protonmail.android.testdata.contact.ContactGroupIdSample
 import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
 
 class ObserveContactGroupTest {
 
-    private val label = LabelTestData.buildLabel(
-        "LabelId1",
-        LabelType.ContactGroup,
-        "Label 1"
-    )
-    private val labels = listOf(label)
-    private val labelRepository = mockk<LabelRepository> {
-        every { this@mockk.observeLabels(UserIdTestData.userId, LabelType.ContactGroup) } returns flowOf(
-            DataResult.Success(
-                ResponseSource.Remote,
-                labels
+    private val testContactGroupId = ContactGroupIdSample.Friends
+    private val contactGroup = ContactMetadata.ContactGroup(
+        id = testContactGroupId,
+        name = "Friends",
+        color = "#FF0000",
+        members = listOf(
+            ContactMetadata.Contact(
+                id = ContactId("contact id 1"),
+                avatar = AvatarInformationSample.avatarSample,
+                name = "Contact Name",
+                emails = listOf(
+                    ContactEmail(
+                        id = ContactEmailId("contact email id"),
+                        email = "test1@protonmail.com",
+                        isProton = false,
+                        lastUsedTime = 0
+                    )
+                )
             )
         )
-    }
+    )
 
-    private val contact = ContactTestData.buildContactWith(
-        contactEmails = listOf(
-            ContactEmail(
-                UserIdTestData.userId,
-                ContactEmailId("contact email id 1"),
-                "First name from contact email",
-                "test1+alias@protonmail.com",
-                0,
-                0,
-                ContactIdTestData.contactId1,
-                "test1@protonmail.com",
-                listOf("LabelId1"),
-                true,
-                lastUsedTime = 0
-            ),
-            ContactEmail(
-                UserIdTestData.userId,
-                ContactEmailId("contact email id 2"),
-                "First name from contact email",
-                "test2+alias@protonmail.com",
-                0,
-                0,
-                ContactIdTestData.contactId1,
-                "test2@protonmail.com",
-                emptyList(),
-                true,
-                lastUsedTime = 0
-            )
-        )
-    )
-    private val contacts = listOf(contact)
+    private val contacts = listOf(contactGroup)
     private val contactRepository = mockk<ContactRepository> {
-        every { this@mockk.observeAllContacts(UserIdTestData.userId) } returns flowOf(
-            DataResult.Success(
-                ResponseSource.Remote,
-                contacts
-            )
-        )
+        // Mock repository to return contacts list
+        every { this@mockk.observeAllContacts(UserIdTestData.userId) } returns flowOf(contacts.right())
     }
 
-    private val contactGroup = ContactGroup(
-        label.labelId,
-        label.name,
-        label.color!!,
-        listOf(contact.contactEmails[0])
-    )
-
-    private val observeContactGroup = ObserveContactGroup(labelRepository, contactRepository)
+    private val observeContactGroup = ObserveContactGroup(contactRepository)
 
     @Test
-    fun `when repository returns labels and contacts they are successfully mapped and emitted`() = runTest {
+    fun `when repository returns contacts, the correct contact group is emitted`() = runTest {
         // When
-        observeContactGroup(UserIdTestData.userId, LabelId("LabelId1")).test {
+        observeContactGroup(UserIdTestData.userId, testContactGroupId).test {
             // Then
-            val actual = assertIs<Either.Right<ContactGroup>>(awaitItem())
+            val actual = assertIs<Either.Right<ContactMetadata.ContactGroup>>(awaitItem())
             assertEquals(contactGroup, actual.value)
             awaitComplete()
         }
     }
 
     @Test
-    fun `when label repository returns any data error then emit get contact groups error`() = runTest {
+    fun `when contact repository returns any data error, then emit GetContactsError`() = runTest {
         // Given
-        every { labelRepository.observeLabels(UserIdTestData.userId, LabelType.ContactGroup) } returns flowOf(
-            DataResult.Error.Remote(message = "Unauthorised", cause = null, httpCode = 401)
-        )
+        every { contactRepository.observeAllContacts(UserIdTestData.userId) } returns flowOf(GetContactError.left())
+
         // When
-        observeContactGroup(UserIdTestData.userId, LabelId("LabelId1")).test {
+        observeContactGroup(UserIdTestData.userId, testContactGroupId).test {
             // Then
-            assertIs<Either.Left<GetContactGroupError.GetLabelsError>>(awaitItem())
+            val actual = assertIs<Either.Left<GetContactGroupError.GetContactsError>>(awaitItem())
             awaitComplete()
         }
     }
 
     @Test
-    fun `when contact repository returns any data error then emit get contact groups error`() = runTest {
+    fun `when contact group is not found, then emit ContactGroupNotFound error`() = runTest {
         // Given
-        every { contactRepository.observeAllContacts(UserIdTestData.userId) } returns flowOf(
-            DataResult.Error.Remote(message = "Unauthorised", cause = null, httpCode = 401)
-        )
+        val otherContactGroupId = ContactGroupIdSample.School
+        every { contactRepository.observeAllContacts(UserIdTestData.userId) } returns flowOf(GetContactError.left())
+
         // When
-        observeContactGroup(UserIdTestData.userId, LabelId("LabelId1")).test {
+        observeContactGroup(UserIdTestData.userId, otherContactGroupId).test {
             // Then
-            assertIs<Either.Left<GetContactGroupError.GetContactsError>>(awaitItem())
+            val actual = assertIs<Either.Left<GetContactGroupError.ContactGroupNotFound>>(awaitItem())
             awaitComplete()
         }
     }

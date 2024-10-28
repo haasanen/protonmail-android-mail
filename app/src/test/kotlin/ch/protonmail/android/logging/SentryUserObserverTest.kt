@@ -46,7 +46,7 @@ import kotlin.test.assertTrue
 class SentryUserObserverTest {
 
     private val sessionRepository = mockk<UserSessionRepository> {
-        coEvery { this@mockk.observeCurrentUserId() } returns flowOf(UserIdTestData.userId)
+        coEvery { this@mockk.observePrimaryUserId() } returns flowOf(UserIdTestData.userId)
     }
 
     private lateinit var sentryUserObserver: SentryUserObserver
@@ -80,7 +80,7 @@ class SentryUserObserverTest {
     @Test
     fun `register random UUID in Sentry when no primary account available`() = runTest {
         // Given
-        every { sessionRepository.observeCurrentUserId() } returns flowOf(null)
+        every { sessionRepository.observePrimaryUserId() } returns flowOf(null)
         // When
         sentryUserObserver.start().join()
         // Then

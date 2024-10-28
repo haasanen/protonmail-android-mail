@@ -21,8 +21,7 @@ package ch.protonmail.android.mailcomposer.presentation.usecase
 import ch.protonmail.android.mailcommon.domain.coroutines.DefaultDispatcher
 import ch.protonmail.android.mailcommon.presentation.usecase.GetInitials
 import ch.protonmail.android.mailcomposer.presentation.model.ContactSuggestionUiModel
-import ch.protonmail.android.mailcontact.domain.model.Contact
-import ch.protonmail.android.mailcontact.domain.model.ContactGroup
+import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import ch.protonmail.android.mailcontact.domain.model.DeviceContact
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -36,32 +35,54 @@ class SortContactsForSuggestions @Inject constructor(
 ) {
 
     suspend operator fun invoke(
-        contacts: List<Contact>,
+        contacts: List<ContactMetadata>,
         deviceContacts: List<DeviceContact>,
-        contactGroups: List<ContactGroup>,
         maxContactAutocompletionCount: Int
     ): List<ContactSuggestionUiModel> = withContext(dispatcher) {
         // Use a temporary map to store unique contacts based on their email address.
         val temporaryEmailContactMap = mutableMapOf<String, ContactSuggestionUiModel.Contact>()
 
-        val fromContacts = contacts.asSequence().flatMap { contact ->
-            contact.contactEmails.map { contactEmail ->
-                Triple(contact, contactEmail, Long.MAX_VALUE - contactEmail.lastUsedTime)
+        val fromContacts = contacts
+            .filterIsInstance<ContactMetadata.Contact>()
+            .asSequence()
+            .flatMap { contact ->
+                contact.emails.map {
+                    contact.copy(
+                        emails = listOf(it)
+                    )
+                }
             }
-        }.sortedBy { (contact, contactEmail, lastUsedTimeDescending) ->
-            "$lastUsedTimeDescending ${contact.name} ${contactEmail.email}"
-        }.mapNotNull { (contact, contactEmail, _) ->
-            val email = contactEmail.email
-            if (email in temporaryEmailContactMap) return@mapNotNull null
+            .sortedBy {
+                val lastUsedTimeDescending = Long.MAX_VALUE - it.emails.first().lastUsedTime
 
-            ContactSuggestionUiModel.Contact(
-                name = contactEmail.name.takeIfNotBlank()
-                    ?: contact.name.takeIfNotBlank()
-                    ?: email,
-                initial = getInitials(contact.name).takeIfNotBlank() ?: "?",
-                email = email
-            ).also { temporaryEmailContactMap[email] = it }
-        }
+                // LastUsedTime, name, email
+                "$lastUsedTimeDescending ${it.name} ${it.emails.first().email}"
+            }
+            .mapNotNull { contact ->
+                val contactEmail = contact.emails.first()
+                val email = contactEmail.email
+                if (email in temporaryEmailContactMap) return@mapNotNull null
+
+                ContactSuggestionUiModel.Contact(
+                    name = contact.name.takeIfNotBlank()
+                        ?: contactEmail.email,
+                    initial = getInitials(contact.name).takeIfNotBlank() ?: "?",
+                    email = contactEmail.email
+                ).also { temporaryEmailContactMap[email] = it }
+            }
+
+        val fromContactGroups = contacts
+            .filterIsInstance<ContactMetadata.ContactGroup>()
+            .asSequence()
+            .map { contactGroup ->
+                ContactSuggestionUiModel.ContactGroup(
+                    name = contactGroup.name,
+                    emails = contactGroup.members.flatMap { member ->
+                        member.emails.map { it.email }
+                    }
+                )
+            }
+            .toList()
 
         val fromDeviceContacts = deviceContacts.asSequence().mapNotNull { deviceContact ->
             val email = deviceContact.email
@@ -73,14 +94,6 @@ class SortContactsForSuggestions @Inject constructor(
                 email = email
             ).also { temporaryEmailContactMap[email] = it }
         }
-
-        val fromContactGroups = contactGroups.asSequence().map { contactGroup ->
-            ContactSuggestionUiModel.ContactGroup(
-                name = contactGroup.name,
-                emails = contactGroup.members.map { it.email }.distinct()
-            )
-        }
-
         val fromDeviceAndContactGroups = (fromDeviceContacts + fromContactGroups).sortedBy { it.name }
 
         return@withContext (fromContacts + fromDeviceAndContactGroups)
@@ -88,3 +101,4 @@ class SortContactsForSuggestions @Inject constructor(
             .toList()
     }
 }
+

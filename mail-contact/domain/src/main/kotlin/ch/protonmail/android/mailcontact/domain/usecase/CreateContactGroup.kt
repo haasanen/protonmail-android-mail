@@ -19,62 +19,25 @@
 package ch.protonmail.android.mailcontact.domain.usecase
 
 import arrow.core.Either
-import arrow.core.raise.either
-import ch.protonmail.android.mailcontact.domain.mapper.isAlreadyExistsApiError
+import arrow.core.right
+import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.maillabel.domain.model.ColorRgbHex
-import ch.protonmail.android.mailcontact.domain.model.ContactEmailId
+import ch.protonmail.android.mailcontact.domain.model.ContactId
 import me.proton.core.domain.entity.UserId
-import ch.protonmail.android.maillabel.domain.model.LabelType
-import ch.protonmail.android.maillabel.domain.model.NewLabel
-import ch.protonmail.android.maillabel.domain.repository.LabelRepository
 import javax.inject.Inject
 
-class CreateContactGroup @Inject constructor(
-    private val labelRepository: LabelRepository,
-    private val editContactGroupMembers: EditContactGroupMembers
-) {
+@MissingRustApi
+class CreateContactGroup @Inject constructor() {
 
     suspend operator fun invoke(
         userId: UserId,
         name: String,
         color: ColorRgbHex,
-        contactEmailIds: List<ContactEmailId>
-    ): Either<CreateContactGroupError, Unit> = either {
-
-        val label = NewLabel(
-            name = name.trim(),
-            color = color.hex,
-            isNotified = null,
-            isExpanded = null,
-            isSticky = null,
-            parentId = null,
-            type = LabelType.ContactGroup
-        )
-
-        runCatching {
-            labelRepository.createLabel(userId, label)
-        }.getOrElse {
-            if (it.isAlreadyExistsApiError()) {
-                raise(CreateContactGroupError.GroupNameDuplicate)
-            } else raise(CreateContactGroupError.CreatingLabelError)
-        }
-
-        val createdLabel = labelRepository.getLabels(userId, LabelType.ContactGroup, refresh = true).find {
-            it.name == label.name
-        } ?: raise(CreateContactGroupError.CreatingLabelError)
-
-        return editContactGroupMembers(
-            userId,
-            createdLabel.labelId,
-            contactEmailIds.toSet()
-        ).mapLeft {
-            CreateContactGroupError.EditingMembersError
-        }
-    }
+        contactIds: List<ContactId>
+    ): Either<CreateContactGroupError, Unit> = Unit.right()
 }
 
 sealed class CreateContactGroupError {
-    object CreatingLabelError : CreateContactGroupError()
     object GroupNameDuplicate : CreateContactGroupError()
     object EditingMembersError : CreateContactGroupError()
 }

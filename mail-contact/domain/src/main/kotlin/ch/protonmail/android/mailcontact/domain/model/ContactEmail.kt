@@ -18,21 +18,9 @@
 
 package ch.protonmail.android.mailcontact.domain.model
 
-import me.proton.core.domain.entity.UserId
-
 data class ContactEmail(
-    val userId: UserId,
     val id: ContactEmailId,
-    val name: String,
     val email: String,
-    /**
-     * 0 if contact contains custom sending preferences or keys, 1 otherwise
-     */
-    val defaults: Int,
-    val order: Int,
-    val contactId: ContactId,
-    val canonicalEmail: String?,
-    val labelIds: List<String>,
-    val isProton: Boolean?,
+    val isProton: Boolean,
     val lastUsedTime: Long
 )

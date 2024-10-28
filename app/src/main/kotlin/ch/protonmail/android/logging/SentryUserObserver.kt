@@ -34,7 +34,7 @@ class SentryUserObserver @Inject constructor(
     private val sessionRepository: UserSessionRepository
 ) {
 
-    fun start() = sessionRepository.observeCurrentUserId()
+    fun start() = sessionRepository.observePrimaryUserId()
         .map { userId ->
             val user = User().apply { id = userId?.id ?: UUID.randomUUID().toString() }
             Sentry.setUser(user)

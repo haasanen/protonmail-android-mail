@@ -20,7 +20,7 @@ class ObservePrimaryUserIdTest {
     fun `observes current user id from user session repository`() = runTest {
         // Given
         val expected = UserIdTestData.userId
-        every { userSessionRepository.observeCurrentUserId() } returns flowOf(expected)
+        every { userSessionRepository.observePrimaryUserId() } returns flowOf(expected)
 
         // When
         observePrimaryUserId().test {

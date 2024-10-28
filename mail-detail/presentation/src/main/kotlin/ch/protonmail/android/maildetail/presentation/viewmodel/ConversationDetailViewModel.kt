@@ -35,7 +35,7 @@ import ch.protonmail.android.mailcommon.domain.model.isOfflineError
 import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailcommon.presentation.mapper.ActionUiModelMapper
 import ch.protonmail.android.mailcommon.presentation.model.BottomBarEvent
-import ch.protonmail.android.mailcontact.domain.model.Contact
+import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import ch.protonmail.android.mailcontact.domain.usecase.FindContactByEmail
 import ch.protonmail.android.mailcontact.domain.usecase.ObserveContacts
 import ch.protonmail.android.mailconversation.domain.usecase.DeleteConversations
@@ -375,7 +375,7 @@ class ConversationDetailViewModel @Inject constructor(
     private suspend fun buildMessagesUiModels(
         userId: UserId,
         messages: NonEmptyList<Message>,
-        contacts: List<Contact>,
+        contacts: List<ContactMetadata.Contact>,
         currentViewState: InMemoryConversationStateRepository.MessagesState
     ): NonEmptyList<ConversationDetailMessageUiModel> {
         val messagesList = messages.map { message ->
@@ -432,7 +432,7 @@ class ConversationDetailViewModel @Inject constructor(
 
     private suspend fun buildCollapsedMessage(
         message: Message,
-        contacts: List<Contact>
+        contacts: List<ContactMetadata.Contact>
     ): ConversationDetailMessageUiModel.Collapsed = conversationMessageMapper.toUiModel(
         message,
         contacts
@@ -448,7 +448,7 @@ class ConversationDetailViewModel @Inject constructor(
         userId: UserId,
         message: Message,
         existingMessageUiState: ConversationDetailMessageUiModel.Expanded?,
-        contacts: List<Contact>,
+        contacts: List<ContactMetadata.Contact>,
         decryptedBody: DecryptedMessageBody
     ): ConversationDetailMessageUiModel.Expanded = conversationMessageMapper.toUiModel(
         userId,

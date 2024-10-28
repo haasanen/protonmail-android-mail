@@ -89,7 +89,6 @@ import ch.protonmail.android.mailcomposer.presentation.usecase.SortContactsForSu
 import ch.protonmail.android.mailcomposer.presentation.usecase.StyleQuotedHtml
 import ch.protonmail.android.mailcontact.domain.DeviceContactsSuggestionsPrompt
 import ch.protonmail.android.mailcontact.domain.usecase.GetContacts
-import ch.protonmail.android.mailcontact.domain.usecase.SearchContactGroups
 import ch.protonmail.android.mailcontact.domain.usecase.SearchContacts
 import ch.protonmail.android.mailcontact.domain.usecase.SearchDeviceContacts
 import ch.protonmail.android.mailcontact.domain.usecase.featureflags.IsDeviceContactsSuggestionsEnabled
@@ -101,11 +100,11 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
@@ -132,7 +131,6 @@ class ComposerViewModel @Inject constructor(
     private val searchContacts: SearchContacts,
     private val searchDeviceContacts: SearchDeviceContacts,
     private val deviceContactsSuggestionsPrompt: DeviceContactsSuggestionsPrompt,
-    private val searchContactGroups: SearchContactGroups,
     private val sortContactsForSuggestions: SortContactsForSuggestions,
     private val participantMapper: ParticipantMapper,
     private val reducer: ComposerReducer,
@@ -788,30 +786,27 @@ class ComposerViewModel @Inject constructor(
         searchContactsJobs[suggestionsField]?.cancel()
 
         if (searchTerm.isNotBlank()) {
-            searchContactsJobs[suggestionsField] = combine(
-                searchContacts(primaryUserId(), searchTerm, onlyMatchingContactEmails = true),
-                searchContactGroups(primaryUserId(), searchTerm)
-            ) { contacts, contactGroups ->
+            searchContactsJobs[suggestionsField] =
+                searchContacts(primaryUserId(), searchTerm, onlyMatchingContactEmails = true).map { contacts ->
 
-                val deviceContacts = if (state.value.isDeviceContactsSuggestionsEnabled) {
-                    searchDeviceContacts(searchTerm).getOrNull() ?: emptyList()
-                } else emptyList()
+                    val deviceContacts = if (state.value.isDeviceContactsSuggestionsEnabled) {
+                        searchDeviceContacts(searchTerm).getOrNull() ?: emptyList()
+                    } else emptyList()
 
-                val suggestions = sortContactsForSuggestions(
-                    contacts.getOrNull() ?: emptyList(),
-                    deviceContacts,
-                    contactGroups.getOrNull() ?: emptyList(),
-                    maxContactAutocompletionCount
-                )
-
-                emitNewStateFor(
-                    ComposerEvent.UpdateContactSuggestions(
-                        suggestions,
-                        suggestionsField
+                    val suggestions = sortContactsForSuggestions(
+                        contacts.getOrNull() ?: emptyList(),
+                        deviceContacts,
+                        maxContactAutocompletionCount
                     )
-                )
 
-            }.launchIn(viewModelScope)
+                    emitNewStateFor(
+                        ComposerEvent.UpdateContactSuggestions(
+                            suggestions,
+                            suggestionsField
+                        )
+                    )
+
+                }.launchIn(viewModelScope)
         } else {
             emitNewStateFor(
                 ComposerAction.ContactSuggestionsDismissed(

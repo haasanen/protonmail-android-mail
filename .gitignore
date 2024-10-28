@@ -119,3 +119,5 @@ scripts/uitests/AssetsFile.lock.bak
 
 # Platform specific files
 .idea/.name
+
+account-core/

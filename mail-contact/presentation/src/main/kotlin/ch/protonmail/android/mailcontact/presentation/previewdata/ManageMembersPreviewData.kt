@@ -19,13 +19,13 @@
 package ch.protonmail.android.mailcontact.presentation.previewdata
 
 import ch.protonmail.android.mailcontact.presentation.model.ManageMembersUiModel
-import ch.protonmail.android.mailcontact.domain.model.ContactEmailId
+import ch.protonmail.android.mailcontact.domain.model.ContactId
 
 object ManageMembersPreviewData {
 
     fun manageMembersSampleData() = listOf(
         ManageMembersUiModel(
-            id = ContactEmailId("Id1"),
+            id = ContactId("Id1"),
             name = "John Doe",
             email = "johndoe@proton.me",
             initials = "JD",
@@ -33,7 +33,7 @@ object ManageMembersPreviewData {
             isDisplayed = true
         ),
         ManageMembersUiModel(
-            id = ContactEmailId("Id2"),
+            id = ContactId("Id2"),
             name = "Jane Doe",
             email = "janedoe@proton.me",
             initials = "JD",

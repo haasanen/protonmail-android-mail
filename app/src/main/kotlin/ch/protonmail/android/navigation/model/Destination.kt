@@ -27,11 +27,12 @@ import ch.protonmail.android.mailcomposer.presentation.ui.ComposerScreen.DraftAc
 import ch.protonmail.android.mailcomposer.presentation.ui.ComposerScreen.DraftMessageIdKey
 import ch.protonmail.android.mailcomposer.presentation.ui.ComposerScreen.SerializedDraftActionKey
 import ch.protonmail.android.mailcomposer.presentation.ui.SetMessagePasswordScreen
+import ch.protonmail.android.mailcontact.domain.model.ContactGroupId
 import ch.protonmail.android.mailcontact.presentation.contactdetails.ContactDetailsScreen.ContactDetailsContactIdKey
 import ch.protonmail.android.mailcontact.presentation.contactform.ContactFormScreen.ContactFormBasicContactInfoKey
 import ch.protonmail.android.mailcontact.presentation.contactform.ContactFormScreen.ContactFormContactIdKey
-import ch.protonmail.android.mailcontact.presentation.contactgroupdetails.ContactGroupDetailsScreen.ContactGroupDetailsLabelIdKey
-import ch.protonmail.android.mailcontact.presentation.contactgroupform.ContactGroupFormScreen.ContactGroupFormLabelIdKey
+import ch.protonmail.android.mailcontact.presentation.contactgroupdetails.ContactGroupDetailsScreen.ContactGroupDetailsGroupIdKey
+import ch.protonmail.android.mailcontact.presentation.contactgroupform.ContactGroupFormScreen.ContactGroupFormGroupIdKey
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen.ConversationIdKey
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen.FilterByLocationKey
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen.ScrollToMessageIdKey
@@ -60,6 +61,7 @@ sealed class Destination(val route: String) {
             "mailbox/conversation/${ConversationIdKey.wrap()}/" +
                 "${ScrollToMessageIdKey.wrap()}/${FilterByLocationKey.wrap()}"
         ) {
+
             operator fun invoke(
                 conversationId: ConversationId,
                 scrollToMessageId: MessageId? = null,
@@ -73,6 +75,7 @@ sealed class Destination(val route: String) {
         object SetMessagePassword : Destination(
             "composer/setMessagePassword/${SetMessagePasswordScreen.InputParamsKey.wrap()}"
         ) {
+
             operator fun invoke(messageId: MessageId, senderEmail: SenderEmail) = route.replace(
                 SetMessagePasswordScreen.InputParamsKey.wrap(),
                 SetMessagePasswordScreen.InputParams(messageId, senderEmail).serialize()
@@ -166,6 +169,7 @@ sealed class Destination(val route: String) {
         object AddContact : Destination(
             "contacts/addContact/${ContactFormBasicContactInfoKey.wrap()}/form"
         ) {
+
             operator fun invoke(contactInfo: BasicContactInfo): String {
                 return route.replace(
                     ContactFormBasicContactInfoKey.wrap(),
@@ -179,15 +183,21 @@ sealed class Destination(val route: String) {
             operator fun invoke(contactId: ContactId) = route.replace(ContactFormContactIdKey.wrap(), contactId.id)
         }
 
-        object ContactGroupDetails : Destination("contacts/group/${ContactGroupDetailsLabelIdKey.wrap()}") {
+        object ContactGroupDetails : Destination("contacts/group/${ContactGroupDetailsGroupIdKey.wrap()}") {
 
-            operator fun invoke(labelId: LabelId) = route.replace(ContactGroupDetailsLabelIdKey.wrap(), labelId.id)
+            operator fun invoke(contactGroupId: ContactGroupId) = route.replace(
+                ContactGroupDetailsGroupIdKey.wrap(),
+                contactGroupId.id
+            )
         }
 
         object CreateContactGroup : Destination("contacts/group/form")
-        object EditContactGroup : Destination("contacts/group/${ContactGroupFormLabelIdKey.wrap()}/form") {
+        object EditContactGroup : Destination("contacts/group/${ContactGroupFormGroupIdKey.wrap()}/form") {
 
-            operator fun invoke(labelId: LabelId) = route.replace(ContactGroupFormLabelIdKey.wrap(), labelId.id)
+            operator fun invoke(contactGroupId: ContactGroupId) = route.replace(
+                ContactGroupFormGroupIdKey.wrap(),
+                contactGroupId.id
+            )
         }
 
         object ManageMembers : Destination("contacts/group/manageMembers")

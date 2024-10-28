@@ -21,18 +21,18 @@ package ch.protonmail.android.mailcontact.presentation.contactgroupform
 import androidx.compose.ui.graphics.Color
 import ch.protonmail.android.mailcommon.presentation.model.ColorHexWithName
 import ch.protonmail.android.mailcontact.presentation.model.ContactGroupFormUiModel
-import ch.protonmail.android.mailcontact.domain.model.ContactEmailId
+import ch.protonmail.android.mailcontact.domain.model.ContactId
 
 sealed interface ContactGroupFormOperation
 
 sealed interface ContactGroupFormViewAction : ContactGroupFormOperation {
     data class OnUpdateMemberList(
-        val selectedContactEmailIds: List<String>
+        val selectedContactIds: List<ContactId>
     ) : ContactGroupFormViewAction
     object OnCloseClick : ContactGroupFormViewAction
     object OnSaveClick : ContactGroupFormViewAction
     data class OnRemoveMemberClick(
-        val contactEmailId: ContactEmailId
+        val contactEmailId: ContactId
     ) : ContactGroupFormViewAction
     data class OnUpdateName(
         val name: String

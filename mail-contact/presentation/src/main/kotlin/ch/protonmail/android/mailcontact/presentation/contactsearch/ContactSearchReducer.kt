@@ -33,13 +33,11 @@ class ContactSearchReducer @Inject constructor() {
         currentState: ContactSearchState,
         event: ContactSearchEvent.ContactsLoaded
     ): ContactSearchState = currentState.copy(
-        contactUiModels = event.contacts,
-        groupUiModels = event.groups
+        contactUiModels = event.contacts
     )
 
     private fun reduceSearchCleared(currentState: ContactSearchState): ContactSearchState = currentState.copy(
-        contactUiModels = null,
-        groupUiModels = null
+        contactUiModels = null
     )
 
 }

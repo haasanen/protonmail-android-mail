@@ -21,7 +21,7 @@ package ch.protonmail.android.mailcontact.presentation.model
 import androidx.compose.ui.graphics.Color
 import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
-import ch.protonmail.android.maillabel.domain.model.LabelId
+import ch.protonmail.android.mailcontact.domain.model.ContactGroupId
 import ch.protonmail.android.mailcontact.domain.model.ContactId
 
 sealed interface ContactListItemUiModel {
@@ -38,7 +38,7 @@ sealed interface ContactListItemUiModel {
 
 
     data class ContactGroup(
-        val labelId: LabelId,
+        val id: ContactGroupId,
         val name: String,
         val memberCount: Int,
         val color: Color

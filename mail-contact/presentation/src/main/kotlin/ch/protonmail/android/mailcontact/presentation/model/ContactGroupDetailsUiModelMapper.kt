@@ -22,7 +22,7 @@ import androidx.compose.ui.graphics.Color
 import arrow.core.getOrElse
 import ch.protonmail.android.mailcommon.presentation.mapper.ColorMapper
 import ch.protonmail.android.mailcommon.presentation.usecase.GetInitials
-import ch.protonmail.android.mailcontact.domain.model.ContactGroup
+import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import javax.inject.Inject
 
 class ContactGroupDetailsUiModelMapper @Inject constructor(
@@ -30,9 +30,9 @@ class ContactGroupDetailsUiModelMapper @Inject constructor(
     private val colorMapper: ColorMapper
 ) {
 
-    fun toContactGroupDetailsUiModel(contactGroup: ContactGroup): ContactGroupDetailsUiModel {
+    fun toContactGroupDetailsUiModel(contactGroup: ContactMetadata.ContactGroup): ContactGroupDetailsUiModel {
         return ContactGroupDetailsUiModel(
-            id = contactGroup.labelId,
+            id = contactGroup.id,
             name = contactGroup.name,
             color = colorMapper.toColor(contactGroup.color).getOrElse { Color.Black },
             memberCount = contactGroup.members.size,
@@ -40,7 +40,7 @@ class ContactGroupDetailsUiModelMapper @Inject constructor(
                 ContactGroupDetailsMember(
                     initials = getInitials(contactEmail.name),
                     name = contactEmail.name,
-                    email = contactEmail.email
+                    email = contactEmail.emails.firstOrNull()?.email ?: ""
                 )
             }
         )

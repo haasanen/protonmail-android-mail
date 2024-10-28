@@ -18,71 +18,39 @@
 
 package ch.protonmail.android.mailcontact.presentation.model
 
-import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
-import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
-import ch.protonmail.android.mailcommon.presentation.usecase.GetInitials
-import ch.protonmail.android.mailcontact.presentation.R
-import ch.protonmail.android.mailcontact.domain.model.Contact
-import ch.protonmail.android.mailcontact.domain.model.ContactEmail
-import me.proton.core.util.kotlin.takeIfNotBlank
+import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
+import ch.protonmail.android.mailcontact.domain.model.GroupedContacts
 import javax.inject.Inject
 
 class ContactListItemUiModelMapper @Inject constructor(
-    private val getInitials: GetInitials
+    private val contactGroupItemUiModelMapper: ContactGroupItemUiModelMapper,
+    private val contactItemUiModelMapper: ContactItemUiModelMapper
 ) {
 
-    fun toContactListItemUiModel(contactList: List<Contact>): List<ContactListItemUiModel> {
+    fun toContactListItemUiModel(groupedContactsList: List<GroupedContacts>): List<ContactListItemUiModel> {
         val contacts = arrayListOf<ContactListItemUiModel>()
-        contactList.map {
-            it.copy(name = it.name.trim())
-        }.sortedBy {
-            it.name.uppercase()
-        }.groupBy {
-            it.name.takeIfNotBlank()?.first()?.uppercaseChar() ?: "?"
-        }.forEach { nameGroup ->
-            contacts.add(
-                ContactListItemUiModel.Header(value = nameGroup.key.toString())
-            )
-            nameGroup.value.sortedBy {
-                it.name
-            }.forEach { contact ->
-                contacts.add(
-                    ContactListItemUiModel.Contact(
-                        id = contact.id,
-                        name = contact.name,
-                        emailSubtext = getEmailSubtext(contact.contactEmails),
-                        avatar = AvatarUiModel.ParticipantAvatar(
-                            getInitials(contact.name),
-                            contact.contactEmails.firstOrNull()?.email ?: "",
-                            null
-                        )
-                    )
-                )
-            }
-        }
-        return contacts
-    }
 
-    private fun getEmailSubtext(contactEmails: List<ContactEmail>): TextUiModel {
-        return if (contactEmails.isNotEmpty()) {
-            val sortedContactEmails = contactEmails.sortedBy {
-                it.order
-            }.mapNotNull { contactEmail ->
-                contactEmail.email.takeIfNotBlank()
+        groupedContactsList.forEach { groupedContacts ->
+
+            contacts.add(ContactListItemUiModel.Header(value = groupedContacts.groupedBy))
+
+            groupedContacts.contacts.forEach { contact ->
+                when (contact) {
+                    is ContactMetadata.Contact -> {
+                        contacts.add(
+                            contactItemUiModelMapper.toContactItemUiModel(contact)
+                        )
+                    }
+
+                    is ContactMetadata.ContactGroup -> {
+                        contacts.add(
+                            contactGroupItemUiModelMapper.toContactGroupItemUiModel(contact)
+                        )
+                    }
+                }
             }
-            if (sortedContactEmails.isEmpty()) {
-                TextUiModel(R.string.no_contact_email)
-            } else if (sortedContactEmails.size > 1) {
-                TextUiModel(
-                    R.string.multiple_contact_emails,
-                    sortedContactEmails.first(),
-                    sortedContactEmails.size.minus(1)
-                )
-            } else {
-                TextUiModel(sortedContactEmails.first())
-            }
-        } else {
-            TextUiModel(R.string.no_contact_email)
         }
+
+        return contacts
     }
 }

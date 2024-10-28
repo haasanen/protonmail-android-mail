@@ -21,31 +21,18 @@ package ch.protonmail.android.mailcontact.presentation.model
 import androidx.compose.ui.graphics.Color
 import arrow.core.getOrElse
 import ch.protonmail.android.mailcommon.presentation.mapper.ColorMapper
-import ch.protonmail.android.mailcontact.domain.model.Contact
-import ch.protonmail.android.maillabel.domain.model.Label
+import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import javax.inject.Inject
 
 class ContactGroupItemUiModelMapper @Inject constructor(
     private val colorMapper: ColorMapper
 ) {
 
-    fun toContactGroupItemUiModel(contactList: List<Contact>, labels: List<Label>): List<ContactGroupItemUiModel> {
-        val labelMembersCount = hashMapOf<String, Int>()
-        contactList.forEach { contact ->
-            contact.contactEmails.forEach { contactEmail ->
-                contactEmail.labelIds.forEach { labelId ->
-                    labelMembersCount[labelId] = labelMembersCount[labelId]?.plus(1) ?: 1
-                }
-            }
-        }
-        val contactGroups = labels.map { label ->
-            ContactGroupItemUiModel(
-                labelId = label.labelId,
-                name = label.name,
-                memberCount = labelMembersCount[label.labelId.id] ?: 0,
-                color = colorMapper.toColor(label.color).getOrElse { Color.Black }
-            )
-        }
-        return contactGroups
-    }
+    fun toContactGroupItemUiModel(contactGroup: ContactMetadata.ContactGroup): ContactListItemUiModel.ContactGroup =
+        ContactListItemUiModel.ContactGroup(
+            id = contactGroup.id,
+            name = contactGroup.name,
+            memberCount = contactGroup.members.size,
+            color = colorMapper.toColor(contactGroup.color).getOrElse { Color.Black }
+        )
 }

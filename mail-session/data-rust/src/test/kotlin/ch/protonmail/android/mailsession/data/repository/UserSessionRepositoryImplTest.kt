@@ -12,6 +12,7 @@ import kotlinx.coroutines.test.runTest
 import me.proton.core.domain.entity.UserId
 import ch.protonmail.android.mailsession.domain.model.ForkedSessionId
 import ch.protonmail.android.mailsession.domain.model.SessionError
+import kotlinx.coroutines.test.TestScope
 import org.junit.Rule
 import uniffi.proton_mail_uniffi.MailSession
 import uniffi.proton_mail_uniffi.MailUserSession
@@ -30,7 +31,10 @@ class UserSessionRepositoryImplTest {
 
     private val mailSessionRepository = mockk<MailSessionRepository>()
 
-    private val userSessionRepository = UserSessionRepositoryImpl(mailSessionRepository)
+    private val userSessionRepository = UserSessionRepositoryImpl(
+        mailSessionRepository,
+        TestScope(mainDispatcherRule.testDispatcher)
+    )
 
     @Test
     fun `initializes session from repository and returns it when not already active`() = runTest {
@@ -134,6 +138,7 @@ class UserSessionRepositoryImplTest {
 
 
     private fun mailSessionWithNoUserSessionsStored() = mockk<MailSession> {
+        coEvery { getAccount(any()) } returns null
         coEvery { getAccounts() } returns emptyList()
     }
 
@@ -148,6 +153,7 @@ class UserSessionRepositoryImplTest {
             every { userId() } returns expectedSessionUserId.id
         }
         coEvery { userContextFromSession(storedSession) } returns expectedMailUserSession
+        coEvery { getAccount(any()) } returns storedAccount
         coEvery { getAccounts() } returns listOf(storedAccount)
         coEvery { getSessions(storedAccount) } returns listOf(storedSession)
     }

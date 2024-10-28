@@ -46,6 +46,10 @@ android {
 dependencies {
     implementation(Proton.Core.accountManager)
 
+    compileOnly(Proton.Common.rustCore)
+
+    implementation(project(":account-core:platform:android:core:auth:presentation"))
+
     implementation(project(":mail-session:data-rust"))
     implementation(project(":mail-session:domain"))
     implementation(project(":mail-session:presentation"))

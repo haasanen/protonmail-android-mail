@@ -20,6 +20,8 @@ package ch.protonmail.android.navigation
 
 import app.cash.turbine.test
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
+import ch.protonmail.android.mailsession.domain.model.Account
+import ch.protonmail.android.mailsession.domain.model.AccountState
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import ch.protonmail.android.navigation.model.LauncherState
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
@@ -29,6 +31,7 @@ import kotlin.test.assertEquals
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
+import me.proton.android.core.auth.presentation.AuthOrchestrator
 import org.junit.Rule
 import kotlin.test.Test
 
@@ -39,6 +42,7 @@ class LauncherViewModelTest {
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
 
+    private val authOrchestrator: AuthOrchestrator = mockk()
     private val userSessionRepository: UserSessionRepository = mockk()
 
     private lateinit var viewModel: LauncherViewModel
@@ -47,10 +51,10 @@ class LauncherViewModelTest {
     fun `state should be AccountNeeded when userSession is not available`() =
         runTest(mainDispatcherRule.testDispatcher) {
             // Given
-            every { userSessionRepository.observeCurrentUserId() } returns flowOf(null)
+            every { userSessionRepository.observeAccounts() } returns flowOf(emptyList())
 
             // When
-            viewModel = LauncherViewModel(userSessionRepository)
+            viewModel = LauncherViewModel(authOrchestrator, userSessionRepository)
 
             // Then
             viewModel.state.test {
@@ -61,10 +65,18 @@ class LauncherViewModelTest {
     @Test
     fun `state should be PrimaryExist when userSession is available`() = runTest(mainDispatcherRule.testDispatcher) {
         // Given
-        every { userSessionRepository.observeCurrentUserId() } returns flowOf(UserIdSample.Primary)
+        every { userSessionRepository.observeAccounts() } returns flowOf(
+            listOf(
+                Account(
+                    userId = UserIdSample.Primary,
+                    nameOrAddress = "User",
+                    state = AccountState.Ready
+                )
+            )
+        )
 
         // When
-        viewModel = LauncherViewModel(userSessionRepository)
+        viewModel = LauncherViewModel(authOrchestrator, userSessionRepository)
 
         // Then
         viewModel.state.test {

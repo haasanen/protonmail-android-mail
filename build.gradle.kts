@@ -28,6 +28,7 @@ buildscript {
         classpath("com.google.dagger:hilt-android-gradle-plugin:${Versions.Gradle.hiltAndroidGradlePlugin}")
         classpath("com.google.gms:google-services:${Versions.Gradle.googleServicesPlugin}")
         classpath("io.sentry:sentry-android-gradle-plugin:${Versions.Gradle.sentryGradlePlugin}")
+        classpath("app.cash.paparazzi:paparazzi-gradle-plugin:${Versions.Cash.paparazzi}")
     }
 }
 

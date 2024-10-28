@@ -18,26 +18,17 @@
 
 package ch.protonmail.android.mailsession.data.repository
 
-import java.lang.IllegalStateException
 import ch.protonmail.android.mailsession.domain.repository.MailSessionRepository
 import uniffi.proton_mail_uniffi.MailSession
 import javax.inject.Inject
 
 class InMemoryMailSessionRepository @Inject constructor() : MailSessionRepository {
 
-    private var rustMailSession: MailSession? = null
+    private lateinit var mailSession: MailSession
 
     override fun setMailSession(mailSession: MailSession) {
-        rustMailSession = mailSession
+        this.mailSession = mailSession
     }
 
-    override suspend fun getMailSession(): MailSession {
-        val currentMailSession = rustMailSession
-            ?: throw IllegalStateException(
-                "Mail Session isn't available in memory. This is illegal."
-            )
-        return currentMailSession
-    }
-
-
+    override fun getMailSession(): MailSession = mailSession
 }

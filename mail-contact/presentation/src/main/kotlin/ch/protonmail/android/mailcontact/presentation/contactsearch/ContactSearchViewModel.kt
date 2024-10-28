@@ -21,19 +21,16 @@ package ch.protonmail.android.mailcontact.presentation.contactsearch
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUserId
-import ch.protonmail.android.mailcontact.domain.usecase.SearchContactGroups
 import ch.protonmail.android.mailcontact.domain.usecase.SearchContacts
-import ch.protonmail.android.mailcontact.presentation.model.ContactListItemUiModel
-import ch.protonmail.android.mailcontact.presentation.model.ContactListItemUiModelMapper
 import ch.protonmail.android.mailcontact.presentation.model.ContactSearchUiModelMapper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -43,9 +40,7 @@ import javax.inject.Inject
 class ContactSearchViewModel @Inject constructor(
     private val reducer: ContactSearchReducer,
     private val contactSearchUiModelMapper: ContactSearchUiModelMapper,
-    private val contactListItemUiModelMapper: ContactListItemUiModelMapper,
     private val searchContacts: SearchContacts,
-    private val searchContactGroups: SearchContactGroups,
     observePrimaryUserId: ObservePrimaryUserId
 ) : ViewModel() {
 
@@ -67,37 +62,34 @@ class ContactSearchViewModel @Inject constructor(
             }
         }
     }
-
     private suspend fun handleOnSearchValueChanged(action: ContactSearchViewAction.OnSearchValueChanged) {
+        // Cancel the previous search job if it's still running
         searchContactsJob?.cancel()
 
+        // Only proceed if the search value is not blank
         if (action.searchValue.isNotBlank()) {
-            searchContactsJob = combine(
-                searchContacts(primaryUserId(), action.searchValue, onlyMatchingContactEmails = false),
-                searchContactGroups(primaryUserId(), action.searchValue, returnEmpty = true)
-            ) { contacts, contactGroups ->
+            searchContactsJob = searchContacts(
+                userId = primaryUserId(),
+                query = action.searchValue,
+                onlyMatchingContactEmails = false
+            ).map { contacts ->
 
-                val fromContacts =
-                    contactListItemUiModelMapper.toContactListItemUiModel(contacts.getOrNull() ?: emptyList())
-                        .filterIsInstance<ContactListItemUiModel.Contact>()
-
-                val fromGroups = contactSearchUiModelMapper.contactGroupsToContactSearchUiModelList(
-                    contactGroups.getOrNull()?.sortedBy { it.name } ?: emptyList()
+                // Map the contacts to the required UI model
+                val contactsUiModel = contactSearchUiModelMapper.toContactListItemUiModel(
+                    contacts.getOrNull() ?: emptyList()
                 )
 
+                // Emit the new state with the loaded contacts
                 emitNewStateFor(
-                    ContactSearchEvent.ContactsLoaded(
-                        contacts = fromContacts,
-                        groups = fromGroups
-                    )
+                    ContactSearchEvent.ContactsLoaded(contacts = contactsUiModel)
                 )
             }.launchIn(viewModelScope)
         } else {
-            emitNewStateFor(
-                ContactSearchEvent.ContactsCleared
-            )
+            // Emit a state indicating that the contacts have been cleared
+            emitNewStateFor(ContactSearchEvent.ContactsCleared)
         }
     }
+
 
     private fun handleOnSearchValueCleared() {
         emitNewStateFor(
@@ -115,8 +107,7 @@ class ContactSearchViewModel @Inject constructor(
     companion object {
 
         val initialState: ContactSearchState = ContactSearchState(
-            contactUiModels = null,
-            groupUiModels = null
+            contactUiModels = null
         )
     }
 }

@@ -20,12 +20,12 @@ package ch.protonmail.android.mailcomposer.presentation.usecase
 
 import ch.protonmail.android.mailcommon.presentation.usecase.GetInitials
 import ch.protonmail.android.mailcomposer.presentation.model.ContactSuggestionUiModel
-import ch.protonmail.android.mailcontact.domain.model.ContactGroup
+import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import ch.protonmail.android.mailcontact.domain.model.DeviceContact
-import ch.protonmail.android.maillabel.domain.sample.LabelIdSample
 import ch.protonmail.android.testdata.contact.ContactEmailSample
 import ch.protonmail.android.testdata.contact.ContactEmailSample.contactEmailLastUsedLongTimeAgo
 import ch.protonmail.android.testdata.contact.ContactEmailSample.contactEmailLastUsedRecently
+import ch.protonmail.android.testdata.contact.ContactGroupIdSample
 import ch.protonmail.android.testdata.contact.ContactSample
 import io.mockk.every
 import io.mockk.mockk
@@ -50,7 +50,7 @@ class SortContactsForSuggestionsTest {
         val contacts = listOf(
             ContactSample.Stefano,
             ContactSample.Doe.copy(
-                contactEmails = listOf(
+                emails = listOf(
                     contactEmailLastUsedLongTimeAgo,
                     contactEmailLastUsedRecently
                 )
@@ -67,54 +67,71 @@ class SortContactsForSuggestionsTest {
             )
         )
         val contactGroups = listOf(
-            ContactGroup(
-                LabelIdSample.LabelCoworkers,
+            ContactMetadata.ContactGroup(
+                ContactGroupIdSample.Friends,
                 "z group",
                 "#AABBCC",
-                listOf(ContactEmailSample.contactEmail1)
+                listOf(
+                    ContactSample.Stefano.copy(
+                        emails = listOf(
+                            ContactEmailSample.contactEmail1
+                        )
+                    )
+                )
             ),
-            ContactGroup(
-                LabelIdSample.LabelCoworkers,
+            ContactMetadata.ContactGroup(
+                ContactGroupIdSample.Work,
                 "x group",
                 "#AABBCC",
-                listOf(ContactEmailSample.contactEmail1)
+                listOf(
+                    ContactSample.Mario.copy(
+                        emails = listOf(
+                            ContactEmailSample.contactEmail2
+                        )
+                    )
+                )
             ),
-            ContactGroup(
-                LabelIdSample.LabelCoworkers,
+            ContactMetadata.ContactGroup(
+                ContactGroupIdSample.School,
                 "a group",
                 "#AABBCC",
-                listOf(ContactEmailSample.contactEmail1)
+                listOf(
+                    ContactSample.Doe.copy(
+                        emails = listOf(
+                            ContactEmailSample.contactEmail3
+                        )
+                    )
+                )
             )
         )
 
         // When
         val actual = sut(
-            contacts,
+            contacts + contactGroups,
             deviceContacts,
-            contactGroups,
             7 // one fewer than total
         )
 
         // Then
         val expected = listOf(
             ContactSuggestionUiModel.Contact(
-                name = contacts[1].contactEmails[1].name,
+                contacts[1].name,
                 initial = BaseInitials,
-                email = contacts[1].contactEmails[1].email
+                contacts[1].emails[1].email
             ),
             ContactSuggestionUiModel.Contact(
-                name = contacts[1].contactEmails[0].name,
+                contacts[1].name,
                 initial = BaseInitials,
-                email = contacts[1].contactEmails[0].email
+                contacts[1].emails[0].email
             ),
             ContactSuggestionUiModel.Contact(
-                name = contacts[0].contactEmails[0].name,
+                contacts[0].name,
                 initial = BaseInitials,
-                email = contacts[0].contactEmails[0].email
+                contacts[0].emails[0].email
             ),
             ContactSuggestionUiModel.ContactGroup(
-                name = contactGroups[2].name,
-                emails = contactGroups[2].members.map { it.email }
+                contactGroups[2].name,
+                contactGroups[2].members[0].emails.map { it.email }
             ),
             ContactSuggestionUiModel.Contact(
                 name = deviceContacts[1].name,
@@ -128,7 +145,7 @@ class SortContactsForSuggestionsTest {
             ),
             ContactSuggestionUiModel.ContactGroup(
                 contactGroups[1].name,
-                contactGroups[1].members.map { it.email }
+                contactGroups[1].members[0].emails.map { it.email }
             )
         )
 
@@ -142,11 +159,10 @@ class SortContactsForSuggestionsTest {
         val secondEmail = ContactEmailSample.contactEmail1.copy(email = "email2@proton.me")
         val thirdEmail = ContactEmailSample.contactEmail1.copy(email = "email3@proton.me")
         val fourthEmail = ContactEmailSample.contactEmail1.copy(email = "email4@proton.me")
-        val fifthEmail = "email5@proton.me"
 
         val contacts = listOf(
-            ContactSample.Doe.copy(contactEmails = listOf(firstEmail, secondEmail)),
-            ContactSample.Doe.copy(contactEmails = listOf(thirdEmail))
+            ContactSample.Doe.copy(emails = listOf(firstEmail, secondEmail)),
+            ContactSample.Doe.copy(emails = listOf(thirdEmail))
         )
         val deviceContacts = listOf(
             DeviceContact("First Email equivalent", firstEmail.email),
@@ -155,51 +171,46 @@ class SortContactsForSuggestionsTest {
         )
 
         val groupsSuggestions = listOf(
-            ContactGroup(
-                LabelIdSample.LabelCoworkers,
-                "A group",
+            ContactMetadata.ContactGroup(
+                ContactGroupIdSample.School,
+                "a group",
                 "#AABBCC",
-                listOf(ContactEmailSample.contactEmail1.copy(email = fifthEmail))
+                listOf(ContactSample.Doe.copy(emails = listOf(ContactEmailSample.contactEmail3)))
             )
         )
 
         val expectedSuggestionsResult = listOf(
             ContactSuggestionUiModel.Contact(
-                name = contacts[0].contactEmails[0].name,
+                name = contacts[0].name,
                 initial = BaseInitials,
-                email = contacts[0].contactEmails[0].email
+                email = contacts[0].emails[0].email
             ),
             ContactSuggestionUiModel.Contact(
-                name = contacts[0].contactEmails[1].name,
+                name = contacts[0].name,
                 initial = BaseInitials,
-                email = contacts[0].contactEmails[1].email
+                email = contacts[0].emails[1].email
             ),
             ContactSuggestionUiModel.Contact(
-                name = contacts[1].contactEmails[0].name,
+                name = contacts[1].name,
                 initial = BaseInitials,
-                email = contacts[1].contactEmails[0].email
-            ),
-            ContactSuggestionUiModel.ContactGroup(
-                name = groupsSuggestions[0].name,
-                emails = groupsSuggestions[0].members.map { it.email }
+                email = contacts[1].emails[0].email
             ),
             ContactSuggestionUiModel.Contact(
                 name = deviceContacts[2].name,
                 initial = BaseInitials,
                 email = deviceContacts[2].email
+            ),
+            ContactSuggestionUiModel.ContactGroup(
+                name = groupsSuggestions[0].name,
+                emails = groupsSuggestions[0].members[0].emails.map { it.email }
             )
         )
 
         // When
-        val actual = sut(
-            contacts,
-            deviceContacts,
-            groupsSuggestions,
-            50
-        )
+        val actual = sut(contacts + groupsSuggestions, deviceContacts, 50)
 
         // Then
-        assertEquals(actual, expectedSuggestionsResult)
+        assertEquals(expectedSuggestionsResult, actual)
     }
 
     @Test
@@ -212,8 +223,8 @@ class SortContactsForSuggestionsTest {
             val fourthEmail = ContactEmailSample.contactEmail1.copy(email = "email4@proton.me")
 
             val contacts = listOf(
-                ContactSample.Doe.copy(contactEmails = listOf(firstEmail, secondEmail)),
-                ContactSample.Doe.copy(contactEmails = listOf(thirdEmail))
+                ContactSample.Doe.copy(emails = listOf(firstEmail, secondEmail)),
+                ContactSample.Doe.copy(emails = listOf(thirdEmail))
             )
             val deviceContacts = listOf(
                 DeviceContact("First Email equivalent", firstEmail.email),
@@ -222,51 +233,46 @@ class SortContactsForSuggestionsTest {
             )
 
             val groupsSuggestions = listOf(
-                ContactGroup(
-                    LabelIdSample.LabelCoworkers,
-                    "A group",
+                ContactMetadata.ContactGroup(
+                    ContactGroupIdSample.School,
+                    "a group",
                     "#AABBCC",
-                    listOf(ContactEmailSample.contactEmail1.copy(email = firstEmail.email))
+                    listOf(ContactSample.Doe.copy(emails = listOf(ContactEmailSample.contactEmail1)))
                 )
             )
 
             val expectedSuggestionsResult = listOf(
                 ContactSuggestionUiModel.Contact(
-                    name = contacts[0].contactEmails[0].name,
+                    name = contacts[0].name,
                     initial = BaseInitials,
-                    email = contacts[0].contactEmails[0].email
+                    email = contacts[0].emails[0].email
                 ),
                 ContactSuggestionUiModel.Contact(
-                    name = contacts[0].contactEmails[1].name,
+                    name = contacts[0].name,
                     initial = BaseInitials,
-                    email = contacts[0].contactEmails[1].email
+                    email = contacts[0].emails[1].email
                 ),
                 ContactSuggestionUiModel.Contact(
-                    name = contacts[1].contactEmails[0].name,
+                    name = contacts[1].name,
                     initial = BaseInitials,
-                    email = contacts[1].contactEmails[0].email
-                ),
-                ContactSuggestionUiModel.ContactGroup(
-                    groupsSuggestions[0].name,
-                    groupsSuggestions[0].members.map { it.email }
+                    email = contacts[1].emails[0].email
                 ),
                 ContactSuggestionUiModel.Contact(
                     name = deviceContacts[2].name,
                     initial = BaseInitials,
                     email = deviceContacts[2].email
+                ),
+                ContactSuggestionUiModel.ContactGroup(
+                    name = groupsSuggestions[0].name,
+                    emails = groupsSuggestions[0].members[0].emails.map { it.email }
                 )
             )
 
             // When
-            val actual = sut(
-                contacts,
-                deviceContacts,
-                groupsSuggestions,
-                50
-            )
+            val actual = sut(contacts + groupsSuggestions, deviceContacts, 50)
 
             // Then
-            assertEquals(actual, expectedSuggestionsResult)
+            assertEquals(expectedSuggestionsResult, actual)
         }
 
     private companion object {

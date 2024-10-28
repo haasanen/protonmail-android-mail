@@ -23,6 +23,7 @@ import arrow.core.getOrElse
 import ch.protonmail.android.mailcommon.presentation.mapper.ColorMapper
 import ch.protonmail.android.mailcommon.presentation.mapper.ExpirationTimeMapper
 import ch.protonmail.android.mailcommon.presentation.usecase.FormatShortTime
+import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMessageUiModel
 import ch.protonmail.android.maillabel.domain.model.Label
 import ch.protonmail.android.maillabel.domain.model.LabelType
@@ -34,7 +35,6 @@ import ch.protonmail.android.mailmessage.presentation.model.MessageBodyUiModel
 import ch.protonmail.android.mailmessage.presentation.model.isApplicable
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
-import ch.protonmail.android.mailcontact.domain.model.Contact
 import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.seconds
@@ -54,7 +54,10 @@ class ConversationDetailMessageUiModelMapper @Inject constructor(
     private val participantUiModelMapper: ParticipantUiModelMapper
 ) {
 
-    suspend fun toUiModel(message: Message, contacts: List<Contact>): ConversationDetailMessageUiModel.Collapsed {
+    suspend fun toUiModel(
+        message: Message,
+        contacts: List<ContactMetadata.Contact>
+    ): ConversationDetailMessageUiModel.Collapsed {
         return ConversationDetailMessageUiModel.Collapsed(
             avatar = avatarUiModelMapper(message.avatarInformation, message.sender),
             expiration = message.expirationTimeOrNull()?.let(expirationTimeMapper::toUiModel),
@@ -75,7 +78,7 @@ class ConversationDetailMessageUiModelMapper @Inject constructor(
     suspend fun toUiModel(
         userId: UserId,
         message: Message,
-        contacts: List<Contact>,
+        contacts: List<ContactMetadata.Contact>,
         decryptedMessageBody: DecryptedMessageBody,
         existingMessageUiState: ConversationDetailMessageUiModel.Expanded? = null
     ): ConversationDetailMessageUiModel.Expanded {
@@ -114,7 +117,7 @@ class ConversationDetailMessageUiModelMapper @Inject constructor(
     suspend fun toUiModel(
         messageUiModel: ConversationDetailMessageUiModel.Expanded,
         message: Message,
-        contacts: List<Contact>
+        contacts: List<ContactMetadata.Contact>
     ): ConversationDetailMessageUiModel.Expanded {
         return messageUiModel.copy(
             isUnread = message.isUnread,

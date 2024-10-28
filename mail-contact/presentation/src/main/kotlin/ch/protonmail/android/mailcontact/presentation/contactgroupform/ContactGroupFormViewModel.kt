@@ -27,11 +27,12 @@ import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailcommon.presentation.mapper.ColorMapper
 import ch.protonmail.android.mailcommon.presentation.model.ColorHexWithName
 import ch.protonmail.android.mailcommon.presentation.usecase.GetColorHexWithNameList
+import ch.protonmail.android.mailcontact.domain.model.ContactGroupId
 import ch.protonmail.android.mailcontact.domain.usecase.CreateContactGroup
 import ch.protonmail.android.mailcontact.domain.usecase.CreateContactGroupError
 import ch.protonmail.android.mailcontact.domain.usecase.DeleteContactGroup
 import ch.protonmail.android.mailcontact.domain.usecase.EditContactGroup
-import ch.protonmail.android.mailcontact.domain.usecase.GetContactEmailsById
+import ch.protonmail.android.mailcontact.domain.usecase.GetContactsById
 import ch.protonmail.android.mailcontact.domain.usecase.ObserveContactGroup
 import ch.protonmail.android.mailcontact.presentation.model.ContactGroupFormUiModel
 import ch.protonmail.android.mailcontact.presentation.model.ContactGroupFormUiModelMapper
@@ -48,14 +49,13 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import me.proton.core.domain.entity.UserId
-import ch.protonmail.android.maillabel.domain.model.LabelId
 import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
 class ContactGroupFormViewModel @Inject constructor(
     private val observeContactGroup: ObserveContactGroup,
-    private val getContactEmailsById: GetContactEmailsById,
+    private val getContactsById: GetContactsById,
     private val reducer: ContactGroupFormReducer,
     private val contactGroupFormUiModelMapper: ContactGroupFormUiModelMapper,
     private val savedStateHandle: SavedStateHandle,
@@ -75,10 +75,13 @@ class ContactGroupFormViewModel @Inject constructor(
 
     init {
         val colors = getColorHexWithNameList()
-        extractLabelId()?.let { labelId ->
+        extractContactGroupId()?.let { contactGroupId ->
             viewModelScope.launch {
                 emitNewStateFor(
-                    getContactGroupFormEvent(userId = primaryUserId(), labelId = LabelId(labelId), colors = colors)
+                    getContactGroupFormEvent(
+                        userId = primaryUserId(),
+                        contactGroupId = ContactGroupId(contactGroupId), colors = colors
+                    )
                 )
             }
         } ?: run {
@@ -118,7 +121,7 @@ class ContactGroupFormViewModel @Inject constructor(
         val stateValue = state.value
         if (stateValue !is ContactGroupFormState.Data) return
 
-        if (action.selectedContactEmailIds.isEmpty()) {
+        if (action.selectedContactIds.isEmpty()) {
             emitNewStateFor(
                 ContactGroupFormEvent.UpdateContactGroupFormUiModel(
                     contactGroupFormUiModel = stateValue.contactGroup.copy(memberCount = 0, members = emptyList())
@@ -126,19 +129,19 @@ class ContactGroupFormViewModel @Inject constructor(
             )
         } else {
             viewModelScope.launch {
-                val newContactEmailIds = action.selectedContactEmailIds.mapNotNull { contactEmailId ->
-                    contactEmailId.takeIf {
-                        stateValue.contactGroup.members.none { it.id.id == contactEmailId }
+                val newContactIds = action.selectedContactIds.mapNotNull { contactId ->
+                    contactId.takeIf {
+                        stateValue.contactGroup.members.none { it.id == contactId }
                     }
                 }
-                val newContactEmails = getContactEmailsById(primaryUserId(), newContactEmailIds).getOrElse {
+                val newContactEmails = getContactsById(primaryUserId(), newContactIds).getOrElse {
                     Timber.e("Failed to get contact emails by id")
                     return@launch emitNewStateFor(ContactGroupFormEvent.UpdateMembersError)
                 }
                 val newContactMembers = contactGroupFormUiModelMapper.toContactGroupFormMemberList(newContactEmails)
 
                 val updatedGroupMemberList = stateValue.contactGroup.members.mapNotNull { member ->
-                    member.takeIf { action.selectedContactEmailIds.contains(it.id.id) }
+                    member.takeIf { action.selectedContactIds.contains(it.id) }
                 }.plus(newContactMembers)
 
                 emitNewStateFor(
@@ -210,7 +213,7 @@ class ContactGroupFormViewModel @Inject constructor(
         viewModelScope.launch {
             deleteContactGroup(
                 userId = primaryUserId(),
-                labelId = currentState.contactGroup.id
+                contactGroupId = currentState.contactGroup.id
             ).getOrElse {
                 return@launch emitNewStateFor(ContactGroupFormEvent.DeletingError)
             }
@@ -231,8 +234,8 @@ class ContactGroupFormViewModel @Inject constructor(
         if (stateValue !is ContactGroupFormState.Data) return
 
         viewModelScope.launch {
-            stateValue.contactGroup.id?.let { labelId ->
-                handleUpdateContactGroup(labelId, stateValue.contactGroup)
+            stateValue.contactGroup.id?.let { contactGroupId ->
+                handleUpdateContactGroup(contactGroupId, stateValue.contactGroup)
             } ?: handleCreateContactGroup(stateValue.contactGroup)
         }
     }
@@ -244,7 +247,7 @@ class ContactGroupFormViewModel @Inject constructor(
             userId = primaryUserId(),
             name = contactGroupFormUiModel.name,
             color = ColorRgbHex(contactGroupFormUiModel.color.getHexStringFromColor()),
-            contactEmailIds = contactGroupFormUiModel.members.map { it.id }
+            contactIds = contactGroupFormUiModel.members.map { it.id }
         ).getOrElse {
             return if (it is CreateContactGroupError.GroupNameDuplicate) {
                 emitNewStateFor(ContactGroupFormEvent.DuplicatedContactGroupName)
@@ -256,15 +259,18 @@ class ContactGroupFormViewModel @Inject constructor(
         emitNewStateFor(ContactGroupFormEvent.ContactGroupCreated)
     }
 
-    private suspend fun handleUpdateContactGroup(labelId: LabelId, contactGroupFormUiModel: ContactGroupFormUiModel) {
+    private suspend fun handleUpdateContactGroup(
+        contactGroupId: ContactGroupId,
+        contactGroupFormUiModel: ContactGroupFormUiModel
+    ) {
         emitNewStateFor(ContactGroupFormEvent.SavingContactGroup)
 
         editContactGroup(
             userId = primaryUserId(),
-            labelId = labelId,
+            contactGroupId = contactGroupId,
             name = contactGroupFormUiModel.name,
             color = ColorRgbHex(contactGroupFormUiModel.color.getHexStringFromColor()),
-            contactEmailIds = contactGroupFormUiModel.members.map { it.id }
+            contactIds = contactGroupFormUiModel.members.map { it.id }
         ).getOrElse {
             return emitNewStateFor(ContactGroupFormEvent.SaveContactGroupError)
         }
@@ -274,10 +280,10 @@ class ContactGroupFormViewModel @Inject constructor(
 
     private suspend fun getContactGroupFormEvent(
         userId: UserId,
-        labelId: LabelId,
+        contactGroupId: ContactGroupId,
         colors: List<ColorHexWithName>
     ): ContactGroupFormEvent {
-        val contactGroup = observeContactGroup(userId, labelId).firstOrNull()?.getOrNull() ?: run {
+        val contactGroup = observeContactGroup(userId, contactGroupId).firstOrNull()?.getOrNull() ?: run {
             Timber.e("Error while observing contact group by id")
             return ContactGroupFormEvent.LoadError
         }
@@ -291,7 +297,8 @@ class ContactGroupFormViewModel @Inject constructor(
 
     private suspend fun primaryUserId() = primaryUserId.first()
 
-    private fun extractLabelId() = savedStateHandle.get<String>(ContactGroupFormScreen.ContactGroupFormLabelIdKey)
+    private fun extractContactGroupId() =
+        savedStateHandle.get<String>(ContactGroupFormScreen.ContactGroupFormGroupIdKey)
 
     private fun emitNewStateFor(event: ContactGroupFormEvent) {
         val currentState = state.value

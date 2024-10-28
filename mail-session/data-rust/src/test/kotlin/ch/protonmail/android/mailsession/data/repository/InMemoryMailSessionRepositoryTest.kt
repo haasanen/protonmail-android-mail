@@ -27,7 +27,7 @@ class InMemoryMailSessionRepositoryTest {
     @Test
     fun `throws when mail session is not present`() = runTest {
         // Then
-        assertFailsWith<IllegalStateException> {
+        assertFailsWith<UninitializedPropertyAccessException> {
             // When
             mailSessionRepository.getMailSession()
         }

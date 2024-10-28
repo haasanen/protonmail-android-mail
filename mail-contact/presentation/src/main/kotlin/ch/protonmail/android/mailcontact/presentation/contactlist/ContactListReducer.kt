@@ -51,7 +51,6 @@ class ContactListReducer @Inject constructor() {
                 if (event.contactList.isNotEmpty()) {
                     ContactListState.Loaded.Data(
                         contacts = event.contactList,
-                        contactGroups = event.contactGroups,
                         isContactGroupsCrudEnabled = event.isContactGroupsCrudEnabled,
                         isContactGroupsUpsellingVisible = event.isContactGroupsUpsellingVisible,
                         isContactSearchEnabled = event.isContactSearchEnabled
@@ -64,7 +63,6 @@ class ContactListReducer @Inject constructor() {
                     ContactListState.Loaded.Data(
                         bottomSheetVisibilityEffect = currentState.bottomSheetVisibilityEffect,
                         contacts = event.contactList,
-                        contactGroups = event.contactGroups,
                         isContactGroupsCrudEnabled = event.isContactGroupsCrudEnabled,
                         isContactGroupsUpsellingVisible = event.isContactGroupsUpsellingVisible,
                         isContactSearchEnabled = event.isContactSearchEnabled

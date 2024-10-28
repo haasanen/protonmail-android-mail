@@ -19,22 +19,21 @@
 package ch.protonmail.android.mailcontact.presentation
 
 import androidx.compose.ui.graphics.Color
+import ch.protonmail.android.mailcommon.domain.model.AvatarInformation
 import ch.protonmail.android.mailcommon.presentation.mapper.ColorMapper
 import ch.protonmail.android.mailcommon.presentation.usecase.GetInitials
-import ch.protonmail.android.mailcontact.domain.model.ContactGroup
 import ch.protonmail.android.mailcontact.presentation.model.ContactGroupDetailsMember
 import ch.protonmail.android.mailcontact.presentation.model.ContactGroupDetailsUiModel
 import ch.protonmail.android.mailcontact.presentation.model.ContactGroupDetailsUiModelMapper
 import ch.protonmail.android.maillabel.presentation.getHexStringFromColor
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
-import ch.protonmail.android.testdata.contact.ContactIdTestData
-import ch.protonmail.android.testdata.contact.ContactTestData
 import ch.protonmail.android.testdata.label.LabelTestData
-import ch.protonmail.android.testdata.user.UserIdTestData
 import ch.protonmail.android.mailcontact.domain.model.ContactEmail
 import ch.protonmail.android.mailcontact.domain.model.ContactEmailId
-import ch.protonmail.android.maillabel.domain.model.LabelId
+import ch.protonmail.android.mailcontact.domain.model.ContactId
+import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import ch.protonmail.android.maillabel.domain.model.LabelType
+import ch.protonmail.android.testdata.contact.ContactGroupIdSample
 import org.junit.Rule
 import org.junit.Test
 import kotlin.test.assertEquals
@@ -56,47 +55,36 @@ class ContactGroupDetailsUiModelMapperTest {
             "Label 1",
             color = Color.Red.getHexStringFromColor()
         )
-        val contact = ContactTestData.buildContactWith(
-            contactEmails = listOf(
+        val contact = ContactMetadata.Contact(
+            id = ContactId("ContactId1"),
+            name = "First name from contact email",
+            avatar = AvatarInformation("FE", Color.Red.getHexStringFromColor()),
+            emails = listOf(
                 ContactEmail(
-                    UserIdTestData.userId,
                     ContactEmailId("contact email id 1"),
-                    "First name from contact email",
                     "test1+alias@protonmail.com",
-                    0,
-                    0,
-                    ContactIdTestData.contactId1,
-                    "test1@protonmail.com",
-                    listOf("LabelId1"),
                     true,
                     lastUsedTime = 0
                 ),
                 ContactEmail(
-                    UserIdTestData.userId,
                     ContactEmailId("contact email id 2"),
-                    "First name from contact email",
                     "test2+alias@protonmail.com",
-                    0,
-                    0,
-                    ContactIdTestData.contactId1,
-                    "test2@protonmail.com",
-                    emptyList(),
                     true,
                     lastUsedTime = 0
                 )
             )
         )
-        val contactGroup = ContactGroup(
-            label.labelId,
+        val contactGroup = ContactMetadata.ContactGroup(
+            ContactGroupIdSample.School,
             label.name,
             label.color!!,
-            listOf(contact.contactEmails[0])
+            listOf(contact)
         )
 
         val actual = contactGroupDetailsUiModelMapper.toContactGroupDetailsUiModel(contactGroup)
 
         val expected = ContactGroupDetailsUiModel(
-            id = LabelId("LabelId1"),
+            id = ContactGroupIdSample.School,
             name = "Label 1",
             color = Color.Red,
             memberCount = 1,
@@ -120,8 +108,8 @@ class ContactGroupDetailsUiModelMapperTest {
             "Label 1",
             color = Color.Red.getHexStringFromColor()
         )
-        val contactGroup = ContactGroup(
-            label.labelId,
+        val contactGroup = ContactMetadata.ContactGroup(
+            ContactGroupIdSample.School,
             label.name,
             label.color!!,
             emptyList()
@@ -130,7 +118,7 @@ class ContactGroupDetailsUiModelMapperTest {
         val actual = contactGroupDetailsUiModelMapper.toContactGroupDetailsUiModel(contactGroup)
 
         val expected = ContactGroupDetailsUiModel(
-            id = LabelId("LabelId1"),
+            id = ContactGroupIdSample.School,
             name = "Label 1",
             color = Color.Red,
             memberCount = 0,

@@ -16,13 +16,15 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailcontact.domain.model
+package ch.protonmail.android.mailcontact.data.usecase
 
-import ch.protonmail.android.maillabel.domain.model.LabelId
+import ch.protonmail.android.mailcommon.datarust.mapper.LocalGroupedContacts
+import uniffi.proton_mail_uniffi.MailUserSession
+import uniffi.proton_mail_uniffi.contactList
+import javax.inject.Inject
 
-data class ContactGroup(
-    val labelId: LabelId,
-    val name: String,
-    val color: String,
-    val members: List<ContactEmail>
-)
+class GetRustContactList @Inject constructor() {
+
+    suspend operator fun invoke(mailUserSession: MailUserSession): List<LocalGroupedContacts> =
+        contactList(mailUserSession)
+}

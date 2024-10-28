@@ -27,6 +27,10 @@ import me.proton.core.account.data.entity.AccountEntity
 import me.proton.core.account.data.entity.AccountMetadataEntity
 import me.proton.core.account.data.entity.SessionDetailsEntity
 import me.proton.core.account.data.entity.SessionEntity
+import me.proton.core.auth.data.db.AuthConverters
+import me.proton.core.auth.data.db.AuthDatabase
+import me.proton.core.auth.data.entity.AuthDeviceEntity
+import me.proton.core.auth.data.entity.DeviceSecretEntity
 import me.proton.core.challenge.data.db.ChallengeConverters
 import me.proton.core.challenge.data.db.ChallengeDatabase
 import me.proton.core.challenge.data.entity.ChallengeFrameEntity
@@ -89,6 +93,9 @@ import me.proton.core.usersettings.data.entity.UserSettingsEntity
         AccountMetadataEntity::class,
         SessionEntity::class,
         SessionDetailsEntity::class,
+        // account-data
+        AuthDeviceEntity::class,
+        DeviceSecretEntity::class,
         // user-data
         UserEntity::class,
         UserKeyEntity::class,
@@ -145,7 +152,8 @@ import me.proton.core.usersettings.data.entity.UserSettingsEntity
     EventManagerConverters::class,
     ChallengeConverters::class,
     NotificationConverters::class,
-    PushConverters::class
+    PushConverters::class,
+    AuthConverters::class
 )
 @Suppress("UnnecessaryAbstractClass")
 abstract class AppDatabase :
@@ -168,7 +176,8 @@ abstract class AppDatabase :
     NotificationDatabase,
     PushDatabase,
     TelemetryDatabase,
-    DeviceRecoveryDatabase {
+    DeviceRecoveryDatabase,
+    AuthDatabase {
 
     companion object {
 
