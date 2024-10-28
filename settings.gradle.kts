@@ -1,3 +1,4 @@
+import java.io.FileNotFoundException
 import java.util.Properties
 
 /*
@@ -24,8 +25,13 @@ plugins {
     id("me.proton.core.gradle-plugins.include-core-build") version "1.3.0"
 }
 
-val localProperties by lazy {
-    Properties().apply { load(file("local.properties").inputStream()) }
+@Suppress("SwallowedException")
+val privateProperties: Properties = Properties().apply {
+    try {
+        load(rootDir.resolve("private.properties").inputStream())
+    } catch (exception: FileNotFoundException) {
+        // Empty properties is used, to allow the app to be built without secrets.
+    }
 }
 
 includeCoreBuild {
@@ -35,11 +41,11 @@ includeCoreBuild {
     // Adding temporary https://gitlab.protontech.ch/amorral/et-protoncore.
     includeRepo("et-protoncore") {
         val tokenKey = "ACCOUNT_REPO_READ_TOKEN"
-        val token = System.getenv(tokenKey) ?: localProperties[tokenKey]
+        val token = System.getenv(tokenKey) ?: privateProperties[tokenKey]
         if (token == null) {
             logger.warn(
                 """
-                    Please provide `$tokenKey` as an environment variable, or a value in local.properties file.
+                    Please provide `$tokenKey` as an environment variable, or a value in private.properties file.
                     Alternatively, uncomment `local.git.et-protoncore=account-core` in gradle.properties file,
                     and clone the et-protoncore repository into `account-core` directory.
                 """.trimIndent()
