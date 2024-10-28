@@ -60,7 +60,7 @@ class TwoPassInputViewModel @Inject constructor(
 
     private val userId by lazy { savedStateHandle.getUserId() }
 
-    private val mutableAction = MutableStateFlow<TwoPassInputAction>(TwoPassInputAction.Load)
+    private val mutableAction = MutableStateFlow<TwoPassInputAction>(TwoPassInputAction.Load())
 
     val state: StateFlow<TwoPassInputState> = mutableAction.flatMapLatest { action ->
         when (action) {

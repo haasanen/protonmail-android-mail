@@ -65,7 +65,7 @@ class OneTimePasswordInputViewModel @Inject constructor(
 
     private val userId by lazy { savedStateHandle.getUserId() }
 
-    private val mutableAction = MutableStateFlow<OneTimePasswordInputAction>(Load)
+    private val mutableAction = MutableStateFlow<OneTimePasswordInputAction>(Load())
 
     val state: StateFlow<OneTimePasswordInputState> = mutableAction.flatMapLatest { action ->
         when (action) {

@@ -21,6 +21,7 @@ package me.proton.android.core.auth.presentation.twopass
 import android.app.Activity
 import android.os.Bundle
 import androidx.activity.compose.setContent
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.MutableStateFlow
 import me.proton.android.core.auth.presentation.R
 import me.proton.core.compose.theme.ProtonTheme
@@ -29,6 +30,7 @@ import me.proton.core.presentation.utils.addOnBackPressedCallback
 import me.proton.core.presentation.utils.errorToast
 import me.proton.core.presentation.utils.openBrowserLink
 
+@AndroidEntryPoint
 class TwoPassActivity : ProtonActivity() {
 
     private val mutableAction = MutableStateFlow<TwoPassInputAction?>(null)
