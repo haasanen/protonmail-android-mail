@@ -119,8 +119,6 @@ import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.LabelAsB
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MailboxMoreActionsBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MoveToBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.UpsellingBottomSheetState
-import ch.protonmail.android.mailpagination.presentation.paging.EmptyLabelId
-import ch.protonmail.android.mailpagination.presentation.paging.EmptyLabelInProgressSignal
 import ch.protonmail.android.mailsettings.domain.model.FolderColorSettings
 import ch.protonmail.android.mailsettings.domain.model.SwipeActionsPreference
 import ch.protonmail.android.mailsettings.domain.usecase.ObserveFolderColorSettings
@@ -274,7 +272,6 @@ class MailboxViewModelTest {
     }
     private val showRatingBooster = mockk<ShowRatingBooster>(relaxUnitFun = true)
     private val recordRatingBoosterTriggered = mockk<RecordRatingBoosterTriggered>(relaxUnitFun = true)
-    private val emptyLabelInProgressSignal = mockk<EmptyLabelInProgressSignal>()
 
     private val observeFolderColorSettings = mockk<ObserveFolderColorSettings> {
         every { this@mockk(userId) } returns flowOf(
@@ -329,8 +326,7 @@ class MailboxViewModelTest {
             shouldShowRatingBooster = shouldShowRatingBooster,
             showRatingBooster = showRatingBooster,
             recordRatingBoosterTriggered = recordRatingBoosterTriggered,
-            findLocalSystemLabelId = findLocalSystemLabelId,
-            emptyLabelInProgressSignal = emptyLabelInProgressSignal
+            findLocalSystemLabelId = findLocalSystemLabelId
         )
     }
 
@@ -1150,7 +1146,7 @@ class MailboxViewModelTest {
         val initialMailboxState = createMailboxDataState()
         val expectedState = createMailboxDataState(selectedMailLabelId = MailLabelTestData.spamSystemLabel.id)
         every { selectedMailLabelId.flow } returns currentLocationFlow
-        every { pagerFactory.create(userId, any(), false, Message, any(), any()) } returns mockk mockPager@{
+        every { pagerFactory.create(userId, any(), false, Message, any()) } returns mockk mockPager@{
             every { this@mockPager.flow } returns flowOf(PagingData.from(listOf(unreadMailboxItem)))
         }
         every { mailboxReducer.newStateFrom(any(), any()) } returns initialMailboxState
@@ -1168,14 +1164,14 @@ class MailboxViewModelTest {
         mailboxViewModel.items.test {
             // Then
             awaitItem()
-            verify { pagerFactory.create(userId, initialLocationMailLabelId, false, Message, any(), any()) }
+            verify { pagerFactory.create(userId, initialLocationMailLabelId, false, Message, any()) }
 
             // When
             currentLocationFlow.emit(MailLabelTestData.spamSystemLabel.id)
 
             // Then
             awaitItem()
-            verify { pagerFactory.create(userId, MailLabelTestData.spamSystemLabel.id, false, Message, any(), any()) }
+            verify { pagerFactory.create(userId, MailLabelTestData.spamSystemLabel.id, false, Message, any()) }
             cancelAndIgnoreRemainingEvents()
         }
     }
@@ -1193,7 +1189,7 @@ class MailboxViewModelTest {
         coEvery {
             mailboxItemMapper.toUiModel(userId, readMailboxItem, ContactTestData.contacts, folderColorSettings, false)
         } returns readMailboxItemUiModel
-        every { pagerFactory.create(any(), any(), any(), any(), any(), emptyLabelInProgressSignal) } returns mockk {
+        every { pagerFactory.create(any(), any(), any(), any(), any()) } returns mockk {
             val pagingData = PagingData.from(listOf(unreadMailboxItem, readMailboxItem))
             every { this@mockk.flow } returns flowOf(pagingData)
         }
@@ -1229,7 +1225,7 @@ class MailboxViewModelTest {
                 false
             )
         } returns readMailboxItemUiModel
-        every { pagerFactory.create(any(), any(), any(), any(), any(), emptyLabelInProgressSignal) } returns mockk {
+        every { pagerFactory.create(any(), any(), any(), any(), any()) } returns mockk {
             val pagingData = PagingData.from(listOf(unreadMailboxItem, readMailboxItem))
             every { this@mockk.flow } returns flowOf(pagingData)
         }
@@ -1464,7 +1460,7 @@ class MailboxViewModelTest {
         val expectedMailBoxState = createMailboxDataState(unreadFilterState = false)
         every { mailboxReducer.newStateFrom(any(), any()) } returns expectedMailBoxState
         every {
-            pagerFactory.create(userId, MailLabelTestData.archiveSystemLabel.id, any(), Message, any(), any())
+            pagerFactory.create(userId, MailLabelTestData.archiveSystemLabel.id, any(), Message, any())
         } returns mockk mockPager@{
             every { this@mockPager.flow } returns flowOf(PagingData.from(listOf(unreadMailboxItem)))
         }
@@ -1477,7 +1473,7 @@ class MailboxViewModelTest {
             // Then
             awaitItem()
             verify(exactly = 1) {
-                pagerFactory.create(userId, MailLabelTestData.archiveSystemLabel.id, false, Message, any(), any())
+                pagerFactory.create(userId, MailLabelTestData.archiveSystemLabel.id, false, Message, any())
             }
 
             // When
@@ -1486,7 +1482,7 @@ class MailboxViewModelTest {
             // Then
             awaitItem()
             verify(exactly = 1) {
-                pagerFactory.create(userId, MailLabelTestData.archiveSystemLabel.id, true, Message, any(), any())
+                pagerFactory.create(userId, MailLabelTestData.archiveSystemLabel.id, true, Message, any())
             }
             cancelAndIgnoreRemainingEvents()
         }
@@ -1507,8 +1503,7 @@ class MailboxViewModelTest {
                 any(),
                 any(),
                 any(),
-                any(),
-                emptyLabelInProgressSignal
+                any()
             )
         } returns mockk mockPager@{
             every { this@mockPager.flow } returns flowOf(PagingData.from(listOf(unreadMailboxItem)))
@@ -1530,7 +1525,7 @@ class MailboxViewModelTest {
             // Then
             awaitItem()
             verify(exactly = 1) {
-                pagerFactory.create(userId, MailLabelTestData.archiveSystemLabel.id, false, Message, any(), any())
+                pagerFactory.create(userId, MailLabelTestData.archiveSystemLabel.id, false, Message, any())
             }
 
             // When
@@ -1539,7 +1534,7 @@ class MailboxViewModelTest {
             // Then
             awaitItem()
             // mailbox pager is recreated only once when view mode for the newly selected location does not change
-            verify(exactly = 1) { pagerFactory.create(userId, inboxLabel.id, false, Message, any(), any()) }
+            verify(exactly = 1) { pagerFactory.create(userId, inboxLabel.id, false, Message, any()) }
             cancelAndIgnoreRemainingEvents()
         }
     }
@@ -1556,8 +1551,7 @@ class MailboxViewModelTest {
                     any(),
                     any(),
                     any(),
-                    any(),
-                    emptyLabelInProgressSignal
+                    any()
                 )
             } returns mockk mockPager@{
                 every { this@mockPager.flow } returns flowOf(PagingData.from(listOf(unreadMailboxItem)))
@@ -1582,7 +1576,7 @@ class MailboxViewModelTest {
                 // When
                 awaitItem()
                 verify(exactly = 1) {
-                    pagerFactory.create(userId, MailLabelTestData.archiveSystemLabel.id, false, Message, any(), any())
+                    pagerFactory.create(userId, MailLabelTestData.archiveSystemLabel.id, false, Message, any())
                 }
 
                 mailboxViewModel.submit(MailboxViewAction.ItemClicked(unreadMailboxItemUiModel))
@@ -1603,8 +1597,7 @@ class MailboxViewModelTest {
                 any(),
                 any(),
                 any(),
-                any(),
-                emptyLabelInProgressSignal
+                any()
             )
         } returns mockk mockPager@{
             every { this@mockPager.flow } returns flowOf(PagingData.from(listOf(unreadMailboxItem)))
@@ -1615,7 +1608,7 @@ class MailboxViewModelTest {
             awaitItem()
             // Then
             verify(exactly = 1) {
-                pagerFactory.create(userId, MailLabelTestData.archiveSystemLabel.id, false, Message, any(), any())
+                pagerFactory.create(userId, MailLabelTestData.archiveSystemLabel.id, false, Message, any())
             }
         }
 
@@ -2057,9 +2050,7 @@ class MailboxViewModelTest {
         runTest {
             // Given
             val initialState = createMailboxDataState(selectedMailLabelId = MailLabelTestData.trashSystemLabel.id)
-            val emptyLabelId = EmptyLabelId(MailLabelTestData.trashSystemLabel.id.labelId.id)
             every { selectedMailLabelId.flow } returns MutableStateFlow(MailLabelTestData.trashSystemLabel.id)
-            coEvery { emptyLabelInProgressSignal.emitOperationSignal(emptyLabelId) } just runs
             expectedSelectedLabelCountStateChange(initialState)
             expectDeleteMessagesSucceeds(userId, SystemLabelId.Trash.labelId)
             expectViewModeForCurrentLocation(NoConversationGrouping)
@@ -2077,8 +2068,6 @@ class MailboxViewModelTest {
                     deleteMessages(userId, SystemLabelId.Trash.labelId)
                 }
                 coVerify { deleteConversations wasNot Called }
-                coVerify(exactly = 1) { emptyLabelInProgressSignal.emitOperationSignal(emptyLabelId) }
-                confirmVerified(emptyLabelInProgressSignal)
             }
         }
 
@@ -2087,9 +2076,7 @@ class MailboxViewModelTest {
         runTest {
             // Given
             val initialState = createMailboxDataState(selectedMailLabelId = MailLabelTestData.trashSystemLabel.id)
-            val emptyLabelId = EmptyLabelId(MailLabelTestData.trashSystemLabel.id.labelId.id)
             every { selectedMailLabelId.flow } returns MutableStateFlow(MailLabelTestData.trashSystemLabel.id)
-            coEvery { emptyLabelInProgressSignal.emitOperationSignal(emptyLabelId) } just runs
             expectedSelectedLabelCountStateChange(initialState)
             expectDeleteConversationsSucceeds(userId, SystemLabelId.Trash.labelId)
             expectViewModeForCurrentLocation(ConversationGrouping)
@@ -2107,8 +2094,6 @@ class MailboxViewModelTest {
                     deleteConversations(userId, SystemLabelId.Trash.labelId)
                 }
                 coVerify { deleteMessages wasNot Called }
-                coVerify(exactly = 1) { emptyLabelInProgressSignal.emitOperationSignal(emptyLabelId) }
-                confirmVerified(emptyLabelInProgressSignal)
             }
         }
 
@@ -2952,7 +2937,7 @@ class MailboxViewModelTest {
         } returns flowOf(ConversationGrouping)
         every { observePrimaryUserId.invoke() } returns primaryUserFlow
         every { selectedMailLabelId.flow } returns currentLocationFlow
-        every { pagerFactory.create(userId, any(), false, Conversation, any(), any()) } returns mockk mockPager@{
+        every { pagerFactory.create(userId, any(), false, Conversation, any()) } returns mockk mockPager@{
             every { this@mockPager.flow } returns flowOf(PagingData.from(listOf(unreadMailboxItem)))
         }
         every { mailboxReducer.newStateFrom(any(), any()) } returns initialMailboxState
@@ -2961,14 +2946,14 @@ class MailboxViewModelTest {
         mailboxViewModel.items.test {
             // Then
             awaitItem()
-            verify { pagerFactory.create(userId, initialLocationMailLabelId, false, Conversation, any(), any()) }
+            verify { pagerFactory.create(userId, initialLocationMailLabelId, false, Conversation, any()) }
 
             // When
             primaryUserFlow.emit(null)
 
             // Then
             verify(exactly = 0) {
-                pagerFactory.create(userId, initialLocationMailLabelId, false, Message, any(), any())
+                pagerFactory.create(userId, initialLocationMailLabelId, false, Message, any())
             }
             cancelAndIgnoreRemainingEvents()
         }

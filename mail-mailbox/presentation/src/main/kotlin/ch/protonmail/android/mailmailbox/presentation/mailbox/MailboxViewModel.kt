@@ -35,6 +35,7 @@ import ch.protonmail.android.mailcommon.presentation.model.ActionUiModel
 import ch.protonmail.android.mailcommon.presentation.model.BottomBarEvent
 import ch.protonmail.android.mailcommon.presentation.model.BottomBarState
 import ch.protonmail.android.mailcommon.presentation.ui.delete.DeleteDialogState
+import ch.protonmail.android.mailcontact.domain.model.Contact
 import ch.protonmail.android.mailcontact.domain.usecase.GetContacts
 import ch.protonmail.android.mailconversation.domain.usecase.DeleteConversations
 import ch.protonmail.android.mailconversation.domain.usecase.MarkConversationsAsRead
@@ -108,8 +109,6 @@ import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.LabelAsB
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MailboxMoreActionsBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MoveToBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.UpsellingBottomSheetState
-import ch.protonmail.android.mailpagination.presentation.paging.EmptyLabelId
-import ch.protonmail.android.mailpagination.presentation.paging.EmptyLabelInProgressSignal
 import ch.protonmail.android.mailsettings.domain.usecase.ObserveFolderColorSettings
 import ch.protonmail.android.mailsettings.domain.usecase.ObserveSwipeActionsPreference
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -132,7 +131,6 @@ import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import ch.protonmail.android.mailcontact.domain.model.Contact
 import me.proton.core.domain.entity.UserId
 import me.proton.core.mailsettings.domain.entity.ViewMode
 import me.proton.core.plan.presentation.compose.usecase.ShouldUpgradeStorage
@@ -186,8 +184,7 @@ class MailboxViewModel @Inject constructor(
     private val shouldShowRatingBooster: ShouldShowRatingBooster,
     private val showRatingBooster: ShowRatingBooster,
     private val recordRatingBoosterTriggered: RecordRatingBoosterTriggered,
-    private val findLocalSystemLabelId: FindLocalSystemLabelId,
-    private val emptyLabelInProgressSignal: EmptyLabelInProgressSignal
+    private val findLocalSystemLabelId: FindLocalSystemLabelId
 ) : ViewModel() {
 
     private val primaryUserId = observePrimaryUserId()
@@ -529,8 +526,7 @@ class MailboxViewModel @Inject constructor(
                     selectedMailLabelId = selectedMailLabel.id,
                     filterUnread = unreadFilterEnabled,
                     type = if (query.isEmpty()) viewMode.toMailboxItemType() else MailboxItemType.Message,
-                    searchQuery = query,
-                    emptyLabelInProgressSignal = emptyLabelInProgressSignal
+                    searchQuery = query
                 )
             }.flatMapLatest { mapPagingData(userId, it) }
         }
@@ -1049,8 +1045,6 @@ class MailboxViewModel @Inject constructor(
         val userId = primaryUserId.filterNotNull().first()
         val viewMode = getViewModeForCurrentLocation(selectedMailLabelId.flow.value)
 
-        val emptyLabelId = EmptyLabelId(currentMailLabel.id)
-        emptyLabelInProgressSignal.emitOperationSignal(emptyLabelId)
         emitNewStateFrom(MailboxEvent.DeleteAllConfirmed(viewMode))
 
         when (viewMode) {

@@ -24,7 +24,6 @@ import ch.protonmail.android.mailmailbox.domain.model.MailboxPageKey
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailpagination.domain.model.ReadStatus
 import ch.protonmail.android.testdata.maillabel.MailLabelTestData
-import ch.protonmail.android.mailpagination.presentation.paging.EmptyLabelInProgressSignal
 import ch.protonmail.android.testdata.user.UserIdTestData.userId
 import io.mockk.every
 import io.mockk.mockk
@@ -40,7 +39,6 @@ class MailboxPagerFactoryTest {
     private val pageKey = PageKey(labelId = selectedMailLabelId.labelId, read = readStatus)
 
     private val mailboxPagerFactory = MailboxPagerFactory(pagingSourceFactory)
-    private val emptyLabelInProgressSignal = mockk<EmptyLabelInProgressSignal>()
 
     @Test
     fun `pager content is returned from mailbox paging source factory`() = runTest {
@@ -57,8 +55,7 @@ class MailboxPagerFactoryTest {
             selectedMailLabelId = selectedMailLabelId,
             filterUnread = false,
             type = type,
-            searchQuery = "",
-            emptyLabelInProgressSignal = emptyLabelInProgressSignal
+            searchQuery = ""
         )
 
         // Then
