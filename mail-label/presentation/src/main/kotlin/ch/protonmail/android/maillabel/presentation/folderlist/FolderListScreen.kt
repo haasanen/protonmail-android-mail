@@ -64,6 +64,7 @@ import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.presentation.R
 import ch.protonmail.android.maillabel.presentation.previewdata.FolderListPreviewData.folderUiModelSampleData
+import ch.protonmail.android.mailupselling.presentation.model.BottomSheetVisibilityEffect
 import kotlinx.coroutines.launch
 import me.proton.core.compose.component.ProtonCenteredProgress
 import me.proton.core.compose.component.ProtonSecondaryButton

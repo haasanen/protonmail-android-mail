@@ -23,7 +23,7 @@ import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.maillabel.domain.model.Label
 import ch.protonmail.android.maillabel.domain.model.LabelId
-import ch.protonmail.android.maillabel.presentation.folderlist.BottomSheetVisibilityEffect
+import ch.protonmail.android.mailupselling.presentation.model.BottomSheetVisibilityEffect
 
 sealed interface FolderFormState {
 
@@ -59,7 +59,8 @@ sealed interface FolderFormState {
             override val closeWithSuccess: Effect<TextUiModel> = Effect.empty(),
             override val showErrorSnackbar: Effect<TextUiModel> = Effect.empty(),
             val displayCreateLoader: Boolean = false,
-            val upsellingVisibility: Effect<BottomSheetVisibilityEffect> = Effect.empty()
+            val upsellingVisibility: Effect<BottomSheetVisibilityEffect> = Effect.empty(),
+            val upsellingInProgress: Effect<TextUiModel> = Effect.empty()
         ) : Data
 
         data class Update(

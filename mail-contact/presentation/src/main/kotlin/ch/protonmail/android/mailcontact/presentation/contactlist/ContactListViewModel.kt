@@ -29,6 +29,9 @@ import ch.protonmail.android.mailcontact.domain.usecase.featureflags.IsContactGr
 import ch.protonmail.android.mailcontact.domain.usecase.featureflags.IsContactSearchEnabled
 import ch.protonmail.android.mailcontact.presentation.model.ContactGroupItemUiModelMapper
 import ch.protonmail.android.mailcontact.presentation.model.ContactListItemUiModelMapper
+import ch.protonmail.android.mailupselling.domain.model.UpsellingEntryPoint
+import ch.protonmail.android.mailupselling.domain.model.UserUpgradeState
+import ch.protonmail.android.mailupselling.presentation.usecase.ObserveUpsellingVisibility
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -54,6 +57,8 @@ class ContactListViewModel @Inject constructor(
     private val contactListItemUiModelMapper: ContactListItemUiModelMapper,
     private val contactGroupItemUiModelMapper: ContactGroupItemUiModelMapper,
     private val isContactGroupsCrudEnabled: IsContactGroupsCrudEnabled,
+    private val observeUpsellingVisibility: ObserveUpsellingVisibility,
+    private val userUpgradeState: UserUpgradeState,
     private val isContactSearchEnabled: IsContactSearchEnabled,
     observePrimaryUserId: ObservePrimaryUserId
 ) : ViewModel() {
@@ -85,20 +90,29 @@ class ContactListViewModel @Inject constructor(
     }
 
     private suspend fun handleOnNewContactGroupClick() {
-        val isPaid = isPaidUser(primaryUserId()).getOrElse { false }
+        if (userUpgradeState.isUserPendingUpgrade) return emitNewStateFor(ContactListEvent.UpsellingInProgress)
 
-        if (isPaid) {
-            emitNewStateFor(ContactListEvent.OpenContactGroupForm)
+        val shouldShowUpselling = observeUpsellingVisibility(UpsellingEntryPoint.BottomSheet.ContactGroups).first()
+
+        if (shouldShowUpselling) {
+            emitNewStateFor(ContactListEvent.OpenUpsellingBottomSheet)
         } else {
-            emitNewStateFor(ContactListEvent.SubscriptionUpgradeRequiredError)
+            val isPaid = isPaidUser(primaryUserId()).getOrElse { false }
+
+            if (isPaid) {
+                emitNewStateFor(ContactListEvent.OpenContactGroupForm)
+            } else {
+                emitNewStateFor(ContactListEvent.SubscriptionUpgradeRequiredError)
+            }
         }
     }
 
     private fun flowContactListEvent(userId: UserId): Flow<ContactListEvent> {
         return combine(
             observeContacts(userId),
-            observeContactGroupLabels(userId)
-        ) { contacts, contactGroups ->
+            observeContactGroupLabels(userId),
+            observeUpsellingVisibility(UpsellingEntryPoint.BottomSheet.ContactGroups)
+        ) { contacts, contactGroups, isContactGroupsUpsellingVisible ->
             val isContactGroupsCrudEnabled = isContactGroupsCrudEnabled()
             val isContactSearchEnabled = isContactSearchEnabled()
             val contactList = contacts.getOrElse {
@@ -117,6 +131,7 @@ class ContactListViewModel @Inject constructor(
                     }
                 ),
                 isContactGroupsCrudEnabled = isContactGroupsCrudEnabled,
+                isContactGroupsUpsellingVisible = isContactGroupsUpsellingVisible,
                 isContactSearchEnabled = isContactSearchEnabled
             )
         }

@@ -30,7 +30,6 @@ import ch.protonmail.android.mailcommon.domain.model.Action
 import ch.protonmail.android.mailcommon.domain.model.AvailableActions
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailcommon.domain.model.PreferencesError
 import ch.protonmail.android.mailcommon.domain.sample.ConversationIdSample
 import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailcommon.presentation.Effect
@@ -67,7 +66,6 @@ import ch.protonmail.android.maillabel.presentation.toCustomUiModel
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItemId
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItemType.Conversation
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItemType.Message
-import ch.protonmail.android.mailmailbox.domain.model.OnboardingPreference
 import ch.protonmail.android.mailmailbox.domain.model.OpenMailboxItemRequest
 import ch.protonmail.android.mailmailbox.domain.model.StorageLimitPreference
 import ch.protonmail.android.mailmailbox.domain.model.UserAccountStorageStatus
@@ -76,14 +74,12 @@ import ch.protonmail.android.mailmailbox.domain.usecase.GetLabelAsBottomSheetCon
 import ch.protonmail.android.mailmailbox.domain.usecase.GetMailboxActions
 import ch.protonmail.android.mailmailbox.domain.usecase.GetMoveToLocations
 import ch.protonmail.android.mailmailbox.domain.usecase.ObserveCurrentViewMode
-import ch.protonmail.android.mailmailbox.domain.usecase.ObserveOnboarding
 import ch.protonmail.android.mailmailbox.domain.usecase.ObservePrimaryUserAccountStorageStatus
 import ch.protonmail.android.mailmailbox.domain.usecase.ObserveStorageLimitPreference
 import ch.protonmail.android.mailmailbox.domain.usecase.ObserveUnreadCounters
 import ch.protonmail.android.mailmailbox.domain.usecase.RecordRatingBoosterTriggered
 import ch.protonmail.android.mailmailbox.domain.usecase.RelabelConversations
 import ch.protonmail.android.mailmailbox.domain.usecase.RelabelMessages
-import ch.protonmail.android.mailmailbox.domain.usecase.SaveOnboarding
 import ch.protonmail.android.mailmailbox.domain.usecase.SaveStorageLimitPreference
 import ch.protonmail.android.mailmailbox.domain.usecase.ShouldShowRatingBooster
 import ch.protonmail.android.mailmailbox.presentation.helper.MailboxAsyncPagingDataDiffer
@@ -123,7 +119,8 @@ import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.LabelAsB
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MailboxMoreActionsBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MoveToBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.UpsellingBottomSheetState
-import ch.protonmail.android.mailonboarding.presentation.model.OnboardingState
+import ch.protonmail.android.mailpagination.presentation.paging.EmptyLabelId
+import ch.protonmail.android.mailpagination.presentation.paging.EmptyLabelInProgressSignal
 import ch.protonmail.android.mailsettings.domain.model.FolderColorSettings
 import ch.protonmail.android.mailsettings.domain.model.SwipeActionsPreference
 import ch.protonmail.android.mailsettings.domain.usecase.ObserveFolderColorSettings
@@ -240,13 +237,7 @@ class MailboxViewModelTest {
         coEvery { this@mockk(any(), any()) } returns listOf(Action.Archive, Action.Trash).right()
     }
 
-    private val observeOnboarding = mockk<ObserveOnboarding> {
-        every { this@mockk() } returns flowOf(OnboardingPreference(display = false).right())
-    }
     private val findLocalSystemLabelId = mockk<FindLocalSystemLabelId>()
-
-    private val saveOnboarding: SaveOnboarding = mockk()
-
     private val markConversationsAsRead = mockk<MarkConversationsAsRead>()
     private val markConversationsAsUnread = mockk<MarkConversationsAsUnread>()
     private val markMessagesAsRead = mockk<MarkMessagesAsRead>()
@@ -283,6 +274,7 @@ class MailboxViewModelTest {
     }
     private val showRatingBooster = mockk<ShowRatingBooster>(relaxUnitFun = true)
     private val recordRatingBoosterTriggered = mockk<RecordRatingBoosterTriggered>(relaxUnitFun = true)
+    private val emptyLabelInProgressSignal = mockk<EmptyLabelInProgressSignal>()
 
     private val observeFolderColorSettings = mockk<ObserveFolderColorSettings> {
         every { this@mockk(userId) } returns flowOf(
@@ -329,8 +321,6 @@ class MailboxViewModelTest {
             unStarConversations = unStarConversations,
             mailboxReducer = mailboxReducer,
             dispatchersProvider = TestDispatcherProvider(),
-            observeOnboarding = observeOnboarding,
-            saveOnboarding = saveOnboarding,
             deleteSearchResults = deleteSearchResults,
             observePrimaryUserAccountStorageStatus = observePrimaryUserAccountStorageStatus,
             observeStorageLimitPreference = observeStorageLimitPreference,
@@ -339,7 +329,8 @@ class MailboxViewModelTest {
             shouldShowRatingBooster = shouldShowRatingBooster,
             showRatingBooster = showRatingBooster,
             recordRatingBoosterTriggered = recordRatingBoosterTriggered,
-            findLocalSystemLabelId = findLocalSystemLabelId
+            findLocalSystemLabelId = findLocalSystemLabelId,
+            emptyLabelInProgressSignal = emptyLabelInProgressSignal
         )
     }
 
@@ -374,7 +365,6 @@ class MailboxViewModelTest {
                 upgradeStorageState = UpgradeStorageState(false),
                 unreadFilterState = UnreadFilterState.Loading,
                 bottomAppBarState = BottomBarState.Data.Hidden(emptyList<ActionUiModel>().toImmutableList()),
-                onboardingState = OnboardingState.Hidden,
                 deleteDialogState = DeleteDialogState.Hidden,
                 deleteAllDialogState = DeleteDialogState.Hidden,
                 storageLimitState = StorageLimitState.None,
@@ -1160,7 +1150,7 @@ class MailboxViewModelTest {
         val initialMailboxState = createMailboxDataState()
         val expectedState = createMailboxDataState(selectedMailLabelId = MailLabelTestData.spamSystemLabel.id)
         every { selectedMailLabelId.flow } returns currentLocationFlow
-        every { pagerFactory.create(userId, any(), false, Message, any()) } returns mockk mockPager@{
+        every { pagerFactory.create(userId, any(), false, Message, any(), any()) } returns mockk mockPager@{
             every { this@mockPager.flow } returns flowOf(PagingData.from(listOf(unreadMailboxItem)))
         }
         every { mailboxReducer.newStateFrom(any(), any()) } returns initialMailboxState
@@ -1178,14 +1168,14 @@ class MailboxViewModelTest {
         mailboxViewModel.items.test {
             // Then
             awaitItem()
-            verify { pagerFactory.create(userId, initialLocationMailLabelId, false, Message, any()) }
+            verify { pagerFactory.create(userId, initialLocationMailLabelId, false, Message, any(), any()) }
 
             // When
             currentLocationFlow.emit(MailLabelTestData.spamSystemLabel.id)
 
             // Then
             awaitItem()
-            verify { pagerFactory.create(userId, MailLabelTestData.spamSystemLabel.id, false, Message, any()) }
+            verify { pagerFactory.create(userId, MailLabelTestData.spamSystemLabel.id, false, Message, any(), any()) }
             cancelAndIgnoreRemainingEvents()
         }
     }
@@ -1203,7 +1193,7 @@ class MailboxViewModelTest {
         coEvery {
             mailboxItemMapper.toUiModel(userId, readMailboxItem, ContactTestData.contacts, folderColorSettings, false)
         } returns readMailboxItemUiModel
-        every { pagerFactory.create(any(), any(), any(), any(), any()) } returns mockk {
+        every { pagerFactory.create(any(), any(), any(), any(), any(), emptyLabelInProgressSignal) } returns mockk {
             val pagingData = PagingData.from(listOf(unreadMailboxItem, readMailboxItem))
             every { this@mockk.flow } returns flowOf(pagingData)
         }
@@ -1239,7 +1229,7 @@ class MailboxViewModelTest {
                 false
             )
         } returns readMailboxItemUiModel
-        every { pagerFactory.create(any(), any(), any(), any(), any()) } returns mockk {
+        every { pagerFactory.create(any(), any(), any(), any(), any(), emptyLabelInProgressSignal) } returns mockk {
             val pagingData = PagingData.from(listOf(unreadMailboxItem, readMailboxItem))
             every { this@mockk.flow } returns flowOf(pagingData)
         }
@@ -1474,7 +1464,7 @@ class MailboxViewModelTest {
         val expectedMailBoxState = createMailboxDataState(unreadFilterState = false)
         every { mailboxReducer.newStateFrom(any(), any()) } returns expectedMailBoxState
         every {
-            pagerFactory.create(userId, MailLabelTestData.archiveSystemLabel.id, any(), Message, any())
+            pagerFactory.create(userId, MailLabelTestData.archiveSystemLabel.id, any(), Message, any(), any())
         } returns mockk mockPager@{
             every { this@mockPager.flow } returns flowOf(PagingData.from(listOf(unreadMailboxItem)))
         }
@@ -1487,7 +1477,7 @@ class MailboxViewModelTest {
             // Then
             awaitItem()
             verify(exactly = 1) {
-                pagerFactory.create(userId, MailLabelTestData.archiveSystemLabel.id, false, Message, any())
+                pagerFactory.create(userId, MailLabelTestData.archiveSystemLabel.id, false, Message, any(), any())
             }
 
             // When
@@ -1496,7 +1486,7 @@ class MailboxViewModelTest {
             // Then
             awaitItem()
             verify(exactly = 1) {
-                pagerFactory.create(userId, MailLabelTestData.archiveSystemLabel.id, true, Message, any())
+                pagerFactory.create(userId, MailLabelTestData.archiveSystemLabel.id, true, Message, any(), any())
             }
             cancelAndIgnoreRemainingEvents()
         }
@@ -1511,7 +1501,16 @@ class MailboxViewModelTest {
         val expectedState = createMailboxDataState(selectedMailLabelId = inboxLabel.id)
         every { selectedMailLabelId.flow } returns currentLocationFlow
         every { mailboxReducer.newStateFrom(any(), any()) } returns expectedMailBoxState
-        every { pagerFactory.create(any(), any(), any(), any(), any()) } returns mockk mockPager@{
+        every {
+            pagerFactory.create(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                emptyLabelInProgressSignal
+            )
+        } returns mockk mockPager@{
             every { this@mockPager.flow } returns flowOf(PagingData.from(listOf(unreadMailboxItem)))
         }
         every {
@@ -1531,7 +1530,7 @@ class MailboxViewModelTest {
             // Then
             awaitItem()
             verify(exactly = 1) {
-                pagerFactory.create(userId, MailLabelTestData.archiveSystemLabel.id, false, Message, any())
+                pagerFactory.create(userId, MailLabelTestData.archiveSystemLabel.id, false, Message, any(), any())
             }
 
             // When
@@ -1540,7 +1539,7 @@ class MailboxViewModelTest {
             // Then
             awaitItem()
             // mailbox pager is recreated only once when view mode for the newly selected location does not change
-            verify(exactly = 1) { pagerFactory.create(userId, inboxLabel.id, false, Message, any()) }
+            verify(exactly = 1) { pagerFactory.create(userId, inboxLabel.id, false, Message, any(), any()) }
             cancelAndIgnoreRemainingEvents()
         }
     }
@@ -1551,7 +1550,16 @@ class MailboxViewModelTest {
             // Given
             val expectedMailBoxState = createMailboxDataState(Effect.empty())
             every { mailboxReducer.newStateFrom(any(), any()) } returns expectedMailBoxState
-            every { pagerFactory.create(any(), any(), any(), any(), any()) } returns mockk mockPager@{
+            every {
+                pagerFactory.create(
+                    any(),
+                    any(),
+                    any(),
+                    any(),
+                    any(),
+                    emptyLabelInProgressSignal
+                )
+            } returns mockk mockPager@{
                 every { this@mockPager.flow } returns flowOf(PagingData.from(listOf(unreadMailboxItem)))
             }
             every {
@@ -1574,7 +1582,7 @@ class MailboxViewModelTest {
                 // When
                 awaitItem()
                 verify(exactly = 1) {
-                    pagerFactory.create(userId, MailLabelTestData.archiveSystemLabel.id, false, Message, any())
+                    pagerFactory.create(userId, MailLabelTestData.archiveSystemLabel.id, false, Message, any(), any())
                 }
 
                 mailboxViewModel.submit(MailboxViewAction.ItemClicked(unreadMailboxItemUiModel))
@@ -1589,7 +1597,16 @@ class MailboxViewModelTest {
     fun `verify mapped paging data is cached`() = runTest {
         // Given
         every { mailboxReducer.newStateFrom(any(), any()) } returns createMailboxDataState()
-        every { pagerFactory.create(any(), any(), any(), any(), any()) } returns mockk mockPager@{
+        every {
+            pagerFactory.create(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                emptyLabelInProgressSignal
+            )
+        } returns mockk mockPager@{
             every { this@mockPager.flow } returns flowOf(PagingData.from(listOf(unreadMailboxItem)))
         }
 
@@ -1598,7 +1615,7 @@ class MailboxViewModelTest {
             awaitItem()
             // Then
             verify(exactly = 1) {
-                pagerFactory.create(userId, MailLabelTestData.archiveSystemLabel.id, false, Message, any())
+                pagerFactory.create(userId, MailLabelTestData.archiveSystemLabel.id, false, Message, any(), any())
             }
         }
 
@@ -2040,12 +2057,13 @@ class MailboxViewModelTest {
         runTest {
             // Given
             val initialState = createMailboxDataState(selectedMailLabelId = MailLabelTestData.trashSystemLabel.id)
+            val emptyLabelId = EmptyLabelId(MailLabelTestData.trashSystemLabel.id.labelId.id)
             every { selectedMailLabelId.flow } returns MutableStateFlow(MailLabelTestData.trashSystemLabel.id)
+            coEvery { emptyLabelInProgressSignal.emitOperationSignal(emptyLabelId) } just runs
             expectedSelectedLabelCountStateChange(initialState)
             expectDeleteMessagesSucceeds(userId, SystemLabelId.Trash.labelId)
             expectViewModeForCurrentLocation(NoConversationGrouping)
             returnExpectedStateForDeleteAllConfirmed(initialState, NoConversationGrouping)
-
 
             mailboxViewModel.state.test {
                 awaitItem() // First emission for selected user
@@ -2059,6 +2077,8 @@ class MailboxViewModelTest {
                     deleteMessages(userId, SystemLabelId.Trash.labelId)
                 }
                 coVerify { deleteConversations wasNot Called }
+                coVerify(exactly = 1) { emptyLabelInProgressSignal.emitOperationSignal(emptyLabelId) }
+                confirmVerified(emptyLabelInProgressSignal)
             }
         }
 
@@ -2067,12 +2087,13 @@ class MailboxViewModelTest {
         runTest {
             // Given
             val initialState = createMailboxDataState(selectedMailLabelId = MailLabelTestData.trashSystemLabel.id)
+            val emptyLabelId = EmptyLabelId(MailLabelTestData.trashSystemLabel.id.labelId.id)
             every { selectedMailLabelId.flow } returns MutableStateFlow(MailLabelTestData.trashSystemLabel.id)
+            coEvery { emptyLabelInProgressSignal.emitOperationSignal(emptyLabelId) } just runs
             expectedSelectedLabelCountStateChange(initialState)
             expectDeleteConversationsSucceeds(userId, SystemLabelId.Trash.labelId)
             expectViewModeForCurrentLocation(ConversationGrouping)
             returnExpectedStateForDeleteAllConfirmed(initialState, ConversationGrouping)
-
 
             mailboxViewModel.state.test {
                 awaitItem() // First emission for selected user
@@ -2086,6 +2107,8 @@ class MailboxViewModelTest {
                     deleteConversations(userId, SystemLabelId.Trash.labelId)
                 }
                 coVerify { deleteMessages wasNot Called }
+                coVerify(exactly = 1) { emptyLabelInProgressSignal.emitOperationSignal(emptyLabelId) }
+                confirmVerified(emptyLabelInProgressSignal)
             }
         }
 
@@ -2166,7 +2189,6 @@ class MailboxViewModelTest {
         val selectedItemsList = listOf(item, secondItem)
 
         val expectedCustomLabels = LabelAsActionsTestData.actions
-        val expectedCustomUiLabels = MailLabelUiModelTestData.customLabelForActions
 
         val expectedCurrentLabelList = LabelSelectionList(
             partiallySelectionLabels = emptyList(),
@@ -2238,7 +2260,6 @@ class MailboxViewModelTest {
             val selectedItemsList = listOf(item, secondItem)
 
             val expectedCustomLabels = LabelAsActionsTestData.actions
-            val expectedCustomUiLabels = MailLabelUiModelTestData.customLabelForActions
 
             val expectedCurrentLabelList = LabelSelectionList(
                 partiallySelectionLabels = emptyList(),
@@ -2314,7 +2335,6 @@ class MailboxViewModelTest {
         val selectedItemsList = listOf(item, secondItem)
 
         val expectedCustomLabels = LabelAsActionsTestData.actions
-        val expectedCustomUiLabels = MailLabelUiModelTestData.customLabelForActions
 
         val expectedCurrentLabelList = LabelSelectionList(
             partiallySelectionLabels = emptyList(),
@@ -2389,7 +2409,6 @@ class MailboxViewModelTest {
             val selectedItemsList = listOf(item, secondItem)
 
             val expectedCustomLabels = LabelAsActionsTestData.actions
-            val expectedCustomUiLabels = MailLabelUiModelTestData.customLabelForActions
 
             val expectedCurrentLabelList = LabelSelectionList(
                 partiallySelectionLabels = emptyList(),
@@ -2710,7 +2729,6 @@ class MailboxViewModelTest {
         val archiveLocalLabelId = LabelId("5")
         val initialState = createMailboxDataState()
         val expectedActions = listOf(Action.Unstar, Action.Archive, Action.Spam)
-        val expectedActionItems = expectedActions.map { ActionUiModelSample.build(it) }
         val intermediateState = MailboxStateSampleData.createSelectionMode(
             listOf(item, secondItem),
             currentMailLabel = MailLabelTestData.trashSystemLabel
@@ -2753,7 +2771,6 @@ class MailboxViewModelTest {
         val archiveLocalLabelId = LabelId("5")
         val initialState = createMailboxDataState()
         val expectedActions = listOf(Action.Unstar, Action.Archive, Action.Spam)
-        val expectedActionItems = expectedActions.map { ActionUiModelSample.build(it) }
         val intermediateState = MailboxStateSampleData.createSelectionMode(
             listOf(item, secondItem),
             currentMailLabel = MailLabelTestData.trashSystemLabel
@@ -2800,7 +2817,6 @@ class MailboxViewModelTest {
 
         val initialState = createMailboxDataState()
         val expectedActions = listOf(Action.Unstar, Action.Archive, Action.Spam)
-        val expectedActionItems = expectedActions.map { ActionUiModelSample.build(it) }
         val intermediateState = MailboxStateSampleData.createSelectionMode(
             listOf(item, secondItem),
             currentMailLabel = MailLabelTestData.trashSystemLabel
@@ -2936,7 +2952,7 @@ class MailboxViewModelTest {
         } returns flowOf(ConversationGrouping)
         every { observePrimaryUserId.invoke() } returns primaryUserFlow
         every { selectedMailLabelId.flow } returns currentLocationFlow
-        every { pagerFactory.create(userId, any(), false, Conversation, any()) } returns mockk mockPager@{
+        every { pagerFactory.create(userId, any(), false, Conversation, any(), any()) } returns mockk mockPager@{
             every { this@mockPager.flow } returns flowOf(PagingData.from(listOf(unreadMailboxItem)))
         }
         every { mailboxReducer.newStateFrom(any(), any()) } returns initialMailboxState
@@ -2945,13 +2961,15 @@ class MailboxViewModelTest {
         mailboxViewModel.items.test {
             // Then
             awaitItem()
-            verify { pagerFactory.create(userId, initialLocationMailLabelId, false, Conversation, any()) }
+            verify { pagerFactory.create(userId, initialLocationMailLabelId, false, Conversation, any(), any()) }
 
             // When
             primaryUserFlow.emit(null)
 
             // Then
-            verify(exactly = 0) { pagerFactory.create(userId, initialLocationMailLabelId, false, Message, any()) }
+            verify(exactly = 0) {
+                pagerFactory.create(userId, initialLocationMailLabelId, false, Message, any(), any())
+            }
             cancelAndIgnoreRemainingEvents()
         }
     }
@@ -3373,63 +3391,6 @@ class MailboxViewModelTest {
                 isFilterEnabled = unreadFilterState
             )
         )
-    }
-
-    @Test
-    fun `onboarding state should be shown when repository emits the preference with value true`() = runTest {
-        // When
-        coEvery {
-            observeOnboarding()
-        } returns flowOf(OnboardingPreference(display = true).right())
-        every {
-            mailboxReducer.newStateFrom(
-                any(),
-                any()
-            )
-        } returns MailboxStateSampleData.OnboardingShown
-
-        mailboxViewModel.state.test {
-            val currentState = awaitItem()
-
-            // Then
-            verify(exactly = 1) {
-                mailboxReducer.newStateFrom(any(), MailboxEvent.ShowOnboarding)
-            }
-            assertEquals(OnboardingState.Shown, currentState.onboardingState)
-        }
-    }
-
-    @Test
-    fun `onboarding state should be hidden when an error occurs while observing the preference`() = runTest {
-        // Given
-        coEvery {
-            observeOnboarding()
-        } returns flowOf(PreferencesError.left())
-        val expectedOnboardingState = OnboardingState.Hidden
-
-        // When
-        mailboxViewModel.state.test {
-            // Then
-            assertEquals(expectedOnboardingState, awaitItem().onboardingState)
-        }
-    }
-
-    @Test
-    fun `should call repository save method when closing onboarding`() = runTest {
-        // Given
-        coEvery {
-            saveOnboarding(display = false)
-        } returns Unit.right()
-
-        // When
-        mailboxViewModel.submit(MailboxViewAction.CloseOnboarding)
-
-        // When
-        mailboxViewModel.state.test {
-            // Then
-            coVerify { saveOnboarding(display = false) }
-            assertEquals(OnboardingState.Hidden, awaitItem().onboardingState)
-        }
     }
 
     @Test

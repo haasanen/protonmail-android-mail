@@ -39,7 +39,6 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.model.SwipeActions
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.UnreadFilterState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.UpgradeStorageState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.BottomSheetState
-import ch.protonmail.android.mailonboarding.presentation.model.OnboardingState
 import kotlinx.collections.immutable.toImmutableList
 import ch.protonmail.android.maillabel.domain.model.LabelId
 
@@ -63,7 +62,6 @@ object MailboxStateSampleData {
         upgradeStorageState = UpgradeStorageState(notificationDotVisible = false),
         unreadFilterState = UnreadFilterState.Loading,
         bottomAppBarState = BottomBarState.Loading,
-        onboardingState = OnboardingState.Hidden,
         actionResult = Effect.empty(),
         deleteDialogState = DeleteDialogState.Hidden,
         deleteAllDialogState = DeleteDialogState.Hidden,
@@ -99,7 +97,6 @@ object MailboxStateSampleData {
         bottomAppBarState = BottomBarState.Data.Hidden(
             actions = listOf(ActionUiModelSample.Archive).toImmutableList()
         ),
-        onboardingState = OnboardingState.Hidden,
         actionResult = Effect.empty(),
         deleteDialogState = DeleteDialogState.Hidden,
         deleteAllDialogState = DeleteDialogState.Hidden,
@@ -135,23 +132,6 @@ object MailboxStateSampleData {
         bottomAppBarState = BottomBarState.Data.Hidden(
             actions = listOf(ActionUiModelSample.Archive).toImmutableList()
         ),
-        onboardingState = OnboardingState.Hidden,
-        actionResult = Effect.empty(),
-        deleteDialogState = DeleteDialogState.Hidden,
-        deleteAllDialogState = DeleteDialogState.Hidden,
-        bottomSheetState = null,
-        storageLimitState = StorageLimitState.HasEnoughSpace,
-        error = Effect.empty(),
-        showRatingBooster = Effect.empty()
-    )
-
-    val OnboardingShown = MailboxState(
-        mailboxListState = MailboxListState.Loading,
-        topAppBarState = MailboxTopAppBarState.Loading,
-        upgradeStorageState = UpgradeStorageState(notificationDotVisible = false),
-        unreadFilterState = UnreadFilterState.Loading,
-        bottomAppBarState = BottomBarState.Loading,
-        onboardingState = OnboardingState.Shown,
         actionResult = Effect.empty(),
         deleteDialogState = DeleteDialogState.Hidden,
         deleteAllDialogState = DeleteDialogState.Hidden,
@@ -192,7 +172,6 @@ object MailboxStateSampleData {
         bottomAppBarState = BottomBarState.Data.Hidden(
             actions = bottomBarAction.toImmutableList()
         ),
-        onboardingState = OnboardingState.Hidden,
         actionResult = Effect.empty(),
         deleteDialogState = DeleteDialogState.Hidden,
         deleteAllDialogState = DeleteDialogState.Hidden,

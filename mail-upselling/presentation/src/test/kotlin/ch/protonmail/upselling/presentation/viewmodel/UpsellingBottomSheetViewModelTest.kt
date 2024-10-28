@@ -20,8 +20,8 @@ package ch.protonmail.upselling.presentation.viewmodel
 
 import java.time.Instant
 import app.cash.turbine.test
-import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
-import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUserId
+import ch.protonmail.android.mailcommon.domain.sample.UserSample
+import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUser
 import ch.protonmail.android.mailupselling.domain.model.UpsellingEntryPoint
 import ch.protonmail.android.mailupselling.domain.model.telemetry.UpsellingTelemetryEventType.Upgrade
 import ch.protonmail.android.mailupselling.domain.model.telemetry.UpsellingTelemetryTargetPlanPayload
@@ -47,6 +47,7 @@ import me.proton.core.domain.entity.UserId
 import me.proton.core.plan.domain.entity.DynamicPlan
 import me.proton.core.plan.domain.entity.DynamicPlans
 import me.proton.core.plan.domain.usecase.GetDynamicPlansAdjustedPrices
+import me.proton.core.user.domain.entity.User
 import org.junit.After
 import org.junit.Before
 import kotlin.test.Test
@@ -55,18 +56,18 @@ import kotlin.test.assertIs
 
 internal class UpsellingBottomSheetViewModelTest {
 
-    private val observePrimaryUserId = mockk<ObservePrimaryUserId>()
+    private val observePrimaryUser = mockk<ObservePrimaryUser>()
     private val getDynamicPlansAdjustedPrices = mockk<GetDynamicPlansAdjustedPrices>()
     private val filterDynamicPlansByUserSubscription = mockk<FilterDynamicPlansByUserSubscription>()
     private val dynamicPlanUiMapper = mockk<DynamicPlanUiMapper>(relaxed = true)
     private val upsellingBottomSheetContentReducer = UpsellingBottomSheetContentReducer(dynamicPlanUiMapper)
     private val updateLastSeenUpsellingTimestamp = mockk<UpdateUpsellingOneClickLastTimestamp>(relaxUnitFun = true)
     private val upsellingTelemetryRepository = mockk<UpsellingTelemetryRepository>(relaxUnitFun = true)
-    private val expectedUpsellingEntryPoint = UpsellingEntryPoint.ContactGroups
+    private val expectedUpsellingEntryPoint = UpsellingEntryPoint.BottomSheet.ContactGroups
     private val viewModel: UpsellingBottomSheetViewModel by lazy {
         UpsellingBottomSheetViewModel(
             expectedUpsellingEntryPoint,
-            observePrimaryUserId,
+            observePrimaryUser,
             getDynamicPlansAdjustedPrices,
             filterDynamicPlansByUserSubscription,
             updateLastSeenUpsellingTimestamp,
@@ -75,7 +76,7 @@ internal class UpsellingBottomSheetViewModelTest {
         )
     }
 
-    private val userId = UserIdSample.Primary
+    private val user = UserSample.Primary
     private val dynamicPlans = mockk<DynamicPlans>()
     private val expectedDynamicPlan = mockk<DynamicPlan>()
 
@@ -92,7 +93,7 @@ internal class UpsellingBottomSheetViewModelTest {
 
     @Test
     fun `should emit loading state at start`() = runTest {
-        every { observePrimaryUserId() } returns flowOf()
+        every { observePrimaryUser() } returns flowOf()
 
         // When + Then
         viewModel.state.test {
@@ -114,8 +115,8 @@ internal class UpsellingBottomSheetViewModelTest {
     @Test
     fun `should emit error when dynamic plans fail to be fetched`() = runTest {
         // Given
-        expectPrimaryUser(userId)
-        expectDynamicPlansError(userId)
+        expectPrimaryUser(user)
+        expectDynamicPlansError(user.userId)
 
         // When + Then
         viewModel.state.test {
@@ -126,9 +127,9 @@ internal class UpsellingBottomSheetViewModelTest {
     @Test
     fun `should emit error when there are no subscriptions`() = runTest {
         // Given
-        expectPrimaryUser(userId)
-        expectDynamicPlans(userId, dynamicPlans)
-        expectEmptySubscriptionOptions(userId, dynamicPlans)
+        expectPrimaryUser(user)
+        expectDynamicPlans(user.userId, dynamicPlans)
+        expectEmptySubscriptionOptions(user.userId, dynamicPlans)
 
         // When + Then
         viewModel.state.test {
@@ -139,9 +140,9 @@ internal class UpsellingBottomSheetViewModelTest {
     @Test
     fun `should emit data when there are subscriptions`() = runTest {
         // Given
-        expectPrimaryUser(userId)
-        expectDynamicPlans(userId, dynamicPlans)
-        expectSubscriptionOptions(userId, dynamicPlans, listOf(expectedDynamicPlan))
+        expectPrimaryUser(user)
+        expectDynamicPlans(user.userId, dynamicPlans)
+        expectSubscriptionOptions(user.userId, dynamicPlans, listOf(expectedDynamicPlan))
 
         // When + Then
         viewModel.state.test {
@@ -154,9 +155,9 @@ internal class UpsellingBottomSheetViewModelTest {
         // Given
         val expectedInstantLongValue = 1L
         mockInstant(expectedInstantLongValue)
-        expectPrimaryUser(userId)
-        expectDynamicPlans(userId, dynamicPlans)
-        expectSubscriptionOptions(userId, dynamicPlans, listOf(expectedDynamicPlan))
+        expectPrimaryUser(user)
+        expectDynamicPlans(user.userId, dynamicPlans)
+        expectSubscriptionOptions(user.userId, dynamicPlans, listOf(expectedDynamicPlan))
 
         // When
         viewModel.updateLastSeenTimestamp()
@@ -170,9 +171,9 @@ internal class UpsellingBottomSheetViewModelTest {
         // Given
         val expectedInstantLongValue = 1L
         mockInstant(expectedInstantLongValue)
-        expectPrimaryUser(userId)
-        expectDynamicPlans(userId, dynamicPlans)
-        expectSubscriptionOptions(userId, dynamicPlans, listOf(expectedDynamicPlan))
+        expectPrimaryUser(user)
+        expectDynamicPlans(user.userId, dynamicPlans)
+        expectSubscriptionOptions(user.userId, dynamicPlans, listOf(expectedDynamicPlan))
         val expectedPayload = UpsellingTelemetryTargetPlanPayload("plan", 1)
 
         // When
@@ -192,9 +193,9 @@ internal class UpsellingBottomSheetViewModelTest {
         // Given
         val expectedInstantLongValue = 1L
         mockInstant(expectedInstantLongValue)
-        expectPrimaryUser(userId)
-        expectDynamicPlans(userId, dynamicPlans)
-        expectSubscriptionOptions(userId, dynamicPlans, listOf(expectedDynamicPlan))
+        expectPrimaryUser(user)
+        expectDynamicPlans(user.userId, dynamicPlans)
+        expectSubscriptionOptions(user.userId, dynamicPlans, listOf(expectedDynamicPlan))
         val expectedPayload = UpsellingTelemetryTargetPlanPayload("plan", 1)
 
         // When
@@ -209,8 +210,8 @@ internal class UpsellingBottomSheetViewModelTest {
         }
     }
 
-    private fun expectPrimaryUser(userId: UserId?) {
-        every { observePrimaryUserId() } returns flowOf(userId)
+    private fun expectPrimaryUser(user: User?) {
+        every { observePrimaryUser() } returns flowOf(user)
     }
 
     private fun expectDynamicPlans(userId: UserId, dynamicPlans: DynamicPlans) {

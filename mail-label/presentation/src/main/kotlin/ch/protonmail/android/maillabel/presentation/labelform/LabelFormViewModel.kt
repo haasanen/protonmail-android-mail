@@ -35,7 +35,8 @@ import ch.protonmail.android.maillabel.domain.usecase.IsLabelLimitReached
 import ch.protonmail.android.maillabel.domain.usecase.IsLabelNameAllowed
 import ch.protonmail.android.maillabel.domain.usecase.UpdateLabel
 import ch.protonmail.android.maillabel.presentation.getHexStringFromColor
-import ch.protonmail.android.mailupselling.domain.usecase.featureflags.IsUpsellingLabelsEnabled
+import ch.protonmail.android.mailupselling.domain.model.UpsellingEntryPoint
+import ch.protonmail.android.mailupselling.domain.model.UserUpgradeState
 import ch.protonmail.android.mailupselling.presentation.usecase.ObserveUpsellingVisibility
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -57,8 +58,8 @@ class LabelFormViewModel @Inject constructor(
     private val getLabelColors: GetLabelColors,
     private val isLabelNameAllowed: IsLabelNameAllowed,
     private val isLabelLimitReached: IsLabelLimitReached,
-    private val isUpsellingLabelsEnabled: IsUpsellingLabelsEnabled,
     private val observeUpsellingVisibility: ObserveUpsellingVisibility,
+    private val userUpgradeState: UserUpgradeState,
     private val reducer: LabelFormReducer,
     private val colorMapper: ColorMapper,
     observePrimaryUserId: ObservePrimaryUserId,
@@ -113,9 +114,11 @@ class LabelFormViewModel @Inject constructor(
                     is LabelFormViewAction.LabelColorChanged -> emitNewStateFor(
                         LabelFormEvent.UpdateLabelColor(action.color.getHexStringFromColor())
                     )
+
                     is LabelFormViewAction.LabelNameChanged -> emitNewStateFor(
                         LabelFormEvent.UpdateLabelName(action.name)
                     )
+
                     LabelFormViewAction.OnCloseLabelFormClick -> emitNewStateFor(LabelFormEvent.CloseLabelForm)
                     LabelFormViewAction.OnDeleteClick -> handleOnDeleteClick()
                     LabelFormViewAction.OnSaveClick -> handleOnSaveClick()
@@ -134,6 +137,7 @@ class LabelFormViewModel @Inject constructor(
                         cleanName,
                         currentState.color ?: Color.Black.getHexStringFromColor()
                     )
+
                     is LabelFormState.Data.Update -> editLabel(
                         currentState.labelId,
                         cleanName,
@@ -141,6 +145,7 @@ class LabelFormViewModel @Inject constructor(
                     )
                 }
             }
+
             is LabelFormState.Loading -> {}
         }
     }
@@ -162,15 +167,25 @@ class LabelFormViewModel @Inject constructor(
     @SuppressWarnings("ReturnCount")
     private suspend fun createLabel(name: String, color: String) {
         emitNewStateFor(LabelFormEvent.CreatingLabel)
-        val isLabelLimitReached = isLabelLimitReached(primaryUserId(), LabelType.MessageLabel).getOrElse {
+
+        val userId = primaryUserId()
+        val isUserUpgrading = userUpgradeState.isUserPendingUpgrade
+
+        val isLabelLimitReached = isLabelLimitReached(userId, LabelType.MessageLabel).getOrElse {
             return emitNewStateFor(LabelFormEvent.SaveLabelError)
         }
-        if (isLabelLimitReached) {
-            val shouldShowUpselling = observeUpsellingVisibility(isUpsellingLabelsEnabled()).first()
 
-            return if (shouldShowUpselling) {
-                emitNewStateFor(LabelFormEvent.ShowUpselling)
-            } else emitNewStateFor(LabelFormEvent.LabelLimitReached)
+        when {
+            isLabelLimitReached && isUserUpgrading -> return emitNewStateFor(LabelFormEvent.UpsellingInProgress)
+
+            isLabelLimitReached -> {
+                val shouldShowUpselling = observeUpsellingVisibility(UpsellingEntryPoint.BottomSheet.Labels).first()
+                return if (shouldShowUpselling) {
+                    emitNewStateFor(LabelFormEvent.ShowUpselling)
+                } else emitNewStateFor(LabelFormEvent.LabelLimitReached)
+            }
+
+            else -> Unit
         }
 
         val isLabelNameAllowed = isLabelNameAllowed(primaryUserId(), name).getOrElse {
@@ -178,10 +193,11 @@ class LabelFormViewModel @Inject constructor(
         }
         if (!isLabelNameAllowed) return emitNewStateFor(LabelFormEvent.LabelAlreadyExists)
 
-        createLabel(primaryUserId(), name, color).getOrElse {
-            return emitNewStateFor(LabelFormEvent.SaveLabelError)
-        }
-        emitNewStateFor(LabelFormEvent.LabelCreated)
+        createLabel(primaryUserId(), name, color)
+            .fold(
+                ifLeft = { emitNewStateFor(LabelFormEvent.SaveLabelError) },
+                ifRight = { emitNewStateFor(LabelFormEvent.LabelCreated) }
+            )
     }
 
     private suspend fun editLabel(

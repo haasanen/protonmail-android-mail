@@ -28,7 +28,7 @@
     <item quantity="other">%d個選択済み</item>
   </plurals>
   <plurals name="filter_unread_button_text">
-    <item quantity="other">%s 未読</item>
+    <item quantity="other">未読%s</item>
   </plurals>
   <string name="mailbox_default_recipient">(宛先なし)</string>
   <string name="mailbox_default_sender">(差出人なし)</string>
@@ -79,10 +79,10 @@
   <string name="mailbox_action_button_clear_spam">迷惑メールを空にする</string>
   <string name="mailbox_action_clear_trash_dialog_title">ごみ箱フォルダーを空にする</string>
   <string name="mailbox_action_clear_spam_dialog_title">迷惑メールフォルダーを空にする</string>
-  <string name="mailbox_action_clear_trash_dialog_body_message">「ごみ箱」内のすべてのメッセージを完全に削除してよろしいですか？</string>
-  <string name="mailbox_action_clear_spam_dialog_body_message">「迷惑メール」内のすべてのメッセージを完全に削除してよろしいですか？</string>
-  <string name="mailbox_action_clear_spam_dialog_body_conversation">「迷惑メール」内のすべての会話を完全に削除してよろしいですか？</string>
-  <string name="mailbox_action_clear_operation_scheduled">"Clear operation is scheduled"</string>
+  <string name="mailbox_action_clear_trash_dialog_body_message">「ごみ箱」フォルダー内のすべてのメッセージを完全に削除してよろしいですか？</string>
+  <string name="mailbox_action_clear_spam_dialog_body_message">「迷惑メール」フォルダー内のすべてのメッセージを完全に削除してよろしいですか？</string>
+  <string name="mailbox_action_clear_spam_dialog_body_conversation">「迷惑メール」フォルダー内のすべての会話を完全に削除してよろしいですか？</string>
+  <string name="mailbox_action_clear_operation_scheduled">"クリア操作が予定されています"</string>
   <!--    Storage Limit Warning-->
   <string name="storage_limit_warning_dialog_title">警告</string>
   <string name="storage_first_limit_exceeded_warning_dialog_text">Proton アカウントのストレージ使用率が 80% を超えています。容量を解放するか、ストレージ追加のためアップグレードしてください。</string>

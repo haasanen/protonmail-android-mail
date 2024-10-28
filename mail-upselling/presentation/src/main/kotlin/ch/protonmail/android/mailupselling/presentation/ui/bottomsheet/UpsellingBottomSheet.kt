@@ -22,16 +22,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
+import ch.protonmail.android.mailupselling.domain.model.UpsellingActions
+import ch.protonmail.android.mailupselling.domain.model.UpsellingEntryPoint
 import ch.protonmail.android.mailupselling.domain.model.telemetry.UpsellingTelemetryTargetPlanPayload
 import ch.protonmail.android.mailupselling.presentation.model.UpsellingBottomSheetContentState
-import ch.protonmail.android.mailupselling.domain.model.UpsellingEntryPoint
 import ch.protonmail.android.mailupselling.presentation.viewmodel.UpsellingBottomSheetViewModel
 
 @Composable
 fun UpsellingBottomSheet(
     modifier: Modifier = Modifier,
     bottomSheetActions: UpsellingBottomSheet.Actions,
-    upsellingEntryPoint: UpsellingEntryPoint
+    upsellingEntryPoint: UpsellingEntryPoint.BottomSheet
 ) {
 
     val viewModel = hiltViewModel<UpsellingBottomSheetViewModel, UpsellingBottomSheetViewModel.Factory> { factory ->
@@ -40,7 +41,7 @@ fun UpsellingBottomSheet(
 
     val actions = bottomSheetActions.copy(
         onDisplayed = { viewModel.updateLastSeenTimestamp() },
-        onPlanSelected = { viewModel.trackUpgradeAttempt(it) },
+        onUpgradeAttempt = { viewModel.trackUpgradeAttempt(it) },
         onUpgradeCancelled = { viewModel.trackUpgradeCancelled(it) },
         onUpgradeErrored = { viewModel.trackUpgradeErrored(it) },
         onSuccess = { viewModel.trackPurchaseCompleted(it) }
@@ -54,22 +55,23 @@ fun UpsellingBottomSheet(
 }
 
 object UpsellingBottomSheet {
+
     data class Actions(
-        val onDisplayed: suspend () -> Unit,
-        val onError: (String) -> Unit,
-        val onPlanSelected: (UpsellingTelemetryTargetPlanPayload) -> Unit,
-        val onUpgradeCancelled: (UpsellingTelemetryTargetPlanPayload) -> Unit,
-        val onUpgradeErrored: (UpsellingTelemetryTargetPlanPayload) -> Unit,
-        val onSuccess: (UpsellingTelemetryTargetPlanPayload) -> Unit,
-        val onUpgrade: (String) -> Unit,
-        val onDismiss: () -> Unit
-    ) {
+        override val onError: (String) -> Unit,
+        override val onUpgradeAttempt: (UpsellingTelemetryTargetPlanPayload) -> Unit,
+        override val onUpgradeCancelled: (UpsellingTelemetryTargetPlanPayload) -> Unit,
+        override val onUpgradeErrored: (UpsellingTelemetryTargetPlanPayload) -> Unit,
+        override val onSuccess: (UpsellingTelemetryTargetPlanPayload) -> Unit,
+        override val onUpgrade: (String) -> Unit,
+        override val onDismiss: () -> Unit,
+        val onDisplayed: suspend () -> Unit
+    ) : UpsellingActions {
 
         companion object {
 
             val Empty = Actions(
                 onDisplayed = {},
-                onPlanSelected = {},
+                onUpgradeAttempt = {},
                 onError = {},
                 onUpgrade = {},
                 onUpgradeCancelled = {},

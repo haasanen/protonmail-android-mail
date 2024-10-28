@@ -39,12 +39,14 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.platform.testTag
@@ -52,12 +54,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
-import ch.protonmail.android.mailcommon.presentation.Effect
+import ch.protonmail.android.mailcommon.presentation.ConsumableTextEffect
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 import ch.protonmail.android.mailcommon.presentation.ui.CommonTestTags
 import ch.protonmail.android.maillabel.presentation.R
-import ch.protonmail.android.maillabel.presentation.folderlist.BottomSheetVisibilityEffect
 import ch.protonmail.android.maillabel.presentation.getColorFromHexString
 import ch.protonmail.android.maillabel.presentation.previewdata.LabelFormPreviewData.createLabelFormState
 import ch.protonmail.android.maillabel.presentation.previewdata.LabelFormPreviewData.editLabelFormState
@@ -65,29 +67,29 @@ import ch.protonmail.android.maillabel.presentation.ui.ColorPicker
 import ch.protonmail.android.maillabel.presentation.ui.FormDeleteButton
 import ch.protonmail.android.maillabel.presentation.ui.FormInputField
 import ch.protonmail.android.maillabel.presentation.upselling.LabelsUpsellingBottomSheet
+import ch.protonmail.android.mailupselling.presentation.model.BottomSheetVisibilityEffect
 import ch.protonmail.android.mailupselling.presentation.ui.bottomsheet.UpsellingBottomSheet
 import ch.protonmail.android.uicomponents.bottomsheet.bottomSheetHeightConstrainedContent
 import ch.protonmail.android.uicomponents.dismissKeyboard
 import ch.protonmail.android.uicomponents.snackbar.DismissableSnackbarHost
-import kotlinx.coroutines.launch
 import me.proton.core.compose.component.ProtonCenteredProgress
 import me.proton.core.compose.component.ProtonModalBottomSheetLayout
 import me.proton.core.compose.component.ProtonSnackbarHostState
 import me.proton.core.compose.component.ProtonSnackbarType
 import me.proton.core.compose.component.ProtonTextButton
 import me.proton.core.compose.component.appbar.ProtonTopAppBar
-import me.proton.core.compose.flow.rememberAsState
 import me.proton.core.compose.theme.ProtonDimens
 import me.proton.core.compose.theme.ProtonTheme
 import me.proton.core.compose.theme.defaultStrongNorm
 
-@OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun LabelFormScreen(actions: LabelFormScreen.Actions, viewModel: LabelFormViewModel = hiltViewModel()) {
     val context = LocalContext.current
     val view = LocalView.current
     val keyboardController = LocalSoftwareKeyboardController.current
-    val snackbarHostErrorState = ProtonSnackbarHostState(defaultType = ProtonSnackbarType.ERROR)
+    val focusManager = LocalFocusManager.current
+    val snackbarHostState = remember { ProtonSnackbarHostState(defaultType = ProtonSnackbarType.ERROR) }
 
     val customActions = actions.copy(
         onLabelNameChanged = {
@@ -106,20 +108,13 @@ fun LabelFormScreen(actions: LabelFormScreen.Actions, viewModel: LabelFormViewMo
         }
     )
 
-    val state = rememberAsState(
-        flow = viewModel.state,
-        initial = LabelFormState.Loading(Effect.empty())
-    ).value
+    val state = viewModel.state.collectAsStateWithLifecycle().value
+    var showBottomSheet by remember { mutableStateOf(false) }
 
     val bottomSheetState = rememberModalBottomSheetState(
         initialValue = ModalBottomSheetValue.Hidden,
         skipHalfExpanded = true
     )
-    val scope = rememberCoroutineScope()
-
-    if (bottomSheetState.currentValue != ModalBottomSheetValue.Hidden) {
-        DisposableEffect(Unit) { onDispose { viewModel.submit(LabelFormViewAction.HideUpselling) } }
-    }
 
     BackHandler(bottomSheetState.isVisible) {
         viewModel.submit(LabelFormViewAction.HideUpselling)
@@ -128,13 +123,15 @@ fun LabelFormScreen(actions: LabelFormScreen.Actions, viewModel: LabelFormViewMo
     if (state is LabelFormState.Data.Create) {
         ConsumableLaunchedEffect(effect = state.upsellingVisibility) { bottomSheetEffect ->
             when (bottomSheetEffect) {
-                BottomSheetVisibilityEffect.Hide -> scope.launch {
+                BottomSheetVisibilityEffect.Hide -> {
                     bottomSheetState.hide()
+                    showBottomSheet = false
                 }
 
-                BottomSheetVisibilityEffect.Show -> scope.launch {
-                    dismissKeyboard(context, view, keyboardController)
+                BottomSheetVisibilityEffect.Show -> {
+                    focusManager.clearFocus()
                     bottomSheetState.show()
+                    showBottomSheet = true
                 }
             }
         }
@@ -143,25 +140,23 @@ fun LabelFormScreen(actions: LabelFormScreen.Actions, viewModel: LabelFormViewMo
     ProtonModalBottomSheetLayout(
         sheetState = bottomSheetState,
         sheetContent = bottomSheetHeightConstrainedContent {
-            LabelsUpsellingBottomSheet(
-                actions = UpsellingBottomSheet.Actions.Empty.copy(
-                    onDismiss = { viewModel.submit(LabelFormViewAction.HideUpselling) },
-                    onUpgrade = { message -> actions.showUpsellingSnackbar(message) },
-                    onError = { message -> actions.showUpsellingErrorSnackbar(message) }
+            if (showBottomSheet) {
+                LabelsUpsellingBottomSheet(
+                    actions = UpsellingBottomSheet.Actions.Empty.copy(
+                        onDismiss = { viewModel.submit(LabelFormViewAction.HideUpselling) },
+                        onUpgrade = { message -> actions.showUpsellingSnackbar(message) },
+                        onError = { message -> actions.showUpsellingErrorSnackbar(message) }
+                    )
                 )
-            )
+            }
         }
     ) {
         Scaffold(
             topBar = {
                 LabelFormTopBar(
                     state = state,
-                    onCloseLabelFormClick = {
-                        viewModel.submit(LabelFormViewAction.OnCloseLabelFormClick)
-                    },
-                    onSaveLabelClick = {
-                        viewModel.submit(LabelFormViewAction.OnSaveClick)
-                    }
+                    onCloseLabelFormClick = customActions.onBackClick,
+                    onSaveLabelClick = customActions.onSaveClick
                 )
             },
             content = { paddingValues ->
@@ -179,25 +174,36 @@ fun LabelFormScreen(actions: LabelFormScreen.Actions, viewModel: LabelFormViewMo
                         }
                         val labelAlreadyExistsMessage = stringResource(id = R.string.label_already_exists)
                         ConsumableLaunchedEffect(effect = state.showLabelAlreadyExistsSnackbar) {
-                            snackbarHostErrorState.showSnackbar(
+                            snackbarHostState.showSnackbar(
                                 message = labelAlreadyExistsMessage,
                                 type = ProtonSnackbarType.ERROR
                             )
                         }
                         val labelLimitReachedMessage = stringResource(id = R.string.label_limit_reached_error)
                         ConsumableLaunchedEffect(effect = state.showLabelLimitReachedSnackbar) {
-                            snackbarHostErrorState.showSnackbar(
+                            snackbarHostState.showSnackbar(
                                 message = labelLimitReachedMessage,
                                 type = ProtonSnackbarType.ERROR
                             )
                         }
                         val saveLabelErrorMessage = stringResource(id = R.string.save_label_error)
                         ConsumableLaunchedEffect(effect = state.showSaveLabelErrorSnackbar) {
-                            snackbarHostErrorState.showSnackbar(
+                            snackbarHostState.showSnackbar(
                                 message = saveLabelErrorMessage,
                                 type = ProtonSnackbarType.ERROR
                             )
                         }
+
+                        if (state is LabelFormState.Data.Create) {
+                            ConsumableTextEffect(effect = state.upsellingInProgress) { message ->
+                                snackbarHostState.snackbarHostState.currentSnackbarData?.dismiss()
+                                snackbarHostState.showSnackbar(
+                                    message = message,
+                                    type = ProtonSnackbarType.NORM
+                                )
+                            }
+                        }
+
                         if (state is LabelFormState.Data.Update) {
                             ConsumableLaunchedEffect(effect = state.closeWithDelete) {
                                 customActions.onBackClick()
@@ -218,7 +224,7 @@ fun LabelFormScreen(actions: LabelFormScreen.Actions, viewModel: LabelFormViewMo
             snackbarHost = {
                 DismissableSnackbarHost(
                     modifier = Modifier.testTag(CommonTestTags.SnackbarHostError),
-                    protonSnackbarHostState = snackbarHostErrorState
+                    protonSnackbarHostState = snackbarHostState
                 )
             }
         )

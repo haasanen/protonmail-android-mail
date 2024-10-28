@@ -30,10 +30,10 @@ sealed interface MailboxListState {
     sealed interface Data : MailboxListState {
 
         sealed interface ClearState {
-            object Hidden : ClearState
+            data object Hidden : ClearState
             sealed interface Visible : ClearState {
                 data class Button(val text: TextUiModel) : Visible
-                object Banner : Visible
+                data object Banner : Visible
             }
         }
 
@@ -73,6 +73,5 @@ sealed interface MailboxListState {
         }
     }
 
-    object Loading : MailboxListState
+    data object Loading : MailboxListState
 }
-

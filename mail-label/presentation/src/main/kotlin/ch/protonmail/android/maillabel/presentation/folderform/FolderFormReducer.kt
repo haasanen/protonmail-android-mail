@@ -22,7 +22,7 @@ import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.maillabel.domain.model.Label
 import ch.protonmail.android.maillabel.presentation.R
-import ch.protonmail.android.maillabel.presentation.folderlist.BottomSheetVisibilityEffect
+import ch.protonmail.android.mailupselling.presentation.model.BottomSheetVisibilityEffect
 import javax.inject.Inject
 
 class FolderFormReducer @Inject constructor() {
@@ -49,6 +49,7 @@ class FolderFormReducer @Inject constructor() {
             FolderFormEvent.CreatingFolder -> reduceCreatingFolder(currentState)
             FolderFormEvent.HideUpselling -> reduceHideUpselling(currentState)
             FolderFormEvent.ShowUpselling -> reduceShowUpselling(currentState)
+            FolderFormEvent.UpsellingInProgress -> reduceUpsellingInProgress(currentState)
         }
     }
 
@@ -226,6 +227,18 @@ class FolderFormReducer @Inject constructor() {
         return when (currentState) {
             is FolderFormState.Data.Create -> currentState.copy(
                 upsellingVisibility = Effect.of(BottomSheetVisibilityEffect.Hide)
+            )
+
+            is FolderFormState.Data.Update -> currentState
+            is FolderFormState.Loading -> currentState
+        }
+    }
+
+    private fun reduceUpsellingInProgress(currentState: FolderFormState): FolderFormState {
+        return when (currentState) {
+            is FolderFormState.Data.Create -> currentState.copy(
+                upsellingInProgress = Effect.of(TextUiModel(R.string.upselling_snackbar_upgrade_in_progress)),
+                displayCreateLoader = false
             )
 
             is FolderFormState.Data.Update -> currentState

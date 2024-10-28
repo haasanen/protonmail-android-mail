@@ -44,7 +44,6 @@ internal sealed interface MailboxOperation {
     sealed interface AffectingUnreadFilter
     sealed interface AffectingMailboxList
     sealed interface AffectingBottomAppBar
-    sealed interface AffectingOnboarding
     sealed interface AffectingStorageLimit
     sealed interface AffectingActionMessage
     sealed interface AffectingDeleteDialog
@@ -139,7 +138,6 @@ internal sealed interface MailboxViewAction : MailboxOperation {
      */
     object OnOfflineWithData : MailboxViewAction, AffectingMailboxList
     object OnErrorWithData : MailboxViewAction, AffectingMailboxList
-    object CloseOnboarding : MailboxViewAction, MailboxOperation.AffectingOnboarding
     object DeleteAll : MailboxViewAction
     object DeleteAllConfirmed : MailboxViewAction
     object DeleteAllDialogDismissed : MailboxViewAction, AffectingClearDialog
@@ -179,8 +177,6 @@ internal sealed interface MailboxEvent : MailboxOperation {
     data class SwipeActionsChanged(
         val swipeActionsPreference: SwipeActionsUiModel
     ) : MailboxEvent, AffectingMailboxList
-
-    object ShowOnboarding : MailboxEvent, MailboxOperation.AffectingOnboarding
 
     data class Trash(val numAffectedMessages: Int) :
         MailboxEvent,

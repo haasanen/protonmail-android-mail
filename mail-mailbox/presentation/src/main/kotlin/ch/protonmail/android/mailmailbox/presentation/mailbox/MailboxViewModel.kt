@@ -69,14 +69,12 @@ import ch.protonmail.android.mailmailbox.domain.usecase.GetLabelAsBottomSheetCon
 import ch.protonmail.android.mailmailbox.domain.usecase.GetMailboxActions
 import ch.protonmail.android.mailmailbox.domain.usecase.GetMoveToLocations
 import ch.protonmail.android.mailmailbox.domain.usecase.ObserveCurrentViewMode
-import ch.protonmail.android.mailmailbox.domain.usecase.ObserveOnboarding
 import ch.protonmail.android.mailmailbox.domain.usecase.ObservePrimaryUserAccountStorageStatus
 import ch.protonmail.android.mailmailbox.domain.usecase.ObserveStorageLimitPreference
 import ch.protonmail.android.mailmailbox.domain.usecase.ObserveUnreadCounters
 import ch.protonmail.android.mailmailbox.domain.usecase.RecordRatingBoosterTriggered
 import ch.protonmail.android.mailmailbox.domain.usecase.RelabelConversations
 import ch.protonmail.android.mailmailbox.domain.usecase.RelabelMessages
-import ch.protonmail.android.mailmailbox.domain.usecase.SaveOnboarding
 import ch.protonmail.android.mailmailbox.domain.usecase.SaveStorageLimitPreference
 import ch.protonmail.android.mailmailbox.domain.usecase.ShouldShowRatingBooster
 import ch.protonmail.android.mailmailbox.presentation.mailbox.mapper.MailboxItemUiModelMapper
@@ -110,7 +108,8 @@ import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.LabelAsB
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MailboxMoreActionsBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MoveToBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.UpsellingBottomSheetState
-import ch.protonmail.android.mailonboarding.presentation.model.OnboardingState
+import ch.protonmail.android.mailpagination.presentation.paging.EmptyLabelId
+import ch.protonmail.android.mailpagination.presentation.paging.EmptyLabelInProgressSignal
 import ch.protonmail.android.mailsettings.domain.usecase.ObserveFolderColorSettings
 import ch.protonmail.android.mailsettings.domain.usecase.ObserveSwipeActionsPreference
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -179,8 +178,6 @@ class MailboxViewModel @Inject constructor(
     private val unStarConversations: UnStarConversations,
     private val mailboxReducer: MailboxReducer,
     private val dispatchersProvider: DispatcherProvider,
-    private val observeOnboarding: ObserveOnboarding,
-    private val saveOnboarding: SaveOnboarding,
     private val deleteSearchResults: DeleteSearchResults,
     private val observePrimaryUserAccountStorageStatus: ObservePrimaryUserAccountStorageStatus,
     private val observeStorageLimitPreference: ObserveStorageLimitPreference,
@@ -189,7 +186,8 @@ class MailboxViewModel @Inject constructor(
     private val shouldShowRatingBooster: ShouldShowRatingBooster,
     private val showRatingBooster: ShowRatingBooster,
     private val recordRatingBoosterTriggered: RecordRatingBoosterTriggered,
-    private val findLocalSystemLabelId: FindLocalSystemLabelId
+    private val findLocalSystemLabelId: FindLocalSystemLabelId,
+    private val emptyLabelInProgressSignal: EmptyLabelInProgressSignal
 ) : ViewModel() {
 
     private val primaryUserId = observePrimaryUserId()
@@ -200,12 +198,6 @@ class MailboxViewModel @Inject constructor(
     val items: Flow<PagingData<MailboxItemUiModel>> = observePagingData().cachedIn(viewModelScope)
 
     init {
-        viewModelScope.launch {
-            if (shouldDisplayOnboarding()) {
-                emitNewStateFrom(MailboxEvent.ShowOnboarding)
-            }
-        }
-
         observeCurrentMailLabel()
             .onEach { currentMailLabel ->
                 currentMailLabel?.let {
@@ -357,7 +349,6 @@ class MailboxViewModel @Inject constructor(
                 is MailboxViewAction.SwipeSpamAction -> handleSwipeSpamAction(viewAction)
                 is MailboxViewAction.SwipeTrashAction -> handleSwipeTrashAction(viewAction)
                 is MailboxViewAction.SwipeStarAction -> handleSwipeStarAction(viewAction)
-                is MailboxViewAction.CloseOnboarding -> handleCloseOnboarding()
                 is MailboxViewAction.Trash -> handleTrashAction()
                 is MailboxViewAction.Delete -> handleDeleteAction()
                 is MailboxViewAction.DeleteConfirmed -> handleDeleteConfirmedAction()
@@ -538,7 +529,8 @@ class MailboxViewModel @Inject constructor(
                     selectedMailLabelId = selectedMailLabel.id,
                     filterUnread = unreadFilterEnabled,
                     type = if (query.isEmpty()) viewMode.toMailboxItemType() else MailboxItemType.Message,
-                    searchQuery = query
+                    searchQuery = query,
+                    emptyLabelInProgressSignal = emptyLabelInProgressSignal
                 )
             }.flatMapLatest { mapPagingData(userId, it) }
         }
@@ -961,20 +953,6 @@ class MailboxViewModel @Inject constructor(
         )
     }
 
-    private suspend fun handleCloseOnboarding() {
-        viewModelScope.launch {
-            saveOnboarding(display = false)
-            emitNewStateFrom(MailboxViewAction.CloseOnboarding)
-        }
-    }
-
-    private suspend fun shouldDisplayOnboarding(): Boolean {
-        return observeOnboarding().first().fold(
-            ifLeft = { false },
-            ifRight = { onboardingPreference -> onboardingPreference.display }
-        )
-    }
-
     private suspend fun handleTrashAction() {
         val selectionModeDataState = state.value.mailboxListState as? MailboxListState.Data.SelectionMode
         if (selectionModeDataState == null) {
@@ -1070,7 +1048,11 @@ class MailboxViewModel @Inject constructor(
         }
         val userId = primaryUserId.filterNotNull().first()
         val viewMode = getViewModeForCurrentLocation(selectedMailLabelId.flow.value)
+
+        val emptyLabelId = EmptyLabelId(currentMailLabel.id)
+        emptyLabelInProgressSignal.emitOperationSignal(emptyLabelId)
         emitNewStateFrom(MailboxEvent.DeleteAllConfirmed(viewMode))
+
         when (viewMode) {
             ViewMode.ConversationGrouping -> deleteConversations(userId, currentMailLabel)
             ViewMode.NoConversationGrouping -> deleteMessages(userId, currentMailLabel)
@@ -1268,7 +1250,6 @@ class MailboxViewModel @Inject constructor(
             upgradeStorageState = UpgradeStorageState(notificationDotVisible = false),
             unreadFilterState = UnreadFilterState.Loading,
             bottomAppBarState = BottomBarState.Data.Hidden(emptyList<ActionUiModel>().toImmutableList()),
-            onboardingState = OnboardingState.Hidden,
             deleteDialogState = DeleteDialogState.Hidden,
             deleteAllDialogState = DeleteDialogState.Hidden,
             storageLimitState = StorageLimitState.None,

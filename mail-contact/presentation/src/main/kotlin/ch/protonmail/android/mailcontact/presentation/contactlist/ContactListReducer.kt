@@ -21,6 +21,7 @@ package ch.protonmail.android.mailcontact.presentation.contactlist
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcontact.presentation.R
+import ch.protonmail.android.mailupselling.presentation.model.BottomSheetVisibilityEffect
 import javax.inject.Inject
 
 class ContactListReducer @Inject constructor() {
@@ -36,6 +37,8 @@ class ContactListReducer @Inject constructor() {
             is ContactListEvent.OpenBottomSheet -> reduceOpenBottomSheet(currentState)
             is ContactListEvent.OpenContactSearch -> reduceOpenContactSearch(currentState)
             is ContactListEvent.SubscriptionUpgradeRequiredError -> reduceErrorSubscriptionUpgradeRequired(currentState)
+            is ContactListEvent.OpenUpsellingBottomSheet -> reduceOpenUpsellingBottomSheet(currentState)
+            is ContactListEvent.UpsellingInProgress -> reduceUpsellingInProgress(currentState)
         }
     }
 
@@ -50,6 +53,7 @@ class ContactListReducer @Inject constructor() {
                         contacts = event.contactList,
                         contactGroups = event.contactGroups,
                         isContactGroupsCrudEnabled = event.isContactGroupsCrudEnabled,
+                        isContactGroupsUpsellingVisible = event.isContactGroupsUpsellingVisible,
                         isContactSearchEnabled = event.isContactSearchEnabled
                     )
                 } else ContactListState.Loaded.Empty()
@@ -62,12 +66,14 @@ class ContactListReducer @Inject constructor() {
                         contacts = event.contactList,
                         contactGroups = event.contactGroups,
                         isContactGroupsCrudEnabled = event.isContactGroupsCrudEnabled,
+                        isContactGroupsUpsellingVisible = event.isContactGroupsUpsellingVisible,
                         isContactSearchEnabled = event.isContactSearchEnabled
                     )
                 } else {
                     ContactListState.Loaded.Empty(
                         bottomSheetVisibilityEffect = currentState.bottomSheetVisibilityEffect,
                         isContactGroupsCrudEnabled = event.isContactGroupsCrudEnabled,
+                        isContactGroupsUpsellingVisible = event.isContactGroupsUpsellingVisible,
                         isContactSearchEnabled = event.isContactSearchEnabled
                     )
                 }
@@ -141,11 +147,13 @@ class ContactListReducer @Inject constructor() {
         return when (currentState) {
             is ContactListState.Loading -> currentState
             is ContactListState.Loaded.Data -> currentState.copy(
-                bottomSheetVisibilityEffect = Effect.of(BottomSheetVisibilityEffect.Show)
+                bottomSheetVisibilityEffect = Effect.of(BottomSheetVisibilityEffect.Show),
+                bottomSheetType = ContactListState.BottomSheetType.Menu
             )
 
             is ContactListState.Loaded.Empty -> currentState.copy(
-                bottomSheetVisibilityEffect = Effect.of(BottomSheetVisibilityEffect.Show)
+                bottomSheetVisibilityEffect = Effect.of(BottomSheetVisibilityEffect.Show),
+                bottomSheetType = ContactListState.BottomSheetType.Menu
             )
         }
     }
@@ -163,6 +171,21 @@ class ContactListReducer @Inject constructor() {
         }
     }
 
+    private fun reduceOpenUpsellingBottomSheet(currentState: ContactListState): ContactListState {
+        return when (currentState) {
+            is ContactListState.Loading -> currentState
+            is ContactListState.Loaded.Data -> currentState.copy(
+                bottomSheetVisibilityEffect = Effect.of(BottomSheetVisibilityEffect.Show),
+                bottomSheetType = ContactListState.BottomSheetType.Upselling
+            )
+
+            is ContactListState.Loaded.Empty -> currentState.copy(
+                bottomSheetVisibilityEffect = Effect.of(BottomSheetVisibilityEffect.Show),
+                bottomSheetType = ContactListState.BottomSheetType.Upselling
+            )
+        }
+    }
+
     private fun reduceDismissBottomSheet(currentState: ContactListState): ContactListState {
         return when (currentState) {
             is ContactListState.Loading -> currentState
@@ -171,6 +194,22 @@ class ContactListReducer @Inject constructor() {
             )
 
             is ContactListState.Loaded.Empty -> currentState.copy(
+                bottomSheetVisibilityEffect = Effect.of(BottomSheetVisibilityEffect.Hide)
+            )
+        }
+    }
+
+    private fun reduceUpsellingInProgress(currentState: ContactListState): ContactListState {
+        val upsellingInProgressEffect = Effect.of(TextUiModel(R.string.upselling_snackbar_upgrade_in_progress))
+        return when (currentState) {
+            is ContactListState.Loading -> currentState
+            is ContactListState.Loaded.Data -> currentState.copy(
+                upsellingInProgress = upsellingInProgressEffect,
+                bottomSheetVisibilityEffect = Effect.of(BottomSheetVisibilityEffect.Hide)
+            )
+
+            is ContactListState.Loaded.Empty -> currentState.copy(
+                upsellingInProgress = upsellingInProgressEffect,
                 bottomSheetVisibilityEffect = Effect.of(BottomSheetVisibilityEffect.Hide)
             )
         }

@@ -20,7 +20,6 @@ package ch.protonmail.android.mailcomposer.presentation.reducer
 
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
-import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.MessageExpirationTime
 import ch.protonmail.android.mailcomposer.domain.model.MessagePassword
@@ -30,12 +29,13 @@ import ch.protonmail.android.mailcomposer.presentation.model.ComposerAction
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerDraftState
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerEvent
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerOperation
-import ch.protonmail.android.mailcomposer.presentation.model.DraftUiModel
-import ch.protonmail.android.mailcomposer.presentation.model.RecipientUiModel
-import ch.protonmail.android.mailcomposer.presentation.model.SenderUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.ContactSuggestionUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.ContactSuggestionsField
+import ch.protonmail.android.mailcomposer.presentation.model.DraftUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.FocusedFieldType
+import ch.protonmail.android.mailcomposer.presentation.model.RecipientUiModel
+import ch.protonmail.android.mailcomposer.presentation.model.SenderUiModel
+import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.model.MessageAttachment
 import ch.protonmail.android.mailmessage.presentation.mapper.AttachmentUiModelMapper
 import ch.protonmail.android.mailmessage.presentation.model.AttachmentGroupUiModel
@@ -66,8 +66,7 @@ class ComposerReducer @Inject constructor(
         is ComposerAction.ContactSuggestionTermChanged -> currentState
         is ComposerAction.DraftBodyChanged -> updateDraftBodyTo(currentState, this.draftBody)
         is ComposerAction.SubjectChanged -> updateSubjectTo(currentState, this.subject)
-        is ComposerAction.OnBottomSheetOptionSelected -> updateBottomSheetVisibility(currentState, false)
-        is ComposerAction.OnAddAttachments -> updateBottomSheetVisibility(currentState, true)
+        is ComposerAction.OnAddAttachments -> updateForOnAddAttachments(currentState)
         is ComposerAction.OnCloseComposer -> updateCloseComposerState(currentState, false)
         is ComposerAction.ChangeSenderRequested -> currentState
         is ComposerAction.OnSendMessage -> updateStateForSendMessage(currentState)
@@ -193,9 +192,6 @@ class ComposerReducer @Inject constructor(
             replaceDraftBody = Effect.of(TextUiModel(bodyWithInlineQuote))
         )
     }
-
-    private fun updateBottomSheetVisibility(currentState: ComposerDraftState, bottomSheetVisibility: Boolean) =
-        currentState.copy(changeBottomSheetVisibility = Effect.of(bottomSheetVisibility))
 
     private fun updateComposerFieldsState(
         currentState: ComposerDraftState,
@@ -336,6 +332,10 @@ class ComposerReducer @Inject constructor(
         messageExpirationTime: MessageExpirationTime?
     ) = currentState.copy(messageExpiresIn = messageExpirationTime?.expiresIn ?: Duration.ZERO)
 
+    private fun updateForOnAddAttachments(currentState: ComposerDraftState) = currentState.copy(
+        openImagePicker = Effect.of(Unit)
+    )
+
     private fun updateRecipientsTo(
         currentState: ComposerDraftState,
         recipients: List<RecipientUiModel>
@@ -405,15 +405,7 @@ class ComposerReducer @Inject constructor(
         val hasDuplicates = hasDuplicates(capturedToDuplicates, capturedCcDuplicates, capturedBccDuplicates)
 
         val error = when {
-            hasDuplicates -> {
-                Effect.of(
-                    TextUiModel(
-                        R.string.composer_error_duplicate_recipient,
-                        getDuplicateEmailsError(capturedToDuplicates, capturedCcDuplicates, capturedBccDuplicates)
-                    )
-                )
-            }
-
+            hasDuplicates -> { Effect.of(TextUiModel(R.string.composer_error_duplicate_recipient)) }
             hasInvalidRecipients -> Effect.of(TextUiModel(R.string.composer_error_invalid_email))
             else -> Effect.empty()
         }
@@ -424,7 +416,7 @@ class ComposerReducer @Inject constructor(
                 cc = capturedCcDuplicates.cleanedRecipients,
                 bcc = capturedBccDuplicates.cleanedRecipients
             ),
-            error = error,
+            recipientValidationError = error,
             isSubmittable = allValid && notEmpty
         )
     }
@@ -436,23 +428,6 @@ class ComposerReducer @Inject constructor(
     ): Boolean = capturedToDuplicates.duplicatesFound.isNotEmpty() ||
         capturedCcDuplicates.duplicatesFound.isNotEmpty() ||
         capturedBccDuplicates.duplicatesFound.isNotEmpty()
-
-    private fun getDuplicateEmailsError(
-        capturedToDuplicates: CleanedRecipients,
-        capturedCcDuplicates: CleanedRecipients,
-        capturedBccDuplicates: CleanedRecipients
-    ): String {
-        val duplicates = capturedToDuplicates.duplicatesFound +
-            capturedCcDuplicates.duplicatesFound +
-            capturedBccDuplicates.duplicatesFound
-
-        val validDuplicates = duplicates.filterIsInstance<RecipientUiModel.Valid>()
-        val inValidDuplicates = duplicates.filterIsInstance<RecipientUiModel.Invalid>()
-
-        return (validDuplicates.map { it.address } + inValidDuplicates.map { it.address })
-            .distinct()
-            .joinToString(", ")
-    }
 
     private fun captureDuplicateEmails(recipients: List<RecipientUiModel>): CleanedRecipients {
         val itemsCounted = recipients.groupingBy { it }.eachCount()

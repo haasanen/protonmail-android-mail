@@ -33,8 +33,8 @@
   <string name="composer_error_change_sender_failed_getting_subscription">Fehler beim Ändern des Absenders, da das Abonnement des Benutzers nicht abgerufen werden konnte. Bitte versuche es erneut.</string>
   <string name="composer_error_store_draft_sender_address">Das Speichern der Absenderadresse dieses Entwurfs ist fehlgeschlagen.</string>
   <string name="composer_error_store_draft_body">Das Speichern des Inhalts dieses Entwurfs ist fehlgeschlagen.</string>
-  <string name="composer_error_duplicate_recipient">Doppelten Empfänger entfernt: %1$s</string>
-  <string name="composer_error_store_draft_subject">Das Speichern des Betreffs dieses Entwurfs ist fehlgeschlagen.</string>
+  <string name="composer_error_duplicate_recipient">Doppelte Empfänger entfernt</string>
+  <string name="composer_error_store_draft_subject">Subject line wasn\'t saved</string>
   <string name="composer_error_store_draft_recipients">Das Speichern der Empfänger dieses Entwurfs ist fehlgeschlagen</string>
   <string name="composer_error_loading_draft">Der Inhalt dieses Entwurfs ist zu diesem Zeitpunkt nicht verfügbar. Durch die Bearbeitung wird der bereits vorhandene Inhalt überschrieben.</string>
   <string name="composer_add_attachments_content_description">Anhänge hinzufügen</string>
@@ -76,7 +76,7 @@
   <!-- Message sending error dialog -->
   <string name="message_sending_error_dialog_header">Sendefehler</string>
   <string name="message_sending_error_dialog_button_dismiss">Schließen</string>
-  <string name="message_sending_error_dialog_text_error">Deine E-Mail kann aus folgendem Grund nicht an die angegebene E-Mail-Adresse gesendet werden:</string>
+  <string name="message_sending_error_dialog_text_error">Your email cannot be sent to the address entered due to the following reason:</string>
   <string name="message_sending_error_dialog_text_reason_no_trusted_keys">Es gibt keine vertrauenswürdigen Schlüssel: %s</string>
   <string name="message_sending_error_dialog_text_reason_address_disabled">Adresse existiert nicht: %s</string>
   <string name="set_message_password_title">Nachricht verschlüsseln</string>
@@ -96,7 +96,7 @@
   <string name="set_message_password_button_remove_password">Passwort entfernen</string>
   <string name="respondInline">Eingebettet antworten</string>
   <plurals name="composer_recipient_suggestion_contacts">
-    <item quantity="one">%d Kontakt</item>
-    <item quantity="other">%d Kontakte</item>
+    <item quantity="one">%d Mitglied</item>
+    <item quantity="other">%d Mitglieder</item>
   </plurals>
 </resources>

@@ -21,7 +21,7 @@ package ch.protonmail.android.mailupselling.presentation.viewmodel
 import java.time.Instant
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUserId
+import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUser
 import ch.protonmail.android.mailupselling.domain.model.telemetry.UpsellingTelemetryEventType.Upgrade
 import ch.protonmail.android.mailupselling.domain.model.telemetry.UpsellingTelemetryTargetPlanPayload
 import ch.protonmail.android.mailupselling.domain.repository.UpsellingTelemetryRepository
@@ -47,8 +47,8 @@ import me.proton.core.util.kotlin.takeIfNotEmpty
 
 @HiltViewModel(assistedFactory = UpsellingBottomSheetViewModel.Factory::class)
 internal class UpsellingBottomSheetViewModel @AssistedInject constructor(
-    @Assisted val upsellingEntryPoint: UpsellingEntryPoint,
-    observePrimaryUserId: ObservePrimaryUserId,
+    @Assisted val upsellingEntryPoint: UpsellingEntryPoint.BottomSheet,
+    observePrimaryUser: ObservePrimaryUser,
     private val getDynamicPlansAdjustedPrices: GetDynamicPlansAdjustedPrices,
     private val filterDynamicPlansByUserSubscription: FilterDynamicPlansByUserSubscription,
     private val updateUpsellingOneClickLastTimestamp: UpdateUpsellingOneClickLastTimestamp,
@@ -59,17 +59,16 @@ internal class UpsellingBottomSheetViewModel @AssistedInject constructor(
     @AssistedFactory
     interface Factory {
 
-        fun create(upsellingEntryPoint: UpsellingEntryPoint): UpsellingBottomSheetViewModel
+        fun create(upsellingEntryPoint: UpsellingEntryPoint.BottomSheet): UpsellingBottomSheetViewModel
     }
 
     private val mutableState = MutableStateFlow<UpsellingBottomSheetContentState>(Loading)
     val state = mutableState.asStateFlow()
 
     init {
-        observePrimaryUserId().mapLatest { userId ->
-            if (userId == null) {
-                return@mapLatest emitNewStateFrom(UpsellingBottomSheetContentEvent.LoadingError.NoUserId)
-            }
+        observePrimaryUser().mapLatest { user ->
+            val userId = user?.userId
+                ?: return@mapLatest emitNewStateFrom(UpsellingBottomSheetContentEvent.LoadingError.NoUserId)
 
             val dynamicPlans = runCatching { getDynamicPlansAdjustedPrices(userId) }.getOrElse {
                 return@mapLatest emitNewStateFrom(UpsellingBottomSheetContentEvent.LoadingError.NoSubscriptions)

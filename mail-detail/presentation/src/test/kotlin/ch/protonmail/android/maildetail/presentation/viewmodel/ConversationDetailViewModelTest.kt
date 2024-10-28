@@ -122,10 +122,13 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.collections.immutable.toImmutableList
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.TestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
@@ -288,6 +291,13 @@ class ConversationDetailViewModelTest {
     private val onMessageLabelAsConfirmed = mockk<OnMessageLabelAsConfirmed>()
     private val moveMessage = mockk<MoveMessage>()
 
+    private val testDispatcher: TestDispatcher by lazy {
+        StandardTestDispatcher().apply { Dispatchers.setMain(this) }
+    }
+
+    private val observableFlowScope = CoroutineScope(SupervisorJob() + testDispatcher)
+    private val longRunningScope = CoroutineScope(SupervisorJob() + testDispatcher)
+
     private val viewModel by lazy {
         ConversationDetailViewModel(
             observePrimaryUserId = observePrimaryUserId,
@@ -329,13 +339,15 @@ class ConversationDetailViewModelTest {
             getLabelAsBottomSheetData = getLabelAsBottomSheetData,
             getMoreActionsBottomSheetData = getMoreActionsBottomSheetData,
             onMessageLabelAsConfirmed = onMessageLabelAsConfirmed,
-            moveMessage = moveMessage
+            moveMessage = moveMessage,
+            observableFlowScope = observableFlowScope,
+            appScope = longRunningScope
         )
     }
 
     @BeforeTest
     fun setUp() {
-        Dispatchers.setMain(StandardTestDispatcher())
+        Dispatchers.setMain(testDispatcher)
     }
 
     @AfterTest

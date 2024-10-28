@@ -78,7 +78,7 @@
   <string name="mailbox_action_move_messages_failed_retrieving_folders">Nem sikerült betölteni a mappákat</string>
   <string name="mailbox_action_trash_message">Üzenet áthelyezve a lomtárba</string>
   <string name="mailbox_action_archive_message">Üzenet áthelyezve az archívumba</string>
-  <string name="mailbox_action_spam_message">üzenet a levélszemét mappába áthelyezve</string>
+  <string name="mailbox_action_spam_message">Üzenet a levélszemét mappába áthelyezve</string>
   <string name="mailbox_search_placeholder_text">Üzenetek keresése</string>
   <string name="mailbox_search_no_results_title">Nincs találat</string>
   <string name="mailbox_search_no_results_explanation">Keresés dátum, név, e-mail cím vagy tárgy alapján</string>
@@ -86,9 +86,9 @@
   <string name="mailbox_action_button_clear_spam">Levélszemét ürítése</string>
   <string name="mailbox_action_clear_trash_dialog_title">Lomtár mappa ürítése</string>
   <string name="mailbox_action_clear_spam_dialog_title">Levélszemét mappa ürítése</string>
-  <string name="mailbox_action_clear_trash_dialog_body_message">Biztos, hogy véglegesen törli az összes üzenetet a Lomtárból?</string>
-  <string name="mailbox_action_clear_spam_dialog_body_message">Biztos, hogy véglegesen törli az összes üzenetet a Levélszemét mappából?</string>
-  <string name="mailbox_action_clear_spam_dialog_body_conversation">Biztos, hogy véglegesen törli az összes beszélgetést a Levélszemét mappából?</string>
+  <string name="mailbox_action_clear_trash_dialog_body_message">Biztos, hogy örökre törölni akarja az összes üzenetet a Lomtárban?</string>
+  <string name="mailbox_action_clear_spam_dialog_body_message">Biztos, hogy örökre törölni akarja az összes üzenetet a Levélszemét mappában?</string>
+  <string name="mailbox_action_clear_spam_dialog_body_conversation">Biztosan szeretné véglegesen törölni minden beszélgetést a Levélszemét mappában?</string>
   <string name="mailbox_action_clear_operation_scheduled">"Ürítési művelet ütemezve"</string>
   <!--    Storage Limit Warning-->
   <string name="storage_limit_warning_dialog_title">Figyelmeztetés</string>

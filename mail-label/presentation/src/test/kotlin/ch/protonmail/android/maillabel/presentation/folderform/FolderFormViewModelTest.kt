@@ -38,9 +38,10 @@ import ch.protonmail.android.maillabel.domain.usecase.IsLabelLimitReached
 import ch.protonmail.android.maillabel.domain.usecase.IsLabelNameAllowed
 import ch.protonmail.android.maillabel.domain.usecase.UpdateLabel
 import ch.protonmail.android.maillabel.presentation.R
-import ch.protonmail.android.maillabel.presentation.folderlist.BottomSheetVisibilityEffect
 import ch.protonmail.android.maillabel.presentation.getHexStringFromColor
-import ch.protonmail.android.mailupselling.domain.usecase.featureflags.IsUpsellingFoldersEnabled
+import ch.protonmail.android.mailupselling.domain.model.UpsellingEntryPoint
+import ch.protonmail.android.mailupselling.domain.model.UserUpgradeState
+import ch.protonmail.android.mailupselling.presentation.model.BottomSheetVisibilityEffect
 import ch.protonmail.android.mailupselling.presentation.usecase.ObserveUpsellingVisibility
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
 import ch.protonmail.android.testdata.label.LabelTestData.buildLabel
@@ -116,9 +117,10 @@ class FolderFormViewModelTest {
 
     private val isLabelNameAllowed = mockk<IsLabelNameAllowed>()
     private val isLabelLimitReached = mockk<IsLabelLimitReached>()
-    private val isUpsellingFoldersEnabled = mockk<IsUpsellingFoldersEnabled> {
-        every { this@mockk.invoke(any()) } returns false
+    private val userUpgradeState = mockk<UserUpgradeState> {
+        every { this@mockk.isUserPendingUpgrade } returns false
     }
+
     private val observeUpsellingVisibility = mockk<ObserveUpsellingVisibility> {
         every { this@mockk.invoke(any()) } returns flowOf(false)
     }
@@ -138,8 +140,8 @@ class FolderFormViewModelTest {
             getLabelColors,
             isLabelNameAllowed,
             isLabelLimitReached,
-            isUpsellingFoldersEnabled,
             observeUpsellingVisibility,
+            userUpgradeState,
             reducer,
             colorMapper,
             observePrimaryUserId,
@@ -526,7 +528,7 @@ class FolderFormViewModelTest {
             val loadedState = loadedCreateState
             every { savedStateHandle.get<String>(FolderFormScreen.FolderFormLabelIdKey) } returns null
             coEvery { isLabelLimitReached.invoke(userId, LabelType.MessageFolder) } returns true.right()
-            coEvery { observeUpsellingVisibility.invoke(any()) } returns flowOf(true)
+            coEvery { observeUpsellingVisibility.invoke(UpsellingEntryPoint.BottomSheet.Folders) } returns flowOf(true)
 
             folderFormViewModel.state.test {
                 // Initial loaded state
@@ -545,6 +547,33 @@ class FolderFormViewModelTest {
                 )
             }
         }
+
+    @Test
+    fun `given create state, limit reached, upselling in progress, emits upselling in progress`() = runTest {
+        // Given
+        val loadedState = loadedCreateState
+        every { savedStateHandle.get<String>(FolderFormScreen.FolderFormLabelIdKey) } returns null
+        coEvery { isLabelLimitReached.invoke(userId, LabelType.MessageFolder) } returns true.right()
+        every { userUpgradeState.isUserPendingUpgrade } returns true
+
+        folderFormViewModel.state.test {
+            // Initial loaded state
+            val actual = awaitItem()
+            assertEquals(loadedState, actual)
+
+            // When
+            folderFormViewModel.submit(FolderFormViewAction.OnSaveClick)
+
+            // Then
+            assertEquals(
+                loadedState.copy(
+                    upsellingInProgress = Effect.of(TextUiModel(R.string.upselling_snackbar_upgrade_in_progress)),
+                    displayCreateLoader = false
+                ),
+                awaitItem()
+            )
+        }
+    }
 
     @Test
     fun `given create state with upselling shown, when action hide upselling, emits hide upselling`() = runTest {

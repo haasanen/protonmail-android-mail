@@ -24,6 +24,9 @@ import ch.protonmail.android.mailupselling.data.repository.UpsellingVisibilityRe
 import ch.protonmail.android.mailupselling.domain.annotations.ForceOneClickUpsellingDetailsOverride
 import ch.protonmail.android.mailupselling.domain.annotations.OneClickUpsellingAlwaysShown
 import ch.protonmail.android.mailupselling.domain.annotations.OneClickUpsellingTelemetryEnabled
+import ch.protonmail.android.mailupselling.domain.annotations.UpsellingAutodeleteEnabled
+import ch.protonmail.android.mailupselling.domain.annotations.UpsellingMobileSignatureEnabled
+import ch.protonmail.android.mailupselling.domain.annotations.UpsellingOnboardingEnabled
 import ch.protonmail.android.mailupselling.domain.repository.UpsellingTelemetryRepository
 import ch.protonmail.android.mailupselling.domain.repository.UpsellingTelemetryRepositoryImpl
 import ch.protonmail.android.mailupselling.domain.repository.UpsellingVisibilityRepository
@@ -31,7 +34,10 @@ import ch.protonmail.android.mailupselling.domain.usecase.featureflags.AlwaysSho
 import ch.protonmail.android.mailupselling.domain.usecase.featureflags.IsOneClickUpsellingTelemetryEnabled
 import ch.protonmail.android.mailupselling.domain.usecase.featureflags.IsSignupPaidPlanSupportEnabled
 import ch.protonmail.android.mailupselling.domain.usecase.featureflags.IsUpgradePaidPlanSupportEnabled
+import ch.protonmail.android.mailupselling.domain.usecase.featureflags.IsUpsellingAutodeleteEnabled
+import ch.protonmail.android.mailupselling.domain.usecase.featureflags.IsUpsellingMobileSignatureEnabled
 import ch.protonmail.android.mailupselling.domain.usecase.featureflags.IsUpsellingOneClickOverrideEnabled
+import ch.protonmail.android.mailupselling.domain.usecase.featureflags.IsUpsellingPostOnboardingEnabled
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -72,6 +78,18 @@ object UpsellingModule {
     @Provides
     @OneClickUpsellingAlwaysShown
     fun provideOneClickUpsellingAlwaysShown(isEnabled: AlwaysShowOneClickUpselling) = isEnabled(null)
+
+    @Provides
+    @UpsellingMobileSignatureEnabled
+    fun provideUpsellingMobileSignatureEnabled(isEnabled: IsUpsellingMobileSignatureEnabled) = isEnabled(null)
+
+    @Provides
+    @UpsellingOnboardingEnabled
+    fun provideUpsellingOnboardingEnabled(isEnabled: IsUpsellingPostOnboardingEnabled) = isEnabled(null)
+
+    @Provides
+    @UpsellingAutodeleteEnabled
+    fun provideUpsellingAutodeleteEnabled(isEnabled: IsUpsellingAutodeleteEnabled) = isEnabled(null)
 
     @Provides
     fun provideClientPlansFilterPredicate(): ClientPlanFilter? = null

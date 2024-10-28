@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import ch.protonmail.android.mailcommon.presentation.compose.dpToPx
 import ch.protonmail.android.mailupselling.presentation.R
 import me.proton.core.compose.theme.ProtonColors
+import me.proton.core.compose.theme.ProtonDimens
 import me.proton.core.compose.theme.ProtonTheme
 
 internal object UpsellingDimens {
@@ -40,6 +41,10 @@ internal object UpsellingDimens {
     const val UpsellingPaymentItemWeight = 1f
 
     val CurrencyDivider = 2.dp
+
+    val OnboardingPayButtonCornerRadius: Int
+        @Composable
+        get() = ProtonDimens.LargeCornerRadius.dpToPx()
 }
 
 internal object UpsellingColors {
@@ -51,7 +56,7 @@ internal object UpsellingColors {
     val BottomSheetBackgroundColor = R.color.haiti
     val DiscountTagColorStops = arrayOf(0.0f to Color(0xFFA792FF), 0.5f to Color(0xFF27DDB1))
     val EntitlementsRowDivider = Color.White.copy(alpha = 0.08f)
-    val SecondaryButtonBackground = android.graphics.Color.parseColor("#33FFFFFF")
+    val SecondaryButtonBackground = android.graphics.Color.parseColor("#474065")
     val PaymentDiscountedItemBackground = Color(0xFF221B42)
     val PaymentDiscountedItemBorder = Color(0xFFA196FC)
     val PaymentStandardItemBackground = Color.White.copy(alpha = 0.04f)

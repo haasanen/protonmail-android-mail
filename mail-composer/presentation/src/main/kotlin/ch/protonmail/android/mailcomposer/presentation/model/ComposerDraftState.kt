@@ -30,6 +30,7 @@ data class ComposerDraftState(
     val fields: ComposerFields,
     val attachments: AttachmentGroupUiModel,
     val premiumFeatureMessage: Effect<TextUiModel>,
+    val recipientValidationError: Effect<TextUiModel>,
     val error: Effect<TextUiModel>,
     val isSubmittable: Boolean,
     val isDeviceContactsSuggestionsEnabled: Boolean,
@@ -54,7 +55,8 @@ data class ComposerDraftState(
     val areContactSuggestionsExpanded: Map<ContactSuggestionsField, Boolean> = emptyMap(),
     val senderChangedNotice: Effect<TextUiModel> = Effect.empty(),
     val messageExpiresIn: Duration,
-    val confirmSendExpiringMessage: Effect<List<Participant>>
+    val confirmSendExpiringMessage: Effect<List<Participant>>,
+    val openImagePicker: Effect<Unit>
 ) {
 
     companion object {
@@ -79,6 +81,7 @@ data class ComposerDraftState(
                 attachments = emptyList()
             ),
             premiumFeatureMessage = Effect.empty(),
+            recipientValidationError = Effect.empty(),
             error = Effect.empty(),
             isSubmittable = isSubmittable,
             senderAddresses = emptyList(),
@@ -100,7 +103,8 @@ data class ComposerDraftState(
             messageExpiresIn = Duration.ZERO,
             confirmSendExpiringMessage = Effect.empty(),
             isDeviceContactsSuggestionsEnabled = false,
-            isDeviceContactsSuggestionsPromptEnabled = false
+            isDeviceContactsSuggestionsPromptEnabled = false,
+            openImagePicker = Effect.empty()
         )
     }
 }

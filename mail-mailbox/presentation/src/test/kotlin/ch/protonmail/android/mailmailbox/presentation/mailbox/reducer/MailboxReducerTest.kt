@@ -18,12 +18,12 @@
 
 package ch.protonmail.android.mailmailbox.presentation.mailbox.reducer
 
-import ch.protonmail.android.maillabel.domain.sample.LabelIdSample
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.BottomBarState
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcommon.presentation.reducer.BottomBarReducer
 import ch.protonmail.android.mailcommon.presentation.ui.delete.DeleteDialogState
+import ch.protonmail.android.maillabel.domain.sample.LabelIdSample
 import ch.protonmail.android.maillabel.presentation.text
 import ch.protonmail.android.mailmailbox.domain.model.StorageLimitPreference
 import ch.protonmail.android.mailmailbox.domain.model.UserAccountStorageStatus
@@ -41,8 +41,6 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.model.UpgradeStora
 import ch.protonmail.android.mailmailbox.presentation.mailbox.previewdata.MailboxSearchStateSampleData
 import ch.protonmail.android.mailmailbox.presentation.mailbox.previewdata.MailboxStateSampleData
 import ch.protonmail.android.mailmessage.presentation.reducer.BottomSheetReducer
-import ch.protonmail.android.mailonboarding.presentation.model.OnboardingState
-import ch.protonmail.android.mailonboarding.presentation.reducer.OnboardingReducer
 import ch.protonmail.android.testdata.mailbox.MailboxItemUiModelTestData
 import ch.protonmail.android.testdata.mailbox.UnreadCountersTestData
 import ch.protonmail.android.testdata.maillabel.MailLabelTestData
@@ -73,9 +71,6 @@ internal class MailboxReducerTest(
     private val bottomAppBarReducer: BottomBarReducer = mockk {
         every { newStateFrom(any(), any()) } returns reducedState.bottomAppBarState
     }
-    private val onboardingReducer: OnboardingReducer = mockk {
-        every { newStateFrom(any()) } returns reducedState.onboardingState
-    }
     private val storageLimitReducer: StorageLimitReducer = mockk {
         every { newStateFrom(any(), any()) } returns reducedState.storageLimitState
     }
@@ -96,7 +91,6 @@ internal class MailboxReducerTest(
         topAppBarReducer,
         unreadFilterReducer,
         bottomAppBarReducer,
-        onboardingReducer,
         storageLimitReducer,
         upgradeStorageReducer,
         actionMessageReducer,
@@ -203,7 +197,6 @@ internal class MailboxReducerTest(
                 isFilterEnabled = false
             ),
             bottomAppBarState = BottomBarState.Loading,
-            onboardingState = OnboardingState.Hidden,
             actionResult = Effect.empty(),
             deleteDialogState = DeleteDialogState.Hidden,
             deleteAllDialogState = DeleteDialogState.Hidden,
@@ -662,7 +655,7 @@ internal class MailboxReducerTest(
                 shouldReduceDeleteDialog = false,
                 deleteAllDialogState = DeleteDialogState.Shown(
                     title = TextUiModel(R.string.mailbox_action_clear_spam_dialog_title),
-                    message = TextUiModel(R.string.mailbox_action_clear_spam_dialog_body_conversation)
+                    message = TextUiModel(R.string.mailbox_action_clear_spam_dialog_body_message)
                 ),
                 shouldReduceBottomSheetState = false,
                 shouldReduceStorageLimitState = false
@@ -780,7 +773,7 @@ internal class MailboxReducerTest(
                 .map { testInput ->
                     val testName = """
                         Operation: ${testInput.operation}
-                        
+
                     """.trimIndent()
                     arrayOf(testName, testInput)
                 }

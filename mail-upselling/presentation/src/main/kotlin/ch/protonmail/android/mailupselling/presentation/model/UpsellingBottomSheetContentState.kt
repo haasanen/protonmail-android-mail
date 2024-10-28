@@ -37,7 +37,7 @@ internal sealed interface UpsellingBottomSheetContentState {
             data class DataLoaded(
                 val userId: UserId,
                 val plans: DynamicPlan,
-                val upsellingEntryPoint: UpsellingEntryPoint
+                val upsellingEntryPoint: UpsellingEntryPoint.BottomSheet
             ) : UpsellingBottomSheetContentEvent
             sealed interface LoadingError : UpsellingBottomSheetContentEvent {
                 data object NoUserId : LoadingError
@@ -45,4 +45,9 @@ internal sealed interface UpsellingBottomSheetContentState {
             }
         }
     }
+}
+
+sealed interface BottomSheetVisibilityEffect {
+    object Show : BottomSheetVisibilityEffect
+    object Hide : BottomSheetVisibilityEffect
 }

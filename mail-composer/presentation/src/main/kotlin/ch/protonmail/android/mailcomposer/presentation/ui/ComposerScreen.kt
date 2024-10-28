@@ -20,6 +20,7 @@ package ch.protonmail.android.mailcomposer.presentation.ui
 
 import android.Manifest
 import android.text.format.Formatter
+import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -97,7 +98,7 @@ fun ComposerScreen(actions: ComposerScreen.Actions, viewModel: ComposerViewModel
         mutableStateOf(if (state.fields.to.isEmpty()) FocusedFieldType.TO else FocusedFieldType.BODY)
     }
     val snackbarHostState = remember { ProtonSnackbarHostState() }
-    val bottomSheetType = rememberSaveable { mutableStateOf(BottomSheetType.AddAttachments) }
+    val bottomSheetType = rememberSaveable { mutableStateOf(BottomSheetType.ChangeSender) }
     val bottomSheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
     val attachmentSizeDialogState = remember { mutableStateOf(false) }
     val sendingErrorDialogState = remember { mutableStateOf<String?>(null) }
@@ -151,16 +152,13 @@ fun ComposerScreen(actions: ComposerScreen.Actions, viewModel: ComposerViewModel
         }
     }
 
+    ConsumableLaunchedEffect(effect = state.openImagePicker) {
+        imagePicker.launch("*/*")
+    }
+
     ProtonModalBottomSheetLayout(
         sheetContent = bottomSheetHeightConstrainedContent {
             when (bottomSheetType.value) {
-                BottomSheetType.AddAttachments -> AddAttachmentsBottomSheetContent(
-                    onImportFromSelected = {
-                        viewModel.submit(ComposerAction.OnBottomSheetOptionSelected)
-                        imagePicker.launch("*/*")
-                    }
-                )
-
                 BottomSheetType.ChangeSender -> ChangeSenderBottomSheetContent(
                     state.senderAddresses,
                     { sender -> viewModel.submit(ComposerAction.SenderChanged(sender)) }
@@ -180,7 +178,6 @@ fun ComposerScreen(actions: ComposerScreen.Actions, viewModel: ComposerViewModel
                 ComposerTopBar(
                     attachmentsCount = state.attachments.attachments.size,
                     onAddAttachmentsClick = {
-                        bottomSheetType.value = BottomSheetType.AddAttachments
                         viewModel.submit(ComposerAction.OnAddAttachments)
                     },
                     onCloseComposerClick = {
@@ -245,7 +242,8 @@ fun ComposerScreen(actions: ComposerScreen.Actions, viewModel: ComposerViewModel
                             { bottomSheetType.value = it }
                         ),
                         contactSuggestions = state.contactSuggestions,
-                        areContactSuggestionsExpanded = state.areContactSuggestionsExpanded
+                        areContactSuggestionsExpanded = state.areContactSuggestionsExpanded,
+                        newContactSuggestionsEnabled = viewModel.newContactSuggestionsEnabled
                     )
                     if (state.attachments.attachments.isNotEmpty()) {
                         AttachmentFooter(
@@ -333,6 +331,10 @@ fun ComposerScreen(actions: ComposerScreen.Actions, viewModel: ComposerViewModel
                 viewModel.clearSendingError()
             }
         )
+    }
+
+    ConsumableTextEffect(effect = state.recipientValidationError) { error ->
+        Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
     }
 
     ConsumableTextEffect(effect = state.premiumFeatureMessage) { message ->
@@ -473,7 +475,7 @@ object ComposerScreen {
     }
 }
 
-private enum class BottomSheetType { AddAttachments, ChangeSender, SetExpirationTime }
+private enum class BottomSheetType { ChangeSender, SetExpirationTime }
 
 private data class SendExpiringMessageDialogState(
     val isVisible: Boolean,

@@ -46,6 +46,7 @@ import ch.protonmail.android.mailsettings.data.repository.local.MobileFooterLoca
 import ch.protonmail.android.mailsettings.data.repository.local.MobileFooterLocalDataSourceImpl
 import ch.protonmail.android.mailsettings.data.repository.remote.AddressIdentityRemoteDataSource
 import ch.protonmail.android.mailsettings.data.repository.remote.AddressIdentityRemoteDataSourceImpl
+import ch.protonmail.android.mailsettings.domain.annotations.AutodeleteFeatureEnabled
 import ch.protonmail.android.mailsettings.domain.repository.AddressIdentityRepository
 import ch.protonmail.android.mailsettings.domain.repository.AlternativeRoutingRepository
 import ch.protonmail.android.mailsettings.domain.repository.AppLanguageRepository
@@ -59,6 +60,7 @@ import ch.protonmail.android.mailsettings.domain.repository.MobileFooterReposito
 import ch.protonmail.android.mailsettings.domain.repository.NotificationsSettingsRepository
 import ch.protonmail.android.mailsettings.domain.repository.PreventScreenshotsRepository
 import ch.protonmail.android.mailsettings.domain.repository.ThemeRepository
+import ch.protonmail.android.mailsettings.domain.usecase.IsAutodeleteFeatureEnabled
 import ch.protonmail.android.mailsettings.presentation.settings.theme.ThemeObserverCoroutineScope
 import dagger.Binds
 import dagger.Module
@@ -130,6 +132,9 @@ object SettingsModule {
     @Singleton
     fun provideMailSettingsRepository(mailSettingsDataSource: MailSettingsDataSource): MailSettingsRepository =
         RustMailSettingsRepository(mailSettingsDataSource)
+
+    @AutodeleteFeatureEnabled
+    fun provideAutodeleteFeatureEnabled(isEnabled: IsAutodeleteFeatureEnabled) = isEnabled(null)
 
     @Module
     @InstallIn(SingletonComponent::class)

@@ -33,8 +33,6 @@ import ch.protonmail.android.maillabel.domain.usecase.ObserveLabels
 import ch.protonmail.android.maillabel.presentation.R
 import ch.protonmail.android.maillabel.presentation.getHexStringFromColor
 import ch.protonmail.android.maillabel.presentation.model.toFolderUiModel
-import ch.protonmail.android.mailsettings.domain.usecase.UpdateEnableFolderColor
-import ch.protonmail.android.mailsettings.domain.usecase.UpdateInheritFolderColor
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
 import ch.protonmail.android.testdata.label.LabelTestData
 import ch.protonmail.android.testdata.user.UserIdTestData.userId
@@ -61,8 +59,6 @@ class FolderListViewModelTest {
         every { this@mockk.invoke() } returns flowOf(userId)
     }
     private val observeLabels = mockk<ObserveLabels>()
-    private val updateEnableFolderColor = mockk<UpdateEnableFolderColor>()
-    private val updateInheritFolderColor = mockk<UpdateInheritFolderColor>()
 
     private val reducer = FolderListReducer()
     private val colorMapper = ColorMapper()
@@ -71,8 +67,6 @@ class FolderListViewModelTest {
         FolderListViewModel(
             observeLabels,
             reducer,
-            updateEnableFolderColor,
-            updateInheritFolderColor,
             colorMapper,
             observePrimaryUserId
         )

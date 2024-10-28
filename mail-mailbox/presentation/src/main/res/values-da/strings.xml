@@ -38,7 +38,7 @@
   <string name="mailbox_error_message_generic">Indlæsning af postkasse mislykkedes</string>
   <string name="mailbox_error_message_unexpected">Et eller andet gik uventet galt</string>
   <string name="mailbox_is_empty_title">Ingen beskeder</string>
-  <string name="mailbox_is_empty_description">Du er ajourført</string>
+  <string name="mailbox_is_empty_description">Du er ajour</string>
   <string name="mailbox_is_empty_no_unread_messages_title">Ingen ulæste beskeder</string>
   <string name="mailbox_is_empty_folder_description">Denne mappe er tom</string>
   <string name="mailbox_is_empty_spam_description">Din spam-mappe er tom</string>
@@ -86,9 +86,9 @@
   <string name="mailbox_action_button_clear_spam">Tøm spam</string>
   <string name="mailbox_action_clear_trash_dialog_title">Tøm papirkurv</string>
   <string name="mailbox_action_clear_spam_dialog_title">Tøm spammappe</string>
-  <string name="mailbox_action_clear_trash_dialog_body_message">Er du sikker på, at du vil slette alle beskeder i \'Papirkurv\' permanent?</string>
-  <string name="mailbox_action_clear_spam_dialog_body_message">Er du sikker på, at du vil slette alle beskeder i \'Spam\' permanent?</string>
-  <string name="mailbox_action_clear_spam_dialog_body_conversation">Er du sikker på, at du vil slette alle samtaler i \'Spam\' permanent?</string>
+  <string name="mailbox_action_clear_trash_dialog_body_message">Er du sikker på, at du vil slette alle beskeder i din papirkurv-folder permanent?</string>
+  <string name="mailbox_action_clear_spam_dialog_body_message">Er du sikker på, at du vil slette alle beskeder i din spam-folder permanent?</string>
+  <string name="mailbox_action_clear_spam_dialog_body_conversation">Er du sikker på, at du vil slette alle samtaler i din spam-folder permanent?</string>
   <string name="mailbox_action_clear_operation_scheduled">"Rydning er planlagt"</string>
   <!--    Storage Limit Warning-->
   <string name="storage_limit_warning_dialog_title">Advarsel</string>

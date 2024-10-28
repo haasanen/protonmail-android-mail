@@ -98,6 +98,7 @@ import ch.protonmail.android.maildetail.presentation.mapper.ParticipantUiModelMa
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMessageUiModel.Collapsed
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMessageUiModel.Expanded
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMessageUiModel.Expanding
+import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMessageUiModel.Hidden
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMetadataState
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailState
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction
@@ -185,10 +186,13 @@ import io.mockk.unmockkStatic
 import io.mockk.verify
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.TestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
@@ -415,13 +419,15 @@ class ConversationDetailViewModelIntegrationTest {
     private val setMessageViewState = SetMessageViewState(inMemoryConversationStateRepository)
     private val observeConversationViewState = ObserveConversationViewState(inMemoryConversationStateRepository)
     private val networkManager = mockk<NetworkManager>()
-    private var testDispatcher: TestDispatcher? = null
+    private val testDispatcher: TestDispatcher by lazy {
+        StandardTestDispatcher().apply { Dispatchers.setMain(this) }
+    }
+
+    private val observableFlowScope = CoroutineScope(SupervisorJob() + testDispatcher)
+    private val longRunningScope = CoroutineScope(SupervisorJob() + testDispatcher)
 
     @BeforeTest
     fun setUp() {
-        testDispatcher = StandardTestDispatcher().apply {
-            Dispatchers.setMain(this)
-        }
         mockkStatic(Formatter::formatShortFileSize)
         every { Formatter.formatShortFileSize(any(), any()) } returns "0"
 
@@ -490,6 +496,7 @@ class ConversationDetailViewModelIntegrationTest {
 
             // when
             viewModel.submit(ConversationDetailViewAction.DoNotAskLinkConfirmationAgain)
+            advanceUntilIdle()
 
             // then
             awaitItem()
@@ -1208,8 +1215,8 @@ class ConversationDetailViewModelIntegrationTest {
     @Test
     fun `verify delete dialog is shown when delete conversation is called`() = runTest {
         // Given
-        val expectedTitle = TextUiModel(R.string.message_delete_dialog_title)
-        val expectedMessage = TextUiModel(R.string.message_delete_dialog_message)
+        val expectedTitle = TextUiModel(R.string.conversation_delete_dialog_title)
+        val expectedMessage = TextUiModel(R.string.conversation_delete_dialog_message)
         val viewModel = buildConversationDetailViewModel()
 
         // When
@@ -1261,7 +1268,34 @@ class ConversationDetailViewModelIntegrationTest {
 
         // Then
         coVerify { deleteConversations(userId, listOf(conversationId), LabelIdSample.Trash) }
+        assertTrue("Observable flow scope is still active.") { observableFlowScope.isActive.not() }
         assertEquals(expectedMessage, viewModel.state.value.exitScreenWithMessageEffect.consume())
+    }
+
+    @Test
+    fun `verify flow observer scope is not active upon viewmodel cleared`() = runTest {
+        // Given
+        val viewModel = buildConversationDetailViewModel()
+
+        // When
+        viewModel.onCleared()
+        advanceUntilIdle()
+
+        // Then
+        assertTrue("Observable flow scope is still active.") { observableFlowScope.isActive.not() }
+    }
+
+    @Test
+    fun `verify long active scope is still active upon viewmodel cleared`() = runTest {
+        // Given
+        val viewModel = buildConversationDetailViewModel()
+
+        // When
+        viewModel.onCleared()
+        advanceUntilIdle()
+
+        // Then
+        assertTrue("Long running scope is not active.") { longRunningScope.isActive }
     }
 
     @Test
@@ -2259,7 +2293,7 @@ class ConversationDetailViewModelIntegrationTest {
         decryptedMessageBody: GetDecryptedMessageBody = getDecryptedMessageBody,
         markMessageAndConversationRead: MarkMessageAsRead = markMessageAsRead,
         getIntentValues: GetAttachmentIntentValues = getAttachmentIntentValues,
-        ioDispatcher: CoroutineDispatcher = testDispatcher!!,
+        ioDispatcher: CoroutineDispatcher = testDispatcher,
         networkMgmt: NetworkManager = networkManager,
         protonCalendarInstalled: IsProtonCalendarInstalled = isProtonCalendarInstalled,
         findContactByEmailAddress: FindContactByEmail = findContactByEmail
@@ -2303,7 +2337,9 @@ class ConversationDetailViewModelIntegrationTest {
         getLabelAsBottomSheetData = getLabelAsBottomSheetData,
         getMoreActionsBottomSheetData = getMoreActionsBottomSheetData,
         onMessageLabelAsConfirmed = onMessageLabelAsConfirmed,
-        moveMessage = moveMessage
+        moveMessage = moveMessage,
+        observableFlowScope = observableFlowScope,
+        appScope = longRunningScope
     )
 
     private fun aMessageAttachment(id: String): MessageAttachment = MessageAttachment(

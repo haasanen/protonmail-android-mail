@@ -282,7 +282,6 @@ dependencies {
     androidTestImplementation(Dependencies.androidTestLibs)
     androidTestImplementation(Proton.Core.accountManagerPresentationCompose)
     androidTestImplementation(Proton.Core.accountRecoveryTest)
-    androidTestImplementation(Proton.Core.authTest)
     androidTestImplementation(Proton.Core.planTest)
     androidTestImplementation(Proton.Core.reportTest)
     androidTestImplementation(Proton.Core.userRecoveryTest)

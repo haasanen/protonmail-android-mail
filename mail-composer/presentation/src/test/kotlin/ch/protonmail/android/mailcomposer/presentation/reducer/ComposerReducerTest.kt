@@ -131,7 +131,11 @@ class ComposerReducerTest(
                 name = "Should generate not submittable error state when adding invalid email address in the to field",
                 currentState = ComposerDraftState.initial(messageId),
                 operation = RecipientsToChanged(listOf(Invalid(this))),
-                expectedState = aNotSubmittableState(messageId, to = listOf(Invalid(this)))
+                expectedState = aNotSubmittableState(
+                    messageId,
+                    to = listOf(Invalid(this)),
+                    recipientValidationError = Effect.of(TextUiModel(R.string.composer_error_invalid_email))
+                )
             )
         }
 
@@ -162,7 +166,11 @@ class ComposerReducerTest(
                 name = "Should generate not submittable error state when adding invalid email address in the cc field",
                 currentState = ComposerDraftState.initial(messageId),
                 operation = RecipientsCcChanged(listOf(Invalid(this))),
-                expectedState = aNotSubmittableState(messageId, cc = listOf(Invalid(this)))
+                expectedState = aNotSubmittableState(
+                    messageId,
+                    cc = listOf(Invalid(this)),
+                    recipientValidationError = Effect.of(TextUiModel(R.string.composer_error_invalid_email))
+                )
             )
         }
 
@@ -193,7 +201,11 @@ class ComposerReducerTest(
                 name = "Should generate not submittable error state when adding invalid email address in the bcc field",
                 currentState = ComposerDraftState.initial(messageId),
                 operation = RecipientsBccChanged(listOf(Invalid(this))),
-                expectedState = aNotSubmittableState(messageId, bcc = listOf(Invalid(this)))
+                expectedState = aNotSubmittableState(
+                    messageId,
+                    bcc = listOf(Invalid(this)),
+                    recipientValidationError = Effect.of(TextUiModel(R.string.composer_error_invalid_email))
+                )
             )
         }
 
@@ -232,7 +244,8 @@ class ComposerReducerTest(
                 operation = RecipientsToChanged(listOf(Invalid(invalidEmail), Invalid(this))),
                 expectedState = aNotSubmittableState(
                     draftId = messageId,
-                    to = listOf(Invalid(invalidEmail), Invalid(this))
+                    to = listOf(Invalid(invalidEmail), Invalid(this)),
+                    recipientValidationError = Effect.of(TextUiModel(R.string.composer_error_invalid_email))
                 )
             )
         }
@@ -331,12 +344,7 @@ class ComposerReducerTest(
                 expectedState = aSubmittableState(
                     draftId = messageId,
                     to = listOf(Valid(this.first())),
-                    error = Effect.of(
-                        TextUiModel(
-                            R.string.composer_error_duplicate_recipient,
-                            this.first()
-                        )
-                    )
+                    recipientValidationError = Effect.of(TextUiModel(R.string.composer_error_duplicate_recipient))
                 )
             )
         }
@@ -349,12 +357,7 @@ class ComposerReducerTest(
                 expectedState = aSubmittableState(
                     draftId = messageId,
                     cc = listOf(Valid(this.first())),
-                    error = Effect.of(
-                        TextUiModel(
-                            R.string.composer_error_duplicate_recipient,
-                            this.first()
-                        )
-                    )
+                    recipientValidationError = Effect.of(TextUiModel(R.string.composer_error_duplicate_recipient))
                 )
             )
         }
@@ -367,12 +370,7 @@ class ComposerReducerTest(
                 expectedState = aSubmittableState(
                     draftId = messageId,
                     bcc = listOf(Valid(this.first())),
-                    error = Effect.of(
-                        TextUiModel(
-                            R.string.composer_error_duplicate_recipient,
-                            this.first()
-                        )
-                    )
+                    recipientValidationError = Effect.of(TextUiModel(R.string.composer_error_duplicate_recipient))
                 )
             )
         }
@@ -388,12 +386,7 @@ class ComposerReducerTest(
                 expectedState = aSubmittableState(
                     draftId = messageId,
                     to = expected,
-                    error = Effect.of(
-                        TextUiModel(
-                            R.string.composer_error_duplicate_recipient,
-                            expected.joinToString(", ") { it.address }
-                        )
-                    )
+                    recipientValidationError = Effect.of(TextUiModel(R.string.composer_error_duplicate_recipient))
                 )
             )
         }
@@ -409,12 +402,7 @@ class ComposerReducerTest(
                 expectedState = aSubmittableState(
                     draftId = messageId,
                     cc = expected,
-                    error = Effect.of(
-                        TextUiModel(
-                            R.string.composer_error_duplicate_recipient,
-                            expected.joinToString(", ") { it.address }
-                        )
-                    )
+                    recipientValidationError = Effect.of(TextUiModel(R.string.composer_error_duplicate_recipient))
                 )
             )
         }
@@ -430,12 +418,7 @@ class ComposerReducerTest(
                 expectedState = aSubmittableState(
                     draftId = messageId,
                     bcc = expected,
-                    error = Effect.of(
-                        TextUiModel(
-                            R.string.composer_error_duplicate_recipient,
-                            expected.joinToString(", ") { it.address }
-                        )
-                    )
+                    recipientValidationError = Effect.of(TextUiModel(R.string.composer_error_duplicate_recipient))
                 )
             )
         }
@@ -449,7 +432,6 @@ class ComposerReducerTest(
                     draftId = messageId,
                     error = Effect.empty(),
                     draftBody = this.value
-
                 )
             )
         }
@@ -675,20 +657,11 @@ class ComposerReducerTest(
         )
 
         private val EmptyToBottomSheetOpened = TestTransition(
-            name = "Should open the bottom sheet when add attachments action is chosen",
+            name = "Should open the file picker when add attachments action is chosen",
             currentState = ComposerDraftState.initial(messageId),
             operation = ComposerAction.OnAddAttachments,
             expectedState = ComposerDraftState.initial(messageId).copy(
-                changeBottomSheetVisibility = Effect.of(true)
-            )
-        )
-
-        private val EmptyToBottomSheetClosed = TestTransition(
-            name = "Should close the bottom sheet when a bottom sheet option has been chosen",
-            currentState = ComposerDraftState.initial(messageId),
-            operation = ComposerAction.OnBottomSheetOptionSelected,
-            expectedState = ComposerDraftState.initial(messageId).copy(
-                changeBottomSheetVisibility = Effect.of(false)
+                openImagePicker = Effect.of(Unit)
             )
         )
 
@@ -736,18 +709,17 @@ class ComposerReducerTest(
             currentState = ComposerDraftState.initial(messageId),
             operation = ComposerEvent.UpdateContactSuggestions(
                 contactSuggestions = listOf(
-                    ContactSuggestionUiModel.Contact("contact name", "contact email"),
+                    ContactSuggestionUiModel.Contact("contact name", "IN", "contact email"),
                     ContactSuggestionUiModel.ContactGroup("contact group name", listOf("contact@emai.il"))
                 ),
                 suggestionsField = ContactSuggestionsField.BCC
             ),
             expectedState = ComposerDraftState.initial(messageId).copy(
                 contactSuggestions = mapOf(
-                    ContactSuggestionsField.BCC
-                        to listOf(
-                            ContactSuggestionUiModel.Contact("contact name", "contact email"),
-                            ContactSuggestionUiModel.ContactGroup("contact group name", listOf("contact@emai.il"))
-                        )
+                    ContactSuggestionsField.BCC to listOf(
+                        ContactSuggestionUiModel.Contact("contact name", "IN", "contact email"),
+                        ContactSuggestionUiModel.ContactGroup("contact group name", listOf("contact@emai.il"))
+                    )
                 ),
                 areContactSuggestionsExpanded = mapOf(ContactSuggestionsField.BCC to true)
             )
@@ -961,7 +933,6 @@ class ComposerReducerTest(
             LoadingToErrorWhenErrorLoadingDraftData,
             LoadingToSendingNoticeWhenReceivedDraftDataWithInvalidSender,
             EmptyToBottomSheetOpened,
-            EmptyToBottomSheetClosed,
             EmptyToAttachmentsUpdated,
             EmptyToAttachmentFileExceeded,
             EmptyToAttachmentReEncryptionFailed,
@@ -990,6 +961,7 @@ class ComposerReducerTest(
             draftBody: String = "",
             subject: Subject = Subject(""),
             quotedHtmlBody: QuotedHtmlContent? = null,
+            recipientValidationError: Effect<TextUiModel> = Effect.empty(),
             error: Effect<TextUiModel> = Effect.empty(),
             closeComposerWithMessageSending: Effect<Unit> = Effect.empty(),
             closeComposerWithMessageSendingOffline: Effect<Unit> = Effect.empty(),
@@ -1012,6 +984,7 @@ class ComposerReducerTest(
             ),
             attachments = AttachmentGroupUiModel(attachments = emptyList()),
             premiumFeatureMessage = Effect.empty(),
+            recipientValidationError = recipientValidationError,
             error = error,
             isSubmittable = true,
             senderAddresses = emptyList(),
@@ -1031,7 +1004,8 @@ class ComposerReducerTest(
             messageExpiresIn = Duration.ZERO,
             confirmSendExpiringMessage = Effect.empty(),
             isDeviceContactsSuggestionsEnabled = false,
-            isDeviceContactsSuggestionsPromptEnabled = false
+            isDeviceContactsSuggestionsPromptEnabled = false,
+            openImagePicker = Effect.empty()
         )
 
         private fun aNotSubmittableState(
@@ -1040,7 +1014,8 @@ class ComposerReducerTest(
             to: List<RecipientUiModel> = emptyList(),
             cc: List<RecipientUiModel> = emptyList(),
             bcc: List<RecipientUiModel> = emptyList(),
-            error: Effect<TextUiModel> = Effect.of(TextUiModel(R.string.composer_error_invalid_email)),
+            recipientValidationError: Effect<TextUiModel> = Effect.empty(),
+            error: Effect<TextUiModel> = Effect.empty(),
             premiumFeatureMessage: Effect<TextUiModel> = Effect.empty(),
             senderAddresses: List<SenderUiModel> = emptyList(),
             changeSenderBottomSheetVisibility: Effect<Boolean> = Effect.empty(),
@@ -1068,6 +1043,7 @@ class ComposerReducerTest(
             ),
             attachments = AttachmentGroupUiModel(attachments = emptyList()),
             premiumFeatureMessage = premiumFeatureMessage,
+            recipientValidationError = recipientValidationError,
             error = error,
             isSubmittable = false,
             senderAddresses = senderAddresses,
@@ -1089,7 +1065,8 @@ class ComposerReducerTest(
             messageExpiresIn = Duration.ZERO,
             confirmSendExpiringMessage = Effect.empty(),
             isDeviceContactsSuggestionsEnabled = false,
-            isDeviceContactsSuggestionsPromptEnabled = false
+            isDeviceContactsSuggestionsPromptEnabled = false,
+            openImagePicker = Effect.empty()
         )
 
         private fun aPositiveRandomInt(bound: Int = 10) = Random().nextInt(bound)

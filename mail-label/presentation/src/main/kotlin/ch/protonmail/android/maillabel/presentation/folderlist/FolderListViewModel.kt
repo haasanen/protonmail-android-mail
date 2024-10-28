@@ -26,8 +26,6 @@ import ch.protonmail.android.mailcommon.presentation.mapper.ColorMapper
 import ch.protonmail.android.maillabel.domain.model.LabelType
 import ch.protonmail.android.maillabel.domain.usecase.ObserveLabels
 import ch.protonmail.android.maillabel.presentation.model.toFolderUiModel
-import ch.protonmail.android.mailsettings.domain.usecase.UpdateEnableFolderColor
-import ch.protonmail.android.mailsettings.domain.usecase.UpdateInheritFolderColor
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -50,8 +48,6 @@ import javax.inject.Inject
 class FolderListViewModel @Inject constructor(
     private val observeLabels: ObserveLabels,
     private val reducer: FolderListReducer,
-    private val updateEnableFolderColor: UpdateEnableFolderColor,
-    private val updateInheritFolderColor: UpdateInheritFolderColor,
     private val colorMapper: ColorMapper,
     observePrimaryUserId: ObservePrimaryUserId
 ) : ViewModel() {

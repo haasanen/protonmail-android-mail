@@ -60,6 +60,7 @@ class ParentFolderListViewModelTest {
         type = LabelType.MessageFolder,
         color = Color.Red.getHexStringFromColor()
     )
+
     private val observePrimaryUserId = mockk<ObservePrimaryUserId> {
         every { this@mockk.invoke() } returns flowOf(UserIdTestData.userId)
     }

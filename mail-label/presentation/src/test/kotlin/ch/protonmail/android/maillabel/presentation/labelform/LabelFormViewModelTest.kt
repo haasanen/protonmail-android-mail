@@ -28,6 +28,7 @@ import ch.protonmail.android.mailcommon.domain.model.NetworkError
 import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.mapper.ColorMapper
+import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.maillabel.domain.model.LabelType
 import ch.protonmail.android.maillabel.domain.usecase.CreateLabel
 import ch.protonmail.android.maillabel.domain.usecase.DeleteLabel
@@ -36,9 +37,11 @@ import ch.protonmail.android.maillabel.domain.usecase.GetLabelColors
 import ch.protonmail.android.maillabel.domain.usecase.IsLabelLimitReached
 import ch.protonmail.android.maillabel.domain.usecase.IsLabelNameAllowed
 import ch.protonmail.android.maillabel.domain.usecase.UpdateLabel
-import ch.protonmail.android.maillabel.presentation.folderlist.BottomSheetVisibilityEffect
+import ch.protonmail.android.maillabel.presentation.R
 import ch.protonmail.android.maillabel.presentation.getHexStringFromColor
-import ch.protonmail.android.mailupselling.domain.usecase.featureflags.IsUpsellingLabelsEnabled
+import ch.protonmail.android.mailupselling.domain.model.UpsellingEntryPoint
+import ch.protonmail.android.mailupselling.domain.model.UserUpgradeState
+import ch.protonmail.android.mailupselling.presentation.model.BottomSheetVisibilityEffect
 import ch.protonmail.android.mailupselling.presentation.usecase.ObserveUpsellingVisibility
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
 import ch.protonmail.android.testdata.label.LabelTestData.buildLabel
@@ -100,11 +103,12 @@ class LabelFormViewModelTest {
 
     private val isLabelNameAllowed = mockk<IsLabelNameAllowed>()
     private val isLabelLimitReached = mockk<IsLabelLimitReached>()
-    private val isUpsellingLabelsEnabled = mockk<IsUpsellingLabelsEnabled> {
-        every { this@mockk.invoke(any()) } returns false
-    }
     private val observeUpsellingVisibility = mockk<ObserveUpsellingVisibility> {
         every { this@mockk.invoke(any()) } returns flowOf(false)
+    }
+
+    private val userUpgradeState = mockk<UserUpgradeState> {
+        every { this@mockk.isUserPendingUpgrade } returns false
     }
 
     private val reducer = LabelFormReducer()
@@ -122,8 +126,8 @@ class LabelFormViewModelTest {
             getLabelColors,
             isLabelNameAllowed,
             isLabelLimitReached,
-            isUpsellingLabelsEnabled,
             observeUpsellingVisibility,
+            userUpgradeState,
             reducer,
             colorMapper,
             observePrimaryUserId,
@@ -423,7 +427,7 @@ class LabelFormViewModelTest {
             val loadedState = loadedCreateState
             every { savedStateHandle.get<String>(LabelFormScreen.LabelFormLabelIdKey) } returns null
             coEvery { isLabelLimitReached.invoke(userId, LabelType.MessageLabel) } returns true.right()
-            coEvery { observeUpsellingVisibility.invoke(any()) } returns flowOf(true)
+            coEvery { observeUpsellingVisibility.invoke(UpsellingEntryPoint.BottomSheet.Labels) } returns flowOf(true)
 
             labelFormViewModel.state.test {
                 // Initial loaded state
@@ -461,6 +465,34 @@ class LabelFormViewModelTest {
             assertEquals(
                 loadedState.copy(
                     upsellingVisibility = Effect.of(BottomSheetVisibilityEffect.Hide),
+                    displayCreateLoader = false
+                ),
+                awaitItem()
+            )
+        }
+    }
+
+    @Test
+    fun `given create state, limit reached, upselling in progress, emits upselling in progress`() = runTest {
+        // Given
+        val loadedState = loadedCreateState
+        every { savedStateHandle.get<String>(LabelFormScreen.LabelFormLabelIdKey) } returns null
+        coEvery { isLabelLimitReached.invoke(userId, LabelType.MessageLabel) } returns true.right()
+        every { userUpgradeState.isUserPendingUpgrade } returns true
+
+
+        labelFormViewModel.state.test {
+            // Initial loaded state
+            val actual = awaitItem()
+            assertEquals(loadedState, actual)
+
+            // When
+            labelFormViewModel.submit(LabelFormViewAction.OnSaveClick)
+
+            // Then
+            assertEquals(
+                loadedState.copy(
+                    upsellingInProgress = Effect.of(TextUiModel(R.string.upselling_snackbar_upgrade_in_progress)),
                     displayCreateLoader = false
                 ),
                 awaitItem()

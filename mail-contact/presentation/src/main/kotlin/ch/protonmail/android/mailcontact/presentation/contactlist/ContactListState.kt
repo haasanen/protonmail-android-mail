@@ -22,15 +22,18 @@ import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcontact.presentation.model.ContactGroupItemUiModel
 import ch.protonmail.android.mailcontact.presentation.model.ContactListItemUiModel
+import ch.protonmail.android.mailupselling.presentation.model.BottomSheetVisibilityEffect
 
 sealed interface ContactListState {
 
     val isContactGroupsCrudEnabled: Boolean
+    val isContactGroupsUpsellingVisible: Boolean
     val isContactSearchEnabled: Boolean
 
     data class Loading(
         val errorLoading: Effect<TextUiModel> = Effect.empty(),
         override val isContactGroupsCrudEnabled: Boolean = false,
+        override val isContactGroupsUpsellingVisible: Boolean = false,
         override val isContactSearchEnabled: Boolean = false
     ) : ContactListState
 
@@ -42,6 +45,8 @@ sealed interface ContactListState {
         val openImportContact: Effect<Unit>
         val openContactSearch: Effect<Boolean>
         val subscriptionError: Effect<TextUiModel>
+        val upsellingInProgress: Effect<TextUiModel>
+        val bottomSheetType: BottomSheetType
 
         data class Data(
             override val bottomSheetVisibilityEffect: Effect<BottomSheetVisibilityEffect> = Effect.empty(),
@@ -50,8 +55,11 @@ sealed interface ContactListState {
             override val openImportContact: Effect<Unit> = Effect.empty(),
             override val openContactSearch: Effect<Boolean> = Effect.empty(),
             override val subscriptionError: Effect<TextUiModel> = Effect.empty(),
+            override val upsellingInProgress: Effect<TextUiModel> = Effect.empty(),
             override val isContactGroupsCrudEnabled: Boolean = false,
+            override val isContactGroupsUpsellingVisible: Boolean = false,
             override val isContactSearchEnabled: Boolean = false,
+            override val bottomSheetType: BottomSheetType = BottomSheetType.Menu,
             val contacts: List<ContactListItemUiModel>,
             val contactGroups: List<ContactGroupItemUiModel>
         ) : Loaded
@@ -63,13 +71,17 @@ sealed interface ContactListState {
             override val openImportContact: Effect<Unit> = Effect.empty(),
             override val openContactSearch: Effect<Boolean> = Effect.empty(),
             override val subscriptionError: Effect<TextUiModel> = Effect.empty(),
+            override val upsellingInProgress: Effect<TextUiModel> = Effect.empty(),
             override val isContactGroupsCrudEnabled: Boolean = false,
-            override val isContactSearchEnabled: Boolean = false
+            override val isContactGroupsUpsellingVisible: Boolean = false,
+            override val isContactSearchEnabled: Boolean = false,
+            override val bottomSheetType: BottomSheetType = BottomSheetType.Menu
         ) : Loaded
+    }
+
+    sealed interface BottomSheetType {
+        data object Menu : BottomSheetType
+        data object Upselling : BottomSheetType
     }
 }
 
-sealed interface BottomSheetVisibilityEffect {
-    data object Show : BottomSheetVisibilityEffect
-    data object Hide : BottomSheetVisibilityEffect
-}

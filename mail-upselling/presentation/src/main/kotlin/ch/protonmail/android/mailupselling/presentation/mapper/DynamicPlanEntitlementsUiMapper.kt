@@ -28,7 +28,7 @@ import me.proton.core.plan.domain.entity.DynamicEntitlement
 import me.proton.core.plan.domain.entity.DynamicPlan
 import javax.inject.Inject
 
-internal class DynamicPlanEntitlementsUiMapper @Inject constructor(
+class DynamicPlanEntitlementsUiMapper @Inject constructor(
     @ForceOneClickUpsellingDetailsOverride private val shouldOverrideEntitlementsList: Boolean
 ) {
 
@@ -37,7 +37,7 @@ internal class DynamicPlanEntitlementsUiMapper @Inject constructor(
 
         return when (plan.name) {
             DynamicPlansOneClickIds.PlusPlanId -> getPlusEntitlements(upsellingEntryPoint)
-            DynamicPlansOneClickIds.UnlimitedPlanId -> UnlimitedOverriddenEntitlements
+            DynamicPlansOneClickIds.UnlimitedPlanId -> getUnlimitedEntitlements(upsellingEntryPoint)
             else -> mapToDefaults(plan.entitlements)
         }
     }
@@ -50,16 +50,23 @@ internal class DynamicPlanEntitlementsUiMapper @Inject constructor(
     }
 
     private fun getPlusEntitlements(upsellingEntryPoint: UpsellingEntryPoint) = when (upsellingEntryPoint) {
-        UpsellingEntryPoint.ContactGroups -> ContactGroupsPlusOverriddenEntitlements
-        UpsellingEntryPoint.Folders -> FoldersPlusOverriddenEntitlements
-        UpsellingEntryPoint.Labels -> LabelsPlusOverriddenEntitlements
-        UpsellingEntryPoint.Mailbox -> MailboxPlusOverriddenEntitlements
-        UpsellingEntryPoint.MobileSignature -> MobileSignaturePlusOverriddenEntitlements
+        UpsellingEntryPoint.BottomSheet.ContactGroups -> ContactGroupsPlusOverriddenEntitlements
+        UpsellingEntryPoint.BottomSheet.Folders -> FoldersPlusOverriddenEntitlements
+        UpsellingEntryPoint.BottomSheet.Labels -> LabelsPlusOverriddenEntitlements
+        UpsellingEntryPoint.BottomSheet.Mailbox -> MailboxPlusOverriddenEntitlements
+        UpsellingEntryPoint.BottomSheet.MobileSignature -> MobileSignaturePlusOverriddenEntitlements
+        UpsellingEntryPoint.BottomSheet.AutoDelete -> AutoDeletePlusOverriddenEntitlements
+        UpsellingEntryPoint.PostOnboarding -> OnboardingPlusOverriddenEntitlements
     }
 
-    private companion object {
+    private fun getUnlimitedEntitlements(upsellingEntryPoint: UpsellingEntryPoint) = when (upsellingEntryPoint) {
+        UpsellingEntryPoint.PostOnboarding -> OnboardingUnlimitedOverriddenEntitlements
+        else -> UnlimitedOverriddenEntitlements
+    }
 
-        val MailboxPlusOverriddenEntitlements = listOf(
+    companion object {
+
+        private val MailboxPlusOverriddenEntitlements = listOf(
             DynamicEntitlementUiModel.Overridden(
                 text = TextUiModel.TextRes(R.string.upselling_plus_feature_storage),
                 localResource = R.drawable.ic_upselling_storage
@@ -101,16 +108,18 @@ internal class DynamicPlanEntitlementsUiMapper @Inject constructor(
             )
         )
 
-        val ContactGroupsPlusOverriddenEntitlements = SharedPlusOverriddenEntitlements
+        private val ContactGroupsPlusOverriddenEntitlements = SharedPlusOverriddenEntitlements
 
-        val FoldersPlusOverriddenEntitlements = SharedPlusOverriddenEntitlements
+        private val FoldersPlusOverriddenEntitlements = SharedPlusOverriddenEntitlements
 
-        val LabelsPlusOverriddenEntitlements = SharedPlusOverriddenEntitlements
+        private val LabelsPlusOverriddenEntitlements = SharedPlusOverriddenEntitlements
 
         @Suppress("VariableMaxLength")
-        val MobileSignaturePlusOverriddenEntitlements = SharedPlusOverriddenEntitlements
+        private val MobileSignaturePlusOverriddenEntitlements = SharedPlusOverriddenEntitlements
 
-        val UnlimitedOverriddenEntitlements = listOf(
+        private val AutoDeletePlusOverriddenEntitlements = SharedPlusOverriddenEntitlements
+
+        private val UnlimitedOverriddenEntitlements = listOf(
             DynamicEntitlementUiModel.Overridden(
                 text = TextUiModel.TextRes(R.string.upselling_unlimited_description_override),
                 localResource = R.drawable.ic_upselling_storage
@@ -130,6 +139,96 @@ internal class DynamicPlanEntitlementsUiMapper @Inject constructor(
             DynamicEntitlementUiModel.Overridden(
                 text = TextUiModel.TextRes(R.string.upselling_unlimited_feature_pass),
                 localResource = R.drawable.ic_upselling_pass
+            )
+        )
+
+        val OnboardingFreeOverriddenEntitlements = listOf(
+            DynamicEntitlementUiModel.Overridden(
+                text = TextUiModel.TextRes(R.string.upselling_onboarding_free_feature_storage),
+                localResource = R.drawable.ic_upselling_storage
+            ),
+            DynamicEntitlementUiModel.Overridden(
+                text = TextUiModel.TextRes(R.string.upselling_onboarding_feature_e2e),
+                localResource = R.drawable.ic_upselling_lock
+            )
+        )
+
+        private val OnboardingPlusOverriddenEntitlements = listOf(
+            DynamicEntitlementUiModel.Overridden(
+                text = TextUiModel.TextRes(R.string.upselling_onboarding_plus_feature_storage),
+                localResource = R.drawable.ic_upselling_storage
+            ),
+            DynamicEntitlementUiModel.Overridden(
+                text = TextUiModel.TextRes(R.string.upselling_onboarding_feature_folders_labels),
+                localResource = R.drawable.ic_upselling_tag
+            ),
+            DynamicEntitlementUiModel.Overridden(
+                text = TextUiModel.TextRes(R.string.upselling_onboarding_feature_e2e),
+                localResource = R.drawable.ic_upselling_lock
+            ),
+            DynamicEntitlementUiModel.Overridden(
+                text = TextUiModel.TextRes(R.string.upselling_onboarding_plus_feature_email_addresses),
+                localResource = R.drawable.ic_upselling_envelopes
+            ),
+            DynamicEntitlementUiModel.Overridden(
+                text = TextUiModel.TextRes(R.string.upselling_onboarding_plus_feature_email_domains),
+                localResource = R.drawable.ic_upselling_globe
+            ),
+            DynamicEntitlementUiModel.Overridden(
+                text = TextUiModel.TextRes(R.string.upselling_onboarding_plus_feature_aliases),
+                localResource = R.drawable.ic_upselling_eye_slash
+            ),
+            DynamicEntitlementUiModel.Overridden(
+                text = TextUiModel.TextRes(R.string.upselling_onboarding_plus_feature_customer_support),
+                localResource = R.drawable.ic_upselling_life_ring
+            )
+        )
+
+        @Suppress("VariableMaxLength")
+        private val OnboardingUnlimitedOverriddenEntitlements = listOf(
+            DynamicEntitlementUiModel.Overridden(
+                text = TextUiModel.TextRes(R.string.upselling_onboarding_unlimited_feature_storage),
+                localResource = R.drawable.ic_upselling_storage
+            ),
+            DynamicEntitlementUiModel.Overridden(
+                text = TextUiModel.TextRes(R.string.upselling_onboarding_feature_folders_labels),
+                localResource = R.drawable.ic_upselling_tag
+            ),
+            DynamicEntitlementUiModel.Overridden(
+                text = TextUiModel.TextRes(R.string.upselling_onboarding_unlimited_feature_email_addresses),
+                localResource = R.drawable.ic_upselling_envelopes
+            ),
+            DynamicEntitlementUiModel.Overridden(
+                text = TextUiModel.TextRes(R.string.upselling_onboarding_feature_e2e),
+                localResource = R.drawable.ic_upselling_lock
+            ),
+            DynamicEntitlementUiModel.Overridden(
+                text = TextUiModel.TextRes(R.string.upselling_onboarding_unlimited_feature_email_domains),
+                localResource = R.drawable.ic_upselling_globe
+            ),
+            DynamicEntitlementUiModel.Overridden(
+                text = TextUiModel.TextRes(R.string.upselling_onboarding_unlimited_feature_aliases),
+                localResource = R.drawable.ic_upselling_eye_slash
+            ),
+            DynamicEntitlementUiModel.Overridden(
+                text = TextUiModel.TextRes(R.string.upselling_onboarding_unlimited_feature_customer_support),
+                localResource = R.drawable.ic_upselling_life_ring
+            ),
+            DynamicEntitlementUiModel.Overridden(
+                text = TextUiModel.TextRes(R.string.upselling_onboarding_unlimited_feature_vpn),
+                localResource = R.drawable.ic_upselling_vpn
+            ),
+            DynamicEntitlementUiModel.Overridden(
+                text = TextUiModel.TextRes(R.string.upselling_onboarding_unlimited_feature_pass),
+                localResource = R.drawable.ic_upselling_pass
+            ),
+            DynamicEntitlementUiModel.Overridden(
+                text = TextUiModel.TextRes(R.string.upselling_onboarding_unlimited_feature_drive),
+                localResource = R.drawable.ic_upselling_drive
+            ),
+            DynamicEntitlementUiModel.Overridden(
+                text = TextUiModel.TextRes(R.string.upselling_onboarding_unlimited_feature_sentinel),
+                localResource = R.drawable.ic_upselling_shield
             )
         )
     }

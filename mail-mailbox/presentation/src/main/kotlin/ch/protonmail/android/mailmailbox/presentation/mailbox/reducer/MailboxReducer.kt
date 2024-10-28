@@ -19,6 +19,7 @@
 package ch.protonmail.android.mailmailbox.presentation.mailbox.reducer
 
 import ch.protonmail.android.mailcommon.presentation.Effect
+import ch.protonmail.android.mailcommon.presentation.model.ActionResult
 import ch.protonmail.android.mailcommon.presentation.model.BottomBarEvent
 import ch.protonmail.android.mailcommon.presentation.model.BottomBarState
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
@@ -26,14 +27,12 @@ import ch.protonmail.android.mailcommon.presentation.reducer.BottomBarReducer
 import ch.protonmail.android.mailcommon.presentation.ui.delete.DeleteDialogState
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.mailmailbox.presentation.R
-import ch.protonmail.android.mailcommon.presentation.model.ActionResult
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxEvent
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxListState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxOperation
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxTopAppBarState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxViewAction
-import ch.protonmail.android.mailonboarding.presentation.model.OnboardingState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.StorageLimitState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.UnreadFilterState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.UpgradeStorageState
@@ -42,9 +41,6 @@ import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.BottomSh
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.LabelAsBottomSheetState.LabelAsBottomSheetAction.LabelToggled
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MoveToBottomSheetState.MoveToBottomSheetAction.MoveToDestinationSelected
 import ch.protonmail.android.mailmessage.presentation.reducer.BottomSheetReducer
-import ch.protonmail.android.mailonboarding.presentation.model.OnboardingOperation
-import ch.protonmail.android.mailonboarding.presentation.reducer.OnboardingReducer
-import me.proton.core.mailsettings.domain.entity.ViewMode
 import javax.inject.Inject
 
 class MailboxReducer @Inject constructor(
@@ -52,7 +48,6 @@ class MailboxReducer @Inject constructor(
     private val topAppBarReducer: MailboxTopAppBarReducer,
     private val unreadFilterReducer: MailboxUnreadFilterReducer,
     private val bottomAppBarReducer: BottomBarReducer,
-    private val onboardingReducer: OnboardingReducer,
     private val storageLimitReducer: StorageLimitReducer,
     private val upgradeStorageReducer: UpgradeStorageReducer,
     private val actionMessageReducer: MailboxActionMessageReducer,
@@ -67,7 +62,6 @@ class MailboxReducer @Inject constructor(
             upgradeStorageState = currentState.toNewStorageSplitStateFrom(operation),
             unreadFilterState = currentState.toNewUnreadFilterStateFrom(operation),
             bottomAppBarState = currentState.toNewBottomAppBarStateFrom(operation),
-            onboardingState = currentState.toNewOnboardingStateFrom(operation),
             storageLimitState = currentState.toNewStorageLimitStateFrom(operation),
             deleteDialogState = currentState.toNewDeleteActionStateFrom(operation),
             deleteAllDialogState = currentState.toNewDeleteAllActionStateFrom(operation),
@@ -136,18 +130,6 @@ class MailboxReducer @Inject constructor(
         }
     }
 
-    private fun MailboxState.toNewOnboardingStateFrom(operation: MailboxOperation): OnboardingState {
-        return if (operation is MailboxOperation.AffectingOnboarding) {
-            val onboardingOperation = when (operation) {
-                MailboxViewAction.CloseOnboarding -> OnboardingOperation.Action.CloseOnboarding
-                MailboxEvent.ShowOnboarding -> OnboardingOperation.Event.ShowOnboarding
-            }
-            onboardingReducer.newStateFrom(onboardingOperation)
-        } else {
-            onboardingState
-        }
-    }
-
     private fun MailboxState.toNewActionMessageStateFrom(operation: MailboxOperation): Effect<ActionResult> {
         return if (operation is MailboxOperation.AffectingActionMessage) {
             actionMessageReducer.newStateFrom(operation)
@@ -176,13 +158,7 @@ class MailboxReducer @Inject constructor(
 
                         SystemLabelId.Spam.labelId -> DeleteDialogState.Shown(
                             title = TextUiModel(R.string.mailbox_action_clear_spam_dialog_title),
-                            message = when (operation.viewMode) {
-                                ViewMode.ConversationGrouping ->
-                                    TextUiModel(R.string.mailbox_action_clear_spam_dialog_body_conversation)
-
-                                ViewMode.NoConversationGrouping ->
-                                    TextUiModel(R.string.mailbox_action_clear_spam_dialog_body_message)
-                            }
+                            message = TextUiModel(R.string.mailbox_action_clear_spam_dialog_body_message)
                         )
 
                         else -> DeleteDialogState.Hidden

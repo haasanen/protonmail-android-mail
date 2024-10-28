@@ -26,17 +26,21 @@ import ch.protonmail.android.composer.data.repository.MessageExpirationTimeRepos
 import ch.protonmail.android.composer.data.repository.MessagePasswordRepositoryImpl
 import ch.protonmail.android.composer.data.repository.MessageRepositoryImpl
 import ch.protonmail.android.mailcomposer.domain.Transactor
+import ch.protonmail.android.mailcomposer.domain.annotations.NewContactSuggestionsEnabled
 import ch.protonmail.android.mailcomposer.domain.repository.AttachmentRepository
 import ch.protonmail.android.mailcomposer.domain.repository.AttachmentStateRepository
 import ch.protonmail.android.mailcomposer.domain.repository.DraftRepository
 import ch.protonmail.android.mailcomposer.domain.repository.MessageExpirationTimeRepository
 import ch.protonmail.android.mailcomposer.domain.repository.MessagePasswordRepository
 import ch.protonmail.android.mailcomposer.domain.repository.MessageRepository
+import ch.protonmail.android.mailcomposer.domain.usecase.featureflags.IsNewContactsSuggestionsEnabled
 import dagger.Binds
 import dagger.Module
+import dagger.Provides
 import dagger.Reusable
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -71,4 +75,14 @@ abstract class MailComposerModule {
     abstract fun bindsMessageExpirationTimeRepository(
         impl: MessageExpirationTimeRepositoryImpl
     ): MessageExpirationTimeRepository
+}
+
+@Module
+@InstallIn(SingletonComponent::class)
+object FeatureFlagModule {
+
+    @Provides
+    @NewContactSuggestionsEnabled
+    @Singleton
+    fun provideNewContactsSuggestionsEnabled(isEnabled: IsNewContactsSuggestionsEnabled) = isEnabled(null)
 }

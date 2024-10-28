@@ -36,10 +36,10 @@
   <string name="mailbox_message_sending_error">Feil ved sending av melding</string>
   <string name="mailbox_message_sending_error_action">Gå til utkast</string>
   <string name="mailbox_attachment_uploading_error">Feil ved opplasting av vedlegg</string>
-  <string name="notification_switched_account">Byttet til konto: %s</string>
+  <string name="notification_switched_account">Switched to account %s</string>
   <string name="label_saved">Etikett lagret</string>
   <string name="label_deleted">Etikett slettet</string>
-  <string name="label_list_loading_error">Feil ved lasting av etikett, vennligst prøv igjen senere.</string>
+  <string name="label_list_loading_error">Feil ved lasting av etikett. Prøv igjen senere.</string>
   <string name="app_locked">App låst</string>
   <string name="use_pin_instead">Bruk PIN-kode istedenfor</string>
 </resources>

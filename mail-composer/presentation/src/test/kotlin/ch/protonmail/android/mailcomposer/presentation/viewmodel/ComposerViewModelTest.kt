@@ -32,6 +32,7 @@ import ch.protonmail.android.mailcommon.domain.usecase.GetPrimaryAddress
 import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
+import ch.protonmail.android.mailcommon.presentation.usecase.GetInitials
 import ch.protonmail.android.mailcomposer.domain.model.DecryptedDraftFields
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.DraftFields
@@ -135,6 +136,8 @@ import io.mockk.verify
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import ch.protonmail.android.mailcontact.domain.model.Contact
 import me.proton.core.domain.entity.UserId
@@ -152,8 +155,10 @@ import kotlin.time.Duration.Companion.days
 
 class ComposerViewModelTest {
 
+    private val testDispatcher = UnconfinedTestDispatcher()
+
     @get:Rule
-    val mainDispatcherRule = MainDispatcherRule()
+    val mainDispatcherRule = MainDispatcherRule(testDispatcher)
 
     @get:Rule
     val loggingTestRule = LoggingTestRule()
@@ -214,9 +219,13 @@ class ComposerViewModelTest {
     private val getExternalRecipients = mockk<GetExternalRecipients>()
     private val convertHtmlToPlainText = mockk<ConvertHtmlToPlainText>()
 
+    private val getInitials = mockk<GetInitials> {
+        every { this@mockk(any()) } returns BaseInitials
+    }
     private val attachmentUiModelMapper = AttachmentUiModelMapper()
-    private val sortContactsForSuggestions = SortContactsForSuggestions()
+    private val sortContactsForSuggestions = SortContactsForSuggestions(getInitials, testDispatcher)
     private val reducer = ComposerReducer(attachmentUiModelMapper)
+    private val isNewContactsSuggestionsEnabled = false
 
     private val viewModel by lazy {
         ComposerViewModel(
@@ -260,6 +269,7 @@ class ComposerViewModelTest {
             observeMessageExpirationTime,
             getExternalRecipients,
             convertHtmlToPlainText,
+            isNewContactsSuggestionsEnabled,
             isDeviceContactsSuggestionsEnabledMock,
             getDecryptedDraftFields,
             savedStateHandle,
@@ -809,12 +819,14 @@ class ComposerViewModelTest {
             mapOf(
                 ContactSuggestionsField.BCC to listOf(
                     ContactSuggestionUiModel.Contact(
-                        expectedContacts[0].contactEmails.first().name,
-                        expectedContacts[0].contactEmails.first().email
+                        name = expectedContacts[0].contactEmails.first().name,
+                        initial = BaseInitials,
+                        email = expectedContacts[0].contactEmails.first().email
                     ),
                     ContactSuggestionUiModel.Contact(
-                        expectedContacts[1].contactEmails.first().name,
-                        expectedContacts[1].contactEmails.first().email
+                        name = expectedContacts[1].contactEmails.first().name,
+                        initial = BaseInitials,
+                        email = expectedContacts[1].contactEmails.first().email
                     ),
                     ContactSuggestionUiModel.ContactGroup(
                         expectedContactGroups[0].name,
@@ -874,12 +886,14 @@ class ComposerViewModelTest {
             mapOf(
                 ContactSuggestionsField.BCC to listOf(
                     ContactSuggestionUiModel.Contact(
-                        expectedDeviceContacts[0].name,
-                        expectedDeviceContacts[0].email
+                        name = expectedDeviceContacts[0].name,
+                        initial = BaseInitials,
+                        email = expectedDeviceContacts[0].email
                     ),
                     ContactSuggestionUiModel.Contact(
-                        expectedDeviceContacts[1].name,
-                        expectedDeviceContacts[1].email
+                        name = expectedDeviceContacts[1].name,
+                        initial = BaseInitials,
+                        email = expectedDeviceContacts[1].email
                     )
                 )
             ),
@@ -902,7 +916,7 @@ class ComposerViewModelTest {
                 contactEmails = listOf(
                     ContactTestData.buildContactEmailWith(
                         name = "contact $it",
-                        address = "address@proton.ch"
+                        address = "address$it@proton.ch"
                     )
                 )
             )
@@ -927,6 +941,7 @@ class ComposerViewModelTest {
 
         // When
         viewModel.submit(action)
+        advanceUntilIdle()
         val actual = viewModel.state.value
 
         // Then
@@ -1952,7 +1967,7 @@ class ComposerViewModelTest {
     }
 
     @Test
-    fun `emits state with an effect to open the bottom sheet when add attachments action is submitted`() = runTest {
+    fun `emits state with an effect to open the file picker when add attachments action is submitted`() = runTest {
         // Given
         val expectedUserId = expectedUserId { UserIdSample.Primary }
         expectedPrimaryAddress(expectedUserId) { UserAddressSample.PrimaryAddress }
@@ -1973,32 +1988,7 @@ class ComposerViewModelTest {
 
         // Then
         val actual = viewModel.state.value
-        assertEquals(true, actual.changeBottomSheetVisibility.consume())
-    }
-
-    @Test
-    fun `emits state with an effect to close the bottom sheet when bottom sheet option is selected`() = runTest {
-        // Given
-        val expectedUserId = expectedUserId { UserIdSample.Primary }
-        expectedPrimaryAddress(expectedUserId) { UserAddressSample.PrimaryAddress }
-        val expectedDraftId = expectInputDraftMessageId { MessageIdSample.RemoteDraft }
-        val decryptedDraftFields = DecryptedDraftFields.Remote(existingDraftFields)
-        expectDecryptedDraftDataSuccess(expectedUserId, expectedDraftId) { decryptedDraftFields }
-        expectStartDraftSync(expectedUserId, expectedDraftId)
-        expectNoInputDraftAction()
-        expectObservedMessageAttachments(expectedUserId, expectedDraftId)
-        expectStoreParentAttachmentSucceeds(expectedUserId, expectedDraftId)
-        expectObserveMessageSendingError(expectedUserId, expectedDraftId)
-        expectMessagePassword(expectedUserId, expectedDraftId)
-        expectNoFileShareVia()
-        expectObserveMessageExpirationTime(expectedUserId, expectedDraftId)
-
-        // When
-        viewModel.submit(ComposerAction.OnBottomSheetOptionSelected)
-
-        // Then
-        val actual = viewModel.state.value
-        assertEquals(false, actual.changeBottomSheetVisibility.consume())
+        assertEquals(Unit, actual.openImagePicker.consume())
     }
 
     @Test
@@ -2698,6 +2688,7 @@ class ComposerViewModelTest {
             ),
             attachments = AttachmentGroupUiModel(attachments = emptyList()),
             premiumFeatureMessage = Effect.empty(),
+            recipientValidationError = Effect.empty(),
             error = Effect.empty(),
             isSubmittable = false,
             senderAddresses = emptyList(),
@@ -2717,7 +2708,8 @@ class ComposerViewModelTest {
             messageExpiresIn = Duration.ZERO,
             confirmSendExpiringMessage = Effect.empty(),
             isDeviceContactsSuggestionsEnabled = false,
-            isDeviceContactsSuggestionsPromptEnabled = false
+            isDeviceContactsSuggestionsPromptEnabled = false,
+            openImagePicker = Effect.empty()
         )
 
         mockkObject(ComposerDraftState.Companion)
@@ -3091,5 +3083,6 @@ class ComposerViewModelTest {
             OriginalHtmlQuote("<blockquote> Quoted html of the parent message </blockquote>")
         )
 
+        const val BaseInitials = "AB"
     }
 }

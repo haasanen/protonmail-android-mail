@@ -40,7 +40,7 @@
   <string name="mail_settings_theme_dark">Fosc</string>
   <!-- Settings item states -->
   <string name="mail_settings_no_information_available">No hi ha informació disponible</string>
-  <string name="mail_settings_enabled">Habilitat</string>
+  <string name="mail_settings_enabled">Activat</string>
   <string name="mail_settings_disabled">Desactivat</string>
   <string name="mail_settings_allowed">Permès</string>
   <string name="mail_settings_denied">Denegat</string>
@@ -77,9 +77,9 @@
   <string name="mail_settings_identity_display_name_hint">Nom per a mostrar</string>
   <string name="mail_settings_identity_signature">Signatura</string>
   <string name="mail_settings_identity_signature_hint">Signatura</string>
-  <string name="mail_settings_identity_mobile_footer">Peu de pàgina al mòbil</string>
-  <string name="mail_settings_identity_mobile_footer_subtext">El peu s\'afegeix després de la signatura.</string>
-  <string name="mail_settings_identity_mobile_footer_hint">Peu de pàgina al mòbil</string>
+  <string name="mail_settings_identity_mobile_footer">Signatura mòbil</string>
+  <string name="mail_settings_identity_mobile_footer_subtext">Això apareix després de la signatura.</string>
+  <string name="mail_settings_identity_mobile_footer_hint">Signatura mòbil</string>
   <string name="mail_settings_identity_mobile_footer_default_free">Enviat des de Proton Mail Android</string>
   <string name="mail_settings_identity_error_updating">S\'ha produït un error en actualitzar les preferències.</string>
   <string name="mail_settings_identity_error_loading">S\'ha produït un error en carregar les preferències.</string>
@@ -89,7 +89,7 @@
   <string name="mail_settings_privacy_prevent_taking_screenshots">Evita les captures de pantalla</string>
   <string name="mail_settings_privacy_request_link_confirmation">Demana confirmació dels enllaços</string>
   <string name="mail_settings_privacy_background_sync">Sincronització en segon pla</string>
-  <string name="mail_settings_privacy_background_sync_description">Si aquesta opció està habilitada, l\'aplicació se sincronitzarà amb el servidor en segon pla. Desactivar aquesta característica també desactivarà les notificacions automàtiques.</string>
+  <string name="mail_settings_privacy_background_sync_description">Si aquesta opció està activada, l\'aplicació se sincronitzarà amb el servidor en segon pla. Desactivar aquesta característica també desactivarà les notificacions automàtiques.</string>
   <string name="mail_settings_privacy_error_updating">S\'ha produït un error en actualitzar les preferències</string>
   <string name="mail_settings_privacy_error_loading">S\'ha produït un error en carregar les preferències</string>
   <!-- Swipe Actions -->

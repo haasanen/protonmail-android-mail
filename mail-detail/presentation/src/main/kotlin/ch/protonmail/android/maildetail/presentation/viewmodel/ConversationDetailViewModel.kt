@@ -19,6 +19,7 @@
 package ch.protonmail.android.maildetail.presentation.viewmodel
 
 import android.content.Context
+import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -26,6 +27,7 @@ import arrow.core.Either
 import arrow.core.NonEmptyList
 import arrow.core.getOrElse
 import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
+import ch.protonmail.android.mailcommon.domain.coroutines.AppScope
 import ch.protonmail.android.mailcommon.domain.coroutines.IODispatcher
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
@@ -41,6 +43,7 @@ import ch.protonmail.android.mailconversation.domain.usecase.GetConversationMove
 import ch.protonmail.android.mailconversation.domain.usecase.ObserveConversation
 import ch.protonmail.android.mailconversation.domain.usecase.StarConversations
 import ch.protonmail.android.mailconversation.domain.usecase.UnStarConversations
+import ch.protonmail.android.maildetail.domain.annotations.ObservableFlowScope
 import ch.protonmail.android.maildetail.domain.model.OpenProtonCalendarIntentValues
 import ch.protonmail.android.maildetail.domain.repository.InMemoryConversationStateRepository
 import ch.protonmail.android.maildetail.domain.usecase.GetAttachmentIntentValues
@@ -120,6 +123,8 @@ import ch.protonmail.android.mailsettings.domain.usecase.privacy.UpdateLinkConfi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -184,7 +189,9 @@ class ConversationDetailViewModel @Inject constructor(
     private val getLabelAsBottomSheetData: GetLabelAsBottomSheetData,
     private val getMoreActionsBottomSheetData: GetMoreActionsBottomSheetData,
     private val onMessageLabelAsConfirmed: OnMessageLabelAsConfirmed,
-    private val moveMessage: MoveMessage
+    private val moveMessage: MoveMessage,
+    @ObservableFlowScope private val observableFlowScope: CoroutineScope,
+    @AppScope private val appScope: CoroutineScope
 ) : ViewModel() {
 
     private val primaryUserId: Flow<UserId> = observePrimaryUserId().filterNotNull()
@@ -193,7 +200,6 @@ class ConversationDetailViewModel @Inject constructor(
     private val initialScrollToMessageId = getInitialScrollToMessageId()
     private val filterByLocation = getFilterByLocation()
     private val observedAttachments = mutableListOf<AttachmentId>()
-
     val state: StateFlow<ConversationDetailState> = mutableDetailState.asStateFlow()
 
     init {
@@ -286,7 +292,7 @@ class ConversationDetailViewModel @Inject constructor(
                     }
                 )
             }
-        }.launchIn(viewModelScope)
+        }.launchIn(observableFlowScope)
     }
 
     private fun observeConversationMetadata(conversationId: ConversationId) {
@@ -306,7 +312,7 @@ class ConversationDetailViewModel @Inject constructor(
                 }
         }.onEach { event ->
             emitNewStateFrom(event)
-        }.launchIn(viewModelScope)
+        }.launchIn(observableFlowScope)
     }
 
     private fun observeConversationMessages(conversationId: ConversationId) {
@@ -358,7 +364,7 @@ class ConversationDetailViewModel @Inject constructor(
                 emitNewStateFrom(event)
             }
             .flowOn(ioDispatcher)
-            .launchIn(viewModelScope)
+            .launchIn(observableFlowScope)
     }
 
     private fun stateIsLoading(): Boolean = state.value.messagesState == ConversationDetailsMessagesState.Loading
@@ -404,6 +410,7 @@ class ConversationDetailViewModel @Inject constructor(
                     .filterIsInstance<ConversationDetailMessageUiModel.Expanded>()
                     .firstOrNull { it.messageId.id == messageId.id }
             }
+
             else -> null
         }
     }
@@ -466,7 +473,7 @@ class ConversationDetailViewModel @Inject constructor(
             }
         }.onEach { event ->
             emitNewStateFrom(event)
-        }.launchIn(viewModelScope)
+        }.launchIn(observableFlowScope)
     }
 
     private fun showMessageMoveToBottomSheet(
@@ -479,7 +486,7 @@ class ConversationDetailViewModel @Inject constructor(
             val userId = primaryUserId.first()
             val labelId = filterByLocation ?: return@launch
 
-            getMessageMoveToLocations(userId, labelId, listOf(initialEvent.messageId!!)).fold(
+            getMessageMoveToLocations(userId, labelId, listOf(initialEvent.messageId)).fold(
                 ifLeft = {
                     Timber.e("detail-actions: failed to load the bottom-sheet actions: $it")
                 },
@@ -762,7 +769,7 @@ class ConversationDetailViewModel @Inject constructor(
     // Need conversation model to expose "exclusive location" in a way that it can be mapped
     // back to deleteConversation as a labelId. Rust will perform checks to see "isDeletable"
     private fun handleDeleteConfirmed(action: ConversationDetailViewAction) {
-        viewModelScope.launch {
+        appScope.launch {
             val userId = primaryUserId.first()
             val conversation = observeConversation(userId, conversationId).first().getOrNull()
             if (conversation == null) {
@@ -778,6 +785,11 @@ class ConversationDetailViewModel @Inject constructor(
                 emitNewStateFrom(ConversationDetailEvent.ErrorDeletingNoApplicableFolder)
                 return@launch
             } else {
+                // We manually cancel the Observer Scope since the following deletion calls cause all the observers
+                // to emit, which could lead to race conditions as the observers re-insert the conversation and/or
+                // the messages in the DB on late changes, making the entry still re-appear in the mailbox list.
+                observableFlowScope.cancel()
+
                 emitNewStateFrom(action)
                 deleteConversations(userId, listOf(conversationId), currentDeletableLabel)
             }
@@ -918,7 +930,7 @@ class ConversationDetailViewModel @Inject constructor(
                 }
             }.onEach { event ->
                 emitNewStateFrom(event)
-            }.launchIn(viewModelScope)
+            }.launchIn(observableFlowScope)
         }
     }
 
@@ -1068,6 +1080,12 @@ class ConversationDetailViewModel @Inject constructor(
             moveMessage(primaryUserId.first(), action.messageId, SystemLabelId.Spam.labelId)
             emitNewStateFrom(action)
         }
+    }
+
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    public override fun onCleared() {
+        super.onCleared()
+        observableFlowScope.cancel()
     }
 
     companion object {

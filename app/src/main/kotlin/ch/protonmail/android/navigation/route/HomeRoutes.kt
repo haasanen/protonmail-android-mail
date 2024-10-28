@@ -592,4 +592,3 @@ internal fun NavGraphBuilder.addContactSearch(navController: NavHostController) 
         )
     }
 }
-

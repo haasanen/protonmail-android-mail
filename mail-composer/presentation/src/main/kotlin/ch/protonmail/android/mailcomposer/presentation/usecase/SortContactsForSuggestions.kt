@@ -18,65 +18,73 @@
 
 package ch.protonmail.android.mailcomposer.presentation.usecase
 
+import ch.protonmail.android.mailcommon.domain.coroutines.DefaultDispatcher
+import ch.protonmail.android.mailcommon.presentation.usecase.GetInitials
 import ch.protonmail.android.mailcomposer.presentation.model.ContactSuggestionUiModel
+import ch.protonmail.android.mailcontact.domain.model.Contact
 import ch.protonmail.android.mailcontact.domain.model.ContactGroup
 import ch.protonmail.android.mailcontact.domain.model.DeviceContact
-import ch.protonmail.android.mailcontact.domain.model.Contact
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import me.proton.core.util.kotlin.takeIfNotBlank
 import javax.inject.Inject
 
-class SortContactsForSuggestions @Inject constructor() {
+class SortContactsForSuggestions @Inject constructor(
+    private val getInitials: GetInitials,
+    @DefaultDispatcher private val dispatcher: CoroutineDispatcher = Dispatchers.Default
+) {
 
-    operator fun invoke(
+    suspend operator fun invoke(
         contacts: List<Contact>,
         deviceContacts: List<DeviceContact>,
         contactGroups: List<ContactGroup>,
         maxContactAutocompletionCount: Int
-    ): List<ContactSuggestionUiModel> {
+    ): List<ContactSuggestionUiModel> = withContext(dispatcher) {
+        // Use a temporary map to store unique contacts based on their email address.
+        val temporaryEmailContactMap = mutableMapOf<String, ContactSuggestionUiModel.Contact>()
 
         val fromContacts = contacts.asSequence().flatMap { contact ->
-            contact.contactEmails.map {
-                contact.copy(
-                    contactEmails = listOf(it)
-                ) // flatMap into Contacts containing only one ContactEmail because we need to sort by them
+            contact.contactEmails.map { contactEmail ->
+                Triple(contact, contactEmail, Long.MAX_VALUE - contactEmail.lastUsedTime)
             }
-        }.sortedBy {
-            val lastUsedTimeDescending = Long.MAX_VALUE - it.contactEmails.first().lastUsedTime
+        }.sortedBy { (contact, contactEmail, lastUsedTimeDescending) ->
+            "$lastUsedTimeDescending ${contact.name} ${contactEmail.email}"
+        }.mapNotNull { (contact, contactEmail, _) ->
+            val email = contactEmail.email
+            if (email in temporaryEmailContactMap) return@mapNotNull null
 
-            // LastUsedTime, name, email
-            "$lastUsedTimeDescending ${it.name} ${it.contactEmails.first().email ?: ""}"
-        }.map { contact ->
-            val contactEmail = contact.contactEmails.first()
             ContactSuggestionUiModel.Contact(
                 name = contactEmail.name.takeIfNotBlank()
                     ?: contact.name.takeIfNotBlank()
-                    ?: contactEmail.email,
-                email = contactEmail.email
-            )
+                    ?: email,
+                initial = getInitials(contact.name).takeIfNotBlank() ?: "?",
+                email = email
+            ).also { temporaryEmailContactMap[email] = it }
         }
 
-        val fromDeviceContacts = deviceContacts.asSequence().map {
+        val fromDeviceContacts = deviceContacts.asSequence().mapNotNull { deviceContact ->
+            val email = deviceContact.email
+            if (email in temporaryEmailContactMap) return@mapNotNull null
+
             ContactSuggestionUiModel.Contact(
-                name = it.name,
-                email = it.email
-            )
+                name = deviceContact.name,
+                initial = getInitials(deviceContact.name).takeIfNotBlank() ?: "?",
+                email = email
+            ).also { temporaryEmailContactMap[email] = it }
         }
 
         val fromContactGroups = contactGroups.asSequence().map { contactGroup ->
             ContactSuggestionUiModel.ContactGroup(
                 name = contactGroup.name,
-                emails = contactGroup.members.map { it.email }
+                emails = contactGroup.members.map { it.email }.distinct()
             )
         }
 
-        val fromDeviceAndContactGroups = (fromDeviceContacts + fromContactGroups).sortedBy {
-            it.name
-        }
+        val fromDeviceAndContactGroups = (fromDeviceContacts + fromContactGroups).sortedBy { it.name }
 
-        return (fromContacts + fromDeviceAndContactGroups)
+        return@withContext (fromContacts + fromDeviceAndContactGroups)
             .take(maxContactAutocompletionCount)
             .toList()
-
     }
-
 }
