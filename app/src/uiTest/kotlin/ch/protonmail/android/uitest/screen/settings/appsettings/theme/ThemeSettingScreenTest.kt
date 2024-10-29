@@ -34,7 +34,7 @@ import ch.protonmail.android.test.annotations.suite.RegressionTest
 import ch.protonmail.android.uitest.util.HiltInstrumentedTest
 import ch.protonmail.android.uitest.util.onNodeWithText
 import dagger.hilt.android.testing.HiltAndroidTest
-import me.proton.core.compose.theme.ProtonTheme
+import ch.protonmail.android.design.compose.theme.ProtonTheme
 import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull

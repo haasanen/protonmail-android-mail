@@ -36,9 +36,9 @@ import ch.protonmail.android.mailcommon.presentation.mapper.UnreadCountValueMapp
 import ch.protonmail.android.mailmailbox.presentation.R
 import ch.protonmail.android.mailmailbox.presentation.mailbox.PreviewData.DummyUnreadCount
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.UnreadFilterState
-import me.proton.core.compose.component.ProtonCenteredProgress
-import me.proton.core.compose.theme.ProtonDimens
-import me.proton.core.compose.theme.ProtonTheme
+import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
+import ch.protonmail.android.design.compose.theme.ProtonDimens
+import ch.protonmail.android.design.compose.theme.ProtonTheme
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable

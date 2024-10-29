@@ -29,10 +29,11 @@ import ch.protonmail.android.mailsettings.presentation.websettings.model.WebSett
 import ch.protonmail.android.mailsettings.presentation.websettings.SettingWebView
 import ch.protonmail.android.mailsettings.presentation.websettings.WebSettingsScreenActions
 import ch.protonmail.android.mailsettings.presentation.websettings.WebSettingsState
-import me.proton.core.compose.component.ProtonCenteredProgress
-import me.proton.core.compose.component.ProtonErrorMessage
-import me.proton.core.compose.component.ProtonSettingsTopBar
-import me.proton.core.compose.flow.rememberAsState
+import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
+import ch.protonmail.android.design.compose.component.ProtonErrorMessage
+import ch.protonmail.android.design.compose.component.ProtonSettingsTopBar
+import ch.protonmail.android.design.compose.flow.rememberAsState
+
 import me.proton.core.util.kotlin.exhaustive
 import timber.log.Timber
 

@@ -87,20 +87,21 @@ import ch.protonmail.android.mailcontact.presentation.utils.ContactFeatureFlags.
 import ch.protonmail.android.mailcontact.presentation.utils.ContactFeatureFlags.ContactEdit
 import ch.protonmail.android.mailcontact.presentation.utils.ContactFeatureFlags.ContactExport
 import ch.protonmail.android.uicomponents.snackbar.DismissableSnackbarHost
-import me.proton.core.compose.component.ProtonAlertDialog
-import me.proton.core.compose.component.ProtonAlertDialogButton
-import me.proton.core.compose.component.ProtonCenteredProgress
-import me.proton.core.compose.component.ProtonSnackbarHostState
-import me.proton.core.compose.component.ProtonSnackbarType
-import me.proton.core.compose.component.appbar.ProtonTopAppBar
-import me.proton.core.compose.flow.rememberAsState
-import me.proton.core.compose.theme.ProtonDimens
-import me.proton.core.compose.theme.ProtonTheme
-import me.proton.core.compose.theme.captionWeak
-import me.proton.core.compose.theme.defaultNorm
-import me.proton.core.compose.theme.defaultSmallStrongUnspecified
-import me.proton.core.compose.theme.defaultWeak
-import me.proton.core.compose.theme.headlineNorm
+import ch.protonmail.android.design.compose.component.ProtonAlertDialog
+import ch.protonmail.android.design.compose.component.ProtonAlertDialogButton
+import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
+import ch.protonmail.android.design.compose.component.ProtonSnackbarHostState
+import ch.protonmail.android.design.compose.component.ProtonSnackbarType
+import ch.protonmail.android.design.compose.component.appbar.ProtonTopAppBar
+import ch.protonmail.android.design.compose.flow.rememberAsState
+
+import ch.protonmail.android.design.compose.theme.ProtonDimens
+import ch.protonmail.android.design.compose.theme.ProtonTheme
+import ch.protonmail.android.design.compose.theme.captionWeak
+import ch.protonmail.android.design.compose.theme.defaultNorm
+import ch.protonmail.android.design.compose.theme.defaultSmallStrongUnspecified
+import ch.protonmail.android.design.compose.theme.defaultWeak
+import ch.protonmail.android.design.compose.theme.headlineNorm
 import ch.protonmail.android.mailcontact.domain.model.ContactId
 import me.proton.core.util.kotlin.takeIfNotBlank
 

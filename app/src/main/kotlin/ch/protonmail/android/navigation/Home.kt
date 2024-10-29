@@ -34,7 +34,6 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -55,6 +54,7 @@ import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailsidebar.presentation.Sidebar
 import ch.protonmail.android.navigation.model.Destination.Dialog
 import ch.protonmail.android.navigation.model.Destination.Screen
+import ch.protonmail.android.navigation.model.HomeState
 import ch.protonmail.android.navigation.route.addAlternativeRoutingSetting
 import ch.protonmail.android.navigation.route.addAppSettings
 import ch.protonmail.android.navigation.route.addAutoLockPinScreen
@@ -94,9 +94,11 @@ import ch.protonmail.android.navigation.route.addWebSpamFilterSettings
 import ch.protonmail.android.uicomponents.snackbar.DismissableSnackbarHost
 import io.sentry.compose.withSentryObservableEffect
 import kotlinx.coroutines.launch
-import me.proton.core.compose.component.ProtonSnackbarHostState
-import me.proton.core.compose.component.ProtonSnackbarType
-import me.proton.core.compose.theme.ProtonTheme
+import ch.protonmail.android.design.compose.component.ProtonSnackbarHostState
+import ch.protonmail.android.design.compose.component.ProtonSnackbarType
+import ch.protonmail.android.design.compose.flow.rememberAsState
+
+import ch.protonmail.android.design.compose.theme.ProtonTheme
 import me.proton.core.network.domain.NetworkStatus
 
 @Composable
@@ -116,7 +118,7 @@ fun Home(
     val snackbarHostNormState = remember { ProtonSnackbarHostState(defaultType = ProtonSnackbarType.NORM) }
     val snackbarHostErrorState = remember { ProtonSnackbarHostState(defaultType = ProtonSnackbarType.ERROR) }
     val scope = rememberCoroutineScope()
-    val state by viewModel.state.collectAsStateWithLifecycle()
+    val state = rememberAsState(flow = viewModel.state, initial = HomeState.Initial)
 
     val offlineSnackbarMessage = stringResource(id = R.string.you_are_offline)
     fun showOfflineSnackbar() = scope.launch {
@@ -126,13 +128,13 @@ fun Home(
         )
     }
 
-    ConsumableLaunchedEffect(state.networkStatusEffect) {
+    ConsumableLaunchedEffect(state.value.networkStatusEffect) {
         if (it == NetworkStatus.Disconnected) {
             showOfflineSnackbar()
         }
     }
 
-    ConsumableLaunchedEffect(state.navigateToEffect) {
+    ConsumableLaunchedEffect(state.value.navigateToEffect) {
         viewModel.navigateTo(navController, it)
     }
 
@@ -244,7 +246,7 @@ fun Home(
         undoActionEffect.value = Effect.of(actionResult)
     }
 
-    ConsumableLaunchedEffect(state.messageSendingStatusEffect) { sendingStatus ->
+    ConsumableLaunchedEffect(state.value.messageSendingStatusEffect) { sendingStatus ->
         when (sendingStatus) {
             is MessageSendingStatus.MessageSent -> showSuccessSendingMessageSnackbar()
             is MessageSendingStatus.SendMessageError -> showErrorSendingMessageSnackbar()

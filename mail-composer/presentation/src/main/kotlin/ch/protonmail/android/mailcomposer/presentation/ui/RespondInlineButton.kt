@@ -27,8 +27,8 @@ import androidx.compose.ui.Alignment.Companion.CenterEnd
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import ch.protonmail.android.mailcomposer.presentation.R
-import me.proton.core.compose.component.ProtonTextButton
-import me.proton.core.compose.theme.ProtonDimens
+import ch.protonmail.android.design.compose.component.ProtonTextButton
+import ch.protonmail.android.design.compose.theme.ProtonDimens
 
 @Composable
 internal fun RespondInlineButton(onRespondInlineClick: () -> Unit, modifier: Modifier = Modifier) {

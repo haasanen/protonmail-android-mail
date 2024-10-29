@@ -75,7 +75,6 @@ import ch.protonmail.android.mailcommon.presentation.model.string
 import ch.protonmail.android.mailcommon.presentation.ui.BottomActionBar
 import ch.protonmail.android.mailcommon.presentation.ui.CommonTestTags
 import ch.protonmail.android.mailcommon.presentation.ui.delete.DeleteDialog
-import ch.protonmail.android.mailcontact.domain.model.ContactId
 import ch.protonmail.android.maildetail.domain.model.OpenAttachmentIntentValues
 import ch.protonmail.android.maildetail.domain.model.OpenProtonCalendarIntentValues
 import ch.protonmail.android.maildetail.presentation.R
@@ -109,14 +108,15 @@ import ch.protonmail.android.uicomponents.snackbar.DismissableSnackbarHost
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.coroutines.android.awaitFrame
 import kotlinx.coroutines.launch
-import me.proton.core.compose.component.ProtonCenteredProgress
-import me.proton.core.compose.component.ProtonErrorMessage
-import me.proton.core.compose.component.ProtonModalBottomSheetLayout
-import me.proton.core.compose.component.ProtonSnackbarHostState
-import me.proton.core.compose.component.ProtonSnackbarType
-import me.proton.core.compose.theme.ProtonDimens
-import me.proton.core.compose.theme.ProtonTheme
-import me.proton.core.compose.theme.ProtonTheme3
+import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
+import ch.protonmail.android.design.compose.component.ProtonErrorMessage
+import ch.protonmail.android.design.compose.component.ProtonModalBottomSheetLayout
+import ch.protonmail.android.design.compose.component.ProtonSnackbarHostState
+import ch.protonmail.android.design.compose.component.ProtonSnackbarType
+import ch.protonmail.android.design.compose.theme.ProtonDimens
+import ch.protonmail.android.design.compose.theme.ProtonTheme
+import ch.protonmail.android.design.compose.theme.ProtonTheme3
+import ch.protonmail.android.mailcontact.domain.model.ContactId
 import timber.log.Timber
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -127,10 +127,7 @@ fun ConversationDetailScreen(
     viewModel: ConversationDetailViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-    val bottomSheetState = rememberModalBottomSheetState(
-        initialValue = ModalBottomSheetValue.Hidden,
-        skipHalfExpanded = true
-    )
+    val bottomSheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
     val isSystemBackButtonClickEnabled = remember { mutableStateOf(true) }
@@ -166,13 +163,8 @@ fun ConversationDetailScreen(
     }
 
     DeleteDialog(
-        state = state.conversationDeleteState.deleteDialogState,
-        confirm = {
-            when (val messageId = state.conversationDeleteState.messageIdInConversation) {
-                null -> viewModel.submit(ConversationDetailViewAction.DeleteConfirmed)
-                else -> viewModel.submit(ConversationDetailViewAction.DeleteMessageConfirmed(messageId))
-            }
-        },
+        state = state.deleteDialogState,
+        confirm = { viewModel.submit(ConversationDetailViewAction.DeleteConfirmed) },
         dismiss = { viewModel.submit(ConversationDetailViewAction.DeleteDialogDismissed) }
     )
 
@@ -240,7 +232,6 @@ fun ConversationDetailScreen(
                         },
                         onMoveToTrash = { viewModel.submit(ConversationDetailViewAction.TrashMessage(it)) },
                         onMoveToArchive = { viewModel.submit(ConversationDetailViewAction.ArchiveMessage(it)) },
-                        onDelete = { viewModel.submit(ConversationDetailViewAction.DeleteMessageRequested(it)) },
                         onMoveToSpam = { viewModel.submit(ConversationDetailViewAction.MoveMessageToSpam(it)) },
                         onMove = { viewModel.submit(ConversationDetailViewAction.RequestMessageMoveToBottomSheet(it)) },
                         onPrint = { viewModel.submit(ConversationDetailViewAction.PrintRequested(it)) },
@@ -254,7 +245,6 @@ fun ConversationDetailScreen(
                         onMoveConversation = {
                             viewModel.submit(ConversationDetailViewAction.RequestMoveToBottomSheet)
                         },
-                        onDeleteConversation = { viewModel.submit(ConversationDetailViewAction.DeleteRequested) },
 
                         onMoveToArchiveConversation = { Timber.d("Archive not implemented for conversation") },
                         onMoveToSpamConversation = { Timber.d("Spam not implemented for conversation") },
@@ -289,7 +279,11 @@ fun ConversationDetailScreen(
                     )
                 )
 
-                else -> Unit
+                else -> {
+                    if (bottomSheetState.isVisible) {
+                        ProtonCenteredProgress()
+                    }
+                }
             }
         }
     ) {
@@ -393,7 +387,7 @@ fun ConversationDetailScreen(
     scrollToMessageId: String?
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(snapAnimationSpec = null)
-    val snackbarHostState = remember { ProtonSnackbarHostState() }
+    val snackbarHostState = ProtonSnackbarHostState()
     val linkConfirmationDialogState = remember { mutableStateOf<Uri?>(null) }
     val phishingLinkConfirmationDialogState = remember { mutableStateOf<Uri?>(null) }
 
@@ -792,7 +786,7 @@ object ConversationDetailScreen {
 
     const val ConversationIdKey = "conversation id"
     const val ScrollToMessageIdKey = "scroll to message id"
-    const val OpenedFromLocationKey = "opened from location"
+    const val FilterByLocationKey = "opened from location"
 
     val scrollOffsetDp: Dp = (-30).dp
 

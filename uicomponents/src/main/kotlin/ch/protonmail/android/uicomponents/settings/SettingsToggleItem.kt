@@ -32,13 +32,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
+import ch.protonmail.android.design.compose.component.ProtonRawListItem
 import ch.protonmail.android.uicomponents.chips.thenIf
-import me.proton.core.compose.component.ProtonRawListItem
-import me.proton.core.compose.theme.ProtonDimens
-import me.proton.core.compose.theme.ProtonTheme
-import me.proton.core.compose.theme.defaultNorm
-import me.proton.core.compose.theme.defaultSmallUnspecified
-import me.proton.core.compose.theme.textNorm
+import ch.protonmail.android.design.compose.theme.ProtonDimens
+import ch.protonmail.android.design.compose.theme.ProtonTheme
+import ch.protonmail.android.design.compose.theme.defaultNorm
+import ch.protonmail.android.design.compose.theme.defaultSmallUnspecified
+import ch.protonmail.android.design.compose.theme.textNorm
 
 @Composable
 fun SettingsToggleItem(

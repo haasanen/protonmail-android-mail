@@ -23,7 +23,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
-import me.proton.core.compose.theme.ProtonTheme
+import ch.protonmail.android.design.compose.theme.ProtonTheme
 
 @Composable
 fun MailDivider(modifier: Modifier = Modifier) {

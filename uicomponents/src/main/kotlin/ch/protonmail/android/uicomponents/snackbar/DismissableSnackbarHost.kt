@@ -27,8 +27,8 @@ import androidx.compose.material.rememberDismissState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
-import me.proton.core.compose.component.ProtonSnackbarHost
-import me.proton.core.compose.component.ProtonSnackbarHostState
+import ch.protonmail.android.design.compose.component.ProtonSnackbarHost
+import ch.protonmail.android.design.compose.component.ProtonSnackbarHostState
 
 @Composable
 fun DismissableSnackbarHost(modifier: Modifier = Modifier, protonSnackbarHostState: ProtonSnackbarHostState) {

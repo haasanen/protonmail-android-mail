@@ -54,3 +54,18 @@ android {
         resources.excludes.add("META-INF/LGPL2.1")
     }
 }
+
+dependencies {
+    kapt(Dependencies.appAnnotationProcessors)
+
+    implementation(Dependencies.modulePresentationLibs)
+
+    implementation(project(":mail-common:domain"))
+    implementation(project(":mail-conversation:domain"))
+    implementation(project(":mail-detail:domain"))
+    implementation(project(":mail-message:domain"))
+
+    implementation(project(":design-system"))
+
+    testImplementation(Dependencies.testLibs)
+}

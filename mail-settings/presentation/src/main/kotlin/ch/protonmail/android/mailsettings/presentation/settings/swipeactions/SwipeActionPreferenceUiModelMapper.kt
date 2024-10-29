@@ -21,7 +21,7 @@ package ch.protonmail.android.mailsettings.presentation.settings.swipeactions
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import ch.protonmail.android.mailsettings.domain.model.SwipeActionsPreference
-import me.proton.core.compose.theme.ProtonTheme
+import ch.protonmail.android.design.compose.theme.ProtonTheme
 import me.proton.core.domain.arch.Mapper
 import me.proton.core.mailsettings.domain.entity.SwipeAction
 import javax.inject.Inject

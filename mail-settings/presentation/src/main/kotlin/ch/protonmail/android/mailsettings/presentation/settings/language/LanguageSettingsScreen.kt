@@ -35,9 +35,10 @@ import ch.protonmail.android.mailsettings.presentation.R
 import ch.protonmail.android.mailsettings.presentation.R.string
 import ch.protonmail.android.mailsettings.presentation.settings.language.LanguageSettingsState.Data
 import ch.protonmail.android.mailsettings.presentation.settings.language.LanguageSettingsState.Loading
-import me.proton.core.compose.component.ProtonSettingsRadioItem
-import me.proton.core.compose.component.ProtonSettingsTopBar
-import me.proton.core.compose.flow.rememberAsState
+import ch.protonmail.android.design.compose.component.ProtonSettingsRadioItem
+import ch.protonmail.android.design.compose.component.ProtonSettingsTopBar
+import ch.protonmail.android.design.compose.flow.rememberAsState
+
 
 const val TEST_TAG_LANGUAGE_SETTINGS_SCREEN = "LanguageSettingsScreenTestTag"
 const val TEST_TAG_LANG_SETTINGS_SCREEN_SCROLL_COL = "LanguageSettingsScreenColumnTestTag"

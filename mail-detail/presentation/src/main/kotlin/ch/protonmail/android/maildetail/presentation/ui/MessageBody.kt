@@ -51,11 +51,11 @@ import ch.protonmail.android.mailmessage.domain.usecase.GetEmbeddedImageResult
 import ch.protonmail.android.mailmessage.presentation.model.MessageBodyExpandCollapseMode
 import ch.protonmail.android.mailmessage.presentation.model.MessageBodyUiModel
 import ch.protonmail.android.mailmessage.presentation.ui.MessageBodyWebView
-import me.proton.core.compose.component.ProtonButton
-import me.proton.core.compose.component.ProtonSolidButton
-import me.proton.core.compose.theme.ProtonDimens
-import me.proton.core.compose.theme.ProtonTheme
-import me.proton.core.compose.theme.defaultSmallWeak
+import ch.protonmail.android.design.compose.component.ProtonButton
+import ch.protonmail.android.design.compose.component.ProtonSolidButton
+import ch.protonmail.android.design.compose.theme.ProtonDimens
+import ch.protonmail.android.design.compose.theme.ProtonTheme
+import ch.protonmail.android.design.compose.theme.defaultSmallWeak
 
 @Composable
 @Suppress("LongParameterList", "LongMethod")

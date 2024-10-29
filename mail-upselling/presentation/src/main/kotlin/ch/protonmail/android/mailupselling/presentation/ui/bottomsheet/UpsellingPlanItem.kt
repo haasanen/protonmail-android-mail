@@ -57,10 +57,10 @@ import ch.protonmail.android.mailupselling.presentation.model.toTelemetryPayload
 import ch.protonmail.android.mailupselling.presentation.ui.UpsellingColors
 import ch.protonmail.android.mailupselling.presentation.ui.UpsellingDimens
 import ch.protonmail.android.uicomponents.chips.thenIf
-import me.proton.core.compose.theme.ProtonDimens
-import me.proton.core.compose.theme.ProtonTheme
-import me.proton.core.compose.theme.captionUnspecified
-import me.proton.core.compose.theme.defaultHighlightUnspecified
+import ch.protonmail.android.design.compose.theme.ProtonDimens
+import ch.protonmail.android.design.compose.theme.ProtonTheme
+import ch.protonmail.android.design.compose.theme.captionUnspecified
+import ch.protonmail.android.design.compose.theme.defaultHighlightUnspecified
 import me.proton.core.payment.presentation.view.ProtonPaymentButton
 
 @OptIn(ExperimentalLayoutApi::class)

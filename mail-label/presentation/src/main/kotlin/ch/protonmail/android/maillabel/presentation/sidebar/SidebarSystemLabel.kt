@@ -32,8 +32,8 @@ import ch.protonmail.android.maillabel.presentation.MailLabelUiModel
 import ch.protonmail.android.maillabel.presentation.MailLabelsUiModel
 import ch.protonmail.android.maillabel.presentation.sidebar.SidebarLabelAction.Select
 import ch.protonmail.android.maillabel.presentation.sidebar.SidebarSystemLabelTestTags.BaseTag
-import me.proton.core.compose.component.ProtonSidebarLazy
-import me.proton.core.compose.theme.ProtonTheme
+import ch.protonmail.android.design.compose.component.ProtonSidebarLazy
+import ch.protonmail.android.design.compose.theme.ProtonTheme
 
 fun LazyListScope.sidebarSystemLabelItems(
     items: List<MailLabelUiModel.System>,

@@ -30,7 +30,7 @@ import ch.protonmail.android.maillabel.presentation.iconRes
 import ch.protonmail.android.maillabel.presentation.textRes
 import ch.protonmail.android.testdata.label.rust.LabelAsActionsTestData
 import kotlinx.collections.immutable.toImmutableList
-import me.proton.core.compose.theme.ProtonDimens
+import ch.protonmail.android.design.compose.theme.ProtonDimens
 
 object MailLabelUiModelTestData {
 

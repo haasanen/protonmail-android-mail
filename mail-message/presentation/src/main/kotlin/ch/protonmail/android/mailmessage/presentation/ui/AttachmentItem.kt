@@ -55,13 +55,13 @@ import ch.protonmail.android.mailmessage.presentation.sample.AttachmentUiModelSa
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
-import me.proton.core.compose.component.ProtonAlertDialog
-import me.proton.core.compose.component.ProtonAlertDialogButton
-import me.proton.core.compose.component.ProtonAlertDialogText
-import me.proton.core.compose.theme.ProtonDimens
-import me.proton.core.compose.theme.ProtonTheme
-import me.proton.core.compose.theme.captionHint
-import me.proton.core.compose.theme.defaultSmall
+import ch.protonmail.android.design.compose.component.ProtonAlertDialog
+import ch.protonmail.android.design.compose.component.ProtonAlertDialogButton
+import ch.protonmail.android.design.compose.component.ProtonAlertDialogText
+import ch.protonmail.android.design.compose.theme.ProtonDimens
+import ch.protonmail.android.design.compose.theme.ProtonTheme
+import ch.protonmail.android.design.compose.theme.captionHint
+import ch.protonmail.android.design.compose.theme.defaultSmall
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable

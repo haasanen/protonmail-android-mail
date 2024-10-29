@@ -25,7 +25,7 @@ import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.testdata.maillabel.MailLabelTestData.buildCustomFolder
-import me.proton.core.compose.theme.ProtonDimens
+import ch.protonmail.android.design.compose.theme.ProtonDimens
 import org.junit.Test
 import kotlin.test.assertEquals
 

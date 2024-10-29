@@ -44,10 +44,10 @@ import ch.protonmail.android.maillabel.presentation.ui.MailboxItemLabels.MinExpa
 import ch.protonmail.android.maillabel.presentation.ui.MailboxItemLabels.Plus1CharLimit
 import ch.protonmail.android.maillabel.presentation.ui.MailboxItemLabels.Plus2CharsLimit
 import ch.protonmail.android.maillabel.presentation.ui.MailboxItemLabels.Plus3CharsLimit
-import me.proton.core.compose.theme.ProtonDimens
-import me.proton.core.compose.theme.ProtonTheme
-import me.proton.core.compose.theme.captionWeak
-import me.proton.core.compose.theme.overline
+import ch.protonmail.android.design.compose.theme.ProtonDimens
+import ch.protonmail.android.design.compose.theme.ProtonTheme
+import ch.protonmail.android.design.compose.theme.captionWeak
+import ch.protonmail.android.design.compose.theme.overline
 
 @Composable
 fun LabelsList(

@@ -32,10 +32,10 @@ import ch.protonmail.android.mailsettings.presentation.settings.autolock.model.A
 import ch.protonmail.android.mailsettings.presentation.settings.autolock.model.AutoLockSettingsViewAction
 import ch.protonmail.android.mailsettings.presentation.settings.autolock.viewmodel.AutoLockSettingsViewModel
 import ch.protonmail.android.uicomponents.snackbar.DismissableSnackbarHost
-import me.proton.core.compose.component.ProtonCenteredProgress
-import me.proton.core.compose.component.ProtonSettingsTopBar
-import me.proton.core.compose.component.ProtonSnackbarHostState
-import me.proton.core.compose.component.ProtonSnackbarType
+import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
+import ch.protonmail.android.design.compose.component.ProtonSettingsTopBar
+import ch.protonmail.android.design.compose.component.ProtonSnackbarHostState
+import ch.protonmail.android.design.compose.component.ProtonSnackbarType
 
 @Composable
 fun AutoLockSettingsScreen(

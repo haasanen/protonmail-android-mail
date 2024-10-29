@@ -54,15 +54,16 @@ import ch.protonmail.android.mailsettings.presentation.R
 import ch.protonmail.android.mailsettings.presentation.R.string
 import ch.protonmail.android.mailsettings.presentation.settings.theme.SettingsDimens
 import ch.protonmail.android.mailsettings.presentation.settings.theme.SwipeActionIllustrationDimens
-import me.proton.core.compose.component.ProtonCenteredProgress
-import me.proton.core.compose.component.ProtonErrorMessage
-import me.proton.core.compose.component.appbar.ProtonTopAppBar
-import me.proton.core.compose.flow.rememberAsState
-import me.proton.core.compose.theme.ProtonDimens
-import me.proton.core.compose.theme.ProtonTheme
-import me.proton.core.compose.theme.captionHint
-import me.proton.core.compose.theme.default
-import me.proton.core.compose.theme.defaultWeak
+import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
+import ch.protonmail.android.design.compose.component.ProtonErrorMessage
+import ch.protonmail.android.design.compose.component.appbar.ProtonTopAppBar
+import ch.protonmail.android.design.compose.flow.rememberAsState
+
+import ch.protonmail.android.design.compose.theme.ProtonDimens
+import ch.protonmail.android.design.compose.theme.ProtonTheme
+import ch.protonmail.android.design.compose.theme.captionHint
+import ch.protonmail.android.design.compose.theme.default
+import ch.protonmail.android.design.compose.theme.defaultWeak
 import me.proton.core.mailsettings.domain.entity.SwipeAction
 import ch.protonmail.android.mailcommon.presentation.R.string as commonString
 

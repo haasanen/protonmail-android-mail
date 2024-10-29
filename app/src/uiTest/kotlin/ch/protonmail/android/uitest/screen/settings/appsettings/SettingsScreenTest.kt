@@ -37,7 +37,7 @@ import ch.protonmail.android.uitest.util.assertions.assertTextContains
 import ch.protonmail.android.uitest.util.hasText
 import ch.protonmail.android.uitest.util.onNodeWithText
 import dagger.hilt.android.testing.HiltAndroidTest
-import me.proton.core.compose.theme.ProtonTheme
+import ch.protonmail.android.design.compose.theme.ProtonTheme
 import org.junit.Before
 import org.junit.Test
 

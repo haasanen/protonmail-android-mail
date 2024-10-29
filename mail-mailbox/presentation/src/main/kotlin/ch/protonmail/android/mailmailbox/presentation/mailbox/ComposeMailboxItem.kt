@@ -61,11 +61,11 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.model.Participants
 import ch.protonmail.android.mailmailbox.presentation.mailbox.previewdata.MailboxItemUiModelPreviewData
 import ch.protonmail.android.mailmessage.presentation.ui.ParticipantAvatar
 import kotlinx.collections.immutable.ImmutableList
-import me.proton.core.compose.theme.ProtonDimens
-import me.proton.core.compose.theme.ProtonTheme
-import me.proton.core.compose.theme.captionNorm
-import me.proton.core.compose.theme.defaultNorm
-import me.proton.core.compose.theme.defaultSmallNorm
+import ch.protonmail.android.design.compose.theme.ProtonDimens
+import ch.protonmail.android.design.compose.theme.ProtonTheme
+import ch.protonmail.android.design.compose.theme.captionNorm
+import ch.protonmail.android.design.compose.theme.defaultNorm
+import ch.protonmail.android.design.compose.theme.defaultSmallNorm
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable

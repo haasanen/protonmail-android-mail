@@ -44,9 +44,10 @@ import me.proton.core.compose.component.ProtonCenteredProgress
 import me.proton.core.compose.component.ProtonSettingsItem
 import me.proton.core.compose.component.ProtonSettingsList
 import me.proton.core.compose.component.ProtonSettingsTopBar
-import me.proton.core.compose.flow.rememberAsState
-import me.proton.core.compose.theme.ProtonDimens
-import me.proton.core.compose.theme.ProtonTheme
+import ch.protonmail.android.design.compose.flow.rememberAsState
+import ch.protonmail.android.design.compose.theme.ProtonDimens
+import ch.protonmail.android.design.compose.theme.ProtonTheme
+
 import me.proton.core.presentation.utils.formatByteToHumanReadable
 import me.proton.core.usersettings.presentation.compose.view.CrashReportSettingToggleItem
 import me.proton.core.usersettings.presentation.compose.view.TelemetrySettingToggleItem

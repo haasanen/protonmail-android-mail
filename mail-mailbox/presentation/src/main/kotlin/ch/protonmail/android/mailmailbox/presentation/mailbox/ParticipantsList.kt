@@ -40,9 +40,9 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.ParticipantsList.p
 import ch.protonmail.android.mailmailbox.presentation.mailbox.ParticipantsList.threeDotsSlotId
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.ParticipantUiModel
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.ParticipantsUiModel
-import me.proton.core.compose.theme.ProtonDimens
-import me.proton.core.compose.theme.ProtonTheme
-import me.proton.core.compose.theme.defaultNorm
+import ch.protonmail.android.design.compose.theme.ProtonDimens
+import ch.protonmail.android.design.compose.theme.ProtonTheme
+import ch.protonmail.android.design.compose.theme.defaultNorm
 
 @Composable
 fun ParticipantsList(

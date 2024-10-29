@@ -33,8 +33,8 @@ import ch.protonmail.android.uitest.util.HiltInstrumentedTest
 import ch.protonmail.android.uitest.util.hasText
 import ch.protonmail.android.uitest.util.onNodeWithText
 import dagger.hilt.android.testing.HiltAndroidTest
-import me.proton.core.compose.component.PROTON_PROGRESS_TEST_TAG
-import me.proton.core.compose.theme.ProtonTheme
+import ch.protonmail.android.design.compose.component.PROTON_PROGRESS_TEST_TAG
+import ch.protonmail.android.design.compose.theme.ProtonTheme
 import kotlin.test.Test
 import ch.protonmail.android.mailsettings.presentation.R as SettingsR
 import me.proton.core.presentation.R as CoreR

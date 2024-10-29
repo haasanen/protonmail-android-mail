@@ -73,4 +73,6 @@ dependencies {
 
     testImplementation(libs.bundles.test)
     testImplementation(project(":test:test-data"))
+    implementation(project(":design-system"))
+
 }

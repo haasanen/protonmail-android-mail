@@ -34,13 +34,14 @@ import ch.protonmail.android.mailsettings.presentation.R
 import ch.protonmail.android.mailsettings.presentation.R.string
 import ch.protonmail.android.mailsettings.presentation.settings.SettingsState.Data
 import ch.protonmail.android.mailsettings.presentation.settings.SettingsState.Loading
-import me.proton.core.compose.component.ProtonCenteredProgress
-import me.proton.core.compose.component.ProtonSettingsHeader
-import me.proton.core.compose.component.ProtonSettingsItem
-import me.proton.core.compose.component.ProtonSettingsList
-import me.proton.core.compose.component.ProtonSettingsTopBar
-import me.proton.core.compose.flow.rememberAsState
-import me.proton.core.compose.theme.ProtonTheme
+import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
+import ch.protonmail.android.design.compose.component.ProtonSettingsHeader
+import ch.protonmail.android.design.compose.component.ProtonSettingsItem
+import ch.protonmail.android.design.compose.component.ProtonSettingsList
+import ch.protonmail.android.design.compose.component.ProtonSettingsTopBar
+import ch.protonmail.android.design.compose.flow.rememberAsState
+
+import ch.protonmail.android.design.compose.theme.ProtonTheme
 
 @Composable
 fun MainSettingsScreen(

@@ -55,8 +55,8 @@ import ch.protonmail.android.mailmessage.presentation.model.SenderImageState
 import ch.protonmail.android.mailmessage.presentation.viewmodel.SenderImageViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import me.proton.core.compose.theme.ProtonDimens
-import me.proton.core.compose.theme.ProtonTheme
+import ch.protonmail.android.design.compose.theme.ProtonDimens
+import ch.protonmail.android.design.compose.theme.ProtonTheme
 
 @Composable
 fun ParticipantAvatar(

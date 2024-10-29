@@ -32,7 +32,7 @@ import ch.protonmail.android.navigation.model.Destination
 import ch.protonmail.android.navigation.route.addAutoLockPinScreen
 import dagger.hilt.android.AndroidEntryPoint
 import io.sentry.compose.withSentryObservableEffect
-import me.proton.core.compose.theme.ProtonTheme
+import ch.protonmail.android.design.compose.theme.ProtonTheme
 
 @AndroidEntryPoint
 internal class LockScreenActivity : AppCompatActivity() {

@@ -24,9 +24,9 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import ch.protonmail.android.mailcontact.presentation.model.ContactListItemUiModel
-import me.proton.core.compose.theme.ProtonDimens
-import me.proton.core.compose.theme.ProtonTheme
-import me.proton.core.compose.theme.defaultSmallStrongUnspecified
+import ch.protonmail.android.design.compose.theme.ProtonDimens
+import ch.protonmail.android.design.compose.theme.ProtonTheme
+import ch.protonmail.android.design.compose.theme.defaultSmallStrongUnspecified
 
 @Composable
 internal fun ContactListHeaderItem(modifier: Modifier = Modifier, header: ContactListItemUiModel.Header) {

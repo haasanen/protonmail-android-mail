@@ -26,7 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import ch.protonmail.android.MainActivity
 import ch.protonmail.android.navigation.model.LauncherState
-import me.proton.core.compose.component.ProtonCenteredProgress
+import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
 import me.proton.core.domain.entity.UserId
 
 @Composable

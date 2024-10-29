@@ -25,7 +25,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import ch.protonmail.android.mailsettings.presentation.R
 import ch.protonmail.android.uicomponents.settings.SettingsToggleItem
-import me.proton.core.compose.component.ProtonSettingsList
+import ch.protonmail.android.design.compose.component.ProtonSettingsList
 
 @Composable
 fun PrivacySettingsList(

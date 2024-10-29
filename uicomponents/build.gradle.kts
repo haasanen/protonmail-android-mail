@@ -56,4 +56,6 @@ dependencies {
     implementation(libs.proton.core.country)
 
     testImplementation(libs.bundles.test)
+    implementation(project(":design-system"))
+
 }

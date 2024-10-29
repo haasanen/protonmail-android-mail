@@ -31,8 +31,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextOverflow
 import ch.protonmail.android.mailcomposer.presentation.model.SenderUiModel
-import me.proton.core.compose.component.ProtonRawListItem
-import me.proton.core.compose.theme.ProtonDimens
+import ch.protonmail.android.design.compose.component.ProtonRawListItem
+import ch.protonmail.android.design.compose.theme.ProtonDimens
 
 @Composable
 fun ChangeSenderBottomSheetContent(

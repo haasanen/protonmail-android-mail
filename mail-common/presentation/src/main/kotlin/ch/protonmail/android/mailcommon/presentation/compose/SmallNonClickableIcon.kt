@@ -30,7 +30,7 @@ import androidx.compose.ui.semantics.semantics
 import ch.protonmail.android.mailcommon.presentation.NO_CONTENT_DESCRIPTION
 import ch.protonmail.android.mailcommon.presentation.R
 import ch.protonmail.android.mailcommon.presentation.extension.tintColor
-import me.proton.core.compose.theme.ProtonDimens
+import ch.protonmail.android.design.compose.theme.ProtonDimens
 
 @Composable
 fun SmallNonClickableIcon(

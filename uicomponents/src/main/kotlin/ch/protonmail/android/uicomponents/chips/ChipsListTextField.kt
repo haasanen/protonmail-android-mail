@@ -56,14 +56,13 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.PopupProperties
-import ch.protonmail.android.uicomponents.chips.item.ChipItem
-import ch.protonmail.android.uicomponents.chips.item.ChipItemsList
 import ch.protonmail.android.uicomponents.verticalScrollbar
 import kotlinx.coroutines.launch
-import me.proton.core.compose.theme.ProtonDimens
-import me.proton.core.compose.theme.ProtonTheme
-import me.proton.core.compose.theme.defaultNorm
-import me.proton.core.compose.theme.defaultSmallWeak
+import ch.protonmail.android.design.compose.theme.ProtonDimens
+import ch.protonmail.android.design.compose.theme.ProtonTheme
+import ch.protonmail.android.design.compose.theme.defaultNorm
+import ch.protonmail.android.design.compose.theme.defaultSmallNorm
+import ch.protonmail.android.design.compose.theme.defaultSmallWeak
 import me.proton.core.util.kotlin.takeIfNotBlank
 
 /*
@@ -89,7 +88,7 @@ fun ChipsListTextField(
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     focusRequester: FocusRequester? = null,
     cursorColor: Color = ProtonTheme.colors.brandDarken20,
-    textStyle: TextStyle = ProtonTheme.typography.defaultNorm,
+    textStyle: TextStyle = ProtonTheme.typography.defaultSmallNorm,
     animateChipsCreation: Boolean = false,
     actions: ChipsListTextField.Actions,
     contactSuggestionState: ContactSuggestionState

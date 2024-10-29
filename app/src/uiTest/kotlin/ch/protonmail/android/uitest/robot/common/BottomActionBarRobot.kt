@@ -30,7 +30,7 @@ import ch.protonmail.android.test.ksp.annotations.VerifiesOuter
 import ch.protonmail.android.uitest.robot.ComposeRobot
 import ch.protonmail.android.uitest.util.onNodeWithContentDescription
 import ch.protonmail.android.uitest.util.onNodeWithText
-import me.proton.core.compose.component.PROTON_PROGRESS_TEST_TAG
+import ch.protonmail.android.design.compose.component.PROTON_PROGRESS_TEST_TAG
 
 internal class BottomActionBarRobot : ComposeRobot() {
 

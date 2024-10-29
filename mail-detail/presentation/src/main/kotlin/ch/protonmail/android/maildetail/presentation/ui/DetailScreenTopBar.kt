@@ -66,12 +66,12 @@ import ch.protonmail.android.maildetail.presentation.R.plurals
 import ch.protonmail.android.maildetail.presentation.R.string
 import ch.protonmail.android.maildetail.presentation.previewdata.DetailsScreenTopBarPreview
 import ch.protonmail.android.maildetail.presentation.previewdata.DetailsScreenTopBarPreviewProvider
-import me.proton.core.compose.theme.ProtonDimens
-import me.proton.core.compose.theme.ProtonTheme
-import me.proton.core.compose.theme.ProtonTheme3
-import me.proton.core.compose.theme.captionNorm
-import me.proton.core.compose.theme.defaultStrongNorm
-import me.proton.core.compose.theme.headlineNorm
+import ch.protonmail.android.design.compose.theme.ProtonDimens
+import ch.protonmail.android.design.compose.theme.ProtonTheme
+import ch.protonmail.android.design.compose.theme.ProtonTheme3
+import ch.protonmail.android.design.compose.theme.captionNorm
+import ch.protonmail.android.design.compose.theme.defaultStrongNorm
+import ch.protonmail.android.design.compose.theme.headlineNorm
 import kotlin.math.absoluteValue
 
 @OptIn(ExperimentalMaterial3Api::class)

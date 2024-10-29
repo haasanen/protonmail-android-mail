@@ -37,12 +37,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import ch.protonmail.android.mailcommon.presentation.NO_CONTENT_DESCRIPTION
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 import ch.protonmail.android.mailcontact.presentation.R
-import me.proton.core.compose.component.ProtonSecondaryButton
-import me.proton.core.compose.theme.ProtonDimens
-import me.proton.core.compose.theme.ProtonTheme
-import me.proton.core.compose.theme.captionNorm
-import me.proton.core.compose.theme.defaultSmallWeak
-import me.proton.core.compose.theme.defaultStrongNorm
+import ch.protonmail.android.design.compose.component.ProtonSecondaryButton
+import ch.protonmail.android.design.compose.theme.ProtonDimens
+import ch.protonmail.android.design.compose.theme.ProtonTheme
+import ch.protonmail.android.design.compose.theme.captionNorm
+import ch.protonmail.android.design.compose.theme.defaultSmallWeak
+import ch.protonmail.android.design.compose.theme.defaultStrongNorm
 
 @Composable
 internal fun ContactEmptyDataScreen(

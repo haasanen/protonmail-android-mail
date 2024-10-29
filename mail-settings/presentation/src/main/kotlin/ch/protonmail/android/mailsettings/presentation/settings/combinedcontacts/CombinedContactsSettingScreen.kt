@@ -30,10 +30,11 @@ import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
 import ch.protonmail.android.mailsettings.presentation.R
 import ch.protonmail.android.uicomponents.settings.SettingsToggleItem
 import ch.protonmail.android.uicomponents.snackbar.DismissableSnackbarHost
-import me.proton.core.compose.component.ProtonSettingsTopBar
-import me.proton.core.compose.component.ProtonSnackbarHostState
-import me.proton.core.compose.component.ProtonSnackbarType
-import me.proton.core.compose.flow.rememberAsState
+import ch.protonmail.android.design.compose.component.ProtonSettingsTopBar
+import ch.protonmail.android.design.compose.component.ProtonSnackbarHostState
+import ch.protonmail.android.design.compose.component.ProtonSnackbarType
+import ch.protonmail.android.design.compose.flow.rememberAsState
+
 
 const val TEST_TAG_COMBINED_CONTACTS_TOGGLE_ITEM = "CombinedContactsToggleItem"
 const val TEST_TAG_COMBINED_CONTACTS_SNACKBAR = "CombinedContactsSnackbar"

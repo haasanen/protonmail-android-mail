@@ -32,9 +32,10 @@ import ch.protonmail.android.mailsettings.domain.model.Theme
 import ch.protonmail.android.mailsettings.presentation.R
 import ch.protonmail.android.mailsettings.presentation.settings.theme.ThemeSettingsState.Data
 import ch.protonmail.android.mailsettings.presentation.settings.theme.ThemeSettingsState.Loading
-import me.proton.core.compose.component.ProtonSettingsRadioItem
-import me.proton.core.compose.component.ProtonSettingsTopBar
-import me.proton.core.compose.flow.rememberAsState
+import ch.protonmail.android.design.compose.component.ProtonSettingsRadioItem
+import ch.protonmail.android.design.compose.component.ProtonSettingsTopBar
+import ch.protonmail.android.design.compose.flow.rememberAsState
+
 
 const val TEST_TAG_THEME_SETTINGS_SCREEN = "ThemeSettingsScreenTestTag"
 

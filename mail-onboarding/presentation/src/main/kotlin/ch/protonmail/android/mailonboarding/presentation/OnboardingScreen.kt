@@ -49,15 +49,15 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 import ch.protonmail.android.mailonboarding.presentation.model.OnboardingState
 import ch.protonmail.android.mailonboarding.presentation.model.OnboardingUiModel
+
 import ch.protonmail.android.mailonboarding.presentation.ui.OnboardingButton
 import ch.protonmail.android.mailonboarding.presentation.ui.OnboardingContent
 import ch.protonmail.android.mailonboarding.presentation.ui.OnboardingIndexDots
 import ch.protonmail.android.mailonboarding.presentation.viewmodel.OnboardingViewModel
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
-import me.proton.core.compose.theme.ProtonTheme
+import ch.protonmail.android.design.compose.theme.ProtonTheme
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun OnboardingScreen(
     exitAction: () -> Unit,

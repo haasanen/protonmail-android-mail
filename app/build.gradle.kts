@@ -244,6 +244,7 @@ dependencies {
     implementation(project(":mail-sidebar"))
     implementation(project(":mail-session"))
     implementation(project(":uicomponents"))
+    implementation(project(":design-system"))
 
     debugImplementation(libs.bundles.app.debug)
 

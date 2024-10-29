@@ -33,11 +33,11 @@ import ch.protonmail.android.mailsettings.presentation.settings.notifications.mo
 import ch.protonmail.android.mailsettings.presentation.settings.notifications.model.PushNotificationsSettingsState
 import ch.protonmail.android.mailsettings.presentation.settings.notifications.viewmodel.PushNotificationsSettingsViewModel
 import ch.protonmail.android.uicomponents.snackbar.DismissableSnackbarHost
-import me.proton.core.compose.component.ProtonCenteredProgress
-import me.proton.core.compose.component.ProtonSettingsTopBar
-import me.proton.core.compose.component.ProtonSnackbarHostState
-import me.proton.core.compose.component.ProtonSnackbarType
-import me.proton.core.compose.theme.ProtonTheme
+import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
+import ch.protonmail.android.design.compose.component.ProtonSettingsTopBar
+import ch.protonmail.android.design.compose.component.ProtonSnackbarHostState
+import ch.protonmail.android.design.compose.component.ProtonSnackbarType
+import ch.protonmail.android.design.compose.theme.ProtonTheme
 
 @Composable
 fun PushNotificationsSettingsScreen(

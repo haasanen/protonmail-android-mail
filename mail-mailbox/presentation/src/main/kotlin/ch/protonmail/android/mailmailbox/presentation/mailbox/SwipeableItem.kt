@@ -57,8 +57,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.LayoutDirection
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.SwipeActionsUiModel
-import me.proton.core.compose.theme.ProtonDimens
-import me.proton.core.compose.theme.ProtonTheme
+import ch.protonmail.android.design.compose.theme.ProtonDimens
+import ch.protonmail.android.design.compose.theme.ProtonTheme
 import me.proton.core.mailsettings.domain.entity.SwipeAction
 import timber.log.Timber
 import kotlin.math.roundToInt

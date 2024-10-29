@@ -31,7 +31,7 @@ import ch.protonmail.android.mailsettings.presentation.settings.combinedcontacts
 import ch.protonmail.android.test.annotations.suite.RegressionTest
 import ch.protonmail.android.uitest.util.HiltInstrumentedTest
 import dagger.hilt.android.testing.HiltAndroidTest
-import me.proton.core.compose.theme.ProtonTheme
+import ch.protonmail.android.design.compose.theme.ProtonTheme
 import org.junit.Test
 import kotlin.test.assertEquals
 

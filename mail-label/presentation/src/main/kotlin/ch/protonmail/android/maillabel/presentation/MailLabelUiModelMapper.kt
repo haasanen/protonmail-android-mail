@@ -25,7 +25,7 @@ import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabel
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabels
-import me.proton.core.compose.theme.ProtonDimens
+import ch.protonmail.android.design.compose.theme.ProtonDimens
 
 fun MailLabels.toUiModels(counters: Map<LabelId, Int?>, selected: MailLabelId): MailLabelsUiModel = MailLabelsUiModel(
     systemLabels = system.map { it.toDynamicSystemUiModel(counters, selected) },

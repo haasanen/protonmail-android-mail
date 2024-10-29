@@ -27,8 +27,8 @@ import ch.protonmail.android.mailsettings.domain.model.autolock.AutoLockInsertio
 import ch.protonmail.android.mailsettings.domain.model.autolock.AutoLockInterval
 import ch.protonmail.android.mailsettings.presentation.settings.autolock.model.AutoLockBiometricsUiModel
 import ch.protonmail.android.mailsettings.presentation.settings.autolock.model.AutoLockSettingsState
-import me.proton.core.compose.component.ProtonSnackbarHostState
-import me.proton.core.compose.component.ProtonSnackbarType
+import ch.protonmail.android.design.compose.component.ProtonSnackbarHostState
+import ch.protonmail.android.design.compose.component.ProtonSnackbarType
 
 @Composable
 fun AutoLockSettingsScreenList(

@@ -49,12 +49,12 @@ import ch.protonmail.android.mailcommon.presentation.model.string
 import ch.protonmail.android.mailupselling.presentation.R
 import ch.protonmail.android.mailupselling.presentation.model.UpsellingBottomSheetContentState
 import ch.protonmail.android.mailupselling.presentation.ui.UpsellingColors
-import me.proton.core.compose.theme.ProtonDimens
-import me.proton.core.compose.theme.ProtonTheme
-import me.proton.core.compose.theme.ProtonTheme3
-import me.proton.core.compose.theme.defaultWeak
-import me.proton.core.compose.theme.headlineNorm
-import me.proton.core.compose.theme.headlineSmallNorm
+import ch.protonmail.android.design.compose.theme.ProtonDimens
+import ch.protonmail.android.design.compose.theme.ProtonTheme
+import ch.protonmail.android.design.compose.theme.ProtonTheme3
+import ch.protonmail.android.design.compose.theme.defaultWeak
+import ch.protonmail.android.design.compose.theme.headlineNorm
+import ch.protonmail.android.design.compose.theme.headlineSmallNorm
 
 @Composable
 internal fun UpsellingBottomSheetContent(

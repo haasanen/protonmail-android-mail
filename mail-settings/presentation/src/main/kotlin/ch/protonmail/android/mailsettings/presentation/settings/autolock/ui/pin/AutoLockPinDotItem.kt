@@ -33,8 +33,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens.AutoLockPinScreen.PinDotsGridHeight
 import ch.protonmail.android.mailsettings.presentation.R
-import me.proton.core.compose.theme.ProtonDimens
-import me.proton.core.compose.theme.ProtonTheme
+import ch.protonmail.android.design.compose.theme.ProtonDimens
+import ch.protonmail.android.design.compose.theme.ProtonTheme
 
 @Composable
 fun AutoLockPinLockIcon(modifier: Modifier = Modifier) {

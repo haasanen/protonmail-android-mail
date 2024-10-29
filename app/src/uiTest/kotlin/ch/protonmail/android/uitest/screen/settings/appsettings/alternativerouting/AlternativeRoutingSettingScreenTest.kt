@@ -33,9 +33,9 @@ import ch.protonmail.android.mailsettings.presentation.settings.alternativerouti
 import ch.protonmail.android.test.annotations.suite.RegressionTest
 import ch.protonmail.android.uitest.util.HiltInstrumentedTest
 import dagger.hilt.android.testing.HiltAndroidTest
-import me.proton.core.compose.component.PROTON_PROGRESS_TEST_TAG
-import me.proton.core.compose.component.ProtonCenteredProgress
-import me.proton.core.compose.theme.ProtonTheme
+import ch.protonmail.android.design.compose.component.PROTON_PROGRESS_TEST_TAG
+import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
+import ch.protonmail.android.design.compose.theme.ProtonTheme
 import org.junit.Test
 import kotlin.test.assertEquals
 

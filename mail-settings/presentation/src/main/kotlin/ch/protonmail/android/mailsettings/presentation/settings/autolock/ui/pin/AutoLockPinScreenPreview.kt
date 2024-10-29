@@ -32,7 +32,7 @@ import ch.protonmail.android.mailsettings.presentation.settings.autolock.model.p
 import ch.protonmail.android.mailsettings.presentation.settings.autolock.model.pin.PinVerificationRemainingAttempts
 import ch.protonmail.android.mailsettings.presentation.settings.autolock.model.pin.SignOutUiModel
 import ch.protonmail.android.mailsettings.presentation.settings.autolock.model.pin.TopBarUiModel
-import me.proton.core.compose.theme.ProtonTheme
+import ch.protonmail.android.design.compose.theme.ProtonTheme
 
 @Preview
 @Composable

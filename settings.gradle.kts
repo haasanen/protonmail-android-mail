@@ -134,6 +134,7 @@ include(":mail-session:domain")
 include(":mail-session:presentation")
 
 include(":uicomponents")
+include(":design-system")
 
 include(":test:annotations")
 include(":test:idlingresources")

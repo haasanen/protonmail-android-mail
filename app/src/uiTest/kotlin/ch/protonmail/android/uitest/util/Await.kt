@@ -22,7 +22,7 @@ import androidx.compose.ui.test.SemanticsNodeInteraction
 import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.junit4.ComposeTestRule
 import androidx.compose.ui.test.onNodeWithTag
-import me.proton.core.compose.component.PROTON_PROGRESS_TEST_TAG
+import ch.protonmail.android.design.compose.component.PROTON_PROGRESS_TEST_TAG
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 import ch.protonmail.android.test.utils.ComposeTestRuleHolder

@@ -51,10 +51,10 @@ import ch.protonmail.android.maillabel.presentation.sidebar.SidebarLabelAction.A
 import ch.protonmail.android.maillabel.presentation.sidebar.SidebarLabelAction.Select
 import ch.protonmail.android.maillabel.presentation.sidebar.SidebarLabelAction.ViewList
 import ch.protonmail.android.maillabel.presentation.testTag
-import me.proton.core.compose.component.ProtonSidebarItem
-import me.proton.core.compose.component.ProtonSidebarLazy
-import me.proton.core.compose.theme.ProtonDimens
-import me.proton.core.compose.theme.ProtonTheme
+import ch.protonmail.android.design.compose.component.ProtonSidebarItem
+import ch.protonmail.android.design.compose.component.ProtonSidebarLazy
+import ch.protonmail.android.design.compose.theme.ProtonDimens
+import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.LabelType
 import ch.protonmail.android.maillabel.domain.model.LabelType.MessageFolder

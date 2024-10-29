@@ -34,7 +34,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens.AutoLockPinScreen.SpacerSize
 import ch.protonmail.android.mailsettings.presentation.settings.autolock.model.pin.AutoLockPinState
-import me.proton.core.compose.theme.ProtonDimens
+import ch.protonmail.android.design.compose.theme.ProtonDimens
 
 @Composable
 fun AutoLockPinInsertionScreen(

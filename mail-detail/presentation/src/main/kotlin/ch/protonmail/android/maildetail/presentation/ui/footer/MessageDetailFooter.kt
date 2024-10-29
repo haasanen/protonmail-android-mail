@@ -46,9 +46,9 @@ import ch.protonmail.android.maildetail.presentation.previewdata.MessageDetailFo
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailItem
 import ch.protonmail.android.maildetail.presentation.ui.MessageBodyTestTags
 import ch.protonmail.android.mailmessage.domain.model.MessageId
-import me.proton.core.compose.theme.ProtonDimens
-import me.proton.core.compose.theme.ProtonTheme
-import me.proton.core.compose.theme.captionNorm
+import ch.protonmail.android.design.compose.theme.ProtonDimens
+import ch.protonmail.android.design.compose.theme.ProtonTheme
+import ch.protonmail.android.design.compose.theme.captionNorm
 
 @Composable
 fun MessageDetailFooter(

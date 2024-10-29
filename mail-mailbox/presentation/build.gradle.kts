@@ -99,6 +99,7 @@ dependencies {
     implementation(project(":mail-upselling:domain"))
     implementation(project(":mail-sidebar:presentation"))
     implementation(project(":uicomponents"))
+    implementation(project(":design-system"))
 
     debugImplementation(libs.bundles.compose.debug)
 

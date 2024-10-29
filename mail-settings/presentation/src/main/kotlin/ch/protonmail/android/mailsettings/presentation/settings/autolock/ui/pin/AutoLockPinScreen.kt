@@ -31,7 +31,7 @@ import ch.protonmail.android.mailsettings.domain.model.autolock.biometric.Biomet
 import ch.protonmail.android.mailsettings.presentation.settings.autolock.model.pin.AutoLockPinState
 import ch.protonmail.android.mailsettings.presentation.settings.autolock.model.pin.AutoLockPinViewAction
 import ch.protonmail.android.mailsettings.presentation.settings.autolock.viewmodel.pin.AutoLockPinViewModel
-import me.proton.core.compose.component.ProtonCenteredProgress
+import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
 import timber.log.Timber
 
 @Composable

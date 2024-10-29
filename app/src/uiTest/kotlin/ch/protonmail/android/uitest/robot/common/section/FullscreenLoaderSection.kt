@@ -23,7 +23,7 @@ import ch.protonmail.android.test.ksp.annotations.AttachTo
 import ch.protonmail.android.uitest.robot.ComposeSectionRobot
 import ch.protonmail.android.uitest.robot.composer.ComposerRobot
 import ch.protonmail.android.uitest.util.awaitHidden
-import me.proton.core.compose.component.PROTON_PROGRESS_TEST_TAG
+import ch.protonmail.android.design.compose.component.PROTON_PROGRESS_TEST_TAG
 
 @AttachTo(targets = [ComposerRobot::class])
 internal class FullscreenLoaderSection : ComposeSectionRobot() {

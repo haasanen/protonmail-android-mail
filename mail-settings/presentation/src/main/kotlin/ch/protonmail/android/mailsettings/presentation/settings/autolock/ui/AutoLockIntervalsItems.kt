@@ -37,10 +37,10 @@ import ch.protonmail.android.mailsettings.domain.model.autolock.AutoLockInsertio
 import ch.protonmail.android.mailsettings.domain.model.autolock.AutoLockInterval
 import ch.protonmail.android.mailsettings.presentation.R
 import ch.protonmail.android.mailsettings.presentation.settings.autolock.model.AutoLockSettingsState
-import me.proton.core.compose.component.ProtonSettingsItem
-import me.proton.core.compose.theme.ProtonDimens
-import me.proton.core.compose.theme.ProtonTheme
-import me.proton.core.compose.theme.defaultNorm
+import ch.protonmail.android.design.compose.component.ProtonSettingsItem
+import ch.protonmail.android.design.compose.theme.ProtonDimens
+import ch.protonmail.android.design.compose.theme.ProtonTheme
+import ch.protonmail.android.design.compose.theme.defaultNorm
 
 fun LazyListScope.AutoLockIntervalsSection(
     state: AutoLockSettingsState.DataLoaded.AutoLockIntervalState,

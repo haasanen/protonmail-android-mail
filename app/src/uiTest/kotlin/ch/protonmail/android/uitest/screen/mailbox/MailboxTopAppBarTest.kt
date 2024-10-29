@@ -38,7 +38,7 @@ import ch.protonmail.android.testdata.maillabel.MailLabelTestData
 import ch.protonmail.android.uitest.util.HiltInstrumentedTest
 import ch.protonmail.android.uitest.util.InstrumentationHolder
 import dagger.hilt.android.testing.HiltAndroidTest
-import me.proton.core.compose.theme.ProtonTheme
+import ch.protonmail.android.design.compose.theme.ProtonTheme
 import org.junit.Test
 
 @Suppress("SameParameterValue") // We want test parameters to be explicit

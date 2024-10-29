@@ -28,7 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import ch.protonmail.android.mailsettings.presentation.R
 import ch.protonmail.android.mailsettings.presentation.settings.autolock.model.pin.AutoLockPinState
-import me.proton.core.compose.component.appbar.ProtonTopAppBar
+import ch.protonmail.android.design.compose.component.appbar.ProtonTopAppBar
 
 @Composable
 fun AutoLockPinInsertionTopBar(

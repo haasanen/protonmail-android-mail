@@ -44,8 +44,8 @@ import ch.protonmail.android.maildetail.presentation.ui.header.MessageDetailHead
 import ch.protonmail.android.mailmessage.domain.model.AttachmentId
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.usecase.GetEmbeddedImageResult
-import me.proton.core.compose.component.ProtonCenteredProgress
-import me.proton.core.compose.theme.ProtonTheme
+import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
+import ch.protonmail.android.design.compose.theme.ProtonTheme
 
 @Composable
 @Suppress("LongParameterList")

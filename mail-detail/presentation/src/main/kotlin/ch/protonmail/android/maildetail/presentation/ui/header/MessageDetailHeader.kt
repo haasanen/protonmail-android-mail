@@ -82,12 +82,12 @@ import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.presentation.ui.ParticipantAvatar
 import ch.protonmail.android.uicomponents.chips.thenIf
 import kotlinx.collections.immutable.ImmutableList
-import me.proton.core.compose.theme.ProtonDimens
-import me.proton.core.compose.theme.ProtonTheme
-import me.proton.core.compose.theme.captionNorm
-import me.proton.core.compose.theme.captionWeak
-import me.proton.core.compose.theme.defaultSmallNorm
-import me.proton.core.compose.theme.defaultSmallStrongNorm
+import ch.protonmail.android.design.compose.theme.ProtonDimens
+import ch.protonmail.android.design.compose.theme.ProtonTheme
+import ch.protonmail.android.design.compose.theme.captionNorm
+import ch.protonmail.android.design.compose.theme.captionWeak
+import ch.protonmail.android.design.compose.theme.defaultSmallNorm
+import ch.protonmail.android.design.compose.theme.defaultSmallStrongNorm
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable

@@ -53,18 +53,19 @@ import ch.protonmail.android.mailcomposer.presentation.model.SetMessagePasswordS
 import ch.protonmail.android.mailcomposer.presentation.viewmodel.SetMessagePasswordViewModel
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import kotlinx.serialization.Serializable
-import me.proton.core.compose.component.ProtonCenteredProgress
-import me.proton.core.compose.component.ProtonOutlinedButton
-import me.proton.core.compose.component.ProtonSolidButton
-import me.proton.core.compose.component.appbar.ProtonTopAppBar
-import me.proton.core.compose.flow.rememberAsState
-import me.proton.core.compose.theme.ProtonDimens
-import me.proton.core.compose.theme.ProtonTheme
-import me.proton.core.compose.theme.defaultInverted
-import me.proton.core.compose.theme.defaultSmallUnspecified
-import me.proton.core.compose.theme.defaultSmallWeak
-import me.proton.core.compose.theme.defaultStrongNorm
-import me.proton.core.compose.theme.defaultUnspecified
+import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
+import ch.protonmail.android.design.compose.component.ProtonOutlinedButton
+import ch.protonmail.android.design.compose.component.ProtonSolidButton
+import ch.protonmail.android.design.compose.component.appbar.ProtonTopAppBar
+import ch.protonmail.android.design.compose.flow.rememberAsState
+
+import ch.protonmail.android.design.compose.theme.ProtonDimens
+import ch.protonmail.android.design.compose.theme.ProtonTheme
+import ch.protonmail.android.design.compose.theme.defaultInverted
+import ch.protonmail.android.design.compose.theme.defaultSmallUnspecified
+import ch.protonmail.android.design.compose.theme.defaultSmallWeak
+import ch.protonmail.android.design.compose.theme.defaultStrongNorm
+import ch.protonmail.android.design.compose.theme.defaultUnspecified
 
 @Composable
 fun SetMessagePasswordScreen(

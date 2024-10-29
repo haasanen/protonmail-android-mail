@@ -43,8 +43,8 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxTopAp
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.UpgradeStorageState
 import ch.protonmail.android.mailupselling.presentation.ui.UpsellingMailButton
 import ch.protonmail.android.uicomponents.SearchView
-import me.proton.core.compose.component.appbar.ProtonTopAppBar
-import me.proton.core.compose.theme.ProtonTheme
+import ch.protonmail.android.design.compose.component.appbar.ProtonTopAppBar
+import ch.protonmail.android.design.compose.theme.ProtonTheme
 import me.proton.core.util.kotlin.EMPTY_STRING
 
 @Composable

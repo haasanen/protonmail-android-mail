@@ -73,6 +73,7 @@ dependencies {
     implementation(project(":mail-upselling:domain"))
     implementation(project(":mail-upselling:presentation"))
     implementation(project(":uicomponents"))
+    implementation(project(":design-system"))
 
     testImplementation(libs.bundles.test)
     testImplementation(project(":test:test-data"))

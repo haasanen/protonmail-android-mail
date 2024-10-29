@@ -26,7 +26,7 @@ import ch.protonmail.android.maillabel.presentation.ui.LabelsList
 import ch.protonmail.android.test.annotations.suite.RegressionTest
 import ch.protonmail.android.uitest.util.HiltInstrumentedTest
 import dagger.hilt.android.testing.HiltAndroidTest
-import me.proton.core.compose.theme.ProtonTheme
+import ch.protonmail.android.design.compose.theme.ProtonTheme
 import kotlin.test.Test
 
 @RegressionTest

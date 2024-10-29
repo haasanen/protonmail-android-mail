@@ -42,12 +42,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 import ch.protonmail.android.mailsettings.presentation.settings.autolock.model.pin.ConfirmButtonUiModel
-import me.proton.core.compose.component.ProtonButton
-import me.proton.core.compose.component.protonButtonColors
-import me.proton.core.compose.theme.ProtonDimens
-import me.proton.core.compose.theme.ProtonTheme
-import me.proton.core.compose.theme.ProtonTypography
-import me.proton.core.compose.theme.defaultNorm
+import ch.protonmail.android.design.compose.component.ProtonButton
+import ch.protonmail.android.design.compose.component.protonButtonColors
+import ch.protonmail.android.design.compose.theme.ProtonDimens
+import ch.protonmail.android.design.compose.theme.ProtonTheme
+import ch.protonmail.android.design.compose.theme.ProtonTypography
+import ch.protonmail.android.design.compose.theme.defaultNorm
 
 @Composable
 fun VirtualKeyboardDigitItem(

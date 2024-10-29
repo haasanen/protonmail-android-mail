@@ -36,8 +36,8 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.TextFieldValue
 import ch.protonmail.android.mailcomposer.presentation.R
 import ch.protonmail.android.uicomponents.text.defaultTextFieldColors
-import me.proton.core.compose.theme.ProtonTheme
-import me.proton.core.compose.theme.defaultNorm
+import ch.protonmail.android.design.compose.theme.ProtonTheme
+import ch.protonmail.android.design.compose.theme.defaultNorm
 
 @Composable
 internal fun SubjectTextField(

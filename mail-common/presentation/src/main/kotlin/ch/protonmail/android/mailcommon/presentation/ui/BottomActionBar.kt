@@ -46,11 +46,11 @@ import ch.protonmail.android.mailcommon.presentation.model.BottomBarState
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcommon.presentation.model.string
 import ch.protonmail.android.mailcommon.presentation.previewdata.BottomActionBarPreviewProvider
-import me.proton.core.compose.component.ProtonCenteredProgress
-import me.proton.core.compose.theme.ProtonDimens
-import me.proton.core.compose.theme.ProtonTheme
-import me.proton.core.compose.theme.ProtonTypography
-import me.proton.core.compose.theme.default
+import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
+import ch.protonmail.android.design.compose.theme.ProtonDimens
+import ch.protonmail.android.design.compose.theme.ProtonTheme
+import ch.protonmail.android.design.compose.theme.ProtonTypography
+import ch.protonmail.android.design.compose.theme.default
 import timber.log.Timber
 
 @Composable

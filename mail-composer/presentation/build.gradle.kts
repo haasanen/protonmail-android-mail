@@ -81,6 +81,7 @@ dependencies {
     implementation(project(":mail-settings:presentation"))
     implementation(project(":test:idlingresources"))
     implementation(project(":uicomponents"))
+    implementation(project(":design-system"))
     implementation(project(":mail-label:domain"))
 
     debugImplementation(libs.bundles.compose.debug)

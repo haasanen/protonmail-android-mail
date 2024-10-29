@@ -24,9 +24,9 @@ import androidx.compose.ui.Modifier
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcommon.presentation.model.string
-import me.proton.core.compose.theme.ProtonTheme
-import me.proton.core.compose.theme.ProtonTypography
-import me.proton.core.compose.theme.captionHint
+import ch.protonmail.android.design.compose.theme.ProtonTheme
+import ch.protonmail.android.design.compose.theme.ProtonTypography
+import ch.protonmail.android.design.compose.theme.captionHint
 
 @Composable
 fun AutoLockPinErrorMessageText(effect: Effect<TextUiModel>, modifier: Modifier = Modifier) {

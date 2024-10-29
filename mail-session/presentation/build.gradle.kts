@@ -56,5 +56,9 @@ dependencies {
     implementation(project(":mail-session:domain"))
 
     testImplementation(libs.bundles.test)
+
+    implementation(project(":mail-session:domain"))
+    implementation(project(":design-system"))
+
     testImplementation(project(":test:test-data"))
 }

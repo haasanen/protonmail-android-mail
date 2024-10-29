@@ -28,8 +28,8 @@ import ch.protonmail.android.test.annotations.suite.SmokeTest
 import ch.protonmail.android.testdata.maillabel.MailLabelUiModelTestData
 import ch.protonmail.android.uitest.util.HiltInstrumentedTest
 import dagger.hilt.android.testing.HiltAndroidTest
-import me.proton.core.compose.component.ProtonSidebarLazy
-import me.proton.core.compose.theme.ProtonTheme
+import ch.protonmail.android.design.compose.component.ProtonSidebarLazy
+import ch.protonmail.android.design.compose.theme.ProtonTheme
 import org.junit.Test
 
 @SmokeTest
