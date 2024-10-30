@@ -19,15 +19,17 @@ package ch.protonmail.android.design.compose.component.bottomsheet
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
-import androidx.compose.material3.ExperimentalMaterialApi
-import androidx.compose.material3.ModalBottomSheetState
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.SheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import ch.protonmail.android.design.compose.component.ProtonModalBottomSheetLayout
+import ch.protonmail.android.design.compose.theme.ProtonDimens
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -35,14 +37,14 @@ import kotlinx.coroutines.launch
 typealias RunAction = (action: suspend () -> Unit) -> Unit
 
 @Composable
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 fun ModalBottomSheet(
-    sheetState: ModalBottomSheetState,
+    sheetState: SheetState,
     sheetContent: @Composable ColumnScope.(runAction: RunAction) -> Unit,
     viewState: ModalBottomSheetViewState,
     modifier: Modifier = Modifier,
     onDismiss: () -> Unit = {},
-    content: @Composable () -> Unit,
+    content: @Composable (PaddingValues) -> Unit = { PaddingValues(ProtonDimens.DefaultSpacing) }
 ) {
     val scope = rememberCoroutineScope()
 
@@ -68,10 +70,10 @@ fun ModalBottomSheet(
     )
 }
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 private fun runAction(
     scope: CoroutineScope,
-    modalBottomSheetState: ModalBottomSheetState,
+    modalBottomSheetState: SheetState,
     viewState: ModalBottomSheetViewState,
     onDismiss: () -> Unit,
     action: suspend () -> Unit,

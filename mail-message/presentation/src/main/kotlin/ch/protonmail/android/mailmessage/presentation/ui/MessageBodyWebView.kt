@@ -293,8 +293,8 @@ private fun ExpandCollapseBodyButton(modifier: Modifier = Modifier, onClick: () 
         contentPadding = PaddingValues(0.dp),
         shape = RoundedCornerShape(MessageBodyDimens.ExpandButtonRoundedCornerPercent),
         border = BorderStroke(MailDimens.DefaultBorder, ProtonTheme.colors.shade20),
-        colors = ButtonDefaults.buttonColors(backgroundColor = ProtonTheme.colors.backgroundNorm),
-        elevation = ButtonDefaults.elevation(defaultElevation = 0.dp),
+        colors = ButtonDefaults.buttonColors().copy(containerColor = ProtonTheme.colors.backgroundNorm),
+        elevation = ButtonDefaults.buttonElevation(defaultElevation = 0.dp),
         onClick = { onClick() }
     ) {
         Icon(

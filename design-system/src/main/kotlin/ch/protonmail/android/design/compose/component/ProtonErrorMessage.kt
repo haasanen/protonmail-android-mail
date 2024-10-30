@@ -22,12 +22,13 @@ import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CardElevation
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.defaultSmallInverted
@@ -37,15 +38,15 @@ import ch.protonmail.android.design.compose.theme.defaultSmallStrongInverted
 fun ProtonErrorMessage(
     errorMessage: String,
     modifier: Modifier = Modifier,
-    elevation: Dp = Elevation
+    elevation: CardElevation =  CardDefaults.cardElevation()
 ) {
     Card(
         modifier = modifier
             .fillMaxWidth()
             .defaultMinSize(minHeight = MinHeight),
-        backgroundColor = ProtonTheme.colors.notificationError,
+        colors = CardDefaults.cardColors(),
         shape = ProtonTheme.shapes.medium,
-        elevation = elevation
+        elevation = elevation,
 
     ) {
         Text(
@@ -66,7 +67,7 @@ fun ProtonErrorMessage(
 fun ProtonErrorMessageWithAction(
     errorMessage: String,
     modifier: Modifier = Modifier,
-    elevation: Dp = Elevation,
+    elevation: CardElevation = CardDefaults.cardElevation(),
     action: String,
     onAction: () -> Unit,
 ) {
@@ -74,9 +75,9 @@ fun ProtonErrorMessageWithAction(
         modifier = modifier
             .fillMaxWidth()
             .defaultMinSize(minHeight = MinHeight),
-        backgroundColor = ProtonTheme.colors.notificationError,
+        colors = CardDefaults.cardColors(),
         shape = ProtonTheme.shapes.medium,
-        elevation = elevation,
+        elevation = elevation
     ) {
         Row(
             modifier = Modifier
@@ -129,7 +130,6 @@ fun PreviewProtonErrorMessageWithAction() {
 
 private val Padding = 8.dp
 private val MinHeight = 48.dp
-private val Elevation = 6.dp
 private val MessageHorizontalPadding = 16.dp
 private val MessageWithActionHorizontalPadding = 8.dp
 private val MessageVerticalPadding = 14.dp

@@ -23,6 +23,7 @@ import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
+import androidx.compose.material3.SnackbarVisuals
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
@@ -32,8 +33,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import ch.protonmail.android.design.compose.theme.ProtonTheme
@@ -69,9 +68,10 @@ class ProtonSnackbarHostState(
         message: String,
         actionLabel: String? = null,
         duration: SnackbarDuration = SnackbarDuration.Short,
+        withDismissAction: Boolean = false
     ): SnackbarResult = mutex.withLock {
         this.type = type
-        snackbarHostState.showSnackbar(message, actionLabel, duration)
+        snackbarHostState.showSnackbar(message, actionLabel, withDismissAction, duration)
     }
 }
 
@@ -83,30 +83,32 @@ fun ProtonSnackbar(
     actionOnNewLine: Boolean = false,
     shape: Shape = ProtonTheme.shapes.medium,
     contentColor: Color = ProtonTheme.colors.textInverted,
-    actionColor: Color = ProtonTheme.colors.textInverted,
-    elevation: Dp = 6.dp,
+    actionColor: Color = ProtonTheme.colors.textInverted
 ) {
     Snackbar(
         snackbarData = snackbarData,
         modifier = modifier,
         actionOnNewLine = actionOnNewLine,
         shape = shape,
-        backgroundColor = when (type) {
+        containerColor = when (type) {
             ProtonSnackbarType.SUCCESS -> ProtonTheme.colors.notificationSuccess
             ProtonSnackbarType.WARNING -> ProtonTheme.colors.notificationWarning
             ProtonSnackbarType.ERROR -> ProtonTheme.colors.notificationError
             ProtonSnackbarType.NORM -> ProtonTheme.colors.notificationNorm
         },
         contentColor = contentColor,
-        actionColor = actionColor,
-        elevation = elevation
+        actionColor = actionColor
     )
 }
 
 private val previewSnackbarData = object : SnackbarData {
-    override val actionLabel: String? = null
-    override val duration: SnackbarDuration = SnackbarDuration.Indefinite
-    override val message: String = "This is a snackbar"
+    override val visuals = object : SnackbarVisuals {
+        override val actionLabel: String? = null
+        override val duration: SnackbarDuration = SnackbarDuration.Indefinite
+        override val message: String = "This is a snackbar"
+        override val withDismissAction: Boolean = false
+    }
+
     override fun dismiss() = Unit
     override fun performAction() = Unit
 }

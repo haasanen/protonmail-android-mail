@@ -46,4 +46,6 @@ object ProtonDimens {
     val ListItemTextStartPadding = 12.dp
 
     val NotificationDotIconSize = 8.dp
+
+    val OutlinedBorderSize = 1.dp
 }

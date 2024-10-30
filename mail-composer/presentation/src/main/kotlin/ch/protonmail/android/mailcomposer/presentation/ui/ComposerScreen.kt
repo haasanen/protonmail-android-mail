@@ -29,6 +29,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterialApi
 import androidx.compose.material3.ModalBottomSheetValue
 import androidx.compose.material3.Scaffold
@@ -85,7 +86,7 @@ import ch.protonmail.android.design.compose.theme.ProtonTheme
 import timber.log.Timber
 import kotlin.time.Duration
 
-@OptIn(ExperimentalMaterialApi::class, ExperimentalPermissionsApi::class)
+@OptIn(ExperimentalPermissionsApi::class, ExperimentalMaterial3Api::class)
 @Suppress("UseComposableActions")
 @Composable
 fun ComposerScreen(actions: ComposerScreen.Actions, viewModel: ComposerViewModel = hiltViewModel()) {

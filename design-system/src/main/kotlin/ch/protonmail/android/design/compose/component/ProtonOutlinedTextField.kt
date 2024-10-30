@@ -25,6 +25,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
@@ -50,23 +51,53 @@ const val PROTON_OUTLINED_TEXT_INPUT_TAG = "PROTON_OUTLINED_TEXT_INPUT_TAG"
 private const val MaxLines = 2
 
 @Composable
-fun TextFieldDefaults.protonOutlineTextFieldColors(): TextFieldColors =
-    outlinedTextFieldColors(
-        textColor = ProtonTheme.colors.textNorm,
-        backgroundColor = ProtonTheme.colors.backgroundSecondary,
+fun protonOutlineTextFieldColors(): TextFieldColors =
+    OutlinedTextFieldDefaults.colors(
+        focusedTextColor = ProtonTheme.colors.textNorm,
+        unfocusedTextColor = ProtonTheme.colors.textNorm,
+        disabledTextColor = ProtonTheme.colors.textDisabled,
+        errorTextColor = ProtonTheme.colors.notificationError,
+
+        focusedContainerColor = ProtonTheme.colors.backgroundSecondary,
+        unfocusedContainerColor = ProtonTheme.colors.backgroundSecondary,
+        disabledContainerColor = ProtonTheme.colors.backgroundSecondary,
+        errorContainerColor = ProtonTheme.colors.backgroundSecondary,
 
         focusedLabelColor = ProtonTheme.colors.textNorm,
-        focusedBorderColor = ProtonTheme.colors.brandNorm,
-
         unfocusedLabelColor = ProtonTheme.colors.textHint,
-        unfocusedBorderColor = ProtonTheme.colors.backgroundSecondary,
-
         disabledLabelColor = ProtonTheme.colors.textDisabled,
-        disabledBorderColor = ProtonTheme.colors.backgroundSecondary,
-
         errorLabelColor = ProtonTheme.colors.notificationError,
+
+        focusedBorderColor = ProtonTheme.colors.brandNorm,
+        unfocusedBorderColor = ProtonTheme.colors.backgroundSecondary,
+        disabledBorderColor = ProtonTheme.colors.backgroundSecondary,
         errorBorderColor = ProtonTheme.colors.notificationError,
+
+        cursorColor = ProtonTheme.colors.brandNorm,
+        errorCursorColor = ProtonTheme.colors.notificationError,
+
+        focusedLeadingIconColor = ProtonTheme.colors.iconAccent,
+        unfocusedLeadingIconColor = ProtonTheme.colors.iconWeak,
+        disabledLeadingIconColor = ProtonTheme.colors.iconDisabled,
+        errorLeadingIconColor = ProtonTheme.colors.notificationError,
+
+        focusedTrailingIconColor = ProtonTheme.colors.iconAccent,
+        unfocusedTrailingIconColor = ProtonTheme.colors.iconWeak,
+        disabledTrailingIconColor = ProtonTheme.colors.iconDisabled,
+        errorTrailingIconColor = ProtonTheme.colors.notificationError,
+
+        focusedPlaceholderColor = ProtonTheme.colors.textHint,
+        unfocusedPlaceholderColor = ProtonTheme.colors.textHint,
+        disabledPlaceholderColor = ProtonTheme.colors.textDisabled,
+        errorPlaceholderColor = ProtonTheme.colors.notificationError,
+
+        focusedSupportingTextColor = ProtonTheme.colors.textNorm,
+        unfocusedSupportingTextColor = ProtonTheme.colors.textHint,
+        disabledSupportingTextColor = ProtonTheme.colors.textDisabled,
+        errorSupportingTextColor = ProtonTheme.colors.notificationError
     )
+
+
 
 @Composable
 fun ProtonOutlinedTextField(
@@ -88,7 +119,7 @@ fun ProtonOutlinedTextField(
     maxLines: Int = Int.MAX_VALUE,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     shape: Shape = ProtonTheme.shapes.medium,
-    colors: TextFieldColors = TextFieldDefaults.protonOutlineTextFieldColors(),
+    colors: TextFieldColors = protonOutlineTextFieldColors(),
 ) = OutlinedTextField(
     value = value,
     onValueChange = onValueChange,
@@ -130,7 +161,7 @@ fun ProtonOutlinedTextFieldWithError(
         OutlinedTextField(
             value = text,
             onValueChange = onValueChanged,
-            colors = TextFieldDefaults.protonOutlineTextFieldColors(),
+            colors = protonOutlineTextFieldColors(),
             enabled = enabled,
             isError = errorText != null,
             keyboardOptions = keyboardOptions,
@@ -177,7 +208,7 @@ fun ProtonOutlinedTextFieldWithError(
         OutlinedTextField(
             value = textFieldValue.value,
             onValueChange = onValueChanged,
-            colors = TextFieldDefaults.protonOutlineTextFieldColors(),
+            colors = protonOutlineTextFieldColors(),
             enabled = enabled,
             isError = errorText != null,
             keyboardOptions = keyboardOptions,
@@ -211,7 +242,7 @@ fun PreviewOutlinedTextFieldWithProtonColors() {
     OutlinedTextField(
         value = "Some text",
         onValueChange = {},
-        colors = TextFieldDefaults.protonOutlineTextFieldColors()
+        colors = protonOutlineTextFieldColors()
     )
 }
 

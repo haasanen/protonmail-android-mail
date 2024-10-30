@@ -20,17 +20,18 @@ package ch.protonmail.android.navigation
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarResult
-import androidx.compose.material3.rememberScaffoldState
+import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -112,7 +113,6 @@ fun Home(
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestinationRoute = navBackStackEntry?.destination?.route
 
-    val scaffoldState = rememberScaffoldState()
     val snackbarHostSuccessState = remember { ProtonSnackbarHostState(defaultType = ProtonSnackbarType.SUCCESS) }
     val snackbarHostWarningState = remember { ProtonSnackbarHostState(defaultType = ProtonSnackbarType.WARNING) }
     val snackbarHostNormState = remember { ProtonSnackbarHostState(defaultType = ProtonSnackbarType.NORM) }
@@ -255,308 +255,312 @@ fun Home(
         }
     }
 
-    Scaffold(
-        scaffoldState = scaffoldState,
-        drawerShape = RectangleShape,
-        drawerScrimColor = ProtonTheme.colors.blenderNorm,
+    val drawerState = rememberDrawerState(DrawerValue.Closed)
+
+    ModalNavigationDrawer(
+        drawerState = drawerState,
         drawerContent = {
             Sidebar(
-                drawerState = scaffoldState.drawerState,
+                drawerState = drawerState,
                 navigationActions = buildSidebarActions(navController, launcherActions)
             )
         },
-        drawerGesturesEnabled = currentDestinationRoute == Screen.Mailbox.route,
-        snackbarHost = {
-            DismissableSnackbarHost(
-                modifier = Modifier.testTag(CommonTestTags.SnackbarHostSuccess),
-                protonSnackbarHostState = snackbarHostSuccessState
-            )
-            DismissableSnackbarHost(
-                modifier = Modifier.testTag(CommonTestTags.SnackbarHostWarning),
-                protonSnackbarHostState = snackbarHostWarningState
-            )
-            DismissableSnackbarHost(
-                modifier = Modifier.testTag(CommonTestTags.SnackbarHostNormal),
-                protonSnackbarHostState = snackbarHostNormState
-            )
-            DismissableSnackbarHost(
-                modifier = Modifier.testTag(CommonTestTags.SnackbarHostError),
-                protonSnackbarHostState = snackbarHostErrorState
-            )
-        }
-    ) { contentPadding ->
-        Box(
-            Modifier.padding(contentPadding)
-        ) {
-            NavHost(
-                navController = navController,
-                startDestination = Screen.Mailbox.route
+        scrimColor = ProtonTheme.colors.blenderNorm,
+        gesturesEnabled = currentDestinationRoute == Screen.Mailbox.route
+    ) {
+        Scaffold(
+            snackbarHost = {
+                DismissableSnackbarHost(
+                    modifier = Modifier.testTag(CommonTestTags.SnackbarHostSuccess),
+                    protonSnackbarHostState = snackbarHostSuccessState
+                )
+                DismissableSnackbarHost(
+                    modifier = Modifier.testTag(CommonTestTags.SnackbarHostWarning),
+                    protonSnackbarHostState = snackbarHostWarningState
+                )
+                DismissableSnackbarHost(
+                    modifier = Modifier.testTag(CommonTestTags.SnackbarHostNormal),
+                    protonSnackbarHostState = snackbarHostNormState
+                )
+                DismissableSnackbarHost(
+                    modifier = Modifier.testTag(CommonTestTags.SnackbarHostError),
+                    protonSnackbarHostState = snackbarHostErrorState
+                )
+            }
+        ) { contentPadding ->
+            Box(
+                Modifier.padding(contentPadding)
             ) {
-                // home
-                addConversationDetail(
-                    actions = ConversationDetail.Actions(
-                        onExit = { notifyUserMessage ->
-                            navController.navigateBack()
-                            notifyUserMessage?.let { showUndoableOperationSnackbar(it) }
-                            viewModel.recordViewOfMailboxScreen()
-                        },
-                        openMessageBodyLink = activityActions.openInActivityInNewTask,
-                        openAttachment = activityActions.openIntentChooser,
-                        handleProtonCalendarRequest = activityActions.openProtonCalendarIntentValues,
-                        onAddLabel = { navController.navigate(Screen.LabelList.route) },
-                        onAddFolder = { navController.navigate(Screen.FolderList.route) },
-                        showFeatureMissingSnackbar = { showFeatureMissingSnackbar() },
-                        onReply = { navController.navigate(Screen.MessageActionComposer(DraftAction.Reply(it))) },
-                        onReplyAll = { navController.navigate(Screen.MessageActionComposer(DraftAction.ReplyAll(it))) },
-                        onForward = { navController.navigate(Screen.MessageActionComposer(DraftAction.Forward(it))) },
-                        onViewContactDetails = { navController.navigate(Screen.ContactDetails(it)) },
-                        onAddContact = { basicContactInfo ->
-                            navController.navigate(Screen.AddContact(basicContactInfo))
-                        },
-                        onComposeNewMessage = {
-                            navController.navigate(
-                                Screen.MessageActionComposer(
-                                    DraftAction.ComposeToAddresses(
-                                        listOf(it)
+                NavHost(
+                    navController = navController,
+                    startDestination = Screen.Mailbox.route
+                ) {
+                    // home
+                    addConversationDetail(
+                        actions = ConversationDetail.Actions(
+                            onExit = { notifyUserMessage ->
+                                navController.navigateBack()
+                                notifyUserMessage?.let { showUndoableOperationSnackbar(it) }
+                                viewModel.recordViewOfMailboxScreen()
+                            },
+                            openMessageBodyLink = activityActions.openInActivityInNewTask,
+                            openAttachment = activityActions.openIntentChooser,
+                            handleProtonCalendarRequest = activityActions.openProtonCalendarIntentValues,
+                            onAddLabel = { navController.navigate(Screen.LabelList.route) },
+                            onAddFolder = { navController.navigate(Screen.FolderList.route) },
+                            showFeatureMissingSnackbar = { showFeatureMissingSnackbar() },
+                            onReply = { navController.navigate(Screen.MessageActionComposer(DraftAction.Reply(it))) },
+                            onReplyAll = { navController.navigate(Screen.MessageActionComposer(DraftAction.ReplyAll(it))) },
+                            onForward = { navController.navigate(Screen.MessageActionComposer(DraftAction.Forward(it))) },
+                            onViewContactDetails = { navController.navigate(Screen.ContactDetails(it)) },
+                            onAddContact = { basicContactInfo ->
+                                navController.navigate(Screen.AddContact(basicContactInfo))
+                            },
+                            onComposeNewMessage = {
+                                navController.navigate(
+                                    Screen.MessageActionComposer(
+                                        DraftAction.ComposeToAddresses(
+                                            listOf(it)
+                                        )
                                     )
                                 )
-                            )
+                            },
+                            openComposerForDraftMessage = { navController.navigate(Screen.EditDraftComposer(it)) },
+                            showSnackbar = { message ->
+                                scope.launch {
+                                    snackbarHostNormState.showSnackbar(
+                                        message = message,
+                                        type = ProtonSnackbarType.NORM
+                                    )
+                                }
+                            },
+                            recordMailboxScreenView = { viewModel.recordViewOfMailboxScreen() }
+                        )
+                    )
+                    addMailbox(
+                        navController,
+                        openDrawerMenu = { scope.launch { drawerState.open() } },
+                        showOfflineSnackbar = { showOfflineSnackbar() },
+                        showNormalSnackbar = { showNormalSnackbar(it) },
+                        showErrorSnackbar = { showErrorSnackbar(it) }
+                    )
+                    addComposer(
+                        navController,
+                        activityActions,
+                        showDraftSavedSnackbar = { showDraftSavedSnackbar(it) },
+                        showMessageSendingSnackbar = { showMessageSendingSnackbar() },
+                        showMessageSendingOfflineSnackbar = { showMessageSendingOfflineSnackbar() }
+                    )
+
+                    addSetMessagePassword(navController)
+                    addSignOutAccountDialog(navController)
+                    addRemoveAccountDialog(navController)
+                    addSettings(navController)
+                    addAppSettings(navController)
+                    addLabelList(
+                        navController,
+                        showLabelListErrorLoadingSnackbar = { showLabelListErrorLoadingSnackbar() }
+                    )
+                    addLabelForm(
+                        navController,
+                        showLabelSavedSnackbar = { showLabelSavedSnackbar() },
+                        showLabelDeletedSnackbar = { showLabelDeletedSnackbar() },
+                        showUpsellingSnackbar = { showUpsellingSnackbar(it) },
+                        showUpsellingErrorSnackbar = { showUpsellingErrorSnackbar(it) }
+                    )
+                    addFolderList(
+                        navController,
+                        showErrorSnackbar = { message ->
+                            scope.launch {
+                                snackbarHostErrorState.showSnackbar(
+                                    message = message,
+                                    type = ProtonSnackbarType.ERROR
+                                )
+                            }
+                        }
+                    )
+                    addFolderForm(
+                        navController,
+                        showSuccessSnackbar = { message ->
+                            scope.launch {
+                                snackbarHostSuccessState.showSnackbar(
+                                    message = message,
+                                    type = ProtonSnackbarType.SUCCESS
+                                )
+                            }
                         },
-                        openComposerForDraftMessage = { navController.navigate(Screen.EditDraftComposer(it)) },
-                        showSnackbar = { message ->
+                        showErrorSnackbar = { message ->
+                            scope.launch {
+                                snackbarHostErrorState.showSnackbar(
+                                    message = message,
+                                    type = ProtonSnackbarType.ERROR
+                                )
+                            }
+                        },
+                        showNormSnackbar = { message ->
                             scope.launch {
                                 snackbarHostNormState.showSnackbar(
                                     message = message,
                                     type = ProtonSnackbarType.NORM
                                 )
                             }
-                        },
-                        recordMailboxScreenView = { viewModel.recordViewOfMailboxScreen() }
+                        }
                     )
-                )
-                addMailbox(
-                    navController,
-                    openDrawerMenu = { scope.launch { scaffoldState.drawerState.open() } },
-                    showOfflineSnackbar = { showOfflineSnackbar() },
-                    showNormalSnackbar = { showNormalSnackbar(it) },
-                    showErrorSnackbar = { showErrorSnackbar(it) }
-                )
-                addComposer(
-                    navController,
-                    activityActions,
-                    showDraftSavedSnackbar = { showDraftSavedSnackbar(it) },
-                    showMessageSendingSnackbar = { showMessageSendingSnackbar() },
-                    showMessageSendingOfflineSnackbar = { showMessageSendingOfflineSnackbar() }
-                )
-
-                addSetMessagePassword(navController)
-                addSignOutAccountDialog(navController)
-                addRemoveAccountDialog(navController)
-                addSettings(navController)
-                addAppSettings(navController)
-                addLabelList(
-                    navController,
-                    showLabelListErrorLoadingSnackbar = { showLabelListErrorLoadingSnackbar() }
-                )
-                addLabelForm(
-                    navController,
-                    showLabelSavedSnackbar = { showLabelSavedSnackbar() },
-                    showLabelDeletedSnackbar = { showLabelDeletedSnackbar() },
-                    showUpsellingSnackbar = { showUpsellingSnackbar(it) },
-                    showUpsellingErrorSnackbar = { showUpsellingErrorSnackbar(it) }
-                )
-                addFolderList(
-                    navController,
-                    showErrorSnackbar = { message ->
-                        scope.launch {
-                            snackbarHostErrorState.showSnackbar(
-                                message = message,
-                                type = ProtonSnackbarType.ERROR
-                            )
+                    addParentFolderList(
+                        navController,
+                        showErrorSnackbar = { message ->
+                            scope.launch {
+                                snackbarHostErrorState.showSnackbar(
+                                    message = message,
+                                    type = ProtonSnackbarType.ERROR
+                                )
+                            }
                         }
-                    }
-                )
-                addFolderForm(
-                    navController,
-                    showSuccessSnackbar = { message ->
-                        scope.launch {
-                            snackbarHostSuccessState.showSnackbar(
-                                message = message,
-                                type = ProtonSnackbarType.SUCCESS
-                            )
+                    )
+                    // settings
+                    addWebAccountSettings(navController, launcherActions)
+                    addWebEmailSettings(navController, launcherActions)
+                    addWebFolderAndLabelSettings(navController, launcherActions)
+                    addWebSpamFilterSettings(navController, launcherActions)
+                    addWebPrivacyAndSecuritySettings(navController, launcherActions)
+                    addContacts(
+                        navController,
+                        showErrorSnackbar = { message ->
+                            scope.launch {
+                                snackbarHostErrorState.showSnackbar(
+                                    message = message,
+                                    type = ProtonSnackbarType.ERROR
+                                )
+                            }
+                        },
+                        showNormalSnackbar = {
+                            showNormalSnackbar(it)
+                        },
+                        showFeatureMissingSnackbar = {
+                            showFeatureMissingSnackbar()
                         }
-                    },
-                    showErrorSnackbar = { message ->
-                        scope.launch {
-                            snackbarHostErrorState.showSnackbar(
-                                message = message,
-                                type = ProtonSnackbarType.ERROR
-                            )
+                    )
+                    addContactDetails(
+                        navController,
+                        showSuccessSnackbar = { message ->
+                            scope.launch {
+                                snackbarHostSuccessState.showSnackbar(
+                                    message = message,
+                                    type = ProtonSnackbarType.SUCCESS
+                                )
+                            }
+                        },
+                        showErrorSnackbar = { message ->
+                            scope.launch {
+                                snackbarHostErrorState.showSnackbar(
+                                    message = message,
+                                    type = ProtonSnackbarType.ERROR
+                                )
+                            }
+                        },
+                        showFeatureMissingSnackbar = {
+                            showFeatureMissingSnackbar()
                         }
-                    },
-                    showNormSnackbar = { message ->
-                        scope.launch {
-                            snackbarHostNormState.showSnackbar(
-                                message = message,
-                                type = ProtonSnackbarType.NORM
-                            )
+                    )
+                    addContactForm(
+                        navController,
+                        showSuccessSnackbar = { message ->
+                            scope.launch {
+                                snackbarHostSuccessState.showSnackbar(
+                                    message = message,
+                                    type = ProtonSnackbarType.SUCCESS
+                                )
+                            }
+                        },
+                        showErrorSnackbar = { message ->
+                            scope.launch {
+                                snackbarHostErrorState.showSnackbar(
+                                    message = message,
+                                    type = ProtonSnackbarType.ERROR
+                                )
+                            }
                         }
-                    }
-                )
-                addParentFolderList(
-                    navController,
-                    showErrorSnackbar = { message ->
-                        scope.launch {
-                            snackbarHostErrorState.showSnackbar(
-                                message = message,
-                                type = ProtonSnackbarType.ERROR
-                            )
+                    )
+                    addContactGroupDetails(
+                        navController,
+                        showErrorSnackbar = { message ->
+                            scope.launch {
+                                snackbarHostErrorState.showSnackbar(
+                                    message = message,
+                                    type = ProtonSnackbarType.ERROR
+                                )
+                            }
+                        },
+                        showNormSnackbar = { message ->
+                            scope.launch {
+                                snackbarHostNormState.showSnackbar(
+                                    message = message,
+                                    type = ProtonSnackbarType.NORM
+                                )
+                            }
                         }
-                    }
-                )
-                // settings
-                addWebAccountSettings(navController, launcherActions)
-                addWebEmailSettings(navController, launcherActions)
-                addWebFolderAndLabelSettings(navController, launcherActions)
-                addWebSpamFilterSettings(navController, launcherActions)
-                addWebPrivacyAndSecuritySettings(navController, launcherActions)
-                addContacts(
-                    navController,
-                    showErrorSnackbar = { message ->
-                        scope.launch {
-                            snackbarHostErrorState.showSnackbar(
-                                message = message,
-                                type = ProtonSnackbarType.ERROR
-                            )
+                    )
+                    addContactGroupForm(
+                        navController,
+                        showSuccessSnackbar = { message ->
+                            scope.launch {
+                                snackbarHostSuccessState.showSnackbar(
+                                    message = message,
+                                    type = ProtonSnackbarType.SUCCESS
+                                )
+                            }
+                        },
+                        showErrorSnackbar = { message ->
+                            scope.launch {
+                                snackbarHostErrorState.showSnackbar(
+                                    message = message,
+                                    type = ProtonSnackbarType.ERROR
+                                )
+                            }
+                        },
+                        showNormSnackbar = { message ->
+                            scope.launch {
+                                snackbarHostNormState.showSnackbar(
+                                    message = message,
+                                    type = ProtonSnackbarType.NORM
+                                )
+                            }
                         }
-                    },
-                    showNormalSnackbar = {
-                        showNormalSnackbar(it)
-                    },
-                    showFeatureMissingSnackbar = {
-                        showFeatureMissingSnackbar()
-                    }
-                )
-                addContactDetails(
-                    navController,
-                    showSuccessSnackbar = { message ->
-                        scope.launch {
-                            snackbarHostSuccessState.showSnackbar(
-                                message = message,
-                                type = ProtonSnackbarType.SUCCESS
-                            )
+                    )
+                    addManageMembers(
+                        navController,
+                        showErrorSnackbar = { message ->
+                            scope.launch {
+                                snackbarHostErrorState.showSnackbar(
+                                    message = message,
+                                    type = ProtonSnackbarType.ERROR
+                                )
+                            }
                         }
-                    },
-                    showErrorSnackbar = { message ->
-                        scope.launch {
-                            snackbarHostErrorState.showSnackbar(
-                                message = message,
-                                type = ProtonSnackbarType.ERROR
-                            )
-                        }
-                    },
-                    showFeatureMissingSnackbar = {
-                        showFeatureMissingSnackbar()
-                    }
-                )
-                addContactForm(
-                    navController,
-                    showSuccessSnackbar = { message ->
-                        scope.launch {
-                            snackbarHostSuccessState.showSnackbar(
-                                message = message,
-                                type = ProtonSnackbarType.SUCCESS
-                            )
-                        }
-                    },
-                    showErrorSnackbar = { message ->
-                        scope.launch {
-                            snackbarHostErrorState.showSnackbar(
-                                message = message,
-                                type = ProtonSnackbarType.ERROR
-                            )
-                        }
-                    }
-                )
-                addContactGroupDetails(
-                    navController,
-                    showErrorSnackbar = { message ->
-                        scope.launch {
-                            snackbarHostErrorState.showSnackbar(
-                                message = message,
-                                type = ProtonSnackbarType.ERROR
-                            )
-                        }
-                    },
-                    showNormSnackbar = { message ->
-                        scope.launch {
-                            snackbarHostNormState.showSnackbar(
-                                message = message,
-                                type = ProtonSnackbarType.NORM
-                            )
-                        }
-                    }
-                )
-                addContactGroupForm(
-                    navController,
-                    showSuccessSnackbar = { message ->
-                        scope.launch {
-                            snackbarHostSuccessState.showSnackbar(
-                                message = message,
-                                type = ProtonSnackbarType.SUCCESS
-                            )
-                        }
-                    },
-                    showErrorSnackbar = { message ->
-                        scope.launch {
-                            snackbarHostErrorState.showSnackbar(
-                                message = message,
-                                type = ProtonSnackbarType.ERROR
-                            )
-                        }
-                    },
-                    showNormSnackbar = { message ->
-                        scope.launch {
-                            snackbarHostNormState.showSnackbar(
-                                message = message,
-                                type = ProtonSnackbarType.NORM
-                            )
-                        }
-                    }
-                )
-                addManageMembers(
-                    navController,
-                    showErrorSnackbar = { message ->
-                        scope.launch {
-                            snackbarHostErrorState.showSnackbar(
-                                message = message,
-                                type = ProtonSnackbarType.ERROR
-                            )
-                        }
-                    }
-                )
-                addContactSearch(
-                    navController
-                )
-                addAlternativeRoutingSetting(navController)
-                addCombinedContactsSetting(navController)
-                addEditSwipeActionsSettings(navController)
-                addLanguageSettings(navController)
-                addPrivacySettings(navController)
-                addAutoLockSettings(navController)
-                addAutoLockPinScreen(
-                    onBack = { navController.navigateBack() },
-                    onShowSuccessSnackbar = {
-                        scope.launch {
-                            snackbarHostSuccessState.showSnackbar(message = it, type = ProtonSnackbarType.SUCCESS)
-                        }
-                    },
-                    activityActions = LockScreenActivity.Actions.Empty
-                )
-                addSwipeActionsSettings(navController)
-                addThemeSettings(navController)
-                addNotificationsSettings(navController)
-                addDeepLinkHandler(navController)
+                    )
+                    addContactSearch(
+                        navController
+                    )
+                    addAlternativeRoutingSetting(navController)
+                    addCombinedContactsSetting(navController)
+                    addEditSwipeActionsSettings(navController)
+                    addLanguageSettings(navController)
+                    addPrivacySettings(navController)
+                    addAutoLockSettings(navController)
+                    addAutoLockPinScreen(
+                        onBack = { navController.navigateBack() },
+                        onShowSuccessSnackbar = {
+                            scope.launch {
+                                snackbarHostSuccessState.showSnackbar(message = it, type = ProtonSnackbarType.SUCCESS)
+                            }
+                        },
+                        activityActions = LockScreenActivity.Actions.Empty
+                    )
+                    addSwipeActionsSettings(navController)
+                    addThemeSettings(navController)
+                    addNotificationsSettings(navController)
+                    addDeepLinkHandler(navController)
+                }
             }
         }
     }

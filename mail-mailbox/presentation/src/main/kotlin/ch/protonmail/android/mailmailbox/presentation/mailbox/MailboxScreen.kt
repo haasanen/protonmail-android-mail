@@ -46,15 +46,17 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
-import androidx.compose.material3.ExperimentalMaterialApi
-import androidx.compose.material3.ModalBottomSheetValue
+import androidx.compose.material3.ExperimentalMaterial3Api
+
+
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Text
-import androidx.compose.material3.pullrefresh.PullRefreshIndicator
-import androidx.compose.material3.pullrefresh.pullRefresh
-import androidx.compose.material3.pullrefresh.rememberPullRefreshState
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults
+import androidx.compose.material3.pulltorefresh.PullToRefreshState
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.material3.rememberModalBottomSheetState
-import androidx.compose.material3.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -143,7 +145,7 @@ import ch.protonmail.android.design.compose.theme.headlineSmallNorm
 import timber.log.Timber
 import ch.protonmail.android.mailcommon.presentation.R.string as commonString
 
-@OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterialApi::class)
+@OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun MailboxScreen(
     modifier: Modifier = Modifier,
@@ -153,7 +155,7 @@ fun MailboxScreen(
     val mailboxState = rememberAsState(viewModel.state, MailboxViewModel.initialState).value
     val mailboxListItems = viewModel.items.collectAsLazyPagingItems()
     val bottomSheetState =
-        rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden, skipHalfExpanded = true)
+        rememberModalBottomSheetState( skipPartiallyExpanded = true)
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
 
@@ -234,7 +236,7 @@ fun MailboxScreen(
             }
         }
 
-        if (bottomSheetState.currentValue != ModalBottomSheetValue.Hidden) {
+        if (bottomSheetState.currentValue != SheetValue.Hidden) {
             DisposableEffect(Unit) { onDispose { viewModel.submit(MailboxViewAction.DismissBottomSheet) } }
         }
 
@@ -322,7 +324,6 @@ fun MailboxScreen(
     actions: MailboxScreen.Actions,
     modifier: Modifier = Modifier
 ) {
-    val scaffoldState = rememberScaffoldState()
     val scope = rememberCoroutineScope()
     val lazyListState = rememberLazyListState()
     val snackbarHostState = remember { ProtonSnackbarHostState() }
@@ -345,7 +346,6 @@ fun MailboxScreen(
 
     Scaffold(
         modifier = modifier.testTag(MailboxScreenTestTags.Root),
-        scaffoldState = scaffoldState,
         topBar = {
             val localDensity = LocalDensity.current
             Column(
@@ -479,8 +479,8 @@ private fun MailboxStickyHeader(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @SuppressWarnings("ComplexMethod")
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun MailboxSwipeRefresh(
     state: MailboxListState,
@@ -537,21 +537,21 @@ private fun MailboxSwipeRefresh(
         }
     }
 
-    val pullRefreshState = rememberPullRefreshState(
-        refreshing = if (searchMode.isInSearch()) refreshing
-        else refreshing && (refreshRequested || loadingWithDataCount == 1),
-        onRefresh = {
-            actions.onRefreshList()
-            items.refresh()
-        }
-    )
+    val pullToRefreshState = rememberPullToRefreshState()
 
-    Box(
-        modifier = modifier.pullRefresh(
-            state = pullRefreshState,
-            enabled = viewState is MailboxListState.Data.ViewMode
-        )
-    ) {
+    // Refresh action
+    val onRefresh: () -> Unit = {
+        actions.onRefreshList()
+        items.refresh()
+    }
+
+    PullToRefreshBox(
+        modifier = modifier,
+        state = pullToRefreshState,
+        isRefreshing = if (searchMode.isInSearch()) refreshing
+        else refreshing && (refreshRequested || loadingWithDataCount == 1),
+        onRefresh = onRefresh
+    ){
         when (currentViewState) {
             is MailboxScreenState.Loading -> ProtonCenteredProgress(
                 modifier = Modifier.testTag(MailboxScreenTestTags.ListProgress)
@@ -601,11 +601,6 @@ private fun MailboxSwipeRefresh(
             is MailboxScreenState.AppendOfflineError,
             is MailboxScreenState.Data -> MailboxItemsList(state, listState, currentViewState, items, actions)
         }
-        PullRefreshIndicator(
-            refreshing = refreshing,
-            state = pullRefreshState,
-            modifier = Modifier.align(Alignment.TopCenter)
-        )
     }
 }
 
@@ -774,7 +769,7 @@ private fun ClearButton(
             ),
         shape = ProtonTheme.shapes.medium,
         border = BorderStroke(
-            ButtonDefaults.OutlinedBorderSize,
+            ProtonDimens.OutlinedBorderSize,
             ProtonTheme.colors.notificationError
         ),
         elevation = null,

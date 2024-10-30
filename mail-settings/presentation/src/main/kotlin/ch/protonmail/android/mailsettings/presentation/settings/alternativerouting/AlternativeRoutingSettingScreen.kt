@@ -21,8 +21,8 @@ package ch.protonmail.android.mailsettings.presentation.settings.alternativerout
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.rememberScaffoldState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
@@ -36,7 +36,6 @@ import ch.protonmail.android.design.compose.component.ProtonSettingsTopBar
 import ch.protonmail.android.design.compose.component.ProtonSnackbarHostState
 import ch.protonmail.android.design.compose.component.ProtonSnackbarType
 import ch.protonmail.android.design.compose.flow.rememberAsState
-
 
 const val TEST_TAG_ALTERNATIVE_ROUTING_TOGGLE_ITEM = "AlternativeRoutingToggleItem"
 const val TEST_TAG_ALTERNATIVE_ROUTING_SNACKBAR = "AlternativeRoutingSnackbar"
@@ -72,16 +71,17 @@ fun AlternativeRoutingSettingScreen(
     onToggle: (Boolean) -> Unit,
     state: AlternativeRoutingSettingState.Data
 ) {
-    val scaffoldState = rememberScaffoldState()
+    val snackbarHostState = remember { ProtonSnackbarHostState() }
     val errorMessage = stringResource(id = R.string.mail_settings_generic_error_message)
 
     ConsumableLaunchedEffect(state.alternativeRoutingSettingErrorEffect) {
-        scaffoldState.snackbarHostState.showSnackbar(errorMessage)
+        snackbarHostState.showSnackbar(
+            message = errorMessage,
+            type = ProtonSnackbarType.ERROR)
     }
 
     Scaffold(
         modifier = modifier,
-        scaffoldState = scaffoldState,
         topBar = {
             ProtonSettingsTopBar(
                 title = stringResource(id = R.string.mail_settings_alternative_routing),
@@ -99,10 +99,10 @@ fun AlternativeRoutingSettingScreen(
                 onToggle = { state.isEnabled?.let { onToggle(!it) } }
             )
         },
-        snackbarHost = { snackbarHostState ->
+        snackbarHost = {
             DismissableSnackbarHost(
                 modifier = Modifier.testTag(TEST_TAG_ALTERNATIVE_ROUTING_SNACKBAR),
-                protonSnackbarHostState = ProtonSnackbarHostState(snackbarHostState, ProtonSnackbarType.ERROR)
+                protonSnackbarHostState = snackbarHostState
             )
         }
     )

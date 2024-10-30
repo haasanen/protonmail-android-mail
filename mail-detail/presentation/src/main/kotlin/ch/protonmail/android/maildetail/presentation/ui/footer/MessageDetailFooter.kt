@@ -105,8 +105,8 @@ private fun MessageActionButton(
         modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(MailDimens.ActionButtonShapeRadius),
         border = BorderStroke(MailDimens.DefaultBorder, ProtonTheme.colors.separatorNorm),
-        colors = ButtonDefaults.buttonColors(backgroundColor = ProtonTheme.colors.backgroundNorm),
-        elevation = ButtonDefaults.elevation(defaultElevation = 0.dp),
+        colors = ButtonDefaults.buttonColors().copy(containerColor = ProtonTheme.colors.backgroundNorm),
+        elevation = ButtonDefaults.buttonElevation(defaultElevation = 0.dp),
         onClick = { onClick() }
     ) {
         Icon(

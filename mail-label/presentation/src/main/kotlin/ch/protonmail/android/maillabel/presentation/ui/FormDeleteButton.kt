@@ -47,7 +47,7 @@ fun FormDeleteButton(
         elevation = null,
         shape = ProtonTheme.shapes.medium,
         border = BorderStroke(
-            ButtonDefaults.OutlinedBorderSize,
+            ProtonDimens.OutlinedBorderSize,
             ProtonTheme.colors.notificationError
         ),
         colors = ButtonDefaults.protonOutlinedButtonColors(

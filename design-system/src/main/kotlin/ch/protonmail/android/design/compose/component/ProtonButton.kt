@@ -74,7 +74,7 @@ fun ProtonSolidButton(
 }
 
 @Composable
-fun ButtonDefaults.protonElevation() = elevation()
+fun ButtonDefaults.protonElevation() = buttonElevation()
 
 @Composable
 fun ButtonDefaults.protonButtonColors(
@@ -92,9 +92,9 @@ fun ButtonDefaults.protonButtonColors(
         Color.White.copy(alpha = 0.5f)
     },
 ): ButtonColors = buttonColors(
-    backgroundColor = backgroundColor,
+    containerColor = backgroundColor,
     contentColor = contentColor,
-    disabledBackgroundColor = disabledBackgroundColor,
+    disabledContainerColor = disabledBackgroundColor,
     disabledContentColor = disabledContentColor,
 )
 
@@ -125,12 +125,14 @@ fun ProtonOutlinedButton(
     )
 }
 
+private val outlinedBorderSize = 1.dp
+
 @Composable
 fun ButtonDefaults.protonOutlinedBorder(
     enabled: Boolean = true,
     loading: Boolean = false,
 ) = BorderStroke(
-    OutlinedBorderSize,
+    outlinedBorderSize,
     when {
         loading -> ProtonTheme.colors.interactionPressed
         !enabled -> ProtonTheme.colors.interactionDisabled
@@ -154,9 +156,9 @@ fun ButtonDefaults.protonOutlinedButtonColors(
         ProtonTheme.colors.interactionDisabled
     },
 ): ButtonColors = buttonColors(
-    backgroundColor = backgroundColor,
+    containerColor = backgroundColor,
     contentColor = contentColor,
-    disabledBackgroundColor = disabledBackgroundColor,
+    disabledContainerColor = disabledBackgroundColor,
     disabledContentColor = disabledContentColor,
 )
 
@@ -207,9 +209,9 @@ fun ButtonDefaults.protonTextButtonColors(
         ProtonTheme.colors.textDisabled
     },
 ): ButtonColors = buttonColors(
-    backgroundColor = backgroundColor,
+    containerColor = backgroundColor,
     contentColor = contentColor,
-    disabledBackgroundColor = disabledBackgroundColor,
+    disabledContainerColor = disabledBackgroundColor,
     disabledContentColor = disabledContentColor,
 )
 
@@ -254,10 +256,10 @@ fun ButtonDefaults.protonSecondaryButtonColors(
         ProtonTheme.colors.textDisabled
     },
 ): ButtonColors = buttonColors(
-    backgroundColor = backgroundColor,
+    containerColor = backgroundColor,
     contentColor = contentColor,
-    disabledContentColor = disabledContentColor,
-    disabledBackgroundColor = disabledBackgroundColor,
+    disabledContainerColor = disabledContentColor,
+    disabledContentColor = disabledBackgroundColor,
 )
 
 @Suppress("LongParameterList")
@@ -291,7 +293,7 @@ fun ProtonButton(
             loading = loading,
             contained = contained,
             content = content,
-            progressColor = colors.contentColor(enabled = false).value,
+            progressColor = colors.disabledContentColor
         )
     }
 }

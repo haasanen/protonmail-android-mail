@@ -31,11 +31,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.ExperimentalMaterialApi
-import androidx.compose.material3.ModalBottomSheetValue
+
+
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SheetValue
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -118,7 +119,7 @@ import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.mailcontact.domain.model.ContactId
 import timber.log.Timber
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ConversationDetailScreen(
     modifier: Modifier = Modifier,
@@ -126,7 +127,7 @@ fun ConversationDetailScreen(
     viewModel: ConversationDetailViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-    val bottomSheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
+    val bottomSheetState = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
     val isSystemBackButtonClickEnabled = remember { mutableStateOf(true) }
@@ -144,7 +145,7 @@ fun ConversationDetailScreen(
         }
     }
 
-    if (bottomSheetState.currentValue != ModalBottomSheetValue.Hidden) {
+    if (bottomSheetState.currentValue != SheetValue.Hidden) {
         DisposableEffect(Unit) { onDispose { viewModel.submit(ConversationDetailViewAction.DismissBottomSheet) } }
     }
 

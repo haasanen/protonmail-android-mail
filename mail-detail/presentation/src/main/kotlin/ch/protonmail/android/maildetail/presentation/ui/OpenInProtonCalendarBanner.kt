@@ -29,7 +29,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ButtonDefaults.elevation
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -49,9 +48,9 @@ import ch.protonmail.android.design.compose.theme.defaultSmallStrongNorm
 @Composable
 fun OpenInProtonCalendarBanner(modifier: Modifier = Modifier, onOpenInProtonCalendarClick: () -> Unit) {
     Button(
-        elevation = elevation(defaultElevation = 0.dp, pressedElevation = 0.dp),
+        elevation = ButtonDefaults.buttonElevation(defaultElevation = 0.dp),
         shape = ProtonTheme.shapes.medium,
-        colors = ButtonDefaults.buttonColors(backgroundColor = ProtonTheme.colors.backgroundSecondary),
+        colors = ButtonDefaults.buttonColors().copy(containerColor = ProtonTheme.colors.backgroundSecondary),
         contentPadding = PaddingValues(ProtonDimens.ExtraSmallSpacing + ProtonDimens.SmallSpacing),
         border = BorderStroke(MailDimens.DefaultBorder, ProtonTheme.colors.separatorNorm),
         modifier = modifier

@@ -200,8 +200,8 @@ fun MessageBodyButtonBanner(
         ProtonButton(
             modifier = Modifier.fillMaxWidth(),
             onClick = { onButtonClicked() },
-            colors = ButtonDefaults.buttonColors(backgroundColor = ProtonTheme.colors.backgroundSecondary),
-            elevation = ButtonDefaults.elevation(defaultElevation = 0.dp),
+            colors = ButtonDefaults.buttonColors().copy(containerColor = ProtonTheme.colors.backgroundSecondary),
+            elevation = ButtonDefaults.buttonElevation(defaultElevation = 0.dp),
             shape = ProtonTheme.shapes.small,
             border = BorderStroke(Dp.Hairline, ProtonTheme.colors.textWeak)
         ) {

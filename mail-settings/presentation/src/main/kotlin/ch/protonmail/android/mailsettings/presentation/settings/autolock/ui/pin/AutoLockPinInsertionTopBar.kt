@@ -38,7 +38,7 @@ fun AutoLockPinInsertionTopBar(
 ) {
     val uiModel = (state as? AutoLockPinState.DataLoaded)?.topBarState?.topBarStateUiModel ?: return
 
-    val navigationIcon: (@Composable () -> Unit)? = if (uiModel.showBackButton) {
+    val navigationIcon: (@Composable () -> Unit) = if (uiModel.showBackButton) {
         {
             IconButton(onClick = onBackClick) {
                 Icon(
@@ -47,7 +47,7 @@ fun AutoLockPinInsertionTopBar(
                 )
             }
         }
-    } else null
+    } else { {} }
 
     ProtonTopAppBar(
         modifier = modifier,

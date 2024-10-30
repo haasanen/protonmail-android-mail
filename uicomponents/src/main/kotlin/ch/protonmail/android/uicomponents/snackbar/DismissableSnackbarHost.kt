@@ -16,41 +16,44 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-@file:OptIn(ExperimentalMaterialApi::class)
-
 package ch.protonmail.android.uicomponents.snackbar
 
-import androidx.compose.material3.DismissValue
-import androidx.compose.material3.ExperimentalMaterialApi
-import androidx.compose.material3.SwipeToDismiss
-import androidx.compose.material3.rememberDismissState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import ch.protonmail.android.design.compose.component.ProtonSnackbarHost
 import ch.protonmail.android.design.compose.component.ProtonSnackbarHostState
+import androidx.compose.material3.SwipeToDismissBox
+import androidx.compose.material3.SwipeToDismissBoxValue
+import androidx.compose.material3.rememberSwipeToDismissBoxState
 
 @Composable
 fun DismissableSnackbarHost(modifier: Modifier = Modifier, protonSnackbarHostState: ProtonSnackbarHostState) {
-    val dismissSnackbarState = rememberDismissState(confirmStateChange = { value ->
-        if (value != DismissValue.Default) {
-            protonSnackbarHostState.snackbarHostState.currentSnackbarData?.dismiss()
-            return@rememberDismissState true
+    val dismissState = rememberSwipeToDismissBoxState(
+        initialValue = SwipeToDismissBoxValue.Settled,
+        confirmValueChange = { newValue ->
+            if (newValue != SwipeToDismissBoxValue.Settled) {
+                protonSnackbarHostState.snackbarHostState.currentSnackbarData?.dismiss()
+                true
+            } else {
+                false
+            }
         }
+    )
 
-        false
-    })
-
-    LaunchedEffect(dismissSnackbarState.currentValue) {
-        if (dismissSnackbarState.currentValue != DismissValue.Default) {
-            dismissSnackbarState.reset()
+    LaunchedEffect(dismissState.currentValue) {
+        if (dismissState.currentValue != SwipeToDismissBoxValue.Settled) {
+            dismissState.reset()
         }
     }
 
-    SwipeToDismiss(
-        state = dismissSnackbarState,
-        background = {},
-        dismissContent = {
+    SwipeToDismissBox(
+        state = dismissState,
+        modifier = modifier,
+        backgroundContent = {
+            // Customize background content here as desired
+        },
+        content = {
             ProtonSnackbarHost(
                 modifier = modifier,
                 hostState = protonSnackbarHostState
@@ -58,3 +61,4 @@ fun DismissableSnackbarHost(modifier: Modifier = Modifier, protonSnackbarHostSta
         }
     )
 }
+

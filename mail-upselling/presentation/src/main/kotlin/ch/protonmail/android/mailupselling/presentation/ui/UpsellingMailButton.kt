@@ -25,7 +25,6 @@ import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ExperimentalMaterialApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -68,7 +67,6 @@ fun UpsellingMailButton(
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun UpsellingMailButton(onButtonClick: () -> Unit, modifier: Modifier = Modifier) {
     val accessibilityDescription = stringResource(id = R.string.upselling_button_item_content_description)

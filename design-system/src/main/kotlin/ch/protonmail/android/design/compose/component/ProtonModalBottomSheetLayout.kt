@@ -18,31 +18,32 @@
 package ch.protonmail.android.design.compose.component
 
 import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.material3.ExperimentalMaterialApi
-import androidx.compose.material3.ModalBottomSheetLayout
-import androidx.compose.material3.ModalBottomSheetState
-import androidx.compose.material3.ModalBottomSheetValue
-import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.material3.BottomSheetScaffold
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.SheetState
+import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 
-@ExperimentalMaterialApi
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProtonModalBottomSheetLayout(
     sheetContent: @Composable ColumnScope.() -> Unit,
     modifier: Modifier = Modifier,
-    sheetState: ModalBottomSheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden),
-    content: @Composable () -> Unit,
+    sheetState: SheetState = rememberBottomSheetScaffoldState().bottomSheetState,
+    content: @Composable (PaddingValues) -> Unit = { PaddingValues(ProtonDimens.DefaultSpacing) }
 ) {
-    ModalBottomSheetLayout(
+    BottomSheetScaffold(
         modifier = modifier,
-        sheetState = sheetState,
+        scaffoldState = rememberBottomSheetScaffoldState(bottomSheetState = sheetState),
         sheetContent = sheetContent,
         sheetShape = ProtonTheme.shapes.bottomSheet,
-        sheetBackgroundColor = ProtonTheme.colors.backgroundNorm,
+        sheetContainerColor = ProtonTheme.colors.backgroundNorm,
         sheetContentColor = ProtonTheme.colors.textNorm,
-        scrimColor = ProtonTheme.colors.blenderNorm,
         content = content
     )
 }

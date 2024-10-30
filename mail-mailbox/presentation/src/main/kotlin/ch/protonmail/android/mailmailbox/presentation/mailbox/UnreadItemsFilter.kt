@@ -19,13 +19,12 @@
 package ch.protonmail.android.mailmailbox.presentation.mailbox
 
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.ChipDefaults
-import androidx.compose.material3.ExperimentalMaterialApi
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
@@ -40,7 +39,6 @@ import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun UnreadItemsFilter(
     modifier: Modifier = Modifier,
@@ -56,7 +54,7 @@ fun UnreadItemsFilter(
         is UnreadFilterState.Data -> {
             FilterChip(
                 modifier = modifier.testTag(UnreadItemsFilterTestTags.UnreadFilterChip),
-                colors = chipColors(state.isFilterEnabled),
+                colors = chipColors(),
                 selected = state.isFilterEnabled,
                 onClick = {
                     if (state.isFilterEnabled) {
@@ -65,16 +63,17 @@ fun UnreadItemsFilter(
                         onFilterEnabled()
                     }
                 },
-                trailingIcon = addCloseIconForEnabledState(state)
-            ) {
-                Text(
-                    text = pluralStringResource(
-                        id = R.plurals.filter_unread_button_text,
-                        count = state.numUnread,
-                        UnreadCountValueMapper.toCappedValue(state.numUnread)
+                trailingIcon = addCloseIconForEnabledState(state),
+                label = {
+                    Text(
+                        text = pluralStringResource(
+                            id = R.plurals.filter_unread_button_text,
+                            count = state.numUnread,
+                            UnreadCountValueMapper.toCappedValue(state.numUnread)
+                        )
                     )
-                )
-            }
+                }
+            )
         }
     }
 }
@@ -95,19 +94,13 @@ private fun addCloseIconForEnabledState(state: UnreadFilterState.Data): @Composa
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
-private fun chipColors(isSelected: Boolean) = if (isSelected) {
-    ChipDefaults.filterChipColors(
-        selectedBackgroundColor = ProtonTheme.colors.iconAccent,
-        selectedContentColor = ProtonTheme.colors.textInverted
-    )
-} else {
-    ChipDefaults.filterChipColors(
-        backgroundColor = ProtonTheme.colors.backgroundSecondary,
-        contentColor = ProtonTheme.colors.textAccent
-    )
-}
+private fun chipColors() = FilterChipDefaults.filterChipColors(
+    selectedContainerColor = ProtonTheme.colors.iconAccent,
+    selectedLabelColor = ProtonTheme.colors.textInverted,
+    containerColor = ProtonTheme.colors.backgroundSecondary,
+    labelColor = ProtonTheme.colors.textAccent
+)
 
 @Preview
 @Composable

@@ -20,8 +20,8 @@ package ch.protonmail.android.mailsettings.presentation.settings.combinedcontact
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.rememberScaffoldState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
@@ -70,16 +70,17 @@ fun CombinedContactsSettingScreen(
     onToggle: (Boolean) -> Unit,
     state: CombinedContactsSettingState.Data
 ) {
-    val scaffoldState = rememberScaffoldState()
+    val snackbarHostState = remember { ProtonSnackbarHostState() }
     val errorMessage = stringResource(id = R.string.mail_settings_generic_error_message)
 
     ConsumableLaunchedEffect(state.combinedContactsSettingErrorEffect) {
-        scaffoldState.snackbarHostState.showSnackbar(errorMessage)
+        snackbarHostState.showSnackbar(
+            message = errorMessage,
+            type = ProtonSnackbarType.ERROR)
     }
 
     Scaffold(
         modifier = modifier,
-        scaffoldState = scaffoldState,
         topBar = {
             ProtonSettingsTopBar(
                 title = stringResource(id = R.string.mail_settings_combined_contacts),
@@ -97,10 +98,10 @@ fun CombinedContactsSettingScreen(
                 onToggle = { state.isEnabled?.let { onToggle(!it) } }
             )
         },
-        snackbarHost = { snackbarHostState ->
+        snackbarHost = {
             DismissableSnackbarHost(
                 modifier = Modifier.testTag(TEST_TAG_COMBINED_CONTACTS_SNACKBAR),
-                protonSnackbarHostState = ProtonSnackbarHostState(snackbarHostState, ProtonSnackbarType.ERROR)
+                protonSnackbarHostState = snackbarHostState
             )
         }
     )

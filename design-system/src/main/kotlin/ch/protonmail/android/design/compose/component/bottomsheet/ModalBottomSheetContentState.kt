@@ -18,9 +18,8 @@
 package ch.protonmail.android.design.compose.component.bottomsheet
 
 import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.material3.ExperimentalMaterialApi
-import androidx.compose.material3.ModalBottomSheetState
-import androidx.compose.material3.ModalBottomSheetValue
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.SheetState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -29,17 +28,17 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 
 @Stable
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 data class ModalBottomSheetContentState(
-    val sheetState: ModalBottomSheetState,
+    val sheetState: SheetState,
     val sheetContent: MutableState<@Composable ColumnScope.(runAction: RunAction) -> Unit>,
 )
 
 @Composable
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 fun rememberModalBottomSheetContentState(
-    modalBottomSheetState: ModalBottomSheetState =
-        rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden),
+    modalBottomSheetState: SheetState =
+        rememberModalBottomSheetState(),
     modalBottomSheetContent: MutableState<@Composable ColumnScope.(runAction: RunAction) -> Unit> = mutableStateOf({}),
 ): ModalBottomSheetContentState = remember {
     ModalBottomSheetContentState(

@@ -439,7 +439,7 @@ data class ProtonTypography(
 private fun TextStyle.withDefaultFontFamily(default: FontFamily): TextStyle =
     if (fontFamily != null) this else copy(fontFamily = default)
 
-internal fun ProtonTypography.toMaterial3ThemeTypography() = androidx.compose.material3.Typography(
+internal fun ProtonTypography.toMaterial3ThemeTypography() = Typography(
     displayLarge = headline,
     displayMedium = headline,
     displaySmall = headline,
@@ -455,18 +455,6 @@ internal fun ProtonTypography.toMaterial3ThemeTypography() = androidx.compose.ma
     labelLarge = captionMedium,
     labelMedium = captionMedium,
     labelSmall = captionMedium
-)
-
-internal fun ProtonTypography.toMaterialThemeTypography() = Typography(
-    defaultFontFamily = FontFamily.SansSerif,
-    h6 = headline,
-    subtitle1 = body1Medium,
-    subtitle2 = body2Medium,
-    body1 = body1Regular,
-    body2 = body2Regular,
-    button = body1Regular,
-    caption = captionMedium,
-    overline = overlineMedium
 )
 
 val LocalTypography = staticCompositionLocalOf { ProtonTypography() }

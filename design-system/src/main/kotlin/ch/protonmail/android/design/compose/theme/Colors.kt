@@ -17,7 +17,6 @@
  */
 package ch.protonmail.android.design.compose.theme
 
-import androidx.compose.material3.Colors
 import androidx.compose.material3.ColorScheme
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
@@ -26,7 +25,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.runtime.structuralEqualityPolicy
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
+import ch.protonmail.android.design.compose.annotation.MissingDesignSpec
 
 private object ProtonPalette {
     val Haiti = Color(0xFF1B1340)
@@ -170,7 +169,7 @@ class ProtonColors(
     shadowRaised: Color,
     shadowLifted: Color,
 
-    sidebarColors: ProtonColors? = null,
+    sidebarColors: ProtonColors? = null
 ) {
     var isDark: Boolean by mutableStateOf(isDark, structuralEqualityPolicy())
         internal set
@@ -290,7 +289,6 @@ class ProtonColors(
 
     fun copy(
         isDark: Boolean = this.isDark,
-
         shade100: Color = this.shade100,
         shade80: Color = this.shade80,
         shade60: Color = this.shade60,
@@ -300,60 +298,47 @@ class ProtonColors(
         shade15: Color = this.shade15,
         shade10: Color = this.shade10,
         shade0: Color = this.shade0,
-
         textNorm: Color = this.textNorm,
         textAccent: Color = this.textAccent,
         textWeak: Color = this.textWeak,
         textHint: Color = this.textHint,
         textDisabled: Color = this.textDisabled,
         textInverted: Color = this.textInverted,
-
         iconNorm: Color = this.iconNorm,
         iconAccent: Color = this.iconAccent,
         iconWeak: Color = this.iconWeak,
         iconHint: Color = this.iconHint,
         iconDisabled: Color = this.iconDisabled,
         iconInverted: Color = this.iconInverted,
-
         interactionStrongNorm: Color = this.interactionStrongNorm,
         interactionStrongPressed: Color = this.interactionStrongPressed,
-
         interactionWeakNorm: Color = this.interactionWeakNorm,
         interactionWeakPressed: Color = this.interactionWeakPressed,
         interactionWeakDisabled: Color = this.interactionWeakDisabled,
-
         backgroundNorm: Color = this.backgroundNorm,
         backgroundSecondary: Color = this.backgroundSecondary,
         backgroundDeep: Color = this.backgroundDeep,
-
         separatorNorm: Color = this.separatorNorm,
-
         blenderNorm: Color = this.blenderNorm,
-
         brandDarken40: Color = this.brandDarken40,
         brandDarken20: Color = this.brandDarken20,
         brandNorm: Color = this.brandNorm,
         brandLighten20: Color = this.brandLighten20,
         brandLighten40: Color = this.brandLighten40,
-
         notificationNorm: Color = this.notificationNorm,
         notificationError: Color = this.notificationError,
         notificationWarning: Color = this.notificationWarning,
         notificationSuccess: Color = this.notificationSuccess,
-
         interactionNorm: Color = this.interactionNorm,
         interactionPressed: Color = this.interactionPressed,
         interactionDisabled: Color = this.interactionDisabled,
-
         floatyBackground: Color = this.floatyBackground,
         floatyPressed: Color = this.floatyPressed,
         floatyText: Color = this.floatyText,
-
         shadowNorm: Color = this.shadowNorm,
         shadowRaised: Color = this.shadowRaised,
         shadowLifted: Color = this.shadowLifted,
-
-        sidebarColors: ProtonColors? = this.sidebarColors,
+        sidebarColors: ProtonColors? = this.sidebarColors
     ) = ProtonColors(
         isDark = isDark,
 
@@ -419,7 +404,7 @@ class ProtonColors(
         shadowRaised = shadowRaised,
         shadowLifted = shadowLifted,
 
-        sidebarColors = sidebarColors,
+        sidebarColors = sidebarColors
     )
 
     companion object {
@@ -432,7 +417,7 @@ class ProtonColors(
             brandDarken20: Color = ProtonPalette.SanMarino,
             brandNorm: Color = ProtonPalette.CornflowerBlue,
             brandLighten20: Color = ProtonPalette.Portage,
-            brandLighten40: Color = ProtonPalette.Perano,
+            brandLighten40: Color = ProtonPalette.Perano
         ) = ProtonColors(
             isDark = false,
             brandDarken40 = brandDarken40,
@@ -457,7 +442,7 @@ class ProtonColors(
             shadowLifted = Color.Black.copy(alpha = 0.1f),
             blenderNorm = ProtonPalette.Woodsmoke.copy(alpha = 0.48f),
             textAccent = brandNorm,
-            iconAccent = brandNorm,
+            iconAccent = brandNorm
         )
 
         private fun baseDark(
@@ -465,7 +450,7 @@ class ProtonColors(
             brandDarken20: Color = ProtonPalette.SanMarino,
             brandNorm: Color = ProtonPalette.CornflowerBlue,
             brandLighten20: Color = ProtonPalette.Portage,
-            brandLighten40: Color = ProtonPalette.Perano,
+            brandLighten40: Color = ProtonPalette.Perano
         ) = ProtonColors(
             isDark = true,
             brandDarken40 = brandDarken40,
@@ -490,7 +475,7 @@ class ProtonColors(
             shadowLifted = Color.Black.copy(alpha = 0.86f),
             blenderNorm = Color.Black.copy(alpha = 0.52f),
             textAccent = brandLighten20,
-            iconAccent = brandLighten20,
+            iconAccent = brandLighten20
         ).let {
             it.copy(
                 interactionWeakNorm = it.shade20,
@@ -498,7 +483,7 @@ class ProtonColors(
                 interactionWeakDisabled = it.shade15,
                 backgroundNorm = it.shade10,
                 backgroundSecondary = it.shade15,
-                backgroundDeep = it.shade0,
+                backgroundDeep = it.shade0
             )
         }
 
@@ -507,13 +492,13 @@ class ProtonColors(
             brandDarken20: Color = ProtonPalette.SanMarino,
             brandNorm: Color = ProtonPalette.CornflowerBlue,
             brandLighten20: Color = ProtonPalette.Portage,
-            brandLighten40: Color = ProtonPalette.Perano,
+            brandLighten40: Color = ProtonPalette.Perano
         ) = baseLight(
             brandDarken40 = brandDarken40,
             brandDarken20 = brandDarken20,
             brandNorm = brandNorm,
             brandLighten20 = brandLighten20,
-            brandLighten40 = brandLighten40,
+            brandLighten40 = brandLighten40
         ).copy(
             backgroundNorm = ProtonPalette.Haiti,
             interactionWeakNorm = ProtonPalette.Jacarta,
@@ -523,7 +508,7 @@ class ProtonColors(
             textWeak = ProtonPalette.CadetBlue,
             iconNorm = ProtonPalette.White,
             iconWeak = ProtonPalette.CadetBlue,
-            interactionPressed = ProtonPalette.SanMarino,
+            interactionPressed = ProtonPalette.SanMarino
         )
 
         private fun sidebarDark(
@@ -531,13 +516,13 @@ class ProtonColors(
             brandDarken20: Color = ProtonPalette.SanMarino,
             brandNorm: Color = ProtonPalette.CornflowerBlue,
             brandLighten20: Color = ProtonPalette.Portage,
-            brandLighten40: Color = ProtonPalette.Perano,
+            brandLighten40: Color = ProtonPalette.Perano
         ) = baseDark(
             brandDarken40 = brandDarken40,
             brandDarken20 = brandDarken20,
             brandNorm = brandNorm,
             brandLighten20 = brandLighten20,
-            brandLighten40 = brandLighten40,
+            brandLighten40 = brandLighten40
         ).copy(
             backgroundNorm = ProtonPalette.Cinder,
             interactionWeakNorm = ProtonPalette.BlackCurrant,
@@ -547,7 +532,7 @@ class ProtonColors(
             textWeak = ProtonPalette.CadetBlue,
             iconNorm = ProtonPalette.White,
             iconWeak = ProtonPalette.CadetBlue,
-            interactionPressed = ProtonPalette.SanMarino,
+            interactionPressed = ProtonPalette.SanMarino
         )
 
         fun light(
@@ -555,20 +540,20 @@ class ProtonColors(
             brandDarken20: Color = ProtonPalette.SanMarino,
             brandNorm: Color = ProtonPalette.CornflowerBlue,
             brandLighten20: Color = ProtonPalette.Portage,
-            brandLighten40: Color = ProtonPalette.Perano,
+            brandLighten40: Color = ProtonPalette.Perano
         ) = baseLight(
             brandDarken40 = brandDarken40,
             brandDarken20 = brandDarken20,
             brandNorm = brandNorm,
             brandLighten20 = brandLighten20,
-            brandLighten40 = brandLighten40,
+            brandLighten40 = brandLighten40
         ).copy(
             sidebarColors = sidebarLight(
                 brandDarken40 = brandDarken40,
                 brandDarken20 = brandDarken20,
                 brandNorm = brandNorm,
                 brandLighten20 = brandLighten20,
-                brandLighten40 = brandLighten40,
+                brandLighten40 = brandLighten40
             )
         )
 
@@ -577,20 +562,20 @@ class ProtonColors(
             brandDarken20: Color = ProtonPalette.SanMarino,
             brandNorm: Color = ProtonPalette.CornflowerBlue,
             brandLighten20: Color = ProtonPalette.Portage,
-            brandLighten40: Color = ProtonPalette.Perano,
+            brandLighten40: Color = ProtonPalette.Perano
         ) = baseDark(
             brandDarken40 = brandDarken40,
             brandDarken20 = brandDarken20,
             brandNorm = brandNorm,
             brandLighten20 = brandLighten20,
-            brandLighten40 = brandLighten40,
+            brandLighten40 = brandLighten40
         ).copy(
             sidebarColors = sidebarDark(
                 brandDarken40 = brandDarken40,
                 brandDarken20 = brandDarken20,
                 brandNorm = brandNorm,
                 brandLighten20 = brandLighten20,
-                brandLighten40 = brandLighten40,
+                brandLighten40 = brandLighten40
             )
         )
     }
@@ -601,6 +586,7 @@ fun ProtonColors.textWeak(enabled: Boolean = true) = if (enabled) textWeak else 
 fun ProtonColors.textInverted(enabled: Boolean = true) = if (enabled) textInverted else textDisabled
 fun ProtonColors.interactionNorm(enabled: Boolean = true) = if (enabled) interactionNorm else interactionDisabled
 
+@MissingDesignSpec
 internal fun ProtonColors.toMaterial3ThemeColors() = ColorScheme(
     primary = brandNorm,
     onPrimary = Color.White,
@@ -621,6 +607,7 @@ internal fun ProtonColors.toMaterial3ThemeColors() = ColorScheme(
     onSurface = textNorm,
     surfaceVariant = backgroundNorm,
     onSurfaceVariant = textNorm,
+    surfaceTint = Color.Unspecified,
     inverseSurface = backgroundNorm,
     inverseOnSurface = textNorm,
     error = notificationError,
@@ -628,25 +615,15 @@ internal fun ProtonColors.toMaterial3ThemeColors() = ColorScheme(
     errorContainer = backgroundNorm,
     onErrorContainer = textNorm,
     outline = brandNorm,
-    surfaceTint = Color.Unspecified,
     outlineVariant = brandNorm,
-    scrim = blenderNorm
-)
-
-internal fun ProtonColors.toMaterialThemeColors() = Colors(
-    primary = brandNorm,
-    primaryVariant = brandDarken20,
-    secondary = brandNorm,
-    secondaryVariant = brandDarken20,
-    background = backgroundNorm,
-    surface = backgroundSecondary,
-    error = notificationError,
-    onPrimary = Color.White,
-    onSecondary = Color.White,
-    onBackground = textNorm,
-    onSurface = textNorm,
-    onError = textInverted,
-    isLight = !isDark,
+    scrim = blenderNorm,
+    surfaceBright = Color.Unspecified,
+    surfaceDim = Color.Unspecified,
+    surfaceContainer = Color.Unspecified,
+    surfaceContainerHigh = Color.Unspecified,
+    surfaceContainerHighest = Color.Unspecified,
+    surfaceContainerLow = Color.Unspecified,
+    surfaceContainerLowest = Color.Unspecified
 )
 
 fun ProtonColors.updateColorsFrom(other: ProtonColors) {
@@ -716,39 +693,5 @@ fun ProtonColors.updateColorsFrom(other: ProtonColors) {
 
     sidebarColors = other.sidebarColors
 }
-//
-//object AccentColors {
-//    val Purple = ProtonAccentColor(ProtonPalette.PurpleBase)
-//    val Enzian = ProtonAccentColor(ProtonPalette.EnzianBase)
-//    val Pink = ProtonAccentColor(ProtonPalette.PinkBase)
-//    val Plum = ProtonAccentColor(ProtonPalette.PlumBase)
-//    val Strawberry = ProtonAccentColor(ProtonPalette.StrawberryBase)
-//    val Cerise = ProtonAccentColor(ProtonPalette.CeriseBase)
-//    val Carrot = ProtonAccentColor(ProtonPalette.CarrotBase)
-//    val Copper = ProtonAccentColor(ProtonPalette.CopperBase)
-//    val Sahara = ProtonAccentColor(ProtonPalette.SaharaBase)
-//    val Soil = ProtonAccentColor(ProtonPalette.SoilBase)
-//    val SlateBlue = ProtonAccentColor(ProtonPalette.SlateBlueBase)
-//    val Cobalt = ProtonAccentColor(ProtonPalette.CobaltBase)
-//    val Pacific = ProtonAccentColor(ProtonPalette.PacificBase)
-//    val Ocean = ProtonAccentColor(ProtonPalette.OceanBase)
-//    val Reef = ProtonAccentColor(ProtonPalette.ReefBase)
-//    val Pine = ProtonAccentColor(ProtonPalette.PineBase)
-//    val Fern = ProtonAccentColor(ProtonPalette.FernBase)
-//    val Forest = ProtonAccentColor(ProtonPalette.ForestBase)
-//    val Olive = ProtonAccentColor(ProtonPalette.OliveBase)
-//    val Pickle = ProtonAccentColor(ProtonPalette.PickleBase)
-//}
-//
-//data class ProtonAccentColor(
-//    val base: Color,
-//    val strong: Color,
-//    val intense: Color,
-//) {
-//    constructor(base: Color) : this(base, base.strongVariant(), base.intenseVariant())
-//}
-//
-//fun Color.strongVariant(): Color = Color(strongColorVariant(toArgb()))
-//fun Color.intenseVariant(): Color = Color(intenseColorVariant(toArgb()))
 
 val LocalColors = staticCompositionLocalOf { ProtonColors.Light }

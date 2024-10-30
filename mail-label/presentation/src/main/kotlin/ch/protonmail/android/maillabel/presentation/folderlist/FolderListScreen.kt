@@ -36,15 +36,15 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Divider
-import androidx.compose.material3.ExperimentalMaterialApi
-import androidx.compose.material3.ModalBottomSheetValue
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.SheetValue
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.rememberCoroutineScope
@@ -77,14 +77,14 @@ import ch.protonmail.android.design.compose.theme.defaultNorm
 import ch.protonmail.android.design.compose.theme.defaultSmallWeak
 import ch.protonmail.android.design.compose.theme.defaultStrongNorm
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FolderListScreen(actions: FolderListScreen.Actions, viewModel: FolderListViewModel = hiltViewModel()) {
     val state = rememberAsState(flow = viewModel.state, initial = viewModel.initialState).value
-    val bottomSheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
+    val bottomSheetState = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
 
-    if (bottomSheetState.currentValue != ModalBottomSheetValue.Hidden) {
+    if (bottomSheetState.currentValue != SheetValue.Hidden) {
         DisposableEffect(Unit) { onDispose { viewModel.submit(FolderListViewAction.OnDismissSettings) } }
     }
 

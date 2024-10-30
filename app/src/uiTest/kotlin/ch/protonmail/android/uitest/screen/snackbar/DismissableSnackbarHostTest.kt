@@ -97,7 +97,6 @@ internal class DismissableSnackbarHostTest : HiltInstrumentedTest() {
                 }
 
                 Scaffold(
-                    scaffoldState = rememberScaffoldState(),
                     snackbarHost = {
                         DismissableSnackbarHost(
                             modifier = Modifier.testTag(MainSnackbarTestTag),
