@@ -39,7 +39,7 @@ import ch.protonmail.android.mailmessage.presentation.previewdata.MailboxMoreAct
 import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
 import ch.protonmail.android.design.compose.component.ProtonRawListItem
 import ch.protonmail.android.design.compose.theme.ProtonDimens
-import ch.protonmail.android.design.compose.theme.ProtonTheme3
+import ch.protonmail.android.design.compose.theme.ProtonTheme
 
 @Composable
 fun MailboxMoreActionBottomSheetContent(
@@ -145,7 +145,7 @@ private fun MoreActionBottomSheetContentPreview(
     @PreviewParameter(MailboxMoreActionBottomSheetPreviewDataProvider::class)
     state: MailboxMoreActionsBottomSheetState.Data
 ) {
-    ProtonTheme3 {
+    ProtonTheme {
         MailboxMoreActionBottomSheetContent(state = state, actionCallbacks = MoreActionBottomSheetContent.Actions.Empty)
     }
 }

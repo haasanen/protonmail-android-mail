@@ -33,7 +33,6 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.model.StorageLimit
 import ch.protonmail.android.design.compose.component.ProtonAlertDialog
 import ch.protonmail.android.design.compose.component.ProtonAlertDialogButton
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.ProtonTheme3
 import ch.protonmail.android.design.compose.theme.defaultWeak
 
 @Composable
@@ -168,7 +167,7 @@ fun StorageQuotaOverWarningDialog(modifier: Modifier = Modifier, onConfirmButton
 @Preview
 @Composable
 private fun FirstStorageLimitWarningDialogPreview() {
-    ProtonTheme3 {
+    ProtonTheme {
         ProtonTheme {
             StorageLimitWarningDialog(
                 warningTextResId = R.string.storage_first_limit_exceeded_warning_dialog_text,
@@ -182,7 +181,7 @@ private fun FirstStorageLimitWarningDialogPreview() {
 @Preview
 @Composable
 private fun SecondStorageLimitWarningDialogPreview() {
-    ProtonTheme3 {
+    ProtonTheme {
         ProtonTheme {
             StorageLimitWarningDialog(
                 warningTextResId = R.string.storage_second_limit_exceeded_warning_dialog_text,
@@ -196,7 +195,7 @@ private fun SecondStorageLimitWarningDialogPreview() {
 @Preview
 @Composable
 private fun StorageQuotaOverWarningDialogPreview() {
-    ProtonTheme3 {
+    ProtonTheme {
         ProtonTheme {
             StorageQuotaOverWarningDialog(
                 onConfirmButtonClicked = {}

@@ -68,7 +68,6 @@ import ch.protonmail.android.maildetail.presentation.previewdata.DetailsScreenTo
 import ch.protonmail.android.maildetail.presentation.previewdata.DetailsScreenTopBarPreviewProvider
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.ProtonTheme3
 import ch.protonmail.android.design.compose.theme.captionNorm
 import ch.protonmail.android.design.compose.theme.defaultStrongNorm
 import ch.protonmail.android.design.compose.theme.headlineNorm
@@ -85,7 +84,7 @@ fun DetailScreenTopBar(
     subjectHeaderSizeCallback: (Int) -> Unit,
     topAppBarState: TopAppBarState
 ) {
-    ProtonTheme3 {
+    ProtonTheme {
         Column(
             modifier = modifier
                 .fillMaxWidth()
@@ -312,7 +311,7 @@ object DetailScreenTopBar {
 private fun DetailScreenTopBarPreview(
     @PreviewParameter(DetailsScreenTopBarPreviewProvider::class) preview: DetailsScreenTopBarPreview
 ) {
-    ProtonTheme3 {
+    ProtonTheme {
         val initialHeightOffset = if (preview.isExpanded) 0f else -Float.MAX_VALUE
         val state = rememberTopAppBarState(initialHeightOffset = initialHeightOffset)
         DetailScreenTopBar(

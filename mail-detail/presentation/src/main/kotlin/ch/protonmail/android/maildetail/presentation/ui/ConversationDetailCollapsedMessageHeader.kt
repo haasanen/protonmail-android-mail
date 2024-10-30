@@ -52,7 +52,6 @@ import ch.protonmail.android.maildetail.presentation.previewdata.ConversationDet
 import ch.protonmail.android.mailmessage.presentation.ui.ParticipantAvatar
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.ProtonTheme3
 import ch.protonmail.android.design.compose.theme.captionNorm
 import ch.protonmail.android.design.compose.theme.defaultNorm
 import ch.protonmail.android.design.compose.theme.overlineNorm
@@ -355,7 +354,7 @@ private fun CdCollapsedMessageHeaderPreview(
     @PreviewParameter(ConversationDetailCollapsedMessageHeaderPreviewData::class)
     uiModel: ConversationDetailMessageUiModel.Collapsed
 ) {
-    ProtonTheme3 {
+    ProtonTheme {
         ProtonTheme {
             ConversationDetailCollapsedMessageHeader(uiModel = uiModel)
         }

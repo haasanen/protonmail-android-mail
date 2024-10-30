@@ -51,7 +51,6 @@ import ch.protonmail.android.mailupselling.presentation.model.UpsellingBottomShe
 import ch.protonmail.android.mailupselling.presentation.ui.UpsellingColors
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.ProtonTheme3
 import ch.protonmail.android.design.compose.theme.defaultWeak
 import ch.protonmail.android.design.compose.theme.headlineNorm
 import ch.protonmail.android.design.compose.theme.headlineSmallNorm
@@ -158,7 +157,7 @@ internal fun UpsellingBottomSheetContent(
 @AdaptivePreviews
 @Composable
 private fun BottomSheetPreview() {
-    ProtonTheme3 {
+    ProtonTheme {
         UpsellingBottomSheetContent(
             state = UpsellingBottomSheetContentPreviewData.Base,
             actions = UpsellingBottomSheet.Actions(

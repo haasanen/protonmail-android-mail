@@ -115,7 +115,6 @@ import ch.protonmail.android.design.compose.component.ProtonSnackbarHostState
 import ch.protonmail.android.design.compose.component.ProtonSnackbarType
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.ProtonTheme3
 import ch.protonmail.android.mailcontact.domain.model.ContactId
 import timber.log.Timber
 
@@ -878,7 +877,7 @@ object ConversationDetailScreen {
 private fun ConversationDetailScreenPreview(
     @PreviewParameter(ConversationDetailsPreviewProvider::class) state: ConversationDetailState
 ) {
-    ProtonTheme3 {
+    ProtonTheme {
         ProtonTheme {
             ConversationDetailScreen(
                 state = state,

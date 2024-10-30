@@ -31,7 +31,6 @@ import ch.protonmail.android.design.compose.component.ProtonAlertDialog
 import ch.protonmail.android.design.compose.component.ProtonAlertDialogButton
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.ProtonTheme3
 import ch.protonmail.android.design.compose.theme.defaultWeak
 
 @Composable
@@ -69,7 +68,7 @@ fun SendingErrorDialog(
 @Preview
 @Composable
 private fun SendingErrorDialogPreview() {
-    ProtonTheme3 {
+    ProtonTheme {
         ProtonTheme {
             SendingErrorDialog(
                 "This is error message",

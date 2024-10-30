@@ -29,7 +29,6 @@ import ch.protonmail.android.mailcomposer.presentation.R
 import ch.protonmail.android.design.compose.component.ProtonAlertDialog
 import ch.protonmail.android.design.compose.component.ProtonAlertDialogButton
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.ProtonTheme3
 import ch.protonmail.android.design.compose.theme.defaultWeak
 
 @Composable
@@ -69,7 +68,7 @@ fun SendingWithEmptySubjectDialog(
 @Preview
 @Composable
 private fun SendingWithEmptySubjectDialogPreview() {
-    ProtonTheme3 {
+    ProtonTheme {
         ProtonTheme {
             SendingWithEmptySubjectDialog(onConfirmClicked = {}, onDismissClicked = {})
         }

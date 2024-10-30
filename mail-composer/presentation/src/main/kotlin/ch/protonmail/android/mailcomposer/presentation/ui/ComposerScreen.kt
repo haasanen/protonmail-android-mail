@@ -81,7 +81,7 @@ import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
 import ch.protonmail.android.design.compose.component.ProtonModalBottomSheetLayout
 import ch.protonmail.android.design.compose.component.ProtonSnackbarHostState
 import ch.protonmail.android.design.compose.component.ProtonSnackbarType
-import ch.protonmail.android.design.compose.theme.ProtonTheme3
+import ch.protonmail.android.design.compose.theme.ProtonTheme
 import timber.log.Timber
 import kotlin.time.Duration
 
@@ -485,7 +485,7 @@ private data class SendExpiringMessageDialogState(
 @Composable
 @AdaptivePreviews
 private fun MessageDetailScreenPreview() {
-    ProtonTheme3 {
+    ProtonTheme {
         ComposerScreen(ComposerScreen.Actions.Empty)
     }
 }
