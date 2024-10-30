@@ -19,11 +19,11 @@
 package ch.protonmail.android.mailmailbox.presentation.mailbox
 
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.ChipDefaults
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.FilterChip
-import androidx.compose.material.Icon
-import androidx.compose.material.Text
+import androidx.compose.material3.ChipDefaults
+import androidx.compose.material3.ExperimentalMaterialApi
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.Composable

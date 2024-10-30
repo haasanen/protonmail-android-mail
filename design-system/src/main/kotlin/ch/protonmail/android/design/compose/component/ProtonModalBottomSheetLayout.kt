@@ -18,11 +18,11 @@
 package ch.protonmail.android.design.compose.component
 
 import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.ModalBottomSheetLayout
-import androidx.compose.material.ModalBottomSheetState
-import androidx.compose.material.ModalBottomSheetValue
-import androidx.compose.material.rememberModalBottomSheetState
+import androidx.compose.material3.ExperimentalMaterialApi
+import androidx.compose.material3.ModalBottomSheetLayout
+import androidx.compose.material3.ModalBottomSheetState
+import androidx.compose.material3.ModalBottomSheetValue
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import ch.protonmail.android.design.compose.theme.ProtonTheme

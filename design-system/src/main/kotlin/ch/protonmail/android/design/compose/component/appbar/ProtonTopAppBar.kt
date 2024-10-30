@@ -19,7 +19,7 @@
 package ch.protonmail.android.design.compose.component.appbar
 
 import androidx.compose.foundation.layout.RowScope
-import androidx.compose.material.TopAppBar
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier

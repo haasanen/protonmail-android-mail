@@ -18,7 +18,7 @@
 
 package ch.protonmail.android.mailcommon.presentation.compose
 
-import androidx.compose.material.SnackbarResult
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope

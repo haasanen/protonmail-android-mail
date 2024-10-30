@@ -17,7 +17,7 @@
  */
 package ch.protonmail.android.design.compose.theme
 
-import androidx.compose.material.Colors
+import androidx.compose.material3.Colors
 import androidx.compose.material3.ColorScheme
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue

@@ -18,7 +18,7 @@
 
 package ch.protonmail.android.mailsettings.presentation.settings.autolock.ui.pin
 
-import androidx.compose.material.Text
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import ch.protonmail.android.mailsettings.presentation.R

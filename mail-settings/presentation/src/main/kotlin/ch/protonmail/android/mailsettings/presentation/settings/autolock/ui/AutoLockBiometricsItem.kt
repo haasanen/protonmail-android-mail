@@ -20,7 +20,7 @@
 package ch.protonmail.android.mailsettings.presentation.settings.autolock.ui
 
 import androidx.compose.foundation.lazy.LazyListScope
-import androidx.compose.material.Divider
+import androidx.compose.material3.Divider
 import androidx.compose.ui.res.stringResource
 import ch.protonmail.android.mailsettings.presentation.R
 import ch.protonmail.android.mailsettings.presentation.settings.autolock.model.AutoLockBiometricsUiModel

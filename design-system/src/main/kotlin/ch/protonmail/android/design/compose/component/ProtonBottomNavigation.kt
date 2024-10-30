@@ -20,15 +20,16 @@ package ch.protonmail.android.design.compose.component
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Box
-import androidx.compose.material.BottomNavigation
-import androidx.compose.material.BottomNavigationItem
-import androidx.compose.material.Divider
-import androidx.compose.material.Icon
-import androidx.compose.material.Text
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -104,15 +105,19 @@ fun ProtonBottomNavigation(
     }
 
     Box(modifier) {
-        BottomNavigation(backgroundColor = ProtonTheme.colors.backgroundNorm) {
+        NavigationBar(containerColor = ProtonTheme.colors.backgroundNorm) {
             tabs.forEachIndexed { index, tab ->
-                BottomNavigationItem(
+                NavigationBarItem(
                     icon = tab.icon,
                     label = tab.title,
                     selected = selectedIndex == index,
                     onClick = { onItemClick(index) },
-                    selectedContentColor = ProtonTheme.colors.interactionNorm,
-                    unselectedContentColor = ProtonTheme.colors.iconWeak,
+                    colors = NavigationBarItemDefaults.colors(
+                        selectedIconColor = ProtonTheme.colors.interactionNorm,
+                        unselectedIconColor = ProtonTheme.colors.iconWeak,
+                        selectedTextColor = ProtonTheme.colors.interactionNorm,
+                        unselectedTextColor = ProtonTheme.colors.iconWeak
+                    )
                 )
             }
         }
@@ -156,3 +161,4 @@ fun PreviewProtonBottomNavigationDark() {
         PreviewProtonBottomNavigationImageVector()
     }
 }
+
