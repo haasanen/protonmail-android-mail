@@ -75,7 +75,8 @@ object LocalMailSettingsTestData {
         blockSenderConfirmation = false,
         mobileSettings = null,
         hideRemoteImages = false,
-        hideSenderImages = false
+        hideSenderImages = false,
+        hideEmbeddedImages = false
     )
 
 }
