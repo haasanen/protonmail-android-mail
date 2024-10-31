@@ -54,9 +54,9 @@ import ch.protonmail.android.maildetail.domain.usecase.MarkMessageAsRead
 import ch.protonmail.android.maildetail.domain.usecase.MarkMessageAsUnread
 import ch.protonmail.android.maildetail.domain.usecase.MoveConversation
 import ch.protonmail.android.maildetail.domain.usecase.MoveMessage
-import ch.protonmail.android.maildetail.domain.usecase.ObserveDetailBottomBarActions
 import ch.protonmail.android.maildetail.domain.usecase.ObserveConversationMessages
 import ch.protonmail.android.maildetail.domain.usecase.ObserveConversationViewState
+import ch.protonmail.android.maildetail.domain.usecase.ObserveDetailBottomBarActions
 import ch.protonmail.android.maildetail.domain.usecase.ObserveMessageAttachmentStatus
 import ch.protonmail.android.maildetail.domain.usecase.RelabelConversation
 import ch.protonmail.android.maildetail.domain.usecase.ReportPhishingMessage
@@ -113,6 +113,7 @@ import ch.protonmail.android.mailmessage.domain.model.Message
 import ch.protonmail.android.mailmessage.domain.model.MessageAttachment
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.Participant
+import ch.protonmail.android.mailmessage.domain.usecase.DeleteMessages
 import ch.protonmail.android.mailmessage.domain.usecase.GetDecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.usecase.GetMessageMoveToLocations
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.ContactActionsBottomSheetState
@@ -191,6 +192,7 @@ class ConversationDetailViewModel @Inject constructor(
     private val getMoreActionsBottomSheetData: GetMoreActionsBottomSheetData,
     private val onMessageLabelAsConfirmed: OnMessageLabelAsConfirmed,
     private val moveMessage: MoveMessage,
+    private val deleteMessages: DeleteMessages,
     @ObservableFlowScope private val observableFlowScope: CoroutineScope,
     @AppScope private val appScope: CoroutineScope
 ) : ViewModel() {
@@ -219,6 +221,7 @@ class ConversationDetailViewModel @Inject constructor(
             is MarkUnread -> markAsUnread()
             is Trash -> moveConversationToTrash()
             is ConversationDetailViewAction.DeleteConfirmed -> handleDeleteConfirmed(action)
+            is ConversationDetailViewAction.DeleteMessageConfirmed -> handleDeleteMessageConfirmed(action)
             is RequestMoveToBottomSheet -> showMoveToBottomSheet(action)
             is MoveToDestinationConfirmed -> onMoveToDestinationConfirmed(action.mailLabelText, action.messageId)
             is RequestConversationLabelAsBottomSheet -> showConversationLabelAsBottomSheet(action)
@@ -252,6 +255,7 @@ class ConversationDetailViewModel @Inject constructor(
 
             is ConversationDetailViewAction.DeleteRequested,
             is ConversationDetailViewAction.DeleteDialogDismissed,
+            is ConversationDetailViewAction.DeleteMessageRequested,
             is DismissBottomSheet,
             is MoveToDestinationSelected,
             is LabelAsToggleAction,
@@ -767,6 +771,15 @@ class ConversationDetailViewModel @Inject constructor(
         }.onEach { event ->
             emitNewStateFrom(event)
         }.launchIn(viewModelScope)
+    }
+
+    private fun handleDeleteMessageConfirmed(action: ConversationDetailViewAction.DeleteMessageConfirmed) {
+        appScope.launch {
+            emitNewStateFrom(action)
+            val currentLabelId = openedFromLocation ?: return@launch
+
+            deleteMessages(primaryUserId.first(), listOf(action.messageId), currentLabelId)
+        }
     }
 
     private fun handleDeleteConfirmed(action: ConversationDetailViewAction) {

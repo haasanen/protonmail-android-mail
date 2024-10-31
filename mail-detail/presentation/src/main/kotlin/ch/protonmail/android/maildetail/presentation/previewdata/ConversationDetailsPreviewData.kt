@@ -28,7 +28,7 @@ import ch.protonmail.android.mailcommon.presentation.model.contentDescription
 import ch.protonmail.android.mailcommon.presentation.model.description
 import ch.protonmail.android.mailcommon.presentation.model.iconDrawable
 import ch.protonmail.android.mailcommon.presentation.sample.TextMessageSample
-import ch.protonmail.android.mailcommon.presentation.ui.delete.DeleteDialogState
+import ch.protonmail.android.maildetail.presentation.model.ConversationDeleteState
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMetadataState
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailState
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailsMessagesState
@@ -82,7 +82,7 @@ object ConversationDetailsPreviewData {
         openProtonCalendarIntent = Effect.empty(),
         scrollToMessage = null,
         requestLinkConfirmation = false,
-        deleteDialogState = DeleteDialogState.Hidden,
+        conversationDeleteState = ConversationDeleteState.Hidden,
         reportPhishingDialogState = ReportPhishingDialogState.Hidden,
         trashedMessagesBannerState = TrashedMessagesBannerState.Hidden
     )
@@ -132,7 +132,7 @@ object ConversationDetailsPreviewData {
         openProtonCalendarIntent = Effect.empty(),
         scrollToMessage = null,
         requestLinkConfirmation = false,
-        deleteDialogState = DeleteDialogState.Hidden,
+        conversationDeleteState = ConversationDeleteState.Hidden,
         reportPhishingDialogState = ReportPhishingDialogState.Hidden,
         trashedMessagesBannerState = TrashedMessagesBannerState.Hidden
     )
@@ -150,7 +150,7 @@ object ConversationDetailsPreviewData {
         openProtonCalendarIntent = Effect.empty(),
         scrollToMessage = null,
         requestLinkConfirmation = false,
-        deleteDialogState = DeleteDialogState.Hidden,
+        conversationDeleteState = ConversationDeleteState.Hidden,
         reportPhishingDialogState = ReportPhishingDialogState.Hidden,
         trashedMessagesBannerState = TrashedMessagesBannerState.Hidden
     )
@@ -168,7 +168,7 @@ object ConversationDetailsPreviewData {
         openProtonCalendarIntent = Effect.empty(),
         scrollToMessage = null,
         requestLinkConfirmation = false,
-        deleteDialogState = DeleteDialogState.Hidden,
+        conversationDeleteState = ConversationDeleteState.Hidden,
         reportPhishingDialogState = ReportPhishingDialogState.Hidden,
         trashedMessagesBannerState = TrashedMessagesBannerState.Hidden
     )
@@ -186,7 +186,7 @@ object ConversationDetailsPreviewData {
         openProtonCalendarIntent = Effect.empty(),
         scrollToMessage = null,
         requestLinkConfirmation = false,
-        deleteDialogState = DeleteDialogState.Hidden,
+        conversationDeleteState = ConversationDeleteState.Hidden,
         reportPhishingDialogState = ReportPhishingDialogState.Hidden,
         trashedMessagesBannerState = TrashedMessagesBannerState.Hidden
     )
@@ -204,7 +204,7 @@ object ConversationDetailsPreviewData {
         openProtonCalendarIntent = Effect.empty(),
         scrollToMessage = null,
         requestLinkConfirmation = false,
-        deleteDialogState = DeleteDialogState.Hidden,
+        conversationDeleteState = ConversationDeleteState.Hidden,
         reportPhishingDialogState = ReportPhishingDialogState.Hidden,
         trashedMessagesBannerState = TrashedMessagesBannerState.Hidden
     )
@@ -222,7 +222,7 @@ object ConversationDetailsPreviewData {
         openProtonCalendarIntent = Effect.empty(),
         scrollToMessage = null,
         requestLinkConfirmation = false,
-        deleteDialogState = DeleteDialogState.Hidden,
+        conversationDeleteState = ConversationDeleteState.Hidden,
         reportPhishingDialogState = ReportPhishingDialogState.Hidden,
         trashedMessagesBannerState = TrashedMessagesBannerState.Hidden
     )

@@ -21,24 +21,39 @@ package ch.protonmail.android.maildetail.presentation.reducer
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcommon.presentation.ui.delete.DeleteDialogState
 import ch.protonmail.android.maildetail.presentation.R
+import ch.protonmail.android.maildetail.presentation.model.ConversationDeleteState
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailOperation.AffectingDeleteDialog
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction
+import ch.protonmail.android.mailmessage.domain.model.MessageId
 import javax.inject.Inject
 
 class ConversationDeleteDialogReducer @Inject constructor() {
 
     internal fun newStateFrom(operation: AffectingDeleteDialog) = when (operation) {
-        ConversationDetailViewAction.DeleteRequested -> newStateFromDeleteRequested()
-        ConversationDetailEvent.ErrorDeletingConversation,
-        ConversationDetailViewAction.DeleteConfirmed,
-        ConversationDetailViewAction.DeleteDialogDismissed -> DeleteDialogState.Hidden
+        is ConversationDetailViewAction.DeleteRequested -> newStateFromDeleteRequested()
+        is ConversationDetailViewAction.DeleteMessageRequested ->
+            newStateFromDeleteMessageRequested(operation.messageId)
+        is ConversationDetailEvent.ErrorDeletingMessage,
+        is ConversationDetailEvent.ErrorDeletingConversation,
+        is ConversationDetailViewAction.DeleteConfirmed,
+        is ConversationDetailViewAction.DeleteMessageConfirmed,
+        is ConversationDetailViewAction.DeleteDialogDismissed -> ConversationDeleteState.Hidden
     }
 
-    private fun newStateFromDeleteRequested(): DeleteDialogState {
-        return DeleteDialogState.Shown(
+    private fun newStateFromDeleteRequested(): ConversationDeleteState = ConversationDeleteState(
+        DeleteDialogState.Shown(
             title = TextUiModel.TextRes(R.string.conversation_delete_dialog_title),
             message = TextUiModel.TextRes(R.string.conversation_delete_dialog_message)
         )
-    }
+    )
+
+    private fun newStateFromDeleteMessageRequested(messageId: MessageId): ConversationDeleteState =
+        ConversationDeleteState(
+            deleteDialogState = DeleteDialogState.Shown(
+                title = TextUiModel.TextRes(R.string.message_delete_dialog_title),
+                message = TextUiModel.TextRes(R.string.message_delete_dialog_message)
+            ),
+            messageIdInConversation = messageId
+        )
 }

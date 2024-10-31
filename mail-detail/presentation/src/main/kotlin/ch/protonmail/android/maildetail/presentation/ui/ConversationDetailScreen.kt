@@ -75,6 +75,7 @@ import ch.protonmail.android.mailcommon.presentation.model.string
 import ch.protonmail.android.mailcommon.presentation.ui.BottomActionBar
 import ch.protonmail.android.mailcommon.presentation.ui.CommonTestTags
 import ch.protonmail.android.mailcommon.presentation.ui.delete.DeleteDialog
+import ch.protonmail.android.mailcontact.domain.model.ContactId
 import ch.protonmail.android.maildetail.domain.model.OpenAttachmentIntentValues
 import ch.protonmail.android.maildetail.domain.model.OpenProtonCalendarIntentValues
 import ch.protonmail.android.maildetail.presentation.R
@@ -116,7 +117,6 @@ import me.proton.core.compose.component.ProtonSnackbarType
 import me.proton.core.compose.theme.ProtonDimens
 import me.proton.core.compose.theme.ProtonTheme
 import me.proton.core.compose.theme.ProtonTheme3
-import ch.protonmail.android.mailcontact.domain.model.ContactId
 import timber.log.Timber
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -163,8 +163,13 @@ fun ConversationDetailScreen(
     }
 
     DeleteDialog(
-        state = state.deleteDialogState,
-        confirm = { viewModel.submit(ConversationDetailViewAction.DeleteConfirmed) },
+        state = state.conversationDeleteState.deleteDialogState,
+        confirm = {
+            when (val messageId = state.conversationDeleteState.messageIdInConversation) {
+                null -> viewModel.submit(ConversationDetailViewAction.DeleteConfirmed)
+                else -> viewModel.submit(ConversationDetailViewAction.DeleteMessageConfirmed(messageId))
+            }
+        },
         dismiss = { viewModel.submit(ConversationDetailViewAction.DeleteDialogDismissed) }
     )
 
@@ -232,6 +237,7 @@ fun ConversationDetailScreen(
                         },
                         onMoveToTrash = { viewModel.submit(ConversationDetailViewAction.TrashMessage(it)) },
                         onMoveToArchive = { viewModel.submit(ConversationDetailViewAction.ArchiveMessage(it)) },
+                        onDelete = { viewModel.submit(ConversationDetailViewAction.DeleteMessageRequested(it)) },
                         onMoveToSpam = { viewModel.submit(ConversationDetailViewAction.MoveMessageToSpam(it)) },
                         onMove = { viewModel.submit(ConversationDetailViewAction.RequestMessageMoveToBottomSheet(it)) },
                         onPrint = { viewModel.submit(ConversationDetailViewAction.PrintRequested(it)) },

@@ -96,6 +96,7 @@ import ch.protonmail.android.maildetail.presentation.mapper.MessageDetailHeaderU
 import ch.protonmail.android.maildetail.presentation.mapper.MessageIdUiModelMapper
 import ch.protonmail.android.maildetail.presentation.mapper.MessageLocationUiModelMapper
 import ch.protonmail.android.maildetail.presentation.mapper.ParticipantUiModelMapper
+import ch.protonmail.android.maildetail.presentation.model.ConversationDeleteState
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMessageUiModel.Collapsed
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMessageUiModel.Expanded
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMessageUiModel.Expanding
@@ -139,6 +140,7 @@ import ch.protonmail.android.mailmessage.domain.model.MimeType
 import ch.protonmail.android.mailmessage.domain.sample.MessageAttachmentSample
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
 import ch.protonmail.android.mailmessage.domain.sample.MessageSample
+import ch.protonmail.android.mailmessage.domain.usecase.DeleteMessages
 import ch.protonmail.android.mailmessage.domain.usecase.GetDecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.usecase.GetEmbeddedImageResult
 import ch.protonmail.android.mailmessage.domain.usecase.GetMessageAvailableActions
@@ -314,6 +316,7 @@ class ConversationDetailViewModelIntegrationTest {
     private val printMessage = mockk<PrintMessage>()
     private val markMessageAsUnread = mockk<MarkMessageAsUnread>()
     private val moveMessage = mockk<MoveMessage>()
+    private val deleteMessages = mockk<DeleteMessages>()
     private val relabelMessage = mockk<RelabelMessage>()
     private val avatarInformationMapper = mockk<AvatarInformationMapper> {
         every {
@@ -1224,8 +1227,8 @@ class ConversationDetailViewModelIntegrationTest {
 
         // Then
         assertEquals(
-            expected = DeleteDialogState.Shown(expectedTitle, expectedMessage),
-            actual = viewModel.state.value.deleteDialogState
+            expected = ConversationDeleteState(DeleteDialogState.Shown(expectedTitle, expectedMessage)),
+            actual = viewModel.state.value.conversationDeleteState
         )
     }
 
@@ -1242,8 +1245,8 @@ class ConversationDetailViewModelIntegrationTest {
 
         // Then
         assertEquals(
-            expected = DeleteDialogState.Hidden,
-            actual = viewModel.state.value.deleteDialogState
+            expected = ConversationDeleteState.Hidden,
+            actual = viewModel.state.value.conversationDeleteState
         )
     }
 
@@ -2300,6 +2303,7 @@ class ConversationDetailViewModelIntegrationTest {
         onMessageLabelAsConfirmed = onMessageLabelAsConfirmed,
         moveMessage = moveMessage,
         observableFlowScope = observableFlowScope,
+        deleteMessages = deleteMessages,
         appScope = longRunningScope
     )
 
