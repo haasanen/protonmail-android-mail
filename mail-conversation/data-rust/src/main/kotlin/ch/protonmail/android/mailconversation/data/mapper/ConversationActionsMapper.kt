@@ -21,7 +21,6 @@ package ch.protonmail.android.mailconversation.data.mapper
 import ch.protonmail.android.mailcommon.domain.model.Action
 import ch.protonmail.android.mailcommon.domain.model.AvailableActions
 import ch.protonmail.android.mailmessage.data.mapper.generalActionsToActions
-import ch.protonmail.android.mailmessage.data.mapper.replyActionsToActions
 import ch.protonmail.android.mailmessage.data.mapper.systemFolderActionsToActions
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.ConversationAction
@@ -30,7 +29,7 @@ import uniffi.proton_mail_uniffi.ConversationAvailableActions
 
 fun ConversationAvailableActions.toAvailableActions(): AvailableActions {
     return AvailableActions(
-        this.replyActions.replyActionsToActions(),
+        emptyList(),
         this.conversationActions.conversationActionsToActions().filterNotNull(),
         this.moveActions.systemFolderActionsToActions().filterNotNull(),
         this.generalActions.generalActionsToActions()

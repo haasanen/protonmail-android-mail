@@ -37,8 +37,8 @@ import uniffi.proton_mail_uniffi.IsSelected
 import uniffi.proton_mail_uniffi.MessageAction
 import uniffi.proton_mail_uniffi.MessageAvailableActions
 import uniffi.proton_mail_uniffi.MovableSystemFolder
-import uniffi.proton_mail_uniffi.MovableSystemFolderAction
 import uniffi.proton_mail_uniffi.MoveAction
+import uniffi.proton_mail_uniffi.MoveItemAction
 import uniffi.proton_mail_uniffi.ReplyAction
 
 fun List<LocalLabelAsAction>.toLabelAsActions(): LabelAsActions {
@@ -91,7 +91,12 @@ fun List<ReplyAction>.replyActionsToActions() = this.map { replyAction ->
     }
 }
 
-fun List<MovableSystemFolderAction>.systemFolderActionsToActions() = this.map { it.name.toAction() }
+fun List<MoveItemAction>.systemFolderActionsToActions() = this.map {
+    when (it) {
+        MoveItemAction.MoveTo -> Action.Move
+        is MoveItemAction.MoveToSystemFolder -> it.v1.name.toAction()
+    }
+}
 
 private fun MovableSystemFolder.toAction() = when (this) {
     MovableSystemFolder.TRASH -> Action.Trash
@@ -145,7 +150,7 @@ private fun List<BottomBarActions>.bottombarActionsToActions() = this.map { bott
         BottomBarActions.MarkUnread -> Action.MarkUnread
         BottomBarActions.More -> Action.More
         BottomBarActions.MoveTo -> Action.Move
-        is BottomBarActions.MoveToSystemFolder -> bottombarAction.v1.toAction()
+        is BottomBarActions.MoveToSystemFolder -> bottombarAction.v1.name.toAction()
         BottomBarActions.PermanentDelete -> Action.Delete
         BottomBarActions.Star -> Action.Star
         BottomBarActions.Unstar -> Action.Unstar

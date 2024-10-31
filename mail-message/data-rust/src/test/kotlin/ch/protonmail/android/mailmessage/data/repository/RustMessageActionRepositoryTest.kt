@@ -43,12 +43,12 @@ import uniffi.proton_mail_uniffi.AllBottomBarMessageActions
 import uniffi.proton_mail_uniffi.BottomBarActions
 import uniffi.proton_mail_uniffi.GeneralActions
 import uniffi.proton_mail_uniffi.Id
-import uniffi.proton_mail_uniffi.IsSelected
 import uniffi.proton_mail_uniffi.MessageAction
 import uniffi.proton_mail_uniffi.MessageAvailableActions
 import uniffi.proton_mail_uniffi.MovableSystemFolder
 import uniffi.proton_mail_uniffi.MovableSystemFolderAction
 import uniffi.proton_mail_uniffi.MoveAction
+import uniffi.proton_mail_uniffi.MoveItemAction
 import uniffi.proton_mail_uniffi.ReplyAction
 import kotlin.test.assertEquals
 
@@ -68,8 +68,10 @@ class RustMessageActionRepositoryTest {
             listOf(ReplyAction.REPLY, ReplyAction.FORWARD),
             listOf(MessageAction.STAR, MessageAction.LABEL_AS),
             listOf(
-                MovableSystemFolderAction(Id(5uL), MovableSystemFolder.SPAM, IsSelected.UNSELECTED),
-                MovableSystemFolderAction(Id(10uL), MovableSystemFolder.ARCHIVE, IsSelected.UNSELECTED)
+                MoveItemAction.MoveToSystemFolder(MovableSystemFolderAction(Id(5uL), MovableSystemFolder.SPAM)),
+                MoveItemAction.MoveToSystemFolder(
+                    MovableSystemFolderAction(Id(10uL), MovableSystemFolder.ARCHIVE)
+                )
             ),
             listOf(GeneralActions.VIEW_HEADERS)
         )
@@ -126,7 +128,11 @@ class RustMessageActionRepositoryTest {
         val rustAvailableActions = MessageAvailableActions(
             listOf(ReplyAction.REPLY_ALL),
             listOf(MessageAction.PIN),
-            listOf(MovableSystemFolderAction(Id(10uL), MovableSystemFolder.INBOX, IsSelected.UNSELECTED)),
+            listOf(
+                MoveItemAction.MoveToSystemFolder(
+                    MovableSystemFolderAction(Id(10uL), MovableSystemFolder.INBOX)
+                )
+            ),
             emptyList()
         )
 
@@ -159,10 +165,10 @@ class RustMessageActionRepositoryTest {
         val messageIds = listOf(MessageId("1"))
         val rustMoveToActions = listOf(
             MoveAction.SystemFolder(
-                MovableSystemFolderAction(Id(2uL), MovableSystemFolder.ARCHIVE, IsSelected.UNSELECTED)
+                MovableSystemFolderAction(Id(2uL), MovableSystemFolder.ARCHIVE)
             ),
             MoveAction.SystemFolder(
-                MovableSystemFolderAction(Id(3uL), MovableSystemFolder.TRASH, IsSelected.UNSELECTED)
+                MovableSystemFolderAction(Id(3uL), MovableSystemFolder.TRASH)
             )
         )
 

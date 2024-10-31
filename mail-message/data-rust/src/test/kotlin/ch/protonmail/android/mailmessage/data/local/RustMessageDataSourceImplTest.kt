@@ -483,13 +483,12 @@ class RustMessageDataSourceImplTest {
         val labelId = LocalLabelId(1uL)
         val mailbox = mockk<Mailbox>()
         val messageIds = listOf(LocalMessageIdSample.AugWeatherForecast)
-        val archive = MovableSystemFolderAction(Id(2uL), MovableSystemFolder.ARCHIVE, IsSelected.UNSELECTED)
+        val archive = MovableSystemFolderAction(Id(2uL), MovableSystemFolder.ARCHIVE)
         val customFolder = CustomFolderAction(
             Id(100uL),
             "custom",
             LabelColor("#fff"),
-            emptyList(),
-            IsSelected.UNSELECTED
+            emptyList()
         )
         val allMoveToActions = listOf(MoveAction.SystemFolder(archive), MoveAction.CustomFolder(customFolder))
         val expected = listOf(MoveAction.SystemFolder(archive))
