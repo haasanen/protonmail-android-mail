@@ -18,9 +18,12 @@
 
 package ch.protonmail.android.navigation
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
@@ -32,6 +35,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -101,6 +105,7 @@ import ch.protonmail.android.design.compose.flow.rememberAsState
 
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import me.proton.core.network.domain.NetworkStatus
+import timber.log.Timber
 
 @Composable
 @Suppress("ComplexMethod")
@@ -260,10 +265,13 @@ fun Home(
     ModalNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {
-            Sidebar(
-                drawerState = drawerState,
-                navigationActions = buildSidebarActions(navController, launcherActions)
-            )
+            ModalDrawerSheet {
+                Sidebar(
+                    drawerState = drawerState,
+                    navigationActions = buildSidebarActions(navController, launcherActions)
+                )
+            }
+
         },
         scrimColor = ProtonTheme.colors.blenderNorm,
         gesturesEnabled = currentDestinationRoute == Screen.Mailbox.route
