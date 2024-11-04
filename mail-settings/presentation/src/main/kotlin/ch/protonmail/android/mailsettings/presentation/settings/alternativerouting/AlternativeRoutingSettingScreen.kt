@@ -77,7 +77,8 @@ fun AlternativeRoutingSettingScreen(
     ConsumableLaunchedEffect(state.alternativeRoutingSettingErrorEffect) {
         snackbarHostState.showSnackbar(
             message = errorMessage,
-            type = ProtonSnackbarType.ERROR)
+            type = ProtonSnackbarType.ERROR
+        )
     }
 
     Scaffold(

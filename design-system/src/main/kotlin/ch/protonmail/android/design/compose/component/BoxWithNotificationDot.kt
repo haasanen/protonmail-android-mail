@@ -65,7 +65,7 @@ private fun IconButtonWithDot() {
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_proton_hamburger),
-                contentDescription = null,
+                contentDescription = null
             )
         }
     }
@@ -82,7 +82,7 @@ private fun IconButtonWithoutDot() {
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_proton_hamburger),
-                contentDescription = null,
+                contentDescription = null
             )
         }
     }

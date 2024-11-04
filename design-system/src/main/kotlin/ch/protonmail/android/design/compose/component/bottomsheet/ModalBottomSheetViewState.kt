@@ -23,5 +23,5 @@ import androidx.compose.runtime.Immutable
 data class ModalBottomSheetViewState(
     val closeOnBack: Boolean = true,
     val closeOnAction: Boolean = true,
-    val dismissOnAction: Boolean = true,
+    val dismissOnAction: Boolean = true
 )

@@ -36,16 +36,16 @@ fun BottomSheetContent(
     header: @Composable BoxScope.() -> Unit,
     content: @Composable ColumnScope.() -> Unit,
     modifier: Modifier = Modifier,
-    scrollState: ScrollState = rememberScrollState(),
+    scrollState: ScrollState = rememberScrollState()
 ) {
     Column(
         modifier = modifier.verticalScroll(scrollState),
-        verticalArrangement = Arrangement.Top,
+        verticalArrangement = Arrangement.Top
     ) {
         BottomSheetHeader(content = header)
         Divider(
             modifier = Modifier.padding(bottom = ProtonDimens.SmallSpacing),
-            color = ProtonTheme.colors.separatorNorm,
+            color = ProtonTheme.colors.separatorNorm
         )
         content()
     }

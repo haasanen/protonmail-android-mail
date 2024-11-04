@@ -54,7 +54,7 @@ import ch.protonmail.android.design.compose.theme.captionHint
 fun ProtonSidebar(
     modifier: Modifier = Modifier,
     drawerState: DrawerState = rememberDrawerState(DrawerValue.Closed),
-    content: (@Composable @ExtensionFunctionType ColumnScope.() -> Unit),
+    content: (@Composable @ExtensionFunctionType ColumnScope.() -> Unit)
 ) {
     val scope = rememberCoroutineScope()
 
@@ -84,7 +84,7 @@ fun ProtonSidebar(
 fun ProtonSidebarSettingsItem(
     modifier: Modifier = Modifier,
     isClickable: Boolean = true,
-    onClick: () -> Unit = {},
+    onClick: () -> Unit = {}
 ) {
     ProtonSidebarItem(
         text = R.string.presentation_menu_item_title_settings,
@@ -100,7 +100,7 @@ fun ProtonSidebarSettingsItem(
 fun ProtonSidebarSubscriptionItem(
     modifier: Modifier = Modifier,
     isClickable: Boolean = true,
-    onClick: () -> Unit = {},
+    onClick: () -> Unit = {}
 ) {
     ProtonSidebarItem(
         text = R.string.presentation_menu_item_title_subscription,
@@ -116,7 +116,7 @@ fun ProtonSidebarSubscriptionItem(
 fun ProtonSidebarReportBugItem(
     modifier: Modifier = Modifier,
     isClickable: Boolean = true,
-    onClick: () -> Unit = {},
+    onClick: () -> Unit = {}
 ) {
     ProtonSidebarItem(
         text = R.string.presentation_menu_item_title_report_a_bug,
@@ -132,7 +132,7 @@ fun ProtonSidebarReportBugItem(
 fun ProtonSidebarSignOutItem(
     modifier: Modifier = Modifier,
     isClickable: Boolean = true,
-    onClick: () -> Unit = {},
+    onClick: () -> Unit = {}
 ) {
     ProtonSidebarItem(
         text = R.string.presentation_menu_item_title_sign_out,
@@ -156,7 +156,7 @@ fun ProtonSidebarItem(
     textColor: Color = if (isSelected) ProtonTheme.colors.textNorm else Color.Unspecified,
     iconTint: Color = if (isSelected) ProtonTheme.colors.iconNorm else ProtonTheme.colors.iconWeak,
     count: Int? = null,
-    onClick: () -> Unit = {},
+    onClick: () -> Unit = {}
 ) {
     ProtonListItem(
         icon = icon,
@@ -185,7 +185,7 @@ fun ProtonSidebarItem(
     textColor: Color = Color.Unspecified,
     iconTint: Color = ProtonTheme.colors.iconWeak,
     count: Int? = null,
-    onClick: () -> Unit = {},
+    onClick: () -> Unit = {}
 ) {
     ProtonListItem(
         icon = icon,
@@ -208,7 +208,7 @@ fun ProtonSidebarItem(
     isClickable: Boolean = true,
     isSelected: Boolean = false,
     onClick: () -> Unit = {},
-    content: (@Composable @ExtensionFunctionType RowScope.() -> Unit),
+    content: (@Composable @ExtensionFunctionType RowScope.() -> Unit)
 ) {
     ProtonListItem(
         modifier = modifier,
@@ -223,7 +223,7 @@ fun ProtonSidebarItem(
 fun ProtonSidebarAppVersionItem(
     name: String,
     version: String,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier
 ) {
     Text(
         modifier = modifier
@@ -241,18 +241,18 @@ fun ProtonSidebarAppVersionItem(
 @Preview(
     name = "Sidebar in light mode",
     uiMode = UI_MODE_NIGHT_NO,
-    showBackground = true,
+    showBackground = true
 )
 @Preview(
     name = "Sidebar in dark mode",
     uiMode = UI_MODE_NIGHT_YES,
-    showBackground = true,
+    showBackground = true
 )
 @Composable
 fun PreviewProtonSidebar() {
     ProtonTheme {
         ProtonSidebar(
-            drawerState = DrawerState(DrawerValue.Open) { true },
+            drawerState = DrawerState(DrawerValue.Open) { true }
         ) {
             ProtonSidebarItem { Text(text = "Inbox") }
             ProtonSidebarItem { Text(text = "Drafts") }

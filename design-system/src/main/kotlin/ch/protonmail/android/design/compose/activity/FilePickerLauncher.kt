@@ -31,19 +31,17 @@ import androidx.compose.runtime.setValue
 @Deprecated(
     message = "This composable is deprecated",
     replaceWith = ReplaceWith(
-        """
-            rememberOpenMultipleDocumentsLauncher(
-                mimeTypes: Array<String> = arrayOf("*/*"),
-                modifyIntent: ((Intent) -> Unit)? = null,
-                onFilesPicked: (List<Uri>) -> Unit
-            )
-        """
+        "rememberOpenMultipleDocumentsLauncher(\n" +
+            "    mimeTypes: Array<String> = arrayOf(\"*/*\"),\n" +
+            "    modifyIntent: ((Intent) -> Unit)? = null,\n" +
+            "    onFilesPicked: (List<Uri>) -> Unit\n" +
+            ")"
     )
 )
 @Composable
 fun rememberFilePickerLauncher(
     onFilesPicked: (List<Uri>) -> Unit,
-    input: Array<String> = arrayOf("*/*"),
+    input: Array<String> = arrayOf("*/*")
 ): FilePickerLauncher {
     var result by remember { mutableStateOf<List<Uri>?>(null) }
     val launcher = rememberLauncherForActivityResult(ActivityResultContracts.OpenMultipleDocuments()) { fileUri ->
@@ -60,7 +58,7 @@ fun rememberFilePickerLauncher(
 
 class FilePickerLauncher(
     private val launcher: ManagedActivityResultLauncher<Array<String>, List<Uri>>,
-    private val input: Array<String>,
+    private val input: Array<String>
 ) {
     fun showPicker() = launcher.launch(input)
 }

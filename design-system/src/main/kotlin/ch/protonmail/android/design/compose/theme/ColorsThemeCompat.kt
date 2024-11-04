@@ -20,10 +20,7 @@ fun rememberColorsFromXml(
 }
 
 @Suppress("LongMethod")
-fun colorsFromXml(
-    context: Context,
-    isSystemDark: Boolean
-): ProtonColors {
+fun colorsFromXml(context: Context, isSystemDark: Boolean): ProtonColors {
     fun TypedArray.getColor(@StyleableRes key: Int): Color = Color(getColorOrThrow(key))
     return context.obtainStyledAttributes(R.styleable.AppTheme).use { typedArray ->
         ProtonColors(
@@ -89,19 +86,23 @@ fun colorsFromXml(
             shadowRaised = (if (isSystemDark) ProtonColors.Dark else ProtonColors.Light).shadowRaised,
             shadowLifted = (if (isSystemDark) ProtonColors.Dark else ProtonColors.Light).shadowLifted,
 
-            sidebarColors = null,
+            sidebarColors = null
         ).let { colors ->
             colors.copy(
                 sidebarColors = colors.copy(
                     backgroundNorm = typedArray.getColor(R.styleable.AppTheme_proton_sidebar_background),
-                    interactionWeakNorm = typedArray.getColor(R.styleable.AppTheme_proton_sidebar_interaction_weak_norm),
-                    interactionWeakPressed = typedArray.getColor(R.styleable.AppTheme_proton_sidebar_interaction_weak_pressed),
+                    interactionWeakNorm = typedArray.getColor(
+                        R.styleable.AppTheme_proton_sidebar_interaction_weak_norm
+                    ),
+                    interactionWeakPressed = typedArray.getColor(
+                        R.styleable.AppTheme_proton_sidebar_interaction_weak_pressed
+                    ),
                     separatorNorm = typedArray.getColor(R.styleable.AppTheme_proton_sidebar_separator),
                     textNorm = typedArray.getColor(R.styleable.AppTheme_proton_sidebar_text_norm),
                     textWeak = typedArray.getColor(R.styleable.AppTheme_proton_sidebar_text_weak),
                     iconNorm = typedArray.getColor(R.styleable.AppTheme_proton_sidebar_icon_norm),
                     iconWeak = typedArray.getColor(R.styleable.AppTheme_proton_sidebar_icon_weak),
-                    interactionPressed = typedArray.getColor(R.styleable.AppTheme_proton_sidebar_interaction_pressed),
+                    interactionPressed = typedArray.getColor(R.styleable.AppTheme_proton_sidebar_interaction_pressed)
                 )
             )
         }

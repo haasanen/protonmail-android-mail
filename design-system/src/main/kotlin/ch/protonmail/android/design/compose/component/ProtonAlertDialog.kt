@@ -47,7 +47,7 @@ fun ProtonAlertDialog(
     dismissButton: @Composable (() -> Unit)? = null,
     shape: Shape = ProtonTheme.shapes.medium,
     backgroundColor: Color = ProtonTheme.colors.backgroundNorm,
-    properties: DialogProperties = DialogProperties(),
+    properties: DialogProperties = DialogProperties()
 ) {
     ProtonAlertDialog(
         onDismissRequest = onDismissRequest,
@@ -58,7 +58,7 @@ fun ProtonAlertDialog(
         text = text,
         shape = shape,
         backgroundColor = backgroundColor,
-        properties = properties,
+        properties = properties
     )
 }
 
@@ -72,7 +72,7 @@ fun ProtonAlertDialog(
     text: @Composable (() -> Unit)? = null,
     shape: Shape = ProtonTheme.shapes.medium,
     backgroundColor: Color = ProtonTheme.colors.backgroundNorm,
-    properties: DialogProperties = DialogProperties(),
+    properties: DialogProperties = DialogProperties()
 ) {
     ProtonAlertDialog(
         onDismissRequest = onDismissRequest,
@@ -83,7 +83,7 @@ fun ProtonAlertDialog(
         text = text,
         shape = shape,
         backgroundColor = backgroundColor,
-        properties = properties,
+        properties = properties
     )
 }
 
@@ -98,7 +98,7 @@ fun ProtonAlertDialog(
     text: @Composable (() -> Unit)? = null,
     shape: Shape = ProtonTheme.shapes.medium,
     backgroundColor: Color = ProtonTheme.colors.backgroundNorm,
-    properties: DialogProperties = DialogProperties(),
+    properties: DialogProperties = DialogProperties()
 ) {
     AlertDialog(
         onDismissRequest = onDismissRequest,
@@ -113,8 +113,8 @@ fun ProtonAlertDialog(
             dismissOnBackPress = properties.dismissOnBackPress,
             dismissOnClickOutside = properties.dismissOnClickOutside,
             securePolicy = properties.securePolicy,
-            usePlatformDefaultWidth = false,
-        ),
+            usePlatformDefaultWidth = false
+        )
     )
 }
 
@@ -128,7 +128,7 @@ fun ProtonAlertDialog(
     text: @Composable (() -> Unit)? = null,
     shape: Shape = ProtonTheme.shapes.medium,
     backgroundColor: Color = ProtonTheme.colors.backgroundNorm,
-    properties: DialogProperties = DialogProperties(),
+    properties: DialogProperties = DialogProperties()
 ) {
     AlertDialog(
         onDismissRequest = onDismissRequest,
@@ -142,57 +142,45 @@ fun ProtonAlertDialog(
             dismissOnBackPress = properties.dismissOnBackPress,
             dismissOnClickOutside = properties.dismissOnClickOutside,
             securePolicy = properties.securePolicy,
-            usePlatformDefaultWidth = false,
-        ),
+            usePlatformDefaultWidth = false
+        )
     )
 }
 
 @Composable
-fun ProtonDialogTitle(
-    @StringRes titleResId: Int,
-    modifier: Modifier = Modifier,
-) {
+fun ProtonDialogTitle(@StringRes titleResId: Int, modifier: Modifier = Modifier) {
     ProtonDialogTitle(
         title = stringResource(id = titleResId),
-        modifier = modifier,
+        modifier = modifier
     )
 }
 
 @Composable
-fun ProtonDialogTitle(
-    title: String,
-    modifier: Modifier = Modifier,
-) {
+fun ProtonDialogTitle(title: String, modifier: Modifier = Modifier) {
     Text(
         text = title,
         style = ProtonTheme.typography.headline,
         color = ProtonTheme.colors.textNorm,
         maxLines = 2,
         overflow = TextOverflow.Ellipsis,
-        modifier = modifier,
+        modifier = modifier
     )
 }
 
 @Composable
-fun ProtonAlertDialogText(
-    @StringRes textResId: Int,
-    modifier: Modifier = Modifier,
-) {
+fun ProtonAlertDialogText(@StringRes textResId: Int, modifier: Modifier = Modifier) {
     ProtonAlertDialogText(
         text = stringResource(id = textResId),
-        modifier = modifier,
+        modifier = modifier
     )
 }
 
 @Composable
-fun ProtonAlertDialogText(
-    text: String,
-    modifier: Modifier = Modifier,
-) {
+fun ProtonAlertDialogText(text: String, modifier: Modifier = Modifier) {
     Text(
         text = text,
         style = ProtonTheme.typography.defaultWeak,
-        modifier = modifier,
+        modifier = modifier
     )
 }
 
@@ -204,7 +192,7 @@ fun ProtonAlertDialogButton(
     loading: Boolean = false,
     contained: Boolean = true,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-    onClick: () -> Unit,
+    onClick: () -> Unit
 ) {
     ProtonAlertDialogButton(
         title = stringResource(id = titleResId),
@@ -213,7 +201,7 @@ fun ProtonAlertDialogButton(
         enabled = enabled,
         loading = loading,
         contained = contained,
-        interactionSource = interactionSource,
+        interactionSource = interactionSource
     )
 }
 
@@ -225,7 +213,7 @@ fun ProtonAlertDialogButton(
     loading: Boolean = false,
     contained: Boolean = true,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-    onClick: () -> Unit,
+    onClick: () -> Unit
 ) {
     ProtonTextButton(
         onClick = onClick,
@@ -233,14 +221,14 @@ fun ProtonAlertDialogButton(
         enabled = enabled,
         loading = loading,
         contained = contained,
-        interactionSource = interactionSource,
+        interactionSource = interactionSource
     ) {
         Text(
             text = title,
             style = ProtonTheme.typography.body1Medium,
             color = ProtonTheme.colors.textAccent,
             maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
+            overflow = TextOverflow.Ellipsis
         )
     }
 }
@@ -252,14 +240,14 @@ fun PreviewProtonAlertDialog() {
         onDismissRequest = {},
         confirmButton = { ProtonAlertDialogButton(title = "Ok") { } },
         text = { ProtonAlertDialogText("This is an alert dialog.") },
-        title = "Alert",
+        title = "Alert"
     )
 }
 
-private fun Modifier.fixAlertDialogSize() = fillMaxWidth(fraction = AlertDialogWidthFraction)
+private fun Modifier.fixAlertDialogSize() = fillMaxWidth(fraction = ALERT_DIALOG_WIDTH_FRACTION)
     .widthIn(max = MaxAlertDialogWidth)
 
-private const val AlertDialogWidthFraction = 0.9f
+private const val ALERT_DIALOG_WIDTH_FRACTION = 0.9f
 
 // Mobile alert on desktop is 560dp wide
 // https://material.io/components/dialogs#specs

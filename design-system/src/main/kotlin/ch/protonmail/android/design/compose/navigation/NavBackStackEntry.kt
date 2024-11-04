@@ -21,8 +21,7 @@ package ch.protonmail.android.design.compose.navigation
 import android.os.Bundle
 import androidx.navigation.NavBackStackEntry
 
-fun NavBackStackEntry.requireArguments() =
-    requireNotNull(arguments) { "Required arguments bundle was null." }
+fun NavBackStackEntry.requireArguments() = requireNotNull(arguments) { "Required arguments bundle was null." }
 
 fun <T> NavBackStackEntry.require(key: String, optionalBundle: Bundle? = null): T =
     requireNotNull(get(key, optionalBundle)) { "Required $key was null." }

@@ -76,7 +76,8 @@ fun CombinedContactsSettingScreen(
     ConsumableLaunchedEffect(state.combinedContactsSettingErrorEffect) {
         snackbarHostState.showSnackbar(
             message = errorMessage,
-            type = ProtonSnackbarType.ERROR)
+            type = ProtonSnackbarType.ERROR
+        )
     }
 
     Scaffold(

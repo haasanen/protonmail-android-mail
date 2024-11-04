@@ -29,9 +29,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 
 @Composable
-fun rememberCameraLauncher(
-    onCaptured: (Boolean) -> Unit
-): CameraLauncher {
+fun rememberCameraLauncher(onCaptured: (Boolean) -> Unit): CameraLauncher {
     var result by remember { mutableStateOf<Boolean?>(null) }
     val onResult = { activityResult: Boolean -> result = activityResult }
     val imageLauncher = rememberLauncherForActivityResult(ActivityResultContracts.TakePicture(), onResult)
@@ -47,15 +45,14 @@ fun rememberCameraLauncher(
 
 enum class Capture {
     IMAGE,
-    VIDEO,
+    VIDEO
 }
 
 data class CameraLauncher(
     private val imageLauncher: ManagedActivityResultLauncher<Uri, Boolean>,
-    private val videoLauncher: ManagedActivityResultLauncher<Uri, Boolean>,
+    private val videoLauncher: ManagedActivityResultLauncher<Uri, Boolean>
 ) {
-    fun capture(destinationUri: Uri, capture: Capture = Capture.IMAGE) =
-        launcher(capture).launch(destinationUri)
+    fun capture(destinationUri: Uri, capture: Capture = Capture.IMAGE) = launcher(capture).launch(destinationUri)
 
     private fun launcher(capture: Capture): ManagedActivityResultLauncher<Uri, Boolean> = when (capture) {
         Capture.IMAGE -> imageLauncher

@@ -75,10 +75,7 @@ fun <T> rememberFlowWithLifecycle(
     )
 )
 @Composable
-fun <T> rememberAsState(
-    flow: Flow<T>,
-    initial: T
-): State<T> = flow.collectAsStateWithLifecycle(initial)
+fun <T> rememberAsState(flow: Flow<T>, initial: T): State<T> = flow.collectAsStateWithLifecycle(initial)
 
 @Deprecated(
     message = "Use StateFlow.collectAsStateWithLifecycle()",
@@ -88,7 +85,4 @@ fun <T> rememberAsState(
     )
 )
 @Composable
-fun <T> rememberAsState(
-    flow: StateFlow<T>,
-    initial: T
-): State<T> = flow.collectAsStateWithLifecycle()
+fun <T> rememberAsState(flow: StateFlow<T>, initial: T): State<T> = flow.collectAsStateWithLifecycle()

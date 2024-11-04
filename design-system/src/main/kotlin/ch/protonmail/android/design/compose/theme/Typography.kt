@@ -353,7 +353,7 @@ data class ProtonTypography(
     val captionRegular: TextStyle,
     val captionMedium: TextStyle,
     val overlineRegular: TextStyle,
-    val overlineMedium: TextStyle,
+    val overlineMedium: TextStyle
 ) {
 
     constructor(
@@ -362,7 +362,7 @@ data class ProtonTypography(
             fontSize = 28.sp,
             fontWeight = FontWeight.W700,
             letterSpacing = 0.45.sp,
-            lineHeight = 34.sp,
+            lineHeight = 34.sp
         ),
         headline: TextStyle = TextStyle(
             fontSize = 20.sp,
@@ -414,7 +414,7 @@ data class ProtonTypography(
         ),
         overlineMedium: TextStyle = overlineRegular.copy(
             fontWeight = FontWeight.W500
-        ),
+        )
     ) : this(
         hero = hero.withDefaultFontFamily(defaultFontFamily),
         headline = headline.withDefaultFontFamily(defaultFontFamily),
@@ -427,7 +427,7 @@ data class ProtonTypography(
         captionRegular = captionRegular.withDefaultFontFamily(defaultFontFamily),
         captionMedium = captionMedium.withDefaultFontFamily(defaultFontFamily),
         overlineRegular = overlineRegular.withDefaultFontFamily(defaultFontFamily),
-        overlineMedium = overlineMedium.withDefaultFontFamily(defaultFontFamily),
+        overlineMedium = overlineMedium.withDefaultFontFamily(defaultFontFamily)
     )
 
     companion object {

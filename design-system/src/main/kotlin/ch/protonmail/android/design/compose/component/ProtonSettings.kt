@@ -62,10 +62,7 @@ import ch.protonmail.android.design.compose.theme.textNorm
  * which displays the given content
  */
 @Composable
-fun ProtonSettingsList(
-    modifier: Modifier = Modifier,
-    content: LazyListScope.() -> Unit
-) {
+fun ProtonSettingsList(modifier: Modifier = Modifier, content: LazyListScope.() -> Unit) {
     Surface(
         color = ProtonTheme.colors.backgroundNorm,
         contentColor = ProtonTheme.colors.textNorm,
@@ -89,7 +86,7 @@ fun ProtonSettingsList(
 fun ProtonSettingsTopBar(
     modifier: Modifier = Modifier,
     title: String,
-    onBackClick: () -> Unit,
+    onBackClick: () -> Unit
 ) {
     ProtonTopAppBar(
         modifier = modifier.fillMaxWidth(),
@@ -103,10 +100,7 @@ fun ProtonSettingsTopBar(
 }
 
 @Composable
-fun ProtonSettingsHeader(
-    modifier: Modifier = Modifier,
-    @StringRes title: Int
-) {
+fun ProtonSettingsHeader(modifier: Modifier = Modifier, @StringRes title: Int) {
     ProtonSettingsHeader(
         modifier = modifier,
         title = stringResource(id = title)
@@ -114,10 +108,7 @@ fun ProtonSettingsHeader(
 }
 
 @Composable
-fun ProtonSettingsHeader(
-    modifier: Modifier = Modifier,
-    title: String
-) {
+fun ProtonSettingsHeader(modifier: Modifier = Modifier, title: String) {
     ProtonListItem(
         modifier = modifier,
         isClickable = false
@@ -150,7 +141,7 @@ fun ProtonSettingsItem(
         Column(
             modifier = Modifier
                 .semantics(mergeDescendants = true) {}
-                .fillMaxWidth(),
+                .fillMaxWidth()
         ) {
             Text(
                 modifier = Modifier,

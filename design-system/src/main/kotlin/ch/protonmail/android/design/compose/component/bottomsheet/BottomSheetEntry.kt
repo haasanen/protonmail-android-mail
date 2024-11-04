@@ -39,7 +39,7 @@ fun BottomSheetEntry(
     @DrawableRes icon: Int,
     title: String,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier
 ) {
     Row(
         modifier = modifier

@@ -46,7 +46,7 @@ import ch.protonmail.android.design.compose.theme.ProtonTheme
 fun ProtonSidebarLazy(
     modifier: Modifier = Modifier,
     drawerState: DrawerState = rememberDrawerState(DrawerValue.Closed),
-    content: LazyListScope.() -> Unit,
+    content: LazyListScope.() -> Unit
 ) {
     val scope = rememberCoroutineScope()
 
@@ -75,18 +75,18 @@ fun ProtonSidebarLazy(
 @Preview(
     name = "Sidebar in light mode",
     uiMode = Configuration.UI_MODE_NIGHT_NO,
-    showBackground = true,
+    showBackground = true
 )
 @Preview(
     name = "Sidebar in dark mode",
     uiMode = Configuration.UI_MODE_NIGHT_YES,
-    showBackground = true,
+    showBackground = true
 )
 @Composable
 fun PreviewProtonSidebarLazy() {
     ProtonTheme {
         ProtonSidebarLazy(
-            drawerState = DrawerState(DrawerValue.Open) { true },
+            drawerState = DrawerState(DrawerValue.Open) { true }
         ) {
             item {
                 ProtonSidebarItem { Text(text = "Inbox") }

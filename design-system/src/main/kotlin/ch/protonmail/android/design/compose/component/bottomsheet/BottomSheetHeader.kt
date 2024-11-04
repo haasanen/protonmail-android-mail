@@ -27,15 +27,12 @@ import androidx.compose.ui.Modifier
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 
 @Composable
-fun BottomSheetHeader(
-    modifier: Modifier = Modifier,
-    content: @Composable BoxScope.() -> Unit,
-) {
+fun BottomSheetHeader(modifier: Modifier = Modifier, content: @Composable BoxScope.() -> Unit) {
     Box(
         modifier = modifier
             .defaultMinSize(minHeight = ProtonDimens.DefaultBottomSheetHeaderMinHeight)
             .padding(horizontal = ProtonDimens.DefaultSpacing),
         contentAlignment = Alignment.CenterStart,
-        content = content,
+        content = content
     )
 }

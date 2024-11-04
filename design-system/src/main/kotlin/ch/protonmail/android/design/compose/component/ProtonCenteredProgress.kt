@@ -30,9 +30,7 @@ import androidx.compose.ui.tooling.preview.Preview
 const val PROTON_PROGRESS_TEST_TAG = "ProtonProgress"
 
 @Composable
-fun ProtonCenteredProgress(
-    modifier: Modifier = Modifier
-) {
+fun ProtonCenteredProgress(modifier: Modifier = Modifier) {
     Box(
         contentAlignment = Alignment.Center,
         modifier = modifier

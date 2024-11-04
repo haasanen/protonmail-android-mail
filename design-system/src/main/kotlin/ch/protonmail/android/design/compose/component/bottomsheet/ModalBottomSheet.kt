@@ -76,7 +76,7 @@ private fun runAction(
     modalBottomSheetState: SheetState,
     viewState: ModalBottomSheetViewState,
     onDismiss: () -> Unit,
-    action: suspend () -> Unit,
+    action: suspend () -> Unit
 ) {
     // Force action to run on the main dispatcher (a confined dispatcher).
     // Avoid Room to change thread a never switch back to main in ui tests.

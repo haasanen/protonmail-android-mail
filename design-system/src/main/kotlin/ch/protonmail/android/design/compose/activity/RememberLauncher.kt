@@ -28,7 +28,7 @@ import androidx.compose.runtime.Composable
  */
 class LauncherWithInput<Input, Output>(
     private val input: Input,
-    private val launcher: ManagedActivityResultLauncher<Input, Output>,
+    private val launcher: ManagedActivityResultLauncher<Input, Output>
 ) {
     fun launch() = launcher.launch(input)
     fun launch(input: Input) = launcher.launch(input)

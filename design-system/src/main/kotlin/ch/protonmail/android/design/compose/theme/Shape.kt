@@ -35,13 +35,13 @@ data class ProtonShapes(
         topEnd = ProtonDimens.LargeCornerRadius,
         bottomStart = 0.dp,
         bottomEnd = 0.dp
-    ),
+    )
 )
 
 fun ProtonShapes.toMaterialThemeShapes() = Shapes(
     small = small,
     medium = medium,
-    large = large,
+    large = large
 )
 
 val LocalShapes = staticCompositionLocalOf { ProtonShapes() }

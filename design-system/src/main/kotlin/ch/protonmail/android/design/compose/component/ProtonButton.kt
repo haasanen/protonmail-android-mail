@@ -55,7 +55,7 @@ fun ProtonSolidButton(
     contained: Boolean = true,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     colors: ButtonColors = ButtonDefaults.protonButtonColors(loading),
-    content: @Composable () -> Unit,
+    content: @Composable () -> Unit
 ) {
     ProtonButton(
         onClick = onClick,
@@ -69,7 +69,7 @@ fun ProtonSolidButton(
         border = null,
         colors = colors,
         contentPadding = ButtonDefaults.ContentPadding,
-        content = content,
+        content = content
     )
 }
 
@@ -90,12 +90,12 @@ fun ButtonDefaults.protonButtonColors(
         Color.White
     } else {
         Color.White.copy(alpha = 0.5f)
-    },
+    }
 ): ButtonColors = buttonColors(
     containerColor = backgroundColor,
     contentColor = contentColor,
     disabledContainerColor = disabledBackgroundColor,
-    disabledContentColor = disabledContentColor,
+    disabledContentColor = disabledContentColor
 )
 
 @Composable
@@ -107,7 +107,7 @@ fun ProtonOutlinedButton(
     contained: Boolean = true,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     colors: ButtonColors = ButtonDefaults.protonOutlinedButtonColors(loading),
-    content: @Composable () -> Unit,
+    content: @Composable () -> Unit
 ) {
     ProtonButton(
         onClick = onClick,
@@ -121,23 +121,20 @@ fun ProtonOutlinedButton(
         border = ButtonDefaults.protonOutlinedBorder(enabled, loading),
         colors = colors,
         contentPadding = ButtonDefaults.ContentPadding,
-        content = content,
+        content = content
     )
 }
 
 private val outlinedBorderSize = 1.dp
 
 @Composable
-fun ButtonDefaults.protonOutlinedBorder(
-    enabled: Boolean = true,
-    loading: Boolean = false,
-) = BorderStroke(
+fun ButtonDefaults.protonOutlinedBorder(enabled: Boolean = true, loading: Boolean = false) = BorderStroke(
     outlinedBorderSize,
     when {
         loading -> ProtonTheme.colors.interactionPressed
         !enabled -> ProtonTheme.colors.interactionDisabled
         else -> ProtonTheme.colors.brandNorm
-    },
+    }
 )
 
 @Composable
@@ -154,12 +151,12 @@ fun ButtonDefaults.protonOutlinedButtonColors(
         ProtonTheme.colors.interactionPressed
     } else {
         ProtonTheme.colors.interactionDisabled
-    },
+    }
 ): ButtonColors = buttonColors(
     containerColor = backgroundColor,
     contentColor = contentColor,
     disabledContainerColor = disabledBackgroundColor,
-    disabledContentColor = disabledContentColor,
+    disabledContentColor = disabledContentColor
 )
 
 @Composable
@@ -171,7 +168,7 @@ fun ProtonTextButton(
     contained: Boolean = true,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     colors: ButtonColors = ButtonDefaults.protonTextButtonColors(loading),
-    content: @Composable () -> Unit,
+    content: @Composable () -> Unit
 ) {
     ProtonButton(
         onClick = onClick,
@@ -185,7 +182,7 @@ fun ProtonTextButton(
         border = null,
         colors = colors,
         contentPadding = ButtonDefaults.TextButtonContentPadding,
-        content = content,
+        content = content
     )
 }
 
@@ -207,12 +204,12 @@ fun ButtonDefaults.protonTextButtonColors(
         ProtonTheme.colors.interactionPressed
     } else {
         ProtonTheme.colors.textDisabled
-    },
+    }
 ): ButtonColors = buttonColors(
     containerColor = backgroundColor,
     contentColor = contentColor,
     disabledContainerColor = disabledBackgroundColor,
-    disabledContentColor = disabledContentColor,
+    disabledContentColor = disabledContentColor
 )
 
 @Composable
@@ -223,7 +220,7 @@ fun ProtonSecondaryButton(
     loading: Boolean = false,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     colors: ButtonColors = ButtonDefaults.protonSecondaryButtonColors(loading),
-    content: @Composable () -> Unit,
+    content: @Composable () -> Unit
 ) {
     ProtonButton(
         onClick = onClick,
@@ -236,7 +233,7 @@ fun ProtonSecondaryButton(
         border = null,
         colors = colors,
         contentPadding = ButtonDefaults.TextButtonContentPadding,
-        content = content,
+        content = content
     )
 }
 
@@ -254,12 +251,12 @@ fun ButtonDefaults.protonSecondaryButtonColors(
         ProtonTheme.colors.textNorm
     } else {
         ProtonTheme.colors.textDisabled
-    },
+    }
 ): ButtonColors = buttonColors(
     containerColor = backgroundColor,
     contentColor = contentColor,
     disabledContainerColor = disabledContentColor,
-    disabledContentColor = disabledBackgroundColor,
+    disabledContentColor = disabledBackgroundColor
 )
 
 @Suppress("LongParameterList")
@@ -276,7 +273,7 @@ fun ProtonButton(
     border: BorderStroke?,
     colors: ButtonColors,
     contentPadding: PaddingValues = ButtonDefaults.ContentPadding,
-    content: @Composable () -> Unit,
+    content: @Composable () -> Unit
 ) {
     Button(
         onClick = onClick,
@@ -287,7 +284,7 @@ fun ProtonButton(
         shape = shape,
         border = border,
         colors = colors,
-        contentPadding = contentPadding,
+        contentPadding = contentPadding
     ) {
         ProtonButtonContent(
             loading = loading,
@@ -303,7 +300,7 @@ private fun ProtonButtonContent(
     loading: Boolean = false,
     contained: Boolean = true,
     progressColor: Color,
-    content: @Composable () -> Unit,
+    content: @Composable () -> Unit
 ) {
     if (!contained) {
         Box(Modifier.fillMaxWidth()) {
@@ -316,7 +313,7 @@ private fun ProtonButtonContent(
                         .size(LoadingIndicatorSize)
                         .align(Alignment.CenterEnd),
                     color = progressColor,
-                    strokeWidth = LoadingIndicatorStroke,
+                    strokeWidth = LoadingIndicatorStroke
                 )
             }
         }
@@ -328,7 +325,7 @@ private fun ProtonButtonContent(
                     .padding(horizontal = ProtonDimens.DefaultSpacing)
                     .size(LoadingIndicatorSize),
                 color = progressColor,
-                strokeWidth = LoadingIndicatorStroke,
+                strokeWidth = LoadingIndicatorStroke
             )
         }
     }
@@ -402,24 +399,24 @@ private fun PreviewProtonSecondaryButton() {
 
 @Composable
 private inline fun PreviewHelper(
-    crossinline button: @Composable (enabled: Boolean, contained: Boolean, loading: Boolean) -> Unit,
+    crossinline button: @Composable (enabled: Boolean, contained: Boolean, loading: Boolean) -> Unit
 ) {
     ProtonTheme {
         Column(Modifier.padding(10.dp)) {
             PreviewRowHelper(
                 enabled = true,
                 loading = false,
-                button,
+                button
             )
             PreviewRowHelper(
                 enabled = false,
                 loading = false,
-                button,
+                button
             )
             PreviewRowHelper(
                 enabled = true,
                 loading = true,
-                button,
+                button
             )
         }
     }
@@ -429,7 +426,7 @@ private inline fun PreviewHelper(
 private inline fun PreviewRowHelper(
     enabled: Boolean,
     loading: Boolean,
-    button: @Composable (enabled: Boolean, contained: Boolean, loading: Boolean) -> Unit,
+    button: @Composable (enabled: Boolean, contained: Boolean, loading: Boolean) -> Unit
 ) {
     Row(Modifier.padding(bottom = 20.dp)) {
         Box(Modifier.width(320.dp)) {

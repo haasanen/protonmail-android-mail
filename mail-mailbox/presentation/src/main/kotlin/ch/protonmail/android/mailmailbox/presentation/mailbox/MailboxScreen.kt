@@ -53,8 +53,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
-import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults
-import androidx.compose.material3.pulltorefresh.PullToRefreshState
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -155,7 +153,7 @@ fun MailboxScreen(
     val mailboxState = rememberAsState(viewModel.state, MailboxViewModel.initialState).value
     val mailboxListItems = viewModel.items.collectAsLazyPagingItems()
     val bottomSheetState =
-        rememberModalBottomSheetState( skipPartiallyExpanded = true)
+        rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
 
@@ -551,7 +549,7 @@ private fun MailboxSwipeRefresh(
         isRefreshing = if (searchMode.isInSearch()) refreshing
         else refreshing && (refreshRequested || loadingWithDataCount == 1),
         onRefresh = onRefresh
-    ){
+    ) {
         when (currentViewState) {
             is MailboxScreenState.Loading -> ProtonCenteredProgress(
                 modifier = Modifier.testTag(MailboxScreenTestTags.ListProgress)

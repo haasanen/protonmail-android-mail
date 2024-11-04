@@ -28,7 +28,6 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldColors
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.remember
@@ -48,54 +47,53 @@ import ch.protonmail.android.design.compose.theme.captionNorm
 import ch.protonmail.android.design.compose.theme.defaultNorm
 
 const val PROTON_OUTLINED_TEXT_INPUT_TAG = "PROTON_OUTLINED_TEXT_INPUT_TAG"
-private const val MaxLines = 2
+private const val MAX_LINES = 2
 
 @Composable
-fun protonOutlineTextFieldColors(): TextFieldColors =
-    OutlinedTextFieldDefaults.colors(
-        focusedTextColor = ProtonTheme.colors.textNorm,
-        unfocusedTextColor = ProtonTheme.colors.textNorm,
-        disabledTextColor = ProtonTheme.colors.textDisabled,
-        errorTextColor = ProtonTheme.colors.notificationError,
+fun protonOutlineTextFieldColors(): TextFieldColors = OutlinedTextFieldDefaults.colors(
+    focusedTextColor = ProtonTheme.colors.textNorm,
+    unfocusedTextColor = ProtonTheme.colors.textNorm,
+    disabledTextColor = ProtonTheme.colors.textDisabled,
+    errorTextColor = ProtonTheme.colors.notificationError,
 
-        focusedContainerColor = ProtonTheme.colors.backgroundSecondary,
-        unfocusedContainerColor = ProtonTheme.colors.backgroundSecondary,
-        disabledContainerColor = ProtonTheme.colors.backgroundSecondary,
-        errorContainerColor = ProtonTheme.colors.backgroundSecondary,
+    focusedContainerColor = ProtonTheme.colors.backgroundSecondary,
+    unfocusedContainerColor = ProtonTheme.colors.backgroundSecondary,
+    disabledContainerColor = ProtonTheme.colors.backgroundSecondary,
+    errorContainerColor = ProtonTheme.colors.backgroundSecondary,
 
-        focusedLabelColor = ProtonTheme.colors.textNorm,
-        unfocusedLabelColor = ProtonTheme.colors.textHint,
-        disabledLabelColor = ProtonTheme.colors.textDisabled,
-        errorLabelColor = ProtonTheme.colors.notificationError,
+    focusedLabelColor = ProtonTheme.colors.textNorm,
+    unfocusedLabelColor = ProtonTheme.colors.textHint,
+    disabledLabelColor = ProtonTheme.colors.textDisabled,
+    errorLabelColor = ProtonTheme.colors.notificationError,
 
-        focusedBorderColor = ProtonTheme.colors.brandNorm,
-        unfocusedBorderColor = ProtonTheme.colors.backgroundSecondary,
-        disabledBorderColor = ProtonTheme.colors.backgroundSecondary,
-        errorBorderColor = ProtonTheme.colors.notificationError,
+    focusedBorderColor = ProtonTheme.colors.brandNorm,
+    unfocusedBorderColor = ProtonTheme.colors.backgroundSecondary,
+    disabledBorderColor = ProtonTheme.colors.backgroundSecondary,
+    errorBorderColor = ProtonTheme.colors.notificationError,
 
-        cursorColor = ProtonTheme.colors.brandNorm,
-        errorCursorColor = ProtonTheme.colors.notificationError,
+    cursorColor = ProtonTheme.colors.brandNorm,
+    errorCursorColor = ProtonTheme.colors.notificationError,
 
-        focusedLeadingIconColor = ProtonTheme.colors.iconAccent,
-        unfocusedLeadingIconColor = ProtonTheme.colors.iconWeak,
-        disabledLeadingIconColor = ProtonTheme.colors.iconDisabled,
-        errorLeadingIconColor = ProtonTheme.colors.notificationError,
+    focusedLeadingIconColor = ProtonTheme.colors.iconAccent,
+    unfocusedLeadingIconColor = ProtonTheme.colors.iconWeak,
+    disabledLeadingIconColor = ProtonTheme.colors.iconDisabled,
+    errorLeadingIconColor = ProtonTheme.colors.notificationError,
 
-        focusedTrailingIconColor = ProtonTheme.colors.iconAccent,
-        unfocusedTrailingIconColor = ProtonTheme.colors.iconWeak,
-        disabledTrailingIconColor = ProtonTheme.colors.iconDisabled,
-        errorTrailingIconColor = ProtonTheme.colors.notificationError,
+    focusedTrailingIconColor = ProtonTheme.colors.iconAccent,
+    unfocusedTrailingIconColor = ProtonTheme.colors.iconWeak,
+    disabledTrailingIconColor = ProtonTheme.colors.iconDisabled,
+    errorTrailingIconColor = ProtonTheme.colors.notificationError,
 
-        focusedPlaceholderColor = ProtonTheme.colors.textHint,
-        unfocusedPlaceholderColor = ProtonTheme.colors.textHint,
-        disabledPlaceholderColor = ProtonTheme.colors.textDisabled,
-        errorPlaceholderColor = ProtonTheme.colors.notificationError,
+    focusedPlaceholderColor = ProtonTheme.colors.textHint,
+    unfocusedPlaceholderColor = ProtonTheme.colors.textHint,
+    disabledPlaceholderColor = ProtonTheme.colors.textDisabled,
+    errorPlaceholderColor = ProtonTheme.colors.notificationError,
 
-        focusedSupportingTextColor = ProtonTheme.colors.textNorm,
-        unfocusedSupportingTextColor = ProtonTheme.colors.textHint,
-        disabledSupportingTextColor = ProtonTheme.colors.textDisabled,
-        errorSupportingTextColor = ProtonTheme.colors.notificationError
-    )
+    focusedSupportingTextColor = ProtonTheme.colors.textNorm,
+    unfocusedSupportingTextColor = ProtonTheme.colors.textHint,
+    disabledSupportingTextColor = ProtonTheme.colors.textDisabled,
+    errorSupportingTextColor = ProtonTheme.colors.notificationError
+)
 
 
 
@@ -119,7 +117,7 @@ fun ProtonOutlinedTextField(
     maxLines: Int = Int.MAX_VALUE,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     shape: Shape = ProtonTheme.shapes.medium,
-    colors: TextFieldColors = protonOutlineTextFieldColors(),
+    colors: TextFieldColors = protonOutlineTextFieldColors()
 ) = OutlinedTextField(
     value = value,
     onValueChange = onValueChange,
@@ -139,7 +137,7 @@ fun ProtonOutlinedTextField(
     maxLines = maxLines,
     interactionSource = interactionSource,
     shape = shape,
-    colors = colors,
+    colors = colors
 )
 
 @Composable
@@ -151,7 +149,7 @@ fun ProtonOutlinedTextFieldWithError(
     focusRequester: FocusRequester = remember { FocusRequester() },
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     label: (@Composable () -> Unit)? = null,
-    maxLines: Int = MaxLines,
+    maxLines: Int = MAX_LINES,
     placeholder: (@Composable () -> Unit)? = null,
     singleLine: Boolean = false,
     onValueChanged: (String) -> Unit,
@@ -199,7 +197,7 @@ fun ProtonOutlinedTextFieldWithError(
     focusRequester: FocusRequester = remember { FocusRequester() },
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     label: (@Composable () -> Unit)? = null,
-    maxLines: Int = MaxLines,
+    maxLines: Int = MAX_LINES,
     placeholder: (@Composable () -> Unit)? = null,
     singleLine: Boolean = false,
     visualTransformation: VisualTransformation = VisualTransformation.None

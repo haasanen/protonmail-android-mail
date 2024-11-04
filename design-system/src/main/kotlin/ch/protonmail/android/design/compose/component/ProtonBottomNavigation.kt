@@ -46,12 +46,12 @@ import ch.protonmail.android.design.compose.theme.ProtonTheme
 
 data class NavigationTab(
     val title: @Composable () -> Unit,
-    val icon: @Composable () -> Unit,
+    val icon: @Composable () -> Unit
 ) {
 
     constructor(
         @StringRes title: Int,
-        @DrawableRes icon: Int,
+        @DrawableRes icon: Int
     ) : this(
         title = {
             Text(stringResource(id = title))
@@ -66,7 +66,7 @@ data class NavigationTab(
 
     constructor(
         @StringRes title: Int,
-        icon: @Composable () -> Unit,
+        icon: @Composable () -> Unit
     ) : this(
         title = {
             Text(stringResource(id = title))
@@ -76,7 +76,7 @@ data class NavigationTab(
 
     constructor(
         @StringRes title: Int,
-        imageVector: ImageVector,
+        imageVector: ImageVector
     ) : this(
         title = {
             Text(stringResource(id = title))
@@ -95,7 +95,7 @@ fun ProtonBottomNavigation(
     tabs: List<NavigationTab>,
     modifier: Modifier = Modifier,
     initialSelectedTabIndex: Int = 0,
-    onSelectedTabIndex: (Int) -> Unit,
+    onSelectedTabIndex: (Int) -> Unit
 ) {
     var selectedIndex by remember { mutableStateOf(initialSelectedTabIndex) }
 
@@ -145,7 +145,7 @@ fun PreviewProtonBottomNavigationImageVector() {
     val tabs = listOf(
         NavigationTab(R.string.presentation_menu_item_title_settings, Icons.Filled.Email),
         NavigationTab(R.string.presentation_menu_item_title_settings, Icons.Filled.ShoppingCart),
-        NavigationTab(R.string.presentation_menu_item_title_settings, Icons.Filled.Home),
+        NavigationTab(R.string.presentation_menu_item_title_settings, Icons.Filled.Home)
     )
     ProtonBottomNavigation(
         tabs = tabs,

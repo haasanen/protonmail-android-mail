@@ -34,10 +34,7 @@ import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 
 @Composable
-fun DeferredCircularProgressIndicator(
-    modifier: Modifier = Modifier,
-    defer: Duration = 500.milliseconds,
-) {
+fun DeferredCircularProgressIndicator(modifier: Modifier = Modifier, defer: Duration = 500.milliseconds) {
     var showProgress by remember { mutableStateOf(false) }
     LaunchedEffect(Unit) {
         delay(defer.inWholeMilliseconds)

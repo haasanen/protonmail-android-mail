@@ -38,7 +38,7 @@ import ch.protonmail.android.design.compose.theme.defaultSmallStrongInverted
 fun ProtonErrorMessage(
     errorMessage: String,
     modifier: Modifier = Modifier,
-    elevation: CardElevation =  CardDefaults.cardElevation()
+    elevation: CardElevation = CardDefaults.cardElevation()
 ) {
     Card(
         modifier = modifier
@@ -46,7 +46,7 @@ fun ProtonErrorMessage(
             .defaultMinSize(minHeight = MinHeight),
         colors = CardDefaults.cardColors(),
         shape = ProtonTheme.shapes.medium,
-        elevation = elevation,
+        elevation = elevation
 
     ) {
         Text(
@@ -58,7 +58,7 @@ fun ProtonErrorMessage(
                     top = MessageVerticalPadding,
                     end = Padding,
                     bottom = MessageHorizontalPadding
-                ),
+                )
         )
     }
 }
@@ -69,7 +69,7 @@ fun ProtonErrorMessageWithAction(
     modifier: Modifier = Modifier,
     elevation: CardElevation = CardDefaults.cardElevation(),
     action: String,
-    onAction: () -> Unit,
+    onAction: () -> Unit
 ) {
     Card(
         modifier = modifier
@@ -90,7 +90,7 @@ fun ProtonErrorMessageWithAction(
                 style = ProtonTheme.typography.defaultSmallInverted,
                 modifier = Modifier
                     .padding(horizontal = MessageWithActionHorizontalPadding, vertical = MessageVerticalPadding)
-                    .weight(1f),
+                    .weight(1f)
             )
             ProtonTextButton(
                 modifier = Modifier.padding(horizontal = ActionHorizontalPadding, vertical = ActionVerticalPadding),
@@ -98,7 +98,7 @@ fun ProtonErrorMessageWithAction(
             ) {
                 Text(
                     text = action,
-                    style = ProtonTheme.typography.defaultSmallStrongInverted,
+                    style = ProtonTheme.typography.defaultSmallStrongInverted
                 )
             }
         }
@@ -115,12 +115,14 @@ fun PreviewProtonErrorMessage() {
 @Preview
 @Composable
 fun PreviewProtonErrorMessageMultiline() {
-    val message =
-        """Some error message to display. This is a longer message so the text gets wrapped.
-We can also
-add some line breaks."""
+    val message = """
+        Some error message to display. This is a longer message so the text gets wrapped.
+        We can also
+        add some line breaks.
+    """.trimIndent()
     ProtonErrorMessage(errorMessage = message)
 }
+
 
 @Preview
 @Composable

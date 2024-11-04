@@ -25,7 +25,6 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.remember
 
-
 @Composable
 fun ProtonTheme(
     isDark: Boolean = isNightMode(),
@@ -40,7 +39,7 @@ fun ProtonTheme(
         LocalColors provides rememberedColors,
         LocalTypography provides typography,
         LocalShapes provides shapes,
-        LocalContentColor provides rememberedColors.textNorm,
+        LocalContentColor provides rememberedColors.textNorm
     ) {
         androidx.compose.material3.MaterialTheme(
             typography = typography.toMaterial3ThemeTypography(),

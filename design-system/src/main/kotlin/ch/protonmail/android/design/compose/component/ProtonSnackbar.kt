@@ -43,7 +43,7 @@ fun ProtonSnackbarHost(
     modifier: Modifier = Modifier,
     snackbar: @Composable (SnackbarData) -> Unit = { data ->
         ProtonSnackbar(snackbarData = data, hostState.type)
-    },
+    }
 ) {
     SnackbarHost(
         hostState = hostState.snackbarHostState,

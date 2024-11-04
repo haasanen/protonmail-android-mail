@@ -40,7 +40,7 @@ fun ProtonTopAppBar(
     navigationIcon: @Composable (() -> Unit),
     actions: @Composable RowScope.() -> Unit = {},
     backgroundColor: Color = ProtonTheme.colors.backgroundNorm,
-    contentColor: Color = ProtonTheme.colors.textNorm,
+    contentColor: Color = ProtonTheme.colors.textNorm
 ) {
     TopAppBar(
         title = title,
@@ -71,7 +71,7 @@ fun ProtonTopAppBarPreview() {
                     contentDescription = "Back",
                     tint = Color.White
                 )
-            },
+            }
         )
     }
 }

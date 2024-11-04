@@ -60,7 +60,7 @@ import ch.protonmail.android.design.compose.theme.ProtonTheme
 fun ProtonRawListItem(
     modifier: Modifier = Modifier,
     horizontalArrangement: Horizontal = Arrangement.Start,
-    content: @Composable (RowScope.() -> Unit),
+    content: @Composable (RowScope.() -> Unit)
 ) {
     Row(
         modifier = modifier.fillMaxWidth(),
@@ -76,7 +76,7 @@ fun ProtonListItem(
     isClickable: Boolean = true,
     isSelected: Boolean = false,
     onClick: () -> Unit = {},
-    content: (@Composable @ExtensionFunctionType RowScope.() -> Unit),
+    content: (@Composable @ExtensionFunctionType RowScope.() -> Unit)
 ) {
     ProtonRawListItem(
         modifier = modifier
@@ -97,13 +97,13 @@ fun ProtonListItem(
     modifier: Modifier = Modifier,
     isClickable: Boolean = true,
     isSelected: Boolean = false,
-    onClick: () -> Unit = {},
+    onClick: () -> Unit = {}
 ) {
     ProtonListItem(
         modifier = modifier,
         onClick = onClick,
         isClickable = isClickable,
-        isSelected = isSelected,
+        isSelected = isSelected
     ) {
         icon(Modifier.padding(end = ProtonDimens.DefaultSpacing))
         text(Modifier.weight(1f, fill = true))
@@ -123,7 +123,7 @@ fun ProtonListItem(
     textColor: Color = Color.Unspecified,
     iconTint: Color = LocalContentColor.current,
     count: Int? = null,
-    onClick: () -> Unit = {},
+    onClick: () -> Unit = {}
 ) {
     ProtonListItem(
         modifier = modifier.semantics(mergeDescendants = true) { },
@@ -156,7 +156,7 @@ fun ProtonListItem(
                     text = "$count",
                     color = Color.White,
                     textAlign = TextAlign.Center,
-                    style = ProtonTheme.typography.captionRegular,
+                    style = ProtonTheme.typography.captionRegular
                 )
             }
         }
@@ -198,7 +198,7 @@ fun ProtonListItem(
 fun PreviewProtonListItem() {
     ProtonListItem(
         icon = R.drawable.ic_proton_arrow_out_from_rectangle,
-        text = R.string.presentation_menu_item_title_sign_out,
+        text = R.string.presentation_menu_item_title_sign_out
     )
 }
 

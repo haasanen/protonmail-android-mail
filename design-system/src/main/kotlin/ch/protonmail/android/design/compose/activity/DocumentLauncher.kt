@@ -28,14 +28,12 @@ import androidx.compose.runtime.Composable
  * Register a request to prompt the user to open a document.
  */
 @Composable
-fun rememberOpenDocumentLauncher(
-    mimeTypes: Array<String> = arrayOf("*/*"),
-    onFilePicked: (Uri?) -> Unit,
-) = rememberLauncherWithInput(
-    input = mimeTypes,
-    contracts = ActivityResultContracts.OpenDocument(),
-    onResult = onFilePicked
-)
+fun rememberOpenDocumentLauncher(mimeTypes: Array<String> = arrayOf("*/*"), onFilePicked: (Uri?) -> Unit) =
+    rememberLauncherWithInput(
+        input = mimeTypes,
+        contracts = ActivityResultContracts.OpenDocument(),
+        onResult = onFilePicked
+    )
 
 /**
  * Register a request to prompt the user to open (possibly multiple) documents.
@@ -44,7 +42,7 @@ fun rememberOpenDocumentLauncher(
 fun rememberOpenMultipleDocumentsLauncher(
     mimeTypes: Array<String> = arrayOf("*/*"),
     modifyIntent: ((Intent) -> Unit)? = null,
-    onFilesPicked: (List<Uri>) -> Unit,
+    onFilesPicked: (List<Uri>) -> Unit
 ) = rememberLauncherWithInput(
     input = mimeTypes,
     contracts = object : ActivityResultContracts.OpenMultipleDocuments() {
@@ -59,14 +57,12 @@ fun rememberOpenMultipleDocumentsLauncher(
  * Register a request to prompt the user to select a directory.
  */
 @Composable
-fun rememberOpenDocumentTreeLauncher(
-    initialLocation: Uri = Uri.EMPTY,
-    onDirectoryPicked: (Uri?) -> Unit,
-) = rememberLauncherWithInput(
-    input = initialLocation,
-    contracts = ActivityResultContracts.OpenDocumentTree(),
-    onResult = onDirectoryPicked
-)
+fun rememberOpenDocumentTreeLauncher(initialLocation: Uri = Uri.EMPTY, onDirectoryPicked: (Uri?) -> Unit) =
+    rememberLauncherWithInput(
+        input = initialLocation,
+        contracts = ActivityResultContracts.OpenDocumentTree(),
+        onResult = onDirectoryPicked
+    )
 
 /**
  * Register a request to prompt the user to create a document.
@@ -75,7 +71,7 @@ fun rememberOpenDocumentTreeLauncher(
 fun rememberCreateDocumentLauncher(
     mimeType: String,
     onDocumentCreated: (Uri?) -> Unit,
-    modifyIntent: ((Intent) -> Unit)? = null,
+    modifyIntent: ((Intent) -> Unit)? = null
 ) = rememberLauncherWithInput(
     input = mimeType,
     contracts = object : ActivityResultContracts.CreateDocument(mimeType) {

@@ -37,16 +37,11 @@ import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.defaultSmallWeak
 
 @Composable
-fun ProtonListSectionTitle(
-    @StringRes title: Int,
-    modifier: Modifier = Modifier
-) = ProtonListSectionTitle(stringResource(title), modifier)
+fun ProtonListSectionTitle(@StringRes title: Int, modifier: Modifier = Modifier) =
+    ProtonListSectionTitle(stringResource(title), modifier)
 
 @Composable
-fun ProtonListSectionTitle(
-    title: String,
-    modifier: Modifier = Modifier
-) {
+fun ProtonListSectionTitle(title: String, modifier: Modifier = Modifier) {
     Column(
         modifier = modifier
             .semantics(mergeDescendants = true) {
@@ -54,7 +49,7 @@ fun ProtonListSectionTitle(
                 heading()
             }
             .padding(top = ProtonDimens.DefaultSpacing)
-            .fillMaxWidth(),
+            .fillMaxWidth()
     ) {
 
         Divider(color = ProtonTheme.colors.separatorNorm)
@@ -63,11 +58,11 @@ fun ProtonListSectionTitle(
             text = title,
             modifier = Modifier.padding(
                 vertical = ProtonDimens.DefaultSpacing,
-                horizontal = SectionHeaderHorizontalPadding,
+                horizontal = SectionHeaderHorizontalPadding
             ),
             style = ProtonTheme.typography.defaultSmallWeak,
             maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
+            overflow = TextOverflow.Ellipsis
         )
     }
 }

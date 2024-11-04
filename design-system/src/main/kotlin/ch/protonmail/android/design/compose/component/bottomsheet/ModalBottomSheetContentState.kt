@@ -31,7 +31,7 @@ import androidx.compose.runtime.remember
 @OptIn(ExperimentalMaterial3Api::class)
 data class ModalBottomSheetContentState(
     val sheetState: SheetState,
-    val sheetContent: MutableState<@Composable ColumnScope.(runAction: RunAction) -> Unit>,
+    val sheetContent: MutableState<@Composable ColumnScope.(runAction: RunAction) -> Unit>
 )
 
 @Composable
@@ -39,7 +39,7 @@ data class ModalBottomSheetContentState(
 fun rememberModalBottomSheetContentState(
     modalBottomSheetState: SheetState =
         rememberModalBottomSheetState(),
-    modalBottomSheetContent: MutableState<@Composable ColumnScope.(runAction: RunAction) -> Unit> = mutableStateOf({}),
+    modalBottomSheetContent: MutableState<@Composable ColumnScope.(runAction: RunAction) -> Unit> = mutableStateOf({})
 ): ModalBottomSheetContentState = remember {
     ModalBottomSheetContentState(
         modalBottomSheetState,

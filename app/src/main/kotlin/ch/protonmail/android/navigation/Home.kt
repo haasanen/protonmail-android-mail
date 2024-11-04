@@ -18,9 +18,7 @@
 
 package ch.protonmail.android.navigation
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ModalDrawerSheet
@@ -35,7 +33,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -102,10 +99,8 @@ import kotlinx.coroutines.launch
 import ch.protonmail.android.design.compose.component.ProtonSnackbarHostState
 import ch.protonmail.android.design.compose.component.ProtonSnackbarType
 import ch.protonmail.android.design.compose.flow.rememberAsState
-
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import me.proton.core.network.domain.NetworkStatus
-import timber.log.Timber
 
 @Composable
 @Suppress("ComplexMethod")
@@ -318,8 +313,20 @@ fun Home(
                             onAddFolder = { navController.navigate(Screen.FolderList.route) },
                             showFeatureMissingSnackbar = { showFeatureMissingSnackbar() },
                             onReply = { navController.navigate(Screen.MessageActionComposer(DraftAction.Reply(it))) },
-                            onReplyAll = { navController.navigate(Screen.MessageActionComposer(DraftAction.ReplyAll(it))) },
-                            onForward = { navController.navigate(Screen.MessageActionComposer(DraftAction.Forward(it))) },
+                            onReplyAll = {
+                                navController.navigate(
+                                    Screen.MessageActionComposer(
+                                        DraftAction.ReplyAll(it)
+                                    )
+                                )
+                            },
+                            onForward = {
+                                navController.navigate(
+                                    Screen.MessageActionComposer(
+                                        DraftAction.Forward(it)
+                                    )
+                                )
+                            },
                             onViewContactDetails = { navController.navigate(Screen.ContactDetails(it)) },
                             onAddContact = { basicContactInfo ->
                                 navController.navigate(Screen.AddContact(basicContactInfo))
