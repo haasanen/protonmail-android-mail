@@ -67,6 +67,7 @@ dependencies {
     implementation(project(":mail-common:domain"))
     implementation(project(":uicomponents"))
     implementation(project(":design-system"))
+    implementation(project(":presentation-compose"))
 
     testImplementation(libs.bundles.test)
     testImplementation(project(":test:utils"))

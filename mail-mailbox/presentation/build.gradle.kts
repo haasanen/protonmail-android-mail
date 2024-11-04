@@ -100,6 +100,7 @@ dependencies {
     implementation(project(":mail-sidebar:presentation"))
     implementation(project(":uicomponents"))
     implementation(project(":design-system"))
+    implementation(project(":presentation-compose"))
 
     debugImplementation(libs.bundles.compose.debug)
 

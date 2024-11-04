@@ -30,7 +30,6 @@ import ch.protonmail.android.maillabel.presentation.iconRes
 import ch.protonmail.android.maillabel.presentation.textRes
 import ch.protonmail.android.testdata.label.rust.LabelAsActionsTestData
 import kotlinx.collections.immutable.toImmutableList
-import ch.protonmail.android.design.compose.theme.ProtonDimens
 
 object MailLabelUiModelTestData {
 
@@ -106,7 +105,7 @@ object MailLabelUiModelTestData {
             count = 2,
             isVisible = true,
             isExpanded = true,
-            iconPaddingStart = ProtonDimens.DefaultSpacing * 1
+            iconPaddingStart = 0.dp
         )
     ).toImmutableList()
     val archiveAndCustomFolder = listOf(

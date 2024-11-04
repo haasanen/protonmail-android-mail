@@ -59,6 +59,7 @@ dependencies {
 
     implementation(project(":mail-session:domain"))
     implementation(project(":design-system"))
+    implementation(project(":presentation-compose"))
 
     testImplementation(project(":test:test-data"))
 }

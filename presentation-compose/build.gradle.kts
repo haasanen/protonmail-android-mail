@@ -22,13 +22,11 @@ plugins {
 }
 
 android {
-    namespace = "ch.protonmail.android.mailconversation.presentation"
+    namespace = "ch.protonmail.android.design.compose"
     compileSdk = Config.compileSdk
 
     defaultConfig {
         minSdk = Config.minSdk
-        lint.targetSdk = Config.targetSdk
-        testInstrumentationRunner = Config.testInstrumentationRunner
     }
 
     compileOptions {
@@ -45,28 +43,18 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.androidx.compose.compiler.get()
-    }
-
-    packaging {
-        resources.excludes.add("META-INF/licenses/**")
-        resources.excludes.add("META-INF/AL2.0")
-        resources.excludes.add("META-INF/LGPL2.1")
+        kotlinCompilerExtensionVersion = Versions.AndroidX.composeCompiler
     }
 }
 
 dependencies {
-    kapt(Dependencies.appAnnotationProcessors)
-
+    implementation(Dependencies.composeLibs)
     implementation(Dependencies.modulePresentationLibs)
+    implementation(Proton.Core.presentation)
 
-    implementation(project(":mail-common:domain"))
-    implementation(project(":mail-conversation:domain"))
-    implementation(project(":mail-detail:domain"))
-    implementation(project(":mail-message:domain"))
+    debugImplementation(Dependencies.appDebug)
+    testImplementation(Dependencies.testLibs)
 
     implementation(project(":design-system"))
-    implementation(project(":presentation-compose"))
 
-    testImplementation(Dependencies.testLibs)
 }

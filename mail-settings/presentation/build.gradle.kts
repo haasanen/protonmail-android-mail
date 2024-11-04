@@ -83,6 +83,7 @@ dependencies {
     implementation(project(":mail-upselling:presentation"))
     implementation(project(":uicomponents"))
     implementation(project(":design-system"))
+    implementation(project(":presentation-compose"))
 
     testImplementation(libs.bundles.test)
     testImplementation(libs.proton.core.network)

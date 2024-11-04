@@ -25,7 +25,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.runtime.structuralEqualityPolicy
 import androidx.compose.ui.graphics.Color
-import ch.protonmail.android.design.compose.annotation.MissingDesignSpec
 
 private object ProtonPalette {
     val Haiti = Color(0xFF1B1340)
@@ -586,7 +585,6 @@ fun ProtonColors.textWeak(enabled: Boolean = true) = if (enabled) textWeak else 
 fun ProtonColors.textInverted(enabled: Boolean = true) = if (enabled) textInverted else textDisabled
 fun ProtonColors.interactionNorm(enabled: Boolean = true) = if (enabled) interactionNorm else interactionDisabled
 
-@MissingDesignSpec
 internal fun ProtonColors.toMaterial3ThemeColors() = ColorScheme(
     primary = brandNorm,
     onPrimary = Color.White,

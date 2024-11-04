@@ -135,6 +135,7 @@ include(":mail-session:presentation")
 
 include(":uicomponents")
 include(":design-system")
+include(":presentation-compose")
 
 include(":test:annotations")
 include(":test:idlingresources")
