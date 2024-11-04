@@ -33,7 +33,7 @@ import ch.protonmail.android.mailcontact.domain.model.ContactId
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ContactListScreen(listActions: ContactListScreen.Actions, viewModel: ContactListViewModel = hiltViewModel()) {
-    val bottomSheetState = rememberModalBottomSheetState()
+    val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val scope = rememberCoroutineScope()
 
     val state = viewModel.state.collectAsStateWithLifecycle().value
