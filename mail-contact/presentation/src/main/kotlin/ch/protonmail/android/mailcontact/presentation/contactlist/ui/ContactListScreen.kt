@@ -4,7 +4,6 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
-
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SheetValue
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -28,7 +27,9 @@ import ch.protonmail.android.uicomponents.bottomsheet.bottomSheetHeightConstrain
 import kotlinx.coroutines.launch
 import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
 import ch.protonmail.android.design.compose.component.ProtonModalBottomSheetLayout
+import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.mailcontact.domain.model.ContactId
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -37,6 +38,8 @@ fun ContactListScreen(listActions: ContactListScreen.Actions, viewModel: Contact
     val scope = rememberCoroutineScope()
 
     val state = viewModel.state.collectAsStateWithLifecycle().value
+
+    val systemUiController = rememberSystemUiController()
 
     val actions = listActions.copy(
         onNewGroupClick = { viewModel.submit(ContactListViewAction.OnNewContactGroupClick) }
@@ -59,6 +62,19 @@ fun ContactListScreen(listActions: ContactListScreen.Actions, viewModel: Contact
         viewModel.submit(ContactListViewAction.OnDismissBottomSheet)
     }
 
+    // In this screen, "Background inverted" theme is used for colouring, which different
+    // from the default theme. Therefore, we need to set/reset the status bar colour manually.
+    val defaultColor = ProtonTheme.colors.backgroundNorm
+    val backgroundColor = ProtonTheme.colors.backgroundSecondary
+    DisposableEffect(Unit) {
+        systemUiController.setStatusBarColor(
+            color = backgroundColor
+        )
+        onDispose {
+            systemUiController.setStatusBarColor(defaultColor)
+        }
+    }
+
     ProtonModalBottomSheetLayout(
         sheetState = bottomSheetState,
         sheetContent = bottomSheetHeightConstrainedContent {
@@ -79,6 +95,7 @@ fun ContactListScreen(listActions: ContactListScreen.Actions, viewModel: Contact
         }
     ) {
         Scaffold(
+            containerColor = backgroundColor,
             topBar = {
                 ContactListTopBar(
                     actions = ContactListTopBar.Actions(
