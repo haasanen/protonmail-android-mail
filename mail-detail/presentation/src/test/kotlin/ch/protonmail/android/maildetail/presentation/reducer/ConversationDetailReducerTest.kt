@@ -19,7 +19,6 @@
 package ch.protonmail.android.maildetail.presentation.reducer
 
 import java.util.UUID
-import ch.protonmail.android.maillabel.domain.sample.LabelIdSample
 import androidx.compose.ui.graphics.Color
 import ch.protonmail.android.mailcommon.presentation.R
 import ch.protonmail.android.mailcommon.presentation.model.ActionResult
@@ -39,6 +38,7 @@ import ch.protonmail.android.maildetail.presentation.model.MessageIdUiModel
 import ch.protonmail.android.maildetail.presentation.model.ParticipantUiModel
 import ch.protonmail.android.maildetail.presentation.sample.ConversationDetailMessageUiModelSample
 import ch.protonmail.android.maildetail.presentation.sample.ConversationDetailMetadataUiModelSample
+import ch.protonmail.android.maillabel.domain.sample.LabelIdSample
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.presentation.model.ViewModePreference
 import ch.protonmail.android.mailmessage.presentation.reducer.BottomSheetReducer
@@ -241,10 +241,10 @@ class ConversationDetailReducerTest(
             ConversationDetailEvent.ErrorLoadingConversation affects listOf(Conversation, Messages),
             ConversationDetailEvent.ErrorLoadingMessages affects Messages,
             ConversationDetailEvent.ErrorMarkingAsUnread affects ErrorBar,
-            ConversationDetailEvent.ErrorMovingConversation affects ErrorBar,
+            ConversationDetailEvent.ErrorMovingConversation affects listOf(BottomSheet, ErrorBar),
             ConversationDetailEvent.ErrorMovingMessage affects ErrorBar,
             ConversationDetailEvent.ErrorMovingToTrash affects ErrorBar,
-            ConversationDetailEvent.ErrorLabelingConversation affects ErrorBar,
+            ConversationDetailEvent.ErrorLabelingConversation affects listOf(BottomSheet, ErrorBar),
             ConversationDetailEvent.MessagesData(
                 emptyList<ConversationDetailMessageUiModel>().toImmutableList(),
                 null,

@@ -20,7 +20,7 @@ plugins {
     id("com.android.library")
     kotlin("android")
     kotlin("kapt")
-    kotlin("plugin.serialization") version Versions.Gradle.kotlinGradlePlugin
+    kotlin("plugin.serialization")
 }
 
 android {
@@ -43,9 +43,9 @@ android {
 }
 
 dependencies {
-    implementation(Dependencies.moduleDomainLibs)
-
     implementation(project(":mail-label:domain"))
 
-    testImplementation(Dependencies.testLibs)
+    implementation(libs.bundles.module.domain)
+
+    testImplementation(libs.bundles.test)
 }

@@ -21,6 +21,7 @@ package ch.protonmail.android.maillabel.presentation.folderform
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.maillabel.domain.model.Label
+import ch.protonmail.android.mailcommon.presentation.ui.delete.DeleteDialogState
 import ch.protonmail.android.maillabel.presentation.R
 import ch.protonmail.android.mailupselling.presentation.model.BottomSheetVisibilityEffect
 import javax.inject.Inject
@@ -50,6 +51,8 @@ class FolderFormReducer @Inject constructor() {
             FolderFormEvent.HideUpselling -> reduceHideUpselling(currentState)
             FolderFormEvent.ShowUpselling -> reduceShowUpselling(currentState)
             FolderFormEvent.UpsellingInProgress -> reduceUpsellingInProgress(currentState)
+            FolderFormEvent.ShowDeleteDialog -> reduceShowDeleteDialog(currentState)
+            FolderFormEvent.HideDeleteDialog -> reduceHideDeleteDialog(currentState)
         }
     }
 
@@ -143,7 +146,8 @@ class FolderFormReducer @Inject constructor() {
         return when (currentState) {
             is FolderFormState.Data.Create -> currentState
             is FolderFormState.Data.Update -> currentState.copy(
-                closeWithSuccess = Effect.of(TextUiModel(R.string.folder_deleted))
+                closeWithSuccess = Effect.of(TextUiModel(R.string.folder_deleted)),
+                confirmDeleteDialogState = DeleteDialogState.Hidden
             )
             is FolderFormState.Loading -> currentState
         }
@@ -246,4 +250,26 @@ class FolderFormReducer @Inject constructor() {
         }
     }
 
+    private fun reduceShowDeleteDialog(currentState: FolderFormState): FolderFormState {
+        return when (currentState) {
+            is FolderFormState.Loading -> currentState
+            is FolderFormState.Data.Create -> currentState
+            is FolderFormState.Data.Update -> currentState.copy(
+                confirmDeleteDialogState = DeleteDialogState.Shown(
+                    title = TextUiModel.TextRes(R.string.delete_folder),
+                    message = TextUiModel.TextRes(R.string.delete_folder_message)
+                )
+            )
+        }
+    }
+
+    private fun reduceHideDeleteDialog(currentState: FolderFormState): FolderFormState {
+        return when (currentState) {
+            is FolderFormState.Loading -> currentState
+            is FolderFormState.Data.Create -> currentState
+            is FolderFormState.Data.Update -> currentState.copy(
+                confirmDeleteDialogState = DeleteDialogState.Hidden
+            )
+        }
+    }
 }

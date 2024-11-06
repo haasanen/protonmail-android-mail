@@ -16,23 +16,21 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailnotifications.domain.usecase.featureflag
+package ch.protonmail.android.mailsettings.data.usecase
 
+import arrow.core.Either
+import arrow.core.raise.either
+import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import me.proton.core.domain.entity.UserId
-import me.proton.core.featureflag.domain.ExperimentalProtonFeatureFlag
-import me.proton.core.featureflag.domain.FeatureFlagManager
-import me.proton.core.featureflag.domain.entity.FeatureId
 import javax.inject.Inject
 
-class IsNotificationMessagePrefetchDisabled @Inject constructor(
-    private val featureFlagManager: FeatureFlagManager
-) {
+@MissingRustApi
+class UpdateAutoDeleteSpamAndTrashDays @Inject constructor() {
 
-    @OptIn(ExperimentalProtonFeatureFlag::class)
-    operator fun invoke(userId: UserId?) = featureFlagManager.getValue(userId, FeatureId(FeatureFlagId))
+    private val settingEnabled = 30
+    private val settingDisabled = 0
 
-    private companion object {
-
-        const val FeatureFlagId = "MailAndroidDisableNotificationMessagePrefetch"
+    suspend operator fun invoke(userId: UserId, enabled: Boolean): Either<Error, Unit> = either {
     }
 }
+

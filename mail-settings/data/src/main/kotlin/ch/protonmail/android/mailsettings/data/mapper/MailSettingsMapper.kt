@@ -76,7 +76,8 @@ object MailSettingsMapper {
             pgpScheme = pgpScheme.toPackageType(),
             promptPin = promptPin,
             stickyLabels = stickyLabels,
-            confirmLink = confirmLink
+            confirmLink = confirmLink,
+            autoDeleteSpamAndTrashDays = autoDeleteSpamAndTrashDays?.toInt()
         )
     }
 

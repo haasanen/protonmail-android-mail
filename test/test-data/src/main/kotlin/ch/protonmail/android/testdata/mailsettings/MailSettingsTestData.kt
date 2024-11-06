@@ -85,6 +85,7 @@ object MailSettingsTestData {
         pgpScheme = pgpScheme,
         promptPin = true,
         stickyLabels = true,
-        confirmLink = confirmLink
+        confirmLink = confirmLink,
+        autoDeleteSpamAndTrashDays = null
     )
 }

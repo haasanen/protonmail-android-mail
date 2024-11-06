@@ -20,10 +20,9 @@ plugins {
     id("com.android.library")
     kotlin("kapt")
     kotlin("android")
-    kotlin("plugin.serialization") version Versions.Gradle.kotlinGradlePlugin
+    kotlin("plugin.serialization")
+    id("dagger.hilt.android.plugin")
 }
-
-setAsHiltModule()
 
 android {
     namespace = "ch.protonmail.android.mailcomposer.presentation"
@@ -50,7 +49,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = Versions.AndroidX.composeCompiler
+        kotlinCompilerExtensionVersion = libs.versions.androidx.compose.compiler.get()
     }
 
     packaging {
@@ -62,7 +61,15 @@ android {
 }
 
 dependencies {
-    implementation(Dependencies.modulePresentationLibs)
+    kapt(libs.bundles.app.annotationProcessors)
+
+    implementation(libs.bundles.module.presentation)
+    implementation(libs.accompanist.permissions)
+    implementation(libs.proton.core.network)
+    implementation(libs.proton.core.user.domain)
+    implementation(libs.google.play.review)
+    implementation(libs.google.play.reviewKtx)
+
     implementation(project(":mail-common:domain"))
     implementation(project(":mail-common:presentation"))
     implementation(project(":mail-composer:domain"))
@@ -76,11 +83,12 @@ dependencies {
     implementation(project(":uicomponents"))
     implementation(project(":mail-label:domain"))
 
-    debugImplementation(Dependencies.composeDebugLibs)
+    debugImplementation(libs.bundles.compose.debug)
 
-    testImplementation(Dependencies.testLibs)
+    kapt(libs.bundles.test)
+    testImplementation(libs.bundles.test)
     testImplementation(project(":test:test-data"))
     testImplementation(project(":test:utils"))
     testImplementation(project(":mail-detail:presentation"))
-    androidTestImplementation(Dependencies.androidTestLibs)
+    androidTestImplementation(libs.bundles.test.androidTest)
 }

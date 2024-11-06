@@ -41,15 +41,15 @@ android {
 }
 
 dependencies {
-    implementation(Dependencies.moduleDomainLibs)
-    implementation(KotlinX.serializationJson)
-
-    implementation(EzVCard.ezVCard)
-    implementation(Proton.Core.user)
+    implementation(libs.bundles.module.domain)
+    implementation(libs.kotlin.serialization.json)
+    implementation(libs.googlecode.ezvcard)
+    implementation(libs.proton.core.user.domain)
+    implementation(libs.proton.core.featureFlag)
 
     implementation(project(":mail-common:domain"))
     implementation(project(":mail-label:domain"))
 
-    testImplementation(Dependencies.testLibs)
+    testImplementation(libs.bundles.test)
     testImplementation(project(":test:test-data"))
 }

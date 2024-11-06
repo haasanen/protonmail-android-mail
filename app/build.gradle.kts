@@ -16,9 +16,11 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import com.android.build.api.dsl.VariantDimension
 import java.util.Properties
+import com.android.build.api.dsl.VariantDimension
 import configuration.extensions.protonEnvironment
+import org.gradle.kotlin.dsl.get
+import studio.forface.easygradle.dsl.android.aar
 
 plugins {
     id("com.android.application")
@@ -29,10 +31,8 @@ plugins {
     id("dagger.hilt.android.plugin")
     id("io.sentry.android.gradle")
     id("org.jetbrains.kotlinx.kover")
-    id("me.proton.core.gradle-plugins.environment-config") version Versions.Proton.corePlugin
+    id("me.proton.core.gradle-plugins.environment-config") version libs.versions.proton.core.plugin.get()
 }
-
-setAsHiltModule()
 
 val privateProperties = Properties().apply {
     @Suppress("SwallowedException")
@@ -188,7 +188,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = Versions.AndroidX.composeCompiler
+        kotlinCompilerExtensionVersion = libs.versions.androidx.compose.compiler.get()
     }
 
     hilt {
@@ -223,14 +223,11 @@ configurations {
 
 dependencies {
     implementation(files("../../proton-libs/gopenpgp/gopenpgp.aar"))
-    implementation(Dependencies.appLibs)
-    implementation(KotlinX.immutableCollections)
-    implementation(Proton.Core.proguardRules)
-    implementation(AndroidX.Biometrics.biometric)
-    implementation(Java.jna)
-    implementation(Proton.Common.rustCore)
 
     implementation(project(":account-core:platform:android:core:auth:presentation"))
+
+    implementation(libs.bundles.appLibs)
+    implementation(libs.java.jna) { artifact { type = "aar" } }
 
     implementation(project(":mail-common"))
     implementation(project(":mail-composer"))
@@ -249,36 +246,37 @@ dependencies {
     implementation(project(":mail-session"))
     implementation(project(":uicomponents"))
 
-    debugImplementation(Dependencies.appDebug)
+    debugImplementation(libs.bundles.app.debug)
 
     // Environment configuration
-    releaseImplementation(Proton.Core.configDaggerStatic)
-    debugImplementation(Proton.Core.configDaggerContentProvider)
+    releaseImplementation(libs.proton.core.configuration.dagger.static)
+    debugImplementation(libs.proton.core.configuration.dagger.contentProvider)
 
-    kapt(Dependencies.appAnnotationProcessors)
+    kapt(libs.bundles.app.annotationProcessors)
 
-    coreLibraryDesugaring(AndroidTools.desugarJdkLibs)
+    coreLibraryDesugaring(libs.android.tools.desugarJdkLibs)
 
     // To see the traces as results we need to include Perfetto.
     // We should not include in the production as it increases the APK size.
     val benchmarkImplementation by configurations
-    benchmarkImplementation(AndroidX.Profile.Tracing.tracing)
-    benchmarkImplementation(AndroidX.Profile.ComposeTracing.composeTracing)
-    benchmarkImplementation(AndroidX.Profile.Perfetto.perfetto)
-    benchmarkImplementation(AndroidX.Profile.Perfetto.perfettoBinary)
+    benchmarkImplementation(libs.androidx.tracing)
+    benchmarkImplementation(libs.androidx.tracing.compose.runtime)
+    benchmarkImplementation(libs.androidx.tracing.perfetto)
+    benchmarkImplementation(libs.androidx.tracing.perfetto.binary)
     // Also include configDaggerStatic to provide the required Hilt bindings in benchmark.
-    benchmarkImplementation(Proton.Core.configDaggerStatic)
+    benchmarkImplementation(libs.proton.core.configuration.dagger.static)
 
-    testImplementation(Dependencies.testLibs)
+    testImplementation(libs.bundles.test)
     testImplementation(project(":test:test-data"))
     testImplementation(project(":test:utils"))
 
-    androidTestImplementation(Dependencies.androidTestLibs)
-    androidTestImplementation(Proton.Core.accountManagerPresentationCompose)
-    androidTestImplementation(Proton.Core.accountRecoveryTest)
-    androidTestImplementation(Proton.Core.planTest)
-    androidTestImplementation(Proton.Core.reportTest)
-    androidTestImplementation(Proton.Core.userRecoveryTest)
+    androidTestImplementation(libs.bundles.test.androidTest)
+    androidTestImplementation(libs.proton.core.accountManagerPresentationCompose)
+    androidTestImplementation(libs.proton.core.accountRecoveryTest)
+    androidTestImplementation(libs.proton.core.authTest)
+    androidTestImplementation(libs.proton.core.planTest)
+    androidTestImplementation(libs.proton.core.reportTest)
+    androidTestImplementation(libs.proton.core.userRecoveryTest)
     androidTestImplementation(project(":test:annotations"))
     androidTestImplementation(project(":test:idlingresources"))
     androidTestImplementation(project(":test:robot:core"))
@@ -288,7 +286,8 @@ dependencies {
     androidTestImplementation(project(":test:utils"))
     androidTestImplementation(project(":uicomponents")) // Needed for shared test tags.
 
-    androidTestUtil(AndroidX.Test.orchestrator)
+    androidTestUtil(libs.androidx.test.orchestrator)
+    kaptAndroidTest(libs.dagger.hilt.compiler)
     kspAndroidTest(project(":test:robot:ksp:processor"))
 }
 

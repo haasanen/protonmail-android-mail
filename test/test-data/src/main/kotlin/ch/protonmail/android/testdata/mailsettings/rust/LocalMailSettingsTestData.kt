@@ -44,7 +44,7 @@ object LocalMailSettingsTestData {
         messageButtons = LocalMessageButtons.UNREAD_FIRST,
         showImages = LocalShowImages.DO_NOT_AUTO_LOAD,
         showMoved = LocalShowMoved.KEEP_BOTH,
-        autoDeleteSpamAndTrashDays = 0.toUInt(),
+        autoDeleteSpamAndTrashDays = null,
         almostAllMail = AlmostAllMail.ALL_MAIL,
         nextMessageOnMove = NextMessageOnMove.DISABLED_EXPLICIT,
         viewMode = LocalViewMode.MESSAGES,

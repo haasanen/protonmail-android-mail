@@ -23,17 +23,18 @@ import android.provider.ContactsContract
 import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
+import ch.protonmail.android.mailcommon.domain.coroutines.IODispatcher
 import ch.protonmail.android.mailcontact.domain.model.DeviceContact
 import ch.protonmail.android.mailcontact.domain.repository.DeviceContactsRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
-import me.proton.core.util.kotlin.DispatcherProvider
 import timber.log.Timber
 import javax.inject.Inject
 
 class DeviceContactsRepositoryImpl @Inject constructor(
     @ApplicationContext private val context: Context,
-    private val dispatcherProvider: DispatcherProvider
+    @IODispatcher private val ioDispatcher: CoroutineDispatcher
 ) : DeviceContactsRepository {
 
     override suspend fun getDeviceContacts(
@@ -46,7 +47,7 @@ class DeviceContactsRepositoryImpl @Inject constructor(
 
         @Suppress("SwallowedException")
         val contactEmails = try {
-            withContext(dispatcherProvider.Io) {
+            withContext(ioDispatcher) {
                 contentResolver.query(
                     ContactsContract.CommonDataKinds.Email.CONTENT_URI,
                     ANDROID_PROJECTION,

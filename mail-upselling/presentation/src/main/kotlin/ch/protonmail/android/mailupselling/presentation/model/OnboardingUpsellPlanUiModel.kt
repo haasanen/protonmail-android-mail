@@ -18,8 +18,6 @@
 
 package ch.protonmail.android.mailupselling.presentation.model
 
-import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
-
 data class OnboardingUpsellPlanUiModels(
     val monthlyPlans: List<OnboardingUpsellPlanUiModel>,
     val annualPlans: List<OnboardingUpsellPlanUiModel>
@@ -27,9 +25,7 @@ data class OnboardingUpsellPlanUiModels(
 
 data class OnboardingUpsellPlanUiModel(
     val title: String,
-    val currency: String?,
-    val monthlyPrice: TextUiModel?,
-    val monthlyPriceWithDiscount: TextUiModel?,
+    val priceUiModel: OnboardingUpsellPriceUiModel,
     val entitlements: List<DynamicEntitlementUiModel>,
     val payButtonPlanUiModel: OnboardingDynamicPlanInstanceUiModel?,
     val premiumValueDrawables: List<Int>

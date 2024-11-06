@@ -20,10 +20,9 @@ plugins {
     id("com.android.library")
     kotlin("android")
     kotlin("kapt")
-    kotlin("plugin.serialization") version Versions.Gradle.kotlinGradlePlugin
+    kotlin("plugin.serialization")
+    id("dagger.hilt.android.plugin")
 }
-
-setAsHiltModule()
 
 android {
     namespace = "ch.protonmail.android.mailcommon.domain"
@@ -45,20 +44,20 @@ android {
 }
 
 dependencies {
-    kapt(Dependencies.appAnnotationProcessors)
-
-    implementation(Proton.Core.key)
-    implementation(Proton.Core.user)
-    implementation(Proton.Core.accountManager)
-    implementation(Proton.Core.featureFlag)
-    implementation(Proton.Core.mailSettings)
-
-    implementation(Dependencies.moduleDomainLibs)
+    kapt(libs.bundles.app.annotationProcessors)
 
     implementation(project(":mail-session:domain"))
 
-    testImplementation(Dependencies.testLibs)
-    testImplementation(Proton.Common.rustCore)
+    kapt(libs.bundles.test)
+    implementation(libs.bundles.module.domain)
+    implementation(libs.proton.core.accountManager)
+    implementation(libs.proton.core.featureFlag)
+    implementation(libs.proton.core.mailSettings)
+    implementation(libs.proton.core.key)
+    implementation(libs.proton.core.user)
+
+    testImplementation(libs.bundles.test)
+    testImplementation(libs.proton.rust.core)
     testImplementation(project(":test:test-data"))
     testImplementation(project(":test:utils"))
 }

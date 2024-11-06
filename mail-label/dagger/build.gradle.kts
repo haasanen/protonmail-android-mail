@@ -20,9 +20,8 @@ plugins {
     id("com.android.library")
     kotlin("android")
     kotlin("kapt")
+    id("dagger.hilt.android.plugin")
 }
-
-setAsHiltModule()
 
 android {
     namespace = "ch.protonmail.android.maillabel.dagger"
@@ -44,7 +43,10 @@ android {
 }
 
 dependencies {
-    implementation(KotlinX.coroutinesCore)
+    kapt(libs.bundles.app.annotationProcessors)
+    implementation(libs.dagger.hilt.android)
+
+    implementation(libs.kotlin.coroutines.core)
 
     implementation(project(":mail-label:data"))
     implementation(project(":mail-label:domain"))

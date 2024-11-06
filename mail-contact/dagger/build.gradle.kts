@@ -20,9 +20,8 @@ plugins {
     id("com.android.library")
     kotlin("android")
     kotlin("kapt")
+    id("dagger.hilt.android.plugin")
 }
-
-setAsHiltModule()
 
 android {
     namespace = "ch.protonmail.android.mailcontact.dagger"
@@ -44,6 +43,8 @@ android {
 }
 
 dependencies {
+    kapt(libs.bundles.app.annotationProcessors)
+    implementation(libs.dagger.hilt.android)
 
     implementation(project(":mail-contact:data"))
     implementation(project(":mail-contact:domain"))

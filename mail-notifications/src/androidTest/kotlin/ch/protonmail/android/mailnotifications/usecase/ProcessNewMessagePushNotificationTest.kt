@@ -26,7 +26,6 @@ import android.net.Uri
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.work.ListenableWorker
 import ch.protonmail.android.mailcommon.presentation.system.NotificationProvider
-import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
 import ch.protonmail.android.mailnotifications.domain.NotificationsDeepLinkHelper
 import ch.protonmail.android.mailnotifications.domain.model.LocalNotificationAction
@@ -44,7 +43,7 @@ import ch.protonmail.android.mailnotifications.title
 import ch.protonmail.android.test.annotations.suite.SmokeTest
 import io.mockk.CapturingSlot
 import io.mockk.coEvery
-import io.mockk.coVerify
+import io.mockk.coVerifySequence
 import io.mockk.confirmVerified
 import io.mockk.every
 import io.mockk.mockk
@@ -53,9 +52,16 @@ import io.mockk.spyk
 import io.mockk.unmockkAll
 import io.mockk.verify
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.test.setMain
 import me.proton.core.domain.entity.UserId
+import me.proton.core.eventmanager.domain.EventManager
+import me.proton.core.eventmanager.domain.EventManagerConfig
+import me.proton.core.eventmanager.domain.EventManagerProvider
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -77,10 +83,15 @@ internal class ProcessNewMessagePushNotificationTest {
     private val createNewMessageNavigationIntent = spyk(
         CreateNewMessageNavigationIntent(context, notificationsDeepLinkHelper)
     )
-    private val provideMessagePrefetchDisabled = mockk<Provider<Boolean>>()
 
-    private val testDispatcher = UnconfinedTestDispatcher()
+    private val testDispatcher = StandardTestDispatcher()
     private val scope = CoroutineScope(testDispatcher)
+
+    private val isMarkAsReadEnabled = mockk<Provider<Boolean>>()
+    private val eventManager = mockk<EventManager>(relaxUnitFun = true)
+    private val eventManagerProvider = mockk<EventManagerProvider> {
+        coEvery { this@mockk.get(any()) } returns eventManager
+    }
 
     private val processNewMessagePushNotification: ProcessNewMessagePushNotification
         get() = ProcessNewMessagePushNotification(
@@ -90,24 +101,25 @@ internal class ProcessNewMessagePushNotificationTest {
             notificationManagerCompatProxy,
             createNewMessageNavigationIntent,
             createNotificationAction,
-            provideMessagePrefetchDisabled.get(),
+            eventManagerProvider,
+            isMarkAsReadEnabled.get(),
             scope
         )
 
-    private val userId = UserId(RawUserId)
-    private val messageId = MessageId(RawMessageId)
     private val userData = UserPushData(RawUserId, RawUserEmail)
     private val pushData = NewMessagePushData(RawSender, RawMessageId, RawContent)
     private val newMessageData = LocalPushNotificationData.NewMessage(userData, pushData)
 
     @Before
     fun setup() {
+        Dispatchers.setMain(testDispatcher)
         initializeCommonMocks()
         notificationProvider.initNotificationChannels()
     }
 
     @After
     fun teardown() {
+        Dispatchers.resetMain()
         unmockkAll()
     }
 
@@ -152,6 +164,44 @@ internal class ProcessNewMessagePushNotificationTest {
     }
 
     @Test
+    fun processNewMessageNotificationCreatesIntentsWithMarkAsReadActionWhenFeatureEnabled() = runTest {
+        // Given
+        coEvery { messageRepository.getRefreshedMessageWithBody(any(), any()) } returns null
+        every { isMarkAsReadEnabled.get() } returns true
+        val expectedArchivePayload = PushNotificationPendingIntentPayloadData(
+            pushData.messageId.hashCode(),
+            userData.userId,
+            userData.userId,
+            pushData.messageId,
+            LocalNotificationAction.MoveTo.Archive
+        )
+        val expectedTrashPayload = expectedArchivePayload.copy(action = LocalNotificationAction.MoveTo.Trash)
+        val expectedMarkAsReadPayload = expectedArchivePayload.copy(action = LocalNotificationAction.MarkAsRead)
+
+        // When
+        val result = processNewMessagePushNotification(newMessageData)
+        advanceUntilIdle()
+
+        // Then
+        assertEquals(ListenableWorker.Result.success(), result)
+        verify(exactly = 1) {
+            createNotificationAction(expectedArchivePayload)
+            createNotificationAction(expectedTrashPayload)
+            createNotificationAction(expectedMarkAsReadPayload)
+        }
+
+        coVerifySequence {
+            eventManagerProvider.get(EventManagerConfig.Core(UserId(userData.userId)))
+            eventManager.resume()
+        }
+
+        confirmVerified(createNotificationAction)
+        confirmVerified(eventManager)
+        confirmVerified(eventManagerProvider)
+    }
+
+
+    @Test
     fun processNewMessageNotificationShowsNotificationWithActions() = runTest {
         // Given
         coEvery { messageRepository.getRefreshedMessageWithBody(any(), any()) } returns null
@@ -169,63 +219,6 @@ internal class ProcessNewMessagePushNotificationTest {
         verify(exactly = 1) {
             notificationManagerCompatProxy.showNotification(expectedNotificationId, capture(notification))
             notificationManagerCompatProxy.showNotification(expectedGroupNotificationId, capture(groupNotification))
-        }
-
-        confirmVerified(notificationManagerCompatProxy)
-        verifySingleNotification(notification)
-        verifyGroupNotification(groupNotification)
-    }
-
-    @Test
-    fun processNewMessageNotificationShouldShowWithMessageBodyPrefetchWhenFFIsDisabled() {
-        every { provideMessagePrefetchDisabled.get() } returns false
-        coEvery { messageRepository.getRefreshedMessageWithBody(userId, messageId) } returns mockk()
-
-        val messageId = MessageId(pushData.messageId)
-        val expectedNotificationId = pushData.messageId.hashCode()
-        val expectedGroupNotificationId = userData.userId.hashCode()
-        val notification = slot<Notification>()
-        val groupNotification = slot<Notification>()
-
-        // When
-        val result = processNewMessagePushNotification(newMessageData)
-
-        // Then
-        assertEquals(ListenableWorker.Result.success(), result)
-        verify(exactly = 1) {
-            notificationManagerCompatProxy.showNotification(expectedNotificationId, capture(notification))
-            notificationManagerCompatProxy.showNotification(expectedGroupNotificationId, capture(groupNotification))
-        }
-        coVerify(exactly = 1) {
-            messageRepository.getRefreshedMessageWithBody(userId, messageId)
-        }
-
-        confirmVerified(notificationManagerCompatProxy)
-        verifySingleNotification(notification)
-        verifyGroupNotification(groupNotification)
-    }
-
-    @Test
-    fun processNewMessageNotificationShouldShowWithNoMessageBodyPrefetchWhenFFIsEnabled() {
-        every { provideMessagePrefetchDisabled.get() } returns true
-
-        val expectedNotificationId = pushData.messageId.hashCode()
-        val expectedGroupNotificationId = userData.userId.hashCode()
-
-        val notification = slot<Notification>()
-        val groupNotification = slot<Notification>()
-
-        // When
-        val result = processNewMessagePushNotification(newMessageData)
-
-        // Then
-        assertEquals(ListenableWorker.Result.success(), result)
-        verify(exactly = 1) {
-            notificationManagerCompatProxy.showNotification(expectedNotificationId, capture(notification))
-            notificationManagerCompatProxy.showNotification(expectedGroupNotificationId, capture(groupNotification))
-        }
-        coVerify(exactly = 0) {
-            messageRepository.getRefreshedMessageWithBody(userId, messageId)
         }
 
         confirmVerified(notificationManagerCompatProxy)
@@ -264,7 +257,7 @@ internal class ProcessNewMessagePushNotificationTest {
         every { notificationsDeepLinkHelper.buildMessageDeepLinkIntent(any(), any(), any()) } returns mockedIntent
         every { notificationsDeepLinkHelper.buildMessageGroupDeepLinkIntent(any(), any()) } returns mockedIntent
         every { notificationsDeepLinkHelper.buildReplyToDeepLinkIntent(any(), any()) } returns mockedIntent
-        every { provideMessagePrefetchDisabled.get() } returns false
+        every { isMarkAsReadEnabled.get() } returns false
     }
 
     private companion object {

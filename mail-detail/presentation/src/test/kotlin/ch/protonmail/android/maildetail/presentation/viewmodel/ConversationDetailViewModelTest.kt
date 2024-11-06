@@ -125,9 +125,7 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.collections.immutable.toImmutableList
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -296,9 +294,6 @@ class ConversationDetailViewModelTest {
         StandardTestDispatcher().apply { Dispatchers.setMain(this) }
     }
 
-    private val observableFlowScope = CoroutineScope(SupervisorJob() + testDispatcher)
-    private val longRunningScope = CoroutineScope(SupervisorJob() + testDispatcher)
-
     private val viewModel by lazy {
         ConversationDetailViewModel(
             observePrimaryUserId = observePrimaryUserId,
@@ -340,9 +335,7 @@ class ConversationDetailViewModelTest {
             getLabelAsBottomSheetData = getLabelAsBottomSheetData,
             getMoreActionsBottomSheetData = getMoreActionsBottomSheetData,
             onMessageLabelAsConfirmed = onMessageLabelAsConfirmed,
-            moveMessage = moveMessage,
-            observableFlowScope = observableFlowScope,
-            appScope = longRunningScope
+            moveMessage = moveMessage
         )
     }
 
@@ -755,7 +748,9 @@ class ConversationDetailViewModelTest {
             assertEquals(bottomBarState, awaitItem())
 
             viewModel.submit(ConversationDetailViewAction.Star)
-            val actual = assertIs<ConversationDetailMetadataState.Data>(awaitItem().conversationState)
+            advanceUntilIdle()
+
+            val actual = assertIs<ConversationDetailMetadataState.Data>(lastEmittedItem().conversationState)
             assertTrue(actual.conversationUiModel.isStarred)
         }
     }

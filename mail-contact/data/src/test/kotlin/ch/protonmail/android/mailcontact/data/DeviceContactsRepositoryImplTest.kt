@@ -43,7 +43,7 @@ class DeviceContactsRepositoryImplTest {
 
     private val deviceContactsRepository = DeviceContactsRepositoryImpl(
         contextMock,
-        testDispatcherProvider
+        testDispatcherProvider.Io
     )
 
     private fun expectCursorQuery(query: String) {

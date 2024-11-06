@@ -25,7 +25,7 @@ import ch.protonmail.android.mailcommon.presentation.system.NotificationProvider
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
 import ch.protonmail.android.mailnotifications.R
-import ch.protonmail.android.mailnotifications.annotations.NotificationsMessagePrefetchDisabled
+import ch.protonmail.android.mailnotifications.annotations.MarkAsReadNotificationActionEnabled
 import ch.protonmail.android.mailnotifications.domain.model.LocalNotificationAction
 import ch.protonmail.android.mailnotifications.domain.model.LocalPushNotificationData
 import ch.protonmail.android.mailnotifications.domain.model.PushNotificationPendingIntentPayloadData
@@ -36,6 +36,8 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import me.proton.core.domain.entity.UserId
+import me.proton.core.eventmanager.domain.EventManagerConfig
+import me.proton.core.eventmanager.domain.EventManagerProvider
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -46,7 +48,8 @@ internal class ProcessNewMessagePushNotification @Inject constructor(
     private val notificationManagerCompatProxy: NotificationManagerCompatProxy,
     private val createNewMessageNavigationIntent: CreateNewMessageNavigationIntent,
     private val createNotificationAction: CreateNotificationAction,
-    @NotificationsMessagePrefetchDisabled private val isNotificationMessagePrefetchDisabled: Boolean,
+    private val eventManager: EventManagerProvider,
+    @MarkAsReadNotificationActionEnabled private val showMarkAsRead: Boolean,
     @AppScope private val coroutineScope: CoroutineScope
 ) {
 
@@ -56,9 +59,16 @@ internal class ProcessNewMessagePushNotification @Inject constructor(
         val userData = notificationData.userData
         val pushData = notificationData.pushData
 
-        if (!isNotificationMessagePrefetchDisabled) {
-            // Prefetch the message, but do nothing in case of failure.
-            coroutineScope.launch {
+        coroutineScope.launch {
+            if (showMarkAsRead) {
+                // This branch will become the default once the FF is removed and promoted.
+                val currentTime = System.currentTimeMillis()
+                if (currentTime - lastExecutionTime >= DEBOUNCE_INTERVAL_MS) {
+                    lastExecutionTime = currentTime
+                    val config = EventManagerConfig.Core(UserId(userData.userId))
+                    eventManager.get(config).resume()
+                }
+            } else {
                 messageRepository.getRefreshedMessageWithBody(UserId(userData.userId), MessageId(pushData.messageId))
                     ?: Timber.d("Unable to prefetch the message with id ${pushData.messageId}.")
             }
@@ -93,10 +103,16 @@ internal class ProcessNewMessagePushNotification @Inject constructor(
 
             val trashAction = archiveAction.copy(action = LocalNotificationAction.MoveTo.Trash)
             val replyAction = archiveAction.copy(action = LocalNotificationAction.Reply)
+            val markAsReadAction = archiveAction.copy(action = LocalNotificationAction.MarkAsRead)
 
             addAction(createNotificationAction(archiveAction))
             addAction(createNotificationAction(trashAction))
-            addAction(createNotificationAction(replyAction))
+
+            if (showMarkAsRead) {
+                addAction(createNotificationAction(markAsReadAction))
+            } else {
+                addAction(createNotificationAction(replyAction))
+            }
         }.build()
 
         val groupNotification = notificationProvider.provideEmailNotificationBuilder(
@@ -117,5 +133,11 @@ internal class ProcessNewMessagePushNotification @Inject constructor(
         }
 
         return ListenableWorker.Result.success()
+    }
+
+    companion object {
+
+        private var lastExecutionTime: Long = 0
+        private const val DEBOUNCE_INTERVAL_MS = 10_000
     }
 }

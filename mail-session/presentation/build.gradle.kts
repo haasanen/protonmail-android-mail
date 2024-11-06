@@ -22,8 +22,6 @@ plugins {
     kotlin("kapt")
 }
 
-setAsHiltModule()
-
 android {
     namespace = "ch.protonmail.android.mailsession.presentation"
     compileSdk = Config.compileSdk
@@ -49,21 +47,14 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = Versions.AndroidX.composeCompiler
+        kotlinCompilerExtensionVersion = libs.versions.androidx.compose.compiler.get()
     }
 }
 
 dependencies {
-    implementation(JakeWharton.timber)
-
-    implementation(Dependencies.modulePresentationLibs)
+    implementation(libs.bundles.module.presentation)
     implementation(project(":mail-session:domain"))
 
+    testImplementation(libs.bundles.test)
     testImplementation(project(":test:test-data"))
-
-    testImplementation(Cash.turbine)
-    testImplementation(Kotlin.test)
-    testImplementation(Kotlin.testJunit)
-    testImplementation(KotlinX.coroutinesTest)
-    testImplementation(Mockk.mockk)
 }

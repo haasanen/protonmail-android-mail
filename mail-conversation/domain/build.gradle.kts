@@ -20,10 +20,8 @@ plugins {
     id("com.android.library")
     kotlin("android")
     kotlin("kapt")
-    kotlin("plugin.serialization") version Versions.Gradle.kotlinGradlePlugin
+    kotlin("plugin.serialization")
 }
-
-setAsHiltModule()
 
 android {
     namespace = "ch.protonmail.android.mailconversation.domain"
@@ -45,16 +43,17 @@ android {
 }
 
 dependencies {
-    kapt(Dependencies.appAnnotationProcessors)
+    kapt(libs.bundles.app.annotationProcessors)
 
-    implementation(Dependencies.moduleDomainLibs)
-    implementation(KotlinX.serializationJson)
+    implementation(libs.bundles.module.domain)
+    implementation(libs.kotlin.serialization.json)
+    implementation(libs.proton.core.user.domain)
 
     implementation(project(":mail-pagination:domain"))
     implementation(project(":mail-common:domain"))
     implementation(project(":mail-message:domain"))
     implementation(project(":mail-label:domain"))
 
-    testImplementation(Dependencies.testLibs)
+    testImplementation(libs.bundles.test)
     testImplementation(project(":test:test-data"))
 }

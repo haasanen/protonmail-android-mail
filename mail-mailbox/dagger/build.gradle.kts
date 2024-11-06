@@ -20,9 +20,8 @@ plugins {
     id("com.android.library")
     kotlin("android")
     kotlin("kapt")
+    id("dagger.hilt.android.plugin")
 }
-
-setAsHiltModule()
 
 android {
     namespace = "ch.protonmail.android.mailmailbox.dagger"
@@ -44,9 +43,12 @@ android {
 }
 
 dependencies {
-    implementation(AndroidX.Room.ktx)
-
     implementation(project(":mail-common:data"))
+    kapt(libs.bundles.app.annotationProcessors)
+
+    implementation(libs.google.play.review)
+    implementation(libs.google.play.reviewKtx)
+
     implementation(project(":mail-mailbox:data"))
     implementation(project(":mail-mailbox:data-rust"))
     implementation(project(":mail-mailbox:domain"))
@@ -55,5 +57,6 @@ dependencies {
     implementation(project(":mail-message:domain"))
     implementation(project(":mail-conversation:domain"))
 
-    implementation(KotlinX.coroutinesCore)
+    implementation(libs.kotlin.coroutines.core)
+    implementation(libs.dagger.hilt.android)
 }

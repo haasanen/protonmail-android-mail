@@ -31,6 +31,7 @@ sealed interface AccountSettingsState {
         val mailboxUsedSpace: Long?,
         val defaultEmail: String?,
         val isConversationMode: Boolean?,
+        val autoDeleteSettingsState: AutoDeleteSettingsState,
         val registeredSecurityKeys: List<Fido2RegisteredKey>,
         val securityKeysVisible: Boolean
     ) : AccountSettingsState

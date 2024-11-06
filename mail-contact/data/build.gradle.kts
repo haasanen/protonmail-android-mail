@@ -1,3 +1,5 @@
+import studio.forface.easygradle.dsl.compileOnly
+
 /*
  * Copyright (c) 2022 Proton Technologies AG
  * This file is part of Proton Technologies AG and Proton Mail.
@@ -20,7 +22,7 @@ plugins {
     id("com.android.library")
     kotlin("android")
     kotlin("kapt")
-    kotlin("plugin.serialization") version Versions.Gradle.kotlinGradlePlugin
+    kotlin("plugin.serialization")
 }
 
 android {
@@ -43,23 +45,21 @@ android {
 }
 
 dependencies {
-    implementation(project(":mail-session:domain"))
-    kapt(Dependencies.appAnnotationProcessors)
+    kapt(libs.bundles.app.annotationProcessors)
+    compileOnly(libs.proton.rust.core)
 
-    implementation(Dependencies.moduleDataLibs)
-    compileOnly(Proton.Common.rustCore)
+    implementation(libs.bundles.module.data)
+    implementation(libs.androidx.hilt.work)
+    implementation(libs.proton.core.domain)
 
-    implementation(Dagger.hiltAndroid)
-    implementation(AndroidX.Hilt.work)
     implementation(project(":mail-common:data"))
     implementation(project(":mail-common:data-rust"))
+    implementation(project(":mail-session:domain"))
     implementation(project(":mail-common:domain"))
     implementation(project(":mail-label:domain"))
-
     implementation(project(":mail-contact:domain"))
 
-    testImplementation(Dependencies.testLibs)
+    testImplementation(libs.bundles.test)
     testImplementation(project(":test:test-data"))
     testImplementation(project(":mail-common:domain"))
-
 }

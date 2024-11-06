@@ -22,8 +22,6 @@ plugins {
     kotlin("kapt")
 }
 
-setAsHiltModule()
-
 android {
     namespace = "ch.protonmail.android.mailsession.domain"
     compileSdk = Config.compileSdk
@@ -44,18 +42,13 @@ android {
 }
 
 dependencies {
-    compileOnly(Proton.Common.rustCore)
-    implementation(Proton.Core.userDomain)
-    implementation(Arrow.core)
-    implementation(JakeWharton.timber)
+    compileOnly(libs.proton.rust.core)
+    implementation(libs.bundles.module.domain)
+
+    implementation(libs.proton.core.user.domain)
 
     testImplementation(project(":test:test-data"))
     testImplementation(project(":test:utils"))
-    testImplementation(Proton.Common.rustCore)
-    testImplementation(Cash.turbine)
-    testImplementation(Kotlin.test)
-    testImplementation(Kotlin.testJunit)
-    testImplementation(KotlinX.coroutinesTest)
-    testImplementation(Mockk.mockk)
-    testImplementation(Proton.Core.testKotlin)
+    testImplementation(libs.proton.rust.core)
+    testImplementation(libs.bundles.test)
 }

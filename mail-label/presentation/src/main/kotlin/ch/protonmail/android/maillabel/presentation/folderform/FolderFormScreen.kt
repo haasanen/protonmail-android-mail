@@ -63,6 +63,7 @@ import ch.protonmail.android.mailcommon.presentation.ConsumableTextEffect
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 import ch.protonmail.android.mailcommon.presentation.ui.CommonTestTags
 import ch.protonmail.android.maillabel.domain.model.LabelId
+import ch.protonmail.android.mailcommon.presentation.ui.delete.DeleteDialog
 import ch.protonmail.android.maillabel.presentation.R
 import ch.protonmail.android.maillabel.presentation.getColorFromHexString
 import ch.protonmail.android.maillabel.presentation.previewdata.FolderFormPreviewData.createFolderFormState
@@ -73,9 +74,11 @@ import ch.protonmail.android.maillabel.presentation.ui.FormInputField
 import ch.protonmail.android.maillabel.presentation.upselling.FoldersUpsellingBottomSheet
 import ch.protonmail.android.mailupselling.presentation.model.BottomSheetVisibilityEffect
 import ch.protonmail.android.mailupselling.presentation.ui.bottomsheet.UpsellingBottomSheet
+import ch.protonmail.android.mailupselling.presentation.ui.bottomsheet.UpsellingBottomSheet.DELAY_SHOWING
 import ch.protonmail.android.uicomponents.bottomsheet.bottomSheetHeightConstrainedContent
 import ch.protonmail.android.uicomponents.dismissKeyboard
 import ch.protonmail.android.uicomponents.snackbar.DismissableSnackbarHost
+import kotlinx.coroutines.delay
 import me.proton.core.compose.component.ProtonCenteredProgress
 import me.proton.core.compose.component.ProtonModalBottomSheetLayout
 import me.proton.core.compose.component.ProtonSettingsToggleItem
@@ -129,7 +132,7 @@ fun FolderFormScreen(
         },
         onDeleteClick = {
             dismissKeyboard(context, view, keyboardController)
-            viewModel.submit(FolderFormViewAction.OnDeleteClick)
+            viewModel.submit(FolderFormViewAction.OnDeleteRequested)
         }
     )
 
@@ -142,18 +145,28 @@ fun FolderFormScreen(
         viewModel.submit(FolderFormViewAction.HideUpselling)
     }
 
+    if (state is FolderFormState.Data.Update) {
+        DeleteDialog(
+            state = state.confirmDeleteDialogState,
+            confirm = { viewModel.submit(FolderFormViewAction.OnDeleteConfirmed) },
+            dismiss = { viewModel.submit(FolderFormViewAction.OnDeleteCanceled) }
+        )
+    }
+
     if (state is FolderFormState.Data.Create) {
         ConsumableLaunchedEffect(effect = state.upsellingVisibility) { bottomSheetEffect ->
             when (bottomSheetEffect) {
                 BottomSheetVisibilityEffect.Hide -> {
                     bottomSheetState.hide()
-                    showBottomSheet = false
                 }
 
                 BottomSheetVisibilityEffect.Show -> {
+                    if (!showBottomSheet) {
+                        showBottomSheet = true
+                        delay(DELAY_SHOWING)
+                    }
                     focusManager.clearFocus()
                     bottomSheetState.show()
-                    showBottomSheet = true
                 }
             }
         }

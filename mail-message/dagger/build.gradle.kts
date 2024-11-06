@@ -43,7 +43,10 @@ android {
 }
 
 dependencies {
-    implementation(Proton.Core.network)
+    kapt(libs.bundles.app.annotationProcessors)
+    implementation(libs.dagger.hilt.android)
+
+    implementation(libs.proton.core.network)
 
     implementation(project(":mail-common:data"))
     implementation(project(":mail-common:domain"))
@@ -54,7 +57,4 @@ dependencies {
     implementation(project(":mail-label:data"))
     implementation(project(":mail-label:domain"))
 
-    implementation(Dagger.hiltAndroid)
-    implementation(project(":mail-label:domain"))
-    kapt(Dagger.hiltDaggerCompiler)
 }

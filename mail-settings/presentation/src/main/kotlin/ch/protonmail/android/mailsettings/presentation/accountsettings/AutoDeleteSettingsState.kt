@@ -16,9 +16,16 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailnotifications.annotations
+package ch.protonmail.android.mailsettings.presentation.accountsettings
 
-import javax.inject.Qualifier
+import ch.protonmail.android.mailcommon.presentation.Effect
+import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
+import ch.protonmail.android.mailupselling.presentation.model.BottomSheetVisibilityEffect
 
-@Qualifier
-annotation class NotificationsMessagePrefetchDisabled
+data class AutoDeleteSettingsState(
+    val autoDeleteInDays: Int? = null,
+    val isSettingVisible: Boolean = false,
+    val isUpsellingVisible: Boolean = false,
+    val upsellingVisibility: Effect<BottomSheetVisibilityEffect> = Effect.empty(),
+    val upsellingInProgress: Effect<TextUiModel> = Effect.empty()
+)

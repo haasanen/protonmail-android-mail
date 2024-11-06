@@ -20,7 +20,7 @@ package ch.protonmail.android.mailnotifications.dagger
 
 import android.content.Context
 import androidx.core.app.NotificationManagerCompat
-import ch.protonmail.android.mailnotifications.annotations.NotificationsMessagePrefetchDisabled
+import ch.protonmail.android.mailnotifications.annotations.MarkAsReadNotificationActionEnabled
 import ch.protonmail.android.mailnotifications.data.local.NotificationTokenLocalDataSource
 import ch.protonmail.android.mailnotifications.data.local.NotificationTokenLocalDataSourceImpl
 import ch.protonmail.android.mailnotifications.data.local.NotificationTokenPreferences
@@ -34,7 +34,7 @@ import ch.protonmail.android.mailnotifications.domain.handler.NotificationHandle
 import ch.protonmail.android.mailnotifications.domain.handler.SessionAwareNotificationHandler
 import ch.protonmail.android.mailnotifications.domain.proxy.NotificationManagerCompatProxy
 import ch.protonmail.android.mailnotifications.domain.proxy.NotificationManagerCompatProxyImpl
-import ch.protonmail.android.mailnotifications.domain.usecase.featureflag.IsNotificationMessagePrefetchDisabled
+import ch.protonmail.android.mailnotifications.domain.usecase.featureflag.IsMarkAsReadNotificationActionEnabled
 import ch.protonmail.android.mailnotifications.permissions.NotificationsPermissionsOrchestrator
 import ch.protonmail.android.mailnotifications.permissions.NotificationsPermissionsOrchestratorImpl
 import com.google.firebase.messaging.FirebaseMessaging
@@ -63,8 +63,8 @@ object MailNotificationsModule {
         NotificationManagerCompat.from(context)
 
     @Provides
-    @NotificationsMessagePrefetchDisabled
-    fun provideNotificationMessageFetchDisabled(isDisabled: IsNotificationMessagePrefetchDisabled) = isDisabled(null)
+    @MarkAsReadNotificationActionEnabled
+    fun provideMarkAsReadActionEnabled(isDisabled: IsMarkAsReadNotificationActionEnabled) = isDisabled(null)
 
     @EntryPoint
     @InstallIn(SingletonComponent::class)

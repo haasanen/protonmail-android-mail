@@ -20,7 +20,7 @@ plugins {
     id("com.android.library")
     kotlin("android")
     kotlin("kapt")
-    kotlin("plugin.serialization") version Versions.Gradle.kotlinGradlePlugin
+    kotlin("plugin.serialization")
 }
 
 android {
@@ -47,12 +47,13 @@ android {
 }
 
 dependencies {
-    kapt(Dependencies.appAnnotationProcessors)
-    compileOnly(Proton.Common.rustCore)
+    compileOnly(libs.proton.rust.core)
 
-    implementation(Dependencies.moduleDataRustLibs)
+    kapt(libs.bundles.app.annotationProcessors)
+    implementation(libs.dagger.hilt.android)
 
-    implementation(Proton.Core.userDomain)
+    implementation(libs.bundles.module.data)
+    implementation(libs.proton.core.user)
 
     implementation(project(":mail-label:domain"))
     implementation(project(":mail-session:domain"))
@@ -61,6 +62,6 @@ dependencies {
 
     testImplementation(project(":test:utils"))
     testImplementation(project(":test:test-data"))
-    testImplementation(Proton.Common.rustCore)
-    testImplementation(Dependencies.testLibs)
+    testImplementation(libs.proton.rust.core)
+    testImplementation(libs.bundles.test)
 }

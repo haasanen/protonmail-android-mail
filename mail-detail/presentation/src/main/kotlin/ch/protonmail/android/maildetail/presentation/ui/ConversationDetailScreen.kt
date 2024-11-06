@@ -127,7 +127,10 @@ fun ConversationDetailScreen(
     viewModel: ConversationDetailViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-    val bottomSheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
+    val bottomSheetState = rememberModalBottomSheetState(
+        initialValue = ModalBottomSheetValue.Hidden,
+        skipHalfExpanded = true
+    )
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
     val isSystemBackButtonClickEnabled = remember { mutableStateOf(true) }
@@ -279,11 +282,7 @@ fun ConversationDetailScreen(
                     )
                 )
 
-                else -> {
-                    if (bottomSheetState.isVisible) {
-                        ProtonCenteredProgress()
-                    }
-                }
+                else -> Unit
             }
         }
     ) {
@@ -387,7 +386,7 @@ fun ConversationDetailScreen(
     scrollToMessageId: String?
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(snapAnimationSpec = null)
-    val snackbarHostState = ProtonSnackbarHostState()
+    val snackbarHostState = remember { ProtonSnackbarHostState() }
     val linkConfirmationDialogState = remember { mutableStateOf<Uri?>(null) }
     val phishingLinkConfirmationDialogState = remember { mutableStateOf<Uri?>(null) }
 

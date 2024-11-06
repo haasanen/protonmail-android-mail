@@ -19,17 +19,11 @@
 package ch.protonmail.android.maildetail.dagger
 
 import ch.protonmail.android.maildetail.data.repository.InMemoryConversationStateRepositoryImpl
-import ch.protonmail.android.maildetail.domain.annotations.ObservableFlowScope
 import ch.protonmail.android.maildetail.domain.repository.InMemoryConversationStateRepository
 import dagger.Binds
 import dagger.Module
-import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
-import dagger.hilt.components.SingletonComponent
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
 
 @Module
 @InstallIn(ViewModelComponent::class)
@@ -40,12 +34,4 @@ internal interface ViewModelBindings {
         implementation: InMemoryConversationStateRepositoryImpl
     ): InMemoryConversationStateRepository
 
-}
-
-@Module
-@InstallIn(SingletonComponent::class)
-object ScopeBindings {
-    @Provides
-    @ObservableFlowScope
-    fun provideObservableFlowScope(): CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 }

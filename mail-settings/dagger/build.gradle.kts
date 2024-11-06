@@ -20,9 +20,8 @@ plugins {
     id("com.android.library")
     kotlin("android")
     kotlin("kapt")
+    id("dagger.hilt.android.plugin")
 }
-
-setAsHiltModule()
 
 android {
     namespace = "ch.protonmail.android.mailsettings.dagger"
@@ -44,7 +43,7 @@ android {
 }
 
 dependencies {
-    implementation(Proton.Core.domain)
+    implementation(libs.proton.core.domain)
 
     implementation(project(":mail-settings:data"))
     implementation(project(":mail-settings:domain"))
@@ -53,6 +52,7 @@ dependencies {
 
     implementation(project(":mail-common:data"))
 
-    implementation(KotlinX.coroutinesCore)
-    implementation(Proton.Core.mailSettings)
+    kapt(libs.bundles.app.annotationProcessors)
+    implementation(libs.dagger.hilt.android)
+    implementation(libs.kotlin.coroutines.core)
 }

@@ -21,7 +21,9 @@ package ch.protonmail.android.mailnotifications.data.local
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import arrow.core.getOrElse
 import ch.protonmail.android.mailcommon.domain.coroutines.AppScope
+import ch.protonmail.android.maildetail.domain.usecase.MarkMessageAsRead
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
 import ch.protonmail.android.mailnotifications.domain.model.LocalNotificationAction
@@ -42,6 +44,9 @@ internal class PushNotificationActionsBroadcastReceiver @Inject constructor() : 
 
     @Inject
     lateinit var messageRepository: MessageRepository
+
+    @Inject
+    lateinit var markAsRead: MarkMessageAsRead
 
     @Inject
     lateinit var notificationManagerCompatProxy: NotificationManagerCompatProxy
@@ -65,6 +70,9 @@ internal class PushNotificationActionsBroadcastReceiver @Inject constructor() : 
         val actionData = rawAction.deserialize<PushNotificationPendingIntentPayloadData>()
 
         coroutineScope.launch {
+            val userId = UserId(actionData.userId)
+            val messageId = MessageId(actionData.messageId)
+
             when (val action = actionData.action) {
                 is LocalNotificationAction.MoveTo -> {
                     val result = messageRepository.moveTo(
@@ -79,6 +87,14 @@ internal class PushNotificationActionsBroadcastReceiver @Inject constructor() : 
                     }.onRight {
                         Timber.d("Message moved successfully from notification action: $it")
                     }
+                }
+
+                is LocalNotificationAction.MarkAsRead -> {
+                    markAsRead(userId, messageId).getOrElse {
+                        return@launch Timber.e("Unable to find message with id $messageId.")
+                    }
+
+                    Timber.d("Conversation marked as read.")
                 }
 
                 else -> Timber.w("Unsupported action via BroadcastReceiver: $action")
