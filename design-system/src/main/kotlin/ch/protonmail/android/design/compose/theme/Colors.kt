@@ -27,78 +27,115 @@ import androidx.compose.runtime.structuralEqualityPolicy
 import androidx.compose.ui.graphics.Color
 
 private object ProtonPalette {
-    val Haiti = Color(0xFF1B1340)
-    val Valhalla = Color(0xFF271B54)
-    val Jacarta = Color(0xFF2E2260)
+
+    // ------------------------ All Colors Light UI -----------------------------
+    // Dark Gray Tones
+    val Charade = Color(0xFF0F0F0F)
+    val EerieBlack = Color(0xFF191927)
+    val Trout = Color(0xFF535964)
+    val OsloGray = Color(0xFF848993)
+    val Manatee = Color(0xFF989BA2)
+    val Aluminium = Color(0xFFA7AAB0)
+    val Ghost = Color(0xFFC8CBD0)
+    val AthensGray = Color(0xFFE9EAEC)
+    val FrostGray = Color(0xFFEFEEF2)
+    val Porcelain = Color(0xFFF4F5F8)
+    val White = Color(0xFFFFFFFF)
+
+    // Purple Tones
+    val DeepCove = Color(0xFF181039)
+    val PortGore = Color(0xFF241C43)
+    val MulledWine = Color(0xFF524D68)
+    val Topaz = Color(0xFF747088)
+    val CadetBlue = Color(0xFFA7A4B5)
+
+    // Blue Tones
     val Chambray = Color(0xFF372580)
     val SanMarino = Color(0xFF4D34B3)
+    val PurpleHeart = Color(0xFF5C3FD9)
     val CornflowerBlue = Color(0xFF6D4AFF)
     val Portage = Color(0xFF8A6EFF)
     val Perano = Color(0xFFC4B7FF)
+    val BlueChalk = Color(0xFFEAe5FF)
+    val Magnolia = Color(0xFFF5F2FF)
 
-    val BalticSea = Color(0xFF1C1B24)
-    val Bastille = Color(0xFF292733)
-    val SteelGray = Color(0xFF343140)
-    val BlackCurrant = Color(0xFF3B3747)
-    val GunPowder = Color(0xFF4A4658)
-    val Smoky = Color(0xFF5B576B)
-    val Dolphin = Color(0xFF6D697D)
-    val CadetBlue = Color(0xFFA7A4B5)
-    val Cinder = Color(0xFF0C0C14)
-    val ShipGray = Color(0xFF35333D)
-    val DoveGray = Color(0xFF706D6B)
-    val Dawn = Color(0xFF999693)
-    val CottonSeed = Color(0xFFC2BFBC)
-    val Cloud = Color(0xFFD1CFCD)
-    val Ebb = Color(0xFFEAE7E4)
-    val Pampas = Color(0xFFF1EEEB)
-    val Carrara = Color(0xFFF5F4F2)
-    val White = Color(0xFFFFFFFF)
-
-    val Woodsmoke = Color(0xFF17181C)
-    val Charade = Color(0xFF25272C)
-    val Tuna = Color(0xFF303239)
-    val Abbey = Color(0xFF494D55)
-    val StormGray = Color(0xFF727680)
-    val SantasGray = Color(0xFF9CA0AA)
-
-    val PortGore = Color(0xFF1C223D)
-    val PickledBluewood = Color(0xFF29304D)
-    val Rhino = Color(0xFF353E60)
-
-    val FrenchGray = Color(0xFFBABDC6)
-    val Mischka = Color(0xFFDADCE3)
-    val AthensGray = Color(0xFFEAECF1)
-    val Whisper = Color(0xFFF5F6FA)
-
-    val Pomegranate = Color(0xFFCC2D4F)
-    val Mauvelous = Color(0xFFF08FA4)
-    val Sunglow = Color(0xFFE65200)
+    // Warm Tones
+    val MaroonFlush = Color(0xFFBA1E55)
+    val Amaranth = Color(0xFFE9345B)
+    val Orange = Color(0xFFFF6713)
     val TexasRose = Color(0xFFFFB84D)
-    val Apple = Color(0xFF007B58)
-    val PuertoRico = Color(0xFF4AB89A)
+    val BrightSun = Color(0xFFFFD143)
 
-    // New accent colors for rebranding
-    val PurpleBase = Color(0xFF8080FF)
-    val EnzianBase = Color(0xFF5252CC)
-    val PinkBase = Color(0xFFDB60D6)
-    val PlumBase = Color(0xFFA839A4)
-    val StrawberryBase = Color(0xFFEC3E7C)
-    val CeriseBase = Color(0xFFBA1E55)
-    val CarrotBase = Color(0xFFF78400)
-    val CopperBase = Color(0xFFC44800)
-    val SaharaBase = Color(0xFF936D58)
-    val SoilBase = Color(0xFF54473F)
-    val SlateBlueBase = Color(0xFF415DF0)
-    val CobaltBase = Color(0xFF273EB2)
-    val PacificBase = Color(0xFF179FD9)
-    val OceanBase = Color(0xFF0A77A6)
-    val ReefBase = Color(0xFF1DA583)
-    val PineBase = Color(0xFF0F735A)
-    val FernBase = Color(0xFF3CBB3A)
-    val ForestBase = Color(0xFF258723)
-    val OliveBase = Color(0xFFB4A40E)
-    val PickleBase = Color(0xFF807304)
+    // Green Tones
+    val Genoa = Color(0xFF0F735A)
+    val Gossamer = Color(0xFF059A6F)
+    val MountainMeadow = Color(0xFF1ED19C)
+    val Apple = Color(0xFF3CBB3A)
+    val Paradiso = Color(0xFF3C8B8C)
+
+    // Purple Tones
+    val RoyalPurple = Color(0xFF6638B7)
+    val Heliotrope = Color(0xFF9553F9)
+    val Melrose = Color(0xFF9C89FF)
+    val MediumRedViolet = Color(0xFFA839A4)
+    val RipePlum = Color(0xFF52006A)
+
+    // Blue Tones
+    val BayOfMany = Color(0xFF213474)
+    val Cobalt = Color(0xFF0047AB)
+    val DodgerBlue = Color(0xFF4989FF)
+    val PictonBlue = Color(0xFF29C0E6)
+    val RoyalBlue = Color(0xFF415DF0)
+
+    // ------------------------ All Colors Dark UI -----------------------------
+    // Gray Tones
+    val Platinum = Color(0xFFDBDBDE)
+    val SantasGray = Color(0xFFA4A4AB)
+    val SonicSilver = Color(0xFF75757D)
+    val CadetGrey = Color(0xFF50505B)
+    val Tuna = Color(0xFF393945)
+    val Gunmetal = Color(0xFF2B2B38)
+    val MidnightBlue = Color(0xFF222230)
+    val Obsidian = Color(0xFF20202E)
+    val Swamp = Color(0xFF1E1E2B)
+
+    // Blue and Indigo Tones
+    val PaleBlue = Color(0xFFD0D0FF)
+    val Periwinkle = Color(0xFFADADFB)
+    val BlueBell = Color(0xFF9292F9)
+    val LightSlateBlue = Color(0xFF7777F8)
+    val LightVioletBlue = Color(0xFF6464CE)
+    val DuskyIndigo = Color(0xFF4D4D9C)
+    val Rhino = Color(0xFF35356A)
+    val DarkBlue = Color(0xFF282848)
+
+    // Pink and Orange Tones
+    val DeepPink = Color(0xFFC9396C)
+    val FlamingoPink = Color(0xFFE15976)
+    val AtomicTangerine = Color(0xFFFF9B62)
+    val PeachYellow = Color(0xFFFFC978)
+    val YellowOrange = Color(0xFFFFDA6A)
+
+    // Green Tones
+    val ViridianGreen = Color(0xFF4B8281)
+    val Turquoise = Color(0xFF62ADA5)
+    val SeafoamGreen = Color(0xFF85C990)
+    val MintGreen = Color(0xFF66C166)
+    val MysticTeal = Color(0xFF41888F)
+
+    // Purple and Violet Tones
+    // val PurpleHeart = Color(0xFF865CD0) - Already defined in Light UI
+    val LavenderPurple = Color(0xFFA779FF)
+    val PeriwinkleBlue = Color(0xFFC2B6FF)
+    val Amethyst = Color(0xFF9A4C99)
+    val DeepPurple = Color(0xFF642A78)
+
+    // Blue Tones
+    val SteelBlue = Color(0xFF4559A1)
+    val SkyBlue = Color(0xFF4A74B1)
+    val DuskyBlue = Color(0xFF6A8AC9)
+    val VibrantSky = Color(0xFF55A0CB)
+    val SoftRoyal = Color(0xFF5D6ECD)
 }
 
 @Stable
@@ -110,6 +147,7 @@ class ProtonColors(
     shade80: Color,
     shade60: Color,
     shade50: Color,
+    shade45: Color,
     shade40: Color,
     shade20: Color,
     shade15: Color,
@@ -118,6 +156,7 @@ class ProtonColors(
 
     brandDarken40: Color = ProtonPalette.Chambray,
     brandDarken20: Color = ProtonPalette.SanMarino,
+    brandDarken10: Color = ProtonPalette.PurpleHeart,
     brandNorm: Color = ProtonPalette.CornflowerBlue,
     brandLighten20: Color = ProtonPalette.Portage,
     brandLighten40: Color = ProtonPalette.Perano,
@@ -128,6 +167,7 @@ class ProtonColors(
     textHint: Color = shade60,
     textDisabled: Color = shade50,
     textInverted: Color = shade0,
+    textSelected: Color = brandDarken10,
 
     iconNorm: Color = shade100,
     iconAccent: Color = brandNorm,
@@ -135,6 +175,7 @@ class ProtonColors(
     iconHint: Color = shade60,
     iconDisabled: Color = shade50,
     iconInverted: Color = shade0,
+    iconSelected: Color = brandDarken10,
 
     interactionStrongNorm: Color = shade100,
     interactionStrongPressed: Color = shade80,
@@ -147,22 +188,23 @@ class ProtonColors(
     backgroundSecondary: Color = shade10,
     backgroundDeep: Color = shade15,
 
-    separatorNorm: Color = shade20,
+    separatorNorm: Color = shade10,
+    separatorStrong: Color = shade20,
 
     blenderNorm: Color,
 
-    notificationNorm: Color = shade100,
-    notificationError: Color = ProtonPalette.Pomegranate,
-    notificationWarning: Color = ProtonPalette.Sunglow,
-    notificationSuccess: Color = ProtonPalette.Apple,
+    notificationNorm: Color = ProtonPalette.Charade,
+    notificationError: Color = ProtonPalette.Amaranth,
+    notificationWarning: Color = ProtonPalette.Orange,
+    notificationSuccess: Color = ProtonPalette.Gossamer,
 
     interactionNorm: Color = brandNorm,
     interactionPressed: Color = brandDarken20,
     interactionDisabled: Color = brandLighten40,
 
-    floatyBackground: Color = ProtonPalette.ShipGray,
-    floatyPressed: Color = ProtonPalette.Cinder,
-    floatyText: Color = Color.White,
+    floatyBackground: Color = ProtonPalette.EerieBlack,
+    floatyPressed: Color = ProtonPalette.Charade,
+    floatyText: Color = ProtonPalette.White,
 
     shadowNorm: Color,
     shadowRaised: Color,
@@ -181,6 +223,8 @@ class ProtonColors(
         internal set
     var shade50: Color by mutableStateOf(shade50, structuralEqualityPolicy())
         internal set
+    var shade45: Color by mutableStateOf(shade45, structuralEqualityPolicy())
+        internal set
     var shade40: Color by mutableStateOf(shade40, structuralEqualityPolicy())
         internal set
     var shade20: Color by mutableStateOf(shade20, structuralEqualityPolicy())
@@ -198,6 +242,8 @@ class ProtonColors(
         internal set
     var textWeak: Color by mutableStateOf(textWeak, structuralEqualityPolicy())
         internal set
+    var textSelected: Color by mutableStateOf(textSelected, structuralEqualityPolicy())
+        internal set
     var textHint: Color by mutableStateOf(textHint, structuralEqualityPolicy())
         internal set
     var textDisabled: Color by mutableStateOf(textDisabled, structuralEqualityPolicy())
@@ -210,6 +256,8 @@ class ProtonColors(
     var iconAccent: Color by mutableStateOf(iconAccent, structuralEqualityPolicy())
         internal set
     var iconWeak: Color by mutableStateOf(iconWeak, structuralEqualityPolicy())
+        internal set
+    var iconSelected: Color by mutableStateOf(iconSelected, structuralEqualityPolicy())
         internal set
     var iconHint: Color by mutableStateOf(iconHint, structuralEqualityPolicy())
         internal set
@@ -240,12 +288,17 @@ class ProtonColors(
     var separatorNorm: Color by mutableStateOf(separatorNorm, structuralEqualityPolicy())
         internal set
 
+    var separatorStrong: Color by mutableStateOf(separatorStrong, structuralEqualityPolicy())
+        internal set
+
     var blenderNorm: Color by mutableStateOf(blenderNorm, structuralEqualityPolicy())
         internal set
 
     var brandDarken40: Color by mutableStateOf(brandDarken40, structuralEqualityPolicy())
         internal set
     var brandDarken20: Color by mutableStateOf(brandDarken20, structuralEqualityPolicy())
+        internal set
+    var brandDarken10: Color by mutableStateOf(brandDarken10, structuralEqualityPolicy())
         internal set
     var brandNorm: Color by mutableStateOf(brandNorm, structuralEqualityPolicy())
         internal set
@@ -292,6 +345,7 @@ class ProtonColors(
         shade80: Color = this.shade80,
         shade60: Color = this.shade60,
         shade50: Color = this.shade50,
+        shade45: Color = this.shade45,
         shade40: Color = this.shade40,
         shade20: Color = this.shade20,
         shade15: Color = this.shade15,
@@ -300,12 +354,14 @@ class ProtonColors(
         textNorm: Color = this.textNorm,
         textAccent: Color = this.textAccent,
         textWeak: Color = this.textWeak,
+        textSelected: Color = this.textSelected,
         textHint: Color = this.textHint,
         textDisabled: Color = this.textDisabled,
         textInverted: Color = this.textInverted,
         iconNorm: Color = this.iconNorm,
         iconAccent: Color = this.iconAccent,
         iconWeak: Color = this.iconWeak,
+        iconSelected: Color = this.iconSelected,
         iconHint: Color = this.iconHint,
         iconDisabled: Color = this.iconDisabled,
         iconInverted: Color = this.iconInverted,
@@ -318,9 +374,11 @@ class ProtonColors(
         backgroundSecondary: Color = this.backgroundSecondary,
         backgroundDeep: Color = this.backgroundDeep,
         separatorNorm: Color = this.separatorNorm,
+        separatorStrong: Color = this.separatorStrong,
         blenderNorm: Color = this.blenderNorm,
         brandDarken40: Color = this.brandDarken40,
         brandDarken20: Color = this.brandDarken20,
+        brandDarken10: Color = this.brandDarken10,
         brandNorm: Color = this.brandNorm,
         brandLighten20: Color = this.brandLighten20,
         brandLighten40: Color = this.brandLighten40,
@@ -345,6 +403,7 @@ class ProtonColors(
         shade80 = shade80,
         shade60 = shade60,
         shade50 = shade50,
+        shade45 = shade45,
         shade40 = shade40,
         shade20 = shade20,
         shade15 = shade15,
@@ -357,6 +416,7 @@ class ProtonColors(
         textHint = textHint,
         textDisabled = textDisabled,
         textInverted = textInverted,
+        textSelected = textSelected,
 
         iconNorm = iconNorm,
         iconAccent = iconAccent,
@@ -364,6 +424,7 @@ class ProtonColors(
         iconHint = iconHint,
         iconDisabled = iconDisabled,
         iconInverted = iconInverted,
+        iconSelected = iconSelected,
 
         interactionStrongNorm = interactionStrongNorm,
         interactionStrongPressed = interactionStrongPressed,
@@ -377,11 +438,13 @@ class ProtonColors(
         backgroundDeep = backgroundDeep,
 
         separatorNorm = separatorNorm,
+        separatorStrong = separatorStrong,
 
         blenderNorm = blenderNorm,
 
         brandDarken40 = brandDarken40,
         brandDarken20 = brandDarken20,
+        brandDarken10 = brandDarken10,
         brandNorm = brandNorm,
         brandLighten20 = brandLighten20,
         brandLighten40 = brandLighten40,
@@ -424,32 +487,34 @@ class ProtonColors(
             brandNorm = brandNorm,
             brandLighten20 = brandLighten20,
             brandLighten40 = brandLighten40,
-            notificationError = ProtonPalette.Pomegranate,
-            notificationWarning = ProtonPalette.Sunglow,
-            notificationSuccess = ProtonPalette.Apple,
-            shade100 = ProtonPalette.Cinder,
-            shade80 = ProtonPalette.DoveGray,
-            shade60 = ProtonPalette.Dawn,
-            shade50 = ProtonPalette.CottonSeed,
-            shade40 = ProtonPalette.Cloud,
-            shade20 = ProtonPalette.Ebb,
-            shade15 = ProtonPalette.Pampas,
-            shade10 = ProtonPalette.Carrara,
+            notificationError = ProtonPalette.Amaranth,
+            notificationWarning = ProtonPalette.Orange,
+            notificationSuccess = ProtonPalette.Gossamer,
+            shade100 = ProtonPalette.Charade,
+            shade80 = ProtonPalette.Trout,
+            shade60 = ProtonPalette.OsloGray,
+            shade50 = ProtonPalette.Manatee,
+            shade45 = ProtonPalette.Aluminium,
+            shade40 = ProtonPalette.Ghost,
+            shade20 = ProtonPalette.AthensGray,
+            shade15 = ProtonPalette.FrostGray,
+            shade10 = ProtonPalette.Porcelain,
             shade0 = Color.White,
             shadowNorm = Color.Black.copy(alpha = 0.1f),
             shadowRaised = Color.Black.copy(alpha = 0.1f),
             shadowLifted = Color.Black.copy(alpha = 0.1f),
-            blenderNorm = ProtonPalette.Woodsmoke.copy(alpha = 0.48f),
+            blenderNorm = ProtonPalette.EerieBlack.copy(alpha = 0.48f),
             textAccent = brandNorm,
             iconAccent = brandNorm
         )
 
         private fun baseDark(
-            brandDarken40: Color = ProtonPalette.Chambray,
-            brandDarken20: Color = ProtonPalette.SanMarino,
-            brandNorm: Color = ProtonPalette.CornflowerBlue,
-            brandLighten20: Color = ProtonPalette.Portage,
-            brandLighten40: Color = ProtonPalette.Perano
+            brandDarken40: Color = ProtonPalette.DarkBlue,
+            brandDarken20: Color = ProtonPalette.Rhino,
+            brandDarken10: Color = ProtonPalette.DuskyIndigo,
+            brandNorm: Color = ProtonPalette.LightSlateBlue,
+            brandLighten20: Color = ProtonPalette.BlueBell,
+            brandLighten40: Color = ProtonPalette.Periwinkle
         ) = ProtonColors(
             isDark = true,
             brandDarken40 = brandDarken40,
@@ -457,18 +522,19 @@ class ProtonColors(
             brandNorm = brandNorm,
             brandLighten20 = brandLighten20,
             brandLighten40 = brandLighten40,
-            notificationError = ProtonPalette.Mauvelous,
-            notificationWarning = ProtonPalette.TexasRose,
-            notificationSuccess = ProtonPalette.PuertoRico,
-            shade100 = Color.White,
-            shade80 = ProtonPalette.CadetBlue,
-            shade60 = ProtonPalette.Dolphin,
-            shade50 = ProtonPalette.Smoky,
-            shade40 = ProtonPalette.GunPowder,
-            shade20 = ProtonPalette.BlackCurrant,
-            shade15 = ProtonPalette.Bastille,
-            shade10 = ProtonPalette.BalticSea,
-            shade0 = ProtonPalette.Cinder,
+            notificationError = ProtonPalette.Amaranth,
+            notificationWarning = ProtonPalette.Orange,
+            notificationSuccess = ProtonPalette.Gossamer,
+            shade100 = ProtonPalette.Platinum,
+            shade80 = ProtonPalette.SantasGray,
+            shade60 = ProtonPalette.SonicSilver,
+            shade50 = ProtonPalette.CadetGrey,
+            shade45 = ProtonPalette.Tuna,
+            shade40 = ProtonPalette.Gunmetal,
+            shade20 = ProtonPalette.MidnightBlue,
+            shade15 = ProtonPalette.Obsidian,
+            shade10 = ProtonPalette.Swamp,
+            shade0 = ProtonPalette.EerieBlack,
             shadowNorm = Color.Black.copy(alpha = 0.8f),
             shadowRaised = Color.Black.copy(alpha = 0.8f),
             shadowLifted = Color.Black.copy(alpha = 0.86f),
@@ -478,11 +544,11 @@ class ProtonColors(
         ).let {
             it.copy(
                 interactionWeakNorm = it.shade20,
-                interactionWeakPressed = it.shade40,
-                interactionWeakDisabled = it.shade15,
-                backgroundNorm = it.shade10,
-                backgroundSecondary = it.shade15,
-                backgroundDeep = it.shade0
+                interactionWeakPressed = it.shade50,
+                interactionWeakDisabled = it.shade10,
+                backgroundNorm = it.shade0,
+                backgroundSecondary = it.shade10,
+                backgroundDeep = it.shade45
             )
         }
 
@@ -499,23 +565,25 @@ class ProtonColors(
             brandLighten20 = brandLighten20,
             brandLighten40 = brandLighten40
         ).copy(
-            backgroundNorm = ProtonPalette.Haiti,
-            interactionWeakNorm = ProtonPalette.Jacarta,
-            interactionWeakPressed = ProtonPalette.Valhalla,
-            separatorNorm = ProtonPalette.Jacarta,
-            textNorm = ProtonPalette.White,
-            textWeak = ProtonPalette.CadetBlue,
-            iconNorm = ProtonPalette.White,
-            iconWeak = ProtonPalette.CadetBlue,
+            backgroundNorm = ProtonPalette.DeepCove,
+            interactionWeakNorm = ProtonPalette.PortGore,
+            interactionWeakPressed = ProtonPalette.PortGore,
+            separatorNorm = ProtonPalette.PortGore,
+            textNorm = ProtonPalette.CadetBlue,
+            textWeak = ProtonPalette.Topaz,
+            textSelected = ProtonPalette.BlueChalk, // Newly defined
+            iconNorm = ProtonPalette.CadetBlue,
+            iconWeak = ProtonPalette.Topaz,
+            iconSelected = ProtonPalette.Portage, // Newly defined
             interactionPressed = ProtonPalette.SanMarino
         )
 
         private fun sidebarDark(
-            brandDarken40: Color = ProtonPalette.Chambray,
-            brandDarken20: Color = ProtonPalette.SanMarino,
-            brandNorm: Color = ProtonPalette.CornflowerBlue,
-            brandLighten20: Color = ProtonPalette.Portage,
-            brandLighten40: Color = ProtonPalette.Perano
+            brandDarken40: Color = ProtonPalette.Rhino,
+            brandDarken20: Color = ProtonPalette.DuskyIndigo,
+            brandNorm: Color = ProtonPalette.LightSlateBlue,
+            brandLighten20: Color = ProtonPalette.BlueBell,
+            brandLighten40: Color = ProtonPalette.Periwinkle
         ) = baseDark(
             brandDarken40 = brandDarken40,
             brandDarken20 = brandDarken20,
@@ -523,16 +591,19 @@ class ProtonColors(
             brandLighten20 = brandLighten20,
             brandLighten40 = brandLighten40
         ).copy(
-            backgroundNorm = ProtonPalette.Cinder,
-            interactionWeakNorm = ProtonPalette.BlackCurrant,
-            interactionWeakPressed = ProtonPalette.GunPowder,
-            separatorNorm = ProtonPalette.BlackCurrant,
-            textNorm = ProtonPalette.White,
-            textWeak = ProtonPalette.CadetBlue,
-            iconNorm = ProtonPalette.White,
-            iconWeak = ProtonPalette.CadetBlue,
-            interactionPressed = ProtonPalette.SanMarino
+            backgroundNorm = ProtonPalette.DeepCove,
+            interactionWeakNorm = ProtonPalette.PortGore,
+            interactionWeakPressed = ProtonPalette.Rhino,
+            separatorNorm = ProtonPalette.PortGore,
+            textNorm = ProtonPalette.Platinum,
+            textWeak = ProtonPalette.SonicSilver,
+            textSelected = ProtonPalette.BlueChalk,
+            iconNorm = ProtonPalette.Platinum,
+            iconWeak = ProtonPalette.SonicSilver,
+            iconSelected = ProtonPalette.Portage,
+            interactionPressed = ProtonPalette.LightSlateBlue
         )
+
 
         fun light(
             brandDarken40: Color = ProtonPalette.Chambray,
@@ -557,11 +628,11 @@ class ProtonColors(
         )
 
         fun dark(
-            brandDarken40: Color = ProtonPalette.Chambray,
-            brandDarken20: Color = ProtonPalette.SanMarino,
-            brandNorm: Color = ProtonPalette.CornflowerBlue,
-            brandLighten20: Color = ProtonPalette.Portage,
-            brandLighten40: Color = ProtonPalette.Perano
+            brandDarken40: Color = ProtonPalette.Rhino,
+            brandDarken20: Color = ProtonPalette.DuskyIndigo,
+            brandNorm: Color = ProtonPalette.LightSlateBlue,
+            brandLighten20: Color = ProtonPalette.BlueBell,
+            brandLighten40: Color = ProtonPalette.Periwinkle
         ) = baseDark(
             brandDarken40 = brandDarken40,
             brandDarken20 = brandDarken20,
@@ -577,6 +648,7 @@ class ProtonColors(
                 brandLighten40 = brandLighten40
             )
         )
+
     }
 }
 
