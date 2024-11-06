@@ -31,7 +31,6 @@ import ch.protonmail.android.mailcommon.presentation.mapper.ColorMapper
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcontact.domain.model.GetContactError
 import ch.protonmail.android.mailcontact.domain.usecase.featureflags.IsContactGroupsCrudEnabled
-import ch.protonmail.android.mailcontact.domain.usecase.featureflags.IsContactSearchEnabled
 import ch.protonmail.android.mailcontact.presentation.R
 import ch.protonmail.android.mailcontact.presentation.model.ContactGroupItemUiModelMapper
 import ch.protonmail.android.mailcontact.presentation.model.ContactListItemUiModelMapper
@@ -112,9 +111,6 @@ class ContactListViewModelTest {
     private val isContactGroupsCrudEnabledMock = mockk<IsContactGroupsCrudEnabled> {
         every { this@mockk() } returns true
     }
-    private val isContactSearchEnabledMock = mockk<IsContactSearchEnabled> {
-        every { this@mockk() } returns true
-    }
 
     private val reducer = ContactListReducer()
 
@@ -138,7 +134,6 @@ class ContactListViewModelTest {
             reducer,
             groupedContactListItemsUiModelMapper,
             isContactGroupsCrudEnabledMock,
-            isContactSearchEnabledMock,
             observePrimaryUserId
         )
     }
@@ -216,28 +211,6 @@ class ContactListViewModelTest {
                 },
                 isContactGroupsCrudEnabled = false,
                 isContactSearchEnabled = true
-            )
-
-            assertEquals(expected, actual)
-        }
-    }
-
-    @Test
-    fun `when feature flag IsContactSearchEnabled is false then emit appropriate event`() = runTest {
-        // Given
-        expectContactsData()
-        every { isContactSearchEnabledMock.invoke() } returns false
-
-        // When
-        contactListViewModel.state.test {
-            // Then
-            val actual = awaitItem()
-            val expected = ContactListState.Loaded.Data(
-                groupedContacts = contactListItemUiModelMapper.toContactListItemUiModel(
-                    listOf(defaultTestGroupedContacts)
-                ),
-                isContactGroupsCrudEnabled = true,
-                isContactSearchEnabled = false
             )
 
             assertEquals(expected, actual)

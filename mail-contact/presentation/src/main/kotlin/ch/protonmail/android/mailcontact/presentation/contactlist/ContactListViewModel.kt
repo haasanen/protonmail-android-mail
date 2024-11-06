@@ -109,7 +109,6 @@ class ContactListViewModel @Inject constructor(
             observeUpsellingVisibility(UpsellingEntryPoint.BottomSheet.ContactGroups)
         ) { contactsEither, isContactGroupsUpsellingVisible ->
             val isContactGroupsCrudEnabled = isContactGroupsCrudEnabled()
-            val isContactSearchEnabled = isContactSearchEnabled()
 
             contactsEither.fold(
                 ifRight = { contactList ->
@@ -117,7 +116,7 @@ class ContactListViewModel @Inject constructor(
                         groupedContactsList = contactList.map { groupedContactListItemsUiModelMapper.toUiModel(it) },
                         isContactGroupsCrudEnabled = isContactGroupsCrudEnabled,
                         isContactGroupsUpsellingVisible = isContactGroupsUpsellingVisible,
-                        isContactSearchEnabled = isContactSearchEnabled
+                        isContactSearchEnabled = true
                     )
                 },
                 ifLeft = {

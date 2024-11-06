@@ -60,7 +60,7 @@ sealed interface ContactListState {
             override val isContactGroupsUpsellingVisible: Boolean = false,
             override val isContactSearchEnabled: Boolean = false,
             override val bottomSheetType: BottomSheetType = BottomSheetType.Menu,
-            val contacts: List<ContactListItemUiModel>
+            val contacts: List<ContactListItemUiModel>,
             val groupedContacts: List<GroupedContactListItemsUiModel>
         ) : Loaded
 
