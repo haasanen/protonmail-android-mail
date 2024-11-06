@@ -98,8 +98,8 @@ class SignUpActivity : ProtonActivity() {
         finish()
     }
 
-    private fun onSuccess() { // todo: add user id of the account created
-        setResult(Activity.RESULT_OK, intent)
+    private fun onSuccess() {
+        setResult(Activity.RESULT_OK)
         finish()
     }
 }

@@ -41,6 +41,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
 import me.proton.android.core.auth.presentation.R
 import me.proton.android.core.auth.presentation.addaccount.SMALL_SCREEN_HEIGHT
@@ -67,6 +68,7 @@ fun SignUpLoading(
         val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.create_account_animation))
         LottieAnimation(
             composition,
+            iterations= LottieConstants.IterateForever,
             modifier = modifier
                 .width(160.dp)
                 .height(160.dp)

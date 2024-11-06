@@ -45,7 +45,7 @@ class CreateRecoveryScreenTest(
         paparazzi.snapshot {
             CompositionLocalProvider(LocalViewModelStoreOwner provides fakeViewModelStoreOwner) {
                 ProtonTheme {
-                    CreatePasswordScreen(
+                    CreateRecoveryScreen(
                         state = CreatePasswordState.Idle
                     )
                 }

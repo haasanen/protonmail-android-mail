@@ -68,7 +68,7 @@
     <string name="auth_signup_create_password">Create your password</string>
     <string name="auth_signup_password">Password</string>
     <string name="auth_signup_repeat_password">Repeat password</string>
-    <string name="auth_signup_terms_privacy_conditions_footer">By clicking Next, you agree with Proton\'s %s and %s</string>
+    <string name="auth_signup_terms_privacy_conditions_footer">By clicking Next, you agree with Proton\'s %1$s and %2$s</string>
     <string name="auth_signup_terms_learn_more">Terms and Conditions</string>
     <string name="auth_signup_privacy_policy_learn_more">Privacy Policy</string>
     <string name="auth_signup_internal_footnote">You’ll need a Proton address to use Proton Mail and Proton Calendar</string>

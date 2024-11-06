@@ -30,8 +30,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Divider
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -53,6 +51,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import me.proton.android.core.auth.presentation.R
 import me.proton.android.core.auth.presentation.addaccount.SMALL_SCREEN_HEIGHT
+import me.proton.android.core.auth.presentation.widget.ProtonCloseButton
 import me.proton.core.compose.component.ProtonOutlinedTextFieldWithError
 import me.proton.core.compose.component.ProtonSolidButton
 import me.proton.core.compose.component.ProtonTextButton
@@ -143,12 +142,7 @@ fun ChooseUsernameScaffold(
             ProtonTopAppBar(
                 title = {},
                 navigationIcon = {
-                    IconButton(onClick = onCloseClicked) {
-                        Icon(
-                            painterResource(id = R.drawable.ic_proton_close),
-                            contentDescription = stringResource(id = R.string.auth_login_close)
-                        )
-                    }
+                    ProtonCloseButton(onCloseClicked = onCloseClicked)
                 },
                 backgroundColor = LocalColors.current.backgroundNorm
             )
@@ -228,7 +222,7 @@ private fun CreateInternalForm(
         )
 
         Column(
-            modifier = modifier.padding(16.dp)
+            modifier = modifier.padding(DefaultSpacing)
         ) {
             ProtonOutlinedTextFieldWithError(
                 text = username,
@@ -298,7 +292,7 @@ private fun CreateExternalForm(
     var email by rememberSaveable { mutableStateOf("") }
 
     Column(
-        modifier = modifier.padding(16.dp)
+        modifier = modifier.padding(DefaultSpacing)
     ) {
         ProtonOutlinedTextFieldWithError(
             text = email,

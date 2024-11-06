@@ -65,7 +65,7 @@ class AuthOrchestrator @Inject constructor() {
 
     private fun registerSignUpResult(caller: ActivityResultCaller): ActivityResultLauncher<Unit> =
         caller.registerForActivityResult(StartSignUp) {
-            onLoginResultListener?.invoke(it)
+            onSignUpResultListener?.invoke(it)
         }
 
     private fun <T> checkRegistered(launcher: ActivityResultLauncher<T>?) =
