@@ -103,7 +103,7 @@ class UserSessionRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getUserSession(userId: UserId): MailUserSession? {
-        val session = getStoredAccount(userId)?.let { mailSession.getSessions(it).firstOrNull() }
+        val session = getStoredAccount(userId)?.let { mailSession.getAccountSessions(it).firstOrNull() }
         return session?.let { mailSession.userContextFromSession(it) }
     }
 
