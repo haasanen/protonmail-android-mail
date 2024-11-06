@@ -20,14 +20,14 @@ package ch.protonmail.android.maildetail.presentation.reducer
 
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.ActionResult
-import ch.protonmail.android.mailcommon.presentation.model.ActionResult.UndoableActionResult
 import ch.protonmail.android.mailcommon.presentation.model.ActionResult.DefinitiveActionResult
+import ch.protonmail.android.mailcommon.presentation.model.ActionResult.UndoableActionResult
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcommon.presentation.reducer.BottomBarReducer
-import ch.protonmail.android.mailcommon.presentation.ui.delete.DeleteDialogState
 import ch.protonmail.android.maildetail.domain.model.OpenAttachmentIntentValues
 import ch.protonmail.android.maildetail.domain.model.OpenProtonCalendarIntentValues
 import ch.protonmail.android.maildetail.presentation.R
+import ch.protonmail.android.maildetail.presentation.model.ConversationDeleteState
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.ErrorMovingConversation
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.ConversationBottomBarEvent
@@ -35,7 +35,6 @@ import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEve
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.ErrorAddStar
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.ErrorAttachmentDownloadInProgress
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.ErrorDeletingConversation
-import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.ErrorDeletingNoApplicableFolder
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.ErrorExpandingDecryptMessageError
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.ErrorExpandingRetrieveMessageError
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.ErrorExpandingRetrievingMessageOffline
@@ -88,7 +87,7 @@ class ConversationDetailReducer @Inject constructor(
             openAttachmentEffect = currentState.toNewOpenAttachmentStateFrom(operation),
             openProtonCalendarIntent = currentState.toNewOpenProtonCalendarIntentFrom(operation),
             scrollToMessage = currentState.toScrollToMessageState(operation),
-            deleteDialogState = currentState.toNewDeleteDialogState(operation),
+            conversationDeleteState = currentState.toNewDeleteDialogState(operation),
             reportPhishingDialogState = currentState.toNewReportPhishingDialogState(operation),
             trashedMessagesBannerState = currentState.toNewTrashedMessagesBannerState(operation)
         )
@@ -143,6 +142,8 @@ class ConversationDetailReducer @Inject constructor(
                 is ConversationDetailViewAction.TrashMessage,
                 is ConversationDetailViewAction.ArchiveMessage,
                 is ConversationDetailViewAction.MoveMessageToSpam,
+                is ConversationDetailViewAction.DeleteConfirmed,
+                is ConversationDetailViewAction.DeleteMessageConfirmed,
                 is ConversationDetailViewAction.MoveToDestinationConfirmed -> BottomSheetOperation.Dismiss
             }
             bottomSheetReducer.newStateFrom(bottomSheetState, bottomSheetOperation)
@@ -168,7 +169,7 @@ class ConversationDetailReducer @Inject constructor(
                 is ErrorGettingAttachmentNotEnoughSpace -> R.string.error_get_attachment_not_enough_memory
                 is ErrorAttachmentDownloadInProgress -> R.string.error_attachment_download_in_progress
                 is ErrorDeletingConversation -> R.string.error_delete_conversation_failed
-                is ErrorDeletingNoApplicableFolder -> R.string.error_delete_conversation_failed_wrong_folder
+                is ConversationDetailEvent.ErrorDeletingMessage -> R.string.error_delete_message_failed
             }
             Effect.of(TextUiModel(textResource))
         } else {
@@ -255,11 +256,11 @@ class ConversationDetailReducer @Inject constructor(
 
     private fun ConversationDetailState.toNewDeleteDialogState(
         operation: ConversationDetailOperation
-    ): DeleteDialogState {
+    ): ConversationDeleteState {
         return if (operation is AffectingDeleteDialog) {
             deleteDialogReducer.newStateFrom(operation)
         } else {
-            deleteDialogState
+            conversationDeleteState
         }
     }
 

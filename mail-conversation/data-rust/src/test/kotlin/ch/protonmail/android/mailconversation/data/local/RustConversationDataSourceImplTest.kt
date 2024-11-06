@@ -82,6 +82,7 @@ class RustConversationDataSourceImplTest {
     private val getRustAllConversationBottomBarActions = mockk<GetRustAllConversationBottomBarActions>()
     private val getRustConversationMoveToActions = mockk<GetRustConversationMoveToActions>()
     private val getRustConversationLabelAsActions = mockk<GetRustConversationLabelAsActions>()
+    private val rustDeleteConversations = mockk<RustDeleteConversations>()
 
     private val dataSource = RustConversationDataSourceImpl(
         sessionManager,
@@ -92,6 +93,7 @@ class RustConversationDataSourceImplTest {
         getRustAvailableConversationActions,
         getRustConversationMoveToActions,
         getRustConversationLabelAsActions,
+        rustDeleteConversations,
         testCoroutineScope
     )
 
@@ -101,7 +103,7 @@ class RustConversationDataSourceImplTest {
         val userId = UserIdTestData.userId
         val mailSession = mockk<MailSession>()
         val labelId = LocalLabelId(1uL)
-        val pageKey = PageKey(labelId.toLabelId())
+        val pageKey = PageKey.DefaultPageKey(labelId.toLabelId())
         val conversations = listOf(
             LocalConversationTestData.AugConversation,
             LocalConversationTestData.SepConversation,

@@ -103,5 +103,6 @@
     <string name="storage_quota_over_dialog_title">Warning</string>
     <string name="storage_quota_over_dialog_text">Your Proton account storage is 100% full. You won\'t be able to send or receive emails unless you permanently delete some emails or upgrade for more storage.</string>
     <string name="storage_quota_over_dialog_confirm_button">OK</string>
+    <string name="mailbox_action_delete_failed">Failed to delete message</string>
 
 </resources>

@@ -65,9 +65,9 @@ import ch.protonmail.android.mailmailbox.domain.model.UserAccountStorageStatus
 import ch.protonmail.android.mailmailbox.domain.model.isBelowFirstLimit
 import ch.protonmail.android.mailmailbox.domain.model.isBelowSecondLimit
 import ch.protonmail.android.mailmailbox.domain.model.toMailboxItemType
+import ch.protonmail.android.mailmailbox.domain.usecase.GetBottomBarActions
 import ch.protonmail.android.mailmailbox.domain.usecase.GetBottomSheetActions
 import ch.protonmail.android.mailmailbox.domain.usecase.GetLabelAsBottomSheetContent
-import ch.protonmail.android.mailmailbox.domain.usecase.GetBottomBarActions
 import ch.protonmail.android.mailmailbox.domain.usecase.GetMoveToLocations
 import ch.protonmail.android.mailmailbox.domain.usecase.ObserveCurrentViewMode
 import ch.protonmail.android.mailmailbox.domain.usecase.ObservePrimaryUserAccountStorageStatus
@@ -1006,8 +1006,7 @@ class MailboxViewModel @Inject constructor(
             ViewMode.ConversationGrouping -> {
                 deleteConversations(
                     userId = userId,
-                    conversationIds = selectionModeDataState.selectedMailboxItems.map { ConversationId(it.id) },
-                    currentLabelId = selectionModeDataState.currentMailLabel.id.labelId
+                    conversationIds = selectionModeDataState.selectedMailboxItems.map { ConversationId(it.id) }
                 )
             }
 
@@ -1018,8 +1017,11 @@ class MailboxViewModel @Inject constructor(
                     currentLabelId = selectionModeDataState.currentMailLabel.id.labelId
                 )
             }
+        }.onLeft {
+            emitNewStateFrom(MailboxEvent.ErrorDeleting)
+        }.onRight {
+            emitNewStateFrom(MailboxEvent.DeleteConfirmed(viewMode, selectionModeDataState.selectedMailboxItems.size))
         }
-        emitNewStateFrom(MailboxEvent.DeleteConfirmed(viewMode, selectionModeDataState.selectedMailboxItems.size))
     }
 
     private fun handleClearAllDialogDismissed(viewAction: MailboxViewAction) {

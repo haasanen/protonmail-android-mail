@@ -16,12 +16,12 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailmessage.data.local
+package ch.protonmail.android.mailmessage.data.search
 
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageMetadata
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import me.proton.core.domain.entity.UserId
 
-interface RustMessageQuery {
-    suspend fun getMessages(userId: UserId, pageKey: PageKey.DefaultPageKey): List<LocalMessageMetadata>?
+interface RustMessageSearchQuery {
+    suspend fun getMessages(userId: UserId, pageKey: PageKey.PageKeyForSearch): List<LocalMessageMetadata>?
 }

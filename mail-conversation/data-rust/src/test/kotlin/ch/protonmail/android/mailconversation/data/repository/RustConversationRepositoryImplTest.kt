@@ -68,7 +68,7 @@ class RustConversationRepositoryImplTest {
     @Test
     fun `getLocalConversations should return conversations`() = runTest {
         // Given
-        val pageKey = PageKey(labelId = labelWithSystemLabelId.label.labelId)
+        val pageKey = PageKey.DefaultPageKey(labelId = labelWithSystemLabelId.label.labelId)
         val localConversations = listOf(
             LocalConversationTestData.AugConversation, LocalConversationTestData.SepConversation
         )
@@ -207,10 +207,7 @@ class RustConversationRepositoryImplTest {
         coEvery { rustConversationDataSource.markUnread(userId, any()) } just Runs
 
         // When
-        val result = rustConversationRepository.markUnread(
-            userId, conversationIds,
-            labelWithSystemLabelId.label.labelId
-        )
+        val result = rustConversationRepository.markUnread(userId, conversationIds)
 
         // Then
         coVerify { rustConversationDataSource.markUnread(userId, conversationIds.map { it.toLocalConversationId() }) }

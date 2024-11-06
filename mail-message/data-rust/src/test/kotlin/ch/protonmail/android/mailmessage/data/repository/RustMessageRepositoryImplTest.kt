@@ -65,7 +65,7 @@ class RustMessageRepositoryImplTest {
     fun `getLocalMessages should return list of messages`() = runTest {
         // Given
         val userId = UserIdTestData.userId
-        val pageKey = PageKey(labelId = SystemLabelId.Archive.labelId)
+        val pageKey = PageKey.DefaultPageKey(labelId = SystemLabelId.Archive.labelId)
 
         val expectedMessages = listOf(
             LocalMessageTestData.AugWeatherForecast,

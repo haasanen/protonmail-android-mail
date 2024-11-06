@@ -23,5 +23,5 @@ import ch.protonmail.android.mailpagination.domain.model.PageKey
 import me.proton.core.domain.entity.UserId
 
 interface RustConversationsQuery {
-    suspend fun getConversations(userId: UserId, pageKey: PageKey): List<LocalConversation>?
+    suspend fun getConversations(userId: UserId, pageKey: PageKey.DefaultPageKey): List<LocalConversation>?
 }

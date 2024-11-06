@@ -144,6 +144,7 @@ private fun callbackForConversation(
     Action.Label -> actionCallbacks.onLabelConversation
     Action.Trash -> actionCallbacks.onMoveToTrashConversation
     Action.Archive -> actionCallbacks.onMoveToArchiveConversation
+    Action.Delete -> actionCallbacks.onDeleteConversation
     Action.Spam -> actionCallbacks.onMoveToSpamConversation
     Action.Move -> actionCallbacks.onMoveConversation
     Action.Print -> actionCallbacks.onPrintConversation
@@ -164,6 +165,7 @@ private fun callbackForAction(
     Action.ViewInLightMode -> actionCallbacks.onViewInLightMode
     Action.ViewInDarkMode -> actionCallbacks.onViewInDarkMode
     Action.Trash -> actionCallbacks.onMoveToTrash
+    Action.Delete -> actionCallbacks.onDelete
     Action.Archive -> actionCallbacks.onMoveToArchive
     Action.Spam -> actionCallbacks.onMoveToSpam
     Action.Move -> actionCallbacks.onMove
@@ -190,6 +192,7 @@ object DetailMoreActionsBottomSheetContent {
         val onViewInDarkMode: (MessageId) -> Unit,
         val onMoveToTrash: (MessageId) -> Unit,
         val onMoveToArchive: (MessageId) -> Unit,
+        val onDelete: (MessageId) -> Unit,
         val onMoveToSpam: (MessageId) -> Unit,
         val onMove: (MessageId) -> Unit,
         val onPrint: (MessageId) -> Unit,
@@ -198,6 +201,7 @@ object DetailMoreActionsBottomSheetContent {
         val onLabelConversation: () -> Unit,
         val onMoveToTrashConversation: () -> Unit,
         val onMoveToArchiveConversation: () -> Unit,
+        val onDeleteConversation: () -> Unit,
         val onMoveToSpamConversation: () -> Unit,
         val onMoveConversation: () -> Unit,
         val onPrintConversation: () -> Unit
@@ -236,6 +240,7 @@ private fun BottomSheetContentPreview() {
                 onViewInDarkMode = {},
                 onMoveToTrash = {},
                 onMoveToArchive = {},
+                onDelete = {},
                 onMoveToSpam = {},
                 onMove = {},
                 onPrint = {},
@@ -246,6 +251,7 @@ private fun BottomSheetContentPreview() {
                 onMoveToArchiveConversation = {},
                 onMoveToSpamConversation = {},
                 onMoveConversation = {},
+                onDeleteConversation = {},
                 onPrintConversation = {}
             )
         )

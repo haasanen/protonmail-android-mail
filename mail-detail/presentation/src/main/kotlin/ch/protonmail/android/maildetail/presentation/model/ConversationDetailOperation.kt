@@ -31,6 +31,7 @@ import ch.protonmail.android.maildetail.presentation.model.ConversationDetailOpe
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailOperation.AffectingMessages
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailOperation.AffectingReportPhishingDialog
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailOperation.AffectingTrashedMessagesBanner
+import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.mailmessage.domain.model.AttachmentId
 import ch.protonmail.android.mailmessage.domain.model.AttachmentWorkerStatus
@@ -38,7 +39,6 @@ import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.presentation.model.ViewModePreference
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.BottomSheetOperation
 import kotlinx.collections.immutable.ImmutableList
-import ch.protonmail.android.maillabel.domain.model.LabelId
 
 sealed interface ConversationDetailOperation {
 
@@ -90,7 +90,7 @@ sealed interface ConversationDetailEvent : ConversationDetailOperation {
     object ErrorGettingAttachmentNotEnoughSpace : ConversationDetailEvent, AffectingErrorBar
     object ErrorAttachmentDownloadInProgress : ConversationDetailEvent, AffectingErrorBar
     object ErrorDeletingConversation : ConversationDetailEvent, AffectingErrorBar, AffectingDeleteDialog
-    object ErrorDeletingNoApplicableFolder : ConversationDetailEvent, AffectingErrorBar, AffectingDeleteDialog
+    object ErrorDeletingMessage : ConversationDetailEvent, AffectingErrorBar, AffectingDeleteDialog
 
     data class ExpandDecryptedMessage(
         val messageId: MessageIdUiModel,
@@ -144,7 +144,7 @@ sealed interface ConversationDetailViewAction : ConversationDetailOperation {
     object Trash : ConversationDetailViewAction
     object DeleteRequested : ConversationDetailViewAction, AffectingDeleteDialog
     object DeleteDialogDismissed : ConversationDetailViewAction, AffectingDeleteDialog
-    object DeleteConfirmed : ConversationDetailViewAction, AffectingDeleteDialog
+    object DeleteConfirmed : ConversationDetailViewAction, AffectingDeleteDialog, AffectingBottomSheet
     object RequestMoveToBottomSheet : ConversationDetailViewAction, AffectingBottomSheet
     object DismissBottomSheet : ConversationDetailViewAction, AffectingBottomSheet
     data class MoveToDestinationSelected(
@@ -230,6 +230,14 @@ sealed interface ConversationDetailViewAction : ConversationDetailOperation {
     data class RequestMessageMoveToBottomSheet(
         val messageId: MessageId
     ) : ConversationDetailViewAction, AffectingBottomSheet
+
+    data class DeleteMessageRequested(
+        val messageId: MessageId
+    ) : ConversationDetailViewAction, AffectingDeleteDialog
+
+    data class DeleteMessageConfirmed(
+        val messageId: MessageId
+    ) : ConversationDetailViewAction, AffectingDeleteDialog, AffectingBottomSheet
 
     data object ChangeVisibilityOfMessages : ConversationDetailViewAction
 }

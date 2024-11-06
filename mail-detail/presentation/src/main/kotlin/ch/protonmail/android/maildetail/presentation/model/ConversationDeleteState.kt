@@ -16,12 +16,16 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailmessage.data.local
+package ch.protonmail.android.maildetail.presentation.model
 
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageMetadata
-import ch.protonmail.android.mailpagination.domain.model.PageKey
-import me.proton.core.domain.entity.UserId
+import ch.protonmail.android.mailcommon.presentation.ui.delete.DeleteDialogState
+import ch.protonmail.android.mailmessage.domain.model.MessageId
 
-interface RustMessageQuery {
-    suspend fun getMessages(userId: UserId, pageKey: PageKey.DefaultPageKey): List<LocalMessageMetadata>?
+data class ConversationDeleteState(
+    val deleteDialogState: DeleteDialogState,
+    val messageIdInConversation: MessageId? = null
+) {
+    companion object {
+        val Hidden = ConversationDeleteState(DeleteDialogState.Hidden)
+    }
 }

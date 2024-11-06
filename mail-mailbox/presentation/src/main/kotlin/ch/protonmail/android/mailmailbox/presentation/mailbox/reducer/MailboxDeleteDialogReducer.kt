@@ -32,6 +32,7 @@ class MailboxDeleteDialogReducer @Inject constructor() {
     internal fun newStateFrom(operation: AffectingDeleteDialog) = when (operation) {
         is MailboxEvent.Delete -> newStateFromDelete(operation)
         is MailboxEvent.DeleteConfirmed -> DeleteDialogState.Hidden
+        is MailboxEvent.ErrorDeleting,
         is MailboxViewAction.DeleteDialogDismissed -> DeleteDialogState.Hidden
     }
 

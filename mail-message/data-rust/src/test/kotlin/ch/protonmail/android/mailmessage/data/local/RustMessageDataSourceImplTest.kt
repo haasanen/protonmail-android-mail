@@ -23,6 +23,7 @@ import arrow.core.right
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageId
 import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailmessage.data.search.RustMessageSearchQuery
 import ch.protonmail.android.mailmessage.data.usecase.CreateRustMessageAccessor
 import ch.protonmail.android.mailmessage.data.usecase.CreateRustMessageBodyAccessor
 import ch.protonmail.android.mailmessage.data.usecase.GetRustAllMessageBottomBarActions
@@ -30,6 +31,7 @@ import ch.protonmail.android.mailmessage.data.usecase.GetRustAvailableMessageAct
 import ch.protonmail.android.mailmessage.data.usecase.GetRustMessageLabelAsActions
 import ch.protonmail.android.mailmessage.data.usecase.GetRustMessageMoveToActions
 import ch.protonmail.android.mailmessage.data.usecase.GetRustSenderImage
+import ch.protonmail.android.mailmessage.data.usecase.RustDeleteMessages
 import ch.protonmail.android.mailmessage.data.usecase.RustMarkMessagesRead
 import ch.protonmail.android.mailmessage.data.usecase.RustMarkMessagesUnread
 import ch.protonmail.android.mailmessage.data.usecase.RustStarMessages
@@ -74,6 +76,7 @@ class RustMessageDataSourceImplTest {
 
     private val rustMailbox: RustMailbox = mockk()
     private val rustMessageQuery: RustMessageQuery = mockk()
+    private val rustMessageSearchQuery: RustMessageSearchQuery = mockk()
     private val createRustMessageAccessor = mockk<CreateRustMessageAccessor>()
     private val createRustMessageBodyAccessor = mockk<CreateRustMessageBodyAccessor>()
     private val getRustSenderImage = mockk<GetRustSenderImage>()
@@ -82,6 +85,7 @@ class RustMessageDataSourceImplTest {
     private val rustStarMessages = mockk<RustStarMessages>()
     private val rustUnstarMessages = mockk<RustUnstarMessages>()
     private val getRustAllBottomBarActions = mockk<GetRustAllMessageBottomBarActions>()
+    private val rustDeleteMessages = mockk<RustDeleteMessages>()
     private val getRustAvailableMessageActions = mockk<GetRustAvailableMessageActions>()
     private val getRustMessageMoveToActions = mockk<GetRustMessageMoveToActions>()
     private val getRustMessageLabelAsActions = mockk<GetRustMessageLabelAsActions>()
@@ -90,6 +94,7 @@ class RustMessageDataSourceImplTest {
         userSessionRepository,
         rustMailbox,
         rustMessageQuery,
+        rustMessageSearchQuery,
         createRustMessageAccessor,
         createRustMessageBodyAccessor,
         getRustSenderImage,
@@ -98,6 +103,7 @@ class RustMessageDataSourceImplTest {
         rustStarMessages,
         rustUnstarMessages,
         getRustAllBottomBarActions,
+        rustDeleteMessages,
         getRustAvailableMessageActions,
         getRustMessageMoveToActions,
         getRustMessageLabelAsActions
@@ -180,7 +186,7 @@ class RustMessageDataSourceImplTest {
         val userId = UserIdTestData.userId
         val mailSession = mockk<MailUserSession>()
         coEvery { userSessionRepository.getUserSession(userId) } returns mailSession
-        val pageKey = PageKey()
+        val pageKey = PageKey.DefaultPageKey()
         val messages = listOf(
             LocalMessageTestData.AugWeatherForecast,
             LocalMessageTestData.SepWeatherForecast,
@@ -193,6 +199,28 @@ class RustMessageDataSourceImplTest {
 
         // Then
         coVerify { rustMessageQuery.getMessages(userId, pageKey) }
+        assertEquals(messages, result)
+    }
+
+    @Test
+    fun `get messages should return search results when pagekey contains search query`() = runTest {
+        // Given
+        val userId = UserIdTestData.userId
+        val mailSession = mockk<MailUserSession>()
+        coEvery { userSessionRepository.getUserSession(userId) } returns mailSession
+        val pageKey = PageKey.PageKeyForSearch("search query")
+        val messages = listOf(
+            LocalMessageTestData.AugWeatherForecast,
+            LocalMessageTestData.SepWeatherForecast,
+            LocalMessageTestData.OctWeatherForecast
+        )
+        coEvery { rustMessageSearchQuery.getMessages(userId, pageKey) } returns messages
+
+        // When
+        val result = dataSource.getMessages(userId, pageKey)
+
+        // Then
+        coVerify { rustMessageSearchQuery.getMessages(userId, pageKey) }
         assertEquals(messages, result)
     }
 
@@ -534,6 +562,39 @@ class RustMessageDataSourceImplTest {
 
         // Then
         assertEquals(expected.left(), result)
+    }
+
+    @Test
+    fun `should not delete messages when mailbox is not available`() = runTest {
+        // Given
+        val userId = UserIdTestData.userId
+        val messageIds = listOf(LocalMessageId(1uL), LocalMessageId(2uL))
+
+        coEvery { rustMailbox.observeMailbox() } returns flowOf()
+
+        // When
+        val result = dataSource.deleteMessages(userId, messageIds)
+
+        // Then
+        assertTrue(result.isLeft())
+        verify { rustDeleteMessages wasNot Called }
+    }
+
+    @Test
+    fun `should handle exception when deleting messages`() = runTest {
+        // Given
+        val userId = UserIdTestData.userId
+        val mailbox = mockk<Mailbox>()
+        val messageIds = listOf(LocalMessageId(1uL), LocalMessageId(2uL))
+
+        coEvery { rustMarkMessagesUnread(mailbox, messageIds) } throws MailSessionException.Other("Error")
+        coEvery { rustMailbox.observeMailbox() } returns flowOf(mailbox)
+
+        // When
+        val result = dataSource.deleteMessages(userId, messageIds)
+
+        // Then
+        assertEquals(DataError.Local.Unknown.left(), result)
     }
 
 }

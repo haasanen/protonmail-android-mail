@@ -134,11 +134,7 @@ class RustConversationRepositoryImpl @Inject constructor(
         return emptyList<Conversation>().right()
     }
 
-    override suspend fun markUnread(
-        userId: UserId,
-        conversationIds: List<ConversationId>,
-        contextLabelId: LabelId
-    ): Either<DataError, Unit> {
+    override suspend fun markUnread(userId: UserId, conversationIds: List<ConversationId>): Either<DataError, Unit> {
         rustConversationDataSource.markUnread(userId, conversationIds.map { it.toLocalConversationId() })
 
         return Unit.right()
@@ -189,12 +185,13 @@ class RustConversationRepositoryImpl @Inject constructor(
         labelsToBeAdded: List<LabelId>
     ): Either<DataError, List<Conversation>> = DataError.Local.Unknown.left()
 
-    // It will be implemented later on
     override suspend fun deleteConversations(
         userId: UserId,
-        conversationIds: List<ConversationId>,
-        contextLabelId: LabelId
-    ): Either<DataError, Unit> = DataError.Local.Unknown.left()
+        conversationIds: List<ConversationId>
+    ): Either<DataError, Unit> = rustConversationDataSource.deleteConversations(
+        userId,
+        conversationIds.map { it.toLocalConversationId() }
+    )
 
     // It will be implemented later on
     override suspend fun deleteConversations(userId: UserId, labelId: LabelId) {

@@ -28,6 +28,7 @@ import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageId
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageMetadata
 import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailmessage.data.search.RustMessageSearchQuery
 import ch.protonmail.android.mailmessage.data.usecase.CreateRustMessageAccessor
 import ch.protonmail.android.mailmessage.data.usecase.CreateRustMessageBodyAccessor
 import ch.protonmail.android.mailmessage.data.usecase.GetRustAllMessageBottomBarActions
@@ -35,6 +36,7 @@ import ch.protonmail.android.mailmessage.data.usecase.GetRustAvailableMessageAct
 import ch.protonmail.android.mailmessage.data.usecase.GetRustMessageLabelAsActions
 import ch.protonmail.android.mailmessage.data.usecase.GetRustMessageMoveToActions
 import ch.protonmail.android.mailmessage.data.usecase.GetRustSenderImage
+import ch.protonmail.android.mailmessage.data.usecase.RustDeleteMessages
 import ch.protonmail.android.mailmessage.data.usecase.RustMarkMessagesRead
 import ch.protonmail.android.mailmessage.data.usecase.RustMarkMessagesUnread
 import ch.protonmail.android.mailmessage.data.usecase.RustStarMessages
@@ -52,10 +54,12 @@ import uniffi.proton_mail_uniffi.MessageAvailableActions
 import uniffi.proton_mail_uniffi.MoveAction
 import javax.inject.Inject
 
+@SuppressWarnings("LongParameterList")
 class RustMessageDataSourceImpl @Inject constructor(
     private val userSessionRepository: UserSessionRepository,
     private val rustMailbox: RustMailbox,
     private val rustMessageQuery: RustMessageQuery,
+    private val rustMessageSearchQuery: RustMessageSearchQuery,
     private val createRustMessageAccessor: CreateRustMessageAccessor,
     private val createRustMessageBodyAccessor: CreateRustMessageBodyAccessor,
     private val getRustSenderImage: GetRustSenderImage,
@@ -64,6 +68,7 @@ class RustMessageDataSourceImpl @Inject constructor(
     private val rustStarMessages: RustStarMessages,
     private val rustUnstarMessages: RustUnstarMessages,
     private val getRustAllMessageBottomBarActions: GetRustAllMessageBottomBarActions,
+    private val rustDeleteMessages: RustDeleteMessages,
     private val getRustAvailableMessageActions: GetRustAvailableMessageActions,
     private val getRustMessageMoveToActions: GetRustMessageMoveToActions,
     private val getRustMessageLabelAsActions: GetRustMessageLabelAsActions
@@ -108,7 +113,14 @@ class RustMessageDataSourceImpl @Inject constructor(
 
     override suspend fun getMessages(userId: UserId, pageKey: PageKey): List<LocalMessageMetadata> {
         Timber.d("rust-message: getMessages for pageKey: $pageKey")
-        return rustMessageQuery.getMessages(userId, pageKey) ?: run {
+        return when (pageKey) {
+            is PageKey.PageKeyForSearch -> {
+                rustMessageSearchQuery.getMessages(userId, pageKey)
+            }
+            is PageKey.DefaultPageKey -> {
+                rustMessageQuery.getMessages(userId, pageKey)
+            }
+        } ?: run {
             Timber.w("rust-message: paginator returned null result for $pageKey")
             emptyList()
         }
@@ -239,5 +251,24 @@ class RustMessageDataSourceImpl @Inject constructor(
             return null
         }
         return getRustMessageLabelAsActions(mailbox, messageIds)
+    }
+
+    override suspend fun deleteMessages(
+        userId: UserId,
+        messageIds: List<LocalMessageId>
+    ): Either<DataError.Local, Unit> {
+        Timber.v("rust-message: executing delete message for $messageIds")
+        val mailbox = rustMailbox.observeMailbox().firstOrNull()
+        if (mailbox == null) {
+            Timber.e("rust-message: trying to delete messages with null Mailbox! failing")
+            return DataError.Local.NoDataCached.left()
+        }
+
+        return Either.catch {
+            rustDeleteMessages(mailbox, messageIds)
+        }.mapLeft {
+            Timber.e("rust-message: Failure deleting message on rust lib $it")
+            DataError.Local.Unknown
+        }
     }
 }

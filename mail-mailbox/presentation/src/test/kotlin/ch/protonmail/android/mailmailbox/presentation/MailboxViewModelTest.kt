@@ -69,9 +69,9 @@ import ch.protonmail.android.mailmailbox.domain.model.MailboxItemType.Message
 import ch.protonmail.android.mailmailbox.domain.model.OpenMailboxItemRequest
 import ch.protonmail.android.mailmailbox.domain.model.StorageLimitPreference
 import ch.protonmail.android.mailmailbox.domain.model.UserAccountStorageStatus
+import ch.protonmail.android.mailmailbox.domain.usecase.GetBottomBarActions
 import ch.protonmail.android.mailmailbox.domain.usecase.GetBottomSheetActions
 import ch.protonmail.android.mailmailbox.domain.usecase.GetLabelAsBottomSheetContent
-import ch.protonmail.android.mailmailbox.domain.usecase.GetBottomBarActions
 import ch.protonmail.android.mailmailbox.domain.usecase.GetMoveToLocations
 import ch.protonmail.android.mailmailbox.domain.usecase.ObserveCurrentViewMode
 import ch.protonmail.android.mailmailbox.domain.usecase.ObservePrimaryUserAccountStorageStatus
@@ -1894,7 +1894,7 @@ class MailboxViewModelTest {
         returnExpectedStateWhenEnterSelectionMode(initialState, item, intermediateState)
         returnExpectedStateForBottomBarEvent(expectedState = intermediateState)
         returnExpectedStateForDeleteConfirmed(intermediateState, initialState, ConversationGrouping, 2)
-        expectDeleteConversationsSucceeds(userId, listOf(item, secondItem), SystemLabelId.Trash.labelId)
+        expectDeleteConversationsSucceeds(userId, listOf(item, secondItem))
 
         mailboxViewModel.state.test {
             // Given
@@ -1917,8 +1917,7 @@ class MailboxViewModelTest {
             coVerify(exactly = 1) {
                 deleteConversations(
                     userId,
-                    listOf(ConversationId(item.id), ConversationId(secondItem.id)),
-                    SystemLabelId.Trash.labelId
+                    listOf(ConversationId(item.id), ConversationId(secondItem.id))
                 )
             }
             coVerify { deleteMessages wasNot Called }
@@ -3812,12 +3811,8 @@ class MailboxViewModelTest {
         coEvery { moveMessages(userId, items.map { MessageId(it.id) }, labelId) } returns Unit.right()
     }
 
-    private fun expectDeleteConversationsSucceeds(
-        userId: UserId,
-        items: List<MailboxItemUiModel>,
-        labelId: LabelId
-    ) {
-        coJustRun { deleteConversations(userId, items.map { ConversationId(it.id) }, labelId) }
+    private fun expectDeleteConversationsSucceeds(userId: UserId, items: List<MailboxItemUiModel>) {
+        coEvery { deleteConversations(userId, items.map { ConversationId(it.id) }) } returns Unit.right()
     }
 
     private fun expectDeleteConversationsSucceeds(userId: UserId, labelId: LabelId) {
@@ -3829,7 +3824,7 @@ class MailboxViewModelTest {
         items: List<MailboxItemUiModel>,
         labelId: LabelId
     ) {
-        coJustRun { deleteMessages(userId, items.map { MessageId(it.id) }, labelId) }
+        coEvery { deleteMessages(userId, items.map { MessageId(it.id) }, labelId) } returns Unit.right()
     }
 
     private fun expectDeleteMessagesSucceeds(userId: UserId, labelId: LabelId) {

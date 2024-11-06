@@ -77,4 +77,6 @@ interface RustMessageDataSource {
         labelId: LocalLabelId,
         messageIds: List<LocalMessageId>
     ): Either<DataError.Local, AllBottomBarMessageActions>
+
+    suspend fun deleteMessages(userId: UserId, messageIds: List<LocalMessageId>): Either<DataError.Local, Unit>
 }

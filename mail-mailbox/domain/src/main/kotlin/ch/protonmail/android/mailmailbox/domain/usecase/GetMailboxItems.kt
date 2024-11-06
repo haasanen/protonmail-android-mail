@@ -45,7 +45,7 @@ class GetMailboxItems @Inject constructor(
     suspend operator fun invoke(
         userId: UserId,
         type: MailboxItemType,
-        pageKey: PageKey = PageKey()
+        pageKey: PageKey = PageKey.DefaultPageKey()
     ): Either<DataError, List<MailboxItem>> = either {
         return@either when (type) {
             MailboxItemType.Message -> messageRepository.getMessages(userId, pageKey).let { list ->

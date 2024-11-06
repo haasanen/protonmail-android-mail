@@ -16,12 +16,15 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailmessage.data.local
+package ch.protonmail.android.mailmessage.data.usecase
 
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageMetadata
-import ch.protonmail.android.mailpagination.domain.model.PageKey
-import me.proton.core.domain.entity.UserId
+import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageId
+import uniffi.proton_mail_uniffi.Mailbox
+import uniffi.proton_mail_uniffi.deleteMessages
+import javax.inject.Inject
 
-interface RustMessageQuery {
-    suspend fun getMessages(userId: UserId, pageKey: PageKey.DefaultPageKey): List<LocalMessageMetadata>?
+class RustDeleteMessages @Inject constructor() {
+
+    suspend operator fun invoke(mailbox: Mailbox, messageIds: List<LocalMessageId>) =
+        deleteMessages(mailbox, messageIds)
 }

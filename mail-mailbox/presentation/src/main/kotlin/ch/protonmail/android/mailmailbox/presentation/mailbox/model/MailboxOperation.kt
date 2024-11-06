@@ -192,7 +192,8 @@ internal sealed interface MailboxEvent : MailboxOperation {
         AffectingTopAppBar,
         AffectingBottomAppBar,
         AffectingActionMessage,
-        AffectingDeleteDialog
+        AffectingDeleteDialog,
+        AffectingBottomSheet
 
     data class DeleteAll(val viewMode: ViewMode, val location: LabelId) : MailboxEvent, AffectingClearDialog
     data class DeleteAllConfirmed(val viewMode: ViewMode) : MailboxEvent, AffectingClearDialog
@@ -231,6 +232,7 @@ internal sealed interface MailboxEvent : MailboxOperation {
         val bottomSheetOperation: BottomSheetOperation
     ) : MailboxEvent, AffectingBottomSheet
 
+    object ErrorDeleting : MailboxEvent, AffectingErrorBar, AffectingDeleteDialog, AffectingBottomSheet
     object ErrorLabeling : MailboxEvent, AffectingErrorBar
     object ErrorRetrievingCustomMailLabels : MailboxEvent, AffectingErrorBar, AffectingBottomSheet
     object ErrorRetrievingFolderColorSettings : MailboxEvent, AffectingErrorBar, AffectingBottomSheet

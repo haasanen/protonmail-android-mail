@@ -21,6 +21,7 @@ package ch.protonmail.android.maildetail.presentation.reducer
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcommon.presentation.ui.delete.DeleteDialogState
 import ch.protonmail.android.maildetail.presentation.R
+import ch.protonmail.android.maildetail.presentation.model.ConversationDeleteState
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailOperation.AffectingDeleteDialog
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction
@@ -49,26 +50,24 @@ class ConversationDeleteDialogReducerTest(
         private val transitions = listOf(
             TestInput(
                 operation = ConversationDetailViewAction.DeleteRequested,
-                expectedState = DeleteDialogState.Shown(
-                    title = TextUiModel.TextRes(R.string.conversation_delete_dialog_title),
-                    message = TextUiModel.TextRes(R.string.conversation_delete_dialog_message)
+                expectedState = ConversationDeleteState(
+                    DeleteDialogState.Shown(
+                        title = TextUiModel.TextRes(R.string.conversation_delete_dialog_title),
+                        message = TextUiModel.TextRes(R.string.conversation_delete_dialog_message)
+                    )
                 )
             ),
             TestInput(
                 operation = ConversationDetailViewAction.DeleteDialogDismissed,
-                expectedState = DeleteDialogState.Hidden
+                expectedState = ConversationDeleteState.Hidden
             ),
             TestInput(
                 operation = ConversationDetailViewAction.DeleteConfirmed,
-                expectedState = DeleteDialogState.Hidden
+                expectedState = ConversationDeleteState.Hidden
             ),
             TestInput(
                 operation = ConversationDetailEvent.ErrorDeletingConversation,
-                expectedState = DeleteDialogState.Hidden
-            ),
-            TestInput(
-                operation = ConversationDetailEvent.ErrorDeletingNoApplicableFolder,
-                expectedState = DeleteDialogState.Hidden
+                expectedState = ConversationDeleteState.Hidden
             )
         )
 
@@ -87,7 +86,7 @@ class ConversationDeleteDialogReducerTest(
 
         data class TestInput(
             val operation: AffectingDeleteDialog,
-            val expectedState: DeleteDialogState
+            val expectedState: ConversationDeleteState
         )
     }
 }

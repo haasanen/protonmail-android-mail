@@ -110,6 +110,7 @@ import ch.protonmail.android.mailmessage.domain.model.Message
 import ch.protonmail.android.mailmessage.domain.model.MessageAttachment
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.Participant
+import ch.protonmail.android.mailmessage.domain.usecase.DeleteMessages
 import ch.protonmail.android.mailmessage.domain.usecase.GetDecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.usecase.GetMessageMoveToLocations
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.ContactActionsBottomSheetState
@@ -192,7 +193,8 @@ class ConversationDetailViewModel @Inject constructor(
     private val getLabelAsBottomSheetData: GetLabelAsBottomSheetData,
     private val getMoreActionsBottomSheetData: GetMoreActionsBottomSheetData,
     private val onMessageLabelAsConfirmed: OnMessageLabelAsConfirmed,
-    private val moveMessage: MoveMessage
+    private val moveMessage: MoveMessage,
+    private val deleteMessages: DeleteMessages
 ) : ViewModel() {
 
     private val primaryUserId = observePrimaryUserId()
@@ -248,6 +250,7 @@ class ConversationDetailViewModel @Inject constructor(
             is MarkUnread -> markAsUnread()
             is Trash -> moveConversationToTrash()
             is ConversationDetailViewAction.DeleteConfirmed -> handleDeleteConfirmed(action)
+            is ConversationDetailViewAction.DeleteMessageConfirmed -> handleDeleteMessageConfirmed(action)
             is RequestMoveToBottomSheet -> showMoveToBottomSheet(action)
             is MoveToDestinationConfirmed -> onMoveToDestinationConfirmed(action.mailLabelText, action.messageId)
             is RequestConversationLabelAsBottomSheet -> showConversationLabelAsBottomSheet(action)
@@ -281,6 +284,7 @@ class ConversationDetailViewModel @Inject constructor(
 
             is ConversationDetailViewAction.DeleteRequested,
             is ConversationDetailViewAction.DeleteDialogDismissed,
+            is ConversationDetailViewAction.DeleteMessageRequested,
             is DismissBottomSheet,
             is MoveToDestinationSelected,
             is LabelAsToggleAction,
@@ -804,34 +808,25 @@ class ConversationDetailViewModel @Inject constructor(
         }.launchIn(viewModelScope)
     }
 
-    @MissingRustApi
-    // Need conversation model to expose "exclusive location" in a way that it can be mapped
-    // back to deleteConversation as a labelId. Rust will perform checks to see "isDeletable"
+    private fun handleDeleteMessageConfirmed(action: ConversationDetailViewAction.DeleteMessageConfirmed) {
+        viewModelScope.launch {
+            emitNewStateFrom(action)
+            val currentLabelId = openedFromLocation ?: return@launch
+
+            deleteMessages(primaryUserId.first(), listOf(action.messageId), currentLabelId)
+        }
+    }
+
     private fun handleDeleteConfirmed(action: ConversationDetailViewAction) {
         viewModelScope.launch {
-            val userId = primaryUserId.first()
-            val conversation = observeConversation(userId, conversationId).first().getOrNull()
-            if (conversation == null) {
-                Timber.e("Failed to get conversation for deletion")
-                emitNewStateFrom(ConversationDetailEvent.ErrorDeletingConversation)
-                return@launch
-            }
+            // We manually cancel the observations since the following deletion calls cause all the observers
+            // to emit, which could lead to race conditions as the observers re-insert the conversation and/or
+            // the messages in the DB on late changes, making the entry still re-appear in the mailbox list.
+            stopAllJobs()
 
-            val currentDeletableLabel: LabelId? = null
+            emitNewStateFrom(action)
+            deleteConversations(primaryUserId.first(), listOf(conversationId))
 
-            if (currentDeletableLabel == null) {
-                Timber.e("Failed to delete conversation: no applicable folder")
-                emitNewStateFrom(ConversationDetailEvent.ErrorDeletingNoApplicableFolder)
-                return@launch
-            } else {
-                // We manually cancel the observations since the following deletion calls cause all the observers
-                // to emit, which could lead to race conditions as the observers re-insert the conversation and/or
-                // the messages in the DB on late changes, making the entry still re-appear in the mailbox list.
-                stopAllJobs()
-
-                deleteConversations(userId, listOf(conversationId), currentDeletableLabel)
-                emitNewStateFrom(action)
-            }
         }
     }
 

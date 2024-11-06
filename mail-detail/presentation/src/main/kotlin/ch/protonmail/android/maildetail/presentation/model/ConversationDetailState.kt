@@ -22,7 +22,6 @@ import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.ActionResult
 import ch.protonmail.android.mailcommon.presentation.model.BottomBarState
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
-import ch.protonmail.android.mailcommon.presentation.ui.delete.DeleteDialogState
 import ch.protonmail.android.maildetail.domain.model.OpenAttachmentIntentValues
 import ch.protonmail.android.maildetail.domain.model.OpenProtonCalendarIntentValues
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.BottomSheetState
@@ -40,7 +39,7 @@ data class ConversationDetailState(
     val openProtonCalendarIntent: Effect<OpenProtonCalendarIntentValues>,
     val scrollToMessage: MessageIdUiModel?,
     val requestLinkConfirmation: Boolean,
-    val deleteDialogState: DeleteDialogState,
+    val conversationDeleteState: ConversationDeleteState,
     val reportPhishingDialogState: ReportPhishingDialogState,
     val trashedMessagesBannerState: TrashedMessagesBannerState
 ) {
@@ -60,7 +59,7 @@ data class ConversationDetailState(
             openProtonCalendarIntent = Effect.empty(),
             scrollToMessage = null,
             requestLinkConfirmation = false,
-            deleteDialogState = DeleteDialogState.Hidden,
+            conversationDeleteState = ConversationDeleteState.Hidden,
             reportPhishingDialogState = ReportPhishingDialogState.Hidden,
             trashedMessagesBannerState = TrashedMessagesBannerState.Hidden
         )

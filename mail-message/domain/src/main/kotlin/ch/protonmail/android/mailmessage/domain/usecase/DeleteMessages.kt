@@ -18,6 +18,8 @@
 
 package ch.protonmail.android.mailmessage.domain.usecase
 
+import arrow.core.Either
+import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
 import me.proton.core.domain.entity.UserId
@@ -32,9 +34,7 @@ class DeleteMessages @Inject constructor(
         userId: UserId,
         messageIds: List<MessageId>,
         currentLabelId: LabelId
-    ) {
-        messageRepository.deleteMessages(userId, messageIds, currentLabelId)
-    }
+    ): Either<DataError, Unit> = messageRepository.deleteMessages(userId, messageIds, currentLabelId)
 
     suspend operator fun invoke(userId: UserId, labelId: LabelId) {
         messageRepository.deleteMessages(userId, labelId)

@@ -75,9 +75,9 @@ import ch.protonmail.android.maildetail.domain.usecase.MarkMessageAsRead
 import ch.protonmail.android.maildetail.domain.usecase.MarkMessageAsUnread
 import ch.protonmail.android.maildetail.domain.usecase.MoveConversation
 import ch.protonmail.android.maildetail.domain.usecase.MoveMessage
-import ch.protonmail.android.maildetail.domain.usecase.ObserveDetailBottomBarActions
 import ch.protonmail.android.maildetail.domain.usecase.ObserveConversationMessages
 import ch.protonmail.android.maildetail.domain.usecase.ObserveConversationViewState
+import ch.protonmail.android.maildetail.domain.usecase.ObserveDetailBottomBarActions
 import ch.protonmail.android.maildetail.domain.usecase.ObserveMessageAttachmentStatus
 import ch.protonmail.android.maildetail.domain.usecase.RelabelConversation
 import ch.protonmail.android.maildetail.domain.usecase.RelabelMessage
@@ -96,10 +96,10 @@ import ch.protonmail.android.maildetail.presentation.mapper.MessageDetailHeaderU
 import ch.protonmail.android.maildetail.presentation.mapper.MessageIdUiModelMapper
 import ch.protonmail.android.maildetail.presentation.mapper.MessageLocationUiModelMapper
 import ch.protonmail.android.maildetail.presentation.mapper.ParticipantUiModelMapper
+import ch.protonmail.android.maildetail.presentation.model.ConversationDeleteState
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMessageUiModel.Collapsed
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMessageUiModel.Expanded
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMessageUiModel.Expanding
-import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMessageUiModel.Hidden
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMetadataState
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailState
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction
@@ -125,7 +125,6 @@ import ch.protonmail.android.maildetail.presentation.usecase.OnMessageLabelAsCon
 import ch.protonmail.android.maildetail.presentation.usecase.PrintMessage
 import ch.protonmail.android.maillabel.domain.model.MailLabels
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
-import ch.protonmail.android.maillabel.domain.sample.LabelIdSample
 import ch.protonmail.android.maillabel.domain.sample.LabelSample
 import ch.protonmail.android.maillabel.presentation.model.LabelSelectedState
 import ch.protonmail.android.maillabel.presentation.sample.LabelUiModelWithSelectedStateSample
@@ -141,10 +140,12 @@ import ch.protonmail.android.mailmessage.domain.model.MimeType
 import ch.protonmail.android.mailmessage.domain.sample.MessageAttachmentSample
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
 import ch.protonmail.android.mailmessage.domain.sample.MessageSample
+import ch.protonmail.android.mailmessage.domain.usecase.DeleteMessages
 import ch.protonmail.android.mailmessage.domain.usecase.GetDecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.usecase.GetEmbeddedImageResult
 import ch.protonmail.android.mailmessage.domain.usecase.GetMessageAvailableActions
 import ch.protonmail.android.mailmessage.domain.usecase.GetMessageLabelAsActions
+import ch.protonmail.android.mailmessage.domain.usecase.GetMessageMoveToLocations
 import ch.protonmail.android.mailmessage.domain.usecase.ObserveMessage
 import ch.protonmail.android.mailmessage.domain.usecase.ResolveParticipantName
 import ch.protonmail.android.mailmessage.presentation.mapper.AttachmentUiModelMapper
@@ -199,12 +200,10 @@ import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
-import ch.protonmail.android.mailmessage.domain.usecase.GetMessageMoveToLocations
 import me.proton.core.network.domain.NetworkManager
 import me.proton.core.network.domain.NetworkStatus
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
-import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
@@ -316,6 +315,7 @@ class ConversationDetailViewModelIntegrationTest {
     private val printMessage = mockk<PrintMessage>()
     private val markMessageAsUnread = mockk<MarkMessageAsUnread>()
     private val moveMessage = mockk<MoveMessage>()
+    private val deleteMessages = mockk<DeleteMessages>()
     private val relabelMessage = mockk<RelabelMessage>()
     private val avatarInformationMapper = mockk<AvatarInformationMapper> {
         every {
@@ -1223,8 +1223,8 @@ class ConversationDetailViewModelIntegrationTest {
 
         // Then
         assertEquals(
-            expected = DeleteDialogState.Shown(expectedTitle, expectedMessage),
-            actual = viewModel.state.value.deleteDialogState
+            expected = ConversationDeleteState(DeleteDialogState.Shown(expectedTitle, expectedMessage)),
+            actual = viewModel.state.value.conversationDeleteState
         )
     }
 
@@ -1241,13 +1241,12 @@ class ConversationDetailViewModelIntegrationTest {
 
         // Then
         assertEquals(
-            expected = DeleteDialogState.Hidden,
-            actual = viewModel.state.value.deleteDialogState
+            expected = ConversationDeleteState.Hidden,
+            actual = viewModel.state.value.conversationDeleteState
         )
     }
 
     @Test
-    @Ignore("MissingRustApi, see viewModel's handleDeleteConfirmed")
     fun `verify delete is executed when delete confirmed is called`() = runTest {
         // Given
         val expectedMessage = ActionResult.DefinitiveActionResult(TextUiModel(R.string.conversation_deleted))
@@ -1256,7 +1255,7 @@ class ConversationDetailViewModelIntegrationTest {
         } returns flowOf(
             ConversationSample.WeatherForecast.right()
         )
-        coJustRun { deleteConversations(userId, listOf(conversationId), LabelIdSample.Trash) }
+        coJustRun { deleteConversations(userId, listOf(conversationId)) }
 
         val viewModel = buildConversationDetailViewModel()
 
@@ -1265,43 +1264,8 @@ class ConversationDetailViewModelIntegrationTest {
         advanceUntilIdle()
 
         // Then
-        coVerify { deleteConversations(userId, listOf(conversationId), LabelIdSample.Trash) }
+        coVerify { deleteConversations(userId, listOf(conversationId)) }
         assertEquals(expectedMessage, viewModel.state.value.exitScreenWithMessageEffect.consume())
-    }
-
-    @Test
-    fun `verify error is shown when getting conversation fails`() = runTest {
-        // Given
-        val expectedMessage = TextUiModel(R.string.error_delete_conversation_failed)
-        coEvery {
-            observeConversationUseCase(userId, conversationId)
-        } returns flowOf(DataError.Local.NoDataCached.left())
-
-        val viewModel = buildConversationDetailViewModel()
-
-        // When
-        viewModel.submit(ConversationDetailViewAction.DeleteConfirmed)
-        advanceUntilIdle()
-
-        // Then
-        coVerify { deleteConversations wasNot Called }
-        assertEquals(expectedMessage, viewModel.state.value.error.consume())
-    }
-
-    @Test
-    fun `verify error is shown when conversation is in wrong location `() = runTest {
-        // Given
-        val expectedMessage = TextUiModel(R.string.error_delete_conversation_failed_wrong_folder)
-
-        val viewModel = buildConversationDetailViewModel()
-
-        // When
-        viewModel.submit(ConversationDetailViewAction.DeleteConfirmed)
-        advanceUntilIdle()
-
-        // Then
-        coVerify { deleteConversations wasNot Called }
-        assertEquals(expectedMessage, viewModel.state.value.error.consume())
     }
 
     @Test
@@ -2429,7 +2393,8 @@ class ConversationDetailViewModelIntegrationTest {
         getLabelAsBottomSheetData = getLabelAsBottomSheetData,
         getMoreActionsBottomSheetData = getMoreActionsBottomSheetData,
         onMessageLabelAsConfirmed = onMessageLabelAsConfirmed,
-        moveMessage = moveMessage
+        moveMessage = moveMessage,
+        deleteMessages = deleteMessages
     )
 
     private fun aMessageAttachment(id: String): MessageAttachment = MessageAttachment(

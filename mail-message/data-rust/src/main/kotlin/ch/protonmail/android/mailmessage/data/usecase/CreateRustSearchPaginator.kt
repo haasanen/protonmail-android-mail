@@ -16,12 +16,19 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailmessage.data.local
+package ch.protonmail.android.mailmessage.data.usecase
 
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageMetadata
-import ch.protonmail.android.mailpagination.domain.model.PageKey
-import me.proton.core.domain.entity.UserId
+import uniffi.proton_mail_uniffi.LiveQueryCallback
+import uniffi.proton_mail_uniffi.MailUserSession
+import uniffi.proton_mail_uniffi.PaginatorSearchOptions
+import uniffi.proton_mail_uniffi.paginateSearch
+import javax.inject.Inject
 
-interface RustMessageQuery {
-    suspend fun getMessages(userId: UserId, pageKey: PageKey.DefaultPageKey): List<LocalMessageMetadata>?
+class CreateRustSearchPaginator @Inject constructor() {
+
+    suspend operator fun invoke(
+        session: MailUserSession,
+        keyword: String,
+        callback: LiveQueryCallback
+    ) = paginateSearch(session, PaginatorSearchOptions(keyword), callback)
 }

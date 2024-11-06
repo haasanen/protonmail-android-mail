@@ -180,9 +180,7 @@ class RustMessageRepositoryImpl @Inject constructor(
         userId: UserId,
         messageIds: List<MessageId>,
         currentLabelId: LabelId
-    ): Either<DataError, Unit> {
-        TODO("Not yet implemented")
-    }
+    ): Either<DataError, Unit> = rustMessageDataSource.deleteMessages(userId, messageIds.map { it.toLocalMessageId() })
 
     override suspend fun deleteMessages(userId: UserId, labelId: LabelId) {
         TODO("Not yet implemented")
