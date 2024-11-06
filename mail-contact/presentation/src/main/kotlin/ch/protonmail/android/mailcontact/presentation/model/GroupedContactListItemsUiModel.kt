@@ -18,25 +18,6 @@
 
 package ch.protonmail.android.mailcontact.presentation.model
 
-import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
-import javax.inject.Inject
-
-class ContactListItemUiModelMapper @Inject constructor(
-    private val contactGroupItemUiModelMapper: ContactGroupItemUiModelMapper,
-    private val contactItemUiModelMapper: ContactItemUiModelMapper
-) {
-
-    fun toContactListItemUiModel(contact: ContactMetadata): ContactListItemUiModel {
-
-        return when (contact) {
-            is ContactMetadata.Contact -> {
-                contactItemUiModelMapper.toContactItemUiModel(contact)
-            }
-
-            is ContactMetadata.ContactGroup -> {
-                contactGroupItemUiModelMapper.toContactGroupItemUiModel(contact)
-            }
-
-        }
-    }
-}
+data class GroupedContactListItemsUiModel(
+    val contacts: List<ContactListItemUiModel>
+)

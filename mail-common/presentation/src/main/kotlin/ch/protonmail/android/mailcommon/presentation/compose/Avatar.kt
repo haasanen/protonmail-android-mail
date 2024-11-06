@@ -24,6 +24,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -38,6 +39,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import ch.protonmail.android.mailcommon.presentation.NO_CONTENT_DESCRIPTION
 import ch.protonmail.android.mailcommon.presentation.R
@@ -92,25 +94,7 @@ fun Avatar(
                 }
 
             is AvatarUiModel.ParticipantAvatar ->
-                Box(
-                    modifier = Modifier
-                        .sizeIn(
-                            minWidth = avatarSize,
-                            minHeight = avatarSize
-                        )
-                        .background(
-                            color = ProtonTheme.colors.interactionWeakNorm,
-                            shape = backgroundShape
-                        ),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        modifier = Modifier
-                            .testTag(AvatarTestTags.AvatarText),
-                        textAlign = TextAlign.Center,
-                        text = avatarUiModel.initial
-                    )
-                }
+                ParticipantAvatar(avatarUiModel)
 
             is AvatarUiModel.SelectionMode ->
                 Box(
@@ -147,6 +131,45 @@ fun Avatar(
         }
     }
 }
+
+@Composable
+fun ParticipantAvatar(avatarUiModel: AvatarUiModel.ParticipantAvatar) {
+    Box(
+        modifier = Modifier
+            .sizeIn(
+                minWidth = MailDimens.AvatarSize,
+                minHeight = MailDimens.AvatarSize
+            )
+            .background(
+                color = avatarUiModel.color,
+                shape = CircleShape
+            ),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            modifier = Modifier
+                .testTag(AvatarTestTags.AvatarText),
+            textAlign = TextAlign.Center,
+            style = ProtonTheme.typography.body2Medium,
+            color = Color.White,
+            text = avatarUiModel.initial
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PreviewParticipantAvatar() {
+    val sampleAvatar = AvatarUiModel.ParticipantAvatar(
+        initial = "A",
+        address = "example@example.com",
+        bimiSelector = null,
+        color = Color.Blue
+    )
+
+    ParticipantAvatar(avatarUiModel = sampleAvatar)
+}
+
 
 object AvatarTestTags {
 

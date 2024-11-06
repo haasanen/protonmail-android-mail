@@ -28,14 +28,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.tooling.preview.Preview
 import ch.protonmail.android.mailcommon.presentation.compose.Avatar
 import ch.protonmail.android.mailcommon.presentation.model.string
 import ch.protonmail.android.mailcontact.presentation.model.ContactListItemUiModel
 import ch.protonmail.android.mailcontact.presentation.utils.ContactFeatureFlags.ContactDetails
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.defaultNorm
-import ch.protonmail.android.design.compose.theme.defaultSmallWeak
+import ch.protonmail.android.mailcontact.presentation.previewdata.ContactListPreviewData
 
 @Composable
 internal fun ContactListItem(
@@ -52,8 +52,7 @@ internal fun ContactListItem(
                 onClick = {
                     actions.onContactSelected(contact.id)
                 }
-            )
-            .padding(start = ProtonDimens.DefaultSpacing),
+            ),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Avatar(
@@ -70,12 +69,23 @@ internal fun ContactListItem(
         ) {
             Text(
                 text = contact.name,
-                style = ProtonTheme.typography.defaultNorm
+                style = ProtonTheme.typography.body1Regular,
+                color = ProtonTheme.colors.textWeak
             )
             Text(
                 text = contact.emailSubtext.string(),
-                style = ProtonTheme.typography.defaultSmallWeak
+                style = ProtonTheme.typography.body2Regular,
+                color = ProtonTheme.colors.textHint
             )
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun ContactListItemPreview() {
+    ContactListItem(
+        contact = ContactListPreviewData.contactSampleData,
+        actions = ContactListScreen.Actions.Empty
+    )
 }

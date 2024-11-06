@@ -28,10 +28,6 @@ import kotlin.random.Random
 
 object ContactListPreviewData {
 
-    val headerSampleData = ContactListItemUiModel.Header(
-        value = "A"
-    )
-
     val contactSampleData = ContactListItemUiModel.Contact(
         id = ContactId("Id"),
         name = "Name",

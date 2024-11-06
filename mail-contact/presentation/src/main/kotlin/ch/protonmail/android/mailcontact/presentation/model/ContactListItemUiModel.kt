@@ -25,9 +25,6 @@ import ch.protonmail.android.mailcontact.domain.model.ContactGroupId
 import ch.protonmail.android.mailcontact.domain.model.ContactId
 
 sealed interface ContactListItemUiModel {
-    data class Header(
-        val value: String
-    ) : ContactListItemUiModel
 
     data class Contact(
         val id: ContactId,

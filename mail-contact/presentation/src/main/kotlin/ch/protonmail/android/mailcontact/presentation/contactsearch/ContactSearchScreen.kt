@@ -130,7 +130,7 @@ fun ContactSearchContent(
                     is ContactListItemUiModel.ContactGroup -> {
                         ContactListGroupItem(
                             modifier = Modifier.animateItemPlacement(),
-                            contact = contact,
+                            contactGroup = contact,
                             actions = ContactListScreen.Actions.fromContactSearchActions(
                                 onContactGroupClick = actions.onContactGroupClick
                             )

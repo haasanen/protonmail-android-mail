@@ -26,10 +26,10 @@ import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailcontact.domain.usecase.ObserveGroupedContacts
 import ch.protonmail.android.mailcontact.domain.usecase.featureflags.IsContactGroupsCrudEnabled
 import ch.protonmail.android.mailcontact.domain.usecase.featureflags.IsContactSearchEnabled
-import ch.protonmail.android.mailcontact.presentation.model.ContactListItemUiModelMapper
 import ch.protonmail.android.mailupselling.domain.model.UpsellingEntryPoint
 import ch.protonmail.android.mailupselling.domain.model.UserUpgradeState
 import ch.protonmail.android.mailupselling.presentation.usecase.ObserveUpsellingVisibility
+import ch.protonmail.android.mailcontact.presentation.model.GroupedContactListItemsUiModelMapper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -51,7 +51,7 @@ class ContactListViewModel @Inject constructor(
     private val observeGroupedContacts: ObserveGroupedContacts,
     private val isPaidUser: IsPaidUser,
     private val reducer: ContactListReducer,
-    private val contactListItemUiModelMapper: ContactListItemUiModelMapper,
+    private val groupedContactListItemsUiModelMapper: GroupedContactListItemsUiModelMapper,
     private val isContactGroupsCrudEnabled: IsContactGroupsCrudEnabled,
     private val observeUpsellingVisibility: ObserveUpsellingVisibility,
     private val userUpgradeState: UserUpgradeState,
@@ -114,7 +114,7 @@ class ContactListViewModel @Inject constructor(
             contactsEither.fold(
                 ifRight = { contactList ->
                     ContactListEvent.ContactListLoaded(
-                        contactList = contactListItemUiModelMapper.toContactListItemUiModel(contactList),
+                        groupedContactsList = contactList.map { groupedContactListItemsUiModelMapper.toUiModel(it) },
                         isContactGroupsCrudEnabled = isContactGroupsCrudEnabled,
                         isContactGroupsUpsellingVisible = isContactGroupsUpsellingVisible,
                         isContactSearchEnabled = isContactSearchEnabled
@@ -127,7 +127,6 @@ class ContactListViewModel @Inject constructor(
             )
         }
     }
-
 
     private fun emitNewStateFor(event: ContactListEvent) {
         val currentState = state.value

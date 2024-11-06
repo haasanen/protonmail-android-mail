@@ -46,6 +46,7 @@ internal fun ContactListTopBar(
 ) {
     ProtonTopAppBar(
         modifier = modifier.fillMaxWidth(),
+        backgroundColor = ProtonTheme.colors.backgroundSecondary,
         title = {
             Text(text = stringResource(id = R.string.contact_list_title))
         },

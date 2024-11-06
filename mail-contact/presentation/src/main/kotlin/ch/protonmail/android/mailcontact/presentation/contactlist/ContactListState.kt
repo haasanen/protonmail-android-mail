@@ -22,6 +22,7 @@ import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcontact.presentation.model.ContactListItemUiModel
 import ch.protonmail.android.mailupselling.presentation.model.BottomSheetVisibilityEffect
+import ch.protonmail.android.mailcontact.presentation.model.GroupedContactListItemsUiModel
 
 sealed interface ContactListState {
 
@@ -60,6 +61,7 @@ sealed interface ContactListState {
             override val isContactSearchEnabled: Boolean = false,
             override val bottomSheetType: BottomSheetType = BottomSheetType.Menu,
             val contacts: List<ContactListItemUiModel>
+            val groupedContacts: List<GroupedContactListItemsUiModel>
         ) : Loaded
 
         data class Empty(

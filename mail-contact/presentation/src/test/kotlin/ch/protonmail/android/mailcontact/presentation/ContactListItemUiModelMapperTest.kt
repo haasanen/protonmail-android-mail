@@ -27,7 +27,6 @@ import ch.protonmail.android.mailcontact.presentation.model.ContactListItemUiMod
 import ch.protonmail.android.mailcontact.domain.model.ContactEmail
 import ch.protonmail.android.mailcontact.domain.model.ContactEmailId
 import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
-import ch.protonmail.android.mailcontact.domain.model.GroupedContacts
 import ch.protonmail.android.mailcontact.presentation.model.ContactGroupItemUiModelMapper
 import ch.protonmail.android.mailcontact.presentation.model.ContactItemUiModelMapper
 import ch.protonmail.android.testdata.contact.ContactGroupIdSample
@@ -48,8 +47,8 @@ class ContactListItemUiModelMapperTest {
     )
 
     @Test
-    fun `return correct contact items and group items with headers`() {
-        // Arrange: Create mock contact and group objects
+    fun `return correct contact item`() {
+        // Given
         val contact1 = ContactMetadata.Contact(
             id = ContactIdTestData.contactId1,
             avatar = AvatarInformationSample.avatarSample,
@@ -63,26 +62,17 @@ class ContactListItemUiModelMapperTest {
                 )
             )
         )
-
-        val contactGroup1 = ContactMetadata.ContactGroup(
-            id = ContactGroupIdSample.Friends,
-            name = "Family Group",
-            color = "Blue",
-            members = emptyList()
-        )
-
-        val groupedContacts = listOf(
-            GroupedContacts(
-                groupedBy = "F",
-                contacts = listOf(contact1)
-            ),
-            GroupedContacts(
-                groupedBy = "Groups",
-                contacts = listOf(contactGroup1)
+        val expectedContact = ContactListItemUiModel.Contact(
+            id = contact1.id,
+            name = contact1.name,
+            emailSubtext = TextUiModel(contact1.emails.first().email),
+            avatar = AvatarUiModel.ParticipantAvatar(
+                initial = "FC",
+                address = contact1.emails.first().email,
+                bimiSelector = null,
+                color = Color.Unspecified
             )
         )
-
-        // Mock the behavior of mappers
         every { contactItemUiModelMapper.toContactItemUiModel(contact1) } returns ContactListItemUiModel.Contact(
             id = contact1.id,
             name = contact1.name,
@@ -95,6 +85,29 @@ class ContactListItemUiModelMapperTest {
             )
         )
 
+        // When
+        val actualContact = contactListItemUiModelMapper.toContactListItemUiModel(contact1)
+
+        // Then
+        assertEquals(expectedContact, actualContact)
+        verify { contactItemUiModelMapper.toContactItemUiModel(contact1) }
+    }
+
+    @Test
+    fun `return correct contact group item`() {
+        // Given
+        val contactGroup1 = ContactMetadata.ContactGroup(
+            id = ContactGroupIdSample.Friends,
+            name = "Family Group",
+            color = "Blue",
+            members = emptyList()
+        )
+        val expectedContactGroup = ContactListItemUiModel.ContactGroup(
+            id = contactGroup1.id,
+            name = contactGroup1.name,
+            memberCount = 0,
+            color = Color.Blue
+        )
         every {
             contactGroupItemUiModelMapper.toContactGroupItemUiModel(contactGroup1)
         } returns ContactListItemUiModel.ContactGroup(
@@ -104,36 +117,11 @@ class ContactListItemUiModelMapperTest {
             color = Color.Blue
         )
 
-        // Act: Call the mapper method
-        val actual = contactListItemUiModelMapper.toContactListItemUiModel(groupedContacts)
+        // When
+        val actualContactGroup = contactListItemUiModelMapper.toContactListItemUiModel(contactGroup1)
 
-        // Assert: Verify the result includes headers and the mapped contacts
-        val expected = listOf(
-            ContactListItemUiModel.Header(value = "F"),
-            ContactListItemUiModel.Contact(
-                id = contact1.id,
-                name = contact1.name,
-                emailSubtext = TextUiModel(contact1.emails.first().email),
-                avatar = AvatarUiModel.ParticipantAvatar(
-                    initial = "FC",
-                    address = contact1.emails.first().email,
-                    bimiSelector = null,
-                    color = Color.Unspecified
-                )
-            ),
-            ContactListItemUiModel.Header(value = "Groups"),
-            ContactListItemUiModel.ContactGroup(
-                id = contactGroup1.id,
-                name = contactGroup1.name,
-                memberCount = 0,
-                color = Color.Blue
-            )
-        )
-
-        assertEquals(expected, actual)
-
-        // Verify that the mappers were called
-        verify { contactItemUiModelMapper.toContactItemUiModel(contact1) }
+        // Then
+        assertEquals(expectedContactGroup, actualContactGroup)
         verify { contactGroupItemUiModelMapper.toContactGroupItemUiModel(contactGroup1) }
     }
 }

@@ -27,6 +27,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Text
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
@@ -36,6 +37,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.tooling.preview.Preview
 import ch.protonmail.android.mailcommon.presentation.NO_CONTENT_DESCRIPTION
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 import ch.protonmail.android.mailcontact.presentation.R
@@ -43,13 +45,12 @@ import ch.protonmail.android.mailcontact.presentation.model.ContactListItemUiMod
 import ch.protonmail.android.mailcontact.presentation.utils.ContactFeatureFlags
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.defaultNorm
-import ch.protonmail.android.design.compose.theme.defaultSmallWeak
+import ch.protonmail.android.mailcontact.presentation.previewdata.ContactListPreviewData
 
 @Composable
 internal fun ContactListGroupItem(
     modifier: Modifier = Modifier,
-    contact: ContactListItemUiModel.ContactGroup,
+    contactGroup: ContactListItemUiModel.ContactGroup,
     actions: ContactListScreen.Actions
 ) {
     Row(
@@ -59,10 +60,9 @@ internal fun ContactListGroupItem(
                 role = Role.Button,
                 enabled = ContactFeatureFlags.ContactGroupDetails.value,
                 onClick = {
-                    actions.onContactGroupSelected(contact.id)
+                    actions.onContactGroupSelected(contactGroup.id)
                 }
-            )
-            .padding(start = ProtonDimens.DefaultSpacing),
+            ),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Box(contentAlignment = Alignment.Center) {
@@ -73,14 +73,16 @@ internal fun ContactListGroupItem(
                         minHeight = MailDimens.AvatarMinSize
                     )
                     .background(
-                        color = contact.color,
-                        shape = ProtonTheme.shapes.medium
+                        color = contactGroup.color,
+                        shape = CircleShape
                     ),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
-                    modifier = Modifier.size(ProtonDimens.SmallIconSize),
-                    painter = painterResource(id = R.drawable.ic_proton_users_filled),
+                    modifier = Modifier
+                        .padding(MailDimens.AvatarIconPadding)
+                        .size(MailDimens.AvatarIconSize),
+                    painter = painterResource(id = R.drawable.ic_proton_users),
                     tint = Color.White,
                     contentDescription = NO_CONTENT_DESCRIPTION
                 )
@@ -95,17 +97,28 @@ internal fun ContactListGroupItem(
             )
         ) {
             Text(
-                text = contact.name,
-                style = ProtonTheme.typography.defaultNorm
+                text = contactGroup.name,
+                style = ProtonTheme.typography.body1Regular,
+                color = ProtonTheme.colors.textWeak
             )
             Text(
                 text = pluralStringResource(
                     R.plurals.contact_group_details_member_count,
-                    contact.memberCount,
-                    contact.memberCount
+                    contactGroup.memberCount,
+                    contactGroup.memberCount
                 ),
-                style = ProtonTheme.typography.defaultSmallWeak
+                style = ProtonTheme.typography.body2Regular,
+                color = ProtonTheme.colors.textHint
             )
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun ContactListGroupItemPreview() {
+    ContactListGroupItem(
+        contactGroup = ContactListPreviewData.contactGroupSampleData,
+        actions = ContactListScreen.Actions.Empty
+    )
 }
