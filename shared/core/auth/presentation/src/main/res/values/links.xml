@@ -20,4 +20,6 @@
     <string name="login_help_link_forgot_password" translatable="false">https://account.proton.me/reset-password</string>
     <string name="login_help_link_other_issues" translatable="false">https://proton.me/support/common-login-problems</string>
     <string name="login_help_link_customer_support" translatable="false">https://proton.me/support/contact</string>
+    <string name="sign_up_url_terms_and_conditions" translatable="false">https://proton.me/legal/terms</string>
+    <string name="sign_up_url_privacy_policy" translatable="false">https://proton.me/legal/privacy</string>
 </resources>

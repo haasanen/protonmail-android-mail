@@ -41,6 +41,9 @@
             android:name=".twopass.TwoPassActivity"
             android:windowSoftInputMode="adjustResize" />
 
+        <activity
+            android:name=".signup.SignUpActivity"
+            android:windowSoftInputMode="adjustResize" />
     </application>
 
 </manifest>

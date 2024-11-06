@@ -65,6 +65,7 @@ dependencies {
     implementation(libs.proton.core.utilKotlin)
     implementation(libs.dagger.hilt.android)
     implementation(libs.androidx.navigation.compose)
+    implementation(libs.lottie.compose)
 
     debugImplementation(libs.androidx.compose.ui.tooling)
 

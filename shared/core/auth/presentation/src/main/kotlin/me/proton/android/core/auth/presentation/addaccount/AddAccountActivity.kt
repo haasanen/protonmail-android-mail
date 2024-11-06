@@ -54,7 +54,11 @@ class AddAccountActivity : ProtonActivity() {
             ProtonTheme {
                 AddAccountScreenMail(
                     onSignInClicked = { authOrchestrator.startLoginWorkflow() },
-                    onSignUpClicked = { showToast("Coming soon") }
+                    onSignUpClicked = {
+                        showToast("Coming soon")
+                        // Enable when ready:
+                        // authOrchestrator.startSignUpWorkflow()
+                    }
                 )
             }
         }

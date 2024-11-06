@@ -26,6 +26,7 @@ import me.proton.android.core.auth.presentation.login.LoginActivity
 import me.proton.android.core.auth.presentation.login.LoginHelpActivity
 import me.proton.android.core.auth.presentation.secondfactor.SecondFactorActivity
 import me.proton.android.core.auth.presentation.secondfactor.SecondFactorArg
+import me.proton.android.core.auth.presentation.signup.SignUpActivity
 import me.proton.android.core.auth.presentation.twopass.TwoPassActivity
 import me.proton.android.core.auth.presentation.twopass.TwoPassArg
 
@@ -84,6 +85,18 @@ object StartTwoPassMode : ActivityResultContract<String, Boolean>() {
         Intent(context, TwoPassActivity::class.java).apply {
             putExtra(TwoPassArg.ARG_USER_ID, input)
         }
+
+    override fun parseResult(resultCode: Int, intent: Intent?): Boolean = when (resultCode) {
+        Activity.RESULT_OK -> true
+        else -> false
+    }
+}
+
+object StartSignUp : ActivityResultContract<Unit, Boolean>() {
+
+    override fun createIntent(context: Context, input: Unit) = Intent(context, SignUpActivity::class.java).apply {
+        addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+    }
 
     override fun parseResult(resultCode: Int, intent: Intent?): Boolean = when (resultCode) {
         Activity.RESULT_OK -> true

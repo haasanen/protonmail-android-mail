@@ -29,12 +29,14 @@ class AuthOrchestrator @Inject constructor() {
     private var loginHelpWorkflowLauncher: ActivityResultLauncher<Unit>? = null
     private var secondFactorWorkflowLauncher: ActivityResultLauncher<String>? = null
     private var twoPassModeWorkflowLauncher: ActivityResultLauncher<String>? = null
+    private var signupWorkflowLauncher: ActivityResultLauncher<Unit>? = null
 
     private var onAddAccountResultListener: ((result: Boolean) -> Unit)? = {}
     private var onLoginResultListener: ((result: Boolean) -> Unit)? = {}
     private var onLoginHelpResultListener: ((result: Boolean) -> Unit)? = {}
     private var onSecondFactorResultListener: ((result: Boolean) -> Unit)? = {}
     private var onTwoPassModeResultListener: ((result: Boolean) -> Unit)? = {}
+    private var onSignUpResultListener: ((result: Boolean) -> Unit)? = {}
 
     private fun registerAddAccountResult(caller: ActivityResultCaller): ActivityResultLauncher<Unit> =
         caller.registerForActivityResult(StartAddAccount) {
@@ -61,6 +63,11 @@ class AuthOrchestrator @Inject constructor() {
             onTwoPassModeResultListener?.invoke(it)
         }
 
+    private fun registerSignUpResult(caller: ActivityResultCaller): ActivityResultLauncher<Unit> =
+        caller.registerForActivityResult(StartSignUp) {
+            onLoginResultListener?.invoke(it)
+        }
+
     private fun <T> checkRegistered(launcher: ActivityResultLauncher<T>?) =
         checkNotNull(launcher) { "You must call register(context) before starting workflow!" }
 
@@ -84,6 +91,10 @@ class AuthOrchestrator @Inject constructor() {
         onTwoPassModeResultListener = block
     }
 
+    fun setOnSignUpResult(block: (result: Boolean) -> Unit) {
+        onSignUpResultListener = block
+    }
+
     /**
      * Register all needed workflow for internal usage.
      *
@@ -95,6 +106,7 @@ class AuthOrchestrator @Inject constructor() {
         loginHelpWorkflowLauncher = registerLoginHelpResult(caller)
         secondFactorWorkflowLauncher = registerSecondFactorResult(caller)
         twoPassModeWorkflowLauncher = registerTwoPassModeResult(caller)
+        signupWorkflowLauncher = registerSignUpResult(caller)
     }
 
     /**
@@ -106,18 +118,21 @@ class AuthOrchestrator @Inject constructor() {
         loginHelpWorkflowLauncher?.unregister()
         secondFactorWorkflowLauncher?.unregister()
         twoPassModeWorkflowLauncher?.unregister()
+        signupWorkflowLauncher?.unregister()
 
         addAccountWorkflowLauncher = null
         loginWorkflowLauncher = null
         loginHelpWorkflowLauncher = null
         secondFactorWorkflowLauncher = null
         twoPassModeWorkflowLauncher = null
+        signupWorkflowLauncher = null
 
         onAddAccountResultListener = null
         onLoginResultListener = null
         onLoginHelpResultListener = null
         onSecondFactorResultListener = null
         onTwoPassModeResultListener = null
+        onSignUpResultListener = null
     }
 
     /**
@@ -154,6 +169,13 @@ class AuthOrchestrator @Inject constructor() {
     fun startTwoPassModeWorkflow(userId: String) {
         checkRegistered(twoPassModeWorkflowLauncher).launch(userId)
     }
+
+    /**
+     * Starts the Signup workflow.
+     */
+    fun startSignUpWorkflow() {
+        checkRegistered(signupWorkflowLauncher).launch(Unit)
+    }
 }
 
 fun AuthOrchestrator.onAddAccountResult(block: (result: Boolean) -> Unit): AuthOrchestrator {
@@ -178,5 +200,10 @@ fun AuthOrchestrator.onSecondFactorResult(block: (result: Boolean) -> Unit): Aut
 
 fun AuthOrchestrator.onTwoPassModeResult(block: (result: Boolean) -> Unit): AuthOrchestrator {
     setOnTwoPassModeResult { block(it) }
+    return this
+}
+
+fun AuthOrchestrator.onSignUpResult(block: (result: Boolean) -> Unit): AuthOrchestrator {
+    setOnSignUpResult { block(it) }
     return this
 }
