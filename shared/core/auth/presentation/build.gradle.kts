@@ -17,8 +17,8 @@
 
 plugins {
     id("com.android.library")
-    kotlin("android")
     kotlin("kapt")
+    kotlin("android")
     id("dagger.hilt.android.plugin")
     id("app.cash.paparazzi")
 }
@@ -48,31 +48,27 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = Versions.AndroidX.composeCompiler
+        kotlinCompilerExtensionVersion = libs.versions.androidx.compose.compiler.get()
     }
 }
 
 dependencies {
-    compileOnly("me.proton.mail.common:lib:${Versions.Proton.rustCore}")
+    kapt(libs.bundles.app.annotationProcessors)
 
-    implementation("androidx.constraintlayout:constraintlayout-compose:${Versions.AndroidX.constraintLayoutCompose}")
-    implementation("androidx.compose.ui:ui-tooling-preview-android:${Versions.AndroidX.compose}")
-    debugImplementation("androidx.compose.ui:ui-tooling:${Versions.AndroidX.compose}")
+    compileOnly(libs.proton.rust.core)
 
-    implementation("me.proton.core:presentation:${Versions.Proton.core}")
-    implementation("me.proton.core:presentation-compose:${Versions.Proton.core}")
-    implementation("me.proton.core:util-kotlin:${Versions.Proton.core}")
+    implementation(libs.dagger.hilt.android)
+    implementation(libs.androidx.constraintlayout.compose)
+    implementation(libs.androidx.compose.ui.tooling)
+    implementation(libs.proton.core.presentation)
+    implementation(libs.proton.core.presentationCompose)
+    implementation(libs.proton.core.utilKotlin)
+    implementation(libs.dagger.hilt.android)
+    implementation(libs.androidx.navigation.compose)
 
-    implementation("com.google.dagger:hilt-android:${Versions.Dagger.dagger}")
-    kapt("com.google.dagger:hilt-compiler:${Versions.Dagger.dagger}")
+    debugImplementation(libs.androidx.compose.ui.tooling)
 
-    implementation("androidx.hilt:hilt-navigation-compose:${Versions.AndroidX.hilt}")
-    kapt("androidx.hilt:hilt-compiler:${Versions.AndroidX.hilt}")
-
+    testImplementation(libs.bundles.test)
+    testImplementation(libs.proton.rust.core)
     testImplementation(kotlin("test"))
-    testImplementation("me.proton.mail.common:lib:${Versions.Proton.rustCore}")
-    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:${Versions.KotlinX.coroutines}")
-    testImplementation("junit:junit:${Versions.Junit.junit}")
-    testImplementation("io.mockk:mockk:${Versions.Mockk.mockk}")
-    testImplementation("app.cash.turbine:turbine:${Versions.Cash.turbine}")
 }

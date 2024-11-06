@@ -99,7 +99,7 @@ class OneTimePasswordInputViewModel @Inject constructor(
     private fun onAuthenticate(action: Authenticate): Flow<OneTimePasswordInputState> = flow {
         emit(Loading)
         val account = sessionInterface.getAccount(userId)
-        val sessions = account?.let { sessionInterface.getSessions(account) }
+        val sessions = account?.let { sessionInterface.getAccountSessions(account) }
         val session = sessions?.firstOrNull()
         val loginFlow = session?.let { sessionInterface.resumeLoginFlow(userId, it.sessionId()) }
         when (loginFlow) {

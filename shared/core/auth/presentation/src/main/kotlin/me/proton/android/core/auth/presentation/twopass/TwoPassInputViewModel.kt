@@ -94,7 +94,7 @@ class TwoPassInputViewModel @Inject constructor(
     private fun onUnlock(action: TwoPassInputAction.Unlock) = flow {
         emit(TwoPassInputState.Loading)
         val account = sessionInterface.getAccount(userId)
-        val sessions = account?.let { sessionInterface.getSessions(account) }
+        val sessions = account?.let { sessionInterface.getAccountSessions(account) }
         val session = sessions?.firstOrNull()
         val loginFlow = session?.let { sessionInterface.resumeLoginFlow(userId, it.sessionId()) }
         when (loginFlow) {
