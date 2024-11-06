@@ -30,10 +30,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import ch.protonmail.android.design.compose.component.appbar.ProtonMediumTopAppBar
 import ch.protonmail.android.mailcontact.presentation.R
 import ch.protonmail.android.mailcontact.presentation.utils.ContactFeatureFlags.ContactCreate
 import ch.protonmail.android.mailcontact.presentation.utils.ContactFeatureFlags.ContactImport
-import ch.protonmail.android.design.compose.component.appbar.ProtonTopAppBar
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 
 @Composable
@@ -44,11 +44,15 @@ internal fun ContactListTopBar(
     isContactGroupsCrudEnabled: Boolean,
     isContactSearchEnabled: Boolean
 ) {
-    ProtonTopAppBar(
+    ProtonMediumTopAppBar(
         modifier = modifier.fillMaxWidth(),
         backgroundColor = ProtonTheme.colors.backgroundSecondary,
         title = {
-            Text(text = stringResource(id = R.string.contact_list_title))
+            Text(
+                text = stringResource(id = R.string.contact_list_title),
+                style = ProtonTheme.typography.headline,
+                color = ProtonTheme.colors.textNorm
+            )
         },
         navigationIcon = {
             IconButton(onClick = actions.onBackClick) {
