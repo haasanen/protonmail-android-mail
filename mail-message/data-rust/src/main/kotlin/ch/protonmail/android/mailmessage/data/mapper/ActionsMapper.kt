@@ -95,6 +95,8 @@ fun List<MoveItemAction>.systemFolderActionsToActions() = this.map {
     when (it) {
         MoveItemAction.MoveTo -> Action.Move
         is MoveItemAction.MoveToSystemFolder -> it.v1.name.toAction()
+        is MoveItemAction.NotSpam -> null
+        MoveItemAction.PermanentDelete -> Action.Delete
     }
 }
 
@@ -154,7 +156,7 @@ private fun List<BottomBarActions>.bottombarActionsToActions() = this.map { bott
         BottomBarActions.PermanentDelete -> Action.Delete
         BottomBarActions.Star -> Action.Star
         BottomBarActions.Unstar -> Action.Unstar
-        BottomBarActions.NotSpam -> {
+        is BottomBarActions.NotSpam -> {
             Timber.i("rust-message: Found unhandled action while mapping: $bottombarAction")
             null
         }
