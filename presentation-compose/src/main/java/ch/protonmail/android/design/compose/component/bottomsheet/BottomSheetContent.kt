@@ -25,7 +25,7 @@ import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import ch.protonmail.android.design.compose.theme.ProtonDimens
@@ -43,7 +43,7 @@ fun BottomSheetContent(
         verticalArrangement = Arrangement.Top
     ) {
         BottomSheetHeader(content = header)
-        Divider(
+        HorizontalDivider(
             modifier = Modifier.padding(bottom = ProtonDimens.SmallSpacing),
             color = ProtonTheme.colors.separatorNorm
         )

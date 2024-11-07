@@ -23,8 +23,8 @@ import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Divider
 import androidx.compose.material3.DrawerState
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -164,11 +164,11 @@ fun Sidebar(
         drawerState = viewState.drawerState
     ) {
         sidebarSystemLabelItems(viewState.mailLabels.systemLabels, actions.onLabelAction)
-        item { Divider() }
+        item { HorizontalDivider() }
         sidebarFolderItems(viewState.mailLabels.folders, actions.onLabelAction)
-        item { Divider() }
+        item { HorizontalDivider() }
         sidebarLabelItems(viewState.mailLabels.labels, actions.onLabelAction)
-        item { Divider() }
+        item { HorizontalDivider() }
         item { SidebarMoreTitleItem() }
         item { ProtonSidebarSettingsItem(onClick = actions.onSettings) }
         item { SidebarSubscriptionItem(viewState.isSubscriptionVisible, onSubscription = actions.onSubscription) }

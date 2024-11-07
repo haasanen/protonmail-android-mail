@@ -30,7 +30,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
@@ -58,7 +58,7 @@ fun ComposerBottomBar(
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier.fillMaxWidth()) {
-        Divider(color = ProtonTheme.colors.separatorNorm, thickness = MailDimens.SeparatorHeight)
+        HorizontalDivider(thickness = MailDimens.SeparatorHeight, color = ProtonTheme.colors.separatorNorm)
         Row(
             modifier = Modifier
                 .fillMaxWidth()

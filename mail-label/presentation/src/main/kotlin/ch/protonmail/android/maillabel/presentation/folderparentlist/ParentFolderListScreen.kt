@@ -31,11 +31,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material3.Divider
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
@@ -127,7 +127,7 @@ fun ParentFolderListScreenContent(
     ) {
         itemsIndexed(state.folders) { index, parentFolderUiModel ->
             if (index == 0) NoneListItem(actions = actions, state = state)
-            if (parentFolderUiModel.displayDivider) Divider()
+            if (parentFolderUiModel.displayDivider) HorizontalDivider()
             if (parentFolderUiModel.isEnabled) {
                 ClickableParentFolderItem(actions = actions, parentFolderUiModel = parentFolderUiModel)
             } else {
@@ -249,7 +249,7 @@ fun NoneListItem(
             )
         }
     }
-    Divider()
+    HorizontalDivider()
 }
 
 @Composable

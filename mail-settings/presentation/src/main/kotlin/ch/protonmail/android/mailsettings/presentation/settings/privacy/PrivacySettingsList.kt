@@ -18,7 +18,7 @@
 
 package ch.protonmail.android.mailsettings.presentation.settings.privacy
 
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
@@ -36,7 +36,7 @@ fun PrivacySettingsList(
     ProtonSettingsList(
         modifier.testTag(PrivacySettingsTestTags.RootItem)
     ) {
-        item { Divider() }
+        item { HorizontalDivider() }
         item {
             SettingsToggleItem(
                 name = stringResource(id = R.string.mail_settings_privacy_auto_show_remote_content),
@@ -44,7 +44,7 @@ fun PrivacySettingsList(
                 onToggle = actions.onShowRemoteContent
             )
         }
-        item { Divider() }
+        item { HorizontalDivider() }
         item {
             SettingsToggleItem(
                 name = stringResource(id = R.string.mail_settings_privacy_auto_show_embedded_images),
@@ -52,7 +52,7 @@ fun PrivacySettingsList(
                 onToggle = actions.onShowEmbeddedImages
             )
         }
-        item { Divider() }
+        item { HorizontalDivider() }
         item {
             SettingsToggleItem(
                 name = stringResource(id = R.string.mail_settings_privacy_prevent_taking_screenshots),
@@ -60,7 +60,7 @@ fun PrivacySettingsList(
                 onToggle = actions.onPreventScreenshots
             )
         }
-        item { Divider() }
+        item { HorizontalDivider() }
         item {
             SettingsToggleItem(
                 name = stringResource(id = R.string.mail_settings_privacy_request_link_confirmation),
@@ -68,7 +68,7 @@ fun PrivacySettingsList(
                 onToggle = actions.onRequestLinkConfirmation
             )
         }
-        item { Divider() }
+        item { HorizontalDivider() }
         item {
             SettingsToggleItem(
                 name = stringResource(id = R.string.mail_settings_privacy_background_sync),

@@ -26,10 +26,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
@@ -137,7 +137,7 @@ internal fun UpsellingBottomSheetContent(
 
                 if (index != dynamicPlansModel.entitlements.lastIndex) {
                     item {
-                        Divider(
+                        HorizontalDivider(
                             modifier = Modifier.padding(horizontal = ProtonDimens.DefaultSpacing),
                             color = UpsellingColors.EntitlementsRowDivider
                         )

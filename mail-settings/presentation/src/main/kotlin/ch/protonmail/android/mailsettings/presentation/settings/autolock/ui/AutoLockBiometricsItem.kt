@@ -20,7 +20,7 @@
 package ch.protonmail.android.mailsettings.presentation.settings.autolock.ui
 
 import androidx.compose.foundation.lazy.LazyListScope
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.ui.res.stringResource
 import ch.protonmail.android.mailsettings.presentation.R
 import ch.protonmail.android.mailsettings.presentation.settings.autolock.model.AutoLockBiometricsUiModel
@@ -33,7 +33,7 @@ fun LazyListScope.AutoLockBiometricsItem(
     val onToggleRequest: (Boolean) -> Unit = { onToggleBiometricsEnabled(state) }
 
     item {
-        Divider()
+        HorizontalDivider()
         SettingsToggleItem(
             name = stringResource(id = R.string.unlock_using_biometrics),
             value = state.enabled,

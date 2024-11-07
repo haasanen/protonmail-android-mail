@@ -26,7 +26,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -106,14 +106,14 @@ fun AppSettingsScreen(
                     name = stringResource(id = string.mail_settings_theme),
                     onClick = actions.onThemeClick
                 )
-                Divider()
+                HorizontalDivider()
             }
             item {
                 ProtonSettingsItem(
                     name = stringResource(id = string.mail_settings_push_notifications),
                     onClick = actions.onPushNotificationsClick
                 )
-                Divider()
+                HorizontalDivider()
             }
             item {
                 AutoLockSettingItem(
@@ -144,7 +144,7 @@ fun AppSettingsScreen(
                     name = stringResource(id = string.mail_settings_swipe_actions),
                     onClick = actions.onSwipeActionsClick
                 )
-                Divider()
+                HorizontalDivider()
             }
             item {
                 ClearLocalCacheItem(
@@ -152,8 +152,8 @@ fun AppSettingsScreen(
                     onClearCacheClick = actions.onClearCacheClick
                 )
             }
-            item { TelemetrySettingToggleItem(divider = { Divider() }) }
-            item { CrashReportSettingToggleItem(divider = { Divider() }) }
+            item { TelemetrySettingToggleItem(divider = { HorizontalDivider() }) }
+            item { CrashReportSettingToggleItem(divider = { HorizontalDivider() }) }
         }
     }
 }
@@ -175,7 +175,7 @@ private fun CombinedContactsSettingItem(
         hint = hint,
         onClick = onCombinedContactsClick
     )
-    Divider()
+    HorizontalDivider()
 }
 
 @Composable
@@ -207,7 +207,7 @@ private fun ClearLocalCacheItem(
             Text(text = stringResource(id = string.mail_settings_local_cache_clear_button))
         }
     }
-    Divider()
+    HorizontalDivider()
 }
 
 @Composable
@@ -224,7 +224,7 @@ private fun AppLanguageSettingItem(
         hint = appLanguage,
         onClick = onAppLanguageClick
     )
-    Divider()
+    HorizontalDivider()
 }
 
 @Composable
@@ -244,7 +244,7 @@ private fun AlternativeRoutingSettingItem(
         hint = hint,
         onClick = onAlternativeRoutingClick
     )
-    Divider()
+    HorizontalDivider()
 }
 
 @Composable
@@ -264,7 +264,7 @@ private fun AutoLockSettingItem(
         hint = hint,
         onClick = onAutoLockClick
     )
-    Divider()
+    HorizontalDivider()
 }
 
 

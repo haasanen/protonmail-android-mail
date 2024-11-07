@@ -45,8 +45,8 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 
 
 import androidx.compose.material3.Scaffold
@@ -695,7 +695,7 @@ private fun MailboxItemsList(
                         }
                     )
                 }
-                Divider(color = ProtonTheme.colors.separatorNorm, thickness = MailDimens.SeparatorHeight)
+                HorizontalDivider(thickness = MailDimens.SeparatorHeight, color = ProtonTheme.colors.separatorNorm)
             }
         }
         item {

@@ -24,7 +24,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.Divider
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.Surface
@@ -32,6 +31,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
@@ -95,7 +95,7 @@ fun PreviewProtonSidebarLazy() {
                 ProtonSidebarItem(isSelected = true) { Text(text = "Trash (active)") }
                 ProtonSidebarItem { Text(text = "All mail") }
 
-                Divider()
+                HorizontalDivider()
                 ProtonSidebarItem { Text(text = "Folders", color = ProtonTheme.colors.textHint) }
             }
 
@@ -111,7 +111,7 @@ fun PreviewProtonSidebarLazy() {
             }
 
             item {
-                Divider()
+                HorizontalDivider()
                 ProtonSidebarItem { Text(text = "Labels", color = ProtonTheme.colors.textHint) }
             }
 
@@ -127,7 +127,7 @@ fun PreviewProtonSidebarLazy() {
             }
 
             item {
-                Divider()
+                HorizontalDivider()
                 ProtonSidebarItem { Text(text = "More", color = ProtonTheme.colors.textHint) }
                 ProtonSidebarSettingsItem()
                 ProtonSidebarReportBugItem()

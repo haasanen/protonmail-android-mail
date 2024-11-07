@@ -22,13 +22,13 @@ import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Box
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -121,7 +121,7 @@ fun ProtonBottomNavigation(
                 )
             }
         }
-        Divider(color = ProtonTheme.colors.separatorNorm)
+        HorizontalDivider(color = ProtonTheme.colors.separatorNorm)
     }
 }
 

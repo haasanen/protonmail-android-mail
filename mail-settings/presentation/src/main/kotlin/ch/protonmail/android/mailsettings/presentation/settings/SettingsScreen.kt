@@ -22,7 +22,7 @@ import android.content.res.Configuration.UI_MODE_NIGHT_NO
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -94,7 +94,7 @@ fun MainSettingsScreen(
                     hint = stringResource(id = string.mail_settings_email_hint),
                     onClick = actions.onEmailSettingsClick
                 )
-                Divider()
+                HorizontalDivider()
             }
             item {
                 ProtonSettingsItem(
@@ -102,7 +102,7 @@ fun MainSettingsScreen(
                     hint = stringResource(id = string.mail_settings_folders_labels_hint),
                     onClick = actions.onFolderAndLabelSettingsClicked
                 )
-                Divider()
+                HorizontalDivider()
             }
             item {
                 ProtonSettingsItem(
@@ -110,7 +110,7 @@ fun MainSettingsScreen(
                     hint = stringResource(id = string.mail_settings_spam_and_custom_filters_hint),
                     onClick = actions.onSpamFilterSettingsClicked
                 )
-                Divider()
+                HorizontalDivider()
             }
             item {
                 ProtonSettingsItem(
@@ -118,7 +118,7 @@ fun MainSettingsScreen(
                     hint = stringResource(id = string.mail_settings_privacy_and_security_hint),
                     onClick = actions.onPrivacyAndSecuritySettingsClicked
                 )
-                Divider()
+                HorizontalDivider()
             }
             item {
                 ProtonSettingsItem(
@@ -126,7 +126,7 @@ fun MainSettingsScreen(
                     hint = stringResource(id = string.mail_settings_app_hint),
                     onClick = actions.onAppSettingsClick
                 )
-                Divider()
+                HorizontalDivider()
             }
             item { ProtonSettingsHeader(title = string.mail_settings_app_information) }
             item {
@@ -156,7 +156,7 @@ fun AccountSettingsItem(
         hint = hint,
         onClick = onAccountClicked
     )
-    Divider()
+    HorizontalDivider()
 }
 
 object MainSettingsScreen {

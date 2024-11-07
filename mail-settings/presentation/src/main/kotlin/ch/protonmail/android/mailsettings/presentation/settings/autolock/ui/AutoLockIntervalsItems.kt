@@ -21,12 +21,12 @@ package ch.protonmail.android.mailsettings.presentation.settings.autolock.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.lazy.LazyListScope
-import androidx.compose.material3.Divider
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.Text
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -48,14 +48,14 @@ fun LazyListScope.AutoLockIntervalsSection(
     onPinScreenNavigation: (AutoLockInsertionMode) -> Unit,
     onIntervalItemClick: (toggleExpanded: Boolean) -> Unit
 ) {
-    item { Divider() }
+    item { HorizontalDivider() }
     item {
         ProtonSettingsItem(
             name = stringResource(id = R.string.mail_settings_auto_lock_change_pin_description),
             onClick = { onPinScreenNavigation(AutoLockInsertionMode.ChangePin) }
         )
     }
-    item { Divider() }
+    item { HorizontalDivider() }
     item {
         ProtonSettingsItem(
             name = stringResource(id = R.string.mail_settings_auto_lock_item_timer_title),

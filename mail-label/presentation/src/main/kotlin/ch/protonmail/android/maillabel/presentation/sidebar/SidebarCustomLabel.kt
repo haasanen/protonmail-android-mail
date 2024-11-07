@@ -27,7 +27,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -207,7 +207,7 @@ private fun PreviewSidebarLabelFolderItems() {
                 ),
                 onLabelAction = {}
             )
-            item { Divider() }
+            item { HorizontalDivider() }
             sidebarLabelItems(
                 items = listOf(
                     MailLabelUiModel.Custom(
@@ -235,12 +235,12 @@ private fun PreviewSidebarLabelFolderItems() {
                 ),
                 onLabelAction = {}
             )
-            item { Divider() }
+            item { HorizontalDivider() }
             sidebarFolderItems(
                 items = emptyList(),
                 onLabelAction = {}
             )
-            item { Divider() }
+            item { HorizontalDivider() }
             sidebarLabelItems(
                 items = emptyList(),
                 onLabelAction = {}

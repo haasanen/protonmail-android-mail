@@ -30,9 +30,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Divider
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
@@ -260,7 +260,7 @@ fun PreviewProtonSidebar() {
             ProtonSidebarItem(isSelected = true) { Text(text = "Trash (active)") }
             ProtonSidebarItem { Text(text = "All mail") }
 
-            Divider()
+            HorizontalDivider()
 
             ProtonSidebarItem { Text(text = "More", color = ProtonTheme.colors.textHint) }
             ProtonSidebarSettingsItem()

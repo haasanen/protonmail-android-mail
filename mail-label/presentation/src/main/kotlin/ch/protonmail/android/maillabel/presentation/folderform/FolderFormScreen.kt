@@ -35,8 +35,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.rememberModalBottomSheetState
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.SheetValue
@@ -254,7 +254,7 @@ fun FolderFormContent(
                     actions.onFolderNameChanged(it)
                 }
             )
-            Divider()
+            HorizontalDivider()
             FolderFormParentFolderField(state, actions)
             val notificationsHintResId =
                 if (state.notifications) R.string.switch_on
@@ -267,7 +267,7 @@ fun FolderFormContent(
                     actions.onFolderNotificationsChanged(it)
                 }
             )
-            Divider()
+            HorizontalDivider()
             ColorPicker(
                 colors = state.colorList,
                 selectedColor = state.color?.getColorFromHexString(),
@@ -327,7 +327,7 @@ fun FolderFormParentFolderField(state: FolderFormState.Data, actions: FolderForm
             style = ProtonTheme.typography.defaultSmallWeak
         )
     }
-    Divider()
+    HorizontalDivider()
 }
 
 @Composable
