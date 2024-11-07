@@ -32,7 +32,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.default
+import ch.protonmail.android.design.compose.theme.defaultNorm
 
 @Composable
 fun BottomSheetEntry(
@@ -56,7 +56,7 @@ fun BottomSheetEntry(
         )
         Text(
             text = title,
-            style = ProtonTheme.typography.default,
+            style = ProtonTheme.typography.defaultNorm,
             modifier = Modifier.padding(end = ProtonDimens.DefaultSpacing),
             maxLines = 1,
             overflow = TextOverflow.Ellipsis

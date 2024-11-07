@@ -58,11 +58,10 @@ import ch.protonmail.android.mailsettings.presentation.settings.theme.SwipeActio
 import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
 import ch.protonmail.android.design.compose.component.ProtonErrorMessage
 import ch.protonmail.android.design.compose.component.appbar.ProtonTopAppBar
-
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.captionHint
-import ch.protonmail.android.design.compose.theme.default
+import ch.protonmail.android.design.compose.theme.defaultNorm
 import ch.protonmail.android.design.compose.theme.defaultWeak
 import me.proton.core.mailsettings.domain.entity.SwipeAction
 import ch.protonmail.android.mailcommon.presentation.R.string as commonString
@@ -179,7 +178,7 @@ private fun SwipeActionItem(
                 .padding(ProtonDimens.DefaultSpacing),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Text(text = actionName, style = ProtonTheme.typography.default)
+            Text(text = actionName, style = ProtonTheme.typography.defaultNorm)
             Row {
                 Text(text = actionDescription, style = ProtonTheme.typography.defaultWeak)
                 Icon(

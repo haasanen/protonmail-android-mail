@@ -48,10 +48,9 @@ import ch.protonmail.android.mailsettings.presentation.testdata.SwipeActionsTest
 import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
 import ch.protonmail.android.design.compose.component.ProtonErrorMessage
 import ch.protonmail.android.design.compose.component.ProtonSettingsTopBar
-
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.default
+import ch.protonmail.android.design.compose.theme.defaultNorm
 import me.proton.core.mailsettings.domain.entity.SwipeAction
 import me.proton.core.util.kotlin.exhaustive
 import ch.protonmail.android.mailcommon.presentation.R.string as commonString
@@ -131,7 +130,7 @@ private fun ListItem(item: EditSwipeActionPreferenceItemUiModel, onSwipeActionSe
         Text(
             modifier = Modifier.weight(1f, fill = true),
             text = stringResource(id = item.descriptionRes),
-            style = ProtonTheme.typography.default
+            style = ProtonTheme.typography.defaultNorm
         )
         RadioButton(selected = item.isSelected, onClick = null)
     }

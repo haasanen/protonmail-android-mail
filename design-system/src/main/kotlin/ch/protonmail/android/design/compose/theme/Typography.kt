@@ -36,25 +36,11 @@ val ProtonTypography.headlineNorm: TextStyle
 val ProtonTypography.headlineHint: TextStyle
     @Composable get() = headlineUnspecified.copy(color = ProtonTheme.colors.textHint)
 
-@Deprecated(
-    "Use headlineNorm or headlineUnspecified",
-    replaceWith = ReplaceWith("headlineNorm")
-)
-val ProtonTypography.headline: TextStyle
-    @Composable get() = headlineNorm
-
 val ProtonTypography.headlineSmallUnspecified: TextStyle
     @Composable get() = body1Medium
 
 val ProtonTypography.headlineSmallNorm: TextStyle
     @Composable get() = headlineSmallUnspecified.copy(color = ProtonTheme.colors.textNorm)
-
-@Deprecated(
-    "Use headlineSmallNorm or headlineSmallUnspecified",
-    replaceWith = ReplaceWith("headlineSmallNorm")
-)
-val ProtonTypography.headlineSmall: TextStyle
-    @Composable get() = headlineSmallNorm
 
 val ProtonTypography.defaultHighlightUnspecified: TextStyle
     @Composable get() = body1Bold
@@ -66,32 +52,11 @@ val ProtonTypography.defaultHighlightNorm: TextStyle
 fun ProtonTypography.defaultHighlightNorm(enabled: Boolean = true): TextStyle =
     defaultHighlightUnspecified.copy(color = ProtonTheme.colors.textNorm(enabled))
 
-@Deprecated(
-    "Use defaultHighlightNorm or defaultHighlightUnspecified",
-    replaceWith = ReplaceWith("defaultHighlightNorm")
-)
-val ProtonTypography.defaultHighlight: TextStyle
-    @Composable get() = defaultHighlightNorm
-
-@Deprecated(
-    "Use defaultHighlightNorm or defaultHighlightUnspecified",
-    replaceWith = ReplaceWith("defaultHighlightNorm")
-)
-@Composable
-fun ProtonTypography.defaultHighlight(enabled: Boolean = true): TextStyle = defaultHighlightNorm(enabled)
-
 val ProtonTypography.subheadlineUnspecified: TextStyle
     @Composable get() = subheadline
 
 val ProtonTypography.subheadlineNorm: TextStyle
     @Composable get() = subheadlineUnspecified.copy(color = ProtonTheme.colors.textNorm)
-
-@Deprecated(
-    "Use subheadlineNorm or subheadlineUnspecified",
-    replaceWith = ReplaceWith("subheadlineNorm")
-)
-val ProtonTypography.subheadline: TextStyle
-    @Composable get() = subheadlineNorm
 
 val ProtonTypography.defaultStrongUnspecified: TextStyle
     @Composable get() = body1Medium
@@ -102,20 +67,6 @@ val ProtonTypography.defaultStrongNorm: TextStyle
 @Composable
 fun ProtonTypography.defaultStrongNorm(enabled: Boolean = true): TextStyle =
     defaultStrongUnspecified.copy(color = ProtonTheme.colors.textNorm(enabled))
-
-@Deprecated(
-    "Use defaultStrongNorm or defaultStrongUnspecified",
-    replaceWith = ReplaceWith("defaultStrongNorm")
-)
-val ProtonTypography.defaultStrong: TextStyle
-    @Composable get() = defaultStrongNorm
-
-@Deprecated(
-    "Use defaultStrongNorm or defaultStrongUnspecified",
-    replaceWith = ReplaceWith("defaultStrongNorm")
-)
-@Composable
-fun ProtonTypography.defaultStrong(enabled: Boolean): TextStyle = defaultStrongNorm(enabled)
 
 val ProtonTypography.defaultUnspecified: TextStyle
     @Composable get() = body1Regular
@@ -143,13 +94,6 @@ val ProtonTypography.defaultInverted: TextStyle
 @Composable
 fun ProtonTypography.defaultInverted(enabled: Boolean = true): TextStyle =
     defaultUnspecified.copy(color = ProtonTheme.colors.textInverted(enabled))
-
-@Deprecated(
-    "Use either defaultNorm or defaultUnspecified",
-    replaceWith = ReplaceWith("defaultNorm")
-)
-val ProtonTypography.default: TextStyle
-    @Composable get() = defaultNorm
 
 @Deprecated(
     "Use either defaultNorm or defaultUnspecified",
