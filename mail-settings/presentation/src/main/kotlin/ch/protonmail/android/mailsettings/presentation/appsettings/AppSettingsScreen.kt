@@ -37,6 +37,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ch.protonmail.android.mailsettings.domain.model.AppSettings
 import ch.protonmail.android.mailsettings.domain.model.LocalStorageUsageInformation
 import ch.protonmail.android.mailsettings.presentation.R.string
@@ -44,7 +45,6 @@ import me.proton.core.compose.component.ProtonCenteredProgress
 import me.proton.core.compose.component.ProtonSettingsItem
 import me.proton.core.compose.component.ProtonSettingsList
 import me.proton.core.compose.component.ProtonSettingsTopBar
-import ch.protonmail.android.design.compose.flow.rememberAsState
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 
@@ -68,8 +68,7 @@ fun AppSettingsScreen(
             showClearDataToast()
         }
     )
-
-    when (val settingsState = rememberAsState(flow = settingsViewModel.state, AppSettingsState.Loading).value) {
+    when (val settingsState = settingsViewModel.state.collectAsStateWithLifecycle(AppSettingsState.Loading).value) {
         is AppSettingsState.Data -> AppSettingsScreen(
             modifier = modifier,
             state = settingsState,

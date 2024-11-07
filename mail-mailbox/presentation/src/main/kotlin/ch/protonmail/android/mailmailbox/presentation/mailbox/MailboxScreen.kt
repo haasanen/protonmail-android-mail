@@ -83,6 +83,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemContentType
@@ -132,7 +133,6 @@ import ch.protonmail.android.design.compose.component.ProtonModalBottomSheetLayo
 import ch.protonmail.android.design.compose.component.ProtonSnackbarHostState
 import ch.protonmail.android.design.compose.component.ProtonSnackbarType
 import ch.protonmail.android.design.compose.component.protonOutlinedButtonColors
-import ch.protonmail.android.design.compose.flow.rememberAsState
 
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
@@ -150,7 +150,8 @@ fun MailboxScreen(
     actions: MailboxScreen.Actions,
     viewModel: MailboxViewModel = hiltViewModel()
 ) {
-    val mailboxState = rememberAsState(viewModel.state, MailboxViewModel.initialState).value
+    val mailboxState = viewModel.state.collectAsStateWithLifecycle(MailboxViewModel.initialState).value
+
     val mailboxListItems = viewModel.items.collectAsLazyPagingItems()
     val bottomSheetState =
         rememberModalBottomSheetState(skipPartiallyExpanded = true)

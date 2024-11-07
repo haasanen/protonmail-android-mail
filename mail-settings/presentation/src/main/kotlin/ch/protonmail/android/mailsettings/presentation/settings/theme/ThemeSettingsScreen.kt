@@ -28,13 +28,13 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ch.protonmail.android.mailsettings.domain.model.Theme
 import ch.protonmail.android.mailsettings.presentation.R
 import ch.protonmail.android.mailsettings.presentation.settings.theme.ThemeSettingsState.Data
 import ch.protonmail.android.mailsettings.presentation.settings.theme.ThemeSettingsState.Loading
 import ch.protonmail.android.design.compose.component.ProtonSettingsRadioItem
 import ch.protonmail.android.design.compose.component.ProtonSettingsTopBar
-import ch.protonmail.android.design.compose.flow.rememberAsState
 
 
 const val TEST_TAG_THEME_SETTINGS_SCREEN = "ThemeSettingsScreenTestTag"
@@ -46,10 +46,7 @@ fun ThemeSettingsScreen(
     viewModel: ThemeSettingsViewModel = hiltViewModel()
 ) {
     when (
-        val state = rememberAsState(
-            flow = viewModel.state,
-            initial = Loading
-        ).value
+        val state = viewModel.state.collectAsStateWithLifecycle(Loading).value
     ) {
         is Data -> {
             ThemeSettingsScreen(

@@ -24,6 +24,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ch.protonmail.android.mailsettings.presentation.R
 import ch.protonmail.android.mailsettings.presentation.websettings.model.WebSettingsAction
 import ch.protonmail.android.mailsettings.presentation.websettings.SettingWebView
@@ -32,7 +33,7 @@ import ch.protonmail.android.mailsettings.presentation.websettings.WebSettingsSt
 import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
 import ch.protonmail.android.design.compose.component.ProtonErrorMessage
 import ch.protonmail.android.design.compose.component.ProtonSettingsTopBar
-import ch.protonmail.android.design.compose.flow.rememberAsState
+import ch.protonmail.android.mailsettings.presentation.settings.theme.ThemeSettingsState.Loading
 
 import me.proton.core.util.kotlin.exhaustive
 import timber.log.Timber
@@ -44,8 +45,7 @@ fun WebAccountSettingScreen(
     accountSettingsViewModel: WebAccountSettingsViewModel = hiltViewModel()
 ) {
     when (
-        val settingsState = rememberAsState(
-            flow = accountSettingsViewModel.state,
+        val settingsState = accountSettingsViewModel.state.collectAsStateWithLifecycle(
             WebSettingsState.Loading
         ).value
     ) {

@@ -68,6 +68,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
 import ch.protonmail.android.mailcommon.presentation.ConsumableTextEffect
 import ch.protonmail.android.mailcommon.presentation.NO_CONTENT_DESCRIPTION
@@ -93,7 +94,6 @@ import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
 import ch.protonmail.android.design.compose.component.ProtonSnackbarHostState
 import ch.protonmail.android.design.compose.component.ProtonSnackbarType
 import ch.protonmail.android.design.compose.component.appbar.ProtonTopAppBar
-import ch.protonmail.android.design.compose.flow.rememberAsState
 
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
@@ -112,7 +112,7 @@ fun ContactDetailsScreen(actions: ContactDetailsScreen.Actions, viewModel: Conta
     val view = LocalView.current
     val keyboardController = LocalSoftwareKeyboardController.current
     val snackbarHostErrorState = ProtonSnackbarHostState(defaultType = ProtonSnackbarType.ERROR)
-    val state = rememberAsState(flow = viewModel.state, initial = ContactDetailsViewModel.initialState).value
+    val state = viewModel.state.collectAsStateWithLifecycle(ContactDetailsViewModel.initialState).value
     val deleteDialogShownState = remember { mutableStateOf(false) }
 
     val customActions = actions.copy(

@@ -52,6 +52,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
 import ch.protonmail.android.mailcommon.presentation.ConsumableTextEffect
 import ch.protonmail.android.mailcommon.presentation.NO_CONTENT_DESCRIPTION
@@ -68,8 +69,6 @@ import ch.protonmail.android.design.compose.component.ProtonSnackbarHostState
 import ch.protonmail.android.design.compose.component.ProtonSnackbarType
 import ch.protonmail.android.design.compose.component.ProtonTextButton
 import ch.protonmail.android.design.compose.component.appbar.ProtonTopAppBar
-import ch.protonmail.android.design.compose.flow.rememberAsState
-
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.defaultNorm
@@ -87,7 +86,7 @@ fun ManageMembersScreen(
     val view = LocalView.current
     val keyboardController = LocalSoftwareKeyboardController.current
     val snackbarHostErrorState = ProtonSnackbarHostState(defaultType = ProtonSnackbarType.ERROR)
-    val state = rememberAsState(flow = viewModel.state, initial = ManageMembersViewModel.initialState).value
+    val state = viewModel.state.collectAsStateWithLifecycle(ManageMembersViewModel.initialState).value
 
     if (state !is ManageMembersState.Data) {
         viewModel.initViewModelWithData(

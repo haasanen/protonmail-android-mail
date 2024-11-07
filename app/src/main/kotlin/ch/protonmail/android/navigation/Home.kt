@@ -36,6 +36,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -56,7 +57,6 @@ import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailsidebar.presentation.Sidebar
 import ch.protonmail.android.navigation.model.Destination.Dialog
 import ch.protonmail.android.navigation.model.Destination.Screen
-import ch.protonmail.android.navigation.model.HomeState
 import ch.protonmail.android.navigation.route.addAlternativeRoutingSetting
 import ch.protonmail.android.navigation.route.addAppSettings
 import ch.protonmail.android.navigation.route.addAutoLockPinScreen
@@ -98,8 +98,8 @@ import io.sentry.compose.withSentryObservableEffect
 import kotlinx.coroutines.launch
 import ch.protonmail.android.design.compose.component.ProtonSnackbarHostState
 import ch.protonmail.android.design.compose.component.ProtonSnackbarType
-import ch.protonmail.android.design.compose.flow.rememberAsState
 import ch.protonmail.android.design.compose.theme.ProtonTheme
+import ch.protonmail.android.navigation.model.HomeState
 import me.proton.core.network.domain.NetworkStatus
 
 @Composable
@@ -118,7 +118,7 @@ fun Home(
     val snackbarHostNormState = remember { ProtonSnackbarHostState(defaultType = ProtonSnackbarType.NORM) }
     val snackbarHostErrorState = remember { ProtonSnackbarHostState(defaultType = ProtonSnackbarType.ERROR) }
     val scope = rememberCoroutineScope()
-    val state = rememberAsState(flow = viewModel.state, initial = HomeState.Initial)
+    val state = viewModel.state.collectAsStateWithLifecycle(HomeState.Initial)
 
     val offlineSnackbarMessage = stringResource(id = R.string.you_are_offline)
     fun showOfflineSnackbar() = scope.launch {

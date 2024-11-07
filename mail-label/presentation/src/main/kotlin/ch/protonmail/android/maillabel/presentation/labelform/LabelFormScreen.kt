@@ -51,6 +51,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
@@ -75,7 +76,6 @@ import ch.protonmail.android.design.compose.component.ProtonSnackbarHostState
 import ch.protonmail.android.design.compose.component.ProtonSnackbarType
 import ch.protonmail.android.design.compose.component.ProtonTextButton
 import ch.protonmail.android.design.compose.component.appbar.ProtonTopAppBar
-import ch.protonmail.android.design.compose.flow.rememberAsState
 
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
@@ -106,10 +106,7 @@ fun LabelFormScreen(actions: LabelFormScreen.Actions, viewModel: LabelFormViewMo
         }
     )
 
-    val state = rememberAsState(
-        flow = viewModel.state,
-        initial = LabelFormState.Loading(Effect.empty())
-    ).value
+    val state = viewModel.state.collectAsStateWithLifecycle(LabelFormState.Loading(Effect.empty())).value
 
     val bottomSheetState = rememberModalBottomSheetState(
         skipPartiallyExpanded = true

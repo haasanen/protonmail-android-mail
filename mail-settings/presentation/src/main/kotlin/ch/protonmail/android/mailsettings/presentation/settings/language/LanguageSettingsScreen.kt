@@ -30,6 +30,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ch.protonmail.android.mailsettings.domain.model.AppLanguage
 import ch.protonmail.android.mailsettings.presentation.R
 import ch.protonmail.android.mailsettings.presentation.R.string
@@ -37,7 +38,6 @@ import ch.protonmail.android.mailsettings.presentation.settings.language.Languag
 import ch.protonmail.android.mailsettings.presentation.settings.language.LanguageSettingsState.Loading
 import ch.protonmail.android.design.compose.component.ProtonSettingsRadioItem
 import ch.protonmail.android.design.compose.component.ProtonSettingsTopBar
-import ch.protonmail.android.design.compose.flow.rememberAsState
 
 const val TEST_TAG_LANGUAGE_SETTINGS_SCREEN = "LanguageSettingsScreenTestTag"
 const val TEST_TAG_LANG_SETTINGS_SCREEN_SCROLL_COL = "LanguageSettingsScreenColumnTestTag"
@@ -49,9 +49,8 @@ fun LanguageSettingsScreen(
     viewModel: LanguageSettingsViewModel = hiltViewModel()
 ) {
     when (
-        val state = rememberAsState(
-            flow = viewModel.state,
-            initial = Loading
+        val state = viewModel.state.collectAsStateWithLifecycle(
+            Loading
         ).value
     ) {
         is Data -> {

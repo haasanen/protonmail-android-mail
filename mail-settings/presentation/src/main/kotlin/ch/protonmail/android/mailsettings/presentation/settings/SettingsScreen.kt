@@ -30,6 +30,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ch.protonmail.android.mailsettings.presentation.R
 import ch.protonmail.android.mailsettings.presentation.R.string
 import ch.protonmail.android.mailsettings.presentation.settings.SettingsState.Data
@@ -39,8 +40,6 @@ import ch.protonmail.android.design.compose.component.ProtonSettingsHeader
 import ch.protonmail.android.design.compose.component.ProtonSettingsItem
 import ch.protonmail.android.design.compose.component.ProtonSettingsList
 import ch.protonmail.android.design.compose.component.ProtonSettingsTopBar
-import ch.protonmail.android.design.compose.flow.rememberAsState
-
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 
 @Composable
@@ -49,8 +48,7 @@ fun MainSettingsScreen(
     actions: MainSettingsScreen.Actions,
     settingsViewModel: SettingsViewModel = hiltViewModel()
 ) {
-
-    when (val settingsState = rememberAsState(flow = settingsViewModel.state, Loading).value) {
+    when (val settingsState = settingsViewModel.state.collectAsStateWithLifecycle(Loading).value) {
         is Data -> MainSettingsScreen(
             modifier = modifier,
             state = settingsState,

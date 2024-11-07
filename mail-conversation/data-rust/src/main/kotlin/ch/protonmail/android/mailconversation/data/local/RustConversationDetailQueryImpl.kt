@@ -63,6 +63,7 @@ class RustConversationDetailQueryImpl @Inject constructor(
 
     private val conversationUpdatedCallback = object : LiveQueryCallback {
         override fun onUpdate() {
+            Timber.d("rust-conversation-detail-query: conversation updated")
             coroutineScope.launch {
                 mutex.withLock {
                     val mailbox = rustMailbox.observeMailbox().firstOrNull()

@@ -55,6 +55,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
 import ch.protonmail.android.mailcommon.presentation.ConsumableTextEffect
 import ch.protonmail.android.mailcommon.presentation.Effect
@@ -82,7 +83,6 @@ import ch.protonmail.android.design.compose.component.ProtonSnackbarHostState
 import ch.protonmail.android.design.compose.component.ProtonSnackbarType
 import ch.protonmail.android.design.compose.component.ProtonTextButton
 import ch.protonmail.android.design.compose.component.appbar.ProtonTopAppBar
-import ch.protonmail.android.design.compose.flow.rememberAsState
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.defaultNorm
@@ -100,7 +100,7 @@ fun FolderFormScreen(
     val view = LocalView.current
     val keyboardController = LocalSoftwareKeyboardController.current
     val snackbarHostErrorState = ProtonSnackbarHostState(defaultType = ProtonSnackbarType.ERROR)
-    val state = rememberAsState(flow = viewModel.state, initial = FolderFormState.Loading(Effect.empty())).value
+    val state = viewModel.state.collectAsStateWithLifecycle(FolderFormState.Loading(Effect.empty())).value
 
     currentParentLabelId?.value?.let {
         // Initial value will always be null when initializing the view,

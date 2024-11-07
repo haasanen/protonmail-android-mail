@@ -55,6 +55,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
 import ch.protonmail.android.mailcommon.presentation.NO_CONTENT_DESCRIPTION
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
@@ -64,7 +65,6 @@ import ch.protonmail.android.maillabel.presentation.previewdata.LabelListPreview
 import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
 import ch.protonmail.android.design.compose.component.ProtonSecondaryButton
 import ch.protonmail.android.design.compose.component.appbar.ProtonTopAppBar
-import ch.protonmail.android.design.compose.flow.rememberAsState
 
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
@@ -77,10 +77,7 @@ import ch.protonmail.android.uicomponents.chips.thenIf
 
 @Composable
 fun LabelListScreen(actions: LabelListScreen.Actions, viewModel: LabelListViewModel = hiltViewModel()) {
-    val state = rememberAsState(
-        flow = viewModel.state,
-        initial = viewModel.initialState
-    ).value
+    val state = viewModel.state.collectAsStateWithLifecycle(viewModel.initialState).value
 
     Scaffold(
         topBar = {

@@ -27,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
 import ch.protonmail.android.mailsettings.presentation.R
 import ch.protonmail.android.uicomponents.settings.SettingsToggleItem
@@ -35,7 +36,7 @@ import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
 import ch.protonmail.android.design.compose.component.ProtonSettingsTopBar
 import ch.protonmail.android.design.compose.component.ProtonSnackbarHostState
 import ch.protonmail.android.design.compose.component.ProtonSnackbarType
-import ch.protonmail.android.design.compose.flow.rememberAsState
+import ch.protonmail.android.mailsettings.presentation.settings.SettingsState.Loading
 
 const val TEST_TAG_ALTERNATIVE_ROUTING_TOGGLE_ITEM = "AlternativeRoutingToggleItem"
 const val TEST_TAG_ALTERNATIVE_ROUTING_SNACKBAR = "AlternativeRoutingSnackbar"
@@ -47,9 +48,8 @@ fun AlternativeRoutingSettingScreen(
     viewModel: AlternativeRoutingSettingViewModel = hiltViewModel()
 ) {
     when (
-        val state = rememberAsState(
-            flow = viewModel.state,
-            initial = AlternativeRoutingSettingState.Loading
+        val state = viewModel.state.collectAsStateWithLifecycle(
+            AlternativeRoutingSettingState.Loading
         ).value
     ) {
         is AlternativeRoutingSettingState.Data -> {

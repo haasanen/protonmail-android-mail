@@ -47,6 +47,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ch.protonmail.android.mailcommon.presentation.ConsumableTextEffect
 import ch.protonmail.android.mailcommon.presentation.NO_CONTENT_DESCRIPTION
 import ch.protonmail.android.maillabel.domain.model.LabelId
@@ -54,7 +55,6 @@ import ch.protonmail.android.maillabel.presentation.R
 import ch.protonmail.android.maillabel.presentation.model.ParentFolderUiModel
 import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
 import ch.protonmail.android.design.compose.component.appbar.ProtonTopAppBar
-import ch.protonmail.android.design.compose.flow.rememberAsState
 
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
@@ -65,7 +65,7 @@ fun ParentFolderListScreen(
     actions: ParentFolderListScreen.Actions,
     viewModel: ParentFolderListViewModel = hiltViewModel()
 ) {
-    val state = rememberAsState(flow = viewModel.state, initial = viewModel.initialState).value
+    val state = viewModel.state.collectAsStateWithLifecycle(viewModel.initialState).value
 
     Scaffold(
         topBar = {

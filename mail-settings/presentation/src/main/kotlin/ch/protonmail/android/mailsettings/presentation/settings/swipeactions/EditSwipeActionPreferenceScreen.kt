@@ -40,6 +40,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ch.protonmail.android.mailsettings.domain.model.SwipeActionDirection
 import ch.protonmail.android.mailsettings.presentation.R.string
 import ch.protonmail.android.mailsettings.presentation.settings.swipeactions.EditSwipeActionPreferenceViewModel.Action
@@ -47,7 +48,6 @@ import ch.protonmail.android.mailsettings.presentation.testdata.SwipeActionsTest
 import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
 import ch.protonmail.android.design.compose.component.ProtonErrorMessage
 import ch.protonmail.android.design.compose.component.ProtonSettingsTopBar
-import ch.protonmail.android.design.compose.flow.rememberAsState
 
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
@@ -63,7 +63,7 @@ fun EditSwipeActionPreferenceScreen(
     modifier: Modifier = Modifier,
     viewModel: EditSwipeActionPreferenceViewModel = hiltViewModel()
 ) {
-    val state by rememberAsState(flow = viewModel.state, initial = viewModel.initial)
+    val state by viewModel.state.collectAsStateWithLifecycle(viewModel.initial)
 
     EditSwipeActionPreferenceScreen(
         state = state,

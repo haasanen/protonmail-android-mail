@@ -26,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
 import ch.protonmail.android.mailsettings.presentation.R
 import ch.protonmail.android.uicomponents.settings.SettingsToggleItem
@@ -33,8 +34,6 @@ import ch.protonmail.android.uicomponents.snackbar.DismissableSnackbarHost
 import ch.protonmail.android.design.compose.component.ProtonSettingsTopBar
 import ch.protonmail.android.design.compose.component.ProtonSnackbarHostState
 import ch.protonmail.android.design.compose.component.ProtonSnackbarType
-import ch.protonmail.android.design.compose.flow.rememberAsState
-
 
 const val TEST_TAG_COMBINED_CONTACTS_TOGGLE_ITEM = "CombinedContactsToggleItem"
 const val TEST_TAG_COMBINED_CONTACTS_SNACKBAR = "CombinedContactsSnackbar"
@@ -46,9 +45,8 @@ fun CombinedContactsSettingScreen(
     viewModel: CombinedContactsSettingViewModel = hiltViewModel()
 ) {
     when (
-        val state = rememberAsState(
-            flow = viewModel.state,
-            initial = CombinedContactsSettingState.Loading
+        val state = viewModel.state.collectAsStateWithLifecycle(
+            CombinedContactsSettingState.Loading
         ).value
     ) {
         is CombinedContactsSettingState.Data -> {

@@ -43,6 +43,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
 import ch.protonmail.android.mailcommon.presentation.NO_CONTENT_DESCRIPTION
 import ch.protonmail.android.mailcommon.presentation.compose.HyperlinkText
@@ -57,8 +58,6 @@ import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
 import ch.protonmail.android.design.compose.component.ProtonOutlinedButton
 import ch.protonmail.android.design.compose.component.ProtonSolidButton
 import ch.protonmail.android.design.compose.component.appbar.ProtonTopAppBar
-import ch.protonmail.android.design.compose.flow.rememberAsState
-
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.defaultInverted
@@ -73,7 +72,7 @@ fun SetMessagePasswordScreen(
     modifier: Modifier = Modifier,
     viewModel: SetMessagePasswordViewModel = hiltViewModel()
 ) {
-    val state by rememberAsState(flow = viewModel.state, initial = SetMessagePasswordState.Loading)
+    val state by viewModel.state.collectAsStateWithLifecycle(SetMessagePasswordState.Loading)
 
     Scaffold(
         modifier = modifier,

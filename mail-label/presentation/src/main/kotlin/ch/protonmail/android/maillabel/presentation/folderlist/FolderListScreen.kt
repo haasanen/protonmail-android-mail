@@ -57,6 +57,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
 import ch.protonmail.android.mailcommon.presentation.ConsumableTextEffect
 import ch.protonmail.android.mailcommon.presentation.NO_CONTENT_DESCRIPTION
@@ -69,7 +70,6 @@ import kotlinx.coroutines.launch
 import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
 import ch.protonmail.android.design.compose.component.ProtonSecondaryButton
 import ch.protonmail.android.design.compose.component.appbar.ProtonTopAppBar
-import ch.protonmail.android.design.compose.flow.rememberAsState
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.captionNorm
@@ -80,7 +80,7 @@ import ch.protonmail.android.design.compose.theme.defaultStrongNorm
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FolderListScreen(actions: FolderListScreen.Actions, viewModel: FolderListViewModel = hiltViewModel()) {
-    val state = rememberAsState(flow = viewModel.state, initial = viewModel.initialState).value
+    val state = viewModel.state.collectAsStateWithLifecycle(viewModel.initialState).value
     val bottomSheetState = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
 
