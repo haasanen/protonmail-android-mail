@@ -24,6 +24,7 @@ import ch.protonmail.android.mailsession.domain.model.AccountState
 import ch.protonmail.android.mailsession.domain.model.ForkedSessionId
 import ch.protonmail.android.mailsession.domain.model.SessionError
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.transform
@@ -54,3 +55,4 @@ fun UserSessionRepository.onAccountState(state: AccountState, initialState: Bool
         .transform { accounts -> accounts.forEach { emit(it) } }
         .filter { it.state == state }
         .drop(if (initialState) 0 else 1)
+        .distinctUntilChanged()

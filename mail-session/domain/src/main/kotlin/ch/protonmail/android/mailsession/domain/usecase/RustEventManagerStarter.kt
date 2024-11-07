@@ -59,6 +59,7 @@ class RustEventManagerStarter @Inject constructor(
     }
 
     private fun startEventLoop(account: Account) {
+        eventLoopJobs[account.userId]?.cancel()
         eventLoopJobs[account.userId] = coroutineScope.launch {
             while (isActive) {
                 delay(EVENT_LOOP_DELAY)
