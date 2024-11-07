@@ -31,6 +31,7 @@ enum class Action {
     Trash,
     Delete,
     Archive,
+    Inbox,
     Spam,
     ViewInLightMode,
     ViewInDarkMode,
@@ -42,5 +43,7 @@ enum class Action {
     SavePdf,
     SenderEmails,
     SaveAttachments,
+    Pin,
+    Unpin,
     More
 }

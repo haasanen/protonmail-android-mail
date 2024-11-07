@@ -52,6 +52,9 @@
     <string name="action_sender_emails_description">Set action for future emails from this sender</string>
     <string name="action_save_attachments_description">Save attachments</string>
     <string name="action_more_description">More</string>
+    <string name="action_inbox_description">Inbox</string>
+    <string name="action_pin_description">Pin</string>
+    <string name="action_unpin_description">Unpin</string>
     <string name="action_reply_content_description">Reply</string>
     <string name="action_reply_to_content_description">Reply to %s</string>
     <string name="action_reply_all_content_description">Reply all</string>
@@ -66,6 +69,9 @@
     <string name="action_delete_content_description">Delete</string>
     <string name="action_archive_content_description">Archive</string>
     <string name="action_spam_content_description">Spam</string>
+    <string name="action_inbox_content_description">Inbox</string>
+    <string name="action_pin_content_description">Pin</string>
+    <string name="action_unpin_content_description">Unpin</string>
     <string name="action_view_in_light_mode_content_description">View message in light mode</string>
     <string name="action_view_in_dark_mode_content_description">View message in dark mode</string>
     <string name="action_print_content_description">Print</string>

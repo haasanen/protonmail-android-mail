@@ -129,6 +129,13 @@ internal sealed interface MailboxViewAction : MailboxOperation {
         AffectingMailboxList,
         AffectingBottomSheet
 
+    object MoveToInbox :
+        MailboxViewAction,
+        AffectingTopAppBar,
+        AffectingBottomAppBar,
+        AffectingMailboxList,
+        AffectingBottomSheet
+
     object DismissBottomSheet : MailboxViewAction, AffectingBottomSheet
 
     /*

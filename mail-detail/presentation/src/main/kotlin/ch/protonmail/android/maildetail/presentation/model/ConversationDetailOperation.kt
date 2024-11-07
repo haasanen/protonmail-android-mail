@@ -142,6 +142,7 @@ sealed interface ConversationDetailViewAction : ConversationDetailOperation {
     object UnStar : ConversationDetailViewAction, AffectingConversation
     object MarkUnread : ConversationDetailViewAction
     object Trash : ConversationDetailViewAction
+    object MoveToInbox : ConversationDetailViewAction, AffectingBottomSheet
     object DeleteRequested : ConversationDetailViewAction, AffectingDeleteDialog
     object DeleteDialogDismissed : ConversationDetailViewAction, AffectingDeleteDialog
     object DeleteConfirmed : ConversationDetailViewAction, AffectingDeleteDialog, AffectingBottomSheet

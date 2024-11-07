@@ -133,6 +133,9 @@ fun callbackForAction(action: Action, viewActionCallbacks: BottomActionBar.Actio
     Action.SenderEmails -> viewActionCallbacks.onSenderEmail
     Action.SaveAttachments -> viewActionCallbacks.onSaveAttachments
     Action.More -> viewActionCallbacks.onMore
+    Action.Inbox -> viewActionCallbacks.onMoveToInbox
+    Action.Pin,
+    Action.Unpin,
     Action.Reply,
     Action.ReplyAll,
     Action.Forward -> {
@@ -178,6 +181,7 @@ object BottomActionBar {
         val onDelete: () -> Unit,
         val onArchive: () -> Unit,
         val onSpam: () -> Unit,
+        val onMoveToInbox: () -> Unit,
         val onViewInLightMode: () -> Unit,
         val onViewInDarkMode: () -> Unit,
         val onPrint: () -> Unit,
@@ -204,6 +208,7 @@ object BottomActionBar {
                 onDelete = {},
                 onArchive = {},
                 onSpam = {},
+                onMoveToInbox = {},
                 onViewInLightMode = {},
                 onViewInDarkMode = {},
                 onPrint = {},

@@ -29,7 +29,6 @@ import ch.protonmail.android.maillabel.domain.model.LabelAsActions
 import ch.protonmail.android.maillabel.domain.model.LabelType
 import ch.protonmail.android.maillabel.domain.model.MailLabel
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
-import timber.log.Timber
 import uniffi.proton_mail_uniffi.AllBottomBarMessageActions
 import uniffi.proton_mail_uniffi.BottomBarActions
 import uniffi.proton_mail_uniffi.GeneralActions
@@ -77,8 +76,8 @@ fun List<MoveAction.SystemFolder>.toMailLabels() = this.map { systemAction ->
 fun MessageAvailableActions.toAvailableActions(): AvailableActions {
     return AvailableActions(
         this.replyActions.replyActionsToActions(),
-        this.messageActions.messageActionsToActions().filterNotNull(),
-        this.moveActions.systemFolderActionsToActions().filterNotNull(),
+        this.messageActions.messageActionsToActions(),
+        this.moveActions.systemFolderActionsToActions(),
         this.generalActions.generalActionsToActions()
     )
 }
@@ -95,7 +94,7 @@ fun List<MoveItemAction>.systemFolderActionsToActions() = this.map {
     when (it) {
         MoveItemAction.MoveTo -> Action.Move
         is MoveItemAction.MoveToSystemFolder -> it.v1.name.toAction()
-        is MoveItemAction.NotSpam -> null
+        is MoveItemAction.NotSpam -> Action.Inbox
         MoveItemAction.PermanentDelete -> Action.Delete
     }
 }
@@ -104,10 +103,7 @@ private fun MovableSystemFolder.toAction() = when (this) {
     MovableSystemFolder.TRASH -> Action.Trash
     MovableSystemFolder.SPAM -> Action.Spam
     MovableSystemFolder.ARCHIVE -> Action.Archive
-    MovableSystemFolder.INBOX -> {
-        Timber.i("rust-message: Found unhandled action while mapping: $name")
-        null
-    }
+    MovableSystemFolder.INBOX -> Action.Inbox
 }
 
 fun List<GeneralActions>.generalActionsToActions() = this.map { generalAction ->
@@ -130,18 +126,15 @@ private fun List<MessageAction>.messageActionsToActions() = this.map { messageAc
         MessageAction.MARK_READ -> Action.MarkRead
         MessageAction.MARK_UNREAD -> Action.MarkUnread
         MessageAction.DELETE -> Action.Delete
-        MessageAction.PIN,
-        MessageAction.UNPIN -> {
-            Timber.i("rust-message: Found unhandled action while mapping: $messageAction")
-            null
-        }
+        MessageAction.PIN -> Action.Pin
+        MessageAction.UNPIN -> Action.Unpin
     }
 }
 
 fun AllBottomBarMessageActions.toAllBottomBarActions(): AllBottomBarActions {
     return AllBottomBarActions(
-        this.hiddenBottomBarActions.bottombarActionsToActions().filterNotNull(),
-        this.visibleBottomBarActions.bottombarActionsToActions().filterNotNull()
+        this.hiddenBottomBarActions.bottombarActionsToActions(),
+        this.visibleBottomBarActions.bottombarActionsToActions()
     )
 }
 
@@ -156,10 +149,7 @@ private fun List<BottomBarActions>.bottombarActionsToActions() = this.map { bott
         BottomBarActions.PermanentDelete -> Action.Delete
         BottomBarActions.Star -> Action.Star
         BottomBarActions.Unstar -> Action.Unstar
-        is BottomBarActions.NotSpam -> {
-            Timber.i("rust-message: Found unhandled action while mapping: $bottombarAction")
-            null
-        }
+        is BottomBarActions.NotSpam -> Action.Inbox
     }
 }
 

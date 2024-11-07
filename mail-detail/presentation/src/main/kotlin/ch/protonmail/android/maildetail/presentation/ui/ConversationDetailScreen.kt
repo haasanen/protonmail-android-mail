@@ -301,6 +301,7 @@ fun ConversationDetailScreen(
                 onUnStarClick = { viewModel.submit(ConversationDetailViewAction.UnStar) },
                 onUnreadClick = { viewModel.submit(ConversationDetailViewAction.MarkUnread) },
                 onMoveToClick = { viewModel.submit(ConversationDetailViewAction.RequestMoveToBottomSheet) },
+                onMoveToInboxClick = { viewModel.submit(ConversationDetailViewAction.MoveToInbox) },
                 onLabelAsClick = {
                     viewModel.submit(ConversationDetailViewAction.RequestConversationLabelAsBottomSheet)
                 },
@@ -515,6 +516,7 @@ fun ConversationDetailScreen(
                     onDelete = actions.onDeleteClick,
                     onArchive = { Timber.d("conversation onArchive clicked") },
                     onSpam = { Timber.d("conversation onSpam clicked") },
+                    onMoveToInbox = actions.onMoveToInboxClick,
                     onViewInLightMode = { Timber.d("conversation onViewInLightMode clicked") },
                     onViewInDarkMode = { Timber.d("conversation onViewInDarkMode clicked") },
                     onPrint = { Timber.d("conversation onPrint clicked") },
@@ -801,6 +803,7 @@ object ConversationDetailScreen {
         val onUnStarClick: () -> Unit,
         val onUnreadClick: () -> Unit,
         val onMoveToClick: () -> Unit,
+        val onMoveToInboxClick: () -> Unit,
         val onLabelAsClick: () -> Unit,
         val onMoreActionsClick: () -> Unit,
         val onExpandMessage: (MessageIdUiModel) -> Unit,
@@ -842,6 +845,7 @@ object ConversationDetailScreen {
                 onUnStarClick = {},
                 onUnreadClick = {},
                 onMoveToClick = {},
+                onMoveToInboxClick = {},
                 onLabelAsClick = {},
                 onMoreActionsClick = {},
                 onExpandMessage = {},

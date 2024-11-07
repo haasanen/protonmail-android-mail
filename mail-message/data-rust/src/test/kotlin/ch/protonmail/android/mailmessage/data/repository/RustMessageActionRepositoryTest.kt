@@ -120,44 +120,6 @@ class RustMessageActionRepositoryTest {
     }
 
     @Test
-    fun `get available actions skips any unhandled actions returned by the data source`() = runTest {
-        // Given
-        val userId = UserIdTestData.userId
-        val labelId = SystemLabelId.Inbox.labelId
-        val messageIds = listOf(MessageId("1"))
-        val rustAvailableActions = MessageAvailableActions(
-            listOf(ReplyAction.REPLY_ALL),
-            listOf(MessageAction.PIN),
-            listOf(
-                MoveItemAction.MoveToSystemFolder(
-                    MovableSystemFolderAction(Id(10uL), MovableSystemFolder.INBOX)
-                )
-            ),
-            emptyList()
-        )
-
-        coEvery {
-            rustMessageDataSource.getAvailableActions(
-                userId,
-                labelId.toLocalLabelId(),
-                messageIds.map { it.toLocalMessageId() }
-            )
-        } returns rustAvailableActions
-
-        // When
-        val result = repository.getAvailableActions(userId, labelId, messageIds)
-
-        // Then
-        val expected = AvailableActions(
-            listOf(Action.ReplyAll),
-            emptyList(),
-            emptyList(),
-            emptyList()
-        )
-        assertEquals(expected.right(), result)
-    }
-
-    @Test
     fun `get available system move to actions should return actions when data source exposes them`() = runTest {
         // Given
         val userId = UserIdTestData.userId

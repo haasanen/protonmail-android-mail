@@ -31,7 +31,7 @@ fun ConversationAvailableActions.toAvailableActions(): AvailableActions {
     return AvailableActions(
         emptyList(),
         this.conversationActions.conversationActionsToActions().filterNotNull(),
-        this.moveActions.systemFolderActionsToActions().filterNotNull(),
+        this.moveActions.systemFolderActionsToActions(),
         this.generalActions.generalActionsToActions()
     )
 }

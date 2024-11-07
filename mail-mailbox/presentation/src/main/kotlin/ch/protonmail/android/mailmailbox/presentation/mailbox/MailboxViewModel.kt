@@ -26,8 +26,12 @@ import androidx.paging.Pager
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.map
+import arrow.core.Either
 import arrow.core.getOrElse
+import arrow.core.left
+import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
+import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.mapper.ActionUiModelMapper
@@ -353,6 +357,7 @@ class MailboxViewModel @Inject constructor(
                 is MailboxViewAction.SwipeStarAction -> handleSwipeStarAction(viewAction)
                 is MailboxViewAction.Trash -> handleTrashAction()
                 is MailboxViewAction.Delete -> handleDeleteAction()
+                is MailboxViewAction.MoveToInbox -> handleMoveToInboxAction(viewAction)
                 is MailboxViewAction.DeleteConfirmed -> handleDeleteConfirmedAction()
                 is MailboxViewAction.DeleteDialogDismissed -> handleDeleteDialogDismissed()
                 is MailboxViewAction.RequestLabelAsBottomSheet -> showLabelAsBottomSheetAndLoadData(viewAction)
@@ -952,32 +957,44 @@ class MailboxViewModel @Inject constructor(
     }
 
     private suspend fun handleTrashAction() {
+        moveMailboxItemsTo(SystemLabelId.Trash).onRight {
+            emitNewStateFrom(MailboxEvent.Trash(it))
+        }
+    }
+
+    private suspend fun handleMoveToInboxAction(action: MailboxViewAction.MoveToInbox) {
+        moveMailboxItemsTo(SystemLabelId.Inbox).onRight {
+            emitNewStateFrom(action)
+        }
+    }
+
+    private suspend fun moveMailboxItemsTo(systemLabelId: SystemLabelId): Either<DataError, Int> {
         val selectionModeDataState = state.value.mailboxListState as? MailboxListState.Data.SelectionMode
         if (selectionModeDataState == null) {
             Timber.d("MailboxListState is not in SelectionMode")
-            return
+            return DataError.Local.Unknown.left()
         }
         val userId = primaryUserId.filterNotNull().first()
-        val trashLocalLabelId = findLocalSystemLabelId(userId, SystemLabelId.Trash)?.labelId
-        if (trashLocalLabelId == null) {
+        val localLabelId = findLocalSystemLabelId(userId, systemLabelId)?.labelId
+        if (localLabelId == null) {
             Timber.e("Local label id cannot be found for SystemLabelId.Trash!")
-            return
+            return DataError.Local.NoDataCached.left()
         }
         val viewMode = getViewModeForCurrentLocation(selectedMailLabelId.flow.value)
         when (viewMode) {
             ViewMode.ConversationGrouping -> moveConversations(
                 userId = userId,
                 conversationIds = selectionModeDataState.selectedMailboxItems.map { ConversationId(it.id) },
-                labelId = trashLocalLabelId
+                labelId = localLabelId
             )
 
             ViewMode.NoConversationGrouping -> moveMessages(
                 userId = userId,
                 messageIds = selectionModeDataState.selectedMailboxItems.map { MessageId(it.id) },
-                labelId = trashLocalLabelId
+                labelId = localLabelId
             )
         }
-        emitNewStateFrom(MailboxEvent.Trash(selectionModeDataState.selectedMailboxItems.size))
+        return selectionModeDataState.selectedMailboxItems.size.right()
     }
 
     private suspend fun handleDeleteAction() {

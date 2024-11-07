@@ -253,6 +253,7 @@ class ConversationDetailViewModel @Inject constructor(
             is ConversationDetailViewAction.DeleteMessageConfirmed -> handleDeleteMessageConfirmed(action)
             is RequestMoveToBottomSheet -> showMoveToBottomSheet(action)
             is MoveToDestinationConfirmed -> onMoveToDestinationConfirmed(action.mailLabelText, action.messageId)
+            is ConversationDetailViewAction.MoveToInbox -> moveConversationToInbox()
             is RequestConversationLabelAsBottomSheet -> showConversationLabelAsBottomSheet(action)
             is RequestContactActionsBottomSheet -> showContactActionsBottomSheetAndLoadData(action)
             is LabelAsConfirmed -> onLabelAsConfirmed(action)
@@ -806,6 +807,17 @@ class ConversationDetailViewModel @Inject constructor(
         }.onEach { event ->
             emitNewStateFrom(event)
         }.launchIn(viewModelScope)
+    }
+
+    private fun moveConversationToInbox() {
+        viewModelScope.launch {
+            performSafeExitAction(
+                onLeft = ConversationDetailEvent.ErrorMovingConversation,
+                onRight = ConversationDetailViewAction.MoveToInbox
+            ) { userId ->
+                moveConversation(userId, conversationId, SystemLabelId.Inbox.labelId)
+            }
+        }
     }
 
     private fun handleDeleteMessageConfirmed(action: ConversationDetailViewAction.DeleteMessageConfirmed) {

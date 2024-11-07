@@ -128,7 +128,7 @@ class RustConversationActionRepositoryTest {
         val labelId = SystemLabelId.Inbox.labelId
         val conversationIds = listOf(ConversationId("1"))
         val rustAvailableActions = ConversationAvailableActions(
-            conversationActions = listOf(ConversationAction.PIN, ConversationAction.STAR),
+            conversationActions = listOf(ConversationAction.PIN, ConversationAction.UNPIN, ConversationAction.STAR),
             moveActions = listOf(
                 MoveItemAction.MoveToSystemFolder(
                     MovableSystemFolderAction(Id(10uL), MovableSystemFolder.INBOX)
@@ -152,7 +152,7 @@ class RustConversationActionRepositoryTest {
         val expected = AvailableActions(
             emptyList(),
             listOf(Action.Star),
-            emptyList(),
+            listOf(Action.Inbox),
             emptyList()
         )
         assertEquals(expected.right(), result)

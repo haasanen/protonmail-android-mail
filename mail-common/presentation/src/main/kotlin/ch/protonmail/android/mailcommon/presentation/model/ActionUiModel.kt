@@ -57,6 +57,9 @@ fun Action.iconDrawable() = when (this) {
     Action.SenderEmails -> R.drawable.ic_proton_envelope
     Action.SaveAttachments -> R.drawable.ic_proton_arrow_down_to_square
     Action.More -> R.drawable.ic_proton_three_dots_horizontal
+    Action.Inbox -> R.drawable.ic_proton_inbox
+    Action.Pin -> R.drawable.ic_pin_angled
+    Action.Unpin -> R.drawable.ic_pin_angled_slash
 }
 
 @get:StringRes
@@ -86,6 +89,9 @@ val Action.contentDescriptionRes: Int
         Action.SenderEmails -> R.string.action_sender_emails_content_description
         Action.SaveAttachments -> R.string.action_save_attachments_content_description
         Action.More -> R.string.action_more_content_description
+        Action.Inbox -> R.string.action_inbox_content_description
+        Action.Pin -> R.string.action_pin_content_description
+        Action.Unpin -> R.string.action_unpin_content_description
     }
 
 @SuppressWarnings("ComplexMethod")
@@ -118,6 +124,9 @@ val Action.descriptionRes: Int
         Action.SenderEmails -> R.string.action_sender_emails_description
         Action.SaveAttachments -> R.string.action_save_attachments_description
         Action.More -> R.string.action_more_description
+        Action.Inbox -> R.string.action_inbox_description
+        Action.Pin -> R.string.action_pin_description
+        Action.Unpin -> R.string.action_unpin_description
     }
 
 fun Action.description() = TextUiModel.TextRes(descriptionRes)
