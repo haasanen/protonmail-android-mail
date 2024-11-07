@@ -1,5 +1,7 @@
 package ch.protonmail.android.mailsession.data.repository
 
+import ch.protonmail.android.mailsession.domain.model.ForkedSessionId
+import ch.protonmail.android.mailsession.domain.model.SessionError
 import ch.protonmail.android.mailsession.domain.repository.MailSessionRepository
 import ch.protonmail.android.test.utils.rule.LoggingTestRule
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
@@ -8,11 +10,9 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
+import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runTest
 import me.proton.core.domain.entity.UserId
-import ch.protonmail.android.mailsession.domain.model.ForkedSessionId
-import ch.protonmail.android.mailsession.domain.model.SessionError
-import kotlinx.coroutines.test.TestScope
 import org.junit.Rule
 import uniffi.proton_mail_uniffi.MailSession
 import uniffi.proton_mail_uniffi.MailUserSession
@@ -155,7 +155,7 @@ class UserSessionRepositoryImplTest {
         coEvery { userContextFromSession(storedSession) } returns expectedMailUserSession
         coEvery { getAccount(any()) } returns storedAccount
         coEvery { getAccounts() } returns listOf(storedAccount)
-        coEvery { getSessions(storedAccount) } returns listOf(storedSession)
+        coEvery { getAccountSessions(storedAccount) } returns listOf(storedSession)
     }
 
 }

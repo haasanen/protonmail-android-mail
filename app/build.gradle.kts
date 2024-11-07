@@ -20,7 +20,6 @@ import java.util.Properties
 import com.android.build.api.dsl.VariantDimension
 import configuration.extensions.protonEnvironment
 import org.gradle.kotlin.dsl.get
-import studio.forface.easygradle.dsl.android.aar
 
 plugins {
     id("com.android.application")
@@ -277,6 +276,7 @@ dependencies {
     androidTestImplementation(libs.proton.core.planTest)
     androidTestImplementation(libs.proton.core.reportTest)
     androidTestImplementation(libs.proton.core.userRecoveryTest)
+    androidTestImplementation(libs.proton.core.testRule)
     androidTestImplementation(project(":test:annotations"))
     androidTestImplementation(project(":test:idlingresources"))
     androidTestImplementation(project(":test:robot:core"))
