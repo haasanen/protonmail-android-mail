@@ -20,29 +20,35 @@
 
 package ch.protonmail.android.mailcontact.presentation.contactsearch
 
-import android.annotation.SuppressLint
 import android.content.res.Configuration
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.LocalView
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import ch.protonmail.android.design.compose.component.appbar.ProtonLargeTopAppBar
 import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
 import ch.protonmail.android.mailcontact.domain.model.ContactGroupId
 import ch.protonmail.android.mailcontact.presentation.R
@@ -51,13 +57,14 @@ import ch.protonmail.android.mailcontact.presentation.contactlist.ui.ContactList
 import ch.protonmail.android.mailcontact.presentation.contactlist.ui.ContactListScreen
 import ch.protonmail.android.uicomponents.SearchView
 import ch.protonmail.android.uicomponents.dismissKeyboard
-import ch.protonmail.android.design.compose.component.appbar.ProtonTopAppBar
+import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.defaultSmallWeak
 import ch.protonmail.android.mailcontact.domain.model.ContactId
 import ch.protonmail.android.mailcontact.presentation.model.ContactListItemUiModel
+import ch.protonmail.android.mailcontact.presentation.previewdata.ContactListPreviewData
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
-@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun ContactSearchScreen(actions: ContactSearchScreen.Actions, viewModel: ContactSearchViewModel = hiltViewModel()) {
     val context = LocalContext.current
@@ -79,7 +86,11 @@ fun ContactSearchScreen(actions: ContactSearchScreen.Actions, viewModel: Contact
                 }
             )
         },
-        content = { _ ->
+        contentWindowInsets = WindowInsets(
+            left = ProtonDimens.DefaultSpacing,
+            right = ProtonDimens.DefaultSpacing
+        ),
+        content = { paddingValues ->
             ContactSearchContent(
                 state = state,
                 actions = ContactSearchContent.Actions(
@@ -89,7 +100,8 @@ fun ContactSearchScreen(actions: ContactSearchScreen.Actions, viewModel: Contact
                     onContactGroupClick = {
                         actions.onContactGroupSelected(it)
                     }
-                )
+                ),
+                paddingValues = paddingValues
             )
         }
     )
@@ -104,7 +116,8 @@ fun ContactSearchScreen(actions: ContactSearchScreen.Actions, viewModel: Contact
 fun ContactSearchContent(
     modifier: Modifier = Modifier,
     state: ContactSearchState,
-    actions: ContactSearchContent.Actions
+    actions: ContactSearchContent.Actions,
+    paddingValues: PaddingValues
 ) {
 
     if (state.contactUiModels?.isEmpty() == true) {
@@ -112,7 +125,8 @@ fun ContactSearchContent(
     }
 
     LazyColumn(
-        modifier = modifier.fillMaxSize()
+        modifier = modifier.fillMaxSize(),
+        contentPadding = paddingValues
     ) {
         state.contactUiModels?.let {
             items(state.contactUiModels) { contact ->
@@ -168,9 +182,20 @@ fun ContactSearchTopBar(
     onSearchValueChange: (String) -> Unit,
     onSearchValueClear: () -> Unit
 ) {
+    val systemUiController = rememberSystemUiController()
 
-    ProtonTopAppBar(
+    // In this screen, "Background inverted" theme is used for colouring, which different
+    // from the default theme. Therefore, we need to set/reset the status bar colour manually.
+    val backgroundColor = ProtonTheme.colors.backgroundSecondary
+    LaunchedEffect(Unit) {
+        systemUiController.setStatusBarColor(
+            color = backgroundColor
+        )
+    }
+
+    ProtonLargeTopAppBar(
         modifier = modifier,
+        backgroundColor = ProtonTheme.colors.backgroundSecondary,
         title = {
             SearchView(
                 SearchView.Parameters(
@@ -179,21 +204,24 @@ fun ContactSearchTopBar(
                     closeButtonContentDescription = R.string.contact_search_content_description
                 ),
                 modifier = Modifier
+                    .padding(end = ProtonDimens.DefaultSpacing)
                     .fillMaxWidth(),
                 actions = SearchView.Actions(
                     onClearSearchQuery = { onSearchValueClear() },
                     onSearchQuerySubmit = {},
                     onSearchQueryChanged = { onSearchValueChange(it) }
-                )
+                ),
+                backgroundColor = backgroundColor
             )
+
         },
         navigationIcon = {
             IconButton(
                 modifier = Modifier,
                 onClick = actions.onClose
             ) {
-                androidx.compose.material.Icon(
-                    painter = painterResource(id = R.drawable.ic_proton_arrow_left),
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = stringResource(id = R.string.contact_search_arrow_back_content_description)
                 )
             }
@@ -244,18 +272,27 @@ private fun ManageMembersContentPreview() {
         state = ContactSearchState(
             contactUiModels = emptyList()
         ),
-        actions = ContactSearchContent.Actions.Empty
+        actions = ContactSearchContent.Actions.Empty,
+        paddingValues = PaddingValues()
     )
 }
 
 @Composable
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_NO, showBackground = true)
-private fun EmptyManageMembersContentPreview() {
+private fun ContactSearchContentPreview() {
     ContactSearchContent(
         state = ContactSearchState(
-            contactUiModels = emptyList()
+            contactUiModels = listOf(
+                ContactListPreviewData.contactSampleData,
+                ContactListPreviewData.contactGroupSampleData,
+                ContactListPreviewData.contactSampleData,
+                ContactListPreviewData.contactSampleData,
+                ContactListPreviewData.contactSampleData,
+                ContactListPreviewData.contactSampleData
+            )
         ),
-        actions = ContactSearchContent.Actions.Empty
+        actions = ContactSearchContent.Actions.Empty,
+        paddingValues = PaddingValues()
     )
 }
 

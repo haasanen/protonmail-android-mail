@@ -10,6 +10,7 @@ import androidx.compose.material3.SheetValue
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
@@ -42,8 +43,21 @@ fun ContactListScreen(listActions: ContactListScreen.Actions, viewModel: Contact
     val state = viewModel.state.collectAsStateWithLifecycle().value
 
     val actions = listActions.copy(
+        onBackClick = {
+            systemUiController.setStatusBarColor(defaultColor)
+
+            listActions.onBackClick()
+        },
         onNewGroupClick = { viewModel.submit(ContactListViewAction.OnNewContactGroupClick) }
     )
+
+    // In this screen, "Background inverted" theme is used for colouring, which different
+    // from the default theme. Therefore, we need to set/reset the status bar colour manually.
+    LaunchedEffect(Unit) {
+        systemUiController.setStatusBarColor(
+            color = backgroundColor
+        )
+    }
 
     if (state is ContactListState.Loaded) {
         ConsumableLaunchedEffect(effect = state.bottomSheetVisibilityEffect) { bottomSheetEffect ->

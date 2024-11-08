@@ -39,11 +39,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment.Companion.CenterVertically
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.testTag
@@ -57,12 +57,13 @@ import ch.protonmail.android.uicomponents.text.defaultTextFieldColors
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.defaultNorm
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun SearchView(
     parameters: SearchView.Parameters,
     actions: SearchView.Actions,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    backgroundColor: Color = ProtonTheme.colors.backgroundNorm,
+    contentColor: Color = ProtonTheme.colors.textNorm
 ) {
     val focusRequester = remember { FocusRequester() }
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -96,7 +97,12 @@ fun SearchView(
                     }
                 },
             textStyle = ProtonTheme.typography.defaultNorm,
-            colors = TextFieldDefaults.defaultTextFieldColors(),
+            colors = TextFieldDefaults.defaultTextFieldColors().copy(
+                focusedContainerColor = backgroundColor,
+                unfocusedContainerColor = backgroundColor,
+                focusedTextColor = contentColor,
+                unfocusedTextColor = contentColor
+            ),
             singleLine = true,
             keyboardOptions = KeyboardOptions.Default.copy(
                 capitalization = KeyboardCapitalization.Sentences,

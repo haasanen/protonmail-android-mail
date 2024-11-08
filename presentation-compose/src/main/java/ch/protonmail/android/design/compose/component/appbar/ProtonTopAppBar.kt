@@ -23,6 +23,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.MediumTopAppBar
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.Text
@@ -69,6 +70,31 @@ fun ProtonMediumTopAppBar(
     contentColor: Color = ProtonTheme.colors.textNorm
 ) {
     MediumTopAppBar(
+        title = title,
+        modifier = modifier,
+        navigationIcon = navigationIcon,
+        actions = actions,
+        colors = topAppBarColors(
+            containerColor = backgroundColor,
+            scrolledContainerColor = backgroundColor,
+            navigationIconContentColor = contentColor,
+            titleContentColor = contentColor,
+            actionIconContentColor = contentColor
+        )
+    )
+}
+
+@Composable
+@OptIn(ExperimentalMaterial3Api::class)
+fun ProtonLargeTopAppBar(
+    title: @Composable () -> Unit,
+    modifier: Modifier = Modifier,
+    navigationIcon: @Composable (() -> Unit),
+    actions: @Composable RowScope.() -> Unit = {},
+    backgroundColor: Color = ProtonTheme.colors.backgroundNorm,
+    contentColor: Color = ProtonTheme.colors.textNorm
+) {
+    LargeTopAppBar(
         title = title,
         modifier = modifier,
         navigationIcon = navigationIcon,
