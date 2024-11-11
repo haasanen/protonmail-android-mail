@@ -195,6 +195,9 @@ class MailboxReducer @Inject constructor(
                 is MailboxViewAction.MoveToArchive,
                 is MailboxViewAction.MoveToSpam,
                 is MailboxViewAction.MoveToInbox,
+                is MailboxViewAction.MarkAsRead,
+                is MailboxViewAction.MarkAsUnread,
+                is MailboxEvent.Trash,
                 is MailboxViewAction.DismissBottomSheet -> BottomSheetOperation.Dismiss
 
                 is MailboxViewAction.MoveToDestinationSelected -> MoveToDestinationSelected(operation.mailLabelId)
