@@ -92,10 +92,7 @@
   <string name="address_city">Grad</string>
   <string name="address_region">Regija</string>
   <string name="address_country">Država</string>
-  <string name="contact_details_delete_dialog_title">Izbriši kontakt</string>
-  <string name="contact_details_delete_dialog_text">Jeste li sigurni da želite ukloniti ovaj kontakt?</string>
-  <string name="contact_details_delete_dialog_cancel_button">Poništi</string>
-  <string name="contact_details_delete_dialog_confirm_button">U redu</string>
+  <string name="contact_delete_dialog_cancel_button">Poništi</string>
   <string name="contact_form_save_error">Error saving contact, please try again later</string>
   <string name="contact_form_save_error_limit_reached">Contact limit reached</string>
   <string name="all_contacts_tab">Kontakti</string>

@@ -92,10 +92,7 @@
   <string name="address_city">By</string>
   <string name="address_region">Region</string>
   <string name="address_country">Land</string>
-  <string name="contact_details_delete_dialog_title">Slet kontakt</string>
-  <string name="contact_details_delete_dialog_text">Sikker på, at du vil slette denne kontakt?</string>
-  <string name="contact_details_delete_dialog_cancel_button">Annullér</string>
-  <string name="contact_details_delete_dialog_confirm_button">Ok</string>
+  <string name="contact_delete_dialog_cancel_button">Annullér</string>
   <string name="contact_form_save_error">Fejl ved lagring af kontakt. Prøv igen senere</string>
   <string name="contact_form_save_error_limit_reached">Kontaktgrænse nået</string>
   <string name="all_contacts_tab">Kontakter</string>

@@ -92,10 +92,7 @@
   <string name="address_city">Mesto</string>
   <string name="address_region">Kraj</string>
   <string name="address_country">Krajina</string>
-  <string name="contact_details_delete_dialog_title">Vymazať kontakt</string>
-  <string name="contact_details_delete_dialog_text">Naozaj chcete vymazať tento kontakt?</string>
-  <string name="contact_details_delete_dialog_cancel_button">Zrušiť</string>
-  <string name="contact_details_delete_dialog_confirm_button">OK</string>
+  <string name="contact_delete_dialog_cancel_button">Zrušiť</string>
   <string name="contact_form_save_error">Chyba pri ukladaní kontaktu, skúste to neskôr, prosím</string>
   <string name="contact_form_save_error_limit_reached">Dosiahnutý limit kontaktov</string>
   <string name="all_contacts_tab">Kontakty</string>

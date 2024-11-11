@@ -92,10 +92,7 @@
   <string name="address_city">城市</string>
   <string name="address_region">地區</string>
   <string name="address_country">國家</string>
-  <string name="contact_details_delete_dialog_title">刪除聯絡人</string>
-  <string name="contact_details_delete_dialog_text">您確定要刪除此聯絡人嗎？</string>
-  <string name="contact_details_delete_dialog_cancel_button">取消</string>
-  <string name="contact_details_delete_dialog_confirm_button">確定</string>
+  <string name="contact_delete_dialog_cancel_button">取消</string>
   <string name="contact_form_save_error">儲存聯絡人時發生錯誤，請稍後再試</string>
   <string name="contact_form_save_error_limit_reached">Contact limit reached</string>
   <string name="all_contacts_tab">聯絡人</string>

@@ -92,10 +92,7 @@
   <string name="address_city">Ville</string>
   <string name="address_region">Région</string>
   <string name="address_country">Pays</string>
-  <string name="contact_details_delete_dialog_title">Supprimer le contact</string>
-  <string name="contact_details_delete_dialog_text">Voulez-vous vraiment supprimer ce contact ?</string>
-  <string name="contact_details_delete_dialog_cancel_button">Annuler</string>
-  <string name="contact_details_delete_dialog_confirm_button">OK</string>
+  <string name="contact_delete_dialog_cancel_button">Annuler</string>
   <string name="contact_form_save_error">Une erreur s\'est produite lors de l\'enregistrement du contact. Nous vous invitons à réessayer plus tard.</string>
   <string name="contact_form_save_error_limit_reached">Le nombre limite de contacts est atteint.</string>
   <string name="all_contacts_tab">Contacts</string>

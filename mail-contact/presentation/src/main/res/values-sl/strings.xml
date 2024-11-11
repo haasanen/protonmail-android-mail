@@ -92,10 +92,7 @@
   <string name="address_city">Mesto</string>
   <string name="address_region">Regija</string>
   <string name="address_country">Država</string>
-  <string name="contact_details_delete_dialog_title">Izbriši stik</string>
-  <string name="contact_details_delete_dialog_text">Ali ste prepričani, da želite izbrisati ta stik?</string>
-  <string name="contact_details_delete_dialog_cancel_button">Prekliči</string>
-  <string name="contact_details_delete_dialog_confirm_button">V redu</string>
+  <string name="contact_delete_dialog_cancel_button">Prekliči</string>
   <string name="contact_form_save_error">Napaka pri shranjevanju stika, poskusite znova pozneje</string>
   <string name="contact_form_save_error_limit_reached">Contact limit reached</string>
   <string name="all_contacts_tab">Stiki</string>

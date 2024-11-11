@@ -92,10 +92,7 @@
   <string name="address_city">Πόλη</string>
   <string name="address_region">Περιοχή</string>
   <string name="address_country">Χώρα</string>
-  <string name="contact_details_delete_dialog_title">Διαγραφή Επαφής</string>
-  <string name="contact_details_delete_dialog_text">Είστε βέβαιοι ότι θέλετε να διαγράψετε αυτήν την επαφή;</string>
-  <string name="contact_details_delete_dialog_cancel_button">Ακύρωση</string>
-  <string name="contact_details_delete_dialog_confirm_button">ΟΚ</string>
+  <string name="contact_delete_dialog_cancel_button">Ακύρωση</string>
   <string name="contact_form_save_error">Σφάλμα κατά την αποθήκευση της επαφής, δοκιμάστε ξανά αργότερα</string>
   <string name="contact_form_save_error_limit_reached">Εξάντληση ορίου επαφών</string>
   <string name="all_contacts_tab">Επαφές</string>

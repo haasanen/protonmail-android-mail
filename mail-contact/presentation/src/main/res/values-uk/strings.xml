@@ -92,10 +92,7 @@
   <string name="address_city">Місто</string>
   <string name="address_region">Область</string>
   <string name="address_country">Країна</string>
-  <string name="contact_details_delete_dialog_title">Видалити контакт</string>
-  <string name="contact_details_delete_dialog_text">Ви дійсно хочете видалити цей контакт?</string>
-  <string name="contact_details_delete_dialog_cancel_button">Скасувати</string>
-  <string name="contact_details_delete_dialog_confirm_button">OK</string>
+  <string name="contact_delete_dialog_cancel_button">Скасувати</string>
   <string name="contact_form_save_error">Помилка збереження контакту, повторіть спробу пізніше</string>
   <string name="contact_form_save_error_limit_reached">Contact limit reached</string>
   <string name="all_contacts_tab">Контакти</string>

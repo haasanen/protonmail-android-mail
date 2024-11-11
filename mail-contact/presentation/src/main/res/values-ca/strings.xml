@@ -92,10 +92,7 @@
   <string name="address_city">Ciutat</string>
   <string name="address_region">Regió</string>
   <string name="address_country">País</string>
-  <string name="contact_details_delete_dialog_title">Elimina el contacte</string>
-  <string name="contact_details_delete_dialog_text">¿Esteu segur que voleu esborrar aquest contacte?</string>
-  <string name="contact_details_delete_dialog_cancel_button">Cancel·la</string>
-  <string name="contact_details_delete_dialog_confirm_button">D\'acord</string>
+  <string name="contact_delete_dialog_cancel_button">Cancel·la</string>
   <string name="contact_form_save_error">S\'ha produït un error en desar el contacte. Torneu-ho a provar més tard</string>
   <string name="contact_form_save_error_limit_reached">S\'ha assolit el límit de contactes</string>
   <string name="all_contacts_tab">Contactes</string>

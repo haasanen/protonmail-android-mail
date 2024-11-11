@@ -92,10 +92,7 @@
   <string name="address_city">Település</string>
   <string name="address_region">Régió</string>
   <string name="address_country">Ország</string>
-  <string name="contact_details_delete_dialog_title">Névjegy törlése</string>
-  <string name="contact_details_delete_dialog_text">Biztos, hogy törölni szeretné ezt a névjegyet?</string>
-  <string name="contact_details_delete_dialog_cancel_button">Mégsem</string>
-  <string name="contact_details_delete_dialog_confirm_button">OK</string>
+  <string name="contact_delete_dialog_cancel_button">Mégsem</string>
   <string name="contact_form_save_error">Hiba a névjegy mentésekor, próbálja újra később</string>
   <string name="contact_form_save_error_limit_reached">Elérte a névjegyek maximális számát</string>
   <string name="all_contacts_tab">Névjegyek</string>

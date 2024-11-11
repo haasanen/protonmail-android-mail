@@ -92,10 +92,7 @@
   <string name="address_city">Oraş</string>
   <string name="address_region">Județ</string>
   <string name="address_country">Țara</string>
-  <string name="contact_details_delete_dialog_title">Ștergere contact</string>
-  <string name="contact_details_delete_dialog_text">Sigur doriți ștergerea contactului selectat?</string>
-  <string name="contact_details_delete_dialog_cancel_button">Anulare</string>
-  <string name="contact_details_delete_dialog_confirm_button">OK</string>
+  <string name="contact_delete_dialog_cancel_button">Anulare</string>
   <string name="contact_form_save_error">Eroare la salvarea contactului. Reîncercați mai târziu.</string>
   <string name="contact_form_save_error_limit_reached">S-a atins numărul maxim de contacte.</string>
   <string name="all_contacts_tab">Contacte</string>

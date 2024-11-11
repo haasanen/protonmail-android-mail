@@ -92,10 +92,7 @@
   <string name="address_city">Miasto</string>
   <string name="address_region">Województwo</string>
   <string name="address_country">Kraj</string>
-  <string name="contact_details_delete_dialog_title">Usuń kontakt</string>
-  <string name="contact_details_delete_dialog_text">Czy na pewno chcesz usunąć ten kontakt?</string>
-  <string name="contact_details_delete_dialog_cancel_button">Anuluj</string>
-  <string name="contact_details_delete_dialog_confirm_button">OK</string>
+  <string name="contact_delete_dialog_cancel_button">Anuluj</string>
   <string name="contact_form_save_error">Wystąpił błąd podczas zapisywania kontaktu. Spróbuj ponownie później</string>
   <string name="contact_form_save_error_limit_reached">Limit kontaktów został osiągnięty</string>
   <string name="all_contacts_tab">Kontakty</string>
