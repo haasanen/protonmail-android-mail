@@ -47,16 +47,12 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
-
-
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -89,6 +85,18 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
+import ch.protonmail.android.design.compose.component.ProtonButton
+import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
+import ch.protonmail.android.design.compose.component.ProtonModalBottomSheetLayout
+import ch.protonmail.android.design.compose.component.ProtonSnackbarHostState
+import ch.protonmail.android.design.compose.component.ProtonSnackbarType
+import ch.protonmail.android.design.compose.component.protonOutlinedButtonColors
+import ch.protonmail.android.design.compose.theme.ProtonDimens
+import ch.protonmail.android.design.compose.theme.ProtonTheme
+import ch.protonmail.android.design.compose.theme.defaultSmallWeak
+import ch.protonmail.android.design.compose.theme.defaultStrongNorm
+import ch.protonmail.android.design.compose.theme.headlineNorm
+import ch.protonmail.android.design.compose.theme.headlineSmallNorm
 import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
 import ch.protonmail.android.mailcommon.presentation.ConsumableTextEffect
 import ch.protonmail.android.mailcommon.presentation.NO_CONTENT_DESCRIPTION
@@ -126,19 +134,6 @@ import ch.protonmail.android.mailupselling.presentation.ui.bottomsheet.Upselling
 import ch.protonmail.android.uicomponents.bottomsheet.bottomSheetHeightConstrainedContent
 import ch.protonmail.android.uicomponents.snackbar.DismissableSnackbarHost
 import kotlinx.coroutines.launch
-import ch.protonmail.android.design.compose.component.ProtonButton
-import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
-import ch.protonmail.android.design.compose.component.ProtonModalBottomSheetLayout
-import ch.protonmail.android.design.compose.component.ProtonSnackbarHostState
-import ch.protonmail.android.design.compose.component.ProtonSnackbarType
-import ch.protonmail.android.design.compose.component.protonOutlinedButtonColors
-
-import ch.protonmail.android.design.compose.theme.ProtonDimens
-import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.defaultSmallWeak
-import ch.protonmail.android.design.compose.theme.defaultStrongNorm
-import ch.protonmail.android.design.compose.theme.headlineNorm
-import ch.protonmail.android.design.compose.theme.headlineSmallNorm
 import timber.log.Timber
 import ch.protonmail.android.mailcommon.presentation.R.string as commonString
 
@@ -231,10 +226,6 @@ fun MailboxScreen(
                 BottomSheetVisibilityEffect.Show -> scope.launch { bottomSheetState.show() }
             }
         }
-    }
-
-    if (bottomSheetState.currentValue != SheetValue.Hidden) {
-        DisposableEffect(Unit) { onDispose { viewModel.submit(MailboxViewAction.DismissBottomSheet) } }
     }
 
     StorageLimitDialogs(

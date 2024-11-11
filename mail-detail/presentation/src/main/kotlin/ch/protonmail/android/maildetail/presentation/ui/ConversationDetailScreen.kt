@@ -31,15 +31,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-
-
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SheetValue
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
@@ -63,6 +59,13 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
+import ch.protonmail.android.design.compose.component.ProtonErrorMessage
+import ch.protonmail.android.design.compose.component.ProtonModalBottomSheetLayout
+import ch.protonmail.android.design.compose.component.ProtonSnackbarHostState
+import ch.protonmail.android.design.compose.component.ProtonSnackbarType
+import ch.protonmail.android.design.compose.theme.ProtonDimens
+import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.mailcommon.domain.model.BasicContactInfo
 import ch.protonmail.android.mailcommon.presentation.AdaptivePreviews
 import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
@@ -76,6 +79,7 @@ import ch.protonmail.android.mailcommon.presentation.model.string
 import ch.protonmail.android.mailcommon.presentation.ui.BottomActionBar
 import ch.protonmail.android.mailcommon.presentation.ui.CommonTestTags
 import ch.protonmail.android.mailcommon.presentation.ui.delete.DeleteDialog
+import ch.protonmail.android.mailcontact.domain.model.ContactId
 import ch.protonmail.android.maildetail.domain.model.OpenAttachmentIntentValues
 import ch.protonmail.android.maildetail.domain.model.OpenProtonCalendarIntentValues
 import ch.protonmail.android.maildetail.presentation.R
@@ -109,14 +113,6 @@ import ch.protonmail.android.uicomponents.snackbar.DismissableSnackbarHost
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.coroutines.android.awaitFrame
 import kotlinx.coroutines.launch
-import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
-import ch.protonmail.android.design.compose.component.ProtonErrorMessage
-import ch.protonmail.android.design.compose.component.ProtonModalBottomSheetLayout
-import ch.protonmail.android.design.compose.component.ProtonSnackbarHostState
-import ch.protonmail.android.design.compose.component.ProtonSnackbarType
-import ch.protonmail.android.design.compose.theme.ProtonDimens
-import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.mailcontact.domain.model.ContactId
 import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -143,10 +139,6 @@ fun ConversationDetailScreen(
                 BottomSheetVisibilityEffect.Show -> scope.launch { bottomSheetState.show() }
             }
         }
-    }
-
-    if (bottomSheetState.currentValue != SheetValue.Hidden) {
-        DisposableEffect(Unit) { onDispose { viewModel.submit(ConversationDetailViewAction.DismissBottomSheet) } }
     }
 
     BackHandler(bottomSheetState.isVisible) {
