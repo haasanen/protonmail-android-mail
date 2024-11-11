@@ -86,7 +86,7 @@ private fun ContactListItemGroup(
                     )
 
                     is ContactListItemUiModel.Contact ->
-                        ContactListItem(
+                        SwipeableContactListItem(
                             contact = contact,
                             actions = actions
                         )
