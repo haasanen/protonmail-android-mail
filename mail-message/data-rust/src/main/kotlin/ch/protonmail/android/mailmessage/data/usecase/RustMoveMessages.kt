@@ -18,13 +18,17 @@
 
 package ch.protonmail.android.mailmessage.data.usecase
 
+import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageId
-import uniffi.proton_mail_uniffi.MailUserSession
+import uniffi.proton_mail_uniffi.Mailbox
+import uniffi.proton_mail_uniffi.moveMessages
 import javax.inject.Inject
 
 class RustMoveMessages @Inject constructor() {
 
-    @SuppressWarnings("NotImplementedDeclaration", "OptionalUnit")
-    suspend operator fun invoke(mailUserSession: MailUserSession, messageIds: List<LocalMessageId>): Unit =
-        TODO("Missing method on uniffi layer")
+    suspend operator fun invoke(
+        mailbox: Mailbox,
+        toLabel: LocalLabelId,
+        messageIds: List<LocalMessageId>
+    ) = moveMessages(mailbox, toLabel, messageIds)
 }

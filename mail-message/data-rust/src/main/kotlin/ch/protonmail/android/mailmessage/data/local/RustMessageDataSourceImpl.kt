@@ -203,9 +203,13 @@ class RustMessageDataSourceImpl @Inject constructor(
         messageIds: List<LocalMessageId>,
         toLabelId: LocalLabelId
     ): Either<DataError.Local, Unit> {
-        val session = userSessionRepository.getUserSession(userId) ?: return DataError.Local.Unknown.left()
+        val mailbox = rustMailbox.observeMailbox().firstOrNull()
+        if (mailbox == null) {
+            Timber.e("rust-message: trying to move messages with null Mailbox! failing")
+            return DataError.Local.NoDataCached.left()
+        }
         return try {
-            rustMoveMessages(session, messageIds).right()
+            rustMoveMessages(mailbox, toLabelId, messageIds).right()
         } catch (e: MailSessionException) {
             Timber.e(e, "rust-message: Failed to mark message unStarred")
             DataError.Local.Unknown.left()
