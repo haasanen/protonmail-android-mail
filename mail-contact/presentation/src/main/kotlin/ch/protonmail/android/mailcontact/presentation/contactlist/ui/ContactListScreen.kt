@@ -44,6 +44,8 @@ import ch.protonmail.android.design.compose.component.ProtonSnackbarHostState
 import ch.protonmail.android.design.compose.component.ProtonSnackbarType
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.mailcontact.domain.model.ContactId
+import ch.protonmail.android.mailcontact.presentation.dialogs.ContactDeleteConfirmationDialog
+import ch.protonmail.android.mailcontact.presentation.model.ContactListItemUiModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -59,6 +61,8 @@ fun ContactListScreen(listActions: ContactListScreen.Actions, viewModel: Contact
     val backgroundColor = ProtonTheme.colors.backgroundSecondary
     val view = LocalView.current
 
+    val deleteDialogState = remember { mutableStateOf<ContactListItemUiModel.Contact?>(null) }
+
     val actions = listActions.copy(
         onBackClick = {
             // Restore default color when this Composable is removed from composition
@@ -67,7 +71,10 @@ fun ContactListScreen(listActions: ContactListScreen.Actions, viewModel: Contact
 
             listActions.onBackClick()
         },
-        onNewGroupClick = { viewModel.submit(ContactListViewAction.OnNewContactGroupClick) }
+        onNewGroupClick = { viewModel.submit(ContactListViewAction.OnNewContactGroupClick) },
+        onDeleteContactRequest = { contact ->
+            viewModel.submit(ContactListViewAction.OnDeleteContactRequested(contact))
+        }
     )
 
     // In this screen, "Background inverted" theme is used for colouring, which is different
@@ -178,6 +185,9 @@ fun ContactListScreen(listActions: ContactListScreen.Actions, viewModel: Contact
 
                 when (state) {
                     is ContactListState.Loaded.Data -> {
+                        ConsumableLaunchedEffect(effect = state.showDeleteConfirmDialog) { contact ->
+                            deleteDialogState.value = contact
+                        }
                         ContactListScreenContent(
                             modifier = Modifier.padding(paddingValues),
                             state = state,
@@ -217,6 +227,11 @@ fun ContactListScreen(listActions: ContactListScreen.Actions, viewModel: Contact
             }
         )
     }
+
+    ContactDeleteConfirmationDialog(
+        deleteDialogState = deleteDialogState,
+        onDeleteConfirmed = { viewModel.submit(ContactListViewAction.OnDeleteContactConfirmed(it)) }
+    )
 }
 
 object ContactListScreen {
@@ -231,7 +246,8 @@ object ContactListScreen {
         val onNewGroupClick: () -> Unit,
         val openImportContact: () -> Unit,
         val onSubscriptionUpgradeRequired: (String) -> Unit,
-        val exitWithErrorMessage: (String) -> Unit
+        val exitWithErrorMessage: (String) -> Unit,
+        val onDeleteContactRequest: (ContactListItemUiModel.Contact) -> Unit
     ) {
 
         companion object {
@@ -246,7 +262,8 @@ object ContactListScreen {
                 openImportContact = {},
                 onNewGroupClick = {},
                 onSubscriptionUpgradeRequired = {},
-                exitWithErrorMessage = {}
+                exitWithErrorMessage = {},
+                onDeleteContactRequest = {}
             )
 
             fun fromContactSearchActions(

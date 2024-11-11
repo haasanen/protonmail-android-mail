@@ -55,7 +55,6 @@ import me.proton.core.compose.navigation.get
 import me.proton.core.domain.entity.UserId
 import me.proton.core.util.kotlin.takeIfNotBlank
 
-
 internal fun NavGraphBuilder.addConversationDetail(actions: ConversationDetail.Actions) {
     composable(route = Destination.Screen.Conversation.route) {
         ConversationDetailScreen(actions = actions)
@@ -371,7 +370,7 @@ internal fun NavGraphBuilder.addContacts(
 ) {
     composable(route = Destination.Screen.Contacts.route) {
         ContactListScreen(
-            listActions = ContactListScreen.Actions(
+            listActions = ContactListScreen.Actions.Empty.copy(
                 onNavigateToNewContactForm = {
                     navController.navigate(Destination.Screen.CreateContact.route)
                 },

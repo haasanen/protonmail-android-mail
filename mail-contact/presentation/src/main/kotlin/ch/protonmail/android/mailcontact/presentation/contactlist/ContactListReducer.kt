@@ -39,6 +39,8 @@ class ContactListReducer @Inject constructor() {
             is ContactListEvent.SubscriptionUpgradeRequiredError -> reduceErrorSubscriptionUpgradeRequired(currentState)
             is ContactListEvent.OpenUpsellingBottomSheet -> reduceOpenUpsellingBottomSheet(currentState)
             is ContactListEvent.UpsellingInProgress -> reduceUpsellingInProgress(currentState)
+            is ContactListEvent.DeleteContactConfirmed -> reduceDeleteConfirmed(currentState)
+            is ContactListEvent.DeleteContactRequested -> reduceDeleteRequested(currentState, event)
         }
     }
 
@@ -212,4 +214,28 @@ class ContactListReducer @Inject constructor() {
             )
         }
     }
+
+    private fun reduceDeleteConfirmed(currentState: ContactListState): ContactListState {
+        return when (currentState) {
+            is ContactListState.Loaded.Data -> currentState.copy(
+                showDeleteConfirmDialog = Effect.empty()
+            )
+
+            else -> currentState
+        }
+    }
+
+    private fun reduceDeleteRequested(
+        currentState: ContactListState,
+        event: ContactListEvent.DeleteContactRequested
+    ): ContactListState {
+        return when (currentState) {
+            is ContactListState.Loaded.Data -> currentState.copy(
+                showDeleteConfirmDialog = Effect.of(event.contact)
+            )
+
+            else -> currentState
+        }
+    }
 }
+

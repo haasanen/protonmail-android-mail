@@ -23,6 +23,7 @@ import androidx.lifecycle.viewModelScope
 import arrow.core.getOrElse
 import ch.protonmail.android.mailcommon.domain.usecase.IsPaidUser
 import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUserId
+import ch.protonmail.android.mailcontact.domain.model.ContactId
 import ch.protonmail.android.mailcontact.domain.usecase.ObserveGroupedContacts
 import ch.protonmail.android.mailcontact.domain.usecase.featureflags.IsContactGroupsCrudEnabled
 import ch.protonmail.android.mailupselling.domain.model.UpsellingEntryPoint
@@ -79,10 +80,18 @@ class ContactListViewModel @Inject constructor(
                 ContactListViewAction.OnNewContactClick -> emitNewStateFor(ContactListEvent.OpenContactForm)
                 ContactListViewAction.OnNewContactGroupClick -> handleOnNewContactGroupClick()
                 ContactListViewAction.OnImportContactClick -> emitNewStateFor(ContactListEvent.OpenImportContact)
+                is ContactListViewAction.OnDeleteContactConfirmed -> handleOnDeleteContactConfirmed(action.contactId)
+                is ContactListViewAction.OnDeleteContactRequested -> emitNewStateFor(
+                    ContactListEvent.DeleteContactRequested(action.contact)
+                )
             }
         }
     }
 
+    private suspend fun handleOnDeleteContactConfirmed(contactId: ContactId) {
+        Timber.d("Deleting contact with id: $contactId")
+        emitNewStateFor(ContactListEvent.DeleteContactConfirmed)
+    }
     private suspend fun handleOnNewContactGroupClick() {
         if (userUpgradeState.isUserPendingUpgrade) return emitNewStateFor(ContactListEvent.UpsellingInProgress)
 
