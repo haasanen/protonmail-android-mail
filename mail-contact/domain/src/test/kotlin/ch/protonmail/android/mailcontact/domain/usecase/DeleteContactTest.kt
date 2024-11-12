@@ -20,12 +20,12 @@ package ch.protonmail.android.mailcontact.domain.usecase
 
 import arrow.core.left
 import arrow.core.right
-import ch.protonmail.android.mailcontact.domain.repository.ContactDetailRepository
-import ch.protonmail.android.mailcontact.domain.repository.ContactDetailRepository.ContactDetailErrors.ContactDetailLocalDataSourceError
+import ch.protonmail.android.mailcommon.domain.model.DataError
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import ch.protonmail.android.mailcontact.domain.model.ContactId
+import ch.protonmail.android.mailcontact.domain.repository.ContactRepository
 import me.proton.core.domain.entity.UserId
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -35,13 +35,13 @@ class DeleteContactTest {
     private val userId = UserId("userId")
     private val contactId = ContactId("contactId")
 
-    private val contactDetailRepository = mockk<ContactDetailRepository>()
-    val deleteContact = DeleteContact(contactDetailRepository)
+    private val contactRepository = mockk<ContactRepository>()
+    val deleteContact = DeleteContact(contactRepository)
 
     @Test
     fun `should return unit when delete contact was successful`() = runTest {
         // Given
-        coEvery { contactDetailRepository.deleteContact(userId, contactId) } returns Unit.right()
+        coEvery { contactRepository.deleteContact(userId, contactId) } returns Unit.right()
 
 
         // When
@@ -55,8 +55,8 @@ class DeleteContactTest {
     fun `should return FailedToDeleteContact when delete contact was not successful`() = runTest {
         // Given
         coEvery {
-            contactDetailRepository.deleteContact(userId, contactId)
-        } returns ContactDetailLocalDataSourceError.left()
+            contactRepository.deleteContact(userId, contactId)
+        } returns DataError.Local.Unknown.left()
 
         // When
         val result = deleteContact(userId, contactId)

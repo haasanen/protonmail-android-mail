@@ -30,6 +30,8 @@ import ch.protonmail.android.mailcontact.domain.model.ContactId
 fun LocalContactId.toContactId(): ContactId = ContactId(this.value.toString())
 fun LocalContactGroupId.toContactGroupId(): ContactGroupId = ContactGroupId(this.value.toString())
 
+fun ContactId.toLocalContactId(): LocalContactId = LocalContactId(this.id.toULong())
+
 @MissingRustApi
 fun LocalContactEmail.toContactEmail(): ContactEmail {
     return ContactEmail(

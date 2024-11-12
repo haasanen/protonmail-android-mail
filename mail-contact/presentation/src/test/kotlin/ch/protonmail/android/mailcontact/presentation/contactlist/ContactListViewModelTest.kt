@@ -51,13 +51,16 @@ import ch.protonmail.android.mailcontact.domain.model.ContactGroupId
 import ch.protonmail.android.mailcontact.domain.model.ContactId
 import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import ch.protonmail.android.mailcontact.domain.model.GroupedContacts
+import ch.protonmail.android.mailcontact.domain.usecase.DeleteContact
 import ch.protonmail.android.mailcontact.domain.usecase.ObserveGroupedContacts
 import ch.protonmail.android.mailcontact.presentation.model.ContactEmailListMapper
 import ch.protonmail.android.mailcontact.presentation.model.ContactItemUiModelMapper
+import ch.protonmail.android.mailcontact.presentation.model.ContactListItemUiModel
 import ch.protonmail.android.mailcontact.presentation.model.GroupedContactListItemsUiModelMapper
 import ch.protonmail.android.maillabel.domain.model.Label
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.LabelType
+import io.mockk.coVerify
 import junit.framework.TestCase.assertEquals
 import org.junit.Rule
 import org.junit.Test
@@ -122,6 +125,10 @@ class ContactListViewModelTest {
         every { this@mockk.isUserPendingUpgrade } returns false
     }
 
+    private val deleteContact = mockk<DeleteContact> {
+        coEvery { this@mockk(UserIdTestData.userId, any()) } returns Unit.right()
+    }
+
     private val reducer = ContactListReducer()
 
     private val isPaidUser = mockk<IsPaidUser>()
@@ -140,6 +147,7 @@ class ContactListViewModelTest {
     private val contactListViewModel by lazy {
         ContactListViewModel(
             observeGroupedContacts,
+            deleteContact,
             isPaidUser,
             reducer,
             groupedContactListItemsUiModelMapper,
@@ -472,6 +480,7 @@ class ContactListViewModelTest {
             }
         }
 
+
     @Test
     fun `given contact list, when action import contact, then emits open import state`() = runTest {
         // Given
@@ -498,6 +507,75 @@ class ContactListViewModelTest {
         }
     }
 
+    @Test
+    fun `when contact deletion request action is submitted, then shows confirmation dialog`() = runTest {
+        // Given
+        val contactId = ContactId("1")
+        val contactUiModel = contactListItemUiModelMapper.toContactListItemUiModel(
+            defaultTestContactMetadata
+        ) as ContactListItemUiModel.Contact
+        coEvery { deleteContact(UserIdTestData.userId, contactId) } returns Unit.right()
+        expectContactsData()
+
+        // When
+        contactListViewModel.state.test {
+            awaitItem()
+
+            contactListViewModel.submit(ContactListViewAction.OnDeleteContactRequested(contactUiModel))
+
+            // Then
+            val actual = awaitItem()
+            val expected = ContactListState.Loaded.Data(
+                groupedContacts = listOf(defaultTestGroupedContacts).map {
+                    groupedContactListItemsUiModelMapper.toUiModel(it)
+                },
+                isContactGroupsCrudEnabled = true,
+                isContactGroupsUpsellingVisible = false,
+                isContactSearchEnabled = true,
+                showDeleteConfirmDialog = Effect.of(contactUiModel),
+                bottomSheetType = ContactListState.BottomSheetType.Menu
+            )
+
+            assertEquals(expected, actual)
+        }
+    }
+
+    @Test
+    fun `when contact deletion confirmed, deleteContact is called and confirmation dialog dismissed`() = runTest {
+        // Given
+        val contactId = ContactId("1")
+        val contactUiModel = contactListItemUiModelMapper.toContactListItemUiModel(
+            defaultTestContactMetadata
+        ) as ContactListItemUiModel.Contact
+        coEvery { deleteContact(UserIdTestData.userId, contactId) } returns Unit.right()
+        expectContactsData()
+
+        // When
+        contactListViewModel.state.test {
+            contactListViewModel.submit(
+                ContactListViewAction.OnDeleteContactRequested(contactUiModel)
+            )
+
+            skipItems(2)
+
+            contactListViewModel.submit(ContactListViewAction.OnDeleteContactConfirmed(contactId))
+
+            // Then
+            val actual = awaitItem()
+            val expected = ContactListState.Loaded.Data(
+                groupedContacts = listOf(defaultTestGroupedContacts).map {
+                    groupedContactListItemsUiModelMapper.toUiModel(it)
+                },
+                isContactGroupsCrudEnabled = true,
+                isContactSearchEnabled = true,
+                showDeleteConfirmDialog = Effect.empty()
+            )
+
+            assertEquals(expected, actual)
+            coVerify { deleteContact(UserIdTestData.userId, contactId) }
+
+        }
+    }
 
     private fun expectContactsData() {
         coEvery {

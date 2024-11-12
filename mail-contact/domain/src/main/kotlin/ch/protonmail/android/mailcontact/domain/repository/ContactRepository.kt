@@ -19,6 +19,7 @@
 package ch.protonmail.android.mailcontact.domain.repository
 
 import arrow.core.Either
+import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcontact.domain.model.ContactCard
 import ch.protonmail.android.mailcontact.domain.model.ContactEmail
 import ch.protonmail.android.mailcontact.domain.model.ContactId
@@ -85,9 +86,9 @@ interface ContactRepository {
     suspend fun createContact(userId: UserId, contactCards: List<ContactCard>)
 
     /**
-     * Delete contacts from [userId] by [contactIds].
+     * Delete contact from [userId] by [contactId].
      */
-    suspend fun deleteContacts(userId: UserId, contactIds: List<ContactId>)
+    suspend fun deleteContact(userId: UserId, contactId: ContactId): Either<DataError.Local, Unit>
 
     /**
      * Update contact from [userId], by [contactId], using [contactCards].

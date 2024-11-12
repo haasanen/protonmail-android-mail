@@ -16,21 +16,17 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailcontact.domain.usecase
+package ch.protonmail.android.mailcontact.data.usecase
 
-import arrow.core.Either
-import ch.protonmail.android.mailcontact.domain.usecase.DeleteContact.DeleteContactErrors.FailedToDeleteContact
-import ch.protonmail.android.mailcontact.domain.model.ContactId
-import ch.protonmail.android.mailcontact.domain.repository.ContactRepository
-import me.proton.core.domain.entity.UserId
+import uniffi.proton_mail_uniffi.ContactsLiveQueryCallback
+import uniffi.proton_mail_uniffi.MailUserSession
+import uniffi.proton_mail_uniffi.WatchedContactList
+import uniffi.proton_mail_uniffi.watchContactList
 import javax.inject.Inject
 
-class DeleteContact @Inject constructor(private val contactRepository: ContactRepository) {
+class CreateRustContactWatcher @Inject constructor() {
 
-    suspend operator fun invoke(userId: UserId, contactId: ContactId): Either<DeleteContactErrors, Unit> =
-        contactRepository.deleteContact(userId, contactId).mapLeft { FailedToDeleteContact }
+    suspend operator fun invoke(session: MailUserSession, callback: ContactsLiveQueryCallback): WatchedContactList =
+        watchContactList(session, callback)
 
-    sealed interface DeleteContactErrors {
-        data object FailedToDeleteContact : DeleteContactErrors
-    }
 }

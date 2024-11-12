@@ -24,6 +24,7 @@ import arrow.core.getOrElse
 import ch.protonmail.android.mailcommon.domain.usecase.IsPaidUser
 import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailcontact.domain.model.ContactId
+import ch.protonmail.android.mailcontact.domain.usecase.DeleteContact
 import ch.protonmail.android.mailcontact.domain.usecase.ObserveGroupedContacts
 import ch.protonmail.android.mailcontact.domain.usecase.featureflags.IsContactGroupsCrudEnabled
 import ch.protonmail.android.mailupselling.domain.model.UpsellingEntryPoint
@@ -49,6 +50,7 @@ import javax.inject.Inject
 @HiltViewModel
 class ContactListViewModel @Inject constructor(
     private val observeGroupedContacts: ObserveGroupedContacts,
+    private val deleteContact: DeleteContact,
     private val isPaidUser: IsPaidUser,
     private val reducer: ContactListReducer,
     private val groupedContactListItemsUiModelMapper: GroupedContactListItemsUiModelMapper,
@@ -90,6 +92,8 @@ class ContactListViewModel @Inject constructor(
 
     private suspend fun handleOnDeleteContactConfirmed(contactId: ContactId) {
         Timber.d("Deleting contact with id: $contactId")
+        deleteContact(primaryUserId(), contactId)
+
         emitNewStateFor(ContactListEvent.DeleteContactConfirmed)
     }
     private suspend fun handleOnNewContactGroupClick() {
@@ -133,6 +137,7 @@ class ContactListViewModel @Inject constructor(
             )
         }
     }
+
 
     private fun emitNewStateFor(event: ContactListEvent) {
         val currentState = state.value

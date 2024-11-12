@@ -62,4 +62,7 @@ dependencies {
     testImplementation(libs.bundles.test)
     testImplementation(project(":test:test-data"))
     testImplementation(project(":mail-common:domain"))
+    testImplementation(project(":test:utils"))
+    testImplementation(libs.proton.rust.core)
+    testImplementation(libs.bundles.test.androidTest)
 }
