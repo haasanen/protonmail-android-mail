@@ -27,6 +27,7 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.map
 import arrow.core.Either
+import arrow.core.flatMap
 import arrow.core.getOrElse
 import arrow.core.left
 import arrow.core.right
@@ -845,7 +846,10 @@ class MailboxViewModel @Inject constructor(
             Timber.d("Selected folder is null")
             return
         }
-        handleMoveOperation(userId, selectionState, selectedFolder.id.labelId)
+        handleMoveOperation(userId, selectionState, selectedFolder.id.labelId).fold(
+            ifLeft = { MailboxEvent.ErrorMoving },
+            ifRight = { MailboxViewAction.MoveToConfirmed }
+        ).let { emitNewStateFrom(it) }
     }
 
     private suspend fun handleMoveToAction(viewAction: MailboxViewAction) {
@@ -869,28 +873,7 @@ class MailboxViewModel @Inject constructor(
             return
         }
 
-        handleMoveOperation(userId, selectionState, targetLabel)
-    }
-
-    private suspend fun handleMoveOperation(
-        userId: UserId,
-        selectionState: MailboxListState.Data.SelectionMode,
-        targetLabelId: LabelId
-    ) {
-        val viewMode = getViewModeForCurrentLocation(selectedMailLabelId.flow.value)
-        when (viewMode) {
-            ViewMode.ConversationGrouping -> moveConversations(
-                userId = userId,
-                conversationIds = selectionState.selectedMailboxItems.map { ConversationId(it.id) },
-                labelId = targetLabelId
-            )
-
-            ViewMode.NoConversationGrouping -> moveMessages(
-                userId = userId,
-                messageIds = selectionState.selectedMailboxItems.map { MessageId(it.id) },
-                labelId = targetLabelId
-            )
-        }.fold(
+        handleMoveOperation(userId, selectionState, targetLabel).fold(
             ifLeft = { MailboxEvent.ErrorMoving },
             ifRight = { MailboxViewAction.MoveToConfirmed }
         ).let { emitNewStateFrom(it) }
@@ -980,8 +963,18 @@ class MailboxViewModel @Inject constructor(
             Timber.e("Local label id cannot be found for SystemLabelId.Trash!")
             return DataError.Local.NoDataCached.left()
         }
+        return handleMoveOperation(userId, selectionModeDataState, localLabelId).flatMap {
+            selectionModeDataState.selectedMailboxItems.size.right()
+        }
+    }
+
+    private suspend fun handleMoveOperation(
+        userId: UserId,
+        selectionModeDataState: MailboxListState.Data.SelectionMode,
+        localLabelId: LabelId
+    ): Either<DataError, Unit> {
         val viewMode = getViewModeForCurrentLocation(selectedMailLabelId.flow.value)
-        when (viewMode) {
+        return when (viewMode) {
             ViewMode.ConversationGrouping -> moveConversations(
                 userId = userId,
                 conversationIds = selectionModeDataState.selectedMailboxItems.map { ConversationId(it.id) },
@@ -994,7 +987,6 @@ class MailboxViewModel @Inject constructor(
                 labelId = localLabelId
             )
         }
-        return selectionModeDataState.selectedMailboxItems.size.right()
     }
 
     private suspend fun handleDeleteAction() {
