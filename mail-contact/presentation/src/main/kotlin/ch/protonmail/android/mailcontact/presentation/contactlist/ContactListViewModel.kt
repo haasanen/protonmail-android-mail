@@ -25,7 +25,6 @@ import ch.protonmail.android.mailcommon.domain.usecase.IsPaidUser
 import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailcontact.domain.usecase.ObserveGroupedContacts
 import ch.protonmail.android.mailcontact.domain.usecase.featureflags.IsContactGroupsCrudEnabled
-import ch.protonmail.android.mailcontact.domain.usecase.featureflags.IsContactSearchEnabled
 import ch.protonmail.android.mailupselling.domain.model.UpsellingEntryPoint
 import ch.protonmail.android.mailupselling.domain.model.UserUpgradeState
 import ch.protonmail.android.mailupselling.presentation.usecase.ObserveUpsellingVisibility
@@ -55,7 +54,6 @@ class ContactListViewModel @Inject constructor(
     private val isContactGroupsCrudEnabled: IsContactGroupsCrudEnabled,
     private val observeUpsellingVisibility: ObserveUpsellingVisibility,
     private val userUpgradeState: UserUpgradeState,
-    private val isContactSearchEnabled: IsContactSearchEnabled,
     observePrimaryUserId: ObservePrimaryUserId
 ) : ViewModel() {
 
