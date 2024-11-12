@@ -183,7 +183,7 @@ class RustMessageDataSourceImpl @Inject constructor(
         return try {
             rustStarMessages(session, messages).right()
         } catch (e: MailSessionException) {
-            Timber.e(e, "rust-message: Failed to mark message unStarred")
+            Timber.e(e, "rust-message: Failed to mark message as starred")
             DataError.Local.Unknown.left()
         }
     }
@@ -211,7 +211,7 @@ class RustMessageDataSourceImpl @Inject constructor(
         return try {
             rustMoveMessages(mailbox, toLabelId, messageIds).right()
         } catch (e: MailSessionException) {
-            Timber.e(e, "rust-message: Failed to mark message unStarred")
+            Timber.e(e, "rust-message: Failed to move messages")
             DataError.Local.Unknown.left()
         }
     }

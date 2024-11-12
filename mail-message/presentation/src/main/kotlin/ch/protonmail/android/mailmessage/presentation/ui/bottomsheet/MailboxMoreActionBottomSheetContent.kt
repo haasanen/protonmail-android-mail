@@ -101,6 +101,7 @@ private fun callbackForAction(action: Action, actionCallbacks: MoreActionBottomS
         Action.Trash -> actionCallbacks.onTrash
         Action.Delete -> actionCallbacks.onDelete
         Action.Move -> actionCallbacks.onMoveTo
+        Action.Inbox -> actionCallbacks.onInbox
         else -> {
             {}
         }
@@ -118,7 +119,8 @@ object MoreActionBottomSheetContent {
         val onMarkUnread: () -> Unit,
         val onTrash: () -> Unit,
         val onDelete: () -> Unit,
-        val onMoveTo: () -> Unit
+        val onMoveTo: () -> Unit,
+        val onInbox: () -> Unit
     ) {
 
         companion object {
@@ -133,7 +135,8 @@ object MoreActionBottomSheetContent {
                 onMarkUnread = {},
                 onTrash = {},
                 onDelete = {},
-                onMoveTo = {}
+                onMoveTo = {},
+                onInbox = {}
             )
         }
     }
