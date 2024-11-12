@@ -42,21 +42,27 @@ fun ContactListScreen(listActions: ContactListScreen.Actions, viewModel: Contact
 
     val state = viewModel.state.collectAsStateWithLifecycle().value
 
+    val defaultColor = ProtonTheme.colors.backgroundNorm
+    val backgroundColor = ProtonTheme.colors.backgroundSecondary
+    val view = LocalView.current
+
     val actions = listActions.copy(
         onBackClick = {
-            systemUiController.setStatusBarColor(defaultColor)
+            // Restore default color when this Composable is removed from composition
+            val activity = view.context as? Activity
+            activity?.window?.statusBarColor = defaultColor.toArgb()
 
             listActions.onBackClick()
         },
         onNewGroupClick = { viewModel.submit(ContactListViewAction.OnNewContactGroupClick) }
     )
 
-    // In this screen, "Background inverted" theme is used for colouring, which different
+    // In this screen, "Background inverted" theme is used for colouring, which is different
     // from the default theme. Therefore, we need to set/reset the status bar colour manually.
     LaunchedEffect(Unit) {
-        systemUiController.setStatusBarColor(
-            color = backgroundColor
-        )
+
+        val activity = view.context as? Activity
+        activity?.window?.statusBarColor = backgroundColor.toArgb()
     }
 
     if (state is ContactListState.Loaded) {
@@ -74,23 +80,6 @@ fun ContactListScreen(listActions: ContactListScreen.Actions, viewModel: Contact
 
     BackHandler(bottomSheetState.isVisible) {
         viewModel.submit(ContactListViewAction.OnDismissBottomSheet)
-    }
-
-    // In this screen, "Background inverted" theme is used for colouring, which different
-    // from the default theme. Therefore, we need to set/reset the status bar colour manually.
-    val defaultColor = ProtonTheme.colors.backgroundNorm
-    val backgroundColor = ProtonTheme.colors.backgroundSecondary
-    val view = LocalView.current
-    DisposableEffect(Unit) {
-        val activity = view.context as? Activity ?: return@DisposableEffect onDispose {}
-
-        // Set the status bar color
-        activity.window.statusBarColor = backgroundColor.toArgb()
-
-        onDispose {
-            // Restore default color when this Composable is removed from composition
-            activity.window.statusBarColor = defaultColor.toArgb()
-        }
     }
 
     ProtonModalBottomSheetLayout(
