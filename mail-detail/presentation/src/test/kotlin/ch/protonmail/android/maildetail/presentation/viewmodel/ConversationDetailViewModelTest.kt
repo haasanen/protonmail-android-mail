@@ -357,18 +357,6 @@ class ConversationDetailViewModelTest {
 
     @Test
     fun `initial state is loading`() = runTest {
-        // Given
-        val messages = nonEmptyListOf(ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded)
-        coEvery {
-            conversationMessageMapper.toUiModel(
-                userId = any(),
-                message = any(),
-                contacts = any(),
-                decryptedMessageBody = any(),
-                existingMessageUiState = any()
-            )
-        } returns messages.first()
-
         // When
         viewModel.state.test {
             // Then
@@ -391,15 +379,6 @@ class ConversationDetailViewModelTest {
     @Test
     fun `conversation state is data when use case succeeds`() = runTest {
         // given
-        val messages = nonEmptyListOf(ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded)
-        coEvery {
-            conversationMessageMapper.toUiModel(
-                userId = any(),
-                message = any(),
-                contacts = any(),
-                decryptedMessageBody = any()
-            )
-        } returns messages.first()
         val conversationUiModel = ConversationDetailMetadataUiModelSample.WeatherForecast
         val expectedState = initialState.copy(
             conversationState = ConversationDetailMetadataState.Data(conversationUiModel)
@@ -424,15 +403,6 @@ class ConversationDetailViewModelTest {
     @Test
     fun `conversation state is error loading when use case fails`() = runTest {
         // given
-        val messages = nonEmptyListOf(ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded)
-        coEvery {
-            conversationMessageMapper.toUiModel(
-                userId = any(),
-                message = any(),
-                contacts = any(),
-                decryptedMessageBody = any()
-            )
-        } returns messages.first()
         val expectedState = initialState.copy(
             conversationState = ConversationDetailMetadataState.Error(
                 message = TextUiModel(string.detail_error_loading_conversation)
@@ -462,15 +432,6 @@ class ConversationDetailViewModelTest {
     @Test
     fun `reducer is called with no network error when observe conversation fails with no network error`() = runTest {
         // given
-        val messages = nonEmptyListOf(ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded)
-        coEvery {
-            conversationMessageMapper.toUiModel(
-                userId = any(),
-                message = any(),
-                contacts = any(),
-                decryptedMessageBody = any()
-            )
-        } returns messages.first()
         val dataState = initialState.copy(
             conversationState = ConversationDetailMetadataState.Data(
                 ConversationDetailMetadataUiModelSample.WeatherForecast
@@ -522,8 +483,7 @@ class ConversationDetailViewModelTest {
                 contacts = any(),
                 decryptedMessageBody = any()
             )
-        } returns
-            InvoiceWithLabelExpanded
+        } returns InvoiceWithLabelExpanded
 
         // when
         viewModel.state.test {
@@ -552,15 +512,6 @@ class ConversationDetailViewModelTest {
                 operation = ofType<ConversationDetailEvent.MessagesData>()
             )
         } returns expectedState
-        coEvery {
-            conversationMessageMapper.toUiModel(
-                userId = any(),
-                message = any(), // Model here has 3 labels, sample models only have one or two
-                contacts = emptyList(),
-                decryptedMessageBody = any()
-            )
-        } returns
-            InvoiceWithLabelExpanded
 
         // when
         viewModel.state.test {
@@ -697,15 +648,6 @@ class ConversationDetailViewModelTest {
     @Test
     fun `starred conversation metadata is emitted when star action is successful`() = runTest {
         // given
-        val messages = nonEmptyListOf(ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded)
-        coEvery {
-            conversationMessageMapper.toUiModel(
-                userId = any(),
-                message = any(),
-                contacts = any(),
-                decryptedMessageBody = any()
-            )
-        } returns messages.first()
         givenReducerReturnsStarredUiModel()
 
         viewModel.state.test {
@@ -724,16 +666,7 @@ class ConversationDetailViewModelTest {
     @Test
     fun `verify order of emitted states when starring a conversation`() = runTest {
         // Given
-        val messages = nonEmptyListOf(ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded)
         val labelId = LabelIdSample.Spam
-        coEvery {
-            conversationMessageMapper.toUiModel(
-                userId = any(),
-                message = any(),
-                contacts = any(),
-                decryptedMessageBody = any()
-            )
-        } returns messages.first()
         every { savedStateHandle.get<String>(ConversationDetailScreen.OpenedFromLocationKey) } returns labelId.id
         val actionUiModels = listOf(
             ActionUiModelTestData.archive,
@@ -764,15 +697,6 @@ class ConversationDetailViewModelTest {
     @Test
     fun `error starring conversation is emitted when star action fails`() = runTest {
         // Given
-        val messages = nonEmptyListOf(ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded)
-        coEvery {
-            conversationMessageMapper.toUiModel(
-                userId = any(),
-                message = any(),
-                contacts = any(),
-                decryptedMessageBody = any()
-            )
-        } returns messages.first()
         coEvery { starConversations.invoke(UserIdSample.Primary, any()) } returns DataError.Local.NoDataCached.left()
         every {
             reducer.newStateFrom(
@@ -800,15 +724,6 @@ class ConversationDetailViewModelTest {
     @Test
     fun `unStarred conversation metadata is emitted when unStar action is successful`() = runTest {
         // given
-        val messages = nonEmptyListOf(ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded)
-        coEvery {
-            conversationMessageMapper.toUiModel(
-                userId = any(),
-                message = any(),
-                contacts = any(),
-                decryptedMessageBody = any()
-            )
-        } returns messages.first()
         every {
             reducer.newStateFrom(
                 currentState = ConversationDetailState.Loading,
@@ -835,15 +750,6 @@ class ConversationDetailViewModelTest {
     @Test
     fun `error unStarring conversation is emitted when unStar action fails`() = runTest {
         // Given
-        val messages = nonEmptyListOf(ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded)
-        coEvery {
-            conversationMessageMapper.toUiModel(
-                userId = any(),
-                message = any(),
-                contacts = any(),
-                decryptedMessageBody = any()
-            )
-        } returns messages.first()
         coEvery { unStarConversations.invoke(UserIdSample.Primary, any()) } returns DataError.Local.NoDataCached.left()
         every {
             reducer.newStateFrom(
@@ -870,15 +776,6 @@ class ConversationDetailViewModelTest {
     @Test
     fun `error moving to trash is emitted when action fails`() = runTest {
         // Given
-        val messages = nonEmptyListOf(ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded)
-        coEvery {
-            conversationMessageMapper.toUiModel(
-                userId = any(),
-                message = any(),
-                contacts = any(),
-                decryptedMessageBody = any()
-            )
-        } returns messages.first()
         coEvery {
             move(
                 UserIdSample.Primary,
@@ -909,15 +806,6 @@ class ConversationDetailViewModelTest {
     @Test
     fun `exit with message is emitted when success moving to trash`() = runTest {
         // Given
-        val messages = nonEmptyListOf(ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded)
-        coEvery {
-            conversationMessageMapper.toUiModel(
-                userId = any(),
-                message = any(),
-                contacts = any(),
-                decryptedMessageBody = any()
-            )
-        } returns messages.first()
         coEvery {
             move(
                 UserIdSample.Primary,
@@ -950,15 +838,6 @@ class ConversationDetailViewModelTest {
     @Test
     fun `verify move to is called and exit with message is emitted when destination get confirmed`() = runTest {
         // Given
-        val messages = nonEmptyListOf(ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded)
-        coEvery {
-            conversationMessageMapper.toUiModel(
-                userId = any(),
-                message = any(),
-                contacts = any(),
-                decryptedMessageBody = any()
-            )
-        } returns messages.first()
         coEvery {
             move(
                 userId = UserIdSample.Primary,
@@ -1018,15 +897,6 @@ class ConversationDetailViewModelTest {
     @Test
     fun `verify relabel is called and exit is not called when labels get confirmed`() = runTest {
         // Given
-        val messages = nonEmptyListOf(ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded)
-        coEvery {
-            conversationMessageMapper.toUiModel(
-                userId = any(),
-                message = any(),
-                contacts = any(),
-                decryptedMessageBody = any()
-            )
-        } returns messages.first()
         val event = LabelAsBottomSheetState.LabelAsBottomSheetEvent.ActionData(
             customLabelList = MailLabelUiModelTestData.customLabelList,
             selectedLabels = listOf<LabelId>().toImmutableList(),
@@ -1116,15 +986,6 @@ class ConversationDetailViewModelTest {
     fun `verify relabel and move is called and exit is set when labels get confirmed and should be archived`() =
         runTest {
             // Given
-            val messages = nonEmptyListOf(ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded)
-            coEvery {
-                conversationMessageMapper.toUiModel(
-                    userId = any(),
-                    message = any(),
-                    contacts = any(),
-                    decryptedMessageBody = any()
-                )
-            } returns messages.first()
             val event = LabelAsBottomSheetState.LabelAsBottomSheetEvent.ActionData(
                 customLabelList = MailLabelUiModelTestData.customLabelList,
                 selectedLabels = listOf<LabelId>().toImmutableList(),
@@ -1232,15 +1093,6 @@ class ConversationDetailViewModelTest {
     @Test
     fun `verify relabel adds previously partially selected label`() = runTest {
         // Given
-        val messages = nonEmptyListOf(ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded)
-        coEvery {
-            conversationMessageMapper.toUiModel(
-                userId = any(),
-                message = any(),
-                contacts = any(),
-                decryptedMessageBody = any()
-            )
-        } returns messages.first()
         val event = LabelAsBottomSheetState.LabelAsBottomSheetEvent.ActionData(
             customLabelList = MailLabelUiModelTestData.customLabelList,
             selectedLabels = listOf(LabelSample.Document.labelId, LabelSample.Label2021.labelId).toImmutableList(),
@@ -1337,15 +1189,6 @@ class ConversationDetailViewModelTest {
     @Test
     fun `mark as unread is called correctly when action is submitted`() = runTest {
         // given
-        val messages = nonEmptyListOf(ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded)
-        coEvery {
-            conversationMessageMapper.toUiModel(
-                userId = any(),
-                message = any(),
-                contacts = any(),
-                decryptedMessageBody = any()
-            )
-        } returns messages.first()
         coEvery { markConversationAsUnread(userId, conversationId) } returns Unit.right()
 
         // when
@@ -1359,15 +1202,6 @@ class ConversationDetailViewModelTest {
     @Test
     fun `exit state is emitted when marked as unread successfully`() = runTest {
         // given
-        val messages = nonEmptyListOf(ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded)
-        coEvery {
-            conversationMessageMapper.toUiModel(
-                userId = any(),
-                message = any(),
-                contacts = any(),
-                decryptedMessageBody = any()
-            )
-        } returns messages.first()
         coEvery { markConversationAsUnread(userId, conversationId) } returns Unit.right()
         every {
             reducer.newStateFrom(
@@ -1392,15 +1226,6 @@ class ConversationDetailViewModelTest {
     @Test
     fun `error message is emitted when mark as unread fails`() = runTest {
         // given
-        val messages = nonEmptyListOf(ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded)
-        coEvery {
-            conversationMessageMapper.toUiModel(
-                userId = any(),
-                message = any(),
-                contacts = any(),
-                decryptedMessageBody = any()
-            )
-        } returns messages.first()
         coEvery { markConversationAsUnread(userId, conversationId) } returns DataError.Local.NoDataCached.left()
         every {
             reducer.newStateFrom(
@@ -1448,15 +1273,6 @@ class ConversationDetailViewModelTest {
     fun `should emit click effect when a link click is submitted`() = runTest {
         // given
         val messageId = MessageIdUiModel(MessageIdSample.AugWeatherForecast.id)
-        val messages = nonEmptyListOf(ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded)
-        coEvery {
-            conversationMessageMapper.toUiModel(
-                userId = any(),
-                message = any(),
-                contacts = any(),
-                decryptedMessageBody = any()
-            )
-        } returns messages.first()
 
         // Mock the Uri class
         val mockUri = mockk<Uri>(relaxed = true)
@@ -1828,15 +1644,6 @@ class ConversationDetailViewModelTest {
     @Test
     fun `exit state is emitted when marked as read successfully`() = runTest {
         // given
-        val messages = nonEmptyListOf(ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded)
-        coEvery {
-            conversationMessageMapper.toUiModel(
-                userId = any(),
-                message = any(),
-                contacts = any(),
-                decryptedMessageBody = any()
-            )
-        } returns messages.first()
         coEvery { markConversationAsRead(userId, conversationId) } returns Unit.right()
         every {
             reducer.newStateFrom(
@@ -1861,15 +1668,6 @@ class ConversationDetailViewModelTest {
     @Test
     fun `error message is emitted when mark as read fails`() = runTest {
         // given
-        val messages = nonEmptyListOf(ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded)
-        coEvery {
-            conversationMessageMapper.toUiModel(
-                userId = any(),
-                message = any(),
-                contacts = any(),
-                decryptedMessageBody = any()
-            )
-        } returns messages.first()
         coEvery { markConversationAsRead(userId, conversationId) } returns DataError.Local.NoDataCached.left()
         every {
             reducer.newStateFrom(
@@ -1891,19 +1689,9 @@ class ConversationDetailViewModelTest {
         }
     }
 
-
     @Test
     fun `exit state is emitted when move to spam successfully`() = runTest {
         // given
-        val messages = nonEmptyListOf(ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded)
-        coEvery {
-            conversationMessageMapper.toUiModel(
-                userId = any(),
-                message = any(),
-                contacts = any(),
-                decryptedMessageBody = any()
-            )
-        } returns messages.first()
         coEvery { move(userId, conversationId, SystemLabelId.Spam.labelId) } returns Unit.right()
         every {
             reducer.newStateFrom(
@@ -1928,15 +1716,6 @@ class ConversationDetailViewModelTest {
     @Test
     fun `error message is emitted when move to spam fails`() = runTest {
         // given
-        val messages = nonEmptyListOf(ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded)
-        coEvery {
-            conversationMessageMapper.toUiModel(
-                userId = any(),
-                message = any(),
-                contacts = any(),
-                decryptedMessageBody = any()
-            )
-        } returns messages.first()
         coEvery { move(userId, conversationId, SystemLabelId.Spam.labelId) } returns DataError.Local.NoDataCached.left()
         every {
             reducer.newStateFrom(
