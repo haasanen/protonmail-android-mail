@@ -371,8 +371,8 @@ class MailboxViewModel @Inject constructor(
                 is MailboxViewAction.DismissBottomSheet -> emitNewStateFrom(viewAction)
                 is MailboxViewAction.Star -> handleStarAction(viewAction)
                 is MailboxViewAction.UnStar -> handleUnStarAction(viewAction)
-                is MailboxViewAction.MoveToArchive,
-                is MailboxViewAction.MoveToSpam -> handleMoveToAction(viewAction)
+                is MailboxViewAction.MoveToArchive -> handleMoveToArchiveAction(viewAction)
+                is MailboxViewAction.MoveToSpam -> handleMoveToSpamAction(viewAction)
 
                 is MailboxViewAction.EnterSearchMode -> emitNewStateFrom(viewAction)
                 is MailboxViewAction.ExitSearchMode -> handleExitSearchMode(viewAction)
@@ -764,21 +764,7 @@ class MailboxViewModel @Inject constructor(
             val updatedSelection = labelAsData.getLabelSelectionState()
             val viewMode = getViewModeForCurrentLocation(selectedMailLabelId.flow.value)
             if (archiveSelected) {
-                when (viewMode) {
-                    ViewMode.ConversationGrouping ->
-                        moveConversations(
-                            userId,
-                            selectionState.selectedMailboxItems.map { ConversationId(it.id) },
-                            SystemLabelId.Archive.labelId
-                        )
-
-                    ViewMode.NoConversationGrouping ->
-                        moveMessages(
-                            userId,
-                            selectionState.selectedMailboxItems.map { MessageId(it.id) },
-                            SystemLabelId.Archive.labelId
-                        )
-                }
+                moveMailboxItemsTo(SystemLabelId.Archive)
             }
             val operation = handleRelabelOperation(
                 userId = userId,
@@ -847,33 +833,6 @@ class MailboxViewModel @Inject constructor(
             return
         }
         handleMoveOperation(userId, selectionState, selectedFolder.id.labelId).fold(
-            ifLeft = { MailboxEvent.ErrorMoving },
-            ifRight = { MailboxViewAction.MoveToConfirmed }
-        ).let { emitNewStateFrom(it) }
-    }
-
-    private suspend fun handleMoveToAction(viewAction: MailboxViewAction) {
-        val selectionState = state.value.mailboxListState as? MailboxListState.Data.SelectionMode
-        if (selectionState == null) {
-            Timber.d("MailboxListState is not in SelectionMode")
-            return
-        }
-        val userId = primaryUserId.filterNotNull().first()
-        val targetLabel = when (viewAction) {
-            is MailboxViewAction.MoveToArchive -> findLocalSystemLabelId(userId, SystemLabelId.Archive)?.labelId
-            is MailboxViewAction.MoveToSpam -> findLocalSystemLabelId(userId, SystemLabelId.Spam)?.labelId
-            else -> {
-                Timber.e("Unsupported action: $viewAction")
-                null
-            }
-        }
-
-        if (targetLabel == null) {
-            Timber.e("Move to action failed!")
-            return
-        }
-
-        handleMoveOperation(userId, selectionState, targetLabel).fold(
             ifLeft = { MailboxEvent.ErrorMoving },
             ifRight = { MailboxViewAction.MoveToConfirmed }
         ).let { emitNewStateFrom(it) }
@@ -948,6 +907,24 @@ class MailboxViewModel @Inject constructor(
     private suspend fun handleMoveToInboxAction(action: MailboxViewAction.MoveToInbox) {
         moveMailboxItemsTo(SystemLabelId.Inbox).onRight {
             emitNewStateFrom(action)
+        }.onLeft {
+            emitNewStateFrom(MailboxEvent.ErrorMoving)
+        }
+    }
+
+    private suspend fun handleMoveToArchiveAction(action: MailboxViewAction.MoveToArchive) {
+        moveMailboxItemsTo(SystemLabelId.Archive).onRight {
+            emitNewStateFrom(action)
+        }.onLeft {
+            emitNewStateFrom(MailboxEvent.ErrorMoving)
+        }
+    }
+
+    private suspend fun handleMoveToSpamAction(action: MailboxViewAction.MoveToSpam) {
+        moveMailboxItemsTo(SystemLabelId.Spam).onRight {
+            emitNewStateFrom(action)
+        }.onLeft {
+            emitNewStateFrom(MailboxEvent.ErrorMoving)
         }
     }
 
