@@ -19,16 +19,21 @@
 package ch.protonmail.android.mailconversation.domain.usecase
 
 import arrow.core.Either
+import arrow.core.left
 import arrow.core.raise.either
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailconversation.domain.repository.ConversationRepository
-import me.proton.core.domain.entity.UserId
 import ch.protonmail.android.maillabel.domain.model.LabelId
+import ch.protonmail.android.maillabel.domain.model.SystemLabelId
+import ch.protonmail.android.maillabel.domain.usecase.FindLocalSystemLabelId
+import me.proton.core.domain.entity.UserId
+import timber.log.Timber
 import javax.inject.Inject
 
 class MoveConversations @Inject constructor(
-    private val conversationRepository: ConversationRepository
+    private val conversationRepository: ConversationRepository,
+    private val findLocalSystemLabelId: FindLocalSystemLabelId
 ) {
 
     suspend operator fun invoke(
@@ -38,6 +43,22 @@ class MoveConversations @Inject constructor(
     ): Either<DataError, Unit> = either {
         conversationRepository
             .move(userId, conversationIds, toLabelId = labelId)
+            .bind()
+    }
+
+    suspend operator fun invoke(
+        userId: UserId,
+        conversationIds: List<ConversationId>,
+        systemLabelId: SystemLabelId
+    ): Either<DataError, Unit> = either {
+        val localLabelId = findLocalSystemLabelId(userId, systemLabelId)?.labelId
+        if (localLabelId == null) {
+            Timber.e("Local label id cannot be found for SystemLabelId $systemLabelId")
+            return DataError.Local.NoDataCached.left()
+        }
+
+        conversationRepository
+            .move(userId, conversationIds, toLabelId = localLabelId)
             .bind()
     }
 

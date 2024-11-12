@@ -24,6 +24,7 @@ import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.sample.ConversationIdSample
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.mailconversation.domain.usecase.MoveConversations
+import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -45,19 +46,45 @@ class MoveConversationTest {
     fun `when move conversations returns error then return error`() = runTest {
         // Given
         val error = DataError.Local.NoDataCached.left()
-        coEvery { moveConversations(userId, listOf(conversationId), any()) } returns error
+        coEvery { moveConversations(userId, listOf(conversationId), any<LabelId>()) } returns error
 
         // When
-        val actual = move(userId, conversationId, SystemLabelId.Trash.labelId)
+        val actual = move(userId, conversationId, LabelId("custom"))
 
         // Then
         assertEquals(error, actual)
     }
 
     @Test
-    fun `when moving a conversation to trash then move conversations is called with the given data`() = runTest {
+    fun `when moving a convo to custom folder then move conversations is called with the given data`() = runTest {
         // Given
-        val toLabel = SystemLabelId.Trash.labelId
+        val toLabel = LabelId("custom label id")
+        coEvery { moveConversations(userId, listOf(conversationId), toLabel) } returns Unit.right()
+
+        // When
+        move(userId, conversationId, toLabel)
+
+        // Then
+        coVerify { moveConversations(userId, listOf(conversationId), toLabel) }
+    }
+
+    @Test
+    fun `when move conversations to system label returns error then return error`() = runTest {
+        // Given
+        val error = DataError.Local.NoDataCached.left()
+        coEvery { moveConversations(userId, listOf(conversationId), any<SystemLabelId>()) } returns error
+
+        // When
+        val actual = move(userId, conversationId, SystemLabelId.Trash)
+
+        // Then
+        assertEquals(error, actual)
+    }
+
+    @Test
+    fun `when moving a convo to system folder then move conversations is called with the given data`() = runTest {
+        // Given
+        val toLabel = SystemLabelId.Trash
         coEvery { moveConversations(userId, listOf(conversationId), toLabel) } returns Unit.right()
 
         // When

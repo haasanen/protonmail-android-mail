@@ -26,10 +26,13 @@ import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.mailconversation.domain.entity.Conversation
 import ch.protonmail.android.mailconversation.domain.repository.ConversationRepository
 import ch.protonmail.android.mailconversation.domain.sample.ConversationSample
+import ch.protonmail.android.maillabel.domain.model.LabelId
+import ch.protonmail.android.maillabel.domain.model.MailLabelId
+import ch.protonmail.android.maillabel.domain.model.SystemLabelId
+import ch.protonmail.android.maillabel.domain.usecase.FindLocalSystemLabelId
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import ch.protonmail.android.maillabel.domain.model.LabelId
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -39,8 +42,12 @@ class MoveConversationsTest {
     private val conversationIds = listOf(ConversationIdSample.Invoices, ConversationIdSample.WeatherForecast)
 
     private val conversationRepository = mockk<ConversationRepository>()
+    private val findLocalSystemLabelId = mockk<FindLocalSystemLabelId>()
 
-    private val moveConversations = MoveConversations(conversationRepository = conversationRepository)
+    private val moveConversations = MoveConversations(
+        conversationRepository = conversationRepository,
+        findLocalSystemLabelId = findLocalSystemLabelId
+    )
 
     @Test
     fun `when move succeeds then Unit is returned`() = runTest {
@@ -69,6 +76,43 @@ class MoveConversationsTest {
 
         // Then
         assertEquals(DataError.Local.NoDataCached.left(), result)
+    }
+
+    @Test
+    fun `when move to system folder maps the static id to the local one`() = runTest {
+        // Given
+        val destinationLabel = SystemLabelId.Archive
+        val localLabelId = LabelId("archive-local-id")
+        val expectedConversations = listOf(ConversationSample.WeatherForecast, ConversationSample.AlphaAppFeedback)
+        expectMoveSucceeds(localLabelId, expectedConversations)
+        expectFindLocalLabel(destinationLabel, localLabelId)
+
+        // When
+        val result = moveConversations(userId, conversationIds, destinationLabel)
+
+        // Then
+        assertEquals(Unit.right(), result)
+    }
+
+    @Test
+    fun `return error when move to system folder fails mapping the static id to the local one`() = runTest {
+        // Given
+        val destinationLabel = SystemLabelId.Archive
+        expectFindLocalLabelFails(destinationLabel)
+
+        // When
+        val result = moveConversations(userId, conversationIds, destinationLabel)
+
+        // Then
+        assertEquals(DataError.Local.NoDataCached.left(), result)
+    }
+
+    private fun expectFindLocalLabelFails(systemLabelId: SystemLabelId) {
+        coEvery { findLocalSystemLabelId(userId, systemLabelId) } returns null
+    }
+
+    private fun expectFindLocalLabel(systemLabelId: SystemLabelId, resolvedLabel: LabelId) {
+        coEvery { findLocalSystemLabelId(userId, systemLabelId) } returns MailLabelId.System(resolvedLabel)
     }
 
     private fun expectMoveSucceeds(destinationLabel: LabelId, expectedList: List<Conversation>) {

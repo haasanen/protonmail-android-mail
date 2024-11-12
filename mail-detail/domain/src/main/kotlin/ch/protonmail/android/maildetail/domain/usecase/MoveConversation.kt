@@ -24,6 +24,7 @@ import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailconversation.domain.usecase.MoveConversations
 import me.proton.core.domain.entity.UserId
 import ch.protonmail.android.maillabel.domain.model.LabelId
+import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import javax.inject.Inject
 
 class MoveConversation @Inject constructor(
@@ -35,5 +36,11 @@ class MoveConversation @Inject constructor(
         conversationId: ConversationId,
         labelId: LabelId
     ): Either<DataError, Unit> = moveConversations(userId, listOf(conversationId), labelId)
+
+    suspend operator fun invoke(
+        userId: UserId,
+        conversationId: ConversationId,
+        systemLabelId: SystemLabelId
+    ): Either<DataError, Unit> = moveConversations(userId, listOf(conversationId), systemLabelId)
 
 }
