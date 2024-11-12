@@ -1,5 +1,6 @@
 package ch.protonmail.android.mailcontact.presentation.contactlist.ui
 
+import android.app.Activity
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -11,6 +12,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -29,7 +32,6 @@ import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
 import ch.protonmail.android.design.compose.component.ProtonModalBottomSheetLayout
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.mailcontact.domain.model.ContactId
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -38,8 +40,6 @@ fun ContactListScreen(listActions: ContactListScreen.Actions, viewModel: Contact
     val scope = rememberCoroutineScope()
 
     val state = viewModel.state.collectAsStateWithLifecycle().value
-
-    val systemUiController = rememberSystemUiController()
 
     val actions = listActions.copy(
         onNewGroupClick = { viewModel.submit(ContactListViewAction.OnNewContactGroupClick) }
@@ -66,12 +66,16 @@ fun ContactListScreen(listActions: ContactListScreen.Actions, viewModel: Contact
     // from the default theme. Therefore, we need to set/reset the status bar colour manually.
     val defaultColor = ProtonTheme.colors.backgroundNorm
     val backgroundColor = ProtonTheme.colors.backgroundSecondary
+    val view = LocalView.current
     DisposableEffect(Unit) {
-        systemUiController.setStatusBarColor(
-            color = backgroundColor
-        )
+        val activity = view.context as? Activity ?: return@DisposableEffect onDispose {}
+
+        // Set the status bar color
+        activity.window.statusBarColor = backgroundColor.toArgb()
+
         onDispose {
-            systemUiController.setStatusBarColor(defaultColor)
+            // Restore default color when this Composable is removed from composition
+            activity.window.statusBarColor = defaultColor.toArgb()
         }
     }
 
