@@ -79,18 +79,22 @@ sealed interface ConversationDetailEvent : ConversationDetailOperation {
         val bottomSheetOperation: BottomSheetOperation
     ) : ConversationDetailEvent, AffectingBottomSheet
 
-    object ErrorAddStar : ConversationDetailEvent, AffectingErrorBar
-    object ErrorRemoveStar : ConversationDetailEvent, AffectingErrorBar
-    object ErrorMarkingAsUnread : ConversationDetailEvent, AffectingErrorBar
-    object ErrorMovingToTrash : ConversationDetailEvent, AffectingErrorBar
+    object ErrorAddStar : ConversationDetailEvent, AffectingErrorBar, AffectingBottomSheet
+    object ErrorRemoveStar : ConversationDetailEvent, AffectingErrorBar, AffectingBottomSheet
+    object ErrorMarkingAsRead : ConversationDetailEvent, AffectingErrorBar, AffectingBottomSheet
+    object ErrorMarkingAsUnread : ConversationDetailEvent, AffectingErrorBar, AffectingBottomSheet
+    object ErrorMovingToTrash : ConversationDetailEvent, AffectingErrorBar, AffectingBottomSheet
     object ErrorMovingConversation : ConversationDetailEvent, AffectingBottomSheet, AffectingErrorBar
-    object ErrorMovingMessage : ConversationDetailEvent, AffectingErrorBar
+    object ErrorMovingMessage : ConversationDetailEvent, AffectingErrorBar, AffectingBottomSheet
     object ErrorLabelingConversation : ConversationDetailEvent, AffectingBottomSheet, AffectingErrorBar
     object ErrorGettingAttachment : ConversationDetailEvent, AffectingErrorBar
     object ErrorGettingAttachmentNotEnoughSpace : ConversationDetailEvent, AffectingErrorBar
     object ErrorAttachmentDownloadInProgress : ConversationDetailEvent, AffectingErrorBar
-    object ErrorDeletingConversation : ConversationDetailEvent, AffectingErrorBar, AffectingDeleteDialog
-    object ErrorDeletingMessage : ConversationDetailEvent, AffectingErrorBar, AffectingDeleteDialog
+    object ErrorDeletingConversation :
+        ConversationDetailEvent, AffectingBottomSheet, AffectingErrorBar, AffectingDeleteDialog
+
+    object ErrorDeletingMessage :
+        ConversationDetailEvent, AffectingBottomSheet, AffectingErrorBar, AffectingDeleteDialog
 
     data class ExpandDecryptedMessage(
         val messageId: MessageIdUiModel,
@@ -138,10 +142,13 @@ sealed interface ConversationDetailEvent : ConversationDetailOperation {
 
 sealed interface ConversationDetailViewAction : ConversationDetailOperation {
 
-    object Star : ConversationDetailViewAction, AffectingConversation
-    object UnStar : ConversationDetailViewAction, AffectingConversation
-    object MarkUnread : ConversationDetailViewAction
-    object Trash : ConversationDetailViewAction
+    object Star : ConversationDetailViewAction, AffectingConversation, AffectingBottomSheet
+    object UnStar : ConversationDetailViewAction, AffectingConversation, AffectingBottomSheet
+    object MarkRead : ConversationDetailViewAction, AffectingBottomSheet
+    object MarkUnread : ConversationDetailViewAction, AffectingBottomSheet
+    object Archive : ConversationDetailViewAction, AffectingBottomSheet
+    object MoveToSpam : ConversationDetailViewAction, AffectingBottomSheet
+    object MoveToTrash : ConversationDetailViewAction, AffectingBottomSheet
     object MoveToInbox : ConversationDetailViewAction, AffectingBottomSheet
     object DeleteRequested : ConversationDetailViewAction, AffectingDeleteDialog
     object DeleteDialogDismissed : ConversationDetailViewAction, AffectingDeleteDialog
@@ -156,14 +163,17 @@ sealed interface ConversationDetailViewAction : ConversationDetailOperation {
         val mailLabelText: String,
         val messageId: MessageId?
     ) : ConversationDetailViewAction, AffectingBottomSheet
+
     object RequestConversationLabelAsBottomSheet : ConversationDetailViewAction, AffectingBottomSheet
     data class LabelAsToggleAction(val labelId: LabelId) : ConversationDetailViewAction, AffectingBottomSheet
     data class LabelAsConfirmed(
         val archiveSelected: Boolean,
         val messageId: MessageId?
     ) : ConversationDetailViewAction, AffectingBottomSheet
+
     data class RequestMessageMoreActionsBottomSheet(val messageId: MessageId) :
         ConversationDetailViewAction, AffectingBottomSheet
+
     data object RequestConversationMoreActionsBottomSheet : ConversationDetailViewAction, AffectingBottomSheet
 
     data class ExpandMessage(val messageId: MessageIdUiModel) : ConversationDetailViewAction
@@ -195,13 +205,16 @@ sealed interface ConversationDetailViewAction : ConversationDetailOperation {
         val messageId: MessageId,
         val viewModePreference: ViewModePreference
     ) : ConversationDetailViewAction, AffectingBottomSheet, AffectingMessages
+
     data class PrintRequested(
         val messageId: MessageId
     ) : ConversationDetailViewAction, AffectingBottomSheet, AffectingMessages
+
     data class Print(
         val context: Context,
         val messageId: MessageId
     ) : ConversationDetailViewAction
+
     data class MarkMessageUnread(
         val messageId: MessageId
     ) : ConversationDetailViewAction, AffectingBottomSheet

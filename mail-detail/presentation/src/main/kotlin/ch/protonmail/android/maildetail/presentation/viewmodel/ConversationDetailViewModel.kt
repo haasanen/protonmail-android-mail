@@ -46,6 +46,7 @@ import ch.protonmail.android.maildetail.domain.repository.InMemoryConversationSt
 import ch.protonmail.android.maildetail.domain.usecase.GetAttachmentIntentValues
 import ch.protonmail.android.maildetail.domain.usecase.GetDownloadingAttachmentsForMessages
 import ch.protonmail.android.maildetail.domain.usecase.IsProtonCalendarInstalled
+import ch.protonmail.android.maildetail.domain.usecase.MarkConversationAsRead
 import ch.protonmail.android.maildetail.domain.usecase.MarkConversationAsUnread
 import ch.protonmail.android.maildetail.domain.usecase.MarkMessageAsRead
 import ch.protonmail.android.maildetail.domain.usecase.MarkMessageAsUnread
@@ -84,7 +85,7 @@ import ch.protonmail.android.maildetail.presentation.model.ConversationDetailVie
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction.ScrollRequestCompleted
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction.ShowAllAttachmentsForMessage
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction.Star
-import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction.Trash
+import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction.MoveToTrash
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction.UnStar
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailsMessagesState
 import ch.protonmail.android.maildetail.presentation.model.MessageIdUiModel
@@ -159,6 +160,7 @@ class ConversationDetailViewModel @Inject constructor(
     private val actionUiModelMapper: ActionUiModelMapper,
     private val conversationMessageMapper: ConversationDetailMessageUiModelMapper,
     private val conversationMetadataMapper: ConversationDetailMetadataUiModelMapper,
+    private val markConversationAsRead: MarkConversationAsRead,
     private val markConversationAsUnread: MarkConversationAsUnread,
     private val moveConversation: MoveConversation,
     private val deleteConversations: DeleteConversations,
@@ -247,8 +249,11 @@ class ConversationDetailViewModel @Inject constructor(
         when (action) {
             is Star -> starConversation()
             is UnStar -> unStarConversation()
+            is ConversationDetailViewAction.MarkRead -> markAsRead()
             is MarkUnread -> markAsUnread()
-            is Trash -> moveConversationToTrash()
+            is MoveToTrash -> moveConversationToTrash()
+            ConversationDetailViewAction.Archive -> moveConversationToArchive()
+            ConversationDetailViewAction.MoveToSpam -> moveConversationToSpam()
             is ConversationDetailViewAction.DeleteConfirmed -> handleDeleteConfirmed(action)
             is ConversationDetailViewAction.DeleteMessageConfirmed -> handleDeleteMessageConfirmed(action)
             is RequestMoveToBottomSheet -> showMoveToBottomSheet(action)
@@ -765,6 +770,17 @@ class ConversationDetailViewModel @Inject constructor(
         mutableDetailState.update { newState }
     }
 
+    private fun markAsRead() {
+        viewModelScope.launch {
+            performSafeExitAction(
+                onLeft = ConversationDetailEvent.ErrorMarkingAsRead,
+                onRight = ConversationDetailViewAction.MarkRead
+            ) { userId ->
+                markConversationAsRead(userId, conversationId)
+            }
+        }
+    }
+
     private fun markAsUnread() {
         viewModelScope.launch {
             performSafeExitAction(
@@ -780,9 +796,31 @@ class ConversationDetailViewModel @Inject constructor(
         viewModelScope.launch {
             performSafeExitAction(
                 onLeft = ConversationDetailEvent.ErrorMovingToTrash,
-                onRight = Trash
+                onRight = MoveToTrash
             ) { userId ->
                 moveConversation(userId, conversationId, SystemLabelId.Trash.labelId)
+            }
+        }
+    }
+
+    private fun moveConversationToSpam() {
+        viewModelScope.launch {
+            performSafeExitAction(
+                onLeft = ConversationDetailEvent.ErrorMovingConversation,
+                onRight = ConversationDetailViewAction.MoveToSpam
+            ) { userId ->
+                moveConversation(userId, conversationId, SystemLabelId.Spam.labelId)
+            }
+        }
+    }
+
+    private fun moveConversationToArchive() {
+        viewModelScope.launch {
+            performSafeExitAction(
+                onLeft = ConversationDetailEvent.ErrorMovingConversation,
+                onRight = ConversationDetailViewAction.Archive
+            ) { userId ->
+                moveConversation(userId, conversationId, SystemLabelId.Archive.labelId)
             }
         }
     }

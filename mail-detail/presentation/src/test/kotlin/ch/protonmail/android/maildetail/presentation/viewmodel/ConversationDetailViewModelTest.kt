@@ -53,14 +53,15 @@ import ch.protonmail.android.mailconversation.domain.usecase.UnStarConversations
 import ch.protonmail.android.maildetail.domain.usecase.GetAttachmentIntentValues
 import ch.protonmail.android.maildetail.domain.usecase.GetDownloadingAttachmentsForMessages
 import ch.protonmail.android.maildetail.domain.usecase.IsProtonCalendarInstalled
+import ch.protonmail.android.maildetail.domain.usecase.MarkConversationAsRead
 import ch.protonmail.android.maildetail.domain.usecase.MarkConversationAsUnread
 import ch.protonmail.android.maildetail.domain.usecase.MarkMessageAsRead
 import ch.protonmail.android.maildetail.domain.usecase.MarkMessageAsUnread
 import ch.protonmail.android.maildetail.domain.usecase.MoveConversation
 import ch.protonmail.android.maildetail.domain.usecase.MoveMessage
-import ch.protonmail.android.maildetail.domain.usecase.ObserveDetailBottomBarActions
 import ch.protonmail.android.maildetail.domain.usecase.ObserveConversationMessages
 import ch.protonmail.android.maildetail.domain.usecase.ObserveConversationViewState
+import ch.protonmail.android.maildetail.domain.usecase.ObserveDetailBottomBarActions
 import ch.protonmail.android.maildetail.domain.usecase.ObserveMessageAttachmentStatus
 import ch.protonmail.android.maildetail.domain.usecase.RelabelConversation
 import ch.protonmail.android.maildetail.domain.usecase.ReportPhishingMessage
@@ -196,6 +197,7 @@ class ConversationDetailViewModelTest {
         } returns
             InvoiceWithLabelExpanding
     }
+    private val markConversationAsRead: MarkConversationAsRead = mockk()
     private val markConversationAsUnread: MarkConversationAsUnread = mockk()
     private val move: MoveConversation = mockk()
     private val relabelConversation: RelabelConversation = mockk()
@@ -303,6 +305,7 @@ class ConversationDetailViewModelTest {
             actionUiModelMapper = actionUiModelMapper,
             conversationMessageMapper = conversationMessageMapper,
             conversationMetadataMapper = conversationMetadataMapper,
+            markConversationAsRead = markConversationAsRead,
             markConversationAsUnread = markConversationAsUnread,
             moveConversation = move,
             deleteConversations = deleteConversations,
@@ -895,7 +898,7 @@ class ConversationDetailViewModelTest {
         // When
         viewModel.state.test {
             initialStateEmitted()
-            viewModel.submit(ConversationDetailViewAction.Trash)
+            viewModel.submit(ConversationDetailViewAction.MoveToTrash)
 
             // Then
             assertEquals(TextUiModel(string.error_move_to_trash_failed), awaitItem().error.consume())
@@ -925,7 +928,7 @@ class ConversationDetailViewModelTest {
         every {
             reducer.newStateFrom(
                 currentState = ConversationDetailState.Loading,
-                operation = ConversationDetailViewAction.Trash
+                operation = ConversationDetailViewAction.MoveToTrash
             )
         } returns ConversationDetailState.Loading.copy(
             exitScreenWithMessageEffect = Effect.of(
@@ -936,7 +939,7 @@ class ConversationDetailViewModelTest {
         // When
         viewModel.state.test {
             initialStateEmitted()
-            viewModel.submit(ConversationDetailViewAction.Trash)
+            viewModel.submit(ConversationDetailViewAction.MoveToTrash)
 
             // Then
             assertNotNull(awaitItem().exitScreenWithMessageEffect.consume())
@@ -1818,6 +1821,189 @@ class ConversationDetailViewModelTest {
             // Then
             val lastItem = awaitItem()
             assertEquals(expectedResult, lastItem)
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `exit state is emitted when marked as read successfully`() = runTest {
+        // given
+        val messages = nonEmptyListOf(ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded)
+        coEvery {
+            conversationMessageMapper.toUiModel(
+                userId = any(),
+                message = any(),
+                contacts = any(),
+                decryptedMessageBody = any()
+            )
+        } returns messages.first()
+        coEvery { markConversationAsRead(userId, conversationId) } returns Unit.right()
+        every {
+            reducer.newStateFrom(
+                currentState = ConversationDetailState.Loading,
+                operation = ConversationDetailViewAction.MarkRead
+            )
+        } returns ConversationDetailState.Loading.copy(
+            exitScreenEffect = Effect.of(Unit)
+        )
+
+        // when
+        viewModel.state.test {
+            initialStateEmitted()
+            viewModel.submit(ConversationDetailViewAction.MarkRead)
+
+            // then
+            assertNotNull(awaitItem().exitScreenEffect.consume())
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `error message is emitted when mark as read fails`() = runTest {
+        // given
+        val messages = nonEmptyListOf(ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded)
+        coEvery {
+            conversationMessageMapper.toUiModel(
+                userId = any(),
+                message = any(),
+                contacts = any(),
+                decryptedMessageBody = any()
+            )
+        } returns messages.first()
+        coEvery { markConversationAsRead(userId, conversationId) } returns DataError.Local.NoDataCached.left()
+        every {
+            reducer.newStateFrom(
+                currentState = ConversationDetailState.Loading,
+                operation = ConversationDetailEvent.ErrorMarkingAsRead
+            )
+        } returns ConversationDetailState.Loading.copy(
+            error = Effect.of(TextUiModel(string.error_mark_as_read_failed))
+        )
+
+        // when
+        viewModel.state.test {
+            initialStateEmitted()
+            viewModel.submit(ConversationDetailViewAction.MarkRead)
+
+            // then
+            assertEquals(TextUiModel(string.error_mark_as_read_failed), awaitItem().error.consume())
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+
+    @Test
+    fun `exit state is emitted when move to spam successfully`() = runTest {
+        // given
+        val messages = nonEmptyListOf(ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded)
+        coEvery {
+            conversationMessageMapper.toUiModel(
+                userId = any(),
+                message = any(),
+                contacts = any(),
+                decryptedMessageBody = any()
+            )
+        } returns messages.first()
+        coEvery { move(userId, conversationId, SystemLabelId.Spam.labelId) } returns Unit.right()
+        every {
+            reducer.newStateFrom(
+                currentState = ConversationDetailState.Loading,
+                operation = ConversationDetailViewAction.MoveToSpam
+            )
+        } returns ConversationDetailState.Loading.copy(
+            exitScreenEffect = Effect.of(Unit)
+        )
+
+        // when
+        viewModel.state.test {
+            initialStateEmitted()
+            viewModel.submit(ConversationDetailViewAction.MoveToSpam)
+
+            // then
+            assertNotNull(awaitItem().exitScreenEffect.consume())
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `error message is emitted when move to spam fails`() = runTest {
+        // given
+        val messages = nonEmptyListOf(ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded)
+        coEvery {
+            conversationMessageMapper.toUiModel(
+                userId = any(),
+                message = any(),
+                contacts = any(),
+                decryptedMessageBody = any()
+            )
+        } returns messages.first()
+        coEvery { move(userId, conversationId, SystemLabelId.Spam.labelId) } returns DataError.Local.NoDataCached.left()
+        every {
+            reducer.newStateFrom(
+                currentState = ConversationDetailState.Loading,
+                operation = ConversationDetailEvent.ErrorMovingConversation
+            )
+        } returns ConversationDetailState.Loading.copy(
+            error = Effect.of(TextUiModel(string.error_move_to_spam_failed))
+        )
+
+        // when
+        viewModel.state.test {
+            initialStateEmitted()
+            viewModel.submit(ConversationDetailViewAction.MoveToSpam)
+
+            // then
+            assertEquals(TextUiModel(string.error_move_to_spam_failed), awaitItem().error.consume())
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `exit state is emitted when move to archive successfully`() = runTest {
+        // given
+        coEvery { move(userId, conversationId, SystemLabelId.Archive.labelId) } returns Unit.right()
+        every {
+            reducer.newStateFrom(
+                currentState = ConversationDetailState.Loading,
+                operation = ConversationDetailViewAction.Archive
+            )
+        } returns ConversationDetailState.Loading.copy(
+            exitScreenEffect = Effect.of(Unit)
+        )
+
+        // when
+        viewModel.state.test {
+            initialStateEmitted()
+            viewModel.submit(ConversationDetailViewAction.Archive)
+
+            // then
+            assertNotNull(awaitItem().exitScreenEffect.consume())
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `error message is emitted when move to archive fails`() = runTest {
+        // given
+        coEvery {
+            move(userId, conversationId, SystemLabelId.Archive.labelId)
+        } returns DataError.Local.NoDataCached.left()
+        every {
+            reducer.newStateFrom(
+                currentState = ConversationDetailState.Loading,
+                operation = ConversationDetailEvent.ErrorMovingConversation
+            )
+        } returns ConversationDetailState.Loading.copy(
+            error = Effect.of(TextUiModel(string.error_move_to_archive_failed))
+        )
+
+        // when
+        viewModel.state.test {
+            initialStateEmitted()
+            viewModel.submit(ConversationDetailViewAction.Archive)
+
+            // then
+            assertEquals(TextUiModel(string.error_move_to_archive_failed), awaitItem().error.consume())
             cancelAndIgnoreRemainingEvents()
         }
     }

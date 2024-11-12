@@ -133,6 +133,21 @@ class ConversationDetailReducer @Inject constructor(
 
                 is ErrorMovingConversation,
                 is ErrorLabelingConversation,
+                is ErrorAddStar,
+                is ErrorDeletingConversation,
+                is ConversationDetailEvent.ErrorDeletingMessage,
+                is ConversationDetailEvent.ErrorMarkingAsRead,
+                is ErrorMarkingAsUnread,
+                is ErrorMovingMessage,
+                is ErrorMovingToTrash,
+                is ErrorRemoveStar,
+                is ConversationDetailViewAction.MarkRead,
+                is ConversationDetailViewAction.MarkUnread,
+                is ConversationDetailViewAction.Star,
+                is ConversationDetailViewAction.UnStar,
+                is ConversationDetailViewAction.Archive,
+                is ConversationDetailViewAction.MoveToSpam,
+                is ConversationDetailViewAction.MoveToTrash,
                 is ConversationDetailViewAction.LabelAsConfirmed,
                 is ConversationDetailEvent.ReportPhishingRequested,
                 is ConversationDetailViewAction.DismissBottomSheet,
@@ -158,6 +173,7 @@ class ConversationDetailReducer @Inject constructor(
             val textResource = when (operation) {
                 is ErrorAddStar -> R.string.error_star_operation_failed
                 is ErrorRemoveStar -> R.string.error_unstar_operation_failed
+                is ConversationDetailEvent.ErrorMarkingAsRead -> R.string.error_mark_as_read_failed
                 is ErrorMarkingAsUnread -> R.string.error_mark_as_unread_failed
                 is ErrorMovingToTrash -> R.string.error_move_to_trash_failed
                 is ErrorMovingConversation -> R.string.error_move_conversation_failed
@@ -180,6 +196,7 @@ class ConversationDetailReducer @Inject constructor(
 
     private fun ConversationDetailState.toExitState(operation: ConversationDetailOperation): Effect<Unit> =
         when (operation) {
+            is ConversationDetailViewAction.MarkRead,
             is ConversationDetailViewAction.MarkUnread -> Effect.of(Unit)
             else -> exitScreenEffect
         }
@@ -187,7 +204,13 @@ class ConversationDetailReducer @Inject constructor(
     private fun ConversationDetailState.toExitWithMessageState(
         operation: ConversationDetailOperation
     ): Effect<ActionResult> = when (operation) {
-        is ConversationDetailViewAction.Trash -> Effect.of(
+        is ConversationDetailViewAction.Archive -> Effect.of(
+            UndoableActionResult(TextUiModel(R.string.conversation_moved_to_archive))
+        )
+        is ConversationDetailViewAction.MoveToSpam -> Effect.of(
+            UndoableActionResult(TextUiModel(R.string.conversation_moved_to_spam))
+        )
+        is ConversationDetailViewAction.MoveToTrash -> Effect.of(
             UndoableActionResult(TextUiModel(R.string.conversation_moved_to_trash))
         )
         is ConversationDetailViewAction.MoveToDestinationConfirmed -> when (operation.messageId == null) {

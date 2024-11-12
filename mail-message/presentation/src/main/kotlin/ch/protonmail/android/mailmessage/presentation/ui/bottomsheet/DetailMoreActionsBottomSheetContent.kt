@@ -140,10 +140,14 @@ private fun callbackForConversation(
     action: Action,
     actionCallbacks: DetailMoreActionsBottomSheetContent.Actions
 ): () -> Unit = when (action) {
+    Action.MarkRead -> actionCallbacks.onMarkReadConversation
     Action.MarkUnread -> actionCallbacks.onMarkUnreadConversation
+    Action.Star -> actionCallbacks.onStarConversation
+    Action.Unstar -> actionCallbacks.onUnStarConversation
     Action.Label -> actionCallbacks.onLabelConversation
     Action.Trash -> actionCallbacks.onMoveToTrashConversation
     Action.Archive -> actionCallbacks.onMoveToArchiveConversation
+    Action.Inbox -> actionCallbacks.onMoveToInboxConversation
     Action.Delete -> actionCallbacks.onDeleteConversation
     Action.Spam -> actionCallbacks.onMoveToSpamConversation
     Action.Move -> actionCallbacks.onMoveConversation
@@ -197,12 +201,16 @@ object DetailMoreActionsBottomSheetContent {
         val onMove: (MessageId) -> Unit,
         val onPrint: (MessageId) -> Unit,
         val onReportPhishing: (MessageId) -> Unit,
+        val onMarkReadConversation: () -> Unit,
         val onMarkUnreadConversation: () -> Unit,
         val onLabelConversation: () -> Unit,
         val onMoveToTrashConversation: () -> Unit,
+        val onMoveToInboxConversation: () -> Unit,
         val onMoveToArchiveConversation: () -> Unit,
         val onDeleteConversation: () -> Unit,
         val onMoveToSpamConversation: () -> Unit,
+        val onStarConversation: () -> Unit,
+        val onUnStarConversation: () -> Unit,
         val onMoveConversation: () -> Unit,
         val onPrintConversation: () -> Unit
     )
@@ -245,13 +253,17 @@ private fun BottomSheetContentPreview() {
                 onMove = {},
                 onPrint = {},
                 onReportPhishing = {},
+                onMarkReadConversation = {},
                 onMarkUnreadConversation = {},
                 onLabelConversation = {},
                 onMoveToTrashConversation = {},
+                onMoveToInboxConversation = {},
                 onMoveToArchiveConversation = {},
                 onMoveToSpamConversation = {},
                 onMoveConversation = {},
                 onDeleteConversation = {},
+                onUnStarConversation = {},
+                onStarConversation = {},
                 onPrintConversation = {}
             )
         )

@@ -40,6 +40,7 @@
     </plurals>
     <string name="hide_details">Hide details</string>
     <string name="undisclosed_recipients">Undisclosed recipients</string>
+    <string name="error_mark_as_read_failed">Mark as read operation failed. Please retry.</string>
     <string name="error_mark_as_unread_failed">Mark as unread operation failed. Please retry.</string>
     <string name="error_star_operation_failed">Add star operation failed. Please retry.</string>
     <string name="error_unstar_operation_failed">Remove star operation failed. Please retry.</string>
@@ -53,6 +54,7 @@
     <string name="error_move_message_failed">Moving message failed. Please retry.</string>
     <string name="conversation_moved_to_trash">Conversation moved to Trash</string>
     <string name="conversation_moved_to_selected_destination">Conversation moved to %1$s</string>
+    <string name="conversation_moved_to_spam">Conversation moved to Spam</string>
     <string name="conversation_moved_to_archive">Conversation moved to Archive</string>
     <string name="error_move_conversation_failed">Moving conversation failed. Please retry.</string>
     <string name="error_loading_message">Something went wrong, please try again.</string>

@@ -235,18 +235,22 @@ fun ConversationDetailScreen(
                         onPrint = { viewModel.submit(ConversationDetailViewAction.PrintRequested(it)) },
                         onReportPhishing = { viewModel.submit(ConversationDetailViewAction.ReportPhishing(it)) },
 
+                        onMarkReadConversation = { viewModel.submit(ConversationDetailViewAction.MarkRead) },
                         onMarkUnreadConversation = { viewModel.submit(ConversationDetailViewAction.MarkUnread) },
                         onLabelConversation = {
                             viewModel.submit(ConversationDetailViewAction.RequestConversationLabelAsBottomSheet)
                         },
-                        onMoveToTrashConversation = { viewModel.submit(ConversationDetailViewAction.Trash) },
+                        onMoveToTrashConversation = { viewModel.submit(ConversationDetailViewAction.MoveToTrash) },
                         onMoveConversation = {
                             viewModel.submit(ConversationDetailViewAction.RequestMoveToBottomSheet)
                         },
                         onDeleteConversation = { viewModel.submit(ConversationDetailViewAction.DeleteRequested) },
 
-                        onMoveToArchiveConversation = { Timber.d("Archive not implemented for conversation") },
-                        onMoveToSpamConversation = { Timber.d("Spam not implemented for conversation") },
+                        onMoveToInboxConversation = { viewModel.submit(ConversationDetailViewAction.MoveToInbox) },
+                        onMoveToArchiveConversation = { viewModel.submit(ConversationDetailViewAction.Archive) },
+                        onMoveToSpamConversation = { viewModel.submit(ConversationDetailViewAction.MoveToSpam) },
+                        onStarConversation = { viewModel.submit(ConversationDetailViewAction.Star) },
+                        onUnStarConversation = { viewModel.submit(ConversationDetailViewAction.UnStar) },
                         onPrintConversation = { Timber.d("Print not implemented for conversation") }
                     )
                 )
@@ -288,9 +292,12 @@ fun ConversationDetailScreen(
             actions = ConversationDetailScreen.Actions(
                 onExit = actions.onExit,
                 onStarClick = { viewModel.submit(ConversationDetailViewAction.Star) },
-                onTrashClick = { viewModel.submit(ConversationDetailViewAction.Trash) },
+                onTrashClick = { viewModel.submit(ConversationDetailViewAction.MoveToTrash) },
                 onDeleteClick = { viewModel.submit(ConversationDetailViewAction.DeleteRequested) },
+                onArchiveClick = { viewModel.submit(ConversationDetailViewAction.Archive) },
+                onSpamClick = { viewModel.submit(ConversationDetailViewAction.MoveToSpam) },
                 onUnStarClick = { viewModel.submit(ConversationDetailViewAction.UnStar) },
+                onReadClick = { viewModel.submit(ConversationDetailViewAction.MarkRead) },
                 onUnreadClick = { viewModel.submit(ConversationDetailViewAction.MarkUnread) },
                 onMoveToClick = { viewModel.submit(ConversationDetailViewAction.RequestMoveToBottomSheet) },
                 onMoveToInboxClick = { viewModel.submit(ConversationDetailViewAction.MoveToInbox) },
@@ -498,16 +505,16 @@ fun ConversationDetailScreen(
             BottomActionBar(
                 state = state.bottomBarState,
                 viewActionCallbacks = BottomActionBar.Actions(
-                    onMarkRead = { Timber.d("conversation onMarkRead clicked") },
+                    onMarkRead = actions.onReadClick,
                     onMarkUnread = actions.onUnreadClick,
-                    onStar = { Timber.d("conversation onStar clicked") },
-                    onUnstar = { Timber.d("conversation onUnstar clicked") },
+                    onStar = actions.onStarClick,
+                    onUnstar = actions.onUnStarClick,
                     onMove = actions.onMoveToClick,
                     onLabel = actions.onLabelAsClick,
                     onTrash = actions.onTrashClick,
                     onDelete = actions.onDeleteClick,
-                    onArchive = { Timber.d("conversation onArchive clicked") },
-                    onSpam = { Timber.d("conversation onSpam clicked") },
+                    onArchive = actions.onArchiveClick,
+                    onSpam = actions.onSpamClick,
                     onMoveToInbox = actions.onMoveToInboxClick,
                     onViewInLightMode = { Timber.d("conversation onViewInLightMode clicked") },
                     onViewInDarkMode = { Timber.d("conversation onViewInDarkMode clicked") },
@@ -793,6 +800,9 @@ object ConversationDetailScreen {
         val onTrashClick: () -> Unit,
         val onDeleteClick: () -> Unit,
         val onUnStarClick: () -> Unit,
+        val onArchiveClick: () -> Unit,
+        val onSpamClick: () -> Unit,
+        val onReadClick: () -> Unit,
         val onUnreadClick: () -> Unit,
         val onMoveToClick: () -> Unit,
         val onMoveToInboxClick: () -> Unit,
@@ -834,8 +844,11 @@ object ConversationDetailScreen {
                 onStarClick = {},
                 onTrashClick = {},
                 onDeleteClick = {},
+                onSpamClick = {},
+                onArchiveClick = {},
                 onUnStarClick = {},
                 onUnreadClick = {},
+                onReadClick = {},
                 onMoveToClick = {},
                 onMoveToInboxClick = {},
                 onLabelAsClick = {},

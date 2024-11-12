@@ -70,6 +70,7 @@ import ch.protonmail.android.maildetail.domain.usecase.DoesMessageBodyHaveRemote
 import ch.protonmail.android.maildetail.domain.usecase.GetAttachmentIntentValues
 import ch.protonmail.android.maildetail.domain.usecase.GetDownloadingAttachmentsForMessages
 import ch.protonmail.android.maildetail.domain.usecase.IsProtonCalendarInstalled
+import ch.protonmail.android.maildetail.domain.usecase.MarkConversationAsRead
 import ch.protonmail.android.maildetail.domain.usecase.MarkConversationAsUnread
 import ch.protonmail.android.maildetail.domain.usecase.MarkMessageAsRead
 import ch.protonmail.android.maildetail.domain.usecase.MarkMessageAsUnread
@@ -279,6 +280,7 @@ class ConversationDetailViewModelIntegrationTest {
     // endregion
 
     // region mock action use cases
+    private val markConversationAsRead: MarkConversationAsRead = mockk()
     private val markConversationAsUnread: MarkConversationAsUnread = mockk()
     private val move: MoveConversation = mockk()
     private val relabelConversation: RelabelConversation = mockk()
@@ -2247,7 +2249,7 @@ class ConversationDetailViewModelIntegrationTest {
                 recordedCalls = true
             )
 
-            viewModel.submit(ConversationDetailViewAction.Trash)
+            viewModel.submit(ConversationDetailViewAction.MoveToTrash)
             advanceUntilIdle()
 
             verify {
@@ -2307,7 +2309,7 @@ class ConversationDetailViewModelIntegrationTest {
                 recordedCalls = true
             )
 
-            viewModel.submit(ConversationDetailViewAction.Trash)
+            viewModel.submit(ConversationDetailViewAction.MoveToTrash)
             advanceUntilIdle()
 
             coVerify {
@@ -2331,6 +2333,7 @@ class ConversationDetailViewModelIntegrationTest {
         actionMapper: ActionUiModelMapper = actionUiModelMapper,
         messageMapper: ConversationDetailMessageUiModelMapper = conversationMessageMapper,
         metadataMapper: ConversationDetailMetadataUiModelMapper = conversationMetadataMapper,
+        read: MarkConversationAsRead = markConversationAsRead,
         unread: MarkConversationAsUnread = markConversationAsUnread,
         moveConversation: MoveConversation = move,
         relabel: RelabelConversation = relabelConversation,
@@ -2360,6 +2363,7 @@ class ConversationDetailViewModelIntegrationTest {
         conversationMessageMapper = messageMapper,
         conversationMetadataMapper = metadataMapper,
         markConversationAsUnread = unread,
+        markConversationAsRead = read,
         moveConversation = moveConversation,
         deleteConversations = delete,
         relabelConversation = relabel,

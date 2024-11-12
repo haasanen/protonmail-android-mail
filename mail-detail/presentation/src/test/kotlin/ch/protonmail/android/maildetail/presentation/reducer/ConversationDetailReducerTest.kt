@@ -181,7 +181,8 @@ class ConversationDetailReducerTest(
         val avatar = AvatarUiModel.ParticipantAvatar("TU", "test@proton.me", null, Color.Red)
 
         val actions = listOf(
-            ConversationDetailViewAction.MarkUnread affects Exit,
+            ConversationDetailViewAction.MarkRead affects listOf(Exit, BottomSheet),
+            ConversationDetailViewAction.MarkUnread affects listOf(Exit, BottomSheet),
             ConversationDetailViewAction.MoveToDestinationConfirmed("spam", null) affects listOf(
                 BottomSheet,
                 ExitWithResult(
@@ -196,11 +197,20 @@ class ConversationDetailReducerTest(
             ConversationDetailViewAction.MoveToDestinationSelected(
                 MailLabelTestData.archiveSystemLabel.id
             ) affects BottomSheet,
-            ConversationDetailViewAction.Star affects Conversation,
-            ConversationDetailViewAction.Trash affects ExitWithResult(
-                UndoableActionResult(TextUiModel(string.conversation_moved_to_trash))
+            ConversationDetailViewAction.Star affects listOf(Conversation, BottomSheet),
+            ConversationDetailViewAction.UnStar affects listOf(Conversation, BottomSheet),
+            ConversationDetailViewAction.Archive affects listOf(
+                ExitWithResult(
+                    UndoableActionResult(TextUiModel(string.conversation_moved_to_archive))
+                ),
+                BottomSheet
             ),
-            ConversationDetailViewAction.UnStar affects Conversation,
+            ConversationDetailViewAction.MoveToTrash affects listOf(
+                ExitWithResult(
+                    UndoableActionResult(TextUiModel(string.conversation_moved_to_trash))
+                ),
+                BottomSheet
+            ),
             ConversationDetailViewAction.RequestConversationLabelAsBottomSheet affects BottomSheet,
             ConversationDetailViewAction.RequestContactActionsBottomSheet(participant, avatar) affects BottomSheet,
             ConversationDetailViewAction.LabelAsToggleAction(LabelIdSample.Label2022) affects BottomSheet,
@@ -237,14 +247,15 @@ class ConversationDetailReducerTest(
             ConversationDetailEvent.ConversationBottomBarEvent(BottomBarEvent.ErrorLoadingActions) affects BottomBar,
             ConversationDetailEvent.ConversationData(ConversationDetailMetadataUiModelSample.WeatherForecast)
                 affects Conversation,
-            ConversationDetailEvent.ErrorAddStar affects ErrorBar,
-            ConversationDetailEvent.ErrorRemoveStar affects ErrorBar,
+            ConversationDetailEvent.ErrorAddStar affects listOf(ErrorBar, BottomSheet),
+            ConversationDetailEvent.ErrorRemoveStar affects listOf(ErrorBar, BottomSheet),
             ConversationDetailEvent.ErrorLoadingConversation affects listOf(Conversation, Messages),
             ConversationDetailEvent.ErrorLoadingMessages affects Messages,
-            ConversationDetailEvent.ErrorMarkingAsUnread affects ErrorBar,
+            ConversationDetailEvent.ErrorMarkingAsUnread affects listOf(ErrorBar, BottomSheet),
+            ConversationDetailEvent.ErrorMarkingAsRead affects listOf(ErrorBar, BottomSheet),
             ConversationDetailEvent.ErrorMovingConversation affects listOf(BottomSheet, ErrorBar),
-            ConversationDetailEvent.ErrorMovingMessage affects ErrorBar,
-            ConversationDetailEvent.ErrorMovingToTrash affects ErrorBar,
+            ConversationDetailEvent.ErrorMovingMessage affects listOf(ErrorBar, BottomSheet),
+            ConversationDetailEvent.ErrorMovingToTrash affects listOf(ErrorBar, BottomSheet),
             ConversationDetailEvent.ErrorLabelingConversation affects listOf(BottomSheet, ErrorBar),
             ConversationDetailEvent.MessagesData(
                 emptyList<ConversationDetailMessageUiModel>().toImmutableList(),
@@ -276,7 +287,8 @@ class ConversationDetailReducerTest(
                 MessageIdUiModel(UUID.randomUUID().toString())
             ) affects listOf(ErrorBar, Messages),
             ConversationDetailEvent.ErrorGettingAttachment affects ErrorBar,
-            ConversationDetailEvent.ErrorDeletingConversation affects listOf(ErrorBar, DeleteDialog)
+            ConversationDetailEvent.ErrorDeletingConversation affects listOf(ErrorBar, BottomSheet, DeleteDialog),
+            ConversationDetailEvent.ErrorDeletingMessage affects listOf(ErrorBar, BottomSheet, DeleteDialog)
         )
 
         @JvmStatic
