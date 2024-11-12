@@ -37,7 +37,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -63,7 +62,6 @@ import ch.protonmail.android.design.compose.theme.defaultSmallWeak
 import ch.protonmail.android.mailcontact.domain.model.ContactId
 import ch.protonmail.android.mailcontact.presentation.model.ContactListItemUiModel
 import ch.protonmail.android.mailcontact.presentation.previewdata.ContactListPreviewData
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @Composable
 fun ContactSearchScreen(actions: ContactSearchScreen.Actions, viewModel: ContactSearchViewModel = hiltViewModel()) {
@@ -182,16 +180,6 @@ fun ContactSearchTopBar(
     onSearchValueChange: (String) -> Unit,
     onSearchValueClear: () -> Unit
 ) {
-    val systemUiController = rememberSystemUiController()
-
-    // In this screen, "Background inverted" theme is used for colouring, which different
-    // from the default theme. Therefore, we need to set/reset the status bar colour manually.
-    val backgroundColor = ProtonTheme.colors.backgroundSecondary
-    LaunchedEffect(Unit) {
-        systemUiController.setStatusBarColor(
-            color = backgroundColor
-        )
-    }
 
     ProtonLargeTopAppBar(
         modifier = modifier,
@@ -211,7 +199,7 @@ fun ContactSearchTopBar(
                     onSearchQuerySubmit = {},
                     onSearchQueryChanged = { onSearchValueChange(it) }
                 ),
-                backgroundColor = backgroundColor
+                backgroundColor = ProtonTheme.colors.backgroundSecondary
             )
 
         },
