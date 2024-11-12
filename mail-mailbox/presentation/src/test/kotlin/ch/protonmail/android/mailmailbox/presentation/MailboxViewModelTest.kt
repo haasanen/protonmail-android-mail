@@ -3774,7 +3774,7 @@ class MailboxViewModelTest {
     private fun expectMarkConversationsAsReadSucceeds(userId: UserId, items: List<MailboxItemUiModel>) {
         coEvery {
             markConversationsAsRead(userId, items.map { ConversationId(it.id) })
-        } returns emptyList<DomainConversation>().right()
+        } returns Unit.right()
     }
 
     private fun expectMarkConversationsAsUnreadSucceeds(userId: UserId, items: List<MailboxItemUiModel>) {

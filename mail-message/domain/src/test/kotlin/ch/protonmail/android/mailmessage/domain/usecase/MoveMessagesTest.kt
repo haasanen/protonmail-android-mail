@@ -75,7 +75,7 @@ class MoveMessagesTest {
     ) {
         coEvery {
             messageRepository.moveTo(userId, expectedMap, destinationLabel)
-        } returns expectedMessages.right()
+        } returns Unit.right()
     }
 
     private fun expectMoveFails(destinationLabel: LabelId) {

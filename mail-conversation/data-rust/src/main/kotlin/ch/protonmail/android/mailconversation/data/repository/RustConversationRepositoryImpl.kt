@@ -141,13 +141,10 @@ class RustConversationRepositoryImpl @Inject constructor(
     }
 
     // It will be implemented later on
-    override suspend fun markRead(
-        userId: UserId,
-        conversationIds: List<ConversationId>
-    ): Either<DataError, List<Conversation>> {
+    override suspend fun markRead(userId: UserId, conversationIds: List<ConversationId>): Either<DataError, Unit> {
         rustConversationDataSource.markRead(userId, conversationIds.map { it.toLocalConversationId() })
 
-        return emptyList<Conversation>().right()
+        return Unit.right()
     }
 
     override suspend fun star(

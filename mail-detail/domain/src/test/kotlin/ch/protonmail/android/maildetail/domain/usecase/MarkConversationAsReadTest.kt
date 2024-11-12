@@ -16,37 +16,38 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailconversation.domain.usecase
+package ch.protonmail.android.maildetail.domain.usecase
 
 import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.sample.ConversationIdSample
 import ch.protonmail.android.mailcommon.domain.sample.DataErrorSample
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
-import ch.protonmail.android.mailconversation.domain.repository.ConversationRepository
+import ch.protonmail.android.mailconversation.domain.sample.ConversationSample
+import ch.protonmail.android.mailconversation.domain.usecase.MarkConversationsAsRead
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class MarkConversationsAsReadTest {
+internal class MarkConversationAsReadTest {
 
     private val userId = UserIdSample.Primary
-    private val conversationIds = listOf(ConversationIdSample.WeatherForecast, ConversationIdSample.AlphaAppFeedback)
+    private val conversationId = ConversationIdSample.WeatherForecast
 
-    private val conversationRepository: ConversationRepository = mockk()
+    private val markConversationsAsRead: MarkConversationsAsRead = mockk()
 
-    private val markRead = MarkConversationsAsRead(conversationRepository)
+    private val markRead = MarkConversationAsRead(markConversationsAsRead)
 
     @Test
     fun `returns error when repository fails`() = runTest {
         // given
         val error = DataErrorSample.NoCache.left()
-        coEvery { conversationRepository.markRead(userId, conversationIds) } returns error
+        coEvery { markConversationsAsRead(userId, listOf(conversationId)) } returns error
 
         // when
-        val result = markRead(userId, conversationIds)
+        val result = markRead(userId, conversationId)
 
         // then
         assertEquals(error, result)
@@ -55,13 +56,13 @@ class MarkConversationsAsReadTest {
     @Test
     fun `returns updated conversation when repository succeeds`() = runTest {
         // given
-        coEvery { conversationRepository.markRead(userId, conversationIds) } returns Unit.right()
+        val conversation = ConversationSample.WeatherForecast
+        coEvery { markConversationsAsRead(userId, listOf(conversationId)) } returns Unit.right()
 
         // when
-        val result = markRead(userId, conversationIds)
+        val result = markRead(userId, conversationId)
 
         // then
         assertEquals(Unit.right(), result)
     }
-
 }
