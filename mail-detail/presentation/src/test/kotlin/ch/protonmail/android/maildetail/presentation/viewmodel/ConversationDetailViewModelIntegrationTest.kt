@@ -124,6 +124,7 @@ import ch.protonmail.android.maildetail.presentation.usecase.GetLabelAsBottomShe
 import ch.protonmail.android.maildetail.presentation.usecase.GetMoreActionsBottomSheetData
 import ch.protonmail.android.maildetail.presentation.usecase.OnMessageLabelAsConfirmed
 import ch.protonmail.android.maildetail.presentation.usecase.PrintMessage
+import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabels
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.maillabel.domain.sample.LabelSample
@@ -1974,7 +1975,7 @@ class ConversationDetailViewModelIntegrationTest {
         coEvery {
             observeMessage(userId, messageId)
         } returns flowOf(MessageSample.Invoice.right())
-        coEvery { moveMessage(userId, messageId, SystemLabelId.Trash.labelId) } returns Unit.right()
+        coEvery { moveMessage(userId, messageId, SystemLabelId.Trash) } returns Unit.right()
         coEvery {
             getMessageAvailableActions(userId, labelId, listOf(messageId))
         } returns AvailableActionsTestData.replyActionsOnly.right()
@@ -1995,7 +1996,7 @@ class ConversationDetailViewModelIntegrationTest {
             assertEquals(
                 BottomSheetVisibilityEffect.Hide, awaitItem().bottomSheetState?.bottomSheetVisibilityEffect?.consume()
             )
-            coVerify { moveMessage(userId, messageId, SystemLabelId.Trash.labelId) }
+            coVerify { moveMessage(userId, messageId, SystemLabelId.Trash) }
 
             cancelAndIgnoreRemainingEvents()
         }
@@ -2017,7 +2018,7 @@ class ConversationDetailViewModelIntegrationTest {
         coEvery {
             observeMessage(userId, messageId)
         } returns flowOf(MessageSample.Invoice.right())
-        coEvery { moveMessage(userId, messageId, filterByLocationLabelId) } returns Unit.right()
+        coEvery { moveMessage(userId, messageId, SystemLabelId.Archive) } returns Unit.right()
         coEvery {
             getMessageAvailableActions(userId, filterByLocationLabelId, listOf(messageId))
         } returns AvailableActionsTestData.replyActionsOnly.right()
@@ -2038,7 +2039,7 @@ class ConversationDetailViewModelIntegrationTest {
             assertEquals(
                 BottomSheetVisibilityEffect.Hide, awaitItem().bottomSheetState?.bottomSheetVisibilityEffect?.consume()
             )
-            coVerify { moveMessage(userId, messageId, filterByLocationLabelId) }
+            coVerify { moveMessage(userId, messageId, SystemLabelId.Archive) }
 
             cancelAndIgnoreRemainingEvents()
         }
@@ -2061,7 +2062,7 @@ class ConversationDetailViewModelIntegrationTest {
         coEvery {
             observeMessage(userId, messageId)
         } returns flowOf(MessageSample.Invoice.right())
-        coEvery { moveMessage(userId, messageId, SystemLabelId.Spam.labelId) } returns Unit.right()
+        coEvery { moveMessage(userId, messageId, SystemLabelId.Spam) } returns Unit.right()
         coEvery {
             getMessageAvailableActions(userId, labelId, listOf(messageId))
         } returns AvailableActionsTestData.replyActionsOnly.right()
@@ -2082,7 +2083,7 @@ class ConversationDetailViewModelIntegrationTest {
             assertEquals(
                 BottomSheetVisibilityEffect.Hide, awaitItem().bottomSheetState?.bottomSheetVisibilityEffect?.consume()
             )
-            coVerify { moveMessage(userId, messageId, SystemLabelId.Spam.labelId) }
+            coVerify { moveMessage(userId, messageId, SystemLabelId.Spam) }
 
             cancelAndIgnoreRemainingEvents()
         }
@@ -2161,11 +2162,13 @@ class ConversationDetailViewModelIntegrationTest {
         )
         val messageId = MessageSample.Invoice.messageId
         val labelId = SystemLabelId.Archive.labelId
+        // in moveTo functionality system labels are already resolved to local label id
+        val localSpamLabelId = LabelId("4")
         coEvery { observeConversationMessages(userId, any()) } returns flowOf(messages.right())
         coEvery {
             observeMessage(userId, messageId)
         } returns flowOf(MessageSample.Invoice.right())
-        coEvery { moveMessage(userId, messageId, SystemLabelId.Spam.labelId) } returns Unit.right()
+        coEvery { moveMessage(userId, messageId, localSpamLabelId) } returns Unit.right()
         coEvery { getMessageMoveToLocations(userId, labelId, listOf(messageId)) } returns listOf(
             MailLabelTestData.spamSystemLabel,
             MailLabelTestData.buildCustomFolder(id = "folder1")
@@ -2229,7 +2232,7 @@ class ConversationDetailViewModelIntegrationTest {
             )
         ).right()
 
-        coEvery { move.invoke(any(), any(), any()) } returns Unit.right()
+        coEvery { move.invoke(any(), any(), any<SystemLabelId>()) } returns Unit.right()
         initGenericObserverMocks()
         val viewModel = buildConversationDetailViewModel()
 
@@ -2291,7 +2294,7 @@ class ConversationDetailViewModelIntegrationTest {
         initGenericObserverMocks()
 
         val viewModel = buildConversationDetailViewModel()
-        coEvery { move.invoke(any(), any(), any()) } returns DataError.Local.Unknown.left()
+        coEvery { move.invoke(any(), any(), any<SystemLabelId>()) } returns DataError.Local.Unknown.left()
 
         // When + Then
         viewModel.state.test {

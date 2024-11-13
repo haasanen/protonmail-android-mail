@@ -780,7 +780,7 @@ class ConversationDetailViewModelTest {
             move(
                 UserIdSample.Primary,
                 conversationId,
-                SystemLabelId.Trash.labelId
+                SystemLabelId.Trash
             )
         } returns DataError.Local.NoDataCached.left()
         every {
@@ -810,7 +810,7 @@ class ConversationDetailViewModelTest {
             move(
                 UserIdSample.Primary,
                 conversationId,
-                SystemLabelId.Trash.labelId
+                SystemLabelId.Trash
             )
         } returns Unit.right()
         every {
@@ -838,11 +838,13 @@ class ConversationDetailViewModelTest {
     @Test
     fun `verify move to is called and exit with message is emitted when destination get confirmed`() = runTest {
         // Given
+        // In moveTo system labels are already resolved to local ids
+        val localSpamLabelId = LabelId("4")
         coEvery {
             move(
                 userId = UserIdSample.Primary,
                 conversationId = conversationId,
-                labelId = SystemLabelId.Spam.labelId
+                labelId = localSpamLabelId
             )
         } returns Unit.right()
         val selectedLabel = MailLabelUiModelTestData.spamAndCustomFolder.first()
@@ -1020,7 +1022,7 @@ class ConversationDetailViewModelTest {
                 move(
                     userId = userId,
                     conversationId = conversationId,
-                    labelId = SystemLabelId.Archive.labelId
+                    systemLabelId = SystemLabelId.Archive
                 )
             } returns Unit.right()
 
@@ -1085,7 +1087,7 @@ class ConversationDetailViewModelTest {
                         )
                     )
                 }
-                coVerify { move(userId, conversationId, SystemLabelId.Archive.labelId) }
+                coVerify { move(userId, conversationId, SystemLabelId.Archive) }
                 assertNotNull(lastEmittedItem().exitScreenWithMessageEffect.consume())
             }
         }
@@ -1692,7 +1694,7 @@ class ConversationDetailViewModelTest {
     @Test
     fun `exit state is emitted when move to spam successfully`() = runTest {
         // given
-        coEvery { move(userId, conversationId, SystemLabelId.Spam.labelId) } returns Unit.right()
+        coEvery { move(userId, conversationId, SystemLabelId.Spam) } returns Unit.right()
         every {
             reducer.newStateFrom(
                 currentState = ConversationDetailState.Loading,
@@ -1716,7 +1718,7 @@ class ConversationDetailViewModelTest {
     @Test
     fun `error message is emitted when move to spam fails`() = runTest {
         // given
-        coEvery { move(userId, conversationId, SystemLabelId.Spam.labelId) } returns DataError.Local.NoDataCached.left()
+        coEvery { move(userId, conversationId, SystemLabelId.Spam) } returns DataError.Local.NoDataCached.left()
         every {
             reducer.newStateFrom(
                 currentState = ConversationDetailState.Loading,
@@ -1740,7 +1742,7 @@ class ConversationDetailViewModelTest {
     @Test
     fun `exit state is emitted when move to archive successfully`() = runTest {
         // given
-        coEvery { move(userId, conversationId, SystemLabelId.Archive.labelId) } returns Unit.right()
+        coEvery { move(userId, conversationId, SystemLabelId.Archive) } returns Unit.right()
         every {
             reducer.newStateFrom(
                 currentState = ConversationDetailState.Loading,
@@ -1765,7 +1767,7 @@ class ConversationDetailViewModelTest {
     fun `error message is emitted when move to archive fails`() = runTest {
         // given
         coEvery {
-            move(userId, conversationId, SystemLabelId.Archive.labelId)
+            move(userId, conversationId, SystemLabelId.Archive)
         } returns DataError.Local.NoDataCached.left()
         every {
             reducer.newStateFrom(

@@ -78,6 +78,7 @@ import ch.protonmail.android.maildetail.presentation.model.ConversationDetailVie
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction.MessageBodyLinkClicked
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction.MoveToDestinationConfirmed
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction.MoveToDestinationSelected
+import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction.MoveToTrash
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction.RequestContactActionsBottomSheet
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction.RequestConversationLabelAsBottomSheet
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction.RequestMoveToBottomSheet
@@ -85,7 +86,6 @@ import ch.protonmail.android.maildetail.presentation.model.ConversationDetailVie
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction.ScrollRequestCompleted
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction.ShowAllAttachmentsForMessage
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction.Star
-import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction.MoveToTrash
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction.UnStar
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailsMessagesState
 import ch.protonmail.android.maildetail.presentation.model.MessageIdUiModel
@@ -681,7 +681,7 @@ class ConversationDetailViewModel @Inject constructor(
                 moveConversation(
                     userId = userId,
                     conversationId = conversationId,
-                    labelId = SystemLabelId.Archive.labelId
+                    systemLabelId = SystemLabelId.Archive
                 ).onLeft {
                     Timber.e("Error while archiving conversation when relabeling got confirmed: $it")
                     return@launch emitNewStateFrom(ConversationDetailEvent.ErrorLabelingConversation)
@@ -798,7 +798,7 @@ class ConversationDetailViewModel @Inject constructor(
                 onLeft = ConversationDetailEvent.ErrorMovingToTrash,
                 onRight = MoveToTrash
             ) { userId ->
-                moveConversation(userId, conversationId, SystemLabelId.Trash.labelId)
+                moveConversation(userId, conversationId, SystemLabelId.Trash)
             }
         }
     }
@@ -809,7 +809,7 @@ class ConversationDetailViewModel @Inject constructor(
                 onLeft = ConversationDetailEvent.ErrorMovingConversation,
                 onRight = ConversationDetailViewAction.MoveToSpam
             ) { userId ->
-                moveConversation(userId, conversationId, SystemLabelId.Spam.labelId)
+                moveConversation(userId, conversationId, SystemLabelId.Spam)
             }
         }
     }
@@ -820,7 +820,7 @@ class ConversationDetailViewModel @Inject constructor(
                 onLeft = ConversationDetailEvent.ErrorMovingConversation,
                 onRight = ConversationDetailViewAction.Archive
             ) { userId ->
-                moveConversation(userId, conversationId, SystemLabelId.Archive.labelId)
+                moveConversation(userId, conversationId, SystemLabelId.Archive)
             }
         }
     }
@@ -853,7 +853,7 @@ class ConversationDetailViewModel @Inject constructor(
                 onLeft = ConversationDetailEvent.ErrorMovingConversation,
                 onRight = ConversationDetailViewAction.MoveToInbox
             ) { userId ->
-                moveConversation(userId, conversationId, SystemLabelId.Inbox.labelId)
+                moveConversation(userId, conversationId, SystemLabelId.Inbox)
             }
         }
     }
@@ -1175,21 +1175,21 @@ class ConversationDetailViewModel @Inject constructor(
 
     private fun handleTrashMessage(action: ConversationDetailViewAction.TrashMessage) {
         viewModelScope.launch {
-            moveMessage(primaryUserId.first(), action.messageId, SystemLabelId.Trash.labelId)
+            moveMessage(primaryUserId.first(), action.messageId, SystemLabelId.Trash)
             emitNewStateFrom(action)
         }
     }
 
     private fun handleArchiveMessage(action: ConversationDetailViewAction.ArchiveMessage) {
         viewModelScope.launch {
-            moveMessage(primaryUserId.first(), action.messageId, SystemLabelId.Archive.labelId)
+            moveMessage(primaryUserId.first(), action.messageId, SystemLabelId.Archive)
             emitNewStateFrom(action)
         }
     }
 
     private fun handleMoveMessageToSpam(action: ConversationDetailViewAction.MoveMessageToSpam) {
         viewModelScope.launch {
-            moveMessage(primaryUserId.first(), action.messageId, SystemLabelId.Spam.labelId)
+            moveMessage(primaryUserId.first(), action.messageId, SystemLabelId.Spam)
             emitNewStateFrom(action)
         }
     }

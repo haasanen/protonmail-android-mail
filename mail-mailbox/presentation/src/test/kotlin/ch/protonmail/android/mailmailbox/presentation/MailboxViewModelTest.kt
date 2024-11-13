@@ -1799,14 +1799,12 @@ class MailboxViewModelTest {
         val secondItem = unreadMailboxItemUiModel
         val initialState = createMailboxDataState()
         val intermediateState = MailboxStateSampleData.createSelectionMode(listOf(item, secondItem))
-        val trashLocalLabelId = LabelId("3")
         expectViewModeForCurrentLocation(ConversationGrouping)
         expectedSelectedLabelCountStateChange(initialState)
         returnExpectedStateWhenEnterSelectionMode(initialState, item, intermediateState)
         returnExpectedStateForBottomBarEvent(expectedState = intermediateState)
         returnExpectedStateForTrash(intermediateState, initialState, 2)
-        expectMoveConversationsSucceeds(userId, listOf(item, secondItem), SystemLabelId.Trash.labelId)
-        coEvery { findLocalSystemLabelId(userId, SystemLabelId.Trash) } returns MailLabelId.System(trashLocalLabelId)
+        expectMoveConversationsSucceeds(userId, listOf(item, secondItem), SystemLabelId.Trash)
 
         mailboxViewModel.state.test {
             // Given
@@ -1830,7 +1828,7 @@ class MailboxViewModelTest {
                 moveConversations(
                     userId,
                     listOf(ConversationId(item.id), ConversationId(secondItem.id)),
-                    trashLocalLabelId
+                    SystemLabelId.Trash
                 )
             }
             coVerify { moveMessages wasNot Called }
@@ -1843,17 +1841,12 @@ class MailboxViewModelTest {
         val secondItem = unreadMailboxItemUiModel
         val initialState = createMailboxDataState()
         val intermediateState = MailboxStateSampleData.createSelectionMode(listOf(item, secondItem))
-        val trashLocalLabelId = LabelId("3")
         expectViewModeForCurrentLocation(NoConversationGrouping)
         expectedSelectedLabelCountStateChange(initialState)
         returnExpectedStateWhenEnterSelectionMode(initialState, item, intermediateState)
         returnExpectedStateForBottomBarEvent(expectedState = intermediateState)
         returnExpectedStateForTrash(intermediateState, initialState, 2)
-        expectMoveMessagesSucceeds(userId, listOf(item, secondItem), trashLocalLabelId)
-        coEvery {
-            findLocalSystemLabelId(userId, SystemLabelId.Trash)
-        } returns MailLabelId.System(trashLocalLabelId)
-
+        expectMoveMessagesSucceeds(userId, listOf(item, secondItem), SystemLabelId.Trash)
         mailboxViewModel.state.test {
             // Given
             awaitItem() // First emission for selected user
@@ -1873,7 +1866,7 @@ class MailboxViewModelTest {
             // Then
             assertEquals(initialState, awaitItem())
             coVerify(exactly = 1) {
-                moveMessages(userId, listOf(MessageId(item.id), MessageId(secondItem.id)), trashLocalLabelId)
+                moveMessages(userId, listOf(MessageId(item.id), MessageId(secondItem.id)), SystemLabelId.Trash)
             }
             coVerify { moveConversations wasNot Called }
         }
@@ -2279,7 +2272,7 @@ class MailboxViewModelTest {
                 expectedCurrentLabelList,
                 expectedUpdatedLabelList
             )
-            expectMoveMessagesSucceeds(userId, selectedItemsList, SystemLabelId.Archive.labelId)
+            expectMoveMessagesSucceeds(userId, selectedItemsList, SystemLabelId.Archive)
             expectColorMappingSuccess()
 
             mailboxViewModel.state.test {
@@ -2298,7 +2291,7 @@ class MailboxViewModelTest {
                 // Then
                 assertEquals(intermediateState, awaitItem())
                 coVerifySequence {
-                    moveMessages(userId, selectedItemsList.map { MessageId(it.id) }, SystemLabelId.Archive.labelId)
+                    moveMessages(userId, selectedItemsList.map { MessageId(it.id) }, SystemLabelId.Archive)
                     relabelMessages(
                         userId,
                         selectedItemsList.map { MessageId(it.id) },
@@ -2428,7 +2421,7 @@ class MailboxViewModelTest {
                 expectedCurrentLabelList,
                 expectedUpdatedLabelList
             )
-            expectMoveConversationsSucceeds(userId, selectedItemsList, SystemLabelId.Archive.labelId)
+            expectMoveConversationsSucceeds(userId, selectedItemsList, SystemLabelId.Archive)
             expectColorMappingSuccess()
 
             mailboxViewModel.state.test {
@@ -2450,7 +2443,7 @@ class MailboxViewModelTest {
                     moveConversations(
                         userId,
                         selectedItemsList.map { ConversationId(it.id) },
-                        SystemLabelId.Archive.labelId
+                        SystemLabelId.Archive
                     )
                     relabelConversations(
                         userId,
@@ -2473,6 +2466,8 @@ class MailboxViewModelTest {
 
         val customLabels = MailLabelTestData.listOfCustomLabels
 
+        // In the moveTo case, ids of system folders are already resolved to local ones
+        val localSpamLabelId = LabelId("4")
         val initialState = createMailboxDataState()
         val bottomSheetShownStateWithSelectedItem = createMailboxStateWithMoveToBottomSheet(
             selectedItemsList,
@@ -2494,7 +2489,7 @@ class MailboxViewModelTest {
         )
         expectedMoveToStateChange(MailLabelTestData.spamSystemLabel.id, bottomSheetShownStateWithSelectedItem)
         expectedMoveToConfirmed(initialState)
-        expectMoveMessagesSucceeds(userId, selectedItemsList, SystemLabelId.Spam.labelId)
+        expectMoveMessagesSucceeds(userId, selectedItemsList, localSpamLabelId)
 
         mailboxViewModel.state.test {
             awaitItem() // First emission for selected user
@@ -2508,7 +2503,7 @@ class MailboxViewModelTest {
 
             assertEquals(initialState, awaitItem())
             coVerify(exactly = 1) {
-                moveMessages(userId, selectedItemsList.map { MessageId(it.id) }, SystemLabelId.Spam.labelId)
+                moveMessages(userId, selectedItemsList.map { MessageId(it.id) }, localSpamLabelId)
             }
             coVerify { moveConversations wasNot Called }
         }
@@ -2523,6 +2518,8 @@ class MailboxViewModelTest {
 
         val customLabels = MailLabelTestData.listOfCustomLabels
 
+        // In the moveTo case, ids of system folders are already resolved to local ones
+        val localSpamLabelId = LabelId("4")
         val initialState = createMailboxDataState()
         val bottomSheetShownStateWithSelectedItem = createMailboxStateWithMoveToBottomSheet(
             selectedItemsList,
@@ -2544,7 +2541,7 @@ class MailboxViewModelTest {
         returnExpectedStateForBottomBarEvent(expectedState = intermediateState)
         expectedMoveToStateChange(MailLabelTestData.spamSystemLabel.id, bottomSheetShownStateWithSelectedItem)
         expectedMoveToConfirmed(initialState)
-        expectMoveConversationsSucceeds(userId, selectedItemsList, SystemLabelId.Spam.labelId)
+        expectMoveConversationsSucceeds(userId, selectedItemsList, localSpamLabelId)
 
         mailboxViewModel.state.test {
             awaitItem() // First emission for selected user
@@ -2561,7 +2558,7 @@ class MailboxViewModelTest {
                 moveConversations(
                     userId = userId,
                     conversationIds = selectedItemsList.map { ConversationId(it.id) },
-                    labelId = SystemLabelId.Spam.labelId
+                    labelId = localSpamLabelId
                 )
             }
             coVerify { moveMessages wasNot Called }
@@ -2710,7 +2707,6 @@ class MailboxViewModelTest {
         val item = readMailboxItemUiModel.copy(id = MessageIdSample.Invoice.id, showStar = true)
         val secondItem = unreadMailboxItemUiModel.copy(id = MessageIdSample.AlphaAppQAReport.id, showStar = true)
         val selectedItemsList = listOf(item, secondItem)
-        val archiveLocalLabelId = LabelId("5")
         val initialState = createMailboxDataState()
         val expectedActions = listOf(Action.Unstar, Action.Archive, Action.Spam)
         val intermediateState = MailboxStateSampleData.createSelectionMode(
@@ -2727,11 +2723,8 @@ class MailboxViewModelTest {
         )
         returnExpectedStateForBottomBarEvent(expectedState = intermediateState)
         returnExpectedStateWhenEnterSelectionMode(initialState, item, intermediateState)
-        expectMoveMessagesSucceeds(userId, selectedItemsList, archiveLocalLabelId)
+        expectMoveMessagesSucceeds(userId, selectedItemsList, SystemLabelId.Archive)
         expectedReducerResult(MailboxViewAction.MoveToConfirmed, initialState)
-        coEvery {
-            findLocalSystemLabelId(userId, SystemLabelId.Archive)
-        } returns MailLabelId.System(archiveLocalLabelId)
 
         mailboxViewModel.state.test {
             awaitItem() // First emission for selected user
@@ -2740,9 +2733,9 @@ class MailboxViewModelTest {
             mailboxViewModel.submit(MailboxViewAction.OnItemAvatarClicked(item))
             assertEquals(intermediateState, awaitItem())
             mailboxViewModel.submit(MailboxViewAction.MoveToArchive)
-            assertEquals(initialState, awaitItem())
+            cancelAndIgnoreRemainingEvents()
         }
-        coVerify { moveMessages(userId, selectedItemsList.map { MessageId(it.id) }, archiveLocalLabelId) }
+        coVerify { moveMessages(userId, selectedItemsList.map { MessageId(it.id) }, SystemLabelId.Archive) }
         coVerify { moveConversations wasNot Called }
     }
 
@@ -2752,7 +2745,6 @@ class MailboxViewModelTest {
         val item = readMailboxItemUiModel.copy(id = MessageIdSample.Invoice.id, showStar = true)
         val secondItem = unreadMailboxItemUiModel.copy(id = MessageIdSample.AlphaAppQAReport.id, showStar = true)
         val selectedItemsList = listOf(item, secondItem)
-        val archiveLocalLabelId = LabelId("5")
         val initialState = createMailboxDataState()
         val expectedActions = listOf(Action.Unstar, Action.Archive, Action.Spam)
         val intermediateState = MailboxStateSampleData.createSelectionMode(
@@ -2770,11 +2762,8 @@ class MailboxViewModelTest {
             selectedItemsList.map { MailboxItemId(it.id) },
             ConversationGrouping
         )
-        expectMoveConversationsSucceeds(userId, selectedItemsList, archiveLocalLabelId)
+        expectMoveConversationsSucceeds(userId, selectedItemsList, SystemLabelId.Archive)
         expectedReducerResult(MailboxViewAction.MoveToConfirmed, initialState)
-        coEvery {
-            findLocalSystemLabelId(userId, SystemLabelId.Archive)
-        } returns MailLabelId.System(archiveLocalLabelId)
 
         mailboxViewModel.state.test {
             awaitItem() // First emission for selected user
@@ -2783,10 +2772,10 @@ class MailboxViewModelTest {
             mailboxViewModel.submit(MailboxViewAction.OnItemAvatarClicked(item))
             assertEquals(intermediateState, awaitItem())
             mailboxViewModel.submit(MailboxViewAction.MoveToArchive)
-            assertEquals(initialState, awaitItem())
+            cancelAndIgnoreRemainingEvents()
         }
         coVerify {
-            moveConversations(userId, selectedItemsList.map { ConversationId(it.id) }, archiveLocalLabelId)
+            moveConversations(userId, selectedItemsList.map { ConversationId(it.id) }, SystemLabelId.Archive)
         }
         coVerify { moveMessages wasNot Called }
     }
@@ -2797,7 +2786,6 @@ class MailboxViewModelTest {
         val item = readMailboxItemUiModel.copy(id = MessageIdSample.Invoice.id, showStar = true)
         val secondItem = unreadMailboxItemUiModel.copy(id = MessageIdSample.AlphaAppQAReport.id, showStar = true)
         val selectedItemsList = listOf(item, secondItem)
-        val spamLocalLabelId = LabelId("7")
 
         val initialState = createMailboxDataState()
         val expectedActions = listOf(Action.Unstar, Action.Archive, Action.Spam)
@@ -2815,11 +2803,8 @@ class MailboxViewModelTest {
         )
         returnExpectedStateForBottomBarEvent(expectedState = intermediateState)
         returnExpectedStateWhenEnterSelectionMode(initialState, item, intermediateState)
-        expectMoveMessagesSucceeds(userId, selectedItemsList, spamLocalLabelId)
+        expectMoveMessagesSucceeds(userId, selectedItemsList, SystemLabelId.Spam)
         expectedReducerResult(MailboxViewAction.MoveToConfirmed, initialState)
-        coEvery {
-            findLocalSystemLabelId(userId, SystemLabelId.Spam)
-        } returns MailLabelId.System(spamLocalLabelId)
 
         mailboxViewModel.state.test {
             awaitItem() // First emission for selected user
@@ -2828,9 +2813,9 @@ class MailboxViewModelTest {
             mailboxViewModel.submit(MailboxViewAction.OnItemAvatarClicked(item))
             assertEquals(intermediateState, awaitItem())
             mailboxViewModel.submit(MailboxViewAction.MoveToSpam)
-            assertEquals(initialState, awaitItem())
+            cancelAndIgnoreRemainingEvents()
         }
-        coVerify { moveMessages(userId, selectedItemsList.map { MessageId(it.id) }, spamLocalLabelId) }
+        coVerify { moveMessages(userId, selectedItemsList.map { MessageId(it.id) }, SystemLabelId.Spam) }
         coVerify { moveConversations wasNot Called }
     }
 
@@ -2840,7 +2825,6 @@ class MailboxViewModelTest {
         val item = readMailboxItemUiModel.copy(id = MessageIdSample.Invoice.id, showStar = true)
         val secondItem = unreadMailboxItemUiModel.copy(id = MessageIdSample.AlphaAppQAReport.id, showStar = true)
         val selectedItemsList = listOf(item, secondItem)
-        val spamLocalLabelId = LabelId("7")
 
         val initialState = createMailboxDataState()
         val expectedActions = listOf(Action.Unstar, Action.Archive, Action.Spam)
@@ -2859,11 +2843,8 @@ class MailboxViewModelTest {
         )
         returnExpectedStateForBottomBarEvent(expectedState = intermediateState)
         returnExpectedStateWhenEnterSelectionMode(initialState, item, intermediateState)
-        expectMoveConversationsSucceeds(userId, selectedItemsList, spamLocalLabelId)
+        expectMoveConversationsSucceeds(userId, selectedItemsList, SystemLabelId.Spam)
         expectedReducerResult(MailboxViewAction.MoveToConfirmed, initialState)
-        coEvery {
-            findLocalSystemLabelId(userId, SystemLabelId.Spam)
-        } returns MailLabelId.System(spamLocalLabelId)
 
         mailboxViewModel.state.test {
             awaitItem() // First emission for selected user
@@ -2872,10 +2853,10 @@ class MailboxViewModelTest {
             mailboxViewModel.submit(MailboxViewAction.OnItemAvatarClicked(item))
             assertEquals(intermediateState, awaitItem())
             mailboxViewModel.submit(MailboxViewAction.MoveToSpam)
-            assertEquals(initialState, awaitItem())
+            cancelAndIgnoreRemainingEvents()
         }
         coVerify {
-            moveConversations(userId, selectedItemsList.map { ConversationId(it.id) }, spamLocalLabelId)
+            moveConversations(userId, selectedItemsList.map { ConversationId(it.id) }, SystemLabelId.Spam)
         }
         coVerify { moveMessages wasNot Called }
     }
@@ -3055,11 +3036,10 @@ class MailboxViewModelTest {
         // Given
         val initialState = createMailboxDataState(selectedMailLabelId = MailLabelTestData.inboxSystemLabel.id)
         val itemId = "itemId"
-        val expectedLabelId = SystemLabelId.Archive.labelId
         val expectedViewAction = MailboxViewAction.SwipeArchiveAction(itemId)
 
         expectedSelectedLabelCountStateChange(initialState)
-        expectMoveMessagesSucceeds(userId, listOf(buildMailboxUiModelItem(id = itemId)), expectedLabelId)
+        expectMoveMessagesSucceeds(userId, listOf(buildMailboxUiModelItem(id = itemId)), SystemLabelId.Archive)
 
         mailboxViewModel.state.test {
             advanceUntilIdle()
@@ -3068,7 +3048,7 @@ class MailboxViewModelTest {
             mailboxViewModel.submit(expectedViewAction)
 
             // Then
-            coVerify { moveMessages(userId, listOf(MessageId(itemId)), expectedLabelId) }
+            coVerify { moveMessages(userId, listOf(MessageId(itemId)), SystemLabelId.Archive) }
             coVerify { moveConversations wasNot Called }
             cancelAndIgnoreRemainingEvents()
         }
@@ -3079,12 +3059,15 @@ class MailboxViewModelTest {
         // Given
         val initialState = createMailboxDataState(selectedMailLabelId = MailLabelTestData.inboxSystemLabel.id)
         val expectedItemId = "itemId"
-        val expectedLabelId = SystemLabelId.Archive.labelId
         val expectedViewAction = MailboxViewAction.SwipeArchiveAction(expectedItemId)
 
         expectViewModeForCurrentLocation(ConversationGrouping)
         expectedSelectedLabelCountStateChange(initialState)
-        expectMoveConversationsSucceeds(userId, listOf(buildMailboxUiModelItem(id = expectedItemId)), expectedLabelId)
+        expectMoveConversationsSucceeds(
+            userId,
+            listOf(buildMailboxUiModelItem(id = expectedItemId)),
+            SystemLabelId.Archive
+        )
 
         mailboxViewModel.state.test {
             advanceUntilIdle()
@@ -3093,7 +3076,7 @@ class MailboxViewModelTest {
             mailboxViewModel.submit(expectedViewAction)
 
             // Then
-            coVerify { moveConversations(userId, listOf(ConversationId(expectedItemId)), expectedLabelId) }
+            coVerify { moveConversations(userId, listOf(ConversationId(expectedItemId)), SystemLabelId.Archive) }
             coVerify { moveMessages wasNot Called }
             cancelAndIgnoreRemainingEvents()
         }
@@ -3124,11 +3107,10 @@ class MailboxViewModelTest {
         // Given
         val initialState = createMailboxDataState(selectedMailLabelId = MailLabelTestData.inboxSystemLabel.id)
         val itemId = "itemId"
-        val expectedLabelId = SystemLabelId.Spam.labelId
         val expectedViewAction = MailboxViewAction.SwipeSpamAction(itemId)
 
         expectedSelectedLabelCountStateChange(initialState)
-        expectMoveMessagesSucceeds(userId, listOf(buildMailboxUiModelItem(id = itemId)), expectedLabelId)
+        expectMoveMessagesSucceeds(userId, listOf(buildMailboxUiModelItem(id = itemId)), SystemLabelId.Spam)
 
         mailboxViewModel.state.test {
             advanceUntilIdle()
@@ -3137,7 +3119,7 @@ class MailboxViewModelTest {
             mailboxViewModel.submit(expectedViewAction)
 
             // Then
-            coVerify { moveMessages(userId, listOf(MessageId(itemId)), expectedLabelId) }
+            coVerify { moveMessages(userId, listOf(MessageId(itemId)), SystemLabelId.Spam) }
             coVerify { moveConversations wasNot Called }
             cancelAndIgnoreRemainingEvents()
         }
@@ -3148,19 +3130,22 @@ class MailboxViewModelTest {
         // Given
         val initialState = createMailboxDataState(selectedMailLabelId = MailLabelTestData.inboxSystemLabel.id)
         val expectedItemId = "itemId"
-        val expectedLabelId = SystemLabelId.Spam.labelId
         val expectedViewAction = MailboxViewAction.SwipeSpamAction(expectedItemId)
 
         expectViewModeForCurrentLocation(ConversationGrouping)
         expectedSelectedLabelCountStateChange(initialState)
-        expectMoveConversationsSucceeds(userId, listOf(buildMailboxUiModelItem(id = expectedItemId)), expectedLabelId)
+        expectMoveConversationsSucceeds(
+            userId,
+            listOf(buildMailboxUiModelItem(id = expectedItemId)),
+            SystemLabelId.Spam
+        )
 
         mailboxViewModel.state.test {
             // When
             mailboxViewModel.submit(expectedViewAction)
 
             // Then
-            coVerify { moveConversations(userId, listOf(ConversationId(expectedItemId)), expectedLabelId) }
+            coVerify { moveConversations(userId, listOf(ConversationId(expectedItemId)), SystemLabelId.Spam) }
             coVerify { moveMessages wasNot Called }
             cancelAndIgnoreRemainingEvents()
         }
@@ -3191,11 +3176,10 @@ class MailboxViewModelTest {
         // Given
         val initialState = createMailboxDataState(selectedMailLabelId = MailLabelTestData.inboxSystemLabel.id)
         val itemId = "itemId"
-        val expectedLabelId = SystemLabelId.Trash.labelId
         val expectedViewAction = MailboxViewAction.SwipeTrashAction(itemId)
 
         expectedSelectedLabelCountStateChange(initialState)
-        expectMoveMessagesSucceeds(userId, listOf(buildMailboxUiModelItem(id = itemId)), expectedLabelId)
+        expectMoveMessagesSucceeds(userId, listOf(buildMailboxUiModelItem(id = itemId)), SystemLabelId.Trash)
 
 
         mailboxViewModel.state.test {
@@ -3203,7 +3187,7 @@ class MailboxViewModelTest {
             mailboxViewModel.submit(expectedViewAction)
 
             // Then
-            coVerify { moveMessages(userId, listOf(MessageId(itemId)), expectedLabelId) }
+            coVerify { moveMessages(userId, listOf(MessageId(itemId)), SystemLabelId.Trash) }
             coVerify { moveConversations wasNot Called }
             cancelAndIgnoreRemainingEvents()
         }
@@ -3214,19 +3198,22 @@ class MailboxViewModelTest {
         // Given
         val initialState = createMailboxDataState(selectedMailLabelId = MailLabelTestData.inboxSystemLabel.id)
         val expectedItemId = "itemId"
-        val expectedLabelId = SystemLabelId.Trash.labelId
         val expectedViewAction = MailboxViewAction.SwipeTrashAction(expectedItemId)
 
         expectViewModeForCurrentLocation(ConversationGrouping)
         expectedSelectedLabelCountStateChange(initialState)
-        expectMoveConversationsSucceeds(userId, listOf(buildMailboxUiModelItem(id = expectedItemId)), expectedLabelId)
+        expectMoveConversationsSucceeds(
+            userId,
+            listOf(buildMailboxUiModelItem(id = expectedItemId)),
+            SystemLabelId.Trash
+        )
 
         mailboxViewModel.state.test {
             // When
             mailboxViewModel.submit(expectedViewAction)
 
             // Then
-            coVerify { moveConversations(userId, listOf(ConversationId(expectedItemId)), expectedLabelId) }
+            coVerify { moveConversations(userId, listOf(ConversationId(expectedItemId)), SystemLabelId.Trash) }
             coVerify { moveMessages wasNot Called }
             cancelAndIgnoreRemainingEvents()
         }
@@ -3801,6 +3788,22 @@ class MailboxViewModelTest {
         labelId: LabelId
     ) {
         coEvery { moveConversations(userId, items.map { ConversationId(it.id) }, labelId) } returns Unit.right()
+    }
+
+    private fun expectMoveConversationsSucceeds(
+        userId: UserId,
+        items: List<MailboxItemUiModel>,
+        systemLabelId: SystemLabelId
+    ) {
+        coEvery { moveConversations(userId, items.map { ConversationId(it.id) }, systemLabelId) } returns Unit.right()
+    }
+
+    private fun expectMoveMessagesSucceeds(
+        userId: UserId,
+        items: List<MailboxItemUiModel>,
+        systemLabelId: SystemLabelId
+    ) {
+        coEvery { moveMessages(userId, items.map { MessageId(it.id) }, systemLabelId) } returns Unit.right()
     }
 
     private fun expectMoveMessagesSucceeds(
