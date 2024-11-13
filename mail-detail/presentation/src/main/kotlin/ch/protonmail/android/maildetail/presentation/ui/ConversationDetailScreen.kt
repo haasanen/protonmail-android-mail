@@ -163,8 +163,13 @@ fun ConversationDetailScreen(
     }
 
     DeleteDialog(
-        state = state.deleteDialogState,
-        confirm = { viewModel.submit(ConversationDetailViewAction.DeleteConfirmed) },
+        state = state.conversationDeleteState.deleteDialogState,
+        confirm = {
+            when (val messageId = state.conversationDeleteState.messageIdInConversation) {
+                null -> viewModel.submit(ConversationDetailViewAction.DeleteConfirmed)
+                else -> viewModel.submit(ConversationDetailViewAction.DeleteMessageConfirmed(messageId))
+            }
+        },
         dismiss = { viewModel.submit(ConversationDetailViewAction.DeleteDialogDismissed) }
     )
 
@@ -232,6 +237,7 @@ fun ConversationDetailScreen(
                         },
                         onMoveToTrash = { viewModel.submit(ConversationDetailViewAction.TrashMessage(it)) },
                         onMoveToArchive = { viewModel.submit(ConversationDetailViewAction.ArchiveMessage(it)) },
+                        onDelete = { viewModel.submit(ConversationDetailViewAction.DeleteMessageRequested(it)) },
                         onMoveToSpam = { viewModel.submit(ConversationDetailViewAction.MoveMessageToSpam(it)) },
                         onMove = { viewModel.submit(ConversationDetailViewAction.RequestMessageMoveToBottomSheet(it)) },
                         onPrint = { viewModel.submit(ConversationDetailViewAction.PrintRequested(it)) },
@@ -245,6 +251,7 @@ fun ConversationDetailScreen(
                         onMoveConversation = {
                             viewModel.submit(ConversationDetailViewAction.RequestMoveToBottomSheet)
                         },
+                        onDeleteConversation = { viewModel.submit(ConversationDetailViewAction.DeleteRequested) },
 
                         onMoveToArchiveConversation = { Timber.d("Archive not implemented for conversation") },
                         onMoveToSpamConversation = { Timber.d("Spam not implemented for conversation") },
@@ -279,11 +286,7 @@ fun ConversationDetailScreen(
                     )
                 )
 
-                else -> {
-                    if (bottomSheetState.isVisible) {
-                        ProtonCenteredProgress()
-                    }
-                }
+                else -> Unit
             }
         }
     ) {
@@ -387,7 +390,7 @@ fun ConversationDetailScreen(
     scrollToMessageId: String?
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(snapAnimationSpec = null)
-    val snackbarHostState = ProtonSnackbarHostState()
+    val snackbarHostState = remember { ProtonSnackbarHostState() }
     val linkConfirmationDialogState = remember { mutableStateOf<Uri?>(null) }
     val phishingLinkConfirmationDialogState = remember { mutableStateOf<Uri?>(null) }
 
@@ -786,7 +789,7 @@ object ConversationDetailScreen {
 
     const val ConversationIdKey = "conversation id"
     const val ScrollToMessageIdKey = "scroll to message id"
-    const val FilterByLocationKey = "opened from location"
+    const val OpenedFromLocationKey = "opened from location"
 
     val scrollOffsetDp: Dp = (-30).dp
 

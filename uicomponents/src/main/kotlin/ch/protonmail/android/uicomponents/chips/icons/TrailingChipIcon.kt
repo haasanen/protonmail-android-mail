@@ -26,9 +26,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
+import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.uicomponents.chips.ChipsTestTags
 import ch.protonmail.android.uicomponents.chips.item.ChipItem
-import me.proton.core.compose.theme.ProtonTheme
 
 @Composable
 internal fun TrailingChipIcon(chipItem: ChipItem) {

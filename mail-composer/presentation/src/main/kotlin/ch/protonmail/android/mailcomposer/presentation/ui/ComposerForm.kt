@@ -18,57 +18,33 @@
 
 package ch.protonmail.android.mailcomposer.presentation.ui
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.animateContentSize
-import androidx.compose.animation.core.Animatable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
 import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.compose.FocusableForm
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
-import ch.protonmail.android.mailcommon.presentation.model.string
 import ch.protonmail.android.mailcommon.presentation.ui.MailDivider
 import ch.protonmail.android.mailcomposer.presentation.R
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerFields
 import ch.protonmail.android.mailcomposer.presentation.model.ContactSuggestionUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.ContactSuggestionsField
 import ch.protonmail.android.mailcomposer.presentation.model.FocusedFieldType
-import ch.protonmail.android.mailcomposer.presentation.model.RecipientUiModel
-import ch.protonmail.android.uicomponents.chips.ChipItem
-import ch.protonmail.android.uicomponents.chips.ChipsListField
-import ch.protonmail.android.uicomponents.chips.ContactSuggestionItem
-import ch.protonmail.android.uicomponents.chips.ContactSuggestionState
-import ch.protonmail.android.uicomponents.chips.thenIf
 import ch.protonmail.android.uicomponents.keyboardVisibilityAsState
-import ch.protonmail.android.design.compose.theme.ProtonDimens
-import ch.protonmail.android.design.compose.theme.ProtonTheme
 import timber.log.Timber
 
 @Composable
 internal fun ComposerForm(
+    newContactSuggestionsEnabled: Boolean,
     emailValidator: (String) -> Boolean,
     recipientsOpen: Boolean,
     initialFocus: FocusedFieldType,
@@ -85,11 +61,17 @@ internal fun ComposerForm(
     val keyboardController = LocalSoftwareKeyboardController.current
 
     val maxWidthModifier = Modifier.fillMaxWidth()
-    val emailNextKeyboardOptions = KeyboardOptions(
-        imeAction = ImeAction.Next,
-        keyboardType = KeyboardType.Email
-    )
-    val recipientsButtonRotation = remember { Animatable(0F) }
+
+    var showSubjectAndBody by remember { mutableStateOf(true) }
+
+    // Handle visibility of body and subject here, to avoid issues with focus requesters.
+    LaunchedEffect(areContactSuggestionsExpanded, newContactSuggestionsEnabled) {
+        showSubjectAndBody = if (newContactSuggestionsEnabled) {
+            !areContactSuggestionsExpanded.any { it.value }
+        } else {
+            true
+        }
+    }
 
     FocusableForm(
         fieldList = listOf(
@@ -123,188 +105,57 @@ internal fun ComposerForm(
                 actions.onChangeSender
             )
             MailDivider()
-            Row(
-                modifier = maxWidthModifier,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                ChipsListField(
-                    label = stringResource(id = R.string.to_prefix),
-                    value = fields.to.map { it.toChipItem() },
-                    chipValidator = emailValidator,
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(start = ProtonDimens.DefaultSpacing)
-                        .testTag(ComposerTestTags.ToRecipient)
-                        .retainFieldFocusOnConfigurationChange(FocusedFieldType.TO),
-                    keyboardOptions = emailNextKeyboardOptions,
-                    focusRequester = fieldFocusRequesters[FocusedFieldType.TO],
-                    actions = ChipsListField.Actions(
-                        onSuggestionTermTyped = {
-                            actions.onContactSuggestionTermChanged(it, ContactSuggestionsField.TO)
-                        },
-                        onSuggestionsDismissed = { actions.onContactSuggestionsDismissed(ContactSuggestionsField.TO) },
-                        onListChanged = {
-                            actions.onToChanged(it.mapNotNull { chipItem -> chipItem.toRecipientUiModel() })
-                        }
-                    ),
-                    contactSuggestionState = ContactSuggestionState(
-                        areSuggestionsExpanded = areContactSuggestionsExpanded[ContactSuggestionsField.TO] ?: false,
-                        contactSuggestionItems = contactSuggestions[ContactSuggestionsField.TO]?.map {
-                            it.toSuggestionContactItem()
-                        } ?: emptyList()
-                    )
+
+            if (newContactSuggestionsEnabled) {
+                RecipientFields2(
+                    fields = fields,
+                    fieldFocusRequesters = fieldFocusRequesters,
+                    recipientsOpen = recipientsOpen,
+                    emailValidator = emailValidator,
+                    contactSuggestions = contactSuggestions,
+                    areContactSuggestionsExpanded = areContactSuggestionsExpanded,
+                    actions = actions
                 )
-                Spacer(modifier = Modifier.size(ProtonDimens.DefaultSpacing))
-                IconButton(
-                    modifier = Modifier.focusProperties { canFocus = false },
-                    onClick = { actions.onToggleRecipients(!recipientsOpen) }
-                ) {
-                    Icon(
-                        modifier = Modifier
-                            .thenIf(recipientsButtonRotation.value == RecipientsButtonRotationValues.Closed) {
-                                testTag(ComposerTestTags.ExpandCollapseArrow)
-                            }
-                            .thenIf(recipientsButtonRotation.value == RecipientsButtonRotationValues.Open) {
-                                testTag(ComposerTestTags.CollapseExpandArrow)
-                            }
-                            .rotate(recipientsButtonRotation.value),
-                        imageVector = Icons.Filled.KeyboardArrowUp,
-                        tint = ProtonTheme.colors.textWeak,
-                        contentDescription = stringResource(id = R.string.composer_expand_recipients_button)
+            } else {
+                RecipientFields(
+                    fields = fields,
+                    fieldFocusRequesters = fieldFocusRequesters,
+                    recipientsOpen = recipientsOpen,
+                    emailValidator = emailValidator,
+                    contactSuggestions = contactSuggestions,
+                    areContactSuggestionsExpanded = areContactSuggestionsExpanded,
+                    actions = actions
+                )
+            }
+
+            if (showSubjectAndBody) {
+                MailDivider()
+                SubjectTextField(
+                    initialValue = fields.subject,
+                    onSubjectChange = actions.onSubjectChanged,
+                    modifier = maxWidthModifier
+                        .testTag(ComposerTestTags.Subject)
+                        .retainFieldFocusOnConfigurationChange(FocusedFieldType.SUBJECT)
+                )
+                MailDivider()
+                BodyTextField(
+                    initialValue = fields.body,
+                    shouldRequestFocus = shouldForceBodyTextFocus,
+                    replaceDraftBody = replaceDraftBody,
+                    onBodyChange = actions.onBodyChanged,
+                    modifier = maxWidthModifier
+                        .testTag(ComposerTestTags.MessageBody)
+                        .retainFieldFocusOnConfigurationChange(FocusedFieldType.BODY)
+                )
+                if (fields.quotedBody != null) {
+                    RespondInlineButton(actions.onRespondInline)
+                    BodyHtmlQuote(
+                        value = fields.quotedBody.styled.value,
+                        modifier = maxWidthModifier.testTag(ComposerTestTags.MessageHtmlQuotedBody)
                     )
                 }
-            }
-            AnimatedVisibility(
-                visible = recipientsOpen,
-                modifier = Modifier.animateContentSize()
-            ) {
-                Column {
-                    MailDivider()
-                    ChipsListField(
-                        label = stringResource(id = R.string.cc_prefix),
-                        value = fields.cc.map { it.toChipItem() },
-                        chipValidator = emailValidator,
-                        modifier = Modifier
-                            .padding(start = ProtonDimens.DefaultSpacing)
-                            .testTag(ComposerTestTags.CcRecipient)
-                            .retainFieldFocusOnConfigurationChange(FocusedFieldType.CC),
-                        keyboardOptions = emailNextKeyboardOptions,
-                        focusRequester = fieldFocusRequesters[FocusedFieldType.CC],
-                        actions = ChipsListField.Actions(
-                            onSuggestionTermTyped = {
-                                actions.onContactSuggestionTermChanged(it, ContactSuggestionsField.CC)
-                            },
-                            onSuggestionsDismissed = {
-                                actions.onContactSuggestionsDismissed(ContactSuggestionsField.CC)
-                            },
-                            onListChanged = {
-                                actions.onCcChanged(it.mapNotNull { chipItem -> chipItem.toRecipientUiModel() })
-                            }
-                        ),
-                        contactSuggestionState = ContactSuggestionState(
-                            areSuggestionsExpanded = areContactSuggestionsExpanded[ContactSuggestionsField.CC] ?: false,
-                            contactSuggestionItems = contactSuggestions[ContactSuggestionsField.CC]?.map {
-                                it.toSuggestionContactItem()
-                            } ?: emptyList()
-                        )
-                    )
-                    MailDivider()
-                    ChipsListField(
-                        label = stringResource(id = R.string.bcc_prefix),
-                        value = fields.bcc.map { it.toChipItem() },
-                        chipValidator = emailValidator,
-                        modifier = Modifier
-                            .padding(start = ProtonDimens.DefaultSpacing)
-                            .testTag(ComposerTestTags.BccRecipient)
-                            .retainFieldFocusOnConfigurationChange(FocusedFieldType.BCC),
-                        keyboardOptions = emailNextKeyboardOptions,
-                        focusRequester = fieldFocusRequesters[FocusedFieldType.BCC],
-                        actions = ChipsListField.Actions(
-                            onSuggestionTermTyped = {
-                                actions.onContactSuggestionTermChanged(it, ContactSuggestionsField.BCC)
-                            },
-                            onSuggestionsDismissed = {
-                                actions.onContactSuggestionsDismissed(ContactSuggestionsField.BCC)
-                            },
-                            onListChanged = {
-                                actions.onBccChanged(it.mapNotNull { chipItem -> chipItem.toRecipientUiModel() })
-                            }
-                        ),
-                        contactSuggestionState = ContactSuggestionState(
-                            areSuggestionsExpanded = areContactSuggestionsExpanded[ContactSuggestionsField.BCC]
-                                ?: false,
-                            contactSuggestionItems = contactSuggestions[ContactSuggestionsField.BCC]?.map {
-                                it.toSuggestionContactItem()
-                            } ?: emptyList()
-                        )
-                    )
-                }
-            }
-            MailDivider()
-            SubjectTextField(
-                initialValue = fields.subject,
-                onSubjectChange = actions.onSubjectChanged,
-                modifier = maxWidthModifier
-                    .testTag(ComposerTestTags.Subject)
-                    .retainFieldFocusOnConfigurationChange(FocusedFieldType.SUBJECT)
-            )
-            MailDivider()
-            BodyTextField(
-                initialValue = fields.body,
-                shouldRequestFocus = shouldForceBodyTextFocus,
-                replaceDraftBody = replaceDraftBody,
-                onBodyChange = actions.onBodyChanged,
-                modifier = maxWidthModifier
-                    .testTag(ComposerTestTags.MessageBody)
-                    .retainFieldFocusOnConfigurationChange(FocusedFieldType.BODY)
-            )
-            if (fields.quotedBody != null) {
-                RespondInlineButton(actions.onRespondInline)
-                BodyHtmlQuote(
-                    value = fields.quotedBody.styled.value,
-                    modifier = maxWidthModifier.testTag(ComposerTestTags.MessageHtmlQuotedBody)
-                )
             }
         }
     }
-
-    LaunchedEffect(key1 = recipientsOpen) {
-        recipientsButtonRotation.animateTo(
-            if (recipientsOpen) RecipientsButtonRotationValues.Open else RecipientsButtonRotationValues.Closed
-        )
-    }
 }
 
-private object RecipientsButtonRotationValues {
-
-    const val Open = 180f
-    const val Closed = 0f
-}
-
-private fun ChipItem.toRecipientUiModel(): RecipientUiModel? = when (this) {
-    is ChipItem.Counter -> null
-    is ChipItem.Invalid -> RecipientUiModel.Invalid(value)
-    is ChipItem.Valid -> RecipientUiModel.Valid(value)
-}
-
-private fun RecipientUiModel.toChipItem(): ChipItem = when (this) {
-    is RecipientUiModel.Invalid -> ChipItem.Invalid(address)
-    is RecipientUiModel.Valid -> ChipItem.Valid(address)
-}
-
-@Composable
-private fun ContactSuggestionUiModel.toSuggestionContactItem(): ContactSuggestionItem = when (this) {
-    is ContactSuggestionUiModel.Contact -> ContactSuggestionItem(
-        this.name,
-        this.email,
-        listOf(this.email)
-    )
-    is ContactSuggestionUiModel.ContactGroup -> ContactSuggestionItem(
-        this.name,
-        TextUiModel.PluralisedText(
-            value = R.plurals.composer_recipient_suggestion_contacts,
-            count = this.emails.size
-        ).string(),
-        this.emails
-    )
-}

@@ -42,12 +42,12 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import ch.protonmail.android.design.compose.theme.ProtonDimens
+import ch.protonmail.android.design.compose.theme.ProtonDimens.ExtraSmallSpacing
+import ch.protonmail.android.design.compose.theme.ProtonTheme
+import ch.protonmail.android.design.compose.theme.defaultNorm
 import ch.protonmail.android.uicomponents.chips.item.ChipItemsList
 import kotlinx.coroutines.launch
-import me.proton.core.compose.theme.ProtonDimens
-import me.proton.core.compose.theme.ProtonDimens.ExtraSmallSpacing
-import me.proton.core.compose.theme.ProtonTheme
-import me.proton.core.compose.theme.defaultNorm
 
 @OptIn(
     ExperimentalLayoutApi::class,
@@ -73,7 +73,9 @@ internal fun ChipsListTextField2(
     val bringIntoViewRequester = remember { BringIntoViewRequester() }
     val coroutineScope = rememberCoroutineScope()
     val keyboardOptions = remember {
-        KeyboardOptions.Default.copy(keyboardType = KeyboardType.Email, imeAction = ImeAction.Next, autoCorrect = false)
+        KeyboardOptions.Default.copy(
+            keyboardType = KeyboardType.Email, imeAction = ImeAction.Next, autoCorrectEnabled = false
+        )
     }
 
     // Similar to what we do for the Message body, we need to ensure

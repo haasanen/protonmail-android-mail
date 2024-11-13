@@ -37,6 +37,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.mailcommon.presentation.compose.FocusableFormScope
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcommon.presentation.model.string
@@ -52,8 +53,7 @@ import ch.protonmail.android.uicomponents.chips.ContactSuggestionState2
 import ch.protonmail.android.uicomponents.chips.item.ChipItem
 import ch.protonmail.android.uicomponents.chips.thenIf
 import ch.protonmail.android.uicomponents.composer.suggestions.ContactSuggestionItem2
-import me.proton.core.compose.theme.ProtonDimens
-import me.proton.core.compose.theme.ProtonTheme
+import ch.protonmail.android.design.compose.theme.ProtonTheme
 
 @Composable
 internal fun FocusableFormScope<FocusedFieldType>.RecipientFields2(

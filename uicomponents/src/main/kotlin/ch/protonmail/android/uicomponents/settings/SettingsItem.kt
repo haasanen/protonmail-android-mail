@@ -23,13 +23,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Text
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.semantics
-import me.proton.core.compose.component.ProtonRawListItem
-import me.proton.core.compose.theme.ProtonDimens
-import me.proton.core.compose.theme.ProtonTheme
+import ch.protonmail.android.design.compose.component.ProtonRawListItem
+import ch.protonmail.android.design.compose.theme.ProtonDimens
+import ch.protonmail.android.design.compose.theme.ProtonTheme
 
 @Composable
 fun SettingsItem(

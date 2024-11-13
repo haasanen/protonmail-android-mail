@@ -28,7 +28,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import me.proton.core.compose.viewmodel.stopTimeoutMillis
+import ch.protonmail.android.design.compose.viewmodel.stopTimeoutMillis
 import me.proton.core.user.domain.entity.User
 import me.proton.core.util.kotlin.takeIfNotEmpty
 import javax.inject.Inject

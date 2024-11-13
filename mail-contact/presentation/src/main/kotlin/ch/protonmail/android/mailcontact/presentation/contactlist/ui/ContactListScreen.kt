@@ -6,13 +6,16 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SheetValue
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
@@ -20,17 +23,25 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
 import ch.protonmail.android.mailcommon.presentation.ConsumableTextEffect
+import ch.protonmail.android.mailcommon.presentation.ui.CommonTestTags
 import ch.protonmail.android.mailcontact.domain.model.ContactGroupId
 import ch.protonmail.android.mailcontact.presentation.R
-import ch.protonmail.android.mailcontact.presentation.contactlist.BottomSheetVisibilityEffect
 import ch.protonmail.android.mailcontact.presentation.contactlist.ContactListState
 import ch.protonmail.android.mailcontact.presentation.contactlist.ContactListViewAction
 import ch.protonmail.android.mailcontact.presentation.contactlist.ContactListViewModel
+import ch.protonmail.android.mailcontact.presentation.upselling.ContactGroupsUpsellingBottomSheet
 import ch.protonmail.android.mailcontact.presentation.utils.ContactFeatureFlags.ContactCreate
+import ch.protonmail.android.mailupselling.presentation.model.BottomSheetVisibilityEffect
+import ch.protonmail.android.mailupselling.presentation.ui.bottomsheet.UpsellingBottomSheet
+import ch.protonmail.android.mailupselling.presentation.ui.bottomsheet.UpsellingBottomSheet.DELAY_SHOWING
 import ch.protonmail.android.uicomponents.bottomsheet.bottomSheetHeightConstrainedContent
+import ch.protonmail.android.uicomponents.snackbar.DismissableSnackbarHost
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
 import ch.protonmail.android.design.compose.component.ProtonModalBottomSheetLayout
+import ch.protonmail.android.design.compose.component.ProtonSnackbarHostState
+import ch.protonmail.android.design.compose.component.ProtonSnackbarType
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.mailcontact.domain.model.ContactId
 
@@ -39,8 +50,10 @@ import ch.protonmail.android.mailcontact.domain.model.ContactId
 fun ContactListScreen(listActions: ContactListScreen.Actions, viewModel: ContactListViewModel = hiltViewModel()) {
     val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val scope = rememberCoroutineScope()
+    val snackbarHostState = remember { ProtonSnackbarHostState() }
 
     val state = viewModel.state.collectAsStateWithLifecycle().value
+    var showBottomSheet by remember { mutableStateOf(false) }
 
     val defaultColor = ProtonTheme.colors.backgroundNorm
     val backgroundColor = ProtonTheme.colors.backgroundSecondary
@@ -65,18 +78,15 @@ fun ContactListScreen(listActions: ContactListScreen.Actions, viewModel: Contact
         activity?.window?.statusBarColor = backgroundColor.toArgb()
     }
 
-    if (state is ContactListState.Loaded) {
-        ConsumableLaunchedEffect(effect = state.bottomSheetVisibilityEffect) { bottomSheetEffect ->
-            when (bottomSheetEffect) {
-                BottomSheetVisibilityEffect.Hide -> scope.launch { bottomSheetState.hide() }
-                BottomSheetVisibilityEffect.Show -> scope.launch { bottomSheetState.show() }
-            }
+    val bottomSheetActions = UpsellingBottomSheet.Actions.Empty.copy(
+        onDismiss = { viewModel.submit(ContactListViewAction.OnDismissBottomSheet) },
+        onUpgrade = { message ->
+            scope.launch { snackbarHostState.showSnackbar(ProtonSnackbarType.NORM, message) }
+        },
+        onError = { message ->
+            scope.launch { snackbarHostState.showSnackbar(ProtonSnackbarType.ERROR, message) }
         }
-    }
-
-    if (bottomSheetState.currentValue != SheetValue.Hidden) {
-        DisposableEffect(Unit) { onDispose { viewModel.submit(ContactListViewAction.OnDismissBottomSheet) } }
-    }
+    )
 
     BackHandler(bottomSheetState.isVisible) {
         viewModel.submit(ContactListViewAction.OnDismissBottomSheet)
@@ -85,20 +95,32 @@ fun ContactListScreen(listActions: ContactListScreen.Actions, viewModel: Contact
     ProtonModalBottomSheetLayout(
         sheetState = bottomSheetState,
         sheetContent = bottomSheetHeightConstrainedContent {
-            ContactBottomSheetContent(
-                isContactGroupsCrudEnabled = state.isContactGroupsCrudEnabled,
-                actions = ContactBottomSheet.Actions(
-                    onNewContactClick = {
-                        viewModel.submit(ContactListViewAction.OnNewContactClick)
-                    },
-                    onNewContactGroupClick = {
-                        viewModel.submit(ContactListViewAction.OnNewContactGroupClick)
-                    },
-                    onImportContactClick = {
-                        viewModel.submit(ContactListViewAction.OnImportContactClick)
+            if (state is ContactListState.Loaded && showBottomSheet) {
+                when (state.bottomSheetType) {
+                    ContactListState.BottomSheetType.Menu -> {
+                        ContactBottomSheetContent(
+                            isContactGroupsCrudEnabled = state.isContactGroupsCrudEnabled,
+                            isContactGroupsUpsellingVisible = state.isContactGroupsUpsellingVisible,
+                            actions = ContactBottomSheet.Actions(
+                                onNewContactClick = {
+                                    viewModel.submit(ContactListViewAction.OnNewContactClick)
+                                },
+                                onNewContactGroupClick = {
+                                    viewModel.submit(ContactListViewAction.OnNewContactGroupClick)
+                                },
+                                onImportContactClick = {
+                                    viewModel.submit(ContactListViewAction.OnImportContactClick)
+                                }
+                            )
+                        )
                     }
-                )
-            )
+
+                    ContactListState.BottomSheetType.Upselling -> {
+                        ContactGroupsUpsellingBottomSheet(actions = bottomSheetActions)
+                    }
+                }
+            }
+
         }
     ) {
         Scaffold(
@@ -132,6 +154,25 @@ fun ContactListScreen(listActions: ContactListScreen.Actions, viewModel: Contact
                     }
                     ConsumableLaunchedEffect(effect = state.openContactSearch) {
                         actions.onNavigateToContactSearch()
+                    }
+                    ConsumableLaunchedEffect(effect = state.bottomSheetVisibilityEffect) { bottomSheetEffect ->
+                        when (bottomSheetEffect) {
+                            BottomSheetVisibilityEffect.Hide -> {
+                                bottomSheetState.hide()
+                            }
+
+                            BottomSheetVisibilityEffect.Show -> {
+                                if (!showBottomSheet) {
+                                    showBottomSheet = true
+                                    delay(DELAY_SHOWING)
+                                }
+                                bottomSheetState.show()
+                            }
+                        }
+                    }
+                    ConsumableTextEffect(effect = state.upsellingInProgress) { message ->
+                        snackbarHostState.snackbarHostState.currentSnackbarData?.dismiss()
+                        snackbarHostState.showSnackbar(ProtonSnackbarType.NORM, message)
                     }
                 }
 
@@ -167,6 +208,12 @@ fun ContactListScreen(listActions: ContactListScreen.Actions, viewModel: Contact
                         }
                     }
                 }
+            },
+            snackbarHost = {
+                DismissableSnackbarHost(
+                    modifier = Modifier.testTag(CommonTestTags.SnackbarHost),
+                    protonSnackbarHostState = snackbarHostState
+                )
             }
         )
     }

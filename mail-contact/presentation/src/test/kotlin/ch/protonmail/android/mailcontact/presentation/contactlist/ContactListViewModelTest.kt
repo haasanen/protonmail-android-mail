@@ -34,6 +34,9 @@ import ch.protonmail.android.mailcontact.domain.usecase.featureflags.IsContactGr
 import ch.protonmail.android.mailcontact.presentation.R
 import ch.protonmail.android.mailcontact.presentation.model.ContactGroupItemUiModelMapper
 import ch.protonmail.android.mailcontact.presentation.model.ContactListItemUiModelMapper
+import ch.protonmail.android.mailupselling.domain.model.UserUpgradeState
+import ch.protonmail.android.mailupselling.presentation.model.BottomSheetVisibilityEffect
+import ch.protonmail.android.mailupselling.presentation.usecase.ObserveUpsellingVisibility
 import ch.protonmail.android.maillabel.presentation.getHexStringFromColor
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
 import ch.protonmail.android.testdata.user.UserIdTestData
@@ -111,6 +114,13 @@ class ContactListViewModelTest {
     private val isContactGroupsCrudEnabledMock = mockk<IsContactGroupsCrudEnabled> {
         every { this@mockk() } returns true
     }
+    private val observeUpsellingVisibilityMock = mockk<ObserveUpsellingVisibility> {
+        every { this@mockk(any()) } returns flowOf(false)
+    }
+
+    private val userUpgradeState = mockk<UserUpgradeState> {
+        every { this@mockk.isUserPendingUpgrade } returns false
+    }
 
     private val reducer = ContactListReducer()
 
@@ -134,6 +144,8 @@ class ContactListViewModelTest {
             reducer,
             groupedContactListItemsUiModelMapper,
             isContactGroupsCrudEnabledMock,
+            observeUpsellingVisibilityMock,
+            userUpgradeState,
             observePrimaryUserId
         )
     }
@@ -218,6 +230,59 @@ class ContactListViewModelTest {
     }
 
     @Test
+    fun `when ObserveUpsellingVisibility is true then emit appropriate event`() = runTest {
+        // Given
+        expectContactsData()
+        coEvery { observeUpsellingVisibilityMock(any()) } returns flowOf(true)
+
+        // When
+        contactListViewModel.state.test {
+            // Then
+            val actual = awaitItem()
+            val expected = ContactListState.Loaded.Data(
+                groupedContacts = listOf(defaultTestGroupedContacts).map {
+                    groupedContactListItemsUiModelMapper.toUiModel(it)
+                },
+                isContactGroupsCrudEnabled = true,
+                isContactGroupsUpsellingVisible = true,
+                isContactSearchEnabled = true
+            )
+
+            assertEquals(expected, actual)
+        }
+    }
+
+    @Test
+    fun `when user subscription upgrade is pending, emit the upselling in progress event`() = runTest {
+        // Given
+        expectContactsData()
+        coEvery { observeUpsellingVisibilityMock(any()) } returns flowOf(false)
+        every { userUpgradeState.isUserPendingUpgrade } returns true
+
+        // When
+        contactListViewModel.state.test {
+            // Then
+            skipItems(1)
+
+            contactListViewModel.submit(ContactListViewAction.OnNewContactGroupClick)
+
+            val actual = awaitItem()
+            val expected = ContactListState.Loaded.Data(
+                groupedContacts = listOf(defaultTestGroupedContacts).map {
+                    groupedContactListItemsUiModelMapper.toUiModel(it)
+                },
+                isContactGroupsCrudEnabled = true,
+                isContactGroupsUpsellingVisible = false,
+                isContactSearchEnabled = true,
+                bottomSheetVisibilityEffect = Effect.of(BottomSheetVisibilityEffect.Hide),
+                upsellingInProgress = Effect.of(TextUiModel(R.string.upselling_snackbar_upgrade_in_progress))
+            )
+
+            assertEquals(expected, actual)
+        }
+    }
+
+    @Test
     fun `given contact list, when action open bottom sheet, then emits open state`() = runTest {
         // Given
         expectContactsData()
@@ -234,6 +299,7 @@ class ContactListViewModelTest {
                     groupedContactListItemsUiModelMapper.toUiModel(it)
                 },
                 bottomSheetVisibilityEffect = Effect.of(BottomSheetVisibilityEffect.Show),
+                bottomSheetType = ContactListState.BottomSheetType.Menu,
                 isContactGroupsCrudEnabled = true,
                 isContactSearchEnabled = true
             )
@@ -373,6 +439,38 @@ class ContactListViewModelTest {
             assertEquals(expected, actual)
         }
     }
+
+    @Suppress("MaxLineLength")
+    @Test
+    fun `given free user contact list and ContactGroup upselling visibility = true, when action new contact group, then emits open upselling bottom sheet`() =
+        runTest {
+            // Given
+            expectContactsData()
+            expectPaidUser(false)
+            coEvery { observeUpsellingVisibilityMock(any()) } returns flowOf(true)
+
+            // When
+            contactListViewModel.state.test {
+                awaitItem()
+
+                contactListViewModel.submit(ContactListViewAction.OnNewContactGroupClick)
+
+                val actual = awaitItem()
+                val expected = ContactListState.Loaded.Data(
+                    groupedContacts = listOf(defaultTestGroupedContacts).map {
+                        groupedContactListItemsUiModelMapper.toUiModel(it)
+                    },
+                    bottomSheetVisibilityEffect = Effect.of(BottomSheetVisibilityEffect.Show),
+                    bottomSheetType = ContactListState.BottomSheetType.Upselling,
+                    subscriptionError = Effect.empty(),
+                    isContactGroupsCrudEnabled = true,
+                    isContactSearchEnabled = true,
+                    isContactGroupsUpsellingVisible = true
+                )
+
+                assertEquals(expected, actual)
+            }
+        }
 
     @Test
     fun `given contact list, when action import contact, then emits open import state`() = runTest {

@@ -27,7 +27,7 @@ import androidx.compose.ui.res.vectorResource
 import ch.protonmail.android.uicomponents.R
 import ch.protonmail.android.uicomponents.chips.ChipsTestTags
 import ch.protonmail.android.uicomponents.chips.item.ChipItem
-import me.proton.core.compose.theme.ProtonTheme
+import ch.protonmail.android.design.compose.theme.ProtonTheme
 
 @Composable
 internal fun LeadingChipIcon(chipItem: ChipItem) {

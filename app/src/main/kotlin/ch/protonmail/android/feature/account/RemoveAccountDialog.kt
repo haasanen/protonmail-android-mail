@@ -18,8 +18,8 @@
 
 package ch.protonmail.android.feature.account
 
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Text
+import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -28,11 +28,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ch.protonmail.android.R
 import ch.protonmail.android.feature.account.SignOutAccountViewModel.State
-import ch.protonmail.android.design.compose.component.ProtonAlertDialog
-import ch.protonmail.android.design.compose.component.ProtonAlertDialogText
-import ch.protonmail.android.design.compose.component.ProtonTextButton
-import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.defaultStrongNorm
+import me.proton.core.compose.component.ProtonAlertDialog
+import me.proton.core.compose.component.ProtonAlertDialogText
+import me.proton.core.compose.component.ProtonTextButton
+import me.proton.core.compose.theme.ProtonTheme
+import me.proton.core.compose.theme.defaultStrongNorm
 import me.proton.core.domain.entity.UserId
 
 @Composable

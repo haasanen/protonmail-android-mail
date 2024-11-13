@@ -29,7 +29,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import me.proton.core.compose.viewmodel.stopTimeoutMillis
+import ch.protonmail.android.design.compose.viewmodel.stopTimeoutMillis
 import javax.inject.Inject
 
 @HiltViewModel

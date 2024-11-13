@@ -23,9 +23,9 @@ import androidx.compose.material3.InputChipDefaults
 import androidx.compose.material3.SelectableChipColors
 import androidx.compose.material3.SuggestionChipDefaults
 import androidx.compose.runtime.Composable
-import me.proton.core.compose.theme.ProtonTheme
-import me.proton.core.compose.theme.defaultInverted
-import me.proton.core.compose.theme.defaultNorm
+import ch.protonmail.android.design.compose.theme.ProtonTheme
+import ch.protonmail.android.design.compose.theme.defaultInverted
+import ch.protonmail.android.design.compose.theme.defaultNorm
 
 @Composable
 internal fun ChipItem.textStyle() = when (this) {

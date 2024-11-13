@@ -72,7 +72,6 @@ dependencies {
     implementation(libs.timber)
     implementation(libs.proton.core.plan)
     implementation(libs.proton.core.presentation)
-    implementation(libs.proton.core.presentationCompose)
 
     testImplementation(project(":test:test-data"))
     testImplementation(libs.bundles.test)

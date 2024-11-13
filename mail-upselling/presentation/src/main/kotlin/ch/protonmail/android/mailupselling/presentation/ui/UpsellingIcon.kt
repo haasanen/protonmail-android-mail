@@ -26,8 +26,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.uicomponents.R
-import me.proton.core.compose.theme.ProtonTheme
 
 @Composable
 fun UpsellingIcon(modifier: Modifier = Modifier) {

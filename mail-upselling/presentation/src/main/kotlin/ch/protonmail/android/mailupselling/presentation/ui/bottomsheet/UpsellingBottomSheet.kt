@@ -24,13 +24,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
+import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 import ch.protonmail.android.mailupselling.domain.model.UpsellingActions
 import ch.protonmail.android.mailupselling.domain.model.UpsellingEntryPoint
 import ch.protonmail.android.mailupselling.domain.model.telemetry.UpsellingTelemetryTargetPlanPayload
 import ch.protonmail.android.mailupselling.presentation.model.UpsellingBottomSheetContentState
 import ch.protonmail.android.mailupselling.presentation.viewmodel.UpsellingBottomSheetViewModel
-import me.proton.core.compose.component.ProtonCenteredProgress
 
 @Composable
 fun UpsellingBottomSheet(

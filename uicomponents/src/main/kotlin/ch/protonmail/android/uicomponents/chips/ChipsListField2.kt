@@ -8,8 +8,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Divider
-import androidx.compose.material.Text
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
@@ -21,13 +21,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.input.TextFieldValue
+import ch.protonmail.android.design.compose.theme.ProtonDimens
+import ch.protonmail.android.design.compose.theme.ProtonTheme
+import ch.protonmail.android.design.compose.theme.defaultNorm
 import ch.protonmail.android.uicomponents.chips.ChipsListState2.Companion.ChipsCreationRegex
 import ch.protonmail.android.uicomponents.chips.item.ChipItem
 import ch.protonmail.android.uicomponents.composer.suggestions.ContactSuggestionItem2
 import ch.protonmail.android.uicomponents.composer.suggestions.ContactSuggestionItemElement
-import me.proton.core.compose.theme.ProtonDimens
-import me.proton.core.compose.theme.ProtonTheme
-import me.proton.core.compose.theme.defaultNorm
 
 @Composable
 fun ChipsListField2(
@@ -117,7 +117,7 @@ fun ChipsListField2(
         if (contactSuggestionState.areSuggestionsExpanded &&
             contactSuggestionState.contactSuggestionItems.isNotEmpty()
         ) {
-            Divider(modifier = Modifier.padding(bottom = ProtonDimens.DefaultSpacing))
+            HorizontalDivider(modifier = Modifier.padding(bottom = ProtonDimens.DefaultSpacing))
 
             contactSuggestionState.contactSuggestionItems.forEach { selectionOption ->
                 ContactSuggestionItemElement(textFieldValue.text, selectionOption, onClick = {

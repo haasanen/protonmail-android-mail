@@ -19,59 +19,61 @@
 package ch.protonmail.android.mailonboarding.presentation
 
 import android.content.res.Configuration
-import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Text
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
-import ch.protonmail.android.mailonboarding.presentation.model.OnboardingUiModel
-import kotlinx.coroutines.launch
-import ch.protonmail.android.design.compose.component.ProtonSolidButton
-import ch.protonmail.android.design.compose.theme.ProtonDimens
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.defaultWeak
-import ch.protonmail.android.design.compose.theme.headlineNorm
+import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
+import ch.protonmail.android.mailonboarding.presentation.model.OnboardingState
+import ch.protonmail.android.mailonboarding.presentation.model.OnboardingUiModel
+import ch.protonmail.android.mailonboarding.presentation.ui.OnboardingButton
+import ch.protonmail.android.mailonboarding.presentation.ui.OnboardingContent
+import ch.protonmail.android.mailonboarding.presentation.ui.OnboardingIndexDots
+import ch.protonmail.android.mailonboarding.presentation.viewmodel.OnboardingViewModel
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun OnboardingScreen(onCloseOnboarding: () -> Unit) {
-    val contentMap = listOf(
-        OnboardingUiModel(
-            illustrationId = R.drawable.illustration_onboarding_ga,
-            headlineId = R.string.onboarding_headline_ga,
-            descriptionId = R.string.onboarding_description_ga
-        ),
+fun OnboardingScreen(
+    exitAction: () -> Unit,
+    onUpsellingNavigation: () -> Unit,
+    viewModel: OnboardingViewModel = hiltViewModel()
+) {
+
+    val state by viewModel.state.collectAsStateWithLifecycle()
+    val isEligibleForUpselling = state is OnboardingState.ToUpsell
+    val isUpsellingEligibilityPending = state is OnboardingState.Loading
+
+    val onExitAction = if (isEligibleForUpselling || isUpsellingEligibilityPending) {
+        { onUpsellingNavigation() }
+    } else {
+        exitAction
+    }
+
+    val contentMap = listOfNotNull(
         OnboardingUiModel(
             illustrationId = R.drawable.illustration_privacy_for_all,
             headlineId = R.string.onboarding_privacy_for_all_headline,
@@ -86,10 +88,36 @@ fun OnboardingScreen(onCloseOnboarding: () -> Unit) {
             illustrationId = R.drawable.illustration_neat_and_tidy,
             headlineId = R.string.onboarding_neat_and_tidy_headline,
             descriptionId = R.string.onboarding_neat_and_tidy_description
-        )
+        ),
+        if (isEligibleForUpselling) OnboardingUiModel.Empty else null
     )
+
     val viewCount = contentMap.size
     val pagerState = rememberPagerState(pageCount = { viewCount })
+
+    var isSwipingToUpsellingPage by remember { mutableStateOf(false) }
+
+    LaunchedEffect(pagerState, viewCount) {
+        snapshotFlow {
+            Triple(pagerState.currentPage, pagerState.targetPage, viewCount)
+        }
+            .distinctUntilChanged()
+            .map { (currentPage, targetPage) ->
+
+                val fromPage = currentPage + 1
+                val toPage = targetPage + 1
+
+                // return true if we're showing upselling and are about to swipe to last page
+                isEligibleForUpselling && fromPage == viewCount - 1 && toPage == viewCount
+            }
+            .collect { isSwipingToUpsellingPage = it }
+    }
+
+    LaunchedEffect(isSwipingToUpsellingPage) {
+        if (isSwipingToUpsellingPage) {
+            onUpsellingNavigation()
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -110,9 +138,7 @@ fun OnboardingScreen(onCloseOnboarding: () -> Unit) {
                     modifier = Modifier
                         .testTag(OnboardingScreenTestTags.CloseButton)
                         .horizontalScroll(state = ScrollState(0), enabled = true),
-                    onClick = {
-                        onCloseOnboarding()
-                    }
+                    onClick = onExitAction
                 ) {
                     Icon(
                         tint = ProtonTheme.colors.iconNorm,
@@ -130,111 +156,10 @@ fun OnboardingScreen(onCloseOnboarding: () -> Unit) {
             OnboardingContent(content = contentMap[pageIndex])
         }
 
-        OnboardingButton(onCloseOnboarding, pagerState, viewCount)
-        OnboardingIndexDots(pagerState, viewCount)
-    }
-}
-
-@Composable
-fun OnboardingContent(content: OnboardingUiModel) {
-    Column(Modifier.fillMaxHeight()) {
-        Image(
-            modifier = Modifier
-                .testTag(OnboardingScreenTestTags.OnboardingImage)
-                .fillMaxHeight(MailDimens.OnboardingIllustrationWeight)
-                .fillMaxWidth(),
-            contentScale = ContentScale.Fit,
-            painter = painterResource(id = content.illustrationId),
-            contentDescription = stringResource(id = R.string.onboarding_illustration_content_description)
-        )
-
-        Text(
-            modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .padding(top = ProtonDimens.DefaultSpacing)
-                .padding(horizontal = ProtonDimens.DefaultSpacing),
-            text = stringResource(id = content.headlineId),
-            style = ProtonTheme.typography.headlineNorm.copy(textAlign = TextAlign.Center)
-        )
-
-        Column(
-            Modifier
-                .align(Alignment.CenterHorizontally)
-                .verticalScroll(rememberScrollState())
-        ) {
-            Text(
-                modifier = Modifier
-                    .padding(ProtonDimens.DefaultSpacing),
-                text = stringResource(id = content.descriptionId),
-                style = ProtonTheme.typography.defaultWeak.copy(textAlign = TextAlign.Center)
-            )
+        if (!isEligibleForUpselling || pagerState.currentPage != viewCount.minus(1)) {
+            OnboardingButton(onExitAction, pagerState, viewCount)
+            OnboardingIndexDots(pagerState, viewCount)
         }
-    }
-}
-
-@OptIn(ExperimentalFoundationApi::class)
-@Composable
-fun OnboardingButton(
-    onCloseOnboarding: () -> Unit,
-    pagerState: PagerState,
-    viewCount: Int
-) {
-    val scope = rememberCoroutineScope()
-
-    ProtonSolidButton(
-        modifier = Modifier
-            .testTag(OnboardingScreenTestTags.BottomButton)
-            .padding(ProtonDimens.DefaultSpacing)
-            .height(MailDimens.onboardingBottomButtonHeight)
-            .fillMaxWidth()
-            .horizontalScroll(state = ScrollState(0), enabled = true),
-        onClick = {
-            val nextPageIndex = pagerState.currentPage.plus(1)
-            if (nextPageIndex == viewCount) {
-                onCloseOnboarding()
-            } else {
-                scope.launch {
-                    pagerState.animateScrollToPage(nextPageIndex)
-                }
-            }
-        }
-    ) {
-        val positiveButtonTextId =
-            if (pagerState.currentPage == viewCount.minus(1)) R.string.onboarding_get_started
-            else R.string.onboarding_next
-        Text(text = stringResource(id = positiveButtonTextId))
-    }
-}
-
-@OptIn(ExperimentalFoundationApi::class)
-@Composable
-fun OnboardingIndexDots(pagerState: PagerState, viewCount: Int) {
-    val highlightedDotColor = ProtonTheme.colors.brandNorm
-    val defaultDotColor = ProtonTheme.colors.shade20
-
-    Row {
-        Canvas(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(ProtonDimens.SmallSpacing)
-                .size(MailDimens.pagerDotsCircleSize),
-            onDraw = {
-                var centerOffset = Offset(
-                    size.width.div(2).minus(MailDimens.pagerDotsCircleSize.toPx().times(viewCount.minus(1))),
-                    this.center.y
-                )
-                for (i in 0 until viewCount) {
-                    drawCircle(
-                        color = if (i == pagerState.currentPage) highlightedDotColor else defaultDotColor,
-                        center = centerOffset
-                    )
-                    centerOffset = Offset(
-                        centerOffset.x.plus(MailDimens.pagerDotsCircleSize.toPx().times(2)),
-                        centerOffset.y
-                    )
-                }
-            }
-        )
     }
 }
 
@@ -243,9 +168,7 @@ fun OnboardingIndexDots(pagerState: PagerState, viewCount: Int) {
 @Composable
 private fun OnboardingScreenPreview() {
     ProtonTheme {
-        OnboardingScreen(
-            onCloseOnboarding = {}
-        )
+        OnboardingScreen(onUpsellingNavigation = {}, exitAction = {})
     }
 }
 

@@ -38,13 +38,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
+import ch.protonmail.android.design.compose.component.ProtonSettingsItem
+import ch.protonmail.android.design.compose.component.ProtonSettingsList
+import ch.protonmail.android.design.compose.component.ProtonSettingsTopBar
 import ch.protonmail.android.mailsettings.domain.model.AppSettings
 import ch.protonmail.android.mailsettings.domain.model.LocalStorageUsageInformation
 import ch.protonmail.android.mailsettings.presentation.R.string
-import me.proton.core.compose.component.ProtonCenteredProgress
-import me.proton.core.compose.component.ProtonSettingsItem
-import me.proton.core.compose.component.ProtonSettingsList
-import me.proton.core.compose.component.ProtonSettingsTopBar
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 

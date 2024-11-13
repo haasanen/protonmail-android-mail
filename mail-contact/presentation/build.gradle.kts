@@ -58,6 +58,8 @@ android {
 }
 
 dependencies {
+    implementation(project(":mail-upselling:presentation"))
+    implementation(project(":mail-upselling:presentation"))
     kapt(libs.bundles.app.annotationProcessors)
     debugImplementation(libs.bundles.compose.debug)
 

@@ -29,7 +29,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
-
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material.icons.Icons
@@ -39,14 +38,16 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.SheetValue
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.State
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.platform.testTag
@@ -58,12 +59,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
 import ch.protonmail.android.mailcommon.presentation.ConsumableTextEffect
-import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 import ch.protonmail.android.mailcommon.presentation.ui.CommonTestTags
 import ch.protonmail.android.maillabel.domain.model.LabelId
+import ch.protonmail.android.mailcommon.presentation.ui.delete.DeleteDialog
 import ch.protonmail.android.maillabel.presentation.R
-import ch.protonmail.android.maillabel.presentation.folderlist.BottomSheetVisibilityEffect
 import ch.protonmail.android.maillabel.presentation.getColorFromHexString
 import ch.protonmail.android.maillabel.presentation.previewdata.FolderFormPreviewData.createFolderFormState
 import ch.protonmail.android.maillabel.presentation.previewdata.FolderFormPreviewData.editFolderFormState
@@ -75,7 +75,6 @@ import ch.protonmail.android.mailupselling.presentation.ui.bottomsheet.Upselling
 import ch.protonmail.android.uicomponents.bottomsheet.bottomSheetHeightConstrainedContent
 import ch.protonmail.android.uicomponents.dismissKeyboard
 import ch.protonmail.android.uicomponents.snackbar.DismissableSnackbarHost
-import kotlinx.coroutines.launch
 import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
 import ch.protonmail.android.design.compose.component.ProtonModalBottomSheetLayout
 import ch.protonmail.android.design.compose.component.ProtonSettingsToggleItem
@@ -88,6 +87,9 @@ import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.defaultNorm
 import ch.protonmail.android.design.compose.theme.defaultSmallWeak
 import ch.protonmail.android.design.compose.theme.defaultStrongNorm
+import ch.protonmail.android.mailupselling.presentation.model.BottomSheetVisibilityEffect
+import ch.protonmail.android.mailupselling.presentation.ui.bottomsheet.UpsellingBottomSheet.DELAY_SHOWING
+import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -99,8 +101,10 @@ fun FolderFormScreen(
     val context = LocalContext.current
     val view = LocalView.current
     val keyboardController = LocalSoftwareKeyboardController.current
-    val snackbarHostErrorState = ProtonSnackbarHostState(defaultType = ProtonSnackbarType.ERROR)
-    val state = viewModel.state.collectAsStateWithLifecycle(FolderFormState.Loading(Effect.empty())).value
+    val focusManager = LocalFocusManager.current
+    val snackbarHostState = remember { ProtonSnackbarHostState(defaultType = ProtonSnackbarType.ERROR) }
+    val state = viewModel.state.collectAsStateWithLifecycle().value
+    var showBottomSheet by remember { mutableStateOf(false) }
 
     currentParentLabelId?.value?.let {
         // Initial value will always be null when initializing the view,
@@ -127,31 +131,39 @@ fun FolderFormScreen(
         },
         onDeleteClick = {
             dismissKeyboard(context, view, keyboardController)
-            viewModel.submit(FolderFormViewAction.OnDeleteClick)
+            viewModel.submit(FolderFormViewAction.OnDeleteRequested)
         }
     )
 
     val bottomSheetState = rememberModalBottomSheetState(
         skipPartiallyExpanded = true
     )
-    val scope = rememberCoroutineScope()
-
-    if (bottomSheetState.currentValue != SheetValue.Hidden) {
-        DisposableEffect(Unit) { onDispose { viewModel.submit(FolderFormViewAction.HideUpselling) } }
-    }
 
     BackHandler(bottomSheetState.isVisible) {
         viewModel.submit(FolderFormViewAction.HideUpselling)
     }
 
+    if (state is FolderFormState.Data.Update) {
+        DeleteDialog(
+            state = state.confirmDeleteDialogState,
+            confirm = { viewModel.submit(FolderFormViewAction.OnDeleteConfirmed) },
+            dismiss = { viewModel.submit(FolderFormViewAction.OnDeleteCanceled) }
+        )
+    }
+
     if (state is FolderFormState.Data.Create) {
         ConsumableLaunchedEffect(effect = state.upsellingVisibility) { bottomSheetEffect ->
             when (bottomSheetEffect) {
-                BottomSheetVisibilityEffect.Hide -> scope.launch {
+                BottomSheetVisibilityEffect.Hide -> {
                     bottomSheetState.hide()
                 }
-                BottomSheetVisibilityEffect.Show -> scope.launch {
-                    dismissKeyboard(context, view, keyboardController)
+
+                BottomSheetVisibilityEffect.Show -> {
+                    if (!showBottomSheet) {
+                        showBottomSheet = true
+                        delay(DELAY_SHOWING)
+                    }
+                    focusManager.clearFocus()
                     bottomSheetState.show()
                 }
             }
@@ -161,25 +173,23 @@ fun FolderFormScreen(
     ProtonModalBottomSheetLayout(
         sheetState = bottomSheetState,
         sheetContent = bottomSheetHeightConstrainedContent {
-            FoldersUpsellingBottomSheet(
-                actions = UpsellingBottomSheet.Actions.Empty.copy(
-                    onDismiss = { viewModel.submit(FolderFormViewAction.HideUpselling) },
-                    onUpgrade = { message -> actions.showUpsellingSnackbar(message) },
-                    onError = { message -> actions.showUpsellingErrorSnackbar(message) }
+            if (showBottomSheet) {
+                FoldersUpsellingBottomSheet(
+                    actions = UpsellingBottomSheet.Actions.Empty.copy(
+                        onDismiss = { viewModel.submit(FolderFormViewAction.HideUpselling) },
+                        onUpgrade = { message -> actions.showUpsellingSnackbar(message) },
+                        onError = { message -> actions.showUpsellingErrorSnackbar(message) }
+                    )
                 )
-            )
+            }
         }
     ) {
         Scaffold(
             topBar = {
                 FolderFormTopBar(
                     state = state,
-                    onCloseFolderFormClick = {
-                        viewModel.submit(FolderFormViewAction.OnCloseFolderFormClick)
-                    },
-                    onSaveFolderClick = {
-                        viewModel.submit(FolderFormViewAction.OnSaveClick)
-                    }
+                    onCloseFolderFormClick = customActions.onBackClick,
+                    onSaveFolderClick = customActions.onSaveClick
                 )
             },
             content = { paddingValues ->
@@ -195,12 +205,17 @@ fun FolderFormScreen(
                             actions.exitWithSuccessMessage(message)
                         }
                         ConsumableTextEffect(effect = state.showErrorSnackbar) { message ->
-                            snackbarHostErrorState.showSnackbar(
-                                message = message,
-                                type = ProtonSnackbarType.ERROR
-                            )
+                            snackbarHostState.showSnackbar(message = message, type = ProtonSnackbarType.ERROR)
+                        }
+
+                        if (state is FolderFormState.Data.Create) {
+                            ConsumableTextEffect(effect = state.upsellingInProgress) { message ->
+                                snackbarHostState.snackbarHostState.currentSnackbarData?.dismiss()
+                                snackbarHostState.showSnackbar(message = message, type = ProtonSnackbarType.NORM)
+                            }
                         }
                     }
+
                     is FolderFormState.Loading -> {
                         ProtonCenteredProgress(
                             modifier = Modifier
@@ -217,7 +232,7 @@ fun FolderFormScreen(
             snackbarHost = {
                 DismissableSnackbarHost(
                     modifier = Modifier.testTag(CommonTestTags.SnackbarHostError),
-                    protonSnackbarHostState = snackbarHostErrorState
+                    protonSnackbarHostState = snackbarHostState
                 )
             }
         )

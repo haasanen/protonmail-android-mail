@@ -35,7 +35,7 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import me.proton.core.compose.viewmodel.stopTimeoutMillis
+import ch.protonmail.android.design.compose.viewmodel.stopTimeoutMillis
 import me.proton.core.mailsettings.domain.entity.SwipeAction
 import me.proton.core.util.kotlin.exhaustive
 import javax.inject.Inject

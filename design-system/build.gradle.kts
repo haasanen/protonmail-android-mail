@@ -43,15 +43,14 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = Versions.AndroidX.composeCompiler
+        kotlinCompilerExtensionVersion = libs.versions.androidx.compose.compiler.get()
     }
 }
 
 dependencies {
-    implementation(Dependencies.composeLibs)
-    implementation(Dependencies.modulePresentationLibs)
-    implementation(Proton.Core.presentation)
+    implementation(libs.bundles.compose)
+    implementation(libs.bundles.module.presentation)
 
-    debugImplementation(Dependencies.appDebug)
-    testImplementation(Dependencies.testLibs)
+    debugImplementation(libs.bundles.app.debug)
+    testImplementation(libs.bundles.test)
 }

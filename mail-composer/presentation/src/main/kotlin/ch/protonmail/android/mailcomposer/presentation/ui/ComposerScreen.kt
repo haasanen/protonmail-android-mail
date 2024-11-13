@@ -30,8 +30,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExperimentalMaterialApi
-import androidx.compose.material3.ModalBottomSheetValue
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -100,7 +98,7 @@ fun ComposerScreen(actions: ComposerScreen.Actions, viewModel: ComposerViewModel
     }
     val snackbarHostState = remember { ProtonSnackbarHostState() }
     val bottomSheetType = rememberSaveable { mutableStateOf(BottomSheetType.ChangeSender) }
-    val bottomSheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
+    val bottomSheetState = rememberModalBottomSheetState()
     val attachmentSizeDialogState = remember { mutableStateOf(false) }
     val sendingErrorDialogState = remember { mutableStateOf<String?>(null) }
     val senderChangedNoticeDialogState = remember { mutableStateOf<String?>(null) }

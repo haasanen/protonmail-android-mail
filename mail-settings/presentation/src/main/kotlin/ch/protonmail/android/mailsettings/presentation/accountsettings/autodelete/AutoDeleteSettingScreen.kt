@@ -19,7 +19,7 @@
 package ch.protonmail.android.mailsettings.presentation.accountsettings.autodelete
 
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Scaffold
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
@@ -27,13 +27,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
+import ch.protonmail.android.design.compose.component.ProtonSettingsTopBar
 import ch.protonmail.android.mailcommon.presentation.ui.delete.AutoDeleteDialog
 import ch.protonmail.android.mailsettings.presentation.R.string
 import ch.protonmail.android.mailsettings.presentation.accountsettings.autodelete.AutoDeleteSettingState.Data
 import ch.protonmail.android.mailsettings.presentation.accountsettings.autodelete.AutoDeleteSettingState.Loading
 import ch.protonmail.android.uicomponents.settings.SettingsToggleItem
-import me.proton.core.compose.component.ProtonCenteredProgress
-import me.proton.core.compose.component.ProtonSettingsTopBar
 import me.proton.core.util.kotlin.exhaustive
 
 const val TEST_TAG_AUTO_DELETE_SETTINGS_SCREEN = "AccountAutoDeleteTestTag"

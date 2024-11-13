@@ -19,11 +19,13 @@
 package ch.protonmail.android.mailcontact.domain.usecase
 
 import arrow.core.Either
+import arrow.core.left
 import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcontact.domain.model.DecryptedContact
 import kotlinx.coroutines.flow.Flow
 import ch.protonmail.android.mailcontact.domain.model.ContactId
+import kotlinx.coroutines.flow.flowOf
 import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 
@@ -35,7 +37,6 @@ class ObserveDecryptedContact @Inject constructor() {
         userId: UserId,
         contactId: ContactId,
         refresh: Boolean = false
-    ): Flow<Either<DataError, DecryptedContact>> {
-        TODO("Not yet implemented")
-    }
+    ): Flow<Either<DataError, DecryptedContact>> = flowOf(DataError.Local.Unknown.left())
+
 }

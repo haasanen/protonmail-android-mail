@@ -33,7 +33,7 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import me.proton.core.accountmanager.domain.AccountManager
-import me.proton.core.compose.viewmodel.stopTimeoutMillis
+import ch.protonmail.android.design.compose.viewmodel.stopTimeoutMillis
 import javax.inject.Inject
 
 @HiltViewModel

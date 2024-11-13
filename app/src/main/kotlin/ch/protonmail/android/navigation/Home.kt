@@ -118,7 +118,7 @@ fun Home(
     val snackbarHostNormState = remember { ProtonSnackbarHostState(defaultType = ProtonSnackbarType.NORM) }
     val snackbarHostErrorState = remember { ProtonSnackbarHostState(defaultType = ProtonSnackbarType.ERROR) }
     val scope = rememberCoroutineScope()
-    val state = viewModel.state.collectAsStateWithLifecycle(HomeState.Initial)
+    val state by viewModel.state.collectAsStateWithLifecycle(HomeState.Initial)
 
     val offlineSnackbarMessage = stringResource(id = R.string.you_are_offline)
     fun showOfflineSnackbar() = scope.launch {
@@ -128,13 +128,13 @@ fun Home(
         )
     }
 
-    ConsumableLaunchedEffect(state.value.networkStatusEffect) {
+    ConsumableLaunchedEffect(state.networkStatusEffect) {
         if (it == NetworkStatus.Disconnected) {
             showOfflineSnackbar()
         }
     }
 
-    ConsumableLaunchedEffect(state.value.navigateToEffect) {
+    ConsumableLaunchedEffect(state.navigateToEffect) {
         viewModel.navigateTo(navController, it)
     }
 
@@ -246,7 +246,7 @@ fun Home(
         undoActionEffect.value = Effect.of(actionResult)
     }
 
-    ConsumableLaunchedEffect(state.value.messageSendingStatusEffect) { sendingStatus ->
+    ConsumableLaunchedEffect(state.messageSendingStatusEffect) { sendingStatus ->
         when (sendingStatus) {
             is MessageSendingStatus.MessageSent -> showSuccessSendingMessageSnackbar()
             is MessageSendingStatus.SendMessageError -> showErrorSendingMessageSnackbar()

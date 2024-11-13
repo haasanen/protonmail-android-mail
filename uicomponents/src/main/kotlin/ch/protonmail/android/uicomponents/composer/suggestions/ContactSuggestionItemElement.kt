@@ -28,8 +28,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.Icon
-import androidx.compose.material.Text
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -37,13 +37,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextOverflow
+import ch.protonmail.android.design.compose.theme.ProtonDimens
+import ch.protonmail.android.design.compose.theme.ProtonTheme
+import ch.protonmail.android.design.compose.theme.defaultNorm
+import ch.protonmail.android.design.compose.theme.defaultSmallWeak
 import ch.protonmail.android.uicomponents.R
 import ch.protonmail.android.uicomponents.composer.suggestions.ContactSuggestionsColor.ContactGroupsBackground
 import ch.protonmail.android.uicomponents.text.HighlightedText
-import me.proton.core.compose.theme.ProtonDimens
-import me.proton.core.compose.theme.ProtonTheme
-import me.proton.core.compose.theme.defaultNorm
-import me.proton.core.compose.theme.defaultSmallWeak
 import me.proton.core.util.kotlin.takeIfNotBlank
 
 @Composable

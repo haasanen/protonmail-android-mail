@@ -19,7 +19,6 @@
 package ch.protonmail.android.mailonboarding.presentation.ui
 
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -28,11 +27,10 @@ import androidx.compose.foundation.pager.PagerState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import ch.protonmail.android.design.compose.theme.ProtonDimens
+import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
-import me.proton.core.compose.theme.ProtonDimens
-import me.proton.core.compose.theme.ProtonTheme
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 internal fun OnboardingIndexDots(pagerState: PagerState, viewCount: Int) {
     val highlightedDotColor = ProtonTheme.colors.brandNorm
