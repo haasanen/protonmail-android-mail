@@ -671,7 +671,7 @@ class MailboxViewModel @Inject constructor(
         if (isActionAllowedForCurrentLabel(SystemLabelId.Archive.labelId)) {
             val viewMode = getViewModeForCurrentLocation(selectedMailLabelId.flow.value)
             val userId = primaryUserId.filterNotNull().first()
-            moveSingleItemToDestination(userId, swipeArchiveAction.itemId, SystemLabelId.Archive.labelId, viewMode)
+            moveSingleItemToDestination(userId, swipeArchiveAction.itemId, SystemLabelId.Archive, viewMode)
             emitNewStateFrom(swipeArchiveAction)
         }
     }
@@ -680,7 +680,7 @@ class MailboxViewModel @Inject constructor(
         if (isActionAllowedForCurrentLabel(SystemLabelId.Spam.labelId)) {
             val viewMode = getViewModeForCurrentLocation(selectedMailLabelId.flow.value)
             val userId = primaryUserId.filterNotNull().first()
-            moveSingleItemToDestination(userId, swipeSpamAction.itemId, SystemLabelId.Spam.labelId, viewMode)
+            moveSingleItemToDestination(userId, swipeSpamAction.itemId, SystemLabelId.Spam, viewMode)
             emitNewStateFrom(swipeSpamAction)
         }
     }
@@ -689,7 +689,7 @@ class MailboxViewModel @Inject constructor(
         if (isActionAllowedForCurrentLabel(SystemLabelId.Trash.labelId)) {
             val viewMode = getViewModeForCurrentLocation(selectedMailLabelId.flow.value)
             val userId = primaryUserId.filterNotNull().first()
-            moveSingleItemToDestination(userId, swipeTrashAction.itemId, SystemLabelId.Trash.labelId, viewMode)
+            moveSingleItemToDestination(userId, swipeTrashAction.itemId, SystemLabelId.Trash, viewMode)
             emitNewStateFrom(swipeTrashAction)
         }
     }
@@ -697,20 +697,20 @@ class MailboxViewModel @Inject constructor(
     private suspend fun moveSingleItemToDestination(
         userId: UserId,
         itemId: String,
-        labelId: LabelId,
+        systemLabelId: SystemLabelId,
         viewMode: ViewMode
     ) {
         when (viewMode) {
             ViewMode.ConversationGrouping -> moveConversations(
                 userId = userId,
                 conversationIds = listOf(ConversationId(itemId)),
-                labelId = labelId
+                systemLabelId = systemLabelId
             )
 
             ViewMode.NoConversationGrouping -> moveMessages(
                 userId = userId,
                 messageIds = listOf(MessageId(itemId)),
-                labelId = labelId
+                systemLabelId = systemLabelId
             )
         }
     }
@@ -764,7 +764,7 @@ class MailboxViewModel @Inject constructor(
             val updatedSelection = labelAsData.getLabelSelectionState()
             val viewMode = getViewModeForCurrentLocation(selectedMailLabelId.flow.value)
             if (archiveSelected) {
-                moveMailboxItemsTo(SystemLabelId.Archive)
+                moveSelectedMailboxItemsTo(SystemLabelId.Archive)
             }
             val operation = handleRelabelOperation(
                 userId = userId,
@@ -899,13 +899,13 @@ class MailboxViewModel @Inject constructor(
     }
 
     private suspend fun handleTrashAction() {
-        moveMailboxItemsTo(SystemLabelId.Trash).onRight {
+        moveSelectedMailboxItemsTo(SystemLabelId.Trash).onRight {
             emitNewStateFrom(MailboxEvent.Trash(it))
         }
     }
 
     private suspend fun handleMoveToInboxAction(action: MailboxViewAction.MoveToInbox) {
-        moveMailboxItemsTo(SystemLabelId.Inbox).onRight {
+        moveSelectedMailboxItemsTo(SystemLabelId.Inbox).onRight {
             emitNewStateFrom(action)
         }.onLeft {
             emitNewStateFrom(MailboxEvent.ErrorMoving)
@@ -913,7 +913,7 @@ class MailboxViewModel @Inject constructor(
     }
 
     private suspend fun handleMoveToArchiveAction(action: MailboxViewAction.MoveToArchive) {
-        moveMailboxItemsTo(SystemLabelId.Archive).onRight {
+        moveSelectedMailboxItemsTo(SystemLabelId.Archive).onRight {
             emitNewStateFrom(action)
         }.onLeft {
             emitNewStateFrom(MailboxEvent.ErrorMoving)
@@ -921,26 +921,34 @@ class MailboxViewModel @Inject constructor(
     }
 
     private suspend fun handleMoveToSpamAction(action: MailboxViewAction.MoveToSpam) {
-        moveMailboxItemsTo(SystemLabelId.Spam).onRight {
+        moveSelectedMailboxItemsTo(SystemLabelId.Spam).onRight {
             emitNewStateFrom(action)
         }.onLeft {
             emitNewStateFrom(MailboxEvent.ErrorMoving)
         }
     }
 
-    private suspend fun moveMailboxItemsTo(systemLabelId: SystemLabelId): Either<DataError, Int> {
+    private suspend fun moveSelectedMailboxItemsTo(systemLabelId: SystemLabelId): Either<DataError, Int> {
         val selectionModeDataState = state.value.mailboxListState as? MailboxListState.Data.SelectionMode
         if (selectionModeDataState == null) {
             Timber.d("MailboxListState is not in SelectionMode")
             return DataError.Local.Unknown.left()
         }
         val userId = primaryUserId.filterNotNull().first()
-        val localLabelId = findLocalSystemLabelId(userId, systemLabelId)?.labelId
-        if (localLabelId == null) {
-            Timber.e("Local label id cannot be found for SystemLabelId.Trash!")
-            return DataError.Local.NoDataCached.left()
-        }
-        return handleMoveOperation(userId, selectionModeDataState, localLabelId).flatMap {
+        val viewMode = getViewModeForCurrentLocation(selectedMailLabelId.flow.value)
+        return when (viewMode) {
+            ViewMode.ConversationGrouping -> moveConversations(
+                userId = userId,
+                conversationIds = selectionModeDataState.selectedMailboxItems.map { ConversationId(it.id) },
+                systemLabelId = systemLabelId
+            )
+
+            ViewMode.NoConversationGrouping -> moveMessages(
+                userId = userId,
+                messageIds = selectionModeDataState.selectedMailboxItems.map { MessageId(it.id) },
+                systemLabelId = systemLabelId
+            )
+        }.flatMap {
             selectionModeDataState.selectedMailboxItems.size.right()
         }
     }
