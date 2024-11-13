@@ -46,9 +46,6 @@ private.properties
 # Sentry properties
 sentry.properties
 
-# Rust lib build properties
-rust.properties
-
 # Test users credentials
 **/users.json
 **/internal_api.json
