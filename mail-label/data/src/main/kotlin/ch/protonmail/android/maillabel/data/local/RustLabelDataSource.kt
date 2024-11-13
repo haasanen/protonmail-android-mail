@@ -27,6 +27,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.LabelType
@@ -43,6 +45,8 @@ class RustLabelDataSource @Inject constructor(
     private val createRustSidebar: CreateRustSidebar,
     @MailLabelRustCoroutineScope private val coroutineScope: CoroutineScope
 ) : LabelDataSource {
+
+    private val mutex = Mutex()
 
     private val mutableSystemLabelsFlow = MutableStateFlow<List<SidebarSystemLabel>?>(null)
     private val systemLabelsFlow: Flow<List<SidebarSystemLabel>> = mutableSystemLabelsFlow
@@ -169,7 +173,7 @@ class RustLabelDataSource @Inject constructor(
         }
     }
 
-    private suspend fun getRustSidebarInstance(userId: UserId): Sidebar? {
+    private suspend fun getRustSidebarInstance(userId: UserId): Sidebar? = mutex.withLock {
         if (shouldInitialiseSidebar(userId)) {
             destroySidebarAndWatchers()
 
