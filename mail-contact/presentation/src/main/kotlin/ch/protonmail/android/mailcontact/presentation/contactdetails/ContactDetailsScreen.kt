@@ -532,16 +532,16 @@ fun ContactDetailsDeleteConfirmationDialog(
     if (deleteDialogShownState.value) {
         ProtonAlertDialog(
             modifier = Modifier.testTag(ContactDetailsTestTags.DeleteDialog),
-            titleResId = R.string.contact_details_delete_dialog_title,
+            titleResId = R.string.contact_delete_dialog_title,
             text = {
                 Text(
-                    text = stringResource(id = R.string.contact_details_delete_dialog_text),
+                    text = stringResource(id = R.string.contact_delete_dialog_text),
                     style = ProtonTheme.typography.defaultWeak
                 )
             },
             dismissButton = {
                 ProtonAlertDialogButton(
-                    titleResId = R.string.contact_details_delete_dialog_cancel_button,
+                    titleResId = R.string.contact_delete_dialog_cancel_button,
                     modifier = Modifier.testTag(ContactDetailsTestTags.DeleteDialogCancelButton)
                 ) {
                     deleteDialogShownState.value = false
@@ -549,7 +549,7 @@ fun ContactDetailsDeleteConfirmationDialog(
             },
             confirmButton = {
                 ProtonAlertDialogButton(
-                    titleResId = R.string.contact_details_delete_dialog_confirm_button,
+                    titleResId = R.string.contact_delete_dialog_confirm_button,
                     modifier = Modifier.testTag(ContactDetailsTestTags.DeleteDialogConfirmButton)
                 ) {
                     deleteDialogShownState.value = false
