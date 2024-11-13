@@ -18,12 +18,14 @@
 
 package ch.protonmail.android.mailcommon.domain.usecase
 
+import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import kotlinx.coroutines.flow.Flow
 import me.proton.core.domain.entity.UserId
 import me.proton.core.user.domain.UserManager
 import me.proton.core.user.domain.entity.User
 import javax.inject.Inject
 
+@MissingRustApi
 class ObserveUser @Inject constructor(
     val userManager: UserManager
 ) {

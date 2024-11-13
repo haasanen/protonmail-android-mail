@@ -4,7 +4,8 @@ import java.time.Instant
 import app.cash.turbine.test
 import arrow.core.left
 import arrow.core.right
-import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUser
+import ch.protonmail.android.mailcommon.domain.usecase.IsPaidMailUser
+import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailupselling.domain.model.UpsellingEntryPoint
 import ch.protonmail.android.mailupselling.domain.model.telemetry.UpsellingTelemetryEventType
 import ch.protonmail.android.mailupselling.domain.model.telemetry.UpsellingTelemetryTargetPlanPayload
@@ -35,7 +36,6 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import me.proton.core.domain.entity.UserId
 import me.proton.core.plan.domain.entity.DynamicPlans
-import me.proton.core.user.domain.entity.User
 import org.junit.Assert.assertNull
 import javax.inject.Provider
 import kotlin.test.AfterTest
@@ -50,7 +50,11 @@ class OnboardingUpsellViewModelTest {
     private val paidUser = UserTestData.paidUser
     private val dynamicPlans = UpsellingTestData.DynamicPlans
 
-    private val observePrimaryUser = mockk<ObservePrimaryUser>()
+    private val observePrimaryUserId = mockk<ObservePrimaryUserId>()
+    private val isPaidMailUser = mockk<IsPaidMailUser> {
+        coEvery { this@mockk.invoke(freeUser.userId) } returns false.right()
+        coEvery { this@mockk.invoke(paidUser.userId) } returns true.right()
+    }
     private val getOnboardingUpsellingPlans = mockk<GetOnboardingUpsellingPlans>()
     private val onboardingUpsellPlanSwitchUiModelMapper = mockk<OnboardingUpsellPlanSwitcherUiModelMapper> {
         every { toUiModel(UpsellingTestData.DynamicPlans) } returns OnboardingUpsellPreviewData.PlanSwitcherUiModel
@@ -78,7 +82,8 @@ class OnboardingUpsellViewModelTest {
 
     private val viewModel: OnboardingUpsellViewModel by lazy {
         OnboardingUpsellViewModel(
-            observePrimaryUser,
+            observePrimaryUserId,
+            isPaidMailUser,
             getOnboardingUpsellingPlans,
             onboardingUpsellReducer,
             isFeatureEnabled.get(),
@@ -99,7 +104,7 @@ class OnboardingUpsellViewModelTest {
 
     @Test
     fun `should emit loading state at start`() = runTest {
-        every { observePrimaryUser() } returns flowOf()
+        every { observePrimaryUserId() } returns flowOf()
 
         // When + Then
         viewModel.state.test {
@@ -108,7 +113,7 @@ class OnboardingUpsellViewModelTest {
     }
 
     @Test
-    fun `should emit error when user is null`() = runTest {
+    fun `should emit error when user id is null`() = runTest {
         // Given
         expectPrimaryUser(null)
 
@@ -121,7 +126,7 @@ class OnboardingUpsellViewModelTest {
     @Test
     fun `should emit unsupported flow - paid user - when user has a subscription`() = runTest {
         // Given
-        expectPrimaryUser(paidUser)
+        expectPrimaryUser(paidUser.userId)
 
         // When + Then
         viewModel.state.test {
@@ -132,7 +137,7 @@ class OnboardingUpsellViewModelTest {
     @Test
     fun `should emit unsupported flow - mismatching plans - when dynamic plans are not as expected`() = runTest {
         // Given
-        expectPrimaryUser(freeUser)
+        expectPrimaryUser(freeUser.userId)
         expectDynamicPlansError(freeUser.userId, GetOnboardingPlansError.MismatchingPlans)
 
         // When + Then
@@ -144,7 +149,7 @@ class OnboardingUpsellViewModelTest {
     @Test
     fun `should emit unsupported flow - mismatching periods - when dynamic plans are not as expected`() = runTest {
         // Given
-        expectPrimaryUser(freeUser)
+        expectPrimaryUser(freeUser.userId)
         expectDynamicPlansError(freeUser.userId, GetOnboardingPlansError.MismatchingPlanCycles)
 
         // When + Then
@@ -156,7 +161,7 @@ class OnboardingUpsellViewModelTest {
     @Test
     fun `should emit unsupported flow - no plans - when dynamic plans are not as expected`() = runTest {
         // Given
-        expectPrimaryUser(freeUser)
+        expectPrimaryUser(freeUser.userId)
         expectDynamicPlansError(freeUser.userId, GetOnboardingPlansError.NoPlans)
 
         // When + Then
@@ -169,7 +174,7 @@ class OnboardingUpsellViewModelTest {
     fun `should emit unsupported flow when FF is disabled`() = runTest {
         // Given
         every { isFeatureEnabled.get() } returns false
-        expectPrimaryUser(freeUser)
+        expectPrimaryUser(freeUser.userId)
 
         // When + Then
         viewModel.state.test {
@@ -180,7 +185,7 @@ class OnboardingUpsellViewModelTest {
     @Test
     fun `should emit data when dynamic plans are fetched`() = runTest {
         // Given
-        expectPrimaryUser(freeUser)
+        expectPrimaryUser(freeUser.userId)
         expectDynamicPlans(freeUser.userId, dynamicPlans)
 
         // When + Then
@@ -192,7 +197,7 @@ class OnboardingUpsellViewModelTest {
     @Test
     fun `should emit correct state when PlanSelected action is submitted`() = runTest {
         // Given
-        expectPrimaryUser(freeUser)
+        expectPrimaryUser(freeUser.userId)
         expectDynamicPlans(freeUser.userId, dynamicPlans)
         val expectedSelectedPlanInstanceUiModel = OnboardingUpsellPreviewData.OnboardingDynamicPlanInstanceUiModel
 
@@ -212,7 +217,7 @@ class OnboardingUpsellViewModelTest {
 
     @Test
     fun `should call the telemetry repository when tracking an upgrade attempted event`() = runTest {
-        expectPrimaryUser(freeUser)
+        expectPrimaryUser(freeUser.userId)
         expectDynamicPlans(freeUser.userId, dynamicPlans)
 
         val payload = UpsellingTelemetryTargetPlanPayload("plan", 1)
@@ -230,7 +235,7 @@ class OnboardingUpsellViewModelTest {
 
     @Test
     fun `should call the telemetry repository when tracking an upgrade cancelled event`() = runTest {
-        expectPrimaryUser(freeUser)
+        expectPrimaryUser(freeUser.userId)
         expectDynamicPlans(freeUser.userId, dynamicPlans)
 
         val payload = UpsellingTelemetryTargetPlanPayload("plan", 1)
@@ -248,7 +253,7 @@ class OnboardingUpsellViewModelTest {
 
     @Test
     fun `should call the telemetry repository when tracking an upgrade errored event`() = runTest {
-        expectPrimaryUser(freeUser)
+        expectPrimaryUser(freeUser.userId)
         expectDynamicPlans(freeUser.userId, dynamicPlans)
 
         val payload = UpsellingTelemetryTargetPlanPayload("plan", 1)
@@ -266,7 +271,7 @@ class OnboardingUpsellViewModelTest {
 
     @Test
     fun `should call the telemetry repository when tracking an upgrade success event`() = runTest {
-        expectPrimaryUser(freeUser)
+        expectPrimaryUser(freeUser.userId)
         expectDynamicPlans(freeUser.userId, dynamicPlans)
 
         val payload = UpsellingTelemetryTargetPlanPayload("plan", 1)
@@ -282,8 +287,8 @@ class OnboardingUpsellViewModelTest {
         confirmVerified(upsellingTelemetryRepository)
     }
 
-    private fun expectPrimaryUser(user: User?) {
-        every { observePrimaryUser() } returns flowOf(user)
+    private fun expectPrimaryUser(userId: UserId?) {
+        every { observePrimaryUserId() } returns flowOf(userId)
     }
 
     private fun expectDynamicPlans(userId: UserId, dynamicPlans: DynamicPlans) {

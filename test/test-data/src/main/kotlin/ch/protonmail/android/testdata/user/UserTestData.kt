@@ -49,9 +49,9 @@ object UserTestData {
         userId = UserIdTestData.adminUserId
     )
 
-    val freeUser = build(subscribed = 0)
+    val freeUser = build(userId = UserIdTestData.freeUserId, subscribed = 0)
 
-    val paidMailUser = build(subscribed = 1)
+    val paidMailUser = build(userId = UserIdTestData.paidUserid, subscribed = 1)
 
     val paidUser = build(subscribed = 2)
 

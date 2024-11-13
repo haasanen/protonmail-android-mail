@@ -21,7 +21,8 @@ package ch.protonmail.android.mailupselling.presentation.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import arrow.core.getOrElse
-import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUser
+import ch.protonmail.android.mailcommon.domain.usecase.IsPaidMailUser
+import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailupselling.domain.annotations.UpsellingOnboardingEnabled
 import ch.protonmail.android.mailupselling.domain.model.UpsellingEntryPoint
 import ch.protonmail.android.mailupselling.domain.model.telemetry.UpsellingTelemetryEventType
@@ -43,12 +44,12 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.update
-import me.proton.core.user.domain.extension.hasSubscription
 import javax.inject.Inject
 
 @HiltViewModel
 class OnboardingUpsellViewModel @Inject constructor(
-    observePrimaryUser: ObservePrimaryUser,
+    observePrimaryUserId: ObservePrimaryUserId,
+    isPaidMailUser: IsPaidMailUser,
     private val getOnboardingUpsellingPlans: GetOnboardingUpsellingPlans,
     private val onboardingUpsellReducer: OnboardingUpsellReducer,
     @UpsellingOnboardingEnabled private val isUpsellingEnabled: Boolean,
@@ -59,14 +60,17 @@ class OnboardingUpsellViewModel @Inject constructor(
     val state = mutableState.asStateFlow()
 
     init {
-        observePrimaryUser().mapLatest { user ->
-            val userId = user?.userId
-                ?: return@mapLatest emitNewStateFrom(OnboardingUpsellEvent.LoadingError.NoUserId)
+        observePrimaryUserId().mapLatest { userId ->
+            if (userId == null) {
+                return@mapLatest emitNewStateFrom(OnboardingUpsellEvent.LoadingError.NoUserId)
+            }
 
             if (!isUpsellingEnabled) return@mapLatest emitNewStateFrom(OnboardingUpsellEvent.UnsupportedFlow.NotEnabled)
 
-            if (user.hasSubscription()) {
-                return@mapLatest emitNewStateFrom(OnboardingUpsellEvent.UnsupportedFlow.PaidUser)
+            isPaidMailUser(userId).onRight { hasPaidPlan ->
+                if (hasPaidPlan) {
+                    return@mapLatest emitNewStateFrom(OnboardingUpsellEvent.UnsupportedFlow.PaidUser)
+                }
             }
 
             val dynamicPlans = getOnboardingUpsellingPlans(userId).getOrElse {

@@ -21,12 +21,14 @@ package ch.protonmail.android.mailcommon.domain.usecase
 import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
+import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import kotlinx.coroutines.flow.first
 import me.proton.core.domain.entity.UserId
 import me.proton.core.user.domain.extension.hasSubscriptionForMail
 import javax.inject.Inject
 
+@MissingRustApi
 class IsPaidMailUser @Inject constructor(
     private val observeUser: ObserveUser
 ) {
