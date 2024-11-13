@@ -20,8 +20,6 @@ package ch.protonmail.android.mailmessage.domain.usecase
 
 import arrow.core.Either
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.maillabel.domain.model.SystemLabelId
-import ch.protonmail.android.mailmessage.domain.model.Message
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
 import me.proton.core.domain.entity.UserId
@@ -31,6 +29,9 @@ class StarMessages @Inject constructor(
     private val messageRepository: MessageRepository
 ) {
 
-    suspend operator fun invoke(userId: UserId, messageIds: List<MessageId>): Either<DataError, List<Message>> =
-        messageRepository.relabel(userId, messageIds, emptyList(), listOf(SystemLabelId.Starred.labelId))
+    suspend operator fun invoke(userId: UserId, messageIds: List<MessageId>): Either<DataError, Unit> =
+        messageRepository.starMessages(userId, messageIds)
+
+    suspend operator fun invoke(userId: UserId, messageId: MessageId): Either<DataError, Unit> =
+        this.invoke(userId, listOf(messageId))
 }

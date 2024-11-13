@@ -39,9 +39,7 @@ internal class UnStarMessagesTest {
     private val starredLabelId = SystemLabelId.Starred.labelId
 
     private val messageRepository: MessageRepository = mockk {
-        coEvery {
-            relabel(userId, messageId, labelsToBeRemoved = listOf(starredLabelId))
-        } returns listOf(MessageTestData.message).right()
+        coEvery { unStarMessages(userId, messageId) } returns Unit.right()
     }
 
 
@@ -56,11 +54,7 @@ internal class UnStarMessagesTest {
 
         // Then
         coVerify {
-            messageRepository.relabel(
-                userId,
-                messageId,
-                labelsToBeRemoved = listOf(SystemLabelId.Starred.labelId)
-            )
+            messageRepository.unStarMessages(userId, messageId)
         }
     }
 
@@ -70,16 +64,14 @@ internal class UnStarMessagesTest {
         val actual = unStarMessages(userId, messageId)
 
         // Then
-        assertEquals(listOf(MessageTestData.message).right(), actual)
+        assertEquals(Unit.right(), actual)
     }
 
     @Test
     fun `returns error when repository fails`() = runTest {
         // Given
         val localError = DataError.Local.NoDataCached
-        coEvery {
-            messageRepository.relabel(userId, messageId, labelsToBeRemoved = listOf(starredLabelId))
-        } returns localError.left()
+        coEvery { messageRepository.unStarMessages(userId, messageId) } returns localError.left()
 
         // When
         val actual = unStarMessages(userId, messageId)

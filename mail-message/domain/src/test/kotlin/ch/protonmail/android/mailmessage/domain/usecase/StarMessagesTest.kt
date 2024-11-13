@@ -22,7 +22,6 @@ import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
-import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
 import ch.protonmail.android.testdata.message.MessageTestData
 import io.mockk.coEvery
@@ -36,12 +35,9 @@ internal class StarMessagesTest {
 
     private val userId = UserIdSample.Primary
     private val messageIds = listOf(MessageTestData.starredMessage.messageId)
-    private val starredLabelId = SystemLabelId.Starred.labelId
 
     private val messageRepository: MessageRepository = mockk {
-        coEvery {
-            relabel(userId, messageIds, labelsToBeAdded = listOf(starredLabelId))
-        } returns listOf(MessageTestData.starredMessage).right()
+        coEvery { starMessages(userId, messageIds) } returns Unit.right()
     }
 
     private val starMessages = StarMessages(
@@ -54,7 +50,7 @@ internal class StarMessagesTest {
         starMessages(userId, messageIds)
 
         // Then
-        coVerify { messageRepository.relabel(userId, messageIds, emptyList(), listOf(starredLabelId)) }
+        coVerify { messageRepository.starMessages(userId, messageIds) }
     }
 
     @Test
@@ -63,7 +59,7 @@ internal class StarMessagesTest {
         val actual = starMessages(userId, messageIds)
 
         // Then
-        assertEquals(listOf(MessageTestData.starredMessage).right(), actual)
+        assertEquals(Unit.right(), actual)
     }
 
     @Test
@@ -71,11 +67,7 @@ internal class StarMessagesTest {
         // Given
         val localError = DataError.Local.NoDataCached
         coEvery {
-            messageRepository.relabel(
-                userId = userId,
-                messageIds = messageIds,
-                labelsToBeAdded = listOf(starredLabelId)
-            )
+            messageRepository.starMessages(userId = userId, messageIds = messageIds)
         } returns localError.left()
 
         // When
