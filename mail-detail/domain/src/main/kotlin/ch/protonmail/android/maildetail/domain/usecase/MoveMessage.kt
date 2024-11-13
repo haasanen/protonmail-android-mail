@@ -24,6 +24,7 @@ import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.usecase.MoveMessages
 import me.proton.core.domain.entity.UserId
 import ch.protonmail.android.maillabel.domain.model.LabelId
+import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import javax.inject.Inject
 
 class MoveMessage @Inject constructor(
@@ -35,4 +36,10 @@ class MoveMessage @Inject constructor(
         messageId: MessageId,
         labelId: LabelId
     ): Either<DataError.Local, Unit> = moveMessages.invoke(userId, listOf(messageId), labelId)
+
+    suspend operator fun invoke(
+        userId: UserId,
+        messageId: MessageId,
+        systemLabelId: SystemLabelId
+    ): Either<DataError.Local, Unit> = moveMessages.invoke(userId, listOf(messageId), systemLabelId)
 }

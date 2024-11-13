@@ -36,7 +36,6 @@ class MoveMessageTest {
 
     private val userId = UserIdSample.Primary
     private val messageId = MessageIdSample.AugWeatherForecast
-    private val toLabelId = SystemLabelId.Spam.labelId
 
     private val moveMessages = mockk<MoveMessages>()
 
@@ -47,6 +46,7 @@ class MoveMessageTest {
     fun `when move to returns error then return error`() = runTest {
         // Given
         val error = DataError.Local.NoDataCached.left()
+        val toLabelId = SystemLabelId.Spam.labelId
         coEvery { moveMessages(userId, listOf(messageId), toLabelId) } returns error
 
         // When
@@ -59,6 +59,7 @@ class MoveMessageTest {
     @Test
     fun `when move messages succeeds then return success`() = runTest {
         // Given
+        val toLabelId = SystemLabelId.Spam.labelId
         coEvery { moveMessages(userId, listOf(messageId), toLabelId) } returns Unit.right()
 
         // When
@@ -66,5 +67,32 @@ class MoveMessageTest {
 
         // Then
         coVerify { moveMessages(userId, listOf(messageId), toLabelId) }
+    }
+
+    @Test
+    fun `when move to system label returns error then return error`() = runTest {
+        // Given
+        val error = DataError.Local.NoDataCached.left()
+        val systemLabel = SystemLabelId.Spam
+        coEvery { moveMessages(userId, listOf(messageId), systemLabel) } returns error
+
+        // When
+        val actual = move(userId, messageId, systemLabel)
+
+        // Then
+        assertEquals(error, actual)
+    }
+
+    @Test
+    fun `when move messages to system label succeeds then return success`() = runTest {
+        // Given
+        val systemLabel = SystemLabelId.Spam
+        coEvery { moveMessages(userId, listOf(messageId), systemLabel) } returns Unit.right()
+
+        // When
+        move(userId, messageId, systemLabel)
+
+        // Then
+        coVerify { moveMessages(userId, listOf(messageId), systemLabel) }
     }
 }

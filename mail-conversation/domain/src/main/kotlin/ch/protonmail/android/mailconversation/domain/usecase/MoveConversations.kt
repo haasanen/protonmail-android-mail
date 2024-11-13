@@ -53,7 +53,7 @@ class MoveConversations @Inject constructor(
     ): Either<DataError, Unit> = either {
         val localLabelId = findLocalSystemLabelId(userId, systemLabelId)?.labelId
         if (localLabelId == null) {
-            Timber.e("Local label id cannot be found for SystemLabelId $systemLabelId")
+            Timber.e("move-conversation: Local label id cannot be found for SystemLabelId $systemLabelId")
             return DataError.Local.NoDataCached.left()
         }
 
