@@ -107,6 +107,8 @@ import ch.protonmail.android.mailmessage.domain.sample.MessageSample
 import ch.protonmail.android.mailmessage.domain.usecase.DeleteMessages
 import ch.protonmail.android.mailmessage.domain.usecase.GetDecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.usecase.GetMessageMoveToLocations
+import ch.protonmail.android.mailmessage.domain.usecase.StarMessages
+import ch.protonmail.android.mailmessage.domain.usecase.UnStarMessages
 import ch.protonmail.android.mailmessage.presentation.model.MessageBodyExpandCollapseMode
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.BottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.ContactActionsBottomSheetState
@@ -244,6 +246,8 @@ class ConversationDetailViewModelTest {
         every { get<String>(ConversationDetailScreen.ScrollToMessageIdKey) } returns null
         every { get<String>(ConversationDetailScreen.OpenedFromLocationKey) } returns null
     }
+    private val starMessages = mockk<StarMessages>()
+    private val unStarMessages = mockk<UnStarMessages>()
     private val starConversations: StarConversations = mockk {
         coEvery { this@mockk.invoke(any(), any()) } returns listOf(ConversationTestData.starredConversation).right()
     }
@@ -319,6 +323,8 @@ class ConversationDetailViewModelTest {
             observeMessageAttachmentStatus = observeAttachmentStatus,
             getDownloadingAttachmentsForMessages = getAttachmentDownloadStatus,
             reducer = reducer,
+            starMessages = starMessages,
+            unStarMessages = unStarMessages,
             starConversations = starConversations,
             unStarConversations = unStarConversations,
             savedStateHandle = savedStateHandle,

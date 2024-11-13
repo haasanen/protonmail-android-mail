@@ -241,6 +241,10 @@ sealed interface ConversationDetailViewAction : ConversationDetailOperation {
         val messageId: MessageId
     ) : ConversationDetailViewAction, AffectingBottomSheet
 
+    data class MoveMessageToInbox(
+        val messageId: MessageId
+    ) : ConversationDetailViewAction, AffectingBottomSheet
+
     data class RequestMessageMoveToBottomSheet(
         val messageId: MessageId
     ) : ConversationDetailViewAction, AffectingBottomSheet
@@ -252,6 +256,15 @@ sealed interface ConversationDetailViewAction : ConversationDetailOperation {
     data class DeleteMessageConfirmed(
         val messageId: MessageId
     ) : ConversationDetailViewAction, AffectingDeleteDialog, AffectingBottomSheet
+
+    data class StarMessage(
+        val messageId: MessageId
+    ) : ConversationDetailViewAction, AffectingBottomSheet
+
+    data class UnStarMessage(
+        val messageId: MessageId
+    ) : ConversationDetailViewAction, AffectingBottomSheet
+
 
     data object ChangeVisibilityOfMessages : ConversationDetailViewAction
 }

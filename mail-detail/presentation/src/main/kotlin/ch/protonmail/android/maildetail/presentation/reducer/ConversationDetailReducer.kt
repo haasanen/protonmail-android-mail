@@ -157,9 +157,12 @@ class ConversationDetailReducer @Inject constructor(
                 is ConversationDetailViewAction.TrashMessage,
                 is ConversationDetailViewAction.ArchiveMessage,
                 is ConversationDetailViewAction.MoveMessageToSpam,
+                is ConversationDetailViewAction.MoveMessageToInbox,
                 is ConversationDetailViewAction.MoveToInbox,
                 is ConversationDetailViewAction.DeleteConfirmed,
                 is ConversationDetailViewAction.DeleteMessageConfirmed,
+                is ConversationDetailViewAction.StarMessage,
+                is ConversationDetailViewAction.UnStarMessage,
                 is ConversationDetailViewAction.MoveToDestinationConfirmed -> BottomSheetOperation.Dismiss
             }
             bottomSheetReducer.newStateFrom(bottomSheetState, bottomSheetOperation)

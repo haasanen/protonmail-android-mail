@@ -165,6 +165,8 @@ private fun callbackForAction(
     Action.ReplyAll -> actionCallbacks.onReplyAll
     Action.Forward -> actionCallbacks.onForward
     Action.MarkUnread -> actionCallbacks.onMarkUnread
+    Action.Star -> actionCallbacks.onStarMessage
+    Action.Unstar -> actionCallbacks.onUnStarMessage
     Action.Label -> actionCallbacks.onLabel
     Action.ViewInLightMode -> actionCallbacks.onViewInLightMode
     Action.ViewInDarkMode -> actionCallbacks.onViewInDarkMode
@@ -172,6 +174,7 @@ private fun callbackForAction(
     Action.Delete -> actionCallbacks.onDelete
     Action.Archive -> actionCallbacks.onMoveToArchive
     Action.Spam -> actionCallbacks.onMoveToSpam
+    Action.Inbox -> actionCallbacks.onMoveToInbox
     Action.Move -> actionCallbacks.onMove
     Action.Print -> actionCallbacks.onPrint
     Action.ReportPhishing -> actionCallbacks.onReportPhishing
@@ -191,6 +194,8 @@ object DetailMoreActionsBottomSheetContent {
         val onReplyAll: (MessageId) -> Unit,
         val onForward: (MessageId) -> Unit,
         val onMarkUnread: (MessageId) -> Unit,
+        val onStarMessage: (MessageId) -> Unit,
+        val onUnStarMessage: (MessageId) -> Unit,
         val onLabel: (MessageId) -> Unit,
         val onViewInLightMode: (MessageId) -> Unit,
         val onViewInDarkMode: (MessageId) -> Unit,
@@ -198,6 +203,7 @@ object DetailMoreActionsBottomSheetContent {
         val onMoveToArchive: (MessageId) -> Unit,
         val onDelete: (MessageId) -> Unit,
         val onMoveToSpam: (MessageId) -> Unit,
+        val onMoveToInbox: (MessageId) -> Unit,
         val onMove: (MessageId) -> Unit,
         val onPrint: (MessageId) -> Unit,
         val onReportPhishing: (MessageId) -> Unit,
@@ -243,6 +249,8 @@ private fun BottomSheetContentPreview() {
                 onReplyAll = {},
                 onForward = {},
                 onMarkUnread = {},
+                onStarMessage = {},
+                onUnStarMessage = {},
                 onLabel = {},
                 onViewInLightMode = {},
                 onViewInDarkMode = {},
@@ -250,6 +258,7 @@ private fun BottomSheetContentPreview() {
                 onMoveToArchive = {},
                 onDelete = {},
                 onMoveToSpam = {},
+                onMoveToInbox = {},
                 onMove = {},
                 onPrint = {},
                 onReportPhishing = {},

@@ -238,6 +238,9 @@ class ConversationDetailReducerTest(
             ConversationDetailViewAction.TrashMessage(MessageId(messageId.id)) affects listOf(BottomSheet),
             ConversationDetailViewAction.ArchiveMessage(MessageId(messageId.id)) affects listOf(BottomSheet),
             ConversationDetailViewAction.MoveMessageToSpam(MessageId(messageId.id)) affects listOf(BottomSheet),
+            ConversationDetailViewAction.MoveMessageToInbox(MessageId(messageId.id)) affects listOf(BottomSheet),
+            ConversationDetailViewAction.StarMessage(MessageId(messageId.id)) affects listOf(BottomSheet),
+            ConversationDetailViewAction.UnStarMessage(MessageId(messageId.id)) affects listOf(BottomSheet),
             ConversationDetailViewAction.RequestMessageMoveToBottomSheet(
                 MessageId(messageId.id)
             ) affects listOf(BottomSheet)

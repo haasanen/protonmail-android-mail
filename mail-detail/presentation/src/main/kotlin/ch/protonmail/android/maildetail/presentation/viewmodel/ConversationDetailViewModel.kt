@@ -114,6 +114,8 @@ import ch.protonmail.android.mailmessage.domain.model.Participant
 import ch.protonmail.android.mailmessage.domain.usecase.DeleteMessages
 import ch.protonmail.android.mailmessage.domain.usecase.GetDecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.usecase.GetMessageMoveToLocations
+import ch.protonmail.android.mailmessage.domain.usecase.StarMessages
+import ch.protonmail.android.mailmessage.domain.usecase.UnStarMessages
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.ContactActionsBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.LabelAsBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MoveToBottomSheetState
@@ -176,6 +178,8 @@ class ConversationDetailViewModel @Inject constructor(
     private val reducer: ConversationDetailReducer,
     private val starConversations: StarConversations,
     private val unStarConversations: UnStarConversations,
+    private val starMessages: StarMessages,
+    private val unStarMessages: UnStarMessages,
     private val savedStateHandle: SavedStateHandle,
     private val getDecryptedMessageBody: GetDecryptedMessageBody,
     private val markMessageAsRead: MarkMessageAsRead,
@@ -244,7 +248,7 @@ class ConversationDetailViewModel @Inject constructor(
         setupObservers()
     }
 
-    @Suppress("ComplexMethod")
+    @Suppress("LongMethod", "ComplexMethod")
     fun submit(action: ConversationDetailViewAction) {
         when (action) {
             is Star -> starConversation()
@@ -282,9 +286,20 @@ class ConversationDetailViewModel @Inject constructor(
             is ConversationDetailViewAction.OpenInProtonCalendar -> handleOpenInProtonCalendar(action)
             is ConversationDetailViewAction.Print -> handlePrint(action.context, action.messageId)
             is ConversationDetailViewAction.MarkMessageUnread -> handleMarkMessageUnread(action)
-            is ConversationDetailViewAction.TrashMessage -> handleTrashMessage(action)
-            is ConversationDetailViewAction.ArchiveMessage -> handleArchiveMessage(action)
-            is ConversationDetailViewAction.MoveMessageToSpam -> handleMoveMessageToSpam(action)
+            is ConversationDetailViewAction.TrashMessage -> moveMessageToSystemFolder(
+                action.messageId, SystemLabelId.Trash, action
+            )
+            is ConversationDetailViewAction.ArchiveMessage -> moveMessageToSystemFolder(
+                action.messageId, SystemLabelId.Archive, action
+            )
+            is ConversationDetailViewAction.MoveMessageToSpam -> moveMessageToSystemFolder(
+                action.messageId, SystemLabelId.Spam, action
+            )
+            is ConversationDetailViewAction.MoveMessageToInbox -> moveMessageToSystemFolder(
+                action.messageId, SystemLabelId.Inbox, action
+            )
+            is ConversationDetailViewAction.StarMessage -> handleStarMessage(action.messageId)
+            is ConversationDetailViewAction.UnStarMessage -> handleUnStarMessage(action.messageId)
 
             is ConversationDetailViewAction.ChangeVisibilityOfMessages -> handleChangeVisibilityOfMessages()
 
@@ -1173,25 +1188,21 @@ class ConversationDetailViewModel @Inject constructor(
         }
     }
 
-    private fun handleTrashMessage(action: ConversationDetailViewAction.TrashMessage) {
-        viewModelScope.launch {
-            moveMessage(primaryUserId.first(), action.messageId, SystemLabelId.Trash)
-            emitNewStateFrom(action)
-        }
+    private fun moveMessageToSystemFolder(
+        messageId: MessageId,
+        systemLabelId: SystemLabelId,
+        event: ConversationDetailViewAction
+    ) = viewModelScope.launch {
+        moveMessage(primaryUserId.first(), messageId, systemLabelId)
+        emitNewStateFrom(event)
     }
 
-    private fun handleArchiveMessage(action: ConversationDetailViewAction.ArchiveMessage) {
-        viewModelScope.launch {
-            moveMessage(primaryUserId.first(), action.messageId, SystemLabelId.Archive)
-            emitNewStateFrom(action)
-        }
+    private fun handleStarMessage(messageId: MessageId) = viewModelScope.launch {
+        starMessages(primaryUserId.first(), messageId)
     }
 
-    private fun handleMoveMessageToSpam(action: ConversationDetailViewAction.MoveMessageToSpam) {
-        viewModelScope.launch {
-            moveMessage(primaryUserId.first(), action.messageId, SystemLabelId.Spam)
-            emitNewStateFrom(action)
-        }
+    private fun handleUnStarMessage(messageId: MessageId) = viewModelScope.launch {
+        unStarMessages(primaryUserId.first(), messageId)
     }
 
     /**

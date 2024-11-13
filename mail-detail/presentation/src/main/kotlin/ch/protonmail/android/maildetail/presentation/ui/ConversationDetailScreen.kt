@@ -214,6 +214,9 @@ fun ConversationDetailScreen(
                         onReplyAll = actions.onReplyAll,
                         onForward = actions.onForward,
                         onMarkUnread = { viewModel.submit(ConversationDetailViewAction.MarkMessageUnread(it)) },
+                        onStarMessage = { viewModel.submit(ConversationDetailViewAction.Star) },
+                        onUnStarMessage = { viewModel.submit(ConversationDetailViewAction.UnStar) },
+                        onMoveToInbox = { viewModel.submit(ConversationDetailViewAction.MoveMessageToInbox(it)) },
                         onLabel = {
                             viewModel.submit(ConversationDetailViewAction.RequestMessageLabelAsBottomSheet(it))
                         },

@@ -150,6 +150,8 @@ import ch.protonmail.android.mailmessage.domain.usecase.GetMessageLabelAsActions
 import ch.protonmail.android.mailmessage.domain.usecase.GetMessageMoveToLocations
 import ch.protonmail.android.mailmessage.domain.usecase.ObserveMessage
 import ch.protonmail.android.mailmessage.domain.usecase.ResolveParticipantName
+import ch.protonmail.android.mailmessage.domain.usecase.StarMessages
+import ch.protonmail.android.mailmessage.domain.usecase.UnStarMessages
 import ch.protonmail.android.mailmessage.presentation.mapper.AttachmentUiModelMapper
 import ch.protonmail.android.mailmessage.presentation.mapper.DetailMoreActionsBottomSheetUiMapper
 import ch.protonmail.android.mailmessage.presentation.model.MessageBodyExpandCollapseMode
@@ -293,6 +295,8 @@ class ConversationDetailViewModelIntegrationTest {
             get<String>(ConversationDetailScreen.OpenedFromLocationKey)
         } returns filterByLocationLabelId.id
     }
+    private val starMessages = mockk<StarMessages>()
+    private val unStarMessages = mockk<UnStarMessages>()
     private val starConversations: StarConversations = mockk()
     private val unStarConversations: UnStarConversations = mockk()
     private val getDecryptedMessageBody: GetDecryptedMessageBody = mockk {
@@ -2350,6 +2354,8 @@ class ConversationDetailViewModelIntegrationTest {
         getAttachmentStatus: GetDownloadingAttachmentsForMessages = getDownloadingAttachmentsForMessages,
         detailReducer: ConversationDetailReducer = reducer,
         savedState: SavedStateHandle = savedStateHandle,
+        starMsg: StarMessages = starMessages,
+        unStarMsg: UnStarMessages = unStarMessages,
         star: StarConversations = starConversations,
         unStar: UnStarConversations = unStarConversations,
         decryptedMessageBody: GetDecryptedMessageBody = getDecryptedMessageBody,
@@ -2379,6 +2385,8 @@ class ConversationDetailViewModelIntegrationTest {
         observeMessageAttachmentStatus = observeMessageAttachmentStatus,
         getDownloadingAttachmentsForMessages = getAttachmentStatus,
         reducer = detailReducer,
+        starMessages = starMsg,
+        unStarMessages = unStarMsg,
         starConversations = star,
         unStarConversations = unStar,
         savedStateHandle = savedState,
