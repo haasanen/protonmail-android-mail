@@ -913,24 +913,24 @@ class ConversationDetailViewModelTest {
 
         val dataState = ConversationDetailState.Loading.copy(
             bottomSheetState = BottomSheetState(
-                LabelAsBottomSheetState.Data(LabelUiModelWithSelectedStateSample.customLabelListWithoutSelection, null)
+                LabelAsBottomSheetState.Data(
+                    LabelUiModelWithSelectedStateSample.customLabelListWithoutSelection, null
+                )
             )
         )
+        val archiveSelected = false
 
         coEvery {
             relabelConversation(
                 userId,
                 conversationId,
-                currentSelections = LabelSelectionList(
-                    selectedLabels = emptyList(),
-                    partiallySelectionLabels = emptyList()
-                ),
                 updatedSelections = LabelSelectionList(
                     selectedLabels = listOf(LabelSample.Document.labelId),
                     partiallySelectionLabels = emptyList()
-                )
+                ),
+                archiveSelected
             )
-        } returns ConversationSample.WeatherForecast.right()
+        } returns Unit.right()
 
         coEvery { observeConversationMessages(userId, conversationId) } returns flowOf(
             ConversationMessages(
@@ -967,7 +967,7 @@ class ConversationDetailViewModelTest {
             advanceUntilIdle()
             viewModel.submit(ConversationDetailViewAction.LabelAsToggleAction(LabelSample.Document.labelId))
             advanceUntilIdle()
-            viewModel.submit(ConversationDetailViewAction.LabelAsConfirmed(false, null))
+            viewModel.submit(ConversationDetailViewAction.LabelAsConfirmed(archiveSelected, null))
             advanceUntilIdle()
 
             // Then
@@ -975,14 +975,11 @@ class ConversationDetailViewModelTest {
                 relabelConversation(
                     userId,
                     conversationId,
-                    currentSelections = LabelSelectionList(
-                        selectedLabels = emptyList(),
-                        partiallySelectionLabels = emptyList()
-                    ),
                     updatedSelections = LabelSelectionList(
                         selectedLabels = listOf(LabelSample.Document.labelId),
                         partiallySelectionLabels = emptyList()
-                    )
+                    ),
+                    archiveSelected
                 )
             }
             verify { move wasNot Called }
@@ -1008,21 +1005,19 @@ class ConversationDetailViewModelTest {
                     )
                 )
             )
+            val archiveSelected = true
 
             coEvery {
                 relabelConversation(
                     userId = userId,
                     conversationId = conversationId,
-                    currentSelections = LabelSelectionList(
-                        selectedLabels = emptyList(),
-                        partiallySelectionLabels = emptyList()
-                    ),
                     updatedSelections = LabelSelectionList(
                         selectedLabels = listOf(LabelSample.Document.labelId),
                         partiallySelectionLabels = emptyList()
-                    )
+                    ),
+                    archiveSelected
                 )
-            } returns ConversationSample.WeatherForecast.right()
+            } returns Unit.right()
 
             coEvery {
                 move(
@@ -1063,7 +1058,7 @@ class ConversationDetailViewModelTest {
             )
 
             coEvery {
-                reducer.newStateFrom(any(), ConversationDetailViewAction.LabelAsConfirmed(true, null))
+                reducer.newStateFrom(any(), ConversationDetailViewAction.LabelAsConfirmed(archiveSelected, null))
             } returns ConversationDetailState.Loading.copy(
                 exitScreenWithMessageEffect = Effect.of(
                     ActionResult.UndoableActionResult(TextUiModel(string.conversation_moved_to_archive))
@@ -1083,17 +1078,13 @@ class ConversationDetailViewModelTest {
                     relabelConversation(
                         userId,
                         conversationId,
-                        currentSelections = LabelSelectionList(
-                            selectedLabels = emptyList(),
-                            partiallySelectionLabels = emptyList()
-                        ),
                         updatedSelections = LabelSelectionList(
                             selectedLabels = listOf(LabelSample.Document.labelId),
                             partiallySelectionLabels = emptyList()
-                        )
+                        ),
+                        archiveSelected
                     )
                 }
-                coVerify { move(userId, conversationId, SystemLabelId.Archive) }
                 assertNotNull(lastEmittedItem().exitScreenWithMessageEffect.consume())
             }
         }
@@ -1115,15 +1106,12 @@ class ConversationDetailViewModelTest {
                 )
             )
         )
+        val archiveSelected = false
 
         coEvery {
             relabelConversation(
                 userId,
                 conversationId,
-                currentSelections = LabelSelectionList(
-                    selectedLabels = emptyList(),
-                    partiallySelectionLabels = emptyList()
-                ),
                 updatedSelections = LabelSelectionList(
                     selectedLabels = listOf(
                         LabelSample.Document.labelId,
@@ -1131,9 +1119,10 @@ class ConversationDetailViewModelTest {
                         LabelSample.Label2022.labelId
                     ),
                     partiallySelectionLabels = emptyList()
-                )
+                ),
+                archiveSelected
             )
-        } returns ConversationSample.WeatherForecast.right()
+        } returns Unit.right()
 
         coEvery { observeConversationMessages(userId, conversationId) } returns flowOf(
             ConversationMessages(
@@ -1167,7 +1156,7 @@ class ConversationDetailViewModelTest {
             advanceUntilIdle()
             viewModel.submit(ConversationDetailViewAction.LabelAsToggleAction(LabelSample.Label2022.labelId))
             advanceUntilIdle()
-            viewModel.submit(ConversationDetailViewAction.LabelAsConfirmed(false, null))
+            viewModel.submit(ConversationDetailViewAction.LabelAsConfirmed(archiveSelected, null))
             advanceUntilIdle()
 
             // Then
@@ -1175,10 +1164,6 @@ class ConversationDetailViewModelTest {
                 relabelConversation(
                     userId,
                     conversationId,
-                    currentSelections = LabelSelectionList(
-                        selectedLabels = emptyList(),
-                        partiallySelectionLabels = emptyList()
-                    ),
                     updatedSelections = LabelSelectionList(
                         selectedLabels = listOf(
                             LabelSample.Document.labelId,
@@ -1186,7 +1171,8 @@ class ConversationDetailViewModelTest {
                             LabelSample.Label2022.labelId
                         ),
                         partiallySelectionLabels = emptyList()
-                    )
+                    ),
+                    archiveSelected
                 )
             }
             verify { move wasNot Called }

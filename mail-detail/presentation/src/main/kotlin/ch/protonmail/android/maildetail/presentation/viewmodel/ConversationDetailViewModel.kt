@@ -668,40 +668,19 @@ class ConversationDetailViewModel @Inject constructor(
 
     private fun onConversationLabelAsConfirmed(archiveSelected: Boolean) {
         viewModelScope.launch {
-            val userId = primaryUserId.first()
-            val messagesWithLabels = observeConversationMessages(userId, conversationId).first().onLeft {
-                Timber.e("Error while observing conversation message when relabeling got confirmed: $it")
-            }.getOrElse { null }
-
-            if (messagesWithLabels == null) {
-                Timber.e("Error while observing conversation message when relabeling got confirmed")
-                return@launch
-            }
-
             val labelAsData = mutableDetailState.value.bottomSheetState?.contentState as? LabelAsBottomSheetState.Data
                 ?: throw IllegalStateException("BottomSheetState is not LabelAsBottomSheetState.Data")
 
-            val updatedSelections = labelAsData.getLabelSelectionState()
-
             val relabelAction = suspend {
                 relabelConversation(
-                    userId = userId,
+                    userId = primaryUserId.first(),
                     conversationId = conversationId,
-                    currentSelections = LabelSelectionList(emptyList(), emptyList()),
-                    updatedSelections = updatedSelections
+                    updatedSelections = labelAsData.getLabelSelectionState(),
+                    archiveSelected
                 )
             }
 
             if (archiveSelected) {
-                moveConversation(
-                    userId = userId,
-                    conversationId = conversationId,
-                    systemLabelId = SystemLabelId.Archive
-                ).onLeft {
-                    Timber.e("Error while archiving conversation when relabeling got confirmed: $it")
-                    return@launch emitNewStateFrom(ConversationDetailEvent.ErrorLabelingConversation)
-                }
-
                 performSafeExitAction(
                     onLeft = ConversationDetailEvent.ErrorLabelingConversation,
                     onRight = LabelAsConfirmed(true, null)
