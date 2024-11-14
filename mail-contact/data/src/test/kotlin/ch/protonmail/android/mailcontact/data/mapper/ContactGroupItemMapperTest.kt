@@ -18,19 +18,31 @@
 
 package ch.protonmail.android.mailcontact.data.mapper
 
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalContactItemTypeGroup
-import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
-import javax.inject.Inject
+import ch.protonmail.android.testdata.contact.rust.LocalContactTestData
+import org.junit.Assert.assertEquals
+import org.junit.Test
 
-@MissingRustApi
-class ContactGroupItemMapper @Inject constructor() {
-    fun toContactGroup(localContactGroupItem: LocalContactItemTypeGroup): ContactMetadata.ContactGroup {
-        return ContactMetadata.ContactGroup(
-            id = localContactGroupItem.v1.id.toContactGroupId(),
-            name = localContactGroupItem.v1.name,
-            color = localContactGroupItem.v1.avatarColor,
-            members = emptyList() // Will be mapped from Rust (emails will be replaced by Contacts)
+class ContactGroupItemMapperTest {
+
+    private val contactGroupItemMapper = ContactGroupItemMapper()
+
+    @Test
+    fun `should map local contact group to domain model correctly`() {
+        // Given
+        val localContactGroup = LocalContactTestData.contactGroup1
+        val expectedContactGroup = ContactMetadata.ContactGroup(
+            id = localContactGroup.v1.id.toContactGroupId(),
+            name = localContactGroup.v1.name,
+            color = "#FFD700",
+            members = emptyList()
         )
+
+        // When
+        val result = contactGroupItemMapper.toContactGroup(localContactGroup)
+
+        // Then
+        assertEquals(expectedContactGroup, result)
     }
+
 }
