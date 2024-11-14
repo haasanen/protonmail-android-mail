@@ -19,21 +19,16 @@
 package ch.protonmail.android.maildetail.presentation.usecase
 
 import arrow.core.Either
-import arrow.core.left
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.maildetail.domain.usecase.MoveMessage
 import ch.protonmail.android.maildetail.domain.usecase.RelabelMessage
-import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.maillabel.presentation.model.LabelSelectedState
 import ch.protonmail.android.maillabel.presentation.model.LabelUiModelWithSelectedState
-import ch.protonmail.android.mailmessage.domain.model.Message
+import ch.protonmail.android.mailmessage.domain.model.LabelSelectionList
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import me.proton.core.domain.entity.UserId
-import timber.log.Timber
 import javax.inject.Inject
 
 class OnMessageLabelAsConfirmed @Inject constructor(
-    private val moveMessage: MoveMessage,
     private val relabelMessage: RelabelMessage
 ) {
 
@@ -42,25 +37,19 @@ class OnMessageLabelAsConfirmed @Inject constructor(
         messageId: MessageId,
         labelUiModelsWithSelectedState: List<LabelUiModelWithSelectedState>,
         archiveSelected: Boolean
-    ): Either<DataError.Local, Message> {
-        val newSelectedLabels = labelUiModelsWithSelectedState
+    ): Either<DataError.Local, Unit> {
+        val selectedLabels = labelUiModelsWithSelectedState
             .filter { it.selectedState == LabelSelectedState.Selected }
             .map { it.labelUiModel.id.labelId }
+        val partiallySelectedLabels = labelUiModelsWithSelectedState
+            .filter { it.selectedState == LabelSelectedState.PartiallySelected }
+            .map { it.labelUiModel.id.labelId }
 
-        if (archiveSelected) {
-            moveMessage(
-                userId,
-                messageId,
-                SystemLabelId.Archive.labelId
-            ).onLeft { Timber.e("Move message failed: $it") }
-        }
-
-        relabelMessage(
+        return relabelMessage(
             userId = userId,
             messageId = messageId,
-            currentLabelIds = emptyList(),
-            updatedLabelIds = newSelectedLabels
+            updatedSelection = LabelSelectionList(selectedLabels, partiallySelectedLabels),
+            shouldArchive = archiveSelected
         )
-        return DataError.Local.NoDataCached.left()
     }
 }

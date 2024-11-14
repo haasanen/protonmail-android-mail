@@ -175,7 +175,6 @@ import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import ch.protonmail.android.mailconversation.domain.entity.Conversation as DomainConversation
-import ch.protonmail.android.mailmessage.domain.model.Message as DomainMessage
 
 class MailboxViewModelTest {
 
@@ -2167,10 +2166,6 @@ class MailboxViewModelTest {
 
         val expectedCustomLabels = LabelAsActionsTestData.actions
 
-        val expectedCurrentLabelList = LabelSelectionList(
-            partiallySelectionLabels = emptyList(),
-            selectedLabels = emptyList()
-        )
         val expectedUpdatedLabelList = LabelSelectionList(
             partiallySelectionLabels = emptyList(),
             selectedLabels = listOf(
@@ -2184,6 +2179,7 @@ class MailboxViewModelTest {
             listOf(item, secondItem),
             currentMailLabel = MailLabelTestData.trashSystemLabel
         )
+        val archiveSelected = false
         expectViewModeForCurrentLocation(NoConversationGrouping)
         expectedSelectedLabelCountStateChange(initialState)
         returnExpectedStateWhenEnterSelectionMode(initialState, item, intermediateState)
@@ -2198,8 +2194,8 @@ class MailboxViewModelTest {
         expectedLabelAsConfirmed(intermediateState)
         expectRelabelMessagesSucceeds(
             selectedItemsList.map { MessageId(it.id) },
-            expectedCurrentLabelList,
-            expectedUpdatedLabelList
+            expectedUpdatedLabelList,
+            archiveSelected
         )
         expectColorMappingSuccess()
 
@@ -2211,7 +2207,7 @@ class MailboxViewModelTest {
             assertEquals(intermediateState, awaitItem())
             mailboxViewModel.submit(MailboxViewAction.LabelAsToggleAction(LabelIdSample.Label2022))
             assertEquals(createMailboxStateWithLabelAsBottomSheet(selectedItemsList, true), awaitItem())
-            mailboxViewModel.submit(MailboxViewAction.LabelAsConfirmed(false))
+            mailboxViewModel.submit(MailboxViewAction.LabelAsConfirmed(archiveSelected))
 
             // Then
             assertEquals(intermediateState, awaitItem())
@@ -2219,17 +2215,16 @@ class MailboxViewModelTest {
                 relabelMessages(
                     userId,
                     selectedItemsList.map { MessageId(it.id) },
-                    expectedCurrentLabelList,
-                    expectedUpdatedLabelList
+                    expectedUpdatedLabelList,
+                    shouldArchive = archiveSelected
                 )
             }
             coVerify { relabelConversations wasNot Called }
         }
     }
 
-    @Suppress("MaxLineLength")
     @Test
-    fun `when label as is triggered with archive selected for no conversation grouping then move and relabel messages is called`() =
+    fun `when label as is triggered with archive selected for no conversation mode then relabel messages is called`() =
         runTest {
             // Given
             val item = readMailboxItemUiModel.copy(id = MessageIdSample.Invoice.id)
@@ -2238,10 +2233,6 @@ class MailboxViewModelTest {
 
             val expectedCustomLabels = LabelAsActionsTestData.actions
 
-            val expectedCurrentLabelList = LabelSelectionList(
-                partiallySelectionLabels = emptyList(),
-                selectedLabels = emptyList()
-            )
             val expectedUpdatedLabelList = LabelSelectionList(
                 partiallySelectionLabels = emptyList(),
                 selectedLabels = listOf(
@@ -2255,6 +2246,7 @@ class MailboxViewModelTest {
                 listOf(item, secondItem),
                 currentMailLabel = MailLabelTestData.trashSystemLabel
             )
+            val archiveSelected = true
             expectViewModeForCurrentLocation(NoConversationGrouping)
             expectedSelectedLabelCountStateChange(initialState)
             returnExpectedStateWhenEnterSelectionMode(initialState, item, intermediateState)
@@ -2266,11 +2258,11 @@ class MailboxViewModelTest {
                 NoConversationGrouping
             )
             expectedLabelAsStateChange(selectedItemsList, LabelIdSample.Label2022)
-            expectedLabelAsConfirmed(intermediateState, true)
+            expectedLabelAsConfirmed(intermediateState, archiveSelected)
             expectRelabelMessagesSucceeds(
                 selectedItemsList.map { MessageId(it.id) },
-                expectedCurrentLabelList,
-                expectedUpdatedLabelList
+                expectedUpdatedLabelList,
+                archiveSelected
             )
             expectMoveMessagesSucceeds(userId, selectedItemsList, SystemLabelId.Archive)
             expectColorMappingSuccess()
@@ -2286,17 +2278,16 @@ class MailboxViewModelTest {
                     createMailboxStateWithLabelAsBottomSheet(selectedItemsList, true),
                     awaitItem()
                 )
-                mailboxViewModel.submit(MailboxViewAction.LabelAsConfirmed(true))
+                mailboxViewModel.submit(MailboxViewAction.LabelAsConfirmed(archiveSelected))
 
                 // Then
                 assertEquals(intermediateState, awaitItem())
                 coVerifySequence {
-                    moveMessages(userId, selectedItemsList.map { MessageId(it.id) }, SystemLabelId.Archive)
                     relabelMessages(
                         userId,
                         selectedItemsList.map { MessageId(it.id) },
-                        expectedCurrentLabelList,
-                        expectedUpdatedLabelList
+                        expectedUpdatedLabelList,
+                        archiveSelected
                     )
                 }
                 coVerify { relabelConversations wasNot Called }
@@ -2330,6 +2321,7 @@ class MailboxViewModelTest {
             listOf(item, secondItem),
             currentMailLabel = MailLabelTestData.trashSystemLabel
         )
+        val archiveSelected = false
         expectViewModeForCurrentLocation(ConversationGrouping)
         expectedSelectedLabelCountStateChange(initialState)
         returnExpectedStateWhenEnterSelectionMode(initialState, item, intermediateState)
@@ -2344,8 +2336,8 @@ class MailboxViewModelTest {
         expectedLabelAsConfirmed(intermediateState)
         expectRelabelConversationSucceeds(
             selectedItemsList.map { ConversationId(it.id) },
-            expectedCurrentLabelList,
-            expectedUpdatedLabelList
+            expectedUpdatedLabelList,
+            archiveSelected
         )
         expectColorMappingSuccess()
 
@@ -2360,7 +2352,7 @@ class MailboxViewModelTest {
                 createMailboxStateWithLabelAsBottomSheet(selectedItemsList, true),
                 awaitItem()
             )
-            mailboxViewModel.submit(MailboxViewAction.LabelAsConfirmed(false))
+            mailboxViewModel.submit(MailboxViewAction.LabelAsConfirmed(archiveSelected))
 
             // Then
             assertEquals(intermediateState, awaitItem())
@@ -2368,7 +2360,7 @@ class MailboxViewModelTest {
                 relabelConversations(
                     userId,
                     selectedItemsList.map { ConversationId(it.id) },
-                    expectedCurrentLabelList,
+                    LabelSelectionList(emptyList(), emptyList()),
                     expectedUpdatedLabelList
                 )
             }
@@ -2376,9 +2368,8 @@ class MailboxViewModelTest {
         }
     }
 
-    @Suppress("MaxLineLength")
     @Test
-    fun `when label as is triggered with archive selected for conversation grouping then move and relabel conversation is called`() =
+    fun `when label as is triggered with archive selected for conversation mode then label conversation is called`() =
         runTest {
             // Given
             val item = readMailboxItemUiModel.copy(id = MessageIdSample.Invoice.id)
@@ -2387,10 +2378,6 @@ class MailboxViewModelTest {
 
             val expectedCustomLabels = LabelAsActionsTestData.actions
 
-            val expectedCurrentLabelList = LabelSelectionList(
-                partiallySelectionLabels = emptyList(),
-                selectedLabels = emptyList()
-            )
             val expectedUpdatedLabelList = LabelSelectionList(
                 partiallySelectionLabels = emptyList(),
                 selectedLabels = listOf(
@@ -2404,6 +2391,7 @@ class MailboxViewModelTest {
                 listOf(item, secondItem),
                 currentMailLabel = MailLabelTestData.trashSystemLabel
             )
+            val archiveSelected = true
             expectViewModeForCurrentLocation(ConversationGrouping)
             expectedSelectedLabelCountStateChange(initialState)
             returnExpectedStateWhenEnterSelectionMode(initialState, item, intermediateState)
@@ -2415,11 +2403,11 @@ class MailboxViewModelTest {
                 ConversationGrouping
             )
             expectedLabelAsStateChange(selectedItemsList, LabelIdSample.Label2022)
-            expectedLabelAsConfirmed(intermediateState, true)
+            expectedLabelAsConfirmed(intermediateState, archiveSelected)
             expectRelabelConversationSucceeds(
                 selectedItemsList.map { ConversationId(it.id) },
-                expectedCurrentLabelList,
-                expectedUpdatedLabelList
+                expectedUpdatedLabelList,
+                archiveSelected
             )
             expectMoveConversationsSucceeds(userId, selectedItemsList, SystemLabelId.Archive)
             expectColorMappingSuccess()
@@ -2435,20 +2423,15 @@ class MailboxViewModelTest {
                     createMailboxStateWithLabelAsBottomSheet(selectedItemsList, true),
                     awaitItem()
                 )
-                mailboxViewModel.submit(MailboxViewAction.LabelAsConfirmed(true))
+                mailboxViewModel.submit(MailboxViewAction.LabelAsConfirmed(archiveSelected))
 
                 // Then
                 assertEquals(intermediateState, awaitItem())
                 coVerifySequence {
-                    moveConversations(
-                        userId,
-                        selectedItemsList.map { ConversationId(it.id) },
-                        SystemLabelId.Archive
-                    )
                     relabelConversations(
                         userId,
                         selectedItemsList.map { ConversationId(it.id) },
-                        expectedCurrentLabelList,
+                        LabelSelectionList(emptyList(), emptyList()),
                         expectedUpdatedLabelList
                     )
                 }
@@ -3658,21 +3641,21 @@ class MailboxViewModelTest {
 
     private fun expectRelabelMessagesSucceeds(
         selectedMessages: List<MessageId>,
-        currentSelections: LabelSelectionList,
-        updatedSelections: LabelSelectionList
+        updatedSelections: LabelSelectionList,
+        archiveSelected: Boolean
     ) {
         coEvery {
-            relabelMessages(userId, selectedMessages, currentSelections, updatedSelections)
-        } returns listOf<DomainMessage>().right()
+            relabelMessages(userId, selectedMessages, updatedSelections, archiveSelected)
+        } returns Unit.right()
     }
 
     private fun expectRelabelConversationSucceeds(
         selectedConversation: List<ConversationId>,
-        currentSelections: LabelSelectionList,
-        updatedSelections: LabelSelectionList
+        updatedSelections: LabelSelectionList,
+        archiveSelected: Boolean
     ) {
         coEvery {
-            relabelConversations(userId, selectedConversation, currentSelections, updatedSelections)
+            relabelConversations(userId, selectedConversation, any(), updatedSelections)
         } returns listOf<DomainConversation>().right()
     }
 

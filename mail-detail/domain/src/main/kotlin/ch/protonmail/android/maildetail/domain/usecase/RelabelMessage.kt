@@ -20,18 +20,12 @@ package ch.protonmail.android.maildetail.domain.usecase
 
 import arrow.core.Either
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.mailmessage.domain.model.LabelSelectionList
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
 import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 
-/**
- * This component will relabel a given message.
- * The labels parameters will be used to compute a diff of the labels that need to be changed,
- * adding or removing them as necessary.
- */
 class RelabelMessage @Inject constructor(
     private val messageRepository: MessageRepository
 ) {
@@ -39,10 +33,8 @@ class RelabelMessage @Inject constructor(
     suspend operator fun invoke(
         userId: UserId,
         messageId: MessageId,
-        currentLabelIds: List<LabelId>,
-        updatedLabelIds: List<LabelId>,
-        updatedSelection: LabelSelectionList = LabelSelectionList(emptyList(), emptyList()),
-        shouldArchive: Boolean = false
+        updatedSelection: LabelSelectionList,
+        shouldArchive: Boolean
     ): Either<DataError.Local, Unit> {
         return messageRepository.labelAs(
             userId = userId,

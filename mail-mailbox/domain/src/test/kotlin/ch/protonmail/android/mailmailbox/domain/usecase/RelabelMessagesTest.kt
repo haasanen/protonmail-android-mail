@@ -42,14 +42,11 @@ class RelabelMessagesTest {
         val result = relabel(
             userId = UserIdSample.Primary,
             messageIds = expectedMessageIds,
-            currentSelections = LabelSelectionList(
-                selectedLabels = emptyList(),
-                partiallySelectionLabels = emptyList()
-            ),
             updatedSelections = LabelSelectionList(
                 selectedLabels = selectedLabels,
                 partiallySelectionLabels = partiallySelectedLabels
-            )
+            ),
+            shouldArchive = false
         )
 
         // Then
@@ -57,7 +54,7 @@ class RelabelMessagesTest {
     }
 
     @Test
-    fun `when repository suceeds then Unit is returned`() = runTest {
+    fun `when repository succeeds then Unit is returned`() = runTest {
         // Given
         val expectedMessageIds = listOf(MessageIdSample.Invoice)
         val selectedLabels = listOf(LabelId("labelId"))
@@ -76,14 +73,11 @@ class RelabelMessagesTest {
         val result = relabel(
             userId = UserIdSample.Primary,
             messageIds = expectedMessageIds,
-            currentSelections = LabelSelectionList(
-                selectedLabels = emptyList(),
-                partiallySelectionLabels = emptyList()
-            ),
             updatedSelections = LabelSelectionList(
                 selectedLabels = selectedLabels,
                 partiallySelectionLabels = partiallySelectedLabels
-            )
+            ),
+            shouldArchive = false
         )
 
         // Then

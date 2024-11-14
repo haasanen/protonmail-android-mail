@@ -33,9 +33,8 @@ class RelabelMessages @Inject constructor(
     suspend operator fun invoke(
         userId: UserId,
         messageIds: List<MessageId>,
-        currentSelections: LabelSelectionList,
         updatedSelections: LabelSelectionList,
-        shouldArchive: Boolean = false
+        shouldArchive: Boolean
     ): Either<DataError.Local, Unit> {
         return messageRepository.labelAs(
             userId = userId,

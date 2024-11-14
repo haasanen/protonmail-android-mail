@@ -1,13 +1,12 @@
 package ch.protonmail.android.maildetail.presentation.usecase
 
 import arrow.core.right
-import ch.protonmail.android.maildetail.domain.usecase.MoveMessage
 import ch.protonmail.android.maildetail.domain.usecase.RelabelMessage
-import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.maillabel.presentation.model.LabelSelectedState
+import ch.protonmail.android.maillabel.presentation.model.LabelUiModelWithSelectedState
 import ch.protonmail.android.maillabel.presentation.sample.LabelUiModelWithSelectedStateSample
+import ch.protonmail.android.mailmessage.domain.model.LabelSelectionList
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
-import ch.protonmail.android.mailmessage.domain.sample.MessageSample
 import ch.protonmail.android.testdata.user.UserIdTestData
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -20,30 +19,18 @@ class OnMessageLabelAsConfirmedTest {
     private val userId = UserIdTestData.userId
     private val messageId = MessageIdSample.PlainTextMessage
 
-    private val moveMessage = mockk<MoveMessage> {
-        coEvery {
-            this@mockk.invoke(
-                userId = userId,
-                messageId = messageId,
-                labelId = SystemLabelId.Archive.labelId
-            )
-        } returns Unit.right()
-    }
     private val relabelMessage = mockk<RelabelMessage> {
         coEvery {
             this@mockk.invoke(
                 userId = userId,
                 messageId = messageId,
-                currentLabelIds = any(),
-                updatedLabelIds = any()
+                updatedSelection = any(),
+                shouldArchive = any()
             )
-        } returns with(MessageSample) {
-            Invoice
-        }.right()
+        } returns Unit.right()
     }
 
     private val onMessageLabelAsConfirmed = OnMessageLabelAsConfirmed(
-        moveMessage,
         relabelMessage
     )
 
@@ -51,6 +38,7 @@ class OnMessageLabelAsConfirmedTest {
     fun `should call relabel message when label as was confirmed`() = runTest {
         // Given
         val labelUiModelsWithSelectedState = LabelUiModelWithSelectedStateSample.customLabelListWithSelection
+        val updatedSelection = labelUiModelsWithSelectedState.toLabelSelectionList()
 
         // When
         onMessageLabelAsConfirmed(userId, messageId, labelUiModelsWithSelectedState, false)
@@ -60,10 +48,8 @@ class OnMessageLabelAsConfirmedTest {
             relabelMessage(
                 userId,
                 messageId,
-                emptyList(),
-                labelUiModelsWithSelectedState.filter {
-                    it.selectedState == LabelSelectedState.Selected
-                }.map { it.labelUiModel.id.labelId }
+                updatedSelection,
+                shouldArchive = false
             )
         }
     }
@@ -72,13 +58,30 @@ class OnMessageLabelAsConfirmedTest {
     fun `should call move message when label as was confirmed and archive was selected`() = runTest {
         // Given
         val labelUiModelsWithSelectedState = LabelUiModelWithSelectedStateSample.customLabelListWithSelection
+        val updatedSelection = labelUiModelsWithSelectedState.toLabelSelectionList()
 
         // When
         onMessageLabelAsConfirmed(userId, messageId, labelUiModelsWithSelectedState, true)
 
         // Then
         coVerify {
-            moveMessage(userId, messageId, SystemLabelId.Archive.labelId)
+            relabelMessage(
+                userId,
+                messageId,
+                updatedSelection,
+                shouldArchive = true
+            )
         }
+    }
+
+    private fun List<LabelUiModelWithSelectedState>.toLabelSelectionList(): LabelSelectionList {
+        val selected = this.filter {
+            it.selectedState == LabelSelectedState.Selected
+        }.map { it.labelUiModel.id.labelId }
+        val partially = this.filter {
+            it.selectedState == LabelSelectedState.PartiallySelected
+        }.map { it.labelUiModel.id.labelId }
+
+        return LabelSelectionList(selected, partially)
     }
 }

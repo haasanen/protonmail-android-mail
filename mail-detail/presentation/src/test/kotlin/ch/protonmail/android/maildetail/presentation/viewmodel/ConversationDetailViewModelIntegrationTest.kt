@@ -135,6 +135,7 @@ import ch.protonmail.android.mailmessage.domain.model.AttachmentId
 import ch.protonmail.android.mailmessage.domain.model.ConversationMessages
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.model.GetDecryptedMessageBodyError
+import ch.protonmail.android.mailmessage.domain.model.LabelSelectionList
 import ch.protonmail.android.mailmessage.domain.model.Message
 import ch.protonmail.android.mailmessage.domain.model.MessageAttachment
 import ch.protonmail.android.mailmessage.domain.model.MessageId
@@ -342,7 +343,7 @@ class ConversationDetailViewModelIntegrationTest {
         getMessageAvailableActions, getConversationAvailableActions, observeMessage, observeConversationUseCase
     )
     private val onMessageLabelAsConfirmed = OnMessageLabelAsConfirmed(
-        moveMessage, relabelMessage
+        relabelMessage
     )
     // endregion
 
@@ -1887,7 +1888,7 @@ class ConversationDetailViewModelIntegrationTest {
     }
 
     @Test
-    fun `should relabel and move message when label as is confirmed and archive is selected`() = runTest {
+    fun `should relabel and forward should archive when label as is confirmed and archive is selected`() = runTest {
         // Given
         val messages = ConversationMessages(
             nonEmptyListOf(
@@ -1898,17 +1899,18 @@ class ConversationDetailViewModelIntegrationTest {
             MessageSample.AugWeatherForecast.messageId
         )
         val messageId = MessageSample.Invoice.messageId
-        val newMessageLabels = buildList {
-            add(LabelSample.Label2022.labelId)
-        }
+        val labelSelection = LabelSelectionList(
+            listOf(LabelSample.Label2022.labelId),
+            emptyList()
+        )
         coEvery { observeConversationMessages(userId, any()) } returns flowOf(messages.right())
         coEvery {
             observeMessage(userId, messageId)
         } returns flowOf(MessageSample.Invoice.right())
         coEvery { moveMessage(userId, messageId, filterByLocationLabelId) } returns Unit.right()
         coEvery {
-            relabelMessage(userId, messageId, emptyList(), newMessageLabels)
-        } returns MessageSample.Invoice.right()
+            relabelMessage(userId, messageId, labelSelection, true)
+        } returns Unit.right()
         coEvery {
             getMessageLabelAsActions(userId, filterByLocationLabelId, listOf(messageId))
         } returns LabelAsActionsTestData.unselectedActions.right()
@@ -1954,8 +1956,7 @@ class ConversationDetailViewModelIntegrationTest {
                 BottomSheetVisibilityEffect.Hide, awaitItem().bottomSheetState?.bottomSheetVisibilityEffect?.consume()
             )
             coVerifySequence {
-                moveMessage(userId, messageId, filterByLocationLabelId)
-                relabelMessage(userId, messageId, emptyList(), newMessageLabels)
+                relabelMessage(userId, messageId, labelSelection, shouldArchive = true)
             }
 
             cancelAndIgnoreRemainingEvents()

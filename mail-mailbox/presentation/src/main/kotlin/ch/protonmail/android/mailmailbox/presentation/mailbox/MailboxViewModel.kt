@@ -763,9 +763,7 @@ class MailboxViewModel @Inject constructor(
 
             val updatedSelection = labelAsData.getLabelSelectionState()
             val viewMode = getViewModeForCurrentLocation(selectedMailLabelId.flow.value)
-            if (archiveSelected) {
-                moveSelectedMailboxItemsTo(SystemLabelId.Archive)
-            }
+
             val operation = handleRelabelOperation(
                 userId = userId,
                 viewMode = viewMode,
@@ -889,8 +887,8 @@ class MailboxViewModel @Inject constructor(
             ViewMode.NoConversationGrouping -> relabelMessages(
                 userId = userId,
                 messageIds = selectedItems.map { MessageId(it.id) },
-                currentSelections = currentSelectionList,
-                updatedSelections = updatedSelectionList
+                updatedSelections = updatedSelectionList,
+                shouldArchive = archiveSelected
             )
         }.fold(
             ifLeft = { MailboxEvent.ErrorLabeling },

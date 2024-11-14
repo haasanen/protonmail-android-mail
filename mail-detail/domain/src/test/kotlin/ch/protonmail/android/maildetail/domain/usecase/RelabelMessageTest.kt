@@ -59,8 +59,6 @@ internal class RelabelMessageTest {
         val result = relabel(
             userId = UserIdSample.Primary,
             messageId = MessageIdSample.Invoice,
-            currentLabelIds = listOf(LabelId("labelId")),
-            updatedLabelIds = listOf(LabelId("labelId2")),
             updatedSelection = LabelSelectionList(selectedLabels, partiallySelectedLabels),
             shouldArchive = false
         )
@@ -90,8 +88,6 @@ internal class RelabelMessageTest {
         val result = relabel(
             userId = UserIdSample.Primary,
             messageId = MessageIdSample.Invoice,
-            currentLabelIds = listOf(LabelId("labelId")),
-            updatedLabelIds = listOf(LabelId("labelId2")),
             updatedSelection = LabelSelectionList(selectedLabels, partiallySelectedLabels),
             shouldArchive = true
         )
