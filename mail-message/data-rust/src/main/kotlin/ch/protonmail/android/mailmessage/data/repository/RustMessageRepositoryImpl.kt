@@ -151,6 +151,20 @@ class RustMessageRepositoryImpl @Inject constructor(
         TODO("Not yet implemented")
     }
 
+    override suspend fun labelAs(
+        userId: UserId,
+        messageIds: List<MessageId>,
+        selectedLabels: List<LabelId>,
+        partiallySelectedLabels: List<LabelId>,
+        shouldArchive: Boolean
+    ): Either<DataError.Local, Unit> = rustMessageDataSource.labelMessages(
+        userId,
+        messageIds.map { it.toLocalMessageId() },
+        selectedLabels.map { it.toLocalLabelId() },
+        partiallySelectedLabels.map { it.toLocalLabelId() },
+        shouldArchive
+    )
+
     override suspend fun relabel(
         userId: UserId,
         messageId: MessageId,

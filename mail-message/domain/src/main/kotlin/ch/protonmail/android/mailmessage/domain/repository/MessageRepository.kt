@@ -179,4 +179,11 @@ interface MessageRepository {
      * Report a message as phishing
      */
     suspend fun reportPhishing(userId: UserId, decryptedMessageBody: DecryptedMessageBody): Either<DataError, Unit>
+    suspend fun labelAs(
+        userId: UserId,
+        messageIds: List<MessageId>,
+        selectedLabels: List<LabelId>,
+        partiallySelectedLabels: List<LabelId>,
+        shouldArchive: Boolean
+    ): Either<DataError.Local, Unit>
 }

@@ -182,6 +182,20 @@ class RustConversationRepositoryImpl @Inject constructor(
         labelsToBeAdded: List<LabelId>
     ): Either<DataError, List<Conversation>> = DataError.Local.Unknown.left()
 
+    override suspend fun labelAs(
+        userId: UserId,
+        conversationIds: List<ConversationId>,
+        selectedLabels: List<LabelId>,
+        partiallySelectedLabels: List<LabelId>,
+        shouldArchive: Boolean
+    ): Either<DataError.Local, Unit> = rustConversationDataSource.labelConversations(
+        userId,
+        conversationIds.map { it.toLocalConversationId() },
+        selectedLabels.map { it.toLocalLabelId() },
+        partiallySelectedLabels.map { it.toLocalLabelId() },
+        shouldArchive
+    )
+
     override suspend fun deleteConversations(
         userId: UserId,
         conversationIds: List<ConversationId>

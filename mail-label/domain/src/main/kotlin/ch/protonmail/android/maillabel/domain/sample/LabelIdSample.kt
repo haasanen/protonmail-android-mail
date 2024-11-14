@@ -38,6 +38,10 @@ object LabelIdSample {
     val Starred = LabelId("10")
     val Trash = LabelId("3")
     val Spam = LabelId("4")
+    val RustLabel1 = LabelId("1")
+    val RustLabel2 = LabelId("2")
+    val RustLabel3 = LabelId("3")
+    val RustLabel4 = LabelId("4")
 
     fun build() = LabelId("label")
 }

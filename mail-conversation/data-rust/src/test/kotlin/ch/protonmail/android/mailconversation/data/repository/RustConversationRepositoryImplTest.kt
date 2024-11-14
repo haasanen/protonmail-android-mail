@@ -290,4 +290,80 @@ class RustConversationRepositoryImplTest {
         assertEquals(emptyList<Conversation>().right(), result)
     }
 
+    @Test
+    fun `label should call rust data source and return unit when successful`() {
+        runTest {
+            // Given
+            val conversationIds = listOf(ConversationId("1"), ConversationId("2"))
+            val selectedLabelIds = listOf(LabelIdSample.RustLabel1, LabelIdSample.RustLabel2)
+            val partiallySelectedLabelIds = listOf(LabelIdSample.RustLabel3)
+            val shouldArchive = false
+
+            coEvery {
+                rustConversationDataSource.labelConversations(
+                    userId,
+                    conversationIds.map { it.toLocalConversationId() },
+                    selectedLabelIds.map { it.toLocalLabelId() },
+                    partiallySelectedLabelIds.map { it.toLocalLabelId() },
+                    shouldArchive
+                )
+            } returns Unit.right()
+
+            // When
+            val result = rustConversationRepository.labelAs(
+                userId,
+                conversationIds,
+                selectedLabelIds,
+                partiallySelectedLabelIds,
+                shouldArchive
+            )
+
+            // Then
+            coVerify {
+                rustConversationDataSource.labelConversations(
+                    userId,
+                    conversationIds.map { it.toLocalConversationId() },
+                    selectedLabelIds.map { it.toLocalLabelId() },
+                    partiallySelectedLabelIds.map { it.toLocalLabelId() },
+                    shouldArchive
+                )
+            }
+            assertEquals(Unit.right(), result)
+        }
+    }
+
+    @Test
+    fun `label should call rust data source and return error when failing`() {
+        runTest {
+            // Given
+            val conversationIds = listOf(ConversationId("1"), ConversationId("2"))
+            val selectedLabelIds = listOf(LabelIdSample.RustLabel1, LabelIdSample.RustLabel2)
+            val partiallySelectedLabelIds = listOf(LabelIdSample.RustLabel3)
+            val shouldArchive = false
+            val expectedError = DataError.Local.Unknown
+
+            coEvery {
+                rustConversationDataSource.labelConversations(
+                    userId,
+                    conversationIds.map { it.toLocalConversationId() },
+                    selectedLabelIds.map { it.toLocalLabelId() },
+                    partiallySelectedLabelIds.map { it.toLocalLabelId() },
+                    shouldArchive
+                )
+            } returns expectedError.left()
+
+            // When
+            val result = rustConversationRepository.labelAs(
+                userId,
+                conversationIds,
+                selectedLabelIds,
+                partiallySelectedLabelIds,
+                shouldArchive
+            )
+
+            // Then
+            assertEquals(expectedError.left(), result)
+        }
+    }
+
 }

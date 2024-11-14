@@ -29,6 +29,7 @@ import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
 import ch.protonmail.android.maillabel.domain.SelectedMailLabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
+import ch.protonmail.android.maillabel.domain.sample.LabelIdSample
 import ch.protonmail.android.mailmessage.data.local.RustMessageDataSource
 import ch.protonmail.android.mailmessage.data.mapper.toLocalMessageId
 import ch.protonmail.android.mailmessage.data.mapper.toMessage
@@ -301,6 +302,82 @@ class RustMessageRepositoryImplTest {
         coVerify { rustMessageDataSource.unStarMessages(userId, messageIds.map { it.toLocalMessageId() }) }
         assert(result.isLeft())
         assertEquals(DataError.Local.Unknown, result.swap().getOrElse { null })
+    }
+
+    @Test
+    fun `label should call rust data source and return unit when successful`() {
+        runTest {
+            // Given
+            val messageIds = listOf(LocalMessageIdSample.AugWeatherForecast.toMessageId())
+            val selectedLabelIds = listOf(LabelIdSample.RustLabel1, LabelIdSample.RustLabel2)
+            val partiallySelectedLabelIds = listOf(LabelIdSample.RustLabel3)
+            val shouldArchive = false
+
+            coEvery {
+                rustMessageDataSource.labelMessages(
+                    userId,
+                    messageIds.map { it.toLocalMessageId() },
+                    selectedLabelIds.map { it.toLocalLabelId() },
+                    partiallySelectedLabelIds.map { it.toLocalLabelId() },
+                    shouldArchive
+                )
+            } returns Unit.right()
+
+            // When
+            val result = repository.labelAs(
+                userId,
+                messageIds,
+                selectedLabelIds,
+                partiallySelectedLabelIds,
+                shouldArchive
+            )
+
+            // Then
+            coVerify {
+                rustMessageDataSource.labelMessages(
+                    userId,
+                    messageIds.map { it.toLocalMessageId() },
+                    selectedLabelIds.map { it.toLocalLabelId() },
+                    partiallySelectedLabelIds.map { it.toLocalLabelId() },
+                    shouldArchive
+                )
+            }
+            assertEquals(Unit.right(), result)
+        }
+    }
+
+    @Test
+    fun `label should call rust data source and return error when failing`() {
+        runTest {
+            // Given
+            val messageIds = listOf(LocalMessageIdSample.AugWeatherForecast.toMessageId())
+            val selectedLabelIds = listOf(LabelIdSample.RustLabel1, LabelIdSample.RustLabel2)
+            val partiallySelectedLabelIds = listOf(LabelIdSample.RustLabel3)
+            val shouldArchive = false
+            val expectedError = DataError.Local.Unknown
+
+            coEvery {
+                rustMessageDataSource.labelMessages(
+                    userId,
+                    messageIds.map { it.toLocalMessageId() },
+                    selectedLabelIds.map { it.toLocalLabelId() },
+                    partiallySelectedLabelIds.map { it.toLocalLabelId() },
+                    shouldArchive
+                )
+            } returns expectedError.left()
+
+            // When
+            val result = repository.labelAs(
+                userId,
+                messageIds,
+                selectedLabelIds,
+                partiallySelectedLabelIds,
+                shouldArchive
+            )
+
+            // Then
+            assertEquals(expectedError.left(), result)
+        }
     }
 
 }

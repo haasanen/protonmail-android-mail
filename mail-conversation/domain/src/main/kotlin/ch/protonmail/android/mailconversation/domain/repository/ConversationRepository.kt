@@ -119,6 +119,14 @@ interface ConversationRepository {
         labelsToBeAdded: List<LabelId>
     ): Either<DataError, List<Conversation>>
 
+    suspend fun labelAs(
+        userId: UserId,
+        conversationIds: List<ConversationId>,
+        selectedLabels: List<LabelId>,
+        partiallySelectedLabels: List<LabelId>,
+        shouldArchive: Boolean
+    ): Either<DataError.Local, Unit>
+
     suspend fun deleteConversations(userId: UserId, conversationIds: List<ConversationId>): Either<DataError, Unit>
 
     suspend fun deleteConversations(userId: UserId, labelId: LabelId)
