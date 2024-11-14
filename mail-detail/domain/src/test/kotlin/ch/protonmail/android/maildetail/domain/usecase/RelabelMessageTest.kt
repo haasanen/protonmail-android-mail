@@ -19,16 +19,16 @@
 package ch.protonmail.android.maildetail.domain.usecase
 
 import arrow.core.left
+import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
-import ch.protonmail.android.mailmessage.domain.model.MessageId
+import ch.protonmail.android.maillabel.domain.model.LabelId
+import ch.protonmail.android.mailmessage.domain.model.LabelSelectionList
 import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
 import io.mockk.coEvery
-import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import ch.protonmail.android.maillabel.domain.model.LabelId
 import org.junit.Test
 import kotlin.test.assertEquals
 
@@ -40,15 +40,29 @@ internal class RelabelMessageTest {
     @Test
     fun `when repository fails then error is returned`() = runTest {
         // Given
+        val userId = UserIdSample.Primary
         val error = DataError.Local.NoDataCached.left()
-        coEvery { messageRepository.relabel(any(), any<MessageId>(), any(), any()) } returns error
+        val expectedMessageIds = listOf(MessageIdSample.Invoice)
+        val selectedLabels = listOf(LabelId("labelId"))
+        val partiallySelectedLabels = listOf(LabelId("labelId2"))
+        coEvery {
+            messageRepository.labelAs(
+                userId,
+                expectedMessageIds,
+                selectedLabels,
+                partiallySelectedLabels,
+                shouldArchive = false
+            )
+        } returns error
 
         // When
         val result = relabel(
             userId = UserIdSample.Primary,
             messageId = MessageIdSample.Invoice,
             currentLabelIds = listOf(LabelId("labelId")),
-            updatedLabelIds = listOf(LabelId("labelId2"))
+            updatedLabelIds = listOf(LabelId("labelId2")),
+            updatedSelection = LabelSelectionList(selectedLabels, partiallySelectedLabels),
+            shouldArchive = false
         )
 
         // Then
@@ -56,32 +70,34 @@ internal class RelabelMessageTest {
     }
 
     @Test
-    fun `use case only forwards affected labels to repository`() = runTest {
+    fun `when repository succeeds then Unit is returned`() = runTest {
         // Given
-        val oldLabelIds = listOf(LabelId("1"), LabelId("2"), LabelId("3"))
-        val newLabelIds = listOf(LabelId("1"), LabelId("2"), LabelId("4"))
-        val removedLabels = listOf(LabelId("3"))
-        val addedLabels = listOf(LabelId("4"))
+        val userId = UserIdSample.Primary
+        val expectedMessageIds = listOf(MessageIdSample.Invoice)
+        val selectedLabels = listOf(LabelId("labelId"))
+        val partiallySelectedLabels = listOf(LabelId("labelId2"))
         coEvery {
-            messageRepository.relabel(
-                userId = UserIdSample.Primary,
-                messageId = MessageIdSample.Invoice,
-                labelsToBeRemoved = removedLabels,
-                labelsToBeAdded = addedLabels
+            messageRepository.labelAs(
+                userId,
+                expectedMessageIds,
+                selectedLabels,
+                partiallySelectedLabels,
+                shouldArchive = true
             )
-        } returns mockk()
+        } returns Unit.right()
 
         // When
-        relabel(UserIdSample.Primary, MessageIdSample.Invoice, oldLabelIds, newLabelIds)
+        val result = relabel(
+            userId = UserIdSample.Primary,
+            messageId = MessageIdSample.Invoice,
+            currentLabelIds = listOf(LabelId("labelId")),
+            updatedLabelIds = listOf(LabelId("labelId2")),
+            updatedSelection = LabelSelectionList(selectedLabels, partiallySelectedLabels),
+            shouldArchive = true
+        )
 
         // Then
-        coVerify {
-            messageRepository.relabel(
-                userId = UserIdSample.Primary,
-                messageId = MessageIdSample.Invoice,
-                labelsToBeRemoved = removedLabels,
-                labelsToBeAdded = addedLabels
-            )
-        }
+        assertEquals(Unit.right(), result)
     }
+
 }

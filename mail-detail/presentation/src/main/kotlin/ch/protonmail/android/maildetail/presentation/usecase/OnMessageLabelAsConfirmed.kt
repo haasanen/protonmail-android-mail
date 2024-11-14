@@ -19,6 +19,7 @@
 package ch.protonmail.android.maildetail.presentation.usecase
 
 import arrow.core.Either
+import arrow.core.left
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.maildetail.domain.usecase.MoveMessage
 import ch.protonmail.android.maildetail.domain.usecase.RelabelMessage
@@ -54,11 +55,12 @@ class OnMessageLabelAsConfirmed @Inject constructor(
             ).onLeft { Timber.e("Move message failed: $it") }
         }
 
-        return relabelMessage(
+        relabelMessage(
             userId = userId,
             messageId = messageId,
             currentLabelIds = emptyList(),
             updatedLabelIds = newSelectedLabels
         )
+        return DataError.Local.NoDataCached.left()
     }
 }

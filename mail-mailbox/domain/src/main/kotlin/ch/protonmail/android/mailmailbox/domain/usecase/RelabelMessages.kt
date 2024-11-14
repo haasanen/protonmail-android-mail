@@ -21,7 +21,6 @@ package ch.protonmail.android.mailmailbox.domain.usecase
 import arrow.core.Either
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailmessage.domain.model.LabelSelectionList
-import ch.protonmail.android.mailmessage.domain.model.Message
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
 import me.proton.core.domain.entity.UserId
@@ -35,18 +34,15 @@ class RelabelMessages @Inject constructor(
         userId: UserId,
         messageIds: List<MessageId>,
         currentSelections: LabelSelectionList,
-        updatedSelections: LabelSelectionList
-    ): Either<DataError.Local, List<Message>> {
-        val currentFullAndPartialSelections = currentSelections.let { it.selectedLabels + it.partiallySelectionLabels }
-        val updatedFullAndPartialSelections = updatedSelections.let { it.selectedLabels + it.partiallySelectionLabels }
-
-        val removedLabels = currentFullAndPartialSelections - updatedFullAndPartialSelections.toSet()
-        val addedLabels = updatedSelections.selectedLabels - currentSelections.selectedLabels.toSet()
-        return messageRepository.relabel(
+        updatedSelections: LabelSelectionList,
+        shouldArchive: Boolean = false
+    ): Either<DataError.Local, Unit> {
+        return messageRepository.labelAs(
             userId = userId,
             messageIds = messageIds,
-            labelsToBeRemoved = removedLabels,
-            labelsToBeAdded = addedLabels
+            selectedLabels = updatedSelections.selectedLabels,
+            partiallySelectedLabels = updatedSelections.partiallySelectionLabels,
+            shouldArchive = shouldArchive
         )
     }
 }
