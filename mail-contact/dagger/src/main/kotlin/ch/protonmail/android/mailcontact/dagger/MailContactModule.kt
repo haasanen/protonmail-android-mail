@@ -20,6 +20,7 @@ package ch.protonmail.android.mailcontact.dagger
 
 import ch.protonmail.android.mailcontact.data.ContactDetailRepositoryImpl
 import ch.protonmail.android.mailcontact.data.ContactGroupRepositoryImpl
+import ch.protonmail.android.mailcontact.data.ContactRustCoroutineScope
 import ch.protonmail.android.mailcontact.data.DeviceContactsRepositoryImpl
 import ch.protonmail.android.mailcontact.data.DeviceContactsSuggestionsPromptImpl
 import ch.protonmail.android.mailcontact.data.local.RustContactDataSource
@@ -32,39 +33,53 @@ import ch.protonmail.android.mailcontact.domain.repository.ContactRepository
 import ch.protonmail.android.mailcontact.domain.repository.DeviceContactsRepository
 import dagger.Binds
 import dagger.Module
+import dagger.Provides
 import dagger.Reusable
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import javax.inject.Singleton
 
-@Module
+@Module(includes = [MailContactModule.BindsModule::class])
 @InstallIn(SingletonComponent::class)
-abstract class MailContactModule {
+object MailContactModule {
 
-    @Binds
-    @Reusable
-    abstract fun bindRustContactDataSource(impl: RustContactDataSourceImpl): RustContactDataSource
-
-    @Binds
-    @Reusable
-    abstract fun bindContactRepository(impl: ContactRepositoryImpl): ContactRepository
-
-    @Binds
-    @Reusable
-    abstract fun bindContactDetailRepository(impl: ContactDetailRepositoryImpl): ContactDetailRepository
-
-    @Binds
-    @Reusable
-    abstract fun bindContactGroupRepository(impl: ContactGroupRepositoryImpl): ContactGroupRepository
-
-    @Binds
-    @Reusable
-    abstract fun bindDeviceContactsRepository(impl: DeviceContactsRepositoryImpl): DeviceContactsRepository
-
-    @Binds
+    @Provides
     @Singleton
-    abstract fun bindDeviceContactsSuggestionsPrompt(
-        impl: DeviceContactsSuggestionsPromptImpl
-    ): DeviceContactsSuggestionsPrompt
+    @ContactRustCoroutineScope
+    fun provideContactRustCoroutineScope(): CoroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
+    @Module
+    @InstallIn(SingletonComponent::class)
+    internal interface BindsModule {
+
+        @Binds
+        @Reusable
+        fun bindRustContactDataSource(impl: RustContactDataSourceImpl): RustContactDataSource
+
+        @Binds
+        @Reusable
+        fun bindContactRepository(impl: ContactRepositoryImpl): ContactRepository
+
+        @Binds
+        @Reusable
+        fun bindContactDetailRepository(impl: ContactDetailRepositoryImpl): ContactDetailRepository
+
+        @Binds
+        @Reusable
+        fun bindContactGroupRepository(impl: ContactGroupRepositoryImpl): ContactGroupRepository
+
+        @Binds
+        @Reusable
+        fun bindDeviceContactsRepository(impl: DeviceContactsRepositoryImpl): DeviceContactsRepository
+
+        @Binds
+        @Singleton
+        fun bindDeviceContactsSuggestionsPrompt(
+            impl: DeviceContactsSuggestionsPromptImpl
+        ): DeviceContactsSuggestionsPrompt
+
+    }
 }
