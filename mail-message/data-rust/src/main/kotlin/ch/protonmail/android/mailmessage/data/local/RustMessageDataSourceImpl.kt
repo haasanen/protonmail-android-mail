@@ -37,6 +37,7 @@ import ch.protonmail.android.mailmessage.data.usecase.GetRustMessageLabelAsActio
 import ch.protonmail.android.mailmessage.data.usecase.GetRustMessageMoveToActions
 import ch.protonmail.android.mailmessage.data.usecase.GetRustSenderImage
 import ch.protonmail.android.mailmessage.data.usecase.RustDeleteMessages
+import ch.protonmail.android.mailmessage.data.usecase.RustLabelMessages
 import ch.protonmail.android.mailmessage.data.usecase.RustMarkMessagesRead
 import ch.protonmail.android.mailmessage.data.usecase.RustMarkMessagesUnread
 import ch.protonmail.android.mailmessage.data.usecase.RustMoveMessages
@@ -71,6 +72,7 @@ class RustMessageDataSourceImpl @Inject constructor(
     private val getRustAllMessageBottomBarActions: GetRustAllMessageBottomBarActions,
     private val rustDeleteMessages: RustDeleteMessages,
     private val rustMoveMessages: RustMoveMessages,
+    private val rustLabelMessages: RustLabelMessages,
     private val getRustAvailableMessageActions: GetRustAvailableMessageActions,
     private val getRustMessageMoveToActions: GetRustMessageMoveToActions,
     private val getRustMessageLabelAsActions: GetRustMessageLabelAsActions
@@ -290,5 +292,34 @@ class RustMessageDataSourceImpl @Inject constructor(
             Timber.e("rust-message: Failure deleting message on rust lib $it")
             DataError.Local.Unknown
         }
+    }
+
+    override suspend fun labelMessages(
+        userId: UserId,
+        messageIds: List<LocalMessageId>,
+        selectedLabelIds: List<LocalLabelId>,
+        partiallySelectedLabelIds: List<LocalLabelId>,
+        shouldArchive: Boolean
+    ): Either<DataError.Local, Unit> {
+        Timber.v("rust-message: executing labels messages for $messageIds")
+        val mailbox = rustMailbox.observeMailbox().firstOrNull()
+        if (mailbox == null) {
+            Timber.e("rust-message: trying to label messages with null Mailbox! failing")
+            return DataError.Local.NoDataCached.left()
+        }
+
+        return Either.catch {
+            rustLabelMessages(
+                mailbox = mailbox,
+                messageIds = messageIds,
+                selectedLabelIds = selectedLabelIds,
+                partiallySelectedLabelIds = partiallySelectedLabelIds,
+                shouldArchive = shouldArchive
+            )
+        }.mapLeft {
+            Timber.e("rust-message: Failure deleting message on rust lib $it")
+            DataError.Local.Unknown
+        }
+
     }
 }

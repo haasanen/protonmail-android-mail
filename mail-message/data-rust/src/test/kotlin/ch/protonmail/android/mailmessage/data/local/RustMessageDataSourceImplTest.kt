@@ -32,6 +32,7 @@ import ch.protonmail.android.mailmessage.data.usecase.GetRustMessageLabelAsActio
 import ch.protonmail.android.mailmessage.data.usecase.GetRustMessageMoveToActions
 import ch.protonmail.android.mailmessage.data.usecase.GetRustSenderImage
 import ch.protonmail.android.mailmessage.data.usecase.RustDeleteMessages
+import ch.protonmail.android.mailmessage.data.usecase.RustLabelMessages
 import ch.protonmail.android.mailmessage.data.usecase.RustMarkMessagesRead
 import ch.protonmail.android.mailmessage.data.usecase.RustMarkMessagesUnread
 import ch.protonmail.android.mailmessage.data.usecase.RustMoveMessages
@@ -88,6 +89,7 @@ class RustMessageDataSourceImplTest {
     private val getRustAllBottomBarActions = mockk<GetRustAllMessageBottomBarActions>()
     private val rustDeleteMessages = mockk<RustDeleteMessages>()
     private val rustMoveMessages = mockk<RustMoveMessages>()
+    private val rustLabelMessages = mockk<RustLabelMessages>()
     private val getRustAvailableMessageActions = mockk<GetRustAvailableMessageActions>()
     private val getRustMessageMoveToActions = mockk<GetRustMessageMoveToActions>()
     private val getRustMessageLabelAsActions = mockk<GetRustMessageLabelAsActions>()
@@ -107,6 +109,7 @@ class RustMessageDataSourceImplTest {
         getRustAllBottomBarActions,
         rustDeleteMessages,
         rustMoveMessages,
+        rustLabelMessages,
         getRustAvailableMessageActions,
         getRustMessageMoveToActions,
         getRustMessageLabelAsActions
@@ -629,6 +632,88 @@ class RustMessageDataSourceImplTest {
 
         // When
         val result = dataSource.moveMessages(userId, messageIds, labelId)
+
+        // Then
+        assertEquals(DataError.Local.Unknown.left(), result)
+    }
+
+    @Test
+    fun `should label messages when mailbox is available`() = runTest {
+        // Given
+        val userId = UserIdTestData.userId
+        val messageIds = listOf(LocalMessageId(1uL), LocalMessageId(2uL))
+        val selectedLabelIds = listOf(LocalLabelId(3uL), LocalLabelId(4uL))
+        val partiallySelectedLabelIds = listOf(LocalLabelId(5uL))
+        val shouldArchive = false
+        val mailbox = mockk<Mailbox>()
+
+        coEvery {
+            rustLabelMessages(mailbox, messageIds, selectedLabelIds, partiallySelectedLabelIds, shouldArchive)
+        } returns Unit
+        coEvery { rustMailbox.observeMailbox() } returns flowOf(mailbox)
+
+        // When
+        val result = dataSource.labelMessages(
+            userId,
+            messageIds,
+            selectedLabelIds,
+            partiallySelectedLabelIds,
+            shouldArchive
+        )
+
+        // Then
+        assertTrue(result.isRight())
+        coVerify { rustLabelMessages(mailbox, messageIds, selectedLabelIds, partiallySelectedLabelIds, shouldArchive) }
+    }
+
+    @Test
+    fun `should not label messages when mailbox is not available`() = runTest {
+        // Given
+        val userId = UserIdTestData.userId
+        val messageIds = listOf(LocalMessageId(1uL), LocalMessageId(2uL))
+        val selectedLabelIds = listOf(LocalLabelId(3uL), LocalLabelId(4uL))
+        val partiallySelectedLabelIds = listOf(LocalLabelId(5uL))
+        val shouldArchive = false
+
+        coEvery { rustMailbox.observeMailbox() } returns flowOf()
+
+        // When
+        val result = dataSource.labelMessages(
+            userId,
+            messageIds,
+            selectedLabelIds,
+            partiallySelectedLabelIds,
+            shouldArchive
+        )
+
+        // Then
+        assertTrue(result.isLeft())
+        verify { rustLabelMessages wasNot Called }
+    }
+
+    @Test
+    fun `should handle exception when labelling messages`() = runTest {
+        // Given
+        val userId = UserIdTestData.userId
+        val mailbox = mockk<Mailbox>()
+        val messageIds = listOf(LocalMessageId(1uL), LocalMessageId(2uL))
+        val selectedLabelIds = listOf(LocalLabelId(3uL), LocalLabelId(4uL))
+        val partiallySelectedLabelIds = listOf(LocalLabelId(5uL))
+        val shouldArchive = false
+
+        coEvery {
+            rustLabelMessages(mailbox, messageIds, selectedLabelIds, partiallySelectedLabelIds, shouldArchive)
+        } throws MailSessionException.Other("Error")
+        coEvery { rustMailbox.observeMailbox() } returns flowOf(mailbox)
+
+        // When
+        val result = dataSource.labelMessages(
+            userId,
+            messageIds,
+            selectedLabelIds,
+            partiallySelectedLabelIds,
+            shouldArchive
+        )
 
         // Then
         assertEquals(DataError.Local.Unknown.left(), result)
