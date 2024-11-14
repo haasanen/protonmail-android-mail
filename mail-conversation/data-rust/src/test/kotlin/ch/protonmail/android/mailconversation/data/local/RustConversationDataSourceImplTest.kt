@@ -40,10 +40,12 @@ import ch.protonmail.android.testdata.conversation.rust.LocalConversationTestDat
 import ch.protonmail.android.testdata.message.rust.LocalMessageIdSample
 import ch.protonmail.android.testdata.message.rust.LocalMessageTestData
 import ch.protonmail.android.testdata.user.UserIdTestData
+import io.mockk.Called
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.verify
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
@@ -58,6 +60,7 @@ import uniffi.proton_mail_uniffi.IsSelected
 import uniffi.proton_mail_uniffi.LabelAsAction
 import uniffi.proton_mail_uniffi.LabelColor
 import uniffi.proton_mail_uniffi.MailSession
+import uniffi.proton_mail_uniffi.MailSessionException
 import uniffi.proton_mail_uniffi.Mailbox
 import uniffi.proton_mail_uniffi.MailboxException
 import uniffi.proton_mail_uniffi.MovableSystemFolder
@@ -84,11 +87,13 @@ class RustConversationDataSourceImplTest {
     private val getRustConversationLabelAsActions = mockk<GetRustConversationLabelAsActions>()
     private val rustDeleteConversations = mockk<RustDeleteConversations>()
     private val rustMoveConversations = mockk<RustMoveConversations>()
+    private val rustLabelConversations = mockk<RustLabelConversations>()
 
     private val dataSource = RustConversationDataSourceImpl(
         sessionManager,
         rustMailbox,
         rustMoveConversations,
+        rustLabelConversations,
         rustConversationDetailQuery,
         rustConversationsQuery,
         getRustAllConversationBottomBarActions,
@@ -310,5 +315,95 @@ class RustConversationDataSourceImplTest {
 
         // Then
         coVerify { rustMoveConversations(mailbox, labelId, conversationIds) }
+    }
+
+    @Test
+    fun `should label conversations when mailbox is available`() = runTest {
+        // Given
+        val userId = UserIdTestData.userId
+        val conversationIds = listOf(LocalConversationId(1uL), LocalConversationId(2uL))
+        val selectedLabelIds = listOf(LocalLabelId(3uL), LocalLabelId(4uL))
+        val partiallySelectedLabelIds = listOf(LocalLabelId(5uL))
+        val shouldArchive = false
+        val mailbox = mockk<Mailbox>()
+
+        coEvery {
+            rustLabelConversations(mailbox, conversationIds, selectedLabelIds, partiallySelectedLabelIds, shouldArchive)
+        } returns Unit
+        coEvery { rustMailbox.observeMailbox() } returns flowOf(mailbox)
+
+        // When
+        val result = dataSource.labelConversations(
+            userId,
+            conversationIds,
+            selectedLabelIds,
+            partiallySelectedLabelIds,
+            shouldArchive
+        )
+
+        // Then
+        assertEquals(Unit.right(), result)
+        coVerify {
+            rustLabelConversations(
+                mailbox,
+                conversationIds,
+                selectedLabelIds,
+                partiallySelectedLabelIds,
+                shouldArchive
+            )
+        }
+    }
+
+    @Test
+    fun `should not label conversations when mailbox is not available`() = runTest {
+        // Given
+        val userId = UserIdTestData.userId
+        val conversationIds = listOf(LocalConversationId(1uL), LocalConversationId(2uL))
+        val selectedLabelIds = listOf(LocalLabelId(3uL), LocalLabelId(4uL))
+        val partiallySelectedLabelIds = listOf(LocalLabelId(5uL))
+        val shouldArchive = false
+
+        coEvery { rustMailbox.observeMailbox() } returns flowOf()
+
+        // When
+        val result = dataSource.labelConversations(
+            userId,
+            conversationIds,
+            selectedLabelIds,
+            partiallySelectedLabelIds,
+            shouldArchive
+        )
+
+        // Then
+        assertEquals(DataError.Local.NoDataCached.left(), result)
+        verify { rustLabelConversations wasNot Called }
+    }
+
+    @Test
+    fun `should handle exception when labelling conversations`() = runTest {
+        // Given
+        val userId = UserIdTestData.userId
+        val mailbox = mockk<Mailbox>()
+        val conversationIds = listOf(LocalConversationId(1uL), LocalConversationId(2uL))
+        val selectedLabelIds = listOf(LocalLabelId(3uL), LocalLabelId(4uL))
+        val partiallySelectedLabelIds = listOf(LocalLabelId(5uL))
+        val shouldArchive = false
+
+        coEvery {
+            rustLabelConversations(mailbox, conversationIds, selectedLabelIds, partiallySelectedLabelIds, shouldArchive)
+        } throws MailSessionException.Other("Error")
+        coEvery { rustMailbox.observeMailbox() } returns flowOf(mailbox)
+
+        // When
+        val result = dataSource.labelConversations(
+            userId,
+            conversationIds,
+            selectedLabelIds,
+            partiallySelectedLabelIds,
+            shouldArchive
+        )
+
+        // Then
+        assertEquals(DataError.Local.Unknown.left(), result)
     }
 }

@@ -88,4 +88,12 @@ interface RustConversationDataSource {
         labelId: LocalLabelId,
         conversationIds: List<LocalConversationId>
     ): Either<DataError.Local, AllBottomBarMessageActions>
+
+    suspend fun labelConversations(
+        userId: UserId,
+        conversationIds: List<LocalConversationId>,
+        selectedLabelIds: List<LocalLabelId>,
+        partiallySelectedLabelIds: List<LocalLabelId>,
+        shouldArchive: Boolean
+    ): Either<DataError.Local, Unit>
 }

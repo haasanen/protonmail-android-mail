@@ -59,6 +59,7 @@ class RustConversationDataSourceImpl @Inject constructor(
     private val userSessionRepository: UserSessionRepository,
     private val rustMailbox: RustMailbox,
     private val rustMoveConversations: RustMoveConversations,
+    private val rustLabelConversations: RustLabelConversations,
     private val rustConversationDetailQuery: RustConversationDetailQuery,
     private val rustConversationsQuery: RustConversationsQuery,
     private val getRustAllConversationBottomBarActions: GetRustAllConversationBottomBarActions,
@@ -187,6 +188,34 @@ class RustConversationDataSourceImpl @Inject constructor(
         return Either.catch {
             getRustAllConversationBottomBarActions(mailbox, conversationIds)
         }.mapLeft {
+            DataError.Local.Unknown
+        }
+    }
+
+    override suspend fun labelConversations(
+        userId: UserId,
+        conversationIds: List<LocalConversationId>,
+        selectedLabelIds: List<LocalLabelId>,
+        partiallySelectedLabelIds: List<LocalLabelId>,
+        shouldArchive: Boolean
+    ): Either<DataError.Local, Unit> {
+        Timber.v("rust-conversation: executing label conversations for $conversationIds")
+        val mailbox = rustMailbox.observeMailbox().firstOrNull()
+        if (mailbox == null) {
+            Timber.e("rust-conversation: trying to label conversations with null Mailbox! failing")
+            return DataError.Local.NoDataCached.left()
+        }
+
+        return Either.catch {
+            rustLabelConversations(
+                mailbox = mailbox,
+                conversationIds = conversationIds,
+                selectedLabelIds = selectedLabelIds,
+                partiallySelectedLabelIds = partiallySelectedLabelIds,
+                shouldArchive = shouldArchive
+            )
+        }.mapLeft {
+            Timber.e("rust-conversation: Failure deleting conversation on rust lib $it")
             DataError.Local.Unknown
         }
     }
