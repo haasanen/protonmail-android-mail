@@ -79,7 +79,7 @@ import ch.protonmail.android.mailmailbox.domain.usecase.ObservePrimaryUserAccoun
 import ch.protonmail.android.mailmailbox.domain.usecase.ObserveStorageLimitPreference
 import ch.protonmail.android.mailmailbox.domain.usecase.ObserveUnreadCounters
 import ch.protonmail.android.mailmailbox.domain.usecase.RecordRatingBoosterTriggered
-import ch.protonmail.android.mailmailbox.domain.usecase.RelabelConversations
+import ch.protonmail.android.mailconversation.domain.usecase.LabelConversations
 import ch.protonmail.android.mailmailbox.domain.usecase.RelabelMessages
 import ch.protonmail.android.mailmailbox.domain.usecase.SaveStorageLimitPreference
 import ch.protonmail.android.mailmailbox.domain.usecase.ShouldShowRatingBooster
@@ -170,7 +170,7 @@ class MailboxViewModel @Inject constructor(
     private val markMessagesAsRead: MarkMessagesAsRead,
     private val markMessagesAsUnread: MarkMessagesAsUnread,
     private val relabelMessages: RelabelMessages,
-    private val relabelConversations: RelabelConversations,
+    private val labelConversations: LabelConversations,
     private val moveConversations: MoveConversations,
     private val moveMessages: MoveMessages,
     private val deleteConversations: DeleteConversations,
@@ -875,7 +875,7 @@ class MailboxViewModel @Inject constructor(
         archiveSelected: Boolean
     ): MailboxOperation {
         return when (viewMode) {
-            ViewMode.ConversationGrouping -> relabelConversations(
+            ViewMode.ConversationGrouping -> labelConversations(
                 userId = userId,
                 conversationIds = selectedItems.map { ConversationId(it.id) },
                 updatedSelections = updatedSelectionList,

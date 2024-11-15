@@ -16,7 +16,7 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailmailbox.domain.usecase
+package ch.protonmail.android.mailconversation.domain.usecase
 
 import arrow.core.left
 import arrow.core.right
@@ -32,12 +32,12 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Test
 import kotlin.test.assertEquals
 
-class RelabelConversationsTest {
+class LabelConversationsTest {
 
     private val userId = UserIdSample.Primary
     private val conversationIds = listOf(ConversationIdSample.Invoices)
     private val conversationRepository: ConversationRepository = mockk()
-    private val relabelConversation = RelabelConversations(conversationRepository)
+    private val relabelConversation = LabelConversations(conversationRepository)
 
     @Test
     fun `when repository fails then error is returned`() = runTest {
