@@ -26,7 +26,7 @@ import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
 import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 
-class RelabelMessage @Inject constructor(
+class LabelMessage @Inject constructor(
     private val messageRepository: MessageRepository
 ) {
 

@@ -20,7 +20,7 @@ package ch.protonmail.android.maildetail.presentation.usecase
 
 import arrow.core.Either
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.maildetail.domain.usecase.RelabelMessage
+import ch.protonmail.android.maildetail.domain.usecase.LabelMessage
 import ch.protonmail.android.maillabel.presentation.model.LabelSelectedState
 import ch.protonmail.android.maillabel.presentation.model.LabelUiModelWithSelectedState
 import ch.protonmail.android.mailmessage.domain.model.LabelSelectionList
@@ -29,7 +29,7 @@ import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 
 class OnMessageLabelAsConfirmed @Inject constructor(
-    private val relabelMessage: RelabelMessage
+    private val labelMessage: LabelMessage
 ) {
 
     suspend operator fun invoke(
@@ -45,7 +45,7 @@ class OnMessageLabelAsConfirmed @Inject constructor(
             .filter { it.selectedState == LabelSelectedState.PartiallySelected }
             .map { it.labelUiModel.id.labelId }
 
-        return relabelMessage(
+        return labelMessage(
             userId = userId,
             messageId = messageId,
             updatedSelection = LabelSelectionList(selectedLabels, partiallySelectedLabels),

@@ -81,7 +81,7 @@ import ch.protonmail.android.maildetail.domain.usecase.ObserveConversationViewSt
 import ch.protonmail.android.maildetail.domain.usecase.ObserveDetailBottomBarActions
 import ch.protonmail.android.maildetail.domain.usecase.ObserveMessageAttachmentStatus
 import ch.protonmail.android.maildetail.domain.usecase.LabelConversation
-import ch.protonmail.android.maildetail.domain.usecase.RelabelMessage
+import ch.protonmail.android.maildetail.domain.usecase.LabelMessage
 import ch.protonmail.android.maildetail.domain.usecase.ReportPhishingMessage
 import ch.protonmail.android.maildetail.domain.usecase.SetMessageViewState
 import ch.protonmail.android.maildetail.domain.usecase.ShouldShowEmbeddedImages
@@ -324,7 +324,7 @@ class ConversationDetailViewModelIntegrationTest {
     private val markMessageAsUnread = mockk<MarkMessageAsUnread>()
     private val moveMessage = mockk<MoveMessage>()
     private val deleteMessages = mockk<DeleteMessages>()
-    private val relabelMessage = mockk<RelabelMessage>()
+    private val labelMessage = mockk<LabelMessage>()
     private val avatarInformationMapper = mockk<AvatarInformationMapper> {
         every {
             this@mockk.toUiModel(any(), any(), any())
@@ -343,7 +343,7 @@ class ConversationDetailViewModelIntegrationTest {
         getMessageAvailableActions, getConversationAvailableActions, observeMessage, observeConversationUseCase
     )
     private val onMessageLabelAsConfirmed = OnMessageLabelAsConfirmed(
-        relabelMessage
+        labelMessage
     )
     // endregion
 
@@ -1909,7 +1909,7 @@ class ConversationDetailViewModelIntegrationTest {
         } returns flowOf(MessageSample.Invoice.right())
         coEvery { moveMessage(userId, messageId, filterByLocationLabelId) } returns Unit.right()
         coEvery {
-            relabelMessage(userId, messageId, labelSelection, true)
+            labelMessage(userId, messageId, labelSelection, true)
         } returns Unit.right()
         coEvery {
             getMessageLabelAsActions(userId, filterByLocationLabelId, listOf(messageId))
@@ -1956,7 +1956,7 @@ class ConversationDetailViewModelIntegrationTest {
                 BottomSheetVisibilityEffect.Hide, awaitItem().bottomSheetState?.bottomSheetVisibilityEffect?.consume()
             )
             coVerifySequence {
-                relabelMessage(userId, messageId, labelSelection, shouldArchive = true)
+                labelMessage(userId, messageId, labelSelection, shouldArchive = true)
             }
 
             cancelAndIgnoreRemainingEvents()

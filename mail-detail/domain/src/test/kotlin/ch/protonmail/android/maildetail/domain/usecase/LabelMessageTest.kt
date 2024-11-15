@@ -32,10 +32,10 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Test
 import kotlin.test.assertEquals
 
-internal class RelabelMessageTest {
+internal class LabelMessageTest {
 
     private val messageRepository: MessageRepository = mockk()
-    private val relabel = RelabelMessage(messageRepository)
+    private val relabel = LabelMessage(messageRepository)
 
     @Test
     fun `when repository fails then error is returned`() = runTest {

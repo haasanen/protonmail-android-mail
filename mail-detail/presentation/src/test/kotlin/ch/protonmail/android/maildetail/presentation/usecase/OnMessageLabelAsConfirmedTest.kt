@@ -1,7 +1,7 @@
 package ch.protonmail.android.maildetail.presentation.usecase
 
 import arrow.core.right
-import ch.protonmail.android.maildetail.domain.usecase.RelabelMessage
+import ch.protonmail.android.maildetail.domain.usecase.LabelMessage
 import ch.protonmail.android.maillabel.presentation.model.LabelSelectedState
 import ch.protonmail.android.maillabel.presentation.model.LabelUiModelWithSelectedState
 import ch.protonmail.android.maillabel.presentation.sample.LabelUiModelWithSelectedStateSample
@@ -19,7 +19,7 @@ class OnMessageLabelAsConfirmedTest {
     private val userId = UserIdTestData.userId
     private val messageId = MessageIdSample.PlainTextMessage
 
-    private val relabelMessage = mockk<RelabelMessage> {
+    private val labelMessage = mockk<LabelMessage> {
         coEvery {
             this@mockk.invoke(
                 userId = userId,
@@ -31,7 +31,7 @@ class OnMessageLabelAsConfirmedTest {
     }
 
     private val onMessageLabelAsConfirmed = OnMessageLabelAsConfirmed(
-        relabelMessage
+        labelMessage
     )
 
     @Test
@@ -45,7 +45,7 @@ class OnMessageLabelAsConfirmedTest {
 
         // Then
         coVerify {
-            relabelMessage(
+            labelMessage(
                 userId,
                 messageId,
                 updatedSelection,
@@ -65,7 +65,7 @@ class OnMessageLabelAsConfirmedTest {
 
         // Then
         coVerify {
-            relabelMessage(
+            labelMessage(
                 userId,
                 messageId,
                 updatedSelection,
