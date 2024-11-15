@@ -63,7 +63,7 @@ import ch.protonmail.android.maildetail.domain.usecase.ObserveConversationMessag
 import ch.protonmail.android.maildetail.domain.usecase.ObserveConversationViewState
 import ch.protonmail.android.maildetail.domain.usecase.ObserveDetailBottomBarActions
 import ch.protonmail.android.maildetail.domain.usecase.ObserveMessageAttachmentStatus
-import ch.protonmail.android.maildetail.domain.usecase.RelabelConversation
+import ch.protonmail.android.maildetail.domain.usecase.LabelConversation
 import ch.protonmail.android.maildetail.domain.usecase.ReportPhishingMessage
 import ch.protonmail.android.maildetail.domain.usecase.SetMessageViewState
 import ch.protonmail.android.maildetail.presentation.R.string
@@ -202,7 +202,7 @@ class ConversationDetailViewModelTest {
     private val markConversationAsRead: MarkConversationAsRead = mockk()
     private val markConversationAsUnread: MarkConversationAsUnread = mockk()
     private val move: MoveConversation = mockk()
-    private val relabelConversation: RelabelConversation = mockk()
+    private val labelConversation: LabelConversation = mockk()
     private val deleteConversations: DeleteConversations = mockk()
     private val observeContacts: ObserveContacts = mockk {
         every { this@mockk(userId = UserIdSample.Primary) } returns flowOf(emptyList<ContactMetadata.Contact>().right())
@@ -313,7 +313,7 @@ class ConversationDetailViewModelTest {
             markConversationAsUnread = markConversationAsUnread,
             moveConversation = move,
             deleteConversations = deleteConversations,
-            relabelConversation = relabelConversation,
+            labelConversation = labelConversation,
             observeContacts = observeContacts,
             observeConversation = observeConversation,
             observeConversationMessages = observeConversationMessages,
@@ -921,7 +921,7 @@ class ConversationDetailViewModelTest {
         val archiveSelected = false
 
         coEvery {
-            relabelConversation(
+            labelConversation(
                 userId,
                 conversationId,
                 updatedSelections = LabelSelectionList(
@@ -972,7 +972,7 @@ class ConversationDetailViewModelTest {
 
             // Then
             coVerify {
-                relabelConversation(
+                labelConversation(
                     userId,
                     conversationId,
                     updatedSelections = LabelSelectionList(
@@ -1008,7 +1008,7 @@ class ConversationDetailViewModelTest {
             val archiveSelected = true
 
             coEvery {
-                relabelConversation(
+                labelConversation(
                     userId = userId,
                     conversationId = conversationId,
                     updatedSelections = LabelSelectionList(
@@ -1075,7 +1075,7 @@ class ConversationDetailViewModelTest {
 
                 // Then
                 coVerify {
-                    relabelConversation(
+                    labelConversation(
                         userId,
                         conversationId,
                         updatedSelections = LabelSelectionList(
@@ -1109,7 +1109,7 @@ class ConversationDetailViewModelTest {
         val archiveSelected = false
 
         coEvery {
-            relabelConversation(
+            labelConversation(
                 userId,
                 conversationId,
                 updatedSelections = LabelSelectionList(
@@ -1161,7 +1161,7 @@ class ConversationDetailViewModelTest {
 
             // Then
             coVerify {
-                relabelConversation(
+                labelConversation(
                     userId,
                     conversationId,
                     updatedSelections = LabelSelectionList(

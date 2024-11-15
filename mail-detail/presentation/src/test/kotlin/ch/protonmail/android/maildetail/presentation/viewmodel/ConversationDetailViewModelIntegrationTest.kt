@@ -80,7 +80,7 @@ import ch.protonmail.android.maildetail.domain.usecase.ObserveConversationMessag
 import ch.protonmail.android.maildetail.domain.usecase.ObserveConversationViewState
 import ch.protonmail.android.maildetail.domain.usecase.ObserveDetailBottomBarActions
 import ch.protonmail.android.maildetail.domain.usecase.ObserveMessageAttachmentStatus
-import ch.protonmail.android.maildetail.domain.usecase.RelabelConversation
+import ch.protonmail.android.maildetail.domain.usecase.LabelConversation
 import ch.protonmail.android.maildetail.domain.usecase.RelabelMessage
 import ch.protonmail.android.maildetail.domain.usecase.ReportPhishingMessage
 import ch.protonmail.android.maildetail.domain.usecase.SetMessageViewState
@@ -287,7 +287,7 @@ class ConversationDetailViewModelIntegrationTest {
     private val markConversationAsRead: MarkConversationAsRead = mockk()
     private val markConversationAsUnread: MarkConversationAsUnread = mockk()
     private val move: MoveConversation = mockk()
-    private val relabelConversation: RelabelConversation = mockk()
+    private val labelConversation: LabelConversation = mockk()
     private val deleteConversations: DeleteConversations = mockk()
     private val savedStateHandle: SavedStateHandle = mockk {
         every { get<String>(ConversationDetailScreen.ConversationIdKey) } returns conversationId.id
@@ -2344,7 +2344,7 @@ class ConversationDetailViewModelIntegrationTest {
         read: MarkConversationAsRead = markConversationAsRead,
         unread: MarkConversationAsUnread = markConversationAsUnread,
         moveConversation: MoveConversation = move,
-        relabel: RelabelConversation = relabelConversation,
+        relabel: LabelConversation = labelConversation,
         delete: DeleteConversations = deleteConversations,
         report: ReportPhishingMessage = reportPhishingMessage,
         contacts: ObserveContacts = observeContacts,
@@ -2376,7 +2376,7 @@ class ConversationDetailViewModelIntegrationTest {
         markConversationAsRead = read,
         moveConversation = moveConversation,
         deleteConversations = delete,
-        relabelConversation = relabel,
+        labelConversation = relabel,
         observeContacts = contacts,
         observeConversation = observeConversation,
         observeConversationMessages = observeConversationMessages,

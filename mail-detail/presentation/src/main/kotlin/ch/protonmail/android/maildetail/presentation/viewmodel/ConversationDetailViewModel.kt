@@ -56,7 +56,7 @@ import ch.protonmail.android.maildetail.domain.usecase.ObserveConversationMessag
 import ch.protonmail.android.maildetail.domain.usecase.ObserveConversationViewState
 import ch.protonmail.android.maildetail.domain.usecase.ObserveDetailBottomBarActions
 import ch.protonmail.android.maildetail.domain.usecase.ObserveMessageAttachmentStatus
-import ch.protonmail.android.maildetail.domain.usecase.RelabelConversation
+import ch.protonmail.android.maildetail.domain.usecase.LabelConversation
 import ch.protonmail.android.maildetail.domain.usecase.ReportPhishingMessage
 import ch.protonmail.android.maildetail.domain.usecase.SetMessageViewState
 import ch.protonmail.android.maildetail.presentation.mapper.ConversationDetailMessageUiModelMapper
@@ -166,7 +166,7 @@ class ConversationDetailViewModel @Inject constructor(
     private val markConversationAsUnread: MarkConversationAsUnread,
     private val moveConversation: MoveConversation,
     private val deleteConversations: DeleteConversations,
-    private val relabelConversation: RelabelConversation,
+    private val labelConversation: LabelConversation,
     private val observeContacts: ObserveContacts,
     private val observeConversation: ObserveConversation,
     private val observeConversationMessages: ObserveConversationMessages,
@@ -672,7 +672,7 @@ class ConversationDetailViewModel @Inject constructor(
                 ?: throw IllegalStateException("BottomSheetState is not LabelAsBottomSheetState.Data")
 
             val relabelAction = suspend {
-                relabelConversation(
+                labelConversation(
                     userId = primaryUserId.first(),
                     conversationId = conversationId,
                     updatedSelections = labelAsData.getLabelSelectionState(),

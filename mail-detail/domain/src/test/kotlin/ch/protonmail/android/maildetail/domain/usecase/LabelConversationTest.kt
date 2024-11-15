@@ -32,10 +32,10 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Test
 import kotlin.test.assertEquals
 
-class RelabelConversationTest {
+class LabelConversationTest {
 
     private val conversationRepository: ConversationRepository = mockk()
-    private val relabelConversation = RelabelConversation(conversationRepository)
+    private val labelConversation = LabelConversation(conversationRepository)
 
     @Test
     fun `when repository fails then error is returned`() = runTest {
@@ -57,7 +57,7 @@ class RelabelConversationTest {
         } returns error
 
         // When
-        val result = relabelConversation(
+        val result = labelConversation(
             userId = UserIdSample.Primary,
             conversationId = ConversationIdSample.Invoices,
             updatedSelections = LabelSelectionList(
@@ -90,7 +90,7 @@ class RelabelConversationTest {
         } returns Unit.right()
 
         // When
-        val result = relabelConversation(
+        val result = labelConversation(
             userId = UserIdSample.Primary,
             conversationId = ConversationIdSample.Invoices,
             updatedSelections = LabelSelectionList(
