@@ -47,10 +47,8 @@ import uniffi.proton_mail_uniffi.MailUserSession
 import uniffi.proton_mail_uniffi.Mailbox
 import uniffi.proton_mail_uniffi.MailboxException
 import uniffi.proton_mail_uniffi.MoveAction
-import uniffi.proton_mail_uniffi.applyLabelToConversations
 import uniffi.proton_mail_uniffi.markConversationsAsRead
 import uniffi.proton_mail_uniffi.markConversationsAsUnread
-import uniffi.proton_mail_uniffi.removeLabelFromConversations
 import uniffi.proton_mail_uniffi.starConversations
 import uniffi.proton_mail_uniffi.unstarConversations
 import javax.inject.Inject
@@ -132,27 +130,6 @@ class RustConversationDataSourceImpl @Inject constructor(
             userId = userId,
             action = { userSession -> unstarConversations(userSession, conversations) },
             actionName = "unstar conversations"
-        )
-    }
-
-    override suspend fun relabel(
-        userId: UserId,
-        conversationIds: List<LocalConversationId>,
-        labelsToBeRemoved: List<LocalLabelId>,
-        labelsToBeAdded: List<LocalLabelId>
-    ) {
-        executeUserSessionAction(
-            userId = userId,
-            action = { userSession ->
-                labelsToBeRemoved.forEach { localLabelId ->
-                    removeLabelFromConversations(userSession, localLabelId, conversationIds)
-                }
-
-                labelsToBeAdded.forEach { localLabelId ->
-                    applyLabelToConversations(userSession, localLabelId, conversationIds)
-                }
-            },
-            actionName = "relabel conversations"
         )
     }
 

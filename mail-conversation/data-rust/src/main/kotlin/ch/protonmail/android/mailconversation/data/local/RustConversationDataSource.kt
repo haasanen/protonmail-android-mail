@@ -50,12 +50,6 @@ interface RustConversationDataSource {
     suspend fun markUnread(userId: UserId, conversations: List<LocalConversationId>)
     suspend fun starConversations(userId: UserId, conversations: List<LocalConversationId>)
     suspend fun unStarConversations(userId: UserId, conversations: List<LocalConversationId>)
-    suspend fun relabel(
-        userId: UserId,
-        conversationIds: List<LocalConversationId>,
-        labelsToBeRemoved: List<LocalLabelId>,
-        labelsToBeAdded: List<LocalLabelId>
-    )
 
     suspend fun moveConversations(
         userId: UserId,
