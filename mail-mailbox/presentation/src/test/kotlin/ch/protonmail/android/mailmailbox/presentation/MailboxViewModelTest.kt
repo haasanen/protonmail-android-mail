@@ -79,7 +79,7 @@ import ch.protonmail.android.mailmailbox.domain.usecase.ObserveStorageLimitPrefe
 import ch.protonmail.android.mailmailbox.domain.usecase.ObserveUnreadCounters
 import ch.protonmail.android.mailmailbox.domain.usecase.RecordRatingBoosterTriggered
 import ch.protonmail.android.mailconversation.domain.usecase.LabelConversations
-import ch.protonmail.android.mailmailbox.domain.usecase.RelabelMessages
+import ch.protonmail.android.mailmessage.domain.usecase.LabelMessages
 import ch.protonmail.android.mailmailbox.domain.usecase.SaveStorageLimitPreference
 import ch.protonmail.android.mailmailbox.domain.usecase.ShouldShowRatingBooster
 import ch.protonmail.android.mailmailbox.presentation.helper.MailboxAsyncPagingDataDiffer
@@ -242,7 +242,7 @@ class MailboxViewModelTest {
     private val moveMessages = mockk<MoveMessages>()
     private val deleteConversations = mockk<DeleteConversations>()
     private val deleteMessages = mockk<DeleteMessages>()
-    private val relabelMessages = mockk<RelabelMessages>()
+    private val labelMessages = mockk<LabelMessages>()
     private val labelConversations = mockk<LabelConversations>()
     private val starMessages = mockk<StarMessages>()
     private val starConversations = mockk<StarConversations>()
@@ -304,7 +304,7 @@ class MailboxViewModelTest {
             markConversationsAsUnread = markConversationsAsUnread,
             markMessagesAsRead = markMessagesAsRead,
             markMessagesAsUnread = markMessagesAsUnread,
-            relabelMessages = relabelMessages,
+            labelMessages = labelMessages,
             labelConversations = labelConversations,
             moveConversations = moveConversations,
             moveMessages = moveMessages,
@@ -2149,7 +2149,7 @@ class MailboxViewModelTest {
             assertEquals(initialState, awaitItem())
 
             coVerify {
-                relabelMessages wasNot Called
+                labelMessages wasNot Called
                 labelConversations wasNot Called
             }
         }
@@ -2211,7 +2211,7 @@ class MailboxViewModelTest {
             // Then
             assertEquals(intermediateState, awaitItem())
             coVerify(exactly = 1) {
-                relabelMessages(
+                labelMessages(
                     userId,
                     selectedItemsList.map { MessageId(it.id) },
                     expectedUpdatedLabelList,
@@ -2282,7 +2282,7 @@ class MailboxViewModelTest {
                 // Then
                 assertEquals(intermediateState, awaitItem())
                 coVerifySequence {
-                    relabelMessages(
+                    labelMessages(
                         userId,
                         selectedItemsList.map { MessageId(it.id) },
                         expectedUpdatedLabelList,
@@ -2359,7 +2359,7 @@ class MailboxViewModelTest {
                     archiveSelected
                 )
             }
-            coVerify { relabelMessages wasNot Called }
+            coVerify { labelMessages wasNot Called }
         }
     }
 
@@ -2430,7 +2430,7 @@ class MailboxViewModelTest {
                         archiveSelected
                     )
                 }
-                coVerify { relabelMessages wasNot Called }
+                coVerify { labelMessages wasNot Called }
                 coVerify { moveMessages wasNot Called }
             }
         }
@@ -3640,7 +3640,7 @@ class MailboxViewModelTest {
         archiveSelected: Boolean
     ) {
         coEvery {
-            relabelMessages(userId, selectedMessages, updatedSelections, archiveSelected)
+            labelMessages(userId, selectedMessages, updatedSelections, archiveSelected)
         } returns Unit.right()
     }
 
