@@ -24,8 +24,8 @@ import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.mailmessage.domain.model.LabelSelectionList
-import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
+import ch.protonmail.android.mailmessage.domain.usecase.LabelMessages
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
@@ -34,8 +34,8 @@ import kotlin.test.assertEquals
 
 internal class LabelMessageTest {
 
-    private val messageRepository: MessageRepository = mockk()
-    private val relabel = LabelMessage(messageRepository)
+    private val labelMessages: LabelMessages = mockk()
+    private val relabel = LabelMessage(labelMessages)
 
     @Test
     fun `when repository fails then error is returned`() = runTest {
@@ -43,14 +43,12 @@ internal class LabelMessageTest {
         val userId = UserIdSample.Primary
         val error = DataError.Local.NoDataCached.left()
         val expectedMessageIds = listOf(MessageIdSample.Invoice)
-        val selectedLabels = listOf(LabelId("labelId"))
-        val partiallySelectedLabels = listOf(LabelId("labelId2"))
+        val updatedSelection = LabelSelectionList(listOf(LabelId("labelId")), listOf(LabelId("labelId2")))
         coEvery {
-            messageRepository.labelAs(
-                userId,
-                expectedMessageIds,
-                selectedLabels,
-                partiallySelectedLabels,
+            labelMessages(
+                userId = userId,
+                messageIds = expectedMessageIds,
+                updatedSelections = updatedSelection,
                 shouldArchive = false
             )
         } returns error
@@ -59,7 +57,7 @@ internal class LabelMessageTest {
         val result = relabel(
             userId = UserIdSample.Primary,
             messageId = MessageIdSample.Invoice,
-            updatedSelection = LabelSelectionList(selectedLabels, partiallySelectedLabels),
+            updatedSelection = updatedSelection,
             shouldArchive = false
         )
 
@@ -72,14 +70,12 @@ internal class LabelMessageTest {
         // Given
         val userId = UserIdSample.Primary
         val expectedMessageIds = listOf(MessageIdSample.Invoice)
-        val selectedLabels = listOf(LabelId("labelId"))
-        val partiallySelectedLabels = listOf(LabelId("labelId2"))
+        val updatedSelection = LabelSelectionList(listOf(LabelId("labelId")), listOf(LabelId("labelId2")))
         coEvery {
-            messageRepository.labelAs(
-                userId,
-                expectedMessageIds,
-                selectedLabels,
-                partiallySelectedLabels,
+            labelMessages(
+                userId = userId,
+                messageIds = expectedMessageIds,
+                updatedSelections = updatedSelection,
                 shouldArchive = true
             )
         } returns Unit.right()
@@ -88,7 +84,7 @@ internal class LabelMessageTest {
         val result = relabel(
             userId = UserIdSample.Primary,
             messageId = MessageIdSample.Invoice,
-            updatedSelection = LabelSelectionList(selectedLabels, partiallySelectedLabels),
+            updatedSelection = updatedSelection,
             shouldArchive = true
         )
 
