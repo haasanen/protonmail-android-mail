@@ -226,8 +226,9 @@ fun ContactListScreen(listActions: ContactListScreen.Actions, viewModel: Contact
     }
 
     ContactDeleteConfirmationDialog(
-        deleteDialogState = deleteDialogState,
-        onDeleteConfirmed = { viewModel.submit(ContactListViewAction.OnDeleteContactConfirmed(it)) }
+        contactToDelete = deleteDialogState.value,
+        onDeleteConfirmed = { viewModel.submit(ContactListViewAction.OnDeleteContactConfirmed(it)) },
+        onDismissRequest = { deleteDialogState.value = null }
     )
 }
 

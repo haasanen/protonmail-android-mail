@@ -20,7 +20,6 @@ package ch.protonmail.android.mailcontact.presentation.dialogs
 
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
@@ -34,10 +33,11 @@ import ch.protonmail.android.mailcontact.presentation.model.ContactListItemUiMod
 
 @Composable
 fun ContactDeleteConfirmationDialog(
+    contactToDelete: ContactListItemUiModel.Contact?,
     onDeleteConfirmed: (ContactId) -> Unit,
-    deleteDialogState: MutableState<ContactListItemUiModel.Contact?>
+    onDismissRequest: () -> Unit
 ) {
-    deleteDialogState.value?.let { contact ->
+    contactToDelete?.let { contact ->
         ProtonAlertDialog(
             modifier = Modifier.testTag(ContactDeleteConfirmationDialogTestTags.DeleteDialog),
             title = stringResource(R.string.contact_delete_dialog_title, contact.name),
@@ -52,7 +52,7 @@ fun ContactDeleteConfirmationDialog(
                     titleResId = R.string.contact_delete_dialog_cancel_button,
                     modifier = Modifier.testTag(ContactDeleteConfirmationDialogTestTags.DeleteDialogCancelButton)
                 ) {
-                    deleteDialogState.value = null
+                    onDismissRequest()
                 }
             },
             confirmButton = {
@@ -60,11 +60,11 @@ fun ContactDeleteConfirmationDialog(
                     titleResId = R.string.contact_delete_dialog_confirm_button,
                     modifier = Modifier.testTag(ContactDeleteConfirmationDialogTestTags.DeleteDialogConfirmButton)
                 ) {
-                    deleteDialogState.value = null
+                    onDismissRequest()
                     onDeleteConfirmed(contact.id)
                 }
             },
-            onDismissRequest = { deleteDialogState.value = null }
+            onDismissRequest = onDismissRequest
         )
     }
 }
