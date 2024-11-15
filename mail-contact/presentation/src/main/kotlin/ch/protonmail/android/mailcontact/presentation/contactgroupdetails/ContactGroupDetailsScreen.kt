@@ -200,13 +200,12 @@ fun ContactGroupDetailsContent(
                     ),
                     textAlign = TextAlign.Center
                 )
-                if (state.isContactGroupsCrudEnabled) {
-                    ContactGroupDetailsSendTextButton(
-                        modifier = Modifier.align(Alignment.CenterHorizontally),
-                        isEnabled = state.isSendEnabled,
-                        onClick = onSendClick
-                    )
-                }
+                ContactGroupDetailsSendTextButton(
+                    modifier = Modifier.align(Alignment.CenterHorizontally),
+                    isEnabled = state.isSendEnabled,
+                    onClick = onSendClick
+                )
+
             }
         }
         items(state.contactGroup.members) { member ->
@@ -328,23 +327,20 @@ fun ContactGroupDetailsTopBar(
         },
         actions = {
             if (state is ContactGroupDetailsState.Data) {
-                if (state.isContactGroupsCrudEnabled) {
-                    IconButton(onClick = { actions.onEditClick(state.contactGroup.id) }) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_proton_pen),
-                            tint = ProtonTheme.colors.iconNorm,
-                            contentDescription = stringResource(R.string.edit_contact_group_content_description)
-                        )
-                    }
+                IconButton(onClick = { actions.onEditClick(state.contactGroup.id) }) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_proton_pen),
+                        tint = ProtonTheme.colors.iconNorm,
+                        contentDescription = stringResource(R.string.edit_contact_group_content_description)
+                    )
                 }
-                if (state.isContactGroupsCrudEnabled) {
-                    IconButton(onClick = onDeleteClick) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_proton_trash),
-                            tint = ProtonTheme.colors.iconNorm,
-                            contentDescription = stringResource(R.string.delete_contact_group_content_description)
-                        )
-                    }
+
+                IconButton(onClick = onDeleteClick) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_proton_trash),
+                        tint = ProtonTheme.colors.iconNorm,
+                        contentDescription = stringResource(R.string.delete_contact_group_content_description)
+                    )
                 }
             }
         }
@@ -384,7 +380,6 @@ private fun ContactGroupDetailsContentPreview() {
     ContactGroupDetailsContent(
         state = ContactGroupDetailsState.Data(
             isSendEnabled = true,
-            isContactGroupsCrudEnabled = true,
             contactGroup = contactGroupDetailsSampleData,
             deleteDialogState = DeleteDialogState.Hidden
         ),
@@ -398,7 +393,6 @@ private fun EmptyContactGroupDetailsContentPreview() {
     ContactGroupDetailsContent(
         state = ContactGroupDetailsState.Data(
             isSendEnabled = true,
-            isContactGroupsCrudEnabled = true,
             contactGroup = contactGroupDetailsSampleData.copy(
                 memberCount = 0,
                 members = emptyList()
@@ -415,7 +409,6 @@ private fun ContactDetailsTopBarPreview() {
     ContactGroupDetailsTopBar(
         state = ContactGroupDetailsState.Data(
             isSendEnabled = true,
-            isContactGroupsCrudEnabled = true,
             contactGroup = contactGroupDetailsSampleData,
             deleteDialogState = DeleteDialogState.Hidden
         ),

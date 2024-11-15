@@ -26,7 +26,6 @@ import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailcontact.domain.model.ContactId
 import ch.protonmail.android.mailcontact.domain.usecase.DeleteContact
 import ch.protonmail.android.mailcontact.domain.usecase.ObserveGroupedContacts
-import ch.protonmail.android.mailcontact.domain.usecase.featureflags.IsContactGroupsCrudEnabled
 import ch.protonmail.android.mailupselling.domain.model.UpsellingEntryPoint
 import ch.protonmail.android.mailupselling.domain.model.UserUpgradeState
 import ch.protonmail.android.mailupselling.presentation.usecase.ObserveUpsellingVisibility
@@ -54,7 +53,6 @@ class ContactListViewModel @Inject constructor(
     private val isPaidUser: IsPaidUser,
     private val reducer: ContactListReducer,
     private val groupedContactListItemsUiModelMapper: GroupedContactListItemsUiModelMapper,
-    private val isContactGroupsCrudEnabled: IsContactGroupsCrudEnabled,
     private val observeUpsellingVisibility: ObserveUpsellingVisibility,
     private val userUpgradeState: UserUpgradeState,
     observePrimaryUserId: ObservePrimaryUserId
@@ -119,15 +117,12 @@ class ContactListViewModel @Inject constructor(
             observeGroupedContacts(userId),
             observeUpsellingVisibility(UpsellingEntryPoint.BottomSheet.ContactGroups)
         ) { contactsEither, isContactGroupsUpsellingVisible ->
-            val isContactGroupsCrudEnabled = isContactGroupsCrudEnabled()
 
             contactsEither.fold(
                 ifRight = { contactList ->
                     ContactListEvent.ContactListLoaded(
                         groupedContactsList = contactList.map { groupedContactListItemsUiModelMapper.toUiModel(it) },
-                        isContactGroupsCrudEnabled = isContactGroupsCrudEnabled,
-                        isContactGroupsUpsellingVisible = isContactGroupsUpsellingVisible,
-                        isContactSearchEnabled = true
+                        isContactGroupsUpsellingVisible = isContactGroupsUpsellingVisible
                     )
                 },
                 ifLeft = {

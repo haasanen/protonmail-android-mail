@@ -38,9 +38,7 @@ internal sealed interface ContactListViewAction : ContactListOperation {
 internal sealed interface ContactListEvent : ContactListOperation {
     data class ContactListLoaded(
         val groupedContactsList: List<GroupedContactListItemsUiModel>,
-        val isContactGroupsCrudEnabled: Boolean,
-        val isContactGroupsUpsellingVisible: Boolean,
-        val isContactSearchEnabled: Boolean
+        val isContactGroupsUpsellingVisible: Boolean
     ) : ContactListEvent
     data object ErrorLoadingContactList : ContactListEvent
     data object SubscriptionUpgradeRequiredError : ContactListEvent

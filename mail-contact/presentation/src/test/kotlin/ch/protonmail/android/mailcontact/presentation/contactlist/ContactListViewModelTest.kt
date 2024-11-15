@@ -30,7 +30,6 @@ import ch.protonmail.android.mailcommon.presentation.mapper.AvatarInformationMap
 import ch.protonmail.android.mailcommon.presentation.mapper.ColorMapper
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcontact.domain.model.GetContactError
-import ch.protonmail.android.mailcontact.domain.usecase.featureflags.IsContactGroupsCrudEnabled
 import ch.protonmail.android.mailcontact.presentation.R
 import ch.protonmail.android.mailcontact.presentation.model.ContactGroupItemUiModelMapper
 import ch.protonmail.android.mailcontact.presentation.model.ContactListItemUiModelMapper
@@ -114,9 +113,6 @@ class ContactListViewModelTest {
     private val observeGroupedContacts = mockk<ObserveGroupedContacts> {
         coEvery { this@mockk.invoke(any()) } returns flowOf(listOf(defaultTestGroupedContacts).right())
     }
-    private val isContactGroupsCrudEnabledMock = mockk<IsContactGroupsCrudEnabled> {
-        every { this@mockk() } returns true
-    }
     private val observeUpsellingVisibilityMock = mockk<ObserveUpsellingVisibility> {
         every { this@mockk(any()) } returns flowOf(false)
     }
@@ -151,7 +147,6 @@ class ContactListViewModelTest {
             isPaidUser,
             reducer,
             groupedContactListItemsUiModelMapper,
-            isContactGroupsCrudEnabledMock,
             observeUpsellingVisibilityMock,
             userUpgradeState,
             observePrimaryUserId
@@ -187,9 +182,7 @@ class ContactListViewModelTest {
             val expected = ContactListState.Loaded.Data(
                 groupedContacts = listOf(defaultTestGroupedContacts).map {
                     groupedContactListItemsUiModelMapper.toUiModel(it)
-                },
-                isContactGroupsCrudEnabled = true,
-                isContactSearchEnabled = true
+                }
             )
 
             assertEquals(expected, actual)
@@ -216,28 +209,6 @@ class ContactListViewModelTest {
     }
 
     @Test
-    fun `when feature flag IsContactGroupsCrudEnabled is false then emit appropriate event`() = runTest {
-        // Given
-        expectContactsData()
-        every { isContactGroupsCrudEnabledMock.invoke() } returns false
-
-        // When
-        contactListViewModel.state.test {
-            // Then
-            val actual = awaitItem()
-            val expected = ContactListState.Loaded.Data(
-                groupedContacts = listOf(defaultTestGroupedContacts).map {
-                    groupedContactListItemsUiModelMapper.toUiModel(it)
-                },
-                isContactGroupsCrudEnabled = false,
-                isContactSearchEnabled = true
-            )
-
-            assertEquals(expected, actual)
-        }
-    }
-
-    @Test
     fun `when ObserveUpsellingVisibility is true then emit appropriate event`() = runTest {
         // Given
         expectContactsData()
@@ -251,9 +222,7 @@ class ContactListViewModelTest {
                 groupedContacts = listOf(defaultTestGroupedContacts).map {
                     groupedContactListItemsUiModelMapper.toUiModel(it)
                 },
-                isContactGroupsCrudEnabled = true,
-                isContactGroupsUpsellingVisible = true,
-                isContactSearchEnabled = true
+                isContactGroupsUpsellingVisible = true
             )
 
             assertEquals(expected, actual)
@@ -279,9 +248,7 @@ class ContactListViewModelTest {
                 groupedContacts = listOf(defaultTestGroupedContacts).map {
                     groupedContactListItemsUiModelMapper.toUiModel(it)
                 },
-                isContactGroupsCrudEnabled = true,
                 isContactGroupsUpsellingVisible = false,
-                isContactSearchEnabled = true,
                 bottomSheetVisibilityEffect = Effect.of(BottomSheetVisibilityEffect.Hide),
                 upsellingInProgress = Effect.of(TextUiModel(R.string.upselling_snackbar_upgrade_in_progress))
             )
@@ -307,9 +274,7 @@ class ContactListViewModelTest {
                     groupedContactListItemsUiModelMapper.toUiModel(it)
                 },
                 bottomSheetVisibilityEffect = Effect.of(BottomSheetVisibilityEffect.Show),
-                bottomSheetType = ContactListState.BottomSheetType.Menu,
-                isContactGroupsCrudEnabled = true,
-                isContactSearchEnabled = true
+                bottomSheetType = ContactListState.BottomSheetType.Menu
             )
 
             assertEquals(expected, actual)
@@ -332,9 +297,7 @@ class ContactListViewModelTest {
                 groupedContacts = listOf(defaultTestGroupedContacts).map {
                     groupedContactListItemsUiModelMapper.toUiModel(it)
                 },
-                bottomSheetVisibilityEffect = Effect.of(BottomSheetVisibilityEffect.Hide),
-                isContactGroupsCrudEnabled = true,
-                isContactSearchEnabled = true
+                bottomSheetVisibilityEffect = Effect.of(BottomSheetVisibilityEffect.Hide)
             )
 
             kotlin.test.assertEquals(expected, actual)
@@ -357,9 +320,7 @@ class ContactListViewModelTest {
                 groupedContacts = listOf(defaultTestGroupedContacts).map {
                     groupedContactListItemsUiModelMapper.toUiModel(it)
                 },
-                bottomSheetVisibilityEffect = Effect.of(BottomSheetVisibilityEffect.Hide),
-                isContactGroupsCrudEnabled = true,
-                isContactSearchEnabled = true
+                bottomSheetVisibilityEffect = Effect.of(BottomSheetVisibilityEffect.Hide)
             )
 
             assertEquals(expected, actual)
@@ -383,9 +344,7 @@ class ContactListViewModelTest {
                     groupedContactListItemsUiModelMapper.toUiModel(it)
                 },
                 bottomSheetVisibilityEffect = Effect.of(BottomSheetVisibilityEffect.Hide),
-                openContactForm = Effect.of(Unit),
-                isContactGroupsCrudEnabled = true,
-                isContactSearchEnabled = true
+                openContactForm = Effect.of(Unit)
             )
 
             assertEquals(expected, actual)
@@ -411,9 +370,7 @@ class ContactListViewModelTest {
                     groupedContactListItemsUiModelMapper.toUiModel(it)
                 },
                 bottomSheetVisibilityEffect = Effect.of(BottomSheetVisibilityEffect.Hide),
-                openContactGroupForm = Effect.of(Unit),
-                isContactGroupsCrudEnabled = true,
-                isContactSearchEnabled = true
+                openContactGroupForm = Effect.of(Unit)
             )
 
             kotlin.test.assertEquals(expected, actual)
@@ -439,9 +396,7 @@ class ContactListViewModelTest {
                     groupedContactListItemsUiModelMapper.toUiModel(it)
                 },
                 bottomSheetVisibilityEffect = Effect.of(BottomSheetVisibilityEffect.Hide),
-                subscriptionError = Effect.of(TextUiModel.TextRes(R.string.contact_group_form_subscription_error)),
-                isContactGroupsCrudEnabled = true,
-                isContactSearchEnabled = true
+                subscriptionError = Effect.of(TextUiModel.TextRes(R.string.contact_group_form_subscription_error))
             )
 
             assertEquals(expected, actual)
@@ -471,8 +426,6 @@ class ContactListViewModelTest {
                     bottomSheetVisibilityEffect = Effect.of(BottomSheetVisibilityEffect.Show),
                     bottomSheetType = ContactListState.BottomSheetType.Upselling,
                     subscriptionError = Effect.empty(),
-                    isContactGroupsCrudEnabled = true,
-                    isContactSearchEnabled = true,
                     isContactGroupsUpsellingVisible = true
                 )
 
@@ -498,9 +451,7 @@ class ContactListViewModelTest {
                     groupedContactListItemsUiModelMapper.toUiModel(it)
                 },
                 bottomSheetVisibilityEffect = Effect.of(BottomSheetVisibilityEffect.Hide),
-                openImportContact = Effect.of(Unit),
-                isContactGroupsCrudEnabled = true,
-                isContactSearchEnabled = true
+                openImportContact = Effect.of(Unit)
             )
 
             assertEquals(expected, actual)
@@ -529,9 +480,7 @@ class ContactListViewModelTest {
                 groupedContacts = listOf(defaultTestGroupedContacts).map {
                     groupedContactListItemsUiModelMapper.toUiModel(it)
                 },
-                isContactGroupsCrudEnabled = true,
                 isContactGroupsUpsellingVisible = false,
-                isContactSearchEnabled = true,
                 showDeleteConfirmDialog = Effect.of(contactUiModel),
                 bottomSheetType = ContactListState.BottomSheetType.Menu
             )
@@ -566,8 +515,6 @@ class ContactListViewModelTest {
                 groupedContacts = listOf(defaultTestGroupedContacts).map {
                     groupedContactListItemsUiModelMapper.toUiModel(it)
                 },
-                isContactGroupsCrudEnabled = true,
-                isContactSearchEnabled = true,
                 showDeleteConfirmDialog = Effect.empty()
             )
 

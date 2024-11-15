@@ -101,9 +101,7 @@ internal class ContactListReducerTest(
         private val emptyLoadedState = ContactListState.Loaded.Empty()
         private val dataLoadedState = ContactListState.Loaded.Data(
             groupedContacts = groupedContacts,
-            isContactGroupsCrudEnabled = true,
-            isContactGroupsUpsellingVisible = true,
-            isContactSearchEnabled = true
+            isContactGroupsUpsellingVisible = true
         )
 
         private val transitionsFromLoadingState = listOf(
@@ -111,9 +109,7 @@ internal class ContactListReducerTest(
                 currentState = emptyLoadingState,
                 event = ContactListEvent.ContactListLoaded(
                     groupedContacts,
-                    isContactGroupsCrudEnabled = true,
-                    isContactGroupsUpsellingVisible = true,
-                    isContactSearchEnabled = true
+                    isContactGroupsUpsellingVisible = true
                 ),
                 expectedState = dataLoadedState
             ),
@@ -121,9 +117,7 @@ internal class ContactListReducerTest(
                 currentState = emptyLoadingState,
                 event = ContactListEvent.ContactListLoaded(
                     emptyList(),
-                    isContactGroupsCrudEnabled = false,
-                    isContactGroupsUpsellingVisible = false,
-                    isContactSearchEnabled = false
+                    isContactGroupsUpsellingVisible = false
                 ),
                 expectedState = ContactListState.Loaded.Empty()
             ),
@@ -169,9 +163,7 @@ internal class ContactListReducerTest(
                 currentState = emptyLoadedState,
                 event = ContactListEvent.ContactListLoaded(
                     groupedContacts,
-                    isContactGroupsCrudEnabled = true,
-                    isContactGroupsUpsellingVisible = true,
-                    isContactSearchEnabled = true
+                    isContactGroupsUpsellingVisible = true
                 ),
                 expectedState = dataLoadedState
             ),
@@ -181,9 +173,7 @@ internal class ContactListReducerTest(
                 ),
                 event = ContactListEvent.ContactListLoaded(
                     emptyList(),
-                    isContactGroupsCrudEnabled = false,
-                    isContactGroupsUpsellingVisible = false,
-                    isContactSearchEnabled = false
+                    isContactGroupsUpsellingVisible = false
                 ),
                 expectedState = ContactListState.Loaded.Empty().copy(
                     bottomSheetVisibilityEffect = Effect.of(BottomSheetVisibilityEffect.Hide)
@@ -275,9 +265,7 @@ internal class ContactListReducerTest(
                 currentState = dataLoadedState,
                 event = ContactListEvent.ContactListLoaded(
                     groupedContacts,
-                    isContactGroupsCrudEnabled = true,
-                    isContactGroupsUpsellingVisible = true,
-                    isContactSearchEnabled = true
+                    isContactGroupsUpsellingVisible = true
                 ),
                 expectedState = dataLoadedState
             ),
@@ -285,9 +273,7 @@ internal class ContactListReducerTest(
                 currentState = dataLoadedState,
                 event = ContactListEvent.ContactListLoaded(
                     emptyList(),
-                    isContactGroupsCrudEnabled = false,
-                    isContactGroupsUpsellingVisible = false,
-                    isContactSearchEnabled = false
+                    isContactGroupsUpsellingVisible = false
                 ),
                 expectedState = ContactListState.Loaded.Empty()
             ),

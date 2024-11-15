@@ -106,7 +106,6 @@ fun ContactListScreen(listActions: ContactListScreen.Actions, viewModel: Contact
                 when (state.bottomSheetType) {
                     ContactListState.BottomSheetType.Menu -> {
                         ContactBottomSheetContent(
-                            isContactGroupsCrudEnabled = state.isContactGroupsCrudEnabled,
                             isContactGroupsUpsellingVisible = state.isContactGroupsUpsellingVisible,
                             actions = ContactBottomSheet.Actions(
                                 onNewContactClick = {
@@ -143,9 +142,7 @@ fun ContactListScreen(listActions: ContactListScreen.Actions, viewModel: Contact
                             viewModel.submit(ContactListViewAction.OnOpenContactSearch)
                         }
                     ),
-                    isAddButtonVisible = state is ContactListState.Loaded.Data,
-                    isContactGroupsCrudEnabled = state.isContactGroupsCrudEnabled,
-                    isContactSearchEnabled = state.isContactSearchEnabled
+                    isAddButtonVisible = state is ContactListState.Loaded.Data
                 )
             },
             content = { paddingValues ->

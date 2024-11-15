@@ -117,9 +117,7 @@ fun ContactListScreenContentPreview() {
     )
 
     val sampleState = ContactListState.Loaded.Data(
-        groupedContacts = sampleGroupedContacts,
-        isContactGroupsCrudEnabled = true,
-        isContactSearchEnabled = true
+        groupedContacts = sampleGroupedContacts
     )
 
     ContactListScreenContent(

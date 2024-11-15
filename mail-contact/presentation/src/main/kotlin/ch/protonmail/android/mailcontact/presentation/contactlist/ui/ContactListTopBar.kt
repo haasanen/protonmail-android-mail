@@ -40,9 +40,7 @@ import ch.protonmail.android.design.compose.theme.ProtonTheme
 internal fun ContactListTopBar(
     modifier: Modifier = Modifier,
     actions: ContactListTopBar.Actions,
-    isAddButtonVisible: Boolean,
-    isContactGroupsCrudEnabled: Boolean,
-    isContactSearchEnabled: Boolean
+    isAddButtonVisible: Boolean
 ) {
     ProtonMediumTopAppBar(
         modifier = modifier.fillMaxWidth(),
@@ -64,17 +62,16 @@ internal fun ContactListTopBar(
             }
         },
         actions = {
-            if (isContactSearchEnabled) {
-                IconButton(onClick = actions.onSearchClick) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_proton_magnifier),
-                        tint = ProtonTheme.colors.iconNorm,
-                        contentDescription = stringResource(R.string.search_contacts_description)
-                    )
-                }
+            IconButton(onClick = actions.onSearchClick) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_proton_magnifier),
+                    tint = ProtonTheme.colors.iconNorm,
+                    contentDescription = stringResource(R.string.search_contacts_description)
+                )
             }
+
             // hasOneCreateOption can be deleted once we get rid of ContactFeatureFlags
-            val hasOneCreateOption = ContactCreate.value || isContactGroupsCrudEnabled || ContactImport.value
+            val hasOneCreateOption = ContactCreate.value || ContactImport.value
             if (isAddButtonVisible && hasOneCreateOption) {
                 IconButton(onClick = actions.onAddClick) {
                     Icon(
@@ -112,9 +109,7 @@ internal object ContactListTopBar {
 private fun ContactListTopBarPreview() {
     ContactListTopBar(
         actions = ContactListTopBar.Actions.Empty,
-        isAddButtonVisible = true,
-        isContactGroupsCrudEnabled = true,
-        isContactSearchEnabled = true
+        isAddButtonVisible = true
     )
 }
 
@@ -123,8 +118,6 @@ private fun ContactListTopBarPreview() {
 private fun EmptyContactListTopBarPreview() {
     ContactListTopBar(
         actions = ContactListTopBar.Actions.Empty,
-        isAddButtonVisible = false,
-        isContactGroupsCrudEnabled = true,
-        isContactSearchEnabled = true
+        isAddButtonVisible = false
     )
 }
