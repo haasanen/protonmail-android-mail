@@ -129,26 +129,6 @@ interface MessageRepository {
 
     suspend fun isMessageRead(userId: UserId, messageId: MessageId): Either<DataError.Local, Boolean>
 
-    /**
-     * Removes [labelsToBeRemoved] and adds [labelsToBeAdded] from the message with the given [messageId]
-     */
-    suspend fun relabel(
-        userId: UserId,
-        messageId: MessageId,
-        labelsToBeRemoved: List<LabelId> = emptyList(),
-        labelsToBeAdded: List<LabelId> = emptyList()
-    ): Either<DataError.Local, Message>
-
-    /**
-     * Removes [labelsToBeRemoved] and adds [labelsToBeAdded] from the messages with the given [messageIds]
-     */
-    suspend fun relabel(
-        userId: UserId,
-        messageIds: List<MessageId>,
-        labelsToBeRemoved: List<LabelId> = emptyList(),
-        labelsToBeAdded: List<LabelId> = emptyList()
-    ): Either<DataError.Local, List<Message>>
-
     suspend fun updateDraftRemoteIds(
         userId: UserId,
         localDraftId: MessageId,

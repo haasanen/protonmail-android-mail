@@ -165,24 +165,6 @@ class RustMessageRepositoryImpl @Inject constructor(
         shouldArchive
     )
 
-    override suspend fun relabel(
-        userId: UserId,
-        messageId: MessageId,
-        labelsToBeRemoved: List<LabelId>,
-        labelsToBeAdded: List<LabelId>
-    ): Either<DataError.Local, Message> {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun relabel(
-        userId: UserId,
-        messageIds: List<MessageId>,
-        labelsToBeRemoved: List<LabelId>,
-        labelsToBeAdded: List<LabelId>
-    ): Either<DataError.Local, List<Message>> {
-        TODO("Not yet implemented")
-    }
-
     override suspend fun updateDraftRemoteIds(
         userId: UserId,
         localDraftId: MessageId,

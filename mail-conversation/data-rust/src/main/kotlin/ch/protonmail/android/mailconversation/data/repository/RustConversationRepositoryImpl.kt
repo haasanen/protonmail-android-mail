@@ -166,22 +166,6 @@ class RustConversationRepositoryImpl @Inject constructor(
         return emptyList<Conversation>().right()
     }
 
-    // It will be implemented later on
-    override suspend fun relabel(
-        userId: UserId,
-        conversationId: ConversationId,
-        labelsToBeRemoved: List<LabelId>,
-        labelsToBeAdded: List<LabelId>
-    ): Either<DataError, Conversation> = DataError.Local.Unknown.left()
-
-    // It will be implemented later on
-    override suspend fun relabel(
-        userId: UserId,
-        conversationIds: List<ConversationId>,
-        labelsToBeRemoved: List<LabelId>,
-        labelsToBeAdded: List<LabelId>
-    ): Either<DataError, List<Conversation>> = DataError.Local.Unknown.left()
-
     override suspend fun labelAs(
         userId: UserId,
         conversationIds: List<ConversationId>,

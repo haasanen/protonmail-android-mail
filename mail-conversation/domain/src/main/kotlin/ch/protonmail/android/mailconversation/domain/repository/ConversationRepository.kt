@@ -105,20 +105,6 @@ interface ConversationRepository {
 
     suspend fun unStar(userId: UserId, conversationIds: List<ConversationId>): Either<DataError, List<Conversation>>
 
-    suspend fun relabel(
-        userId: UserId,
-        conversationId: ConversationId,
-        labelsToBeRemoved: List<LabelId>,
-        labelsToBeAdded: List<LabelId>
-    ): Either<DataError, Conversation>
-
-    suspend fun relabel(
-        userId: UserId,
-        conversationIds: List<ConversationId>,
-        labelsToBeRemoved: List<LabelId>,
-        labelsToBeAdded: List<LabelId>
-    ): Either<DataError, List<Conversation>>
-
     suspend fun labelAs(
         userId: UserId,
         conversationIds: List<ConversationId>,
