@@ -23,7 +23,7 @@ import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.sample.ConversationIdSample
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
-import ch.protonmail.android.mailconversation.domain.repository.ConversationRepository
+import ch.protonmail.android.mailconversation.domain.usecase.LabelConversations
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.mailmessage.domain.model.LabelSelectionList
 import io.mockk.coEvery
@@ -34,24 +34,22 @@ import kotlin.test.assertEquals
 
 class LabelConversationTest {
 
-    private val conversationRepository: ConversationRepository = mockk()
-    private val labelConversation = LabelConversation(conversationRepository)
+    private val labelConversations: LabelConversations = mockk()
+    private val labelConversation = LabelConversation(labelConversations)
 
     @Test
     fun `when repository fails then error is returned`() = runTest {
         // Given
         val error = DataError.Local.NoDataCached.left()
         val userId = UserIdSample.Primary
-        val selectedLabels = listOf(LabelId("labelId"))
-        val partiallySelectedLabels = listOf(LabelId("labelId2"))
+        val labelSelectionList = LabelSelectionList(listOf(LabelId("labelId")), listOf(LabelId("labelId2")))
         val conversationIds = listOf(ConversationIdSample.Invoices)
         val shouldArchive = false
         coEvery {
-            conversationRepository.labelAs(
+            labelConversations(
                 userId = userId,
                 conversationIds = conversationIds,
-                selectedLabels = selectedLabels,
-                partiallySelectedLabels = partiallySelectedLabels,
+                updatedSelections = labelSelectionList,
                 shouldArchive = shouldArchive
             )
         } returns error
@@ -60,10 +58,7 @@ class LabelConversationTest {
         val result = labelConversation(
             userId = UserIdSample.Primary,
             conversationId = ConversationIdSample.Invoices,
-            updatedSelections = LabelSelectionList(
-                selectedLabels = selectedLabels,
-                partiallySelectionLabels = partiallySelectedLabels
-            ),
+            updatedSelections = labelSelectionList,
             shouldArchive = shouldArchive
         )
 
@@ -75,16 +70,14 @@ class LabelConversationTest {
     fun `when repository succeeds then Unit is returned`() = runTest {
         // Given
         val userId = UserIdSample.Primary
-        val selectedLabels = listOf(LabelId("labelId"))
-        val partiallySelectedLabels = listOf(LabelId("labelId2"))
+        val labelSelectionList = LabelSelectionList(listOf(LabelId("labelId")), listOf(LabelId("labelId2")))
         val conversationIds = listOf(ConversationIdSample.Invoices)
         val shouldArchive = true
         coEvery {
-            conversationRepository.labelAs(
+            labelConversations(
                 userId = userId,
                 conversationIds = conversationIds,
-                selectedLabels = selectedLabels,
-                partiallySelectedLabels = partiallySelectedLabels,
+                updatedSelections = labelSelectionList,
                 shouldArchive = shouldArchive
             )
         } returns Unit.right()
@@ -93,10 +86,7 @@ class LabelConversationTest {
         val result = labelConversation(
             userId = UserIdSample.Primary,
             conversationId = ConversationIdSample.Invoices,
-            updatedSelections = LabelSelectionList(
-                selectedLabels = selectedLabels,
-                partiallySelectionLabels = partiallySelectedLabels
-            ),
+            updatedSelections = labelSelectionList,
             shouldArchive = shouldArchive
         )
 

@@ -21,13 +21,13 @@ package ch.protonmail.android.maildetail.domain.usecase
 import arrow.core.Either
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailconversation.domain.repository.ConversationRepository
+import ch.protonmail.android.mailconversation.domain.usecase.LabelConversations
 import ch.protonmail.android.mailmessage.domain.model.LabelSelectionList
 import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 
 class LabelConversation @Inject constructor(
-    private val conversationRepository: ConversationRepository
+    private val labelConversations: LabelConversations
 ) {
 
     suspend operator fun invoke(
@@ -35,11 +35,10 @@ class LabelConversation @Inject constructor(
         conversationId: ConversationId,
         updatedSelections: LabelSelectionList,
         shouldArchive: Boolean
-    ): Either<DataError, Unit> = conversationRepository.labelAs(
+    ): Either<DataError, Unit> = labelConversations(
         userId = userId,
         conversationIds = listOf(conversationId),
-        selectedLabels = updatedSelections.selectedLabels,
-        partiallySelectedLabels = updatedSelections.partiallySelectionLabels,
+        updatedSelections = updatedSelections,
         shouldArchive = shouldArchive
     )
 }
