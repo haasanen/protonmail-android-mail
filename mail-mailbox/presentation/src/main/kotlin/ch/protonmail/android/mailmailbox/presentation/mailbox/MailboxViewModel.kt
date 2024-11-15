@@ -768,7 +768,6 @@ class MailboxViewModel @Inject constructor(
                 userId = userId,
                 viewMode = viewMode,
                 selectedItems = selectionState.selectedMailboxItems,
-                currentSelectionList = LabelSelectionList(emptyList(), emptyList()),
                 updatedSelectionList = updatedSelection,
                 archiveSelected = archiveSelected
             )
@@ -872,7 +871,6 @@ class MailboxViewModel @Inject constructor(
         userId: UserId,
         viewMode: ViewMode,
         selectedItems: Set<SelectedMailboxItem>,
-        currentSelectionList: LabelSelectionList,
         updatedSelectionList: LabelSelectionList,
         archiveSelected: Boolean
     ): MailboxOperation {
@@ -880,8 +878,8 @@ class MailboxViewModel @Inject constructor(
             ViewMode.ConversationGrouping -> relabelConversations(
                 userId = userId,
                 conversationIds = selectedItems.map { ConversationId(it.id) },
-                currentSelections = currentSelectionList,
-                updatedSelections = updatedSelectionList
+                updatedSelections = updatedSelectionList,
+                archiveSelected
             )
 
             ViewMode.NoConversationGrouping -> relabelMessages(

@@ -24,13 +24,11 @@ import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.sample.ConversationIdSample
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.mailconversation.domain.repository.ConversationRepository
-import ch.protonmail.android.mailconversation.domain.sample.ConversationSample
+import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.mailmessage.domain.model.LabelSelectionList
 import io.mockk.coEvery
-import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import ch.protonmail.android.maillabel.domain.model.LabelId
 import org.junit.Test
 import kotlin.test.assertEquals
 
@@ -45,20 +43,30 @@ class RelabelConversationsTest {
     fun `when repository fails then error is returned`() = runTest {
         // Given
         val error = DataError.Local.NoDataCached.left()
-        coEvery { conversationRepository.relabel(userId, conversationIds, emptyList(), emptyList()) } returns error
+        val userId = UserIdSample.Primary
+        val selectedLabels = listOf(LabelId("labelId"))
+        val partiallySelectedLabels = listOf(LabelId("labelId2"))
+        val conversationIds = listOf(ConversationIdSample.Invoices)
+        val shouldArchive = false
+        coEvery {
+            conversationRepository.labelAs(
+                userId = userId,
+                conversationIds = conversationIds,
+                selectedLabels = selectedLabels,
+                partiallySelectedLabels = partiallySelectedLabels,
+                shouldArchive = shouldArchive
+            )
+        } returns error
 
         // When
         val result = relabelConversation(
-            userId = userId,
+            userId = UserIdSample.Primary,
             conversationIds = conversationIds,
-            currentSelections = LabelSelectionList(
-                selectedLabels = listOf(LabelId("labelId")),
-                partiallySelectionLabels = emptyList()
-            ),
             updatedSelections = LabelSelectionList(
-                selectedLabels = listOf(LabelId("labelId")),
-                partiallySelectionLabels = emptyList()
-            )
+                selectedLabels = selectedLabels,
+                partiallySelectionLabels = partiallySelectedLabels
+            ),
+            shouldArchive = shouldArchive
         )
 
         // Then
@@ -66,177 +74,35 @@ class RelabelConversationsTest {
     }
 
     @Test
-    fun `use case passing correct add and remove label lists to repository`() = runTest {
+    fun `when repository succeeds then Unit is returned`() = runTest {
         // Given
-        val oldLabelIds = listOf(LabelId("1"), LabelId("2"), LabelId("3"))
-        val newLabelIds = listOf(LabelId("1"), LabelId("2"), LabelId("4"))
-        val removedLabels = listOf(LabelId("3"))
-        val addedLabels = listOf(LabelId("4"))
-        val expected = listOf(ConversationSample.AlphaAppFeedback).right()
+        val userId = UserIdSample.Primary
+        val selectedLabels = listOf(LabelId("labelId"))
+        val partiallySelectedLabels = listOf(LabelId("labelId2"))
+        val conversationIds = listOf(ConversationIdSample.Invoices)
+        val shouldArchive = true
         coEvery {
-            conversationRepository.relabel(
-                userId = UserIdSample.Primary,
-                conversationIds = listOf(ConversationIdSample.Invoices),
-                labelsToBeRemoved = removedLabels,
-                labelsToBeAdded = addedLabels
+            conversationRepository.labelAs(
+                userId = userId,
+                conversationIds = conversationIds,
+                selectedLabels = selectedLabels,
+                partiallySelectedLabels = partiallySelectedLabels,
+                shouldArchive = shouldArchive
             )
-        } returns expected
+        } returns Unit.right()
 
         // When
-        val actual = relabelConversation(
-            UserIdSample.Primary,
-            listOf(ConversationIdSample.Invoices),
-            currentSelections = LabelSelectionList(
-                selectedLabels = oldLabelIds,
-                partiallySelectionLabels = emptyList()
-            ),
+        val result = relabelConversation(
+            userId = UserIdSample.Primary,
+            conversationIds = conversationIds,
             updatedSelections = LabelSelectionList(
-                selectedLabels = newLabelIds,
-                partiallySelectionLabels = emptyList()
-            )
+                selectedLabels = selectedLabels,
+                partiallySelectionLabels = partiallySelectedLabels
+            ),
+            shouldArchive = shouldArchive
         )
 
         // Then
-        assertEquals(expected, actual)
-        coVerify {
-            conversationRepository.relabel(
-                userId = UserIdSample.Primary,
-                conversationIds = listOf(ConversationIdSample.Invoices),
-                labelsToBeRemoved = removedLabels,
-                labelsToBeAdded = addedLabels
-            )
-        }
-    }
-
-    @Test
-    fun `use case passing correct add and remove label lists when partial selection is changed to remove`() = runTest {
-        // Given
-        val oldLabelIds = listOf(LabelId("1"), LabelId("2"), LabelId("3"))
-        val oldPartialSelectedLabels = listOf(LabelId("5"))
-        val newLabelIds = listOf(LabelId("1"), LabelId("2"), LabelId("4"))
-        val removedLabels = listOf(LabelId("3"), LabelId("5"))
-        val addedLabels = listOf(LabelId("4"))
-        val expected = listOf(ConversationSample.AlphaAppFeedback).right()
-        coEvery {
-            conversationRepository.relabel(
-                userId = UserIdSample.Primary,
-                conversationIds = listOf(ConversationIdSample.Invoices),
-                labelsToBeRemoved = removedLabels,
-                labelsToBeAdded = addedLabels
-            )
-        } returns expected
-
-        // When
-        val actual = relabelConversation(
-            UserIdSample.Primary,
-            listOf(ConversationIdSample.Invoices),
-            currentSelections = LabelSelectionList(
-                selectedLabels = oldLabelIds,
-                partiallySelectionLabels = oldPartialSelectedLabels
-            ),
-            updatedSelections = LabelSelectionList(
-                selectedLabels = newLabelIds,
-                partiallySelectionLabels = emptyList()
-            )
-        )
-
-        // Then
-        assertEquals(expected, actual)
-        coVerify {
-            conversationRepository.relabel(
-                userId = UserIdSample.Primary,
-                conversationIds = listOf(ConversationIdSample.Invoices),
-                labelsToBeRemoved = removedLabels,
-                labelsToBeAdded = addedLabels
-            )
-        }
-    }
-
-    @Test
-    fun `use case passing correct add and remove label lists when partial selection is changed to add`() = runTest {
-        // Given
-        val oldLabelIds = listOf(LabelId("1"), LabelId("2"), LabelId("3"))
-        val oldPartialSelectedLabels = listOf(LabelId("5"))
-        val newLabelIds = listOf(LabelId("1"), LabelId("2"), LabelId("4"), LabelId("5"))
-        val removedLabels = listOf(LabelId("3"))
-        val addedLabels = listOf(LabelId("4"), LabelId("5"))
-        val expected = listOf(ConversationSample.AlphaAppFeedback).right()
-        coEvery {
-            conversationRepository.relabel(
-                userId = UserIdSample.Primary,
-                conversationIds = listOf(ConversationIdSample.Invoices),
-                labelsToBeRemoved = removedLabels,
-                labelsToBeAdded = addedLabels
-            )
-        } returns expected
-
-        // When
-        val actual = relabelConversation(
-            UserIdSample.Primary,
-            listOf(ConversationIdSample.Invoices),
-            currentSelections = LabelSelectionList(
-                selectedLabels = oldLabelIds,
-                partiallySelectionLabels = oldPartialSelectedLabels
-            ),
-            updatedSelections = LabelSelectionList(
-                selectedLabels = newLabelIds,
-                partiallySelectionLabels = emptyList()
-            )
-        )
-
-        // Then
-        assertEquals(expected, actual)
-        coVerify {
-            conversationRepository.relabel(
-                userId = UserIdSample.Primary,
-                conversationIds = listOf(ConversationIdSample.Invoices),
-                labelsToBeRemoved = removedLabels,
-                labelsToBeAdded = addedLabels
-            )
-        }
-    }
-
-    @Test
-    fun `use case passing correct add and remove label lists when partial selection is unchanged`() = runTest {
-        // Given
-        val oldLabelIds = listOf(LabelId("1"), LabelId("2"), LabelId("3"))
-        val partialSelectionLabels = listOf(LabelId("5"))
-        val newLabelIds = listOf(LabelId("1"), LabelId("2"), LabelId("4"))
-        val removedLabels = listOf(LabelId("3"))
-        val addedLabels = listOf(LabelId("4"))
-        val expected = listOf(ConversationSample.AlphaAppFeedback).right()
-        coEvery {
-            conversationRepository.relabel(
-                userId = UserIdSample.Primary,
-                conversationIds = listOf(ConversationIdSample.Invoices),
-                labelsToBeRemoved = removedLabels,
-                labelsToBeAdded = addedLabels
-            )
-        } returns expected
-
-        // When
-        val actual = relabelConversation(
-            UserIdSample.Primary,
-            listOf(ConversationIdSample.Invoices),
-            currentSelections = LabelSelectionList(
-                selectedLabels = oldLabelIds,
-                partiallySelectionLabels = partialSelectionLabels
-            ),
-            updatedSelections = LabelSelectionList(
-                selectedLabels = newLabelIds,
-                partiallySelectionLabels = partialSelectionLabels
-            )
-        )
-
-        // Then
-        assertEquals(expected, actual)
-        coVerify {
-            conversationRepository.relabel(
-                userId = UserIdSample.Primary,
-                conversationIds = listOf(ConversationIdSample.Invoices),
-                labelsToBeRemoved = removedLabels,
-                labelsToBeAdded = addedLabels
-            )
-        }
+        assertEquals(Unit.right(), result)
     }
 }

@@ -21,11 +21,9 @@ package ch.protonmail.android.mailmailbox.domain.usecase
 import arrow.core.Either
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailconversation.domain.entity.Conversation
 import ch.protonmail.android.mailconversation.domain.repository.ConversationRepository
 import ch.protonmail.android.mailmessage.domain.model.LabelSelectionList
 import me.proton.core.domain.entity.UserId
-import ch.protonmail.android.maillabel.domain.model.LabelId
 import javax.inject.Inject
 
 class RelabelConversations @Inject constructor(
@@ -35,23 +33,13 @@ class RelabelConversations @Inject constructor(
     suspend operator fun invoke(
         userId: UserId,
         conversationIds: List<ConversationId>,
-        currentSelections: LabelSelectionList,
-        updatedSelections: LabelSelectionList
-    ): Either<DataError, List<Conversation>> {
-        val currentFullAndPartialSelections = currentSelections.getCurrentFullAndPartialSelections()
-        val updatedFullAndPartialSelections = updatedSelections.getCurrentFullAndPartialSelections()
-
-        val labelsToBeRemoved = currentFullAndPartialSelections - updatedFullAndPartialSelections.toSet()
-        val labelsToBeAdded = updatedSelections.selectedLabels - currentSelections.selectedLabels.toSet()
-
-        return conversationRepository.relabel(
-            userId = userId,
-            conversationIds = conversationIds,
-            labelsToBeRemoved = labelsToBeRemoved,
-            labelsToBeAdded = labelsToBeAdded
-        )
-    }
-
-    private fun LabelSelectionList.getCurrentFullAndPartialSelections(): List<LabelId> =
-        this.let { it.selectedLabels + it.partiallySelectionLabels }
+        updatedSelections: LabelSelectionList,
+        shouldArchive: Boolean
+    ): Either<DataError, Unit> = conversationRepository.labelAs(
+        userId = userId,
+        conversationIds = conversationIds,
+        selectedLabels = updatedSelections.selectedLabels,
+        partiallySelectedLabels = updatedSelections.partiallySelectionLabels,
+        shouldArchive = shouldArchive
+    )
 }

@@ -174,7 +174,6 @@ import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import ch.protonmail.android.mailconversation.domain.entity.Conversation as DomainConversation
 
 class MailboxViewModelTest {
 
@@ -2304,10 +2303,6 @@ class MailboxViewModelTest {
 
         val expectedCustomLabels = LabelAsActionsTestData.actions
 
-        val expectedCurrentLabelList = LabelSelectionList(
-            partiallySelectionLabels = emptyList(),
-            selectedLabels = emptyList()
-        )
         val expectedUpdatedLabelList = LabelSelectionList(
             partiallySelectionLabels = emptyList(),
             selectedLabels = listOf(
@@ -2360,8 +2355,8 @@ class MailboxViewModelTest {
                 relabelConversations(
                     userId,
                     selectedItemsList.map { ConversationId(it.id) },
-                    LabelSelectionList(emptyList(), emptyList()),
-                    expectedUpdatedLabelList
+                    expectedUpdatedLabelList,
+                    archiveSelected
                 )
             }
             coVerify { relabelMessages wasNot Called }
@@ -2431,8 +2426,8 @@ class MailboxViewModelTest {
                     relabelConversations(
                         userId,
                         selectedItemsList.map { ConversationId(it.id) },
-                        LabelSelectionList(emptyList(), emptyList()),
-                        expectedUpdatedLabelList
+                        expectedUpdatedLabelList,
+                        archiveSelected
                     )
                 }
                 coVerify { relabelMessages wasNot Called }
@@ -3655,8 +3650,8 @@ class MailboxViewModelTest {
         archiveSelected: Boolean
     ) {
         coEvery {
-            relabelConversations(userId, selectedConversation, any(), updatedSelections)
-        } returns listOf<DomainConversation>().right()
+            relabelConversations(userId, selectedConversation, updatedSelections, archiveSelected)
+        } returns Unit.right()
     }
 
     private fun expectViewMode(viewMode: ViewMode) {
