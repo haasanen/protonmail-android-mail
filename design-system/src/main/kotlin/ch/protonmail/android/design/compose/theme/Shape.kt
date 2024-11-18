@@ -27,9 +27,11 @@ import androidx.compose.ui.unit.dp
 
 @Immutable
 data class ProtonShapes(
-    val small: CornerBasedShape = RoundedCornerShape(ProtonDimens.DefaultCornerRadius),
-    val medium: CornerBasedShape = RoundedCornerShape(ProtonDimens.LargeCornerRadius),
-    val large: CornerBasedShape = RoundedCornerShape(ProtonDimens.ExtraLargeCornerRadius),
+    val small: CornerBasedShape = RoundedCornerShape(ProtonDimens.CornerRadius.Small),
+    val medium: CornerBasedShape = RoundedCornerShape(ProtonDimens.CornerRadius.Medium),
+    val large: CornerBasedShape = RoundedCornerShape(ProtonDimens.CornerRadius.Large),
+    val extraLarge: CornerBasedShape = RoundedCornerShape(ProtonDimens.CornerRadius.ExtraLarge),
+    val huge: CornerBasedShape = RoundedCornerShape(ProtonDimens.CornerRadius.Huge),
     val bottomSheet: Shape = RoundedCornerShape(
         topStart = ProtonDimens.LargeCornerRadius,
         topEnd = ProtonDimens.LargeCornerRadius,
