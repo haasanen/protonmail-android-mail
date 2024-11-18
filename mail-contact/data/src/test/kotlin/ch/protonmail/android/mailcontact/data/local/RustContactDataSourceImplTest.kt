@@ -27,7 +27,6 @@ import ch.protonmail.android.mailcontact.data.mapper.ContactItemMapper
 import ch.protonmail.android.mailcontact.data.mapper.ContactItemTypeMapper
 import ch.protonmail.android.mailcontact.data.mapper.GroupedContactsMapper
 import ch.protonmail.android.mailcontact.data.usecase.CreateRustContactWatcher
-import ch.protonmail.android.mailcontact.data.usecase.GetRustContactList
 import ch.protonmail.android.mailcontact.data.usecase.RustDeleteContact
 import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import ch.protonmail.android.mailcontact.domain.model.GetContactError
@@ -37,6 +36,7 @@ import ch.protonmail.android.testdata.contact.rust.LocalContactTestData
 import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
 import io.mockk.slot
@@ -60,7 +60,6 @@ class RustContactDataSourceImplTest {
 
     private val mockWatcher = mockk<WatchedContactList>(relaxed = true)
 
-    private val getRustContactList = mockk<GetRustContactList>()
     private val userSessionRepository = mockk<UserSessionRepository>()
     private val createRustContactWatcher = mockk<CreateRustContactWatcher>()
     private val rustDeleteContact = mockk<RustDeleteContact>()
@@ -72,7 +71,6 @@ class RustContactDataSourceImplTest {
     private val groupedContactsMapper = GroupedContactsMapper(contactItemTypeMapper)
 
     private val rustContactDataSource = RustContactDataSourceImpl(
-        getRustContactList,
         userSessionRepository,
         groupedContactsMapper,
         createRustContactWatcher,
@@ -93,8 +91,8 @@ class RustContactDataSourceImplTest {
             .flatMap { it.contacts }
 
         coEvery { userSessionRepository.getUserSession(userId) } returns session
-        coEvery { getRustContactList(session) } returns localGroupedContactList
         coEvery { createRustContactWatcher(session, capture(contactListUpdatedCallbackSlot)) } returns mockWatcher
+        every { mockWatcher.contactList } returns localGroupedContactList
 
         // When
         val result = rustContactDataSource.observeAllContacts(userId).first()
@@ -128,9 +126,10 @@ class RustContactDataSourceImplTest {
         )
         val expectedGroupedContactList = localGroupedContactList
             .map { groupedContactsMapper.toGroupedContacts(it) }
+
         coEvery { userSessionRepository.getUserSession(userId) } returns session
-        coEvery { getRustContactList(any()) } returns localGroupedContactList
         coEvery { createRustContactWatcher(session, capture(contactListUpdatedCallbackSlot)) } returns mockWatcher
+        every { mockWatcher.contactList } returns localGroupedContactList
 
         // When
         val result = rustContactDataSource.observeAllGroupedContacts(userId).first()
@@ -196,8 +195,7 @@ class RustContactDataSourceImplTest {
         val session = mockk<MailUserSession>()
         val callbackSlot = slot<ContactsLiveQueryCallback>()
         coEvery { userSessionRepository.getUserSession(userId) } returns session
-        coEvery { createRustContactWatcher(session, capture(callbackSlot)) } returns mockk()
-        coEvery { getRustContactList(session) } returns emptyList()
+        coEvery { createRustContactWatcher(session, capture(callbackSlot)) } returns mockWatcher
 
         // When
         rustContactDataSource.observeAllGroupedContacts(userId).first()
@@ -213,8 +211,7 @@ class RustContactDataSourceImplTest {
         val session = mockk<MailUserSession>()
         val callbackSlot = slot<ContactsLiveQueryCallback>()
         coEvery { userSessionRepository.getUserSession(userId) } returns session
-        coEvery { createRustContactWatcher(session, capture(callbackSlot)) } returns mockk()
-        coEvery { getRustContactList(session) } returns emptyList()
+        coEvery { createRustContactWatcher(session, capture(callbackSlot)) } returns mockWatcher
 
         // First call to initialize the watcher
         rustContactDataSource.observeAllGroupedContacts(userId).first()

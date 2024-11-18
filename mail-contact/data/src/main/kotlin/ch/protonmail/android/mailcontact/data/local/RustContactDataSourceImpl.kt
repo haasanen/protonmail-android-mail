@@ -27,7 +27,6 @@ import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcontact.data.ContactRustCoroutineScope
 import ch.protonmail.android.mailcontact.data.mapper.GroupedContactsMapper
 import ch.protonmail.android.mailcontact.data.usecase.CreateRustContactWatcher
-import ch.protonmail.android.mailcontact.data.usecase.GetRustContactList
 import ch.protonmail.android.mailcontact.data.usecase.RustDeleteContact
 import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import ch.protonmail.android.mailcontact.domain.model.GetContactError
@@ -53,7 +52,6 @@ import uniffi.proton_mail_uniffi.WatchedContactList
 import javax.inject.Inject
 
 class RustContactDataSourceImpl @Inject constructor(
-    private val getRustContactList: GetRustContactList,
     private val userSessionRepository: UserSessionRepository,
     private val groupedContactsMapper: GroupedContactsMapper,
     private val createRustContactWatcher: CreateRustContactWatcher,
@@ -110,8 +108,11 @@ class RustContactDataSourceImpl @Inject constructor(
         mutex.withLock {
             if (contactListWatcher == null) {
                 contactListWatcher = createRustContactWatcher(session, contactListUpdatedCallback)
-                contactListMutableStatusFlow.value = getRustContactList(session).map {
-                    groupedContactsMapper.toGroupedContacts(it)
+                contactListWatcher?.let {
+                    contactListMutableStatusFlow.value = it.contactList.map { groupedContacts ->
+                        groupedContactsMapper.toGroupedContacts(groupedContacts)
+                    }
+                    Timber.d("rust-contact-data-source: contact watcher created")
                 }
                 Timber.d("rust-contact-data-source: contact watcher created")
             }
