@@ -1198,11 +1198,11 @@ class ConversationDetailViewModel @Inject constructor(
     }
 
     private fun handleStarMessage(messageId: MessageId) = viewModelScope.launch {
-        starMessages(primaryUserId.first(), messageId)
+        starMessages(primaryUserId.first(), listOf(messageId))
     }
 
     private fun handleUnStarMessage(messageId: MessageId) = viewModelScope.launch {
-        unStarMessages(primaryUserId.first(), messageId)
+        unStarMessages(primaryUserId.first(), listOf(messageId))
     }
 
     /**

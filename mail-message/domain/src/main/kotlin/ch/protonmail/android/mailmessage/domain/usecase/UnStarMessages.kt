@@ -30,7 +30,4 @@ class UnStarMessages @Inject constructor(private val messageRepository: MessageR
     suspend operator fun invoke(userId: UserId, messageIds: List<MessageId>): Either<DataError, Unit> =
         messageRepository.unStarMessages(userId, messageIds)
 
-    suspend operator fun invoke(userId: UserId, messageId: MessageId): Either<DataError, Unit> =
-        this.invoke(userId, listOf(messageId))
-
 }

@@ -31,7 +31,4 @@ class StarMessages @Inject constructor(
 
     suspend operator fun invoke(userId: UserId, messageIds: List<MessageId>): Either<DataError, Unit> =
         messageRepository.starMessages(userId, messageIds)
-
-    suspend operator fun invoke(userId: UserId, messageId: MessageId): Either<DataError, Unit> =
-        this.invoke(userId, listOf(messageId))
 }
