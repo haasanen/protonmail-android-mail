@@ -40,7 +40,7 @@ internal fun OnboardingIndexDots(pagerState: PagerState, viewCount: Int) {
         Canvas(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(ProtonDimens.SmallSpacing)
+                .padding(ProtonDimens.Spacing.Standard)
                 .size(MailDimens.pagerDotsCircleSize),
             onDraw = {
                 var centerOffset = Offset(

@@ -47,7 +47,7 @@ fun ChangeSenderBottomSheetContent(
                     .testTag("${ChangeSenderBottomSheetTestTags.Item}$index")
                     .clickable { onSenderSelected(item) }
                     .height(ProtonDimens.ListItemHeight)
-                    .padding(horizontal = ProtonDimens.DefaultSpacing)
+                    .padding(horizontal = ProtonDimens.Spacing.Large)
             ) {
                 Text(
                     modifier = Modifier.weight(1f),
@@ -56,7 +56,7 @@ fun ChangeSenderBottomSheetContent(
                     overflow = TextOverflow.Ellipsis
                 )
                 Spacer(
-                    modifier = Modifier.size(ProtonDimens.SmallSpacing)
+                    modifier = Modifier.size(ProtonDimens.Spacing.Standard)
                 )
             }
         }

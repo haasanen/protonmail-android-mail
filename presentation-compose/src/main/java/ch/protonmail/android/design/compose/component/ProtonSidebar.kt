@@ -228,7 +228,7 @@ fun ProtonSidebarAppVersionItem(
     Text(
         modifier = modifier
             .fillMaxWidth()
-            .padding(ProtonDimens.MediumSpacing),
+            .padding(ProtonDimens.Spacing.ExtraLarge),
         text = "$name $version",
         textAlign = TextAlign.Center,
         color = ProtonTheme.colors.textWeak,

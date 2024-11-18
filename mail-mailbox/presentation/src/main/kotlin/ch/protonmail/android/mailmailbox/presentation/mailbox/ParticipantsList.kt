@@ -221,7 +221,7 @@ private fun Separator(
     fontColor: Color
 ) {
     Text(
-        modifier = modifier.padding(end = ProtonDimens.ExtraSmallSpacing),
+        modifier = modifier.padding(end = ProtonDimens.Spacing.Small),
         text = ",",
         style = ProtonTheme.typography.defaultNorm.copy(fontWeight = fontWeight, color = fontColor)
     )

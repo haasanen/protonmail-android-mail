@@ -85,8 +85,8 @@ fun ContactSearchScreen(actions: ContactSearchScreen.Actions, viewModel: Contact
             )
         },
         contentWindowInsets = WindowInsets(
-            left = ProtonDimens.DefaultSpacing,
-            right = ProtonDimens.DefaultSpacing
+            left = ProtonDimens.Spacing.Large,
+            right = ProtonDimens.Spacing.Large
         ),
         content = { paddingValues ->
             ContactSearchContent(
@@ -192,7 +192,7 @@ fun ContactSearchTopBar(
                     closeButtonContentDescription = R.string.contact_search_content_description
                 ),
                 modifier = Modifier
-                    .padding(end = ProtonDimens.DefaultSpacing)
+                    .padding(end = ProtonDimens.Spacing.Large)
                     .fillMaxWidth(),
                 actions = SearchView.Actions(
                     onClearSearchQuery = { onSearchValueClear() },

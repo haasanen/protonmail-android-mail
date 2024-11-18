@@ -46,7 +46,7 @@ internal fun UpsellingPlansList(
     FlowRow(
         modifier = modifier,
         verticalArrangement = Arrangement.Bottom,
-        horizontalArrangement = Arrangement.spacedBy(ProtonDimens.SmallSpacing)
+        horizontalArrangement = Arrangement.spacedBy(ProtonDimens.Spacing.Standard)
     ) {
         if (dynamicPlansModel.plans.isEmpty()) {
             TextNoPlansAvailable()
@@ -68,8 +68,8 @@ private fun TextNoPlansAvailable() {
 
     Text(
         modifier = Modifier
-            .padding(horizontal = ProtonDimens.DefaultSpacing)
-            .padding(top = ProtonDimens.SmallSpacing),
+            .padding(horizontal = ProtonDimens.Spacing.Large)
+            .padding(top = ProtonDimens.Spacing.Standard),
         text = stringResource(id = R.string.upselling_unable_retrieve_options),
         style = ProtonTheme.typography.defaultWeak,
         color = colors.textWeak,
@@ -82,7 +82,7 @@ private fun TextNoPlansAvailable() {
 private fun UpsellingItem() {
     ProtonTheme {
         UpsellingPlansList(
-            modifier = Modifier.padding(top = ProtonDimens.DefaultSpacing),
+            modifier = Modifier.padding(top = ProtonDimens.Spacing.Large),
             dynamicPlansModel = UpsellingBottomSheetContentPreviewData.Base.plans,
             actions = UpsellingBottomSheet.Actions(
                 onDisplayed = {},

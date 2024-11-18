@@ -66,8 +66,8 @@ fun ContactSuggestionItemElement(
                 }
             }
             .fillMaxSize()
-            .padding(horizontal = ProtonDimens.DefaultSpacing)
-            .padding(vertical = ProtonDimens.SmallSpacing)
+            .padding(horizontal = ProtonDimens.Spacing.Large)
+            .padding(vertical = ProtonDimens.Spacing.Standard)
     ) {
         when (item) {
             is ContactSuggestionItem2.ContactGroupSuggestionItem -> ContactSuggestionGroupEntry(currentText, item)
@@ -81,7 +81,7 @@ private fun ContactSuggestionEntry(currentText: String, item: ContactSuggestionI
     Row {
         Box(
             modifier = Modifier
-                .size(ProtonDimens.LargeSpacing)
+                .size(ProtonDimens.Spacing.Huge)
                 .background(
                     color = ProtonTheme.colors.backgroundSecondary,
                     shape = ProtonTheme.shapes.medium
@@ -94,7 +94,7 @@ private fun ContactSuggestionEntry(currentText: String, item: ContactSuggestionI
             )
         }
 
-        Spacer(Modifier.width(ProtonDimens.DefaultSpacing))
+        Spacer(Modifier.width(ProtonDimens.Spacing.Large))
 
         Column {
             HighlightedText(
@@ -104,7 +104,7 @@ private fun ContactSuggestionEntry(currentText: String, item: ContactSuggestionI
                 style = ProtonTheme.typography.defaultNorm,
                 overflow = TextOverflow.Ellipsis
             )
-            Spacer(modifier = Modifier.size(ProtonDimens.SmallSpacing))
+            Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Standard))
             HighlightedText(
                 text = item.subheader,
                 highlight = currentText,
@@ -121,7 +121,7 @@ private fun ContactSuggestionGroupEntry(currentText: String, item: ContactSugges
     Row {
         Box(
             modifier = Modifier
-                .size(ProtonDimens.LargeSpacing)
+                .size(ProtonDimens.Spacing.Huge)
                 .background(
                     color = Color(android.graphics.Color.parseColor(ContactGroupsBackground)),
                     shape = ProtonTheme.shapes.medium
@@ -136,7 +136,7 @@ private fun ContactSuggestionGroupEntry(currentText: String, item: ContactSugges
             )
         }
 
-        Spacer(Modifier.width(ProtonDimens.DefaultSpacing))
+        Spacer(Modifier.width(ProtonDimens.Spacing.Large))
 
         Column {
             HighlightedText(
@@ -146,7 +146,7 @@ private fun ContactSuggestionGroupEntry(currentText: String, item: ContactSugges
                 style = ProtonTheme.typography.defaultNorm,
                 overflow = TextOverflow.Ellipsis
             )
-            Spacer(modifier = Modifier.size(ProtonDimens.ExtraSmallSpacing))
+            Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Small))
             Text(
                 text = item.subheader,
                 maxLines = 1,

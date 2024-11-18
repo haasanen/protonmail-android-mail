@@ -65,7 +65,7 @@ fun MailLabel.Custom.toCustomUiModel(counters: Map<LabelId, Int?>, selected: Mai
         isVisible = parent == null || parent?.isExpanded == true,
         isExpanded = isExpanded,
         isSelected = id.labelId == selected?.labelId,
-        iconPaddingStart = ProtonDimens.DefaultSpacing * level,
+        iconPaddingStart = ProtonDimens.Spacing.Large * level,
         count = counters[id.labelId]
     )
 

@@ -216,8 +216,8 @@ fun ContactGroupFormContent(
                         modifier = Modifier
                             .align(Alignment.CenterHorizontally)
                             .padding(
-                                top = ProtonDimens.DefaultSpacing,
-                                bottom = ProtonDimens.ExtraSmallSpacing
+                                top = ProtonDimens.Spacing.Large,
+                                bottom = ProtonDimens.Spacing.Small
                             ),
                         iconResId = R.drawable.ic_proton_users,
                         backgroundColor = state.contactGroup.color
@@ -240,31 +240,31 @@ fun ContactGroupFormContent(
                     ProtonSecondaryButton(
                         modifier = modifier
                             .padding(
-                                vertical = ProtonDimens.SmallSpacing,
-                                horizontal = ProtonDimens.DefaultSpacing
+                                vertical = ProtonDimens.Spacing.Standard,
+                                horizontal = ProtonDimens.Spacing.Large
                             )
                             .align(Alignment.CenterHorizontally),
                         onClick = { openDialog.value = true }
                     ) {
                         Text(
                             text = stringResource(R.string.change_color),
-                            modifier = Modifier.padding(horizontal = ProtonDimens.SmallSpacing),
+                            modifier = Modifier.padding(horizontal = ProtonDimens.Spacing.Standard),
                             style = ProtonTheme.typography.defaultSmallNorm
                         )
                     }
                     FormInputField(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(ProtonDimens.DefaultSpacing),
+                            .padding(ProtonDimens.Spacing.Large),
                         initialValue = state.contactGroup.name,
                         hint = stringResource(id = R.string.contact_group_form_name_hint),
                         onTextChange = actions.onUpdateName
                     )
                     Row(
                         modifier = Modifier.padding(
-                            top = ProtonDimens.MediumSpacing,
-                            start = ProtonDimens.DefaultSpacing,
-                            end = ProtonDimens.DefaultSpacing
+                            top = ProtonDimens.Spacing.ExtraLarge,
+                            start = ProtonDimens.Spacing.Large,
+                            end = ProtonDimens.Spacing.Large
                         ),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
@@ -276,7 +276,7 @@ fun ContactGroupFormContent(
                             contentDescription = NO_CONTENT_DESCRIPTION
                         )
                         Text(
-                            modifier = Modifier.padding(start = ProtonDimens.SmallSpacing),
+                            modifier = Modifier.padding(start = ProtonDimens.Spacing.Standard),
                             style = ProtonTheme.typography.defaultSmallWeak,
                             text = pluralStringResource(
                                 R.plurals.contact_group_form_member_count,
@@ -286,7 +286,7 @@ fun ContactGroupFormContent(
                         )
                     }
                     HorizontalDivider(
-                        modifier = Modifier.padding(top = ProtonDimens.SmallSpacing),
+                        modifier = Modifier.padding(top = ProtonDimens.Spacing.Standard),
                         color = ProtonTheme.colors.separatorNorm
                     )
                 }
@@ -299,12 +299,12 @@ fun ContactGroupFormContent(
             }
             item {
                 ProtonSecondaryButton(
-                    modifier = Modifier.padding(ProtonDimens.DefaultSpacing),
+                    modifier = Modifier.padding(ProtonDimens.Spacing.Large),
                     onClick = actions.onAddMemberClick
                 ) {
                     Text(
                         text = stringResource(R.string.add_members),
-                        modifier = Modifier.padding(horizontal = ProtonDimens.SmallSpacing),
+                        modifier = Modifier.padding(horizontal = ProtonDimens.Spacing.Standard),
                         style = ProtonTheme.typography.defaultSmallNorm
                     )
                 }
@@ -316,7 +316,7 @@ fun ContactGroupFormContent(
                 modifier = Modifier
                     .fillMaxWidth()
                     .wrapContentHeight()
-                    .padding(top = ProtonDimens.ExtraSmallSpacing),
+                    .padding(top = ProtonDimens.Spacing.Small),
                 contentAlignment = Alignment.Center
             ) {
                 FormDeleteButton(
@@ -338,7 +338,7 @@ fun ContactGroupMemberItem(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(start = ProtonDimens.DefaultSpacing),
+            .padding(start = ProtonDimens.Spacing.Large),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Box(
@@ -365,7 +365,7 @@ fun ContactGroupMemberItem(
                     start = ProtonDimens.ListItemTextStartPadding,
                     top = ProtonDimens.ListItemTextStartPadding,
                     bottom = ProtonDimens.ListItemTextStartPadding,
-                    end = ProtonDimens.DefaultSpacing
+                    end = ProtonDimens.Spacing.Large
                 )
         ) {
             Text(
@@ -411,7 +411,7 @@ fun ContactGroupFormTopBar(
             if (displaySaveLoader) {
                 CircularProgressIndicator(
                     modifier = Modifier
-                        .padding(end = ProtonDimens.DefaultSpacing)
+                        .padding(end = ProtonDimens.Spacing.Large)
                         .size(MailDimens.ProgressDefaultSize),
                     strokeWidth = MailDimens.ProgressStrokeWidth
                 )

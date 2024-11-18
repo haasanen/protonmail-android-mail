@@ -61,14 +61,14 @@ fun ColorPicker(
         Text(
             text = stringResource(id = R.string.color_picker_title),
             modifier = Modifier.padding(
-                top = ProtonDimens.MediumSpacing,
-                start = ProtonDimens.DefaultSpacing,
-                bottom = ProtonDimens.SmallSpacing
+                top = ProtonDimens.Spacing.ExtraLarge,
+                start = ProtonDimens.Spacing.Large,
+                bottom = ProtonDimens.Spacing.Standard
             ),
             style = ProtonTheme.typography.defaultSmallStrongNorm
         )
 
-        FlowRow(Modifier.padding(start = ProtonDimens.SmallSpacing)) {
+        FlowRow(Modifier.padding(start = ProtonDimens.Spacing.Standard)) {
             for (color in colors) {
                 ColorItem(
                     color = color,
@@ -91,8 +91,8 @@ fun ColorItem(
     ConstraintLayout(
         modifier = Modifier
             .padding(
-                horizontal = ProtonDimens.ExtraSmallSpacing,
-                vertical = ProtonDimens.SmallSpacing
+                horizontal = ProtonDimens.Spacing.Small,
+                vertical = ProtonDimens.Spacing.Standard
             )
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },

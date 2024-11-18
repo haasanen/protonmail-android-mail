@@ -452,7 +452,7 @@ private fun MailboxStickyHeader(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = ProtonDimens.DefaultSpacing),
+            .padding(horizontal = ProtonDimens.Spacing.Large),
         horizontalArrangement = Arrangement.End
     ) {
         UnreadItemsFilter(
@@ -690,7 +690,7 @@ private fun MailboxItemsList(
                 is MailboxScreenState.AppendLoading -> ProtonCenteredProgress(
                     modifier = Modifier
                         .testTag(MailboxScreenTestTags.MailboxAppendLoader)
-                        .padding(ProtonDimens.DefaultSpacing)
+                        .padding(ProtonDimens.Spacing.Large)
                 )
 
                 is MailboxScreenState.AppendOfflineError -> AppendError(
@@ -716,16 +716,16 @@ private fun ClearBanner() {
             .fillMaxWidth()
             .heightIn(min = ButtonDefaults.MinHeight)
             .padding(
-                start = ProtonDimens.DefaultSpacing,
-                top = ProtonDimens.SmallSpacing,
-                bottom = ProtonDimens.DefaultSpacing,
-                end = ProtonDimens.DefaultSpacing
+                start = ProtonDimens.Spacing.Large,
+                top = ProtonDimens.Spacing.Standard,
+                bottom = ProtonDimens.Spacing.Large,
+                end = ProtonDimens.Spacing.Large
             )
             .background(
                 color = ProtonTheme.colors.backgroundSecondary,
                 shape = ProtonTheme.shapes.medium
             )
-            .padding(ProtonDimens.SmallSpacing),
+            .padding(ProtonDimens.Spacing.Standard),
         horizontalArrangement = Arrangement.Center
     ) {
         Text(
@@ -747,10 +747,10 @@ private fun ClearButton(
             .fillMaxWidth()
             .heightIn(min = ButtonDefaults.MinHeight)
             .padding(
-                start = ProtonDimens.DefaultSpacing,
-                top = ProtonDimens.SmallSpacing,
-                bottom = ProtonDimens.DefaultSpacing,
-                end = ProtonDimens.DefaultSpacing
+                start = ProtonDimens.Spacing.Large,
+                top = ProtonDimens.Spacing.Standard,
+                bottom = ProtonDimens.Spacing.Large,
+                end = ProtonDimens.Spacing.Large
             ),
         shape = ProtonTheme.shapes.medium,
         border = BorderStroke(
@@ -800,9 +800,9 @@ private fun AppendError(
             .testTag(MailboxScreenTestTags.MailboxAppendError)
             .fillMaxWidth()
             .padding(
-                top = ProtonDimens.DefaultSpacing,
-                start = ProtonDimens.DefaultSpacing,
-                end = ProtonDimens.DefaultSpacing
+                top = ProtonDimens.Spacing.Large,
+                start = ProtonDimens.Spacing.Large,
+                end = ProtonDimens.Spacing.Large
             ),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -829,8 +829,8 @@ private fun SearchNoResult(modifier: Modifier = Modifier) {
         modifier = modifier
             .fillMaxWidth()
             .padding(
-                start = ProtonDimens.LargerSpacing,
-                end = ProtonDimens.LargerSpacing
+                start = ProtonDimens.Spacing.Jumbo,
+                end = ProtonDimens.Spacing.Jumbo
             ),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -845,7 +845,7 @@ private fun SearchNoResult(modifier: Modifier = Modifier) {
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
                 .padding(
-                    bottom = ProtonDimens.SmallSpacing
+                    bottom = ProtonDimens.Spacing.Standard
                 ),
             painter = painterResource(id = R.drawable.search_no_results),
             contentDescription = NO_CONTENT_DESCRIPTION
@@ -854,7 +854,7 @@ private fun SearchNoResult(modifier: Modifier = Modifier) {
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
                 .padding(
-                    bottom = ProtonDimens.SmallSpacing
+                    bottom = ProtonDimens.Spacing.Standard
                 ),
             text = stringResource(id = R.string.mailbox_search_no_results_title),
             textAlign = TextAlign.Center,
@@ -958,14 +958,14 @@ private fun MailboxEmpty(
             painter = painterResource(id = illustration),
             contentDescription = NO_CONTENT_DESCRIPTION
         )
-        Spacer(modifier = Modifier.height(ProtonDimens.LargeSpacing))
+        Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Huge))
         Text(
             modifier = Modifier.testTag(MailboxScreenTestTags.MailboxEmptyTitle),
             text = stringResource(id = title),
             style = ProtonTheme.typography.headlineSmallNorm,
             textAlign = TextAlign.Center
         )
-        Spacer(modifier = Modifier.height(ProtonDimens.ExtraSmallSpacing))
+        Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Small))
         Text(
             modifier = Modifier.testTag(MailboxScreenTestTags.MailboxEmptySubtitle),
             text = stringResource(id = description),

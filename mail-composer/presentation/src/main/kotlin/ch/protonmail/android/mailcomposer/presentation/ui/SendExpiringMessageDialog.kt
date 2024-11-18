@@ -55,7 +55,7 @@ fun SendExpiringMessageDialog(
                     ),
                     style = ProtonTheme.typography.defaultWeak
                 )
-                Spacer(modifier = Modifier.height(ProtonDimens.SmallSpacing))
+                Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Standard))
                 Text(
                     text = externalRecipients.joinToString(separator = "\n") { it.address },
                     style = ProtonTheme.typography.defaultWeak

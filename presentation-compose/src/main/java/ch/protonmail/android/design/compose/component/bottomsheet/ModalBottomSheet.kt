@@ -44,7 +44,7 @@ fun ModalBottomSheet(
     viewState: ModalBottomSheetViewState,
     modifier: Modifier = Modifier,
     onDismiss: () -> Unit = {},
-    content: @Composable (PaddingValues) -> Unit = { PaddingValues(ProtonDimens.DefaultSpacing) }
+    content: @Composable (PaddingValues) -> Unit = { PaddingValues(ProtonDimens.Spacing.Large) }
 ) {
     val scope = rememberCoroutineScope()
 

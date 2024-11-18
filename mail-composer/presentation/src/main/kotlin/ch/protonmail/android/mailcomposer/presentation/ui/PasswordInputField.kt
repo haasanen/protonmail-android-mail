@@ -108,7 +108,7 @@ fun PasswordInputFieldLabel(
     modifier: Modifier = Modifier
 ) {
     Text(
-        modifier = modifier.padding(bottom = ProtonDimens.SmallSpacing),
+        modifier = modifier.padding(bottom = ProtonDimens.Spacing.Standard),
         text = text,
         style = ProtonTheme.typography.captionStrongNorm,
         color = if (isError) ProtonTheme.colors.notificationError else ProtonTheme.colors.textNorm
@@ -146,7 +146,7 @@ fun PasswordInputFieldSupportingText(
     modifier: Modifier = Modifier
 ) {
     Text(
-        modifier = modifier.padding(top = ProtonDimens.ExtraSmallSpacing),
+        modifier = modifier.padding(top = ProtonDimens.Spacing.Small),
         text = stringResource(id = textId),
         style = ProtonTheme.typography.captionWeak,
         color = if (isError) ProtonTheme.colors.notificationError else ProtonTheme.colors.textWeak

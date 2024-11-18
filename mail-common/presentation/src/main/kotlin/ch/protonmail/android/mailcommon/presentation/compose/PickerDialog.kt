@@ -64,7 +64,7 @@ fun PickerDialog(
         Card(
             shape = RoundedCornerShape(MailDimens.DialogCardRadius),
             modifier = modifier
-                .padding(ProtonDimens.DefaultSpacing)
+                .padding(ProtonDimens.Spacing.Large)
                 .fillMaxWidth()
         ) {
             ConstraintLayout(
@@ -78,8 +78,8 @@ fun PickerDialog(
                     style = ProtonTheme.typography.headlineNorm,
                     modifier = Modifier
                         .constrainAs(header) {
-                            top.linkTo(parent.top, margin = ProtonDimens.MediumSpacing)
-                            start.linkTo(parent.start, margin = ProtonDimens.MediumSpacing)
+                            top.linkTo(parent.top, margin = ProtonDimens.Spacing.ExtraLarge)
+                            start.linkTo(parent.start, margin = ProtonDimens.Spacing.ExtraLarge)
                         }
                 )
                 TextButton(
@@ -99,8 +99,8 @@ fun PickerDialog(
                 LazyColumn(
                     modifier = Modifier
                         .constrainAs(typeList) {
-                            top.linkTo(header.bottom, margin = ProtonDimens.DefaultSpacing)
-                            bottom.linkTo(cancelButton.top, margin = ProtonDimens.SmallSpacing)
+                            top.linkTo(header.bottom, margin = ProtonDimens.Spacing.Large)
+                            bottom.linkTo(cancelButton.top, margin = ProtonDimens.Spacing.Standard)
                             start.linkTo(parent.start)
                             end.linkTo(parent.end)
                             height = Dimension.preferredWrapContent
@@ -115,7 +115,7 @@ fun PickerDialog(
                                     role = Role.RadioButton
                                 ) { onValueSelected(value) }
                                 .padding(
-                                    horizontal = ProtonDimens.DefaultSpacing,
+                                    horizontal = ProtonDimens.Spacing.Large,
                                     vertical = MailDimens.PickerDialogItemVerticalPadding
                                 ),
                             verticalAlignment = Alignment.CenterVertically
@@ -124,7 +124,7 @@ fun PickerDialog(
                                 selected = isSelected,
                                 onClick = null
                             )
-                            Spacer(modifier = Modifier.width(ProtonDimens.DefaultSpacing))
+                            Spacer(modifier = Modifier.width(ProtonDimens.Spacing.Large))
                             Text(
                                 modifier = Modifier.weight(1f, fill = true),
                                 text = value.string(),

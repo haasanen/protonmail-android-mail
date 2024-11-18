@@ -169,7 +169,7 @@ fun ManageMembersContent(
             FormInputField(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(ProtonDimens.DefaultSpacing),
+                    .padding(ProtonDimens.Spacing.Large),
                 initialValue = state.searchValue,
                 hint = stringResource(R.string.search_contact),
                 showClearTextIcon = true,
@@ -204,7 +204,7 @@ fun ManageMembersItem(
                     actions.onMemberClick(member.id)
                 }
             )
-            .padding(start = ProtonDimens.DefaultSpacing),
+            .padding(start = ProtonDimens.Spacing.Large),
         verticalAlignment = Alignment.CenterVertically
     ) {
         ManageMembersAvatar(member)
@@ -215,7 +215,7 @@ fun ManageMembersItem(
                     start = ProtonDimens.ListItemTextStartPadding,
                     top = ProtonDimens.ListItemTextStartPadding,
                     bottom = ProtonDimens.ListItemTextStartPadding,
-                    end = ProtonDimens.DefaultSpacing
+                    end = ProtonDimens.Spacing.Large
                 )
                 .weight(1f)
         ) {
@@ -232,8 +232,8 @@ fun ManageMembersItem(
         if (member.isSelected) {
             Icon(
                 modifier = Modifier.padding(
-                    start = ProtonDimens.SmallSpacing,
-                    end = ProtonDimens.DefaultSpacing
+                    start = ProtonDimens.Spacing.Standard,
+                    end = ProtonDimens.Spacing.Large
                 ),
                 painter = painterResource(id = R.drawable.ic_proton_checkmark),
                 tint = ProtonTheme.colors.iconAccent,

@@ -36,7 +36,7 @@ internal fun RespondInlineButton(onRespondInlineClick: () -> Unit, modifier: Mod
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .padding(ProtonDimens.DefaultSpacing)
+            .padding(ProtonDimens.Spacing.Large)
     ) {
         ProtonTextButton(
             onClick = onRespondInlineClick,

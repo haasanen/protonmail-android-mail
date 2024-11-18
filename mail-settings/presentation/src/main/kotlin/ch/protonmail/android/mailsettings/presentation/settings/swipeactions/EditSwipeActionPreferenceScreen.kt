@@ -105,7 +105,7 @@ fun EditSwipeActionPreferenceContent(
     onSwipeActionSelect: (SwipeAction) -> Unit,
     modifier: Modifier
 ) {
-    LazyColumn(modifier = modifier, contentPadding = PaddingValues(top = ProtonDimens.SmallSpacing)) {
+    LazyColumn(modifier = modifier, contentPadding = PaddingValues(top = ProtonDimens.Spacing.Standard)) {
         items(items) {
             ListItem(item = it, onSwipeActionSelect = onSwipeActionSelect)
         }
@@ -118,7 +118,7 @@ private fun ListItem(item: EditSwipeActionPreferenceItemUiModel, onSwipeActionSe
     Row(
         modifier = Modifier
             .selectable(selected = item.isSelected, role = Role.RadioButton) { onSwipeActionSelect(item.swipeAction) }
-            .padding(ProtonDimens.DefaultSpacing),
+            .padding(ProtonDimens.Spacing.Large),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
@@ -126,7 +126,7 @@ private fun ListItem(item: EditSwipeActionPreferenceItemUiModel, onSwipeActionSe
             painter = painterResource(id = item.imageRes),
             contentDescription = null
         )
-        Spacer(modifier = Modifier.width(ProtonDimens.DefaultSpacing))
+        Spacer(modifier = Modifier.width(ProtonDimens.Spacing.Large))
         Text(
             modifier = Modifier.weight(1f, fill = true),
             text = stringResource(id = item.descriptionRes),

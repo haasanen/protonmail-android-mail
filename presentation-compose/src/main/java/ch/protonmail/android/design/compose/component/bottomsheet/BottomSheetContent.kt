@@ -44,7 +44,7 @@ fun BottomSheetContent(
     ) {
         BottomSheetHeader(content = header)
         HorizontalDivider(
-            modifier = Modifier.padding(bottom = ProtonDimens.SmallSpacing),
+            modifier = Modifier.padding(bottom = ProtonDimens.Spacing.Standard),
             color = ProtonTheme.colors.separatorNorm
         )
         content()

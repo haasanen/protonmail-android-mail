@@ -59,13 +59,13 @@ fun SettingsToggleItem(
                     role = Role.Switch
                 ) { onToggle(!value) }
             }
-            .padding(horizontal = ProtonDimens.DefaultSpacing),
+            .padding(horizontal = ProtonDimens.Spacing.Large),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
         ProtonRawListItem(
             modifier = Modifier
                 .sizeIn(minHeight = ProtonDimens.ListItemHeight)
-                .padding(vertical = ProtonDimens.DefaultSpacing),
+                .padding(vertical = ProtonDimens.Spacing.Large),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.weight(1f)) {

@@ -219,7 +219,7 @@ fun MessageBodyWebView(
         }
         if (bodyDisplayMode != MessageBodyExpandCollapseMode.NotApplicable) {
             ExpandCollapseBodyButton(
-                modifier = Modifier.offset(x = ProtonDimens.SmallSpacing),
+                modifier = Modifier.offset(x = ProtonDimens.Spacing.Standard),
                 onClick = { actions.onExpandCollapseButtonCLicked() }
             )
         }
@@ -287,7 +287,7 @@ private fun configureDarkLightModeWhenInDarkTheme(webView: WebView, viewModePref
 private fun ExpandCollapseBodyButton(modifier: Modifier = Modifier, onClick: () -> Unit) {
     Button(
         modifier = modifier
-            .padding(ProtonDimens.ExtraSmallSpacing)
+            .padding(ProtonDimens.Spacing.Small)
             .height(MessageBodyDimens.ExpandButtonHeight)
             .width(MessageBodyDimens.ExpandButtonWidth),
         contentPadding = PaddingValues(0.dp),

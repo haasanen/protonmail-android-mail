@@ -110,8 +110,8 @@ fun AttachmentItem(
 
     Row(
         modifier = modifier
-            .padding(horizontal = ProtonDimens.SmallSpacing, vertical = ProtonDimens.ExtraSmallSpacing)
-            .padding(horizontal = ProtonDimens.ExtraSmallSpacing)
+            .padding(horizontal = ProtonDimens.Spacing.Standard, vertical = ProtonDimens.Spacing.Small)
+            .padding(horizontal = ProtonDimens.Spacing.Small)
             .border(
                 width = MailDimens.DefaultBorder,
                 color = ProtonTheme.colors.interactionWeakNorm,
@@ -129,7 +129,7 @@ fun AttachmentItem(
                     }
                 }
             }
-            .padding(ProtonDimens.SmallSpacing),
+            .padding(ProtonDimens.Spacing.Standard),
         verticalAlignment = Alignment.CenterVertically
     ) {
         if (attachmentUiModel.status == AttachmentWorkerStatus.Running) {
@@ -148,7 +148,7 @@ fun AttachmentItem(
                 )
             )
         }
-        Spacer(modifier = Modifier.width(ProtonDimens.SmallSpacing))
+        Spacer(modifier = Modifier.width(ProtonDimens.Spacing.Standard))
         Text(
             modifier = Modifier
                 .testTag(AttachmentItemTestTags.Name)
@@ -161,7 +161,7 @@ fun AttachmentItem(
         Text(
             modifier = Modifier
                 .testTag(AttachmentItemTestTags.Extension)
-                .padding(end = ProtonDimens.SmallSpacing),
+                .padding(end = ProtonDimens.Spacing.Standard),
             text = ".${attachmentUiModel.extension}",
             style = ProtonTheme.typography.defaultSmall
         )
@@ -171,7 +171,7 @@ fun AttachmentItem(
             style = ProtonTheme.typography.captionHint
         )
         if (attachmentUiModel.deletable) {
-            Spacer(modifier = Modifier.width(ProtonDimens.ExtraSmallSpacing))
+            Spacer(modifier = Modifier.width(ProtonDimens.Spacing.Small))
             Image(
                 modifier = Modifier
                     .clickable { onAttachmentItemDeleteClicked(AttachmentId(attachmentUiModel.attachmentId)) }

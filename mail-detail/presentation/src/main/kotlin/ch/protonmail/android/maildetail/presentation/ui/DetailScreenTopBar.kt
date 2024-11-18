@@ -244,8 +244,8 @@ private fun SubjectHeader(
         modifier = modifier
             .fillMaxWidth()
             .padding(
-                horizontal = ProtonDimens.DefaultSpacing,
-                vertical = ProtonDimens.SmallSpacing
+                horizontal = ProtonDimens.Spacing.Large,
+                vertical = ProtonDimens.Spacing.Standard
             )
     ) {
         SelectionContainer(modifier = Modifier.testTag(DetailScreenTopBarTestTags.Subject)) {

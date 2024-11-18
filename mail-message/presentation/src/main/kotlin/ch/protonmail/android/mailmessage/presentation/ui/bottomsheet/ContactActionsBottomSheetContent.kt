@@ -118,7 +118,7 @@ fun ContactActionsBottomSheetHeader(participant: Participant, avatarUiModel: Ava
         Avatar(
             modifier = Modifier
                 .testTag(ContactActionsBottomSheetTestTags.Avatar)
-                .padding(ProtonDimens.DefaultSpacing)
+                .padding(ProtonDimens.Spacing.Large)
                 .align(Alignment.CenterHorizontally),
             avatarUiModel = avatarUiModel,
             onClick = { },
@@ -131,7 +131,7 @@ fun ContactActionsBottomSheetHeader(participant: Participant, avatarUiModel: Ava
             Text(
                 modifier = Modifier
                     .padding(
-                        start = ProtonDimens.MediumSpacing, end = ProtonDimens.MediumSpacing
+                        start = ProtonDimens.Spacing.ExtraLarge, end = ProtonDimens.Spacing.ExtraLarge
                     )
                     .align(Alignment.CenterHorizontally),
                 style = ProtonTheme.typography.headlineNorm,
@@ -142,10 +142,10 @@ fun ContactActionsBottomSheetHeader(participant: Participant, avatarUiModel: Ava
         Text(
             modifier = Modifier
                 .padding(
-                    top = ProtonDimens.ExtraSmallSpacing,
-                    bottom = ProtonDimens.MediumSpacing,
-                    start = ProtonDimens.MediumSpacing,
-                    end = ProtonDimens.MediumSpacing
+                    top = ProtonDimens.Spacing.Small,
+                    bottom = ProtonDimens.Spacing.ExtraLarge,
+                    start = ProtonDimens.Spacing.ExtraLarge,
+                    end = ProtonDimens.Spacing.ExtraLarge
                 )
                 .align(Alignment.CenterHorizontally),
             style = ProtonTheme.typography.defaultNorm,
@@ -167,13 +167,13 @@ private fun ContactActionItem(
         modifier = Modifier
             .testTag(ContactActionsBottomSheetTestTags.ContactActionsItem)
             .clickable { onClick() }
-            .padding(vertical = ProtonDimens.DefaultSpacing)
+            .padding(vertical = ProtonDimens.Spacing.Large)
     ) {
         Icon(
             painter = painterResource(iconRes),
             modifier = Modifier
                 .testTag(ContactActionsBottomSheetTestTags.ActionIcon)
-                .padding(horizontal = ProtonDimens.DefaultSpacing),
+                .padding(horizontal = ProtonDimens.Spacing.Large),
             contentDescription = stringResource(id = contentDescriptionRes)
         )
         Text(

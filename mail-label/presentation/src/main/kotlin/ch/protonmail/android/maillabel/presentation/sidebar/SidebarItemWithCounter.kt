@@ -35,7 +35,6 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
-import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 import ch.protonmail.android.mailcommon.presentation.mapper.UnreadCountValueMapper
 import ch.protonmail.android.design.compose.component.ProtonListItem
 import ch.protonmail.android.design.compose.theme.ProtonDimens
@@ -91,8 +90,8 @@ fun SidebarItemWithCounter(
                 Text(
                     modifier = Modifier
                         .testTag(SidebarItemWithCounterTestTags.Counter)
-                        .padding(MailDimens.TinySpacing)
-                        .padding(horizontal = MailDimens.TinySpacing),
+                        .padding(ProtonDimens.Spacing.Tiny)
+                        .padding(horizontal = ProtonDimens.Spacing.Tiny),
                     text = UnreadCountValueMapper.toCappedValue(count),
                     color = Color.White,
                     style = ProtonTheme.typography.captionNorm

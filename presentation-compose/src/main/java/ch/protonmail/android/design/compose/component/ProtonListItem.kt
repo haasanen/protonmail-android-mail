@@ -84,7 +84,7 @@ fun ProtonListItem(
             .background(color = if (isSelected) ProtonTheme.colors.interactionPressed else Color.Transparent)
             .height(height = ProtonDimens.ListItemHeight)
             .clickable(enabled = isClickable, onClick = onClick)
-            .padding(horizontal = ProtonDimens.DefaultSpacing),
+            .padding(horizontal = ProtonDimens.Spacing.Large),
         content = content
     )
 }
@@ -105,7 +105,7 @@ fun ProtonListItem(
         isClickable = isClickable,
         isSelected = isSelected
     ) {
-        icon(Modifier.padding(end = ProtonDimens.DefaultSpacing))
+        icon(Modifier.padding(end = ProtonDimens.Spacing.Large))
         text(Modifier.weight(1f, fill = true))
         count(Modifier.weight(1f))
     }

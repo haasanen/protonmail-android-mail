@@ -35,7 +35,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.Constraints
-import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 import ch.protonmail.android.maillabel.presentation.model.LabelUiModel
 import ch.protonmail.android.maillabel.presentation.previewdata.MailboxItemLabelsPreviewDataProvider
 import ch.protonmail.android.maillabel.presentation.ui.MailboxItemLabels.DummyMinExpandedLabel
@@ -196,12 +195,12 @@ private fun Label(label: LabelUiModel) {
         modifier = Modifier
             .testTag(LabelsListTestTags.Label)
             .padding(
-                end = ProtonDimens.ExtraSmallSpacing,
-                top = MailDimens.TinySpacing,
-                bottom = MailDimens.TinySpacing
+                end = ProtonDimens.Spacing.Small,
+                top = ProtonDimens.Spacing.Tiny,
+                bottom = ProtonDimens.Spacing.Tiny
             )
             .background(label.color, shape = RoundedCornerShape(percent = 100))
-            .padding(horizontal = ProtonDimens.SmallSpacing, vertical = MailDimens.TinySpacing),
+            .padding(horizontal = ProtonDimens.Spacing.Standard, vertical = ProtonDimens.Spacing.Tiny),
         text = label.name,
         style = ProtonTheme.typography.overline.copy(color = ProtonTheme.colors.floatyText),
         maxLines = 1,

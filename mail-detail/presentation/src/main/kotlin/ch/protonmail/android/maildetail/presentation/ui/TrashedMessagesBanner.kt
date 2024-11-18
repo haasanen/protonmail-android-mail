@@ -60,8 +60,8 @@ fun TrashedMessagesBanner(
             )
 
             .padding(
-                horizontal = ProtonDimens.DefaultSpacing,
-                vertical = ProtonDimens.SmallSpacing
+                horizontal = ProtonDimens.Spacing.Large,
+                vertical = ProtonDimens.Spacing.Standard
             )
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -70,13 +70,13 @@ fun TrashedMessagesBanner(
                 contentDescription = NO_CONTENT_DESCRIPTION,
                 tint = ProtonTheme.colors.iconNorm
             )
-            Spacer(modifier = Modifier.width(ProtonDimens.DefaultSpacing))
+            Spacer(modifier = Modifier.width(ProtonDimens.Spacing.Large))
             Text(
                 modifier = Modifier.weight(1f),
                 text = stringResource(id = uiModel.message),
                 style = ProtonTheme.typography.defaultSmallNorm
             )
-            Spacer(modifier = Modifier.width(ProtonDimens.DefaultSpacing))
+            Spacer(modifier = Modifier.width(ProtonDimens.Spacing.Large))
             ProtonTextButton(onClick = onActionClick) {
                 Text(text = stringResource(id = uiModel.action))
             }

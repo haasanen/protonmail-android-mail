@@ -168,7 +168,7 @@ private fun OnboardingUpsellScreenContent(
         LazyColumn(
             modifier = Modifier
                 .weight(1f)
-                .padding(horizontal = ProtonDimens.DefaultSpacing),
+                .padding(horizontal = ProtonDimens.Spacing.Large),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
@@ -181,7 +181,7 @@ private fun OnboardingUpsellScreenContent(
                         onPlanSelected(selectedPlansType.value, selectedPlan.value)
                     }
                 )
-                Spacer(modifier = Modifier.size(ProtonDimens.DefaultSpacing))
+                Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Large))
             }
 
             val plans = when (selectedPlansType.value) {
@@ -200,7 +200,7 @@ private fun OnboardingUpsellScreenContent(
                         onPlanSelected(selectedPlansType.value, selectedPlan.value)
                     }
                 )
-                Spacer(modifier = Modifier.size(ProtonDimens.DefaultSpacing))
+                Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Large))
             }
         }
 
@@ -269,11 +269,11 @@ private fun PlanSwitcherLabel(modifier: Modifier, text: TextUiModel) {
         Text(
             modifier = Modifier
                 .background(color = ProtonTheme.colors.interactionNorm, shape = ProtonTheme.shapes.large)
-                .padding(horizontal = ProtonDimens.SmallSpacing, vertical = ProtonDimens.ExtraSmallSpacing),
+                .padding(horizontal = ProtonDimens.Spacing.Standard, vertical = ProtonDimens.Spacing.Small),
             text = text.string(),
             style = ProtonTheme.typography.captionStrongUnspecified.copy(color = Color.White)
         )
-        Spacer(Modifier.width(ProtonDimens.SmallSpacing))
+        Spacer(Modifier.width(ProtonDimens.Spacing.Standard))
     }
 }
 
@@ -290,7 +290,7 @@ private fun PlanSwitcherItem(
     Box(
         modifier = modifier
             .fillMaxSize()
-            .padding(ProtonDimens.ExtraSmallSpacing)
+            .padding(ProtonDimens.Spacing.Small)
             .then(selectedBackgroundModifier),
         contentAlignment = Alignment.Center
     ) {
@@ -332,7 +332,7 @@ private fun PlanCard(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(ProtonTheme.colors.interactionNorm)
-                    .padding(ProtonDimens.SmallSpacing),
+                    .padding(ProtonDimens.Spacing.Standard),
                 text = stringResource(id = R.string.upselling_onboarding_best_value),
                 textAlign = TextAlign.Center,
                 style = ProtonTheme.typography.defaultSmallStrongUnspecified.copy(color = Color.White)
@@ -341,14 +341,14 @@ private fun PlanCard(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(ProtonDimens.DefaultSpacing)
+                .padding(ProtonDimens.Spacing.Large)
         ) {
             PlanCheckmark(isSelected = isSelected)
             PlanNameAndPrice(plan = plan)
             Spacer(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(ProtonDimens.DefaultSpacing)
+                    .height(ProtonDimens.Spacing.Large)
             )
             PlanEntitlements(plan = plan, numberOfEntitlementsToShow = numberOfEntitlementsToShow)
         }
@@ -362,7 +362,7 @@ private fun PlanCheckmark(modifier: Modifier = Modifier, isSelected: Boolean) {
             modifier = modifier
                 .size(ProtonDimens.DefaultIconSize)
                 .background(color = ProtonTheme.colors.interactionNorm, shape = CircleShape)
-                .padding(ProtonDimens.ExtraSmallSpacing)
+                .padding(ProtonDimens.Spacing.Small)
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_proton_checkmark),
@@ -386,10 +386,10 @@ private fun PlanNameAndPrice(modifier: Modifier = Modifier, plan: OnboardingUpse
         Column(
             modifier = Modifier
                 .weight(1f)
-                .padding(top = ProtonDimens.DefaultSpacing)
+                .padding(top = ProtonDimens.Spacing.Large)
         ) {
             Text(
-                modifier = Modifier.padding(end = ProtonDimens.ExtraSmallSpacing),
+                modifier = Modifier.padding(end = ProtonDimens.Spacing.Small),
                 text = plan.title,
                 style = ProtonTheme.typography.subheadline,
                 color = ProtonTheme.colors.textNorm
@@ -437,7 +437,7 @@ private fun PlanEntitlements(
                 Spacer(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(ProtonDimens.DefaultSpacing)
+                        .height(ProtonDimens.Spacing.Large)
                 )
             }
         }
@@ -464,16 +464,16 @@ private fun PlanEntitlement(entitlementUiModel: DynamicEntitlementUiModel) {
     Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
         AsyncImage(
             modifier = Modifier
-                .size(ProtonDimens.LargeSpacing)
+                .size(ProtonDimens.Spacing.Huge)
                 .background(color = ProtonTheme.colors.backgroundSecondary, shape = CircleShape)
-                .padding(ProtonDimens.SmallSpacing),
+                .padding(ProtonDimens.Spacing.Standard),
             placeholder = painterResource(R.drawable.ic_logo_mail_mono),
             model = imageModel,
             contentDescription = NO_CONTENT_DESCRIPTION,
             colorFilter = ColorFilter.tint(ProtonTheme.colors.iconNorm),
             contentScale = ContentScale.Fit
         )
-        Spacer(modifier = Modifier.size(ProtonDimens.DefaultSpacing))
+        Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Large))
         Text(
             text = entitlementUiModel.text.string(),
             style = ProtonTheme.typography.defaultSmallNorm
@@ -498,7 +498,7 @@ private fun MorePlanEntitlements(
             ),
             style = ProtonTheme.typography.defaultSmallStrongUnspecified.copy(color = ProtonTheme.colors.textAccent)
         )
-        Spacer(modifier = Modifier.size(ProtonDimens.ExtraSmallSpacing))
+        Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Small))
         Icon(
             modifier = Modifier.size(ProtonDimens.SmallIconSize),
             painter = painterResource(id = R.drawable.ic_proton_chevron_down),
@@ -511,9 +511,9 @@ private fun MorePlanEntitlements(
 @Composable
 private fun PremiumValueSection(modifier: Modifier = Modifier, logoDrawables: List<Int>) {
     logoDrawables.takeIfNotEmpty()?.let {
-        Column(modifier = modifier.padding(bottom = ProtonDimens.DefaultSpacing)) {
+        Column(modifier = modifier.padding(bottom = ProtonDimens.Spacing.Large)) {
             Text(
-                modifier = modifier.padding(vertical = ProtonDimens.SmallSpacing),
+                modifier = modifier.padding(vertical = ProtonDimens.Spacing.Standard),
                 text = stringResource(R.string.upselling_onboarding_premium_value_included),
                 style = ProtonTheme.typography.defaultSmallStrongUnspecified.copy(color = ProtonTheme.colors.textAccent)
             )
@@ -525,7 +525,7 @@ private fun PremiumValueSection(modifier: Modifier = Modifier, logoDrawables: Li
                         painter = painterResource(id = it),
                         contentDescription = NO_CONTENT_DESCRIPTION
                     )
-                    Spacer(modifier = Modifier.size(ProtonDimens.SmallSpacing))
+                    Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Standard))
                 }
             }
         }
@@ -560,20 +560,20 @@ private fun UpsellButtons(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = ProtonDimens.DefaultSpacing),
+            .padding(horizontal = ProtonDimens.Spacing.Large),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
         Box(
             modifier = Modifier
-                .padding(top = ProtonDimens.SmallSpacing)
-                .padding(bottom = ProtonDimens.SmallSpacing)
+                .padding(top = ProtonDimens.Spacing.Standard)
+                .padding(bottom = ProtonDimens.Spacing.Standard)
         ) {
             if (billingMessage != null) {
                 Text(
                     modifier = Modifier
-                        .padding(top = ProtonDimens.SmallSpacing)
-                        .padding(bottom = ProtonDimens.ExtraSmallSpacing),
+                        .padding(top = ProtonDimens.Spacing.Standard)
+                        .padding(bottom = ProtonDimens.Spacing.Small),
                     text = billingMessage.string(),
                     style = ProtonTheme.typography.captionRegular.copy(color = ProtonTheme.colors.textAccent)
                 )
@@ -593,7 +593,7 @@ private fun UpsellButtons(
             ProtonSolidButton(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = ProtonDimens.DefaultSpacing)
+                    .padding(bottom = ProtonDimens.Spacing.Large)
                     .height(MailDimens.OnboardingUpsellButtonHeight),
                 onClick = onContinueWithProtonFree
             ) {
@@ -612,9 +612,9 @@ private fun UpsellButtons(
         ) {
             Text(
                 modifier = Modifier
-                    .padding(horizontal = ProtonDimens.DefaultSpacing)
-                    .padding(top = ProtonDimens.SmallSpacing)
-                    .padding(bottom = ProtonDimens.DefaultSpacing),
+                    .padding(horizontal = ProtonDimens.Spacing.Large)
+                    .padding(top = ProtonDimens.Spacing.Standard)
+                    .padding(bottom = ProtonDimens.Spacing.Large),
                 text = stringResource(id = R.string.upselling_onboarding_continue_with_proton_free),
                 style = ProtonTheme.typography.body1Medium.copy(
                     color = ProtonTheme.colors.textAccent

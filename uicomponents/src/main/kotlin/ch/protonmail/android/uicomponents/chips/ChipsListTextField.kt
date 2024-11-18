@@ -163,7 +163,7 @@ fun ChipsListTextField(
                     .thenIf(!state.isFocused()) {
                         height(0.dp)
                     }
-                    .padding(ProtonDimens.DefaultSpacing)
+                    .padding(ProtonDimens.Spacing.Large)
                     .onKeyEvent { keyEvent ->
                         if (keyEvent.key == Key.Backspace) {
                             state.onDelete()
@@ -253,7 +253,7 @@ fun ChipsListTextField(
                     contactSuggestionState.contactSuggestionItems.forEach { selectionOption ->
                         DropdownMenuItem(
                             text = {
-                                Column(modifier = Modifier.padding(vertical = ProtonDimens.SmallSpacing)) {
+                                Column(modifier = Modifier.padding(vertical = ProtonDimens.Spacing.Standard)) {
                                     Text(
                                         text = selectionOption.header,
                                         maxLines = 1,
@@ -261,7 +261,7 @@ fun ChipsListTextField(
                                         style = ProtonTheme.typography.defaultNorm,
                                         overflow = TextOverflow.Ellipsis
                                     )
-                                    Spacer(modifier = Modifier.size(ProtonDimens.ExtraSmallSpacing))
+                                    Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Small))
                                     Text(
                                         text = selectionOption.subheader,
                                         maxLines = 1,

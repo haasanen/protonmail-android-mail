@@ -607,12 +607,12 @@ private fun MessagesContent(
     val layoutDirection = LocalLayoutDirection.current
     val contentPadding = remember(padding, paddingOffsetDp) {
         PaddingValues(
-            start = padding.calculateStartPadding(layoutDirection) + ProtonDimens.SmallSpacing,
-            end = padding.calculateEndPadding(layoutDirection) + ProtonDimens.SmallSpacing,
+            start = padding.calculateStartPadding(layoutDirection) + ProtonDimens.Spacing.Standard,
+            end = padding.calculateEndPadding(layoutDirection) + ProtonDimens.Spacing.Standard,
             top = (
-                padding.calculateTopPadding() + ProtonDimens.SmallSpacing + paddingOffsetDp
+                padding.calculateTopPadding() + ProtonDimens.Spacing.Standard + paddingOffsetDp
                 ).coerceAtLeast(0f.dp),
-            bottom = padding.calculateBottomPadding() + ProtonDimens.SmallSpacing
+            bottom = padding.calculateBottomPadding() + ProtonDimens.Spacing.Standard
         )
     }
 
@@ -698,7 +698,7 @@ private fun MessagesContent(
                 lazyColumnHeight.value = it.size.height
             },
         contentPadding = contentPadding,
-        verticalArrangement = Arrangement.spacedBy(ProtonDimens.SmallSpacing),
+        verticalArrangement = Arrangement.spacedBy(ProtonDimens.Spacing.Standard),
         state = listState
     ) {
 

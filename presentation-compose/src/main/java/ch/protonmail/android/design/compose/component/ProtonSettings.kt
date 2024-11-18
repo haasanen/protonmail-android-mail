@@ -135,7 +135,7 @@ fun ProtonSettingsItem(
             .clickable(isClickable, onClick = onClick)
             .padding(
                 vertical = ProtonDimens.ListItemTextStartPadding,
-                horizontal = ProtonDimens.DefaultSpacing
+                horizontal = ProtonDimens.Spacing.Large
             )
     ) {
         Column(
@@ -151,7 +151,7 @@ fun ProtonSettingsItem(
             )
             hint?.let {
                 Text(
-                    modifier = Modifier.padding(top = ProtonDimens.ExtraSmallSpacing),
+                    modifier = Modifier.padding(top = ProtonDimens.Spacing.Small),
                     text = hint,
                     color = ProtonTheme.colors.textHint,
                     style = ProtonTheme.typography.body2Regular
@@ -178,7 +178,7 @@ fun ProtonSettingsToggleItem(
                 enabled = isViewEnabled,
                 role = Role.Switch
             ) { onToggle(!isSwitchChecked) }
-            .padding(horizontal = ProtonDimens.DefaultSpacing),
+            .padding(horizontal = ProtonDimens.Spacing.Large),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
         ProtonRawListItem(
@@ -218,7 +218,7 @@ fun ProtonSettingsRadioItem(
         modifier = modifier
             .selectable(selected = isSelected, role = Role.RadioButton) { onItemSelected(name) }
             .sizeIn(minHeight = ProtonDimens.ListItemHeight)
-            .padding(horizontal = ProtonDimens.DefaultSpacing),
+            .padding(horizontal = ProtonDimens.Spacing.Large),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(

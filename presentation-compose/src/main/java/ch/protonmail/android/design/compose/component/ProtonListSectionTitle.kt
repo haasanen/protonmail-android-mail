@@ -48,7 +48,7 @@ fun ProtonListSectionTitle(title: String, modifier: Modifier = Modifier) {
                 contentDescription = title
                 heading()
             }
-            .padding(top = ProtonDimens.DefaultSpacing)
+            .padding(top = ProtonDimens.Spacing.Large)
             .fillMaxWidth()
     ) {
 
@@ -57,7 +57,7 @@ fun ProtonListSectionTitle(title: String, modifier: Modifier = Modifier) {
         Text(
             text = title,
             modifier = Modifier.padding(
-                vertical = ProtonDimens.DefaultSpacing,
+                vertical = ProtonDimens.Spacing.Large,
                 horizontal = SectionHeaderHorizontalPadding
             ),
             style = ProtonTheme.typography.defaultSmallWeak,

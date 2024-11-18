@@ -136,7 +136,7 @@ fun DismissBackground(dismissState: SwipeToDismissBoxState, swipeActionsUiModel:
         modifier = Modifier
             .fillMaxSize()
             .background(color)
-            .padding(horizontal = ProtonDimens.MediumSpacing),
+            .padding(horizontal = ProtonDimens.Spacing.ExtraLarge),
         contentAlignment = alignment
     ) {
         Icon(

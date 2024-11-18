@@ -36,6 +36,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
@@ -84,12 +85,13 @@ fun MailboxItem(
             )
             .semantics { isItemRead = item.isRead }
             .padding(
-                start = ProtonDimens.DefaultSpacing,
-                end = ProtonDimens.DefaultSpacing,
-                top = ProtonDimens.ExtraSmallSpacing,
-                bottom = ProtonDimens.ExtraSmallSpacing
+                start = ProtonDimens.Spacing.ModeratelyLarge,
+                end = ProtonDimens.Spacing.Large,
+                top = ProtonDimens.Spacing.ModeratelyLarge,
+                bottom = ProtonDimens.Spacing.ModeratelyLarge
             )
             .fillMaxWidth()
+            .clip(ProtonTheme.shapes.large)
     ) {
         val fontWeight = if (item.isRead) FontWeight.Normal else FontWeight.Bold
         val fontColor = if (item.isRead) ProtonTheme.colors.textWeak else ProtonTheme.colors.textNorm
@@ -97,15 +99,19 @@ fun MailboxItem(
 
         ParticipantAvatar(
             avatarUiModel = if (selectionMode) AvatarUiModel.SelectionMode(isSelected) else item.avatar,
-            modifier = Modifier.padding(top = ProtonDimens.SmallSpacing, end = ProtonDimens.ExtraSmallSpacing),
+            modifier = Modifier.padding(top = ProtonDimens.Spacing.Standard, end = ProtonDimens.Spacing.Small),
             onClick = { actions.onAvatarClicked(item) }
         )
-        Column(modifier = Modifier.padding(start = ProtonDimens.SmallSpacing, top = ProtonDimens.SmallSpacing)) {
+        Column(
+            modifier = Modifier.padding(
+                start = ProtonDimens.Spacing.Standard, top = ProtonDimens.Spacing.Standard
+            )
+        ) {
             Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                 ActionIcons(
                     item = item,
                     iconColor = fontColor,
-                    modifier = Modifier.padding(end = ProtonDimens.ExtraSmallSpacing)
+                    modifier = Modifier.padding(end = ProtonDimens.Spacing.Small)
                 )
                 Participants(
                     participants = item.participants,
@@ -113,7 +119,7 @@ fun MailboxItem(
                     fontColor = fontColor,
                     modifier = Modifier
                         .weight(1f)
-                        .padding(end = ProtonDimens.ExtraSmallSpacing)
+                        .padding(end = ProtonDimens.Spacing.Small)
                 )
                 Time(time = item.time, fontWeight = fontWeight, fontColor = fontColor)
             }
@@ -124,7 +130,7 @@ fun MailboxItem(
                 LocationIcons(
                     iconResIds = item.locations,
                     iconColor = fontColor,
-                    modifier = Modifier.padding(end = ProtonDimens.ExtraSmallSpacing)
+                    modifier = Modifier.padding(end = ProtonDimens.Spacing.Small)
                 )
                 Row(
                     Modifier
@@ -137,7 +143,7 @@ fun MailboxItem(
                         fontColor = fontColor,
                         modifier = Modifier
                             .weight(1f, fill = false)
-                            .padding(end = ProtonDimens.ExtraSmallSpacing)
+                            .padding(end = ProtonDimens.Spacing.Small)
                     )
                     Count(
                         count = item.numMessages,
@@ -149,18 +155,18 @@ fun MailboxItem(
                 Icons(
                     item = item,
                     iconColor = fontColor,
-                    modifier = Modifier.padding(start = ProtonDimens.ExtraSmallSpacing)
+                    modifier = Modifier.padding(start = ProtonDimens.Spacing.Small)
                 )
             }
             Row(
                 modifier = Modifier
-                    .padding(top = ProtonDimens.ExtraSmallSpacing, bottom = ProtonDimens.ExtraSmallSpacing)
+                    .padding(top = ProtonDimens.Spacing.Small, bottom = ProtonDimens.Spacing.Small)
                     .fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 ExpirationLabel(
                     hasExpirationTime = item.shouldShowExpirationLabel,
-                    modifier = Modifier.padding(end = ProtonDimens.ExtraSmallSpacing)
+                    modifier = Modifier.padding(end = ProtonDimens.Spacing.Small)
                 )
                 Labels(labels = item.labels)
             }
@@ -300,7 +306,7 @@ private fun Count(
         Text(
             modifier = Modifier
                 .testTag(MailboxItemTestTags.Count)
-                .padding(horizontal = ProtonDimens.ExtraSmallSpacing),
+                .padding(horizontal = ProtonDimens.Spacing.Small),
             text = count.toString(),
             overflow = TextOverflow.Ellipsis,
             style = ProtonTheme.typography.captionNorm.copy(fontWeight = fontWeight, color = fontColor)
@@ -339,7 +345,7 @@ private fun ExpirationLabel(modifier: Modifier = Modifier, hasExpirationTime: Bo
             modifier = modifier
                 .background(ProtonTheme.colors.interactionWeakNorm, ProtonTheme.shapes.large)
                 .size(ProtonDimens.SmallIconSize)
-                .padding(MailDimens.TinySpacing),
+                .padding(ProtonDimens.Spacing.Tiny),
             contentAlignment = Alignment.Center
         ) {
             Icon(

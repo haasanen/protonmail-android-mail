@@ -90,8 +90,8 @@ internal fun UpsellingBottomSheetContent(
                 if (!isNarrowScreen) {
                     Image(
                         modifier = Modifier.padding(
-                            start = ProtonDimens.DefaultSpacing,
-                            end = ProtonDimens.DefaultSpacing
+                            start = ProtonDimens.Spacing.Large,
+                            end = ProtonDimens.Spacing.Large
                         ),
                         painter = painterResource(id = dynamicPlansModel.icon.iconResId),
                         contentDescription = NO_CONTENT_DESCRIPTION
@@ -101,7 +101,7 @@ internal fun UpsellingBottomSheetContent(
 
             item {
                 Text(
-                    modifier = Modifier.padding(ProtonDimens.DefaultSpacing),
+                    modifier = Modifier.padding(ProtonDimens.Spacing.Large),
                     text = dynamicPlansModel.title.text.string(),
                     style = if (isNarrowScreen) {
                         ProtonTheme.typography.headlineSmallNorm
@@ -112,14 +112,14 @@ internal fun UpsellingBottomSheetContent(
             }
 
             item {
-                Spacer(modifier = Modifier.height(ProtonDimens.ExtraSmallSpacing))
+                Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Small))
             }
 
             item {
                 Text(
                     modifier = Modifier
-                        .padding(horizontal = ProtonDimens.DefaultSpacing)
-                        .padding(top = ProtonDimens.SmallSpacing),
+                        .padding(horizontal = ProtonDimens.Spacing.Large)
+                        .padding(top = ProtonDimens.Spacing.Standard),
                     text = dynamicPlansModel.description.text.string(),
                     style = ProtonTheme.typography.defaultWeak,
                     color = contentColors.textWeak,
@@ -128,7 +128,7 @@ internal fun UpsellingBottomSheetContent(
             }
 
             item {
-                Spacer(modifier = Modifier.height(ProtonDimens.DefaultSpacing))
+                Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Large))
             }
 
             dynamicPlansModel.entitlements.forEachIndexed { index, model ->
@@ -138,14 +138,14 @@ internal fun UpsellingBottomSheetContent(
                 if (index != dynamicPlansModel.entitlements.lastIndex) {
                     item {
                         HorizontalDivider(
-                            modifier = Modifier.padding(horizontal = ProtonDimens.DefaultSpacing),
+                            modifier = Modifier.padding(horizontal = ProtonDimens.Spacing.Large),
                             color = UpsellingColors.EntitlementsRowDivider
                         )
                     }
                 }
             }
 
-            item { UpsellingPlansList(modifier = Modifier.padding(ProtonDimens.DefaultSpacing), state.plans, actions) }
+            item { UpsellingPlansList(modifier = Modifier.padding(ProtonDimens.Spacing.Large), state.plans, actions) }
         }
     }
 

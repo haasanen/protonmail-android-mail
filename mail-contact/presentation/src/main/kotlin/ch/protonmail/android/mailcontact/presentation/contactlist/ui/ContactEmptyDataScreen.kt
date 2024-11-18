@@ -61,12 +61,12 @@ internal fun ContactEmptyDataScreen(
     ) {
         Icon(
             modifier = Modifier
-                .padding(start = ProtonDimens.ExtraSmallSpacing)
+                .padding(start = ProtonDimens.Spacing.Small)
                 .background(
                     color = ProtonTheme.colors.backgroundSecondary,
                     shape = RoundedCornerShape(MailDimens.IconWeakRoundBackgroundRadius)
                 )
-                .padding(ProtonDimens.SmallSpacing),
+                .padding(ProtonDimens.Spacing.Standard),
             painter = painterResource(id = iconResId),
             tint = ProtonTheme.colors.iconNorm,
             contentDescription = NO_CONTENT_DESCRIPTION
@@ -74,31 +74,31 @@ internal fun ContactEmptyDataScreen(
         Text(
             title,
             Modifier.padding(
-                start = ProtonDimens.LargeSpacing,
-                top = ProtonDimens.MediumSpacing,
-                end = ProtonDimens.LargeSpacing
+                start = ProtonDimens.Spacing.Huge,
+                top = ProtonDimens.Spacing.ExtraLarge,
+                end = ProtonDimens.Spacing.Huge
             ),
             style = ProtonTheme.typography.defaultStrongNorm
         )
         Text(
             description,
             Modifier.padding(
-                start = ProtonDimens.LargeSpacing,
-                top = ProtonDimens.ExtraSmallSpacing,
-                end = ProtonDimens.LargeSpacing
+                start = ProtonDimens.Spacing.Huge,
+                top = ProtonDimens.Spacing.Small,
+                end = ProtonDimens.Spacing.Huge
             ),
             style = ProtonTheme.typography.defaultSmallWeak,
             textAlign = TextAlign.Center
         )
         if (showAddButton) {
             ProtonSecondaryButton(
-                modifier = Modifier.padding(top = ProtonDimens.LargeSpacing),
+                modifier = Modifier.padding(top = ProtonDimens.Spacing.Huge),
                 onClick = onAddClick
             ) {
                 Text(
                     text = buttonText,
                     Modifier.padding(
-                        horizontal = ProtonDimens.SmallSpacing
+                        horizontal = ProtonDimens.Spacing.Standard
                     ),
                     style = ProtonTheme.typography.captionNorm
                 )

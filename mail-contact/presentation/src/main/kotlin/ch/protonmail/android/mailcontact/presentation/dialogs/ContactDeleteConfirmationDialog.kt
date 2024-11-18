@@ -26,7 +26,7 @@ import androidx.compose.ui.res.stringResource
 import ch.protonmail.android.design.compose.component.ProtonAlertDialog
 import ch.protonmail.android.design.compose.component.ProtonAlertDialogButton
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.defaultWeak
+import ch.protonmail.android.design.compose.theme.bodyMediumWeak
 import ch.protonmail.android.mailcontact.domain.model.ContactId
 import ch.protonmail.android.mailcontact.presentation.R
 import ch.protonmail.android.mailcontact.presentation.model.ContactListItemUiModel
@@ -44,7 +44,7 @@ fun ContactDeleteConfirmationDialog(
             text = {
                 Text(
                     text = stringResource(id = R.string.contact_delete_dialog_text),
-                    style = ProtonTheme.typography.defaultWeak
+                    style = ProtonTheme.typography.bodyMediumWeak
                 )
             },
             dismissButton = {

@@ -35,9 +35,9 @@ fun OfficialBadge(modifier: Modifier = Modifier) {
     Text(
         modifier = modifier
             .testTag(OfficialBadgeTestTags.Item)
-            .padding(start = ProtonDimens.ExtraSmallSpacing)
+            .padding(start = ProtonDimens.Spacing.Small)
             .background(color = ProtonTheme.colors.backgroundSecondary, shape = ProtonTheme.shapes.medium)
-            .padding(horizontal = ProtonDimens.ExtraSmallSpacing, vertical = MailDimens.TinySpacing),
+            .padding(horizontal = ProtonDimens.Spacing.Small, vertical = ProtonDimens.Spacing.Tiny),
         text = stringResource(id = R.string.auth_badge_official),
         maxLines = 1,
         style = ProtonTheme.typography.overlineStrongNorm.copy(color = ProtonTheme.colors.textAccent)

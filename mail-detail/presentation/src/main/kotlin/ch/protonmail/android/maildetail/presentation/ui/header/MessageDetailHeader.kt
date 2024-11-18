@@ -139,10 +139,10 @@ private fun MessageDetailHeaderLayout(
                 enabled = !isExpanded
             ) { actions.onClick() }
             .padding(
-                start = ProtonDimens.SmallSpacing + ProtonDimens.ExtraSmallSpacing,
-                end = ProtonDimens.DefaultSpacing,
-                top = ProtonDimens.SmallSpacing,
-                bottom = ProtonDimens.DefaultSpacing
+                start = ProtonDimens.Spacing.Standard + ProtonDimens.Spacing.Small,
+                end = ProtonDimens.Spacing.Large,
+                top = ProtonDimens.Spacing.Standard,
+                bottom = ProtonDimens.Spacing.Large
             )
             .testTag(MessageDetailHeaderTestTags.RootItem)
     ) {
@@ -173,7 +173,7 @@ private fun MessageDetailHeaderLayout(
 
         ParticipantAvatar(
             modifier = modifier.constrainAs(avatarRef) {
-                top.linkTo(parent.top, margin = ProtonDimens.SmallSpacing)
+                top.linkTo(parent.top, margin = ProtonDimens.Spacing.Standard)
                 start.linkTo(parent.start)
             },
             avatarUiModel = uiModel.avatar,
@@ -185,9 +185,9 @@ private fun MessageDetailHeaderLayout(
         SenderName(
             modifier = modifier.constrainAs(senderNameRef) {
                 width = Dimension.fillToConstraints
-                top.linkTo(parent.top, margin = ProtonDimens.SmallSpacing)
-                start.linkTo(avatarRef.end, margin = ProtonDimens.SmallSpacing)
-                end.linkTo(iconsRef.start, margin = ProtonDimens.SmallSpacing)
+                top.linkTo(parent.top, margin = ProtonDimens.Spacing.Standard)
+                start.linkTo(avatarRef.end, margin = ProtonDimens.Spacing.Standard)
+                end.linkTo(iconsRef.start, margin = ProtonDimens.Spacing.Standard)
             },
             participantUiModel = uiModel.sender
         )
@@ -195,9 +195,9 @@ private fun MessageDetailHeaderLayout(
         SenderAddress(
             modifier = modifier.constrainAs(senderAddressRef) {
                 width = Dimension.fillToConstraints
-                top.linkTo(senderNameRef.bottom, margin = ProtonDimens.ExtraSmallSpacing)
-                start.linkTo(avatarRef.end, margin = ProtonDimens.SmallSpacing)
-                end.linkTo(headerActionsRef.start, margin = ProtonDimens.SmallSpacing)
+                top.linkTo(senderNameRef.bottom, margin = ProtonDimens.Spacing.Small)
+                start.linkTo(avatarRef.end, margin = ProtonDimens.Spacing.Standard)
+                end.linkTo(headerActionsRef.start, margin = ProtonDimens.Spacing.Standard)
             },
             participantUiModel = uiModel.sender,
             isExpanded = isExpanded,
@@ -212,7 +212,7 @@ private fun MessageDetailHeaderLayout(
                 .constrainAs(iconsRef) {
                     top.linkTo(timeRef.top)
                     bottom.linkTo(timeRef.bottom)
-                    end.linkTo(timeRef.start, margin = ProtonDimens.ExtraSmallSpacing)
+                    end.linkTo(timeRef.start, margin = ProtonDimens.Spacing.Small)
                 },
             uiModel = uiModel,
             isExpanded = isExpanded
@@ -220,8 +220,8 @@ private fun MessageDetailHeaderLayout(
 
         Time(
             modifier = modifier.constrainAs(timeRef) {
-                top.linkTo(parent.top, margin = ProtonDimens.SmallSpacing)
-                end.linkTo(parent.end, margin = ProtonDimens.ExtraSmallSpacing)
+                top.linkTo(parent.top, margin = ProtonDimens.Spacing.Standard)
+                end.linkTo(parent.end, margin = ProtonDimens.Spacing.Small)
             },
             time = uiModel.time
         )
@@ -240,9 +240,9 @@ private fun MessageDetailHeaderLayout(
         AllRecipients(
             modifier = modifier.constrainAs(allRecipientsRef) {
                 width = Dimension.fillToConstraints
-                top.linkTo(senderAddressRef.bottom, margin = ProtonDimens.ExtraSmallSpacing)
-                start.linkTo(avatarRef.end, margin = ProtonDimens.SmallSpacing)
-                end.linkTo(headerActionsRef.start, margin = ProtonDimens.SmallSpacing)
+                top.linkTo(senderAddressRef.bottom, margin = ProtonDimens.Spacing.Small)
+                start.linkTo(avatarRef.end, margin = ProtonDimens.Spacing.Standard)
+                end.linkTo(headerActionsRef.start, margin = ProtonDimens.Spacing.Standard)
                 visibility = visibleWhen(!isExpanded)
             },
             allRecipients = uiModel.allRecipients
@@ -344,7 +344,7 @@ private fun MessageDetailHeaderLayout(
                     top.linkTo(bccRecipientsRef.bottom)
                     visibility = visibleWhen(isExpanded)
                 }
-                .height(ProtonDimens.SmallSpacing)
+                .height(ProtonDimens.Spacing.Standard)
         )
 
         Labels(
@@ -353,7 +353,7 @@ private fun MessageDetailHeaderLayout(
                     topReference = spacerRef,
                     endReference = headerActionsRef,
                     isExpanded = isExpanded,
-                    topMargin = ProtonDimens.SmallSpacing
+                    topMargin = ProtonDimens.Spacing.Standard
                 )
                 visibility = visibleWhen(uiModel.labels.isNotEmpty())
             },
@@ -435,10 +435,10 @@ private fun MessageDetailHeaderLayout(
                 .constrainAs(hideDetailsRef) {
                     top.linkTo(
                         sizeRef.bottom,
-                        margin = ProtonDimens.SmallSpacing,
-                        goneMargin = ProtonDimens.SmallSpacing
+                        margin = ProtonDimens.Spacing.Standard,
+                        goneMargin = ProtonDimens.Spacing.Standard
                     )
-                    start.linkTo(avatarRef.end, margin = ProtonDimens.SmallSpacing)
+                    start.linkTo(avatarRef.end, margin = ProtonDimens.Spacing.Standard)
                     visibility = visibleWhen(isExpanded)
                 }
                 .clickable { actions.onClick() }
@@ -477,7 +477,7 @@ private fun SenderAddress(
     ) {
         // Display the padlock once the handling is implemented https://jira.protontech.ch/browse/MAILANDR-213
         // SmallNonClickableIcon(iconId = participantUiModel.participantPadlock)
-        // Spacer(modifier = Modifier.width(ProtonDimens.ExtraSmallSpacing))
+        // Spacer(modifier = Modifier.width(ProtonDimens.Spacing.Small))
         ParticipantText(
             modifier = Modifier.testTag(MessageDetailHeaderTestTags.SenderAddress),
             text = participantUiModel.participantAddress,
@@ -532,7 +532,7 @@ private fun AllRecipients(modifier: Modifier = Modifier, allRecipients: TextUiMo
         Text(
             modifier = Modifier
                 .testTag(MessageDetailHeaderTestTags.AllRecipientsText)
-                .padding(end = ProtonDimens.ExtraSmallSpacing),
+                .padding(end = ProtonDimens.Spacing.Small),
             text = stringResource(R.string.to),
             style = ProtonTheme.typography.captionNorm
         )
@@ -573,11 +573,11 @@ private fun Recipients(
                         clickable = true,
                         onClick = { onRecipientClick(participant) }
                     )
-                    Spacer(modifier = Modifier.width(ProtonDimens.ExtraSmallSpacing))
+                    Spacer(modifier = Modifier.width(ProtonDimens.Spacing.Small))
                 }
                 // Display the padlock once the handling is implemented https://jira.protontech.ch/browse/MAILANDR-213
                 // SmallNonClickableIcon(iconId = participant.participantPadlock)
-                // Spacer(modifier = Modifier.width(ProtonDimens.ExtraSmallSpacing))
+                // Spacer(modifier = Modifier.width(ProtonDimens.Spacing.Small))
                 ParticipantText(
                     modifier = Modifier.testTag(MessageDetailHeaderTestTags.ParticipantValue),
                     text = participant.participantAddress,
@@ -588,7 +588,7 @@ private fun Recipients(
                 )
             }
             if (index != recipients.size - 1) {
-                Spacer(modifier = Modifier.height(ProtonDimens.ExtraSmallSpacing))
+                Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Small))
             }
         }
     }
@@ -660,10 +660,10 @@ private fun Labels(
             modifier = Modifier
                 .testTag(MessageDetailHeaderTestTags.LabelIcon)
                 .alpha(iconAlpha)
-                .padding(top = MailDimens.TinySpacing),
+                .padding(top = ProtonDimens.Spacing.Tiny),
             iconId = R.drawable.ic_proton_tag
         )
-        Spacer(modifier = Modifier.width(ProtonDimens.SmallSpacing))
+        Spacer(modifier = Modifier.width(ProtonDimens.Spacing.Standard))
         LabelsList(
             modifier = Modifier.testTag(MessageDetailHeaderTestTags.LabelsList),
             labels = uiModels,
@@ -696,7 +696,7 @@ private fun ExtendedHeaderRow(
                 iconId = icon
             )
         }
-        Spacer(modifier = Modifier.width(ProtonDimens.SmallSpacing))
+        Spacer(modifier = Modifier.width(ProtonDimens.Spacing.Standard))
         Text(
             modifier = Modifier.testTag(MessageDetailHeaderTestTags.ExtendedHeaderText),
             text = text,
@@ -722,7 +722,7 @@ private fun ConstrainScope.constrainRecipientsTitle(
     hasUndisclosedRecipients: Boolean = false
 ) {
     top.linkTo(reference.top)
-    end.linkTo(reference.start, margin = ProtonDimens.SmallSpacing)
+    end.linkTo(reference.start, margin = ProtonDimens.Spacing.Standard)
     visibility = visibleWhen((recipients.isNotEmpty() || hasUndisclosedRecipients) && isExpanded)
 }
 
@@ -737,11 +737,11 @@ private fun ConstrainScope.constrainRecipients(
     width = Dimension.fillToConstraints
     top.linkTo(
         topReference.bottom,
-        margin = ProtonDimens.SmallSpacing,
-        goneMargin = ProtonDimens.SmallSpacing
+        margin = ProtonDimens.Spacing.Standard,
+        goneMargin = ProtonDimens.Spacing.Standard
     )
-    start.linkTo(startReference.end, margin = ProtonDimens.SmallSpacing)
-    end.linkTo(endReference.start, margin = ProtonDimens.SmallSpacing)
+    start.linkTo(startReference.end, margin = ProtonDimens.Spacing.Standard)
+    end.linkTo(endReference.start, margin = ProtonDimens.Spacing.Standard)
     visibility = visibleWhen((recipients.isNotEmpty() || hasUndisclosedRecipients) && isExpanded)
 }
 
@@ -749,7 +749,7 @@ private fun ConstrainScope.constrainExtendedHeaderRow(
     topReference: ConstrainedLayoutReference,
     endReference: ConstrainedLayoutReference,
     isExpanded: Boolean,
-    topMargin: Dp = ProtonDimens.SmallSpacing
+    topMargin: Dp = ProtonDimens.Spacing.Standard
 ) {
     width = Dimension.fillToConstraints
     top.linkTo(
@@ -757,7 +757,7 @@ private fun ConstrainScope.constrainExtendedHeaderRow(
         margin = topMargin,
         goneMargin = topMargin
     )
-    start.linkTo(parent.start, margin = ProtonDimens.DefaultSpacing)
+    start.linkTo(parent.start, margin = ProtonDimens.Spacing.Large)
     end.linkTo(endReference.end)
     visibility = visibleWhen(isExpanded)
 }

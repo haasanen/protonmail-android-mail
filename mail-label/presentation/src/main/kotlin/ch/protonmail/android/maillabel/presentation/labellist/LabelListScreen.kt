@@ -139,7 +139,7 @@ fun LabelListScreenContent(
             .padding(
                 PaddingValues(
                     start = paddingValues.calculateStartPadding(LocalLayoutDirection.current),
-                    top = paddingValues.calculateTopPadding() + ProtonDimens.SmallSpacing,
+                    top = paddingValues.calculateTopPadding() + ProtonDimens.Spacing.Standard,
                     end = paddingValues.calculateEndPadding(LocalLayoutDirection.current),
                     bottom = paddingValues.calculateBottomPadding()
                 )
@@ -171,10 +171,10 @@ fun LabelListScreenContent(
                 Text(
                     text = label.name,
                     modifier = Modifier.padding(
-                        start = ProtonDimens.ExtraSmallSpacing,
-                        top = ProtonDimens.DefaultSpacing,
-                        end = ProtonDimens.DefaultSpacing,
-                        bottom = ProtonDimens.DefaultSpacing
+                        start = ProtonDimens.Spacing.Small,
+                        top = ProtonDimens.Spacing.Large,
+                        end = ProtonDimens.Spacing.Large,
+                        bottom = ProtonDimens.Spacing.Large
                     ),
                     style = ProtonTheme.typography.defaultNorm
                 )
@@ -195,12 +195,12 @@ fun EmptyLabelListScreen(onAddLabelClick: () -> Unit, paddingValues: PaddingValu
     ) {
         Icon(
             modifier = Modifier
-                .padding(start = ProtonDimens.ExtraSmallSpacing)
+                .padding(start = ProtonDimens.Spacing.Small)
                 .background(
                     color = ProtonTheme.colors.backgroundSecondary,
                     shape = RoundedCornerShape(MailDimens.IconWeakRoundBackgroundRadius)
                 )
-                .padding(ProtonDimens.SmallSpacing),
+                .padding(ProtonDimens.Spacing.Standard),
             painter = painterResource(id = R.drawable.ic_proton_tag_plus),
             tint = ProtonTheme.colors.iconNorm,
             contentDescription = NO_CONTENT_DESCRIPTION
@@ -208,30 +208,30 @@ fun EmptyLabelListScreen(onAddLabelClick: () -> Unit, paddingValues: PaddingValu
         Text(
             stringResource(R.string.label_list_no_labels_found),
             Modifier.padding(
-                start = ProtonDimens.LargeSpacing,
-                top = ProtonDimens.MediumSpacing,
-                end = ProtonDimens.LargeSpacing
+                start = ProtonDimens.Spacing.Huge,
+                top = ProtonDimens.Spacing.ExtraLarge,
+                end = ProtonDimens.Spacing.Huge
             ),
             style = ProtonTheme.typography.defaultStrongNorm
         )
         Text(
             stringResource(R.string.label_list_create_label_placeholder_description),
             Modifier.padding(
-                start = ProtonDimens.LargeSpacing,
-                top = MailDimens.TinySpacing,
-                end = ProtonDimens.LargeSpacing
+                start = ProtonDimens.Spacing.Huge,
+                top = ProtonDimens.Spacing.Tiny,
+                end = ProtonDimens.Spacing.Huge
             ),
             style = ProtonTheme.typography.defaultSmallWeak,
             textAlign = TextAlign.Center
         )
         ProtonSecondaryButton(
-            modifier = Modifier.padding(top = ProtonDimens.LargeSpacing),
+            modifier = Modifier.padding(top = ProtonDimens.Spacing.Huge),
             onClick = onAddLabelClick
         ) {
             Text(
                 text = stringResource(R.string.label_title_create_label),
                 Modifier.padding(
-                    horizontal = ProtonDimens.SmallSpacing
+                    horizontal = ProtonDimens.Spacing.Standard
                 ),
                 style = ProtonTheme.typography.captionNorm
             )

@@ -50,7 +50,7 @@ fun AutoLockPinDotItem(modifier: Modifier = Modifier) {
     Icon(
         modifier = modifier
             .wrapContentSize()
-            .padding(ProtonDimens.ExtraSmallSpacing),
+            .padding(ProtonDimens.Spacing.Small),
         painter = painterResource(id = R.drawable.ic_proton_circle_filled),
         tint = ProtonTheme.colors.iconAccent,
         contentDescription = stringResource(id = R.string.mail_settings_pin_insertion_pin_dot_description)
@@ -79,7 +79,7 @@ fun AutoLockPinKeyboardGrid(
     modifier: Modifier = Modifier
 ) {
     LazyVerticalGrid(
-        contentPadding = PaddingValues(ProtonDimens.DefaultSpacing),
+        contentPadding = PaddingValues(ProtonDimens.Spacing.Large),
         modifier = modifier.wrapContentSize(),
         columns = GridCells.Fixed(Constants.KeyboardRowSize),
         horizontalArrangement = Arrangement.Center,

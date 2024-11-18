@@ -59,8 +59,8 @@ fun AutoLockPinInsertionScreen(
             modifier = Modifier
                 .fillMaxHeight()
                 .weight(1f, fill = false)
-                .padding(horizontal = ProtonDimens.DefaultSpacing)
-                .padding(horizontal = ProtonDimens.LargeSpacing),
+                .padding(horizontal = ProtonDimens.Spacing.Large)
+                .padding(horizontal = ProtonDimens.Spacing.Huge),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -79,7 +79,7 @@ fun AutoLockPinInsertionScreen(
                 )
             )
 
-            Spacer(modifier = Modifier.height(ProtonDimens.SmallSpacing))
+            Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Standard))
 
             AutoLockPinSignOutItem(
                 state = state.signOutButtonState,

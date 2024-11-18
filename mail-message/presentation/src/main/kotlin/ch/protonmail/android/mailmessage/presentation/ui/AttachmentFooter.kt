@@ -66,11 +66,11 @@ fun AttachmentFooter(
         MailDivider()
         Row(
             modifier = modifier
-                .padding(ProtonDimens.SmallSpacing)
+                .padding(ProtonDimens.Spacing.Standard)
                 .padding(
-                    start = ProtonDimens.ExtraSmallSpacing,
-                    top = ProtonDimens.ExtraSmallSpacing,
-                    end = ProtonDimens.ExtraSmallSpacing
+                    start = ProtonDimens.Spacing.Small,
+                    top = ProtonDimens.Spacing.Small,
+                    end = ProtonDimens.Spacing.Small
                 ),
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -82,13 +82,13 @@ fun AttachmentFooter(
                 tint = ProtonTheme.colors.iconWeak,
                 contentDescription = ""
             )
-            Spacer(modifier = Modifier.width(ProtonDimens.ExtraSmallSpacing))
+            Spacer(modifier = Modifier.width(ProtonDimens.Spacing.Small))
             Text(
                 modifier = Modifier.testTag(AttachmentFooterTestTags.SummaryText),
                 text = pluralStringResource(R.plurals.attachment_count_label, attachments.size, attachments.size),
                 style = ProtonTheme.typography.defaultSmall
             )
-            Spacer(modifier = Modifier.width(ProtonDimens.ExtraSmallSpacing))
+            Spacer(modifier = Modifier.width(ProtonDimens.Spacing.Small))
             Text(
                 modifier = Modifier.testTag(AttachmentFooterTestTags.SummarySize),
                 text = attachments.getTotalAttachmentByteSizeReadable(LocalContext.current),
@@ -106,14 +106,14 @@ fun AttachmentFooter(
         if (attachments.size > messageBodyAttachmentsUiModel.limit) {
             Box(
                 modifier = Modifier
-                    .padding(ProtonDimens.ExtraSmallSpacing)
-                    .padding(horizontal = ProtonDimens.SmallSpacing)
+                    .padding(ProtonDimens.Spacing.Small)
+                    .padding(horizontal = ProtonDimens.Spacing.Standard)
             ) {
                 Text(
                     modifier = Modifier
                         .testTag(AttachmentFooterTestTags.ShowMoreItems)
                         .clickable { actions.onShowAllAttachments() }
-                        .padding(ProtonDimens.SmallSpacing),
+                        .padding(ProtonDimens.Spacing.Standard),
                     text = stringResource(
                         id = R.string.attachment_show_more_label,
                         attachments.size - messageBodyAttachmentsUiModel.limit
@@ -122,7 +122,7 @@ fun AttachmentFooter(
                 )
             }
         }
-        Spacer(modifier = Modifier.height(ProtonDimens.SmallSpacing))
+        Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Standard))
     }
 }
 

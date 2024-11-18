@@ -70,8 +70,8 @@ internal fun ConversationDetailCollapsedMessageHeader(
     ConstraintLayout(
         modifier = modifier
             .testTag(ConversationDetailCollapsedMessageHeaderTestTags.RootItem)
-            .padding(ProtonDimens.SmallSpacing)
-            .padding(ProtonDimens.ExtraSmallSpacing)
+            .padding(ProtonDimens.Spacing.Standard)
+            .padding(ProtonDimens.Spacing.Small)
             .fillMaxWidth()
     ) {
         val (
@@ -102,7 +102,7 @@ internal fun ConversationDetailCollapsedMessageHeader(
 
         ParticipantAvatar(
             modifier = Modifier
-                .padding(end = ProtonDimens.SmallSpacing)
+                .padding(end = ProtonDimens.Spacing.Standard)
                 .constrainAs(avatarRef) {
                     centerVerticallyTo(parent)
                 },
@@ -204,12 +204,12 @@ private fun AttachmentIcon(fontColor: Color, modifier: Modifier) {
 private fun Expiration(uiModel: ConversationDetailMessageUiModel.Collapsed, modifier: Modifier) {
     Row(
         modifier = modifier
-            .padding(horizontal = ProtonDimens.ExtraSmallSpacing)
+            .padding(horizontal = ProtonDimens.Spacing.Small)
             .background(
                 color = ProtonTheme.colors.interactionWeakNorm,
                 shape = ProtonTheme.shapes.large
             )
-            .padding(ProtonDimens.ExtraSmallSpacing),
+            .padding(ProtonDimens.Spacing.Small),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
@@ -271,7 +271,7 @@ private fun RepliedIcon(
         ConversationDetailMessageUiModel.RepliedIcon.Replied -> SmallNonClickableIcon(
             modifier = modifier
                 .testTag(ConversationDetailCollapsedMessageHeaderTestTags.RepliedIcon)
-                .padding(horizontal = MailDimens.TinySpacing),
+                .padding(horizontal = ProtonDimens.Spacing.Tiny),
             iconId = drawable.ic_proton_arrow_up_and_left,
             iconColor = fontColor
         )
@@ -279,7 +279,7 @@ private fun RepliedIcon(
         ConversationDetailMessageUiModel.RepliedIcon.RepliedAll -> SmallNonClickableIcon(
             modifier = modifier
                 .testTag(ConversationDetailCollapsedMessageHeaderTestTags.RepliedAllIcon)
-                .padding(horizontal = MailDimens.TinySpacing),
+                .padding(horizontal = ProtonDimens.Spacing.Tiny),
             iconId = drawable.ic_proton_arrows_up_and_left,
             iconColor = fontColor
         )
@@ -294,7 +294,7 @@ private fun Sender(
     modifier: Modifier
 ) {
     Row(
-        modifier = modifier.padding(horizontal = MailDimens.TinySpacing),
+        modifier = modifier.padding(horizontal = ProtonDimens.Spacing.Tiny),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
@@ -336,7 +336,7 @@ private fun Time(
     Text(
         modifier = modifier
             .testTag(ConversationDetailCollapsedMessageHeaderTestTags.Time)
-            .padding(start = ProtonDimens.ExtraSmallSpacing),
+            .padding(start = ProtonDimens.Spacing.Small),
         text = uiModel.shortTime.string(),
         fontWeight = fontWeight,
         color = fontColor,

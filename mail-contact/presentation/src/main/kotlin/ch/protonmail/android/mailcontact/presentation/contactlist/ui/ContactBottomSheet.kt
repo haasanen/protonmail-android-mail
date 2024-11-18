@@ -51,7 +51,7 @@ internal fun ContactBottomSheetContent(
 ) {
     Column(
         modifier = modifier
-            .padding(top = ProtonDimens.SmallSpacing)
+            .padding(top = ProtonDimens.Spacing.Standard)
             .verticalScroll(rememberScrollState())
     ) {
         if (ContactCreate.value) {
@@ -97,7 +97,7 @@ private fun ContactBottomSheetItem(
                 role = Role.Button,
                 onClick = onClick
             )
-            .padding(ProtonDimens.DefaultSpacing)
+            .padding(ProtonDimens.Spacing.Large)
     ) {
         Icon(
             painter = painterResource(id = iconResId),
@@ -105,12 +105,12 @@ private fun ContactBottomSheetItem(
             tint = ProtonTheme.colors.iconNorm
         )
         Text(
-            modifier = Modifier.padding(start = ProtonDimens.DefaultSpacing),
+            modifier = Modifier.padding(start = ProtonDimens.Spacing.Large),
             text = stringResource(id = titleResId),
             style = ProtonTheme.typography.defaultNorm
         )
         if (isUpsellingVisible) {
-            UpsellingIcon(modifier = Modifier.padding(start = ProtonDimens.SmallSpacing))
+            UpsellingIcon(modifier = Modifier.padding(start = ProtonDimens.Spacing.Standard))
         }
     }
 }

@@ -26,6 +26,6 @@ import androidx.compose.ui.unit.Dp
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 
 @Composable
-fun VerticalSpacer(modifier: Modifier = Modifier, height: Dp = ProtonDimens.SmallSpacing) {
+fun VerticalSpacer(modifier: Modifier = Modifier, height: Dp = ProtonDimens.Spacing.Standard) {
     Spacer(modifier.height(height))
 }

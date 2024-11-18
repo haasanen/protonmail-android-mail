@@ -76,7 +76,7 @@ fun MoveToBottomSheetContent(dataState: MoveToBottomSheetState.Data, actions: Mo
         Row(
             modifier = Modifier
                 .testTag(MoveToBottomSheetTestTags.RootItem)
-                .padding(ProtonDimens.DefaultSpacing)
+                .padding(ProtonDimens.Spacing.Large)
                 .fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
@@ -115,14 +115,14 @@ fun MoveToBottomSheetContent(dataState: MoveToBottomSheetState.Data, actions: Mo
                 contentDescription = NO_CONTENT_DESCRIPTION,
                 modifier = Modifier
                     .testTag(MoveToBottomSheetTestTags.AddFolderIcon)
-                    .padding(ProtonDimens.DefaultSpacing),
+                    .padding(ProtonDimens.Spacing.Large),
                 tint = ProtonTheme.colors.iconNorm
             )
             Text(
                 modifier = Modifier
                     .testTag(MoveToBottomSheetTestTags.AddFolderText)
                     .weight(1f)
-                    .padding(vertical = ProtonDimens.DefaultSpacing),
+                    .padding(vertical = ProtonDimens.Spacing.Large),
                 text = stringResource(id = R.string.label_title_create_folder),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
@@ -135,14 +135,14 @@ fun MoveToBottomSheetContent(dataState: MoveToBottomSheetState.Data, actions: Mo
                         .testTag(MoveToBottomSheetTestTags.FolderItem)
                         .clickable { actions.onFolderSelected(it.id) }
                         .height(ProtonDimens.ListItemHeight)
-                        .padding(end = ProtonDimens.DefaultSpacing)
+                        .padding(end = ProtonDimens.Spacing.Large)
                 ) {
                     Icon(
                         modifier = Modifier
                             .testTag(MoveToBottomSheetTestTags.FolderIcon)
                             .semantics { tintColor = it.iconTint }
                             .padding(start = if (it is MailLabelUiModel.Custom) it.iconPaddingStart else 0.dp)
-                            .padding(horizontal = ProtonDimens.DefaultSpacing),
+                            .padding(horizontal = ProtonDimens.Spacing.Large),
                         painter = painterResource(id = it.icon),
                         contentDescription = NO_CONTENT_DESCRIPTION,
                         tint = it.iconTint ?: ProtonTheme.colors.iconWeak
@@ -158,13 +158,13 @@ fun MoveToBottomSheetContent(dataState: MoveToBottomSheetState.Data, actions: Mo
                     Spacer(
                         modifier = Modifier
                             .testTag(MoveToBottomSheetTestTags.FolderSpacer)
-                            .size(ProtonDimens.SmallSpacing)
+                            .size(ProtonDimens.Spacing.Standard)
                     )
                     if (it.isSelected) {
                         Icon(
                             modifier = Modifier
                                 .testTag(MoveToBottomSheetTestTags.FolderSelectionIcon)
-                                .padding(end = ProtonDimens.SmallSpacing)
+                                .padding(end = ProtonDimens.Spacing.Standard)
                                 .size(ProtonDimens.SmallIconSize),
                             painter = painterResource(id = R.drawable.ic_proton_checkmark),
                             contentDescription = NO_CONTENT_DESCRIPTION,
@@ -214,7 +214,7 @@ fun MoveToBottomSheetContentPreview() {
                     count = 2,
                     isVisible = true,
                     isExpanded = true,
-                    iconPaddingStart = ProtonDimens.DefaultSpacing * 1
+                    iconPaddingStart = ProtonDimens.Spacing.Large * 1
                 ),
                 MailLabelUiModel.Custom(
                     id = MailLabelId.Custom.Folder(LabelId("folder3")),
@@ -225,7 +225,7 @@ fun MoveToBottomSheetContentPreview() {
                     count = null,
                     isVisible = true,
                     isExpanded = true,
-                    iconPaddingStart = ProtonDimens.DefaultSpacing * 2
+                    iconPaddingStart = ProtonDimens.Spacing.Large * 2
                 ),
                 MailLabelUiModel.Custom(
                     id = MailLabelId.Custom.Folder(LabelId("really long folder name")),

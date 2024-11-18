@@ -60,8 +60,8 @@ fun MessageDetailFooter(
         modifier = modifier
             .testTag(MessageBodyTestTags.MessageActionsRootItem)
             .fillMaxWidth()
-            .padding(ProtonDimens.SmallSpacing),
-        horizontalArrangement = Arrangement.spacedBy(ProtonDimens.SmallSpacing)
+            .padding(ProtonDimens.Spacing.Standard),
+        horizontalArrangement = Arrangement.spacedBy(ProtonDimens.Spacing.Standard)
     ) {
         MessageActionButton(
             modifier = Modifier
@@ -110,7 +110,7 @@ private fun MessageActionButton(
         onClick = { onClick() }
     ) {
         Icon(
-            modifier = Modifier.padding(end = ProtonDimens.ExtraSmallSpacing),
+            modifier = Modifier.padding(end = ProtonDimens.Spacing.Small),
             painter = painterResource(id = iconResource),
             tint = ProtonTheme.colors.iconNorm,
             contentDescription = null

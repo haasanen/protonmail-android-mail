@@ -28,8 +28,6 @@ object MailDimens {
     val AvatarBorderLine = 1.5.dp
     val OnboardingUpsellBestValueBorder = 2.dp
 
-    val TinySpacing = 2.dp
-
     val SeparatorHeight = 1.dp
 
     val DefaultTouchTargetSize = 32.dp

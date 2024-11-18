@@ -296,11 +296,11 @@ fun FolderFormContent(
             FormDeleteButton(
                 modifier = Modifier
                     .constrainAs(deleteButton) {
-                        bottom.linkTo(parent.bottom, margin = ProtonDimens.DefaultSpacing)
+                        bottom.linkTo(parent.bottom, margin = ProtonDimens.Spacing.Large)
                         start.linkTo(parent.start)
                         end.linkTo(parent.end)
                     }
-                    .padding(top = ProtonDimens.LargerSpacing),
+                    .padding(top = ProtonDimens.Spacing.Jumbo),
                 text = stringResource(id = R.string.folder_form_delete),
                 onClick = actions.onDeleteClick
             )
@@ -327,15 +327,15 @@ fun FolderFormParentFolderField(state: FolderFormState.Data, actions: FolderForm
         Text(
             text = stringResource(id = R.string.folder_form_parent),
             modifier = Modifier.padding(
-                top = ProtonDimens.DefaultSpacing,
-                start = ProtonDimens.DefaultSpacing
+                top = ProtonDimens.Spacing.Large,
+                start = ProtonDimens.Spacing.Large
             ),
             style = ProtonTheme.typography.defaultNorm
         )
         Text(
             modifier = Modifier.padding(
-                start = ProtonDimens.DefaultSpacing,
-                bottom = ProtonDimens.DefaultSpacing
+                start = ProtonDimens.Spacing.Large,
+                bottom = ProtonDimens.Spacing.Large
             ),
             text = state.parent?.name ?: stringResource(id = R.string.folder_form_no_parent),
             color = ProtonTheme.colors.textHint,
@@ -375,7 +375,7 @@ fun FolderFormTopBar(
             if (displayCreateLoader) {
                 CircularProgressIndicator(
                     modifier = Modifier
-                        .padding(end = ProtonDimens.DefaultSpacing)
+                        .padding(end = ProtonDimens.Spacing.Large)
                         .size(MailDimens.ProgressDefaultSize),
                     strokeWidth = MailDimens.ProgressStrokeWidth
                 )

@@ -87,7 +87,7 @@ fun LabelAsBottomSheetContent(
         Row(
             modifier = Modifier
                 .testTag(LabelAsBottomSheetTestTags.RootItem)
-                .padding(ProtonDimens.DefaultSpacing)
+                .padding(ProtonDimens.Spacing.Large)
                 .fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
@@ -128,14 +128,14 @@ fun LabelAsBottomSheetContent(
                 contentDescription = NO_CONTENT_DESCRIPTION,
                 modifier = Modifier
                     .testTag(LabelAsBottomSheetTestTags.AddLabelIcon)
-                    .padding(ProtonDimens.DefaultSpacing),
+                    .padding(ProtonDimens.Spacing.Large),
                 tint = ProtonTheme.colors.iconNorm
             )
             Text(
                 modifier = Modifier
                     .testTag(LabelAsBottomSheetTestTags.AddLabelText)
                     .weight(1f)
-                    .padding(vertical = ProtonDimens.DefaultSpacing),
+                    .padding(vertical = ProtonDimens.Spacing.Large),
                 text = stringResource(id = R.string.label_title_create_label),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
@@ -153,7 +153,7 @@ fun LabelAsBottomSheetContent(
                         modifier = Modifier
                             .testTag(LabelAsBottomSheetTestTags.LabelIcon)
                             .semantics { tintColor = itemLabel.labelUiModel.iconTint }
-                            .padding(horizontal = ProtonDimens.DefaultSpacing),
+                            .padding(horizontal = ProtonDimens.Spacing.Large),
                         painter = painterResource(id = itemLabel.labelUiModel.icon),
                         contentDescription = NO_CONTENT_DESCRIPTION,
                         tint = itemLabel.labelUiModel.iconTint ?: ProtonTheme.colors.iconWeak
@@ -169,12 +169,12 @@ fun LabelAsBottomSheetContent(
                     Spacer(
                         modifier = Modifier
                             .testTag(LabelAsBottomSheetTestTags.LabelSpacer)
-                            .size(ProtonDimens.SmallSpacing)
+                            .size(ProtonDimens.Spacing.Standard)
                     )
                     TriStateCheckbox(
                         modifier = Modifier
                             .testTag(LabelAsBottomSheetTestTags.LabelSelectionCheckbox)
-                            .padding(end = ProtonDimens.ExtraSmallSpacing),
+                            .padding(end = ProtonDimens.Spacing.Small),
                         state = when (itemLabel.selectedState) {
                             LabelSelectedState.Selected -> ToggleableState.On
                             LabelSelectedState.NotSelected -> ToggleableState.Off

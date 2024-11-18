@@ -59,8 +59,8 @@ internal fun OnboardingContent(content: OnboardingUiModel) {
         Text(
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
-                .padding(top = ProtonDimens.DefaultSpacing)
-                .padding(horizontal = ProtonDimens.DefaultSpacing),
+                .padding(top = ProtonDimens.Spacing.Large)
+                .padding(horizontal = ProtonDimens.Spacing.Large),
             text = stringResource(id = content.headlineId),
             style = ProtonTheme.typography.headlineNorm.copy(textAlign = TextAlign.Center)
         )
@@ -72,7 +72,7 @@ internal fun OnboardingContent(content: OnboardingUiModel) {
         ) {
             Text(
                 modifier = Modifier
-                    .padding(ProtonDimens.DefaultSpacing),
+                    .padding(ProtonDimens.Spacing.Large),
                 text = stringResource(id = content.descriptionId),
                 style = ProtonTheme.typography.defaultWeak.copy(textAlign = TextAlign.Center)
             )

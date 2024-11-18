@@ -71,7 +71,7 @@ class MailLabelUiModelMapperTest {
                 count = null,
                 isVisible = true,
                 isExpanded = true,
-                iconPaddingStart = ProtonDimens.DefaultSpacing
+                iconPaddingStart = ProtonDimens.Spacing.Large
             ),
             MailLabelUiModel.Custom(
                 id = MailLabelId.Custom.Folder(LabelId("0.2")),
@@ -82,7 +82,7 @@ class MailLabelUiModelMapperTest {
                 count = null,
                 isVisible = true,
                 isExpanded = true,
-                iconPaddingStart = ProtonDimens.DefaultSpacing
+                iconPaddingStart = ProtonDimens.Spacing.Large
             ),
             MailLabelUiModel.Custom(
                 id = MailLabelId.Custom.Folder(LabelId("0.2.1")),
@@ -93,7 +93,7 @@ class MailLabelUiModelMapperTest {
                 count = null,
                 isVisible = true,
                 isExpanded = true,
-                iconPaddingStart = ProtonDimens.DefaultSpacing * 2
+                iconPaddingStart = ProtonDimens.Spacing.Large * 2
             ),
             MailLabelUiModel.Custom(
                 id = MailLabelId.Custom.Folder(LabelId("0.2.2")),
@@ -104,7 +104,7 @@ class MailLabelUiModelMapperTest {
                 count = null,
                 isVisible = true,
                 isExpanded = true,
-                iconPaddingStart = ProtonDimens.DefaultSpacing * 2
+                iconPaddingStart = ProtonDimens.Spacing.Large * 2
             )
         )
         assertEquals(expected = expected, actual = actual)
@@ -160,7 +160,7 @@ class MailLabelUiModelMapperTest {
                 count = null,
                 isVisible = true,
                 isExpanded = true,
-                iconPaddingStart = ProtonDimens.DefaultSpacing
+                iconPaddingStart = ProtonDimens.Spacing.Large
             )
         )
         assertEquals(expected = expected, actual = actual)

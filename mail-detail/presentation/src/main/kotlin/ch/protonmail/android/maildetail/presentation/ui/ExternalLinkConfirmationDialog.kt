@@ -64,7 +64,7 @@ fun ExternalLinkConfirmationDialog(
                     style = ProtonTheme.typography.defaultWeak,
                     modifier = modifier
                 )
-                Spacer(modifier = Modifier.height(ProtonDimens.ExtraSmallSpacing))
+                Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Small))
                 Row(
                     modifier = modifier,
                     horizontalArrangement = Arrangement.Start,
@@ -76,7 +76,7 @@ fun ExternalLinkConfirmationDialog(
                             checkedDoNotShowAgain.value = it
                         }
                     )
-                    Spacer(modifier = Modifier.width(ProtonDimens.ExtraSmallSpacing))
+                    Spacer(modifier = Modifier.width(ProtonDimens.Spacing.Small))
                     Text(
                         text = stringResource(id = R.string.external_link_confirmation_dialog_do_not_ask_again),
                         maxLines = 3,

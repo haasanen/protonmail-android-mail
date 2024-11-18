@@ -51,13 +51,13 @@ fun OpenInProtonCalendarBanner(modifier: Modifier = Modifier, onOpenInProtonCale
         elevation = ButtonDefaults.buttonElevation(defaultElevation = 0.dp),
         shape = ProtonTheme.shapes.medium,
         colors = ButtonDefaults.buttonColors().copy(containerColor = ProtonTheme.colors.backgroundSecondary),
-        contentPadding = PaddingValues(ProtonDimens.ExtraSmallSpacing + ProtonDimens.SmallSpacing),
+        contentPadding = PaddingValues(ProtonDimens.Spacing.Small + ProtonDimens.Spacing.Standard),
         border = BorderStroke(MailDimens.DefaultBorder, ProtonTheme.colors.separatorNorm),
         modifier = modifier
             .padding(
-                start = ProtonDimens.DefaultSpacing,
-                end = ProtonDimens.DefaultSpacing,
-                bottom = ProtonDimens.SmallSpacing + ProtonDimens.ExtraSmallSpacing
+                start = ProtonDimens.Spacing.Large,
+                end = ProtonDimens.Spacing.Large,
+                bottom = ProtonDimens.Spacing.Standard + ProtonDimens.Spacing.Small
             )
             .fillMaxWidth(),
 
@@ -71,7 +71,7 @@ fun OpenInProtonCalendarBanner(modifier: Modifier = Modifier, onOpenInProtonCale
                 painter = painterResource(id = R.drawable.ic_logo_calendar),
                 contentDescription = NO_CONTENT_DESCRIPTION
             )
-            Spacer(modifier = Modifier.size(ProtonDimens.DefaultSpacing))
+            Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Large))
             Column {
                 Text(
                     style = ProtonTheme.typography.defaultSmallStrongNorm,

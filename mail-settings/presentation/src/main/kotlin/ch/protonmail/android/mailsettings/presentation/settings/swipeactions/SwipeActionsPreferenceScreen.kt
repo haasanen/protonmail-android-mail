@@ -121,7 +121,7 @@ private fun SwipeActionsPreferenceContent(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(ProtonDimens.DefaultSpacing),
+                .padding(ProtonDimens.Spacing.Large),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceAround
         ) {
@@ -132,7 +132,7 @@ private fun SwipeActionsPreferenceContent(
                 tint = ProtonTheme.colors.iconHint
             )
             Text(
-                modifier = Modifier.padding(start = ProtonDimens.SmallSpacing),
+                modifier = Modifier.padding(start = ProtonDimens.Spacing.Standard),
                 text = stringResource(id = string.mail_settings_swipe_actions_subtitle),
                 style = ProtonTheme.typography.captionHint
             )
@@ -175,7 +175,7 @@ private fun SwipeActionItem(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(ProtonDimens.DefaultSpacing),
+                .padding(ProtonDimens.Spacing.Large),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(text = actionName, style = ProtonTheme.typography.defaultNorm)
@@ -194,15 +194,15 @@ private fun SwipeActionItem(
 @Composable
 private fun SwipeActionPreviewItem(model: SwipeActionPreferenceUiModel, actionDirection: SwipeActionDirection) {
     val offset = when (actionDirection) {
-        SwipeActionDirection.RIGHT -> ProtonDimens.MediumSpacing
-        SwipeActionDirection.LEFT -> -ProtonDimens.MediumSpacing
+        SwipeActionDirection.RIGHT -> ProtonDimens.Spacing.ExtraLarge
+        SwipeActionDirection.LEFT -> -ProtonDimens.Spacing.ExtraLarge
     }
 
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .background(ProtonTheme.colors.backgroundSecondary)
-            .padding(vertical = ProtonDimens.MediumSpacing)
+            .padding(vertical = ProtonDimens.Spacing.ExtraLarge)
             .offset(x = offset)
     ) {
         if (actionDirection == SwipeActionDirection.RIGHT) {
@@ -237,7 +237,7 @@ private fun SwipeActionIcon(model: SwipeActionPreferenceUiModel, actionDirection
             contentDescription = NO_CONTENT_DESCRIPTION,
             tint = ProtonTheme.colors.iconInverted
         )
-        Spacer(modifier = Modifier.height(ProtonDimens.ExtraSmallSpacing))
+        Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Small))
         Text(text = stringResource(id = model.titleRes), color = ProtonTheme.colors.textInverted)
     }
 }

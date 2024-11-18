@@ -33,7 +33,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import ch.protonmail.android.mailcommon.domain.model.Action
 import ch.protonmail.android.mailcommon.presentation.NO_CONTENT_DESCRIPTION
-import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 import ch.protonmail.android.mailcommon.presentation.model.ActionUiModel
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcommon.presentation.model.string
@@ -82,9 +81,9 @@ fun DetailMoreActionsBottomSheetContent(
     Column {
         Text(
             modifier = Modifier
-                .padding(top = ProtonDimens.DefaultSpacing)
-                .padding(bottom = MailDimens.TinySpacing)
-                .padding(horizontal = ProtonDimens.DefaultSpacing),
+                .padding(top = ProtonDimens.Spacing.Large)
+                .padding(bottom = ProtonDimens.Spacing.Tiny)
+                .padding(horizontal = ProtonDimens.Spacing.Large),
             text = uiModel.headerSubjectText.string(),
             style = ProtonTheme.typography.defaultStrongNorm,
             maxLines = 1,
@@ -92,8 +91,8 @@ fun DetailMoreActionsBottomSheetContent(
         )
         Text(
             modifier = Modifier
-                .padding(horizontal = ProtonDimens.DefaultSpacing)
-                .padding(bottom = ProtonDimens.SmallSpacing),
+                .padding(horizontal = ProtonDimens.Spacing.Large)
+                .padding(bottom = ProtonDimens.Spacing.Standard),
             text = uiModel.headerDescriptionText.string(),
             style = ProtonTheme.typography.defaultWeak(),
             maxLines = 1,
@@ -117,10 +116,10 @@ fun DetailMoreActionsBottomSheetContent(
                                 callbackForConversation(actionItem.action, actionCallbacks).invoke()
                             }
                         }
-                        .padding(vertical = ProtonDimens.DefaultSpacing)
+                        .padding(vertical = ProtonDimens.Spacing.Large)
                 ) {
                     Icon(
-                        modifier = Modifier.padding(horizontal = ProtonDimens.DefaultSpacing),
+                        modifier = Modifier.padding(horizontal = ProtonDimens.Spacing.Large),
                         painter = painterResource(id = actionItem.icon),
                         contentDescription = NO_CONTENT_DESCRIPTION
                     )

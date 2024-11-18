@@ -191,7 +191,7 @@ private fun PreviewSidebarLabelFolderItems() {
                         count = 2,
                         isVisible = true,
                         isExpanded = true,
-                        iconPaddingStart = ProtonDimens.DefaultSpacing * 1
+                        iconPaddingStart = ProtonDimens.Spacing.Large * 1
                     ),
                     MailLabelUiModel.Custom(
                         id = MailLabelId.Custom.Folder(LabelId("folder3")),
@@ -202,7 +202,7 @@ private fun PreviewSidebarLabelFolderItems() {
                         count = null,
                         isVisible = true,
                         isExpanded = true,
-                        iconPaddingStart = ProtonDimens.DefaultSpacing * 2
+                        iconPaddingStart = ProtonDimens.Spacing.Large * 2
                     )
                 ),
                 onLabelAction = {}

@@ -59,13 +59,13 @@ fun FormInputField(
 ) {
     Column(
         Modifier.padding(
-            horizontal = ProtonDimens.DefaultSpacing,
-            vertical = ProtonDimens.MediumSpacing
+            horizontal = ProtonDimens.Spacing.Large,
+            vertical = ProtonDimens.Spacing.ExtraLarge
         )
     ) {
         Text(
             text = title,
-            modifier = Modifier.padding(bottom = ProtonDimens.SmallSpacing),
+            modifier = Modifier.padding(bottom = ProtonDimens.Spacing.Standard),
             style = ProtonTheme.typography.defaultSmallStrongNorm
         )
 
@@ -121,7 +121,7 @@ fun FormInputField(
                 maxCharacters
             ),
             modifier = Modifier.padding(
-                top = ProtonDimens.ExtraSmallSpacing
+                top = ProtonDimens.Spacing.Small
             ),
             style = ProtonTheme.typography.captionWeak
         )

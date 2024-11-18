@@ -45,7 +45,7 @@ fun SettingsItem(
             .clickable(isClickable, onClick = onClick)
             .padding(
                 vertical = ProtonDimens.ListItemTextStartPadding,
-                horizontal = ProtonDimens.DefaultSpacing
+                horizontal = ProtonDimens.Spacing.Large
             )
     ) {
         Column(
@@ -64,7 +64,7 @@ fun SettingsItem(
             }
             hint?.let {
                 Text(
-                    modifier = Modifier.padding(top = ProtonDimens.ExtraSmallSpacing),
+                    modifier = Modifier.padding(top = ProtonDimens.Spacing.Small),
                     text = hint,
                     color = ProtonTheme.colors.textHint,
                     style = ProtonTheme.typography.body2Regular

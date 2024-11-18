@@ -88,8 +88,8 @@ fun ChipsListField2(
                 modifier = Modifier
                     .testTag(ChipsTestTags.FieldPrefix)
                     .align(Alignment.Top)
-                    .padding(vertical = ProtonDimens.DefaultSpacing)
-                    .padding(start = ProtonDimens.DefaultSpacing),
+                    .padding(vertical = ProtonDimens.Spacing.Large)
+                    .padding(start = ProtonDimens.Spacing.Large),
                 color = ProtonTheme.colors.textWeak,
                 style = ProtonTheme.typography.defaultNorm
             )
@@ -117,7 +117,7 @@ fun ChipsListField2(
         if (contactSuggestionState.areSuggestionsExpanded &&
             contactSuggestionState.contactSuggestionItems.isNotEmpty()
         ) {
-            HorizontalDivider(modifier = Modifier.padding(bottom = ProtonDimens.DefaultSpacing))
+            HorizontalDivider(modifier = Modifier.padding(bottom = ProtonDimens.Spacing.Large))
 
             contactSuggestionState.contactSuggestionItems.forEach { selectionOption ->
                 ContactSuggestionItemElement(textFieldValue.text, selectionOption, onClick = {

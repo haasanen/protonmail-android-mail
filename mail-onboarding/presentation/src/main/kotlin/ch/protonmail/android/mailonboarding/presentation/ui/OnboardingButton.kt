@@ -50,7 +50,7 @@ internal fun OnboardingButton(
     ProtonSolidButton(
         modifier = Modifier
             .testTag(OnboardingScreenTestTags.BottomButton)
-            .padding(ProtonDimens.DefaultSpacing)
+            .padding(ProtonDimens.Spacing.Large)
             .height(MailDimens.onboardingBottomButtonHeight)
             .fillMaxWidth()
             .horizontalScroll(state = ScrollState(0), enabled = true),

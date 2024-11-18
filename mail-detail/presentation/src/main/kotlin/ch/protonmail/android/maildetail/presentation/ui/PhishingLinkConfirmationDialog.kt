@@ -51,14 +51,14 @@ fun PhishingLinkConfirmationDialog(
                     text = stringResource(id = R.string.phishing_link_confirmation_dialog_content_part_1),
                     style = ProtonTheme.typography.defaultNorm
                 )
-                Spacer(modifier = Modifier.height(ProtonDimens.DefaultSpacing))
+                Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Large))
                 Text(
                     text = encodeToPunycode(linkUri.toString()),
                     maxLines = 3,
                     overflow = TextOverflow.Ellipsis,
                     style = ProtonTheme.typography.defaultWeak
                 )
-                Spacer(modifier = Modifier.height(ProtonDimens.DefaultSpacing))
+                Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Large))
                 Text(
                     text = stringResource(id = R.string.phishing_link_confirmation_dialog_content_part_2),
                     style = ProtonTheme.typography.defaultNorm

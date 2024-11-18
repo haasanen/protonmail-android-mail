@@ -87,7 +87,7 @@ private fun DialogLinkRow(
         modifier = Modifier
             .fillMaxWidth()
             .clickable { uriAction(linkUri) }
-            .padding(ProtonDimens.DefaultSpacing)
+            .padding(ProtonDimens.Spacing.Large)
     ) {
         Text(text = text, style = ProtonTheme.typography.defaultNorm())
     }

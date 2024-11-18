@@ -68,7 +68,7 @@ internal fun PrefixedEmailSelector(
                         color = ProtonTheme.colors.textWeak,
                         style = ProtonTheme.typography.defaultNorm
                     )
-                    Spacer(modifier = Modifier.size(ProtonDimens.ExtraSmallSpacing))
+                    Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Small))
                 }
             },
             singleLine = true,

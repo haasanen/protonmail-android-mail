@@ -101,7 +101,7 @@ fun MessageBody(
         )
     }
 
-    MailDivider(modifier = Modifier.padding(top = ProtonDimens.SmallSpacing))
+    MailDivider(modifier = Modifier.padding(top = ProtonDimens.Spacing.Standard))
 
     if (hasWebView) {
         MessageBodyWebView(
@@ -131,7 +131,7 @@ internal fun MessageBodyNoWebView(modifier: Modifier = Modifier) {
     Text(
         modifier = modifier
             .testTag(MessageBodyTestTags.WebViewAlternative)
-            .padding(ProtonDimens.MediumSpacing),
+            .padding(ProtonDimens.Spacing.ExtraLarge),
         text = stringResource(id = R.string.message_body_error_no_webview)
     )
 }
@@ -155,27 +155,27 @@ internal fun MessageBodyLoadingError(
         modifier = modifier
             .fillMaxWidth()
             .background(ProtonTheme.colors.backgroundNorm)
-            .padding(horizontal = ProtonDimens.MediumSpacing, vertical = MailDimens.ExtraLargeSpacing),
+            .padding(horizontal = ProtonDimens.Spacing.ExtraLarge, vertical = MailDimens.ExtraLargeSpacing),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Icon(
             modifier = Modifier
                 .size(MailDimens.ErrorIconBoxSize)
                 .background(ProtonTheme.colors.backgroundSecondary, ProtonTheme.shapes.large)
-                .padding(ProtonDimens.MediumSpacing),
+                .padding(ProtonDimens.Spacing.ExtraLarge),
             painter = painterResource(id = R.drawable.ic_proton_exclamation_circle),
             contentDescription = NO_CONTENT_DESCRIPTION,
             tint = ProtonTheme.colors.iconHint
         )
         Text(
-            modifier = Modifier.padding(top = ProtonDimens.DefaultSpacing),
+            modifier = Modifier.padding(top = ProtonDimens.Spacing.Large),
             text = errorMessage,
             textAlign = TextAlign.Center,
             style = ProtonTheme.typography.defaultSmallWeak
         )
         if (!isNetworkError) {
             ProtonSolidButton(
-                modifier = Modifier.padding(top = ProtonDimens.DefaultSpacing),
+                modifier = Modifier.padding(top = ProtonDimens.Spacing.Large),
                 onClick = { onReload() }
             ) {
                 Text(text = stringResource(id = R.string.reload))

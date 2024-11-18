@@ -49,7 +49,7 @@ fun SendingErrorDialog(
                     style = ProtonTheme.typography.defaultWeak,
                     modifier = modifier
                 )
-                Spacer(modifier = Modifier.height(ProtonDimens.DefaultSpacing))
+                Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Large))
                 Text(
                     text = errorMessage,
                     style = ProtonTheme.typography.defaultWeak,

@@ -43,7 +43,6 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import ch.protonmail.android.design.compose.theme.ProtonDimens
-import ch.protonmail.android.design.compose.theme.ProtonDimens.ExtraSmallSpacing
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.defaultNorm
 import ch.protonmail.android.uicomponents.chips.item.ChipItemsList
@@ -127,9 +126,9 @@ internal fun ChipsListTextField2(
                 .thenIf(!state.isFocused() && items !is ChipItemsList.Empty) {
                     height(0.dp)
                 }
-                .padding(vertical = ProtonDimens.DefaultSpacing)
-                .padding(start = ExtraSmallSpacing)
-                .padding(end = ProtonDimens.DefaultSpacing)
+                .padding(vertical = ProtonDimens.Spacing.Large)
+                .padding(start = ProtonDimens.Spacing.Small)
+                .padding(end = ProtonDimens.Spacing.Large)
                 .onKeyEvent { keyEvent ->
                     if (keyEvent.key == Key.Backspace) {
                         actions.onItemDeleted(null)

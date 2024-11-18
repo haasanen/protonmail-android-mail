@@ -71,9 +71,9 @@ fun MessageBanner(
         modifier = modifier
             .testTag(MessageBodyTestTags.MessageBodyBanner)
             .padding(
-                start = ProtonDimens.DefaultSpacing,
-                end = ProtonDimens.DefaultSpacing,
-                bottom = ProtonDimens.SmallSpacing + ProtonDimens.ExtraSmallSpacing
+                start = ProtonDimens.Spacing.Large,
+                end = ProtonDimens.Spacing.Large,
+                bottom = ProtonDimens.Spacing.Standard + ProtonDimens.Spacing.Small
             )
             .border(
                 width = MailDimens.DefaultBorder,
@@ -81,7 +81,7 @@ fun MessageBanner(
                 shape = ProtonTheme.shapes.medium
             )
             .background(color = backgroundColor, shape = ProtonTheme.shapes.medium)
-            .padding(ProtonDimens.DefaultSpacing)
+            .padding(ProtonDimens.Spacing.Large)
     ) {
         Row {
             Icon(
@@ -90,7 +90,7 @@ fun MessageBanner(
                 contentDescription = NO_CONTENT_DESCRIPTION,
                 tint = iconTint
             )
-            Spacer(modifier = Modifier.width(ProtonDimens.SmallSpacing))
+            Spacer(modifier = Modifier.width(ProtonDimens.Spacing.Standard))
             Text(
                 modifier = Modifier.testTag(MessageBodyTestTags.MessageBodyBannerText),
                 text = text.string(),

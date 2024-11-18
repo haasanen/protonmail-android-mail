@@ -93,7 +93,7 @@ internal fun ContactListGroupItem(
                 start = ProtonDimens.ListItemTextStartPadding,
                 top = ProtonDimens.ListItemTextStartPadding,
                 bottom = ProtonDimens.ListItemTextStartPadding,
-                end = ProtonDimens.DefaultSpacing
+                end = ProtonDimens.Spacing.Large
             )
         ) {
             Text(

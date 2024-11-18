@@ -213,7 +213,7 @@ fun ContactDetailsContent(
                         InitialsContactAvatar(
                             modifier = Modifier
                                 .align(Alignment.CenterHorizontally)
-                                .padding(top = ProtonDimens.DefaultSpacing),
+                                .padding(top = ProtonDimens.Spacing.Large),
                             initials = state.contact.avatar.value
                         )
                     }
@@ -222,7 +222,7 @@ fun ContactDetailsContent(
                         ImageContactAvatar(
                             modifier = Modifier
                                 .align(Alignment.CenterHorizontally)
-                                .padding(top = ProtonDimens.DefaultSpacing),
+                                .padding(top = ProtonDimens.Spacing.Large),
                             imageBitmap = state.contact.avatar.bitmap.asImageBitmap()
                         )
                     }
@@ -230,9 +230,9 @@ fun ContactDetailsContent(
                 Text(
                     modifier = Modifier
                         .padding(
-                            top = ProtonDimens.MediumSpacing,
-                            start = ProtonDimens.MediumSpacing,
-                            end = ProtonDimens.MediumSpacing
+                            top = ProtonDimens.Spacing.ExtraLarge,
+                            start = ProtonDimens.Spacing.ExtraLarge,
+                            end = ProtonDimens.Spacing.ExtraLarge
                         )
                         .align(Alignment.CenterHorizontally),
                     style = ProtonTheme.typography.headlineNorm,
@@ -243,9 +243,9 @@ fun ContactDetailsContent(
                     Text(
                         modifier = Modifier
                             .padding(
-                                top = ProtonDimens.ExtraSmallSpacing,
-                                start = ProtonDimens.MediumSpacing,
-                                end = ProtonDimens.MediumSpacing
+                                top = ProtonDimens.Spacing.Small,
+                                start = ProtonDimens.Spacing.ExtraLarge,
+                                end = ProtonDimens.Spacing.ExtraLarge
                             )
                             .align(Alignment.CenterHorizontally),
                         style = ProtonTheme.typography.defaultNorm,
@@ -256,7 +256,7 @@ fun ContactDetailsContent(
                 }
                 ActionItemsRow(
                     modifier = Modifier
-                        .padding(vertical = ProtonDimens.MediumSpacing)
+                        .padding(vertical = ProtonDimens.Spacing.ExtraLarge)
                         .align(Alignment.CenterHorizontally),
                     actions = actions,
                     state = state
@@ -272,7 +272,7 @@ fun ContactDetailsContent(
         item {
             if (state.contact.contactGroups.displayGroupSection) {
                 ContactGroupRow(
-                    modifier = Modifier.padding(ProtonDimens.DefaultSpacing),
+                    modifier = Modifier.padding(ProtonDimens.Spacing.Large),
                     contactGroups = state.contact.contactGroups
                 )
             }
@@ -295,14 +295,14 @@ private fun ActionItemsRow(
             isEnabled = state.contact.isCallActionEnabled()
         )
         ContactDetailsActionItem(
-            modifier = Modifier.padding(start = ProtonDimens.DefaultSpacing),
+            modifier = Modifier.padding(start = ProtonDimens.Spacing.Large),
             iconResId = R.drawable.ic_proton_pen_square,
             onClick = { actions.onEmailClick(state.contact.defaultEmail) },
             isEnabled = state.contact.isEmailActionEnabled()
         )
         if (ContactExport.value) {
             ContactDetailsActionItem(
-                modifier = Modifier.padding(start = ProtonDimens.DefaultSpacing),
+                modifier = Modifier.padding(start = ProtonDimens.Spacing.Large),
                 iconResId = R.drawable.ic_proton_arrow_up_from_square,
                 onClick = actions.showFeatureMissingSnackbar,
                 isEnabled = false
@@ -326,7 +326,7 @@ private fun ContactGroupRow(modifier: Modifier = Modifier, contactGroups: Contac
         FlowRow(
             Modifier
                 .fillMaxWidth()
-                .padding(start = ProtonDimens.DefaultSpacing)
+                .padding(start = ProtonDimens.Spacing.Large)
         ) {
             for (groupLabel in contactGroups.groupLabelList) {
                 ContactDetailsGroupLabel(
@@ -347,8 +347,8 @@ private fun ContactDetailsGroupLabel(
     Box(
         modifier = modifier
             .padding(
-                end = ProtonDimens.ExtraSmallSpacing,
-                bottom = ProtonDimens.ExtraSmallSpacing
+                end = ProtonDimens.Spacing.Small,
+                bottom = ProtonDimens.Spacing.Small
             )
             .background(
                 color = color,
@@ -400,13 +400,13 @@ private fun ContactDetailsItem(
                     }
                 }
             )
-            .padding(ProtonDimens.DefaultSpacing)
+            .padding(ProtonDimens.Spacing.Large)
     ) {
         if (contactDetailsItem.displayIcon) {
             Icon(
                 modifier = Modifier
                     .align(Alignment.Top)
-                    .padding(top = ProtonDimens.SmallSpacing),
+                    .padding(top = ProtonDimens.Spacing.Standard),
                 painter = painterResource(id = contactDetailsItem.iconResId),
                 tint = ProtonTheme.colors.iconNorm,
                 contentDescription = contactDetailsItem.header.string()
@@ -414,8 +414,8 @@ private fun ContactDetailsItem(
         }
 
         val columnPadding =
-            if (contactDetailsItem.displayIcon) ProtonDimens.DefaultSpacing
-            else ProtonDimens.LargerSpacing
+            if (contactDetailsItem.displayIcon) ProtonDimens.Spacing.Large
+            else ProtonDimens.Spacing.Jumbo
         Column(modifier.padding(start = columnPadding)) {
             Text(
                 text = contactDetailsItem.header.string(),
@@ -425,7 +425,7 @@ private fun ContactDetailsItem(
                 is ContactDetailsItem.Image -> {
                     Image(
                         modifier = modifier
-                            .padding(top = ProtonDimens.SmallSpacing)
+                            .padding(top = ProtonDimens.Spacing.Standard)
                             .sizeIn(
                                 maxWidth = MailDimens.ContactAvatarSize,
                                 maxHeight = MailDimens.ContactAvatarSize

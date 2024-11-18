@@ -137,7 +137,7 @@ fun Sidebar(
         AccountPrimaryItem(
             modifier = Modifier
                 .background(sidebarColors.backgroundNorm)
-                .padding(all = ProtonDimens.SmallSpacing)
+                .padding(all = ProtonDimens.Spacing.Standard)
                 .fillMaxWidth(),
             onRemove = actions.onRemoveAccount,
             onSignIn = actions.onSignIn,

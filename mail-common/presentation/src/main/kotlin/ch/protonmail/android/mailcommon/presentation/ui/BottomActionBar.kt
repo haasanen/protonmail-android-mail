@@ -75,7 +75,7 @@ fun BottomActionBar(
                     }
                 )
                 .fillMaxWidth()
-                .padding(horizontal = 0.dp, vertical = ProtonDimens.DefaultSpacing),
+                .padding(horizontal = 0.dp, vertical = ProtonDimens.Spacing.Large),
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
             when (state) {

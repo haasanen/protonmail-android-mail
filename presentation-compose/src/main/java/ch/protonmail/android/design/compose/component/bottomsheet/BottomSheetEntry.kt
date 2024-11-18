@@ -45,19 +45,19 @@ fun BottomSheetEntry(
         modifier = modifier
             .fillMaxWidth()
             .clickable(onClick = onClick)
-            .padding(bottom = ProtonDimens.SmallSpacing)
+            .padding(bottom = ProtonDimens.Spacing.Standard)
             .height(ItemHeight),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
             painter = painterResource(id = icon),
             contentDescription = null,
-            modifier = Modifier.padding(start = ProtonDimens.DefaultSpacing, end = ProtonDimens.MediumSpacing)
+            modifier = Modifier.padding(start = ProtonDimens.Spacing.Large, end = ProtonDimens.Spacing.ExtraLarge)
         )
         Text(
             text = title,
             style = ProtonTheme.typography.defaultNorm,
-            modifier = Modifier.padding(end = ProtonDimens.DefaultSpacing),
+            modifier = Modifier.padding(end = ProtonDimens.Spacing.Large),
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
         )

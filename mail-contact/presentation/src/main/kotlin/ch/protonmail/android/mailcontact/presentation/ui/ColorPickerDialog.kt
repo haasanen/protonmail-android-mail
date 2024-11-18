@@ -73,7 +73,7 @@ fun ColorPickerDialog(
         Card(
             shape = RoundedCornerShape(MailDimens.DialogCardRadius),
             modifier = modifier
-                .padding(ProtonDimens.DefaultSpacing)
+                .padding(ProtonDimens.Spacing.Large)
                 .fillMaxWidth()
         ) {
             ConstraintLayout(
@@ -87,8 +87,8 @@ fun ColorPickerDialog(
                     style = ProtonTheme.typography.headlineNorm,
                     modifier = Modifier
                         .constrainAs(header) {
-                            top.linkTo(parent.top, margin = ProtonDimens.MediumSpacing)
-                            start.linkTo(parent.start, margin = ProtonDimens.MediumSpacing)
+                            top.linkTo(parent.top, margin = ProtonDimens.Spacing.ExtraLarge)
+                            start.linkTo(parent.start, margin = ProtonDimens.Spacing.ExtraLarge)
                         }
                 )
                 TextButton(
@@ -108,8 +108,8 @@ fun ColorPickerDialog(
                 LazyColumn(
                     modifier = Modifier
                         .constrainAs(typeList) {
-                            top.linkTo(header.bottom, margin = ProtonDimens.DefaultSpacing)
-                            bottom.linkTo(cancelButton.top, margin = ProtonDimens.SmallSpacing)
+                            top.linkTo(header.bottom, margin = ProtonDimens.Spacing.Large)
+                            bottom.linkTo(cancelButton.top, margin = ProtonDimens.Spacing.Standard)
                             start.linkTo(parent.start)
                             end.linkTo(parent.end)
                             height = Dimension.preferredWrapContent
@@ -125,7 +125,7 @@ fun ColorPickerDialog(
                                     role = Role.RadioButton
                                 ) { onValueSelected(color) }
                                 .padding(
-                                    horizontal = ProtonDimens.DefaultSpacing,
+                                    horizontal = ProtonDimens.Spacing.Large,
                                     vertical = MailDimens.PickerDialogItemVerticalPadding
                                 ),
                             verticalAlignment = Alignment.CenterVertically
@@ -134,7 +134,7 @@ fun ColorPickerDialog(
                                 color = color,
                                 isSelected = isSelected
                             )
-                            Spacer(modifier = Modifier.width(ProtonDimens.DefaultSpacing))
+                            Spacer(modifier = Modifier.width(ProtonDimens.Spacing.Large))
                             Text(
                                 modifier = Modifier.weight(1f, fill = true),
                                 text = value.name.string(),

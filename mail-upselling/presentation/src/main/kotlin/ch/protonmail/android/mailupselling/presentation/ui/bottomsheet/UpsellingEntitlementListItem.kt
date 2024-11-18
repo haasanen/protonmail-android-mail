@@ -50,8 +50,8 @@ internal fun UpsellingEntitlementListItem(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = ProtonDimens.DefaultSpacing)
-            .padding(vertical = ProtonDimens.ExtraSmallSpacing),
+            .padding(horizontal = ProtonDimens.Spacing.Large)
+            .padding(vertical = ProtonDimens.Spacing.Small),
         verticalAlignment = Alignment.CenterVertically
     ) {
 
@@ -68,7 +68,7 @@ internal fun UpsellingEntitlementListItem(
             colorFilter = ColorFilter.tint(color),
             contentScale = ContentScale.Fit
         )
-        Spacer(modifier = Modifier.size(ProtonDimens.SmallSpacing))
+        Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Standard))
         Text(
             text = entitlementUiModel.text.string(),
             style = ProtonTheme.typography.defaultSmallNorm,

@@ -179,7 +179,7 @@ fun ProtonOutlinedTextFieldWithError(
             maxLines = maxLines,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = ProtonDimens.ExtraSmallSpacing),
+                .padding(top = ProtonDimens.Spacing.Small),
             overflow = TextOverflow.Ellipsis,
             style = ProtonTheme.typography.captionNorm,
             color = ProtonTheme.colors.notificationError
@@ -226,7 +226,7 @@ fun ProtonOutlinedTextFieldWithError(
             maxLines = maxLines,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = ProtonDimens.ExtraSmallSpacing),
+                .padding(top = ProtonDimens.Spacing.Small),
             overflow = TextOverflow.Ellipsis,
             style = ProtonTheme.typography.captionNorm,
             color = ProtonTheme.colors.notificationError

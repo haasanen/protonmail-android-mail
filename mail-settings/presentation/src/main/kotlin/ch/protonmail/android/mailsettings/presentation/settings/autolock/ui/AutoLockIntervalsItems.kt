@@ -82,7 +82,7 @@ private fun AutoLockIntervalDropDownMenu(
     DropdownMenu(
         modifier = Modifier.background(ProtonTheme.colors.backgroundNorm),
         properties = PopupProperties(focusable = false),
-        offset = DpOffset(x = ProtonDimens.DefaultSpacing, y = 0.dp),
+        offset = DpOffset(x = ProtonDimens.Spacing.Large, y = 0.dp),
         expanded = state.dropdownExpanded,
         onDismissRequest = { onIntervalItemClick(false) }
     ) {

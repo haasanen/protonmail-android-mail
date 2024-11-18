@@ -168,16 +168,16 @@ fun ContactGroupDetailsContent(
                 IconContactAvatar(
                     modifier = Modifier
                         .align(Alignment.CenterHorizontally)
-                        .padding(top = ProtonDimens.DefaultSpacing),
+                        .padding(top = ProtonDimens.Spacing.Large),
                     iconResId = R.drawable.ic_proton_users,
                     backgroundColor = state.contactGroup.color
                 )
                 Text(
                     modifier = Modifier
                         .padding(
-                            top = ProtonDimens.MediumSpacing,
-                            start = ProtonDimens.MediumSpacing,
-                            end = ProtonDimens.MediumSpacing
+                            top = ProtonDimens.Spacing.ExtraLarge,
+                            start = ProtonDimens.Spacing.ExtraLarge,
+                            end = ProtonDimens.Spacing.ExtraLarge
                         )
                         .align(Alignment.CenterHorizontally),
                     style = ProtonTheme.typography.headlineNorm,
@@ -187,9 +187,9 @@ fun ContactGroupDetailsContent(
                 Text(
                     modifier = Modifier
                         .padding(
-                            top = ProtonDimens.ExtraSmallSpacing,
-                            start = ProtonDimens.MediumSpacing,
-                            end = ProtonDimens.MediumSpacing
+                            top = ProtonDimens.Spacing.Small,
+                            start = ProtonDimens.Spacing.ExtraLarge,
+                            end = ProtonDimens.Spacing.ExtraLarge
                         )
                         .align(Alignment.CenterHorizontally),
                     style = ProtonTheme.typography.captionWeak,
@@ -225,8 +225,8 @@ private fun ContactGroupDetailsSendTextButton(
     Row(
         modifier = modifier
             .padding(
-                top = ProtonDimens.DefaultSpacing,
-                bottom = ProtonDimens.MediumSpacing
+                top = ProtonDimens.Spacing.Large,
+                bottom = ProtonDimens.Spacing.ExtraLarge
             )
             .sizeIn(
                 minWidth = MailDimens.ContactActionSize,
@@ -246,15 +246,15 @@ private fun ContactGroupDetailsSendTextButton(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
-            modifier = modifier.padding(start = ProtonDimens.DefaultSpacing),
+            modifier = modifier.padding(start = ProtonDimens.Spacing.Large),
             painter = painterResource(id = R.drawable.ic_proton_pen_square),
             tint = if (isEnabled) ProtonTheme.colors.iconNorm else ProtonTheme.colors.iconDisabled,
             contentDescription = NO_CONTENT_DESCRIPTION
         )
         Text(
             modifier = Modifier.padding(
-                start = ProtonDimens.SmallSpacing,
-                end = ProtonDimens.DefaultSpacing
+                start = ProtonDimens.Spacing.Standard,
+                end = ProtonDimens.Spacing.Large
             ),
             text = stringResource(R.string.send_group_message),
             style = ProtonTheme.typography.defaultSmallNorm
@@ -267,7 +267,7 @@ fun ContactGroupMemberItem(modifier: Modifier = Modifier, contactGroupMember: Co
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(start = ProtonDimens.DefaultSpacing),
+            .padding(start = ProtonDimens.Spacing.Large),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Box(
@@ -292,7 +292,7 @@ fun ContactGroupMemberItem(modifier: Modifier = Modifier, contactGroupMember: Co
                 start = ProtonDimens.ListItemTextStartPadding,
                 top = ProtonDimens.ListItemTextStartPadding,
                 bottom = ProtonDimens.ListItemTextStartPadding,
-                end = ProtonDimens.DefaultSpacing
+                end = ProtonDimens.Spacing.Large
             )
         ) {
             Text(

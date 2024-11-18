@@ -35,7 +35,7 @@ fun ProtonModalBottomSheetLayout(
     sheetContent: @Composable ColumnScope.() -> Unit,
     modifier: Modifier = Modifier,
     sheetState: SheetState = rememberBottomSheetScaffoldState().bottomSheetState,
-    content: @Composable (PaddingValues) -> Unit = { PaddingValues(ProtonDimens.DefaultSpacing) }
+    content: @Composable (PaddingValues) -> Unit = { PaddingValues(ProtonDimens.Spacing.Large) }
 ) {
     BottomSheetScaffold(
         modifier = modifier,

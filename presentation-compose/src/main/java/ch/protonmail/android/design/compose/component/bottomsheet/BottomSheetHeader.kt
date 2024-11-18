@@ -31,7 +31,7 @@ fun BottomSheetHeader(modifier: Modifier = Modifier, content: @Composable BoxSco
     Box(
         modifier = modifier
             .defaultMinSize(minHeight = ProtonDimens.DefaultBottomSheetHeaderMinHeight)
-            .padding(horizontal = ProtonDimens.DefaultSpacing),
+            .padding(horizontal = ProtonDimens.Spacing.Large),
         contentAlignment = Alignment.CenterStart,
         content = content
     )

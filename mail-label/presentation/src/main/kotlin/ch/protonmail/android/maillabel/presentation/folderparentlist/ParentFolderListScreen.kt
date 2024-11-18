@@ -81,7 +81,7 @@ fun ParentFolderListScreen(
                         modifier = Modifier.padding(
                             PaddingValues(
                                 start = paddingValues.calculateStartPadding(LocalLayoutDirection.current),
-                                top = paddingValues.calculateTopPadding() + ProtonDimens.SmallSpacing,
+                                top = paddingValues.calculateTopPadding() + ProtonDimens.Spacing.Standard,
                                 end = paddingValues.calculateEndPadding(LocalLayoutDirection.current),
                                 bottom = paddingValues.calculateBottomPadding()
                             )
@@ -154,8 +154,8 @@ fun ClickableParentFolderItem(
     ) {
         Icon(
             modifier = Modifier.padding(
-                start = ProtonDimens.DefaultSpacing.times(parentFolderUiModel.folder.level.plus(1)),
-                end = ProtonDimens.DefaultSpacing
+                start = ProtonDimens.Spacing.Large.times(parentFolderUiModel.folder.level.plus(1)),
+                end = ProtonDimens.Spacing.Large
             ),
             painter = painterResource(id = parentFolderUiModel.folder.icon),
             tint = parentFolderUiModel.folder.color ?: ProtonTheme.colors.iconNorm,
@@ -165,10 +165,10 @@ fun ClickableParentFolderItem(
             text = parentFolderUiModel.folder.name,
             modifier = Modifier
                 .padding(
-                    start = ProtonDimens.ExtraSmallSpacing,
-                    top = ProtonDimens.DefaultSpacing,
-                    end = ProtonDimens.DefaultSpacing,
-                    bottom = ProtonDimens.DefaultSpacing
+                    start = ProtonDimens.Spacing.Small,
+                    top = ProtonDimens.Spacing.Large,
+                    end = ProtonDimens.Spacing.Large,
+                    bottom = ProtonDimens.Spacing.Large
                 )
                 .weight(1f),
             style = ProtonTheme.typography.defaultNorm
@@ -176,7 +176,7 @@ fun ClickableParentFolderItem(
         if (parentFolderUiModel.isSelected) {
             Icon(
                 modifier = Modifier.padding(
-                    end = ProtonDimens.DefaultSpacing
+                    end = ProtonDimens.Spacing.Large
                 ),
                 painter = painterResource(id = R.drawable.ic_proton_checkmark),
                 tint = ProtonTheme.colors.iconAccent,
@@ -195,8 +195,8 @@ fun DisabledParentFolderItem(modifier: Modifier = Modifier, parentFolderUiModel:
     ) {
         Icon(
             modifier = Modifier.padding(
-                start = ProtonDimens.DefaultSpacing.times(parentFolderUiModel.folder.level.plus(1)),
-                end = ProtonDimens.DefaultSpacing
+                start = ProtonDimens.Spacing.Large.times(parentFolderUiModel.folder.level.plus(1)),
+                end = ProtonDimens.Spacing.Large
             ),
             painter = painterResource(id = parentFolderUiModel.folder.icon),
             tint = parentFolderUiModel.folder.color?.copy(alpha = 0.5f) ?: ProtonTheme.colors.iconDisabled,
@@ -206,10 +206,10 @@ fun DisabledParentFolderItem(modifier: Modifier = Modifier, parentFolderUiModel:
             text = parentFolderUiModel.folder.name,
             modifier = Modifier
                 .padding(
-                    start = ProtonDimens.ExtraSmallSpacing,
-                    top = ProtonDimens.DefaultSpacing,
-                    end = ProtonDimens.DefaultSpacing,
-                    bottom = ProtonDimens.DefaultSpacing
+                    start = ProtonDimens.Spacing.Small,
+                    top = ProtonDimens.Spacing.Large,
+                    end = ProtonDimens.Spacing.Large,
+                    bottom = ProtonDimens.Spacing.Large
                 )
                 .weight(1f),
             style = ProtonTheme.typography.defaultNorm,
@@ -236,13 +236,13 @@ fun NoneListItem(
         Text(
             text = stringResource(id = R.string.parent_folder_none),
             modifier = Modifier
-                .padding(ProtonDimens.DefaultSpacing)
+                .padding(ProtonDimens.Spacing.Large)
                 .weight(1f),
             style = ProtonTheme.typography.defaultNorm
         )
         if (state.parentLabelId == null) {
             Icon(
-                modifier = Modifier.padding(end = ProtonDimens.DefaultSpacing),
+                modifier = Modifier.padding(end = ProtonDimens.Spacing.Large),
                 painter = painterResource(id = R.drawable.ic_proton_checkmark),
                 tint = ProtonTheme.colors.iconAccent,
                 contentDescription = NO_CONTENT_DESCRIPTION

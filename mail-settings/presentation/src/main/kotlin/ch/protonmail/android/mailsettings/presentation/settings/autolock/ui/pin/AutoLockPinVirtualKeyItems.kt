@@ -62,7 +62,7 @@ fun VirtualKeyboardDigitItem(
             .clickable(interactionSource = interactionSource, indication = null) { onElementClicked(value) }
             .wrapContentSize()
             .size(MailDimens.AutoLockPinScreen.KeyboardButtonBoxSize)
-            .padding(ProtonDimens.SmallSpacing)
+            .padding(ProtonDimens.Spacing.Standard)
             .background(color = ProtonTheme.colors.shade10, shape = CircleShape),
         contentAlignment = Alignment.Center
     ) {
@@ -85,7 +85,7 @@ fun VirtualKeyboardButtonItem(
     IconButton(
         modifier = modifier
             .size(MailDimens.AutoLockPinScreen.KeyboardButtonBoxSize)
-            .padding(ProtonDimens.SmallSpacing),
+            .padding(ProtonDimens.Spacing.Standard),
         onClick = onClick
     ) {
         Icon(
@@ -104,7 +104,7 @@ fun VirtualKeyboardConfirmButton(
     ProtonButton(
         modifier = modifier
             .fillMaxWidth()
-            .padding(ProtonDimens.DefaultSpacing),
+            .padding(ProtonDimens.Spacing.Large),
         elevation = null,
         border = null,
         shape = ProtonTheme.shapes.medium,

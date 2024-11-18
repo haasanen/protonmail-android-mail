@@ -201,7 +201,7 @@ private fun ClearLocalCacheItem(
         )
 
         Button(
-            modifier = Modifier.padding(end = ProtonDimens.DefaultSpacing),
+            modifier = Modifier.padding(end = ProtonDimens.Spacing.Large),
             onClick = onClearCacheClick
         ) {
             Text(text = stringResource(id = string.mail_settings_local_cache_clear_button))

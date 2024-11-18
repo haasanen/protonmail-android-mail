@@ -50,10 +50,10 @@ internal fun ContactListScreenContent(
 ) {
     LazyColumn(
         modifier = modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.spacedBy(ProtonDimens.DefaultSpacing),
+        verticalArrangement = Arrangement.spacedBy(ProtonDimens.Spacing.Large),
         contentPadding = PaddingValues(
-            start = ProtonDimens.DefaultSpacing,
-            end = ProtonDimens.DefaultSpacing
+            start = ProtonDimens.Spacing.Large,
+            end = ProtonDimens.Spacing.Large
         )
     ) {
         items(state.groupedContacts) { groupedContactsUiModel ->

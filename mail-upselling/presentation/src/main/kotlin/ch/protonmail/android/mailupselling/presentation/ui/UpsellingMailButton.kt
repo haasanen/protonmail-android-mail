@@ -80,7 +80,7 @@ private fun UpsellingMailButton(onButtonClick: () -> Unit, modifier: Modifier = 
     ) {
         Row(
             modifier = Modifier
-                .padding(ProtonDimens.SmallSpacing),
+                .padding(ProtonDimens.Spacing.Standard),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(

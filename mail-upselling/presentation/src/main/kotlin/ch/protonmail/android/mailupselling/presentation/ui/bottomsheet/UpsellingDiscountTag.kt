@@ -44,7 +44,7 @@ internal fun UpsellingDiscountTag(modifier: Modifier = Modifier, text: TextUiMod
                 Brush.linearGradient(colorStops = UpsellingColors.DiscountTagColorStops),
                 shape = ProtonTheme.shapes.small
             )
-            .padding(horizontal = ProtonDimens.SmallSpacing, vertical = ProtonDimens.ExtraSmallSpacing),
+            .padding(horizontal = ProtonDimens.Spacing.Standard, vertical = ProtonDimens.Spacing.Small),
         contentAlignment = Alignment.Center
     ) {
         Text(

@@ -195,8 +195,8 @@ fun ContactFormContent(
                             modifier = Modifier
                                 .align(Alignment.CenterHorizontally)
                                 .padding(
-                                    top = ProtonDimens.DefaultSpacing,
-                                    bottom = ProtonDimens.MediumSpacing
+                                    top = ProtonDimens.Spacing.Large,
+                                    bottom = ProtonDimens.Spacing.ExtraLarge
                                 ),
                             initials = ""
                         )
@@ -206,8 +206,8 @@ fun ContactFormContent(
                             modifier = Modifier
                                 .align(Alignment.CenterHorizontally)
                                 .padding(
-                                    top = ProtonDimens.DefaultSpacing,
-                                    bottom = ProtonDimens.MediumSpacing
+                                    top = ProtonDimens.Spacing.Large,
+                                    bottom = ProtonDimens.Spacing.ExtraLarge
                                 ),
                             imageBitmap = avatar.bitmap.asImageBitmap()
                         )
@@ -452,9 +452,9 @@ private fun NameSection(state: ContactFormState.Data, actions: ContactFormConten
         modifier = Modifier
             .fillMaxWidth()
             .padding(
-                start = ProtonDimens.DefaultSpacing,
-                end = ProtonDimens.DefaultSpacing,
-                bottom = ProtonDimens.DefaultSpacing
+                start = ProtonDimens.Spacing.Large,
+                end = ProtonDimens.Spacing.Large,
+                bottom = ProtonDimens.Spacing.Large
             ),
         initialValue = state.contact.displayName,
         hint = stringResource(R.string.display_name),
@@ -468,9 +468,9 @@ private fun NameSection(state: ContactFormState.Data, actions: ContactFormConten
         modifier = Modifier
             .fillMaxWidth()
             .padding(
-                start = ProtonDimens.DefaultSpacing,
-                end = ProtonDimens.DefaultSpacing,
-                bottom = ProtonDimens.DefaultSpacing
+                start = ProtonDimens.Spacing.Large,
+                end = ProtonDimens.Spacing.Large,
+                bottom = ProtonDimens.Spacing.Large
             ),
         initialValue = state.contact.firstName,
         hint = stringResource(R.string.first_name),
@@ -484,9 +484,9 @@ private fun NameSection(state: ContactFormState.Data, actions: ContactFormConten
         modifier = Modifier
             .fillMaxWidth()
             .padding(
-                start = ProtonDimens.DefaultSpacing,
-                end = ProtonDimens.DefaultSpacing,
-                bottom = ProtonDimens.DefaultSpacing
+                start = ProtonDimens.Spacing.Large,
+                end = ProtonDimens.Spacing.Large,
+                bottom = ProtonDimens.Spacing.Large
             ),
         initialValue = state.contact.lastName,
         hint = stringResource(R.string.last_name),
@@ -508,10 +508,10 @@ private fun SectionHeader(
         modifier = modifier
             .fillMaxWidth()
             .padding(
-                start = ProtonDimens.DefaultSpacing,
-                end = ProtonDimens.DefaultSpacing,
-                top = ProtonDimens.MediumSpacing,
-                bottom = ProtonDimens.SmallSpacing
+                start = ProtonDimens.Spacing.Large,
+                end = ProtonDimens.Spacing.Large,
+                top = ProtonDimens.Spacing.ExtraLarge,
+                bottom = ProtonDimens.Spacing.Standard
             )
     ) {
         Icon(
@@ -521,7 +521,7 @@ private fun SectionHeader(
             contentDescription = NO_CONTENT_DESCRIPTION
         )
         Text(
-            modifier = Modifier.padding(start = ProtonDimens.SmallSpacing),
+            modifier = Modifier.padding(start = ProtonDimens.Spacing.Standard),
             text = title,
             style = ProtonTheme.typography.captionWeak
         )
@@ -533,15 +533,15 @@ private fun SectionHeader(
 private fun AddNewButton(modifier: Modifier = Modifier, onClick: () -> Unit) {
     ProtonSecondaryButton(
         modifier = modifier.padding(
-            start = ProtonDimens.DefaultSpacing,
-            top = ProtonDimens.ExtraSmallSpacing,
-            bottom = ProtonDimens.DefaultSpacing
+            start = ProtonDimens.Spacing.Large,
+            top = ProtonDimens.Spacing.Small,
+            bottom = ProtonDimens.Spacing.Large
         ),
         onClick = onClick
     ) {
         Text(
             text = stringResource(R.string.add_new),
-            Modifier.padding(horizontal = ProtonDimens.SmallSpacing),
+            Modifier.padding(horizontal = ProtonDimens.Spacing.Standard),
             style = ProtonTheme.typography.captionNorm
         )
     }
@@ -561,9 +561,9 @@ private fun InputField(
                 .fillMaxWidth()
                 .weight(1f)
                 .padding(
-                    start = ProtonDimens.DefaultSpacing,
+                    start = ProtonDimens.Spacing.Large,
                     end = MailDimens.ContactFormTypedFieldPaddingEnd,
-                    top = ProtonDimens.DefaultSpacing
+                    top = ProtonDimens.Spacing.Large
                 ),
             initialValue = value,
             hint = hint,
@@ -590,9 +590,9 @@ private fun InputFieldWithTrash(
                 .align(Alignment.CenterVertically)
                 .weight(1f)
                 .padding(
-                    start = ProtonDimens.DefaultSpacing,
-                    end = ProtonDimens.DefaultSpacing,
-                    top = ProtonDimens.DefaultSpacing
+                    start = ProtonDimens.Spacing.Large,
+                    end = ProtonDimens.Spacing.Large,
+                    top = ProtonDimens.Spacing.Large
                 ),
             initialValue = value,
             hint = hint,
@@ -606,8 +606,8 @@ private fun InputFieldWithTrash(
             modifier = Modifier
                 .align(Alignment.CenterVertically)
                 .padding(
-                    top = ProtonDimens.DefaultSpacing,
-                    end = ProtonDimens.DefaultSpacing
+                    top = ProtonDimens.Spacing.Large,
+                    end = ProtonDimens.Spacing.Large
                 )
                 .clickable(
                     interactionSource = remember { MutableInteractionSource() },
@@ -652,9 +652,9 @@ private fun TypePickerField(initialSelectedType: FieldType, onValueSelected: (Te
     Row(
         modifier = Modifier
             .padding(
-                top = ProtonDimens.DefaultSpacing,
-                bottom = ProtonDimens.DefaultSpacing,
-                start = ProtonDimens.DefaultSpacing,
+                top = ProtonDimens.Spacing.Large,
+                bottom = ProtonDimens.Spacing.Large,
+                start = ProtonDimens.Spacing.Large,
                 end = MailDimens.ContactFormTypedFieldPaddingEnd
             )
             .background(
@@ -672,10 +672,10 @@ private fun TypePickerField(initialSelectedType: FieldType, onValueSelected: (Te
             modifier = Modifier
                 .weight(1f)
                 .padding(
-                    top = ProtonDimens.DefaultSpacing,
-                    bottom = ProtonDimens.DefaultSpacing,
-                    start = ProtonDimens.DefaultSpacing,
-                    end = ProtonDimens.ExtraSmallSpacing
+                    top = ProtonDimens.Spacing.Large,
+                    bottom = ProtonDimens.Spacing.Large,
+                    start = ProtonDimens.Spacing.Large,
+                    end = ProtonDimens.Spacing.Small
                 ),
             text = selectedType.string(),
             style = ProtonTheme.typography.defaultNorm
@@ -684,7 +684,7 @@ private fun TypePickerField(initialSelectedType: FieldType, onValueSelected: (Te
             painter = painterResource(id = R.drawable.ic_proton_chevron_down),
             tint = ProtonTheme.colors.iconNorm,
             modifier = Modifier
-                .padding(end = ProtonDimens.DefaultSpacing)
+                .padding(end = ProtonDimens.Spacing.Large)
                 .size(ProtonDimens.SmallIconSize)
                 .align(Alignment.CenterVertically),
             contentDescription = NO_CONTENT_DESCRIPTION
@@ -715,7 +715,7 @@ fun ContactFormTopBar(
             if (displaySaveLoader) {
                 CircularProgressIndicator(
                     modifier = Modifier
-                        .padding(end = ProtonDimens.DefaultSpacing)
+                        .padding(end = ProtonDimens.Spacing.Large)
                         .size(MailDimens.ProgressDefaultSize),
                     strokeWidth = MailDimens.ProgressStrokeWidth
                 )

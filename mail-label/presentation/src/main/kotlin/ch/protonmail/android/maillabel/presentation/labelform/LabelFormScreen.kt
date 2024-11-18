@@ -286,11 +286,11 @@ fun LabelFormContent(
             FormDeleteButton(
                 modifier = Modifier
                     .constrainAs(deleteButton) {
-                        bottom.linkTo(parent.bottom, margin = ProtonDimens.DefaultSpacing)
+                        bottom.linkTo(parent.bottom, margin = ProtonDimens.Spacing.Large)
                         start.linkTo(parent.start)
                         end.linkTo(parent.end)
                     }
-                    .padding(top = ProtonDimens.LargerSpacing),
+                    .padding(top = ProtonDimens.Spacing.Jumbo),
                 text = stringResource(id = R.string.label_form_delete),
                 onClick = actions.onDeleteClick
             )
@@ -328,7 +328,7 @@ fun LabelFormTopBar(
             if (displayCreateLoader) {
                 CircularProgressIndicator(
                     modifier = Modifier
-                        .padding(end = ProtonDimens.DefaultSpacing)
+                        .padding(end = ProtonDimens.Spacing.Large)
                         .size(MailDimens.ProgressDefaultSize),
                     strokeWidth = MailDimens.ProgressStrokeWidth
                 )

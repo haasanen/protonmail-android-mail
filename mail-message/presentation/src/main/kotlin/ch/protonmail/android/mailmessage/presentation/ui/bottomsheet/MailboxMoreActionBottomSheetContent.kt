@@ -61,18 +61,18 @@ fun MailboxMoreActionBottomSheetContent(
     state: MailboxMoreActionsBottomSheetState.Data,
     actionCallbacks: MoreActionBottomSheetContent.Actions
 ) {
-    LazyColumn(modifier = modifier.padding(vertical = ProtonDimens.DefaultSpacing)) {
+    LazyColumn(modifier = modifier.padding(vertical = ProtonDimens.Spacing.Large)) {
         items(state.actionUiModels) { actionItem ->
             ProtonRawListItem(
                 modifier = Modifier
                     .testTag(MoreActionsBottomSheetTestTags.ActionItem)
                     .clickable { callbackForAction(actionItem.action, actionCallbacks).invoke() }
-                    .padding(vertical = ProtonDimens.DefaultSpacing)
+                    .padding(vertical = ProtonDimens.Spacing.Large)
             ) {
                 Icon(
                     modifier = Modifier
                         .testTag(MoreActionsBottomSheetTestTags.LabelIcon)
-                        .padding(horizontal = ProtonDimens.DefaultSpacing),
+                        .padding(horizontal = ProtonDimens.Spacing.Large),
                     painter = painterResource(id = actionItem.icon),
                     contentDescription = NO_CONTENT_DESCRIPTION
                 )

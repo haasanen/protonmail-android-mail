@@ -146,7 +146,7 @@ private fun SetMessagePasswordContent(
             .fillMaxSize()
             .background(ProtonTheme.colors.backgroundNorm)
             .verticalScroll(rememberScrollState(), reverseScrolling = true)
-            .padding(ProtonDimens.DefaultSpacing)
+            .padding(ProtonDimens.Spacing.Large)
     ) {
         var messagePassword by rememberSaveable { mutableStateOf(state.initialMessagePasswordValue) }
         var repeatedMessagePassword by rememberSaveable { mutableStateOf(state.initialMessagePasswordValue) }
@@ -218,7 +218,7 @@ private fun SetMessagePasswordContent(
             onValueChange = { messagePasswordHint = it },
             onFocusChanged = {}
         )
-        MessagePasswordSpacer(height = ProtonDimens.LargerSpacing)
+        MessagePasswordSpacer(height = ProtonDimens.Spacing.Jumbo)
         MessagePasswordButtons(
             shouldShowEditingButtons = state.isInEditMode,
             isApplyButtonEnabled = shouldApplyButtonBeEnabled(),
@@ -236,7 +236,7 @@ private fun MessagePasswordInfo(modifier: Modifier = Modifier) {
             contentDescription = NO_CONTENT_DESCRIPTION,
             tint = ProtonTheme.colors.iconWeak
         )
-        Spacer(modifier = Modifier.width(ProtonDimens.DefaultSpacing))
+        Spacer(modifier = Modifier.width(ProtonDimens.Spacing.Large))
         Column {
             Text(
                 text = stringResource(id = R.string.set_message_password_info_message),
@@ -275,7 +275,7 @@ private fun MessagePasswordButtons(
         )
     }
     if (shouldShowEditingButtons) {
-        MessagePasswordSpacer(height = ProtonDimens.DefaultSpacing)
+        MessagePasswordSpacer(height = ProtonDimens.Spacing.Large)
         ProtonOutlinedButton(
             modifier = Modifier
                 .fillMaxWidth()
@@ -292,7 +292,7 @@ private fun MessagePasswordButtons(
 }
 
 @Composable
-private fun MessagePasswordSpacer(modifier: Modifier = Modifier, height: Dp = ProtonDimens.MediumSpacing) {
+private fun MessagePasswordSpacer(modifier: Modifier = Modifier, height: Dp = ProtonDimens.Spacing.ExtraLarge) {
     Spacer(modifier = modifier.height(height))
 }
 

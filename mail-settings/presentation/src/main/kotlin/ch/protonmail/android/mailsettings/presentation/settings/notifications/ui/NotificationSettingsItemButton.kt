@@ -50,7 +50,7 @@ fun NotificationSettingsItemButton(modifier: Modifier = Modifier) {
     ProtonRawListItem(
         modifier = modifier
             .clickable { launchNotificationSettingsIntent() }
-            .padding(ProtonDimens.DefaultSpacing),
+            .padding(ProtonDimens.Spacing.Large),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(

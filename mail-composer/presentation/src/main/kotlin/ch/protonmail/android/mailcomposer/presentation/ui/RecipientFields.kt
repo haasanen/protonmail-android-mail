@@ -88,7 +88,7 @@ internal fun FocusableFormScope<FocusedFieldType>.RecipientFields(
             chipValidator = emailValidator,
             modifier = Modifier
                 .weight(1f)
-                .padding(start = ProtonDimens.DefaultSpacing)
+                .padding(start = ProtonDimens.Spacing.Large)
                 .testTag(ComposerTestTags.ToRecipient)
                 .retainFieldFocusOnConfigurationChange(FocusedFieldType.TO),
             keyboardOptions = emailNextKeyboardOptions,
@@ -109,7 +109,7 @@ internal fun FocusableFormScope<FocusedFieldType>.RecipientFields(
                 } ?: emptyList()
             )
         )
-        Spacer(modifier = Modifier.size(ProtonDimens.DefaultSpacing))
+        Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Large))
         if (!hasCcBccContent) {
             IconButton(
                 modifier = Modifier.focusProperties { canFocus = false },
@@ -143,7 +143,7 @@ internal fun FocusableFormScope<FocusedFieldType>.RecipientFields(
                 value = fields.cc.map { it.toChipItem() },
                 chipValidator = emailValidator,
                 modifier = Modifier
-                    .padding(start = ProtonDimens.DefaultSpacing)
+                    .padding(start = ProtonDimens.Spacing.Large)
                     .testTag(ComposerTestTags.CcRecipient)
                     .retainFieldFocusOnConfigurationChange(FocusedFieldType.CC),
                 keyboardOptions = emailNextKeyboardOptions,
@@ -172,7 +172,7 @@ internal fun FocusableFormScope<FocusedFieldType>.RecipientFields(
                 value = fields.bcc.map { it.toChipItem() },
                 chipValidator = emailValidator,
                 modifier = Modifier
-                    .padding(start = ProtonDimens.DefaultSpacing)
+                    .padding(start = ProtonDimens.Spacing.Large)
                     .testTag(ComposerTestTags.BccRecipient)
                     .retainFieldFocusOnConfigurationChange(FocusedFieldType.BCC),
                 keyboardOptions = emailNextKeyboardOptions,

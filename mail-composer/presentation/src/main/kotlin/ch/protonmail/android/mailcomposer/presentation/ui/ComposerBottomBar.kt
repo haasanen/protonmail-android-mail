@@ -63,7 +63,7 @@ fun ComposerBottomBar(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(MailDimens.ExtraLargeSpacing)
-                .padding(horizontal = ProtonDimens.ExtraSmallSpacing),
+                .padding(horizontal = ProtonDimens.Spacing.Small),
             verticalAlignment = Alignment.CenterVertically
         ) {
             AddPasswordButton(draftId, senderEmail, isMessagePasswordSet, onSetMessagePasswordClick)
@@ -118,7 +118,7 @@ private fun BottomBarButton(
             Box(
                 modifier = Modifier
                     .size(MailDimens.ExtraLargeSpacing)
-                    .padding(bottom = ProtonDimens.SmallSpacing, end = ProtonDimens.ExtraSmallSpacing),
+                    .padding(bottom = ProtonDimens.Spacing.Standard, end = ProtonDimens.Spacing.Small),
                 contentAlignment = Alignment.BottomEnd
             ) {
                 BottomBarButtonCheckmark()
@@ -134,7 +134,7 @@ private fun BottomBarButtonCheckmark(modifier: Modifier = Modifier) {
             .size(ProtonDimens.SmallIconSize)
             .background(ProtonTheme.colors.interactionNorm, CircleShape)
             .border(Dp.Hairline, ProtonTheme.colors.backgroundNorm, CircleShape)
-            .padding(ProtonDimens.ExtraSmallSpacing),
+            .padding(ProtonDimens.Spacing.Small),
         contentAlignment = Alignment.Center
     ) {
         Icon(

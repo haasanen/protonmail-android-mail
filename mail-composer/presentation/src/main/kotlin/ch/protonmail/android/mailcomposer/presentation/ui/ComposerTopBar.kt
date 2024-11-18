@@ -102,7 +102,7 @@ private fun AttachmentsButton(
 ) {
     Row(
         modifier = modifier,
-        horizontalArrangement = Arrangement.spacedBy((-ProtonDimens.SmallSpacing.value).dp),
+        horizontalArrangement = Arrangement.spacedBy((-ProtonDimens.Spacing.Standard.value).dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         if (attachmentsCount > 0) {
@@ -127,7 +127,7 @@ private fun AttachmentsNumber(attachmentsCount: Int, modifier: Modifier = Modifi
         modifier = modifier
             .background(ProtonTheme.colors.interactionNorm, CircleShape)
             .border(Dp.Hairline, ProtonTheme.colors.backgroundNorm, CircleShape)
-            .padding(vertical = ProtonDimens.ExtraSmallSpacing, horizontal = ProtonDimens.SmallSpacing),
+            .padding(vertical = ProtonDimens.Spacing.Small, horizontal = ProtonDimens.Spacing.Standard),
         contentAlignment = Alignment.Center
     ) {
         Text(

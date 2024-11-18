@@ -84,7 +84,7 @@ fun SetExpirationTimeBottomSheetContent(expirationTime: Duration, onDoneClick: (
     Column {
         Row(
             modifier = Modifier
-                .padding(ProtonDimens.DefaultSpacing)
+                .padding(ProtonDimens.Spacing.Large)
                 .fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
@@ -113,7 +113,7 @@ fun SetExpirationTimeBottomSheetContent(expirationTime: Duration, onDoneClick: (
                     modifier = Modifier
                         .selectable(selected = item == selectedItem.value) { selectedItem.value = item }
                         .height(ProtonDimens.ListItemHeight)
-                        .padding(horizontal = ProtonDimens.DefaultSpacing)
+                        .padding(horizontal = ProtonDimens.Spacing.Large)
                 ) {
                     val textRes = when (item) {
                         ExpirationTime.None -> R.string.composer_bottom_bar_expiration_time_none
@@ -142,8 +142,8 @@ fun SetExpirationTimeBottomSheetContent(expirationTime: Duration, onDoneClick: (
                 item {
                     Row(
                         modifier = Modifier.padding(
-                            horizontal = ProtonDimens.DefaultSpacing,
-                            vertical = ProtonDimens.SmallSpacing
+                            horizontal = ProtonDimens.Spacing.Large,
+                            vertical = ProtonDimens.Spacing.Standard
                         )
                     ) {
                         ExpirationTimeDropdownMenu(
@@ -152,7 +152,7 @@ fun SetExpirationTimeBottomSheetContent(expirationTime: Duration, onDoneClick: (
                             type = ExpirationTimeDropdownMenuType.Days,
                             onSelectionChanged = { selectedCustomDays.value = it.toLong() }
                         )
-                        Spacer(modifier = Modifier.width(ProtonDimens.DefaultSpacing))
+                        Spacer(modifier = Modifier.width(ProtonDimens.Spacing.Large))
                         ExpirationTimeDropdownMenu(
                             modifier = Modifier.weight(1f),
                             initialValue = TextFieldValue(selectedCustomHours.value.toString()),
@@ -184,7 +184,7 @@ private fun ExpirationTimeDropdownMenu(
             text = label,
             style = ProtonTheme.typography.defaultSmallStrongNorm
         )
-        Spacer(modifier = Modifier.height(ProtonDimens.SmallSpacing))
+        Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Standard))
         ExposedDropdownMenuBox(
             expanded = expanded.value,
             onExpandedChange = { expanded.value = !expanded.value }

@@ -322,7 +322,7 @@ private fun ProtonButtonContent(
         if (loading) {
             CircularProgressIndicator(
                 modifier = Modifier
-                    .padding(horizontal = ProtonDimens.DefaultSpacing)
+                    .padding(horizontal = ProtonDimens.Spacing.Large)
                     .size(LoadingIndicatorSize),
                 color = progressColor,
                 strokeWidth = LoadingIndicatorStroke

@@ -101,7 +101,7 @@ internal fun BodyTextField(
         value = text,
         modifier = modifier
             .fillMaxSize()
-            .padding(ProtonDimens.DefaultSpacing)
+            .padding(ProtonDimens.Spacing.Large)
             .focusRequester(focusRequester)
             .bringIntoViewRequester(bringIntoViewRequester)
             .onFocusChanged { isFocused = it.isFocused },

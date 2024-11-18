@@ -75,7 +75,7 @@ internal fun UpsellingPlanItem(
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .padding(top = ProtonDimens.SmallSpacing)
+            .padding(top = ProtonDimens.Spacing.Standard)
     ) {
         if (planUiModel.discount != null) {
             var discountTagHeight by remember { mutableIntStateOf(0) }
@@ -94,38 +94,38 @@ internal fun UpsellingPlanItem(
                 .thenIf(planUiModel.discount != null) {
                     background(
                         color = UpsellingColors.PaymentDiscountedItemBackground,
-                        shape = RoundedCornerShape(ProtonDimens.DefaultSpacing)
+                        shape = RoundedCornerShape(ProtonDimens.Spacing.Large)
                     )
                     border(
                         width = MailDimens.DefaultBorder,
                         color = UpsellingColors.PaymentDiscountedItemBorder,
-                        shape = RoundedCornerShape(ProtonDimens.DefaultSpacing)
+                        shape = RoundedCornerShape(ProtonDimens.Spacing.Large)
                     )
                 }
                 .thenIf(planUiModel.discount == null) {
                     background(
                         color = UpsellingColors.PaymentStandardItemBackground,
-                        shape = RoundedCornerShape(ProtonDimens.DefaultSpacing)
+                        shape = RoundedCornerShape(ProtonDimens.Spacing.Large)
                     )
                     border(
                         width = MailDimens.DefaultBorder,
                         color = UpsellingColors.PaymentStandardItemBorder,
-                        shape = RoundedCornerShape(ProtonDimens.DefaultSpacing)
+                        shape = RoundedCornerShape(ProtonDimens.Spacing.Large)
                     )
                 },
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
                 modifier = Modifier.padding(
-                    top = ProtonDimens.MediumSpacing,
-                    bottom = ProtonDimens.SmallSpacing + ProtonDimens.ExtraSmallSpacing
+                    top = ProtonDimens.Spacing.ExtraLarge,
+                    bottom = ProtonDimens.Spacing.Standard + ProtonDimens.Spacing.Small
                 ),
                 text = pluralStringResource(R.plurals.upselling_month, planUiModel.cycle, planUiModel.cycle),
                 style = ProtonTheme.typography.captionUnspecified,
                 color = colors.textNorm
             )
             FlowRow(
-                modifier = Modifier.padding(horizontal = ProtonDimens.DefaultSpacing),
+                modifier = Modifier.padding(horizontal = ProtonDimens.Spacing.Large),
                 horizontalArrangement = Arrangement.Center,
                 verticalArrangement = Arrangement.Center
             ) {
@@ -166,7 +166,7 @@ internal fun UpsellingPlanItem(
                     modifier = Modifier
                         .widthIn(max = maxWrappedViewSize.width.pxToDp())
                         .align(Alignment.Center)
-                        .padding(ProtonDimens.DefaultSpacing),
+                        .padding(ProtonDimens.Spacing.Large),
                     factory = { ctx ->
                         ProtonPaymentButton(ContextThemeWrapper(ctx, R.style.ProtonTheme)).apply {
                             this.id = planUiModel.viewId
