@@ -29,6 +29,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -45,6 +46,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
@@ -228,6 +231,11 @@ private fun LoginForm(
             errorText = usernameError,
             label = { Text(text = stringResource(id = R.string.auth_username)) },
             singleLine = true,
+            keyboardOptions = KeyboardOptions(
+                autoCorrect = false,
+                imeAction = ImeAction.Next,
+                keyboardType = KeyboardType.Email
+            ),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = DefaultSpacing)
