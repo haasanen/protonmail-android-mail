@@ -901,6 +901,8 @@ class MailboxViewModel @Inject constructor(
     private suspend fun handleTrashAction() {
         moveSelectedMailboxItemsTo(SystemLabelId.Trash).onRight {
             emitNewStateFrom(MailboxEvent.Trash(it))
+        }.onLeft {
+            emitNewStateFrom(MailboxEvent.ErrorMoving)
         }
     }
 
