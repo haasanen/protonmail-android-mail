@@ -2157,7 +2157,7 @@ class MailboxViewModelTest {
 
 
     @Test
-    fun `when label as is triggered for no conversation grouping then relabel messages is called`() = runTest {
+    fun `when label as is triggered for no conversation grouping then label messages is called`() = runTest {
         // Given
         val item = readMailboxItemUiModel.copy(id = MessageIdSample.Invoice.id)
         val secondItem = unreadMailboxItemUiModel.copy(id = MessageIdSample.AlphaAppQAReport.id)
@@ -2191,7 +2191,7 @@ class MailboxViewModelTest {
         )
         expectedLabelAsStateChange(selectedItemsList, LabelIdSample.Label2022)
         expectedLabelAsConfirmed(intermediateState)
-        expectRelabelMessagesSucceeds(
+        expectLabelMessagesSucceeds(
             selectedItemsList.map { MessageId(it.id) },
             expectedUpdatedLabelList,
             archiveSelected
@@ -2223,7 +2223,7 @@ class MailboxViewModelTest {
     }
 
     @Test
-    fun `when label as is triggered with archive selected for no conversation mode then relabel messages is called`() =
+    fun `when label as is triggered with archive selected for no conversation mode then label messages is called`() =
         runTest {
             // Given
             val item = readMailboxItemUiModel.copy(id = MessageIdSample.Invoice.id)
@@ -2258,7 +2258,7 @@ class MailboxViewModelTest {
             )
             expectedLabelAsStateChange(selectedItemsList, LabelIdSample.Label2022)
             expectedLabelAsConfirmed(intermediateState, archiveSelected)
-            expectRelabelMessagesSucceeds(
+            expectLabelMessagesSucceeds(
                 selectedItemsList.map { MessageId(it.id) },
                 expectedUpdatedLabelList,
                 archiveSelected
@@ -2295,7 +2295,7 @@ class MailboxViewModelTest {
         }
 
     @Test
-    fun `when label as is triggered for conversation grouping then relabel conversation is called`() = runTest {
+    fun `when label as is triggered for conversation grouping then label conversation is called`() = runTest {
         // Given
         val item = readMailboxItemUiModel.copy(id = MessageIdSample.Invoice.id)
         val secondItem = unreadMailboxItemUiModel.copy(id = MessageIdSample.AlphaAppQAReport.id)
@@ -2329,7 +2329,7 @@ class MailboxViewModelTest {
         )
         expectedLabelAsStateChange(selectedItemsList, LabelIdSample.Label2022)
         expectedLabelAsConfirmed(intermediateState)
-        expectRelabelConversationSucceeds(
+        expectLabelConversationSucceeds(
             selectedItemsList.map { ConversationId(it.id) },
             expectedUpdatedLabelList,
             archiveSelected
@@ -2399,7 +2399,7 @@ class MailboxViewModelTest {
             )
             expectedLabelAsStateChange(selectedItemsList, LabelIdSample.Label2022)
             expectedLabelAsConfirmed(intermediateState, archiveSelected)
-            expectRelabelConversationSucceeds(
+            expectLabelConversationSucceeds(
                 selectedItemsList.map { ConversationId(it.id) },
                 expectedUpdatedLabelList,
                 archiveSelected
@@ -3634,7 +3634,7 @@ class MailboxViewModelTest {
         every { mailboxReducer.newStateFrom(any(), MailboxViewAction.DismissBottomSheet) } returns expectedState
     }
 
-    private fun expectRelabelMessagesSucceeds(
+    private fun expectLabelMessagesSucceeds(
         selectedMessages: List<MessageId>,
         updatedSelections: LabelSelectionList,
         archiveSelected: Boolean
@@ -3644,7 +3644,7 @@ class MailboxViewModelTest {
         } returns Unit.right()
     }
 
-    private fun expectRelabelConversationSucceeds(
+    private fun expectLabelConversationSucceeds(
         selectedConversation: List<ConversationId>,
         updatedSelections: LabelSelectionList,
         archiveSelected: Boolean

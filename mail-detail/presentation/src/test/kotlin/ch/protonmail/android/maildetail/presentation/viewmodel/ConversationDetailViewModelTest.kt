@@ -903,7 +903,7 @@ class ConversationDetailViewModelTest {
     }
 
     @Test
-    fun `verify relabel is called and exit is not called when labels get confirmed`() = runTest {
+    fun `verify label conversation is called and exit is not called when labels get confirmed`() = runTest {
         // Given
         val event = LabelAsBottomSheetState.LabelAsBottomSheetEvent.ActionData(
             customLabelList = MailLabelUiModelTestData.customLabelList,
@@ -988,7 +988,7 @@ class ConversationDetailViewModelTest {
     }
 
     @Test
-    fun `verify relabel and move is called and exit is set when labels get confirmed and should be archived`() =
+    fun `verify label conversation is called and exit is set when labels get confirmed and should be archived`() =
         runTest {
             // Given
             val event = LabelAsBottomSheetState.LabelAsBottomSheetEvent.ActionData(
@@ -1016,14 +1016,6 @@ class ConversationDetailViewModelTest {
                         partiallySelectionLabels = emptyList()
                     ),
                     archiveSelected
-                )
-            } returns Unit.right()
-
-            coEvery {
-                move(
-                    userId = userId,
-                    conversationId = conversationId,
-                    systemLabelId = SystemLabelId.Archive
                 )
             } returns Unit.right()
 
@@ -1090,7 +1082,7 @@ class ConversationDetailViewModelTest {
         }
 
     @Test
-    fun `verify relabel adds previously partially selected label`() = runTest {
+    fun `verify label conversation adds previously partially selected label`() = runTest {
         // Given
         val event = LabelAsBottomSheetState.LabelAsBottomSheetEvent.ActionData(
             customLabelList = MailLabelUiModelTestData.customLabelList,

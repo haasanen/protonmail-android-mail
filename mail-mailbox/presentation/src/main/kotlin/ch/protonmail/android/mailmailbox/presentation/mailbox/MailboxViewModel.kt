@@ -764,7 +764,7 @@ class MailboxViewModel @Inject constructor(
             val updatedSelection = labelAsData.getLabelSelectionState()
             val viewMode = getViewModeForCurrentLocation(selectedMailLabelId.flow.value)
 
-            val operation = handleRelabelOperation(
+            val operation = handleLabelOperation(
                 userId = userId,
                 viewMode = viewMode,
                 selectedItems = selectionState.selectedMailboxItems,
@@ -867,7 +867,7 @@ class MailboxViewModel @Inject constructor(
         )
     }
 
-    private suspend fun handleRelabelOperation(
+    private suspend fun handleLabelOperation(
         userId: UserId,
         viewMode: ViewMode,
         selectedItems: Set<SelectedMailboxItem>,

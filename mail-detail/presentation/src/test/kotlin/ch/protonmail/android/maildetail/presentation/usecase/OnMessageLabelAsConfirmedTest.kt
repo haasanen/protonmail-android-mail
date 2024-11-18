@@ -35,7 +35,7 @@ class OnMessageLabelAsConfirmedTest {
     )
 
     @Test
-    fun `should call relabel message when label as was confirmed`() = runTest {
+    fun `should call label message when label as was confirmed`() = runTest {
         // Given
         val labelUiModelsWithSelectedState = LabelUiModelWithSelectedStateSample.customLabelListWithSelection
         val updatedSelection = labelUiModelsWithSelectedState.toLabelSelectionList()
@@ -55,7 +55,7 @@ class OnMessageLabelAsConfirmedTest {
     }
 
     @Test
-    fun `should call move message when label as was confirmed and archive was selected`() = runTest {
+    fun `should pass should archive flag true when label was confirmed and archive was selected`() = runTest {
         // Given
         val labelUiModelsWithSelectedState = LabelUiModelWithSelectedStateSample.customLabelListWithSelection
         val updatedSelection = labelUiModelsWithSelectedState.toLabelSelectionList()

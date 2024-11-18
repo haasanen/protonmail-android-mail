@@ -34,10 +34,8 @@ import kotlin.test.assertEquals
 
 class LabelConversationsTest {
 
-    private val userId = UserIdSample.Primary
-    private val conversationIds = listOf(ConversationIdSample.Invoices)
     private val conversationRepository: ConversationRepository = mockk()
-    private val relabelConversation = LabelConversations(conversationRepository)
+    private val labelConversation = LabelConversations(conversationRepository)
 
     @Test
     fun `when repository fails then error is returned`() = runTest {
@@ -59,7 +57,7 @@ class LabelConversationsTest {
         } returns error
 
         // When
-        val result = relabelConversation(
+        val result = labelConversation(
             userId = UserIdSample.Primary,
             conversationIds = conversationIds,
             updatedSelections = LabelSelectionList(
@@ -92,7 +90,7 @@ class LabelConversationsTest {
         } returns Unit.right()
 
         // When
-        val result = relabelConversation(
+        val result = labelConversation(
             userId = UserIdSample.Primary,
             conversationIds = conversationIds,
             updatedSelections = LabelSelectionList(

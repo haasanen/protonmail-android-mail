@@ -35,7 +35,7 @@ import kotlin.test.assertEquals
 internal class LabelMessageTest {
 
     private val labelMessages: LabelMessages = mockk()
-    private val relabel = LabelMessage(labelMessages)
+    private val labelMessage = LabelMessage(labelMessages)
 
     @Test
     fun `when repository fails then error is returned`() = runTest {
@@ -54,7 +54,7 @@ internal class LabelMessageTest {
         } returns error
 
         // When
-        val result = relabel(
+        val result = labelMessage(
             userId = UserIdSample.Primary,
             messageId = MessageIdSample.Invoice,
             updatedSelection = updatedSelection,
@@ -81,7 +81,7 @@ internal class LabelMessageTest {
         } returns Unit.right()
 
         // When
-        val result = relabel(
+        val result = labelMessage(
             userId = UserIdSample.Primary,
             messageId = MessageIdSample.Invoice,
             updatedSelection = updatedSelection,

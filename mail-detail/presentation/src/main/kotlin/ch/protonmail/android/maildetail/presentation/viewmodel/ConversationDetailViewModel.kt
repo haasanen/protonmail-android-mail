@@ -657,7 +657,7 @@ class ConversationDetailViewModel @Inject constructor(
                     archiveSelected = archiveSelected
                 ).fold(
                     ifLeft = {
-                        Timber.e("Relabel message failed: $it")
+                        Timber.e("Label message failed: $it")
                         ConversationDetailEvent.ErrorLabelingConversation
                     },
                     ifRight = { LabelAsConfirmed(archiveSelected, messageId) }
@@ -671,7 +671,7 @@ class ConversationDetailViewModel @Inject constructor(
             val labelAsData = mutableDetailState.value.bottomSheetState?.contentState as? LabelAsBottomSheetState.Data
                 ?: throw IllegalStateException("BottomSheetState is not LabelAsBottomSheetState.Data")
 
-            val relabelAction = suspend {
+            val labelAction = suspend {
                 labelConversation(
                     userId = primaryUserId.first(),
                     conversationId = conversationId,
@@ -685,10 +685,10 @@ class ConversationDetailViewModel @Inject constructor(
                     onLeft = ConversationDetailEvent.ErrorLabelingConversation,
                     onRight = LabelAsConfirmed(true, null)
                 ) {
-                    relabelAction()
+                    labelAction()
                 }
             } else {
-                val operation = relabelAction().fold(
+                val operation = labelAction().fold(
                     ifLeft = { ConversationDetailEvent.ErrorLabelingConversation },
                     ifRight = { LabelAsConfirmed(false, null) }
                 )
