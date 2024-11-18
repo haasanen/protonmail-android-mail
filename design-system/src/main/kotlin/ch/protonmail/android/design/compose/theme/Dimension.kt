@@ -20,6 +20,7 @@ package ch.protonmail.android.design.compose.theme
 import androidx.compose.ui.unit.dp
 
 object ProtonDimens {
+
     val ExtraSmallSpacing = 4.dp
     val SmallSpacing = 8.dp
     val DefaultSpacing = 16.dp
@@ -48,4 +49,28 @@ object ProtonDimens {
     val NotificationDotIconSize = 8.dp
 
     val OutlinedBorderSize = 1.dp
+
+    object Spacing {
+
+        val Tiny = 2.dp
+        val Small = 4.dp
+        val Compact = 6.dp
+        val Standard = 8.dp
+        val MediumLight = 10.dp
+        val Medium = 12.dp
+        val ModeratelyLarge = 14.dp
+        val Large = 16.dp
+        val ExtraLarge = 24.dp
+        val Huge = 32.dp
+        val Jumbo = 40.dp
+    }
+
+    object CornerRadius {
+
+        val Small = 4.dp
+        val Medium = 8.dp
+        val Large = 12.dp
+        val ExtraLarge = 16.dp
+        val Huge = 24.dp
+    }
 }
