@@ -151,20 +151,10 @@ class RustConversationDetailQueryImpl @Inject constructor(
         }
     }
 
-    private fun disconnect() {
-        Timber.d(
-            "rust-conversation-detail-query: disconnecting conversation watcher for " +
-                "$currentConversationId"
-        )
-
-        conversationWatcher?.get()?.handle?.disconnect()
+    private fun destroy() {
+        Timber.d("rust-conversation-detail-query: destroy watcher for $currentConversationId")
         conversationWatcher?.clear()
         currentConversationId = null
-    }
-
-    private fun destroy() {
-        Timber.d("rust-conversation-detail-query: destroy")
-        disconnect()
         conversationMessagesMutableStatusFlow.value = null
         conversationMutableStatusFlow.value = null
     }

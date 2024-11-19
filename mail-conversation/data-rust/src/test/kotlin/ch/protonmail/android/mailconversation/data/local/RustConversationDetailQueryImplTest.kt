@@ -46,7 +46,6 @@ import org.junit.Rule
 import uniffi.proton_mail_uniffi.ConversationAndMessages
 import uniffi.proton_mail_uniffi.LiveQueryCallback
 import uniffi.proton_mail_uniffi.Mailbox
-import uniffi.proton_mail_uniffi.WatchHandle
 import uniffi.proton_mail_uniffi.WatchedConversation
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -203,13 +202,11 @@ class RustConversationDetailQueryImplTest {
             every { conversation } returns expectedConversation1
             every { messages } returns expectedMessages.messages
             every { messageIdToOpen } returns messageToOpen
-            every { handle } returns mockk<WatchHandle>(relaxUnitFun = true)
         }
         val watcherMock2 = mockk<WatchedConversation> {
             every { conversation } returns expectedConversation2
             every { messages } returns expectedMessages.messages
             every { messageIdToOpen } returns messageToOpen
-            every { handle } returns mockk<WatchHandle>(relaxUnitFun = true)
         }
         every { rustMailbox.observeMailbox() } returns flowOf(mailbox)
         coEvery {
@@ -245,7 +242,6 @@ class RustConversationDetailQueryImplTest {
             every { conversation } returns expectedConversation
             every { messages } returns expectedMessages.messages
             every { messageIdToOpen } returns messageToOpen
-            every { handle } returns mockk<WatchHandle>(relaxUnitFun = true)
         }
         every { rustMailbox.observeMailbox() } returns flowOf(mailbox)
         coEvery { createRustConversationWatcher(mailbox, conversationId, capture(callbackSlot)) } coAnswers {
