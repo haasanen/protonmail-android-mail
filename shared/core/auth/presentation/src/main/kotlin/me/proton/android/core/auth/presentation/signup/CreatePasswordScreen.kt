@@ -16,6 +16,8 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
+@file:Suppress("UseComposableActions")
+
 package me.proton.android.core.auth.presentation.signup
 
 import android.content.res.Configuration
@@ -122,7 +124,7 @@ fun CreatePasswordScreen(
                 .verticalScroll(rememberScrollState())
         ) {
             Column(
-                modifier = Modifier.padding(ProtonDimens.DefaultSpacing),
+                modifier = Modifier.padding(ProtonDimens.DefaultSpacing)
             ) {
                 Text(
                     style = LocalTypography.current.headline,
@@ -171,9 +173,7 @@ fun TermsPolicyFooter() {
 }
 
 @Composable
-fun LearnMoreText(
-    @StringRes text: Int,
-) {
+fun LearnMoreText(@StringRes text: Int) {
     HyperlinkText(
         modifier = Modifier.padding(top = ProtonDimens.MediumSpacing),
         fullText = stringResource(
@@ -182,9 +182,15 @@ fun LearnMoreText(
             stringResource(id = R.string.auth_signup_privacy_policy_learn_more)
         ),
         hyperLinks = mutableMapOf(
-            stringResource(id = R.string.auth_signup_terms_learn_more) to stringResource(id = R.string.sign_up_url_terms_and_conditions),
-            stringResource(id = R.string.auth_signup_privacy_policy_learn_more) to stringResource(id = R.string.sign_up_url_privacy_policy),
+            Pair(
+                stringResource(id = R.string.auth_signup_terms_learn_more),
+                stringResource(id = R.string.sign_up_url_terms_and_conditions)
             ),
+            Pair(
+                stringResource(id = R.string.auth_signup_privacy_policy_learn_more),
+                stringResource(id = R.string.sign_up_url_privacy_policy)
+            )
+        ),
         textStyle = LocalTypography.current.body2Regular
     )
 }
@@ -192,7 +198,7 @@ fun LearnMoreText(
 @Preview(name = "Light mode", showBackground = true)
 @Preview(name = "Dark mode", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview(name = "Small screen height", heightDp = SMALL_SCREEN_HEIGHT)
-@Preview(name = "Foldable", device = Devices.FOLDABLE)
+@Preview(name = "Foldable", device = Devices.PIXEL_FOLD)
 @Preview(name = "Tablet", device = Devices.PIXEL_C)
 @Preview(name = "Horizontal", widthDp = 800, heightDp = 360)
 @Composable

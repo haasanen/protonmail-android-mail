@@ -54,7 +54,7 @@ fun CountryCodeDropDown(
     modifier: Modifier = Modifier,
     isLoading: Boolean = false,
     data: List<Country> = emptyList(),
-    onInputChanged: (Country) -> Unit = {},
+    onInputChanged: (Country) -> Unit = {}
 ) {
     var expanded by remember { mutableStateOf(false) }
     var selected by remember { mutableStateOf(data.firstOrNull()) }
@@ -107,7 +107,7 @@ fun CountryCodeDropDown(
 internal fun CountryListItem(
     country: Country?,
     modifier: Modifier = Modifier,
-    trailing: @Composable (() -> Unit)? = null,
+    trailing: @Composable (() -> Unit)? = null
 ) {
     ListItem(
         modifier = modifier,
@@ -124,7 +124,7 @@ internal fun CountryListItem(
 @Preview(name = "Light mode", showBackground = true)
 @Preview(name = "Dark mode", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview(name = "Small screen height", heightDp = SMALL_SCREEN_HEIGHT)
-@Preview(name = "Foldable", device = Devices.FOLDABLE)
+@Preview(name = "Foldable", device = Devices.PIXEL_FOLD)
 @Preview(name = "Tablet", device = Devices.PIXEL_C)
 @Preview(name = "Horizontal", widthDp = 800, heightDp = 360)
 @Composable

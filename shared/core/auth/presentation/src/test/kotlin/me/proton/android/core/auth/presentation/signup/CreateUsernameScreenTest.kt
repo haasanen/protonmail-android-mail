@@ -11,8 +11,6 @@ import com.android.resources.ScreenOrientation
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.MutableStateFlow
-import me.proton.android.core.auth.presentation.secondfactor.SecondFactorInputScreen
-import me.proton.android.core.auth.presentation.secondfactor.SecondFactorInputState
 import me.proton.android.core.auth.presentation.secondfactor.otp.OneTimePasswordInputState
 import me.proton.android.core.auth.presentation.secondfactor.otp.OneTimePasswordInputViewModel
 import me.proton.core.compose.theme.ProtonTheme

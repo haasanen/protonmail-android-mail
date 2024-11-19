@@ -22,5 +22,7 @@ sealed interface SignUpState {
     data object SigningUp : SignUpState
 
     data class Error(val message: String?) : SignUpState
+
+    @Suppress("ForbiddenComment")
     data object Success : SignUpState // todo: add user data
 }

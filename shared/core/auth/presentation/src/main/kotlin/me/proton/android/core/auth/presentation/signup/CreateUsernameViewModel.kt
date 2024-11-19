@@ -70,6 +70,7 @@ class CreateUsernameViewModel @Inject constructor(
         emit(CreateUsernameState.Idle(AccountType.External))
     }
 
+    @Suppress("ForbiddenComment")
     private fun onCreateInternalAccount(): Flow<CreateUsernameState> = flow {
         currentAccountType = AccountType.Internal
         emit(CreateUsernameState.Loading(AccountType.Internal))

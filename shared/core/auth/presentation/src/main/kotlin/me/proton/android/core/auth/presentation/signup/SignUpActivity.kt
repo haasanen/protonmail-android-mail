@@ -63,7 +63,7 @@ class SignUpActivity : ProtonActivity() {
                 val navController = rememberNavController()
                 NavHost(
                     navController = navController,
-                    startDestination = SignUpRoutes.Route.CreateUsername.get()
+                    startDestination = SignUpRoutes.Route.CreateUsername()
                 ) {
                     addCreateUsernameScreen(
                         navController = navController,

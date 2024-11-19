@@ -54,7 +54,7 @@ import me.proton.core.compose.theme.defaultSmallWeak
 fun SignUpLoading(
     modifier: Modifier = Modifier,
     @StringRes titleText: Int = R.string.auth_signup_your_account_is_being_setup,
-    @StringRes subtitleText: Int = R.string.auth_signup_please_wait,
+    @StringRes subtitleText: Int = R.string.auth_signup_please_wait
 ) {
     Column(
         modifier = modifier
@@ -68,7 +68,7 @@ fun SignUpLoading(
         val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.create_account_animation))
         LottieAnimation(
             composition,
-            iterations= LottieConstants.IterateForever,
+            iterations = LottieConstants.IterateForever,
             modifier = modifier
                 .width(160.dp)
                 .height(160.dp)
@@ -98,7 +98,7 @@ fun SignUpLoading(
 @Preview(name = "Light mode", showBackground = true)
 @Preview(name = "Dark mode", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview(name = "Small screen height", heightDp = SMALL_SCREEN_HEIGHT)
-@Preview(name = "Foldable", device = Devices.FOLDABLE)
+@Preview(name = "Foldable", device = Devices.PIXEL_FOLD)
 @Preview(name = "Tablet", device = Devices.PIXEL_C)
 @Preview(name = "Horizontal", widthDp = 800, heightDp = 360)
 @Composable

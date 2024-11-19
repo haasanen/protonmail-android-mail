@@ -30,7 +30,7 @@ sealed class CreateRecoveryState(
 
     data class Loading(
         override val recoveryMethod: RecoveryMethod,
-        override val countries: List<Country>? = null,
+        override val countries: List<Country>? = null
     ) : CreateRecoveryState(recoveryMethod, countries)
 
     data class Validating(

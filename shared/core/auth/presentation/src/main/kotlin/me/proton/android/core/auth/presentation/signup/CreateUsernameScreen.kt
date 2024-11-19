@@ -16,6 +16,8 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
+@file:Suppress("UseComposableActions")
+
 package me.proton.android.core.auth.presentation.signup
 
 import android.content.res.Configuration
@@ -179,7 +181,10 @@ fun ChooseUsernameScaffold(
                             enabled = !isLoading,
                             onUsernameSubmitted = onUsernameSubmitted,
                             onCreateExternalClicked = onCreateExternalClicked,
-                            usernameError = if (inputError) stringResource(R.string.auth_signup_username_assistive_text) else null,
+                            usernameError = when {
+                                inputError -> stringResource(R.string.auth_signup_username_assistive_text)
+                                else -> null
+                            },
                             isLoading = isLoading,
                             domains = domains
                         )
@@ -190,7 +195,10 @@ fun ChooseUsernameScaffold(
                             enabled = !isLoading,
                             onExternalEmailSubmitted = onUsernameSubmitted,
                             onCreateInternalClicked = onCreateInternalClicked,
-                            emailError = if (inputError) stringResource(R.string.auth_signup_email_assistive_text) else null
+                            emailError = when {
+                                inputError -> stringResource(R.string.auth_signup_email_assistive_text)
+                                else -> null
+                            }
                         )
                 }
             }
@@ -265,7 +273,7 @@ private fun CreateInternalForm(
                 onClick = { onCreateExternalClicked(CreateUsernameAction.CreateExternalAccount) },
                 modifier = Modifier
                     .padding(vertical = ProtonDimens.MediumSpacing)
-                    .height(ProtonDimens.DefaultButtonMinHeight),
+                    .height(ProtonDimens.DefaultButtonMinHeight)
             ) {
                 Text(text = stringResource(R.string.auth_signup_use_current_email))
             }
@@ -329,7 +337,7 @@ private fun CreateExternalForm(
             onClick = { onCreateInternalClicked(CreateUsernameAction.CreateInternalAccount) },
             modifier = Modifier
                 .padding(vertical = ProtonDimens.MediumSpacing)
-                .height(ProtonDimens.DefaultButtonMinHeight),
+                .height(ProtonDimens.DefaultButtonMinHeight)
         ) {
             Text(text = stringResource(R.string.auth_signup_get_encrypted_email))
         }
@@ -346,7 +354,7 @@ private fun CreateExternalForm(
 @Preview(name = "Light mode", showBackground = true)
 @Preview(name = "Dark mode", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview(name = "Small screen height", heightDp = SMALL_SCREEN_HEIGHT)
-@Preview(name = "Foldable", device = Devices.FOLDABLE)
+@Preview(name = "Foldable", device = Devices.PIXEL_FOLD)
 @Preview(name = "Tablet", device = Devices.PIXEL_C)
 @Preview(name = "Horizontal", widthDp = 800, heightDp = 360)
 @Composable
@@ -359,7 +367,7 @@ internal fun CreateUsernameScreenPreview() {
 @Preview(name = "Light mode", showBackground = true)
 @Preview(name = "Dark mode", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview(name = "Small screen height", heightDp = SMALL_SCREEN_HEIGHT)
-@Preview(name = "Foldable", device = Devices.FOLDABLE)
+@Preview(name = "Foldable", device = Devices.PIXEL_FOLD)
 @Preview(name = "Tablet", device = Devices.PIXEL_C)
 @Preview(name = "Horizontal", widthDp = 800, heightDp = 360)
 @Composable
@@ -378,7 +386,7 @@ internal fun CreateInternalPreview() {
 @Preview(name = "Light mode", showBackground = true)
 @Preview(name = "Dark mode", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview(name = "Small screen height", heightDp = SMALL_SCREEN_HEIGHT)
-@Preview(name = "Foldable", device = Devices.FOLDABLE)
+@Preview(name = "Foldable", device = Devices.PIXEL_FOLD)
 @Preview(name = "Tablet", device = Devices.PIXEL_C)
 @Preview(name = "Horizontal", widthDp = 800, heightDp = 360)
 @Composable

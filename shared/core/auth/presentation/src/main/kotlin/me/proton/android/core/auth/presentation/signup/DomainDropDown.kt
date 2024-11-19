@@ -47,10 +47,11 @@ import me.proton.core.compose.theme.defaultNorm
 typealias Domain = String
 
 @Composable
+@OptIn(ExperimentalMaterialApi::class)
 fun DomainDropDown(
     isLoading: Boolean = false,
     data: List<Domain> = emptyList(),
-    onInputChanged: (Domain) -> Unit = {},
+    onInputChanged: (Domain) -> Unit = {}
 ) {
     var expanded by remember { mutableStateOf(false) }
     var selected by remember { mutableStateOf<Domain?>(null) }
@@ -104,7 +105,7 @@ fun DomainDropDown(
 internal fun DomainListItem(
     domain: Domain?,
     modifier: Modifier = Modifier,
-    trailing: @Composable (() -> Unit)? = null,
+    trailing: @Composable (() -> Unit)? = null
 ) {
     ListItem(
         modifier = modifier,
@@ -121,7 +122,7 @@ internal fun DomainListItem(
 @Preview(name = "Light mode", showBackground = true)
 @Preview(name = "Dark mode", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview(name = "Small screen height", heightDp = SMALL_SCREEN_HEIGHT)
-@Preview(name = "Foldable", device = Devices.FOLDABLE)
+@Preview(name = "Foldable", device = Devices.PIXEL_FOLD)
 @Preview(name = "Tablet", device = Devices.PIXEL_C)
 @Preview(name = "Horizontal", widthDp = 800, heightDp = 360)
 @Composable
@@ -136,7 +137,7 @@ internal fun NonEmptyDomainDropDownPreview() {
 @Preview(name = "Light mode", showBackground = true)
 @Preview(name = "Dark mode", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview(name = "Small screen height", heightDp = SMALL_SCREEN_HEIGHT)
-@Preview(name = "Foldable", device = Devices.FOLDABLE)
+@Preview(name = "Foldable", device = Devices.PIXEL_FOLD)
 @Preview(name = "Tablet", device = Devices.PIXEL_C)
 @Preview(name = "Horizontal", widthDp = 800, heightDp = 360)
 @Composable

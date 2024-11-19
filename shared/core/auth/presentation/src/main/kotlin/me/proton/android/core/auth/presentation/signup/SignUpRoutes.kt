@@ -23,43 +23,39 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 
 object SignUpRoutes {
+    sealed class Route(val route: String) {
+        data object SignUp : Route("auth/signup") {
 
-    object Route {
-        object SignUp {
-
-            const val Deeplink: String = "auth/signup"
-            fun get(): String = "auth/signup"
+            operator fun invoke() = route
         }
 
-        object CreateUsername {
+        data object CreateUsername : Route("auth/signup/create/username") {
 
-            const val Deeplink: String = "auth/signup/create/username"
-            fun get(): String = "auth/signup/create/username"
+            operator fun invoke() = route
         }
 
-        object CreatePassword {
+        data object CreatePassword : Route("auth/signup/create/password") {
 
-            const val Deeplink: String = "auth/signup/create/password"
-            fun get(): String = "auth/signup/create/password"
+            operator fun invoke() = route
         }
 
-        object CreateRecovery {
+        data object CreateRecovery : Route("auth/signup/create/recovery") {
 
-            const val Deeplink: String = "auth/signup/create/recovery"
-            fun get(): String = "auth/signup/create/recovery"
+            operator fun invoke() = route
         }
     }
 
+    @Suppress("ForbiddenComment")
     fun NavGraphBuilder.addMainScreen(
         onErrorMessage: (String?) -> Unit,
         onSuccess: () -> Unit // todo: add user id
     ) {
         composable(
-            route = Route.SignUp.Deeplink,
+            route = Route.SignUp.route
         ) {
             SignUpScreen(
                 onSuccess = { onSuccess() },
-                onErrorMessage = { onErrorMessage(it) },
+                onErrorMessage = { onErrorMessage(it) }
             )
         }
     }
@@ -70,14 +66,14 @@ object SignUpRoutes {
         onErrorMessage: (String?) -> Unit
     ) {
         composable(
-            route = Route.CreateUsername.Deeplink,
+            route = Route.CreateUsername.route
         ) {
             CreateUsernameScreen(
                 onCloseClicked = { onClose() },
                 onErrorMessage = { onErrorMessage(it) },
                 onSuccess = {
                     val password = it
-                    navController.navigate(Route.CreatePassword.get())
+                    navController.navigate(Route.CreatePassword())
                 }
             )
         }
@@ -89,14 +85,14 @@ object SignUpRoutes {
         onErrorMessage: (String?) -> Unit
     ) {
         composable(
-            route = Route.CreatePassword.Deeplink,
+            route = Route.CreatePassword.route
         ) {
             CreatePasswordScreen(
                 onBackClicked = { navController.popBackStack() },
                 onErrorMessage = { onErrorMessage(it) },
                 onSuccess = {
                     val password = it
-                    navController.navigate(Route.CreateRecovery.get())
+                    navController.navigate(Route.CreateRecovery())
                 }
             )
         }
@@ -108,7 +104,7 @@ object SignUpRoutes {
         onErrorMessage: (String?) -> Unit
     ) {
         composable(
-            route = Route.CreateRecovery.Deeplink,
+            route = Route.CreateRecovery.route
         ) {
             CreateRecoveryScreen(
                 onBackClicked = { onClose() },
@@ -116,7 +112,7 @@ object SignUpRoutes {
                 onErrorMessage = { onErrorMessage(it) },
                 onSuccess = { method, value ->
                     val recovery = it // add to viewmodel
-                    navController.navigate(Route.SignUp.get())
+                    navController.navigate(Route.SignUp())
                 }
             )
         }

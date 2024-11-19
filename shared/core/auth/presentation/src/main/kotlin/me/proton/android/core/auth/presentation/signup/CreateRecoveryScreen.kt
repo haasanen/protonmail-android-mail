@@ -16,6 +16,8 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
+@file:Suppress("UseComposableActions")
+
 package me.proton.android.core.auth.presentation.signup
 
 import android.content.res.Configuration
@@ -180,7 +182,7 @@ fun RecoveryMethodScaffold(
                 .verticalScroll(rememberScrollState())
         ) {
             Column(
-                modifier = Modifier.padding(DefaultSpacing),
+                modifier = Modifier.padding(DefaultSpacing)
             ) {
                 Text(
                     style = LocalTypography.current.headline,
@@ -273,7 +275,7 @@ fun RecoveryMethodFormPhone(
         Column(
             modifier = Modifier
                 .weight(1f)
-                .fillMaxHeight(),
+                .fillMaxHeight()
         ) {
             CountryCodeDropDown(
                 modifier = Modifier
@@ -320,7 +322,7 @@ fun RecoveryMethodFormPhone(
 @Composable
 fun RecoveryTabs(
     modifier: Modifier = Modifier,
-    tabs: List<String>, // todo: wrap
+    tabs: List<String>,
     onTabSelected: (Int) -> Unit = {}
 ) {
     var selectedIndex by remember { mutableIntStateOf(0) }
@@ -360,7 +362,7 @@ fun RecoveryTabs(
 @Preview(name = "Light mode", showBackground = true)
 @Preview(name = "Dark mode", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview(name = "Small screen height", heightDp = SMALL_SCREEN_HEIGHT)
-@Preview(name = "Foldable", device = Devices.FOLDABLE)
+@Preview(name = "Foldable", device = Devices.PIXEL_FOLD)
 @Preview(name = "Tablet", device = Devices.PIXEL_C)
 @Preview(name = "Horizontal", widthDp = 800, heightDp = 360)
 @Composable
@@ -373,15 +375,17 @@ internal fun RecoveryMethodScreenPreview() {
 @Preview(name = "Light mode", showBackground = true)
 @Preview(name = "Dark mode", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview(name = "Small screen height", heightDp = SMALL_SCREEN_HEIGHT)
-@Preview(name = "Foldable", device = Devices.FOLDABLE)
+@Preview(name = "Foldable", device = Devices.PIXEL_FOLD)
 @Preview(name = "Tablet", device = Devices.PIXEL_C)
 @Preview(name = "Horizontal", widthDp = 800, heightDp = 360)
 @Composable
+@Suppress("MagicNumber")
 internal fun CreateRecoveryPhoneScreenPreview() {
     ProtonTheme {
         CreateRecoveryScreen(
             state = CreateRecoveryState.Idle(
-                RecoveryMethod.Phone, listOf(
+                RecoveryMethod.Phone,
+                listOf(
                     Country("CH", 41, "Switzerland"),
                     Country("US", 1, "US")
                 )
