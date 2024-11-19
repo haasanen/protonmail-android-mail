@@ -46,7 +46,7 @@ class CreateRecoveryScreenTest(
             CompositionLocalProvider(LocalViewModelStoreOwner provides fakeViewModelStoreOwner) {
                 ProtonTheme {
                     CreateRecoveryScreen(
-                        state = CreatePasswordState.Idle
+                        state = CreateRecoveryState.Idle(RecoveryMethod.Email)
                     )
                 }
             }

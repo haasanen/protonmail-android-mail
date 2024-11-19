@@ -108,14 +108,14 @@ fun CreateRecoveryScreen(
 
 @Composable
 fun CreateRecoveryScreen(
+    state: CreateRecoveryState,
     modifier: Modifier = Modifier,
     onBackClicked: () -> Unit = {},
     onSkipClicked: () -> Unit = {},
     onErrorMessage: (String?) -> Unit = {},
     onTabSelected: (RecoveryMethod) -> Unit = {},
     onRecoverySubmitted: (CreateRecoveryAction) -> Unit = {},
-    onSuccess: (RecoveryMethod, String) -> Unit = { recovery, method -> },
-    state: CreateRecoveryState
+    onSuccess: (RecoveryMethod, String) -> Unit = { recovery, method -> }
 ) {
     LaunchedEffect(state) {
         when (state) {
