@@ -45,6 +45,8 @@ import ch.protonmail.android.mailcontact.presentation.model.ContactListItemUiMod
 import ch.protonmail.android.mailcontact.presentation.utils.ContactFeatureFlags
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
+import ch.protonmail.android.design.compose.theme.bodyLargeNorm
+import ch.protonmail.android.design.compose.theme.bodyMediumNorm
 import ch.protonmail.android.mailcontact.presentation.previewdata.ContactListPreviewData
 
 @Composable
@@ -98,7 +100,7 @@ internal fun ContactListGroupItem(
         ) {
             Text(
                 text = contactGroup.name,
-                style = ProtonTheme.typography.body1Regular,
+                style = ProtonTheme.typography.bodyLargeNorm,
                 color = ProtonTheme.colors.textWeak
             )
             Text(
@@ -107,7 +109,7 @@ internal fun ContactListGroupItem(
                     contactGroup.memberCount,
                     contactGroup.memberCount
                 ),
-                style = ProtonTheme.typography.body2Regular,
+                style = ProtonTheme.typography.bodyMediumNorm,
                 color = ProtonTheme.colors.textHint
             )
         }

@@ -33,7 +33,7 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.model.StorageLimit
 import ch.protonmail.android.design.compose.component.ProtonAlertDialog
 import ch.protonmail.android.design.compose.component.ProtonAlertDialogButton
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.defaultWeak
+import ch.protonmail.android.design.compose.theme.bodyMediumWeak
 
 @Composable
 fun StorageLimitDialogs(
@@ -118,7 +118,7 @@ fun StorageLimitWarningDialog(
             Column {
                 Text(
                     text = stringResource(id = warningTextResId),
-                    style = ProtonTheme.typography.defaultWeak,
+                    style = ProtonTheme.typography.bodyMediumWeak,
                     modifier = modifier
                 )
             }
@@ -148,7 +148,7 @@ fun StorageQuotaOverWarningDialog(modifier: Modifier = Modifier, onConfirmButton
             Column {
                 Text(
                     text = stringResource(id = R.string.storage_quota_over_dialog_text),
-                    style = ProtonTheme.typography.defaultWeak,
+                    style = ProtonTheme.typography.bodyMediumWeak,
                     modifier = modifier
                 )
             }

@@ -29,7 +29,7 @@ import ch.protonmail.android.mailcomposer.presentation.R
 import ch.protonmail.android.design.compose.component.ProtonAlertDialog
 import ch.protonmail.android.design.compose.component.ProtonAlertDialogButton
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.defaultWeak
+import ch.protonmail.android.design.compose.theme.bodyMediumWeak
 
 @Composable
 fun SendingWithEmptySubjectDialog(
@@ -44,7 +44,7 @@ fun SendingWithEmptySubjectDialog(
             Column {
                 Text(
                     text = stringResource(id = R.string.composer_send_without_subject_dialog_text),
-                    style = ProtonTheme.typography.defaultWeak,
+                    style = ProtonTheme.typography.bodyMediumWeak,
                     modifier = modifier
                 )
             }

@@ -41,7 +41,7 @@ import ch.protonmail.android.mailcontact.presentation.utils.ContactFeatureFlags.
 import ch.protonmail.android.mailcontact.presentation.utils.ContactFeatureFlags.ContactImport
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.defaultNorm
+import ch.protonmail.android.design.compose.theme.bodyLargeNorm
 
 @Composable
 internal fun ContactBottomSheetContent(
@@ -107,7 +107,7 @@ private fun ContactBottomSheetItem(
         Text(
             modifier = Modifier.padding(start = ProtonDimens.Spacing.Large),
             text = stringResource(id = titleResId),
-            style = ProtonTheme.typography.defaultNorm
+            style = ProtonTheme.typography.bodyLargeNorm
         )
         if (isUpsellingVisible) {
             UpsellingIcon(modifier = Modifier.padding(start = ProtonDimens.Spacing.Standard))

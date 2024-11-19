@@ -39,7 +39,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import ch.protonmail.android.maillabel.presentation.R
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.defaultNorm
+import ch.protonmail.android.design.compose.theme.bodyLargeNorm
 
 @Composable
 fun FormInputField(
@@ -70,13 +70,13 @@ fun FormInputField(
             Text(
                 text = hint,
                 color = ProtonTheme.colors.textHint,
-                style = ProtonTheme.typography.defaultNorm
+                style = ProtonTheme.typography.bodyLargeNorm
             )
         },
         shape = RoundedCornerShape(ProtonDimens.LargeCornerRadius),
         colors = formTextFieldColors(),
         singleLine = singleLine,
-        textStyle = ProtonTheme.typography.defaultNorm,
+        textStyle = ProtonTheme.typography.bodyLargeNorm,
         keyboardOptions = keyboardOptions,
         trailingIcon = {
             if (showClearTextIcon && textFieldValue.text.isNotBlank()) {

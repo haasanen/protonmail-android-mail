@@ -68,9 +68,9 @@ import ch.protonmail.android.maildetail.presentation.previewdata.DetailsScreenTo
 import ch.protonmail.android.maildetail.presentation.previewdata.DetailsScreenTopBarPreviewProvider
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.captionNorm
-import ch.protonmail.android.design.compose.theme.defaultStrongNorm
-import ch.protonmail.android.design.compose.theme.headlineNorm
+import ch.protonmail.android.design.compose.theme.bodySmallNorm
+import ch.protonmail.android.design.compose.theme.titleMediumNorm
+import ch.protonmail.android.design.compose.theme.titleLargeNorm
 import kotlin.math.absoluteValue
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -190,7 +190,7 @@ fun CustomSingleLineTopAppBar(
                         .testTag(DetailScreenTopBarTestTags.MessageCount)
                         .fillMaxWidth(),
                     text = pluralStringResource(plurals.message_count_label_text, count, count),
-                    style = ProtonTheme.typography.captionNorm,
+                    style = ProtonTheme.typography.bodySmallNorm,
                     textAlign = TextAlign.Center
                 )
             }
@@ -204,7 +204,7 @@ fun CustomSingleLineTopAppBar(
                     maxLines = 1,
                     text = title,
                     overflow = TextOverflow.Ellipsis,
-                    style = ProtonTheme.typography.defaultStrongNorm,
+                    style = ProtonTheme.typography.titleMediumNorm,
                     textAlign = TextAlign.Center
                 )
             }
@@ -258,7 +258,7 @@ private fun SubjectHeader(
                     .align(Alignment.Center),
                 text = subject,
                 overflow = TextOverflow.Ellipsis,
-                style = ProtonTheme.typography.headlineNorm,
+                style = ProtonTheme.typography.titleLargeNorm,
                 textAlign = TextAlign.Center
             )
         }

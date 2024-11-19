@@ -55,9 +55,9 @@ import ch.protonmail.android.design.compose.component.ProtonOutlinedTextField
 import ch.protonmail.android.design.compose.component.ProtonRawListItem
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.defaultSmallStrongNorm
-import ch.protonmail.android.design.compose.theme.defaultStrongNorm
-import ch.protonmail.android.design.compose.theme.defaultStrongUnspecified
+import ch.protonmail.android.design.compose.theme.titleSmallNorm
+import ch.protonmail.android.design.compose.theme.titleMediumNorm
+import ch.protonmail.android.design.compose.theme.bodyLargeNorm
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.hours
@@ -90,7 +90,7 @@ fun SetExpirationTimeBottomSheetContent(expirationTime: Duration, onDoneClick: (
         ) {
             Text(
                 text = stringResource(id = R.string.composer_expiration_time_bottom_sheet_title),
-                style = ProtonTheme.typography.defaultStrongNorm
+                style = ProtonTheme.typography.titleMediumNorm
             )
             Text(
                 modifier = Modifier.clickable(role = Role.Button) {
@@ -100,7 +100,7 @@ fun SetExpirationTimeBottomSheetContent(expirationTime: Duration, onDoneClick: (
                     onDoneClick(valueToBeSaved)
                 },
                 text = stringResource(id = R.string.composer_expiration_time_bottom_sheet_done),
-                style = ProtonTheme.typography.defaultStrongUnspecified,
+                style = ProtonTheme.typography.bodyLargeNorm,
                 color = ProtonTheme.colors.interactionNorm
             )
         }
@@ -182,7 +182,7 @@ private fun ExpirationTimeDropdownMenu(
     Column(modifier = modifier) {
         Text(
             text = label,
-            style = ProtonTheme.typography.defaultSmallStrongNorm
+            style = ProtonTheme.typography.titleSmallNorm
         )
         Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Standard))
         ExposedDropdownMenuBox(

@@ -43,8 +43,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.captionNorm
-import ch.protonmail.android.design.compose.theme.defaultNorm
+import ch.protonmail.android.design.compose.theme.bodySmallNorm
+import ch.protonmail.android.design.compose.theme.bodyLargeNorm
 
 const val PROTON_OUTLINED_TEXT_INPUT_TAG = "PROTON_OUTLINED_TEXT_INPUT_TAG"
 private const val MAX_LINES = 2
@@ -171,7 +171,7 @@ fun ProtonOutlinedTextFieldWithError(
                 .testTag(PROTON_OUTLINED_TEXT_INPUT_TAG),
             placeholder = placeholder,
             singleLine = singleLine,
-            textStyle = ProtonTheme.typography.defaultNorm,
+            textStyle = ProtonTheme.typography.bodyLargeNorm,
             visualTransformation = visualTransformation
         )
         Text(
@@ -181,7 +181,7 @@ fun ProtonOutlinedTextFieldWithError(
                 .fillMaxWidth()
                 .padding(top = ProtonDimens.Spacing.Small),
             overflow = TextOverflow.Ellipsis,
-            style = ProtonTheme.typography.captionNorm,
+            style = ProtonTheme.typography.bodySmallNorm,
             color = ProtonTheme.colors.notificationError
         )
     }
@@ -218,7 +218,7 @@ fun ProtonOutlinedTextFieldWithError(
                 .testTag(PROTON_OUTLINED_TEXT_INPUT_TAG),
             placeholder = placeholder,
             singleLine = singleLine,
-            textStyle = ProtonTheme.typography.defaultNorm,
+            textStyle = ProtonTheme.typography.bodyLargeNorm,
             visualTransformation = visualTransformation
         )
         Text(
@@ -228,7 +228,7 @@ fun ProtonOutlinedTextFieldWithError(
                 .fillMaxWidth()
                 .padding(top = ProtonDimens.Spacing.Small),
             overflow = TextOverflow.Ellipsis,
-            style = ProtonTheme.typography.captionNorm,
+            style = ProtonTheme.typography.bodySmallNorm,
             color = ProtonTheme.colors.notificationError
         )
     }

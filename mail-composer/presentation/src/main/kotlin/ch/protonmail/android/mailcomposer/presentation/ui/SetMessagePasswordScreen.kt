@@ -60,11 +60,11 @@ import ch.protonmail.android.design.compose.component.ProtonSolidButton
 import ch.protonmail.android.design.compose.component.appbar.ProtonTopAppBar
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.defaultInverted
-import ch.protonmail.android.design.compose.theme.defaultSmallUnspecified
-import ch.protonmail.android.design.compose.theme.defaultSmallWeak
-import ch.protonmail.android.design.compose.theme.defaultStrongNorm
-import ch.protonmail.android.design.compose.theme.defaultUnspecified
+import ch.protonmail.android.design.compose.theme.bodyLargeInverted
+import ch.protonmail.android.design.compose.theme.bodyMediumNorm
+import ch.protonmail.android.design.compose.theme.bodyMediumWeak
+import ch.protonmail.android.design.compose.theme.titleMediumNorm
+import ch.protonmail.android.design.compose.theme.bodyLargeNorm
 
 @Composable
 fun SetMessagePasswordScreen(
@@ -82,7 +82,7 @@ fun SetMessagePasswordScreen(
                 title = {
                     Text(
                         text = stringResource(id = R.string.set_message_password_title),
-                        style = ProtonTheme.typography.defaultStrongNorm
+                        style = ProtonTheme.typography.titleMediumNorm
                     )
                 },
                 navigationIcon = {
@@ -240,11 +240,11 @@ private fun MessagePasswordInfo(modifier: Modifier = Modifier) {
         Column {
             Text(
                 text = stringResource(id = R.string.set_message_password_info_message),
-                style = ProtonTheme.typography.defaultSmallWeak
+                style = ProtonTheme.typography.bodyMediumWeak
             )
             HyperlinkText(
                 textResource = R.string.set_message_password_info_link,
-                textStyle = ProtonTheme.typography.defaultSmallUnspecified,
+                textStyle = ProtonTheme.typography.bodyMediumNorm,
                 linkTextColor = ProtonTheme.colors.interactionNorm
             )
         }
@@ -271,7 +271,7 @@ private fun MessagePasswordButtons(
                     R.string.set_message_password_button_save_changes
                 } else R.string.set_message_password_button_apply
             ),
-            style = ProtonTheme.typography.defaultInverted
+            style = ProtonTheme.typography.bodyLargeInverted
         )
     }
     if (shouldShowEditingButtons) {
@@ -284,7 +284,7 @@ private fun MessagePasswordButtons(
         ) {
             Text(
                 text = stringResource(id = R.string.set_message_password_button_remove_password),
-                style = ProtonTheme.typography.defaultUnspecified,
+                style = ProtonTheme.typography.bodyLargeNorm,
                 color = ProtonTheme.colors.interactionNorm
             )
         }

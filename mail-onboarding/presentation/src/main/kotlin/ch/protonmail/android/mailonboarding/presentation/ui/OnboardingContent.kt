@@ -40,8 +40,8 @@ import ch.protonmail.android.mailonboarding.presentation.OnboardingScreenTestTag
 import ch.protonmail.android.mailonboarding.presentation.R
 import ch.protonmail.android.mailonboarding.presentation.model.OnboardingUiModel
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.defaultWeak
-import ch.protonmail.android.design.compose.theme.headlineNorm
+import ch.protonmail.android.design.compose.theme.bodyMediumWeak
+import ch.protonmail.android.design.compose.theme.titleLargeNorm
 
 @Composable
 internal fun OnboardingContent(content: OnboardingUiModel) {
@@ -62,7 +62,7 @@ internal fun OnboardingContent(content: OnboardingUiModel) {
                 .padding(top = ProtonDimens.Spacing.Large)
                 .padding(horizontal = ProtonDimens.Spacing.Large),
             text = stringResource(id = content.headlineId),
-            style = ProtonTheme.typography.headlineNorm.copy(textAlign = TextAlign.Center)
+            style = ProtonTheme.typography.titleLargeNorm.copy(textAlign = TextAlign.Center)
         )
 
         Column(
@@ -74,7 +74,7 @@ internal fun OnboardingContent(content: OnboardingUiModel) {
                 modifier = Modifier
                     .padding(ProtonDimens.Spacing.Large),
                 text = stringResource(id = content.descriptionId),
-                style = ProtonTheme.typography.defaultWeak.copy(textAlign = TextAlign.Center)
+                style = ProtonTheme.typography.bodyMediumWeak.copy(textAlign = TextAlign.Center)
             )
         }
     }

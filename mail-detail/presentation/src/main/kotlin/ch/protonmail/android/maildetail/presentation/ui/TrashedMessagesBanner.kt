@@ -39,7 +39,7 @@ import ch.protonmail.android.maildetail.presentation.model.TrashedMessagesBanner
 import ch.protonmail.android.design.compose.component.ProtonTextButton
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.defaultSmallNorm
+import ch.protonmail.android.design.compose.theme.bodyMediumNorm
 
 @Composable
 fun TrashedMessagesBanner(
@@ -74,7 +74,7 @@ fun TrashedMessagesBanner(
             Text(
                 modifier = Modifier.weight(1f),
                 text = stringResource(id = uiModel.message),
-                style = ProtonTheme.typography.defaultSmallNorm
+                style = ProtonTheme.typography.bodyMediumNorm
             )
             Spacer(modifier = Modifier.width(ProtonDimens.Spacing.Large))
             ProtonTextButton(onClick = onActionClick) {

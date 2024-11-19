@@ -97,11 +97,11 @@ import ch.protonmail.android.design.compose.component.appbar.ProtonTopAppBar
 
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.captionWeak
-import ch.protonmail.android.design.compose.theme.defaultNorm
-import ch.protonmail.android.design.compose.theme.defaultSmallStrongUnspecified
-import ch.protonmail.android.design.compose.theme.defaultWeak
-import ch.protonmail.android.design.compose.theme.headlineNorm
+import ch.protonmail.android.design.compose.theme.bodySmallWeak
+import ch.protonmail.android.design.compose.theme.bodyLargeNorm
+import ch.protonmail.android.design.compose.theme.titleSmallNorm
+import ch.protonmail.android.design.compose.theme.bodyMediumWeak
+import ch.protonmail.android.design.compose.theme.titleLargeNorm
 import ch.protonmail.android.mailcontact.domain.model.ContactId
 import me.proton.core.util.kotlin.takeIfNotBlank
 
@@ -235,7 +235,7 @@ fun ContactDetailsContent(
                             end = ProtonDimens.Spacing.ExtraLarge
                         )
                         .align(Alignment.CenterHorizontally),
-                    style = ProtonTheme.typography.headlineNorm,
+                    style = ProtonTheme.typography.titleLargeNorm,
                     text = state.contact.nameHeader,
                     textAlign = TextAlign.Center
                 )
@@ -248,7 +248,7 @@ fun ContactDetailsContent(
                                 end = ProtonDimens.Spacing.ExtraLarge
                             )
                             .align(Alignment.CenterHorizontally),
-                        style = ProtonTheme.typography.defaultNorm,
+                        style = ProtonTheme.typography.bodyLargeNorm,
                         color = ProtonTheme.colors.textWeak,
                         text = state.contact.nameSubText,
                         textAlign = TextAlign.Center
@@ -362,7 +362,7 @@ private fun ContactDetailsGroupLabel(
                     vertical = MailDimens.ContactGroupLabelPaddingVertical
                 ),
             text = value,
-            style = ProtonTheme.typography.defaultSmallStrongUnspecified,
+            style = ProtonTheme.typography.titleSmallNorm,
             color = Color.White
         )
     }
@@ -419,7 +419,7 @@ private fun ContactDetailsItem(
         Column(modifier.padding(start = columnPadding)) {
             Text(
                 text = contactDetailsItem.header.string(),
-                style = ProtonTheme.typography.captionWeak
+                style = ProtonTheme.typography.bodySmallWeak
             )
             when (contactDetailsItem) {
                 is ContactDetailsItem.Image -> {
@@ -439,7 +439,7 @@ private fun ContactDetailsItem(
                 is ContactDetailsItem.Text -> {
                     Text(
                         text = contactDetailsItem.value.string(),
-                        style = ProtonTheme.typography.defaultNorm
+                        style = ProtonTheme.typography.bodyLargeNorm
                     )
                 }
             }
@@ -536,7 +536,7 @@ fun ContactDetailsDeleteConfirmationDialog(
             text = {
                 Text(
                     text = stringResource(id = R.string.contact_delete_dialog_text),
-                    style = ProtonTheme.typography.defaultWeak
+                    style = ProtonTheme.typography.bodyMediumWeak
                 )
             },
             dismissButton = {

@@ -26,14 +26,14 @@ import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcommon.presentation.model.string
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.ProtonTypography
-import ch.protonmail.android.design.compose.theme.captionHint
+import ch.protonmail.android.design.compose.theme.bodySmallHint
 
 @Composable
 fun AutoLockPinErrorMessageText(effect: Effect<TextUiModel>, modifier: Modifier = Modifier) {
     Text(
         modifier = modifier,
         text = effect.consume()?.string() ?: "",
-        style = ProtonTypography.Default.captionHint,
+        style = ProtonTypography.Default.bodySmallHint,
         color = ProtonTheme.colors.notificationError
     )
 }

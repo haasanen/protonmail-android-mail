@@ -31,7 +31,7 @@ import ch.protonmail.android.design.compose.component.ProtonAlertDialog
 import ch.protonmail.android.design.compose.component.ProtonAlertDialogButton
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.defaultWeak
+import ch.protonmail.android.design.compose.theme.bodyMediumWeak
 
 @Composable
 fun SendingErrorDialog(
@@ -46,13 +46,13 @@ fun SendingErrorDialog(
             Column {
                 Text(
                     text = stringResource(id = R.string.message_sending_error_dialog_text_error),
-                    style = ProtonTheme.typography.defaultWeak,
+                    style = ProtonTheme.typography.bodyMediumWeak,
                     modifier = modifier
                 )
                 Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Large))
                 Text(
                     text = errorMessage,
-                    style = ProtonTheme.typography.defaultWeak,
+                    style = ProtonTheme.typography.bodyMediumWeak,
                     modifier = modifier
                 )
             }

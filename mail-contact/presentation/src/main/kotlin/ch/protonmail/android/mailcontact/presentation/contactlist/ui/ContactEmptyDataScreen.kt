@@ -40,9 +40,9 @@ import ch.protonmail.android.mailcontact.presentation.R
 import ch.protonmail.android.design.compose.component.ProtonSecondaryButton
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.captionNorm
-import ch.protonmail.android.design.compose.theme.defaultSmallWeak
-import ch.protonmail.android.design.compose.theme.defaultStrongNorm
+import ch.protonmail.android.design.compose.theme.bodySmallNorm
+import ch.protonmail.android.design.compose.theme.bodyMediumWeak
+import ch.protonmail.android.design.compose.theme.titleMediumNorm
 
 @Composable
 internal fun ContactEmptyDataScreen(
@@ -78,7 +78,7 @@ internal fun ContactEmptyDataScreen(
                 top = ProtonDimens.Spacing.ExtraLarge,
                 end = ProtonDimens.Spacing.Huge
             ),
-            style = ProtonTheme.typography.defaultStrongNorm
+            style = ProtonTheme.typography.titleMediumNorm
         )
         Text(
             description,
@@ -87,7 +87,7 @@ internal fun ContactEmptyDataScreen(
                 top = ProtonDimens.Spacing.Small,
                 end = ProtonDimens.Spacing.Huge
             ),
-            style = ProtonTheme.typography.defaultSmallWeak,
+            style = ProtonTheme.typography.bodyMediumWeak,
             textAlign = TextAlign.Center
         )
         if (showAddButton) {
@@ -100,7 +100,7 @@ internal fun ContactEmptyDataScreen(
                     Modifier.padding(
                         horizontal = ProtonDimens.Spacing.Standard
                     ),
-                    style = ProtonTheme.typography.captionNorm
+                    style = ProtonTheme.typography.bodySmallNorm
                 )
             }
         }

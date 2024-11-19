@@ -40,7 +40,7 @@ import ch.protonmail.android.design.compose.component.ProtonAlertDialog
 import ch.protonmail.android.design.compose.component.ProtonAlertDialogButton
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.defaultWeak
+import ch.protonmail.android.design.compose.theme.bodyMediumWeak
 import timber.log.Timber
 
 @Composable
@@ -61,7 +61,7 @@ fun ExternalLinkConfirmationDialog(
                     text = encodeToPunycode(linkUri.toString()),
                     maxLines = 3,
                     overflow = TextOverflow.Ellipsis,
-                    style = ProtonTheme.typography.defaultWeak,
+                    style = ProtonTheme.typography.bodyMediumWeak,
                     modifier = modifier
                 )
                 Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Small))
@@ -81,7 +81,7 @@ fun ExternalLinkConfirmationDialog(
                         text = stringResource(id = R.string.external_link_confirmation_dialog_do_not_ask_again),
                         maxLines = 3,
                         overflow = TextOverflow.Ellipsis,
-                        style = ProtonTheme.typography.defaultWeak,
+                        style = ProtonTheme.typography.bodyMediumWeak,
                         modifier = modifier
                     )
                 }

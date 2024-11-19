@@ -74,11 +74,11 @@ import ch.protonmail.android.design.compose.component.appbar.ProtonTopAppBar
 
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.captionWeak
-import ch.protonmail.android.design.compose.theme.defaultNorm
-import ch.protonmail.android.design.compose.theme.defaultSmallNorm
-import ch.protonmail.android.design.compose.theme.defaultSmallWeak
-import ch.protonmail.android.design.compose.theme.headlineNorm
+import ch.protonmail.android.design.compose.theme.bodySmallWeak
+import ch.protonmail.android.design.compose.theme.bodyLargeNorm
+import ch.protonmail.android.design.compose.theme.bodyMediumNorm
+import ch.protonmail.android.design.compose.theme.bodyMediumWeak
+import ch.protonmail.android.design.compose.theme.titleLargeNorm
 
 @Composable
 fun ContactGroupDetailsScreen(
@@ -180,7 +180,7 @@ fun ContactGroupDetailsContent(
                             end = ProtonDimens.Spacing.ExtraLarge
                         )
                         .align(Alignment.CenterHorizontally),
-                    style = ProtonTheme.typography.headlineNorm,
+                    style = ProtonTheme.typography.titleLargeNorm,
                     text = state.contactGroup.name,
                     textAlign = TextAlign.Center
                 )
@@ -192,7 +192,7 @@ fun ContactGroupDetailsContent(
                             end = ProtonDimens.Spacing.ExtraLarge
                         )
                         .align(Alignment.CenterHorizontally),
-                    style = ProtonTheme.typography.captionWeak,
+                    style = ProtonTheme.typography.bodySmallWeak,
                     text = pluralStringResource(
                         R.plurals.contact_group_details_member_count,
                         state.contactGroup.memberCount,
@@ -257,7 +257,7 @@ private fun ContactGroupDetailsSendTextButton(
                 end = ProtonDimens.Spacing.Large
             ),
             text = stringResource(R.string.send_group_message),
-            style = ProtonTheme.typography.defaultSmallNorm
+            style = ProtonTheme.typography.bodyMediumNorm
         )
     }
 }
@@ -297,11 +297,11 @@ fun ContactGroupMemberItem(modifier: Modifier = Modifier, contactGroupMember: Co
         ) {
             Text(
                 text = contactGroupMember.name,
-                style = ProtonTheme.typography.defaultNorm
+                style = ProtonTheme.typography.bodyLargeNorm
             )
             Text(
                 text = contactGroupMember.email,
-                style = ProtonTheme.typography.defaultSmallWeak
+                style = ProtonTheme.typography.bodyMediumWeak
             )
         }
     }

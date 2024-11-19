@@ -62,9 +62,9 @@ import ch.protonmail.android.uicomponents.verticalScrollbar
 import kotlinx.coroutines.launch
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.defaultNorm
-import ch.protonmail.android.design.compose.theme.defaultSmallNorm
-import ch.protonmail.android.design.compose.theme.defaultSmallWeak
+import ch.protonmail.android.design.compose.theme.bodyLargeNorm
+import ch.protonmail.android.design.compose.theme.bodyMediumNorm
+import ch.protonmail.android.design.compose.theme.bodyMediumWeak
 import me.proton.core.util.kotlin.takeIfNotBlank
 
 /*
@@ -90,7 +90,7 @@ fun ChipsListTextField(
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     focusRequester: FocusRequester? = null,
     cursorColor: Color = ProtonTheme.colors.brandDarken20,
-    textStyle: TextStyle = ProtonTheme.typography.defaultSmallNorm,
+    textStyle: TextStyle = ProtonTheme.typography.bodyMediumNorm,
     animateChipsCreation: Boolean = false,
     actions: ChipsListTextField.Actions,
     contactSuggestionState: ContactSuggestionState
@@ -258,7 +258,7 @@ fun ChipsListTextField(
                                         text = selectionOption.header,
                                         maxLines = 1,
                                         color = ProtonTheme.colors.textNorm,
-                                        style = ProtonTheme.typography.defaultNorm,
+                                        style = ProtonTheme.typography.bodyLargeNorm,
                                         overflow = TextOverflow.Ellipsis
                                     )
                                     Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Small))
@@ -266,7 +266,7 @@ fun ChipsListTextField(
                                         text = selectionOption.subheader,
                                         maxLines = 1,
                                         color = ProtonTheme.colors.textWeak,
-                                        style = ProtonTheme.typography.defaultSmallWeak,
+                                        style = ProtonTheme.typography.bodyMediumWeak,
                                         overflow = TextOverflow.Ellipsis
                                     )
                                 }

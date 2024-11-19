@@ -45,7 +45,7 @@ import ch.protonmail.android.uicomponents.chips.thenIf
 import ch.protonmail.android.design.compose.component.appbar.ProtonTopAppBar
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.defaultSmallStrongInverted
+import ch.protonmail.android.design.compose.theme.labelLargeInverted
 
 @Composable
 @Suppress("UseComposableActions")
@@ -132,7 +132,7 @@ private fun AttachmentsNumber(attachmentsCount: Int, modifier: Modifier = Modifi
     ) {
         Text(
             text = attachmentsCount.toString(),
-            style = ProtonTheme.typography.defaultSmallStrongInverted
+            style = ProtonTheme.typography.labelLargeInverted
         )
     }
 }

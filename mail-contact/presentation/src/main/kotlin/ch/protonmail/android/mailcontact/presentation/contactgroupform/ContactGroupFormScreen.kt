@@ -83,10 +83,10 @@ import ch.protonmail.android.design.compose.component.appbar.ProtonTopAppBar
 
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.defaultNorm
-import ch.protonmail.android.design.compose.theme.defaultSmallNorm
-import ch.protonmail.android.design.compose.theme.defaultSmallWeak
-import ch.protonmail.android.design.compose.theme.defaultStrongNorm
+import ch.protonmail.android.design.compose.theme.bodyLargeNorm
+import ch.protonmail.android.design.compose.theme.bodyMediumNorm
+import ch.protonmail.android.design.compose.theme.bodyMediumWeak
+import ch.protonmail.android.design.compose.theme.titleMediumNorm
 import ch.protonmail.android.mailcontact.domain.model.ContactId
 
 @Composable
@@ -249,7 +249,7 @@ fun ContactGroupFormContent(
                         Text(
                             text = stringResource(R.string.change_color),
                             modifier = Modifier.padding(horizontal = ProtonDimens.Spacing.Standard),
-                            style = ProtonTheme.typography.defaultSmallNorm
+                            style = ProtonTheme.typography.bodyMediumNorm
                         )
                     }
                     FormInputField(
@@ -277,7 +277,7 @@ fun ContactGroupFormContent(
                         )
                         Text(
                             modifier = Modifier.padding(start = ProtonDimens.Spacing.Standard),
-                            style = ProtonTheme.typography.defaultSmallWeak,
+                            style = ProtonTheme.typography.bodyMediumWeak,
                             text = pluralStringResource(
                                 R.plurals.contact_group_form_member_count,
                                 state.contactGroup.memberCount,
@@ -305,7 +305,7 @@ fun ContactGroupFormContent(
                     Text(
                         text = stringResource(R.string.add_members),
                         modifier = Modifier.padding(horizontal = ProtonDimens.Spacing.Standard),
-                        style = ProtonTheme.typography.defaultSmallNorm
+                        style = ProtonTheme.typography.bodyMediumNorm
                     )
                 }
             }
@@ -370,11 +370,11 @@ fun ContactGroupMemberItem(
         ) {
             Text(
                 text = contactGroupMember.name,
-                style = ProtonTheme.typography.defaultNorm
+                style = ProtonTheme.typography.bodyLargeNorm
             )
             Text(
                 text = contactGroupMember.email,
-                style = ProtonTheme.typography.defaultSmallWeak
+                style = ProtonTheme.typography.bodyMediumWeak
             )
         }
         IconButton(
@@ -425,7 +425,7 @@ fun ContactGroupFormTopBar(
                     Text(
                         text = stringResource(id = R.string.contact_group_form_save),
                         color = textColor,
-                        style = ProtonTheme.typography.defaultStrongNorm
+                        style = ProtonTheme.typography.titleMediumNorm
                     )
                 }
             }

@@ -36,8 +36,8 @@ import ch.protonmail.android.design.compose.component.ProtonRawListItem
 import ch.protonmail.android.uicomponents.chips.thenIf
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.defaultNorm
-import ch.protonmail.android.design.compose.theme.defaultSmallUnspecified
+import ch.protonmail.android.design.compose.theme.bodyLargeNorm
+import ch.protonmail.android.design.compose.theme.bodyMediumNorm
 import ch.protonmail.android.design.compose.theme.textNorm
 
 @Composable
@@ -73,7 +73,7 @@ fun SettingsToggleItem(
                     text = name,
                     modifier = Modifier.weight(weight = 1f, fill = false),
                     color = ProtonTheme.colors.textNorm(),
-                    style = ProtonTheme.typography.defaultNorm
+                    style = ProtonTheme.typography.bodyLargeNorm
                 )
                 upsellingIcon()
             }
@@ -88,7 +88,7 @@ fun SettingsToggleItem(
                 modifier = Modifier.offset(y = toggleItemNegativeOffset),
                 text = hint,
                 color = ProtonTheme.colors.textHint,
-                style = ProtonTheme.typography.defaultSmallUnspecified
+                style = ProtonTheme.typography.bodyMediumNorm
             )
         }
     }

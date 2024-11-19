@@ -17,7 +17,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import ch.protonmail.android.uicomponents.chips.item.ChipItem
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.defaultSmallNorm
+import ch.protonmail.android.design.compose.theme.bodyMediumNorm
 
 /*
     Composable that displays a ChipsListTextField with a label in a row (useful for forms)
@@ -47,7 +47,7 @@ fun ChipsListField(
                 .align(Alignment.Top)
                 .padding(top = 16.dp, bottom = 16.dp, start = 0.dp),
             color = ProtonTheme.colors.textWeak,
-            style = ProtonTheme.typography.defaultSmallNorm
+            style = ProtonTheme.typography.bodyMediumNorm
         )
         ChipsListTextField(
             modifier = Modifier

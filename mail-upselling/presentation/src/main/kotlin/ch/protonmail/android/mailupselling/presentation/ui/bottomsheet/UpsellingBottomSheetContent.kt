@@ -51,8 +51,8 @@ import ch.protonmail.android.mailupselling.presentation.model.UpsellingBottomShe
 import ch.protonmail.android.mailupselling.presentation.ui.UpsellingColors
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.defaultWeak
-import ch.protonmail.android.design.compose.theme.headlineNorm
+import ch.protonmail.android.design.compose.theme.bodyMediumWeak
+import ch.protonmail.android.design.compose.theme.titleLargeNorm
 import ch.protonmail.android.design.compose.theme.headlineSmallNorm
 
 @Composable
@@ -105,7 +105,7 @@ internal fun UpsellingBottomSheetContent(
                     text = dynamicPlansModel.title.text.string(),
                     style = if (isNarrowScreen) {
                         ProtonTheme.typography.headlineSmallNorm
-                    } else ProtonTheme.typography.headlineNorm,
+                    } else ProtonTheme.typography.titleLargeNorm,
                     color = contentColors.textNorm,
                     textAlign = TextAlign.Center
                 )
@@ -121,7 +121,7 @@ internal fun UpsellingBottomSheetContent(
                         .padding(horizontal = ProtonDimens.Spacing.Large)
                         .padding(top = ProtonDimens.Spacing.Standard),
                     text = dynamicPlansModel.description.text.string(),
-                    style = ProtonTheme.typography.defaultWeak,
+                    style = ProtonTheme.typography.bodyMediumWeak,
                     color = contentColors.textWeak,
                     textAlign = TextAlign.Center
                 )

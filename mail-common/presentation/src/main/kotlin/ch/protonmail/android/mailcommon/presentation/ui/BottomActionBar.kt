@@ -50,7 +50,7 @@ import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.ProtonTypography
-import ch.protonmail.android.design.compose.theme.defaultNorm
+import ch.protonmail.android.design.compose.theme.bodyLargeNorm
 import timber.log.Timber
 
 @Composable
@@ -85,7 +85,7 @@ fun BottomActionBar(
 
                 is BottomBarState.Error -> Text(
                     text = stringResource(id = R.string.common_error_loading_actions),
-                    style = ProtonTypography.Default.defaultNorm
+                    style = ProtonTypography.Default.bodyLargeNorm
                 )
 
                 is BottomBarState.Data.Shown -> {

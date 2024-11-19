@@ -84,10 +84,10 @@ import ch.protonmail.android.uicomponents.chips.thenIf
 import kotlinx.collections.immutable.ImmutableList
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.captionNorm
-import ch.protonmail.android.design.compose.theme.captionWeak
-import ch.protonmail.android.design.compose.theme.defaultSmallNorm
-import ch.protonmail.android.design.compose.theme.defaultSmallStrongNorm
+import ch.protonmail.android.design.compose.theme.bodySmallNorm
+import ch.protonmail.android.design.compose.theme.bodySmallWeak
+import ch.protonmail.android.design.compose.theme.bodyMediumNorm
+import ch.protonmail.android.design.compose.theme.titleSmallNorm
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
@@ -456,7 +456,7 @@ private fun SenderName(modifier: Modifier = Modifier, participantUiModel: Partic
             text = participantUiModel.participantName,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
-            style = ProtonTheme.typography.defaultSmallStrongNorm
+            style = ProtonTheme.typography.titleSmallNorm
         )
         if (participantUiModel.shouldShowOfficialBadge) {
             OfficialBadge()
@@ -522,7 +522,7 @@ private fun Time(modifier: Modifier = Modifier, time: TextUiModel) {
         modifier = modifier.testTag(MessageDetailHeaderTestTags.Time),
         text = time.string(),
         maxLines = 1,
-        style = ProtonTheme.typography.captionWeak
+        style = ProtonTheme.typography.bodySmallWeak
     )
 }
 
@@ -534,14 +534,14 @@ private fun AllRecipients(modifier: Modifier = Modifier, allRecipients: TextUiMo
                 .testTag(MessageDetailHeaderTestTags.AllRecipientsText)
                 .padding(end = ProtonDimens.Spacing.Small),
             text = stringResource(R.string.to),
-            style = ProtonTheme.typography.captionNorm
+            style = ProtonTheme.typography.bodySmallNorm
         )
         Text(
             modifier = Modifier.testTag(MessageDetailHeaderTestTags.AllRecipientsValue),
             text = allRecipients.string(),
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
-            style = ProtonTheme.typography.captionWeak
+            style = ProtonTheme.typography.bodySmallWeak
         )
     }
 }
@@ -596,7 +596,7 @@ private fun Recipients(
 
 @Composable
 private fun RecipientsTitle(modifier: Modifier = Modifier, @StringRes recipientsTitle: Int) {
-    Text(modifier = modifier, text = stringResource(id = recipientsTitle), style = ProtonTheme.typography.captionNorm)
+    Text(modifier = modifier, text = stringResource(id = recipientsTitle), style = ProtonTheme.typography.bodySmallNorm)
 }
 
 @Composable
@@ -616,7 +616,7 @@ private fun ParticipantText(
         color = textColor,
         maxLines = if (shouldBreak) Int.MAX_VALUE else 1,
         overflow = TextOverflow.Ellipsis,
-        style = ProtonTheme.typography.captionNorm
+        style = ProtonTheme.typography.bodySmallNorm
     )
 }
 
@@ -700,7 +700,7 @@ private fun ExtendedHeaderRow(
         Text(
             modifier = Modifier.testTag(MessageDetailHeaderTestTags.ExtendedHeaderText),
             text = text,
-            style = ProtonTheme.typography.captionWeak
+            style = ProtonTheme.typography.bodySmallWeak
         )
     }
 }
@@ -711,7 +711,7 @@ private fun HideDetails(modifier: Modifier = Modifier) {
         modifier = modifier.testTag(MessageDetailHeaderTestTags.ExtendedHideDetails),
         text = stringResource(id = R.string.hide_details),
         color = ProtonTheme.colors.brandLighten20,
-        style = ProtonTheme.typography.defaultSmallNorm
+        style = ProtonTheme.typography.bodyMediumNorm
     )
 }
 

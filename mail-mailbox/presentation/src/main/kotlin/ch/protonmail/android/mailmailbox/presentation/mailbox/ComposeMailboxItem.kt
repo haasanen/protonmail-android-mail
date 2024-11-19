@@ -64,9 +64,9 @@ import ch.protonmail.android.mailmessage.presentation.ui.ParticipantAvatar
 import kotlinx.collections.immutable.ImmutableList
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.captionNorm
-import ch.protonmail.android.design.compose.theme.defaultNorm
-import ch.protonmail.android.design.compose.theme.defaultSmallNorm
+import ch.protonmail.android.design.compose.theme.bodySmallNorm
+import ch.protonmail.android.design.compose.theme.bodyLargeNorm
+import ch.protonmail.android.design.compose.theme.bodyMediumNorm
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -224,7 +224,7 @@ private fun Participants(
                 text = participants.message.string(),
                 overflow = TextOverflow.Ellipsis,
                 maxLines = 1,
-                style = ProtonTheme.typography.defaultNorm.copy(fontWeight = fontWeight, color = fontColor)
+                style = ProtonTheme.typography.bodyLargeNorm.copy(fontWeight = fontWeight, color = fontColor)
             )
         }
     }
@@ -242,7 +242,7 @@ private fun Time(
         text = time.string(),
         maxLines = 1,
         textAlign = TextAlign.End,
-        style = ProtonTheme.typography.captionNorm.copy(fontWeight = fontWeight, color = fontColor)
+        style = ProtonTheme.typography.bodySmallNorm.copy(fontWeight = fontWeight, color = fontColor)
     )
 }
 
@@ -282,7 +282,7 @@ private fun Subject(
         text = subject,
         overflow = TextOverflow.Ellipsis,
         maxLines = 1,
-        style = ProtonTheme.typography.defaultSmallNorm.copy(fontWeight = fontWeight, color = fontColor)
+        style = ProtonTheme.typography.bodyMediumNorm.copy(fontWeight = fontWeight, color = fontColor)
     )
 }
 
@@ -309,7 +309,7 @@ private fun Count(
                 .padding(horizontal = ProtonDimens.Spacing.Small),
             text = count.toString(),
             overflow = TextOverflow.Ellipsis,
-            style = ProtonTheme.typography.captionNorm.copy(fontWeight = fontWeight, color = fontColor)
+            style = ProtonTheme.typography.bodySmallNorm.copy(fontWeight = fontWeight, color = fontColor)
         )
     }
 }

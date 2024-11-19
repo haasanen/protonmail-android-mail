@@ -41,7 +41,7 @@ import ch.protonmail.android.mailcomposer.presentation.R
 import ch.protonmail.android.uicomponents.text.defaultTextFieldColors
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.defaultNorm
+import ch.protonmail.android.design.compose.theme.bodyLargeNorm
 
 @Composable
 internal fun PrefixedEmailSelector(
@@ -59,14 +59,14 @@ internal fun PrefixedEmailSelector(
                 .align(Alignment.CenterVertically)
                 .weight(1f),
             readOnly = true,
-            textStyle = ProtonTheme.typography.defaultNorm,
+            textStyle = ProtonTheme.typography.bodyLargeNorm,
             prefix = {
                 Row {
                     Text(
                         modifier = Modifier.testTag(ComposerTestTags.FieldPrefix),
                         text = stringResource(prefixStringResource),
                         color = ProtonTheme.colors.textWeak,
-                        style = ProtonTheme.typography.defaultNorm
+                        style = ProtonTheme.typography.bodyLargeNorm
                     )
                     Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Small))
                 }

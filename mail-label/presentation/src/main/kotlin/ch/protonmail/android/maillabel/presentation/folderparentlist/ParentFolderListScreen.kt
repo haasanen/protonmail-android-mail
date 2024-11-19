@@ -58,7 +58,7 @@ import ch.protonmail.android.design.compose.component.appbar.ProtonTopAppBar
 
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.defaultNorm
+import ch.protonmail.android.design.compose.theme.bodyLargeNorm
 
 @Composable
 fun ParentFolderListScreen(
@@ -171,7 +171,7 @@ fun ClickableParentFolderItem(
                     bottom = ProtonDimens.Spacing.Large
                 )
                 .weight(1f),
-            style = ProtonTheme.typography.defaultNorm
+            style = ProtonTheme.typography.bodyLargeNorm
         )
         if (parentFolderUiModel.isSelected) {
             Icon(
@@ -212,7 +212,7 @@ fun DisabledParentFolderItem(modifier: Modifier = Modifier, parentFolderUiModel:
                     bottom = ProtonDimens.Spacing.Large
                 )
                 .weight(1f),
-            style = ProtonTheme.typography.defaultNorm,
+            style = ProtonTheme.typography.bodyLargeNorm,
             color = ProtonTheme.colors.textDisabled
         )
     }
@@ -238,7 +238,7 @@ fun NoneListItem(
             modifier = Modifier
                 .padding(ProtonDimens.Spacing.Large)
                 .weight(1f),
-            style = ProtonTheme.typography.defaultNorm
+            style = ProtonTheme.typography.bodyLargeNorm
         )
         if (state.parentLabelId == null) {
             Icon(

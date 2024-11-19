@@ -40,7 +40,7 @@ import ch.protonmail.android.mailsettings.presentation.settings.autolock.model.A
 import ch.protonmail.android.design.compose.component.ProtonSettingsItem
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.defaultNorm
+import ch.protonmail.android.design.compose.theme.bodyLargeNorm
 
 fun LazyListScope.AutoLockIntervalsSection(
     state: AutoLockSettingsState.DataLoaded.AutoLockIntervalState,
@@ -92,7 +92,7 @@ private fun AutoLockIntervalDropDownMenu(
                     Text(
                         text = stringResource(id = item.description),
                         color = ProtonTheme.colors.textNorm,
-                        style = ProtonTheme.typography.defaultNorm
+                        style = ProtonTheme.typography.bodyLargeNorm
                     )
                 },
                 onClick = { onIntervalSelected(item.autoLockInterval) },

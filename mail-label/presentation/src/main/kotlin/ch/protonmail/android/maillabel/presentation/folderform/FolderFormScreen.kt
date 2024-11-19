@@ -84,9 +84,9 @@ import ch.protonmail.android.design.compose.component.ProtonTextButton
 import ch.protonmail.android.design.compose.component.appbar.ProtonTopAppBar
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.defaultNorm
-import ch.protonmail.android.design.compose.theme.defaultSmallWeak
-import ch.protonmail.android.design.compose.theme.defaultStrongNorm
+import ch.protonmail.android.design.compose.theme.bodyLargeNorm
+import ch.protonmail.android.design.compose.theme.bodyMediumWeak
+import ch.protonmail.android.design.compose.theme.titleMediumNorm
 import ch.protonmail.android.mailupselling.presentation.model.BottomSheetVisibilityEffect
 import ch.protonmail.android.mailupselling.presentation.ui.bottomsheet.UpsellingBottomSheet.DELAY_SHOWING
 import kotlinx.coroutines.delay
@@ -330,7 +330,7 @@ fun FolderFormParentFolderField(state: FolderFormState.Data, actions: FolderForm
                 top = ProtonDimens.Spacing.Large,
                 start = ProtonDimens.Spacing.Large
             ),
-            style = ProtonTheme.typography.defaultNorm
+            style = ProtonTheme.typography.bodyLargeNorm
         )
         Text(
             modifier = Modifier.padding(
@@ -339,7 +339,7 @@ fun FolderFormParentFolderField(state: FolderFormState.Data, actions: FolderForm
             ),
             text = state.parent?.name ?: stringResource(id = R.string.folder_form_no_parent),
             color = ProtonTheme.colors.textHint,
-            style = ProtonTheme.typography.defaultSmallWeak
+            style = ProtonTheme.typography.bodyMediumWeak
         )
     }
     HorizontalDivider()
@@ -390,7 +390,7 @@ fun FolderFormTopBar(
                     Text(
                         text = stringResource(id = R.string.label_form_save),
                         color = textColor,
-                        style = ProtonTheme.typography.defaultStrongNorm
+                        style = ProtonTheme.typography.titleMediumNorm
                     )
                 }
             }

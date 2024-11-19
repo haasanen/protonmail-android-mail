@@ -34,7 +34,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.defaultSmallWeak
+import ch.protonmail.android.design.compose.theme.bodyMediumWeak
 
 @Composable
 fun ProtonListSectionTitle(@StringRes title: Int, modifier: Modifier = Modifier) =
@@ -60,7 +60,7 @@ fun ProtonListSectionTitle(title: String, modifier: Modifier = Modifier) {
                 vertical = ProtonDimens.Spacing.Large,
                 horizontal = SectionHeaderHorizontalPadding
             ),
-            style = ProtonTheme.typography.defaultSmallWeak,
+            style = ProtonTheme.typography.bodyMediumWeak,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
         )

@@ -39,7 +39,7 @@ import ch.protonmail.android.mailupselling.presentation.ui.UpsellingDimens
 import coil.compose.AsyncImage
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.defaultSmallNorm
+import ch.protonmail.android.design.compose.theme.bodyMediumNorm
 
 @Composable
 internal fun UpsellingEntitlementListItem(
@@ -71,7 +71,7 @@ internal fun UpsellingEntitlementListItem(
         Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Standard))
         Text(
             text = entitlementUiModel.text.string(),
-            style = ProtonTheme.typography.defaultSmallNorm,
+            style = ProtonTheme.typography.bodyMediumNorm,
             color = color
         )
     }

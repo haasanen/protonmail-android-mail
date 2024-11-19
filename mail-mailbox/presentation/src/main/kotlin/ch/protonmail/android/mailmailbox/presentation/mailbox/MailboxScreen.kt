@@ -46,7 +46,6 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
@@ -93,14 +92,13 @@ import ch.protonmail.android.design.compose.component.ProtonSnackbarType
 import ch.protonmail.android.design.compose.component.protonOutlinedButtonColors
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.defaultSmallWeak
-import ch.protonmail.android.design.compose.theme.defaultStrongNorm
-import ch.protonmail.android.design.compose.theme.headlineNorm
+import ch.protonmail.android.design.compose.theme.bodyMediumWeak
+import ch.protonmail.android.design.compose.theme.titleMediumNorm
+import ch.protonmail.android.design.compose.theme.titleLargeNorm
 import ch.protonmail.android.design.compose.theme.headlineSmallNorm
 import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
 import ch.protonmail.android.mailcommon.presentation.ConsumableTextEffect
 import ch.protonmail.android.mailcommon.presentation.NO_CONTENT_DESCRIPTION
-import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 import ch.protonmail.android.mailcommon.presentation.compose.UndoableOperationSnackbar
 import ch.protonmail.android.mailcommon.presentation.model.string
 import ch.protonmail.android.mailcommon.presentation.ui.BottomActionBar
@@ -681,7 +679,6 @@ private fun MailboxItemsList(
                         }
                     )
                 }
-                HorizontalDivider(thickness = MailDimens.SeparatorHeight, color = ProtonTheme.colors.separatorNorm)
             }
         }
         item {
@@ -858,7 +855,7 @@ private fun SearchNoResult(modifier: Modifier = Modifier) {
                 ),
             text = stringResource(id = R.string.mailbox_search_no_results_title),
             textAlign = TextAlign.Center,
-            style = ProtonTheme.typography.headlineNorm,
+            style = ProtonTheme.typography.titleLargeNorm,
             color = ProtonTheme.colors.textNorm
         )
         Text(
@@ -866,7 +863,7 @@ private fun SearchNoResult(modifier: Modifier = Modifier) {
                 .align(Alignment.CenterHorizontally),
             text = stringResource(id = R.string.mailbox_search_no_results_explanation),
             textAlign = TextAlign.Center,
-            style = ProtonTheme.typography.defaultStrongNorm,
+            style = ProtonTheme.typography.titleMediumNorm,
             color = ProtonTheme.colors.textHint
         )
 
@@ -969,7 +966,7 @@ private fun MailboxEmpty(
         Text(
             modifier = Modifier.testTag(MailboxScreenTestTags.MailboxEmptySubtitle),
             text = stringResource(id = description),
-            style = ProtonTheme.typography.defaultSmallWeak,
+            style = ProtonTheme.typography.bodyMediumWeak,
             textAlign = TextAlign.Center
         )
     }

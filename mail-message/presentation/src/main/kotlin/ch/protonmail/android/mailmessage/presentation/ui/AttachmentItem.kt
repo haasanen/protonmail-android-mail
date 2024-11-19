@@ -60,8 +60,8 @@ import ch.protonmail.android.design.compose.component.ProtonAlertDialogButton
 import ch.protonmail.android.design.compose.component.ProtonAlertDialogText
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.captionHint
-import ch.protonmail.android.design.compose.theme.defaultSmall
+import ch.protonmail.android.design.compose.theme.bodySmallHint
+import ch.protonmail.android.design.compose.theme.bodyMediumNorm
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
@@ -153,7 +153,7 @@ fun AttachmentItem(
             modifier = Modifier
                 .testTag(AttachmentItemTestTags.Name)
                 .weight(1f, fill = false),
-            style = ProtonTheme.typography.defaultSmall,
+            style = ProtonTheme.typography.bodyMediumNorm,
             text = attachmentUiModel.fileName,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
@@ -163,12 +163,12 @@ fun AttachmentItem(
                 .testTag(AttachmentItemTestTags.Extension)
                 .padding(end = ProtonDimens.Spacing.Standard),
             text = ".${attachmentUiModel.extension}",
-            style = ProtonTheme.typography.defaultSmall
+            style = ProtonTheme.typography.bodyMediumNorm
         )
         Text(
             modifier = Modifier.testTag(AttachmentItemTestTags.Size),
             text = Formatter.formatShortFileSize(LocalContext.current, attachmentUiModel.size),
-            style = ProtonTheme.typography.captionHint
+            style = ProtonTheme.typography.bodySmallHint
         )
         if (attachmentUiModel.deletable) {
             Spacer(modifier = Modifier.width(ProtonDimens.Spacing.Small))

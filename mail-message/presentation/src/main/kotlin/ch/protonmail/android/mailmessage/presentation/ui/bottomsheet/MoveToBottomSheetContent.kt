@@ -57,7 +57,7 @@ import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
 import ch.protonmail.android.design.compose.component.ProtonRawListItem
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.defaultNorm
+import ch.protonmail.android.design.compose.theme.bodyLargeNorm
 import ch.protonmail.android.design.compose.theme.interactionNorm
 import ch.protonmail.android.maillabel.domain.model.LabelId
 
@@ -83,7 +83,7 @@ fun MoveToBottomSheetContent(dataState: MoveToBottomSheetState.Data, actions: Mo
             Text(
                 modifier = Modifier.testTag(MoveToBottomSheetTestTags.MoveToText),
                 text = stringResource(id = R.string.bottom_sheet_move_to_title),
-                style = ProtonTheme.typography.defaultNorm
+                style = ProtonTheme.typography.bodyLargeNorm
             )
             Text(
                 modifier = Modifier
@@ -94,7 +94,7 @@ fun MoveToBottomSheetContent(dataState: MoveToBottomSheetState.Data, actions: Mo
                         } ?: actions.onDismiss()
                     },
                 text = stringResource(id = R.string.bottom_sheet_done_action),
-                style = ProtonTheme.typography.defaultNorm,
+                style = ProtonTheme.typography.bodyLargeNorm,
                 color = ProtonTheme.colors.interactionNorm()
             )
         }

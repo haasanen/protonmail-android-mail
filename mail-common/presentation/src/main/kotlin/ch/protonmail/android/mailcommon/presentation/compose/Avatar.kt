@@ -46,6 +46,7 @@ import ch.protonmail.android.mailcommon.presentation.R
 import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
+import ch.protonmail.android.design.compose.theme.titleSmallNorm
 
 @Composable
 fun Avatar(
@@ -150,7 +151,7 @@ fun ParticipantAvatar(avatarUiModel: AvatarUiModel.ParticipantAvatar) {
             modifier = Modifier
                 .testTag(AvatarTestTags.AvatarText),
             textAlign = TextAlign.Center,
-            style = ProtonTheme.typography.body2Medium,
+            style = ProtonTheme.typography.titleSmallNorm,
             color = Color.White,
             text = avatarUiModel.initial
         )

@@ -47,7 +47,7 @@ import ch.protonmail.android.design.compose.component.protonButtonColors
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.ProtonTypography
-import ch.protonmail.android.design.compose.theme.defaultNorm
+import ch.protonmail.android.design.compose.theme.bodyLargeNorm
 
 @Composable
 fun VirtualKeyboardDigitItem(
@@ -69,7 +69,7 @@ fun VirtualKeyboardDigitItem(
         Text(
             text = value.toString(),
             fontSize = MailDimens.AutoLockPinScreen.DigitTextSize,
-            style = ProtonTypography.Default.defaultNorm,
+            style = ProtonTypography.Default.bodyLargeNorm,
             textAlign = TextAlign.Center
         )
     }

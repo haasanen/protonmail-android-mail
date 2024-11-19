@@ -34,7 +34,7 @@ import ch.protonmail.android.mailupselling.presentation.ui.UpsellingColors
 import ch.protonmail.android.mailupselling.presentation.ui.UpsellingDimens
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.defaultWeak
+import ch.protonmail.android.design.compose.theme.bodyMediumWeak
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -71,7 +71,7 @@ private fun TextNoPlansAvailable() {
             .padding(horizontal = ProtonDimens.Spacing.Large)
             .padding(top = ProtonDimens.Spacing.Standard),
         text = stringResource(id = R.string.upselling_unable_retrieve_options),
-        style = ProtonTheme.typography.defaultWeak,
+        style = ProtonTheme.typography.bodyMediumWeak,
         color = colors.textWeak,
         textAlign = TextAlign.Center
     )

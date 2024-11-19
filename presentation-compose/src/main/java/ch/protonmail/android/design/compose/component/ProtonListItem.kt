@@ -47,6 +47,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import ch.protonmail.android.design.R
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
+import ch.protonmail.android.design.compose.theme.bodySmallNorm
 
 /**
  * A basic, highly customizable list item to be used in lists that requires particular layouts.
@@ -156,7 +157,7 @@ fun ProtonListItem(
                     text = "$count",
                     color = Color.White,
                     textAlign = TextAlign.Center,
-                    style = ProtonTheme.typography.captionRegular
+                    style = ProtonTheme.typography.bodySmallNorm
                 )
             }
         }

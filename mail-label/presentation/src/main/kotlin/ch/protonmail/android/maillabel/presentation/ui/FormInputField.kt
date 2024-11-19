@@ -44,9 +44,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import ch.protonmail.android.maillabel.presentation.R
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.captionWeak
-import ch.protonmail.android.design.compose.theme.defaultNorm
-import ch.protonmail.android.design.compose.theme.defaultSmallStrongNorm
+import ch.protonmail.android.design.compose.theme.bodySmallWeak
+import ch.protonmail.android.design.compose.theme.bodyLargeNorm
+import ch.protonmail.android.design.compose.theme.titleSmallNorm
 import kotlin.math.min
 
 @Composable
@@ -66,7 +66,7 @@ fun FormInputField(
         Text(
             text = title,
             modifier = Modifier.padding(bottom = ProtonDimens.Spacing.Standard),
-            style = ProtonTheme.typography.defaultSmallStrongNorm
+            style = ProtonTheme.typography.titleSmallNorm
         )
 
         var textFieldValue by rememberSaveable(stateSaver = TextFieldValue.Saver) {
@@ -84,13 +84,13 @@ fun FormInputField(
                 Text(
                     text = hint,
                     color = ProtonTheme.colors.textHint,
-                    style = ProtonTheme.typography.defaultNorm
+                    style = ProtonTheme.typography.bodyLargeNorm
                 )
             },
             shape = RoundedCornerShape(ProtonDimens.LargeCornerRadius),
             colors = formTextFieldColors(),
             singleLine = true,
-            textStyle = ProtonTheme.typography.defaultNorm,
+            textStyle = ProtonTheme.typography.bodyLargeNorm,
             keyboardOptions = KeyboardOptions.Default.copy(
                 capitalization = KeyboardCapitalization.Sentences,
                 imeAction = ImeAction.Done
@@ -123,7 +123,7 @@ fun FormInputField(
             modifier = Modifier.padding(
                 top = ProtonDimens.Spacing.Small
             ),
-            style = ProtonTheme.typography.captionWeak
+            style = ProtonTheme.typography.bodySmallWeak
         )
     }
 }

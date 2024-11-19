@@ -97,10 +97,10 @@ import ch.protonmail.android.design.compose.component.ProtonTextButton
 import ch.protonmail.android.design.compose.component.appbar.ProtonTopAppBar
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.captionNorm
-import ch.protonmail.android.design.compose.theme.captionWeak
-import ch.protonmail.android.design.compose.theme.defaultNorm
-import ch.protonmail.android.design.compose.theme.defaultStrongNorm
+import ch.protonmail.android.design.compose.theme.bodySmallNorm
+import ch.protonmail.android.design.compose.theme.bodySmallWeak
+import ch.protonmail.android.design.compose.theme.bodyLargeNorm
+import ch.protonmail.android.design.compose.theme.titleMediumNorm
 
 @Composable
 fun ContactFormScreen(actions: ContactFormScreen.Actions, viewModel: ContactFormViewModel = hiltViewModel()) {
@@ -523,7 +523,7 @@ private fun SectionHeader(
         Text(
             modifier = Modifier.padding(start = ProtonDimens.Spacing.Standard),
             text = title,
-            style = ProtonTheme.typography.captionWeak
+            style = ProtonTheme.typography.bodySmallWeak
         )
     }
     MailDivider()
@@ -542,7 +542,7 @@ private fun AddNewButton(modifier: Modifier = Modifier, onClick: () -> Unit) {
         Text(
             text = stringResource(R.string.add_new),
             Modifier.padding(horizontal = ProtonDimens.Spacing.Standard),
-            style = ProtonTheme.typography.captionNorm
+            style = ProtonTheme.typography.bodySmallNorm
         )
     }
 }
@@ -678,7 +678,7 @@ private fun TypePickerField(initialSelectedType: FieldType, onValueSelected: (Te
                     end = ProtonDimens.Spacing.Small
                 ),
             text = selectedType.string(),
-            style = ProtonTheme.typography.defaultNorm
+            style = ProtonTheme.typography.bodyLargeNorm
         )
         Icon(
             painter = painterResource(id = R.drawable.ic_proton_chevron_down),
@@ -730,7 +730,7 @@ fun ContactFormTopBar(
                     Text(
                         text = stringResource(id = R.string.contact_form_save),
                         color = textColor,
-                        style = ProtonTheme.typography.defaultStrongNorm
+                        style = ProtonTheme.typography.titleMediumNorm
                     )
                 }
             }

@@ -45,8 +45,8 @@ import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
 import ch.protonmail.android.design.compose.component.ProtonRawListItem
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.defaultStrongNorm
-import ch.protonmail.android.design.compose.theme.defaultWeak
+import ch.protonmail.android.design.compose.theme.titleMediumNorm
+import ch.protonmail.android.design.compose.theme.bodyMediumWeak
 import timber.log.Timber
 
 @Composable
@@ -85,7 +85,7 @@ fun DetailMoreActionsBottomSheetContent(
                 .padding(bottom = ProtonDimens.Spacing.Tiny)
                 .padding(horizontal = ProtonDimens.Spacing.Large),
             text = uiModel.headerSubjectText.string(),
-            style = ProtonTheme.typography.defaultStrongNorm,
+            style = ProtonTheme.typography.titleMediumNorm,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
         )
@@ -94,7 +94,7 @@ fun DetailMoreActionsBottomSheetContent(
                 .padding(horizontal = ProtonDimens.Spacing.Large)
                 .padding(bottom = ProtonDimens.Spacing.Standard),
             text = uiModel.headerDescriptionText.string(),
-            style = ProtonTheme.typography.defaultWeak(),
+            style = ProtonTheme.typography.bodyMediumWeak,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
         )

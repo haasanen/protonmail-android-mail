@@ -23,7 +23,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.input.TextFieldValue
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.defaultNorm
+import ch.protonmail.android.design.compose.theme.bodyLargeNorm
 import ch.protonmail.android.uicomponents.chips.ChipsListState2.Companion.ChipsCreationRegex
 import ch.protonmail.android.uicomponents.chips.item.ChipItem
 import ch.protonmail.android.uicomponents.composer.suggestions.ContactSuggestionItem2
@@ -91,7 +91,7 @@ fun ChipsListField2(
                     .padding(vertical = ProtonDimens.Spacing.Large)
                     .padding(start = ProtonDimens.Spacing.Large),
                 color = ProtonTheme.colors.textWeak,
-                style = ProtonTheme.typography.defaultNorm
+                style = ProtonTheme.typography.bodyLargeNorm
             )
 
             ChipsListTextField2(

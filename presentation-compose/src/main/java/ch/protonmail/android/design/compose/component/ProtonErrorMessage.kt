@@ -31,8 +31,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.defaultSmallInverted
-import ch.protonmail.android.design.compose.theme.defaultSmallStrongInverted
+import ch.protonmail.android.design.compose.theme.bodyMediumInverted
+import ch.protonmail.android.design.compose.theme.labelLargeInverted
 
 @Composable
 fun ProtonErrorMessage(
@@ -51,7 +51,7 @@ fun ProtonErrorMessage(
     ) {
         Text(
             text = errorMessage,
-            style = ProtonTheme.typography.defaultSmallInverted,
+            style = ProtonTheme.typography.bodyMediumInverted,
             modifier = Modifier
                 .padding(
                     start = MessageHorizontalPadding,
@@ -87,7 +87,7 @@ fun ProtonErrorMessageWithAction(
         ) {
             Text(
                 text = errorMessage,
-                style = ProtonTheme.typography.defaultSmallInverted,
+                style = ProtonTheme.typography.bodyMediumInverted,
                 modifier = Modifier
                     .padding(horizontal = MessageWithActionHorizontalPadding, vertical = MessageVerticalPadding)
                     .weight(1f)
@@ -98,7 +98,7 @@ fun ProtonErrorMessageWithAction(
             ) {
                 Text(
                     text = action,
-                    style = ProtonTheme.typography.defaultSmallStrongInverted
+                    style = ProtonTheme.typography.labelLargeInverted
                 )
             }
         }

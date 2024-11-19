@@ -55,6 +55,8 @@ import ch.protonmail.android.design.R
 import ch.protonmail.android.design.compose.component.appbar.ProtonTopAppBar
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
+import ch.protonmail.android.design.compose.theme.bodyLargeNorm
+import ch.protonmail.android.design.compose.theme.bodyMediumNorm
 import ch.protonmail.android.design.compose.theme.textNorm
 
 /**
@@ -117,7 +119,7 @@ fun ProtonSettingsHeader(modifier: Modifier = Modifier, title: String) {
             modifier = Modifier.align(Alignment.Bottom),
             text = title,
             color = ProtonTheme.colors.brandNorm,
-            style = ProtonTheme.typography.body1Medium
+            style = ProtonTheme.typography.titleMedium
         )
     }
 }
@@ -147,14 +149,14 @@ fun ProtonSettingsItem(
                 modifier = Modifier,
                 text = name,
                 color = ProtonTheme.colors.textNorm,
-                style = ProtonTheme.typography.body1Regular
+                style = ProtonTheme.typography.bodyLargeNorm
             )
             hint?.let {
                 Text(
                     modifier = Modifier.padding(top = ProtonDimens.Spacing.Small),
                     text = hint,
                     color = ProtonTheme.colors.textHint,
-                    style = ProtonTheme.typography.body2Regular
+                    style = ProtonTheme.typography.bodyMediumNorm
                 )
             }
         }
@@ -188,7 +190,7 @@ fun ProtonSettingsToggleItem(
             Text(
                 text = name,
                 color = ProtonTheme.colors.textNorm(isViewEnabled),
-                style = ProtonTheme.typography.body1Regular
+                style = ProtonTheme.typography.bodyLargeNorm
             )
             Switch(
                 checked = isSwitchChecked,
@@ -201,7 +203,7 @@ fun ProtonSettingsToggleItem(
                 modifier = Modifier.offset(y = toggleItemNegativeOffset),
                 text = hint,
                 color = ProtonTheme.colors.textHint,
-                style = ProtonTheme.typography.body2Regular
+                style = ProtonTheme.typography.bodyMediumNorm
             )
         }
     }
@@ -224,7 +226,7 @@ fun ProtonSettingsRadioItem(
         Text(
             text = name,
             color = ProtonTheme.colors.textNorm,
-            style = ProtonTheme.typography.body1Regular
+            style = ProtonTheme.typography.bodyLargeNorm
         )
         RadioButton(
             selected = isSelected,

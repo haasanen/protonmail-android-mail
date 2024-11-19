@@ -39,8 +39,8 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextOverflow
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.defaultNorm
-import ch.protonmail.android.design.compose.theme.defaultSmallWeak
+import ch.protonmail.android.design.compose.theme.bodyLargeNorm
+import ch.protonmail.android.design.compose.theme.bodyMediumWeak
 import ch.protonmail.android.uicomponents.R
 import ch.protonmail.android.uicomponents.composer.suggestions.ContactSuggestionsColor.ContactGroupsBackground
 import ch.protonmail.android.uicomponents.text.HighlightedText
@@ -101,7 +101,7 @@ private fun ContactSuggestionEntry(currentText: String, item: ContactSuggestionI
                 text = item.header,
                 highlight = currentText,
                 maxLines = 1,
-                style = ProtonTheme.typography.defaultNorm,
+                style = ProtonTheme.typography.bodyLargeNorm,
                 overflow = TextOverflow.Ellipsis
             )
             Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Standard))
@@ -109,7 +109,7 @@ private fun ContactSuggestionEntry(currentText: String, item: ContactSuggestionI
                 text = item.subheader,
                 highlight = currentText,
                 maxLines = 1,
-                style = ProtonTheme.typography.defaultSmallWeak,
+                style = ProtonTheme.typography.bodyMediumWeak,
                 overflow = TextOverflow.Ellipsis
             )
         }
@@ -143,14 +143,14 @@ private fun ContactSuggestionGroupEntry(currentText: String, item: ContactSugges
                 text = item.header,
                 highlight = currentText,
                 maxLines = 1,
-                style = ProtonTheme.typography.defaultNorm,
+                style = ProtonTheme.typography.bodyLargeNorm,
                 overflow = TextOverflow.Ellipsis
             )
             Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Small))
             Text(
                 text = item.subheader,
                 maxLines = 1,
-                style = ProtonTheme.typography.defaultSmallWeak,
+                style = ProtonTheme.typography.bodyMediumWeak,
                 overflow = TextOverflow.Ellipsis
             )
         }

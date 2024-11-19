@@ -41,7 +41,7 @@ import ch.protonmail.android.mailcommon.presentation.NO_CONTENT_DESCRIPTION
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 import ch.protonmail.android.mailcontact.presentation.R
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.subheadlineUnspecified
+import ch.protonmail.android.design.compose.theme.headlineSmallNorm
 
 @Composable
 fun InitialsContactAvatar(modifier: Modifier = Modifier, initials: String) {
@@ -62,7 +62,7 @@ fun InitialsContactAvatar(modifier: Modifier = Modifier, initials: String) {
     ) {
         Text(
             textAlign = TextAlign.Center,
-            style = ProtonTheme.typography.subheadlineUnspecified,
+            style = ProtonTheme.typography.headlineSmallNorm,
             color = ProtonTheme.colors.textHint,
             text = initials
         )

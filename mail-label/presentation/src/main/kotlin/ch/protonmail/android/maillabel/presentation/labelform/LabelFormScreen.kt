@@ -83,7 +83,7 @@ import ch.protonmail.android.design.compose.component.appbar.ProtonTopAppBar
 
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.defaultStrongNorm
+import ch.protonmail.android.design.compose.theme.titleMediumNorm
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -343,7 +343,7 @@ fun LabelFormTopBar(
                     Text(
                         text = stringResource(id = R.string.label_form_save),
                         color = textColor,
-                        style = ProtonTheme.typography.defaultStrongNorm
+                        style = ProtonTheme.typography.titleMediumNorm
                     )
                 }
             }

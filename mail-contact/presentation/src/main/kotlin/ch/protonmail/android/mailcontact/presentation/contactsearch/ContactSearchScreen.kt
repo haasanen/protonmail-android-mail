@@ -58,7 +58,7 @@ import ch.protonmail.android.uicomponents.SearchView
 import ch.protonmail.android.uicomponents.dismissKeyboard
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.defaultSmallWeak
+import ch.protonmail.android.design.compose.theme.bodyMediumWeak
 import ch.protonmail.android.mailcontact.domain.model.ContactId
 import ch.protonmail.android.mailcontact.presentation.model.ContactListItemUiModel
 import ch.protonmail.android.mailcontact.presentation.previewdata.ContactListPreviewData
@@ -167,7 +167,7 @@ fun NoResultsContent(modifier: Modifier = Modifier) {
             modifier = Modifier.align(Alignment.Center),
             text = stringResource(id = R.string.contact_search_no_results),
             textAlign = TextAlign.Center,
-            style = ProtonTheme.typography.defaultSmallWeak
+            style = ProtonTheme.typography.bodyMediumWeak
         )
     }
 }

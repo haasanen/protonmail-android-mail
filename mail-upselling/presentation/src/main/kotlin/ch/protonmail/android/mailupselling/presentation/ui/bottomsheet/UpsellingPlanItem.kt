@@ -59,8 +59,8 @@ import ch.protonmail.android.mailupselling.presentation.ui.UpsellingDimens
 import ch.protonmail.android.uicomponents.chips.thenIf
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.captionUnspecified
-import ch.protonmail.android.design.compose.theme.defaultHighlightUnspecified
+import ch.protonmail.android.design.compose.theme.bodySmallNorm
+import ch.protonmail.android.design.compose.theme.titleMediumNorm
 import me.proton.core.payment.presentation.view.ProtonPaymentButton
 
 @OptIn(ExperimentalLayoutApi::class)
@@ -121,7 +121,7 @@ internal fun UpsellingPlanItem(
                     bottom = ProtonDimens.Spacing.Standard + ProtonDimens.Spacing.Small
                 ),
                 text = pluralStringResource(R.plurals.upselling_month, planUiModel.cycle, planUiModel.cycle),
-                style = ProtonTheme.typography.captionUnspecified,
+                style = ProtonTheme.typography.bodySmallNorm,
                 color = colors.textNorm
             )
             FlowRow(
@@ -131,18 +131,18 @@ internal fun UpsellingPlanItem(
             ) {
                 Text(
                     text = planUiModel.currency,
-                    style = ProtonTheme.typography.defaultHighlightUnspecified,
+                    style = ProtonTheme.typography.titleMediumNorm,
                     color = colors.textNorm
                 )
                 Spacer(modifier = Modifier.padding(UpsellingDimens.CurrencyDivider))
                 Text(
                     text = planUiModel.price.string(),
-                    style = ProtonTheme.typography.defaultHighlightUnspecified,
+                    style = ProtonTheme.typography.titleMediumNorm,
                     color = colors.textNorm
                 )
                 Text(
                     text = stringResource(id = R.string.upselling_month),
-                    style = ProtonTheme.typography.captionUnspecified,
+                    style = ProtonTheme.typography.bodySmallNorm,
                     color = colors.textWeak,
                     modifier = Modifier.align(Alignment.CenterVertically)
                 )

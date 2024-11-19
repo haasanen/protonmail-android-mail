@@ -55,7 +55,7 @@ import ch.protonmail.android.mailcomposer.presentation.R
 import kotlinx.coroutines.launch
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.defaultNorm
+import ch.protonmail.android.design.compose.theme.bodyLargeNorm
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -115,7 +115,7 @@ internal fun BodyTextField(
         },
         minLines = bodyMinLines,
         keyboardOptions = KeyboardOptions.Default.copy(capitalization = KeyboardCapitalization.Sentences),
-        textStyle = ProtonTheme.typography.defaultNorm,
+        textStyle = ProtonTheme.typography.bodyLargeNorm,
         cursorBrush = SolidColor(TextFieldDefaults.colors().cursorColor),
         decorationBox = @Composable { innerTextField ->
             if (text.text.isEmpty()) {
@@ -123,7 +123,7 @@ internal fun BodyTextField(
                     modifier = Modifier.testTag(ComposerTestTags.MessageBodyPlaceholder),
                     text = stringResource(R.string.compose_message_placeholder),
                     color = ProtonTheme.colors.textHint,
-                    style = ProtonTheme.typography.defaultNorm
+                    style = ProtonTheme.typography.bodyLargeNorm
                 )
             }
             innerTextField()

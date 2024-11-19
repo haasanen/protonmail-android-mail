@@ -72,10 +72,10 @@ import ch.protonmail.android.design.compose.component.ProtonSecondaryButton
 import ch.protonmail.android.design.compose.component.appbar.ProtonTopAppBar
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.captionNorm
-import ch.protonmail.android.design.compose.theme.defaultNorm
-import ch.protonmail.android.design.compose.theme.defaultSmallWeak
-import ch.protonmail.android.design.compose.theme.defaultStrongNorm
+import ch.protonmail.android.design.compose.theme.bodySmallNorm
+import ch.protonmail.android.design.compose.theme.bodyLargeNorm
+import ch.protonmail.android.design.compose.theme.bodyMediumWeak
+import ch.protonmail.android.design.compose.theme.titleMediumNorm
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -198,7 +198,7 @@ fun FolderListScreenContent(
                         end = ProtonDimens.Spacing.Large,
                         bottom = ProtonDimens.Spacing.Large
                     ),
-                    style = ProtonTheme.typography.defaultNorm
+                    style = ProtonTheme.typography.bodyLargeNorm
                 )
             }
         }
@@ -231,7 +231,7 @@ fun EmptyFolderListScreen(modifier: Modifier = Modifier, onAddFolderClick: () ->
                 top = ProtonDimens.Spacing.ExtraLarge,
                 end = ProtonDimens.Spacing.Huge
             ),
-            style = ProtonTheme.typography.defaultStrongNorm
+            style = ProtonTheme.typography.titleMediumNorm
         )
         Text(
             stringResource(R.string.folder_list_create_folder_placeholder_description),
@@ -240,7 +240,7 @@ fun EmptyFolderListScreen(modifier: Modifier = Modifier, onAddFolderClick: () ->
                 top = ProtonDimens.Spacing.Tiny,
                 end = ProtonDimens.Spacing.Huge
             ),
-            style = ProtonTheme.typography.defaultSmallWeak,
+            style = ProtonTheme.typography.bodyMediumWeak,
             textAlign = TextAlign.Center
         )
         ProtonSecondaryButton(
@@ -252,7 +252,7 @@ fun EmptyFolderListScreen(modifier: Modifier = Modifier, onAddFolderClick: () ->
                 Modifier.padding(
                     horizontal = ProtonDimens.Spacing.Standard
                 ),
-                style = ProtonTheme.typography.captionNorm
+                style = ProtonTheme.typography.bodySmallNorm
             )
         }
     }

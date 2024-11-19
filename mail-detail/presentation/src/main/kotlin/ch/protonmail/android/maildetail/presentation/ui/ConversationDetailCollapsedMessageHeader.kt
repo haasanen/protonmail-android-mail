@@ -52,9 +52,8 @@ import ch.protonmail.android.maildetail.presentation.previewdata.ConversationDet
 import ch.protonmail.android.mailmessage.presentation.ui.ParticipantAvatar
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.captionNorm
-import ch.protonmail.android.design.compose.theme.defaultNorm
-import ch.protonmail.android.design.compose.theme.overlineNorm
+import ch.protonmail.android.design.compose.theme.bodySmallNorm
+import ch.protonmail.android.design.compose.theme.bodyLargeNorm
 import me.proton.core.presentation.R.drawable
 import me.proton.core.util.kotlin.EMPTY_STRING
 import me.proton.core.util.kotlin.exhaustive
@@ -223,7 +222,7 @@ private fun Expiration(uiModel: ConversationDetailMessageUiModel.Collapsed, modi
         Text(
             modifier = Modifier.testTag(ConversationDetailCollapsedMessageHeaderTestTags.ExpirationText),
             text = uiModel.expiration?.string() ?: EMPTY_STRING,
-            style = ProtonTheme.typography.overlineNorm
+            style = ProtonTheme.typography.bodySmallNorm
         )
     }
 }
@@ -304,7 +303,7 @@ private fun Sender(
             text = uiModel.sender.participantName,
             fontWeight = fontWeight,
             color = fontColor,
-            style = ProtonTheme.typography.defaultNorm,
+            style = ProtonTheme.typography.bodyLargeNorm,
             overflow = TextOverflow.Ellipsis,
             maxLines = 1
         )
@@ -340,7 +339,7 @@ private fun Time(
         text = uiModel.shortTime.string(),
         fontWeight = fontWeight,
         color = fontColor,
-        style = ProtonTheme.typography.captionNorm,
+        style = ProtonTheme.typography.bodySmallNorm,
         maxLines = 1
     )
 }

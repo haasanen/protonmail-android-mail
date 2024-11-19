@@ -28,7 +28,7 @@ import ch.protonmail.android.design.compose.component.ProtonAlertDialogButton
 import ch.protonmail.android.design.compose.component.ProtonAlertDialogText
 import ch.protonmail.android.design.compose.component.ProtonTextButton
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.defaultNorm
+import ch.protonmail.android.design.compose.theme.bodyLargeNorm
 
 @Composable
 fun AutoLockPinSignOutItem(
@@ -39,7 +39,7 @@ fun AutoLockPinSignOutItem(
         ProtonTextButton(onClick = actions.onSignOut) {
             Text(
                 text = stringResource(id = R.string.mail_settings_pin_insertion_signout_text),
-                style = ProtonTheme.typography.defaultNorm(),
+                style = ProtonTheme.typography.bodyLargeNorm,
                 color = ProtonTheme.colors.textAccent
             )
         }

@@ -47,7 +47,7 @@ import ch.protonmail.android.maillabel.presentation.R
 import ch.protonmail.android.maillabel.presentation.sample.LabelColorListSample.colorListSample
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.defaultSmallStrongNorm
+import ch.protonmail.android.design.compose.theme.titleSmallNorm
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -65,7 +65,7 @@ fun ColorPicker(
                 start = ProtonDimens.Spacing.Large,
                 bottom = ProtonDimens.Spacing.Standard
             ),
-            style = ProtonTheme.typography.defaultSmallStrongNorm
+            style = ProtonTheme.typography.titleSmallNorm
         )
 
         FlowRow(Modifier.padding(start = ProtonDimens.Spacing.Standard)) {

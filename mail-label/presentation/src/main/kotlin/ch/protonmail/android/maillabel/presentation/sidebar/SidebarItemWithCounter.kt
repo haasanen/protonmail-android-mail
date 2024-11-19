@@ -39,7 +39,7 @@ import ch.protonmail.android.mailcommon.presentation.mapper.UnreadCountValueMapp
 import ch.protonmail.android.design.compose.component.ProtonListItem
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.captionNorm
+import ch.protonmail.android.design.compose.theme.bodySmallNorm
 
 @Composable
 fun SidebarItemWithCounter(
@@ -94,7 +94,7 @@ fun SidebarItemWithCounter(
                         .padding(horizontal = ProtonDimens.Spacing.Tiny),
                     text = UnreadCountValueMapper.toCappedValue(count),
                     color = Color.White,
-                    style = ProtonTheme.typography.captionNorm
+                    style = ProtonTheme.typography.bodySmallNorm
                 )
             }
         }

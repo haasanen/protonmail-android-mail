@@ -42,7 +42,7 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.model.ParticipantU
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.ParticipantsUiModel
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.defaultNorm
+import ch.protonmail.android.design.compose.theme.bodyLargeNorm
 
 @Composable
 fun ParticipantsList(
@@ -210,7 +210,7 @@ private fun ParticipantName(
         text = participantName,
         overflow = TextOverflow.Ellipsis,
         maxLines = 1,
-        style = ProtonTheme.typography.defaultNorm.copy(fontWeight = fontWeight, color = fontColor)
+        style = ProtonTheme.typography.bodyLargeNorm.copy(fontWeight = fontWeight, color = fontColor)
     )
 }
 
@@ -223,7 +223,7 @@ private fun Separator(
     Text(
         modifier = modifier.padding(end = ProtonDimens.Spacing.Small),
         text = ",",
-        style = ProtonTheme.typography.defaultNorm.copy(fontWeight = fontWeight, color = fontColor)
+        style = ProtonTheme.typography.bodyLargeNorm.copy(fontWeight = fontWeight, color = fontColor)
     )
 }
 
@@ -236,7 +236,7 @@ private fun ThreeDots(
     Text(
         modifier = modifier,
         text = "...",
-        style = ProtonTheme.typography.defaultNorm.copy(fontWeight = fontWeight, color = fontColor)
+        style = ProtonTheme.typography.bodyLargeNorm.copy(fontWeight = fontWeight, color = fontColor)
     )
 }
 

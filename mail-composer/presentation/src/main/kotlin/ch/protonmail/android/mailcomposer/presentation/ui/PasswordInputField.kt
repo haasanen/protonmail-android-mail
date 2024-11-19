@@ -48,9 +48,9 @@ import androidx.compose.ui.text.input.VisualTransformation
 import ch.protonmail.android.mailcomposer.presentation.R
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.captionStrongNorm
-import ch.protonmail.android.design.compose.theme.captionWeak
-import ch.protonmail.android.design.compose.theme.defaultNorm
+import ch.protonmail.android.design.compose.theme.labelMediumNorm
+import ch.protonmail.android.design.compose.theme.bodySmallWeak
+import ch.protonmail.android.design.compose.theme.bodyLargeNorm
 
 @Composable
 fun PasswordInputField(
@@ -78,7 +78,7 @@ fun PasswordInputField(
             shape = RoundedCornerShape(ProtonDimens.LargeCornerRadius),
             colors = getPasswordInputFieldColors(),
             singleLine = true,
-            textStyle = ProtonTheme.typography.defaultNorm,
+            textStyle = ProtonTheme.typography.bodyLargeNorm,
             trailingIcon = {
                 if (showTrailingIcon) {
                     PasswordInputFieldTrailingButton(
@@ -110,7 +110,7 @@ fun PasswordInputFieldLabel(
     Text(
         modifier = modifier.padding(bottom = ProtonDimens.Spacing.Standard),
         text = text,
-        style = ProtonTheme.typography.captionStrongNorm,
+        style = ProtonTheme.typography.labelMediumNorm,
         color = if (isError) ProtonTheme.colors.notificationError else ProtonTheme.colors.textNorm
     )
 }
@@ -148,7 +148,7 @@ fun PasswordInputFieldSupportingText(
     Text(
         modifier = modifier.padding(top = ProtonDimens.Spacing.Small),
         text = stringResource(id = textId),
-        style = ProtonTheme.typography.captionWeak,
+        style = ProtonTheme.typography.bodySmallWeak,
         color = if (isError) ProtonTheme.colors.notificationError else ProtonTheme.colors.textWeak
     )
 }

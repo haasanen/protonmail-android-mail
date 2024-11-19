@@ -55,7 +55,7 @@ import ch.protonmail.android.design.compose.component.ProtonButton
 import ch.protonmail.android.design.compose.component.ProtonSolidButton
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.defaultSmallWeak
+import ch.protonmail.android.design.compose.theme.bodyMediumWeak
 
 @Composable
 @Suppress("LongParameterList", "LongMethod")
@@ -171,7 +171,7 @@ internal fun MessageBodyLoadingError(
             modifier = Modifier.padding(top = ProtonDimens.Spacing.Large),
             text = errorMessage,
             textAlign = TextAlign.Center,
-            style = ProtonTheme.typography.defaultSmallWeak
+            style = ProtonTheme.typography.bodyMediumWeak
         )
         if (!isNetworkError) {
             ProtonSolidButton(
@@ -194,7 +194,7 @@ fun MessageBodyButtonBanner(
         icon = R.drawable.ic_proton_image,
         iconTint = ProtonTheme.colors.iconWeak,
         text = TextUiModel.TextRes(bannerText),
-        textStyle = ProtonTheme.typography.defaultSmallWeak,
+        textStyle = ProtonTheme.typography.bodyMediumWeak,
         backgroundColor = ProtonTheme.colors.backgroundSecondary
     ) {
         ProtonButton(
@@ -207,7 +207,7 @@ fun MessageBodyButtonBanner(
         ) {
             Text(
                 text = stringResource(id = buttonText),
-                style = ProtonTheme.typography.defaultSmallWeak
+                style = ProtonTheme.typography.bodyMediumWeak
             )
         }
     }

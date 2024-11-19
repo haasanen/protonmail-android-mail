@@ -44,7 +44,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.defaultNorm
+import ch.protonmail.android.design.compose.theme.bodyLargeNorm
 import ch.protonmail.android.uicomponents.chips.item.ChipItemsList
 import kotlinx.coroutines.launch
 
@@ -59,7 +59,7 @@ internal fun ChipsListTextField2(
     modifier: Modifier = Modifier,
     focusRequester: FocusRequester? = null,
     cursorColor: Color = ProtonTheme.colors.brandDarken20,
-    textStyle: TextStyle = ProtonTheme.typography.defaultNorm,
+    textStyle: TextStyle = ProtonTheme.typography.bodyLargeNorm,
     animateChipsCreation: Boolean = false,
     actions: ChipsListTextField2.Actions
 ) {

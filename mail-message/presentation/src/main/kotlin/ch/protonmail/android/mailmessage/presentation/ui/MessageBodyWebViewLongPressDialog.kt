@@ -39,7 +39,7 @@ import ch.protonmail.android.mailcommon.presentation.ui.MailDivider
 import ch.protonmail.android.mailmessage.presentation.R
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.defaultNorm
+import ch.protonmail.android.design.compose.theme.bodyLargeNorm
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -89,7 +89,7 @@ private fun DialogLinkRow(
             .clickable { uriAction(linkUri) }
             .padding(ProtonDimens.Spacing.Large)
     ) {
-        Text(text = text, style = ProtonTheme.typography.defaultNorm())
+        Text(text = text, style = ProtonTheme.typography.bodyLargeNorm)
     }
 }
 

@@ -45,8 +45,8 @@ import ch.protonmail.android.maillabel.presentation.ui.MailboxItemLabels.Plus2Ch
 import ch.protonmail.android.maillabel.presentation.ui.MailboxItemLabels.Plus3CharsLimit
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.captionWeak
-import ch.protonmail.android.design.compose.theme.overline
+import ch.protonmail.android.design.compose.theme.bodySmallWeak
+import ch.protonmail.android.design.compose.theme.labelSmallNorm
 
 @Composable
 fun LabelsList(
@@ -202,7 +202,7 @@ private fun Label(label: LabelUiModel) {
             .background(label.color, shape = RoundedCornerShape(percent = 100))
             .padding(horizontal = ProtonDimens.Spacing.Standard, vertical = ProtonDimens.Spacing.Tiny),
         text = label.name,
-        style = ProtonTheme.typography.overline.copy(color = ProtonTheme.colors.floatyText),
+        style = ProtonTheme.typography.labelSmallNorm.copy(color = ProtonTheme.colors.floatyText),
         maxLines = 1,
         overflow = TextOverflow.Ellipsis
     )
@@ -213,7 +213,7 @@ private fun PlusText(count: Int) {
     Text(
         modifier = Modifier,
         text = "+$count",
-        style = ProtonTheme.typography.captionWeak,
+        style = ProtonTheme.typography.bodySmallWeak,
         maxLines = 1
     )
 }

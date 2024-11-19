@@ -35,7 +35,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.defaultWeak
+import ch.protonmail.android.design.compose.theme.bodyMediumWeak
 
 @Composable
 fun ProtonAlertDialog(
@@ -159,7 +159,7 @@ fun ProtonDialogTitle(@StringRes titleResId: Int, modifier: Modifier = Modifier)
 fun ProtonDialogTitle(title: String, modifier: Modifier = Modifier) {
     Text(
         text = title,
-        style = ProtonTheme.typography.headline,
+        style = ProtonTheme.typography.titleLarge,
         color = ProtonTheme.colors.textNorm,
         maxLines = 2,
         overflow = TextOverflow.Ellipsis,
@@ -179,7 +179,7 @@ fun ProtonAlertDialogText(@StringRes textResId: Int, modifier: Modifier = Modifi
 fun ProtonAlertDialogText(text: String, modifier: Modifier = Modifier) {
     Text(
         text = text,
-        style = ProtonTheme.typography.defaultWeak,
+        style = ProtonTheme.typography.bodyMediumWeak,
         modifier = modifier
     )
 }
@@ -225,7 +225,7 @@ fun ProtonAlertDialogButton(
     ) {
         Text(
             text = title,
-            style = ProtonTheme.typography.body1Medium,
+            style = ProtonTheme.typography.titleMedium,
             color = ProtonTheme.colors.textAccent,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis

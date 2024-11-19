@@ -32,7 +32,7 @@ import ch.protonmail.android.mailcommon.presentation.model.string
 import ch.protonmail.android.mailupselling.presentation.ui.UpsellingColors
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.overlineStrongUnspecified
+import ch.protonmail.android.design.compose.theme.labelSmallNorm
 
 @Composable
 internal fun UpsellingDiscountTag(modifier: Modifier = Modifier, text: TextUiModel) {
@@ -49,7 +49,7 @@ internal fun UpsellingDiscountTag(modifier: Modifier = Modifier, text: TextUiMod
     ) {
         Text(
             text = text.string(),
-            style = ProtonTheme.typography.overlineStrongUnspecified,
+            style = ProtonTheme.typography.labelSmallNorm,
             color = colors.backgroundNorm
         )
     }

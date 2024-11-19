@@ -47,8 +47,8 @@ import ch.protonmail.android.mailmessage.presentation.model.AttachmentGroupUiMod
 import ch.protonmail.android.mailmessage.presentation.sample.AttachmentUiModelSample
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.defaultSmall
-import ch.protonmail.android.design.compose.theme.defaultSmallStrong
+import ch.protonmail.android.design.compose.theme.bodyMediumNorm
+import ch.protonmail.android.design.compose.theme.labelLargeNorm
 import me.proton.core.presentation.R.drawable
 
 @Composable
@@ -86,13 +86,13 @@ fun AttachmentFooter(
             Text(
                 modifier = Modifier.testTag(AttachmentFooterTestTags.SummaryText),
                 text = pluralStringResource(R.plurals.attachment_count_label, attachments.size, attachments.size),
-                style = ProtonTheme.typography.defaultSmall
+                style = ProtonTheme.typography.bodyMediumNorm
             )
             Spacer(modifier = Modifier.width(ProtonDimens.Spacing.Small))
             Text(
                 modifier = Modifier.testTag(AttachmentFooterTestTags.SummarySize),
                 text = attachments.getTotalAttachmentByteSizeReadable(LocalContext.current),
-                style = ProtonTheme.typography.defaultSmall.copy(color = ProtonTheme.colors.textHint)
+                style = ProtonTheme.typography.bodyMediumNorm.copy(color = ProtonTheme.colors.textHint)
             )
         }
         attachments.take(messageBodyAttachmentsUiModel.limit).forEachIndexed { index, item ->
@@ -118,7 +118,7 @@ fun AttachmentFooter(
                         id = R.string.attachment_show_more_label,
                         attachments.size - messageBodyAttachmentsUiModel.limit
                     ),
-                    style = ProtonTheme.typography.defaultSmallStrong.copy(color = ProtonTheme.colors.brandNorm)
+                    style = ProtonTheme.typography.labelLargeNorm.copy(color = ProtonTheme.colors.brandNorm)
                 )
             }
         }

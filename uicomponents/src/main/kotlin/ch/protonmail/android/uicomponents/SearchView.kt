@@ -55,7 +55,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import ch.protonmail.android.uicomponents.text.defaultTextFieldColors
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.defaultNorm
+import ch.protonmail.android.design.compose.theme.bodyLargeNorm
 
 @Composable
 fun SearchView(
@@ -96,7 +96,7 @@ fun SearchView(
                         focusRequester.requestFocus()
                     }
                 },
-            textStyle = ProtonTheme.typography.defaultNorm,
+            textStyle = ProtonTheme.typography.bodyLargeNorm,
             colors = TextFieldDefaults.defaultTextFieldColors().copy(
                 focusedContainerColor = backgroundColor,
                 unfocusedContainerColor = backgroundColor,
@@ -122,7 +122,7 @@ fun SearchView(
                     modifier = Modifier.testTag(SearchViewTestTags.SearchTextFieldPlaceholder),
                     text = stringResource(parameters.searchPlaceholderText),
                     color = ProtonTheme.colors.textHint,
-                    style = ProtonTheme.typography.defaultNorm
+                    style = ProtonTheme.typography.bodyLargeNorm
                 )
             }
         )

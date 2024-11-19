@@ -30,6 +30,8 @@ import androidx.compose.ui.semantics.semantics
 import ch.protonmail.android.design.compose.component.ProtonRawListItem
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
+import ch.protonmail.android.design.compose.theme.bodyLargeNorm
+import ch.protonmail.android.design.compose.theme.bodyMediumNorm
 
 @Composable
 fun SettingsItem(
@@ -58,7 +60,7 @@ fun SettingsItem(
                     modifier = Modifier,
                     text = name,
                     color = ProtonTheme.colors.textNorm,
-                    style = ProtonTheme.typography.body1Regular
+                    style = ProtonTheme.typography.bodyLargeNorm
                 )
                 upsellingIcon()
             }
@@ -67,7 +69,7 @@ fun SettingsItem(
                     modifier = Modifier.padding(top = ProtonDimens.Spacing.Small),
                     text = hint,
                     color = ProtonTheme.colors.textHint,
-                    style = ProtonTheme.typography.body2Regular
+                    style = ProtonTheme.typography.bodyMediumNorm
                 )
             }
         }

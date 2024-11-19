@@ -32,8 +32,8 @@ import ch.protonmail.android.design.compose.component.ProtonAlertDialog
 import ch.protonmail.android.design.compose.component.ProtonAlertDialogButton
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.defaultNorm
-import ch.protonmail.android.design.compose.theme.defaultWeak
+import ch.protonmail.android.design.compose.theme.bodyLargeNorm
+import ch.protonmail.android.design.compose.theme.bodyMediumWeak
 
 @Composable
 fun PhishingLinkConfirmationDialog(
@@ -49,19 +49,19 @@ fun PhishingLinkConfirmationDialog(
             Column {
                 Text(
                     text = stringResource(id = R.string.phishing_link_confirmation_dialog_content_part_1),
-                    style = ProtonTheme.typography.defaultNorm
+                    style = ProtonTheme.typography.bodyLargeNorm
                 )
                 Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Large))
                 Text(
                     text = encodeToPunycode(linkUri.toString()),
                     maxLines = 3,
                     overflow = TextOverflow.Ellipsis,
-                    style = ProtonTheme.typography.defaultWeak
+                    style = ProtonTheme.typography.bodyMediumWeak
                 )
                 Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Large))
                 Text(
                     text = stringResource(id = R.string.phishing_link_confirmation_dialog_content_part_2),
-                    style = ProtonTheme.typography.defaultNorm
+                    style = ProtonTheme.typography.bodyLargeNorm
                 )
             }
         },

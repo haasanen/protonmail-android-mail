@@ -35,7 +35,7 @@ import ch.protonmail.android.mailsettings.presentation.R
 import ch.protonmail.android.design.compose.component.ProtonRawListItem
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.defaultNorm
+import ch.protonmail.android.design.compose.theme.bodyLargeNorm
 
 @Composable
 fun NotificationSettingsItemButton(modifier: Modifier = Modifier) {
@@ -57,7 +57,7 @@ fun NotificationSettingsItemButton(modifier: Modifier = Modifier) {
             modifier = Modifier.weight(1f),
             text = stringResource(id = R.string.mail_settings_notifications_notifications_settings),
             color = ProtonTheme.colors.textNorm,
-            style = ProtonTheme.typography.defaultNorm
+            style = ProtonTheme.typography.bodyLargeNorm
         )
         Icon(
             painter = painterResource(id = R.drawable.ic_proton_arrow_out_square),

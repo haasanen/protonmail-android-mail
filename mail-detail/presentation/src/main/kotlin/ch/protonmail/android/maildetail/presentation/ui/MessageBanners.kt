@@ -27,7 +27,7 @@ import ch.protonmail.android.maildetail.presentation.R
 import ch.protonmail.android.maildetail.presentation.model.MessageBannersUiModel
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.defaultSmallInverted
+import ch.protonmail.android.design.compose.theme.bodyMediumInverted
 
 @Composable
 fun MessageBanners(messageBannersUiModel: MessageBannersUiModel) {
@@ -37,7 +37,7 @@ fun MessageBanners(messageBannersUiModel: MessageBannersUiModel) {
                 icon = R.drawable.ic_proton_hook,
                 iconTint = ProtonTheme.colors.iconInverted,
                 text = TextUiModel.TextRes(R.string.message_phishing_banner_text),
-                textStyle = ProtonTheme.typography.defaultSmallInverted,
+                textStyle = ProtonTheme.typography.bodyMediumInverted,
                 backgroundColor = ProtonTheme.colors.notificationError,
                 borderColorIsBackgroundColor = true
             )
@@ -48,7 +48,7 @@ fun MessageBanners(messageBannersUiModel: MessageBannersUiModel) {
                 icon = R.drawable.ic_proton_hourglass,
                 iconTint = ProtonTheme.colors.iconInverted,
                 text = messageBannersUiModel.expirationBannerText,
-                textStyle = ProtonTheme.typography.defaultSmallInverted,
+                textStyle = ProtonTheme.typography.bodyMediumInverted,
                 backgroundColor = ProtonTheme.colors.notificationError,
                 borderColorIsBackgroundColor = true
             )

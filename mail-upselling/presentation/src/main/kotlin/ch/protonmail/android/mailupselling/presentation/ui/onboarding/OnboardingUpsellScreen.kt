@@ -87,14 +87,15 @@ import ch.protonmail.android.design.compose.component.ProtonSolidButton
 import ch.protonmail.android.design.compose.component.ProtonTextButton
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.captionStrongUnspecified
-import ch.protonmail.android.design.compose.theme.defaultNorm
-import ch.protonmail.android.design.compose.theme.defaultSmallNorm
-import ch.protonmail.android.design.compose.theme.defaultSmallStrongNorm
-import ch.protonmail.android.design.compose.theme.defaultSmallStrongUnspecified
-import ch.protonmail.android.design.compose.theme.defaultSmallWeak
-import ch.protonmail.android.design.compose.theme.defaultStrongNorm
-import ch.protonmail.android.design.compose.theme.headlineNorm
+import ch.protonmail.android.design.compose.theme.labelMediumNorm
+import ch.protonmail.android.design.compose.theme.bodyLargeNorm
+import ch.protonmail.android.design.compose.theme.bodyMediumNorm
+import ch.protonmail.android.design.compose.theme.titleSmallNorm
+import ch.protonmail.android.design.compose.theme.bodyMediumWeak
+import ch.protonmail.android.design.compose.theme.bodySmallNorm
+import ch.protonmail.android.design.compose.theme.headlineSmallNorm
+import ch.protonmail.android.design.compose.theme.titleMediumNorm
+import ch.protonmail.android.design.compose.theme.titleLargeNorm
 import me.proton.core.domain.entity.UserId
 import me.proton.core.util.kotlin.takeIfNotEmpty
 
@@ -161,7 +162,7 @@ private fun OnboardingUpsellScreenContent(
         ) {
             Text(
                 text = stringResource(id = R.string.upselling_onboarding_title),
-                style = ProtonTheme.typography.defaultStrongNorm
+                style = ProtonTheme.typography.titleMediumNorm
             )
         }
 
@@ -271,7 +272,7 @@ private fun PlanSwitcherLabel(modifier: Modifier, text: TextUiModel) {
                 .background(color = ProtonTheme.colors.interactionNorm, shape = ProtonTheme.shapes.large)
                 .padding(horizontal = ProtonDimens.Spacing.Standard, vertical = ProtonDimens.Spacing.Small),
             text = text.string(),
-            style = ProtonTheme.typography.captionStrongUnspecified.copy(color = Color.White)
+            style = ProtonTheme.typography.labelMediumNorm.copy(color = Color.White)
         )
         Spacer(Modifier.width(ProtonDimens.Spacing.Standard))
     }
@@ -296,7 +297,7 @@ private fun PlanSwitcherItem(
     ) {
         Text(
             text = stringResource(id = text),
-            style = ProtonTheme.typography.defaultSmallStrongNorm
+            style = ProtonTheme.typography.titleSmallNorm
         )
     }
 }
@@ -335,7 +336,7 @@ private fun PlanCard(
                     .padding(ProtonDimens.Spacing.Standard),
                 text = stringResource(id = R.string.upselling_onboarding_best_value),
                 textAlign = TextAlign.Center,
-                style = ProtonTheme.typography.defaultSmallStrongUnspecified.copy(color = Color.White)
+                style = ProtonTheme.typography.titleSmallNorm.copy(color = Color.White)
             )
         }
         Column(
@@ -391,7 +392,7 @@ private fun PlanNameAndPrice(modifier: Modifier = Modifier, plan: OnboardingUpse
             Text(
                 modifier = Modifier.padding(end = ProtonDimens.Spacing.Small),
                 text = plan.title,
-                style = ProtonTheme.typography.subheadline,
+                style = ProtonTheme.typography.headlineSmallNorm,
                 color = ProtonTheme.colors.textNorm
             )
         }
@@ -403,7 +404,7 @@ private fun PlanNameAndPrice(modifier: Modifier = Modifier, plan: OnboardingUpse
                 Text(
                     modifier = Modifier.align(Alignment.End),
                     text = "${priceUiModel.currency} ${priceUiModel.originalAmount.string()}",
-                    style = ProtonTheme.typography.defaultSmallWeak.copy(
+                    style = ProtonTheme.typography.bodyMediumWeak.copy(
                         textDecoration = TextDecoration.LineThrough
                     )
                 )
@@ -411,11 +412,11 @@ private fun PlanNameAndPrice(modifier: Modifier = Modifier, plan: OnboardingUpse
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
                     text = "${priceUiModel.currency} ${priceUiModel.amount.string()}",
-                    style = ProtonTheme.typography.headlineNorm.copy(fontWeight = FontWeight.W700)
+                    style = ProtonTheme.typography.titleLargeNorm.copy(fontWeight = FontWeight.W700)
                 )
                 Text(
                     text = priceUiModel.period.string(),
-                    style = ProtonTheme.typography.defaultSmallWeak
+                    style = ProtonTheme.typography.bodyMediumWeak
                 )
             }
         }
@@ -476,7 +477,7 @@ private fun PlanEntitlement(entitlementUiModel: DynamicEntitlementUiModel) {
         Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Large))
         Text(
             text = entitlementUiModel.text.string(),
-            style = ProtonTheme.typography.defaultSmallNorm
+            style = ProtonTheme.typography.bodyMediumNorm
         )
     }
 }
@@ -496,7 +497,7 @@ private fun MorePlanEntitlements(
                 count = numberOfEntitlementsNotShown,
                 numberOfEntitlementsNotShown
             ),
-            style = ProtonTheme.typography.defaultSmallStrongUnspecified.copy(color = ProtonTheme.colors.textAccent)
+            style = ProtonTheme.typography.titleSmallNorm.copy(color = ProtonTheme.colors.textAccent)
         )
         Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Small))
         Icon(
@@ -515,7 +516,7 @@ private fun PremiumValueSection(modifier: Modifier = Modifier, logoDrawables: Li
             Text(
                 modifier = modifier.padding(vertical = ProtonDimens.Spacing.Standard),
                 text = stringResource(R.string.upselling_onboarding_premium_value_included),
-                style = ProtonTheme.typography.defaultSmallStrongUnspecified.copy(color = ProtonTheme.colors.textAccent)
+                style = ProtonTheme.typography.titleSmallNorm.copy(color = ProtonTheme.colors.textAccent)
             )
             Row(
                 modifier = modifier
@@ -575,7 +576,7 @@ private fun UpsellButtons(
                         .padding(top = ProtonDimens.Spacing.Standard)
                         .padding(bottom = ProtonDimens.Spacing.Small),
                     text = billingMessage.string(),
-                    style = ProtonTheme.typography.captionRegular.copy(color = ProtonTheme.colors.textAccent)
+                    style = ProtonTheme.typography.bodySmallNorm.copy(color = ProtonTheme.colors.textAccent)
                 )
             }
         }
@@ -599,7 +600,7 @@ private fun UpsellButtons(
             ) {
                 Text(
                     text = getButtonLabel.string(),
-                    style = ProtonTheme.typography.defaultNorm.copy(color = Color.White)
+                    style = ProtonTheme.typography.bodyLargeNorm.copy(color = Color.White)
                 )
             }
         }
@@ -616,7 +617,7 @@ private fun UpsellButtons(
                     .padding(top = ProtonDimens.Spacing.Standard)
                     .padding(bottom = ProtonDimens.Spacing.Large),
                 text = stringResource(id = R.string.upselling_onboarding_continue_with_proton_free),
-                style = ProtonTheme.typography.body1Medium.copy(
+                style = ProtonTheme.typography.titleMedium.copy(
                     color = ProtonTheme.colors.textAccent
                 )
             )

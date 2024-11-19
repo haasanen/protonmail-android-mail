@@ -48,8 +48,8 @@ import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
 import ch.protonmail.android.design.compose.component.ProtonRawListItem
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.defaultNorm
-import ch.protonmail.android.design.compose.theme.headlineNorm
+import ch.protonmail.android.design.compose.theme.bodyLargeNorm
+import ch.protonmail.android.design.compose.theme.titleLargeNorm
 import ch.protonmail.android.mailcontact.domain.model.ContactId
 
 @Composable
@@ -134,7 +134,7 @@ fun ContactActionsBottomSheetHeader(participant: Participant, avatarUiModel: Ava
                         start = ProtonDimens.Spacing.ExtraLarge, end = ProtonDimens.Spacing.ExtraLarge
                     )
                     .align(Alignment.CenterHorizontally),
-                style = ProtonTheme.typography.headlineNorm,
+                style = ProtonTheme.typography.titleLargeNorm,
                 text = participant.name,
                 textAlign = TextAlign.Center
             )
@@ -148,7 +148,7 @@ fun ContactActionsBottomSheetHeader(participant: Participant, avatarUiModel: Ava
                     end = ProtonDimens.Spacing.ExtraLarge
                 )
                 .align(Alignment.CenterHorizontally),
-            style = ProtonTheme.typography.defaultNorm,
+            style = ProtonTheme.typography.bodyLargeNorm,
             color = ProtonTheme.colors.textWeak,
             text = participant.address,
             textAlign = TextAlign.Center

@@ -48,7 +48,7 @@ import ch.protonmail.android.maildetail.presentation.ui.MessageBodyTestTags
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.captionNorm
+import ch.protonmail.android.design.compose.theme.bodySmallNorm
 
 @Composable
 fun MessageDetailFooter(
@@ -117,7 +117,7 @@ private fun MessageActionButton(
         )
         Text(
             text = stringResource(textResource),
-            style = ProtonTheme.typography.captionNorm
+            style = ProtonTheme.typography.bodySmallNorm
         )
     }
 }

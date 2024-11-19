@@ -60,9 +60,9 @@ import ch.protonmail.android.design.compose.component.ProtonErrorMessage
 import ch.protonmail.android.design.compose.component.appbar.ProtonTopAppBar
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.captionHint
-import ch.protonmail.android.design.compose.theme.defaultNorm
-import ch.protonmail.android.design.compose.theme.defaultWeak
+import ch.protonmail.android.design.compose.theme.bodySmallHint
+import ch.protonmail.android.design.compose.theme.bodyLargeNorm
+import ch.protonmail.android.design.compose.theme.bodyMediumWeak
 import me.proton.core.mailsettings.domain.entity.SwipeAction
 import ch.protonmail.android.mailcommon.presentation.R.string as commonString
 
@@ -134,7 +134,7 @@ private fun SwipeActionsPreferenceContent(
             Text(
                 modifier = Modifier.padding(start = ProtonDimens.Spacing.Standard),
                 text = stringResource(id = string.mail_settings_swipe_actions_subtitle),
-                style = ProtonTheme.typography.captionHint
+                style = ProtonTheme.typography.bodySmallHint
             )
         }
         SwipeActionItem(
@@ -178,9 +178,9 @@ private fun SwipeActionItem(
                 .padding(ProtonDimens.Spacing.Large),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Text(text = actionName, style = ProtonTheme.typography.defaultNorm)
+            Text(text = actionName, style = ProtonTheme.typography.bodyLargeNorm)
             Row {
-                Text(text = actionDescription, style = ProtonTheme.typography.defaultWeak)
+                Text(text = actionDescription, style = ProtonTheme.typography.bodyMediumWeak)
                 Icon(
                     painter = painterResource(id = R.drawable.ic_proton_chevron_right),
                     contentDescription = NO_CONTENT_DESCRIPTION

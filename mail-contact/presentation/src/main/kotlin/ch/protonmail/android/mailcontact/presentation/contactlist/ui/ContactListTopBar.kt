@@ -48,7 +48,7 @@ internal fun ContactListTopBar(
         title = {
             Text(
                 text = stringResource(id = R.string.contact_list_title),
-                style = ProtonTheme.typography.headline,
+                style = ProtonTheme.typography.titleLarge,
                 color = ProtonTheme.colors.textNorm
             )
         },

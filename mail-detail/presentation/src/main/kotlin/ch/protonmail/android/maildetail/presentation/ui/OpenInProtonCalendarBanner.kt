@@ -42,8 +42,8 @@ import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 import ch.protonmail.android.maildetail.presentation.R
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.captionWeak
-import ch.protonmail.android.design.compose.theme.defaultSmallStrongNorm
+import ch.protonmail.android.design.compose.theme.bodySmallWeak
+import ch.protonmail.android.design.compose.theme.titleSmallNorm
 
 @Composable
 fun OpenInProtonCalendarBanner(modifier: Modifier = Modifier, onOpenInProtonCalendarClick: () -> Unit) {
@@ -74,13 +74,13 @@ fun OpenInProtonCalendarBanner(modifier: Modifier = Modifier, onOpenInProtonCale
             Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Large))
             Column {
                 Text(
-                    style = ProtonTheme.typography.defaultSmallStrongNorm,
+                    style = ProtonTheme.typography.titleSmallNorm,
                     color = ProtonTheme.colors.textAccent,
                     maxLines = 1,
                     text = stringResource(id = R.string.open_on_protoncalendar_banner_title)
                 )
                 Text(
-                    style = ProtonTheme.typography.captionWeak,
+                    style = ProtonTheme.typography.bodySmallWeak,
                     color = ProtonTheme.colors.textWeak,
                     maxLines = 1,
                     text = stringResource(id = R.string.open_on_protoncalendar_banner_description)

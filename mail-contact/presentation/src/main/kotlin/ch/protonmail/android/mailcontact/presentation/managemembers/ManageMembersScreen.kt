@@ -71,9 +71,9 @@ import ch.protonmail.android.design.compose.component.ProtonTextButton
 import ch.protonmail.android.design.compose.component.appbar.ProtonTopAppBar
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.defaultNorm
-import ch.protonmail.android.design.compose.theme.defaultSmallWeak
-import ch.protonmail.android.design.compose.theme.defaultStrongNorm
+import ch.protonmail.android.design.compose.theme.bodyLargeNorm
+import ch.protonmail.android.design.compose.theme.bodyMediumWeak
+import ch.protonmail.android.design.compose.theme.titleMediumNorm
 import ch.protonmail.android.mailcontact.domain.model.ContactId
 
 @Composable
@@ -221,11 +221,11 @@ fun ManageMembersItem(
         ) {
             Text(
                 text = member.name,
-                style = ProtonTheme.typography.defaultNorm
+                style = ProtonTheme.typography.bodyLargeNorm
             )
             Text(
                 text = member.email,
-                style = ProtonTheme.typography.defaultSmallWeak
+                style = ProtonTheme.typography.bodyMediumWeak
             )
         }
 
@@ -302,7 +302,7 @@ fun ManageMembersTopBar(
                 Text(
                     text = stringResource(id = R.string.members_done),
                     color = ProtonTheme.colors.textAccent,
-                    style = ProtonTheme.typography.defaultStrongNorm
+                    style = ProtonTheme.typography.titleMediumNorm
                 )
             }
         }

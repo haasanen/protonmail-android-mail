@@ -37,7 +37,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import ch.protonmail.android.mailcomposer.presentation.R
 import ch.protonmail.android.uicomponents.text.defaultTextFieldColors
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.defaultNorm
+import ch.protonmail.android.design.compose.theme.bodyLargeNorm
 
 @Composable
 internal fun SubjectTextField(
@@ -64,7 +64,7 @@ internal fun SubjectTextField(
             userUpdated = true
         },
         modifier = modifier,
-        textStyle = ProtonTheme.typography.defaultNorm,
+        textStyle = ProtonTheme.typography.bodyLargeNorm,
         colors = TextFieldDefaults.defaultTextFieldColors(),
         maxLines = 3,
         keyboardOptions = KeyboardOptions.Default.copy(
@@ -76,7 +76,7 @@ internal fun SubjectTextField(
                 modifier = Modifier.testTag(ComposerTestTags.SubjectPlaceholder),
                 text = stringResource(R.string.subject_placeholder),
                 color = ProtonTheme.colors.textHint,
-                style = ProtonTheme.typography.defaultNorm
+                style = ProtonTheme.typography.bodyLargeNorm
             )
         }
     )

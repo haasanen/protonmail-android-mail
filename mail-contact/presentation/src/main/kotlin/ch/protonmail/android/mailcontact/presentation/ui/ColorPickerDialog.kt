@@ -56,9 +56,8 @@ import ch.protonmail.android.mailcommon.presentation.usecase.GetColorHexWithName
 import ch.protonmail.android.maillabel.presentation.getColorFromHexString
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.defaultNorm
-import ch.protonmail.android.design.compose.theme.defaultStrongUnspecified
-import ch.protonmail.android.design.compose.theme.headlineNorm
+import ch.protonmail.android.design.compose.theme.bodyLargeNorm
+import ch.protonmail.android.design.compose.theme.titleLargeNorm
 
 @Composable
 fun ColorPickerDialog(
@@ -84,7 +83,7 @@ fun ColorPickerDialog(
 
                 Text(
                     text = title,
-                    style = ProtonTheme.typography.headlineNorm,
+                    style = ProtonTheme.typography.titleLargeNorm,
                     modifier = Modifier
                         .constrainAs(header) {
                             top.linkTo(parent.top, margin = ProtonDimens.Spacing.ExtraLarge)
@@ -101,7 +100,7 @@ fun ColorPickerDialog(
                 ) {
                     Text(
                         text = stringResource(R.string.picker_dialog_cancel),
-                        style = ProtonTheme.typography.defaultStrongUnspecified,
+                        style = ProtonTheme.typography.bodyLargeNorm,
                         color = ProtonTheme.colors.brandNorm
                     )
                 }
@@ -138,7 +137,7 @@ fun ColorPickerDialog(
                             Text(
                                 modifier = Modifier.weight(1f, fill = true),
                                 text = value.name.string(),
-                                style = ProtonTheme.typography.defaultNorm
+                                style = ProtonTheme.typography.bodyLargeNorm
                             )
                         }
                     }

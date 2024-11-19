@@ -33,7 +33,7 @@ import ch.protonmail.android.design.compose.component.ProtonAlertDialog
 import ch.protonmail.android.design.compose.component.ProtonAlertDialogButton
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.defaultWeak
+import ch.protonmail.android.design.compose.theme.bodyMediumWeak
 
 @Composable
 fun SendExpiringMessageDialog(
@@ -53,12 +53,12 @@ fun SendExpiringMessageDialog(
                     text = stringResource(
                         id = R.string.composer_send_expiring_message_to_external_recipients_dialog_text
                     ),
-                    style = ProtonTheme.typography.defaultWeak
+                    style = ProtonTheme.typography.bodyMediumWeak
                 )
                 Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Standard))
                 Text(
                     text = externalRecipients.joinToString(separator = "\n") { it.address },
-                    style = ProtonTheme.typography.defaultWeak
+                    style = ProtonTheme.typography.bodyMediumWeak
                 )
             }
         },

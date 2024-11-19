@@ -48,7 +48,7 @@ import ch.protonmail.android.design.R
 import kotlinx.coroutines.launch
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.captionHint
+import ch.protonmail.android.design.compose.theme.bodySmallHint
 
 @Composable
 fun ProtonSidebar(
@@ -232,7 +232,7 @@ fun ProtonSidebarAppVersionItem(
         text = "$name $version",
         textAlign = TextAlign.Center,
         color = ProtonTheme.colors.textWeak,
-        style = ProtonTheme.typography.captionHint,
+        style = ProtonTheme.typography.bodySmallHint,
         maxLines = 1,
         overflow = TextOverflow.Ellipsis
     )

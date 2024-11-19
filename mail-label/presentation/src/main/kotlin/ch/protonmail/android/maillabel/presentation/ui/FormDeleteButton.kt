@@ -32,7 +32,7 @@ import ch.protonmail.android.design.compose.component.ProtonButton
 import ch.protonmail.android.design.compose.component.protonOutlinedButtonColors
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.defaultNorm
+import ch.protonmail.android.design.compose.theme.bodyLargeNorm
 
 @Composable
 fun FormDeleteButton(
@@ -61,7 +61,7 @@ fun FormDeleteButton(
                 vertical = ProtonDimens.Spacing.Small
             ),
             text = text,
-            style = ProtonTheme.typography.defaultNorm,
+            style = ProtonTheme.typography.bodyLargeNorm,
             color = Color.White
         )
     }
