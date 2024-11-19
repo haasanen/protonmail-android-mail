@@ -67,7 +67,6 @@ import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodySmallNorm
 import ch.protonmail.android.design.compose.theme.bodyLargeNorm
-import ch.protonmail.android.design.compose.theme.bodyMediumNorm
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -94,7 +93,7 @@ fun MailboxItem(
             .fillMaxWidth()
             .clip(ProtonTheme.shapes.large)
     ) {
-        val fontWeight = if (item.isRead) FontWeight.Normal else FontWeight.Bold
+        val fontWeight = if (item.isRead) FontWeight.Normal else FontWeight.Medium
         val fontColor = if (item.isRead) ProtonTheme.colors.textWeak else ProtonTheme.colors.textNorm
         val iconColor = if (item.isRead) ProtonTheme.colors.iconWeak else ProtonTheme.colors.iconNorm
 
@@ -285,7 +284,7 @@ private fun Subject(
         text = subject,
         overflow = TextOverflow.Ellipsis,
         maxLines = 1,
-        style = ProtonTheme.typography.bodyMediumNorm.copy(fontWeight = fontWeight, color = fontColor)
+        style = ProtonTheme.typography.bodyLargeNorm.copy(fontWeight = fontWeight, color = fontColor)
     )
 }
 

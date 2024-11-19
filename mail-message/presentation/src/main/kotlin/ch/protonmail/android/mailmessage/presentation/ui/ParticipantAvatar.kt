@@ -57,6 +57,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
+import ch.protonmail.android.design.compose.theme.bodyLargeNorm
 
 @Composable
 fun ParticipantAvatar(
@@ -194,6 +195,7 @@ private fun SenderInitialsAvatar(initials: String, modifier: Modifier) {
                 .testTag(ch.protonmail.android.mailcommon.presentation.compose.AvatarTestTags.AvatarText),
             textAlign = TextAlign.Center,
             text = initials,
+            style = ProtonTheme.typography.bodyLargeNorm,
             color = ProtonTheme.colors.textInverted
 
         )

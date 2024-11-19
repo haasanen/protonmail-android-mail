@@ -110,7 +110,8 @@ fun MailboxTopAppBar(
                         modifier = Modifier
                             .testTag(MailboxTopAppBarTestTags.LocationLabel)
                             .clickable(onClick = actions.onTitleClick),
-                        text = uiModel.title
+                        text = uiModel.title,
+                        style = ProtonTheme.typography.titleLarge
                     )
                 },
                 navigationIcon = {
