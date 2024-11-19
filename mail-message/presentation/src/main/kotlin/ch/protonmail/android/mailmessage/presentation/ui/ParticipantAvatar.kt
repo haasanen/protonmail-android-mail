@@ -64,9 +64,9 @@ fun ParticipantAvatar(
     avatarUiModel: AvatarUiModel,
     onClick: () -> Unit = {},
     clickable: Boolean = true,
-    outerContainerSize: Dp = MailDimens.DefaultTouchTargetSize,
-    avatarSize: Dp = MailDimens.AvatarMinSize,
-    backgroundShape: Shape = ProtonTheme.shapes.medium,
+    outerContainerSize: Dp = MailDimens.AvatarSize,
+    avatarSize: Dp = MailDimens.AvatarSize,
+    backgroundShape: Shape = ProtonTheme.shapes.large,
     senderImageViewModel: SenderImageViewModel = hiltViewModel()
 ) {
     Box(
@@ -90,11 +90,6 @@ fun ParticipantAvatar(
                         .sizeIn(
                             minWidth = avatarSize,
                             minHeight = avatarSize
-                        )
-                        .border(
-                            width = MailDimens.DefaultBorder,
-                            color = ProtonTheme.colors.interactionWeakNorm,
-                            shape = backgroundShape
                         ),
                     contentAlignment = Alignment.Center
                 ) {
@@ -116,7 +111,16 @@ fun ParticipantAvatar(
                 when (imageState) {
                     is SenderImageState.Data -> SenderImageAvatar(imageState.imageFile, avatarSize)
                     is SenderImageState.NoImageAvailable -> SenderInitialsAvatar(
-                        initials = avatarUiModel.initial, color = avatarUiModel.color
+                        initials = avatarUiModel.initial,
+                        modifier = Modifier
+                            .sizeIn(
+                                minWidth = avatarSize,
+                                minHeight = avatarSize
+                            )
+                            .background(
+                                color = avatarUiModel.color,
+                                shape = backgroundShape
+                            )
                     )
                     else -> Unit
                 }
@@ -180,17 +184,9 @@ private fun SenderImageAvatar(imageFile: File, avatarSize: Dp) {
 }
 
 @Composable
-private fun SenderInitialsAvatar(initials: String, color: Color) {
+private fun SenderInitialsAvatar(initials: String, modifier: Modifier) {
     Box(
-        modifier = Modifier
-            .sizeIn(
-                minWidth = MailDimens.AvatarMinSize,
-                minHeight = MailDimens.AvatarMinSize
-            )
-            .background(
-                color = color,
-                shape = ProtonTheme.shapes.medium
-            ),
+        modifier = modifier,
         contentAlignment = Alignment.Center
     ) {
         Text(
