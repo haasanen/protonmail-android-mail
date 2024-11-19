@@ -39,9 +39,7 @@ import ch.protonmail.android.mailmessage.data.mapper.toMailLabels
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
 class RustConversationActionRepository @Inject constructor(
     private val rustConversationDataSource: RustConversationDataSource
 ) : ConversationActionRepository {

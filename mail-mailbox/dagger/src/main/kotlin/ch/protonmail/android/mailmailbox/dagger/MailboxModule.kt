@@ -22,10 +22,8 @@ import android.content.Context
 import ch.protonmail.android.mailmailbox.data.MailMailboxDataStoreProvider
 import ch.protonmail.android.mailmailbox.data.local.StorageLimitLocalDataSource
 import ch.protonmail.android.mailmailbox.data.local.StorageLimitLocalDataSourceImpl
-import ch.protonmail.android.mailmailbox.data.repository.InMemoryMailboxRepositoryImpl
 import ch.protonmail.android.mailmailbox.data.repository.StorageLimitRepositoryImpl
 import ch.protonmail.android.mailmailbox.data.repository.UnreadCountersRepositoryImpl
-import ch.protonmail.android.mailmailbox.domain.repository.InMemoryMailboxRepository
 import ch.protonmail.android.mailmailbox.domain.repository.StorageLimitRepository
 import ch.protonmail.android.mailmailbox.domain.repository.UnreadCountersRepository
 import ch.protonmail.android.mailmailbox.domain.usecase.GetMailboxItems
@@ -36,16 +34,14 @@ import dagger.Module
 import dagger.Provides
 import dagger.Reusable
 import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ViewModelComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
-import dagger.hilt.components.SingletonComponent
-import javax.inject.Singleton
 
 @Module(includes = [MailboxModule.BindsModule::class])
-@InstallIn(SingletonComponent::class)
+@InstallIn(ViewModelComponent::class)
 object MailboxModule {
 
     @Provides
-    @Singleton
     fun providesMailboxItemPagingSourceFactory(
         getMailboxItems: GetMailboxItems,
         rustInvalidationTracker: RustInvalidationTracker
@@ -55,12 +51,11 @@ object MailboxModule {
     )
 
     @Provides
-    @Singleton
     fun provideDataStoreProvider(@ApplicationContext context: Context): MailMailboxDataStoreProvider =
         MailMailboxDataStoreProvider(context)
 
     @Module
-    @InstallIn(SingletonComponent::class)
+    @InstallIn(ViewModelComponent::class)
     internal interface BindsModule {
 
         @Binds
@@ -74,9 +69,5 @@ object MailboxModule {
         @Binds
         @Reusable
         fun bindsStorageQuotaRepository(impl: StorageLimitRepositoryImpl): StorageLimitRepository
-
-        @Binds
-        @Singleton
-        fun bindsInMemoryMailboxRepository(impl: InMemoryMailboxRepositoryImpl): InMemoryMailboxRepository
     }
 }

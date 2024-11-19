@@ -16,23 +16,21 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailconversation.data.usecase
+package ch.protonmail.android.mailmailbox.dagger
 
-import java.lang.ref.WeakReference
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalConversationId
-import uniffi.proton_mail_uniffi.LiveQueryCallback
-import uniffi.proton_mail_uniffi.Mailbox
-import uniffi.proton_mail_uniffi.WatchedConversation
-import uniffi.proton_mail_uniffi.watchConversation
-import javax.inject.Inject
+import ch.protonmail.android.mailmailbox.data.repository.InMemoryMailboxRepositoryImpl
+import ch.protonmail.android.mailmailbox.domain.repository.InMemoryMailboxRepository
+import dagger.Binds
+import dagger.Module
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
 
-class CreateRustConversationWatcher @Inject constructor() {
+@Module
+@InstallIn(SingletonComponent::class)
+internal interface MailboxSingletonModule {
 
-    suspend operator fun invoke(
-        mailbox: Mailbox,
-        conversationId: LocalConversationId,
-        callback: LiveQueryCallback
-    ): WeakReference<WatchedConversation> = WeakReference(
-        watchConversation(mailbox, conversationId, callback)
-    )
+    @Binds
+    @Singleton
+    fun bindsInMemoryMailboxRepository(impl: InMemoryMailboxRepositoryImpl): InMemoryMailboxRepository
 }

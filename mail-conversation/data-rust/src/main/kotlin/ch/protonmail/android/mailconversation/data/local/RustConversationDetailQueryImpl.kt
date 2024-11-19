@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.mailconversation.data.local
 
+import java.lang.ref.WeakReference
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalConversation
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalConversationId
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageMetadata
@@ -41,6 +42,7 @@ import uniffi.proton_mail_uniffi.LiveQueryCallback
 import uniffi.proton_mail_uniffi.WatchedConversation
 import javax.inject.Inject
 
+@SuppressWarnings("MagicNumber")
 class RustConversationDetailQueryImpl @Inject constructor(
     private val rustMailbox: RustMailbox,
     private val createRustConversationWatcher: CreateRustConversationWatcher,
@@ -48,7 +50,7 @@ class RustConversationDetailQueryImpl @Inject constructor(
     @ConversationRustCoroutineScope private val coroutineScope: CoroutineScope
 ) : RustConversationDetailQuery {
 
-    private var conversationWatcher: WatchedConversation? = null
+    private var conversationWatcher: WeakReference<WatchedConversation>? = null
     private var currentConversationId: LocalConversationId? = null
     private val mutex = Mutex()
     private val conversationMutableStatusFlow = MutableStateFlow<LocalConversation?>(null)
@@ -110,7 +112,7 @@ class RustConversationDetailQueryImpl @Inject constructor(
     private fun initialiseOrUpdateWatcher(conversationId: LocalConversationId) {
         coroutineScope.launch {
             mutex.withLock {
-                if (currentConversationId != conversationId || conversationWatcher == null) {
+                if (currentConversationId != conversationId || conversationWatcher?.get() == null) {
                     // If the conversationId is different or there's no active watcher, destroy and create a new one
                     destroy()
 
@@ -120,9 +122,10 @@ class RustConversationDetailQueryImpl @Inject constructor(
                         return@withLock
                     }
 
-                    conversationWatcher =
-                        createRustConversationWatcher(mailbox, conversationId, conversationUpdatedCallback)
-                    val conversation = conversationWatcher?.conversation ?: run {
+                    conversationWatcher = createRustConversationWatcher(
+                        mailbox, conversationId, conversationUpdatedCallback
+                    )
+                    val conversation = conversationWatcher?.get()?.conversation ?: run {
                         Timber.w(
                             "rust-conversation-detail-query: init value for " +
                                 "$conversationId from $conversationWatcher is null"
@@ -132,8 +135,8 @@ class RustConversationDetailQueryImpl @Inject constructor(
                     conversationMutableStatusFlow.value = conversation
                     currentConversationId = conversationId
 
-                    val messages = conversationWatcher?.messages
-                    val messageIdToOpen = conversationWatcher?.messageIdToOpen
+                    val messages = conversationWatcher?.get()?.messages
+                    val messageIdToOpen = conversationWatcher?.get()?.messageIdToOpen
                     if (messages != null && messageIdToOpen != null) {
                         val localConversationMessages = LocalConversationMessages(messageIdToOpen, messages)
                         conversationMessagesMutableStatusFlow.value = localConversationMessages
@@ -154,8 +157,8 @@ class RustConversationDetailQueryImpl @Inject constructor(
                 "$currentConversationId"
         )
 
-        conversationWatcher?.handle?.disconnect()
-        conversationWatcher = null
+        conversationWatcher?.get()?.handle?.disconnect()
+        conversationWatcher?.clear()
         currentConversationId = null
     }
 

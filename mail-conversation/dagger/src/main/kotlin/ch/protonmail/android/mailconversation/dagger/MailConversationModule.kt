@@ -32,44 +32,41 @@ import ch.protonmail.android.mailconversation.domain.repository.ConversationRepo
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
+import dagger.Reusable
 import dagger.hilt.InstallIn
-import dagger.hilt.components.SingletonComponent
+import dagger.hilt.android.components.ViewModelComponent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import javax.inject.Singleton
 
 @Module(includes = [MailConversationModule.BindsModule::class])
-@InstallIn(SingletonComponent::class)
+@InstallIn(ViewModelComponent::class)
 object MailConversationModule {
 
     @Provides
-    @Singleton
     @ConversationRustCoroutineScope
     fun provideConversationRustCoroutineScope(): CoroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
     @Module
-    @InstallIn(SingletonComponent::class)
+    @InstallIn(ViewModelComponent::class)
     internal interface BindsModule {
 
         @Binds
-        @Singleton
+        @Reusable
         fun bindsRustConversationDataSource(impl: RustConversationDataSourceImpl): RustConversationDataSource
 
         @Binds
-        @Singleton
         fun bindsRustConversationsQuery(impl: RustConversationsQueryImpl): RustConversationsQuery
 
         @Binds
-        @Singleton
         fun bindsRustConversationQuery(impl: RustConversationDetailQueryImpl): RustConversationDetailQuery
 
         @Binds
-        @Singleton
+        @Reusable
         fun bindsConversationRepositoryImpl(impl: RustConversationRepositoryImpl): ConversationRepository
 
         @Binds
-        @Singleton
+        @Reusable
         fun bindsConversationActionRepositoryImpl(impl: RustConversationActionRepository): ConversationActionRepository
     }
 }

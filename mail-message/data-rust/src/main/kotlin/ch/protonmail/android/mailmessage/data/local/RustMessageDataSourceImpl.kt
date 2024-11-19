@@ -158,6 +158,7 @@ class RustMessageDataSourceImpl @Inject constructor(
                 return DataError.Local.Unknown.left()
             }
 
+            Timber.v("rust-message: marking message as read...")
             rustMarkMessagesRead(mailbox, messages).right()
         } catch (e: MailSessionException) {
             Timber.e(e, "rust-message: Failed to mark message read")

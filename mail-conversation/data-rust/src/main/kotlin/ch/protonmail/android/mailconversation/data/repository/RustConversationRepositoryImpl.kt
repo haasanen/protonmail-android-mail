@@ -40,9 +40,7 @@ import kotlinx.coroutines.flow.map
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
 class RustConversationRepositoryImpl @Inject constructor(
     private val rustConversationDataSource: RustConversationDataSource
 ) : ConversationRepository {
