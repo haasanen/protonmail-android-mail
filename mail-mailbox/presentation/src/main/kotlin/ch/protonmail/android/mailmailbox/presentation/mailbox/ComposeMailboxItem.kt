@@ -27,6 +27,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -98,13 +99,14 @@ fun MailboxItem(
         val iconColor = if (item.isRead) ProtonTheme.colors.iconWeak else ProtonTheme.colors.iconNorm
 
         ParticipantAvatar(
+            modifier = Modifier.align(Alignment.CenterVertically),
             avatarUiModel = if (selectionMode) AvatarUiModel.SelectionMode(isSelected) else item.avatar,
-            modifier = Modifier.padding(top = ProtonDimens.Spacing.Standard, end = ProtonDimens.Spacing.Small),
             onClick = { actions.onAvatarClicked(item) }
         )
         Column(
             modifier = Modifier.padding(
-                start = ProtonDimens.Spacing.Standard, top = ProtonDimens.Spacing.Standard
+                start = ProtonDimens.Spacing.ModeratelyLarge,
+                top = ProtonDimens.Spacing.Standard
             )
         ) {
             Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
@@ -123,6 +125,7 @@ fun MailboxItem(
                 )
                 Time(time = item.time, fontWeight = fontWeight, fontColor = fontColor)
             }
+            Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Small))
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
