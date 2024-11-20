@@ -2,6 +2,7 @@ package ch.protonmail.android.mailsettings.data.local
 
 import app.cash.turbine.test
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
+import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
 import ch.protonmail.android.mailsettings.data.usecase.CreateRustUserMailSettings
 import ch.protonmail.android.test.utils.rule.LoggingTestRule
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
@@ -16,7 +17,6 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import org.junit.Test
 import uniffi.proton_mail_uniffi.LiveQueryCallback
-import uniffi.proton_mail_uniffi.MailUserSession
 import uniffi.proton_mail_uniffi.SettingsWatcher
 import kotlin.test.assertEquals
 
@@ -60,7 +60,7 @@ class RustMailSettingsDataSourceTest {
         val expected = LocalMailSettingsTestData.mailSettings
         val expectedUpdated = LocalMailSettingsTestData.mailSettings.copy(displayName = "updated display name")
         val mailSettingsCallbackSlot = slot<LiveQueryCallback>()
-        val userSessionMock = mockk<MailUserSession>()
+        val userSessionMock = mockk<MailUserSessionWrapper>()
         coEvery { userSessionRepository.getUserSession(userId) } returns userSessionMock
         val watcherMock = mockk<SettingsWatcher> {
             every { settings } returns expected
@@ -85,7 +85,7 @@ class RustMailSettingsDataSourceTest {
         val userId = UserIdTestData.userId
         val expected = LocalMailSettingsTestData.mailSettings
         val mailSettingsCallbackSlot = slot<LiveQueryCallback>()
-        val userSessionMock = mockk<MailUserSession>()
+        val userSessionMock = mockk<MailUserSessionWrapper>()
         coEvery { userSessionRepository.getUserSession(userId) } returns userSessionMock
         val watcherMock = mockk<SettingsWatcher> {
             every { settings } returns expected

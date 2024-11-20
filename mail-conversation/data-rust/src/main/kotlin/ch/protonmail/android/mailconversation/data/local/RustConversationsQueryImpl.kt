@@ -30,12 +30,12 @@ import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailpagination.domain.model.PageToLoad
 import ch.protonmail.android.mailpagination.domain.model.ReadStatus
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
+import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.LiveQueryCallback
-import uniffi.proton_mail_uniffi.MailUserSession
 import javax.inject.Inject
 
 class RustConversationsQueryImpl @Inject constructor(
@@ -89,7 +89,7 @@ class RustConversationsQueryImpl @Inject constructor(
         userId: UserId,
         labelId: LocalLabelId,
         unread: Boolean,
-        session: MailUserSession
+        session: MailUserSessionWrapper
     ) = paginatorMutex.withLock {
         if (!shouldInitPaginator(userId, labelId, unread)) {
             Timber.v("rust-conversation-query: reusing existing paginator instance...")

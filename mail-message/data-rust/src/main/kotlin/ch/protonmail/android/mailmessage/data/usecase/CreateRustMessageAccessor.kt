@@ -19,11 +19,12 @@
 package ch.protonmail.android.mailmessage.data.usecase
 
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageId
-import uniffi.proton_mail_uniffi.MailUserSession
+import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
 import uniffi.proton_mail_uniffi.message
 import javax.inject.Inject
 
 class CreateRustMessageAccessor @Inject constructor() {
 
-    suspend operator fun invoke(session: MailUserSession, messageId: LocalMessageId) = message(session, messageId)
+    suspend operator fun invoke(session: MailUserSessionWrapper, messageId: LocalMessageId) =
+        message(session.rustObject(), messageId)
 }

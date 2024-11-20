@@ -2,6 +2,7 @@ package ch.protonmail.android.mailsession.data.repository
 
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
+import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -9,7 +10,6 @@ import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import org.junit.Test
-import uniffi.proton_mail_uniffi.MailUserSession
 
 class RustEventLoopRepositoryTest {
 
@@ -26,7 +26,7 @@ class RustEventLoopRepositoryTest {
     fun `triggers event loop for the given user's session`() = runTest {
         // Given
         val userId = UserIdSample.Primary
-        val mailSession = mockk<MailUserSession>(relaxUnitFun = true)
+        val mailSession = mockk<MailUserSessionWrapper>(relaxUnitFun = true)
         coEvery { userSessionRepository.getUserSession(userId) } returns mailSession
 
         // When

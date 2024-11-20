@@ -19,6 +19,7 @@
 package ch.protonmail.android.mailsession.domain.repository
 
 import arrow.core.Either
+import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
 import ch.protonmail.android.mailsession.domain.model.Account
 import ch.protonmail.android.mailsession.domain.model.AccountState
 import ch.protonmail.android.mailsession.domain.model.ForkedSessionId
@@ -29,7 +30,6 @@ import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.transform
 import me.proton.core.domain.entity.UserId
-import uniffi.proton_mail_uniffi.MailUserSession
 
 interface UserSessionRepository {
 
@@ -43,7 +43,7 @@ interface UserSessionRepository {
 
     suspend fun disableAccount(userId: UserId)
 
-    suspend fun getUserSession(userId: UserId): MailUserSession?
+    suspend fun getUserSession(userId: UserId): MailUserSessionWrapper?
 
     suspend fun forkSession(userId: UserId): Either<SessionError, ForkedSessionId>
 

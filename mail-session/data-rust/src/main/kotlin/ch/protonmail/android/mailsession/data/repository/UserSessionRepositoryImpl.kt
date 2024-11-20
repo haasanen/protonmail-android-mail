@@ -28,6 +28,7 @@ import ch.protonmail.android.mailsession.domain.model.AccountState
 import ch.protonmail.android.mailsession.domain.model.ForkedSessionId
 import ch.protonmail.android.mailsession.domain.model.SessionError
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
+import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
@@ -35,7 +36,6 @@ import kotlinx.coroutines.flow.mapLatest
 import me.proton.android.core.account.domain.ObserveStoredAccounts
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
-import uniffi.proton_mail_uniffi.MailUserSession
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -48,7 +48,7 @@ class UserSessionRepositoryImpl @Inject constructor(
     private val mailSession by lazy { mailSessionRepository.getMailSession() }
 
     // Cache to store MailUserSession per UserId
-    private val userSessionCache = mutableMapOf<UserId, MailUserSession>()
+    private val userSessionCache = mutableMapOf<UserId, MailUserSessionWrapper>()
 
     private suspend fun getStoredAccount(userId: UserId) = mailSession.getAccount(userId.toLocalUserId())
 
@@ -77,7 +77,7 @@ class UserSessionRepositoryImpl @Inject constructor(
         userSessionCache.remove(userId)
     }
 
-    override suspend fun getUserSession(userId: UserId): MailUserSession? {
+    override suspend fun getUserSession(userId: UserId): MailUserSessionWrapper? {
         // Return cached session if it exists
         userSessionCache[userId]?.let { return it }
 

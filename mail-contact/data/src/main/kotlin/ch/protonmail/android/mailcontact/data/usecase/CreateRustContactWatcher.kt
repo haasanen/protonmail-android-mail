@@ -18,15 +18,17 @@
 
 package ch.protonmail.android.mailcontact.data.usecase
 
+import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
 import uniffi.proton_mail_uniffi.ContactsLiveQueryCallback
-import uniffi.proton_mail_uniffi.MailUserSession
 import uniffi.proton_mail_uniffi.WatchedContactList
 import uniffi.proton_mail_uniffi.watchContactList
 import javax.inject.Inject
 
 class CreateRustContactWatcher @Inject constructor() {
 
-    suspend operator fun invoke(session: MailUserSession, callback: ContactsLiveQueryCallback): WatchedContactList =
-        watchContactList(session, callback)
+    suspend operator fun invoke(
+        session: MailUserSessionWrapper,
+        callback: ContactsLiveQueryCallback
+    ): WatchedContactList = watchContactList(session.rustObject(), callback)
 
 }

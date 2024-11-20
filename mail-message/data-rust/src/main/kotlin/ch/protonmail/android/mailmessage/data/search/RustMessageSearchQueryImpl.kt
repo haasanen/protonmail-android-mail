@@ -30,12 +30,12 @@ import ch.protonmail.android.mailmessage.domain.paging.RustInvalidationTracker
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailpagination.domain.model.PageToLoad
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
+import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.LiveQueryCallback
-import uniffi.proton_mail_uniffi.MailUserSession
 import javax.inject.Inject
 
 class RustMessageSearchQueryImpl @Inject constructor(
@@ -85,7 +85,7 @@ class RustMessageSearchQueryImpl @Inject constructor(
 
     private suspend fun initPaginator(
         userId: UserId,
-        session: MailUserSession,
+        session: MailUserSessionWrapper,
         keyword: String
     ) = paginatorMutex.withLock {
         if (!shouldInitPaginator(userId, keyword)) {

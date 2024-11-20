@@ -19,8 +19,8 @@
 package ch.protonmail.android.mailmessage.data.usecase
 
 import ch.protonmail.android.mailmessage.data.wrapper.MessagePaginatorWrapper
+import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
 import uniffi.proton_mail_uniffi.LiveQueryCallback
-import uniffi.proton_mail_uniffi.MailUserSession
 import uniffi.proton_mail_uniffi.PaginatorSearchOptions
 import uniffi.proton_mail_uniffi.paginateSearch
 import javax.inject.Inject
@@ -28,10 +28,10 @@ import javax.inject.Inject
 class CreateRustSearchPaginator @Inject constructor() {
 
     suspend operator fun invoke(
-        session: MailUserSession,
+        session: MailUserSessionWrapper,
         keyword: String,
         callback: LiveQueryCallback
     ) = MessagePaginatorWrapper(
-        paginateSearch(session, PaginatorSearchOptions(keyword), callback)
+        paginateSearch(session.rustObject(), PaginatorSearchOptions(keyword), callback)
     )
 }

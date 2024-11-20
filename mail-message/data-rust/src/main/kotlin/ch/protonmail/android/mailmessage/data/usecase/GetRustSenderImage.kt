@@ -18,18 +18,15 @@
 
 package ch.protonmail.android.mailmessage.data.usecase
 
-import uniffi.proton_mail_uniffi.MailUserSession
+import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
 import javax.inject.Inject
 
 class GetRustSenderImage @Inject constructor() {
 
     suspend operator fun invoke(
-        mailUserSession: MailUserSession,
+        mailUserSession: MailUserSessionWrapper,
         address: String,
         bimi: String?
-    ): String? = mailUserSession.imageForSender(
-        address, bimi, true, null,
-        null, "png"
-    )
+    ): String? = mailUserSession.imageForSender(address, bimi)
 }
 

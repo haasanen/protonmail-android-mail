@@ -40,6 +40,7 @@ import ch.protonmail.android.mailmessage.data.usecase.RustStarMessages
 import ch.protonmail.android.mailmessage.data.usecase.RustUnstarMessages
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
+import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
 import ch.protonmail.android.testdata.message.rust.LocalMessageIdSample
 import ch.protonmail.android.testdata.message.rust.LocalMessageTestData
 import ch.protonmail.android.testdata.user.UserIdTestData
@@ -61,7 +62,6 @@ import uniffi.proton_mail_uniffi.IsSelected
 import uniffi.proton_mail_uniffi.LabelAsAction
 import uniffi.proton_mail_uniffi.LabelColor
 import uniffi.proton_mail_uniffi.MailSessionException
-import uniffi.proton_mail_uniffi.MailUserSession
 import uniffi.proton_mail_uniffi.Mailbox
 import uniffi.proton_mail_uniffi.MailboxException
 import uniffi.proton_mail_uniffi.MessageAvailableActions
@@ -119,7 +119,7 @@ class RustMessageDataSourceImplTest {
     fun `get message should return message metadata`() = runTest {
         // Given
         val userId = UserIdTestData.userId
-        val mailSession = mockk<MailUserSession>()
+        val mailSession = mockk<MailUserSessionWrapper>()
         val messageId = LocalMessageIdSample.AugWeatherForecast
         coEvery { userSessionRepository.getUserSession(userId) } returns mailSession
         coEvery { createRustMessageAccessor(mailSession, messageId) } returns LocalMessageTestData.AugWeatherForecast
@@ -135,7 +135,7 @@ class RustMessageDataSourceImplTest {
     fun `get message should handle session exception`() = runTest {
         // Given
         val userId = UserIdTestData.userId
-        val mailSession = mockk<MailUserSession>()
+        val mailSession = mockk<MailUserSessionWrapper>()
         coEvery { userSessionRepository.getUserSession(userId) } returns mailSession
         val messageId = LocalMessageIdSample.AugWeatherForecast
         coEvery {
@@ -153,7 +153,7 @@ class RustMessageDataSourceImplTest {
     fun `get message body should return decrypted message body`() = runTest {
         // Given
         val userId = UserIdTestData.userId
-        val mailSession = mockk<MailUserSession>()
+        val mailSession = mockk<MailUserSessionWrapper>()
         val labelId = LocalLabelId(1uL)
         val messageId = LocalMessageIdSample.AugWeatherForecast
         val mailbox = mockk<Mailbox>()
@@ -190,7 +190,7 @@ class RustMessageDataSourceImplTest {
     fun `get messages should return list of message metadata`() = runTest {
         // Given
         val userId = UserIdTestData.userId
-        val mailSession = mockk<MailUserSession>()
+        val mailSession = mockk<MailUserSessionWrapper>()
         coEvery { userSessionRepository.getUserSession(userId) } returns mailSession
         val pageKey = PageKey.DefaultPageKey()
         val messages = listOf(
@@ -212,7 +212,7 @@ class RustMessageDataSourceImplTest {
     fun `get messages should return search results when pagekey contains search query`() = runTest {
         // Given
         val userId = UserIdTestData.userId
-        val mailSession = mockk<MailUserSession>()
+        val mailSession = mockk<MailUserSessionWrapper>()
         coEvery { userSessionRepository.getUserSession(userId) } returns mailSession
         val pageKey = PageKey.PageKeyForSearch("search query")
         val messages = listOf(
@@ -234,7 +234,7 @@ class RustMessageDataSourceImplTest {
     fun `getSenderImage should return sender image when session is available`() = runTest {
         // Given
         val userId = UserIdTestData.userId
-        val mailSession = mockk<MailUserSession>()
+        val mailSession = mockk<MailUserSessionWrapper>()
         val address = "test@example.com"
         val bimi = "bimiSelector"
         val expectedImage = "image.png"
@@ -271,7 +271,7 @@ class RustMessageDataSourceImplTest {
     fun `getSenderImage should return null when exception occurs`() = runTest {
         // Given
         val userId = UserIdTestData.userId
-        val mailSession = mockk<MailUserSession>()
+        val mailSession = mockk<MailUserSessionWrapper>()
         val address = "test@example.com"
         val bimi = "bimiSelector"
 
@@ -364,7 +364,7 @@ class RustMessageDataSourceImplTest {
     fun `should star messages when session is available`() = runTest {
         // Given
         val userId = UserIdTestData.userId
-        val mailSession = mockk<MailUserSession>()
+        val mailSession = mockk<MailUserSessionWrapper>()
         val messageIds = listOf(LocalMessageId(1uL), LocalMessageId(2uL))
 
         coEvery { userSessionRepository.getUserSession(userId) } returns mailSession
@@ -415,7 +415,7 @@ class RustMessageDataSourceImplTest {
     fun `should unstar messages when session is available`() = runTest {
         // Given
         val userId = UserIdTestData.userId
-        val mailSession = mockk<MailUserSession>()
+        val mailSession = mockk<MailUserSessionWrapper>()
         val messageIds = listOf(LocalMessageId(1uL), LocalMessageId(2uL))
 
         coEvery { userSessionRepository.getUserSession(userId) } returns mailSession
@@ -449,7 +449,7 @@ class RustMessageDataSourceImplTest {
     fun `should handle exception when unstarring messages`() = runTest {
         // Given
         val userId = UserIdTestData.userId
-        val mailSession = mockk<MailUserSession>()
+        val mailSession = mockk<MailUserSessionWrapper>()
         val messageIds = listOf(LocalMessageId(1uL), LocalMessageId(2uL))
 
         coEvery { userSessionRepository.getUserSession(userId) } returns mailSession

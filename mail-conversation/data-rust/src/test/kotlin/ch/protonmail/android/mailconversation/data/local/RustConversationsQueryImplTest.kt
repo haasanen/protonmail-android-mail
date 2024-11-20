@@ -12,6 +12,7 @@ import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailpagination.domain.model.PageToLoad
 import ch.protonmail.android.mailpagination.domain.model.ReadStatus
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
+import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
 import ch.protonmail.android.testdata.conversation.rust.LocalConversationTestData
 import io.mockk.Called
@@ -26,7 +27,6 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import org.junit.Test
 import uniffi.proton_mail_uniffi.LiveQueryCallback
-import uniffi.proton_mail_uniffi.MailUserSession
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 
@@ -70,7 +70,7 @@ class RustConversationsQueryImplTest {
         val userId = UserIdSample.Primary
         val labelId = SystemLabelId.Inbox.labelId
         val pageKey = PageKey.DefaultPageKey(labelId = labelId)
-        val session = mockk<MailUserSession>()
+        val session = mockk<MailUserSessionWrapper>()
         val paginator = mockk<ConversationPaginatorWrapper> {
             coEvery { this@mockk.nextPage() } returns expectedConversations
         }
@@ -91,7 +91,7 @@ class RustConversationsQueryImplTest {
         val userId = UserIdSample.Primary
         val labelId = SystemLabelId.Inbox.labelId
         val pageKey = PageKey.DefaultPageKey(labelId = labelId, pageToLoad = PageToLoad.Next)
-        val session = mockk<MailUserSession>()
+        val session = mockk<MailUserSessionWrapper>()
         val paginator = mockk<ConversationPaginatorWrapper> {
             coEvery { this@mockk.nextPage() } returns expectedConversations
         }
@@ -112,7 +112,7 @@ class RustConversationsQueryImplTest {
         val userId = UserIdSample.Primary
         val labelId = SystemLabelId.Inbox.labelId
         val pageKey = PageKey.DefaultPageKey(labelId = labelId, pageToLoad = PageToLoad.All)
-        val session = mockk<MailUserSession>()
+        val session = mockk<MailUserSessionWrapper>()
         val paginator = mockk<ConversationPaginatorWrapper> {
             coEvery { this@mockk.reload() } returns expectedConversations
         }
@@ -133,7 +133,7 @@ class RustConversationsQueryImplTest {
         val userId = UserIdSample.Primary
         val labelId = SystemLabelId.Inbox.labelId
         val pageKey = PageKey.DefaultPageKey(labelId = labelId)
-        val session = mockk<MailUserSession>()
+        val session = mockk<MailUserSessionWrapper>()
         val paginator = mockk<ConversationPaginatorWrapper> {
             coEvery { this@mockk.nextPage() } returns expectedConversations
         }
@@ -156,7 +156,7 @@ class RustConversationsQueryImplTest {
         val labelId = SystemLabelId.Inbox.labelId
         val pageKey = PageKey.DefaultPageKey(labelId = labelId)
         val nextPageKey = pageKey.copy(pageToLoad = PageToLoad.Next)
-        val session = mockk<MailUserSession>()
+        val session = mockk<MailUserSessionWrapper>()
         val paginator = mockk<ConversationPaginatorWrapper> {
             coEvery { this@mockk.nextPage() } returns firstPage
         }
@@ -182,7 +182,7 @@ class RustConversationsQueryImplTest {
         val newLabelId = SystemLabelId.Archive.labelId
         val pageKey = PageKey.DefaultPageKey(labelId = labelId)
         val newPageKey = pageKey.copy(newLabelId)
-        val session = mockk<MailUserSession>()
+        val session = mockk<MailUserSessionWrapper>()
         val paginator = mockk<ConversationPaginatorWrapper> {
             coEvery { this@mockk.nextPage() } returns firstPage
             coEvery { this@mockk.disconnect() } just Runs
@@ -235,7 +235,7 @@ class RustConversationsQueryImplTest {
         val newReadStatus = ReadStatus.Unread
         val pageKey = PageKey.DefaultPageKey(labelId = labelId, readStatus = readStatus)
         val newPageKey = pageKey.copy(readStatus = newReadStatus)
-        val session = mockk<MailUserSession>()
+        val session = mockk<MailUserSessionWrapper>()
         val paginator = mockk<ConversationPaginatorWrapper> {
             coEvery { this@mockk.nextPage() } returns firstPage
             coEvery { this@mockk.disconnect() } just Runs
@@ -261,11 +261,10 @@ class RustConversationsQueryImplTest {
     fun `invalidates data source when onUpdated callback is fired`() = runTest {
         // Given
         val firstPage = listOf(LocalConversationTestData.AugConversation)
-        val nextPage = listOf(LocalConversationTestData.OctConversation)
         val userId = UserIdSample.Primary
         val labelId = SystemLabelId.Inbox.labelId
         val pageKey = PageKey.DefaultPageKey(labelId = labelId)
-        val session = mockk<MailUserSession>()
+        val session = mockk<MailUserSessionWrapper>()
         val paginator = mockk<ConversationPaginatorWrapper> {
             coEvery { this@mockk.nextPage() } returns firstPage
         }

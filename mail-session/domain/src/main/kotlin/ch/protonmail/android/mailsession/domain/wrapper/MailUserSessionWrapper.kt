@@ -16,14 +16,26 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailsession.data.repository
+package ch.protonmail.android.mailsession.domain.wrapper
 
-import ch.protonmail.android.mailsession.data.wrapper.MailSessionWrapper
-import uniffi.proton_mail_uniffi.MailSession
+import uniffi.proton_mail_uniffi.MailUserSession
 
-interface MailSessionRepository {
+class MailUserSessionWrapper(private val userSession: MailUserSession) {
 
-    fun setMailSession(mailSession: MailSession)
+    fun rustObject() = userSession
 
-    fun getMailSession(): MailSessionWrapper
+    suspend fun fork() = userSession.fork()
+
+    suspend fun pollEvents() = userSession.pollEvents()
+
+    fun executePendingActions() = userSession.executePendingActions()
+
+    suspend fun imageForSender(address: String, bimi: String?) = userSession.imageForSender(
+        address,
+        bimi,
+        true,
+        null,
+        null,
+        "png"
+    )
 }

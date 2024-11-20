@@ -35,6 +35,7 @@ import ch.protonmail.android.mailmessage.data.local.RustMailbox
 import ch.protonmail.android.mailmessage.data.model.LocalConversationMessages
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
+import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
@@ -43,15 +44,14 @@ import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.AllBottomBarMessageActions
 import uniffi.proton_mail_uniffi.ConversationAvailableActions
-import uniffi.proton_mail_uniffi.MailUserSession
 import uniffi.proton_mail_uniffi.Mailbox
 import uniffi.proton_mail_uniffi.MailboxException
 import uniffi.proton_mail_uniffi.MoveAction
 import uniffi.proton_mail_uniffi.markConversationsAsRead
 import uniffi.proton_mail_uniffi.markConversationsAsUnread
-import uniffi.proton_mail_uniffi.starConversations
-import uniffi.proton_mail_uniffi.unstarConversations
 import javax.inject.Inject
+import uniffi.proton_mail_uniffi.starConversations as rustStarConversation
+import uniffi.proton_mail_uniffi.unstarConversations as rustUnstarConversation
 
 class RustConversationDataSourceImpl @Inject constructor(
     private val userSessionRepository: UserSessionRepository,
@@ -120,7 +120,7 @@ class RustConversationDataSourceImpl @Inject constructor(
     override suspend fun starConversations(userId: UserId, conversations: List<LocalConversationId>) {
         executeUserSessionAction(
             userId = userId,
-            action = { userSession -> starConversations(userSession, conversations) },
+            action = { userSession -> rustStarConversation(userSession.rustObject(), conversations) },
             actionName = "star conversations"
         )
     }
@@ -128,7 +128,7 @@ class RustConversationDataSourceImpl @Inject constructor(
     override suspend fun unStarConversations(userId: UserId, conversations: List<LocalConversationId>) {
         executeUserSessionAction(
             userId = userId,
-            action = { userSession -> unstarConversations(userSession, conversations) },
+            action = { userSession -> rustUnstarConversation(userSession.rustObject(), conversations) },
             actionName = "unstar conversations"
         )
     }
@@ -240,7 +240,7 @@ class RustConversationDataSourceImpl @Inject constructor(
 
     private suspend fun executeUserSessionAction(
         userId: UserId,
-        action: suspend (MailUserSession) -> Unit,
+        action: suspend (MailUserSessionWrapper) -> Unit,
         actionName: String
     ) {
         val userSession = userSessionRepository.getUserSession(userId)

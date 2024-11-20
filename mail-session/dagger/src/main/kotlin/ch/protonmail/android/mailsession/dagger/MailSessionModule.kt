@@ -19,11 +19,11 @@
 package ch.protonmail.android.mailsession.dagger
 
 import ch.protonmail.android.mailsession.data.repository.InMemoryMailSessionRepository
+import ch.protonmail.android.mailsession.data.repository.MailSessionRepository
 import ch.protonmail.android.mailsession.data.repository.RustEventLoopRepository
 import ch.protonmail.android.mailsession.data.repository.UserSessionRepositoryImpl
 import ch.protonmail.android.mailsession.domain.coroutines.EventLoopScope
 import ch.protonmail.android.mailsession.domain.repository.EventLoopRepository
-import ch.protonmail.android.mailsession.data.repository.MailSessionRepository
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import dagger.Binds
 import dagger.Module
@@ -45,7 +45,7 @@ object MailSessionModule {
     @Provides
     @Singleton
     fun provideMailSessionInterface(repository: MailSessionRepository): MailSessionInterface =
-        repository.getMailSession()
+        repository.getMailSession().rustObject()
 
     @Provides
     @Singleton

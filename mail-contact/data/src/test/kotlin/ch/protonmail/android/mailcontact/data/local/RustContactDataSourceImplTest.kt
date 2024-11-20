@@ -31,6 +31,7 @@ import ch.protonmail.android.mailcontact.data.usecase.RustDeleteContact
 import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import ch.protonmail.android.mailcontact.domain.model.GetContactError
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
+import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
 import ch.protonmail.android.testdata.contact.rust.LocalContactTestData
 import io.mockk.Runs
@@ -47,10 +48,9 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import uniffi.proton_mail_uniffi.ContactsLiveQueryCallback
 import uniffi.proton_mail_uniffi.MailSessionException
-import kotlin.test.assertEquals
-import uniffi.proton_mail_uniffi.MailUserSession
 import uniffi.proton_mail_uniffi.WatchedContactList
 import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class RustContactDataSourceImplTest {
 
@@ -82,7 +82,7 @@ class RustContactDataSourceImplTest {
     fun `observing all contacts emits contact metadata list when grouped contacts are loaded`() = runTest {
         // Given
         val userId = UserIdSample.Primary
-        val session = mockk<MailUserSession>()
+        val session = mockk<MailUserSessionWrapper>()
         val localGroupedContactList = listOf(
             LocalContactTestData.groupedContactsByA, LocalContactTestData.groupedContactsByB
         )
@@ -120,7 +120,7 @@ class RustContactDataSourceImplTest {
     fun `observeAllGroupedContacts should initialize watcher and emit contact groups`() = runTest {
         // Given
         val userId = UserIdSample.Primary
-        val session = mockk<MailUserSession>()
+        val session = mockk<MailUserSessionWrapper>()
         val localGroupedContactList = listOf(
             LocalContactTestData.groupedContactsByA, LocalContactTestData.groupedContactsByB
         )
@@ -144,7 +144,7 @@ class RustContactDataSourceImplTest {
         // Given
         val userId = UserIdSample.Primary
         val contactId = LocalContactTestData.contactId1
-        val session = mockk<MailUserSession>()
+        val session = mockk<MailUserSessionWrapper>()
         coEvery { userSessionRepository.getUserSession(userId) } returns session
         coEvery { rustDeleteContact(session, contactId) } just Runs
 
@@ -176,7 +176,7 @@ class RustContactDataSourceImplTest {
         // Given
         val userId = UserIdSample.Primary
         val contactId = LocalContactTestData.contactId1
-        val session = mockk<MailUserSession>()
+        val session = mockk<MailUserSessionWrapper>()
         coEvery { userSessionRepository.getUserSession(userId) } returns session
         coEvery { rustDeleteContact(session, contactId) } throws MailSessionException.ContactException("")
 
@@ -192,7 +192,7 @@ class RustContactDataSourceImplTest {
     fun `should create watcher on first invocation`() = runTest {
         // Given
         val userId = UserIdSample.Primary
-        val session = mockk<MailUserSession>()
+        val session = mockk<MailUserSessionWrapper>()
         val callbackSlot = slot<ContactsLiveQueryCallback>()
         coEvery { userSessionRepository.getUserSession(userId) } returns session
         coEvery { createRustContactWatcher(session, capture(callbackSlot)) } returns mockWatcher
@@ -208,7 +208,7 @@ class RustContactDataSourceImplTest {
     fun `should not recreate watcher if already exists`() = runTest {
         // Given
         val userId = UserIdSample.Primary
-        val session = mockk<MailUserSession>()
+        val session = mockk<MailUserSessionWrapper>()
         val callbackSlot = slot<ContactsLiveQueryCallback>()
         coEvery { userSessionRepository.getUserSession(userId) } returns session
         coEvery { createRustContactWatcher(session, capture(callbackSlot)) } returns mockWatcher

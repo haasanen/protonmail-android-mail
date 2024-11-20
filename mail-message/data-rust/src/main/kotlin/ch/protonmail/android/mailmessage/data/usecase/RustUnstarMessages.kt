@@ -19,12 +19,12 @@
 package ch.protonmail.android.mailmessage.data.usecase
 
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageId
-import uniffi.proton_mail_uniffi.MailUserSession
+import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
 import uniffi.proton_mail_uniffi.unstarMessages
 import javax.inject.Inject
 
 class RustUnstarMessages @Inject constructor() {
 
-    suspend operator fun invoke(mailUserSession: MailUserSession, messageIds: List<LocalMessageId>) =
-        unstarMessages(mailUserSession, messageIds)
+    suspend operator fun invoke(mailUserSession: MailUserSessionWrapper, messageIds: List<LocalMessageId>) =
+        unstarMessages(mailUserSession.rustObject(), messageIds)
 }

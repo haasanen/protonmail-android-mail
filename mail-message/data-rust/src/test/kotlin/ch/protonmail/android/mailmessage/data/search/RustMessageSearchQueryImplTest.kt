@@ -32,6 +32,7 @@ import ch.protonmail.android.mailmessage.domain.paging.RustInvalidationTracker
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailpagination.domain.model.PageToLoad
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
+import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
 import io.mockk.Runs
 import io.mockk.coEvery
@@ -44,7 +45,6 @@ import junit.framework.TestCase.assertNotNull
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import uniffi.proton_mail_uniffi.LiveQueryCallback
-import uniffi.proton_mail_uniffi.MailUserSession
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -82,7 +82,7 @@ class RustMessageSearchQueryImplTest {
         val callbackSlot = slot<LiveQueryCallback>()
         val keyword = "keyword"
         val pageKey = PageKey.PageKeyForSearch(keyword)
-        val userSession = mockk<MailUserSession>()
+        val userSession = mockk<MailUserSessionWrapper>()
         coEvery { userSessionRepository.getUserSession(userId) } returns userSession
         coEvery { searchPaginator.nextPage() } returns expectedMessages
         coEvery {
@@ -105,7 +105,7 @@ class RustMessageSearchQueryImplTest {
         // Given
         val keyword = "keyword"
         val pageKey = PageKey.PageKeyForSearch(keyword)
-        val userSession = mockk<MailUserSession>()
+        val userSession = mockk<MailUserSessionWrapper>()
         val labelId = SystemLabelId.AllMail.labelId
         coEvery { userSessionRepository.getUserSession(userId) } returns userSession
         coEvery { searchPaginator.nextPage() } returns expectedMessages
@@ -126,7 +126,7 @@ class RustMessageSearchQueryImplTest {
         val callbackSlot = slot<LiveQueryCallback>()
         val keyword = "test"
         val pageKey = PageKey.PageKeyForSearch(keyword)
-        val userSession = mockk<MailUserSession>()
+        val userSession = mockk<MailUserSessionWrapper>()
         coEvery { userSessionRepository.getUserSession(userId) } returns userSession
         coEvery { searchPaginator.nextPage() } returns emptyList()
         coEvery {
@@ -150,7 +150,7 @@ class RustMessageSearchQueryImplTest {
         val expectedConversations = listOf(mockk<LocalMessageMetadata>())
         val keyword = "keyword"
         val pageKey = PageKey.PageKeyForSearch(keyword, PageToLoad.First)
-        val session = mockk<MailUserSession>()
+        val session = mockk<MailUserSessionWrapper>()
         val paginator = mockk<MessagePaginatorWrapper> {
             coEvery { this@mockk.nextPage() } returns expectedConversations
         }
@@ -170,7 +170,7 @@ class RustMessageSearchQueryImplTest {
         val expectedConversations = listOf(mockk<LocalMessageMetadata>())
         val keyword = "keyword"
         val pageKey = PageKey.PageKeyForSearch(keyword, PageToLoad.Next)
-        val session = mockk<MailUserSession>()
+        val session = mockk<MailUserSessionWrapper>()
         val paginator = mockk<MessagePaginatorWrapper> {
             coEvery { this@mockk.nextPage() } returns expectedConversations
         }
@@ -190,7 +190,7 @@ class RustMessageSearchQueryImplTest {
         val expectedConversations = listOf(mockk<LocalMessageMetadata>())
         val keyword = "keyword"
         val pageKey = PageKey.PageKeyForSearch(keyword, PageToLoad.All)
-        val session = mockk<MailUserSession>()
+        val session = mockk<MailUserSessionWrapper>()
         val paginator = mockk<MessagePaginatorWrapper> {
             coEvery { this@mockk.reload() } returns expectedConversations
         }
@@ -210,7 +210,7 @@ class RustMessageSearchQueryImplTest {
         val expectedConversations = listOf(mockk<LocalMessageMetadata>())
         val keyword = "keyword"
         val pageKey = PageKey.PageKeyForSearch(keyword)
-        val session = mockk<MailUserSession>()
+        val session = mockk<MailUserSessionWrapper>()
         val labelId = SystemLabelId.AllMail.labelId
         val paginator = mockk<MessagePaginatorWrapper> {
             coEvery { this@mockk.nextPage() } returns expectedConversations
@@ -234,7 +234,7 @@ class RustMessageSearchQueryImplTest {
         val keyword = "keyword"
         val pageKey = PageKey.PageKeyForSearch(keyword)
         val nextPageKey = pageKey.copy(pageToLoad = PageToLoad.Next)
-        val session = mockk<MailUserSession>()
+        val session = mockk<MailUserSessionWrapper>()
         val paginator = mockk<MessagePaginatorWrapper> {
             coEvery { this@mockk.nextPage() } returns firstPage
         }
@@ -259,7 +259,7 @@ class RustMessageSearchQueryImplTest {
         val newKeyword = "second query"
         val pageKey = PageKey.PageKeyForSearch(keyword)
         val newPageKey = PageKey.PageKeyForSearch(newKeyword)
-        val session = mockk<MailUserSession>()
+        val session = mockk<MailUserSessionWrapper>()
         val paginator = mockk<MessagePaginatorWrapper> {
             coEvery { this@mockk.nextPage() } returns firstPage
             coEvery { this@mockk.destroy() } just Runs

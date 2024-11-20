@@ -1,19 +1,18 @@
 package ch.protonmail.android.mailsession.data.repository
 
+import ch.protonmail.android.mailsession.data.wrapper.MailSessionWrapper
 import ch.protonmail.android.mailsession.domain.model.ForkedSessionId
 import ch.protonmail.android.mailsession.domain.model.SessionError
+import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
 import ch.protonmail.android.test.utils.rule.LoggingTestRule
 import ch.protonmail.android.testdata.user.UserIdTestData
 import io.mockk.coEvery
 import io.mockk.coVerify
-import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import me.proton.android.core.account.domain.ObserveStoredAccounts
 import me.proton.core.domain.entity.UserId
 import org.junit.Rule
-import uniffi.proton_mail_uniffi.MailSession
-import uniffi.proton_mail_uniffi.MailUserSession
 import uniffi.proton_mail_uniffi.StoredAccount
 import uniffi.proton_mail_uniffi.StoredSession
 import kotlin.test.Test
@@ -36,7 +35,7 @@ class UserSessionRepositoryImplTest {
     fun `initializes session from repository and returns it when not already active`() = runTest {
         // Given
         val userId = UserIdTestData.userId
-        val expectedMailUserSession = mockk<MailUserSession>()
+        val expectedMailUserSession = mockk<MailUserSessionWrapper>()
         val mailSession = mailSessionWithUserSessionStored(userId, expectedMailUserSession)
         coEvery { mailSessionRepository.getMailSession() } returns mailSession
 
@@ -50,7 +49,7 @@ class UserSessionRepositoryImplTest {
     fun `returns active session without re initialising it`() = runTest {
         // Given
         val userId = UserIdTestData.userId
-        val expectedMailUserSession = mockk<MailUserSession>()
+        val expectedMailUserSession = mockk<MailUserSessionWrapper>()
         val mailSession = mailSessionWithUserSessionStored(userId, expectedMailUserSession)
         coEvery { mailSessionRepository.getMailSession() } returns mailSession
 
@@ -82,7 +81,7 @@ class UserSessionRepositoryImplTest {
         // Given
         val userId = UserIdTestData.userId
         val expectedSessionId = "forked-session-id"
-        val expectedMailUserSession = mockk<MailUserSession> {
+        val expectedMailUserSession = mockk<MailUserSessionWrapper> {
             coEvery { fork() } returns expectedSessionId
         }
         val mailSession = mailSessionWithUserSessionStored(userId, expectedMailUserSession)
@@ -117,7 +116,7 @@ class UserSessionRepositoryImplTest {
         // Given
         val userId = UserIdTestData.userId
         val exception = RuntimeException("Fork failed")
-        val expectedMailUserSession = mockk<MailUserSession> {
+        val expectedMailUserSession = mockk<MailUserSessionWrapper> {
             coEvery { fork() } throws exception
         }
         val mailSession = mailSessionWithUserSessionStored(userId, expectedMailUserSession)
@@ -136,7 +135,7 @@ class UserSessionRepositoryImplTest {
     fun `ensures single session instance is created for a user`() = runTest {
         // Given
         val userId = UserIdTestData.userId
-        val expectedMailUserSession = mockk<MailUserSession>()
+        val expectedMailUserSession = mockk<MailUserSessionWrapper>()
         val mailSession = mailSessionWithUserSessionStored(userId, expectedMailUserSession)
         coEvery { mailSessionRepository.getMailSession() } returns mailSession
 
@@ -149,21 +148,17 @@ class UserSessionRepositoryImplTest {
         coVerify(exactly = 1) { mailSession.userContextFromSession(any()) }
     }
 
-    private fun mailSessionWithNoUserSessionsStored() = mockk<MailSession> {
+    private fun mailSessionWithNoUserSessionsStored() = mockk<MailSessionWrapper> {
         coEvery { getAccount(any()) } returns null
         coEvery { getAccounts() } returns emptyList()
     }
 
     private fun mailSessionWithUserSessionStored(
         expectedSessionUserId: UserId,
-        expectedMailUserSession: MailUserSession
-    ) = mockk<MailSession> {
-        val storedAccount = mockk<StoredAccount> {
-            every { userId() } returns expectedSessionUserId.id
-        }
-        val storedSession = mockk<StoredSession> {
-            every { userId() } returns expectedSessionUserId.id
-        }
+        expectedMailUserSession: MailUserSessionWrapper
+    ) = mockk<MailSessionWrapper> {
+        val storedAccount = mockk<StoredAccount>()
+        val storedSession = mockk<StoredSession>()
         coEvery { userContextFromSession(storedSession) } returns expectedMailUserSession
         coEvery { getAccount(any()) } returns storedAccount
         coEvery { getAccounts() } returns listOf(storedAccount)

@@ -20,8 +20,8 @@ package ch.protonmail.android.mailmessage.data.usecase
 
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
 import ch.protonmail.android.mailmessage.data.wrapper.MessagePaginatorWrapper
+import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
 import uniffi.proton_mail_uniffi.LiveQueryCallback
-import uniffi.proton_mail_uniffi.MailUserSession
 import uniffi.proton_mail_uniffi.PaginatorFilter
 import uniffi.proton_mail_uniffi.paginateMessagesForLabel
 import javax.inject.Inject
@@ -29,14 +29,14 @@ import javax.inject.Inject
 class CreateRustMessagesPaginator @Inject constructor() {
 
     suspend operator fun invoke(
-        session: MailUserSession,
+        session: MailUserSessionWrapper,
         labelId: LocalLabelId,
         unread: Boolean,
         callback: LiveQueryCallback
     ): MessagePaginatorWrapper {
         val filterParam = if (unread) true else null
         return MessagePaginatorWrapper(
-            paginateMessagesForLabel(session, labelId, PaginatorFilter(filterParam), callback)
+            paginateMessagesForLabel(session.rustObject(), labelId, PaginatorFilter(filterParam), callback)
         )
     }
 }

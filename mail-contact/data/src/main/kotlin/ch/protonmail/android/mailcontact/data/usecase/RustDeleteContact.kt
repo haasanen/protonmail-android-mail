@@ -19,13 +19,13 @@
 package ch.protonmail.android.mailcontact.data.usecase
 
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalContactId
-import uniffi.proton_mail_uniffi.MailUserSession
+import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
 import uniffi.proton_mail_uniffi.deleteContact
 import javax.inject.Inject
 
 class RustDeleteContact @Inject constructor() {
 
-    suspend operator fun invoke(mailUserSession: MailUserSession, contactId: LocalContactId) {
-        deleteContact(contactId, mailUserSession)
+    suspend operator fun invoke(mailUserSession: MailUserSessionWrapper, contactId: LocalContactId) {
+        deleteContact(contactId, mailUserSession.rustObject())
     }
 }

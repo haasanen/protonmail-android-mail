@@ -32,6 +32,7 @@ import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import ch.protonmail.android.mailcontact.domain.model.GetContactError
 import ch.protonmail.android.mailcontact.domain.model.GroupedContacts
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
+import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -47,7 +48,6 @@ import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.ContactsLiveQueryCallback
 import uniffi.proton_mail_uniffi.MailSessionException
-import uniffi.proton_mail_uniffi.MailUserSession
 import uniffi.proton_mail_uniffi.WatchedContactList
 import javax.inject.Inject
 
@@ -104,7 +104,7 @@ class RustContactDataSourceImpl @Inject constructor(
             }
         }
 
-    private suspend fun initialiseOrUpdateContactListWatcher(session: MailUserSession) {
+    private suspend fun initialiseOrUpdateContactListWatcher(session: MailUserSessionWrapper) {
         mutex.withLock {
             if (contactListWatcher == null) {
                 contactListWatcher = createRustContactWatcher(session, contactListUpdatedCallback)
