@@ -22,12 +22,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.tooling.preview.Preview
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
@@ -38,6 +37,7 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.model.UnreadFilter
 import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
+import ch.protonmail.android.design.compose.theme.bodySmallWeak
 
 @Composable
 fun UnreadItemsFilter(
@@ -54,7 +54,17 @@ fun UnreadItemsFilter(
         is UnreadFilterState.Data -> {
             FilterChip(
                 modifier = modifier.testTag(UnreadItemsFilterTestTags.UnreadFilterChip),
-                colors = chipColors(),
+                colors = chipColors().copy(
+                    containerColor = ProtonTheme.colors.backgroundNorm,
+                    selectedContainerColor = ProtonTheme.colors.interactionWeakPressed
+                ),
+                shape = ProtonTheme.shapes.huge,
+                border = FilterChipDefaults.filterChipBorder(
+                    enabled = true,
+                    selected = state.isFilterEnabled,
+                    borderWidth = ProtonDimens.OutlinedBorderSize,
+                    borderColor = ProtonTheme.colors.borderNorm
+                ),
                 selected = state.isFilterEnabled,
                 onClick = {
                     if (state.isFilterEnabled) {
@@ -63,34 +73,26 @@ fun UnreadItemsFilter(
                         onFilterEnabled()
                     }
                 },
-                trailingIcon = addCloseIconForEnabledState(state),
+                leadingIcon = {
+                    Icon(
+                        modifier = Modifier.size(ProtonDimens.SmallIconSize),
+                        painter = painterResource(R.drawable.ic_proton_envelope_dot),
+                        contentDescription = null,
+                        tint = ProtonTheme.colors.iconNorm
+                    )
+                },
                 label = {
                     Text(
                         text = pluralStringResource(
                             id = R.plurals.filter_unread_button_text,
                             count = state.numUnread,
                             UnreadCountValueMapper.toCappedValue(state.numUnread)
-                        )
+                        ),
+                        style = ProtonTheme.typography.bodySmallWeak
                     )
                 }
             )
         }
-    }
-}
-
-@Composable
-private fun addCloseIconForEnabledState(state: UnreadFilterState.Data): @Composable (() -> Unit)? {
-    return if (state.isFilterEnabled) {
-        {
-            Icon(
-                modifier = Modifier.size(ProtonDimens.SmallIconSize),
-                imageVector = Icons.Filled.Close,
-                contentDescription = null,
-                tint = ProtonTheme.colors.iconInverted
-            )
-        }
-    } else {
-        null
     }
 }
 
