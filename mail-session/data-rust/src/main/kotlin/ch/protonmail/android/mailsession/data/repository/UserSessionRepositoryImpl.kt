@@ -58,6 +58,9 @@ class UserSessionRepositoryImpl @Inject constructor(
 
     private val mailSession by lazy { mailSessionRepository.getMailSession() }
 
+    // Cache to store MailUserSession per UserId
+    private val userSessionCache = mutableMapOf<UserId, MailUserSession>()
+
     private val storedAccountsStateFlow: Flow<List<StoredAccount>?> = callbackFlow {
         var watchedStoredAccounts: WatchedAccounts? = null
         watchedStoredAccounts = mailSession.watchAccounts(
@@ -96,16 +99,31 @@ class UserSessionRepositoryImpl @Inject constructor(
 
     override suspend fun deleteAccount(userId: UserId) {
         mailSession.deleteAccount(userId.toLocalUserId())
+        // Remove session from cache
+        userSessionCache.remove(userId)
     }
 
     override suspend fun disableAccount(userId: UserId) {
         mailSession.logoutAccount(userId.toLocalUserId())
+        // Remove session from cache
+        userSessionCache.remove(userId)
     }
 
     override suspend fun getUserSession(userId: UserId): MailUserSession? {
-        val session = getStoredAccount(userId)?.let { mailSession.getAccountSessions(it).firstOrNull() }
-        return session?.let { mailSession.userContextFromSession(it) }
+        // Return cached session if it exists
+        userSessionCache[userId]?.let { return it }
+
+        // Create and store session if not in cache
+        val session = getStoredAccount(userId)?.let { account ->
+            mailSession.getAccountSessions(account).firstOrNull()
+        }
+        val userContext = session?.let { mailSession.userContextFromSession(it) }
+        if (userContext != null) {
+            userSessionCache[userId] = userContext
+        }
+        return userContext
     }
+
 
     override suspend fun forkSession(userId: UserId): Either<SessionError, ForkedSessionId> {
         val userSession = getUserSession(userId) ?: return SessionError.Local.Unknown.left()
@@ -123,3 +141,4 @@ class UserSessionRepositoryImpl @Inject constructor(
         )
     }
 }
+

@@ -136,6 +136,22 @@ class UserSessionRepositoryImplTest {
         coVerify { expectedMailUserSession.fork() }
     }
 
+    @Test
+    fun `ensures single session instance is created for a user`() = runTest {
+        // Given
+        val userId = UserIdTestData.userId
+        val expectedMailUserSession = mockk<MailUserSession>()
+        val mailSession = mailSessionWithUserSessionStored(userId, expectedMailUserSession)
+        coEvery { mailSessionRepository.getMailSession() } returns mailSession
+
+        // When
+        val firstSession = userSessionRepository.getUserSession(userId)
+        val secondSession = userSessionRepository.getUserSession(userId)
+
+        // Then
+        assertEquals(firstSession, secondSession)
+        coVerify(exactly = 1) { mailSession.userContextFromSession(any()) }
+    }
 
     private fun mailSessionWithNoUserSessionsStored() = mockk<MailSession> {
         coEvery { getAccount(any()) } returns null
