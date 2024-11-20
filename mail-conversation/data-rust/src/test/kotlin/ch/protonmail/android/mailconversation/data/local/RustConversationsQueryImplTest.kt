@@ -2,6 +2,7 @@ package ch.protonmail.android.mailconversation.data.local
 
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.mailconversation.data.usecase.CreateRustConversationPaginator
+import ch.protonmail.android.mailconversation.data.wrapper.ConversationPaginatorWrapper
 import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.mailmessage.data.local.RustMailbox
@@ -24,7 +25,6 @@ import io.mockk.verify
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import org.junit.Test
-import uniffi.proton_mail_uniffi.ConversationPaginator
 import uniffi.proton_mail_uniffi.LiveQueryCallback
 import uniffi.proton_mail_uniffi.MailUserSession
 import kotlin.test.assertEquals
@@ -71,7 +71,7 @@ class RustConversationsQueryImplTest {
         val labelId = SystemLabelId.Inbox.labelId
         val pageKey = PageKey.DefaultPageKey(labelId = labelId)
         val session = mockk<MailUserSession>()
-        val paginator = mockk<ConversationPaginator> {
+        val paginator = mockk<ConversationPaginatorWrapper> {
             coEvery { this@mockk.nextPage() } returns expectedConversations
         }
         coEvery { userSessionRepository.getUserSession(userId) } returns session
@@ -92,7 +92,7 @@ class RustConversationsQueryImplTest {
         val labelId = SystemLabelId.Inbox.labelId
         val pageKey = PageKey.DefaultPageKey(labelId = labelId, pageToLoad = PageToLoad.Next)
         val session = mockk<MailUserSession>()
-        val paginator = mockk<ConversationPaginator> {
+        val paginator = mockk<ConversationPaginatorWrapper> {
             coEvery { this@mockk.nextPage() } returns expectedConversations
         }
         coEvery { userSessionRepository.getUserSession(userId) } returns session
@@ -113,7 +113,7 @@ class RustConversationsQueryImplTest {
         val labelId = SystemLabelId.Inbox.labelId
         val pageKey = PageKey.DefaultPageKey(labelId = labelId, pageToLoad = PageToLoad.All)
         val session = mockk<MailUserSession>()
-        val paginator = mockk<ConversationPaginator> {
+        val paginator = mockk<ConversationPaginatorWrapper> {
             coEvery { this@mockk.reload() } returns expectedConversations
         }
         coEvery { userSessionRepository.getUserSession(userId) } returns session
@@ -134,7 +134,7 @@ class RustConversationsQueryImplTest {
         val labelId = SystemLabelId.Inbox.labelId
         val pageKey = PageKey.DefaultPageKey(labelId = labelId)
         val session = mockk<MailUserSession>()
-        val paginator = mockk<ConversationPaginator> {
+        val paginator = mockk<ConversationPaginatorWrapper> {
             coEvery { this@mockk.nextPage() } returns expectedConversations
         }
         coEvery { userSessionRepository.getUserSession(userId) } returns session
@@ -157,7 +157,7 @@ class RustConversationsQueryImplTest {
         val pageKey = PageKey.DefaultPageKey(labelId = labelId)
         val nextPageKey = pageKey.copy(pageToLoad = PageToLoad.Next)
         val session = mockk<MailUserSession>()
-        val paginator = mockk<ConversationPaginator> {
+        val paginator = mockk<ConversationPaginatorWrapper> {
             coEvery { this@mockk.nextPage() } returns firstPage
         }
         coEvery { userSessionRepository.getUserSession(userId) } returns session
@@ -183,9 +183,9 @@ class RustConversationsQueryImplTest {
         val pageKey = PageKey.DefaultPageKey(labelId = labelId)
         val newPageKey = pageKey.copy(newLabelId)
         val session = mockk<MailUserSession>()
-        val paginator = mockk<ConversationPaginator> {
+        val paginator = mockk<ConversationPaginatorWrapper> {
             coEvery { this@mockk.nextPage() } returns firstPage
-            coEvery { this@mockk.handle().disconnect() } just Runs
+            coEvery { this@mockk.disconnect() } just Runs
         }
         coEvery { userSessionRepository.getUserSession(userId) } returns session
         coEvery {
@@ -214,7 +214,7 @@ class RustConversationsQueryImplTest {
         }
         coVerify(exactly = 1) { rustMailbox.switchToMailbox(userId, labelId.toLocalLabelId()) }
 
-        coVerify { paginator.handle().disconnect() }
+        coVerify { paginator.disconnect() }
 
         coVerify(exactly = 1) {
             createRustConversationPaginator(
@@ -236,9 +236,9 @@ class RustConversationsQueryImplTest {
         val pageKey = PageKey.DefaultPageKey(labelId = labelId, readStatus = readStatus)
         val newPageKey = pageKey.copy(readStatus = newReadStatus)
         val session = mockk<MailUserSession>()
-        val paginator = mockk<ConversationPaginator> {
+        val paginator = mockk<ConversationPaginatorWrapper> {
             coEvery { this@mockk.nextPage() } returns firstPage
-            coEvery { this@mockk.handle().disconnect() } just Runs
+            coEvery { this@mockk.disconnect() } just Runs
         }
         coEvery { userSessionRepository.getUserSession(userId) } returns session
         coEvery { createRustConversationPaginator(session, labelId.toLocalLabelId(), false, any()) } returns paginator
@@ -252,7 +252,7 @@ class RustConversationsQueryImplTest {
         coVerify(exactly = 1) { createRustConversationPaginator(session, labelId.toLocalLabelId(), false, any()) }
         coVerify(exactly = 2) { rustMailbox.switchToMailbox(userId, labelId.toLocalLabelId()) }
 
-        coVerify { paginator.handle().disconnect() }
+        coVerify { paginator.disconnect() }
 
         coVerify(exactly = 1) { createRustConversationPaginator(session, labelId.toLocalLabelId(), true, any()) }
     }
@@ -266,7 +266,7 @@ class RustConversationsQueryImplTest {
         val labelId = SystemLabelId.Inbox.labelId
         val pageKey = PageKey.DefaultPageKey(labelId = labelId)
         val session = mockk<MailUserSession>()
-        val paginator = mockk<ConversationPaginator> {
+        val paginator = mockk<ConversationPaginatorWrapper> {
             coEvery { this@mockk.nextPage() } returns firstPage
         }
         val callbackSlot = slot<LiveQueryCallback>()
