@@ -35,6 +35,7 @@ import ch.protonmail.android.mailmessage.data.mapper.toLocalMessageId
 import ch.protonmail.android.mailmessage.data.mapper.toMessage
 import ch.protonmail.android.mailmessage.data.mapper.toMessageBody
 import ch.protonmail.android.mailmessage.data.mapper.toMessageId
+import ch.protonmail.android.mailmessage.data.wrapper.DecryptedMessageWrapper
 import ch.protonmail.android.mailmessage.domain.model.SenderImage
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.testdata.message.rust.LocalMessageIdSample
@@ -136,7 +137,7 @@ class RustMessageRepositoryImplTest {
         val localMessage = LocalMessageTestData.AugWeatherForecast
         val bodyOutput = BodyOutput("message body", false, 0uL, 0uL)
         val localMimeType = LocalMimeType.TEXT_PLAIN
-        val localMessageBody = mockk<uniffi.proton_mail_uniffi.DecryptedMessage> {
+        val localMessageBody = mockk<DecryptedMessageWrapper> {
             coEvery { body(any()) } returns bodyOutput
             every { mimeType() } returns localMimeType
         }

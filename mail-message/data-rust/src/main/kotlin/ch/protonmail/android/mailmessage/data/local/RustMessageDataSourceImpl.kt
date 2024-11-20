@@ -21,7 +21,6 @@ package ch.protonmail.android.mailmessage.data.local
 import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalDecryptedMessage
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelAsAction
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageId
@@ -43,6 +42,7 @@ import ch.protonmail.android.mailmessage.data.usecase.RustMarkMessagesUnread
 import ch.protonmail.android.mailmessage.data.usecase.RustMoveMessages
 import ch.protonmail.android.mailmessage.data.usecase.RustStarMessages
 import ch.protonmail.android.mailmessage.data.usecase.RustUnstarMessages
+import ch.protonmail.android.mailmessage.data.wrapper.DecryptedMessageWrapper
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import kotlinx.coroutines.flow.firstOrNull
@@ -96,7 +96,7 @@ class RustMessageDataSourceImpl @Inject constructor(
         userId: UserId,
         messageId: LocalMessageId,
         labelId: LocalLabelId?
-    ): LocalDecryptedMessage? {
+    ): DecryptedMessageWrapper? {
         val mailboxFlow = if (labelId != null) {
             rustMailbox.observeMailbox(labelId)
         } else {
@@ -109,6 +109,7 @@ class RustMessageDataSourceImpl @Inject constructor(
                     createRustMessageBodyAccessor(mailbox, messageId)
                 }
                 .firstOrNull()
+                ?.let { DecryptedMessageWrapper(it) }
         } catch (e: MailboxException) {
             Timber.e(e, "rust-message: Failed to get message body")
             null

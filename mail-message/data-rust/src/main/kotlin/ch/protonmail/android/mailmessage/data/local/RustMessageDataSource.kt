@@ -19,12 +19,12 @@
 package ch.protonmail.android.mailmessage.data.local
 
 import arrow.core.Either
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalDecryptedMessage
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelAsAction
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageId
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageMetadata
 import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailmessage.data.wrapper.DecryptedMessageWrapper
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import me.proton.core.domain.entity.UserId
 import uniffi.proton_mail_uniffi.AllBottomBarMessageActions
@@ -38,7 +38,7 @@ interface RustMessageDataSource {
         userId: UserId,
         messageId: LocalMessageId,
         labelId: LocalLabelId?
-    ): LocalDecryptedMessage?
+    ): DecryptedMessageWrapper?
 
     suspend fun getMessages(userId: UserId, pageKey: PageKey): List<LocalMessageMetadata>
 

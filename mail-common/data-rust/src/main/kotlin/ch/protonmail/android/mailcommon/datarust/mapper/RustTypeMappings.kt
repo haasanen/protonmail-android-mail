@@ -25,7 +25,6 @@ import uniffi.proton_mail_uniffi.ComposerMode
 import uniffi.proton_mail_uniffi.ContactEmailItem
 import uniffi.proton_mail_uniffi.ContactItemType
 import uniffi.proton_mail_uniffi.Conversation
-import uniffi.proton_mail_uniffi.DecryptedMessage
 import uniffi.proton_mail_uniffi.ExclusiveLocation
 import uniffi.proton_mail_uniffi.GroupedContacts
 import uniffi.proton_mail_uniffi.Id
@@ -50,7 +49,6 @@ typealias LocalLabelId = Id
 typealias LocalViewMode = ViewMode
 typealias LocalMessageId = Id
 typealias LocalMessageMetadata = Message
-typealias LocalDecryptedMessage = DecryptedMessage
 typealias LocalAttachmentMetadata = AttachmentMetadata
 typealias LocalMimeType = MimeType
 typealias LocalMailSettings = MailSettings
