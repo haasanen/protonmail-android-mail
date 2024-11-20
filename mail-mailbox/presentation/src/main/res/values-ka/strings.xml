@@ -28,10 +28,6 @@
     <item quantity="one">მონიშნულია %d</item>
     <item quantity="other">მონიშნულია %d</item>
   </plurals>
-  <plurals name="filter_unread_button_text">
-    <item quantity="one">%s წაუკითხავი</item>
-    <item quantity="other">%s წაუკითხავი</item>
-  </plurals>
   <string name="mailbox_default_recipient">(მიმღების გარეშე)</string>
   <string name="mailbox_default_sender">(გამომგზავნის გარეშე)</string>
   <string name="mailbox_error_message_offline">ინტერნეტკავშირის გარეშე. ელემენტების მიღება შეუძლებელია</string>

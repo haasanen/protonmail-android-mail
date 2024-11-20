@@ -29,11 +29,6 @@
     <item quantity="few">%d Odabrano</item>
     <item quantity="other">%d odabranih</item>
   </plurals>
-  <plurals name="filter_unread_button_text">
-    <item quantity="one">%s nepročitane</item>
-    <item quantity="few">%s nepročitanih</item>
-    <item quantity="other">%s nepročitane</item>
-  </plurals>
   <string name="mailbox_default_recipient">(Nema primatelja)</string>
   <string name="mailbox_default_sender">(Nema pošiljatelja)</string>
   <string name="mailbox_error_message_offline">Izvan mreže ste, nije moguće dohvatiti stavke</string>

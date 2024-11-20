@@ -28,10 +28,6 @@
     <item quantity="one">%d yettwafernen</item>
     <item quantity="other">%d yettwafernen</item>
   </plurals>
-  <plurals name="filter_unread_button_text">
-    <item quantity="one">%s ur yettwaɣra ara</item>
-    <item quantity="other">%s ur ttwaɣran ara</item>
-  </plurals>
   <string name="mailbox_default_recipient">(Ulac iɣerwaḍen)</string>
   <string name="mailbox_default_sender">(Ulac amazan)</string>
   <string name="mailbox_error_message_offline">Ur teqqineḍ ara, ulamek i d-terriḍ iferdisen</string>

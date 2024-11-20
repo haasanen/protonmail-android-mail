@@ -28,10 +28,6 @@
     <item quantity="one">%d ausgewählt</item>
     <item quantity="other">%d ausgewählt</item>
   </plurals>
-  <plurals name="filter_unread_button_text">
-    <item quantity="one">%s ungelesen</item>
-    <item quantity="other">%s ungelesen</item>
-  </plurals>
   <string name="mailbox_default_recipient">(Kein Empfänger)</string>
   <string name="mailbox_default_sender">(Kein Absender)</string>
   <string name="mailbox_error_message_offline">Du bist offline und kannst keine Einträge abrufen.</string>

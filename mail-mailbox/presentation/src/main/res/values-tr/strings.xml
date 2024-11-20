@@ -28,10 +28,6 @@
     <item quantity="one">%d seçilmiş</item>
     <item quantity="other">%d seçilmiş</item>
   </plurals>
-  <plurals name="filter_unread_button_text">
-    <item quantity="one">%s okunmamış</item>
-    <item quantity="other">%s okunmamış</item>
-  </plurals>
   <string name="mailbox_default_recipient">(Alıcı yok)</string>
   <string name="mailbox_default_sender">(Gönderici yok)</string>
   <string name="mailbox_error_message_offline">Çevrim dışı olduğunuzda ögeler alınamadı</string>

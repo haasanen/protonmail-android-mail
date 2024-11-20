@@ -28,10 +28,6 @@
     <item quantity="one">%d elemento selezionato</item>
     <item quantity="other">%d elementi selezionati</item>
   </plurals>
-  <plurals name="filter_unread_button_text">
-    <item quantity="one">%s non letto</item>
-    <item quantity="other">%s non letti</item>
-  </plurals>
   <string name="mailbox_default_recipient">(Nessun destinatario)</string>
   <string name="mailbox_default_sender">(Nessun mittente)</string>
   <string name="mailbox_error_message_offline">Nessuna connessone a Internet. Caricamento dei messaggi non riuscito.</string>

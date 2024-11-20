@@ -28,10 +28,6 @@
     <item quantity="one">%d kiválasztva</item>
     <item quantity="other">%d kiválasztva</item>
   </plurals>
-  <plurals name="filter_unread_button_text">
-    <item quantity="one">%s olvasatlan</item>
-    <item quantity="other">%s olvasatlan</item>
-  </plurals>
   <string name="mailbox_default_recipient">(Nincs címzett)</string>
   <string name="mailbox_default_sender">(Nincs feladó)</string>
   <string name="mailbox_error_message_offline">Jelenleg offline, az elemek így nem tölthetők be</string>

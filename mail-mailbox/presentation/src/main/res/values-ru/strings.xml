@@ -30,12 +30,6 @@
     <item quantity="many">%d выбрано</item>
     <item quantity="other">%d выбрано</item>
   </plurals>
-  <plurals name="filter_unread_button_text">
-    <item quantity="one">%s непрочитанное</item>
-    <item quantity="few">%s непрочитанных</item>
-    <item quantity="many">%s непрочитанных</item>
-    <item quantity="other">%s непрочитанных</item>
-  </plurals>
   <string name="mailbox_default_recipient">(Нет получателя)</string>
   <string name="mailbox_default_sender">(Нет отправителя)</string>
   <string name="mailbox_error_message_offline">Вы офлайн, не удалось получить элементы</string>

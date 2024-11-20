@@ -28,10 +28,6 @@
     <item quantity="one">%d valgt</item>
     <item quantity="other">%d valgte</item>
   </plurals>
-  <plurals name="filter_unread_button_text">
-    <item quantity="one">%s ulæst</item>
-    <item quantity="other">%s ulæste</item>
-  </plurals>
   <string name="mailbox_default_recipient">(Ingen modtager)</string>
   <string name="mailbox_default_sender">(Ingen afsender)</string>
   <string name="mailbox_error_message_offline">Du er offline og kan ikke hente elementer</string>

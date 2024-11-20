@@ -28,10 +28,6 @@
     <item quantity="one">%d vald</item>
     <item quantity="other">%d valda</item>
   </plurals>
-  <plurals name="filter_unread_button_text">
-    <item quantity="one">%s oläst</item>
-    <item quantity="other">%s olästa</item>
-  </plurals>
   <string name="mailbox_default_recipient">(Ingen mottagare)</string>
   <string name="mailbox_default_sender">(Ingen avsändare)</string>
   <string name="mailbox_error_message_offline">Du är offline, kan inte hämta objekt</string>

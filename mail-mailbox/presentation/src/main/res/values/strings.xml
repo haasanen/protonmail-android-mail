@@ -29,8 +29,8 @@
         <item quantity="other">%d Selected</item>
     </plurals>
     <plurals name="filter_unread_button_text">
-        <item quantity="one">%s unread</item>
-        <item quantity="other">%s unread</item>
+        <item quantity="one">Unread %s</item>
+        <item quantity="other">Unread %s</item>
     </plurals>
     <string name="mailbox_default_recipient">(No Recipient)</string>
     <string name="mailbox_default_sender">(No Sender)</string>
