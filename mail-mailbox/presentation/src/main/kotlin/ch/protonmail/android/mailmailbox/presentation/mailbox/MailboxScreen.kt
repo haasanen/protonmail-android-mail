@@ -451,7 +451,7 @@ private fun MailboxStickyHeader(
         modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = ProtonDimens.Spacing.Large),
-        horizontalArrangement = Arrangement.End
+        horizontalArrangement = Arrangement.Start
     ) {
         UnreadItemsFilter(
             modifier = Modifier,
