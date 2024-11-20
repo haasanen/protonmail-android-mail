@@ -21,7 +21,7 @@ package ch.protonmail.android.mailsession.data.initializer
 import android.content.Context
 import ch.protonmail.android.mailsession.data.keychain.OsKeyChainMock
 import ch.protonmail.android.mailsession.data.model.RustLibConfigParams
-import ch.protonmail.android.mailsession.domain.repository.MailSessionRepository
+import ch.protonmail.android.mailsession.data.repository.MailSessionRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
 import me.proton.core.network.data.di.BaseProtonApiUrl
 import okhttp3.HttpUrl

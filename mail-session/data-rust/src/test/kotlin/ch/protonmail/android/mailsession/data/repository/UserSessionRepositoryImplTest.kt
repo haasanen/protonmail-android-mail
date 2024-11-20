@@ -2,7 +2,6 @@ package ch.protonmail.android.mailsession.data.repository
 
 import ch.protonmail.android.mailsession.domain.model.ForkedSessionId
 import ch.protonmail.android.mailsession.domain.model.SessionError
-import ch.protonmail.android.mailsession.domain.repository.MailSessionRepository
 import ch.protonmail.android.test.utils.rule.LoggingTestRule
 import ch.protonmail.android.testdata.user.UserIdTestData
 import io.mockk.coEvery

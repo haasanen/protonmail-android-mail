@@ -16,7 +16,7 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailsession.domain.repository
+package ch.protonmail.android.mailsession.data.repository
 
 import uniffi.proton_mail_uniffi.MailSession
 

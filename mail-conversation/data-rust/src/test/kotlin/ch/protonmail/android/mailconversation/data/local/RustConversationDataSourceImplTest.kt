@@ -32,7 +32,6 @@ import ch.protonmail.android.maillabel.data.mapper.toLabelId
 import ch.protonmail.android.mailmessage.data.local.RustMailbox
 import ch.protonmail.android.mailmessage.data.model.LocalConversationMessages
 import ch.protonmail.android.mailpagination.domain.model.PageKey
-import ch.protonmail.android.mailsession.domain.repository.MailSessionRepository
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
 import ch.protonmail.android.testdata.conversation.rust.LocalConversationIdSample
@@ -59,7 +58,6 @@ import uniffi.proton_mail_uniffi.Id
 import uniffi.proton_mail_uniffi.IsSelected
 import uniffi.proton_mail_uniffi.LabelAsAction
 import uniffi.proton_mail_uniffi.LabelColor
-import uniffi.proton_mail_uniffi.MailSession
 import uniffi.proton_mail_uniffi.MailSessionException
 import uniffi.proton_mail_uniffi.Mailbox
 import uniffi.proton_mail_uniffi.MailboxException
@@ -76,7 +74,6 @@ class RustConversationDataSourceImplTest {
     private val testCoroutineScope = CoroutineScope(mainDispatcherRule.testDispatcher)
 
     private val sessionManager = mockk<UserSessionRepository>()
-    private val mailSessionRepository = mockk<MailSessionRepository>()
 
     private val rustMailbox: RustMailbox = mockk()
     private val rustConversationDetailQuery: RustConversationDetailQuery = mockk()
@@ -108,7 +105,6 @@ class RustConversationDataSourceImplTest {
     fun `get conversations should return list of conversations`() = runTest {
         // Given
         val userId = UserIdTestData.userId
-        val mailSession = mockk<MailSession>()
         val labelId = LocalLabelId(1uL)
         val pageKey = PageKey.DefaultPageKey(labelId.toLabelId())
         val conversations = listOf(
@@ -116,7 +112,6 @@ class RustConversationDataSourceImplTest {
             LocalConversationTestData.SepConversation,
             LocalConversationTestData.OctConversation
         )
-        coEvery { mailSessionRepository.getMailSession() } returns mailSession
         coEvery { rustConversationsQuery.getConversations(userId, pageKey) } returns conversations
 
         // When
@@ -131,9 +126,7 @@ class RustConversationDataSourceImplTest {
     fun `observe conversation should return the conversation for the given id`() = runTest {
         // Given
         val userId = UserIdTestData.userId
-        val mailSession = mockk<MailSession>()
         val conversationId = LocalConversationIdSample.AugConversation
-        coEvery { mailSessionRepository.getMailSession() } returns mailSession
         coEvery {
             rustConversationDetailQuery.observeConversation(userId, conversationId)
         } returns flowOf(LocalConversationTestData.AugConversation)
@@ -149,9 +142,7 @@ class RustConversationDataSourceImplTest {
     fun `observe conversation should handle mailbox exception`() = runTest {
         // Given
         val userId = UserIdTestData.userId
-        val mailSession = mockk<MailSession>()
         val conversationId = LocalConversationIdSample.AugConversation
-        coEvery { mailSessionRepository.getMailSession() } returns mailSession
         coEvery {
             rustConversationDetailQuery.observeConversation(userId, conversationId)
         } throws MailboxException.Io("DB Exception")

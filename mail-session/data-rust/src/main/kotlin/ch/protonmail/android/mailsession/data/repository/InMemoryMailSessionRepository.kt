@@ -18,7 +18,6 @@
 
 package ch.protonmail.android.mailsession.data.repository
 
-import ch.protonmail.android.mailsession.domain.repository.MailSessionRepository
 import uniffi.proton_mail_uniffi.MailSession
 import javax.inject.Inject
 
