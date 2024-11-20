@@ -24,6 +24,7 @@ import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.maillabel.domain.usecase.FindLocalSystemLabelId
 import ch.protonmail.android.mailmessage.data.local.RustMailbox
 import ch.protonmail.android.mailmessage.data.usecase.CreateRustSearchPaginator
+import ch.protonmail.android.mailmessage.data.wrapper.MessagePaginatorWrapper
 import ch.protonmail.android.mailmessage.domain.paging.RustDataSourceId
 import ch.protonmail.android.mailmessage.domain.paging.RustInvalidationTracker
 import ch.protonmail.android.mailpagination.domain.model.PageKey
@@ -35,7 +36,6 @@ import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.LiveQueryCallback
 import uniffi.proton_mail_uniffi.MailUserSession
-import uniffi.proton_mail_uniffi.MessagePaginator
 import javax.inject.Inject
 
 class RustMessageSearchQueryImpl @Inject constructor(
@@ -114,12 +114,12 @@ class RustMessageSearchQueryImpl @Inject constructor(
 
     private fun destroy() {
         Timber.d("rust-message-query: destroy")
-        paginator?.searchPaginator?.handle()?.disconnect()
+        paginator?.searchPaginator?.destroy()
         paginator = null
     }
 
     private fun shouldInitPaginator(userId: UserId, keyword: String) =
         paginator == null || paginator?.userId != userId || paginator?.keyword != keyword
 
-    private data class Paginator(val searchPaginator: MessagePaginator, val userId: UserId, val keyword: String)
+    private data class Paginator(val searchPaginator: MessagePaginatorWrapper, val userId: UserId, val keyword: String)
 }

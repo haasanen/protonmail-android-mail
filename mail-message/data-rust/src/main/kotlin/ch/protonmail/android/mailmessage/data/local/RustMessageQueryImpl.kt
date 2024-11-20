@@ -22,6 +22,7 @@ import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageMetadata
 import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
 import ch.protonmail.android.mailmessage.data.usecase.CreateRustMessagesPaginator
+import ch.protonmail.android.mailmessage.data.wrapper.MessagePaginatorWrapper
 import ch.protonmail.android.mailmessage.domain.paging.RustDataSourceId
 import ch.protonmail.android.mailmessage.domain.paging.RustInvalidationTracker
 import ch.protonmail.android.mailpagination.domain.model.PageKey
@@ -34,7 +35,6 @@ import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.LiveQueryCallback
 import uniffi.proton_mail_uniffi.MailUserSession
-import uniffi.proton_mail_uniffi.MessagePaginator
 import javax.inject.Inject
 
 class RustMessageQueryImpl @Inject constructor(
@@ -103,7 +103,7 @@ class RustMessageQueryImpl @Inject constructor(
 
     private fun destroy() {
         Timber.d("rust-message-query: destroy")
-        paginator?.rustPaginator?.handle()?.disconnect()
+        paginator?.rustPaginator?.destroy()
         paginator = null
     }
 
@@ -114,7 +114,7 @@ class RustMessageQueryImpl @Inject constructor(
     ) = paginator == null || paginator?.userId != userId || paginator?.labelId != labelId || paginator?.unread != unread
 
     private data class Paginator(
-        val rustPaginator: MessagePaginator,
+        val rustPaginator: MessagePaginatorWrapper,
         val userId: UserId,
         val labelId: LocalLabelId,
         val unread: Boolean

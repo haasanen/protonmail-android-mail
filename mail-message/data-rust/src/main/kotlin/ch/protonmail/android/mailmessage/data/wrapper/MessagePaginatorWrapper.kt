@@ -16,22 +16,18 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailmessage.data.usecase
+package ch.protonmail.android.mailmessage.data.wrapper
 
-import ch.protonmail.android.mailmessage.data.wrapper.MessagePaginatorWrapper
-import uniffi.proton_mail_uniffi.LiveQueryCallback
-import uniffi.proton_mail_uniffi.MailUserSession
-import uniffi.proton_mail_uniffi.PaginatorSearchOptions
-import uniffi.proton_mail_uniffi.paginateSearch
-import javax.inject.Inject
+import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageMetadata
+import uniffi.proton_mail_uniffi.MessagePaginator
 
-class CreateRustSearchPaginator @Inject constructor() {
+class MessagePaginatorWrapper(private val rustPaginator: MessagePaginator) {
 
-    suspend operator fun invoke(
-        session: MailUserSession,
-        keyword: String,
-        callback: LiveQueryCallback
-    ) = MessagePaginatorWrapper(
-        paginateSearch(session, PaginatorSearchOptions(keyword), callback)
-    )
+    suspend fun nextPage(): List<LocalMessageMetadata> = rustPaginator.nextPage()
+
+    suspend fun reload(): List<LocalMessageMetadata> = rustPaginator.reload()
+
+    fun destroy() {
+        rustPaginator.handle().disconnect()
+    }
 }
