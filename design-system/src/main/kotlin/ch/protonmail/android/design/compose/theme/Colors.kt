@@ -191,6 +191,9 @@ class ProtonColors(
     separatorNorm: Color = shade10,
     separatorStrong: Color = shade20,
 
+    borderNorm: Color = shade10,
+    borderStrong: Color = shade20,
+
     blenderNorm: Color,
 
     notificationNorm: Color = ProtonPalette.Charade,
@@ -287,8 +290,12 @@ class ProtonColors(
 
     var separatorNorm: Color by mutableStateOf(separatorNorm, structuralEqualityPolicy())
         internal set
-
     var separatorStrong: Color by mutableStateOf(separatorStrong, structuralEqualityPolicy())
+        internal set
+
+    var borderNorm: Color by mutableStateOf(borderNorm, structuralEqualityPolicy())
+        internal set
+    var borderStrong: Color by mutableStateOf(borderStrong, structuralEqualityPolicy())
         internal set
 
     var blenderNorm: Color by mutableStateOf(blenderNorm, structuralEqualityPolicy())
@@ -339,6 +346,7 @@ class ProtonColors(
 
     var sidebarColors: ProtonColors? by mutableStateOf(sidebarColors, structuralEqualityPolicy())
 
+    @Suppress("LongMethod")
     fun copy(
         isDark: Boolean = this.isDark,
         shade100: Color = this.shade100,
@@ -375,6 +383,8 @@ class ProtonColors(
         backgroundDeep: Color = this.backgroundDeep,
         separatorNorm: Color = this.separatorNorm,
         separatorStrong: Color = this.separatorStrong,
+        borderNorm: Color = this.borderNorm,
+        borderStrong: Color = this.borderStrong,
         blenderNorm: Color = this.blenderNorm,
         brandDarken40: Color = this.brandDarken40,
         brandDarken20: Color = this.brandDarken20,
@@ -439,6 +449,9 @@ class ProtonColors(
 
         separatorNorm = separatorNorm,
         separatorStrong = separatorStrong,
+
+        borderNorm = borderNorm,
+        borderStrong = borderStrong,
 
         blenderNorm = blenderNorm,
 
@@ -735,6 +748,10 @@ fun ProtonColors.updateColorsFrom(other: ProtonColors) {
     backgroundDeep = other.backgroundDeep
 
     separatorNorm = other.separatorNorm
+    separatorStrong = other.separatorStrong
+
+    borderNorm = other.borderNorm
+    borderStrong = other.borderStrong
 
     blenderNorm = other.blenderNorm
 
