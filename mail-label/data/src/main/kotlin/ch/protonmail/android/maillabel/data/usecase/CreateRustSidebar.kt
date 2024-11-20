@@ -18,11 +18,12 @@
 
 package ch.protonmail.android.maillabel.data.usecase
 
+import ch.protonmail.android.maillabel.data.wrapper.SidebarWrapper
 import uniffi.proton_mail_uniffi.MailUserSession
 import uniffi.proton_mail_uniffi.Sidebar
 import javax.inject.Inject
 
 class CreateRustSidebar @Inject constructor() {
 
-    operator fun invoke(userSession: MailUserSession) = Sidebar(userSession)
+    operator fun invoke(userSession: MailUserSession) = SidebarWrapper(Sidebar(userSession))
 }

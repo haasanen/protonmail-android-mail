@@ -18,8 +18,10 @@
 
 package ch.protonmail.android.maillabel.data.local
 
+import java.lang.ref.WeakReference
 import ch.protonmail.android.maillabel.data.MailLabelRustCoroutineScope
 import ch.protonmail.android.maillabel.data.usecase.CreateRustSidebar
+import ch.protonmail.android.maillabel.data.wrapper.SidebarWrapper
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -33,7 +35,6 @@ import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.LabelType
 import uniffi.proton_mail_uniffi.LiveQueryCallback
-import uniffi.proton_mail_uniffi.Sidebar
 import uniffi.proton_mail_uniffi.SidebarCustomFolder
 import uniffi.proton_mail_uniffi.SidebarCustomLabel
 import uniffi.proton_mail_uniffi.SidebarSystemLabel
@@ -64,9 +65,9 @@ class RustLabelDataSource @Inject constructor(
         .filterNotNull()
 
     private var sidebarWithUserId: SidebarWithUserId? = null
-    private var systemLabelsWatchHandle: WatchHandle? = null
-    private var messageLabelsWatchHandle: WatchHandle? = null
-    private var messageFoldersWatchHandle: WatchHandle? = null
+    private var systemLabelsWatchHandle: WeakReference<WatchHandle>? = null
+    private var messageLabelsWatchHandle: WeakReference<WatchHandle>? = null
+    private var messageFoldersWatchHandle: WeakReference<WatchHandle>? = null
 
     private val customLabelsUpdatedCallback = object : LiveQueryCallback {
         override fun onUpdate() {
@@ -173,7 +174,7 @@ class RustLabelDataSource @Inject constructor(
         }
     }
 
-    private suspend fun getRustSidebarInstance(userId: UserId): Sidebar? = mutex.withLock {
+    private suspend fun getRustSidebarInstance(userId: UserId): SidebarWrapper? = mutex.withLock {
         if (shouldInitialiseSidebar(userId)) {
             destroySidebarAndWatchers()
 
@@ -201,26 +202,26 @@ class RustLabelDataSource @Inject constructor(
 
     private fun destroySystemLabelsWatcher() {
         Timber.v("rust-label: destroySystemLabelsLiveQuery")
-        systemLabelsWatchHandle?.disconnect()
+        systemLabelsWatchHandle?.clear()
         systemLabelsWatchHandle = null
     }
 
     private fun destroyMessageLabelsWatcher() {
         Timber.v("rust-label: label: destroyMessageLabelsLiveQuery")
-        messageLabelsWatchHandle?.disconnect()
+        messageLabelsWatchHandle?.clear()
         messageLabelsWatchHandle = null
     }
 
     private fun destroyMessageFoldersWatcher() {
         Timber.v("rust-label: label: destroyMessageFoldersLiveQuery")
-        messageFoldersWatchHandle?.disconnect()
+        messageFoldersWatchHandle?.clear()
         messageFoldersWatchHandle = null
     }
 
-    private fun Sidebar.withUserId(userId: UserId) = SidebarWithUserId(userId, this)
+    private fun SidebarWrapper.withUserId(userId: UserId) = SidebarWithUserId(userId, this)
 
     private data class SidebarWithUserId(
         val userId: UserId,
-        val sidebar: Sidebar
+        val sidebar: SidebarWrapper
     )
 }
