@@ -58,7 +58,7 @@ internal fun ChipsListTextField2(
     textFieldValue: TextFieldValue,
     modifier: Modifier = Modifier,
     focusRequester: FocusRequester? = null,
-    cursorColor: Color = ProtonTheme.colors.brandDarken20,
+    cursorColor: Color = ProtonTheme.colors.brandPlus20,
     textStyle: TextStyle = ProtonTheme.typography.bodyLargeNorm,
     animateChipsCreation: Boolean = false,
     actions: ChipsListTextField2.Actions

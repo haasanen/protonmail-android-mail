@@ -89,7 +89,7 @@ fun ChipsListTextField(
     onListChanged: (List<ChipItem>) -> Unit,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     focusRequester: FocusRequester? = null,
-    cursorColor: Color = ProtonTheme.colors.brandDarken20,
+    cursorColor: Color = ProtonTheme.colors.brandPlus20,
     textStyle: TextStyle = ProtonTheme.typography.bodyMediumNorm,
     animateChipsCreation: Boolean = false,
     actions: ChipsListTextField.Actions,

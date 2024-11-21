@@ -710,7 +710,7 @@ private fun HideDetails(modifier: Modifier = Modifier) {
     Text(
         modifier = modifier.testTag(MessageDetailHeaderTestTags.ExtendedHideDetails),
         text = stringResource(id = R.string.hide_details),
-        color = ProtonTheme.colors.brandLighten20,
+        color = ProtonTheme.colors.brandMinus20,
         style = ProtonTheme.typography.bodyMediumNorm
     )
 }

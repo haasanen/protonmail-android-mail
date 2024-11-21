@@ -49,15 +49,15 @@ private object ProtonPalette {
     val Topaz = Color(0xFF747088)
     val CadetBlue = Color(0xFFA7A4B5)
 
-    // Blue Tones
-    val Chambray = Color(0xFF372580)
-    val SanMarino = Color(0xFF4D34B3)
-    val PurpleHeart = Color(0xFF5C3FD9)
-    val CornflowerBlue = Color(0xFF6D4AFF)
-    val Portage = Color(0xFF8A6EFF)
-    val Perano = Color(0xFFC4B7FF)
-    val BlueChalk = Color(0xFFEAe5FF)
-    val Magnolia = Color(0xFFF5F2FF)
+    // Brand Tones
+    val Chambray = Color(0xFF372580) // plus-30
+    val SanMarino = Color(0xFF4D34B3) // plus-20
+    val PurpleHeart = Color(0xFF5C3FD9) // plus-10
+    val CornflowerBlue = Color(0xFF6D4AFF) // norm
+    val Portage = Color(0xFF8A6EFF) // minus-10
+    val Perano = Color(0xFFC4B7FF) // minus-20
+    val BlueChalk = Color(0xFFEAe5FF) // minus-30
+    val Magnolia = Color(0xFFF5F2FF) // minus-40
 
     // Warm Tones
     val MaroonFlush = Color(0xFFBA1E55)
@@ -154,12 +154,14 @@ class ProtonColors(
     shade10: Color,
     shade0: Color,
 
-    brandDarken40: Color = ProtonPalette.Chambray,
-    brandDarken20: Color = ProtonPalette.SanMarino,
-    brandDarken10: Color = ProtonPalette.PurpleHeart,
+    brandPlus30: Color = ProtonPalette.Chambray,
+    brandPlus20: Color = ProtonPalette.SanMarino,
+    brandPlus10: Color = ProtonPalette.PurpleHeart,
     brandNorm: Color = ProtonPalette.CornflowerBlue,
-    brandLighten20: Color = ProtonPalette.Portage,
-    brandLighten40: Color = ProtonPalette.Perano,
+    brandMinus10: Color = ProtonPalette.Portage,
+    brandMinus20: Color = ProtonPalette.Perano,
+    brandMinus30: Color = ProtonPalette.BlueChalk,
+    brandMinus40: Color = ProtonPalette.Magnolia,
 
     textNorm: Color = shade100,
     textAccent: Color = brandNorm,
@@ -167,7 +169,7 @@ class ProtonColors(
     textHint: Color = shade60,
     textDisabled: Color = shade50,
     textInverted: Color = shade0,
-    textSelected: Color = brandDarken10,
+    textSelected: Color = brandPlus10,
 
     iconNorm: Color = shade100,
     iconAccent: Color = brandNorm,
@@ -175,7 +177,7 @@ class ProtonColors(
     iconHint: Color = shade60,
     iconDisabled: Color = shade50,
     iconInverted: Color = shade0,
-    iconSelected: Color = brandDarken10,
+    iconSelected: Color = brandPlus10,
 
     interactionStrongNorm: Color = shade100,
     interactionStrongPressed: Color = shade80,
@@ -202,8 +204,8 @@ class ProtonColors(
     notificationSuccess: Color = ProtonPalette.Gossamer,
 
     interactionNorm: Color = brandNorm,
-    interactionPressed: Color = brandDarken20,
-    interactionDisabled: Color = brandLighten40,
+    interactionPressed: Color = brandPlus20,
+    interactionDisabled: Color = brandMinus40,
 
     floatyBackground: Color = ProtonPalette.EerieBlack,
     floatyPressed: Color = ProtonPalette.Charade,
@@ -301,17 +303,21 @@ class ProtonColors(
     var blenderNorm: Color by mutableStateOf(blenderNorm, structuralEqualityPolicy())
         internal set
 
-    var brandDarken40: Color by mutableStateOf(brandDarken40, structuralEqualityPolicy())
+    var brandPlus30: Color by mutableStateOf(brandPlus30, structuralEqualityPolicy())
         internal set
-    var brandDarken20: Color by mutableStateOf(brandDarken20, structuralEqualityPolicy())
+    var brandPlus20: Color by mutableStateOf(brandPlus20, structuralEqualityPolicy())
         internal set
-    var brandDarken10: Color by mutableStateOf(brandDarken10, structuralEqualityPolicy())
+    var brandPlus10: Color by mutableStateOf(brandPlus10, structuralEqualityPolicy())
         internal set
     var brandNorm: Color by mutableStateOf(brandNorm, structuralEqualityPolicy())
         internal set
-    var brandLighten20: Color by mutableStateOf(brandLighten20, structuralEqualityPolicy())
+    var brandMinus10: Color by mutableStateOf(brandMinus10, structuralEqualityPolicy())
         internal set
-    var brandLighten40: Color by mutableStateOf(brandLighten40, structuralEqualityPolicy())
+    var brandMinus20: Color by mutableStateOf(brandMinus20, structuralEqualityPolicy())
+        internal set
+    var brandMinus30: Color by mutableStateOf(brandMinus30, structuralEqualityPolicy())
+        internal set
+    var brandMinus40: Color by mutableStateOf(brandMinus40, structuralEqualityPolicy())
         internal set
 
     var notificationNorm: Color by mutableStateOf(notificationNorm, structuralEqualityPolicy())
@@ -386,12 +392,14 @@ class ProtonColors(
         borderNorm: Color = this.borderNorm,
         borderStrong: Color = this.borderStrong,
         blenderNorm: Color = this.blenderNorm,
-        brandDarken40: Color = this.brandDarken40,
-        brandDarken20: Color = this.brandDarken20,
-        brandDarken10: Color = this.brandDarken10,
+        brandPlus30: Color = this.brandPlus30,
+        brandPlus20: Color = this.brandPlus20,
+        brandPlus10: Color = this.brandPlus10,
         brandNorm: Color = this.brandNorm,
-        brandLighten20: Color = this.brandLighten20,
-        brandLighten40: Color = this.brandLighten40,
+        brandMinus10: Color = this.brandMinus10,
+        brandMinus20: Color = this.brandMinus20,
+        brandMinus30: Color = this.brandMinus30,
+        brandMinus40: Color = this.brandMinus40,
         notificationNorm: Color = this.notificationNorm,
         notificationError: Color = this.notificationError,
         notificationWarning: Color = this.notificationWarning,
@@ -455,12 +463,14 @@ class ProtonColors(
 
         blenderNorm = blenderNorm,
 
-        brandDarken40 = brandDarken40,
-        brandDarken20 = brandDarken20,
-        brandDarken10 = brandDarken10,
+        brandPlus30 = brandPlus30,
+        brandPlus20 = brandPlus20,
+        brandPlus10 = brandPlus10,
         brandNorm = brandNorm,
-        brandLighten20 = brandLighten20,
-        brandLighten40 = brandLighten40,
+        brandMinus10 = brandMinus10,
+        brandMinus20 = brandMinus20,
+        brandMinus30 = brandMinus30,
+        brandMinus40 = brandMinus40,
 
         notificationNorm = notificationNorm,
         notificationError = notificationError,
@@ -488,18 +498,24 @@ class ProtonColors(
         val Dark = baseDark().copy(sidebarColors = sidebarDark())
 
         private fun baseLight(
-            brandDarken40: Color = ProtonPalette.Chambray,
-            brandDarken20: Color = ProtonPalette.SanMarino,
+            brandPlus30: Color = ProtonPalette.Chambray,
+            brandPlus20: Color = ProtonPalette.SanMarino,
+            brandPlus10: Color = ProtonPalette.PurpleHeart,
             brandNorm: Color = ProtonPalette.CornflowerBlue,
-            brandLighten20: Color = ProtonPalette.Portage,
-            brandLighten40: Color = ProtonPalette.Perano
+            brandMinus10: Color = ProtonPalette.Portage,
+            brandMinus20: Color = ProtonPalette.Perano,
+            brandMinus30: Color = ProtonPalette.BlueChalk,
+            brandMinus40: Color = ProtonPalette.Magnolia
         ) = ProtonColors(
             isDark = false,
-            brandDarken40 = brandDarken40,
-            brandDarken20 = brandDarken20,
+            brandPlus30 = brandPlus30,
+            brandPlus20 = brandPlus20,
+            brandPlus10 = brandPlus10,
             brandNorm = brandNorm,
-            brandLighten20 = brandLighten20,
-            brandLighten40 = brandLighten40,
+            brandMinus10 = brandMinus10,
+            brandMinus20 = brandMinus20,
+            brandMinus30 = brandMinus30,
+            brandMinus40 = brandMinus40,
             notificationError = ProtonPalette.Amaranth,
             notificationWarning = ProtonPalette.Orange,
             notificationSuccess = ProtonPalette.Gossamer,
@@ -522,19 +538,24 @@ class ProtonColors(
         )
 
         private fun baseDark(
-            brandDarken40: Color = ProtonPalette.DarkBlue,
-            brandDarken20: Color = ProtonPalette.Rhino,
-            brandDarken10: Color = ProtonPalette.DuskyIndigo,
+            brandPlus30: Color = ProtonPalette.PaleBlue,
+            brandPlus20: Color = ProtonPalette.Periwinkle,
+            brandPlus10: Color = ProtonPalette.BlueBell,
             brandNorm: Color = ProtonPalette.LightSlateBlue,
-            brandLighten20: Color = ProtonPalette.BlueBell,
-            brandLighten40: Color = ProtonPalette.Periwinkle
+            brandMinus10: Color = ProtonPalette.LightVioletBlue,
+            brandMinus20: Color = ProtonPalette.DuskyIndigo,
+            brandMinus30: Color = ProtonPalette.Rhino,
+            brandMinus40: Color = ProtonPalette.DarkBlue
         ) = ProtonColors(
             isDark = true,
-            brandDarken40 = brandDarken40,
-            brandDarken20 = brandDarken20,
+            brandPlus30 = brandPlus30,
+            brandPlus20 = brandPlus20,
+            brandPlus10 = brandPlus10,
             brandNorm = brandNorm,
-            brandLighten20 = brandLighten20,
-            brandLighten40 = brandLighten40,
+            brandMinus10 = brandMinus10,
+            brandMinus20 = brandMinus20,
+            brandMinus30 = brandMinus30,
+            brandMinus40 = brandMinus40,
             notificationError = ProtonPalette.Amaranth,
             notificationWarning = ProtonPalette.Orange,
             notificationSuccess = ProtonPalette.Gossamer,
@@ -552,8 +573,8 @@ class ProtonColors(
             shadowRaised = Color.Black.copy(alpha = 0.8f),
             shadowLifted = Color.Black.copy(alpha = 0.86f),
             blenderNorm = Color.Black.copy(alpha = 0.52f),
-            textAccent = brandLighten20,
-            iconAccent = brandLighten20
+            textAccent = brandMinus20,
+            iconAccent = brandMinus20
         ).let {
             it.copy(
                 interactionWeakNorm = it.shade20,
@@ -566,17 +587,17 @@ class ProtonColors(
         }
 
         private fun sidebarLight(
-            brandDarken40: Color = ProtonPalette.Chambray,
-            brandDarken20: Color = ProtonPalette.SanMarino,
+            brandPlus30: Color = ProtonPalette.Chambray,
+            brandPlus20: Color = ProtonPalette.SanMarino,
             brandNorm: Color = ProtonPalette.CornflowerBlue,
-            brandLighten20: Color = ProtonPalette.Portage,
-            brandLighten40: Color = ProtonPalette.Perano
+            brandMinus20: Color = ProtonPalette.Portage,
+            brandMinus40: Color = ProtonPalette.Perano
         ) = baseLight(
-            brandDarken40 = brandDarken40,
-            brandDarken20 = brandDarken20,
+            brandPlus30 = brandPlus30,
+            brandPlus20 = brandPlus20,
             brandNorm = brandNorm,
-            brandLighten20 = brandLighten20,
-            brandLighten40 = brandLighten40
+            brandMinus20 = brandMinus20,
+            brandMinus40 = brandMinus40
         ).copy(
             backgroundNorm = ProtonPalette.DeepCove,
             interactionWeakNorm = ProtonPalette.PortGore,
@@ -584,25 +605,25 @@ class ProtonColors(
             separatorNorm = ProtonPalette.PortGore,
             textNorm = ProtonPalette.CadetBlue,
             textWeak = ProtonPalette.Topaz,
-            textSelected = ProtonPalette.BlueChalk, // Newly defined
+            textSelected = ProtonPalette.BlueChalk,
             iconNorm = ProtonPalette.CadetBlue,
             iconWeak = ProtonPalette.Topaz,
-            iconSelected = ProtonPalette.Portage, // Newly defined
+            iconSelected = ProtonPalette.Portage,
             interactionPressed = ProtonPalette.SanMarino
         )
 
         private fun sidebarDark(
-            brandDarken40: Color = ProtonPalette.Rhino,
-            brandDarken20: Color = ProtonPalette.DuskyIndigo,
+            brandPlus30: Color = ProtonPalette.Rhino,
+            brandPlus20: Color = ProtonPalette.DuskyIndigo,
             brandNorm: Color = ProtonPalette.LightSlateBlue,
-            brandLighten20: Color = ProtonPalette.BlueBell,
-            brandLighten40: Color = ProtonPalette.Periwinkle
+            brandMinus20: Color = ProtonPalette.BlueBell,
+            brandMinus40: Color = ProtonPalette.Periwinkle
         ) = baseDark(
-            brandDarken40 = brandDarken40,
-            brandDarken20 = brandDarken20,
+            brandPlus30 = brandPlus30,
+            brandPlus20 = brandPlus20,
             brandNorm = brandNorm,
-            brandLighten20 = brandLighten20,
-            brandLighten40 = brandLighten40
+            brandMinus20 = brandMinus20,
+            brandMinus40 = brandMinus40
         ).copy(
             backgroundNorm = ProtonPalette.DeepCove,
             interactionWeakNorm = ProtonPalette.PortGore,
@@ -619,46 +640,46 @@ class ProtonColors(
 
 
         fun light(
-            brandDarken40: Color = ProtonPalette.Chambray,
-            brandDarken20: Color = ProtonPalette.SanMarino,
+            brandPlus30: Color = ProtonPalette.Chambray,
+            brandPlus20: Color = ProtonPalette.SanMarino,
             brandNorm: Color = ProtonPalette.CornflowerBlue,
-            brandLighten20: Color = ProtonPalette.Portage,
-            brandLighten40: Color = ProtonPalette.Perano
+            brandMinus20: Color = ProtonPalette.Portage,
+            brandMinus40: Color = ProtonPalette.Perano
         ) = baseLight(
-            brandDarken40 = brandDarken40,
-            brandDarken20 = brandDarken20,
+            brandPlus30 = brandPlus30,
+            brandPlus20 = brandPlus20,
             brandNorm = brandNorm,
-            brandLighten20 = brandLighten20,
-            brandLighten40 = brandLighten40
+            brandMinus20 = brandMinus20,
+            brandMinus40 = brandMinus40
         ).copy(
             sidebarColors = sidebarLight(
-                brandDarken40 = brandDarken40,
-                brandDarken20 = brandDarken20,
+                brandPlus30 = brandPlus30,
+                brandPlus20 = brandPlus20,
                 brandNorm = brandNorm,
-                brandLighten20 = brandLighten20,
-                brandLighten40 = brandLighten40
+                brandMinus20 = brandMinus20,
+                brandMinus40 = brandMinus40
             )
         )
 
         fun dark(
-            brandDarken40: Color = ProtonPalette.Rhino,
-            brandDarken20: Color = ProtonPalette.DuskyIndigo,
+            brandPlus30: Color = ProtonPalette.Rhino,
+            brandPlus20: Color = ProtonPalette.DuskyIndigo,
             brandNorm: Color = ProtonPalette.LightSlateBlue,
-            brandLighten20: Color = ProtonPalette.BlueBell,
-            brandLighten40: Color = ProtonPalette.Periwinkle
+            brandMinus20: Color = ProtonPalette.BlueBell,
+            brandMinus40: Color = ProtonPalette.Periwinkle
         ) = baseDark(
-            brandDarken40 = brandDarken40,
-            brandDarken20 = brandDarken20,
+            brandPlus30 = brandPlus30,
+            brandPlus20 = brandPlus20,
             brandNorm = brandNorm,
-            brandLighten20 = brandLighten20,
-            brandLighten40 = brandLighten40
+            brandMinus20 = brandMinus20,
+            brandMinus40 = brandMinus40
         ).copy(
             sidebarColors = sidebarDark(
-                brandDarken40 = brandDarken40,
-                brandDarken20 = brandDarken20,
+                brandPlus30 = brandPlus30,
+                brandPlus20 = brandPlus20,
                 brandNorm = brandNorm,
-                brandLighten20 = brandLighten20,
-                brandLighten40 = brandLighten40
+                brandMinus20 = brandMinus20,
+                brandMinus40 = brandMinus40
             )
         )
 
@@ -680,7 +701,7 @@ internal fun ProtonColors.toMaterial3ThemeColors() = ColorScheme(
     onSecondary = Color.White,
     secondaryContainer = backgroundSecondary,
     onSecondaryContainer = textNorm,
-    tertiary = brandDarken20,
+    tertiary = brandPlus20,
     onTertiary = Color.White,
     tertiaryContainer = backgroundNorm,
     onTertiaryContainer = textNorm,
@@ -755,11 +776,14 @@ fun ProtonColors.updateColorsFrom(other: ProtonColors) {
 
     blenderNorm = other.blenderNorm
 
-    brandDarken40 = other.brandDarken40
-    brandDarken20 = other.brandDarken20
+    brandPlus30 = other.brandPlus30
+    brandPlus20 = other.brandPlus20
+    brandPlus10 = other.brandPlus10
     brandNorm = other.brandNorm
-    brandLighten20 = other.brandLighten20
-    brandLighten40 = other.brandLighten40
+    brandMinus10 = other.brandMinus10
+    brandMinus20 = other.brandMinus20
+    brandMinus30 = other.brandMinus30
+    brandMinus40 = other.brandMinus40
 
     notificationNorm = other.notificationNorm
     notificationError = other.notificationError
