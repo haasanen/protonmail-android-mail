@@ -201,8 +201,9 @@ class ProtonColors(
     separatorNorm: Color = shade10,
     separatorStrong: Color = shade20,
 
-    borderNorm: Color = shade10,
-    borderStrong: Color = shade20,
+    borderLight: Color = shade10,
+    borderNorm: Color = shade20,
+    borderStrong: Color = shade40,
 
     blenderNorm: Color,
 
@@ -320,6 +321,8 @@ class ProtonColors(
     var separatorStrong: Color by mutableStateOf(separatorStrong, structuralEqualityPolicy())
         internal set
 
+    var borderLight: Color by mutableStateOf(borderLight, structuralEqualityPolicy())
+        internal set
     var borderNorm: Color by mutableStateOf(borderNorm, structuralEqualityPolicy())
         internal set
     var borderStrong: Color by mutableStateOf(borderStrong, structuralEqualityPolicy())
@@ -424,6 +427,7 @@ class ProtonColors(
         backgroundAvatar: Color = this.backgroundAvatar,
         separatorNorm: Color = this.separatorNorm,
         separatorStrong: Color = this.separatorStrong,
+        borderLight: Color = this.borderLight,
         borderNorm: Color = this.borderNorm,
         borderStrong: Color = this.borderStrong,
         blenderNorm: Color = this.blenderNorm,
@@ -501,6 +505,7 @@ class ProtonColors(
         separatorNorm = separatorNorm,
         separatorStrong = separatorStrong,
 
+        borderLight = borderLight,
         borderNorm = borderNorm,
         borderStrong = borderStrong,
 
@@ -627,7 +632,10 @@ class ProtonColors(
                 interactionWeakDisabled = it.shade10,
                 backgroundDeep = it.shade45,
                 backgroundAvatar = it.shade100,
-                interactionBrandWeakPressed = it.brandMinus20
+                interactionBrandWeakPressed = it.brandMinus20,
+                borderLight = it.shade40,
+                borderNorm = it.shade45,
+                borderStrong = it.shade50
             )
         }
 
@@ -826,6 +834,7 @@ fun ProtonColors.updateColorsFrom(other: ProtonColors) {
     separatorNorm = other.separatorNorm
     separatorStrong = other.separatorStrong
 
+    borderLight = other.borderLight
     borderNorm = other.borderNorm
     borderStrong = other.borderStrong
 
