@@ -198,6 +198,11 @@ class ProtonColors(
     backgroundDeep: Color = shade20,
     backgroundAvatar: Color = shade0,
 
+    backgroundInvertedNorm: Color = shade10,
+    backgroundInvertedSecondary: Color = shade0,
+    backgroundInvertedDeep: Color = shade20,
+    backgroundInvertedBorder: Color = shade10,
+
     separatorNorm: Color = shade10,
     separatorStrong: Color = shade20,
 
@@ -316,6 +321,15 @@ class ProtonColors(
     var backgroundAvatar: Color by mutableStateOf(backgroundAvatar, structuralEqualityPolicy())
         internal set
 
+    var backgroundInvertedNorm: Color by mutableStateOf(backgroundInvertedNorm, structuralEqualityPolicy())
+        internal set
+    var backgroundInvertedSecondary: Color by mutableStateOf(backgroundInvertedSecondary, structuralEqualityPolicy())
+        internal set
+    var backgroundInvertedDeep: Color by mutableStateOf(backgroundInvertedDeep, structuralEqualityPolicy())
+        internal set
+    var backgroundInvertedBorder: Color by mutableStateOf(backgroundInvertedBorder, structuralEqualityPolicy())
+        internal set
+
     var separatorNorm: Color by mutableStateOf(separatorNorm, structuralEqualityPolicy())
         internal set
     var separatorStrong: Color by mutableStateOf(separatorStrong, structuralEqualityPolicy())
@@ -425,6 +439,10 @@ class ProtonColors(
         backgroundSecondary: Color = this.backgroundSecondary,
         backgroundDeep: Color = this.backgroundDeep,
         backgroundAvatar: Color = this.backgroundAvatar,
+        backgroundInvertedNorm: Color = this.backgroundInvertedNorm,
+        backgroundInvertedSecondary: Color = this.backgroundInvertedSecondary,
+        backgroundInvertedDeep: Color = this.backgroundInvertedDeep,
+        backgroundInvertedBorder: Color = this.backgroundInvertedBorder,
         separatorNorm: Color = this.separatorNorm,
         separatorStrong: Color = this.separatorStrong,
         borderLight: Color = this.borderLight,
@@ -501,6 +519,11 @@ class ProtonColors(
         backgroundSecondary = backgroundSecondary,
         backgroundDeep = backgroundDeep,
         backgroundAvatar = backgroundAvatar,
+
+        backgroundInvertedNorm = backgroundInvertedNorm,
+        backgroundInvertedSecondary = backgroundInvertedSecondary,
+        backgroundInvertedDeep = backgroundInvertedDeep,
+        backgroundInvertedBorder = backgroundInvertedBorder,
 
         separatorNorm = separatorNorm,
         separatorStrong = separatorStrong,
@@ -635,7 +658,10 @@ class ProtonColors(
                 interactionBrandWeakPressed = it.brandMinus20,
                 borderLight = it.shade40,
                 borderNorm = it.shade45,
-                borderStrong = it.shade50
+                borderStrong = it.shade50,
+                backgroundInvertedNorm = it.shade20,
+                backgroundInvertedSecondary = it.shade40,
+                backgroundInvertedDeep = it.shade45
             )
         }
 
