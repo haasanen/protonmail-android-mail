@@ -688,7 +688,7 @@ class ProtonColors(
             iconNorm = ProtonPalette.CadetBlue,
             iconWeak = ProtonPalette.Topaz,
             iconSelected = ProtonPalette.Portage,
-            interactionBrandDefaultPressed = ProtonPalette.SanMarino
+            interactionBrandDefaultPressed = ProtonPalette.PurpleHeart
         )
 
         private fun sidebarDark(
@@ -704,17 +704,17 @@ class ProtonColors(
             brandMinus20 = brandMinus20,
             brandMinus40 = brandMinus40
         ).copy(
-            backgroundNorm = ProtonPalette.DeepCove,
-            interactionWeakNorm = ProtonPalette.PortGore,
-            interactionWeakPressed = ProtonPalette.Rhino,
-            separatorNorm = ProtonPalette.PortGore,
-            textNorm = ProtonPalette.Platinum,
+            backgroundNorm = ProtonPalette.EerieBlack,
+            interactionWeakNorm = ProtonPalette.MidnightBlue,
+            interactionWeakPressed = ProtonPalette.MidnightBlue,
+            separatorNorm = ProtonPalette.MidnightBlue,
+            textNorm = ProtonPalette.SantasGray,
             textWeak = ProtonPalette.SonicSilver,
-            textSelected = ProtonPalette.BlueChalk,
-            iconNorm = ProtonPalette.Platinum,
+            textSelected = ProtonPalette.Platinum,
+            iconNorm = ProtonPalette.SantasGray,
             iconWeak = ProtonPalette.SonicSilver,
-            iconSelected = ProtonPalette.Portage,
-            interactionBrandDefaultPressed = ProtonPalette.LightSlateBlue
+            iconSelected = ProtonPalette.BlueBell,
+            interactionBrandDefaultPressed = ProtonPalette.BlueBell
         )
 
 
