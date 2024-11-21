@@ -195,7 +195,8 @@ class ProtonColors(
 
     backgroundNorm: Color = shade0,
     backgroundSecondary: Color = shade10,
-    backgroundDeep: Color = shade15,
+    backgroundDeep: Color = shade20,
+    backgroundAvatar: Color = shade0,
 
     separatorNorm: Color = shade10,
     separatorStrong: Color = shade20,
@@ -311,6 +312,8 @@ class ProtonColors(
         internal set
     var backgroundDeep: Color by mutableStateOf(backgroundDeep, structuralEqualityPolicy())
         internal set
+    var backgroundAvatar: Color by mutableStateOf(backgroundAvatar, structuralEqualityPolicy())
+        internal set
 
     var separatorNorm: Color by mutableStateOf(separatorNorm, structuralEqualityPolicy())
         internal set
@@ -418,6 +421,7 @@ class ProtonColors(
         backgroundNorm: Color = this.backgroundNorm,
         backgroundSecondary: Color = this.backgroundSecondary,
         backgroundDeep: Color = this.backgroundDeep,
+        backgroundAvatar: Color = this.backgroundAvatar,
         separatorNorm: Color = this.separatorNorm,
         separatorStrong: Color = this.separatorStrong,
         borderNorm: Color = this.borderNorm,
@@ -492,6 +496,7 @@ class ProtonColors(
         backgroundNorm = backgroundNorm,
         backgroundSecondary = backgroundSecondary,
         backgroundDeep = backgroundDeep,
+        backgroundAvatar = backgroundAvatar,
 
         separatorNorm = separatorNorm,
         separatorStrong = separatorStrong,
@@ -620,9 +625,8 @@ class ProtonColors(
                 interactionWeakNorm = it.shade40,
                 interactionWeakPressed = it.shade50,
                 interactionWeakDisabled = it.shade10,
-                backgroundNorm = it.shade0,
-                backgroundSecondary = it.shade10,
                 backgroundDeep = it.shade45,
+                backgroundAvatar = it.shade100,
                 interactionBrandWeakPressed = it.brandMinus20
             )
         }
@@ -817,6 +821,7 @@ fun ProtonColors.updateColorsFrom(other: ProtonColors) {
     backgroundNorm = other.backgroundNorm
     backgroundSecondary = other.backgroundSecondary
     backgroundDeep = other.backgroundDeep
+    backgroundAvatar = other.backgroundAvatar
 
     separatorNorm = other.separatorNorm
     separatorStrong = other.separatorStrong
