@@ -182,6 +182,9 @@ class ProtonColors(
     interactionBrandStrongNorm: Color = brandPlus10,
     interactionBrandStrongPressed: Color = brandPlus20,
 
+    interactionFabNorm: Color = shade0,
+    interactionFabPressed: Color = shade20,
+
     interactionWeakNorm: Color = shade10,
     interactionWeakPressed: Color = shade20,
     interactionWeakDisabled: Color = shade10,
@@ -280,6 +283,12 @@ class ProtonColors(
     var interactionBrandStrongPressed: Color by mutableStateOf(
         interactionBrandStrongPressed, structuralEqualityPolicy()
     )
+        internal set
+
+
+    var interactionFabNorm: Color by mutableStateOf(interactionFabNorm, structuralEqualityPolicy())
+        internal set
+    var interactionFabPressed: Color by mutableStateOf(interactionFabPressed, structuralEqualityPolicy())
         internal set
 
     var interactionWeakNorm: Color by mutableStateOf(interactionWeakNorm, structuralEqualityPolicy())
@@ -398,6 +407,8 @@ class ProtonColors(
         iconInverted: Color = this.iconInverted,
         interactionBrandStrongNorm: Color = this.interactionBrandStrongNorm,
         interactionBrandStrongPressed: Color = this.interactionBrandStrongPressed,
+        interactionFabNorm: Color = this.interactionFabNorm,
+        interactionFabPressed: Color = this.interactionFabPressed,
         interactionWeakNorm: Color = this.interactionWeakNorm,
         interactionWeakPressed: Color = this.interactionWeakPressed,
         interactionWeakDisabled: Color = this.interactionWeakDisabled,
@@ -466,6 +477,9 @@ class ProtonColors(
 
         interactionBrandStrongNorm = interactionBrandStrongNorm,
         interactionBrandStrongPressed = interactionBrandStrongPressed,
+
+        interactionFabNorm = interactionFabNorm,
+        interactionFabPressed = interactionFabPressed,
 
         interactionWeakNorm = interactionWeakNorm,
         interactionWeakPressed = interactionWeakPressed,
@@ -601,6 +615,8 @@ class ProtonColors(
             iconAccent = brandPlus10
         ).let {
             it.copy(
+                interactionFabNorm = it.shade40,
+                interactionFabPressed = it.shade45,
                 interactionWeakNorm = it.shade40,
                 interactionWeakPressed = it.shade50,
                 interactionWeakDisabled = it.shade10,
@@ -786,6 +802,9 @@ fun ProtonColors.updateColorsFrom(other: ProtonColors) {
 
     interactionBrandStrongNorm = other.interactionBrandStrongNorm
     interactionBrandStrongPressed = other.interactionBrandStrongPressed
+
+    interactionFabNorm = other.interactionFabNorm
+    interactionFabPressed = other.interactionFabPressed
 
     interactionWeakNorm = other.interactionWeakNorm
     interactionWeakPressed = other.interactionWeakPressed
