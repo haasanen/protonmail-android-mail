@@ -186,6 +186,10 @@ class ProtonColors(
     interactionWeakPressed: Color = shade20,
     interactionWeakDisabled: Color = shade10,
 
+    interactionBrandWeakNorm: Color = brandMinus30,
+    interactionBrandWeakPressed: Color = brandMinus20,
+    interactionBrandWeakDisabled: Color = brandMinus40,
+
     backgroundNorm: Color = shade0,
     backgroundSecondary: Color = shade10,
     backgroundDeep: Color = shade15,
@@ -283,6 +287,13 @@ class ProtonColors(
     var interactionWeakPressed: Color by mutableStateOf(interactionWeakPressed, structuralEqualityPolicy())
         internal set
     var interactionWeakDisabled: Color by mutableStateOf(interactionWeakDisabled, structuralEqualityPolicy())
+        internal set
+
+    var interactionBrandWeakNorm: Color by mutableStateOf(interactionBrandWeakNorm, structuralEqualityPolicy())
+        internal set
+    var interactionBrandWeakPressed: Color by mutableStateOf(interactionBrandWeakPressed, structuralEqualityPolicy())
+        internal set
+    var interactionBrandWeakDisabled: Color by mutableStateOf(interactionBrandWeakDisabled, structuralEqualityPolicy())
         internal set
 
     var backgroundNorm: Color by mutableStateOf(backgroundNorm, structuralEqualityPolicy())
@@ -390,6 +401,9 @@ class ProtonColors(
         interactionWeakNorm: Color = this.interactionWeakNorm,
         interactionWeakPressed: Color = this.interactionWeakPressed,
         interactionWeakDisabled: Color = this.interactionWeakDisabled,
+        interactionBrandWeakNorm: Color = this.interactionBrandWeakNorm,
+        interactionBrandWeakPressed: Color = this.interactionBrandWeakPressed,
+        interactionBrandWeakDisabled: Color = this.interactionBrandWeakDisabled,
         backgroundNorm: Color = this.backgroundNorm,
         backgroundSecondary: Color = this.backgroundSecondary,
         backgroundDeep: Color = this.backgroundDeep,
@@ -456,6 +470,10 @@ class ProtonColors(
         interactionWeakNorm = interactionWeakNorm,
         interactionWeakPressed = interactionWeakPressed,
         interactionWeakDisabled = interactionWeakDisabled,
+
+        interactionBrandWeakNorm = interactionBrandWeakNorm,
+        interactionBrandWeakPressed = interactionBrandWeakPressed,
+        interactionBrandWeakDisabled = interactionBrandWeakDisabled,
 
         backgroundNorm = backgroundNorm,
         backgroundSecondary = backgroundSecondary,
@@ -583,12 +601,13 @@ class ProtonColors(
             iconAccent = brandPlus10
         ).let {
             it.copy(
-                interactionWeakNorm = it.shade10,
-                interactionWeakPressed = it.shade20,
+                interactionWeakNorm = it.shade40,
+                interactionWeakPressed = it.shade50,
                 interactionWeakDisabled = it.shade10,
                 backgroundNorm = it.shade0,
                 backgroundSecondary = it.shade10,
-                backgroundDeep = it.shade45
+                backgroundDeep = it.shade45,
+                interactionBrandWeakPressed = it.brandMinus20
             )
         }
 
@@ -737,6 +756,7 @@ internal fun ProtonColors.toMaterial3ThemeColors() = ColorScheme(
     surfaceContainerLowest = Color.Unspecified
 )
 
+@Suppress("LongMethod")
 fun ProtonColors.updateColorsFrom(other: ProtonColors) {
     isDark = other.isDark
 
@@ -770,6 +790,10 @@ fun ProtonColors.updateColorsFrom(other: ProtonColors) {
     interactionWeakNorm = other.interactionWeakNorm
     interactionWeakPressed = other.interactionWeakPressed
     interactionWeakDisabled = other.interactionWeakDisabled
+
+    interactionBrandWeakNorm = other.interactionBrandWeakNorm
+    interactionBrandWeakPressed = other.interactionBrandWeakPressed
+    interactionBrandWeakDisabled = other.interactionBrandWeakDisabled
 
     backgroundNorm = other.backgroundNorm
     backgroundSecondary = other.backgroundSecondary
