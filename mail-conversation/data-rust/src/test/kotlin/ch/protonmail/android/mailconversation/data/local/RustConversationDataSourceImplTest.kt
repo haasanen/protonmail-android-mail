@@ -31,6 +31,7 @@ import ch.protonmail.android.mailconversation.data.usecase.GetRustConversationMo
 import ch.protonmail.android.maillabel.data.mapper.toLabelId
 import ch.protonmail.android.mailmessage.data.local.RustMailbox
 import ch.protonmail.android.mailmessage.data.model.LocalConversationMessages
+import ch.protonmail.android.mailmessage.data.wrapper.MailboxWrapper
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
@@ -59,7 +60,6 @@ import uniffi.proton_mail_uniffi.IsSelected
 import uniffi.proton_mail_uniffi.LabelAsAction
 import uniffi.proton_mail_uniffi.LabelColor
 import uniffi.proton_mail_uniffi.MailSessionException
-import uniffi.proton_mail_uniffi.Mailbox
 import uniffi.proton_mail_uniffi.MailboxException
 import uniffi.proton_mail_uniffi.MovableSystemFolder
 import uniffi.proton_mail_uniffi.MovableSystemFolderAction
@@ -85,6 +85,8 @@ class RustConversationDataSourceImplTest {
     private val rustDeleteConversations = mockk<RustDeleteConversations>()
     private val rustMoveConversations = mockk<RustMoveConversations>()
     private val rustLabelConversations = mockk<RustLabelConversations>()
+    private val rustMarkConversationsAsRead = mockk<RustMarkConversationsAsRead>()
+    private val rustMarkConversationsAsUnread = mockk<RustMarkConversationsAsUnread>()
 
     private val dataSource = RustConversationDataSourceImpl(
         sessionManager,
@@ -98,6 +100,8 @@ class RustConversationDataSourceImplTest {
         getRustConversationMoveToActions,
         getRustConversationLabelAsActions,
         rustDeleteConversations,
+        rustMarkConversationsAsRead,
+        rustMarkConversationsAsUnread,
         testCoroutineScope
     )
 
@@ -191,7 +195,7 @@ class RustConversationDataSourceImplTest {
         // Given
         val userId = UserIdTestData.userId
         val labelId = LocalLabelId(1uL)
-        val mailbox = mockk<Mailbox>()
+        val mailbox = mockk<MailboxWrapper>()
         val conversationIds = listOf(LocalConversationIdSample.OctConversation)
         val expected = ConversationAvailableActions(emptyList(), emptyList(), emptyList())
 
@@ -210,7 +214,7 @@ class RustConversationDataSourceImplTest {
         // Given
         val userId = UserIdTestData.userId
         val labelId = LocalLabelId(1uL)
-        val mailbox = mockk<Mailbox>()
+        val mailbox = mockk<MailboxWrapper>()
         val conversationIds = listOf(LocalConversationIdSample.OctConversation)
         val archive = MovableSystemFolderAction(Id(2uL), MovableSystemFolder.ARCHIVE)
         val customFolder = CustomFolderAction(
@@ -237,7 +241,7 @@ class RustConversationDataSourceImplTest {
         // Given
         val userId = UserIdTestData.userId
         val labelId = LocalLabelId(1uL)
-        val mailbox = mockk<Mailbox>()
+        val mailbox = mockk<MailboxWrapper>()
         val conversationIds = listOf(LocalConversationIdSample.AugConversation)
         val expected = listOf(
             LabelAsAction(Id(1uL), "label", LabelColor("#fff"), IsSelected.UNSELECTED),
@@ -259,7 +263,7 @@ class RustConversationDataSourceImplTest {
         // Given
         val userId = UserIdTestData.userId
         val labelId = LocalLabelId(1uL)
-        val mailbox = mockk<Mailbox>()
+        val mailbox = mockk<MailboxWrapper>()
         val conversationIds = listOf(LocalConversationIdSample.OctConversation)
         val expected = AllBottomBarMessageActions(emptyList(), emptyList())
 
@@ -278,7 +282,7 @@ class RustConversationDataSourceImplTest {
         // Given
         val userId = UserIdTestData.userId
         val labelId = LocalLabelId(1uL)
-        val mailbox = mockk<Mailbox>()
+        val mailbox = mockk<MailboxWrapper>()
         val conversationIds = listOf(LocalConversationIdSample.OctConversation)
 
         every { rustMailbox.observeMailbox(labelId) } returns flowOf(mailbox)
@@ -296,7 +300,7 @@ class RustConversationDataSourceImplTest {
         // Given
         val userId = UserIdTestData.userId
         val labelId = LocalLabelId(1uL)
-        val mailbox = mockk<Mailbox>()
+        val mailbox = mockk<MailboxWrapper>()
         val conversationIds = listOf(LocalConversationIdSample.AugConversation)
 
         every { rustMailbox.observeMailbox() } returns flowOf(mailbox)
@@ -316,7 +320,7 @@ class RustConversationDataSourceImplTest {
         val selectedLabelIds = listOf(LocalLabelId(3uL), LocalLabelId(4uL))
         val partiallySelectedLabelIds = listOf(LocalLabelId(5uL))
         val shouldArchive = false
-        val mailbox = mockk<Mailbox>()
+        val mailbox = mockk<MailboxWrapper>()
 
         coEvery {
             rustLabelConversations(mailbox, conversationIds, selectedLabelIds, partiallySelectedLabelIds, shouldArchive)
@@ -374,7 +378,7 @@ class RustConversationDataSourceImplTest {
     fun `should handle exception when labelling conversations`() = runTest {
         // Given
         val userId = UserIdTestData.userId
-        val mailbox = mockk<Mailbox>()
+        val mailbox = mockk<MailboxWrapper>()
         val conversationIds = listOf(LocalConversationId(1uL), LocalConversationId(2uL))
         val selectedLabelIds = listOf(LocalLabelId(3uL), LocalLabelId(4uL))
         val partiallySelectedLabelIds = listOf(LocalLabelId(5uL))

@@ -20,6 +20,7 @@ package ch.protonmail.android.mailmessage.data.local
 
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
 import ch.protonmail.android.mailmessage.data.usecase.CreateMailbox
+import ch.protonmail.android.mailmessage.data.wrapper.MailboxWrapper
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -29,7 +30,6 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.map
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
-import uniffi.proton_mail_uniffi.Mailbox
 import javax.inject.Inject
 
 class RustMailboxImpl @Inject constructor(
@@ -37,9 +37,9 @@ class RustMailboxImpl @Inject constructor(
     private val createMailbox: CreateMailbox
 ) : RustMailbox {
 
-    private val mailboxMutableStatusFlow = MutableStateFlow<Mailbox?>(null)
+    private val mailboxMutableStatusFlow = MutableStateFlow<MailboxWrapper?>(null)
 
-    private val mailboxFlow: Flow<Mailbox> = mailboxMutableStatusFlow.asStateFlow()
+    private val mailboxFlow: Flow<MailboxWrapper> = mailboxMutableStatusFlow.asStateFlow()
         .filterNotNull()
 
     override suspend fun switchToMailbox(userId: UserId, labelId: LocalLabelId) {
@@ -62,9 +62,10 @@ class RustMailboxImpl @Inject constructor(
         mailboxMutableStatusFlow.value = mailbox
     }
 
-    override fun observeMailbox(): Flow<Mailbox> = mailboxFlow
+    override fun observeMailbox(): Flow<MailboxWrapper> = mailboxFlow
 
-    override fun observeMailbox(labelId: LocalLabelId): Flow<Mailbox> = mailboxMutableStatusFlow.asStateFlow()
+    override fun observeMailbox(labelId: LocalLabelId): Flow<MailboxWrapper> = mailboxMutableStatusFlow
+        .asStateFlow()
         .filterNotNull()
         .filter { it.labelId() == labelId }
 

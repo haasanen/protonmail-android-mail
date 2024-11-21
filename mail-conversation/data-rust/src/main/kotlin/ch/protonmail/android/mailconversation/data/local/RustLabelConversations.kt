@@ -20,19 +20,25 @@ package ch.protonmail.android.mailconversation.data.local
 
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalConversationId
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
-import uniffi.proton_mail_uniffi.Mailbox
+import ch.protonmail.android.mailmessage.data.wrapper.MailboxWrapper
 import uniffi.proton_mail_uniffi.labelConversationsAs
 import javax.inject.Inject
 
 class RustLabelConversations @Inject constructor() {
 
     suspend operator fun invoke(
-        mailbox: Mailbox,
+        mailbox: MailboxWrapper,
         conversationIds: List<LocalConversationId>,
         selectedLabelIds: List<LocalLabelId>,
         partiallySelectedLabelIds: List<LocalLabelId>,
         shouldArchive: Boolean
     ) {
-        labelConversationsAs(mailbox, conversationIds, selectedLabelIds, partiallySelectedLabelIds, shouldArchive)
+        labelConversationsAs(
+            mailbox.rustObject(),
+            conversationIds,
+            selectedLabelIds,
+            partiallySelectedLabelIds,
+            shouldArchive
+        )
     }
 }

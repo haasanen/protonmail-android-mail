@@ -20,19 +20,19 @@ package ch.protonmail.android.mailmessage.data.usecase
 
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageId
-import uniffi.proton_mail_uniffi.Mailbox
+import ch.protonmail.android.mailmessage.data.wrapper.MailboxWrapper
 import uniffi.proton_mail_uniffi.labelMessagesAs
 import javax.inject.Inject
 
 class RustLabelMessages @Inject constructor() {
 
     suspend operator fun invoke(
-        mailbox: Mailbox,
+        mailbox: MailboxWrapper,
         messageIds: List<LocalMessageId>,
         selectedLabelIds: List<LocalLabelId>,
         partiallySelectedLabelIds: List<LocalLabelId>,
         shouldArchive: Boolean
     ) {
-        labelMessagesAs(mailbox, messageIds, selectedLabelIds, partiallySelectedLabelIds, shouldArchive)
+        labelMessagesAs(mailbox.rustObject(), messageIds, selectedLabelIds, partiallySelectedLabelIds, shouldArchive)
     }
 }

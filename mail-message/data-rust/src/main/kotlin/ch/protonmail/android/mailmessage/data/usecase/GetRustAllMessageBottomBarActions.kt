@@ -19,13 +19,13 @@
 package ch.protonmail.android.mailmessage.data.usecase
 
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageId
+import ch.protonmail.android.mailmessage.data.wrapper.MailboxWrapper
 import uniffi.proton_mail_uniffi.AllBottomBarMessageActions
-import uniffi.proton_mail_uniffi.Mailbox
 import uniffi.proton_mail_uniffi.allAvailableBottomBarActionsForMessages
 import javax.inject.Inject
 
 class GetRustAllMessageBottomBarActions @Inject constructor() {
 
-    suspend operator fun invoke(mailbox: Mailbox, messageIds: List<LocalMessageId>): AllBottomBarMessageActions =
-        allAvailableBottomBarActionsForMessages(mailbox, messageIds)
+    suspend operator fun invoke(mailbox: MailboxWrapper, messageIds: List<LocalMessageId>): AllBottomBarMessageActions =
+        allAvailableBottomBarActionsForMessages(mailbox.rustObject(), messageIds)
 }

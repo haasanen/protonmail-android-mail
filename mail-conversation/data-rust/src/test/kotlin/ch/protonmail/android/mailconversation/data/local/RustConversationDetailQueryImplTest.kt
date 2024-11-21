@@ -26,6 +26,7 @@ import ch.protonmail.android.mailconversation.data.usecase.CreateRustConversatio
 import ch.protonmail.android.mailmessage.data.local.RustMailbox
 import ch.protonmail.android.mailmessage.data.model.LocalConversationMessages
 import ch.protonmail.android.mailmessage.data.usecase.GetRustConversationMessages
+import ch.protonmail.android.mailmessage.data.wrapper.MailboxWrapper
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
 import ch.protonmail.android.testdata.conversation.rust.LocalConversationTestData
 import ch.protonmail.android.testdata.message.rust.LocalMessageTestData
@@ -45,7 +46,6 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import uniffi.proton_mail_uniffi.ConversationAndMessages
 import uniffi.proton_mail_uniffi.LiveQueryCallback
-import uniffi.proton_mail_uniffi.Mailbox
 import uniffi.proton_mail_uniffi.WatchedConversation
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -56,7 +56,7 @@ class RustConversationDetailQueryImplTest {
     val mainDispatcherRule = MainDispatcherRule()
     private val testCoroutineScope = CoroutineScope(mainDispatcherRule.testDispatcher)
 
-    private val mailbox = mockk<Mailbox>()
+    private val mailbox = mockk<MailboxWrapper>()
 
     private val createRustConversationWatcher: CreateRustConversationWatcher = mockk()
     private val rustMailbox: RustMailbox = mockk()

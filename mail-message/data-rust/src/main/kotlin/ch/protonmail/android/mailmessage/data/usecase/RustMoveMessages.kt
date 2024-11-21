@@ -20,15 +20,15 @@ package ch.protonmail.android.mailmessage.data.usecase
 
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageId
-import uniffi.proton_mail_uniffi.Mailbox
+import ch.protonmail.android.mailmessage.data.wrapper.MailboxWrapper
 import uniffi.proton_mail_uniffi.moveMessages
 import javax.inject.Inject
 
 class RustMoveMessages @Inject constructor() {
 
     suspend operator fun invoke(
-        mailbox: Mailbox,
+        mailbox: MailboxWrapper,
         toLabel: LocalLabelId,
         messageIds: List<LocalMessageId>
-    ) = moveMessages(mailbox, toLabel, messageIds)
+    ) = moveMessages(mailbox.rustObject(), toLabel, messageIds)
 }

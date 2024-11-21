@@ -16,15 +16,15 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailmessage.data.usecase
+package ch.protonmail.android.mailconversation.data.local
 
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageId
+import ch.protonmail.android.mailcommon.datarust.mapper.LocalConversationId
 import ch.protonmail.android.mailmessage.data.wrapper.MailboxWrapper
-import uniffi.proton_mail_uniffi.deleteMessages
+import uniffi.proton_mail_uniffi.markConversationsAsRead
 import javax.inject.Inject
 
-class RustDeleteMessages @Inject constructor() {
+class RustMarkConversationsAsRead @Inject constructor() {
 
-    suspend operator fun invoke(mailbox: MailboxWrapper, messageIds: List<LocalMessageId>) =
-        deleteMessages(mailbox.rustObject(), messageIds)
+    suspend operator fun invoke(mailbox: MailboxWrapper, conversationIds: List<LocalConversationId>) =
+        markConversationsAsRead(mailbox.rustObject(), conversationIds)
 }

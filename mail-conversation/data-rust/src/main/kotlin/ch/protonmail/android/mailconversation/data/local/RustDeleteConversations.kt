@@ -19,12 +19,12 @@
 package ch.protonmail.android.mailconversation.data.local
 
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalConversationId
-import uniffi.proton_mail_uniffi.Mailbox
+import ch.protonmail.android.mailmessage.data.wrapper.MailboxWrapper
 import uniffi.proton_mail_uniffi.deleteConversations
 import javax.inject.Inject
 
 class RustDeleteConversations @Inject constructor() {
 
-    suspend operator fun invoke(mailbox: Mailbox, conversationIds: List<LocalConversationId>) =
-        deleteConversations(mailbox, conversationIds)
+    suspend operator fun invoke(mailbox: MailboxWrapper, conversationIds: List<LocalConversationId>) =
+        deleteConversations(mailbox.rustObject(), conversationIds)
 }

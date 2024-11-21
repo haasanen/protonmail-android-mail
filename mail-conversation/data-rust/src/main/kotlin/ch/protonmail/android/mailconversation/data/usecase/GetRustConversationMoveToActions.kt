@@ -19,13 +19,13 @@
 package ch.protonmail.android.mailconversation.data.usecase
 
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalConversationId
-import uniffi.proton_mail_uniffi.Mailbox
+import ch.protonmail.android.mailmessage.data.wrapper.MailboxWrapper
 import uniffi.proton_mail_uniffi.MoveAction
 import uniffi.proton_mail_uniffi.availableMoveToActionsForConversations
 import javax.inject.Inject
 
 class GetRustConversationMoveToActions @Inject constructor() {
 
-    suspend operator fun invoke(mailbox: Mailbox, conversationId: List<LocalConversationId>): List<MoveAction> =
-        availableMoveToActionsForConversations(mailbox, conversationId)
+    suspend operator fun invoke(mailbox: MailboxWrapper, conversationId: List<LocalConversationId>): List<MoveAction> =
+        availableMoveToActionsForConversations(mailbox.rustObject(), conversationId)
 }

@@ -38,6 +38,7 @@ import ch.protonmail.android.mailmessage.data.usecase.RustMarkMessagesUnread
 import ch.protonmail.android.mailmessage.data.usecase.RustMoveMessages
 import ch.protonmail.android.mailmessage.data.usecase.RustStarMessages
 import ch.protonmail.android.mailmessage.data.usecase.RustUnstarMessages
+import ch.protonmail.android.mailmessage.data.wrapper.MailboxWrapper
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
@@ -62,7 +63,6 @@ import uniffi.proton_mail_uniffi.IsSelected
 import uniffi.proton_mail_uniffi.LabelAsAction
 import uniffi.proton_mail_uniffi.LabelColor
 import uniffi.proton_mail_uniffi.MailSessionException
-import uniffi.proton_mail_uniffi.Mailbox
 import uniffi.proton_mail_uniffi.MailboxException
 import uniffi.proton_mail_uniffi.MessageAvailableActions
 import uniffi.proton_mail_uniffi.MovableSystemFolder
@@ -156,7 +156,7 @@ class RustMessageDataSourceImplTest {
         val mailSession = mockk<MailUserSessionWrapper>()
         val labelId = LocalLabelId(1uL)
         val messageId = LocalMessageIdSample.AugWeatherForecast
-        val mailbox = mockk<Mailbox>()
+        val mailbox = mockk<MailboxWrapper>()
         coEvery { userSessionRepository.getUserSession(userId) } returns mailSession
         every { rustMailbox.observeMailbox(labelId) } returns flowOf(mailbox)
         coEvery { createRustMessageBodyAccessor(mailbox, messageId) } returns mockk()
@@ -175,7 +175,7 @@ class RustMessageDataSourceImplTest {
         // Given
         val userId = UserIdTestData.userId
         val messageId = LocalMessageIdSample.AugWeatherForecast
-        val mailbox = mockk<Mailbox>()
+        val mailbox = mockk<MailboxWrapper>()
         every { rustMailbox.observeMailbox() } returns flowOf(mailbox)
         coEvery { createRustMessageBodyAccessor(mailbox, messageId) } throws MailboxException.Io("DB Exception")
         // When
@@ -295,7 +295,7 @@ class RustMessageDataSourceImplTest {
     fun `should mark messages as read when session and labelId are available`() = runTest {
         // Given
         val userId = UserIdTestData.userId
-        val mailbox = mockk<Mailbox>()
+        val mailbox = mockk<MailboxWrapper>()
         val messageIds = listOf(LocalMessageId(1uL), LocalMessageId(2uL))
 
         coEvery { rustMailbox.observeMailbox() } returns flowOf(mailbox)
@@ -329,7 +329,7 @@ class RustMessageDataSourceImplTest {
     fun `should handle exception when marking messages as read`() = runTest {
         // Given
         val userId = UserIdTestData.userId
-        val mailbox = mockk<Mailbox>()
+        val mailbox = mockk<MailboxWrapper>()
         val messageIds = listOf(LocalMessageId(1uL), LocalMessageId(2uL))
 
         coEvery { rustMarkMessagesRead(mailbox, messageIds) } throws MailSessionException.Other("Error")
@@ -346,7 +346,7 @@ class RustMessageDataSourceImplTest {
     fun `should mark messages as unread when session and labelId are available`() = runTest {
         // Given
         val userId = UserIdTestData.userId
-        val mailbox = mockk<Mailbox>()
+        val mailbox = mockk<MailboxWrapper>()
         val messageIds = listOf(LocalMessageId(1uL), LocalMessageId(2uL))
 
         coEvery { rustMailbox.observeMailbox() } returns flowOf(mailbox)
@@ -398,7 +398,7 @@ class RustMessageDataSourceImplTest {
     fun `should handle exception when marking messages as unread`() = runTest {
         // Given
         val userId = UserIdTestData.userId
-        val mailbox = mockk<Mailbox>()
+        val mailbox = mockk<MailboxWrapper>()
         val messageIds = listOf(LocalMessageId(1uL), LocalMessageId(2uL))
 
         coEvery { rustMarkMessagesUnread(mailbox, messageIds) } throws MailSessionException.Other("Error")
@@ -468,7 +468,7 @@ class RustMessageDataSourceImplTest {
         // Given
         val userId = UserIdTestData.userId
         val labelId = LocalLabelId(1uL)
-        val mailbox = mockk<Mailbox>()
+        val mailbox = mockk<MailboxWrapper>()
         val messageIds = listOf(LocalMessageIdSample.AugWeatherForecast)
         val expected = MessageAvailableActions(emptyList(), emptyList(), emptyList(), emptyList())
 
@@ -487,7 +487,7 @@ class RustMessageDataSourceImplTest {
         // Given
         val userId = UserIdTestData.userId
         val labelId = LocalLabelId(1uL)
-        val mailbox = mockk<Mailbox>()
+        val mailbox = mockk<MailboxWrapper>()
         val messageIds = listOf(LocalMessageIdSample.AugWeatherForecast)
         val archive = MovableSystemFolderAction(Id(2uL), MovableSystemFolder.ARCHIVE)
         val customFolder = CustomFolderAction(
@@ -514,7 +514,7 @@ class RustMessageDataSourceImplTest {
         // Given
         val userId = UserIdTestData.userId
         val labelId = LocalLabelId(1uL)
-        val mailbox = mockk<Mailbox>()
+        val mailbox = mockk<MailboxWrapper>()
         val messageIds = listOf(LocalMessageIdSample.AugWeatherForecast)
         val expected = listOf(
             LabelAsAction(Id(1uL), "label", LabelColor("#fff"), IsSelected.UNSELECTED),
@@ -536,7 +536,7 @@ class RustMessageDataSourceImplTest {
         // Given
         val userId = UserIdTestData.userId
         val labelId = LocalLabelId(1uL)
-        val mailbox = mockk<Mailbox>()
+        val mailbox = mockk<MailboxWrapper>()
         val messageIds = listOf(LocalMessageIdSample.AugWeatherForecast)
         val expected = AllBottomBarMessageActions(emptyList(), emptyList())
 
@@ -555,7 +555,7 @@ class RustMessageDataSourceImplTest {
         // Given
         val userId = UserIdTestData.userId
         val labelId = LocalLabelId(1uL)
-        val mailbox = mockk<Mailbox>()
+        val mailbox = mockk<MailboxWrapper>()
         val messageIds = listOf(LocalMessageIdSample.AugWeatherForecast)
         val expected = DataError.Local.Unknown
 
@@ -589,7 +589,7 @@ class RustMessageDataSourceImplTest {
     fun `should handle exception when deleting messages`() = runTest {
         // Given
         val userId = UserIdTestData.userId
-        val mailbox = mockk<Mailbox>()
+        val mailbox = mockk<MailboxWrapper>()
         val messageIds = listOf(LocalMessageId(1uL), LocalMessageId(2uL))
 
         coEvery { rustDeleteMessages(mailbox, messageIds) } throws MailSessionException.Other("Error")
@@ -623,7 +623,7 @@ class RustMessageDataSourceImplTest {
     fun `should handle exception when moving messages`() = runTest {
         // Given
         val userId = UserIdTestData.userId
-        val mailbox = mockk<Mailbox>()
+        val mailbox = mockk<MailboxWrapper>()
         val labelId = LocalLabelId(1uL)
         val messageIds = listOf(LocalMessageId(1uL), LocalMessageId(2uL))
 
@@ -645,7 +645,7 @@ class RustMessageDataSourceImplTest {
         val selectedLabelIds = listOf(LocalLabelId(3uL), LocalLabelId(4uL))
         val partiallySelectedLabelIds = listOf(LocalLabelId(5uL))
         val shouldArchive = false
-        val mailbox = mockk<Mailbox>()
+        val mailbox = mockk<MailboxWrapper>()
 
         coEvery {
             rustLabelMessages(mailbox, messageIds, selectedLabelIds, partiallySelectedLabelIds, shouldArchive)
@@ -695,7 +695,7 @@ class RustMessageDataSourceImplTest {
     fun `should handle exception when labelling messages`() = runTest {
         // Given
         val userId = UserIdTestData.userId
-        val mailbox = mockk<Mailbox>()
+        val mailbox = mockk<MailboxWrapper>()
         val messageIds = listOf(LocalMessageId(1uL), LocalMessageId(2uL))
         val selectedLabelIds = listOf(LocalLabelId(3uL), LocalLabelId(4uL))
         val partiallySelectedLabelIds = listOf(LocalLabelId(5uL))

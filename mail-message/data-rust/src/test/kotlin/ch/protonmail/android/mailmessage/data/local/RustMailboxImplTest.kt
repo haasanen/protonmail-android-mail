@@ -22,6 +22,7 @@ import app.cash.turbine.test
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalViewMode
 import ch.protonmail.android.mailmessage.data.usecase.CreateMailbox
+import ch.protonmail.android.mailmessage.data.wrapper.MailboxWrapper
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
@@ -33,7 +34,6 @@ import io.mockk.mockk
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
-import uniffi.proton_mail_uniffi.Mailbox
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -42,12 +42,12 @@ class RustMailboxImplTest {
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
 
-    private val messageMailbox: Mailbox = mockk {
+    private val messageMailbox: MailboxWrapper = mockk {
         every { labelId() } returns LocalLabelId(1u)
         every { viewMode() } returns LocalViewMode.MESSAGES
     }
 
-    private val conversationMailbox: Mailbox = mockk {
+    private val conversationMailbox: MailboxWrapper = mockk {
         every { labelId() } returns LocalLabelId(1u)
         every { viewMode() } returns LocalViewMode.CONVERSATIONS
     }

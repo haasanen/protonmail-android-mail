@@ -33,6 +33,7 @@ import ch.protonmail.android.mailconversation.data.usecase.GetRustConversationLa
 import ch.protonmail.android.mailconversation.data.usecase.GetRustConversationMoveToActions
 import ch.protonmail.android.mailmessage.data.local.RustMailbox
 import ch.protonmail.android.mailmessage.data.model.LocalConversationMessages
+import ch.protonmail.android.mailmessage.data.wrapper.MailboxWrapper
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
@@ -44,11 +45,8 @@ import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.AllBottomBarMessageActions
 import uniffi.proton_mail_uniffi.ConversationAvailableActions
-import uniffi.proton_mail_uniffi.Mailbox
 import uniffi.proton_mail_uniffi.MailboxException
 import uniffi.proton_mail_uniffi.MoveAction
-import uniffi.proton_mail_uniffi.markConversationsAsRead
-import uniffi.proton_mail_uniffi.markConversationsAsUnread
 import javax.inject.Inject
 import uniffi.proton_mail_uniffi.starConversations as rustStarConversation
 import uniffi.proton_mail_uniffi.unstarConversations as rustUnstarConversation
@@ -65,6 +63,8 @@ class RustConversationDataSourceImpl @Inject constructor(
     private val getRustConversationMoveToActions: GetRustConversationMoveToActions,
     private val getRustConversationLabelAsActions: GetRustConversationLabelAsActions,
     private val rustDeleteConversations: RustDeleteConversations,
+    private val rustMarkConversationsAsRead: RustMarkConversationsAsRead,
+    private val rustMarkConversationsAsUnread: RustMarkConversationsAsUnread,
     @ConversationRustCoroutineScope private val coroutineScope: CoroutineScope
 ) : RustConversationDataSource {
 
@@ -104,7 +104,7 @@ class RustConversationDataSourceImpl @Inject constructor(
     override suspend fun markRead(userId: UserId, conversations: List<LocalConversationId>) {
         executeMailboxAction(
             userId = userId,
-            action = { markConversationsAsRead(it, conversations) },
+            action = { rustMarkConversationsAsRead(it, conversations) },
             actionName = "mark as read"
         )
     }
@@ -112,7 +112,7 @@ class RustConversationDataSourceImpl @Inject constructor(
     override suspend fun markUnread(userId: UserId, conversations: List<LocalConversationId>) {
         executeMailboxAction(
             userId = userId,
-            action = { mailbox -> markConversationsAsUnread(mailbox, conversations) },
+            action = { mailbox -> rustMarkConversationsAsUnread(mailbox, conversations) },
             actionName = "mark as unread"
         )
     }
@@ -258,7 +258,7 @@ class RustConversationDataSourceImpl @Inject constructor(
     }
     private suspend fun executeMailboxAction(
         userId: UserId,
-        action: suspend (Mailbox) -> Unit,
+        action: suspend (MailboxWrapper) -> Unit,
         actionName: String
     ): Either<DataError.Local, Unit> {
         Timber.v("rust-conversation: executing action $actionName")

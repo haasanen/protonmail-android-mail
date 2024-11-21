@@ -20,12 +20,14 @@ package ch.protonmail.android.mailconversation.data.usecase
 
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalConversationId
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelAsAction
-import uniffi.proton_mail_uniffi.Mailbox
+import ch.protonmail.android.mailmessage.data.wrapper.MailboxWrapper
 import uniffi.proton_mail_uniffi.availableLabelAsActionsForConversations
 import javax.inject.Inject
 
 class GetRustConversationLabelAsActions @Inject constructor() {
 
-    suspend operator fun invoke(mailbox: Mailbox, conversationId: List<LocalConversationId>): List<LocalLabelAsAction> =
-        availableLabelAsActionsForConversations(mailbox, conversationId)
+    suspend operator fun invoke(
+        mailbox: MailboxWrapper,
+        conversationId: List<LocalConversationId>
+    ): List<LocalLabelAsAction> = availableLabelAsActionsForConversations(mailbox.rustObject(), conversationId)
 }

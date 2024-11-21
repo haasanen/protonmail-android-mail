@@ -20,8 +20,8 @@ package ch.protonmail.android.mailconversation.data.usecase
 
 import java.lang.ref.WeakReference
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalConversationId
+import ch.protonmail.android.mailmessage.data.wrapper.MailboxWrapper
 import uniffi.proton_mail_uniffi.LiveQueryCallback
-import uniffi.proton_mail_uniffi.Mailbox
 import uniffi.proton_mail_uniffi.WatchedConversation
 import uniffi.proton_mail_uniffi.watchConversation
 import javax.inject.Inject
@@ -29,10 +29,10 @@ import javax.inject.Inject
 class CreateRustConversationWatcher @Inject constructor() {
 
     suspend operator fun invoke(
-        mailbox: Mailbox,
+        mailbox: MailboxWrapper,
         conversationId: LocalConversationId,
         callback: LiveQueryCallback
     ): WeakReference<WatchedConversation> = WeakReference(
-        watchConversation(mailbox, conversationId, callback)
+        watchConversation(mailbox.rustObject(), conversationId, callback)
     )
 }
