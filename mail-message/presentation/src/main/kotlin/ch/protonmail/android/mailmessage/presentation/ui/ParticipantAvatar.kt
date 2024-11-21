@@ -136,12 +136,12 @@ fun ParticipantAvatar(
                         )
                         .border(
                             width = MailDimens.AvatarBorderLine,
-                            color = ProtonTheme.colors.interactionNorm,
+                            color = ProtonTheme.colors.interactionBrandDefaultNorm,
                             shape = backgroundShape
                         )
                         .background(
                             color = when (avatarUiModel.selected) {
-                                true -> ProtonTheme.colors.interactionNorm
+                                true -> ProtonTheme.colors.interactionBrandDefaultNorm
                                 false -> ProtonTheme.colors.backgroundSecondary
                             },
                             shape = backgroundShape

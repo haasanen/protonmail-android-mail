@@ -47,7 +47,7 @@ class SwipeActionPreferenceUiModelMapper @Inject constructor() :
             SwipeAction.Spam -> ProtonTheme.colors.iconHint
             SwipeAction.Star -> ProtonTheme.colors.notificationWarning
             SwipeAction.Archive -> ProtonTheme.colors.iconHint
-            SwipeAction.MarkRead -> ProtonTheme.colors.interactionNorm
+            SwipeAction.MarkRead -> ProtonTheme.colors.interactionBrandDefaultNorm
         }
     }
 }

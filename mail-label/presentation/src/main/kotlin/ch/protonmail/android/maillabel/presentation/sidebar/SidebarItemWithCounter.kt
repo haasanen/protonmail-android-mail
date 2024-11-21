@@ -84,7 +84,7 @@ fun SidebarItemWithCounter(
                 modifier = Modifier
                     .wrapContentSize()
                     .defaultMinSize(ProtonDimens.CounterIconSize)
-                    .background(color = ProtonTheme.colors.interactionNorm, shape = CircleShape),
+                    .background(color = ProtonTheme.colors.interactionBrandDefaultNorm, shape = CircleShape),
                 contentAlignment = Alignment.Center
             ) {
                 Text(

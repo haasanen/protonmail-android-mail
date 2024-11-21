@@ -125,7 +125,7 @@ private fun AttachmentsButton(
 private fun AttachmentsNumber(attachmentsCount: Int, modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
-            .background(ProtonTheme.colors.interactionNorm, CircleShape)
+            .background(ProtonTheme.colors.interactionBrandDefaultNorm, CircleShape)
             .border(Dp.Hairline, ProtonTheme.colors.backgroundNorm, CircleShape)
             .padding(vertical = ProtonDimens.Spacing.Small, horizontal = ProtonDimens.Spacing.Standard),
         contentAlignment = Alignment.Center

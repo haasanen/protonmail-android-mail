@@ -79,10 +79,10 @@ fun ButtonDefaults.protonElevation() = buttonElevation()
 @Composable
 fun ButtonDefaults.protonButtonColors(
     loading: Boolean = false,
-    backgroundColor: Color = ProtonTheme.colors.interactionNorm,
+    backgroundColor: Color = ProtonTheme.colors.interactionBrandDefaultNorm,
     contentColor: Color = Color.White,
     disabledBackgroundColor: Color = if (loading) {
-        ProtonTheme.colors.interactionPressed
+        ProtonTheme.colors.interactionBrandDefaultPressed
     } else {
         ProtonTheme.colors.brandMinus40
     },
@@ -131,8 +131,8 @@ private val outlinedBorderSize = 1.dp
 fun ButtonDefaults.protonOutlinedBorder(enabled: Boolean = true, loading: Boolean = false) = BorderStroke(
     outlinedBorderSize,
     when {
-        loading -> ProtonTheme.colors.interactionPressed
-        !enabled -> ProtonTheme.colors.interactionDisabled
+        loading -> ProtonTheme.colors.interactionBrandDefaultPressed
+        !enabled -> ProtonTheme.colors.interactionBrandDefaultDisabled
         else -> ProtonTheme.colors.brandNorm
     }
 )
@@ -148,9 +148,9 @@ fun ButtonDefaults.protonOutlinedButtonColors(
         ProtonTheme.colors.backgroundNorm
     },
     disabledContentColor: Color = if (loading) {
-        ProtonTheme.colors.interactionPressed
+        ProtonTheme.colors.interactionBrandDefaultPressed
     } else {
-        ProtonTheme.colors.interactionDisabled
+        ProtonTheme.colors.interactionBrandDefaultDisabled
     }
 ): ButtonColors = buttonColors(
     containerColor = backgroundColor,
@@ -201,7 +201,7 @@ fun ButtonDefaults.protonTextButtonColors(
         Color.Transparent
     },
     disabledContentColor: Color = if (loading) {
-        ProtonTheme.colors.interactionPressed
+        ProtonTheme.colors.interactionBrandDefaultPressed
     } else {
         ProtonTheme.colors.textDisabled
     }

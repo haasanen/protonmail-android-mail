@@ -339,7 +339,7 @@ fun LabelFormTopBar(
                 ) {
                     val textColor =
                         if (state.isSaveEnabled) ProtonTheme.colors.textAccent
-                        else ProtonTheme.colors.interactionDisabled
+                        else ProtonTheme.colors.interactionBrandDefaultDisabled
                     Text(
                         text = stringResource(id = R.string.label_form_save),
                         color = textColor,

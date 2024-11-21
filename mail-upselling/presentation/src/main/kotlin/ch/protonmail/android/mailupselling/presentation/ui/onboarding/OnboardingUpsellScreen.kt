@@ -241,8 +241,7 @@ private fun PlanSwitcher(
                 modifier = Modifier
                     .weight(1f)
                     .clickable(
-                        interactionSource = monthlyInteractionSource,
-                        indication = null
+                        interactionSource = monthlyInteractionSource, indication = null
                     ) { onSwitch(PlansType.Monthly) },
                 text = R.string.upselling_onboarding_switcher_monthly,
                 isSelected = selectedPlansType == PlansType.Monthly
@@ -251,8 +250,7 @@ private fun PlanSwitcher(
                 modifier = Modifier
                     .weight(1f)
                     .clickable(
-                        interactionSource = yearlyInteractionSource,
-                        indication = null
+                        interactionSource = yearlyInteractionSource, indication = null
                     ) { onSwitch(PlansType.Annual) },
                 text = R.string.upselling_onboarding_switcher_annual,
                 isSelected = selectedPlansType == PlansType.Annual
@@ -269,7 +267,7 @@ private fun PlanSwitcherLabel(modifier: Modifier, text: TextUiModel) {
     Row(modifier = modifier) {
         Text(
             modifier = Modifier
-                .background(color = ProtonTheme.colors.interactionNorm, shape = ProtonTheme.shapes.large)
+                .background(color = ProtonTheme.colors.interactionBrandDefaultNorm, shape = ProtonTheme.shapes.large)
                 .padding(horizontal = ProtonDimens.Spacing.Standard, vertical = ProtonDimens.Spacing.Small),
             text = text.string(),
             style = ProtonTheme.typography.labelMediumNorm.copy(color = Color.White)
@@ -312,7 +310,8 @@ private fun PlanCard(
     onClick: () -> Unit
 ) {
     val borderWidth = if (isSelected) MailDimens.OnboardingUpsellBestValueBorder else MailDimens.DefaultBorder
-    val borderColor = if (isSelected) ProtonTheme.colors.interactionNorm else ProtonTheme.colors.separatorNorm
+    val borderColor = if (isSelected) ProtonTheme.colors.interactionBrandDefaultNorm
+    else ProtonTheme.colors.separatorNorm
     val interactionSource = remember { MutableInteractionSource() }
 
     ElevatedCard(
@@ -320,10 +319,7 @@ private fun PlanCard(
             .fillMaxWidth()
             .border(width = borderWidth, color = borderColor, shape = ProtonTheme.shapes.large)
             .selectable(
-                interactionSource = interactionSource,
-                indication = null,
-                selected = isSelected,
-                onClick = onClick
+                interactionSource = interactionSource, indication = null, selected = isSelected, onClick = onClick
             ),
         shape = ProtonTheme.shapes.large,
         colors = CardDefaults.elevatedCardColors().copy(containerColor = ProtonTheme.colors.backgroundNorm)
@@ -332,7 +328,7 @@ private fun PlanCard(
             Text(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(ProtonTheme.colors.interactionNorm)
+                    .background(ProtonTheme.colors.interactionBrandDefaultNorm)
                     .padding(ProtonDimens.Spacing.Standard),
                 text = stringResource(id = R.string.upselling_onboarding_best_value),
                 textAlign = TextAlign.Center,
@@ -362,7 +358,7 @@ private fun PlanCheckmark(modifier: Modifier = Modifier, isSelected: Boolean) {
         Box(
             modifier = modifier
                 .size(ProtonDimens.DefaultIconSize)
-                .background(color = ProtonTheme.colors.interactionNorm, shape = CircleShape)
+                .background(color = ProtonTheme.colors.interactionBrandDefaultNorm, shape = CircleShape)
                 .padding(ProtonDimens.Spacing.Small)
         ) {
             Icon(

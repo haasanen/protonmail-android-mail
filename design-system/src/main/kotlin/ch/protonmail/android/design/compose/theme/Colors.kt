@@ -203,9 +203,9 @@ class ProtonColors(
     notificationWarning: Color = ProtonPalette.Orange,
     notificationSuccess: Color = ProtonPalette.Gossamer,
 
-    interactionNorm: Color = brandNorm,
-    interactionPressed: Color = brandPlus20,
-    interactionDisabled: Color = brandMinus40,
+    interactionBrandDefaultNorm: Color = brandNorm,
+    interactionBrandDefaultPressed: Color = brandPlus10,
+    interactionBrandDefaultDisabled: Color = brandMinus30,
 
     floatyBackground: Color = ProtonPalette.EerieBlack,
     floatyPressed: Color = ProtonPalette.Charade,
@@ -331,11 +331,15 @@ class ProtonColors(
     var notificationSuccess: Color by mutableStateOf(notificationSuccess, structuralEqualityPolicy())
         internal set
 
-    var interactionNorm: Color by mutableStateOf(interactionNorm, structuralEqualityPolicy())
+    var interactionBrandDefaultNorm: Color by mutableStateOf(interactionBrandDefaultNorm, structuralEqualityPolicy())
         internal set
-    var interactionPressed: Color by mutableStateOf(interactionPressed, structuralEqualityPolicy())
+    var interactionBrandDefaultPressed: Color by mutableStateOf(
+        interactionBrandDefaultPressed, structuralEqualityPolicy()
+    )
         internal set
-    var interactionDisabled: Color by mutableStateOf(interactionDisabled, structuralEqualityPolicy())
+    var interactionBrandDefaultDisabled: Color by mutableStateOf(
+        interactionBrandDefaultDisabled, structuralEqualityPolicy()
+    )
         internal set
 
     var floatyBackground: Color by mutableStateOf(floatyBackground, structuralEqualityPolicy())
@@ -406,9 +410,9 @@ class ProtonColors(
         notificationError: Color = this.notificationError,
         notificationWarning: Color = this.notificationWarning,
         notificationSuccess: Color = this.notificationSuccess,
-        interactionNorm: Color = this.interactionNorm,
-        interactionPressed: Color = this.interactionPressed,
-        interactionDisabled: Color = this.interactionDisabled,
+        interactionBrandDefaultNorm: Color = this.interactionBrandDefaultNorm,
+        interactionBrandDefaultPressed: Color = this.interactionBrandDefaultPressed,
+        interactionBrandDefaultDisabled: Color = this.interactionBrandDefaultDisabled,
         floatyBackground: Color = this.floatyBackground,
         floatyPressed: Color = this.floatyPressed,
         floatyText: Color = this.floatyText,
@@ -479,9 +483,9 @@ class ProtonColors(
         notificationWarning = notificationWarning,
         notificationSuccess = notificationSuccess,
 
-        interactionNorm = interactionNorm,
-        interactionPressed = interactionPressed,
-        interactionDisabled = interactionDisabled,
+        interactionBrandDefaultNorm = interactionBrandDefaultNorm,
+        interactionBrandDefaultPressed = interactionBrandDefaultPressed,
+        interactionBrandDefaultDisabled = interactionBrandDefaultDisabled,
 
         floatyBackground = floatyBackground,
         floatyPressed = floatyPressed,
@@ -611,7 +615,7 @@ class ProtonColors(
             iconNorm = ProtonPalette.CadetBlue,
             iconWeak = ProtonPalette.Topaz,
             iconSelected = ProtonPalette.Portage,
-            interactionPressed = ProtonPalette.SanMarino
+            interactionBrandDefaultPressed = ProtonPalette.SanMarino
         )
 
         private fun sidebarDark(
@@ -637,7 +641,7 @@ class ProtonColors(
             iconNorm = ProtonPalette.Platinum,
             iconWeak = ProtonPalette.SonicSilver,
             iconSelected = ProtonPalette.Portage,
-            interactionPressed = ProtonPalette.LightSlateBlue
+            interactionBrandDefaultPressed = ProtonPalette.LightSlateBlue
         )
 
 
@@ -691,7 +695,8 @@ class ProtonColors(
 fun ProtonColors.textNorm(enabled: Boolean = true) = if (enabled) textNorm else textDisabled
 fun ProtonColors.textWeak(enabled: Boolean = true) = if (enabled) textWeak else textDisabled
 fun ProtonColors.textInverted(enabled: Boolean = true) = if (enabled) textInverted else textDisabled
-fun ProtonColors.interactionNorm(enabled: Boolean = true) = if (enabled) interactionNorm else interactionDisabled
+fun ProtonColors.interactionBrandDefaultNorm(enabled: Boolean = true) =
+    if (enabled) interactionBrandDefaultNorm else interactionBrandDefaultDisabled
 
 internal fun ProtonColors.toMaterial3ThemeColors() = ColorScheme(
     primary = brandNorm,
@@ -792,9 +797,9 @@ fun ProtonColors.updateColorsFrom(other: ProtonColors) {
     notificationWarning = other.notificationWarning
     notificationSuccess = other.notificationSuccess
 
-    interactionNorm = other.interactionNorm
-    interactionPressed = other.interactionPressed
-    interactionDisabled = other.interactionDisabled
+    interactionBrandDefaultNorm = other.interactionBrandDefaultNorm
+    interactionBrandDefaultPressed = other.interactionBrandDefaultPressed
+    interactionBrandDefaultDisabled = other.interactionBrandDefaultDisabled
 
     floatyBackground = other.floatyBackground
     floatyPressed = other.floatyPressed

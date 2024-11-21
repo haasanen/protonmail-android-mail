@@ -58,7 +58,7 @@ import ch.protonmail.android.design.compose.component.ProtonRawListItem
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyLargeNorm
-import ch.protonmail.android.design.compose.theme.interactionNorm
+import ch.protonmail.android.design.compose.theme.interactionBrandDefaultNorm
 import ch.protonmail.android.maillabel.domain.model.LabelId
 
 @Composable
@@ -95,7 +95,7 @@ fun MoveToBottomSheetContent(dataState: MoveToBottomSheetState.Data, actions: Mo
                     },
                 text = stringResource(id = R.string.bottom_sheet_done_action),
                 style = ProtonTheme.typography.bodyLargeNorm,
-                color = ProtonTheme.colors.interactionNorm()
+                color = ProtonTheme.colors.interactionBrandDefaultNorm
             )
         }
         HorizontalDivider(modifier = Modifier.testTag(MoveToBottomSheetTestTags.Divider))
@@ -168,7 +168,7 @@ fun MoveToBottomSheetContent(dataState: MoveToBottomSheetState.Data, actions: Mo
                                 .size(ProtonDimens.SmallIconSize),
                             painter = painterResource(id = R.drawable.ic_proton_checkmark),
                             contentDescription = NO_CONTENT_DESCRIPTION,
-                            tint = ProtonTheme.colors.interactionNorm(true)
+                            tint = ProtonTheme.colors.interactionBrandDefaultNorm(true)
                         )
                     }
                 }

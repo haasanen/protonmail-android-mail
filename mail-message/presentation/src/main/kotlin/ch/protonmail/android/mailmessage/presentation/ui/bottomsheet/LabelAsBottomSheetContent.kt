@@ -61,7 +61,6 @@ import ch.protonmail.android.design.compose.component.ProtonRawListItem
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyLargeNorm
-import ch.protonmail.android.design.compose.theme.interactionNorm
 import ch.protonmail.android.maillabel.domain.model.LabelId
 
 @Composable
@@ -102,7 +101,7 @@ fun LabelAsBottomSheetContent(
                     .clickable { actions.onDoneClick(archiveSelectedState, labelAsDataState.messageIdInConversation) },
                 text = stringResource(id = R.string.bottom_sheet_done_action),
                 style = ProtonTheme.typography.bodyLargeNorm,
-                color = ProtonTheme.colors.interactionNorm()
+                color = ProtonTheme.colors.interactionBrandDefaultNorm
             )
         }
         HorizontalDivider(modifier = Modifier.testTag(LabelAsBottomSheetTestTags.Divider))

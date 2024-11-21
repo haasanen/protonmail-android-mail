@@ -113,9 +113,9 @@ fun ProtonBottomNavigation(
                     selected = selectedIndex == index,
                     onClick = { onItemClick(index) },
                     colors = NavigationBarItemDefaults.colors(
-                        selectedIconColor = ProtonTheme.colors.interactionNorm,
+                        selectedIconColor = ProtonTheme.colors.interactionBrandDefaultNorm,
                         unselectedIconColor = ProtonTheme.colors.iconWeak,
-                        selectedTextColor = ProtonTheme.colors.interactionNorm,
+                        selectedTextColor = ProtonTheme.colors.interactionBrandDefaultNorm,
                         unselectedTextColor = ProtonTheme.colors.iconWeak
                     )
                 )

@@ -82,7 +82,10 @@ fun ProtonListItem(
     ProtonRawListItem(
         modifier = modifier
             .fillMaxWidth()
-            .background(color = if (isSelected) ProtonTheme.colors.interactionPressed else Color.Transparent)
+            .background(
+                color = if (isSelected) ProtonTheme.colors.interactionBrandDefaultPressed
+                else Color.Transparent
+            )
             .height(height = ProtonDimens.ListItemHeight)
             .clickable(enabled = isClickable, onClick = onClick)
             .padding(horizontal = ProtonDimens.Spacing.Large),
@@ -153,7 +156,7 @@ fun ProtonListItem(
                 Text(
                     modifier = Modifier
                         .defaultMinSize(ProtonDimens.CounterIconSize)
-                        .background(color = ProtonTheme.colors.interactionNorm, shape = CircleShape),
+                        .background(color = ProtonTheme.colors.interactionBrandDefaultNorm, shape = CircleShape),
                     text = "$count",
                     color = Color.White,
                     textAlign = TextAlign.Center,

@@ -421,7 +421,7 @@ fun ContactGroupFormTopBar(
                     enabled = isSaveEnabled
                 ) {
                     val textColor = if (isSaveEnabled) ProtonTheme.colors.textAccent
-                    else ProtonTheme.colors.interactionDisabled
+                    else ProtonTheme.colors.interactionBrandDefaultDisabled
                     Text(
                         text = stringResource(id = R.string.contact_group_form_save),
                         color = textColor,

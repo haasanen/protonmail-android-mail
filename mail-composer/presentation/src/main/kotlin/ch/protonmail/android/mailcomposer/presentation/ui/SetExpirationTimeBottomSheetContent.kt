@@ -101,7 +101,7 @@ fun SetExpirationTimeBottomSheetContent(expirationTime: Duration, onDoneClick: (
                 },
                 text = stringResource(id = R.string.composer_expiration_time_bottom_sheet_done),
                 style = ProtonTheme.typography.bodyLargeNorm,
-                color = ProtonTheme.colors.interactionNorm
+                color = ProtonTheme.colors.interactionBrandDefaultNorm
             )
         }
 
@@ -133,7 +133,7 @@ fun SetExpirationTimeBottomSheetContent(expirationTime: Duration, onDoneClick: (
                         Icon(
                             painter = painterResource(id = R.drawable.ic_proton_checkmark),
                             contentDescription = NO_CONTENT_DESCRIPTION,
-                            tint = ProtonTheme.colors.interactionNorm
+                            tint = ProtonTheme.colors.interactionBrandDefaultNorm
                         )
                     }
                 }

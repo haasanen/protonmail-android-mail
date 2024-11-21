@@ -245,7 +245,7 @@ private fun MessagePasswordInfo(modifier: Modifier = Modifier) {
             HyperlinkText(
                 textResource = R.string.set_message_password_info_link,
                 textStyle = ProtonTheme.typography.bodyMediumNorm,
-                linkTextColor = ProtonTheme.colors.interactionNorm
+                linkTextColor = ProtonTheme.colors.interactionBrandDefaultNorm
             )
         }
     }
@@ -285,7 +285,7 @@ private fun MessagePasswordButtons(
             Text(
                 text = stringResource(id = R.string.set_message_password_button_remove_password),
                 style = ProtonTheme.typography.bodyLargeNorm,
-                color = ProtonTheme.colors.interactionNorm
+                color = ProtonTheme.colors.interactionBrandDefaultNorm
             )
         }
     }
