@@ -164,7 +164,7 @@ class ProtonColors(
     brandMinus40: Color = ProtonPalette.Magnolia,
 
     textNorm: Color = shade100,
-    textAccent: Color = brandNorm,
+    textAccent: Color = brandPlus10,
     textWeak: Color = shade80,
     textHint: Color = shade60,
     textDisabled: Color = shade50,
@@ -533,7 +533,7 @@ class ProtonColors(
             shadowRaised = Color.Black.copy(alpha = 0.1f),
             shadowLifted = Color.Black.copy(alpha = 0.1f),
             blenderNorm = ProtonPalette.EerieBlack.copy(alpha = 0.48f),
-            textAccent = brandNorm,
+            textAccent = brandPlus10,
             iconAccent = brandNorm
         )
 
@@ -573,7 +573,7 @@ class ProtonColors(
             shadowRaised = Color.Black.copy(alpha = 0.8f),
             shadowLifted = Color.Black.copy(alpha = 0.86f),
             blenderNorm = Color.Black.copy(alpha = 0.52f),
-            textAccent = brandMinus20,
+            textAccent = brandPlus10,
             iconAccent = brandMinus20
         ).let {
             it.copy(
