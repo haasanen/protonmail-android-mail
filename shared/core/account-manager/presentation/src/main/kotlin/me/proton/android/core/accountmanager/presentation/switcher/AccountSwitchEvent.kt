@@ -17,22 +17,24 @@
 
 package me.proton.android.core.accountmanager.presentation.switcher
 
+import me.proton.core.domain.entity.UserId
+
 sealed interface AccountSwitchEvent {
 
     @JvmInline
-    value class OnAccountSelected(val userId: String) : AccountSwitchEvent
+    value class OnAccountSelected(val userId: UserId) : AccountSwitchEvent
 
     @JvmInline
-    value class OnManageAccount(val userId: String) : AccountSwitchEvent
+    value class OnManageAccount(val userId: UserId) : AccountSwitchEvent
 
     @JvmInline
-    value class OnSignOut(val userId: String) : AccountSwitchEvent
+    value class OnSignOut(val userId: UserId) : AccountSwitchEvent
 
     @JvmInline
-    value class OnSignIn(val userId: String) : AccountSwitchEvent
+    value class OnSignIn(val userId: UserId) : AccountSwitchEvent
 
     @JvmInline
-    value class OnRemoveAccount(val userId: String) : AccountSwitchEvent
+    value class OnRemoveAccount(val userId: UserId) : AccountSwitchEvent
 
     data object OnAddAccount : AccountSwitchEvent
 

@@ -45,6 +45,7 @@ import me.proton.android.core.accountmanager.presentation.switcher.MenuOption.Ma
 import me.proton.android.core.accountmanager.presentation.switcher.MenuOption.Remove
 import me.proton.android.core.accountmanager.presentation.switcher.MenuOption.SignIn
 import me.proton.android.core.accountmanager.presentation.switcher.MenuOption.SignOut
+import me.proton.core.domain.entity.UserId
 
 /**
  * Displays a row with the given [accountListItem].
@@ -202,7 +203,7 @@ fun AccountSwitcherRowWithContextMenuPreview() {
         AccountSwitcherRowWithContextMenu(
             accountListItem = AccountListItem.Ready.Primary(
                 accountItem = AccountItem(
-                    userId = "1",
+                    userId = UserId("1"),
                     name = "Username",
                     email = "email@proton.me",
                     initials = "UN"

@@ -61,6 +61,7 @@ dependencies {
     implementation(libs.dagger.hilt.android)
     implementation(libs.androidx.constraintlayout.compose)
     implementation(libs.androidx.compose.ui.tooling.preview)
+    implementation(libs.proton.core.domain)
     implementation(libs.proton.core.presentation)
     implementation(libs.proton.core.presentationCompose)
     implementation(libs.proton.core.utilKotlin)

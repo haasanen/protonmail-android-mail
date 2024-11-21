@@ -63,6 +63,7 @@ dependencies {
     implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.dagger.hilt.android)
+    implementation(libs.proton.core.domain)
     implementation(libs.proton.core.presentation)
     implementation(libs.proton.core.utilKotlin)
 

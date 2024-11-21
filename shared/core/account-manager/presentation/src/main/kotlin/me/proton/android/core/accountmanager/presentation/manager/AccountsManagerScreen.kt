@@ -47,6 +47,7 @@ import me.proton.android.core.accountmanager.presentation.switcher.AccountItem
 import me.proton.android.core.accountmanager.presentation.switcher.AccountListItem
 import me.proton.android.core.accountmanager.presentation.switcher.AccountSwitchEvent
 import me.proton.android.core.accountmanager.presentation.switcher.AccountSwitcherRowWithContextMenu
+import me.proton.core.domain.entity.UserId
 
 @Composable
 fun AccountsManagerScreen(
@@ -186,15 +187,15 @@ fun ManageAccountsScreenPreview() {
             state = AccountsManagerState.Idle(
                 signedInAccounts = listOf(
                     AccountListItem.Ready.Primary(
-                        AccountItem("user-1", "User One", "user.one@example.test", "U1")
+                        AccountItem(UserId("user-1"), "User One", "user.one@example.test", "U1")
                     ),
                     AccountListItem.Ready(
-                        AccountItem("user-2", "User Two", "user.two@example.test", "U2")
+                        AccountItem(UserId("user-2"), "User Two", "user.two@example.test", "U2")
                     )
                 ),
                 disabledAccounts = listOf(
                     AccountListItem.Disabled(
-                        AccountItem("user-3", "User Three", "user.three@example.test", "U3")
+                        AccountItem(UserId("user-3"), "User Three", "user.three@example.test", "U3")
                     )
                 )
             )

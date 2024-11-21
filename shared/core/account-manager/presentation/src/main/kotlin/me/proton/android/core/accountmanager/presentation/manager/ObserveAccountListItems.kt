@@ -23,6 +23,7 @@ import kotlinx.coroutines.flow.map
 import me.proton.android.core.account.domain.ObserveStoredAccounts
 import me.proton.android.core.accountmanager.presentation.switcher.AccountItem
 import me.proton.android.core.accountmanager.presentation.switcher.AccountListItem
+import me.proton.core.domain.entity.UserId
 import me.proton.core.util.kotlin.takeIfNotBlank
 import uniffi.proton_mail_uniffi.MailSessionInterface
 import uniffi.proton_mail_uniffi.StoredAccountState
@@ -40,7 +41,7 @@ class ObserveAccountListItems @Inject constructor(
             val initials = storedAccount.avatarInformation()?.text
             val color = storedAccount.avatarInformation()?.color
             val accountItem = AccountItem(
-                userId = storedAccount.userId(),
+                userId = UserId(storedAccount.userId()),
                 name = accountName,
                 email = storedAccount.primaryAddr(),
                 initials = initials,
