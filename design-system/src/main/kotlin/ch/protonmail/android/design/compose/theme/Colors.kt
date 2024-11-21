@@ -198,7 +198,7 @@ class ProtonColors(
 
     blenderNorm: Color,
 
-    notificationNorm: Color = ProtonPalette.Charade,
+    notificationNorm: Color = shade100,
     notificationError: Color = ProtonPalette.Amaranth,
     notificationWarning: Color = ProtonPalette.Orange,
     notificationSuccess: Color = ProtonPalette.Gossamer,
