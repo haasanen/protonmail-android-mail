@@ -172,7 +172,7 @@ class ProtonColors(
     textSelected: Color = brandPlus10,
 
     iconNorm: Color = shade100,
-    iconAccent: Color = brandNorm,
+    iconAccent: Color = brandPlus10,
     iconWeak: Color = shade80,
     iconHint: Color = shade60,
     iconDisabled: Color = shade50,
@@ -534,7 +534,7 @@ class ProtonColors(
             shadowLifted = Color.Black.copy(alpha = 0.1f),
             blenderNorm = ProtonPalette.EerieBlack.copy(alpha = 0.48f),
             textAccent = brandPlus10,
-            iconAccent = brandNorm
+            iconAccent = brandPlus10
         )
 
         private fun baseDark(
@@ -574,7 +574,7 @@ class ProtonColors(
             shadowLifted = Color.Black.copy(alpha = 0.86f),
             blenderNorm = Color.Black.copy(alpha = 0.52f),
             textAccent = brandPlus10,
-            iconAccent = brandMinus20
+            iconAccent = brandPlus10
         ).let {
             it.copy(
                 interactionWeakNorm = it.shade20,
