@@ -36,7 +36,7 @@ import ch.protonmail.android.design.compose.theme.ProtonTheme
 fun Modifier.verticalScrollbar(
     state: LazyListState,
     width: Dp = 2.dp,
-    color: Color = ProtonTheme.colors.interactionStrongNorm
+    color: Color = ProtonTheme.colors.interactionBrandStrongNorm
 ): Modifier {
     val targetAlpha = if (state.isScrollInProgress) 1f else 0f
     val duration = if (state.isScrollInProgress) 150 else 500

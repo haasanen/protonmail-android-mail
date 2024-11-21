@@ -179,8 +179,8 @@ class ProtonColors(
     iconInverted: Color = shade0,
     iconSelected: Color = brandPlus10,
 
-    interactionStrongNorm: Color = shade100,
-    interactionStrongPressed: Color = shade80,
+    interactionBrandStrongNorm: Color = brandPlus10,
+    interactionBrandStrongPressed: Color = brandPlus20,
 
     interactionWeakNorm: Color = shade10,
     interactionWeakPressed: Color = shade20,
@@ -271,9 +271,11 @@ class ProtonColors(
     var iconInverted: Color by mutableStateOf(iconInverted, structuralEqualityPolicy())
         internal set
 
-    var interactionStrongNorm: Color by mutableStateOf(interactionStrongNorm, structuralEqualityPolicy())
+    var interactionBrandStrongNorm: Color by mutableStateOf(interactionBrandStrongNorm, structuralEqualityPolicy())
         internal set
-    var interactionStrongPressed: Color by mutableStateOf(interactionStrongPressed, structuralEqualityPolicy())
+    var interactionBrandStrongPressed: Color by mutableStateOf(
+        interactionBrandStrongPressed, structuralEqualityPolicy()
+    )
         internal set
 
     var interactionWeakNorm: Color by mutableStateOf(interactionWeakNorm, structuralEqualityPolicy())
@@ -379,8 +381,8 @@ class ProtonColors(
         iconHint: Color = this.iconHint,
         iconDisabled: Color = this.iconDisabled,
         iconInverted: Color = this.iconInverted,
-        interactionStrongNorm: Color = this.interactionStrongNorm,
-        interactionStrongPressed: Color = this.interactionStrongPressed,
+        interactionBrandStrongNorm: Color = this.interactionBrandStrongNorm,
+        interactionBrandStrongPressed: Color = this.interactionBrandStrongPressed,
         interactionWeakNorm: Color = this.interactionWeakNorm,
         interactionWeakPressed: Color = this.interactionWeakPressed,
         interactionWeakDisabled: Color = this.interactionWeakDisabled,
@@ -444,8 +446,8 @@ class ProtonColors(
         iconInverted = iconInverted,
         iconSelected = iconSelected,
 
-        interactionStrongNorm = interactionStrongNorm,
-        interactionStrongPressed = interactionStrongPressed,
+        interactionBrandStrongNorm = interactionBrandStrongNorm,
+        interactionBrandStrongPressed = interactionBrandStrongPressed,
 
         interactionWeakNorm = interactionWeakNorm,
         interactionWeakPressed = interactionWeakPressed,
@@ -757,8 +759,8 @@ fun ProtonColors.updateColorsFrom(other: ProtonColors) {
     iconDisabled = other.iconDisabled
     iconInverted = other.iconInverted
 
-    interactionStrongNorm = other.interactionStrongNorm
-    interactionStrongPressed = other.interactionStrongPressed
+    interactionBrandStrongNorm = other.interactionBrandStrongNorm
+    interactionBrandStrongPressed = other.interactionBrandStrongPressed
 
     interactionWeakNorm = other.interactionWeakNorm
     interactionWeakPressed = other.interactionWeakPressed
