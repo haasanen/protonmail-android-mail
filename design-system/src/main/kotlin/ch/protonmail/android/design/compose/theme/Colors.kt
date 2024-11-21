@@ -182,8 +182,8 @@ class ProtonColors(
     interactionStrongNorm: Color = shade100,
     interactionStrongPressed: Color = shade80,
 
-    interactionWeakNorm: Color = shade20,
-    interactionWeakPressed: Color = shade40,
+    interactionWeakNorm: Color = shade10,
+    interactionWeakPressed: Color = shade20,
     interactionWeakDisabled: Color = shade10,
 
     backgroundNorm: Color = shade0,
@@ -577,8 +577,8 @@ class ProtonColors(
             iconAccent = brandPlus10
         ).let {
             it.copy(
-                interactionWeakNorm = it.shade20,
-                interactionWeakPressed = it.shade50,
+                interactionWeakNorm = it.shade10,
+                interactionWeakPressed = it.shade20,
                 interactionWeakDisabled = it.shade10,
                 backgroundNorm = it.shade0,
                 backgroundSecondary = it.shade10,
