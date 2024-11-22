@@ -36,7 +36,6 @@ import ch.protonmail.android.design.compose.theme.LocalShapes
 import ch.protonmail.android.design.compose.theme.LocalTypography
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.defaultNorm
 import me.proton.core.util.kotlin.takeIfNotBlank
 
 /**
@@ -50,11 +49,11 @@ internal fun BaseAccountSwitcherRow(
 ) {
     Row(
         modifier = modifier.padding(
-            horizontal = ProtonDimens.DefaultSpacing,
-            vertical = ProtonDimens.SmallSpacing
+            horizontal = ProtonDimens.Spacing.Large,
+            vertical = ProtonDimens.Spacing.Standard
         ),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(ProtonDimens.DefaultSpacing)
+        horizontalArrangement = Arrangement.spacedBy(ProtonDimens.Spacing.Large)
     ) {
         val boxColor =
             accountListItem.accountItem.color?.toColorInt()?.let { Color(it) } ?: LocalColors.current.interactionNorm
@@ -66,7 +65,7 @@ internal fun BaseAccountSwitcherRow(
             Text(
                 text = accountListItem.accountItem.initials ?: "",
                 color = LocalColors.current.textInverted,
-                style = LocalTypography.current.defaultNorm,
+                style = LocalTypography.current.bodyMedium,
                 modifier = Modifier.align(Alignment.Center)
             )
         }
@@ -76,13 +75,14 @@ internal fun BaseAccountSwitcherRow(
             Text(
                 text = accountListItem.accountItem.name,
                 color = if (isDisabled) ProtonTheme.colors.textWeak else ProtonTheme.colors.textNorm,
-                style = LocalTypography.current.body1Regular
+                style = LocalTypography.current.bodyMedium
             )
             accountListItem.accountItem.email?.takeIfNotBlank()?.let {
                 Text(
                     text = it,
                     color = if (isDisabled) ProtonTheme.colors.textWeak else ProtonTheme.colors.textWeak,
-                    style = LocalTypography.current.body2Regular
+                    style = LocalTypography.current.bodySmall,
+                    modifier = Modifier.padding(top = ProtonDimens.Spacing.Tiny)
                 )
             }
         }

@@ -59,12 +59,12 @@ fun AccountSwitcherDropdownMenuContent(
             Text(
                 modifier = Modifier
                     .padding(
-                        start = ProtonDimens.DefaultSpacing,
-                        end = ProtonDimens.DefaultSpacing,
-                        top = ProtonDimens.MediumSpacing,
-                        bottom = ProtonDimens.SmallSpacing
+                        start = ProtonDimens.Spacing.Large,
+                        end = ProtonDimens.Spacing.Large,
+                        top = ProtonDimens.Spacing.ExtraLarge,
+                        bottom = ProtonDimens.Spacing.Standard
                     ),
-                style = LocalTypography.current.body2Regular,
+                style = LocalTypography.current.bodyMedium,
                 color = LocalColors.current.textWeak,
                 text = stringResource(R.string.account_switcher_switch_to)
             )

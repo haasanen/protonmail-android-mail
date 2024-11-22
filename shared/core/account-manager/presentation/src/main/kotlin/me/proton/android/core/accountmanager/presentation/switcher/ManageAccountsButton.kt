@@ -45,9 +45,9 @@ fun ManageAccountsButton(modifier: Modifier = Modifier, onClick: () -> Unit = {}
         modifier = modifier
             .fillMaxWidth()
             .clickable { onClick() }
-            .padding(ProtonDimens.DefaultSpacing),
+            .padding(ProtonDimens.Spacing.Large),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(ProtonDimens.SmallSpacing)
+        horizontalArrangement = Arrangement.spacedBy(ProtonDimens.Spacing.Standard)
     ) {
         Icon(
             contentDescription = null,
@@ -55,7 +55,7 @@ fun ManageAccountsButton(modifier: Modifier = Modifier, onClick: () -> Unit = {}
             painter = painterResource(CoreR.drawable.ic_proton_cog_wheel)
         )
         Text(
-            style = LocalTypography.current.body1Regular,
+            style = LocalTypography.current.bodyMedium,
             text = stringResource(R.string.manage_accounts_title)
         )
     }

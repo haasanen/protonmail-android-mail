@@ -32,7 +32,7 @@ import ch.protonmail.android.design.compose.theme.LocalColors
 import ch.protonmail.android.design.compose.theme.LocalTypography
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.defaultSmallNorm
+import ch.protonmail.android.design.compose.theme.bodyMediumNorm
 import me.proton.android.core.accountmanager.presentation.R
 import me.proton.core.domain.entity.UserId
 
@@ -52,7 +52,7 @@ fun AccountSwitcherRowWithSignIn(
             .clickable(enabled = accountListItem !is AccountListItem.Disabled) {
                 onEvent(AccountSwitchEvent.OnAccountSelected(accountListItem.accountItem.userId))
             }
-            .padding(ProtonDimens.SmallSpacing),
+            .padding(ProtonDimens.Spacing.Standard),
         accountListItem = accountListItem,
         trailingContent = {
             if (accountListItem is AccountListItem.Disabled) {
@@ -62,8 +62,8 @@ fun AccountSwitcherRowWithSignIn(
                     }
                 ) {
                     Text(
-                        modifier = Modifier.padding(horizontal = ProtonDimens.SmallSpacing),
-                        style = LocalTypography.current.defaultSmallNorm,
+                        modifier = Modifier.padding(horizontal = ProtonDimens.Spacing.Standard),
+                        style = LocalTypography.current.bodyMediumNorm,
                         text = stringResource(R.string.account_switcher_sign_in)
                     )
                 }

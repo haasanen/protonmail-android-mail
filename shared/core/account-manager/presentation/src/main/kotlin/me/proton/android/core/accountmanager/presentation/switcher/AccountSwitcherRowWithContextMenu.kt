@@ -61,7 +61,7 @@ fun AccountSwitcherRowWithContextMenu(
     BaseAccountSwitcherRow(
         modifier = modifier
             .background(LocalColors.current.backgroundNorm)
-            .padding(ProtonDimens.SmallSpacing),
+            .padding(ProtonDimens.Spacing.Standard),
         accountListItem = accountListItem,
         trailingContent = {
             AccountSwitcherRowContextMenu(
@@ -107,7 +107,7 @@ private fun AccountSwitcherRowContextMenu(
                         DropdownMenuItem(
                             text = {
                                 Text(
-                                    style = LocalTypography.current.body1Regular,
+                                    style = LocalTypography.current.bodyMedium,
                                     text = stringResource(R.string.account_switcher_manage_account)
                                 )
                             },
@@ -127,7 +127,7 @@ private fun AccountSwitcherRowContextMenu(
                         DropdownMenuItem(
                             text = {
                                 Text(
-                                    style = LocalTypography.current.body1Regular,
+                                    style = LocalTypography.current.bodyMedium,
                                     text = stringResource(R.string.account_switcher_sign_out)
                                 )
                             },
@@ -147,7 +147,7 @@ private fun AccountSwitcherRowContextMenu(
                         DropdownMenuItem(
                             text = {
                                 Text(
-                                    style = LocalTypography.current.body1Regular,
+                                    style = LocalTypography.current.bodyMedium,
                                     text = stringResource(R.string.account_switcher_sign_in)
                                 )
                             },
@@ -167,7 +167,7 @@ private fun AccountSwitcherRowContextMenu(
                         DropdownMenuItem(
                             text = {
                                 Text(
-                                    style = LocalTypography.current.body1Regular,
+                                    style = LocalTypography.current.bodyMedium,
                                     text = stringResource(R.string.account_switcher_remove)
                                 )
                             },

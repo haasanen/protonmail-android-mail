@@ -45,7 +45,7 @@ fun AccountSwitcherRowWithChevron(accountListItem: AccountListItem, modifier: Mo
                 contentDescription = null,
                 painter = painterResource(R.drawable.ic_proton_chevron_down),
                 tint = LocalColors.current.textWeak,
-                modifier = Modifier.padding(end = ProtonDimens.SmallSpacing)
+                modifier = Modifier.padding(end = ProtonDimens.Spacing.Standard)
             )
         }
     )

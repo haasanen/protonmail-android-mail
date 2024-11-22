@@ -121,13 +121,13 @@ private fun AccountsList(
             item(key = "signed-in-header") {
                 Text(
                     color = LocalColors.current.textWeak,
-                    style = LocalTypography.current.body2Regular,
+                    style = LocalTypography.current.bodyLarge,
                     text = stringResource(R.string.manage_accounts_signed_in),
                     modifier = Modifier.padding(
-                        top = ProtonDimens.MediumSpacing,
-                        bottom = ProtonDimens.SmallSpacing,
-                        start = ProtonDimens.DefaultSpacing,
-                        end = ProtonDimens.DefaultSpacing
+                        top = ProtonDimens.Spacing.ExtraLarge,
+                        bottom = ProtonDimens.Spacing.Standard,
+                        start = ProtonDimens.Spacing.Large,
+                        end = ProtonDimens.Spacing.Large
                     )
                 )
             }
@@ -147,13 +147,13 @@ private fun AccountsList(
             item(key = "signed-out-header") {
                 Text(
                     color = LocalColors.current.textWeak,
-                    style = LocalTypography.current.body2Regular,
+                    style = LocalTypography.current.bodyLarge,
                     text = stringResource(R.string.manage_accounts_signed_out),
                     modifier = Modifier.padding(
-                        top = ProtonDimens.MediumSpacing,
-                        bottom = ProtonDimens.SmallSpacing,
-                        start = ProtonDimens.DefaultSpacing,
-                        end = ProtonDimens.DefaultSpacing
+                        top = ProtonDimens.Spacing.ExtraLarge,
+                        bottom = ProtonDimens.Spacing.Standard,
+                        start = ProtonDimens.Spacing.Large,
+                        end = ProtonDimens.Spacing.Large
                     )
                 )
             }
