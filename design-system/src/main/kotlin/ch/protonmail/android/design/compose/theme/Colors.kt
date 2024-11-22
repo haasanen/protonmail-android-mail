@@ -229,7 +229,15 @@ class ProtonColors(
     shadowRaised: Color,
     shadowLifted: Color,
 
-    sidebarColors: ProtonColors? = null
+    sidebarBackground: Color,
+    sidebarInteractionPressed: Color,
+    sidebarSeparator: Color,
+    sidebarTextNorm: Color,
+    sidebarTextWeak: Color,
+    sidebarTextSelected: Color,
+    sidebarIconNorm: Color,
+    sidebarIconWeak: Color,
+    sidebarIconSelected: Color
 ) {
     var isDark: Boolean by mutableStateOf(isDark, structuralEqualityPolicy())
         internal set
@@ -396,7 +404,25 @@ class ProtonColors(
     var shadowLifted: Color by mutableStateOf(shadowLifted, structuralEqualityPolicy())
         internal set
 
-    var sidebarColors: ProtonColors? by mutableStateOf(sidebarColors, structuralEqualityPolicy())
+
+    var sidebarBackground: Color by mutableStateOf(sidebarBackground, structuralEqualityPolicy())
+        internal set
+    var sidebarInteractionPressed: Color by mutableStateOf(sidebarInteractionPressed, structuralEqualityPolicy())
+        internal set
+    var sidebarSeparator: Color by mutableStateOf(sidebarSeparator, structuralEqualityPolicy())
+        internal set
+    var sidebarTextNorm: Color by mutableStateOf(sidebarTextNorm, structuralEqualityPolicy())
+        internal set
+    var sidebarTextWeak: Color by mutableStateOf(sidebarTextWeak, structuralEqualityPolicy())
+        internal set
+    var sidebarTextSelected: Color by mutableStateOf(sidebarTextSelected, structuralEqualityPolicy())
+        internal set
+    var sidebarIconNorm: Color by mutableStateOf(sidebarIconNorm, structuralEqualityPolicy())
+        internal set
+    var sidebarIconWeak: Color by mutableStateOf(sidebarIconWeak, structuralEqualityPolicy())
+        internal set
+    var sidebarIconSelected: Color by mutableStateOf(sidebarIconSelected, structuralEqualityPolicy())
+        internal set
 
     @Suppress("LongMethod")
     fun copy(
@@ -470,7 +496,15 @@ class ProtonColors(
         shadowNorm: Color = this.shadowNorm,
         shadowRaised: Color = this.shadowRaised,
         shadowLifted: Color = this.shadowLifted,
-        sidebarColors: ProtonColors? = this.sidebarColors
+        sidebarBackground: Color = this.sidebarBackground,
+        sidebarInteractionPressed: Color = this.sidebarInteractionPressed,
+        sidebarSeparator: Color = this.sidebarSeparator,
+        sidebarTextNorm: Color = this.sidebarTextNorm,
+        sidebarTextWeak: Color = this.sidebarTextWeak,
+        sidebarTextSelected: Color = this.sidebarTextSelected,
+        sidebarIconNorm: Color = this.sidebarIconNorm,
+        sidebarIconWeak: Color = this.sidebarIconWeak,
+        sidebarIconSelected: Color = this.sidebarIconSelected
     ) = ProtonColors(
         isDark = isDark,
 
@@ -560,13 +594,21 @@ class ProtonColors(
         shadowRaised = shadowRaised,
         shadowLifted = shadowLifted,
 
-        sidebarColors = sidebarColors
+        sidebarBackground = sidebarBackground,
+        sidebarInteractionPressed = sidebarInteractionPressed,
+        sidebarSeparator = sidebarSeparator,
+        sidebarTextNorm = sidebarTextNorm,
+        sidebarTextWeak = sidebarTextWeak,
+        sidebarTextSelected = sidebarTextSelected,
+        sidebarIconNorm = sidebarIconNorm,
+        sidebarIconWeak = sidebarIconWeak,
+        sidebarIconSelected = sidebarIconSelected
     )
 
     companion object {
 
-        val Light = baseLight().copy(sidebarColors = sidebarLight())
-        val Dark = baseDark().copy(sidebarColors = sidebarDark())
+        val Light = baseLight()
+        val Dark = baseDark()
 
         private fun baseLight(
             brandPlus30: Color = ProtonPalette.Chambray,
@@ -605,7 +647,16 @@ class ProtonColors(
             shadowLifted = Color.Black.copy(alpha = 0.1f),
             blenderNorm = ProtonPalette.EerieBlack.copy(alpha = 0.48f),
             textAccent = brandPlus10,
-            iconAccent = brandPlus10
+            iconAccent = brandPlus10,
+            sidebarBackground = ProtonPalette.DeepCove,
+            sidebarInteractionPressed = ProtonPalette.PortGore,
+            sidebarSeparator = ProtonPalette.PortGore,
+            sidebarTextNorm = ProtonPalette.CadetBlue,
+            sidebarTextWeak = ProtonPalette.Topaz,
+            sidebarTextSelected = ProtonPalette.BlueChalk,
+            sidebarIconNorm = ProtonPalette.CadetBlue,
+            sidebarIconWeak = ProtonPalette.Topaz,
+            sidebarIconSelected = ProtonPalette.Portage
         )
 
         private fun baseDark(
@@ -645,7 +696,16 @@ class ProtonColors(
             shadowLifted = Color.Black.copy(alpha = 0.86f),
             blenderNorm = Color.Black.copy(alpha = 0.52f),
             textAccent = brandPlus10,
-            iconAccent = brandPlus10
+            iconAccent = brandPlus10,
+            sidebarBackground = ProtonPalette.EerieBlack,
+            sidebarInteractionPressed = ProtonPalette.MidnightBlue,
+            sidebarSeparator = ProtonPalette.MidnightBlue,
+            sidebarTextNorm = ProtonPalette.SantasGray,
+            sidebarTextWeak = ProtonPalette.SonicSilver,
+            sidebarTextSelected = ProtonPalette.Platinum,
+            sidebarIconNorm = ProtonPalette.SantasGray,
+            sidebarIconWeak = ProtonPalette.SonicSilver,
+            sidebarIconSelected = ProtonPalette.BlueBell
         ).let {
             it.copy(
                 interactionFabNorm = it.shade40,
@@ -665,59 +725,6 @@ class ProtonColors(
             )
         }
 
-        private fun sidebarLight(
-            brandPlus30: Color = ProtonPalette.Chambray,
-            brandPlus20: Color = ProtonPalette.SanMarino,
-            brandNorm: Color = ProtonPalette.CornflowerBlue,
-            brandMinus20: Color = ProtonPalette.Portage,
-            brandMinus40: Color = ProtonPalette.Perano
-        ) = baseLight(
-            brandPlus30 = brandPlus30,
-            brandPlus20 = brandPlus20,
-            brandNorm = brandNorm,
-            brandMinus20 = brandMinus20,
-            brandMinus40 = brandMinus40
-        ).copy(
-            backgroundNorm = ProtonPalette.DeepCove,
-            interactionWeakNorm = ProtonPalette.PortGore,
-            interactionWeakPressed = ProtonPalette.PortGore,
-            separatorNorm = ProtonPalette.PortGore,
-            textNorm = ProtonPalette.CadetBlue,
-            textWeak = ProtonPalette.Topaz,
-            textSelected = ProtonPalette.BlueChalk,
-            iconNorm = ProtonPalette.CadetBlue,
-            iconWeak = ProtonPalette.Topaz,
-            iconSelected = ProtonPalette.Portage,
-            interactionBrandDefaultPressed = ProtonPalette.PurpleHeart
-        )
-
-        private fun sidebarDark(
-            brandPlus30: Color = ProtonPalette.Rhino,
-            brandPlus20: Color = ProtonPalette.DuskyIndigo,
-            brandNorm: Color = ProtonPalette.LightSlateBlue,
-            brandMinus20: Color = ProtonPalette.BlueBell,
-            brandMinus40: Color = ProtonPalette.Periwinkle
-        ) = baseDark(
-            brandPlus30 = brandPlus30,
-            brandPlus20 = brandPlus20,
-            brandNorm = brandNorm,
-            brandMinus20 = brandMinus20,
-            brandMinus40 = brandMinus40
-        ).copy(
-            backgroundNorm = ProtonPalette.EerieBlack,
-            interactionWeakNorm = ProtonPalette.MidnightBlue,
-            interactionWeakPressed = ProtonPalette.MidnightBlue,
-            separatorNorm = ProtonPalette.MidnightBlue,
-            textNorm = ProtonPalette.SantasGray,
-            textWeak = ProtonPalette.SonicSilver,
-            textSelected = ProtonPalette.Platinum,
-            iconNorm = ProtonPalette.SantasGray,
-            iconWeak = ProtonPalette.SonicSilver,
-            iconSelected = ProtonPalette.BlueBell,
-            interactionBrandDefaultPressed = ProtonPalette.BlueBell
-        )
-
-
         fun light(
             brandPlus30: Color = ProtonPalette.Chambray,
             brandPlus20: Color = ProtonPalette.SanMarino,
@@ -730,14 +737,6 @@ class ProtonColors(
             brandNorm = brandNorm,
             brandMinus20 = brandMinus20,
             brandMinus40 = brandMinus40
-        ).copy(
-            sidebarColors = sidebarLight(
-                brandPlus30 = brandPlus30,
-                brandPlus20 = brandPlus20,
-                brandNorm = brandNorm,
-                brandMinus20 = brandMinus20,
-                brandMinus40 = brandMinus40
-            )
         )
 
         fun dark(
@@ -752,16 +751,7 @@ class ProtonColors(
             brandNorm = brandNorm,
             brandMinus20 = brandMinus20,
             brandMinus40 = brandMinus40
-        ).copy(
-            sidebarColors = sidebarDark(
-                brandPlus30 = brandPlus30,
-                brandPlus20 = brandPlus20,
-                brandNorm = brandNorm,
-                brandMinus20 = brandMinus20,
-                brandMinus40 = brandMinus40
-            )
         )
-
     }
 }
 
@@ -892,7 +882,15 @@ fun ProtonColors.updateColorsFrom(other: ProtonColors) {
     shadowRaised = other.shadowRaised
     shadowLifted = other.shadowLifted
 
-    sidebarColors = other.sidebarColors
+    sidebarBackground = other.sidebarBackground
+    sidebarInteractionPressed = other.sidebarInteractionPressed
+    sidebarSeparator = other.sidebarSeparator
+    sidebarTextNorm = other.sidebarTextNorm
+    sidebarTextWeak = other.sidebarTextWeak
+    sidebarTextSelected = other.sidebarTextSelected
+    sidebarIconNorm = other.sidebarIconNorm
+    sidebarIconWeak = other.sidebarIconWeak
+    sidebarIconSelected = other.sidebarIconSelected
 }
 
 val LocalColors = staticCompositionLocalOf { ProtonColors.Light }
