@@ -768,7 +768,9 @@ private fun MailboxItemsList(
                     onClick = { items.retry() }
                 )
 
-                else -> Unit
+                else -> {
+                    Spacer(modifier = Modifier.padding(1.dp))
+                }
             }
         }
     }
