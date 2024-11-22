@@ -19,6 +19,7 @@
 package ch.protonmail.android.navigation
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ModalDrawerSheet
@@ -46,6 +47,7 @@ import ch.protonmail.android.MainActivity
 import ch.protonmail.android.R
 import ch.protonmail.android.design.compose.component.ProtonSnackbarHostState
 import ch.protonmail.android.design.compose.component.ProtonSnackbarType
+import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
 import ch.protonmail.android.mailcommon.presentation.Effect
@@ -262,7 +264,14 @@ fun Home(
     ModalNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {
-            ModalDrawerSheet {
+            ModalDrawerSheet(
+                drawerContentColor = ProtonTheme.colors.sidebarTextNorm,
+                drawerContainerColor = ProtonTheme.colors.sidebarBackground,
+                windowInsets = WindowInsets(
+                    top = ProtonDimens.Spacing.ExtraLarge,
+                    bottom = ProtonDimens.Spacing.ExtraLarge
+                )
+            ) {
                 Sidebar(
                     drawerState = drawerState,
                     navigationActions = buildSidebarActions(
@@ -634,7 +643,5 @@ private fun buildSidebarActions(navController: NavHostController, launcherAction
         onFolderAdd = { navController.navigate(Screen.CreateFolder.route) },
         onSubscription = launcherActions.onSubscription,
         onContacts = { navController.navigate(Screen.Contacts.route) },
-        onReportBug = launcherActions.onReportBug,
-        onManageAccount = { navController.navigate(Screen.AccountSettings.route) },
-        onManageAccounts = { navController.navigate(Screen.AccountsManager.route) }
+        onReportBug = launcherActions.onReportBug
     )

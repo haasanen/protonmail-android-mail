@@ -88,7 +88,7 @@ fun ProtonListItem(
             )
             .height(height = ProtonDimens.ListItemHeight)
             .clickable(enabled = isClickable, onClick = onClick)
-            .padding(horizontal = ProtonDimens.Spacing.Large),
+            .padding(horizontal = ProtonDimens.Spacing.ExtraLarge),
         content = content
     )
 }

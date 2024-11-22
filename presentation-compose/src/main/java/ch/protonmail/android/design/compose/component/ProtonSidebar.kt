@@ -50,7 +50,6 @@ import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonSidebarTheme
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodySmallHint
-import ch.protonmail.android.design.compose.theme.bodySmallWeak
 
 @Composable
 fun ProtonSidebar(
@@ -121,22 +120,6 @@ fun ProtonSidebarReportBugItem(
     ProtonSidebarItem(
         text = R.string.presentation_menu_item_title_report_a_bug,
         icon = R.drawable.ic_proton_bug,
-        modifier = modifier,
-        onClick = onClick,
-        isClickable = isClickable,
-        isSelected = false
-    )
-}
-
-@Composable
-fun ProtonSidebarSignOutItem(
-    modifier: Modifier = Modifier,
-    isClickable: Boolean = true,
-    onClick: () -> Unit = {}
-) {
-    ProtonSidebarItem(
-        text = R.string.presentation_menu_item_title_sign_out,
-        icon = R.drawable.ic_proton_arrow_out_from_rectangle,
         modifier = modifier,
         onClick = onClick,
         isClickable = isClickable,
@@ -228,7 +211,11 @@ fun ProtonSidebarAppVersionItem(
     Text(
         modifier = modifier
             .fillMaxWidth()
-            .padding(ProtonDimens.Spacing.ExtraLarge),
+            .padding(
+                start = ProtonDimens.Spacing.ExtraLarge,
+                end = ProtonDimens.Spacing.ExtraLarge,
+                bottom = ProtonDimens.Spacing.ExtraLarge
+            ),
         text = "$name $version",
         textAlign = TextAlign.Center,
         color = ProtonTheme.colors.textWeak,
@@ -266,7 +253,6 @@ fun PreviewProtonSidebar() {
             ProtonSidebarSettingsItem()
             ProtonSidebarSubscriptionItem()
             ProtonSidebarReportBugItem()
-            ProtonSidebarSignOutItem()
 
             ProtonSidebarAppVersionItem(name = "App Name", version = "0.0.7")
         }

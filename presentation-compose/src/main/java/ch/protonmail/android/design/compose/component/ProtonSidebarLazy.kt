@@ -56,9 +56,6 @@ fun ProtonSidebarLazy(
     }
 
     ProtonSidebarTheme {
-        val sidebarBg = ProtonTheme.colors.sidebarBackground
-        val sidebarText = ProtonTheme.colors.sidebarTextNorm
-        Timber.d("sidebarBg: ${getHexCode(sidebarBg)}, sidebarText: ${getHexCode(sidebarText)}")
         Surface(
             color = ProtonTheme.colors.sidebarBackground,
             contentColor = ProtonTheme.colors.sidebarTextNorm,
@@ -133,7 +130,6 @@ fun PreviewProtonSidebarLazy() {
                 ProtonSidebarItem { Text(text = "More", color = ProtonTheme.colors.textHint) }
                 ProtonSidebarSettingsItem()
                 ProtonSidebarReportBugItem()
-                ProtonSidebarSignOutItem()
 
                 ProtonSidebarAppVersionItem(name = "App Name", version = "0.0.7")
             }

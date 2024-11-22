@@ -54,9 +54,16 @@ private fun SidebarSystemLabel(
     item: MailLabelUiModel.System,
     onLabelAction: (SidebarLabelAction) -> Unit
 ) {
+    val iconTintColor = if (item.isSelected) {
+        ProtonTheme.colors.sidebarIconSelected
+    } else {
+        ProtonTheme.colors.sidebarIconNorm
+    }
+
     SidebarItemWithCounter(
         modifier = modifier,
         icon = painterResource(item.icon),
+        iconTint = iconTintColor,
         text = stringResource(item.text.value),
         count = item.count,
         isSelected = item.isSelected,

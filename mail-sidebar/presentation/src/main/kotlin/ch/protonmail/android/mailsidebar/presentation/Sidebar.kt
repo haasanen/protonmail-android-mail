@@ -20,19 +20,14 @@ package ch.protonmail.android.mailsidebar.presentation
 
 import android.annotation.SuppressLint
 import android.content.res.Configuration
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
@@ -44,7 +39,6 @@ import ch.protonmail.android.design.compose.component.ProtonSidebarItem
 import ch.protonmail.android.design.compose.component.ProtonSidebarLazy
 import ch.protonmail.android.design.compose.component.ProtonSidebarReportBugItem
 import ch.protonmail.android.design.compose.component.ProtonSidebarSettingsItem
-import ch.protonmail.android.design.compose.component.ProtonSidebarSignOutItem
 import ch.protonmail.android.design.compose.component.ProtonSidebarSubscriptionItem
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
@@ -58,10 +52,7 @@ import ch.protonmail.android.maillabel.presentation.sidebar.sidebarSystemLabelIt
 import ch.protonmail.android.mailsidebar.presentation.SidebarViewModel.State.Disabled
 import ch.protonmail.android.mailsidebar.presentation.SidebarViewModel.State.Enabled
 import kotlinx.coroutines.launch
-import me.proton.android.core.accountmanager.presentation.switcher.AccountSwitchEvent
-import me.proton.android.core.accountmanager.presentation.switcher.AccountSwitcher
 import me.proton.core.domain.entity.UserId
-import me.proton.core.plan.presentation.compose.component.UpgradeStorageInfo
 
 @Composable
 @Suppress("ComplexMethod")
@@ -137,92 +128,58 @@ fun Sidebar(
     viewState: SidebarState,
     actions: Sidebar.Actions
 ) {
-    val sidebarColors = requireNotNull(ProtonTheme.colors.sidebarColors)
-    var accountSwitcherExpanded by remember { mutableStateOf(false) }
 
-    AccountSwitcher(
-        isExpanded = accountSwitcherExpanded,
-        primaryAccount = viewState.primaryAccount,
-        otherAccounts = viewState.otherAccounts,
-        onExpandedChange = { accountSwitcherExpanded = it },
-        onEvent = {
-            accountSwitcherExpanded = false
-            when (it) {
-                is AccountSwitchEvent.OnAccountSelected ->
-                    actions.onSwitchAccount(it.userId)
+    SidebarHeader()
 
-                is AccountSwitchEvent.OnAddAccount ->
-                    actions.onSignIn(null)
-
-                is AccountSwitchEvent.OnManageAccount ->
-                    actions.onManageAccount()
-
-                is AccountSwitchEvent.OnRemoveAccount ->
-                    actions.onRemoveAccount(it.userId)
-
-                is AccountSwitchEvent.OnSignIn ->
-                    actions.onSignIn(it.userId)
-
-                is AccountSwitchEvent.OnSignOut ->
-                    actions.onSignOut(it.userId)
-
-                is AccountSwitchEvent.OnManageAccounts ->
-                    actions.onManageAccounts()
-            }
-        },
-        modifier = Modifier
-            .background(sidebarColors.backgroundNorm)
-            .fillMaxWidth()
-            .padding(all = ProtonDimens.Spacing.Standard)
-    )
-
-    ProtonTheme(
-        colors = sidebarColors
-    ) {
-        UpgradeStorageInfo(
-            modifier = modifier
-                .background(sidebarColors.backgroundNorm),
-            onUpgradeClicked = { actions.onSubscription() },
-            withTopDivider = true,
-            withBottomDivider = true
-        )
-    }
+    SidebarDivider()
 
     ProtonSidebarLazy(
         modifier = modifier.testTag(SidebarMenuTestTags.Root),
         drawerState = viewState.drawerState
     ) {
         sidebarSystemLabelItems(viewState.mailLabels.systemLabels, actions.onLabelAction)
-        item { HorizontalDivider() }
+        item { SidebarDivider() }
         sidebarFolderItems(viewState.mailLabels.folders, actions.onLabelAction)
-        item { HorizontalDivider() }
+        item { SidebarDivider() }
         sidebarLabelItems(viewState.mailLabels.labels, actions.onLabelAction)
-        item { HorizontalDivider() }
-        item { SidebarMoreTitleItem() }
+        item {
+            ProtonSidebarSubscriptionItem(
+                modifier = Modifier.padding(top = ProtonDimens.Spacing.Standard)
+            ) { actions.onSubscription() }
+        }
         item { ProtonSidebarSettingsItem(onClick = actions.onSettings) }
-        item { SidebarSubscriptionItem(viewState.isSubscriptionVisible, onSubscription = actions.onSubscription) }
-        if (viewState.showContacts) item { SidebarContactsItem(onClick = actions.onContacts) }
-        item { ProtonSidebarReportBugItem(onClick = actions.onReportBug) }
-        item { ProtonSidebarSignOutItem(onClick = { actions.onSignOut(null) }) }
+        item { SidebarContactsItem(onClick = actions.onContacts) }
+        item {
+            ProtonSidebarReportBugItem(
+                modifier = Modifier.padding(bottom = ProtonDimens.Spacing.ExtraLarge),
+                onClick = actions.onReportBug
+            )
+        }
+        item { SidebarDivider() }
         item { SidebarAppVersionItem(viewState.appInformation) }
     }
 }
 
 @Composable
-private fun SidebarMoreTitleItem() {
-    ProtonSidebarItem(isClickable = false) {
-        Text(
-            text = stringResource(R.string.drawer_title_more),
-            color = ProtonTheme.colors.textWeak
+private fun SidebarHeader() {
+    Box(
+        modifier = Modifier.padding(
+            start = ProtonDimens.Spacing.ExtraLarge,
+            bottom = ProtonDimens.Spacing.Small
+        )
+    ) {
+        Image(
+            painter = painterResource(R.drawable.proton_mail_logo),
+            contentDescription = null
         )
     }
 }
 
 @Composable
-private fun SidebarSubscriptionItem(isVisible: Boolean, onSubscription: () -> Unit) {
-    if (isVisible) {
-        ProtonSidebarSubscriptionItem { onSubscription() }
-    }
+private fun SidebarDivider() {
+    HorizontalDivider(
+        color = ProtonTheme.colors.sidebarSeparator
+    )
 }
 
 @Composable
@@ -254,9 +211,7 @@ object Sidebar {
         val onLabelAction: (SidebarLabelAction) -> Unit,
         val onSubscription: () -> Unit,
         val onContacts: () -> Unit,
-        val onReportBug: () -> Unit,
-        val onManageAccount: () -> Unit,
-        val onManageAccounts: () -> Unit
+        val onReportBug: () -> Unit
     ) {
 
         companion object {
@@ -270,9 +225,7 @@ object Sidebar {
                 onLabelAction = {},
                 onSubscription = {},
                 onContacts = {},
-                onReportBug = {},
-                onManageAccount = {},
-                onManageAccounts = {}
+                onReportBug = {}
             )
         }
     }
@@ -289,9 +242,7 @@ object Sidebar {
         val onFolderAdd: () -> Unit,
         val onSubscription: () -> Unit,
         val onContacts: () -> Unit,
-        val onReportBug: () -> Unit,
-        val onManageAccount: () -> Unit,
-        val onManageAccounts: () -> Unit
+        val onReportBug: () -> Unit
     ) {
 
         fun toSidebarActions(close: () -> Unit, onLabelAction: (SidebarLabelAction) -> Unit) = Actions(
@@ -330,14 +281,6 @@ object Sidebar {
             onReportBug = {
                 onReportBug()
                 close()
-            },
-            onManageAccount = {
-                onManageAccount()
-                close()
-            },
-            onManageAccounts = {
-                onManageAccounts()
-                close()
             }
         )
 
@@ -355,9 +298,7 @@ object Sidebar {
                 onFolderAdd = {},
                 onSubscription = {},
                 onContacts = {},
-                onReportBug = {},
-                onManageAccount = {},
-                onManageAccounts = {}
+                onReportBug = {}
             )
         }
     }
