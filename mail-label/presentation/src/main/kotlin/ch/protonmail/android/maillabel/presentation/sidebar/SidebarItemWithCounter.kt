@@ -18,17 +18,11 @@
 
 package ch.protonmail.android.maillabel.presentation.sidebar
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
@@ -50,11 +44,11 @@ fun SidebarItemWithCounter(
     textModifier: Modifier = Modifier,
     isClickable: Boolean = true,
     isSelected: Boolean = false,
-    textColor: Color = Color.Unspecified,
     iconTint: Color = LocalContentColor.current,
     count: Int? = null,
     onClick: () -> Unit = {}
 ) {
+
     ProtonListItem(
         modifier = modifier.semantics(mergeDescendants = true) {},
         onClick = onClick,
@@ -72,31 +66,25 @@ fun SidebarItemWithCounter(
             Text(
                 modifier = defaultModifier.then(textModifier),
                 text = text,
-                color = textColor,
+                color = if (isSelected) ProtonTheme.colors.sidebarTextSelected else ProtonTheme.colors.sidebarTextNorm,
                 maxLines = 1,
+                style = if (isSelected) ProtonTheme.typography.titleMedium else ProtonTheme.typography.bodyLarge,
                 overflow = TextOverflow.Ellipsis
             )
         },
         count = {
             count ?: return@ProtonListItem
 
-            Box(
+            Text(
                 modifier = Modifier
-                    .wrapContentSize()
-                    .defaultMinSize(ProtonDimens.CounterIconSize)
-                    .background(color = ProtonTheme.colors.interactionBrandDefaultNorm, shape = CircleShape),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    modifier = Modifier
-                        .testTag(SidebarItemWithCounterTestTags.Counter)
-                        .padding(ProtonDimens.Spacing.Tiny)
-                        .padding(horizontal = ProtonDimens.Spacing.Tiny),
-                    text = UnreadCountValueMapper.toCappedValue(count),
-                    color = Color.White,
-                    style = ProtonTheme.typography.bodySmallNorm
-                )
-            }
+                    .testTag(SidebarItemWithCounterTestTags.Counter)
+                    .padding(ProtonDimens.Spacing.Tiny)
+                    .padding(horizontal = ProtonDimens.Spacing.Tiny),
+                text = UnreadCountValueMapper.toCappedValue(count),
+                color = ProtonTheme.colors.sidebarTextNorm,
+                style = ProtonTheme.typography.bodySmallNorm
+            )
+
         }
     )
 }
