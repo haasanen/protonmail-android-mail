@@ -49,9 +49,9 @@ internal object UpsellingDimens {
 
 internal object UpsellingColors {
 
-    val BottomSheetContentColors: ProtonColors?
+    val BottomSheetContentColors: ProtonColors
         @Composable
-        get() = ProtonTheme.colors.sidebarColors
+        get() = ProtonTheme.colors
 
     val BottomSheetBackgroundColor = R.color.haiti
     val DiscountTagColorStops = arrayOf(0.0f to Color(0xFFA792FF), 0.5f to Color(0xFF27DDB1))

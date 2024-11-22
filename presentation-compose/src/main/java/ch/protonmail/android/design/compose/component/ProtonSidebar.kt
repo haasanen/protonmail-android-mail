@@ -47,8 +47,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import ch.protonmail.android.design.R
 import kotlinx.coroutines.launch
 import ch.protonmail.android.design.compose.theme.ProtonDimens
+import ch.protonmail.android.design.compose.theme.ProtonSidebarTheme
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodySmallHint
+import ch.protonmail.android.design.compose.theme.bodySmallWeak
 
 @Composable
 fun ProtonSidebar(
@@ -62,12 +64,10 @@ fun ProtonSidebar(
         scope.launch { drawerState.close() }
     }
 
-    val sidebarColors = requireNotNull(ProtonTheme.colors.sidebarColors)
-
-    ProtonTheme(colors = sidebarColors) {
+    ProtonSidebarTheme {
         Surface(
-            color = sidebarColors.backgroundNorm,
-            contentColor = sidebarColors.textNorm,
+            color = ProtonTheme.colors.sidebarBackground,
+            contentColor = ProtonTheme.colors.sidebarTextNorm,
             modifier = modifier.fillMaxSize()
         ) {
             val state = rememberScrollState()

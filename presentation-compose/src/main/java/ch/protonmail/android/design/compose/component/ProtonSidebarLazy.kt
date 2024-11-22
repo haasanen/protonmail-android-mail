@@ -39,6 +39,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.tooling.preview.Preview
+import ch.protonmail.android.design.compose.theme.ProtonSidebarTheme
 import kotlinx.coroutines.launch
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 
@@ -54,12 +55,13 @@ fun ProtonSidebarLazy(
         scope.launch { drawerState.close() }
     }
 
-    val sidebarColors = requireNotNull(ProtonTheme.colors.sidebarColors)
-
-    ProtonTheme(colors = sidebarColors) {
+    ProtonSidebarTheme {
+        val sidebarBg = ProtonTheme.colors.sidebarBackground
+        val sidebarText = ProtonTheme.colors.sidebarTextNorm
+        Timber.d("sidebarBg: ${getHexCode(sidebarBg)}, sidebarText: ${getHexCode(sidebarText)}")
         Surface(
-            color = sidebarColors.backgroundNorm,
-            contentColor = sidebarColors.textNorm,
+            color = ProtonTheme.colors.sidebarBackground,
+            contentColor = ProtonTheme.colors.sidebarTextNorm,
             modifier = modifier.fillMaxSize()
         ) {
             val state = rememberLazyListState()
