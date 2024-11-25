@@ -34,6 +34,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import ch.protonmail.android.design.compose.theme.ProtonDimens
@@ -81,6 +83,14 @@ fun SwipeableItem(
         },
         positionalThreshold = SwipeThreshold.defaultPositionalThreshold()
     )
+
+    // Haptic Feedback
+    val haptic = LocalHapticFeedback.current
+    LaunchedEffect(key1 = swipeState.targetValue) {
+        if (swipeState.targetValue != SwipeToDismissBoxValue.Settled) {
+            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+        }
+    }
 
     // Reset the swipe state whenever it's been swiped to delete
     if (swipeState.currentValue == SwipeToDismissBoxValue.EndToStart) {
