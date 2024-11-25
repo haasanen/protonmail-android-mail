@@ -51,8 +51,8 @@ import ch.protonmail.android.mailsidebar.presentation.label.SidebarLabelAction.A
 import ch.protonmail.android.mailsidebar.presentation.label.SidebarLabelAction.Select
 import ch.protonmail.android.mailsidebar.presentation.label.SidebarLabelAction.ViewList
 import ch.protonmail.android.maillabel.presentation.testTag
-import ch.protonmail.android.design.compose.component.ProtonSidebarItem
-import ch.protonmail.android.design.compose.component.ProtonSidebarLazy
+import ch.protonmail.android.mailsidebar.presentation.common.ProtonSidebarItem
+import ch.protonmail.android.mailsidebar.presentation.common.ProtonSidebarLazy
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.maillabel.domain.model.LabelId

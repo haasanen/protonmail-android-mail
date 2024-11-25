@@ -34,16 +34,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
-import ch.protonmail.android.design.compose.component.ProtonSidebarAppVersionItem
-import ch.protonmail.android.design.compose.component.ProtonSidebarItem
-import ch.protonmail.android.design.compose.component.ProtonSidebarLazy
-import ch.protonmail.android.design.compose.component.ProtonSidebarReportBugItem
-import ch.protonmail.android.design.compose.component.ProtonSidebarSettingsItem
-import ch.protonmail.android.design.compose.component.ProtonSidebarSubscriptionItem
-import ch.protonmail.android.design.compose.theme.ProtonDimens
-import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.mailcommon.domain.AppInformation
-import ch.protonmail.android.maillabel.domain.model.LabelType
 import ch.protonmail.android.maillabel.presentation.MailLabelsUiModel
 import ch.protonmail.android.mailsidebar.presentation.label.SidebarLabelAction
 import ch.protonmail.android.mailsidebar.presentation.label.sidebarFolderItems
@@ -52,7 +43,16 @@ import ch.protonmail.android.mailsidebar.presentation.label.sidebarSystemLabelIt
 import ch.protonmail.android.mailsidebar.presentation.SidebarViewModel.State.Disabled
 import ch.protonmail.android.mailsidebar.presentation.SidebarViewModel.State.Enabled
 import kotlinx.coroutines.launch
+import ch.protonmail.android.mailsidebar.presentation.common.ProtonSidebarAppVersionItem
+import ch.protonmail.android.mailsidebar.presentation.common.ProtonSidebarItem
+import ch.protonmail.android.mailsidebar.presentation.common.ProtonSidebarLazy
+import ch.protonmail.android.mailsidebar.presentation.common.ProtonSidebarReportBugItem
+import ch.protonmail.android.mailsidebar.presentation.common.ProtonSidebarSettingsItem
+import ch.protonmail.android.mailsidebar.presentation.common.ProtonSidebarSubscriptionItem
+import ch.protonmail.android.design.compose.theme.ProtonDimens
+import ch.protonmail.android.design.compose.theme.ProtonTheme
 import me.proton.core.domain.entity.UserId
+import ch.protonmail.android.maillabel.domain.model.LabelType
 
 @Composable
 @Suppress("ComplexMethod")
