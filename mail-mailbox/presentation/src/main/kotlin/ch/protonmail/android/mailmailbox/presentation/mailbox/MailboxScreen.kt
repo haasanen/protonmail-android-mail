@@ -47,11 +47,13 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -93,9 +95,9 @@ import ch.protonmail.android.design.compose.component.protonOutlinedButtonColors
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyMediumWeak
-import ch.protonmail.android.design.compose.theme.titleMediumNorm
-import ch.protonmail.android.design.compose.theme.titleLargeNorm
 import ch.protonmail.android.design.compose.theme.headlineSmallNorm
+import ch.protonmail.android.design.compose.theme.titleLargeNorm
+import ch.protonmail.android.design.compose.theme.titleMediumNorm
 import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
 import ch.protonmail.android.mailcommon.presentation.ConsumableTextEffect
 import ch.protonmail.android.mailcommon.presentation.NO_CONTENT_DESCRIPTION
@@ -222,6 +224,14 @@ fun MailboxScreen(
             when (bottomSheetEffect) {
                 BottomSheetVisibilityEffect.Hide -> scope.launch { bottomSheetState.hide() }
                 BottomSheetVisibilityEffect.Show -> scope.launch { bottomSheetState.show() }
+            }
+        }
+    }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            if (bottomSheetState.currentValue != SheetValue.Hidden) {
+                viewModel.submit(MailboxViewAction.DismissBottomSheet)
             }
         }
     }
