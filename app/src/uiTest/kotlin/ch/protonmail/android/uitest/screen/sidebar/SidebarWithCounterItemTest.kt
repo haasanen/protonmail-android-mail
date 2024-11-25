@@ -21,9 +21,9 @@ package ch.protonmail.android.uitest.screen.sidebar
 import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.onNodeWithTag
 import ch.protonmail.android.maillabel.presentation.MailLabelUiModel
-import ch.protonmail.android.maillabel.presentation.sidebar.SidebarItemWithCounterTestTags
-import ch.protonmail.android.maillabel.presentation.sidebar.sidebarLabelItems
-import ch.protonmail.android.maillabel.presentation.sidebar.sidebarSystemLabelItems
+import ch.protonmail.android.mailsidebar.presentation.label.SidebarItemWithCounterTestTags
+import ch.protonmail.android.mailsidebar.presentation.label.sidebarLabelItems
+import ch.protonmail.android.mailsidebar.presentation.label.sidebarSystemLabelItems
 import ch.protonmail.android.test.annotations.suite.SmokeTest
 import ch.protonmail.android.testdata.maillabel.MailLabelUiModelTestData
 import ch.protonmail.android.uitest.util.HiltInstrumentedTest

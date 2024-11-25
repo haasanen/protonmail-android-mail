@@ -28,9 +28,9 @@ import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.maillabel.domain.usecase.ObserveMailLabels
 import ch.protonmail.android.maillabel.domain.usecase.UpdateLabelExpandedState
 import ch.protonmail.android.maillabel.presentation.MailLabelsUiModel
-import ch.protonmail.android.maillabel.presentation.sidebar.SidebarLabelAction.Collapse
-import ch.protonmail.android.maillabel.presentation.sidebar.SidebarLabelAction.Expand
-import ch.protonmail.android.maillabel.presentation.sidebar.SidebarLabelAction.Select
+import ch.protonmail.android.mailsidebar.presentation.label.SidebarLabelAction.Collapse
+import ch.protonmail.android.mailsidebar.presentation.label.SidebarLabelAction.Expand
+import ch.protonmail.android.mailsidebar.presentation.label.SidebarLabelAction.Select
 import ch.protonmail.android.mailmailbox.domain.usecase.ObserveUnreadCounters
 import ch.protonmail.android.mailmessage.domain.model.UnreadCounter
 import ch.protonmail.android.mailsidebar.presentation.SidebarViewModel.Action.LabelAction

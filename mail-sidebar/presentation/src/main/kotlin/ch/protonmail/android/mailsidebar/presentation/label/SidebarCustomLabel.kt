@@ -18,7 +18,7 @@
 
 @file:OptIn(ExperimentalFoundationApi::class)
 
-package ch.protonmail.android.maillabel.presentation.sidebar
+package ch.protonmail.android.mailsidebar.presentation.label
 
 import android.content.res.Configuration
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -47,9 +47,9 @@ import ch.protonmail.android.maillabel.presentation.MailLabelUiModel
 import ch.protonmail.android.maillabel.presentation.R
 import ch.protonmail.android.maillabel.presentation.labelAddTitleRes
 import ch.protonmail.android.maillabel.presentation.labelTitleRes
-import ch.protonmail.android.maillabel.presentation.sidebar.SidebarLabelAction.Add
-import ch.protonmail.android.maillabel.presentation.sidebar.SidebarLabelAction.Select
-import ch.protonmail.android.maillabel.presentation.sidebar.SidebarLabelAction.ViewList
+import ch.protonmail.android.mailsidebar.presentation.label.SidebarLabelAction.Add
+import ch.protonmail.android.mailsidebar.presentation.label.SidebarLabelAction.Select
+import ch.protonmail.android.mailsidebar.presentation.label.SidebarLabelAction.ViewList
 import ch.protonmail.android.maillabel.presentation.testTag
 import ch.protonmail.android.design.compose.component.ProtonSidebarItem
 import ch.protonmail.android.design.compose.component.ProtonSidebarLazy

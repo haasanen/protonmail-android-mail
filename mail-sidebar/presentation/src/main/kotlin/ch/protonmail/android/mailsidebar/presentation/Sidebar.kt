@@ -45,10 +45,10 @@ import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.mailcommon.domain.AppInformation
 import ch.protonmail.android.maillabel.domain.model.LabelType
 import ch.protonmail.android.maillabel.presentation.MailLabelsUiModel
-import ch.protonmail.android.maillabel.presentation.sidebar.SidebarLabelAction
-import ch.protonmail.android.maillabel.presentation.sidebar.sidebarFolderItems
-import ch.protonmail.android.maillabel.presentation.sidebar.sidebarLabelItems
-import ch.protonmail.android.maillabel.presentation.sidebar.sidebarSystemLabelItems
+import ch.protonmail.android.mailsidebar.presentation.label.SidebarLabelAction
+import ch.protonmail.android.mailsidebar.presentation.label.sidebarFolderItems
+import ch.protonmail.android.mailsidebar.presentation.label.sidebarLabelItems
+import ch.protonmail.android.mailsidebar.presentation.label.sidebarSystemLabelItems
 import ch.protonmail.android.mailsidebar.presentation.SidebarViewModel.State.Disabled
 import ch.protonmail.android.mailsidebar.presentation.SidebarViewModel.State.Enabled
 import kotlinx.coroutines.launch

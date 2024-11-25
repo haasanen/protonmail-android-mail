@@ -16,7 +16,7 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.maillabel.presentation.sidebar
+package ch.protonmail.android.mailsidebar.presentation.label
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon

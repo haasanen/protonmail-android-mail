@@ -16,7 +16,7 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.maillabel.presentation.sidebar
+package ch.protonmail.android.mailsidebar.presentation.label
 
 import android.annotation.SuppressLint
 import android.content.res.Configuration
@@ -30,8 +30,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import ch.protonmail.android.maillabel.presentation.MailLabelUiModel
 import ch.protonmail.android.maillabel.presentation.MailLabelsUiModel
-import ch.protonmail.android.maillabel.presentation.sidebar.SidebarLabelAction.Select
-import ch.protonmail.android.maillabel.presentation.sidebar.SidebarSystemLabelTestTags.BaseTag
+import ch.protonmail.android.mailsidebar.presentation.label.SidebarLabelAction.Select
+import ch.protonmail.android.mailsidebar.presentation.label.SidebarSystemLabelTestTags.BaseTag
 import ch.protonmail.android.design.compose.component.ProtonSidebarLazy
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 

@@ -24,7 +24,7 @@ import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.performScrollToNode
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
-import ch.protonmail.android.maillabel.presentation.sidebar.SidebarSystemLabelTestTags.BaseTag
+import ch.protonmail.android.mailsidebar.presentation.label.SidebarSystemLabelTestTags.BaseTag
 import ch.protonmail.android.mailmailbox.presentation.mailbox.MailboxTopAppBarTestTags
 import ch.protonmail.android.mailsidebar.presentation.SidebarMenuTestTags
 import ch.protonmail.android.test.ksp.annotations.AsDsl
