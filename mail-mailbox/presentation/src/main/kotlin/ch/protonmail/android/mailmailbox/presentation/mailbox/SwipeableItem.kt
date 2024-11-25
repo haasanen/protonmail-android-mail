@@ -74,8 +74,8 @@ fun SwipeableItem(
 
     // Haptic Feedback
     val haptic = LocalHapticFeedback.current
-    LaunchedEffect(key1 = swipeState.dismissDirection) {
-        if (swipeState.dismissDirection != null) {
+    LaunchedEffect(key1 = swipeState.targetValue) {
+        if (swipeState.targetValue != SwipeToDismissBoxValue.Settled) {
             haptic.performHapticFeedback(HapticFeedbackType.LongPress)
         }
     }
