@@ -56,7 +56,8 @@ internal fun BaseAccountSwitcherRow(
         horizontalArrangement = Arrangement.spacedBy(ProtonDimens.Spacing.Large)
     ) {
         val boxColor =
-            accountListItem.accountItem.color?.toColorInt()?.let { Color(it) } ?: LocalColors.current.interactionNorm
+            accountListItem.accountItem.color?.toColorInt()?.let { Color(it) }
+                ?: ProtonTheme.colors.interactionBrandDefaultNorm
         Box(
             modifier = Modifier
                 .background(boxColor, LocalShapes.current.medium)
@@ -64,7 +65,7 @@ internal fun BaseAccountSwitcherRow(
         ) {
             Text(
                 text = accountListItem.accountItem.initials ?: "",
-                color = LocalColors.current.textInverted,
+                color = ProtonTheme.colors.textInverted,
                 style = LocalTypography.current.bodyMedium,
                 modifier = Modifier.align(Alignment.Center)
             )
