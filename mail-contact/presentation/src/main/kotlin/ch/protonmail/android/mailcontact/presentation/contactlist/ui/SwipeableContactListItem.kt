@@ -34,13 +34,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
-import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
+import ch.protonmail.android.mailcommon.presentation.compose.SwipeThreshold
 import ch.protonmail.android.mailcontact.presentation.R
 import ch.protonmail.android.mailcontact.presentation.model.ContactListItemUiModel
 import ch.protonmail.android.mailcontact.presentation.model.ContactSwipeToDeleteUiModel
@@ -81,7 +79,7 @@ fun SwipeableItem(
             }
             return@rememberSwipeToDismissBoxState true
         },
-        positionalThreshold = SwipeableItem.contactSwipePositionalThreshold()
+        positionalThreshold = SwipeThreshold.defaultPositionalThreshold()
     )
 
     // Reset the swipe state whenever it's been swiped to delete
@@ -135,16 +133,5 @@ fun DismissBackground(dismissState: SwipeToDismissBoxState, swipeActionUiModel: 
             contentDescription = stringResource(id = swipeActionUiModel.descriptionRes),
             tint = ProtonTheme.colors.iconInverted
         )
-    }
-}
-
-object SwipeableItem {
-
-    const val SWIPE_THRESHOLD_PERCENTAGE = 0.3f
-
-    @Composable
-    fun contactSwipePositionalThreshold(): (totalDistance: Float) -> Float {
-        val screenWidthDp = LocalConfiguration.current.screenWidthDp
-        return with(LocalDensity.current) { { (screenWidthDp * SWIPE_THRESHOLD_PERCENTAGE).dp.toPx() } }
     }
 }
