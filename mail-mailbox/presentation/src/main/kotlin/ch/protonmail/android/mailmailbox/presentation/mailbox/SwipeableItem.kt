@@ -41,6 +41,7 @@ import androidx.compose.ui.res.stringResource
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.SwipeActionsUiModel
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
+import ch.protonmail.android.mailcommon.presentation.compose.SwipeThreshold
 import me.proton.core.mailsettings.domain.entity.SwipeAction
 
 @Composable
@@ -67,7 +68,8 @@ fun SwipeableItem(
                 else -> false
             }
             return@rememberSwipeToDismissBoxState true
-        }
+        },
+        positionalThreshold = SwipeThreshold.defaultPositionalThreshold()
     )
 
     // Haptic Feedback
