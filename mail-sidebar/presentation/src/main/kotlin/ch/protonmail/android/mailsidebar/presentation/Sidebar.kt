@@ -142,6 +142,7 @@ fun Sidebar(
         sidebarFolderItems(viewState.mailLabels.folders, actions.onLabelAction)
         item { SidebarDivider() }
         sidebarLabelItems(viewState.mailLabels.labels, actions.onLabelAction)
+        item { SidebarDivider() }
         item {
             ProtonSidebarSubscriptionItem(
                 modifier = Modifier.padding(top = ProtonDimens.Spacing.Standard)

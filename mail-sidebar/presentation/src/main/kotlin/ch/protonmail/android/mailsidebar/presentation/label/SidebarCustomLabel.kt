@@ -22,21 +22,16 @@ package ch.protonmail.android.mailsidebar.presentation.label
 
 import android.content.res.Configuration
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -44,12 +39,8 @@ import ch.protonmail.android.mailcommon.presentation.extension.tintColor
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.presentation.MailLabelUiModel
-import ch.protonmail.android.maillabel.presentation.R
-import ch.protonmail.android.maillabel.presentation.labelAddTitleRes
-import ch.protonmail.android.maillabel.presentation.labelTitleRes
 import ch.protonmail.android.mailsidebar.presentation.label.SidebarLabelAction.Add
 import ch.protonmail.android.mailsidebar.presentation.label.SidebarLabelAction.Select
-import ch.protonmail.android.mailsidebar.presentation.label.SidebarLabelAction.ViewList
 import ch.protonmail.android.maillabel.presentation.testTag
 import ch.protonmail.android.mailsidebar.presentation.common.ProtonSidebarItem
 import ch.protonmail.android.mailsidebar.presentation.common.ProtonSidebarLazy
@@ -59,6 +50,7 @@ import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.LabelType
 import ch.protonmail.android.maillabel.domain.model.LabelType.MessageFolder
 import ch.protonmail.android.maillabel.domain.model.LabelType.MessageLabel
+import ch.protonmail.android.mailsidebar.presentation.R
 
 fun LazyListScope.sidebarLabelItems(items: List<MailLabelUiModel.Custom>, onLabelAction: (SidebarLabelAction) -> Unit) =
     sidebarCustomLabelItems(MessageLabel, items, onLabelAction)
@@ -73,19 +65,14 @@ private fun LazyListScope.sidebarCustomLabelItems(
     items: List<MailLabelUiModel.Custom>,
     onLabelAction: (SidebarLabelAction) -> Unit
 ) {
+    items(items = items.filter { it.isVisible }, key = { it.id.labelId.id }) {
+        SidebarCustomLabel(it, onLabelAction)
+    }
     item {
         SidebarCustomLabelTitleItem(
             type = type,
-            showAddIcon = items.isNotEmpty(),
-            onAddClick = { onLabelAction(Add(type)) },
-            onLabelsClick = { onLabelAction(ViewList(type)) }
+            onAddClick = { onLabelAction(Add(type)) }
         )
-    }
-    when {
-        items.isEmpty() -> item { SidebarAddCustomLabelItem(type) { onLabelAction(Add(type)) } }
-        else -> items(items = items.filter { it.isVisible }, key = { it.id.labelId.id }) {
-            SidebarCustomLabel(it, onLabelAction)
-        }
     }
 }
 
@@ -114,46 +101,19 @@ private fun LazyItemScope.SidebarCustomLabel(
 }
 
 @Composable
-private fun SidebarCustomLabelTitleItem(
-    type: LabelType,
-    showAddIcon: Boolean,
-    onAddClick: () -> Unit,
-    onLabelsClick: () -> Unit
-) {
-    ProtonSidebarItem(
-        modifier = Modifier.background(ProtonTheme.colors.backgroundNorm),
-        isClickable = showAddIcon,
-        onClick = onLabelsClick
-    ) {
-        Text(
-            modifier = Modifier.weight(1f, fill = true),
-            text = stringResource(type.labelTitleRes()),
-            color = ProtonTheme.colors.textWeak
-        )
-        if (showAddIcon) {
-            IconButton(
-                onClick = onAddClick
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.ic_proton_plus),
-                    contentDescription = stringResource(
-                        id = if (type == MessageLabel) R.string.label_title_create_label
-                        else R.string.label_title_create_folder
-                    ),
-                    tint = ProtonTheme.colors.iconWeak
-                )
-            }
-        }
+private fun SidebarCustomLabelTitleItem(type: LabelType, onAddClick: () -> Unit) {
+    val textRes = when (type) {
+        MessageFolder -> R.string.drawer_item_add_folder
+        MessageLabel -> R.string.drawer_item_add_label
+        else -> return
     }
-}
 
-@Composable
-private fun SidebarAddCustomLabelItem(type: LabelType, onClick: () -> Unit) {
     ProtonSidebarItem(
-        isClickable = true,
-        onClick = onClick,
+        text = textRes,
         icon = R.drawable.ic_proton_plus,
-        text = type.labelAddTitleRes()
+        onClick = onAddClick,
+        isClickable = true,
+        isSelected = false
     )
 }
 

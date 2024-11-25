@@ -20,5 +20,8 @@
     <string name="drawer_title_contacts">Contacts</string>
     <string name="drawer_title_subscription">Subscription</string>
     <string name="drawer_title_bug_report">Bug report</string>
+    <string name="drawer_item_add_label">Add label</string>
+    <string name="drawer_item_add_folder">Add folder</string>
+
 
 </resources>
