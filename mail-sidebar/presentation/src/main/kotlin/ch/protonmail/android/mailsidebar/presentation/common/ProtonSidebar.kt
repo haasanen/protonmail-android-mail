@@ -44,13 +44,13 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import ch.protonmail.android.design.R
 import ch.protonmail.android.design.compose.component.ProtonListItem
 import kotlinx.coroutines.launch
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonSidebarTheme
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodySmallHint
+import ch.protonmail.android.mailsidebar.presentation.R
 
 @Composable
 fun ProtonSidebar(
@@ -119,7 +119,7 @@ fun ProtonSidebarReportBugItem(
     onClick: () -> Unit = {}
 ) {
     ProtonSidebarItem(
-        text = R.string.presentation_menu_item_title_report_a_bug,
+        text = R.string.drawer_title_bug_report,
         icon = R.drawable.ic_proton_bug,
         modifier = modifier,
         onClick = onClick,
