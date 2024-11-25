@@ -80,6 +80,13 @@ fun SwipeableItem(
         }
     }
 
+    // Reset the swipe state after actions are performed
+    if (swipeState.currentValue != SwipeToDismissBoxValue.Settled) {
+        LaunchedEffect(swipeState) {
+            swipeState.reset()
+        }
+    }
+
     SwipeToDismissBox(
         state = swipeState,
         modifier = modifier,
