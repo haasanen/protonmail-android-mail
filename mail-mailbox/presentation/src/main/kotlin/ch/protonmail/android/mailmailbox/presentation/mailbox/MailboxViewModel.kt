@@ -524,13 +524,22 @@ class MailboxViewModel @Inject constructor(
         }
     }
 
-    private fun observePagingData(): Flow<PagingData<MailboxItemUiModel>> =
+    private fun observePagingData(): Flow<PagingData<MailboxItemUiModel>> {
+        val pagingDataFlow = MutableStateFlow<PagingData<MailboxItemUiModel>>(PagingData.empty())
+        var currentMailLabel: MailLabel? = null
+
         primaryUserId.filterNotNull().flatMapLatest { userId ->
             combine(
                 state.observeMailLabelChanges(),
                 state.observeUnreadFilterState(),
                 state.observeSearchQuery()
             ) { selectedMailLabel, unreadFilterEnabled, query ->
+
+                if (selectedMailLabel != currentMailLabel) {
+                    pagingDataFlow.emit(PagingData.empty())
+                    currentMailLabel = selectedMailLabel
+                }
+
                 val viewMode = getViewModeForCurrentLocation(selectedMailLabelId.flow.value)
                 mailboxPagerFactory.create(
                     userId = userId,
@@ -540,7 +549,12 @@ class MailboxViewModel @Inject constructor(
                     searchQuery = query
                 )
             }.flatMapLatest { mapPagingData(userId, it) }
-        }
+        }.onEach {
+            pagingDataFlow.emit(it)
+        }.launchIn(viewModelScope)
+
+        return pagingDataFlow
+    }
 
     private suspend fun mapPagingData(
         userId: UserId,
@@ -549,7 +563,7 @@ class MailboxViewModel @Inject constructor(
         return withContext(dispatchersProvider.Comp) {
             val contacts = getContacts()
             combine(
-                pager.flow.cachedIn(viewModelScope),
+                pager.flow,
                 observeFolderColorSettings(userId)
             ) { pagingData, folderColorSettings ->
                 pagingData.map {
