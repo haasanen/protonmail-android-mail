@@ -136,17 +136,6 @@ fun MailboxTopAppBar(
                                 )
                             )
                         }
-                        IconButton(
-                            modifier = Modifier.testTag(MailboxTopAppBarTestTags.ComposerButton),
-                            onClick = actions.onOpenComposer
-                        ) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.ic_proton_pen_square),
-                                contentDescription = stringResource(
-                                    id = R.string.mailbox_fab_compose_button_content_description
-                                )
-                            )
-                        }
                     }
                 }
             )
@@ -224,7 +213,6 @@ object MailboxTopAppBar {
         val onTitleClick: () -> Unit,
         val onEnterSearchMode: () -> Unit,
         val onSearch: (query: String) -> Unit,
-        val onOpenComposer: () -> Unit,
         val onOpenUpsellingPage: () -> Unit,
         val onCloseUpsellingPage: () -> Unit
     )
@@ -266,7 +254,6 @@ fun LoadingMailboxTopAppBarPreview() {
             onTitleClick = {},
             onEnterSearchMode = {},
             onSearch = {},
-            onOpenComposer = {},
             onOpenUpsellingPage = {},
             onCloseUpsellingPage = {}
         )

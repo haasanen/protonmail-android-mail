@@ -367,7 +367,6 @@ fun MailboxScreen(
                         onTitleClick = { scope.launch { lazyListState.animateScrollToItem(0) } },
                         onEnterSearchMode = { actions.onEnterSearchMode() },
                         onSearch = { query -> actions.onSearchQuery(query) },
-                        onOpenComposer = { actions.navigateToComposer() },
                         onOpenUpsellingPage = actions.onOpenUpsellingPage,
                         onCloseUpsellingPage = actions.onCloseUpsellingPage
                     )
