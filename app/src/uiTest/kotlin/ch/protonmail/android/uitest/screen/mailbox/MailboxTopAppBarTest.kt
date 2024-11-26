@@ -264,7 +264,7 @@ internal class MailboxTopAppBarTest : HiltInstrumentedTest() {
         onNodeWithContentDescription(context.getString(R.string.mailbox_toolbar_search_button_content_description))
 
     private fun SemanticsNodeInteractionsProvider.onComposeIconButton() =
-        onNodeWithContentDescription(context.getString(R.string.mailbox_toolbar_compose_button_content_description))
+        onNodeWithContentDescription(context.getString(R.string.mailbox_fab_compose_button_content_description))
 
     private fun SemanticsNodeInteractionsProvider.onExitSearchIconButton() =
         onNodeWithContentDescription(context.getString(R.string.mailbox_toolbar_exit_search_mode_content_description))

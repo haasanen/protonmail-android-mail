@@ -26,6 +26,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.rememberScrollableState
 import androidx.compose.foundation.gestures.scrollable
@@ -43,9 +44,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.FabPosition
+import androidx.compose.material3.FloatingActionButtonDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Text
@@ -65,6 +71,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
@@ -101,6 +108,7 @@ import ch.protonmail.android.design.compose.theme.titleMediumNorm
 import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
 import ch.protonmail.android.mailcommon.presentation.ConsumableTextEffect
 import ch.protonmail.android.mailcommon.presentation.NO_CONTENT_DESCRIPTION
+import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 import ch.protonmail.android.mailcommon.presentation.compose.UndoableOperationSnackbar
 import ch.protonmail.android.mailcommon.presentation.model.string
 import ch.protonmail.android.mailcommon.presentation.ui.BottomActionBar
@@ -338,6 +346,10 @@ fun MailboxScreen(
 
     Scaffold(
         modifier = modifier.testTag(MailboxScreenTestTags.Root),
+        floatingActionButton = {
+            ComposeNewMailFab(onComposeClick = actions.navigateToComposer)
+        },
+        floatingActionButtonPosition = FabPosition.EndOverlay,
         topBar = {
             val localDensity = LocalDensity.current
             Column(
@@ -448,6 +460,49 @@ fun MailboxScreen(
             )
         }
     }
+}
+
+@Composable
+fun ComposeNewMailFab(onComposeClick: () -> Unit) {
+
+    ExtendedFloatingActionButton(
+        onClick = { onComposeClick() },
+        icon = {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_proton_pen_square),
+                contentDescription = stringResource(id = R.string.mailbox_fab_compose_button_content_description),
+                tint = ProtonTheme.colors.brandNorm
+            )
+        },
+        text = {
+            Text(
+                text = stringResource(id = R.string.mailbox_fab_compose_button_title),
+                color = ProtonTheme.colors.brandNorm,
+                style = ProtonTheme.typography.titleMedium
+            )
+        },
+        modifier = Modifier
+            .border(1.dp, ProtonTheme.colors.borderNorm, RoundedCornerShape(MailDimens.MailboxFabRadius))
+            .background(
+                color = ProtonTheme.colors.interactionFabNorm,
+                shape = RoundedCornerShape(MailDimens.MailboxFabRadius)
+            )
+            .shadow(
+                elevation = 4.dp,
+                shape = RoundedCornerShape(MailDimens.MailboxFabRadius),
+                clip = false,
+                ambientColor = ProtonTheme.colors.shadowLifted.copy(alpha = 0.4f),
+                spotColor = ProtonTheme.colors.shadowLifted.copy(alpha = 0.4f)
+            ),
+        expanded = true,
+        shape = RoundedCornerShape(MailDimens.MailboxFabRadius),
+        containerColor = ProtonTheme.colors.interactionFabNorm,
+        contentColor = ProtonTheme.colors.brandNorm,
+        elevation = FloatingActionButtonDefaults.elevation(
+            defaultElevation = 0.dp,
+            pressedElevation = 0.dp
+        )
+    )
 }
 
 @Composable

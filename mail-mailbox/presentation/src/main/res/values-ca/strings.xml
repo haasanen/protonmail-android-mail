@@ -17,7 +17,7 @@
   ~ along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
   -->
 <resources>
-  <string name="mailbox_toolbar_compose_button_content_description">Redacta un missatge nou</string>
+  <string name="mailbox_fab_compose_button_content_description">Redacta un missatge nou</string>
   <string name="mailbox_toolbar_exit_selection_mode_button_content_description">Tanca el mode de selecció</string>
   <string name="mailbox_toolbar_menu_button_content_description">Menú</string>
   <string name="mailbox_toolbar_search_button_content_description">Cerca</string>

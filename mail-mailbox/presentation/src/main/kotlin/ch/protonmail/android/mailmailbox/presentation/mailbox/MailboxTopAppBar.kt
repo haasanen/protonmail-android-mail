@@ -143,7 +143,7 @@ fun MailboxTopAppBar(
                             Icon(
                                 painter = painterResource(id = R.drawable.ic_proton_pen_square),
                                 contentDescription = stringResource(
-                                    id = R.string.mailbox_toolbar_compose_button_content_description
+                                    id = R.string.mailbox_fab_compose_button_content_description
                                 )
                             )
                         }
