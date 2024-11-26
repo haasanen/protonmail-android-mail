@@ -331,6 +331,9 @@ fun MailboxScreen(
     val rememberTopBarHeight = remember { mutableStateOf(0.dp) }
     val refreshErrorText = stringResource(id = R.string.mailbox_error_message_generic)
 
+    val shouldShowFab = mailboxState.mailboxListState is MailboxListState.Data.ViewMode &&
+        !mailboxState.mailboxListState.searchState.isInSearch()
+
     UndoableOperationSnackbar(snackbarHostState = snackbarHostState, actionEffect = mailboxState.actionResult)
 
     ConsumableTextEffect(effect = mailboxState.error) {
@@ -347,7 +350,9 @@ fun MailboxScreen(
     Scaffold(
         modifier = modifier.testTag(MailboxScreenTestTags.Root),
         floatingActionButton = {
-            ComposeNewMailFab(onComposeClick = actions.navigateToComposer)
+            if (shouldShowFab) {
+                ComposeNewMailFab(onComposeClick = actions.navigateToComposer)
+            }
         },
         floatingActionButtonPosition = FabPosition.EndOverlay,
         topBar = {
