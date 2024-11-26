@@ -42,6 +42,7 @@ import ch.protonmail.android.mailcommon.presentation.sample.ActionUiModelSample
 import ch.protonmail.android.mailcommon.presentation.ui.delete.DeleteDialogState
 import ch.protonmail.android.mailcontact.domain.usecase.GetContacts
 import ch.protonmail.android.mailconversation.domain.usecase.DeleteConversations
+import ch.protonmail.android.mailconversation.domain.usecase.LabelConversations
 import ch.protonmail.android.mailconversation.domain.usecase.MarkConversationsAsRead
 import ch.protonmail.android.mailconversation.domain.usecase.MarkConversationsAsUnread
 import ch.protonmail.android.mailconversation.domain.usecase.MoveConversations
@@ -63,7 +64,9 @@ import ch.protonmail.android.maillabel.presentation.model.LabelSelectedState
 import ch.protonmail.android.maillabel.presentation.model.LabelUiModelWithSelectedState
 import ch.protonmail.android.maillabel.presentation.text
 import ch.protonmail.android.maillabel.presentation.toCustomUiModel
+import ch.protonmail.android.mailmailbox.domain.model.MailboxItem
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItemId
+import ch.protonmail.android.mailmailbox.domain.model.MailboxItemType
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItemType.Conversation
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItemType.Message
 import ch.protonmail.android.mailmailbox.domain.model.OpenMailboxItemRequest
@@ -78,8 +81,6 @@ import ch.protonmail.android.mailmailbox.domain.usecase.ObservePrimaryUserAccoun
 import ch.protonmail.android.mailmailbox.domain.usecase.ObserveStorageLimitPreference
 import ch.protonmail.android.mailmailbox.domain.usecase.ObserveUnreadCounters
 import ch.protonmail.android.mailmailbox.domain.usecase.RecordRatingBoosterTriggered
-import ch.protonmail.android.mailconversation.domain.usecase.LabelConversations
-import ch.protonmail.android.mailmessage.domain.usecase.LabelMessages
 import ch.protonmail.android.mailmailbox.domain.usecase.SaveStorageLimitPreference
 import ch.protonmail.android.mailmailbox.domain.usecase.ShouldShowRatingBooster
 import ch.protonmail.android.mailmailbox.presentation.helper.MailboxAsyncPagingDataDiffer
@@ -108,6 +109,7 @@ import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
 import ch.protonmail.android.mailmessage.domain.usecase.DeleteMessages
 import ch.protonmail.android.mailmessage.domain.usecase.DeleteSearchResults
+import ch.protonmail.android.mailmessage.domain.usecase.LabelMessages
 import ch.protonmail.android.mailmessage.domain.usecase.MarkMessagesAsRead
 import ch.protonmail.android.mailmessage.domain.usecase.MarkMessagesAsUnread
 import ch.protonmail.android.mailmessage.domain.usecase.MoveMessages
@@ -155,6 +157,7 @@ import io.mockk.verifyOrder
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flowOf
@@ -607,6 +610,7 @@ class MailboxViewModelTest {
             )
         } returns expectedState
         returnExpectedStateForBottomBarEvent(expectedState = expectedState)
+        expectPagerMock()
 
         mailboxViewModel.state.test {
             awaitItem()
@@ -890,6 +894,7 @@ class MailboxViewModelTest {
             expectedSelectedLabelCountStateChange(intermediateState)
             returnExpectedStateWhenEnterSelectionMode(intermediateState, item, expectedSelectionState)
             returnExpectedStateForBottomBarEvent(expectedSelectionState, expectedBottomBarState)
+            expectPagerMock()
 
             mailboxViewModel.state.test {
                 // Given
@@ -919,6 +924,7 @@ class MailboxViewModelTest {
             expectedSelectedLabelCountStateChange(intermediateState)
             returnExpectedStateWhenEnterSelectionMode(intermediateState, item, expectedSelectionState)
             returnExpectedStateForBottomBarEvent(expectedSelectionState, expectedBottomBarState)
+            expectPagerMock()
 
             mailboxViewModel.state.test {
                 // Given
@@ -958,6 +964,7 @@ class MailboxViewModelTest {
                 operation = MailboxEvent.MessageBottomBarEvent(BottomBarEvent.ActionsData(expectedBottomBarActions))
             )
         } returns expectedBottomBarState
+        expectPagerMock()
 
         mailboxViewModel.state.test {
             // Given
@@ -1004,6 +1011,7 @@ class MailboxViewModelTest {
                 operation = MailboxEvent.ItemClicked.ItemAddedToSelection(secondItem)
             )
         } returns expectedSelectionState
+        expectPagerMock()
 
         mailboxViewModel.state.test {
             // Given
@@ -1043,6 +1051,7 @@ class MailboxViewModelTest {
                     MailboxViewAction.ExitSelectionMode
                 )
             } returns initialState
+            expectPagerMock()
 
             mailboxViewModel.state.test {
                 // Given
@@ -1089,6 +1098,7 @@ class MailboxViewModelTest {
                     MailboxEvent.ItemClicked.ItemRemovedFromSelection(item)
                 )
             } returns expectedState
+            expectPagerMock()
 
             mailboxViewModel.state.test {
                 // Given
@@ -1148,9 +1158,11 @@ class MailboxViewModelTest {
         val initialMailboxState = createMailboxDataState()
         val expectedState = createMailboxDataState(selectedMailLabelId = MailLabelTestData.spamSystemLabel.id)
         every { selectedMailLabelId.flow } returns currentLocationFlow
-        every { pagerFactory.create(userId, any(), false, Message, any()) } returns mockk mockPager@{
-            every { this@mockPager.flow } returns flowOf(PagingData.from(listOf(unreadMailboxItem)))
-        }
+        expectPagerMock(
+            filterUnread = false,
+            itemType = Message,
+            pagingDataFlow = flowOf(PagingData.from(listOf(unreadMailboxItem)))
+        )
         every { mailboxReducer.newStateFrom(any(), any()) } returns initialMailboxState
         every {
             mailboxReducer.newStateFrom(
@@ -1191,15 +1203,16 @@ class MailboxViewModelTest {
         coEvery {
             mailboxItemMapper.toUiModel(userId, readMailboxItem, ContactTestData.contacts, folderColorSettings, false)
         } returns readMailboxItemUiModel
-        every { pagerFactory.create(any(), any(), any(), any(), any()) } returns mockk {
-            val pagingData = PagingData.from(listOf(unreadMailboxItem, readMailboxItem))
-            every { this@mockk.flow } returns flowOf(pagingData)
-        }
+        expectPagerMock(
+            pagingDataFlow = flowOf(PagingData.from(listOf(unreadMailboxItem, readMailboxItem)))
+        )
         every { mailboxReducer.newStateFrom(any(), any()) } returns createMailboxDataState()
         val differ = MailboxAsyncPagingDataDiffer.differ
 
         // When
         mailboxViewModel.items.test {
+            // Initial item is an empty page to clear the currently shown items (when switching label)
+            awaitItem()
             // Then
             val pagingData = awaitItem()
             differ.submitData(pagingData)
@@ -1227,14 +1240,16 @@ class MailboxViewModelTest {
                 false
             )
         } returns readMailboxItemUiModel
-        every { pagerFactory.create(any(), any(), any(), any(), any()) } returns mockk {
-            val pagingData = PagingData.from(listOf(unreadMailboxItem, readMailboxItem))
-            every { this@mockk.flow } returns flowOf(pagingData)
-        }
+        expectPagerMock(
+            pagingDataFlow = flowOf(PagingData.from(listOf(unreadMailboxItem, readMailboxItem)))
+        )
         every { mailboxReducer.newStateFrom(any(), any()) } returns createMailboxDataState()
         val differ = MailboxAsyncPagingDataDiffer.differ
+
         // When
         mailboxViewModel.items.test {
+            // Initial item is an empty page to clear the currently shown items (when switching label)
+            awaitItem()
             // Then
             val pagingData = awaitItem()
             differ.submitData(pagingData)
@@ -1264,6 +1279,7 @@ class MailboxViewModelTest {
                 MailboxEvent.ItemClicked.ItemDetailsOpened(item)
             )
         } returns expectedState
+        expectPagerMock()
 
         // When
         mailboxViewModel.submit(MailboxViewAction.ItemClicked(item))
@@ -1290,6 +1306,7 @@ class MailboxViewModelTest {
                 MailboxEvent.ItemClicked.OpenComposer(item)
             )
         } returns expectedState
+        expectPagerMock()
 
         // When
         mailboxViewModel.submit(MailboxViewAction.ItemClicked(item))
@@ -1413,6 +1430,7 @@ class MailboxViewModelTest {
                 MailboxEvent.ItemClicked.ItemDetailsOpened(item)
             )
         } returns expectedState
+        expectPagerMock()
 
         mailboxViewModel.state.test {
             awaitItem() // await that label count gets emitted
@@ -1464,11 +1482,12 @@ class MailboxViewModelTest {
         // Given
         val expectedMailBoxState = createMailboxDataState(unreadFilterState = false)
         every { mailboxReducer.newStateFrom(any(), any()) } returns expectedMailBoxState
-        every {
-            pagerFactory.create(userId, MailLabelTestData.archiveSystemLabel.id, any(), Message, any())
-        } returns mockk mockPager@{
-            every { this@mockPager.flow } returns flowOf(PagingData.from(listOf(unreadMailboxItem)))
-        }
+        val pagingData = PagingData.from(listOf(unreadMailboxItem))
+        expectPagerMock(
+            selectedLabelId = MailLabelTestData.archiveSystemLabel.id,
+            itemType = Message,
+            pagingDataFlow = flowOf(pagingData)
+        )
         every { mailboxReducer.newStateFrom(expectedMailBoxState, MailboxViewAction.EnableUnreadFilter) } returns
             createMailboxDataState(unreadFilterState = true)
 
@@ -1502,17 +1521,8 @@ class MailboxViewModelTest {
         val expectedState = createMailboxDataState(selectedMailLabelId = inboxLabel.id)
         every { selectedMailLabelId.flow } returns currentLocationFlow
         every { mailboxReducer.newStateFrom(any(), any()) } returns expectedMailBoxState
-        every {
-            pagerFactory.create(
-                any(),
-                any(),
-                any(),
-                any(),
-                any()
-            )
-        } returns mockk mockPager@{
-            every { this@mockPager.flow } returns flowOf(PagingData.from(listOf(unreadMailboxItem)))
-        }
+        val pagingData = PagingData.from(listOf(unreadMailboxItem))
+        expectPagerMock(pagingDataFlow = flowOf(pagingData))
         every {
             mailboxReducer.newStateFrom(
                 expectedMailBoxState,
@@ -1550,17 +1560,8 @@ class MailboxViewModelTest {
             // Given
             val expectedMailBoxState = createMailboxDataState(Effect.empty())
             every { mailboxReducer.newStateFrom(any(), any()) } returns expectedMailBoxState
-            every {
-                pagerFactory.create(
-                    any(),
-                    any(),
-                    any(),
-                    any(),
-                    any()
-                )
-            } returns mockk mockPager@{
-                every { this@mockPager.flow } returns flowOf(PagingData.from(listOf(unreadMailboxItem)))
-            }
+            val pagingData = PagingData.from(listOf(unreadMailboxItem))
+            expectPagerMock(pagingDataFlow = flowOf(pagingData))
             every {
                 mailboxReducer.newStateFrom(
                     expectedMailBoxState,
@@ -1596,17 +1597,7 @@ class MailboxViewModelTest {
     fun `verify mapped paging data is cached`() = runTest {
         // Given
         every { mailboxReducer.newStateFrom(any(), any()) } returns createMailboxDataState()
-        every {
-            pagerFactory.create(
-                any(),
-                any(),
-                any(),
-                any(),
-                any()
-            )
-        } returns mockk mockPager@{
-            every { this@mockPager.flow } returns flowOf(PagingData.from(listOf(unreadMailboxItem)))
-        }
+        expectPagerMock(pagingDataFlow = flowOf(PagingData.from(listOf(unreadMailboxItem))))
 
         mailboxViewModel.items.test {
             // When
@@ -1642,6 +1633,7 @@ class MailboxViewModelTest {
             returnExpectedStateForBottomBarEvent(expectedState = intermediateState)
             returnExpectedStateForMarkAsRead(intermediateState, expectedState)
             expectMarkConversationsAsReadSucceeds(userId, listOf(item, secondItem))
+            expectPagerMock()
 
             mailboxViewModel.state.test {
                 // Given
@@ -1685,6 +1677,7 @@ class MailboxViewModelTest {
             returnExpectedStateForBottomBarEvent(expectedState = intermediateState)
             returnExpectedStateForMarkAsUnread(intermediateState, expectedState)
             expectMarkConversationsAsUnreadSucceeds(userId, listOf(item, secondItem))
+            expectPagerMock()
 
             mailboxViewModel.state.test {
                 // Given
@@ -1728,6 +1721,7 @@ class MailboxViewModelTest {
             returnExpectedStateForBottomBarEvent(expectedState = intermediateState)
             returnExpectedStateForMarkAsRead(intermediateState, expectedState)
             expectMarkMessagesAsReadSucceeds(userId, listOf(item, secondItem))
+            expectPagerMock()
 
             mailboxViewModel.state.test {
                 // Given
@@ -1771,6 +1765,7 @@ class MailboxViewModelTest {
             returnExpectedStateForBottomBarEvent(expectedState = intermediateState)
             returnExpectedStateForMarkAsUnread(intermediateState, expectedState)
             expectMarkMessagesAsUnreadSucceeds(userId, listOf(item, secondItem))
+            expectPagerMock()
 
             mailboxViewModel.state.test {
                 // Given
@@ -1810,6 +1805,7 @@ class MailboxViewModelTest {
         returnExpectedStateForBottomBarEvent(expectedState = intermediateState)
         returnExpectedStateForTrash(intermediateState, initialState, 2)
         expectMoveConversationsSucceeds(userId, listOf(item, secondItem), SystemLabelId.Trash)
+        expectPagerMock()
 
         mailboxViewModel.state.test {
             // Given
@@ -1852,6 +1848,8 @@ class MailboxViewModelTest {
         returnExpectedStateForBottomBarEvent(expectedState = intermediateState)
         returnExpectedStateForTrash(intermediateState, initialState, 2)
         expectMoveMessagesSucceeds(userId, listOf(item, secondItem), SystemLabelId.Trash)
+        expectPagerMock()
+
         mailboxViewModel.state.test {
             // Given
             awaitItem() // First emission for selected user
@@ -1893,6 +1891,7 @@ class MailboxViewModelTest {
         returnExpectedStateForBottomBarEvent(expectedState = intermediateState)
         returnExpectedStateForDeleteConfirmed(intermediateState, initialState, ConversationGrouping, 2)
         expectDeleteConversationsSucceeds(userId, listOf(item, secondItem))
+        expectPagerMock()
 
         mailboxViewModel.state.test {
             // Given
@@ -1936,6 +1935,7 @@ class MailboxViewModelTest {
         returnExpectedStateForBottomBarEvent(expectedState = intermediateState)
         returnExpectedStateForDeleteConfirmed(intermediateState, initialState, NoConversationGrouping, 2)
         expectDeleteMessagesSucceeds(userId, listOf(item, secondItem), SystemLabelId.Trash.labelId)
+        expectPagerMock()
 
         mailboxViewModel.state.test {
             // Given
@@ -2052,6 +2052,7 @@ class MailboxViewModelTest {
             expectDeleteMessagesSucceeds(userId, SystemLabelId.Trash.labelId)
             expectViewModeForCurrentLocation(NoConversationGrouping)
             returnExpectedStateForDeleteAllConfirmed(initialState, NoConversationGrouping)
+            expectPagerMock()
 
             mailboxViewModel.state.test {
                 awaitItem() // First emission for selected user
@@ -2078,6 +2079,7 @@ class MailboxViewModelTest {
             expectDeleteConversationsSucceeds(userId, SystemLabelId.Trash.labelId)
             expectViewModeForCurrentLocation(ConversationGrouping)
             returnExpectedStateForDeleteAllConfirmed(initialState, ConversationGrouping)
+            expectPagerMock()
 
             mailboxViewModel.state.test {
                 awaitItem() // First emission for selected user
@@ -2101,7 +2103,7 @@ class MailboxViewModelTest {
         every { selectedMailLabelId.flow } returns MutableStateFlow(MailLabelTestData.inboxSystemLabel.id)
         expectedSelectedLabelCountStateChange(initialState)
         returnExpectedStateForDeleteAllDismissed(initialState)
-
+        expectPagerMock()
 
         mailboxViewModel.state.test {
             awaitItem() // First emission for selected user
@@ -2143,6 +2145,7 @@ class MailboxViewModelTest {
             NoConversationGrouping
         )
         expectedLabelAsBottomSheetDismissed(initialState)
+        expectPagerMock()
 
         mailboxViewModel.state.test {
             awaitItem() // First emission for selected user
@@ -2169,6 +2172,7 @@ class MailboxViewModelTest {
         val item = readMailboxItemUiModel.copy(id = MessageIdSample.Invoice.id)
         val secondItem = unreadMailboxItemUiModel.copy(id = MessageIdSample.AlphaAppQAReport.id)
         val selectedItemsList = listOf(item, secondItem)
+        expectPagerMock()
 
         val expectedCustomLabels = LabelAsActionsTestData.actions
 
@@ -2272,6 +2276,7 @@ class MailboxViewModelTest {
             )
             expectMoveMessagesSucceeds(userId, selectedItemsList, SystemLabelId.Archive)
             expectColorMappingSuccess()
+            expectPagerMock()
 
             mailboxViewModel.state.test {
                 awaitItem() // First emission for selected user
@@ -2342,6 +2347,7 @@ class MailboxViewModelTest {
             archiveSelected
         )
         expectColorMappingSuccess()
+        expectPagerMock()
 
         mailboxViewModel.state.test {
             awaitItem() // First emission for selected user
@@ -2413,6 +2419,7 @@ class MailboxViewModelTest {
             )
             expectMoveConversationsSucceeds(userId, selectedItemsList, SystemLabelId.Archive)
             expectColorMappingSuccess()
+            expectPagerMock()
 
             mailboxViewModel.state.test {
                 awaitItem() // First emission for selected user
@@ -2475,6 +2482,7 @@ class MailboxViewModelTest {
         expectedMoveToStateChange(MailLabelTestData.spamSystemLabel.id, bottomSheetShownStateWithSelectedItem)
         expectedMoveToConfirmed(initialState)
         expectMoveMessagesSucceeds(userId, selectedItemsList, localSpamLabelId)
+        expectPagerMock()
 
         mailboxViewModel.state.test {
             awaitItem() // First emission for selected user
@@ -2527,6 +2535,7 @@ class MailboxViewModelTest {
         expectedMoveToStateChange(MailLabelTestData.spamSystemLabel.id, bottomSheetShownStateWithSelectedItem)
         expectedMoveToConfirmed(initialState)
         expectMoveConversationsSucceeds(userId, selectedItemsList, localSpamLabelId)
+        expectPagerMock()
 
         mailboxViewModel.state.test {
             awaitItem() // First emission for selected user
@@ -2573,6 +2582,7 @@ class MailboxViewModelTest {
         returnExpectedStateForBottomBarEvent(expectedState = intermediateState)
         expectedReducerResult(MailboxEvent.ErrorRetrievingDestinationMailFolders, expectedState)
         expectGetMoveToActionsFails()
+        expectPagerMock()
 
         mailboxViewModel.state.test {
             awaitItem() // First emission for selected user
@@ -2620,7 +2630,7 @@ class MailboxViewModelTest {
         expectedMoreActionBottomSheetRequestedStateChange(expectedActionItems, bottomSheetShownState)
         expectedStarMessagesSucceeds(userId, selectedItemsList)
         returnExpectedStateWhenStarringSucceeds(intermediateState)
-
+        expectPagerMock()
 
         mailboxViewModel.state.test {
             awaitItem() // First emission for selected user
@@ -2669,7 +2679,7 @@ class MailboxViewModelTest {
         expectedMoreActionBottomSheetRequestedStateChange(expectedActionItems, bottomSheetShownState)
         expectedUnStarMessagesSucceeds(userId, selectedItemsList)
         returnExpectedStateWhenUnStarringSucceeds(intermediateState)
-
+        expectPagerMock()
 
         mailboxViewModel.state.test {
             awaitItem() // First emission for selected user
@@ -2710,6 +2720,7 @@ class MailboxViewModelTest {
         returnExpectedStateWhenEnterSelectionMode(initialState, item, intermediateState)
         expectMoveMessagesSucceeds(userId, selectedItemsList, SystemLabelId.Archive)
         expectedReducerResult(MailboxViewAction.MoveToConfirmed, initialState)
+        expectPagerMock()
 
         mailboxViewModel.state.test {
             awaitItem() // First emission for selected user
@@ -2749,6 +2760,7 @@ class MailboxViewModelTest {
         )
         expectMoveConversationsSucceeds(userId, selectedItemsList, SystemLabelId.Archive)
         expectedReducerResult(MailboxViewAction.MoveToConfirmed, initialState)
+        expectPagerMock()
 
         mailboxViewModel.state.test {
             awaitItem() // First emission for selected user
@@ -2790,6 +2802,7 @@ class MailboxViewModelTest {
         returnExpectedStateWhenEnterSelectionMode(initialState, item, intermediateState)
         expectMoveMessagesSucceeds(userId, selectedItemsList, SystemLabelId.Spam)
         expectedReducerResult(MailboxViewAction.MoveToConfirmed, initialState)
+        expectPagerMock()
 
         mailboxViewModel.state.test {
             awaitItem() // First emission for selected user
@@ -2830,6 +2843,7 @@ class MailboxViewModelTest {
         returnExpectedStateWhenEnterSelectionMode(initialState, item, intermediateState)
         expectMoveConversationsSucceeds(userId, selectedItemsList, SystemLabelId.Spam)
         expectedReducerResult(MailboxViewAction.MoveToConfirmed, initialState)
+        expectPagerMock()
 
         mailboxViewModel.state.test {
             awaitItem() // First emission for selected user
@@ -2853,6 +2867,7 @@ class MailboxViewModelTest {
         expectViewMode(NoConversationGrouping)
         expectedSelectedLabelCountStateChange(initialState)
         returnExpectedStateForDeleteDismissed(initialState, initialState)
+        expectPagerMock()
 
         mailboxViewModel.state.test {
             // Given
@@ -2875,6 +2890,7 @@ class MailboxViewModelTest {
         expectViewMode(NoConversationGrouping)
         expectedSelectedLabelCountStateChange(initialState)
         returnExpectedStateForDeleteDismissed(initialState, initialState)
+        expectPagerMock()
 
         mailboxViewModel.state.test {
             // Given
@@ -2902,9 +2918,11 @@ class MailboxViewModelTest {
         } returns flowOf(ConversationGrouping)
         every { observePrimaryUserId.invoke() } returns primaryUserFlow
         every { selectedMailLabelId.flow } returns currentLocationFlow
-        every { pagerFactory.create(userId, any(), false, Conversation, any()) } returns mockk mockPager@{
-            every { this@mockPager.flow } returns flowOf(PagingData.from(listOf(unreadMailboxItem)))
-        }
+        val pagingData = PagingData.from(listOf(unreadMailboxItem))
+        expectPagerMock(
+            itemType = Conversation,
+            pagingDataFlow = flowOf(pagingData)
+        )
         every { mailboxReducer.newStateFrom(any(), any()) } returns initialMailboxState
         returnExpectedStateForBottomBarEvent(expectedState = expectedState)
 
@@ -3025,6 +3043,7 @@ class MailboxViewModelTest {
 
         expectedSelectedLabelCountStateChange(initialState)
         expectMoveMessagesSucceeds(userId, listOf(buildMailboxUiModelItem(id = itemId)), SystemLabelId.Archive)
+        expectPagerMock()
 
         mailboxViewModel.state.test {
             advanceUntilIdle()
@@ -3053,6 +3072,7 @@ class MailboxViewModelTest {
             listOf(buildMailboxUiModelItem(id = expectedItemId)),
             SystemLabelId.Archive
         )
+        expectPagerMock()
 
         mailboxViewModel.state.test {
             advanceUntilIdle()
@@ -3075,6 +3095,7 @@ class MailboxViewModelTest {
         val expectedViewAction = MailboxViewAction.SwipeArchiveAction(expectedItemId)
 
         expectedSelectedLabelCountStateChange(initialState)
+        expectPagerMock()
 
         mailboxViewModel.state.test {
             // When
@@ -3096,6 +3117,7 @@ class MailboxViewModelTest {
 
         expectedSelectedLabelCountStateChange(initialState)
         expectMoveMessagesSucceeds(userId, listOf(buildMailboxUiModelItem(id = itemId)), SystemLabelId.Spam)
+        expectPagerMock()
 
         mailboxViewModel.state.test {
             advanceUntilIdle()
@@ -3124,6 +3146,7 @@ class MailboxViewModelTest {
             listOf(buildMailboxUiModelItem(id = expectedItemId)),
             SystemLabelId.Spam
         )
+        expectPagerMock()
 
         mailboxViewModel.state.test {
             // When
@@ -3144,6 +3167,7 @@ class MailboxViewModelTest {
         val expectedViewAction = MailboxViewAction.SwipeSpamAction(expectedItemId)
 
         expectedSelectedLabelCountStateChange(initialState)
+        expectPagerMock()
 
         mailboxViewModel.state.test {
             // When
@@ -3165,7 +3189,7 @@ class MailboxViewModelTest {
 
         expectedSelectedLabelCountStateChange(initialState)
         expectMoveMessagesSucceeds(userId, listOf(buildMailboxUiModelItem(id = itemId)), SystemLabelId.Trash)
-
+        expectPagerMock()
 
         mailboxViewModel.state.test {
             // When
@@ -3192,6 +3216,7 @@ class MailboxViewModelTest {
             listOf(buildMailboxUiModelItem(id = expectedItemId)),
             SystemLabelId.Trash
         )
+        expectPagerMock()
 
         mailboxViewModel.state.test {
             // When
@@ -3212,6 +3237,7 @@ class MailboxViewModelTest {
         val expectedViewAction = MailboxViewAction.SwipeTrashAction(expectedItemId)
 
         expectedSelectedLabelCountStateChange(initialState)
+        expectPagerMock()
 
         mailboxViewModel.state.test {
             // When
@@ -3373,6 +3399,7 @@ class MailboxViewModelTest {
                 MailboxViewAction.EnterSearchMode
             )
         } returns expectedState
+        expectPagerMock()
 
         // When
         mailboxViewModel.submit(MailboxViewAction.EnterSearchMode)
@@ -3407,6 +3434,7 @@ class MailboxViewModelTest {
             )
         } returns expectedState
         coEvery { deleteSearchResults.invoke(any(), any()) } just runs
+        expectPagerMock()
 
         // When
         mailboxViewModel.submit(MailboxViewAction.ExitSearchMode)
@@ -3493,6 +3521,7 @@ class MailboxViewModelTest {
         expectedSelectedLabelCountStateChange(initialState)
         expectRequestUpsellingBottomSheet(initialState)
         expectUpsellingBottomSheetDataLoaded(initialState)
+        expectPagerMock()
 
         mailboxViewModel.state.test {
             awaitItem() // First emission for selected user
@@ -3910,6 +3939,25 @@ class MailboxViewModelTest {
 
     private fun expectColorMappingSuccess() {
         every { Color.parseColor(any()) } returns 0
+    }
+
+    private fun expectPagerMock(
+        selectedLabelId: MailLabelId? = null,
+        filterUnread: Boolean? = null,
+        itemType: MailboxItemType? = null,
+        searchQuery: String? = null,
+        pagingDataFlow: Flow<PagingData<MailboxItem>> = flowOf()
+    ) {
+
+        every {
+            pagerFactory.create(
+                userId,
+                selectedLabelId ?: any(),
+                filterUnread ?: any(),
+                itemType ?: any(),
+                searchQuery ?: any()
+            )
+        } returns mockk mockPager@{ every { this@mockPager.flow } returns pagingDataFlow }
     }
 
 }
