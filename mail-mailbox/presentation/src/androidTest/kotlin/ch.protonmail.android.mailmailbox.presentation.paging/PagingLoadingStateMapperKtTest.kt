@@ -49,17 +49,6 @@ class PagingLoadingStateMapperKtTest {
     }
 
     @Test
-    fun returnLoadingWhenItemCountIsZeroAndMediatorIsLoading() {
-        val items = mockk<LazyPagingItems<MailboxItemUiModel>> {
-            every { loadState.mediator } returns mockk(relaxed = true)
-            every { itemCount } returns 0
-            every { loadState.source.refresh } returns LoadState.NotLoading(false)
-            every { loadState.mediator!!.refresh } returns LoadState.Loading
-        }
-        assertEquals(MailboxScreenState.Loading, items.mapToUiStates(false))
-    }
-
-    @Test
     fun returnLoadingWithDataWhenItemCountIsLargerThanZeroAndSourceIsLoading() {
         val items = mockk<LazyPagingItems<MailboxItemUiModel>> {
             every { itemCount } returns 10
@@ -71,24 +60,11 @@ class PagingLoadingStateMapperKtTest {
     }
 
     @Test
-    fun returnLoadingWithDataWhenItemCountIsLargerThanZeroAndMediatorIsLoading() {
-        val items = mockk<LazyPagingItems<MailboxItemUiModel>> {
-            every { itemCount } returns 10
-            every { loadState.append } returns LoadState.NotLoading(false)
-            every { loadState.source.refresh } returns LoadState.NotLoading(false)
-            every { loadState.mediator } returns mockk(relaxed = true)
-            every { loadState.mediator!!.refresh } returns LoadState.Loading
-        }
-        assertEquals(MailboxScreenState.LoadingWithData, items.mapToUiStates(false))
-    }
-
-    @Test
     fun returnUnexpectedErrorWhenLoadStateIsAnUnknownError() {
         val items = mockk<LazyPagingItems<MailboxItemUiModel>> {
             every { itemCount } returns 0
             every { loadState.refresh } returns LoadState.Error(Exception("Not a DataErrorException"))
             every { loadState.source.refresh } returns LoadState.NotLoading(false)
-            every { loadState.mediator } returns mockk(relaxed = true)
             every { loadState.append } returns LoadState.NotLoading(false)
         }
         assertEquals(MailboxScreenState.UnexpectedError, items.mapToUiStates(false))
@@ -102,7 +78,6 @@ class PagingLoadingStateMapperKtTest {
                 DataErrorException(DataError.Remote.Http(NetworkError.ServerError))
             )
             every { loadState.source.refresh } returns LoadState.NotLoading(false)
-            every { loadState.mediator } returns mockk(relaxed = true)
             every { loadState.append } returns LoadState.NotLoading(false)
         }
         assertEquals(MailboxScreenState.Error, items.mapToUiStates(false))
@@ -116,7 +91,6 @@ class PagingLoadingStateMapperKtTest {
                 DataErrorException(DataError.Remote.Http(NetworkError.NoNetwork))
             )
             every { loadState.source.refresh } returns LoadState.NotLoading(false)
-            every { loadState.mediator } returns mockk(relaxed = true)
             every { loadState.append } returns LoadState.NotLoading(false)
         }
         assertEquals(MailboxScreenState.Offline, items.mapToUiStates(false))
@@ -130,7 +104,6 @@ class PagingLoadingStateMapperKtTest {
                 DataErrorException(DataError.Remote.Http(NetworkError.Unreachable))
             )
             every { loadState.source.refresh } returns LoadState.NotLoading(false)
-            every { loadState.mediator } returns mockk(relaxed = true)
             every { loadState.append } returns LoadState.NotLoading(false)
         }
         assertEquals(MailboxScreenState.ErrorWithData, items.mapToUiStates(false))
@@ -144,7 +117,6 @@ class PagingLoadingStateMapperKtTest {
                 DataErrorException(DataError.Remote.Http(NetworkError.NoNetwork))
             )
             every { loadState.source.refresh } returns LoadState.NotLoading(false)
-            every { loadState.mediator } returns mockk(relaxed = true)
             every { loadState.append } returns LoadState.NotLoading(false)
         }
         assertEquals(MailboxScreenState.OfflineWithData, items.mapToUiStates(false))
@@ -155,7 +127,6 @@ class PagingLoadingStateMapperKtTest {
         val items = mockk<LazyPagingItems<MailboxItemUiModel>> {
             every { itemCount } returns 0
             every { loadState.source } returns mockk(relaxed = true)
-            every { loadState.mediator } returns mockk(relaxed = true)
             every { loadState.refresh } returns LoadState.NotLoading(false)
             every { loadState.append } returns LoadState.NotLoading(false)
             every { loadState.prepend } returns LoadState.NotLoading(false)
@@ -168,7 +139,6 @@ class PagingLoadingStateMapperKtTest {
         val items = mockk<LazyPagingItems<MailboxItemUiModel>> {
             every { itemCount } returns 10
             every { loadState.source } returns mockk(relaxed = true)
-            every { loadState.mediator } returns mockk(relaxed = true)
             every { loadState.refresh } returns LoadState.NotLoading(false)
             every { loadState.append } returns LoadState.NotLoading(false)
             every { loadState.prepend } returns LoadState.NotLoading(false)
@@ -182,7 +152,6 @@ class PagingLoadingStateMapperKtTest {
             every { itemCount } returns 10
             every { loadState.refresh } returns LoadState.NotLoading(false)
             every { loadState.source.refresh } returns LoadState.NotLoading(false)
-            every { loadState.mediator } returns mockk(relaxed = true)
             every { loadState.append } returns LoadState.Loading
         }
         assertEquals(MailboxScreenState.AppendLoading, items.mapToUiStates(false))
@@ -194,7 +163,6 @@ class PagingLoadingStateMapperKtTest {
             every { itemCount } returns 10
             every { loadState.refresh } returns LoadState.NotLoading(false)
             every { loadState.source.refresh } returns LoadState.NotLoading(false)
-            every { loadState.mediator } returns mockk(relaxed = true)
             every { loadState.append } returns LoadState.Error(Exception("Not a known DataErrorException"))
         }
         assertEquals(MailboxScreenState.UnexpectedError, items.mapToUiStates(false))
@@ -206,7 +174,6 @@ class PagingLoadingStateMapperKtTest {
             every { itemCount } returns 10
             every { loadState.refresh } returns LoadState.NotLoading(false)
             every { loadState.source.refresh } returns LoadState.NotLoading(false)
-            every { loadState.mediator } returns mockk(relaxed = true)
             every { loadState.append } returns LoadState.Error(
                 DataErrorException(DataError.Remote.Http(NetworkError.ServerError))
             )
@@ -220,7 +187,6 @@ class PagingLoadingStateMapperKtTest {
             every { itemCount } returns 10
             every { loadState.refresh } returns LoadState.NotLoading(false)
             every { loadState.source.refresh } returns LoadState.NotLoading(false)
-            every { loadState.mediator } returns mockk(relaxed = true)
             every { loadState.append } returns LoadState.Error(
                 DataErrorException(DataError.Remote.Http(NetworkError.NoNetwork))
             )

@@ -420,11 +420,9 @@ class SearchPagingLoadingStateMapperKtTest {
                 refresh = if (isRefreshLoading) LoadState.Loading else LoadState.NotLoading(true),
                 append = if (isAppendLoading) LoadState.Loading else LoadState.NotLoading(true),
                 prepend = mockk(),
-                source = mockk(),
-                mediator = mockk()
+                source = mockk()
             )
         every { loadState.source.refresh } returns loadState.refresh
-        every { loadState.mediator?.refresh } returns loadState.refresh
 
         val mockPaging: LazyPagingItems<MailboxItemUiModel> = mockk(relaxed = true)
         every { mockPaging.loadState } returns loadState
@@ -444,11 +442,9 @@ class SearchPagingLoadingStateMapperKtTest {
                 append = if (appendError) LoadState.Error(DataErrorException(mockk()))
                 else LoadState.NotLoading(true),
                 prepend = mockk(),
-                source = mockk(),
-                mediator = mockk()
+                source = mockk()
             )
         every { loadState.source.refresh } returns loadState.refresh
-        every { loadState.mediator?.refresh } returns loadState.refresh
 
         val mockPaging: LazyPagingItems<MailboxItemUiModel> = mockk(relaxed = true)
         every { mockPaging.loadState } returns loadState

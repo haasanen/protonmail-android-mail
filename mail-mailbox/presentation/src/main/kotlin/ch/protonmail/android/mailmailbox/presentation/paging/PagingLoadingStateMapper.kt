@@ -107,8 +107,7 @@ fun LazyPagingItems<MailboxItemUiModel>.isPageEmpty(): Boolean = this.itemCount 
 fun LazyPagingItems<MailboxItemUiModel>.isPageInError(): Boolean = isPageRefreshFailed() || isPageAppendFailed()
 
 
-// Mediator or Source is Loading
-private fun CombinedLoadStates.isLoading() = this.isSourceLoading() || this.isMediatorLoading()
+// Source is Loading
+private fun CombinedLoadStates.isLoading() = this.isSourceLoading()
 fun CombinedLoadStates.isSourceLoading() = this.source.refresh is LoadState.Loading
-fun CombinedLoadStates.isMediatorLoading() = this.mediator?.refresh is LoadState.Loading
 private fun CombinedLoadStates.isAppendLoading() = this.append is LoadState.Loading

@@ -23,7 +23,6 @@ import androidx.paging.compose.LazyPagingItems
 import ch.protonmail.android.mailmailbox.presentation.mailbox.MailboxScreenState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxItemUiModel
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxSearchMode
-import ch.protonmail.android.mailmailbox.presentation.paging.isMediatorLoading
 import ch.protonmail.android.mailmailbox.presentation.paging.isSourceLoading
 import me.proton.core.util.kotlin.exhaustive
 
@@ -67,8 +66,7 @@ fun LazyPagingItems<MailboxItemUiModel>.mapToUiStatesInSearch(
 fun LazyPagingItems<MailboxItemUiModel>.isPageLoadingWhenSearchData(): Boolean =
     this.loadState.refresh is LoadState.Loading
 
-// When there is no search data, we will check mediator + source refresh loading state.
-// This is to ensure that loading is completed after both source + mediator loading completed. Otherwise,
+// When there is no search data, we will check source refresh loading state.
+// This is to ensure that loading is completed after the source loading completed. Otherwise,
 // we may get a situation where "No Results Found" appear for a short time, then results appear
-fun LazyPagingItems<MailboxItemUiModel>.isPageLoadingWhenNoSearchData(): Boolean =
-    this.loadState.isSourceLoading() || this.loadState.isMediatorLoading()
+fun LazyPagingItems<MailboxItemUiModel>.isPageLoadingWhenNoSearchData(): Boolean = this.loadState.isSourceLoading()
