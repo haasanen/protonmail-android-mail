@@ -694,6 +694,7 @@ private fun MailboxItemsList(
 
     LazyColumn(
         state = listState,
+        verticalArrangement = Arrangement.spacedBy(ProtonDimens.Spacing.Small),
         modifier = Modifier
             .testTag(MailboxScreenTestTags.List)
             .fillMaxSize()

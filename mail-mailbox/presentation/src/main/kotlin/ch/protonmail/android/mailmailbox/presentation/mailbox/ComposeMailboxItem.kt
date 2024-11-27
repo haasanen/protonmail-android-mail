@@ -32,6 +32,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -46,6 +47,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import ch.protonmail.android.mailcommon.presentation.NO_CONTENT_DESCRIPTION
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 import ch.protonmail.android.mailcommon.presentation.compose.SmallNonClickableIcon
@@ -77,104 +79,126 @@ fun MailboxItem(
     selectionMode: Boolean = false,
     isSelected: Boolean = false
 ) {
-    Row(
+    Box(
         modifier = modifier
             .combinedClickable(
                 onClick = { actions.onItemClicked(item) },
                 onLongClick = { actions.onItemLongClicked(item) }
             )
             .semantics { isItemRead = item.isRead }
-            .padding(
-                start = ProtonDimens.Spacing.ModeratelyLarge,
-                end = ProtonDimens.Spacing.Large,
-                top = ProtonDimens.Spacing.ModeratelyLarge,
-                bottom = ProtonDimens.Spacing.ModeratelyLarge
+            .padding(start = ProtonDimens.Spacing.Tiny)
+            .background(
+                color = ProtonTheme.colors.backgroundNorm,
+                shape = ProtonTheme.shapes.extraLarge
             )
             .fillMaxWidth()
-            .clip(ProtonTheme.shapes.large)
-    ) {
-        val fontWeight = if (item.isRead) FontWeight.Normal else FontWeight.Medium
-        val fontColor = if (item.isRead) ProtonTheme.colors.textWeak else ProtonTheme.colors.textNorm
-        val iconColor = if (item.isRead) ProtonTheme.colors.iconWeak else ProtonTheme.colors.iconNorm
-
-        ParticipantAvatar(
-            modifier = Modifier.align(Alignment.CenterVertically),
-            avatarUiModel = if (selectionMode) {
-                (item.avatar as? AvatarUiModel.ParticipantAvatar)?.copy(selected = isSelected) ?: item.avatar
-            } else {
-                item.avatar
-            },
-            onClick = { actions.onAvatarClicked(item) }
-        )
-        Column(
-            modifier = Modifier.padding(
-                start = ProtonDimens.Spacing.ModeratelyLarge,
-                top = ProtonDimens.Spacing.Standard
+            .clip(
+                shape = if (isSelected) {
+                    RoundedCornerShape(
+                        topStart = ProtonDimens.CornerRadius.ExtraLarge,
+                        topEnd = 0.dp,
+                        bottomStart = ProtonDimens.CornerRadius.ExtraLarge,
+                        bottomEnd = 0.dp
+                    )
+                } else ProtonTheme.shapes.extraLarge
             )
+            .background(
+                color = if (isSelected) ProtonTheme.colors.interactionWeakPressed else ProtonTheme.colors.backgroundNorm
+            )
+
+    ) {
+        Row(
+            modifier = Modifier
+                .padding(
+                    start = ProtonDimens.Spacing.ModeratelyLarge,
+                    end = ProtonDimens.Spacing.Large,
+                    top = ProtonDimens.Spacing.ModeratelyLarge,
+                    bottom = ProtonDimens.Spacing.ModeratelyLarge
+                )
         ) {
-            Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                ActionIcons(
-                    item = item,
-                    iconColor = fontColor,
-                    modifier = Modifier.padding(end = ProtonDimens.Spacing.Small)
+            val fontWeight = if (item.isRead) FontWeight.Normal else FontWeight.Medium
+            val fontColor = if (item.isRead) ProtonTheme.colors.textWeak else ProtonTheme.colors.textNorm
+            val iconColor = if (item.isRead) ProtonTheme.colors.iconWeak else ProtonTheme.colors.iconNorm
+
+            ParticipantAvatar(
+                modifier = Modifier.align(Alignment.CenterVertically),
+                avatarUiModel = if (selectionMode) {
+                    (item.avatar as? AvatarUiModel.ParticipantAvatar)?.copy(selected = isSelected) ?: item.avatar
+                } else {
+                    item.avatar
+                },
+                onClick = { actions.onAvatarClicked(item) }
+            )
+            Column(
+                modifier = Modifier.padding(
+                    start = ProtonDimens.Spacing.ModeratelyLarge,
+                    top = ProtonDimens.Spacing.Standard
                 )
-                Participants(
-                    participants = item.participants,
-                    fontWeight = fontWeight,
-                    fontColor = fontColor,
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(end = ProtonDimens.Spacing.Small)
-                )
-                Time(time = item.time, fontWeight = fontWeight, fontColor = fontColor)
-            }
-            Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Small))
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
             ) {
-                LocationIcons(
-                    iconResIds = item.locations,
-                    iconColor = fontColor,
-                    modifier = Modifier.padding(end = ProtonDimens.Spacing.Small)
-                )
-                Row(
-                    Modifier
-                        .weight(1f),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Subject(
-                        subject = item.subject,
+                Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                    ActionIcons(
+                        item = item,
+                        iconColor = fontColor,
+                        modifier = Modifier.padding(end = ProtonDimens.Spacing.Small)
+                    )
+                    Participants(
+                        participants = item.participants,
                         fontWeight = fontWeight,
                         fontColor = fontColor,
                         modifier = Modifier
-                            .weight(1f, fill = false)
+                            .weight(1f)
                             .padding(end = ProtonDimens.Spacing.Small)
                     )
-                    Count(
-                        count = item.numMessages,
-                        fontWeight = fontWeight,
-                        fontColor = fontColor,
-                        iconColor = iconColor
+                    Time(time = item.time, fontWeight = fontWeight, fontColor = fontColor)
+                }
+                Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Small))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    LocationIcons(
+                        iconResIds = item.locations,
+                        iconColor = fontColor,
+                        modifier = Modifier.padding(end = ProtonDimens.Spacing.Small)
+                    )
+                    Row(
+                        Modifier
+                            .weight(1f),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Subject(
+                            subject = item.subject,
+                            fontWeight = fontWeight,
+                            fontColor = fontColor,
+                            modifier = Modifier
+                                .weight(1f, fill = false)
+                                .padding(end = ProtonDimens.Spacing.Small)
+                        )
+                        Count(
+                            count = item.numMessages,
+                            fontWeight = fontWeight,
+                            fontColor = fontColor,
+                            iconColor = iconColor
+                        )
+                    }
+                    Icons(
+                        item = item,
+                        iconColor = fontColor,
+                        modifier = Modifier.padding(start = ProtonDimens.Spacing.Small)
                     )
                 }
-                Icons(
-                    item = item,
-                    iconColor = fontColor,
-                    modifier = Modifier.padding(start = ProtonDimens.Spacing.Small)
-                )
-            }
-            Row(
-                modifier = Modifier
-                    .padding(top = ProtonDimens.Spacing.Small, bottom = ProtonDimens.Spacing.Small)
-                    .fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                ExpirationLabel(
-                    hasExpirationTime = item.shouldShowExpirationLabel,
-                    modifier = Modifier.padding(end = ProtonDimens.Spacing.Small)
-                )
-                Labels(labels = item.labels)
+                Row(
+                    modifier = Modifier
+                        .padding(top = ProtonDimens.Spacing.Small, bottom = ProtonDimens.Spacing.Small)
+                        .fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    ExpirationLabel(
+                        hasExpirationTime = item.shouldShowExpirationLabel,
+                        modifier = Modifier.padding(end = ProtonDimens.Spacing.Small)
+                    )
+                    Labels(labels = item.labels)
+                }
             }
         }
     }
