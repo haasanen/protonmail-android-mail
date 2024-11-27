@@ -20,7 +20,6 @@ package ch.protonmail.android.mailmessage.presentation.ui
 
 import java.io.File
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
@@ -84,82 +83,103 @@ fun ParticipantAvatar(
         contentAlignment = Alignment.Center
     ) {
         when (avatarUiModel) {
-            is AvatarUiModel.DraftIcon ->
-                Box(
-                    modifier = Modifier
-                        .testTag(AvatarTestTags.AvatarDraft)
-                        .sizeIn(
-                            minWidth = avatarSize,
-                            minHeight = avatarSize
-                        ),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(
-                        modifier = Modifier.size(ProtonDimens.SmallIconSize),
-                        painter = painterResource(id = R.drawable.ic_proton_pencil),
-                        contentDescription = NO_CONTENT_DESCRIPTION
-                    )
-                }
-
-
+            is AvatarUiModel.DraftIcon -> ParticipantAvatarDraftIcon(avatarSize)
             is AvatarUiModel.ParticipantAvatar -> {
-                val imageState = senderImageViewModel.stateForAddress(avatarUiModel.address).collectAsState().value
-
-                LaunchedEffect(avatarUiModel.address) {
-                    senderImageViewModel.loadSenderImage(avatarUiModel.address, avatarUiModel.bimiSelector)
-                }
-
-                when (imageState) {
-                    is SenderImageState.Data -> SenderImageAvatar(imageState.imageFile, avatarSize)
-                    is SenderImageState.NoImageAvailable -> SenderInitialsAvatar(
-                        initials = avatarUiModel.initial,
-                        modifier = Modifier
-                            .sizeIn(
-                                minWidth = avatarSize,
-                                minHeight = avatarSize
-                            )
-                            .background(
-                                color = avatarUiModel.color,
-                                shape = backgroundShape
-                            )
+                if (avatarUiModel.selected) {
+                    ParticipantAvatarSelected(
+                        avatarUiModel = avatarUiModel,
+                        avatarSize = avatarSize,
+                        backgroundShape = backgroundShape
                     )
-                    else -> Unit
+                } else {
+                    ParticipantAvatarNotSelected(
+                        avatarUiModel = avatarUiModel,
+                        avatarSize = avatarSize,
+                        backgroundShape = backgroundShape,
+                        senderImageViewModel = senderImageViewModel
+                    )
                 }
             }
-
-            is AvatarUiModel.SelectionMode ->
-                Box(
-                    modifier = Modifier
-                        .sizeIn(
-                            minWidth = avatarSize,
-                            minHeight = avatarSize
-                        )
-                        .border(
-                            width = MailDimens.AvatarBorderLine,
-                            color = ProtonTheme.colors.interactionBrandDefaultNorm,
-                            shape = backgroundShape
-                        )
-                        .background(
-                            color = when (avatarUiModel.selected) {
-                                true -> ProtonTheme.colors.interactionBrandDefaultNorm
-                                false -> ProtonTheme.colors.backgroundSecondary
-                            },
-                            shape = backgroundShape
-                        )
-                        .testTag(AvatarTestTags.AvatarSelectionMode)
-                        .semantics { selected = avatarUiModel.selected },
-                    contentAlignment = Alignment.Center
-                ) {
-                    if (avatarUiModel.selected) {
-                        Icon(
-                            imageVector = ImageVector.vectorResource(id = R.drawable.ic_proton_checkmark),
-                            tint = Color.White,
-                            contentDescription = NO_CONTENT_DESCRIPTION,
-                            modifier = Modifier.size(MailDimens.AvatarCheckmarkSize)
-                        )
-                    }
-                }
         }
+    }
+}
+
+@Composable
+fun ParticipantAvatarDraftIcon(avatarSize: Dp) {
+    Box(
+        modifier = Modifier
+            .testTag(AvatarTestTags.AvatarDraft)
+            .sizeIn(
+                minWidth = avatarSize,
+                minHeight = avatarSize
+            ),
+        contentAlignment = Alignment.Center
+    ) {
+        Icon(
+            modifier = Modifier.size(ProtonDimens.SmallIconSize),
+            painter = painterResource(id = R.drawable.ic_proton_pencil),
+            contentDescription = NO_CONTENT_DESCRIPTION
+        )
+    }
+}
+
+@Composable
+fun ParticipantAvatarNotSelected(
+    avatarUiModel: AvatarUiModel.ParticipantAvatar,
+    avatarSize: Dp,
+    backgroundShape: Shape,
+    senderImageViewModel: SenderImageViewModel
+) {
+    val imageState = senderImageViewModel.stateForAddress(avatarUiModel.address).collectAsState().value
+
+    LaunchedEffect(avatarUiModel.address) {
+        senderImageViewModel.loadSenderImage(avatarUiModel.address, avatarUiModel.bimiSelector)
+    }
+
+    when (imageState) {
+        is SenderImageState.Data -> SenderImageAvatar(imageState.imageFile, avatarSize)
+        is SenderImageState.NoImageAvailable -> SenderInitialsAvatar(
+            initials = avatarUiModel.initial,
+            modifier = Modifier
+                .sizeIn(
+                    minWidth = avatarSize,
+                    minHeight = avatarSize
+                )
+                .background(
+                    color = avatarUiModel.color,
+                    shape = backgroundShape
+                )
+        )
+        else -> Unit
+    }
+}
+
+@Composable
+fun ParticipantAvatarSelected(
+    avatarUiModel: AvatarUiModel.ParticipantAvatar,
+    avatarSize: Dp,
+    backgroundShape: Shape
+) {
+    Box(
+        modifier = Modifier
+            .sizeIn(
+                minWidth = avatarSize,
+                minHeight = avatarSize
+            )
+            .background(
+                color = ProtonTheme.colors.interactionBrandDefaultNorm,
+                shape = backgroundShape
+            )
+            .testTag(AvatarTestTags.AvatarSelectionMode)
+            .semantics { selected = avatarUiModel.selected },
+        contentAlignment = Alignment.Center
+    ) {
+        Icon(
+            imageVector = ImageVector.vectorResource(id = R.drawable.ic_proton_checkmark),
+            tint = Color.White,
+            contentDescription = NO_CONTENT_DESCRIPTION,
+            modifier = Modifier.size(MailDimens.AvatarCheckmarkSize)
+        )
     }
 }
 

@@ -36,8 +36,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.semantics.selected
-import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -72,64 +70,62 @@ fun Avatar(
         contentAlignment = Alignment.Center
     ) {
         when (avatarUiModel) {
-            is AvatarUiModel.DraftIcon ->
-                Box(
-                    modifier = Modifier
-                        .testTag(AvatarTestTags.AvatarDraft)
-                        .sizeIn(
-                            minWidth = avatarSize,
-                            minHeight = avatarSize
-                        )
-                        .border(
-                            width = MailDimens.DefaultBorder,
-                            color = ProtonTheme.colors.interactionWeakNorm,
-                            shape = backgroundShape
-                        ),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(
-                        modifier = Modifier.size(ProtonDimens.SmallIconSize),
-                        painter = painterResource(id = R.drawable.ic_proton_pencil),
-                        contentDescription = NO_CONTENT_DESCRIPTION
-                    )
+            is AvatarUiModel.DraftIcon -> ParticipantAvatarDraftIcon(avatarSize, backgroundShape)
+            is AvatarUiModel.ParticipantAvatar -> {
+                if (avatarUiModel.selected) {
+                    ParticipantAvatarSelected(avatarSize, backgroundShape)
+                } else {
+                    ParticipantAvatar(avatarUiModel)
                 }
-
-            is AvatarUiModel.ParticipantAvatar ->
-                ParticipantAvatar(avatarUiModel)
-
-            is AvatarUiModel.SelectionMode ->
-                Box(
-                    modifier = Modifier
-                        .sizeIn(
-                            minWidth = avatarSize,
-                            minHeight = avatarSize
-                        )
-                        .border(
-                            width = MailDimens.AvatarBorderLine,
-                            color = ProtonTheme.colors.interactionBrandDefaultNorm,
-                            shape = backgroundShape
-                        )
-                        .background(
-                            color = when (avatarUiModel.selected) {
-                                true -> ProtonTheme.colors.interactionBrandDefaultNorm
-                                false -> ProtonTheme.colors.backgroundSecondary
-                            },
-                            shape = backgroundShape
-                        )
-                        .testTag(AvatarTestTags.AvatarSelectionMode)
-                        .semantics { selected = avatarUiModel.selected },
-                    contentAlignment = Alignment.Center
-                ) {
-                    if (avatarUiModel.selected) {
-                        Icon(
-                            imageVector = ImageVector.vectorResource(id = R.drawable.ic_proton_checkmark),
-                            tint = Color.White,
-                            contentDescription = NO_CONTENT_DESCRIPTION,
-                            modifier = Modifier.size(MailDimens.AvatarCheckmarkSize)
-                        )
-                    }
-                }
+            }
         }
+    }
+}
+
+@Composable
+private fun ParticipantAvatarDraftIcon(avatarSize: Dp, backgroundShape: Shape) {
+    Box(
+        modifier = Modifier
+            .testTag(AvatarTestTags.AvatarDraft)
+            .sizeIn(minWidth = avatarSize, minHeight = avatarSize)
+            .border(
+                width = MailDimens.DefaultBorder,
+                color = ProtonTheme.colors.interactionWeakNorm,
+                shape = backgroundShape
+            ),
+        contentAlignment = Alignment.Center
+    ) {
+        Icon(
+            modifier = Modifier.size(ProtonDimens.SmallIconSize),
+            painter = painterResource(id = R.drawable.ic_proton_pencil),
+            contentDescription = NO_CONTENT_DESCRIPTION
+        )
+    }
+}
+
+@Composable
+private fun ParticipantAvatarSelected(avatarSize: Dp, backgroundShape: Shape) {
+    Box(
+        modifier = Modifier
+            .sizeIn(minWidth = avatarSize, minHeight = avatarSize)
+            .border(
+                width = MailDimens.AvatarBorderLine,
+                color = ProtonTheme.colors.interactionBrandDefaultNorm,
+                shape = backgroundShape
+            )
+            .background(
+                color = ProtonTheme.colors.interactionBrandDefaultNorm,
+                shape = backgroundShape
+            )
+            .testTag(AvatarTestTags.AvatarSelectionMode),
+        contentAlignment = Alignment.Center
+    ) {
+        Icon(
+            imageVector = ImageVector.vectorResource(id = R.drawable.ic_proton_checkmark),
+            tint = Color.White,
+            contentDescription = NO_CONTENT_DESCRIPTION,
+            modifier = Modifier.size(MailDimens.AvatarCheckmarkSize)
+        )
     }
 }
 

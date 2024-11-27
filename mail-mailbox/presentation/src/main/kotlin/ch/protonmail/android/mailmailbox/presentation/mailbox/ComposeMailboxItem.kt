@@ -99,7 +99,11 @@ fun MailboxItem(
 
         ParticipantAvatar(
             modifier = Modifier.align(Alignment.CenterVertically),
-            avatarUiModel = if (selectionMode) AvatarUiModel.SelectionMode(isSelected) else item.avatar,
+            avatarUiModel = if (selectionMode) {
+                (item.avatar as? AvatarUiModel.ParticipantAvatar)?.copy(selected = isSelected) ?: item.avatar
+            } else {
+                item.avatar
+            },
             onClick = { actions.onAvatarClicked(item) }
         )
         Column(

@@ -28,9 +28,9 @@ sealed class AvatarUiModel {
         val initial: String,
         val address: String,
         val bimiSelector: String?,
-        val color: Color = Color.Unspecified
+        val color: Color = Color.Unspecified,
+        val selected: Boolean = false
     ) : AvatarUiModel()
 
-    data class SelectionMode(val selected: Boolean) : AvatarUiModel()
     data object DraftIcon : AvatarUiModel()
 }
