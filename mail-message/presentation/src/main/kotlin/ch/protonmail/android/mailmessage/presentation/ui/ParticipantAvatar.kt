@@ -32,7 +32,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
@@ -167,7 +166,7 @@ fun ParticipantAvatarSelected(
                 minHeight = avatarSize
             )
             .background(
-                color = ProtonTheme.colors.interactionBrandDefaultNorm,
+                color = ProtonTheme.colors.backgroundNorm,
                 shape = backgroundShape
             )
             .testTag(AvatarTestTags.AvatarSelectionMode)
@@ -176,7 +175,7 @@ fun ParticipantAvatarSelected(
     ) {
         Icon(
             imageVector = ImageVector.vectorResource(id = R.drawable.ic_proton_checkmark),
-            tint = Color.White,
+            tint = ProtonTheme.colors.textNorm,
             contentDescription = NO_CONTENT_DESCRIPTION,
             modifier = Modifier.size(MailDimens.AvatarCheckmarkSize)
         )
