@@ -18,25 +18,18 @@
 
 package ch.protonmail.android.mailcomposer.domain.usecase
 
-import ch.protonmail.android.mailcomposer.domain.repository.DraftRepository
-import ch.protonmail.android.maillabel.domain.model.SystemLabelId
+import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailmessage.domain.model.MessageId
-import ch.protonmail.android.mailmessage.domain.usecase.DeleteMessages
 import me.proton.core.domain.entity.UserId
-import timber.log.Timber
 import javax.inject.Inject
 
-class DiscardDraft @Inject constructor(
-    private val findLocalDraft: FindLocalDraft,
-    private val deleteMessages: DeleteMessages,
-    private val draftRepository: DraftRepository
-) {
+@MissingRustApi
+// How to discard the draft to be provided by rust
+class DiscardDraft @Inject constructor() {
 
+    @SuppressWarnings("NotImplementedDeclaration")
     suspend operator fun invoke(userId: UserId, messageId: MessageId) {
-        findLocalDraft(userId, messageId)?.message?.messageId?.let {
-            draftRepository.cancelUploadDraft(it)
-            deleteMessages(userId, listOf(it), SystemLabelId.Drafts.labelId)
-        } ?: Timber.e("No draft for discard found")
+        TODO("Not yet implemented")
     }
 
 }
