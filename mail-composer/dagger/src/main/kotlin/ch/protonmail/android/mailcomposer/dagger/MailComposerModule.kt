@@ -19,6 +19,8 @@
 package ch.protonmail.android.mailcomposer.dagger
 
 import ch.protonmail.android.composer.data.local.RoomTransactor
+import ch.protonmail.android.composer.data.local.RustDraftDataSource
+import ch.protonmail.android.composer.data.local.RustDraftDataSourceImpl
 import ch.protonmail.android.composer.data.repository.AttachmentRepositoryImpl
 import ch.protonmail.android.composer.data.repository.AttachmentStateRepositoryImpl
 import ch.protonmail.android.composer.data.repository.DraftRepositoryImpl
@@ -75,6 +77,10 @@ abstract class MailComposerModule {
     abstract fun bindsMessageExpirationTimeRepository(
         impl: MessageExpirationTimeRepositoryImpl
     ): MessageExpirationTimeRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindsRustDraftDataSource(impl: RustDraftDataSourceImpl): RustDraftDataSource
 }
 
 @Module

@@ -44,15 +44,19 @@ android {
 
 dependencies {
     kapt(libs.bundles.app.annotationProcessors)
+    compileOnly(libs.proton.rust.core)
 
     implementation(libs.bundles.module.data)
     implementation(libs.androidx.hilt.work)
     implementation(libs.proton.core.user)
     implementation(libs.proton.core.mailSendPreferences)
 
+    implementation(project(":mail-session:domain"))
+    implementation(project(":mail-common:data-rust"))
     implementation(project(":mail-common:data"))
     implementation(project(":mail-common:domain"))
     implementation(project(":mail-composer:domain"))
+    implementation(project(":mail-message:data-rust"))
     implementation(project(":mail-message:data"))
     implementation(project(":mail-message:domain"))
     implementation(project(":mail-settings:domain"))

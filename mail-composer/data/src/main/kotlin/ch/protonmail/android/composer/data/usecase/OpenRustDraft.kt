@@ -16,16 +16,17 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailcomposer.domain.repository
+package ch.protonmail.android.composer.data.usecase
 
-import ch.protonmail.android.mailcomposer.domain.model.DraftFields
-import ch.protonmail.android.mailmessage.domain.model.DraftAction
-import ch.protonmail.android.mailmessage.domain.model.MessageId
-import me.proton.core.domain.entity.UserId
+import ch.protonmail.android.composer.data.wrapper.DraftWrapper
+import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageId
+import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
+import uniffi.proton_mail_uniffi.Draft
+import javax.inject.Inject
 
-interface DraftRepository {
+class OpenRustDraft @Inject constructor() {
 
-    suspend fun openDraft(userId: UserId, messageId: MessageId): DraftFields
+    suspend operator fun invoke(mailSession: MailUserSessionWrapper, messageId: LocalMessageId) =
+        DraftWrapper(Draft.open(mailSession.getRustUserSession(), messageId))
 
-    suspend fun createDraft(userId: UserId, action: DraftAction): DraftFields
 }

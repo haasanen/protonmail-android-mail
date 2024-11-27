@@ -16,16 +16,13 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailcomposer.domain.repository
+package ch.protonmail.android.composer.data.local
 
-import ch.protonmail.android.mailcomposer.domain.model.DraftFields
-import ch.protonmail.android.mailmessage.domain.model.DraftAction
-import ch.protonmail.android.mailmessage.domain.model.MessageId
-import me.proton.core.domain.entity.UserId
-
-interface DraftRepository {
-
-    suspend fun openDraft(userId: UserId, messageId: MessageId): DraftFields
-
-    suspend fun createDraft(userId: UserId, action: DraftAction): DraftFields
-}
+data class LocalDraft(
+    val sender: String,
+    val subject: String,
+    val body: String,
+    val recipientsTo: List<String>,
+    val recipientsCc: List<String>,
+    val recipientsBcc: List<String>
+)

@@ -16,16 +16,22 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailcomposer.domain.repository
+package ch.protonmail.android.composer.data.wrapper
 
-import ch.protonmail.android.mailcomposer.domain.model.DraftFields
-import ch.protonmail.android.mailmessage.domain.model.DraftAction
-import ch.protonmail.android.mailmessage.domain.model.MessageId
-import me.proton.core.domain.entity.UserId
+import uniffi.proton_mail_uniffi.Draft
 
-interface DraftRepository {
+class DraftWrapper constructor(private val rustDraft: Draft) {
 
-    suspend fun openDraft(userId: UserId, messageId: MessageId): DraftFields
+    fun subject(): String = rustDraft.subject()
 
-    suspend fun createDraft(userId: UserId, action: DraftAction): DraftFields
+    fun sender(): String = rustDraft.sender()
+
+    fun body(): String = rustDraft.body()
+
+    fun recipientsTo(): List<String> = rustDraft.toRecipients()
+
+    fun recipientsCc(): List<String> = rustDraft.ccRecipients()
+
+    fun recipientsBcc(): List<String> = rustDraft.bccRecipients()
+
 }
