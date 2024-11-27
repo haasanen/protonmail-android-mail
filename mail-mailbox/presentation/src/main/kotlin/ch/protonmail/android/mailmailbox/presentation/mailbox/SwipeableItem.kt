@@ -42,6 +42,8 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.model.SwipeActions
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.mailcommon.presentation.compose.SwipeThreshold
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import me.proton.core.mailsettings.domain.entity.SwipeAction
 
 @Composable
@@ -76,7 +78,9 @@ fun SwipeableItem(
     val haptic = LocalHapticFeedback.current
     LaunchedEffect(key1 = swipeState.targetValue) {
         if (swipeState.targetValue != SwipeToDismissBoxValue.Settled) {
-            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+            withContext(Dispatchers.IO) {
+                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+            }
         }
     }
 

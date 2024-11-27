@@ -44,6 +44,8 @@ import ch.protonmail.android.mailcommon.presentation.compose.SwipeThreshold
 import ch.protonmail.android.mailcontact.presentation.R
 import ch.protonmail.android.mailcontact.presentation.model.ContactListItemUiModel
 import ch.protonmail.android.mailcontact.presentation.model.ContactSwipeToDeleteUiModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 @Composable
 fun SwipeableContactListItem(contact: ContactListItemUiModel.Contact, actions: ContactListScreen.Actions) {
@@ -88,7 +90,9 @@ fun SwipeableItem(
     val haptic = LocalHapticFeedback.current
     LaunchedEffect(key1 = swipeState.targetValue) {
         if (swipeState.targetValue != SwipeToDismissBoxValue.Settled) {
-            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+            withContext(Dispatchers.IO) {
+                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+            }
         }
     }
 
