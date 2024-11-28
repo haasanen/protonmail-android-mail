@@ -44,6 +44,7 @@ object ProtonDimens {
 
     object Spacing {
 
+        val ExtraTiny = 1.dp
         val Tiny = 2.dp
         val Small = 4.dp
         val Compact = 6.dp

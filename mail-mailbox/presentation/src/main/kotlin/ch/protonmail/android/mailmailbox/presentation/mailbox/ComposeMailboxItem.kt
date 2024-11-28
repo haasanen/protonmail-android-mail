@@ -18,10 +18,8 @@
 
 package ch.protonmail.android.mailmailbox.presentation.mailbox
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -49,7 +47,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ch.protonmail.android.mailcommon.presentation.NO_CONTENT_DESCRIPTION
-import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 import ch.protonmail.android.mailcommon.presentation.compose.SmallNonClickableIcon
 import ch.protonmail.android.mailcommon.presentation.extension.isItemRead
 import ch.protonmail.android.mailcommon.presentation.extension.tintColor
@@ -145,10 +142,12 @@ fun MailboxItem(
                         participants = item.participants,
                         fontWeight = fontWeight,
                         fontColor = fontColor,
+                        count = item.numMessages,
+                        iconColor = iconColor,
                         modifier = Modifier
                             .weight(1f)
-                            .padding(end = ProtonDimens.Spacing.Small)
                     )
+
                     Time(time = item.time, fontWeight = fontWeight, fontColor = fontColor)
                 }
                 Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Small))
@@ -173,12 +172,6 @@ fun MailboxItem(
                             modifier = Modifier
                                 .weight(1f, fill = false)
                                 .padding(end = ProtonDimens.Spacing.Small)
-                        )
-                        Count(
-                            count = item.numMessages,
-                            fontWeight = fontWeight,
-                            fontColor = fontColor,
-                            iconColor = iconColor
                         )
                     }
                     Icons(
@@ -235,16 +228,20 @@ private fun ActionIcons(
 private fun Participants(
     modifier: Modifier = Modifier,
     participants: ParticipantsUiModel,
+    count: Int? = null,
     fontWeight: FontWeight,
-    fontColor: Color
+    fontColor: Color,
+    iconColor: Color
 ) {
     when (participants) {
         is ParticipantsUiModel.Participants -> {
             ParticipantsList(
                 modifier = modifier.wrapContentSize(),
                 participants = participants,
+                count = count,
                 fontWeight = fontWeight,
-                fontColor = fontColor
+                fontColor = fontColor,
+                iconColor = iconColor
             )
         }
 
@@ -314,34 +311,6 @@ private fun Subject(
         maxLines = 1,
         style = ProtonTheme.typography.bodyLargeNorm.copy(fontWeight = fontWeight, color = fontColor)
     )
-}
-
-@Composable
-private fun Count(
-    modifier: Modifier = Modifier,
-    count: Int?,
-    fontWeight: FontWeight,
-    fontColor: Color,
-    iconColor: Color
-) {
-    if (count == null) {
-        return
-    }
-
-    val stroke = BorderStroke(MailDimens.DefaultBorder, iconColor)
-    Box(
-        modifier = modifier
-            .border(stroke, ProtonTheme.shapes.small)
-    ) {
-        Text(
-            modifier = Modifier
-                .testTag(MailboxItemTestTags.Count)
-                .padding(horizontal = ProtonDimens.Spacing.Small),
-            text = count.toString(),
-            overflow = TextOverflow.Ellipsis,
-            style = ProtonTheme.typography.bodySmallNorm.copy(fontWeight = fontWeight, color = fontColor)
-        )
-    }
 }
 
 @Composable

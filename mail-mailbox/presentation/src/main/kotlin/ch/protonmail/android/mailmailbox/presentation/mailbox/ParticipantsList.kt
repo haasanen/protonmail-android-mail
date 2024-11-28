@@ -18,6 +18,9 @@
 
 package ch.protonmail.android.mailmailbox.presentation.mailbox
 
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
@@ -31,6 +34,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Constraints
+import androidx.compose.ui.unit.dp
 import ch.protonmail.android.mailcommon.presentation.compose.OfficialBadge
 import ch.protonmail.android.mailmailbox.presentation.mailbox.ParticipantsList.minLengthParticipantName
 import ch.protonmail.android.mailmailbox.presentation.mailbox.ParticipantsList.participantNameId
@@ -43,17 +47,32 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.model.Participants
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyLargeNorm
+import ch.protonmail.android.design.compose.theme.bodySmallNorm
+import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 
 @Composable
 fun ParticipantsList(
     modifier: Modifier = Modifier,
     participants: ParticipantsUiModel.Participants,
     fontWeight: FontWeight,
-    fontColor: Color
+    fontColor: Color,
+    count: Int?,
+    iconColor: Color
 ) {
-    SubcomposeLayout(
-        modifier = modifier
-    ) { constraints ->
+    SubcomposeLayout(modifier = modifier) { constraints ->
+
+        val countMeasurable = count?.let {
+            subcompose("count") {
+                Count(
+                    modifier = Modifier.padding(horizontal = ProtonDimens.Spacing.Small),
+                    count = it,
+                    fontColor = fontColor,
+                    iconColor = iconColor
+                )
+            }.single()
+        }
+        val countPlaceable = countMeasurable?.measure(constraints)
+        val countWidth = countPlaceable?.width ?: 0
 
         val participantWithBadgeAndSeparatorMinWidth =
             MeasurementCache.getMinWidthWithBadgeAndSeparator(fontWeight).takeIf { it > 0 }
@@ -120,7 +139,7 @@ fun ParticipantsList(
                 participantNameMinWidth
             }
 
-        var availableWidth = constraints.maxWidth
+        var availableWidth = constraints.maxWidth - countWidth
 
         val threeDotsPlaceable = threeDotsMeasurable.measure(constraints)
         val placeables = measurables.mapIndexedNotNull { index, measurable ->
@@ -142,7 +161,10 @@ fun ParticipantsList(
             return@mapIndexedNotNull placeable
         }
 
-        val height = placeables.maxOf { it.height }
+        val height = maxOf(
+            placeables.maxOfOrNull { it.height } ?: 0,
+            countPlaceable?.height ?: 0
+        )
 
         layout(constraints.maxWidth, height) {
             var xPosition = 0
@@ -151,6 +173,11 @@ fun ParticipantsList(
                 placeable.placeRelative(x = xPosition, y = 0)
                 xPosition += placeable.width
             }
+
+            countPlaceable?.placeRelative(
+                x = xPosition,
+                y = (height - countPlaceable.height) / 2
+            )
         }
     }
 }
@@ -195,6 +222,39 @@ private fun ParticipantRow(
         if (participant.shouldShowOfficialBadge) {
             OfficialBadge()
         }
+    }
+}
+
+
+@Composable
+private fun Count(
+    modifier: Modifier = Modifier,
+    count: Int?,
+    fontColor: Color,
+    iconColor: Color
+) {
+    if (count == null) {
+        return
+    }
+
+    val stroke = BorderStroke(MailDimens.DefaultBorder, iconColor)
+    Box(
+        modifier = modifier
+            .border(stroke, ProtonTheme.shapes.small)
+            .padding(
+                horizontal = ProtonDimens.Spacing.Compact,
+                vertical = ProtonDimens.Spacing.ExtraTiny
+            ),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            modifier = Modifier
+                .testTag(MailboxItemTestTags.Count)
+                .padding(0.dp),
+            text = count.toString(),
+            overflow = TextOverflow.Ellipsis,
+            style = ProtonTheme.typography.bodySmallNorm.copy(color = fontColor)
+        )
     }
 }
 
