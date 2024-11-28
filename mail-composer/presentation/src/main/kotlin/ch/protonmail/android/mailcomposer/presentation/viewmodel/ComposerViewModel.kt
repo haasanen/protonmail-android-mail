@@ -24,6 +24,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import arrow.core.getOrElse
 import ch.protonmail.android.mailcommon.domain.AppInBackgroundState
+import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.domain.model.IntentShareInfo
 import ch.protonmail.android.mailcommon.domain.model.decode
 import ch.protonmail.android.mailcommon.domain.model.hasEmailData
@@ -31,7 +32,6 @@ import ch.protonmail.android.mailcommon.domain.usecase.GetPrimaryAddress
 import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcomposer.domain.annotations.NewContactSuggestionsEnabled
-import ch.protonmail.android.mailcomposer.domain.model.DecryptedDraftFields
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.DraftFields
 import ch.protonmail.android.mailcomposer.domain.model.OriginalHtmlQuote
@@ -50,6 +50,7 @@ import ch.protonmail.android.mailcomposer.domain.usecase.GetComposerSenderAddres
 import ch.protonmail.android.mailcomposer.domain.usecase.GetDecryptedDraftFields
 import ch.protonmail.android.mailcomposer.domain.usecase.GetExternalRecipients
 import ch.protonmail.android.mailcomposer.domain.usecase.GetLocalMessageDecrypted
+import ch.protonmail.android.mailcomposer.domain.usecase.InitializeComposerState
 import ch.protonmail.android.mailcomposer.domain.usecase.IsValidEmailAddress
 import ch.protonmail.android.mailcomposer.domain.usecase.ObserveMessageAttachments
 import ch.protonmail.android.mailcomposer.domain.usecase.ObserveMessageExpirationTime
@@ -68,8 +69,6 @@ import ch.protonmail.android.mailcomposer.domain.usecase.StoreDraftWithRecipient
 import ch.protonmail.android.mailcomposer.domain.usecase.StoreDraftWithSubject
 import ch.protonmail.android.mailcomposer.domain.usecase.StoreExternalAttachments
 import ch.protonmail.android.mailcomposer.domain.usecase.ValidateSenderAddress
-import ch.protonmail.android.mailcomposer.domain.usecase.isInvalidDueToDisabledAddress
-import ch.protonmail.android.mailcomposer.domain.usecase.isInvalidDueToPaidAddress
 import ch.protonmail.android.mailcomposer.presentation.mapper.ParticipantMapper
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerAction
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerDraftState
@@ -160,6 +159,7 @@ class ComposerViewModel @Inject constructor(
     private val getExternalRecipients: GetExternalRecipients,
     private val convertHtmlToPlainText: ConvertHtmlToPlainText,
     @NewContactSuggestionsEnabled private val isNewContactsSuggestionsEnabled: Boolean,
+    private val initializeComposerState: InitializeComposerState,
     isDeviceContactsSuggestionsEnabled: IsDeviceContactsSuggestionsEnabled,
     getDecryptedDraftFields: GetDecryptedDraftFields,
     savedStateHandle: SavedStateHandle,
@@ -173,9 +173,7 @@ class ComposerViewModel @Inject constructor(
     private val searchContactsJobs = mutableMapOf<ContactSuggestionsField, Job>()
     private val mutableState = MutableStateFlow(
         ComposerDraftState.initial(
-            MessageId(savedStateHandle.get<String>(ComposerScreen.DraftMessageIdKey) ?: provideNewDraftId().id),
-            // setting the passed recipient directly here in the initial value makes the UX a bit smoother
-            to = savedStateHandle.extractRecipient() ?: emptyList()
+            MessageId(savedStateHandle.get<String>(ComposerScreen.DraftMessageIdKey) ?: provideNewDraftId().id)
         )
     )
     val state: StateFlow<ComposerDraftState> = mutableState
@@ -187,30 +185,10 @@ class ComposerViewModel @Inject constructor(
         val inputDraftId = savedStateHandle.get<String>(ComposerScreen.DraftMessageIdKey)
         val draftAction = savedStateHandle.get<String>(ComposerScreen.SerializedDraftActionKey)
             ?.deserialize<DraftAction>()
-        val recipientAddress = savedStateHandle.extractRecipient()
-
-        val draftActionForShare = savedStateHandle.get<String>(ComposerScreen.DraftActionForShareKey)
-            ?.deserialize<DraftAction.PrefillForShare>()
-
-        primaryUserId.onEach { userId ->
-            getPrimaryAddress(userId)
-                .onLeft { emitNewStateFor(ComposerEvent.ErrorLoadingDefaultSenderAddress) }
-                .onRight {
-                    emitNewStateFor(ComposerEvent.DefaultSenderReceived(SenderUiModel(it.email)))
-                    if (isCreatingEmptyDraft(inputDraftId, draftAction)) {
-                        injectAddressSignature(SenderEmail(it.email))
-                    }
-                    recipientAddress?.let { recipient ->
-                        emitNewStateFor(onToChanged(ComposerAction.RecipientsToChanged(recipient)))
-                    }
-                }
-        }.launchIn(viewModelScope)
 
         when {
-            inputDraftId != null -> prefillWithExistingDraft(inputDraftId, getDecryptedDraftFields)
+            inputDraftId != null -> prefillWithExistingDraft(inputDraftId)
             draftAction != null -> prefillForDraftAction(draftAction)
-            draftActionForShare != null -> prefillForShareDraftAction(draftActionForShare)
-            else -> uploadDraftContinuouslyWhileInForeground(DraftAction.Compose)
         }
 
         observeMessageAttachments()
@@ -222,8 +200,21 @@ class ComposerViewModel @Inject constructor(
         emitNewStateFor(ComposerEvent.OnIsDeviceContactsSuggestionsEnabled(isDeviceContactsSuggestionsEnabled()))
     }
 
-    private fun isCreatingEmptyDraft(inputDraftId: String?, draftAction: DraftAction?): Boolean =
-        inputDraftId == null && (draftAction == null || draftAction is DraftAction.ComposeToAddresses)
+    private fun prefillForComposeToAction(recipients: List<RecipientUiModel>) {
+        viewModelScope.launch {
+            emitNewStateFor(onToChanged(ComposerAction.RecipientsToChanged(recipients)))
+        }
+    }
+
+    private fun prefillForNewDraft() {
+        viewModelScope.launch {
+            initializeComposerState.withNewEmptyDraft(primaryUserId())
+                .onRight { draftFields ->
+                    emitNewStateFor(ComposerEvent.DefaultSenderReceived(SenderUiModel(draftFields.sender.value)))
+                }
+                .onLeft { emitNewStateFor(ComposerEvent.ErrorLoadingDefaultSenderAddress) }
+        }
+    }
 
     private fun prefillForShareDraftAction(shareDraftAction: DraftAction.PrefillForShare) {
         val fileShareInfo = shareDraftAction.intentShareInfo.decode()
@@ -286,88 +277,58 @@ class ComposerViewModel @Inject constructor(
         )
     }
 
+    @MissingRustApi
+    // hardcoding values for isBlockedSendingFromPmAddress / isBlockedSendingFromDisabledAddress
     private fun prefillForDraftAction(draftAction: DraftAction) {
-        val parentMessageId = draftAction.getParentMessageId() ?: return
         Timber.d("Opening composer for draft action $draftAction / ${currentMessageId()}")
         emitNewStateFor(ComposerEvent.OpenWithMessageAction(currentMessageId(), draftAction))
 
-        viewModelScope.launch {
-            val parentMessage = getLocalMessageDecrypted(primaryUserId(), parentMessageId)
-                .onLeft { emitNewStateFor(ComposerEvent.ErrorLoadingParentMessageData) }
-                .getOrNull()
-                ?: return@launch
-
-            Timber.d("Parent message draft data received $parentMessage")
-            val draftFields = parentMessageToDraftFields(primaryUserId(), parentMessage, draftAction)
-                .onLeft { emitNewStateFor(ComposerEvent.ErrorLoadingParentMessageData) }
-                .getOrNull()
-                ?: return@launch
-
-            val senderValidationResult = validateSenderAddress(primaryUserId(), draftFields.sender)
-                .onLeft { emitNewStateFor(ComposerEvent.ErrorLoadingParentMessageData) }
-                .getOrNull()
-                ?: return@launch
-
-            Timber.d("Quoted parent body $draftFields")
-            uploadDraftContinuouslyWhileInForeground(draftAction)
-            val validatedSender = senderValidationResult.validAddress
-
-            emitNewStateFor(
-                ComposerEvent.PrefillDraftDataReceived(
-                    draftUiModel = draftFields.copy(sender = validatedSender).toDraftUiModel(),
-                    isDataRefreshed = true,
-                    isBlockedSendingFromPmAddress = senderValidationResult.isInvalidDueToPaidAddress(),
-                    isBlockedSendingFromDisabledAddress = senderValidationResult.isInvalidDueToDisabledAddress()
-                )
-            )
-            storeDraftWithParentAttachments.invoke(
-                primaryUserId(),
-                currentMessageId(),
-                parentMessage,
-                validatedSender,
-                draftAction
-            )
-
-            // User may skip editing Subject line, so we need to store it here.
-            storeDraftWithSubject(
-                primaryUserId(), currentMessageId(), validatedSender, draftFields.subject
-            )
-
-            if (senderValidationResult is ValidateSenderAddress.ValidationResult.Invalid) {
-                reEncryptAttachments(
-                    userId = primaryUserId(),
-                    messageId = currentMessageId(),
-                    previousSender = senderValidationResult.invalid,
-                    newSenderEmail = validatedSender
-                ).onLeft {
-                    Timber.e("Failed to re-encrypt attachments: $it")
-                    handleReEncryptionFailed()
-                }
+        when (draftAction) {
+            DraftAction.Compose -> prefillForNewDraft()
+            is DraftAction.ComposeToAddresses -> {
+                prefillForNewDraft()
+                prefillForComposeToAction(draftAction.extractRecipients())
             }
+            is DraftAction.Forward,
+            is DraftAction.Reply,
+            is DraftAction.ReplyAll -> viewModelScope.launch {
+                initializeComposerState.withDraftAction(primaryUserId(), draftAction)
+                    .onRight { draftFields ->
+                        emitNewStateFor(
+                            ComposerEvent.PrefillDraftDataReceived(
+                                draftUiModel = draftFields.toDraftUiModel(),
+                                isDataRefreshed = true,
+                                isBlockedSendingFromPmAddress = false,
+                                isBlockedSendingFromDisabledAddress = false
+                            )
+                        )
+                    }
+                    .onLeft { emitNewStateFor(ComposerEvent.ErrorLoadingParentMessageData) }
+            }
+
+            is DraftAction.PrefillForShare -> prefillForShareDraftAction(draftAction)
         }
     }
 
-    private fun prefillWithExistingDraft(inputDraftId: String, getDecryptedDraftFields: GetDecryptedDraftFields) {
+    @MissingRustApi
+    // isDataRefresh param of event is hardcoded to true
+    private fun prefillWithExistingDraft(inputDraftId: String) {
         Timber.d("Opening composer with $inputDraftId / ${currentMessageId()}")
         emitNewStateFor(ComposerEvent.OpenExistingDraft(currentMessageId()))
 
         viewModelScope.launch {
-            getDecryptedDraftFields(primaryUserId(), currentMessageId())
+            initializeComposerState.withExistingDraft(primaryUserId(), MessageId(inputDraftId))
                 .onRight { draftFields ->
-                    Timber.d("Opening existing draft with body $draftFields")
-                    uploadDraftContinuouslyWhileInForeground(DraftAction.Compose)
-                    storeExternalAttachments(primaryUserId(), currentMessageId())
                     emitNewStateFor(
                         ComposerEvent.PrefillDraftDataReceived(
-                            draftUiModel = draftFields.draftFields.toDraftUiModel(),
-                            isDataRefreshed = draftFields is DecryptedDraftFields.Remote,
+                            draftUiModel = draftFields.toDraftUiModel(),
+                            isDataRefreshed = true,
                             isBlockedSendingFromPmAddress = false,
                             isBlockedSendingFromDisabledAddress = false
                         )
                     )
                 }
                 .onLeft { emitNewStateFor(ComposerEvent.ErrorLoadingDraftData) }
-
         }
     }
 
@@ -525,9 +486,7 @@ class ComposerViewModel @Inject constructor(
     private suspend fun onCloseComposer(action: ComposerAction.OnCloseComposer): ComposerOperation {
         val draftFields = buildDraftFields()
         return when {
-            draftFields.haveBlankRecipients() &&
-                draftFields.haveBlankSubject() &&
-                isBodyEmptyOrEqualsToSignatureAndFooter(currentDraftBody()) -> action
+            draftFields.areBlank() -> action
 
             else -> {
                 viewModelScope.launch {
@@ -619,36 +578,18 @@ class ComposerViewModel @Inject constructor(
         SenderEmail(action.sender.email),
         primaryUserId()
     )
-        .onRight {
-            reEncryptAttachments(
-                userId = primaryUserId(),
-                messageId = currentMessageId(),
-                previousSender = SenderEmail(state.value.fields.sender.email),
-                newSenderEmail = SenderEmail(action.sender.email)
-            ).onLeft {
-                Timber.e("Failed to re-encrypt attachments: $it")
-                handleReEncryptionFailed()
-            }
-        }
         .fold(
             ifLeft = {
                 Timber.e("Store draft ${currentMessageId()} with new sender ${action.sender.email} failed")
                 ComposerEvent.ErrorStoringDraftSenderAddress
             },
             ifRight = {
-                injectAddressSignature(
-                    senderEmail = SenderEmail(action.sender.email),
-                    previousSenderEmail = currentSenderEmail()
-                )
                 action
             }
         )
 
     private suspend fun onDraftBodyChanged(action: ComposerAction.DraftBodyChanged) {
         emitNewStateFor(ComposerAction.DraftBodyChanged(action.draftBody))
-
-        // Do not store the draft if the body is exactly the same as signature + footer.
-        if (isBodyEmptyOrEqualsToSignatureAndFooter(action.draftBody)) return
 
         storeDraftWithBody(
             currentMessageId(),
@@ -657,26 +598,6 @@ class ComposerViewModel @Inject constructor(
             currentSenderEmail(),
             primaryUserId()
         ).onLeft { emitNewStateFor(ComposerEvent.ErrorStoringDraftBody) }
-    }
-
-    private suspend fun injectAddressSignature(senderEmail: SenderEmail, previousSenderEmail: SenderEmail? = null) {
-        injectAddressSignature(primaryUserId(), currentDraftBody(), senderEmail, previousSenderEmail).getOrNull()?.let {
-            emitNewStateFor(ComposerEvent.ReplaceDraftBody(it))
-        }
-    }
-
-    private suspend fun isBodyEmptyOrEqualsToSignatureAndFooter(draftBody: DraftBody): Boolean {
-        // Consider the body empty even if it has white spaces or newlines.
-        if (draftBody.value.trim().isEmpty()) return true
-
-        val bodyWithSignature = injectAddressSignature(
-            primaryUserId(),
-            DraftBody(""),
-            currentSenderEmail()
-        )
-
-        val isBodyEqualSignature = bodyWithSignature.getOrNull()?.value == draftBody.value
-        return draftBody.value.isNotBlank() && isBodyEqualSignature
     }
 
     private suspend fun primaryUserId() = primaryUserId.first()
@@ -817,27 +738,18 @@ class ComposerViewModel @Inject constructor(
 
     }
 
-    private suspend fun handleReEncryptionFailed() {
-        deleteAllAttachments(primaryUserId(), currentSenderEmail(), currentMessageId())
-        emitNewStateFor(ComposerEvent.ErrorAttachmentsReEncryption)
-    }
-
     private fun emitNewStateFor(operation: ComposerOperation) {
         val currentState = state.value
         mutableState.value = reducer.newStateFrom(currentState, operation)
     }
 
-    private fun SavedStateHandle.extractRecipient(): List<RecipientUiModel>? {
-        return get<String>(ComposerScreen.SerializedDraftActionKey)?.deserialize<DraftAction>()
-            .let { it as? DraftAction.ComposeToAddresses }
-            ?.let {
-                it.recipients.map { recipient ->
-                    when {
-                        validateEmailAddress(recipient) -> RecipientUiModel.Valid(recipient)
-                        else -> RecipientUiModel.Invalid(recipient)
-                    }
-                }
+    private fun DraftAction.ComposeToAddresses.extractRecipients(): List<RecipientUiModel> {
+        return this.recipients.map { recipient ->
+            when {
+                validateEmailAddress(recipient) -> RecipientUiModel.Valid(recipient)
+                else -> RecipientUiModel.Invalid(recipient)
             }
+        }
     }
 
     companion object {

@@ -37,6 +37,8 @@ data class DraftFields(
 
     fun haveBlankSubject() = subject.value.isBlank()
 
+    fun haveBlankBody() = body.value.isBlank()
+
     fun haveBlankRecipients() = recipientsTo.value.isEmpty() &&
         recipientsCc.value.isEmpty() &&
         recipientsBcc.value.isEmpty()
