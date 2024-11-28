@@ -213,7 +213,7 @@ fun MailboxScreen(
         onSwipeSpam = { itemId -> viewModel.submit(MailboxViewAction.SwipeSpamAction(itemId)) },
         onSwipeTrash = { itemId -> viewModel.submit(MailboxViewAction.SwipeTrashAction(itemId)) },
         onSwipeStar = { itemId, isStarred ->
-            viewModel.submit(MailboxViewAction.SwipeStarAction(itemId, isStarred))
+            viewModel.submit(MailboxViewAction.StarAction(itemId, isStarred))
         },
         onEnterSearchMode = { viewModel.submit(MailboxViewAction.EnterSearchMode) },
         onSearchQuery = { query -> viewModel.submit(MailboxViewAction.SearchQuery(query)) },

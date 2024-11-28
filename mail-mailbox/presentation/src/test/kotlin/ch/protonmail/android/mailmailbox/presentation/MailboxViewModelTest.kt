@@ -3256,7 +3256,7 @@ class MailboxViewModelTest {
         val expectedItemId = "itemId"
         expectViewMode(NoConversationGrouping)
         expectedUnStarMessagesSucceeds(userId, listOf(buildMailboxUiModelItem(id = expectedItemId)))
-        val expectedViewAction = MailboxViewAction.SwipeStarAction(expectedItemId, true)
+        val expectedViewAction = MailboxViewAction.StarAction(expectedItemId, true)
 
         // When
         mailboxViewModel.submit(expectedViewAction)
@@ -3280,7 +3280,7 @@ class MailboxViewModelTest {
         expectViewMode(ConversationGrouping)
         expectedUnStarConversationsSucceeds(userId, listOf(buildMailboxUiModelItem(id = expectedItemId)))
         expectViewModeForCurrentLocation(ConversationGrouping)
-        val expectedViewAction = MailboxViewAction.SwipeStarAction(expectedItemId, true)
+        val expectedViewAction = MailboxViewAction.StarAction(expectedItemId, true)
 
         // When
         mailboxViewModel.submit(expectedViewAction)
@@ -3303,7 +3303,7 @@ class MailboxViewModelTest {
         val expectedItemId = "itemId"
         expectViewMode(NoConversationGrouping)
         expectedStarMessagesSucceeds(userId, listOf(buildMailboxUiModelItem(id = expectedItemId)))
-        val expectedViewAction = MailboxViewAction.SwipeStarAction(expectedItemId, false)
+        val expectedViewAction = MailboxViewAction.StarAction(expectedItemId, false)
 
         // When
         mailboxViewModel.submit(expectedViewAction)
@@ -3327,7 +3327,7 @@ class MailboxViewModelTest {
         expectViewMode(ConversationGrouping)
         expectedStarConversationsSucceeds(userId, listOf(buildMailboxUiModelItem(id = expectedItemId)))
         expectViewModeForCurrentLocation(ConversationGrouping)
-        val expectedViewAction = MailboxViewAction.SwipeStarAction(expectedItemId, false)
+        val expectedViewAction = MailboxViewAction.StarAction(expectedItemId, false)
 
         // When
         mailboxViewModel.submit(expectedViewAction)

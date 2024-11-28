@@ -355,7 +355,7 @@ class MailboxViewModel @Inject constructor(
                 is MailboxViewAction.SwipeArchiveAction -> handleSwipeArchiveAction(viewAction)
                 is MailboxViewAction.SwipeSpamAction -> handleSwipeSpamAction(viewAction)
                 is MailboxViewAction.SwipeTrashAction -> handleSwipeTrashAction(viewAction)
-                is MailboxViewAction.SwipeStarAction -> handleSwipeStarAction(viewAction)
+                is MailboxViewAction.StarAction -> handleSwipeStarAction(viewAction)
                 is MailboxViewAction.Trash -> handleTrashAction()
                 is MailboxViewAction.Delete -> handleDeleteAction()
                 is MailboxViewAction.MoveToInbox -> handleMoveToInboxAction(viewAction)
@@ -652,7 +652,7 @@ class MailboxViewModel @Inject constructor(
         emitNewStateFrom(swipeReadAction)
     }
 
-    private suspend fun handleSwipeStarAction(swipeStarAction: MailboxViewAction.SwipeStarAction) {
+    private suspend fun handleSwipeStarAction(swipeStarAction: MailboxViewAction.StarAction) {
         if (swipeStarAction.isStarred) {
             when (getViewModeForCurrentLocation(selectedMailLabelId.flow.value)) {
                 ViewMode.ConversationGrouping -> unStarConversations(
