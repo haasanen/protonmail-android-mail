@@ -186,6 +186,9 @@ fun MailboxScreen(
         onOfflineWithData = { viewModel.submit(MailboxViewAction.OnOfflineWithData) },
         onErrorWithData = { viewModel.submit(MailboxViewAction.OnErrorWithData) },
         onAvatarClicked = { viewModel.submit(MailboxViewAction.OnItemAvatarClicked(it)) },
+        onStarClicked = { item ->
+            viewModel.submit(MailboxViewAction.StarAction(item.id, item.showStar))
+        },
         onItemClicked = { item -> viewModel.submit(MailboxViewAction.ItemClicked(item)) },
         onItemLongClicked = { viewModel.submit(MailboxViewAction.OnItemLongClicked(it)) },
         onRefreshList = { viewModel.submit(MailboxViewAction.Refresh) },
@@ -668,7 +671,8 @@ private fun MailboxItemsList(
     val itemActions = ComposeMailboxItem.Actions(
         onItemClicked = actions.onItemClicked,
         onItemLongClicked = actions.onItemLongClicked,
-        onAvatarClicked = actions.onAvatarClicked
+        onAvatarClicked = actions.onAvatarClicked,
+        onStarClicked = actions.onStarClicked
     )
 
     val swipingEnabled = state is MailboxListState.Data.ViewMode && !state.searchState.isInSearch()
@@ -1054,6 +1058,7 @@ object MailboxScreen {
         val onItemClicked: (MailboxItemUiModel) -> Unit,
         val onItemLongClicked: (MailboxItemUiModel) -> Unit,
         val onAvatarClicked: (MailboxItemUiModel) -> Unit,
+        val onStarClicked: (MailboxItemUiModel) -> Unit,
         val onRefreshList: () -> Unit,
         val onRefreshListCompleted: () -> Unit,
         val openDrawerMenu: () -> Unit,
@@ -1103,6 +1108,7 @@ object MailboxScreen {
                 onItemClicked = {},
                 onItemLongClicked = {},
                 onAvatarClicked = {},
+                onStarClicked = {},
                 onRefreshList = {},
                 onRefreshListCompleted = {},
                 openDrawerMenu = {},

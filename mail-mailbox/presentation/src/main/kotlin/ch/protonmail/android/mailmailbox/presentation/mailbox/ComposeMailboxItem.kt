@@ -177,7 +177,8 @@ fun MailboxItem(
                     }
                     Icons(
                         item = item,
-                        iconColor = fontColor
+                        iconColor = fontColor,
+                        onStarClicked = actions.onStarClicked
                     )
                 }
                 Row(
@@ -317,7 +318,8 @@ private fun Subject(
 private fun Icons(
     modifier: Modifier = Modifier,
     item: MailboxItemUiModel,
-    iconColor: Color
+    iconColor: Color,
+    onStarClicked: (MailboxItemUiModel) -> Unit
 ) {
 
     Row(
@@ -333,10 +335,15 @@ private fun Icons(
         if (item.showStar) {
             SmallClickableIcon(
                 iconId = R.drawable.ic_proton_star_filled,
-                iconColor = ProtonTheme.colors.starSelected
-            ) {}
+                iconColor = ProtonTheme.colors.starSelected,
+                onClick = { onStarClicked(item) }
+            )
         } else {
-            SmallClickableIcon(iconId = R.drawable.ic_proton_star, iconColor = ProtonTheme.colors.starDefault) {}
+            SmallClickableIcon(
+                iconId = R.drawable.ic_proton_star,
+                iconColor = ProtonTheme.colors.starDefault,
+                onClick = { onStarClicked(item) }
+            )
         }
     }
 }
@@ -372,7 +379,8 @@ object ComposeMailboxItem {
     data class Actions(
         val onItemClicked: (MailboxItemUiModel) -> Unit,
         val onItemLongClicked: (MailboxItemUiModel) -> Unit,
-        val onAvatarClicked: (MailboxItemUiModel) -> Unit
+        val onAvatarClicked: (MailboxItemUiModel) -> Unit,
+        val onStarClicked: (MailboxItemUiModel) -> Unit
     ) {
 
         companion object {
@@ -380,7 +388,8 @@ object ComposeMailboxItem {
             val Empty = Actions(
                 onAvatarClicked = {},
                 onItemLongClicked = {},
-                onItemClicked = {}
+                onItemClicked = {},
+                onStarClicked = {}
             )
         }
     }
