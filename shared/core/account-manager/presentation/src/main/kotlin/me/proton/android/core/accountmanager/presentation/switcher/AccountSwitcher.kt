@@ -25,7 +25,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -40,8 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
 import ch.protonmail.android.design.compose.theme.LocalColors
 import ch.protonmail.android.design.compose.theme.LocalShapes
-import ch.protonmail.android.design.compose.theme.ProtonColors
-import ch.protonmail.android.design.compose.theme.ProtonTheme
+import ch.protonmail.android.design.compose.theme.ProtonSidebarTheme
 import me.proton.core.domain.entity.UserId
 
 @Composable
@@ -51,16 +49,15 @@ fun AccountSwitcher(
     primaryAccount: AccountListItem.Ready.Primary?,
     otherAccounts: List<AccountListItem>,
     onExpandedChange: (Boolean) -> Unit,
-    onEvent: (AccountSwitchEvent) -> Unit,
-    sidebarColors: ProtonColors = ProtonTheme.colors.sidebarColors ?: ProtonTheme.colors
+    onEvent: (AccountSwitchEvent) -> Unit
 ) {
     var rowSize by remember { mutableStateOf(Size.Zero) }
 
-    Column(
-        modifier = modifier.clip(LocalShapes.current.large)
-    ) {
-        if (primaryAccount != null) {
-            CompositionLocalProvider(LocalColors provides sidebarColors) {
+    ProtonSidebarTheme {
+        Column(
+            modifier = modifier.clip(LocalShapes.current.large)
+        ) {
+            if (primaryAccount != null) {
                 AccountSwitcherRowWithChevron(
                     accountListItem = primaryAccount,
                     modifier = Modifier

@@ -28,7 +28,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import ch.protonmail.android.design.compose.theme.LocalColors
 import ch.protonmail.android.design.compose.theme.ProtonDimens
-import ch.protonmail.android.design.compose.theme.ProtonTheme
+import ch.protonmail.android.design.compose.theme.ProtonSidebarTheme
 import me.proton.core.domain.entity.UserId
 import me.proton.core.presentation.R
 
@@ -55,7 +55,7 @@ fun AccountSwitcherRowWithChevron(accountListItem: AccountListItem, modifier: Mo
 @Preview(name = "Night", uiMode = UI_MODE_NIGHT_YES)
 @Composable
 fun AccountSwitcherRowWithChevronPreview() {
-    ProtonTheme(colors = ProtonTheme.colors.sidebarColors!!) {
+    ProtonSidebarTheme {
         AccountSwitcherRowWithChevron(
             accountListItem = AccountListItem.Ready.Primary(
                 accountItem = AccountItem(

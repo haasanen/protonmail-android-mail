@@ -39,7 +39,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import ch.protonmail.android.design.compose.theme.LocalColors
 import ch.protonmail.android.design.compose.theme.LocalTypography
 import ch.protonmail.android.design.compose.theme.ProtonDimens
-import ch.protonmail.android.design.compose.theme.ProtonTheme
+import ch.protonmail.android.design.compose.theme.ProtonSidebarTheme
 import me.proton.android.core.accountmanager.presentation.R
 import me.proton.android.core.accountmanager.presentation.switcher.MenuOption.ManageAccount
 import me.proton.android.core.accountmanager.presentation.switcher.MenuOption.Remove
@@ -199,7 +199,7 @@ private enum class MenuOption {
 @Preview(name = "Night", uiMode = UI_MODE_NIGHT_YES)
 @Composable
 fun AccountSwitcherRowWithContextMenuPreview() {
-    ProtonTheme(colors = ProtonTheme.colors.sidebarColors!!) {
+    ProtonSidebarTheme {
         AccountSwitcherRowWithContextMenu(
             accountListItem = AccountListItem.Ready.Primary(
                 accountItem = AccountItem(
