@@ -53,7 +53,7 @@ includeCoreBuild {
         }
         val server = "gitlab.protontech.ch"
         uri.set("https://username:${token}@${server}/amorral/et-protoncore.git")
-        branch.set("develop")
+        branch.set("fix/proton_sidebar_theme_fix")
         checkoutDirectory.set(file("./account-core"))
     }
 }
