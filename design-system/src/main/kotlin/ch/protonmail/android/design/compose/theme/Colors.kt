@@ -229,6 +229,9 @@ class ProtonColors(
     shadowRaised: Color,
     shadowLifted: Color,
 
+    starDefault: Color = shade50,
+    starSelected: Color = ProtonPalette.TexasRose,
+
     sidebarBackground: Color,
     sidebarInteractionPressed: Color,
     sidebarSeparator: Color,
@@ -404,6 +407,10 @@ class ProtonColors(
     var shadowLifted: Color by mutableStateOf(shadowLifted, structuralEqualityPolicy())
         internal set
 
+    var starDefault: Color by mutableStateOf(starDefault, structuralEqualityPolicy())
+        internal set
+    var starSelected: Color by mutableStateOf(starSelected, structuralEqualityPolicy())
+        internal set
 
     var sidebarBackground: Color by mutableStateOf(sidebarBackground, structuralEqualityPolicy())
         internal set
@@ -493,6 +500,8 @@ class ProtonColors(
         floatyBackground: Color = this.floatyBackground,
         floatyPressed: Color = this.floatyPressed,
         floatyText: Color = this.floatyText,
+        starDefault: Color = this.starDefault,
+        starSelected: Color = this.starSelected,
         shadowNorm: Color = this.shadowNorm,
         shadowRaised: Color = this.shadowRaised,
         shadowLifted: Color = this.shadowLifted,
@@ -593,6 +602,9 @@ class ProtonColors(
         shadowNorm = shadowNorm,
         shadowRaised = shadowRaised,
         shadowLifted = shadowLifted,
+
+        starDefault = starDefault,
+        starSelected = starSelected,
 
         sidebarBackground = sidebarBackground,
         sidebarInteractionPressed = sidebarInteractionPressed,
@@ -719,6 +731,7 @@ class ProtonColors(
                 borderLight = it.shade40,
                 borderNorm = it.shade45,
                 borderStrong = it.shade50,
+                starDefault = it.shade50,
                 backgroundInvertedNorm = it.shade20,
                 backgroundInvertedSecondary = it.shade40,
                 backgroundInvertedDeep = it.shade45
@@ -881,6 +894,9 @@ fun ProtonColors.updateColorsFrom(other: ProtonColors) {
     shadowNorm = other.shadowNorm
     shadowRaised = other.shadowRaised
     shadowLifted = other.shadowLifted
+
+    starDefault = other.starDefault
+    starSelected = other.starSelected
 
     sidebarBackground = other.sidebarBackground
     sidebarInteractionPressed = other.sidebarInteractionPressed
