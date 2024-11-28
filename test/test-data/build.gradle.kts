@@ -61,5 +61,6 @@ dependencies {
     implementation(project(":mail-message"))
     implementation(project(":mail-detail"))
     implementation(project(":mail-contact"))
+    implementation(project(":mail-composer"))
 
 }
