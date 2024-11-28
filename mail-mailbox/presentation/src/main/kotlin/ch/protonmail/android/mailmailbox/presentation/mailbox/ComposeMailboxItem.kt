@@ -66,6 +66,7 @@ import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodySmallNorm
 import ch.protonmail.android.design.compose.theme.bodyLargeNorm
+import ch.protonmail.android.mailcommon.presentation.compose.SmallClickableIcon
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -171,13 +172,12 @@ fun MailboxItem(
                             fontColor = fontColor,
                             modifier = Modifier
                                 .weight(1f, fill = false)
-                                .padding(end = ProtonDimens.Spacing.Small)
+                                .padding(end = ProtonDimens.Spacing.Medium)
                         )
                     }
                     Icons(
                         item = item,
-                        iconColor = fontColor,
-                        modifier = Modifier.padding(start = ProtonDimens.Spacing.Small)
+                        iconColor = fontColor
                     )
                 }
                 Row(
@@ -319,7 +319,6 @@ private fun Icons(
     item: MailboxItemUiModel,
     iconColor: Color
 ) {
-    if (item.hasIconsToShow().not()) return
 
     Row(
         modifier = modifier,
@@ -332,7 +331,12 @@ private fun Icons(
             SmallNonClickableIcon(iconId = R.drawable.ic_proton_paper_clip, iconColor = iconColor)
         }
         if (item.showStar) {
-            SmallNonClickableIcon(iconId = R.drawable.ic_proton_star_filled, tintId = R.color.notification_warning)
+            SmallClickableIcon(
+                iconId = R.drawable.ic_proton_star_filled,
+                iconColor = ProtonTheme.colors.starSelected
+            ) {}
+        } else {
+            SmallClickableIcon(iconId = R.drawable.ic_proton_star, iconColor = ProtonTheme.colors.starDefault) {}
         }
     }
 }
