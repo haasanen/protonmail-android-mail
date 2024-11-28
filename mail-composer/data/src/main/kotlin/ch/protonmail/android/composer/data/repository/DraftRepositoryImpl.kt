@@ -18,8 +18,10 @@
 
 package ch.protonmail.android.composer.data.repository
 
+import arrow.core.Either
 import ch.protonmail.android.composer.data.local.RustDraftDataSource
-import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
+import ch.protonmail.android.composer.data.mapper.toDraftFields
+import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcomposer.domain.model.DraftFields
 import ch.protonmail.android.mailcomposer.domain.repository.DraftRepository
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
@@ -27,18 +29,13 @@ import ch.protonmail.android.mailmessage.domain.model.MessageId
 import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 
-@MissingRustApi
 class DraftRepositoryImpl @Inject constructor(
     private val draftDataSource: RustDraftDataSource
 ) : DraftRepository {
 
-    @SuppressWarnings("NotImplementedDeclaration")
-    override suspend fun openDraft(userId: UserId, messageId: MessageId): DraftFields {
-        TODO("Not yet implemented")
-    }
+    override suspend fun openDraft(userId: UserId, messageId: MessageId): Either<DataError, DraftFields> =
+        draftDataSource.open(userId, messageId).map { it.toDraftFields() }
 
-    @SuppressWarnings("NotImplementedDeclaration")
-    override suspend fun createDraft(userId: UserId, action: DraftAction): DraftFields {
-        draftDataSource.createDraft()
-    }
+    override suspend fun createDraft(userId: UserId, action: DraftAction): Either<DataError, DraftFields> =
+        draftDataSource.create(userId, action).map { it.toDraftFields() }
 }

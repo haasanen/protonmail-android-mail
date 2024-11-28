@@ -62,6 +62,11 @@ object RecipientSample {
         name = "external-encrypted@privacy.first.com"
     )
 
+    val NamelessRecipient = build(
+        address = "i-have-no-name@proton.me",
+        name = ""
+    )
+
     fun build(address: String = "email@pm.me", name: String = "name") = Recipient(
         address = address,
         name = name

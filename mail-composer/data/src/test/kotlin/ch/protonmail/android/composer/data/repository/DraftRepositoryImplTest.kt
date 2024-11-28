@@ -1,0 +1,53 @@
+package ch.protonmail.android.composer.data.repository
+
+import arrow.core.left
+import arrow.core.right
+import ch.protonmail.android.composer.data.local.RustDraftDataSource
+import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
+import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
+import ch.protonmail.android.testdata.composer.DraftFieldsTestData
+import ch.protonmail.android.testdata.composer.LocalDraftTestData
+import io.mockk.coEvery
+import io.mockk.mockk
+import kotlinx.coroutines.test.runTest
+import kotlin.test.Test
+import kotlin.test.assertEquals
+
+class DraftRepositoryImplTest {
+
+    private val draftDataSource = mockk<RustDraftDataSource>()
+
+    private val draftRepository = DraftRepositoryImpl(draftDataSource)
+
+    @Test
+    fun `returns success when open draft succeeds`() = runTest {
+        // Given
+        val userId = UserIdSample.Primary
+        val messageId = MessageIdSample.PlainTextMessage
+        val localFields = LocalDraftTestData.BasicLocalDraft
+        coEvery { draftDataSource.open(userId, messageId) } returns localFields.right()
+
+        // When
+        val actual = draftRepository.openDraft(userId, messageId)
+
+        // Then
+        val expected = DraftFieldsTestData.BasicDraftFields
+        assertEquals(expected.right(), actual)
+    }
+
+    @Test
+    fun `returns error when open draft fails`() = runTest {
+        // Given
+        val userId = UserIdSample.Primary
+        val messageId = MessageIdSample.PlainTextMessage
+        val expected = DataError.Local.Unknown
+        coEvery { draftDataSource.open(userId, messageId) } returns expected.left()
+
+        // When
+        val actual = draftRepository.openDraft(userId, messageId)
+
+        // Then
+        assertEquals(expected.left(), actual)
+    }
+}

@@ -18,6 +18,34 @@
 
 package ch.protonmail.android.composer.data.local
 
+import arrow.core.Either
+import ch.protonmail.android.composer.data.usecase.CreateRustDraft
+import ch.protonmail.android.composer.data.usecase.OpenRustDraft
+import ch.protonmail.android.composer.data.wrapper.DraftWrapper
+import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailmessage.domain.model.DraftAction
+import ch.protonmail.android.mailmessage.domain.model.MessageId
+import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
+import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
+import javax.inject.Singleton
 
-class RustDraftDataSourceImpl @Inject constructor() : RustDraftDataSource
+@Singleton
+@SuppressWarnings("NotImplementedDeclaration")
+class RustDraftDataSourceImpl @Inject constructor(
+    private val userSessionRepository: UserSessionRepository,
+    private val createRustDraft: CreateRustDraft,
+    private val openRustDraft: OpenRustDraft
+) : RustDraftDataSource {
+
+    private var rustDraftWrapper: DraftWrapper? = null
+
+    override suspend fun open(userId: UserId, messageId: MessageId): Either<DataError, LocalDraft> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun create(userId: UserId, action: DraftAction): Either<DataError, LocalDraft> {
+        TODO("Not yet implemented")
+    }
+
+}

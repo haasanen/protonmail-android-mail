@@ -18,4 +18,16 @@
 
 package ch.protonmail.android.composer.data.local
 
-interface RustDraftDataSource
+import arrow.core.Either
+import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailmessage.domain.model.DraftAction
+import ch.protonmail.android.mailmessage.domain.model.MessageId
+import me.proton.core.domain.entity.UserId
+
+interface RustDraftDataSource {
+
+    suspend fun open(userId: UserId, messageId: MessageId): Either<DataError, LocalDraft>
+
+    suspend fun create(userId: UserId, action: DraftAction): Either<DataError, LocalDraft>
+
+}
