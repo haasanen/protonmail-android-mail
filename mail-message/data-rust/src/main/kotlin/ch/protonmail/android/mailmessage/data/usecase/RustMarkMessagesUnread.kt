@@ -26,5 +26,5 @@ import javax.inject.Inject
 class RustMarkMessagesUnread @Inject constructor() {
 
     suspend operator fun invoke(mailbox: MailboxWrapper, messageIds: List<LocalMessageId>) =
-        markMessagesUnread(mailbox.rustObject(), messageIds)
+        markMessagesUnread(mailbox.getRustMailbox(), messageIds)
 }

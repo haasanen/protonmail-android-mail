@@ -29,5 +29,5 @@ class GetRustConversationLabelAsActions @Inject constructor() {
     suspend operator fun invoke(
         mailbox: MailboxWrapper,
         conversationId: List<LocalConversationId>
-    ): List<LocalLabelAsAction> = availableLabelAsActionsForConversations(mailbox.rustObject(), conversationId)
+    ): List<LocalLabelAsAction> = availableLabelAsActionsForConversations(mailbox.getRustMailbox(), conversationId)
 }

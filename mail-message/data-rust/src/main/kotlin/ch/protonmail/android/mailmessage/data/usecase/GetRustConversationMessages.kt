@@ -29,5 +29,5 @@ class GetRustConversationMessages @Inject constructor() {
     suspend operator fun invoke(
         mailbox: MailboxWrapper,
         conversationId: LocalConversationId
-    ): ConversationAndMessages? = conversation(mailbox.rustObject(), conversationId)
+    ): ConversationAndMessages? = conversation(mailbox.getRustMailbox(), conversationId)
 }

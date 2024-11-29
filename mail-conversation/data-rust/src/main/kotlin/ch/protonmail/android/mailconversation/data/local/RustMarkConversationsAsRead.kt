@@ -26,5 +26,5 @@ import javax.inject.Inject
 class RustMarkConversationsAsRead @Inject constructor() {
 
     suspend operator fun invoke(mailbox: MailboxWrapper, conversationIds: List<LocalConversationId>) =
-        markConversationsAsRead(mailbox.rustObject(), conversationIds)
+        markConversationsAsRead(mailbox.getRustMailbox(), conversationIds)
 }

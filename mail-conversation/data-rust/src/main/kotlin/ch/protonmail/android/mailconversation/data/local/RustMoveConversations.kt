@@ -30,5 +30,5 @@ class RustMoveConversations @Inject constructor() {
         mailbox: MailboxWrapper,
         toLabel: LocalLabelId,
         conversationIds: List<LocalConversationId>
-    ) = moveConversations(mailbox.rustObject(), toLabel, conversationIds)
+    ) = moveConversations(mailbox.getRustMailbox(), toLabel, conversationIds)
 }

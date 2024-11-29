@@ -27,5 +27,5 @@ import javax.inject.Inject
 class GetRustMessageLabelAsActions @Inject constructor() {
 
     suspend operator fun invoke(mailbox: MailboxWrapper, messageIds: List<LocalMessageId>): List<LocalLabelAsAction> =
-        availableLabelAsActionsForMessages(mailbox.rustObject(), messageIds)
+        availableLabelAsActionsForMessages(mailbox.getRustMailbox(), messageIds)
 }

@@ -24,7 +24,7 @@ import uniffi.proton_mail_uniffi.Mailbox
 
 class MailboxWrapper(private val rustMailbox: Mailbox) {
 
-    fun rustObject() = rustMailbox
+    fun getRustMailbox() = rustMailbox
 
     fun labelId(): LocalLabelId = rustMailbox.labelId()
 

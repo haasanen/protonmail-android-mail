@@ -29,5 +29,5 @@ class GetRustAvailableConversationActions @Inject constructor() {
     suspend operator fun invoke(
         mailbox: MailboxWrapper,
         messageIds: List<LocalConversationId>
-    ): ConversationAvailableActions = availableActionsForConversations(mailbox.rustObject(), messageIds)
+    ): ConversationAvailableActions = availableActionsForConversations(mailbox.getRustMailbox(), messageIds)
 }

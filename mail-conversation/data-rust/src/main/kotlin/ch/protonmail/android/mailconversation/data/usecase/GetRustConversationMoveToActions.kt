@@ -27,5 +27,5 @@ import javax.inject.Inject
 class GetRustConversationMoveToActions @Inject constructor() {
 
     suspend operator fun invoke(mailbox: MailboxWrapper, conversationId: List<LocalConversationId>): List<MoveAction> =
-        availableMoveToActionsForConversations(mailbox.rustObject(), conversationId)
+        availableMoveToActionsForConversations(mailbox.getRustMailbox(), conversationId)
 }

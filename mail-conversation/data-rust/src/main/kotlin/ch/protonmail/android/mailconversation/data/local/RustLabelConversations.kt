@@ -34,7 +34,7 @@ class RustLabelConversations @Inject constructor() {
         shouldArchive: Boolean
     ) {
         labelConversationsAs(
-            mailbox.rustObject(),
+            mailbox.getRustMailbox(),
             conversationIds,
             selectedLabelIds,
             partiallySelectedLabelIds,

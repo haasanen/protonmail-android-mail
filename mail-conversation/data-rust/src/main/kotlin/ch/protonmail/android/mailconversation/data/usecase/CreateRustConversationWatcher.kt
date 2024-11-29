@@ -33,6 +33,6 @@ class CreateRustConversationWatcher @Inject constructor() {
         conversationId: LocalConversationId,
         callback: LiveQueryCallback
     ): WeakReference<WatchedConversation> = WeakReference(
-        watchConversation(mailbox.rustObject(), conversationId, callback)
+        watchConversation(mailbox.getRustMailbox(), conversationId, callback)
     )
 }

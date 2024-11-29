@@ -29,5 +29,5 @@ class GetRustAllConversationBottomBarActions @Inject constructor() {
     suspend operator fun invoke(
         mailbox: MailboxWrapper,
         messageIds: List<LocalConversationId>
-    ): AllBottomBarMessageActions = allAvailableBottomBarActionsForConversations(mailbox.rustObject(), messageIds)
+    ): AllBottomBarMessageActions = allAvailableBottomBarActionsForConversations(mailbox.getRustMailbox(), messageIds)
 }

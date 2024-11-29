@@ -26,5 +26,5 @@ import javax.inject.Inject
 class RustDeleteConversations @Inject constructor() {
 
     suspend operator fun invoke(mailbox: MailboxWrapper, conversationIds: List<LocalConversationId>) =
-        deleteConversations(mailbox.rustObject(), conversationIds)
+        deleteConversations(mailbox.getRustMailbox(), conversationIds)
 }

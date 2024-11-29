@@ -26,5 +26,5 @@ import javax.inject.Inject
 class CreateRustMessageBodyAccessor @Inject constructor() {
 
     suspend operator fun invoke(mailbox: MailboxWrapper, messageId: LocalMessageId) =
-        getMessageBody(mailbox.rustObject(), messageId)
+        getMessageBody(mailbox.getRustMailbox(), messageId)
 }

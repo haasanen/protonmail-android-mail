@@ -33,6 +33,12 @@ class RustLabelMessages @Inject constructor() {
         partiallySelectedLabelIds: List<LocalLabelId>,
         shouldArchive: Boolean
     ) {
-        labelMessagesAs(mailbox.rustObject(), messageIds, selectedLabelIds, partiallySelectedLabelIds, shouldArchive)
+        labelMessagesAs(
+            mailbox.getRustMailbox(),
+            messageIds,
+            selectedLabelIds,
+            partiallySelectedLabelIds,
+            shouldArchive
+        )
     }
 }

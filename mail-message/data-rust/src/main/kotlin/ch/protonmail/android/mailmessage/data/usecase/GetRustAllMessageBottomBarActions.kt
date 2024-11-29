@@ -27,5 +27,5 @@ import javax.inject.Inject
 class GetRustAllMessageBottomBarActions @Inject constructor() {
 
     suspend operator fun invoke(mailbox: MailboxWrapper, messageIds: List<LocalMessageId>): AllBottomBarMessageActions =
-        allAvailableBottomBarActionsForMessages(mailbox.rustObject(), messageIds)
+        allAvailableBottomBarActionsForMessages(mailbox.getRustMailbox(), messageIds)
 }

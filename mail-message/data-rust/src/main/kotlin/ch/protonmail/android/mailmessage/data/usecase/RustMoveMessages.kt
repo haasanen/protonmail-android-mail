@@ -30,5 +30,5 @@ class RustMoveMessages @Inject constructor() {
         mailbox: MailboxWrapper,
         toLabel: LocalLabelId,
         messageIds: List<LocalMessageId>
-    ) = moveMessages(mailbox.rustObject(), toLabel, messageIds)
+    ) = moveMessages(mailbox.getRustMailbox(), toLabel, messageIds)
 }
