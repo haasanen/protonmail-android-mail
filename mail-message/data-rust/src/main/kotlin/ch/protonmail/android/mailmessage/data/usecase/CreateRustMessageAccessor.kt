@@ -26,5 +26,5 @@ import javax.inject.Inject
 class CreateRustMessageAccessor @Inject constructor() {
 
     suspend operator fun invoke(session: MailUserSessionWrapper, messageId: LocalMessageId) =
-        message(session.rustObject(), messageId)
+        message(session.getRustUserSession(), messageId)
 }

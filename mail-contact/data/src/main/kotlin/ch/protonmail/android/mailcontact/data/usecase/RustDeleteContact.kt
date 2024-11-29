@@ -26,6 +26,6 @@ import javax.inject.Inject
 class RustDeleteContact @Inject constructor() {
 
     suspend operator fun invoke(mailUserSession: MailUserSessionWrapper, contactId: LocalContactId) {
-        deleteContact(contactId, mailUserSession.rustObject())
+        deleteContact(contactId, mailUserSession.getRustUserSession())
     }
 }

@@ -27,5 +27,5 @@ import javax.inject.Inject
 class CreateMailbox @Inject constructor() {
 
     suspend operator fun invoke(mailUserSession: MailUserSessionWrapper, labelId: LocalLabelId) =
-        MailboxWrapper(Mailbox.withLabelId(mailUserSession.rustObject(), labelId))
+        MailboxWrapper(Mailbox.withLabelId(mailUserSession.getRustUserSession(), labelId))
 }

@@ -26,5 +26,5 @@ import javax.inject.Inject
 class RustUnstarMessages @Inject constructor() {
 
     suspend operator fun invoke(mailUserSession: MailUserSessionWrapper, messageIds: List<LocalMessageId>) =
-        unstarMessages(mailUserSession.rustObject(), messageIds)
+        unstarMessages(mailUserSession.getRustUserSession(), messageIds)
 }

@@ -120,7 +120,7 @@ class RustConversationDataSourceImpl @Inject constructor(
     override suspend fun starConversations(userId: UserId, conversations: List<LocalConversationId>) {
         executeUserSessionAction(
             userId = userId,
-            action = { userSession -> rustStarConversation(userSession.rustObject(), conversations) },
+            action = { userSession -> rustStarConversation(userSession.getRustUserSession(), conversations) },
             actionName = "star conversations"
         )
     }
@@ -128,7 +128,7 @@ class RustConversationDataSourceImpl @Inject constructor(
     override suspend fun unStarConversations(userId: UserId, conversations: List<LocalConversationId>) {
         executeUserSessionAction(
             userId = userId,
-            action = { userSession -> rustUnstarConversation(userSession.rustObject(), conversations) },
+            action = { userSession -> rustUnstarConversation(userSession.getRustUserSession(), conversations) },
             actionName = "unstar conversations"
         )
     }

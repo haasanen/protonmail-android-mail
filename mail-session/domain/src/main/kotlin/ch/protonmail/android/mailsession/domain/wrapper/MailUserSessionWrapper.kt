@@ -22,7 +22,7 @@ import uniffi.proton_mail_uniffi.MailUserSession
 
 class MailUserSessionWrapper(private val userSession: MailUserSession) {
 
-    fun rustObject() = userSession
+    fun getRustUserSession() = userSession
 
     suspend fun fork() = userSession.fork()
 

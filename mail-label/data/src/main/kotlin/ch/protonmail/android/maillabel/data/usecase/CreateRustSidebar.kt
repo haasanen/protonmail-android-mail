@@ -25,5 +25,5 @@ import javax.inject.Inject
 
 class CreateRustSidebar @Inject constructor() {
 
-    operator fun invoke(userSession: MailUserSessionWrapper) = SidebarWrapper(Sidebar(userSession.rustObject()))
+    operator fun invoke(userSession: MailUserSessionWrapper) = SidebarWrapper(Sidebar(userSession.getRustUserSession()))
 }

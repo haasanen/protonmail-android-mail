@@ -32,6 +32,6 @@ class CreateRustSearchPaginator @Inject constructor() {
         keyword: String,
         callback: LiveQueryCallback
     ) = MessagePaginatorWrapper(
-        paginateSearch(session.rustObject(), PaginatorSearchOptions(keyword), callback)
+        paginateSearch(session.getRustUserSession(), PaginatorSearchOptions(keyword), callback)
     )
 }

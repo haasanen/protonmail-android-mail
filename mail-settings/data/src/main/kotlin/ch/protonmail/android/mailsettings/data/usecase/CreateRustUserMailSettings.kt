@@ -26,5 +26,5 @@ import javax.inject.Inject
 class CreateRustUserMailSettings @Inject constructor() {
 
     suspend operator fun invoke(session: MailUserSessionWrapper, callback: LiveQueryCallback) =
-        watchMailSettings(session.rustObject(), callback)
+        watchMailSettings(session.getRustUserSession(), callback)
 }

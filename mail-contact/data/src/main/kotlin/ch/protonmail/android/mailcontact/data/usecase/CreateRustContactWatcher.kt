@@ -29,6 +29,6 @@ class CreateRustContactWatcher @Inject constructor() {
     suspend operator fun invoke(
         session: MailUserSessionWrapper,
         callback: ContactsLiveQueryCallback
-    ): WatchedContactList = watchContactList(session.rustObject(), callback)
+    ): WatchedContactList = watchContactList(session.getRustUserSession(), callback)
 
 }

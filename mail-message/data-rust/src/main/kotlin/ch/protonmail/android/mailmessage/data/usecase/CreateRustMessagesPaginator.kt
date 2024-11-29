@@ -36,7 +36,7 @@ class CreateRustMessagesPaginator @Inject constructor() {
     ): MessagePaginatorWrapper {
         val filterParam = if (unread) true else null
         return MessagePaginatorWrapper(
-            paginateMessagesForLabel(session.rustObject(), labelId, PaginatorFilter(filterParam), callback)
+            paginateMessagesForLabel(session.getRustUserSession(), labelId, PaginatorFilter(filterParam), callback)
         )
     }
 }
