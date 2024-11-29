@@ -18,15 +18,22 @@
 
 package ch.protonmail.android.composer.data.local
 
+import androidx.annotation.VisibleForTesting
 import arrow.core.Either
+import arrow.core.left
+import arrow.core.right
+import ch.protonmail.android.composer.data.mapper.toDraftCreateMode
+import ch.protonmail.android.composer.data.mapper.toLocalDraft
 import ch.protonmail.android.composer.data.usecase.CreateRustDraft
 import ch.protonmail.android.composer.data.usecase.OpenRustDraft
 import ch.protonmail.android.composer.data.wrapper.DraftWrapper
 import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailmessage.data.mapper.toLocalMessageId
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import me.proton.core.domain.entity.UserId
+import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -38,14 +45,37 @@ class RustDraftDataSourceImpl @Inject constructor(
     private val openRustDraft: OpenRustDraft
 ) : RustDraftDataSource {
 
-    private var rustDraftWrapper: DraftWrapper? = null
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    var rustDraftWrapper: DraftWrapper? = null
 
     override suspend fun open(userId: UserId, messageId: MessageId): Either<DataError, LocalDraft> {
-        TODO("Not yet implemented")
+        val session = userSessionRepository.getUserSession(userId)
+        if (session == null) {
+            Timber.e("rust-draft: Trying to open draft with null session; Failing.")
+            return DataError.Local.Unknown.left()
+        }
+
+        val draftWrapper = openRustDraft(session, messageId.toLocalMessageId())
+        rustDraftWrapper = draftWrapper
+        return draftWrapper.toLocalDraft().right()
     }
 
     override suspend fun create(userId: UserId, action: DraftAction): Either<DataError, LocalDraft> {
-        TODO("Not yet implemented")
+        val session = userSessionRepository.getUserSession(userId)
+        if (session == null) {
+            Timber.e("rust-draft: Trying to create draft with null session; Failing.")
+            return DataError.Local.Unknown.left()
+        }
+
+        val draftCreateMode = action.toDraftCreateMode()
+        if (draftCreateMode == null) {
+            Timber.e("rust-draft: Trying to create draft with invalid create mode; Failing.")
+            return DataError.Local.UnsupportedOperation.left()
+        }
+
+        val draftWrapper = createRustDraft(session, draftCreateMode)
+        rustDraftWrapper = draftWrapper
+        return draftWrapper.toLocalDraft().right()
     }
 
 }

@@ -47,5 +47,7 @@ object MessageIdSample {
     val UnreadMessageMaySecond = MessageId("UnreadMessageMaySecond")
     val UnreadMessageMayThird = MessageId("UnreadMessageMayThird")
 
+    val RustJobApplication = MessageId("1")
+
     fun build() = MessageId("message")
 }

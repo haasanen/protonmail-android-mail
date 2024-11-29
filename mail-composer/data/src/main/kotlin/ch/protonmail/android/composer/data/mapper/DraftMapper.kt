@@ -28,7 +28,11 @@ import ch.protonmail.android.mailcomposer.domain.model.RecipientsCc
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsTo
 import ch.protonmail.android.mailcomposer.domain.model.SenderEmail
 import ch.protonmail.android.mailcomposer.domain.model.Subject
+import ch.protonmail.android.mailmessage.data.mapper.toLocalMessageId
+import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.model.Recipient
+import timber.log.Timber
+import uniffi.proton_mail_uniffi.DraftCreateMode
 
 fun LocalDraft.toDraftFields() = DraftFields(
     sender = SenderEmail(this.sender),
@@ -48,6 +52,18 @@ fun DraftWrapper.toLocalDraft() = LocalDraft(
     recipientsCc = this.recipientsCc(),
     recipientsBcc = this.recipientsBcc()
 )
+
+fun DraftAction.toDraftCreateMode(): DraftCreateMode? = when (this) {
+    is DraftAction.Forward -> DraftCreateMode.Forward(this.parentId.toLocalMessageId())
+    is DraftAction.Reply -> DraftCreateMode.Reply(this.parentId.toLocalMessageId())
+    is DraftAction.ReplyAll -> DraftCreateMode.ReplyAll(this.parentId.toLocalMessageId())
+    DraftAction.Compose -> DraftCreateMode.Empty
+    is DraftAction.ComposeToAddresses,
+    is DraftAction.PrefillForShare -> {
+        Timber.e("rust-draft: mapping draft action $this failed! Unsupported by rust DraftCreateMode type")
+        null
+    }
+}
 
 @MissingRustApi
 // Hardcoded values in the mapping

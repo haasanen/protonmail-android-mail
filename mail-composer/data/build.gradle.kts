@@ -62,6 +62,7 @@ dependencies {
     implementation(project(":mail-settings:domain"))
     implementation(project(":mail-label:domain"))
 
+    testImplementation(libs.proton.rust.core)
     testImplementation(libs.bundles.test)
     testImplementation(libs.proton.core.testAndroidInstrumented)
     testImplementation(libs.androidx.work.runtimeKtx)
