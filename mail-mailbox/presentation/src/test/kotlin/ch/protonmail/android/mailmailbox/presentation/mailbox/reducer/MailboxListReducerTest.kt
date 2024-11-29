@@ -65,16 +65,20 @@ internal class MailboxListReducerTest(
             refreshRequested = false,
             swipeActions = null,
             searchState = MailboxSearchStateSampleData.NotSearching,
-            clearState = MailboxListState.Data.ClearState.Hidden
+            clearState = MailboxListState.Data.ClearState.Hidden,
+            shouldShowFab = true
         )
         private val listStateWithSearchModeNewSearch = listStateWithSearchModeNone.copy(
-            searchState = MailboxSearchStateSampleData.NewSearch
+            searchState = MailboxSearchStateSampleData.NewSearch,
+            shouldShowFab = false
         )
         private val listStateWithSearchModeNewSearchLoading = listStateWithSearchModeNone.copy(
-            searchState = MailboxSearchStateSampleData.SearchLoading
+            searchState = MailboxSearchStateSampleData.SearchLoading,
+            shouldShowFab = false
         )
         private val listStateWithSearchModeSearchData = listStateWithSearchModeNone.copy(
-            searchState = MailboxSearchStateSampleData.SearchData
+            searchState = MailboxSearchStateSampleData.SearchData,
+            shouldShowFab = false
         )
 
         private val listStateWithSearchSelectionMode = MailboxListState.Data.SelectionMode(
@@ -88,7 +92,8 @@ internal class MailboxListReducerTest(
             ),
             swipeActions = null,
             searchState = MailboxSearchStateSampleData.SearchData,
-            clearState = MailboxListState.Data.ClearState.Hidden
+            clearState = MailboxListState.Data.ClearState.Hidden,
+            shouldShowFab = false
         )
 
         private val listStateSearchSelectionInCustomFolder = listStateWithSearchSelectionMode.copy(
@@ -115,7 +120,8 @@ internal class MailboxListReducerTest(
                     swipeActions = null,
 
                     searchState = MailboxSearchStateSampleData.NotSearching,
-                    clearState = MailboxListState.Data.ClearState.Hidden
+                    clearState = MailboxListState.Data.ClearState.Hidden,
+                    shouldShowFab = true
                 )
             ),
             TestInput(
@@ -130,7 +136,8 @@ internal class MailboxListReducerTest(
                     refreshRequested = false,
                     swipeActions = null,
                     searchState = MailboxSearchStateSampleData.NotSearching,
-                    clearState = MailboxListState.Data.ClearState.Hidden
+                    clearState = MailboxListState.Data.ClearState.Hidden,
+                    shouldShowFab = true
                 )
             ),
             TestInput(
@@ -145,7 +152,8 @@ internal class MailboxListReducerTest(
                     refreshRequested = false,
                     swipeActions = null,
                     searchState = MailboxSearchStateSampleData.NotSearching,
-                    clearState = MailboxListState.Data.ClearState.Hidden
+                    clearState = MailboxListState.Data.ClearState.Hidden,
+                    shouldShowFab = true
                 )
             ),
             TestInput(
@@ -160,7 +168,8 @@ internal class MailboxListReducerTest(
                     refreshRequested = false,
                     swipeActions = null,
                     searchState = MailboxSearchStateSampleData.NotSearching,
-                    clearState = MailboxListState.Data.ClearState.Hidden
+                    clearState = MailboxListState.Data.ClearState.Hidden,
+                    shouldShowFab = true
                 )
             ),
             TestInput(
@@ -175,7 +184,8 @@ internal class MailboxListReducerTest(
                     refreshRequested = false,
                     swipeActions = null,
                     searchState = MailboxSearchStateSampleData.NotSearching,
-                    clearState = MailboxListState.Data.ClearState.Hidden
+                    clearState = MailboxListState.Data.ClearState.Hidden,
+                    shouldShowFab = true
                 )
             ),
             TestInput(
@@ -190,7 +200,8 @@ internal class MailboxListReducerTest(
                     refreshRequested = false,
                     swipeActions = null,
                     searchState = MailboxSearchStateSampleData.NotSearching,
-                    clearState = MailboxListState.Data.ClearState.Hidden
+                    clearState = MailboxListState.Data.ClearState.Hidden,
+                    shouldShowFab = true
                 )
             ),
             TestInput(
@@ -255,7 +266,8 @@ internal class MailboxListReducerTest(
                     refreshRequested = false,
                     swipeActions = null,
                     searchState = MailboxSearchStateSampleData.NotSearching,
-                    clearState = MailboxListState.Data.ClearState.Hidden
+                    clearState = MailboxListState.Data.ClearState.Hidden,
+                    shouldShowFab = true
                 ),
                 operation = MailboxEvent.SelectedLabelChanged(MailLabelTestData.customLabelTwo),
                 expectedState = MailboxListState.Data.ViewMode(
@@ -267,7 +279,8 @@ internal class MailboxListReducerTest(
                     refreshRequested = false,
                     swipeActions = null,
                     searchState = MailboxSearchStateSampleData.NotSearching,
-                    clearState = MailboxListState.Data.ClearState.Hidden
+                    clearState = MailboxListState.Data.ClearState.Hidden,
+                    shouldShowFab = true
                 )
             ),
             TestInput(
@@ -280,7 +293,8 @@ internal class MailboxListReducerTest(
                     refreshRequested = false,
                     swipeActions = null,
                     searchState = MailboxSearchStateSampleData.NotSearching,
-                    clearState = MailboxListState.Data.ClearState.Hidden
+                    clearState = MailboxListState.Data.ClearState.Hidden,
+                    shouldShowFab = true
                 ),
                 operation = MailboxEvent.ClearAllOperationStatus(false),
                 expectedState = MailboxListState.Data.ViewMode(
@@ -294,7 +308,8 @@ internal class MailboxListReducerTest(
                     searchState = MailboxSearchStateSampleData.NotSearching,
                     clearState = MailboxListState.Data.ClearState.Visible.Button(
                         text = TextUiModel(R.string.mailbox_action_button_clear_trash)
-                    )
+                    ),
+                    shouldShowFab = true
                 )
             ),
             TestInput(
@@ -307,7 +322,8 @@ internal class MailboxListReducerTest(
                     refreshRequested = false,
                     swipeActions = null,
                     searchState = MailboxSearchStateSampleData.NotSearching,
-                    clearState = MailboxListState.Data.ClearState.Hidden
+                    clearState = MailboxListState.Data.ClearState.Hidden,
+                    shouldShowFab = true
                 ),
                 operation = MailboxEvent.ClearAllOperationStatus(true),
                 expectedState = MailboxListState.Data.ViewMode(
@@ -319,7 +335,8 @@ internal class MailboxListReducerTest(
                     refreshRequested = false,
                     swipeActions = null,
                     searchState = MailboxSearchStateSampleData.NotSearching,
-                    clearState = MailboxListState.Data.ClearState.Visible.Banner
+                    clearState = MailboxListState.Data.ClearState.Visible.Banner,
+                    shouldShowFab = true
                 )
             ),
             TestInput(
@@ -332,7 +349,8 @@ internal class MailboxListReducerTest(
                     refreshRequested = false,
                     swipeActions = null,
                     searchState = MailboxSearchStateSampleData.NotSearching,
-                    clearState = MailboxListState.Data.ClearState.Hidden
+                    clearState = MailboxListState.Data.ClearState.Hidden,
+                    shouldShowFab = true
                 ),
                 operation = MailboxEvent.ClearAllOperationStatus(false),
                 expectedState = MailboxListState.Data.ViewMode(
@@ -346,7 +364,8 @@ internal class MailboxListReducerTest(
                     searchState = MailboxSearchStateSampleData.NotSearching,
                     clearState = MailboxListState.Data.ClearState.Visible.Button(
                         text = TextUiModel(R.string.mailbox_action_button_clear_spam)
-                    )
+                    ),
+                    shouldShowFab = true
                 )
             ),
             TestInput(
@@ -359,7 +378,8 @@ internal class MailboxListReducerTest(
                     refreshRequested = false,
                     swipeActions = null,
                     searchState = MailboxSearchStateSampleData.NotSearching,
-                    clearState = MailboxListState.Data.ClearState.Hidden
+                    clearState = MailboxListState.Data.ClearState.Hidden,
+                    shouldShowFab = true
                 ),
                 operation = MailboxEvent.ClearAllOperationStatus(true),
                 expectedState = MailboxListState.Data.ViewMode(
@@ -371,7 +391,8 @@ internal class MailboxListReducerTest(
                     refreshRequested = false,
                     swipeActions = null,
                     searchState = MailboxSearchStateSampleData.NotSearching,
-                    clearState = MailboxListState.Data.ClearState.Visible.Banner
+                    clearState = MailboxListState.Data.ClearState.Visible.Banner,
+                    shouldShowFab = true
                 )
             ),
             TestInput(
@@ -384,7 +405,8 @@ internal class MailboxListReducerTest(
                     refreshRequested = false,
                     swipeActions = null,
                     searchState = MailboxSearchStateSampleData.NotSearching,
-                    clearState = MailboxListState.Data.ClearState.Hidden
+                    clearState = MailboxListState.Data.ClearState.Hidden,
+                    shouldShowFab = true
                 ),
                 operation = MailboxEvent.NewLabelSelected(MailLabelTestData.customLabelTwo, UNREAD_COUNT),
                 expectedState = MailboxListState.Data.ViewMode(
@@ -396,7 +418,8 @@ internal class MailboxListReducerTest(
                     refreshRequested = false,
                     swipeActions = null,
                     searchState = MailboxSearchStateSampleData.NotSearching,
-                    clearState = MailboxListState.Data.ClearState.Hidden
+                    clearState = MailboxListState.Data.ClearState.Hidden,
+                    shouldShowFab = true
                 )
             ),
             TestInput(
@@ -409,7 +432,8 @@ internal class MailboxListReducerTest(
                     refreshRequested = false,
                     swipeActions = null,
                     searchState = MailboxSearchStateSampleData.NotSearching,
-                    clearState = MailboxListState.Data.ClearState.Hidden
+                    clearState = MailboxListState.Data.ClearState.Hidden,
+                    shouldShowFab = true
                 ),
                 operation = MailboxEvent.ItemClicked.ItemDetailsOpened(
                     item = MailboxItemUiModelTestData.readMailboxItemUiModel
@@ -430,7 +454,8 @@ internal class MailboxListReducerTest(
                     refreshRequested = false,
                     swipeActions = null,
                     searchState = MailboxSearchStateSampleData.NotSearching,
-                    clearState = MailboxListState.Data.ClearState.Hidden
+                    clearState = MailboxListState.Data.ClearState.Hidden,
+                    shouldShowFab = true
                 )
             ),
             TestInput(
@@ -443,7 +468,8 @@ internal class MailboxListReducerTest(
                     refreshRequested = false,
                     swipeActions = null,
                     searchState = MailboxSearchStateSampleData.NotSearching,
-                    clearState = MailboxListState.Data.ClearState.Hidden
+                    clearState = MailboxListState.Data.ClearState.Hidden,
+                    shouldShowFab = true
                 ),
                 operation = MailboxEvent.ItemClicked.ItemDetailsOpened(
                     item = MailboxItemUiModelTestData.readMailboxItemUiModel
@@ -464,7 +490,8 @@ internal class MailboxListReducerTest(
                     refreshRequested = false,
                     swipeActions = null,
                     searchState = MailboxSearchStateSampleData.NotSearching,
-                    clearState = MailboxListState.Data.ClearState.Hidden
+                    clearState = MailboxListState.Data.ClearState.Hidden,
+                    shouldShowFab = true
                 )
             ),
             TestInput(
@@ -477,7 +504,8 @@ internal class MailboxListReducerTest(
                     refreshRequested = false,
                     swipeActions = null,
                     searchState = MailboxSearchStateSampleData.NotSearching,
-                    clearState = MailboxListState.Data.ClearState.Hidden
+                    clearState = MailboxListState.Data.ClearState.Hidden,
+                    shouldShowFab = true
                 ),
                 operation = MailboxEvent.ItemClicked.OpenComposer(
                     item = MailboxItemUiModelTestData.draftMailboxItemUiModel
@@ -496,7 +524,8 @@ internal class MailboxListReducerTest(
                     refreshRequested = false,
                     swipeActions = null,
                     searchState = MailboxSearchStateSampleData.NotSearching,
-                    clearState = MailboxListState.Data.ClearState.Hidden
+                    clearState = MailboxListState.Data.ClearState.Hidden,
+                    shouldShowFab = true
                 )
             ),
             TestInput(
@@ -509,7 +538,8 @@ internal class MailboxListReducerTest(
                     refreshRequested = false,
                     swipeActions = null,
                     searchState = MailboxSearchStateSampleData.NotSearching,
-                    clearState = MailboxListState.Data.ClearState.Hidden
+                    clearState = MailboxListState.Data.ClearState.Hidden,
+                    shouldShowFab = true
                 ),
                 operation = MailboxEvent.ItemClicked.OpenComposer(
                     item = MailboxItemUiModelTestData.draftMailboxItemUiModel
@@ -528,7 +558,8 @@ internal class MailboxListReducerTest(
                     refreshRequested = false,
                     swipeActions = null,
                     searchState = MailboxSearchStateSampleData.NotSearching,
-                    clearState = MailboxListState.Data.ClearState.Hidden
+                    clearState = MailboxListState.Data.ClearState.Hidden,
+                    shouldShowFab = true
                 )
             ),
             TestInput(
@@ -541,7 +572,8 @@ internal class MailboxListReducerTest(
                     refreshRequested = true,
                     swipeActions = null,
                     searchState = MailboxSearchStateSampleData.NotSearching,
-                    clearState = MailboxListState.Data.ClearState.Hidden
+                    clearState = MailboxListState.Data.ClearState.Hidden,
+                    shouldShowFab = true
                 ),
                 operation = MailboxViewAction.OnOfflineWithData,
                 expectedState = MailboxListState.Data.ViewMode(
@@ -553,7 +585,8 @@ internal class MailboxListReducerTest(
                     refreshRequested = false,
                     swipeActions = null,
                     searchState = MailboxSearchStateSampleData.NotSearching,
-                    clearState = MailboxListState.Data.ClearState.Hidden
+                    clearState = MailboxListState.Data.ClearState.Hidden,
+                    shouldShowFab = true
                 )
             ),
             TestInput(
@@ -566,7 +599,8 @@ internal class MailboxListReducerTest(
                     refreshRequested = false,
                     swipeActions = null,
                     searchState = MailboxSearchStateSampleData.NotSearching,
-                    clearState = MailboxListState.Data.ClearState.Hidden
+                    clearState = MailboxListState.Data.ClearState.Hidden,
+                    shouldShowFab = true
                 ),
                 operation = MailboxViewAction.OnOfflineWithData,
                 expectedState = MailboxListState.Data.ViewMode(
@@ -578,7 +612,8 @@ internal class MailboxListReducerTest(
                     refreshRequested = false,
                     swipeActions = null,
                     searchState = MailboxSearchStateSampleData.NotSearching,
-                    clearState = MailboxListState.Data.ClearState.Hidden
+                    clearState = MailboxListState.Data.ClearState.Hidden,
+                    shouldShowFab = true
                 )
             ),
             TestInput(
@@ -591,7 +626,8 @@ internal class MailboxListReducerTest(
                     refreshRequested = true,
                     swipeActions = null,
                     searchState = MailboxSearchStateSampleData.NotSearching,
-                    clearState = MailboxListState.Data.ClearState.Hidden
+                    clearState = MailboxListState.Data.ClearState.Hidden,
+                    shouldShowFab = true
                 ),
                 operation = MailboxViewAction.OnErrorWithData,
                 expectedState = MailboxListState.Data.ViewMode(
@@ -603,7 +639,8 @@ internal class MailboxListReducerTest(
                     refreshRequested = false,
                     swipeActions = null,
                     searchState = MailboxSearchStateSampleData.NotSearching,
-                    clearState = MailboxListState.Data.ClearState.Hidden
+                    clearState = MailboxListState.Data.ClearState.Hidden,
+                    shouldShowFab = true
                 )
             ),
             TestInput(
@@ -616,7 +653,8 @@ internal class MailboxListReducerTest(
                     refreshRequested = false,
                     swipeActions = null,
                     searchState = MailboxSearchStateSampleData.NotSearching,
-                    clearState = MailboxListState.Data.ClearState.Hidden
+                    clearState = MailboxListState.Data.ClearState.Hidden,
+                    shouldShowFab = true
                 ),
                 operation = MailboxViewAction.OnErrorWithData,
                 expectedState = MailboxListState.Data.ViewMode(
@@ -628,7 +666,8 @@ internal class MailboxListReducerTest(
                     refreshRequested = false,
                     swipeActions = null,
                     searchState = MailboxSearchStateSampleData.NotSearching,
-                    clearState = MailboxListState.Data.ClearState.Hidden
+                    clearState = MailboxListState.Data.ClearState.Hidden,
+                    shouldShowFab = true
                 )
             ),
             TestInput(
@@ -641,7 +680,8 @@ internal class MailboxListReducerTest(
                     refreshRequested = false,
                     swipeActions = null,
                     searchState = MailboxSearchStateSampleData.NotSearching,
-                    clearState = MailboxListState.Data.ClearState.Hidden
+                    clearState = MailboxListState.Data.ClearState.Hidden,
+                    shouldShowFab = true
                 ),
                 operation = MailboxViewAction.Refresh,
                 expectedState = MailboxListState.Data.ViewMode(
@@ -653,7 +693,8 @@ internal class MailboxListReducerTest(
                     refreshRequested = true,
                     swipeActions = null,
                     searchState = MailboxSearchStateSampleData.NotSearching,
-                    clearState = MailboxListState.Data.ClearState.Hidden
+                    clearState = MailboxListState.Data.ClearState.Hidden,
+                    shouldShowFab = true
                 )
             ),
             TestInput(
@@ -666,7 +707,8 @@ internal class MailboxListReducerTest(
                     refreshRequested = false,
                     swipeActions = null,
                     searchState = MailboxSearchStateSampleData.NotSearching,
-                    clearState = MailboxListState.Data.ClearState.Hidden
+                    clearState = MailboxListState.Data.ClearState.Hidden,
+                    shouldShowFab = true
                 ),
                 operation = MailboxEvent.EnterSelectionMode(MailboxItemUiModelTestData.readMailboxItemUiModel),
                 expectedState = MailboxListState.Data.SelectionMode(
@@ -680,7 +722,8 @@ internal class MailboxListReducerTest(
                     ),
                     swipeActions = null,
                     searchState = MailboxSearchStateSampleData.NotSearching,
-                    clearState = MailboxListState.Data.ClearState.Hidden
+                    clearState = MailboxListState.Data.ClearState.Hidden,
+                    shouldShowFab = false
                 )
             ),
             TestInput(
@@ -695,7 +738,8 @@ internal class MailboxListReducerTest(
                     ),
                     swipeActions = null,
                     searchState = MailboxSearchStateSampleData.NotSearching,
-                    clearState = MailboxListState.Data.ClearState.Hidden
+                    clearState = MailboxListState.Data.ClearState.Hidden,
+                    shouldShowFab = false
                 ),
                 operation = MailboxViewAction.ExitSelectionMode,
                 expectedState = MailboxListState.Data.ViewMode(
@@ -707,7 +751,8 @@ internal class MailboxListReducerTest(
                     refreshRequested = false,
                     swipeActions = null,
                     searchState = MailboxSearchStateSampleData.NotSearching,
-                    clearState = MailboxListState.Data.ClearState.Hidden
+                    clearState = MailboxListState.Data.ClearState.Hidden,
+                    shouldShowFab = true
                 )
             ),
             TestInput(
@@ -722,7 +767,8 @@ internal class MailboxListReducerTest(
                     ),
                     swipeActions = null,
                     searchState = MailboxSearchStateSampleData.NotSearching,
-                    clearState = MailboxListState.Data.ClearState.Hidden
+                    clearState = MailboxListState.Data.ClearState.Hidden,
+                    shouldShowFab = false
                 ),
                 operation = MailboxEvent.ItemClicked.ItemAddedToSelection(
                     MailboxItemUiModelTestData.unreadMailboxItemUiModel
@@ -743,7 +789,8 @@ internal class MailboxListReducerTest(
                     ),
                     swipeActions = null,
                     searchState = MailboxSearchStateSampleData.NotSearching,
-                    clearState = MailboxListState.Data.ClearState.Hidden
+                    clearState = MailboxListState.Data.ClearState.Hidden,
+                    shouldShowFab = false
                 )
             ),
             TestInput(
@@ -758,7 +805,8 @@ internal class MailboxListReducerTest(
                     ),
                     swipeActions = null,
                     searchState = MailboxSearchStateSampleData.NotSearching,
-                    clearState = MailboxListState.Data.ClearState.Hidden
+                    clearState = MailboxListState.Data.ClearState.Hidden,
+                    shouldShowFab = false
                 ),
                 operation = MailboxEvent.ItemClicked.ItemRemovedFromSelection(
                     MailboxItemUiModelTestData.readMailboxItemUiModel
@@ -768,7 +816,8 @@ internal class MailboxListReducerTest(
                     selectedMailboxItems = setOf(),
                     swipeActions = null,
                     searchState = MailboxSearchStateSampleData.NotSearching,
-                    clearState = MailboxListState.Data.ClearState.Hidden
+                    clearState = MailboxListState.Data.ClearState.Hidden,
+                    shouldShowFab = false
                 )
             ),
             TestInput(
@@ -783,7 +832,8 @@ internal class MailboxListReducerTest(
                     ),
                     swipeActions = null,
                     searchState = MailboxSearchStateSampleData.NotSearching,
-                    clearState = MailboxListState.Data.ClearState.Hidden
+                    clearState = MailboxListState.Data.ClearState.Hidden,
+                    shouldShowFab = false
                 ),
                 operation = MailboxViewAction.MarkAsRead,
                 expectedState = MailboxListState.Data.SelectionMode(
@@ -797,7 +847,8 @@ internal class MailboxListReducerTest(
                     ),
                     swipeActions = null,
                     searchState = MailboxSearchStateSampleData.NotSearching,
-                    clearState = MailboxListState.Data.ClearState.Hidden
+                    clearState = MailboxListState.Data.ClearState.Hidden,
+                    shouldShowFab = false
                 )
             ),
             TestInput(
@@ -812,7 +863,8 @@ internal class MailboxListReducerTest(
                     ),
                     swipeActions = null,
                     searchState = MailboxSearchStateSampleData.NotSearching,
-                    clearState = MailboxListState.Data.ClearState.Hidden
+                    clearState = MailboxListState.Data.ClearState.Hidden,
+                    shouldShowFab = false
                 ),
                 operation = MailboxViewAction.MarkAsUnread,
                 expectedState = MailboxListState.Data.SelectionMode(
@@ -826,7 +878,8 @@ internal class MailboxListReducerTest(
                     ),
                     swipeActions = null,
                     searchState = MailboxSearchStateSampleData.NotSearching,
-                    clearState = MailboxListState.Data.ClearState.Hidden
+                    clearState = MailboxListState.Data.ClearState.Hidden,
+                    shouldShowFab = false
                 )
             ),
             TestInput(
@@ -841,7 +894,8 @@ internal class MailboxListReducerTest(
                     ),
                     swipeActions = null,
                     searchState = MailboxSearchStateSampleData.NotSearching,
-                    clearState = MailboxListState.Data.ClearState.Hidden
+                    clearState = MailboxListState.Data.ClearState.Hidden,
+                    shouldShowFab = false
                 ),
                 operation = MailboxEvent.Trash(5),
                 expectedState = MailboxListState.Data.ViewMode(
@@ -853,7 +907,8 @@ internal class MailboxListReducerTest(
                     refreshRequested = false,
                     swipeActions = null,
                     searchState = MailboxSearchStateSampleData.NotSearching,
-                    clearState = MailboxListState.Data.ClearState.Hidden
+                    clearState = MailboxListState.Data.ClearState.Hidden,
+                    shouldShowFab = true
                 )
             ),
             TestInput(
@@ -868,7 +923,8 @@ internal class MailboxListReducerTest(
                     ),
                     swipeActions = null,
                     searchState = MailboxSearchStateSampleData.NotSearching,
-                    clearState = MailboxListState.Data.ClearState.Hidden
+                    clearState = MailboxListState.Data.ClearState.Hidden,
+                    shouldShowFab = false
                 ),
                 operation = MailboxEvent.DeleteConfirmed(ViewMode.ConversationGrouping, 5),
                 expectedState = MailboxListState.Data.ViewMode(
@@ -880,7 +936,8 @@ internal class MailboxListReducerTest(
                     refreshRequested = false,
                     swipeActions = null,
                     searchState = MailboxSearchStateSampleData.NotSearching,
-                    clearState = MailboxListState.Data.ClearState.Hidden
+                    clearState = MailboxListState.Data.ClearState.Hidden,
+                    shouldShowFab = true
                 )
             ),
             TestInput(
@@ -895,7 +952,8 @@ internal class MailboxListReducerTest(
                     ),
                     swipeActions = null,
                     searchState = MailboxSearchStateSampleData.NotSearching,
-                    clearState = MailboxListState.Data.ClearState.Hidden
+                    clearState = MailboxListState.Data.ClearState.Hidden,
+                    shouldShowFab = false
                 ),
                 operation = MailboxEvent.DeleteConfirmed(ViewMode.NoConversationGrouping, 5),
                 expectedState = MailboxListState.Data.ViewMode(
@@ -907,7 +965,8 @@ internal class MailboxListReducerTest(
                     refreshRequested = false,
                     swipeActions = null,
                     searchState = MailboxSearchStateSampleData.NotSearching,
-                    clearState = MailboxListState.Data.ClearState.Hidden
+                    clearState = MailboxListState.Data.ClearState.Hidden,
+                    shouldShowFab = true
                 )
             ),
             TestInput(
@@ -922,7 +981,8 @@ internal class MailboxListReducerTest(
                     ),
                     swipeActions = null,
                     searchState = MailboxSearchStateSampleData.NotSearching,
-                    clearState = MailboxListState.Data.ClearState.Hidden
+                    clearState = MailboxListState.Data.ClearState.Hidden,
+                    shouldShowFab = false
                 ),
                 operation = MailboxEvent.ItemsRemovedFromSelection(
                     listOf(MailboxItemUiModelTestData.readMailboxItemUiModel.id)
@@ -932,7 +992,8 @@ internal class MailboxListReducerTest(
                     selectedMailboxItems = emptySet(),
                     swipeActions = null,
                     searchState = MailboxSearchStateSampleData.NotSearching,
-                    clearState = MailboxListState.Data.ClearState.Hidden
+                    clearState = MailboxListState.Data.ClearState.Hidden,
+                    shouldShowFab = false
                 )
             ),
             TestInput(
@@ -947,7 +1008,8 @@ internal class MailboxListReducerTest(
                     ),
                     swipeActions = null,
                     searchState = MailboxSearchStateSampleData.NotSearching,
-                    clearState = MailboxListState.Data.ClearState.Hidden
+                    clearState = MailboxListState.Data.ClearState.Hidden,
+                    shouldShowFab = false
                 ),
                 operation = MailboxViewAction.MoveToConfirmed,
                 expectedState = MailboxListState.Data.ViewMode(
@@ -959,7 +1021,8 @@ internal class MailboxListReducerTest(
                     refreshRequested = false,
                     swipeActions = null,
                     searchState = MailboxSearchStateSampleData.NotSearching,
-                    clearState = MailboxListState.Data.ClearState.Hidden
+                    clearState = MailboxListState.Data.ClearState.Hidden,
+                    shouldShowFab = true
                 )
             ),
             TestInput(
@@ -974,7 +1037,8 @@ internal class MailboxListReducerTest(
                     ),
                     swipeActions = null,
                     searchState = MailboxSearchStateSampleData.NotSearching,
-                    clearState = MailboxListState.Data.ClearState.Hidden
+                    clearState = MailboxListState.Data.ClearState.Hidden,
+                    shouldShowFab = false
                 ),
                 operation = MailboxViewAction.Star,
                 expectedState = MailboxListState.Data.SelectionMode(
@@ -988,7 +1052,8 @@ internal class MailboxListReducerTest(
                     ),
                     swipeActions = null,
                     searchState = MailboxSearchStateSampleData.NotSearching,
-                    clearState = MailboxListState.Data.ClearState.Hidden
+                    clearState = MailboxListState.Data.ClearState.Hidden,
+                    shouldShowFab = false
                 )
             ),
             TestInput(
@@ -1003,7 +1068,8 @@ internal class MailboxListReducerTest(
                     ),
                     swipeActions = null,
                     searchState = MailboxSearchStateSampleData.NotSearching,
-                    clearState = MailboxListState.Data.ClearState.Hidden
+                    clearState = MailboxListState.Data.ClearState.Hidden,
+                    shouldShowFab = false
                 ),
                 operation = MailboxViewAction.Star,
                 expectedState = MailboxListState.Data.SelectionMode(
@@ -1017,7 +1083,8 @@ internal class MailboxListReducerTest(
                     ),
                     swipeActions = null,
                     searchState = MailboxSearchStateSampleData.NotSearching,
-                    clearState = MailboxListState.Data.ClearState.Hidden
+                    clearState = MailboxListState.Data.ClearState.Hidden,
+                    shouldShowFab = false
                 )
             ),
             TestInput(
@@ -1032,7 +1099,8 @@ internal class MailboxListReducerTest(
                     ),
                     swipeActions = null,
                     searchState = MailboxSearchStateSampleData.NotSearching,
-                    clearState = MailboxListState.Data.ClearState.Hidden
+                    clearState = MailboxListState.Data.ClearState.Hidden,
+                    shouldShowFab = false
                 ),
                 operation = MailboxViewAction.UnStar,
                 expectedState = MailboxListState.Data.SelectionMode(
@@ -1046,7 +1114,8 @@ internal class MailboxListReducerTest(
                     ),
                     swipeActions = null,
                     searchState = MailboxSearchStateSampleData.NotSearching,
-                    clearState = MailboxListState.Data.ClearState.Hidden
+                    clearState = MailboxListState.Data.ClearState.Hidden,
+                    shouldShowFab = false
                 )
             ),
             TestInput(
@@ -1061,7 +1130,8 @@ internal class MailboxListReducerTest(
                     ),
                     swipeActions = null,
                     searchState = MailboxSearchStateSampleData.NotSearching,
-                    clearState = MailboxListState.Data.ClearState.Hidden
+                    clearState = MailboxListState.Data.ClearState.Hidden,
+                    shouldShowFab = false
                 ),
                 operation = MailboxViewAction.MoveToArchive,
                 expectedState = MailboxListState.Data.ViewMode(
@@ -1073,7 +1143,8 @@ internal class MailboxListReducerTest(
                     refreshRequested = false,
                     swipeActions = null,
                     searchState = MailboxSearchStateSampleData.NotSearching,
-                    clearState = MailboxListState.Data.ClearState.Hidden
+                    clearState = MailboxListState.Data.ClearState.Hidden,
+                    shouldShowFab = true
                 )
             ),
             TestInput(
@@ -1088,7 +1159,8 @@ internal class MailboxListReducerTest(
                     ),
                     swipeActions = null,
                     searchState = MailboxSearchStateSampleData.NotSearching,
-                    clearState = MailboxListState.Data.ClearState.Hidden
+                    clearState = MailboxListState.Data.ClearState.Hidden,
+                    shouldShowFab = false
                 ),
                 operation = MailboxViewAction.MoveToSpam,
                 expectedState = MailboxListState.Data.ViewMode(
@@ -1100,7 +1172,8 @@ internal class MailboxListReducerTest(
                     refreshRequested = false,
                     swipeActions = null,
                     searchState = MailboxSearchStateSampleData.NotSearching,
-                    clearState = MailboxListState.Data.ClearState.Hidden
+                    clearState = MailboxListState.Data.ClearState.Hidden,
+                    shouldShowFab = true
                 )
             ),
             TestInput(
@@ -1113,7 +1186,8 @@ internal class MailboxListReducerTest(
                     refreshRequested = false,
                     swipeActions = null,
                     searchState = MailboxSearchStateSampleData.NotSearching,
-                    clearState = MailboxListState.Data.ClearState.Hidden
+                    clearState = MailboxListState.Data.ClearState.Hidden,
+                    shouldShowFab = true
                 ),
                 operation = MailboxEvent.SwipeActionsChanged(
                     SwipeActionsUiModel(
@@ -1133,7 +1207,8 @@ internal class MailboxListReducerTest(
                         end = SwipeUiModelSampleData.Archive
                     ),
                     searchState = MailboxSearchStateSampleData.NotSearching,
-                    clearState = MailboxListState.Data.ClearState.Hidden
+                    clearState = MailboxListState.Data.ClearState.Hidden,
+                    shouldShowFab = true
                 )
             ),
             TestInput(

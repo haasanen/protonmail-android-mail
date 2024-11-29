@@ -88,7 +88,8 @@ class MailboxListReducer @Inject constructor() {
                 searchState = MailboxSearchState(
                     searchMode = MailboxSearchMode.NewSearch,
                     searchQuery = ""
-                )
+                ),
+                shouldShowFab = false
             )
 
             else -> currentState
@@ -135,7 +136,8 @@ class MailboxListReducer @Inject constructor() {
     private fun reduceExitSearchMode(currentState: MailboxListState): MailboxListState {
         return when (currentState) {
             is MailboxListState.Data.ViewMode -> currentState.copy(
-                searchState = MailboxSearchState.NotSearching
+                searchState = MailboxSearchState.NotSearching,
+                shouldShowFab = true
             )
 
             is MailboxListState.Data.SelectionMode -> reduceExitSelectionMode(
@@ -163,7 +165,8 @@ class MailboxListReducer @Inject constructor() {
                 refreshRequested = false,
                 swipeActions = null,
                 searchState = MailboxSearchState.NotSearching,
-                clearState = MailboxListState.Data.ClearState.Hidden
+                clearState = MailboxListState.Data.ClearState.Hidden,
+                shouldShowFab = true
             )
 
             is MailboxListState.Data.SelectionMode -> currentState.copy(
@@ -193,7 +196,8 @@ class MailboxListReducer @Inject constructor() {
                 refreshRequested = false,
                 swipeActions = null,
                 searchState = MailboxSearchState.NotSearching,
-                clearState = MailboxListState.Data.ClearState.Hidden
+                clearState = MailboxListState.Data.ClearState.Hidden,
+                shouldShowFab = true
             )
 
             is MailboxListState.Data.ViewMode -> currentState.copy(
@@ -296,7 +300,8 @@ class MailboxListReducer @Inject constructor() {
                 selectedMailboxItems = setOf(SelectedMailboxItem(item.id, item.isRead, item.showStar)),
                 swipeActions = currentState.swipeActions,
                 clearState = currentState.clearState,
-                searchState = currentState.searchState
+                searchState = currentState.searchState,
+                shouldShowFab = false
             )
 
             else -> currentState
@@ -312,7 +317,8 @@ class MailboxListReducer @Inject constructor() {
             refreshRequested = false,
             swipeActions = currentState.swipeActions,
             searchState = currentState.searchState,
-            clearState = currentState.clearState
+            clearState = currentState.clearState,
+            shouldShowFab = !currentState.searchState.isInSearch()
         )
 
         else -> currentState

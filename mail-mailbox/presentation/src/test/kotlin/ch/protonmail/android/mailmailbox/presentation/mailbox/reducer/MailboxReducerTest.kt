@@ -186,7 +186,8 @@ internal class MailboxReducerTest(
                 refreshRequested = false,
                 swipeActions = null,
                 searchState = MailboxSearchStateSampleData.NotSearching,
-                clearState = MailboxListState.Data.ClearState.Hidden
+                clearState = MailboxListState.Data.ClearState.Hidden,
+                shouldShowFab = true
             ),
             topAppBarState = MailboxTopAppBarState.Data.DefaultMode(
                 currentLabelName = spamLabel.text()

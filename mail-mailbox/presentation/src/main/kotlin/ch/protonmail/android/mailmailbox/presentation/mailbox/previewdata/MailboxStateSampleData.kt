@@ -84,7 +84,8 @@ object MailboxStateSampleData {
                 end = SwipeUiModelSampleData.Archive
             ),
             searchState = MailboxSearchStateSampleData.NotSearching,
-            clearState = MailboxListState.Data.ClearState.Hidden
+            clearState = MailboxListState.Data.ClearState.Hidden,
+            shouldShowFab = true
         ),
         topAppBarState = MailboxTopAppBarState.Data.DefaultMode(
             currentLabelName = inboxDynamicLabel.text()
@@ -119,7 +120,8 @@ object MailboxStateSampleData {
                 end = SwipeUiModelSampleData.Archive
             ),
             searchState = MailboxSearchStateSampleData.NotSearching,
-            clearState = MailboxListState.Data.ClearState.Hidden
+            clearState = MailboxListState.Data.ClearState.Hidden,
+            shouldShowFab = true
         ),
         topAppBarState = MailboxTopAppBarState.Data.DefaultMode(
             currentLabelName = allMailDynamicLabel.text()
@@ -158,7 +160,8 @@ object MailboxStateSampleData {
                 end = SwipeUiModelSampleData.Archive
             ),
             searchState = MailboxSearchState.NotSearching,
-            clearState = MailboxListState.Data.ClearState.Hidden
+            clearState = MailboxListState.Data.ClearState.Hidden,
+            shouldShowFab = false
         ),
         topAppBarState = MailboxTopAppBarState.Data.SelectionMode(
             currentLabelName = inboxDynamicLabel.text(),

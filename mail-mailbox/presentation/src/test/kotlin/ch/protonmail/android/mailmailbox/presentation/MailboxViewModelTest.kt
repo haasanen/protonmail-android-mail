@@ -688,7 +688,8 @@ class MailboxViewModelTest {
                 refreshRequested = false,
                 swipeActions = null,
                 searchState = MailboxSearchStateSampleData.NotSearching,
-                clearState = MailboxListState.Data.ClearState.Hidden
+                clearState = MailboxListState.Data.ClearState.Hidden,
+                shouldShowFab = true
             )
         )
         val expectedSwipeActions = SwipeActionsUiModel(
@@ -705,7 +706,8 @@ class MailboxViewModelTest {
                 refreshRequested = false,
                 swipeActions = expectedSwipeActions,
                 searchState = MailboxSearchStateSampleData.NotSearching,
-                clearState = MailboxListState.Data.ClearState.Hidden
+                clearState = MailboxListState.Data.ClearState.Hidden,
+                shouldShowFab = true
             )
         )
         val expectedStateAfterClearAllStatus = expectedStateWithSwipeGestures.copy(
@@ -718,7 +720,8 @@ class MailboxViewModelTest {
                 refreshRequested = false,
                 swipeActions = expectedSwipeActions,
                 searchState = MailboxSearchStateSampleData.NotSearching,
-                clearState = MailboxListState.Data.ClearState.Visible.Button(TextUiModel("Clear All"))
+                clearState = MailboxListState.Data.ClearState.Visible.Button(TextUiModel("Clear All")),
+                shouldShowFab = true
             )
         )
         val mailLabelsFlow = MutableStateFlow(
@@ -774,7 +777,8 @@ class MailboxViewModelTest {
                 refreshRequested = false,
                 swipeActions = null,
                 searchState = MailboxSearchStateSampleData.NotSearching,
-                clearState = MailboxListState.Data.ClearState.Hidden
+                clearState = MailboxListState.Data.ClearState.Hidden,
+                shouldShowFab = true
             )
         )
         val mailLabelsFlow = MutableStateFlow(
@@ -1308,7 +1312,8 @@ class MailboxViewModelTest {
                 refreshRequested = false,
                 swipeActions = null,
                 searchState = MailboxSearchStateSampleData.NotSearching,
-                clearState = MailboxListState.Data.ClearState.Hidden
+                clearState = MailboxListState.Data.ClearState.Hidden,
+                shouldShowFab = true
             )
         )
         every {
@@ -1339,7 +1344,8 @@ class MailboxViewModelTest {
                 refreshRequested = false,
                 swipeActions = null,
                 searchState = MailboxSearchStateSampleData.NotSearching,
-                clearState = MailboxListState.Data.ClearState.Hidden
+                clearState = MailboxListState.Data.ClearState.Hidden,
+                shouldShowFab = true
             )
         )
         every {
@@ -1370,7 +1376,8 @@ class MailboxViewModelTest {
                 refreshRequested = true,
                 swipeActions = null,
                 searchState = MailboxSearchStateSampleData.NotSearching,
-                clearState = MailboxListState.Data.ClearState.Hidden
+                clearState = MailboxListState.Data.ClearState.Hidden,
+                shouldShowFab = true
             )
         )
         every {
@@ -3333,7 +3340,8 @@ class MailboxViewModelTest {
                 refreshRequested = false,
                 swipeActions = null,
                 searchState = MailboxSearchStateSampleData.NotSearching,
-                clearState = MailboxListState.Data.ClearState.Hidden
+                clearState = MailboxListState.Data.ClearState.Hidden,
+                shouldShowFab = true
             ),
             unreadFilterState = UnreadFilterState.Data(
                 numUnread = UnreadCountersTestData.labelToCounterMap[initialLocationMailLabelId.labelId]!!,
@@ -3355,7 +3363,8 @@ class MailboxViewModelTest {
                 refreshRequested = false,
                 swipeActions = null,
                 searchState = MailboxSearchStateSampleData.NewSearch,
-                clearState = MailboxListState.Data.ClearState.Hidden
+                clearState = MailboxListState.Data.ClearState.Hidden,
+                shouldShowFab = false
             )
         )
         every {
@@ -3387,7 +3396,8 @@ class MailboxViewModelTest {
                 refreshRequested = false,
                 swipeActions = null,
                 searchState = MailboxSearchStateSampleData.NotSearching,
-                clearState = MailboxListState.Data.ClearState.Hidden
+                clearState = MailboxListState.Data.ClearState.Hidden,
+                shouldShowFab = true
             )
         )
         every {
@@ -3422,7 +3432,8 @@ class MailboxViewModelTest {
                 refreshRequested = false,
                 swipeActions = null,
                 searchState = MailboxSearchStateSampleData.SearchLoading,
-                clearState = MailboxListState.Data.ClearState.Hidden
+                clearState = MailboxListState.Data.ClearState.Hidden,
+                shouldShowFab = false
             )
         )
         every {
@@ -3454,7 +3465,8 @@ class MailboxViewModelTest {
                 refreshRequested = false,
                 swipeActions = null,
                 searchState = MailboxSearchStateSampleData.SearchData,
-                clearState = MailboxListState.Data.ClearState.Hidden
+                clearState = MailboxListState.Data.ClearState.Hidden,
+                shouldShowFab = true
             )
         )
         every {
