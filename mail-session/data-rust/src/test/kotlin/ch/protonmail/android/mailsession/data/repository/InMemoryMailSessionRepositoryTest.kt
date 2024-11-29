@@ -24,7 +24,7 @@ class InMemoryMailSessionRepositoryTest {
 
         // Then
         assertIs<MailSessionWrapper>(actual)
-        assertEquals(expected, actual.rustObject())
+        assertEquals(expected, actual.getRustMailSession())
     }
 
     @Test

@@ -45,7 +45,7 @@ object MailSessionModule {
     @Provides
     @Singleton
     fun provideMailSessionInterface(repository: MailSessionRepository): MailSessionInterface =
-        repository.getMailSession().rustObject()
+        repository.getMailSession().getRustMailSession()
 
     @Provides
     @Singleton

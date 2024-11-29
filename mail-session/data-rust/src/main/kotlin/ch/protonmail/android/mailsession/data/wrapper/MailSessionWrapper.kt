@@ -28,7 +28,7 @@ import uniffi.proton_mail_uniffi.WatchedAccounts
 
 class MailSessionWrapper(private val mailSession: MailSession) {
 
-    fun rustObject() = mailSession
+    fun getRustMailSession() = mailSession
 
     suspend fun watchAccounts(liveQueryCallback: LiveQueryCallback): WatchedAccounts =
         mailSession.watchAccounts(liveQueryCallback)
