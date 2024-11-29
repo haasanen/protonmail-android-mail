@@ -189,6 +189,7 @@ class ComposerViewModel @Inject constructor(
         when {
             inputDraftId != null -> prefillWithExistingDraft(inputDraftId)
             draftAction != null -> prefillForDraftAction(draftAction)
+            else -> prefillForNewDraft()
         }
 
         observeMessageAttachments()
@@ -286,12 +287,14 @@ class ComposerViewModel @Inject constructor(
         when (draftAction) {
             DraftAction.Compose -> prefillForNewDraft()
             is DraftAction.ComposeToAddresses -> {
+                Timber.d("composer: prefilling for compose To")
                 prefillForNewDraft()
                 prefillForComposeToAction(draftAction.extractRecipients())
             }
             is DraftAction.Forward,
             is DraftAction.Reply,
             is DraftAction.ReplyAll -> viewModelScope.launch {
+                Timber.d("composer: prefilling for reply / fw action")
                 initializeComposerState.withDraftAction(primaryUserId(), draftAction)
                     .onRight { draftFields ->
                         emitNewStateFor(
