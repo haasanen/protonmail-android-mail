@@ -51,9 +51,14 @@ class FormatShortTime @Inject constructor(
             return TextUiModel.Text(itemTime.toWeekDay())
         }
         if (itemTime.isThisYear()) {
-            return TextUiModel.Text(itemTime.toFullDate())
+            return TextUiModel.Text(itemTime.toShortDateWithoutYear())
         }
         return TextUiModel.Text(itemTime.toFullDate())
+    }
+
+    private fun Duration.toShortDateWithoutYear(): String {
+        val dateFormat = SimpleDateFormat("MMM d", getAppLocale())
+        return dateFormat.format(Date(this.inWholeMilliseconds))
     }
 
     private fun Duration.toFullDate() = DateFormat.getDateInstance(DateFormat.MEDIUM, getAppLocale())

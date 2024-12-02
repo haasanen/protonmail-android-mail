@@ -142,13 +142,25 @@ class FormatShortTimeTest {
         val actual = formatter.invoke(itemTime.seconds)
         // Then
         assertIs<TextUiModel.Text>(actual, actual.toString())
-        assertEquals(TextUiModel.Text("21 mars 2022"), actual)
+        assertEquals(TextUiModel.Text("mars 21"), actual)
     }
 
     @Test
-    fun `when showing day and month ensure they are formatted based on the current locale`() {
+    fun `when showing day and month from the current year ensure they are formatted based on the current locale`() {
         // Given
         givenCurrentTimeAndLocale(1_658_994_137.seconds, Locale.US) // Thu Jul 28 09:42:17 CEST 2022
+        val itemTime = 1_647_852_004 // Mon Mar 21 09:40:04 CEST 2022
+        // When
+        val actual = formatter.invoke(itemTime.seconds)
+        // Then
+        assertIs<TextUiModel.Text>(actual, actual.toString())
+        assertEquals(TextUiModel.Text("Mar 21"), actual)
+    }
+
+    @Test
+    fun `when showing day and month from previous years ensure they are formatted based on the current locale`() {
+        // Given
+        givenCurrentTimeAndLocale(1_709_557_304.seconds, Locale.US) // Mon Mar 04 14:01:44 CET 2024
         val itemTime = 1_647_852_004 // Mon Mar 21 09:40:04 CEST 2022
         // When
         val actual = formatter.invoke(itemTime.seconds)
