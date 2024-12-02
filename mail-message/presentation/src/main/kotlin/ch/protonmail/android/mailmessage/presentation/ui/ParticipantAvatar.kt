@@ -19,6 +19,7 @@
 package ch.protonmail.android.mailmessage.presentation.ui
 
 import java.io.File
+import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -84,19 +85,24 @@ fun ParticipantAvatar(
         when (avatarUiModel) {
             is AvatarUiModel.DraftIcon -> ParticipantAvatarDraftIcon(avatarSize)
             is AvatarUiModel.ParticipantAvatar -> {
-                if (avatarUiModel.selected) {
-                    ParticipantAvatarSelected(
-                        avatarUiModel = avatarUiModel,
-                        avatarSize = avatarSize,
-                        backgroundShape = backgroundShape
-                    )
-                } else {
-                    ParticipantAvatarNotSelected(
-                        avatarUiModel = avatarUiModel,
-                        avatarSize = avatarSize,
-                        backgroundShape = backgroundShape,
-                        senderImageViewModel = senderImageViewModel
-                    )
+                Crossfade(
+                    targetState = avatarUiModel.selected,
+                    label = avatarUiModel.address
+                ) { isSelected ->
+                    if (isSelected) {
+                        ParticipantAvatarSelected(
+                            avatarUiModel = avatarUiModel,
+                            avatarSize = avatarSize,
+                            backgroundShape = backgroundShape
+                        )
+                    } else {
+                        ParticipantAvatarNotSelected(
+                            avatarUiModel = avatarUiModel,
+                            avatarSize = avatarSize,
+                            backgroundShape = backgroundShape,
+                            senderImageViewModel = senderImageViewModel
+                        )
+                    }
                 }
             }
         }
