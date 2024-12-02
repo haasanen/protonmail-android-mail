@@ -139,9 +139,11 @@ fun MailboxItem(
                         iconColor = fontColor,
                         modifier = Modifier.padding(end = ProtonDimens.Spacing.Small)
                     )
+
+                    val participantsFontWeight = if (item.isRead) FontWeight.Normal else FontWeight.Bold
                     Participants(
                         participants = item.participants,
-                        fontWeight = fontWeight,
+                        fontWeight = participantsFontWeight,
                         fontColor = fontColor,
                         count = item.numMessages,
                         iconColor = iconColor,
