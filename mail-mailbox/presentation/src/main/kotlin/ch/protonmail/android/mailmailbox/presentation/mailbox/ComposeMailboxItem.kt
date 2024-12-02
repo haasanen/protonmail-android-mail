@@ -178,6 +178,7 @@ fun MailboxItem(
                     Icons(
                         item = item,
                         iconColor = fontColor,
+                        isStarClickable = !selectionMode,
                         onStarClicked = actions.onStarClicked
                     )
                 }
@@ -319,6 +320,7 @@ private fun Icons(
     modifier: Modifier = Modifier,
     item: MailboxItemUiModel,
     iconColor: Color,
+    isStarClickable: Boolean,
     onStarClicked: (MailboxItemUiModel) -> Unit
 ) {
 
@@ -332,19 +334,32 @@ private fun Icons(
         if (item.shouldShowAttachmentIcon) {
             SmallNonClickableIcon(iconId = R.drawable.ic_proton_paper_clip, iconColor = iconColor)
         }
-        if (item.isStarred) {
-            SmallClickableIcon(
-                iconId = R.drawable.ic_proton_star_filled,
-                iconColor = ProtonTheme.colors.starSelected,
-                onClick = { onStarClicked(item) }
-            )
-        } else {
-            SmallClickableIcon(
-                iconId = R.drawable.ic_proton_star,
-                iconColor = ProtonTheme.colors.starDefault,
-                onClick = { onStarClicked(item) }
-            )
-        }
+
+        StarIcon(
+            isStarred = item.isStarred,
+            isClickable = isStarClickable,
+            onClick = { onStarClicked(item) }
+        )
+    }
+}
+
+@Composable
+private fun StarIcon(
+    isStarred: Boolean,
+    isClickable: Boolean,
+    onClick: () -> Unit
+) {
+    val iconId = if (isStarred) R.drawable.ic_proton_star_filled else R.drawable.ic_proton_star
+    val iconColor = if (isStarred) ProtonTheme.colors.starSelected else ProtonTheme.colors.starDefault
+
+    if (isClickable) {
+        SmallClickableIcon(
+            iconId = iconId,
+            iconColor = iconColor,
+            onClick = onClick
+        )
+    } else {
+        SmallNonClickableIcon(iconId = iconId, iconColor = iconColor)
     }
 }
 
