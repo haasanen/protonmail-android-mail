@@ -212,7 +212,7 @@ object MailboxItemUiModelTestData {
         shouldShowRepliedAllIcon = false,
         shouldShowForwardedIcon = false,
         numMessages = null,
-        showStar = false,
+        isStarred = false,
         locations = locations,
         shouldShowAttachmentIcon = false,
         shouldShowExpirationLabel = false,

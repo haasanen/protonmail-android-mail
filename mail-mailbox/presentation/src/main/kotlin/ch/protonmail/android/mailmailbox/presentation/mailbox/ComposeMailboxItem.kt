@@ -332,7 +332,7 @@ private fun Icons(
         if (item.shouldShowAttachmentIcon) {
             SmallNonClickableIcon(iconId = R.drawable.ic_proton_paper_clip, iconColor = iconColor)
         }
-        if (item.showStar) {
+        if (item.isStarred) {
             SmallClickableIcon(
                 iconId = R.drawable.ic_proton_star_filled,
                 iconColor = ProtonTheme.colors.starSelected,

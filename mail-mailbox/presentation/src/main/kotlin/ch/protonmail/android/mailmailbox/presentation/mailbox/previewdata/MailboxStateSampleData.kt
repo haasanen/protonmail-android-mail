@@ -153,7 +153,7 @@ object MailboxStateSampleData {
         mailboxListState = MailboxListState.Data.SelectionMode(
             currentMailLabel = currentMailLabel,
             selectedMailboxItems = selectedMailboxItemUiModels.map {
-                SelectedMailboxItem(it.id, it.isRead, it.showStar)
+                SelectedMailboxItem(it.id, it.isRead, it.isStarred)
             }.toSet(),
             swipeActions = SwipeActionsUiModel(
                 start = SwipeUiModelSampleData.Trash,

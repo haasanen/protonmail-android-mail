@@ -2601,8 +2601,8 @@ class MailboxViewModelTest {
     @Test
     fun `when star action is triggered for no-conversation grouping then star messages is called`() = runTest {
         // Given
-        val item = readMailboxItemUiModel.copy(id = MessageIdSample.Invoice.id, showStar = true)
-        val secondItem = unreadMailboxItemUiModel.copy(id = MessageIdSample.AlphaAppQAReport.id, showStar = false)
+        val item = readMailboxItemUiModel.copy(id = MessageIdSample.Invoice.id, isStarred = true)
+        val secondItem = unreadMailboxItemUiModel.copy(id = MessageIdSample.AlphaAppQAReport.id, isStarred = false)
         val selectedItemsList = listOf(item, secondItem)
 
         val initialState = createMailboxDataState()
@@ -2650,8 +2650,8 @@ class MailboxViewModelTest {
     @Test
     fun `when unstar action is triggered for no-conversation grouping then unstar messages is called`() = runTest {
         // Given
-        val item = readMailboxItemUiModel.copy(id = MessageIdSample.Invoice.id, showStar = true)
-        val secondItem = unreadMailboxItemUiModel.copy(id = MessageIdSample.AlphaAppQAReport.id, showStar = true)
+        val item = readMailboxItemUiModel.copy(id = MessageIdSample.Invoice.id, isStarred = true)
+        val secondItem = unreadMailboxItemUiModel.copy(id = MessageIdSample.AlphaAppQAReport.id, isStarred = true)
         val selectedItemsList = listOf(item, secondItem)
 
         val initialState = createMailboxDataState()
@@ -2699,8 +2699,8 @@ class MailboxViewModelTest {
     @Test
     fun `when move to archive is triggered for no-conversation grouping then move messages is called`() = runTest {
         // Given
-        val item = readMailboxItemUiModel.copy(id = MessageIdSample.Invoice.id, showStar = true)
-        val secondItem = unreadMailboxItemUiModel.copy(id = MessageIdSample.AlphaAppQAReport.id, showStar = true)
+        val item = readMailboxItemUiModel.copy(id = MessageIdSample.Invoice.id, isStarred = true)
+        val secondItem = unreadMailboxItemUiModel.copy(id = MessageIdSample.AlphaAppQAReport.id, isStarred = true)
         val selectedItemsList = listOf(item, secondItem)
         val initialState = createMailboxDataState()
         val expectedActions = listOf(Action.Unstar, Action.Archive, Action.Spam)
@@ -2738,8 +2738,8 @@ class MailboxViewModelTest {
     @Test
     fun `when move to archive is triggered for conversation grouping then move conversation is called`() = runTest {
         // Given
-        val item = readMailboxItemUiModel.copy(id = MessageIdSample.Invoice.id, showStar = true)
-        val secondItem = unreadMailboxItemUiModel.copy(id = MessageIdSample.AlphaAppQAReport.id, showStar = true)
+        val item = readMailboxItemUiModel.copy(id = MessageIdSample.Invoice.id, isStarred = true)
+        val secondItem = unreadMailboxItemUiModel.copy(id = MessageIdSample.AlphaAppQAReport.id, isStarred = true)
         val selectedItemsList = listOf(item, secondItem)
         val initialState = createMailboxDataState()
         val expectedActions = listOf(Action.Unstar, Action.Archive, Action.Spam)
@@ -2780,8 +2780,8 @@ class MailboxViewModelTest {
     @Test
     fun `when move to spam is triggered for no-conversation grouping then move messages is called`() = runTest {
         // Given
-        val item = readMailboxItemUiModel.copy(id = MessageIdSample.Invoice.id, showStar = true)
-        val secondItem = unreadMailboxItemUiModel.copy(id = MessageIdSample.AlphaAppQAReport.id, showStar = true)
+        val item = readMailboxItemUiModel.copy(id = MessageIdSample.Invoice.id, isStarred = true)
+        val secondItem = unreadMailboxItemUiModel.copy(id = MessageIdSample.AlphaAppQAReport.id, isStarred = true)
         val selectedItemsList = listOf(item, secondItem)
 
         val initialState = createMailboxDataState()
@@ -2820,8 +2820,8 @@ class MailboxViewModelTest {
     @Test
     fun `when move to spam is triggered for conversation grouping then move conversation is called`() = runTest {
         // Given
-        val item = readMailboxItemUiModel.copy(id = MessageIdSample.Invoice.id, showStar = true)
-        val secondItem = unreadMailboxItemUiModel.copy(id = MessageIdSample.AlphaAppQAReport.id, showStar = true)
+        val item = readMailboxItemUiModel.copy(id = MessageIdSample.Invoice.id, isStarred = true)
+        val secondItem = unreadMailboxItemUiModel.copy(id = MessageIdSample.AlphaAppQAReport.id, isStarred = true)
         val selectedItemsList = listOf(item, secondItem)
 
         val initialState = createMailboxDataState()

@@ -256,7 +256,7 @@ class MailboxItemUiModelMapperTest {
         // When
         val actual = mapper.toUiModel(userId, mailboxItem, ContactTestData.contacts, defaultFolderColorSettings, false)
         // Then
-        assertTrue(actual.showStar)
+        assertTrue(actual.isStarred)
     }
 
     @Test
@@ -267,7 +267,7 @@ class MailboxItemUiModelMapperTest {
         // When
         val actual = mapper.toUiModel(userId, mailboxItem, ContactTestData.contacts, defaultFolderColorSettings, false)
         // Then
-        assertFalse(actual.showStar)
+        assertFalse(actual.isStarred)
     }
 
     @Test

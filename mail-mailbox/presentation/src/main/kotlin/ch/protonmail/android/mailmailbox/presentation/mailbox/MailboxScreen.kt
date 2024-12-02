@@ -187,7 +187,7 @@ fun MailboxScreen(
         onErrorWithData = { viewModel.submit(MailboxViewAction.OnErrorWithData) },
         onAvatarClicked = { viewModel.submit(MailboxViewAction.OnItemAvatarClicked(it)) },
         onStarClicked = { item ->
-            viewModel.submit(MailboxViewAction.StarAction(item.id, item.showStar))
+            viewModel.submit(MailboxViewAction.StarAction(item.id, item.isStarred))
         },
         onItemClicked = { item -> viewModel.submit(MailboxViewAction.ItemClicked(item)) },
         onItemLongClicked = { viewModel.submit(MailboxViewAction.OnItemLongClicked(it)) },
@@ -849,7 +849,7 @@ private fun generateSwipeActions(
         onSpam = { actions.onSwipeSpam(item.id) },
         onStar = {
             items.itemSnapshotList.items.firstOrNull { it.id == item.id }?.let {
-                actions.onSwipeStar(it.id, it.showStar)
+                actions.onSwipeStar(it.id, it.isStarred)
             }
         },
         onArchive = { actions.onSwipeArchive(item.id) },
