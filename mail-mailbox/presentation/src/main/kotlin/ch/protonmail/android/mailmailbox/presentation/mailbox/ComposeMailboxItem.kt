@@ -235,10 +235,10 @@ private fun Participants(
 ) {
     when (participants) {
         is ParticipantsUiModel.Participants -> {
-            ParticipantsList(
+            ParticipantsListWithMessageCount(
                 modifier = modifier.wrapContentSize(),
                 participants = participants,
-                count = count,
+                messageCount = count,
                 fontWeight = fontWeight,
                 fontColor = fontColor,
                 iconColor = iconColor

@@ -51,17 +51,17 @@ import ch.protonmail.android.design.compose.theme.bodySmallNorm
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 
 @Composable
-fun ParticipantsList(
+fun ParticipantsListWithMessageCount(
     modifier: Modifier = Modifier,
     participants: ParticipantsUiModel.Participants,
     fontWeight: FontWeight,
     fontColor: Color,
-    count: Int?,
+    messageCount: Int?,
     iconColor: Color
 ) {
     SubcomposeLayout(modifier = modifier) { constraints ->
 
-        val countMeasurable = count?.let {
+        val countMeasurable = messageCount?.let {
             subcompose("count") {
                 Count(
                     modifier = Modifier.padding(horizontal = ProtonDimens.Spacing.Small),
