@@ -28,7 +28,7 @@ import androidx.compose.ui.res.stringResource
 import ch.protonmail.android.mailcommon.presentation.R
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.labelSmallNorm
+import ch.protonmail.android.design.compose.theme.labelMediumNorm
 
 @Composable
 fun OfficialBadge(modifier: Modifier = Modifier) {
@@ -36,11 +36,11 @@ fun OfficialBadge(modifier: Modifier = Modifier) {
         modifier = modifier
             .testTag(OfficialBadgeTestTags.Item)
             .padding(start = ProtonDimens.Spacing.Small)
-            .background(color = ProtonTheme.colors.backgroundSecondary, shape = ProtonTheme.shapes.medium)
-            .padding(horizontal = ProtonDimens.Spacing.Small, vertical = ProtonDimens.Spacing.Tiny),
+            .background(color = ProtonTheme.colors.brandMinus30, shape = ProtonTheme.shapes.medium)
+            .padding(horizontal = ProtonDimens.Spacing.Compact, vertical = ProtonDimens.Spacing.Tiny),
         text = stringResource(id = R.string.auth_badge_official),
         maxLines = 1,
-        style = ProtonTheme.typography.labelSmallNorm.copy(color = ProtonTheme.colors.textAccent)
+        style = ProtonTheme.typography.labelMediumNorm.copy(color = ProtonTheme.colors.textAccent)
     )
 }
 
