@@ -21,4 +21,14 @@
     <string name="welcome_sign_in">Sign in</string>
     <string name="welcome_sign_up">Create an account</string>
     <string name="welcome_proton_privacy_by_default">Proton - Privacy by default</string>
+    <string name="auth_login">Sign in</string>
+    <string name="auth_login_close">Close</string>
+    <string name="auth_login_help">Help</string>
+    <string name="auth_sign_in">Sign In</string>
+    <string name="auth_username">Username</string>
+    <string name="auth_password">Password</string>
+    <string name="auth_username_placeholder">Username or email</string>
+    <string name="auth_password_placeholder">Password</string>
+    <string name="auth_login_assistive_text">Please enter your Proton email or username.</string>
+    <string name="auth_account_details">Enter your Proton Account details.</string>
 </resources>

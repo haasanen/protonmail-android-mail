@@ -54,7 +54,7 @@ import me.proton.core.compose.theme.ProtonTypography
 import me.proton.core.compose.theme.defaultSmallWeak
 import me.proton.core.presentation.R as CoreR
 
-private const val SMALL_SCREEN_HEIGHT = 680
+public const val SMALL_SCREEN_HEIGHT: Int = 680
 
 @Composable
 public fun WelcomeScreenMail(
