@@ -13,11 +13,11 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Test
 import kotlin.test.assertEquals
 
-class InitializeComposerStateTest {
+class OpenExistingDraftTest {
 
     private val draftRepository = mockk<DraftRepository>()
 
-    private val initializeComposerState = InitializeComposerState(draftRepository)
+    private val openExistingDraft = OpenExistingDraft(draftRepository)
 
     @Test
     fun `returns success when init with existing draft succeeds`() = runTest {
@@ -28,7 +28,7 @@ class InitializeComposerStateTest {
         coEvery { draftRepository.openDraft(userId, messageId) } returns expected.right()
 
         // When
-        val actual = initializeComposerState.withExistingDraft(userId, messageId)
+        val actual = openExistingDraft(userId, messageId)
 
         // Then
         assertEquals(expected.right(), actual)
@@ -43,7 +43,7 @@ class InitializeComposerStateTest {
         coEvery { draftRepository.openDraft(userId, messageId) } returns expected.left()
 
         // When
-        val actual = initializeComposerState.withExistingDraft(userId, messageId)
+        val actual = openExistingDraft(userId, messageId)
 
         // Then
         assertEquals(expected.left(), actual)

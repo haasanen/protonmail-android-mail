@@ -52,12 +52,12 @@ import ch.protonmail.android.mailcomposer.domain.usecase.GetComposerSenderAddres
 import ch.protonmail.android.mailcomposer.domain.usecase.GetDecryptedDraftFields
 import ch.protonmail.android.mailcomposer.domain.usecase.GetExternalRecipients
 import ch.protonmail.android.mailcomposer.domain.usecase.GetLocalMessageDecrypted
-import ch.protonmail.android.mailcomposer.domain.usecase.InitializeComposerState
 import ch.protonmail.android.mailcomposer.domain.usecase.IsValidEmailAddress
 import ch.protonmail.android.mailcomposer.domain.usecase.ObserveMessageAttachments
 import ch.protonmail.android.mailcomposer.domain.usecase.ObserveMessageExpirationTime
 import ch.protonmail.android.mailcomposer.domain.usecase.ObserveMessagePassword
 import ch.protonmail.android.mailcomposer.domain.usecase.ObserveMessageSendingError
+import ch.protonmail.android.mailcomposer.domain.usecase.OpenExistingDraft
 import ch.protonmail.android.mailcomposer.domain.usecase.ProvideNewDraftId
 import ch.protonmail.android.mailcomposer.domain.usecase.ReEncryptAttachments
 import ch.protonmail.android.mailcomposer.domain.usecase.SaveMessageExpirationTime
@@ -161,7 +161,7 @@ class ComposerViewModel @Inject constructor(
     private val getExternalRecipients: GetExternalRecipients,
     private val convertHtmlToPlainText: ConvertHtmlToPlainText,
     @NewContactSuggestionsEnabled private val isNewContactsSuggestionsEnabled: Boolean,
-    private val initializeComposerState: InitializeComposerState,
+    private val openExistingDraft: OpenExistingDraft,
     private val createEmptyDraft: CreateEmptyDraft,
     private val createDraftForAction: CreateDraftForAction,
     isDeviceContactsSuggestionsEnabled: IsDeviceContactsSuggestionsEnabled,
@@ -324,7 +324,7 @@ class ComposerViewModel @Inject constructor(
         emitNewStateFor(ComposerEvent.OpenExistingDraft(currentMessageId()))
 
         viewModelScope.launch {
-            initializeComposerState.withExistingDraft(primaryUserId(), MessageId(inputDraftId))
+            openExistingDraft(primaryUserId(), MessageId(inputDraftId))
                 .onRight { draftFields ->
                     emitNewStateFor(
                         ComposerEvent.PrefillDraftDataReceived(

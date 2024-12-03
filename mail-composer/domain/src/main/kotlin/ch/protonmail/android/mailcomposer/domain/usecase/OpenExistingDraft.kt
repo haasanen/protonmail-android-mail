@@ -26,10 +26,10 @@ import ch.protonmail.android.mailmessage.domain.model.MessageId
 import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 
-class InitializeComposerState @Inject constructor(
+class OpenExistingDraft @Inject constructor(
     private val draftRepository: DraftRepository
 ) {
 
-    suspend fun withExistingDraft(userId: UserId, draftId: MessageId): Either<DataError, DraftFields> =
+    suspend operator fun invoke(userId: UserId, draftId: MessageId): Either<DataError, DraftFields> =
         draftRepository.openDraft(userId, draftId)
 }

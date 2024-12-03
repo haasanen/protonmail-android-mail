@@ -46,6 +46,8 @@ import ch.protonmail.android.mailcomposer.domain.model.SenderEmail
 import ch.protonmail.android.mailcomposer.domain.model.StyledHtmlQuote
 import ch.protonmail.android.mailcomposer.domain.model.Subject
 import ch.protonmail.android.mailcomposer.domain.usecase.ClearMessageSendingError
+import ch.protonmail.android.mailcomposer.domain.usecase.CreateDraftForAction
+import ch.protonmail.android.mailcomposer.domain.usecase.CreateEmptyDraft
 import ch.protonmail.android.mailcomposer.domain.usecase.DeleteAllAttachments
 import ch.protonmail.android.mailcomposer.domain.usecase.DeleteAttachment
 import ch.protonmail.android.mailcomposer.domain.usecase.DraftUploader
@@ -53,12 +55,12 @@ import ch.protonmail.android.mailcomposer.domain.usecase.GetComposerSenderAddres
 import ch.protonmail.android.mailcomposer.domain.usecase.GetDecryptedDraftFields
 import ch.protonmail.android.mailcomposer.domain.usecase.GetExternalRecipients
 import ch.protonmail.android.mailcomposer.domain.usecase.GetLocalMessageDecrypted
-import ch.protonmail.android.mailcomposer.domain.usecase.InitializeComposerState
 import ch.protonmail.android.mailcomposer.domain.usecase.IsValidEmailAddress
 import ch.protonmail.android.mailcomposer.domain.usecase.ObserveMessageAttachments
 import ch.protonmail.android.mailcomposer.domain.usecase.ObserveMessageExpirationTime
 import ch.protonmail.android.mailcomposer.domain.usecase.ObserveMessagePassword
 import ch.protonmail.android.mailcomposer.domain.usecase.ObserveMessageSendingError
+import ch.protonmail.android.mailcomposer.domain.usecase.OpenExistingDraft
 import ch.protonmail.android.mailcomposer.domain.usecase.ProvideNewDraftId
 import ch.protonmail.android.mailcomposer.domain.usecase.ReEncryptAttachments
 import ch.protonmail.android.mailcomposer.domain.usecase.SaveMessageExpirationTime
@@ -216,7 +218,9 @@ class ComposerViewModelTest {
     private val observeMessageExpirationTime = mockk<ObserveMessageExpirationTime>()
     private val getExternalRecipients = mockk<GetExternalRecipients>()
     private val convertHtmlToPlainText = mockk<ConvertHtmlToPlainText>()
-    private val initializeComposerState = mockk<InitializeComposerState>()
+    private val createEmptyDraft = mockk<CreateEmptyDraft>()
+    private val createDraftForAction = mockk<CreateDraftForAction>()
+    private val openExistingDraft = mockk<OpenExistingDraft>()
 
     private val getInitials = mockk<GetInitials> {
         every { this@mockk(any()) } returns BaseInitials
@@ -268,7 +272,9 @@ class ComposerViewModelTest {
             getExternalRecipients,
             convertHtmlToPlainText,
             isNewContactsSuggestionsEnabled,
-            initializeComposerState,
+            openExistingDraft,
+            createEmptyDraft,
+            createDraftForAction,
             isDeviceContactsSuggestionsEnabledMock,
             getDecryptedDraftFields,
             savedStateHandle,
@@ -1689,7 +1695,7 @@ class ComposerViewModelTest {
 
         // Then
         assertTrue(actual.isLoading)
-        coVerify { initializeComposerState.withExistingDraft(expectedUserId, expectedDraftId) }
+        coVerify { openExistingDraft(expectedUserId, expectedDraftId) }
     }
 
     @Test
@@ -2533,7 +2539,7 @@ class ComposerViewModelTest {
         action: DraftAction,
         draftFields: () -> DraftFields
     ) = draftFields().also {
-        coEvery { initializeComposerState.withDraftAction(userId, action) } returns it.right()
+        coEvery { createDraftForAction(userId, action) } returns it.right()
     }
 
     private fun expectParentDraftDataError(
@@ -2558,14 +2564,14 @@ class ComposerViewModelTest {
         userId: UserId,
         result: () -> DraftFields = { DraftFieldsTestData.EmptyDraftWithPrimarySender }
     ) = result().also { draftFields ->
-        coEvery { initializeComposerState.withNewEmptyDraft(userId) } coAnswers { draftFields.right() }
+        coEvery { createEmptyDraft(userId) } coAnswers { draftFields.right() }
     }
 
     private fun expectInitComposerWithExistingDraftError(
         userId: UserId,
         draftId: MessageId,
         error: () -> DataError
-    ) = error().also { coEvery { initializeComposerState.withExistingDraft(userId, draftId) } returns it.left() }
+    ) = error().also { coEvery { openExistingDraft(userId, draftId) } returns it.left() }
 
     private fun expectInitComposerWithExistingDraftSuccess(
         userId: UserId,
@@ -2573,7 +2579,7 @@ class ComposerViewModelTest {
         responseDelay: Long = 0L,
         result: () -> DraftFields
     ) = result().also { draftFields ->
-        coEvery { initializeComposerState.withExistingDraft(userId, draftId) } coAnswers {
+        coEvery { openExistingDraft(userId, draftId) } coAnswers {
             delay(responseDelay)
             draftFields.right()
         }
@@ -2723,7 +2729,7 @@ class ComposerViewModelTest {
 
     private fun expectInitComposerWithNewEmptyDraftFails(userId: UserId, dataError: () -> DataError) =
         dataError().also {
-            coEvery { initializeComposerState.withNewEmptyDraft(userId) } returns it.left()
+            coEvery { createEmptyDraft(userId) } returns it.left()
         }
 
     private fun expectedGetComposerSenderAddresses(addresses: () -> List<UserAddress>): List<UserAddress> =
