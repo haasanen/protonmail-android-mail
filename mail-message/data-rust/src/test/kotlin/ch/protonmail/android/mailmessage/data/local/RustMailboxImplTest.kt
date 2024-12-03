@@ -21,6 +21,8 @@ package ch.protonmail.android.mailmessage.data.local
 import app.cash.turbine.test
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalViewMode
+import ch.protonmail.android.mailcommon.datarust.usecase.ExecuteActionWithUserSession
+import ch.protonmail.android.mailmessage.data.usecase.CreateAllMailMailbox
 import ch.protonmail.android.mailmessage.data.usecase.CreateMailbox
 import ch.protonmail.android.mailmessage.data.wrapper.MailboxWrapper
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
@@ -56,9 +58,19 @@ class RustMailboxImplTest {
         coEvery { this@mockk.invoke(any(), any()) } returns messageMailbox
     }
 
+    private val createAllMailMailbox = mockk<CreateAllMailMailbox> {
+        coEvery { this@mockk.invoke(any()) } returns messageMailbox
+    }
+
     private val userSessionRepository = mockk<UserSessionRepository>()
 
-    private val rustMailbox = RustMailboxImpl(userSessionRepository, createMailbox)
+    private val executeActionWithUserSession = ExecuteActionWithUserSession(userSessionRepository)
+
+    private val rustMailbox = RustMailboxImpl(
+        executeActionWithUserSession,
+        createMailbox,
+        createAllMailMailbox
+    )
 
     @Test
     fun `switchToMailbox should initialise the mailbox when there is no mailbox created`() = runTest {
@@ -79,7 +91,7 @@ class RustMailboxImplTest {
     }
 
     @Test
-    fun `observeeMailbox returns message mailbox flow`() = runTest {
+    fun `observe Mailbox returns message mailbox flow`() = runTest {
         // Given
         val userId = UserIdTestData.userId
         val mailUserSession = mockk<MailUserSessionWrapper>()
@@ -143,6 +155,31 @@ class RustMailboxImplTest {
         // Then
         coVerify { createMailbox(mailUserSession, secondLabelId) }
         advanceUntilIdle()
+    }
+
+    @Test
+    fun `switch To All Mail Mailbox switches to a new all mail mailbox emitting it on observed mailboxes`() = runTest {
+        // Given
+        val userId = UserIdTestData.userId
+        val mailUserSession = mockk<MailUserSessionWrapper>()
+        val allMailMailbox: MailboxWrapper = mockk {
+            every { labelId() } returns LocalLabelId(5u)
+            every { viewMode() } returns LocalViewMode.MESSAGES
+        }
+
+        coEvery { userSessionRepository.getUserSession(userId) } returns mailUserSession
+        coEvery { createAllMailMailbox(mailUserSession) } returns allMailMailbox
+
+        // When
+        rustMailbox.switchToAllMailMailbox(userId)
+
+        // Then
+        rustMailbox.observeMailbox().test {
+            coVerify { createAllMailMailbox(mailUserSession) }
+            advanceUntilIdle()
+
+            assertEquals(allMailMailbox, awaitItem())
+        }
     }
 
 }

@@ -34,4 +34,5 @@ interface RustMailbox {
     // markMessagesRead Rust function requires current label id as a parameter
     // Therefore this function is added temporarily to get the current label id
     fun observeCurrentLabelId(): Flow<LocalLabelId>
+    suspend fun switchToAllMailMailbox(userId: UserId)
 }

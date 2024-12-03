@@ -19,9 +19,10 @@
 package ch.protonmail.android.mailmessage.data.local
 
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
+import ch.protonmail.android.mailcommon.datarust.usecase.ExecuteActionWithUserSession
+import ch.protonmail.android.mailmessage.data.usecase.CreateAllMailMailbox
 import ch.protonmail.android.mailmessage.data.usecase.CreateMailbox
 import ch.protonmail.android.mailmessage.data.wrapper.MailboxWrapper
-import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -33,8 +34,9 @@ import timber.log.Timber
 import javax.inject.Inject
 
 class RustMailboxImpl @Inject constructor(
-    private val userSessionRepository: UserSessionRepository,
-    private val createMailbox: CreateMailbox
+    private val executeActionWithUserSession: ExecuteActionWithUserSession,
+    private val createMailbox: CreateMailbox,
+    private val createAllMailMailbox: CreateAllMailMailbox
 ) : RustMailbox {
 
     private val mailboxMutableStatusFlow = MutableStateFlow<MailboxWrapper?>(null)
@@ -46,21 +48,32 @@ class RustMailboxImpl @Inject constructor(
         if (!shouldSwitchMailbox(labelId)) {
             return
         }
-
         // Reset mailbox to avoid using wrong mailbox while the new one is being created
         mailboxMutableStatusFlow.value = null
 
-        val userSession = userSessionRepository.getUserSession(userId)
-        if (userSession == null) {
-            Timber.w("rust-mailbox: switchMailbox failed, no session for $userId")
-            return
+        executeActionWithUserSession(userId) { userSession ->
+            Timber.v("rust-mailbox: mailbox creation started... ${System.currentTimeMillis()}")
+            val mailbox = createMailbox(userSession, labelId)
+            Timber.d("rust-mailbox: Mailbox created for label: $labelId at ${System.currentTimeMillis()}")
+            mailboxMutableStatusFlow.value = mailbox
         }
-        Timber.v("rust-mailbox: mailbox creation started... ${System.currentTimeMillis()}")
-        val mailbox = createMailbox(userSession, labelId)
-        Timber.d("rust-mailbox: Mailbox created for label: $labelId at ${System.currentTimeMillis()}")
-
-        mailboxMutableStatusFlow.value = mailbox
     }
+
+    /**
+     * Switches rust Mailbox object to AllMail OR AlmostAllMail
+     * depending on the user's preference. (Decision making is delegated to the rust lib)
+     */
+    override suspend fun switchToAllMailMailbox(userId: UserId) {
+        // Reset mailbox to avoid using wrong mailbox while the new one is being created
+        mailboxMutableStatusFlow.value = null
+
+        executeActionWithUserSession(userId) { userSession ->
+            Timber.v("rust-mailbox: all mail mailbox creation...")
+            val mailbox = createAllMailMailbox(userSession)
+            mailboxMutableStatusFlow.value = mailbox
+        }
+    }
+
 
     override fun observeMailbox(): Flow<MailboxWrapper> = mailboxFlow
 
