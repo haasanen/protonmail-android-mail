@@ -19,9 +19,6 @@
 package ch.protonmail.android.mailmessage.data.search
 
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageMetadata
-import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
-import ch.protonmail.android.maillabel.domain.model.SystemLabelId
-import ch.protonmail.android.maillabel.domain.usecase.FindLocalSystemLabelId
 import ch.protonmail.android.mailmessage.data.local.RustMailbox
 import ch.protonmail.android.mailmessage.data.usecase.CreateRustSearchPaginator
 import ch.protonmail.android.mailmessage.data.wrapper.MessagePaginatorWrapper
@@ -42,8 +39,7 @@ class RustMessageSearchQueryImpl @Inject constructor(
     private val userSessionRepository: UserSessionRepository,
     private val invalidationTracker: RustInvalidationTracker,
     private val createRustSearchPaginator: CreateRustSearchPaginator,
-    private val rustMailbox: RustMailbox,
-    private val findLocalSystemLabelId: FindLocalSystemLabelId
+    private val rustMailbox: RustMailbox
 ) : RustMessageSearchQuery {
 
     private var paginator: Paginator? = null
@@ -96,13 +92,7 @@ class RustMessageSearchQueryImpl @Inject constructor(
         destroy()
 
         // Switch to all mail location
-        val allMailLabelId = findLocalSystemLabelId(userId, SystemLabelId.AllMail)?.labelId
-        if (allMailLabelId != null) {
-            rustMailbox.switchToMailbox(userId, allMailLabelId.toLocalLabelId())
-        } else {
-            Timber.e("rust-search: all mail label id not found")
-            return
-        }
+        rustMailbox.switchToAllMailMailbox(userId)
 
         Timber.v("rust-search: searching for $keyword")
         paginator = Paginator(

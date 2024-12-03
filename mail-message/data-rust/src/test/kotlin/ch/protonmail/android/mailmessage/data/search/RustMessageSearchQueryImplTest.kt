@@ -20,11 +20,6 @@ package ch.protonmail.android.mailmessage.data.search
 
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageMetadata
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
-import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
-import ch.protonmail.android.maillabel.domain.model.LabelId
-import ch.protonmail.android.maillabel.domain.model.MailLabelId
-import ch.protonmail.android.maillabel.domain.model.SystemLabelId
-import ch.protonmail.android.maillabel.domain.usecase.FindLocalSystemLabelId
 import ch.protonmail.android.mailmessage.data.local.RustMailbox
 import ch.protonmail.android.mailmessage.data.usecase.CreateRustSearchPaginator
 import ch.protonmail.android.mailmessage.data.wrapper.MessagePaginatorWrapper
@@ -64,16 +59,12 @@ class RustMessageSearchQueryImplTest {
     private val createRustSearchPaginator: CreateRustSearchPaginator = mockk()
     private val userSessionRepository = mockk<UserSessionRepository>()
     private val invalidationTracker: RustInvalidationTracker = mockk(relaxUnitFun = true)
-    private val findLocalSystemLabelId: FindLocalSystemLabelId = mockk {
-        coEvery { this@mockk.invoke(any(), SystemLabelId.AllMail) } returns MailLabelId.System(LabelId("5"))
-    }
 
     private val rustMessageSearchQuery = RustMessageSearchQueryImpl(
         userSessionRepository,
         invalidationTracker,
         createRustSearchPaginator,
-        rustMailbox,
-        findLocalSystemLabelId
+        rustMailbox
     )
 
     @Test
@@ -106,18 +97,17 @@ class RustMessageSearchQueryImplTest {
         val keyword = "keyword"
         val pageKey = PageKey.PageKeyForSearch(keyword)
         val userSession = mockk<MailUserSessionWrapper>()
-        val labelId = SystemLabelId.AllMail.labelId
         coEvery { userSessionRepository.getUserSession(userId) } returns userSession
         coEvery { searchPaginator.nextPage() } returns expectedMessages
         coEvery { createRustSearchPaginator.invoke(userSession, keyword, any()) } returns searchPaginator
-        coEvery { rustMailbox.switchToMailbox(userId, labelId.toLocalLabelId()) } just Runs
+        coEvery { rustMailbox.switchToAllMailMailbox(userId) } just Runs
 
         // When
         val actual = rustMessageSearchQuery.getMessages(userId, pageKey)
 
         // Then
         assertNotNull(actual)
-        coVerify { rustMailbox.switchToMailbox(userId, labelId.toLocalLabelId()) }
+        coVerify { rustMailbox.switchToAllMailMailbox(userId) }
     }
 
     @Test
@@ -211,19 +201,18 @@ class RustMessageSearchQueryImplTest {
         val keyword = "keyword"
         val pageKey = PageKey.PageKeyForSearch(keyword)
         val session = mockk<MailUserSessionWrapper>()
-        val labelId = SystemLabelId.AllMail.labelId
         val paginator = mockk<MessagePaginatorWrapper> {
             coEvery { this@mockk.nextPage() } returns expectedConversations
         }
         coEvery { userSessionRepository.getUserSession(userId) } returns session
         coEvery { createRustSearchPaginator(session, keyword, any()) } returns paginator
-        coEvery { rustMailbox.switchToMailbox(userId, labelId.toLocalLabelId()) } just Runs
+        coEvery { rustMailbox.switchToAllMailMailbox(userId) } just Runs
 
         // When
         rustMessageSearchQuery.getMessages(userId, pageKey)
 
         // Then
-        coVerify(exactly = 1) { rustMailbox.switchToMailbox(userId, labelId.toLocalLabelId()) }
+        coVerify(exactly = 1) { rustMailbox.switchToAllMailMailbox(userId) }
     }
 
     @Test
@@ -248,7 +237,7 @@ class RustMessageSearchQueryImplTest {
 
         // Then
         coVerify(exactly = 1) { createRustSearchPaginator(session, keyword, any()) }
-        coVerify(exactly = 1) { rustMailbox.switchToMailbox(userId, any()) }
+        coVerify(exactly = 1) { rustMailbox.switchToAllMailMailbox(userId) }
     }
 
     @Test
