@@ -77,7 +77,7 @@ dependencies {
     implementation(project(":mail-settings:domain"))
     implementation(project(":design-system"))
     implementation(project(":presentation-compose"))
-    implementation(project(":account-core:platform:android:core:account-manager:presentation"))
+    implementation(project(":shared:core:account-manager:presentation"))
 
     testImplementation(libs.bundles.test)
     testImplementation(libs.proton.rust.core)

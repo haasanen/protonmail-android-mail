@@ -67,7 +67,7 @@ dependencies {
     implementation(libs.proton.core.presentation)
     implementation(libs.proton.core.utilKotlin)
 
-    implementation(project(":account-core:platform:android:core:account:domain"))
+    implementation(project(":shared:core:account:domain"))
     implementation(project(":design-system"))
     implementation(project(":presentation-compose"))
 

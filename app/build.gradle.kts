@@ -223,9 +223,9 @@ configurations {
 dependencies {
     implementation(files("../../proton-libs/gopenpgp/gopenpgp.aar"))
 
-    implementation(project(":account-core:platform:android:core:account:dagger"))
-    implementation(project(":account-core:platform:android:core:account-manager:presentation"))
-    implementation(project(":account-core:platform:android:core:auth:presentation"))
+    implementation(project(":shared:core:account:dagger"))
+    implementation(project(":shared:core:account-manager:presentation"))
+    implementation(project(":shared:core:auth:presentation"))
 
     implementation(libs.bundles.appLibs)
     implementation(libs.java.jna) { artifact { type = "aar" } }

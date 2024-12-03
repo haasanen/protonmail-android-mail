@@ -47,10 +47,10 @@ android {
 dependencies {
     kapt(libs.bundles.app.annotationProcessors)
 
-    api(project(":account-core:platform:android:core:account:domain"))
+    api(project(":shared:core:account:domain"))
 
     compileOnly(libs.proton.rust.core)
 
-    implementation(project(":account-core:platform:android:core:account:data"))
+    implementation(project(":shared:core:account:data"))
     implementation(libs.dagger.hilt.android)
 }

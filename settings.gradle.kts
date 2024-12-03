@@ -25,44 +25,16 @@ plugins {
     id("me.proton.core.gradle-plugins.include-core-build") version "1.3.0"
 }
 
-@Suppress("SwallowedException")
-val privateProperties: Properties = Properties().apply {
-    try {
-        load(rootDir.resolve("private.properties").inputStream())
-    } catch (exception: FileNotFoundException) {
-        // Empty properties is used, to allow the app to be built without secrets.
-    }
-}
-
 includeCoreBuild {
     branch.set("main")
     includeBuild("gopenpgp")
-
-    // Adding temporary https://gitlab.protontech.ch/amorral/et-protoncore.
-    includeRepo("et-protoncore") {
-        val tokenKey = "ACCOUNT_REPO_READ_TOKEN"
-        val token = System.getenv(tokenKey) ?: privateProperties[tokenKey]
-        if (token == null) {
-            logger.warn(
-                """
-                    Please provide `$tokenKey` as an environment variable, or a value in private.properties file.
-                    Alternatively, uncomment `local.git.et-protoncore=account-core` in gradle.properties file,
-                    and clone the et-protoncore repository into `account-core` directory.
-                """.trimIndent()
-            )
-        }
-        val server = "gitlab.protontech.ch"
-        uri.set("https://username:${token}@${server}/amorral/et-protoncore.git")
-        branch.set("fix/proton_sidebar_theme_fix")
-        checkoutDirectory.set(file("./account-core"))
-    }
 }
 
-include("account-core:platform:android:core:account-manager:presentation")
-include("account-core:platform:android:core:account:dagger")
-include("account-core:platform:android:core:account:data")
-include("account-core:platform:android:core:account:domain")
-include("account-core:platform:android:core:auth:presentation")
+include(":shared:core:account-manager:presentation")
+include(":shared:core:account:dagger")
+include(":shared:core:account:data")
+include(":shared:core:account:domain")
+include(":shared:core:auth:presentation")
 
 include(":app")
 include(":benchmark")

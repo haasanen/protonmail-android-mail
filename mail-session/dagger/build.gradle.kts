@@ -47,7 +47,7 @@ dependencies {
 
     implementation(libs.dagger.hilt.android)
 
-    implementation(project(":account-core:platform:android:core:auth:presentation"))
+    implementation(project(":shared:core:auth:presentation"))
     implementation(project(":mail-session:data-rust"))
     implementation(project(":mail-session:domain"))
     implementation(project(":mail-session:presentation"))

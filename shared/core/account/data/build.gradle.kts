@@ -43,7 +43,7 @@ android {
 }
 
 dependencies {
-    api(project(":account-core:platform:android:core:account:domain"))
+    api(project(":shared:core:account:domain"))
     compileOnly(libs.proton.rust.core)
     implementation(libs.javax.inject)
 }

@@ -46,7 +46,7 @@ android {
         implementation(libs.proton.core.domain)
         implementation(libs.proton.core.network)
 
-        implementation(project(":account-core:platform:android:core:account:domain"))
+        implementation(project(":shared:core:account:domain"))
         implementation(project(":mail-common:data"))
         implementation(project(":mail-common:data-rust"))
         implementation(project(":mail-common:domain"))
