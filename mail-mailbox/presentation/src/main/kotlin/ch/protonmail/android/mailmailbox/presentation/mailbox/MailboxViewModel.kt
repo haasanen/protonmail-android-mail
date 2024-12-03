@@ -544,9 +544,21 @@ class MailboxViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Creates a [MailboxPagerFactory] and observes the emitted paging data. The Pager is re-created, when:
+     * - The selected Mail Label (ie. Mailbox location) changes
+     * - The "Unread filter" state changes
+     * - The search keyword changes (search mode)
+     *
+     * This method keeps track of the "selected mail label" and the "search mode state" it's been called
+     * to be able to hide the displayed items and show a loader as soon as such params change (avoiding
+     * the old location's items from being displayed till the new ones are loaded).
+     * This is achieved through `pagingDataFlow.emit(PagingData.empty())`
+     */
     private fun observePagingData(): Flow<PagingData<MailboxItemUiModel>> {
         val pagingDataFlow = MutableStateFlow<PagingData<MailboxItemUiModel>>(PagingData.empty())
         var currentMailLabel: MailLabel? = null
+        var currentSearchModeState: Boolean? = null
 
         primaryUserId.filterNotNull().flatMapLatest { userId ->
             combine(
@@ -555,9 +567,11 @@ class MailboxViewModel @Inject constructor(
                 state.observeSearchQuery()
             ) { selectedMailLabel, unreadFilterEnabled, query ->
 
-                if (selectedMailLabel != currentMailLabel) {
+                val isInSearchMode = state.value.isInSearchMode()
+                if (selectedMailLabel != currentMailLabel || currentSearchModeState != isInSearchMode) {
                     pagingDataFlow.emit(PagingData.empty())
                     currentMailLabel = selectedMailLabel
+                    currentSearchModeState = isInSearchMode
                 }
 
                 val viewMode = getViewModeForCurrentLocation(selectedMailLabelId.flow.value)
