@@ -9,7 +9,6 @@ import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
 import ch.protonmail.android.testdata.composer.DraftFieldsTestData
 import io.mockk.coEvery
-import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
@@ -83,34 +82,4 @@ class InitializeComposerStateTest {
         assertEquals(expected.left(), actual)
     }
 
-    @Test
-    fun `returns success when init with new empty draft action succeeds`() = runTest {
-        // Given
-        val userId = UserIdSample.Primary
-        val action = DraftAction.Compose
-        val expected = DraftFieldsTestData.BasicDraftFields
-        coEvery { draftRepository.createDraft(userId, action) } returns expected.right()
-
-        // When
-        val actual = initializeComposerState.withNewEmptyDraft(userId)
-
-        // Then
-        coVerify { draftRepository.createDraft(userId, action) }
-        assertEquals(expected.right(), actual)
-    }
-
-    @Test
-    fun `returns error when init with new empty draft fails`() = runTest {
-        // Given
-        val userId = UserIdSample.Primary
-        val action = DraftAction.Compose
-        val expected = DataError.Local.Unknown
-        coEvery { draftRepository.createDraft(userId, action) } returns expected.left()
-
-        // When
-        val actual = initializeComposerState.withNewEmptyDraft(userId)
-
-        // Then
-        assertEquals(expected.left(), actual)
-    }
 }

@@ -1,102 +1,53 @@
 package ch.protonmail.android.mailcomposer.domain.usecase
 
-import java.time.Instant
-import ch.protonmail.android.mailcommon.domain.model.AvatarInformation
-import ch.protonmail.android.mailcommon.domain.model.ConversationId
-import ch.protonmail.android.mailcommon.domain.model.TRANSPARENT_COLOR_HEX
-import ch.protonmail.android.mailcommon.domain.sample.UserAddressSample
+import arrow.core.left
+import arrow.core.right
+import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
-import ch.protonmail.android.maillabel.domain.model.ExclusiveLocation
-import ch.protonmail.android.mailmessage.domain.model.AttachmentCount
-import ch.protonmail.android.mailmessage.domain.model.Message
-import ch.protonmail.android.mailmessage.domain.model.MessageBody
-import ch.protonmail.android.mailmessage.domain.model.MessageWithBody
-import ch.protonmail.android.mailmessage.domain.model.MimeType
-import ch.protonmail.android.mailmessage.domain.model.Recipient
-import ch.protonmail.android.mailmessage.domain.model.Sender
-import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
-import io.mockk.every
+import ch.protonmail.android.mailcomposer.domain.repository.DraftRepository
+import ch.protonmail.android.mailmessage.domain.model.DraftAction
+import ch.protonmail.android.testdata.composer.DraftFieldsTestData
+import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.mockk
-import io.mockk.mockkStatic
-import io.mockk.unmockkStatic
-import me.proton.core.util.kotlin.EMPTY_STRING
-import org.junit.After
-import org.junit.Before
+import kotlinx.coroutines.test.runTest
 import org.junit.Test
 import kotlin.test.assertEquals
 
 class CreateEmptyDraftTest {
 
-    @Before
-    fun setUp() {
-        mockkStatic(Instant::class)
+    private val draftRepository = mockk<DraftRepository>()
+
+    private val createEmptyDraft = CreateEmptyDraft(draftRepository)
+
+    @Test
+    fun `returns success when init with new empty draft action succeeds`() = runTest {
+        // Given
+        val userId = UserIdSample.Primary
+        val action = DraftAction.Compose
+        val expected = DraftFieldsTestData.BasicDraftFields
+        coEvery { draftRepository.createDraft(userId, action) } returns expected.right()
+
+        // When
+        val actual = createEmptyDraft(userId)
+
+        // Then
+        coVerify { draftRepository.createDraft(userId, action) }
+        assertEquals(expected.right(), actual)
     }
 
     @Test
-    fun `should create an empty draft with the current timestamp and the given sender`() {
+    fun `returns error when init with new empty draft fails`() = runTest {
         // Given
-        val expectedCurrentTimestamp = expectedCurrentTimestamp { 42L }
-        val expectedMessageId = MessageIdSample.EmptyDraft
-        val expectedUserId = UserIdSample.Primary
-        val expectedUserAddress = UserAddressSample.build()
-        val expectedEmptyDraft = MessageWithBody(
-            message = Message(
-                messageId = expectedMessageId,
-                conversationId = ConversationId(EMPTY_STRING),
-                time = expectedCurrentTimestamp,
-                size = 0L,
-                order = 0,
-                subject = EMPTY_STRING,
-                isUnread = false,
-                sender = Sender(expectedUserAddress.email, expectedUserAddress.displayName!!),
-                toList = emptyList(),
-                ccList = emptyList(),
-                bccList = emptyList(),
-                expirationTime = 0L,
-                isReplied = false,
-                isRepliedAll = false,
-                isForwarded = false,
-                isStarred = false,
-                addressId = expectedUserAddress.addressId,
-                numAttachments = 0,
-                flags = 0L,
-                attachmentCount = AttachmentCount(0),
-                customLabels = emptyList(),
-                avatarInformation = AvatarInformation("", TRANSPARENT_COLOR_HEX),
-                exclusiveLocation = ExclusiveLocation.NoLocation
-            ),
-            messageBody = MessageBody(
-                messageId = expectedMessageId,
-                body = EMPTY_STRING,
-                header = EMPTY_STRING,
-                attachments = emptyList(),
-                mimeType = MimeType.PlainText,
-                spamScore = EMPTY_STRING,
-                replyTo = Recipient(
-                    address = expectedUserAddress.email,
-                    name = expectedUserAddress.displayName!!,
-                    group = null
-                ),
-                replyTos = emptyList(),
-                unsubscribeMethods = null
-            )
-        )
+        val userId = UserIdSample.Primary
+        val action = DraftAction.Compose
+        val expected = DataError.Local.Unknown
+        coEvery { draftRepository.createDraft(userId, action) } returns expected.left()
 
         // When
-        val actualEmptyDraft = CreateEmptyDraft()(expectedMessageId, expectedUserId, expectedUserAddress)
+        val actual = createEmptyDraft(userId)
 
         // Then
-        assertEquals(expectedEmptyDraft, actualEmptyDraft)
-    }
-
-    @After
-    fun tearDown() {
-        unmockkStatic(Instant::class)
-    }
-
-    private fun expectedCurrentTimestamp(expectedCurrentTimestamp: () -> Long): Long = expectedCurrentTimestamp().also {
-        every { Instant.now() } returns mockk {
-            every { epochSecond } returns it
-        }
+        assertEquals(expected.left(), actual)
     }
 }

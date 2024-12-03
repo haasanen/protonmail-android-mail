@@ -42,6 +42,7 @@ import ch.protonmail.android.mailcomposer.domain.model.RecipientsTo
 import ch.protonmail.android.mailcomposer.domain.model.SenderEmail
 import ch.protonmail.android.mailcomposer.domain.model.Subject
 import ch.protonmail.android.mailcomposer.domain.usecase.ClearMessageSendingError
+import ch.protonmail.android.mailcomposer.domain.usecase.CreateEmptyDraft
 import ch.protonmail.android.mailcomposer.domain.usecase.DeleteAllAttachments
 import ch.protonmail.android.mailcomposer.domain.usecase.DeleteAttachment
 import ch.protonmail.android.mailcomposer.domain.usecase.DraftUploader
@@ -160,6 +161,7 @@ class ComposerViewModel @Inject constructor(
     private val convertHtmlToPlainText: ConvertHtmlToPlainText,
     @NewContactSuggestionsEnabled private val isNewContactsSuggestionsEnabled: Boolean,
     private val initializeComposerState: InitializeComposerState,
+    private val createEmptyDraft: CreateEmptyDraft,
     isDeviceContactsSuggestionsEnabled: IsDeviceContactsSuggestionsEnabled,
     getDecryptedDraftFields: GetDecryptedDraftFields,
     savedStateHandle: SavedStateHandle,
@@ -209,7 +211,7 @@ class ComposerViewModel @Inject constructor(
 
     private fun prefillForNewDraft() {
         viewModelScope.launch {
-            initializeComposerState.withNewEmptyDraft(primaryUserId())
+            createEmptyDraft(primaryUserId())
                 .onRight { draftFields ->
                     emitNewStateFor(ComposerEvent.DefaultSenderReceived(SenderUiModel(draftFields.sender.value)))
                 }

@@ -18,70 +18,19 @@
 
 package ch.protonmail.android.mailcomposer.domain.usecase
 
-import java.time.Instant
-import ch.protonmail.android.mailcommon.domain.model.AvatarInformation
-import ch.protonmail.android.mailcommon.domain.model.ConversationId
-import ch.protonmail.android.mailcommon.domain.model.TRANSPARENT_COLOR_HEX
-import ch.protonmail.android.maillabel.domain.model.ExclusiveLocation
-import ch.protonmail.android.mailmessage.domain.model.AttachmentCount
-import ch.protonmail.android.mailmessage.domain.model.Message
-import ch.protonmail.android.mailmessage.domain.model.MessageBody
-import ch.protonmail.android.mailmessage.domain.model.MessageId
-import ch.protonmail.android.mailmessage.domain.model.MessageWithBody
-import ch.protonmail.android.mailmessage.domain.model.MimeType
-import ch.protonmail.android.mailmessage.domain.model.Recipient
-import ch.protonmail.android.mailmessage.domain.model.Sender
+import arrow.core.Either
+import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailcomposer.domain.model.DraftFields
+import ch.protonmail.android.mailcomposer.domain.repository.DraftRepository
+import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import me.proton.core.domain.entity.UserId
-import me.proton.core.user.domain.entity.UserAddress
-import me.proton.core.util.kotlin.EMPTY_STRING
 import javax.inject.Inject
 
-class CreateEmptyDraft @Inject constructor() {
+class CreateEmptyDraft @Inject constructor(
+    private val draftRepository: DraftRepository
+) {
 
-    operator fun invoke(
-        messageId: MessageId,
-        userId: UserId,
-        userAddress: UserAddress
-    ) = MessageWithBody(
-        message = Message(
-            messageId = messageId,
-            conversationId = ConversationId(EMPTY_STRING),
-            time = Instant.now().epochSecond,
-            size = 0L,
-            order = 0,
-            subject = EMPTY_STRING,
-            isUnread = false,
-            sender = Sender(userAddress.email, userAddress.displayName.orEmpty()),
-            toList = emptyList(),
-            ccList = emptyList(),
-            bccList = emptyList(),
-            expirationTime = 0L,
-            isReplied = false,
-            isRepliedAll = false,
-            isForwarded = false,
-            isStarred = false,
-            addressId = userAddress.addressId,
-            numAttachments = 0,
-            flags = 0L,
-            attachmentCount = AttachmentCount(0),
-            customLabels = emptyList(),
-            avatarInformation = AvatarInformation("", TRANSPARENT_COLOR_HEX),
-            exclusiveLocation = ExclusiveLocation.NoLocation
-        ),
-        messageBody = MessageBody(
-            messageId = messageId,
-            body = EMPTY_STRING,
-            header = EMPTY_STRING,
-            attachments = emptyList(),
-            mimeType = MimeType.PlainText,
-            spamScore = EMPTY_STRING,
-            replyTo = Recipient(
-                address = userAddress.email,
-                name = userAddress.displayName ?: EMPTY_STRING,
-                group = null
-            ),
-            replyTos = emptyList(),
-            unsubscribeMethods = null
-        )
-    )
+    suspend operator fun invoke(userId: UserId): Either<DataError, DraftFields> =
+        draftRepository.createDraft(userId, DraftAction.Compose)
+
 }

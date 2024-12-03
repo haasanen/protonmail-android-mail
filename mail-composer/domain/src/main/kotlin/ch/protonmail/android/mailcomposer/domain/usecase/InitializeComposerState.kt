@@ -36,7 +36,4 @@ class InitializeComposerState @Inject constructor(
 
     suspend fun withDraftAction(userId: UserId, action: DraftAction): Either<DataError, DraftFields> =
         draftRepository.createDraft(userId, action)
-
-    suspend fun withNewEmptyDraft(userId: UserId): Either<DataError, DraftFields> =
-        draftRepository.createDraft(userId, DraftAction.Compose)
 }
