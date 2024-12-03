@@ -42,6 +42,7 @@ import ch.protonmail.android.mailcomposer.domain.model.RecipientsTo
 import ch.protonmail.android.mailcomposer.domain.model.SenderEmail
 import ch.protonmail.android.mailcomposer.domain.model.Subject
 import ch.protonmail.android.mailcomposer.domain.usecase.ClearMessageSendingError
+import ch.protonmail.android.mailcomposer.domain.usecase.CreateDraftForAction
 import ch.protonmail.android.mailcomposer.domain.usecase.CreateEmptyDraft
 import ch.protonmail.android.mailcomposer.domain.usecase.DeleteAllAttachments
 import ch.protonmail.android.mailcomposer.domain.usecase.DeleteAttachment
@@ -162,6 +163,7 @@ class ComposerViewModel @Inject constructor(
     @NewContactSuggestionsEnabled private val isNewContactsSuggestionsEnabled: Boolean,
     private val initializeComposerState: InitializeComposerState,
     private val createEmptyDraft: CreateEmptyDraft,
+    private val createDraftForAction: CreateDraftForAction,
     isDeviceContactsSuggestionsEnabled: IsDeviceContactsSuggestionsEnabled,
     getDecryptedDraftFields: GetDecryptedDraftFields,
     savedStateHandle: SavedStateHandle,
@@ -297,7 +299,7 @@ class ComposerViewModel @Inject constructor(
             is DraftAction.Reply,
             is DraftAction.ReplyAll -> viewModelScope.launch {
                 Timber.d("composer: prefilling for reply / fw action")
-                initializeComposerState.withDraftAction(primaryUserId(), draftAction)
+                createDraftForAction(primaryUserId(), draftAction)
                     .onRight { draftFields ->
                         emitNewStateFor(
                             ComposerEvent.PrefillDraftDataReceived(
