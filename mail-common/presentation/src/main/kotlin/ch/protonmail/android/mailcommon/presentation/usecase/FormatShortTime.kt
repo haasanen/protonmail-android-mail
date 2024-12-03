@@ -31,7 +31,8 @@ import kotlin.time.Duration
 
 class FormatShortTime @Inject constructor(
     private val getLocalisedCalendar: GetLocalisedCalendar,
-    private val getAppLocale: GetAppLocale
+    private val getAppLocale: GetAppLocale,
+    private val getLocalisedDayMonthDateFormat: GetLocalisedDayMonthDateFormat
 ) {
 
     private val currentTime: Calendar
@@ -57,7 +58,8 @@ class FormatShortTime @Inject constructor(
     }
 
     private fun Duration.toShortDateWithoutYear(): String {
-        val dateFormat = SimpleDateFormat("MMM d", getAppLocale())
+        val dateFormat = getLocalisedDayMonthDateFormat()
+
         return dateFormat.format(Date(this.inWholeMilliseconds))
     }
 

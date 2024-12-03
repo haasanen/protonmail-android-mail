@@ -22,6 +22,7 @@ import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
+import android.icu.text.DateFormat
 import ch.protonmail.android.mailcommon.domain.usecase.GetAppLocale
 import ch.protonmail.android.mailcommon.domain.usecase.GetLocalisedCalendar
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
@@ -44,16 +45,20 @@ class FormatShortTimeTest {
 
     private val getLocalisedCalendar = mockk<GetLocalisedCalendar>()
     private val getAppLocale = mockk<GetAppLocale>()
-
+    private val getLocalisedDayMonthDateFormat = mockk<GetLocalisedDayMonthDateFormat>()
+    private val mockedDateFormat = mockk<DateFormat>()
     private val formatter = FormatShortTime(
         getLocalisedCalendar,
-        getAppLocale
+        getAppLocale,
+        getLocalisedDayMonthDateFormat
     )
 
     @Before
     fun setUp() {
         mockkStatic(TimeZone::class)
         every { TimeZone.getDefault() } returns TimeZone.getTimeZone("Europe/Zurich")
+
+        mockkStatic(DateFormat::class)
     }
 
     @After
@@ -136,18 +141,22 @@ class FormatShortTimeTest {
     @Test
     fun `when the message is from the current year and older than current week show day and month`() {
         // Given
+        every { DateFormat.getDateInstance(any(), any<Locale>()) } returns mockedDateFormat
+        every { mockedDateFormat.format(any()) } returns "21 mars"
         givenCurrentTimeAndLocale(1_658_994_137.seconds, Locale.FRENCH) // Thu Jul 28 09:42:17 CEST 2022
         val itemTime = 1_647_852_004 // Mon Mar 21 09:40:04 CEST 2022
         // When
         val actual = formatter.invoke(itemTime.seconds)
         // Then
         assertIs<TextUiModel.Text>(actual, actual.toString())
-        assertEquals(TextUiModel.Text("mars 21"), actual)
+        assertEquals(TextUiModel.Text("21 mars"), actual)
     }
 
     @Test
     fun `when showing day and month from the current year ensure they are formatted based on the current locale`() {
         // Given
+        every { DateFormat.getDateInstance(any(), any<Locale>()) } returns mockedDateFormat
+        every { mockedDateFormat.format(any()) } returns "Mar 21"
         givenCurrentTimeAndLocale(1_658_994_137.seconds, Locale.US) // Thu Jul 28 09:42:17 CEST 2022
         val itemTime = 1_647_852_004 // Mon Mar 21 09:40:04 CEST 2022
         // When
@@ -160,6 +169,8 @@ class FormatShortTimeTest {
     @Test
     fun `when showing day and month from previous years ensure they are formatted based on the current locale`() {
         // Given
+        every { DateFormat.getDateInstance(any(), any<Locale>()) } returns mockedDateFormat
+        every { mockedDateFormat.format(any()) } returns "Mar 21, 2022"
         givenCurrentTimeAndLocale(1_709_557_304.seconds, Locale.US) // Mon Mar 04 14:01:44 CET 2024
         val itemTime = 1_647_852_004 // Mon Mar 21 09:40:04 CEST 2022
         // When
@@ -226,5 +237,6 @@ class FormatShortTimeTest {
 
         every { getLocalisedCalendar() } returns calendar
         every { getAppLocale() } returns locale
+        every { getLocalisedDayMonthDateFormat() } returns mockedDateFormat
     }
 }
