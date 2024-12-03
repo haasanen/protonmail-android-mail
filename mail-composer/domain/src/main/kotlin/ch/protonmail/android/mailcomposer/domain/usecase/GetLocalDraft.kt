@@ -19,32 +19,23 @@
 package ch.protonmail.android.mailcomposer.domain.usecase
 
 import arrow.core.Either
-import arrow.core.raise.either
-import ch.protonmail.android.mailcommon.domain.usecase.ResolveUserAddress
+import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcomposer.domain.model.SenderEmail
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.MessageWithBody
 import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 
-class GetLocalDraft @Inject constructor(
-    private val createEmptyDraft: CreateEmptyDraft,
-    private val findLocalDraft: FindLocalDraft,
-    private val resolveUserAddress: ResolveUserAddress
-) {
+class GetLocalDraft @Inject constructor() {
 
+    @SuppressWarnings("NotImplementedDeclaration")
+    @MissingRustApi
+    // Use case implementation was dropped as outdated; Needs to be bound to rust
     suspend operator fun invoke(
         userId: UserId,
         messageId: MessageId,
         senderEmail: SenderEmail
-    ): Either<Error, MessageWithBody> = either {
-        val senderAddress = resolveUserAddress(userId, senderEmail.value)
-            .mapLeft { Error.ResolveUserAddressError }
-            .bind()
-
-        return@either findLocalDraft(userId, messageId)
-            ?: createEmptyDraft(messageId, userId, senderAddress)
-    }
+    ): Either<Error, MessageWithBody> = TODO()
 
     sealed interface Error {
         object ResolveUserAddressError : Error
