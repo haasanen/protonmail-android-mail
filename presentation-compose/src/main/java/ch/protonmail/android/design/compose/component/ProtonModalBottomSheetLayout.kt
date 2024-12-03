@@ -17,33 +17,45 @@
  */
 package ch.protonmail.android.design.compose.component
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.material3.BottomSheetScaffold
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SheetState
-import androidx.compose.material3.rememberBottomSheetScaffoldState
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProtonModalBottomSheetLayout(
     sheetContent: @Composable ColumnScope.() -> Unit,
     modifier: Modifier = Modifier,
-    sheetState: SheetState = rememberBottomSheetScaffoldState().bottomSheetState,
-    content: @Composable (PaddingValues) -> Unit = { PaddingValues(ProtonDimens.Spacing.Large) }
+    sheetState: SheetState = rememberModalBottomSheetState(),
+    content: @Composable () -> Unit
 ) {
-    BottomSheetScaffold(
-        modifier = modifier,
-        scaffoldState = rememberBottomSheetScaffoldState(bottomSheetState = sheetState),
-        sheetContent = sheetContent,
-        sheetShape = ProtonTheme.shapes.bottomSheet,
-        sheetContainerColor = ProtonTheme.colors.backgroundNorm,
-        sheetContentColor = ProtonTheme.colors.textNorm,
-        content = content
-    )
+    val coroutineScope = rememberCoroutineScope()
+
+    Box(modifier = modifier.fillMaxSize()) {
+
+        content()
+
+        if (sheetState.isVisible) {
+            ModalBottomSheet(
+                onDismissRequest = {
+                    coroutineScope.launch { sheetState.hide() }
+                },
+                sheetState = sheetState,
+                shape = ProtonTheme.shapes.bottomSheet,
+                containerColor = ProtonTheme.colors.backgroundNorm,
+                contentColor = ProtonTheme.colors.textNorm,
+                content = sheetContent
+            )
+        }
+    }
 }
+

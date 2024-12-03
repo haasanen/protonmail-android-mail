@@ -19,7 +19,6 @@ package ch.protonmail.android.design.compose.component.bottomsheet
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -29,7 +28,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import ch.protonmail.android.design.compose.component.ProtonModalBottomSheetLayout
-import ch.protonmail.android.design.compose.theme.ProtonDimens
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -44,7 +42,7 @@ fun ModalBottomSheet(
     viewState: ModalBottomSheetViewState,
     modifier: Modifier = Modifier,
     onDismiss: () -> Unit = {},
-    content: @Composable (PaddingValues) -> Unit = { PaddingValues(ProtonDimens.Spacing.Large) }
+    content: @Composable () -> Unit
 ) {
     val scope = rememberCoroutineScope()
 
