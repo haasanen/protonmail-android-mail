@@ -34,6 +34,8 @@ sealed interface DataError {
 
         object NoDataCached : Local
 
+        object NoUserSession : Local
+
         object OutOfMemory : Local
 
         object FailedToStoreFile : Local

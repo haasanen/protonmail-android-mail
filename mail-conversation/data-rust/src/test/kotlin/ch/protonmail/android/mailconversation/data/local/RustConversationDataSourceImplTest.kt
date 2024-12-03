@@ -23,6 +23,7 @@ import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalConversationId
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
+import ch.protonmail.android.mailcommon.datarust.usecase.ExecuteActionWithUserSession
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailconversation.data.usecase.GetRustAllConversationBottomBarActions
 import ch.protonmail.android.mailconversation.data.usecase.GetRustAvailableConversationActions
@@ -87,6 +88,8 @@ class RustConversationDataSourceImplTest {
     private val rustLabelConversations = mockk<RustLabelConversations>()
     private val rustMarkConversationsAsRead = mockk<RustMarkConversationsAsRead>()
     private val rustMarkConversationsAsUnread = mockk<RustMarkConversationsAsUnread>()
+    private val executeActionWithUserSession = mockk<ExecuteActionWithUserSession>()
+
 
     private val dataSource = RustConversationDataSourceImpl(
         sessionManager,
@@ -102,6 +105,7 @@ class RustConversationDataSourceImplTest {
         rustDeleteConversations,
         rustMarkConversationsAsRead,
         rustMarkConversationsAsUnread,
+        executeActionWithUserSession,
         testCoroutineScope
     )
 
