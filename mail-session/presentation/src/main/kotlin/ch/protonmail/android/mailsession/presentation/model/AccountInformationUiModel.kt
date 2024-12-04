@@ -16,25 +16,12 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailsettings.presentation.settings
+package ch.protonmail.android.mailsession.presentation.model
 
-import ch.protonmail.android.mailcommon.domain.AppInformation
-import ch.protonmail.android.mailsession.presentation.model.AccountInformationUiModel
+import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
 
-object SettingsScreenPreviewData {
-
-    val Data = SettingsState.Data(
-        AccountInformationUiModel("ProtonUser", "user@proton.ch", null),
-        AppInformation(appVersionName = "6.0.0-alpha")
-    )
-
-    val Actions = MainSettingsScreen.Actions(
-        onAccountClick = {},
-        onAppSettingsClick = {},
-        onEmailSettingsClick = {},
-        onFolderAndLabelSettingsClicked = {},
-        onSpamFilterSettingsClicked = {},
-        onPrivacyAndSecuritySettingsClicked = {},
-        onBackClick = {}
-    )
-}
+data class AccountInformationUiModel(
+    val name: String,
+    val email: String,
+    val avatarUiModel: AvatarUiModel?
+)

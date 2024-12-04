@@ -41,6 +41,7 @@ import ch.protonmail.android.design.compose.component.ProtonSettingsItem
 import ch.protonmail.android.design.compose.component.ProtonSettingsList
 import ch.protonmail.android.design.compose.component.ProtonSettingsTopBar
 import ch.protonmail.android.design.compose.theme.ProtonTheme
+import ch.protonmail.android.mailsession.presentation.model.AccountInformationUiModel
 
 @Composable
 fun MainSettingsScreen(
@@ -83,7 +84,7 @@ fun MainSettingsScreen(
             item {
                 AccountSettingsItem(
                     modifier = Modifier.testTag(SettingsScreenTestTags.AccountSettingsItem),
-                    accountInfo = state.account,
+                    accountInfo = state.accountInfoUiModel,
                     onAccountClicked = actions.onAccountClick
                 )
             }
@@ -143,7 +144,7 @@ fun MainSettingsScreen(
 @Composable
 fun AccountSettingsItem(
     modifier: Modifier = Modifier,
-    accountInfo: AccountInfo?,
+    accountInfo: AccountInformationUiModel?,
     onAccountClicked: () -> Unit
 ) {
     val header = accountInfo?.name
