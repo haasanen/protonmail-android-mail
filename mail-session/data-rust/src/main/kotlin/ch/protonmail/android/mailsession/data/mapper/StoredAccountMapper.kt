@@ -19,6 +19,7 @@
 package ch.protonmail.android.mailsession.data.mapper
 
 import ch.protonmail.android.mailsession.domain.model.Account
+import ch.protonmail.android.mailsession.domain.model.AccountAvatarInfo
 import ch.protonmail.android.mailsession.domain.model.AccountState
 import me.proton.core.domain.entity.UserId
 import uniffi.proton_mail_uniffi.StoredAccount
@@ -34,5 +35,8 @@ internal fun StoredAccount.toAccount() = Account(
         is StoredAccountState.NeedMbp -> AccountState.TwoPasswordNeeded
         is StoredAccountState.NeedTfa -> AccountState.TwoFactorNeeded
     },
-    username = username()
+    username = username(),
+    primaryAddress = primaryAddr(),
+    displayName = displayName(),
+    avatarInfo = avatarInformation()?.let { AccountAvatarInfo(it.text, it.color) }
 )

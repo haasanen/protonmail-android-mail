@@ -18,41 +18,7 @@
 
 package ch.protonmail.android.mailsession.domain.model
 
-import me.proton.core.domain.entity.UserId
-
-data class Account(
-    val userId: UserId,
-    val nameOrAddress: String,
-    val state: AccountState,
-    val username: String?,
-    val primaryAddress: String?,
-    val displayName: String?,
-    val avatarInfo: AccountAvatarInfo? = null
+data class AccountAvatarInfo(
+    val initials: String,
+    val color: String
 )
-
-enum class AccountState {
-    /**
-     * The account is not yet ready to be used.
-     */
-    NotReady,
-
-    /**
-     * The account has at least one fully logged-in session.
-     */
-    Ready,
-
-    /**
-     * The account has authenticated sessions but they are missing the key secret.
-     */
-    TwoPasswordNeeded,
-
-    /**
-     * The account has partially authenticated sessions that require a second factor.
-     */
-    TwoFactorNeeded,
-
-    /**
-     * The account has no active sessions.
-     */
-    Disabled
-}

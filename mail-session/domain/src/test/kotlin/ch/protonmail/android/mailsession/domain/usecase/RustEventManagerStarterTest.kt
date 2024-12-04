@@ -92,6 +92,9 @@ class RustEventManagerStarterTest {
         userId = userId,
         nameOrAddress = "User",
         state = state,
-        username = "user"
+        username = "user",
+        primaryAddress = "email",
+        displayName = "User",
+        avatarInfo = null
     )
 }

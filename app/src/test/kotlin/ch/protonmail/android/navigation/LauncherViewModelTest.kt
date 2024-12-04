@@ -73,7 +73,9 @@ class LauncherViewModelTest {
                     userId = UserIdSample.Primary,
                     nameOrAddress = "User",
                     state = AccountState.Ready,
-                    username = "user"
+                    username = "user",
+                    primaryAddress = "address",
+                    displayName = "displayName"
                 )
             )
         )
