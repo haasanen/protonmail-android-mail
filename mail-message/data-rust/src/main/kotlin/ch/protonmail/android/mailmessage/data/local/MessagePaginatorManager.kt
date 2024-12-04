@@ -1,0 +1,126 @@
+/*
+ * Copyright (c) 2022 Proton Technologies AG
+ * This file is part of Proton Technologies AG and Proton Mail.
+ *
+ * Proton Mail is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Proton Mail is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+package ch.protonmail.android.mailmessage.data.local
+
+import arrow.core.Either
+import arrow.core.left
+import arrow.core.right
+import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
+import ch.protonmail.android.mailmessage.data.usecase.CreateRustMessagesPaginator
+import ch.protonmail.android.mailmessage.data.usecase.CreateRustSearchPaginator
+import ch.protonmail.android.mailmessage.data.wrapper.MessagePaginatorWrapper
+import ch.protonmail.android.mailpagination.domain.model.PageKey
+import ch.protonmail.android.mailpagination.domain.model.ReadStatus
+import ch.protonmail.android.mailsession.data.mapper.toLocalUserId
+import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
+import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
+import me.proton.core.domain.entity.UserId
+import timber.log.Timber
+import uniffi.proton_mail_uniffi.LiveQueryCallback
+import javax.inject.Inject
+
+class MessagePaginatorManager @Inject constructor(
+    private val userSessionRepository: UserSessionRepository,
+    private val createRustMessagesPaginator: CreateRustMessagesPaginator,
+    private val createRustSearchPaginator: CreateRustSearchPaginator,
+    private val rustMailbox: RustMailbox
+) {
+
+    private var paginator: MessagePaginatorWrapper? = null
+    private val paginatorMutex = Mutex()
+
+    suspend fun getOrCreatePaginator(
+        userId: UserId,
+        pageKey: PageKey,
+        callback: LiveQueryCallback
+    ): Either<DataError, MessagePaginatorWrapper> = paginatorMutex.withLock {
+        if (!shouldInitPaginator(userId, pageKey)) {
+            Timber.v("rust-paginator: reusing existing paginator instance...")
+            return paginator.getOrError()
+        }
+
+        val session = userSessionRepository.getUserSession(userId)
+        if (session == null) {
+            Timber.e("rust-action-with-user-session: Failed to perform action, null user session")
+            return DataError.Local.NoUserSession.left()
+        }
+
+        destroy()
+        paginator = when (pageKey) {
+            is PageKey.DefaultPageKey -> createDefaultPaginator(userId, session, pageKey, callback)
+            is PageKey.PageKeyForSearch -> createSearchPaginator(userId, session, pageKey, callback)
+        }
+
+        return paginator.getOrError()
+    }
+
+    private suspend fun createDefaultPaginator(
+        userId: UserId,
+        session: MailUserSessionWrapper,
+        pageKey: PageKey.DefaultPageKey,
+        callback: LiveQueryCallback
+    ): MessagePaginatorWrapper {
+        val labelId = pageKey.labelId.toLocalLabelId()
+        val unread = pageKey.readStatus == ReadStatus.Unread
+
+        rustMailbox.switchToMailbox(userId, labelId)
+        return createRustMessagesPaginator(session, labelId, unread, callback)
+    }
+
+    private suspend fun createSearchPaginator(
+        userId: UserId,
+        session: MailUserSessionWrapper,
+        pageKey: PageKey.PageKeyForSearch,
+        callback: LiveQueryCallback
+    ): MessagePaginatorWrapper {
+        val keyword = pageKey.keyword
+
+        rustMailbox.switchToAllMailMailbox(userId)
+        return createRustSearchPaginator(session, keyword, callback)
+    }
+
+    private fun destroy() {
+        Timber.d("rust-paginator: destroy")
+        paginator?.destroy()
+        paginator = null
+    }
+
+    private fun shouldInitPaginator(userId: UserId, pageKey: PageKey) = when (pageKey) {
+        is PageKey.DefaultPageKey -> {
+            val unread = pageKey.readStatus == ReadStatus.Unread
+            paginator == null ||
+                paginator?.params?.userId != userId.toLocalUserId() ||
+                paginator?.params?.labelId != pageKey.labelId.toLocalLabelId() ||
+                paginator?.params?.unread != unread
+        }
+        is PageKey.PageKeyForSearch -> {
+            val keyword = pageKey.keyword
+            paginator == null ||
+                paginator?.params?.userId != userId.toLocalUserId() ||
+                paginator?.params?.keyword != keyword
+        }
+    }
+
+    private fun MessagePaginatorWrapper?.getOrError(): Either<DataError, MessagePaginatorWrapper> =
+        this?.right() ?: DataError.Local.NoDataCached.left()
+
+}

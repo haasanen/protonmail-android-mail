@@ -16,22 +16,14 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailmessage.data.wrapper
+package ch.protonmail.android.mailmessage.data.model
 
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageMetadata
-import ch.protonmail.android.mailmessage.data.model.PaginatorParams
-import uniffi.proton_mail_uniffi.MessagePaginator
+import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
+import ch.protonmail.android.mailcommon.datarust.mapper.LocalUserId
 
-class MessagePaginatorWrapper(
-    private val rustPaginator: MessagePaginator,
-    val params: PaginatorParams
-) {
-
-    suspend fun nextPage(): List<LocalMessageMetadata> = rustPaginator.nextPage()
-
-    suspend fun reload(): List<LocalMessageMetadata> = rustPaginator.reload()
-
-    fun destroy() {
-        rustPaginator.handle().disconnect()
-    }
-}
+data class PaginatorParams(
+    val userId: LocalUserId,
+    val labelId: LocalLabelId? = null,
+    val unread: Boolean? = null,
+    val keyword: String? = null
+)

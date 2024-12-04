@@ -118,14 +118,9 @@ class RustMessageDataSourceImpl @Inject constructor(
 
     override suspend fun getMessages(userId: UserId, pageKey: PageKey): List<LocalMessageMetadata> {
         Timber.d("rust-message: getMessages for pageKey: $pageKey")
-        return when (pageKey) {
-            is PageKey.PageKeyForSearch -> {
-                rustMessageSearchQuery.getMessages(userId, pageKey)
-            }
-            is PageKey.DefaultPageKey -> {
-                rustMessageQuery.getMessages(userId, pageKey)
-            }
-        } ?: run {
+        val messages = rustMessageQuery.getMessages(userId, pageKey)
+        Timber.d("rust-message: paginator returning messages ${messages?.joinToString { it.id.toString() }}")
+        return messages ?: run {
             Timber.w("rust-message: paginator returned null result for $pageKey")
             emptyList()
         }

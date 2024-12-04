@@ -23,5 +23,5 @@ import ch.protonmail.android.mailpagination.domain.model.PageKey
 import me.proton.core.domain.entity.UserId
 
 interface RustMessageQuery {
-    suspend fun getMessages(userId: UserId, pageKey: PageKey.DefaultPageKey): List<LocalMessageMetadata>?
+    suspend fun getMessages(userId: UserId, pageKey: PageKey): List<LocalMessageMetadata>?
 }
