@@ -18,58 +18,61 @@
 
 package ch.protonmail.android.mailsettings.presentation
 
-import app.cash.turbine.ReceiveTurbine
+import androidx.compose.ui.graphics.Color
 import app.cash.turbine.test
 import ch.protonmail.android.mailcommon.domain.AppInformation
-import ch.protonmail.android.mailcommon.domain.sample.UserSample
-import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUser
-import ch.protonmail.android.mailsettings.domain.model.AppSettings
-import ch.protonmail.android.mailsettings.domain.model.LocalStorageUsageInformation
-import ch.protonmail.android.mailsettings.presentation.settings.AccountInfo
+import ch.protonmail.android.mailcommon.presentation.mapper.ColorMapper
+import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
+import ch.protonmail.android.mailsession.domain.model.Account
+import ch.protonmail.android.mailsession.domain.model.AccountAvatarInfo
+import ch.protonmail.android.mailsession.domain.model.AccountState
+import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryAccount
+import ch.protonmail.android.mailsession.presentation.mapper.AccountInformationMapper
+import ch.protonmail.android.mailsession.presentation.model.AccountInformationUiModel
 import ch.protonmail.android.mailsettings.presentation.settings.SettingsState
-import ch.protonmail.android.mailsettings.presentation.settings.SettingsState.Data
 import ch.protonmail.android.mailsettings.presentation.settings.SettingsState.Loading
 import ch.protonmail.android.mailsettings.presentation.settings.SettingsViewModel
-import ch.protonmail.android.mailsettings.presentation.testdata.AppSettingsTestData
-import ch.protonmail.android.testdata.user.UserTestData
-import io.mockk.every
+import ch.protonmail.android.test.utils.rule.MainDispatcherRule
+import io.mockk.coEvery
 import io.mockk.mockk
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
-import kotlinx.coroutines.test.setMain
-import me.proton.core.user.domain.entity.User
+import me.proton.core.domain.entity.UserId
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 
 class SettingsViewModelTest {
+    @get:Rule
+    val mainDispatcherRule = MainDispatcherRule()
 
-    private val userFlow = MutableSharedFlow<User?>()
-    private val observePrimaryUser = mockk<ObservePrimaryUser> {
-        every { this@mockk.invoke() } returns userFlow
+    private val accountFlow = MutableSharedFlow<Account?>()
+
+    private val observePrimaryAccount = mockk<ObservePrimaryAccount> {
+        coEvery { this@mockk.invoke() } returns accountFlow
     }
 
-    private val appSettingsFlow = MutableSharedFlow<AppSettings>()
-
     private val appInformation = AppInformation(appVersionName = "6.0.0-alpha")
+    private val accountInformationMapper = AccountInformationMapper(ColorMapper())
+
 
     private lateinit var viewModel: SettingsViewModel
 
     @Before
     fun setUp() {
-        Dispatchers.setMain(UnconfinedTestDispatcher())
 
         viewModel = SettingsViewModel(
-            appInformation,
-            observePrimaryUser
+            appInformation = appInformation,
+            observePrimaryAccount = observePrimaryAccount,
+            accountInformationMapper = accountInformationMapper
         )
     }
 
     @Test
     fun `emits loading state when initialised`() = runTest {
+        // Given
         viewModel.state.test {
             assertEquals(Loading, awaitItem())
         }
@@ -77,67 +80,50 @@ class SettingsViewModelTest {
 
     @Test
     fun `state has account info when there is a valid primary user`() = runTest {
-        viewModel.state.test {
-            // Given
-            initialStateEmitted()
-            appSettingsFlow.emit(AppSettingsTestData.appSettings)
+        // Given
+        val account = Account(
+            userId = UserId("123"),
+            nameOrAddress = "name@example.com",
+            state = AccountState.Ready,
+            username = "username",
+            primaryAddress = "primary@example.com",
+            displayName = "Display Name",
+            avatarInfo = AccountAvatarInfo("D", "#FF5733")
+        )
+        val accountUiModel = AccountInformationUiModel(
+            name = "Display Name",
+            email = "primary@example.com",
+            avatarUiModel = AvatarUiModel.ParticipantAvatar(
+                initial = "D",
+                address = "primary@example.com",
+                bimiSelector = null,
+                color = Color(0xFFFF5733)
+            )
+        )
 
-            // When
-            userFlow.emit(UserTestData.Primary)
+        // When
+        viewModel.state.test {
+            assertEquals(Loading, awaitItem()) // Initial state
+            accountFlow.emit(account)
 
             // Then
-            val actual = awaitItem() as Data
-            val expected = AccountInfo(
-                UserTestData.USER_DISPLAY_NAME_RAW,
-                UserTestData.USER_EMAIL_RAW
-            )
-            assertEquals(expected, actual.account)
+            val actual = awaitItem() as SettingsState.Data
+            assertEquals(accountUiModel, actual.accountInfoUiModel)
+            assertEquals(appInformation, actual.appInformation)
         }
     }
 
     @Test
-    fun `state has user name info when primary user display name is empty`() = runTest {
+    fun `state has null account info when there is no valid primary account`() = runTest {
         viewModel.state.test {
-            // Given
-            val user = UserSample.Primary
-            initialStateEmitted()
-            appSettingsFlow.emit(AppSettingsTestData.appSettings)
+            assertEquals(Loading, awaitItem())
+            accountFlow.emit(null)
 
-            // When
-            userFlow.emit(user.copy(displayName = ""))
-
-            // Then
-            val actual = awaitItem() as Data
-            val expected = AccountInfo(
-                name = requireNotNull(user.displayName),
-                email = requireNotNull(user.email)
-            )
-            assertEquals(expected, actual.account)
+            // Wait for the state to update with null account info
+            val actual = awaitItem() as SettingsState.Data
+            assertNull(actual.accountInfoUiModel)
+            assertEquals(appInformation, actual.appInformation)
         }
     }
 
-    @Test
-    fun `state has null account info when there is no valid primary user`() = runTest {
-        viewModel.state.test {
-            // Given
-            initialStateEmitted()
-            appSettingsFlow.emit(AppSettingsTestData.appSettings)
-
-            // When
-            userFlow.emit(null)
-
-            // Then
-            val actual = awaitItem() as Data
-            assertNull(actual.account)
-        }
-    }
-
-    private suspend fun ReceiveTurbine<SettingsState>.initialStateEmitted() {
-        awaitItem() as Loading
-    }
-
-    private companion object {
-
-        val BaseLocalStorageUsageInformation = LocalStorageUsageInformation(123)
-    }
 }

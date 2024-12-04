@@ -41,6 +41,9 @@ android {
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_17.toString()
     }
+    kapt {
+        correctErrorTypes  = true
+    }
 }
 
 dependencies {

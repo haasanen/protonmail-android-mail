@@ -33,6 +33,8 @@ import me.proton.core.domain.entity.UserId
 
 interface UserSessionRepository {
 
+    fun observePrimaryAccount(): Flow<Account?>
+
     fun observeAccounts(): Flow<List<Account>>
 
     fun observePrimaryUserId(): Flow<UserId?>

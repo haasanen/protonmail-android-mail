@@ -63,6 +63,13 @@ class UserSessionRepositoryImpl @Inject constructor(
         .map { account -> account?.userId }
         .distinctUntilChanged()
 
+    override fun observePrimaryAccount(): Flow<Account?> = observeAccounts()
+        .map { list ->
+            val primaryUserId = mailSession.getPrimaryAccount()?.userId()
+            list.firstOrNull { it.state == AccountState.Ready && primaryUserId == it.userId.toLocalUserId() }
+        }
+        .distinctUntilChanged()
+
     override suspend fun getAccount(userId: UserId): Account? = getStoredAccount(userId)?.toAccount()
 
     override suspend fun deleteAccount(userId: UserId) {

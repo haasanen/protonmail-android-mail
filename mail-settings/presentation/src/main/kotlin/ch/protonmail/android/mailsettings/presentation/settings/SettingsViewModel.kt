@@ -20,29 +20,29 @@ package ch.protonmail.android.mailsettings.presentation.settings
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import ch.protonmail.android.design.compose.viewmodel.stopTimeoutMillis
 import ch.protonmail.android.mailcommon.domain.AppInformation
-import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUser
+import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryAccount
+import ch.protonmail.android.mailsession.presentation.mapper.AccountInformationMapper
 import ch.protonmail.android.mailsettings.presentation.settings.SettingsState.Data
 import ch.protonmail.android.mailsettings.presentation.settings.SettingsState.Loading
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import ch.protonmail.android.design.compose.viewmodel.stopTimeoutMillis
-import me.proton.core.user.domain.entity.User
-import me.proton.core.util.kotlin.takeIfNotEmpty
 import javax.inject.Inject
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
-    appInformation: AppInformation,
-    observePrimaryUser: ObservePrimaryUser
+    private val appInformation: AppInformation,
+    private val observePrimaryAccount: ObservePrimaryAccount,
+    private val accountInformationMapper: AccountInformationMapper
 ) : ViewModel() {
 
-    val state = observePrimaryUser()
-        .map { user ->
+    val state = observePrimaryAccount()
+        .map { account ->
             Data(
-                buildAccountData(user),
+                account?.let { accountInformationMapper.toUiModel(it) },
                 appInformation
             )
         }
@@ -52,13 +52,5 @@ class SettingsViewModel @Inject constructor(
             Loading
         )
 
-    private fun buildAccountData(user: User?) = user?.let {
-        AccountInfo(
-            name = getUsername(it),
-            email = it.email.orEmpty()
-        )
-    }
-
-    // For Mail product, we know that user.name will always be non-null, non-empty and non-blank.
-    private fun getUsername(user: User) = user.displayName?.takeIfNotEmpty() ?: requireNotNull(user.name)
 }
+
