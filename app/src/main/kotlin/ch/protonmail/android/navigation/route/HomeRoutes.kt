@@ -24,6 +24,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.dialog
 import ch.protonmail.android.MainActivity
+import ch.protonmail.android.design.compose.theme.ProtonInvertedTheme
 import ch.protonmail.android.feature.account.RemoveAccountDialog
 import ch.protonmail.android.feature.account.SignOutAccountDialog
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
@@ -159,31 +160,33 @@ internal fun NavGraphBuilder.addRemoveAccountDialog(navController: NavHostContro
 
 internal fun NavGraphBuilder.addSettings(navController: NavHostController) {
     composable(route = Destination.Screen.Settings.route) {
-        MainSettingsScreen(
-            actions = MainSettingsScreen.Actions(
-                onAccountClick = {
-                    navController.navigate(Destination.Screen.AccountSettings.route)
-                },
-                onAppSettingsClick = {
-                    navController.navigate(Destination.Screen.AppSettings.route)
-                },
-                onEmailSettingsClick = {
-                    navController.navigate(Destination.Screen.EmailSettings.route)
-                },
-                onFolderAndLabelSettingsClicked = {
-                    navController.navigate(Destination.Screen.FolderAndLabelSettings.route)
-                },
-                onSpamFilterSettingsClicked = {
-                    navController.navigate(Destination.Screen.SpamFilterSettings.route)
-                },
-                onPrivacyAndSecuritySettingsClicked = {
-                    navController.navigate(Destination.Screen.PrivacyAndSecuritySettings.route)
-                },
-                onBackClick = {
-                    navController.navigateBack()
-                }
+        ProtonInvertedTheme {
+            MainSettingsScreen(
+                actions = MainSettingsScreen.Actions(
+                    onAccountClick = {
+                        navController.navigate(Destination.Screen.AccountSettings.route)
+                    },
+                    onAppSettingsClick = {
+                        navController.navigate(Destination.Screen.AppSettings.route)
+                    },
+                    onEmailSettingsClick = {
+                        navController.navigate(Destination.Screen.EmailSettings.route)
+                    },
+                    onFolderAndLabelSettingsClicked = {
+                        navController.navigate(Destination.Screen.FolderAndLabelSettings.route)
+                    },
+                    onSpamFilterSettingsClicked = {
+                        navController.navigate(Destination.Screen.SpamFilterSettings.route)
+                    },
+                    onPrivacyAndSecuritySettingsClicked = {
+                        navController.navigate(Destination.Screen.PrivacyAndSecuritySettings.route)
+                    },
+                    onBackClick = {
+                        navController.navigateBack()
+                    }
+                )
             )
-        )
+        }
     }
 }
 
