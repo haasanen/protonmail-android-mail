@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.uitest.screen.settings.appsettings
 
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.test.assertHasNoClickAction
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertTextContains
@@ -27,7 +28,6 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performScrollToNode
 import ch.protonmail.android.mailcommon.domain.AppInformation
 import ch.protonmail.android.mailsettings.presentation.R.string
-import ch.protonmail.android.mailsettings.presentation.settings.AccountInfo
 import ch.protonmail.android.mailsettings.presentation.settings.MainSettingsScreen
 import ch.protonmail.android.mailsettings.presentation.settings.SettingsScreenTestTags
 import ch.protonmail.android.mailsettings.presentation.settings.SettingsState.Data
@@ -38,6 +38,8 @@ import ch.protonmail.android.uitest.util.hasText
 import ch.protonmail.android.uitest.util.onNodeWithText
 import dagger.hilt.android.testing.HiltAndroidTest
 import ch.protonmail.android.design.compose.theme.ProtonTheme
+import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
+import ch.protonmail.android.mailsession.presentation.model.AccountInformationUiModel
 import org.junit.Before
 import org.junit.Test
 
@@ -46,7 +48,13 @@ import org.junit.Test
 internal class SettingsScreenTest : HiltInstrumentedTest() {
 
     private val settingsState = Data(
-        AccountInfo("ProtonTest", "user-test@proton.ch"),
+        AccountInformationUiModel(
+            "ProtonTest", "user-test@proton.ch",
+            AvatarUiModel.ParticipantAvatar(
+                "R2", "result2@proton.me",
+                null, Color.Unspecified
+            )
+        ),
         AppInformation(appVersionName = "6.0.0-alpha-adf8373a", appVersionCode = 9026)
     )
 

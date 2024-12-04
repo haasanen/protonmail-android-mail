@@ -20,10 +20,17 @@ package ch.protonmail.android.mailsettings.presentation.settings
 
 import android.content.res.Configuration.UI_MODE_NIGHT_NO
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import androidx.annotation.StringRes
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
@@ -36,11 +43,12 @@ import ch.protonmail.android.mailsettings.presentation.R.string
 import ch.protonmail.android.mailsettings.presentation.settings.SettingsState.Data
 import ch.protonmail.android.mailsettings.presentation.settings.SettingsState.Loading
 import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
-import ch.protonmail.android.design.compose.component.ProtonSettingsHeader
-import ch.protonmail.android.design.compose.component.ProtonSettingsItem
-import ch.protonmail.android.design.compose.component.ProtonSettingsList
+import ch.protonmail.android.design.compose.component.ProtonMainSettingsItem
 import ch.protonmail.android.design.compose.component.ProtonSettingsTopBar
+import ch.protonmail.android.design.compose.theme.ProtonDimens
+import ch.protonmail.android.design.compose.theme.ProtonInvertedTheme
 import ch.protonmail.android.design.compose.theme.ProtonTheme
+import ch.protonmail.android.mailcommon.presentation.compose.Avatar
 import ch.protonmail.android.mailsession.presentation.model.AccountInformationUiModel
 
 @Composable
@@ -68,6 +76,10 @@ fun MainSettingsScreen(
 ) {
     Scaffold(
         modifier = modifier.testTag(SettingsScreenTestTags.RootItem),
+        contentWindowInsets = WindowInsets(
+            left = ProtonDimens.Spacing.Large,
+            right = ProtonDimens.Spacing.Large
+        ),
         topBar = {
             ProtonSettingsTopBar(
                 title = stringResource(id = string.mail_settings_settings),
@@ -75,70 +87,94 @@ fun MainSettingsScreen(
             )
         }
     ) { contentPadding ->
-        ProtonSettingsList(
+        Column(
             modifier = modifier
                 .testTag(SettingsScreenTestTags.SettingsList)
                 .padding(contentPadding)
         ) {
-            item { ProtonSettingsHeader(title = string.mail_settings_account_settings) }
-            item {
-                AccountSettingsItem(
-                    modifier = Modifier.testTag(SettingsScreenTestTags.AccountSettingsItem),
-                    accountInfo = state.accountInfoUiModel,
-                    onAccountClicked = actions.onAccountClick
+            MainSettingsHeader(titleRes = string.mail_settings_account)
+            AccountSettingsItem(
+                modifier = Modifier.testTag(SettingsScreenTestTags.AccountSettingsItem),
+                accountInfo = state.accountInfoUiModel,
+                onAccountClicked = actions.onAccountClick
+            )
+
+            MainSettingsHeader(titleRes = string.mail_settings_preferences)
+
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                shape = ProtonTheme.shapes.extraLarge,
+                elevation = CardDefaults.cardElevation(),
+                colors = CardDefaults.cardColors().copy(
+                    containerColor = ProtonTheme.colors.backgroundInvertedSecondary
                 )
-            }
-            item { ProtonSettingsHeader(title = string.mail_settings_preferences) }
-            item {
-                ProtonSettingsItem(
-                    name = stringResource(id = string.mail_settings_email),
-                    hint = stringResource(id = string.mail_settings_email_hint),
-                    onClick = actions.onEmailSettingsClick
-                )
-                HorizontalDivider()
-            }
-            item {
-                ProtonSettingsItem(
-                    name = stringResource(id = string.mail_settings_folders_labels),
-                    hint = stringResource(id = string.mail_settings_folders_labels_hint),
-                    onClick = actions.onFolderAndLabelSettingsClicked
-                )
-                HorizontalDivider()
-            }
-            item {
-                ProtonSettingsItem(
-                    name = stringResource(id = string.mail_settings_spam_and_custom_filters),
-                    hint = stringResource(id = string.mail_settings_spam_and_custom_filters_hint),
-                    onClick = actions.onSpamFilterSettingsClicked
-                )
-                HorizontalDivider()
-            }
-            item {
-                ProtonSettingsItem(
-                    name = stringResource(id = string.mail_settings_privacy_and_security),
-                    hint = stringResource(id = string.mail_settings_privacy_and_security_hint),
-                    onClick = actions.onPrivacyAndSecuritySettingsClicked
-                )
-                HorizontalDivider()
-            }
-            item {
-                ProtonSettingsItem(
-                    name = stringResource(id = string.mail_settings_app),
-                    hint = stringResource(id = string.mail_settings_app_hint),
-                    onClick = actions.onAppSettingsClick
-                )
-                HorizontalDivider()
-            }
-            item { ProtonSettingsHeader(title = string.mail_settings_app_information) }
-            item {
-                ProtonSettingsItem(
-                    name = stringResource(id = string.mail_settings_app_version),
-                    hint = "${state.appInformation.appVersionName} (${state.appInformation.appVersionCode})",
-                    isClickable = false
-                )
+            ) {
+
+                Column {
+                    ProtonMainSettingsItem(
+                        name = stringResource(id = string.mail_settings_email),
+                        iconRes = R.drawable.ic_proton_envelopes,
+                        hint = stringResource(id = string.mail_settings_email_hint),
+                        onClick = actions.onEmailSettingsClick
+                    )
+                    SettingsItemDivider()
+
+
+                    ProtonMainSettingsItem(
+                        name = stringResource(id = string.mail_settings_folders_labels),
+                        iconRes = R.drawable.ic_proton_folder_open,
+                        hint = stringResource(id = string.mail_settings_folders_labels_hint),
+                        onClick = actions.onFolderAndLabelSettingsClicked
+                    )
+                    SettingsItemDivider()
+
+
+                    ProtonMainSettingsItem(
+                        name = stringResource(id = string.mail_settings_spam_and_custom_filters),
+                        iconRes = R.drawable.ic_proton_sliders,
+                        hint = stringResource(id = string.mail_settings_spam_and_custom_filters_hint),
+                        onClick = actions.onSpamFilterSettingsClicked
+                    )
+                    SettingsItemDivider()
+
+
+                    ProtonMainSettingsItem(
+                        name = stringResource(id = string.mail_settings_privacy_and_security),
+                        iconRes = R.drawable.ic_proton_shield_2_bolt,
+                        hint = stringResource(id = string.mail_settings_privacy_and_security_hint),
+                        onClick = actions.onPrivacyAndSecuritySettingsClicked
+                    )
+                    SettingsItemDivider()
+
+
+                    ProtonMainSettingsItem(
+                        name = stringResource(id = string.mail_settings_app),
+                        iconRes = R.drawable.ic_proton_mobile,
+                        hint = stringResource(id = string.mail_settings_app_hint),
+                        onClick = actions.onAppSettingsClick
+                    )
+                }
             }
         }
     }
+}
+
+@Composable
+fun MainSettingsHeader(@StringRes titleRes: Int) {
+    Text(
+        modifier = Modifier.padding(vertical = ProtonDimens.Spacing.Large),
+        text = stringResource(id = titleRes),
+        color = ProtonTheme.colors.textWeak,
+        style = ProtonTheme.typography.titleMedium
+    )
+}
+
+@Composable
+fun SettingsItemDivider() {
+    HorizontalDivider(
+        color = ProtonTheme.colors.backgroundInvertedNorm
+    )
 }
 
 @Composable
@@ -149,15 +185,31 @@ fun AccountSettingsItem(
 ) {
     val header = accountInfo?.name
         ?: stringResource(id = R.string.mail_settings_no_information_available)
-    val hint = accountInfo?.email
+    val hint = accountInfo?.email ?: ""
 
-    ProtonSettingsItem(
-        modifier = modifier,
-        name = header,
-        hint = hint,
-        onClick = onAccountClicked
-    )
-    HorizontalDivider()
+    Card(
+        modifier = Modifier
+            .fillMaxWidth(),
+        shape = ProtonTheme.shapes.extraLarge,
+        elevation = CardDefaults.cardElevation(),
+        colors = CardDefaults.cardColors().copy(
+            containerColor = ProtonTheme.colors.backgroundInvertedSecondary
+        )
+    ) {
+        ProtonMainSettingsItem(
+            modifier = modifier,
+            name = header,
+            hint = hint,
+            icon = {
+                accountInfo?.avatarUiModel?.let {
+                    Avatar(
+                        avatarUiModel = it
+                    )
+                }
+            },
+            onClick = onAccountClicked
+        )
+    }
 }
 
 object MainSettingsScreen {
@@ -185,7 +237,7 @@ object MainSettingsScreen {
 )
 @Composable
 fun PreviewMainSettingsScreen() {
-    ProtonTheme {
+    ProtonInvertedTheme {
         MainSettingsScreen(
             state = SettingsScreenPreviewData.Data,
             actions = SettingsScreenPreviewData.Actions
@@ -194,6 +246,7 @@ fun PreviewMainSettingsScreen() {
 }
 
 object SettingsScreenTestTags {
+
     const val RootItem = "SettingsScreenTestTag"
     const val SettingsList = "SettingsListTestTag"
     const val AccountSettingsItem = "AccountSettingsItemTestTag"

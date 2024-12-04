@@ -58,7 +58,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ch.protonmail.android.design.R
-import ch.protonmail.android.design.compose.component.appbar.ProtonTopAppBar
+import ch.protonmail.android.design.compose.component.appbar.ProtonMediumTopAppBar
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyLargeNorm
@@ -97,7 +97,7 @@ fun ProtonSettingsTopBar(
     title: String,
     onBackClick: () -> Unit
 ) {
-    ProtonTopAppBar(
+    ProtonMediumTopAppBar(
         modifier = modifier.fillMaxWidth(),
         title = { Text(title) },
         navigationIcon = {
@@ -147,7 +147,7 @@ fun ProtonMainSettingsItem(
         icon = {
             ProtonMainSettingsIcon(
                 iconRes = iconRes,
-                contentDescription = "Sample Icon",
+                contentDescription = hint,
                 tint = ProtonTheme.colors.textNorm
             )
         },
