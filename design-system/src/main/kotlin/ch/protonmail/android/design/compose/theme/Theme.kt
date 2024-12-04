@@ -77,6 +77,24 @@ fun ProtonSidebarTheme(content: @Composable () -> Unit) {
 }
 
 @Composable
+fun ProtonInvertedTheme(content: @Composable () -> Unit) {
+    val isDark: Boolean = isNightMode()
+    val protonColors: ProtonColors = if (isDark) ProtonColors.Dark else ProtonColors.Light
+    val invertedColors = protonColors.let {
+        it.copy(
+            backgroundNorm = it.backgroundInvertedNorm,
+            backgroundSecondary = it.backgroundInvertedSecondary
+        )
+    }
+
+    ProtonTheme(
+        isDark = isDark,
+        colors = invertedColors,
+        content = content
+    )
+}
+
+@Composable
 fun isNightMode() = when (AppCompatDelegate.getDefaultNightMode()) {
     AppCompatDelegate.MODE_NIGHT_NO -> false
     AppCompatDelegate.MODE_NIGHT_YES -> true
