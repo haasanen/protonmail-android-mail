@@ -18,8 +18,10 @@
 
 package ch.protonmail.android.mailsettings.presentation.settings
 
+import android.app.Activity
 import android.content.res.Configuration.UI_MODE_NIGHT_NO
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import androidx.activity.compose.BackHandler
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
@@ -32,7 +34,10 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -57,15 +62,39 @@ fun MainSettingsScreen(
     actions: MainSettingsScreen.Actions,
     settingsViewModel: SettingsViewModel = hiltViewModel()
 ) {
+
+    val defaultColor = ProtonTheme.colors.backgroundSecondary
+    val backgroundColor = ProtonTheme.colors.backgroundNorm
+    val view = LocalView.current
+
+    val mainActions = actions.copy(
+        onBackClick = {
+            // Restore default color when this Composable is removed from composition
+            val activity = view.context as? Activity
+            activity?.window?.statusBarColor = defaultColor.toArgb()
+
+            actions.onBackClick()
+        }
+    )
     when (val settingsState = settingsViewModel.state.collectAsStateWithLifecycle(Loading).value) {
         is Data -> MainSettingsScreen(
             modifier = modifier,
             state = settingsState,
-            actions = actions
+            actions = mainActions
         )
 
         is Loading -> ProtonCenteredProgress(modifier = Modifier.fillMaxSize())
     }
+
+    // In this screen, "Background inverted" theme is used for colouring, which is different
+    // from the default theme. Therefore, we need to set/reset the status bar colour manually.
+    LaunchedEffect(Unit) {
+
+        val activity = view.context as? Activity
+        activity?.window?.statusBarColor = backgroundColor.toArgb()
+    }
+
+    BackHandler { mainActions.onBackClick() }
 }
 
 @Composable
