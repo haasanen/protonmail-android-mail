@@ -18,8 +18,6 @@
 
 package ch.protonmail.android.mailmailbox.dagger
 
-import android.content.Context
-import ch.protonmail.android.mailmailbox.data.MailMailboxDataStoreProvider
 import ch.protonmail.android.mailmailbox.data.local.StorageLimitLocalDataSource
 import ch.protonmail.android.mailmailbox.data.local.StorageLimitLocalDataSourceImpl
 import ch.protonmail.android.mailmailbox.data.repository.StorageLimitRepositoryImpl
@@ -35,7 +33,6 @@ import dagger.Provides
 import dagger.Reusable
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
-import dagger.hilt.android.qualifiers.ApplicationContext
 
 @Module(includes = [MailboxModule.BindsModule::class])
 @InstallIn(ViewModelComponent::class)
@@ -49,10 +46,6 @@ object MailboxModule {
         getMailboxItems,
         rustInvalidationTracker
     )
-
-    @Provides
-    fun provideDataStoreProvider(@ApplicationContext context: Context): MailMailboxDataStoreProvider =
-        MailMailboxDataStoreProvider(context)
 
     @Module
     @InstallIn(ViewModelComponent::class)
