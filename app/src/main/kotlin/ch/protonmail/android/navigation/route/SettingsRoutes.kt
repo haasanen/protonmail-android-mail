@@ -23,6 +23,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import ch.protonmail.android.LockScreenActivity
+import ch.protonmail.android.design.compose.theme.ProtonInvertedTheme
 import ch.protonmail.android.mailcommon.presentation.extension.navigateBack
 import ch.protonmail.android.mailsettings.domain.model.SwipeActionDirection
 import ch.protonmail.android.mailsettings.presentation.settings.alternativerouting.AlternativeRoutingSettingScreen
@@ -46,35 +47,39 @@ import ch.protonmail.android.navigation.Launcher
 import ch.protonmail.android.navigation.model.Destination.Screen
 import me.proton.core.compose.navigation.require
 
-
 fun NavGraphBuilder.addWebAccountSettings(navController: NavHostController, launcherActions: Launcher.Actions) {
     composable(route = Screen.AccountSettings.route) {
-        WebAccountSettingScreen(
-            actions = WebSettingsScreenActions(
-                onBackClick = { navController.popBackStack() }
+        ProtonInvertedTheme {
+            WebAccountSettingScreen(
+                actions = WebSettingsScreenActions(
+                    onBackClick = { navController.popBackStack() }
+                )
             )
-        )
+        }
     }
 }
 
-
 fun NavGraphBuilder.addWebEmailSettings(navController: NavHostController, launcherActions: Launcher.Actions) {
     composable(route = Screen.EmailSettings.route) {
-        WebEmailSettingScreen(
-            actions = WebSettingsScreenActions(
-                onBackClick = { navController.popBackStack() }
+        ProtonInvertedTheme {
+            WebEmailSettingScreen(
+                actions = WebSettingsScreenActions(
+                    onBackClick = { navController.popBackStack() }
+                )
             )
-        )
+        }
     }
 }
 
 fun NavGraphBuilder.addWebFolderAndLabelSettings(navController: NavHostController, launcherActions: Launcher.Actions) {
     composable(route = Screen.FolderAndLabelSettings.route) {
-        WebFoldersAndLabelsSettingScreen(
-            actions = WebSettingsScreenActions(
-                onBackClick = { navController.popBackStack() }
+        ProtonInvertedTheme {
+            WebFoldersAndLabelsSettingScreen(
+                actions = WebSettingsScreenActions(
+                    onBackClick = { navController.popBackStack() }
+                )
             )
-        )
+        }
     }
 }
 
@@ -83,21 +88,25 @@ fun NavGraphBuilder.addWebPrivacyAndSecuritySettings(
     launcherActions: Launcher.Actions
 ) {
     composable(route = Screen.PrivacyAndSecuritySettings.route) {
-        WebPrivacyAndSecuritySettingsScreen(
-            actions = WebSettingsScreenActions(
-                onBackClick = { navController.popBackStack() }
+        ProtonInvertedTheme {
+            WebPrivacyAndSecuritySettingsScreen(
+                actions = WebSettingsScreenActions(
+                    onBackClick = { navController.popBackStack() }
+                )
             )
-        )
+        }
     }
 }
 
 fun NavGraphBuilder.addWebSpamFilterSettings(navController: NavHostController, launcherActions: Launcher.Actions) {
     composable(route = Screen.SpamFilterSettings.route) {
-        WebSpamFilterSettingsScreen(
-            actions = WebSettingsScreenActions(
-                onBackClick = { navController.popBackStack() }
+        ProtonInvertedTheme {
+            WebSpamFilterSettingsScreen(
+                actions = WebSettingsScreenActions(
+                    onBackClick = { navController.popBackStack() }
+                )
             )
-        )
+        }
     }
 }
 
