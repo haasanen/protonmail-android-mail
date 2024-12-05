@@ -192,7 +192,8 @@ internal class MailboxReducerTest(
                 avatarImagesUiModel = AvatarImagesUiModel.Empty
             ),
             topAppBarState = MailboxTopAppBarState.Data.DefaultMode(
-                currentLabelName = spamLabel.text()
+                currentLabelName = spamLabel.text(),
+                primaryAvatarItem = null
             ),
             upgradeStorageState = UpgradeStorageState(false),
             unreadFilterState = UnreadFilterState.Data(

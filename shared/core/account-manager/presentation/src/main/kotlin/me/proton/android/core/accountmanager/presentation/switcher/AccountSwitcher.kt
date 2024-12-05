@@ -40,7 +40,7 @@ import androidx.compose.ui.unit.toSize
 import ch.protonmail.android.design.compose.theme.LocalColors
 import ch.protonmail.android.design.compose.theme.LocalShapes
 import ch.protonmail.android.design.compose.theme.ProtonSidebarTheme
-import me.proton.core.domain.entity.UserId
+import me.proton.android.core.account.domain.model.CoreUserId
 
 @Composable
 fun AccountSwitcher(
@@ -95,7 +95,7 @@ fun AccountSwitcherListPreview() {
         isExpanded = isExpanded,
         primaryAccount = AccountListItem.Ready.Primary(
             AccountItem(
-                userId = UserId("1"),
+                userId = CoreUserId("1"),
                 name = "John Doe",
                 email = "john.doe@example.test",
                 initials = "JD"

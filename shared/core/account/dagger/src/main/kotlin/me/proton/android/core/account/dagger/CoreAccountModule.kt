@@ -26,11 +26,15 @@ import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import me.proton.android.core.account.data.ObserveAllSessionsImpl
-import me.proton.android.core.account.data.ObserveStoredAccountsImpl
 import me.proton.android.core.account.data.qualifier.QueryWatcherCoroutineScope
-import me.proton.android.core.account.domain.ObserveAllSessions
-import me.proton.android.core.account.domain.ObserveStoredAccounts
+import me.proton.android.core.account.data.usecase.ObserveCoreSessionsImpl
+import me.proton.android.core.account.data.usecase.ObservePrimaryCoreAccountImpl
+import me.proton.android.core.account.data.usecase.ObserveCoreAccountsImpl
+import me.proton.android.core.account.data.usecase.ObserveStoredAccountsImpl
+import me.proton.android.core.account.domain.usecase.ObserveCoreSessions
+import me.proton.android.core.account.domain.usecase.ObservePrimaryCoreAccount
+import me.proton.android.core.account.domain.usecase.ObserveCoreAccounts
+import me.proton.android.core.account.domain.usecase.ObserveStoredAccounts
 import javax.inject.Singleton
 
 @InstallIn(SingletonComponent::class)
@@ -48,7 +52,15 @@ object CoreAccountModule {
 
         @Binds
         @Singleton
-        fun bindObserveAllSessions(impl: ObserveAllSessionsImpl): ObserveAllSessions
+        fun bindObserveAllSessions(impl: ObserveCoreSessionsImpl): ObserveCoreSessions
+
+        @Binds
+        @Singleton
+        fun bindObservePrimaryStoredAccountImpl(impl: ObservePrimaryCoreAccountImpl): ObservePrimaryCoreAccount
+
+        @Binds
+        @Singleton
+        fun bindObserveCoreAccounts(impl: ObserveCoreAccountsImpl): ObserveCoreAccounts
 
         @Binds
         @Singleton

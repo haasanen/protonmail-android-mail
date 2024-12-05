@@ -30,6 +30,9 @@ includeCoreBuild {
     includeBuild("gopenpgp")
 }
 
+include(":shared:core:account-manager:dagger")
+include(":shared:core:account-manager:data")
+include(":shared:core:account-manager:domain")
 include(":shared:core:account-manager:presentation")
 include(":shared:core:account:dagger")
 include(":shared:core:account:data")

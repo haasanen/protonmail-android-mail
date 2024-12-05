@@ -77,8 +77,6 @@ fun Sidebar(
         is Enabled -> {
             viewState.isSubscriptionVisible = viewModelState.canChangeSubscription
             viewState.mailLabels = viewModelState.mailLabels
-            viewState.primaryAccount = viewModelState.primaryAccount
-            viewState.otherAccounts = viewModelState.otherAccounts
             val actions = navigationActions.toSidebarActions(
                 close = ::close,
                 onLabelAction = { sidebarLabelAction ->

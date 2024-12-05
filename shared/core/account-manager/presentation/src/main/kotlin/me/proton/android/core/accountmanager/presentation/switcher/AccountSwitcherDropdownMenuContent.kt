@@ -33,8 +33,8 @@ import ch.protonmail.android.design.compose.theme.LocalColors
 import ch.protonmail.android.design.compose.theme.LocalTypography
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
+import me.proton.android.core.account.domain.model.CoreUserId
 import me.proton.android.core.accountmanager.presentation.R
-import me.proton.core.domain.entity.UserId
 
 @Composable
 fun AccountSwitcherDropdownMenuContent(
@@ -94,7 +94,7 @@ private fun ContentPreview() {
             AccountSwitcherDropdownMenuContent(
                 primary = AccountListItem.Ready.Primary(
                     accountItem = AccountItem(
-                        userId = UserId("1"),
+                        userId = CoreUserId("1"),
                         name = "John Doe",
                         email = "john.doe@proton.me",
                         initials = "J"
@@ -103,7 +103,7 @@ private fun ContentPreview() {
                 other = listOf(
                     AccountListItem.Ready(
                         accountItem = AccountItem(
-                            userId = UserId("2"),
+                            userId = CoreUserId("2"),
                             name = "Jane Doe",
                             email = "jane.doe@proton.me",
                             initials = "J"
@@ -111,7 +111,7 @@ private fun ContentPreview() {
                     ),
                     AccountListItem.Disabled(
                         accountItem = AccountItem(
-                            userId = UserId("3"),
+                            userId = CoreUserId("3"),
                             name = "Charles Doe",
                             email = "charles.doe@proton.me",
                             initials = "C"

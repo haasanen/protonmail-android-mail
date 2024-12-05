@@ -16,27 +16,28 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package me.proton.android.core.account.data
+package me.proton.android.core.account.data.usecase
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.launch
+import me.proton.android.core.account.data.model.toCoreSession
 import me.proton.android.core.account.data.qualifier.QueryWatcherCoroutineScope
-import me.proton.android.core.account.domain.ObserveAllSessions
+import me.proton.android.core.account.domain.model.CoreSession
+import me.proton.android.core.account.domain.usecase.ObserveCoreSessions
 import uniffi.proton_mail_uniffi.LiveQueryCallback
 import uniffi.proton_mail_uniffi.MailSessionInterface
-import uniffi.proton_mail_uniffi.StoredSession
 import javax.inject.Inject
 
-class ObserveAllSessionsImpl @Inject constructor(
+class ObserveCoreSessionsImpl @Inject constructor(
     @QueryWatcherCoroutineScope private val coroutineScope: CoroutineScope,
     private val mailSession: MailSessionInterface
-) : ObserveAllSessions {
+) : ObserveCoreSessions {
 
     private val storedSessionsFlow = callbackFlow {
         val watchedSessions = mailSession.watchSessions(
@@ -53,7 +54,8 @@ class ObserveAllSessionsImpl @Inject constructor(
             watchedSessions.handle.disconnect()
             watchedSessions.destroy()
         }
-    }.stateIn(coroutineScope, SharingStarted.WhileSubscribed(), null)
+    }.shareIn(coroutineScope, SharingStarted.WhileSubscribed(), replay = 1)
 
-    override fun invoke(): Flow<List<StoredSession>> = storedSessionsFlow.filterNotNull()
+    override fun invoke(): Flow<List<CoreSession>> = storedSessionsFlow
+        .map { list -> list.map { it.toCoreSession() } }
 }

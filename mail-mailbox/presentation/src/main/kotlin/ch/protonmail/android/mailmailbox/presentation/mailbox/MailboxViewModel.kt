@@ -141,6 +141,7 @@ import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import me.proton.android.core.accountmanager.domain.usecase.ObservePrimaryAccountAvatarItem
 import me.proton.core.domain.entity.UserId
 import me.proton.core.mailsettings.domain.entity.ViewMode
 import me.proton.core.plan.presentation.compose.usecase.ShouldUpgradeStorage
@@ -196,7 +197,8 @@ class MailboxViewModel @Inject constructor(
     private val recordRatingBoosterTriggered: RecordRatingBoosterTriggered,
     private val findLocalSystemLabelId: FindLocalSystemLabelId,
     private val loadAvatarImage: LoadAvatarImage,
-    private val observeAvatarImageStates: ObserveAvatarImageStates
+    private val observeAvatarImageStates: ObserveAvatarImageStates,
+    private val observePrimaryAccountAvatarItem: ObservePrimaryAccountAvatarItem
 ) : ViewModel() {
 
     private val primaryUserId = observePrimaryUserId()
@@ -322,6 +324,10 @@ class MailboxViewModel @Inject constructor(
                 emitNewStateFrom(MailboxEvent.AvatarImageStatesUpdated(avatarImageStates))
             }
             .launchIn(viewModelScope)
+
+        observePrimaryAccountAvatarItem().onEach { item ->
+            emitNewStateFrom(MailboxEvent.PrimaryAccountAvatarChanged(item))
+        }.launchIn(viewModelScope)
     }
 
     private fun handleSwipeActionPreferences(userId: UserId, currentMailLabel: MailLabel): Flow<MailboxEvent> {

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024 Proton Technologies AG
+ * Copyright (c) 2022 Proton Technologies AG
  * This file is part of Proton Technologies AG and Proton Mail.
  *
  * Proton Mail is free software: you can redistribute it and/or modify
@@ -16,12 +16,14 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package me.proton.android.core.account.domain
+package me.proton.android.core.account.domain.model
 
-import kotlinx.coroutines.flow.Flow
-import uniffi.proton_mail_uniffi.StoredSession
+data class CoreSession(
+    val sessionId: CoreSessionId,
+    val state: CoreSessionState,
+    val userId: CoreUserId
+)
 
-interface ObserveAllSessions {
-
-    operator fun invoke(): Flow<List<StoredSession>>
+enum class CoreSessionState {
+    Authenticated, NeedKey, NeedSecondFactor
 }

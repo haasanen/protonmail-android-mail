@@ -101,6 +101,8 @@ dependencies {
     implementation(project(":uicomponents"))
     implementation(project(":design-system"))
     implementation(project(":presentation-compose"))
+    implementation(project(":shared:core:account-manager:domain"))
+    implementation(project(":shared:core:account-manager:presentation"))
 
     debugImplementation(libs.bundles.compose.debug)
 

@@ -20,35 +20,35 @@ package me.proton.android.core.accountmanager.presentation.manager
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import me.proton.android.core.account.domain.ObserveStoredAccounts
+import me.proton.android.core.account.domain.model.CoreAccountState
+import me.proton.android.core.account.domain.usecase.ObserveCoreAccounts
+import me.proton.android.core.accountmanager.domain.usecase.GetAccountAvatarItem
 import me.proton.android.core.accountmanager.presentation.switcher.AccountItem
 import me.proton.android.core.accountmanager.presentation.switcher.AccountListItem
-import me.proton.core.domain.entity.UserId
 import me.proton.core.util.kotlin.takeIfNotBlank
 import uniffi.proton_mail_uniffi.MailSessionInterface
-import uniffi.proton_mail_uniffi.StoredAccountState
 import javax.inject.Inject
 
 class ObserveAccountListItems @Inject constructor(
+    private val getAccountAvatarItem: GetAccountAvatarItem,
     private val mailSessionInterface: MailSessionInterface,
-    private val observeStoredAccounts: ObserveStoredAccounts
+    private val observeCoreAccounts: ObserveCoreAccounts
 ) {
 
-    suspend operator fun invoke(): Flow<List<AccountListItem>> = observeStoredAccounts().map { storedAccounts ->
+    suspend operator fun invoke(): Flow<List<AccountListItem>> = observeCoreAccounts().map { accounts ->
         val primaryStoredAccount = mailSessionInterface.getPrimaryAccount()
-        storedAccounts.map { storedAccount ->
-            val accountName = storedAccount.displayName()?.takeIfNotBlank() ?: storedAccount.nameOrAddress()
-            val initials = storedAccount.avatarInformation()?.text
-            val color = storedAccount.avatarInformation()?.color
+        accounts.map { account ->
+            val accountName = account.displayName?.takeIfNotBlank() ?: account.nameOrAddress
+            val avatarItem = getAccountAvatarItem(account.userId)
             val accountItem = AccountItem(
-                userId = UserId(storedAccount.userId()),
+                userId = account.userId,
                 name = accountName,
-                email = storedAccount.primaryAddr(),
-                initials = initials,
-                color = color
+                email = account.primaryEmailAddress,
+                initials = avatarItem?.initials,
+                color = avatarItem?.color
             )
-            when (storedAccount.state()) {
-                is StoredAccountState.LoggedIn -> if (storedAccount.userId() == primaryStoredAccount?.userId()) {
+            when (account.state) {
+                CoreAccountState.Ready -> if (account.userId.id == primaryStoredAccount?.userId()) {
                     AccountListItem.Ready.Primary(accountItem)
                 } else {
                     AccountListItem.Ready(accountItem)

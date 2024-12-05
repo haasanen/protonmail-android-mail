@@ -17,10 +17,10 @@
 
 package me.proton.android.core.accountmanager.presentation.switcher
 
-import me.proton.core.domain.entity.UserId
+import me.proton.android.core.account.domain.model.CoreUserId
 
 data class AccountItem(
-    val userId: UserId,
+    val userId: CoreUserId,
     val name: String,
     val email: String? = null,
     val initials: String? = null,

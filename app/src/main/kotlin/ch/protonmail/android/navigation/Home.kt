@@ -59,6 +59,7 @@ import ch.protonmail.android.mailcomposer.domain.model.MessageSendingStatus
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetail
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.model.MessageId
+import ch.protonmail.android.mailsession.data.mapper.toUserId
 import ch.protonmail.android.mailsidebar.presentation.Sidebar
 import ch.protonmail.android.navigation.model.Destination.Dialog
 import ch.protonmail.android.navigation.model.Destination.Screen
@@ -102,6 +103,8 @@ import ch.protonmail.android.navigation.route.addWebSpamFilterSettings
 import ch.protonmail.android.uicomponents.snackbar.DismissableSnackbarHost
 import io.sentry.compose.withSentryObservableEffect
 import kotlinx.coroutines.launch
+import me.proton.android.core.accountmanager.presentation.manager.addAccountsManager
+import me.proton.android.core.accountmanager.presentation.switcher.AccountSwitchEvent
 import me.proton.core.network.domain.NetworkStatus
 
 @Composable
@@ -587,6 +590,38 @@ fun Home(
                     addThemeSettings(navController)
                     addNotificationsSettings(navController)
                     addDeepLinkHandler(navController)
+                    addAccountsManager(
+                        navController,
+                        route = Screen.AccountsManager.route,
+                        onCloseClicked = { navController.navigateBack() },
+                        onEvent = {
+                            when (it) {
+                                is AccountSwitchEvent.OnAccountSelected -> {
+                                    launcherActions.onSwitchToAccount(it.userId.toUserId())
+                                    navController.popBackStack(Screen.Mailbox.route, inclusive = false)
+                                }
+
+                                is AccountSwitchEvent.OnAddAccount ->
+                                    launcherActions.onSignIn(null)
+
+                                is AccountSwitchEvent.OnManageAccount ->
+                                    navController.navigate(Screen.AccountSettings.route)
+
+                                is AccountSwitchEvent.OnManageAccounts ->
+                                    navController.navigate(Screen.AccountsManager.route)
+
+                                is AccountSwitchEvent.OnRemoveAccount ->
+                                    navController.navigate(Dialog.RemoveAccount(it.userId.toUserId()))
+
+                                is AccountSwitchEvent.OnSignIn ->
+                                    launcherActions.onSignIn(it.userId.toUserId())
+
+                                is AccountSwitchEvent.OnSignOut ->
+                                    navController.navigate(Dialog.SignOut(it.userId.toUserId()))
+                            }
+                        }
+                    )
+
                 }
             }
         }

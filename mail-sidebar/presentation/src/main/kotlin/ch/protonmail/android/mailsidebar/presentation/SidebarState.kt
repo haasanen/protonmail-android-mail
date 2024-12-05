@@ -20,7 +20,6 @@ package ch.protonmail.android.mailsidebar.presentation
 
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
-import androidx.compose.material3.DrawerValue.Closed
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
@@ -30,7 +29,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import ch.protonmail.android.mailcommon.domain.AppInformation
 import ch.protonmail.android.maillabel.presentation.MailLabelsUiModel
-import me.proton.android.core.accountmanager.presentation.switcher.AccountListItem
 
 @Stable
 class SidebarState(
@@ -38,15 +36,11 @@ class SidebarState(
     val drawerState: DrawerState = DrawerState(DrawerValue.Closed),
     val showContacts: Boolean = true,
     mailLabels: MailLabelsUiModel = MailLabelsUiModel.Loading,
-    isSubscriptionVisible: Boolean = true,
-    primaryAccount: AccountListItem.Ready.Primary? = null,
-    otherAccounts: List<AccountListItem> = emptyList()
+    isSubscriptionVisible: Boolean = true
 ) {
 
     var mailLabels by mutableStateOf(mailLabels)
     var isSubscriptionVisible by mutableStateOf(isSubscriptionVisible)
-    var primaryAccount: AccountListItem.Ready.Primary? by mutableStateOf(primaryAccount)
-    var otherAccounts: List<AccountListItem> by mutableStateOf(otherAccounts)
 }
 
 @Composable

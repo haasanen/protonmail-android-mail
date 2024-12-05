@@ -10,7 +10,7 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import me.proton.android.core.account.domain.ObserveStoredAccounts
+import me.proton.android.core.account.domain.usecase.ObserveStoredAccounts
 import me.proton.core.domain.entity.UserId
 import org.junit.Rule
 import uniffi.proton_mail_uniffi.StoredAccount

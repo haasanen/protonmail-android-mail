@@ -33,7 +33,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
-import me.proton.android.core.account.domain.ObserveStoredAccounts
+import me.proton.android.core.account.domain.usecase.ObserveStoredAccounts
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import javax.inject.Inject

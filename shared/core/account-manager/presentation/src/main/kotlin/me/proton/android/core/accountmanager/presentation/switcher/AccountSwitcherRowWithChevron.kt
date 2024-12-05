@@ -29,7 +29,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import ch.protonmail.android.design.compose.theme.LocalColors
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonSidebarTheme
-import me.proton.core.domain.entity.UserId
+import me.proton.android.core.account.domain.model.CoreUserId
 import me.proton.core.presentation.R
 
 /**
@@ -59,7 +59,7 @@ fun AccountSwitcherRowWithChevronPreview() {
         AccountSwitcherRowWithChevron(
             accountListItem = AccountListItem.Ready.Primary(
                 accountItem = AccountItem(
-                    userId = UserId("1"),
+                    userId = CoreUserId("1"),
                     name = "Username",
                     email = "email@proton.me",
                     initials = "UN"

@@ -378,7 +378,8 @@ fun MailboxScreen(
                         onEnterSearchMode = { actions.onEnterSearchMode() },
                         onSearch = { query -> actions.onSearchQuery(query) },
                         onOpenUpsellingPage = actions.onOpenUpsellingPage,
-                        onCloseUpsellingPage = actions.onCloseUpsellingPage
+                        onCloseUpsellingPage = actions.onCloseUpsellingPage,
+                        onAccountAvatarClicked = actions.onAccountAvatarClicked
                     )
                 )
 
@@ -1107,7 +1108,8 @@ object MailboxScreen {
         val onExitSearchMode: () -> Unit,
         val onOpenUpsellingPage: () -> Unit,
         val onCloseUpsellingPage: () -> Unit,
-        val onShowRatingBooster: () -> Unit
+        val onShowRatingBooster: () -> Unit,
+        val onAccountAvatarClicked: () -> Unit
     ) {
 
         companion object {
@@ -1158,7 +1160,8 @@ object MailboxScreen {
                 onSearchResult = {},
                 onOpenUpsellingPage = {},
                 onCloseUpsellingPage = {},
-                onShowRatingBooster = {}
+                onShowRatingBooster = {},
+                onAccountAvatarClicked = {}
             )
         }
     }

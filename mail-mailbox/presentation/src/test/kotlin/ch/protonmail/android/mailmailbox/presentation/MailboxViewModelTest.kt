@@ -171,6 +171,7 @@ import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
+import me.proton.android.core.accountmanager.domain.usecase.ObservePrimaryAccountAvatarItem
 import me.proton.core.domain.entity.UserId
 import me.proton.core.mailsettings.domain.entity.SwipeAction
 import me.proton.core.mailsettings.domain.entity.ViewMode
@@ -260,6 +261,9 @@ class MailboxViewModelTest {
     private val getBottomSheetActions = mockk<GetBottomSheetActions>()
     private val getMoveToLocations = mockk<GetMoveToLocations>()
     private val getLabelAsBottomSheetContent = mockk<GetLabelAsBottomSheetContent>()
+    private val observePrimaryAccountAvatarItem = mockk<ObservePrimaryAccountAvatarItem> {
+        every { this@mockk() } returns flowOf()
+    }
     private val observePrimaryUserAccountStorageStatus = mockk<ObservePrimaryUserAccountStorageStatus> {
         every { this@mockk() } returns flowOf()
     }
@@ -342,7 +346,8 @@ class MailboxViewModelTest {
             recordRatingBoosterTriggered = recordRatingBoosterTriggered,
             findLocalSystemLabelId = findLocalSystemLabelId,
             loadAvatarImage = loadAvatarImage,
-            observeAvatarImageStates = observeAvatarImageStates
+            observeAvatarImageStates = observeAvatarImageStates,
+            observePrimaryAccountAvatarItem = observePrimaryAccountAvatarItem
         )
     }
 
@@ -1151,7 +1156,8 @@ class MailboxViewModelTest {
         // Given
         val expectedState = MailboxStateSampleData.Loading.copy(
             topAppBarState = MailboxTopAppBarState.Data.DefaultMode(
-                currentLabelName = MailLabelTestData.inboxSystemLabel.text()
+                currentLabelName = MailLabelTestData.inboxSystemLabel.text(),
+                primaryAvatarItem = null
             )
         )
         every {

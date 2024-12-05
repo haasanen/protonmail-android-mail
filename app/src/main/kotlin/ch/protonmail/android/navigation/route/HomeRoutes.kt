@@ -91,7 +91,8 @@ internal fun NavGraphBuilder.addMailbox(
                 showNormalSnackbar = showNormalSnackbar,
                 showErrorSnackbar = showErrorSnackbar,
                 onAddLabel = { navController.navigate(Destination.Screen.CreateLabel.route) },
-                onAddFolder = { navController.navigate(Destination.Screen.CreateFolder.route) }
+                onAddFolder = { navController.navigate(Destination.Screen.CreateFolder.route) },
+                onAccountAvatarClicked = { navController.navigate(Destination.Screen.AccountsManager.route) }
             )
         )
     }

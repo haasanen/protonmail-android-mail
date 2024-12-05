@@ -33,8 +33,8 @@ import ch.protonmail.android.design.compose.theme.LocalTypography
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyMediumNorm
+import me.proton.android.core.account.domain.model.CoreUserId
 import me.proton.android.core.accountmanager.presentation.R
-import me.proton.core.domain.entity.UserId
 
 /**
  * Displays a row with the given [accountListItem].
@@ -81,7 +81,7 @@ fun AccountSwitcherRowWithSignInPreview() {
             AccountSwitcherRowWithSignIn(
                 accountListItem = AccountListItem.Ready.Primary(
                     accountItem = AccountItem(
-                        userId = UserId("1"),
+                        userId = CoreUserId("1"),
                         name = "Username",
                         email = "email@proton.me",
                         initials = "UN"
@@ -93,7 +93,7 @@ fun AccountSwitcherRowWithSignInPreview() {
             AccountSwitcherRowWithSignIn(
                 accountListItem = AccountListItem.Disabled(
                     accountItem = AccountItem(
-                        userId = UserId("1"),
+                        userId = CoreUserId("1"),
                         name = "Username",
                         email = "email@proton.me",
                         initials = "UN"

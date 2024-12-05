@@ -220,7 +220,8 @@ internal class MailboxScreenTest : HiltInstrumentedTest() {
                     avatarImagesUiModel = AvatarImagesUiModel.Empty
                 ),
                 topAppBarState = MailboxTopAppBarState.Data.DefaultMode(
-                    currentLabelName = systemLabel.text()
+                    currentLabelName = systemLabel.text(),
+                    primaryAvatarItem = null
                 ),
                 upgradeStorageState = UpgradeStorageState(notificationDotVisible = false),
                 unreadFilterState = UnreadFilterState.Loading,
@@ -231,7 +232,7 @@ internal class MailboxScreenTest : HiltInstrumentedTest() {
                 storageLimitState = StorageLimitState.HasEnoughSpace,
                 bottomSheetState = null,
                 error = Effect.empty(),
-                showRatingBooster = Effect.empty(),
+                showRatingBooster = Effect.empty()
             )
         }
 

@@ -42,12 +42,12 @@ import ch.protonmail.android.design.compose.theme.LocalColors
 import ch.protonmail.android.design.compose.theme.LocalTypography
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
+import me.proton.android.core.account.domain.model.CoreUserId
 import me.proton.android.core.accountmanager.presentation.R
 import me.proton.android.core.accountmanager.presentation.switcher.AccountItem
 import me.proton.android.core.accountmanager.presentation.switcher.AccountListItem
 import me.proton.android.core.accountmanager.presentation.switcher.AccountSwitchEvent
 import me.proton.android.core.accountmanager.presentation.switcher.AccountSwitcherRowWithContextMenu
-import me.proton.core.domain.entity.UserId
 
 @Composable
 fun AccountsManagerScreen(
@@ -187,15 +187,15 @@ fun ManageAccountsScreenPreview() {
             state = AccountsManagerState.Idle(
                 signedInAccounts = listOf(
                     AccountListItem.Ready.Primary(
-                        AccountItem(UserId("user-1"), "User One", "user.one@example.test", "U1")
+                        AccountItem(CoreUserId("user-1"), "User One", "user.one@example.test", "U1")
                     ),
                     AccountListItem.Ready(
-                        AccountItem(UserId("user-2"), "User Two", "user.two@example.test", "U2")
+                        AccountItem(CoreUserId("user-2"), "User Two", "user.two@example.test", "U2")
                     )
                 ),
                 disabledAccounts = listOf(
                     AccountListItem.Disabled(
-                        AccountItem(UserId("user-3"), "User Three", "user.three@example.test", "U3")
+                        AccountItem(CoreUserId("user-3"), "User Three", "user.three@example.test", "U3")
                     )
                 )
             )

@@ -224,6 +224,7 @@ dependencies {
     implementation(files("../../proton-libs/gopenpgp/gopenpgp.aar"))
 
     implementation(project(":shared:core:account:dagger"))
+    implementation(project(":shared:core:account-manager:dagger"))
     implementation(project(":shared:core:account-manager:presentation"))
     implementation(project(":shared:core:auth:presentation"))
 

@@ -50,6 +50,7 @@ class MailboxTopAppBarReducer @Inject constructor() {
 
             is MailboxViewAction.ExitSearchMode -> currentState.toNewStateForExitSearchMode()
             is MailboxViewAction.EnterSearchMode -> currentState.toNewStateForEnterSearchMode()
+            is MailboxEvent.PrimaryAccountAvatarChanged -> currentState.toNewStateForAccountAvatarChanged(operation)
         }
     }
 
@@ -59,7 +60,7 @@ class MailboxTopAppBarReducer @Inject constructor() {
         val currentMailLabel = operation.selectedLabel
         return when (this) {
             is MailboxTopAppBarState.Loading ->
-                MailboxTopAppBarState.Data.DefaultMode(currentMailLabel.text())
+                MailboxTopAppBarState.Data.DefaultMode(currentMailLabel.text(), null)
 
             is MailboxTopAppBarState.Data -> this.with(currentMailLabel.text())
         }
@@ -71,7 +72,7 @@ class MailboxTopAppBarReducer @Inject constructor() {
         val currentMailLabel = operation.selectedLabel
         return when (this) {
             is MailboxTopAppBarState.Loading ->
-                MailboxTopAppBarState.Data.DefaultMode(currentMailLabel.text())
+                MailboxTopAppBarState.Data.DefaultMode(currentMailLabel.text(), null)
 
             is MailboxTopAppBarState.Data -> this.with(currentMailLabel.text())
         }
@@ -79,14 +80,14 @@ class MailboxTopAppBarReducer @Inject constructor() {
 
     private fun MailboxTopAppBarState.toNewStateForEnterSearchMode() = when (this) {
         is MailboxTopAppBarState.Data.DefaultMode ->
-            MailboxTopAppBarState.Data.SearchMode(currentLabelName, "")
+            MailboxTopAppBarState.Data.SearchMode(currentLabelName, primaryAvatarItem, "")
 
         else -> this
     }
 
     private fun MailboxTopAppBarState.toNewStateForExitSearchMode() = when (this) {
         is MailboxTopAppBarState.Data.SearchMode ->
-            MailboxTopAppBarState.Data.DefaultMode(currentLabelName)
+            MailboxTopAppBarState.Data.DefaultMode(currentLabelName, primaryAvatarItem)
 
         else -> this
     }
@@ -96,16 +97,14 @@ class MailboxTopAppBarReducer @Inject constructor() {
         is MailboxTopAppBarState.Loading -> this
         is MailboxTopAppBarState.Data -> if (this !is MailboxTopAppBarState.Data.SearchMode)
             MailboxTopAppBarState.Data.SelectionMode(
-                currentLabelName, selectedCount = 1
+                currentLabelName, primaryAvatarItem, selectedCount = 1
             ) else this
     }
 
     private fun MailboxTopAppBarState.toNewStateForExitSelectionMode() = when (this) {
         is MailboxTopAppBarState.Loading -> this
         is MailboxTopAppBarState.Data -> if (this !is MailboxTopAppBarState.Data.SearchMode)
-            MailboxTopAppBarState.Data.DefaultMode(
-                currentLabelName
-            )
+            MailboxTopAppBarState.Data.DefaultMode(currentLabelName, primaryAvatarItem)
         else this
     }
 
@@ -126,6 +125,18 @@ class MailboxTopAppBarReducer @Inject constructor() {
 
             else -> this
         }
+
+    private fun MailboxTopAppBarState.toNewStateForAccountAvatarChanged(
+        operation: MailboxEvent.PrimaryAccountAvatarChanged
+    ) = when (this) {
+        is MailboxTopAppBarState.Data.DefaultMode -> copy(primaryAvatarItem = operation.item)
+        is MailboxTopAppBarState.Data.SearchMode -> copy(primaryAvatarItem = operation.item)
+        is MailboxTopAppBarState.Data.SelectionMode -> copy(primaryAvatarItem = operation.item)
+        is MailboxTopAppBarState.Loading -> MailboxTopAppBarState.Data.DefaultMode(
+            currentLabelName = TextUiModel(""),
+            primaryAvatarItem = operation.item
+        )
+    }
 
     fun MailboxTopAppBarState.Data.with(currentLabelName: TextUiModel) = when (this) {
         is MailboxTopAppBarState.Data.DefaultMode -> copy(currentLabelName = currentLabelName)

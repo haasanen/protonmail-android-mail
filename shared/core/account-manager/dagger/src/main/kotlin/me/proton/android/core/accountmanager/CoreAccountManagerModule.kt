@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024 Proton Technologies AG
+ * Copyright (c) 2022 Proton Technologies AG
  * This file is part of Proton Technologies AG and Proton Mail.
  *
  * Proton Mail is free software: you can redistribute it and/or modify
@@ -16,12 +16,24 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package me.proton.android.core.account.domain
+package me.proton.android.core.accountmanager
 
-import kotlinx.coroutines.flow.Flow
-import uniffi.proton_mail_uniffi.StoredAccount
+import dagger.Binds
+import dagger.Module
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
+import me.proton.android.core.accountmanager.data.usecase.GetAccountAvatarItemImpl
+import me.proton.android.core.accountmanager.domain.usecase.GetAccountAvatarItem
 
-interface ObserveStoredAccounts {
+@InstallIn(SingletonComponent::class)
+@Module
+object CoreAccountManagerModule {
 
-    operator fun invoke(): Flow<List<StoredAccount>>
+    @Module
+    @InstallIn(SingletonComponent::class)
+    interface BindsModule {
+
+        @Binds
+        fun bindGetAccountAvatarItem(impl: GetAccountAvatarItemImpl): GetAccountAvatarItem
+    }
 }

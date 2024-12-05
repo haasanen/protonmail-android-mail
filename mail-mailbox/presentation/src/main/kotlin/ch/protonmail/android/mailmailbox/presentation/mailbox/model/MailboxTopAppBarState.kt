@@ -19,26 +19,31 @@
 package ch.protonmail.android.mailmailbox.presentation.mailbox.model
 
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
+import me.proton.android.core.accountmanager.domain.model.CoreAccountAvatarItem
 
 sealed interface MailboxTopAppBarState {
 
-    object Loading : MailboxTopAppBarState
+    data object Loading : MailboxTopAppBarState
 
     sealed interface Data : MailboxTopAppBarState {
 
+        val primaryAvatarItem: CoreAccountAvatarItem?
         val currentLabelName: TextUiModel
 
         data class DefaultMode(
-            override val currentLabelName: TextUiModel
+            override val currentLabelName: TextUiModel,
+            override val primaryAvatarItem: CoreAccountAvatarItem?
         ) : Data
 
         data class SelectionMode(
             override val currentLabelName: TextUiModel,
+            override val primaryAvatarItem: CoreAccountAvatarItem?,
             val selectedCount: Int
         ) : Data
 
         data class SearchMode(
             override val currentLabelName: TextUiModel,
+            override val primaryAvatarItem: CoreAccountAvatarItem?,
             val searchQuery: String
         ) : Data
     }

@@ -45,6 +45,8 @@ import ch.protonmail.android.mailupselling.presentation.ui.UpsellingMailButton
 import ch.protonmail.android.uicomponents.SearchView
 import ch.protonmail.android.design.compose.component.appbar.ProtonTopAppBar
 import ch.protonmail.android.design.compose.theme.ProtonTheme
+import me.proton.android.core.accountmanager.domain.model.CoreAccountAvatarItem
+import me.proton.android.core.accountmanager.presentation.switcher.AccountAvatar
 import me.proton.core.util.kotlin.EMPTY_STRING
 
 @Composable
@@ -63,7 +65,8 @@ fun MailboxTopAppBar(
                 id = R.string.mailbox_toolbar_menu_button_content_description
             ),
             shouldShowActions = true,
-            notificationDotVisible = upgradeStorageState.notificationDotVisible
+            notificationDotVisible = upgradeStorageState.notificationDotVisible,
+            accountAvatarItem = state.primaryAvatarItem
         )
 
         is MailboxTopAppBarState.Data.SelectionMode -> UiModel(
@@ -75,7 +78,8 @@ fun MailboxTopAppBar(
             navigationIconRes = R.drawable.ic_proton_arrow_left,
             navigationIconContentDescription =
             stringResource(id = R.string.mailbox_toolbar_exit_selection_mode_button_content_description),
-            shouldShowActions = false
+            shouldShowActions = false,
+            accountAvatarItem = state.primaryAvatarItem
         )
 
         is MailboxTopAppBarState.Data.SearchMode -> UiModel.Empty.copy(
@@ -136,6 +140,10 @@ fun MailboxTopAppBar(
                                 )
                             )
                         }
+                        AccountAvatar(
+                            accountItem = uiModel.accountAvatarItem,
+                            onClick = actions.onAccountAvatarClicked
+                        )
                     }
                 }
             )
@@ -214,7 +222,8 @@ object MailboxTopAppBar {
         val onEnterSearchMode: () -> Unit,
         val onSearch: (query: String) -> Unit,
         val onOpenUpsellingPage: () -> Unit,
-        val onCloseUpsellingPage: () -> Unit
+        val onCloseUpsellingPage: () -> Unit,
+        val onAccountAvatarClicked: () -> Unit
     )
 }
 
@@ -224,7 +233,8 @@ private data class UiModel(
     val navigationIconContentDescription: String,
     val shouldShowActions: Boolean,
     val notificationDotVisible: Boolean = false,
-    val searchQuery: String = EMPTY_STRING
+    val searchQuery: String = EMPTY_STRING,
+    val accountAvatarItem: CoreAccountAvatarItem?
 ) {
 
     companion object {
@@ -233,7 +243,8 @@ private data class UiModel(
             title = EMPTY_STRING,
             navigationIconRes = R.drawable.ic_proton_hamburger,
             navigationIconContentDescription = EMPTY_STRING,
-            shouldShowActions = false
+            shouldShowActions = false,
+            accountAvatarItem = null
         )
     }
 }
@@ -255,7 +266,8 @@ fun LoadingMailboxTopAppBarPreview() {
             onEnterSearchMode = {},
             onSearch = {},
             onOpenUpsellingPage = {},
-            onCloseUpsellingPage = {}
+            onCloseUpsellingPage = {},
+            onAccountAvatarClicked = {}
         )
     )
 }

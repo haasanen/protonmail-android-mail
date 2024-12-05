@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024 Proton Technologies AG
+ * Copyright (c) 2022 Proton Technologies AG
  * This file is part of Proton Technologies AG and Proton Mail.
  *
  * Proton Mail is free software: you can redistribute it and/or modify
@@ -16,45 +16,44 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package me.proton.android.core.account.data
+package me.proton.android.core.account.data.usecase
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.launch
 import me.proton.android.core.account.data.qualifier.QueryWatcherCoroutineScope
-import me.proton.android.core.account.domain.ObserveAllSessions
-import me.proton.android.core.account.domain.ObserveStoredAccounts
+import me.proton.android.core.account.domain.usecase.ObserveCoreSessions
+import me.proton.android.core.account.domain.usecase.ObserveStoredAccounts
 import uniffi.proton_mail_uniffi.LiveQueryCallback
-import uniffi.proton_mail_uniffi.MailSessionInterface
+import uniffi.proton_mail_uniffi.MailSession
 import uniffi.proton_mail_uniffi.StoredAccount
 import javax.inject.Inject
 
 class ObserveStoredAccountsImpl @Inject constructor(
     @QueryWatcherCoroutineScope private val coroutineScope: CoroutineScope,
-    private val mailSession: MailSessionInterface,
-    private val observeAllSessions: ObserveAllSessions
+    private val mailSession: MailSession,
+    private val observeCoreSessions: ObserveCoreSessions
 ) : ObserveStoredAccounts {
 
     /**
      * Note:
-     * Instead of just invoking [MailSessionInterface.watchAccounts],
-     * we also call [observeAllSessions],
+     * Instead of just invoking [MailSession.watchAccounts],
+     * we also call [observeCoreSessions],
      * so that the [StoredAccount.state] is always up to date.
      * This is needed because currently, a session state is not part of the "Accounts" SQL table.
      */
-    private val storedAccountsWithSessionStateFlow = observeAllSessions()
-        .flatMapLatest { storedAccountsFlow() }
-        .stateIn(coroutineScope, SharingStarted.WhileSubscribed(), null)
+    private val storedAccountsWithSessionStateFlow = observeCoreSessions()
+        .flatMapLatest { accountsFlow() }
+        .shareIn(coroutineScope, SharingStarted.WhileSubscribed(), replay = 1)
 
-    override fun invoke(): Flow<List<StoredAccount>> = storedAccountsWithSessionStateFlow.filterNotNull()
+    override fun invoke(): Flow<List<StoredAccount>> = storedAccountsWithSessionStateFlow
 
-    private fun storedAccountsFlow(): Flow<List<StoredAccount>> = callbackFlow {
+    private fun accountsFlow(): Flow<List<StoredAccount>> = callbackFlow {
         val watchedStoredAccounts = mailSession.watchAccounts(
             object : LiveQueryCallback {
                 override fun onUpdate() {

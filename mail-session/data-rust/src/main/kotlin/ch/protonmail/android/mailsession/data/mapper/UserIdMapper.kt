@@ -19,7 +19,10 @@
 package ch.protonmail.android.mailsession.data.mapper
 
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalUserId
+import me.proton.android.core.account.domain.model.CoreUserId
 import me.proton.core.domain.entity.UserId
+
+fun CoreUserId.toUserId(): UserId = UserId(this.id)
 
 fun UserId.toLocalUserId(): LocalUserId = this.id
 

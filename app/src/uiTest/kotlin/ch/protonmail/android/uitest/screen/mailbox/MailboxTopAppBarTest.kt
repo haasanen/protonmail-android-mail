@@ -222,7 +222,8 @@ internal class MailboxTopAppBarTest : HiltInstrumentedTest() {
                         onEnterSearchMode = {},
                         onSearch = {},
                         onOpenUpsellingPage = {},
-                        onCloseUpsellingPage = {}
+                        onCloseUpsellingPage = {},
+                        onAccountAvatarClicked = {}
                     )
                 )
             }
@@ -232,13 +233,14 @@ internal class MailboxTopAppBarTest : HiltInstrumentedTest() {
     }
 
     private fun setupScreenWithDefaultMode(currentMailLabel: MailLabel) {
-        val state = Data.DefaultMode(currentLabelName = currentMailLabel.text())
+        val state = Data.DefaultMode(currentLabelName = currentMailLabel.text(), primaryAvatarItem = null)
         setupScreenWithState(state)
     }
 
     private fun setupScreenWithSelectionMode(currentMailLabel: MailLabel, selectedCount: Int) {
         val state = Data.SelectionMode(
             currentLabelName = currentMailLabel.text(),
+            primaryAvatarItem = null,
             selectedCount = selectedCount
         )
         setupScreenWithState(state)
@@ -247,6 +249,7 @@ internal class MailboxTopAppBarTest : HiltInstrumentedTest() {
     private fun setupScreenWithSearchMode(currentMailLabel: MailLabel, searchQuery: String) {
         val state = Data.SearchMode(
             currentLabelName = currentMailLabel.text(),
+            primaryAvatarItem = null,
             searchQuery = searchQuery
         )
         setupScreenWithState(state)

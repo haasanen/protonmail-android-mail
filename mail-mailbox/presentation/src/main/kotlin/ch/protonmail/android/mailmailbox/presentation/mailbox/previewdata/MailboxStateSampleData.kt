@@ -24,6 +24,7 @@ import ch.protonmail.android.mailcommon.presentation.model.BottomBarState
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcommon.presentation.sample.ActionUiModelSample
 import ch.protonmail.android.mailcommon.presentation.ui.delete.DeleteDialogState
+import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabel
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
@@ -40,7 +41,6 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.model.UnreadFilter
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.UpgradeStorageState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.BottomSheetState
 import kotlinx.collections.immutable.toImmutableList
-import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.mailmessage.presentation.model.AvatarImagesUiModel
 
 object MailboxStateSampleData {
@@ -90,7 +90,8 @@ object MailboxStateSampleData {
             avatarImagesUiModel = AvatarImagesUiModel.Empty
         ),
         topAppBarState = MailboxTopAppBarState.Data.DefaultMode(
-            currentLabelName = inboxDynamicLabel.text()
+            currentLabelName = inboxDynamicLabel.text(),
+            primaryAvatarItem = null
         ),
         upgradeStorageState = UpgradeStorageState(notificationDotVisible = false),
         unreadFilterState = UnreadFilterState.Data(
@@ -127,7 +128,8 @@ object MailboxStateSampleData {
             avatarImagesUiModel = AvatarImagesUiModel.Empty
         ),
         topAppBarState = MailboxTopAppBarState.Data.DefaultMode(
-            currentLabelName = allMailDynamicLabel.text()
+            currentLabelName = allMailDynamicLabel.text(),
+            primaryAvatarItem = null
         ),
         upgradeStorageState = UpgradeStorageState(notificationDotVisible = false),
         unreadFilterState = UnreadFilterState.Data(
@@ -169,7 +171,8 @@ object MailboxStateSampleData {
         ),
         topAppBarState = MailboxTopAppBarState.Data.SelectionMode(
             currentLabelName = inboxDynamicLabel.text(),
-            selectedCount = selectedMailboxItemUiModels.size
+            selectedCount = selectedMailboxItemUiModels.size,
+            primaryAvatarItem = null
         ),
         upgradeStorageState = UpgradeStorageState(notificationDotVisible = false),
         unreadFilterState = UnreadFilterState.Data(
