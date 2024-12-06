@@ -31,10 +31,10 @@ class ExecuteActionWithUserSession @Inject constructor(
     private val userSessionRepository: UserSessionRepository
 ) {
 
-    suspend operator fun invoke(
+    suspend operator fun <T> invoke(
         userId: UserId,
-        action: suspend (MailUserSessionWrapper) -> Unit
-    ): Either<DataError, Unit> {
+        action: suspend (MailUserSessionWrapper) -> T
+    ): Either<DataError, T> {
         val userSession = userSessionRepository.getUserSession(userId)
         if (userSession == null) {
             Timber.e("rust-action-with-user-session: Failed to perform action, null user session")
