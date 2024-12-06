@@ -23,6 +23,8 @@ import arrow.core.right
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
 import ch.protonmail.android.mailcommon.datarust.usecase.ExecuteWithUserSession
 import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
+import ch.protonmail.android.maillabel.domain.SelectedMailLabelId
 import ch.protonmail.android.mailmessage.data.usecase.CreateAllMailMailbox
 import ch.protonmail.android.mailmessage.data.usecase.CreateMailbox
 import ch.protonmail.android.mailmessage.data.wrapper.MailboxWrapper
@@ -33,10 +35,27 @@ import javax.inject.Inject
 class RustMailboxFactory @Inject constructor(
     private val executeWithUserSession: ExecuteWithUserSession,
     private val createMailbox: CreateMailbox,
-    private val createAllMailMailbox: CreateAllMailMailbox
+    private val createAllMailMailbox: CreateAllMailMailbox,
+    private val selectedMailLabelId: SelectedMailLabelId
 ) {
 
     private val mailboxCache: MutableMap<LocalLabelId, MailboxWrapper> = mutableMapOf()
+
+    suspend fun create(userId: UserId): Either<DataError, MailboxWrapper> {
+        val currentLabelId = selectedMailLabelId.flow.value.labelId.toLocalLabelId()
+
+        val cachedMailbox = mailboxCache[currentLabelId]
+        if (cachedMailbox != null) {
+            return cachedMailbox.right()
+        }
+
+        return executeWithUserSession(userId) { session ->
+            val mailbox = createMailbox(session, currentLabelId)
+            mailboxCache[currentLabelId] = mailbox
+            Timber.d("rust-mailbox-factory: Mailbox created for Current Label: $currentLabelId")
+            mailbox
+        }
+    }
 
     suspend fun create(userId: UserId, labelId: LocalLabelId): Either<DataError, MailboxWrapper> {
         val cachedMailbox = mailboxCache[labelId]

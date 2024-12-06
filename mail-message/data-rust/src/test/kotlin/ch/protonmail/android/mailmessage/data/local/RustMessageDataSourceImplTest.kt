@@ -48,11 +48,9 @@ import io.mockk.Called
 import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.coVerify
-import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
 import io.mockk.verify
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
 import uniffi.proton_mail_uniffi.AllBottomBarMessageActions
@@ -75,7 +73,7 @@ class RustMessageDataSourceImplTest {
 
     private val userSessionRepository = mockk<UserSessionRepository>()
 
-    private val rustMailbox: RustMailbox = mockk()
+    private val rustMailboxFactory: RustMailboxFactory = mockk()
     private val rustMessageQuery: RustMessageQuery = mockk()
     private val createRustMessageAccessor = mockk<CreateRustMessageAccessor>()
     private val createRustMessageBodyAccessor = mockk<CreateRustMessageBodyAccessor>()
@@ -94,7 +92,7 @@ class RustMessageDataSourceImplTest {
 
     private val dataSource = RustMessageDataSourceImpl(
         userSessionRepository,
-        rustMailbox,
+        rustMailboxFactory,
         rustMessageQuery,
         createRustMessageAccessor,
         createRustMessageBodyAccessor,
@@ -155,14 +153,14 @@ class RustMessageDataSourceImplTest {
         val messageId = LocalMessageIdSample.AugWeatherForecast
         val mailbox = mockk<MailboxWrapper>()
         coEvery { userSessionRepository.getUserSession(userId) } returns mailSession
-        every { rustMailbox.observeMailbox(labelId) } returns flowOf(mailbox)
+        coEvery { rustMailboxFactory.create(userId, labelId) } returns mailbox.right()
         coEvery { createRustMessageBodyAccessor(mailbox, messageId) } returns mockk()
 
         // When
         val result = dataSource.getMessageBody(userId, messageId, labelId)
 
         // Then
-        verify { rustMailbox.observeMailbox(labelId) }
+        coVerify { rustMailboxFactory.create(userId, labelId) }
         coVerify { createRustMessageBodyAccessor(mailbox, messageId) }
         assert(result != null)
     }
@@ -173,13 +171,14 @@ class RustMessageDataSourceImplTest {
         val userId = UserIdTestData.userId
         val messageId = LocalMessageIdSample.AugWeatherForecast
         val mailbox = mockk<MailboxWrapper>()
-        every { rustMailbox.observeMailbox() } returns flowOf(mailbox)
+        val labelId = LocalLabelId(1uL)
+        coEvery { rustMailboxFactory.create(userId, labelId) } returns mailbox.right()
         coEvery { createRustMessageBodyAccessor(mailbox, messageId) } throws MailboxException.Io("DB Exception")
         // When
-        val result = dataSource.getMessageBody(userId, messageId, null)
+        val result = dataSource.getMessageBody(userId, messageId, labelId)
 
         // Then
-        verify { rustMailbox.observeMailbox() }
+        coVerify { rustMailboxFactory.create(userId, labelId) }
         assertNull(result)
     }
 
@@ -273,7 +272,7 @@ class RustMessageDataSourceImplTest {
         val mailbox = mockk<MailboxWrapper>()
         val messageIds = listOf(LocalMessageId(1uL), LocalMessageId(2uL))
 
-        coEvery { rustMailbox.observeMailbox() } returns flowOf(mailbox)
+        coEvery { rustMailboxFactory.create(userId) } returns mailbox.right()
         coEvery { rustMarkMessagesRead(mailbox, messageIds) } just Runs
 
         // When
@@ -290,7 +289,7 @@ class RustMessageDataSourceImplTest {
         val userId = UserIdTestData.userId
         val messageIds = listOf(LocalMessageId(1uL), LocalMessageId(2uL))
 
-        coEvery { rustMailbox.observeMailbox() } returns flowOf()
+        coEvery { rustMailboxFactory.create(userId) } returns DataError.Local.Unknown.left()
 
         // When
         val result = dataSource.markRead(userId, messageIds)
@@ -308,7 +307,7 @@ class RustMessageDataSourceImplTest {
         val messageIds = listOf(LocalMessageId(1uL), LocalMessageId(2uL))
 
         coEvery { rustMarkMessagesRead(mailbox, messageIds) } throws MailSessionException.Other("Error")
-        coEvery { rustMailbox.observeMailbox() } returns flowOf(mailbox)
+        coEvery { rustMailboxFactory.create(userId) } returns mailbox.right()
 
         // When
         val result = dataSource.markRead(userId, messageIds)
@@ -324,7 +323,7 @@ class RustMessageDataSourceImplTest {
         val mailbox = mockk<MailboxWrapper>()
         val messageIds = listOf(LocalMessageId(1uL), LocalMessageId(2uL))
 
-        coEvery { rustMailbox.observeMailbox() } returns flowOf(mailbox)
+        coEvery { rustMailboxFactory.create(userId) } returns mailbox.right()
         coEvery { rustMarkMessagesUnread(mailbox, messageIds) } just Runs
 
         // When
@@ -359,7 +358,7 @@ class RustMessageDataSourceImplTest {
         val userId = UserIdTestData.userId
         val messageIds = listOf(LocalMessageId(1uL), LocalMessageId(2uL))
 
-        coEvery { rustMailbox.observeMailbox() } returns flowOf()
+        coEvery { rustMailboxFactory.create(userId) } returns DataError.Local.Unknown.left()
 
         // When
         val result = dataSource.markUnread(userId, messageIds)
@@ -377,7 +376,7 @@ class RustMessageDataSourceImplTest {
         val messageIds = listOf(LocalMessageId(1uL), LocalMessageId(2uL))
 
         coEvery { rustMarkMessagesUnread(mailbox, messageIds) } throws MailSessionException.Other("Error")
-        coEvery { rustMailbox.observeMailbox() } returns flowOf(mailbox)
+        coEvery { rustMailboxFactory.create(userId) } returns mailbox.right()
 
         // When
         val result = dataSource.markUnread(userId, messageIds)
@@ -447,7 +446,7 @@ class RustMessageDataSourceImplTest {
         val messageIds = listOf(LocalMessageIdSample.AugWeatherForecast)
         val expected = MessageAvailableActions(emptyList(), emptyList(), emptyList(), emptyList())
 
-        every { rustMailbox.observeMailbox(labelId) } returns flowOf(mailbox)
+        coEvery { rustMailboxFactory.create(userId, labelId) } returns mailbox.right()
         coEvery { getRustAvailableMessageActions(mailbox, messageIds) } returns expected
 
         // When
@@ -474,7 +473,7 @@ class RustMessageDataSourceImplTest {
         val allMoveToActions = listOf(MoveAction.SystemFolder(archive), MoveAction.CustomFolder(customFolder))
         val expected = listOf(MoveAction.SystemFolder(archive))
 
-        every { rustMailbox.observeMailbox(labelId) } returns flowOf(mailbox)
+        coEvery { rustMailboxFactory.create(userId, labelId) } returns mailbox.right()
         coEvery { getRustMessageMoveToActions(mailbox, messageIds) } returns allMoveToActions
 
         // When
@@ -496,7 +495,7 @@ class RustMessageDataSourceImplTest {
             LabelAsAction(Id(2uL), "label2", LabelColor("#000"), IsSelected.SELECTED)
         )
 
-        every { rustMailbox.observeMailbox(labelId) } returns flowOf(mailbox)
+        coEvery { rustMailboxFactory.create(userId, labelId) } returns mailbox.right()
         coEvery { getRustMessageLabelAsActions(mailbox, messageIds) } returns expected
 
         // When
@@ -515,7 +514,7 @@ class RustMessageDataSourceImplTest {
         val messageIds = listOf(LocalMessageIdSample.AugWeatherForecast)
         val expected = AllBottomBarMessageActions(emptyList(), emptyList())
 
-        every { rustMailbox.observeMailbox(labelId) } returns flowOf(mailbox)
+        coEvery { rustMailboxFactory.create(userId, labelId) } returns mailbox.right()
         coEvery { getRustAllBottomBarActions(mailbox, messageIds) } returns expected
 
         // When
@@ -534,7 +533,7 @@ class RustMessageDataSourceImplTest {
         val messageIds = listOf(LocalMessageIdSample.AugWeatherForecast)
         val expected = DataError.Local.Unknown
 
-        every { rustMailbox.observeMailbox(labelId) } returns flowOf(mailbox)
+        coEvery { rustMailboxFactory.create(userId, labelId) } returns mailbox.right()
         coEvery { getRustAllBottomBarActions(mailbox, messageIds) } throws MailboxException.Other("fail")
 
         // When
@@ -550,7 +549,7 @@ class RustMessageDataSourceImplTest {
         val userId = UserIdTestData.userId
         val messageIds = listOf(LocalMessageId(1uL), LocalMessageId(2uL))
 
-        coEvery { rustMailbox.observeMailbox() } returns flowOf()
+        coEvery { rustMailboxFactory.create(userId) } returns DataError.Local.Unknown.left()
 
         // When
         val result = dataSource.deleteMessages(userId, messageIds)
@@ -568,7 +567,7 @@ class RustMessageDataSourceImplTest {
         val messageIds = listOf(LocalMessageId(1uL), LocalMessageId(2uL))
 
         coEvery { rustDeleteMessages(mailbox, messageIds) } throws MailSessionException.Other("Error")
-        coEvery { rustMailbox.observeMailbox() } returns flowOf(mailbox)
+        coEvery { rustMailboxFactory.create(userId) } returns mailbox.right()
 
         // When
         val result = dataSource.deleteMessages(userId, messageIds)
@@ -584,7 +583,7 @@ class RustMessageDataSourceImplTest {
         val labelId = LocalLabelId(1uL)
         val messageIds = listOf(LocalMessageId(1uL), LocalMessageId(2uL))
 
-        coEvery { rustMailbox.observeMailbox() } returns flowOf()
+        coEvery { rustMailboxFactory.create(userId) } returns DataError.Local.Unknown.left()
 
         // When
         val result = dataSource.moveMessages(userId, messageIds, labelId)
@@ -603,7 +602,7 @@ class RustMessageDataSourceImplTest {
         val messageIds = listOf(LocalMessageId(1uL), LocalMessageId(2uL))
 
         coEvery { rustMoveMessages(mailbox, labelId, messageIds) } throws MailSessionException.Other("Error")
-        coEvery { rustMailbox.observeMailbox() } returns flowOf(mailbox)
+        coEvery { rustMailboxFactory.create(userId) } returns mailbox.right()
 
         // When
         val result = dataSource.moveMessages(userId, messageIds, labelId)
@@ -625,7 +624,7 @@ class RustMessageDataSourceImplTest {
         coEvery {
             rustLabelMessages(mailbox, messageIds, selectedLabelIds, partiallySelectedLabelIds, shouldArchive)
         } returns Unit
-        coEvery { rustMailbox.observeMailbox() } returns flowOf(mailbox)
+        coEvery { rustMailboxFactory.create(userId) } returns mailbox.right()
 
         // When
         val result = dataSource.labelMessages(
@@ -650,7 +649,7 @@ class RustMessageDataSourceImplTest {
         val partiallySelectedLabelIds = listOf(LocalLabelId(5uL))
         val shouldArchive = false
 
-        coEvery { rustMailbox.observeMailbox() } returns flowOf()
+        coEvery { rustMailboxFactory.create(userId) } returns DataError.Local.Unknown.left()
 
         // When
         val result = dataSource.labelMessages(
@@ -679,7 +678,7 @@ class RustMessageDataSourceImplTest {
         coEvery {
             rustLabelMessages(mailbox, messageIds, selectedLabelIds, partiallySelectedLabelIds, shouldArchive)
         } throws MailSessionException.Other("Error")
-        coEvery { rustMailbox.observeMailbox() } returns flowOf(mailbox)
+        coEvery { rustMailboxFactory.create(userId) } returns mailbox.right()
 
         // When
         val result = dataSource.labelMessages(

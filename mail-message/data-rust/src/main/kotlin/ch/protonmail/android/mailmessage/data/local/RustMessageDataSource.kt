@@ -37,7 +37,7 @@ interface RustMessageDataSource {
     suspend fun getMessageBody(
         userId: UserId,
         messageId: LocalMessageId,
-        labelId: LocalLabelId?
+        labelId: LocalLabelId
     ): DecryptedMessageWrapper?
 
     suspend fun getMessages(userId: UserId, pageKey: PageKey): List<LocalMessageMetadata>

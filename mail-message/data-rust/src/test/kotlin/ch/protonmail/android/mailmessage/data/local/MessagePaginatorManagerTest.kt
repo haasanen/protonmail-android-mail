@@ -40,7 +40,6 @@ class MessagePaginatorManagerTest {
     )
 
     private val messagePaginator: MessagePaginatorWrapper = mockk()
-    private val rustMailbox: RustMailbox = mockk(relaxUnitFun = true)
     private val createRustMessagesPaginator: CreateRustMessagesPaginator = mockk()
     private val createRustSearchPaginator: CreateRustSearchPaginator = mockk()
     private val userSessionRepository: UserSessionRepository = mockk()
@@ -48,12 +47,11 @@ class MessagePaginatorManagerTest {
     private val messagePaginatorManager = MessagePaginatorManager(
         userSessionRepository,
         createRustMessagesPaginator,
-        createRustSearchPaginator,
-        rustMailbox
+        createRustSearchPaginator
     )
 
     @Test
-    fun `get messages with labelId switches mailbox if needed`() = runTest {
+    fun `initialises paginator instance with given input label`() = runTest {
         // Given
         val userId = UserIdTestData.userId
         val localLabelId = LocalLabelId(1u)
@@ -61,7 +59,6 @@ class MessagePaginatorManagerTest {
         val userSession = mockk<MailUserSessionWrapper>()
         val callback = mockk<LiveQueryCallback>()
         coEvery { userSessionRepository.getUserSession(userId) } returns userSession
-        coEvery { rustMailbox.switchToMailbox(userId, localLabelId) } just Runs
         coEvery { messagePaginator.nextPage() } returns expectedMessages
         coEvery { createRustMessagesPaginator.invoke(userSession, localLabelId, false, any()) } returns messagePaginator
 
@@ -70,29 +67,6 @@ class MessagePaginatorManagerTest {
 
         // Then
         assertNotNull(actual)
-        coVerify { rustMailbox.switchToMailbox(userId, localLabelId) }
-    }
-
-    @Test
-    fun `switches rust Mailbox to new label when creating a new paginator`() = runTest {
-        // Given
-        val expectedConversations = listOf(LocalMessageTestData.AugWeatherForecast)
-        val userId = UserIdSample.Primary
-        val labelId = SystemLabelId.Inbox.labelId
-        val pageKey = PageKey.DefaultPageKey(labelId = labelId)
-        val session = mockk<MailUserSessionWrapper>()
-        val callback = mockk<LiveQueryCallback>()
-        val paginator = mockk<MessagePaginatorWrapper> {
-            coEvery { this@mockk.nextPage() } returns expectedConversations
-        }
-        coEvery { userSessionRepository.getUserSession(userId) } returns session
-        coEvery { createRustMessagesPaginator(session, labelId.toLocalLabelId(), false, any()) } returns paginator
-
-        // When
-        messagePaginatorManager.getInstance(userId, pageKey, callback)
-
-        // Then
-        coVerify(exactly = 1) { rustMailbox.switchToMailbox(userId, labelId.toLocalLabelId()) }
     }
 
     @Test
@@ -120,7 +94,6 @@ class MessagePaginatorManagerTest {
 
         // Then
         coVerify(exactly = 1) { createRustMessagesPaginator(session, labelId.toLocalLabelId(), false, any()) }
-        coVerify(exactly = 1) { rustMailbox.switchToMailbox(userId, labelId.toLocalLabelId()) }
     }
 
     @Test
@@ -151,12 +124,10 @@ class MessagePaginatorManagerTest {
 
         // Then
         coVerify(exactly = 1) { createRustMessagesPaginator(session, labelId.toLocalLabelId(), false, any()) }
-        coVerify(exactly = 1) { rustMailbox.switchToMailbox(userId, labelId.toLocalLabelId()) }
 
         coVerify { paginator.destroy() }
 
         coVerify(exactly = 1) { createRustMessagesPaginator(session, newLabelId.toLocalLabelId(), false, any()) }
-        coVerify(exactly = 1) { rustMailbox.switchToMailbox(userId, newLabelId.toLocalLabelId()) }
     }
 
     @Test
@@ -185,7 +156,6 @@ class MessagePaginatorManagerTest {
 
         // Then
         coVerify(exactly = 1) { createRustMessagesPaginator(session, labelId.toLocalLabelId(), false, any()) }
-        coVerify(exactly = 2) { rustMailbox.switchToMailbox(userId, labelId.toLocalLabelId()) }
 
         coVerify { paginator.destroy() }
 

@@ -21,8 +21,6 @@ package ch.protonmail.android.mailmessage.dagger
 import ch.protonmail.android.maillabel.domain.SelectedMailLabelId
 import ch.protonmail.android.mailmessage.data.ImageLoaderCoroutineScope
 import ch.protonmail.android.mailmessage.data.MessageRustCoroutineScope
-import ch.protonmail.android.mailmessage.data.local.RustMailbox
-import ch.protonmail.android.mailmessage.data.local.RustMailboxImpl
 import ch.protonmail.android.mailmessage.data.local.RustMessageDataSource
 import ch.protonmail.android.mailmessage.data.local.RustMessageDataSourceImpl
 import ch.protonmail.android.mailmessage.data.local.RustMessageQuery
@@ -74,10 +72,6 @@ object MailMessageModule {
     @Module
     @InstallIn(SingletonComponent::class)
     internal interface BindsModule {
-
-        @Binds
-        @Singleton
-        fun bindRustMailbox(impl: RustMailboxImpl): RustMailbox
 
         @Binds
         @Singleton

@@ -30,7 +30,7 @@ import ch.protonmail.android.mailconversation.data.usecase.GetRustAvailableConve
 import ch.protonmail.android.mailconversation.data.usecase.GetRustConversationLabelAsActions
 import ch.protonmail.android.mailconversation.data.usecase.GetRustConversationMoveToActions
 import ch.protonmail.android.maillabel.data.mapper.toLabelId
-import ch.protonmail.android.mailmessage.data.local.RustMailbox
+import ch.protonmail.android.mailmessage.data.local.RustMailboxFactory
 import ch.protonmail.android.mailmessage.data.model.LocalConversationMessages
 import ch.protonmail.android.mailmessage.data.wrapper.MailboxWrapper
 import ch.protonmail.android.mailpagination.domain.model.PageKey
@@ -44,7 +44,6 @@ import ch.protonmail.android.testdata.user.UserIdTestData
 import io.mockk.Called
 import io.mockk.coEvery
 import io.mockk.coVerify
-import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.CoroutineScope
@@ -76,7 +75,7 @@ class RustConversationDataSourceImplTest {
 
     private val sessionManager = mockk<UserSessionRepository>()
 
-    private val rustMailbox: RustMailbox = mockk()
+    private val rustMailboxFactory: RustMailboxFactory = mockk()
     private val rustConversationDetailQuery: RustConversationDetailQuery = mockk()
     private val rustConversationsQuery: RustConversationsQuery = mockk()
     private val getRustAvailableConversationActions = mockk<GetRustAvailableConversationActions>()
@@ -93,7 +92,7 @@ class RustConversationDataSourceImplTest {
 
     private val dataSource = RustConversationDataSourceImpl(
         sessionManager,
-        rustMailbox,
+        rustMailboxFactory,
         rustMoveConversations,
         rustLabelConversations,
         rustConversationDetailQuery,
@@ -203,7 +202,7 @@ class RustConversationDataSourceImplTest {
         val conversationIds = listOf(LocalConversationIdSample.OctConversation)
         val expected = ConversationAvailableActions(emptyList(), emptyList(), emptyList())
 
-        every { rustMailbox.observeMailbox(labelId) } returns flowOf(mailbox)
+        coEvery { rustMailboxFactory.create(userId, labelId) } returns mailbox.right()
         coEvery { getRustAvailableConversationActions(mailbox, conversationIds) } returns expected
 
         // When
@@ -230,7 +229,7 @@ class RustConversationDataSourceImplTest {
         val allMoveToActions = listOf(MoveAction.SystemFolder(archive), MoveAction.CustomFolder(customFolder))
         val expected = listOf(MoveAction.SystemFolder(archive))
 
-        every { rustMailbox.observeMailbox(labelId) } returns flowOf(mailbox)
+        coEvery { rustMailboxFactory.create(userId, labelId) } returns mailbox.right()
         coEvery { getRustConversationMoveToActions(mailbox, conversationIds) } returns allMoveToActions
 
         // When
@@ -252,7 +251,7 @@ class RustConversationDataSourceImplTest {
             LabelAsAction(Id(2uL), "label2", LabelColor("#000"), IsSelected.SELECTED)
         )
 
-        every { rustMailbox.observeMailbox(labelId) } returns flowOf(mailbox)
+        coEvery { rustMailboxFactory.create(userId, labelId) } returns mailbox.right()
         coEvery { getRustConversationLabelAsActions(mailbox, conversationIds) } returns expected
 
         // When
@@ -271,7 +270,7 @@ class RustConversationDataSourceImplTest {
         val conversationIds = listOf(LocalConversationIdSample.OctConversation)
         val expected = AllBottomBarMessageActions(emptyList(), emptyList())
 
-        every { rustMailbox.observeMailbox(labelId) } returns flowOf(mailbox)
+        coEvery { rustMailboxFactory.create(userId, labelId) } returns mailbox.right()
         coEvery { getRustAllConversationBottomBarActions(mailbox, conversationIds) } returns expected
 
         // When
@@ -289,7 +288,7 @@ class RustConversationDataSourceImplTest {
         val mailbox = mockk<MailboxWrapper>()
         val conversationIds = listOf(LocalConversationIdSample.OctConversation)
 
-        every { rustMailbox.observeMailbox(labelId) } returns flowOf(mailbox)
+        coEvery { rustMailboxFactory.create(userId, labelId) } returns mailbox.right()
         coEvery { getRustAllConversationBottomBarActions(mailbox, conversationIds) } throws MailboxException.Io("fail")
 
         // When
@@ -307,7 +306,7 @@ class RustConversationDataSourceImplTest {
         val mailbox = mockk<MailboxWrapper>()
         val conversationIds = listOf(LocalConversationIdSample.AugConversation)
 
-        every { rustMailbox.observeMailbox() } returns flowOf(mailbox)
+        coEvery { rustMailboxFactory.create(userId) } returns mailbox.right()
 
         // When
         dataSource.moveConversations(userId, conversationIds, labelId)
@@ -329,7 +328,7 @@ class RustConversationDataSourceImplTest {
         coEvery {
             rustLabelConversations(mailbox, conversationIds, selectedLabelIds, partiallySelectedLabelIds, shouldArchive)
         } returns Unit
-        coEvery { rustMailbox.observeMailbox() } returns flowOf(mailbox)
+        coEvery { rustMailboxFactory.create(userId) } returns mailbox.right()
 
         // When
         val result = dataSource.labelConversations(
@@ -354,7 +353,7 @@ class RustConversationDataSourceImplTest {
     }
 
     @Test
-    fun `should not label conversations when mailbox is not available`() = runTest {
+    fun `should not label conversations when mailbox creation fails`() = runTest {
         // Given
         val userId = UserIdTestData.userId
         val conversationIds = listOf(LocalConversationId(1uL), LocalConversationId(2uL))
@@ -362,7 +361,7 @@ class RustConversationDataSourceImplTest {
         val partiallySelectedLabelIds = listOf(LocalLabelId(5uL))
         val shouldArchive = false
 
-        coEvery { rustMailbox.observeMailbox() } returns flowOf()
+        coEvery { rustMailboxFactory.create(userId) } returns DataError.Local.Unknown.left()
 
         // When
         val result = dataSource.labelConversations(
@@ -391,7 +390,7 @@ class RustConversationDataSourceImplTest {
         coEvery {
             rustLabelConversations(mailbox, conversationIds, selectedLabelIds, partiallySelectedLabelIds, shouldArchive)
         } throws MailSessionException.Other("Error")
-        coEvery { rustMailbox.observeMailbox() } returns flowOf(mailbox)
+        coEvery { rustMailboxFactory.create(userId) } returns mailbox.right()
 
         // When
         val result = dataSource.labelConversations(

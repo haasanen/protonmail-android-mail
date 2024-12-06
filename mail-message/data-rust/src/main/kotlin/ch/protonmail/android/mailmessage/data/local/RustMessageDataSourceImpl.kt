@@ -44,8 +44,6 @@ import ch.protonmail.android.mailmessage.data.usecase.RustUnstarMessages
 import ch.protonmail.android.mailmessage.data.wrapper.DecryptedMessageWrapper
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
-import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.flow.mapLatest
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.AllBottomBarMessageActions
@@ -58,7 +56,7 @@ import javax.inject.Inject
 @SuppressWarnings("LongParameterList")
 class RustMessageDataSourceImpl @Inject constructor(
     private val userSessionRepository: UserSessionRepository,
-    private val rustMailbox: RustMailbox,
+    private val rustMailboxFactory: RustMailboxFactory,
     private val rustMessageQuery: RustMessageQuery,
     private val createRustMessageAccessor: CreateRustMessageAccessor,
     private val createRustMessageBodyAccessor: CreateRustMessageBodyAccessor,
@@ -93,21 +91,12 @@ class RustMessageDataSourceImpl @Inject constructor(
     override suspend fun getMessageBody(
         userId: UserId,
         messageId: LocalMessageId,
-        labelId: LocalLabelId?
+        labelId: LocalLabelId
     ): DecryptedMessageWrapper? {
-        val mailboxFlow = if (labelId != null) {
-            rustMailbox.observeMailbox(labelId)
-        } else {
-            rustMailbox.observeMailbox()
-        }
+        val mailbox = rustMailboxFactory.create(userId, labelId).getOrNull() ?: return null
 
         return try {
-            mailboxFlow
-                .mapLatest { mailbox ->
-                    createRustMessageBodyAccessor(mailbox, messageId)
-                }
-                .firstOrNull()
-                ?.let { DecryptedMessageWrapper(it) }
+            DecryptedMessageWrapper(createRustMessageBodyAccessor(mailbox, messageId))
         } catch (e: MailboxException) {
             Timber.e(e, "rust-message: Failed to get message body")
             null
@@ -146,7 +135,7 @@ class RustMessageDataSourceImpl @Inject constructor(
     @MissingRustApi
     override suspend fun markRead(userId: UserId, messages: List<LocalMessageId>): Either<DataError.Local, Unit> {
         return try {
-            val mailbox = rustMailbox.observeMailbox().firstOrNull()
+            val mailbox = rustMailboxFactory.create(userId).getOrNull()
             if (mailbox == null) {
                 Timber.e("rust-message: trying to mark message read with a null mailbox")
                 return DataError.Local.Unknown.left()
@@ -162,7 +151,7 @@ class RustMessageDataSourceImpl @Inject constructor(
 
     override suspend fun markUnread(userId: UserId, messages: List<LocalMessageId>): Either<DataError.Local, Unit> {
         return try {
-            val mailbox = rustMailbox.observeMailbox().firstOrNull()
+            val mailbox = rustMailboxFactory.create(userId).getOrNull()
             if (mailbox == null) {
                 Timber.e("rust-message: trying to mark unread with null Mailbox! failing")
                 return DataError.Local.NoDataCached.left()
@@ -200,7 +189,7 @@ class RustMessageDataSourceImpl @Inject constructor(
         messageIds: List<LocalMessageId>,
         toLabelId: LocalLabelId
     ): Either<DataError.Local, Unit> {
-        val mailbox = rustMailbox.observeMailbox().firstOrNull()
+        val mailbox = rustMailboxFactory.create(userId).getOrNull()
         if (mailbox == null) {
             Timber.e("rust-message: trying to move messages with null Mailbox! failing")
             return DataError.Local.NoDataCached.left()
@@ -218,7 +207,7 @@ class RustMessageDataSourceImpl @Inject constructor(
         labelId: LocalLabelId,
         messageIds: List<LocalMessageId>
     ): MessageAvailableActions? {
-        val mailbox = rustMailbox.observeMailbox(labelId).firstOrNull()
+        val mailbox = rustMailboxFactory.create(userId, labelId).getOrNull()
         if (mailbox == null) {
             Timber.e("rust-message: trying to get available actions for null Mailbox! failing")
             return null
@@ -231,7 +220,7 @@ class RustMessageDataSourceImpl @Inject constructor(
         labelId: LocalLabelId,
         messageIds: List<LocalMessageId>
     ): Either<DataError.Local, AllBottomBarMessageActions> {
-        val mailbox = rustMailbox.observeMailbox(labelId).firstOrNull()
+        val mailbox = rustMailboxFactory.create(userId, labelId).getOrNull()
         if (mailbox == null) {
             Timber.e("rust-message: trying to get all available actions for null Mailbox! failing")
             return DataError.Local.NoDataCached.left()
@@ -248,7 +237,7 @@ class RustMessageDataSourceImpl @Inject constructor(
         labelId: LocalLabelId,
         messageIds: List<LocalMessageId>
     ): List<MoveAction.SystemFolder>? {
-        val mailbox = rustMailbox.observeMailbox(labelId).firstOrNull()
+        val mailbox = rustMailboxFactory.create(userId, labelId).getOrNull()
         if (mailbox == null) {
             Timber.e("rust-message: trying to get available actions for null Mailbox! failing")
             return null
@@ -262,7 +251,7 @@ class RustMessageDataSourceImpl @Inject constructor(
         labelId: LocalLabelId,
         messageIds: List<LocalMessageId>
     ): List<LocalLabelAsAction>? {
-        val mailbox = rustMailbox.observeMailbox(labelId).firstOrNull()
+        val mailbox = rustMailboxFactory.create(userId, labelId).getOrNull()
         if (mailbox == null) {
             Timber.e("rust-message: trying to get available label actions for null Mailbox! failing")
             return null
@@ -275,7 +264,7 @@ class RustMessageDataSourceImpl @Inject constructor(
         messageIds: List<LocalMessageId>
     ): Either<DataError.Local, Unit> {
         Timber.v("rust-message: executing delete message for $messageIds")
-        val mailbox = rustMailbox.observeMailbox().firstOrNull()
+        val mailbox = rustMailboxFactory.create(userId).getOrNull()
         if (mailbox == null) {
             Timber.e("rust-message: trying to delete messages with null Mailbox! failing")
             return DataError.Local.NoDataCached.left()
@@ -297,7 +286,7 @@ class RustMessageDataSourceImpl @Inject constructor(
         shouldArchive: Boolean
     ): Either<DataError.Local, Unit> {
         Timber.v("rust-message: executing labels messages for $messageIds")
-        val mailbox = rustMailbox.observeMailbox().firstOrNull()
+        val mailbox = rustMailboxFactory.create(userId).getOrNull()
         if (mailbox == null) {
             Timber.e("rust-message: trying to label messages with null Mailbox! failing")
             return DataError.Local.NoDataCached.left()

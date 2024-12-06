@@ -5,7 +5,6 @@ import ch.protonmail.android.mailconversation.data.usecase.CreateRustConversatio
 import ch.protonmail.android.mailconversation.data.wrapper.ConversationPaginatorWrapper
 import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
-import ch.protonmail.android.mailmessage.data.local.RustMailbox
 import ch.protonmail.android.mailmessage.domain.paging.RustDataSourceId
 import ch.protonmail.android.mailmessage.domain.paging.RustInvalidationTracker
 import ch.protonmail.android.mailpagination.domain.model.PageKey
@@ -36,7 +35,6 @@ class RustConversationsQueryImplTest {
     val mainDispatcherRule = MainDispatcherRule()
 
     private val createRustConversationPaginator = mockk<CreateRustConversationPaginator>()
-    private val rustMailbox = mockk<RustMailbox>(relaxUnitFun = true)
     private val userSessionRepository = mockk<UserSessionRepository>()
     private val invalidationTracker = mockk<RustInvalidationTracker>(relaxUnitFun = true)
 
@@ -44,8 +42,7 @@ class RustConversationsQueryImplTest {
     private val rustConversationsQuery = RustConversationsQueryImpl(
         userSessionRepository,
         invalidationTracker,
-        createRustConversationPaginator,
-        rustMailbox
+        createRustConversationPaginator
     )
 
     @Test
@@ -127,27 +124,6 @@ class RustConversationsQueryImplTest {
     }
 
     @Test
-    fun `switches rust Mailbox to new label when creating a new paginator`() = runTest {
-        // Given
-        val expectedConversations = listOf(LocalConversationTestData.AugConversation)
-        val userId = UserIdSample.Primary
-        val labelId = SystemLabelId.Inbox.labelId
-        val pageKey = PageKey.DefaultPageKey(labelId = labelId)
-        val session = mockk<MailUserSessionWrapper>()
-        val paginator = mockk<ConversationPaginatorWrapper> {
-            coEvery { this@mockk.nextPage() } returns expectedConversations
-        }
-        coEvery { userSessionRepository.getUserSession(userId) } returns session
-        coEvery { createRustConversationPaginator(session, labelId.toLocalLabelId(), false, any()) } returns paginator
-
-        // When
-        rustConversationsQuery.getConversations(userId, pageKey)
-
-        // Then
-        coVerify(exactly = 1) { rustMailbox.switchToMailbox(userId, labelId.toLocalLabelId()) }
-    }
-
-    @Test
     fun `initialised paginator only once for any given label`() = runTest {
         // Given
         val firstPage = listOf(LocalConversationTestData.AugConversation)
@@ -170,7 +146,6 @@ class RustConversationsQueryImplTest {
 
         // Then
         coVerify(exactly = 1) { createRustConversationPaginator(session, labelId.toLocalLabelId(), false, any()) }
-        coVerify(exactly = 1) { rustMailbox.switchToMailbox(userId, labelId.toLocalLabelId()) }
     }
 
     @Test
@@ -212,7 +187,6 @@ class RustConversationsQueryImplTest {
                 false, any()
             )
         }
-        coVerify(exactly = 1) { rustMailbox.switchToMailbox(userId, labelId.toLocalLabelId()) }
 
         coVerify { paginator.disconnect() }
 
@@ -222,7 +196,6 @@ class RustConversationsQueryImplTest {
                 false, any()
             )
         }
-        coVerify(exactly = 1) { rustMailbox.switchToMailbox(userId, newLabelId.toLocalLabelId()) }
     }
 
     @Test
@@ -250,7 +223,6 @@ class RustConversationsQueryImplTest {
 
         // Then
         coVerify(exactly = 1) { createRustConversationPaginator(session, labelId.toLocalLabelId(), false, any()) }
-        coVerify(exactly = 2) { rustMailbox.switchToMailbox(userId, labelId.toLocalLabelId()) }
 
         coVerify { paginator.disconnect() }
 

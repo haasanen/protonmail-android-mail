@@ -24,7 +24,7 @@ import ch.protonmail.android.mailcommon.datarust.mapper.LocalConversationId
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageMetadata
 import ch.protonmail.android.mailconversation.data.ConversationRustCoroutineScope
 import ch.protonmail.android.mailconversation.data.usecase.CreateRustConversationWatcher
-import ch.protonmail.android.mailmessage.data.local.RustMailbox
+import ch.protonmail.android.mailmessage.data.local.RustMailboxFactory
 import ch.protonmail.android.mailmessage.data.model.LocalConversationMessages
 import ch.protonmail.android.mailmessage.data.usecase.GetRustConversationMessages
 import kotlinx.coroutines.CoroutineScope
@@ -32,7 +32,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -44,7 +43,7 @@ import javax.inject.Inject
 
 @SuppressWarnings("MagicNumber")
 class RustConversationDetailQueryImpl @Inject constructor(
-    private val rustMailbox: RustMailbox,
+    private val rustMailboxFactory: RustMailboxFactory,
     private val createRustConversationWatcher: CreateRustConversationWatcher,
     private val getRustConversationMessages: GetRustConversationMessages,
     @ConversationRustCoroutineScope private val coroutineScope: CoroutineScope
@@ -52,6 +51,8 @@ class RustConversationDetailQueryImpl @Inject constructor(
 
     private var conversationWatcher: WeakReference<WatchedConversation>? = null
     private var currentConversationId: LocalConversationId? = null
+    private var currentUserId: UserId? = null
+
     private val mutex = Mutex()
     private val conversationMutableStatusFlow = MutableStateFlow<LocalConversation?>(null)
     private val conversationStatusFlow = conversationMutableStatusFlow
@@ -68,7 +69,7 @@ class RustConversationDetailQueryImpl @Inject constructor(
             Timber.d("rust-conversation-detail-query: conversation updated")
             coroutineScope.launch {
                 mutex.withLock {
-                    val mailbox = rustMailbox.observeMailbox().firstOrNull()
+                    val mailbox = currentUserId?.let { rustMailboxFactory.create(it).getOrNull() }
                     if (mailbox != null && currentConversationId != null) {
                         val conversationAndMessages = getRustConversationMessages(mailbox, currentConversationId!!)
 
@@ -94,7 +95,7 @@ class RustConversationDetailQueryImpl @Inject constructor(
 
     override fun observeConversation(userId: UserId, conversationId: LocalConversationId): Flow<LocalConversation> {
 
-        initialiseOrUpdateWatcher(conversationId)
+        initialiseOrUpdateWatcher(userId, conversationId)
 
         return conversationStatusFlow
     }
@@ -104,24 +105,25 @@ class RustConversationDetailQueryImpl @Inject constructor(
         conversationId: LocalConversationId
     ): Flow<LocalConversationMessages> {
 
-        initialiseOrUpdateWatcher(conversationId)
+        initialiseOrUpdateWatcher(userId, conversationId)
 
         return conversationMessagesStatusFlow
     }
 
-    private fun initialiseOrUpdateWatcher(conversationId: LocalConversationId) {
+    private fun initialiseOrUpdateWatcher(userId: UserId, conversationId: LocalConversationId) {
         coroutineScope.launch {
             mutex.withLock {
                 if (currentConversationId != conversationId || conversationWatcher?.get() == null) {
                     // If the conversationId is different or there's no active watcher, destroy and create a new one
                     destroy()
 
-                    val mailbox = rustMailbox.observeMailbox().firstOrNull()
+                    val mailbox = rustMailboxFactory.create(userId).getOrNull()
                     if (mailbox == null) {
                         Timber.e("rust-conversation-detail-query: Failed to observe conversation, null mailbox")
                         return@withLock
                     }
 
+                    currentUserId = userId
                     conversationWatcher = createRustConversationWatcher(
                         mailbox, conversationId, conversationUpdatedCallback
                     )

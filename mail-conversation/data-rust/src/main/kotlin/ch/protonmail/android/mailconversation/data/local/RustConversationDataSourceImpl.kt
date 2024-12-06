@@ -32,7 +32,7 @@ import ch.protonmail.android.mailconversation.data.usecase.GetRustAllConversatio
 import ch.protonmail.android.mailconversation.data.usecase.GetRustAvailableConversationActions
 import ch.protonmail.android.mailconversation.data.usecase.GetRustConversationLabelAsActions
 import ch.protonmail.android.mailconversation.data.usecase.GetRustConversationMoveToActions
-import ch.protonmail.android.mailmessage.data.local.RustMailbox
+import ch.protonmail.android.mailmessage.data.local.RustMailboxFactory
 import ch.protonmail.android.mailmessage.data.model.LocalConversationMessages
 import ch.protonmail.android.mailmessage.data.wrapper.MailboxWrapper
 import ch.protonmail.android.mailpagination.domain.model.PageKey
@@ -40,7 +40,6 @@ import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
@@ -53,7 +52,7 @@ import uniffi.proton_mail_uniffi.unstarConversations as rustUnstarConversation
 
 class RustConversationDataSourceImpl @Inject constructor(
     private val userSessionRepository: UserSessionRepository,
-    private val rustMailbox: RustMailbox,
+    private val rustMailboxFactory: RustMailboxFactory,
     private val rustMoveConversations: RustMoveConversations,
     private val rustLabelConversations: RustLabelConversations,
     private val rustConversationDetailQuery: RustConversationDetailQuery,
@@ -143,7 +142,7 @@ class RustConversationDataSourceImpl @Inject constructor(
         labelId: LocalLabelId,
         conversationIds: List<LocalConversationId>
     ): ConversationAvailableActions? {
-        val mailbox = rustMailbox.observeMailbox(labelId).firstOrNull()
+        val mailbox = rustMailboxFactory.create(userId, labelId).getOrNull()
         if (mailbox == null) {
             Timber.e("rust-conversation: trying to get available actions for null Mailbox! failing")
             return null
@@ -157,7 +156,7 @@ class RustConversationDataSourceImpl @Inject constructor(
         labelId: LocalLabelId,
         conversationIds: List<LocalConversationId>
     ): Either<DataError.Local, AllBottomBarMessageActions> {
-        val mailbox = rustMailbox.observeMailbox(labelId).firstOrNull()
+        val mailbox = rustMailboxFactory.create(userId, labelId).getOrNull()
         if (mailbox == null) {
             Timber.e("rust-conversation: trying to get available actions for null Mailbox! failing")
             return DataError.Local.NoDataCached.left()
@@ -178,7 +177,7 @@ class RustConversationDataSourceImpl @Inject constructor(
         shouldArchive: Boolean
     ): Either<DataError.Local, Unit> {
         Timber.v("rust-conversation: executing label conversations for $conversationIds")
-        val mailbox = rustMailbox.observeMailbox().firstOrNull()
+        val mailbox = rustMailboxFactory.create(userId).getOrNull()
         if (mailbox == null) {
             Timber.e("rust-conversation: trying to label conversations with null Mailbox! failing")
             return DataError.Local.NoDataCached.left()
@@ -204,7 +203,7 @@ class RustConversationDataSourceImpl @Inject constructor(
         labelId: LocalLabelId,
         conversationIds: List<LocalConversationId>
     ): List<MoveAction.SystemFolder>? {
-        val mailbox = rustMailbox.observeMailbox(labelId).firstOrNull()
+        val mailbox = rustMailboxFactory.create(userId, labelId).getOrNull()
         if (mailbox == null) {
             Timber.e("rust-conversation: trying to get available actions for null Mailbox! failing")
             return null
@@ -231,7 +230,7 @@ class RustConversationDataSourceImpl @Inject constructor(
         labelId: LocalLabelId,
         conversationIds: List<LocalConversationId>
     ): List<LocalLabelAsAction>? {
-        val mailbox = rustMailbox.observeMailbox(labelId).firstOrNull()
+        val mailbox = rustMailboxFactory.create(userId, labelId).getOrNull()
         if (mailbox == null) {
             Timber.e("rust-conversation: trying to get available label actions for null Mailbox! failing")
             return null
@@ -255,7 +254,7 @@ class RustConversationDataSourceImpl @Inject constructor(
         actionName: String
     ): Either<DataError.Local, Unit> {
         Timber.v("rust-conversation: executing action $actionName")
-        val mailbox = rustMailbox.observeMailbox().firstOrNull()
+        val mailbox = rustMailboxFactory.create(userId).getOrNull()
         if (mailbox == null) {
             Timber.e("rust-conversation: Failed to perform $actionName, null mailbox")
             return DataError.Local.NoDataCached.left()

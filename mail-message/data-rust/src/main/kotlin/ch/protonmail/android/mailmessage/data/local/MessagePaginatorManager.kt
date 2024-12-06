@@ -41,8 +41,7 @@ import javax.inject.Inject
 class MessagePaginatorManager @Inject constructor(
     private val userSessionRepository: UserSessionRepository,
     private val createRustMessagesPaginator: CreateRustMessagesPaginator,
-    private val createRustSearchPaginator: CreateRustSearchPaginator,
-    private val rustMailbox: RustMailbox
+    private val createRustSearchPaginator: CreateRustSearchPaginator
 ) {
 
     private var paginator: MessagePaginatorWrapper? = null
@@ -66,15 +65,14 @@ class MessagePaginatorManager @Inject constructor(
 
         destroy()
         paginator = when (pageKey) {
-            is PageKey.DefaultPageKey -> createDefaultPaginator(userId, session, pageKey, callback)
-            is PageKey.PageKeyForSearch -> createSearchPaginator(userId, session, pageKey, callback)
+            is PageKey.DefaultPageKey -> createDefaultPaginator(session, pageKey, callback)
+            is PageKey.PageKeyForSearch -> createSearchPaginator(session, pageKey, callback)
         }
 
         return paginator.getOrError()
     }
 
     private suspend fun createDefaultPaginator(
-        userId: UserId,
         session: MailUserSessionWrapper,
         pageKey: PageKey.DefaultPageKey,
         callback: LiveQueryCallback
@@ -82,19 +80,16 @@ class MessagePaginatorManager @Inject constructor(
         val labelId = pageKey.labelId.toLocalLabelId()
         val unread = pageKey.readStatus == ReadStatus.Unread
 
-        rustMailbox.switchToMailbox(userId, labelId)
         return createRustMessagesPaginator(session, labelId, unread, callback)
     }
 
     private suspend fun createSearchPaginator(
-        userId: UserId,
         session: MailUserSessionWrapper,
         pageKey: PageKey.PageKeyForSearch,
         callback: LiveQueryCallback
     ): MessagePaginatorWrapper {
         val keyword = pageKey.keyword
 
-        rustMailbox.switchToAllMailMailbox(userId)
         return createRustSearchPaginator(session, keyword, callback)
     }
 
