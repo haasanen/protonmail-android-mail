@@ -23,7 +23,6 @@ import arrow.core.right
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageId
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailmessage.data.search.RustMessageSearchQuery
 import ch.protonmail.android.mailmessage.data.usecase.CreateRustMessageAccessor
 import ch.protonmail.android.mailmessage.data.usecase.CreateRustMessageBodyAccessor
 import ch.protonmail.android.mailmessage.data.usecase.GetRustAllMessageBottomBarActions
@@ -78,7 +77,6 @@ class RustMessageDataSourceImplTest {
 
     private val rustMailbox: RustMailbox = mockk()
     private val rustMessageQuery: RustMessageQuery = mockk()
-    private val rustMessageSearchQuery: RustMessageSearchQuery = mockk()
     private val createRustMessageAccessor = mockk<CreateRustMessageAccessor>()
     private val createRustMessageBodyAccessor = mockk<CreateRustMessageBodyAccessor>()
     private val getRustSenderImage = mockk<GetRustSenderImage>()
@@ -98,7 +96,6 @@ class RustMessageDataSourceImplTest {
         userSessionRepository,
         rustMailbox,
         rustMessageQuery,
-        rustMessageSearchQuery,
         createRustMessageAccessor,
         createRustMessageBodyAccessor,
         getRustSenderImage,
@@ -205,28 +202,6 @@ class RustMessageDataSourceImplTest {
 
         // Then
         coVerify { rustMessageQuery.getMessages(userId, pageKey) }
-        assertEquals(messages, result)
-    }
-
-    @Test
-    fun `get messages should return search results when pagekey contains search query`() = runTest {
-        // Given
-        val userId = UserIdTestData.userId
-        val mailSession = mockk<MailUserSessionWrapper>()
-        coEvery { userSessionRepository.getUserSession(userId) } returns mailSession
-        val pageKey = PageKey.PageKeyForSearch("search query")
-        val messages = listOf(
-            LocalMessageTestData.AugWeatherForecast,
-            LocalMessageTestData.SepWeatherForecast,
-            LocalMessageTestData.OctWeatherForecast
-        )
-        coEvery { rustMessageSearchQuery.getMessages(userId, pageKey) } returns messages
-
-        // When
-        val result = dataSource.getMessages(userId, pageKey)
-
-        // Then
-        coVerify { rustMessageSearchQuery.getMessages(userId, pageKey) }
         assertEquals(messages, result)
     }
 

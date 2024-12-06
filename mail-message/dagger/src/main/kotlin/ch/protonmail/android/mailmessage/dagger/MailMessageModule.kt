@@ -30,8 +30,6 @@ import ch.protonmail.android.mailmessage.data.local.RustMessageQueryImpl
 import ch.protonmail.android.mailmessage.data.repository.InMemoryAvatarImageStateRepositoryImpl
 import ch.protonmail.android.mailmessage.data.repository.RustMessageActionRepository
 import ch.protonmail.android.mailmessage.data.repository.RustMessageRepositoryImpl
-import ch.protonmail.android.mailmessage.data.search.RustMessageSearchQuery
-import ch.protonmail.android.mailmessage.data.search.RustMessageSearchQueryImpl
 import ch.protonmail.android.mailmessage.domain.paging.RustInvalidationTracker
 import ch.protonmail.android.mailmessage.domain.paging.RustInvalidationTrackerImpl
 import ch.protonmail.android.mailmessage.domain.repository.InMemoryAvatarImageStateRepository
@@ -84,10 +82,6 @@ object MailMessageModule {
         @Binds
         @Singleton
         fun bindRustMessageQuery(impl: RustMessageQueryImpl): RustMessageQuery
-
-        @Binds
-        @Singleton
-        fun bindRustMessageSearchQuery(impl: RustMessageSearchQueryImpl): RustMessageSearchQuery
 
         @Binds
         @Singleton
