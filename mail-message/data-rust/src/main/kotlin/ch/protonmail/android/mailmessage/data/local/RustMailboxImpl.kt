@@ -19,7 +19,7 @@
 package ch.protonmail.android.mailmessage.data.local
 
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
-import ch.protonmail.android.mailcommon.datarust.usecase.ExecuteActionWithUserSession
+import ch.protonmail.android.mailcommon.datarust.usecase.ExecuteWithUserSession
 import ch.protonmail.android.mailmessage.data.usecase.CreateAllMailMailbox
 import ch.protonmail.android.mailmessage.data.usecase.CreateMailbox
 import ch.protonmail.android.mailmessage.data.wrapper.MailboxWrapper
@@ -34,7 +34,7 @@ import timber.log.Timber
 import javax.inject.Inject
 
 class RustMailboxImpl @Inject constructor(
-    private val executeActionWithUserSession: ExecuteActionWithUserSession,
+    private val executeWithUserSession: ExecuteWithUserSession,
     private val createMailbox: CreateMailbox,
     private val createAllMailMailbox: CreateAllMailMailbox
 ) : RustMailbox {
@@ -51,7 +51,7 @@ class RustMailboxImpl @Inject constructor(
         // Reset mailbox to avoid using wrong mailbox while the new one is being created
         mailboxMutableStatusFlow.value = null
 
-        executeActionWithUserSession(userId) { userSession ->
+        executeWithUserSession(userId) { userSession ->
             Timber.v("rust-mailbox: mailbox creation started... ${System.currentTimeMillis()}")
             val mailbox = createMailbox(userSession, labelId)
             Timber.d("rust-mailbox: Mailbox created for label: $labelId at ${System.currentTimeMillis()}")
@@ -67,7 +67,7 @@ class RustMailboxImpl @Inject constructor(
         // Reset mailbox to avoid using wrong mailbox while the new one is being created
         mailboxMutableStatusFlow.value = null
 
-        executeActionWithUserSession(userId) { userSession ->
+        executeWithUserSession(userId) { userSession ->
             Timber.v("rust-mailbox: all mail mailbox creation...")
             val mailbox = createAllMailMailbox(userSession)
             mailboxMutableStatusFlow.value = mailbox

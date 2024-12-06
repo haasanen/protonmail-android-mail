@@ -21,7 +21,7 @@ package ch.protonmail.android.mailmessage.data.local
 import app.cash.turbine.test
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalViewMode
-import ch.protonmail.android.mailcommon.datarust.usecase.ExecuteActionWithUserSession
+import ch.protonmail.android.mailcommon.datarust.usecase.ExecuteWithUserSession
 import ch.protonmail.android.mailmessage.data.usecase.CreateAllMailMailbox
 import ch.protonmail.android.mailmessage.data.usecase.CreateMailbox
 import ch.protonmail.android.mailmessage.data.wrapper.MailboxWrapper
@@ -64,10 +64,10 @@ class RustMailboxImplTest {
 
     private val userSessionRepository = mockk<UserSessionRepository>()
 
-    private val executeActionWithUserSession = ExecuteActionWithUserSession(userSessionRepository)
+    private val executeWithUserSession = ExecuteWithUserSession(userSessionRepository)
 
     private val rustMailbox = RustMailboxImpl(
-        executeActionWithUserSession,
+        executeWithUserSession,
         createMailbox,
         createAllMailMailbox
     )

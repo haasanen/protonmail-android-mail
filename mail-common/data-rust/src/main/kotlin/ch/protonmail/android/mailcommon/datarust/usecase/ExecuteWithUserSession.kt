@@ -27,7 +27,7 @@ import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import javax.inject.Inject
 
-class ExecuteActionWithUserSession @Inject constructor(
+class ExecuteWithUserSession @Inject constructor(
     private val userSessionRepository: UserSessionRepository
 ) {
 

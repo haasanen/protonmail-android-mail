@@ -24,7 +24,7 @@ import ch.protonmail.android.mailcommon.datarust.mapper.LocalConversation
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalConversationId
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelAsAction
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
-import ch.protonmail.android.mailcommon.datarust.usecase.ExecuteActionWithUserSession
+import ch.protonmail.android.mailcommon.datarust.usecase.ExecuteWithUserSession
 import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailconversation.data.ConversationRustCoroutineScope
@@ -65,7 +65,7 @@ class RustConversationDataSourceImpl @Inject constructor(
     private val rustDeleteConversations: RustDeleteConversations,
     private val rustMarkConversationsAsRead: RustMarkConversationsAsRead,
     private val rustMarkConversationsAsUnread: RustMarkConversationsAsUnread,
-    private val executeActionWithUserSession: ExecuteActionWithUserSession,
+    private val executeWithUserSession: ExecuteWithUserSession,
     @ConversationRustCoroutineScope private val coroutineScope: CoroutineScope
 ) : RustConversationDataSource {
 
@@ -244,7 +244,7 @@ class RustConversationDataSourceImpl @Inject constructor(
         action: suspend (MailUserSessionWrapper) -> Unit,
         actionName: String
     ) {
-        executeActionWithUserSession(userId, action)
+        executeWithUserSession(userId, action)
             .onLeft { Timber.e("rust-conversation: Failed to perform $actionName due to $it") }
             .onRight { executePendingActions(userId) }
     }
