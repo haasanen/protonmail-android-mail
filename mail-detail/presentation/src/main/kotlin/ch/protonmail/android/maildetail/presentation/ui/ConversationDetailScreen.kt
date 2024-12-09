@@ -72,6 +72,7 @@ import ch.protonmail.android.mailcommon.domain.model.BasicContactInfo
 import ch.protonmail.android.mailcommon.presentation.AdaptivePreviews
 import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
 import ch.protonmail.android.mailcommon.presentation.ConsumableTextEffect
+import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 import ch.protonmail.android.mailcommon.presentation.compose.dpToPx
 import ch.protonmail.android.mailcommon.presentation.compose.pxToDp
 import ch.protonmail.android.mailcommon.presentation.extension.copyTextToClipboard
@@ -698,6 +699,7 @@ private fun MessagesContent(
     LazyColumn(
         modifier = modifier
             .testTag(ConversationDetailScreenTestTags.MessagesList)
+            .padding(vertical = MailDimens.ConversationCollapseHeaderOverlapHeight)
             .pointerInteropFilter { event ->
                 if (!userTapped && event.action == android.view.MotionEvent.ACTION_DOWN) {
                     userTapped = true
@@ -707,8 +709,7 @@ private fun MessagesContent(
             .onGloballyPositioned {
                 lazyColumnHeight.value = it.size.height
             },
-        contentPadding = contentPadding,
-        verticalArrangement = Arrangement.spacedBy(ProtonDimens.Spacing.Standard),
+        verticalArrangement = Arrangement.spacedBy(-MailDimens.ConversationCollapseHeaderOverlapHeight),
         state = listState
     ) {
 

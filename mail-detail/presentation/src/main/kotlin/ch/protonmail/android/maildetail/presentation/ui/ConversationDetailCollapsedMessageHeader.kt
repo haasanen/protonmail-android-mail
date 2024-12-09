@@ -20,6 +20,7 @@ package ch.protonmail.android.maildetail.presentation.ui
 
 import android.content.res.Configuration
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -27,6 +28,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -41,6 +43,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
+import androidx.constraintlayout.compose.ChainStyle
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.constraintlayout.compose.Visibility
@@ -61,7 +64,6 @@ import ch.protonmail.android.design.compose.theme.bodyMediumNorm
 import ch.protonmail.android.maildetail.presentation.R
 import me.proton.core.presentation.R.drawable
 import ch.protonmail.android.maildetail.presentation.model.ParticipantUiModel
-import ch.protonmail.android.maildetail.presentation.ui.header.MessageDetailHeaderTestTags
 import kotlinx.collections.immutable.ImmutableList
 import me.proton.core.util.kotlin.EMPTY_STRING
 import me.proton.core.util.kotlin.exhaustive
@@ -105,7 +107,8 @@ internal fun ConversationDetailCollapsedMessageHeader(
             starIconRef,
             attachmentIconRef,
             locationIconRef,
-            timeRef
+            timeRef,
+            chainStyle = ChainStyle.Packed
         )
 
         ParticipantAvatar(
@@ -149,23 +152,27 @@ internal fun ConversationDetailCollapsedMessageHeader(
 
             Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Tiny))
 
-            Row {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.Start,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 ToRecipientsTitle(
-                    modifier = Modifier.padding(end = ProtonDimens.Spacing.Small),
+                    modifier = Modifier
+                        .wrapContentHeight()
+                        .padding(end = ProtonDimens.Spacing.Small),
                     fontWeight = fontWeight,
                     fontColor = fontColor
                 )
                 ToRecipientNames(
-                    modifier = modifier.testTag(MessageDetailHeaderTestTags.ToRecipientsList),
                     toRecipients = uiModel.recipients,
                     hasUndisclosedRecipients = uiModel.shouldShowUndisclosedRecipients,
                     fontWeight = fontWeight,
                     fontColor = fontColor
                 )
             }
-
         }
-
 
         Expiration(
             modifier = Modifier.constrainAs(expirationRef) {

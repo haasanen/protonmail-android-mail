@@ -57,9 +57,12 @@ fun ConversationDetailItem(
 ) {
     ElevatedCard(
         modifier = modifier.fillMaxWidth(),
-        shape = ProtonTheme.shapes.large,
+        shape = ProtonTheme.shapes.huge,
         colors = CardDefaults.elevatedCardColors(
             containerColor = ProtonTheme.colors.backgroundNorm
+        ),
+        elevation = CardDefaults.elevatedCardElevation(
+            defaultElevation = MailDimens.ConversationCollapseHeaderElevation
         )
     ) {
         when (uiModel) {
@@ -67,7 +70,9 @@ fun ConversationDetailItem(
             is Collapsed -> {
                 ConversationDetailCollapsedMessageHeader(
                     uiModel = uiModel,
-                    modifier = Modifier.clickable {
+                    modifier = Modifier
+                        .padding(bottom = MailDimens.ConversationCollapseHeaderOverlapHeight)
+                        .clickable {
                         when (uiModel.isDraft) {
                             true -> actions.onOpenComposer(uiModel.messageId)
                             else -> actions.onExpand(uiModel.messageId)
@@ -82,6 +87,7 @@ fun ConversationDetailItem(
 
             is Expanded -> {
                 ConversationDetailExpandedItem(
+                    modifier = Modifier.padding(bottom = MailDimens.ConversationCollapseHeaderOverlapHeight),
                     uiModel = uiModel,
                     actions = actions,
                     onMessageBodyLoadFinished = onMessageBodyLoadFinished
@@ -94,7 +100,8 @@ fun ConversationDetailItem(
 @Composable
 private fun ConversationDetailExpandingItem(uiModel: Expanding, modifier: Modifier = Modifier) {
     Column(
-        modifier = modifier.fillMaxWidth()
+        modifier = modifier
+            .fillMaxWidth()
     ) {
         ConversationDetailCollapsedMessageHeader(
             uiModel = uiModel.collapsed
