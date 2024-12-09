@@ -132,7 +132,9 @@ class RustMessageDataSourceImpl @Inject constructor(
     @MissingRustApi
     override suspend fun markRead(userId: UserId, messages: List<LocalMessageId>): Either<DataError.Local, Unit> {
         return try {
-            val mailbox = rustMailboxFactory.create(userId).getOrNull()
+            // Hardcoded rust mailbox to "AllMail" to avoid this method having labelId as param;
+            // the current labelId is not needed to mark as read and is planned to be dropped on this API
+            val mailbox = rustMailboxFactory.createAllMail(userId).getOrNull()
             if (mailbox == null) {
                 Timber.e("rust-message: trying to mark message read with a null mailbox")
                 return DataError.Local.Unknown.left()
@@ -148,7 +150,9 @@ class RustMessageDataSourceImpl @Inject constructor(
 
     override suspend fun markUnread(userId: UserId, messages: List<LocalMessageId>): Either<DataError.Local, Unit> {
         return try {
-            val mailbox = rustMailboxFactory.create(userId).getOrNull()
+            // Hardcoded rust mailbox to "AllMail" to avoid this method having labelId as param;
+            // the current labelId is not needed to mark as unread and is planned to be dropped on this API
+            val mailbox = rustMailboxFactory.createAllMail(userId).getOrNull()
             if (mailbox == null) {
                 Timber.e("rust-message: trying to mark unread with null Mailbox! failing")
                 return DataError.Local.NoDataCached.left()
@@ -261,7 +265,9 @@ class RustMessageDataSourceImpl @Inject constructor(
         messageIds: List<LocalMessageId>
     ): Either<DataError.Local, Unit> {
         Timber.v("rust-message: executing delete message for $messageIds")
-        val mailbox = rustMailboxFactory.create(userId).getOrNull()
+        // Hardcoded rust mailbox to "AllMail" to avoid this method having labelId as param;
+        // the current labelId is not needed to delete messages and is planned to be dropped on this API
+        val mailbox = rustMailboxFactory.createAllMail(userId).getOrNull()
         if (mailbox == null) {
             Timber.e("rust-message: trying to delete messages with null Mailbox! failing")
             return DataError.Local.NoDataCached.left()

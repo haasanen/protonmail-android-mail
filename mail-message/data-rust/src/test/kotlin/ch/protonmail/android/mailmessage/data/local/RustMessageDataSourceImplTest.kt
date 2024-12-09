@@ -270,7 +270,7 @@ class RustMessageDataSourceImplTest {
         val mailbox = mockk<MailboxWrapper>()
         val messageIds = listOf(LocalMessageId(1uL), LocalMessageId(2uL))
 
-        coEvery { rustMailboxFactory.create(userId) } returns mailbox.right()
+        coEvery { rustMailboxFactory.createAllMail(userId) } returns mailbox.right()
         coEvery { rustMarkMessagesRead(mailbox, messageIds) } just Runs
 
         // When
@@ -287,7 +287,7 @@ class RustMessageDataSourceImplTest {
         val userId = UserIdTestData.userId
         val messageIds = listOf(LocalMessageId(1uL), LocalMessageId(2uL))
 
-        coEvery { rustMailboxFactory.create(userId) } returns DataError.Local.Unknown.left()
+        coEvery { rustMailboxFactory.createAllMail(userId) } returns DataError.Local.Unknown.left()
 
         // When
         val result = dataSource.markRead(userId, messageIds)
@@ -305,7 +305,7 @@ class RustMessageDataSourceImplTest {
         val messageIds = listOf(LocalMessageId(1uL), LocalMessageId(2uL))
 
         coEvery { rustMarkMessagesRead(mailbox, messageIds) } throws MailSessionException.Other("Error")
-        coEvery { rustMailboxFactory.create(userId) } returns mailbox.right()
+        coEvery { rustMailboxFactory.createAllMail(userId) } returns mailbox.right()
 
         // When
         val result = dataSource.markRead(userId, messageIds)
@@ -321,7 +321,7 @@ class RustMessageDataSourceImplTest {
         val mailbox = mockk<MailboxWrapper>()
         val messageIds = listOf(LocalMessageId(1uL), LocalMessageId(2uL))
 
-        coEvery { rustMailboxFactory.create(userId) } returns mailbox.right()
+        coEvery { rustMailboxFactory.createAllMail(userId) } returns mailbox.right()
         coEvery { rustMarkMessagesUnread(mailbox, messageIds) } just Runs
 
         // When
@@ -356,7 +356,7 @@ class RustMessageDataSourceImplTest {
         val userId = UserIdTestData.userId
         val messageIds = listOf(LocalMessageId(1uL), LocalMessageId(2uL))
 
-        coEvery { rustMailboxFactory.create(userId) } returns DataError.Local.Unknown.left()
+        coEvery { rustMailboxFactory.createAllMail(userId) } returns DataError.Local.Unknown.left()
 
         // When
         val result = dataSource.markUnread(userId, messageIds)
@@ -374,7 +374,7 @@ class RustMessageDataSourceImplTest {
         val messageIds = listOf(LocalMessageId(1uL), LocalMessageId(2uL))
 
         coEvery { rustMarkMessagesUnread(mailbox, messageIds) } throws MailSessionException.Other("Error")
-        coEvery { rustMailboxFactory.create(userId) } returns mailbox.right()
+        coEvery { rustMailboxFactory.createAllMail(userId) } returns mailbox.right()
 
         // When
         val result = dataSource.markUnread(userId, messageIds)
@@ -547,7 +547,7 @@ class RustMessageDataSourceImplTest {
         val userId = UserIdTestData.userId
         val messageIds = listOf(LocalMessageId(1uL), LocalMessageId(2uL))
 
-        coEvery { rustMailboxFactory.create(userId) } returns DataError.Local.Unknown.left()
+        coEvery { rustMailboxFactory.createAllMail(userId) } returns DataError.Local.Unknown.left()
 
         // When
         val result = dataSource.deleteMessages(userId, messageIds)
@@ -565,7 +565,7 @@ class RustMessageDataSourceImplTest {
         val messageIds = listOf(LocalMessageId(1uL), LocalMessageId(2uL))
 
         coEvery { rustDeleteMessages(mailbox, messageIds) } throws MailSessionException.Other("Error")
-        coEvery { rustMailboxFactory.create(userId) } returns mailbox.right()
+        coEvery { rustMailboxFactory.createAllMail(userId) } returns mailbox.right()
 
         // When
         val result = dataSource.deleteMessages(userId, messageIds)
