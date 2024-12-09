@@ -21,7 +21,9 @@ package ch.protonmail.android.maildetail.presentation.ui
 import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -33,6 +35,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -54,7 +57,12 @@ import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodySmallNorm
 import ch.protonmail.android.design.compose.theme.bodyLargeNorm
+import ch.protonmail.android.design.compose.theme.bodyMediumNorm
+import ch.protonmail.android.maildetail.presentation.R
 import me.proton.core.presentation.R.drawable
+import ch.protonmail.android.maildetail.presentation.model.ParticipantUiModel
+import ch.protonmail.android.maildetail.presentation.ui.header.MessageDetailHeaderTestTags
+import kotlinx.collections.immutable.ImmutableList
 import me.proton.core.util.kotlin.EMPTY_STRING
 import me.proton.core.util.kotlin.exhaustive
 
@@ -63,7 +71,8 @@ internal fun ConversationDetailCollapsedMessageHeader(
     uiModel: ConversationDetailMessageUiModel.Collapsed,
     modifier: Modifier = Modifier
 ) {
-    val fontWeight = if (uiModel.isUnread) FontWeight.Bold else FontWeight.Normal
+    val fontWeight = if (uiModel.isUnread) FontWeight.Medium else FontWeight.Normal
+    val labelFontWeight = if (uiModel.isUnread) FontWeight.Bold else FontWeight.Normal
     val fontColor = if (uiModel.isUnread) ProtonTheme.colors.textNorm else ProtonTheme.colors.textWeak
 
     ConstraintLayout(
@@ -124,15 +133,39 @@ internal fun ConversationDetailCollapsedMessageHeader(
             fontColor = fontColor
         )
 
-        Sender(
-            modifier = Modifier.constrainAs(senderRef) {
-                width = Dimension.preferredWrapContent
-                centerVerticallyTo(parent)
-            },
-            uiModel = uiModel,
-            fontWeight = fontWeight,
-            fontColor = fontColor
-        )
+        Column(
+            modifier = Modifier
+                .padding(end = ProtonDimens.Spacing.Small)
+                .constrainAs(senderRef) {
+                    width = Dimension.preferredWrapContent
+                    centerVerticallyTo(parent)
+                }
+        ) {
+            Sender(
+                uiModel = uiModel,
+                fontWeight = fontWeight,
+                fontColor = fontColor
+            )
+
+            Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Tiny))
+
+            Row {
+                ToRecipientsTitle(
+                    modifier = Modifier.padding(end = ProtonDimens.Spacing.Small),
+                    fontWeight = fontWeight,
+                    fontColor = fontColor
+                )
+                ToRecipientNames(
+                    modifier = modifier.testTag(MessageDetailHeaderTestTags.ToRecipientsList),
+                    toRecipients = uiModel.recipients,
+                    hasUndisclosedRecipients = uiModel.shouldShowUndisclosedRecipients,
+                    fontWeight = fontWeight,
+                    fontColor = fontColor
+                )
+            }
+
+        }
+
 
         Expiration(
             modifier = Modifier.constrainAs(expirationRef) {
@@ -181,10 +214,52 @@ internal fun ConversationDetailCollapsedMessageHeader(
                 centerVerticallyTo(parent)
             },
             uiModel = uiModel,
-            fontWeight = fontWeight,
+            fontWeight = labelFontWeight,
             fontColor = fontColor
         )
     }
+}
+
+@Composable
+private fun ToRecipientNames(
+    modifier: Modifier = Modifier,
+    fontWeight: FontWeight,
+    fontColor: Color,
+    toRecipients: ImmutableList<ParticipantUiModel>,
+    hasUndisclosedRecipients: Boolean = false
+) {
+    val toRecipientsLine = if (hasUndisclosedRecipients) {
+        stringResource(R.string.undisclosed_recipients)
+    } else {
+        toRecipients.joinToString(separator = ", ") {
+            it.participantName.ifBlank { it.participantAddress }
+        }
+    }
+
+    Text(
+        modifier = modifier,
+        text = toRecipientsLine,
+        fontWeight = fontWeight,
+        color = fontColor,
+        style = ProtonTheme.typography.bodyMediumNorm,
+        overflow = TextOverflow.Ellipsis,
+        maxLines = 1
+    )
+}
+
+@Composable
+private fun ToRecipientsTitle(
+    modifier: Modifier = Modifier,
+    fontWeight: FontWeight,
+    fontColor: Color
+) {
+    Text(
+        modifier = modifier,
+        text = stringResource(id = R.string.to),
+        style = ProtonTheme.typography.bodyMedium,
+        fontWeight = fontWeight,
+        color = fontColor
+    )
 }
 
 @Composable
@@ -205,8 +280,7 @@ private fun Expiration(uiModel: ConversationDetailMessageUiModel.Collapsed, modi
         modifier = modifier
             .padding(horizontal = ProtonDimens.Spacing.Small)
             .background(
-                color = ProtonTheme.colors.interactionWeakNorm,
-                shape = ProtonTheme.shapes.large
+                color = ProtonTheme.colors.interactionWeakNorm, shape = ProtonTheme.shapes.large
             )
             .padding(ProtonDimens.Spacing.Small),
         verticalAlignment = Alignment.CenterVertically
@@ -290,10 +364,10 @@ private fun Sender(
     uiModel: ConversationDetailMessageUiModel.Collapsed,
     fontWeight: FontWeight,
     fontColor: Color,
-    modifier: Modifier
+    modifier: Modifier = Modifier
 ) {
     Row(
-        modifier = modifier.padding(horizontal = ProtonDimens.Spacing.Tiny),
+        modifier = modifier,
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
