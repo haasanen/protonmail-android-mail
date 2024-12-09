@@ -34,13 +34,17 @@ class ParticipantUiModelMapper @Inject constructor(
     fun senderToUiModel(participant: Sender, contacts: List<ContactMetadata.Contact>) =
         toUiModel(participant, contacts, ResolveParticipantName.FallbackType.USERNAME)
 
-    fun recipientToUiModel(participant: Recipient, contacts: List<ContactMetadata.Contact>) =
-        toUiModel(participant, contacts, ResolveParticipantName.FallbackType.NONE)
+    fun recipientToUiModel(
+        participant: Recipient,
+        contacts: List<ContactMetadata.Contact>,
+        primaryUserAddress: String?
+    ) = toUiModel(participant, contacts, ResolveParticipantName.FallbackType.NONE, primaryUserAddress)
 
     private fun toUiModel(
         participant: Participant,
         contacts: List<ContactMetadata.Contact>,
-        fallbackType: ResolveParticipantName.FallbackType
+        fallbackType: ResolveParticipantName.FallbackType,
+        primaryUserAddress: String? = null
     ): ParticipantUiModel {
         val resolveParticipantNameResult = resolveParticipantName(
             participant,
@@ -52,7 +56,8 @@ class ParticipantUiModelMapper @Inject constructor(
             participantName = resolveParticipantNameResult.name,
             participantAddress = participant.address,
             participantPadlock = R.drawable.ic_proton_lock,
-            shouldShowOfficialBadge = resolveParticipantNameResult.isProton
+            shouldShowOfficialBadge = resolveParticipantNameResult.isProton,
+            isPrimaryUser = primaryUserAddress == participant.address
         )
     }
 }

@@ -94,6 +94,7 @@ import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen
 import ch.protonmail.android.maildetail.presentation.usecase.GetEmbeddedImageAvoidDuplicatedExecution
 import ch.protonmail.android.maildetail.presentation.usecase.GetLabelAsBottomSheetData
 import ch.protonmail.android.maildetail.presentation.usecase.GetMoreActionsBottomSheetData
+import ch.protonmail.android.maildetail.presentation.usecase.ObservePrimaryUserAddress
 import ch.protonmail.android.maildetail.presentation.usecase.OnMessageLabelAsConfirmed
 import ch.protonmail.android.maildetail.presentation.usecase.PrintMessage
 import ch.protonmail.android.maillabel.domain.model.LabelId
@@ -200,7 +201,8 @@ class ConversationDetailViewModel @Inject constructor(
     private val getMoreActionsBottomSheetData: GetMoreActionsBottomSheetData,
     private val onMessageLabelAsConfirmed: OnMessageLabelAsConfirmed,
     private val moveMessage: MoveMessage,
-    private val deleteMessages: DeleteMessages
+    private val deleteMessages: DeleteMessages,
+    private val observePrimaryUserAddress: ObservePrimaryUserAddress
 ) : ViewModel() {
 
     private val primaryUserId = observePrimaryUserId()
@@ -372,8 +374,9 @@ class ConversationDetailViewModel @Inject constructor(
         combine(
             observeContacts(userId),
             observeConversationMessages(userId, conversationId).ignoreLocalErrors(),
-            observeConversationViewState()
-        ) { contactsEither, messagesEither, conversationViewState ->
+            observeConversationViewState(),
+            observePrimaryUserAddress()
+        ) { contactsEither, messagesEither, conversationViewState, primaryUserAddress ->
             val contacts = contactsEither.getOrElse {
                 Timber.i("Failed getting contacts for displaying initials. Fallback to display name")
                 emptyList()
@@ -385,6 +388,7 @@ class ConversationDetailViewModel @Inject constructor(
                 userId = userId,
                 messages = conversationMessages.messages,
                 contacts = contacts,
+                primaryUserAddress = primaryUserAddress,
                 currentViewState = conversationViewState
             ).toImmutableList()
 
@@ -426,6 +430,7 @@ class ConversationDetailViewModel @Inject constructor(
         userId: UserId,
         messages: NonEmptyList<Message>,
         contacts: List<ContactMetadata.Contact>,
+        primaryUserAddress: String?,
         currentViewState: InMemoryConversationStateRepository.MessagesState
     ): NonEmptyList<ConversationDetailMessageUiModel> {
         val messagesList = messages.map { message ->
@@ -433,7 +438,7 @@ class ConversationDetailViewModel @Inject constructor(
 
             when (val viewState = currentViewState.messagesState[message.messageId]) {
                 is InMemoryConversationStateRepository.MessageState.Expanding ->
-                    buildExpandingMessage(buildCollapsedMessage(message, contacts))
+                    buildExpandingMessage(buildCollapsedMessage(message, contacts, primaryUserAddress))
 
                 is InMemoryConversationStateRepository.MessageState.Expanded -> {
                     buildExpandedMessage(
@@ -441,12 +446,13 @@ class ConversationDetailViewModel @Inject constructor(
                         message,
                         existingMessageState,
                         contacts,
+                        primaryUserAddress,
                         viewState.decryptedBody
                     )
                 }
 
                 else -> {
-                    buildCollapsedMessage(message, contacts)
+                    buildCollapsedMessage(message, contacts, primaryUserAddress)
                 }
             }
         }
@@ -482,10 +488,12 @@ class ConversationDetailViewModel @Inject constructor(
 
     private suspend fun buildCollapsedMessage(
         message: Message,
-        contacts: List<ContactMetadata.Contact>
+        contacts: List<ContactMetadata.Contact>,
+        primaryUserAddress: String?
     ): ConversationDetailMessageUiModel.Collapsed = conversationMessageMapper.toUiModel(
         message,
-        contacts
+        contacts,
+        primaryUserAddress
     )
 
     private fun buildExpandingMessage(
@@ -499,11 +507,13 @@ class ConversationDetailViewModel @Inject constructor(
         message: Message,
         existingMessageUiState: ConversationDetailMessageUiModel.Expanded?,
         contacts: List<ContactMetadata.Contact>,
+        primaryUserAddress: String?,
         decryptedBody: DecryptedMessageBody
     ): ConversationDetailMessageUiModel.Expanded = conversationMessageMapper.toUiModel(
         userId,
         message,
         contacts,
+        primaryUserAddress,
         decryptedBody,
         existingMessageUiState
     )

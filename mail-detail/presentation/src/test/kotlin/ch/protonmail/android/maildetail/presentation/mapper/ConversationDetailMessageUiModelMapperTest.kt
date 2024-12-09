@@ -20,6 +20,7 @@ package ch.protonmail.android.maildetail.presentation.mapper
 
 import java.util.UUID
 import android.text.format.Formatter
+import ch.protonmail.android.mailcommon.domain.sample.UserAddressSample
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.mailcommon.presentation.mapper.ColorMapper
 import ch.protonmail.android.mailcommon.presentation.mapper.ExpirationTimeMapper
@@ -59,6 +60,7 @@ import kotlin.test.assertNull
 internal class ConversationDetailMessageUiModelMapperTest {
 
     private val colorMapper: ColorMapper = mockk()
+    private val primaryUserAddress = UserAddressSample.PrimaryAddress.email
 
     private val avatarUiModelMapper: DetailAvatarUiModelMapper = mockk {
         every { this@mockk(any(), any()) } returns ConversationDetailMessageUiModelSample.AugWeatherForecast.avatar
@@ -160,7 +162,8 @@ internal class ConversationDetailMessageUiModelMapperTest {
         // when
         val result: ConversationDetailMessageUiModel.Collapsed = mapper.toUiModel(
             message = message,
-            contacts = emptyList()
+            contacts = emptyList(),
+            primaryUserAddress
         )
 
         // then
@@ -184,13 +187,14 @@ internal class ConversationDetailMessageUiModelMapperTest {
             userId,
             message,
             contacts = contactsList,
+            primaryUserAddress,
             decryptedMessageBody = decryptedMessageBody
         )
 
         // then
         assertEquals(result.isUnread, message.isUnread)
         assertEquals(result.messageId.id, message.messageId.id)
-        coVerify { messageDetailHeaderUiModelMapper.toUiModel(message, contactsList) }
+        coVerify { messageDetailHeaderUiModelMapper.toUiModel(message, contactsList, primaryUserAddress) }
         coVerify { messageBodyUiModelMapper.toUiModel(userId, decryptedMessageBody) }
     }
 
@@ -220,7 +224,7 @@ internal class ConversationDetailMessageUiModelMapperTest {
         }
 
         // when
-        val result = mapper.toUiModel(message, contacts = emptyList())
+        val result = mapper.toUiModel(message, contacts = emptyList(), primaryUserAddress)
 
         // then
         assertEquals(expected, result)
@@ -237,7 +241,7 @@ internal class ConversationDetailMessageUiModelMapperTest {
         }
 
         // when
-        val result = mapper.toUiModel(message, contacts = emptyList())
+        val result = mapper.toUiModel(message, contacts = emptyList(), primaryUserAddress)
 
         // then
         assertEquals(expected, result)
@@ -254,7 +258,7 @@ internal class ConversationDetailMessageUiModelMapperTest {
         }
 
         // when
-        val result = mapper.toUiModel(message, contacts = emptyList())
+        val result = mapper.toUiModel(message, contacts = emptyList(), primaryUserAddress)
 
         // then
         assertEquals(expected, result)
@@ -274,7 +278,7 @@ internal class ConversationDetailMessageUiModelMapperTest {
         }
 
         // when
-        val result = mapper.toUiModel(message, contacts = emptyList())
+        val result = mapper.toUiModel(message, contacts = emptyList(), primaryUserAddress)
 
         // then
         assertEquals(expected, result)
@@ -293,7 +297,7 @@ internal class ConversationDetailMessageUiModelMapperTest {
         } returns ConversationDetailMessageUiModelSample.ExpiringInvitation.avatar
 
         // when
-        val result = mapper.toUiModel(message, contacts = emptyList())
+        val result = mapper.toUiModel(message, contacts = emptyList(), primaryUserAddress)
 
         // then
         assertEquals(expected, result)
@@ -312,7 +316,7 @@ internal class ConversationDetailMessageUiModelMapperTest {
         } returns ConversationDetailMessageUiModelSample.ExpiringInvitation.avatar
 
         // when
-        val result = mapper.toUiModel(message, contacts = emptyList())
+        val result = mapper.toUiModel(message, contacts = emptyList(), primaryUserAddress)
 
         // then
         assertEquals(expected, result)
@@ -354,6 +358,7 @@ internal class ConversationDetailMessageUiModelMapperTest {
             userId,
             message,
             contacts = contactsList,
+            primaryUserAddress = primaryUserAddress,
             decryptedMessageBody = decryptedMessageBody,
             existingMessageUiState = previousState
         )

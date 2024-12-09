@@ -228,11 +228,16 @@ private fun ToRecipientNames(
     toRecipients: ImmutableList<ParticipantUiModel>,
     hasUndisclosedRecipients: Boolean = false
 ) {
+    val recipientMeText = stringResource(id = R.string.recipient_me)
     val toRecipientsLine = if (hasUndisclosedRecipients) {
         stringResource(R.string.undisclosed_recipients)
     } else {
         toRecipients.joinToString(separator = ", ") {
-            it.participantName.ifBlank { it.participantAddress }
+            if (it.isPrimaryUser) {
+                recipientMeText
+            } else {
+                it.participantName.ifBlank { it.participantAddress }
+            }
         }
     }
 

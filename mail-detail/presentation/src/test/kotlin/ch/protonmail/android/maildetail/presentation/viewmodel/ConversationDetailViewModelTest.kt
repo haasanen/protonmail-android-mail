@@ -31,6 +31,7 @@ import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.model.NetworkError
 import ch.protonmail.android.mailcommon.domain.sample.ConversationIdSample
 import ch.protonmail.android.mailcommon.domain.sample.DataErrorSample
+import ch.protonmail.android.mailcommon.domain.sample.UserAddressSample
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailcommon.presentation.Effect
@@ -88,6 +89,7 @@ import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen
 import ch.protonmail.android.maildetail.presentation.usecase.GetEmbeddedImageAvoidDuplicatedExecution
 import ch.protonmail.android.maildetail.presentation.usecase.GetLabelAsBottomSheetData
 import ch.protonmail.android.maildetail.presentation.usecase.GetMoreActionsBottomSheetData
+import ch.protonmail.android.maildetail.presentation.usecase.ObservePrimaryUserAddress
 import ch.protonmail.android.maildetail.presentation.usecase.OnMessageLabelAsConfirmed
 import ch.protonmail.android.maildetail.presentation.usecase.PrintMessage
 import ch.protonmail.android.maillabel.domain.model.LabelId
@@ -154,6 +156,7 @@ import kotlin.test.assertTrue
 class ConversationDetailViewModelTest {
 
     private val userId = UserIdSample.Primary
+    private val primaryUserAddress = UserAddressSample.PrimaryAddress.email
     private val conversationId = ConversationIdSample.WeatherForecast
     private val initialState = ConversationDetailState.Loading
 
@@ -167,28 +170,32 @@ class ConversationDetailViewModelTest {
         coEvery {
             toUiModel(
                 message = MessageSample.Invoice,
-                contacts = any()
+                contacts = any(),
+                primaryUserAddress = primaryUserAddress
             )
         } returns
             ConversationDetailMessageUiModelSample.InvoiceWithLabel
         coEvery {
             toUiModel(
                 message = MessageSample.Invoice,
-                contacts = any()
+                contacts = any(),
+                primaryUserAddress = primaryUserAddress
             )
         } returns
             ConversationDetailMessageUiModelSample.InvoiceWithTwoLabels
         coEvery {
             toUiModel(
                 message = MessageSample.Invoice,
-                contacts = any()
+                contacts = any(),
+                primaryUserAddress = primaryUserAddress
             )
         } returns
             ConversationDetailMessageUiModelSample.InvoiceWithoutLabels
         coEvery {
             toUiModel(
                 message = MessageSample.Invoice,
-                contacts = any()
+                contacts = any(),
+                primaryUserAddress = primaryUserAddress
             )
         } returns
             ConversationDetailMessageUiModelSample.AnotherInvoiceWithoutLabels
@@ -270,6 +277,10 @@ class ConversationDetailViewModelTest {
         coEvery { this@mockk.invoke(any(), any()) } returns ContactSample.Stefano
     }
 
+    private val observePrimaryUserAddress = mockk<ObservePrimaryUserAddress> {
+        every { this@mockk() } returns flowOf(primaryUserAddress)
+    }
+
     // Privacy settings for link confirmation dialog
     private val observePrivacySettings = mockk<ObservePrivacySettings> {
         coEvery { this@mockk.invoke(any()) } returns flowOf(
@@ -347,7 +358,8 @@ class ConversationDetailViewModelTest {
             getMoreActionsBottomSheetData = getMoreActionsBottomSheetData,
             onMessageLabelAsConfirmed = onMessageLabelAsConfirmed,
             moveMessage = moveMessage,
-            deleteMessages = deleteMessages
+            deleteMessages = deleteMessages,
+            observePrimaryUserAddress = observePrimaryUserAddress
         )
     }
 
@@ -487,6 +499,7 @@ class ConversationDetailViewModelTest {
                 userId = any(),
                 message = any(),
                 contacts = any(),
+                primaryUserAddress = primaryUserAddress,
                 decryptedMessageBody = any()
             )
         } returns InvoiceWithLabelExpanded
@@ -588,6 +601,7 @@ class ConversationDetailViewModelTest {
                 userId = any(),
                 message = any(),
                 contacts = any(),
+                primaryUserAddress = primaryUserAddress,
                 decryptedMessageBody = any()
             )
         } returns messages.first()
@@ -627,6 +641,7 @@ class ConversationDetailViewModelTest {
                 userId = any(),
                 message = any(),
                 contacts = any(),
+                primaryUserAddress = primaryUserAddress,
                 decryptedMessageBody = any()
             )
         } returns messages.first()
@@ -1379,6 +1394,7 @@ class ConversationDetailViewModelTest {
                 userId = any(),
                 message = any(),
                 contacts = any(),
+                primaryUserAddress = primaryUserAddress,
                 decryptedMessageBody = any()
             )
         } returns messages.first()
@@ -1423,6 +1439,7 @@ class ConversationDetailViewModelTest {
                     userId = any(),
                     message = any(),
                     contacts = any(),
+                    primaryUserAddress = primaryUserAddress,
                     decryptedMessageBody = any()
                 )
             } returns expectedUiModel
@@ -1474,6 +1491,7 @@ class ConversationDetailViewModelTest {
                 userId = any(),
                 message = any(),
                 contacts = any(),
+                primaryUserAddress = primaryUserAddress,
                 decryptedMessageBody = any()
             )
         } returns expectedUiModel
@@ -1537,6 +1555,7 @@ class ConversationDetailViewModelTest {
                 userId = any(),
                 message = any(),
                 contacts = any(),
+                primaryUserAddress = primaryUserAddress,
                 decryptedMessageBody = any()
             )
         } returns messages.first()
@@ -1560,6 +1579,7 @@ class ConversationDetailViewModelTest {
                 userId = any(),
                 message = any(),
                 contacts = any(),
+                primaryUserAddress = primaryUserAddress,
                 decryptedMessageBody = any()
             )
         } returns messages.first()
@@ -1871,13 +1891,14 @@ class ConversationDetailViewModelTest {
             messagesState = ConversationDetailsMessagesState.Data(firstExpanding)
         )
 
-        coEvery { conversationMessageMapper.toUiModel(any(), any()) } returns
+        coEvery { conversationMessageMapper.toUiModel(any(), any(), primaryUserAddress) } returns
             ConversationDetailMessageUiModelSample.InvoiceWithLabel
         coEvery {
             conversationMessageMapper.toUiModel(
                 userId = any(),
                 message = any(),
                 contacts = any(),
+                primaryUserAddress = primaryUserAddress,
                 decryptedMessageBody = any()
             )
         } returns

@@ -69,11 +69,36 @@ class ParticipantUiModelMapperTest {
             participantName = "Test",
             participantAddress = "test@protonmail.com",
             participantPadlock = R.drawable.ic_proton_lock,
-            shouldShowOfficialBadge = false
+            shouldShowOfficialBadge = false,
+            isPrimaryUser = false
         )
 
         // When
-        val result = participantUiModelMapper.recipientToUiModel(participant, ContactTestData.contacts)
+        val result = participantUiModelMapper.recipientToUiModel(participant, ContactTestData.contacts, null)
+
+        // Then
+        assertEquals(expectedResult, result)
+        verify {
+            resolveParticipantName(participant, ContactTestData.contacts, ResolveParticipantName.FallbackType.NONE)
+        }
+    }
+
+    @Test
+    fun `primary user's recipient is mapped to participant ui model`() {
+        // Given
+        val expectedResult = ParticipantUiModel(
+            participantName = "Test",
+            participantAddress = "test@protonmail.com",
+            participantPadlock = R.drawable.ic_proton_lock,
+            shouldShowOfficialBadge = false,
+            isPrimaryUser = true
+
+        )
+
+        // When
+        val result = participantUiModelMapper.recipientToUiModel(
+            participant, ContactTestData.contacts, "test@protonmail.com"
+        )
 
         // Then
         assertEquals(expectedResult, result)

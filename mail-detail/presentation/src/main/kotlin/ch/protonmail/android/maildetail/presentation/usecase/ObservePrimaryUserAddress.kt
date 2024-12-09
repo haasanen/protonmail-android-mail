@@ -16,14 +16,17 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.maildetail.presentation.model
+package ch.protonmail.android.maildetail.presentation.usecase
 
-import androidx.annotation.DrawableRes
+import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryAccount
+import kotlinx.coroutines.flow.map
+import javax.inject.Inject
 
-data class ParticipantUiModel(
-    val participantName: String,
-    val participantAddress: String,
-    @DrawableRes val participantPadlock: Int,
-    val shouldShowOfficialBadge: Boolean,
-    val isPrimaryUser: Boolean = false
-)
+class ObservePrimaryUserAddress @Inject constructor(
+    private val observePrimaryAccount: ObservePrimaryAccount
+) {
+
+    operator fun invoke() = observePrimaryAccount().map {
+        it?.primaryAddress ?: it?.nameOrAddress
+    }
+}

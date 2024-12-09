@@ -22,6 +22,7 @@ import android.content.Context
 import android.text.format.Formatter
 import androidx.compose.ui.graphics.Color
 import arrow.core.right
+import ch.protonmail.android.mailcommon.domain.sample.UserAddressSample
 import ch.protonmail.android.mailcommon.presentation.R.drawable.ic_proton_archive_box
 import ch.protonmail.android.mailcommon.presentation.R.drawable.ic_proton_lock
 import ch.protonmail.android.mailcommon.presentation.mapper.ColorMapper
@@ -57,6 +58,7 @@ import kotlin.time.Duration.Companion.seconds
 
 class MessageDetailHeaderUiModelMapperTest {
 
+    private val primaryUserAddress = UserAddressSample.PrimaryAddress.email
     private val avatarUiModel = ParticipantAvatarSample.amazon
     private val messageLocationUiModel = MessageLocationUiModel("Archive", ic_proton_archive_box)
     private val shortTimeTextUiModel = TextUiModel.Text("08/11/2022")
@@ -117,9 +119,15 @@ class MessageDetailHeaderUiModelMapperTest {
     }
     private val participantUiModelMapper: ParticipantUiModelMapper = mockk {
         every { senderToUiModel(MessageTestData.sender, ContactTestData.contacts) } returns senderUiModel
-        every { recipientToUiModel(MessageTestData.recipient1, ContactTestData.contacts) } returns participant1UiModel
-        every { recipientToUiModel(MessageTestData.recipient2, ContactTestData.contacts) } returns participant2UiModel
-        every { recipientToUiModel(MessageTestData.recipient3, ContactTestData.contacts) } returns participant3UiModel
+        every {
+            recipientToUiModel(MessageTestData.recipient1, ContactTestData.contacts, primaryUserAddress)
+        } returns participant1UiModel
+        every {
+            recipientToUiModel(MessageTestData.recipient2, ContactTestData.contacts, primaryUserAddress)
+        } returns participant2UiModel
+        every {
+            recipientToUiModel(MessageTestData.recipient3, ContactTestData.contacts, primaryUserAddress)
+        } returns participant3UiModel
     }
     private val resolveParticipantName: ResolveParticipantName = mockk {
         every {
@@ -175,7 +183,8 @@ class MessageDetailHeaderUiModelMapperTest {
         // When
         val result = messageDetailHeaderUiModelMapper.toUiModel(
             message = message,
-            contacts = ContactTestData.contacts
+            contacts = ContactTestData.contacts,
+            primaryUserAddress = primaryUserAddress
         )
         // Then
         assertEquals(expectedResult, result)
@@ -192,7 +201,8 @@ class MessageDetailHeaderUiModelMapperTest {
         // When
         val result = messageDetailHeaderUiModelMapper.toUiModel(
             message = message,
-            contacts = ContactTestData.contacts
+            contacts = ContactTestData.contacts,
+            primaryUserAddress = primaryUserAddress
         )
         // Then
         assertEquals(expectedResult, result)
@@ -206,7 +216,8 @@ class MessageDetailHeaderUiModelMapperTest {
         // When
         val result = messageDetailHeaderUiModelMapper.toUiModel(
             message = message,
-            contacts = ContactTestData.contacts
+            contacts = ContactTestData.contacts,
+            primaryUserAddress = primaryUserAddress
         )
         // Then
         assertEquals(expectedResult, result)
@@ -228,7 +239,8 @@ class MessageDetailHeaderUiModelMapperTest {
         // When
         val result = messageDetailHeaderUiModelMapper.toUiModel(
             message = message,
-            contacts = ContactTestData.contacts
+            contacts = ContactTestData.contacts,
+            primaryUserAddress = primaryUserAddress
         )
         // Then
         assertEquals(expectedResult, result)
@@ -251,7 +263,7 @@ class MessageDetailHeaderUiModelMapperTest {
         )
 
         // When
-        val result = messageDetailHeaderUiModelMapper.toUiModel(input, ContactTestData.contacts)
+        val result = messageDetailHeaderUiModelMapper.toUiModel(input, ContactTestData.contacts, primaryUserAddress)
 
         // Then
         assertEquals(expected, result.labels)

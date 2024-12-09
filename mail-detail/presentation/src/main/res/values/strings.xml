@@ -113,4 +113,5 @@
     <string name="non_trashed_messages_banner">This conversation contains non-trashed messages.</string>
     <string name="show">Show</string>
     <string name="hide">Hide</string>
+    <string name="recipient_me">me</string>
 </resources>

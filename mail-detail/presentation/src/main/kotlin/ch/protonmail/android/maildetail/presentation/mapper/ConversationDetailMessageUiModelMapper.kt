@@ -56,7 +56,8 @@ class ConversationDetailMessageUiModelMapper @Inject constructor(
 
     suspend fun toUiModel(
         message: Message,
-        contacts: List<ContactMetadata.Contact>
+        contacts: List<ContactMetadata.Contact>,
+        primaryUserAddress: String?
     ): ConversationDetailMessageUiModel.Collapsed {
         return ConversationDetailMessageUiModel.Collapsed(
             avatar = avatarUiModelMapper(message.avatarInformation, message.sender),
@@ -73,7 +74,7 @@ class ConversationDetailMessageUiModelMapper @Inject constructor(
             messageId = messageIdUiModelMapper.toUiModel(message.messageId),
             isDraft = false,
             recipients = (message.toList + message.ccList + message.bccList).map {
-                participantUiModelMapper.recipientToUiModel(it, contacts)
+                participantUiModelMapper.recipientToUiModel(it, contacts, primaryUserAddress)
             }.toImmutableList(),
             shouldShowUndisclosedRecipients = message.hasUndisclosedRecipients()
         )
@@ -83,6 +84,7 @@ class ConversationDetailMessageUiModelMapper @Inject constructor(
         userId: UserId,
         message: Message,
         contacts: List<ContactMetadata.Contact>,
+        primaryUserAddress: String?,
         decryptedMessageBody: DecryptedMessageBody,
         existingMessageUiState: ConversationDetailMessageUiModel.Expanded? = null
     ): ConversationDetailMessageUiModel.Expanded {
@@ -97,7 +99,8 @@ class ConversationDetailMessageUiModelMapper @Inject constructor(
             isUnread = message.isUnread,
             messageDetailHeaderUiModel = messageDetailHeaderUiModelMapper.toUiModel(
                 message,
-                contacts
+                contacts,
+                primaryUserAddress
             ),
             messageDetailFooterUiModel = messageDetailFooterUiModelMapper.toUiModel(message),
             messageBannersUiModel = messageBannersUiModelMapper.createMessageBannersUiModel(message),
@@ -127,7 +130,8 @@ class ConversationDetailMessageUiModelMapper @Inject constructor(
             isUnread = message.isUnread,
             messageDetailHeaderUiModel = messageDetailHeaderUiModelMapper.toUiModel(
                 message,
-                contacts
+                contacts,
+                null
             )
         )
     }

@@ -36,6 +36,7 @@ import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.domain.model.Action
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.sample.ConversationIdSample
+import ch.protonmail.android.mailcommon.domain.sample.UserAddressSample
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.mailcommon.domain.usecase.GetCurrentEpochTimeDuration
 import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUserId
@@ -122,6 +123,7 @@ import ch.protonmail.android.maildetail.presentation.usecase.ExtractMessageBodyW
 import ch.protonmail.android.maildetail.presentation.usecase.GetEmbeddedImageAvoidDuplicatedExecution
 import ch.protonmail.android.maildetail.presentation.usecase.GetLabelAsBottomSheetData
 import ch.protonmail.android.maildetail.presentation.usecase.GetMoreActionsBottomSheetData
+import ch.protonmail.android.maildetail.presentation.usecase.ObservePrimaryUserAddress
 import ch.protonmail.android.maildetail.presentation.usecase.OnMessageLabelAsConfirmed
 import ch.protonmail.android.maildetail.presentation.usecase.PrintMessage
 import ch.protonmail.android.maillabel.domain.model.LabelId
@@ -304,6 +306,10 @@ class ConversationDetailViewModelIntegrationTest {
         coEvery { this@mockk.invoke(any(), any()) } returns DecryptedMessageBody(
             MessageId("default"), "", MimeType.Html, emptyList()
         ).right()
+    }
+
+    private val observePrimaryUserAddress = mockk<ObservePrimaryUserAddress> {
+        every { this@mockk() } returns flowOf(UserAddressSample.PrimaryAddress.email)
     }
 
     private val markMessageAsRead: MarkMessageAsRead =
@@ -2410,7 +2416,8 @@ class ConversationDetailViewModelIntegrationTest {
         getMoreActionsBottomSheetData = getMoreActionsBottomSheetData,
         onMessageLabelAsConfirmed = onMessageLabelAsConfirmed,
         moveMessage = moveMessage,
-        deleteMessages = deleteMessages
+        deleteMessages = deleteMessages,
+        observePrimaryUserAddress = observePrimaryUserAddress
     )
 
     private fun aMessageAttachment(id: String): MessageAttachment = MessageAttachment(

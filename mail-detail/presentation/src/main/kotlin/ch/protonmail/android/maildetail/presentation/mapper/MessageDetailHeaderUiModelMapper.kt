@@ -53,7 +53,11 @@ class MessageDetailHeaderUiModelMapper @Inject constructor(
     private val resolveParticipantName: ResolveParticipantName
 ) {
 
-    suspend fun toUiModel(message: Message, contacts: List<ContactMetadata.Contact>): MessageDetailHeaderUiModel {
+    suspend fun toUiModel(
+        message: Message,
+        contacts: List<ContactMetadata.Contact>,
+        primaryUserAddress: String?
+    ): MessageDetailHeaderUiModel {
         return MessageDetailHeaderUiModel(
             avatar = detailAvatarUiModelMapper(message.avatarInformation, message.sender),
             sender = participantUiModelMapper.senderToUiModel(message.sender, contacts),
@@ -66,13 +70,13 @@ class MessageDetailHeaderUiModelMapper @Inject constructor(
             shouldShowUndisclosedRecipients = message.hasUndisclosedRecipients(),
             allRecipients = message.allRecipients(contacts),
             toRecipients = message.toList.map {
-                participantUiModelMapper.recipientToUiModel(it, contacts)
+                participantUiModelMapper.recipientToUiModel(it, contacts, primaryUserAddress)
             }.toImmutableList(),
             ccRecipients = message.ccList.map {
-                participantUiModelMapper.recipientToUiModel(it, contacts)
+                participantUiModelMapper.recipientToUiModel(it, contacts, primaryUserAddress)
             }.toImmutableList(),
             bccRecipients = message.bccList.map {
-                participantUiModelMapper.recipientToUiModel(it, contacts)
+                participantUiModelMapper.recipientToUiModel(it, contacts, primaryUserAddress)
             }.toImmutableList(),
             labels = toLabelUiModels(message.customLabels),
             size = Formatter.formatShortFileSize(context, message.size),
