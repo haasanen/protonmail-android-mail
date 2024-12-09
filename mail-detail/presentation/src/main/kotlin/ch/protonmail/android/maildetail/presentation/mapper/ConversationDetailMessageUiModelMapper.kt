@@ -71,7 +71,11 @@ class ConversationDetailMessageUiModelMapper @Inject constructor(
             shortTime = formatShortTime(message.time.seconds),
             labels = toLabelUiModels(message.customLabels),
             messageId = messageIdUiModelMapper.toUiModel(message.messageId),
-            isDraft = false
+            isDraft = false,
+            recipients = (message.toList + message.ccList + message.bccList).map {
+                participantUiModelMapper.recipientToUiModel(it, contacts)
+            }.toImmutableList(),
+            shouldShowUndisclosedRecipients = message.hasUndisclosedRecipients()
         )
     }
 
@@ -164,4 +168,7 @@ class ConversationDetailMessageUiModelMapper @Inject constructor(
                 id = label.labelId.id
             )
         }.toImmutableList()
+
+    private fun Message.hasUndisclosedRecipients() = (toList + ccList + bccList).isEmpty()
+
 }

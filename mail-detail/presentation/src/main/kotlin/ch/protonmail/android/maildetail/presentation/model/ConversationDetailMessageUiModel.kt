@@ -48,7 +48,9 @@ sealed interface ConversationDetailMessageUiModel {
         val sender: ParticipantUiModel,
         val shortTime: TextUiModel,
         val labels: ImmutableList<LabelUiModel>,
-        val isDraft: Boolean
+        val isDraft: Boolean,
+        val recipients: ImmutableList<ParticipantUiModel>,
+        val shouldShowUndisclosedRecipients: Boolean
     ) : ConversationDetailMessageUiModel
 
     data class Expanding(

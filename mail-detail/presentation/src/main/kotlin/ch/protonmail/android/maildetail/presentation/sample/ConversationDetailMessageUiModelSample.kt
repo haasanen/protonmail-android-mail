@@ -211,7 +211,9 @@ object ConversationDetailMessageUiModelSample {
         shortTime = TextUiModel("10:00"),
         labels = emptyList<LabelUiModel>().toImmutableList(),
         messageId = MessageIdUiModel(message.messageId.id),
-        isDraft = false
+        isDraft = false,
+        recipients = emptyList<ParticipantUiModel>().toImmutableList(),
+        shouldShowUndisclosedRecipients = (message.toList + message.ccList + message.bccList).isEmpty()
     )
 
     private fun buildExpanded(
