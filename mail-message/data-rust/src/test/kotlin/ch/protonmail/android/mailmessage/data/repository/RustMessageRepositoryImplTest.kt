@@ -26,8 +26,6 @@ import arrow.core.right
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalMimeType
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
-import ch.protonmail.android.maillabel.domain.SelectedMailLabelId
-import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.maillabel.domain.sample.LabelIdSample
 import ch.protonmail.android.mailmessage.data.local.RustMessageDataSource
@@ -46,8 +44,6 @@ import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import junit.framework.TestCase.assertNull
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.test.runTest
 import me.proton.core.domain.entity.UserId
 import org.junit.Test
@@ -58,10 +54,9 @@ import kotlin.test.assertNotNull
 class RustMessageRepositoryImplTest {
 
     private val rustMessageDataSource: RustMessageDataSource = mockk()
-    private val selectedMailLabelId: SelectedMailLabelId = mockk()
 
     private val userId = UserId("userId")
-    private val repository = RustMessageRepositoryImpl(rustMessageDataSource, selectedMailLabelId)
+    private val repository = RustMessageRepositoryImpl(rustMessageDataSource)
 
     @Test
     fun `getLocalMessages should return list of messages`() = runTest {
@@ -146,13 +141,9 @@ class RustMessageRepositoryImplTest {
         coEvery {
             rustMessageDataSource.getMessageBody(
                 userId,
-                messageId.toLocalMessageId(),
-                SystemLabelId.Inbox.labelId.toLocalLabelId()
+                messageId.toLocalMessageId()
             )
         } returns localMessageBody
-        coEvery {
-            selectedMailLabelId.flow
-        } returns MutableStateFlow(MailLabelId.System(SystemLabelId.Inbox.labelId)).asStateFlow()
         // When
         val result = repository.getMessageWithBody(userId, messageId).getOrNull()
 
@@ -164,8 +155,7 @@ class RustMessageRepositoryImplTest {
         coVerify {
             rustMessageDataSource.getMessageBody(
                 userId,
-                messageId.toLocalMessageId(),
-                SystemLabelId.Inbox.labelId.toLocalLabelId()
+                messageId.toLocalMessageId()
             )
         }
     }

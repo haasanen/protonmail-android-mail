@@ -149,18 +149,17 @@ class RustMessageDataSourceImplTest {
         // Given
         val userId = UserIdTestData.userId
         val mailSession = mockk<MailUserSessionWrapper>()
-        val labelId = LocalLabelId(1uL)
         val messageId = LocalMessageIdSample.AugWeatherForecast
         val mailbox = mockk<MailboxWrapper>()
         coEvery { userSessionRepository.getUserSession(userId) } returns mailSession
-        coEvery { rustMailboxFactory.create(userId, labelId) } returns mailbox.right()
+        coEvery { rustMailboxFactory.createAllMail(userId) } returns mailbox.right()
         coEvery { createRustMessageBodyAccessor(mailbox, messageId) } returns mockk()
 
         // When
-        val result = dataSource.getMessageBody(userId, messageId, labelId)
+        val result = dataSource.getMessageBody(userId, messageId)
 
         // Then
-        coVerify { rustMailboxFactory.create(userId, labelId) }
+        coVerify { rustMailboxFactory.createAllMail(userId) }
         coVerify { createRustMessageBodyAccessor(mailbox, messageId) }
         assert(result != null)
     }
@@ -171,14 +170,13 @@ class RustMessageDataSourceImplTest {
         val userId = UserIdTestData.userId
         val messageId = LocalMessageIdSample.AugWeatherForecast
         val mailbox = mockk<MailboxWrapper>()
-        val labelId = LocalLabelId(1uL)
-        coEvery { rustMailboxFactory.create(userId, labelId) } returns mailbox.right()
+        coEvery { rustMailboxFactory.createAllMail(userId) } returns mailbox.right()
         coEvery { createRustMessageBodyAccessor(mailbox, messageId) } throws MailboxException.Io("DB Exception")
         // When
-        val result = dataSource.getMessageBody(userId, messageId, labelId)
+        val result = dataSource.getMessageBody(userId, messageId)
 
         // Then
-        coVerify { rustMailboxFactory.create(userId, labelId) }
+        coVerify { rustMailboxFactory.createAllMail(userId) }
         assertNull(result)
     }
 

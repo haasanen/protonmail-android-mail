@@ -88,15 +88,12 @@ class RustMessageDataSourceImpl @Inject constructor(
         }
     }
 
-    override suspend fun getMessageBody(
-        userId: UserId,
-        messageId: LocalMessageId,
-        labelId: LocalLabelId
-    ): DecryptedMessageWrapper? {
-        val mailbox = rustMailboxFactory.create(userId, labelId).getOrNull() ?: return null
-
+    override suspend fun getMessageBody(userId: UserId, messageId: LocalMessageId): DecryptedMessageWrapper? {
         return try {
-            DecryptedMessageWrapper(createRustMessageBodyAccessor(mailbox, messageId))
+            // Hardcoded rust mailbox to "AllMail" to avoid this method having labelId as param;
+            // the current labelId is not needed to get the body and is planned to be dropped on this API
+            val mailbox = rustMailboxFactory.createAllMail(userId).getOrNull()
+            DecryptedMessageWrapper(createRustMessageBodyAccessor(mailbox!!, messageId))
         } catch (e: MailboxException) {
             Timber.e(e, "rust-message: Failed to get message body")
             null

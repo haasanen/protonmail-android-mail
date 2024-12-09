@@ -18,7 +18,6 @@
 
 package ch.protonmail.android.mailmessage.dagger
 
-import ch.protonmail.android.maillabel.domain.SelectedMailLabelId
 import ch.protonmail.android.mailmessage.data.ImageLoaderCoroutineScope
 import ch.protonmail.android.mailmessage.data.MessageRustCoroutineScope
 import ch.protonmail.android.mailmessage.data.local.RustMessageDataSource
@@ -59,10 +58,8 @@ object MailMessageModule {
 
     @Provides
     @Singleton
-    fun providesMessageRepository(
-        rustMessageDataSource: RustMessageDataSource,
-        selectedMailLabelId: SelectedMailLabelId
-    ): MessageRepository = RustMessageRepositoryImpl(rustMessageDataSource, selectedMailLabelId)
+    fun providesMessageRepository(rustMessageDataSource: RustMessageDataSource): MessageRepository =
+        RustMessageRepositoryImpl(rustMessageDataSource)
 
     @Provides
     @Singleton

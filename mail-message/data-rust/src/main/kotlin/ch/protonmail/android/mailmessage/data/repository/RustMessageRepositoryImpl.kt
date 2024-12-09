@@ -26,7 +26,6 @@ import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
-import ch.protonmail.android.maillabel.domain.SelectedMailLabelId
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.mailmessage.data.local.RustMessageDataSource
 import ch.protonmail.android.mailmessage.data.mapper.toLocalMessageId
@@ -52,8 +51,7 @@ import javax.inject.Inject
 
 @Suppress("NotImplementedDeclaration", "TooManyFunctions")
 class RustMessageRepositoryImpl @Inject constructor(
-    private val rustMessageDataSource: RustMessageDataSource,
-    private val selectedMailLabelId: SelectedMailLabelId
+    private val rustMessageDataSource: RustMessageDataSource
 ) : MessageRepository {
 
     override suspend fun getSenderImage(
@@ -97,8 +95,7 @@ class RustMessageRepositoryImpl @Inject constructor(
     override suspend fun getLocalMessageWithBody(userId: UserId, messageId: MessageId): MessageWithBody? {
         val localMessageId = messageId.toLocalMessageId()
         val message = rustMessageDataSource.getMessage(userId, localMessageId)?.toMessage()
-        val currentLabelId = selectedMailLabelId.flow.value.labelId.toLocalLabelId()
-        val decryptedBody = rustMessageDataSource.getMessageBody(userId, localMessageId, currentLabelId)
+        val decryptedBody = rustMessageDataSource.getMessageBody(userId, localMessageId)
 
         return if (message != null && decryptedBody != null) {
             val bodyOutput = decryptedBody.body(TransformOpts(BlockQuote.STRIP, RemoteContent.DEFAULT))

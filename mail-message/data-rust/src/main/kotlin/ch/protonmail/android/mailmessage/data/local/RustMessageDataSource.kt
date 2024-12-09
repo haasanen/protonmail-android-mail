@@ -34,11 +34,7 @@ import uniffi.proton_mail_uniffi.MoveAction
 interface RustMessageDataSource {
 
     suspend fun getMessage(userId: UserId, messageId: LocalMessageId): LocalMessageMetadata?
-    suspend fun getMessageBody(
-        userId: UserId,
-        messageId: LocalMessageId,
-        labelId: LocalLabelId
-    ): DecryptedMessageWrapper?
+    suspend fun getMessageBody(userId: UserId, messageId: LocalMessageId): DecryptedMessageWrapper?
 
     suspend fun getMessages(userId: UserId, pageKey: PageKey): List<LocalMessageMetadata>
 
