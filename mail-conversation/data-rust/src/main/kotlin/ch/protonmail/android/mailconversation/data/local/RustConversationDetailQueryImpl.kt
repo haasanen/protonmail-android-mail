@@ -21,6 +21,7 @@ package ch.protonmail.android.mailconversation.data.local
 import java.lang.ref.WeakReference
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalConversation
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalConversationId
+import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageMetadata
 import ch.protonmail.android.mailconversation.data.ConversationRustCoroutineScope
 import ch.protonmail.android.mailconversation.data.usecase.CreateRustConversationWatcher
@@ -93,7 +94,11 @@ class RustConversationDetailQueryImpl @Inject constructor(
         }
     }
 
-    override fun observeConversation(userId: UserId, conversationId: LocalConversationId): Flow<LocalConversation> {
+    override fun observeConversation(
+        userId: UserId,
+        conversationId: LocalConversationId,
+        labelId: LocalLabelId
+    ): Flow<LocalConversation> {
 
         initialiseOrUpdateWatcher(userId, conversationId)
 
@@ -102,7 +107,8 @@ class RustConversationDetailQueryImpl @Inject constructor(
 
     override fun observeConversationMessages(
         userId: UserId,
-        conversationId: LocalConversationId
+        conversationId: LocalConversationId,
+        labelId: LocalLabelId
     ): Flow<LocalConversationMessages> {
 
         initialiseOrUpdateWatcher(userId, conversationId)

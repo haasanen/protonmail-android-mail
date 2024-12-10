@@ -22,6 +22,7 @@ import java.lang.ref.WeakReference
 import app.cash.turbine.test
 import arrow.core.right
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalConversationId
+import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageId
 import ch.protonmail.android.mailconversation.data.usecase.CreateRustConversationWatcher
 import ch.protonmail.android.mailmessage.data.local.RustMailboxFactory
@@ -83,19 +84,20 @@ class RustConversationDetailQueryImplTest {
             every { messages } returns expectedMessages.messages
             every { messageIdToOpen } returns messageToOpen
         }
+        val localLabelId = LocalLabelId(1uL)
         coEvery { rustMailboxFactory.create(userId) } returns mailbox.right()
         coEvery {
             createRustConversationWatcher(mailbox, conversationId, capture(callbackSlot))
         } returns WeakReference(watcherMock)
 
         // When
-        rustConversationQuery.observeConversation(userId, conversationId).test {
+        rustConversationQuery.observeConversation(userId, conversationId, localLabelId).test {
             // Then
             assertEquals(expectedConversation, awaitItem())
         }
 
         // When
-        rustConversationQuery.observeConversationMessages(userId, conversationId).test {
+        rustConversationQuery.observeConversationMessages(userId, conversationId, localLabelId).test {
 
             // Then
             val result = awaitItem()
@@ -119,6 +121,7 @@ class RustConversationDetailQueryImplTest {
             every { this@mockk.messages } returns expectedMessages.messages
             every { this@mockk.messageIdToOpen } returns messageToOpen
         }
+        val localLabelId = LocalLabelId(1uL)
         coEvery { rustMailboxFactory.create(userId) } returns mailbox.right()
         coEvery {
             createRustConversationWatcher(mailbox, conversationId, capture(callbackSlot))
@@ -126,7 +129,7 @@ class RustConversationDetailQueryImplTest {
         coEvery {
             getRustConversationMessages(mailbox, conversationId)
         } returns ConversationAndMessages(expectedConversation, messageToOpen, messages)
-        rustConversationQuery.observeConversation(userId, conversationId).test {
+        rustConversationQuery.observeConversation(userId, conversationId, localLabelId).test {
             skipItems(1)
             // When
             val updatedConversation = expectedConversation.copy(isStarred = true)
@@ -146,13 +149,14 @@ class RustConversationDetailQueryImplTest {
             assertEquals(updatedConversation, awaitItem())
 
             // When
-            rustConversationQuery.observeConversationMessages(UserIdTestData.userId, conversationId).test {
+            rustConversationQuery.observeConversationMessages(UserIdTestData.userId, conversationId, localLabelId)
+                .test {
 
-                // Then
-                val result = awaitItem()
-                assertEquals(updatedMessages, result)
-                assertEquals(updatedMessageToOpen, result.messageIdToOpen)
-            }
+                    // Then
+                    val result = awaitItem()
+                    assertEquals(updatedMessages, result)
+                    assertEquals(updatedMessageToOpen, result.messageIdToOpen)
+                }
         }
     }
 
@@ -165,6 +169,7 @@ class RustConversationDetailQueryImplTest {
         val callbackSlot = slot<LiveQueryCallback>()
         val expectedConversation = LocalConversationTestData.AugConversation
         val expectedMessages = LocalConversationMessages(messageToOpen, listOf(mockk()))
+        val localLabelId = LocalLabelId(1uL)
 
         val watcherMock = mockk<WatchedConversation> {
             every { conversation } returns expectedConversation
@@ -177,9 +182,9 @@ class RustConversationDetailQueryImplTest {
             createRustConversationWatcher(mailbox, conversationId, capture(callbackSlot))
         } returns WeakReference(watcherMock)
 
-        rustConversationQuery.observeConversation(userId, conversationId).test {
+        rustConversationQuery.observeConversation(userId, conversationId, localLabelId).test {
             skipItems(1)
-            rustConversationQuery.observeConversation(userId, conversationId).test {
+            rustConversationQuery.observeConversation(userId, conversationId, localLabelId).test {
                 assertEquals(expectedConversation, awaitItem())
             }
 
@@ -209,6 +214,7 @@ class RustConversationDetailQueryImplTest {
             every { messages } returns expectedMessages.messages
             every { messageIdToOpen } returns messageToOpen
         }
+        val localLabelId = LocalLabelId(1uL)
         coEvery { rustMailboxFactory.create(userId) } returns mailbox.right()
         coEvery {
             createRustConversationWatcher(mailbox, conversationId1, capture(callbackSlot))
@@ -218,11 +224,11 @@ class RustConversationDetailQueryImplTest {
         } returns WeakReference(watcherMock2)
 
         // When
-        rustConversationQuery.observeConversation(userId, conversationId1).test {
+        rustConversationQuery.observeConversation(userId, conversationId1, localLabelId).test {
             assertEquals(expectedConversation1, awaitItem())
         }
 
-        rustConversationQuery.observeConversation(userId, conversationId2).test {
+        rustConversationQuery.observeConversation(userId, conversationId2, localLabelId).test {
             assertEquals(expectedConversation2, awaitItem())
         }
 
@@ -254,9 +260,10 @@ class RustConversationDetailQueryImplTest {
         // When
         val numberOfConcurrentCalls = 10
         val jobList = mutableListOf<Deferred<Unit>>()
+        val localLabelId = LocalLabelId(1uL)
         repeat(numberOfConcurrentCalls) {
             val job = async {
-                rustConversationQuery.observeConversation(userId, conversationId).test {
+                rustConversationQuery.observeConversation(userId, conversationId, localLabelId).test {
                     assertEquals(expectedConversation, awaitItem())
                 }
             }

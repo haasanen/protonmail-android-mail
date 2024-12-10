@@ -54,24 +54,25 @@ class RustConversationRepositoryImpl @Inject constructor(
     // Awaiting for rust to add structured error handling
     override fun observeConversation(
         userId: UserId,
-        id: ConversationId
+        id: ConversationId,
+        labelId: LabelId
     ): Flow<Either<DataError, Conversation>> = rustConversationDataSource
-        .observeConversation(userId, id.toLocalConversationId())
+        .observeConversation(userId, id.toLocalConversationId(), labelId.toLocalLabelId())
         ?.map { it.toConversation().right() }
         ?: flowOf(DataError.Local.Unknown.left())
 
 
     override fun observeConversationMessages(
         userId: UserId,
-        conversationId: ConversationId
-    ): Flow<Either<DataError.Local, ConversationMessages>> {
-        return rustConversationDataSource.observeConversationMessages(userId, conversationId.toLocalConversationId())
-            .map { conversationMessages ->
-                conversationMessages
-                    .toConversationMessagesWithMessageToOpen()
-                    ?.right()
-                    ?: DataError.Local.NoDataCached.left()
-            }
+        conversationId: ConversationId,
+        labelId: LabelId
+    ): Flow<Either<DataError.Local, ConversationMessages>> = rustConversationDataSource.observeConversationMessages(
+        userId, conversationId.toLocalConversationId(), labelId.toLocalLabelId()
+    ).map { conversationMessages ->
+        conversationMessages
+            .toConversationMessagesWithMessageToOpen()
+            ?.right()
+            ?: DataError.Local.NoDataCached.left()
     }
 
     // It will be implemented later on

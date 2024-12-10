@@ -22,18 +22,18 @@ import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.sample.AddressIdSample
 import ch.protonmail.android.mailcommon.domain.sample.AvatarInformationSample
 import ch.protonmail.android.mailcommon.domain.sample.ConversationIdSample
-import ch.protonmail.android.maillabel.domain.sample.LabelSample
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.maillabel.domain.model.ExclusiveLocation
+import ch.protonmail.android.maillabel.domain.model.Label
+import ch.protonmail.android.maillabel.domain.model.LabelId
+import ch.protonmail.android.maillabel.domain.model.SystemLabelId
+import ch.protonmail.android.maillabel.domain.sample.LabelSample
 import ch.protonmail.android.mailmessage.domain.model.AttachmentCount
 import ch.protonmail.android.mailmessage.domain.model.Message
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.Recipient
 import ch.protonmail.android.mailmessage.domain.model.Sender
 import me.proton.core.domain.entity.UserId
-import ch.protonmail.android.maillabel.domain.model.Label
-import ch.protonmail.android.maillabel.domain.model.LabelId
-import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import me.proton.core.user.domain.entity.AddressId
 
 object MessageSample {
@@ -221,6 +221,15 @@ object MessageSample {
         messageId = MessageIdSample.UnreadMessageMayThird,
         time = MayThird2023,
         unread = true
+    )
+
+    val MessageWithNoExclusiveLocation = build(
+        conversationId = ConversationIdSample.AlphaAppFeedback,
+        messageId = MessageIdSample.AlphaAppQAReport,
+        sender = RecipientSample.John,
+        subject = "This message is orphan...",
+        time = Oct2022,
+        exclusiveLocation = ExclusiveLocation.NoLocation
     )
 
     private val MayFirst2023 get() = 1_682_899_200L

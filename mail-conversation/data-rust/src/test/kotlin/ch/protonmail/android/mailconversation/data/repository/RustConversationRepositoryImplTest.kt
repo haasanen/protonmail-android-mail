@@ -28,6 +28,7 @@ import ch.protonmail.android.mailconversation.data.local.RustConversationDataSou
 import ch.protonmail.android.mailconversation.data.mapper.toConversation
 import ch.protonmail.android.mailconversation.domain.entity.Conversation
 import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
+import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.LabelWithSystemLabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.maillabel.domain.sample.LabelIdSample
@@ -89,15 +90,22 @@ class RustConversationRepositoryImplTest {
         val conversationId = LocalConversationIdSample.AugConversation.toConversationId()
         val localConversation = LocalConversationTestData.AugConversation
         val expected = localConversation.toConversation()
-        coEvery { rustConversationDataSource.observeConversation(userId, any()) } returns flowOf(localConversation)
+        val labelId = LabelId("2")
+        coEvery {
+            rustConversationDataSource.observeConversation(
+                userId,
+                any(),
+                labelId.toLocalLabelId()
+            )
+        } returns flowOf(localConversation)
 
         // When
-        rustConversationRepository.observeConversation(userId, conversationId).test {
+        rustConversationRepository.observeConversation(userId, conversationId, labelId).test {
             val result = awaitItem().getOrNull()
 
             // Then
             assertEquals(expected, result)
-            coVerify { rustConversationDataSource.observeConversation(userId, any()) }
+            coVerify { rustConversationDataSource.observeConversation(userId, any(), labelId.toLocalLabelId()) }
 
             awaitComplete()
         }
@@ -108,16 +116,17 @@ class RustConversationRepositoryImplTest {
     fun `observeConversation should return error when rust provides no conversation `() = runTest {
         // Given
         val conversationId = LocalConversationIdSample.AugConversation.toConversationId()
+        val labelId = LabelId("2")
 
-        coEvery { rustConversationDataSource.observeConversation(userId, any()) } returns null
+        coEvery { rustConversationDataSource.observeConversation(userId, any(), labelId.toLocalLabelId()) } returns null
 
         // When
-        rustConversationRepository.observeConversation(userId, conversationId).test {
+        rustConversationRepository.observeConversation(userId, conversationId, labelId).test {
             val result = awaitItem().getOrNull()
 
             // Then
             assertEquals(null, result)
-            coVerify { rustConversationDataSource.observeConversation(userId, any()) }
+            coVerify { rustConversationDataSource.observeConversation(userId, any(), labelId.toLocalLabelId()) }
 
             awaitComplete()
         }
@@ -138,13 +147,18 @@ class RustConversationRepositoryImplTest {
             messages = localMessages
         )
         val expectedConversationMessages = localConversationMessages.toConversationMessagesWithMessageToOpen()
+        val labelId = LabelId("2")
 
         coEvery {
-            rustConversationDataSource.observeConversationMessages(userId, conversationId.toLocalConversationId())
+            rustConversationDataSource.observeConversationMessages(
+                userId,
+                conversationId.toLocalConversationId(),
+                labelId.toLocalLabelId()
+            )
         } returns flowOf(localConversationMessages)
 
         // When
-        rustConversationRepository.observeConversationMessages(userId, conversationId).test {
+        rustConversationRepository.observeConversationMessages(userId, conversationId, labelId).test {
             val result = awaitItem().getOrElse { null }
 
             // Then
@@ -152,7 +166,8 @@ class RustConversationRepositoryImplTest {
             coVerify {
                 rustConversationDataSource.observeConversationMessages(
                     userId,
-                    conversationId.toLocalConversationId()
+                    conversationId.toLocalConversationId(),
+                    labelId.toLocalLabelId()
                 )
             }
             awaitComplete()
@@ -165,13 +180,18 @@ class RustConversationRepositoryImplTest {
         val userId = UserIdTestData.userId
         val conversationId = LocalConversationIdSample.AugConversation.toConversationId()
         val expectedError = DataError.Local.NoDataCached.left()
+        val labelId = LabelId("2")
 
         coEvery {
-            rustConversationDataSource.observeConversationMessages(userId, conversationId.toLocalConversationId())
+            rustConversationDataSource.observeConversationMessages(
+                userId,
+                conversationId.toLocalConversationId(),
+                labelId.toLocalLabelId()
+            )
         } returns flowOf(LocalConversationMessages(LocalMessageIdSample.AugWeatherForecast, emptyList()))
 
         // When
-        rustConversationRepository.observeConversationMessages(userId, conversationId).test {
+        rustConversationRepository.observeConversationMessages(userId, conversationId, labelId).test {
             val result = awaitItem()
 
             // Then
@@ -179,7 +199,8 @@ class RustConversationRepositoryImplTest {
             coVerify {
                 rustConversationDataSource.observeConversationMessages(
                     userId,
-                    conversationId.toLocalConversationId()
+                    conversationId.toLocalConversationId(),
+                    labelId.toLocalLabelId()
                 )
             }
             awaitComplete()

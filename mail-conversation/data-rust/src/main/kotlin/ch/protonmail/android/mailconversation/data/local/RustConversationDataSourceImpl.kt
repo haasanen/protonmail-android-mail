@@ -82,16 +82,22 @@ class RustConversationDataSourceImpl @Inject constructor(
         }
     }
 
-    override fun observeConversation(userId: UserId, conversationId: LocalConversationId): Flow<LocalConversation>? =
-        runCatching { rustConversationDetailQuery.observeConversation(userId, conversationId) }
-            .onFailure { Timber.w("rust-conversation: failed to observe conversation $it") }
-            .getOrNull()
+    override fun observeConversation(
+        userId: UserId,
+        conversationId: LocalConversationId,
+        labelId: LocalLabelId
+    ): Flow<LocalConversation>? = runCatching {
+        rustConversationDetailQuery.observeConversation(userId, conversationId, labelId)
+    }.onFailure {
+        Timber.w("rust-conversation: failed to observe conversation $it")
+    }.getOrNull()
 
     override fun observeConversationMessages(
         userId: UserId,
-        conversationId: LocalConversationId
+        conversationId: LocalConversationId,
+        labelId: LocalLabelId
     ): Flow<LocalConversationMessages> = rustConversationDetailQuery.observeConversationMessages(
-        userId, conversationId
+        userId, conversationId, labelId
     )
 
     override suspend fun deleteConversations(userId: UserId, conversations: List<LocalConversationId>) =

@@ -42,14 +42,19 @@ interface ConversationRepository {
      * Returns any conversation data that is available locally right away.
      * Message metadata is fetched and returned as available
      */
-    fun observeConversation(userId: UserId, id: ConversationId): Flow<Either<DataError, Conversation>>
+    fun observeConversation(
+        userId: UserId,
+        id: ConversationId,
+        labelId: LabelId
+    ): Flow<Either<DataError, Conversation>>
 
     /**
      * Get all the [Message]s metadata for a given [ConversationId], for [userId] from the local storage
      */
     fun observeConversationMessages(
         userId: UserId,
-        conversationId: ConversationId
+        conversationId: ConversationId,
+        labelId: LabelId
     ): Flow<Either<DataError.Local, ConversationMessages>>
 
     /**

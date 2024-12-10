@@ -22,6 +22,7 @@ import arrow.core.Either
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailconversation.domain.repository.ConversationRepository
+import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.mailmessage.domain.model.ConversationMessages
 import kotlinx.coroutines.flow.Flow
 import me.proton.core.domain.entity.UserId
@@ -31,6 +32,10 @@ class ObserveConversationMessages @Inject constructor(
     private val conversationRepository: ConversationRepository
 ) {
 
-    operator fun invoke(userId: UserId, conversationId: ConversationId): Flow<Either<DataError, ConversationMessages>> =
-        conversationRepository.observeConversationMessages(userId, conversationId)
+    operator fun invoke(
+        userId: UserId,
+        conversationId: ConversationId,
+        labelId: LabelId
+    ): Flow<Either<DataError, ConversationMessages>> =
+        conversationRepository.observeConversationMessages(userId, conversationId, labelId)
 }

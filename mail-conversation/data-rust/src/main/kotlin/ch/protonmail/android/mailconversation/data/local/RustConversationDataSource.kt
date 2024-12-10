@@ -34,11 +34,16 @@ import uniffi.proton_mail_uniffi.MoveAction
 
 interface RustConversationDataSource {
 
-    fun observeConversation(userId: UserId, conversationId: LocalConversationId): Flow<LocalConversation>?
+    fun observeConversation(
+        userId: UserId,
+        conversationId: LocalConversationId,
+        labelId: LocalLabelId
+    ): Flow<LocalConversation>?
 
     fun observeConversationMessages(
         userId: UserId,
-        conversationId: LocalConversationId
+        conversationId: LocalConversationId,
+        labelId: LocalLabelId
     ): Flow<LocalConversationMessages>
 
     suspend fun getConversations(userId: UserId, pageKey: PageKey): List<LocalConversation>

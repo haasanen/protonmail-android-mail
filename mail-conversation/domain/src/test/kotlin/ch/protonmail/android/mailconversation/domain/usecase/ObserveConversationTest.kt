@@ -24,6 +24,7 @@ import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailconversation.domain.repository.ConversationRepository
+import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.testdata.conversation.ConversationTestData
 import ch.protonmail.android.testdata.user.UserIdTestData.userId
 import io.mockk.every
@@ -39,6 +40,7 @@ class ObserveConversationTest {
         every {
             this@mockk.observeConversation(
                 userId,
+                any(),
                 any()
             )
         } returns flowOf(DataError.Local.NoDataCached.left())
@@ -51,10 +53,11 @@ class ObserveConversationTest {
         // Given
         val conversationId = ConversationId(ConversationTestData.RAW_CONVERSATION_ID)
         val error = DataError.Local.NoDataCached
-        every { repository.observeConversation(userId, conversationId) } returns flowOf(error.left())
+        val labelId = LabelId("3")
+        every { repository.observeConversation(userId, conversationId, labelId) } returns flowOf(error.left())
 
         // When
-        observeConversation(userId, conversationId).test {
+        observeConversation(userId, conversationId, labelId).test {
             // Then
             assertEquals(error.left(), awaitItem())
             awaitComplete()
@@ -66,10 +69,11 @@ class ObserveConversationTest {
         // Given
         val conversationId = ConversationId(ConversationTestData.RAW_CONVERSATION_ID)
         val conversation = ConversationTestData.conversation
-        every { repository.observeConversation(userId, conversationId) } returns flowOf(conversation.right())
+        val labelId = LabelId("3")
+        every { repository.observeConversation(userId, conversationId, labelId) } returns flowOf(conversation.right())
 
         // When
-        observeConversation(userId, conversationId).test {
+        observeConversation(userId, conversationId, labelId).test {
             // Then
             assertEquals(conversation.right(), awaitItem())
             awaitComplete()
@@ -81,10 +85,11 @@ class ObserveConversationTest {
         // Given
         val conversationId = ConversationId(ConversationTestData.RAW_CONVERSATION_ID)
         val conversation = ConversationTestData.conversation
-        every { repository.observeConversation(userId, conversationId) } returns flowOf(conversation.right())
+        val labelId = LabelId("3")
+        every { repository.observeConversation(userId, conversationId, labelId) } returns flowOf(conversation.right())
 
         // When
-        observeConversation(userId, conversationId).test {
+        observeConversation(userId, conversationId, labelId).test {
             // Then
             assertEquals(conversation.right(), awaitItem())
             awaitComplete()

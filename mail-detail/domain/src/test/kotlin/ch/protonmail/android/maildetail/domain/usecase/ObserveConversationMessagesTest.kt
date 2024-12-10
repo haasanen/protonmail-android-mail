@@ -26,6 +26,7 @@ import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.sample.ConversationIdSample
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.mailconversation.domain.repository.ConversationRepository
+import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.mailmessage.domain.model.ConversationMessages
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
 import ch.protonmail.android.mailmessage.domain.sample.MessageSample
@@ -42,10 +43,7 @@ internal class ObserveConversationMessagesTest {
         nonEmptyListOf(MessageSample.AugWeatherForecast),
         MessageIdSample.AugWeatherForecast
     )
-    private val conversationRepository: ConversationRepository = mockk {
-        every { observeConversationMessages(UserIdSample.Primary, ConversationIdSample.WeatherForecast) } returns
-            flowOf(conversationMessages.right())
-    }
+    private val conversationRepository: ConversationRepository = mockk()
     private val observeConversationMessages = ObserveConversationMessages(
         conversationRepository = conversationRepository
     )
@@ -57,11 +55,18 @@ internal class ObserveConversationMessagesTest {
             nonEmptyListOf(MessageSample.AugWeatherForecast),
             MessageSample.AugWeatherForecast.messageId
         ).right()
+        val labelId = LabelId("1")
+        every {
+            conversationRepository.observeConversationMessages(
+                UserIdSample.Primary, ConversationIdSample.WeatherForecast, labelId
+            )
+        } returns flowOf(conversationMessages.right())
 
         // when
         observeConversationMessages(
             UserIdSample.Primary,
-            ConversationIdSample.WeatherForecast
+            ConversationIdSample.WeatherForecast,
+            labelId
         ).test {
 
             // then
@@ -78,10 +83,10 @@ internal class ObserveConversationMessagesTest {
             nonEmptyListOf(message),
             message.messageId
         ).right()
-
+        val labelId = LabelId("1")
         every {
             conversationRepository.observeConversationMessages(
-                UserIdSample.Primary, ConversationIdSample.Invoices
+                UserIdSample.Primary, ConversationIdSample.Invoices, labelId
             )
         } returns
             flowOf(ConversationMessages(nonEmptyListOf(message), MessageSample.Invoice.messageId).right())
@@ -89,7 +94,8 @@ internal class ObserveConversationMessagesTest {
         // when
         observeConversationMessages(
             UserIdSample.Primary,
-            ConversationIdSample.Invoices
+            ConversationIdSample.Invoices,
+            labelId
         ).test {
 
             // then
@@ -102,17 +108,18 @@ internal class ObserveConversationMessagesTest {
     fun `when messages emits an error, the error is emitted`() = runTest {
         // given
         val error = DataError.Local.NoDataCached.left()
+        val labelId = LabelId("1")
         every {
             conversationRepository.observeConversationMessages(
-                UserIdSample.Primary,
-                ConversationIdSample.WeatherForecast
+                UserIdSample.Primary, ConversationIdSample.WeatherForecast, labelId
             )
         } returns flowOf(error)
 
         // when
         observeConversationMessages(
             UserIdSample.Primary,
-            ConversationIdSample.WeatherForecast
+            ConversationIdSample.WeatherForecast,
+            labelId
         ).test {
 
             // then

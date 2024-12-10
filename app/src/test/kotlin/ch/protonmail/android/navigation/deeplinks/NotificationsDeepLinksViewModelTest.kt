@@ -28,10 +28,14 @@ import ch.protonmail.android.mailcommon.domain.sample.UserAddressSample
 import ch.protonmail.android.mailcommon.domain.usecase.GetPrimaryAddress
 import ch.protonmail.android.mailconversation.domain.repository.ConversationRepository
 import ch.protonmail.android.mailconversation.domain.sample.ConversationSample
+import ch.protonmail.android.maillabel.domain.model.LabelId
+import ch.protonmail.android.maillabel.domain.model.MailLabelId
+import ch.protonmail.android.maillabel.domain.model.SystemLabelId
+import ch.protonmail.android.maillabel.domain.usecase.FindLocalSystemLabelId
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
 import ch.protonmail.android.mailmessage.domain.sample.MessageSample.AlphaAppQAReport
-import ch.protonmail.android.mailsettings.domain.repository.MailSettingsRepository
+import ch.protonmail.android.mailmessage.domain.sample.MessageSample.MessageWithNoExclusiveLocation
 import ch.protonmail.android.navigation.deeplinks.NotificationsDeepLinksViewModel.State.NavigateToComposerForReply
 import ch.protonmail.android.navigation.deeplinks.NotificationsDeepLinksViewModel.State.NavigateToConversation
 import ch.protonmail.android.navigation.deeplinks.NotificationsDeepLinksViewModel.State.NavigateToInbox
@@ -63,9 +67,7 @@ class NotificationsDeepLinksViewModelTest {
     private val messageRepository: MessageRepository = mockk()
     private val conversationRepository: ConversationRepository = mockk()
     private val mailSettings: MailSettings = mockk()
-    private val mailSettingsRepository: MailSettingsRepository = mockk {
-        coEvery { getMailSettings(any(), any()) } returns mailSettings
-    }
+    private val findLocalSystemLabelId: FindLocalSystemLabelId = mockk()
     private val getPrimaryAddress: GetPrimaryAddress = mockk()
 
     @Before
@@ -93,6 +95,7 @@ class NotificationsDeepLinksViewModelTest {
         // Given
         val messageId = UUID.randomUUID().toString()
         val userId = UUID.randomUUID().toString()
+        val labelId = LabelId("1")
         coEvery { accountManager.getPrimaryUserId() } returns flowOf(UserId(userId))
         coEvery { mailSettings.viewMode } returns IntEnum(ViewMode.ConversationGrouping.value, null)
         coEvery { messageRepository.observeMessage(UserId(userId), MessageId(messageId)) } returns flowOf(
@@ -101,7 +104,8 @@ class NotificationsDeepLinksViewModelTest {
         coEvery {
             conversationRepository.observeConversation(
                 UserId(userId),
-                AlphaAppQAReport.conversationId
+                AlphaAppQAReport.conversationId,
+                labelId
             )
         } returns flowOf(
             ConversationSample.AlphaAppFeedback.right()
@@ -125,6 +129,7 @@ class NotificationsDeepLinksViewModelTest {
         // Given
         val messageId = UUID.randomUUID().toString()
         val userId = UUID.randomUUID().toString()
+        val labelId = LabelId("1")
         coEvery { accountManager.getPrimaryUserId() } returns flowOf(UserId(userId))
         coEvery { mailSettings.viewMode } returns IntEnum(ViewMode.NoConversationGrouping.value, null)
         coEvery { messageRepository.observeMessage(UserId(userId), MessageId(messageId)) } returns flowOf(
@@ -133,7 +138,8 @@ class NotificationsDeepLinksViewModelTest {
         coEvery {
             conversationRepository.observeConversation(
                 UserId(userId),
-                AlphaAppQAReport.conversationId
+                AlphaAppQAReport.conversationId,
+                labelId
             )
         } returns flowOf(
             ConversationSample.AlphaAppFeedback.right()
@@ -194,6 +200,7 @@ class NotificationsDeepLinksViewModelTest {
         // Given
         val messageId = UUID.randomUUID().toString()
         val userId = UUID.randomUUID().toString()
+        val labelId = LabelId("1")
         coEvery { mailSettings.viewMode } returns IntEnum(ViewMode.ConversationGrouping.value, null)
         coEvery { messageRepository.observeMessage(UserId(userId), MessageId(messageId)) } returns flowOf(
             AlphaAppQAReport.right()
@@ -201,7 +208,8 @@ class NotificationsDeepLinksViewModelTest {
         coEvery {
             conversationRepository.observeConversation(
                 UserId(userId),
-                AlphaAppQAReport.conversationId
+                AlphaAppQAReport.conversationId,
+                labelId
             )
         } returns flowOf(DataError.Local.Unknown.left())
         val viewModel = buildViewModel()
@@ -244,6 +252,7 @@ class NotificationsDeepLinksViewModelTest {
         val secondaryAccount = AccountSample.Primary.copy(userId = notificationUserId)
         val messageId = UUID.randomUUID().toString()
         val viewModel = buildViewModel()
+        val labelId = LabelId("1")
         coEvery { accountManager.getPrimaryUserId() } returns flowOf(activeAccount.userId)
         coEvery { getPrimaryAddress.invoke(secondaryAccount.userId) } returns UserAddressSample.PrimaryAddress.right()
         coEvery { accountManager.getAccounts() } returns flowOf(listOf(activeAccount, secondaryAccount))
@@ -254,7 +263,8 @@ class NotificationsDeepLinksViewModelTest {
         coEvery {
             conversationRepository.observeConversation(
                 secondaryAccount.userId,
-                AlphaAppQAReport.conversationId
+                AlphaAppQAReport.conversationId,
+                labelId
             )
         } returns flowOf(
             ConversationSample.AlphaAppFeedback.right()
@@ -323,11 +333,54 @@ class NotificationsDeepLinksViewModelTest {
             coVerify { accountManager.setAsPrimary(secondaryAccount.userId) }
         }
 
+    @Test
+    fun `Should fallback to all mail when message exclusive location can't be resolved`() = runTest {
+        // Given
+        val messageId = UUID.randomUUID().toString()
+        val userId = UUID.randomUUID().toString()
+        val labelId = LabelId("resolvedAllMail")
+        coEvery { accountManager.getPrimaryUserId() } returns flowOf(UserId(userId))
+        coEvery { mailSettings.viewMode } returns IntEnum(ViewMode.ConversationGrouping.value, null)
+        coEvery { messageRepository.observeMessage(UserId(userId), MessageId(messageId)) } returns flowOf(
+            MessageWithNoExclusiveLocation.right()
+        )
+        coEvery { findLocalSystemLabelId(UserId(userId), SystemLabelId.AllMail) } returns MailLabelId.System(labelId)
+        coEvery {
+            conversationRepository.observeConversation(
+                UserId(userId),
+                MessageWithNoExclusiveLocation.conversationId,
+                labelId
+            )
+        } returns flowOf(
+            ConversationSample.AlphaAppFeedback.right()
+        )
+        val viewModel = buildViewModel()
+
+        // When
+        viewModel.navigateToMessage(messageId, userId)
+
+        // Then
+        viewModel.state.test {
+            assertEquals(
+                NavigateToConversation(AlphaAppQAReport.conversationId),
+                awaitItem()
+            )
+            coVerify {
+                conversationRepository.observeConversation(
+                    UserId(userId),
+                    MessageWithNoExclusiveLocation.conversationId,
+                    labelId
+                )
+            }
+        }
+    }
+
     private fun buildViewModel() = NotificationsDeepLinksViewModel(
         networkManager = networkManager,
         accountManager = accountManager,
         getPrimaryAddress = getPrimaryAddress,
         messageRepository = messageRepository,
-        conversationRepository = conversationRepository
+        conversationRepository = conversationRepository,
+        findLocalSystemLabelId = findLocalSystemLabelId
     )
 }

@@ -24,6 +24,9 @@ import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.usecase.GetPrimaryAddress
 import ch.protonmail.android.mailconversation.domain.repository.ConversationRepository
+import ch.protonmail.android.maillabel.domain.model.ExclusiveLocation
+import ch.protonmail.android.maillabel.domain.model.SystemLabelId
+import ch.protonmail.android.maillabel.domain.usecase.FindLocalSystemLabelId
 import ch.protonmail.android.mailmessage.domain.model.Message
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
@@ -53,7 +56,8 @@ class NotificationsDeepLinksViewModel @Inject constructor(
     private val accountManager: AccountManager,
     private val getPrimaryAddress: GetPrimaryAddress,
     private val messageRepository: MessageRepository,
-    private val conversationRepository: ConversationRepository
+    private val conversationRepository: ConversationRepository,
+    private val findLocalSystemLabelId: FindLocalSystemLabelId
 ) : ViewModel() {
 
     private val _state = MutableStateFlow<State>(State.Launched)
@@ -177,9 +181,12 @@ class NotificationsDeepLinksViewModel @Inject constructor(
         userId: UserId,
         switchedAccountEmail: String?
     ) {
+        val labelId = message.exclusiveLocation.getLabelId(userId) ?: return
+
         conversationRepository.observeConversation(
             userId,
-            message.conversationId
+            message.conversationId,
+            labelId
         ).collectLatest { conversationResult ->
             conversationResult
                 .onLeft {
@@ -194,6 +201,12 @@ class NotificationsDeepLinksViewModel @Inject constructor(
                         )
                 }
         }
+    }
+
+    private suspend fun ExclusiveLocation.getLabelId(userId: UserId) = when (this) {
+        is ExclusiveLocation.Folder -> this.labelId
+        is ExclusiveLocation.NoLocation -> findLocalSystemLabelId(userId, SystemLabelId.AllMail)?.labelId
+        is ExclusiveLocation.System -> this.labelId
     }
 
     private fun isOffline() = networkManager.networkStatus == NetworkStatus.Disconnected

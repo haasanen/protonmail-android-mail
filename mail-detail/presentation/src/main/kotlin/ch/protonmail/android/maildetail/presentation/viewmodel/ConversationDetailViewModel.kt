@@ -48,6 +48,7 @@ import ch.protonmail.android.maildetail.domain.repository.InMemoryConversationSt
 import ch.protonmail.android.maildetail.domain.usecase.GetAttachmentIntentValues
 import ch.protonmail.android.maildetail.domain.usecase.GetDownloadingAttachmentsForMessages
 import ch.protonmail.android.maildetail.domain.usecase.IsProtonCalendarInstalled
+import ch.protonmail.android.maildetail.domain.usecase.LabelConversation
 import ch.protonmail.android.maildetail.domain.usecase.MarkConversationAsRead
 import ch.protonmail.android.maildetail.domain.usecase.MarkConversationAsUnread
 import ch.protonmail.android.maildetail.domain.usecase.MarkMessageAsRead
@@ -58,7 +59,6 @@ import ch.protonmail.android.maildetail.domain.usecase.ObserveConversationMessag
 import ch.protonmail.android.maildetail.domain.usecase.ObserveConversationViewState
 import ch.protonmail.android.maildetail.domain.usecase.ObserveDetailBottomBarActions
 import ch.protonmail.android.maildetail.domain.usecase.ObserveMessageAttachmentStatus
-import ch.protonmail.android.maildetail.domain.usecase.LabelConversation
 import ch.protonmail.android.maildetail.domain.usecase.ReportPhishingMessage
 import ch.protonmail.android.maildetail.domain.usecase.SetMessageViewState
 import ch.protonmail.android.maildetail.presentation.mapper.ConversationDetailMessageUiModelMapper
@@ -361,7 +361,7 @@ class ConversationDetailViewModel @Inject constructor(
     }.launchIn(viewModelScope)
 
     private fun observeConversationMetadata(conversationId: ConversationId) = primaryUserId.flatMapLatest { userId ->
-        observeConversation(userId, conversationId)
+        observeConversation(userId, conversationId, openedFromLocation)
             .mapLatest { either ->
                 either.fold(
                     ifLeft = {
@@ -383,7 +383,7 @@ class ConversationDetailViewModel @Inject constructor(
     private fun observeConversationMessages(conversationId: ConversationId) = primaryUserId.flatMapLatest { userId ->
         combine(
             observeContacts(userId),
-            observeConversationMessages(userId, conversationId).ignoreLocalErrors(),
+            observeConversationMessages(userId, conversationId, openedFromLocation).ignoreLocalErrors(),
             observeConversationViewState(),
             observePrimaryUserAddress(),
             observeAvatarImageStates()
@@ -784,9 +784,10 @@ class ConversationDetailViewModel @Inject constructor(
         return messageIdStr?.let { if (it == "null") null else MessageIdUiModel(it) }
     }
 
-    private fun getOpenedFromLocation(): LabelId? {
+    private fun getOpenedFromLocation(): LabelId {
         val labelId = savedStateHandle.get<String>(ConversationDetailScreen.OpenedFromLocationKey)
-        return labelId?.let { if (it == "null") null else LabelId(it) }
+            ?: throw IllegalStateException("No opened from label id given")
+        return LabelId(labelId)
     }
 
     private fun emitNewStateFrom(event: ConversationDetailOperation) {

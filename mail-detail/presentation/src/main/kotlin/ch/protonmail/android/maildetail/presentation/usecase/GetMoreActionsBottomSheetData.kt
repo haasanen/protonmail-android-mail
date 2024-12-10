@@ -53,7 +53,7 @@ class GetMoreActionsBottomSheetData @Inject constructor(
         conversationId: ConversationId
     ): DetailMoreActionsBottomSheetEvent.DataLoaded? =
         getConversationAvailableActions(userId, labelId, listOf(conversationId)).map { availableActions ->
-            val conversation = observeConversation(userId, conversationId).firstOrNull()?.getOrNull()
+            val conversation = observeConversation(userId, conversationId, labelId).firstOrNull()?.getOrNull()
                 ?: return null
 
             return DetailMoreActionsBottomSheetEvent.DataLoaded(

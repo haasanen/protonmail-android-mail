@@ -134,12 +134,13 @@ class RustConversationDataSourceImplTest {
         // Given
         val userId = UserIdTestData.userId
         val conversationId = LocalConversationIdSample.AugConversation
+        val localLabelId = LocalLabelId(3uL)
         coEvery {
-            rustConversationDetailQuery.observeConversation(userId, conversationId)
+            rustConversationDetailQuery.observeConversation(userId, conversationId, localLabelId)
         } returns flowOf(LocalConversationTestData.AugConversation)
 
         // When
-        val result = dataSource.observeConversation(userId, conversationId)?.first()
+        val result = dataSource.observeConversation(userId, conversationId, localLabelId)?.first()
 
         // Then
         assertEquals(LocalConversationTestData.AugConversation, result)
@@ -150,12 +151,13 @@ class RustConversationDataSourceImplTest {
         // Given
         val userId = UserIdTestData.userId
         val conversationId = LocalConversationIdSample.AugConversation
+        val localLabelId = LocalLabelId(3uL)
         coEvery {
-            rustConversationDetailQuery.observeConversation(userId, conversationId)
+            rustConversationDetailQuery.observeConversation(userId, conversationId, localLabelId)
         } throws MailboxException.Io("DB Exception")
 
         // When
-        val result = dataSource.observeConversation(userId, conversationId)
+        val result = dataSource.observeConversation(userId, conversationId, localLabelId)
 
         // Then
         assertNull(result)
@@ -175,19 +177,20 @@ class RustConversationDataSourceImplTest {
             messageIdToOpen = LocalMessageIdSample.AugWeatherForecast,
             messages = messages
         )
+        val localLabelId = LocalLabelId(3uL)
         coEvery {
             rustConversationDetailQuery.observeConversationMessages(
-                userId, conversationId
+                userId, conversationId, localLabelId
             )
         } returns flowOf(localConversationMessages)
 
         // When
-        dataSource.observeConversationMessages(userId, conversationId).test {
+        dataSource.observeConversationMessages(userId, conversationId, localLabelId).test {
 
             // Then
             val result = awaitItem()
             assertEquals(localConversationMessages, result)
-            coVerify { rustConversationDetailQuery.observeConversationMessages(userId, conversationId) }
+            coVerify { rustConversationDetailQuery.observeConversationMessages(userId, conversationId, localLabelId) }
 
             awaitComplete()
         }
