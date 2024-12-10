@@ -85,7 +85,7 @@ class RustConversationDetailQueryImplTest {
             every { messageIdToOpen } returns messageToOpen
         }
         val localLabelId = LocalLabelId(1uL)
-        coEvery { rustMailboxFactory.create(userId) } returns mailbox.right()
+        coEvery { rustMailboxFactory.create(userId, localLabelId) } returns mailbox.right()
         coEvery {
             createRustConversationWatcher(mailbox, conversationId, capture(callbackSlot))
         } returns WeakReference(watcherMock)
@@ -122,7 +122,7 @@ class RustConversationDetailQueryImplTest {
             every { this@mockk.messageIdToOpen } returns messageToOpen
         }
         val localLabelId = LocalLabelId(1uL)
-        coEvery { rustMailboxFactory.create(userId) } returns mailbox.right()
+        coEvery { rustMailboxFactory.create(userId, localLabelId) } returns mailbox.right()
         coEvery {
             createRustConversationWatcher(mailbox, conversationId, capture(callbackSlot))
         } returns WeakReference(watcherMock)
@@ -177,7 +177,7 @@ class RustConversationDetailQueryImplTest {
             every { messageIdToOpen } returns messageToOpen
 
         }
-        coEvery { rustMailboxFactory.create(userId) } returns mailbox.right()
+        coEvery { rustMailboxFactory.create(userId, localLabelId) } returns mailbox.right()
         coEvery {
             createRustConversationWatcher(mailbox, conversationId, capture(callbackSlot))
         } returns WeakReference(watcherMock)
@@ -215,7 +215,7 @@ class RustConversationDetailQueryImplTest {
             every { messageIdToOpen } returns messageToOpen
         }
         val localLabelId = LocalLabelId(1uL)
-        coEvery { rustMailboxFactory.create(userId) } returns mailbox.right()
+        coEvery { rustMailboxFactory.create(userId, localLabelId) } returns mailbox.right()
         coEvery {
             createRustConversationWatcher(mailbox, conversationId1, capture(callbackSlot))
         } returns WeakReference(watcherMock1)
@@ -251,7 +251,8 @@ class RustConversationDetailQueryImplTest {
             every { messages } returns expectedMessages.messages
             every { messageIdToOpen } returns messageToOpen
         }
-        coEvery { rustMailboxFactory.create(userId) } returns mailbox.right()
+        val localLabelId = LocalLabelId(1uL)
+        coEvery { rustMailboxFactory.create(userId, localLabelId) } returns mailbox.right()
         coEvery { createRustConversationWatcher(mailbox, conversationId, capture(callbackSlot)) } coAnswers {
             delay(100) // Simulate delay to enforce concurrency
             WeakReference(watcherMock)
@@ -260,7 +261,6 @@ class RustConversationDetailQueryImplTest {
         // When
         val numberOfConcurrentCalls = 10
         val jobList = mutableListOf<Deferred<Unit>>()
-        val localLabelId = LocalLabelId(1uL)
         repeat(numberOfConcurrentCalls) {
             val job = async {
                 rustConversationQuery.observeConversation(userId, conversationId, localLabelId).test {

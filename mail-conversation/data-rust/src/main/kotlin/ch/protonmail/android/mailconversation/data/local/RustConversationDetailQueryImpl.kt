@@ -53,6 +53,7 @@ class RustConversationDetailQueryImpl @Inject constructor(
     private var conversationWatcher: WeakReference<WatchedConversation>? = null
     private var currentConversationId: LocalConversationId? = null
     private var currentUserId: UserId? = null
+    private var currentLabelId: LocalLabelId? = null
 
     private val mutex = Mutex()
     private val conversationMutableStatusFlow = MutableStateFlow<LocalConversation?>(null)
@@ -70,7 +71,16 @@ class RustConversationDetailQueryImpl @Inject constructor(
             Timber.d("rust-conversation-detail-query: conversation updated")
             coroutineScope.launch {
                 mutex.withLock {
-                    val mailbox = currentUserId?.let { rustMailboxFactory.create(it).getOrNull() }
+                    val userId = currentUserId ?: run {
+                        Timber.w("rust-conversation-messages: Failed to update convo, no user id!")
+                        return@withLock
+                    }
+                    val labelId = currentLabelId ?: run {
+                        Timber.w("rust-conversation-messages: Failed to update convo, no label id!")
+                        return@withLock
+                    }
+                    val mailbox = rustMailboxFactory.create(userId, labelId).getOrNull()
+
                     if (mailbox != null && currentConversationId != null) {
                         val conversationAndMessages = getRustConversationMessages(mailbox, currentConversationId!!)
 
@@ -100,7 +110,7 @@ class RustConversationDetailQueryImpl @Inject constructor(
         labelId: LocalLabelId
     ): Flow<LocalConversation> {
 
-        initialiseOrUpdateWatcher(userId, conversationId)
+        initialiseOrUpdateWatcher(userId, conversationId, labelId)
 
         return conversationStatusFlow
     }
@@ -111,25 +121,30 @@ class RustConversationDetailQueryImpl @Inject constructor(
         labelId: LocalLabelId
     ): Flow<LocalConversationMessages> {
 
-        initialiseOrUpdateWatcher(userId, conversationId)
+        initialiseOrUpdateWatcher(userId, conversationId, labelId)
 
         return conversationMessagesStatusFlow
     }
 
-    private fun initialiseOrUpdateWatcher(userId: UserId, conversationId: LocalConversationId) {
+    private fun initialiseOrUpdateWatcher(
+        userId: UserId,
+        conversationId: LocalConversationId,
+        labelId: LocalLabelId
+    ) {
         coroutineScope.launch {
             mutex.withLock {
                 if (currentConversationId != conversationId || conversationWatcher?.get() == null) {
                     // If the conversationId is different or there's no active watcher, destroy and create a new one
                     destroy()
 
-                    val mailbox = rustMailboxFactory.create(userId).getOrNull()
+                    val mailbox = rustMailboxFactory.create(userId, labelId).getOrNull()
                     if (mailbox == null) {
                         Timber.e("rust-conversation-detail-query: Failed to observe conversation, null mailbox")
                         return@withLock
                     }
 
                     currentUserId = userId
+                    currentLabelId = labelId
                     conversationWatcher = createRustConversationWatcher(
                         mailbox, conversationId, conversationUpdatedCallback
                     )
