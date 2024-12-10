@@ -21,6 +21,7 @@ package ch.protonmail.android.maildetail.presentation.ui
 import android.net.Uri
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -30,6 +31,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.testTag
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
@@ -60,9 +62,15 @@ fun ConversationDetailItem(
         modifier = modifier
             .fillMaxWidth()
             .border(
-                width = MailDimens.MediumBorder,
+                width = if (isSystemInDarkTheme()) MailDimens.ThinBorder else MailDimens.MediumBorder,
                 color = ProtonTheme.colors.borderNorm,
                 shape = ProtonTheme.shapes.huge
+            )
+            .shadow(
+                elevation = MailDimens.ConversationCollapseHeaderElevation,
+                shape = ProtonTheme.shapes.huge,
+                ambientColor = ProtonTheme.colors.shadowNorm,
+                spotColor = ProtonTheme.colors.shadowNorm
             ),
         shape = ProtonTheme.shapes.huge,
         colors = CardDefaults.elevatedCardColors(

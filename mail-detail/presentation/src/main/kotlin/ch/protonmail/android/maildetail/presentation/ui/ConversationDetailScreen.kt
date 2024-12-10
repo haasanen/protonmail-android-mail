@@ -21,13 +21,18 @@ import android.net.Uri
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -45,6 +50,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
@@ -489,7 +495,7 @@ fun ConversationDetailScreen(
         modifier = modifier
             .testTag(ConversationDetailScreenTestTags.RootItem)
             .nestedScroll(scrollBehavior.nestedScrollConnection),
-        containerColor = ProtonTheme.colors.backgroundDeep,
+        containerColor = ProtonTheme.colors.backgroundNorm,
         snackbarHost = {
             DismissableSnackbarHost(
                 modifier = Modifier.testTag(CommonTestTags.SnackbarHost),
@@ -571,7 +577,7 @@ fun ConversationDetailScreen(
                     onAvatarClicked = actions.onAvatarClicked,
                     onParticipantClicked = actions.onParticipantClicked
                 )
-                MessagesContent(
+                MessagesContentWithHiddenEdges(
                     uiModels = state.messagesState.messages,
                     trashedMessagesBannerState = state.trashedMessagesBannerState,
                     padding = innerPadding,
@@ -599,6 +605,48 @@ fun ConversationDetailScreen(
     }
 }
 
+@Composable
+fun MessagesContentWithHiddenEdges(
+    uiModels: ImmutableList<ConversationDetailMessageUiModel>,
+    trashedMessagesBannerState: TrashedMessagesBannerState,
+    padding: PaddingValues,
+    scrollToMessageId: String?,
+    modifier: Modifier = Modifier,
+    actions: ConversationDetailItem.Actions,
+    onTrashedMessagesBannerClick: () -> Unit,
+    paddingOffsetDp: Dp = 0f.dp
+) {
+
+    Box(modifier = Modifier.fillMaxWidth()) {
+        MessagesContent(
+            modifier = modifier,
+            uiModels = uiModels,
+            trashedMessagesBannerState = trashedMessagesBannerState,
+            padding = padding,
+            scrollToMessageId = scrollToMessageId,
+            actions = actions,
+            onTrashedMessagesBannerClick = onTrashedMessagesBannerClick,
+            paddingOffsetDp = paddingOffsetDp
+        )
+
+        // Cover left and right edges
+        Box(
+            modifier = Modifier
+                .fillMaxHeight()
+                .width(MailDimens.MediumBorder)
+                .align(Alignment.CenterStart)
+                .background(ProtonTheme.colors.backgroundNorm)
+        )
+        Box(
+            modifier = Modifier
+                .fillMaxHeight()
+                .width(MailDimens.MediumBorder)
+                .align(Alignment.CenterEnd)
+                .background(ProtonTheme.colors.backgroundNorm)
+        )
+    }
+}
+
 @OptIn(ExperimentalFoundationApi::class, ExperimentalComposeUiApi::class)
 @Composable
 @Suppress("LongParameterList", "ComplexMethod")
@@ -618,8 +666,8 @@ private fun MessagesContent(
     val layoutDirection = LocalLayoutDirection.current
     val contentPadding = remember(padding, paddingOffsetDp) {
         PaddingValues(
-            start = padding.calculateStartPadding(layoutDirection) + ProtonDimens.Spacing.Standard,
-            end = padding.calculateEndPadding(layoutDirection) + ProtonDimens.Spacing.Standard,
+            start = padding.calculateStartPadding(layoutDirection),
+            end = padding.calculateEndPadding(layoutDirection),
             top = (
                 padding.calculateTopPadding() + ProtonDimens.Spacing.Standard + paddingOffsetDp
                 ).coerceAtLeast(0f.dp),
@@ -699,7 +747,6 @@ private fun MessagesContent(
     LazyColumn(
         modifier = modifier
             .testTag(ConversationDetailScreenTestTags.MessagesList)
-            .padding(vertical = MailDimens.ConversationCollapseHeaderOverlapHeight)
             .pointerInteropFilter { event ->
                 if (!userTapped && event.action == android.view.MotionEvent.ACTION_DOWN) {
                     userTapped = true
@@ -709,6 +756,7 @@ private fun MessagesContent(
             .onGloballyPositioned {
                 lazyColumnHeight.value = it.size.height
             },
+        contentPadding = contentPadding,
         verticalArrangement = Arrangement.spacedBy(-MailDimens.ConversationCollapseHeaderOverlapHeight),
         state = listState
     ) {
