@@ -47,10 +47,10 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewParameter
@@ -60,7 +60,6 @@ import ch.protonmail.android.mailcommon.presentation.AdaptivePreviews
 import ch.protonmail.android.mailcommon.presentation.NO_CONTENT_DESCRIPTION
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 import ch.protonmail.android.mailcommon.presentation.compose.dpToPx
-import ch.protonmail.android.maildetail.presentation.R.color
 import ch.protonmail.android.maildetail.presentation.R.drawable
 import ch.protonmail.android.maildetail.presentation.R.plurals
 import ch.protonmail.android.maildetail.presentation.R.string
@@ -248,18 +247,21 @@ private fun SubjectHeader(
                 vertical = ProtonDimens.Spacing.Standard
             )
     ) {
-        SelectionContainer(modifier = Modifier.testTag(DetailScreenTopBarTestTags.Subject)) {
+        SelectionContainer(
+            modifier = Modifier
+                .testTag(DetailScreenTopBarTestTags.Subject)
+        ) {
             Text(
                 modifier = Modifier
                     .graphicsLayer {
                         alpha = subjectTextAlpha
                     }
-                    .fillMaxWidth()
-                    .align(Alignment.Center),
+                    .fillMaxWidth(),
                 text = subject,
                 overflow = TextOverflow.Ellipsis,
                 style = ProtonTheme.typography.titleLargeNorm,
-                textAlign = TextAlign.Center
+                fontWeight = FontWeight.SemiBold,
+                textAlign = TextAlign.Start
             )
         }
     }
@@ -267,9 +269,9 @@ private fun SubjectHeader(
 
 @Composable
 private fun getStarredIconColor(isStarred: Boolean) = if (isStarred) {
-    colorResource(id = color.notification_warning)
+    ProtonTheme.colors.starSelected
 } else {
-    ProtonTheme.colors.textNorm
+    ProtonTheme.colors.starDefault
 }
 
 @Composable
