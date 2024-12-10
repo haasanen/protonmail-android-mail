@@ -44,6 +44,7 @@ import ch.protonmail.android.mailcommon.presentation.ui.delete.DeleteDialogState
 import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import ch.protonmail.android.mailcontact.domain.usecase.GetContacts
 import ch.protonmail.android.mailconversation.domain.usecase.DeleteConversations
+import ch.protonmail.android.mailconversation.domain.usecase.LabelConversations
 import ch.protonmail.android.mailconversation.domain.usecase.MarkConversationsAsRead
 import ch.protonmail.android.mailconversation.domain.usecase.MarkConversationsAsUnread
 import ch.protonmail.android.mailconversation.domain.usecase.MoveConversations
@@ -80,8 +81,6 @@ import ch.protonmail.android.mailmailbox.domain.usecase.ObservePrimaryUserAccoun
 import ch.protonmail.android.mailmailbox.domain.usecase.ObserveStorageLimitPreference
 import ch.protonmail.android.mailmailbox.domain.usecase.ObserveUnreadCounters
 import ch.protonmail.android.mailmailbox.domain.usecase.RecordRatingBoosterTriggered
-import ch.protonmail.android.mailconversation.domain.usecase.LabelConversations
-import ch.protonmail.android.mailmessage.domain.usecase.LabelMessages
 import ch.protonmail.android.mailmailbox.domain.usecase.SaveStorageLimitPreference
 import ch.protonmail.android.mailmailbox.domain.usecase.ShouldShowRatingBooster
 import ch.protonmail.android.mailmailbox.presentation.mailbox.mapper.MailboxItemUiModelMapper
@@ -106,6 +105,7 @@ import ch.protonmail.android.mailmessage.domain.model.UnreadCounter
 import ch.protonmail.android.mailmessage.domain.usecase.DeleteMessages
 import ch.protonmail.android.mailmessage.domain.usecase.DeleteSearchResults
 import ch.protonmail.android.mailmessage.domain.usecase.LoadAvatarImage
+import ch.protonmail.android.mailmessage.domain.usecase.LabelMessages
 import ch.protonmail.android.mailmessage.domain.usecase.MarkMessagesAsRead
 import ch.protonmail.android.mailmessage.domain.usecase.MarkMessagesAsUnread
 import ch.protonmail.android.mailmessage.domain.usecase.MoveMessages
@@ -472,7 +472,7 @@ class MailboxViewModel @Inject constructor(
         }
     }
 
-    private fun handleItemClick(item: MailboxItemUiModel) {
+    private suspend fun handleItemClick(item: MailboxItemUiModel) {
         when (state.value.mailboxListState) {
             is MailboxListState.Data.SelectionMode -> handleItemClickInSelectionMode(item)
             is MailboxListState.Data.ViewMode -> handleItemClickInViewMode(item)
@@ -482,11 +482,12 @@ class MailboxViewModel @Inject constructor(
         }
     }
 
-    private fun handleItemClickInViewMode(item: MailboxItemUiModel) {
+    private suspend fun handleItemClickInViewMode(item: MailboxItemUiModel) {
         if (item.shouldOpenInComposer) {
             emitNewStateFrom(MailboxEvent.ItemClicked.OpenComposer(item))
         } else {
-            emitNewStateFrom(MailboxEvent.ItemClicked.ItemDetailsOpened(item))
+            val labelId = getFromLabelIdSearchAware()
+            emitNewStateFrom(MailboxEvent.ItemClicked.ItemDetailsOpened(item, labelId))
         }
     }
 
@@ -1278,6 +1279,21 @@ class MailboxViewModel @Inject constructor(
         } catch (exception: ClassCastException) {
             Timber.e("Showing the rating booster was unsuccessful", exception)
         }
+    }
+
+    private suspend fun getFromLabelIdSearchAware(): LabelId {
+        val currentLabelId = selectedMailLabelId.flow.value.labelId
+
+        if (!state.value.isInSearchMode()) {
+            return currentLabelId
+        }
+
+        val userId = primaryUserId.filterNotNull().first()
+        // Search should always happen with "AllMail" as current label
+        // Return either AllMail or AlmostAllMail (depending on user settings one or the other won't be available)
+        return findLocalSystemLabelId(userId, SystemLabelId.AllMail)?.labelId
+            ?: findLocalSystemLabelId(userId, SystemLabelId.AlmostAllMail)?.labelId
+            ?: currentLabelId
     }
 
     companion object {

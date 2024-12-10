@@ -221,7 +221,8 @@ internal sealed interface MailboxEvent : MailboxOperation {
         val item: MailboxItemUiModel
 
         data class ItemDetailsOpened(
-            override val item: MailboxItemUiModel
+            override val item: MailboxItemUiModel,
+            val contextLabel: LabelId
         ) : ItemClicked, AffectingMailboxList
 
         data class OpenComposer(

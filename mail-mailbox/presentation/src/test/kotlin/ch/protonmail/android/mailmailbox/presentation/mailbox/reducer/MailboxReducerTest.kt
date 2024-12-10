@@ -490,7 +490,8 @@ internal class MailboxReducerTest(
         private val events = listOf(
             TestInput(
                 MailboxEvent.ItemClicked.ItemDetailsOpened(
-                    item = MailboxItemUiModelTestData.readMailboxItemUiModel
+                    item = MailboxItemUiModelTestData.readMailboxItemUiModel,
+                    contextLabel = LabelIdSample.RustLabel1
                 ),
                 shouldReduceMailboxListState = true,
                 shouldReduceTopAppBarState = false,

@@ -1287,15 +1287,20 @@ class MailboxViewModelTest {
         // Given
         val item = buildMailboxUiModelItem("id", Message)
         val intermediateState = createMailboxDataState()
+        val labelId = initialLocationMailLabelId.labelId
         val expectedState = createMailboxDataState(
-            openEffect = Effect.of(OpenMailboxItemRequest(MailboxItemId(item.id), false))
+            openEffect = Effect.of(
+                OpenMailboxItemRequest(
+                    MailboxItemId(item.id), shouldOpenInComposer = false, openedFromLocation = labelId
+                )
+            )
         )
         expectViewMode(NoConversationGrouping)
         expectedSelectedLabelCountStateChange(intermediateState)
         every {
             mailboxReducer.newStateFrom(
                 intermediateState,
-                MailboxEvent.ItemClicked.ItemDetailsOpened(item)
+                MailboxEvent.ItemClicked.ItemDetailsOpened(item, labelId)
             )
         } returns expectedState
         expectPagerMock()
@@ -1313,9 +1318,15 @@ class MailboxViewModelTest {
         // Given
         val item = buildMailboxUiModelItem("id", Message, shouldOpenInComposer = true)
         val intermediateState = createMailboxDataState(selectedMailLabelId = MailLabelTestData.draftsSystemLabel.id)
+        val labelId = initialLocationMailLabelId.labelId
         val expectedState = createMailboxDataState(
             selectedMailLabelId = MailLabelTestData.draftsSystemLabel.id,
-            openEffect = Effect.of(OpenMailboxItemRequest(MailboxItemId(item.id), true))
+            openEffect = Effect.of(
+                OpenMailboxItemRequest(
+                    MailboxItemId(item.id), shouldOpenInComposer = true,
+                    openedFromLocation = labelId
+                )
+            )
         )
         expectViewMode(NoConversationGrouping)
         expectedSelectedLabelCountStateChange(intermediateState)
@@ -1439,8 +1450,13 @@ class MailboxViewModelTest {
         // Given
         val item = buildMailboxUiModelItem("id", Conversation)
         val intermediateState = createMailboxDataState()
+        val labelId = initialLocationMailLabelId.labelId
         val expectedState = createMailboxDataState(
-            openEffect = Effect.of(OpenMailboxItemRequest(MailboxItemId(item.id), false))
+            openEffect = Effect.of(
+                OpenMailboxItemRequest(
+                    MailboxItemId(item.id), shouldOpenInComposer = false, openedFromLocation = labelId
+                )
+            )
         )
 
         every { observeCurrentViewMode(userId = any()) } returns flowOf(ConversationGrouping)
@@ -1449,7 +1465,7 @@ class MailboxViewModelTest {
         every {
             mailboxReducer.newStateFrom(
                 intermediateState,
-                MailboxEvent.ItemClicked.ItemDetailsOpened(item)
+                MailboxEvent.ItemClicked.ItemDetailsOpened(item, labelId)
             )
         } returns expectedState
         expectPagerMock()
@@ -1584,18 +1600,21 @@ class MailboxViewModelTest {
             every { mailboxReducer.newStateFrom(any(), any()) } returns expectedMailBoxState
             val pagingData = PagingData.from(listOf(unreadMailboxItem))
             expectPagerMock(pagingDataFlow = flowOf(pagingData))
+            val labelId = initialLocationMailLabelId.labelId
             every {
                 mailboxReducer.newStateFrom(
                     expectedMailBoxState,
                     MailboxEvent.ItemClicked.ItemDetailsOpened(
-                        unreadMailboxItemUiModel
+                        unreadMailboxItemUiModel,
+                        contextLabel = labelId
                     )
                 )
             } returns createMailboxDataState(
                 Effect.of(
                     OpenMailboxItemRequest(
                         MailboxItemId(unreadMailboxItem.id),
-                        false
+                        shouldOpenInComposer = false,
+                        openedFromLocation = labelId
                     )
                 )
             )

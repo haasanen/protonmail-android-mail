@@ -20,6 +20,7 @@ package ch.protonmail.android.mailmailbox.presentation.mailbox.reducer
 
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
+import ch.protonmail.android.maillabel.domain.sample.LabelIdSample
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItemId
 import ch.protonmail.android.mailmailbox.domain.model.OpenMailboxItemRequest
 import ch.protonmail.android.mailmailbox.presentation.R
@@ -222,14 +223,16 @@ internal class MailboxListReducerTest(
             TestInput(
                 currentState = MailboxListState.Loading,
                 operation = MailboxEvent.ItemClicked.ItemDetailsOpened(
-                    item = MailboxItemUiModelTestData.readMailboxItemUiModel
+                    item = MailboxItemUiModelTestData.readMailboxItemUiModel,
+                    contextLabel = LabelIdSample.RustLabel3
                 ),
                 expectedState = MailboxListState.Loading
             ),
             TestInput(
                 currentState = MailboxListState.Loading,
                 operation = MailboxEvent.ItemClicked.ItemDetailsOpened(
-                    item = MailboxItemUiModelTestData.readMailboxItemUiModel
+                    item = MailboxItemUiModelTestData.readMailboxItemUiModel,
+                    contextLabel = LabelIdSample.RustLabel3
                 ),
                 expectedState = MailboxListState.Loading
             ),
@@ -464,7 +467,8 @@ internal class MailboxListReducerTest(
                     avatarImagesUiModel = AvatarImagesUiModel.Empty
                 ),
                 operation = MailboxEvent.ItemClicked.ItemDetailsOpened(
-                    item = MailboxItemUiModelTestData.readMailboxItemUiModel
+                    item = MailboxItemUiModelTestData.readMailboxItemUiModel,
+                    contextLabel = MailLabelTestData.customLabelOne.id.labelId
                 ),
                 expectedState = MailboxListState.Data.ViewMode(
                     currentMailLabel = MailLabelTestData.customLabelOne,
@@ -473,7 +477,7 @@ internal class MailboxListReducerTest(
                             itemId = MailboxItemId(MailboxItemUiModelTestData.readMailboxItemUiModel.conversationId.id),
                             shouldOpenInComposer = false,
                             subItemId = MailboxItemId(MailboxItemUiModelTestData.readMailboxItemUiModel.id),
-                            openedFromLocation = MailLabelTestData.customLabelOne
+                            openedFromLocation = MailLabelTestData.customLabelOne.id.labelId
                         )
                     ),
                     scrollToMailboxTop = Effect.empty(),
@@ -502,7 +506,8 @@ internal class MailboxListReducerTest(
                     avatarImagesUiModel = AvatarImagesUiModel.Empty
                 ),
                 operation = MailboxEvent.ItemClicked.ItemDetailsOpened(
-                    item = MailboxItemUiModelTestData.readMailboxItemUiModel
+                    item = MailboxItemUiModelTestData.readMailboxItemUiModel,
+                    contextLabel = MailLabelTestData.customLabelOne.id.labelId
                 ),
                 expectedState = MailboxListState.Data.ViewMode(
                     currentMailLabel = MailLabelTestData.customLabelOne,
@@ -511,7 +516,7 @@ internal class MailboxListReducerTest(
                             itemId = MailboxItemId(MailboxItemUiModelTestData.readMailboxItemUiModel.conversationId.id),
                             shouldOpenInComposer = false,
                             subItemId = MailboxItemId(MailboxItemUiModelTestData.readMailboxItemUiModel.id),
-                            openedFromLocation = MailLabelTestData.customLabelOne
+                            openedFromLocation = MailLabelTestData.customLabelOne.id.labelId
                         )
                     ),
                     scrollToMailboxTop = Effect.empty(),
@@ -547,7 +552,8 @@ internal class MailboxListReducerTest(
                     openItemEffect = Effect.of(
                         OpenMailboxItemRequest(
                             itemId = MailboxItemId(MailboxItemUiModelTestData.draftMailboxItemUiModel.id),
-                            shouldOpenInComposer = true
+                            shouldOpenInComposer = true,
+                            openedFromLocation = MailLabelTestData.customLabelOne.id.labelId
                         )
                     ),
                     scrollToMailboxTop = Effect.empty(),
@@ -583,7 +589,8 @@ internal class MailboxListReducerTest(
                     openItemEffect = Effect.of(
                         OpenMailboxItemRequest(
                             itemId = MailboxItemId(MailboxItemUiModelTestData.draftMailboxItemUiModel.id),
-                            shouldOpenInComposer = true
+                            shouldOpenInComposer = true,
+                            openedFromLocation = MailLabelTestData.customLabelOne.id.labelId
                         )
                     ),
                     scrollToMailboxTop = Effect.empty(),
