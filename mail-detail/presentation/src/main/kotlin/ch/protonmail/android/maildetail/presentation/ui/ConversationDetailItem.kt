@@ -19,6 +19,7 @@
 package ch.protonmail.android.maildetail.presentation.ui
 
 import android.net.Uri
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -56,7 +57,13 @@ fun ConversationDetailItem(
     onMessageBodyLoadFinished: (messageId: MessageId, height: Int) -> Unit
 ) {
     ElevatedCard(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier
+            .fillMaxWidth()
+            .border(
+                width = MailDimens.MediumBorder,
+                color = ProtonTheme.colors.borderNorm,
+                shape = ProtonTheme.shapes.huge
+            ),
         shape = ProtonTheme.shapes.huge,
         colors = CardDefaults.elevatedCardColors(
             containerColor = ProtonTheme.colors.backgroundNorm
@@ -73,11 +80,11 @@ fun ConversationDetailItem(
                     modifier = Modifier
                         .padding(bottom = MailDimens.ConversationCollapseHeaderOverlapHeight)
                         .clickable {
-                        when (uiModel.isDraft) {
-                            true -> actions.onOpenComposer(uiModel.messageId)
-                            else -> actions.onExpand(uiModel.messageId)
+                            when (uiModel.isDraft) {
+                                true -> actions.onOpenComposer(uiModel.messageId)
+                                else -> actions.onExpand(uiModel.messageId)
+                            }
                         }
-                    }
                 )
             }
 

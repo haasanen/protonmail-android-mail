@@ -25,6 +25,7 @@ object MailDimens {
 
     val ThinBorder = 0.5.dp
     val DefaultBorder = 1.dp
+    val MediumBorder = 2.dp
     val AvatarBorderLine = 1.5.dp
     val OnboardingUpsellBestValueBorder = 2.dp
 
