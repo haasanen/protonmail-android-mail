@@ -25,6 +25,7 @@ import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.usecase.GetPrimaryAddress
 import ch.protonmail.android.mailconversation.domain.repository.ConversationRepository
 import ch.protonmail.android.maillabel.domain.model.ExclusiveLocation
+import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.maillabel.domain.usecase.FindLocalSystemLabelId
 import ch.protonmail.android.mailmessage.domain.model.Message
@@ -197,7 +198,8 @@ class NotificationsDeepLinksViewModel @Inject constructor(
                     _state.value =
                         State.NavigateToConversation(
                             conversationId = conversation.conversationId,
-                            userSwitchedEmail = switchedAccountEmail
+                            userSwitchedEmail = switchedAccountEmail,
+                            contextLabelId = labelId
                         )
                 }
         }
@@ -222,7 +224,8 @@ class NotificationsDeepLinksViewModel @Inject constructor(
         data class NavigateToConversation(
             val conversationId: ConversationId,
             val scrollToMessageId: MessageId? = null,
-            val userSwitchedEmail: String? = null
+            val userSwitchedEmail: String? = null,
+            val contextLabelId: LabelId
         ) : State
 
         data class NavigateToComposerForReply(

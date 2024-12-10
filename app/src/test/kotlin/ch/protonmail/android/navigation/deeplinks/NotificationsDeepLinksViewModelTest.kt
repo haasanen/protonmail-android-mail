@@ -118,7 +118,7 @@ class NotificationsDeepLinksViewModelTest {
         // Then
         viewModel.state.test {
             assertEquals(
-                NavigateToConversation(AlphaAppQAReport.conversationId),
+                NavigateToConversation(AlphaAppQAReport.conversationId, contextLabelId = labelId),
                 awaitItem()
             )
         }
@@ -152,7 +152,7 @@ class NotificationsDeepLinksViewModelTest {
         // Then
         viewModel.state.test {
             assertEquals(
-                NavigateToConversation(AlphaAppQAReport.conversationId),
+                NavigateToConversation(AlphaAppQAReport.conversationId, contextLabelId = labelId),
                 awaitItem()
             )
         }
@@ -278,7 +278,8 @@ class NotificationsDeepLinksViewModelTest {
             assertEquals(
                 NavigateToConversation(
                     conversationId = AlphaAppQAReport.conversationId,
-                    userSwitchedEmail = AccountSample.Primary.email
+                    userSwitchedEmail = AccountSample.Primary.email,
+                    contextLabelId = labelId
                 ),
                 awaitItem()
             )
@@ -362,7 +363,7 @@ class NotificationsDeepLinksViewModelTest {
         // Then
         viewModel.state.test {
             assertEquals(
-                NavigateToConversation(AlphaAppQAReport.conversationId),
+                NavigateToConversation(AlphaAppQAReport.conversationId, contextLabelId = labelId),
                 awaitItem()
             )
             coVerify {

@@ -28,6 +28,7 @@ import ch.protonmail.android.mailcomposer.presentation.ui.ComposerScreen.DraftMe
 import ch.protonmail.android.mailcomposer.presentation.ui.ComposerScreen.SerializedDraftActionKey
 import ch.protonmail.android.mailcomposer.presentation.ui.SetMessagePasswordScreen
 import ch.protonmail.android.mailcontact.domain.model.ContactGroupId
+import ch.protonmail.android.mailcontact.domain.model.ContactId
 import ch.protonmail.android.mailcontact.presentation.contactdetails.ContactDetailsScreen.ContactDetailsContactIdKey
 import ch.protonmail.android.mailcontact.presentation.contactform.ContactFormScreen.ContactFormBasicContactInfoKey
 import ch.protonmail.android.mailcontact.presentation.contactform.ContactFormScreen.ContactFormContactIdKey
@@ -36,7 +37,7 @@ import ch.protonmail.android.mailcontact.presentation.contactgroupform.ContactGr
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen.ConversationIdKey
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen.OpenedFromLocationKey
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen.ScrollToMessageIdKey
-import ch.protonmail.android.maillabel.domain.model.MailLabel
+import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.presentation.folderform.FolderFormScreen.FolderFormLabelIdKey
 import ch.protonmail.android.maillabel.presentation.folderparentlist.ParentFolderListScreen.ParentFolderListLabelIdKey
 import ch.protonmail.android.maillabel.presentation.folderparentlist.ParentFolderListScreen.ParentFolderListParentLabelIdKey
@@ -47,9 +48,7 @@ import ch.protonmail.android.mailsettings.domain.model.SwipeActionDirection
 import ch.protonmail.android.mailsettings.domain.model.autolock.AutoLockInsertionMode
 import ch.protonmail.android.mailsettings.presentation.settings.autolock.ui.pin.AutoLockPinScreen.AutoLockPinModeKey
 import ch.protonmail.android.mailsettings.presentation.settings.swipeactions.EditSwipeActionPreferenceScreen.SWIPE_DIRECTION_KEY
-import ch.protonmail.android.mailcontact.domain.model.ContactId
 import me.proton.core.domain.entity.UserId
-import ch.protonmail.android.maillabel.domain.model.LabelId
 import me.proton.core.util.kotlin.serialize
 
 sealed class Destination(val route: String) {
@@ -65,10 +64,10 @@ sealed class Destination(val route: String) {
             operator fun invoke(
                 conversationId: ConversationId,
                 scrollToMessageId: MessageId? = null,
-                openedFromLocation: MailLabel? = null
+                openedFromLocation: LabelId
             ) = route.replace(ConversationIdKey.wrap(), conversationId.id)
                 .replace(ScrollToMessageIdKey.wrap(), scrollToMessageId?.id ?: "null")
-                .replace(OpenedFromLocationKey.wrap(), openedFromLocation?.id?.labelId?.id ?: "null")
+                .replace(OpenedFromLocationKey.wrap(), openedFromLocation.id)
         }
 
         object Composer : Destination("composer")

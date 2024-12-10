@@ -37,6 +37,7 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxSearc
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxViewAction
 import ch.protonmail.android.mailmessage.domain.model.AvatarImageStates
 import ch.protonmail.android.mailmessage.presentation.model.AvatarImagesUiModel
+import timber.log.Timber
 import javax.inject.Inject
 
 @Suppress("TooManyFunctions")
@@ -276,6 +277,7 @@ class MailboxListReducer @Inject constructor(
         val currentLocation = if (currentState is MailboxListState.Data) {
             currentState.currentMailLabel
         } else {
+            Timber.e("Trying to open a conversation while not in data state; No 'from' location exists.")
             null
         }
 
@@ -284,7 +286,7 @@ class MailboxListReducer @Inject constructor(
             itemId = MailboxItemId(operation.item.conversationId.id),
             shouldOpenInComposer = false,
             subItemId = subItemId,
-            openedFromLocation = currentLocation
+            openedFromLocation = currentLocation ?: error("No 'from' location found to open conversation detail")
         )
 
         return when (currentState) {
@@ -410,7 +412,8 @@ class MailboxListReducer @Inject constructor(
                 openItemEffect = Effect.of(
                     OpenMailboxItemRequest(
                         itemId = MailboxItemId(operation.item.id),
-                        shouldOpenInComposer = true
+                        shouldOpenInComposer = true,
+                        openedFromLocation = currentState.currentMailLabel
                     )
                 )
             )
