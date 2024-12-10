@@ -70,6 +70,11 @@ interface LabelRepository {
     ): Label?
 
     /**
+     * Returns the local label id of AllMail or AlmostAllMail depending on user's settings
+     */
+    suspend fun getAllMailLocalLabelId(userId: UserId): LabelId?
+
+    /**
      * Create a new [Label] for [userId], remotely, then locally if success.
      */
     suspend fun createLabel(userId: UserId, label: NewLabel)

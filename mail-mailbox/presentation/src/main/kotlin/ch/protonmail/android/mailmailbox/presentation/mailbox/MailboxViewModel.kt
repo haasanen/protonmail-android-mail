@@ -1290,9 +1290,7 @@ class MailboxViewModel @Inject constructor(
 
         val userId = primaryUserId.filterNotNull().first()
         // Search should always happen with "AllMail" as current label
-        // Return either AllMail or AlmostAllMail (depending on user settings one or the other won't be available)
         return findLocalSystemLabelId(userId, SystemLabelId.AllMail)?.labelId
-            ?: findLocalSystemLabelId(userId, SystemLabelId.AlmostAllMail)?.labelId
             ?: currentLabelId
     }
 

@@ -25,14 +25,25 @@ import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 
 class FindLocalSystemLabelId @Inject constructor(
-    private val observeMailLabels: ObserveMailLabels
+    private val observeMailLabels: ObserveMailLabels,
+    private val getAllMailLocalLabelId: GetAllMailLocalLabelId
 ) {
 
-    suspend operator fun invoke(userId: UserId, systemLabelId: SystemLabelId): MailLabelId.System? {
-        return observeMailLabels(userId).firstOrNull()?.let { mailLabels ->
-            mailLabels.system.firstOrNull {
-                it.systemLabelId.labelId == systemLabelId.labelId
+    suspend operator fun invoke(userId: UserId, systemLabelId: SystemLabelId): MailLabelId.System? =
+        when (systemLabelId) {
+            SystemLabelId.AllMail,
+            SystemLabelId.AlmostAllMail -> getAllMailLocalLabelId(userId)
+                ?.let { allMailLocalLabelId ->
+                    MailLabelId.System(allMailLocalLabelId)
+                }
+
+            else -> {
+                observeMailLabels(userId).firstOrNull()?.let { mailLabels ->
+                    mailLabels.system.firstOrNull {
+                        it.systemLabelId.labelId == systemLabelId.labelId
+                    }
+                }?.id
             }
-        }?.id
-    }
+        }
+
 }

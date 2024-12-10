@@ -16,25 +16,16 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.maillabel.data.local
+package ch.protonmail.android.maillabel.domain.usecase
 
-import arrow.core.Either
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
-import ch.protonmail.android.mailcommon.domain.model.DataError
-import kotlinx.coroutines.flow.Flow
+import ch.protonmail.android.maillabel.domain.repository.LabelRepository
 import me.proton.core.domain.entity.UserId
-import uniffi.proton_mail_uniffi.SidebarCustomFolder
-import uniffi.proton_mail_uniffi.SidebarCustomLabel
-import uniffi.proton_mail_uniffi.SidebarSystemLabel
+import javax.inject.Inject
 
-interface LabelDataSource {
+class GetAllMailLocalLabelId @Inject constructor(
+    private val labelRepository: LabelRepository
+) {
 
-    fun observeSystemLabels(userId: UserId): Flow<List<SidebarSystemLabel>>
-
-    fun observeMessageLabels(userId: UserId): Flow<List<SidebarCustomLabel>>
-
-    fun observeMessageFolders(userId: UserId): Flow<List<SidebarCustomFolder>>
-
-    suspend fun getAllMailLabelId(userId: UserId): Either<DataError, LocalLabelId>
+    suspend operator fun invoke(userId: UserId) = labelRepository.getAllMailLocalLabelId(userId)
 
 }

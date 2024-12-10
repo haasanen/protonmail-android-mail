@@ -19,8 +19,14 @@
 package ch.protonmail.android.maillabel.data.local
 
 import java.lang.ref.WeakReference
+import arrow.core.Either
+import arrow.core.left
+import arrow.core.right
+import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
+import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.maillabel.data.MailLabelRustCoroutineScope
 import ch.protonmail.android.maillabel.data.usecase.CreateRustSidebar
+import ch.protonmail.android.maillabel.data.usecase.RustGetAllMailLabelId
 import ch.protonmail.android.maillabel.data.wrapper.SidebarWrapper
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import kotlinx.coroutines.CoroutineScope
@@ -44,6 +50,7 @@ import javax.inject.Inject
 class RustLabelDataSource @Inject constructor(
     private val userSessionRepository: UserSessionRepository,
     private val createRustSidebar: CreateRustSidebar,
+    private val rustGetAllMailLabelId: RustGetAllMailLabelId,
     @MailLabelRustCoroutineScope private val coroutineScope: CoroutineScope
 ) : LabelDataSource {
 
@@ -121,6 +128,15 @@ class RustLabelDataSource @Inject constructor(
         }
 
         return messageFoldersFlow
+    }
+
+    override suspend fun getAllMailLabelId(userId: UserId): Either<DataError, LocalLabelId> {
+        val session = userSessionRepository.getUserSession(userId)
+        if (session == null) {
+            Timber.e("rust-label: trying to get all mail label id with null session.")
+            return DataError.Local.NoDataCached.left()
+        }
+        return rustGetAllMailLabelId(session).right()
     }
 
     private fun shouldInitSystemLabelWatcher(userId: UserId) =

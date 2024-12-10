@@ -21,6 +21,7 @@ package ch.protonmail.android.maillabel.data.local
 import java.lang.ref.WeakReference
 import app.cash.turbine.test
 import ch.protonmail.android.maillabel.data.usecase.CreateRustSidebar
+import ch.protonmail.android.maillabel.data.usecase.RustGetAllMailLabelId
 import ch.protonmail.android.maillabel.data.wrapper.SidebarWrapper
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
@@ -46,6 +47,7 @@ import kotlin.test.assertEquals
 
 class RustLabelDataSourceTest {
 
+
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
 
@@ -55,10 +57,12 @@ class RustLabelDataSourceTest {
     private val userSessionRepository = mockk<UserSessionRepository>()
     private val testCoroutineScope = CoroutineScope(mainDispatcherRule.testDispatcher)
     private val createRustSidebar = mockk<CreateRustSidebar>()
+    private val rustGetAllMailLabelId = mockk<RustGetAllMailLabelId>()
 
     private val labelDataSource = RustLabelDataSource(
         userSessionRepository,
         createRustSidebar,
+        rustGetAllMailLabelId,
         testCoroutineScope
     )
 
