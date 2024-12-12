@@ -67,6 +67,7 @@ import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodySmallNorm
 import ch.protonmail.android.design.compose.theme.bodyLargeNorm
 import ch.protonmail.android.mailcommon.presentation.compose.SmallClickableIcon
+import ch.protonmail.android.mailcommon.presentation.model.AvatarImageUiModel
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -74,6 +75,7 @@ fun MailboxItem(
     modifier: Modifier = Modifier,
     actions: ComposeMailboxItem.Actions,
     item: MailboxItemUiModel,
+    avatarImageUiModel: AvatarImageUiModel,
     selectionMode: Boolean = false,
     isSelected: Boolean = false
 ) {
@@ -117,6 +119,10 @@ fun MailboxItem(
             val fontWeight = if (item.isRead) FontWeight.Normal else FontWeight.Medium
             val fontColor = if (item.isRead) ProtonTheme.colors.textWeak else ProtonTheme.colors.textNorm
             val iconColor = if (item.isRead) ProtonTheme.colors.iconWeak else ProtonTheme.colors.iconNorm
+            val avatarActions = ParticipantAvatar.Actions(
+                onAvatarClicked = { actions.onAvatarClicked(item) },
+                onAvatarImageLoadRequested = { actions.onAvatarImageLoadRequested(item) }
+            )
 
             ParticipantAvatar(
                 modifier = Modifier.align(Alignment.CenterVertically),
@@ -125,7 +131,8 @@ fun MailboxItem(
                 } else {
                     item.avatar
                 },
-                onClick = { actions.onAvatarClicked(item) }
+                avatarImageUiModel = avatarImageUiModel,
+                actions = avatarActions
             )
             Column(
                 modifier = Modifier.padding(
@@ -398,6 +405,7 @@ object ComposeMailboxItem {
         val onItemClicked: (MailboxItemUiModel) -> Unit,
         val onItemLongClicked: (MailboxItemUiModel) -> Unit,
         val onAvatarClicked: (MailboxItemUiModel) -> Unit,
+        val onAvatarImageLoadRequested: (MailboxItemUiModel) -> Unit,
         val onStarClicked: (MailboxItemUiModel) -> Unit
     ) {
 
@@ -405,6 +413,7 @@ object ComposeMailboxItem {
 
             val Empty = Actions(
                 onAvatarClicked = {},
+                onAvatarImageLoadRequested = {},
                 onItemLongClicked = {},
                 onItemClicked = {},
                 onStarClicked = {}
@@ -420,7 +429,8 @@ private fun DroidConMailboxItemPreview() {
         MailboxItem(
             modifier = Modifier,
             item = MailboxItemUiModelPreviewData.Conversation.DroidConLondon,
-            actions = ComposeMailboxItem.Actions.Empty
+            actions = ComposeMailboxItem.Actions.Empty,
+            avatarImageUiModel = AvatarImageUiModel.NotLoaded
         )
     }
 }
@@ -432,7 +442,8 @@ private fun DroidConWithoutCountMailboxItemPreview() {
         MailboxItem(
             modifier = Modifier,
             item = MailboxItemUiModelPreviewData.Conversation.DroidConLondonWithZeroMessages,
-            actions = ComposeMailboxItem.Actions.Empty
+            actions = ComposeMailboxItem.Actions.Empty,
+            avatarImageUiModel = AvatarImageUiModel.NotLoaded
         )
     }
 }
@@ -444,7 +455,8 @@ private fun WeatherMailboxItemPreview() {
         MailboxItem(
             modifier = Modifier,
             item = MailboxItemUiModelPreviewData.Conversation.WeatherForecast,
-            actions = ComposeMailboxItem.Actions.Empty
+            actions = ComposeMailboxItem.Actions.Empty,
+            avatarImageUiModel = AvatarImageUiModel.NotLoaded
         )
     }
 }
@@ -456,7 +468,8 @@ private fun LongRecipientItemPreview() {
         MailboxItem(
             modifier = Modifier,
             item = MailboxItemUiModelPreviewData.Conversation.MultipleRecipientWithLabel,
-            actions = ComposeMailboxItem.Actions.Empty
+            actions = ComposeMailboxItem.Actions.Empty,
+            avatarImageUiModel = AvatarImageUiModel.NotLoaded
         )
     }
 }
@@ -468,7 +481,8 @@ private fun LongSubjectItemPreview() {
         MailboxItem(
             modifier = Modifier,
             item = MailboxItemUiModelPreviewData.Conversation.LongSubjectWithIcons,
-            actions = ComposeMailboxItem.Actions.Empty
+            actions = ComposeMailboxItem.Actions.Empty,
+            avatarImageUiModel = AvatarImageUiModel.NotLoaded
         )
     }
 }
@@ -480,7 +494,8 @@ private fun LongSubjectWithIconItemPreview() {
         MailboxItem(
             modifier = Modifier,
             item = MailboxItemUiModelPreviewData.Conversation.LongSubjectWithoutIcons,
-            actions = ComposeMailboxItem.Actions.Empty
+            actions = ComposeMailboxItem.Actions.Empty,
+            avatarImageUiModel = AvatarImageUiModel.NotLoaded
         )
     }
 }
@@ -492,7 +507,8 @@ private fun NoRecipientIconItemPreview() {
         MailboxItem(
             modifier = Modifier,
             item = MailboxItemUiModelPreviewData.Conversation.NoParticipant,
-            actions = ComposeMailboxItem.Actions.Empty
+            actions = ComposeMailboxItem.Actions.Empty,
+            avatarImageUiModel = AvatarImageUiModel.NotLoaded
         )
     }
 }

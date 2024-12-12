@@ -36,6 +36,7 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxOpera
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxOperation.AffectingStorageLimit
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxOperation.AffectingTopAppBar
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxOperation.AffectingUnreadFilter
+import ch.protonmail.android.mailmessage.domain.model.AvatarImageStates
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.BottomSheetOperation
 import me.proton.core.mailsettings.domain.entity.ViewMode
 
@@ -63,6 +64,10 @@ internal sealed interface MailboxViewAction : MailboxOperation {
     ) : MailboxViewAction
 
     data class OnItemAvatarClicked(
+        val item: MailboxItemUiModel
+    ) : MailboxViewAction
+
+    data class OnAvatarImageLoadRequested(
         val item: MailboxItemUiModel
     ) : MailboxViewAction
 
@@ -154,6 +159,10 @@ internal sealed interface MailboxViewAction : MailboxOperation {
 }
 
 internal sealed interface MailboxEvent : MailboxOperation {
+
+    data class AvatarImageStatesUpdated(
+        val avatarImageStates: AvatarImageStates
+    ) : MailboxEvent, AffectingMailboxList
 
     data class UpgradeStorageStatusChanged(
         val notificationDotVisible: Boolean

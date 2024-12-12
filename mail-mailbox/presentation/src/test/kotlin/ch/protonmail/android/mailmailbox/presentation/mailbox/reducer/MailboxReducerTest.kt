@@ -40,6 +40,7 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.model.UnreadFilter
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.UpgradeStorageState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.previewdata.MailboxSearchStateSampleData
 import ch.protonmail.android.mailmailbox.presentation.mailbox.previewdata.MailboxStateSampleData
+import ch.protonmail.android.mailmessage.presentation.model.AvatarImagesUiModel
 import ch.protonmail.android.mailmessage.presentation.reducer.BottomSheetReducer
 import ch.protonmail.android.testdata.mailbox.MailboxItemUiModelTestData
 import ch.protonmail.android.testdata.mailbox.UnreadCountersTestData
@@ -187,7 +188,8 @@ internal class MailboxReducerTest(
                 swipeActions = null,
                 searchState = MailboxSearchStateSampleData.NotSearching,
                 clearState = MailboxListState.Data.ClearState.Hidden,
-                shouldShowFab = true
+                shouldShowFab = true,
+                avatarImagesUiModel = AvatarImagesUiModel.Empty
             ),
             topAppBarState = MailboxTopAppBarState.Data.DefaultMode(
                 currentLabelName = spamLabel.text()

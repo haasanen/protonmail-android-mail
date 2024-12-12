@@ -24,6 +24,7 @@ import ch.protonmail.android.maillabel.domain.model.MailLabel
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.mailmailbox.domain.model.OpenMailboxItemRequest
+import ch.protonmail.android.mailmessage.presentation.model.AvatarImagesUiModel
 
 sealed interface MailboxListState {
 
@@ -42,13 +43,14 @@ sealed interface MailboxListState {
         val clearState: ClearState
         val searchState: MailboxSearchState
         val shouldShowFab: Boolean
-
+        val avatarImagesUiModel: AvatarImagesUiModel
         data class ViewMode(
             override val currentMailLabel: MailLabel,
             override val swipeActions: SwipeActionsUiModel?,
             override val clearState: ClearState,
             override val searchState: MailboxSearchState,
             override val shouldShowFab: Boolean,
+            override val avatarImagesUiModel: AvatarImagesUiModel,
             val openItemEffect: Effect<OpenMailboxItemRequest>,
             val scrollToMailboxTop: Effect<MailLabelId>,
             val offlineEffect: Effect<Unit>,
@@ -65,6 +67,7 @@ sealed interface MailboxListState {
             override val clearState: ClearState,
             override val searchState: MailboxSearchState,
             override val shouldShowFab: Boolean,
+            override val avatarImagesUiModel: AvatarImagesUiModel,
             val selectedMailboxItems: Set<SelectedMailboxItem>
         ) : Data {
 

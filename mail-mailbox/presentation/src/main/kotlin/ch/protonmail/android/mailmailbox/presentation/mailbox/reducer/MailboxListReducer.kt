@@ -19,6 +19,7 @@
 package ch.protonmail.android.mailmailbox.presentation.mailbox.reducer
 
 import ch.protonmail.android.mailcommon.presentation.Effect
+import ch.protonmail.android.mailmessage.presentation.mapper.AvatarImageUiModelMapper
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.maillabel.domain.model.MailLabel
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
@@ -34,9 +35,14 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxOpera
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxSearchMode
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxSearchState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxViewAction
+import ch.protonmail.android.mailmessage.domain.model.AvatarImageStates
+import ch.protonmail.android.mailmessage.presentation.model.AvatarImagesUiModel
 import javax.inject.Inject
 
-class MailboxListReducer @Inject constructor() {
+@Suppress("TooManyFunctions")
+class MailboxListReducer @Inject constructor(
+    private val avatarImageUiModelMapper: AvatarImageUiModelMapper
+) {
 
     @Suppress("ComplexMethod")
     internal fun newStateFrom(
@@ -79,7 +85,33 @@ class MailboxListReducer @Inject constructor() {
             is MailboxViewAction.SearchResult -> reduceSearchResult(currentState)
             is MailboxViewAction.ExitSearchMode -> reduceExitSearchMode(currentState)
             is MailboxEvent.ClearAllOperationStatus -> reduceClearState(operation, currentState)
+            is MailboxEvent.AvatarImageStatesUpdated -> reduceAvatarImageStatesUpdated(operation, currentState)
         }
+    }
+
+    private fun reduceAvatarImageStatesUpdated(
+        event: MailboxEvent.AvatarImageStatesUpdated,
+        currentState: MailboxListState
+    ): MailboxListState {
+        return when (currentState) {
+            is MailboxListState.Data.ViewMode -> currentState.copy(
+                avatarImagesUiModel = mapAvatarImageStatesToUiModel(event.avatarImageStates)
+            )
+
+            is MailboxListState.Data.SelectionMode -> currentState.copy(
+                avatarImagesUiModel = mapAvatarImageStatesToUiModel(event.avatarImageStates)
+            )
+
+            else -> currentState
+        }
+    }
+
+    private fun mapAvatarImageStatesToUiModel(avatarImageStates: AvatarImageStates): AvatarImagesUiModel {
+        return AvatarImagesUiModel(
+            states = avatarImageStates.states.mapValues { (_, state) ->
+                avatarImageUiModelMapper.toUiModel(state)
+            }
+        )
     }
 
     private fun reduceEnterSearchMode(currentState: MailboxListState): MailboxListState {
@@ -166,7 +198,8 @@ class MailboxListReducer @Inject constructor() {
                 swipeActions = null,
                 searchState = MailboxSearchState.NotSearching,
                 clearState = MailboxListState.Data.ClearState.Hidden,
-                shouldShowFab = true
+                shouldShowFab = true,
+                avatarImagesUiModel = AvatarImagesUiModel.Empty
             )
 
             is MailboxListState.Data.SelectionMode -> currentState.copy(
@@ -197,7 +230,8 @@ class MailboxListReducer @Inject constructor() {
                 swipeActions = null,
                 searchState = MailboxSearchState.NotSearching,
                 clearState = MailboxListState.Data.ClearState.Hidden,
-                shouldShowFab = true
+                shouldShowFab = true,
+                avatarImagesUiModel = AvatarImagesUiModel.Empty
             )
 
             is MailboxListState.Data.ViewMode -> currentState.copy(
@@ -301,6 +335,7 @@ class MailboxListReducer @Inject constructor() {
                 swipeActions = currentState.swipeActions,
                 clearState = currentState.clearState,
                 searchState = currentState.searchState,
+                avatarImagesUiModel = currentState.avatarImagesUiModel,
                 shouldShowFab = false
             )
 
@@ -318,7 +353,8 @@ class MailboxListReducer @Inject constructor() {
             swipeActions = currentState.swipeActions,
             searchState = currentState.searchState,
             clearState = currentState.clearState,
-            shouldShowFab = !currentState.searchState.isInSearch()
+            shouldShowFab = !currentState.searchState.isInSearch(),
+            avatarImagesUiModel = currentState.avatarImagesUiModel
         )
 
         else -> currentState

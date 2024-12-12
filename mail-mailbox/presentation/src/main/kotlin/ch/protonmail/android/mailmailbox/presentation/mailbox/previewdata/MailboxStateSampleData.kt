@@ -41,6 +41,7 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.model.UpgradeStora
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.BottomSheetState
 import kotlinx.collections.immutable.toImmutableList
 import ch.protonmail.android.maillabel.domain.model.LabelId
+import ch.protonmail.android.mailmessage.presentation.model.AvatarImagesUiModel
 
 object MailboxStateSampleData {
 
@@ -85,7 +86,8 @@ object MailboxStateSampleData {
             ),
             searchState = MailboxSearchStateSampleData.NotSearching,
             clearState = MailboxListState.Data.ClearState.Hidden,
-            shouldShowFab = true
+            shouldShowFab = true,
+            avatarImagesUiModel = AvatarImagesUiModel.Empty
         ),
         topAppBarState = MailboxTopAppBarState.Data.DefaultMode(
             currentLabelName = inboxDynamicLabel.text()
@@ -121,7 +123,8 @@ object MailboxStateSampleData {
             ),
             searchState = MailboxSearchStateSampleData.NotSearching,
             clearState = MailboxListState.Data.ClearState.Hidden,
-            shouldShowFab = true
+            shouldShowFab = true,
+            avatarImagesUiModel = AvatarImagesUiModel.Empty
         ),
         topAppBarState = MailboxTopAppBarState.Data.DefaultMode(
             currentLabelName = allMailDynamicLabel.text()
@@ -161,7 +164,8 @@ object MailboxStateSampleData {
             ),
             searchState = MailboxSearchState.NotSearching,
             clearState = MailboxListState.Data.ClearState.Hidden,
-            shouldShowFab = false
+            shouldShowFab = false,
+            avatarImagesUiModel = AvatarImagesUiModel.Empty
         ),
         topAppBarState = MailboxTopAppBarState.Data.SelectionMode(
             currentLabelName = inboxDynamicLabel.text(),

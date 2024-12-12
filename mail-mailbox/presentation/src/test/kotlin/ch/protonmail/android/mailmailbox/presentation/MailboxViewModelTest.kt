@@ -35,6 +35,7 @@ import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.mapper.ActionUiModelMapper
 import ch.protonmail.android.mailcommon.presentation.model.ActionUiModel
+import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
 import ch.protonmail.android.mailcommon.presentation.model.BottomBarEvent
 import ch.protonmail.android.mailcommon.presentation.model.BottomBarState
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
@@ -110,9 +111,11 @@ import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
 import ch.protonmail.android.mailmessage.domain.usecase.DeleteMessages
 import ch.protonmail.android.mailmessage.domain.usecase.DeleteSearchResults
 import ch.protonmail.android.mailmessage.domain.usecase.LabelMessages
+import ch.protonmail.android.mailmessage.domain.usecase.LoadAvatarImage
 import ch.protonmail.android.mailmessage.domain.usecase.MarkMessagesAsRead
 import ch.protonmail.android.mailmessage.domain.usecase.MarkMessagesAsUnread
 import ch.protonmail.android.mailmessage.domain.usecase.MoveMessages
+import ch.protonmail.android.mailmessage.domain.usecase.ObserveAvatarImageStates
 import ch.protonmail.android.mailmessage.domain.usecase.ObserveClearMessageOperation
 import ch.protonmail.android.mailmessage.domain.usecase.StarMessages
 import ch.protonmail.android.mailmessage.domain.usecase.UnStarMessages
@@ -125,6 +128,8 @@ import ch.protonmail.android.mailsettings.domain.model.FolderColorSettings
 import ch.protonmail.android.mailsettings.domain.model.SwipeActionsPreference
 import ch.protonmail.android.mailsettings.domain.usecase.ObserveFolderColorSettings
 import ch.protonmail.android.mailsettings.domain.usecase.ObserveSwipeActionsPreference
+import ch.protonmail.android.testdata.avatar.AvatarImageStatesTestData
+import ch.protonmail.android.testdata.avatar.AvatarImagesUiModelTestData
 import ch.protonmail.android.testdata.contact.ContactTestData
 import ch.protonmail.android.testdata.label.rust.LabelAsActionsTestData
 import ch.protonmail.android.testdata.mailbox.MailboxItemUiModelTestData.buildMailboxUiModelItem
@@ -283,6 +288,14 @@ class MailboxViewModelTest {
         )
     }
 
+    private val loadAvatarImage = mockk<LoadAvatarImage> {
+        every { this@mockk.invoke(any(), any()) } returns Unit
+    }
+
+    private val observeAvatarImageStates = mockk<ObserveAvatarImageStates> {
+        every { this@mockk() } returns flowOf()
+    }
+
     private val mailboxViewModel by lazy {
         MailboxViewModel(
             mailboxPagerFactory = pagerFactory,
@@ -327,7 +340,9 @@ class MailboxViewModelTest {
             shouldShowRatingBooster = shouldShowRatingBooster,
             showRatingBooster = showRatingBooster,
             recordRatingBoosterTriggered = recordRatingBoosterTriggered,
-            findLocalSystemLabelId = findLocalSystemLabelId
+            findLocalSystemLabelId = findLocalSystemLabelId,
+            loadAvatarImage = loadAvatarImage,
+            observeAvatarImageStates = observeAvatarImageStates
         )
     }
 
@@ -693,7 +708,8 @@ class MailboxViewModelTest {
                 swipeActions = null,
                 searchState = MailboxSearchStateSampleData.NotSearching,
                 clearState = MailboxListState.Data.ClearState.Hidden,
-                shouldShowFab = true
+                shouldShowFab = true,
+                avatarImagesUiModel = AvatarImagesUiModelTestData.SampleData1
             )
         )
         val expectedSwipeActions = SwipeActionsUiModel(
@@ -711,7 +727,8 @@ class MailboxViewModelTest {
                 swipeActions = expectedSwipeActions,
                 searchState = MailboxSearchStateSampleData.NotSearching,
                 clearState = MailboxListState.Data.ClearState.Hidden,
-                shouldShowFab = true
+                shouldShowFab = true,
+                avatarImagesUiModel = AvatarImagesUiModelTestData.SampleData1
             )
         )
         val expectedStateAfterClearAllStatus = expectedStateWithSwipeGestures.copy(
@@ -725,7 +742,8 @@ class MailboxViewModelTest {
                 swipeActions = expectedSwipeActions,
                 searchState = MailboxSearchStateSampleData.NotSearching,
                 clearState = MailboxListState.Data.ClearState.Visible.Button(TextUiModel("Clear All")),
-                shouldShowFab = true
+                shouldShowFab = true,
+                avatarImagesUiModel = AvatarImagesUiModelTestData.SampleData1
             )
         )
         val mailLabelsFlow = MutableStateFlow(
@@ -782,7 +800,8 @@ class MailboxViewModelTest {
                 swipeActions = null,
                 searchState = MailboxSearchStateSampleData.NotSearching,
                 clearState = MailboxListState.Data.ClearState.Hidden,
-                shouldShowFab = true
+                shouldShowFab = true,
+                avatarImagesUiModel = AvatarImagesUiModelTestData.SampleData1
             )
         )
         val mailLabelsFlow = MutableStateFlow(
@@ -1330,7 +1349,8 @@ class MailboxViewModelTest {
                 swipeActions = null,
                 searchState = MailboxSearchStateSampleData.NotSearching,
                 clearState = MailboxListState.Data.ClearState.Hidden,
-                shouldShowFab = true
+                shouldShowFab = true,
+                avatarImagesUiModel = AvatarImagesUiModelTestData.SampleData1
             )
         )
         every {
@@ -1362,7 +1382,8 @@ class MailboxViewModelTest {
                 swipeActions = null,
                 searchState = MailboxSearchStateSampleData.NotSearching,
                 clearState = MailboxListState.Data.ClearState.Hidden,
-                shouldShowFab = true
+                shouldShowFab = true,
+                avatarImagesUiModel = AvatarImagesUiModelTestData.SampleData1
             )
         )
         every {
@@ -1394,7 +1415,8 @@ class MailboxViewModelTest {
                 swipeActions = null,
                 searchState = MailboxSearchStateSampleData.NotSearching,
                 clearState = MailboxListState.Data.ClearState.Hidden,
-                shouldShowFab = true
+                shouldShowFab = true,
+                avatarImagesUiModel = AvatarImagesUiModelTestData.SampleData1
             )
         )
         every {
@@ -3367,7 +3389,8 @@ class MailboxViewModelTest {
                 swipeActions = null,
                 searchState = MailboxSearchStateSampleData.NotSearching,
                 clearState = MailboxListState.Data.ClearState.Hidden,
-                shouldShowFab = true
+                shouldShowFab = true,
+                avatarImagesUiModel = AvatarImagesUiModelTestData.SampleData1
             ),
             unreadFilterState = UnreadFilterState.Data(
                 numUnread = UnreadCountersTestData.labelToCounterMap[initialLocationMailLabelId.labelId]!!,
@@ -3390,7 +3413,8 @@ class MailboxViewModelTest {
                 swipeActions = null,
                 searchState = MailboxSearchStateSampleData.NewSearch,
                 clearState = MailboxListState.Data.ClearState.Hidden,
-                shouldShowFab = false
+                shouldShowFab = false,
+                avatarImagesUiModel = AvatarImagesUiModelTestData.SampleData1
             )
         )
         every {
@@ -3424,7 +3448,8 @@ class MailboxViewModelTest {
                 swipeActions = null,
                 searchState = MailboxSearchStateSampleData.NotSearching,
                 clearState = MailboxListState.Data.ClearState.Hidden,
-                shouldShowFab = true
+                shouldShowFab = true,
+                avatarImagesUiModel = AvatarImagesUiModelTestData.SampleData1
             )
         )
         every {
@@ -3461,7 +3486,8 @@ class MailboxViewModelTest {
                 swipeActions = null,
                 searchState = MailboxSearchStateSampleData.SearchLoading,
                 clearState = MailboxListState.Data.ClearState.Hidden,
-                shouldShowFab = false
+                shouldShowFab = false,
+                avatarImagesUiModel = AvatarImagesUiModelTestData.SampleData1
             )
         )
         every {
@@ -3494,7 +3520,8 @@ class MailboxViewModelTest {
                 swipeActions = null,
                 searchState = MailboxSearchStateSampleData.SearchData,
                 clearState = MailboxListState.Data.ClearState.Hidden,
-                shouldShowFab = true
+                shouldShowFab = true,
+                avatarImagesUiModel = AvatarImagesUiModelTestData.SampleData1
             )
         )
         every {
@@ -3581,6 +3608,60 @@ class MailboxViewModelTest {
 
         // Then
         verify { showRatingBooster(context) }
+    }
+
+    @Test
+    fun `should invoke avatar image loading when requested`() = runTest {
+        // Given
+        val address = "user@example.com"
+        val bimiSelector = "selector"
+        val mailboxItem = mockk<MailboxItemUiModel> {
+            every { avatar } returns AvatarUiModel.ParticipantAvatar(
+                address = address,
+                bimiSelector = bimiSelector,
+                initial = "U",
+                color = androidx.compose.ui.graphics.Color.Red,
+                selected = false
+            )
+        }
+
+        val mailboxAction = MailboxViewAction.OnAvatarImageLoadRequested(mailboxItem)
+
+        // When
+        mailboxViewModel.submit(mailboxAction)
+
+        // Then
+        verify {
+            loadAvatarImage.invoke(
+                address = address,
+                bimiSelector = bimiSelector
+            )
+        }
+    }
+
+    @Test
+    fun `should raise avatar image states updated event when a new state observed`() = runTest {
+        // Given
+        val avatarImageStates = AvatarImageStatesTestData.SampleData1
+        val avatarImageStatesFlow = MutableStateFlow(avatarImageStates)
+
+        every { observeAvatarImageStates() } returns avatarImageStatesFlow
+        every { mailboxReducer.newStateFrom(any(), any()) } returns MailboxStateSampleData.Loading
+
+        mailboxViewModel.state.test {
+            skipItems(1)
+
+            // When
+            avatarImageStatesFlow.emit(avatarImageStates)
+
+            // Then
+            verify {
+                mailboxReducer.newStateFrom(
+                    any(),
+                    MailboxEvent.AvatarImageStatesUpdated(avatarImageStates)
+                )
+            }
+        }
     }
 
     private fun returnExpectedStateForBottomBarEvent(

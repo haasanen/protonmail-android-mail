@@ -40,6 +40,7 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.model.UnreadFilter
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.UpgradeStorageState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.previewdata.MailboxSearchStateSampleData
 import ch.protonmail.android.mailmailbox.presentation.mailbox.previewdata.MailboxStateSampleData
+import ch.protonmail.android.mailmessage.presentation.model.AvatarImagesUiModel
 import ch.protonmail.android.test.annotations.suite.RegressionTest
 import ch.protonmail.android.testdata.mailbox.MailboxItemUiModelTestData
 import ch.protonmail.android.testdata.maillabel.MailLabelTestData
@@ -95,7 +96,8 @@ internal class MailboxScreenTest : HiltInstrumentedTest() {
             swipeActions = null,
             searchState = MailboxSearchStateSampleData.NotSearching,
             clearState = MailboxListState.Data.ClearState.Hidden,
-            shouldShowFab = true
+            shouldShowFab = true,
+            avatarImagesUiModel = AvatarImagesUiModel.Empty
         )
         val mailboxState = MailboxStateSampleData.Loading.copy(mailboxListState = mailboxListState)
         val items = listOf(MailboxItemUiModelTestData.readMailboxItemUiModel)
@@ -120,7 +122,8 @@ internal class MailboxScreenTest : HiltInstrumentedTest() {
             swipeActions = null,
             searchState = MailboxSearchStateSampleData.NotSearching,
             clearState = MailboxListState.Data.ClearState.Hidden,
-            shouldShowFab = true
+            shouldShowFab = true,
+            avatarImagesUiModel = AvatarImagesUiModel.Empty
         )
         val mailboxState = MailboxStateSampleData.Loading.copy(mailboxListState = mailboxListState)
         val label = LabelUiModelSample.News
@@ -155,7 +158,8 @@ internal class MailboxScreenTest : HiltInstrumentedTest() {
             swipeActions = null,
             searchState = MailboxSearchStateSampleData.NotSearching,
             clearState = MailboxListState.Data.ClearState.Hidden,
-            shouldShowFab = true
+            shouldShowFab = true,
+            avatarImagesUiModel = AvatarImagesUiModel.Empty
         )
         val mailboxState = MailboxStateSampleData.Loading.copy(mailboxListState = mailboxListState)
         val robot = setupScreen(state = mailboxState)
@@ -176,7 +180,8 @@ internal class MailboxScreenTest : HiltInstrumentedTest() {
             swipeActions = null,
             searchState = MailboxSearchStateSampleData.NotSearching,
             clearState = MailboxListState.Data.ClearState.Hidden,
-            shouldShowFab = true
+            shouldShowFab = true,
+            avatarImagesUiModel = AvatarImagesUiModel.Empty
         )
         val mailboxState = MailboxStateSampleData.Loading.copy(mailboxListState = mailboxListState)
         val robot = setupScreen(state = mailboxState)
@@ -211,7 +216,8 @@ internal class MailboxScreenTest : HiltInstrumentedTest() {
                     swipeActions = null,
                     searchState = MailboxSearchStateSampleData.NotSearching,
                     clearState = MailboxListState.Data.ClearState.Hidden,
-                    shouldShowFab = true
+                    shouldShowFab = true,
+                    avatarImagesUiModel = AvatarImagesUiModel.Empty
                 ),
                 topAppBarState = MailboxTopAppBarState.Data.DefaultMode(
                     currentLabelName = systemLabel.text()

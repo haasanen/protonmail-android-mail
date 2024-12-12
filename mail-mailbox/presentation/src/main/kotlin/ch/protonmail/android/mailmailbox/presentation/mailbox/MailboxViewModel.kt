@@ -37,6 +37,7 @@ import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.mapper.ActionUiModelMapper
 import ch.protonmail.android.mailcommon.presentation.model.ActionUiModel
+import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
 import ch.protonmail.android.mailcommon.presentation.model.BottomBarEvent
 import ch.protonmail.android.mailcommon.presentation.model.BottomBarState
 import ch.protonmail.android.mailcommon.presentation.ui.delete.DeleteDialogState
@@ -104,9 +105,11 @@ import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.UnreadCounter
 import ch.protonmail.android.mailmessage.domain.usecase.DeleteMessages
 import ch.protonmail.android.mailmessage.domain.usecase.DeleteSearchResults
+import ch.protonmail.android.mailmessage.domain.usecase.LoadAvatarImage
 import ch.protonmail.android.mailmessage.domain.usecase.MarkMessagesAsRead
 import ch.protonmail.android.mailmessage.domain.usecase.MarkMessagesAsUnread
 import ch.protonmail.android.mailmessage.domain.usecase.MoveMessages
+import ch.protonmail.android.mailmessage.domain.usecase.ObserveAvatarImageStates
 import ch.protonmail.android.mailmessage.domain.usecase.ObserveClearMessageOperation
 import ch.protonmail.android.mailmessage.domain.usecase.StarMessages
 import ch.protonmail.android.mailmessage.domain.usecase.UnStarMessages
@@ -189,7 +192,9 @@ class MailboxViewModel @Inject constructor(
     private val shouldShowRatingBooster: ShouldShowRatingBooster,
     private val showRatingBooster: ShowRatingBooster,
     private val recordRatingBoosterTriggered: RecordRatingBoosterTriggered,
-    private val findLocalSystemLabelId: FindLocalSystemLabelId
+    private val findLocalSystemLabelId: FindLocalSystemLabelId,
+    private val loadAvatarImage: LoadAvatarImage,
+    private val observeAvatarImageStates: ObserveAvatarImageStates
 ) : ViewModel() {
 
     private val primaryUserId = observePrimaryUserId()
@@ -309,6 +314,12 @@ class MailboxViewModel @Inject constructor(
                 emitNewStateFrom(MailboxEvent.ShowRatingBooster)
             }
         }.launchIn(viewModelScope)
+
+        observeAvatarImageStates()
+            .onEach { avatarImageStates ->
+                emitNewStateFrom(MailboxEvent.AvatarImageStatesUpdated(avatarImageStates))
+            }
+            .launchIn(viewModelScope)
     }
 
     private fun handleSwipeActionPreferences(userId: UserId, currentMailLabel: MailLabel): Flow<MailboxEvent> {
@@ -343,6 +354,7 @@ class MailboxViewModel @Inject constructor(
 
                 is MailboxViewAction.MailboxItemsChanged -> handleMailboxItemChanged(viewAction.itemIds)
                 is MailboxViewAction.OnItemAvatarClicked -> handleOnAvatarClicked(viewAction.item)
+                is MailboxViewAction.OnAvatarImageLoadRequested -> handleOnAvatarImageLoadRequested(viewAction.item)
                 is MailboxViewAction.OnItemLongClicked -> handleItemLongClick(viewAction.item)
                 is MailboxViewAction.Refresh -> emitNewStateFrom(viewAction)
                 is MailboxViewAction.RefreshCompleted -> emitNewStateFrom(viewAction)
@@ -493,6 +505,14 @@ class MailboxViewModel @Inject constructor(
             is MailboxListState.Data.SelectionMode -> handleItemClickInSelectionMode(item)
             else -> {
                 Timber.d("Avatar clicked not supported in state: $state")
+            }
+        }
+    }
+
+    private fun handleOnAvatarImageLoadRequested(item: MailboxItemUiModel) {
+        (item.avatar as? AvatarUiModel.ParticipantAvatar)?.let { avatar ->
+            viewModelScope.launch {
+                loadAvatarImage(avatar.address, avatar.bimiSelector)
             }
         }
     }

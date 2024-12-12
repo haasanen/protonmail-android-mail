@@ -110,6 +110,8 @@ import ch.protonmail.android.mailcommon.presentation.ConsumableTextEffect
 import ch.protonmail.android.mailcommon.presentation.NO_CONTENT_DESCRIPTION
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 import ch.protonmail.android.mailcommon.presentation.compose.UndoableOperationSnackbar
+import ch.protonmail.android.mailcommon.presentation.model.AvatarImageUiModel
+import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
 import ch.protonmail.android.mailcommon.presentation.model.string
 import ch.protonmail.android.mailcommon.presentation.ui.BottomActionBar
 import ch.protonmail.android.mailcommon.presentation.ui.delete.DeleteDialog
@@ -186,6 +188,7 @@ fun MailboxScreen(
         onOfflineWithData = { viewModel.submit(MailboxViewAction.OnOfflineWithData) },
         onErrorWithData = { viewModel.submit(MailboxViewAction.OnErrorWithData) },
         onAvatarClicked = { viewModel.submit(MailboxViewAction.OnItemAvatarClicked(it)) },
+        onAvatarImageLoadRequested = { viewModel.submit(MailboxViewAction.OnAvatarImageLoadRequested(it)) },
         onStarClicked = { item ->
             viewModel.submit(MailboxViewAction.StarAction(item.id, item.isStarred))
         },
@@ -653,7 +656,9 @@ private fun MailboxSwipeRefresh(
             is MailboxScreenState.AppendLoading,
             is MailboxScreenState.AppendError,
             is MailboxScreenState.AppendOfflineError,
-            is MailboxScreenState.Data -> MailboxItemsList(state, listState, currentViewState, items, actions)
+            is MailboxScreenState.Data -> MailboxItemsList(
+                state, listState, currentViewState, items, actions
+            )
         }
     }
 }
@@ -672,6 +677,7 @@ private fun MailboxItemsList(
         onItemClicked = actions.onItemClicked,
         onItemLongClicked = actions.onItemLongClicked,
         onAvatarClicked = actions.onAvatarClicked,
+        onAvatarImageLoadRequested = actions.onAvatarImageLoadRequested,
         onStarClicked = actions.onStarClicked
     )
 
@@ -736,11 +742,17 @@ private fun MailboxItemsList(
                     swipingEnabled = swipingEnabled,
                     swipeActionCallbacks = generateSwipeActions(items, actions, item)
                 ) {
+
+                    val avatarImageUiModel = (item.avatar as? AvatarUiModel.ParticipantAvatar)
+                        ?.let { state.avatarImagesUiModel.getStateForAddress(it.address) }
+                        ?: AvatarImageUiModel.NotLoaded
+
                     MailboxItem(
                         modifier = Modifier
                             .background(ProtonTheme.colors.backgroundNorm)
                             .testTag("${MailboxItemTestTags.ItemRow}$index"),
                         item = item,
+                        avatarImageUiModel = avatarImageUiModel,
                         actions = itemActions,
                         selectionMode = state is MailboxListState.Data.SelectionMode,
                         // See doc 0014
@@ -1058,6 +1070,7 @@ object MailboxScreen {
         val onItemClicked: (MailboxItemUiModel) -> Unit,
         val onItemLongClicked: (MailboxItemUiModel) -> Unit,
         val onAvatarClicked: (MailboxItemUiModel) -> Unit,
+        val onAvatarImageLoadRequested: (MailboxItemUiModel) -> Unit,
         val onStarClicked: (MailboxItemUiModel) -> Unit,
         val onRefreshList: () -> Unit,
         val onRefreshListCompleted: () -> Unit,
@@ -1108,6 +1121,7 @@ object MailboxScreen {
                 onItemClicked = {},
                 onItemLongClicked = {},
                 onAvatarClicked = {},
+                onAvatarImageLoadRequested = {},
                 onStarClicked = {},
                 onRefreshList = {},
                 onRefreshListCompleted = {},

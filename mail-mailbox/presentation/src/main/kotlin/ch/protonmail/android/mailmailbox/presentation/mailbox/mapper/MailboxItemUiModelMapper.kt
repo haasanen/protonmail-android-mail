@@ -53,6 +53,7 @@ class MailboxItemUiModelMapper @Inject constructor(
     private val getParticipantsResolvedNames: GetParticipantsResolvedNames
 ) : Mapper<MailboxItem, MailboxItemUiModel> {
 
+    @Suppress("LongParameterList")
     @MissingRustApi
     // Rust to expose whether message is a draft (allows setting shouldOpenInComposer)
     suspend fun toUiModel(
