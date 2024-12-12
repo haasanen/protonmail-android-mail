@@ -18,7 +18,7 @@
 
 package ch.protonmail.android.mailmessage.presentation.ui
 
-import java.io.File
+import android.net.Uri
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -29,7 +29,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -45,29 +44,27 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.core.net.toUri
-import androidx.hilt.navigation.compose.hiltViewModel
 import ch.protonmail.android.mailcommon.presentation.NO_CONTENT_DESCRIPTION
 import ch.protonmail.android.mailcommon.presentation.R
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
-import ch.protonmail.android.mailmessage.presentation.model.SenderImageState
-import ch.protonmail.android.mailmessage.presentation.viewmodel.SenderImageViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyLargeNorm
+import ch.protonmail.android.mailcommon.presentation.model.AvatarImageUiModel
 
 @Composable
 fun ParticipantAvatar(
     modifier: Modifier = Modifier,
     avatarUiModel: AvatarUiModel,
-    onClick: () -> Unit = {},
+    avatarImageUiModel: AvatarImageUiModel,
+    actions: ParticipantAvatar.Actions = ParticipantAvatar.Actions.Empty,
     clickable: Boolean = true,
     outerContainerSize: Dp = MailDimens.AvatarSize,
     avatarSize: Dp = MailDimens.AvatarSize,
-    backgroundShape: Shape = ProtonTheme.shapes.large,
-    senderImageViewModel: SenderImageViewModel = hiltViewModel()
+    backgroundShape: Shape = ProtonTheme.shapes.large
 ) {
     Box(
         modifier = modifier
@@ -75,7 +72,7 @@ fun ParticipantAvatar(
             .size(outerContainerSize)
             .run {
                 if (clickable) {
-                    clickable(onClick = onClick)
+                    clickable(onClick = actions.onAvatarClicked)
                 } else {
                     this // Return the current modifier unchanged if not clickable
                 }
@@ -98,9 +95,10 @@ fun ParticipantAvatar(
                     } else {
                         ParticipantAvatarNotSelected(
                             avatarUiModel = avatarUiModel,
+                            avatarImageUiModel = avatarImageUiModel,
+                            actions = actions,
                             avatarSize = avatarSize,
-                            backgroundShape = backgroundShape,
-                            senderImageViewModel = senderImageViewModel
+                            backgroundShape = backgroundShape
                         )
                     }
                 }
@@ -131,19 +129,21 @@ fun ParticipantAvatarDraftIcon(avatarSize: Dp) {
 @Composable
 fun ParticipantAvatarNotSelected(
     avatarUiModel: AvatarUiModel.ParticipantAvatar,
+    avatarImageUiModel: AvatarImageUiModel,
+    actions: ParticipantAvatar.Actions,
     avatarSize: Dp,
-    backgroundShape: Shape,
-    senderImageViewModel: SenderImageViewModel
+    backgroundShape: Shape
 ) {
-    val imageState = senderImageViewModel.stateForAddress(avatarUiModel.address).collectAsState().value
 
-    LaunchedEffect(avatarUiModel.address) {
-        senderImageViewModel.loadSenderImage(avatarUiModel.address, avatarUiModel.bimiSelector)
+    LaunchedEffect(avatarImageUiModel) {
+        if (avatarImageUiModel is AvatarImageUiModel.NotLoaded) {
+            actions.onAvatarImageLoadRequested(avatarUiModel)
+        }
     }
 
-    when (imageState) {
-        is SenderImageState.Data -> SenderImageAvatar(imageState.imageFile, avatarSize)
-        is SenderImageState.NoImageAvailable -> SenderInitialsAvatar(
+    when (avatarImageUiModel) {
+        is AvatarImageUiModel.Data -> SenderImageAvatar(avatarImageUiModel.imageFile.toUri(), avatarSize)
+        is AvatarImageUiModel.NoImageAvailable -> SenderInitialsAvatar(
             initials = avatarUiModel.initial,
             modifier = Modifier
                 .sizeIn(
@@ -189,9 +189,8 @@ fun ParticipantAvatarSelected(
 }
 
 @Composable
-private fun SenderImageAvatar(imageFile: File, avatarSize: Dp) {
+private fun SenderImageAvatar(imageUri: Uri, avatarSize: Dp) {
     val context = LocalContext.current
-    val imageUri = imageFile.toUri()
 
     // If we do not provide our own cache key, Coil will make disk IO to access File to create a cache key
     val imageRequest = remember(imageUri) {
@@ -224,6 +223,22 @@ private fun SenderInitialsAvatar(initials: String, modifier: Modifier) {
             color = ProtonTheme.colors.textInverted
 
         )
+    }
+}
+
+object ParticipantAvatar {
+    data class Actions(
+        val onAvatarClicked: () -> Unit,
+        val onAvatarImageLoadRequested: (AvatarUiModel) -> Unit
+    ) {
+
+        companion object {
+
+            val Empty = Actions(
+                onAvatarClicked = {},
+                onAvatarImageLoadRequested = { }
+            )
+        }
     }
 }
 
