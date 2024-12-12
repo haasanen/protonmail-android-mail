@@ -22,6 +22,8 @@ import java.util.Collections
 import android.app.Activity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.LoadState
+import androidx.paging.LoadStates
 import androidx.paging.Pager
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
@@ -570,7 +572,11 @@ class MailboxViewModel @Inject constructor(
 
                 val isInSearchMode = state.value.isInSearchMode()
                 if (selectedMailLabel != currentMailLabel || currentSearchModeState != isInSearchMode) {
-                    pagingDataFlow.emit(PagingData.empty())
+                    pagingDataFlow.emit(
+                        PagingData.empty(
+                            LoadStates(LoadState.Loading, LoadState.Loading, LoadState.Loading)
+                        )
+                    )
                     currentMailLabel = selectedMailLabel
                     currentSearchModeState = isInSearchMode
                 }
