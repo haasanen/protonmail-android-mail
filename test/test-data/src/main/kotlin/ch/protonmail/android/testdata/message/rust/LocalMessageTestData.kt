@@ -27,14 +27,15 @@ import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageMetadata
 import uniffi.proton_mail_uniffi.AvatarInformation
 import uniffi.proton_mail_uniffi.InlineCustomLabel
 import uniffi.proton_mail_uniffi.LabelColor
-import uniffi.proton_mail_uniffi.MessageAddress
 import uniffi.proton_mail_uniffi.MessageFlags
+import uniffi.proton_mail_uniffi.MessageRecipient
+import uniffi.proton_mail_uniffi.MessageSender
 
 object LocalMessageTestData {
     const val RAW_SUBJECT = "Subject"
     const val RAW_MESSAGE_ID = 1000uL
 
-    val sender = MessageAddress(
+    val sender = MessageSender(
         address = "sender@pm.me",
         name = "Sender",
         isProton = true,
@@ -43,26 +44,20 @@ object LocalMessageTestData {
         bimiSelector = null
     )
 
-    val recipient1 = MessageAddress(
+    val recipient1 = MessageRecipient(
         address = "recipient1@pm.me", name = "Recipient1",
         isProton = true,
-        displaySenderImage = false,
-        isSimpleLogin = false,
-        bimiSelector = null
+        group = null
     )
-    val recipient2 = MessageAddress(
+    val recipient2 = MessageRecipient(
         address = "recipient2@pm.me", name = "Recipient2",
         isProton = true,
-        displaySenderImage = false,
-        isSimpleLogin = false,
-        bimiSelector = null
+        group = null
     )
-    val recipient3 = MessageAddress(
+    val recipient3 = MessageRecipient(
         address = "recipient3@pm.me", name = "Recipient3",
         isProton = true,
-        displaySenderImage = false,
-        isSimpleLogin = false,
-        bimiSelector = null
+        group = null
     )
 
     val AugWeatherForecast = buildMessage(
@@ -208,10 +203,10 @@ object LocalMessageTestData {
     fun buildMessage(
         id: LocalMessageId,
         subject: String,
-        sender: MessageAddress,
-        to: List<MessageAddress>,
-        cc: List<MessageAddress> = emptyList(),
-        bcc: List<MessageAddress> = emptyList(),
+        sender: MessageSender,
+        to: List<MessageRecipient>,
+        cc: List<MessageRecipient> = emptyList(),
+        bcc: List<MessageRecipient> = emptyList(),
         labels: List<InlineCustomLabel> = listOf(InlineCustomLabel(LocalLabelId(1uL), "Inbox", LabelColor("green"))),
         time: ULong,
         size: ULong = 0uL,

@@ -25,13 +25,14 @@ import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
 import uniffi.proton_mail_uniffi.AvatarInformation
 import uniffi.proton_mail_uniffi.InlineCustomLabel
 import uniffi.proton_mail_uniffi.LabelColor
-import uniffi.proton_mail_uniffi.MessageAddress
+import uniffi.proton_mail_uniffi.MessageRecipient
+import uniffi.proton_mail_uniffi.MessageSender
 
 object LocalConversationTestData {
     const val RAW_SUBJECT = "Conversation Subject"
     const val RAW_CONVERSATION_ID = 1000uL
 
-    val sender = MessageAddress(
+    val sender = MessageSender(
         address = "sender@pm.me",
         name = "Sender",
         isProton = true,
@@ -40,26 +41,20 @@ object LocalConversationTestData {
         bimiSelector = null
     )
 
-    val recipient1 = MessageAddress(
+    val recipient1 = MessageRecipient(
         address = "recipient1@pm.me", name = "Recipient1",
         isProton = true,
-        displaySenderImage = false,
-        isSimpleLogin = false,
-        bimiSelector = null
+        group = null
     )
-    val recipient2 = MessageAddress(
+    val recipient2 = MessageRecipient(
         address = "recipient2@pm.me", name = "Recipient2",
         isProton = true,
-        displaySenderImage = false,
-        isSimpleLogin = false,
-        bimiSelector = null
+        group = null
     )
-    val recipient3 = MessageAddress(
+    val recipient3 = MessageRecipient(
         address = "recipient3@pm.me", name = "Recipient3",
         isProton = true,
-        displaySenderImage = false,
-        isSimpleLogin = false,
-        bimiSelector = null
+        group = null
     )
 
     val AugConversation = buildConversation(
@@ -174,8 +169,8 @@ object LocalConversationTestData {
     fun buildConversation(
         id: LocalConversationId,
         subject: String,
-        senders: List<MessageAddress>,
-        recipients: List<MessageAddress>,
+        senders: List<MessageSender>,
+        recipients: List<MessageRecipient>,
         labels: List<InlineCustomLabel> = listOf(InlineCustomLabel(LocalLabelId(1uL), "Inbox", LabelColor("green"))),
         time: ULong,
         size: ULong = 0uL,

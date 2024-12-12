@@ -41,7 +41,8 @@ import ch.protonmail.android.mailmessage.domain.model.Recipient
 import me.proton.core.user.domain.entity.AddressId
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.BodyOutput
-import uniffi.proton_mail_uniffi.MessageAddress
+import uniffi.proton_mail_uniffi.MessageRecipient
+import uniffi.proton_mail_uniffi.MessageSender
 
 
 fun LocalAvatarInformation.toAvatarInformation(): AvatarInformation {
@@ -89,13 +90,16 @@ fun LocalMessageMetadata.toMessage(): Message {
     )
 }
 
-fun MessageAddress.toParticipant(): Participant {
+fun MessageSender.toParticipant(): Participant {
     return Participant(
         address = this.address, name = this.name, isProton = this.isProton, bimiSelector = this.bimiSelector
     )
 }
 
-fun MessageAddress.toRecipient(): Recipient {
+fun MessageRecipient.toParticipant(): Participant =
+    Participant(address = this.address, name = this.name, isProton = this.isProton)
+
+fun MessageRecipient.toRecipient(): Recipient {
     return Recipient(
         address = this.address,
         name = this.name,

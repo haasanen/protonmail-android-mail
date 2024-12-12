@@ -18,18 +18,19 @@
 
 package ch.protonmail.android.mailmessage.data.mapper
 
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageId
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageMetadata
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalAddressId
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalAvatarInformation
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalConversationId
+import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageId
+import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageMetadata
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertFalse
 import junit.framework.TestCase.assertTrue
 import uniffi.proton_mail_uniffi.ExclusiveLocation
 import uniffi.proton_mail_uniffi.Id
-import uniffi.proton_mail_uniffi.MessageAddress
 import uniffi.proton_mail_uniffi.MessageFlags
+import uniffi.proton_mail_uniffi.MessageRecipient
+import uniffi.proton_mail_uniffi.MessageSender
 import uniffi.proton_mail_uniffi.SystemLabel
 import kotlin.test.Test
 
@@ -47,7 +48,7 @@ class MessageMapperTest {
             displayOrder = 1u,
             subject = "Test Subject",
             unread = true,
-            sender = MessageAddress(
+            sender = MessageSender(
                 address = "sender@test.com",
                 bimiSelector = "sender bimiSelector",
                 displaySenderImage = false,
@@ -56,13 +57,11 @@ class MessageMapperTest {
                 name = "Sender Name"
             ),
             toList = listOf(
-                MessageAddress(
+                MessageRecipient(
                     address = "to@test.com",
-                    bimiSelector = null,
-                    displaySenderImage = false,
                     isProton = false,
-                    isSimpleLogin = false,
-                    name = "Recipient Name"
+                    name = "Recipient Name",
+                    group = null
                 )
             ),
             ccList = emptyList(),

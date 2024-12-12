@@ -41,14 +41,16 @@ import org.junit.Test
 import uniffi.proton_mail_uniffi.AvatarInformation
 import uniffi.proton_mail_uniffi.InlineCustomLabel
 import uniffi.proton_mail_uniffi.LabelColor
-import uniffi.proton_mail_uniffi.MessageAddress
 import uniffi.proton_mail_uniffi.MessageFlags
+import uniffi.proton_mail_uniffi.MessageRecipient
+import uniffi.proton_mail_uniffi.MessageReplyTo
+import uniffi.proton_mail_uniffi.MessageSender
 import uniffi.proton_mail_uniffi.SystemLabel
 
 class MessageMapperTest {
 
     @Test
-    fun `message address to participant should convert correctly`() {
+    fun `message sender to participant should convert correctly`() {
         // Given
         val address = "address@test.com"
         val name = "Name"
@@ -57,7 +59,7 @@ class MessageMapperTest {
         val isSimpleLogin = false
         val bimiSelector = "bimiSelector"
 
-        val messageAddress = MessageAddress(
+        val messageAddress = MessageSender(
             address = address,
             name = name,
             isProton = isProton,
@@ -78,22 +80,17 @@ class MessageMapperTest {
 
 
     @Test
-    fun `message address to recipient should convert correctly`() {
+    fun `message recipient to recipient should convert correctly`() {
         // Given
         val address = "recipient@test.com"
         val name = "Recipient Name"
         val isProton = true
-        val displaySenderImage = false
-        val isSimpleLogin = false
-        val bimiSelector = "bimiSelector"
 
-        val messageAddress = MessageAddress(
+        val messageAddress = MessageRecipient(
             address = address,
             name = name,
             isProton = isProton,
-            displaySenderImage = displaySenderImage,
-            isSimpleLogin = isSimpleLogin,
-            bimiSelector = bimiSelector
+            group = null
         )
 
         // When
@@ -119,39 +116,37 @@ class MessageMapperTest {
         )
         val subject = "Test Subject"
         val unread = true
-        val sender = MessageAddress(
+        val sender = MessageSender(
             "sender@test.com", "Sender", true,
             false, false, "bimiSelector"
         )
         val to = listOf(
-            MessageAddress(
-                "to1@test.com", "To1", true,
-                false, false, "bimiSelector"
+            MessageRecipient(
+                "to1@test.com", true, "To1", null
             ),
-            MessageAddress(
-                "to2@test.com", "To2", false,
-                false, false, "bimiSelector"
+            MessageRecipient(
+                "to2@test.com", false, "To2", null
             )
         )
         val cc = listOf(
-            MessageAddress(
-                "cc1@test.com", "Cc1", true,
-                false, false, "bimiSelector"
+            MessageRecipient(
+                "cc1@test.com", true, "Cc1", null
             ),
-            MessageAddress(
-                "cc2@test.com", "Cc2", false,
-                false, false, "bimiSelector"
+            MessageRecipient(
+                "cc2@test.com", false, "Cc2", null
             )
         )
         val bcc = listOf(
-            MessageAddress(
-                "bcc1@test.com", "Bcc1", true,
-                false, false, "bimiSelector"
+            MessageRecipient(
+                "bcc1@test.com", true, "Bcc1", null
             ),
-            MessageAddress(
-                "bcc2@test.com", "Bcc2", false,
-                false, false, "bimiSelector"
+            MessageRecipient(
+                "bcc2@test.com", false, "Bcc2", null
             )
+        )
+        val replyTo = listOf(
+            MessageReplyTo("to1@test.com", "To1"),
+            MessageReplyTo("to2@test.com", "To2")
         )
         val expirationTime = 1625235000000u
         val isReplied = false
@@ -192,7 +187,7 @@ class MessageMapperTest {
             starred = starred,
             attachmentsMetadata = attachments,
             exclusiveLocation = exclusiveLocation,
-            replyTos = to,
+            replyTos = replyTo,
             avatar = avatarInformation
         )
 

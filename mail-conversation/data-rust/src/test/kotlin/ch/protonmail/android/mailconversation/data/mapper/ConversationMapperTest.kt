@@ -26,9 +26,9 @@ import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.maillabel.data.mapper.toExclusiveLocation
 import ch.protonmail.android.maillabel.data.mapper.toLabel
+import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.mailmessage.data.mapper.toParticipant
 import ch.protonmail.android.mailmessage.domain.model.AttachmentCount
-import ch.protonmail.android.maillabel.domain.model.LabelId
 import org.junit.Test
 import uniffi.proton_mail_uniffi.AttachmentMimeType
 import uniffi.proton_mail_uniffi.AvatarInformation
@@ -36,7 +36,8 @@ import uniffi.proton_mail_uniffi.Disposition
 import uniffi.proton_mail_uniffi.Id
 import uniffi.proton_mail_uniffi.InlineCustomLabel
 import uniffi.proton_mail_uniffi.LabelColor
-import uniffi.proton_mail_uniffi.MessageAddress
+import uniffi.proton_mail_uniffi.MessageRecipient
+import uniffi.proton_mail_uniffi.MessageSender
 import uniffi.proton_mail_uniffi.MimeTypeCategory
 import uniffi.proton_mail_uniffi.SystemLabel
 import kotlin.test.assertEquals
@@ -51,23 +52,21 @@ class ConversationMapperTest {
         val order = 1uL
         val subject = "Test Subject"
         val senders = listOf(
-            MessageAddress(
+            MessageSender(
                 "sender1@test.com", "Sender1", true,
                 false, false, ""
             ),
-            MessageAddress(
+            MessageSender(
                 "sender2@test.com", "Sender2", false,
                 false, false, ""
             )
         )
         val recipients = listOf(
-            MessageAddress(
-                "recipient1@test.com", "Recipient1", true,
-                false, false, ""
+            MessageRecipient(
+                "recipient1@test.com", true, "Recipient1", null
             ),
-            MessageAddress(
-                "recipient2@test.com", "Recipient2", false,
-                false, false, ""
+            MessageRecipient(
+                "recipient2@test.com", false, "Recipient2", null
             )
         )
         val totalNumMessages = 8uL
