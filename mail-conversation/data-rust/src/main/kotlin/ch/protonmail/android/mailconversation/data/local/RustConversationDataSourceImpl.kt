@@ -107,7 +107,11 @@ class RustConversationDataSourceImpl @Inject constructor(
             actionName = "delete conversations"
         )
 
-    override suspend fun markRead(userId: UserId, conversations: List<LocalConversationId>) {
+    override suspend fun markRead(
+        userId: UserId,
+        labelId: LocalLabelId,
+        conversations: List<LocalConversationId>
+    ) {
         executeMailboxAction(
             userId = userId,
             action = { rustMarkConversationsAsRead(it, conversations) },
@@ -115,7 +119,11 @@ class RustConversationDataSourceImpl @Inject constructor(
         )
     }
 
-    override suspend fun markUnread(userId: UserId, conversations: List<LocalConversationId>) {
+    override suspend fun markUnread(
+        userId: UserId,
+        labelId: LocalLabelId,
+        conversations: List<LocalConversationId>
+    ) {
         executeMailboxAction(
             userId = userId,
             action = { mailbox -> rustMarkConversationsAsUnread(mailbox, conversations) },

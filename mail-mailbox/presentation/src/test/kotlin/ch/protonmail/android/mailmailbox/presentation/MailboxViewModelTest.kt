@@ -1668,12 +1668,13 @@ class MailboxViewModelTest {
             val expectedState = MailboxStateSampleData.createSelectionMode(
                 listOf(item.copy(isRead = true), secondItem.copy(isRead = true))
             )
+            val labelId = initialLocationMailLabelId.labelId
             expectViewModeForCurrentLocation(ConversationGrouping)
             expectedSelectedLabelCountStateChange(initialState)
             returnExpectedStateWhenEnterSelectionMode(initialState, item, intermediateState)
             returnExpectedStateForBottomBarEvent(expectedState = intermediateState)
             returnExpectedStateForMarkAsRead(intermediateState, expectedState)
-            expectMarkConversationsAsReadSucceeds(userId, listOf(item, secondItem))
+            expectMarkConversationsAsReadSucceeds(userId, labelId, listOf(item, secondItem))
             expectPagerMock()
 
             mailboxViewModel.state.test {
@@ -1695,7 +1696,11 @@ class MailboxViewModelTest {
                 // Then
                 assertEquals(expectedState, awaitItem())
                 coVerify(exactly = 1) {
-                    markConversationsAsRead(userId, listOf(ConversationId(item.id), ConversationId(secondItem.id)))
+                    markConversationsAsRead(
+                        userId,
+                        labelId,
+                        listOf(ConversationId(item.id), ConversationId(secondItem.id))
+                    )
                 }
                 coVerify { markMessagesAsRead wasNot Called }
             }
@@ -1712,12 +1717,13 @@ class MailboxViewModelTest {
             val expectedState = MailboxStateSampleData.createSelectionMode(
                 listOf(item.copy(isRead = false), secondItem.copy(isRead = false))
             )
+            val labelId = initialLocationMailLabelId.labelId
             expectViewModeForCurrentLocation(ConversationGrouping)
             expectedSelectedLabelCountStateChange(initialState)
             returnExpectedStateWhenEnterSelectionMode(initialState, item, intermediateState)
             returnExpectedStateForBottomBarEvent(expectedState = intermediateState)
             returnExpectedStateForMarkAsUnread(intermediateState, expectedState)
-            expectMarkConversationsAsUnreadSucceeds(userId, listOf(item, secondItem))
+            expectMarkConversationsAsUnreadSucceeds(userId, labelId, listOf(item, secondItem))
             expectPagerMock()
 
             mailboxViewModel.state.test {
@@ -1739,7 +1745,11 @@ class MailboxViewModelTest {
                 // Then
                 assertEquals(expectedState, awaitItem())
                 coVerify(exactly = 1) {
-                    markConversationsAsUnread(userId, listOf(ConversationId(item.id), ConversationId(secondItem.id)))
+                    markConversationsAsUnread(
+                        userId,
+                        labelId,
+                        listOf(ConversationId(item.id), ConversationId(secondItem.id))
+                    )
                 }
                 coVerify { markMessagesAsUnread wasNot Called }
             }
@@ -3010,8 +3020,9 @@ class MailboxViewModelTest {
     fun `when swipe read is called for conversation grouping and item is read then mark as unread is called`() {
         // Given
         val expectedItemId = "itemId"
+        val labelId = initialLocationMailLabelId.labelId
         expectViewModeForCurrentLocation(ConversationGrouping)
-        expectMarkConversationsAsUnreadSucceeds(userId, listOf(buildMailboxUiModelItem(id = expectedItemId)))
+        expectMarkConversationsAsUnreadSucceeds(userId, labelId, listOf(buildMailboxUiModelItem(id = expectedItemId)))
         val expectedViewAction = MailboxViewAction.SwipeReadAction(expectedItemId, true)
 
         // When
@@ -3019,7 +3030,11 @@ class MailboxViewModelTest {
 
         // Then
         coVerifyOrder {
-            markConversationsAsUnread(userId, listOf(ConversationId(expectedItemId)))
+            markConversationsAsUnread(
+                userId,
+                labelId,
+                listOf(ConversationId(expectedItemId))
+            )
             mailboxReducer.newStateFrom(any(), expectedViewAction)
         }
         coVerify {
@@ -3056,8 +3071,9 @@ class MailboxViewModelTest {
     fun `when swipe read is called for conversation grouping and item is unread then mark as read is called`() {
         // Given
         val expectedItemId = "itemId"
+        val labelId = initialLocationMailLabelId.labelId
         expectViewModeForCurrentLocation(ConversationGrouping)
-        expectMarkConversationsAsReadSucceeds(userId, listOf(buildMailboxUiModelItem(id = expectedItemId)))
+        expectMarkConversationsAsReadSucceeds(userId, labelId, listOf(buildMailboxUiModelItem(id = expectedItemId)))
         val expectedViewAction = MailboxViewAction.SwipeReadAction(expectedItemId, false)
 
         // When
@@ -3065,7 +3081,11 @@ class MailboxViewModelTest {
 
         // Then
         coVerify {
-            markConversationsAsRead(userId, listOf(ConversationId(expectedItemId)))
+            markConversationsAsRead(
+                userId,
+                labelId,
+                listOf(ConversationId(expectedItemId))
+            )
             mailboxReducer.newStateFrom(any(), expectedViewAction)
         }
         coVerify {
@@ -3877,15 +3897,23 @@ class MailboxViewModelTest {
         } returns expectedState
     }
 
-    private fun expectMarkConversationsAsReadSucceeds(userId: UserId, items: List<MailboxItemUiModel>) {
+    private fun expectMarkConversationsAsReadSucceeds(
+        userId: UserId,
+        labelId: LabelId,
+        items: List<MailboxItemUiModel>
+    ) {
         coEvery {
-            markConversationsAsRead(userId, items.map { ConversationId(it.id) })
+            markConversationsAsRead(userId, labelId, items.map { ConversationId(it.id) })
         } returns Unit.right()
     }
 
-    private fun expectMarkConversationsAsUnreadSucceeds(userId: UserId, items: List<MailboxItemUiModel>) {
+    private fun expectMarkConversationsAsUnreadSucceeds(
+        userId: UserId,
+        labelId: LabelId,
+        items: List<MailboxItemUiModel>
+    ) {
         coEvery {
-            markConversationsAsUnread(userId, items.map { ConversationId(it.id) })
+            markConversationsAsUnread(userId, labelId, items.map { ConversationId(it.id) })
         } returns Unit.right()
     }
 

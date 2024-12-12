@@ -801,7 +801,7 @@ class ConversationDetailViewModel @Inject constructor(
                 onLeft = ConversationDetailEvent.ErrorMarkingAsRead,
                 onRight = ConversationDetailViewAction.MarkRead
             ) { userId ->
-                markConversationAsRead(userId, conversationId)
+                markConversationAsRead(userId, openedFromLocation, conversationId)
             }
         }
     }
@@ -812,7 +812,7 @@ class ConversationDetailViewModel @Inject constructor(
                 onLeft = ConversationDetailEvent.ErrorMarkingAsUnread,
                 onRight = MarkUnread
             ) { userId ->
-                markConversationAsUnread(userId, conversationId)
+                markConversationAsUnread(userId, openedFromLocation, conversationId)
             }
         }
     }

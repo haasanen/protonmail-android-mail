@@ -1222,20 +1222,24 @@ class ConversationDetailViewModelTest {
     @Test
     fun `mark as unread is called correctly when action is submitted`() = runTest {
         // given
-        coEvery { markConversationAsUnread(userId, conversationId) } returns Unit.right()
+        val labelId = LabelIdSample.AllMail
+        every { savedStateHandle.get<String>(ConversationDetailScreen.OpenedFromLocationKey) } returns labelId.id
+        coEvery { markConversationAsUnread(userId, labelId, conversationId) } returns Unit.right()
 
         // when
         viewModel.submit(ConversationDetailViewAction.MarkUnread)
         advanceUntilIdle()
 
         // then
-        coVerify { markConversationAsUnread(userId, conversationId) }
+        coVerify { markConversationAsUnread(userId, labelId, conversationId) }
     }
 
     @Test
     fun `exit state is emitted when marked as unread successfully`() = runTest {
         // given
-        coEvery { markConversationAsUnread(userId, conversationId) } returns Unit.right()
+        val labelId = LabelIdSample.AllMail
+        every { savedStateHandle.get<String>(ConversationDetailScreen.OpenedFromLocationKey) } returns labelId.id
+        coEvery { markConversationAsUnread(userId, labelId, conversationId) } returns Unit.right()
         every {
             reducer.newStateFrom(
                 currentState = ConversationDetailState.Loading,
@@ -1259,7 +1263,11 @@ class ConversationDetailViewModelTest {
     @Test
     fun `error message is emitted when mark as unread fails`() = runTest {
         // given
-        coEvery { markConversationAsUnread(userId, conversationId) } returns DataError.Local.NoDataCached.left()
+        val labelId = LabelIdSample.AllMail
+        every { savedStateHandle.get<String>(ConversationDetailScreen.OpenedFromLocationKey) } returns labelId.id
+        coEvery {
+            markConversationAsUnread(userId, labelId, conversationId)
+        } returns DataError.Local.NoDataCached.left()
         every {
             reducer.newStateFrom(
                 currentState = ConversationDetailState.Loading,
@@ -1689,7 +1697,9 @@ class ConversationDetailViewModelTest {
     @Test
     fun `exit state is emitted when marked as read successfully`() = runTest {
         // given
-        coEvery { markConversationAsRead(userId, conversationId) } returns Unit.right()
+        val labelId = LabelIdSample.AllMail
+        every { savedStateHandle.get<String>(ConversationDetailScreen.OpenedFromLocationKey) } returns labelId.id
+        coEvery { markConversationAsRead(userId, labelId, conversationId) } returns Unit.right()
         every {
             reducer.newStateFrom(
                 currentState = ConversationDetailState.Loading,
@@ -1713,7 +1723,9 @@ class ConversationDetailViewModelTest {
     @Test
     fun `error message is emitted when mark as read fails`() = runTest {
         // given
-        coEvery { markConversationAsRead(userId, conversationId) } returns DataError.Local.NoDataCached.left()
+        val labelId = LabelIdSample.AllMail
+        every { savedStateHandle.get<String>(ConversationDetailScreen.OpenedFromLocationKey) } returns labelId.id
+        coEvery { markConversationAsRead(userId, labelId, conversationId) } returns DataError.Local.NoDataCached.left()
         every {
             reducer.newStateFrom(
                 currentState = ConversationDetailState.Loading,

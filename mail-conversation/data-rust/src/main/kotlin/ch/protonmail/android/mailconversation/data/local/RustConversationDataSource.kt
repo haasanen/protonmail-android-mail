@@ -51,8 +51,16 @@ interface RustConversationDataSource {
         userId: UserId,
         conversations: List<LocalConversationId>
     ): Either<DataError.Local, Unit>
-    suspend fun markRead(userId: UserId, conversations: List<LocalConversationId>)
-    suspend fun markUnread(userId: UserId, conversations: List<LocalConversationId>)
+    suspend fun markRead(
+        userId: UserId,
+        labelId: LocalLabelId,
+        conversations: List<LocalConversationId>
+    )
+    suspend fun markUnread(
+        userId: UserId,
+        labelId: LocalLabelId,
+        conversations: List<LocalConversationId>
+    )
     suspend fun starConversations(userId: UserId, conversations: List<LocalConversationId>)
     suspend fun unStarConversations(userId: UserId, conversations: List<LocalConversationId>)
 

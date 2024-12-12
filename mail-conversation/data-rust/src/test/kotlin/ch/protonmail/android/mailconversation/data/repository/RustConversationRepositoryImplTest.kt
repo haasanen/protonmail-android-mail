@@ -211,13 +211,20 @@ class RustConversationRepositoryImplTest {
     fun `markRead should mark conversations as read`() = runTest {
         // Given
         val conversationIds = listOf(LocalConversationIdSample.AugConversation.toConversationId())
-        coEvery { rustConversationDataSource.markRead(userId, any()) } just Runs
+        val labelId = LabelIdSample.AllMail
+        coEvery { rustConversationDataSource.markRead(userId, labelId.toLocalLabelId(), any()) } just Runs
 
         // When
-        val result = rustConversationRepository.markRead(userId, conversationIds)
+        val result = rustConversationRepository.markRead(userId, labelId, conversationIds)
 
         // Then
-        coVerify { rustConversationDataSource.markRead(userId, conversationIds.map { it.toLocalConversationId() }) }
+        coVerify {
+            rustConversationDataSource.markRead(
+                userId,
+                labelId.toLocalLabelId(),
+                conversationIds.map { it.toLocalConversationId() }
+            )
+        }
         assertEquals(Unit, result.getOrNull())
     }
 
@@ -225,13 +232,20 @@ class RustConversationRepositoryImplTest {
     fun `markUnread should mark conversations as unread`() = runTest {
         // Given
         val conversationIds = listOf(LocalConversationIdSample.AugConversation.toConversationId())
-        coEvery { rustConversationDataSource.markUnread(userId, any()) } just Runs
+        val labelId = LabelIdSample.AllMail
+        coEvery { rustConversationDataSource.markUnread(userId, labelId.toLocalLabelId(), any()) } just Runs
 
         // When
-        val result = rustConversationRepository.markUnread(userId, conversationIds)
+        val result = rustConversationRepository.markUnread(userId, labelId, conversationIds)
 
         // Then
-        coVerify { rustConversationDataSource.markUnread(userId, conversationIds.map { it.toLocalConversationId() }) }
+        coVerify {
+            rustConversationDataSource.markUnread(
+                userId,
+                labelId.toLocalLabelId(),
+                conversationIds.map { it.toLocalConversationId() }
+            )
+        }
         assertEquals(Unit, result.getOrNull())
     }
 

@@ -24,6 +24,7 @@ import ch.protonmail.android.mailcommon.domain.sample.ConversationIdSample
 import ch.protonmail.android.mailcommon.domain.sample.DataErrorSample
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.mailconversation.domain.repository.ConversationRepository
+import ch.protonmail.android.maillabel.domain.sample.LabelIdSample
 import ch.protonmail.android.testdata.maillabel.MailLabelTestData
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -47,10 +48,11 @@ class MarkConversationsAsUnreadTest {
     fun `returns error when repository fails`() = runTest {
         // given
         val error = DataErrorSample.NoCache.left()
-        coEvery { conversationRepository.markUnread(userId, conversationIds) } returns error
+        val labelId = LabelIdSample.AllMail
+        coEvery { conversationRepository.markUnread(userId, labelId, conversationIds) } returns error
 
         // when
-        val result = markUnread(userId, conversationIds)
+        val result = markUnread(userId, labelId, conversationIds)
 
         // then
         assertEquals(error, result)
@@ -59,10 +61,11 @@ class MarkConversationsAsUnreadTest {
     @Test
     fun `does not return error when repository succeeds`() = runTest {
         // given
-        coEvery { conversationRepository.markUnread(userId, conversationIds) } returns Unit.right()
+        val labelId = LabelIdSample.AllMail
+        coEvery { conversationRepository.markUnread(userId, labelId, conversationIds) } returns Unit.right()
 
         // when
-        val result = markUnread(userId, conversationIds)
+        val result = markUnread(userId, labelId, conversationIds)
 
         // then
         assertEquals(Unit.right(), result)

@@ -22,6 +22,7 @@ import arrow.core.Either
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailconversation.domain.usecase.MarkConversationsAsUnread
+import ch.protonmail.android.maillabel.domain.model.LabelId
 import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 
@@ -29,6 +30,9 @@ class MarkConversationAsUnread @Inject constructor(
     private val markConversationsAsUnread: MarkConversationsAsUnread
 ) {
 
-    suspend operator fun invoke(userId: UserId, conversationId: ConversationId): Either<DataError, Unit> =
-        markConversationsAsUnread(userId, listOf(conversationId))
+    suspend operator fun invoke(
+        userId: UserId,
+        labelId: LabelId,
+        conversationId: ConversationId
+    ): Either<DataError, Unit> = markConversationsAsUnread(userId, labelId, listOf(conversationId))
 }

@@ -24,6 +24,7 @@ import ch.protonmail.android.mailcommon.domain.sample.ConversationIdSample
 import ch.protonmail.android.mailcommon.domain.sample.DataErrorSample
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.mailconversation.domain.repository.ConversationRepository
+import ch.protonmail.android.maillabel.domain.sample.LabelIdSample
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
@@ -43,10 +44,11 @@ class MarkConversationsAsReadTest {
     fun `returns error when repository fails`() = runTest {
         // given
         val error = DataErrorSample.NoCache.left()
-        coEvery { conversationRepository.markRead(userId, conversationIds) } returns error
+        val labelId = LabelIdSample.AllMail
+        coEvery { conversationRepository.markRead(userId, labelId, conversationIds) } returns error
 
         // when
-        val result = markRead(userId, conversationIds)
+        val result = markRead(userId, labelId, conversationIds)
 
         // then
         assertEquals(error, result)
@@ -55,10 +57,11 @@ class MarkConversationsAsReadTest {
     @Test
     fun `returns updated conversation when repository succeeds`() = runTest {
         // given
-        coEvery { conversationRepository.markRead(userId, conversationIds) } returns Unit.right()
+        val labelId = LabelIdSample.AllMail
+        coEvery { conversationRepository.markRead(userId, labelId, conversationIds) } returns Unit.right()
 
         // when
-        val result = markRead(userId, conversationIds)
+        val result = markRead(userId, labelId, conversationIds)
 
         // then
         assertEquals(Unit.right(), result)

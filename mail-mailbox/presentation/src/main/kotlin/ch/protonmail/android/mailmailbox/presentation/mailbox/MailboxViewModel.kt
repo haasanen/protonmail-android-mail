@@ -625,6 +625,7 @@ class MailboxViewModel @Inject constructor(
         when (viewMode) {
             ViewMode.ConversationGrouping -> markConversationsAsRead(
                 userId = user,
+                labelId = getFromLabelIdSearchAware(),
                 conversationIds = selectionModeDataState.selectedMailboxItems.map { ConversationId(it.id) }
             )
 
@@ -647,6 +648,7 @@ class MailboxViewModel @Inject constructor(
         when (viewMode) {
             ViewMode.ConversationGrouping -> markConversationsAsUnread(
                 userId = userId,
+                labelId = getFromLabelIdSearchAware(),
                 conversationIds = selectionModeDataState.selectedMailboxItems.map { ConversationId(it.id) }
             )
 
@@ -663,6 +665,7 @@ class MailboxViewModel @Inject constructor(
             when (getViewModeForCurrentLocation(selectedMailLabelId.flow.value)) {
                 ViewMode.ConversationGrouping -> markConversationsAsUnread(
                     userId = primaryUserId.filterNotNull().first(),
+                    labelId = getFromLabelIdSearchAware(),
                     conversationIds = listOf(ConversationId(swipeReadAction.itemId))
                 )
 
@@ -675,6 +678,7 @@ class MailboxViewModel @Inject constructor(
             when (getViewModeForCurrentLocation(selectedMailLabelId.flow.value)) {
                 ViewMode.ConversationGrouping -> markConversationsAsRead(
                     userId = primaryUserId.filterNotNull().first(),
+                    labelId = getFromLabelIdSearchAware(),
                     conversationIds = listOf(ConversationId(swipeReadAction.itemId))
                 )
 
