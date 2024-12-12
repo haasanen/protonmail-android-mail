@@ -26,12 +26,12 @@ import me.proton.android.core.accountmanager.domain.usecase.GetAccountAvatarItem
 import me.proton.android.core.accountmanager.presentation.switcher.AccountItem
 import me.proton.android.core.accountmanager.presentation.switcher.AccountListItem
 import me.proton.core.util.kotlin.takeIfNotBlank
-import uniffi.proton_mail_uniffi.MailSessionInterface
+import uniffi.proton_mail_uniffi.MailSession
 import javax.inject.Inject
 
 class ObserveAccountListItems @Inject constructor(
     private val getAccountAvatarItem: GetAccountAvatarItem,
-    private val mailSessionInterface: MailSessionInterface,
+    private val mailSessionInterface: MailSession,
     private val observeCoreAccounts: ObserveCoreAccounts
 ) {
 

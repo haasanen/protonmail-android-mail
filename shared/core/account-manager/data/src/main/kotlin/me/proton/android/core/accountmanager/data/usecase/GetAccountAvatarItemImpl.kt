@@ -21,11 +21,11 @@ package me.proton.android.core.accountmanager.data.usecase
 import me.proton.android.core.account.domain.model.CoreUserId
 import me.proton.android.core.accountmanager.domain.model.CoreAccountAvatarItem
 import me.proton.android.core.accountmanager.domain.usecase.GetAccountAvatarItem
-import uniffi.proton_mail_uniffi.MailSessionInterface
+import uniffi.proton_mail_uniffi.MailSession
 import javax.inject.Inject
 
 class GetAccountAvatarItemImpl @Inject constructor(
-    private val mailSession: MailSessionInterface
+    private val mailSession: MailSession
 ) : GetAccountAvatarItem {
 
     override suspend operator fun invoke(userId: CoreUserId?): CoreAccountAvatarItem? {

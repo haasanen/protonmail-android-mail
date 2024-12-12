@@ -41,7 +41,7 @@ import me.proton.core.compose.viewmodel.stopTimeoutMillis
 import me.proton.core.presentation.utils.InputValidationResult
 import me.proton.core.presentation.utils.ValidationType
 import uniffi.proton_mail_uniffi.LoginFlow
-import uniffi.proton_mail_uniffi.MailSessionInterface
+import uniffi.proton_mail_uniffi.MailSession
 import uniffi.proton_mail_uniffi.MailUserSession
 import uniffi.proton_mail_uniffi.UserLoginFlowArcLoginFlowResult
 import uniffi.proton_mail_uniffi.UserLoginFlowArcMailUserSessionResult
@@ -54,7 +54,7 @@ class TwoPassInputViewModel @Inject constructor(
     @ApplicationContext
     private val context: Context,
     private val savedStateHandle: SavedStateHandle,
-    private val sessionInterface: MailSessionInterface,
+    private val sessionInterface: MailSession,
     private val callback: UserSessionInitializationCallback
 ) : ViewModel() {
 

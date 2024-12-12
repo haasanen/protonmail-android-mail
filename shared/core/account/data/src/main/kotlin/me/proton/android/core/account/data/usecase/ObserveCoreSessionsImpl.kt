@@ -31,12 +31,12 @@ import me.proton.android.core.account.data.qualifier.QueryWatcherCoroutineScope
 import me.proton.android.core.account.domain.model.CoreSession
 import me.proton.android.core.account.domain.usecase.ObserveCoreSessions
 import uniffi.proton_mail_uniffi.LiveQueryCallback
-import uniffi.proton_mail_uniffi.MailSessionInterface
+import uniffi.proton_mail_uniffi.MailSession
 import javax.inject.Inject
 
 class ObserveCoreSessionsImpl @Inject constructor(
     @QueryWatcherCoroutineScope private val coroutineScope: CoroutineScope,
-    private val mailSession: MailSessionInterface
+    private val mailSession: MailSession
 ) : ObserveCoreSessions {
 
     private val storedSessionsFlow = callbackFlow {

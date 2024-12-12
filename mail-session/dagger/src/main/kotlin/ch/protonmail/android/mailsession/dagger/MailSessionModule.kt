@@ -34,7 +34,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import me.proton.android.core.auth.presentation.session.UserSessionInitializationCallback
-import uniffi.proton_mail_uniffi.MailSessionInterface
+import uniffi.proton_mail_uniffi.MailSession
 import uniffi.proton_mail_uniffi.MailUserSessionInitializationCallback
 import javax.inject.Singleton
 
@@ -44,7 +44,7 @@ object MailSessionModule {
 
     @Provides
     @Singleton
-    fun provideMailSessionInterface(repository: MailSessionRepository): MailSessionInterface =
+    fun provideMailSessionInterface(repository: MailSessionRepository): MailSession =
         repository.getMailSession().getRustMailSession()
 
     @Provides

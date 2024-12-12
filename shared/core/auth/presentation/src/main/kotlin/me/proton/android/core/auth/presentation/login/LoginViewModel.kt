@@ -28,7 +28,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import me.proton.android.core.auth.presentation.session.UserSessionInitializationCallback
-import uniffi.proton_mail_uniffi.MailSessionInterface
+import uniffi.proton_mail_uniffi.MailSession
 import uniffi.proton_mail_uniffi.MailUserSession
 import uniffi.proton_mail_uniffi.UserLoginFlowArcLoginFlowResult
 import uniffi.proton_mail_uniffi.UserLoginFlowArcMailUserSessionResult
@@ -41,7 +41,7 @@ import javax.inject.Inject
 class LoginViewModel @Inject constructor(
     @ApplicationContext
     private val context: Context,
-    private val sessionInterface: MailSessionInterface,
+    private val sessionInterface: MailSession,
     private val callback: UserSessionInitializationCallback
 ) : ViewModel() {
 

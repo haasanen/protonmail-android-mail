@@ -25,11 +25,11 @@ import me.proton.android.core.account.domain.model.CoreAccount
 import me.proton.android.core.account.domain.model.CoreAccountState
 import me.proton.android.core.account.domain.usecase.ObservePrimaryCoreAccount
 import me.proton.android.core.account.domain.usecase.ObserveCoreAccounts
-import uniffi.proton_mail_uniffi.MailSessionInterface
+import uniffi.proton_mail_uniffi.MailSession
 import javax.inject.Inject
 
 class ObservePrimaryCoreAccountImpl @Inject constructor(
-    private val mailSession: MailSessionInterface,
+    private val mailSession: MailSession,
     private val observeCoreAccounts: ObserveCoreAccounts
 ) : ObservePrimaryCoreAccount {
 

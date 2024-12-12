@@ -34,13 +34,13 @@ import kotlinx.coroutines.launch
 import me.proton.android.core.auth.presentation.secondfactor.SecondFactorArg.getUserId
 import me.proton.android.core.auth.presentation.secondfactor.SecondFactorInputAction.Close
 import me.proton.core.compose.viewmodel.stopTimeoutMillis
-import uniffi.proton_mail_uniffi.MailSessionInterface
+import uniffi.proton_mail_uniffi.MailSession
 import javax.inject.Inject
 
 @HiltViewModel
 class SecondFactorInputViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
-    private val sessionInterface: MailSessionInterface
+    private val sessionInterface: MailSession
 ) : ViewModel() {
 
     private val userId by lazy { savedStateHandle.getUserId() }
