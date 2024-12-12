@@ -109,6 +109,8 @@ import ch.protonmail.android.mailmessage.domain.sample.MessageSample
 import ch.protonmail.android.mailmessage.domain.usecase.DeleteMessages
 import ch.protonmail.android.mailmessage.domain.usecase.GetDecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.usecase.GetMessageMoveToLocations
+import ch.protonmail.android.mailmessage.domain.usecase.LoadAvatarImage
+import ch.protonmail.android.mailmessage.domain.usecase.ObserveAvatarImageStates
 import ch.protonmail.android.mailmessage.domain.usecase.StarMessages
 import ch.protonmail.android.mailmessage.domain.usecase.UnStarMessages
 import ch.protonmail.android.mailmessage.presentation.model.MessageBodyExpandCollapseMode
@@ -120,6 +122,7 @@ import ch.protonmail.android.mailsettings.domain.model.PrivacySettings
 import ch.protonmail.android.mailsettings.domain.usecase.privacy.ObservePrivacySettings
 import ch.protonmail.android.mailsettings.domain.usecase.privacy.UpdateLinkConfirmationSetting
 import ch.protonmail.android.testdata.action.ActionUiModelTestData
+import ch.protonmail.android.testdata.avatar.AvatarImageStatesTestData
 import ch.protonmail.android.testdata.contact.ContactSample
 import ch.protonmail.android.testdata.conversation.ConversationTestData
 import ch.protonmail.android.testdata.conversation.ConversationUiModelTestData
@@ -171,7 +174,8 @@ class ConversationDetailViewModelTest {
             toUiModel(
                 message = MessageSample.Invoice,
                 contacts = any(),
-                primaryUserAddress = primaryUserAddress
+                primaryUserAddress = primaryUserAddress,
+                avatarImageState = any()
             )
         } returns
             ConversationDetailMessageUiModelSample.InvoiceWithLabel
@@ -179,7 +183,8 @@ class ConversationDetailViewModelTest {
             toUiModel(
                 message = MessageSample.Invoice,
                 contacts = any(),
-                primaryUserAddress = primaryUserAddress
+                primaryUserAddress = primaryUserAddress,
+                avatarImageState = any()
             )
         } returns
             ConversationDetailMessageUiModelSample.InvoiceWithTwoLabels
@@ -187,7 +192,8 @@ class ConversationDetailViewModelTest {
             toUiModel(
                 message = MessageSample.Invoice,
                 contacts = any(),
-                primaryUserAddress = primaryUserAddress
+                primaryUserAddress = primaryUserAddress,
+                avatarImageState = any()
             )
         } returns
             ConversationDetailMessageUiModelSample.InvoiceWithoutLabels
@@ -195,7 +201,8 @@ class ConversationDetailViewModelTest {
             toUiModel(
                 message = MessageSample.Invoice,
                 contacts = any(),
-                primaryUserAddress = primaryUserAddress
+                primaryUserAddress = primaryUserAddress,
+                avatarImageState = any()
             )
         } returns
             ConversationDetailMessageUiModelSample.AnotherInvoiceWithoutLabels
@@ -308,6 +315,12 @@ class ConversationDetailViewModelTest {
     private val onMessageLabelAsConfirmed = mockk<OnMessageLabelAsConfirmed>()
     private val moveMessage = mockk<MoveMessage>()
     private val deleteMessages = mockk<DeleteMessages>()
+    private val loadAvatarImage = mockk<LoadAvatarImage> {
+        every { this@mockk.invoke(any(), any()) } returns Unit
+    }
+    private val observeAvatarImageStates = mockk<ObserveAvatarImageStates> {
+        every { this@mockk() } returns flowOf(AvatarImageStatesTestData.SampleData1)
+    }
 
     private val testDispatcher: TestDispatcher by lazy {
         StandardTestDispatcher().apply { Dispatchers.setMain(this) }
@@ -359,7 +372,9 @@ class ConversationDetailViewModelTest {
             onMessageLabelAsConfirmed = onMessageLabelAsConfirmed,
             moveMessage = moveMessage,
             deleteMessages = deleteMessages,
-            observePrimaryUserAddress = observePrimaryUserAddress
+            observePrimaryUserAddress = observePrimaryUserAddress,
+            loadAvatarImage = loadAvatarImage,
+            observeAvatarImageStates = observeAvatarImageStates
         )
     }
 
@@ -499,6 +514,7 @@ class ConversationDetailViewModelTest {
                 userId = any(),
                 message = any(),
                 contacts = any(),
+                avatarImageState = any(),
                 primaryUserAddress = primaryUserAddress,
                 decryptedMessageBody = any()
             )
@@ -601,6 +617,7 @@ class ConversationDetailViewModelTest {
                 userId = any(),
                 message = any(),
                 contacts = any(),
+                avatarImageState = any(),
                 primaryUserAddress = primaryUserAddress,
                 decryptedMessageBody = any()
             )
@@ -641,6 +658,7 @@ class ConversationDetailViewModelTest {
                 userId = any(),
                 message = any(),
                 contacts = any(),
+                avatarImageState = any(),
                 primaryUserAddress = primaryUserAddress,
                 decryptedMessageBody = any()
             )
@@ -1394,6 +1412,7 @@ class ConversationDetailViewModelTest {
                 userId = any(),
                 message = any(),
                 contacts = any(),
+                avatarImageState = any(),
                 primaryUserAddress = primaryUserAddress,
                 decryptedMessageBody = any()
             )
@@ -1439,6 +1458,7 @@ class ConversationDetailViewModelTest {
                     userId = any(),
                     message = any(),
                     contacts = any(),
+                    avatarImageState = any(),
                     primaryUserAddress = primaryUserAddress,
                     decryptedMessageBody = any()
                 )
@@ -1491,6 +1511,7 @@ class ConversationDetailViewModelTest {
                 userId = any(),
                 message = any(),
                 contacts = any(),
+                avatarImageState = any(),
                 primaryUserAddress = primaryUserAddress,
                 decryptedMessageBody = any()
             )
@@ -1555,6 +1576,7 @@ class ConversationDetailViewModelTest {
                 userId = any(),
                 message = any(),
                 contacts = any(),
+                avatarImageState = any(),
                 primaryUserAddress = primaryUserAddress,
                 decryptedMessageBody = any()
             )
@@ -1579,6 +1601,7 @@ class ConversationDetailViewModelTest {
                 userId = any(),
                 message = any(),
                 contacts = any(),
+                avatarImageState = any(),
                 primaryUserAddress = primaryUserAddress,
                 decryptedMessageBody = any()
             )
@@ -1891,13 +1914,14 @@ class ConversationDetailViewModelTest {
             messagesState = ConversationDetailsMessagesState.Data(firstExpanding)
         )
 
-        coEvery { conversationMessageMapper.toUiModel(any(), any(), primaryUserAddress) } returns
+        coEvery { conversationMessageMapper.toUiModel(any(), any(), any(), primaryUserAddress) } returns
             ConversationDetailMessageUiModelSample.InvoiceWithLabel
         coEvery {
             conversationMessageMapper.toUiModel(
                 userId = any(),
                 message = any(),
                 contacts = any(),
+                avatarImageState = any(),
                 primaryUserAddress = primaryUserAddress,
                 decryptedMessageBody = any()
             )

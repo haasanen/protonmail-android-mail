@@ -20,6 +20,8 @@ package ch.protonmail.android.maildetail.presentation.mapper
 
 import androidx.compose.ui.graphics.Color
 import arrow.core.getOrElse
+import ch.protonmail.android.mailmessage.domain.model.AvatarImageState
+import ch.protonmail.android.mailmessage.presentation.mapper.AvatarImageUiModelMapper
 import ch.protonmail.android.mailcommon.presentation.mapper.ColorMapper
 import ch.protonmail.android.mailcommon.presentation.mapper.ExpirationTimeMapper
 import ch.protonmail.android.mailcommon.presentation.usecase.FormatShortTime
@@ -51,16 +53,19 @@ class ConversationDetailMessageUiModelMapper @Inject constructor(
     private val messageDetailFooterUiModelMapper: MessageDetailFooterUiModelMapper,
     private val messageBannersUiModelMapper: MessageBannersUiModelMapper,
     private val messageBodyUiModelMapper: MessageBodyUiModelMapper,
-    private val participantUiModelMapper: ParticipantUiModelMapper
+    private val participantUiModelMapper: ParticipantUiModelMapper,
+    private val avatarImageUiModelMapper: AvatarImageUiModelMapper
 ) {
 
     suspend fun toUiModel(
         message: Message,
         contacts: List<ContactMetadata.Contact>,
+        avatarImageState: AvatarImageState,
         primaryUserAddress: String?
     ): ConversationDetailMessageUiModel.Collapsed {
         return ConversationDetailMessageUiModel.Collapsed(
             avatar = avatarUiModelMapper(message.avatarInformation, message.sender),
+            avatarImage = avatarImageUiModelMapper.toUiModel(avatarImageState),
             expiration = message.expirationTimeOrNull()?.let(expirationTimeMapper::toUiModel),
             forwardedIcon = getForwardedIcon(isForwarded = message.isForwarded),
             hasAttachments = message.numAttachments > message.attachmentCount.calendar,
@@ -83,6 +88,7 @@ class ConversationDetailMessageUiModelMapper @Inject constructor(
     suspend fun toUiModel(
         userId: UserId,
         message: Message,
+        avatarImageState: AvatarImageState,
         contacts: List<ContactMetadata.Contact>,
         primaryUserAddress: String?,
         decryptedMessageBody: DecryptedMessageBody,
@@ -100,7 +106,8 @@ class ConversationDetailMessageUiModelMapper @Inject constructor(
             messageDetailHeaderUiModel = messageDetailHeaderUiModelMapper.toUiModel(
                 message,
                 contacts,
-                primaryUserAddress
+                primaryUserAddress,
+                avatarImageState
             ),
             messageDetailFooterUiModel = messageDetailFooterUiModelMapper.toUiModel(message),
             messageBannersUiModel = messageBannersUiModelMapper.createMessageBannersUiModel(message),
@@ -124,6 +131,7 @@ class ConversationDetailMessageUiModelMapper @Inject constructor(
     suspend fun toUiModel(
         messageUiModel: ConversationDetailMessageUiModel.Expanded,
         message: Message,
+        avatarImageState: AvatarImageState,
         contacts: List<ContactMetadata.Contact>
     ): ConversationDetailMessageUiModel.Expanded {
         return messageUiModel.copy(
@@ -131,7 +139,8 @@ class ConversationDetailMessageUiModelMapper @Inject constructor(
             messageDetailHeaderUiModel = messageDetailHeaderUiModelMapper.toUiModel(
                 message,
                 contacts,
-                null
+                null,
+                avatarImageState
             )
         )
     }

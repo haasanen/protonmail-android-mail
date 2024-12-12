@@ -71,6 +71,7 @@ import me.proton.core.util.kotlin.exhaustive
 @Composable
 internal fun ConversationDetailCollapsedMessageHeader(
     uiModel: ConversationDetailMessageUiModel.Collapsed,
+    avatarActions: ParticipantAvatar.Actions,
     modifier: Modifier = Modifier
 ) {
     val fontWeight = if (uiModel.isUnread) FontWeight.Medium else FontWeight.Normal
@@ -117,7 +118,9 @@ internal fun ConversationDetailCollapsedMessageHeader(
                 .constrainAs(avatarRef) {
                     centerVerticallyTo(parent)
                 },
-            avatarUiModel = uiModel.avatar
+            avatarUiModel = uiModel.avatar,
+            avatarImageUiModel = uiModel.avatarImage,
+            actions = avatarActions
         )
 
         ForwardedIcon(
@@ -441,7 +444,10 @@ private fun CdCollapsedMessageHeaderPreview(
 ) {
     ProtonTheme {
         ProtonTheme {
-            ConversationDetailCollapsedMessageHeader(uiModel = uiModel)
+            ConversationDetailCollapsedMessageHeader(
+                uiModel = uiModel,
+                avatarActions = ParticipantAvatar.Actions.Empty
+            )
         }
     }
 }

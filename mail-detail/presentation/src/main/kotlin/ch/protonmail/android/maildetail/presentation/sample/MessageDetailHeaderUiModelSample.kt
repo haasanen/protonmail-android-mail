@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.maildetail.presentation.sample
 
+import ch.protonmail.android.mailcommon.presentation.model.AvatarImageUiModel
 import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.maildetail.presentation.model.MessageDetailHeaderUiModel
@@ -44,6 +45,7 @@ object MessageDetailHeaderUiModelSample {
         labels: ImmutableList<LabelUiModel>
     ): MessageDetailHeaderUiModel = MessageDetailHeaderUiModel(
         avatar = avatar,
+        avatarImage = AvatarImageUiModel.NoImageAvailable,
         sender = sender,
         shouldShowTrackerProtectionIcon = false,
         shouldShowAttachmentIcon = false,

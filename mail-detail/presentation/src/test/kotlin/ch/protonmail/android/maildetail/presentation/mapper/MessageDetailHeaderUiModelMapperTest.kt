@@ -22,10 +22,12 @@ import android.content.Context
 import android.text.format.Formatter
 import androidx.compose.ui.graphics.Color
 import arrow.core.right
+import ch.protonmail.android.mailmessage.domain.model.AvatarImageState
 import ch.protonmail.android.mailcommon.domain.sample.UserAddressSample
 import ch.protonmail.android.mailcommon.presentation.R.drawable.ic_proton_archive_box
 import ch.protonmail.android.mailcommon.presentation.R.drawable.ic_proton_lock
 import ch.protonmail.android.mailcommon.presentation.mapper.ColorMapper
+import ch.protonmail.android.mailcommon.presentation.model.AvatarImageUiModel
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcommon.presentation.sample.ParticipantAvatarSample
 import ch.protonmail.android.mailcommon.presentation.usecase.FormatExtendedTime
@@ -40,6 +42,7 @@ import ch.protonmail.android.maillabel.presentation.sample.LabelUiModelSample
 import ch.protonmail.android.mailmessage.domain.model.AttachmentCount
 import ch.protonmail.android.mailmessage.domain.usecase.ResolveParticipantName
 import ch.protonmail.android.mailmessage.domain.usecase.ResolveParticipantNameResult
+import ch.protonmail.android.mailmessage.presentation.mapper.AvatarImageUiModelMapper
 import ch.protonmail.android.testdata.contact.ContactTestData
 import ch.protonmail.android.testdata.label.LabelTestData
 import ch.protonmail.android.testdata.message.MessageTestData
@@ -82,6 +85,7 @@ class MessageDetailHeaderUiModelMapperTest {
     )
     private val expectedResult = MessageDetailHeaderUiModel(
         avatar = avatarUiModel,
+        avatarImage = AvatarImageUiModel.NoImageAvailable,
         sender = senderUiModel,
         shouldShowTrackerProtectionIcon = true,
         shouldShowAttachmentIcon = true,
@@ -155,6 +159,9 @@ class MessageDetailHeaderUiModelMapperTest {
             )
         } returns ResolveParticipantNameResult(MessageTestData.recipient3.name, isProton = false)
     }
+    private val avatarImageUiModelMapper: AvatarImageUiModelMapper = mockk {
+        every { this@mockk.toUiModel(any()) } returns AvatarImageUiModel.NoImageAvailable
+    }
 
     private val messageDetailHeaderUiModelMapper = MessageDetailHeaderUiModelMapper(
         colorMapper = colorMapper,
@@ -164,7 +171,8 @@ class MessageDetailHeaderUiModelMapperTest {
         formatShortTime = formatShortTime,
         messageLocationUiModelMapper = messageLocationUiModelMapper,
         participantUiModelMapper = participantUiModelMapper,
-        resolveParticipantName = resolveParticipantName
+        resolveParticipantName = resolveParticipantName,
+        avatarImageUiModelMapper = avatarImageUiModelMapper
     )
 
     @BeforeTest
@@ -184,7 +192,8 @@ class MessageDetailHeaderUiModelMapperTest {
         val result = messageDetailHeaderUiModelMapper.toUiModel(
             message = message,
             contacts = ContactTestData.contacts,
-            primaryUserAddress = primaryUserAddress
+            primaryUserAddress = primaryUserAddress,
+            avatarImageState = AvatarImageState.NoImageAvailable
         )
         // Then
         assertEquals(expectedResult, result)
@@ -202,7 +211,8 @@ class MessageDetailHeaderUiModelMapperTest {
         val result = messageDetailHeaderUiModelMapper.toUiModel(
             message = message,
             contacts = ContactTestData.contacts,
-            primaryUserAddress = primaryUserAddress
+            primaryUserAddress = primaryUserAddress,
+            avatarImageState = AvatarImageState.NoImageAvailable
         )
         // Then
         assertEquals(expectedResult, result)
@@ -217,7 +227,8 @@ class MessageDetailHeaderUiModelMapperTest {
         val result = messageDetailHeaderUiModelMapper.toUiModel(
             message = message,
             contacts = ContactTestData.contacts,
-            primaryUserAddress = primaryUserAddress
+            primaryUserAddress = primaryUserAddress,
+            avatarImageState = AvatarImageState.NoImageAvailable
         )
         // Then
         assertEquals(expectedResult, result)
@@ -240,7 +251,8 @@ class MessageDetailHeaderUiModelMapperTest {
         val result = messageDetailHeaderUiModelMapper.toUiModel(
             message = message,
             contacts = ContactTestData.contacts,
-            primaryUserAddress = primaryUserAddress
+            primaryUserAddress = primaryUserAddress,
+            avatarImageState = AvatarImageState.NoImageAvailable
         )
         // Then
         assertEquals(expectedResult, result)
@@ -261,9 +273,12 @@ class MessageDetailHeaderUiModelMapperTest {
             LabelUiModelSample.Document,
             LabelUiModelSample.News
         )
+        val avatarImageState = AvatarImageState.NoImageAvailable
 
         // When
-        val result = messageDetailHeaderUiModelMapper.toUiModel(input, ContactTestData.contacts, primaryUserAddress)
+        val result = messageDetailHeaderUiModelMapper.toUiModel(
+            input, ContactTestData.contacts, primaryUserAddress, avatarImageState
+        )
 
         // Then
         assertEquals(expected, result.labels)

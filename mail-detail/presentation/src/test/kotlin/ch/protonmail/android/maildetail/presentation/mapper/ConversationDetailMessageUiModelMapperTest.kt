@@ -20,10 +20,12 @@ package ch.protonmail.android.maildetail.presentation.mapper
 
 import java.util.UUID
 import android.text.format.Formatter
+import ch.protonmail.android.mailmessage.domain.model.AvatarImageState
 import ch.protonmail.android.mailcommon.domain.sample.UserAddressSample
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.mailcommon.presentation.mapper.ColorMapper
 import ch.protonmail.android.mailcommon.presentation.mapper.ExpirationTimeMapper
+import ch.protonmail.android.mailcommon.presentation.model.AvatarImageUiModel
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcommon.presentation.usecase.FormatExtendedTime
 import ch.protonmail.android.mailcommon.presentation.usecase.FormatShortTime
@@ -40,6 +42,7 @@ import ch.protonmail.android.mailmessage.domain.sample.MessageSample
 import ch.protonmail.android.mailmessage.domain.sample.RecipientSample
 import ch.protonmail.android.mailmessage.domain.usecase.ResolveParticipantName
 import ch.protonmail.android.mailmessage.domain.usecase.ResolveParticipantNameResult
+import ch.protonmail.android.mailmessage.presentation.mapper.AvatarImageUiModelMapper
 import ch.protonmail.android.mailmessage.presentation.model.MessageBodyExpandCollapseMode
 import ch.protonmail.android.testdata.contact.ContactSample
 import ch.protonmail.android.testdata.maildetail.MessageBannersUiModelTestData.messageBannersUiModel
@@ -90,6 +93,9 @@ internal class ConversationDetailMessageUiModelMapperTest {
             this@mockk(contacts = any(), participant = RecipientSample.PreciWeather)
         } returns ResolveParticipantNameResult(RecipientSample.PreciWeather.name, isProton = false)
     }
+    private val avatarImageUiModelMapper: AvatarImageUiModelMapper = mockk {
+        every { this@mockk.toUiModel(avatarImageState = any()) } returns AvatarImageUiModel.NoImageAvailable
+    }
     private val messageDetailHeaderUiModelMapper = spyk(
         MessageDetailHeaderUiModelMapper(
             colorMapper = colorMapper,
@@ -99,7 +105,8 @@ internal class ConversationDetailMessageUiModelMapperTest {
             formatShortTime = formatShortTime,
             messageLocationUiModelMapper = messageLocationUiModelMapper,
             participantUiModelMapper = ParticipantUiModelMapper(ResolveParticipantName()),
-            resolveParticipantName = resolveParticipantName
+            resolveParticipantName = resolveParticipantName,
+            avatarImageUiModelMapper = avatarImageUiModelMapper
         )
     )
     private val messageDetailFooterUiModelMapper = spyk(MessageDetailFooterUiModelMapper())
@@ -139,7 +146,8 @@ internal class ConversationDetailMessageUiModelMapperTest {
         messageBannersUiModelMapper = messageBannersUiModelMapper,
         messageBodyUiModelMapper = messageBodyUiModelMapper,
         participantUiModelMapper = participantUiModelMapper,
-        messageIdUiModelMapper = messageIdUiModelMapper
+        messageIdUiModelMapper = messageIdUiModelMapper,
+        avatarImageUiModelMapper = avatarImageUiModelMapper
     )
 
     @BeforeTest
@@ -163,7 +171,8 @@ internal class ConversationDetailMessageUiModelMapperTest {
         val result: ConversationDetailMessageUiModel.Collapsed = mapper.toUiModel(
             message = message,
             contacts = emptyList(),
-            primaryUserAddress
+            avatarImageState = AvatarImageState.NoImageAvailable,
+            primaryUserAddress = primaryUserAddress
         )
 
         // then
@@ -181,20 +190,26 @@ internal class ConversationDetailMessageUiModelMapperTest {
             UUID.randomUUID().toString(),
             MimeType.Html
         )
+        val avatarImageState = AvatarImageState.NoImageAvailable
 
         // when
         val result = mapper.toUiModel(
-            userId,
-            message,
+            userId = userId,
+            message = message,
             contacts = contactsList,
-            primaryUserAddress,
+            avatarImageState = avatarImageState,
+            primaryUserAddress = primaryUserAddress,
             decryptedMessageBody = decryptedMessageBody
         )
 
         // then
         assertEquals(result.isUnread, message.isUnread)
         assertEquals(result.messageId.id, message.messageId.id)
-        coVerify { messageDetailHeaderUiModelMapper.toUiModel(message, contactsList, primaryUserAddress) }
+        coVerify {
+            messageDetailHeaderUiModelMapper.toUiModel(
+                message, contactsList, primaryUserAddress, avatarImageState
+            )
+        }
         coVerify { messageBodyUiModelMapper.toUiModel(userId, decryptedMessageBody) }
     }
 
@@ -222,9 +237,10 @@ internal class ConversationDetailMessageUiModelMapperTest {
                 forwardedIcon = ConversationDetailMessageUiModel.ForwardedIcon.Forwarded
             )
         }
+        val avatarImageState = AvatarImageState.NoImageAvailable
 
         // when
-        val result = mapper.toUiModel(message, contacts = emptyList(), primaryUserAddress)
+        val result = mapper.toUiModel(message, contacts = emptyList(), avatarImageState, primaryUserAddress)
 
         // then
         assertEquals(expected, result)
@@ -239,9 +255,10 @@ internal class ConversationDetailMessageUiModelMapperTest {
                 repliedIcon = ConversationDetailMessageUiModel.RepliedIcon.Replied
             )
         }
+        val avatarImageState = AvatarImageState.NoImageAvailable
 
         // when
-        val result = mapper.toUiModel(message, contacts = emptyList(), primaryUserAddress)
+        val result = mapper.toUiModel(message, contacts = emptyList(), avatarImageState, primaryUserAddress)
 
         // then
         assertEquals(expected, result)
@@ -256,9 +273,10 @@ internal class ConversationDetailMessageUiModelMapperTest {
                 repliedIcon = ConversationDetailMessageUiModel.RepliedIcon.RepliedAll
             )
         }
+        val avatarImageState = AvatarImageState.NoImageAvailable
 
         // when
-        val result = mapper.toUiModel(message, contacts = emptyList(), primaryUserAddress)
+        val result = mapper.toUiModel(message, contacts = emptyList(), avatarImageState, primaryUserAddress)
 
         // then
         assertEquals(expected, result)
@@ -276,9 +294,10 @@ internal class ConversationDetailMessageUiModelMapperTest {
                 repliedIcon = ConversationDetailMessageUiModel.RepliedIcon.RepliedAll
             )
         }
+        val avatarImageState = AvatarImageState.NoImageAvailable
 
         // when
-        val result = mapper.toUiModel(message, contacts = emptyList(), primaryUserAddress)
+        val result = mapper.toUiModel(message, contacts = emptyList(), avatarImageState, primaryUserAddress)
 
         // then
         assertEquals(expected, result)
@@ -295,9 +314,10 @@ internal class ConversationDetailMessageUiModelMapperTest {
                 any()
             )
         } returns ConversationDetailMessageUiModelSample.ExpiringInvitation.avatar
+        val avatarImageState = AvatarImageState.NoImageAvailable
 
         // when
-        val result = mapper.toUiModel(message, contacts = emptyList(), primaryUserAddress)
+        val result = mapper.toUiModel(message, contacts = emptyList(), avatarImageState, primaryUserAddress)
 
         // then
         assertEquals(expected, result)
@@ -314,9 +334,10 @@ internal class ConversationDetailMessageUiModelMapperTest {
                 any()
             )
         } returns ConversationDetailMessageUiModelSample.ExpiringInvitation.avatar
+        val avatarImageState = AvatarImageState.NoImageAvailable
 
         // when
-        val result = mapper.toUiModel(message, contacts = emptyList(), primaryUserAddress)
+        val result = mapper.toUiModel(message, contacts = emptyList(), avatarImageState, primaryUserAddress)
 
         // then
         assertEquals(expected, result)
@@ -327,11 +348,13 @@ internal class ConversationDetailMessageUiModelMapperTest {
         // Given
         val previousMessage = ConversationDetailMessageUiModelSample.InvoiceWithoutLabelsCustomFolderExpanded
         val message = MessageSample.Invoice.copy(isUnread = true)
+        val avatarImageState = AvatarImageState.NoImageAvailable
 
         // When
         val result = mapper.toUiModel(
             messageUiModel = previousMessage,
             message = message,
+            avatarImageState = avatarImageState,
             contacts = listOf(ContactSample.John)
         )
 
@@ -352,12 +375,14 @@ internal class ConversationDetailMessageUiModelMapperTest {
             MimeType.Html
         )
         val previousState = AugWeatherForecastExpanded.copy(expandCollapseMode = MessageBodyExpandCollapseMode.Expanded)
+        val avatarImageState = AvatarImageState.NoImageAvailable
 
         // when
         val result = mapper.toUiModel(
             userId,
             message,
             contacts = contactsList,
+            avatarImageState = avatarImageState,
             primaryUserAddress = primaryUserAddress,
             decryptedMessageBody = decryptedMessageBody,
             existingMessageUiState = previousState

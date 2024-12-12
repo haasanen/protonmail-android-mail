@@ -19,6 +19,7 @@
 package ch.protonmail.android.maildetail.presentation.previewdata
 
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
+import ch.protonmail.android.mailcommon.presentation.model.AvatarImageUiModel
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcommon.presentation.sample.ParticipantAvatarSample
 import ch.protonmail.android.maildetail.presentation.R
@@ -34,6 +35,7 @@ object MessageDetailHeaderPreviewData {
 
     val WithoutLabels = MessageDetailHeaderUiModel(
         avatar = ParticipantAvatarSample.ebay,
+        avatarImage = AvatarImageUiModel.NoImageAvailable,
         sender = ParticipantUiModel(
             participantName = "Proton Test Account",
             participantAddress = "proton.test@protonmail.com",

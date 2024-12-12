@@ -19,6 +19,7 @@
 package ch.protonmail.android.testdata.maildetail
 
 import ch.protonmail.android.mailcommon.presentation.R
+import ch.protonmail.android.mailcommon.presentation.model.AvatarImageUiModel
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcommon.presentation.sample.ParticipantAvatarSample
 import ch.protonmail.android.maildetail.presentation.model.MessageDetailHeaderUiModel
@@ -32,6 +33,7 @@ object MessageDetailHeaderUiModelTestData {
 
     val messageDetailHeaderUiModel = MessageDetailHeaderUiModel(
         avatar = ParticipantAvatarSample.ebay,
+        avatarImage = AvatarImageUiModel.NoImageAvailable,
         sender = ParticipantUiModel(
             "Sender",
             "sender@pm.com",

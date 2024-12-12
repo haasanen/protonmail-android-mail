@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.maildetail.presentation.model
 
+import ch.protonmail.android.mailcommon.presentation.model.AvatarImageUiModel
 import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.maillabel.presentation.model.LabelUiModel
@@ -38,6 +39,7 @@ sealed interface ConversationDetailMessageUiModel {
     data class Collapsed(
         override val messageId: MessageIdUiModel,
         val avatar: AvatarUiModel,
+        val avatarImage: AvatarImageUiModel,
         val expiration: TextUiModel?,
         val forwardedIcon: ForwardedIcon,
         val hasAttachments: Boolean,
@@ -79,5 +81,14 @@ sealed interface ConversationDetailMessageUiModel {
         None,
         Replied,
         RepliedAll
+    }
+}
+
+fun ConversationDetailMessageUiModel.getSenderAddress(): String? {
+    return when (this) {
+        is ConversationDetailMessageUiModel.Collapsed -> sender.participantAddress
+        is ConversationDetailMessageUiModel.Expanding -> collapsed.sender.participantAddress
+        is ConversationDetailMessageUiModel.Expanded -> messageDetailHeaderUiModel.sender.participantAddress
+        is ConversationDetailMessageUiModel.Hidden -> null
     }
 }

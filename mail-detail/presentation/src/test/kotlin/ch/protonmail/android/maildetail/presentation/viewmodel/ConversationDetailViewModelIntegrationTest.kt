@@ -151,11 +151,14 @@ import ch.protonmail.android.mailmessage.domain.usecase.GetEmbeddedImageResult
 import ch.protonmail.android.mailmessage.domain.usecase.GetMessageAvailableActions
 import ch.protonmail.android.mailmessage.domain.usecase.GetMessageLabelAsActions
 import ch.protonmail.android.mailmessage.domain.usecase.GetMessageMoveToLocations
+import ch.protonmail.android.mailmessage.domain.usecase.LoadAvatarImage
+import ch.protonmail.android.mailmessage.domain.usecase.ObserveAvatarImageStates
 import ch.protonmail.android.mailmessage.domain.usecase.ObserveMessage
 import ch.protonmail.android.mailmessage.domain.usecase.ResolveParticipantName
 import ch.protonmail.android.mailmessage.domain.usecase.StarMessages
 import ch.protonmail.android.mailmessage.domain.usecase.UnStarMessages
 import ch.protonmail.android.mailmessage.presentation.mapper.AttachmentUiModelMapper
+import ch.protonmail.android.mailmessage.presentation.mapper.AvatarImageUiModelMapper
 import ch.protonmail.android.mailmessage.presentation.mapper.DetailMoreActionsBottomSheetUiMapper
 import ch.protonmail.android.mailmessage.presentation.model.MessageBodyExpandCollapseMode
 import ch.protonmail.android.mailmessage.presentation.model.ViewModePreference
@@ -176,6 +179,7 @@ import ch.protonmail.android.mailsettings.domain.model.PrivacySettings
 import ch.protonmail.android.mailsettings.domain.usecase.privacy.ObservePrivacySettings
 import ch.protonmail.android.mailsettings.domain.usecase.privacy.UpdateLinkConfirmationSetting
 import ch.protonmail.android.testdata.action.AvailableActionsTestData
+import ch.protonmail.android.testdata.avatar.AvatarImageStatesTestData
 import ch.protonmail.android.testdata.contact.ContactSample
 import ch.protonmail.android.testdata.label.rust.LabelAsActionsTestData
 import ch.protonmail.android.testdata.maillabel.MailLabelTestData
@@ -261,7 +265,12 @@ class ConversationDetailViewModelIntegrationTest {
     private val getConversationLabelAsActions = mockk<GetConversationLabelAsActions>()
     private val getMessageLabelAsActions = mockk<GetMessageLabelAsActions>()
     private val reportPhishingMessage = mockk<ReportPhishingMessage>()
-
+    private val loadAvatarImage = mockk<LoadAvatarImage> {
+        every { this@mockk.invoke(any(), any()) } returns Unit
+    }
+    private val observeAvatarImageStates = mockk<ObserveAvatarImageStates> {
+        every { this@mockk() } returns flowOf(AvatarImageStatesTestData.SampleData1)
+    }
     // Privacy settings for link confirmation dialog
     private val observePrivacySettings = mockk<ObservePrivacySettings> {
         coEvery { this@mockk.invoke(any()) } returns flowOf(
@@ -375,6 +384,7 @@ class ConversationDetailViewModelIntegrationTest {
     private val injectCssIntoDecryptedMessageBody = InjectCssIntoDecryptedMessageBody(context)
     private val sanitizeHtmlOfDecryptedMessageBody = SanitizeHtmlOfDecryptedMessageBody()
     private val extractMessageBodyWithoutQuote = ExtractMessageBodyWithoutQuote()
+    private val avatarImageUiModelMapper = AvatarImageUiModelMapper()
     private val conversationMessageMapper = ConversationDetailMessageUiModelMapper(
         avatarUiModelMapper = DetailAvatarUiModelMapper(avatarInformationMapper),
         expirationTimeMapper = ExpirationTimeMapper(getCurrentEpochTimeDuration),
@@ -389,7 +399,8 @@ class ConversationDetailViewModelIntegrationTest {
             formatShortTime = formatShortTime,
             messageLocationUiModelMapper = messageLocationUiModelMapper,
             participantUiModelMapper = ParticipantUiModelMapper(resolveParticipantName),
-            resolveParticipantName = resolveParticipantName
+            resolveParticipantName = resolveParticipantName,
+            avatarImageUiModelMapper = avatarImageUiModelMapper
         ),
         messageDetailFooterUiModelMapper = MessageDetailFooterUiModelMapper(),
         messageBannersUiModelMapper = MessageBannersUiModelMapper(context),
@@ -404,7 +415,8 @@ class ConversationDetailViewModelIntegrationTest {
             extractMessageBodyWithoutQuote = extractMessageBodyWithoutQuote
         ),
         participantUiModelMapper = ParticipantUiModelMapper(resolveParticipantName),
-        messageIdUiModelMapper = messageIdUiModelMapper
+        messageIdUiModelMapper = messageIdUiModelMapper,
+        avatarImageUiModelMapper = avatarImageUiModelMapper
     )
 
     private val conversationMetadataMapper = ConversationDetailMetadataUiModelMapper()
@@ -2371,7 +2383,9 @@ class ConversationDetailViewModelIntegrationTest {
         ioDispatcher: CoroutineDispatcher = testDispatcher,
         networkMgmt: NetworkManager = networkManager,
         protonCalendarInstalled: IsProtonCalendarInstalled = isProtonCalendarInstalled,
-        findContactByEmailAddress: FindContactByEmail = findContactByEmail
+        findContactByEmailAddress: FindContactByEmail = findContactByEmail,
+        loadAvatarImg: LoadAvatarImage = loadAvatarImage,
+        observeAvatarImgStates: ObserveAvatarImageStates = observeAvatarImageStates
     ) = ConversationDetailViewModel(
         observePrimaryUserId = observePrimaryUser,
         messageIdUiModelMapper = messageIdUiModelMapper,
@@ -2417,7 +2431,9 @@ class ConversationDetailViewModelIntegrationTest {
         onMessageLabelAsConfirmed = onMessageLabelAsConfirmed,
         moveMessage = moveMessage,
         deleteMessages = deleteMessages,
-        observePrimaryUserAddress = observePrimaryUserAddress
+        observePrimaryUserAddress = observePrimaryUserAddress,
+        loadAvatarImage = loadAvatarImg,
+        observeAvatarImageStates = observeAvatarImgStates
     )
 
     private fun aMessageAttachment(id: String): MessageAttachment = MessageAttachment(

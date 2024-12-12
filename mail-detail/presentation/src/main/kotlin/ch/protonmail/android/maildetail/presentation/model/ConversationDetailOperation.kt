@@ -267,4 +267,8 @@ sealed interface ConversationDetailViewAction : ConversationDetailOperation {
 
 
     data object ChangeVisibilityOfMessages : ConversationDetailViewAction
+
+    data class OnAvatarImageLoadRequested(
+        val avatar: AvatarUiModel
+    ) : ConversationDetailViewAction
 }

@@ -19,6 +19,7 @@
 package ch.protonmail.android.maildetail.presentation.model
 
 import androidx.annotation.DrawableRes
+import ch.protonmail.android.mailcommon.presentation.model.AvatarImageUiModel
 import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.maillabel.presentation.model.LabelUiModel
@@ -26,6 +27,7 @@ import kotlinx.collections.immutable.ImmutableList
 
 data class MessageDetailHeaderUiModel(
     val avatar: AvatarUiModel,
+    val avatarImage: AvatarImageUiModel,
     val sender: ParticipantUiModel,
     val shouldShowTrackerProtectionIcon: Boolean,
     val shouldShowAttachmentIcon: Boolean,

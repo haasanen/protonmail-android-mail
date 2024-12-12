@@ -22,6 +22,8 @@ import android.content.Context
 import android.text.format.Formatter
 import androidx.compose.ui.graphics.Color
 import arrow.core.getOrElse
+import ch.protonmail.android.mailmessage.domain.model.AvatarImageState
+import ch.protonmail.android.mailmessage.presentation.mapper.AvatarImageUiModelMapper
 import ch.protonmail.android.mailcommon.presentation.mapper.ColorMapper
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcommon.presentation.usecase.FormatExtendedTime
@@ -50,16 +52,19 @@ class MessageDetailHeaderUiModelMapper @Inject constructor(
     private val formatShortTime: FormatShortTime,
     private val messageLocationUiModelMapper: MessageLocationUiModelMapper,
     private val participantUiModelMapper: ParticipantUiModelMapper,
-    private val resolveParticipantName: ResolveParticipantName
+    private val resolveParticipantName: ResolveParticipantName,
+    private val avatarImageUiModelMapper: AvatarImageUiModelMapper
 ) {
 
     suspend fun toUiModel(
         message: Message,
         contacts: List<ContactMetadata.Contact>,
-        primaryUserAddress: String?
+        primaryUserAddress: String?,
+        avatarImageState: AvatarImageState
     ): MessageDetailHeaderUiModel {
         return MessageDetailHeaderUiModel(
             avatar = detailAvatarUiModelMapper(message.avatarInformation, message.sender),
+            avatarImage = avatarImageUiModelMapper.toUiModel(avatarImageState),
             sender = participantUiModelMapper.senderToUiModel(message.sender, contacts),
             shouldShowTrackerProtectionIcon = true,
             shouldShowAttachmentIcon = message.hasNonCalendarAttachments(),

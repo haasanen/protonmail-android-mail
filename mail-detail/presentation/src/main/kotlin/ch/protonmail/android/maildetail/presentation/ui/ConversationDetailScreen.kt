@@ -382,6 +382,9 @@ fun ConversationDetailScreen(
                         )
                     )
                 },
+                onAvatarImageLoadRequested = { avatarUiModel ->
+                    viewModel.submit(ConversationDetailViewAction.OnAvatarImageLoadRequested(avatarUiModel))
+                },
                 onOpenComposer = { actions.openComposerForDraftMessage(MessageId(it.id)) },
                 onParticipantClicked = { participantUiModel, avatarUiModel ->
                     viewModel.submit(
@@ -575,6 +578,7 @@ fun ConversationDetailScreen(
                     onOpenInProtonCalendar = { actions.onOpenInProtonCalendar(it) },
                     onPrint = actions.onPrint,
                     onAvatarClicked = actions.onAvatarClicked,
+                    onAvatarImageLoadRequested = actions.onAvatarImageLoadRequested,
                     onParticipantClicked = actions.onParticipantClicked
                 )
                 MessagesContentWithHiddenEdges(
@@ -895,6 +899,7 @@ object ConversationDetailScreen {
         val onOpenComposer: (MessageIdUiModel) -> Unit,
         val onPrint: (MessageId) -> Unit,
         val onAvatarClicked: (ParticipantUiModel, AvatarUiModel) -> Unit,
+        val onAvatarImageLoadRequested: (AvatarUiModel) -> Unit,
         val onParticipantClicked: (ParticipantUiModel, AvatarUiModel) -> Unit,
         val onTrashedMessagesBannerClick: () -> Unit
     ) {
@@ -940,6 +945,7 @@ object ConversationDetailScreen {
                 onOpenComposer = {},
                 onPrint = { _ -> },
                 onAvatarClicked = { _, _ -> },
+                onAvatarImageLoadRequested = {},
                 onParticipantClicked = { _, _ -> },
                 onTrashedMessagesBannerClick = {}
             )

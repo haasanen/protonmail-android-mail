@@ -21,6 +21,7 @@ package ch.protonmail.android.maildetail.presentation.sample
 import java.util.UUID
 import ch.protonmail.android.maillabel.domain.sample.LabelSample
 import androidx.compose.ui.graphics.Color
+import ch.protonmail.android.mailcommon.presentation.model.AvatarImageUiModel
 import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.maildetail.presentation.R
@@ -200,6 +201,7 @@ object ConversationDetailMessageUiModelSample {
         isStarred: Boolean = false
     ): ConversationDetailMessageUiModel.Collapsed = ConversationDetailMessageUiModel.Collapsed(
         avatar = avatar,
+        avatarImage = AvatarImageUiModel.NoImageAvailable,
         expiration = expiration,
         forwardedIcon = forwardedIcon,
         hasAttachments = message.numAttachments > message.attachmentCount.calendar,

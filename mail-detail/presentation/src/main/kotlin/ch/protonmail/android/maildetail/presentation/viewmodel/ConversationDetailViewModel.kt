@@ -27,11 +27,13 @@ import arrow.core.NonEmptyList
 import arrow.core.getOrElse
 import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.domain.coroutines.IODispatcher
+import ch.protonmail.android.mailmessage.domain.model.AvatarImageState
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.model.isOfflineError
 import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailcommon.presentation.mapper.ActionUiModelMapper
+import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
 import ch.protonmail.android.mailcommon.presentation.model.BottomBarEvent
 import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import ch.protonmail.android.mailcontact.domain.usecase.FindContactByEmail
@@ -104,6 +106,7 @@ import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.maillabel.presentation.model.LabelSelectedState
 import ch.protonmail.android.maillabel.presentation.toUiModels
 import ch.protonmail.android.mailmessage.domain.model.AttachmentId
+import ch.protonmail.android.mailmessage.domain.model.AvatarImageStates
 import ch.protonmail.android.mailmessage.domain.model.ConversationMessages
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.model.GetDecryptedMessageBodyError
@@ -115,6 +118,8 @@ import ch.protonmail.android.mailmessage.domain.model.Participant
 import ch.protonmail.android.mailmessage.domain.usecase.DeleteMessages
 import ch.protonmail.android.mailmessage.domain.usecase.GetDecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.usecase.GetMessageMoveToLocations
+import ch.protonmail.android.mailmessage.domain.usecase.LoadAvatarImage
+import ch.protonmail.android.mailmessage.domain.usecase.ObserveAvatarImageStates
 import ch.protonmail.android.mailmessage.domain.usecase.StarMessages
 import ch.protonmail.android.mailmessage.domain.usecase.UnStarMessages
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.ContactActionsBottomSheetState
@@ -202,7 +207,9 @@ class ConversationDetailViewModel @Inject constructor(
     private val onMessageLabelAsConfirmed: OnMessageLabelAsConfirmed,
     private val moveMessage: MoveMessage,
     private val deleteMessages: DeleteMessages,
-    private val observePrimaryUserAddress: ObservePrimaryUserAddress
+    private val observePrimaryUserAddress: ObservePrimaryUserAddress,
+    private val loadAvatarImage: LoadAvatarImage,
+    private val observeAvatarImageStates: ObserveAvatarImageStates
 ) : ViewModel() {
 
     private val primaryUserId = observePrimaryUserId()
@@ -321,6 +328,9 @@ class ConversationDetailViewModel @Inject constructor(
             is ConversationDetailViewAction.ReportPhishingDismissed,
             is ConversationDetailViewAction.SwitchViewMode,
             is ConversationDetailViewAction.PrintRequested -> directlyHandleViewAction(action)
+
+            is ConversationDetailViewAction.OnAvatarImageLoadRequested ->
+                handleOnAvatarImageLoadRequested(action.avatar)
         }
     }
 
@@ -375,8 +385,9 @@ class ConversationDetailViewModel @Inject constructor(
             observeContacts(userId),
             observeConversationMessages(userId, conversationId).ignoreLocalErrors(),
             observeConversationViewState(),
-            observePrimaryUserAddress()
-        ) { contactsEither, messagesEither, conversationViewState, primaryUserAddress ->
+            observePrimaryUserAddress(),
+            observeAvatarImageStates()
+        ) { contactsEither, messagesEither, conversationViewState, primaryUserAddress, avatarImageStates ->
             val contacts = contactsEither.getOrElse {
                 Timber.i("Failed getting contacts for displaying initials. Fallback to display name")
                 emptyList()
@@ -389,7 +400,8 @@ class ConversationDetailViewModel @Inject constructor(
                 messages = conversationMessages.messages,
                 contacts = contacts,
                 primaryUserAddress = primaryUserAddress,
-                currentViewState = conversationViewState
+                currentViewState = conversationViewState,
+                avatarImageStates = avatarImageStates
             ).toImmutableList()
 
             val initialScrollTo = initialScrollToMessageId
@@ -431,19 +443,23 @@ class ConversationDetailViewModel @Inject constructor(
         messages: NonEmptyList<Message>,
         contacts: List<ContactMetadata.Contact>,
         primaryUserAddress: String?,
-        currentViewState: InMemoryConversationStateRepository.MessagesState
+        currentViewState: InMemoryConversationStateRepository.MessagesState,
+        avatarImageStates: AvatarImageStates
     ): NonEmptyList<ConversationDetailMessageUiModel> {
         val messagesList = messages.map { message ->
             val existingMessageState = getExistingExpandedMessageUiState(message.messageId)
-
+            val avatarImageState = avatarImageStates.getStateForAddress(message.sender.address)
             when (val viewState = currentViewState.messagesState[message.messageId]) {
                 is InMemoryConversationStateRepository.MessageState.Expanding ->
-                    buildExpandingMessage(buildCollapsedMessage(message, contacts, primaryUserAddress))
+                    buildExpandingMessage(
+                        buildCollapsedMessage(message, avatarImageState, contacts, primaryUserAddress)
+                    )
 
                 is InMemoryConversationStateRepository.MessageState.Expanded -> {
                     buildExpandedMessage(
                         userId,
                         message,
+                        avatarImageState,
                         existingMessageState,
                         contacts,
                         primaryUserAddress,
@@ -452,7 +468,7 @@ class ConversationDetailViewModel @Inject constructor(
                 }
 
                 else -> {
-                    buildCollapsedMessage(message, contacts, primaryUserAddress)
+                    buildCollapsedMessage(message, avatarImageState, contacts, primaryUserAddress)
                 }
             }
         }
@@ -488,12 +504,14 @@ class ConversationDetailViewModel @Inject constructor(
 
     private suspend fun buildCollapsedMessage(
         message: Message,
+        avatarImageState: AvatarImageState,
         contacts: List<ContactMetadata.Contact>,
         primaryUserAddress: String?
     ): ConversationDetailMessageUiModel.Collapsed = conversationMessageMapper.toUiModel(
-        message,
-        contacts,
-        primaryUserAddress
+        message = message,
+        contacts = contacts,
+        primaryUserAddress = primaryUserAddress,
+        avatarImageState = avatarImageState
     )
 
     private fun buildExpandingMessage(
@@ -505,6 +523,7 @@ class ConversationDetailViewModel @Inject constructor(
     private suspend fun buildExpandedMessage(
         userId: UserId,
         message: Message,
+        avatarImageState: AvatarImageState,
         existingMessageUiState: ConversationDetailMessageUiModel.Expanded?,
         contacts: List<ContactMetadata.Contact>,
         primaryUserAddress: String?,
@@ -512,6 +531,7 @@ class ConversationDetailViewModel @Inject constructor(
     ): ConversationDetailMessageUiModel.Expanded = conversationMessageMapper.toUiModel(
         userId,
         message,
+        avatarImageState,
         contacts,
         primaryUserAddress,
         decryptedBody,
@@ -1192,6 +1212,14 @@ class ConversationDetailViewModel @Inject constructor(
 
     private fun handleUnStarMessage(messageId: MessageId) = viewModelScope.launch {
         unStarMessages(primaryUserId.first(), listOf(messageId))
+    }
+
+    private fun handleOnAvatarImageLoadRequested(avatarUiModel: AvatarUiModel) {
+        (avatarUiModel as? AvatarUiModel.ParticipantAvatar)?.let { avatar ->
+            viewModelScope.launch {
+                loadAvatarImage(avatar.address, avatar.bimiSelector)
+            }
+        }
     }
 
     /**

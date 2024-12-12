@@ -49,6 +49,7 @@ import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.usecase.GetEmbeddedImageResult
 import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
 import ch.protonmail.android.design.compose.theme.ProtonTheme
+import ch.protonmail.android.mailmessage.presentation.ui.ParticipantAvatar
 
 @Composable
 @Suppress("LongParameterList")
@@ -58,6 +59,9 @@ fun ConversationDetailItem(
     modifier: Modifier = Modifier,
     onMessageBodyLoadFinished: (messageId: MessageId, height: Int) -> Unit
 ) {
+    val avatarActions = ParticipantAvatar.Actions.Empty.copy(
+        onAvatarImageLoadRequested = actions.onAvatarImageLoadRequested
+    )
     ElevatedCard(
         modifier = modifier
             .fillMaxWidth()
@@ -85,6 +89,7 @@ fun ConversationDetailItem(
             is Collapsed -> {
                 ConversationDetailCollapsedMessageHeader(
                     uiModel = uiModel,
+                    avatarActions = avatarActions,
                     modifier = Modifier
                         .padding(bottom = MailDimens.ConversationCollapseHeaderOverlapHeight)
                         .clickable {
@@ -97,7 +102,10 @@ fun ConversationDetailItem(
             }
 
             is Expanding -> {
-                ConversationDetailExpandingItem(uiModel = uiModel)
+                ConversationDetailExpandingItem(
+                    uiModel = uiModel,
+                    avatarActions = avatarActions
+                )
             }
 
             is Expanded -> {
@@ -113,13 +121,18 @@ fun ConversationDetailItem(
 }
 
 @Composable
-private fun ConversationDetailExpandingItem(uiModel: Expanding, modifier: Modifier = Modifier) {
+private fun ConversationDetailExpandingItem(
+    uiModel: Expanding,
+    avatarActions: ParticipantAvatar.Actions,
+    modifier: Modifier = Modifier
+) {
     Column(
         modifier = modifier
             .fillMaxWidth()
     ) {
         ConversationDetailCollapsedMessageHeader(
-            uiModel = uiModel.collapsed
+            uiModel = uiModel.collapsed,
+            avatarActions = avatarActions
         )
         ProtonCenteredProgress(modifier = Modifier.padding(MailDimens.ProgressDefaultSize))
     }
@@ -137,6 +150,7 @@ private fun ConversationDetailExpandedItem(
         onReplyAll = actions.onReplyAll,
         onMore = actions.onMoreMessageActionsClick,
         onAvatarClicked = actions.onAvatarClicked,
+        onAvatarImageLoadRequested = actions.onAvatarImageLoadRequested,
         onParticipantClicked = actions.onParticipantClicked,
         onShowFeatureMissingSnackbar = actions.showFeatureMissingSnackbar
     )
@@ -206,6 +220,7 @@ object ConversationDetailItem {
         val onOpenInProtonCalendar: (MessageId) -> Unit,
         val onPrint: (MessageId) -> Unit,
         val onAvatarClicked: (ParticipantUiModel, AvatarUiModel) -> Unit,
+        val onAvatarImageLoadRequested: (AvatarUiModel) -> Unit,
         val onParticipantClicked: (ParticipantUiModel, AvatarUiModel) -> Unit
     )
 }

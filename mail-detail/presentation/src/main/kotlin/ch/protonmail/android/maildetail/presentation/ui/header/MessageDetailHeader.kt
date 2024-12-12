@@ -171,15 +171,19 @@ private fun MessageDetailHeaderLayout(
             hideDetailsRef
         ) = createRefs()
 
+        val avatarActions = ParticipantAvatar.Actions(
+            onAvatarClicked = { actions.onAvatarClicked(uiModel.sender, uiModel.avatar) },
+            onAvatarImageLoadRequested = { actions.onAvatarImageLoadRequested(it) }
+        )
+
         ParticipantAvatar(
             modifier = modifier.constrainAs(avatarRef) {
                 top.linkTo(parent.top, margin = ProtonDimens.Spacing.Standard)
                 start.linkTo(parent.start)
             },
             avatarUiModel = uiModel.avatar,
-            onClick = {
-                actions.onAvatarClicked(uiModel.sender, uiModel.avatar)
-            }
+            avatarImageUiModel = uiModel.avatarImage,
+            actions = avatarActions
         )
 
         SenderName(
@@ -773,6 +777,7 @@ object MessageDetailHeader {
         val onShowFeatureMissingSnackbar: () -> Unit,
         val onMore: (MessageId) -> Unit,
         val onAvatarClicked: (ParticipantUiModel, AvatarUiModel) -> Unit,
+        val onAvatarImageLoadRequested: (AvatarUiModel) -> Unit,
         val onParticipantClicked: (ParticipantUiModel, AvatarUiModel) -> Unit
     ) {
 
@@ -785,6 +790,7 @@ object MessageDetailHeader {
                 onShowFeatureMissingSnackbar = {},
                 onMore = {},
                 onAvatarClicked = { _, _ -> },
+                onAvatarImageLoadRequested = { },
                 onParticipantClicked = { _, _ -> }
             )
         }
