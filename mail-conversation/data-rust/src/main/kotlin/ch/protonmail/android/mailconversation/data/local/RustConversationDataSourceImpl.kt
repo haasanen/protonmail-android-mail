@@ -114,6 +114,7 @@ class RustConversationDataSourceImpl @Inject constructor(
     ) {
         executeMailboxAction(
             userId = userId,
+            labelId = labelId,
             action = { rustMarkConversationsAsRead(it, conversations) },
             actionName = "mark as read"
         )
@@ -126,6 +127,7 @@ class RustConversationDataSourceImpl @Inject constructor(
     ) {
         executeMailboxAction(
             userId = userId,
+            labelId = labelId,
             action = { mailbox -> rustMarkConversationsAsUnread(mailbox, conversations) },
             actionName = "mark as unread"
         )
@@ -264,11 +266,16 @@ class RustConversationDataSourceImpl @Inject constructor(
 
     private suspend fun executeMailboxAction(
         userId: UserId,
+        labelId: LocalLabelId? = null,
         action: suspend (MailboxWrapper) -> Unit,
         actionName: String
     ): Either<DataError.Local, Unit> {
         Timber.v("rust-conversation: executing action $actionName")
-        val mailbox = rustMailboxFactory.create(userId).getOrNull()
+        val mailbox = if (labelId != null) {
+            rustMailboxFactory.create(userId, labelId)
+        } else {
+            rustMailboxFactory.create(userId)
+        }.getOrNull()
         if (mailbox == null) {
             Timber.e("rust-conversation: Failed to perform $actionName, null mailbox")
             return DataError.Local.NoDataCached.left()
