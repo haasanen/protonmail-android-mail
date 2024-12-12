@@ -44,6 +44,7 @@ class RustMailboxFactory @Inject constructor(
     private val mutex = Mutex()
     private var mailboxCache: MailboxWrapper? = null
 
+    @Deprecated("Error prone due to using selectedMailLabel; To be dropped after ET-1739")
     suspend fun create(userId: UserId): Either<DataError, MailboxWrapper> = mutex.withLock {
         val currentLabelId = selectedMailLabelId.flow.value.labelId.toLocalLabelId()
 
