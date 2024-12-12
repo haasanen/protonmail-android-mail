@@ -145,7 +145,6 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.mapLatest
@@ -540,7 +539,7 @@ class ConversationDetailViewModel @Inject constructor(
 
     private fun observeBottomBarActions(conversationId: ConversationId) = primaryUserId.flatMapLatest { userId ->
         val errorEvent = ConversationDetailEvent.ConversationBottomBarEvent(BottomBarEvent.ErrorLoadingActions)
-        val labelId = openedFromLocation ?: return@flatMapLatest flowOf(errorEvent)
+        val labelId = openedFromLocation
 
         return@flatMapLatest observeDetailActions(userId, labelId, conversationId).mapLatest { either ->
             either.fold(
@@ -565,7 +564,7 @@ class ConversationDetailViewModel @Inject constructor(
             emitNewStateFrom(initialEvent)
 
             val userId = primaryUserId.first()
-            val labelId = openedFromLocation ?: return@launch
+            val labelId = openedFromLocation
 
             getMessageMoveToLocations(userId, labelId, listOf(initialEvent.messageId)).fold(
                 ifLeft = {
@@ -586,7 +585,7 @@ class ConversationDetailViewModel @Inject constructor(
             emitNewStateFrom(initialEvent)
 
             val userId = primaryUserId.first()
-            val labelId = openedFromLocation ?: return@launch
+            val labelId = openedFromLocation
 
             getConversationMoveToLocations(userId, labelId, listOf(conversationId)).fold(
                 ifLeft = {
@@ -644,7 +643,7 @@ class ConversationDetailViewModel @Inject constructor(
             emitNewStateFrom(initialEvent)
 
             val userId = primaryUserId.first()
-            val labelId = openedFromLocation ?: return@launch
+            val labelId = openedFromLocation
             val labelAsData = getLabelAsBottomSheetData.forConversation(userId, labelId, conversationId)
             emitNewStateFrom(ConversationDetailEvent.ConversationBottomSheetEvent(labelAsData))
         }
@@ -657,7 +656,7 @@ class ConversationDetailViewModel @Inject constructor(
             emitNewStateFrom(initialEvent)
 
             val userId = primaryUserId.first()
-            val labelId = openedFromLocation ?: return@launch
+            val labelId = openedFromLocation
             val labelAsData = getLabelAsBottomSheetData.forMessage(userId, labelId, initialEvent.messageId)
             emitNewStateFrom(ConversationDetailEvent.MessageBottomSheetEvent(labelAsData))
         }
@@ -748,7 +747,7 @@ class ConversationDetailViewModel @Inject constructor(
             emitNewStateFrom(initialEvent)
 
             val userId = primaryUserId.first()
-            val labelId = openedFromLocation ?: return@launch
+            val labelId = openedFromLocation
             val moreActions = getMoreActionsBottomSheetData.forMessage(userId, labelId, initialEvent.messageId)
                 ?: return@launch
             emitNewStateFrom(ConversationDetailEvent.ConversationBottomSheetEvent(moreActions))
@@ -763,7 +762,7 @@ class ConversationDetailViewModel @Inject constructor(
             emitNewStateFrom(initialEvent)
 
             val userId = primaryUserId.first()
-            val labelId = openedFromLocation ?: return@launch
+            val labelId = openedFromLocation
             val moreActions = getMoreActionsBottomSheetData.forConversation(userId, labelId, conversationId)
                 ?: return@launch
 
@@ -886,7 +885,7 @@ class ConversationDetailViewModel @Inject constructor(
     private fun handleDeleteMessageConfirmed(action: ConversationDetailViewAction.DeleteMessageConfirmed) {
         viewModelScope.launch {
             emitNewStateFrom(action)
-            val currentLabelId = openedFromLocation ?: return@launch
+            val currentLabelId = openedFromLocation
 
             deleteMessages(primaryUserId.first(), listOf(action.messageId), currentLabelId)
         }
