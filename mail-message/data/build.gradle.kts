@@ -43,6 +43,7 @@ android {
 }
 
 dependencies {
+    testImplementation(project(":test:utils"))
     kapt(libs.bundles.app.annotationProcessors)
     implementation(libs.bundles.module.data)
 
