@@ -38,10 +38,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -51,8 +54,18 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 import me.proton.android.core.auth.presentation.R
 import me.proton.android.core.auth.presentation.addaccount.SMALL_SCREEN_HEIGHT
+import me.proton.android.core.auth.presentation.challenge.SIGNUP_CHALLENGE_FLOW_NAME
+import me.proton.android.core.auth.presentation.challenge.SIGNUP_CHALLENGE_USERNAME_FRAME
+import me.proton.android.core.auth.presentation.challenge.TextChange
+import me.proton.core.challenge.presentation.compose.LocalClipManager
+import me.proton.core.challenge.presentation.compose.LocalClipManager.OnClipChangedDisposableEffect
+import me.proton.core.challenge.presentation.compose.PayloadController
+import me.proton.core.challenge.presentation.compose.payload
 import me.proton.core.compose.component.ProtonCloseButton
 import me.proton.core.compose.component.ProtonOutlinedTextFieldWithError
 import me.proton.core.compose.component.ProtonSolidButton
@@ -217,8 +230,23 @@ private fun CreateInternalForm(
     enabled: Boolean,
     domains: List<Domain>?
 ) {
+    val scope = rememberCoroutineScope()
     var username by rememberSaveable { mutableStateOf("") }
     var domain by rememberSaveable { mutableStateOf("") }
+    val usernameChanges = remember { MutableStateFlow(TextChange()) }
+    val usernameHasFocus = remember { mutableStateOf(false) }
+    val usernamePayloadController = remember { PayloadController() }
+    val usernameTextCopies = remember { MutableStateFlow("") }
+
+    LocalClipManager.current?.OnClipChangedDisposableEffect {
+        if (usernameHasFocus.value) usernameTextCopies.value = it
+    }
+
+    fun onSubmit() = scope.launch {
+        val usernameFrameDetails = usernamePayloadController.flush()
+        onUsernameSubmitted(CreateUsernameAction.Submit(username, AccountType.Internal, usernameFrameDetails))
+    }
+
     Column {
         Text(
             text = stringResource(subtitleText),
@@ -234,14 +262,26 @@ private fun CreateInternalForm(
         ) {
             ProtonOutlinedTextFieldWithError(
                 text = username,
-                onValueChanged = { username = it },
+                onValueChanged = {
+                    usernameChanges.value = usernameChanges.value.roll(it)
+                    username = it
+                },
                 enabled = enabled,
                 errorText = usernameError,
                 label = { Text(text = stringResource(id = R.string.auth_signup_email_username)) },
                 singleLine = true,
                 modifier = Modifier
+                    .onFocusChanged { usernameHasFocus.value = it.hasFocus }
                     .fillMaxWidth()
                     .padding(top = DefaultSpacing)
+                    .payload(
+                        flow = SIGNUP_CHALLENGE_FLOW_NAME,
+                        frame = SIGNUP_CHALLENGE_USERNAME_FRAME,
+                        onTextChanged = usernameChanges.map { it.toPair() },
+                        onTextCopied = usernameTextCopies,
+                        onFrameUpdated = {},
+                        payloadController = usernamePayloadController
+                    )
                     .testTag(USERNAME_FIELD_TAG)
             )
 
@@ -255,7 +295,7 @@ private fun CreateInternalForm(
                 contained = false,
                 enabled = enabled,
                 loading = isLoading,
-                onClick = { onUsernameSubmitted(CreateUsernameAction.Submit(username, AccountType.Internal)) },
+                onClick = ::onSubmit,
                 modifier = Modifier
                     .padding(top = ProtonDimens.MediumSpacing)
                     .height(ProtonDimens.DefaultButtonMinHeight)
@@ -297,21 +337,47 @@ private fun CreateExternalForm(
     emailError: String? = null,
     enabled: Boolean
 ) {
+    val scope = rememberCoroutineScope()
     var email by rememberSaveable { mutableStateOf("") }
+    val emailChanges = remember { MutableStateFlow(TextChange()) }
+    val emailHasFocus = remember { mutableStateOf(false) }
+    val emailPayloadController = remember { PayloadController() }
+    val emailTextCopies = remember { MutableStateFlow("") }
+
+    LocalClipManager.current?.OnClipChangedDisposableEffect {
+        if (emailHasFocus.value) emailTextCopies.value = it
+    }
+
+    fun onSubmit() = scope.launch {
+        val emailFrameDetails = emailPayloadController.flush()
+        onExternalEmailSubmitted(CreateUsernameAction.Submit(email, AccountType.External, emailFrameDetails))
+    }
 
     Column(
         modifier = modifier.padding(DefaultSpacing)
     ) {
         ProtonOutlinedTextFieldWithError(
             text = email,
-            onValueChanged = { email = it },
+            onValueChanged = {
+                emailChanges.value = emailChanges.value.roll(it)
+                email = it
+            },
             enabled = enabled,
             errorText = emailError,
             label = { Text(text = stringResource(id = R.string.auth_email)) },
             singleLine = true,
             modifier = Modifier
+                .onFocusChanged { emailHasFocus.value = it.hasFocus }
                 .fillMaxWidth()
                 .padding(top = DefaultSpacing)
+                .payload(
+                    flow = SIGNUP_CHALLENGE_FLOW_NAME,
+                    frame = SIGNUP_CHALLENGE_USERNAME_FRAME,
+                    onTextChanged = emailChanges.map { it.toPair() },
+                    onTextCopied = emailTextCopies,
+                    onFrameUpdated = {},
+                    payloadController = emailPayloadController
+                )
                 .testTag(EMAIL_FIELD_TAG)
         )
 
@@ -319,7 +385,7 @@ private fun CreateExternalForm(
             contained = false,
             enabled = enabled,
             loading = !enabled,
-            onClick = { onExternalEmailSubmitted(CreateUsernameAction.Submit(email, AccountType.External)) },
+            onClick = ::onSubmit,
             modifier = Modifier
                 .padding(top = ProtonDimens.MediumSpacing)
                 .height(ProtonDimens.DefaultButtonMinHeight)

@@ -32,12 +32,15 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import me.proton.core.challenge.domain.ChallengeManager
+import me.proton.core.challenge.domain.entity.ChallengeFrameDetails
 import me.proton.core.compose.viewmodel.stopTimeoutMillis
 import me.proton.core.presentation.savedstate.state
 import javax.inject.Inject
 
 @HiltViewModel
 class CreateUsernameViewModel @Inject constructor(
+    private val challengeManager: ChallengeManager,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -52,7 +55,7 @@ class CreateUsernameViewModel @Inject constructor(
             is CreateUsernameAction.CreateExternalAccount -> onCreateExternalAccount()
             is CreateUsernameAction.CreateInternalAccount -> onCreateInternalAccount()
             is CreateUsernameAction.Load -> onInit(currentAccountType)
-            is CreateUsernameAction.Submit -> onSubmit(action.type, action.value)
+            is CreateUsernameAction.Submit -> onSubmit(action.type, action.value, action.usernameFrameDetails)
         }
     }.stateIn(viewModelScope, WhileSubscribed(stopTimeoutMillis), CreateUsernameState.Loading(currentAccountType))
 
@@ -79,7 +82,12 @@ class CreateUsernameViewModel @Inject constructor(
         emit(CreateUsernameState.Idle(AccountType.Internal, domains))
     }
 
-    private fun onSubmit(accountType: AccountType, username: String): Flow<CreateUsernameState> = flow {
+    private fun onSubmit(
+        accountType: AccountType,
+        username: String,
+        usernameFrameDetails: ChallengeFrameDetails
+    ): Flow<CreateUsernameState> = flow {
+        challengeManager.addOrUpdateFrameToFlow(usernameFrameDetails)
         emit(CreateUsernameState.Success(accountType, username))
     }
 

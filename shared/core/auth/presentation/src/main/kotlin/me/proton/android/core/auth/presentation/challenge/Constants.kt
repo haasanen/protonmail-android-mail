@@ -22,3 +22,7 @@ internal const val MAIL_FRAME_KEY_PREFIX = "mail-android-v7-challenge"
 
 internal const val LOGIN_CHALLENGE_FLOW_NAME = "login"
 internal const val LOGIN_CHALLENGE_USERNAME_FRAME = "username"
+
+internal const val SIGNUP_CHALLENGE_FLOW_NAME = "signup"
+internal const val SIGNUP_CHALLENGE_RECOVERY_FRAME = "recovery"
+internal const val SIGNUP_CHALLENGE_USERNAME_FRAME = "username"

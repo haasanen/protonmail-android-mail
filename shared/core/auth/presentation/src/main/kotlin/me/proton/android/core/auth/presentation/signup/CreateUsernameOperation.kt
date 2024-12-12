@@ -18,12 +18,19 @@
 
 package me.proton.android.core.auth.presentation.signup
 
+import me.proton.core.challenge.domain.entity.ChallengeFrameDetails
+
 sealed interface CreateUsernameOperation
 
 sealed interface CreateUsernameAction : CreateUsernameOperation {
     data object Load : CreateUsernameAction
     data object CreateExternalAccount : CreateUsernameAction
     data object CreateInternalAccount : CreateUsernameAction
-    data class Submit(val value: String, val type: AccountType) : CreateUsernameAction
+    data class Submit(
+        val value: String,
+        val type: AccountType,
+        val usernameFrameDetails: ChallengeFrameDetails
+    ) : CreateUsernameAction
+
     data object SetNavigationDone : CreateUsernameAction
 }
