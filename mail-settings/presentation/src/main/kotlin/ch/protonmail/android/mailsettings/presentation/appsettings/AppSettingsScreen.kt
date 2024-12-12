@@ -48,8 +48,6 @@ import ch.protonmail.android.mailsettings.domain.model.AppSettings
 import ch.protonmail.android.mailsettings.domain.model.LocalStorageUsageInformation
 import ch.protonmail.android.mailsettings.presentation.R.string
 import me.proton.core.presentation.utils.formatByteToHumanReadable
-import me.proton.core.usersettings.presentation.compose.view.CrashReportSettingToggleItem
-import me.proton.core.usersettings.presentation.compose.view.TelemetrySettingToggleItem
 
 @Composable
 fun AppSettingsScreen(
@@ -151,8 +149,6 @@ fun AppSettingsScreen(
                     onClearCacheClick = actions.onClearCacheClick
                 )
             }
-            item { TelemetrySettingToggleItem(divider = { MailDivider() }) }
-            item { CrashReportSettingToggleItem(divider = { MailDivider() }) }
         }
     }
 }
