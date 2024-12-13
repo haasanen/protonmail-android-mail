@@ -18,13 +18,26 @@
 
 package ch.protonmail.android.mailmessage.data.usecase
 
+import arrow.core.Either
+import arrow.core.left
+import arrow.core.right
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageId
+import ch.protonmail.android.mailcommon.datarust.mapper.toDataError
+import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailmessage.data.wrapper.DecryptedMessageWrapper
 import ch.protonmail.android.mailmessage.data.wrapper.MailboxWrapper
+import uniffi.proton_mail_uniffi.GetMessageBodyResult
 import uniffi.proton_mail_uniffi.getMessageBody
 import javax.inject.Inject
 
 class CreateRustMessageBodyAccessor @Inject constructor() {
 
-    suspend operator fun invoke(mailbox: MailboxWrapper, messageId: LocalMessageId) =
-        getMessageBody(mailbox.getRustMailbox(), messageId)
+    suspend operator fun invoke(
+        mailbox: MailboxWrapper,
+        messageId: LocalMessageId
+    ): Either<DataError, DecryptedMessageWrapper> =
+        when (val result = getMessageBody(mailbox.getRustMailbox(), messageId)) {
+            is GetMessageBodyResult.Error -> result.v1.toDataError().left()
+            is GetMessageBodyResult.Ok -> DecryptedMessageWrapper(result.v1).right()
+        }
 }

@@ -18,18 +18,32 @@
 
 package ch.protonmail.android.mailmessage.data.wrapper
 
+import arrow.core.Either
+import arrow.core.left
+import arrow.core.right
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageMetadata
+import ch.protonmail.android.mailcommon.datarust.mapper.toDataError
+import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailmessage.data.model.PaginatorParams
 import uniffi.proton_mail_uniffi.MessagePaginator
+import uniffi.proton_mail_uniffi.MessagePaginatorNextPageResult
+import uniffi.proton_mail_uniffi.MessagePaginatorReloadResult
 
 class MessagePaginatorWrapper(
     private val rustPaginator: MessagePaginator,
     val params: PaginatorParams
 ) {
 
-    suspend fun nextPage(): List<LocalMessageMetadata> = rustPaginator.nextPage()
+    suspend fun nextPage(): Either<DataError, List<LocalMessageMetadata>> =
+        when (val result = rustPaginator.nextPage()) {
+            is MessagePaginatorNextPageResult.Error -> result.v1.toDataError().left()
+            is MessagePaginatorNextPageResult.Ok -> result.v1.right()
+        }
 
-    suspend fun reload(): List<LocalMessageMetadata> = rustPaginator.reload()
+    suspend fun reload(): Either<DataError, List<LocalMessageMetadata>> = when (val result = rustPaginator.reload()) {
+        is MessagePaginatorReloadResult.Error -> result.v1.toDataError().left()
+        is MessagePaginatorReloadResult.Ok -> result.v1.right()
+    }
 
     fun destroy() {
         rustPaginator.handle().disconnect()

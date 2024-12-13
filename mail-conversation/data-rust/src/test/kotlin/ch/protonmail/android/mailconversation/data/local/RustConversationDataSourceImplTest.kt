@@ -23,7 +23,6 @@ import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalConversationId
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
-import ch.protonmail.android.mailsession.data.usecase.ExecuteWithUserSession
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailconversation.data.usecase.GetRustAllConversationBottomBarActions
 import ch.protonmail.android.mailconversation.data.usecase.GetRustAvailableConversationActions
@@ -34,6 +33,7 @@ import ch.protonmail.android.mailmessage.data.local.RustMailboxFactory
 import ch.protonmail.android.mailmessage.data.model.LocalConversationMessages
 import ch.protonmail.android.mailmessage.data.wrapper.MailboxWrapper
 import ch.protonmail.android.mailpagination.domain.model.PageKey
+import ch.protonmail.android.mailsession.data.usecase.ExecuteWithUserSession
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
 import ch.protonmail.android.testdata.conversation.rust.LocalConversationIdSample
@@ -59,13 +59,10 @@ import uniffi.proton_mail_uniffi.Id
 import uniffi.proton_mail_uniffi.IsSelected
 import uniffi.proton_mail_uniffi.LabelAsAction
 import uniffi.proton_mail_uniffi.LabelColor
-import uniffi.proton_mail_uniffi.MailSessionException
-import uniffi.proton_mail_uniffi.MailboxException
 import uniffi.proton_mail_uniffi.MovableSystemFolder
 import uniffi.proton_mail_uniffi.MovableSystemFolderAction
 import uniffi.proton_mail_uniffi.MoveAction
 import kotlin.test.assertEquals
-import kotlin.test.assertNull
 
 class RustConversationDataSourceImplTest {
 
@@ -147,23 +144,6 @@ class RustConversationDataSourceImplTest {
     }
 
     @Test
-    fun `observe conversation should handle mailbox exception`() = runTest {
-        // Given
-        val userId = UserIdTestData.userId
-        val conversationId = LocalConversationIdSample.AugConversation
-        val localLabelId = LocalLabelId(3uL)
-        coEvery {
-            rustConversationDetailQuery.observeConversation(userId, conversationId, localLabelId)
-        } throws MailboxException.Io("DB Exception")
-
-        // When
-        val result = dataSource.observeConversation(userId, conversationId, localLabelId)
-
-        // Then
-        assertNull(result)
-    }
-
-    @Test
     fun `observeConversationMessages should return conversation messages`() = runTest {
         // Given
         val userId = UserIdTestData.userId
@@ -206,13 +186,13 @@ class RustConversationDataSourceImplTest {
         val expected = ConversationAvailableActions(emptyList(), emptyList(), emptyList())
 
         coEvery { rustMailboxFactory.create(userId, labelId) } returns mailbox.right()
-        coEvery { getRustAvailableConversationActions(mailbox, conversationIds) } returns expected
+        coEvery { getRustAvailableConversationActions(mailbox, conversationIds) } returns expected.right()
 
         // When
         val result = dataSource.getAvailableActions(userId, labelId, conversationIds)
 
         // Then
-        assertEquals(expected, result)
+        assertEquals(expected.right(), result)
     }
 
     @Test
@@ -233,13 +213,13 @@ class RustConversationDataSourceImplTest {
         val expected = listOf(MoveAction.SystemFolder(archive))
 
         coEvery { rustMailboxFactory.create(userId, labelId) } returns mailbox.right()
-        coEvery { getRustConversationMoveToActions(mailbox, conversationIds) } returns allMoveToActions
+        coEvery { getRustConversationMoveToActions(mailbox, conversationIds) } returns allMoveToActions.right()
 
         // When
         val result = dataSource.getAvailableSystemMoveToActions(userId, labelId, conversationIds)
 
         // Then
-        assertEquals(expected, result)
+        assertEquals(expected.right(), result)
     }
 
     @Test
@@ -255,13 +235,13 @@ class RustConversationDataSourceImplTest {
         )
 
         coEvery { rustMailboxFactory.create(userId, labelId) } returns mailbox.right()
-        coEvery { getRustConversationLabelAsActions(mailbox, conversationIds) } returns expected
+        coEvery { getRustConversationLabelAsActions(mailbox, conversationIds) } returns expected.right()
 
         // When
         val result = dataSource.getAvailableLabelAsActions(userId, labelId, conversationIds)
 
         // Then
-        assertEquals(expected, result)
+        assertEquals(expected.right(), result)
     }
 
     @Test
@@ -274,7 +254,7 @@ class RustConversationDataSourceImplTest {
         val expected = AllBottomBarMessageActions(emptyList(), emptyList())
 
         coEvery { rustMailboxFactory.create(userId, labelId) } returns mailbox.right()
-        coEvery { getRustAllConversationBottomBarActions(mailbox, conversationIds) } returns expected
+        coEvery { getRustAllConversationBottomBarActions(mailbox, conversationIds) } returns expected.right()
 
         // When
         val result = dataSource.getAllAvailableBottomBarActions(userId, labelId, conversationIds)
@@ -284,21 +264,23 @@ class RustConversationDataSourceImplTest {
     }
 
     @Test
-    fun `get all available actions should return error when rust thrown exception`() = runTest {
+    fun `get all available actions should return error when rust returns error`() = runTest {
         // Given
         val userId = UserIdTestData.userId
         val labelId = LocalLabelId(1uL)
         val mailbox = mockk<MailboxWrapper>()
         val conversationIds = listOf(LocalConversationIdSample.OctConversation)
+        val expectedError = DataError.Local.NoDataCached
 
         coEvery { rustMailboxFactory.create(userId, labelId) } returns mailbox.right()
-        coEvery { getRustAllConversationBottomBarActions(mailbox, conversationIds) } throws MailboxException.Io("fail")
+        coEvery { getRustAllConversationBottomBarActions(mailbox, conversationIds) } returns
+            expectedError.left()
 
         // When
         val result = dataSource.getAllAvailableBottomBarActions(userId, labelId, conversationIds)
 
         // Then
-        assertEquals(DataError.Local.Unknown.left(), result)
+        assertEquals(expectedError.left(), result)
     }
 
     @Test
@@ -330,7 +312,7 @@ class RustConversationDataSourceImplTest {
 
         coEvery {
             rustLabelConversations(mailbox, conversationIds, selectedLabelIds, partiallySelectedLabelIds, shouldArchive)
-        } returns Unit
+        } returns true.right()
         coEvery { rustMailboxFactory.create(userId) } returns mailbox.right()
 
         // When
@@ -381,7 +363,7 @@ class RustConversationDataSourceImplTest {
     }
 
     @Test
-    fun `should handle exception when labelling conversations`() = runTest {
+    fun `should handle error when labelling conversations`() = runTest {
         // Given
         val userId = UserIdTestData.userId
         val mailbox = mockk<MailboxWrapper>()
@@ -389,10 +371,11 @@ class RustConversationDataSourceImplTest {
         val selectedLabelIds = listOf(LocalLabelId(3uL), LocalLabelId(4uL))
         val partiallySelectedLabelIds = listOf(LocalLabelId(5uL))
         val shouldArchive = false
+        val error = DataError.Local.NoDataCached
 
         coEvery {
             rustLabelConversations(mailbox, conversationIds, selectedLabelIds, partiallySelectedLabelIds, shouldArchive)
-        } throws MailSessionException.Other("Error")
+        } returns error.left()
         coEvery { rustMailboxFactory.create(userId) } returns mailbox.right()
 
         // When
@@ -405,6 +388,6 @@ class RustConversationDataSourceImplTest {
         )
 
         // Then
-        assertEquals(DataError.Local.Unknown.left(), result)
+        assertEquals(error.left(), result)
     }
 }

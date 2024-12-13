@@ -84,7 +84,7 @@ class RustConversationActionRepositoryTest {
                 labelId.toLocalLabelId(),
                 conversationIds.map { it.toLocalConversationId() }
             )
-        } returns rustAvailableActions
+        } returns rustAvailableActions.right()
 
         // When
         val result = rustConversationRepository.getAvailableActions(userId, labelId, conversationIds)
@@ -105,6 +105,7 @@ class RustConversationActionRepositoryTest {
         val userId = UserIdTestData.userId
         val labelId = SystemLabelId.Inbox.labelId
         val conversationIds = listOf(ConversationId("1"))
+        val expectedError = DataError.Local.NoDataCached
 
         coEvery {
             rustConversationDataSource.getAvailableActions(
@@ -112,13 +113,13 @@ class RustConversationActionRepositoryTest {
                 labelId.toLocalLabelId(),
                 conversationIds.map { it.toLocalConversationId() }
             )
-        } returns null
+        } returns expectedError.left()
 
         // When
         val result = rustConversationRepository.getAvailableActions(userId, labelId, conversationIds)
 
         // Then
-        assertEquals(DataError.Local.Unknown.left(), result)
+        assertEquals(expectedError.left(), result)
     }
 
     @Test
@@ -143,7 +144,7 @@ class RustConversationActionRepositoryTest {
                 labelId.toLocalLabelId(),
                 conversationIds.map { it.toLocalConversationId() }
             )
-        } returns rustAvailableActions
+        } returns rustAvailableActions.right()
 
         // When
         val result = rustConversationRepository.getAvailableActions(userId, labelId, conversationIds)
@@ -179,7 +180,7 @@ class RustConversationActionRepositoryTest {
                 labelId.toLocalLabelId(),
                 conversationIds.map { it.toLocalConversationId() }
             )
-        } returns rustMoveToActions
+        } returns rustMoveToActions.right()
 
         // When
         val result = rustConversationRepository.getSystemMoveToLocations(userId, labelId, conversationIds)
@@ -198,6 +199,7 @@ class RustConversationActionRepositoryTest {
         val userId = UserIdTestData.userId
         val labelId = SystemLabelId.Inbox.labelId
         val conversationIds = listOf(ConversationId("1"))
+        val expectedError = DataError.Local.NoDataCached
 
         coEvery {
             rustConversationDataSource.getAvailableSystemMoveToActions(
@@ -205,13 +207,13 @@ class RustConversationActionRepositoryTest {
                 labelId.toLocalLabelId(),
                 conversationIds.map { it.toLocalConversationId() }
             )
-        } returns null
+        } returns expectedError.left()
 
         // When
         val result = rustConversationRepository.getSystemMoveToLocations(userId, labelId, conversationIds)
 
         // Then
-        assertEquals(DataError.Local.Unknown.left(), result)
+        assertEquals(expectedError.left(), result)
     }
 
     @Test
@@ -232,7 +234,7 @@ class RustConversationActionRepositoryTest {
                 labelId.toLocalLabelId(),
                 conversationIds.map { it.toLocalConversationId() }
             )
-        } returns rustLabelAsActions
+        } returns rustLabelAsActions.right()
 
         // When
         val result = rustConversationRepository.getAvailableLabelAsActions(userId, labelId, conversationIds)
@@ -248,6 +250,7 @@ class RustConversationActionRepositoryTest {
         val userId = UserIdTestData.userId
         val labelId = SystemLabelId.Inbox.labelId
         val conversationIds = listOf(ConversationId("1"))
+        val expectedError = DataError.Local.NoDataCached
 
         coEvery {
             rustConversationDataSource.getAvailableLabelAsActions(
@@ -255,13 +258,13 @@ class RustConversationActionRepositoryTest {
                 labelId.toLocalLabelId(),
                 conversationIds.map { it.toLocalConversationId() }
             )
-        } returns null
+        } returns expectedError.left()
 
         // When
         val result = rustConversationRepository.getAvailableLabelAsActions(userId, labelId, conversationIds)
 
         // Then
-        assertEquals(DataError.Local.Unknown.left(), result)
+        assertEquals(expectedError.left(), result)
     }
 
     @Test

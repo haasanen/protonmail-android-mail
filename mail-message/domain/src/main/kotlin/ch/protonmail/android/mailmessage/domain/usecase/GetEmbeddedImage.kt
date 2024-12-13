@@ -39,8 +39,8 @@ class GetEmbeddedImage @Inject constructor(
         messageId: MessageId,
         contentId: String
     ): Either<DataError, GetEmbeddedImageResult> = either {
-        val messageWithBody =
-            messageRepository.getLocalMessageWithBody(userId, messageId) ?: raise(DataError.Local.NoDataCached)
+        val messageWithBody = messageRepository.getLocalMessageWithBody(userId, messageId).getOrNull()
+            ?: raise(DataError.Local.NoDataCached)
         val attachment = messageWithBody.messageBody.attachments
             .filter { it.hasAllowedEmbeddedImageMimeType() }
             .firstOrNull {

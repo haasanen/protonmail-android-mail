@@ -47,7 +47,7 @@ import kotlinx.coroutines.sync.withLock
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.ContactsLiveQueryCallback
-import uniffi.proton_mail_uniffi.MailSessionException
+import uniffi.proton_mail_uniffi.VoidActionResult
 import uniffi.proton_mail_uniffi.WatchedContactList
 import javax.inject.Inject
 
@@ -107,7 +107,7 @@ class RustContactDataSourceImpl @Inject constructor(
     private suspend fun initialiseOrUpdateContactListWatcher(session: MailUserSessionWrapper) {
         mutex.withLock {
             if (contactListWatcher == null) {
-                contactListWatcher = createRustContactWatcher(session, contactListUpdatedCallback)
+                contactListWatcher = createRustContactWatcher(session, contactListUpdatedCallback).getOrNull()
                 contactListWatcher?.let {
                     contactListMutableStatusFlow.value = it.contactList.map { groupedContacts ->
                         groupedContactsMapper.toGroupedContacts(groupedContacts)
@@ -120,18 +120,19 @@ class RustContactDataSourceImpl @Inject constructor(
     }
 
     override suspend fun deleteContact(userId: UserId, contactId: LocalContactId): Either<DataError.Local, Unit> {
-        return try {
-            val session = userSessionRepository.getUserSession(userId)
-            if (session == null) {
-                Timber.e("rust-contact: trying to load message with a null session")
-                DataError.Local.Unknown.left()
-            } else {
-                rustDeleteContact(session, contactId)
-                Unit.right()
-            }
-        } catch (e: MailSessionException) {
-            Timber.e(e, "rust-contact: Failed to delete contact")
+        val session = userSessionRepository.getUserSession(userId)
+        if (session == null) {
+            Timber.e("rust-contact: trying to load message with a null session")
             return DataError.Local.Unknown.left()
         }
+
+        return when (rustDeleteContact(session, contactId)) {
+            is VoidActionResult.Error -> {
+                Timber.e("rust-contact: Failed to delete contact")
+                return DataError.Local.Unknown.left()
+            }
+            VoidActionResult.Ok -> Unit.right()
+        }
     }
+
 }

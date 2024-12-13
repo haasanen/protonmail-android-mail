@@ -21,7 +21,6 @@ package ch.protonmail.android.composer.data.local
 import androidx.annotation.VisibleForTesting
 import arrow.core.Either
 import arrow.core.left
-import arrow.core.right
 import ch.protonmail.android.composer.data.mapper.toDraftCreateMode
 import ch.protonmail.android.composer.data.mapper.toLocalDraft
 import ch.protonmail.android.composer.data.usecase.CreateRustDraft
@@ -55,9 +54,9 @@ class RustDraftDataSourceImpl @Inject constructor(
             return DataError.Local.Unknown.left()
         }
 
-        val draftWrapper = openRustDraft(session, messageId.toLocalMessageId())
-        rustDraftWrapper = draftWrapper
-        return draftWrapper.toLocalDraft().right()
+        return openRustDraft(session, messageId.toLocalMessageId())
+            .onRight { rustDraftWrapper = it }
+            .map { it.toLocalDraft() }
     }
 
     override suspend fun create(userId: UserId, action: DraftAction): Either<DataError, LocalDraft> {
@@ -73,9 +72,9 @@ class RustDraftDataSourceImpl @Inject constructor(
             return DataError.Local.UnsupportedOperation.left()
         }
 
-        val draftWrapper = createRustDraft(session, draftCreateMode)
-        rustDraftWrapper = draftWrapper
-        return draftWrapper.toLocalDraft().right()
+        return createRustDraft(session, draftCreateMode)
+            .onRight { rustDraftWrapper = it }
+            .map { it.toLocalDraft() }
     }
 
 }

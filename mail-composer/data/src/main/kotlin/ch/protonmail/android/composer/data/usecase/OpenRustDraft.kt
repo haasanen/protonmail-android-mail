@@ -18,15 +18,22 @@
 
 package ch.protonmail.android.composer.data.usecase
 
+import arrow.core.left
+import arrow.core.right
 import ch.protonmail.android.composer.data.wrapper.DraftWrapper
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageId
+import ch.protonmail.android.mailcommon.datarust.mapper.toDataError
 import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
-import uniffi.proton_mail_uniffi.Draft
+import uniffi.proton_mail_uniffi.NewDraftResult
+import uniffi.proton_mail_uniffi.openDraft
 import javax.inject.Inject
 
 class OpenRustDraft @Inject constructor() {
 
     suspend operator fun invoke(mailSession: MailUserSessionWrapper, messageId: LocalMessageId) =
-        DraftWrapper(Draft.open(mailSession.getRustUserSession(), messageId))
+        when (val result = openDraft(mailSession.getRustUserSession(), messageId)) {
+            is NewDraftResult.Error -> result.v1.toDataError().left()
+            is NewDraftResult.Ok -> DraftWrapper(result.v1).right()
+        }
 
 }

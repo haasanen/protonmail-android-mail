@@ -64,19 +64,19 @@ class MessagePaginatorManager @Inject constructor(
         }
 
         destroy()
-        paginator = when (pageKey) {
+        return when (pageKey) {
             is PageKey.DefaultPageKey -> createDefaultPaginator(session, pageKey, callback)
             is PageKey.PageKeyForSearch -> createSearchPaginator(session, pageKey, callback)
+        }.onRight {
+            paginator = it
         }
-
-        return paginator.getOrError()
     }
 
     private suspend fun createDefaultPaginator(
         session: MailUserSessionWrapper,
         pageKey: PageKey.DefaultPageKey,
         callback: LiveQueryCallback
-    ): MessagePaginatorWrapper {
+    ): Either<DataError, MessagePaginatorWrapper> {
         val labelId = pageKey.labelId.toLocalLabelId()
         val unread = pageKey.readStatus == ReadStatus.Unread
 
@@ -87,7 +87,7 @@ class MessagePaginatorManager @Inject constructor(
         session: MailUserSessionWrapper,
         pageKey: PageKey.PageKeyForSearch,
         callback: LiveQueryCallback
-    ): MessagePaginatorWrapper {
+    ): Either<DataError, MessagePaginatorWrapper> {
         val keyword = pageKey.keyword
 
         return createRustSearchPaginator(session, keyword, callback)

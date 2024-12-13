@@ -37,7 +37,7 @@ class OnMessageLabelAsConfirmed @Inject constructor(
         messageId: MessageId,
         labelUiModelsWithSelectedState: List<LabelUiModelWithSelectedState>,
         archiveSelected: Boolean
-    ): Either<DataError.Local, Unit> {
+    ): Either<DataError, Unit> {
         val selectedLabels = labelUiModelsWithSelectedState
             .filter { it.selectedState == LabelSelectedState.Selected }
             .map { it.labelUiModel.id.labelId }

@@ -29,12 +29,12 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import me.proton.android.core.auth.presentation.session.UserSessionInitializationCallback
 import uniffi.proton_mail_uniffi.MailSession
+import uniffi.proton_mail_uniffi.LoginError
+import uniffi.proton_mail_uniffi.LoginFlowToUserContextResult
+import uniffi.proton_mail_uniffi.LoginFlowUserIdResult
+import uniffi.proton_mail_uniffi.MailSessionNewLoginFlowResult
 import uniffi.proton_mail_uniffi.MailUserSession
-import uniffi.proton_mail_uniffi.UserLoginFlowArcLoginFlowResult
-import uniffi.proton_mail_uniffi.UserLoginFlowArcMailUserSessionResult
-import uniffi.proton_mail_uniffi.UserLoginFlowError
-import uniffi.proton_mail_uniffi.UserLoginFlowStringResult
-import uniffi.proton_mail_uniffi.UserLoginFlowVoidResult
+import uniffi.proton_mail_uniffi.VoidLoginResult
 import javax.inject.Inject
 
 @HiltViewModel
@@ -57,18 +57,18 @@ class LoginViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getLoginFlow() = (loginFlowResult.await() as UserLoginFlowArcLoginFlowResult.Ok).v1
+    private suspend fun getLoginFlow() = (loginFlowResult.await() as MailSessionNewLoginFlowResult.Ok).v1
 
     private suspend fun onLogin(action: LoginAction.Login) {
         val loginFlowResult = loginFlowResult.await()
         return when {
             action.username.isBlank() -> mutableState.emit(LoginViewState.Error.Validation)
-            loginFlowResult is UserLoginFlowArcLoginFlowResult.Error -> onError(loginFlowResult.v1)
+            loginFlowResult is MailSessionNewLoginFlowResult.Error -> onError(loginFlowResult.v1)
             else -> {
                 mutableState.emit(LoginViewState.LoggingIn)
                 when (val result = getLoginFlow().login(email = action.username, password = action.password)) {
-                    is UserLoginFlowVoidResult.Error -> onError(result.v1)
-                    is UserLoginFlowVoidResult.Ok -> onSuccess()
+                    is VoidLoginResult.Error -> onError(result.v1)
+                    VoidLoginResult.Ok -> onSuccess()
                 }
             }
         }
@@ -78,17 +78,17 @@ class LoginViewModel @Inject constructor(
         mutableState.emit(getLoginViewState())
     }
 
-    private suspend fun onError(error: UserLoginFlowError) {
+    private suspend fun onError(error: LoginError) {
         mutableState.emit(getError(error))
     }
 
-    private fun getError(error: UserLoginFlowError): LoginViewState =
+    private fun getError(error: LoginError): LoginViewState =
         LoginViewState.Error.LoginFlow(error.getErrorMessage(context))
 
     private suspend fun getLoginViewState(): LoginViewState {
         val userId = when (val result = getLoginFlow().userId()) {
-            is UserLoginFlowStringResult.Error -> return getError(result.v1)
-            is UserLoginFlowStringResult.Ok -> result.v1
+            is LoginFlowUserIdResult.Error -> return getError(result.v1)
+            is LoginFlowUserIdResult.Ok -> result.v1
         }
         return when {
             getLoginFlow().isAwaitingMailboxPassword() -> onTwoPass(userId)
@@ -104,8 +104,8 @@ class LoginViewModel @Inject constructor(
 
     private suspend fun onLoggedIn(): LoginViewState {
         return when (val result = getLoginFlow().toUserContext()) {
-            is UserLoginFlowArcMailUserSessionResult.Error -> LoginViewState.Error.LoginFlow("${result.v1}")
-            is UserLoginFlowArcMailUserSessionResult.Ok -> onLoggedInSuccess(result.v1)
+            is LoginFlowToUserContextResult.Error -> LoginViewState.Error.LoginFlow("${result.v1}")
+            is LoginFlowToUserContextResult.Ok -> onLoggedInSuccess(result.v1)
         }
     }
 

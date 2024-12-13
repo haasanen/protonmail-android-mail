@@ -35,7 +35,7 @@ class LabelMessage @Inject constructor(
         messageId: MessageId,
         updatedSelection: LabelSelectionList,
         shouldArchive: Boolean
-    ): Either<DataError.Local, Unit> = labelMessages(
+    ): Either<DataError, Unit> = labelMessages(
         userId = userId,
         messageIds = listOf(messageId),
         updatedSelection,

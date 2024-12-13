@@ -1,6 +1,7 @@
 package ch.protonmail.android.mailsettings.data.local
 
 import app.cash.turbine.test
+import arrow.core.right
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
 import ch.protonmail.android.mailsettings.data.usecase.CreateRustUserMailSettings
@@ -65,7 +66,9 @@ class RustMailSettingsDataSourceTest {
         val watcherMock = mockk<SettingsWatcher> {
             every { settings } returns expected
         }
-        coEvery { createRustMailSettings(userSessionMock, capture(mailSettingsCallbackSlot)) } returns watcherMock
+        coEvery {
+            createRustMailSettings(userSessionMock, capture(mailSettingsCallbackSlot))
+        } returns watcherMock.right()
 
         mailSettingsDataSource.observeMailSettings(userId).test {
             // Given
@@ -90,7 +93,9 @@ class RustMailSettingsDataSourceTest {
         val watcherMock = mockk<SettingsWatcher> {
             every { settings } returns expected
         }
-        coEvery { createRustMailSettings(userSessionMock, capture(mailSettingsCallbackSlot)) } returns watcherMock
+        coEvery {
+            createRustMailSettings(userSessionMock, capture(mailSettingsCallbackSlot))
+        } returns watcherMock.right()
 
         mailSettingsDataSource.observeMailSettings(userId).test {
 

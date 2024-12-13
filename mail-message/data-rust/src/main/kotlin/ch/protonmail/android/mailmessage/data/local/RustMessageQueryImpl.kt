@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.mailmessage.data.local
 
+import arrow.core.getOrElse
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageMetadata
 import ch.protonmail.android.mailmessage.domain.paging.RustDataSourceId
 import ch.protonmail.android.mailmessage.domain.paging.RustInvalidationTracker
@@ -54,7 +55,7 @@ class RustMessageQueryImpl @Inject constructor(
             PageToLoad.First -> paginator?.nextPage()
             PageToLoad.Next -> paginator?.nextPage()
             PageToLoad.All -> paginator?.reload()
-        }
+        }?.getOrElse { emptyList() }
 
         Timber.v("rust-message: init value for messages is $messages")
         return messages

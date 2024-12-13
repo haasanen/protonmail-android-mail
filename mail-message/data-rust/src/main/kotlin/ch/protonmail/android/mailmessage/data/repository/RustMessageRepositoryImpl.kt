@@ -30,7 +30,6 @@ import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.mailmessage.data.local.RustMessageDataSource
 import ch.protonmail.android.mailmessage.data.mapper.toLocalMessageId
 import ch.protonmail.android.mailmessage.data.mapper.toMessage
-import ch.protonmail.android.mailmessage.data.mapper.toMessageBody
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.model.Message
 import ch.protonmail.android.mailmessage.domain.model.MessageAttachment
@@ -44,9 +43,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import me.proton.core.domain.entity.UserId
-import uniffi.proton_mail_uniffi.BlockQuote
-import uniffi.proton_mail_uniffi.RemoteContent
-import uniffi.proton_mail_uniffi.TransformOpts
 import javax.inject.Inject
 
 @Suppress("NotImplementedDeclaration", "TooManyFunctions")
@@ -90,19 +86,18 @@ class RustMessageRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getMessageWithBody(userId: UserId, messageId: MessageId): Either<DataError, MessageWithBody> =
-        getLocalMessageWithBody(userId, messageId)?.right() ?: DataError.Local.NoDataCached.left()
+        getLocalMessageWithBody(userId, messageId)
 
-    override suspend fun getLocalMessageWithBody(userId: UserId, messageId: MessageId): MessageWithBody? {
+    override suspend fun getLocalMessageWithBody(
+        userId: UserId,
+        messageId: MessageId
+    ): Either<DataError, MessageWithBody> {
         val localMessageId = messageId.toLocalMessageId()
         val message = rustMessageDataSource.getMessage(userId, localMessageId)?.toMessage()
-        val decryptedBody = rustMessageDataSource.getMessageBody(userId, localMessageId)
+            ?: return DataError.Local.NoDataCached.left()
 
-        return if (message != null && decryptedBody != null) {
-            val bodyOutput = decryptedBody.body(TransformOpts(BlockQuote.STRIP, RemoteContent.DEFAULT))
-            MessageWithBody(message, bodyOutput.toMessageBody(messageId, decryptedBody.mimeType()))
-        } else {
-            null
-        }
+        return rustMessageDataSource.getMessageBody(userId, localMessageId)
+            .map { MessageWithBody(message, it) }
     }
 
     override suspend fun getRefreshedMessageWithBody(userId: UserId, messageId: MessageId): RefreshedMessageWithBody? {
@@ -126,22 +121,22 @@ class RustMessageRepositoryImpl @Inject constructor(
         userId: UserId,
         messageIds: List<MessageId>,
         toLabel: LabelId
-    ): Either<DataError.Local, Unit> = rustMessageDataSource.moveMessages(
+    ): Either<DataError, Unit> = rustMessageDataSource.moveMessages(
         userId,
         messageIds.map { it.toLocalMessageId() },
         toLabel.toLocalLabelId()
     )
 
-    override suspend fun markUnread(userId: UserId, messageIds: List<MessageId>): Either<DataError.Local, Unit> =
+    override suspend fun markUnread(userId: UserId, messageIds: List<MessageId>): Either<DataError, Unit> =
         rustMessageDataSource.markUnread(userId, messageIds.map { it.toLocalMessageId() })
 
-    override suspend fun markRead(userId: UserId, messageIds: List<MessageId>): Either<DataError.Local, Unit> =
+    override suspend fun markRead(userId: UserId, messageIds: List<MessageId>): Either<DataError, Unit> =
         rustMessageDataSource.markRead(userId, messageIds.map { it.toLocalMessageId() })
 
-    override suspend fun starMessages(userId: UserId, messageIds: List<MessageId>): Either<DataError.Local, Unit> =
+    override suspend fun starMessages(userId: UserId, messageIds: List<MessageId>): Either<DataError, Unit> =
         rustMessageDataSource.starMessages(userId, messageIds.map { it.toLocalMessageId() })
 
-    override suspend fun unStarMessages(userId: UserId, messageIds: List<MessageId>): Either<DataError.Local, Unit> =
+    override suspend fun unStarMessages(userId: UserId, messageIds: List<MessageId>): Either<DataError, Unit> =
         rustMessageDataSource.unStarMessages(userId, messageIds.map { it.toLocalMessageId() })
 
     override suspend fun isMessageRead(userId: UserId, messageId: MessageId): Either<DataError.Local, Boolean> {
@@ -154,7 +149,7 @@ class RustMessageRepositoryImpl @Inject constructor(
         selectedLabels: List<LabelId>,
         partiallySelectedLabels: List<LabelId>,
         shouldArchive: Boolean
-    ): Either<DataError.Local, Unit> = rustMessageDataSource.labelMessages(
+    ): Either<DataError, Unit> = rustMessageDataSource.labelMessages(
         userId,
         messageIds.map { it.toLocalMessageId() },
         selectedLabels.map { it.toLocalLabelId() },

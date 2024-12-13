@@ -1,5 +1,6 @@
 package ch.protonmail.android.mailmessage.data.local
 
+import arrow.core.right
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.maillabel.data.mapper.toLabelId
@@ -59,8 +60,10 @@ class MessagePaginatorManagerTest {
         val userSession = mockk<MailUserSessionWrapper>()
         val callback = mockk<LiveQueryCallback>()
         coEvery { userSessionRepository.getUserSession(userId) } returns userSession
-        coEvery { messagePaginator.nextPage() } returns expectedMessages
-        coEvery { createRustMessagesPaginator.invoke(userSession, localLabelId, false, any()) } returns messagePaginator
+        coEvery { messagePaginator.nextPage() } returns expectedMessages.right()
+        coEvery {
+            createRustMessagesPaginator.invoke(userSession, localLabelId, false, any())
+        } returns messagePaginator.right()
 
         // When
         val actual = messagePaginatorManager.getOrCreatePaginator(userId, pageKey, callback)
@@ -80,16 +83,18 @@ class MessagePaginatorManagerTest {
         val session = mockk<MailUserSessionWrapper>()
         val callback = mockk<LiveQueryCallback>()
         val paginator = mockk<MessagePaginatorWrapper> {
-            coEvery { this@mockk.nextPage() } returns firstPage
+            coEvery { this@mockk.nextPage() } returns firstPage.right()
             coEvery { this@mockk.params } returns
                 PaginatorParams(userId.toLocalUserId(), labelId.toLocalLabelId(), false)
         }
         coEvery { userSessionRepository.getUserSession(userId) } returns session
-        coEvery { createRustMessagesPaginator(session, labelId.toLocalLabelId(), false, any()) } returns paginator
+        coEvery {
+            createRustMessagesPaginator(session, labelId.toLocalLabelId(), false, any())
+        } returns paginator.right()
 
         // When
         messagePaginatorManager.getOrCreatePaginator(userId, pageKey, callback)
-        coEvery { paginator.nextPage() } returns nextPage
+        coEvery { paginator.nextPage() } returns nextPage.right()
         messagePaginatorManager.getOrCreatePaginator(userId, pageKey, callback)
 
         // Then
@@ -108,15 +113,19 @@ class MessagePaginatorManagerTest {
         val session = mockk<MailUserSessionWrapper>()
         val callback = mockk<LiveQueryCallback>()
         val paginator = mockk<MessagePaginatorWrapper> {
-            coEvery { this@mockk.nextPage() } returns firstPage
+            coEvery { this@mockk.nextPage() } returns firstPage.right()
             coEvery { this@mockk.destroy() } just Runs
             coEvery { this@mockk.params } returns PaginatorParams(
                 userId = userId.toLocalUserId(), labelId = labelId.toLocalLabelId(), unread = false
             )
         }
         coEvery { userSessionRepository.getUserSession(userId) } returns session
-        coEvery { createRustMessagesPaginator(session, labelId.toLocalLabelId(), false, any()) } returns paginator
-        coEvery { createRustMessagesPaginator(session, newLabelId.toLocalLabelId(), false, any()) } returns paginator
+        coEvery {
+            createRustMessagesPaginator(session, labelId.toLocalLabelId(), false, any())
+        } returns paginator.right()
+        coEvery {
+            createRustMessagesPaginator(session, newLabelId.toLocalLabelId(), false, any())
+        } returns paginator.right()
 
         // When
         messagePaginatorManager.getOrCreatePaginator(userId, pageKey, callback)
@@ -142,13 +151,17 @@ class MessagePaginatorManagerTest {
         val session = mockk<MailUserSessionWrapper>()
         val callback = mockk<LiveQueryCallback>()
         val paginator = mockk<MessagePaginatorWrapper> {
-            coEvery { this@mockk.nextPage() } returns firstPage
+            coEvery { this@mockk.nextPage() } returns firstPage.right()
             coEvery { this@mockk.destroy() } just Runs
             coEvery { this@mockk.params } returns PaginatorParams(userId.toLocalUserId(), labelId.toLocalLabelId())
         }
         coEvery { userSessionRepository.getUserSession(userId) } returns session
-        coEvery { createRustMessagesPaginator(session, labelId.toLocalLabelId(), false, any()) } returns paginator
-        coEvery { createRustMessagesPaginator(session, labelId.toLocalLabelId(), true, any()) } returns paginator
+        coEvery {
+            createRustMessagesPaginator(session, labelId.toLocalLabelId(), false, any())
+        } returns paginator.right()
+        coEvery {
+            createRustMessagesPaginator(session, labelId.toLocalLabelId(), true, any())
+        } returns paginator.right()
 
         // When
         messagePaginatorManager.getOrCreatePaginator(userId, pageKey, callback)

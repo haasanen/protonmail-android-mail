@@ -18,13 +18,22 @@
 
 package ch.protonmail.android.mailmessage.data.usecase
 
+import arrow.core.Either
+import arrow.core.left
+import arrow.core.right
+import ch.protonmail.android.mailcommon.datarust.mapper.toDataError
+import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailmessage.data.wrapper.MailboxWrapper
 import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
-import uniffi.proton_mail_uniffi.Mailbox
+import uniffi.proton_mail_uniffi.NewMailboxResult
+import uniffi.proton_mail_uniffi.newAllMailMailbox
 import javax.inject.Inject
 
 class CreateAllMailMailbox @Inject constructor() {
 
-    suspend operator fun invoke(mailUserSession: MailUserSessionWrapper) =
-        MailboxWrapper(Mailbox.allMail(mailUserSession.getRustUserSession()))
+    suspend operator fun invoke(mailUserSession: MailUserSessionWrapper): Either<DataError, MailboxWrapper> =
+        when (val result = newAllMailMailbox(mailUserSession.getRustUserSession())) {
+            is NewMailboxResult.Error -> result.v1.toDataError().left()
+            is NewMailboxResult.Ok -> MailboxWrapper(result.v1).right()
+        }
 }

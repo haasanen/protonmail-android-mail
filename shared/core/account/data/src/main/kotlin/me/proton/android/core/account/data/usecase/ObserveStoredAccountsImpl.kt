@@ -31,6 +31,8 @@ import me.proton.android.core.account.domain.usecase.ObserveCoreSessions
 import me.proton.android.core.account.domain.usecase.ObserveStoredAccounts
 import uniffi.proton_mail_uniffi.LiveQueryCallback
 import uniffi.proton_mail_uniffi.MailSession
+import uniffi.proton_mail_uniffi.MailSessionGetAccountsResult
+import uniffi.proton_mail_uniffi.MailSessionWatchAccountsResult
 import uniffi.proton_mail_uniffi.StoredAccount
 import javax.inject.Inject
 
@@ -57,16 +59,27 @@ class ObserveStoredAccountsImpl @Inject constructor(
         val watchedStoredAccounts = mailSession.watchAccounts(
             object : LiveQueryCallback {
                 override fun onUpdate() {
-                    launch { send(mailSession.getAccounts()) }
+                    launch {
+                        when (val accountsResult = mailSession.getAccounts()) {
+                            is MailSessionGetAccountsResult.Error -> send(emptyList())
+                            is MailSessionGetAccountsResult.Ok -> send(accountsResult.v1)
+                        }
+
+                    }
                 }
             }
         )
 
-        send(watchedStoredAccounts.accounts)
+        when (watchedStoredAccounts) {
+            is MailSessionWatchAccountsResult.Error -> send(emptyList())
+            is MailSessionWatchAccountsResult.Ok -> {
+                send(watchedStoredAccounts.v1.accounts)
 
-        awaitClose {
-            watchedStoredAccounts.handle.disconnect()
-            watchedStoredAccounts.destroy()
+                awaitClose {
+                    watchedStoredAccounts.v1.handle.disconnect()
+                    watchedStoredAccounts.destroy()
+                }
+            }
         }
     }
 }

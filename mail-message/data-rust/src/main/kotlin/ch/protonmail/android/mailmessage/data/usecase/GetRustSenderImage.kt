@@ -18,7 +18,13 @@
 
 package ch.protonmail.android.mailmessage.data.usecase
 
+import arrow.core.Either
+import arrow.core.left
+import arrow.core.right
+import ch.protonmail.android.mailcommon.datarust.mapper.toDataError
+import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
+import uniffi.proton_mail_uniffi.MailUserSessionImageForSenderResult
 import javax.inject.Inject
 
 class GetRustSenderImage @Inject constructor() {
@@ -27,6 +33,14 @@ class GetRustSenderImage @Inject constructor() {
         mailUserSession: MailUserSessionWrapper,
         address: String,
         bimi: String?
-    ): String? = mailUserSession.imageForSender(address, bimi)
+    ): Either<DataError, String> = when (val result = mailUserSession.imageForSender(address, bimi)) {
+        is MailUserSessionImageForSenderResult.Error -> result.v1.toDataError().left()
+        is MailUserSessionImageForSenderResult.Ok -> {
+            when (val image = result.v1) {
+                null -> DataError.Local.NoDataCached.left()
+                else -> image.right()
+            }
+        }
+    }
 }
 

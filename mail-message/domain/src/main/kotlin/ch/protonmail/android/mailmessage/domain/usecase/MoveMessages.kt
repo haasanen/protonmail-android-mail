@@ -22,12 +22,12 @@ import arrow.core.Either
 import arrow.core.left
 import arrow.core.raise.either
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailmessage.domain.model.MessageId
-import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
-import me.proton.core.domain.entity.UserId
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.maillabel.domain.usecase.FindLocalSystemLabelId
+import ch.protonmail.android.mailmessage.domain.model.MessageId
+import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
+import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -40,15 +40,13 @@ class MoveMessages @Inject constructor(
         userId: UserId,
         messageIds: List<MessageId>,
         labelId: LabelId
-    ): Either<DataError.Local, Unit> = either {
-        messageRepository.moveTo(userId, messageIds, labelId).bind()
-    }
+    ): Either<DataError, Unit> = messageRepository.moveTo(userId, messageIds, labelId)
 
     suspend operator fun invoke(
         userId: UserId,
         messageIds: List<MessageId>,
         systemLabelId: SystemLabelId
-    ): Either<DataError.Local, Unit> = either {
+    ): Either<DataError, Unit> = either {
         val localLabelId = findLocalSystemLabelId(userId, systemLabelId)?.labelId
         if (localLabelId == null) {
             Timber.e("move-message: Local label id cannot be found for SystemLabelId $systemLabelId")

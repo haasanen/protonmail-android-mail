@@ -58,7 +58,7 @@ class StoreAttachments @Inject constructor(
                 .bind()
 
             // Verify that draft exists in db, if not create it
-            val messageWithBody = messageRepository.getLocalMessageWithBody(userId, draft.message.messageId)
+            val messageWithBody = messageRepository.getLocalMessageWithBody(userId, draft.message.messageId).getOrNull()
             Timber.d("Draft exists in db: ${messageWithBody != null}")
             if (messageWithBody == null) {
                 val success = saveDraft(draft, userId)

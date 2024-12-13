@@ -18,9 +18,15 @@
 
 package ch.protonmail.android.mailmessage.data.usecase
 
+import arrow.core.Either
+import arrow.core.left
+import arrow.core.right
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageId
+import ch.protonmail.android.mailcommon.datarust.mapper.toDataError
+import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailmessage.data.wrapper.MailboxWrapper
+import uniffi.proton_mail_uniffi.LabelMessagesAsResult
 import uniffi.proton_mail_uniffi.labelMessagesAs
 import javax.inject.Inject
 
@@ -32,13 +38,16 @@ class RustLabelMessages @Inject constructor() {
         selectedLabelIds: List<LocalLabelId>,
         partiallySelectedLabelIds: List<LocalLabelId>,
         shouldArchive: Boolean
-    ) {
-        labelMessagesAs(
+    ): Either<DataError, Unit> = when (
+        val result = labelMessagesAs(
             mailbox.getRustMailbox(),
             messageIds,
             selectedLabelIds,
             partiallySelectedLabelIds,
             shouldArchive
         )
+    ) {
+        is LabelMessagesAsResult.Error -> result.v1.toDataError().left()
+        is LabelMessagesAsResult.Ok -> Unit.right()
     }
 }

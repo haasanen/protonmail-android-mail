@@ -32,6 +32,9 @@ import me.proton.android.core.account.domain.model.CoreSession
 import me.proton.android.core.account.domain.usecase.ObserveCoreSessions
 import uniffi.proton_mail_uniffi.LiveQueryCallback
 import uniffi.proton_mail_uniffi.MailSession
+import uniffi.proton_mail_uniffi.MailSessionGetSessionsResult
+import uniffi.proton_mail_uniffi.MailSessionWatchSessionsResult
+import uniffi.proton_mail_uniffi.StoredSession
 import javax.inject.Inject
 
 class ObserveCoreSessionsImpl @Inject constructor(
@@ -39,20 +42,30 @@ class ObserveCoreSessionsImpl @Inject constructor(
     private val mailSession: MailSession
 ) : ObserveCoreSessions {
 
-    private val storedSessionsFlow = callbackFlow {
+    private val storedSessionsFlow = callbackFlow<List<StoredSession>> {
         val watchedSessions = mailSession.watchSessions(
             object : LiveQueryCallback {
                 override fun onUpdate() {
-                    launch { send(mailSession.getSessions()) }
+                    launch {
+                        when (val sessionsResult = mailSession.getSessions()) {
+                            is MailSessionGetSessionsResult.Error -> send(emptyList())
+                            is MailSessionGetSessionsResult.Ok -> send(sessionsResult.v1)
+                        }
+                    }
                 }
             }
         )
 
-        send(watchedSessions.sessions)
+        when (watchedSessions) {
+            is MailSessionWatchSessionsResult.Error -> send(emptyList())
+            is MailSessionWatchSessionsResult.Ok -> {
+                send(watchedSessions.v1.sessions)
 
-        awaitClose {
-            watchedSessions.handle.disconnect()
-            watchedSessions.destroy()
+                awaitClose {
+                    watchedSessions.v1.handle.disconnect()
+                    watchedSessions.destroy()
+                }
+            }
         }
     }.shareIn(coroutineScope, SharingStarted.WhileSubscribed(), replay = 1)
 

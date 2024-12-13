@@ -46,6 +46,8 @@ dependencies {
     implementation(libs.bundles.module.domain)
 
     implementation(libs.proton.core.user.domain)
+    implementation(project(":mail-common:data-rust"))
+    implementation(project(":mail-common:domain"))
 
     testImplementation(project(":test:test-data"))
     testImplementation(project(":test:utils"))

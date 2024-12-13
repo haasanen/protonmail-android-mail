@@ -23,9 +23,10 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import me.proton.android.core.account.domain.model.CoreAccount
 import me.proton.android.core.account.domain.model.CoreAccountState
-import me.proton.android.core.account.domain.usecase.ObservePrimaryCoreAccount
 import me.proton.android.core.account.domain.usecase.ObserveCoreAccounts
+import me.proton.android.core.account.domain.usecase.ObservePrimaryCoreAccount
 import uniffi.proton_mail_uniffi.MailSession
+import uniffi.proton_mail_uniffi.MailSessionGetPrimaryAccountResult
 import javax.inject.Inject
 
 class ObservePrimaryCoreAccountImpl @Inject constructor(
@@ -34,7 +35,10 @@ class ObservePrimaryCoreAccountImpl @Inject constructor(
 ) : ObservePrimaryCoreAccount {
 
     override operator fun invoke(): Flow<CoreAccount?> = observeCoreAccounts().map { list ->
-        val primaryAccount = mailSession.getPrimaryAccount()
+        val primaryAccount = when (val result = mailSession.getPrimaryAccount()) {
+            is MailSessionGetPrimaryAccountResult.Error -> null
+            is MailSessionGetPrimaryAccountResult.Ok -> result.v1
+        }
         list.firstOrNull { it.state == CoreAccountState.Ready && it.userId.id == primaryAccount?.userId() }
     }.distinctUntilChanged()
 }

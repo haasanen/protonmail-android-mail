@@ -18,14 +18,26 @@
 
 package ch.protonmail.android.mailmessage.data.usecase
 
+import arrow.core.Either
+import arrow.core.left
+import arrow.core.right
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageId
+import ch.protonmail.android.mailcommon.datarust.mapper.toDataError
+import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailmessage.data.wrapper.MailboxWrapper
+import uniffi.proton_mail_uniffi.AllAvailableBottomBarActionsForMessagesResult
 import uniffi.proton_mail_uniffi.AllBottomBarMessageActions
 import uniffi.proton_mail_uniffi.allAvailableBottomBarActionsForMessages
 import javax.inject.Inject
 
 class GetRustAllMessageBottomBarActions @Inject constructor() {
 
-    suspend operator fun invoke(mailbox: MailboxWrapper, messageIds: List<LocalMessageId>): AllBottomBarMessageActions =
-        allAvailableBottomBarActionsForMessages(mailbox.getRustMailbox(), messageIds)
+    suspend operator fun invoke(
+        mailbox: MailboxWrapper,
+        messageIds: List<LocalMessageId>
+    ): Either<DataError, AllBottomBarMessageActions> =
+        when (val result = allAvailableBottomBarActionsForMessages(mailbox.getRustMailbox(), messageIds)) {
+            is AllAvailableBottomBarActionsForMessagesResult.Error -> result.v1.toDataError().left()
+            is AllAvailableBottomBarActionsForMessagesResult.Ok -> result.v1.right()
+        }
 }

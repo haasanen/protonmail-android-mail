@@ -51,7 +51,7 @@ class SaveMessageExpirationTime @Inject constructor(
                 .mapLeft { DataError.Local.NoDataCached }
                 .bind()
             // Verify that draft exists in db, if not create it
-            val messageWithBody = messageRepository.getLocalMessageWithBody(userId, draft.message.messageId)
+            val messageWithBody = messageRepository.getLocalMessageWithBody(userId, draft.message.messageId).getOrNull()
             if (messageWithBody == null) {
                 val success = saveDraft(draft, userId)
                 if (!success) {

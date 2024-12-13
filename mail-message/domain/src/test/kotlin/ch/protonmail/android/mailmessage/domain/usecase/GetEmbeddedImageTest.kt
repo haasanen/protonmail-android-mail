@@ -57,7 +57,7 @@ class GetEmbeddedImageTest {
             coEvery { messageRepository.getLocalMessageWithBody(userId, messageId) } returns MessageWithBody(
                 message = MessageTestData.message,
                 messageBody = MessageBodyTestData.messageBodyWithEmbeddedImage
-            )
+            ).right()
             coEvery {
                 attachmentRepository.getEmbeddedImage(userId, messageId, attachmentId)
             } returns expectedByteArray.right()
@@ -77,7 +77,7 @@ class GetEmbeddedImageTest {
         coEvery { messageRepository.getLocalMessageWithBody(userId, messageId) } returns MessageWithBody(
             message = MessageTestData.message,
             messageBody = MessageBodyTestData.messageBodyWithEmbeddedOctetStream
-        )
+        ).right()
         coEvery {
             attachmentRepository.getEmbeddedImage(userId, messageId, attachmentId)
         } returns expectedByteArray.right()
@@ -95,7 +95,7 @@ class GetEmbeddedImageTest {
         coEvery { messageRepository.getLocalMessageWithBody(userId, messageId) } returns MessageWithBody(
             message = MessageTestData.message,
             messageBody = MessageBodyTestData.messageBodyWithInvalidEmbeddedAttachment
-        )
+        ).right()
 
         // When
         val actual = getEmbeddedImage(userId, messageId, contentId)
@@ -107,7 +107,8 @@ class GetEmbeddedImageTest {
     @Test
     fun `returns data not cached error when message with body is not found`() = runTest {
         // Given
-        coEvery { messageRepository.getLocalMessageWithBody(userId, messageId) } returns null
+        coEvery { messageRepository.getLocalMessageWithBody(userId, messageId) } returns
+            DataError.Local.NoDataCached.left()
 
         // When
         val actual = getEmbeddedImage(userId, messageId, contentId)
@@ -122,7 +123,7 @@ class GetEmbeddedImageTest {
         coEvery { messageRepository.getLocalMessageWithBody(userId, messageId) } returns MessageWithBody(
             message = MessageTestData.message,
             messageBody = MessageBodyTestData.messageBody
-        )
+        ).right()
 
         // When
         val actual = getEmbeddedImage(userId, messageId, contentId)
@@ -137,7 +138,7 @@ class GetEmbeddedImageTest {
         coEvery { messageRepository.getLocalMessageWithBody(userId, messageId) } returns MessageWithBody(
             message = MessageTestData.message,
             messageBody = MessageBodyTestData.messageBodyWithAttachment
-        )
+        ).right()
 
         // When
         val actual = getEmbeddedImage(userId, messageId, contentId)
@@ -153,7 +154,7 @@ class GetEmbeddedImageTest {
         coEvery { messageRepository.getLocalMessageWithBody(userId, messageId) } returns MessageWithBody(
             message = MessageTestData.message,
             messageBody = MessageBodyTestData.messageBodyWithEmbeddedOctetStream
-        )
+        ).right()
         coEvery {
             attachmentRepository.getEmbeddedImage(userId, messageId, attachmentId)
         } returns expected
@@ -177,7 +178,7 @@ class GetEmbeddedImageTest {
         } returns MessageWithBody(
             message = MessageTestData.message,
             messageBody = MessageBodyTestData.messageBodyWithEmbeddedOctetStream
-        )
+        ).right()
         coEvery {
             attachmentRepository.getEmbeddedImage(userId, messageId, attachmentId)
         } returns expected
@@ -195,7 +196,7 @@ class GetEmbeddedImageTest {
         coEvery { messageRepository.getLocalMessageWithBody(userId, messageId) } returns MessageWithBody(
             message = MessageTestData.message.copy(),
             messageBody = MessageBodyTestData.messageBodyWithContentIdList
-        )
+        ).right()
 
         // When
         val actual = getEmbeddedImage(userId, messageId, contentId)

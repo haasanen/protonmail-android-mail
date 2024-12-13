@@ -18,15 +18,27 @@
 
 package ch.protonmail.android.composer.data.usecase
 
+import arrow.core.Either
+import arrow.core.left
+import arrow.core.right
 import ch.protonmail.android.composer.data.wrapper.DraftWrapper
+import ch.protonmail.android.mailcommon.datarust.mapper.toDataError
+import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
-import uniffi.proton_mail_uniffi.Draft
 import uniffi.proton_mail_uniffi.DraftCreateMode
+import uniffi.proton_mail_uniffi.NewDraftResult
+import uniffi.proton_mail_uniffi.newDraft
 import javax.inject.Inject
 
 class CreateRustDraft @Inject constructor() {
 
-    suspend operator fun invoke(mailSession: MailUserSessionWrapper, createMode: DraftCreateMode) =
-        DraftWrapper(Draft.create(mailSession.getRustUserSession(), createMode))
+    suspend operator fun invoke(
+        mailSession: MailUserSessionWrapper,
+        createMode: DraftCreateMode
+    ): Either<DataError, DraftWrapper> = when (val result = newDraft(mailSession.getRustUserSession(), createMode)) {
+        is NewDraftResult.Error -> result.v1.toDataError().left()
+        is NewDraftResult.Ok -> DraftWrapper(result.v1).right()
+    }
+
 
 }

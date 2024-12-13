@@ -20,11 +20,11 @@ package ch.protonmail.android.maildetail.domain.usecase
 
 import arrow.core.Either
 import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.maillabel.domain.model.LabelId
+import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.usecase.MoveMessages
 import me.proton.core.domain.entity.UserId
-import ch.protonmail.android.maillabel.domain.model.LabelId
-import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import javax.inject.Inject
 
 class MoveMessage @Inject constructor(
@@ -35,11 +35,11 @@ class MoveMessage @Inject constructor(
         userId: UserId,
         messageId: MessageId,
         labelId: LabelId
-    ): Either<DataError.Local, Unit> = moveMessages.invoke(userId, listOf(messageId), labelId)
+    ): Either<DataError, Unit> = moveMessages.invoke(userId, listOf(messageId), labelId)
 
     suspend operator fun invoke(
         userId: UserId,
         messageId: MessageId,
         systemLabelId: SystemLabelId
-    ): Either<DataError.Local, Unit> = moveMessages.invoke(userId, listOf(messageId), systemLabelId)
+    ): Either<DataError, Unit> = moveMessages.invoke(userId, listOf(messageId), systemLabelId)
 }

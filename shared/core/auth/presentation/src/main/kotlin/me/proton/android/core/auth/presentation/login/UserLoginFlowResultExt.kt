@@ -21,24 +21,24 @@ import android.content.Context
 import me.proton.android.core.auth.presentation.LogTag
 import me.proton.android.core.auth.presentation.R
 import me.proton.core.util.kotlin.CoreLogger
-import uniffi.proton_mail_uniffi.LoginReason
+import uniffi.proton_mail_uniffi.LoginError
+import uniffi.proton_mail_uniffi.LoginErrorReason
+import uniffi.proton_mail_uniffi.OtherErrorReason
+import uniffi.proton_mail_uniffi.ProtonError
 import uniffi.proton_mail_uniffi.UnexpectedError
 import uniffi.proton_mail_uniffi.UserApiServiceError
-import uniffi.proton_mail_uniffi.UserLoginFlowError
 
-fun UserLoginFlowError.getErrorMessage(context: Context) = when (this) {
-    is UserLoginFlowError.InvalidAction -> v1.getErrorMessage(context)
-    is UserLoginFlowError.Network -> context.getString(R.string.presentation_general_connection_error)
-    is UserLoginFlowError.ServerError -> v1.getErrorMessage(context)
-    is UserLoginFlowError.Unexpected -> v1.getErrorMessage()
+fun LoginError.getErrorMessage(context: Context) = when (this) {
+    is LoginError.Other -> this.v1.getErrorMessage(context)
+    is LoginError.Reason -> this.v1.getErrorMessage(context)
 }
 
 @Suppress("MaxLineLength")
-fun LoginReason.getErrorMessage(context: Context) = when (this) {
-    is LoginReason.CantUnlockUserKey -> context.getString(R.string.auth_login_error_invalid_action_cannot_unlock_keys)
-    is LoginReason.HumanVerificationChallenge -> context.getString(R.string.auth_login_error_invalid_action_human_verification_challenge)
-    is LoginReason.InvalidCredentials -> context.getString(R.string.auth_login_error_invalid_action_invalid_credentials)
-    is LoginReason.UnsupportedTfa -> context.getString(R.string.auth_login_error_invalid_action_unsupported_tfa)
+fun LoginErrorReason.getErrorMessage(context: Context) = when (this) {
+    is LoginErrorReason.CantUnlockUserKey -> context.getString(R.string.auth_login_error_invalid_action_cannot_unlock_keys)
+    is LoginErrorReason.HumanVerificationChallenge -> context.getString(R.string.auth_login_error_invalid_action_human_verification_challenge)
+    is LoginErrorReason.InvalidCredentials -> context.getString(R.string.auth_login_error_invalid_action_invalid_credentials)
+    is LoginErrorReason.UnsupportedTfa -> context.getString(R.string.auth_login_error_invalid_action_unsupported_tfa)
 }
 
 fun UserApiServiceError.getErrorMessage(context: Context) = when (this) {
@@ -66,7 +66,22 @@ fun UnexpectedError.getErrorMessage() = when (this) {
     UnexpectedError.QUEUE -> "QUEUE"
     UnexpectedError.UNKNOWN -> "UNKNOWN"
     UnexpectedError.API -> "API"
+    UnexpectedError.DRAFT -> "DRAFT"
+    UnexpectedError.ERROR_MAPPING -> "ERROR_MAPPING"
 }.also {
     val error = IllegalStateException("UnexpectedError: $it")
     CoreLogger.e(LogTag.LOGIN, error)
+}
+
+private fun OtherErrorReason.getErrorMessage(context: Context) = when (this) {
+    OtherErrorReason.InvalidParameter -> context.getString(R.string.auth_login_error_invalid_action_invalid_credentials)
+    is OtherErrorReason.Other -> this.v1
+}
+
+private fun ProtonError.getErrorMessage(context: Context) = when (this) {
+    is ProtonError.OtherReason -> v1.getErrorMessage(context)
+    is ProtonError.ServerError -> v1.getErrorMessage(context)
+    is ProtonError.Unexpected -> v1.getErrorMessage()
+    ProtonError.Network -> context.getString(R.string.presentation_general_connection_error)
+    ProtonError.SessionExpired -> context.getString(R.string.presentation_error_general)
 }

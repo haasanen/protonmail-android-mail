@@ -18,13 +18,22 @@
 
 package ch.protonmail.android.mailmessage.data.usecase
 
+import arrow.core.Either
+import arrow.core.left
+import arrow.core.right
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageId
+import ch.protonmail.android.mailcommon.datarust.mapper.toDataError
+import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailmessage.data.wrapper.MailboxWrapper
+import uniffi.proton_mail_uniffi.VoidActionResult
 import uniffi.proton_mail_uniffi.markMessagesRead
 import javax.inject.Inject
 
 class RustMarkMessagesRead @Inject constructor() {
 
-    suspend operator fun invoke(mailbox: MailboxWrapper, messageIds: List<LocalMessageId>) =
-        markMessagesRead(mailbox.getRustMailbox(), messageIds)
+    suspend operator fun invoke(mailbox: MailboxWrapper, messageIds: List<LocalMessageId>): Either<DataError, Unit> =
+        when (val result = markMessagesRead(mailbox.getRustMailbox(), messageIds)) {
+            is VoidActionResult.Error -> result.v1.toDataError().left()
+            VoidActionResult.Ok -> Unit.right()
+        }
 }

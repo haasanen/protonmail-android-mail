@@ -72,14 +72,16 @@ class RustMailSettingsDataSource @Inject constructor(
                 }
             }
 
-            val settingsWatcher = createRustMailSettings(session, settingsCallback)
-            mailSettingsWatcherByUserId?.let { destroyMailSettingsLiveQuery() }
-            mailSettingsWatcherByUserId = MailUserSettingsWatcherByUserId(userId, settingsWatcher)
+            createRustMailSettings(session, settingsCallback)
+                .onLeft { Timber.e("rust-settings: failed creating settings watcher $it") }
+                .onRight { settingsWatcher ->
+                    mailSettingsWatcherByUserId?.let { destroyMailSettingsLiveQuery() }
+                    mailSettingsWatcherByUserId = MailUserSettingsWatcherByUserId(userId, settingsWatcher)
 
-
-            Timber.v("rust-settings: Setting initial value for mail settings ${settingsWatcher.settings}")
-            mutableMailSettingsFlow.value = settingsWatcher.settings
-            Timber.d("rust-settings: created mail settings live query")
+                    Timber.v("rust-settings: Setting initial value for mail settings ${settingsWatcher.settings}")
+                    mutableMailSettingsFlow.value = settingsWatcher.settings
+                    Timber.d("rust-settings: created mail settings live query")
+                }
         }
     }
 

@@ -64,7 +64,7 @@ class PrepareAttachmentForSharing @Inject constructor(
         decryptedByteArray: ByteArray
     ): Either<PrepareAttachmentForSharingError, Uri> = withContext(ioDispatcher) {
         val message =
-            messageRepository.getLocalMessageWithBody(userId, messageId)
+            messageRepository.getLocalMessageWithBody(userId, messageId).getOrNull()
                 ?: return@withContext PrepareAttachmentForSharingError.MessageNotFound.left()
         val messageAttachment = message.messageBody.attachments.firstOrNull { it.attachmentId == attachmentId }
             ?: return@withContext PrepareAttachmentForSharingError.AttachmentNotFound.left()

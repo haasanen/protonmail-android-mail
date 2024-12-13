@@ -33,6 +33,7 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import me.proton.android.core.auth.presentation.LogTag
 import me.proton.android.core.auth.presentation.login.getErrorMessage
 import me.proton.android.core.auth.presentation.secondfactor.SecondFactorArg.getUserId
 import me.proton.android.core.auth.presentation.secondfactor.otp.OneTimePasswordInputAction.Authenticate
@@ -45,13 +46,18 @@ import me.proton.android.core.auth.presentation.secondfactor.otp.OneTimePassword
 import me.proton.android.core.auth.presentation.secondfactor.otp.OneTimePasswordInputState.LoggedIn
 import me.proton.android.core.auth.presentation.session.UserSessionInitializationCallback
 import me.proton.core.compose.viewmodel.stopTimeoutMillis
+import me.proton.core.util.kotlin.CoreLogger
+import uniffi.proton_mail_uniffi.LoginError
 import uniffi.proton_mail_uniffi.LoginFlow
 import uniffi.proton_mail_uniffi.MailSession
+import uniffi.proton_mail_uniffi.LoginFlowToUserContextResult
+import uniffi.proton_mail_uniffi.MailSessionGetAccountResult
+import uniffi.proton_mail_uniffi.MailSessionGetAccountSessionsResult
+import uniffi.proton_mail_uniffi.MailSessionResumeLoginFlowResult
 import uniffi.proton_mail_uniffi.MailUserSession
-import uniffi.proton_mail_uniffi.UserLoginFlowArcLoginFlowResult
-import uniffi.proton_mail_uniffi.UserLoginFlowArcMailUserSessionResult
-import uniffi.proton_mail_uniffi.UserLoginFlowError
-import uniffi.proton_mail_uniffi.UserLoginFlowVoidResult
+import uniffi.proton_mail_uniffi.StoredAccount
+import uniffi.proton_mail_uniffi.StoredSession
+import uniffi.proton_mail_uniffi.VoidLoginResult
 import javax.inject.Inject
 
 @HiltViewModel
@@ -98,30 +104,28 @@ class OneTimePasswordInputViewModel @Inject constructor(
 
     private fun onAuthenticate(action: Authenticate): Flow<OneTimePasswordInputState> = flow {
         emit(Loading)
-        val account = sessionInterface.getAccount(userId)
-        val sessions = account?.let { sessionInterface.getAccountSessions(account) }
-        val session = sessions?.firstOrNull()
-        val loginFlow = session?.let { sessionInterface.resumeLoginFlow(userId, it.sessionId()) }
+        val session = getSession(getAccount(userId))?.firstOrNull()
+        val loginFlow = session?.let { sessionInterface.resumeLoginFlow(userId, session.sessionId()) }
         when (loginFlow) {
             null -> emitAll(onClose())
-            is UserLoginFlowArcLoginFlowResult.Error -> emitAll(onError(loginFlow.v1))
-            is UserLoginFlowArcLoginFlowResult.Ok -> {
+            is MailSessionResumeLoginFlowResult.Error -> emitAll(onError(loginFlow.v1))
+            is MailSessionResumeLoginFlowResult.Ok -> {
                 when (val submit = loginFlow.v1.submitTotp(action.code)) {
-                    is UserLoginFlowVoidResult.Error -> emitAll(onError(submit.v1))
-                    is UserLoginFlowVoidResult.Ok -> emitAll(onSuccess(loginFlow.v1))
+                    is VoidLoginResult.Error -> emitAll(onError(submit.v1))
+                    is VoidLoginResult.Ok -> emitAll(onSuccess(loginFlow.v1))
                 }
             }
         }
     }
 
-    private fun onError(error: UserLoginFlowError): Flow<OneTimePasswordInputState> = flow {
+    private fun onError(error: LoginError): Flow<OneTimePasswordInputState> = flow {
         emit(Error.LoginFlow(error.getErrorMessage(context)))
     }
 
     private fun onSuccess(loginFlow: LoginFlow): Flow<OneTimePasswordInputState> = flow {
         when (val result = loginFlow.toUserContext()) {
-            is UserLoginFlowArcMailUserSessionResult.Error -> emitAll(onError(result.v1))
-            is UserLoginFlowArcMailUserSessionResult.Ok -> onWaitFinished(result.v1)
+            is LoginFlowToUserContextResult.Error -> emitAll(onError(result.v1))
+            is LoginFlowToUserContextResult.Ok -> onWaitFinished(result.v1)
         }
     }
 
@@ -129,5 +133,27 @@ class OneTimePasswordInputViewModel @Inject constructor(
         mailUserSession.initialize(callback)
         callback.waitFinished()
         emit(LoggedIn)
+    }
+
+    private suspend fun getSession(account: StoredAccount?): List<StoredSession>? {
+        if (account == null) {
+            return null
+        }
+
+        return when (val result = sessionInterface.getAccountSessions(account)) {
+            is MailSessionGetAccountSessionsResult.Error -> {
+                CoreLogger.e(LogTag.LOGIN, result.v1.toString())
+                null
+            }
+            is MailSessionGetAccountSessionsResult.Ok -> result.v1
+        }
+    }
+
+    private suspend fun getAccount(userId: String) = when (val result = sessionInterface.getAccount(userId)) {
+        is MailSessionGetAccountResult.Error -> {
+            CoreLogger.e(LogTag.LOGIN, result.v1.toString())
+            null
+        }
+        is MailSessionGetAccountResult.Ok -> result.v1
     }
 }

@@ -71,7 +71,7 @@ interface MessageRepository {
     /**
      * Get the [MessageWithBody] for a given [MessageId] and [userId] from the local storage.
      */
-    suspend fun getLocalMessageWithBody(userId: UserId, messageId: MessageId): MessageWithBody?
+    suspend fun getLocalMessageWithBody(userId: UserId, messageId: MessageId): Either<DataError, MessageWithBody>
 
     /**
      * Get the [MessageWithBody] for a given [MessageId] and [userId] from the remote storage
@@ -105,27 +105,27 @@ interface MessageRepository {
         userId: UserId,
         messageIds: List<MessageId>,
         toLabel: LabelId
-    ): Either<DataError.Local, Unit>
+    ): Either<DataError, Unit>
 
     /**
      * Mark the messages with the given [messageIds] as Starred
      */
-    suspend fun starMessages(userId: UserId, messageIds: List<MessageId>): Either<DataError.Local, Unit>
+    suspend fun starMessages(userId: UserId, messageIds: List<MessageId>): Either<DataError, Unit>
 
     /**
      * MArk the messages with the given [messageIds] as UnStarred
      */
-    suspend fun unStarMessages(userId: UserId, messageIds: List<MessageId>): Either<DataError.Local, Unit>
+    suspend fun unStarMessages(userId: UserId, messageIds: List<MessageId>): Either<DataError, Unit>
 
     /**
      * Set the messages with the given [messageIds] as unread
      */
-    suspend fun markUnread(userId: UserId, messageIds: List<MessageId>): Either<DataError.Local, Unit>
+    suspend fun markUnread(userId: UserId, messageIds: List<MessageId>): Either<DataError, Unit>
 
     /**
      * Set the messages with the given [messageIds] as read
      */
-    suspend fun markRead(userId: UserId, messageIds: List<MessageId>): Either<DataError.Local, Unit>
+    suspend fun markRead(userId: UserId, messageIds: List<MessageId>): Either<DataError, Unit>
 
     suspend fun isMessageRead(userId: UserId, messageId: MessageId): Either<DataError.Local, Boolean>
 
@@ -165,5 +165,5 @@ interface MessageRepository {
         selectedLabels: List<LabelId>,
         partiallySelectedLabels: List<LabelId>,
         shouldArchive: Boolean
-    ): Either<DataError.Local, Unit>
+    ): Either<DataError, Unit>
 }

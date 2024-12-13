@@ -18,8 +18,14 @@
 
 package ch.protonmail.android.mailcontact.data.usecase
 
+import arrow.core.Either
+import arrow.core.left
+import arrow.core.right
+import ch.protonmail.android.mailcommon.datarust.mapper.toDataError
+import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
 import uniffi.proton_mail_uniffi.ContactsLiveQueryCallback
+import uniffi.proton_mail_uniffi.WatchContactListResult
 import uniffi.proton_mail_uniffi.WatchedContactList
 import uniffi.proton_mail_uniffi.watchContactList
 import javax.inject.Inject
@@ -29,6 +35,10 @@ class CreateRustContactWatcher @Inject constructor() {
     suspend operator fun invoke(
         session: MailUserSessionWrapper,
         callback: ContactsLiveQueryCallback
-    ): WatchedContactList = watchContactList(session.getRustUserSession(), callback)
+    ): Either<DataError, WatchedContactList> =
+        when (val result = watchContactList(session.getRustUserSession(), callback)) {
+            is WatchContactListResult.Error -> result.v1.toDataError().left()
+            is WatchContactListResult.Ok -> result.v1.right()
+        }
 
 }

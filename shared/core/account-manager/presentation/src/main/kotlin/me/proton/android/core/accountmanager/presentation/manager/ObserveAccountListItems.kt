@@ -27,6 +27,7 @@ import me.proton.android.core.accountmanager.presentation.switcher.AccountItem
 import me.proton.android.core.accountmanager.presentation.switcher.AccountListItem
 import me.proton.core.util.kotlin.takeIfNotBlank
 import uniffi.proton_mail_uniffi.MailSession
+import uniffi.proton_mail_uniffi.MailSessionGetPrimaryAccountResult
 import javax.inject.Inject
 
 class ObserveAccountListItems @Inject constructor(
@@ -36,7 +37,10 @@ class ObserveAccountListItems @Inject constructor(
 ) {
 
     suspend operator fun invoke(): Flow<List<AccountListItem>> = observeCoreAccounts().map { accounts ->
-        val primaryStoredAccount = mailSessionInterface.getPrimaryAccount()
+        val primaryStoredAccount = when (val result = mailSessionInterface.getPrimaryAccount()) {
+            is MailSessionGetPrimaryAccountResult.Error -> null
+            is MailSessionGetPrimaryAccountResult.Ok -> result.v1
+        }
         accounts.map { account ->
             val accountName = account.displayName?.takeIfNotBlank() ?: account.nameOrAddress
             val avatarItem = getAccountAvatarItem(account.userId)

@@ -27,8 +27,9 @@ import me.proton.core.network.data.di.BaseProtonApiUrl
 import okhttp3.HttpUrl
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.ApiConfig
-import uniffi.proton_mail_uniffi.MailSession
+import uniffi.proton_mail_uniffi.CreateMailSessionResult
 import uniffi.proton_mail_uniffi.MailSessionParams
+import uniffi.proton_mail_uniffi.createMailSession
 import javax.inject.Inject
 
 class InitRustCommonLibrary @Inject constructor(
@@ -59,15 +60,18 @@ class InitRustCommonLibrary @Inject constructor(
         )
         Timber.d("rust-session: Initializing the Rust Lib with $sessionParams")
 
-        val mailSession = MailSession.create(
-            sessionParams,
-            OsKeyChainMock(context),
-            null
-        )
-        Timber.v("rust-session: Mail session created! (hash: ${mailSession.hashCode()})")
-        Timber.v("rust-session: Storing mail session to In Memory Session Repository...")
 
-        mailSessionRepository.setMailSession(mailSession)
+        when (val result = createMailSession(sessionParams, OsKeyChainMock(context), null)) {
+            is CreateMailSessionResult.Error -> {
+                Timber.e("rust-session: Critical error! Failed creating Mail session. Reason: ${result.v1}")
+            }
+            is CreateMailSessionResult.Ok -> {
+                Timber.v("rust-session: Mail session created! (hash: ${result.v1.hashCode()})")
+                Timber.v("rust-session: Storing mail session to In Memory Session Repository...")
+
+                mailSessionRepository.setMailSession(result.v1)
+            }
+        }
 
     }
 

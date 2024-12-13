@@ -28,25 +28,27 @@ sealed interface DataError {
      */
     sealed interface Local : DataError {
 
-        object DecryptionError : Local
+        data object DecryptionError : Local
 
-        object EncryptionError : Local
+        data object EncryptionError : Local
 
-        object NoDataCached : Local
+        data object NoDataCached : Local
 
-        object NoUserSession : Local
+        data object NoUserSession : Local
 
-        object OutOfMemory : Local
+        data object OutOfMemory : Local
 
-        object FailedToStoreFile : Local
+        data object FailedToStoreFile : Local
 
-        object FailedToDeleteFile : Local
+        data object FailedToDeleteFile : Local
 
-        object DeletingFailed : Local
+        data object DeletingFailed : Local
 
-        object DbWriteFailed : Local
+        data object DbWriteFailed : Local
 
-        object UnsupportedOperation : Local
+        data object UnsupportedOperation : Local
+
+        data object SaveDraftError : Local
 
         /**
          * This object is not meant to be actively used.
@@ -81,8 +83,6 @@ sealed interface DataError {
          * is not and to allow dedicated handling to be put in place.
          */
         object Unknown : Remote
-
-        object CreateDraftRequestNotPerformed : Remote
     }
 
     object AddressNotFound : DataError

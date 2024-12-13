@@ -18,9 +18,15 @@
 
 package ch.protonmail.android.mailconversation.data.usecase
 
+import arrow.core.Either
+import arrow.core.left
+import arrow.core.right
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalConversationId
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelAsAction
+import ch.protonmail.android.mailcommon.datarust.mapper.toDataError
+import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailmessage.data.wrapper.MailboxWrapper
+import uniffi.proton_mail_uniffi.AvailableLabelAsActionsForConversationsResult
+import uniffi.proton_mail_uniffi.LabelAsAction
 import uniffi.proton_mail_uniffi.availableLabelAsActionsForConversations
 import javax.inject.Inject
 
@@ -29,5 +35,9 @@ class GetRustConversationLabelAsActions @Inject constructor() {
     suspend operator fun invoke(
         mailbox: MailboxWrapper,
         conversationId: List<LocalConversationId>
-    ): List<LocalLabelAsAction> = availableLabelAsActionsForConversations(mailbox.getRustMailbox(), conversationId)
+    ): Either<DataError, List<LabelAsAction>> =
+        when (val result = availableLabelAsActionsForConversations(mailbox.getRustMailbox(), conversationId)) {
+            is AvailableLabelAsActionsForConversationsResult.Error -> result.v1.toDataError().left()
+            is AvailableLabelAsActionsForConversationsResult.Ok -> result.v1.right()
+        }
 }

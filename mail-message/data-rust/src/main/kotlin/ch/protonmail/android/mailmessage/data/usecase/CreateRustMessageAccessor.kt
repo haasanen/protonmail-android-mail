@@ -18,13 +18,28 @@
 
 package ch.protonmail.android.mailmessage.data.usecase
 
+import arrow.core.Either
+import arrow.core.left
+import arrow.core.right
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageId
+import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageMetadata
+import ch.protonmail.android.mailcommon.datarust.mapper.toDataError
+import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
+import uniffi.proton_mail_uniffi.MessageResult
 import uniffi.proton_mail_uniffi.message
 import javax.inject.Inject
 
 class CreateRustMessageAccessor @Inject constructor() {
 
-    suspend operator fun invoke(session: MailUserSessionWrapper, messageId: LocalMessageId) =
-        message(session.getRustUserSession(), messageId)
+    suspend operator fun invoke(
+        session: MailUserSessionWrapper,
+        messageId: LocalMessageId
+    ): Either<DataError, LocalMessageMetadata> = when (val result = message(session.getRustUserSession(), messageId)) {
+        is MessageResult.Error -> result.v1.toDataError().left()
+        is MessageResult.Ok -> when (val message = result.v1) {
+            null -> DataError.Local.NoDataCached.left()
+            else -> message.right()
+        }
+    }
 }

@@ -21,7 +21,6 @@ package ch.protonmail.android.mailconversation.data.local
 import arrow.core.Either
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalConversation
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalConversationId
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelAsAction
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailmessage.data.model.LocalConversationMessages
@@ -30,6 +29,7 @@ import kotlinx.coroutines.flow.Flow
 import me.proton.core.domain.entity.UserId
 import uniffi.proton_mail_uniffi.AllBottomBarMessageActions
 import uniffi.proton_mail_uniffi.ConversationAvailableActions
+import uniffi.proton_mail_uniffi.LabelAsAction
 import uniffi.proton_mail_uniffi.MoveAction
 
 interface RustConversationDataSource {
@@ -76,25 +76,25 @@ interface RustConversationDataSource {
         userId: UserId,
         labelId: LocalLabelId,
         conversationIds: List<LocalConversationId>
-    ): ConversationAvailableActions?
+    ): Either<DataError, ConversationAvailableActions>
 
     suspend fun getAvailableSystemMoveToActions(
         userId: UserId,
         labelId: LocalLabelId,
         conversationIds: List<LocalConversationId>
-    ): List<MoveAction.SystemFolder>?
+    ): Either<DataError, List<MoveAction.SystemFolder>>
 
     suspend fun getAvailableLabelAsActions(
         userId: UserId,
         labelId: LocalLabelId,
         conversationIds: List<LocalConversationId>
-    ): List<LocalLabelAsAction>?
+    ): Either<DataError, List<LabelAsAction>>
 
     suspend fun getAllAvailableBottomBarActions(
         userId: UserId,
         labelId: LocalLabelId,
         conversationIds: List<LocalConversationId>
-    ): Either<DataError.Local, AllBottomBarMessageActions>
+    ): Either<DataError, AllBottomBarMessageActions>
 
     suspend fun labelConversations(
         userId: UserId,
@@ -102,5 +102,5 @@ interface RustConversationDataSource {
         selectedLabelIds: List<LocalLabelId>,
         partiallySelectedLabelIds: List<LocalLabelId>,
         shouldArchive: Boolean
-    ): Either<DataError.Local, Unit>
+    ): Either<DataError, Unit>
 }

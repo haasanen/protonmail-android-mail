@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.mailconversation.data.local
 
+import arrow.core.getOrElse
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalConversation
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
 import ch.protonmail.android.mailconversation.data.usecase.CreateRustConversationPaginator
@@ -77,7 +78,7 @@ class RustConversationsQueryImpl @Inject constructor(
             PageToLoad.First -> paginatorState?.paginatorWrapper?.nextPage()
             PageToLoad.Next -> paginatorState?.paginatorWrapper?.nextPage()
             PageToLoad.All -> paginatorState?.paginatorWrapper?.reload()
-        }
+        }?.getOrElse { emptyList() }
 
         Timber.v("rust-conversation-query: init value for conversation is $conversations")
         return conversations
@@ -88,7 +89,7 @@ class RustConversationsQueryImpl @Inject constructor(
         labelId: LocalLabelId,
         unread: Boolean,
         session: MailUserSessionWrapper
-    ) = paginatorMutex.withLock {
+    ) = paginatorMutex.withLock<Unit> {
         if (!shouldInitPaginator(userId, labelId, unread)) {
             Timber.v("rust-conversation-query: reusing existing paginator instance...")
             return
@@ -96,12 +97,16 @@ class RustConversationsQueryImpl @Inject constructor(
 
         Timber.v("rust-conversation-query: [destroy and] initialize paginator instance...")
         destroy()
-        paginatorState = PaginatorState(
-            createRustConversationPaginator(session, labelId, unread, conversationsUpdatedCallback),
-            userId,
-            labelId,
-            unread
-        )
+
+        createRustConversationPaginator(session, labelId, unread, conversationsUpdatedCallback)
+            .onRight {
+                paginatorState = PaginatorState(
+                    paginatorWrapper = it,
+                    userId = userId,
+                    labelId = labelId,
+                    unread = unread
+                )
+            }
     }
 
     private fun shouldInitPaginator(

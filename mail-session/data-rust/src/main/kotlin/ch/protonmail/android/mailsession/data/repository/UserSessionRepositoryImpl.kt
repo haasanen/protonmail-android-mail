@@ -20,7 +20,6 @@ package ch.protonmail.android.mailsession.data.repository
 
 import arrow.core.Either
 import arrow.core.left
-import arrow.core.right
 import ch.protonmail.android.mailsession.data.mapper.toAccount
 import ch.protonmail.android.mailsession.data.mapper.toLocalUserId
 import ch.protonmail.android.mailsession.domain.model.Account
@@ -57,7 +56,7 @@ class UserSessionRepositoryImpl @Inject constructor(
 
     override fun observePrimaryUserId(): Flow<UserId?> = observeAccounts()
         .map { list ->
-            val primaryUserId = mailSession.getPrimaryAccount()?.userId()
+            val primaryUserId = mailSession.getPrimaryAccount().getOrNull()?.userId()
             list.firstOrNull { it.state == AccountState.Ready && primaryUserId == it.userId.toLocalUserId() }
         }
         .map { account -> account?.userId }
@@ -65,12 +64,12 @@ class UserSessionRepositoryImpl @Inject constructor(
 
     override fun observePrimaryAccount(): Flow<Account?> = observeAccounts()
         .map { list ->
-            val primaryUserId = mailSession.getPrimaryAccount()?.userId()
+            val primaryUserId = mailSession.getPrimaryAccount().getOrNull()?.userId()
             list.firstOrNull { it.state == AccountState.Ready && primaryUserId == it.userId.toLocalUserId() }
         }
         .distinctUntilChanged()
 
-    override suspend fun getAccount(userId: UserId): Account? = getStoredAccount(userId)?.toAccount()
+    override suspend fun getAccount(userId: UserId): Account? = getStoredAccount(userId).getOrNull()?.toAccount()
 
     override suspend fun deleteAccount(userId: UserId) {
         mailSession.deleteAccount(userId.toLocalUserId())
@@ -89,10 +88,10 @@ class UserSessionRepositoryImpl @Inject constructor(
         userSessionCache[userId]?.let { return it }
 
         // Create and store session if not in cache
-        val session = getStoredAccount(userId)?.let { account ->
-            mailSession.getAccountSessions(account).firstOrNull()
+        val session = getStoredAccount(userId).getOrNull()?.let { account ->
+            mailSession.getAccountSessions(account).getOrNull()?.firstOrNull()
         }
-        val userContext = session?.let { mailSession.userContextFromSession(it) }
+        val userContext = session?.let { mailSession.userContextFromSession(it) }?.getOrNull()
         if (userContext != null) {
             userSessionCache[userId] = userContext
         }
@@ -103,17 +102,12 @@ class UserSessionRepositoryImpl @Inject constructor(
     override suspend fun forkSession(userId: UserId): Either<SessionError, ForkedSessionId> {
         val userSession = getUserSession(userId) ?: return SessionError.Local.Unknown.left()
 
-        runCatching {
-            userSession.fork()
-        }.fold(
-            onSuccess = { sessionId ->
-                return ForkedSessionId(sessionId).right()
-            },
-            onFailure = { throwable ->
-                Timber.e(throwable, "rust-session: Forking session failed")
-                return SessionError.Local.Unknown.left()
+        return userSession.fork()
+            .map { sessionId -> ForkedSessionId(sessionId) }
+            .mapLeft {
+                Timber.e("rust-session: Forking session failed $it")
+                SessionError.Local.Unknown
             }
-        )
     }
 
     override suspend fun setPrimaryAccount(userId: UserId) {

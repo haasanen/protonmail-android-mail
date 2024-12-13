@@ -150,7 +150,8 @@ class GetDecryptedDraftFieldsTest {
     }
 
     private fun expectGetLocalMessageFailure(userId: UserId, messageId: MessageId) {
-        coEvery { messageRepository.getLocalMessageWithBody(userId, messageId) } returns null
+        coEvery { messageRepository.getLocalMessageWithBody(userId, messageId) } returns
+            DataError.Local.NoDataCached.left()
     }
 
     private fun expectedGetRefreshedMessageError(userId: UserId, messageId: MessageId) {

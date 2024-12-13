@@ -38,7 +38,7 @@ class GetLocalMessageDecrypted @Inject constructor(
 
     suspend operator fun invoke(userId: UserId, messageId: MessageId): Either<DataError, MessageWithDecryptedBody> {
         Timber.d("Get decrypted local message data for $userId $messageId")
-        val messageWithBody = messageRepository.getLocalMessageWithBody(userId, messageId)
+        val messageWithBody = messageRepository.getLocalMessageWithBody(userId, messageId).getOrNull()
         if (messageWithBody == null) {
             Timber.e("Error getting local message decrypted")
             return DataError.Local.NoDataCached.left()

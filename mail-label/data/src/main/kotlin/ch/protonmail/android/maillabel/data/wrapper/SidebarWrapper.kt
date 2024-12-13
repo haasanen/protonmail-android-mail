@@ -18,25 +18,48 @@
 
 package ch.protonmail.android.maillabel.data.wrapper
 
-import java.lang.ref.WeakReference
+import arrow.core.Either
+import arrow.core.left
+import arrow.core.right
+import ch.protonmail.android.mailcommon.datarust.mapper.toDataError
+import ch.protonmail.android.mailcommon.domain.model.DataError
 import uniffi.proton_mail_uniffi.LabelType
 import uniffi.proton_mail_uniffi.LiveQueryCallback
 import uniffi.proton_mail_uniffi.Sidebar
+import uniffi.proton_mail_uniffi.SidebarAllCustomFoldersResult
 import uniffi.proton_mail_uniffi.SidebarCustomFolder
 import uniffi.proton_mail_uniffi.SidebarCustomLabel
+import uniffi.proton_mail_uniffi.SidebarCustomLabelsResult
 import uniffi.proton_mail_uniffi.SidebarSystemLabel
+import uniffi.proton_mail_uniffi.SidebarSystemLabelsResult
+import uniffi.proton_mail_uniffi.SidebarWatchLabelsResult
 import uniffi.proton_mail_uniffi.WatchHandle
 
 class SidebarWrapper(private val sidebar: Sidebar) {
 
-    suspend fun watchLabels(system: LabelType, callback: LiveQueryCallback): WeakReference<WatchHandle> =
-        WeakReference(sidebar.watchLabels(system, callback))
+    suspend fun watchLabels(system: LabelType, callback: LiveQueryCallback): Either<DataError, WatchHandle> =
+        when (val result = sidebar.watchLabels(system, callback)) {
+            is SidebarWatchLabelsResult.Error -> result.v1.toDataError().left()
+            is SidebarWatchLabelsResult.Ok -> result.v1.right()
+        }
 
-    suspend fun systemLabels(): List<SidebarSystemLabel> = sidebar.systemLabels()
+    suspend fun systemLabels(): Either<DataError, List<SidebarSystemLabel>> =
+        when (val result = sidebar.systemLabels()) {
+            is SidebarSystemLabelsResult.Error -> result.v1.toDataError().left()
+            is SidebarSystemLabelsResult.Ok -> result.v1.right()
+        }
 
-    suspend fun customLabels(): List<SidebarCustomLabel> = sidebar.customLabels()
+    suspend fun customLabels(): Either<DataError, List<SidebarCustomLabel>> =
+        when (val result = sidebar.customLabels()) {
+            is SidebarCustomLabelsResult.Error -> result.v1.toDataError().left()
+            is SidebarCustomLabelsResult.Ok -> result.v1.right()
+        }
 
-    suspend fun allCustomFolders(): List<SidebarCustomFolder> = sidebar.allCustomFolders()
+    suspend fun allCustomFolders(): Either<DataError, List<SidebarCustomFolder>> =
+        when (val result = sidebar.allCustomFolders()) {
+            is SidebarAllCustomFoldersResult.Error -> result.v1.toDataError().left()
+            is SidebarAllCustomFoldersResult.Ok -> result.v1.right()
+        }
 
     fun destroy() {
         sidebar.destroy()

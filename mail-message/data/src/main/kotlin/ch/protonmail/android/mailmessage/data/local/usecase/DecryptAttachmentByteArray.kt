@@ -65,8 +65,9 @@ class DecryptAttachmentByteArray @Inject constructor(
         userId: UserId,
         messageId: MessageId
     ): Either<AttachmentDecryptionError, MessageWithBody> {
-        return messageRepository.getLocalMessageWithBody(userId, messageId)?.right()
-            ?: AttachmentDecryptionError.MessageBodyNotFound.left()
+        return messageRepository.getLocalMessageWithBody(userId, messageId).mapLeft {
+            AttachmentDecryptionError.MessageBodyNotFound
+        }
     }
 
     private suspend fun getUserAddress(

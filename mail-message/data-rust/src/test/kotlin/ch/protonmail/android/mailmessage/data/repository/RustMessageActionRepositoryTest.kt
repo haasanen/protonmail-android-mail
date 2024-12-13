@@ -82,7 +82,7 @@ class RustMessageActionRepositoryTest {
                 labelId.toLocalLabelId(),
                 messageIds.map { it.toLocalMessageId() }
             )
-        } returns rustAvailableActions
+        } returns rustAvailableActions.right()
 
         // When
         val result = repository.getAvailableActions(userId, labelId, messageIds)
@@ -103,20 +103,20 @@ class RustMessageActionRepositoryTest {
         val userId = UserIdTestData.userId
         val labelId = SystemLabelId.Inbox.labelId
         val messageIds = listOf(MessageId("1"))
-
+        val expectedError = DataError.Local.NoDataCached
         coEvery {
             rustMessageDataSource.getAvailableActions(
                 userId,
                 labelId.toLocalLabelId(),
                 messageIds.map { it.toLocalMessageId() }
             )
-        } returns null
+        } returns expectedError.left()
 
         // When
         val result = repository.getAvailableActions(userId, labelId, messageIds)
 
         // Then
-        assertEquals(DataError.Local.Unknown.left(), result)
+        assertEquals(expectedError.left(), result)
     }
 
     @Test
@@ -140,7 +140,7 @@ class RustMessageActionRepositoryTest {
                 labelId.toLocalLabelId(),
                 messageIds.map { it.toLocalMessageId() }
             )
-        } returns rustMoveToActions
+        } returns rustMoveToActions.right()
 
         // When
         val result = repository.getSystemMoveToLocations(userId, labelId, messageIds)
@@ -159,20 +159,20 @@ class RustMessageActionRepositoryTest {
         val userId = UserIdTestData.userId
         val labelId = SystemLabelId.Inbox.labelId
         val messageIds = listOf(MessageId("1"))
-
+        val expectedError = DataError.Local.NoDataCached
         coEvery {
             rustMessageDataSource.getAvailableSystemMoveToActions(
                 userId,
                 labelId.toLocalLabelId(),
                 messageIds.map { it.toLocalMessageId() }
             )
-        } returns null
+        } returns expectedError.left()
 
         // When
         val result = repository.getSystemMoveToLocations(userId, labelId, messageIds)
 
         // Then
-        assertEquals(DataError.Local.Unknown.left(), result)
+        assertEquals(expectedError.left(), result)
     }
 
     @Test
@@ -193,7 +193,7 @@ class RustMessageActionRepositoryTest {
                 labelId.toLocalLabelId(),
                 messageIds.map { it.toLocalMessageId() }
             )
-        } returns rustLabelAsActions
+        } returns rustLabelAsActions.right()
 
         // When
         val result = repository.getAvailableLabelAsActions(userId, labelId, messageIds)
@@ -209,6 +209,7 @@ class RustMessageActionRepositoryTest {
         val userId = UserIdTestData.userId
         val labelId = SystemLabelId.Inbox.labelId
         val messageIds = listOf(MessageId("1"))
+        val expectedError = DataError.Local.NoDataCached
 
         coEvery {
             rustMessageDataSource.getAvailableLabelAsActions(
@@ -216,13 +217,13 @@ class RustMessageActionRepositoryTest {
                 labelId.toLocalLabelId(),
                 messageIds.map { it.toLocalMessageId() }
             )
-        } returns null
+        } returns expectedError.left()
 
         // When
         val result = repository.getAvailableLabelAsActions(userId, labelId, messageIds)
 
         // Then
-        assertEquals(DataError.Local.Unknown.left(), result)
+        assertEquals(expectedError.left(), result)
     }
 
     @Test

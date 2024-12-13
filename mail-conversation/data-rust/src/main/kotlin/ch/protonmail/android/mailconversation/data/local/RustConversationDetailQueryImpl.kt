@@ -81,10 +81,13 @@ class RustConversationDetailQueryImpl @Inject constructor(
                     }
                     val mailbox = rustMailboxFactory.create(userId, labelId).getOrNull()
 
-                    if (mailbox != null && currentConversationId != null) {
-                        val conversationAndMessages = getRustConversationMessages(mailbox, currentConversationId!!)
+                    if (mailbox == null || currentConversationId == null) {
+                        Timber.w("rust-conversation-messages: Failed to update conversation messages!")
+                        return@withLock
+                    }
 
-                        conversationAndMessages?.let {
+                    getRustConversationMessages(mailbox, currentConversationId!!)
+                        .onRight { conversationAndMessages ->
                             conversationMutableStatusFlow.value = conversationAndMessages.conversation
 
                             val messages: List<LocalMessageMetadata> = conversationAndMessages.messages
@@ -93,12 +96,10 @@ class RustConversationDetailQueryImpl @Inject constructor(
                             conversationMessagesMutableStatusFlow.value = LocalConversationMessages(
                                 messageIdToOpen, messages
                             )
-                        } ?: Timber.w("rust-conversation-messages: Failed to update conversation messages!")
-
-
-                    } else {
-                        Timber.w("rust-conversation-messages: Failed to update conversation messages!")
-                    }
+                        }
+                        .onLeft {
+                            Timber.w("rust-conversation-messages: Failed to update conversation messages!")
+                        }
                 }
             }
         }
@@ -145,9 +146,8 @@ class RustConversationDetailQueryImpl @Inject constructor(
 
                     currentUserId = userId
                     currentLabelId = labelId
-                    conversationWatcher = createRustConversationWatcher(
-                        mailbox, conversationId, conversationUpdatedCallback
-                    )
+                    createRustConversationWatcher(mailbox, conversationId, conversationUpdatedCallback)
+                        .onRight { conversationWatcher = it }
                     val conversation = conversationWatcher?.get()?.conversation ?: run {
                         Timber.w(
                             "rust-conversation-detail-query: init value for " +

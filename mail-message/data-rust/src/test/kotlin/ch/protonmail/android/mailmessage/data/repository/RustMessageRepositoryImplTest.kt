@@ -33,7 +33,6 @@ import ch.protonmail.android.mailmessage.data.mapper.toLocalMessageId
 import ch.protonmail.android.mailmessage.data.mapper.toMessage
 import ch.protonmail.android.mailmessage.data.mapper.toMessageBody
 import ch.protonmail.android.mailmessage.data.mapper.toMessageId
-import ch.protonmail.android.mailmessage.data.wrapper.DecryptedMessageWrapper
 import ch.protonmail.android.mailmessage.domain.model.SenderImage
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.testdata.message.rust.LocalMessageIdSample
@@ -41,7 +40,6 @@ import ch.protonmail.android.testdata.message.rust.LocalMessageTestData
 import ch.protonmail.android.testdata.user.UserIdTestData
 import io.mockk.coEvery
 import io.mockk.coVerify
-import io.mockk.every
 import io.mockk.mockk
 import junit.framework.TestCase.assertNull
 import kotlinx.coroutines.test.runTest
@@ -132,10 +130,6 @@ class RustMessageRepositoryImplTest {
         val localMessage = LocalMessageTestData.AugWeatherForecast
         val bodyOutput = BodyOutput("message body", false, 0uL, 0uL)
         val localMimeType = LocalMimeType.TEXT_PLAIN
-        val localMessageBody = mockk<DecryptedMessageWrapper> {
-            coEvery { body(any()) } returns bodyOutput
-            every { mimeType() } returns localMimeType
-        }
         val expectedMessageWithBody = bodyOutput.toMessageBody(messageId, localMimeType)
         coEvery { rustMessageDataSource.getMessage(userId, messageId.toLocalMessageId()) } returns localMessage
         coEvery {
@@ -143,7 +137,7 @@ class RustMessageRepositoryImplTest {
                 userId,
                 messageId.toLocalMessageId()
             )
-        } returns localMessageBody
+        } returns expectedMessageWithBody.right()
         // When
         val result = repository.getMessageWithBody(userId, messageId).getOrNull()
 

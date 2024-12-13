@@ -1,0 +1,69 @@
+/*
+ * Copyright (c) 2022 Proton Technologies AG
+ * This file is part of Proton Technologies AG and Proton Mail.
+ *
+ * Proton Mail is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Proton Mail is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+package ch.protonmail.android.mailcommon.datarust.mapper
+
+import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailcommon.domain.model.NetworkError
+import uniffi.proton_mail_uniffi.ActionError
+import uniffi.proton_mail_uniffi.ActionErrorReason
+import uniffi.proton_mail_uniffi.DraftError
+import uniffi.proton_mail_uniffi.DraftErrorReason
+import uniffi.proton_mail_uniffi.EventError
+import uniffi.proton_mail_uniffi.EventErrorReason
+import uniffi.proton_mail_uniffi.ProtonError
+import uniffi.proton_mail_uniffi.SessionErrorReason
+import uniffi.proton_mail_uniffi.UserSessionError
+
+fun UserSessionError.toDataError(): DataError = when (this) {
+    is UserSessionError.Other -> this.v1.toDataError()
+    is UserSessionError.Reason -> when (this.v1) {
+        SessionErrorReason.UNKNOWN_LABEL,
+        SessionErrorReason.DUPLICATE_CONTEXT -> DataError.Local.Unknown
+    }
+}
+
+fun ActionError.toDataError(): DataError = when (this) {
+    is ActionError.Other -> this.v1.toDataError()
+    is ActionError.Reason -> when (v1) {
+        ActionErrorReason.UNKNOWN_LABEL,
+        ActionErrorReason.UNKNOWN_MESSAGE,
+        ActionErrorReason.UNKNOWN_CONTENT_ID -> DataError.Local.NoDataCached
+    }
+}
+
+fun DraftError.toDataError(): DataError = when (this) {
+    is DraftError.Other -> this.v1.toDataError()
+    is DraftError.Reason -> when (this.v1) {
+        DraftErrorReason.UNKNOWN_MIME_TYPE -> DataError.Local.SaveDraftError
+    }
+}
+
+fun EventError.toDataError(): DataError = when (this) {
+    is EventError.Other -> this.v1.toDataError()
+    is EventError.Reason -> when (this.v1) {
+        EventErrorReason.PLACEHOLDER -> DataError.Local.Unknown
+    }
+}
+private fun ProtonError.toDataError(): DataError = when (this) {
+    ProtonError.Network -> DataError.Remote.Http(NetworkError.NoNetwork)
+    is ProtonError.OtherReason -> DataError.Local.Unknown
+    is ProtonError.ServerError -> DataError.Remote.Http(NetworkError.ServerError)
+    ProtonError.SessionExpired -> DataError.Remote.Http(NetworkError.Unauthorized)
+    is ProtonError.Unexpected -> DataError.Local.Unknown
+}

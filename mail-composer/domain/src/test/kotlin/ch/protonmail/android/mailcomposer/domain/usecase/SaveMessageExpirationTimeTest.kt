@@ -130,13 +130,13 @@ class SaveMessageExpirationTimeTest {
         coEvery { getLocalDraft(userId, messageId, senderEmail) } returns MessageWithBodySample.EmptyDraft.right()
         coEvery {
             messageRepository.getLocalMessageWithBody(userId, MessageWithBodySample.EmptyDraft.message.messageId)
-        } returns MessageWithBodySample.EmptyDraft
+        } returns MessageWithBodySample.EmptyDraft.right()
     }
 
     private fun expectDraftDoesNotExist() {
         coEvery { getLocalDraft(userId, messageId, senderEmail) } returns MessageWithBodySample.EmptyDraft.right()
         coEvery {
             messageRepository.getLocalMessageWithBody(userId, MessageWithBodySample.EmptyDraft.message.messageId)
-        } returns null
+        } returns DataError.Local.NoDataCached.left()
     }
 }

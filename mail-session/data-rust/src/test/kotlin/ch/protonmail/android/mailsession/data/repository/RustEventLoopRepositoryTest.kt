@@ -1,5 +1,6 @@
 package ch.protonmail.android.mailsession.data.repository
 
+import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
@@ -26,7 +27,9 @@ class RustEventLoopRepositoryTest {
     fun `triggers event loop for the given user's session`() = runTest {
         // Given
         val userId = UserIdSample.Primary
-        val mailSession = mockk<MailUserSessionWrapper>(relaxUnitFun = true)
+        val mailSession = mockk<MailUserSessionWrapper>(relaxUnitFun = true) {
+            coEvery { this@mockk.pollEvents() } returns Unit.right()
+        }
         coEvery { userSessionRepository.getUserSession(userId) } returns mailSession
 
         // When

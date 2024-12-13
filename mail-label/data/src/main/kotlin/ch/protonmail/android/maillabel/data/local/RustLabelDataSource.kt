@@ -21,7 +21,6 @@ package ch.protonmail.android.maillabel.data.local
 import java.lang.ref.WeakReference
 import arrow.core.Either
 import arrow.core.left
-import arrow.core.right
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.maillabel.data.MailLabelRustCoroutineScope
@@ -79,7 +78,7 @@ class RustLabelDataSource @Inject constructor(
     private val customLabelsUpdatedCallback = object : LiveQueryCallback {
         override fun onUpdate() {
             coroutineScope.launch {
-                mutableMessageLabelsFlow.value = sidebarWithUserId?.sidebar?.customLabels()
+                mutableMessageLabelsFlow.value = sidebarWithUserId?.sidebar?.customLabels()?.getOrNull()
                 Timber.v("rust-label: message labels updated: ${mutableMessageLabelsFlow.value}")
             }
         }
@@ -88,7 +87,7 @@ class RustLabelDataSource @Inject constructor(
     private val foldersUpdatedCallback = object : LiveQueryCallback {
         override fun onUpdate() {
             coroutineScope.launch {
-                mutableMessageFoldersFlow.value = sidebarWithUserId?.sidebar?.allCustomFolders()
+                mutableMessageFoldersFlow.value = sidebarWithUserId?.sidebar?.allCustomFolders()?.getOrNull()
                 Timber.v("rust-label: message folders updated: ${mutableMessageFoldersFlow.value}")
             }
         }
@@ -97,7 +96,7 @@ class RustLabelDataSource @Inject constructor(
     private val systemLabelsUpdatedCallback = object : LiveQueryCallback {
         override fun onUpdate() {
             coroutineScope.launch {
-                mutableSystemLabelsFlow.value = sidebarWithUserId?.sidebar?.systemLabels()
+                mutableSystemLabelsFlow.value = sidebarWithUserId?.sidebar?.systemLabels()?.getOrNull()
                 Timber.v("rust-label: system labels updated: ${mutableSystemLabelsFlow.value}")
             }
         }
@@ -136,7 +135,7 @@ class RustLabelDataSource @Inject constructor(
             Timber.e("rust-label: trying to get all mail label id with null session.")
             return DataError.Local.NoDataCached.left()
         }
-        return rustGetAllMailLabelId(session).right()
+        return rustGetAllMailLabelId(session)
     }
 
     private fun shouldInitSystemLabelWatcher(userId: UserId) =
@@ -154,10 +153,12 @@ class RustLabelDataSource @Inject constructor(
 
             val sidebar = getRustSidebarInstance(userId) ?: return@launch
 
-            messageLabelsWatchHandle = sidebar.watchLabels(LabelType.LABEL, customLabelsUpdatedCallback)
+            sidebar.watchLabels(LabelType.LABEL, customLabelsUpdatedCallback)
+                .onLeft { Timber.e("rust-label: failed to watch labels! $it") }
+                .onRight { messageLabelsWatchHandle = WeakReference(it) }
 
             Timber.v("rust-label: Setting initial value for labels: ${sidebar.customLabels()}")
-            mutableMessageLabelsFlow.value = sidebar.customLabels()
+            mutableMessageLabelsFlow.value = sidebar.customLabels().getOrNull()
             Timber.d("rust-label: created message labels live query")
         }
     }
@@ -168,10 +169,12 @@ class RustLabelDataSource @Inject constructor(
 
             val sidebar = getRustSidebarInstance(userId) ?: return@launch
 
-            messageFoldersWatchHandle = sidebar.watchLabels(LabelType.FOLDER, foldersUpdatedCallback)
+            sidebar.watchLabels(LabelType.FOLDER, foldersUpdatedCallback)
+                .onLeft { Timber.e("rust-label: failed to watch folders! $it") }
+                .onRight { messageFoldersWatchHandle = WeakReference(it) }
 
             Timber.v("rust-label: Setting initial value for folders: ${sidebar.allCustomFolders()}")
-            mutableMessageFoldersFlow.value = sidebar.allCustomFolders()
+            mutableMessageFoldersFlow.value = sidebar.allCustomFolders().getOrNull()
             Timber.d("rust-label: created message folders live query")
         }
     }
@@ -182,10 +185,12 @@ class RustLabelDataSource @Inject constructor(
 
             val sidebar = getRustSidebarInstance(userId) ?: return@launch
 
-            systemLabelsWatchHandle = sidebar.watchLabels(LabelType.SYSTEM, systemLabelsUpdatedCallback)
+            sidebar.watchLabels(LabelType.SYSTEM, systemLabelsUpdatedCallback)
+                .onLeft { Timber.e("rust-label: failed to watch system labels! $it") }
+                .onRight { systemLabelsWatchHandle = WeakReference(it) }
 
             Timber.v("rust-label: Setting initial value for system folders ${sidebar.systemLabels()}")
-            mutableSystemLabelsFlow.value = sidebar.systemLabels()
+            mutableSystemLabelsFlow.value = sidebar.systemLabels().getOrNull()
             Timber.d("rust-label: created systemLabelsLiveQuery")
         }
     }

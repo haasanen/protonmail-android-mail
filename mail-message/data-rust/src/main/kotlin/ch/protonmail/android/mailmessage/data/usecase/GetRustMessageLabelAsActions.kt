@@ -18,14 +18,26 @@
 
 package ch.protonmail.android.mailmessage.data.usecase
 
+import arrow.core.Either
+import arrow.core.left
+import arrow.core.right
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelAsAction
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageId
+import ch.protonmail.android.mailcommon.datarust.mapper.toDataError
+import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailmessage.data.wrapper.MailboxWrapper
+import uniffi.proton_mail_uniffi.AvailableLabelAsActionsForMessagesResult
 import uniffi.proton_mail_uniffi.availableLabelAsActionsForMessages
 import javax.inject.Inject
 
 class GetRustMessageLabelAsActions @Inject constructor() {
 
-    suspend operator fun invoke(mailbox: MailboxWrapper, messageIds: List<LocalMessageId>): List<LocalLabelAsAction> =
-        availableLabelAsActionsForMessages(mailbox.getRustMailbox(), messageIds)
+    suspend operator fun invoke(
+        mailbox: MailboxWrapper,
+        messageIds: List<LocalMessageId>
+    ): Either<DataError, List<LocalLabelAsAction>> =
+        when (val result = availableLabelAsActionsForMessages(mailbox.getRustMailbox(), messageIds)) {
+            is AvailableLabelAsActionsForMessagesResult.Error -> result.v1.toDataError().left()
+            is AvailableLabelAsActionsForMessagesResult.Ok -> result.v1.right()
+        }
 }

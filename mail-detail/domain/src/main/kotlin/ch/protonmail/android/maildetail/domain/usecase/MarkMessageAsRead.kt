@@ -29,7 +29,7 @@ class MarkMessageAsRead @Inject constructor(
     private val markMessagesAsRead: MarkMessagesAsRead
 ) {
 
-    suspend operator fun invoke(userId: UserId, messageId: MessageId): Either<DataError.Local, Unit> =
+    suspend operator fun invoke(userId: UserId, messageId: MessageId): Either<DataError, Unit> =
         markMessagesAsRead(userId, listOf(messageId))
 
 }

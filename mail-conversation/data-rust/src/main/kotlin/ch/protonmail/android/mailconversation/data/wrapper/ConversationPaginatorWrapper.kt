@@ -18,14 +18,27 @@
 
 package ch.protonmail.android.mailconversation.data.wrapper
 
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalConversation
+import arrow.core.Either
+import arrow.core.left
+import arrow.core.right
+import ch.protonmail.android.mailcommon.datarust.mapper.toDataError
+import ch.protonmail.android.mailcommon.domain.model.DataError
+import uniffi.proton_mail_uniffi.Conversation
 import uniffi.proton_mail_uniffi.ConversationPaginator
+import uniffi.proton_mail_uniffi.ConversationPaginatorNextPageResult
+import uniffi.proton_mail_uniffi.ConversationPaginatorReloadResult
 
 class ConversationPaginatorWrapper(private val rustPaginator: ConversationPaginator) {
 
-    suspend fun nextPage(): List<LocalConversation> = rustPaginator.nextPage()
+    suspend fun nextPage(): Either<DataError, List<Conversation>> = when (val result = rustPaginator.nextPage()) {
+        is ConversationPaginatorNextPageResult.Error -> result.v1.toDataError().left()
+        is ConversationPaginatorNextPageResult.Ok -> result.v1.right()
+    }
 
-    suspend fun reload(): List<LocalConversation> = rustPaginator.reload()
+    suspend fun reload(): Either<DataError, List<Conversation>> = when (val result = rustPaginator.reload()) {
+        is ConversationPaginatorReloadResult.Error -> result.v1.toDataError().left()
+        is ConversationPaginatorReloadResult.Ok -> result.v1.right()
+    }
 
     fun disconnect() {
         rustPaginator.handle().disconnect()

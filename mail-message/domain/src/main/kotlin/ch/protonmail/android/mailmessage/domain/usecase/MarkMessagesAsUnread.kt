@@ -29,7 +29,7 @@ class MarkMessagesAsUnread @Inject constructor(
     private val messageRepository: MessageRepository
 ) {
 
-    suspend operator fun invoke(userId: UserId, messageIds: List<MessageId>): Either<DataError.Local, Unit> =
+    suspend operator fun invoke(userId: UserId, messageIds: List<MessageId>): Either<DataError, Unit> =
         messageRepository.markUnread(userId, messageIds)
 
 }

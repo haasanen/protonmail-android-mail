@@ -18,11 +18,17 @@
 
 package ch.protonmail.android.mailmessage.data.usecase
 
+import arrow.core.Either
+import arrow.core.left
+import arrow.core.right
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
 import ch.protonmail.android.mailmessage.data.model.PaginatorParams
+import ch.protonmail.android.mailcommon.datarust.mapper.toDataError
+import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailmessage.data.wrapper.MessagePaginatorWrapper
 import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
 import uniffi.proton_mail_uniffi.LiveQueryCallback
+import uniffi.proton_mail_uniffi.PaginateMessagesForLabelResult
 import uniffi.proton_mail_uniffi.PaginatorFilter
 import uniffi.proton_mail_uniffi.paginateMessagesForLabel
 import javax.inject.Inject
@@ -34,11 +40,21 @@ class CreateRustMessagesPaginator @Inject constructor() {
         labelId: LocalLabelId,
         unread: Boolean,
         callback: LiveQueryCallback
-    ): MessagePaginatorWrapper {
+    ): Either<DataError, MessagePaginatorWrapper> {
         val filterParam = if (unread) true else null
-        return MessagePaginatorWrapper(
-            paginateMessagesForLabel(session.getRustUserSession(), labelId, PaginatorFilter(filterParam), callback),
-            PaginatorParams(session.getRustUserSession().userId(), labelId, unread)
-        )
+        return when (
+            val result = paginateMessagesForLabel(
+                session.getRustUserSession(),
+                labelId,
+                PaginatorFilter(filterParam),
+                callback
+            )
+        ) {
+            is PaginateMessagesForLabelResult.Error -> result.v1.toDataError().left()
+            is PaginateMessagesForLabelResult.Ok -> {
+                val params = PaginatorParams(session.getRustUserSession().userId(), labelId, unread)
+                MessagePaginatorWrapper(result.v1, params).right()
+            }
+        }
     }
 }

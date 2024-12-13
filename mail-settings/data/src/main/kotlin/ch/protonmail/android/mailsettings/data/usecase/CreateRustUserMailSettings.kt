@@ -18,13 +18,26 @@
 
 package ch.protonmail.android.mailsettings.data.usecase
 
+import arrow.core.Either
+import arrow.core.left
+import arrow.core.right
+import ch.protonmail.android.mailcommon.datarust.mapper.toDataError
+import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
 import uniffi.proton_mail_uniffi.LiveQueryCallback
+import uniffi.proton_mail_uniffi.SettingsWatcher
+import uniffi.proton_mail_uniffi.WatchMailSettingsResult
 import uniffi.proton_mail_uniffi.watchMailSettings
 import javax.inject.Inject
 
 class CreateRustUserMailSettings @Inject constructor() {
 
-    suspend operator fun invoke(session: MailUserSessionWrapper, callback: LiveQueryCallback) =
-        watchMailSettings(session.getRustUserSession(), callback)
+    suspend operator fun invoke(
+        session: MailUserSessionWrapper,
+        callback: LiveQueryCallback
+    ): Either<DataError, SettingsWatcher> =
+        when (val result = watchMailSettings(session.getRustUserSession(), callback)) {
+            is WatchMailSettingsResult.Error -> result.v1.toDataError().left()
+            is WatchMailSettingsResult.Ok -> result.v1.right()
+        }
 }

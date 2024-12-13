@@ -18,14 +18,26 @@
 
 package ch.protonmail.android.mailconversation.data.usecase
 
+import arrow.core.Either
+import arrow.core.left
+import arrow.core.right
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalConversationId
+import ch.protonmail.android.mailcommon.datarust.mapper.toDataError
+import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailmessage.data.wrapper.MailboxWrapper
+import uniffi.proton_mail_uniffi.AvailableMoveToActionsForConversationsResult
 import uniffi.proton_mail_uniffi.MoveAction
 import uniffi.proton_mail_uniffi.availableMoveToActionsForConversations
 import javax.inject.Inject
 
 class GetRustConversationMoveToActions @Inject constructor() {
 
-    suspend operator fun invoke(mailbox: MailboxWrapper, conversationId: List<LocalConversationId>): List<MoveAction> =
-        availableMoveToActionsForConversations(mailbox.getRustMailbox(), conversationId)
+    suspend operator fun invoke(
+        mailbox: MailboxWrapper,
+        conversationId: List<LocalConversationId>
+    ): Either<DataError, List<MoveAction>> =
+        when (val result = availableMoveToActionsForConversations(mailbox.getRustMailbox(), conversationId)) {
+            is AvailableMoveToActionsForConversationsResult.Error -> result.v1.toDataError().left()
+            is AvailableMoveToActionsForConversationsResult.Ok -> result.v1.right()
+        }
 }

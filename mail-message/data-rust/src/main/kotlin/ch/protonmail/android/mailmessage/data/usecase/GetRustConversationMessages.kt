@@ -18,9 +18,15 @@
 
 package ch.protonmail.android.mailmessage.data.usecase
 
+import arrow.core.Either
+import arrow.core.left
+import arrow.core.right
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalConversationId
+import ch.protonmail.android.mailcommon.datarust.mapper.toDataError
+import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailmessage.data.wrapper.MailboxWrapper
 import uniffi.proton_mail_uniffi.ConversationAndMessages
+import uniffi.proton_mail_uniffi.ConversationResult
 import uniffi.proton_mail_uniffi.conversation
 import javax.inject.Inject
 
@@ -29,5 +35,14 @@ class GetRustConversationMessages @Inject constructor() {
     suspend operator fun invoke(
         mailbox: MailboxWrapper,
         conversationId: LocalConversationId
-    ): ConversationAndMessages? = conversation(mailbox.getRustMailbox(), conversationId)
+    ): Either<DataError, ConversationAndMessages> =
+        when (val result = conversation(mailbox.getRustMailbox(), conversationId)) {
+            is ConversationResult.Error -> result.v1.toDataError().left()
+            is ConversationResult.Ok -> {
+                when (val data = result.v1) {
+                    null -> DataError.Local.NoDataCached.left()
+                    else -> data.right()
+                }
+            }
+        }
 }

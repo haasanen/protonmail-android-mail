@@ -79,7 +79,7 @@ class StoreAttachmentsTest {
         val expectedMessageId = MessageIdSample.Invoice
         val expectedMessageBody = MessageWithBodySample.Invoice
         expectedLocalDraft(expectedMessageId, expectedMessageBody)
-        expectedLocalMessageBody(expectedMessageId, null)
+        expectLocalMessageBodyError(expectedMessageId, DataError.Local.NoDataCached)
         expectedDraftSaving(expectedMessageBody, true)
         expectAttachmentSavingSuccessful(expectedMessageId)
         expectAttachmentStateSavingSuccess(expectedMessageId)
@@ -122,7 +122,7 @@ class StoreAttachmentsTest {
         val expectedError = StoreDraftWithAttachmentError.FailedReceivingDraft.left()
 
         expectedLocalDraft(expectedMessageId, expectedMessageBody)
-        expectedLocalMessageBody(expectedMessageId, null)
+        expectLocalMessageBodyError(expectedMessageId, DataError.Local.NoDataCached)
         expectAttachmentSavingSuccessful(expectedMessageId)
         expectedDraftSaving(expectedMessageBody, false)
 
@@ -198,7 +198,7 @@ class StoreAttachmentsTest {
         val expectedMessageId = MessageIdSample.Invoice
         val expectedMessageBody = MessageWithBodySample.Invoice
         expectedLocalDraft(expectedMessageId, expectedMessageBody)
-        expectedLocalMessageBody(expectedMessageId, null)
+        expectLocalMessageBodyError(expectedMessageId, DataError.Local.NoDataCached)
         expectedDraftSaving(expectedMessageBody, true)
         expectAttachmentSavingSuccessful(expectedMessageId)
         expectAttachmentStateSavingSuccess(expectedMessageId)
@@ -219,7 +219,7 @@ class StoreAttachmentsTest {
         val expectedMessageId = MessageIdSample.Invoice
         val expectedMessageBody = MessageWithBodySample.Invoice
         expectedLocalDraft(expectedMessageId, expectedMessageBody)
-        expectedLocalMessageBody(expectedMessageId, null)
+        expectLocalMessageBodyError(expectedMessageId, DataError.Local.NoDataCached)
         expectedDraftSaving(expectedMessageBody, true)
         expectAttachmentSavingSuccessful(expectedMessageId)
         expectAttachmentStateSavingSuccess(expectedMessageId)
@@ -245,8 +245,12 @@ class StoreAttachmentsTest {
         } returns GetLocalDraft.Error.ResolveUserAddressError.left()
     }
 
-    private fun expectedLocalMessageBody(messageId: MessageId, expectedMessageBody: MessageWithBody?) {
-        coEvery { messageRepository.getLocalMessageWithBody(userId, messageId) } returns expectedMessageBody
+    private fun expectedLocalMessageBody(messageId: MessageId, expectedMessageBody: MessageWithBody) {
+        coEvery { messageRepository.getLocalMessageWithBody(userId, messageId) } returns expectedMessageBody.right()
+    }
+
+    private fun expectLocalMessageBodyError(messageId: MessageId, error: DataError) {
+        coEvery { messageRepository.getLocalMessageWithBody(userId, messageId) } returns error.left()
     }
 
     private fun expectedDraftSaving(expectedMessageBody: MessageWithBody, successful: Boolean) {

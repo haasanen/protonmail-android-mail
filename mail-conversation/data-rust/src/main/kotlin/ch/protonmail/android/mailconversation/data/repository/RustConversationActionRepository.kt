@@ -19,8 +19,6 @@
 package ch.protonmail.android.mailconversation.data.repository
 
 import arrow.core.Either
-import arrow.core.left
-import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.AllBottomBarActions
 import ch.protonmail.android.mailcommon.domain.model.AvailableActions
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
@@ -53,10 +51,10 @@ class RustConversationActionRepository @Inject constructor(
             userId,
             labelId.toLocalLabelId(),
             conversationIds.map { it.toLocalConversationId() }
-        ) ?: return DataError.Local.Unknown.left()
+        )
         Timber.v("rust-conversation: Available actions: $availableActions \n for convos $conversationIds")
 
-        return availableActions.toAvailableActions().right()
+        return availableActions.map { it.toAvailableActions() }
     }
 
     override suspend fun getSystemMoveToLocations(
@@ -68,12 +66,9 @@ class RustConversationActionRepository @Inject constructor(
             userId,
             labelId.toLocalLabelId(),
             conversationIds.map { it.toLocalConversationId() }
-        ) ?: return DataError.Local.Unknown.left()
-        Timber.v("rust-conversation: Available move to actions: ${moveToActions.joinToString("\n")}")
+        )
 
-        val mailLabels = moveToActions.toMailLabels()
-        Timber.v("rust-conversation: Actions to mail labels: ${mailLabels.joinToString("\n")}")
-        return mailLabels.right()
+        return moveToActions.map { it.toMailLabels() }
     }
 
     override suspend fun getAvailableLabelAsActions(
@@ -85,10 +80,9 @@ class RustConversationActionRepository @Inject constructor(
             userId,
             labelId.toLocalLabelId(),
             conversationIds.map { it.toLocalConversationId() }
-        ) ?: return DataError.Local.Unknown.left()
-        Timber.v("rust-conversation: Available label as actions: ${labelAsActions.joinToString("\n")}")
+        )
 
-        return labelAsActions.toLabelAsActions().right()
+        return labelAsActions.map { it.toLabelAsActions() }
     }
 
     override suspend fun getAllBottomBarActions(

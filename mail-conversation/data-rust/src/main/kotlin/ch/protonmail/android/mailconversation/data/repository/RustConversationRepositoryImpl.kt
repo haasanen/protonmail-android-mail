@@ -187,7 +187,7 @@ class RustConversationRepositoryImpl @Inject constructor(
         selectedLabels: List<LabelId>,
         partiallySelectedLabels: List<LabelId>,
         shouldArchive: Boolean
-    ): Either<DataError.Local, Unit> = rustConversationDataSource.labelConversations(
+    ): Either<DataError, Unit> = rustConversationDataSource.labelConversations(
         userId,
         conversationIds.map { it.toLocalConversationId() },
         selectedLabels.map { it.toLocalLabelId() },

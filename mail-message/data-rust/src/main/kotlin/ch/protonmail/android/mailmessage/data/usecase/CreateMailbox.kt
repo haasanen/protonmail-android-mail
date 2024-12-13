@@ -18,14 +18,21 @@
 
 package ch.protonmail.android.mailmessage.data.usecase
 
+import arrow.core.left
+import arrow.core.right
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
+import ch.protonmail.android.mailcommon.datarust.mapper.toDataError
 import ch.protonmail.android.mailmessage.data.wrapper.MailboxWrapper
 import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
-import uniffi.proton_mail_uniffi.Mailbox
+import uniffi.proton_mail_uniffi.NewMailboxResult
+import uniffi.proton_mail_uniffi.newMailbox
 import javax.inject.Inject
 
 class CreateMailbox @Inject constructor() {
 
     suspend operator fun invoke(mailUserSession: MailUserSessionWrapper, labelId: LocalLabelId) =
-        MailboxWrapper(Mailbox.withLabelId(mailUserSession.getRustUserSession(), labelId))
+        when (val result = newMailbox(mailUserSession.getRustUserSession(), labelId)) {
+            is NewMailboxResult.Error -> result.v1.toDataError().left()
+            is NewMailboxResult.Ok -> MailboxWrapper(result.v1).right()
+        }
 }

@@ -18,15 +18,28 @@
 
 package ch.protonmail.android.mailsession.domain.wrapper
 
+import arrow.core.Either
+import arrow.core.left
+import arrow.core.right
+import ch.protonmail.android.mailcommon.datarust.mapper.toDataError
+import ch.protonmail.android.mailcommon.domain.model.DataError
 import uniffi.proton_mail_uniffi.MailUserSession
+import uniffi.proton_mail_uniffi.MailUserSessionForkResult
+import uniffi.proton_mail_uniffi.VoidEventResult
 
 class MailUserSessionWrapper(private val userSession: MailUserSession) {
 
     fun getRustUserSession() = userSession
 
-    suspend fun fork() = userSession.fork()
+    suspend fun fork(): Either<DataError, String> = when (val result = userSession.fork()) {
+        is MailUserSessionForkResult.Error -> result.v1.toDataError().left()
+        is MailUserSessionForkResult.Ok -> result.v1.right()
+    }
 
-    suspend fun pollEvents() = userSession.pollEvents()
+    suspend fun pollEvents(): Either<DataError, Unit> = when (val result = userSession.pollEvents()) {
+        is VoidEventResult.Error -> result.v1.toDataError().left()
+        VoidEventResult.Ok -> Unit.right()
+    }
 
     fun executePendingActions() = userSession.executePendingActions()
 

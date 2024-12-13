@@ -22,6 +22,7 @@ import me.proton.android.core.account.domain.model.CoreUserId
 import me.proton.android.core.accountmanager.domain.model.CoreAccountAvatarItem
 import me.proton.android.core.accountmanager.domain.usecase.GetAccountAvatarItem
 import uniffi.proton_mail_uniffi.MailSession
+import uniffi.proton_mail_uniffi.MailSessionGetAccountResult
 import javax.inject.Inject
 
 class GetAccountAvatarItemImpl @Inject constructor(
@@ -30,7 +31,10 @@ class GetAccountAvatarItemImpl @Inject constructor(
 
     override suspend operator fun invoke(userId: CoreUserId?): CoreAccountAvatarItem? {
         userId ?: return null
-        val account = mailSession.getAccount(userId.id)
+        val account = when (val result = mailSession.getAccount(userId.id)) {
+            is MailSessionGetAccountResult.Error -> null
+            is MailSessionGetAccountResult.Ok -> result.v1
+        }
         return CoreAccountAvatarItem(
             initials = account?.avatarInformation()?.text,
             color = account?.avatarInformation()?.color

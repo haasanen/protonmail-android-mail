@@ -60,7 +60,7 @@ class RustDraftDataSourceImplTest {
         val expected = LocalDraftTestData.JobApplicationDraft
         val expectedDraftWrapper = expectDraftWrapperReturns(expected.subject, expected.sender, expected.body)
         coEvery { userSessionRepository.getUserSession(userId) } returns mockUserSession
-        coEvery { openRustDraft(mockUserSession, localMessageId) } returns expectedDraftWrapper
+        coEvery { openRustDraft(mockUserSession, localMessageId) } returns expectedDraftWrapper.right()
 
         // When
         val actual = dataSource.open(userId, messageId)
@@ -78,7 +78,7 @@ class RustDraftDataSourceImplTest {
         val expected = LocalDraftTestData.JobApplicationDraft
         val expectedDraftWrapper = expectDraftWrapperReturns(expected.subject, expected.sender, expected.body)
         coEvery { userSessionRepository.getUserSession(userId) } returns mockUserSession
-        coEvery { openRustDraft(mockUserSession, localMessageId) } returns expectedDraftWrapper
+        coEvery { openRustDraft(mockUserSession, localMessageId) } returns expectedDraftWrapper.right()
         assertNull(dataSource.rustDraftWrapper)
 
         // When
@@ -132,7 +132,7 @@ class RustDraftDataSourceImplTest {
         val body = expected.body
         val expectedDraftWrapper = expectDraftWrapperReturns(subject, sender, body)
         coEvery { userSessionRepository.getUserSession(userId) } returns mockUserSession
-        coEvery { createRustDraft(mockUserSession, localDraftCreateMode) } returns expectedDraftWrapper
+        coEvery { createRustDraft(mockUserSession, localDraftCreateMode) } returns expectedDraftWrapper.right()
 
         // When
         val actual = dataSource.create(userId, action)
@@ -151,7 +151,7 @@ class RustDraftDataSourceImplTest {
         val expected = LocalDraftTestData.JobApplicationDraft
         val expectedDraftWrapper = expectDraftWrapperReturns(expected.subject, expected.sender, expected.body)
         coEvery { userSessionRepository.getUserSession(userId) } returns mockUserSession
-        coEvery { createRustDraft(mockUserSession, localDraftCreateMode) } returns expectedDraftWrapper
+        coEvery { createRustDraft(mockUserSession, localDraftCreateMode) } returns expectedDraftWrapper.right()
         assertNull(dataSource.rustDraftWrapper)
 
         // When

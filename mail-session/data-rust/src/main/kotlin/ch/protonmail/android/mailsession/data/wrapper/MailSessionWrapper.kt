@@ -18,10 +18,21 @@
 
 package ch.protonmail.android.mailsession.data.wrapper
 
+import arrow.core.Either
+import arrow.core.left
+import arrow.core.right
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalUserId
+import ch.protonmail.android.mailcommon.datarust.mapper.toDataError
+import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
 import uniffi.proton_mail_uniffi.LiveQueryCallback
 import uniffi.proton_mail_uniffi.MailSession
+import uniffi.proton_mail_uniffi.MailSessionGetAccountResult
+import uniffi.proton_mail_uniffi.MailSessionGetAccountSessionsResult
+import uniffi.proton_mail_uniffi.MailSessionGetAccountsResult
+import uniffi.proton_mail_uniffi.MailSessionGetPrimaryAccountResult
+import uniffi.proton_mail_uniffi.MailSessionUserContextFromSessionResult
+import uniffi.proton_mail_uniffi.MailSessionWatchAccountsResult
 import uniffi.proton_mail_uniffi.StoredAccount
 import uniffi.proton_mail_uniffi.StoredSession
 import uniffi.proton_mail_uniffi.WatchedAccounts
@@ -30,20 +41,50 @@ class MailSessionWrapper(private val mailSession: MailSession) {
 
     fun getRustMailSession() = mailSession
 
-    suspend fun watchAccounts(liveQueryCallback: LiveQueryCallback): WatchedAccounts =
-        mailSession.watchAccounts(liveQueryCallback)
+    suspend fun watchAccounts(liveQueryCallback: LiveQueryCallback): Either<DataError, WatchedAccounts> =
+        when (val result = mailSession.watchAccounts(liveQueryCallback)) {
+            is MailSessionWatchAccountsResult.Error -> result.v1.toDataError().left()
+            is MailSessionWatchAccountsResult.Ok -> result.v1.right()
+        }
 
-    suspend fun getAccounts(): List<StoredAccount> = mailSession.getAccounts()
+    suspend fun getAccounts(): Either<DataError, List<StoredAccount>> = when (val result = mailSession.getAccounts()) {
+        is MailSessionGetAccountsResult.Error -> result.v1.toDataError().left()
+        is MailSessionGetAccountsResult.Ok -> result.v1.right()
+    }
 
-    suspend fun getAccount(userId: LocalUserId) = mailSession.getAccount(userId)
+    suspend fun getAccount(userId: LocalUserId): Either<DataError, StoredAccount> =
+        when (val result = mailSession.getAccount(userId)) {
+            is MailSessionGetAccountResult.Error -> result.v1.toDataError().left()
+            is MailSessionGetAccountResult.Ok -> {
+                when (val data = result.v1) {
+                    null -> DataError.Local.NoDataCached.left()
+                    else -> data.right()
+                }
+            }
+        }
 
-    suspend fun getPrimaryAccount() = mailSession.getPrimaryAccount()
+    suspend fun getPrimaryAccount(): Either<DataError, StoredAccount> =
+        when (val result = mailSession.getPrimaryAccount()) {
+            is MailSessionGetPrimaryAccountResult.Error -> result.v1.toDataError().left()
+            is MailSessionGetPrimaryAccountResult.Ok -> {
+                when (val data = result.v1) {
+                    null -> DataError.Local.NoDataCached.left()
+                    else -> data.right()
+                }
+            }
+        }
 
-    suspend fun getAccountSessions(account: StoredAccount) = mailSession.getAccountSessions(account)
+    suspend fun getAccountSessions(account: StoredAccount): Either<DataError, List<StoredSession>> =
+        when (val result = mailSession.getAccountSessions(account)) {
+            is MailSessionGetAccountSessionsResult.Error -> result.v1.toDataError().left()
+            is MailSessionGetAccountSessionsResult.Ok -> result.v1.right()
+        }
 
-    suspend fun userContextFromSession(session: StoredSession) = MailUserSessionWrapper(
-        mailSession.userContextFromSession(session)
-    )
+    suspend fun userContextFromSession(session: StoredSession): Either<DataError, MailUserSessionWrapper> =
+        when (val result = mailSession.userContextFromSession(session)) {
+            is MailSessionUserContextFromSessionResult.Error -> result.v1.toDataError().left()
+            is MailSessionUserContextFromSessionResult.Ok -> MailUserSessionWrapper(result.v1).right()
+        }
 
     suspend fun deleteAccount(userId: LocalUserId) = mailSession.deleteAccount(userId)
 

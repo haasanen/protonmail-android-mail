@@ -88,7 +88,7 @@ class RustConversationDetailQueryImplTest {
         coEvery { rustMailboxFactory.create(userId, localLabelId) } returns mailbox.right()
         coEvery {
             createRustConversationWatcher(mailbox, conversationId, capture(callbackSlot))
-        } returns WeakReference(watcherMock)
+        } returns WeakReference(watcherMock).right()
 
         // When
         rustConversationQuery.observeConversation(userId, conversationId, localLabelId).test {
@@ -125,10 +125,10 @@ class RustConversationDetailQueryImplTest {
         coEvery { rustMailboxFactory.create(userId, localLabelId) } returns mailbox.right()
         coEvery {
             createRustConversationWatcher(mailbox, conversationId, capture(callbackSlot))
-        } returns WeakReference(watcherMock)
+        } returns WeakReference(watcherMock).right()
         coEvery {
             getRustConversationMessages(mailbox, conversationId)
-        } returns ConversationAndMessages(expectedConversation, messageToOpen, messages)
+        } returns ConversationAndMessages(expectedConversation, messageToOpen, messages).right()
         rustConversationQuery.observeConversation(userId, conversationId, localLabelId).test {
             skipItems(1)
             // When
@@ -140,7 +140,11 @@ class RustConversationDetailQueryImplTest {
             every { watcherMock.messageIdToOpen } returns messageToOpen
             coEvery {
                 getRustConversationMessages(mailbox, conversationId)
-            } returns ConversationAndMessages(updatedConversation, updatedMessageToOpen, updatedMessages.messages)
+            } returns ConversationAndMessages(
+                updatedConversation,
+                updatedMessageToOpen,
+                updatedMessages.messages
+            ).right()
 
             // When
             callbackSlot.captured.onUpdate()
@@ -180,7 +184,7 @@ class RustConversationDetailQueryImplTest {
         coEvery { rustMailboxFactory.create(userId, localLabelId) } returns mailbox.right()
         coEvery {
             createRustConversationWatcher(mailbox, conversationId, capture(callbackSlot))
-        } returns WeakReference(watcherMock)
+        } returns WeakReference(watcherMock).right()
 
         rustConversationQuery.observeConversation(userId, conversationId, localLabelId).test {
             skipItems(1)
@@ -218,10 +222,10 @@ class RustConversationDetailQueryImplTest {
         coEvery { rustMailboxFactory.create(userId, localLabelId) } returns mailbox.right()
         coEvery {
             createRustConversationWatcher(mailbox, conversationId1, capture(callbackSlot))
-        } returns WeakReference(watcherMock1)
+        } returns WeakReference(watcherMock1).right()
         coEvery {
             createRustConversationWatcher(mailbox, conversationId2, capture(callbackSlot))
-        } returns WeakReference(watcherMock2)
+        } returns WeakReference(watcherMock2).right()
 
         // When
         rustConversationQuery.observeConversation(userId, conversationId1, localLabelId).test {
@@ -255,7 +259,7 @@ class RustConversationDetailQueryImplTest {
         coEvery { rustMailboxFactory.create(userId, localLabelId) } returns mailbox.right()
         coEvery { createRustConversationWatcher(mailbox, conversationId, capture(callbackSlot)) } coAnswers {
             delay(100) // Simulate delay to enforce concurrency
-            WeakReference(watcherMock)
+            WeakReference(watcherMock).right()
         }
 
         // When

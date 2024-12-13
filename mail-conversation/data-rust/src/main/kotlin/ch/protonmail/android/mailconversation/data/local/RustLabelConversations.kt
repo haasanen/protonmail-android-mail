@@ -18,9 +18,15 @@
 
 package ch.protonmail.android.mailconversation.data.local
 
+import arrow.core.Either
+import arrow.core.left
+import arrow.core.right
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalConversationId
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
+import ch.protonmail.android.mailcommon.datarust.mapper.toDataError
+import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailmessage.data.wrapper.MailboxWrapper
+import uniffi.proton_mail_uniffi.LabelConversationsAsResult
 import uniffi.proton_mail_uniffi.labelConversationsAs
 import javax.inject.Inject
 
@@ -32,13 +38,16 @@ class RustLabelConversations @Inject constructor() {
         selectedLabelIds: List<LocalLabelId>,
         partiallySelectedLabelIds: List<LocalLabelId>,
         shouldArchive: Boolean
-    ) {
-        labelConversationsAs(
+    ): Either<DataError, Boolean> = when (
+        val result = labelConversationsAs(
             mailbox.getRustMailbox(),
             conversationIds,
             selectedLabelIds,
             partiallySelectedLabelIds,
             shouldArchive
         )
+    ) {
+        is LabelConversationsAsResult.Error -> result.v1.toDataError().left()
+        is LabelConversationsAsResult.Ok -> result.v1.right()
     }
 }

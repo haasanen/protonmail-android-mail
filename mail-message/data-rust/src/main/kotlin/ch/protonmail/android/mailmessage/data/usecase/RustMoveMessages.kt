@@ -18,9 +18,15 @@
 
 package ch.protonmail.android.mailmessage.data.usecase
 
+import arrow.core.Either
+import arrow.core.left
+import arrow.core.right
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageId
+import ch.protonmail.android.mailcommon.datarust.mapper.toDataError
+import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailmessage.data.wrapper.MailboxWrapper
+import uniffi.proton_mail_uniffi.VoidActionResult
 import uniffi.proton_mail_uniffi.moveMessages
 import javax.inject.Inject
 
@@ -30,5 +36,8 @@ class RustMoveMessages @Inject constructor() {
         mailbox: MailboxWrapper,
         toLabel: LocalLabelId,
         messageIds: List<LocalMessageId>
-    ) = moveMessages(mailbox.getRustMailbox(), toLabel, messageIds)
+    ): Either<DataError, Unit> = when (val result = moveMessages(mailbox.getRustMailbox(), toLabel, messageIds)) {
+        is VoidActionResult.Error -> result.v1.toDataError().left()
+        VoidActionResult.Ok -> Unit.right()
+    }
 }

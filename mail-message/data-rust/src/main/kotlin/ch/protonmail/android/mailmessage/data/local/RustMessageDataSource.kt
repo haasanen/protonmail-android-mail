@@ -24,7 +24,7 @@ import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageId
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageMetadata
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailmessage.data.wrapper.DecryptedMessageWrapper
+import ch.protonmail.android.mailmessage.domain.model.MessageBody
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import me.proton.core.domain.entity.UserId
 import uniffi.proton_mail_uniffi.AllBottomBarMessageActions
@@ -34,7 +34,7 @@ import uniffi.proton_mail_uniffi.MoveAction
 interface RustMessageDataSource {
 
     suspend fun getMessage(userId: UserId, messageId: LocalMessageId): LocalMessageMetadata?
-    suspend fun getMessageBody(userId: UserId, messageId: LocalMessageId): DecryptedMessageWrapper?
+    suspend fun getMessageBody(userId: UserId, messageId: LocalMessageId): Either<DataError, MessageBody>
 
     suspend fun getMessages(userId: UserId, pageKey: PageKey): List<LocalMessageMetadata>
 
@@ -44,43 +44,43 @@ interface RustMessageDataSource {
         bimi: String?
     ): String?
 
-    suspend fun markRead(userId: UserId, messages: List<LocalMessageId>): Either<DataError.Local, Unit>
-    suspend fun markUnread(userId: UserId, messages: List<LocalMessageId>): Either<DataError.Local, Unit>
+    suspend fun markRead(userId: UserId, messages: List<LocalMessageId>): Either<DataError, Unit>
+    suspend fun markUnread(userId: UserId, messages: List<LocalMessageId>): Either<DataError, Unit>
 
-    suspend fun starMessages(userId: UserId, messages: List<LocalMessageId>): Either<DataError.Local, Unit>
-    suspend fun unStarMessages(userId: UserId, messages: List<LocalMessageId>): Either<DataError.Local, Unit>
+    suspend fun starMessages(userId: UserId, messages: List<LocalMessageId>): Either<DataError, Unit>
+    suspend fun unStarMessages(userId: UserId, messages: List<LocalMessageId>): Either<DataError, Unit>
 
     suspend fun moveMessages(
         userId: UserId,
         messageIds: List<LocalMessageId>,
         toLabelId: LocalLabelId
-    ): Either<DataError.Local, Unit>
+    ): Either<DataError, Unit>
 
     suspend fun getAvailableActions(
         userId: UserId,
         labelId: LocalLabelId,
         messageIds: List<LocalMessageId>
-    ): MessageAvailableActions?
+    ): Either<DataError, MessageAvailableActions>
 
     suspend fun getAvailableSystemMoveToActions(
         userId: UserId,
         labelId: LocalLabelId,
         messageIds: List<LocalMessageId>
-    ): List<MoveAction.SystemFolder>?
+    ): Either<DataError, List<MoveAction.SystemFolder>>
 
     suspend fun getAvailableLabelAsActions(
         userId: UserId,
         labelId: LocalLabelId,
         messageIds: List<LocalMessageId>
-    ): List<LocalLabelAsAction>?
+    ): Either<DataError, List<LocalLabelAsAction>>
 
     suspend fun getAllAvailableBottomBarActions(
         userId: UserId,
         labelId: LocalLabelId,
         messageIds: List<LocalMessageId>
-    ): Either<DataError.Local, AllBottomBarMessageActions>
+    ): Either<DataError, AllBottomBarMessageActions>
 
-    suspend fun deleteMessages(userId: UserId, messageIds: List<LocalMessageId>): Either<DataError.Local, Unit>
+    suspend fun deleteMessages(userId: UserId, messageIds: List<LocalMessageId>): Either<DataError, Unit>
 
     suspend fun labelMessages(
         userId: UserId,
@@ -88,5 +88,5 @@ interface RustMessageDataSource {
         selectedLabelIds: List<LocalLabelId>,
         partiallySelectedLabelIds: List<LocalLabelId>,
         shouldArchive: Boolean
-    ): Either<DataError.Local, Unit>
+    ): Either<DataError, Unit>
 }

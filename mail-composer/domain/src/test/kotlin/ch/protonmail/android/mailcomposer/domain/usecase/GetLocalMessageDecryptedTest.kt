@@ -107,7 +107,8 @@ class GetLocalMessageDecryptedTest {
     }
 
     private fun expectGetLocalMessageFailure(userId: UserId, messageId: MessageId) {
-        coEvery { messageRepository.getLocalMessageWithBody(userId, messageId) } returns null
+        coEvery { messageRepository.getLocalMessageWithBody(userId, messageId) } returns
+            DataError.Local.NoDataCached.left()
     }
 
     private fun expectDecryptedMessageResult(
@@ -123,6 +124,6 @@ class GetLocalMessageDecryptedTest {
         messageId: MessageId,
         result: () -> MessageWithBody
     ) = result().also {
-        coEvery { messageRepository.getLocalMessageWithBody(userId, messageId) } returns it
+        coEvery { messageRepository.getLocalMessageWithBody(userId, messageId) } returns it.right()
     }
 }
