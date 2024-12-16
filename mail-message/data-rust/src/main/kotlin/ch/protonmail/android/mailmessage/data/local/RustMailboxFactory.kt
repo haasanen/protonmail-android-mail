@@ -28,6 +28,8 @@ import ch.protonmail.android.maillabel.domain.SelectedMailLabelId
 import ch.protonmail.android.mailmessage.data.usecase.CreateAllMailMailbox
 import ch.protonmail.android.mailmessage.data.usecase.CreateMailbox
 import ch.protonmail.android.mailmessage.data.wrapper.MailboxWrapper
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import javax.inject.Inject
@@ -39,42 +41,50 @@ class RustMailboxFactory @Inject constructor(
     private val selectedMailLabelId: SelectedMailLabelId
 ) {
 
-    private val mailboxCache: MutableMap<LocalLabelId, MailboxWrapper> = mutableMapOf()
+    private val mutex = Mutex()
+    private var mailboxCache: MailboxWrapper? = null
 
-    suspend fun create(userId: UserId): Either<DataError, MailboxWrapper> {
+    suspend fun create(userId: UserId): Either<DataError, MailboxWrapper> = mutex.withLock {
         val currentLabelId = selectedMailLabelId.flow.value.labelId.toLocalLabelId()
 
-        val cachedMailbox = mailboxCache[currentLabelId]
+        val cachedMailbox = getMailboxFromCache(currentLabelId)
         if (cachedMailbox != null) {
             return cachedMailbox.right()
         }
 
         return executeWithUserSession(userId) { session ->
             val mailbox = createMailbox(session, currentLabelId)
-            mailboxCache[currentLabelId] = mailbox
+            mailboxCache = mailbox
             Timber.d("rust-mailbox-factory: Mailbox created for Current Label: $currentLabelId")
             mailbox
         }
     }
 
-    suspend fun create(userId: UserId, labelId: LocalLabelId): Either<DataError, MailboxWrapper> {
-        val cachedMailbox = mailboxCache[labelId]
+    suspend fun create(userId: UserId, labelId: LocalLabelId): Either<DataError, MailboxWrapper> = mutex.withLock {
+        val cachedMailbox = getMailboxFromCache(labelId)
         if (cachedMailbox != null) {
             return cachedMailbox.right()
         }
 
         return executeWithUserSession(userId) { session ->
             val mailbox = createMailbox(session, labelId)
-            mailboxCache[labelId] = mailbox
+            mailboxCache = mailbox
             Timber.d("rust-mailbox-factory: Mailbox created for label: $labelId")
             mailbox
         }
     }
 
-    suspend fun createAllMail(userId: UserId): Either<DataError, MailboxWrapper> =
+    suspend fun createAllMail(userId: UserId): Either<DataError, MailboxWrapper> = mutex.withLock {
         executeWithUserSession(userId) { session ->
             Timber.d("rust-mailbox-factory: Mailbox created for all mail label")
             createAllMailMailbox(session)
         }
+    }
 
+    private fun getMailboxFromCache(currentLabelId: LocalLabelId): MailboxWrapper? {
+        if (mailboxCache?.labelId() == currentLabelId) {
+            return mailboxCache
+        }
+        return null
+    }
 }
