@@ -33,6 +33,31 @@ import kotlinx.collections.immutable.toImmutableList
 
 object MessageDetailHeaderPreviewData {
 
+    val recipientOne = ParticipantUiModel(
+        participantName = "Recipient One",
+        participantAddress = "recipient1@protonmail.com",
+        participantPadlock = R.drawable.ic_proton_lock,
+        shouldShowOfficialBadge = false
+    )
+    val recipientTwo = ParticipantUiModel(
+        participantName = "Recipient Two",
+        participantAddress = "recipient2@protonmail.com",
+        participantPadlock = R.drawable.ic_proton_lock,
+        shouldShowOfficialBadge = false
+    )
+    val recipientThree = ParticipantUiModel(
+        participantName = "Recipient Three",
+        participantAddress = "recipient3@protonmail.com",
+        participantPadlock = R.drawable.ic_proton_lock,
+        shouldShowOfficialBadge = false
+    )
+    val recipientFour = ParticipantUiModel(
+        participantName = "Recipient Four",
+        participantAddress = "recipient4@protonmail.com",
+        participantPadlock = R.drawable.ic_proton_lock,
+        shouldShowOfficialBadge = false
+    )
+
     val WithoutLabels = MessageDetailHeaderUiModel(
         avatar = ParticipantAvatarSample.ebay,
         avatarImage = AvatarImageUiModel.NoImageAvailable,
@@ -49,37 +74,18 @@ object MessageDetailHeaderPreviewData {
         time = TextUiModel.Text("11:48"),
         extendedTime = TextUiModel.Text("19-10-2022 at 11:48AM"),
         shouldShowUndisclosedRecipients = false,
-        allRecipients = TextUiModel.Text("Recipient One, Recipient Two, Recipient Three, Recipient Four"),
+        allRecipients = listOf(
+            recipientOne,
+            recipientTwo,
+            recipientThree,
+            recipientFour
+        ).toImmutableList(),
         toRecipients = listOf(
-            ParticipantUiModel(
-                participantName = "Recipient One",
-                participantAddress = "recipient1@protonmail.com",
-                participantPadlock = R.drawable.ic_proton_lock,
-                shouldShowOfficialBadge = false
-            ),
-            ParticipantUiModel(
-                participantName = "Recipient Two",
-                participantAddress = "recipient2@protonmail.com",
-                participantPadlock = R.drawable.ic_proton_lock,
-                shouldShowOfficialBadge = false
-            )
+            recipientOne,
+            recipientTwo
         ).toImmutableList(),
-        ccRecipients = listOf(
-            ParticipantUiModel(
-                participantName = "Recipient Three",
-                participantAddress = "recipient3@protonmail.com",
-                participantPadlock = R.drawable.ic_proton_lock,
-                shouldShowOfficialBadge = false
-            )
-        ).toImmutableList(),
-        bccRecipients = listOf(
-            ParticipantUiModel(
-                participantName = "Recipient Four",
-                participantAddress = "recipient4@protonmail.com",
-                participantPadlock = R.drawable.ic_proton_lock,
-                shouldShowOfficialBadge = false
-            )
-        ).toImmutableList(),
+        ccRecipients = listOf(recipientThree).toImmutableList(),
+        bccRecipients = listOf(recipientFour).toImmutableList(),
         labels = persistentListOf(),
         size = "6.35 KB",
         encryptionPadlock = R.drawable.ic_proton_lock,
@@ -106,6 +112,15 @@ class MessageDetailHeaderPreviewProvider : PreviewParameterProvider<MessageDetai
         MessageDetailHeaderPreview(
             initiallyExpanded = false,
             uiModel = MessageDetailHeaderPreviewData.WithoutLabels
+        ),
+        MessageDetailHeaderPreview(
+            initiallyExpanded = false,
+            uiModel = MessageDetailHeaderPreviewData.WithoutLabels.copy(
+                allRecipients = listOf(MessageDetailHeaderPreviewData.recipientOne).toImmutableList(),
+                toRecipients = listOf(MessageDetailHeaderPreviewData.recipientOne).toImmutableList(),
+                ccRecipients = listOf<ParticipantUiModel>().toImmutableList(),
+                bccRecipients = listOf<ParticipantUiModel>().toImmutableList()
+            )
         ),
         MessageDetailHeaderPreview(
             initiallyExpanded = true,

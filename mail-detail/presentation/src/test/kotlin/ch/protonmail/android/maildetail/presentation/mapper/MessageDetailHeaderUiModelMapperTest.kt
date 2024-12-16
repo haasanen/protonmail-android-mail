@@ -32,7 +32,6 @@ import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcommon.presentation.sample.ParticipantAvatarSample
 import ch.protonmail.android.mailcommon.presentation.usecase.FormatExtendedTime
 import ch.protonmail.android.mailcommon.presentation.usecase.FormatShortTime
-import ch.protonmail.android.maildetail.presentation.R.string.undisclosed_recipients
 import ch.protonmail.android.maildetail.presentation.model.MessageDetailHeaderUiModel
 import ch.protonmail.android.maildetail.presentation.model.MessageIdUiModel
 import ch.protonmail.android.maildetail.presentation.model.MessageLocationUiModel
@@ -94,7 +93,7 @@ class MessageDetailHeaderUiModelMapperTest {
         time = shortTimeTextUiModel,
         extendedTime = extendedTimeTestUiModel,
         shouldShowUndisclosedRecipients = false,
-        allRecipients = TextUiModel.Text("Recipient1, Recipient2, Recipient3"),
+        allRecipients = listOf(participant1UiModel, participant2UiModel, participant3UiModel).toImmutableList(),
         toRecipients = listOf(participant1UiModel, participant2UiModel).toImmutableList(),
         ccRecipients = listOf(participant3UiModel).toImmutableList(),
         bccRecipients = emptyList<ParticipantUiModel>().toImmutableList(),
@@ -243,7 +242,7 @@ class MessageDetailHeaderUiModelMapperTest {
         )
         val expectedResult = expectedResult.copy(
             shouldShowUndisclosedRecipients = true,
-            allRecipients = TextUiModel.TextRes(undisclosed_recipients),
+            allRecipients = emptyList<ParticipantUiModel>().toImmutableList(),
             toRecipients = emptyList<ParticipantUiModel>().toImmutableList(),
             ccRecipients = emptyList<ParticipantUiModel>().toImmutableList()
         )

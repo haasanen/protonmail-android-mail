@@ -73,7 +73,9 @@ class MessageDetailHeaderUiModelMapper @Inject constructor(
             time = formatShortTime(message.time.seconds),
             extendedTime = formatExtendedTime(message.time.seconds),
             shouldShowUndisclosedRecipients = message.hasUndisclosedRecipients(),
-            allRecipients = message.allRecipients(contacts),
+            allRecipients = (message.toList + message.ccList + message.bccList).map {
+                participantUiModelMapper.recipientToUiModel(it, contacts, primaryUserAddress)
+            }.toImmutableList(),
             toRecipients = message.toList.map {
                 participantUiModelMapper.recipientToUiModel(it, contacts, primaryUserAddress)
             }.toImmutableList(),

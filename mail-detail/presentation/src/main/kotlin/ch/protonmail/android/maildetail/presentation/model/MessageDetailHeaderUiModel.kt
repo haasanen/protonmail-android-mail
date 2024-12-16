@@ -36,7 +36,7 @@ data class MessageDetailHeaderUiModel(
     val time: TextUiModel,
     val extendedTime: TextUiModel,
     val shouldShowUndisclosedRecipients: Boolean,
-    val allRecipients: TextUiModel,
+    val allRecipients: ImmutableList<ParticipantUiModel>,
     val toRecipients: ImmutableList<ParticipantUiModel>,
     val ccRecipients: ImmutableList<ParticipantUiModel>,
     val bccRecipients: ImmutableList<ParticipantUiModel>,

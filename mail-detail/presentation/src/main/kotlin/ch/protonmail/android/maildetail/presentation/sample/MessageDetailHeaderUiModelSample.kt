@@ -38,7 +38,7 @@ object MessageDetailHeaderUiModelSample {
         location: MessageLocationUiModel,
         time: TextUiModel,
         extendedTime: TextUiModel,
-        allRecipients: TextUiModel,
+        allRecipients: ImmutableList<ParticipantUiModel>,
         toRecipients: ImmutableList<ParticipantUiModel>,
         ccRecipients: ImmutableList<ParticipantUiModel>,
         bccRecipients: ImmutableList<ParticipantUiModel>,

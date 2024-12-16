@@ -244,7 +244,7 @@ object ConversationDetailMessageUiModelSample {
             location = locationUiModel,
             time = TextUiModel("10:00"),
             extendedTime = TextUiModel("10:00"),
-            allRecipients = TextUiModel("Recipients"),
+            allRecipients = emptyList<ParticipantUiModel>().toImmutableList(),
             toRecipients = emptyList<ParticipantUiModel>().toImmutableList(),
             ccRecipients = emptyList<ParticipantUiModel>().toImmutableList(),
             bccRecipients = emptyList<ParticipantUiModel>().toImmutableList(),

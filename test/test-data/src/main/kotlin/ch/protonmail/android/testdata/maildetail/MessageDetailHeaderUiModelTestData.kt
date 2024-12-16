@@ -30,6 +30,24 @@ import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 
 object MessageDetailHeaderUiModelTestData {
+    val recipientOne = ParticipantUiModel(
+        "Recipient1",
+        "recipient1@pm.com",
+        R.drawable.ic_proton_lock,
+        shouldShowOfficialBadge = false
+    )
+    val recipientTwo = ParticipantUiModel(
+        "Recipient2",
+        "recipient2@pm.com",
+        R.drawable.ic_proton_lock,
+        shouldShowOfficialBadge = false
+    )
+    val recipientThree = ParticipantUiModel(
+        "Recipient3",
+        "recipient3@pm.com",
+        R.drawable.ic_proton_lock,
+        shouldShowOfficialBadge = false
+    )
 
     val messageDetailHeaderUiModel = MessageDetailHeaderUiModel(
         avatar = ParticipantAvatarSample.ebay,
@@ -47,28 +65,17 @@ object MessageDetailHeaderUiModelTestData {
         time = TextUiModel.Text("08/11/2022"),
         extendedTime = TextUiModel.Text("08/11/2022, 17:16"),
         shouldShowUndisclosedRecipients = false,
-        allRecipients = TextUiModel.Text("Recipient1, Recipient2, Recipient3"),
+        allRecipients = listOf(
+            recipientOne,
+            recipientTwo,
+            recipientThree
+        ).toImmutableList(),
         toRecipients = listOf(
-            ParticipantUiModel(
-                "Recipient1",
-                "recipient1@pm.com",
-                R.drawable.ic_proton_lock,
-                shouldShowOfficialBadge = false
-            ),
-            ParticipantUiModel(
-                "Recipient2",
-                "recipient2@pm.com",
-                R.drawable.ic_proton_lock,
-                shouldShowOfficialBadge = false
-            )
+            recipientOne,
+            recipientTwo
         ).toImmutableList(),
         ccRecipients = listOf(
-            ParticipantUiModel(
-                "Recipient3",
-                "recipient3@pm.com",
-                R.drawable.ic_proton_lock,
-                shouldShowOfficialBadge = false
-            )
+            recipientThree
         ).toImmutableList(),
         bccRecipients = emptyList<ParticipantUiModel>().toImmutableList(),
         labels = persistentListOf(),
