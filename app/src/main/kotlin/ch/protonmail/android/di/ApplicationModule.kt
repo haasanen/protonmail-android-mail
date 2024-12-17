@@ -21,6 +21,7 @@ package ch.protonmail.android.di
 import android.content.Context
 import androidx.work.WorkManager
 import ch.protonmail.android.BuildConfig
+import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.mailcommon.domain.AppInformation
 import ch.protonmail.android.mailnotifications.domain.NotificationsDeepLinkHelper
 import ch.protonmail.android.navigation.deeplinks.NotificationsDeepLinkHelperImpl
@@ -33,6 +34,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import me.proton.core.account.domain.entity.AccountType
+import me.proton.core.compose.theme.AppTheme
 import me.proton.core.configuration.EnvironmentConfiguration
 import me.proton.core.domain.entity.AppStore
 import me.proton.core.domain.entity.Product
@@ -77,6 +79,11 @@ object ApplicationModule {
     @Provides
     @Singleton
     fun provideReviewManager(@ApplicationContext context: Context): ReviewManager = ReviewManagerFactory.create(context)
+
+    @Provides
+    fun provideAppTheme(): AppTheme = AppTheme { content ->
+        ProtonTheme { content() }
+    }
 
     @Module
     @InstallIn(SingletonComponent::class)
