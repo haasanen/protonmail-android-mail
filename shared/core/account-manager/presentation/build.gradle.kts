@@ -19,6 +19,7 @@ plugins {
     id("com.android.library")
     kotlin("android")
     kotlin("kapt")
+    id("org.jetbrains.kotlin.plugin.compose")
     id("dagger.hilt.android.plugin")
     id("app.cash.paparazzi")
 }
@@ -45,10 +46,6 @@ android {
 
     buildFeatures {
         compose = true
-    }
-
-    composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.androidx.compose.compiler.get()
     }
 }
 

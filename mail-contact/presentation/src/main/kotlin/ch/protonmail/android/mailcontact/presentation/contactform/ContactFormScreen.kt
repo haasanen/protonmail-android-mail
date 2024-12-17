@@ -67,7 +67,6 @@ import ch.protonmail.android.mailcommon.presentation.ConsumableTextEffect
 import ch.protonmail.android.mailcommon.presentation.NO_CONTENT_DESCRIPTION
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 import ch.protonmail.android.mailcommon.presentation.compose.PickerDialog
-import ch.protonmail.android.uicomponents.dismissKeyboard
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcommon.presentation.model.string
 import ch.protonmail.android.mailcommon.presentation.ui.CommonTestTags
@@ -88,6 +87,7 @@ import ch.protonmail.android.mailcontact.presentation.previewdata.ContactFormPre
 import ch.protonmail.android.mailcontact.presentation.ui.FormInputField
 import ch.protonmail.android.mailcontact.presentation.ui.ImageContactAvatar
 import ch.protonmail.android.mailcontact.presentation.ui.InitialsContactAvatar
+import ch.protonmail.android.uicomponents.dismissKeyboard
 import ch.protonmail.android.uicomponents.snackbar.DismissableSnackbarHost
 import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
 import ch.protonmail.android.design.compose.component.ProtonSecondaryButton
