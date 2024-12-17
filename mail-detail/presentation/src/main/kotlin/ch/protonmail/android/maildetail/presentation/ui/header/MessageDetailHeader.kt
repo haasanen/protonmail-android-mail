@@ -85,7 +85,6 @@ import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodySmallNorm
 import ch.protonmail.android.design.compose.theme.bodySmallWeak
-import ch.protonmail.android.design.compose.theme.bodyMediumNorm
 import ch.protonmail.android.design.compose.theme.titleMediumNorm
 import ch.protonmail.android.maildetail.presentation.ui.common.SingleLineRecipientNames
 
@@ -435,19 +434,6 @@ private fun MessageDetailHeaderLayout(
         //            text = uiModel.encryptionInfo
         //        )
 
-        HideDetails(
-            modifier = modifier
-                .constrainAs(hideDetailsRef) {
-                    top.linkTo(
-                        sizeRef.bottom,
-                        margin = ProtonDimens.Spacing.Standard,
-                        goneMargin = ProtonDimens.Spacing.Standard
-                    )
-                    start.linkTo(avatarRef.end, margin = ProtonDimens.Spacing.Standard)
-                    visibility = visibleWhen(isExpanded)
-                }
-                .clickable { actions.onClick() }
-        )
     }
 }
 
@@ -729,16 +715,6 @@ private fun ExtendedHeaderRow(
             style = ProtonTheme.typography.bodySmallWeak
         )
     }
-}
-
-@Composable
-private fun HideDetails(modifier: Modifier = Modifier) {
-    Text(
-        modifier = modifier.testTag(MessageDetailHeaderTestTags.ExtendedHideDetails),
-        text = stringResource(id = R.string.hide_details),
-        color = ProtonTheme.colors.brandMinus20,
-        style = ProtonTheme.typography.bodyMediumNorm
-    )
 }
 
 private fun ConstrainScope.constrainRecipientsTitle(
