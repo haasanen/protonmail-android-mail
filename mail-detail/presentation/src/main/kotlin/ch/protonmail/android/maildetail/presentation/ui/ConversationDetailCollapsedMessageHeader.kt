@@ -63,8 +63,7 @@ import ch.protonmail.android.design.compose.theme.bodyLargeNorm
 import ch.protonmail.android.design.compose.theme.bodyMediumNorm
 import ch.protonmail.android.maildetail.presentation.R
 import me.proton.core.presentation.R.drawable
-import ch.protonmail.android.maildetail.presentation.model.ParticipantUiModel
-import kotlinx.collections.immutable.ImmutableList
+import ch.protonmail.android.maildetail.presentation.ui.common.SingleLineRecipientNames
 import me.proton.core.util.kotlin.EMPTY_STRING
 import me.proton.core.util.kotlin.exhaustive
 
@@ -168,11 +167,15 @@ internal fun ConversationDetailCollapsedMessageHeader(
                     fontWeight = fontWeight,
                     fontColor = fontColor
                 )
-                ToRecipientNames(
-                    toRecipients = uiModel.recipients,
+
+                SingleLineRecipientNames(
+                    modifier = Modifier
+                        .wrapContentHeight(),
+                    recipients = uiModel.recipients,
                     hasUndisclosedRecipients = uiModel.shouldShowUndisclosedRecipients,
-                    fontWeight = fontWeight,
-                    fontColor = fontColor
+                    textStyle = ProtonTheme.typography.bodyMediumNorm,
+                    fontColor = fontColor,
+                    fontWeight = fontWeight
                 )
             }
         }
@@ -228,38 +231,6 @@ internal fun ConversationDetailCollapsedMessageHeader(
             fontColor = fontColor
         )
     }
-}
-
-@Composable
-private fun ToRecipientNames(
-    modifier: Modifier = Modifier,
-    fontWeight: FontWeight,
-    fontColor: Color,
-    toRecipients: ImmutableList<ParticipantUiModel>,
-    hasUndisclosedRecipients: Boolean = false
-) {
-    val recipientMeText = stringResource(id = R.string.recipient_me)
-    val toRecipientsLine = if (hasUndisclosedRecipients) {
-        stringResource(R.string.undisclosed_recipients)
-    } else {
-        toRecipients.joinToString(separator = ", ") {
-            if (it.isPrimaryUser) {
-                recipientMeText
-            } else {
-                it.participantName.ifBlank { it.participantAddress }
-            }
-        }
-    }
-
-    Text(
-        modifier = modifier,
-        text = toRecipientsLine,
-        fontWeight = fontWeight,
-        color = fontColor,
-        style = ProtonTheme.typography.bodyMediumNorm,
-        overflow = TextOverflow.Ellipsis,
-        maxLines = 1
-    )
 }
 
 @Composable
