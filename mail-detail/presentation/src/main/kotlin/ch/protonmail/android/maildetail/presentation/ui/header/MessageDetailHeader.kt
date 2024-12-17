@@ -166,8 +166,7 @@ private fun MessageDetailHeaderLayout(
         val (
             headerActionsRef,
             locationRef,
-            sizeRef,
-            hideDetailsRef
+            sizeRef
         ) = createRefs()
 
         val avatarActions = ParticipantAvatar.Actions(
@@ -492,10 +491,13 @@ private fun Icons(
         //            SmallNonClickableIcon(iconId = R.drawable.ic_proton_shield)
         //        }
         if (uiModel.shouldShowAttachmentIcon) {
-            SmallNonClickableIcon(iconId = R.drawable.ic_proton_paper_clip)
+            SmallNonClickableIcon(iconId = R.drawable.ic_proton_paper_clip, iconColor = ProtonTheme.colors.iconWeak)
         }
         if (uiModel.shouldShowStar) {
-            SmallNonClickableIcon(iconId = R.drawable.ic_proton_star_filled, tintId = R.color.notification_warning)
+            SmallNonClickableIcon(
+                iconId = R.drawable.ic_proton_star_filled,
+                iconColor = ProtonTheme.colors.starSelected
+            )
         }
         if (!isExpanded) {
             if (uiModel.location.color != null) {
