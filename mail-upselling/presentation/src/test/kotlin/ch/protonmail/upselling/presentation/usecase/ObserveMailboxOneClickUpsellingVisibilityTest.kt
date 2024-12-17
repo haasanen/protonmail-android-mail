@@ -21,7 +21,7 @@ package ch.protonmail.upselling.presentation.usecase
 import app.cash.turbine.test
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.mailcommon.domain.sample.UserSample
-import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUserId
+import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailupselling.domain.usecase.UserHasAvailablePlans
 import ch.protonmail.android.mailupselling.domain.usecase.UserHasPendingPurchases
 import ch.protonmail.android.mailupselling.domain.usecase.featureflags.ObserveOneClickUpsellingEnabled

@@ -21,7 +21,7 @@ package ch.protonmail.android.mailsettings.presentation.settings.swipeactions
 import androidx.lifecycle.SavedStateHandle
 import app.cash.turbine.ReceiveTurbine
 import app.cash.turbine.test
-import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUserId
+import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailsettings.domain.model.SwipeActionDirection
 import ch.protonmail.android.mailsettings.domain.model.SwipeActionsPreference
 import ch.protonmail.android.mailsettings.domain.usecase.ObserveSwipeActionsPreference

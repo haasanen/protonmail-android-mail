@@ -60,6 +60,7 @@ dependencies {
     implementation(project(":mail-message:domain"))
     implementation(project(":mail-message:data-rust"))
     implementation(project(":mail-session:domain"))
+    implementation(project(":mail-session:data-rust"))
 
     testImplementation(project(":test:utils"))
     testImplementation(project(":test:test-data"))

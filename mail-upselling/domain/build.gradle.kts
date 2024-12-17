@@ -43,14 +43,15 @@ android {
 }
 
 dependencies {
-    implementation(project(":mail-common:domain"))
-
     kapt(libs.bundles.app.annotationProcessors)
     implementation(libs.dagger.hilt.android)
 
     implementation(libs.arrow.core)
     implementation(libs.proton.core.plan)
     implementation(libs.proton.core.telemetry)
+
+    implementation(project(":mail-common:domain"))
+    implementation(project(":mail-session:domain"))
 
     testImplementation(project(":test:test-data"))
 

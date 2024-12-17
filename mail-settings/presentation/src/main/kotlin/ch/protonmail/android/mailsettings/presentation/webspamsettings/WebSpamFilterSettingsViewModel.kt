@@ -20,7 +20,7 @@ package ch.protonmail.android.mailsettings.presentation.webspamsettings
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUserId
+import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailsession.domain.usecase.ForkSession
 import ch.protonmail.android.mailsettings.domain.repository.ThemeRepository
 import ch.protonmail.android.mailsettings.domain.usecase.HandleCloseWebSettings

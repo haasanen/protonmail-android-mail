@@ -20,7 +20,7 @@ package ch.protonmail.android.mailcontact.presentation.managemembers
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUserId
+import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailcontact.domain.usecase.ObserveContacts
 import ch.protonmail.android.mailcontact.presentation.model.ManageMembersUiModelMapper
 import dagger.hilt.android.lifecycle.HiltViewModel

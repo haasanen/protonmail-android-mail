@@ -21,7 +21,7 @@ package ch.protonmail.android.mailsettings.presentation.webemailsettings
 import app.cash.turbine.test
 import arrow.core.left
 import arrow.core.right
-import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUserId
+import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailsession.domain.model.ForkedSessionId
 import ch.protonmail.android.mailsession.domain.model.SessionError
 import ch.protonmail.android.mailsession.domain.usecase.ForkSession

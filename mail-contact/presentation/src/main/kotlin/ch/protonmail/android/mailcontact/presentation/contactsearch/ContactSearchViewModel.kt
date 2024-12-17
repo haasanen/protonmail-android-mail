@@ -20,7 +20,7 @@ package ch.protonmail.android.mailcontact.presentation.contactsearch
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUserId
+import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailcontact.domain.usecase.SearchContacts
 import ch.protonmail.android.mailcontact.presentation.model.ContactSearchUiModelMapper
 import dagger.hilt.android.lifecycle.HiltViewModel

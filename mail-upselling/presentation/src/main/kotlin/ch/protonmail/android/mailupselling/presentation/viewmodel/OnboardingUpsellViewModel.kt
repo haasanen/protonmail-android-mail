@@ -22,7 +22,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import arrow.core.getOrElse
 import ch.protonmail.android.mailcommon.domain.usecase.IsPaidMailUser
-import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUserId
+import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailupselling.domain.annotations.UpsellingOnboardingEnabled
 import ch.protonmail.android.mailupselling.domain.model.UpsellingEntryPoint
 import ch.protonmail.android.mailupselling.domain.model.telemetry.UpsellingTelemetryEventType

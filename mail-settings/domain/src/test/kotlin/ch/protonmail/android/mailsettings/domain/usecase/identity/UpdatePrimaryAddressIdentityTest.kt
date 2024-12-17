@@ -23,7 +23,7 @@ import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.sample.UserAddressSample
 import ch.protonmail.android.mailcommon.domain.usecase.GetPrimaryAddress
-import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUserId
+import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailsettings.domain.model.DisplayName
 import ch.protonmail.android.mailsettings.domain.model.Signature
 import ch.protonmail.android.mailsettings.domain.model.SignatureValue

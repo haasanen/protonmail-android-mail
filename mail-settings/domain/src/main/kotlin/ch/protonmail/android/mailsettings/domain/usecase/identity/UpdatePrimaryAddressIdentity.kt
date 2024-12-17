@@ -22,7 +22,7 @@ import arrow.core.Either
 import arrow.core.getOrElse
 import arrow.core.raise.either
 import ch.protonmail.android.mailcommon.domain.usecase.GetPrimaryAddress
-import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUserId
+import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailsettings.domain.model.DisplayName
 import ch.protonmail.android.mailsettings.domain.model.Signature
 import ch.protonmail.android.mailsettings.domain.repository.AddressIdentityRepository

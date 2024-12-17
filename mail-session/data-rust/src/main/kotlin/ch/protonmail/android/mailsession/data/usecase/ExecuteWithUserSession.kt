@@ -16,16 +16,36 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailcommon.domain.usecase
+package ch.protonmail.android.mailsession.data.usecase
 
+import arrow.core.Either
+import arrow.core.left
+import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
-import kotlinx.coroutines.flow.Flow
+import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
 import me.proton.core.domain.entity.UserId
+import timber.log.Timber
 import javax.inject.Inject
 
-class ObservePrimaryUserId @Inject constructor(
+class ExecuteWithUserSession @Inject constructor(
     private val userSessionRepository: UserSessionRepository
 ) {
 
-    operator fun invoke(): Flow<UserId?> = userSessionRepository.observePrimaryUserId()
+    suspend operator fun <T> invoke(
+        userId: UserId,
+        action: suspend (MailUserSessionWrapper) -> T
+    ): Either<DataError, T> {
+        val userSession = userSessionRepository.getUserSession(userId)
+        if (userSession == null) {
+            Timber.e("rust-action-with-user-session: Failed to perform action, null user session")
+            return DataError.Local.NoUserSession.left()
+        }
+
+        return Either.catch {
+            action(userSession)
+        }.mapLeft {
+            Timber.e(it, "rust-action-with-user-session: Failed to perform requested action")
+            DataError.Local.Unknown
+        }
+    }
 }

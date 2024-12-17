@@ -19,7 +19,7 @@
 package ch.protonmail.android.mailnotifications.domain.handler
 
 import ch.protonmail.android.mailcommon.domain.coroutines.AppScope
-import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUserId
+import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailcommon.domain.AppInBackgroundState
 import ch.protonmail.android.mailnotifications.domain.usecase.DismissEmailNotificationsForUser
 import kotlinx.coroutines.CoroutineScope

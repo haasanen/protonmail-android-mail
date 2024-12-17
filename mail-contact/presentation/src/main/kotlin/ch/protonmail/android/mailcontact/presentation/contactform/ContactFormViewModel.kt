@@ -24,7 +24,7 @@ import androidx.lifecycle.viewModelScope
 import arrow.core.getOrElse
 import ch.protonmail.android.mailcommon.domain.model.BasicContactInfo
 import ch.protonmail.android.mailcommon.domain.model.decode
-import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUserId
+import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailcontact.domain.usecase.CreateContact
 import ch.protonmail.android.mailcontact.domain.usecase.EditContact
 import ch.protonmail.android.mailcontact.domain.usecase.ObserveDecryptedContact

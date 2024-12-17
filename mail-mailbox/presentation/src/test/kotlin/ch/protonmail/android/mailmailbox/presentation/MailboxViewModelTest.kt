@@ -31,7 +31,7 @@ import ch.protonmail.android.mailcommon.domain.model.AllBottomBarActions
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.sample.ConversationIdSample
-import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUserId
+import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.mapper.ActionUiModelMapper
 import ch.protonmail.android.mailcommon.presentation.model.ActionUiModel

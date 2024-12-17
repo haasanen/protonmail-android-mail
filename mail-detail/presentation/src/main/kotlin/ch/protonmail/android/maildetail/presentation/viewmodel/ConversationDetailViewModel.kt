@@ -31,7 +31,7 @@ import ch.protonmail.android.mailmessage.domain.model.AvatarImageState
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.model.isOfflineError
-import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUserId
+import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailcommon.presentation.mapper.ActionUiModelMapper
 import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
 import ch.protonmail.android.mailcommon.presentation.model.BottomBarEvent

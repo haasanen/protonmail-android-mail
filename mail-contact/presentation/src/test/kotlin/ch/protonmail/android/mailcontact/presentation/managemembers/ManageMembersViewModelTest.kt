@@ -21,7 +21,7 @@ package ch.protonmail.android.mailcontact.presentation.managemembers
 import app.cash.turbine.test
 import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.sample.AvatarInformationSample
-import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUserId
+import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcontact.domain.usecase.ObserveContacts
 import ch.protonmail.android.mailcontact.presentation.model.ManageMembersUiModel

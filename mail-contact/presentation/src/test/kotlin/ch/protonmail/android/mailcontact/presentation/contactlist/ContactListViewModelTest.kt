@@ -24,7 +24,7 @@ import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.sample.AvatarInformationSample
 import ch.protonmail.android.mailcommon.domain.usecase.IsPaidUser
-import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUserId
+import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.mapper.AvatarInformationMapper
 import ch.protonmail.android.mailcommon.presentation.mapper.ColorMapper

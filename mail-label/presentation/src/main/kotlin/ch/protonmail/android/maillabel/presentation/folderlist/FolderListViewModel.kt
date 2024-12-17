@@ -21,7 +21,7 @@ package ch.protonmail.android.maillabel.presentation.folderlist
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import arrow.core.getOrElse
-import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUserId
+import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailcommon.presentation.mapper.ColorMapper
 import ch.protonmail.android.maillabel.domain.model.LabelType
 import ch.protonmail.android.maillabel.domain.usecase.ObserveLabels

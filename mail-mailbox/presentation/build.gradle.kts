@@ -103,6 +103,7 @@ dependencies {
     implementation(project(":presentation-compose"))
     implementation(project(":shared:core:account-manager:domain"))
     implementation(project(":shared:core:account-manager:presentation"))
+    implementation(project(":mail-session:domain"))
 
     debugImplementation(libs.bundles.compose.debug)
 

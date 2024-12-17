@@ -24,7 +24,7 @@ import ch.protonmail.android.mailcommon.datarust.mapper.LocalConversation
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalConversationId
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelAsAction
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
-import ch.protonmail.android.mailcommon.datarust.usecase.ExecuteWithUserSession
+import ch.protonmail.android.mailsession.data.usecase.ExecuteWithUserSession
 import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailconversation.data.ConversationRustCoroutineScope

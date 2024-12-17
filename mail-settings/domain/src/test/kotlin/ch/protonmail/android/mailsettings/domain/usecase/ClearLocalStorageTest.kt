@@ -18,7 +18,7 @@
 
 package ch.protonmail.android.mailsettings.domain.usecase
 
-import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUserId
+import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailsettings.domain.model.ClearDataAction
 import ch.protonmail.android.mailsettings.domain.repository.LocalStorageDataRepository
 import io.mockk.called

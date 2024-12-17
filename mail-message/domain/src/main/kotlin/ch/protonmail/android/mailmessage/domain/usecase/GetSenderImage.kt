@@ -18,7 +18,7 @@
 
 package ch.protonmail.android.mailmessage.domain.usecase
 
-import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUserId
+import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailmessage.domain.model.SenderImage
 import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
 import kotlinx.coroutines.flow.firstOrNull

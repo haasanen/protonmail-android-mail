@@ -78,6 +78,7 @@ dependencies {
     implementation(project(":design-system"))
     implementation(project(":presentation-compose"))
     implementation(project(":shared:core:account-manager:presentation"))
+    implementation(project(":mail-session:domain"))
 
     testImplementation(libs.bundles.test)
     testImplementation(libs.proton.rust.core)

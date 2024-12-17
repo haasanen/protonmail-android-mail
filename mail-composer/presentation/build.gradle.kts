@@ -84,6 +84,7 @@ dependencies {
     implementation(project(":design-system"))
     implementation(project(":presentation-compose"))
     implementation(project(":mail-label:domain"))
+    implementation(project(":mail-session:domain"))
 
     debugImplementation(libs.bundles.compose.debug)
 

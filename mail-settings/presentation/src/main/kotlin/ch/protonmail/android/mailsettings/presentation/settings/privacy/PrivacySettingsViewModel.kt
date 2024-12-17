@@ -21,7 +21,7 @@ package ch.protonmail.android.mailsettings.presentation.settings.privacy
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import arrow.core.getOrElse
-import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUserId
+import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailsettings.domain.usecase.privacy.ObservePrivacySettings
 import ch.protonmail.android.mailsettings.domain.usecase.privacy.UpdateAutoShowEmbeddedImagesSetting
 import ch.protonmail.android.mailsettings.domain.usecase.privacy.UpdateBackgroundSyncSetting

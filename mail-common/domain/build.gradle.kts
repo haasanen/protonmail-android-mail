@@ -49,8 +49,6 @@ android {
 dependencies {
     kapt(libs.bundles.app.annotationProcessors)
 
-    implementation(project(":mail-session:domain"))
-
     kapt(libs.bundles.test)
     implementation(libs.bundles.module.domain)
     implementation(libs.proton.core.accountManager)

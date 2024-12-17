@@ -20,7 +20,7 @@ package ch.protonmail.android.mailsettings.presentation
 
 import app.cash.turbine.ReceiveTurbine
 import app.cash.turbine.test
-import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUserId
+import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailcommon.presentation.model.DialogState
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailsettings.domain.usecase.ObserveMailSettings

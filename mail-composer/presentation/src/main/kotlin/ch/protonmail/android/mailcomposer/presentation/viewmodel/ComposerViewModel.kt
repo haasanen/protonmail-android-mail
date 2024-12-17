@@ -29,7 +29,7 @@ import ch.protonmail.android.mailcommon.domain.model.IntentShareInfo
 import ch.protonmail.android.mailcommon.domain.model.decode
 import ch.protonmail.android.mailcommon.domain.model.hasEmailData
 import ch.protonmail.android.mailcommon.domain.usecase.GetPrimaryAddress
-import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUserId
+import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcomposer.domain.annotations.NewContactSuggestionsEnabled
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody

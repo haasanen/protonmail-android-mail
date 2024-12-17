@@ -21,7 +21,7 @@ package ch.protonmail.android.mailcomposer.presentation.viewmodel
 import androidx.lifecycle.SavedStateHandle
 import app.cash.turbine.test
 import arrow.core.right
-import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUserId
+import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcomposer.domain.model.MessagePassword
 import ch.protonmail.android.mailcomposer.domain.model.SenderEmail

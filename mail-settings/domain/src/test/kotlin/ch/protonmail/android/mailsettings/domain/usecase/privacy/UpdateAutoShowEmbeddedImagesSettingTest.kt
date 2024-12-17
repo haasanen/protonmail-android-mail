@@ -21,7 +21,7 @@ package ch.protonmail.android.mailsettings.domain.usecase.privacy
 import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUserId
+import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.confirmVerified

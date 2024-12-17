@@ -22,7 +22,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import arrow.core.getOrElse
 import ch.protonmail.android.mailcommon.domain.usecase.IsPaidUser
-import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUserId
+import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailcontact.domain.model.ContactId
 import ch.protonmail.android.mailcontact.domain.usecase.DeleteContact
 import ch.protonmail.android.mailcontact.domain.usecase.ObserveGroupedContacts

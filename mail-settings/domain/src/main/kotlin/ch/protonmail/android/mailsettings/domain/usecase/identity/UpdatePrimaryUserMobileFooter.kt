@@ -20,7 +20,7 @@ package ch.protonmail.android.mailsettings.domain.usecase.identity
 
 import arrow.core.Either
 import arrow.core.raise.either
-import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUserId
+import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailsettings.domain.model.MobileFooterPreference
 import ch.protonmail.android.mailsettings.domain.repository.MobileFooterRepository
 import kotlinx.coroutines.flow.firstOrNull

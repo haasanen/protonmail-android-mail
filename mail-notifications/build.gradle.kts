@@ -77,6 +77,7 @@ dependencies {
     implementation(project(":mail-pagination:domain"))
     implementation(project(":mail-message:domain"))
     implementation(project(":mail-settings:domain"))
+    implementation(project(":mail-session:domain"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.datastore.preferences)

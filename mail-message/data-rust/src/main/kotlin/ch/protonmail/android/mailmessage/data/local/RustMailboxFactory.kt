@@ -21,7 +21,7 @@ package ch.protonmail.android.mailmessage.data.local
 import arrow.core.Either
 import arrow.core.right
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
-import ch.protonmail.android.mailcommon.datarust.usecase.ExecuteWithUserSession
+import ch.protonmail.android.mailsession.data.usecase.ExecuteWithUserSession
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.maillabel.data.mapper.toLocalLabelId
 import ch.protonmail.android.maillabel.domain.SelectedMailLabelId

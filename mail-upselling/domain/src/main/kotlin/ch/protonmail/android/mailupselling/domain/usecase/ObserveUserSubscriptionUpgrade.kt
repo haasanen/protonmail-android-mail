@@ -19,7 +19,7 @@
 package ch.protonmail.android.mailupselling.domain.usecase
 
 import ch.protonmail.android.mailcommon.domain.coroutines.AppScope
-import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUserId
+import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailupselling.domain.model.UserUpgradeState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job

@@ -21,7 +21,7 @@ package ch.protonmail.android.mailcomposer.presentation.viewmodel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUserId
+import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailcomposer.domain.usecase.DeleteMessagePassword
 import ch.protonmail.android.mailcomposer.domain.usecase.ObserveMessagePassword
 import ch.protonmail.android.mailcomposer.domain.usecase.SaveMessagePassword

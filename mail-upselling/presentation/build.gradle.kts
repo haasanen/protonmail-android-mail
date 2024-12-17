@@ -62,6 +62,7 @@ dependencies {
     implementation(project(":uicomponents"))
     implementation(project(":design-system"))
     implementation(project(":presentation-compose"))
+    implementation(project(":mail-session:domain"))
 
     debugImplementation(libs.bundles.compose.debug)
 

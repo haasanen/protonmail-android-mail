@@ -22,7 +22,7 @@ import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUserId
+import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import kotlinx.coroutines.flow.firstOrNull
 import ch.protonmail.android.mailsettings.domain.repository.MailSettingsRepository
 import javax.inject.Inject

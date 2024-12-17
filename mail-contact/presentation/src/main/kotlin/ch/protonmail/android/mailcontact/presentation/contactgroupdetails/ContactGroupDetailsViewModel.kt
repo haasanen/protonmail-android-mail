@@ -22,7 +22,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import arrow.core.getOrElse
-import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUserId
+import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailcontact.domain.model.ContactGroupId
 import ch.protonmail.android.mailcontact.domain.usecase.DeleteContactGroup
 import ch.protonmail.android.mailcontact.domain.usecase.ObserveContactGroup

@@ -20,7 +20,7 @@ package ch.protonmail.android.maillabel.domain.usecase
 
 import app.cash.turbine.test
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
-import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUserId
+import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.maillabel.domain.SelectedMailLabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId

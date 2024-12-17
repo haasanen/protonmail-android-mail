@@ -19,7 +19,7 @@
 package ch.protonmail.android.maillabel.domain
 
 import ch.protonmail.android.mailcommon.domain.coroutines.AppScope
-import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUserId
+import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.maillabel.domain.usecase.FindLocalSystemLabelId

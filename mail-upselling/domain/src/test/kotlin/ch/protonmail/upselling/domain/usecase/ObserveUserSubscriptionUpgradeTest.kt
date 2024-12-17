@@ -19,7 +19,7 @@
 package ch.protonmail.upselling.domain.usecase
 
 import ch.protonmail.android.mailcommon.domain.sample.UserSample
-import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUserId
+import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailupselling.domain.model.UserUpgradeState
 import ch.protonmail.android.mailupselling.domain.usecase.ObserveUserSubscriptionUpgrade
 import ch.protonmail.upselling.domain.UpsellingTestData

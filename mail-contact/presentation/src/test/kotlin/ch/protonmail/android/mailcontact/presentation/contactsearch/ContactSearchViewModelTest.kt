@@ -21,7 +21,7 @@ package ch.protonmail.android.mailcontact.presentation.contactsearch
 import androidx.compose.ui.graphics.Color
 import app.cash.turbine.test
 import arrow.core.right
-import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUserId
+import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
