@@ -18,10 +18,12 @@
 
 package ch.protonmail.android.maildetail.presentation.ui.header
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.maildetail.presentation.R
 import ch.protonmail.android.maildetail.presentation.model.MessageDetailHeaderUiModel
 import ch.protonmail.android.mailmessage.domain.model.MessageId
@@ -32,7 +34,10 @@ fun MessageDetailHeaderActions(
     uiModel: MessageDetailHeaderUiModel,
     actions: MessageDetailHeader.Actions
 ) {
-    Row(modifier = modifier) {
+    Row(
+        modifier = modifier,
+        horizontalArrangement = Arrangement.spacedBy(ProtonDimens.Spacing.Small)
+    ) {
         if (uiModel.recipientsCount > 1) {
             ReplyAllActionButton(action = { actions.onReplyAll(MessageId(uiModel.messageIdUiModel.id)) })
         } else {

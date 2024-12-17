@@ -38,13 +38,10 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
-import androidx.compose.material3.IconButtonDefaults
-import androidx.compose.material3.OutlinedIconButton
-import androidx.compose.material3.ShapeDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -56,6 +53,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
@@ -65,6 +63,7 @@ import androidx.constraintlayout.compose.ConstrainedLayoutReference
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.constraintlayout.compose.Visibility
+import ch.protonmail.android.design.compose.component.ProtonOutlinedIconButton
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 import ch.protonmail.android.mailcommon.presentation.compose.OfficialBadge
 import ch.protonmail.android.mailcommon.presentation.compose.SmallNonClickableIcon
@@ -87,7 +86,8 @@ import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodySmallNorm
 import ch.protonmail.android.design.compose.theme.bodySmallWeak
 import ch.protonmail.android.design.compose.theme.bodyMediumNorm
-import ch.protonmail.android.design.compose.theme.titleSmallNorm
+import ch.protonmail.android.design.compose.theme.titleMediumNorm
+import ch.protonmail.android.maildetail.presentation.ui.common.SingleLineRecipientNames
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
@@ -139,9 +139,9 @@ private fun MessageDetailHeaderLayout(
                 enabled = !isExpanded
             ) { actions.onClick() }
             .padding(
-                start = ProtonDimens.Spacing.Standard + ProtonDimens.Spacing.Small,
+                start = ProtonDimens.Spacing.Large,
                 end = ProtonDimens.Spacing.Large,
-                top = ProtonDimens.Spacing.Standard,
+                top = ProtonDimens.Spacing.Large,
                 bottom = ProtonDimens.Spacing.Large
             )
             .testTag(MessageDetailHeaderTestTags.RootItem)
@@ -178,7 +178,7 @@ private fun MessageDetailHeaderLayout(
 
         ParticipantAvatar(
             modifier = modifier.constrainAs(avatarRef) {
-                top.linkTo(parent.top, margin = ProtonDimens.Spacing.Standard)
+                top.linkTo(parent.top)
                 start.linkTo(parent.start)
             },
             avatarUiModel = uiModel.avatar,
@@ -189,8 +189,8 @@ private fun MessageDetailHeaderLayout(
         SenderName(
             modifier = modifier.constrainAs(senderNameRef) {
                 width = Dimension.fillToConstraints
-                top.linkTo(parent.top, margin = ProtonDimens.Spacing.Standard)
-                start.linkTo(avatarRef.end, margin = ProtonDimens.Spacing.Standard)
+                top.linkTo(parent.top)
+                start.linkTo(avatarRef.end, margin = ProtonDimens.Spacing.Large)
                 end.linkTo(iconsRef.start, margin = ProtonDimens.Spacing.Standard)
             },
             participantUiModel = uiModel.sender
@@ -200,7 +200,7 @@ private fun MessageDetailHeaderLayout(
             modifier = modifier.constrainAs(senderAddressRef) {
                 width = Dimension.fillToConstraints
                 top.linkTo(senderNameRef.bottom, margin = ProtonDimens.Spacing.Small)
-                start.linkTo(avatarRef.end, margin = ProtonDimens.Spacing.Standard)
+                start.linkTo(avatarRef.end, margin = ProtonDimens.Spacing.Large)
                 end.linkTo(headerActionsRef.start, margin = ProtonDimens.Spacing.Standard)
             },
             participantUiModel = uiModel.sender,
@@ -224,8 +224,8 @@ private fun MessageDetailHeaderLayout(
 
         Time(
             modifier = modifier.constrainAs(timeRef) {
-                top.linkTo(parent.top, margin = ProtonDimens.Spacing.Standard)
-                end.linkTo(parent.end, margin = ProtonDimens.Spacing.Small)
+                top.linkTo(parent.top)
+                end.linkTo(parent.end)
             },
             time = uiModel.time
         )
@@ -234,7 +234,7 @@ private fun MessageDetailHeaderLayout(
             modifier = modifier
                 .testTag(MessageDetailHeaderTestTags.ActionsRootItem)
                 .constrainAs(headerActionsRef) {
-                    top.linkTo(senderNameRef.bottom)
+                    top.linkTo(senderAddressRef.top)
                     end.linkTo(parent.end)
                 },
             uiModel = uiModel,
@@ -244,12 +244,13 @@ private fun MessageDetailHeaderLayout(
         AllRecipients(
             modifier = modifier.constrainAs(allRecipientsRef) {
                 width = Dimension.fillToConstraints
-                top.linkTo(senderAddressRef.bottom, margin = ProtonDimens.Spacing.Small)
-                start.linkTo(avatarRef.end, margin = ProtonDimens.Spacing.Standard)
+                top.linkTo(senderAddressRef.bottom, margin = ProtonDimens.Spacing.Standard)
+                start.linkTo(avatarRef.end, margin = ProtonDimens.Spacing.Large)
                 end.linkTo(headerActionsRef.start, margin = ProtonDimens.Spacing.Standard)
                 visibility = visibleWhen(!isExpanded)
             },
-            allRecipients = uiModel.allRecipients
+            allRecipients = uiModel.allRecipients,
+            hasUndisclosedRecipients = uiModel.shouldShowUndisclosedRecipients
         )
 
         RecipientsTitle(
@@ -460,7 +461,7 @@ private fun SenderName(modifier: Modifier = Modifier, participantUiModel: Partic
             text = participantUiModel.participantName,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
-            style = ProtonTheme.typography.titleSmallNorm
+            style = ProtonTheme.typography.titleMediumNorm
         )
         if (participantUiModel.shouldShowOfficialBadge) {
             OfficialBadge()
@@ -485,7 +486,7 @@ private fun SenderAddress(
         ParticipantText(
             modifier = Modifier.testTag(MessageDetailHeaderTestTags.SenderAddress),
             text = participantUiModel.participantAddress,
-            textColor = ProtonTheme.colors.textAccent,
+            textColor = ProtonTheme.colors.textWeak,
             clickable = isExpanded,
             shouldBreak = isExpanded,
             onClick = { onClick(participantUiModel) }
@@ -531,8 +532,15 @@ private fun Time(modifier: Modifier = Modifier, time: TextUiModel) {
 }
 
 @Composable
-private fun AllRecipients(modifier: Modifier = Modifier, allRecipients: TextUiModel) {
-    Row(modifier = modifier) {
+private fun AllRecipients(
+    modifier: Modifier = Modifier,
+    allRecipients: ImmutableList<ParticipantUiModel>,
+    hasUndisclosedRecipients: Boolean
+) {
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
         Text(
             modifier = Modifier
                 .testTag(MessageDetailHeaderTestTags.AllRecipientsText)
@@ -540,13 +548,29 @@ private fun AllRecipients(modifier: Modifier = Modifier, allRecipients: TextUiMo
             text = stringResource(R.string.to),
             style = ProtonTheme.typography.bodySmallNorm
         )
-        Text(
-            modifier = Modifier.testTag(MessageDetailHeaderTestTags.AllRecipientsValue),
-            text = allRecipients.string(),
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-            style = ProtonTheme.typography.bodySmallWeak
-        )
+        Row(
+            modifier = Modifier.weight(1f, fill = false),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            SingleLineRecipientNames(
+                modifier = Modifier.weight(1f, fill = false),
+                textStyle = ProtonTheme.typography.bodySmallWeak,
+                fontWeight = FontWeight.Normal,
+                fontColor = ProtonTheme.colors.textWeak,
+                recipients = allRecipients,
+                hasUndisclosedRecipients = hasUndisclosedRecipients
+            )
+
+            Spacer(modifier = Modifier.width(ProtonDimens.Spacing.Small))
+
+            Icon(
+                modifier = Modifier
+                    .size(MailDimens.MessageDetailsHeader.CollapseExpandButtonSize),
+                painter = painterResource(id = R.drawable.ic_proton_chevron_tiny_down),
+                contentDescription = null,
+                tint = ProtonTheme.colors.iconWeak
+            )
+        }
     }
 }
 
@@ -631,18 +655,16 @@ internal fun MessageDetailHeaderButton(
     @StringRes contentDescriptionResource: Int,
     onClick: () -> Unit
 ) {
-    OutlinedIconButton(
-        modifier = modifier.wrapContentSize(),
-        shape = ShapeDefaults.Medium,
-        border = BorderStroke(MailDimens.DefaultBorder, ProtonTheme.colors.separatorNorm),
-        colors = IconButtonDefaults.filledIconButtonColors(
-            containerColor = ProtonTheme.colors.backgroundNorm
-        ),
+    ProtonOutlinedIconButton(
+        buttonSize = MailDimens.MessageDetailsHeader.ButtonSize,
+        shape = ProtonTheme.shapes.mediumLarge,
+        border = BorderStroke(MailDimens.DefaultBorder, ProtonTheme.colors.borderNorm),
         onClick = onClick
     ) {
         Icon(
+            modifier = Modifier.size(MailDimens.MessageDetailsHeader.ButtonIconSize),
             painter = painterResource(id = iconResource),
-            tint = ProtonTheme.colors.iconNorm,
+            tint = ProtonTheme.colors.iconWeak,
             contentDescription = stringResource(contentDescriptionResource)
         )
     }
