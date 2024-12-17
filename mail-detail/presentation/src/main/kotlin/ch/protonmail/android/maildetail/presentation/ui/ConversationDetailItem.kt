@@ -151,7 +151,11 @@ private fun ConversationDetailExpandedItem(
         onMore = actions.onMoreMessageActionsClick,
         onAvatarClicked = actions.onAvatarClicked,
         onAvatarImageLoadRequested = actions.onAvatarImageLoadRequested,
-        onParticipantClicked = actions.onParticipantClicked,
+        onParticipantClicked = { participantUiModel, avatarUiModel ->
+            if (avatarUiModel != null) {
+                actions.onParticipantClicked(participantUiModel, avatarUiModel)
+            }
+        },
         onShowFeatureMissingSnackbar = actions.showFeatureMissingSnackbar
     )
 

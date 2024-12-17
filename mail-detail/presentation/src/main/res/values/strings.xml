@@ -114,4 +114,8 @@
     <string name="show">Show</string>
     <string name="hide">Hide</string>
     <string name="recipient_me">me</string>
+    <string name="message_details_header_from">From</string>
+    <string name="message_details_header_to">To</string>
+    <string name="message_details_header_cc">Cc</string>
+    <string name="message_details_header_bcc">Bcc</string>
 </resources>
