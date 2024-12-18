@@ -22,6 +22,12 @@ import android.annotation.SuppressLint
 import android.content.res.Configuration
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.ReportDrawn
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -44,12 +50,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FabPosition
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -61,6 +69,7 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -337,6 +346,12 @@ fun MailboxScreen(
     val rememberTopBarHeight = remember { mutableStateOf(0.dp) }
     val refreshErrorText = stringResource(id = R.string.mailbox_error_message_generic)
 
+    val showMinimizedFab by remember {
+        derivedStateOf {
+            lazyListState.lastScrolledForward
+        }
+    }
+
     UndoableOperationSnackbar(snackbarHostState = snackbarHostState, actionEffect = mailboxState.actionResult)
 
     ConsumableTextEffect(effect = mailboxState.error) {
@@ -356,7 +371,10 @@ fun MailboxScreen(
             val mailboxListState = mailboxState.mailboxListState
 
             if (mailboxListState is MailboxListState.Data && mailboxListState.shouldShowFab) {
-                ComposeNewMailFab(onComposeClick = actions.navigateToComposer)
+                AnimatedComposeMailFab(
+                    showMinimized = showMinimizedFab,
+                    onComposeClick = actions.navigateToComposer
+                )
             }
         },
         floatingActionButtonPosition = FabPosition.EndOverlay,
@@ -473,7 +491,24 @@ fun MailboxScreen(
 }
 
 @Composable
-fun ComposeNewMailFab(onComposeClick: () -> Unit) {
+fun AnimatedComposeMailFab(showMinimized: Boolean, onComposeClick: () -> Unit) {
+    AnimatedContent(
+        targetState = showMinimized,
+        transitionSpec = {
+            (scaleIn(initialScale = 0.8f) + fadeIn())
+                .togetherWith(scaleOut(targetScale = 0.8f) + fadeOut())
+        }
+    ) { minimized ->
+        if (minimized) {
+            IconOnlyComposeMailFab(onComposeClick)
+        } else {
+            ComposeMailFab(onComposeClick)
+        }
+    }
+}
+
+@Composable
+fun ComposeMailFab(onComposeClick: () -> Unit) {
 
     ExtendedFloatingActionButton(
         onClick = { onComposeClick() },
@@ -492,7 +527,10 @@ fun ComposeNewMailFab(onComposeClick: () -> Unit) {
             )
         },
         modifier = Modifier
-            .border(1.dp, ProtonTheme.colors.borderNorm, RoundedCornerShape(MailDimens.MailboxFabRadius))
+            .border(
+                ProtonDimens.OutlinedBorderSize,
+                ProtonTheme.colors.borderNorm, RoundedCornerShape(MailDimens.MailboxFabRadius)
+            )
             .background(
                 color = ProtonTheme.colors.interactionFabNorm,
                 shape = RoundedCornerShape(MailDimens.MailboxFabRadius)
@@ -513,6 +551,39 @@ fun ComposeNewMailFab(onComposeClick: () -> Unit) {
             pressedElevation = 0.dp
         )
     )
+}
+
+@Composable
+fun IconOnlyComposeMailFab(onComposeClick: () -> Unit) {
+    FloatingActionButton(
+        onClick = { onComposeClick() },
+        modifier = Modifier
+            .border(
+                width = 1.dp,
+                color = ProtonTheme.colors.borderNorm,
+                shape = CircleShape
+            )
+            .shadow(
+                elevation = 4.dp,
+                shape = CircleShape,
+                clip = false,
+                ambientColor = ProtonTheme.colors.shadowLifted.copy(alpha = 0.4f),
+                spotColor = ProtonTheme.colors.shadowLifted.copy(alpha = 0.4f)
+            ),
+        shape = RoundedCornerShape(MailDimens.MailboxFabRadius),
+        containerColor = ProtonTheme.colors.interactionFabNorm,
+        contentColor = ProtonTheme.colors.brandNorm,
+        elevation = FloatingActionButtonDefaults.elevation(
+            defaultElevation = 0.dp,
+            pressedElevation = 0.dp
+        )
+    ) {
+        Icon(
+            painter = painterResource(id = R.drawable.ic_proton_pen_square),
+            contentDescription = stringResource(id = R.string.mailbox_fab_compose_button_content_description),
+            tint = ProtonTheme.colors.brandNorm
+        )
+    }
 }
 
 @Composable
