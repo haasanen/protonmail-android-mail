@@ -68,7 +68,8 @@ sealed interface MailboxListState {
             override val searchState: MailboxSearchState,
             override val shouldShowFab: Boolean,
             override val avatarImagesUiModel: AvatarImagesUiModel,
-            val selectedMailboxItems: Set<SelectedMailboxItem>
+            val selectedMailboxItems: Set<SelectedMailboxItem>,
+            val areAllItemsSelected: Boolean
         ) : Data {
 
             data class SelectedMailboxItem(

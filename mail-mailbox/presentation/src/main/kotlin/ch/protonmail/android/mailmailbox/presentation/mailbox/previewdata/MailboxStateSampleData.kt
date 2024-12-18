@@ -167,7 +167,8 @@ object MailboxStateSampleData {
             searchState = MailboxSearchState.NotSearching,
             clearState = MailboxListState.Data.ClearState.Hidden,
             shouldShowFab = false,
-            avatarImagesUiModel = AvatarImagesUiModel.Empty
+            avatarImagesUiModel = AvatarImagesUiModel.Empty,
+            areAllItemsSelected = false
         ),
         topAppBarState = MailboxTopAppBarState.Data.SelectionMode(
             currentLabelName = inboxDynamicLabel.text(),
