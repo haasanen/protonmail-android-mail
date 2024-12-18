@@ -75,7 +75,7 @@ fun MailboxTopAppBar(
                 state.selectedCount,
                 state.selectedCount
             ),
-            navigationIconRes = R.drawable.ic_proton_arrow_left,
+            navigationIconRes = R.drawable.ic_arrow_left,
             navigationIconContentDescription =
             stringResource(id = R.string.mailbox_toolbar_exit_selection_mode_button_content_description),
             shouldShowActions = false,
@@ -83,7 +83,7 @@ fun MailboxTopAppBar(
         )
 
         is MailboxTopAppBarState.Data.SearchMode -> UiModel.Empty.copy(
-            navigationIconRes = R.drawable.ic_proton_arrow_left,
+            navigationIconRes = R.drawable.ic_arrow_left,
             navigationIconContentDescription = stringResource(
                 id = R.string.mailbox_toolbar_exit_search_mode_content_description
             ),
