@@ -193,6 +193,10 @@ fun MailboxScreen(
     val completeActions = actions.copy(
         onDisableUnreadFilter = { viewModel.submit(MailboxViewAction.DisableUnreadFilter) },
         onEnableUnreadFilter = { viewModel.submit(MailboxViewAction.EnableUnreadFilter) },
+        onSelectAllClicked = {
+            viewModel.submit(MailboxViewAction.SelectAll(mailboxListItems.itemSnapshotList.items))
+        },
+        onDeselectAllClicked = { viewModel.submit(MailboxViewAction.DeselectAll) },
         onExitSelectionMode = { viewModel.submit(MailboxViewAction.ExitSelectionMode) },
         onOfflineWithData = { viewModel.submit(MailboxViewAction.OnOfflineWithData) },
         onErrorWithData = { viewModel.submit(MailboxViewAction.OnErrorWithData) },
@@ -352,6 +356,13 @@ fun MailboxScreen(
         }
     }
 
+    val stickyHeaderActions = MailboxStickyHeader.Actions(
+        onUnreadFilterEnabled = actions.onEnableUnreadFilter,
+        onUnreadFilterDisabled = actions.onDisableUnreadFilter,
+        onSelectAllClicked = actions.onSelectAllClicked,
+        onDeselectAllClicked = actions.onDeselectAllClicked
+    )
+
     UndoableOperationSnackbar(snackbarHostState = snackbarHostState, actionEffect = mailboxState.actionResult)
 
     ConsumableTextEffect(effect = mailboxState.error) {
@@ -402,11 +413,11 @@ fun MailboxScreen(
                 )
 
                 if (mailboxState.topAppBarState !is MailboxTopAppBarState.Data.SearchMode) {
+
                     MailboxStickyHeader(
                         modifier = Modifier,
-                        state = mailboxState.unreadFilterState,
-                        onFilterEnabled = actions.onEnableUnreadFilter,
-                        onFilterDisabled = actions.onDisableUnreadFilter
+                        state = mailboxState,
+                        actions = stickyHeaderActions
                     )
                 }
             }
@@ -582,28 +593,6 @@ fun IconOnlyComposeMailFab(onComposeClick: () -> Unit) {
             painter = painterResource(id = R.drawable.ic_proton_pen_square),
             contentDescription = stringResource(id = R.string.mailbox_fab_compose_button_content_description),
             tint = ProtonTheme.colors.brandNorm
-        )
-    }
-}
-
-@Composable
-private fun MailboxStickyHeader(
-    modifier: Modifier = Modifier,
-    state: UnreadFilterState,
-    onFilterEnabled: () -> Unit,
-    onFilterDisabled: () -> Unit
-) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = ProtonDimens.Spacing.Large),
-        horizontalArrangement = Arrangement.Start
-    ) {
-        UnreadItemsFilter(
-            modifier = Modifier,
-            state = state,
-            onFilterEnabled = onFilterEnabled,
-            onFilterDisabled = onFilterDisabled
         )
     }
 }
@@ -1138,6 +1127,8 @@ object MailboxScreen {
         val navigateToComposer: () -> Unit,
         val onDisableUnreadFilter: () -> Unit,
         val onEnableUnreadFilter: () -> Unit,
+        val onSelectAllClicked: () -> Unit,
+        val onDeselectAllClicked: () -> Unit,
         val onExitSelectionMode: () -> Unit,
         val onItemClicked: (MailboxItemUiModel) -> Unit,
         val onItemLongClicked: (MailboxItemUiModel) -> Unit,
@@ -1190,6 +1181,8 @@ object MailboxScreen {
                 navigateToComposer = {},
                 onDisableUnreadFilter = {},
                 onEnableUnreadFilter = {},
+                onSelectAllClicked = {},
+                onDeselectAllClicked = {},
                 onExitSelectionMode = {},
                 onItemClicked = {},
                 onItemLongClicked = {},
