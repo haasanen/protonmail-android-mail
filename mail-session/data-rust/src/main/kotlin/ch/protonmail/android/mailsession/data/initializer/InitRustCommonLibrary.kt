@@ -51,11 +51,8 @@ class InitRustCommonLibrary @Inject constructor(
             logDir = context.filesDir.absolutePath,
             logDebug = config.isDebug,
             apiEnvConfig = ApiConfig(
-                allowInsecureNetworking,
-                config.appVersion,
-                baseApiUrl.toString().removeSuffix("/"),
-                skipSrpProofValidation,
-                config.userAgent
+                appVersion = config.appVersion,
+                userAgent = config.userAgent
             )
         )
         Timber.d("rust-session: Initializing the Rust Lib with $sessionParams")
@@ -78,6 +75,6 @@ class InitRustCommonLibrary @Inject constructor(
     private fun isRunningAgainstMockWebserver(baseApiUrl: HttpUrl) = baseApiUrl.host == "localhost"
 
     companion object {
-        private const val CACHE_SIZE = 100_000_000u
+        private const val CACHE_SIZE = 1_000000uL
     }
 }
