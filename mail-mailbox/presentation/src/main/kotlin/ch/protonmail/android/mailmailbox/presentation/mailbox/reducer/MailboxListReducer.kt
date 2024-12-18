@@ -63,7 +63,8 @@ class MailboxListReducer @Inject constructor(
             )
 
             is MailboxEvent.ItemsRemovedFromSelection -> reduceItemsRemovedFromSelection(operation, currentState)
-
+            is MailboxEvent.AllItemsSelected -> reduceAllItemsSelected(operation, currentState)
+            is MailboxEvent.AllItemsDeselected -> reduceAllItemsDeselected(currentState)
             is MailboxEvent.DeleteConfirmed,
             is MailboxViewAction.MoveToConfirmed,
             is MailboxViewAction.MoveToArchive,
@@ -332,7 +333,8 @@ class MailboxListReducer @Inject constructor(
                 clearState = currentState.clearState,
                 searchState = currentState.searchState,
                 avatarImagesUiModel = currentState.avatarImagesUiModel,
-                shouldShowFab = false
+                shouldShowFab = false,
+                areAllItemsSelected = false
             )
 
             else -> currentState
@@ -379,6 +381,7 @@ class MailboxListReducer @Inject constructor(
     ) = when (currentState) {
         is MailboxListState.Data.SelectionMode ->
             currentState.copy(
+                areAllItemsSelected = false,
                 selectedMailboxItems = currentState.selectedMailboxItems
                     .filterNot { it.id == operation.item.id }
                     .toSet()
@@ -392,9 +395,35 @@ class MailboxListReducer @Inject constructor(
         currentState: MailboxListState
     ) = when (currentState) {
         is MailboxListState.Data.SelectionMode -> currentState.copy(
+            areAllItemsSelected = false,
             selectedMailboxItems = currentState.selectedMailboxItems
                 .filterNot { operation.itemIds.contains(it.id) }
                 .toSet()
+        )
+
+        else -> currentState
+    }
+
+    private fun reduceAllItemsSelected(operation: MailboxEvent.AllItemsSelected, currentState: MailboxListState) =
+        when (currentState) {
+            is MailboxListState.Data.SelectionMode -> currentState.copy(
+                areAllItemsSelected = true,
+                selectedMailboxItems = operation.allItems.map { item ->
+                    SelectedMailboxItem(
+                        id = item.id,
+                        isRead = item.isRead,
+                        isStarred = item.isStarred
+                    )
+                }.toSet()
+            )
+
+            else -> currentState
+        }
+
+    private fun reduceAllItemsDeselected(currentState: MailboxListState) = when (currentState) {
+        is MailboxListState.Data.SelectionMode -> currentState.copy(
+            areAllItemsSelected = false,
+            selectedMailboxItems = emptySet()
         )
 
         else -> currentState

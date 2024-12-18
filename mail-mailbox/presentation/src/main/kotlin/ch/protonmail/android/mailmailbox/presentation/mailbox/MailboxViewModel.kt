@@ -406,8 +406,18 @@ class MailboxViewModel @Inject constructor(
                     selectedMailLabelId.set(MailLabelId.System(SystemLabelId.Inbox.labelId))
 
                 is MailboxViewAction.ShowRatingBooster -> showRatingBooster(viewAction)
+                is MailboxViewAction.SelectAll -> handleSelectAllAction(viewAction)
+                is MailboxViewAction.DeselectAll -> handleDeselectAllAction()
             }.exhaustive
         }
+    }
+
+    private fun handleSelectAllAction(action: MailboxViewAction.SelectAll) {
+        emitNewStateFrom(MailboxEvent.AllItemsSelected(action.allItems))
+    }
+
+    private fun handleDeselectAllAction() {
+        emitNewStateFrom(MailboxEvent.AllItemsDeselected)
     }
 
     private fun revokeStorageConfirmationsIfNeeded(

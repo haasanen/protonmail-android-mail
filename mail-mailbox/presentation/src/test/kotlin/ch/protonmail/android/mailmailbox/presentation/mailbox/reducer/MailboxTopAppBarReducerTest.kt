@@ -306,6 +306,7 @@ internal class MailboxTopAppBarReducerTest(
                     selectedCount = 42
                 )
             )
+
         )
 
         private val transitionsFromSearchModeState = listOf(
