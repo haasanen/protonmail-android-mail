@@ -157,6 +157,8 @@ internal sealed interface MailboxViewAction : MailboxOperation {
     object NavigateToInboxLabel : MailboxViewAction
     object RequestUpsellingBottomSheet : MailboxViewAction, AffectingBottomSheet
     data class ShowRatingBooster(val context: Context) : MailboxViewAction
+    data class SelectAll(val allItems: List<MailboxItemUiModel>) : MailboxViewAction
+    data object DeselectAll : MailboxViewAction
 }
 
 internal sealed interface MailboxEvent : MailboxOperation {
@@ -243,6 +245,13 @@ internal sealed interface MailboxEvent : MailboxOperation {
     data class ItemsRemovedFromSelection(
         val itemIds: List<String>
     ) : MailboxEvent, AffectingMailboxList, AffectingTopAppBar
+
+    data class AllItemsSelected(
+        val allItems: List<MailboxItemUiModel>
+    ) : MailboxEvent, AffectingMailboxList, AffectingTopAppBar
+
+    data object AllItemsDeselected :
+        MailboxEvent, AffectingMailboxList, AffectingTopAppBar
 
     data class MessageBottomBarEvent(
         val bottomBarEvent: BottomBarEvent
