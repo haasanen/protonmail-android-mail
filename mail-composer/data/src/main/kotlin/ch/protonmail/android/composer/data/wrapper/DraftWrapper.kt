@@ -18,9 +18,10 @@
 
 package ch.protonmail.android.composer.data.wrapper
 
+import uniffi.proton_mail_uniffi.ComposerRecipientList
 import uniffi.proton_mail_uniffi.Draft
 
-class DraftWrapper constructor(private val rustDraft: Draft) {
+class DraftWrapper(private val rustDraft: Draft) {
 
     fun subject(): String = rustDraft.subject()
 
@@ -28,10 +29,10 @@ class DraftWrapper constructor(private val rustDraft: Draft) {
 
     fun body(): String = rustDraft.body()
 
-    fun recipientsTo(): List<String> = rustDraft.toRecipients()
+    fun recipientsTo(): ComposerRecipientList = rustDraft.toRecipients()
 
-    fun recipientsCc(): List<String> = rustDraft.ccRecipients()
+    fun recipientsCc(): ComposerRecipientList = rustDraft.ccRecipients()
 
-    fun recipientsBcc(): List<String> = rustDraft.bccRecipients()
+    fun recipientsBcc(): ComposerRecipientList = rustDraft.bccRecipients()
 
 }

@@ -44,13 +44,15 @@ fun LocalDraft.toDraftFields() = DraftFields(
     originalHtmlQuote = null
 )
 
+@MissingRustApi
+// Recipients (single + groups) to be mapped to objects we own from wrapper, to allow mocking
 fun DraftWrapper.toLocalDraft() = LocalDraft(
     subject = this.subject(),
     sender = this.sender(),
     body = this.body(),
-    recipientsTo = this.recipientsTo(),
-    recipientsCc = this.recipientsCc(),
-    recipientsBcc = this.recipientsBcc()
+    recipientsTo = emptyList(),
+    recipientsCc = emptyList(),
+    recipientsBcc = emptyList()
 )
 
 fun DraftAction.toDraftCreateMode(): DraftCreateMode? = when (this) {

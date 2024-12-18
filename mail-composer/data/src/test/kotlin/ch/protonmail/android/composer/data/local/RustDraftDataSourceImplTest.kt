@@ -169,8 +169,8 @@ class RustDraftDataSourceImplTest {
         every { subject() } returns subject
         every { sender() } returns sender
         every { body() } returns body
-        every { recipientsTo() } returns emptyList()
-        every { recipientsCc() } returns emptyList()
-        every { recipientsBcc() } returns emptyList()
+        every { recipientsTo() } returns mockk()
+        every { recipientsCc() } returns mockk()
+        every { recipientsBcc() } returns mockk()
     }
 }

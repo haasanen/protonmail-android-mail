@@ -26,6 +26,7 @@ import ch.protonmail.android.mailcommon.domain.model.DataError
 import uniffi.proton_mail_uniffi.MailUserSession
 import uniffi.proton_mail_uniffi.MailUserSessionForkResult
 import uniffi.proton_mail_uniffi.VoidEventResult
+import uniffi.proton_mail_uniffi.VoidSessionResult
 
 class MailUserSessionWrapper(private val userSession: MailUserSession) {
 
@@ -41,7 +42,11 @@ class MailUserSessionWrapper(private val userSession: MailUserSession) {
         VoidEventResult.Ok -> Unit.right()
     }
 
-    fun executePendingActions() = userSession.executePendingActions()
+    suspend fun executePendingActions(): Either<DataError, Unit> =
+        when (val result = userSession.executePendingActions()) {
+            is VoidSessionResult.Error -> result.v1.toDataError().left()
+            VoidSessionResult.Ok -> Unit.right()
+        }
 
     suspend fun imageForSender(address: String, bimi: String?) = userSession.imageForSender(
         address,
