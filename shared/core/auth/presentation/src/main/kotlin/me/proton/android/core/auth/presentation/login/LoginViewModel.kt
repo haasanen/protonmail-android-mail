@@ -27,10 +27,14 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import me.proton.android.core.auth.presentation.challenge.GetChallengePayload
 import me.proton.android.core.auth.presentation.session.UserSessionInitializationCallback
 import uniffi.proton_mail_uniffi.LoginError
 import uniffi.proton_mail_uniffi.LoginFlowToUserContextResult
 import uniffi.proton_mail_uniffi.LoginFlowUserIdResult
+import me.proton.core.challenge.data.frame.ChallengeFrame
+import me.proton.core.challenge.domain.entity.ChallengeFrameDetails
+import me.proton.core.util.kotlin.serialize
 import uniffi.proton_mail_uniffi.MailSession
 import uniffi.proton_mail_uniffi.MailSessionNewLoginFlowResult
 import uniffi.proton_mail_uniffi.MailUserSession
@@ -40,9 +44,10 @@ import uniffi.proton_mail_uniffi.VoidSessionResult
 import javax.inject.Inject
 
 @HiltViewModel
-class LoginViewModel @Inject constructor(
+class LoginViewModel @Inject internal constructor(
     @ApplicationContext
     private val context: Context,
+    private val getChallengePayload: GetChallengePayload,
     private val sessionInterface: MailSession,
     private val callback: UserSessionInitializationCallback
 ) : ViewModel() {
@@ -52,10 +57,12 @@ class LoginViewModel @Inject constructor(
 
     val state: StateFlow<LoginViewState> = mutableState.asStateFlow()
 
-    fun submit(action: LoginAction) = viewModelScope.launch {
-        when (action) {
-            is LoginAction.Login -> onLogin(action)
-            is LoginAction.Close -> onClose()
+    fun submit(action: LoginAction) {
+        viewModelScope.launch {
+            when (action) {
+                is LoginAction.Login -> onLogin(action)
+                is LoginAction.Close -> onClose()
+            }
         }
     }
 
@@ -66,13 +73,27 @@ class LoginViewModel @Inject constructor(
         return when {
             action.username.isBlank() -> mutableState.emit(LoginViewState.Error.Validation)
             loginFlowResult is MailSessionNewLoginFlowResult.Error -> onError(loginFlowResult.v1)
-            else -> {
-                mutableState.emit(LoginViewState.LoggingIn)
-                when (val result = getLoginFlow().login(email = action.username, password = action.password, null)) {
-                    is VoidLoginResult.Error -> onError(result.v1)
-                    VoidLoginResult.Ok -> onSuccess()
-                }
-            }
+            else -> performLogin(
+                username = action.username,
+                usernameFrameDetails = action.usernameFrameDetails,
+                password = action.password
+            )
+        }
+    }
+
+    private suspend fun performLogin(
+        username: String,
+        usernameFrameDetails: ChallengeFrameDetails,
+        password: String
+    ) {
+        mutableState.emit(LoginViewState.LoggingIn)
+
+        val payload = getChallengePayload(listOfNotNull(ChallengeFrame.Username.from(context, usernameFrameDetails)))
+        val payloadJson = payload.serialize()
+        val result = getLoginFlow().login(email = username, password = password, fingerprintPayload = payloadJson)
+        when (result) {
+            is VoidLoginResult.Error -> onError(result.v1)
+            is VoidLoginResult.Ok -> onSuccess()
         }
     }
 

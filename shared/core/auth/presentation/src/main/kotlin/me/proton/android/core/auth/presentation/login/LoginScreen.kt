@@ -39,10 +39,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -54,8 +57,18 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 import me.proton.android.core.auth.presentation.R
 import me.proton.android.core.auth.presentation.addaccount.SMALL_SCREEN_HEIGHT
+import me.proton.android.core.auth.presentation.challenge.LOGIN_CHALLENGE_FLOW_NAME
+import me.proton.android.core.auth.presentation.challenge.LOGIN_CHALLENGE_USERNAME_FRAME
+import me.proton.android.core.auth.presentation.challenge.TextChange
+import me.proton.core.challenge.presentation.compose.LocalClipManager
+import me.proton.core.challenge.presentation.compose.LocalClipManager.OnClipChangedDisposableEffect
+import me.proton.core.challenge.presentation.compose.PayloadController
+import me.proton.core.challenge.presentation.compose.payload
 import me.proton.core.compose.component.ProtonOutlinedTextFieldWithError
 import me.proton.core.compose.component.ProtonPasswordOutlinedTextFieldWithError
 import me.proton.core.compose.component.ProtonSolidButton
@@ -219,26 +232,53 @@ private fun LoginForm(
     enabled: Boolean,
     initialUsername: String? = null
 ) {
+    val scope = rememberCoroutineScope()
     var username by rememberSaveable { mutableStateOf(initialUsername ?: "") }
     var password by rememberSaveable { mutableStateOf("") }
+    val usernameChanges = remember { MutableStateFlow(TextChange()) }
+    val usernameHasFocus = remember { mutableStateOf(false) }
+    val usernamePayloadController = remember { PayloadController() }
+    val usernameTextCopies = remember { MutableStateFlow("") }
+
+    LocalClipManager.current?.OnClipChangedDisposableEffect {
+        if (usernameHasFocus.value) usernameTextCopies.value = it
+    }
+
+    fun onSubmit() = scope.launch {
+        val usernameFrameDetails = usernamePayloadController.flush()
+        onLoginClicked(LoginAction.Login(username, usernameFrameDetails, password))
+    }
+
     Column(
         modifier = Modifier.padding(16.dp)
     ) {
         ProtonOutlinedTextFieldWithError(
             text = username,
-            onValueChanged = { username = it },
+            onValueChanged = {
+                usernameChanges.value = usernameChanges.value.roll(it)
+                username = it
+            },
             enabled = enabled,
             errorText = usernameError,
             label = { Text(text = stringResource(id = R.string.auth_username)) },
             singleLine = true,
             keyboardOptions = KeyboardOptions(
-                autoCorrect = false,
+                autoCorrectEnabled = false,
                 imeAction = ImeAction.Next,
                 keyboardType = KeyboardType.Email
             ),
             modifier = Modifier
+                .onFocusChanged { usernameHasFocus.value = it.hasFocus }
                 .fillMaxWidth()
                 .padding(top = DefaultSpacing)
+                .payload(
+                    flow = LOGIN_CHALLENGE_FLOW_NAME,
+                    frame = LOGIN_CHALLENGE_USERNAME_FRAME,
+                    onTextChanged = usernameChanges.map { it.toPair() },
+                    onTextCopied = usernameTextCopies,
+                    onFrameUpdated = {},
+                    payloadController = usernamePayloadController
+                )
                 .testTag(USERNAME_FIELD_TAG)
         )
 
@@ -258,7 +298,7 @@ private fun LoginForm(
             contained = false,
             enabled = enabled,
             loading = !enabled,
-            onClick = { onLoginClicked(LoginAction.Login(username, password)) },
+            onClick = ::onSubmit,
             modifier = Modifier
                 .padding(top = ProtonDimens.MediumSpacing)
                 .height(ProtonDimens.DefaultButtonMinHeight)
@@ -271,7 +311,7 @@ private fun LoginForm(
 @Preview(name = "Light mode", showBackground = true)
 @Preview(name = "Dark mode", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview(name = "Small screen height", heightDp = SMALL_SCREEN_HEIGHT)
-@Preview(name = "Foldable", device = Devices.FOLDABLE)
+@Preview(name = "Foldable", device = Devices.PIXEL_FOLD)
 @Preview(name = "Tablet", device = Devices.PIXEL_C)
 @Preview(name = "Horizontal", widthDp = 800, heightDp = 360)
 @Composable
@@ -284,7 +324,7 @@ internal fun LoginScreenPreview() {
 @Preview(name = "Light mode", showBackground = true)
 @Preview(name = "Dark mode", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview(name = "Small screen height", heightDp = SMALL_SCREEN_HEIGHT)
-@Preview(name = "Foldable", device = Devices.FOLDABLE)
+@Preview(name = "Foldable", device = Devices.PIXEL_FOLD)
 @Preview(name = "Tablet", device = Devices.PIXEL_C)
 @Preview(name = "Horizontal", widthDp = 800, heightDp = 360)
 @Composable
@@ -297,4 +337,3 @@ internal fun LoginScreenFormPreview() {
         )
     }
 }
-

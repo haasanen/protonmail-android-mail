@@ -17,11 +17,14 @@
 
 package me.proton.android.core.auth.presentation.login
 
+import me.proton.core.challenge.domain.entity.ChallengeFrameDetails
+
 sealed interface LoginOperation
 
 sealed interface LoginAction : LoginOperation {
     data class Login(
         val username: String,
+        val usernameFrameDetails: ChallengeFrameDetails,
         val password: String
     ) : LoginAction
 
