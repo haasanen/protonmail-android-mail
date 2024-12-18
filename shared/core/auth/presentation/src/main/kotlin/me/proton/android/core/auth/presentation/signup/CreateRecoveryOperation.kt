@@ -18,11 +18,18 @@
 
 package me.proton.android.core.auth.presentation.signup
 
+import me.proton.core.challenge.domain.entity.ChallengeFrameDetails
+
 sealed interface RecoveryMethodOperation
 
 sealed interface CreateRecoveryAction : RecoveryMethodOperation {
     data class SelectCreateRecovery(val recoveryMethod: RecoveryMethod) : CreateRecoveryAction
-    data class SubmitEmail(val email: String) : CreateRecoveryAction
-    data class SubmitPhone(val callingCode: String, val phoneNumber: String) : CreateRecoveryAction
+    data class SubmitEmail(val email: String, val recoveryFrameDetails: ChallengeFrameDetails) : CreateRecoveryAction
+    data class SubmitPhone(
+        val callingCode: String,
+        val phoneNumber: String,
+        val recoveryFrameDetails: ChallengeFrameDetails
+    ) : CreateRecoveryAction
+
     data object SetNavigationDone : CreateRecoveryAction
 }

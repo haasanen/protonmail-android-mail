@@ -30,11 +30,15 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import me.proton.core.challenge.domain.ChallengeManager
+import me.proton.core.challenge.domain.entity.ChallengeFrameDetails
 import me.proton.core.compose.viewmodel.stopTimeoutMillis
 import javax.inject.Inject
 
 @HiltViewModel
-class CreateRecoveryViewModel @Inject constructor() : ViewModel() {
+class CreateRecoveryViewModel @Inject constructor(
+    private val challengeManager: ChallengeManager
+) : ViewModel() {
 
     private val mutableAction = MutableStateFlow<CreateRecoveryAction?>(null)
 
@@ -42,8 +46,13 @@ class CreateRecoveryViewModel @Inject constructor() : ViewModel() {
         when (action) {
             null -> flowOf(CreateRecoveryState.Idle(RecoveryMethod.Email))
             is CreateRecoveryAction.SelectCreateRecovery -> onSelectRecoveryMethod(action.recoveryMethod)
-            is CreateRecoveryAction.SubmitEmail -> onSubmitEmail(action.email)
-            is CreateRecoveryAction.SubmitPhone -> onSubmitPhone(action.callingCode, action.phoneNumber)
+            is CreateRecoveryAction.SubmitEmail -> onSubmitEmail(action.email, action.recoveryFrameDetails)
+            is CreateRecoveryAction.SubmitPhone -> onSubmitPhone(
+                action.callingCode,
+                action.phoneNumber,
+                action.recoveryFrameDetails
+            )
+
             is CreateRecoveryAction.SetNavigationDone -> onSetNavigationDone()
         }
     }.stateIn(viewModelScope, WhileSubscribed(stopTimeoutMillis), CreateRecoveryState.Idle(RecoveryMethod.Email))
@@ -60,11 +69,18 @@ class CreateRecoveryViewModel @Inject constructor() : ViewModel() {
         emit(CreateRecoveryState.Idle(recoveryMethod, countries))
     }
 
-    private fun onSubmitEmail(email: String): Flow<CreateRecoveryState> = flow {
-        emit(CreateRecoveryState.Success(RecoveryMethod.Email, email))
-    }
+    private fun onSubmitEmail(email: String, recoveryFrameDetails: ChallengeFrameDetails): Flow<CreateRecoveryState> =
+        flow {
+            challengeManager.addOrUpdateFrameToFlow(recoveryFrameDetails)
+            emit(CreateRecoveryState.Success(RecoveryMethod.Email, email))
+        }
 
-    private fun onSubmitPhone(callingCode: String, phoneNumber: String): Flow<CreateRecoveryState> = flow {
+    private fun onSubmitPhone(
+        callingCode: String,
+        phoneNumber: String,
+        recoveryFrameDetails: ChallengeFrameDetails
+    ): Flow<CreateRecoveryState> = flow {
+        challengeManager.addOrUpdateFrameToFlow(recoveryFrameDetails)
         emit(CreateRecoveryState.Success(RecoveryMethod.Phone, "$callingCode$phoneNumber"))
     }
 

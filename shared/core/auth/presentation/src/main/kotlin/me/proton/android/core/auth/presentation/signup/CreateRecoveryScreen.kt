@@ -49,10 +49,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalViewConfiguration
 import androidx.compose.ui.platform.testTag
@@ -63,8 +65,16 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 import me.proton.android.core.auth.presentation.R
 import me.proton.android.core.auth.presentation.addaccount.SMALL_SCREEN_HEIGHT
+import me.proton.android.core.auth.presentation.challenge.SIGNUP_CHALLENGE_FLOW_NAME
+import me.proton.android.core.auth.presentation.challenge.SIGNUP_CHALLENGE_RECOVERY_FRAME
+import me.proton.android.core.auth.presentation.challenge.TextChange
+import me.proton.core.challenge.presentation.compose.PayloadController
+import me.proton.core.challenge.presentation.compose.payload
 import me.proton.core.compose.component.ProtonOutlinedTextFieldWithError
 import me.proton.core.compose.component.ProtonSolidButton
 import me.proton.core.compose.component.ProtonTextButton
@@ -229,19 +239,41 @@ fun RecoveryMethodScaffold(
 fun RecoveryMethodFormEmail(
     loading: Boolean = false,
     emailError: String? = null,
-    onEmailSubmitted: (CreateRecoveryAction) -> Unit = {}
+    onEmailSubmitted: (CreateRecoveryAction.SubmitEmail) -> Unit = {}
 ) {
     var email by rememberSaveable { mutableStateOf("") }
+    val scope = rememberCoroutineScope()
+    val emailChanges = remember { MutableStateFlow(TextChange()) }
+    val emailHasFocus = remember { mutableStateOf(false) }
+    val emailPayloadController = remember { PayloadController() }
+    val emailTextCopies = remember { MutableStateFlow("") }
+
+    fun onSubmit() = scope.launch {
+        val frameDetails = emailPayloadController.flush()
+        onEmailSubmitted(CreateRecoveryAction.SubmitEmail(email, frameDetails))
+    }
 
     ProtonOutlinedTextFieldWithError(
         text = email,
-        onValueChanged = { email = it },
+        onValueChanged = {
+            emailChanges.value = emailChanges.value.roll(it)
+            email = it
+        },
         errorText = emailError,
         label = { Text(text = stringResource(id = R.string.auth_email)) },
         singleLine = true,
         modifier = Modifier
+            .onFocusChanged { emailHasFocus.value = it.hasFocus }
             .fillMaxWidth()
             .padding(top = DefaultSpacing)
+            .payload(
+                flow = SIGNUP_CHALLENGE_FLOW_NAME,
+                frame = SIGNUP_CHALLENGE_RECOVERY_FRAME,
+                onTextChanged = emailChanges.map { it.toPair() },
+                onTextCopied = emailTextCopies,
+                onFrameUpdated = {},
+                payloadController = emailPayloadController
+            )
             .testTag(EMAIL_FIELD_TAG)
     )
 
@@ -251,7 +283,7 @@ fun RecoveryMethodFormEmail(
         modifier = Modifier
             .padding(top = MediumSpacing)
             .height(ProtonDimens.DefaultButtonMinHeight),
-        onClick = { onEmailSubmitted(CreateRecoveryAction.SubmitEmail(email)) }
+        onClick = ::onSubmit
     ) {
         Text(
             text = stringResource(id = R.string.auth_signup_next)
@@ -264,10 +296,21 @@ fun RecoveryMethodFormPhone(
     emailError: String? = null,
     loading: Boolean = false,
     data: List<Country> = emptyList(),
-    onPhoneSubmitted: (CreateRecoveryAction) -> Unit
+    onPhoneSubmitted: (CreateRecoveryAction.SubmitPhone) -> Unit
 ) {
     var callingCode by rememberSaveable { mutableStateOf("") }
     var phoneNumber by rememberSaveable { mutableStateOf("") }
+
+    val scope = rememberCoroutineScope()
+    val phoneChanges = remember { MutableStateFlow(TextChange()) }
+    val phoneHasFocus = remember { mutableStateOf(false) }
+    val phonePayloadController = remember { PayloadController() }
+    val phoneTextCopies = remember { MutableStateFlow("") }
+
+    fun onSubmit() = scope.launch {
+        val frameDetails = phonePayloadController.flush()
+        onPhoneSubmitted(CreateRecoveryAction.SubmitPhone(callingCode, phoneNumber, frameDetails))
+    }
 
     Row(
         modifier = Modifier.fillMaxWidth()
@@ -294,12 +337,24 @@ fun RecoveryMethodFormPhone(
         ) {
             ProtonOutlinedTextFieldWithError(
                 text = phoneNumber,
-                onValueChanged = { phoneNumber = it },
+                onValueChanged = {
+                    phoneChanges.value = phoneChanges.value.roll(it)
+                    phoneNumber = it
+                },
                 errorText = emailError,
                 label = { Text(text = stringResource(id = R.string.auth_signup_phone_placeholder)) },
                 singleLine = true,
                 modifier = Modifier
+                    .onFocusChanged { phoneHasFocus.value = it.hasFocus }
                     .padding(top = MediumSpacing)
+                    .payload(
+                        flow = SIGNUP_CHALLENGE_FLOW_NAME,
+                        frame = SIGNUP_CHALLENGE_RECOVERY_FRAME,
+                        onTextChanged = phoneChanges.map { it.toPair() },
+                        onTextCopied = phoneTextCopies,
+                        onFrameUpdated = {},
+                        payloadController = phonePayloadController
+                    )
                     .testTag(PHONE_FIELD_TAG)
             )
         }
@@ -311,7 +366,7 @@ fun RecoveryMethodFormPhone(
         modifier = Modifier
             .padding(top = MediumSpacing)
             .height(ProtonDimens.DefaultButtonMinHeight),
-        onClick = { onPhoneSubmitted(CreateRecoveryAction.SubmitPhone(callingCode, phoneNumber)) }
+        onClick = ::onSubmit
     ) {
         Text(
             text = stringResource(id = R.string.auth_signup_next)
