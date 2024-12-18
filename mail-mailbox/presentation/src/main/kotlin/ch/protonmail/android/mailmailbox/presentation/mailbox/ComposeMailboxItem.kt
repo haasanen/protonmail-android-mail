@@ -103,7 +103,8 @@ fun MailboxItem(
                 } else ProtonTheme.shapes.extraLarge
             )
             .background(
-                color = if (isSelected) ProtonTheme.colors.interactionWeakPressed else ProtonTheme.colors.backgroundNorm
+                color = if (isSelected) ProtonTheme.colors.interactionBrandWeakNorm
+                else ProtonTheme.colors.backgroundNorm
             )
 
     ) {

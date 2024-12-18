@@ -172,7 +172,7 @@ fun ParticipantAvatarSelected(
                 minHeight = avatarSize
             )
             .background(
-                color = ProtonTheme.colors.backgroundNorm,
+                color = ProtonTheme.colors.brandNorm,
                 shape = backgroundShape
             )
             .testTag(AvatarTestTags.AvatarSelectionMode)
@@ -181,7 +181,7 @@ fun ParticipantAvatarSelected(
     ) {
         Icon(
             imageVector = ImageVector.vectorResource(id = R.drawable.ic_proton_checkmark),
-            tint = ProtonTheme.colors.textNorm,
+            tint = ProtonTheme.colors.iconInverted,
             contentDescription = NO_CONTENT_DESCRIPTION,
             modifier = Modifier.size(MailDimens.AvatarCheckmarkSize)
         )
