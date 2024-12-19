@@ -58,6 +58,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import androidx.constraintlayout.compose.Visibility
 import ch.protonmail.android.design.compose.component.ProtonOutlinedIconButton
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 import ch.protonmail.android.mailcommon.presentation.compose.OfficialBadge
@@ -142,6 +143,7 @@ private fun MessageDetailHeaderLayout(
             iconsRef,
             timeRef,
             allRecipientsRef,
+            labelsRef,
             cardRef,
             headerActionsRef
         ) = createRefs()
@@ -224,15 +226,29 @@ private fun MessageDetailHeaderLayout(
                 },
             allRecipients = uiModel.allRecipients,
             hasUndisclosedRecipients = uiModel.shouldShowUndisclosedRecipients,
-            onClick = actions.onClick
+            onClick = actions.onClick,
+            isExpanded = isExpanded
+        )
+
+        Labels(
+            modifier = modifier.constrainAs(labelsRef) {
+                width = Dimension.fillToConstraints
+                top.linkTo(allRecipientsRef.bottom, margin = ProtonDimens.Spacing.Compact)
+                start.linkTo(allRecipientsRef.start)
+                end.linkTo(headerActionsRef.start, margin = ProtonDimens.Spacing.Standard)
+                visibility = visibleWhen(uiModel.labels.isNotEmpty())
+            },
+            uiModels = uiModel.labels
         )
 
         if (isExpanded) {
+            val cardTopAnchor = if (uiModel.labels.isNotEmpty()) labelsRef.bottom else allRecipientsRef.bottom
+
             MessageDetailHeaderCard(
                 uiModel = uiModel,
                 actions = actions,
                 modifier = Modifier.constrainAs(cardRef) {
-                    top.linkTo(allRecipientsRef.bottom, margin = ProtonDimens.Spacing.Medium)
+                    top.linkTo(cardTopAnchor, margin = ProtonDimens.Spacing.Large)
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
                 }
@@ -338,6 +354,7 @@ private fun AllRecipients(
     modifier: Modifier = Modifier,
     allRecipients: ImmutableList<ParticipantUiModel>,
     hasUndisclosedRecipients: Boolean,
+    isExpanded: Boolean,
     onClick: () -> Unit
 ) {
     Row(
@@ -366,10 +383,16 @@ private fun AllRecipients(
 
             Spacer(modifier = Modifier.width(ProtonDimens.Spacing.Small))
 
+            val expandCollapseIconRes = if (isExpanded) {
+                R.drawable.ic_chevron_tiny_up
+            } else {
+                R.drawable.ic_chevron_tiny_down
+            }
+
             Icon(
                 modifier = Modifier
                     .size(MailDimens.MessageDetailsHeader.CollapseExpandButtonSize),
-                painter = painterResource(id = R.drawable.ic_proton_chevron_tiny_down),
+                painter = painterResource(id = expandCollapseIconRes),
                 contentDescription = null,
                 tint = ProtonTheme.colors.iconWeak
             )
@@ -436,7 +459,6 @@ private fun Labels(modifier: Modifier, uiModels: ImmutableList<LabelUiModel>) {
         verticalAlignment = Alignment.Top
     ) {
 
-        Spacer(modifier = Modifier.width(MailDimens.MessageDetailsHeader.DetailsTitleWidth))
         LabelsList(
             modifier = Modifier.testTag(MessageDetailHeaderTestTags.LabelsList),
             labels = uiModels
@@ -463,13 +485,6 @@ private fun MessageDetailHeaderCard(
             SenderDetails(uiModel.sender, actions)
             RecipientsSection(uiModel, actions)
             ExtendedHeaderSection(uiModel)
-
-            if (uiModel.labels.isNotEmpty()) {
-                Labels(
-                    uiModels = uiModel.labels,
-                    modifier = Modifier.fillMaxWidth()
-                )
-            }
         }
     }
 }
@@ -622,6 +637,8 @@ private fun ExtendedHeaderRow(
         )
     }
 }
+
+private fun visibleWhen(isVisible: Boolean) = if (isVisible) Visibility.Visible else Visibility.Gone
 
 object MessageDetailHeader {
     data class Actions(
