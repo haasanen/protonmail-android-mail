@@ -20,12 +20,10 @@ package ch.protonmail.android.maildetail.presentation.ui.footer
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -38,7 +36,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
-import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 import ch.protonmail.android.maildetail.presentation.R
 import ch.protonmail.android.maildetail.presentation.model.MessageDetailFooterUiModel
 import ch.protonmail.android.maildetail.presentation.previewdata.MessageDetailFooterPreview
@@ -103,9 +100,8 @@ private fun MessageActionButton(
 ) {
     Button(
         modifier = modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(MailDimens.ActionButtonShapeRadius),
-        border = BorderStroke(MailDimens.DefaultBorder, ProtonTheme.colors.separatorNorm),
-        colors = ButtonDefaults.buttonColors().copy(containerColor = ProtonTheme.colors.backgroundNorm),
+        shape = ProtonTheme.shapes.extraLarge,
+        colors = ButtonDefaults.buttonColors().copy(containerColor = ProtonTheme.colors.interactionWeakNorm),
         elevation = ButtonDefaults.buttonElevation(defaultElevation = 0.dp),
         onClick = { onClick() }
     ) {

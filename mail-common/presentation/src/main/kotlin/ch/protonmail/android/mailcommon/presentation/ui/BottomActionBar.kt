@@ -33,6 +33,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -61,7 +62,17 @@ fun BottomActionBar(
 ) {
     if (state is BottomBarState.Data.Hidden) return
     Column(
-        modifier = modifier.background(ProtonTheme.colors.backgroundNorm)
+        modifier = modifier
+            .shadow(
+                elevation = ProtonDimens.ShadowElevation.Small,
+                ambientColor = ProtonTheme.colors.shadowNorm.copy(
+                    alpha = MailDimens.MessageDetailsBottomBar.shadowColorAlpha
+                ),
+                spotColor = ProtonTheme.colors.shadowNorm.copy(
+                    alpha = MailDimens.MessageDetailsBottomBar.shadowColorAlpha
+                )
+            )
+            .background(ProtonTheme.colors.backgroundNorm)
     ) {
         HorizontalDivider(thickness = MailDimens.SeparatorHeight, color = ProtonTheme.colors.separatorNorm)
 
@@ -161,7 +172,7 @@ private fun BottomBarIcon(
             modifier = Modifier,
             painter = painterResource(id = iconId),
             contentDescription = description.string(),
-            tint = ProtonTheme.colors.iconNorm
+            tint = ProtonTheme.colors.iconWeak
         )
     }
 }
