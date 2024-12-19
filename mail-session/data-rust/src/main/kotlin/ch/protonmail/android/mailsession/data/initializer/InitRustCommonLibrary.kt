@@ -75,6 +75,6 @@ class InitRustCommonLibrary @Inject constructor(
     private fun isRunningAgainstMockWebserver(baseApiUrl: HttpUrl) = baseApiUrl.host == "localhost"
 
     companion object {
-        private const val CACHE_SIZE = 1_000000uL
+        private const val CACHE_SIZE = 500_000_000uL
     }
 }
