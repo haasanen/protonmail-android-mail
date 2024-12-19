@@ -55,7 +55,7 @@ interface ConversationRepository {
         userId: UserId,
         conversationId: ConversationId,
         labelId: LabelId
-    ): Flow<Either<DataError.Local, ConversationMessages>>
+    ): Flow<Either<DataError, ConversationMessages>>
 
     /**
      * Adds the given [labelId] to the message with the given [conversationId]

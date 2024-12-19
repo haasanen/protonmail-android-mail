@@ -38,13 +38,13 @@ interface RustConversationDataSource {
         userId: UserId,
         conversationId: LocalConversationId,
         labelId: LocalLabelId
-    ): Flow<LocalConversation>?
+    ): Flow<Either<DataError, LocalConversation>>
 
     fun observeConversationMessages(
         userId: UserId,
         conversationId: LocalConversationId,
         labelId: LocalLabelId
-    ): Flow<LocalConversationMessages>
+    ): Flow<Either<DataError, LocalConversationMessages>>
 
     suspend fun getConversations(userId: UserId, pageKey: PageKey): List<LocalConversation>
     suspend fun deleteConversations(

@@ -18,6 +18,9 @@
 
 package ch.protonmail.android.mailmessage.data.mapper
 
+import arrow.core.Either
+import arrow.core.left
+import arrow.core.right
 import arrow.core.toNonEmptyListOrNull
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalAddressId
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalAvatarInformation
@@ -27,6 +30,7 @@ import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageMetadata
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalMimeType
 import ch.protonmail.android.mailcommon.domain.model.AvatarInformation
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
+import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.maillabel.data.mapper.toExclusiveLocation
 import ch.protonmail.android.maillabel.data.mapper.toLabel
 import ch.protonmail.android.mailmessage.data.model.LocalConversationMessages
@@ -136,11 +140,12 @@ fun BodyOutput.toMessageBody(messageId: MessageId, mimeType: LocalMimeType): Mes
     )
 }
 
-fun LocalConversationMessages.toConversationMessagesWithMessageToOpen(): ConversationMessages? {
-    return messages.toNonEmptyListOrNull()?.map { it.toMessage() }?.let { messageList ->
-        ConversationMessages(
-            messages = messageList,
-            messageIdToOpen = messageIdToOpen.toMessageId()
-        )
-    }
+fun LocalConversationMessages.toConversationMessagesWithMessageToOpen(): Either<DataError, ConversationMessages> {
+    val messages = messages.toNonEmptyListOrNull()?.map { it.toMessage() }
+        ?: return DataError.Local.NoDataCached.left()
+
+    return ConversationMessages(
+        messages = messages,
+        messageIdToOpen = messageIdToOpen.toMessageId()
+    ).right()
 }

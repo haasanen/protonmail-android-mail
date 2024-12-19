@@ -86,13 +86,14 @@ class RustConversationDataSourceImpl @Inject constructor(
         userId: UserId,
         conversationId: LocalConversationId,
         labelId: LocalLabelId
-    ): Flow<LocalConversation> = rustConversationDetailQuery.observeConversation(userId, conversationId, labelId)
+    ): Flow<Either<DataError, LocalConversation>> =
+        rustConversationDetailQuery.observeConversation(userId, conversationId, labelId)
 
     override fun observeConversationMessages(
         userId: UserId,
         conversationId: LocalConversationId,
         labelId: LocalLabelId
-    ): Flow<LocalConversationMessages> = rustConversationDetailQuery.observeConversationMessages(
+    ): Flow<Either<DataError, LocalConversationMessages>> = rustConversationDetailQuery.observeConversationMessages(
         userId, conversationId, labelId
     )
 

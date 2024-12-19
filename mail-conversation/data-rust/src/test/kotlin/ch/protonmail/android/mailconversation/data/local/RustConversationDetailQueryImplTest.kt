@@ -18,7 +18,6 @@
 
 package ch.protonmail.android.mailconversation.data.local
 
-import java.lang.ref.WeakReference
 import app.cash.turbine.test
 import arrow.core.right
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalConversationId
@@ -88,12 +87,12 @@ class RustConversationDetailQueryImplTest {
         coEvery { rustMailboxFactory.create(userId, localLabelId) } returns mailbox.right()
         coEvery {
             createRustConversationWatcher(mailbox, conversationId, capture(callbackSlot))
-        } returns WeakReference(watcherMock).right()
+        } returns watcherMock.right()
 
         // When
         rustConversationQuery.observeConversation(userId, conversationId, localLabelId).test {
             // Then
-            assertEquals(expectedConversation, awaitItem())
+            assertEquals(expectedConversation.right(), awaitItem())
         }
 
         // When
@@ -101,8 +100,8 @@ class RustConversationDetailQueryImplTest {
 
             // Then
             val result = awaitItem()
-            assertEquals(expectedMessages, result)
-            assertEquals(messageToOpen, result.messageIdToOpen)
+            assertEquals(expectedMessages.right(), result)
+            assertEquals(messageToOpen, result.getOrNull()?.messageIdToOpen)
         }
     }
 
@@ -125,7 +124,7 @@ class RustConversationDetailQueryImplTest {
         coEvery { rustMailboxFactory.create(userId, localLabelId) } returns mailbox.right()
         coEvery {
             createRustConversationWatcher(mailbox, conversationId, capture(callbackSlot))
-        } returns WeakReference(watcherMock).right()
+        } returns watcherMock.right()
         coEvery {
             getRustConversationMessages(mailbox, conversationId)
         } returns ConversationAndMessages(expectedConversation, messageToOpen, messages).right()
@@ -150,7 +149,7 @@ class RustConversationDetailQueryImplTest {
             callbackSlot.captured.onUpdate()
 
             // Then
-            assertEquals(updatedConversation, awaitItem())
+            assertEquals(updatedConversation.right(), awaitItem())
 
             // When
             rustConversationQuery.observeConversationMessages(UserIdTestData.userId, conversationId, localLabelId)
@@ -158,8 +157,8 @@ class RustConversationDetailQueryImplTest {
 
                     // Then
                     val result = awaitItem()
-                    assertEquals(updatedMessages, result)
-                    assertEquals(updatedMessageToOpen, result.messageIdToOpen)
+                    assertEquals(updatedMessages.right(), result)
+                    assertEquals(updatedMessageToOpen, result.getOrNull()?.messageIdToOpen)
                 }
         }
     }
@@ -184,12 +183,12 @@ class RustConversationDetailQueryImplTest {
         coEvery { rustMailboxFactory.create(userId, localLabelId) } returns mailbox.right()
         coEvery {
             createRustConversationWatcher(mailbox, conversationId, capture(callbackSlot))
-        } returns WeakReference(watcherMock).right()
+        } returns watcherMock.right()
 
         rustConversationQuery.observeConversation(userId, conversationId, localLabelId).test {
             skipItems(1)
             rustConversationQuery.observeConversation(userId, conversationId, localLabelId).test {
-                assertEquals(expectedConversation, awaitItem())
+                assertEquals(expectedConversation.right(), awaitItem())
             }
 
             // Then
@@ -222,18 +221,18 @@ class RustConversationDetailQueryImplTest {
         coEvery { rustMailboxFactory.create(userId, localLabelId) } returns mailbox.right()
         coEvery {
             createRustConversationWatcher(mailbox, conversationId1, capture(callbackSlot))
-        } returns WeakReference(watcherMock1).right()
+        } returns watcherMock1.right()
         coEvery {
             createRustConversationWatcher(mailbox, conversationId2, capture(callbackSlot))
-        } returns WeakReference(watcherMock2).right()
+        } returns watcherMock2.right()
 
         // When
         rustConversationQuery.observeConversation(userId, conversationId1, localLabelId).test {
-            assertEquals(expectedConversation1, awaitItem())
+            assertEquals(expectedConversation1.right(), awaitItem())
         }
 
         rustConversationQuery.observeConversation(userId, conversationId2, localLabelId).test {
-            assertEquals(expectedConversation2, awaitItem())
+            assertEquals(expectedConversation2.right(), awaitItem())
         }
 
         // Then
@@ -259,7 +258,7 @@ class RustConversationDetailQueryImplTest {
         coEvery { rustMailboxFactory.create(userId, localLabelId) } returns mailbox.right()
         coEvery { createRustConversationWatcher(mailbox, conversationId, capture(callbackSlot)) } coAnswers {
             delay(100) // Simulate delay to enforce concurrency
-            WeakReference(watcherMock).right()
+            watcherMock.right()
         }
 
         // When
@@ -268,7 +267,7 @@ class RustConversationDetailQueryImplTest {
         repeat(numberOfConcurrentCalls) {
             val job = async {
                 rustConversationQuery.observeConversation(userId, conversationId, localLabelId).test {
-                    assertEquals(expectedConversation, awaitItem())
+                    assertEquals(expectedConversation.right(), awaitItem())
                 }
             }
             jobList.add(job)

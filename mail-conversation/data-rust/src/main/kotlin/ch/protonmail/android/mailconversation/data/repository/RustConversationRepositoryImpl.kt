@@ -19,9 +19,9 @@
 package ch.protonmail.android.mailconversation.data.repository
 
 import arrow.core.Either
+import arrow.core.flatMap
 import arrow.core.left
 import arrow.core.right
-import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailconversation.data.local.RustConversationDataSource
@@ -50,29 +50,23 @@ class RustConversationRepositoryImpl @Inject constructor(
         return rustConversationDataSource.getConversations(userId, pageKey).map { it.toConversation() }
     }
 
-    @MissingRustApi
-    // Awaiting for rust to add structured error handling
     override fun observeConversation(
         userId: UserId,
         id: ConversationId,
         labelId: LabelId
     ): Flow<Either<DataError, Conversation>> = rustConversationDataSource
         .observeConversation(userId, id.toLocalConversationId(), labelId.toLocalLabelId())
-        ?.map { it.toConversation().right() }
-        ?: flowOf(DataError.Local.Unknown.left())
+        .map { eitherFlow -> eitherFlow.map { it.toConversation() } }
 
 
     override fun observeConversationMessages(
         userId: UserId,
         conversationId: ConversationId,
         labelId: LabelId
-    ): Flow<Either<DataError.Local, ConversationMessages>> = rustConversationDataSource.observeConversationMessages(
+    ): Flow<Either<DataError, ConversationMessages>> = rustConversationDataSource.observeConversationMessages(
         userId, conversationId.toLocalConversationId(), labelId.toLocalLabelId()
-    ).map { conversationMessages ->
-        conversationMessages
-            .toConversationMessagesWithMessageToOpen()
-            ?.right()
-            ?: DataError.Local.NoDataCached.left()
+    ).map { eitherConversationMessages ->
+        eitherConversationMessages.flatMap { it.toConversationMessagesWithMessageToOpen() }
     }
 
     // It will be implemented later on

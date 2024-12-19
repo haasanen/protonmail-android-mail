@@ -19,10 +19,11 @@
 package ch.protonmail.android.mailconversation.data.local
 
 import java.lang.ref.WeakReference
+import arrow.core.Either
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalConversation
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalConversationId
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageMetadata
+import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailconversation.data.ConversationRustCoroutineScope
 import ch.protonmail.android.mailconversation.data.usecase.CreateRustConversationWatcher
 import ch.protonmail.android.mailmessage.data.local.RustMailboxFactory
@@ -56,13 +57,14 @@ class RustConversationDetailQueryImpl @Inject constructor(
     private var currentLabelId: LocalLabelId? = null
 
     private val mutex = Mutex()
-    private val conversationMutableStatusFlow = MutableStateFlow<LocalConversation?>(null)
+    private val conversationMutableStatusFlow = MutableStateFlow<Either<DataError, LocalConversation>?>(null)
     private val conversationStatusFlow = conversationMutableStatusFlow
         .asStateFlow()
         .filterNotNull()
 
-    private var conversationMessagesMutableStatusFlow = MutableStateFlow<LocalConversationMessages?>(null)
-    private val conversationMessagesStatusFlow: Flow<LocalConversationMessages> = conversationMessagesMutableStatusFlow
+    private var conversationMessagesMutableStatusFlow =
+        MutableStateFlow<Either<DataError, LocalConversationMessages>?>(null)
+    private val conversationMessagesStatusFlow = conversationMessagesMutableStatusFlow
         .asStateFlow()
         .filterNotNull()
 
@@ -86,20 +88,15 @@ class RustConversationDetailQueryImpl @Inject constructor(
                         return@withLock
                     }
 
-                    getRustConversationMessages(mailbox, currentConversationId!!)
-                        .onRight { conversationAndMessages ->
-                            conversationMutableStatusFlow.value = conversationAndMessages.conversation
-
-                            val messages: List<LocalMessageMetadata> = conversationAndMessages.messages
-                            val messageIdToOpen = conversationAndMessages.messageIdToOpen
-
-                            conversationMessagesMutableStatusFlow.value = LocalConversationMessages(
-                                messageIdToOpen, messages
-                            )
-                        }
+                    val conversationEither = getRustConversationMessages(mailbox, currentConversationId!!)
                         .onLeft {
                             Timber.w("rust-conversation-messages: Failed to update conversation messages!")
                         }
+
+                    conversationMutableStatusFlow.value = conversationEither.map { it.conversation }
+                    conversationMessagesMutableStatusFlow.value = conversationEither.map {
+                        LocalConversationMessages(it.messageIdToOpen, it.messages)
+                    }
                 }
             }
         }
@@ -109,7 +106,7 @@ class RustConversationDetailQueryImpl @Inject constructor(
         userId: UserId,
         conversationId: LocalConversationId,
         labelId: LocalLabelId
-    ): Flow<LocalConversation> {
+    ): Flow<Either<DataError, LocalConversation>> {
 
         initialiseOrUpdateWatcher(userId, conversationId, labelId)
 
@@ -120,7 +117,7 @@ class RustConversationDetailQueryImpl @Inject constructor(
         userId: UserId,
         conversationId: LocalConversationId,
         labelId: LocalLabelId
-    ): Flow<LocalConversationMessages> {
+    ): Flow<Either<DataError, LocalConversationMessages>> {
 
         initialiseOrUpdateWatcher(userId, conversationId, labelId)
 
@@ -146,29 +143,19 @@ class RustConversationDetailQueryImpl @Inject constructor(
 
                     currentUserId = userId
                     currentLabelId = labelId
-                    createRustConversationWatcher(mailbox, conversationId, conversationUpdatedCallback)
-                        .onRight { conversationWatcher = it }
-                    val conversation = conversationWatcher?.get()?.conversation ?: run {
-                        Timber.w(
-                            "rust-conversation-detail-query: init value for " +
-                                "$conversationId from $conversationWatcher is null"
-                        )
-                        null
-                    }
-                    conversationMutableStatusFlow.value = conversation
-                    currentConversationId = conversationId
-
-                    val messages = conversationWatcher?.get()?.messages
-                    val messageIdToOpen = conversationWatcher?.get()?.messageIdToOpen
-                    if (messages != null && messageIdToOpen != null) {
-                        val localConversationMessages = LocalConversationMessages(messageIdToOpen, messages)
-                        conversationMessagesMutableStatusFlow.value = localConversationMessages
-                        Timber.d("rust-conversation-messages: new messages value is $localConversationMessages")
-                    } else {
+                    val convoWatcherEither = createRustConversationWatcher(
+                        mailbox, conversationId, conversationUpdatedCallback
+                    ).onLeft {
                         Timber.w("rust-conversation-messages: Failed to update conversation messages!")
+                    }.onRight {
+                        conversationWatcher = WeakReference(it)
                     }
 
-                    Timber.d("rust-conversation-detail-query: conversation watcher created for $conversationId")
+                    conversationMutableStatusFlow.value = convoWatcherEither.map { it.conversation }
+                    conversationMessagesMutableStatusFlow.value = convoWatcherEither.map {
+                        LocalConversationMessages(it.messageIdToOpen, it.messages)
+                    }
+                    currentConversationId = conversationId
                 }
             }
         }

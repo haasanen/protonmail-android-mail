@@ -19,7 +19,6 @@
 package ch.protonmail.android.mailconversation.data.repository
 
 import app.cash.turbine.test
-import arrow.core.getOrElse
 import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
@@ -97,7 +96,7 @@ class RustConversationRepositoryImplTest {
                 any(),
                 labelId.toLocalLabelId()
             )
-        } returns flowOf(localConversation)
+        } returns flowOf(localConversation.right())
 
         // When
         rustConversationRepository.observeConversation(userId, conversationId, labelId).test {
@@ -118,7 +117,8 @@ class RustConversationRepositoryImplTest {
         val conversationId = LocalConversationIdSample.AugConversation.toConversationId()
         val labelId = LabelId("2")
 
-        coEvery { rustConversationDataSource.observeConversation(userId, any(), labelId.toLocalLabelId()) } returns null
+        coEvery { rustConversationDataSource.observeConversation(userId, any(), labelId.toLocalLabelId()) } returns
+            flowOf(DataError.Local.NoDataCached.left())
 
         // When
         rustConversationRepository.observeConversation(userId, conversationId, labelId).test {
@@ -155,11 +155,11 @@ class RustConversationRepositoryImplTest {
                 conversationId.toLocalConversationId(),
                 labelId.toLocalLabelId()
             )
-        } returns flowOf(localConversationMessages)
+        } returns flowOf(localConversationMessages.right())
 
         // When
         rustConversationRepository.observeConversationMessages(userId, conversationId, labelId).test {
-            val result = awaitItem().getOrElse { null }
+            val result = awaitItem()
 
             // Then
             assertEquals(expectedConversationMessages, result)
@@ -188,7 +188,7 @@ class RustConversationRepositoryImplTest {
                 conversationId.toLocalConversationId(),
                 labelId.toLocalLabelId()
             )
-        } returns flowOf(LocalConversationMessages(LocalMessageIdSample.AugWeatherForecast, emptyList()))
+        } returns flowOf(LocalConversationMessages(LocalMessageIdSample.AugWeatherForecast, emptyList()).right())
 
         // When
         rustConversationRepository.observeConversationMessages(userId, conversationId, labelId).test {

@@ -134,13 +134,13 @@ class RustConversationDataSourceImplTest {
         val localLabelId = LocalLabelId(3uL)
         coEvery {
             rustConversationDetailQuery.observeConversation(userId, conversationId, localLabelId)
-        } returns flowOf(LocalConversationTestData.AugConversation)
+        } returns flowOf(LocalConversationTestData.AugConversation.right())
 
         // When
         val result = dataSource.observeConversation(userId, conversationId, localLabelId)?.first()
 
         // Then
-        assertEquals(LocalConversationTestData.AugConversation, result)
+        assertEquals(LocalConversationTestData.AugConversation.right(), result)
     }
 
     @Test
@@ -162,14 +162,14 @@ class RustConversationDataSourceImplTest {
             rustConversationDetailQuery.observeConversationMessages(
                 userId, conversationId, localLabelId
             )
-        } returns flowOf(localConversationMessages)
+        } returns flowOf(localConversationMessages.right())
 
         // When
         dataSource.observeConversationMessages(userId, conversationId, localLabelId).test {
 
             // Then
             val result = awaitItem()
-            assertEquals(localConversationMessages, result)
+            assertEquals(localConversationMessages.right(), result)
             coVerify { rustConversationDetailQuery.observeConversationMessages(userId, conversationId, localLabelId) }
 
             awaitComplete()

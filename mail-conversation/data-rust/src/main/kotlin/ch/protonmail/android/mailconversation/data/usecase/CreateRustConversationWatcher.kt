@@ -18,7 +18,6 @@
 
 package ch.protonmail.android.mailconversation.data.usecase
 
-import java.lang.ref.WeakReference
 import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
@@ -38,13 +37,13 @@ class CreateRustConversationWatcher @Inject constructor() {
         mailbox: MailboxWrapper,
         conversationId: LocalConversationId,
         callback: LiveQueryCallback
-    ): Either<DataError, WeakReference<WatchedConversation>> =
+    ): Either<DataError, WatchedConversation> =
         when (val result = watchConversation(mailbox.getRustMailbox(), conversationId, callback)) {
             is WatchConversationResult.Error -> result.v1.toDataError().left()
             is WatchConversationResult.Ok -> {
                 when (val watcher = result.v1) {
                     null -> DataError.Local.NoDataCached.left()
-                    else -> WeakReference(watcher).right()
+                    else -> watcher.right()
                 }
             }
         }

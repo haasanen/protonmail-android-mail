@@ -18,9 +18,11 @@
 
 package ch.protonmail.android.mailconversation.data.local
 
+import arrow.core.Either
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalConversation
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalConversationId
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
+import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailmessage.data.model.LocalConversationMessages
 import kotlinx.coroutines.flow.Flow
 import me.proton.core.domain.entity.UserId
@@ -30,11 +32,11 @@ interface RustConversationDetailQuery {
         userId: UserId,
         conversationId: LocalConversationId,
         labelId: LocalLabelId
-    ): Flow<LocalConversation>
+    ): Flow<Either<DataError, LocalConversation>>
 
     fun observeConversationMessages(
         userId: UserId,
         conversationId: LocalConversationId,
         labelId: LocalLabelId
-    ): Flow<LocalConversationMessages>
+    ): Flow<Either<DataError, LocalConversationMessages>>
 }
