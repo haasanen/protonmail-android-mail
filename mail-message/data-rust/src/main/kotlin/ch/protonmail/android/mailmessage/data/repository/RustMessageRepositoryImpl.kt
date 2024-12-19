@@ -20,8 +20,7 @@ package ch.protonmail.android.mailmessage.data.repository
 
 import java.io.File
 import arrow.core.Either
-import arrow.core.left
-import arrow.core.right
+import arrow.core.flatMap
 import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
@@ -67,11 +66,12 @@ class RustMessageRepositoryImpl @Inject constructor(
 
     @MissingRustApi
     // Observing is currently faked! This won't reflect changes to the message after the first emission
-    override fun observeMessage(userId: UserId, messageId: MessageId): Flow<Either<DataError.Local, Message>> =
+    override fun observeMessage(userId: UserId, messageId: MessageId): Flow<Either<DataError, Message>> =
         flow {
-            val message = rustMessageDataSource.getMessage(userId, messageId.toLocalMessageId())?.toMessage()
+            val message = rustMessageDataSource.getMessage(userId, messageId.toLocalMessageId())
+                .map { it.toMessage() }
 
-            emit(message?.right() ?: DataError.Local.NoDataCached.left())
+            emit(message)
         }
 
     override fun observeMessageWithBody(
@@ -93,11 +93,11 @@ class RustMessageRepositoryImpl @Inject constructor(
         messageId: MessageId
     ): Either<DataError, MessageWithBody> {
         val localMessageId = messageId.toLocalMessageId()
-        val message = rustMessageDataSource.getMessage(userId, localMessageId)?.toMessage()
-            ?: return DataError.Local.NoDataCached.left()
 
-        return rustMessageDataSource.getMessageBody(userId, localMessageId)
-            .map { MessageWithBody(message, it) }
+        return rustMessageDataSource.getMessage(userId, localMessageId).flatMap { localMessage ->
+            rustMessageDataSource.getMessageBody(userId, localMessageId)
+                .map { MessageWithBody(localMessage.toMessage(), it) }
+        }
     }
 
     override suspend fun getRefreshedMessageWithBody(userId: UserId, messageId: MessageId): RefreshedMessageWithBody? {

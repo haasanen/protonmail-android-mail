@@ -88,7 +88,7 @@ class RustMessageRepositoryImplTest {
         val expectedMessage = LocalMessageTestData.AugWeatherForecast.toMessage()
         coEvery {
             rustMessageDataSource.getMessage(userId, messageId.toLocalMessageId())
-        } returns LocalMessageTestData.AugWeatherForecast
+        } returns LocalMessageTestData.AugWeatherForecast.right()
 
         // When
         repository.observeMessage(userId, messageId).test {
@@ -108,7 +108,8 @@ class RustMessageRepositoryImplTest {
         val userId = UserIdTestData.userId
         val messageId = LocalMessageIdSample.AugWeatherForecast.toMessageId()
 
-        coEvery { rustMessageDataSource.getMessage(userId, messageId.toLocalMessageId()) } returns null
+        coEvery { rustMessageDataSource.getMessage(userId, messageId.toLocalMessageId()) } returns
+            DataError.Local.NoDataCached.left()
 
         // When
         repository.observeMessage(userId, messageId).test {
@@ -131,7 +132,7 @@ class RustMessageRepositoryImplTest {
         val bodyOutput = BodyOutput("message body", false, 0uL, 0uL)
         val localMimeType = LocalMimeType.TEXT_PLAIN
         val expectedMessageWithBody = bodyOutput.toMessageBody(messageId, localMimeType)
-        coEvery { rustMessageDataSource.getMessage(userId, messageId.toLocalMessageId()) } returns localMessage
+        coEvery { rustMessageDataSource.getMessage(userId, messageId.toLocalMessageId()) } returns localMessage.right()
         coEvery {
             rustMessageDataSource.getMessageBody(
                 userId,

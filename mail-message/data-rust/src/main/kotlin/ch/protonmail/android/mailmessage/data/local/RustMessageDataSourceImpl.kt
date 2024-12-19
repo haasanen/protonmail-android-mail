@@ -77,16 +77,18 @@ class RustMessageDataSourceImpl @Inject constructor(
     private val getRustMessageLabelAsActions: GetRustMessageLabelAsActions
 ) : RustMessageDataSource {
 
-    override suspend fun getMessage(userId: UserId, messageId: LocalMessageId): LocalMessageMetadata? {
+    override suspend fun getMessage(
+        userId: UserId,
+        messageId: LocalMessageId
+    ): Either<DataError, LocalMessageMetadata> {
         val session = userSessionRepository.getUserSession(userId)
         if (session == null) {
             Timber.e("rust-message: trying to load message with a null session")
-            return null
+            return DataError.Local.SaveDraftError.left()
         }
 
         return createRustMessageAccessor(session, messageId)
             .onLeft { Timber.e("rust-message: Failed to get message $it") }
-            .getOrNull()
     }
 
     override suspend fun getMessageBody(userId: UserId, messageId: LocalMessageId): Either<DataError, MessageBody> {

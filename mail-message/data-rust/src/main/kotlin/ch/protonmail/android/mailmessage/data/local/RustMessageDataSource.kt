@@ -33,7 +33,7 @@ import uniffi.proton_mail_uniffi.MoveAction
 
 interface RustMessageDataSource {
 
-    suspend fun getMessage(userId: UserId, messageId: LocalMessageId): LocalMessageMetadata?
+    suspend fun getMessage(userId: UserId, messageId: LocalMessageId): Either<DataError, LocalMessageMetadata>
     suspend fun getMessageBody(userId: UserId, messageId: LocalMessageId): Either<DataError, MessageBody>
 
     suspend fun getMessages(userId: UserId, pageKey: PageKey): List<LocalMessageMetadata>

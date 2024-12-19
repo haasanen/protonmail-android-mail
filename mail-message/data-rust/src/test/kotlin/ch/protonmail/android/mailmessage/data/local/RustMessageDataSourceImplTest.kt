@@ -123,7 +123,7 @@ class RustMessageDataSourceImplTest {
         val result = dataSource.getMessage(userId, messageId)
 
         // Then
-        assertEquals(LocalMessageTestData.AugWeatherForecast, result)
+        assertEquals(LocalMessageTestData.AugWeatherForecast.right(), result)
     }
 
     @Test
@@ -133,15 +133,16 @@ class RustMessageDataSourceImplTest {
         val mailSession = mockk<MailUserSessionWrapper>()
         coEvery { userSessionRepository.getUserSession(userId) } returns mailSession
         val messageId = LocalMessageIdSample.AugWeatherForecast
+        val expectedError = DataError.Local.NoDataCached
         coEvery {
             createRustMessageAccessor.invoke(mailSession, messageId)
-        } returns DataError.Local.NoDataCached.left()
+        } returns expectedError.left()
 
         // When
         val result = dataSource.getMessage(userId, messageId)
 
         // Then
-        assertNull(result)
+        assertEquals(expectedError.left(), result)
     }
 
     @Test

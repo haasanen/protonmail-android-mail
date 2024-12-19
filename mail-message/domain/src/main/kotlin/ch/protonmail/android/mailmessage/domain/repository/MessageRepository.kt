@@ -51,7 +51,7 @@ interface MessageRepository {
      * Gets a [Message] metadata for [userId] from the local storage
      * @return either the [Message] or a [DataError.Local]
      */
-    fun observeMessage(userId: UserId, messageId: MessageId): Flow<Either<DataError.Local, Message>>
+    fun observeMessage(userId: UserId, messageId: MessageId): Flow<Either<DataError, Message>>
 
     /**
      * Observe the [MessageWithBody] for a given [MessageId], for [userId]
