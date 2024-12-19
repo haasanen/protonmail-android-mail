@@ -20,7 +20,6 @@ package ch.protonmail.android.mailmessage.domain.usecase
 
 import ch.protonmail.android.mailmessage.domain.model.Participant
 import ch.protonmail.android.mailmessage.domain.usecase.ResolveParticipantName.FallbackType
-import ch.protonmail.android.testdata.contact.ContactTestData
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -29,36 +28,12 @@ class ResolveParticipantNameTest {
     private val resolveParticipantName = ResolveParticipantName()
 
     @Test
-    fun `when a participant exists as contact then contact name is returned`() {
-        // Given
-        val contactName = "contact name"
-        val contact = ContactTestData.buildContactWith(
-            name = contactName,
-            contactEmails = listOf(
-                ContactTestData.buildContactEmailWith(
-                    address = "sender@proton.ch"
-                )
-            )
-        )
-
-        val userContacts = listOf(contact, ContactTestData.contact2)
-        val participant = Participant("sender@proton.ch", "")
-
-        // When
-        val actual = resolveParticipantName(participant, userContacts)
-
-        // Then
-        val expected = ResolveParticipantNameResult(contactName, isProton = false)
-        assertEquals(expected, actual)
-    }
-
-    @Test
     fun `when a participant has display name then display name is returned`() {
         // Given
         val participant = Participant("sender@proton.ch", "Sender")
 
         // When
-        val actual = resolveParticipantName(participant, ContactTestData.contacts)
+        val actual = resolveParticipantName(participant)
 
         // Then
         val expected = ResolveParticipantNameResult("Sender", isProton = false)
@@ -71,7 +46,7 @@ class ResolveParticipantNameTest {
         val participant = Participant("sender@proton.ch", "")
 
         // When
-        val actual = resolveParticipantName(participant, ContactTestData.contacts, FallbackType.ADDRESS)
+        val actual = resolveParticipantName(participant, FallbackType.ADDRESS)
 
         // Then
         val expected = ResolveParticipantNameResult("sender@proton.ch", isProton = false)
@@ -84,7 +59,7 @@ class ResolveParticipantNameTest {
         val participant = Participant("sender@proton.ch", "")
 
         // When
-        val actual = resolveParticipantName(participant, ContactTestData.contacts, FallbackType.USERNAME)
+        val actual = resolveParticipantName(participant, FallbackType.USERNAME)
 
         // Then
         val expected = ResolveParticipantNameResult("sender", isProton = false)
@@ -97,7 +72,7 @@ class ResolveParticipantNameTest {
         val participant = Participant("sender@proton.ch", "")
 
         // When
-        val actual = resolveParticipantName(participant, ContactTestData.contacts, FallbackType.NONE)
+        val actual = resolveParticipantName(participant, FallbackType.NONE)
 
         // Then
         val expected = ResolveParticipantNameResult("", isProton = false)
@@ -110,7 +85,7 @@ class ResolveParticipantNameTest {
         val participant = Participant("sender@proton.ch", "sender@proton.ch")
 
         // When
-        val actual = resolveParticipantName(participant, ContactTestData.contacts, FallbackType.NONE)
+        val actual = resolveParticipantName(participant, FallbackType.NONE)
 
         // Then
         val expected = ResolveParticipantNameResult("", isProton = false)
@@ -123,7 +98,7 @@ class ResolveParticipantNameTest {
         val participant = Participant("sender@proton.ch", "sender@proton.ch")
 
         // When
-        val actual = resolveParticipantName(participant, ContactTestData.contacts, FallbackType.USERNAME)
+        val actual = resolveParticipantName(participant, FallbackType.USERNAME)
 
         // Then
         val expected = ResolveParticipantNameResult("sender", isProton = false)
@@ -136,7 +111,7 @@ class ResolveParticipantNameTest {
         val participant = Participant("sender@proton.ch", " ")
 
         // When
-        val actual = resolveParticipantName(participant, ContactTestData.contacts)
+        val actual = resolveParticipantName(participant)
 
         // Then
         val expected = ResolveParticipantNameResult("sender@proton.ch", isProton = false)
@@ -149,7 +124,7 @@ class ResolveParticipantNameTest {
         val participant = Participant("", "")
 
         // When
-        val actual = resolveParticipantName(participant, ContactTestData.contacts)
+        val actual = resolveParticipantName(participant)
 
         // Then
         val expected = ResolveParticipantNameResult("", isProton = false)
@@ -162,7 +137,7 @@ class ResolveParticipantNameTest {
         val participant = Participant("", "")
 
         // When
-        val actual = resolveParticipantName(participant, ContactTestData.contacts, FallbackType.USERNAME)
+        val actual = resolveParticipantName(participant, FallbackType.USERNAME)
 
         // Then
         val expected = ResolveParticipantNameResult("", isProton = false)
@@ -175,7 +150,7 @@ class ResolveParticipantNameTest {
         val participant = Participant("sender@proton.ch", "Sender", isProton = true)
 
         // When
-        val actual = resolveParticipantName(participant, ContactTestData.contacts)
+        val actual = resolveParticipantName(participant)
 
         // Then
         val expected = ResolveParticipantNameResult(name = "Sender", isProton = true)
@@ -188,7 +163,7 @@ class ResolveParticipantNameTest {
         val participant = Participant("sender@proton.ch", "Sender", isProton = false)
 
         // When
-        val actual = resolveParticipantName(participant, ContactTestData.contacts)
+        val actual = resolveParticipantName(participant)
 
         // Then
         val expected = ResolveParticipantNameResult(name = "Sender", isProton = false)

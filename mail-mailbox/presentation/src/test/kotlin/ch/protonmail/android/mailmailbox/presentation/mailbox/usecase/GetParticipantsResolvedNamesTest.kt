@@ -24,7 +24,6 @@ import ch.protonmail.android.mailmailbox.domain.usecase.ParticipantsResolvedName
 import ch.protonmail.android.mailmessage.domain.model.Sender
 import ch.protonmail.android.mailmessage.domain.usecase.ResolveParticipantName
 import ch.protonmail.android.mailmessage.domain.usecase.ResolveParticipantNameResult
-import ch.protonmail.android.testdata.contact.ContactTestData
 import ch.protonmail.android.testdata.mailbox.MailboxTestData.buildMailboxItem
 import io.mockk.every
 import io.mockk.mockk
@@ -50,10 +49,10 @@ class GetParticipantsResolvedNamesTest {
             labelIds = listOf(SystemLabelId.Inbox.labelId),
             senders = senders
         )
-        every { resolveParticipantName(sender, ContactTestData.contacts) } returns resolveParticipant1NameResult
-        every { resolveParticipantName(sender1, ContactTestData.contacts) } returns resolveParticipant2NameResult
+        every { resolveParticipantName(sender) } returns resolveParticipant1NameResult
+        every { resolveParticipantName(sender1) } returns resolveParticipant2NameResult
         // When
-        val actual = useCase(mailboxItem, ContactTestData.contacts)
+        val actual = useCase(mailboxItem)
         // Then
         val expected = ParticipantsResolvedNamesResult.Senders(
             listOf(

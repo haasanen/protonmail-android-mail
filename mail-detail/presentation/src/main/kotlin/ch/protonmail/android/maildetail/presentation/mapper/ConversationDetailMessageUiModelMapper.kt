@@ -25,7 +25,6 @@ import ch.protonmail.android.mailmessage.presentation.mapper.AvatarImageUiModelM
 import ch.protonmail.android.mailcommon.presentation.mapper.ColorMapper
 import ch.protonmail.android.mailcommon.presentation.mapper.ExpirationTimeMapper
 import ch.protonmail.android.mailcommon.presentation.usecase.FormatShortTime
-import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMessageUiModel
 import ch.protonmail.android.maillabel.domain.model.Label
 import ch.protonmail.android.maillabel.domain.model.LabelType
@@ -59,7 +58,6 @@ class ConversationDetailMessageUiModelMapper @Inject constructor(
 
     suspend fun toUiModel(
         message: Message,
-        contacts: List<ContactMetadata.Contact>,
         avatarImageState: AvatarImageState,
         primaryUserAddress: String?
     ): ConversationDetailMessageUiModel.Collapsed {
@@ -73,13 +71,13 @@ class ConversationDetailMessageUiModelMapper @Inject constructor(
             isUnread = message.isUnread,
             locationIcon = messageLocationUiModelMapper(message.exclusiveLocation, message.customLabels),
             repliedIcon = getRepliedIcon(isReplied = message.isReplied, isRepliedAll = message.isRepliedAll),
-            sender = participantUiModelMapper.senderToUiModel(message.sender, contacts),
+            sender = participantUiModelMapper.senderToUiModel(message.sender),
             shortTime = formatShortTime(message.time.seconds),
             labels = toLabelUiModels(message.customLabels),
             messageId = messageIdUiModelMapper.toUiModel(message.messageId),
             isDraft = false,
             recipients = (message.toList + message.ccList + message.bccList).map {
-                participantUiModelMapper.recipientToUiModel(it, contacts, primaryUserAddress)
+                participantUiModelMapper.recipientToUiModel(it, primaryUserAddress)
             }.toImmutableList(),
             shouldShowUndisclosedRecipients = message.hasUndisclosedRecipients()
         )
@@ -89,7 +87,6 @@ class ConversationDetailMessageUiModelMapper @Inject constructor(
         userId: UserId,
         message: Message,
         avatarImageState: AvatarImageState,
-        contacts: List<ContactMetadata.Contact>,
         primaryUserAddress: String?,
         decryptedMessageBody: DecryptedMessageBody,
         existingMessageUiState: ConversationDetailMessageUiModel.Expanded? = null
@@ -105,7 +102,6 @@ class ConversationDetailMessageUiModelMapper @Inject constructor(
             isUnread = message.isUnread,
             messageDetailHeaderUiModel = messageDetailHeaderUiModelMapper.toUiModel(
                 message,
-                contacts,
                 primaryUserAddress,
                 avatarImageState
             ),
@@ -131,14 +127,12 @@ class ConversationDetailMessageUiModelMapper @Inject constructor(
     suspend fun toUiModel(
         messageUiModel: ConversationDetailMessageUiModel.Expanded,
         message: Message,
-        avatarImageState: AvatarImageState,
-        contacts: List<ContactMetadata.Contact>
+        avatarImageState: AvatarImageState
     ): ConversationDetailMessageUiModel.Expanded {
         return messageUiModel.copy(
             isUnread = message.isUnread,
             messageDetailHeaderUiModel = messageDetailHeaderUiModelMapper.toUiModel(
                 message,
-                contacts,
                 null,
                 avatarImageState
             )

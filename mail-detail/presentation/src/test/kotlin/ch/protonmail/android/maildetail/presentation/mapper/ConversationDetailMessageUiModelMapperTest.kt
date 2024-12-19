@@ -84,13 +84,13 @@ internal class ConversationDetailMessageUiModelMapperTest {
     }
     private val resolveParticipantName: ResolveParticipantName = mockk {
         every {
-            this@mockk(contacts = any(), participant = RecipientSample.Doe)
+            this@mockk(participant = RecipientSample.Doe)
         } returns ResolveParticipantNameResult(ContactSample.Doe.name, isProton = false)
         every {
-            this@mockk(contacts = any(), participant = RecipientSample.John)
+            this@mockk(participant = RecipientSample.John)
         } returns ResolveParticipantNameResult(ContactSample.John.name, isProton = false)
         every {
-            this@mockk(contacts = any(), participant = RecipientSample.PreciWeather)
+            this@mockk(participant = RecipientSample.PreciWeather)
         } returns ResolveParticipantNameResult(RecipientSample.PreciWeather.name, isProton = false)
     }
     private val avatarImageUiModelMapper: AvatarImageUiModelMapper = mockk {
@@ -123,16 +123,16 @@ internal class ConversationDetailMessageUiModelMapperTest {
     }
     private val participantUiModelMapper: ParticipantUiModelMapper = mockk {
         every {
-            senderToUiModel(RecipientSample.Doe, any())
+            senderToUiModel(RecipientSample.Doe)
         } returns ConversationDetailMessageUiModelSample
             .InvoiceWithoutLabelsCustomFolderExpanded
             .messageDetailHeaderUiModel
             .sender
         every {
-            senderToUiModel(RecipientSample.John, any())
+            senderToUiModel(RecipientSample.John)
         } returns ConversationDetailMessageUiModelSample.ExpiringInvitation.sender
         every {
-            senderToUiModel(RecipientSample.PreciWeather, any())
+            senderToUiModel(RecipientSample.PreciWeather)
         } returns ConversationDetailMessageUiModelSample.AugWeatherForecast.sender
     }
     private val mapper = ConversationDetailMessageUiModelMapper(
@@ -170,7 +170,6 @@ internal class ConversationDetailMessageUiModelMapperTest {
         // when
         val result: ConversationDetailMessageUiModel.Collapsed = mapper.toUiModel(
             message = message,
-            contacts = emptyList(),
             avatarImageState = AvatarImageState.NoImageAvailable,
             primaryUserAddress = primaryUserAddress
         )
@@ -184,7 +183,6 @@ internal class ConversationDetailMessageUiModelMapperTest {
         // given
         val userId = UserIdSample.Primary
         val message = MessageSample.AugWeatherForecast
-        val contactsList = listOf(ContactSample.John, ContactSample.Doe)
         val decryptedMessageBody = DecryptedMessageBody(
             message.messageId,
             UUID.randomUUID().toString(),
@@ -196,7 +194,6 @@ internal class ConversationDetailMessageUiModelMapperTest {
         val result = mapper.toUiModel(
             userId = userId,
             message = message,
-            contacts = contactsList,
             avatarImageState = avatarImageState,
             primaryUserAddress = primaryUserAddress,
             decryptedMessageBody = decryptedMessageBody
@@ -207,7 +204,7 @@ internal class ConversationDetailMessageUiModelMapperTest {
         assertEquals(result.messageId.id, message.messageId.id)
         coVerify {
             messageDetailHeaderUiModelMapper.toUiModel(
-                message, contactsList, primaryUserAddress, avatarImageState
+                message, primaryUserAddress, avatarImageState
             )
         }
         coVerify { messageBodyUiModelMapper.toUiModel(userId, decryptedMessageBody) }
@@ -240,7 +237,7 @@ internal class ConversationDetailMessageUiModelMapperTest {
         val avatarImageState = AvatarImageState.NoImageAvailable
 
         // when
-        val result = mapper.toUiModel(message, contacts = emptyList(), avatarImageState, primaryUserAddress)
+        val result = mapper.toUiModel(message, avatarImageState, primaryUserAddress)
 
         // then
         assertEquals(expected, result)
@@ -258,7 +255,7 @@ internal class ConversationDetailMessageUiModelMapperTest {
         val avatarImageState = AvatarImageState.NoImageAvailable
 
         // when
-        val result = mapper.toUiModel(message, contacts = emptyList(), avatarImageState, primaryUserAddress)
+        val result = mapper.toUiModel(message, avatarImageState, primaryUserAddress)
 
         // then
         assertEquals(expected, result)
@@ -276,7 +273,7 @@ internal class ConversationDetailMessageUiModelMapperTest {
         val avatarImageState = AvatarImageState.NoImageAvailable
 
         // when
-        val result = mapper.toUiModel(message, contacts = emptyList(), avatarImageState, primaryUserAddress)
+        val result = mapper.toUiModel(message, avatarImageState, primaryUserAddress)
 
         // then
         assertEquals(expected, result)
@@ -297,7 +294,7 @@ internal class ConversationDetailMessageUiModelMapperTest {
         val avatarImageState = AvatarImageState.NoImageAvailable
 
         // when
-        val result = mapper.toUiModel(message, contacts = emptyList(), avatarImageState, primaryUserAddress)
+        val result = mapper.toUiModel(message, avatarImageState, primaryUserAddress)
 
         // then
         assertEquals(expected, result)
@@ -317,7 +314,7 @@ internal class ConversationDetailMessageUiModelMapperTest {
         val avatarImageState = AvatarImageState.NoImageAvailable
 
         // when
-        val result = mapper.toUiModel(message, contacts = emptyList(), avatarImageState, primaryUserAddress)
+        val result = mapper.toUiModel(message, avatarImageState, primaryUserAddress)
 
         // then
         assertEquals(expected, result)
@@ -337,7 +334,7 @@ internal class ConversationDetailMessageUiModelMapperTest {
         val avatarImageState = AvatarImageState.NoImageAvailable
 
         // when
-        val result = mapper.toUiModel(message, contacts = emptyList(), avatarImageState, primaryUserAddress)
+        val result = mapper.toUiModel(message, avatarImageState, primaryUserAddress)
 
         // then
         assertEquals(expected, result)
@@ -354,8 +351,7 @@ internal class ConversationDetailMessageUiModelMapperTest {
         val result = mapper.toUiModel(
             messageUiModel = previousMessage,
             message = message,
-            avatarImageState = avatarImageState,
-            contacts = listOf(ContactSample.John)
+            avatarImageState = avatarImageState
         )
 
         // Then
@@ -368,7 +364,6 @@ internal class ConversationDetailMessageUiModelMapperTest {
         // given
         val userId = UserIdSample.Primary
         val message = MessageSample.AugWeatherForecast
-        val contactsList = listOf(ContactSample.John, ContactSample.Doe)
         val decryptedMessageBody = DecryptedMessageBody(
             message.messageId,
             UUID.randomUUID().toString(),
@@ -381,7 +376,6 @@ internal class ConversationDetailMessageUiModelMapperTest {
         val result = mapper.toUiModel(
             userId,
             message,
-            contacts = contactsList,
             avatarImageState = avatarImageState,
             primaryUserAddress = primaryUserAddress,
             decryptedMessageBody = decryptedMessageBody,

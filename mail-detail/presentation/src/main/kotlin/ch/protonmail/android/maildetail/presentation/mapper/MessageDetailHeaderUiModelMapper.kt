@@ -58,14 +58,13 @@ class MessageDetailHeaderUiModelMapper @Inject constructor(
 
     suspend fun toUiModel(
         message: Message,
-        contacts: List<ContactMetadata.Contact>,
         primaryUserAddress: String?,
         avatarImageState: AvatarImageState
     ): MessageDetailHeaderUiModel {
         return MessageDetailHeaderUiModel(
             avatar = detailAvatarUiModelMapper(message.avatarInformation, message.sender),
             avatarImage = avatarImageUiModelMapper.toUiModel(avatarImageState),
-            sender = participantUiModelMapper.senderToUiModel(message.sender, contacts),
+            sender = participantUiModelMapper.senderToUiModel(message.sender),
             shouldShowTrackerProtectionIcon = true,
             shouldShowAttachmentIcon = message.hasNonCalendarAttachments(),
             shouldShowStar = message.isStarred,
@@ -74,16 +73,16 @@ class MessageDetailHeaderUiModelMapper @Inject constructor(
             extendedTime = formatExtendedTime(message.time.seconds),
             shouldShowUndisclosedRecipients = message.hasUndisclosedRecipients(),
             allRecipients = (message.toList + message.ccList + message.bccList).map {
-                participantUiModelMapper.recipientToUiModel(it, contacts, primaryUserAddress)
+                participantUiModelMapper.recipientToUiModel(it, primaryUserAddress)
             }.toImmutableList(),
             toRecipients = message.toList.map {
-                participantUiModelMapper.recipientToUiModel(it, contacts, primaryUserAddress)
+                participantUiModelMapper.recipientToUiModel(it, primaryUserAddress)
             }.toImmutableList(),
             ccRecipients = message.ccList.map {
-                participantUiModelMapper.recipientToUiModel(it, contacts, primaryUserAddress)
+                participantUiModelMapper.recipientToUiModel(it, primaryUserAddress)
             }.toImmutableList(),
             bccRecipients = message.bccList.map {
-                participantUiModelMapper.recipientToUiModel(it, contacts, primaryUserAddress)
+                participantUiModelMapper.recipientToUiModel(it, primaryUserAddress)
             }.toImmutableList(),
             labels = toLabelUiModels(message.customLabels),
             size = Formatter.formatShortFileSize(context, message.size),
@@ -101,7 +100,7 @@ class MessageDetailHeaderUiModelMapper @Inject constructor(
         val allRecipientsList = toList + ccList + bccList
 
         return if (allRecipientsList.isNotEmpty()) {
-            TextUiModel.Text(allRecipientsList.joinToString { resolveParticipantName(it, contacts).name })
+            TextUiModel.Text(allRecipientsList.joinToString { resolveParticipantName(it).name })
         } else {
             TextUiModel.TextRes(R.string.undisclosed_recipients)
         }

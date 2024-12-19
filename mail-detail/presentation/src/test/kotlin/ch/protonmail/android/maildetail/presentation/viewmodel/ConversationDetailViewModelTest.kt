@@ -173,7 +173,6 @@ class ConversationDetailViewModelTest {
         coEvery {
             toUiModel(
                 message = MessageSample.Invoice,
-                contacts = any(),
                 primaryUserAddress = primaryUserAddress,
                 avatarImageState = any()
             )
@@ -182,7 +181,6 @@ class ConversationDetailViewModelTest {
         coEvery {
             toUiModel(
                 message = MessageSample.Invoice,
-                contacts = any(),
                 primaryUserAddress = primaryUserAddress,
                 avatarImageState = any()
             )
@@ -191,7 +189,6 @@ class ConversationDetailViewModelTest {
         coEvery {
             toUiModel(
                 message = MessageSample.Invoice,
-                contacts = any(),
                 primaryUserAddress = primaryUserAddress,
                 avatarImageState = any()
             )
@@ -200,7 +197,6 @@ class ConversationDetailViewModelTest {
         coEvery {
             toUiModel(
                 message = MessageSample.Invoice,
-                contacts = any(),
                 primaryUserAddress = primaryUserAddress,
                 avatarImageState = any()
             )
@@ -517,7 +513,6 @@ class ConversationDetailViewModelTest {
             conversationMessageMapper.toUiModel(
                 userId = any(),
                 message = any(),
-                contacts = any(),
                 avatarImageState = any(),
                 primaryUserAddress = primaryUserAddress,
                 decryptedMessageBody = any()
@@ -624,7 +619,6 @@ class ConversationDetailViewModelTest {
             conversationMessageMapper.toUiModel(
                 userId = any(),
                 message = any(),
-                contacts = any(),
                 avatarImageState = any(),
                 primaryUserAddress = primaryUserAddress,
                 decryptedMessageBody = any()
@@ -665,7 +659,6 @@ class ConversationDetailViewModelTest {
             conversationMessageMapper.toUiModel(
                 userId = any(),
                 message = any(),
-                contacts = any(),
                 avatarImageState = any(),
                 primaryUserAddress = primaryUserAddress,
                 decryptedMessageBody = any()
@@ -1433,7 +1426,6 @@ class ConversationDetailViewModelTest {
             conversationMessageMapper.toUiModel(
                 userId = any(),
                 message = any(),
-                contacts = any(),
                 avatarImageState = any(),
                 primaryUserAddress = primaryUserAddress,
                 decryptedMessageBody = any()
@@ -1479,7 +1471,6 @@ class ConversationDetailViewModelTest {
                 conversationMessageMapper.toUiModel(
                     userId = any(),
                     message = any(),
-                    contacts = any(),
                     avatarImageState = any(),
                     primaryUserAddress = primaryUserAddress,
                     decryptedMessageBody = any()
@@ -1532,7 +1523,6 @@ class ConversationDetailViewModelTest {
             conversationMessageMapper.toUiModel(
                 userId = any(),
                 message = any(),
-                contacts = any(),
                 avatarImageState = any(),
                 primaryUserAddress = primaryUserAddress,
                 decryptedMessageBody = any()
@@ -1597,7 +1587,6 @@ class ConversationDetailViewModelTest {
             conversationMessageMapper.toUiModel(
                 userId = any(),
                 message = any(),
-                contacts = any(),
                 avatarImageState = any(),
                 primaryUserAddress = primaryUserAddress,
                 decryptedMessageBody = any()
@@ -1622,7 +1611,6 @@ class ConversationDetailViewModelTest {
             conversationMessageMapper.toUiModel(
                 userId = any(),
                 message = any(),
-                contacts = any(),
                 avatarImageState = any(),
                 primaryUserAddress = primaryUserAddress,
                 decryptedMessageBody = any()
@@ -1945,13 +1933,12 @@ class ConversationDetailViewModelTest {
             messagesState = ConversationDetailsMessagesState.Data(firstExpanding)
         )
 
-        coEvery { conversationMessageMapper.toUiModel(any(), any(), any(), primaryUserAddress) } returns
+        coEvery { conversationMessageMapper.toUiModel(any(), any(), primaryUserAddress) } returns
             ConversationDetailMessageUiModelSample.InvoiceWithLabel
         coEvery {
             conversationMessageMapper.toUiModel(
                 userId = any(),
                 message = any(),
-                contacts = any(),
                 avatarImageState = any(),
                 primaryUserAddress = primaryUserAddress,
                 decryptedMessageBody = any()

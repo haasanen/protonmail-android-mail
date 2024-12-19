@@ -18,7 +18,6 @@
 
 package ch.protonmail.android.maildetail.presentation.mapper
 
-import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import ch.protonmail.android.maildetail.presentation.R
 import ch.protonmail.android.maildetail.presentation.model.ParticipantUiModel
 import ch.protonmail.android.mailmessage.domain.model.Participant
@@ -31,24 +30,18 @@ class ParticipantUiModelMapper @Inject constructor(
     private val resolveParticipantName: ResolveParticipantName
 ) {
 
-    fun senderToUiModel(participant: Sender, contacts: List<ContactMetadata.Contact>) =
-        toUiModel(participant, contacts, ResolveParticipantName.FallbackType.USERNAME)
+    fun senderToUiModel(participant: Sender) = toUiModel(participant, ResolveParticipantName.FallbackType.USERNAME)
 
-    fun recipientToUiModel(
-        participant: Recipient,
-        contacts: List<ContactMetadata.Contact>,
-        primaryUserAddress: String?
-    ) = toUiModel(participant, contacts, ResolveParticipantName.FallbackType.NONE, primaryUserAddress)
+    fun recipientToUiModel(participant: Recipient, primaryUserAddress: String?) =
+        toUiModel(participant, ResolveParticipantName.FallbackType.NONE, primaryUserAddress)
 
     private fun toUiModel(
         participant: Participant,
-        contacts: List<ContactMetadata.Contact>,
         fallbackType: ResolveParticipantName.FallbackType,
         primaryUserAddress: String? = null
     ): ParticipantUiModel {
         val resolveParticipantNameResult = resolveParticipantName(
             participant,
-            contacts,
             fallbackType = fallbackType
         )
 

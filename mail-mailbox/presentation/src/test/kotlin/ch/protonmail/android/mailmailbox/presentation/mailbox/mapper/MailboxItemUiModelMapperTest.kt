@@ -37,7 +37,6 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.model.ParticipantU
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.ParticipantsUiModel
 import ch.protonmail.android.mailmessage.domain.usecase.ResolveParticipantNameResult
 import ch.protonmail.android.mailsettings.domain.model.FolderColorSettings
-import ch.protonmail.android.testdata.contact.ContactTestData
 import ch.protonmail.android.testdata.mailbox.MailboxTestData
 import ch.protonmail.android.testdata.mailbox.MailboxTestData.buildMailboxItem
 import io.mockk.coEvery
@@ -86,7 +85,7 @@ class MailboxItemUiModelMapperTest {
 
     private val getParticipantsResolvedNames = mockk<GetParticipantsResolvedNames> {
         every {
-            this@mockk.invoke(any(), any())
+            this@mockk.invoke(any())
         } returns ParticipantsResolvedNamesResult.Senders(
             listOf(
                 ResolveParticipantNameResult(
@@ -121,7 +120,7 @@ class MailboxItemUiModelMapperTest {
         // Given
         val mailboxItem = MailboxTestData.repliedMailboxItem
         // When
-        val actual = mapper.toUiModel(userId, mailboxItem, ContactTestData.contacts, defaultFolderColorSettings, false)
+        val actual = mapper.toUiModel(userId, mailboxItem, defaultFolderColorSettings, false)
         // Then
         assertTrue(actual.shouldShowRepliedIcon)
     }
@@ -131,7 +130,7 @@ class MailboxItemUiModelMapperTest {
         // Given
         val mailboxItem = MailboxTestData.repliedAllMailboxItem
         // When
-        val actual = mapper.toUiModel(userId, mailboxItem, ContactTestData.contacts, defaultFolderColorSettings, false)
+        val actual = mapper.toUiModel(userId, mailboxItem, defaultFolderColorSettings, false)
         // Then
         assertTrue(actual.shouldShowRepliedAllIcon)
         assertFalse(actual.shouldShowRepliedIcon)
@@ -142,7 +141,7 @@ class MailboxItemUiModelMapperTest {
         // Given
         val mailboxItem = MailboxTestData.allActionsMailboxItem
         // When
-        val actual = mapper.toUiModel(userId, mailboxItem, ContactTestData.contacts, defaultFolderColorSettings, false)
+        val actual = mapper.toUiModel(userId, mailboxItem, defaultFolderColorSettings, false)
         // Then
         assertTrue(actual.shouldShowForwardedIcon)
     }
@@ -152,7 +151,7 @@ class MailboxItemUiModelMapperTest {
         // Given
         val mailboxItem = MailboxTestData.mailboxConversationItem
         // When
-        val actual = mapper.toUiModel(userId, mailboxItem, ContactTestData.contacts, defaultFolderColorSettings, false)
+        val actual = mapper.toUiModel(userId, mailboxItem, defaultFolderColorSettings, false)
         // Then
         assertFalse(actual.shouldShowRepliedIcon)
         assertFalse(actual.shouldShowRepliedAllIcon)
@@ -174,10 +173,10 @@ class MailboxItemUiModelMapperTest {
             ).toImmutableList()
         )
         every {
-            getParticipantsResolvedNames.invoke(mailboxItem, ContactTestData.contacts)
+            getParticipantsResolvedNames.invoke(mailboxItem)
         } returns ParticipantsResolvedNamesResult.Recipients(resolvedNames)
         // When
-        val actual = mapper.toUiModel(userId, mailboxItem, ContactTestData.contacts, defaultFolderColorSettings, false)
+        val actual = mapper.toUiModel(userId, mailboxItem, defaultFolderColorSettings, false)
         // Then
         assertEquals(expected, actual.participants)
     }
@@ -191,10 +190,10 @@ class MailboxItemUiModelMapperTest {
             TextUiModel(ch.protonmail.android.mailmailbox.presentation.R.string.mailbox_default_recipient)
         )
         every {
-            getParticipantsResolvedNames.invoke(mailboxItem, ContactTestData.contacts)
+            getParticipantsResolvedNames.invoke(mailboxItem)
         } returns ParticipantsResolvedNamesResult.Recipients(resolvedNames)
         // When
-        val actual = mapper.toUiModel(userId, mailboxItem, ContactTestData.contacts, defaultFolderColorSettings, false)
+        val actual = mapper.toUiModel(userId, mailboxItem, defaultFolderColorSettings, false)
         // Then
         assertEquals(expected, actual.participants)
     }
@@ -208,10 +207,10 @@ class MailboxItemUiModelMapperTest {
             TextUiModel(ch.protonmail.android.mailmailbox.presentation.R.string.mailbox_default_sender)
         )
         every {
-            getParticipantsResolvedNames.invoke(mailboxItem, ContactTestData.contacts)
+            getParticipantsResolvedNames.invoke(mailboxItem)
         } returns ParticipantsResolvedNamesResult.Senders(resolvedNames)
         // When
-        val actual = mapper.toUiModel(userId, mailboxItem, ContactTestData.contacts, defaultFolderColorSettings, false)
+        val actual = mapper.toUiModel(userId, mailboxItem, defaultFolderColorSettings, false)
         // Then
         assertEquals(expected, actual.participants)
     }
@@ -224,7 +223,7 @@ class MailboxItemUiModelMapperTest {
         val result = TextUiModel.Text("18:00")
         every { formatMailboxItemTime.invoke(time.seconds) } returns result
         // When
-        val actual = mapper.toUiModel(userId, mailboxItem, ContactTestData.contacts, defaultFolderColorSettings, false)
+        val actual = mapper.toUiModel(userId, mailboxItem, defaultFolderColorSettings, false)
         // Then
         assertEquals(result, actual.time)
     }
@@ -234,7 +233,7 @@ class MailboxItemUiModelMapperTest {
         // Given
         val mailboxItem = buildMailboxItem(type = MailboxItemType.Conversation, numMessages = 2)
         // When
-        val actual = mapper.toUiModel(userId, mailboxItem, ContactTestData.contacts, defaultFolderColorSettings, false)
+        val actual = mapper.toUiModel(userId, mailboxItem, defaultFolderColorSettings, false)
         // Then
         assertEquals(2, actual.numMessages)
     }
@@ -244,7 +243,7 @@ class MailboxItemUiModelMapperTest {
         // Given
         val mailboxItem = buildMailboxItem(type = MailboxItemType.Conversation, numMessages = 1)
         // When
-        val actual = mapper.toUiModel(userId, mailboxItem, ContactTestData.contacts, defaultFolderColorSettings, false)
+        val actual = mapper.toUiModel(userId, mailboxItem, defaultFolderColorSettings, false)
         // Then
         assertNull(actual.numMessages)
     }
@@ -254,7 +253,7 @@ class MailboxItemUiModelMapperTest {
         // Given
         val mailboxItem = buildMailboxItem(labelIds = listOf(SystemLabelId.Starred.labelId))
         // When
-        val actual = mapper.toUiModel(userId, mailboxItem, ContactTestData.contacts, defaultFolderColorSettings, false)
+        val actual = mapper.toUiModel(userId, mailboxItem, defaultFolderColorSettings, false)
         // Then
         assertTrue(actual.isStarred)
     }
@@ -265,7 +264,7 @@ class MailboxItemUiModelMapperTest {
         val labelIds = listOf(SystemLabelId.Drafts.labelId, SystemLabelId.Archive.labelId)
         val mailboxItem = buildMailboxItem(labelIds = labelIds)
         // When
-        val actual = mapper.toUiModel(userId, mailboxItem, ContactTestData.contacts, defaultFolderColorSettings, false)
+        val actual = mapper.toUiModel(userId, mailboxItem, defaultFolderColorSettings, false)
         // Then
         assertFalse(actual.isStarred)
     }
@@ -284,7 +283,7 @@ class MailboxItemUiModelMapperTest {
             )
         } returns icons
         // When
-        val actual = mapper.toUiModel(userId, mailboxItem, ContactTestData.contacts, defaultFolderColorSettings, false)
+        val actual = mapper.toUiModel(userId, mailboxItem, defaultFolderColorSettings, false)
         // Then
         val expectedIconsRes = listOf(inboxIconRes)
         assertEquals(expectedIconsRes, actual.locations)
@@ -298,7 +297,7 @@ class MailboxItemUiModelMapperTest {
             getMailboxItemLocationIcons.invoke(userId, mailboxItem, defaultFolderColorSettings, false)
         } returns GetMailboxItemLocationIcon.Result.None
         // When
-        val actual = mapper.toUiModel(userId, mailboxItem, ContactTestData.contacts, defaultFolderColorSettings, false)
+        val actual = mapper.toUiModel(userId, mailboxItem, defaultFolderColorSettings, false)
         // Then
         assertEquals(emptyList(), actual.locations)
     }
@@ -308,7 +307,7 @@ class MailboxItemUiModelMapperTest {
         // Given
         val mailboxItem = buildMailboxItem(hasAttachments = true)
         // When
-        val actual = mapper.toUiModel(userId, mailboxItem, ContactTestData.contacts, defaultFolderColorSettings, false)
+        val actual = mapper.toUiModel(userId, mailboxItem, defaultFolderColorSettings, false)
         // Then
         assertTrue(actual.shouldShowAttachmentIcon)
     }
@@ -318,7 +317,7 @@ class MailboxItemUiModelMapperTest {
         // Given
         val mailboxItem = buildMailboxItem(hasAttachments = false)
         // When
-        val actual = mapper.toUiModel(userId, mailboxItem, ContactTestData.contacts, defaultFolderColorSettings, false)
+        val actual = mapper.toUiModel(userId, mailboxItem, defaultFolderColorSettings, false)
         // Then
         assertFalse(actual.shouldShowAttachmentIcon)
     }
@@ -333,12 +332,12 @@ class MailboxItemUiModelMapperTest {
             ResolveParticipantNameResult("display name", isProton = false)
         )
         every {
-            getParticipantsResolvedNames.invoke(mailboxItem, ContactTestData.contacts)
+            getParticipantsResolvedNames.invoke(mailboxItem)
         } returns ParticipantsResolvedNamesResult.Senders(resolvedNames)
         every { mailboxAvatarUiModelMapper.invoke(mailboxItem) } returns avatarUiModel
 
         // When
-        val actual = mapper.toUiModel(userId, mailboxItem, ContactTestData.contacts, defaultFolderColorSettings, false)
+        val actual = mapper.toUiModel(userId, mailboxItem, defaultFolderColorSettings, false)
         // Then
         assertEquals(avatarUiModel, actual.avatar)
     }
@@ -349,7 +348,7 @@ class MailboxItemUiModelMapperTest {
         val mailboxItem = buildMailboxItem(expirationTime = 1000L)
         // When
         val mailboxItemUiModel = mapper.toUiModel(
-            userId, mailboxItem, ContactTestData.contacts, defaultFolderColorSettings, false
+            userId, mailboxItem, defaultFolderColorSettings, false
         )
         // Then
         assertTrue(mailboxItemUiModel.shouldShowExpirationLabel)
@@ -361,7 +360,7 @@ class MailboxItemUiModelMapperTest {
         val mailboxItem = buildMailboxItem(expirationTime = 0L)
         // When
         val mailboxItemUiModel = mapper.toUiModel(
-            userId, mailboxItem, ContactTestData.contacts, defaultFolderColorSettings, false
+            userId, mailboxItem, defaultFolderColorSettings, false
         )
         // Then
         assertFalse(mailboxItemUiModel.shouldShowExpirationLabel)
@@ -373,7 +372,7 @@ class MailboxItemUiModelMapperTest {
         val mailboxItem = buildMailboxItem(calendarAttachmentCount = 1)
         // When
         val mailboxItemUiModel = mapper.toUiModel(
-            userId, mailboxItem, ContactTestData.contacts, defaultFolderColorSettings, false
+            userId, mailboxItem, defaultFolderColorSettings, false
         )
         // Then
         assertTrue(mailboxItemUiModel.shouldShowCalendarIcon)
@@ -385,7 +384,7 @@ class MailboxItemUiModelMapperTest {
         val mailboxItem = buildMailboxItem(calendarAttachmentCount = 0)
         // When
         val mailboxItemUiModel = mapper.toUiModel(
-            userId, mailboxItem, ContactTestData.contacts, defaultFolderColorSettings, false
+            userId, mailboxItem, defaultFolderColorSettings, false
         )
         // Then
         assertFalse(mailboxItemUiModel.shouldShowCalendarIcon)
@@ -402,7 +401,7 @@ class MailboxItemUiModelMapperTest {
         val mailboxItem = buildMailboxItem(labels = mailboxItemLabels)
 
         // when
-        val result = mapper.toUiModel(userId, mailboxItem, ContactTestData.contacts, defaultFolderColorSettings, false)
+        val result = mapper.toUiModel(userId, mailboxItem, defaultFolderColorSettings, false)
 
         // then
         val expectedLabels = listOf(
@@ -421,7 +420,7 @@ class MailboxItemUiModelMapperTest {
         val mailboxItem = buildMailboxItem(labelIds = listOf(SystemLabelId.AllMail.labelId))
         // When
         val mailboxItemUiModel = mapper.toUiModel(
-            userId, mailboxItem, ContactTestData.contacts, defaultFolderColorSettings, false
+            userId, mailboxItem, defaultFolderColorSettings, false
         )
         // Then
         assertFalse(mailboxItemUiModel.shouldOpenInComposer)

@@ -42,7 +42,6 @@ import ch.protonmail.android.mailmessage.domain.model.AttachmentCount
 import ch.protonmail.android.mailmessage.domain.usecase.ResolveParticipantName
 import ch.protonmail.android.mailmessage.domain.usecase.ResolveParticipantNameResult
 import ch.protonmail.android.mailmessage.presentation.mapper.AvatarImageUiModelMapper
-import ch.protonmail.android.testdata.contact.ContactTestData
 import ch.protonmail.android.testdata.label.LabelTestData
 import ch.protonmail.android.testdata.message.MessageTestData
 import io.mockk.coEvery
@@ -121,40 +120,36 @@ class MessageDetailHeaderUiModelMapperTest {
         coEvery { this@mockk(any(), any()) } returns messageLocationUiModel
     }
     private val participantUiModelMapper: ParticipantUiModelMapper = mockk {
-        every { senderToUiModel(MessageTestData.sender, ContactTestData.contacts) } returns senderUiModel
+        every { senderToUiModel(MessageTestData.sender) } returns senderUiModel
         every {
-            recipientToUiModel(MessageTestData.recipient1, ContactTestData.contacts, primaryUserAddress)
+            recipientToUiModel(MessageTestData.recipient1, primaryUserAddress)
         } returns participant1UiModel
         every {
-            recipientToUiModel(MessageTestData.recipient2, ContactTestData.contacts, primaryUserAddress)
+            recipientToUiModel(MessageTestData.recipient2, primaryUserAddress)
         } returns participant2UiModel
         every {
-            recipientToUiModel(MessageTestData.recipient3, ContactTestData.contacts, primaryUserAddress)
+            recipientToUiModel(MessageTestData.recipient3, primaryUserAddress)
         } returns participant3UiModel
     }
     private val resolveParticipantName: ResolveParticipantName = mockk {
         every {
             this@mockk.invoke(
-                MessageTestData.sender,
-                ContactTestData.contacts
+                MessageTestData.sender
             )
         } returns ResolveParticipantNameResult(MessageTestData.sender.name, isProton = false)
         every {
             this@mockk.invoke(
-                MessageTestData.recipient1,
-                ContactTestData.contacts
+                MessageTestData.recipient1
             )
         } returns ResolveParticipantNameResult(MessageTestData.recipient1.name, isProton = false)
         every {
             this@mockk.invoke(
-                MessageTestData.recipient2,
-                ContactTestData.contacts
+                MessageTestData.recipient2
             )
         } returns ResolveParticipantNameResult(MessageTestData.recipient2.name, isProton = false)
         every {
             this@mockk.invoke(
-                MessageTestData.recipient3,
-                ContactTestData.contacts
+                MessageTestData.recipient3
             )
         } returns ResolveParticipantNameResult(MessageTestData.recipient3.name, isProton = false)
     }
@@ -190,7 +185,6 @@ class MessageDetailHeaderUiModelMapperTest {
         // When
         val result = messageDetailHeaderUiModelMapper.toUiModel(
             message = message,
-            contacts = ContactTestData.contacts,
             primaryUserAddress = primaryUserAddress,
             avatarImageState = AvatarImageState.NoImageAvailable
         )
@@ -209,7 +203,6 @@ class MessageDetailHeaderUiModelMapperTest {
         // When
         val result = messageDetailHeaderUiModelMapper.toUiModel(
             message = message,
-            contacts = ContactTestData.contacts,
             primaryUserAddress = primaryUserAddress,
             avatarImageState = AvatarImageState.NoImageAvailable
         )
@@ -225,7 +218,6 @@ class MessageDetailHeaderUiModelMapperTest {
         // When
         val result = messageDetailHeaderUiModelMapper.toUiModel(
             message = message,
-            contacts = ContactTestData.contacts,
             primaryUserAddress = primaryUserAddress,
             avatarImageState = AvatarImageState.NoImageAvailable
         )
@@ -249,7 +241,6 @@ class MessageDetailHeaderUiModelMapperTest {
         // When
         val result = messageDetailHeaderUiModelMapper.toUiModel(
             message = message,
-            contacts = ContactTestData.contacts,
             primaryUserAddress = primaryUserAddress,
             avatarImageState = AvatarImageState.NoImageAvailable
         )
@@ -276,7 +267,7 @@ class MessageDetailHeaderUiModelMapperTest {
 
         // When
         val result = messageDetailHeaderUiModelMapper.toUiModel(
-            input, ContactTestData.contacts, primaryUserAddress, avatarImageState
+            input, primaryUserAddress, avatarImageState
         )
 
         // Then

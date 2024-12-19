@@ -24,7 +24,6 @@ import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.presentation.mapper.ColorMapper
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcommon.presentation.usecase.FormatShortTime
-import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import ch.protonmail.android.maillabel.presentation.model.LabelUiModel
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItem
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItemType
@@ -59,11 +58,10 @@ class MailboxItemUiModelMapper @Inject constructor(
     suspend fun toUiModel(
         userId: UserId,
         mailboxItem: MailboxItem,
-        contacts: List<ContactMetadata.Contact>,
         folderColorSettings: FolderColorSettings,
         isShowingSearchResults: Boolean
     ): MailboxItemUiModel {
-        val participantsResolvedNamesResult = getParticipantsResolvedNames(mailboxItem, contacts)
+        val participantsResolvedNamesResult = getParticipantsResolvedNames(mailboxItem)
 
         return MailboxItemUiModel(
             avatar = mailboxAvatarUiModelMapper(mailboxItem),

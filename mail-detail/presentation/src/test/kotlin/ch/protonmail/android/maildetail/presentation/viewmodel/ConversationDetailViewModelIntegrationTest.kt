@@ -2345,7 +2345,6 @@ class ConversationDetailViewModelIntegrationTest {
 
             coVerify {
                 observeConversationUseCase(userId, conversationId, any())
-                observeContacts(userId)
                 observeConversationViewState()
                 observeAttachmentStatus(userId, any(), any())
                 observePrivacySettings(userId)

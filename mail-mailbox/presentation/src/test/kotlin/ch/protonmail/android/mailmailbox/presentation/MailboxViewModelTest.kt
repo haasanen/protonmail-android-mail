@@ -23,7 +23,6 @@ import android.graphics.Color
 import android.util.Log
 import androidx.paging.PagingData
 import app.cash.turbine.test
-import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.Action
@@ -41,7 +40,6 @@ import ch.protonmail.android.mailcommon.presentation.model.BottomBarState
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcommon.presentation.sample.ActionUiModelSample
 import ch.protonmail.android.mailcommon.presentation.ui.delete.DeleteDialogState
-import ch.protonmail.android.mailcontact.domain.usecase.GetContacts
 import ch.protonmail.android.mailconversation.domain.usecase.DeleteConversations
 import ch.protonmail.android.mailconversation.domain.usecase.LabelConversations
 import ch.protonmail.android.mailconversation.domain.usecase.MarkConversationsAsRead
@@ -130,7 +128,6 @@ import ch.protonmail.android.mailsettings.domain.usecase.ObserveFolderColorSetti
 import ch.protonmail.android.mailsettings.domain.usecase.ObserveSwipeActionsPreference
 import ch.protonmail.android.testdata.avatar.AvatarImageStatesTestData
 import ch.protonmail.android.testdata.avatar.AvatarImagesUiModelTestData
-import ch.protonmail.android.testdata.contact.ContactTestData
 import ch.protonmail.android.testdata.label.rust.LabelAsActionsTestData
 import ch.protonmail.android.testdata.mailbox.MailboxItemUiModelTestData.buildMailboxUiModelItem
 import ch.protonmail.android.testdata.mailbox.MailboxItemUiModelTestData.draftMailboxItemUiModel
@@ -226,10 +223,6 @@ class MailboxViewModelTest {
         coEvery { this@mockk(userId = any()) } returns flowOf(UnreadCountersTestData.systemUnreadCounters)
     }
 
-    private val getContacts = mockk<GetContacts> {
-        coEvery { this@mockk.invoke(userId) } returns Either.Right(ContactTestData.contacts)
-    }
-
     private val pagerFactory = mockk<MailboxPagerFactory>()
 
     private val mailboxItemMapper = mockk<MailboxItemUiModelMapper>()
@@ -319,7 +312,6 @@ class MailboxViewModelTest {
             actionUiModelMapper = actionUiModelMapper,
             mailboxItemMapper = mailboxItemMapper,
             swipeActionsMapper = swipeActionsMapper,
-            getContacts = getContacts,
             markConversationsAsRead = markConversationsAsRead,
             markConversationsAsUnread = markConversationsAsUnread,
             markMessagesAsRead = markMessagesAsRead,
@@ -1223,10 +1215,10 @@ class MailboxViewModelTest {
             inheritParentFolderColor = true
         )
         coEvery {
-            mailboxItemMapper.toUiModel(userId, unreadMailboxItem, ContactTestData.contacts, folderColorSettings, false)
+            mailboxItemMapper.toUiModel(userId, unreadMailboxItem, folderColorSettings, false)
         } returns unreadMailboxItemUiModel
         coEvery {
-            mailboxItemMapper.toUiModel(userId, readMailboxItem, ContactTestData.contacts, folderColorSettings, false)
+            mailboxItemMapper.toUiModel(userId, readMailboxItem, folderColorSettings, false)
         } returns readMailboxItemUiModel
         expectPagerMock(
             pagingDataFlow = flowOf(PagingData.from(listOf(unreadMailboxItem, readMailboxItem)))
@@ -1256,12 +1248,12 @@ class MailboxViewModelTest {
         )
         coEvery {
             mailboxItemMapper.toUiModel(
-                userId, unreadMailboxItem, ContactTestData.contacts, folderColorSettings, false
+                userId, unreadMailboxItem, folderColorSettings, false
             )
         } returns unreadMailboxItemUiModel
         coEvery {
             mailboxItemMapper.toUiModel(
-                userId, readMailboxItem, ContactTestData.contacts, folderColorSettings,
+                userId, readMailboxItem, folderColorSettings,
                 false
             )
         } returns readMailboxItemUiModel
@@ -1281,8 +1273,7 @@ class MailboxViewModelTest {
 
             coVerify {
                 mailboxItemMapper.toUiModel(
-                    userId, any(),
-                    ContactTestData.contacts, folderColorSettings, false
+                    userId, any(), folderColorSettings, false
                 )
             }
         }

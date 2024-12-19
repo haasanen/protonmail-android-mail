@@ -23,7 +23,6 @@ import ch.protonmail.android.maildetail.presentation.R
 import ch.protonmail.android.mailmessage.domain.model.Participant
 import ch.protonmail.android.mailmessage.domain.usecase.ResolveParticipantName
 import ch.protonmail.android.mailmessage.domain.usecase.ResolveParticipantNameResult
-import ch.protonmail.android.testdata.contact.ContactTestData
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -36,7 +35,7 @@ class ParticipantUiModelMapperTest {
 
     private val resolveParticipantName: ResolveParticipantName = mockk {
         every {
-            this@mockk.invoke(participant, ContactTestData.contacts, any())
+            this@mockk.invoke(participant, any())
         } returns ResolveParticipantNameResult("Test", isProton = false)
     }
 
@@ -53,12 +52,12 @@ class ParticipantUiModelMapperTest {
         )
 
         // When
-        val result = participantUiModelMapper.senderToUiModel(participant, ContactTestData.contacts)
+        val result = participantUiModelMapper.senderToUiModel(participant)
 
         // Then
         assertEquals(expectedResult, result)
         verify {
-            resolveParticipantName(participant, ContactTestData.contacts, ResolveParticipantName.FallbackType.USERNAME)
+            resolveParticipantName(participant, ResolveParticipantName.FallbackType.USERNAME)
         }
     }
 
@@ -74,12 +73,12 @@ class ParticipantUiModelMapperTest {
         )
 
         // When
-        val result = participantUiModelMapper.recipientToUiModel(participant, ContactTestData.contacts, null)
+        val result = participantUiModelMapper.recipientToUiModel(participant, null)
 
         // Then
         assertEquals(expectedResult, result)
         verify {
-            resolveParticipantName(participant, ContactTestData.contacts, ResolveParticipantName.FallbackType.NONE)
+            resolveParticipantName(participant, ResolveParticipantName.FallbackType.NONE)
         }
     }
 
@@ -97,13 +96,13 @@ class ParticipantUiModelMapperTest {
 
         // When
         val result = participantUiModelMapper.recipientToUiModel(
-            participant, ContactTestData.contacts, "test@protonmail.com"
+            participant, "test@protonmail.com"
         )
 
         // Then
         assertEquals(expectedResult, result)
         verify {
-            resolveParticipantName(participant, ContactTestData.contacts, ResolveParticipantName.FallbackType.NONE)
+            resolveParticipantName(participant, ResolveParticipantName.FallbackType.NONE)
         }
     }
 }

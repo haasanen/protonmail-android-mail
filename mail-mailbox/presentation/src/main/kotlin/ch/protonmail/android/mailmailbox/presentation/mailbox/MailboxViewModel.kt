@@ -43,8 +43,6 @@ import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
 import ch.protonmail.android.mailcommon.presentation.model.BottomBarEvent
 import ch.protonmail.android.mailcommon.presentation.model.BottomBarState
 import ch.protonmail.android.mailcommon.presentation.ui.delete.DeleteDialogState
-import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
-import ch.protonmail.android.mailcontact.domain.usecase.GetContacts
 import ch.protonmail.android.mailconversation.domain.usecase.DeleteConversations
 import ch.protonmail.android.mailconversation.domain.usecase.LabelConversations
 import ch.protonmail.android.mailconversation.domain.usecase.MarkConversationsAsRead
@@ -170,7 +168,6 @@ class MailboxViewModel @Inject constructor(
     private val actionUiModelMapper: ActionUiModelMapper,
     private val mailboxItemMapper: MailboxItemUiModelMapper,
     private val swipeActionsMapper: SwipeActionsMapper,
-    private val getContacts: GetContacts,
     private val markConversationsAsRead: MarkConversationsAsRead,
     private val markConversationsAsUnread: MarkConversationsAsUnread,
     private val markMessagesAsRead: MarkMessagesAsRead,
@@ -618,7 +615,6 @@ class MailboxViewModel @Inject constructor(
         pager: Pager<MailboxPageKey, MailboxItem>
     ): Flow<PagingData<MailboxItemUiModel>> {
         return withContext(dispatchersProvider.Comp) {
-            val contacts = getContacts()
             combine(
                 pager.flow,
                 observeFolderColorSettings(userId)
@@ -626,7 +622,7 @@ class MailboxViewModel @Inject constructor(
                 pagingData.map {
                     withContext(dispatchersProvider.Comp) {
                         mailboxItemMapper.toUiModel(
-                            userId, it, contacts, folderColorSettings,
+                            userId, it, folderColorSettings,
                             state.value.isInSearchMode()
                         )
                     }
@@ -1203,15 +1199,6 @@ class MailboxViewModel @Inject constructor(
             flowOf(MailLabels.Initial)
         } else {
             observeMailLabels(userId)
-        }
-    }
-
-    private suspend fun getContacts(): List<ContactMetadata.Contact> {
-        val userId = primaryUserId.firstOrNull() ?: return emptyList()
-
-        return getContacts(userId).getOrElse {
-            Timber.i("Failed getting user contacts for displaying mailbox. Fallback to using display name")
-            emptyList()
         }
     }
 
