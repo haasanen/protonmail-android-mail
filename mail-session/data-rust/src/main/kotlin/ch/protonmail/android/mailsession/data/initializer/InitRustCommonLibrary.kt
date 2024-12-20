@@ -49,7 +49,7 @@ class InitRustCommonLibrary @Inject constructor(
             mailCacheDir = context.cacheDir.absolutePath,
             mailCacheSize = CACHE_SIZE,
             logDir = context.filesDir.absolutePath,
-            logDebug = config.isDebug,
+            logDebug = false,
             apiEnvConfig = ApiConfig(
                 appVersion = config.appVersion,
                 userAgent = config.userAgent
