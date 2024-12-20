@@ -57,7 +57,10 @@ class ObserveCoreSessionsImpl @Inject constructor(
         )
 
         when (watchedSessions) {
-            is MailSessionWatchSessionsResult.Error -> send(emptyList())
+            is MailSessionWatchSessionsResult.Error -> {
+                send(emptyList())
+                close()
+            }
             is MailSessionWatchSessionsResult.Ok -> {
                 send(watchedSessions.v1.sessions)
 

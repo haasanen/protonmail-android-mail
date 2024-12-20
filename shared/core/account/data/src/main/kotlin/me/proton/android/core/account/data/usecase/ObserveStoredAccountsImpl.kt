@@ -71,7 +71,10 @@ class ObserveStoredAccountsImpl @Inject constructor(
         )
 
         when (watchedStoredAccounts) {
-            is MailSessionWatchAccountsResult.Error -> send(emptyList())
+            is MailSessionWatchAccountsResult.Error -> {
+                send(emptyList())
+                close()
+            }
             is MailSessionWatchAccountsResult.Ok -> {
                 send(watchedStoredAccounts.v1.accounts)
 
