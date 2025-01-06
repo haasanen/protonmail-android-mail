@@ -184,7 +184,11 @@ fun ConversationDetailScreen(
 
     ReportPhishingDialog(
         state = state.reportPhishingDialogState,
-        onConfirm = { viewModel.submit(ConversationDetailViewAction.ReportPhishingConfirmed(it)) },
+        onConfirm = {
+            actions.showFeatureMissingSnackbar()
+            viewModel.submit(ConversationDetailViewAction.ReportPhishingDismissed)
+            // viewModel.submit(ConversationDetailViewAction.ReportPhishingConfirmed(it))
+        },
         onDismiss = { viewModel.submit(ConversationDetailViewAction.ReportPhishingDismissed) }
     )
 
