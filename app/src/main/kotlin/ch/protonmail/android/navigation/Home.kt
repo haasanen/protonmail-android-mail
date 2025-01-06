@@ -278,6 +278,9 @@ fun Home(
                     navigationActions = buildSidebarActions(
                         navController,
                         launcherActions
+                    ).copy(
+                        onReportBug = { showFeatureMissingSnackbar() },
+                        onSubscription = { showFeatureMissingSnackbar() }
                     )
                 )
             }
