@@ -399,7 +399,8 @@ fun Home(
                         showLabelSavedSnackbar = { showLabelSavedSnackbar() },
                         showLabelDeletedSnackbar = { showLabelDeletedSnackbar() },
                         showUpsellingSnackbar = { showUpsellingSnackbar(it) },
-                        showUpsellingErrorSnackbar = { showUpsellingErrorSnackbar(it) }
+                        showUpsellingErrorSnackbar = { showUpsellingErrorSnackbar(it) },
+                        showFeatureMissingSnackbar = { showFeatureMissingSnackbar() }
                     )
                     addFolderList(
                         navController,
@@ -437,6 +438,9 @@ fun Home(
                                     type = ProtonSnackbarType.NORM
                                 )
                             }
+                        },
+                        showFeatureMissingSnackbar = {
+                            showFeatureMissingSnackbar()
                         }
                     )
                     addParentFolderList(

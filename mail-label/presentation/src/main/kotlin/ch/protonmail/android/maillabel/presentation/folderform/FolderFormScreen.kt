@@ -189,7 +189,7 @@ fun FolderFormScreen(
                 FolderFormTopBar(
                     state = state,
                     onCloseFolderFormClick = customActions.onBackClick,
-                    onSaveFolderClick = customActions.onSaveClick
+                    onSaveFolderClick = customActions.showFeatureMissingSnackbar
                 )
             },
             content = { paddingValues ->
@@ -302,7 +302,7 @@ fun FolderFormContent(
                     }
                     .padding(top = ProtonDimens.Spacing.Jumbo),
                 text = stringResource(id = R.string.folder_form_delete),
-                onClick = actions.onDeleteClick
+                onClick = actions.showFeatureMissingSnackbar
             )
         }
     }
@@ -413,7 +413,8 @@ object FolderFormScreen {
         val onSaveClick: () -> Unit,
         val onDeleteClick: () -> Unit,
         val showUpsellingSnackbar: (String) -> Unit,
-        val showUpsellingErrorSnackbar: (String) -> Unit
+        val showUpsellingErrorSnackbar: (String) -> Unit,
+        val showFeatureMissingSnackbar: () -> Unit
     ) {
 
         companion object {
@@ -429,7 +430,8 @@ object FolderFormScreen {
                 onSaveClick = {},
                 onDeleteClick = {},
                 showUpsellingSnackbar = {},
-                showUpsellingErrorSnackbar = {}
+                showUpsellingErrorSnackbar = {},
+                showFeatureMissingSnackbar = {}
             )
         }
     }

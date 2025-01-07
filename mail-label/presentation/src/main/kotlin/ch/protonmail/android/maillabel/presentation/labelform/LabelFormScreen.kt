@@ -168,7 +168,7 @@ fun LabelFormScreen(actions: LabelFormScreen.Actions, viewModel: LabelFormViewMo
                 LabelFormTopBar(
                     state = state,
                     onCloseLabelFormClick = customActions.onBackClick,
-                    onSaveLabelClick = customActions.onSaveClick
+                    onSaveLabelClick = customActions.showFeatureMissingSnackbar
                 )
             },
             content = { paddingValues ->
@@ -292,7 +292,7 @@ fun LabelFormContent(
                     }
                     .padding(top = ProtonDimens.Spacing.Jumbo),
                 text = stringResource(id = R.string.label_form_delete),
-                onClick = actions.onDeleteClick
+                onClick = actions.showFeatureMissingSnackbar
             )
         }
     }
@@ -364,7 +364,8 @@ object LabelFormScreen {
         val onLabelNameChanged: (String) -> Unit,
         val onLabelColorChanged: (Color) -> Unit,
         val onSaveClick: () -> Unit,
-        val onDeleteClick: () -> Unit
+        val onDeleteClick: () -> Unit,
+        val showFeatureMissingSnackbar: () -> Unit
     ) {
 
         companion object {
@@ -378,7 +379,8 @@ object LabelFormScreen {
                 onLabelNameChanged = {},
                 onLabelColorChanged = {},
                 onSaveClick = {},
-                onDeleteClick = {}
+                onDeleteClick = {},
+                showFeatureMissingSnackbar = {}
             )
         }
     }

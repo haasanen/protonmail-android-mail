@@ -247,12 +247,14 @@ internal fun NavGraphBuilder.addLabelList(
     }
 }
 
+@Suppress("LongParameterList")
 internal fun NavGraphBuilder.addLabelForm(
     navController: NavHostController,
     showLabelSavedSnackbar: () -> Unit,
     showLabelDeletedSnackbar: () -> Unit,
     showUpsellingSnackbar: (String) -> Unit,
-    showUpsellingErrorSnackbar: (String) -> Unit
+    showUpsellingErrorSnackbar: (String) -> Unit,
+    showFeatureMissingSnackbar: () -> Unit
 ) {
     val actions = LabelFormScreen.Actions.Empty.copy(
         onBackClick = {
@@ -261,7 +263,8 @@ internal fun NavGraphBuilder.addLabelForm(
         showLabelSavedSnackbar = showLabelSavedSnackbar,
         showLabelDeletedSnackbar = showLabelDeletedSnackbar,
         showUpsellingSnackbar = showUpsellingSnackbar,
-        showUpsellingErrorSnackbar = showUpsellingErrorSnackbar
+        showUpsellingErrorSnackbar = showUpsellingErrorSnackbar,
+        showFeatureMissingSnackbar = showFeatureMissingSnackbar
     )
     composable(route = Destination.Screen.CreateLabel.route) { LabelFormScreen(actions) }
     composable(route = Destination.Screen.EditLabel.route) { LabelFormScreen(actions) }
@@ -296,7 +299,8 @@ internal fun NavGraphBuilder.addFolderForm(
     navController: NavHostController,
     showSuccessSnackbar: (message: String) -> Unit,
     showErrorSnackbar: (message: String) -> Unit,
-    showNormSnackbar: (String) -> Unit
+    showNormSnackbar: (String) -> Unit,
+    showFeatureMissingSnackbar: () -> Unit
 ) {
     val actions = FolderFormScreen.Actions.Empty.copy(
         onBackClick = {
@@ -314,7 +318,8 @@ internal fun NavGraphBuilder.addFolderForm(
             showErrorSnackbar(message)
         },
         showUpsellingSnackbar = { showNormSnackbar(it) },
-        showUpsellingErrorSnackbar = { showErrorSnackbar(it) }
+        showUpsellingErrorSnackbar = { showErrorSnackbar(it) },
+        showFeatureMissingSnackbar = { showFeatureMissingSnackbar() }
     )
     composable(route = Destination.Screen.CreateFolder.route) {
         FolderFormScreen(
