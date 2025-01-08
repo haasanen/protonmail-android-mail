@@ -375,7 +375,8 @@ fun Home(
                         openDrawerMenu = { scope.launch { drawerState.open() } },
                         showOfflineSnackbar = { showOfflineSnackbar() },
                         showNormalSnackbar = { showNormalSnackbar(it) },
-                        showErrorSnackbar = { showErrorSnackbar(it) }
+                        showErrorSnackbar = { showErrorSnackbar(it) },
+                        showFeatureMissingSnackbar = { showFeatureMissingSnackbar() }
                     )
                     addComposer(
                         navController,

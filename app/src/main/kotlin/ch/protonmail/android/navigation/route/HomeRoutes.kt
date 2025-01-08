@@ -62,12 +62,14 @@ internal fun NavGraphBuilder.addConversationDetail(actions: ConversationDetail.A
     }
 }
 
+@Suppress("LongParameterList")
 internal fun NavGraphBuilder.addMailbox(
     navController: NavHostController,
     openDrawerMenu: () -> Unit,
     showOfflineSnackbar: () -> Unit,
     showNormalSnackbar: (message: String) -> Unit,
-    showErrorSnackbar: (String) -> Unit
+    showErrorSnackbar: (String) -> Unit,
+    showFeatureMissingSnackbar: () -> Unit
 ) {
     composable(route = Destination.Screen.Mailbox.route) {
         MailboxScreen(
@@ -85,7 +87,10 @@ internal fun NavGraphBuilder.addMailbox(
                     }
                     navController.navigate(destination)
                 },
-                navigateToComposer = { navController.navigate(Destination.Screen.Composer.route) },
+                navigateToComposer = {
+                    showFeatureMissingSnackbar()
+                    // navController.navigate(Destination.Screen.Composer.route)
+                },
                 openDrawerMenu = openDrawerMenu,
                 showOfflineSnackbar = showOfflineSnackbar,
                 showNormalSnackbar = showNormalSnackbar,
