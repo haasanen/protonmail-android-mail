@@ -19,34 +19,34 @@
 package ch.protonmail.android.maillabel.presentation.ui
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.Measurable
 import androidx.compose.ui.layout.Placeable
 import androidx.compose.ui.layout.SubcomposeLayout
 import androidx.compose.ui.layout.SubcomposeMeasureScope
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.Constraints
 import ch.protonmail.android.maillabel.presentation.model.LabelUiModel
 import ch.protonmail.android.maillabel.presentation.previewdata.MailboxItemLabelsPreviewDataProvider
-import ch.protonmail.android.maillabel.presentation.ui.MailboxItemLabels.DummyMinExpandedLabel
-import ch.protonmail.android.maillabel.presentation.ui.MailboxItemLabels.DummyMinExpandedLabelId
-import ch.protonmail.android.maillabel.presentation.ui.MailboxItemLabels.MinExpandedLabelLength
 import ch.protonmail.android.maillabel.presentation.ui.MailboxItemLabels.Plus1CharLimit
 import ch.protonmail.android.maillabel.presentation.ui.MailboxItemLabels.Plus2CharsLimit
 import ch.protonmail.android.maillabel.presentation.ui.MailboxItemLabels.Plus3CharsLimit
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.bodySmallWeak
 import ch.protonmail.android.design.compose.theme.labelSmallNorm
+import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 
 @Composable
 fun LabelsList(
@@ -54,7 +54,11 @@ fun LabelsList(
     labels: List<LabelUiModel>,
     isExpanded: Boolean = false
 ) {
-    SubcomposeLayout(modifier = modifier.wrapContentSize()) { constraints ->
+    SubcomposeLayout(
+        modifier = modifier
+            .padding(top = ProtonDimens.Spacing.Small)
+            .wrapContentSize()
+    ) { constraints ->
 
         val labelsMeasurables = labels.map { label ->
             label to subcompose(label.id) {
@@ -90,7 +94,6 @@ private fun SubcomposeMeasureScope.measure(
     val plusOneDigitWidth = measurePlusTextWidth(constraints, Plus1CharLimit)
     val plusTwoDigitWidth = measurePlusTextWidth(constraints, Plus2CharsLimit)
     val plusThreeDigitWidth = measurePlusTextWidth(constraints, Plus3CharsLimit)
-    val minExpandedLabelWidth = measureMinExpandedLabelWidth(constraints)
 
     var labelsWidth = 0
     var notPlacedCount = labels.size
@@ -106,24 +109,23 @@ private fun SubcomposeMeasureScope.measure(
         }
     }
 
-    val labelsPlaceables = labelsMeasurables.mapNotNull { (label, measurable) ->
-        val availableWidth = when (isExpanded) {
-            true -> constraints.maxWidth
-            false -> constraints.maxWidth - labelsWidth - plusPlaceableWidth()
+    val labelsPlaceables = labelsMeasurables.mapIndexedNotNull { index, (_, measurable) ->
+        val availableWidth = constraints.maxWidth - labelsWidth - plusPlaceableWidth()
+        if (availableWidth <= 0) return@mapIndexedNotNull null
+
+        val placeable = measurable.measure(
+            constraints.copy(minWidth = 0, maxWidth = Constraints.Infinity)
+        )
+
+        if (placeable.width <= availableWidth) {
+            labelsWidth += placeable.width
+            notPlacedCount--
+            placeable
+        } else if (index == labelsMeasurables.lastIndex) {
+            null
+        } else {
+            null
         }
-        val maxWidth = if (availableWidth <= 0) constraints.maxWidth else
-            availableWidth.coerceAtLeast(minExpandedLabelWidth)
-        val minWidth = when {
-            label.name.length >= MinExpandedLabelLength -> minExpandedLabelWidth
-            else -> 0
-        }
-        val placeable = measurable.measure(constraints.copy(minWidth = minWidth, maxWidth = maxWidth))
-        if (isExpanded.not() && placeable.width > availableWidth) {
-            return@mapNotNull null
-        }
-        labelsWidth += placeable.width
-        notPlacedCount--
-        placeable
     }
 
     return calculateCoordinates(labelsPlaceables, constraints, isExpanded, notPlacedCount)
@@ -167,7 +169,7 @@ private fun SubcomposeMeasureScope.calculateCoordinates(
             .measure(constraints)
 
         val plusSignCoordinates = PlaceableCoordinates(
-            x = x,
+            x = x - ProtonDimens.Spacing.Standard.roundToPx() + ProtonDimens.Spacing.Small.roundToPx(),
             y = (rowsCount - 1) * rowHeight + (rowHeight - plusSignPlaceable.height) / 2
         )
         labelsPlaceablesCoordinates + (plusSignPlaceable to plusSignCoordinates)
@@ -185,37 +187,50 @@ private fun SubcomposeMeasureScope.measurePlusTextWidth(constraints: Constraints
     subcompose(charsLimit) { PlusText(count = charsLimit) }
         .maxOf { it.measure(constraints).width }
 
-private fun SubcomposeMeasureScope.measureMinExpandedLabelWidth(constraints: Constraints) =
-    subcompose(DummyMinExpandedLabelId) { Label(label = DummyMinExpandedLabel) }
-        .maxOf { it.measure(constraints).width }
-
 @Composable
 private fun Label(label: LabelUiModel) {
-    Text(
+    Box(
         modifier = Modifier
             .testTag(LabelsListTestTags.Label)
             .padding(
-                end = ProtonDimens.Spacing.Small,
-                top = ProtonDimens.Spacing.Tiny,
-                bottom = ProtonDimens.Spacing.Tiny
+                end = ProtonDimens.Spacing.Standard
             )
-            .background(label.color, shape = RoundedCornerShape(percent = 100))
-            .padding(horizontal = ProtonDimens.Spacing.Standard, vertical = ProtonDimens.Spacing.Tiny),
-        text = label.name,
-        style = ProtonTheme.typography.labelSmallNorm.copy(color = ProtonTheme.colors.floatyText),
-        maxLines = 1,
-        overflow = TextOverflow.Ellipsis
-    )
+            .height(MailDimens.MailboxItemLabelHeight)
+            .background(label.color, shape = ProtonTheme.shapes.medium)
+            .padding(horizontal = ProtonDimens.Spacing.Standard),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = label.name,
+            style = ProtonTheme.typography.labelSmallNorm.copy(
+                color = ProtonTheme.colors.floatyText,
+                fontWeight = FontWeight.Medium
+            ),
+            maxLines = 1,
+            textAlign = TextAlign.Center,
+            overflow = TextOverflow.Visible
+        )
+    }
 }
+
 
 @Composable
 private fun PlusText(count: Int) {
-    Text(
-        modifier = Modifier,
-        text = "+$count",
-        style = ProtonTheme.typography.bodySmallWeak,
-        maxLines = 1
-    )
+    Box(
+        modifier = Modifier
+            .height(MailDimens.MailboxItemLabelHeight),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            modifier = Modifier,
+            text = "+$count",
+            style = ProtonTheme.typography.labelMedium.copy(
+                color = ProtonTheme.colors.textWeak
+            ),
+            maxLines = 1,
+            textAlign = TextAlign.Center
+        )
+    }
 }
 
 private data class MeasureResult(
@@ -233,14 +248,6 @@ object MailboxItemLabels {
     internal const val Plus1CharLimit = 9
     internal const val Plus2CharsLimit = 99
     internal const val Plus3CharsLimit = 999
-    internal const val DummyMinExpandedLabelId = "DummyMinimumExpandedLabelId"
-    private const val DummyMinExpandedLabelText = "abc..."
-    internal const val MinExpandedLabelLength = DummyMinExpandedLabelText.length
-    internal val DummyMinExpandedLabel = LabelUiModel(
-        name = DummyMinExpandedLabelText,
-        color = Color.Unspecified,
-        id = "dummyLabel"
-    )
 }
 
 @Composable
