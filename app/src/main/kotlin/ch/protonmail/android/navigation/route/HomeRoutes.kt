@@ -393,7 +393,8 @@ internal fun NavGraphBuilder.addContacts(
                     showFeatureMissingSnackbar()
                 },
                 onContactSelected = { contactId ->
-                    navController.navigate(Destination.Screen.ContactDetails(contactId))
+                    showFeatureMissingSnackbar()
+                    // navController.navigate(Destination.Screen.ContactDetails(contactId))
                 },
                 onContactGroupSelected = { contactGroupId ->
                     navController.navigate(Destination.Screen.ContactGroupDetails(contactGroupId))
@@ -448,7 +449,8 @@ internal fun NavGraphBuilder.addContactDetails(
 internal fun NavGraphBuilder.addContactForm(
     navController: NavHostController,
     showSuccessSnackbar: (message: String) -> Unit,
-    showErrorSnackbar: (message: String) -> Unit
+    showErrorSnackbar: (message: String) -> Unit,
+    showFeatureMissingSnackbar: () -> Unit
 ) {
 
     val actions = ContactFormScreen.Actions.Empty.copy(
@@ -462,6 +464,9 @@ internal fun NavGraphBuilder.addContactForm(
         exitWithErrorMessage = { message ->
             navController.navigateBack()
             showErrorSnackbar(message)
+        },
+        showFeatureMissingSnackbar = {
+            showFeatureMissingSnackbar()
         }
     )
     composable(route = Destination.Screen.CreateContact.route) {

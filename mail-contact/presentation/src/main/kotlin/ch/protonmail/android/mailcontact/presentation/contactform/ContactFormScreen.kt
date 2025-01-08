@@ -118,7 +118,8 @@ fun ContactFormScreen(actions: ContactFormScreen.Actions, viewModel: ContactForm
                     viewModel.submit(ContactFormViewAction.OnCloseContactFormClick)
                 },
                 onSaveContactClick = {
-                    viewModel.submit(ContactFormViewAction.OnSaveClick)
+                    actions.showFeatureMissingSnackbar()
+                    // viewModel.submit(ContactFormViewAction.OnSaveClick)
                 }
             )
         },
@@ -746,7 +747,8 @@ object ContactFormScreen {
     data class Actions(
         val onCloseClick: () -> Unit,
         val exitWithSuccessMessage: (String) -> Unit,
-        val exitWithErrorMessage: (String) -> Unit
+        val exitWithErrorMessage: (String) -> Unit,
+        val showFeatureMissingSnackbar: () -> Unit
     ) {
 
         companion object {
@@ -754,7 +756,8 @@ object ContactFormScreen {
             val Empty = Actions(
                 onCloseClick = {},
                 exitWithSuccessMessage = {},
-                exitWithErrorMessage = {}
+                exitWithErrorMessage = {},
+                showFeatureMissingSnackbar = {}
             )
         }
     }

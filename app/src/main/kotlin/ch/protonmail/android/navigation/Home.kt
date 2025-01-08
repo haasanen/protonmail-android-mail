@@ -516,6 +516,9 @@ fun Home(
                                     type = ProtonSnackbarType.ERROR
                                 )
                             }
+                        },
+                        showFeatureMissingSnackbar = {
+                            showFeatureMissingSnackbar()
                         }
                     )
                     addContactGroupDetails(
