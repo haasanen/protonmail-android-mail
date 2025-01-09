@@ -133,6 +133,8 @@ object MailDimens {
 
     val MailboxFabRadius = 32.dp
 
+    val MessageBannerIconSize = 20.dp
+
     object MessageDetailsHeader {
 
         val ButtonSize = 36.dp

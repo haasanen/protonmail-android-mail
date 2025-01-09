@@ -19,10 +19,14 @@
 package ch.protonmail.android.maildetail.presentation.ui
 
 import android.net.Uri
+import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -36,7 +40,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ch.protonmail.android.mailcommon.presentation.NO_CONTENT_DESCRIPTION
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
@@ -55,6 +59,7 @@ import ch.protonmail.android.design.compose.component.ProtonButton
 import ch.protonmail.android.design.compose.component.ProtonSolidButton
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
+import ch.protonmail.android.design.compose.theme.bodyMediumNorm
 import ch.protonmail.android.design.compose.theme.bodyMediumWeak
 
 @Composable
@@ -73,6 +78,7 @@ fun MessageBody(
             MessageBodyButtonBanner(
                 bannerText = R.string.message_body_embedded_and_remote_content_banner_text,
                 buttonText = R.string.message_body_load_embedded_and_remote_content_button_text,
+                icon = R.drawable.ic_proton_image,
                 onButtonClicked = { actions.onLoadRemoteAndEmbeddedContent(messageBodyUiModel.messageId) }
             )
         }
@@ -81,6 +87,7 @@ fun MessageBody(
             MessageBodyButtonBanner(
                 bannerText = R.string.message_body_embedded_images_banner_text,
                 buttonText = R.string.message_body_load_embedded_images_button_text,
+                icon = R.drawable.ic_proton_image,
                 onButtonClicked = { actions.onLoadEmbeddedImages(messageBodyUiModel.messageId) }
             )
         }
@@ -89,6 +96,7 @@ fun MessageBody(
             MessageBodyButtonBanner(
                 bannerText = R.string.message_body_remote_content_banner_text,
                 buttonText = R.string.message_body_load_remote_content_button_text,
+                icon = R.drawable.ic_proton_cog_wheel,
                 onButtonClicked = { actions.onLoadRemoteContent(messageBodyUiModel.messageId) }
             )
         }
@@ -188,28 +196,70 @@ internal fun MessageBodyLoadingError(
 fun MessageBodyButtonBanner(
     @StringRes bannerText: Int,
     @StringRes buttonText: Int,
+    @DrawableRes icon: Int,
     onButtonClicked: () -> Unit
 ) {
     MessageBanner(
-        icon = R.drawable.ic_proton_image,
+        icon = icon,
         iconTint = ProtonTheme.colors.iconWeak,
         text = TextUiModel.TextRes(bannerText),
         textStyle = ProtonTheme.typography.bodyMediumWeak,
-        backgroundColor = ProtonTheme.colors.backgroundSecondary
+        backgroundColor = ProtonTheme.colors.backgroundNorm
     ) {
-        ProtonButton(
-            modifier = Modifier.fillMaxWidth(),
-            onClick = { onButtonClicked() },
-            colors = ButtonDefaults.buttonColors().copy(containerColor = ProtonTheme.colors.backgroundSecondary),
-            elevation = ButtonDefaults.buttonElevation(defaultElevation = 0.dp),
-            shape = ProtonTheme.shapes.small,
-            border = BorderStroke(Dp.Hairline, ProtonTheme.colors.textWeak)
-        ) {
-            Text(
-                text = stringResource(id = buttonText),
-                style = ProtonTheme.typography.bodyMediumWeak
-            )
+        Column {
+            Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Standard))
+            ProtonButton(
+                modifier = Modifier.fillMaxWidth(),
+                onClick = { onButtonClicked() },
+                colors = ButtonDefaults.buttonColors().copy(
+                    containerColor = ProtonTheme.colors.interactionWeakNorm,
+                    contentColor = ProtonTheme.colors.textNorm
+                ),
+                elevation = ButtonDefaults.buttonElevation(0.dp),
+                shape = ProtonTheme.shapes.huge,
+                border = BorderStroke(ProtonDimens.OutlinedBorderSize, ProtonTheme.colors.interactionWeakNorm),
+                contentPadding = PaddingValues(
+                    horizontal = ProtonDimens.Spacing.Standard,
+                    vertical = ProtonDimens.Spacing.Medium
+                )
+            ) {
+                Text(
+                    text = stringResource(id = buttonText),
+                    style = ProtonTheme.typography.bodyMediumNorm
+                )
+            }
         }
+    }
+}
+
+@Composable
+@Preview(showBackground = true)
+fun MessageBodyButtonBannerPreview() {
+    Column(
+        modifier = Modifier.padding(vertical = ProtonDimens.Spacing.Large),
+        verticalArrangement = Arrangement.SpaceEvenly
+    ) {
+        MessageBodyButtonBanner(
+            bannerText = R.string.message_body_embedded_and_remote_content_banner_text,
+            buttonText = R.string.message_body_load_embedded_and_remote_content_button_text,
+            icon = R.drawable.ic_proton_cog_wheel,
+            onButtonClicked = {}
+        )
+
+        MessageBodyButtonBanner(
+            bannerText = R.string.message_body_embedded_images_banner_text,
+            buttonText = R.string.message_body_load_embedded_images_button_text,
+            icon = R.drawable.ic_proton_cog_wheel,
+            onButtonClicked = {}
+        )
+
+
+        MessageBodyButtonBanner(
+            bannerText = R.string.message_body_remote_content_banner_text,
+            buttonText = R.string.message_body_load_remote_content_button_text,
+            icon = R.drawable.ic_proton_cog_wheel,
+            onButtonClicked = {}
+        )
     }
 }
 

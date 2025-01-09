@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -71,21 +72,23 @@ fun MessageBanner(
         modifier = modifier
             .testTag(MessageBodyTestTags.MessageBodyBanner)
             .padding(
-                start = ProtonDimens.Spacing.Large,
-                end = ProtonDimens.Spacing.Large,
-                bottom = ProtonDimens.Spacing.Standard + ProtonDimens.Spacing.Small
+                start = ProtonDimens.Spacing.ModeratelyLarge,
+                end = ProtonDimens.Spacing.ModeratelyLarge,
+                bottom = ProtonDimens.Spacing.ModeratelyLarge
             )
             .border(
                 width = MailDimens.DefaultBorder,
-                color = if (borderColorIsBackgroundColor) backgroundColor else ProtonTheme.colors.separatorNorm,
-                shape = ProtonTheme.shapes.medium
+                color = if (borderColorIsBackgroundColor) backgroundColor else ProtonTheme.colors.borderNorm,
+                shape = ProtonTheme.shapes.extraLarge
             )
-            .background(color = backgroundColor, shape = ProtonTheme.shapes.medium)
-            .padding(ProtonDimens.Spacing.Large)
+            .background(color = backgroundColor, shape = ProtonTheme.shapes.extraLarge)
+            .padding(ProtonDimens.Spacing.ModeratelyLarge)
     ) {
         Row {
             Icon(
-                modifier = Modifier.testTag(MessageBodyTestTags.MessageBodyBannerIcon),
+                modifier = Modifier
+                    .testTag(MessageBodyTestTags.MessageBodyBannerIcon)
+                    .size(MailDimens.MessageBannerIconSize),
                 painter = painterResource(id = icon),
                 contentDescription = NO_CONTENT_DESCRIPTION,
                 tint = iconTint
