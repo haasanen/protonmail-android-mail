@@ -109,6 +109,19 @@
     <string name="select_all">Select All</string>
     <string name="deselect_all">Deselect All</string>
 
-
+    <!--    Expiry messages-->
+    <plurals name="expires_in_days">
+        <item quantity="one">Expires in %d day</item>
+        <item quantity="other">Expires in %d days</item>
+    </plurals>
+    <plurals name="expires_in_hours">
+        <item quantity="one">Expires in %d hour</item>
+        <item quantity="other">Expires in %d hours</item>
+    </plurals>
+    <plurals name="expires_in_minutes">
+        <item quantity="one">Expires in %d minute</item>
+        <item quantity="other">Expires in %d minutes</item>
+    </plurals>
+    <string name="expires_in_less_than_a_minute">Expires in less than a minute</string>
 
 </resources>
