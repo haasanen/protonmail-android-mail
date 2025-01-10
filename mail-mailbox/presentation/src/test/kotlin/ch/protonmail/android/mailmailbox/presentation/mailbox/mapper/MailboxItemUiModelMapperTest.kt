@@ -48,6 +48,7 @@ import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.test.runTest
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.LabelType
+import ch.protonmail.android.mailmailbox.presentation.mailbox.model.ExpiryInformationUiModel
 import ch.protonmail.android.mailmailbox.presentation.mailbox.usecase.GetMailboxItemLocationIcon
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
@@ -96,12 +97,17 @@ class MailboxItemUiModelMapperTest {
         )
     }
 
+    private val expiryInformationUiModelMapper: ExpiryInformationUiModelMapper = mockk {
+        every { this@mockk.toUiModel(any()) } returns ExpiryInformationUiModel.NoExpiry
+    }
+
     private val mapper = MailboxItemUiModelMapper(
         mailboxAvatarUiModelMapper = mailboxAvatarUiModelMapper,
         colorMapper = colorMapper,
         formatMailboxItemTime = formatMailboxItemTime,
         getMailboxItemLocationIcon = getMailboxItemLocationIcons,
-        getParticipantsResolvedNames = getParticipantsResolvedNames
+        getParticipantsResolvedNames = getParticipantsResolvedNames,
+        expiryInformationUiModelMapper = expiryInformationUiModelMapper
     )
 
     @BeforeTest
@@ -343,30 +349,6 @@ class MailboxItemUiModelMapperTest {
     }
 
     @Test
-    fun `when mailbox item has expiration time show expiration label`() = runTest {
-        // Given
-        val mailboxItem = buildMailboxItem(expirationTime = 1000L)
-        // When
-        val mailboxItemUiModel = mapper.toUiModel(
-            userId, mailboxItem, defaultFolderColorSettings, false
-        )
-        // Then
-        assertTrue(mailboxItemUiModel.shouldShowExpirationLabel)
-    }
-
-    @Test
-    fun `when mailbox item has no expiration time don't show expiration label`() = runTest {
-        // Given
-        val mailboxItem = buildMailboxItem(expirationTime = 0L)
-        // When
-        val mailboxItemUiModel = mapper.toUiModel(
-            userId, mailboxItem, defaultFolderColorSettings, false
-        )
-        // Then
-        assertFalse(mailboxItemUiModel.shouldShowExpirationLabel)
-    }
-
-    @Test
     fun `when mailbox item has calendar attachments, show calendar icon`() = runTest {
         // Given
         val mailboxItem = buildMailboxItem(calendarAttachmentCount = 1)
@@ -425,4 +407,36 @@ class MailboxItemUiModelMapperTest {
         // Then
         assertFalse(mailboxItemUiModel.shouldOpenInComposer)
     }
+
+    @Test
+    fun `when mailbox item has no expiration time, expiryInformation should be NoExpiry`() = runTest {
+        // Given
+        val mailboxItem = buildMailboxItem(expirationTime = 0L)
+        every { expiryInformationUiModelMapper.toUiModel(0L) } returns ExpiryInformationUiModel.NoExpiry
+
+        // When
+        val mailboxItemUiModel = mapper.toUiModel(userId, mailboxItem, defaultFolderColorSettings, false)
+
+        // Then
+        assertEquals(ExpiryInformationUiModel.NoExpiry, mailboxItemUiModel.expiryInformation)
+    }
+
+    @Test
+    fun `when mailbox item has expiry time, expiryInformation should be HasExpiry`() = runTest {
+        // Given
+        val expirationTime = 1_700_000_000L
+        val mailboxItem = buildMailboxItem(expirationTime = expirationTime)
+        val expectedExpiry = ExpiryInformationUiModel.HasExpiry(
+            TextUiModel("Expires in 19 days"),
+            isLessThanOneHour = false
+        )
+        every { expiryInformationUiModelMapper.toUiModel(expirationTime) } returns expectedExpiry
+
+        // When
+        val mailboxItemUiModel = mapper.toUiModel(userId, mailboxItem, defaultFolderColorSettings, false)
+
+        // Then
+        assertEquals(expectedExpiry, mailboxItemUiModel.expiryInformation)
+    }
+
 }

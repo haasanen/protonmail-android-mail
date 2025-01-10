@@ -31,7 +31,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -39,14 +38,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import ch.protonmail.android.mailcommon.presentation.NO_CONTENT_DESCRIPTION
 import ch.protonmail.android.mailcommon.presentation.compose.SmallNonClickableIcon
 import ch.protonmail.android.mailcommon.presentation.extension.isItemRead
 import ch.protonmail.android.mailcommon.presentation.extension.tintColor
@@ -68,6 +65,7 @@ import ch.protonmail.android.design.compose.theme.bodySmallNorm
 import ch.protonmail.android.design.compose.theme.bodyLargeNorm
 import ch.protonmail.android.mailcommon.presentation.compose.SmallClickableIcon
 import ch.protonmail.android.mailcommon.presentation.model.AvatarImageUiModel
+import ch.protonmail.android.mailmailbox.presentation.mailbox.model.ExpiryInformationUiModel
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -193,16 +191,28 @@ fun MailboxItem(
                         onStarClicked = actions.onStarClicked
                     )
                 }
+
+                if (item.expiryInformation is ExpiryInformationUiModel.HasExpiry) {
+
+                    Row(
+                        modifier = Modifier
+                            .padding(top = ProtonDimens.Spacing.Small, bottom = ProtonDimens.Spacing.Small)
+                            .fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        ExpiryInformation(
+                            expiryInformation = item.expiryInformation,
+                            fontColor = fontColor
+                        )
+                    }
+                }
+
                 Row(
                     modifier = Modifier
                         .padding(top = ProtonDimens.Spacing.Small, bottom = ProtonDimens.Spacing.Small)
                         .fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    ExpirationLabel(
-                        hasExpirationTime = item.shouldShowExpirationLabel,
-                        modifier = Modifier.padding(end = ProtonDimens.Spacing.Small)
-                    )
                     Labels(labels = item.labels)
                 }
             }
@@ -375,22 +385,20 @@ private fun StarIcon(
 }
 
 @Composable
-private fun ExpirationLabel(modifier: Modifier = Modifier, hasExpirationTime: Boolean) {
-    if (hasExpirationTime) {
-        Box(
-            modifier = modifier
-                .background(ProtonTheme.colors.interactionWeakNorm, ProtonTheme.shapes.large)
-                .size(ProtonDimens.SmallIconSize)
-                .padding(ProtonDimens.Spacing.Tiny),
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_proton_hourglass),
-                tint = ProtonTheme.colors.iconNorm,
-                contentDescription = NO_CONTENT_DESCRIPTION
-            )
-        }
-    }
+private fun ExpiryInformation(
+    modifier: Modifier = Modifier,
+    expiryInformation: ExpiryInformationUiModel.HasExpiry,
+    fontColor: Color
+) {
+
+    val color = if (expiryInformation.isLessThanOneHour) ProtonTheme.colors.notificationError else fontColor
+    Text(
+        modifier = modifier.testTag(MailboxItemTestTags.ExpiryInformation),
+        text = expiryInformation.expiryText.string(),
+        overflow = TextOverflow.Ellipsis,
+        maxLines = 1,
+        style = ProtonTheme.typography.bodyLargeNorm.copy(color = color)
+    )
 }
 
 @Composable
@@ -477,6 +485,25 @@ private fun LongRecipientItemPreview() {
 
 @Composable
 @Preview(showBackground = true)
+private fun LongRecipientItemWithExpiryPreview() {
+    val itemWithExpiry = MailboxItemUiModelPreviewData.Conversation.MultipleRecipientWithLabel.copy(
+        expiryInformation = ExpiryInformationUiModel.HasExpiry(
+            TextUiModel.PluralisedText(R.plurals.expires_in_minutes, 10),
+            true
+        )
+    )
+    ProtonTheme {
+        MailboxItem(
+            modifier = Modifier,
+            item = itemWithExpiry,
+            actions = ComposeMailboxItem.Actions.Empty,
+            avatarImageUiModel = AvatarImageUiModel.NotLoaded
+        )
+    }
+}
+
+@Composable
+@Preview(showBackground = true)
 private fun LongSubjectItemPreview() {
     ProtonTheme {
         MailboxItem(
@@ -522,4 +549,5 @@ object MailboxItemTestTags {
     const val Subject = "Subject"
     const val Date = "Date"
     const val Count = "Count"
+    const val ExpiryInformation = "ExpiryInformation"
 }

@@ -49,7 +49,8 @@ class MailboxItemUiModelMapper @Inject constructor(
     private val colorMapper: ColorMapper,
     private val formatMailboxItemTime: FormatShortTime,
     private val getMailboxItemLocationIcon: GetMailboxItemLocationIcon,
-    private val getParticipantsResolvedNames: GetParticipantsResolvedNames
+    private val getParticipantsResolvedNames: GetParticipantsResolvedNames,
+    private val expiryInformationUiModelMapper: ExpiryInformationUiModelMapper
 ) : Mapper<MailboxItem, MailboxItemUiModel> {
 
     @Suppress("LongParameterList")
@@ -79,8 +80,8 @@ class MailboxItemUiModelMapper @Inject constructor(
             numMessages = mailboxItem.numMessages.takeIf { it >= 2 },
             isStarred = mailboxItem.isStarred,
             locations = getLocationIconsToDisplay(userId, mailboxItem, folderColorSettings, isShowingSearchResults),
+            expiryInformation = expiryInformationUiModelMapper.toUiModel(mailboxItem.expirationTime),
             shouldShowAttachmentIcon = mailboxItem.hasNonCalendarAttachments,
-            shouldShowExpirationLabel = hasExpirationTime(mailboxItem),
             shouldShowCalendarIcon = hasCalendarAttachment(mailboxItem),
             shouldOpenInComposer = false
         )
@@ -102,8 +103,6 @@ class MailboxItemUiModelMapper @Inject constructor(
     }.toImmutableList()
 
     private fun hasCalendarAttachment(mailboxItem: MailboxItem) = mailboxItem.calendarAttachmentCount > 0
-
-    private fun hasExpirationTime(mailboxItem: MailboxItem) = mailboxItem.expirationTime > 0
 
     private fun shouldShowRepliedIcon(mailboxItem: MailboxItem): Boolean {
         if (mailboxItem.type == MailboxItemType.Conversation) {

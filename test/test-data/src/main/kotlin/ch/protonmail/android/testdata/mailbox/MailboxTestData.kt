@@ -42,6 +42,7 @@ import me.proton.core.domain.entity.UserId
 import ch.protonmail.android.maillabel.domain.model.Label
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.sample.LabelSample
+import ch.protonmail.android.mailmailbox.presentation.mailbox.model.ExpiryInformationUiModel
 import ch.protonmail.android.mailmailbox.R.string as mailboxStrings
 
 object MailboxTestData {
@@ -214,8 +215,8 @@ object MailboxItemUiModelTestData {
         numMessages = null,
         isStarred = false,
         locations = locations,
+        expiryInformation = ExpiryInformationUiModel.NoExpiry,
         shouldShowAttachmentIcon = false,
-        shouldShowExpirationLabel = false,
         shouldShowCalendarIcon = false,
         shouldOpenInComposer = shouldOpenInComposer
     )

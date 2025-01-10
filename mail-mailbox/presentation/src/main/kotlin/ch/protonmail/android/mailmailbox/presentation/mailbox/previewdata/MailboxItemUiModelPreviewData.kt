@@ -25,6 +25,7 @@ import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.maillabel.presentation.model.LabelUiModel
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItemType
 import ch.protonmail.android.mailmailbox.presentation.R
+import ch.protonmail.android.mailmailbox.presentation.mailbox.model.ExpiryInformationUiModel
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxItemLocationUiModel
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxItemUiModel
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.ParticipantUiModel
@@ -60,8 +61,8 @@ object MailboxItemUiModelPreviewData {
             numMessages = 2,
             isStarred = true,
             locations = persistentListOf(MailboxItemLocationUiModel(R.drawable.ic_proton_archive_box)),
+            expiryInformation = ExpiryInformationUiModel.NoExpiry,
             shouldShowAttachmentIcon = true,
-            shouldShowExpirationLabel = false,
             shouldShowCalendarIcon = true,
             shouldOpenInComposer = false
         )
@@ -84,8 +85,8 @@ object MailboxItemUiModelPreviewData {
             numMessages = null,
             isStarred = true,
             locations = persistentListOf(),
+            expiryInformation = ExpiryInformationUiModel.NoExpiry,
             shouldShowAttachmentIcon = false,
-            shouldShowExpirationLabel = false,
             shouldShowCalendarIcon = false,
             shouldOpenInComposer = false
         )
@@ -111,8 +112,8 @@ object MailboxItemUiModelPreviewData {
                 MailboxItemLocationUiModel(R.drawable.ic_proton_inbox),
                 MailboxItemLocationUiModel(R.drawable.ic_proton_trash)
             ),
+            expiryInformation = ExpiryInformationUiModel.NoExpiry,
             shouldShowAttachmentIcon = true,
-            shouldShowExpirationLabel = false,
             shouldShowCalendarIcon = false,
             shouldOpenInComposer = false
         )
@@ -146,8 +147,8 @@ object MailboxItemUiModelPreviewData {
             numMessages = 2,
             isStarred = true,
             locations = persistentListOf(),
+            expiryInformation = ExpiryInformationUiModel.NoExpiry,
             shouldShowAttachmentIcon = true,
-            shouldShowExpirationLabel = true,
             shouldShowCalendarIcon = true,
             shouldOpenInComposer = false
         )
@@ -173,8 +174,8 @@ object MailboxItemUiModelPreviewData {
                 MailboxItemLocationUiModel(R.drawable.ic_proton_inbox),
                 MailboxItemLocationUiModel(R.drawable.ic_proton_trash)
             ),
+            expiryInformation = ExpiryInformationUiModel.NoExpiry,
             shouldShowAttachmentIcon = false,
-            shouldShowExpirationLabel = false,
             shouldShowCalendarIcon = false,
             shouldOpenInComposer = false
         )
@@ -197,8 +198,8 @@ object MailboxItemUiModelPreviewData {
             numMessages = 2,
             isStarred = false,
             locations = persistentListOf(),
+            expiryInformation = ExpiryInformationUiModel.NoExpiry,
             shouldShowAttachmentIcon = false,
-            shouldShowExpirationLabel = false,
             shouldShowCalendarIcon = false,
             shouldOpenInComposer = false
         )
@@ -219,8 +220,8 @@ object MailboxItemUiModelPreviewData {
             numMessages = 2,
             isStarred = false,
             locations = persistentListOf(),
+            expiryInformation = ExpiryInformationUiModel.NoExpiry,
             shouldShowAttachmentIcon = false,
-            shouldShowExpirationLabel = false,
             shouldShowCalendarIcon = false,
             shouldOpenInComposer = false
         )
@@ -246,8 +247,8 @@ object MailboxItemUiModelPreviewData {
             numMessages = 1,
             isStarred = true,
             locations = persistentListOf(),
+            expiryInformation = ExpiryInformationUiModel.NoExpiry,
             shouldShowAttachmentIcon = true,
-            shouldShowExpirationLabel = false,
             shouldShowCalendarIcon = false,
             shouldOpenInComposer = false
         )
@@ -270,8 +271,8 @@ object MailboxItemUiModelPreviewData {
             numMessages = 1,
             isStarred = true,
             locations = persistentListOf(),
+            expiryInformation = ExpiryInformationUiModel.NoExpiry,
             shouldShowAttachmentIcon = true,
-            shouldShowExpirationLabel = false,
             shouldShowCalendarIcon = false,
             shouldOpenInComposer = false
         )
