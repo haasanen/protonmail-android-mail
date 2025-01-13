@@ -41,7 +41,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -110,10 +109,8 @@ import ch.protonmail.android.design.compose.component.ProtonSnackbarType
 import ch.protonmail.android.design.compose.component.protonOutlinedButtonColors
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.bodyMediumWeak
-import ch.protonmail.android.design.compose.theme.headlineSmallNorm
+import ch.protonmail.android.design.compose.theme.bodyLargeWeak
 import ch.protonmail.android.design.compose.theme.titleLargeNorm
-import ch.protonmail.android.design.compose.theme.titleMediumNorm
 import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
 import ch.protonmail.android.mailcommon.presentation.ConsumableTextEffect
 import ch.protonmail.android.mailcommon.presentation.NO_CONTENT_DESCRIPTION
@@ -137,6 +134,7 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxViewA
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.UnreadFilterState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.previewdata.MailboxPreview
 import ch.protonmail.android.mailmailbox.presentation.mailbox.previewdata.MailboxPreviewProvider
+import ch.protonmail.android.mailmailbox.presentation.mailbox.previewdata.MailboxStateSampleData
 import ch.protonmail.android.mailmailbox.presentation.paging.mapToUiStates
 import ch.protonmail.android.mailmailbox.presentation.paging.search.mapToUiStatesInSearch
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.BottomSheetVisibilityEffect
@@ -705,7 +703,9 @@ private fun MailboxSwipeRefresh(
 
             is MailboxScreenState.NewSearch -> {}
 
-            is MailboxScreenState.SearchNoData -> SearchNoResult()
+            is MailboxScreenState.SearchNoData -> SearchNoResult(
+                modifier = modifier.padding(bottom = topBarHeight)
+            )
 
             is MailboxScreenState.SearchLoading -> ProtonCenteredProgress(
                 modifier = Modifier.testTag(MailboxScreenTestTags.ListProgress)
@@ -970,21 +970,20 @@ private fun AppendError(
 
 @Composable
 private fun SearchNoResult(modifier: Modifier = Modifier) {
+
     Column(
         modifier = modifier
-            .fillMaxWidth()
+            .fillMaxSize()
             .padding(
-                start = ProtonDimens.Spacing.Jumbo,
-                end = ProtonDimens.Spacing.Jumbo
+                ProtonDimens.Spacing.Huge
+            )
+            .scrollable(
+                rememberScrollableState(consumeScrollDelta = { 0f }),
+                orientation = Orientation.Vertical
             ),
+        verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-
-        Spacer(
-            modifier = Modifier
-                .fillMaxHeight(fraction = 0.2f)
-                .fillMaxWidth()
-        )
 
         Image(
             modifier = Modifier
@@ -995,24 +994,26 @@ private fun SearchNoResult(modifier: Modifier = Modifier) {
             painter = painterResource(id = R.drawable.search_no_results),
             contentDescription = NO_CONTENT_DESCRIPTION
         )
+        Spacer(
+            modifier = Modifier.height(ProtonDimens.Spacing.ExtraLarge)
+        )
         Text(
             modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .padding(
-                    bottom = ProtonDimens.Spacing.Standard
-                ),
+                .align(Alignment.CenterHorizontally),
             text = stringResource(id = R.string.mailbox_search_no_results_title),
             textAlign = TextAlign.Center,
             style = ProtonTheme.typography.titleLargeNorm,
-            color = ProtonTheme.colors.textNorm
+            fontWeight = FontWeight.SemiBold
+        )
+        Spacer(
+            modifier = Modifier.height(ProtonDimens.Spacing.MediumLight)
         )
         Text(
             modifier = Modifier
                 .align(Alignment.CenterHorizontally),
             text = stringResource(id = R.string.mailbox_search_no_results_explanation),
             textAlign = TextAlign.Center,
-            style = ProtonTheme.typography.titleMediumNorm,
-            color = ProtonTheme.colors.textHint
+            style = ProtonTheme.typography.bodyLargeWeak
         )
 
     }
@@ -1068,7 +1069,7 @@ private fun MailboxEmpty(
 
                         SystemLabelId.Trash -> Triple(
                             R.drawable.illustration_empty_mailbox_trash,
-                            R.string.mailbox_is_empty_title,
+                            R.string.trash_is_empty_title,
                             R.string.mailbox_is_empty_trash_description
                         )
 
@@ -1103,18 +1104,19 @@ private fun MailboxEmpty(
             painter = painterResource(id = illustration),
             contentDescription = NO_CONTENT_DESCRIPTION
         )
-        Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Huge))
+        Spacer(modifier = Modifier.height(ProtonDimens.Spacing.ExtraLarge))
         Text(
             modifier = Modifier.testTag(MailboxScreenTestTags.MailboxEmptyTitle),
             text = stringResource(id = title),
-            style = ProtonTheme.typography.headlineSmallNorm,
+            style = ProtonTheme.typography.titleLargeNorm,
+            fontWeight = FontWeight.SemiBold,
             textAlign = TextAlign.Center
         )
         Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Small))
         Text(
             modifier = Modifier.testTag(MailboxScreenTestTags.MailboxEmptySubtitle),
             text = stringResource(id = description),
-            style = ProtonTheme.typography.bodyMediumWeak,
+            style = ProtonTheme.typography.bodyLargeWeak,
             textAlign = TextAlign.Center
         )
     }
@@ -1244,6 +1246,40 @@ private fun MailboxScreenPreview(@PreviewParameter(MailboxPreviewProvider::class
             mailboxListItems = mailboxPreview.items.collectAsLazyPagingItems(),
             mailboxState = mailboxPreview.state,
             actions = MailboxScreen.Actions.Empty
+        )
+    }
+}
+
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_NO, showBackground = true)
+@Composable
+private fun MailboxEmptyTrashPreview() {
+    ProtonTheme {
+        MailboxEmpty(
+            listState = MailboxStateSampleData.Trash.mailboxListState as MailboxListState.Data,
+            unreadFilterState = UnreadFilterState.Data(0, false)
+        )
+    }
+}
+
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_NO, showBackground = true)
+@Composable
+private fun MailboxUnreadFilterEmptyPreview() {
+    ProtonTheme {
+        MailboxEmpty(
+            listState = MailboxStateSampleData.Inbox.mailboxListState as MailboxListState.Data,
+            unreadFilterState = UnreadFilterState.Data(0, true)
+        )
+    }
+}
+
+
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_NO, showBackground = true)
+@Composable
+private fun MailboxEmptyPreview() {
+    ProtonTheme {
+        MailboxEmpty(
+            listState = MailboxStateSampleData.Inbox.mailboxListState as MailboxListState.Data,
+            unreadFilterState = UnreadFilterState.Data(0, false)
         )
     }
 }

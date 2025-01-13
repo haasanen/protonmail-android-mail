@@ -57,6 +57,12 @@ object MailboxStateSampleData {
         0
     )
 
+    private val trashDynamicLabel = MailLabel.System(
+        MailLabelId.System(LabelId("trash")),
+        SystemLabelId.Trash,
+        0
+    )
+
     val Loading = MailboxState(
         mailboxListState = MailboxListState.Loading,
         topAppBarState = MailboxTopAppBarState.Loading,
@@ -146,6 +152,12 @@ object MailboxStateSampleData {
         storageLimitState = StorageLimitState.HasEnoughSpace,
         error = Effect.empty(),
         showRatingBooster = Effect.empty()
+    )
+
+    val Trash = Inbox.copy(
+        mailboxListState = (Inbox.mailboxListState as MailboxListState.Data.ViewMode).copy(
+            currentMailLabel = trashDynamicLabel
+        )
     )
 
     fun createSelectionMode(

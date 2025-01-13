@@ -39,11 +39,12 @@
     <string name="mailbox_error_message_generic">Loading mailbox failed</string>
     <string name="mailbox_error_message_unexpected">Something went unexpectedly wrong</string>
     <string name="mailbox_is_empty_title">No messages</string>
-    <string name="mailbox_is_empty_description">You are up to date</string>
+    <string name="trash_is_empty_title">Nothing in Trash</string>
+    <string name="mailbox_is_empty_description">Seems like you are all caught up for now</string>
     <string name="mailbox_is_empty_no_unread_messages_title">No unread messages</string>
     <string name="mailbox_is_empty_folder_description">This folder is empty</string>
     <string name="mailbox_is_empty_spam_description">Your spam folder is empty</string>
-    <string name="mailbox_is_empty_trash_description">Trash is empty</string>
+    <string name="mailbox_is_empty_trash_description">Looks empty over here</string>
     <plurals name="mailbox_action_trash">
         <item quantity="one">Message moved to Trash</item>
         <item quantity="other">%d messages moved to Trash</item>
@@ -82,8 +83,8 @@
     <string name="mailbox_action_archive_message">Message moved to archive</string>
     <string name="mailbox_action_spam_message">Message moved to spam</string>
     <string name="mailbox_search_placeholder_text">Search messages</string>
-    <string name="mailbox_search_no_results_title">No results found</string>
-    <string name="mailbox_search_no_results_explanation">Search date, name, email address, or subject line</string>
+    <string name="mailbox_search_no_results_title">No matches</string>
+    <string name="mailbox_search_no_results_explanation">You can either update your search query or clear it.</string>
 
     <string name="mailbox_action_button_clear_trash">Empty Trash</string>
     <string name="mailbox_action_button_clear_spam">Empty Spam</string>
@@ -123,5 +124,4 @@
         <item quantity="other">Expires in %d minutes</item>
     </plurals>
     <string name="expires_in_less_than_a_minute">Expires in less than a minute</string>
-
 </resources>
