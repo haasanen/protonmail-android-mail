@@ -44,7 +44,7 @@ import ch.protonmail.android.mailmessage.domain.model.Participant
 import ch.protonmail.android.mailmessage.domain.model.Recipient
 import me.proton.core.user.domain.entity.AddressId
 import timber.log.Timber
-import uniffi.proton_mail_uniffi.BodyOutput
+import uniffi.proton_mail_common.BodyOutput
 import uniffi.proton_mail_uniffi.MessageRecipient
 import uniffi.proton_mail_uniffi.MessageSender
 

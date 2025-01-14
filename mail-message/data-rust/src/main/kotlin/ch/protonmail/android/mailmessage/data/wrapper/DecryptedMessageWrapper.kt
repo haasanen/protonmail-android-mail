@@ -19,23 +19,17 @@
 package ch.protonmail.android.mailmessage.data.wrapper
 
 import arrow.core.Either
-import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalMimeType
-import ch.protonmail.android.mailcommon.datarust.mapper.toDataError
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import uniffi.proton_mail_uniffi.BodyOutput
+import uniffi.proton_mail_common.BodyOutput
+import uniffi.proton_mail_common.TransformOpts
 import uniffi.proton_mail_uniffi.DecryptedMessage
-import uniffi.proton_mail_uniffi.DecryptedMessageBodyResult
-import uniffi.proton_mail_uniffi.TransformOpts
 
 class DecryptedMessageWrapper(private val decryptedMessage: DecryptedMessage) {
 
     suspend fun body(transformOpts: TransformOpts): Either<DataError, BodyOutput> =
-        when (val result = decryptedMessage.body(transformOpts)) {
-            is DecryptedMessageBodyResult.Error -> result.v1.toDataError().left()
-            is DecryptedMessageBodyResult.Ok -> result.v1.right()
-        }
+        decryptedMessage.body(transformOpts).right()
 
     fun mimeType(): LocalMimeType = decryptedMessage.mimeType()
 }

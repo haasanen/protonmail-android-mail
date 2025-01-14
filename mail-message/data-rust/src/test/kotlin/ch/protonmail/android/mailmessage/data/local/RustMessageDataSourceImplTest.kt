@@ -53,8 +53,10 @@ import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
+import uniffi.proton_mail_common.BodyBanners
+import uniffi.proton_mail_common.BodyOutput
+import uniffi.proton_mail_common.TransformOpts
 import uniffi.proton_mail_uniffi.AllBottomBarMessageActions
-import uniffi.proton_mail_uniffi.BodyOutput
 import uniffi.proton_mail_uniffi.CustomFolderAction
 import uniffi.proton_mail_uniffi.Id
 import uniffi.proton_mail_uniffi.IsSelected
@@ -152,7 +154,19 @@ class RustMessageDataSourceImplTest {
         val mailSession = mockk<MailUserSessionWrapper>()
         val messageId = LocalMessageIdSample.AugWeatherForecast
         val mailbox = mockk<MailboxWrapper>()
-        val bodyOutput = BodyOutput("message body", false, 0uL, 0uL)
+        val transformOpts = mockk<TransformOpts>()
+        val bodyBanners = mockk<BodyBanners>()
+        val bodyOutput = BodyOutput(
+            "message body",
+            false,
+            0uL,
+            0uL,
+            0uL,
+            0uL,
+            0uL,
+            transformOpts,
+            bodyBanners
+        )
         val localMimeType = LocalMimeType.TEXT_PLAIN
         val decryptedMessageBodyWrapper = mockk<DecryptedMessageWrapper> {
             coEvery { body(any()) } returns bodyOutput.right()

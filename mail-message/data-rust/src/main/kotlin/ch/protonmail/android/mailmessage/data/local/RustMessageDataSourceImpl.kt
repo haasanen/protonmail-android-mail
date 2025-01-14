@@ -48,12 +48,10 @@ import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
+import uniffi.proton_mail_common.TransformOpts
 import uniffi.proton_mail_uniffi.AllBottomBarMessageActions
-import uniffi.proton_mail_uniffi.BlockQuote
 import uniffi.proton_mail_uniffi.MessageAvailableActions
 import uniffi.proton_mail_uniffi.MoveAction
-import uniffi.proton_mail_uniffi.RemoteContent
-import uniffi.proton_mail_uniffi.TransformOpts
 import javax.inject.Inject
 
 @SuppressWarnings("LongParameterList")
@@ -99,7 +97,7 @@ class RustMessageDataSourceImpl @Inject constructor(
         return createRustMessageBodyAccessor(mailbox, messageId)
             .onLeft { Timber.e("rust-message: Failed to get message body $it") }
             .flatMap { decryptedMessage ->
-                decryptedMessage.body(TransformOpts(BlockQuote.STRIP, RemoteContent.DEFAULT))
+                decryptedMessage.body(TransformOpts(false, null, null, null))
                     .map { decryptedBody ->
                         decryptedBody.toMessageBody(messageId.toMessageId(), decryptedMessage.mimeType())
                     }
