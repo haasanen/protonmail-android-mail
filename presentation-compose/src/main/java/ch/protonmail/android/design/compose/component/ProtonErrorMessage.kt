@@ -44,7 +44,7 @@ fun ProtonErrorMessage(
         modifier = modifier
             .fillMaxWidth()
             .defaultMinSize(minHeight = MinHeight),
-        colors = CardDefaults.cardColors(),
+        colors = CardDefaults.cardColors().copy(containerColor = ProtonTheme.colors.notificationError),
         shape = ProtonTheme.shapes.medium,
         elevation = elevation
 
