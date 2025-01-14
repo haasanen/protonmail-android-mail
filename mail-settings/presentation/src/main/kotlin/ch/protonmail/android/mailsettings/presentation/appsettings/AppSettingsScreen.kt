@@ -26,7 +26,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -42,12 +41,12 @@ import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
 import ch.protonmail.android.design.compose.component.ProtonSettingsItem
 import ch.protonmail.android.design.compose.component.ProtonSettingsList
 import ch.protonmail.android.design.compose.component.ProtonSettingsTopBar
+import ch.protonmail.android.design.compose.theme.ProtonDimens
+import ch.protonmail.android.design.compose.theme.ProtonTheme
+import ch.protonmail.android.mailcommon.presentation.ui.MailDivider
 import ch.protonmail.android.mailsettings.domain.model.AppSettings
 import ch.protonmail.android.mailsettings.domain.model.LocalStorageUsageInformation
 import ch.protonmail.android.mailsettings.presentation.R.string
-import ch.protonmail.android.design.compose.theme.ProtonDimens
-import ch.protonmail.android.design.compose.theme.ProtonTheme
-
 import me.proton.core.presentation.utils.formatByteToHumanReadable
 import me.proton.core.usersettings.presentation.compose.view.CrashReportSettingToggleItem
 import me.proton.core.usersettings.presentation.compose.view.TelemetrySettingToggleItem
@@ -106,14 +105,14 @@ fun AppSettingsScreen(
                     name = stringResource(id = string.mail_settings_theme),
                     onClick = actions.onThemeClick
                 )
-                HorizontalDivider()
+                MailDivider()
             }
             item {
                 ProtonSettingsItem(
                     name = stringResource(id = string.mail_settings_push_notifications),
                     onClick = actions.onPushNotificationsClick
                 )
-                HorizontalDivider()
+                MailDivider()
             }
             item {
                 AutoLockSettingItem(
@@ -144,7 +143,7 @@ fun AppSettingsScreen(
                     name = stringResource(id = string.mail_settings_swipe_actions),
                     onClick = actions.onSwipeActionsClick
                 )
-                HorizontalDivider()
+                MailDivider()
             }
             item {
                 ClearLocalCacheItem(
@@ -152,8 +151,8 @@ fun AppSettingsScreen(
                     onClearCacheClick = actions.onClearCacheClick
                 )
             }
-            item { TelemetrySettingToggleItem(divider = { HorizontalDivider() }) }
-            item { CrashReportSettingToggleItem(divider = { HorizontalDivider() }) }
+            item { TelemetrySettingToggleItem(divider = { MailDivider() }) }
+            item { CrashReportSettingToggleItem(divider = { MailDivider() }) }
         }
     }
 }
@@ -175,7 +174,7 @@ private fun CombinedContactsSettingItem(
         hint = hint,
         onClick = onCombinedContactsClick
     )
-    HorizontalDivider()
+    MailDivider()
 }
 
 @Composable
@@ -207,7 +206,7 @@ private fun ClearLocalCacheItem(
             Text(text = stringResource(id = string.mail_settings_local_cache_clear_button))
         }
     }
-    HorizontalDivider()
+    MailDivider()
 }
 
 @Composable
@@ -224,7 +223,7 @@ private fun AppLanguageSettingItem(
         hint = appLanguage,
         onClick = onAppLanguageClick
     )
-    HorizontalDivider()
+    MailDivider()
 }
 
 @Composable
@@ -244,7 +243,7 @@ private fun AlternativeRoutingSettingItem(
         hint = hint,
         onClick = onAlternativeRoutingClick
     )
-    HorizontalDivider()
+    MailDivider()
 }
 
 @Composable
@@ -264,7 +263,7 @@ private fun AutoLockSettingItem(
         hint = hint,
         onClick = onAutoLockClick
     )
-    HorizontalDivider()
+    MailDivider()
 }
 
 
