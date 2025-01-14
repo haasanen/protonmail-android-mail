@@ -25,15 +25,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import ch.protonmail.android.mailsettings.presentation.R
-import ch.protonmail.android.mailsettings.presentation.websettings.model.WebSettingsAction
-import ch.protonmail.android.mailsettings.presentation.websettings.SettingWebView
-import ch.protonmail.android.mailsettings.presentation.websettings.WebSettingsScreenActions
-import ch.protonmail.android.mailsettings.presentation.websettings.WebSettingsState
 import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
 import ch.protonmail.android.design.compose.component.ProtonErrorMessage
 import ch.protonmail.android.design.compose.component.ProtonSettingsTopBar
-
+import ch.protonmail.android.mailsettings.presentation.R
+import ch.protonmail.android.mailsettings.presentation.websettings.SettingWebView
+import ch.protonmail.android.mailsettings.presentation.websettings.WebSettingsScreenActions
+import ch.protonmail.android.mailsettings.presentation.websettings.WebSettingsState
+import ch.protonmail.android.mailsettings.presentation.websettings.model.WebSettingsAction
 import me.proton.core.util.kotlin.exhaustive
 import timber.log.Timber
 
@@ -43,35 +42,25 @@ fun WebEmailSettingScreen(
     modifier: Modifier = Modifier,
     viewModel: WebEmailSettingsViewModel = hiltViewModel()
 ) {
-    when (
-        val settingsState = viewModel.state.collectAsStateWithLifecycle(
-            WebSettingsState.Loading
-        ).value
-    ) {
-        is WebSettingsState.Data -> WebEmailSettingScreen(
-            modifier = modifier,
-            state = settingsState,
-            actions = WebSettingsScreenActions(
-                onBackClick = {
-                    viewModel.submit(WebSettingsAction.OnCloseWebSettings)
-                    actions.onBackClick()
-                }
-            )
+    val settingsState = viewModel.state.collectAsStateWithLifecycle(
+        WebSettingsState.Loading
+    ).value
+    WebEmailSettingScreen(
+        modifier = modifier,
+        state = settingsState,
+        actions = WebSettingsScreenActions(
+            onBackClick = {
+                viewModel.submit(WebSettingsAction.OnCloseWebSettings)
+                actions.onBackClick()
+            }
         )
-
-        is WebSettingsState.Error -> ProtonErrorMessage(errorMessage = settingsState.errorMessage)
-
-        WebSettingsState.Loading -> ProtonCenteredProgress()
-        WebSettingsState.NotLoggedIn ->
-            ProtonErrorMessage(errorMessage = stringResource(id = R.string.x_error_not_logged_in))
-    }.exhaustive
-
+    )
 }
 
 @Composable
 fun WebEmailSettingScreen(
     modifier: Modifier = Modifier,
-    state: WebSettingsState.Data,
+    state: WebSettingsState,
     actions: WebSettingsScreenActions
 ) {
     Timber.d("web-email-settings: WebEmailSettingScreen: $state")
@@ -84,11 +73,26 @@ fun WebEmailSettingScreen(
             )
         },
         content = { paddingValues ->
-            SettingWebView(
-                modifier
-                    .padding(paddingValues),
-                state = state
-            )
+            when (state) {
+                is WebSettingsState.Data -> SettingWebView(
+                    modifier.padding(paddingValues),
+                    state = state
+                )
+
+                is WebSettingsState.Error -> ProtonErrorMessage(
+                    modifier = modifier.padding(paddingValues),
+                    errorMessage = state.errorMessage
+                )
+
+                WebSettingsState.Loading -> ProtonCenteredProgress(modifier = modifier.padding(paddingValues))
+
+                WebSettingsState.NotLoggedIn ->
+                    ProtonErrorMessage(
+                        modifier = modifier.padding(paddingValues),
+                        errorMessage = stringResource(id = R.string.x_error_not_logged_in)
+                    )
+            }.exhaustive
+
         }
     )
 }
