@@ -569,11 +569,37 @@ class ConversationDetailViewModelTest {
         every { savedStateHandle.get<String>(ConversationDetailScreen.OpenedFromLocationKey) } returns labelId.id
         every {
             observeConversationMessages(UserIdSample.Primary, ConversationIdSample.WeatherForecast, labelId)
-        } returns flowOf(DataError.Remote.Http(NetworkError.NoNetwork).left())
+        } returns flowOf(DataError.Remote.Http(NetworkError.ServerError).left())
         every {
             reducer.newStateFrom(
                 currentState = initialState,
                 operation = ConversationDetailEvent.ErrorLoadingMessages
+            )
+        } returns expectedState
+
+        // when
+        viewModel.state.test {
+            initialStateEmitted()
+
+            // then
+            assertEquals(expectedState, awaitItem())
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `conversation messages state is offline when use case fails with no network error`() = runTest {
+        // given
+        val expectedState = initialState.copy(messagesState = ConversationDetailsMessagesState.Offline)
+        val labelId = LabelIdSample.AllMail
+        every { savedStateHandle.get<String>(ConversationDetailScreen.OpenedFromLocationKey) } returns labelId.id
+        every {
+            observeConversationMessages(UserIdSample.Primary, ConversationIdSample.WeatherForecast, labelId)
+        } returns flowOf(DataError.Remote.Http(NetworkError.NoNetwork).left())
+        every {
+            reducer.newStateFrom(
+                currentState = initialState,
+                operation = ConversationDetailEvent.NoNetworkError
             )
         } returns expectedState
 
