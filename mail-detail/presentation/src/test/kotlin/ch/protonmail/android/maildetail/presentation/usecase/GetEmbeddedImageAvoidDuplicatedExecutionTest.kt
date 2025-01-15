@@ -22,9 +22,9 @@ import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
-import ch.protonmail.android.mailmessage.domain.usecase.GetEmbeddedImage
-import ch.protonmail.android.mailmessage.domain.usecase.GetEmbeddedImageResult
+import ch.protonmail.android.mailmessage.domain.model.EmbeddedImage
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
+import ch.protonmail.android.mailmessage.domain.usecase.GetEmbeddedImage
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -49,7 +49,7 @@ class GetEmbeddedImageAvoidDuplicatedExecutionTest {
     fun `returns embedded image result when getting embedded image was successful`() = runTest {
         // Given
         val expectedByteArray = "I'm an embedded image".toByteArray()
-        val expectedEmbeddedImageResult = GetEmbeddedImageResult(data = expectedByteArray, mimeType = "")
+        val expectedEmbeddedImageResult = EmbeddedImage(data = expectedByteArray, mimeType = "")
         coEvery {
             getEmbeddedImage(userId, messageId, contentId)
         } returns expectedEmbeddedImageResult.right()
@@ -79,7 +79,7 @@ class GetEmbeddedImageAvoidDuplicatedExecutionTest {
     fun `verify get embedded image is called only once while it is running`() = runTest {
         // Given
         val expectedByteArray = "I'm an embedded image".toByteArray()
-        val expectedEmbeddedImageResult = GetEmbeddedImageResult(data = expectedByteArray, mimeType = "")
+        val expectedEmbeddedImageResult = EmbeddedImage(data = expectedByteArray, mimeType = "")
         coEvery {
             getEmbeddedImage(userId, messageId, contentId)
         } coAnswers {

@@ -105,8 +105,8 @@ import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen
 import ch.protonmail.android.maildetail.presentation.ui.dialog.ReportPhishingDialog
 import ch.protonmail.android.maildetail.presentation.viewmodel.ConversationDetailViewModel
 import ch.protonmail.android.mailmessage.domain.model.AttachmentId
+import ch.protonmail.android.mailmessage.domain.model.EmbeddedImage
 import ch.protonmail.android.mailmessage.domain.model.MessageId
-import ch.protonmail.android.mailmessage.domain.usecase.GetEmbeddedImageResult
 import ch.protonmail.android.mailmessage.presentation.model.ViewModePreference
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.BottomSheetVisibilityEffect
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.ContactActionsBottomSheetState
@@ -911,7 +911,7 @@ object ConversationDetailScreen {
         val openAttachment: (values: OpenAttachmentIntentValues) -> Unit,
         val handleProtonCalendarRequest: (values: OpenProtonCalendarIntentValues) -> Unit,
         val showFeatureMissingSnackbar: () -> Unit,
-        val loadEmbeddedImage: (messageId: MessageId?, contentId: String) -> GetEmbeddedImageResult?,
+        val loadEmbeddedImage: (messageId: MessageId?, contentId: String) -> EmbeddedImage?,
         val onReply: (MessageId) -> Unit,
         val onReplyAll: (MessageId) -> Unit,
         val onForward: (MessageId) -> Unit,

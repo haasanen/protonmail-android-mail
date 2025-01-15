@@ -46,9 +46,9 @@ import ch.protonmail.android.maildetail.presentation.ui.footer.MessageDetailFoot
 import ch.protonmail.android.maildetail.presentation.ui.header.MessageDetailHeader
 import ch.protonmail.android.mailmessage.domain.model.AttachmentId
 import ch.protonmail.android.mailmessage.domain.model.MessageId
-import ch.protonmail.android.mailmessage.domain.usecase.GetEmbeddedImageResult
 import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
 import ch.protonmail.android.design.compose.theme.ProtonTheme
+import ch.protonmail.android.mailmessage.domain.model.EmbeddedImage
 import ch.protonmail.android.mailmessage.presentation.ui.ParticipantAvatar
 
 @Composable
@@ -211,7 +211,7 @@ object ConversationDetailItem {
         val onShowAllAttachmentsForMessage: (MessageIdUiModel) -> Unit,
         val onAttachmentClicked: (MessageIdUiModel, AttachmentId) -> Unit,
         val showFeatureMissingSnackbar: () -> Unit,
-        val loadEmbeddedImage: (messageId: MessageId?, contentId: String) -> GetEmbeddedImageResult?,
+        val loadEmbeddedImage: (messageId: MessageId?, contentId: String) -> EmbeddedImage?,
         val onReply: (MessageId) -> Unit,
         val onReplyAll: (MessageId) -> Unit,
         val onForward: (MessageId) -> Unit,

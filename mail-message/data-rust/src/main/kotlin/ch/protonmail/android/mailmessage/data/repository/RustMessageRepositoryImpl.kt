@@ -30,6 +30,7 @@ import ch.protonmail.android.mailmessage.data.local.RustMessageDataSource
 import ch.protonmail.android.mailmessage.data.mapper.toLocalMessageId
 import ch.protonmail.android.mailmessage.data.mapper.toMessage
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
+import ch.protonmail.android.mailmessage.domain.model.EmbeddedImage
 import ch.protonmail.android.mailmessage.domain.model.Message
 import ch.protonmail.android.mailmessage.domain.model.MessageAttachment
 import ch.protonmail.android.mailmessage.domain.model.MessageId
@@ -57,6 +58,14 @@ class RustMessageRepositoryImpl @Inject constructor(
         return rustMessageDataSource.getSenderImage(userId, address, bimi)?.let { imageString ->
             SenderImage(File(imageString))
         }
+    }
+
+    override suspend fun getEmbeddedImage(
+        userId: UserId,
+        messageId: MessageId,
+        contentId: String
+    ): Either<DataError, EmbeddedImage> {
+        TODO("Not yet implemented")
     }
 
     override suspend fun getMessages(userId: UserId, pageKey: PageKey): List<Message> {

@@ -31,13 +31,13 @@ import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.maildetail.presentation.R
 import ch.protonmail.android.maildetail.presentation.model.MessageDetailHeaderUiModel
 import ch.protonmail.android.maildetail.presentation.model.ParticipantUiModel
+import ch.protonmail.android.mailmessage.domain.model.EmbeddedImage
 import ch.protonmail.android.mailmessage.domain.model.MessageId
-import ch.protonmail.android.mailmessage.domain.usecase.GetEmbeddedImageResult
+import ch.protonmail.android.mailmessage.presentation.extension.getSecuredWebResourceResponse
 import ch.protonmail.android.mailmessage.presentation.extension.getTotalAttachmentByteSizeReadable
 import ch.protonmail.android.mailmessage.presentation.extension.isEmbeddedImage
 import ch.protonmail.android.mailmessage.presentation.extension.isRemoteContent
 import ch.protonmail.android.mailmessage.presentation.extension.isRemoteUnsecuredContent
-import ch.protonmail.android.mailmessage.presentation.extension.getSecuredWebResourceResponse
 import ch.protonmail.android.mailmessage.presentation.model.MessageBodyExpandCollapseMode
 import ch.protonmail.android.mailmessage.presentation.model.MessageBodyUiModel
 import org.jsoup.Jsoup
@@ -53,7 +53,7 @@ class PrintMessage @Inject constructor() {
         messageHeaderUiModel: MessageDetailHeaderUiModel,
         messageBodyUiModel: MessageBodyUiModel,
         messageBodyExpandCollapseMode: MessageBodyExpandCollapseMode,
-        loadEmbeddedImage: (MessageId, String) -> GetEmbeddedImageResult?
+        loadEmbeddedImage: (MessageId, String) -> EmbeddedImage?
     ) {
         val webView = WebView(context)
         webView.webViewClient = PrintWebViewClient(
@@ -133,7 +133,7 @@ class PrintMessage @Inject constructor() {
         private val context: Context,
         private val subject: String,
         private val messageBodyUiModel: MessageBodyUiModel,
-        private val loadEmbeddedImage: (MessageId, String) -> GetEmbeddedImageResult?
+        private val loadEmbeddedImage: (MessageId, String) -> EmbeddedImage?
     ) : WebViewClient() {
 
         @Suppress("TooGenericExceptionCaught")

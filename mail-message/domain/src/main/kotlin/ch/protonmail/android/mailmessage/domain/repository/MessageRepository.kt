@@ -23,6 +23,7 @@ import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
+import ch.protonmail.android.mailmessage.domain.model.EmbeddedImage
 import ch.protonmail.android.mailmessage.domain.model.Message
 import ch.protonmail.android.mailmessage.domain.model.MessageAttachment
 import ch.protonmail.android.mailmessage.domain.model.MessageId
@@ -41,6 +42,12 @@ interface MessageRepository {
         address: String,
         bimi: String?
     ): SenderImage?
+
+    suspend fun getEmbeddedImage(
+        userId: UserId,
+        messageId: MessageId,
+        contentId: String
+    ): Either<DataError, EmbeddedImage>
 
     /**
      * Load all [Message] from local cache for [userId] filtered by [PageKey].

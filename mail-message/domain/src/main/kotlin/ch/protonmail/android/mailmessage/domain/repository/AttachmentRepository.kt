@@ -58,6 +58,10 @@ interface AttachmentRepository {
      * Otherwise it will return the local file.
      * @return If successful the encrypted bytearray of the embedded image.
      */
+    @Deprecated(
+        "Outdated as relying on the old tech stack",
+        ReplaceWith("MessageRepository.getEmbeddedImage")
+    )
     suspend fun getEmbeddedImage(
         userId: UserId,
         messageId: MessageId,

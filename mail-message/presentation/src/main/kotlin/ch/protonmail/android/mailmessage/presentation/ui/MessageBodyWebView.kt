@@ -65,7 +65,6 @@ import ch.protonmail.android.mailcommon.presentation.extension.openShareIntentFo
 import ch.protonmail.android.mailmessage.domain.model.AttachmentId
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.MimeType
-import ch.protonmail.android.mailmessage.domain.usecase.GetEmbeddedImageResult
 import ch.protonmail.android.mailmessage.presentation.R
 import ch.protonmail.android.mailmessage.presentation.extension.getSecuredWebResourceResponse
 import ch.protonmail.android.mailmessage.presentation.extension.isEmbeddedImage
@@ -83,6 +82,7 @@ import com.google.accompanist.web.rememberWebViewStateWithHTMLData
 import kotlinx.coroutines.delay
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
+import ch.protonmail.android.mailmessage.domain.model.EmbeddedImage
 
 @Composable
 fun MessageBodyWebView(
@@ -327,7 +327,7 @@ object MessageBodyWebView {
         val onShowAllAttachments: () -> Unit,
         val onExpandCollapseButtonCLicked: () -> Unit,
         val onAttachmentClicked: (attachmentId: AttachmentId) -> Unit,
-        val loadEmbeddedImage: (messageId: MessageId, contentId: String) -> GetEmbeddedImageResult?,
+        val loadEmbeddedImage: (messageId: MessageId, contentId: String) -> EmbeddedImage?,
         val onPrint: (MessageId) -> Unit
     )
 }

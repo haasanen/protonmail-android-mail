@@ -39,7 +39,6 @@ import ch.protonmail.android.mailcommon.domain.sample.ConversationIdSample
 import ch.protonmail.android.mailcommon.domain.sample.UserAddressSample
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.mailcommon.domain.usecase.GetCurrentEpochTimeDuration
-import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.mapper.ActionUiModelMapper
 import ch.protonmail.android.mailcommon.presentation.mapper.AvatarInformationMapper
@@ -136,6 +135,7 @@ import ch.protonmail.android.maillabel.presentation.toUiModels
 import ch.protonmail.android.mailmessage.domain.model.AttachmentId
 import ch.protonmail.android.mailmessage.domain.model.ConversationMessages
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
+import ch.protonmail.android.mailmessage.domain.model.EmbeddedImage
 import ch.protonmail.android.mailmessage.domain.model.GetDecryptedMessageBodyError
 import ch.protonmail.android.mailmessage.domain.model.LabelSelectionList
 import ch.protonmail.android.mailmessage.domain.model.Message
@@ -147,7 +147,6 @@ import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
 import ch.protonmail.android.mailmessage.domain.sample.MessageSample
 import ch.protonmail.android.mailmessage.domain.usecase.DeleteMessages
 import ch.protonmail.android.mailmessage.domain.usecase.GetDecryptedMessageBody
-import ch.protonmail.android.mailmessage.domain.usecase.GetEmbeddedImageResult
 import ch.protonmail.android.mailmessage.domain.usecase.GetMessageAvailableActions
 import ch.protonmail.android.mailmessage.domain.usecase.GetMessageLabelAsActions
 import ch.protonmail.android.mailmessage.domain.usecase.GetMessageMoveToLocations
@@ -175,6 +174,7 @@ import ch.protonmail.android.mailmessage.presentation.reducer.MoveToBottomSheetR
 import ch.protonmail.android.mailmessage.presentation.reducer.UpsellingBottomSheetReducer
 import ch.protonmail.android.mailmessage.presentation.usecase.InjectCssIntoDecryptedMessageBody
 import ch.protonmail.android.mailmessage.presentation.usecase.SanitizeHtmlOfDecryptedMessageBody
+import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailsettings.domain.model.PrivacySettings
 import ch.protonmail.android.mailsettings.domain.usecase.privacy.ObservePrivacySettings
 import ch.protonmail.android.mailsettings.domain.usecase.privacy.UpdateLinkConfirmationSetting
@@ -1417,7 +1417,7 @@ class ConversationDetailViewModelIntegrationTest {
         val messageId = MessageId("rawMessageId")
         val contentId = "contentId"
         val byteArray = "I'm a byte array".toByteArray()
-        val expectedResult = GetEmbeddedImageResult(byteArray, "image/png")
+        val expectedResult = EmbeddedImage(byteArray, "image/png")
         coEvery { getEmbeddedImageAvoidDuplicatedExecution(userId, messageId, contentId, any()) } returns expectedResult
 
         // When
@@ -2369,7 +2369,6 @@ class ConversationDetailViewModelIntegrationTest {
         relabel: LabelConversation = labelConversation,
         delete: DeleteConversations = deleteConversations,
         report: ReportPhishingMessage = reportPhishingMessage,
-        contacts: ObserveContacts = observeContacts,
         observeConversation: ObserveConversation = observeConversationUseCase,
         observeConversationMessages: ObserveConversationMessages = this.observeConversationMessages,
         observeDetailActions: ObserveDetailBottomBarActions = observeDetailBottomBarActions,

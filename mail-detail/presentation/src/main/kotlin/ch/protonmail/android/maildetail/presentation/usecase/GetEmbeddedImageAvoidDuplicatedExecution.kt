@@ -18,8 +18,8 @@
 
 package ch.protonmail.android.maildetail.presentation.usecase
 
+import ch.protonmail.android.mailmessage.domain.model.EmbeddedImage
 import ch.protonmail.android.mailmessage.domain.usecase.GetEmbeddedImage
-import ch.protonmail.android.mailmessage.domain.usecase.GetEmbeddedImageResult
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
@@ -32,14 +32,14 @@ class GetEmbeddedImageAvoidDuplicatedExecution @Inject constructor(
     private val getEmbeddedImage: GetEmbeddedImage
 ) {
 
-    private val loadEmbeddedImageJobMap = mutableMapOf<String, Deferred<GetEmbeddedImageResult?>>()
+    private val loadEmbeddedImageJobMap = mutableMapOf<String, Deferred<EmbeddedImage?>>()
 
     suspend operator fun invoke(
         userId: UserId,
         messageId: MessageId,
         contentId: String,
         coroutineContext: CoroutineContext
-    ): GetEmbeddedImageResult? = runCatching {
+    ): EmbeddedImage? = runCatching {
         withContext(coroutineContext) {
             if (loadEmbeddedImageJobMap[contentId]?.isActive == true) {
                 loadEmbeddedImageJobMap[contentId]
