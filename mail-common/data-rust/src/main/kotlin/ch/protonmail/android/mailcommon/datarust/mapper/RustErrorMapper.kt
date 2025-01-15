@@ -60,7 +60,8 @@ fun EventError.toDataError(): DataError = when (this) {
         EventErrorReason.PLACEHOLDER -> DataError.Local.Unknown
     }
 }
-private fun ProtonError.toDataError(): DataError = when (this) {
+
+fun ProtonError.toDataError(): DataError = when (this) {
     ProtonError.Network -> DataError.Remote.Http(NetworkError.NoNetwork)
     is ProtonError.OtherReason -> DataError.Local.Unknown
     is ProtonError.ServerError -> DataError.Remote.Http(NetworkError.ServerError)

@@ -43,6 +43,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import me.proton.core.domain.entity.UserId
+import timber.log.Timber
 import javax.inject.Inject
 
 @Suppress("NotImplementedDeclaration", "TooManyFunctions")
@@ -64,9 +65,12 @@ class RustMessageRepositoryImpl @Inject constructor(
         userId: UserId,
         messageId: MessageId,
         contentId: String
-    ): Either<DataError, EmbeddedImage> {
-        TODO("Not yet implemented")
-    }
+    ): Either<DataError, EmbeddedImage> =
+        rustMessageDataSource.getEmbeddedImage(userId, messageId.toLocalMessageId(), contentId)
+            .map { localEmbeddedImage ->
+                Timber.d("RustMessage: Loaded embedded image: $contentId; mime ${localEmbeddedImage.mime};")
+                EmbeddedImage(localEmbeddedImage.data, localEmbeddedImage.mime)
+            }
 
     override suspend fun getMessages(userId: UserId, pageKey: PageKey): List<Message> {
         return rustMessageDataSource.getMessages(userId, pageKey)

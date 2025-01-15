@@ -157,7 +157,7 @@ fun MessageBodyWebView(
                 return if (!messageBodyUiModel.shouldShowRemoteContent && request?.isRemoteContent() == true) {
                     WebResourceResponse("", "", null)
                 } else if (messageBodyUiModel.shouldShowEmbeddedImages && request?.isEmbeddedImage() == true) {
-                    actions.loadEmbeddedImage(messageId, "<${request.url.schemeSpecificPart}>")?.let {
+                    actions.loadEmbeddedImage(messageId, request.url.schemeSpecificPart)?.let {
                         WebResourceResponse(it.mimeType, "", ByteArrayInputStream(it.data))
                     }
                 } else if (request?.isRemoteUnsecuredContent() == true) {

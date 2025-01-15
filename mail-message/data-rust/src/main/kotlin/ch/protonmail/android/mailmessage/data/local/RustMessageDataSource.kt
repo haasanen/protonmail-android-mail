@@ -28,6 +28,7 @@ import ch.protonmail.android.mailmessage.domain.model.MessageBody
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import me.proton.core.domain.entity.UserId
 import uniffi.proton_mail_uniffi.AllBottomBarMessageActions
+import uniffi.proton_mail_uniffi.EmbeddedAttachmentInfo
 import uniffi.proton_mail_uniffi.MessageAvailableActions
 import uniffi.proton_mail_uniffi.MoveAction
 
@@ -89,4 +90,10 @@ interface RustMessageDataSource {
         partiallySelectedLabelIds: List<LocalLabelId>,
         shouldArchive: Boolean
     ): Either<DataError, Unit>
+
+    suspend fun getEmbeddedImage(
+        userId: UserId,
+        messageId: LocalMessageId,
+        contentId: String
+    ): Either<DataError, EmbeddedAttachmentInfo>
 }

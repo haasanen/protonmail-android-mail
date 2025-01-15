@@ -50,6 +50,7 @@ import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import uniffi.proton_mail_common.TransformOpts
 import uniffi.proton_mail_uniffi.AllBottomBarMessageActions
+import uniffi.proton_mail_uniffi.EmbeddedAttachmentInfo
 import uniffi.proton_mail_uniffi.MessageAvailableActions
 import uniffi.proton_mail_uniffi.MoveAction
 import javax.inject.Inject
@@ -276,5 +277,21 @@ class RustMessageDataSourceImpl @Inject constructor(
             partiallySelectedLabelIds = partiallySelectedLabelIds,
             shouldArchive = shouldArchive
         )
+    }
+
+    override suspend fun getEmbeddedImage(
+        userId: UserId,
+        messageId: LocalMessageId,
+        contentId: String
+    ): Either<DataError, EmbeddedAttachmentInfo> {
+        // Hardcoded rust mailbox to "AllMail" to avoid this method having labelId as param;
+        // the current labelId is not needed to get the body and is planned to be dropped on this API
+        val mailbox = rustMailboxFactory.createAllMail(userId).getOrNull() ?: return DataError.Local.NoDataCached.left()
+
+        return createRustMessageBodyAccessor(mailbox, messageId)
+            .onLeft { Timber.e("rust-message: Failed to build message body accessor $it") }
+            .flatMap { decryptedMessage ->
+                decryptedMessage.getEmbeddedAttachment(contentId)
+            }
     }
 }
