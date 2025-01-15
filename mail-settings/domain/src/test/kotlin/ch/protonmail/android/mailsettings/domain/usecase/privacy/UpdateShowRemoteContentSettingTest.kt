@@ -72,7 +72,7 @@ internal class UpdateShowRemoteContentSettingTest {
         // Given
         val settingsMock = mockk<MailSettings>()
         every { observePrimaryUserId() } returns flowOf(UserId("123"))
-        coEvery { mailSettingsRepository.getMailSettings(any(), false) } returns settingsMock
+        coEvery { mailSettingsRepository.getMailSettings(any()) } returns settingsMock
         coEvery { settingsMock.showImages } returns null
 
         val expectedResult = DataError.Local.NoDataCached.left()
@@ -90,7 +90,7 @@ internal class UpdateShowRemoteContentSettingTest {
         val userId = UserId("123")
         val settingsMock = mockk<MailSettings>()
         every { observePrimaryUserId() } returns flowOf(userId)
-        coEvery { mailSettingsRepository.getMailSettings(any(), false) } returns settingsMock
+        coEvery { mailSettingsRepository.getMailSettings(any()) } returns settingsMock
         coEvery { settingsMock.showImages } returns IntEnum(0, ShowImage.None)
 
         val expectedResult = Unit.right()
@@ -101,7 +101,7 @@ internal class UpdateShowRemoteContentSettingTest {
         // Then
         assertEquals(expectedResult, result)
         coVerify(exactly = 1) {
-            mailSettingsRepository.getMailSettings(userId, refresh = false)
+            mailSettingsRepository.getMailSettings(userId)
         }
         coVerify(exactly = 0) {
             mailSettingsRepository.updateShowImages(any(), any())
@@ -119,7 +119,7 @@ internal class UpdateShowRemoteContentSettingTest {
         val expectedShowImagesValue = ShowImage.Both.value
 
         every { observePrimaryUserId() } returns flowOf(userId)
-        coEvery { mailSettingsRepository.getMailSettings(any(), refresh = false) } returns settingsMock
+        coEvery { mailSettingsRepository.getMailSettings(any()) } returns settingsMock
         coEvery { mailSettingsRepository.updateShowImages(any(), any()) } returns settingsMock
         coEvery { settingsMock.showImages } returns IntEnum(2, ShowImage.Embedded)
 
@@ -129,7 +129,7 @@ internal class UpdateShowRemoteContentSettingTest {
         // Then
         assertEquals(expectedResult, result)
         coVerify(exactly = 1) {
-            mailSettingsRepository.getMailSettings(userId, refresh = false)
+            mailSettingsRepository.getMailSettings(userId)
             mailSettingsRepository.updateShowImages(userId, capture(updateValue))
         }
         confirmVerified(mailSettingsRepository)

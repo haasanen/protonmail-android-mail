@@ -34,7 +34,6 @@ import ch.protonmail.android.mailcommon.presentation.mapper.ActionUiModelMapper
 import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
 import ch.protonmail.android.mailcommon.presentation.model.BottomBarEvent
 import ch.protonmail.android.mailcontact.domain.usecase.FindContactByEmail
-import ch.protonmail.android.mailcontact.domain.usecase.ObserveContacts
 import ch.protonmail.android.mailconversation.domain.usecase.DeleteConversations
 import ch.protonmail.android.mailconversation.domain.usecase.GetConversationMoveToLocations
 import ch.protonmail.android.mailconversation.domain.usecase.ObserveConversation
@@ -171,7 +170,6 @@ class ConversationDetailViewModel @Inject constructor(
     private val moveConversation: MoveConversation,
     private val deleteConversations: DeleteConversations,
     private val labelConversation: LabelConversation,
-    private val observeContacts: ObserveContacts,
     private val observeConversation: ObserveConversation,
     private val observeConversationMessages: ObserveConversationMessages,
     private val observeDetailActions: ObserveDetailBottomBarActions,

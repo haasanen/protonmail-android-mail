@@ -29,7 +29,7 @@ class ShouldShowEmbeddedImages @Inject constructor(
 ) {
 
     suspend operator fun invoke(userId: UserId): Boolean =
-        mailSettingsRepository.getMailSettingsOrNull(userId, refresh = false)?.showImages?.let {
+        mailSettingsRepository.getMailSettingsOrNull(userId)?.showImages?.let {
             it.enum == ShowImage.Embedded || it.enum == ShowImage.Both
         } ?: false
 }

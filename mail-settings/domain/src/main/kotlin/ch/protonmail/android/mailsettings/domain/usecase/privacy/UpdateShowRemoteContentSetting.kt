@@ -34,7 +34,7 @@ class UpdateShowRemoteContentSetting @Inject constructor(
 
     suspend operator fun invoke(newValue: Boolean): Either<DataError, Unit> {
         val userId = observePrimaryUserId().firstOrNull() ?: return DataError.Local.NoDataCached.left()
-        val currentValue = mailSettingsRepository.getMailSettings(userId, refresh = false).showImages
+        val currentValue = mailSettingsRepository.getMailSettings(userId).showImages
         val enum = currentValue?.enum ?: return DataError.Local.NoDataCached.left()
         if (enum.includesRemote() != newValue) {
             mailSettingsRepository.updateShowImages(userId, enum.toggleRemote())

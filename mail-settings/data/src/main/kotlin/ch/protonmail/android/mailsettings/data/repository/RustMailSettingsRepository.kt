@@ -45,13 +45,13 @@ class RustMailSettingsRepository(
     private val mailSettingsDataSource: MailSettingsDataSource
 ) : MailSettingsRepository {
 
-    override fun getMailSettingsFlow(userId: UserId, refresh: Boolean) =
+    override fun getMailSettingsFlow(userId: UserId) =
         mailSettingsDataSource.observeMailSettings(userId).map { localSettings ->
             localSettings.toMailSettings()
         }.convertToDataResultFlow()
 
     @Throws(NoSuchElementException::class)
-    override suspend fun getMailSettings(userId: UserId, refresh: Boolean): MailSettings {
+    override suspend fun getMailSettings(userId: UserId): MailSettings {
         return getMailSettingsFlow(userId).firstOrNull().successOrNull()
             ?: throw NoSuchElementException("No Mail Settings found")
     }

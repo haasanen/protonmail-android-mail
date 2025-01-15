@@ -39,14 +39,14 @@ interface MailSettingsRepository {
     /**
      * Observe [MailSettings], by [userId].
      */
-    fun getMailSettingsFlow(userId: UserId, refresh: Boolean = false): Flow<DataResult<MailSettings>>
+    fun getMailSettingsFlow(userId: UserId): Flow<DataResult<MailSettings>>
 
     /**
      * Get [MailSettings], by [userId].
      *
      * @see [MailSettingsRepository.getMailSettingsOrNull]
      */
-    suspend fun getMailSettings(userId: UserId, refresh: Boolean = false): MailSettings
+    suspend fun getMailSettings(userId: UserId): MailSettings
 
     /**
      * Update [MailSettings], locally.
@@ -185,5 +185,5 @@ interface MailSettingsRepository {
  *
  * @see [MailSettingsRepository.getMailSettings]
  */
-suspend fun MailSettingsRepository.getMailSettingsOrNull(userId: UserId, refresh: Boolean = true): MailSettings? =
-    runCatching { getMailSettings(userId, refresh) }.getOrNull()
+suspend fun MailSettingsRepository.getMailSettingsOrNull(userId: UserId): MailSettings? =
+    runCatching { getMailSettings(userId) }.getOrNull()
