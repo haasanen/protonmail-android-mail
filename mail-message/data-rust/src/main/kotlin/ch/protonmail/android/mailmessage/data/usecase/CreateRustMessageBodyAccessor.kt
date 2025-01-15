@@ -26,18 +26,36 @@ import ch.protonmail.android.mailcommon.datarust.mapper.toDataError
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailmessage.data.wrapper.DecryptedMessageWrapper
 import ch.protonmail.android.mailmessage.data.wrapper.MailboxWrapper
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
+import timber.log.Timber
 import uniffi.proton_mail_uniffi.GetMessageBodyResult
 import uniffi.proton_mail_uniffi.getMessageBody
 import javax.inject.Inject
 
 class CreateRustMessageBodyAccessor @Inject constructor() {
 
+    private var cache: Pair<LocalMessageId, DecryptedMessageWrapper>? = null
+    private val mutex = Mutex()
+
     suspend operator fun invoke(
         mailbox: MailboxWrapper,
         messageId: LocalMessageId
-    ): Either<DataError, DecryptedMessageWrapper> =
-        when (val result = getMessageBody(mailbox.getRustMailbox(), messageId)) {
-            is GetMessageBodyResult.Error -> result.v1.toDataError().left()
-            is GetMessageBodyResult.Ok -> DecryptedMessageWrapper(result.v1).right()
+    ): Either<DataError, DecryptedMessageWrapper> = mutex.withLock {
+        cache?.let {
+            if (messageId == it.first) {
+                Timber.d("RustMessage: cache hit, returning Decrypted Message Body...")
+                return it.second.right()
+            }
         }
+
+        return when (val result = getMessageBody(mailbox.getRustMailbox(), messageId)) {
+            is GetMessageBodyResult.Error -> result.v1.toDataError().left()
+            is GetMessageBodyResult.Ok -> {
+                val decryptedMessageWrapper = DecryptedMessageWrapper(result.v1)
+                cache = Pair(messageId, decryptedMessageWrapper)
+                decryptedMessageWrapper.right()
+            }
+        }
+    }
 }
