@@ -207,6 +207,17 @@ fun MailboxItem(
                     }
                 }
 
+                if (item.attachments.isNotEmpty()) {
+                    Row(
+                        modifier = Modifier
+                            .padding(top = ProtonDimens.Spacing.Small, bottom = ProtonDimens.Spacing.Small)
+                            .fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        AttachmentList(attachments = item.attachments, textColor = fontColor)
+                    }
+                }
+
                 Row(
                     modifier = Modifier
                         .padding(top = ProtonDimens.Spacing.Small, bottom = ProtonDimens.Spacing.Small)
