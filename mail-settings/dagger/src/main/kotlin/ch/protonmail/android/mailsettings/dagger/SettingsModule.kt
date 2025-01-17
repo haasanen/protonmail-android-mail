@@ -20,6 +20,8 @@ package ch.protonmail.android.mailsettings.dagger
 
 import android.content.Context
 import ch.protonmail.android.mailcommon.domain.repository.AppLocaleRepository
+import ch.protonmail.android.mailsession.domain.repository.EventLoopRepository
+import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailsettings.data.MailSettingsDataStoreProvider
 import ch.protonmail.android.mailsettings.data.local.MailSettingsDataSource
 import ch.protonmail.android.mailsettings.data.local.RustMailSettingsDataSource
@@ -60,6 +62,7 @@ import ch.protonmail.android.mailsettings.domain.repository.MobileFooterReposito
 import ch.protonmail.android.mailsettings.domain.repository.NotificationsSettingsRepository
 import ch.protonmail.android.mailsettings.domain.repository.PreventScreenshotsRepository
 import ch.protonmail.android.mailsettings.domain.repository.ThemeRepository
+import ch.protonmail.android.mailsettings.domain.usecase.HandleCloseWebSettings
 import ch.protonmail.android.mailsettings.domain.usecase.IsAutodeleteFeatureEnabled
 import ch.protonmail.android.mailsettings.presentation.settings.theme.ThemeObserverCoroutineScope
 import dagger.Binds
@@ -132,6 +135,13 @@ object SettingsModule {
     @Singleton
     fun provideMailSettingsRepository(mailSettingsDataSource: MailSettingsDataSource): MailSettingsRepository =
         RustMailSettingsRepository(mailSettingsDataSource)
+
+    @Provides
+    @Singleton
+    fun provideHandleCloseWebSettings(
+        observePrimaryUserId: ObservePrimaryUserId,
+        eventLoopRepository: EventLoopRepository
+    ): HandleCloseWebSettings = HandleCloseWebSettings(observePrimaryUserId, eventLoopRepository)
 
     @AutodeleteFeatureEnabled
     fun provideAutodeleteFeatureEnabled(isEnabled: IsAutodeleteFeatureEnabled) = isEnabled(null)

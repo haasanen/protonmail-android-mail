@@ -18,15 +18,19 @@
 
 package ch.protonmail.android.mailsettings.domain.usecase
 
-import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
-import me.proton.core.usersettings.domain.repository.UserSettingsRepository
-import timber.log.Timber
+import ch.protonmail.android.mailsession.domain.repository.EventLoopRepository
+import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
+import kotlinx.coroutines.flow.firstOrNull
 import javax.inject.Inject
 
 class HandleCloseWebSettings @Inject constructor(
-    private val userSettingsRepository: UserSettingsRepository
+    private val observePrimaryUserId: ObservePrimaryUserId,
+    private val eventLoopRepository: EventLoopRepository
 ) {
 
-    @MissingRustApi
-    operator fun invoke() = Timber.d("We should trigger Rust event loop to get setting updates!")
+    suspend operator fun invoke() {
+        observePrimaryUserId().firstOrNull()?.let {
+            eventLoopRepository.trigger(it)
+        }
+    }
 }
