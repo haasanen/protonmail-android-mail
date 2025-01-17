@@ -34,6 +34,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -271,7 +272,8 @@ fun Home(
                 windowInsets = WindowInsets(
                     top = ProtonDimens.Spacing.ExtraLarge,
                     bottom = ProtonDimens.Spacing.ExtraLarge
-                )
+                ),
+                drawerShape = RectangleShape
             ) {
                 Sidebar(
                     drawerState = drawerState,
