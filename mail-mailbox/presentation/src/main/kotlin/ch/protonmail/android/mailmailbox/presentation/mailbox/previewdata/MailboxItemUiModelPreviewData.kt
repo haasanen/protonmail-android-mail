@@ -64,7 +64,6 @@ object MailboxItemUiModelPreviewData {
             isStarred = true,
             locations = persistentListOf(MailboxItemLocationUiModel(R.drawable.ic_proton_archive_box)),
             expiryInformation = ExpiryInformationUiModel.NoExpiry,
-            shouldShowAttachmentIcon = true,
             shouldShowCalendarIcon = true,
             shouldOpenInComposer = false,
             attachments = persistentListOf()
@@ -89,7 +88,6 @@ object MailboxItemUiModelPreviewData {
             isStarred = true,
             locations = persistentListOf(),
             expiryInformation = ExpiryInformationUiModel.NoExpiry,
-            shouldShowAttachmentIcon = false,
             shouldShowCalendarIcon = false,
             shouldOpenInComposer = false,
             attachments = persistentListOf()
@@ -117,7 +115,6 @@ object MailboxItemUiModelPreviewData {
                 MailboxItemLocationUiModel(R.drawable.ic_proton_trash)
             ),
             expiryInformation = ExpiryInformationUiModel.NoExpiry,
-            shouldShowAttachmentIcon = true,
             shouldShowCalendarIcon = false,
             shouldOpenInComposer = false,
             attachments = persistentListOf()
@@ -153,7 +150,6 @@ object MailboxItemUiModelPreviewData {
             isStarred = true,
             locations = persistentListOf(),
             expiryInformation = ExpiryInformationUiModel.NoExpiry,
-            shouldShowAttachmentIcon = true,
             shouldShowCalendarIcon = true,
             shouldOpenInComposer = false,
             attachments = persistentListOf(
@@ -193,7 +189,6 @@ object MailboxItemUiModelPreviewData {
                 MailboxItemLocationUiModel(R.drawable.ic_proton_trash)
             ),
             expiryInformation = ExpiryInformationUiModel.NoExpiry,
-            shouldShowAttachmentIcon = false,
             shouldShowCalendarIcon = false,
             shouldOpenInComposer = false,
             attachments = persistentListOf()
@@ -218,7 +213,6 @@ object MailboxItemUiModelPreviewData {
             isStarred = false,
             locations = persistentListOf(),
             expiryInformation = ExpiryInformationUiModel.NoExpiry,
-            shouldShowAttachmentIcon = false,
             shouldShowCalendarIcon = false,
             shouldOpenInComposer = false,
             attachments = persistentListOf()
@@ -241,7 +235,6 @@ object MailboxItemUiModelPreviewData {
             isStarred = false,
             locations = persistentListOf(),
             expiryInformation = ExpiryInformationUiModel.NoExpiry,
-            shouldShowAttachmentIcon = false,
             shouldShowCalendarIcon = false,
             shouldOpenInComposer = false,
             attachments = persistentListOf()
@@ -269,7 +262,6 @@ object MailboxItemUiModelPreviewData {
             isStarred = true,
             locations = persistentListOf(),
             expiryInformation = ExpiryInformationUiModel.NoExpiry,
-            shouldShowAttachmentIcon = true,
             shouldShowCalendarIcon = false,
             shouldOpenInComposer = false,
             attachments = persistentListOf()
@@ -294,7 +286,6 @@ object MailboxItemUiModelPreviewData {
             isStarred = true,
             locations = persistentListOf(),
             expiryInformation = ExpiryInformationUiModel.NoExpiry,
-            shouldShowAttachmentIcon = true,
             shouldShowCalendarIcon = false,
             shouldOpenInComposer = false,
             attachments = persistentListOf()

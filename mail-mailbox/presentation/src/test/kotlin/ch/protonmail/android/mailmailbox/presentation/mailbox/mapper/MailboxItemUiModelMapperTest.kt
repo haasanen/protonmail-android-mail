@@ -317,26 +317,6 @@ class MailboxItemUiModelMapperTest {
     }
 
     @Test
-    fun `when mailbox item has attachments show paperclip icon`() = runTest {
-        // Given
-        val mailboxItem = buildMailboxItem(hasAttachments = true)
-        // When
-        val actual = mapper.toUiModel(userId, mailboxItem, defaultFolderColorSettings, false)
-        // Then
-        assertTrue(actual.shouldShowAttachmentIcon)
-    }
-
-    @Test
-    fun `when mailbox item has no attachments do not show paperclip icon`() = runTest {
-        // Given
-        val mailboxItem = buildMailboxItem(hasAttachments = false)
-        // When
-        val actual = mapper.toUiModel(userId, mailboxItem, defaultFolderColorSettings, false)
-        // Then
-        assertFalse(actual.shouldShowAttachmentIcon)
-    }
-
-    @Test
     fun `avatar ui model should be received from the use case`() = runTest {
         // Given
         val avatarUiModel = ParticipantAvatarSample.ebay

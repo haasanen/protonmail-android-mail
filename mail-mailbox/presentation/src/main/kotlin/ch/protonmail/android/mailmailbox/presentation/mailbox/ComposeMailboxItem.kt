@@ -363,9 +363,6 @@ private fun Icons(
         if (item.shouldShowCalendarIcon) {
             SmallNonClickableIcon(iconId = R.drawable.ic_proton_calendar_grid, iconColor = iconColor)
         }
-        if (item.shouldShowAttachmentIcon) {
-            SmallNonClickableIcon(iconId = R.drawable.ic_proton_paper_clip, iconColor = iconColor)
-        }
 
         StarIcon(
             isStarred = item.isStarred,

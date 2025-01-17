@@ -82,7 +82,6 @@ class MailboxItemUiModelMapper @Inject constructor(
             isStarred = mailboxItem.isStarred,
             locations = getLocationIconsToDisplay(userId, mailboxItem, folderColorSettings, isShowingSearchResults),
             expiryInformation = expiryInformationUiModelMapper.toUiModel(mailboxItem.expirationTime),
-            shouldShowAttachmentIcon = mailboxItem.hasNonCalendarAttachments,
             shouldShowCalendarIcon = hasCalendarAttachment(mailboxItem),
             shouldOpenInComposer = false,
             attachments = mailboxItem.attachments.map(attachmentMetadataUiModelMapper::toUiModel).toImmutableList()
