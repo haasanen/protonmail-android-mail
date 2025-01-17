@@ -103,8 +103,8 @@ private fun LazyItemScope.SidebarCustomLabel(
 @Composable
 private fun SidebarCustomLabelTitleItem(type: LabelType, onAddClick: () -> Unit) {
     val textRes = when (type) {
-        MessageFolder -> R.string.drawer_item_add_folder
-        MessageLabel -> R.string.drawer_item_add_label
+        MessageFolder -> R.string.drawer_item_create_folder
+        MessageLabel -> R.string.drawer_item_create_label
         else -> return
     }
 
