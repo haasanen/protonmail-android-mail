@@ -60,7 +60,7 @@ class RustConversationActionRepositoryTest {
     )
 
     @Test
-    fun `get available actions should return available actions when data source exposes them`() = runTest {
+    fun `get available actions should return supported available actions when data source exposes them`() = runTest {
         // Given
         val userId = UserIdTestData.userId
         val labelId = SystemLabelId.Inbox.labelId
@@ -75,7 +75,7 @@ class RustConversationActionRepositoryTest {
                     MovableSystemFolderAction(Id(10uL), MovableSystemFolder.ARCHIVE)
                 )
             ),
-            listOf(GeneralActions.VIEW_HEADERS)
+            emptyList()
         )
 
         coEvery {
@@ -94,7 +94,7 @@ class RustConversationActionRepositoryTest {
             emptyList(),
             listOf(Action.Star, Action.Label),
             listOf(Action.Spam, Action.Archive),
-            listOf(Action.ViewHeaders)
+            emptyList()
         )
         assertEquals(expected.right(), result)
     }
@@ -135,7 +135,12 @@ class RustConversationActionRepositoryTest {
                     MovableSystemFolderAction(Id(10uL), MovableSystemFolder.INBOX)
                 )
             ),
-            emptyList()
+            generalActions = listOf(
+                GeneralActions.PRINT,
+                GeneralActions.REPORT_PHISHING,
+                GeneralActions.SAVE_AS_PDF,
+                GeneralActions.VIEW_HEADERS
+            )
         )
 
         coEvery {

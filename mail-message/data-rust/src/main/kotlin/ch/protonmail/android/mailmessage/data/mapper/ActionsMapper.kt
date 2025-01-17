@@ -29,6 +29,7 @@ import ch.protonmail.android.maillabel.domain.model.LabelAsActions
 import ch.protonmail.android.maillabel.domain.model.LabelType
 import ch.protonmail.android.maillabel.domain.model.MailLabel
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
+import timber.log.Timber
 import uniffi.proton_mail_uniffi.AllBottomBarMessageActions
 import uniffi.proton_mail_uniffi.BottomBarActions
 import uniffi.proton_mail_uniffi.GeneralActions
@@ -75,18 +76,21 @@ fun List<MoveAction.SystemFolder>.toMailLabels() = this.map { systemAction ->
 
 fun MessageAvailableActions.toAvailableActions(): AvailableActions {
     return AvailableActions(
-        this.replyActions.replyActionsToActions(),
-        this.messageActions.messageActionsToActions(),
+        this.replyActions.replyActionsToActions().filterNotNull(),
+        this.messageActions.messageActionsToActions().filterNotNull(),
         this.moveActions.systemFolderActionsToActions(),
-        this.generalActions.generalActionsToActions()
+        this.generalActions.generalActionsToActions().filterNotNull()
     )
 }
 
 fun List<ReplyAction>.replyActionsToActions() = this.map { replyAction ->
     when (replyAction) {
-        ReplyAction.REPLY -> Action.Reply
-        ReplyAction.REPLY_ALL -> Action.ReplyAll
-        ReplyAction.FORWARD -> Action.Forward
+        ReplyAction.REPLY,
+        ReplyAction.REPLY_ALL,
+        ReplyAction.FORWARD -> {
+            Timber.i("rust-actions-mapper: Skipping unhandled action mapping generalActions: $replyAction")
+            null
+        }
     }
 }
 
@@ -110,11 +114,14 @@ fun List<GeneralActions>.generalActionsToActions() = this.map { generalAction ->
     when (generalAction) {
         GeneralActions.VIEW_MESSAGE_IN_LIGHT_MODE -> Action.ViewInLightMode
         GeneralActions.VIEW_MESSAGE_IN_DARK_MODE -> Action.ViewInDarkMode
-        GeneralActions.SAVE_AS_PDF -> Action.SavePdf
-        GeneralActions.PRINT -> Action.Print
-        GeneralActions.VIEW_HEADERS -> Action.ViewHeaders
-        GeneralActions.VIEW_HTML -> Action.ViewHtml
-        GeneralActions.REPORT_PHISHING -> Action.ReportPhishing
+        GeneralActions.SAVE_AS_PDF,
+        GeneralActions.PRINT,
+        GeneralActions.VIEW_HEADERS,
+        GeneralActions.VIEW_HTML,
+        GeneralActions.REPORT_PHISHING -> {
+            Timber.i("rust-actions-mapper: Skipping unhandled action mapping generalActions: $generalAction")
+            null
+        }
     }
 }
 
@@ -126,8 +133,11 @@ private fun List<MessageAction>.messageActionsToActions() = this.map { messageAc
         MessageAction.MARK_READ -> Action.MarkRead
         MessageAction.MARK_UNREAD -> Action.MarkUnread
         MessageAction.DELETE -> Action.Delete
-        MessageAction.PIN -> Action.Pin
-        MessageAction.UNPIN -> Action.Unpin
+        MessageAction.PIN,
+        MessageAction.UNPIN -> {
+            Timber.i("rust-actions-mapper: Skipping unhandled action mapping msgActions: $messageAction")
+            null
+        }
     }
 }
 

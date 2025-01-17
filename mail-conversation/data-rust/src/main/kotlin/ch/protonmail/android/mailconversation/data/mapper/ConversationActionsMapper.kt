@@ -32,7 +32,7 @@ fun ConversationAvailableActions.toAvailableActions(): AvailableActions {
         emptyList(),
         this.conversationActions.conversationActionsToActions().filterNotNull(),
         this.moveActions.systemFolderActionsToActions(),
-        this.generalActions.generalActionsToActions()
+        this.generalActions.generalActionsToActions().filterNotNull()
     )
 }
 

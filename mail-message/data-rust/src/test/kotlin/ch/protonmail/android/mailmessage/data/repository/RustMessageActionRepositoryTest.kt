@@ -59,7 +59,7 @@ class RustMessageActionRepositoryTest {
     private val repository = RustMessageActionRepository(rustMessageDataSource)
 
     @Test
-    fun `get available actions should return available actions when data source exposes them`() = runTest {
+    fun `get available actions should return supported available actions when data source exposes them`() = runTest {
         // Given
         val userId = UserIdTestData.userId
         val labelId = SystemLabelId.Inbox.labelId
@@ -73,7 +73,7 @@ class RustMessageActionRepositoryTest {
                     MovableSystemFolderAction(Id(10uL), MovableSystemFolder.ARCHIVE)
                 )
             ),
-            listOf(GeneralActions.VIEW_HEADERS)
+            listOf(GeneralActions.VIEW_MESSAGE_IN_DARK_MODE, GeneralActions.VIEW_MESSAGE_IN_LIGHT_MODE)
         )
 
         coEvery {
@@ -89,10 +89,10 @@ class RustMessageActionRepositoryTest {
 
         // Then
         val expected = AvailableActions(
-            listOf(Action.Reply, Action.Forward),
+            emptyList(),
             listOf(Action.Star, Action.Label),
             listOf(Action.Spam, Action.Archive),
-            listOf(Action.ViewHeaders)
+            listOf(Action.ViewInDarkMode, Action.ViewInLightMode)
         )
         assertEquals(expected.right(), result)
     }
