@@ -329,13 +329,6 @@ private fun Icons(
                 iconColor = ProtonTheme.colors.starSelected
             )
         }
-        if (!isExpanded) {
-            if (uiModel.location.color != null) {
-                SmallNonClickableIcon(iconId = uiModel.location.icon, iconColor = uiModel.location.color)
-            } else {
-                SmallNonClickableIcon(iconId = uiModel.location.icon)
-            }
-        }
     }
 }
 

@@ -48,22 +48,22 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.constraintlayout.compose.Visibility
 import androidx.constraintlayout.compose.atLeast
+import ch.protonmail.android.design.compose.theme.ProtonDimens
+import ch.protonmail.android.design.compose.theme.ProtonTheme
+import ch.protonmail.android.design.compose.theme.bodyLargeNorm
+import ch.protonmail.android.design.compose.theme.bodyMediumNorm
+import ch.protonmail.android.design.compose.theme.bodySmallNorm
 import ch.protonmail.android.mailcommon.presentation.NO_CONTENT_DESCRIPTION
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 import ch.protonmail.android.mailcommon.presentation.compose.OfficialBadge
 import ch.protonmail.android.mailcommon.presentation.compose.SmallNonClickableIcon
 import ch.protonmail.android.mailcommon.presentation.model.string
+import ch.protonmail.android.maildetail.presentation.R
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMessageUiModel
 import ch.protonmail.android.maildetail.presentation.previewdata.ConversationDetailCollapsedMessageHeaderPreviewData
-import ch.protonmail.android.mailmessage.presentation.ui.ParticipantAvatar
-import ch.protonmail.android.design.compose.theme.ProtonDimens
-import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.bodySmallNorm
-import ch.protonmail.android.design.compose.theme.bodyLargeNorm
-import ch.protonmail.android.design.compose.theme.bodyMediumNorm
-import ch.protonmail.android.maildetail.presentation.R
-import me.proton.core.presentation.R.drawable
 import ch.protonmail.android.maildetail.presentation.ui.common.SingleLineRecipientNames
+import ch.protonmail.android.mailmessage.presentation.ui.ParticipantAvatar
+import me.proton.core.presentation.R.drawable
 import me.proton.core.util.kotlin.EMPTY_STRING
 import me.proton.core.util.kotlin.exhaustive
 
@@ -93,7 +93,6 @@ internal fun ConversationDetailCollapsedMessageHeader(
             labelsRef,
             starIconRef,
             attachmentIconRef,
-            locationIconRef,
             timeRef
         ) = createRefs()
 
@@ -106,7 +105,6 @@ internal fun ConversationDetailCollapsedMessageHeader(
             labelsRef,
             starIconRef,
             attachmentIconRef,
-            locationIconRef,
             timeRef,
             chainStyle = ChainStyle.Packed
         )
@@ -214,14 +212,6 @@ internal fun ConversationDetailCollapsedMessageHeader(
             }
         )
 
-        LocationIcon(
-            uiModel = uiModel,
-            fontColor = fontColor,
-            modifier = Modifier.constrainAs(locationIconRef) {
-                centerVerticallyTo(parent)
-            }
-        )
-
         Time(
             modifier = Modifier.constrainAs(timeRef) {
                 centerVerticallyTo(parent)
@@ -301,22 +291,6 @@ private fun ForwardedIcon(
             iconColor = fontColor
         )
     }.exhaustive
-}
-
-@Composable
-private fun LocationIcon(
-    uiModel: ConversationDetailMessageUiModel.Collapsed,
-    fontColor: Color,
-    modifier: Modifier
-) {
-    Icon(
-        modifier = modifier
-            .testTag(ConversationDetailCollapsedMessageHeaderTestTags.Location)
-            .size(ProtonDimens.SmallIconSize),
-        painter = painterResource(id = uiModel.locationIcon.icon),
-        tint = uiModel.locationIcon.color ?: fontColor,
-        contentDescription = NO_CONTENT_DESCRIPTION
-    )
 }
 
 @Composable

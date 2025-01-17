@@ -91,10 +91,6 @@ internal data class MessageCollapsedItemEntryModel(
         hasTestTag(ConversationDetailCollapsedMessageHeaderTestTags.ExpirationText)
     }
 
-    private val locationIcon = rootItem.child {
-        hasTestTag(ConversationDetailCollapsedMessageHeaderTestTags.Location)
-    }
-
     private val time = rootItem.child {
         hasTestTag(ConversationDetailCollapsedMessageHeaderTestTags.Time)
     }
@@ -153,10 +149,6 @@ internal data class MessageCollapsedItemEntryModel(
     fun hasExpiration(value: String): MessageCollapsedItemEntryModel = apply {
         expirationIcon.assertIsDisplayed()
         expirationText.assertTextEquals(value)
-    }
-
-    fun hasLocationIcon(): MessageCollapsedItemEntryModel = apply {
-        locationIcon.assertIsDisplayed()
     }
 
     fun hasTime(value: String): MessageCollapsedItemEntryModel = apply {
