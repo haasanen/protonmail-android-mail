@@ -25,6 +25,8 @@ import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.maillabel.presentation.model.LabelUiModel
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItemType
 import ch.protonmail.android.mailmailbox.presentation.R
+import ch.protonmail.android.mailmailbox.presentation.mailbox.model.AttachmentIdUiModel
+import ch.protonmail.android.mailmailbox.presentation.mailbox.model.AttachmentMetadataUiModel
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.ExpiryInformationUiModel
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxItemLocationUiModel
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxItemUiModel
@@ -64,7 +66,8 @@ object MailboxItemUiModelPreviewData {
             expiryInformation = ExpiryInformationUiModel.NoExpiry,
             shouldShowAttachmentIcon = true,
             shouldShowCalendarIcon = true,
-            shouldOpenInComposer = false
+            shouldOpenInComposer = false,
+            attachments = persistentListOf()
         )
 
         val DroidConLondonWithZeroMessages = MailboxItemUiModel(
@@ -88,7 +91,8 @@ object MailboxItemUiModelPreviewData {
             expiryInformation = ExpiryInformationUiModel.NoExpiry,
             shouldShowAttachmentIcon = false,
             shouldShowCalendarIcon = false,
-            shouldOpenInComposer = false
+            shouldOpenInComposer = false,
+            attachments = persistentListOf()
         )
 
         val WeatherForecast = MailboxItemUiModel(
@@ -115,7 +119,8 @@ object MailboxItemUiModelPreviewData {
             expiryInformation = ExpiryInformationUiModel.NoExpiry,
             shouldShowAttachmentIcon = true,
             shouldShowCalendarIcon = false,
-            shouldOpenInComposer = false
+            shouldOpenInComposer = false,
+            attachments = persistentListOf()
         )
 
         val MultipleRecipientWithLabel = MailboxItemUiModel(
@@ -150,7 +155,20 @@ object MailboxItemUiModelPreviewData {
             expiryInformation = ExpiryInformationUiModel.NoExpiry,
             shouldShowAttachmentIcon = true,
             shouldShowCalendarIcon = true,
-            shouldOpenInComposer = false
+            shouldOpenInComposer = false,
+            attachments = persistentListOf(
+                AttachmentMetadataUiModel(
+                    id = AttachmentIdUiModel("0"),
+                    name = TextUiModel.Text("Account_statement_01.pdf"),
+                    icon = R.drawable.ic_file_type_pdf
+                ),
+                AttachmentMetadataUiModel(
+                    id = AttachmentIdUiModel("1"),
+                    name = TextUiModel.Text("Account_statement_all.zip"),
+                    icon = R.drawable.ic_file_type_zip
+                )
+            )
+
         )
 
         val LongSubjectWithIcons = MailboxItemUiModel(
@@ -177,7 +195,8 @@ object MailboxItemUiModelPreviewData {
             expiryInformation = ExpiryInformationUiModel.NoExpiry,
             shouldShowAttachmentIcon = false,
             shouldShowCalendarIcon = false,
-            shouldOpenInComposer = false
+            shouldOpenInComposer = false,
+            attachments = persistentListOf()
         )
 
         val LongSubjectWithoutIcons = MailboxItemUiModel(
@@ -201,7 +220,8 @@ object MailboxItemUiModelPreviewData {
             expiryInformation = ExpiryInformationUiModel.NoExpiry,
             shouldShowAttachmentIcon = false,
             shouldShowCalendarIcon = false,
-            shouldOpenInComposer = false
+            shouldOpenInComposer = false,
+            attachments = persistentListOf()
         )
 
         val NoParticipant = MailboxItemUiModel(
@@ -223,7 +243,8 @@ object MailboxItemUiModelPreviewData {
             expiryInformation = ExpiryInformationUiModel.NoExpiry,
             shouldShowAttachmentIcon = false,
             shouldShowCalendarIcon = false,
-            shouldOpenInComposer = false
+            shouldOpenInComposer = false,
+            attachments = persistentListOf()
         )
     }
 
@@ -250,7 +271,8 @@ object MailboxItemUiModelPreviewData {
             expiryInformation = ExpiryInformationUiModel.NoExpiry,
             shouldShowAttachmentIcon = true,
             shouldShowCalendarIcon = false,
-            shouldOpenInComposer = false
+            shouldOpenInComposer = false,
+            attachments = persistentListOf()
         )
 
         val WeatherForecastSep = MailboxItemUiModel(
@@ -274,7 +296,8 @@ object MailboxItemUiModelPreviewData {
             expiryInformation = ExpiryInformationUiModel.NoExpiry,
             shouldShowAttachmentIcon = true,
             shouldShowCalendarIcon = false,
-            shouldOpenInComposer = false
+            shouldOpenInComposer = false,
+            attachments = persistentListOf()
         )
     }
 }

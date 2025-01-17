@@ -50,6 +50,9 @@ import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.LabelType
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.ExpiryInformationUiModel
 import ch.protonmail.android.mailmailbox.presentation.mailbox.usecase.GetMailboxItemLocationIcon
+import ch.protonmail.android.mailmessage.domain.model.AttachmentId
+import ch.protonmail.android.mailmessage.domain.model.AttachmentMetadata
+import ch.protonmail.android.mailmessage.domain.model.MimeTypeCategory
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -101,13 +104,18 @@ class MailboxItemUiModelMapperTest {
         every { this@mockk.toUiModel(any()) } returns ExpiryInformationUiModel.NoExpiry
     }
 
+    private val attachmentMetadataUiModelMapper: AttachmentMetadataUiModelMapper = mockk {
+        every { this@mockk.toUiModel(any()) } returns mockk()
+    }
+
     private val mapper = MailboxItemUiModelMapper(
         mailboxAvatarUiModelMapper = mailboxAvatarUiModelMapper,
         colorMapper = colorMapper,
         formatMailboxItemTime = formatMailboxItemTime,
         getMailboxItemLocationIcon = getMailboxItemLocationIcons,
         getParticipantsResolvedNames = getParticipantsResolvedNames,
-        expiryInformationUiModelMapper = expiryInformationUiModelMapper
+        expiryInformationUiModelMapper = expiryInformationUiModelMapper,
+        attachmentMetadataUiModelMapper = attachmentMetadataUiModelMapper
     )
 
     @BeforeTest
@@ -437,6 +445,39 @@ class MailboxItemUiModelMapperTest {
 
         // Then
         assertEquals(expectedExpiry, mailboxItemUiModel.expiryInformation)
+    }
+
+    @Test
+    fun `when mailbox item has attachments, they are correctly mapped to the UI model`() = runTest {
+        // Given
+        val attachments = listOf(
+            AttachmentMetadata(
+                id = AttachmentId("123"), name = "File1.pdf", size = 1024L, mimeTypeCategory = MimeTypeCategory.Pdf
+            ),
+            AttachmentMetadata(
+                id = AttachmentId("456"), name = "File2.png", size = 2048L, mimeTypeCategory = MimeTypeCategory.Image
+            )
+        )
+        val mailboxItem = buildMailboxItem(attachments = attachments)
+        val expectedUiModels = attachments.map { attachmentMetadataUiModelMapper.toUiModel(it) }
+
+        // When
+        val actual = mapper.toUiModel(userId, mailboxItem, defaultFolderColorSettings, false)
+
+        // Then
+        assertEquals(expectedUiModels, actual.attachments)
+    }
+
+    @Test
+    fun `when mailbox item has no attachments, UI model attachments list should be empty`() = runTest {
+        // Given
+        val mailboxItem = buildMailboxItem(attachments = emptyList())
+
+        // When
+        val actual = mapper.toUiModel(userId, mailboxItem, defaultFolderColorSettings, false)
+
+        // Then
+        assertTrue(actual.attachments.isEmpty())
     }
 
 }

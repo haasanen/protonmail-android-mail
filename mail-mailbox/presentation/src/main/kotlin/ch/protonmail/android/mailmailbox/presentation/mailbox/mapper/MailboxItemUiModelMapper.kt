@@ -50,7 +50,8 @@ class MailboxItemUiModelMapper @Inject constructor(
     private val formatMailboxItemTime: FormatShortTime,
     private val getMailboxItemLocationIcon: GetMailboxItemLocationIcon,
     private val getParticipantsResolvedNames: GetParticipantsResolvedNames,
-    private val expiryInformationUiModelMapper: ExpiryInformationUiModelMapper
+    private val expiryInformationUiModelMapper: ExpiryInformationUiModelMapper,
+    private val attachmentMetadataUiModelMapper: AttachmentMetadataUiModelMapper
 ) : Mapper<MailboxItem, MailboxItemUiModel> {
 
     @Suppress("LongParameterList")
@@ -83,7 +84,8 @@ class MailboxItemUiModelMapper @Inject constructor(
             expiryInformation = expiryInformationUiModelMapper.toUiModel(mailboxItem.expirationTime),
             shouldShowAttachmentIcon = mailboxItem.hasNonCalendarAttachments,
             shouldShowCalendarIcon = hasCalendarAttachment(mailboxItem),
-            shouldOpenInComposer = false
+            shouldOpenInComposer = false,
+            attachments = mailboxItem.attachments.map(attachmentMetadataUiModelMapper::toUiModel).toImmutableList()
         )
     }
 

@@ -43,6 +43,7 @@ import ch.protonmail.android.maillabel.domain.model.Label
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.sample.LabelSample
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.ExpiryInformationUiModel
+import ch.protonmail.android.mailmessage.domain.model.AttachmentMetadata
 import ch.protonmail.android.mailmailbox.R.string as mailboxStrings
 
 object MailboxTestData {
@@ -73,7 +74,8 @@ object MailboxTestData {
         hasAttachments: Boolean = false,
         expirationTime: Long = 0,
         calendarAttachmentCount: Int = 0,
-        exclusiveLocation: ExclusiveLocation = ExclusiveLocation.System(SystemLabelId.Sent, LabelId("1"))
+        exclusiveLocation: ExclusiveLocation = ExclusiveLocation.System(SystemLabelId.Sent, LabelId("1")),
+        attachments: List<AttachmentMetadata> = emptyList()
     ) = MailboxItem(
         type = type,
         id = id,
@@ -95,7 +97,8 @@ object MailboxTestData {
         expirationTime = expirationTime,
         calendarAttachmentCount = calendarAttachmentCount,
         avatarInformation = AvatarInformationSample.avatarSample,
-        exclusiveLocation = exclusiveLocation
+        exclusiveLocation = exclusiveLocation,
+        attachments = attachments
     )
 
     private fun buildMessageMailboxItem(
@@ -106,7 +109,8 @@ object MailboxTestData {
         isForwarded: Boolean = false,
         labelIds: List<LabelId> = emptyList(),
         labels: List<Label> = emptyList(),
-        exclusiveLocation: ExclusiveLocation = ExclusiveLocation.System(SystemLabelId.Inbox, LabelId("1"))
+        exclusiveLocation: ExclusiveLocation = ExclusiveLocation.System(SystemLabelId.Inbox, LabelId("1")),
+        attachments: List<AttachmentMetadata> = emptyList()
     ) = MailboxItem(
         type = MailboxItemType.Message,
         id = id,
@@ -128,7 +132,8 @@ object MailboxTestData {
         expirationTime = 0,
         calendarAttachmentCount = 0,
         avatarInformation = AvatarInformationSample.avatarSample,
-        exclusiveLocation = exclusiveLocation
+        exclusiveLocation = exclusiveLocation,
+        attachments = attachments
     )
 
     private fun buildConversationMailboxItem(id: String) = MailboxItem(
@@ -152,7 +157,8 @@ object MailboxTestData {
         expirationTime = 0,
         calendarAttachmentCount = 0,
         avatarInformation = AvatarInformationSample.avatarSample,
-        exclusiveLocation = ExclusiveLocation.System(SystemLabelId.Inbox, LabelId("1"))
+        exclusiveLocation = ExclusiveLocation.System(SystemLabelId.Inbox, LabelId("1")),
+        attachments = emptyList()
     )
 
 }
@@ -218,6 +224,7 @@ object MailboxItemUiModelTestData {
         expiryInformation = ExpiryInformationUiModel.NoExpiry,
         shouldShowAttachmentIcon = false,
         shouldShowCalendarIcon = false,
-        shouldOpenInComposer = shouldOpenInComposer
+        shouldOpenInComposer = shouldOpenInComposer,
+        attachments = persistentListOf()
     )
 }

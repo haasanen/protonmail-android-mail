@@ -24,6 +24,9 @@ import ch.protonmail.android.testdata.label.LabelTestData
 import ch.protonmail.android.testdata.message.MessageTestData
 import ch.protonmail.android.testdata.user.UserIdTestData.userId
 import ch.protonmail.android.maillabel.domain.model.LabelType
+import ch.protonmail.android.mailmessage.domain.model.AttachmentId
+import ch.protonmail.android.mailmessage.domain.model.AttachmentMetadata
+import ch.protonmail.android.mailmessage.domain.model.MimeTypeCategory
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -130,6 +133,24 @@ class MessageMailboxItemMapperTest {
         val mailboxItem = mapper.toMailboxItem(message)
         // Then
         assertEquals(calendarAttachmentCount, mailboxItem.calendarAttachmentCount)
+    }
+
+    @Test
+    fun `when mapping message, attachments are preserved in the mailbox item`() {
+        // Given
+        val attachments = listOf(
+            AttachmentMetadata(AttachmentId("1"), MimeTypeCategory.Pdf, "File1.pdf", 1024L),
+            AttachmentMetadata(AttachmentId("2"), MimeTypeCategory.Image, "Image1.png", 2048L)
+        )
+        val message = MessageTestData.buildMessage(
+            userId,
+            "id",
+            attachments = attachments
+        )
+        // When
+        val mailboxItem = mapper.toMailboxItem(message)
+        // Then
+        assertEquals(attachments, mailboxItem.attachments)
     }
 
     private fun buildLabel(value: String) = LabelTestData.buildLabel(

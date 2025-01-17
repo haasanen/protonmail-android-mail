@@ -43,6 +43,7 @@ data class MailboxItemUiModel(
     val numMessages: Int?,
     val isStarred: Boolean,
     val locations: ImmutableList<MailboxItemLocationUiModel>,
+    val attachments: ImmutableList<AttachmentMetadataUiModel>,
     val expiryInformation: ExpiryInformationUiModel,
     val shouldShowAttachmentIcon: Boolean,
     val shouldShowCalendarIcon: Boolean,
