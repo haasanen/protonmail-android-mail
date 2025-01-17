@@ -281,6 +281,7 @@ object MessageSample {
         numAttachments = numAttachments,
         flags = 0,
         attachmentCount = attachmentCount,
+        attachments = listOf(AttachmentMetadataSamples.Zip),
         customLabels = customLabels,
         avatarInformation = AvatarInformationSample.avatarSample,
         exclusiveLocation = exclusiveLocation

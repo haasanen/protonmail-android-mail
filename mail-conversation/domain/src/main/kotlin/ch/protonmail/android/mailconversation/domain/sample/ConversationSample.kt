@@ -31,6 +31,7 @@ import ch.protonmail.android.mailmessage.domain.model.AttachmentCount
 import ch.protonmail.android.mailmessage.domain.model.Recipient
 import ch.protonmail.android.mailmessage.domain.model.Sender
 import ch.protonmail.android.mailmessage.domain.sample.AttachmentCountSample
+import ch.protonmail.android.mailmessage.domain.sample.AttachmentMetadataSamples
 import ch.protonmail.android.mailmessage.domain.sample.RecipientSample
 import me.proton.core.domain.entity.UserId
 
@@ -97,6 +98,7 @@ object ConversationSample {
         numUnread = 0,
         numAttachments = 0,
         attachmentCount = attachmentCount,
+        attachments = listOf(AttachmentMetadataSamples.Pdf),
         isStarred = false,
         time = 0,
         size = 0,

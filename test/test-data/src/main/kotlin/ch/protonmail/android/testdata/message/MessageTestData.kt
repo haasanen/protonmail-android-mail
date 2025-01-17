@@ -40,6 +40,7 @@ import ch.protonmail.android.testdata.user.UserIdTestData.userId
 import me.proton.core.domain.entity.UserId
 import ch.protonmail.android.maillabel.domain.model.Label
 import ch.protonmail.android.maillabel.domain.model.LabelId
+import ch.protonmail.android.mailmessage.domain.model.AttachmentMetadata
 import me.proton.core.user.domain.entity.AddressId
 
 object MessageTestData {
@@ -192,7 +193,8 @@ object MessageTestData {
         flags: Long = 0,
         customLabels: List<Label> = emptyList(),
         isStarred: Boolean = false,
-        exclusiveLocation: ExclusiveLocation = ExclusiveLocation.System(AllMail, LabelId("100"))
+        exclusiveLocation: ExclusiveLocation = ExclusiveLocation.System(AllMail, LabelId("100")),
+        attachments: List<AttachmentMetadata> = emptyList()
     ) = Message(
         messageId = MessageId(id),
         conversationId = conversationId,
@@ -216,6 +218,7 @@ object MessageTestData {
         attachmentCount = attachmentCount,
         customLabels = customLabels,
         avatarInformation = AvatarInformationSample.avatarSample,
-        exclusiveLocation = exclusiveLocation
+        exclusiveLocation = exclusiveLocation,
+        attachments = attachments
     )
 }

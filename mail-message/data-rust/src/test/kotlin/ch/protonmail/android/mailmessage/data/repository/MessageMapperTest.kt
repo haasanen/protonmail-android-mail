@@ -19,17 +19,24 @@
 package ch.protonmail.android.mailmessage.data.repository
 
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalAddressId
+import ch.protonmail.android.mailcommon.datarust.mapper.LocalAttachmentId
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalAttachmentMetadata
+import ch.protonmail.android.mailcommon.datarust.mapper.LocalAttachmentMimeType
+import ch.protonmail.android.mailcommon.datarust.mapper.LocalAvatarInformation
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalConversationId
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalExclusiveLocationSystem
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageId
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageMetadata
+import ch.protonmail.android.mailcommon.datarust.mapper.LocalMimeTypeCategory
 import ch.protonmail.android.maillabel.data.mapper.toExclusiveLocation
 import ch.protonmail.android.maillabel.data.mapper.toLabel
 import ch.protonmail.android.mailmessage.data.mapper.toAddressId
+import ch.protonmail.android.mailmessage.data.mapper.toAttachmentId
+import ch.protonmail.android.mailmessage.data.mapper.toAttachmentMetadata
 import ch.protonmail.android.mailmessage.data.mapper.toConversationId
 import ch.protonmail.android.mailmessage.data.mapper.toMessage
+import ch.protonmail.android.mailmessage.data.mapper.toMimeTypeCategory
 import ch.protonmail.android.mailmessage.data.mapper.toParticipant
 import ch.protonmail.android.mailmessage.data.mapper.toRecipient
 import ch.protonmail.android.mailmessage.domain.model.AttachmentCount
@@ -39,6 +46,7 @@ import junit.framework.TestCase.assertFalse
 import junit.framework.TestCase.assertTrue
 import org.junit.Test
 import uniffi.proton_mail_uniffi.AvatarInformation
+import uniffi.proton_mail_uniffi.Disposition
 import uniffi.proton_mail_uniffi.InlineCustomLabel
 import uniffi.proton_mail_uniffi.LabelColor
 import uniffi.proton_mail_uniffi.MessageFlags
@@ -100,6 +108,32 @@ class MessageMapperTest {
         assertEquals(address, recipient.address)
         assertEquals(name, recipient.name)
         assertTrue(recipient.isProton)
+    }
+
+    @Test
+    fun `LocalAttachmentMetadata toAttachmentMetadata should convert correctly`() {
+        // Given
+        val localAttachmentId = LocalAttachmentId(1uL)
+        val name = "Test Attachment"
+        val size = 1024uL
+        val mimeType = LocalAttachmentMimeType("application/pdf", LocalMimeTypeCategory.PDF)
+
+        val localAttachmentMetadata = LocalAttachmentMetadata(
+            id = localAttachmentId,
+            name = name,
+            size = size,
+            mimeType = mimeType,
+            disposition = Disposition.ATTACHMENT
+        )
+
+        // When
+        val attachmentMetadata = localAttachmentMetadata.toAttachmentMetadata()
+
+        // Then
+        assertEquals(localAttachmentId.toAttachmentId(), attachmentMetadata.id)
+        assertEquals(name, attachmentMetadata.name)
+        assertEquals(size.toLong(), attachmentMetadata.size)
+        assertEquals(mimeType.category.toMimeTypeCategory(), attachmentMetadata.mimeTypeCategory)
     }
 
     @Test
@@ -216,6 +250,69 @@ class MessageMapperTest {
         assertEquals(flags.value.toLong(), message.flags)
         assertEquals(AttachmentCount(numAttachments.toInt()), message.attachmentCount)
         assertEquals(exclusiveLocation.toExclusiveLocation(), message.exclusiveLocation)
+    }
+
+    @Test
+    fun `LocalMessageMetadata toMessage should include attachments correctly`() {
+        // Given
+        val localAttachmentId1 = LocalAttachmentId(1uL)
+        val localAttachmentId2 = LocalAttachmentId(2uL)
+        val attachment1 = LocalAttachmentMetadata(
+            id = localAttachmentId1,
+            name = "Attachment1.pdf",
+            size = 2048uL,
+            mimeType = LocalAttachmentMimeType("application/pdf", LocalMimeTypeCategory.PDF),
+            disposition = Disposition.ATTACHMENT
+        )
+        val attachment2 = LocalAttachmentMetadata(
+            id = localAttachmentId2,
+            name = "Attachment2.txt",
+            size = 1024uL,
+            mimeType = LocalAttachmentMimeType("plain/text", LocalMimeTypeCategory.TEXT),
+            disposition = Disposition.ATTACHMENT
+        )
+        val localMessageMetadata = LocalMessageMetadata(
+            id = LocalMessageId(1uL),
+            conversationId = LocalConversationId(99uL),
+            time = 1625234000000uL,
+            size = 4096uL,
+            displayOrder = 1uL,
+            customLabels = emptyList(),
+            subject = "Test Subject",
+            unread = true,
+            sender = MessageSender(
+                address = "sender@test.com",
+                name = "Sender",
+                isProton = true,
+                displaySenderImage = false,
+                isSimpleLogin = false,
+                bimiSelector = "bimiSelector"
+            ),
+            toList = emptyList(),
+            ccList = emptyList(),
+            bccList = emptyList(),
+            expirationTime = 1625235000000u,
+            snoozeTime = 1625888000000uL,
+            isReplied = false,
+            isRepliedAll = false,
+            isForwarded = false,
+            addressId = LocalAddressId(1uL),
+            numAttachments = 2u,
+            flags = MessageFlags(1897uL),
+            starred = false,
+            attachmentsMetadata = listOf(attachment1, attachment2),
+            exclusiveLocation = null,
+            replyTos = emptyList(),
+            avatar = LocalAvatarInformation("S", "blue")
+        )
+
+        // When
+        val message = localMessageMetadata.toMessage()
+
+        // Then
+        assertEquals(2, message.attachments.size)
+        assertEquals(attachment1.toAttachmentMetadata(), message.attachments[0])
+        assertEquals(attachment2.toAttachmentMetadata(), message.attachments[1])
     }
 }
 

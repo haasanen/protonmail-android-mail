@@ -24,9 +24,11 @@ import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailconversation.domain.entity.Conversation
 import ch.protonmail.android.maillabel.data.mapper.toExclusiveLocation
 import ch.protonmail.android.maillabel.data.mapper.toLabel
+import ch.protonmail.android.mailmessage.data.mapper.toAttachmentMetadata
 import ch.protonmail.android.mailmessage.data.mapper.toAvatarInformation
 import ch.protonmail.android.mailmessage.data.mapper.toParticipant
 import ch.protonmail.android.mailmessage.domain.model.AttachmentCount
+import uniffi.proton_mail_uniffi.Disposition
 
 fun LocalConversation.toConversation() = Conversation(
     conversationId = this.id.toConversationId(),
@@ -39,6 +41,9 @@ fun LocalConversation.toConversation() = Conversation(
     numUnread = this.numUnread.toInt(),
     numAttachments = this.numAttachments.toInt(),
     attachmentCount = AttachmentCount(this.numAttachments.toInt()),
+    attachments = this.attachmentsMetadata
+        .filter { it.disposition == Disposition.ATTACHMENT }
+        .map { it.toAttachmentMetadata() },
     isStarred = this.isStarred,
     time = time.toLong(),
     size = size.toLong(),

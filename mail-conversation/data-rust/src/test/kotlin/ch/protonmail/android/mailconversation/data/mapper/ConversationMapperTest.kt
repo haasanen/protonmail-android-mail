@@ -27,6 +27,7 @@ import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.maillabel.data.mapper.toExclusiveLocation
 import ch.protonmail.android.maillabel.data.mapper.toLabel
 import ch.protonmail.android.maillabel.domain.model.LabelId
+import ch.protonmail.android.mailmessage.data.mapper.toAttachmentMetadata
 import ch.protonmail.android.mailmessage.data.mapper.toParticipant
 import ch.protonmail.android.mailmessage.domain.model.AttachmentCount
 import org.junit.Test
@@ -81,14 +82,12 @@ class ConversationMapperTest {
             InlineCustomLabel(LocalLabelId(1uL), "Test Label", LabelColor("0xFF0000"))
         )
         val starred = false
-        val attachments = listOf(
-            LocalAttachmentMetadata(
-                id = Id(123uL),
-                name = "file.txt",
-                mimeType = AttachmentMimeType("text/plain", MimeTypeCategory.TEXT),
-                size = 123uL,
-                disposition = Disposition.ATTACHMENT
-            )
+        val attachment = LocalAttachmentMetadata(
+            id = Id(123uL),
+            name = "file.txt",
+            mimeType = AttachmentMimeType("text/plain", MimeTypeCategory.TEXT),
+            size = 123uL,
+            disposition = Disposition.ATTACHMENT
         )
         val avatarInformation = AvatarInformation("A", "blue")
         val exclusiveLocation = LocalExclusiveLocationSystem(
@@ -109,7 +108,7 @@ class ConversationMapperTest {
             time = time,
             customLabels = labels,
             isStarred = starred,
-            attachmentsMetadata = attachments,
+            attachmentsMetadata = listOf(attachment),
             displaySnoozeReminder = false,
             exclusiveLocation = exclusiveLocation,
             avatar = avatarInformation,
@@ -142,6 +141,8 @@ class ConversationMapperTest {
         assertEquals(time.toLong(), conversation.time)
         assertEquals(size.toLong(), conversation.size)
         assertEquals(exclusiveLocation.toExclusiveLocation(), conversation.exclusiveLocation)
+        assertEquals(attachment.toAttachmentMetadata(), conversation.attachments[0])
+
     }
 
     @Test

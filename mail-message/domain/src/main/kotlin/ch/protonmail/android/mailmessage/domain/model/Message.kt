@@ -56,6 +56,7 @@ data class Message(
     val numAttachments: Int,
     val flags: Long,
     val attachmentCount: AttachmentCount,
+    val attachments: List<AttachmentMetadata>,
     val customLabels: List<Label>,
     val avatarInformation: AvatarInformation,
     val exclusiveLocation: ExclusiveLocation

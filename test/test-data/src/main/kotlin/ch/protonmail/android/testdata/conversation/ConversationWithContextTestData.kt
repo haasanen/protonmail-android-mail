@@ -30,6 +30,7 @@ import ch.protonmail.android.maillabel.domain.model.Label
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.LabelType
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
+import ch.protonmail.android.mailmessage.domain.sample.AttachmentMetadataSamples
 
 object ConversationWithContextTestData {
 
@@ -114,7 +115,8 @@ object ConversationWithContextTestData {
         size = 0.toLong(),
         customLabels = labelIds.map { buildLabel(it) },
         avatarInformation = AvatarInformationSample.avatarSample,
-        exclusiveLocation = exclusiveLocation
+        exclusiveLocation = exclusiveLocation,
+        attachments = listOf(AttachmentMetadataSamples.Pdf)
     )
 
     private fun buildLabel(labelId: String) = Label(
