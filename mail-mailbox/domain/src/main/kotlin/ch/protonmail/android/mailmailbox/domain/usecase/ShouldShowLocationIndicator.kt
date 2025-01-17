@@ -18,7 +18,6 @@
 
 package ch.protonmail.android.mailmailbox.domain.usecase
 
-import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.maillabel.domain.model.toDynamicSystemMailLabel
@@ -27,8 +26,6 @@ import kotlinx.coroutines.flow.firstOrNull
 import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 
-@MissingRustApi
-// This use case could be deleted if Rust provides the information for a given location
 class ShouldShowLocationIndicator @Inject constructor(
     private val labelRepository: LabelRepository
 ) {
@@ -48,6 +45,7 @@ class ShouldShowLocationIndicator @Inject constructor(
     ): Boolean {
         val locationList = labelRepository.observeSystemLabels(userId).firstOrNull()?.filter {
             it.systemLabelId.labelId == SystemLabelId.AllMail.labelId ||
+                it.systemLabelId.labelId == SystemLabelId.AlmostAllMail.labelId ||
                 it.systemLabelId.labelId == SystemLabelId.Starred.labelId
         }?.toDynamicSystemMailLabel()
             ?.map { it.id }

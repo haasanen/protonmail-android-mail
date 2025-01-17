@@ -20,7 +20,6 @@ package ch.protonmail.android.mailmailbox.presentation.mailbox.usecase
 
 import androidx.compose.ui.graphics.Color
 import arrow.core.getOrElse
-import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.presentation.mapper.ColorMapper
 import ch.protonmail.android.maillabel.domain.SelectedMailLabelId
 import ch.protonmail.android.maillabel.domain.model.ExclusiveLocation
@@ -78,15 +77,10 @@ class GetMailboxItemLocationIcon @Inject constructor(
         }
     }
 
-    @MissingRustApi
     private suspend fun currentLocationShouldShowIcons(userId: UserId): Boolean {
         val currentLocation = selectedMailLabelId.flow.value
 
-        // Should show when starred, all mail or custom label
-        // Removed when introducing dynamic system folders.
-        // Now we would need to get mail labels to check for system folders Ids.
-        // which won't be done as we expect rust to expose the icons
-        // for a given item directly
+        // Should show when starred, all mail, almost all mail or custom label
         return shouldShowLocationIndicator(userId, currentLocation)
     }
 

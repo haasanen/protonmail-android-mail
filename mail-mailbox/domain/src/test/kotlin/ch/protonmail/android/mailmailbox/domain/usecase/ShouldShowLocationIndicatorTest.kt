@@ -43,7 +43,7 @@ class ShouldShowLocationIndicatorTest {
 
     private val shouldShowLocationIndicator = ShouldShowLocationIndicator(labelRepository)
 
-    private val exclusiveSystemLabels = listOf(
+    private val systemLabels = listOf(
         LabelWithSystemLabelId(
             buildLabel(id = SystemLabelId.Starred.labelId.id, type = LabelType.SystemFolder),
             SystemLabelId.Starred
@@ -51,6 +51,10 @@ class ShouldShowLocationIndicatorTest {
         LabelWithSystemLabelId(
             buildLabel(id = SystemLabelId.AllMail.labelId.id, type = LabelType.SystemFolder),
             SystemLabelId.AllMail
+        ),
+        LabelWithSystemLabelId(
+            buildLabel(id = SystemLabelId.AlmostAllMail.labelId.id, type = LabelType.SystemFolder),
+            SystemLabelId.AlmostAllMail
         )
     )
 
@@ -81,12 +85,10 @@ class ShouldShowLocationIndicatorTest {
     }
 
     @Test
-    fun `should return true when current system location is in exclusive system labels`() = runTest {
+    fun `should return true when current system location is starred`() = runTest {
         // Given
         val currentLocation = MailLabelId.System(SystemLabelId.Starred.labelId)
-        coEvery { labelRepository.observeSystemLabels(any()) } returns flowOf(
-            exclusiveSystemLabels
-        )
+        coEvery { labelRepository.observeSystemLabels(any()) } returns flowOf(systemLabels)
 
         // When
         val result = shouldShowLocationIndicator.invoke(userId, currentLocation)
@@ -94,6 +96,32 @@ class ShouldShowLocationIndicatorTest {
         // Then
         assertTrue(result)
         verify { labelRepository.observeSystemLabels(userId) }
+    }
+
+    @Test
+    fun `should return true when current system location is AllMail`() = runTest {
+        // Given
+        val currentLocation = MailLabelId.System(SystemLabelId.AllMail.labelId)
+        coEvery { labelRepository.observeSystemLabels(any()) } returns flowOf(systemLabels)
+
+        // When
+        val result = shouldShowLocationIndicator.invoke(userId, currentLocation)
+
+        // Then
+        assertTrue(result)
+    }
+
+    @Test
+    fun `should return true when current system location is AlmostAllMail`() = runTest {
+        // Given
+        val currentLocation = MailLabelId.System(SystemLabelId.AlmostAllMail.labelId)
+        coEvery { labelRepository.observeSystemLabels(any()) } returns flowOf(systemLabels)
+
+        // When
+        val result = shouldShowLocationIndicator.invoke(userId, currentLocation)
+
+        // Then
+        assertTrue(result)
     }
 
 }
