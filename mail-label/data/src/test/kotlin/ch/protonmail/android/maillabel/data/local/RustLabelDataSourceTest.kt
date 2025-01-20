@@ -47,7 +47,6 @@ import kotlin.test.assertEquals
 
 class RustLabelDataSourceTest {
 
-
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
 
@@ -113,7 +112,9 @@ class RustLabelDataSourceTest {
         val firstUserId = UserIdTestData.userId
         val secondUserId = UserIdTestData.userId1
         val expected = listOf(LocalLabelTestData.localSystemLabelWithCount)
-        val watcherMock = mockk<WatchHandle>()
+        val watcherMock = mockk<WatchHandle> {
+            coEvery { this@mockk.destroy() } just Runs
+        }
         val firstUserSessionMock = mockk<MailUserSessionWrapper>()
         val secondUserSessionMock = mockk<MailUserSessionWrapper>()
         val sidebarMock = mockk<SidebarWrapper> {
@@ -186,7 +187,9 @@ class RustLabelDataSourceTest {
         val firstUserId = UserIdTestData.userId
         val secondUserId = UserIdTestData.userId1
         val expected = listOf(LocalLabelTestData.localMessageLabelWithCount)
-        val watcherMock = mockk<WatchHandle>()
+        val watcherMock = mockk<WatchHandle> {
+            coEvery { this@mockk.destroy() } just Runs
+        }
         val firstUserSessionMock = mockk<MailUserSessionWrapper>()
         val secondUserSessionMock = mockk<MailUserSessionWrapper>()
         val sidebarMock = mockk<SidebarWrapper> {
@@ -256,7 +259,9 @@ class RustLabelDataSourceTest {
         val firstUserId = UserIdTestData.userId
         val secondUserId = UserIdTestData.userId1
         val expected = listOf(LocalLabelTestData.localMessageFolderWithCount)
-        val watcherMock = mockk<WatchHandle>()
+        val watcherMock = mockk<WatchHandle> {
+            coEvery { this@mockk.destroy() } just Runs
+        }
         val firstUserSessionMock = mockk<MailUserSessionWrapper>()
         val secondUserSessionMock = mockk<MailUserSessionWrapper>()
         val sidebarMock = mockk<SidebarWrapper> {

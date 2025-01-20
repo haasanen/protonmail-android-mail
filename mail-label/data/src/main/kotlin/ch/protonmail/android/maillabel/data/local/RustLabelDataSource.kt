@@ -18,7 +18,6 @@
 
 package ch.protonmail.android.maillabel.data.local
 
-import java.lang.ref.WeakReference
 import arrow.core.Either
 import arrow.core.left
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
@@ -71,9 +70,9 @@ class RustLabelDataSource @Inject constructor(
         .filterNotNull()
 
     private var sidebarWithUserId: SidebarWithUserId? = null
-    private var systemLabelsWatchHandle: WeakReference<WatchHandle>? = null
-    private var messageLabelsWatchHandle: WeakReference<WatchHandle>? = null
-    private var messageFoldersWatchHandle: WeakReference<WatchHandle>? = null
+    private var systemLabelsWatchHandle: WatchHandle? = null
+    private var messageLabelsWatchHandle: WatchHandle? = null
+    private var messageFoldersWatchHandle: WatchHandle? = null
 
     private val customLabelsUpdatedCallback = object : LiveQueryCallback {
         override fun onUpdate() {
@@ -155,7 +154,7 @@ class RustLabelDataSource @Inject constructor(
 
             sidebar.watchLabels(LabelType.LABEL, customLabelsUpdatedCallback)
                 .onLeft { Timber.e("rust-label: failed to watch labels! $it") }
-                .onRight { messageLabelsWatchHandle = WeakReference(it) }
+                .onRight { messageLabelsWatchHandle = it }
 
             Timber.v("rust-label: Setting initial value for labels: ${sidebar.customLabels()}")
             mutableMessageLabelsFlow.value = sidebar.customLabels().getOrNull()
@@ -171,7 +170,7 @@ class RustLabelDataSource @Inject constructor(
 
             sidebar.watchLabels(LabelType.FOLDER, foldersUpdatedCallback)
                 .onLeft { Timber.e("rust-label: failed to watch folders! $it") }
-                .onRight { messageFoldersWatchHandle = WeakReference(it) }
+                .onRight { messageFoldersWatchHandle = it }
 
             Timber.v("rust-label: Setting initial value for folders: ${sidebar.allCustomFolders()}")
             mutableMessageFoldersFlow.value = sidebar.allCustomFolders().getOrNull()
@@ -187,7 +186,7 @@ class RustLabelDataSource @Inject constructor(
 
             sidebar.watchLabels(LabelType.SYSTEM, systemLabelsUpdatedCallback)
                 .onLeft { Timber.e("rust-label: failed to watch system labels! $it") }
-                .onRight { systemLabelsWatchHandle = WeakReference(it) }
+                .onRight { systemLabelsWatchHandle = it }
 
             Timber.v("rust-label: Setting initial value for system folders ${sidebar.systemLabels()}")
             mutableSystemLabelsFlow.value = sidebar.systemLabels().getOrNull()
@@ -223,19 +222,19 @@ class RustLabelDataSource @Inject constructor(
 
     private fun destroySystemLabelsWatcher() {
         Timber.v("rust-label: destroySystemLabelsLiveQuery")
-        systemLabelsWatchHandle?.clear()
+        systemLabelsWatchHandle?.destroy()
         systemLabelsWatchHandle = null
     }
 
     private fun destroyMessageLabelsWatcher() {
         Timber.v("rust-label: label: destroyMessageLabelsLiveQuery")
-        messageLabelsWatchHandle?.clear()
+        messageLabelsWatchHandle?.destroy()
         messageLabelsWatchHandle = null
     }
 
     private fun destroyMessageFoldersWatcher() {
         Timber.v("rust-label: label: destroyMessageFoldersLiveQuery")
-        messageFoldersWatchHandle?.clear()
+        messageFoldersWatchHandle?.destroy()
         messageFoldersWatchHandle = null
     }
 
