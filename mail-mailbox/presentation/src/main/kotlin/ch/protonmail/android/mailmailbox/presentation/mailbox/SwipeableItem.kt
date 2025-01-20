@@ -31,6 +31,9 @@ import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
@@ -42,7 +45,9 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.model.SwipeActions
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.mailcommon.presentation.compose.SwipeThreshold
+import ch.protonmail.android.mailmailbox.presentation.mailbox.SwipeActions.SwipeActionResetTimeout
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import me.proton.core.mailsettings.domain.entity.SwipeAction
 
@@ -54,22 +59,28 @@ fun SwipeableItem(
     swipingEnabled: Boolean = true,
     content: @Composable () -> Unit
 ) {
+    var isActionExecuted by remember { mutableStateOf(false) }
+
     val swipeState = rememberSwipeToDismissBoxState(
         confirmValueChange = { dismissValue ->
-            when (dismissValue) {
-                SwipeToDismissBoxValue.StartToEnd -> {
-                    swipeActionsUiModel?.start?.swipeAction?.let {
-                        callbackForSwipeAction(it, swipeActionCallbacks)()
+            if (!isActionExecuted) {
+                when (dismissValue) {
+                    SwipeToDismissBoxValue.StartToEnd -> {
+                        swipeActionsUiModel?.start?.swipeAction?.let {
+                            isActionExecuted = true
+                            callbackForSwipeAction(it, swipeActionCallbacks)()
+                        }
                     }
-                }
-                SwipeToDismissBoxValue.EndToStart -> {
-                    swipeActionsUiModel?.end?.swipeAction?.let {
-                        callbackForSwipeAction(it, swipeActionCallbacks)()
+                    SwipeToDismissBoxValue.EndToStart -> {
+                        swipeActionsUiModel?.end?.swipeAction?.let {
+                            isActionExecuted = true
+                            callbackForSwipeAction(it, swipeActionCallbacks)()
+                        }
                     }
+                    else -> false
                 }
-                else -> false
             }
-            return@rememberSwipeToDismissBoxState true
+            true
         },
         positionalThreshold = SwipeThreshold.defaultPositionalThreshold()
     )
@@ -88,6 +99,10 @@ fun SwipeableItem(
     if (swipeState.currentValue != SwipeToDismissBoxValue.Settled) {
         LaunchedEffect(swipeState) {
             swipeState.reset()
+
+            // Reset the action execution flag after the animation completes
+            delay(SwipeActionResetTimeout)
+            isActionExecuted = false
         }
     }
 
@@ -172,6 +187,8 @@ fun callbackForSwipeAction(action: SwipeAction, swipeActionCallbacks: SwipeActio
 }
 
 object SwipeActions {
+    const val SwipeActionResetTimeout = 500L
+
     data class Actions(
         val onTrash: () -> Unit,
         val onSpam: () -> Unit,
