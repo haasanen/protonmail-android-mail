@@ -23,6 +23,7 @@ import arrow.core.left
 import arrow.core.right
 import arrow.core.toNonEmptyListOrNull
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalAddressId
+import ch.protonmail.android.mailcommon.datarust.mapper.LocalAttachmentDisposition
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalAttachmentId
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalAttachmentMetadata
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalAvatarInformation
@@ -51,7 +52,6 @@ import ch.protonmail.android.mailmessage.domain.model.Recipient
 import me.proton.core.user.domain.entity.AddressId
 import timber.log.Timber
 import uniffi.proton_mail_common.BodyOutput
-import uniffi.proton_mail_uniffi.Disposition
 import uniffi.proton_mail_uniffi.MessageRecipient
 import uniffi.proton_mail_uniffi.MessageSender
 
@@ -97,7 +97,7 @@ fun LocalMessageMetadata.toMessage(): Message {
         numAttachments = this.numAttachments.toInt(),
         flags = this.flags.value.toLong(),
         attachmentCount = AttachmentCount(this.numAttachments.toInt()),
-        attachments = attachmentsMetadata.filter { it.disposition == Disposition.ATTACHMENT }
+        attachments = attachmentsMetadata.filter { it.disposition == LocalAttachmentDisposition.ATTACHMENT }
             .map { it.toAttachmentMetadata() },
         customLabels = customLabels.map { it.toLabel() },
         avatarInformation = this.avatar.toAvatarInformation(),

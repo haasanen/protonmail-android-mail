@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.mailconversation.data.mapper
 
+import ch.protonmail.android.mailcommon.datarust.mapper.LocalAttachmentDisposition
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalConversation
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalConversationId
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
@@ -28,7 +29,6 @@ import ch.protonmail.android.mailmessage.data.mapper.toAttachmentMetadata
 import ch.protonmail.android.mailmessage.data.mapper.toAvatarInformation
 import ch.protonmail.android.mailmessage.data.mapper.toParticipant
 import ch.protonmail.android.mailmessage.domain.model.AttachmentCount
-import uniffi.proton_mail_uniffi.Disposition
 
 fun LocalConversation.toConversation() = Conversation(
     conversationId = this.id.toConversationId(),
@@ -42,7 +42,7 @@ fun LocalConversation.toConversation() = Conversation(
     numAttachments = this.numAttachments.toInt(),
     attachmentCount = AttachmentCount(this.numAttachments.toInt()),
     attachments = this.attachmentsMetadata
-        .filter { it.disposition == Disposition.ATTACHMENT }
+        .filter { it.disposition == LocalAttachmentDisposition.ATTACHMENT }
         .map { it.toAttachmentMetadata() },
     isStarred = this.isStarred,
     time = time.toLong(),
