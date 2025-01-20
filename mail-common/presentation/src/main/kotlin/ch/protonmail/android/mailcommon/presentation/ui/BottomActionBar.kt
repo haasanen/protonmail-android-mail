@@ -39,6 +39,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
+import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
+import ch.protonmail.android.design.compose.theme.ProtonDimens
+import ch.protonmail.android.design.compose.theme.ProtonTheme
+import ch.protonmail.android.design.compose.theme.ProtonTypography
+import ch.protonmail.android.design.compose.theme.bodyLargeNorm
 import ch.protonmail.android.mailcommon.domain.model.Action
 import ch.protonmail.android.mailcommon.presentation.AdaptivePreviews
 import ch.protonmail.android.mailcommon.presentation.R
@@ -47,11 +52,6 @@ import ch.protonmail.android.mailcommon.presentation.model.BottomBarState
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcommon.presentation.model.string
 import ch.protonmail.android.mailcommon.presentation.previewdata.BottomActionBarPreviewProvider
-import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
-import ch.protonmail.android.design.compose.theme.ProtonDimens
-import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.ProtonTypography
-import ch.protonmail.android.design.compose.theme.bodyLargeNorm
 import timber.log.Timber
 
 @Composable
@@ -64,13 +64,9 @@ fun BottomActionBar(
     Column(
         modifier = modifier
             .shadow(
-                elevation = ProtonDimens.ShadowElevation.Small,
-                ambientColor = ProtonTheme.colors.shadowNorm.copy(
-                    alpha = MailDimens.MessageDetailsBottomBar.shadowColorAlpha
-                ),
-                spotColor = ProtonTheme.colors.shadowNorm.copy(
-                    alpha = MailDimens.MessageDetailsBottomBar.shadowColorAlpha
-                )
+                elevation = ProtonDimens.ShadowElevation.Large,
+                ambientColor = ProtonTheme.colors.shadowNorm,
+                spotColor = ProtonTheme.colors.shadowNorm
             )
             .background(ProtonTheme.colors.backgroundNorm)
     ) {

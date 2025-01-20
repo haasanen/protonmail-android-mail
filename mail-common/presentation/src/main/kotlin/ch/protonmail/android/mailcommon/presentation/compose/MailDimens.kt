@@ -142,9 +142,4 @@ object MailDimens {
         val CollapseExpandButtonSize = 16.dp
         val DetailsTitleWidth = 34.dp
     }
-
-    object MessageDetailsBottomBar {
-
-        const val shadowColorAlpha = 0.06f
-    }
 }
