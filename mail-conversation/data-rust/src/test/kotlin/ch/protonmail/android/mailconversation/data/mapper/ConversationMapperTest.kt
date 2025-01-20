@@ -27,123 +27,132 @@ import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.maillabel.data.mapper.toExclusiveLocation
 import ch.protonmail.android.maillabel.data.mapper.toLabel
 import ch.protonmail.android.maillabel.domain.model.LabelId
-import ch.protonmail.android.mailmessage.data.mapper.toAttachmentMetadata
 import ch.protonmail.android.mailmessage.data.mapper.toParticipant
-import ch.protonmail.android.mailmessage.domain.model.AttachmentCount
+import ch.protonmail.android.mailmessage.data.sample.LocalAttachmentMetadataSample
+import ch.protonmail.android.mailmessage.domain.model.MimeTypeCategory
+import junit.framework.TestCase.assertFalse
+import junit.framework.TestCase.assertTrue
 import org.junit.Test
-import uniffi.proton_mail_uniffi.AttachmentMimeType
 import uniffi.proton_mail_uniffi.AvatarInformation
-import uniffi.proton_mail_uniffi.Disposition
-import uniffi.proton_mail_uniffi.Id
 import uniffi.proton_mail_uniffi.InlineCustomLabel
 import uniffi.proton_mail_uniffi.LabelColor
 import uniffi.proton_mail_uniffi.MessageRecipient
 import uniffi.proton_mail_uniffi.MessageSender
-import uniffi.proton_mail_uniffi.MimeTypeCategory
 import uniffi.proton_mail_uniffi.SystemLabel
 import kotlin.test.assertEquals
-import kotlin.test.assertTrue
 
 class ConversationMapperTest {
 
     @Test
-    fun `local conversation to conversation should convert correctly`() {
+    fun `local conversation without attachments to conversation should convert correctly`() {
         // Given
-        val id = LocalConversationId(123uL)
-        val order = 1uL
-        val subject = "Test Subject"
-        val senders = listOf(
-            MessageSender(
-                "sender1@test.com", "Sender1", true,
-                false, false, ""
-            ),
-            MessageSender(
-                "sender2@test.com", "Sender2", false,
-                false, false, ""
-            )
+        val localConversation = createLocalConversation()
+
+        // When
+        val conversation = localConversation.toConversation()
+
+        // Then
+        val expectedId = ConversationId(localConversation.id.value.toString())
+        assertEquals(expectedId, conversation.conversationId)
+        assertEquals(localConversation.displayOrder.toLong(), conversation.order)
+        assertEquals(localConversation.subject, conversation.subject)
+        assertEquals(localConversation.senders.map { it.toParticipant() }, conversation.senders)
+        assertEquals(localConversation.recipients.map { it.toParticipant() }, conversation.recipients)
+        assertEquals(localConversation.totalMessages.toInt(), conversation.numMessages)
+        assertEquals(localConversation.numUnread.toInt(), conversation.numUnread)
+        assertEquals(localConversation.numAttachments.toInt(), conversation.numAttachments)
+        assertEquals(localConversation.expirationTime.toLong(), conversation.expirationTime)
+        assertEquals(localConversation.avatar.text, conversation.avatarInformation.initials)
+        assertEquals(localConversation.avatar.color, conversation.avatarInformation.color)
+        assertEquals(
+            localConversation.customLabels.map { it.toLabel() },
+            conversation.customLabels
         )
-        val recipients = listOf(
-            MessageRecipient(
-                "recipient1@test.com", true, "Recipient1", null
-            ),
-            MessageRecipient(
-                "recipient2@test.com", false, "Recipient2", null
-            )
+        assertEquals(0, conversation.attachmentCount.calendar)
+        assertFalse(conversation.isStarred)
+        assertEquals(localConversation.time.toLong(), conversation.time)
+        assertEquals(localConversation.size.toLong(), conversation.size)
+        assertEquals(localConversation.exclusiveLocation.toExclusiveLocation(), conversation.exclusiveLocation)
+    }
+
+
+    @Test
+    fun `Local conversation with non-calendar attachments to conversation should convert correctly`() {
+        // Given
+        val attachments = listOf(
+            LocalAttachmentMetadataSample.Pdf,
+            LocalAttachmentMetadataSample.Image,
+            LocalAttachmentMetadataSample.Text
         )
-        val totalNumMessages = 8uL
-        val totalNumUnread = 3uL
-        val numMessages = 5uL
-        val numUnread = 2uL
-        val numAttachments = 1uL
-        val expirationTime = 1625235000000uL
-        val size = 1024uL
-        val time = 1625250000000uL
-        val labels = listOf(
-            InlineCustomLabel(LocalLabelId(1uL), "Test Label", LabelColor("0xFF0000"))
-        )
-        val starred = false
-        val attachment = LocalAttachmentMetadata(
-            id = Id(123uL),
-            name = "file.txt",
-            mimeType = AttachmentMimeType("text/plain", MimeTypeCategory.TEXT),
-            size = 123uL,
-            disposition = Disposition.ATTACHMENT
-        )
-        val avatarInformation = AvatarInformation("A", "blue")
-        val exclusiveLocation = LocalExclusiveLocationSystem(
-            name = SystemLabel.TRASH,
-            id = LocalLabelId(1uL)
-        )
-        val localConversation = LocalConversation(
-            id = id,
-            displayOrder = order,
-            subject = subject,
-            senders = senders,
-            recipients = recipients,
-            numMessages = numMessages,
-            numUnread = numUnread,
-            numAttachments = numAttachments,
-            expirationTime = expirationTime,
-            size = size,
-            time = time,
-            customLabels = labels,
-            isStarred = starred,
-            attachmentsMetadata = listOf(attachment),
-            displaySnoozeReminder = false,
-            exclusiveLocation = exclusiveLocation,
-            avatar = avatarInformation,
-            totalMessages = totalNumMessages,
-            totalUnread = totalNumUnread
+        val localConversation = createLocalConversation(
+            attachmentsMetadata = attachments
         )
 
         // When
         val conversation = localConversation.toConversation()
 
         // Then
-        val expectedId = ConversationId(id.value.toString())
-        assertEquals(expectedId, conversation.conversationId)
-        assertEquals(order.toLong(), conversation.order)
-        assertEquals(subject, conversation.subject)
-        assertEquals(senders.map { it.toParticipant() }, conversation.senders)
-        assertEquals(recipients.map { it.toParticipant() }, conversation.recipients)
-        assertEquals(totalNumMessages.toInt(), conversation.numMessages)
-        assertEquals(numUnread.toInt(), conversation.numUnread)
-        assertEquals(numAttachments.toInt(), conversation.numAttachments)
-        assertEquals(expirationTime.toLong(), conversation.expirationTime)
-        assertEquals(avatarInformation.text, conversation.avatarInformation.initials)
-        assertEquals(avatarInformation.color, conversation.avatarInformation.color)
-        assertEquals(
-            labels.map { it.toLabel() },
-            conversation.customLabels
-        )
-        assertEquals(AttachmentCount(numAttachments.toInt()), conversation.attachmentCount)
-        assertTrue(!conversation.isStarred)
-        assertEquals(time.toLong(), conversation.time)
-        assertEquals(size.toLong(), conversation.size)
-        assertEquals(exclusiveLocation.toExclusiveLocation(), conversation.exclusiveLocation)
-        assertEquals(attachment.toAttachmentMetadata(), conversation.attachments[0])
-
+        assertEquals(attachments.size, conversation.attachments.size)
+        assertEquals(0, conversation.attachmentCount.calendar)
+        assertTrue(conversation.attachments.all { it.mimeTypeCategory != MimeTypeCategory.Calendar })
     }
+
+    @Test
+    fun `Local conversation with one calendar type attachment to conversation should convert correctly`() {
+        // Given
+        val attachments = listOf(LocalAttachmentMetadataSample.Calendar)
+        val localConversation = createLocalConversation(attachmentsMetadata = attachments)
+
+        // When
+        val conversation = localConversation.toConversation()
+
+        // Then
+        assertEquals(1, conversation.attachments.size)
+        assertEquals(1, conversation.attachmentCount.calendar)
+        assertEquals(MimeTypeCategory.Calendar, conversation.attachments[0].mimeTypeCategory)
+    }
+
+    @Test
+    fun `Local conversation with a calendar and several other attachment types should convert correctly`() {
+        // Given
+        val attachments = listOf(
+            LocalAttachmentMetadataSample.Calendar,
+            LocalAttachmentMetadataSample.Pdf,
+            LocalAttachmentMetadataSample.Image
+        )
+        val localConversation = createLocalConversation(attachmentsMetadata = attachments)
+
+        // When
+        val conversation = localConversation.toConversation()
+
+        // Then
+        assertEquals(attachments.size, conversation.attachments.size)
+        assertEquals(1, conversation.attachmentCount.calendar)
+        assertTrue(conversation.attachments.any { it.mimeTypeCategory == MimeTypeCategory.Calendar })
+        assertTrue(conversation.attachments.any { it.mimeTypeCategory == MimeTypeCategory.Image })
+        assertTrue(conversation.attachments.any { it.mimeTypeCategory == MimeTypeCategory.Pdf })
+    }
+
+    @Test
+    fun `Local conversation with inline attachments to conversation should convert correctly`() {
+        // Given
+        val attachments = listOf(
+            LocalAttachmentMetadataSample.Pdf,
+            LocalAttachmentMetadataSample.Compressed,
+            LocalAttachmentMetadataSample.InlineImage
+        )
+        val localConversation = createLocalConversation(
+            attachmentsMetadata = attachments
+        )
+
+        // When
+        val conversation = localConversation.toConversation()
+
+        // Then
+        assertEquals(2, conversation.attachments.size)
+        assertEquals(0, conversation.attachmentCount.calendar)
+    }
+
 
     @Test
     fun `InlineCustomLabel to ConversationLabel should convert correctly`() {
@@ -164,4 +173,59 @@ class ConversationMapperTest {
         assertEquals(color.value, label.color)
         assertEquals(name, label.name)
     }
+
+    private fun createLocalConversation(
+        id: LocalConversationId = LocalConversationId(123uL),
+        displayOrder: ULong = 1uL,
+        subject: String = "Test Subject",
+        senders: List<MessageSender> = listOf(
+            MessageSender("sender1@test.com", "Sender1", true, false, false, ""),
+            MessageSender("sender2@test.com", "Sender2", false, false, false, "")
+        ),
+        recipients: List<MessageRecipient> = listOf(
+            MessageRecipient("recipient1@test.com", true, "Recipient1", null),
+            MessageRecipient("recipient2@test.com", false, "Recipient2", null)
+        ),
+        numMessages: ULong = 5uL,
+        numUnread: ULong = 2uL,
+        attachmentsMetadata: List<LocalAttachmentMetadata> = emptyList(),
+        expirationTime: ULong = 1625235000000uL,
+        size: ULong = 1024uL,
+        time: ULong = 1625250000000uL,
+        customLabels: List<InlineCustomLabel> = listOf(
+            InlineCustomLabel(LocalLabelId(1uL), "Test Label", LabelColor("0xFF0000"))
+        ),
+        isStarred: Boolean = false,
+        displaySnoozeReminder: Boolean = false,
+        exclusiveLocation: LocalExclusiveLocationSystem = LocalExclusiveLocationSystem(
+            name = SystemLabel.TRASH,
+            id = LocalLabelId(1uL)
+        ),
+        avatar: AvatarInformation = AvatarInformation("A", "blue"),
+        totalMessages: ULong = 8uL,
+        totalUnread: ULong = 3uL
+    ): LocalConversation {
+        return LocalConversation(
+            id = id,
+            displayOrder = displayOrder,
+            subject = subject,
+            senders = senders,
+            recipients = recipients,
+            numMessages = numMessages,
+            numUnread = numUnread,
+            numAttachments = attachmentsMetadata.size.toULong(),
+            expirationTime = expirationTime,
+            size = size,
+            time = time,
+            customLabels = customLabels,
+            isStarred = isStarred,
+            attachmentsMetadata = attachmentsMetadata,
+            displaySnoozeReminder = displaySnoozeReminder,
+            exclusiveLocation = exclusiveLocation,
+            avatar = avatar,
+            totalMessages = totalMessages,
+            totalUnread = totalUnread
+        )
+    }
+
 }

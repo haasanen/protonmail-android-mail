@@ -39,7 +39,6 @@ import ch.protonmail.android.mailmessage.data.mapper.toMessage
 import ch.protonmail.android.mailmessage.data.mapper.toMimeTypeCategory
 import ch.protonmail.android.mailmessage.data.mapper.toParticipant
 import ch.protonmail.android.mailmessage.data.mapper.toRecipient
-import ch.protonmail.android.mailmessage.domain.model.AttachmentCount
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertFalse
@@ -248,7 +247,7 @@ class MessageMapperTest {
         assertEquals(addressId.toAddressId(), message.addressId)
         assertEquals(numAttachments.toInt(), message.numAttachments)
         assertEquals(flags.value.toLong(), message.flags)
-        assertEquals(AttachmentCount(numAttachments.toInt()), message.attachmentCount)
+        assertEquals(0, message.attachmentCount.calendar)
         assertEquals(exclusiveLocation.toExclusiveLocation(), message.exclusiveLocation)
     }
 
@@ -311,6 +310,7 @@ class MessageMapperTest {
 
         // Then
         assertEquals(2, message.attachments.size)
+        assertEquals(0, message.attachmentCount.calendar)
         assertEquals(attachment1.toAttachmentMetadata(), message.attachments[0])
         assertEquals(attachment2.toAttachmentMetadata(), message.attachments[1])
     }

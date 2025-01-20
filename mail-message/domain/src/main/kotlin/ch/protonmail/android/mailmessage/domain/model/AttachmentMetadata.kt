@@ -24,3 +24,5 @@ data class AttachmentMetadata(
     val name: String,
     val size: Long
 )
+
+fun AttachmentMetadata.isCalendar() = mimeTypeCategory == MimeTypeCategory.Calendar

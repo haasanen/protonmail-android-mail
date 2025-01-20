@@ -96,7 +96,9 @@ fun LocalMessageMetadata.toMessage(): Message {
         addressId = this.addressId.toAddressId(),
         numAttachments = this.numAttachments.toInt(),
         flags = this.flags.value.toLong(),
-        attachmentCount = AttachmentCount(this.numAttachments.toInt()),
+        attachmentCount = AttachmentCount(
+            calendar = this.attachmentsMetadata.getCalendarAttachmentCount()
+        ),
         attachments = attachmentsMetadata.filter { it.disposition == LocalAttachmentDisposition.ATTACHMENT }
             .map { it.toAttachmentMetadata() },
         customLabels = customLabels.map { it.toLabel() },
@@ -104,6 +106,9 @@ fun LocalMessageMetadata.toMessage(): Message {
         exclusiveLocation = this.exclusiveLocation.toExclusiveLocation()
     )
 }
+
+fun List<LocalAttachmentMetadata>.getCalendarAttachmentCount(): Int =
+    this.filter { it.mimeType.category == LocalMimeTypeCategory.CALENDAR }.size
 
 fun LocalAttachmentMetadata.toAttachmentMetadata(): AttachmentMetadata {
     return AttachmentMetadata(
