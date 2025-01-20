@@ -142,7 +142,8 @@ fun ContactListScreen(listActions: ContactListScreen.Actions, viewModel: Contact
                             viewModel.submit(ContactListViewAction.OnOpenContactSearch)
                         }
                     ),
-                    isAddButtonVisible = state is ContactListState.Loaded.Data
+                    // Hide "add contact" button as feature isn't currently on the roadmap
+                    isAddButtonVisible = false
                 )
             },
             content = { paddingValues ->

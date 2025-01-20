@@ -582,7 +582,10 @@ fun Home(
                         }
                     )
                     addContactSearch(
-                        navController
+                        navController,
+                        showFeatureMissingSnackbar = {
+                            showFeatureMissingSnackbar()
+                        }
                     )
                     addAlternativeRoutingSetting(navController)
                     addCombinedContactsSetting(navController)
