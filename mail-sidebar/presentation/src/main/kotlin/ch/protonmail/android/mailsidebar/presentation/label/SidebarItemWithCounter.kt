@@ -81,7 +81,7 @@ fun SidebarItemWithCounter(
                     .padding(ProtonDimens.Spacing.Tiny)
                     .padding(horizontal = ProtonDimens.Spacing.Tiny),
                 text = UnreadCountValueMapper.toCappedValue(count),
-                color = ProtonTheme.colors.sidebarTextNorm,
+                color = ProtonTheme.colors.sidebarTextSelected,
                 style = ProtonTheme.typography.bodySmallNorm
             )
 

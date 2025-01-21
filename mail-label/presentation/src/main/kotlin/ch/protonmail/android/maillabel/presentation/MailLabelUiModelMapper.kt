@@ -20,12 +20,13 @@ package ch.protonmail.android.maillabel.presentation
 
 import androidx.annotation.DrawableRes
 import androidx.compose.ui.graphics.Color
+import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabel
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabels
-import ch.protonmail.android.design.compose.theme.ProtonDimens
+import ch.protonmail.android.design.compose.R as presentationComposeR
 
 fun MailLabels.toUiModels(counters: Map<LabelId, Int?>, selected: MailLabelId): MailLabelsUiModel = MailLabelsUiModel(
     systemLabels = system.map { it.toDynamicSystemUiModel(counters, selected) },
@@ -77,7 +78,7 @@ fun MailLabel.text(): TextUiModel = when (this) {
 @DrawableRes
 fun MailLabel.iconRes(): Int = when (this) {
     is MailLabel.Custom -> when (id) {
-        is MailLabelId.Custom.Label -> R.drawable.ic_proton_circle_filled
+        is MailLabelId.Custom.Label -> presentationComposeR.drawable.ic_proton_circle_filled_small
         is MailLabelId.Custom.Folder -> {
             val useFolderColor = color != null
             when {

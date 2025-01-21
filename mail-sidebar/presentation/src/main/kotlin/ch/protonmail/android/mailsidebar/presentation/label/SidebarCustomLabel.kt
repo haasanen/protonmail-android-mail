@@ -84,7 +84,7 @@ private fun LazyItemScope.SidebarCustomLabel(
     SidebarItemWithCounter(
         modifier = Modifier
             .testTag("${SidebarCustomLabelTestTags.RootItem}${item.testTag}")
-            .animateItemPlacement(),
+            .animateItem(),
         iconModifier = Modifier
             .testTag(SidebarCustomLabelTestTags.Icon)
             .semantics { tintColor = item.iconTint }
