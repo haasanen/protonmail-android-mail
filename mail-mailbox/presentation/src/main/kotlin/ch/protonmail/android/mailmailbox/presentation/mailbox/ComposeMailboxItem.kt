@@ -111,8 +111,8 @@ fun MailboxItem(
                 .padding(
                     start = ProtonDimens.Spacing.ModeratelyLarge,
                     end = ProtonDimens.Spacing.Large,
-                    top = ProtonDimens.Spacing.ModeratelyLarge,
-                    bottom = ProtonDimens.Spacing.ModeratelyLarge
+                    top = ProtonDimens.Spacing.Standard,
+                    bottom = ProtonDimens.Spacing.Standard
                 )
         ) {
             val fontWeight = if (item.isRead) FontWeight.Normal else FontWeight.Medium
