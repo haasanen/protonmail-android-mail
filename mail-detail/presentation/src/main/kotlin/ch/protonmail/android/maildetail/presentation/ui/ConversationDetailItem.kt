@@ -33,22 +33,23 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.testTag
+import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
+import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
+import ch.protonmail.android.mailcommon.presentation.compose.MailDimens.MessageDetailsHeader.ShadowAlpha
 import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMessageUiModel
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMessageUiModel.Collapsed
-import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMessageUiModel.Hidden
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMessageUiModel.Expanded
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMessageUiModel.Expanding
+import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMessageUiModel.Hidden
 import ch.protonmail.android.maildetail.presentation.model.MessageIdUiModel
 import ch.protonmail.android.maildetail.presentation.model.ParticipantUiModel
 import ch.protonmail.android.maildetail.presentation.ui.footer.MessageDetailFooter
 import ch.protonmail.android.maildetail.presentation.ui.header.MessageDetailHeader
 import ch.protonmail.android.mailmessage.domain.model.AttachmentId
-import ch.protonmail.android.mailmessage.domain.model.MessageId
-import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
-import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.mailmessage.domain.model.EmbeddedImage
+import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.presentation.ui.ParticipantAvatar
 
 @Composable
@@ -71,10 +72,14 @@ fun ConversationDetailItem(
                 shape = ProtonTheme.shapes.huge
             )
             .shadow(
-                elevation = MailDimens.ConversationCollapseHeaderElevation,
+                elevation = if (isSystemInDarkTheme()) {
+                    MailDimens.ConversationCollapseHeaderElevationDark
+                } else {
+                    MailDimens.ConversationCollapseHeaderElevation
+                },
                 shape = ProtonTheme.shapes.huge,
-                ambientColor = ProtonTheme.colors.shadowNorm,
-                spotColor = ProtonTheme.colors.shadowNorm
+                ambientColor = ProtonTheme.colors.shadowNorm.copy(alpha = ShadowAlpha),
+                spotColor = ProtonTheme.colors.shadowNorm.copy(alpha = ShadowAlpha)
             ),
         shape = ProtonTheme.shapes.huge,
         colors = CardDefaults.elevatedCardColors(

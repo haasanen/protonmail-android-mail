@@ -50,6 +50,7 @@ object MailDimens {
 
     val ConversationMessageCollapseBarHeight = 16.dp
     val ConversationCollapseHeaderOverlapHeight = 32.dp
+    val ConversationCollapseHeaderElevationDark = 8.dp
     val ConversationCollapseHeaderElevation = 16.dp
 
     val IconWeakRoundBackgroundRadius = 28.dp
@@ -141,5 +142,6 @@ object MailDimens {
         val ButtonIconSize = 20.dp
         val CollapseExpandButtonSize = 16.dp
         val DetailsTitleWidth = 34.dp
+        const val ShadowAlpha = 0.5f
     }
 }
