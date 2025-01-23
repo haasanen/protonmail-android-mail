@@ -69,6 +69,8 @@ import ch.protonmail.android.navigation.model.Destination.Dialog
 import ch.protonmail.android.navigation.model.Destination.Screen
 import ch.protonmail.android.navigation.model.HomeState
 import ch.protonmail.android.navigation.onboarding.Onboarding
+import ch.protonmail.android.navigation.onboarding.OnboardingStepAction
+import ch.protonmail.android.navigation.onboarding.OnboardingStepViewModel
 import ch.protonmail.android.navigation.route.addAlternativeRoutingSetting
 import ch.protonmail.android.navigation.route.addAppSettings
 import ch.protonmail.android.navigation.route.addAutoLockPinScreen
@@ -119,7 +121,8 @@ import me.proton.core.network.domain.NetworkStatus
 fun Home(
     activityActions: MainActivity.Actions,
     launcherActions: Launcher.Actions,
-    viewModel: HomeViewModel = hiltViewModel()
+    viewModel: HomeViewModel = hiltViewModel(),
+    onboardingStepViewModel: OnboardingStepViewModel = hiltViewModel()
 ) {
     val navController = rememberNavController().withSentryObservableEffect()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -279,11 +282,13 @@ fun Home(
         sheetState = bottomSheetState,
         sheetContent = bottomSheetHeightConstrainedContent {
             Onboarding(
-                onDismissed = {
+                onExitOnboarding = {
+                    onboardingStepViewModel.submit(OnboardingStepAction.MarkOnboardingComplete)
                     scope.launch { bottomSheetState.hide() }
                 }
             )
-        }
+        },
+        onDismissed = { onboardingStepViewModel.submit(OnboardingStepAction.MarkOnboardingComplete) }
     ) {
         ModalNavigationDrawer(
             drawerState = drawerState,

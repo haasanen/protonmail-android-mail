@@ -26,7 +26,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-internal class OnboardingStepViewModel @Inject constructor(
+class OnboardingStepViewModel @Inject constructor(
     private val saveOnboarding: SaveOnboarding
 ) : ViewModel() {
 
@@ -39,6 +39,6 @@ internal class OnboardingStepViewModel @Inject constructor(
     }
 }
 
-internal sealed interface OnboardingStepAction {
+sealed interface OnboardingStepAction {
     data object MarkOnboardingComplete : OnboardingStepAction
 }
