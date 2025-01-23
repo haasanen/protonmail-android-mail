@@ -24,7 +24,6 @@ import arrow.core.Either
 import arrow.core.left
 import ch.protonmail.android.mailcommon.domain.coroutines.IODispatcher
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailmessage.data.local.usecase.DecryptAttachmentByteArray
 import ch.protonmail.android.mailmessage.domain.model.AttachmentId
 import ch.protonmail.android.mailmessage.domain.model.MessageAttachment
 import ch.protonmail.android.mailmessage.domain.model.MessageAttachmentMetadata
@@ -38,7 +37,6 @@ import timber.log.Timber
 import javax.inject.Inject
 
 class AttachmentRepositoryImpl @Inject constructor(
-    private val decryptAttachmentByteArray: DecryptAttachmentByteArray,
     @IODispatcher private val ioDispatcher: CoroutineDispatcher
 ) : AttachmentRepository {
 
