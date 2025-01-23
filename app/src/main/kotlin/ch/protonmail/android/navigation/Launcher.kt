@@ -25,8 +25,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import ch.protonmail.android.MainActivity
-import ch.protonmail.android.navigation.model.LauncherState
 import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
+import ch.protonmail.android.navigation.model.LauncherState
 import me.proton.core.domain.entity.UserId
 
 @Composable
@@ -35,7 +35,7 @@ fun Launcher(activityActions: MainActivity.Actions, viewModel: LauncherViewModel
 
     when (state) {
         LauncherState.AccountNeeded -> viewModel.submit(LauncherViewModel.Action.AddAccount)
-        LauncherState.PrimaryExist -> LauncherRouter(
+        LauncherState.PrimaryExist -> Home(
             activityActions = activityActions,
             launcherActions = Launcher.Actions(
                 onPasswordManagement = { viewModel.submit(LauncherViewModel.Action.OpenPasswordManagement) },
