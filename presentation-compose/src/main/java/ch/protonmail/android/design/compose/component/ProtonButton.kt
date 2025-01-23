@@ -55,6 +55,7 @@ fun ProtonSolidButton(
     contained: Boolean = true,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     colors: ButtonColors = ButtonDefaults.protonButtonColors(loading),
+    shape: Shape = ProtonTheme.shapes.medium,
     content: @Composable () -> Unit
 ) {
     ProtonButton(
@@ -65,7 +66,7 @@ fun ProtonSolidButton(
         contained = contained,
         interactionSource = interactionSource,
         elevation = ButtonDefaults.protonElevation(),
-        shape = ProtonTheme.shapes.medium,
+        shape = shape,
         border = null,
         colors = colors,
         contentPadding = ButtonDefaults.ContentPadding,

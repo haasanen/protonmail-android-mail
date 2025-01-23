@@ -85,7 +85,7 @@ object MailDimens {
     val pagerDotsCircleSize = 8.dp
     val onboardingBottomButtonHeight = 48.dp
     val OnboardingCloseButtonToolbarHeight = 48.dp
-    const val OnboardingIllustrationWeight = 0.5f
+    const val OnboardingIllustrationWeight = 0.4f
 
     object AutoLockPinScreen {
 

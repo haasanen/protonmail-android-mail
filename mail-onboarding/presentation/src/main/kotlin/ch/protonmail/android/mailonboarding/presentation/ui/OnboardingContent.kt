@@ -33,9 +33,11 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
+import ch.protonmail.android.design.compose.theme.bodyLargeNorm
 import ch.protonmail.android.design.compose.theme.bodyMediumWeak
 import ch.protonmail.android.design.compose.theme.titleLargeNorm
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
@@ -46,6 +48,12 @@ import ch.protonmail.android.mailonboarding.presentation.model.OnboardingUiModel
 @Composable
 internal fun OnboardingContent(content: OnboardingUiModel) {
     Column {
+        Text(
+            modifier = Modifier.align(Alignment.CenterHorizontally),
+            text = stringResource(id = content.title),
+            style = ProtonTheme.typography.titleLargeNorm.copy(textAlign = TextAlign.Center)
+        )
+
         Image(
             modifier = Modifier
                 .testTag(OnboardingScreenTestTags.OnboardingImage)
@@ -62,7 +70,10 @@ internal fun OnboardingContent(content: OnboardingUiModel) {
                 .padding(top = ProtonDimens.Spacing.Large)
                 .padding(horizontal = ProtonDimens.Spacing.Large),
             text = stringResource(id = content.headlineId),
-            style = ProtonTheme.typography.titleLargeNorm.copy(textAlign = TextAlign.Center)
+            style = ProtonTheme.typography.bodyLargeNorm.copy(
+                textAlign = TextAlign.Center,
+                fontWeight = FontWeight.SemiBold
+            )
         )
 
         Column(

@@ -18,7 +18,6 @@
 
 package ch.protonmail.android.mailonboarding.presentation.ui
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -33,12 +32,12 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import ch.protonmail.android.design.compose.component.ProtonSolidButton
 import ch.protonmail.android.design.compose.theme.ProtonDimens
+import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 import ch.protonmail.android.mailonboarding.presentation.OnboardingScreenTestTags
 import ch.protonmail.android.mailonboarding.presentation.R
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 internal fun OnboardingButton(
     onCloseOnboarding: () -> Unit,
@@ -63,7 +62,8 @@ internal fun OnboardingButton(
                     pagerState.animateScrollToPage(nextPageIndex)
                 }
             }
-        }
+        },
+        shape = ProtonTheme.shapes.huge
     ) {
         val positiveButtonTextId =
             if (pagerState.currentPage == viewCount.minus(1)) R.string.onboarding_get_started

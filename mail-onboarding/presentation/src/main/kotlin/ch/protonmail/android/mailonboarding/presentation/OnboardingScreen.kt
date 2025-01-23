@@ -64,19 +64,22 @@ fun OnboardingScreen(
 
     val contentMap = listOfNotNull(
         OnboardingUiModel(
-            illustrationId = R.drawable.illustration_privacy_for_all,
-            headlineId = R.string.onboarding_privacy_for_all_headline,
-            descriptionId = R.string.onboarding_privacy_for_all_description
+            illustrationId = R.drawable.illustration_rebuilt_from_the_ground_up,
+            title = R.string.onboarding_introducing_next_gen_app,
+            headlineId = R.string.onboarding_rebuilt_from_ground_up_headline,
+            descriptionId = R.string.onboarding_rebuilt_from_ground_up_description
         ),
         OnboardingUiModel(
-            illustrationId = R.drawable.illustration_easily_up_to_date,
-            headlineId = R.string.onboarding_easily_up_to_date_headline,
-            descriptionId = R.string.onboarding_easily_up_to_date_description
+            illustrationId = R.drawable.illustration_new_design,
+            title = R.string.onboarding_introducing_next_gen_app,
+            headlineId = R.string.onboarding_new_inbox_headline,
+            descriptionId = R.string.onboarding_new_inbox_description
         ),
         OnboardingUiModel(
-            illustrationId = R.drawable.illustration_neat_and_tidy,
-            headlineId = R.string.onboarding_neat_and_tidy_headline,
-            descriptionId = R.string.onboarding_neat_and_tidy_description
+            illustrationId = R.drawable.illustration_feedback_needed,
+            title = R.string.onboarding_introducing_next_gen_app,
+            headlineId = R.string.onboarding_feedback_is_key_headline,
+            descriptionId = R.string.onboarding_feedback_is_key_description
         ),
         if (isEligibleForUpselling) OnboardingUiModel.Empty else null
     )
