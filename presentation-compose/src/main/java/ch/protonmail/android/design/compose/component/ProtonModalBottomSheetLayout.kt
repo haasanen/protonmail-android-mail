@@ -36,6 +36,7 @@ fun ProtonModalBottomSheetLayout(
     sheetContent: @Composable ColumnScope.() -> Unit,
     modifier: Modifier = Modifier,
     sheetState: SheetState = rememberModalBottomSheetState(),
+    onDismissed: () -> Unit,
     content: @Composable () -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
@@ -48,6 +49,7 @@ fun ProtonModalBottomSheetLayout(
             ModalBottomSheet(
                 onDismissRequest = {
                     coroutineScope.launch { sheetState.hide() }
+                    onDismissed()
                 },
                 sheetState = sheetState,
                 shape = ProtonTheme.shapes.bottomSheet,
@@ -57,5 +59,22 @@ fun ProtonModalBottomSheetLayout(
             )
         }
     }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ProtonModalBottomSheetLayout(
+    sheetContent: @Composable ColumnScope.() -> Unit,
+    modifier: Modifier = Modifier,
+    sheetState: SheetState = rememberModalBottomSheetState(),
+    content: @Composable () -> Unit
+) {
+    ProtonModalBottomSheetLayout(
+        sheetContent = sheetContent,
+        modifier = modifier,
+        sheetState = sheetState,
+        content = content,
+        onDismissed = { }
+    )
 }
 
