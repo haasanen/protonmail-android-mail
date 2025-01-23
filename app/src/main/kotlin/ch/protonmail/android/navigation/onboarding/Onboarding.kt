@@ -18,7 +18,6 @@
 
 package ch.protonmail.android.navigation.onboarding
 
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -31,18 +30,19 @@ import ch.protonmail.android.navigation.route.addOnboardingUpselling
 import io.sentry.compose.withSentryObservableEffect
 
 @Composable
-fun Onboarding() {
+fun Onboarding(onDismissed: () -> Unit, modifier: Modifier = Modifier) {
     val navController = rememberNavController().withSentryObservableEffect()
     val onboardingStepViewModel = hiltViewModel<OnboardingStepViewModel>()
 
     val exitAction = remember {
         {
+            onDismissed()
             onboardingStepViewModel.submit(OnboardingStepAction.MarkOnboardingComplete)
         }
     }
 
     NavHost(
-        modifier = Modifier.fillMaxSize(),
+        modifier = modifier,
         navController = navController,
         startDestination = Destination.Screen.Onboarding.MainScreen.route
     ) {

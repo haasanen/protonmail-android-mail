@@ -35,17 +35,17 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import ch.protonmail.android.design.compose.theme.ProtonDimens
+import ch.protonmail.android.design.compose.theme.ProtonTheme
+import ch.protonmail.android.design.compose.theme.bodyMediumWeak
+import ch.protonmail.android.design.compose.theme.titleLargeNorm
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 import ch.protonmail.android.mailonboarding.presentation.OnboardingScreenTestTags
 import ch.protonmail.android.mailonboarding.presentation.R
 import ch.protonmail.android.mailonboarding.presentation.model.OnboardingUiModel
-import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.bodyMediumWeak
-import ch.protonmail.android.design.compose.theme.titleLargeNorm
 
 @Composable
 internal fun OnboardingContent(content: OnboardingUiModel) {
-    Column(Modifier.fillMaxHeight()) {
+    Column {
         Image(
             modifier = Modifier
                 .testTag(OnboardingScreenTestTags.OnboardingImage)

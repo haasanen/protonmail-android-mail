@@ -19,19 +19,10 @@
 package ch.protonmail.android.mailonboarding.presentation
 
 import android.content.res.Configuration
-import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -41,12 +32,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 import ch.protonmail.android.mailonboarding.presentation.model.OnboardingState
 import ch.protonmail.android.mailonboarding.presentation.model.OnboardingUiModel
 import ch.protonmail.android.mailonboarding.presentation.ui.OnboardingButton
@@ -122,36 +111,11 @@ fun OnboardingScreen(
     Column(
         modifier = Modifier
             .testTag(OnboardingScreenTestTags.RootItem)
-            .fillMaxSize()
             .background(ProtonTheme.colors.backgroundNorm)
     ) {
 
-        // Keep the spacing to avoid the jumping effect on transitioning to the last page.
-        Row(
-            modifier = Modifier
-                .testTag(OnboardingScreenTestTags.TopBarRootItem)
-                .fillMaxWidth()
-                .heightIn(min = MailDimens.OnboardingCloseButtonToolbarHeight)
-        ) {
-            if (pagerState.currentPage != viewCount.minus(1)) {
-                IconButton(
-                    modifier = Modifier
-                        .testTag(OnboardingScreenTestTags.CloseButton)
-                        .horizontalScroll(state = ScrollState(0), enabled = true),
-                    onClick = onExitAction
-                ) {
-                    Icon(
-                        tint = ProtonTheme.colors.iconNorm,
-                        imageVector = androidx.compose.material.icons.Icons.Filled.Close,
-                        contentDescription = stringResource(id = R.string.onboarding_close_content_description)
-                    )
-                }
-            }
-        }
-
         HorizontalPager(
-            state = pagerState,
-            modifier = Modifier.weight(1f)
+            state = pagerState
         ) { pageIndex ->
             OnboardingContent(content = contentMap[pageIndex])
         }
