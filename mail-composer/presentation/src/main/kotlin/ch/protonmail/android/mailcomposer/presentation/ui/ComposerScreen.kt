@@ -65,7 +65,7 @@ import ch.protonmail.android.mailcomposer.presentation.model.FocusedFieldType
 import ch.protonmail.android.mailcomposer.presentation.viewmodel.ComposerViewModel
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.Participant
-import ch.protonmail.android.mailmessage.presentation.ui.AttachmentFooter
+import ch.protonmail.android.mailmessage.presentation.ui.AttachmentList
 import ch.protonmail.android.uicomponents.bottomsheet.bottomSheetHeightConstrainedContent
 import ch.protonmail.android.uicomponents.dismissKeyboard
 import ch.protonmail.android.uicomponents.snackbar.DismissableSnackbarHost
@@ -245,9 +245,9 @@ fun ComposerScreen(actions: ComposerScreen.Actions, viewModel: ComposerViewModel
                         newContactSuggestionsEnabled = viewModel.newContactSuggestionsEnabled
                     )
                     if (state.attachments.attachments.isNotEmpty()) {
-                        AttachmentFooter(
-                            messageBodyAttachmentsUiModel = state.attachments,
-                            actions = AttachmentFooter.Actions(
+                        AttachmentList(
+                            messageAttachmentsUiModel = state.attachments,
+                            actions = AttachmentList.Actions(
                                 onShowAllAttachments = { Timber.d("On show all attachments clicked") },
                                 onAttachmentClicked = { Timber.d("On attachment clicked: $it") },
                                 onAttachmentDeleteClicked = { viewModel.submit(ComposerAction.RemoveAttachment(it)) }

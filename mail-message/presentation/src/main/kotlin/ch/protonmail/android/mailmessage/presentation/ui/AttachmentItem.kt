@@ -23,14 +23,17 @@ import android.net.Uri
 import android.os.Build
 import android.text.format.Formatter
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -43,15 +46,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import ch.protonmail.android.mailcommon.presentation.NO_CONTENT_DESCRIPTION
-import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 import ch.protonmail.android.mailmessage.domain.model.AttachmentId
 import ch.protonmail.android.mailmessage.domain.model.AttachmentWorkerStatus
 import ch.protonmail.android.mailmessage.presentation.R
-import ch.protonmail.android.mailmessage.presentation.model.AttachmentUiModel
-import ch.protonmail.android.mailmessage.presentation.model.getContentDescriptionForMimeType
-import ch.protonmail.android.mailmessage.presentation.model.getDrawableForMimeType
-import ch.protonmail.android.mailmessage.presentation.sample.AttachmentUiModelSample
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
@@ -60,125 +57,150 @@ import ch.protonmail.android.design.compose.component.ProtonAlertDialogButton
 import ch.protonmail.android.design.compose.component.ProtonAlertDialogText
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.bodySmallHint
-import ch.protonmail.android.design.compose.theme.bodyMediumNorm
+import ch.protonmail.android.design.compose.theme.bodyMediumWeak
+import ch.protonmail.android.mailcommon.presentation.model.string
+import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentMetadataUiModel
+import ch.protonmail.android.mailmessage.presentation.sample.AttachmentMetadataUiModelSamples
+import com.google.accompanist.permissions.PermissionState
+import com.google.accompanist.permissions.PermissionStatus
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun AttachmentItem(
     modifier: Modifier = Modifier,
-    attachmentUiModel: AttachmentUiModel,
+    attachmentUiModel: AttachmentMetadataUiModel,
     onAttachmentItemClicked: (attachmentId: AttachmentId) -> Unit,
-    onAttachmentItemDeleteClicked: (attachmentId: AttachmentId) -> Unit
+    onAttachmentItemDeleteClicked: (attachmentId: AttachmentId) -> Unit,
+    isPreview: Boolean = false
 ) {
-    val currentContext = LocalContext.current
-    val shouldShowPermissionRationaleDialog = remember { mutableStateOf(false) }
-    val externalStoragePermission = rememberPermissionState(
-        permission = android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
-        onPermissionResult = { result ->
-            if (result) {
-                onAttachmentItemClicked(AttachmentId(attachmentUiModel.attachmentId))
-            } else {
-                shouldShowPermissionRationaleDialog.value = true
-            }
-        }
-    )
+    val context = LocalContext.current
+    val shouldShowPermissionDialog = remember { mutableStateOf(false) }
 
-    if (shouldShowPermissionRationaleDialog.value) {
+    // Use a conditional to skip permission logic in preview mode
+    val externalStoragePermission = if (!isPreview) {
+        rememberPermissionState(
+            permission = android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            onPermissionResult = { result ->
+                if (result) {
+                    onAttachmentItemClicked(AttachmentId(attachmentUiModel.id.id))
+                } else {
+                    shouldShowPermissionDialog.value = true
+                }
+            }
+        )
+    } else {
+        object : PermissionState {
+            override val permission: String = android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+            override val status: PermissionStatus = PermissionStatus.Granted
+            override fun launchPermissionRequest() {}
+        }
+    }
+
+    if (shouldShowPermissionDialog.value) {
         ProtonAlertDialog(
             title = stringResource(id = R.string.attachment_permission_dialog_title),
             text = { ProtonAlertDialogText(R.string.attachment_permission_dialog_message) },
             dismissButton = {
                 ProtonAlertDialogButton(R.string.attachment_permission_dialog_dismiss_button) {
-                    shouldShowPermissionRationaleDialog.value = false
+                    shouldShowPermissionDialog.value = false
                 }
             },
             confirmButton = {
                 ProtonAlertDialogButton(R.string.attachment_permission_dialog_action_button) {
-                    shouldShowPermissionRationaleDialog.value = false
-                    currentContext.startActivity(
-                        Intent().apply {
-                            action = android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS
-                            data = Uri.fromParts("package", currentContext.packageName, null)
-                        }
+                    shouldShowPermissionDialog.value = false
+                    context.startActivity(
+                        Intent(
+                            android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                            Uri.fromParts("package", context.packageName, null)
+                        )
                     )
                 }
             },
-            onDismissRequest = { shouldShowPermissionRationaleDialog.value = false }
+            onDismissRequest = { shouldShowPermissionDialog.value = false }
         )
     }
 
     Row(
         modifier = modifier
-            .padding(horizontal = ProtonDimens.Spacing.Standard, vertical = ProtonDimens.Spacing.Small)
-            .padding(horizontal = ProtonDimens.Spacing.Small)
-            .border(
-                width = MailDimens.DefaultBorder,
+            .fillMaxWidth()
+            .background(
                 color = ProtonTheme.colors.interactionWeakNorm,
-                shape = ProtonTheme.shapes.large
+                shape = ProtonTheme.shapes.huge
             )
             .clickable {
-                // For now the deletable flag indicates the usage in composer.
-                // Since currently opening an attachment in the the composer is not supported,
-                // the click shouldn't do anything.
-                if (attachmentUiModel.deletable.not()) {
+                if (!attachmentUiModel.deletable) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q || externalStoragePermission.status.isGranted) {
-                        onAttachmentItemClicked(AttachmentId(attachmentUiModel.attachmentId))
+                        onAttachmentItemClicked(AttachmentId(attachmentUiModel.id.id))
                     } else {
                         externalStoragePermission.launchPermissionRequest()
                     }
                 }
             }
-            .padding(ProtonDimens.Spacing.Standard),
+            .padding(
+                top = ProtonDimens.Spacing.MediumLight,
+                bottom = ProtonDimens.Spacing.MediumLight,
+                start = ProtonDimens.Spacing.Medium,
+                end = ProtonDimens.Spacing.Large
+            ),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        if (attachmentUiModel.status == AttachmentWorkerStatus.Running) {
-            CircularProgressIndicator(
-                modifier = Modifier
-                    .testTag(AttachmentItemTestTags.Loader)
-                    .size(ProtonDimens.DefaultIconSize)
+        // Icon
+        Image(
+            modifier = Modifier
+                .size(ProtonDimens.IconSize.Medium)
+                .testTag(AttachmentItemTestTags.Icon),
+            painter = painterResource(id = attachmentUiModel.icon),
+            contentDescription = stringResource(
+                id = R.string.attachment_type_description,
+                stringResource(id = attachmentUiModel.contentDescription)
             )
-        } else {
-            Image(
-                modifier = Modifier.testTag(AttachmentItemTestTags.Icon),
-                painter = painterResource(id = getDrawableForMimeType(attachmentUiModel.mimeType)),
-                contentDescription = stringResource(
-                    id = R.string.attachment_type_description,
-                    stringResource(id = getContentDescriptionForMimeType(attachmentUiModel.mimeType))
+        )
+
+        Spacer(modifier = Modifier.width(ProtonDimens.Spacing.Standard))
+
+        // Name and Size
+        Row(
+            modifier = Modifier.weight(1f),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                modifier = Modifier
+                    .weight(1f)
+                    .testTag(AttachmentItemTestTags.Name),
+                text = attachmentUiModel.name.string(),
+                style = ProtonTheme.typography.bodyMediumWeak,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+            Spacer(modifier = Modifier.width(ProtonDimens.Spacing.Medium))
+            Text(
+                modifier = Modifier.testTag(AttachmentItemTestTags.Size),
+                text = Formatter.formatShortFileSize(context, attachmentUiModel.size),
+                style = ProtonTheme.typography.bodyMedium.copy(
+                    color = ProtonTheme.colors.textHint
                 )
             )
         }
-        Spacer(modifier = Modifier.width(ProtonDimens.Spacing.Standard))
-        Text(
-            modifier = Modifier
-                .testTag(AttachmentItemTestTags.Name)
-                .weight(1f, fill = false),
-            style = ProtonTheme.typography.bodyMediumNorm,
-            text = attachmentUiModel.fileName,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis
-        )
-        Text(
-            modifier = Modifier
-                .testTag(AttachmentItemTestTags.Extension)
-                .padding(end = ProtonDimens.Spacing.Standard),
-            text = ".${attachmentUiModel.extension}",
-            style = ProtonTheme.typography.bodyMediumNorm
-        )
-        Text(
-            modifier = Modifier.testTag(AttachmentItemTestTags.Size),
-            text = Formatter.formatShortFileSize(LocalContext.current, attachmentUiModel.size),
-            style = ProtonTheme.typography.bodySmallHint
-        )
+
+        // Delete Button or Loader
         if (attachmentUiModel.deletable) {
             Spacer(modifier = Modifier.width(ProtonDimens.Spacing.Small))
-            Image(
-                modifier = Modifier
-                    .clickable { onAttachmentItemDeleteClicked(AttachmentId(attachmentUiModel.attachmentId)) }
-                    .testTag(AttachmentItemTestTags.Delete),
-                painter = painterResource(id = R.drawable.ic_proton_cross_small),
-                contentDescription = NO_CONTENT_DESCRIPTION
-            )
+            if (attachmentUiModel.status == AttachmentWorkerStatus.Running) {
+                CircularProgressIndicator(
+                    modifier = Modifier
+                        .size(ProtonDimens.DefaultIconSize)
+                        .testTag(AttachmentItemTestTags.Loader)
+                )
+            } else {
+                Icon(
+                    modifier = Modifier
+                        .size(ProtonDimens.SmallIconSize)
+                        .clickable { onAttachmentItemDeleteClicked(AttachmentId(attachmentUiModel.id.id)) }
+                        .testTag(AttachmentItemTestTags.Delete),
+                    painter = painterResource(id = R.drawable.ic_proton_cross_small),
+                    contentDescription = null
+                )
+            }
         }
     }
 }
@@ -188,9 +210,10 @@ fun AttachmentItem(
 fun AttachmentItemPreview() {
     ProtonTheme {
         AttachmentItem(
-            attachmentUiModel = AttachmentUiModelSample.invoice,
+            attachmentUiModel = AttachmentMetadataUiModelSamples.Invoice,
             onAttachmentItemClicked = {},
-            onAttachmentItemDeleteClicked = {}
+            onAttachmentItemDeleteClicked = {},
+            isPreview = true
         )
     }
 }
@@ -199,11 +222,18 @@ fun AttachmentItemPreview() {
 @Preview(showBackground = true)
 fun AttachmentItemTruncationPreview() {
     ProtonTheme {
-        AttachmentItem(
-            attachmentUiModel = AttachmentUiModelSample.documentWithReallyLongFileName,
-            onAttachmentItemClicked = {},
-            onAttachmentItemDeleteClicked = {}
-        )
+        Box(
+            modifier = Modifier
+                .background(ProtonTheme.colors.backgroundNorm)
+                .padding(ProtonDimens.Spacing.Large)
+        ) {
+            AttachmentItem(
+                attachmentUiModel = AttachmentMetadataUiModelSamples.DocumentWithReallyLongFileName,
+                onAttachmentItemClicked = {},
+                onAttachmentItemDeleteClicked = {},
+                isPreview = true
+            )
+        }
     }
 }
 

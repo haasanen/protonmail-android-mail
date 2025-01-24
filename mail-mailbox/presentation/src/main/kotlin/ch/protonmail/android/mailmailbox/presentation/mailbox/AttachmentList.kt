@@ -51,8 +51,8 @@ import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcommon.presentation.model.string
 import ch.protonmail.android.mailmailbox.presentation.R
 import ch.protonmail.android.mailmailbox.presentation.mailbox.Attachment.TotalIconAndPaddingDp
-import ch.protonmail.android.mailmailbox.presentation.mailbox.model.AttachmentIdUiModel
-import ch.protonmail.android.mailmailbox.presentation.mailbox.model.AttachmentMetadataUiModel
+import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentIdUiModel
+import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentMetadataUiModel
 
 @Composable
 fun AttachmentList(
@@ -281,7 +281,9 @@ private fun MinTruncatedAttachment(maxWidth: Int) {
         attachment = AttachmentMetadataUiModel(
             AttachmentIdUiModel("0"),
             TextUiModel("AAA... .pdf"),
-            R.drawable.ic_file_type_default
+            R.drawable.ic_file_type_default,
+            R.string.attachment_type_unknown,
+            size = 0L
         ),
         textColor = ProtonTheme.colors.textWeak,
         minWidth = 0,
@@ -389,7 +391,9 @@ private fun AttachmentPreview() {
                 AttachmentMetadataUiModel(
                     AttachmentIdUiModel("0"),
                     TextUiModel("Attachment name.pdf"),
-                    R.drawable.ic_file_type_unknown
+                    R.drawable.ic_file_type_unknown,
+                    R.string.attachment_type_unknown,
+                    size = 1024L
                 )
             ),
             textColor = ProtonTheme.colors.textWeak

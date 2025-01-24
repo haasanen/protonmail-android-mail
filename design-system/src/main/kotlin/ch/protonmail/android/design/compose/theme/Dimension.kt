@@ -26,12 +26,12 @@ object ProtonDimens {
     val ExtraLargeCornerRadius = 12.dp
 
     val DefaultButtonMinHeight = 48.dp
-    val ExtraSmallIconSize = 12.dp
-    val SmallIconSize = 16.dp
-    val CounterIconSize = 20.dp
-    val DefaultIconSize = 24.dp
-    val DefaultIconSizeLogo = 36.dp
-    val DefaultIconWithPadding = 40.dp
+    val ExtraSmallIconSize = IconSize.ExtraSmall
+    val SmallIconSize = IconSize.Small
+    val CounterIconSize = IconSize.Medium
+    val DefaultIconSize = IconSize.Default
+    val DefaultIconSizeLogo = IconSize.Large
+    val DefaultIconWithPadding = IconSize.MediumLarge
 
     val DefaultBottomSheetHeaderMinHeight = 56.dp
 
@@ -73,5 +73,15 @@ object ProtonDimens {
         val Small = 4.dp
         val Medium = 8.dp
         val Large = 16.dp
+    }
+
+    object IconSize {
+        val ExtraSmall = 12.dp
+        val Small = 16.dp
+        val Medium = 20.dp
+        val Default = 24.dp
+        val Large = 36.dp
+        val MediumLarge = 40.dp
+        val ExtraLarge = 48.dp
     }
 }

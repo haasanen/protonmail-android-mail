@@ -24,7 +24,7 @@ import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performScrollTo
 import androidx.test.espresso.Espresso
-import ch.protonmail.android.mailmessage.presentation.ui.AttachmentFooterTestTags
+import ch.protonmail.android.mailmessage.presentation.ui.AttachmentListTestTags
 import ch.protonmail.android.test.ksp.annotations.AttachTo
 import ch.protonmail.android.test.ksp.annotations.VerifiesOuter
 import ch.protonmail.android.uitest.robot.ComposeSectionRobot
@@ -48,20 +48,20 @@ import ch.protonmail.android.uitest.util.child
 internal class MessageFooterAttachmentSection : ComposeSectionRobot() {
 
     private val rootItem = composeTestRule.onNodeWithTag(
-        testTag = AttachmentFooterTestTags.Root,
+        testTag = AttachmentListTestTags.Root,
         useUnmergedTree = true
     )
 
     private val paperClipIcon = rootItem.child {
-        hasTestTag(AttachmentFooterTestTags.PaperClipIcon)
+        hasTestTag(AttachmentListTestTags.PaperClipIcon)
     }
 
     private val summaryText = rootItem.child {
-        hasTestTag(AttachmentFooterTestTags.SummaryText)
+        hasTestTag(AttachmentListTestTags.SummaryText)
     }
 
     private val summarySize = rootItem.child {
-        hasTestTag(AttachmentFooterTestTags.SummarySize)
+        hasTestTag(AttachmentListTestTags.SummarySize)
     }
 
     init {
