@@ -50,7 +50,7 @@ class GetAttachmentIntentValuesTest {
 
     private val userId = UserIdSample.Primary
     private val messageId = MessageIdSample.Invoice
-    private val attachmentId = AttachmentId("invoice")
+    private val attachmentId = AttachmentId("1")
 
     private val extension = "txt"
     private val uri = mockk<Uri>()
@@ -91,17 +91,18 @@ class GetAttachmentIntentValuesTest {
     @Test
     fun `should return intent values when attachment and metadata is locally available`() = runTest {
         // Given
+        val id = AttachmentId("6")
         coEvery {
             attachmentRepository.getAttachment(
                 userId = userId,
                 messageId = messageId,
-                attachmentId = attachmentId
+                attachmentId = id
             )
         } returns messageAttachmentMetadata.right()
         coEvery { messageRepository.getMessageWithBody(userId, messageId) } returns messageWithBody.right()
 
         // When
-        val result = getAttachmentIntentValues(userId, messageId, attachmentId)
+        val result = getAttachmentIntentValues(userId, messageId, id)
 
         // Then
         assertEquals(OpenAttachmentIntentValues("application/pdf", uri).right(), result)
@@ -167,12 +168,12 @@ class GetAttachmentIntentValuesTest {
             attachmentRepository.saveMimeAttachmentToPublicStorage(
                 userId = userId,
                 messageId = messageId,
-                attachmentId = AttachmentId("image")
+                attachmentId = AttachmentId("1")
             )
         } returns uri.right()
 
         // When
-        val result = getAttachmentIntentValues(userId, messageId, AttachmentId("image"))
+        val result = getAttachmentIntentValues(userId, messageId, AttachmentId("1"))
 
         // Then
         assertEquals(OpenAttachmentIntentValues("image/png", uri).right(), result)
@@ -191,17 +192,17 @@ class GetAttachmentIntentValuesTest {
                 attachmentRepository.saveMimeAttachmentToPublicStorage(
                     userId = userId,
                     messageId = messageId,
-                    attachmentId = AttachmentId("invoice_binary_content_type")
+                    attachmentId = AttachmentId("7")
                 )
             } returns uri.right()
 
             // When
-            val result = getAttachmentIntentValues(userId, messageId, AttachmentId("invoice_binary_content_type"))
+            val result = getAttachmentIntentValues(userId, messageId, AttachmentId("7"))
 
             println(result)
 
             // Then
-            assertEquals(OpenAttachmentIntentValues("application/pdf", uri).right(), result)
+            assertEquals(OpenAttachmentIntentValues("application/octet-stream", uri).right(), result)
         }
 
     @Test

@@ -50,7 +50,22 @@ class MessageBodyTest : HiltInstrumentedTest() {
                 MessageBody(
                     modifier = Modifier,
                     messageBodyUiModel = state,
-                    actions = MessageBody.Actions({}, {}, {}, {}, { _, _ -> null }, {}, {}, {}, {}, {}, {}, {}, {}),
+                    actions = MessageBody.Actions(
+                        onExpandCollapseButtonClicked = {},
+                        onMessageBodyLinkClicked = { _ -> },
+                        onShowAllAttachments = {},
+                        onAttachmentClicked = { _ -> },
+                        onToggleAttachmentsExpandCollapseMode = {},
+                        loadEmbeddedImage = { _, _ -> null },
+                        onReply = { _ -> },
+                        onReplyAll = { _ -> },
+                        onForward = { _ -> },
+                        onLoadRemoteContent = { _ -> },
+                        onLoadEmbeddedImages = { _ -> },
+                        onLoadRemoteAndEmbeddedContent = { _ -> },
+                        onOpenInProtonCalendar = { _ -> },
+                        onPrint = { _ -> }
+                    ),
                     expandCollapseMode = MessageBodyExpandCollapseMode.NotApplicable
                 )
             }
@@ -73,7 +88,22 @@ class MessageBodyTest : HiltInstrumentedTest() {
                 MessageBody(
                     modifier = Modifier,
                     messageBodyUiModel = state,
-                    actions = MessageBody.Actions({}, {}, {}, {}, { _, _ -> null }, {}, {}, {}, {}, {}, {}, {}, {}),
+                    actions = MessageBody.Actions(
+                        onExpandCollapseButtonClicked = {},
+                        onMessageBodyLinkClicked = { _ -> },
+                        onShowAllAttachments = {},
+                        onAttachmentClicked = { _ -> },
+                        onToggleAttachmentsExpandCollapseMode = {},
+                        loadEmbeddedImage = { _, _ -> null },
+                        onReply = { _ -> },
+                        onReplyAll = { _ -> },
+                        onForward = { _ -> },
+                        onLoadRemoteContent = { _ -> },
+                        onLoadEmbeddedImages = { _ -> },
+                        onLoadRemoteAndEmbeddedContent = { _ -> },
+                        onOpenInProtonCalendar = { _ -> },
+                        onPrint = { _ -> }
+                    ),
                     expandCollapseMode = MessageBodyExpandCollapseMode.NotApplicable
                 )
             }
