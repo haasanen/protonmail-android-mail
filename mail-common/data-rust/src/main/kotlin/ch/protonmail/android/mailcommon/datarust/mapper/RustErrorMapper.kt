@@ -22,8 +22,10 @@ import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.model.NetworkError
 import uniffi.proton_mail_uniffi.ActionError
 import uniffi.proton_mail_uniffi.ActionErrorReason
-import uniffi.proton_mail_uniffi.DraftError
-import uniffi.proton_mail_uniffi.DraftErrorReason
+import uniffi.proton_mail_uniffi.DraftOpenError
+import uniffi.proton_mail_uniffi.DraftOpenErrorReason
+import uniffi.proton_mail_uniffi.DraftSaveSendError
+import uniffi.proton_mail_uniffi.DraftSaveSendErrorReason
 import uniffi.proton_mail_uniffi.EventError
 import uniffi.proton_mail_uniffi.EventErrorReason
 import uniffi.proton_mail_uniffi.ProtonError
@@ -47,10 +49,31 @@ fun ActionError.toDataError(): DataError = when (this) {
     }
 }
 
-fun DraftError.toDataError(): DataError = when (this) {
-    is DraftError.Other -> this.v1.toDataError()
-    is DraftError.Reason -> when (this.v1) {
-        DraftErrorReason.UNKNOWN_MIME_TYPE -> DataError.Local.SaveDraftError
+fun DraftSaveSendError.toDataError(): DataError = when (this) {
+    is DraftSaveSendError.Other -> this.v1.toDataError()
+    is DraftSaveSendError.Reason -> when (this.v1) {
+        is DraftSaveSendErrorReason.AddressDisabled,
+        is DraftSaveSendErrorReason.AddressDoesNotHavePrimaryKey,
+        DraftSaveSendErrorReason.AlreadySent,
+        DraftSaveSendErrorReason.MessageAlreadySent,
+        DraftSaveSendErrorReason.MessageDoesNotExist,
+        DraftSaveSendErrorReason.MessageIsNotADraft,
+        DraftSaveSendErrorReason.NoRecipients,
+        is DraftSaveSendErrorReason.PackageError,
+        is DraftSaveSendErrorReason.ProtonRecipientDoesNotExist,
+        is DraftSaveSendErrorReason.RecipientEmailInvalid,
+        is DraftSaveSendErrorReason.UnknownRecipientValidationError -> DataError.Local.SaveDraftError
+    }
+}
+
+fun DraftOpenError.toDataError(): DataError = when (this) {
+    is DraftOpenError.Other -> this.v1.toDataError()
+    is DraftOpenError.Reason -> when (this.v1) {
+        DraftOpenErrorReason.MESSAGE_DOES_NOT_EXIST,
+        DraftOpenErrorReason.MESSAGE_IS_NOT_A_DRAFT,
+        DraftOpenErrorReason.REPLY_OR_FORWARD_DRAFT,
+        DraftOpenErrorReason.ADDRESS_NOT_FOUND,
+        DraftOpenErrorReason.MESSAGE_BODY_MISSING -> DataError.Local.OpenDraftError
     }
 }
 

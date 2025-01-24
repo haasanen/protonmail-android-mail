@@ -36,8 +36,8 @@ class GetAccountAvatarItemImpl @Inject constructor(
             is MailSessionGetAccountResult.Ok -> result.v1
         }
         return CoreAccountAvatarItem(
-            initials = account?.avatarInformation()?.text,
-            color = account?.avatarInformation()?.color
+            initials = account?.details()?.avatarInformation?.text,
+            color = account?.details()?.avatarInformation?.color
         )
     }
 }

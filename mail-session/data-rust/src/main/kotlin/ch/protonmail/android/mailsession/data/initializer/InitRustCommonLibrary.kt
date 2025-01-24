@@ -25,8 +25,10 @@ import ch.protonmail.android.mailsession.data.repository.MailSessionRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
 import me.proton.core.network.data.di.BaseProtonApiUrl
 import okhttp3.HttpUrl
+import okhttp3.internal.toCanonicalHost
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.ApiConfig
+import uniffi.proton_mail_uniffi.ApiEnvId
 import uniffi.proton_mail_uniffi.CreateMailSessionResult
 import uniffi.proton_mail_uniffi.MailSessionParams
 import uniffi.proton_mail_uniffi.createMailSession
@@ -43,6 +45,7 @@ class InitRustCommonLibrary @Inject constructor(
 
         val skipSrpProofValidation = isRunningAgainstMockWebserver(baseApiUrl)
         val allowInsecureNetworking = isRunningAgainstMockWebserver(baseApiUrl)
+        val protonHost = baseApiUrl.toApiEnv()
         val sessionParams = MailSessionParams(
             sessionDir = context.filesDir.absolutePath,
             userDir = context.filesDir.absolutePath,
@@ -52,7 +55,8 @@ class InitRustCommonLibrary @Inject constructor(
             logDebug = false,
             apiEnvConfig = ApiConfig(
                 appVersion = config.appVersion,
-                userAgent = config.userAgent
+                userAgent = config.userAgent,
+                envId = protonHost
             )
         )
         Timber.d("rust-session: Initializing the Rust Lib with $sessionParams")
@@ -70,6 +74,12 @@ class InitRustCommonLibrary @Inject constructor(
             }
         }
 
+    }
+
+    private fun HttpUrl.toApiEnv() = when (this.host.toCanonicalHost()) {
+        "mail-api.proton.me" -> ApiEnvId.Prod
+        "mail-api.proton.black" -> ApiEnvId.Atlas
+        else -> ApiEnvId.Prod
     }
 
     private fun isRunningAgainstMockWebserver(baseApiUrl: HttpUrl) = baseApiUrl.host == "localhost"

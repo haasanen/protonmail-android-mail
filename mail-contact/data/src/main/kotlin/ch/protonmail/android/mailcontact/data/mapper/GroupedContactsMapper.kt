@@ -28,6 +28,6 @@ class GroupedContactsMapper @Inject constructor(
 
     fun toGroupedContacts(localGroupedContacts: LocalGroupedContacts): GroupedContacts = GroupedContacts(
         groupedBy = localGroupedContacts.groupedBy,
-        contacts = localGroupedContacts.item.map { contactItemTypeMapper.toContactMetadata(it) }
+        contacts = localGroupedContacts.items.map { contactItemTypeMapper.toContactMetadata(it) }
     )
 }

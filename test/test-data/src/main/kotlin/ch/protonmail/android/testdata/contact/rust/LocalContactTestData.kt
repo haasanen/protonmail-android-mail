@@ -47,11 +47,15 @@ object LocalContactTestData {
             emails = listOf(
                 ContactEmailItem(
                     id = Id(101u),
-                    email = "alice.johnson@example.com"
+                    email = "alice.johnson@example.com",
+                    isProton = false,
+                    lastUsedTime = 0uL
                 ),
                 ContactEmailItem(
                     id = Id(102u),
-                    email = "alice.work@example.com"
+                    email = "alice.work@example.com",
+                    isProton = false,
+                    lastUsedTime = 0uL
                 )
             )
         )
@@ -68,7 +72,9 @@ object LocalContactTestData {
             emails = listOf(
                 ContactEmailItem(
                     id = Id(104u),
-                    email = "bob.smith@example.com"
+                    email = "bob.smith@example.com",
+                    isProton = false,
+                    lastUsedTime = 0uL
                 )
             )
         )
@@ -79,10 +85,19 @@ object LocalContactTestData {
             id = contactGroupId1,
             name = "A Family",
             avatarColor = "#FFD700",
-            emails = listOf(
-                ContactEmailItem(
+            contacts = listOf(
+                ContactItem(
                     id = Id(106u),
-                    email = "family@example.com"
+                    name = "family",
+                    avatarInformation = AvatarInformation("Fam", "#rrr"),
+                    emails = listOf(
+                        ContactEmailItem(
+                            id = Id(1u),
+                            "family@example.com",
+                            isProton = false,
+                            lastUsedTime = 0uL
+                        )
+                    )
                 )
             )
         )
@@ -93,14 +108,25 @@ object LocalContactTestData {
             id = contactGroupId2,
             name = "B Work Colleagues",
             avatarColor = "#8A2BE2",
-            emails = listOf(
-                ContactEmailItem(
-                    id = Id(108u),
-                    email = "work@example.com"
-                ),
-                ContactEmailItem(
-                    id = Id(109u),
-                    email = "team@example.com"
+            contacts = listOf(
+                ContactItem(
+                    id = Id(106u),
+                    name = "family",
+                    avatarInformation = AvatarInformation("Fam", "#rrr"),
+                    emails = listOf(
+                        ContactEmailItem(
+                            id = Id(1u),
+                            email = "work@example.com",
+                            isProton = false,
+                            lastUsedTime = 0uL
+                        ),
+                        ContactEmailItem(
+                            id = Id(1u),
+                            email = "team@example.com",
+                            isProton = false,
+                            lastUsedTime = 0uL
+                        )
+                    )
                 )
             )
         )
@@ -108,11 +134,11 @@ object LocalContactTestData {
 
     val groupedContactsByA = LocalGroupedContacts(
         groupedBy = "A",
-        item = listOf(contact1, contactGroup1)
+        items = listOf(contact1, contactGroup1)
     )
 
     val groupedContactsByB = LocalGroupedContacts(
         groupedBy = "B",
-        item = listOf(contact2, contactGroup2)
+        items = listOf(contact2, contactGroup2)
     )
 }

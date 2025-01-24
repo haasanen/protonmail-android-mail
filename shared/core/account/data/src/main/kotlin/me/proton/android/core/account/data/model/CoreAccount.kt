@@ -26,11 +26,11 @@ import uniffi.proton_mail_uniffi.StoredAccountState
 
 internal fun StoredAccount.toCoreAccount() = CoreAccount(
     userId = CoreUserId(userId()),
-    displayName = displayName(),
-    nameOrAddress = nameOrAddress(),
-    primaryEmailAddress = primaryAddr(),
+    displayName = details().name,
+    nameOrAddress = details().name,
+    primaryEmailAddress = details().email,
     state = state().toCoreAccountState(),
-    username = username()
+    username = details().name
 )
 
 internal fun StoredAccountState.toCoreAccountState() = when (this) {
