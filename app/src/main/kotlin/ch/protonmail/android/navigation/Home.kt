@@ -69,10 +69,10 @@ import ch.protonmail.android.mailsidebar.presentation.Sidebar
 import ch.protonmail.android.navigation.model.Destination.Dialog
 import ch.protonmail.android.navigation.model.Destination.Screen
 import ch.protonmail.android.navigation.model.HomeState
-import ch.protonmail.android.navigation.model.OnboardingEligibilityState
+import ch.protonmail.android.mailonboarding.domain.model.OnboardingEligibilityState
 import ch.protonmail.android.navigation.onboarding.Onboarding
-import ch.protonmail.android.navigation.onboarding.OnboardingStepAction
-import ch.protonmail.android.navigation.onboarding.OnboardingStepViewModel
+import ch.protonmail.android.mailonboarding.presentation.viewmodel.OnboardingStepAction
+import ch.protonmail.android.mailonboarding.presentation.viewmodel.OnboardingStepViewModel
 import ch.protonmail.android.navigation.route.addAlternativeRoutingSetting
 import ch.protonmail.android.navigation.route.addAppSettings
 import ch.protonmail.android.navigation.route.addAutoLockPinScreen

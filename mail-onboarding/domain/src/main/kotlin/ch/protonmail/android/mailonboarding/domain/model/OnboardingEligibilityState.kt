@@ -16,7 +16,7 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.navigation.model
+package ch.protonmail.android.mailonboarding.domain.model
 
 sealed interface OnboardingEligibilityState {
     data object Required : OnboardingEligibilityState

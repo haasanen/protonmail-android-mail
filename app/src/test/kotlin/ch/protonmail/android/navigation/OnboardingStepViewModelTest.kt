@@ -25,9 +25,9 @@ import ch.protonmail.android.mailcommon.domain.model.PreferencesError
 import ch.protonmail.android.mailonboarding.domain.model.OnboardingPreference
 import ch.protonmail.android.mailonboarding.domain.usecase.ObserveOnboarding
 import ch.protonmail.android.mailonboarding.domain.usecase.SaveOnboarding
-import ch.protonmail.android.navigation.model.OnboardingEligibilityState
-import ch.protonmail.android.navigation.onboarding.OnboardingStepAction
-import ch.protonmail.android.navigation.onboarding.OnboardingStepViewModel
+import ch.protonmail.android.mailonboarding.domain.model.OnboardingEligibilityState
+import ch.protonmail.android.mailonboarding.presentation.viewmodel.OnboardingStepAction
+import ch.protonmail.android.mailonboarding.presentation.viewmodel.OnboardingStepViewModel
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
 import io.mockk.coVerify
 import io.mockk.confirmVerified
