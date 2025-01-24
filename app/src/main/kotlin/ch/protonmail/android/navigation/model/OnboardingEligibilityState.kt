@@ -18,7 +18,7 @@
 
 package ch.protonmail.android.navigation.model
 
-internal sealed interface OnboardingEligibilityState {
+sealed interface OnboardingEligibilityState {
     data object Required : OnboardingEligibilityState
     data object NotRequired : OnboardingEligibilityState
     data object Loading : OnboardingEligibilityState

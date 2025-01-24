@@ -31,6 +31,7 @@ import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -68,6 +69,7 @@ import ch.protonmail.android.mailsidebar.presentation.Sidebar
 import ch.protonmail.android.navigation.model.Destination.Dialog
 import ch.protonmail.android.navigation.model.Destination.Screen
 import ch.protonmail.android.navigation.model.HomeState
+import ch.protonmail.android.navigation.model.OnboardingEligibilityState
 import ch.protonmail.android.navigation.onboarding.Onboarding
 import ch.protonmail.android.navigation.onboarding.OnboardingStepAction
 import ch.protonmail.android.navigation.onboarding.OnboardingStepViewModel
@@ -134,6 +136,7 @@ fun Home(
     val snackbarHostErrorState = remember { ProtonSnackbarHostState(defaultType = ProtonSnackbarType.ERROR) }
     val scope = rememberCoroutineScope()
     val state by viewModel.state.collectAsStateWithLifecycle(HomeState.Initial)
+    val onboardingEligibilityState by onboardingStepViewModel.onboardingEligibilityState.collectAsStateWithLifecycle()
 
     val offlineSnackbarMessage = stringResource(id = R.string.you_are_offline)
     fun showOfflineSnackbar() = scope.launch {
@@ -274,8 +277,10 @@ fun Home(
 
     val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
-    ConsumableLaunchedEffect(state.showOnboarding) {
-        bottomSheetState.show()
+    LaunchedEffect(onboardingEligibilityState) {
+        if (onboardingEligibilityState == OnboardingEligibilityState.Required) {
+            bottomSheetState.show()
+        }
     }
 
     ProtonModalBottomSheetLayout(

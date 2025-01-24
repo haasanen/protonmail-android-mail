@@ -20,15 +20,32 @@ package ch.protonmail.android.navigation.onboarding
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import arrow.core.Either
+import ch.protonmail.android.mailcommon.domain.model.PreferencesError
+import ch.protonmail.android.mailonboarding.domain.model.OnboardingPreference
+import ch.protonmail.android.mailonboarding.domain.usecase.ObserveOnboarding
 import ch.protonmail.android.mailonboarding.domain.usecase.SaveOnboarding
+import ch.protonmail.android.navigation.model.OnboardingEligibilityState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class OnboardingStepViewModel @Inject constructor(
-    private val saveOnboarding: SaveOnboarding
+    private val saveOnboarding: SaveOnboarding,
+    observeOnboarding: ObserveOnboarding
 ) : ViewModel() {
+
+    val onboardingEligibilityState = observeOnboarding()
+        .mapLatest { it.toState() }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.Lazily,
+            initialValue = OnboardingEligibilityState.Loading
+        )
 
     fun submit(action: OnboardingStepAction) {
         viewModelScope.launch {
@@ -36,6 +53,11 @@ class OnboardingStepViewModel @Inject constructor(
                 OnboardingStepAction.MarkOnboardingComplete -> saveOnboarding(display = false)
             }
         }
+    }
+
+    private fun Either<PreferencesError, OnboardingPreference>.toState(): OnboardingEligibilityState {
+        val preference = this.getOrNull() ?: return OnboardingEligibilityState.Required
+        return if (preference.display) OnboardingEligibilityState.Required else OnboardingEligibilityState.NotRequired
     }
 }
 

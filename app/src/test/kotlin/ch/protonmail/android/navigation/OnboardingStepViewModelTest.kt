@@ -18,43 +18,82 @@
 
 package ch.protonmail.android.navigation
 
+import app.cash.turbine.test
+import arrow.core.left
+import arrow.core.right
+import ch.protonmail.android.mailcommon.domain.model.PreferencesError
+import ch.protonmail.android.mailonboarding.domain.model.OnboardingPreference
+import ch.protonmail.android.mailonboarding.domain.usecase.ObserveOnboarding
 import ch.protonmail.android.mailonboarding.domain.usecase.SaveOnboarding
+import ch.protonmail.android.navigation.model.OnboardingEligibilityState
 import ch.protonmail.android.navigation.onboarding.OnboardingStepAction
 import ch.protonmail.android.navigation.onboarding.OnboardingStepViewModel
+import ch.protonmail.android.test.utils.rule.MainDispatcherRule
 import io.mockk.coVerify
 import io.mockk.confirmVerified
+import io.mockk.every
 import io.mockk.mockk
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
-import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
-import kotlinx.coroutines.test.setMain
-import kotlin.test.AfterTest
-import kotlin.test.BeforeTest
+import org.junit.Rule
 import kotlin.test.Test
+import kotlin.test.assertEquals
 
 internal class OnboardingStepViewModelTest {
 
+    @get:Rule
+    val mainDispatcherRule = MainDispatcherRule()
+
     private val saveOnboarding = mockk<SaveOnboarding>(relaxed = true)
-    private val viewModel = OnboardingStepViewModel(saveOnboarding)
+    private val observeOnboarding = mockk<ObserveOnboarding>()
 
-    @BeforeTest
-    fun setup() {
-        Dispatchers.setMain(UnconfinedTestDispatcher())
-    }
-
-    @AfterTest
-    fun teardown() {
-        Dispatchers.resetMain()
+    private val viewModel by lazy {
+        OnboardingStepViewModel(saveOnboarding, observeOnboarding)
     }
 
     @Test
     fun `should call save onboarding when marking onboarding as completed`() = runTest {
+        // Given
+        every { observeOnboarding() } returns flowOf(OnboardingPreference(false).right())
+
         // When
         viewModel.submit(OnboardingStepAction.MarkOnboardingComplete)
 
         // Then
         coVerify(exactly = 1) { saveOnboarding(false) }
         confirmVerified(saveOnboarding)
+    }
+
+    @Test
+    fun `should emit onboarding required state when observe onboarding returns true`() = runTest {
+        // Given
+        every { observeOnboarding() } returns flowOf(OnboardingPreference(true).right())
+
+        // When + Then
+        viewModel.onboardingEligibilityState.test {
+            assertEquals(OnboardingEligibilityState.Required, awaitItem())
+        }
+    }
+
+    @Test
+    fun `should emit onboarding not required state when observe onboarding returns false`() = runTest {
+        // Given
+        every { observeOnboarding() } returns flowOf(OnboardingPreference(false).right())
+
+        // When + Then
+        viewModel.onboardingEligibilityState.test {
+            assertEquals(OnboardingEligibilityState.NotRequired, awaitItem())
+        }
+    }
+
+    @Test
+    fun `should emit onboarding required state when observe onboarding errors`() = runTest {
+        // Given
+        every { observeOnboarding() } returns flowOf(PreferencesError.left())
+
+        // When + Then
+        viewModel.onboardingEligibilityState.test {
+            assertEquals(OnboardingEligibilityState.Required, awaitItem())
+        }
     }
 }
