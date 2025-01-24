@@ -35,8 +35,8 @@ import ch.protonmail.android.mailcomposer.presentation.model.DraftUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.FocusedFieldType
 import ch.protonmail.android.mailcomposer.presentation.model.RecipientUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.SenderUiModel
+import ch.protonmail.android.mailmessage.domain.model.AttachmentMetadata
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
-import ch.protonmail.android.mailmessage.domain.model.MessageAttachment
 import ch.protonmail.android.mailmessage.presentation.mapper.AttachmentUiModelMapper
 import ch.protonmail.android.mailmessage.presentation.model.AttachmentGroupUiModel
 import ch.protonmail.android.mailmessage.presentation.model.NO_ATTACHMENT_LIMIT
@@ -232,7 +232,7 @@ class ComposerReducer @Inject constructor(
         )
     }
 
-    private fun updateAttachmentsState(currentState: ComposerDraftState, attachments: List<MessageAttachment>) =
+    private fun updateAttachmentsState(currentState: ComposerDraftState, attachments: List<AttachmentMetadata>) =
         currentState.copy(
             attachments = AttachmentGroupUiModel(
                 limit = NO_ATTACHMENT_LIMIT,

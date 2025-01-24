@@ -102,6 +102,7 @@ import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.maillabel.presentation.model.LabelSelectedState
 import ch.protonmail.android.maillabel.presentation.toUiModels
 import ch.protonmail.android.mailmessage.domain.model.AttachmentId
+import ch.protonmail.android.mailmessage.domain.model.AttachmentMetadata
 import ch.protonmail.android.mailmessage.domain.model.AvatarImageState
 import ch.protonmail.android.mailmessage.domain.model.AvatarImageStates
 import ch.protonmail.android.mailmessage.domain.model.ConversationMessages
@@ -109,7 +110,6 @@ import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.model.GetDecryptedMessageBodyError
 import ch.protonmail.android.mailmessage.domain.model.LabelSelectionList
 import ch.protonmail.android.mailmessage.domain.model.Message
-import ch.protonmail.android.mailmessage.domain.model.MessageAttachment
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.Participant
 import ch.protonmail.android.mailmessage.domain.usecase.DeleteMessages
@@ -220,7 +220,7 @@ class ConversationDetailViewModel @Inject constructor(
     private val conversationId = requireConversationId()
     private val initialScrollToMessageId = getInitialScrollToMessageId()
     private val openedFromLocation = getOpenedFromLocation()
-    private val attachmentsState = MutableStateFlow<Map<MessageId, List<MessageAttachment>>>(emptyMap())
+    private val attachmentsState = MutableStateFlow<Map<MessageId, List<AttachmentMetadata>>>(emptyMap())
 
     val state: StateFlow<ConversationDetailState> = mutableDetailState.asStateFlow()
 
@@ -1084,7 +1084,7 @@ class ConversationDetailViewModel @Inject constructor(
         } else false
     }
 
-    private fun updateObservedAttachments(attachments: Map<MessageId, List<MessageAttachment>>) {
+    private fun updateObservedAttachments(attachments: Map<MessageId, List<AttachmentMetadata>>) {
         attachmentsState.update { it + attachments }
     }
 

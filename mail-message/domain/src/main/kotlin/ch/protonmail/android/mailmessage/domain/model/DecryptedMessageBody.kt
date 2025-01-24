@@ -22,5 +22,5 @@ data class DecryptedMessageBody(
     val messageId: MessageId,
     val value: String,
     val mimeType: MimeType,
-    val attachments: List<MessageAttachment> = emptyList()
+    val attachments: List<AttachmentMetadata> = emptyList()
 )

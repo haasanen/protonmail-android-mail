@@ -55,7 +55,7 @@ import ch.protonmail.android.mailcomposer.presentation.model.RecipientUiModel.Va
 import ch.protonmail.android.mailcomposer.presentation.model.SenderUiModel
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.Recipient
-import ch.protonmail.android.mailmessage.domain.sample.MessageAttachmentSample
+import ch.protonmail.android.mailmessage.domain.sample.AttachmentMetadataSamples
 import ch.protonmail.android.mailmessage.domain.sample.RecipientSample
 import ch.protonmail.android.mailmessage.presentation.mapper.AttachmentUiModelMapper
 import ch.protonmail.android.mailmessage.presentation.model.AttachmentGroupUiModel

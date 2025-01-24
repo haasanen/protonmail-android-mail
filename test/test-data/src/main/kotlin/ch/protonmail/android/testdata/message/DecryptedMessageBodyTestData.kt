@@ -19,11 +19,11 @@
 package ch.protonmail.android.testdata.message
 
 import ch.protonmail.android.mailcommon.domain.sample.UserAddressSample
+import ch.protonmail.android.mailmessage.domain.model.AttachmentMetadata
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
-import ch.protonmail.android.mailmessage.domain.model.MessageAttachment
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.MimeType
-import ch.protonmail.android.mailmessage.domain.sample.MessageAttachmentSample
+import ch.protonmail.android.mailmessage.domain.sample.AttachmentMetadataSamples
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
 import me.proton.core.user.domain.entity.UserAddress
 
@@ -33,41 +33,41 @@ object DecryptedMessageBodyTestData {
 
     val messageBodyWithAttachment = buildDecryptedMessageBody(
         attachments = listOf(
-            MessageAttachmentSample.invoice
+            AttachmentMetadataSamples.Invoice
         )
     )
 
     val messageBodyWithEmbeddedImage = buildDecryptedMessageBody(
         attachments = listOf(
-            MessageAttachmentSample.embeddedImageAttachment
+            AttachmentMetadataSamples.EmbeddedImageAttachment
         )
     )
 
     val messageBodyWithEmbeddedOctetStream = buildDecryptedMessageBody(
         attachments = listOf(
-            MessageAttachmentSample.embeddedOctetStreamAttachment
+            AttachmentMetadataSamples.EmbeddedOctetStreamAttachment
         )
     )
 
     val messageBodyWithInvalidEmbeddedAttachment = buildDecryptedMessageBody(
         attachments = listOf(
-            MessageAttachmentSample.invalidEmbeddedImageAttachment
+            AttachmentMetadataSamples.InvalidEmbeddedImageAttachment
         )
     )
 
     val MessageWithAttachments = buildDecryptedMessageBody(
         messageId = MessageIdSample.MessageWithAttachments,
         attachments = listOf(
-            MessageAttachmentSample.document,
-            MessageAttachmentSample.documentWithReallyLongFileName,
-            MessageAttachmentSample.embeddedImageAttachment
+            AttachmentMetadataSamples.Document,
+            AttachmentMetadataSamples.DocumentWithReallyLongFileName,
+            AttachmentMetadataSamples.EmbeddedImageAttachment
         )
     )
 
     val MessageWithSignedAttachments = buildDecryptedMessageBody(
         messageId = MessageIdSample.MessageWithAttachments,
         attachments = listOf(
-            MessageAttachmentSample.signedDocument
+            AttachmentMetadataSamples.SignedDocument
         )
     )
 
@@ -88,8 +88,8 @@ object DecryptedMessageBodyTestData {
     val PgpMimeMessage = buildDecryptedMessageBody(
         messageId = MessageIdSample.PgpMimeMessage,
         attachments = listOf(
-            MessageAttachmentSample.embeddedImageAttachment,
-            MessageAttachmentSample.image
+            AttachmentMetadataSamples.EmbeddedImageAttachment,
+            AttachmentMetadataSamples.Image
         )
     )
 
@@ -97,7 +97,7 @@ object DecryptedMessageBodyTestData {
         messageId: MessageId = MessageIdSample.build(),
         value: String = DECRYPTED_MESSAGE_BODY,
         mimeType: MimeType = MimeType.Html,
-        attachments: List<MessageAttachment> = emptyList(),
+        attachments: List<AttachmentMetadata> = emptyList(),
         userAddress: UserAddress = UserAddressSample.PrimaryAddress
     ) = DecryptedMessageBody(
         messageId = messageId,

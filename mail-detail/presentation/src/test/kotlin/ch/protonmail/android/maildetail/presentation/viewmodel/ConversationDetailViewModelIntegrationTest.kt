@@ -132,17 +132,20 @@ import ch.protonmail.android.maillabel.domain.sample.LabelSample
 import ch.protonmail.android.maillabel.presentation.model.LabelSelectedState
 import ch.protonmail.android.maillabel.presentation.sample.LabelUiModelWithSelectedStateSample
 import ch.protonmail.android.maillabel.presentation.toUiModels
+import ch.protonmail.android.mailmessage.domain.model.AttachmentDisposition
 import ch.protonmail.android.mailmessage.domain.model.AttachmentId
+import ch.protonmail.android.mailmessage.domain.model.AttachmentMetadata
+import ch.protonmail.android.mailmessage.domain.model.AttachmentMimeType
 import ch.protonmail.android.mailmessage.domain.model.ConversationMessages
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.model.EmbeddedImage
 import ch.protonmail.android.mailmessage.domain.model.GetDecryptedMessageBodyError
 import ch.protonmail.android.mailmessage.domain.model.LabelSelectionList
 import ch.protonmail.android.mailmessage.domain.model.Message
-import ch.protonmail.android.mailmessage.domain.model.MessageAttachment
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.MimeType
-import ch.protonmail.android.mailmessage.domain.sample.MessageAttachmentSample
+import ch.protonmail.android.mailmessage.domain.model.MimeTypeCategory
+import ch.protonmail.android.mailmessage.domain.sample.AttachmentMetadataSamples
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
 import ch.protonmail.android.mailmessage.domain.sample.MessageSample
 import ch.protonmail.android.mailmessage.domain.usecase.DeleteMessages
@@ -156,7 +159,8 @@ import ch.protonmail.android.mailmessage.domain.usecase.ObserveMessage
 import ch.protonmail.android.mailmessage.domain.usecase.ResolveParticipantName
 import ch.protonmail.android.mailmessage.domain.usecase.StarMessages
 import ch.protonmail.android.mailmessage.domain.usecase.UnStarMessages
-import ch.protonmail.android.mailmessage.presentation.mapper.AttachmentUiModelMapper
+import ch.protonmail.android.mailmessage.presentation.mapper.AttachmentGroupUiModelMapper
+import ch.protonmail.android.mailmessage.presentation.mapper.AttachmentMetadataUiModelMapper
 import ch.protonmail.android.mailmessage.presentation.mapper.AvatarImageUiModelMapper
 import ch.protonmail.android.mailmessage.presentation.mapper.DetailMoreActionsBottomSheetUiMapper
 import ch.protonmail.android.mailmessage.presentation.model.MessageBodyExpandCollapseMode
@@ -350,7 +354,8 @@ class ConversationDetailViewModelIntegrationTest {
     }
 
     private val messageIdUiModelMapper = MessageIdUiModelMapper()
-    private val attachmentUiModelMapper = AttachmentUiModelMapper()
+    private val attachmentMetadataUiModelMapper = AttachmentMetadataUiModelMapper()
+    private val attachmentGroupUiModelMapper = AttachmentGroupUiModelMapper(attachmentMetadataUiModelMapper)
     private val doesMessageBodyHaveEmbeddedImages = DoesMessageBodyHaveEmbeddedImages()
     private val doesMessageBodyHaveRemoteContent = DoesMessageBodyHaveRemoteContent()
     private val getLabelAsBottomSheetData = GetLabelAsBottomSheetData(
@@ -408,7 +413,7 @@ class ConversationDetailViewModelIntegrationTest {
         messageDetailFooterUiModelMapper = MessageDetailFooterUiModelMapper(),
         messageBannersUiModelMapper = MessageBannersUiModelMapper(context),
         messageBodyUiModelMapper = MessageBodyUiModelMapper(
-            attachmentUiModelMapper = attachmentUiModelMapper,
+            attachmentGroupUiModelMapper = attachmentGroupUiModelMapper,
             doesMessageBodyHaveEmbeddedImages = doesMessageBodyHaveEmbeddedImages,
             doesMessageBodyHaveRemoteContent = doesMessageBodyHaveRemoteContent,
             injectCssIntoDecryptedMessageBody = injectCssIntoDecryptedMessageBody,
@@ -546,10 +551,10 @@ class ConversationDetailViewModelIntegrationTest {
             value = EmailBodyTestSamples.BodyWithoutQuotes,
             mimeType = MimeType.Html,
             attachments = listOf(
-                MessageAttachmentSample.document,
-                MessageAttachmentSample.documentWithReallyLongFileName,
-                MessageAttachmentSample.invoice,
-                MessageAttachmentSample.image
+                AttachmentMetadataSamples.Document,
+                AttachmentMetadataSamples.DocumentWithReallyLongFileName,
+                AttachmentMetadataSamples.Invoice,
+                AttachmentMetadataSamples.Image
             )
         ).right()
         coEvery { observeAttachmentStatus.invoke(userId, messageId, any()) } returns flowOf()
@@ -581,14 +586,14 @@ class ConversationDetailViewModelIntegrationTest {
             )
             assertEquals(MessageBodyExpandCollapseMode.NotApplicable, expandedMessage.expandCollapseMode)
             coVerifyOrder {
-                observeAttachmentStatus.invoke(userId, messageId, MessageAttachmentSample.document.attachmentId)
+                observeAttachmentStatus.invoke(userId, messageId, AttachmentMetadataSamples.Document.attachmentId)
                 observeAttachmentStatus.invoke(
                     userId,
                     messageId,
-                    MessageAttachmentSample.documentWithReallyLongFileName.attachmentId
+                    AttachmentMetadataSamples.DocumentWithReallyLongFileName.attachmentId
                 )
-                observeAttachmentStatus.invoke(userId, messageId, MessageAttachmentSample.invoice.attachmentId)
-                observeAttachmentStatus.invoke(userId, messageId, MessageAttachmentSample.image.attachmentId)
+                observeAttachmentStatus.invoke(userId, messageId, AttachmentMetadataSamples.Invoice.attachmentId)
+                observeAttachmentStatus.invoke(userId, messageId, AttachmentMetadataSamples.Image.attachmentId)
             }
         }
     }
@@ -605,10 +610,10 @@ class ConversationDetailViewModelIntegrationTest {
             value = EmailBodyTestSamples.BodyWithProtonMailQuote,
             mimeType = MimeType.Html,
             attachments = listOf(
-                MessageAttachmentSample.document,
-                MessageAttachmentSample.documentWithReallyLongFileName,
-                MessageAttachmentSample.invoice,
-                MessageAttachmentSample.image
+                AttachmentMetadataSamples.Document,
+                AttachmentMetadataSamples.DocumentWithReallyLongFileName,
+                AttachmentMetadataSamples.Invoice,
+                AttachmentMetadataSamples.Image
             )
         ).right()
         coEvery { observeAttachmentStatus.invoke(userId, messageId, any()) } returns flowOf()
@@ -646,10 +651,10 @@ class ConversationDetailViewModelIntegrationTest {
             value = EmailBodyTestSamples.BodyWithProtonMailQuote,
             mimeType = MimeType.Html,
             attachments = listOf(
-                MessageAttachmentSample.document,
-                MessageAttachmentSample.documentWithReallyLongFileName,
-                MessageAttachmentSample.invoice,
-                MessageAttachmentSample.image
+                AttachmentMetadataSamples.Document,
+                AttachmentMetadataSamples.DocumentWithReallyLongFileName,
+                AttachmentMetadataSamples.Invoice,
+                AttachmentMetadataSamples.Image
             )
         ).right()
         coEvery { observeAttachmentStatus.invoke(userId, messageId, any()) } returns flowOf()
@@ -694,10 +699,10 @@ class ConversationDetailViewModelIntegrationTest {
             value = EmailBodyTestSamples.BodyWithProtonMailQuote,
             mimeType = MimeType.Html,
             attachments = listOf(
-                MessageAttachmentSample.document,
-                MessageAttachmentSample.documentWithReallyLongFileName,
-                MessageAttachmentSample.invoice,
-                MessageAttachmentSample.image
+                AttachmentMetadataSamples.Document,
+                AttachmentMetadataSamples.DocumentWithReallyLongFileName,
+                AttachmentMetadataSamples.Invoice,
+                AttachmentMetadataSamples.Image
             )
         ).right()
         coEvery { observeAttachmentStatus.invoke(userId, messageId, any()) } returns flowOf()
@@ -1566,12 +1571,12 @@ class ConversationDetailViewModelIntegrationTest {
                 messageId = messageId,
                 value = EmailBodyTestSamples.BodyWithoutQuotes,
                 mimeType = MimeType.Html,
-                attachments = listOf(MessageAttachmentSample.calendar)
+                attachments = listOf(AttachmentMetadataSamples.Calendar)
             ).right()
             coEvery { observeAttachmentStatus.invoke(userId, messageId, any()) } returns flowOf()
             coEvery { isProtonCalendarInstalled() } returns true
             coEvery {
-                getAttachmentIntentValues(userId, messageId, AttachmentId("calendar"))
+                getAttachmentIntentValues(userId, messageId, AttachmentId(AttachmentMetadataSamples.Ids.ID_CALENDAR))
             } returns OpenAttachmentIntentValues(
                 mimeType = " text/calendar",
                 uri = expectedUri
@@ -1609,7 +1614,7 @@ class ConversationDetailViewModelIntegrationTest {
                 messageId = messageId,
                 value = EmailBodyTestSamples.BodyWithoutQuotes,
                 mimeType = MimeType.Html,
-                attachments = listOf(MessageAttachmentSample.calendar)
+                attachments = listOf(AttachmentMetadataSamples.Calendar)
             ).right()
             coEvery { observeAttachmentStatus.invoke(userId, messageId, any()) } returns flowOf()
             coEvery { isProtonCalendarInstalled() } returns false
@@ -2253,10 +2258,10 @@ class ConversationDetailViewModelIntegrationTest {
             value = EmailBodyTestSamples.BodyWithoutQuotes,
             mimeType = MimeType.Html,
             attachments = listOf(
-                MessageAttachmentSample.document,
-                MessageAttachmentSample.documentWithReallyLongFileName,
-                MessageAttachmentSample.invoice,
-                MessageAttachmentSample.image
+                AttachmentMetadataSamples.Document,
+                AttachmentMetadataSamples.DocumentWithReallyLongFileName,
+                AttachmentMetadataSamples.Invoice,
+                AttachmentMetadataSamples.Image
             )
         ).right()
 
@@ -2312,10 +2317,10 @@ class ConversationDetailViewModelIntegrationTest {
             value = EmailBodyTestSamples.BodyWithoutQuotes,
             mimeType = MimeType.Html,
             attachments = listOf(
-                MessageAttachmentSample.document,
-                MessageAttachmentSample.documentWithReallyLongFileName,
-                MessageAttachmentSample.invoice,
-                MessageAttachmentSample.image
+                AttachmentMetadataSamples.Document,
+                AttachmentMetadataSamples.DocumentWithReallyLongFileName,
+                AttachmentMetadataSamples.Invoice,
+                AttachmentMetadataSamples.Image
             )
         ).right()
 
@@ -2438,16 +2443,15 @@ class ConversationDetailViewModelIntegrationTest {
         observeAvatarImageStates = observeAvatarImgStates
     )
 
-    private fun aMessageAttachment(id: String): MessageAttachment = MessageAttachment(
+    private fun aMessageAttachment(id: String): AttachmentMetadata = AttachmentMetadata(
         attachmentId = AttachmentId(id),
         name = "name",
         size = 0,
-        mimeType = MimeType.MultipartMixed.value,
-        disposition = null,
-        keyPackets = null,
-        signature = null,
-        encSignature = null,
-        headers = emptyMap()
+        mimeType = AttachmentMimeType(
+            mime = "application/pdf",
+            category = MimeTypeCategory.Pdf
+        ),
+        disposition = AttachmentDisposition.Attachment
     )
 
     private suspend fun ReceiveTurbine<ConversationDetailState>.lastEmittedItem(): ConversationDetailState {

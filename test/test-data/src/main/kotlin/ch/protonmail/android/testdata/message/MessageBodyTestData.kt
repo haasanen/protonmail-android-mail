@@ -18,13 +18,13 @@
 
 package ch.protonmail.android.testdata.message
 
-import ch.protonmail.android.mailmessage.domain.model.MessageAttachment
+import ch.protonmail.android.mailmessage.domain.model.AttachmentMetadata
 import ch.protonmail.android.mailmessage.domain.model.MessageBody
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.MimeType
 import ch.protonmail.android.mailmessage.domain.model.Recipient
 import ch.protonmail.android.mailmessage.domain.model.UnsubscribeMethods
-import ch.protonmail.android.mailmessage.domain.sample.MessageAttachmentSample
+import ch.protonmail.android.mailmessage.domain.sample.AttachmentMetadataSamples
 import ch.protonmail.android.mailmessage.domain.sample.RecipientSample
 import ch.protonmail.android.testdata.message.MessageTestData.RAW_MESSAGE_ID
 import ch.protonmail.android.testdata.user.UserIdTestData
@@ -38,31 +38,7 @@ object MessageBodyTestData {
 
     val messageBodyWithAttachment = buildMessageBody(
         attachments = listOf(
-            MessageAttachmentSample.invoice
-        )
-    )
-
-    val messageBodyWithEmbeddedImage = buildMessageBody(
-        attachments = listOf(
-            MessageAttachmentSample.embeddedImageAttachment
-        )
-    )
-
-    val messageBodyWithEmbeddedOctetStream = buildMessageBody(
-        attachments = listOf(
-            MessageAttachmentSample.embeddedOctetStreamAttachment
-        )
-    )
-
-    val messageBodyWithInvalidEmbeddedAttachment = buildMessageBody(
-        attachments = listOf(
-            MessageAttachmentSample.invalidEmbeddedImageAttachment
-        )
-    )
-
-    val messageBodyWithContentIdList = buildMessageBody(
-        attachments = listOf(
-            MessageAttachmentSample.embeddedImageAttachmentAsList
+            AttachmentMetadataSamples.Invoice
         )
     )
 
@@ -79,7 +55,7 @@ object MessageBodyTestData {
         messageId: MessageId = MessageId(RAW_MESSAGE_ID),
         body: String = RAW_ENCRYPTED_MESSAGE_BODY,
         header: String = "",
-        attachments: List<MessageAttachment> = emptyList(),
+        attachments: List<AttachmentMetadata> = emptyList(),
         mimeType: MimeType = MimeType.PlainText,
         spamScore: String = "",
         replyTo: Recipient = RecipientSample.John,

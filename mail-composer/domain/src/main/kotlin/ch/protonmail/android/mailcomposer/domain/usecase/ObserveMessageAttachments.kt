@@ -19,7 +19,7 @@
 package ch.protonmail.android.mailcomposer.domain.usecase
 
 import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
-import ch.protonmail.android.mailmessage.domain.model.MessageAttachment
+import ch.protonmail.android.mailmessage.domain.model.AttachmentMetadata
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
 import kotlinx.coroutines.flow.Flow
@@ -34,7 +34,7 @@ class ObserveMessageAttachments @Inject constructor(
     private val messageRepository: MessageRepository
 ) {
 
-    operator fun invoke(userId: UserId, messageId: MessageId): Flow<List<MessageAttachment>> {
+    operator fun invoke(userId: UserId, messageId: MessageId): Flow<List<AttachmentMetadata>> {
         Timber.w("ObserveMessageAttachments Not implemented")
         return flowOf()
     }

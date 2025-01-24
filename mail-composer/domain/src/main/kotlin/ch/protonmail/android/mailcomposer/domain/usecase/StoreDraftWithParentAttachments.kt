@@ -26,11 +26,12 @@ import ch.protonmail.android.mailcomposer.domain.Transactor
 import ch.protonmail.android.mailcomposer.domain.model.MessageWithDecryptedBody
 import ch.protonmail.android.mailcomposer.domain.model.SenderEmail
 import ch.protonmail.android.mailmessage.domain.model.AttachmentId
+import ch.protonmail.android.mailmessage.domain.model.AttachmentMetadata
 import ch.protonmail.android.mailmessage.domain.model.AttachmentSyncState
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
-import ch.protonmail.android.mailmessage.domain.model.MessageAttachment
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.MimeType
+import ch.protonmail.android.mailmessage.domain.model.isInline
 import ch.protonmail.android.mailmessage.domain.repository.AttachmentRepository
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
@@ -86,12 +87,12 @@ class StoreDraftWithParentAttachments @Inject constructor(
 
     private fun Raise<Error>.getParentAttachments(
         draftAction: DraftAction,
-        parentMessageAttachments: List<MessageAttachment>
-    ): List<MessageAttachment> = when (draftAction) {
+        parentMessageAttachments: List<AttachmentMetadata>
+    ): List<AttachmentMetadata> = when (draftAction) {
         is DraftAction.PrefillForShare -> emptyList()
         is DraftAction.Forward -> parentMessageAttachments
         is DraftAction.Reply,
-        is DraftAction.ReplyAll -> parentMessageAttachments.filter { it.disposition == "inline" }
+        is DraftAction.ReplyAll -> parentMessageAttachments.filter { it.isInline() }
 
         is DraftAction.Compose,
         is DraftAction.ComposeToAddresses -> {
@@ -104,12 +105,12 @@ class StoreDraftWithParentAttachments @Inject constructor(
         userId: UserId,
         messageId: MessageId,
         senderEmail: SenderEmail,
-        parentAttachments: List<MessageAttachment>
+        parentAttachments: List<AttachmentMetadata>
     ) {
         val draftWithBody = getLocalDraft(userId, messageId, senderEmail)
             .mapLeft { Error.DraftDataError }
             .bind()
-        val parentAttachmentsWithoutSignature = parentAttachments.map { it.copy(signature = null, encSignature = null) }
+        val parentAttachmentsWithoutSignature = parentAttachments
         val updatedDraft = draftWithBody.copy(
             messageBody = draftWithBody.messageBody.copy(
                 attachments = draftWithBody.messageBody.attachments + parentAttachmentsWithoutSignature

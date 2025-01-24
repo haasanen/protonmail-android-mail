@@ -18,7 +18,7 @@
 
 package ch.protonmail.android.mailmessage.domain.model
 
-import ch.protonmail.android.mailmessage.domain.sample.MessageAttachmentSample
+import ch.protonmail.android.mailmessage.domain.sample.AttachmentMetadataSamples
 import kotlin.test.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
@@ -27,23 +27,16 @@ class MessageAttachmentTest {
 
     @Test
     fun `when attachment mimetype is calendar return true`() {
-        val attachment = MessageAttachmentSample.calendar
+        val attachment = AttachmentMetadataSamples.Calendar
 
         assertTrue { attachment.isCalendarAttachment() }
     }
 
     @Test
     fun `when attachment mimetype is not calendar return false`() {
-        val attachment = MessageAttachmentSample.document
+        val attachment = AttachmentMetadataSamples.Document
 
         assertFalse { attachment.isCalendarAttachment() }
-    }
-
-    @Test
-    fun `when attachment mimetype contains calendar return true`() {
-        val attachment = MessageAttachmentSample.calendar.copy(mimeType = "text/calendar;image/png")
-
-        assertTrue { attachment.isCalendarAttachment() }
     }
 
 }

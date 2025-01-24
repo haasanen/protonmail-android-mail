@@ -104,7 +104,7 @@ import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.Recipient
 import ch.protonmail.android.mailmessage.domain.model.SendingError
-import ch.protonmail.android.mailmessage.domain.sample.MessageAttachmentSample
+import ch.protonmail.android.mailmessage.domain.sample.AttachmentMetadataSamples
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
 import ch.protonmail.android.mailmessage.domain.sample.MessageWithBodySample
 import ch.protonmail.android.mailmessage.domain.sample.RecipientSample
@@ -2936,7 +2936,7 @@ class ComposerViewModelTest {
     private fun expectObservedMessageAttachments(userId: UserId, messageId: MessageId) {
         every {
             observeMessageAttachments(userId, messageId)
-        } returns flowOf(listOf(MessageAttachmentSample.invoice))
+        } returns flowOf(listOf(AttachmentMetadataSamples.Invoice))
     }
 
     private fun expectAttachmentDeleteSucceeds(
