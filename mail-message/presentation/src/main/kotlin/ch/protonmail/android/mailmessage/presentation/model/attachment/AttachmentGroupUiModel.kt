@@ -16,15 +16,15 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailmailbox.presentation.mailbox.model
+package ch.protonmail.android.mailmessage.presentation.model.attachment
 
-import androidx.annotation.DrawableRes
-import androidx.compose.runtime.Immutable
-import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
+const val DEFAULT_ATTACHMENT_LIMIT = 3
+const val NO_ATTACHMENT_LIMIT = Int.MAX_VALUE
 
-@Immutable
-data class AttachmentMetadataUiModel(
-    val id: AttachmentIdUiModel,
-    val name: TextUiModel,
-    @DrawableRes val icon: Int
+data class AttachmentGroupUiModel(
+    val limit: Int = DEFAULT_ATTACHMENT_LIMIT,
+    val attachments: List<AttachmentMetadataUiModel>,
+    val expandCollapseMode: AttachmentListExpandCollapseMode = AttachmentListExpandCollapseMode.NotApplicable
 )
+
+fun AttachmentGroupUiModel.isExpandable() = limit < attachments.size

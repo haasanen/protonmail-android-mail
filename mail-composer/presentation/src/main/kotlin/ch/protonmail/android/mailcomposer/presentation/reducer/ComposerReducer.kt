@@ -38,8 +38,8 @@ import ch.protonmail.android.mailcomposer.presentation.model.SenderUiModel
 import ch.protonmail.android.mailmessage.domain.model.AttachmentMetadata
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.presentation.mapper.AttachmentUiModelMapper
-import ch.protonmail.android.mailmessage.presentation.model.AttachmentGroupUiModel
-import ch.protonmail.android.mailmessage.presentation.model.NO_ATTACHMENT_LIMIT
+import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentGroupUiModel
+import ch.protonmail.android.mailmessage.presentation.model.attachment.NO_ATTACHMENT_LIMIT
 import javax.inject.Inject
 import kotlin.time.Duration
 

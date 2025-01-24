@@ -34,10 +34,11 @@ import ch.protonmail.android.maildetail.presentation.model.ParticipantUiModel
 import ch.protonmail.android.maillabel.presentation.model.LabelUiModel
 import ch.protonmail.android.mailmessage.domain.model.Message
 import ch.protonmail.android.mailmessage.domain.sample.MessageSample
-import ch.protonmail.android.mailmessage.presentation.model.AttachmentGroupUiModel
+import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentGroupUiModel
 import ch.protonmail.android.mailmessage.presentation.model.MessageBodyExpandCollapseMode
 import ch.protonmail.android.mailmessage.presentation.model.MessageBodyUiModel
-import ch.protonmail.android.mailmessage.presentation.sample.AttachmentUiModelSample
+import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentListExpandCollapseMode
+import ch.protonmail.android.mailmessage.presentation.sample.AttachmentMetadataUiModelSamples
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 
@@ -176,11 +177,12 @@ object ConversationDetailMessageUiModelSample {
             attachments = AttachmentGroupUiModel(
                 limit = limit,
                 attachments = listOf(
-                    AttachmentUiModelSample.document,
-                    AttachmentUiModelSample.documentWithReallyLongFileName,
-                    AttachmentUiModelSample.invoice,
-                    AttachmentUiModelSample.image
-                )
+                    AttachmentMetadataUiModelSamples.Document,
+                    AttachmentMetadataUiModelSamples.DocumentWithReallyLongFileName,
+                    AttachmentMetadataUiModelSamples.Invoice,
+                    AttachmentMetadataUiModelSamples.Image
+                ),
+                expandCollapseMode = AttachmentListExpandCollapseMode.Collapsed
             )
         )
     )

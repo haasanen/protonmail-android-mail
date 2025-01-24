@@ -58,9 +58,10 @@ import ch.protonmail.android.mailmessage.domain.model.Recipient
 import ch.protonmail.android.mailmessage.domain.sample.AttachmentMetadataSamples
 import ch.protonmail.android.mailmessage.domain.sample.RecipientSample
 import ch.protonmail.android.mailmessage.presentation.mapper.AttachmentUiModelMapper
-import ch.protonmail.android.mailmessage.presentation.model.AttachmentGroupUiModel
-import ch.protonmail.android.mailmessage.presentation.model.NO_ATTACHMENT_LIMIT
-import ch.protonmail.android.mailmessage.presentation.sample.AttachmentUiModelSample
+import ch.protonmail.android.mailmessage.presentation.mapper.AttachmentMetadataUiModelMapper
+import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentGroupUiModel
+import ch.protonmail.android.mailmessage.presentation.model.attachment.NO_ATTACHMENT_LIMIT
+import ch.protonmail.android.mailmessage.presentation.sample.AttachmentMetadataUiModelSamples
 import ch.protonmail.android.testdata.user.UserIdTestData
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
@@ -668,11 +669,11 @@ class ComposerReducerTest(
         private val EmptyToAttachmentsUpdated = TestTransition(
             name = "Should emit attachments when they are updated",
             currentState = ComposerDraftState.initial(messageId),
-            operation = ComposerEvent.OnAttachmentsUpdated(listOf(MessageAttachmentSample.invoice)),
+            operation = ComposerEvent.OnAttachmentsUpdated(listOf(AttachmentMetadataSamples.Invoice)),
             expectedState = ComposerDraftState.initial(messageId).copy(
                 attachments = AttachmentGroupUiModel(
                     limit = NO_ATTACHMENT_LIMIT,
-                    attachments = listOf(AttachmentUiModelSample.deletableInvoice)
+                    attachments = listOf(AttachmentMetadataUiModelSamples.DeletableInvoice)
                 )
             )
         )

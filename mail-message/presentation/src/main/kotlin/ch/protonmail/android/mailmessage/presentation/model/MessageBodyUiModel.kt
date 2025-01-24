@@ -20,6 +20,7 @@ package ch.protonmail.android.mailmessage.presentation.model
 
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailmessage.domain.model.MessageId
+import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentGroupUiModel
 
 data class MessageBodyUiModel(
     val messageId: MessageId,

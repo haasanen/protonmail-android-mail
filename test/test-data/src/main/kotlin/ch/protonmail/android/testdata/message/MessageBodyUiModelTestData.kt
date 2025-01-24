@@ -21,11 +21,11 @@ package ch.protonmail.android.testdata.message
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
-import ch.protonmail.android.mailmessage.presentation.model.AttachmentGroupUiModel
+import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentGroupUiModel
 import ch.protonmail.android.mailmessage.presentation.model.MessageBodyUiModel
 import ch.protonmail.android.mailmessage.presentation.model.MimeTypeUiModel
 import ch.protonmail.android.mailmessage.presentation.model.ViewModePreference
-import ch.protonmail.android.mailmessage.presentation.sample.AttachmentUiModelSample
+import ch.protonmail.android.mailmessage.presentation.sample.AttachmentMetadataUiModelSamples
 import me.proton.core.user.domain.entity.UserAddress
 
 object MessageBodyUiModelTestData {
@@ -36,10 +36,10 @@ object MessageBodyUiModelTestData {
         attachments = AttachmentGroupUiModel(
             limit = 3,
             attachments = listOf(
-                AttachmentUiModelSample.invoice,
-                AttachmentUiModelSample.document,
-                AttachmentUiModelSample.documentWithMultipleDots,
-                AttachmentUiModelSample.image
+                AttachmentMetadataUiModelSamples.Invoice,
+                AttachmentMetadataUiModelSamples.Document,
+                AttachmentMetadataUiModelSamples.DocumentWithMultipleDots,
+                AttachmentMetadataUiModelSamples.Image
             )
         )
     )
@@ -48,7 +48,7 @@ object MessageBodyUiModelTestData {
         attachments = AttachmentGroupUiModel(
             limit = 3,
             attachments = listOf(
-                AttachmentUiModelSample.calendar
+                AttachmentMetadataUiModelSamples.Calendar
             )
         )
     )

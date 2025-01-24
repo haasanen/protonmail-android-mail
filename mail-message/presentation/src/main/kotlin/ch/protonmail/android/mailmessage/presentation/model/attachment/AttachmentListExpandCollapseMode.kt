@@ -16,24 +16,10 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailmessage.presentation.model
+package ch.protonmail.android.mailmessage.presentation.model.attachment
 
-import ch.protonmail.android.mailmessage.domain.model.AttachmentWorkerStatus
-
-const val DEFAULT_ATTACHMENT_LIMIT = 3
-const val NO_ATTACHMENT_LIMIT = Int.MAX_VALUE
-
-data class AttachmentGroupUiModel(
-    val limit: Int = DEFAULT_ATTACHMENT_LIMIT,
-    val attachments: List<AttachmentUiModel>
-)
-
-data class AttachmentUiModel(
-    val attachmentId: String,
-    val fileName: String,
-    val extension: String,
-    val size: Long,
-    val mimeType: String,
-    val status: AttachmentWorkerStatus? = null,
-    val deletable: Boolean = false
-)
+enum class AttachmentListExpandCollapseMode {
+    Collapsed,
+    Expanded,
+    NotApplicable
+}

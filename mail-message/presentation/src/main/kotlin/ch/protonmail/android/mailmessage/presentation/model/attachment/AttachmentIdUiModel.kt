@@ -16,11 +16,6 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailmessage.presentation.extension
+package ch.protonmail.android.mailmessage.presentation.model.attachment
 
-import android.content.Context
-import android.text.format.Formatter
-import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentMetadataUiModel
-
-fun List<AttachmentMetadataUiModel>.getTotalAttachmentByteSizeReadable(context: Context): String =
-    this.sumOf { it.size }.let { Formatter.formatShortFileSize(context, it) }
+data class AttachmentIdUiModel(val id: String)

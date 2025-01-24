@@ -16,6 +16,22 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailmailbox.presentation.mailbox.model
+package ch.protonmail.android.mailmessage.presentation.model.attachment
 
-data class AttachmentIdUiModel(val id: String)
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
+import androidx.compose.runtime.Immutable
+import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
+import ch.protonmail.android.mailmessage.domain.model.AttachmentWorkerStatus
+
+@Immutable
+data class AttachmentMetadataUiModel(
+    val id: AttachmentIdUiModel,
+    val name: TextUiModel,
+    @DrawableRes val icon: Int,
+    @StringRes val contentDescription: Int,
+    val size: Long,
+    val status: AttachmentWorkerStatus? = null,
+    val deletable: Boolean = false,
+    val isCalendar: Boolean = false
+)

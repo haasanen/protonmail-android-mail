@@ -24,6 +24,7 @@ import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.maillabel.presentation.model.LabelUiModel
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItemType
+import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentMetadataUiModel
 import kotlinx.collections.immutable.ImmutableList
 
 @Immutable
