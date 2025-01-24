@@ -50,9 +50,12 @@ import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.LabelType
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.ExpiryInformationUiModel
 import ch.protonmail.android.mailmailbox.presentation.mailbox.usecase.GetMailboxItemLocationIcon
+import ch.protonmail.android.mailmessage.domain.model.AttachmentDisposition
 import ch.protonmail.android.mailmessage.domain.model.AttachmentId
 import ch.protonmail.android.mailmessage.domain.model.AttachmentMetadata
+import ch.protonmail.android.mailmessage.domain.model.AttachmentMimeType
 import ch.protonmail.android.mailmessage.domain.model.MimeTypeCategory
+import ch.protonmail.android.mailmessage.presentation.mapper.AttachmentMetadataUiModelMapper
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -432,10 +435,23 @@ class MailboxItemUiModelMapperTest {
         // Given
         val attachments = listOf(
             AttachmentMetadata(
-                id = AttachmentId("123"), name = "File1.pdf", size = 1024L, mimeTypeCategory = MimeTypeCategory.Pdf
+                attachmentId = AttachmentId("123"),
+                name = "File1.pdf",
+                size = 1024L,
+                mimeType = AttachmentMimeType(
+                    mime = "application/pdf",
+                    category = MimeTypeCategory.Pdf
+                ),
+                disposition = AttachmentDisposition.Attachment
             ),
             AttachmentMetadata(
-                id = AttachmentId("456"), name = "File2.png", size = 2048L, mimeTypeCategory = MimeTypeCategory.Image
+                attachmentId = AttachmentId("456"),
+                name = "File2.png", size = 2048L,
+                mimeType = AttachmentMimeType(
+                    mime = "image/png",
+                    category = MimeTypeCategory.Image
+                ),
+                disposition = AttachmentDisposition.Attachment
             )
         )
         val mailboxItem = buildMailboxItem(attachments = attachments)

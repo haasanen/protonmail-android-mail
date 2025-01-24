@@ -19,10 +19,15 @@
 package ch.protonmail.android.mailmessage.domain.model
 
 data class AttachmentMetadata(
-    val id: AttachmentId,
-    val mimeTypeCategory: MimeTypeCategory,
+    val attachmentId: AttachmentId,
+    val mimeType: AttachmentMimeType,
+    val disposition: AttachmentDisposition,
     val name: String,
     val size: Long
 )
 
-fun AttachmentMetadata.isCalendar() = mimeTypeCategory == MimeTypeCategory.Calendar
+fun AttachmentMetadata.isInline() = disposition == AttachmentDisposition.Inline
+
+fun AttachmentMetadata.isCalendarAttachment() = mimeType.category == MimeTypeCategory.Calendar
+fun AttachmentMetadata.isAllowedEmbeddedImage() = mimeType.category == MimeTypeCategory.Image &&
+    disposition == AttachmentDisposition.Inline

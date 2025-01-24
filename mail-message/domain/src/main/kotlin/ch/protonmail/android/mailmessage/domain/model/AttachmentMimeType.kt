@@ -16,15 +16,9 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.maildetail.domain.usecase
+package ch.protonmail.android.mailmessage.domain.model
 
-import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
-import ch.protonmail.android.mailmessage.domain.model.isAllowedEmbeddedImage
-import javax.inject.Inject
-
-class DoesMessageBodyHaveEmbeddedImages @Inject constructor() {
-
-    operator fun invoke(messageBody: DecryptedMessageBody): Boolean = messageBody.attachments.any {
-        it.isAllowedEmbeddedImage()
-    }
-}
+data class AttachmentMimeType(
+    val mime: String,
+    val category: MimeTypeCategory
+)

@@ -26,6 +26,7 @@ import ch.protonmail.android.mailcommon.datarust.mapper.LocalAddressId
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalAttachmentDisposition
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalAttachmentId
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalAttachmentMetadata
+import ch.protonmail.android.mailcommon.datarust.mapper.LocalAttachmentMimeType
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalAvatarInformation
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalConversationId
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageId
@@ -39,8 +40,10 @@ import ch.protonmail.android.maillabel.data.mapper.toExclusiveLocation
 import ch.protonmail.android.maillabel.data.mapper.toLabel
 import ch.protonmail.android.mailmessage.data.model.LocalConversationMessages
 import ch.protonmail.android.mailmessage.domain.model.AttachmentCount
+import ch.protonmail.android.mailmessage.domain.model.AttachmentDisposition
 import ch.protonmail.android.mailmessage.domain.model.AttachmentId
 import ch.protonmail.android.mailmessage.domain.model.AttachmentMetadata
+import ch.protonmail.android.mailmessage.domain.model.AttachmentMimeType
 import ch.protonmail.android.mailmessage.domain.model.ConversationMessages
 import ch.protonmail.android.mailmessage.domain.model.Message
 import ch.protonmail.android.mailmessage.domain.model.MessageBody
@@ -112,13 +115,26 @@ fun List<LocalAttachmentMetadata>.getCalendarAttachmentCount(): Int =
 
 fun LocalAttachmentMetadata.toAttachmentMetadata(): AttachmentMetadata {
     return AttachmentMetadata(
-        id = this.id.toAttachmentId(),
+        attachmentId = this.id.toAttachmentId(),
         name = this.name,
         size = this.size.toLong(),
-        mimeTypeCategory = this.mimeType.category.toMimeTypeCategory()
+        mimeType = this.mimeType.toAttachmentMimeType(),
+        disposition = this.disposition.toAttachmentDisposition()
     )
 }
 
+fun LocalAttachmentDisposition.toAttachmentDisposition(): AttachmentDisposition {
+    return when (this) {
+        LocalAttachmentDisposition.INLINE -> AttachmentDisposition.Inline
+        LocalAttachmentDisposition.ATTACHMENT -> AttachmentDisposition.Attachment
+    }
+}
+fun LocalAttachmentMimeType.toAttachmentMimeType(): AttachmentMimeType {
+    return AttachmentMimeType(
+        mime = this.mime,
+        category = this.category.toMimeTypeCategory()
+    )
+}
 fun MessageSender.toParticipant(): Participant {
     return Participant(
         address = this.address, name = this.name, isProton = this.isProton, bimiSelector = this.bimiSelector

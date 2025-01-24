@@ -25,8 +25,8 @@ import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.maillabel.presentation.model.LabelUiModel
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItemType
 import ch.protonmail.android.mailmailbox.presentation.R
-import ch.protonmail.android.mailmailbox.presentation.mailbox.model.AttachmentIdUiModel
-import ch.protonmail.android.mailmailbox.presentation.mailbox.model.AttachmentMetadataUiModel
+import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentIdUiModel
+import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentMetadataUiModel
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.ExpiryInformationUiModel
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxItemLocationUiModel
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxItemUiModel
@@ -156,12 +156,16 @@ object MailboxItemUiModelPreviewData {
                 AttachmentMetadataUiModel(
                     id = AttachmentIdUiModel("0"),
                     name = TextUiModel.Text("Account_statement_01.pdf"),
-                    icon = R.drawable.ic_file_type_pdf
+                    icon = R.drawable.ic_file_type_pdf,
+                    contentDescription = R.string.attachment_type_pdf,
+                    size = 5678L
                 ),
                 AttachmentMetadataUiModel(
                     id = AttachmentIdUiModel("1"),
                     name = TextUiModel.Text("Account_statement_all.zip"),
-                    icon = R.drawable.ic_file_type_zip
+                    icon = R.drawable.ic_file_type_zip,
+                    contentDescription = R.string.attachment_type_archive,
+                    size = 5678L
                 )
             )
 

@@ -19,7 +19,6 @@ class StoreExternalAttachmentsTest {
 
     private val userId = UserIdSample.Primary
     private val messageId = MessageIdSample.Invoice
-    private val attachmentIds = listOf(AttachmentId("1"), AttachmentId("2"))
     private val attachmentStateRepository = mockk<AttachmentStateRepository>()
     private val messageRepository = mockk<MessageRepository>()
 
@@ -33,7 +32,7 @@ class StoreExternalAttachmentsTest {
             // Given
             expectGetMessageWithBodySucceeds()
             expectGetAllAttachmentStatesForMessageSucceeds()
-            val expectedAttachmentList = listOf(AttachmentId("embeddedImageId"))
+            val expectedAttachmentList = listOf(AttachmentId("13"))
             expectCreateOrUpdateStatesSucceeds(expectedAttachmentList, AttachmentSyncState.ExternalUploaded)
 
             // When
@@ -60,14 +59,12 @@ class StoreExternalAttachmentsTest {
         coEvery {
             attachmentStateRepository.getAllAttachmentStatesForMessage(userId, messageId)
         } returns listOf(
-            AttachmentStateSample.build(userId, messageId, AttachmentId("document"))
+            AttachmentStateSample.build(userId, messageId, AttachmentId("9")),
+            AttachmentStateSample.build(userId, messageId, AttachmentId("11"))
         )
     }
 
-    private fun expectCreateOrUpdateStatesSucceeds(
-        ids: List<AttachmentId> = attachmentIds,
-        expectedSyncState: AttachmentSyncState
-    ) {
+    private fun expectCreateOrUpdateStatesSucceeds(ids: List<AttachmentId>, expectedSyncState: AttachmentSyncState) {
         coEvery {
             attachmentStateRepository.createOrUpdateLocalStates(
                 userId,

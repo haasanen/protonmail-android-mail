@@ -20,10 +20,15 @@ package ch.protonmail.android.mailmailbox.presentation.mailbox.mapper
 
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailmailbox.presentation.R
-import ch.protonmail.android.mailmailbox.presentation.mailbox.model.AttachmentIdUiModel
+import ch.protonmail.android.mailmessage.domain.model.AttachmentDisposition
+import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentIdUiModel
 import ch.protonmail.android.mailmessage.domain.model.AttachmentMetadata
 import ch.protonmail.android.mailmessage.domain.model.AttachmentId
+import ch.protonmail.android.mailmessage.domain.model.AttachmentMimeType
 import ch.protonmail.android.mailmessage.domain.model.MimeTypeCategory
+import ch.protonmail.android.mailmessage.domain.sample.AttachmentMetadataSamples
+import ch.protonmail.android.mailmessage.presentation.mapper.AttachmentMetadataUiModelMapper
+import ch.protonmail.android.mailmessage.presentation.sample.AttachmentMetadataUiModelSamples
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
@@ -35,10 +40,14 @@ class AttachmentMetadataUiModelMapperTest {
     fun `toUiModel maps id correctly`() {
         // Given
         val attachmentMetadata = AttachmentMetadata(
-            id = AttachmentId("123"),
+            attachmentId = AttachmentId("123"),
             name = "TestFile.pdf",
             size = 1024L,
-            mimeTypeCategory = MimeTypeCategory.Pdf
+            mimeType = AttachmentMimeType(
+                mime = "application/pdf",
+                category = MimeTypeCategory.Pdf
+            ),
+            disposition = AttachmentDisposition.Attachment
         )
 
         // When
@@ -76,10 +85,14 @@ class AttachmentMetadataUiModelMapperTest {
         mimeTypeToIconMapping.forEach { (mimeTypeCategory, expectedIcon) ->
             // Given
             val attachmentMetadata = AttachmentMetadata(
-                id = AttachmentId("123"),
+                attachmentId = AttachmentId("123"),
                 name = "TestFile",
                 size = 1024L,
-                mimeTypeCategory = mimeTypeCategory
+                mimeType = AttachmentMimeType(
+                    mime = "mime",
+                    category = mimeTypeCategory
+                ),
+                disposition = AttachmentDisposition.Attachment
             )
 
             // When
@@ -87,6 +100,47 @@ class AttachmentMetadataUiModelMapperTest {
 
             // Then
             assertEquals(expectedIcon, result.icon)
+        }
+    }
+
+    @Test
+    fun `toUiModel maps all AttachmentMetadataSamples to AttachmentMetadataUiModelSamples correctly`() {
+        // Given
+        val testCases = listOf(
+            AttachmentMetadataSamples.Invoice to AttachmentMetadataUiModelSamples.Invoice,
+            AttachmentMetadataSamples.Image to AttachmentMetadataUiModelSamples.Image,
+            AttachmentMetadataSamples.Audio to AttachmentMetadataUiModelSamples.Audio,
+            AttachmentMetadataSamples.Video to AttachmentMetadataUiModelSamples.Video,
+            AttachmentMetadataSamples.Pdf to AttachmentMetadataUiModelSamples.Pdf,
+            AttachmentMetadataSamples.Zip to AttachmentMetadataUiModelSamples.Zip,
+            AttachmentMetadataSamples.InvoiceWithBinaryContentType to
+                AttachmentMetadataUiModelSamples.InvoiceWithBinaryContentType,
+            AttachmentMetadataSamples.PublicKey to AttachmentMetadataUiModelSamples.PublicKey,
+            AttachmentMetadataSamples.Document to AttachmentMetadataUiModelSamples.Document,
+            AttachmentMetadataSamples.DocumentWithMultipleDots to
+                AttachmentMetadataUiModelSamples.DocumentWithMultipleDots,
+            AttachmentMetadataSamples.DocumentWithReallyLongFileName to
+                AttachmentMetadataUiModelSamples.DocumentWithReallyLongFileName,
+            AttachmentMetadataSamples.Calendar to AttachmentMetadataUiModelSamples.Calendar,
+            AttachmentMetadataSamples.EmbeddedImageAttachment to
+                AttachmentMetadataUiModelSamples.EmbeddedImageAttachment,
+            AttachmentMetadataSamples.SignedDocument to AttachmentMetadataUiModelSamples.SignedDocument,
+            AttachmentMetadataSamples.InvalidEmbeddedImageAttachment to
+                AttachmentMetadataUiModelSamples.InvalidEmbeddedImageAttachment,
+            AttachmentMetadataSamples.EmbeddedOctetStreamAttachment to
+                AttachmentMetadataUiModelSamples.EmbeddedOctetStreamAttachment
+        )
+
+        testCases.forEach { (metadata, uiModelSample) ->
+            // When
+            val result = mapper.toUiModel(metadata)
+
+            // Then
+            assertEquals(uiModelSample.id, result.id)
+            assertEquals(uiModelSample.name, result.name)
+            assertEquals(uiModelSample.icon, result.icon)
+            assertEquals(uiModelSample.contentDescription, result.contentDescription)
+            assertEquals(uiModelSample.size, result.size)
         }
     }
 }

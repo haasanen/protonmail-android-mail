@@ -94,7 +94,7 @@ class ConversationMapperTest {
         // Then
         assertEquals(attachments.size, conversation.attachments.size)
         assertEquals(0, conversation.attachmentCount.calendar)
-        assertTrue(conversation.attachments.all { it.mimeTypeCategory != MimeTypeCategory.Calendar })
+        assertTrue(conversation.attachments.all { it.mimeType.category != MimeTypeCategory.Calendar })
     }
 
     @Test
@@ -109,7 +109,7 @@ class ConversationMapperTest {
         // Then
         assertEquals(1, conversation.attachments.size)
         assertEquals(1, conversation.attachmentCount.calendar)
-        assertEquals(MimeTypeCategory.Calendar, conversation.attachments[0].mimeTypeCategory)
+        assertEquals(MimeTypeCategory.Calendar, conversation.attachments[0].mimeType.category)
     }
 
     @Test
@@ -128,9 +128,9 @@ class ConversationMapperTest {
         // Then
         assertEquals(attachments.size, conversation.attachments.size)
         assertEquals(1, conversation.attachmentCount.calendar)
-        assertTrue(conversation.attachments.any { it.mimeTypeCategory == MimeTypeCategory.Calendar })
-        assertTrue(conversation.attachments.any { it.mimeTypeCategory == MimeTypeCategory.Image })
-        assertTrue(conversation.attachments.any { it.mimeTypeCategory == MimeTypeCategory.Pdf })
+        assertTrue(conversation.attachments.any { it.mimeType.category == MimeTypeCategory.Calendar })
+        assertTrue(conversation.attachments.any { it.mimeType.category == MimeTypeCategory.Image })
+        assertTrue(conversation.attachments.any { it.mimeType.category == MimeTypeCategory.Pdf })
     }
 
     @Test

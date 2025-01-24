@@ -21,7 +21,7 @@ package ch.protonmail.android.mailmailbox.domain.mapper
 import ch.protonmail.android.mailconversation.domain.entity.Conversation
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItem
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItemType
-import ch.protonmail.android.mailmessage.domain.model.isCalendar
+import ch.protonmail.android.mailmessage.domain.model.isCalendarAttachment
 import me.proton.core.domain.arch.Mapper
 import javax.inject.Inject
 
@@ -50,7 +50,7 @@ class ConversationMailboxItemMapper @Inject constructor() : Mapper<Conversation,
             calendarAttachmentCount = attachmentCount.calendar,
             avatarInformation = avatarInformation,
             exclusiveLocation = exclusiveLocation,
-            attachments = attachments.filter { it.isCalendar().not() }
+            attachments = attachments.filter { it.isCalendarAttachment().not() }
         )
     }
 }

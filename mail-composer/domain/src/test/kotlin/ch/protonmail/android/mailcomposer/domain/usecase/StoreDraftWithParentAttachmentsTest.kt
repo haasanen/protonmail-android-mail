@@ -26,6 +26,7 @@ import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailcomposer.domain.model.MessageWithDecryptedBody
 import ch.protonmail.android.mailcomposer.domain.model.SenderEmail
+import ch.protonmail.android.mailmessage.domain.model.AttachmentDisposition
 import ch.protonmail.android.mailmessage.domain.model.AttachmentId
 import ch.protonmail.android.mailmessage.domain.model.AttachmentSyncState
 import ch.protonmail.android.mailmessage.domain.model.MessageId
@@ -133,7 +134,7 @@ class StoreDraftWithParentAttachmentsTest {
             MessageWithBodySample.EmptyDraft
         }
         val expectedAttachments = expectedParentMessage.decryptedMessageBody.attachments.filter {
-            it.disposition == "inline"
+            it.disposition == AttachmentDisposition.Inline
         }
         val expectedAttachmentIds = expectedAttachments.map { it.attachmentId }
         val expectedSavedDraft = draftWithBody.copy(
@@ -227,7 +228,7 @@ class StoreDraftWithParentAttachmentsTest {
             MessageWithBodySample.EmptyDraft
         }
         val expectedAttachments = expectedParentMessage.decryptedMessageBody.attachments.filter {
-            it.disposition == "inline"
+            it.disposition == AttachmentDisposition.Inline
         }
         val expectedSavedDraft = draftWithBody.copy(
             messageBody = draftWithBody.messageBody.copy(attachments = expectedAttachments)
@@ -249,53 +250,6 @@ class StoreDraftWithParentAttachmentsTest {
     }
 
     @Test
-    fun `removes signature and encrypted signature from parent attachments before storing them`() = runTest {
-        // Given
-        val expectedParentMessage = MessageWithDecryptedBody(
-            MessageWithBodySample.MessageWithSignedAttachments,
-            DecryptedMessageBodyTestData.MessageWithSignedAttachments
-        )
-        val expectedAction = DraftAction.Forward(expectedParentMessage.messageWithBody.message.messageId)
-        val draftWithBody = expectedGetLocalDraft(userId, draftMessageId, senderEmail) {
-            MessageWithBodySample.EmptyDraft
-        }
-        val expectedAttachments = expectedParentMessage.decryptedMessageBody.attachments.map {
-            it.copy(signature = null, encSignature = null)
-        }
-        val expectedSavedDraft = draftWithBody.copy(
-            messageBody = draftWithBody.messageBody.copy(attachments = expectedAttachments)
-        )
-        givenSaveDraftSucceeds(expectedSavedDraft, userId)
-        givenStoreParentAttachmentsSucceeds(
-            userId = userId,
-            messageId = expectedSavedDraft.message.messageId,
-            attachments = expectedAttachments.map { it.attachmentId },
-            syncState = AttachmentSyncState.External
-        )
-
-        // When
-        val result = storeDraftWithParentAttachments(
-            userId,
-            draftMessageId,
-            expectedParentMessage,
-            senderEmail,
-            expectedAction
-        )
-
-        // Then
-        coVerifySequence {
-            saveDraftMock(expectedSavedDraft, userId)
-            storeParentAttachmentStates(
-                userId = userId,
-                messageId = expectedSavedDraft.message.messageId,
-                attachmentIds = expectedAttachments.map { it.attachmentId },
-                syncState = AttachmentSyncState.External
-            )
-        }
-        assertEquals(Unit.right(), result)
-    }
-
-    @Test
     fun `should copy embedded attachments from parent pgp mime message and set their status to local when replying`() =
         runTest {
             // Given
@@ -308,7 +262,7 @@ class StoreDraftWithParentAttachmentsTest {
                 MessageWithBodySample.EmptyDraft
             }
             val expectedAttachments = expectedParentMessage.decryptedMessageBody.attachments.filter {
-                it.disposition == "inline"
+                it.disposition == AttachmentDisposition.Inline
             }
             val expectedSavedDraft = draftWithBody.copy(
                 messageBody = draftWithBody.messageBody.copy(attachments = expectedAttachments)

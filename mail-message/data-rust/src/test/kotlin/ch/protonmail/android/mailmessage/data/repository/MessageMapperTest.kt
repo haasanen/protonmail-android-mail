@@ -129,10 +129,10 @@ class MessageMapperTest {
         val attachmentMetadata = localAttachmentMetadata.toAttachmentMetadata()
 
         // Then
-        assertEquals(localAttachmentId.toAttachmentId(), attachmentMetadata.id)
+        assertEquals(localAttachmentId.toAttachmentId(), attachmentMetadata.attachmentId)
         assertEquals(name, attachmentMetadata.name)
         assertEquals(size.toLong(), attachmentMetadata.size)
-        assertEquals(mimeType.category.toMimeTypeCategory(), attachmentMetadata.mimeTypeCategory)
+        assertEquals(mimeType.category.toMimeTypeCategory(), attachmentMetadata.mimeType.category)
     }
 
     @Test

@@ -71,7 +71,7 @@ class PrepareAttachmentForSharing @Inject constructor(
 
         val contentResolver = context.contentResolver
         val fileName = sanitizeFileName(messageAttachment.name)
-        val attachmentMimeType = messageAttachment.mimeType
+        val attachmentMimeType = messageAttachment.mimeType.mime
         try {
             if (buildVersionProvider.sdkInt() >= Build.VERSION_CODES.Q) {
                 return@withContext handleAttachmentForQAndLater(

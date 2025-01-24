@@ -48,12 +48,11 @@ class GetAttachmentIntentValues @Inject constructor(
         }
 
         val attachment = messageWithBody.messageBody.attachments.firstOrNull { it.attachmentId == attachmentId }
-            ?.fixBinaryContentTypes()
             ?: raise(DataError.Local.NoDataCached)
 
         return@either uri?.let {
             OpenAttachmentIntentValues(
-                mimeType = attachment.mimeType,
+                mimeType = attachment.mimeType.mime,
                 uri = it
             )
         } ?: raise(DataError.Local.NoDataCached)
