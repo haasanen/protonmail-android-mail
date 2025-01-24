@@ -18,18 +18,19 @@
 
 package ch.protonmail.android.mailmessage.data.usecase
 
-import ch.protonmail.android.mailmessage.data.model.PaginatorParams
 import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.datarust.mapper.toDataError
 import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailmessage.data.model.PaginatorParams
 import ch.protonmail.android.mailmessage.data.wrapper.MessagePaginatorWrapper
+import ch.protonmail.android.mailmessage.data.wrapper.SearchMessagePaginatorWrapper
 import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
 import uniffi.proton_mail_uniffi.LiveQueryCallback
-import uniffi.proton_mail_uniffi.PaginateSearchResult
 import uniffi.proton_mail_uniffi.PaginatorSearchOptions
-import uniffi.proton_mail_uniffi.paginateSearch
+import uniffi.proton_mail_uniffi.ScrollerSearchResult
+import uniffi.proton_mail_uniffi.scrollerSearch
 import javax.inject.Inject
 
 class CreateRustSearchPaginator @Inject constructor() {
@@ -39,12 +40,12 @@ class CreateRustSearchPaginator @Inject constructor() {
         keyword: String,
         callback: LiveQueryCallback
     ): Either<DataError, MessagePaginatorWrapper> = when (
-        val result = paginateSearch(session.getRustUserSession(), PaginatorSearchOptions(keyword), callback)
+        val result = scrollerSearch(session.getRustUserSession(), PaginatorSearchOptions(keyword), callback)
     ) {
-        is PaginateSearchResult.Error -> result.v1.toDataError().left()
-        is PaginateSearchResult.Ok -> {
+        is ScrollerSearchResult.Error -> result.v1.toDataError().left()
+        is ScrollerSearchResult.Ok -> {
             val params = PaginatorParams(session.getRustUserSession().userId(), keyword = keyword)
-            MessagePaginatorWrapper(result.v1, params).right()
+            SearchMessagePaginatorWrapper(result.v1, params).right()
         }
     }
 }

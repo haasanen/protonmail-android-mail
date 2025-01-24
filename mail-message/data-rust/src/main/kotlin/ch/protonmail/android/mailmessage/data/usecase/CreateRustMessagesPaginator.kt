@@ -22,15 +22,16 @@ import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
-import ch.protonmail.android.mailmessage.data.model.PaginatorParams
 import ch.protonmail.android.mailcommon.datarust.mapper.toDataError
 import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailmessage.data.model.PaginatorParams
+import ch.protonmail.android.mailmessage.data.wrapper.MailboxMessagePaginatorWrapper
 import ch.protonmail.android.mailmessage.data.wrapper.MessagePaginatorWrapper
 import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
 import uniffi.proton_mail_uniffi.LiveQueryCallback
-import uniffi.proton_mail_uniffi.PaginateMessagesForLabelResult
-import uniffi.proton_mail_uniffi.PaginatorFilter
-import uniffi.proton_mail_uniffi.paginateMessagesForLabel
+import uniffi.proton_mail_uniffi.ReadFilter
+import uniffi.proton_mail_uniffi.ScrollMessagesForLabelResult
+import uniffi.proton_mail_uniffi.scrollMessagesForLabel
 import javax.inject.Inject
 
 class CreateRustMessagesPaginator @Inject constructor() {
@@ -41,19 +42,19 @@ class CreateRustMessagesPaginator @Inject constructor() {
         unread: Boolean,
         callback: LiveQueryCallback
     ): Either<DataError, MessagePaginatorWrapper> {
-        val filterParam = if (unread) true else null
+        val filterParam = if (unread) ReadFilter.UNREAD else ReadFilter.ALL
         return when (
-            val result = paginateMessagesForLabel(
+            val result = scrollMessagesForLabel(
                 session.getRustUserSession(),
                 labelId,
-                PaginatorFilter(filterParam),
+                filterParam,
                 callback
             )
         ) {
-            is PaginateMessagesForLabelResult.Error -> result.v1.toDataError().left()
-            is PaginateMessagesForLabelResult.Ok -> {
+            is ScrollMessagesForLabelResult.Error -> result.v1.toDataError().left()
+            is ScrollMessagesForLabelResult.Ok -> {
                 val params = PaginatorParams(session.getRustUserSession().userId(), labelId, unread)
-                MessagePaginatorWrapper(result.v1, params).right()
+                MailboxMessagePaginatorWrapper(result.v1, params).right()
             }
         }
     }

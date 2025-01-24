@@ -9,7 +9,7 @@ import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.mailmessage.data.model.PaginatorParams
 import ch.protonmail.android.mailmessage.data.usecase.CreateRustMessagesPaginator
 import ch.protonmail.android.mailmessage.data.usecase.CreateRustSearchPaginator
-import ch.protonmail.android.mailmessage.data.wrapper.MessagePaginatorWrapper
+import ch.protonmail.android.mailmessage.data.wrapper.MailboxMessagePaginatorWrapper
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailpagination.domain.model.ReadStatus
 import ch.protonmail.android.mailsession.data.mapper.toLocalUserId
@@ -40,7 +40,7 @@ class MessagePaginatorManagerTest {
         LocalMessageTestData.OctWeatherForecast
     )
 
-    private val messagePaginator: MessagePaginatorWrapper = mockk()
+    private val messagePaginator: MailboxMessagePaginatorWrapper = mockk()
     private val createRustMessagesPaginator: CreateRustMessagesPaginator = mockk()
     private val createRustSearchPaginator: CreateRustSearchPaginator = mockk()
     private val userSessionRepository: UserSessionRepository = mockk()
@@ -82,7 +82,7 @@ class MessagePaginatorManagerTest {
         val pageKey = PageKey.DefaultPageKey(labelId = labelId)
         val session = mockk<MailUserSessionWrapper>()
         val callback = mockk<LiveQueryCallback>()
-        val paginator = mockk<MessagePaginatorWrapper> {
+        val paginator = mockk<MailboxMessagePaginatorWrapper> {
             coEvery { this@mockk.nextPage() } returns firstPage.right()
             coEvery { this@mockk.params } returns
                 PaginatorParams(userId.toLocalUserId(), labelId.toLocalLabelId(), false)
@@ -112,7 +112,7 @@ class MessagePaginatorManagerTest {
         val newPageKey = pageKey.copy(newLabelId)
         val session = mockk<MailUserSessionWrapper>()
         val callback = mockk<LiveQueryCallback>()
-        val paginator = mockk<MessagePaginatorWrapper> {
+        val paginator = mockk<MailboxMessagePaginatorWrapper> {
             coEvery { this@mockk.nextPage() } returns firstPage.right()
             coEvery { this@mockk.destroy() } just Runs
             coEvery { this@mockk.params } returns PaginatorParams(
@@ -150,7 +150,7 @@ class MessagePaginatorManagerTest {
         val newPageKey = pageKey.copy(readStatus = ReadStatus.Unread)
         val session = mockk<MailUserSessionWrapper>()
         val callback = mockk<LiveQueryCallback>()
-        val paginator = mockk<MessagePaginatorWrapper> {
+        val paginator = mockk<MailboxMessagePaginatorWrapper> {
             coEvery { this@mockk.nextPage() } returns firstPage.right()
             coEvery { this@mockk.destroy() } just Runs
             coEvery { this@mockk.params } returns PaginatorParams(userId.toLocalUserId(), labelId.toLocalLabelId())

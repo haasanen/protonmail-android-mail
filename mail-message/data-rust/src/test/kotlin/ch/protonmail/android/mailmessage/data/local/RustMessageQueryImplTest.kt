@@ -24,7 +24,7 @@ import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageMetadata
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.maillabel.data.mapper.toLabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
-import ch.protonmail.android.mailmessage.data.wrapper.MessagePaginatorWrapper
+import ch.protonmail.android.mailmessage.data.wrapper.MailboxMessagePaginatorWrapper
 import ch.protonmail.android.mailmessage.domain.paging.RustInvalidationTracker
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailpagination.domain.model.PageToLoad
@@ -53,7 +53,7 @@ class RustMessageQueryImplTest {
         LocalMessageTestData.OctWeatherForecast
     )
 
-    private val messagePaginator: MessagePaginatorWrapper = mockk()
+    private val messagePaginator: MailboxMessagePaginatorWrapper = mockk()
 
     private val messagePaginatorManager = mockk<MessagePaginatorManager>()
     private val invalidationTracker: RustInvalidationTracker = mockk(relaxUnitFun = true)
@@ -109,7 +109,7 @@ class RustMessageQueryImplTest {
         val userId = UserIdSample.Primary
         val labelId = SystemLabelId.Inbox.labelId
         val pageKey = PageKey.DefaultPageKey(labelId = labelId)
-        val paginator = mockk<MessagePaginatorWrapper> {
+        val paginator = mockk<MailboxMessagePaginatorWrapper> {
             coEvery { this@mockk.nextPage() } returns expectedConversations.right()
         }
         coEvery { messagePaginatorManager.getOrCreatePaginator(userId, pageKey, any()) } returns paginator.right()
@@ -128,7 +128,7 @@ class RustMessageQueryImplTest {
         val userId = UserIdSample.Primary
         val labelId = SystemLabelId.Inbox.labelId
         val pageKey = PageKey.DefaultPageKey(labelId = labelId, pageToLoad = PageToLoad.Next)
-        val paginator = mockk<MessagePaginatorWrapper> {
+        val paginator = mockk<MailboxMessagePaginatorWrapper> {
             coEvery { this@mockk.nextPage() } returns expectedConversations.right()
         }
         coEvery { messagePaginatorManager.getOrCreatePaginator(userId, pageKey, any()) } returns paginator.right()
@@ -147,7 +147,7 @@ class RustMessageQueryImplTest {
         val userId = UserIdSample.Primary
         val labelId = SystemLabelId.Inbox.labelId
         val pageKey = PageKey.DefaultPageKey(labelId = labelId, pageToLoad = PageToLoad.All)
-        val paginator = mockk<MessagePaginatorWrapper> {
+        val paginator = mockk<MailboxMessagePaginatorWrapper> {
             coEvery { this@mockk.reload() } returns expectedConversations.right()
         }
         coEvery { messagePaginatorManager.getOrCreatePaginator(userId, pageKey, any()) } returns paginator.right()

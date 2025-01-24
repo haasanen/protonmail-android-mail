@@ -27,9 +27,9 @@ import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailconversation.data.wrapper.ConversationPaginatorWrapper
 import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
 import uniffi.proton_mail_uniffi.LiveQueryCallback
-import uniffi.proton_mail_uniffi.PaginateConversationsForLabelResult
-import uniffi.proton_mail_uniffi.PaginatorFilter
-import uniffi.proton_mail_uniffi.paginateConversationsForLabel
+import uniffi.proton_mail_uniffi.ReadFilter
+import uniffi.proton_mail_uniffi.ScrollConversationsForLabelResult
+import uniffi.proton_mail_uniffi.scrollConversationsForLabel
 import javax.inject.Inject
 
 class CreateRustConversationPaginator @Inject constructor() {
@@ -40,17 +40,17 @@ class CreateRustConversationPaginator @Inject constructor() {
         unread: Boolean,
         callback: LiveQueryCallback
     ): Either<DataError, ConversationPaginatorWrapper> {
-        val filterParam = if (unread) true else null
+        val filterParam = if (unread) ReadFilter.UNREAD else ReadFilter.ALL
         return when (
-            val result = paginateConversationsForLabel(
+            val result = scrollConversationsForLabel(
                 session.getRustUserSession(),
                 labelId,
-                PaginatorFilter(filterParam),
+                filterParam,
                 callback
             )
         ) {
-            is PaginateConversationsForLabelResult.Error -> result.v1.toDataError().left()
-            is PaginateConversationsForLabelResult.Ok -> ConversationPaginatorWrapper(result.v1).right()
+            is ScrollConversationsForLabelResult.Error -> result.v1.toDataError().left()
+            is ScrollConversationsForLabelResult.Ok -> ConversationPaginatorWrapper(result.v1).right()
         }
     }
 }
