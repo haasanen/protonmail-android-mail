@@ -101,6 +101,7 @@ class RustMessageRepositoryImpl @Inject constructor(
     override suspend fun getMessageWithBody(userId: UserId, messageId: MessageId): Either<DataError, MessageWithBody> =
         getLocalMessageWithBody(userId, messageId)
 
+    @MissingRustApi
     override suspend fun getLocalMessageWithBody(
         userId: UserId,
         messageId: MessageId
@@ -108,8 +109,18 @@ class RustMessageRepositoryImpl @Inject constructor(
         val localMessageId = messageId.toLocalMessageId()
 
         return rustMessageDataSource.getMessage(userId, localMessageId).flatMap { localMessage ->
+            val message = localMessage.toMessage()
+
+            // Until Rust provides list of attachments in the body, we will copy attachments from the Message
             rustMessageDataSource.getMessageBody(userId, localMessageId)
-                .map { MessageWithBody(localMessage.toMessage(), it) }
+                .map {
+                    MessageWithBody(
+                        message,
+                        it.copy(
+                            attachments = message.attachments
+                        )
+                    )
+                }
         }
     }
 
