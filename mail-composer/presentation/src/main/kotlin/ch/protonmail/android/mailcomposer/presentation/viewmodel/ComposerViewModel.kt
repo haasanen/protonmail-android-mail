@@ -59,7 +59,6 @@ import ch.protonmail.android.mailcomposer.domain.usecase.ObserveMessagePassword
 import ch.protonmail.android.mailcomposer.domain.usecase.ObserveMessageSendingError
 import ch.protonmail.android.mailcomposer.domain.usecase.OpenExistingDraft
 import ch.protonmail.android.mailcomposer.domain.usecase.ProvideNewDraftId
-import ch.protonmail.android.mailcomposer.domain.usecase.ReEncryptAttachments
 import ch.protonmail.android.mailcomposer.domain.usecase.SaveMessageExpirationTime
 import ch.protonmail.android.mailcomposer.domain.usecase.SendMessage
 import ch.protonmail.android.mailcomposer.domain.usecase.StoreAttachments
@@ -153,7 +152,6 @@ class ComposerViewModel @Inject constructor(
     private val storeDraftWithParentAttachments: StoreDraftWithParentAttachments,
     private val deleteAttachment: DeleteAttachment,
     private val deleteAllAttachments: DeleteAllAttachments,
-    private val reEncryptAttachments: ReEncryptAttachments,
     private val observeMessagePassword: ObserveMessagePassword,
     private val validateSenderAddress: ValidateSenderAddress,
     private val saveMessageExpirationTime: SaveMessageExpirationTime,

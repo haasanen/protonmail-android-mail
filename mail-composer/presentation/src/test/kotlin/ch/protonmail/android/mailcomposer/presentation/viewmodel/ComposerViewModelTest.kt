@@ -62,7 +62,6 @@ import ch.protonmail.android.mailcomposer.domain.usecase.ObserveMessagePassword
 import ch.protonmail.android.mailcomposer.domain.usecase.ObserveMessageSendingError
 import ch.protonmail.android.mailcomposer.domain.usecase.OpenExistingDraft
 import ch.protonmail.android.mailcomposer.domain.usecase.ProvideNewDraftId
-import ch.protonmail.android.mailcomposer.domain.usecase.ReEncryptAttachments
 import ch.protonmail.android.mailcomposer.domain.usecase.SaveMessageExpirationTime
 import ch.protonmail.android.mailcomposer.domain.usecase.SendMessage
 import ch.protonmail.android.mailcomposer.domain.usecase.StoreAttachments
@@ -207,7 +206,6 @@ class ComposerViewModelTest {
     private val observeMessageSendingError = mockk<ObserveMessageSendingError>()
     private val clearMessageSendingError = mockk<ClearMessageSendingError>()
     private val formatMessageSendingError = mockk<FormatMessageSendingError>()
-    private val reEncryptAttachments = mockk<ReEncryptAttachments>()
     private val appInBackgroundStateFlow = MutableStateFlow(false)
     private val appInBackgroundState = mockk<AppInBackgroundState> {
         every { observe() } returns appInBackgroundStateFlow
@@ -264,7 +262,6 @@ class ComposerViewModelTest {
             storeDraftWithParentAttachments,
             deleteAttachment,
             deleteAllAttachments,
-            reEncryptAttachments,
             observeMessagePassword,
             validateSenderAddress,
             saveMessageExpirationTime,
