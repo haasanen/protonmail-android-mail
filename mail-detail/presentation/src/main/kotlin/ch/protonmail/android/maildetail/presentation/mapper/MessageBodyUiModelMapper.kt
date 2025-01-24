@@ -27,8 +27,8 @@ import ch.protonmail.android.maildetail.presentation.usecase.ExtractMessageBodyW
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.model.GetDecryptedMessageBodyError
 import ch.protonmail.android.mailmessage.domain.model.MimeType
-import ch.protonmail.android.mailmessage.presentation.mapper.AttachmentUiModelMapper
-import ch.protonmail.android.mailmessage.presentation.model.AttachmentGroupUiModel
+import ch.protonmail.android.mailmessage.domain.model.isCalendarAttachment
+import ch.protonmail.android.mailmessage.presentation.mapper.AttachmentGroupUiModelMapper
 import ch.protonmail.android.mailmessage.presentation.model.MessageBodyUiModel
 import ch.protonmail.android.mailmessage.presentation.model.MessageBodyWithType
 import ch.protonmail.android.mailmessage.presentation.model.MimeTypeUiModel
@@ -39,7 +39,7 @@ import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 
 class MessageBodyUiModelMapper @Inject constructor(
-    private val attachmentUiModelMapper: AttachmentUiModelMapper,
+    private val attachmentGroupUiModelMapper: AttachmentGroupUiModelMapper,
     private val doesMessageBodyHaveEmbeddedImages: DoesMessageBodyHaveEmbeddedImages,
     private val doesMessageBodyHaveRemoteContent: DoesMessageBodyHaveRemoteContent,
     private val injectCssIntoDecryptedMessageBody: InjectCssIntoDecryptedMessageBody,
@@ -90,10 +90,9 @@ class MessageBodyUiModelMapper @Inject constructor(
             shouldShowExpandCollapseButton = extractQuoteResult.hasQuote,
             shouldShowOpenInProtonCalendar = decryptedMessageBody.attachments.any { it.isCalendarAttachment() },
             attachments = if (decryptedMessageBody.attachments.isNotEmpty()) {
-                AttachmentGroupUiModel(
-                    attachments = decryptedMessageBody.attachments.map {
-                        attachmentUiModelMapper.toUiModel(it.fixBinaryContentTypes())
-                    }
+                attachmentGroupUiModelMapper.toUiModel(
+                    decryptedMessageBody.attachments,
+                    existingMessageBodyUiModel?.attachments
                 )
             } else null,
             viewModePreference = viewModePreference,

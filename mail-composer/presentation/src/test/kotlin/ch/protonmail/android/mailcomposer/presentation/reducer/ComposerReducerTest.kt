@@ -57,7 +57,6 @@ import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.Recipient
 import ch.protonmail.android.mailmessage.domain.sample.AttachmentMetadataSamples
 import ch.protonmail.android.mailmessage.domain.sample.RecipientSample
-import ch.protonmail.android.mailmessage.presentation.mapper.AttachmentUiModelMapper
 import ch.protonmail.android.mailmessage.presentation.mapper.AttachmentMetadataUiModelMapper
 import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentGroupUiModel
 import ch.protonmail.android.mailmessage.presentation.model.attachment.NO_ATTACHMENT_LIMIT
@@ -77,7 +76,7 @@ class ComposerReducerTest(
     private val testTransition: TestTransition
 ) {
 
-    private val attachmentUiModelMapper = AttachmentUiModelMapper()
+    private val attachmentUiModelMapper = AttachmentMetadataUiModelMapper()
     private val composerReducer = ComposerReducer(attachmentUiModelMapper)
 
     @Test

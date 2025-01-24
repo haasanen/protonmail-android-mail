@@ -16,23 +16,28 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailmailbox.presentation.mailbox.mapper
+package ch.protonmail.android.mailmessage.presentation.mapper
 
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
-import ch.protonmail.android.mailmailbox.presentation.R
-import ch.protonmail.android.mailmailbox.presentation.mailbox.model.AttachmentIdUiModel
-import ch.protonmail.android.mailmailbox.presentation.mailbox.model.AttachmentMetadataUiModel
+import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentIdUiModel
 import ch.protonmail.android.mailmessage.domain.model.AttachmentMetadata
 import ch.protonmail.android.mailmessage.domain.model.MimeTypeCategory
+import ch.protonmail.android.mailmessage.domain.model.isCalendarAttachment
+import ch.protonmail.android.mailmessage.presentation.R
+import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentMetadataUiModel
 import javax.inject.Inject
 
 class AttachmentMetadataUiModelMapper @Inject constructor() {
 
-    fun toUiModel(attachmentMetadata: AttachmentMetadata): AttachmentMetadataUiModel {
+    fun toUiModel(attachmentMetadata: AttachmentMetadata, isDeletable: Boolean = false): AttachmentMetadataUiModel {
         return AttachmentMetadataUiModel(
-            id = AttachmentIdUiModel(attachmentMetadata.id.id),
+            id = AttachmentIdUiModel(attachmentMetadata.attachmentId.id),
             name = TextUiModel(attachmentMetadata.name),
-            icon = getIcon(attachmentMetadata.mimeTypeCategory)
+            icon = getIcon(attachmentMetadata.mimeType.category),
+            size = attachmentMetadata.size,
+            isCalendar = attachmentMetadata.isCalendarAttachment(),
+            contentDescription = getContentDescription(attachmentMetadata.mimeType.category),
+            deletable = isDeletable
         )
     }
 
@@ -58,5 +63,29 @@ class AttachmentMetadataUiModelMapper @Inject constructor() {
             MimeTypeCategory.Unknown -> R.drawable.ic_file_type_unknown
         }
     }
+
+    private fun getContentDescription(mimeTypeCategory: MimeTypeCategory): Int {
+        return when (mimeTypeCategory) {
+            MimeTypeCategory.Audio -> R.string.attachment_type_audio
+            MimeTypeCategory.Calendar -> R.string.attachment_type_calendar
+            MimeTypeCategory.Code -> R.string.attachment_type_code
+            MimeTypeCategory.Compressed -> R.string.attachment_type_archive
+            MimeTypeCategory.Default -> R.string.attachment_type_unknown
+            MimeTypeCategory.Excel -> R.string.attachment_type_spreadsheet
+            MimeTypeCategory.Font -> R.string.attachment_type_font
+            MimeTypeCategory.Image -> R.string.attachment_type_image
+            MimeTypeCategory.Key -> R.string.attachment_type_key
+            MimeTypeCategory.Keynote -> R.string.attachment_type_keynote
+            MimeTypeCategory.Numbers -> R.string.attachment_type_numbers
+            MimeTypeCategory.Pages -> R.string.attachment_type_pages
+            MimeTypeCategory.Pdf -> R.string.attachment_type_pdf
+            MimeTypeCategory.Powerpoint -> R.string.attachment_type_presentation
+            MimeTypeCategory.Text -> R.string.attachment_type_text
+            MimeTypeCategory.Video -> R.string.attachment_type_video
+            MimeTypeCategory.Word -> R.string.attachment_type_word
+            MimeTypeCategory.Unknown -> R.string.attachment_type_unknown
+        }
+    }
+
 
 }

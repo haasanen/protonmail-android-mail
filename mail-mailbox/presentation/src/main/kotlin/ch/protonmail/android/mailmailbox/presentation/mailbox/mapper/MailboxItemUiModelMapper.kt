@@ -39,6 +39,7 @@ import kotlinx.collections.immutable.toImmutableList
 import me.proton.core.domain.arch.Mapper
 import ch.protonmail.android.maillabel.domain.model.Label
 import ch.protonmail.android.maillabel.domain.model.LabelType
+import ch.protonmail.android.mailmessage.presentation.mapper.AttachmentMetadataUiModelMapper
 import ch.protonmail.android.mailsettings.domain.model.FolderColorSettings
 import me.proton.core.domain.entity.UserId
 import javax.inject.Inject

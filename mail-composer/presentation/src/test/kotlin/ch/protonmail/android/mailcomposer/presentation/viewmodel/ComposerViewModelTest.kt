@@ -107,7 +107,7 @@ import ch.protonmail.android.mailmessage.domain.sample.AttachmentMetadataSamples
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
 import ch.protonmail.android.mailmessage.domain.sample.MessageWithBodySample
 import ch.protonmail.android.mailmessage.domain.sample.RecipientSample
-import ch.protonmail.android.mailmessage.presentation.mapper.AttachmentUiModelMapper
+import ch.protonmail.android.mailmessage.presentation.mapper.AttachmentMetadataUiModelMapper
 import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentGroupUiModel
 import ch.protonmail.android.mailmessage.presentation.model.attachment.NO_ATTACHMENT_LIMIT
 import ch.protonmail.android.mailmessage.presentation.sample.AttachmentMetadataUiModelSamples
@@ -223,7 +223,7 @@ class ComposerViewModelTest {
     private val getInitials = mockk<GetInitials> {
         every { this@mockk(any()) } returns BaseInitials
     }
-    private val attachmentUiModelMapper = AttachmentUiModelMapper()
+    private val attachmentUiModelMapper = AttachmentMetadataUiModelMapper()
     private val sortContactsForSuggestions = SortContactsForSuggestions(getInitials, testDispatcher)
     private val reducer = ComposerReducer(attachmentUiModelMapper)
     private val isNewContactsSuggestionsEnabled = false

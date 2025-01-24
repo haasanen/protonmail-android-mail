@@ -29,15 +29,15 @@ import ch.protonmail.android.maildetail.presentation.viewmodel.EmailBodyTestSamp
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.model.GetDecryptedMessageBodyError
 import ch.protonmail.android.mailmessage.domain.model.MimeType
-import ch.protonmail.android.mailmessage.domain.sample.MessageAttachmentSample
+import ch.protonmail.android.mailmessage.domain.sample.AttachmentMetadataSamples
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
-import ch.protonmail.android.mailmessage.presentation.mapper.AttachmentUiModelMapper
-import ch.protonmail.android.mailmessage.presentation.model.AttachmentGroupUiModel
+import ch.protonmail.android.mailmessage.presentation.mapper.AttachmentGroupUiModelMapper
+import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentGroupUiModel
 import ch.protonmail.android.mailmessage.presentation.model.MessageBodyUiModel
 import ch.protonmail.android.mailmessage.presentation.model.MessageBodyWithType
 import ch.protonmail.android.mailmessage.presentation.model.MimeTypeUiModel
 import ch.protonmail.android.mailmessage.presentation.model.ViewModePreference
-import ch.protonmail.android.mailmessage.presentation.sample.AttachmentUiModelSample
+import ch.protonmail.android.mailmessage.presentation.sample.AttachmentMetadataUiModelSamples
 import ch.protonmail.android.mailmessage.presentation.usecase.InjectCssIntoDecryptedMessageBody
 import ch.protonmail.android.mailmessage.presentation.usecase.SanitizeHtmlOfDecryptedMessageBody
 import ch.protonmail.android.testdata.message.MessageBodyTestData
@@ -55,13 +55,40 @@ class MessageBodyUiModelMapperTest {
     private val sanitizedDecryptedMessageBody = "Sanitized decrypted message body."
     private val sanitizedDecryptedMessageBodyWithCss = "Sanitized decrypted message body with CSS."
 
-    private val attachmentUiModelMapper = mockk<AttachmentUiModelMapper> {
-        every { this@mockk.toUiModel(MessageAttachmentSample.invoice) } returns AttachmentUiModelSample.invoice
-        every { this@mockk.toUiModel(MessageAttachmentSample.document) } returns AttachmentUiModelSample.document
+    private val attachmentGroupUiModelMapper = mockk<AttachmentGroupUiModelMapper> {
+        every { this@mockk.toUiModel(listOf(AttachmentMetadataSamples.Invoice)) } returns AttachmentGroupUiModel(
+            attachments = listOf(AttachmentMetadataUiModelSamples.Invoice)
+        )
+
+        every { this@mockk.toUiModel(listOf(AttachmentMetadataSamples.Document)) } returns AttachmentGroupUiModel(
+            attachments = listOf(AttachmentMetadataUiModelSamples.Document)
+        )
+
         every {
-            this@mockk.toUiModel(MessageAttachmentSample.documentWithMultipleDots)
-        } returns AttachmentUiModelSample.documentWithMultipleDots
-        every { this@mockk.toUiModel(MessageAttachmentSample.calendar) } returns AttachmentUiModelSample.calendar
+            this@mockk.toUiModel(listOf(AttachmentMetadataSamples.DocumentWithMultipleDots))
+        } returns AttachmentGroupUiModel(
+            attachments = listOf(AttachmentMetadataUiModelSamples.DocumentWithMultipleDots)
+        )
+
+        every { this@mockk.toUiModel(listOf(AttachmentMetadataSamples.Calendar)) } returns AttachmentGroupUiModel(
+            attachments = listOf(AttachmentMetadataUiModelSamples.Calendar)
+        )
+
+        every {
+            this@mockk.toUiModel(
+                listOf(
+                    AttachmentMetadataSamples.Invoice,
+                    AttachmentMetadataSamples.Document,
+                    AttachmentMetadataSamples.DocumentWithMultipleDots
+                )
+            )
+        } returns AttachmentGroupUiModel(
+            attachments = listOf(
+                AttachmentMetadataUiModelSamples.Invoice,
+                AttachmentMetadataUiModelSamples.Document,
+                AttachmentMetadataUiModelSamples.DocumentWithMultipleDots
+            )
+        )
     }
     private val doesMessageBodyHaveEmbeddedImages = mockk<DoesMessageBodyHaveEmbeddedImages> {
         every { this@mockk.invoke(any()) } returns false
@@ -87,7 +114,7 @@ class MessageBodyUiModelMapperTest {
     }
 
     private val messageBodyUiModelMapper = MessageBodyUiModelMapper(
-        attachmentUiModelMapper = attachmentUiModelMapper,
+        attachmentGroupUiModelMapper = attachmentGroupUiModelMapper,
         doesMessageBodyHaveEmbeddedImages = doesMessageBodyHaveEmbeddedImages,
         doesMessageBodyHaveRemoteContent = doesMessageBodyHaveRemoteContent,
         injectCssIntoDecryptedMessageBody = injectCssIntoDecryptedMessageBody,
@@ -133,16 +160,19 @@ class MessageBodyUiModelMapperTest {
     fun `plain text message body is correctly mapped to a message body ui model with attachments`() = runTest {
         // Given
         val messageId = MessageIdSample.build()
+        val attachments = listOf(
+            AttachmentMetadataSamples.Invoice,
+            AttachmentMetadataSamples.Document,
+            AttachmentMetadataSamples.DocumentWithMultipleDots
+        )
         val messageBody = DecryptedMessageBody(
             messageId,
             decryptedMessageBody,
             MimeType.PlainText,
-            listOf(
-                MessageAttachmentSample.invoice,
-                MessageAttachmentSample.document,
-                MessageAttachmentSample.documentWithMultipleDots
-            )
+            attachments
         )
+
+
         val expected = MessageBodyUiModel(
             messageId = messageId,
             messageBody = decryptedMessageBody,
@@ -156,9 +186,9 @@ class MessageBodyUiModelMapperTest {
             shouldShowOpenInProtonCalendar = false,
             attachments = AttachmentGroupUiModel(
                 attachments = listOf(
-                    AttachmentUiModelSample.invoice,
-                    AttachmentUiModelSample.document,
-                    AttachmentUiModelSample.documentWithMultipleDots
+                    AttachmentMetadataUiModelSamples.Invoice,
+                    AttachmentMetadataUiModelSamples.Document,
+                    AttachmentMetadataUiModelSamples.DocumentWithMultipleDots
                 )
             ),
             viewModePreference = ViewModePreference.ThemeDefault,
@@ -176,14 +206,16 @@ class MessageBodyUiModelMapperTest {
     fun `plain text message body is correctly mapped to a message body ui model with calendar invite`() = runTest {
         // Given
         val messageId = MessageIdSample.build()
+        val attachments = listOf(
+            AttachmentMetadataSamples.Calendar
+        )
         val messageBody = DecryptedMessageBody(
             messageId,
             decryptedMessageBody,
             MimeType.PlainText,
-            listOf(
-                MessageAttachmentSample.calendar
-            )
+            attachments
         )
+
         val expected = MessageBodyUiModel(
             messageId = messageId,
             messageBody = decryptedMessageBody,
@@ -197,7 +229,7 @@ class MessageBodyUiModelMapperTest {
             shouldShowOpenInProtonCalendar = true,
             attachments = AttachmentGroupUiModel(
                 attachments = listOf(
-                    AttachmentUiModelSample.calendar
+                    AttachmentMetadataUiModelSamples.Calendar
                 )
             ),
             viewModePreference = ViewModePreference.ThemeDefault,
@@ -216,13 +248,14 @@ class MessageBodyUiModelMapperTest {
         runTest {
             // Given
             val messageId = MessageIdSample.build()
+            val attachments = listOf(
+                AttachmentMetadataSamples.InvoiceWithBinaryContentType
+            )
             val messageBody = DecryptedMessageBody(
                 messageId,
                 decryptedMessageBody,
                 MimeType.PlainText,
-                listOf(
-                    MessageAttachmentSample.invoiceWithBinaryContentType
-                )
+                attachments
             )
             val expected = MessageBodyUiModel(
                 messageId = messageId,
@@ -237,7 +270,7 @@ class MessageBodyUiModelMapperTest {
                 shouldShowOpenInProtonCalendar = false,
                 attachments = AttachmentGroupUiModel(
                     attachments = listOf(
-                        AttachmentUiModelSample.invoiceWithBinaryContentType
+                        AttachmentMetadataUiModelSamples.InvoiceWithBinaryContentType
                     )
                 ),
                 viewModePreference = ViewModePreference.ThemeDefault,
@@ -245,12 +278,14 @@ class MessageBodyUiModelMapperTest {
             )
 
             every {
-                attachmentUiModelMapper.toUiModel(
-                    MessageAttachmentSample.invoiceWithBinaryContentType.copy(
-                        mimeType = "application/pdf"
+                attachmentGroupUiModelMapper.toUiModel(
+                    attachments = listOf(
+                        AttachmentMetadataSamples.InvoiceWithBinaryContentType
                     )
                 )
-            } returns AttachmentUiModelSample.invoiceWithBinaryContentType
+            } returns AttachmentGroupUiModel(
+                attachments = listOf(AttachmentMetadataUiModelSamples.InvoiceWithBinaryContentType)
+            )
 
             // When
             val actual = messageBodyUiModelMapper.toUiModel(UserIdTestData.userId, messageBody)
@@ -394,7 +429,7 @@ class MessageBodyUiModelMapperTest {
                 viewModePreference = ViewModePreference.ThemeDefault,
                 printEffect = Effect.empty()
             )
-            every { doesMessageBodyHaveEmbeddedImages(messageBody) } returns true
+            every { doesMessageBodyHaveEmbeddedImages(any()) } returns true
             coEvery { shouldShowEmbeddedImages(UserIdTestData.userId) } returns true
 
             // When
@@ -429,7 +464,7 @@ class MessageBodyUiModelMapperTest {
                 viewModePreference = ViewModePreference.ThemeDefault,
                 printEffect = Effect.empty()
             )
-            every { doesMessageBodyHaveEmbeddedImages(messageBody) } returns true
+            every { doesMessageBodyHaveEmbeddedImages(any()) } returns true
             coEvery { shouldShowEmbeddedImages(UserIdTestData.userId) } returns false
 
             // When
@@ -528,7 +563,7 @@ class MessageBodyUiModelMapperTest {
             printEffect = Effect.empty()
         )
 
-        every { doesMessageBodyHaveEmbeddedImages(messageBody) } returns true
+        every { doesMessageBodyHaveEmbeddedImages(any()) } returns true
         coEvery { shouldShowEmbeddedImages(UserIdTestData.userId) } returns false
         coEvery { shouldShowRemoteContent(UserIdTestData.userId) } returns false
 
