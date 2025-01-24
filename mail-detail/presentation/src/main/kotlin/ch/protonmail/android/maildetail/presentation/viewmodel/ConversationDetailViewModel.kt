@@ -119,6 +119,8 @@ import ch.protonmail.android.mailmessage.domain.usecase.LoadAvatarImage
 import ch.protonmail.android.mailmessage.domain.usecase.ObserveAvatarImageStates
 import ch.protonmail.android.mailmessage.domain.usecase.StarMessages
 import ch.protonmail.android.mailmessage.domain.usecase.UnStarMessages
+import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentListExpandCollapseMode
+import ch.protonmail.android.mailmessage.presentation.model.attachment.isExpandable
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.ContactActionsBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.LabelAsBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MoveToBottomSheetState
@@ -284,6 +286,9 @@ class ConversationDetailViewModel @Inject constructor(
             is ShowAllAttachmentsForMessage -> showAllAttachmentsForMessage(action.messageId)
             is ConversationDetailViewAction.OnAttachmentClicked -> {
                 onOpenAttachmentClicked(action.messageId, action.attachmentId)
+            }
+            is ConversationDetailViewAction.ExpandOrCollapseAttachmentList -> {
+                handleExpandOrCollapseAttachmentList(action.messageId)
             }
 
             is ConversationDetailViewAction.ReportPhishing -> handleReportPhishing(action)
@@ -950,7 +955,6 @@ class ConversationDetailViewModel @Inject constructor(
             getDecryptedMessageBody(primaryUserId.first(), domainMsgId)
                 .onRight { message ->
                     setMessageViewState.expanded(domainMsgId, message)
-
                     if (message.attachments.isNotEmpty()) {
                         updateObservedAttachments(mapOf(domainMsgId to message.attachments))
                     }
@@ -1019,6 +1023,33 @@ class ConversationDetailViewModel @Inject constructor(
                     )
                 )
                 viewModelScope.launch { emitNewStateFrom(operation) }
+            }
+    }
+
+    private fun handleExpandOrCollapseAttachmentList(messageId: MessageIdUiModel) {
+        val dataState = state.value.messagesState as? ConversationDetailsMessagesState.Data
+        if (dataState == null) {
+            Timber.e("Messages state is not data to perform expand or collapse attachments")
+            return
+        }
+        dataState.messages.firstOrNull { it.messageId == messageId }
+            ?.takeIf { it is ConversationDetailMessageUiModel.Expanded }
+            ?.let { it as ConversationDetailMessageUiModel.Expanded }
+            ?.let {
+                val attachmentGroupUiModel = it.messageBodyUiModel.attachments
+                attachmentGroupUiModel?.let {
+                    val expandCollapseMode = when {
+                        attachmentGroupUiModel.isExpandable().not() -> AttachmentListExpandCollapseMode.NotApplicable
+                        attachmentGroupUiModel.expandCollapseMode == AttachmentListExpandCollapseMode.Expanded ->
+                            AttachmentListExpandCollapseMode.Collapsed
+                        else -> AttachmentListExpandCollapseMode.Expanded
+                    }
+                    val operation = ConversationDetailEvent.AttachmentListExpandCollapseModeChanged(
+                        messageId = messageId,
+                        expandCollapseMode = expandCollapseMode
+                    )
+                    viewModelScope.launch { emitNewStateFrom(operation) }
+                }
             }
     }
 
@@ -1139,14 +1170,14 @@ class ConversationDetailViewModel @Inject constructor(
         val firstCalendarAttachment = messageUiModel.messageBodyUiModel
             .attachments
             ?.attachments
-            ?.firstOrNull { uiModel -> uiModel.mimeType.split(";").any { it == "text/calendar" } }
+            ?.firstOrNull { uiModel -> uiModel.isCalendar }
 
         if (firstCalendarAttachment == null) return
 
         getAttachmentIntentValues(
             userId = primaryUserId.first(),
             messageId = MessageId(messageUiModel.messageId.id),
-            attachmentId = AttachmentId(firstCalendarAttachment.attachmentId)
+            attachmentId = AttachmentId(firstCalendarAttachment.id.id)
         ).fold(
             ifLeft = { Timber.d("Failed to download attachment: $it") },
             ifRight = {

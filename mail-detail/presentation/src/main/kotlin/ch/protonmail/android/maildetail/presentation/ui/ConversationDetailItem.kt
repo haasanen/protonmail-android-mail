@@ -184,6 +184,9 @@ private fun ConversationDetailExpandedItem(
                 onMessageBodyLinkClicked = { actions.onMessageBodyLinkClicked(uiModel.messageId, it) },
                 onShowAllAttachments = { actions.onShowAllAttachmentsForMessage(uiModel.messageId) },
                 onAttachmentClicked = { actions.onAttachmentClicked(uiModel.messageId, it) },
+                onToggleAttachmentsExpandCollapseMode = {
+                    actions.onToggleAttachmentsExpandCollapseMode(uiModel.messageId)
+                },
                 onExpandCollapseButtonClicked = {
                     actions.onBodyExpandCollapseButtonClicked(uiModel.messageId)
                 },
@@ -215,6 +218,7 @@ object ConversationDetailItem {
         val onOpenMessageBodyLink: (url: Uri) -> Unit,
         val onShowAllAttachmentsForMessage: (MessageIdUiModel) -> Unit,
         val onAttachmentClicked: (MessageIdUiModel, AttachmentId) -> Unit,
+        val onToggleAttachmentsExpandCollapseMode: (MessageIdUiModel) -> Unit,
         val showFeatureMissingSnackbar: () -> Unit,
         val loadEmbeddedImage: (messageId: MessageId?, contentId: String) -> EmbeddedImage?,
         val onReply: (MessageId) -> Unit,

@@ -191,6 +191,18 @@ fun MessageBodyWebView(
 
     Column(modifier = modifier) {
         key(client) {
+            val attachmentsUiModel = messageBodyUiModel.attachments
+            if (attachmentsUiModel != null && attachmentsUiModel.attachments.isNotEmpty()) {
+                AttachmentList(
+                    modifier = Modifier.background(color = ProtonTheme.colors.backgroundNorm),
+                    messageAttachmentsUiModel = attachmentsUiModel,
+                    actions = AttachmentList.Actions(
+                        onShowAllAttachments = actions.onShowAllAttachments,
+                        onAttachmentClicked = actions.onAttachmentClicked,
+                        onToggleExpandCollapseMode = actions.onToggleAttachmentsExpandCollapseMode
+                    )
+                )
+            }
             WebView(
                 onCreated = {
                     it.settings.builtInZoomControls = true
@@ -221,17 +233,6 @@ fun MessageBodyWebView(
             ExpandCollapseBodyButton(
                 modifier = Modifier.offset(x = ProtonDimens.Spacing.Standard),
                 onClick = { actions.onExpandCollapseButtonCLicked() }
-            )
-        }
-        val attachmentsUiModel = messageBodyUiModel.attachments
-        if (attachmentsUiModel != null && attachmentsUiModel.attachments.isNotEmpty()) {
-            AttachmentFooter(
-                modifier = Modifier.background(color = ProtonTheme.colors.backgroundNorm),
-                messageBodyAttachmentsUiModel = attachmentsUiModel,
-                actions = AttachmentFooter.Actions(
-                    onShowAllAttachments = actions.onShowAllAttachments,
-                    onAttachmentClicked = actions.onAttachmentClicked
-                )
             )
         }
     }
@@ -327,6 +328,7 @@ object MessageBodyWebView {
         val onShowAllAttachments: () -> Unit,
         val onExpandCollapseButtonCLicked: () -> Unit,
         val onAttachmentClicked: (attachmentId: AttachmentId) -> Unit,
+        val onToggleAttachmentsExpandCollapseMode: () -> Unit,
         val loadEmbeddedImage: (messageId: MessageId, contentId: String) -> EmbeddedImage?,
         val onPrint: (MessageId) -> Unit
     )

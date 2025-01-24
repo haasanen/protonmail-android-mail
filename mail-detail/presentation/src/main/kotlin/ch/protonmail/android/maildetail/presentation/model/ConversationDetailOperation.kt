@@ -37,6 +37,7 @@ import ch.protonmail.android.mailmessage.domain.model.AttachmentId
 import ch.protonmail.android.mailmessage.domain.model.AttachmentWorkerStatus
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.presentation.model.ViewModePreference
+import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentListExpandCollapseMode
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.BottomSheetOperation
 import kotlinx.collections.immutable.ImmutableList
 
@@ -131,6 +132,11 @@ sealed interface ConversationDetailEvent : ConversationDetailOperation {
         val status: AttachmentWorkerStatus
     ) : ConversationDetailEvent, AffectingMessages
 
+    data class AttachmentListExpandCollapseModeChanged(
+        val messageId: MessageIdUiModel,
+        val expandCollapseMode: AttachmentListExpandCollapseMode
+    ) : ConversationDetailEvent, AffectingMessages
+
     data class OpenAttachmentEvent(val values: OpenAttachmentIntentValues) : ConversationDetailEvent
     data class ReportPhishingRequested(
         val messageId: MessageId,
@@ -184,6 +190,9 @@ sealed interface ConversationDetailViewAction : ConversationDetailOperation {
     object ScrollRequestCompleted : ConversationDetailViewAction
     data class ShowAllAttachmentsForMessage(val messageId: MessageIdUiModel) : ConversationDetailViewAction
     data class OnAttachmentClicked(val messageId: MessageIdUiModel, val attachmentId: AttachmentId) :
+        ConversationDetailViewAction
+
+    data class ExpandOrCollapseAttachmentList(val messageId: MessageIdUiModel) :
         ConversationDetailViewAction
 
     data class ExpandOrCollapseMessageBody(val messageId: MessageIdUiModel) :

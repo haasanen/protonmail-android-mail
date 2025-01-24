@@ -120,6 +120,7 @@ fun MessageBody(
                 onMessageBodyLinkClicked = actions.onMessageBodyLinkClicked,
                 onMessageBodyLinkLongClicked = {}, // Deferred init to MessageBodyWebView.
                 onShowAllAttachments = actions.onShowAllAttachments,
+                onToggleAttachmentsExpandCollapseMode = actions.onToggleAttachmentsExpandCollapseMode,
                 onExpandCollapseButtonCLicked = actions.onExpandCollapseButtonClicked,
                 onAttachmentClicked = actions.onAttachmentClicked,
                 loadEmbeddedImage = actions.loadEmbeddedImage,
@@ -270,6 +271,7 @@ object MessageBody {
         val onMessageBodyLinkClicked: (uri: Uri) -> Unit,
         val onShowAllAttachments: () -> Unit,
         val onAttachmentClicked: (attachmentId: AttachmentId) -> Unit,
+        val onToggleAttachmentsExpandCollapseMode: () -> Unit,
         val loadEmbeddedImage: (messageId: MessageId, contentId: String) -> EmbeddedImage?,
         val onReply: (MessageId) -> Unit,
         val onReplyAll: (MessageId) -> Unit,

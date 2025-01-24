@@ -59,7 +59,8 @@ internal class MessageDetailFooterActionsTest {
             onAvatarClicked = { _, _ -> },
             onParticipantClicked = { _, _ -> },
             onOpenComposer = {},
-            onAvatarImageLoadRequested = {}
+            onAvatarImageLoadRequested = {},
+            onToggleAttachmentsExpandCollapseMode = {}
         )
 
         // When

@@ -358,6 +358,9 @@ fun ConversationDetailScreen(
                         ConversationDetailViewAction.OnAttachmentClicked(messageId, attachmentId)
                     )
                 },
+                onToggleAttachmentsExpandCollapseMode = {
+                    viewModel.submit(ConversationDetailViewAction.ExpandOrCollapseAttachmentList(it))
+                },
                 openAttachment = actions.openAttachment,
                 handleProtonCalendarRequest = actions.handleProtonCalendarRequest,
                 showFeatureMissingSnackbar = actions.showFeatureMissingSnackbar,
@@ -589,6 +592,7 @@ fun ConversationDetailScreen(
                     onOpenMessageBodyLink = actions.onOpenMessageBodyLink,
                     onShowAllAttachmentsForMessage = actions.onShowAllAttachmentsForMessage,
                     onAttachmentClicked = actions.onAttachmentClicked,
+                    onToggleAttachmentsExpandCollapseMode = actions.onToggleAttachmentsExpandCollapseMode,
                     showFeatureMissingSnackbar = actions.showFeatureMissingSnackbar,
                     loadEmbeddedImage = actions.loadEmbeddedImage,
                     onReply = actions.onReply,
@@ -907,6 +911,7 @@ object ConversationDetailScreen {
         val onRequestScrollTo: (MessageIdUiModel) -> Unit,
         val onScrollRequestCompleted: () -> Unit,
         val onShowAllAttachmentsForMessage: (MessageIdUiModel) -> Unit,
+        val onToggleAttachmentsExpandCollapseMode: (MessageIdUiModel) -> Unit,
         val onAttachmentClicked: (MessageIdUiModel, AttachmentId) -> Unit,
         val openAttachment: (values: OpenAttachmentIntentValues) -> Unit,
         val handleProtonCalendarRequest: (values: OpenProtonCalendarIntentValues) -> Unit,
@@ -954,6 +959,7 @@ object ConversationDetailScreen {
                 onScrollRequestCompleted = {},
                 onShowAllAttachmentsForMessage = {},
                 onAttachmentClicked = { _, _ -> },
+                onToggleAttachmentsExpandCollapseMode = {},
                 openAttachment = {},
                 handleProtonCalendarRequest = {},
                 showFeatureMissingSnackbar = {},

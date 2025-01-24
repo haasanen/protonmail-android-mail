@@ -40,6 +40,7 @@ internal fun BodyHtmlQuote(value: String, modifier: Modifier = Modifier) {
             onMessageBodyLinkClicked = {},
             onMessageBodyLinkLongClicked = {},
             onShowAllAttachments = {},
+            onToggleAttachmentsExpandCollapseMode = {},
             onExpandCollapseButtonCLicked = {},
             onAttachmentClicked = {},
             loadEmbeddedImage = { _, _ -> null },

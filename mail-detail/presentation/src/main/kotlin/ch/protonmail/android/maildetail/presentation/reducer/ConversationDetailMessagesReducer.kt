@@ -32,6 +32,7 @@ import ch.protonmail.android.mailmessage.presentation.model.MessageBodyExpandCol
 import ch.protonmail.android.mailmessage.presentation.model.MessageBodyUiModel
 import ch.protonmail.android.mailmessage.presentation.model.MessageBodyWithType
 import ch.protonmail.android.mailmessage.presentation.model.ViewModePreference
+import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentListExpandCollapseMode
 import ch.protonmail.android.mailmessage.presentation.usecase.InjectCssIntoDecryptedMessageBody
 import kotlinx.collections.immutable.toImmutableList
 import javax.inject.Inject
@@ -41,6 +42,7 @@ class ConversationDetailMessagesReducer @Inject constructor(
     private val injectCssIntoDecryptedMessageBody: InjectCssIntoDecryptedMessageBody
 ) {
 
+    @Suppress("LongMethod")
     fun newStateFrom(
         currentState: ConversationDetailsMessagesState,
         operation: ConversationDetailOperation.AffectingMessages
@@ -94,6 +96,12 @@ class ConversationDetailMessagesReducer @Inject constructor(
 
         is ConversationDetailEvent.AttachmentStatusChanged ->
             currentState.newStateFromMessageAttachmentStatus(operation)
+
+        is ConversationDetailEvent.AttachmentListExpandCollapseModeChanged ->
+            currentState.newStateFromAttachmentsExpandCollapseMode(
+                operation.messageId,
+                operation.expandCollapseMode
+            )
 
         is ConversationDetailViewAction.ExpandOrCollapseMessageBody -> {
             currentState.toNewMessageBodyExpandCollapseState(operation)
@@ -295,6 +303,35 @@ class ConversationDetailMessagesReducer @Inject constructor(
         }
     }
 
+    @Suppress("FunctionMaxLength")
+    private fun ConversationDetailsMessagesState.newStateFromAttachmentsExpandCollapseMode(
+        messageId: MessageIdUiModel,
+        expandCollapseMode: AttachmentListExpandCollapseMode
+    ): ConversationDetailsMessagesState {
+        return when (this) {
+            is ConversationDetailsMessagesState.Data -> {
+                this.copy(
+                    messages = this.messages.map {
+                        if (it.messageId == messageId && it is ConversationDetailMessageUiModel.Expanded) {
+                            it.messageBodyUiModel.attachments?.let { attachmentGroupUiModel ->
+                                it.copy(
+                                    messageBodyUiModel = it.messageBodyUiModel.copy(
+                                        attachments = attachmentGroupUiModel.copy(
+                                            expandCollapseMode = expandCollapseMode
+                                        )
+                                    )
+                                )
+                            } ?: it
+                        } else
+                            it
+                    }.toImmutableList()
+                )
+            }
+
+            else -> this
+        }
+    }
+
     private fun createMessageBodyState(
         messageBodyUiModel: MessageBodyUiModel,
         operation: ConversationDetailEvent.AttachmentStatusChanged
@@ -303,7 +340,7 @@ class ConversationDetailMessagesReducer @Inject constructor(
         return messageBodyUiModel.copy(
             attachments = attachmentGroupUiModel?.copy(
                 attachments = attachmentGroupUiModel.attachments.map { attachment ->
-                    if (attachment.attachmentId == operation.attachmentId.id) {
+                    if (attachment.id.id == operation.attachmentId.id) {
                         attachment.copy(status = operation.status)
                     } else {
                         attachment
