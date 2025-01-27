@@ -100,7 +100,9 @@ class RustMessageDataSourceImpl @Inject constructor(
             .flatMap { decryptedMessage ->
                 decryptedMessage.body(TransformOpts(false, null, null, null))
                     .map { decryptedBody ->
-                        decryptedBody.toMessageBody(messageId.toMessageId(), decryptedMessage.mimeType())
+                        decryptedBody.toMessageBody(
+                            messageId.toMessageId(), decryptedMessage.mimeType(), decryptedMessage.getAllAttachments()
+                        )
                     }
             }
     }

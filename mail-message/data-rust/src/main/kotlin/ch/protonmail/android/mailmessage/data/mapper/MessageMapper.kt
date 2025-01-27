@@ -167,12 +167,16 @@ fun LocalMimeType.toAndroidMimeType(): MimeType {
     }
 }
 
-fun BodyOutput.toMessageBody(messageId: MessageId, mimeType: LocalMimeType): MessageBody {
+fun BodyOutput.toMessageBody(
+    messageId: MessageId,
+    mimeType: LocalMimeType,
+    attachments: List<LocalAttachmentMetadata>
+): MessageBody {
     return MessageBody(
         messageId = messageId,
         body = this.body,
         header = "",
-        attachments = emptyList(),
+        attachments = attachments.map { it.toAttachmentMetadata() },
         mimeType = mimeType.toAndroidMimeType(),
         spamScore = "",
         replyTo = Recipient("", ""),
