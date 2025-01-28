@@ -91,8 +91,7 @@ class MessageBodyUiModelMapper @Inject constructor(
             shouldShowOpenInProtonCalendar = decryptedMessageBody.attachments.any { it.isCalendarAttachment() },
             attachments = if (decryptedMessageBody.attachments.isNotEmpty()) {
                 attachmentGroupUiModelMapper.toUiModel(
-                    decryptedMessageBody.attachments,
-                    existingMessageBodyUiModel?.attachments
+                    decryptedMessageBody.attachments
                 )
             } else null,
             viewModePreference = viewModePreference,

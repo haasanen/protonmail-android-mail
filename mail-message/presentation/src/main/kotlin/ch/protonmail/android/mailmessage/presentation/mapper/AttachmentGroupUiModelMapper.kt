@@ -28,22 +28,15 @@ class AttachmentGroupUiModelMapper @Inject constructor(
     private val attachmentMetadataUiModelMapper: AttachmentMetadataUiModelMapper
 ) {
 
-    fun toUiModel(
-        attachments: List<AttachmentMetadata>,
-        existingUiModel: AttachmentGroupUiModel? = null
-    ): AttachmentGroupUiModel {
-        val limit = existingUiModel?.limit ?: DEFAULT_ATTACHMENT_LIMIT
-        val attachmentsUiModel = attachments.map { attachmentMetadataUiModelMapper.toUiModel(it) }
-        val expandCollapseMode = when {
-            attachmentsUiModel.size < limit -> AttachmentListExpandCollapseMode.NotApplicable
-            existingUiModel != null -> existingUiModel.expandCollapseMode
-            else -> AttachmentListExpandCollapseMode.Collapsed
-        }
-
+    fun toUiModel(attachments: List<AttachmentMetadata>): AttachmentGroupUiModel {
+        val attachmentsUiModel = attachments.map(attachmentMetadataUiModelMapper::toUiModel)
         return AttachmentGroupUiModel(
-            limit = limit,
             attachments = attachmentsUiModel,
-            expandCollapseMode = expandCollapseMode
+            expandCollapseMode = if (attachmentsUiModel.size < DEFAULT_ATTACHMENT_LIMIT) {
+                AttachmentListExpandCollapseMode.NotApplicable
+            } else {
+                AttachmentListExpandCollapseMode.Collapsed
+            }
         )
     }
 }
