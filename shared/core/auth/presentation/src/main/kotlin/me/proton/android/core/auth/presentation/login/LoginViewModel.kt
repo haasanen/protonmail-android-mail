@@ -28,10 +28,10 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import me.proton.android.core.auth.presentation.session.UserSessionInitializationCallback
-import uniffi.proton_mail_uniffi.MailSession
 import uniffi.proton_mail_uniffi.LoginError
 import uniffi.proton_mail_uniffi.LoginFlowToUserContextResult
 import uniffi.proton_mail_uniffi.LoginFlowUserIdResult
+import uniffi.proton_mail_uniffi.MailSession
 import uniffi.proton_mail_uniffi.MailSessionNewLoginFlowResult
 import uniffi.proton_mail_uniffi.MailUserSession
 import uniffi.proton_mail_uniffi.VoidLoginResult
@@ -66,7 +66,7 @@ class LoginViewModel @Inject constructor(
             loginFlowResult is MailSessionNewLoginFlowResult.Error -> onError(loginFlowResult.v1)
             else -> {
                 mutableState.emit(LoginViewState.LoggingIn)
-                when (val result = getLoginFlow().login(email = action.username, password = action.password)) {
+                when (val result = getLoginFlow().login(email = action.username, password = action.password, null)) {
                     is VoidLoginResult.Error -> onError(result.v1)
                     VoidLoginResult.Ok -> onSuccess()
                 }

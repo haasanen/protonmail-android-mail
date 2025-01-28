@@ -94,7 +94,16 @@ object MailSettingsMapper {
 
     private fun LocalViewLayout.toViewLayout(): IntEnum<ViewLayout>? = ViewLayout.enumOf(this.value.toInt())
 
-    private fun LocalSwipeAction.toSwipeAction(): IntEnum<SwipeAction>? = SwipeAction.enumOf(this.value.toInt())
+    private fun LocalSwipeAction.toSwipeAction(): IntEnum<SwipeAction>? = when (this) {
+        uniffi.proton_mail_uniffi.SwipeAction.TRASH -> IntEnum(SwipeAction.Trash.value, SwipeAction.Trash)
+        uniffi.proton_mail_uniffi.SwipeAction.SPAM -> IntEnum(SwipeAction.Spam.value, SwipeAction.Spam)
+        uniffi.proton_mail_uniffi.SwipeAction.STAR -> IntEnum(SwipeAction.Star.value, SwipeAction.Star)
+        uniffi.proton_mail_uniffi.SwipeAction.ARCHIVE -> IntEnum(SwipeAction.Archive.value, SwipeAction.Archive)
+        uniffi.proton_mail_uniffi.SwipeAction.MARK_AS_READ -> IntEnum(SwipeAction.MarkRead.value, SwipeAction.MarkRead)
+        uniffi.proton_mail_uniffi.SwipeAction.LABEL_AS,
+        uniffi.proton_mail_uniffi.SwipeAction.MOVE_TO,
+        uniffi.proton_mail_uniffi.SwipeAction.NO_ACTION -> null
+    }
 
     private fun LocalPgpScheme.toPackageType(): IntEnum<PackageType>? = PackageType.enumOf(this.value.toInt())
 
