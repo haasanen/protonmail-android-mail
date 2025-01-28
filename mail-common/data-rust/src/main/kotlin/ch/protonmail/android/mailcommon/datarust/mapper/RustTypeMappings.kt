@@ -26,6 +26,7 @@ import uniffi.proton_mail_uniffi.ComposerMode
 import uniffi.proton_mail_uniffi.ContactEmailItem
 import uniffi.proton_mail_uniffi.ContactItemType
 import uniffi.proton_mail_uniffi.Conversation
+import uniffi.proton_mail_uniffi.DecryptedAttachment
 import uniffi.proton_mail_uniffi.Disposition
 import uniffi.proton_mail_uniffi.ExclusiveLocation
 import uniffi.proton_mail_uniffi.GroupedContacts
@@ -56,6 +57,7 @@ typealias LocalAttachmentMetadata = AttachmentMetadata
 typealias LocalAttachmentId = Id
 typealias LocalAttachmentDisposition = Disposition
 typealias LocalAttachmentMimeType = AttachmentMimeType
+typealias LocalDecryptedAttachment = DecryptedAttachment
 typealias LocalMimeTypeCategory = MimeTypeCategory
 typealias LocalMimeType = MimeType
 typealias LocalMailSettings = MailSettings
