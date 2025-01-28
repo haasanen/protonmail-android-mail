@@ -61,8 +61,6 @@ import ch.protonmail.android.design.compose.theme.bodyMediumWeak
 import ch.protonmail.android.mailcommon.presentation.model.string
 import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentMetadataUiModel
 import ch.protonmail.android.mailmessage.presentation.sample.AttachmentMetadataUiModelSamples
-import com.google.accompanist.permissions.PermissionState
-import com.google.accompanist.permissions.PermissionStatus
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
@@ -70,14 +68,13 @@ fun AttachmentItem(
     modifier: Modifier = Modifier,
     attachmentUiModel: AttachmentMetadataUiModel,
     onAttachmentItemClicked: (attachmentId: AttachmentId) -> Unit,
-    onAttachmentItemDeleteClicked: (attachmentId: AttachmentId) -> Unit,
-    isPreview: Boolean = false
+    onAttachmentItemDeleteClicked: (attachmentId: AttachmentId) -> Unit
 ) {
     val context = LocalContext.current
     val shouldShowPermissionDialog = remember { mutableStateOf(false) }
 
     // Use a conditional to skip permission logic in preview mode
-    val externalStoragePermission = if (!isPreview) {
+    val externalStoragePermission =
         rememberPermissionState(
             permission = android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
             onPermissionResult = { result ->
@@ -88,13 +85,6 @@ fun AttachmentItem(
                 }
             }
         )
-    } else {
-        object : PermissionState {
-            override val permission: String = android.Manifest.permission.WRITE_EXTERNAL_STORAGE
-            override val status: PermissionStatus = PermissionStatus.Granted
-            override fun launchPermissionRequest() {}
-        }
-    }
 
     if (shouldShowPermissionDialog.value) {
         ProtonAlertDialog(
@@ -144,7 +134,6 @@ fun AttachmentItem(
             ),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        // Icon
         Image(
             modifier = Modifier
                 .size(ProtonDimens.IconSize.Medium)
@@ -158,7 +147,6 @@ fun AttachmentItem(
 
         Spacer(modifier = Modifier.width(ProtonDimens.Spacing.Standard))
 
-        // Name and Size
         Row(
             modifier = Modifier.weight(1f),
             verticalAlignment = Alignment.CenterVertically
@@ -182,7 +170,6 @@ fun AttachmentItem(
             )
         }
 
-        // Delete Button or Loader
         if (attachmentUiModel.deletable) {
             Spacer(modifier = Modifier.width(ProtonDimens.Spacing.Small))
             if (attachmentUiModel.status == AttachmentWorkerStatus.Running) {
@@ -212,8 +199,7 @@ fun AttachmentItemPreview() {
         AttachmentItem(
             attachmentUiModel = AttachmentMetadataUiModelSamples.Invoice,
             onAttachmentItemClicked = {},
-            onAttachmentItemDeleteClicked = {},
-            isPreview = true
+            onAttachmentItemDeleteClicked = {}
         )
     }
 }
@@ -230,8 +216,7 @@ fun AttachmentItemTruncationPreview() {
             AttachmentItem(
                 attachmentUiModel = AttachmentMetadataUiModelSamples.DocumentWithReallyLongFileName,
                 onAttachmentItemClicked = {},
-                onAttachmentItemDeleteClicked = {},
-                isPreview = true
+                onAttachmentItemDeleteClicked = {}
             )
         }
     }

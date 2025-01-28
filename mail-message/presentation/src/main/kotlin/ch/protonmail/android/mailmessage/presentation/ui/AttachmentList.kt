@@ -111,8 +111,7 @@ fun ExpandableAttachmentList(
                         modifier = Modifier.testTag("${AttachmentListTestTags.Item}$index"),
                         attachmentUiModel = item,
                         onAttachmentItemClicked = actions.onAttachmentClicked,
-                        onAttachmentItemDeleteClicked = actions.onAttachmentDeleteClicked,
-                        isPreview = isPreview
+                        onAttachmentItemDeleteClicked = actions.onAttachmentDeleteClicked
                     )
                 }
             }
@@ -143,8 +142,7 @@ fun DefaultAttachmentList(
                 modifier = Modifier.testTag("${AttachmentListTestTags.Item}$index"),
                 attachmentUiModel = item,
                 onAttachmentItemClicked = actions.onAttachmentClicked,
-                onAttachmentItemDeleteClicked = actions.onAttachmentDeleteClicked,
-                isPreview = isPreview
+                onAttachmentItemDeleteClicked = actions.onAttachmentDeleteClicked
             )
         }
     }
