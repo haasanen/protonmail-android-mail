@@ -1177,7 +1177,7 @@ class ConversationDetailViewModel @Inject constructor(
         getAttachmentIntentValues(
             userId = primaryUserId.first(),
             messageId = MessageId(messageUiModel.messageId.id),
-            attachmentId = AttachmentId(firstCalendarAttachment.id.id)
+            attachmentId = AttachmentId(firstCalendarAttachment.id.value)
         ).fold(
             ifLeft = { Timber.d("Failed to download attachment: $it") },
             ifRight = {

@@ -79,7 +79,7 @@ fun AttachmentItem(
             permission = android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
             onPermissionResult = { result ->
                 if (result) {
-                    onAttachmentItemClicked(AttachmentId(attachmentUiModel.id.id))
+                    onAttachmentItemClicked(AttachmentId(attachmentUiModel.id.value))
                 } else {
                     shouldShowPermissionDialog.value = true
                 }
@@ -120,7 +120,7 @@ fun AttachmentItem(
             .clickable {
                 if (!attachmentUiModel.deletable) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q || externalStoragePermission.status.isGranted) {
-                        onAttachmentItemClicked(AttachmentId(attachmentUiModel.id.id))
+                        onAttachmentItemClicked(AttachmentId(attachmentUiModel.id.value))
                     } else {
                         externalStoragePermission.launchPermissionRequest()
                     }
@@ -182,7 +182,7 @@ fun AttachmentItem(
                 Icon(
                     modifier = Modifier
                         .size(ProtonDimens.SmallIconSize)
-                        .clickable { onAttachmentItemDeleteClicked(AttachmentId(attachmentUiModel.id.id)) }
+                        .clickable { onAttachmentItemDeleteClicked(AttachmentId(attachmentUiModel.id.value)) }
                         .testTag(AttachmentItemTestTags.Delete),
                     painter = painterResource(id = R.drawable.ic_proton_cross_small),
                     contentDescription = null

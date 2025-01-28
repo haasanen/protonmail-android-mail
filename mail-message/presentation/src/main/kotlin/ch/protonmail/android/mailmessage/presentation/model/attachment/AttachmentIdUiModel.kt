@@ -18,4 +18,4 @@
 
 package ch.protonmail.android.mailmessage.presentation.model.attachment
 
-data class AttachmentIdUiModel(val id: String)
+data class AttachmentIdUiModel(val value: String)

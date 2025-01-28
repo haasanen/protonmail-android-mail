@@ -340,7 +340,7 @@ class ConversationDetailMessagesReducer @Inject constructor(
         return messageBodyUiModel.copy(
             attachments = attachmentGroupUiModel?.copy(
                 attachments = attachmentGroupUiModel.attachments.map { attachment ->
-                    if (attachment.id.id == operation.attachmentId.id) {
+                    if (attachment.id.value == operation.attachmentId.id) {
                         attachment.copy(status = operation.status)
                     } else {
                         attachment

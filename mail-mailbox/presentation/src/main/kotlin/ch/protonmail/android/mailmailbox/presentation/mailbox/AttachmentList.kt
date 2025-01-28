@@ -110,7 +110,7 @@ private fun SubcomposeMeasureScope.measureAttachments(
 
         if (availableWidth < minTruncatedAttachmentWidth) {
             if (notPlacedCount > 0) {
-                val plusPlaceable = subcompose(generateSlotId("Plus", attachment.id.id, notPlacedCount)) {
+                val plusPlaceable = subcompose(generateSlotId("Plus", attachment.id.value, notPlacedCount)) {
                     PlusText(count = notPlacedCount)
                 }.single().measure(constraints)
                 attachmentPlaceables.add(plusPlaceable)
@@ -160,7 +160,7 @@ private fun SubcomposeMeasureScope.createTruncatedPlaceable(
     maxAttachmentWidth: Int,
     baseNameWidth: Int
 ): Placeable {
-    return subcompose(generateSlotId("place-attachment", attachment.id.id)) {
+    return subcompose(generateSlotId("place-attachment", attachment.id.value)) {
         Attachment(
             attachment = attachment,
             textColor = textColor,
@@ -198,8 +198,8 @@ private fun SubcomposeMeasureScope.measureAttachmentsFullWidth(
 ): List<FullWidthAttachmentInfo> {
     return attachments.map { attachment ->
         val measuredExtensionsMap = mutableMapOf<AttachmentIdUiModel, Int>()
-        val placeable = subcompose(generateSlotId("measure-attachment", attachment.id.id)) {
-            val extensionWidth = measureExtensionWidth(attachment.name.string(), attachmentId = attachment.id.id)
+        val placeable = subcompose(generateSlotId("measure-attachment", attachment.id.value)) {
+            val extensionWidth = measureExtensionWidth(attachment.name.string(), attachmentId = attachment.id.value)
             measuredExtensionsMap[attachment.id] = extensionWidth
             Attachment(
                 attachment = attachment,
