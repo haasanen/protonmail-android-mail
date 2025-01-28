@@ -27,7 +27,7 @@ import uniffi.proton_mail_uniffi.StoredAccountState
 
 internal fun StoredAccount.toAccount() = Account(
     userId = UserId(userId()),
-    nameOrAddress = details().name,
+    name = details().name,
     state = when (state()) {
         is StoredAccountState.NotReady -> AccountState.NotReady
         is StoredAccountState.LoggedIn -> AccountState.Ready
@@ -35,8 +35,6 @@ internal fun StoredAccount.toAccount() = Account(
         is StoredAccountState.NeedMbp -> AccountState.TwoPasswordNeeded
         is StoredAccountState.NeedTfa -> AccountState.TwoFactorNeeded
     },
-    username = details().name,
     primaryAddress = details().email,
-    displayName = details().name,
     avatarInfo = details().avatarInformation.let { AccountAvatarInfo(it.text, it.color) }
 )

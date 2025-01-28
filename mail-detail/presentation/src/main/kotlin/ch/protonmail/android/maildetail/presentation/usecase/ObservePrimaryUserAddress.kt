@@ -27,6 +27,6 @@ class ObservePrimaryUserAddress @Inject constructor(
 ) {
 
     operator fun invoke() = observePrimaryAccount().map {
-        it?.primaryAddress ?: it?.nameOrAddress
+        it?.primaryAddress ?: it?.name
     }
 }

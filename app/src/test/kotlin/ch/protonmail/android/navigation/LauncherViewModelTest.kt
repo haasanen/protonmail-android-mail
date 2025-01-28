@@ -71,11 +71,9 @@ class LauncherViewModelTest {
             listOf(
                 Account(
                     userId = UserIdSample.Primary,
-                    nameOrAddress = "User",
+                    name = "User",
                     state = AccountState.Ready,
-                    username = "user",
-                    primaryAddress = "address",
-                    displayName = "displayName"
+                    primaryAddress = "address"
                 )
             )
         )

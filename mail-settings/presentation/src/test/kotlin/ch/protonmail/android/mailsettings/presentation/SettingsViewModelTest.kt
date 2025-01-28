@@ -83,11 +83,9 @@ class SettingsViewModelTest {
         // Given
         val account = Account(
             userId = UserId("123"),
-            nameOrAddress = "name@example.com",
+            name = "Display Name",
             state = AccountState.Ready,
-            username = "username",
             primaryAddress = "primary@example.com",
-            displayName = "Display Name",
             avatarInfo = AccountAvatarInfo("D", "#FF5733")
         )
         val accountUiModel = AccountInformationUiModel(
