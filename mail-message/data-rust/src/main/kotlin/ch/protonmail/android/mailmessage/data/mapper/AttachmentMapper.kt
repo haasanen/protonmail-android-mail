@@ -1,0 +1,90 @@
+/*
+ * Copyright (c) 2022 Proton Technologies AG
+ * This file is part of Proton Technologies AG and Proton Mail.
+ *
+ * Proton Mail is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Proton Mail is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+package ch.protonmail.android.mailmessage.data.mapper
+
+import ch.protonmail.android.mailcommon.datarust.mapper.LocalAttachmentDisposition
+import ch.protonmail.android.mailcommon.datarust.mapper.LocalAttachmentId
+import ch.protonmail.android.mailcommon.datarust.mapper.LocalAttachmentMetadata
+import ch.protonmail.android.mailcommon.datarust.mapper.LocalAttachmentMimeType
+import ch.protonmail.android.mailcommon.datarust.mapper.LocalDecryptedAttachment
+import ch.protonmail.android.mailcommon.datarust.mapper.LocalMimeTypeCategory
+import ch.protonmail.android.mailmessage.domain.model.AttachmentDisposition
+import ch.protonmail.android.mailmessage.domain.model.AttachmentId
+import ch.protonmail.android.mailmessage.domain.model.AttachmentMetadata
+import ch.protonmail.android.mailmessage.domain.model.AttachmentMimeType
+import ch.protonmail.android.mailmessage.domain.model.DecryptedAttachment
+import ch.protonmail.android.mailmessage.domain.model.MimeTypeCategory
+
+fun LocalAttachmentId.toAttachmentId(): AttachmentId = AttachmentId(this.value.toString())
+fun AttachmentId.toLocalAttachmentId(): LocalAttachmentId = LocalAttachmentId(this.id.toULong())
+
+fun List<LocalAttachmentMetadata>.getCalendarAttachmentCount(): Int =
+    this.filter { it.mimeType.category == LocalMimeTypeCategory.CALENDAR }.size
+
+fun LocalAttachmentMetadata.toAttachmentMetadata(): AttachmentMetadata {
+    return AttachmentMetadata(
+        attachmentId = this.id.toAttachmentId(),
+        name = this.name,
+        size = this.size.toLong(),
+        mimeType = this.mimeType.toAttachmentMimeType(),
+        disposition = this.disposition.toAttachmentDisposition()
+    )
+}
+
+fun LocalAttachmentDisposition.toAttachmentDisposition(): AttachmentDisposition {
+    return when (this) {
+        LocalAttachmentDisposition.INLINE -> AttachmentDisposition.Inline
+        LocalAttachmentDisposition.ATTACHMENT -> AttachmentDisposition.Attachment
+    }
+}
+
+fun LocalAttachmentMimeType.toAttachmentMimeType(): AttachmentMimeType {
+    return AttachmentMimeType(
+        mime = this.mime,
+        category = this.category.toMimeTypeCategory()
+    )
+}
+
+fun LocalMimeTypeCategory.toMimeTypeCategory(): MimeTypeCategory = when (this) {
+    LocalMimeTypeCategory.AUDIO -> MimeTypeCategory.Audio
+    LocalMimeTypeCategory.CALENDAR -> MimeTypeCategory.Calendar
+    LocalMimeTypeCategory.CODE -> MimeTypeCategory.Code
+    LocalMimeTypeCategory.COMPRESSED -> MimeTypeCategory.Compressed
+    LocalMimeTypeCategory.DEFAULT -> MimeTypeCategory.Default
+    LocalMimeTypeCategory.EXCEL -> MimeTypeCategory.Excel
+    LocalMimeTypeCategory.FONT -> MimeTypeCategory.Font
+    LocalMimeTypeCategory.IMAGE -> MimeTypeCategory.Image
+    LocalMimeTypeCategory.KEY -> MimeTypeCategory.Key
+    LocalMimeTypeCategory.KEYNOTE -> MimeTypeCategory.Keynote
+    LocalMimeTypeCategory.NUMBERS -> MimeTypeCategory.Numbers
+    LocalMimeTypeCategory.PAGES -> MimeTypeCategory.Pages
+    LocalMimeTypeCategory.PDF -> MimeTypeCategory.Pdf
+    LocalMimeTypeCategory.POWERPOINT -> MimeTypeCategory.Powerpoint
+    LocalMimeTypeCategory.TEXT -> MimeTypeCategory.Text
+    LocalMimeTypeCategory.VIDEO -> MimeTypeCategory.Video
+    LocalMimeTypeCategory.WORD -> MimeTypeCategory.Word
+    LocalMimeTypeCategory.UNKNOWN -> MimeTypeCategory.Unknown
+}
+
+fun LocalDecryptedAttachment.toDecryptedAttachment(): DecryptedAttachment {
+    return DecryptedAttachment(
+        attachmentMetadata = this.attachmentMetadata.toAttachmentMetadata(),
+        dataPath = this.dataPath
+    )
+}

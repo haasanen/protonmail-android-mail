@@ -24,15 +24,12 @@ import arrow.core.right
 import arrow.core.toNonEmptyListOrNull
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalAddressId
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalAttachmentDisposition
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalAttachmentId
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalAttachmentMetadata
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalAttachmentMimeType
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalAvatarInformation
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalConversationId
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageId
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageMetadata
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalMimeType
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalMimeTypeCategory
 import ch.protonmail.android.mailcommon.domain.model.AvatarInformation
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
@@ -40,16 +37,11 @@ import ch.protonmail.android.maillabel.data.mapper.toExclusiveLocation
 import ch.protonmail.android.maillabel.data.mapper.toLabel
 import ch.protonmail.android.mailmessage.data.model.LocalConversationMessages
 import ch.protonmail.android.mailmessage.domain.model.AttachmentCount
-import ch.protonmail.android.mailmessage.domain.model.AttachmentDisposition
-import ch.protonmail.android.mailmessage.domain.model.AttachmentId
-import ch.protonmail.android.mailmessage.domain.model.AttachmentMetadata
-import ch.protonmail.android.mailmessage.domain.model.AttachmentMimeType
 import ch.protonmail.android.mailmessage.domain.model.ConversationMessages
 import ch.protonmail.android.mailmessage.domain.model.Message
 import ch.protonmail.android.mailmessage.domain.model.MessageBody
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.MimeType
-import ch.protonmail.android.mailmessage.domain.model.MimeTypeCategory
 import ch.protonmail.android.mailmessage.domain.model.Participant
 import ch.protonmail.android.mailmessage.domain.model.Recipient
 import me.proton.core.user.domain.entity.AddressId
@@ -75,8 +67,6 @@ fun LocalMessageId.toMessageId(): MessageId = MessageId(this.value.toString())
 fun LocalConversationId.toConversationId(): ConversationId = ConversationId(this.value.toString())
 
 fun LocalAddressId.toAddressId(): AddressId = AddressId(this.value.toString())
-
-fun LocalAttachmentId.toAttachmentId(): AttachmentId = AttachmentId(this.value.toString())
 
 fun LocalMessageMetadata.toMessage(): Message {
     return Message(
@@ -110,31 +100,6 @@ fun LocalMessageMetadata.toMessage(): Message {
     )
 }
 
-fun List<LocalAttachmentMetadata>.getCalendarAttachmentCount(): Int =
-    this.filter { it.mimeType.category == LocalMimeTypeCategory.CALENDAR }.size
-
-fun LocalAttachmentMetadata.toAttachmentMetadata(): AttachmentMetadata {
-    return AttachmentMetadata(
-        attachmentId = this.id.toAttachmentId(),
-        name = this.name,
-        size = this.size.toLong(),
-        mimeType = this.mimeType.toAttachmentMimeType(),
-        disposition = this.disposition.toAttachmentDisposition()
-    )
-}
-
-fun LocalAttachmentDisposition.toAttachmentDisposition(): AttachmentDisposition {
-    return when (this) {
-        LocalAttachmentDisposition.INLINE -> AttachmentDisposition.Inline
-        LocalAttachmentDisposition.ATTACHMENT -> AttachmentDisposition.Attachment
-    }
-}
-fun LocalAttachmentMimeType.toAttachmentMimeType(): AttachmentMimeType {
-    return AttachmentMimeType(
-        mime = this.mime,
-        category = this.category.toMimeTypeCategory()
-    )
-}
 fun MessageSender.toParticipant(): Participant {
     return Participant(
         address = this.address, name = this.name, isProton = this.isProton, bimiSelector = this.bimiSelector
@@ -195,23 +160,3 @@ fun LocalConversationMessages.toConversationMessagesWithMessageToOpen(): Either<
     ).right()
 }
 
-fun LocalMimeTypeCategory.toMimeTypeCategory(): MimeTypeCategory = when (this) {
-    LocalMimeTypeCategory.AUDIO -> MimeTypeCategory.Audio
-    LocalMimeTypeCategory.CALENDAR -> MimeTypeCategory.Calendar
-    LocalMimeTypeCategory.CODE -> MimeTypeCategory.Code
-    LocalMimeTypeCategory.COMPRESSED -> MimeTypeCategory.Compressed
-    LocalMimeTypeCategory.DEFAULT -> MimeTypeCategory.Default
-    LocalMimeTypeCategory.EXCEL -> MimeTypeCategory.Excel
-    LocalMimeTypeCategory.FONT -> MimeTypeCategory.Font
-    LocalMimeTypeCategory.IMAGE -> MimeTypeCategory.Image
-    LocalMimeTypeCategory.KEY -> MimeTypeCategory.Key
-    LocalMimeTypeCategory.KEYNOTE -> MimeTypeCategory.Keynote
-    LocalMimeTypeCategory.NUMBERS -> MimeTypeCategory.Numbers
-    LocalMimeTypeCategory.PAGES -> MimeTypeCategory.Pages
-    LocalMimeTypeCategory.PDF -> MimeTypeCategory.Pdf
-    LocalMimeTypeCategory.POWERPOINT -> MimeTypeCategory.Powerpoint
-    LocalMimeTypeCategory.TEXT -> MimeTypeCategory.Text
-    LocalMimeTypeCategory.VIDEO -> MimeTypeCategory.Video
-    LocalMimeTypeCategory.WORD -> MimeTypeCategory.Word
-    LocalMimeTypeCategory.UNKNOWN -> MimeTypeCategory.Unknown
-}
