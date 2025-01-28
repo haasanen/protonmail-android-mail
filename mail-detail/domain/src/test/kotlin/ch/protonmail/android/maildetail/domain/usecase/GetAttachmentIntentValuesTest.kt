@@ -18,20 +18,21 @@
 
 package ch.protonmail.android.maildetail.domain.usecase
 
+import android.content.Context
 import android.net.Uri
+import androidx.core.content.FileProvider
 import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.maildetail.domain.model.OpenAttachmentIntentValues
 import ch.protonmail.android.mailmessage.domain.model.AttachmentId
-import ch.protonmail.android.mailmessage.domain.model.AttachmentWorkerStatus
-import ch.protonmail.android.mailmessage.domain.model.MessageAttachmentMetadata
+import ch.protonmail.android.mailmessage.domain.model.DecryptedAttachment
 import ch.protonmail.android.mailmessage.domain.model.MessageWithBody
 import ch.protonmail.android.mailmessage.domain.repository.AttachmentRepository
 import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
+import ch.protonmail.android.mailmessage.domain.sample.AttachmentMetadataSamples
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
-import ch.protonmail.android.mailmessage.domain.sample.MessageWithBodySample
 import ch.protonmail.android.testdata.message.MessageBodyTestData
 import ch.protonmail.android.testdata.message.MessageTestData
 import io.mockk.coEvery
@@ -52,16 +53,12 @@ class GetAttachmentIntentValuesTest {
     private val messageId = MessageIdSample.Invoice
     private val attachmentId = AttachmentId("1")
 
-    private val extension = "txt"
     private val uri = mockk<Uri>()
 
-    private val messageAttachmentMetadata by lazy {
-        MessageAttachmentMetadata(
-            userId = userId,
-            messageId = messageId,
-            attachmentId = attachmentId,
-            uri = Uri.parse("/test/tmp.$extension"),
-            status = AttachmentWorkerStatus.Success
+    private val decryptedAttachment by lazy {
+        DecryptedAttachment(
+            attachmentMetadata = AttachmentMetadataSamples.Pdf,
+            dataPath = "/test/tmp.pdf"
         )
     }
 
@@ -69,23 +66,26 @@ class GetAttachmentIntentValuesTest {
         message = MessageTestData.message,
         messageBody = MessageBodyTestData.messageBodyWithAttachment
     )
-    private val pgpMimeMessageWithBody = MessageWithBodySample.PgpMimeMessageWithAttachment
 
     private val attachmentRepository = mockk<AttachmentRepository>()
     private val messageRepository = mockk<MessageRepository>()
 
+    private val mockContext = mockk<Context> {
+        every { packageName } returns "ch.protonmail.android"
+    }
+
     private val getAttachmentIntentValues =
-        GetAttachmentIntentValues(attachmentRepository, messageRepository)
+        GetAttachmentIntentValues(attachmentRepository, messageRepository, mockContext)
 
     @Before
     fun setUp() {
-        mockkStatic(Uri::class)
-        every { Uri.parse(any()) } returns uri
+        mockkStatic(FileProvider::class)
+        every { FileProvider.getUriForFile(any(), any(), any()) } returns uri
     }
 
     @After
     fun tearDown() {
-        unmockkStatic(Uri::class)
+        unmockkStatic(FileProvider::class)
     }
 
     @Test
@@ -98,7 +98,7 @@ class GetAttachmentIntentValuesTest {
                 messageId = messageId,
                 attachmentId = id
             )
-        } returns messageAttachmentMetadata.right()
+        } returns decryptedAttachment.right()
         coEvery { messageRepository.getMessageWithBody(userId, messageId) } returns messageWithBody.right()
 
         // When
@@ -158,69 +158,5 @@ class GetAttachmentIntentValuesTest {
 
         // Then
         assertEquals(DataError.Local.OutOfMemory.left(), result)
-    }
-
-    @Test
-    fun `should return intent values when mime attachment is successfully saved and metadata is available`() = runTest {
-        // Given
-        coEvery { messageRepository.getMessageWithBody(userId, messageId) } returns pgpMimeMessageWithBody.right()
-        coEvery {
-            attachmentRepository.saveMimeAttachmentToPublicStorage(
-                userId = userId,
-                messageId = messageId,
-                attachmentId = AttachmentId("1")
-            )
-        } returns uri.right()
-
-        // When
-        val result = getAttachmentIntentValues(userId, messageId, AttachmentId("1"))
-
-        // Then
-        assertEquals(OpenAttachmentIntentValues("image/png", uri).right(), result)
-    }
-
-    @Test
-    @Suppress("MaxLineLength")
-    fun `should return intent values with fixed mime-type when mime attachment is successfully saved, metadata is available and content-type is binary but file extension is well-known`() =
-        runTest {
-            // Given
-            val messageWithBody = MessageWithBodySample.PgpMimeMessageWithPdfAttachmentWithBinaryContentType
-            coEvery {
-                messageRepository.getMessageWithBody(userId, messageId)
-            } returns messageWithBody.right()
-            coEvery {
-                attachmentRepository.saveMimeAttachmentToPublicStorage(
-                    userId = userId,
-                    messageId = messageId,
-                    attachmentId = AttachmentId("7")
-                )
-            } returns uri.right()
-
-            // When
-            val result = getAttachmentIntentValues(userId, messageId, AttachmentId("7"))
-
-            println(result)
-
-            // Then
-            assertEquals(OpenAttachmentIntentValues("application/octet-stream", uri).right(), result)
-        }
-
-    @Test
-    fun `should return error if saving mime attachment to public storage fails`() = runTest {
-        // Given
-        coEvery { messageRepository.getMessageWithBody(userId, messageId) } returns pgpMimeMessageWithBody.right()
-        coEvery {
-            attachmentRepository.saveMimeAttachmentToPublicStorage(
-                userId = userId,
-                messageId = messageId,
-                attachmentId = AttachmentId("image")
-            )
-        } returns DataError.Local.NoDataCached.left()
-
-        // When
-        val result = getAttachmentIntentValues(userId, messageId, AttachmentId("image"))
-
-        // Then
-        assertEquals(DataError.Local.NoDataCached.left(), result)
     }
 }

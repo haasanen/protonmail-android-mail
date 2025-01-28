@@ -18,21 +18,25 @@
 
 package ch.protonmail.android.maildetail.domain.usecase
 
+import java.io.File
+import android.content.Context
+import androidx.core.content.FileProvider
 import arrow.core.Either
 import arrow.core.raise.either
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.maildetail.domain.model.OpenAttachmentIntentValues
 import ch.protonmail.android.mailmessage.domain.model.AttachmentId
 import ch.protonmail.android.mailmessage.domain.model.MessageId
-import ch.protonmail.android.mailmessage.domain.model.MimeType
 import ch.protonmail.android.mailmessage.domain.repository.AttachmentRepository
 import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
+import dagger.hilt.android.qualifiers.ApplicationContext
 import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 
 class GetAttachmentIntentValues @Inject constructor(
     private val attachmentRepository: AttachmentRepository,
-    private val messageRepository: MessageRepository
+    private val messageRepository: MessageRepository,
+    @ApplicationContext private val context: Context
 ) {
 
     suspend operator fun invoke(
@@ -41,11 +45,12 @@ class GetAttachmentIntentValues @Inject constructor(
         attachmentId: AttachmentId
     ): Either<DataError, OpenAttachmentIntentValues> = either {
         val messageWithBody = messageRepository.getMessageWithBody(userId, messageId).bind()
-        val uri = if (messageWithBody.messageBody.mimeType == MimeType.MultipartMixed) {
-            attachmentRepository.saveMimeAttachmentToPublicStorage(userId, messageId, attachmentId).bind()
-        } else {
-            attachmentRepository.getAttachment(userId, messageId, attachmentId).bind().uri
-        }
+        val filePath = attachmentRepository.getAttachment(userId, messageId, attachmentId).bind().dataPath
+        val uri = FileProvider.getUriForFile(
+            context,
+            "${context.packageName}.provider",
+            File(filePath)
+        )
 
         val attachment = messageWithBody.messageBody.attachments.firstOrNull { it.attachmentId == attachmentId }
             ?: raise(DataError.Local.NoDataCached)
