@@ -293,6 +293,7 @@ fun Home(
                 }
             )
         },
+        dismissOnBack = false,
         onDismissed = { onboardingStepViewModel.submit(OnboardingStepAction.MarkOnboardingComplete) }
     ) {
         ModalNavigationDrawer(

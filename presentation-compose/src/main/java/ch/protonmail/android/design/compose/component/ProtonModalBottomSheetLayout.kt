@@ -22,6 +22,7 @@ import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.ModalBottomSheetProperties
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -37,6 +38,7 @@ fun ProtonModalBottomSheetLayout(
     modifier: Modifier = Modifier,
     sheetState: SheetState = rememberModalBottomSheetState(),
     onDismissed: () -> Unit,
+    dismissOnBack: Boolean,
     content: @Composable () -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
@@ -55,7 +57,8 @@ fun ProtonModalBottomSheetLayout(
                 shape = ProtonTheme.shapes.bottomSheet,
                 containerColor = ProtonTheme.colors.backgroundNorm,
                 contentColor = ProtonTheme.colors.textNorm,
-                content = sheetContent
+                content = sheetContent,
+                properties = ModalBottomSheetProperties(shouldDismissOnBackPress = dismissOnBack)
             )
         }
     }
@@ -74,6 +77,7 @@ fun ProtonModalBottomSheetLayout(
         modifier = modifier,
         sheetState = sheetState,
         content = content,
+        dismissOnBack = true,
         onDismissed = { }
     )
 }

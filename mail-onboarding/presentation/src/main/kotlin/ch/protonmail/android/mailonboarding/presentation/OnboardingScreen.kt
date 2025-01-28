@@ -53,6 +53,16 @@ fun OnboardingScreen(
 ) {
 
     val state by viewModel.state.collectAsStateWithLifecycle()
+
+    OnboardingScreen(state, onUpsellingNavigation, exitAction)
+}
+
+@Composable
+private fun OnboardingScreen(
+    state: OnboardingState,
+    onUpsellingNavigation: () -> Unit,
+    exitAction: () -> Unit
+) {
     val isEligibleForUpselling = state is OnboardingState.ToUpsell
     val isUpsellingEligibilityPending = state is OnboardingState.Loading
 
@@ -135,7 +145,7 @@ fun OnboardingScreen(
 @Composable
 private fun OnboardingScreenPreview() {
     ProtonTheme {
-        OnboardingScreen(onUpsellingNavigation = {}, exitAction = {})
+        OnboardingScreen(state = OnboardingState.NoUpsell, onUpsellingNavigation = {}, exitAction = {})
     }
 }
 
