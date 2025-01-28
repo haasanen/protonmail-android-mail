@@ -22,14 +22,16 @@ import java.io.File
 import android.net.Uri
 import arrow.core.Either
 import arrow.core.left
-import ch.protonmail.android.mailcommon.domain.coroutines.IODispatcher
 import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailmessage.data.local.RustAttachmentDataSource
+import ch.protonmail.android.mailmessage.data.mapper.toDecryptedAttachment
+import ch.protonmail.android.mailmessage.data.mapper.toLocalAttachmentId
 import ch.protonmail.android.mailmessage.domain.model.AttachmentId
+import ch.protonmail.android.mailmessage.domain.model.DecryptedAttachment
 import ch.protonmail.android.mailmessage.domain.model.MessageAttachment
 import ch.protonmail.android.mailmessage.domain.model.MessageAttachmentMetadata
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.repository.AttachmentRepository
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import me.proton.core.domain.entity.UserId
@@ -37,16 +39,17 @@ import timber.log.Timber
 import javax.inject.Inject
 
 class AttachmentRepositoryImpl @Inject constructor(
-    @IODispatcher private val ioDispatcher: CoroutineDispatcher
+    private val rustAttachmentDataSource: RustAttachmentDataSource
 ) : AttachmentRepository {
 
     override suspend fun getAttachment(
         userId: UserId,
         messageId: MessageId,
         attachmentId: AttachmentId
-    ): Either<DataError, MessageAttachmentMetadata> {
-        Timber.w("Not implemented")
-        return DataError.Local.Unknown.left()
+    ): Either<DataError, DecryptedAttachment> {
+        return rustAttachmentDataSource.getAttachment(userId, attachmentId.toLocalAttachmentId()).map {
+            it.toDecryptedAttachment()
+        }
     }
 
     override suspend fun getAttachmentFromRemote(

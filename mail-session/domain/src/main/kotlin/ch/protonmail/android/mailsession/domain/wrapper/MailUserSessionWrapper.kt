@@ -21,6 +21,7 @@ package ch.protonmail.android.mailsession.domain.wrapper
 import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
+import ch.protonmail.android.mailcommon.datarust.mapper.LocalAttachmentId
 import ch.protonmail.android.mailcommon.datarust.mapper.toDataError
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import uniffi.proton_mail_uniffi.MailUserSession
@@ -56,4 +57,6 @@ class MailUserSessionWrapper(private val userSession: MailUserSession) {
         null,
         "png"
     )
+
+    suspend fun getAttachment(attachmentId: LocalAttachmentId) = userSession.getAttachment(attachmentId)
 }

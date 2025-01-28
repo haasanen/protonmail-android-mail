@@ -1,0 +1,92 @@
+/*
+ * Copyright (c) 2022 Proton Technologies AG
+ * This file is part of Proton Technologies AG and Proton Mail.
+ *
+ * Proton Mail is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Proton Mail is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+package ch.protonmail.android.mailmessage.data.repository
+
+import ch.protonmail.android.mailmessage.data.local.RustAttachmentDataSource
+import io.mockk.mockk
+
+import arrow.core.left
+import arrow.core.right
+import ch.protonmail.android.mailcommon.datarust.mapper.LocalDecryptedAttachment
+import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
+import ch.protonmail.android.mailmessage.data.mapper.toAttachmentMetadata
+import ch.protonmail.android.mailmessage.data.mapper.toLocalAttachmentId
+import ch.protonmail.android.mailmessage.data.sample.LocalAttachmentMetadataSample
+import ch.protonmail.android.mailmessage.domain.model.AttachmentId
+import ch.protonmail.android.mailmessage.domain.model.DecryptedAttachment
+import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
+import io.mockk.coEvery
+import io.mockk.coVerify
+import kotlinx.coroutines.test.runTest
+import org.junit.Assert.assertEquals
+import org.junit.Test
+
+class AttachmentRepositoryImplTest {
+
+    private val rustAttachmentDataSource = mockk<RustAttachmentDataSource>()
+    private val attachmentRepository = AttachmentRepositoryImpl(rustAttachmentDataSource)
+
+    @Test
+    fun `test get attachment returns decrypted attachment for valid inputs`() = runTest {
+        // Given
+        val userId = UserIdSample.Primary
+        val messageId = MessageIdSample.Invoice
+        val attachmentId = AttachmentId("121")
+        val localAttachment = LocalDecryptedAttachment(
+            attachmentMetadata = LocalAttachmentMetadataSample.Pdf,
+            dataPath = "/cache/sampleFile"
+        )
+        val expectedDecryptedAttachment = DecryptedAttachment(
+            attachmentMetadata = localAttachment.attachmentMetadata.toAttachmentMetadata(),
+            dataPath = "/cache/sampleFile"
+        )
+        coEvery {
+            rustAttachmentDataSource.getAttachment(userId, attachmentId.toLocalAttachmentId())
+        } returns localAttachment.right()
+
+
+        // When
+        val result = attachmentRepository.getAttachment(userId, messageId, attachmentId)
+
+        // Then
+        assertEquals(expectedDecryptedAttachment.right(), result)
+        coVerify { rustAttachmentDataSource.getAttachment(userId, attachmentId.toLocalAttachmentId()) }
+    }
+
+    @Test
+    fun `test get attachment returns data error for failed fetch`() = runTest {
+        // Given
+        val userId = UserIdSample.Primary
+        val messageId = MessageIdSample.Invoice
+        val attachmentId = AttachmentId("1221")
+        val expectedError = DataError.Local.Unknown
+
+        coEvery {
+            rustAttachmentDataSource.getAttachment(userId, attachmentId.toLocalAttachmentId())
+        } returns expectedError.left()
+
+        // When
+        val result = attachmentRepository.getAttachment(userId, messageId, attachmentId)
+
+        // Then
+        assertEquals(expectedError.left(), result)
+        coVerify { rustAttachmentDataSource.getAttachment(userId, attachmentId.toLocalAttachmentId()) }
+    }
+}

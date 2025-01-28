@@ -18,6 +18,8 @@
 
 package ch.protonmail.android.mailmessage.dagger
 
+import ch.protonmail.android.mailmessage.data.local.RustAttachmentDataSource
+import ch.protonmail.android.mailmessage.data.local.RustAttachmentDataSourceImpl
 import ch.protonmail.android.mailmessage.data.repository.AttachmentRepositoryImpl
 import ch.protonmail.android.mailmessage.domain.repository.AttachmentRepository
 import dagger.Binds
@@ -32,6 +34,10 @@ abstract class MailAttachmentModule {
 
     @Binds
     @Singleton
-    abstract fun bindAttachmentRepository(attachmentRepositoryImpl: AttachmentRepositoryImpl): AttachmentRepository
+    abstract fun bindAttachmentRepository(impl: AttachmentRepositoryImpl): AttachmentRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindRustAttachmentDataSource(impl: RustAttachmentDataSourceImpl): RustAttachmentDataSource
 
 }

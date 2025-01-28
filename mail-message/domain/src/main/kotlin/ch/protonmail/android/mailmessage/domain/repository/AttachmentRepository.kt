@@ -23,6 +23,7 @@ import android.net.Uri
 import arrow.core.Either
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailmessage.domain.model.AttachmentId
+import ch.protonmail.android.mailmessage.domain.model.DecryptedAttachment
 import ch.protonmail.android.mailmessage.domain.model.MessageAttachment
 import ch.protonmail.android.mailmessage.domain.model.MessageAttachmentMetadata
 import ch.protonmail.android.mailmessage.domain.model.MessageId
@@ -38,7 +39,7 @@ interface AttachmentRepository {
         userId: UserId,
         messageId: MessageId,
         attachmentId: AttachmentId
-    ): Either<DataError, MessageAttachmentMetadata>
+    ): Either<DataError, DecryptedAttachment>
 
     suspend fun getAttachmentFromRemote(
         userId: UserId,
