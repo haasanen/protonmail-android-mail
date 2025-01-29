@@ -64,15 +64,15 @@ import ch.protonmail.android.mailcomposer.domain.model.MessageSendingStatus
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetail
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.model.MessageId
+import ch.protonmail.android.mailonboarding.domain.model.OnboardingEligibilityState
+import ch.protonmail.android.mailonboarding.presentation.viewmodel.OnboardingStepAction
+import ch.protonmail.android.mailonboarding.presentation.viewmodel.OnboardingStepViewModel
 import ch.protonmail.android.mailsession.data.mapper.toUserId
 import ch.protonmail.android.mailsidebar.presentation.Sidebar
 import ch.protonmail.android.navigation.model.Destination.Dialog
 import ch.protonmail.android.navigation.model.Destination.Screen
 import ch.protonmail.android.navigation.model.HomeState
-import ch.protonmail.android.mailonboarding.domain.model.OnboardingEligibilityState
 import ch.protonmail.android.navigation.onboarding.Onboarding
-import ch.protonmail.android.mailonboarding.presentation.viewmodel.OnboardingStepAction
-import ch.protonmail.android.mailonboarding.presentation.viewmodel.OnboardingStepViewModel
 import ch.protonmail.android.navigation.route.addAlternativeRoutingSetting
 import ch.protonmail.android.navigation.route.addAppSettings
 import ch.protonmail.android.navigation.route.addAutoLockPinScreen
@@ -412,8 +412,7 @@ fun Home(
                             openDrawerMenu = { scope.launch { drawerState.open() } },
                             showOfflineSnackbar = { showOfflineSnackbar() },
                             showNormalSnackbar = { showNormalSnackbar(it) },
-                            showErrorSnackbar = { showErrorSnackbar(it) },
-                            showFeatureMissingSnackbar = { showFeatureMissingSnackbar() }
+                            showErrorSnackbar = { showErrorSnackbar(it) }
                         )
                         addComposer(
                             navController,
