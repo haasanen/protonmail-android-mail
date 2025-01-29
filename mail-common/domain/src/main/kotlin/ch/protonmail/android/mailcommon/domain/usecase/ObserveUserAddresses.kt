@@ -24,6 +24,7 @@ import me.proton.core.user.domain.UserManager
 import me.proton.core.user.domain.entity.UserAddress
 import javax.inject.Inject
 
+@Deprecated("Relying on old core libraries; Read this data from rust-lib instead")
 class ObserveUserAddresses @Inject constructor(
     private val userManager: UserManager
 ) {

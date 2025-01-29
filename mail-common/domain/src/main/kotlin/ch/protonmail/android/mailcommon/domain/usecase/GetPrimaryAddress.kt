@@ -27,6 +27,7 @@ import me.proton.core.domain.entity.UserId
 import me.proton.core.user.domain.entity.UserAddress
 import javax.inject.Inject
 
+@Deprecated("Relying on old core libraries; Read this data from rust-lib instead")
 class GetPrimaryAddress @Inject constructor(
     private val observeUserAddresses: ObserveUserAddresses
 ) {
