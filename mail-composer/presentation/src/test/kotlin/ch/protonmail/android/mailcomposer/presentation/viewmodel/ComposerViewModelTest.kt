@@ -68,7 +68,6 @@ import ch.protonmail.android.mailcomposer.domain.usecase.StoreDraftWithBodyError
 import ch.protonmail.android.mailcomposer.domain.usecase.StoreDraftWithRecipients
 import ch.protonmail.android.mailcomposer.domain.usecase.StoreDraftWithSubject
 import ch.protonmail.android.mailcomposer.domain.usecase.StoreExternalAttachments
-import ch.protonmail.android.mailcomposer.domain.usecase.ValidateSenderAddress
 import ch.protonmail.android.mailcomposer.presentation.R
 import ch.protonmail.android.mailcomposer.presentation.mapper.ParticipantMapper
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerAction
@@ -198,7 +197,6 @@ class ComposerViewModelTest {
         every { observe() } returns appInBackgroundStateFlow
     }
     private val observeMessagePassword = mockk<ObserveMessagePassword>()
-    private val validateSenderAddress = mockk<ValidateSenderAddress>()
     private val saveMessageExpirationTime = mockk<SaveMessageExpirationTime>()
     private val observeMessageExpirationTime = mockk<ObserveMessageExpirationTime>()
     private val getExternalRecipients = mockk<GetExternalRecipients>()
@@ -245,7 +243,6 @@ class ComposerViewModelTest {
             styleQuotedHtml,
             deleteAttachment,
             observeMessagePassword,
-            validateSenderAddress,
             saveMessageExpirationTime,
             observeMessageExpirationTime,
             getExternalRecipients,
@@ -1720,7 +1717,6 @@ class ComposerViewModelTest {
             expectObserveMessageSendingError(expectedUserId, expectedDraftId)
             expectMessagePassword(expectedUserId, expectedDraftId)
             expectNoFileShareVia()
-            expectValidSenderAddress(expectedUserId, expectedDraftFields.sender)
             expectObserveMessageExpirationTime(expectedUserId, expectedDraftId)
 
             // When
@@ -1763,12 +1759,6 @@ class ComposerViewModelTest {
         expectMessagePassword(expectedUserId, expectedDraftId)
         expectNoFileShareVia()
         expectObserveMessageExpirationTime(expectedUserId, expectedDraftId)
-        expectInvalidSenderAddress(
-            expectedUserId,
-            expectedDraftFields.sender,
-            expectedValidEmail,
-            ValidateSenderAddress.ValidationError.PaidAddress
-        )
 
         // When
         val actual = viewModel.state.value
@@ -2846,23 +2836,6 @@ class ComposerViewModelTest {
                 any()
             )
         } returns Recipient(RecipientSample.NamelessRecipient.address, "", false)
-    }
-
-    private fun expectValidSenderAddress(userId: UserId, senderEmail: SenderEmail) {
-        coEvery {
-            validateSenderAddress(userId, senderEmail)
-        } returns ValidateSenderAddress.ValidationResult.Valid(senderEmail).right()
-    }
-
-    private fun expectInvalidSenderAddress(
-        userId: UserId,
-        invalid: SenderEmail,
-        useInstead: SenderEmail,
-        reason: ValidateSenderAddress.ValidationError
-    ) {
-        coEvery {
-            validateSenderAddress(userId, invalid)
-        } returns ValidateSenderAddress.ValidationResult.Invalid(useInstead, invalid, reason).right()
     }
 
     private fun expectExternalRecipients(

@@ -65,7 +65,6 @@ import ch.protonmail.android.mailcomposer.domain.usecase.StoreDraftWithBody
 import ch.protonmail.android.mailcomposer.domain.usecase.StoreDraftWithRecipients
 import ch.protonmail.android.mailcomposer.domain.usecase.StoreDraftWithSubject
 import ch.protonmail.android.mailcomposer.domain.usecase.StoreExternalAttachments
-import ch.protonmail.android.mailcomposer.domain.usecase.ValidateSenderAddress
 import ch.protonmail.android.mailcomposer.presentation.mapper.ParticipantMapper
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerAction
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerDraftState
@@ -143,7 +142,6 @@ class ComposerViewModel @Inject constructor(
     private val styleQuotedHtml: StyleQuotedHtml,
     private val deleteAttachment: DeleteAttachment,
     private val observeMessagePassword: ObserveMessagePassword,
-    private val validateSenderAddress: ValidateSenderAddress,
     private val saveMessageExpirationTime: SaveMessageExpirationTime,
     private val observeMessageExpirationTime: ObserveMessageExpirationTime,
     private val getExternalRecipients: GetExternalRecipients,
