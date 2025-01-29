@@ -21,10 +21,11 @@ package ch.protonmail.android.mailmessage.data.repository
 import java.io.File
 import android.net.Uri
 import arrow.core.Either
+import arrow.core.flatMap
 import arrow.core.left
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailmessage.data.local.RustAttachmentDataSource
-import ch.protonmail.android.mailmessage.data.mapper.toDecryptedAttachment
+import ch.protonmail.android.mailmessage.data.mapper.DecryptedAttachmentMapper
 import ch.protonmail.android.mailmessage.data.mapper.toLocalAttachmentId
 import ch.protonmail.android.mailmessage.domain.model.AttachmentId
 import ch.protonmail.android.mailmessage.domain.model.DecryptedAttachment
@@ -39,7 +40,8 @@ import timber.log.Timber
 import javax.inject.Inject
 
 class AttachmentRepositoryImpl @Inject constructor(
-    private val rustAttachmentDataSource: RustAttachmentDataSource
+    private val rustAttachmentDataSource: RustAttachmentDataSource,
+    private val decryptedAttachmentMapper: DecryptedAttachmentMapper
 ) : AttachmentRepository {
 
     override suspend fun getAttachment(
@@ -47,9 +49,9 @@ class AttachmentRepositoryImpl @Inject constructor(
         messageId: MessageId,
         attachmentId: AttachmentId
     ): Either<DataError, DecryptedAttachment> {
-        return rustAttachmentDataSource.getAttachment(userId, attachmentId.toLocalAttachmentId()).map {
-            it.toDecryptedAttachment()
-        }
+        return rustAttachmentDataSource
+            .getAttachment(userId, attachmentId.toLocalAttachmentId())
+            .flatMap { decryptedAttachmentMapper.toDomainModel(it) }
     }
 
     override suspend fun getAttachmentFromRemote(

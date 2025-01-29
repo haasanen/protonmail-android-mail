@@ -38,6 +38,8 @@ sealed interface DataError {
 
         data object OutOfMemory : Local
 
+        data object FailedToReadFile : Local
+
         data object FailedToStoreFile : Local
 
         data object FailedToDeleteFile : Local

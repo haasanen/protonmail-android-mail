@@ -18,7 +18,9 @@
 
 package ch.protonmail.android.mailmessage.domain.model
 
+import android.net.Uri
+
 data class DecryptedAttachment(
-    val attachmentMetadata: AttachmentMetadata,
-    val dataPath: String
+    val metadata: AttachmentMetadata,
+    val fileUri: Uri
 )

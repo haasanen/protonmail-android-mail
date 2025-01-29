@@ -18,9 +18,6 @@
 
 package ch.protonmail.android.maildetail.domain.usecase
 
-import java.io.File
-import android.content.Context
-import androidx.core.content.FileProvider
 import arrow.core.Either
 import arrow.core.raise.either
 import ch.protonmail.android.mailcommon.domain.model.DataError
@@ -29,14 +26,12 @@ import ch.protonmail.android.mailmessage.domain.model.AttachmentId
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.repository.AttachmentRepository
 import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
-import dagger.hilt.android.qualifiers.ApplicationContext
 import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 
 class GetAttachmentIntentValues @Inject constructor(
     private val attachmentRepository: AttachmentRepository,
-    private val messageRepository: MessageRepository,
-    @ApplicationContext private val context: Context
+    private val messageRepository: MessageRepository
 ) {
 
     suspend operator fun invoke(
@@ -45,21 +40,14 @@ class GetAttachmentIntentValues @Inject constructor(
         attachmentId: AttachmentId
     ): Either<DataError, OpenAttachmentIntentValues> = either {
         val messageWithBody = messageRepository.getMessageWithBody(userId, messageId).bind()
-        val filePath = attachmentRepository.getAttachment(userId, messageId, attachmentId).bind().dataPath
-        val uri = FileProvider.getUriForFile(
-            context,
-            "${context.packageName}.provider",
-            File(filePath)
-        )
+        val fileUri = attachmentRepository.getAttachment(userId, messageId, attachmentId).bind().fileUri
 
         val attachment = messageWithBody.messageBody.attachments.firstOrNull { it.attachmentId == attachmentId }
             ?: raise(DataError.Local.NoDataCached)
 
-        return@either uri?.let {
-            OpenAttachmentIntentValues(
-                mimeType = attachment.mimeType.mime,
-                uri = it
-            )
-        } ?: raise(DataError.Local.NoDataCached)
+        return@either OpenAttachmentIntentValues(
+            mimeType = attachment.mimeType.mime,
+            uri = fileUri
+        )
     }
 }

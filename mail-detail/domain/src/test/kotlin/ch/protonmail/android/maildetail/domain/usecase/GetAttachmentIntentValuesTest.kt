@@ -18,9 +18,7 @@
 
 package ch.protonmail.android.maildetail.domain.usecase
 
-import android.content.Context
 import android.net.Uri
-import androidx.core.content.FileProvider
 import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.DataError
@@ -36,13 +34,8 @@ import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
 import ch.protonmail.android.testdata.message.MessageBodyTestData
 import ch.protonmail.android.testdata.message.MessageTestData
 import io.mockk.coEvery
-import io.mockk.every
 import io.mockk.mockk
-import io.mockk.mockkStatic
-import io.mockk.unmockkStatic
 import kotlinx.coroutines.test.runTest
-import org.junit.After
-import org.junit.Before
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -57,8 +50,8 @@ class GetAttachmentIntentValuesTest {
 
     private val decryptedAttachment by lazy {
         DecryptedAttachment(
-            attachmentMetadata = AttachmentMetadataSamples.Pdf,
-            dataPath = "/test/tmp.pdf"
+            metadata = AttachmentMetadataSamples.Pdf,
+            fileUri = uri
         )
     }
 
@@ -70,23 +63,8 @@ class GetAttachmentIntentValuesTest {
     private val attachmentRepository = mockk<AttachmentRepository>()
     private val messageRepository = mockk<MessageRepository>()
 
-    private val mockContext = mockk<Context> {
-        every { packageName } returns "ch.protonmail.android"
-    }
-
     private val getAttachmentIntentValues =
-        GetAttachmentIntentValues(attachmentRepository, messageRepository, mockContext)
-
-    @Before
-    fun setUp() {
-        mockkStatic(FileProvider::class)
-        every { FileProvider.getUriForFile(any(), any(), any()) } returns uri
-    }
-
-    @After
-    fun tearDown() {
-        unmockkStatic(FileProvider::class)
-    }
+        GetAttachmentIntentValues(attachmentRepository, messageRepository)
 
     @Test
     fun `should return intent values when attachment and metadata is locally available`() = runTest {
@@ -160,3 +138,4 @@ class GetAttachmentIntentValuesTest {
         assertEquals(DataError.Local.OutOfMemory.left(), result)
     }
 }
+

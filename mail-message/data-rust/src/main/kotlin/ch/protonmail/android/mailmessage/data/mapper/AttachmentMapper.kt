@@ -22,13 +22,11 @@ import ch.protonmail.android.mailcommon.datarust.mapper.LocalAttachmentDispositi
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalAttachmentId
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalAttachmentMetadata
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalAttachmentMimeType
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalDecryptedAttachment
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalMimeTypeCategory
 import ch.protonmail.android.mailmessage.domain.model.AttachmentDisposition
 import ch.protonmail.android.mailmessage.domain.model.AttachmentId
 import ch.protonmail.android.mailmessage.domain.model.AttachmentMetadata
 import ch.protonmail.android.mailmessage.domain.model.AttachmentMimeType
-import ch.protonmail.android.mailmessage.domain.model.DecryptedAttachment
 import ch.protonmail.android.mailmessage.domain.model.MimeTypeCategory
 
 fun LocalAttachmentId.toAttachmentId(): AttachmentId = AttachmentId(this.value.toString())
@@ -82,9 +80,3 @@ fun LocalMimeTypeCategory.toMimeTypeCategory(): MimeTypeCategory = when (this) {
     LocalMimeTypeCategory.UNKNOWN -> MimeTypeCategory.Unknown
 }
 
-fun LocalDecryptedAttachment.toDecryptedAttachment(): DecryptedAttachment {
-    return DecryptedAttachment(
-        attachmentMetadata = this.attachmentMetadata.toAttachmentMetadata(),
-        dataPath = this.dataPath
-    )
-}

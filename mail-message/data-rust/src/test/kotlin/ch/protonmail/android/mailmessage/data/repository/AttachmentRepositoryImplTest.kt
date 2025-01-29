@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.mailmessage.data.repository
 
+import android.net.Uri
 import ch.protonmail.android.mailmessage.data.local.RustAttachmentDataSource
 import io.mockk.mockk
 
@@ -26,6 +27,7 @@ import arrow.core.right
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalDecryptedAttachment
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
+import ch.protonmail.android.mailmessage.data.mapper.DecryptedAttachmentMapper
 import ch.protonmail.android.mailmessage.data.mapper.toAttachmentMetadata
 import ch.protonmail.android.mailmessage.data.mapper.toLocalAttachmentId
 import ch.protonmail.android.mailmessage.data.sample.LocalAttachmentMetadataSample
@@ -34,6 +36,7 @@ import ch.protonmail.android.mailmessage.domain.model.DecryptedAttachment
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.every
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -41,7 +44,10 @@ import org.junit.Test
 class AttachmentRepositoryImplTest {
 
     private val rustAttachmentDataSource = mockk<RustAttachmentDataSource>()
-    private val attachmentRepository = AttachmentRepositoryImpl(rustAttachmentDataSource)
+    private val decryptedAttachmentMapper = mockk<DecryptedAttachmentMapper>()
+    private val attachmentRepository = AttachmentRepositoryImpl(
+        rustAttachmentDataSource, decryptedAttachmentMapper
+    )
 
     @Test
     fun `test get attachment returns decrypted attachment for valid inputs`() = runTest {
@@ -49,18 +55,21 @@ class AttachmentRepositoryImplTest {
         val userId = UserIdSample.Primary
         val messageId = MessageIdSample.Invoice
         val attachmentId = AttachmentId("121")
+        val mockUri = mockk<Uri>()
+
         val localAttachment = LocalDecryptedAttachment(
             attachmentMetadata = LocalAttachmentMetadataSample.Pdf,
             dataPath = "/cache/sampleFile"
         )
         val expectedDecryptedAttachment = DecryptedAttachment(
-            attachmentMetadata = localAttachment.attachmentMetadata.toAttachmentMetadata(),
-            dataPath = "/cache/sampleFile"
+            metadata = localAttachment.attachmentMetadata.toAttachmentMetadata(),
+            fileUri = mockUri
+
         )
+        every { decryptedAttachmentMapper.toDomainModel(localAttachment) } returns expectedDecryptedAttachment.right()
         coEvery {
             rustAttachmentDataSource.getAttachment(userId, attachmentId.toLocalAttachmentId())
         } returns localAttachment.right()
-
 
         // When
         val result = attachmentRepository.getAttachment(userId, messageId, attachmentId)
