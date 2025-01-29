@@ -81,7 +81,6 @@ import ch.protonmail.android.mailcomposer.presentation.reducer.ComposerReducer
 import ch.protonmail.android.mailcomposer.presentation.ui.ComposerScreen
 import ch.protonmail.android.mailcomposer.presentation.usecase.ConvertHtmlToPlainText
 import ch.protonmail.android.mailcomposer.presentation.usecase.FormatMessageSendingError
-import ch.protonmail.android.mailcomposer.presentation.usecase.ParentMessageToDraftFields
 import ch.protonmail.android.mailcomposer.presentation.usecase.SortContactsForSuggestions
 import ch.protonmail.android.mailcomposer.presentation.usecase.StyleQuotedHtml
 import ch.protonmail.android.mailcontact.domain.DeviceContactsSuggestionsPrompt
@@ -143,7 +142,6 @@ class ComposerViewModel @Inject constructor(
     private val formatMessageSendingError: FormatMessageSendingError,
     private val sendMessage: SendMessage,
     private val networkManager: NetworkManager,
-    private val parentMessageToDraftFields: ParentMessageToDraftFields,
     private val styleQuotedHtml: StyleQuotedHtml,
     private val storeDraftWithParentAttachments: StoreDraftWithParentAttachments,
     private val deleteAttachment: DeleteAttachment,

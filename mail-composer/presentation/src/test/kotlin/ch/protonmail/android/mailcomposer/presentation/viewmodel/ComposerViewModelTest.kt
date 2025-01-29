@@ -84,7 +84,6 @@ import ch.protonmail.android.mailcomposer.presentation.reducer.ComposerReducer
 import ch.protonmail.android.mailcomposer.presentation.ui.ComposerScreen
 import ch.protonmail.android.mailcomposer.presentation.usecase.ConvertHtmlToPlainText
 import ch.protonmail.android.mailcomposer.presentation.usecase.FormatMessageSendingError
-import ch.protonmail.android.mailcomposer.presentation.usecase.ParentMessageToDraftFields
 import ch.protonmail.android.mailcomposer.presentation.usecase.SortContactsForSuggestions
 import ch.protonmail.android.mailcomposer.presentation.usecase.StyleQuotedHtml
 import ch.protonmail.android.mailcontact.domain.DeviceContactsSuggestionsPrompt
@@ -115,7 +114,6 @@ import ch.protonmail.android.testdata.contact.ContactEmailSample
 import ch.protonmail.android.testdata.contact.ContactGroupIdSample
 import ch.protonmail.android.testdata.contact.ContactSample
 import ch.protonmail.android.testdata.contact.ContactTestData
-import ch.protonmail.android.testdata.message.DecryptedMessageBodyTestData
 import io.mockk.Called
 import io.mockk.Runs
 import io.mockk.coEvery
@@ -192,7 +190,6 @@ class ComposerViewModelTest {
     private val savedStateHandle = mockk<SavedStateHandle>()
     private val getDecryptedDraftFields = mockk<GetDecryptedDraftFields>()
     private val styleQuotedHtml = mockk<StyleQuotedHtml>()
-    private val parentMessageToDraftFields = mockk<ParentMessageToDraftFields>()
     private val storeDraftWithParentAttachments = mockk<StoreDraftWithParentAttachments>()
     private val deleteAttachment = mockk<DeleteAttachment>()
     private val deleteAllAttachments = mockk<DeleteAllAttachments>()
@@ -249,7 +246,6 @@ class ComposerViewModelTest {
             formatMessageSendingError,
             sendMessageMock,
             networkManagerMock,
-            parentMessageToDraftFields,
             styleQuotedHtml,
             storeDraftWithParentAttachments,
             deleteAttachment,
@@ -364,7 +360,6 @@ class ComposerViewModelTest {
         // Given
         val expectedDraftBody = DraftBody(RawDraftBody)
         val expectedQuotedDraftBody = null
-        val originalSenderEmail = SenderEmail(UserAddressSample.PrimaryAddress.email)
         val expectedSenderEmail = SenderEmail(UserAddressSample.AliasAddress.email)
         val expectedMessageId = expectedMessageId { MessageIdSample.EmptyDraft }
         val expectedUserId = expectedUserId { UserIdSample.Primary }
@@ -411,7 +406,6 @@ class ComposerViewModelTest {
         // Given
         val expectedDraftBody = DraftBody(RawDraftBody)
         val expectedQuotedDraftBody = null
-        val previousSenderEmail = SenderEmail(UserAddressSample.PrimaryAddress.email)
         val expectedSenderEmail = SenderEmail(UserAddressSample.AliasAddress.email)
         val expectedMessageId = expectedMessageId { MessageIdSample.EmptyDraft }
         val expectedUserId = expectedUserId { UserIdSample.Primary }
@@ -627,7 +621,6 @@ class ComposerViewModelTest {
     @Test
     fun `should perform search when ContactSuggestionTermChanged`() = runTest {
         // Given
-        val expectedSenderEmail = SenderEmail(UserAddressSample.PrimaryAddress.email)
         val expectedMessageId = expectedMessageId { MessageIdSample.EmptyDraft }
         val expectedUserId = expectedUserId { UserIdSample.Primary }
         val expectedSearchTerm = "proton"
@@ -662,7 +655,6 @@ class ComposerViewModelTest {
     @Test
     fun `should emit ContactSuggestionsDismissed when searchTerm is blank`() = runTest {
         // Given
-        val expectedSenderEmail = SenderEmail(UserAddressSample.PrimaryAddress.email)
         val expectedMessageId = expectedMessageId { MessageIdSample.EmptyDraft }
         val expectedUserId = expectedUserId { UserIdSample.Primary }
         val expectedSearchTerm = ""
@@ -704,7 +696,6 @@ class ComposerViewModelTest {
     @Test
     fun `should call DeviceContactsSuggestionsPrompt when DeviceContactsPromptDenied is emitted`() = runTest {
         // Given
-        val expectedSenderEmail = SenderEmail(UserAddressSample.PrimaryAddress.email)
         val expectedMessageId = expectedMessageId { MessageIdSample.EmptyDraft }
         val expectedUserId = expectedUserId { UserIdSample.Primary }
         val expectedSearchTerm = ""
@@ -744,7 +735,6 @@ class ComposerViewModelTest {
     @Test
     fun `should emit UpdateContactSuggestions when contact suggestions are found`() = runTest {
         // Given
-        val expectedSenderEmail = SenderEmail(UserAddressSample.PrimaryAddress.email)
         val expectedMessageId = expectedMessageId { MessageIdSample.EmptyDraft }
         val expectedUserId = expectedUserId { UserIdSample.Primary }
         val expectedSearchTerm = "contact"
@@ -829,7 +819,6 @@ class ComposerViewModelTest {
     @Test
     fun `should emit UpdateContactSuggestions when device contact suggestions are found`() = runTest {
         // Given
-        val expectedSenderEmail = SenderEmail(UserAddressSample.PrimaryAddress.email)
         val expectedMessageId = expectedMessageId { MessageIdSample.EmptyDraft }
         val expectedUserId = expectedUserId { UserIdSample.Primary }
         val expectedSearchTerm = "contact"
@@ -891,7 +880,6 @@ class ComposerViewModelTest {
     @Test
     fun `should emit UpdateContactSuggestions limiting results according to constant max value`() = runTest {
         // Given
-        val expectedSenderEmail = SenderEmail(UserAddressSample.PrimaryAddress.email)
         val expectedMessageId = expectedMessageId { MessageIdSample.EmptyDraft }
         val expectedUserId = expectedUserId { UserIdSample.Primary }
         val expectedSearchTerm = "contact"
@@ -938,7 +926,6 @@ class ComposerViewModelTest {
     @Test
     fun `should dismiss contact suggestions when ContactSuggestionsDismissed is emitted`() = runTest {
         // Given
-        val expectedSenderEmail = SenderEmail(UserAddressSample.PrimaryAddress.email)
         val expectedMessageId = expectedMessageId { MessageIdSample.EmptyDraft }
         val expectedUserId = expectedUserId { UserIdSample.Primary }
         val suggestionField = ContactSuggestionsField.BCC
@@ -1139,7 +1126,6 @@ class ComposerViewModelTest {
         // Given
         val expectedUserId = expectedUserId { UserIdSample.Primary }
         val expectedMessageId = expectedMessageId { MessageIdSample.EmptyDraft }
-        val expectedSenderEmail = SenderEmail(UserAddressSample.PrimaryAddress.email)
         expectedPrimaryAddress(expectedUserId) { UserAddressSample.PrimaryAddress }
         expectNoInputDraftMessageId()
         expectNoInputDraftAction()
@@ -1167,7 +1153,6 @@ class ComposerViewModelTest {
         // Given
         val expectedUserId = expectedUserId { UserIdSample.Primary }
         val expectedMessageId = expectedMessageId { MessageIdSample.EmptyDraft }
-        val expectedSenderEmail = SenderEmail(UserAddressSample.PrimaryAddress.email)
         expectedPrimaryAddress(expectedUserId) { UserAddressSample.PrimaryAddress }
         expectNoInputDraftMessageId()
         expectInputDraftAction { DraftAction.Compose }
@@ -1258,7 +1243,6 @@ class ComposerViewModelTest {
         val expectedUserId = expectedUserId { UserIdSample.Primary }
         val expectedMessageId = expectedMessageId { MessageIdSample.EmptyDraft }
         val primaryAddress = expectedPrimaryAddress(expectedUserId) { UserAddressSample.PrimaryAddress }
-        val expectedSenderEmail = SenderEmail(UserAddressSample.PrimaryAddress.email)
         expectNoInputDraftMessageId()
         expectInputDraftAction { DraftAction.Compose }
         expectStartDraftSync(expectedUserId, MessageIdSample.EmptyDraft)
@@ -1304,7 +1288,6 @@ class ComposerViewModelTest {
         val expectedUserId = expectedUserId { UserIdSample.Primary }
         val addresses = listOf(UserAddressSample.PrimaryAddress, UserAddressSample.AliasAddress)
         expectedPrimaryAddress(expectedUserId) { UserAddressSample.PrimaryAddress }
-        val expectedSenderEmail = SenderEmail(UserAddressSample.PrimaryAddress.email)
         val expectedMessageId = expectedMessageId { MessageIdSample.EmptyDraft }
         expectedGetComposerSenderAddresses { addresses }
         expectNoInputDraftMessageId()
@@ -1331,7 +1314,6 @@ class ComposerViewModelTest {
         // Given
         val expectedUserId = expectedUserId { UserIdSample.Primary }
         expectedPrimaryAddress(expectedUserId) { UserAddressSample.PrimaryAddress }
-        val expectedSenderEmail = SenderEmail(UserAddressSample.PrimaryAddress.email)
         val expectedMessageId = expectedMessageId { MessageIdSample.EmptyDraft }
         expectedGetComposerSenderAddressesError { GetComposerSenderAddresses.Error.UpgradeToChangeSender }
         expectNoInputDraftMessageId()
@@ -1358,7 +1340,6 @@ class ComposerViewModelTest {
         // Given
         val expectedUserId = expectedUserId { UserIdSample.Primary }
         expectedPrimaryAddress(expectedUserId) { UserAddressSample.PrimaryAddress }
-        val expectedSenderEmail = SenderEmail(UserAddressSample.PrimaryAddress.email)
         val expectedMessageId = expectedMessageId { MessageIdSample.EmptyDraft }
         expectedGetComposerSenderAddressesError { GetComposerSenderAddresses.Error.FailedDeterminingUserSubscription }
         expectNoInputDraftMessageId()
@@ -1384,7 +1365,6 @@ class ComposerViewModelTest {
     fun `emits state with new sender address when sender changed`() = runTest {
         // Given
         val expectedDraftBody = DraftBody("")
-        val originalSenderEmail = SenderEmail(UserAddressSample.PrimaryAddress.email)
         val expectedSenderEmail = SenderEmail(UserAddressSample.AliasAddress.email)
         val expectedMessageId = expectedMessageId { MessageIdSample.EmptyDraft }
         val expectedUserId = expectedUserId { UserIdSample.Primary }
@@ -1413,7 +1393,6 @@ class ComposerViewModelTest {
     fun `emits state with saving draft with new sender error when save draft with sender returns error`() = runTest {
         // Given
         val expectedDraftBody = DraftBody("")
-        val originalSenderEmail = SenderEmail(UserAddressSample.PrimaryAddress.email)
         val expectedSenderEmail = SenderEmail(UserAddressSample.AliasAddress.email)
         val expectedUserId = expectedUserId { UserIdSample.Primary }
         val action = ComposerAction.SenderChanged(SenderUiModel(expectedSenderEmail.value))
@@ -1734,7 +1713,6 @@ class ComposerViewModelTest {
             val expectedDraftId = expectedMessageId { MessageIdSample.EmptyDraft }
             val expectedParentId = MessageIdSample.Invoice
             val expectedAction = expectInputDraftAction { DraftAction.Reply(expectedParentId) }
-            val expectedDecryptedParentBody = DecryptedMessageBodyTestData.htmlInvoice
             expectedPrimaryAddress(expectedUserId) { UserAddressSample.PrimaryAddress }
             expectStartDraftSync(expectedUserId, expectedDraftId, expectedAction)
             expectNoInputDraftMessageId()
@@ -1745,12 +1723,6 @@ class ComposerViewModelTest {
             val expectedStyledQuote = expectStyleQuotedHtml(expectedDraftFields.originalHtmlQuote) {
                 StyledHtmlQuote("<styled> ${expectedDraftFields.originalHtmlQuote?.value} </styled>")
             }
-            expectStoreDraftWithParentAttachmentsSucceeds(
-                expectedUserId,
-                expectedDraftId,
-                expectedDraftFields.sender,
-                expectedAction
-            )
             expectObserveMessageSendingError(expectedUserId, expectedDraftId)
             expectMessagePassword(expectedUserId, expectedDraftId)
             expectNoFileShareVia()
@@ -1782,7 +1754,6 @@ class ComposerViewModelTest {
         val expectedDraftId = expectedMessageId { MessageIdSample.EmptyDraft }
         val expectedParentId = MessageIdSample.Invoice
         val expectedAction = expectInputDraftAction { DraftAction.Reply(expectedParentId) }
-        val expectedDecryptedParentBody = DecryptedMessageBodyTestData.htmlInvoice
         expectedPrimaryAddress(expectedUserId) { UserAddressSample.PrimaryAddress }
         expectStartDraftSync(expectedUserId, expectedDraftId, expectedAction)
         expectNoInputDraftMessageId()
@@ -1794,12 +1765,6 @@ class ComposerViewModelTest {
         expectStyleQuotedHtml(expectedDraftFields.originalHtmlQuote) {
             StyledHtmlQuote("<styled> ${expectedDraftFields.originalHtmlQuote?.value} </styled>")
         }
-        expectStoreDraftWithParentAttachmentsSucceeds(
-            expectedUserId,
-            expectedDraftId,
-            expectedValidEmail,
-            expectedAction
-        )
         expectObserveMessageSendingError(expectedUserId, expectedDraftId)
         expectMessagePassword(expectedUserId, expectedDraftId)
         expectNoFileShareVia()
@@ -1875,7 +1840,6 @@ class ComposerViewModelTest {
         // Given
         val userId = expectedUserId { UserIdSample.Primary }
         val messageId = expectedMessageId { MessageIdSample.EmptyDraft }
-        val expectedSenderEmail = SenderEmail(UserAddressSample.PrimaryAddress.email)
         expectedPrimaryAddress(userId) { UserAddressSample.PrimaryAddress }
         expectStartDraftSync(userId, messageId)
         expectNoInputDraftMessageId()
@@ -2066,7 +2030,6 @@ class ComposerViewModelTest {
         // Given
         val userId = expectedUserId { UserIdSample.Primary }
         val messageId = expectedMessageId { MessageIdSample.EmptyDraft }
-        val expectedSenderEmail = SenderEmail(UserAddressSample.PrimaryAddress.email)
         expectedPrimaryAddress(userId) { UserAddressSample.PrimaryAddress }
         expectStartDraftSync(userId, messageId)
         expectStopContinuousDraftUploadSucceeds()
@@ -2096,7 +2059,6 @@ class ComposerViewModelTest {
         // Given
         val userId = expectedUserId { UserIdSample.Primary }
         val messageId = expectedMessageId { MessageIdSample.EmptyDraft }
-        val expectedSenderEmail = SenderEmail(UserAddressSample.PrimaryAddress.email)
         expectedPrimaryAddress(userId) { UserAddressSample.PrimaryAddress }
         expectStartDraftSync(userId, messageId)
         expectStopContinuousDraftUploadSucceeds()
@@ -2127,7 +2089,6 @@ class ComposerViewModelTest {
         // Given
         val userId = expectedUserId { UserIdSample.Primary }
         val messageId = expectedMessageId { MessageIdSample.EmptyDraft }
-        val expectedSenderEmail = SenderEmail(UserAddressSample.PrimaryAddress.email)
         expectedPrimaryAddress(userId) { UserAddressSample.PrimaryAddress }
         expectStartDraftSync(userId, messageId)
         expectNoInputDraftMessageId()
@@ -2184,7 +2145,6 @@ class ComposerViewModelTest {
         // Given
         val userId = expectedUserId { UserIdSample.Primary }
         val messageId = expectedMessageId { MessageIdSample.EmptyDraft }
-        val expectedSenderEmail = SenderEmail(UserAddressSample.PrimaryAddress.email)
         expectedPrimaryAddress(userId) { UserAddressSample.PrimaryAddress }
         expectStartDraftSync(userId, messageId)
         expectNoInputDraftMessageId()
@@ -2270,7 +2230,6 @@ class ComposerViewModelTest {
         // Given
         val userId = expectedUserId { UserIdSample.Primary }
         val messageId = expectedMessageId { MessageIdSample.EmptyDraft }
-        val expectedSenderEmail = SenderEmail(UserAddressSample.PrimaryAddress.email)
         expectedPrimaryAddress(userId) { UserAddressSample.PrimaryAddress }
         expectStartDraftSync(userId, messageId)
         expectNoInputDraftMessageId()
@@ -2645,18 +2604,6 @@ class ComposerViewModelTest {
     private fun expectedGetComposerSenderAddressesError(
         error: () -> GetComposerSenderAddresses.Error
     ): GetComposerSenderAddresses.Error = error().also { coEvery { getComposerSenderAddresses() } returns it.left() }
-
-    private fun expectStoreDraftWithParentAttachmentsSucceeds(
-        userId: UserId,
-        messageId: MessageId,
-        senderEmail: SenderEmail,
-        action: DraftAction
-    ) {
-//        coEvery {
-//            storeDraftWithParentAttachments(userId, messageId, null, senderEmail, action)
-//        } returns Unit.right()
-    }
-
 
     private fun expectStoreDraftBodySucceeds(
         expectedMessageId: MessageId,
