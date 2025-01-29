@@ -46,7 +46,6 @@ import ch.protonmail.android.mailcomposer.domain.model.Subject
 import ch.protonmail.android.mailcomposer.domain.usecase.ClearMessageSendingError
 import ch.protonmail.android.mailcomposer.domain.usecase.CreateDraftForAction
 import ch.protonmail.android.mailcomposer.domain.usecase.CreateEmptyDraft
-import ch.protonmail.android.mailcomposer.domain.usecase.DeleteAllAttachments
 import ch.protonmail.android.mailcomposer.domain.usecase.DeleteAttachment
 import ch.protonmail.android.mailcomposer.domain.usecase.DraftUploader
 import ch.protonmail.android.mailcomposer.domain.usecase.GetComposerSenderAddresses
@@ -190,7 +189,6 @@ class ComposerViewModelTest {
     private val getDecryptedDraftFields = mockk<GetDecryptedDraftFields>()
     private val styleQuotedHtml = mockk<StyleQuotedHtml>()
     private val deleteAttachment = mockk<DeleteAttachment>()
-    private val deleteAllAttachments = mockk<DeleteAllAttachments>()
     private val observeMessageAttachments = mockk<ObserveMessageAttachments>()
     private val observeMessageSendingError = mockk<ObserveMessageSendingError>()
     private val clearMessageSendingError = mockk<ClearMessageSendingError>()
@@ -246,7 +244,6 @@ class ComposerViewModelTest {
             networkManagerMock,
             styleQuotedHtml,
             deleteAttachment,
-            deleteAllAttachments,
             observeMessagePassword,
             validateSenderAddress,
             saveMessageExpirationTime,

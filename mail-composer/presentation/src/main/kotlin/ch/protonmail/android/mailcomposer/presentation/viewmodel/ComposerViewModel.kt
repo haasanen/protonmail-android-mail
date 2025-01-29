@@ -43,7 +43,6 @@ import ch.protonmail.android.mailcomposer.domain.model.Subject
 import ch.protonmail.android.mailcomposer.domain.usecase.ClearMessageSendingError
 import ch.protonmail.android.mailcomposer.domain.usecase.CreateDraftForAction
 import ch.protonmail.android.mailcomposer.domain.usecase.CreateEmptyDraft
-import ch.protonmail.android.mailcomposer.domain.usecase.DeleteAllAttachments
 import ch.protonmail.android.mailcomposer.domain.usecase.DeleteAttachment
 import ch.protonmail.android.mailcomposer.domain.usecase.DraftUploader
 import ch.protonmail.android.mailcomposer.domain.usecase.GetComposerSenderAddresses
@@ -143,7 +142,6 @@ class ComposerViewModel @Inject constructor(
     private val networkManager: NetworkManager,
     private val styleQuotedHtml: StyleQuotedHtml,
     private val deleteAttachment: DeleteAttachment,
-    private val deleteAllAttachments: DeleteAllAttachments,
     private val observeMessagePassword: ObserveMessagePassword,
     private val validateSenderAddress: ValidateSenderAddress,
     private val saveMessageExpirationTime: SaveMessageExpirationTime,
