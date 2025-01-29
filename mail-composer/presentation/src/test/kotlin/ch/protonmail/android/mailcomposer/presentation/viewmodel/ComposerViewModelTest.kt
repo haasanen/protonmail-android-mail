@@ -28,7 +28,6 @@ import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.sample.UserAddressSample
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.mailcommon.domain.usecase.GetPrimaryAddress
-import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcommon.presentation.usecase.GetInitials
@@ -36,7 +35,6 @@ import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.DraftFields
 import ch.protonmail.android.mailcomposer.domain.model.MessageExpirationTime
 import ch.protonmail.android.mailcomposer.domain.model.MessagePassword
-import ch.protonmail.android.mailcomposer.domain.model.MessageWithDecryptedBody
 import ch.protonmail.android.mailcomposer.domain.model.OriginalHtmlQuote
 import ch.protonmail.android.mailcomposer.domain.model.QuotedHtmlContent
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsBcc
@@ -54,7 +52,6 @@ import ch.protonmail.android.mailcomposer.domain.usecase.DraftUploader
 import ch.protonmail.android.mailcomposer.domain.usecase.GetComposerSenderAddresses
 import ch.protonmail.android.mailcomposer.domain.usecase.GetDecryptedDraftFields
 import ch.protonmail.android.mailcomposer.domain.usecase.GetExternalRecipients
-import ch.protonmail.android.mailcomposer.domain.usecase.GetLocalMessageDecrypted
 import ch.protonmail.android.mailcomposer.domain.usecase.IsValidEmailAddress
 import ch.protonmail.android.mailcomposer.domain.usecase.ObserveMessageAttachments
 import ch.protonmail.android.mailcomposer.domain.usecase.ObserveMessageExpirationTime
@@ -105,12 +102,12 @@ import ch.protonmail.android.mailmessage.domain.model.Recipient
 import ch.protonmail.android.mailmessage.domain.model.SendingError
 import ch.protonmail.android.mailmessage.domain.sample.AttachmentMetadataSamples
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
-import ch.protonmail.android.mailmessage.domain.sample.MessageWithBodySample
 import ch.protonmail.android.mailmessage.domain.sample.RecipientSample
 import ch.protonmail.android.mailmessage.presentation.mapper.AttachmentMetadataUiModelMapper
 import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentGroupUiModel
 import ch.protonmail.android.mailmessage.presentation.model.attachment.NO_ATTACHMENT_LIMIT
 import ch.protonmail.android.mailmessage.presentation.sample.AttachmentMetadataUiModelSamples
+import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.test.idlingresources.ComposerIdlingResource
 import ch.protonmail.android.test.utils.rule.LoggingTestRule
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
@@ -196,7 +193,6 @@ class ComposerViewModelTest {
     private val savedStateHandle = mockk<SavedStateHandle>()
     private val getDecryptedDraftFields = mockk<GetDecryptedDraftFields>()
     private val styleQuotedHtml = mockk<StyleQuotedHtml>()
-    private val getLocalMessageDecrypted = mockk<GetLocalMessageDecrypted>()
     private val injectAddressSignature = mockk<InjectAddressSignature>()
     private val parentMessageToDraftFields = mockk<ParentMessageToDraftFields>()
     private val storeDraftWithParentAttachments = mockk<StoreDraftWithParentAttachments>()
@@ -255,7 +251,6 @@ class ComposerViewModelTest {
             formatMessageSendingError,
             sendMessageMock,
             networkManagerMock,
-            getLocalMessageDecrypted,
             injectAddressSignature,
             parentMessageToDraftFields,
             styleQuotedHtml,
@@ -1781,9 +1776,6 @@ class ComposerViewModelTest {
             expectedPrimaryAddress(expectedUserId) { UserAddressSample.PrimaryAddress }
             expectStartDraftSync(expectedUserId, expectedDraftId, expectedAction)
             expectNoInputDraftMessageId()
-            val expectedMessageDecrypted = expectGetMessageWithDecryptedBodySuccess(expectedUserId, expectedParentId) {
-                MessageWithDecryptedBody(MessageWithBodySample.Invoice, expectedDecryptedParentBody)
-            }
             val expectedDraftFields = expectInitComposerForActionSuccess(
                 expectedUserId, expectedAction
             ) { draftFieldsWithQuotedBody }
@@ -1794,7 +1786,6 @@ class ComposerViewModelTest {
             expectStoreDraftWithParentAttachmentsSucceeds(
                 expectedUserId,
                 expectedDraftId,
-                expectedMessageDecrypted,
                 expectedDraftFields.sender,
                 expectedAction
             )
@@ -1833,9 +1824,6 @@ class ComposerViewModelTest {
         expectedPrimaryAddress(expectedUserId) { UserAddressSample.PrimaryAddress }
         expectStartDraftSync(expectedUserId, expectedDraftId, expectedAction)
         expectNoInputDraftMessageId()
-        val expectedMessageDecrypted = expectGetMessageWithDecryptedBodySuccess(expectedUserId, expectedParentId) {
-            MessageWithDecryptedBody(MessageWithBodySample.Invoice, expectedDecryptedParentBody)
-        }
         val expectedValidEmail = SenderEmail("valid-to-use-instead@proton.me")
         val expectedDraftFields = expectInitComposerForActionSuccess(
             expectedUserId, expectedAction
@@ -1847,7 +1835,6 @@ class ComposerViewModelTest {
         expectStoreDraftWithParentAttachmentsSucceeds(
             expectedUserId,
             expectedDraftId,
-            expectedMessageDecrypted,
             expectedValidEmail,
             expectedAction
         )
@@ -1884,7 +1871,6 @@ class ComposerViewModelTest {
         expectedPrimaryAddress(expectedUserId) { UserAddressSample.PrimaryAddress }
         expectStartDraftSync(expectedUserId, draftId, expectedAction)
         expectNoInputDraftMessageId()
-        expectParentDraftDataError(expectedUserId, expectedParentId) { DataError.Local.DecryptionError }
         expectObservedMessageAttachments(expectedUserId, draftId)
         expectObserveMessageSendingError(expectedUserId, draftId)
         expectMessagePassword(expectedUserId, draftId)
@@ -2539,24 +2525,6 @@ class ComposerViewModelTest {
         coEvery { createDraftForAction(userId, action) } returns it.right()
     }
 
-    private fun expectParentDraftDataError(
-        userId: UserId,
-        messageId: MessageId,
-        error: () -> DataError.Local
-    ) = error().also { coEvery { getLocalMessageDecrypted(userId, messageId) } returns it.left() }
-
-    private fun expectGetMessageWithDecryptedBodySuccess(
-        userId: UserId,
-        messageId: MessageId,
-        responseDelay: Long = 0L,
-        result: () -> MessageWithDecryptedBody
-    ) = result().also { messageWithDecryptedBody ->
-        coEvery { getLocalMessageDecrypted(userId, messageId) } coAnswers {
-            delay(responseDelay)
-            messageWithDecryptedBody.right()
-        }
-    }
-
     private fun expectInitComposerWithNewEmptyDraftSucceeds(
         userId: UserId,
         result: () -> DraftFields = { DraftFieldsTestData.EmptyDraftWithPrimarySender }
@@ -2739,13 +2707,12 @@ class ComposerViewModelTest {
     private fun expectStoreDraftWithParentAttachmentsSucceeds(
         userId: UserId,
         messageId: MessageId,
-        messageWithDecryptedBody: MessageWithDecryptedBody,
         senderEmail: SenderEmail,
         action: DraftAction
     ) {
-        coEvery {
-            storeDraftWithParentAttachments(userId, messageId, messageWithDecryptedBody, senderEmail, action)
-        } returns Unit.right()
+//        coEvery {
+//            storeDraftWithParentAttachments(userId, messageId, null, senderEmail, action)
+//        } returns Unit.right()
     }
 
 
