@@ -66,7 +66,6 @@ import ch.protonmail.android.mailcomposer.domain.usecase.StoreDraftWithAllFields
 import ch.protonmail.android.mailcomposer.domain.usecase.StoreDraftWithAttachmentError
 import ch.protonmail.android.mailcomposer.domain.usecase.StoreDraftWithBody
 import ch.protonmail.android.mailcomposer.domain.usecase.StoreDraftWithBodyError
-import ch.protonmail.android.mailcomposer.domain.usecase.StoreDraftWithParentAttachments
 import ch.protonmail.android.mailcomposer.domain.usecase.StoreDraftWithRecipients
 import ch.protonmail.android.mailcomposer.domain.usecase.StoreDraftWithSubject
 import ch.protonmail.android.mailcomposer.domain.usecase.StoreExternalAttachments
@@ -190,7 +189,6 @@ class ComposerViewModelTest {
     private val savedStateHandle = mockk<SavedStateHandle>()
     private val getDecryptedDraftFields = mockk<GetDecryptedDraftFields>()
     private val styleQuotedHtml = mockk<StyleQuotedHtml>()
-    private val storeDraftWithParentAttachments = mockk<StoreDraftWithParentAttachments>()
     private val deleteAttachment = mockk<DeleteAttachment>()
     private val deleteAllAttachments = mockk<DeleteAllAttachments>()
     private val observeMessageAttachments = mockk<ObserveMessageAttachments>()
@@ -247,7 +245,6 @@ class ComposerViewModelTest {
             sendMessageMock,
             networkManagerMock,
             styleQuotedHtml,
-            storeDraftWithParentAttachments,
             deleteAttachment,
             deleteAllAttachments,
             observeMessagePassword,

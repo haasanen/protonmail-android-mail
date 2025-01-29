@@ -63,7 +63,6 @@ import ch.protonmail.android.mailcomposer.domain.usecase.StoreAttachments
 import ch.protonmail.android.mailcomposer.domain.usecase.StoreDraftWithAllFields
 import ch.protonmail.android.mailcomposer.domain.usecase.StoreDraftWithAttachmentError
 import ch.protonmail.android.mailcomposer.domain.usecase.StoreDraftWithBody
-import ch.protonmail.android.mailcomposer.domain.usecase.StoreDraftWithParentAttachments
 import ch.protonmail.android.mailcomposer.domain.usecase.StoreDraftWithRecipients
 import ch.protonmail.android.mailcomposer.domain.usecase.StoreDraftWithSubject
 import ch.protonmail.android.mailcomposer.domain.usecase.StoreExternalAttachments
@@ -143,7 +142,6 @@ class ComposerViewModel @Inject constructor(
     private val sendMessage: SendMessage,
     private val networkManager: NetworkManager,
     private val styleQuotedHtml: StyleQuotedHtml,
-    private val storeDraftWithParentAttachments: StoreDraftWithParentAttachments,
     private val deleteAttachment: DeleteAttachment,
     private val deleteAllAttachments: DeleteAllAttachments,
     private val observeMessagePassword: ObserveMessagePassword,
