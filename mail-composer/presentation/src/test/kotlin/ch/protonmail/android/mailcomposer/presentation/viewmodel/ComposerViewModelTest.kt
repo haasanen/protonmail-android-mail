@@ -49,7 +49,6 @@ import ch.protonmail.android.mailcomposer.domain.usecase.CreateEmptyDraft
 import ch.protonmail.android.mailcomposer.domain.usecase.DeleteAttachment
 import ch.protonmail.android.mailcomposer.domain.usecase.DraftUploader
 import ch.protonmail.android.mailcomposer.domain.usecase.GetComposerSenderAddresses
-import ch.protonmail.android.mailcomposer.domain.usecase.GetDecryptedDraftFields
 import ch.protonmail.android.mailcomposer.domain.usecase.GetExternalRecipients
 import ch.protonmail.android.mailcomposer.domain.usecase.IsValidEmailAddress
 import ch.protonmail.android.mailcomposer.domain.usecase.ObserveMessageAttachments
@@ -185,7 +184,6 @@ class ComposerViewModelTest {
         coEvery { this@mockk.invoke() } returns GetComposerSenderAddresses.Error.UpgradeToChangeSender.left()
     }
     private val savedStateHandle = mockk<SavedStateHandle>()
-    private val getDecryptedDraftFields = mockk<GetDecryptedDraftFields>()
     private val styleQuotedHtml = mockk<StyleQuotedHtml>()
     private val deleteAttachment = mockk<DeleteAttachment>()
     private val observeMessageAttachments = mockk<ObserveMessageAttachments>()
@@ -252,7 +250,6 @@ class ComposerViewModelTest {
             createEmptyDraft,
             createDraftForAction,
             isDeviceContactsSuggestionsEnabledMock,
-            getDecryptedDraftFields,
             savedStateHandle,
             observePrimaryUserIdMock,
             provideNewDraftIdMock
