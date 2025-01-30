@@ -24,6 +24,10 @@ import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.presentation.mapper.ColorMapper
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcommon.presentation.usecase.FormatShortTime
+import ch.protonmail.android.maillabel.domain.model.ExclusiveLocation
+import ch.protonmail.android.maillabel.domain.model.Label
+import ch.protonmail.android.maillabel.domain.model.LabelType
+import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.maillabel.presentation.model.LabelUiModel
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItem
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItemType
@@ -34,13 +38,11 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxItemU
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.ParticipantUiModel
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.ParticipantsUiModel
 import ch.protonmail.android.mailmailbox.presentation.mailbox.usecase.GetMailboxItemLocationIcon
+import ch.protonmail.android.mailmessage.presentation.mapper.AttachmentMetadataUiModelMapper
+import ch.protonmail.android.mailsettings.domain.model.FolderColorSettings
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 import me.proton.core.domain.arch.Mapper
-import ch.protonmail.android.maillabel.domain.model.Label
-import ch.protonmail.android.maillabel.domain.model.LabelType
-import ch.protonmail.android.mailmessage.presentation.mapper.AttachmentMetadataUiModelMapper
-import ch.protonmail.android.mailsettings.domain.model.FolderColorSettings
 import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.seconds
@@ -84,9 +86,15 @@ class MailboxItemUiModelMapper @Inject constructor(
             locations = getLocationIconsToDisplay(userId, mailboxItem, folderColorSettings, isShowingSearchResults),
             expiryInformation = expiryInformationUiModelMapper.toUiModel(mailboxItem.expirationTime),
             shouldShowCalendarIcon = hasCalendarAttachment(mailboxItem),
-            shouldOpenInComposer = false,
+            shouldOpenInComposer = mailboxItem.exclusiveLocation.isDraft(),
             attachments = mailboxItem.attachments.map(attachmentMetadataUiModelMapper::toUiModel).toImmutableList()
         )
+    }
+
+    private fun ExclusiveLocation.isDraft() = when (this) {
+        is ExclusiveLocation.Folder,
+        ExclusiveLocation.NoLocation -> false
+        is ExclusiveLocation.System -> this.systemLabelId == SystemLabelId.Drafts
     }
 
     private suspend fun getLocationIconsToDisplay(
