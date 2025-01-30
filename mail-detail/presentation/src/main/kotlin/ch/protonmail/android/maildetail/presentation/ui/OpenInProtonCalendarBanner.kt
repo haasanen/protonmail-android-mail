@@ -20,6 +20,8 @@ package ch.protonmail.android.maildetail.presentation.ui
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -29,69 +31,95 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import ch.protonmail.android.mailcommon.presentation.NO_CONTENT_DESCRIPTION
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 import ch.protonmail.android.maildetail.presentation.R
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.bodySmallWeak
-import ch.protonmail.android.design.compose.theme.titleSmallNorm
 
 @Composable
 fun OpenInProtonCalendarBanner(modifier: Modifier = Modifier, onOpenInProtonCalendarClick: () -> Unit) {
     Button(
-        elevation = ButtonDefaults.buttonElevation(defaultElevation = 0.dp),
-        shape = ProtonTheme.shapes.medium,
-        colors = ButtonDefaults.buttonColors().copy(containerColor = ProtonTheme.colors.backgroundSecondary),
-        contentPadding = PaddingValues(ProtonDimens.Spacing.Small + ProtonDimens.Spacing.Standard),
-        border = BorderStroke(MailDimens.DefaultBorder, ProtonTheme.colors.separatorNorm),
+        shape = ProtonTheme.shapes.extraLarge,
+        colors = ButtonDefaults.buttonColors().copy(
+            containerColor = ProtonTheme.colors.backgroundNorm
+        ),
+        contentPadding = PaddingValues(ProtonDimens.Spacing.Large),
+        border = BorderStroke(MailDimens.DefaultBorder, ProtonTheme.colors.borderNorm),
         modifier = modifier
             .padding(
                 start = ProtonDimens.Spacing.Large,
                 end = ProtonDimens.Spacing.Large,
                 bottom = ProtonDimens.Spacing.Standard + ProtonDimens.Spacing.Small
             )
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .shadow(
+                elevation = ProtonDimens.ShadowElevation.Small,
+                shape = ProtonTheme.shapes.extraLarge,
+                spotColor = ProtonTheme.colors.borderNorm.copy(alpha = 0.2f),
+                ambientColor = ProtonTheme.colors.borderNorm.copy(alpha = 0.4f)
+            ),
 
         onClick = onOpenInProtonCalendarClick
     ) {
         Row(modifier = Modifier.fillMaxWidth()) {
-            Image(
-                modifier = Modifier
-                    .align(Alignment.CenterVertically)
-                    .size(MailDimens.ProtonCalendarIconSize),
-                painter = painterResource(id = R.drawable.ic_logo_calendar),
-                contentDescription = NO_CONTENT_DESCRIPTION
-            )
+            Box(modifier = Modifier.size(MailDimens.ProtonCalendarIconSize)) {
+                Image(
+                    modifier = Modifier.align(Alignment.Center),
+                    painter = painterResource(id = R.drawable.ic_logo_calendar),
+                    contentDescription = NO_CONTENT_DESCRIPTION
+                )
+
+            }
             Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Large))
-            Column {
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.Center
+            ) {
                 Text(
-                    style = ProtonTheme.typography.titleSmallNorm,
+                    style = ProtonTheme.typography.bodyMedium,
                     color = ProtonTheme.colors.textAccent,
                     maxLines = 1,
                     text = stringResource(id = R.string.open_on_protoncalendar_banner_title)
                 )
+                Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Tiny))
                 Text(
-                    style = ProtonTheme.typography.bodySmallWeak,
+                    style = ProtonTheme.typography.bodyMedium,
                     color = ProtonTheme.colors.textWeak,
                     maxLines = 1,
                     text = stringResource(id = R.string.open_on_protoncalendar_banner_description)
+                )
+            }
+            Box(modifier = Modifier.size(MailDimens.ProtonCalendarIconSize)) {
+                Icon(
+                    modifier = Modifier.align(Alignment.Center),
+                    painter = painterResource(id = R.drawable.ic_proton_arrow_out_square),
+                    contentDescription = NO_CONTENT_DESCRIPTION,
+                    tint = ProtonTheme.colors.iconHint
                 )
             }
         }
     }
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 private fun OpenInProtonCalendarBannerPreview() {
-    OpenInProtonCalendarBanner(onOpenInProtonCalendarClick = {})
+    ProtonTheme {
+        Box(
+            modifier = Modifier
+                .padding(ProtonDimens.Spacing.Large)
+        ) {
+            OpenInProtonCalendarBanner(onOpenInProtonCalendarClick = {})
+        }
+    }
 }
