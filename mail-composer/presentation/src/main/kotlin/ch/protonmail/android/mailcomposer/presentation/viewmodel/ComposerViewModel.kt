@@ -28,7 +28,6 @@ import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.domain.model.IntentShareInfo
 import ch.protonmail.android.mailcommon.domain.model.decode
 import ch.protonmail.android.mailcommon.domain.model.hasEmailData
-import ch.protonmail.android.mailcommon.domain.usecase.GetPrimaryAddress
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.DraftFields
@@ -62,7 +61,6 @@ import ch.protonmail.android.mailcomposer.domain.usecase.StoreDraftWithAttachmen
 import ch.protonmail.android.mailcomposer.domain.usecase.StoreDraftWithBody
 import ch.protonmail.android.mailcomposer.domain.usecase.StoreDraftWithRecipients
 import ch.protonmail.android.mailcomposer.domain.usecase.StoreDraftWithSubject
-import ch.protonmail.android.mailcomposer.domain.usecase.StoreExternalAttachments
 import ch.protonmail.android.mailcomposer.presentation.mapper.ParticipantMapper
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerAction
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerDraftState
@@ -118,7 +116,6 @@ class ComposerViewModel @Inject constructor(
     private val storeDraftWithSubject: StoreDraftWithSubject,
     private val storeDraftWithAllFields: StoreDraftWithAllFields,
     private val storeDraftWithRecipients: StoreDraftWithRecipients,
-    private val storeExternalAttachments: StoreExternalAttachments,
     private val getContacts: GetContacts,
     private val searchContacts: SearchContacts,
     private val searchDeviceContacts: SearchDeviceContacts,
@@ -127,7 +124,6 @@ class ComposerViewModel @Inject constructor(
     private val participantMapper: ParticipantMapper,
     private val reducer: ComposerReducer,
     private val isValidEmailAddress: IsValidEmailAddress,
-    private val getPrimaryAddress: GetPrimaryAddress,
     private val getComposerSenderAddresses: GetComposerSenderAddresses,
     private val composerIdlingResource: ComposerIdlingResource,
     private val draftUploader: DraftUploader,
