@@ -19,19 +19,16 @@
 package ch.protonmail.android.mailcomposer.presentation.ui
 
 import androidx.compose.animation.core.Animatable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.focus.FocusRequester
@@ -40,8 +37,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.mailcommon.presentation.compose.FocusableFormScope
@@ -54,14 +49,14 @@ import ch.protonmail.android.mailcomposer.presentation.model.ContactSuggestionUi
 import ch.protonmail.android.mailcomposer.presentation.model.ContactSuggestionsField
 import ch.protonmail.android.mailcomposer.presentation.model.FocusedFieldType
 import ch.protonmail.android.mailcomposer.presentation.model.RecipientUiModel
-import ch.protonmail.android.uicomponents.chips.ChipsListField
-import ch.protonmail.android.uicomponents.chips.ContactSuggestionItem
-import ch.protonmail.android.uicomponents.chips.ContactSuggestionState
+import ch.protonmail.android.uicomponents.chips.ChipsListField2
+import ch.protonmail.android.uicomponents.chips.ContactSuggestionState2
 import ch.protonmail.android.uicomponents.chips.item.ChipItem
 import ch.protonmail.android.uicomponents.chips.thenIf
+import ch.protonmail.android.uicomponents.composer.suggestions.ContactSuggestionItem2
 
 @Composable
-internal fun FocusableFormScope<FocusedFieldType>.RecipientFields(
+internal fun FocusableFormScope<FocusedFieldType>.RecipientFields2(
     modifier: Modifier = Modifier,
     fields: ComposerFields,
     fieldFocusRequesters: Map<FocusedFieldType, FocusRequester>,
@@ -71,29 +66,25 @@ internal fun FocusableFormScope<FocusedFieldType>.RecipientFields(
     actions: ComposerFormActions,
     areContactSuggestionsExpanded: Map<ContactSuggestionsField, Boolean>
 ) {
-    val emailNextKeyboardOptions = KeyboardOptions(
-        imeAction = ImeAction.Next,
-        keyboardType = KeyboardType.Email
-    )
     val recipientsButtonRotation = remember { Animatable(0F) }
+    val isShowingToSuggestions = areContactSuggestionsExpanded[ContactSuggestionsField.TO] == true
+    val isShowingCcSuggestions = areContactSuggestionsExpanded[ContactSuggestionsField.CC] == true
     val hasCcBccContent = fields.cc.isNotEmpty() || fields.bcc.isNotEmpty()
+    val shouldShowCcBcc = recipientsOpen || hasCcBccContent
 
     Row(
-        modifier = modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween
+        modifier = modifier.fillMaxWidth()
     ) {
-        ChipsListField(
+        ChipsListField2(
             label = stringResource(id = R.string.to_prefix),
             value = fields.to.map { it.toChipItem() },
             chipValidator = emailValidator,
             modifier = Modifier
                 .weight(1f)
-                .padding(start = ProtonDimens.Spacing.Large)
                 .testTag(ComposerTestTags.ToRecipient)
                 .retainFieldFocusOnConfigurationChange(FocusedFieldType.TO),
-            keyboardOptions = emailNextKeyboardOptions,
             focusRequester = fieldFocusRequesters[FocusedFieldType.TO],
-            actions = ChipsListField.Actions(
+            actions = ChipsListField2.Actions(
                 onSuggestionTermTyped = {
                     actions.onContactSuggestionTermChanged(it, ContactSuggestionsField.TO)
                 },
@@ -102,53 +93,54 @@ internal fun FocusableFormScope<FocusedFieldType>.RecipientFields(
                     actions.onToChanged(it.mapNotNull { chipItem -> chipItem.toRecipientUiModel() })
                 }
             ),
-            contactSuggestionState = ContactSuggestionState(
+            contactSuggestionState = ContactSuggestionState2(
                 areSuggestionsExpanded = areContactSuggestionsExpanded[ContactSuggestionsField.TO] ?: false,
                 contactSuggestionItems = contactSuggestions[ContactSuggestionsField.TO]?.map {
                     it.toSuggestionContactItem()
                 } ?: emptyList()
-            )
-        )
-        Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Large))
-        if (!hasCcBccContent) {
-            IconButton(
-                modifier = Modifier.focusProperties { canFocus = false },
-                onClick = { actions.onToggleRecipients(!recipientsOpen) }
-            ) {
-                Icon(
-                    modifier = Modifier
-                        .thenIf(recipientsButtonRotation.value == RecipientsButtonRotationValues.Closed) {
-                            testTag(ComposerTestTags.ExpandCollapseArrow)
-                        }
-                        .thenIf(recipientsButtonRotation.value == RecipientsButtonRotationValues.Open) {
-                            testTag(ComposerTestTags.CollapseExpandArrow)
-                        }
-                        .rotate(recipientsButtonRotation.value)
-                        .size(ProtonDimens.IconSize.Small),
-                    imageVector = ImageVector.vectorResource(
-                        id = me.proton.core.presentation.R.drawable.ic_proton_chevron_down_filled
-                    ),
-                    tint = ProtonTheme.colors.textWeak,
-                    contentDescription = stringResource(id = R.string.composer_expand_recipients_button)
-                )
+            ),
+            chevronIconContent = {
+                if (!hasCcBccContent) {
+                    IconButton(
+                        modifier = Modifier
+                            .align(Alignment.Top)
+                            .focusProperties { canFocus = false },
+                        onClick = { actions.onToggleRecipients(!recipientsOpen) }
+                    ) {
+                        Icon(
+                            modifier = Modifier
+                                .thenIf(recipientsButtonRotation.value == RecipientsButtonRotationValues2.Closed) {
+                                    testTag(ComposerTestTags.ExpandCollapseArrow)
+                                }
+                                .thenIf(recipientsButtonRotation.value == RecipientsButtonRotationValues2.Open) {
+                                    testTag(ComposerTestTags.CollapseExpandArrow)
+                                }
+                                .rotate(recipientsButtonRotation.value)
+                                .size(ProtonDimens.IconSize.Small),
+                            imageVector = ImageVector.vectorResource(
+                                id = me.proton.core.presentation.R.drawable.ic_proton_chevron_down_filled
+                            ),
+                            tint = ProtonTheme.colors.textWeak,
+                            contentDescription = stringResource(id = R.string.composer_expand_recipients_button)
+                        )
+                    }
+                }
             }
-        }
+        )
     }
 
-    if (recipientsOpen || hasCcBccContent) {
+    if (shouldShowCcBcc && !isShowingToSuggestions) {
         Column {
             MailDivider()
-            ChipsListField(
+            ChipsListField2(
                 label = stringResource(id = R.string.cc_prefix),
                 value = fields.cc.map { it.toChipItem() },
                 chipValidator = emailValidator,
                 modifier = Modifier
-                    .padding(start = ProtonDimens.Spacing.Large)
                     .testTag(ComposerTestTags.CcRecipient)
                     .retainFieldFocusOnConfigurationChange(FocusedFieldType.CC),
-                keyboardOptions = emailNextKeyboardOptions,
                 focusRequester = fieldFocusRequesters[FocusedFieldType.CC],
-                actions = ChipsListField.Actions(
+                actions = ChipsListField2.Actions(
                     onSuggestionTermTyped = {
                         actions.onContactSuggestionTermChanged(it, ContactSuggestionsField.CC)
                     },
@@ -159,53 +151,54 @@ internal fun FocusableFormScope<FocusedFieldType>.RecipientFields(
                         actions.onCcChanged(it.mapNotNull { chipItem -> chipItem.toRecipientUiModel() })
                     }
                 ),
-                contactSuggestionState = ContactSuggestionState(
+                contactSuggestionState = ContactSuggestionState2(
                     areSuggestionsExpanded = areContactSuggestionsExpanded[ContactSuggestionsField.CC] ?: false,
                     contactSuggestionItems = contactSuggestions[ContactSuggestionsField.CC]?.map {
                         it.toSuggestionContactItem()
                     } ?: emptyList()
                 )
             )
-            MailDivider()
-            ChipsListField(
-                label = stringResource(id = R.string.bcc_prefix),
-                value = fields.bcc.map { it.toChipItem() },
-                chipValidator = emailValidator,
-                modifier = Modifier
-                    .padding(start = ProtonDimens.Spacing.Large)
-                    .testTag(ComposerTestTags.BccRecipient)
-                    .retainFieldFocusOnConfigurationChange(FocusedFieldType.BCC),
-                keyboardOptions = emailNextKeyboardOptions,
-                focusRequester = fieldFocusRequesters[FocusedFieldType.BCC],
-                actions = ChipsListField.Actions(
-                    onSuggestionTermTyped = {
-                        actions.onContactSuggestionTermChanged(it, ContactSuggestionsField.BCC)
-                    },
-                    onSuggestionsDismissed = {
-                        actions.onContactSuggestionsDismissed(ContactSuggestionsField.BCC)
-                    },
-                    onListChanged = {
-                        actions.onBccChanged(it.mapNotNull { chipItem -> chipItem.toRecipientUiModel() })
-                    }
-                ),
-                contactSuggestionState = ContactSuggestionState(
-                    areSuggestionsExpanded = areContactSuggestionsExpanded[ContactSuggestionsField.BCC] ?: false,
-                    contactSuggestionItems = contactSuggestions[ContactSuggestionsField.BCC]?.map {
-                        it.toSuggestionContactItem()
-                    } ?: emptyList()
+
+            if (!isShowingCcSuggestions) {
+                MailDivider()
+                ChipsListField2(
+                    label = stringResource(id = R.string.bcc_prefix),
+                    value = fields.bcc.map { it.toChipItem() },
+                    chipValidator = emailValidator,
+                    modifier = Modifier
+                        .testTag(ComposerTestTags.BccRecipient)
+                        .retainFieldFocusOnConfigurationChange(FocusedFieldType.BCC),
+                    focusRequester = fieldFocusRequesters[FocusedFieldType.BCC],
+                    actions = ChipsListField2.Actions(
+                        onSuggestionTermTyped = {
+                            actions.onContactSuggestionTermChanged(it, ContactSuggestionsField.BCC)
+                        },
+                        onSuggestionsDismissed = {
+                            actions.onContactSuggestionsDismissed(ContactSuggestionsField.BCC)
+                        },
+                        onListChanged = {
+                            actions.onBccChanged(it.mapNotNull { chipItem -> chipItem.toRecipientUiModel() })
+                        }
+                    ),
+                    contactSuggestionState = ContactSuggestionState2(
+                        areSuggestionsExpanded = areContactSuggestionsExpanded[ContactSuggestionsField.BCC] ?: false,
+                        contactSuggestionItems = contactSuggestions[ContactSuggestionsField.BCC]?.map {
+                            it.toSuggestionContactItem()
+                        } ?: emptyList()
+                    )
                 )
-            )
+            }
         }
     }
 
     LaunchedEffect(key1 = recipientsOpen) {
         recipientsButtonRotation.animateTo(
-            if (recipientsOpen) RecipientsButtonRotationValues.Open else RecipientsButtonRotationValues.Closed
+            if (recipientsOpen) RecipientsButtonRotationValues2.Open else RecipientsButtonRotationValues2.Closed
         )
     }
 }
 
-private object RecipientsButtonRotationValues {
+private object RecipientsButtonRotationValues2 {
 
     const val Open = 180f
     const val Closed = 0f
@@ -223,14 +216,15 @@ private fun RecipientUiModel.toChipItem(): ChipItem = when (this) {
 }
 
 @Composable
-private fun ContactSuggestionUiModel.toSuggestionContactItem(): ContactSuggestionItem = when (this) {
-    is ContactSuggestionUiModel.Contact -> ContactSuggestionItem(
+private fun ContactSuggestionUiModel.toSuggestionContactItem(): ContactSuggestionItem2 = when (this) {
+    is ContactSuggestionUiModel.Contact -> ContactSuggestionItem2.ContactSuggestionItem(
+        this.initial,
         this.name,
         this.email,
-        listOf(this.email)
+        this.email
     )
 
-    is ContactSuggestionUiModel.ContactGroup -> ContactSuggestionItem(
+    is ContactSuggestionUiModel.ContactGroup -> ContactSuggestionItem2.ContactGroupSuggestionItem(
         this.name,
         TextUiModel.PluralisedText(
             value = R.plurals.composer_recipient_suggestion_contacts,

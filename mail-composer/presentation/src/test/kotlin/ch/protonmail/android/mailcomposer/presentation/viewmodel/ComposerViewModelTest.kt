@@ -209,7 +209,6 @@ class ComposerViewModelTest {
     private val attachmentUiModelMapper = AttachmentMetadataUiModelMapper()
     private val sortContactsForSuggestions = SortContactsForSuggestions(getInitials, testDispatcher)
     private val reducer = ComposerReducer(attachmentUiModelMapper)
-    private val isNewContactsSuggestionsEnabled = false
 
     private val viewModel by lazy {
         ComposerViewModel(
@@ -245,7 +244,6 @@ class ComposerViewModelTest {
             observeMessageExpirationTime,
             getExternalRecipients,
             convertHtmlToPlainText,
-            isNewContactsSuggestionsEnabled,
             openExistingDraft,
             createEmptyDraft,
             createDraftForAction,

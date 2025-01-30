@@ -50,6 +50,14 @@ import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
+import ch.protonmail.android.design.compose.component.ProtonAlertDialog
+import ch.protonmail.android.design.compose.component.ProtonAlertDialogButton
+import ch.protonmail.android.design.compose.component.ProtonAlertDialogText
+import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
+import ch.protonmail.android.design.compose.component.ProtonModalBottomSheetLayout
+import ch.protonmail.android.design.compose.component.ProtonSnackbarHostState
+import ch.protonmail.android.design.compose.component.ProtonSnackbarType
+import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.mailcommon.presentation.AdaptivePreviews
 import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
 import ch.protonmail.android.mailcommon.presentation.ConsumableTextEffect
@@ -73,14 +81,6 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.google.accompanist.permissions.shouldShowRationale
-import ch.protonmail.android.design.compose.component.ProtonAlertDialog
-import ch.protonmail.android.design.compose.component.ProtonAlertDialogButton
-import ch.protonmail.android.design.compose.component.ProtonAlertDialogText
-import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
-import ch.protonmail.android.design.compose.component.ProtonModalBottomSheetLayout
-import ch.protonmail.android.design.compose.component.ProtonSnackbarHostState
-import ch.protonmail.android.design.compose.component.ProtonSnackbarType
-import ch.protonmail.android.design.compose.theme.ProtonTheme
 import timber.log.Timber
 import kotlin.time.Duration
 
@@ -241,8 +241,7 @@ fun ComposerScreen(actions: ComposerScreen.Actions, viewModel: ComposerViewModel
                             { bottomSheetType.value = it }
                         ),
                         contactSuggestions = state.contactSuggestions,
-                        areContactSuggestionsExpanded = state.areContactSuggestionsExpanded,
-                        newContactSuggestionsEnabled = viewModel.newContactSuggestionsEnabled
+                        areContactSuggestionsExpanded = state.areContactSuggestionsExpanded
                     )
                     if (state.attachments.attachments.isNotEmpty()) {
                         AttachmentList(
