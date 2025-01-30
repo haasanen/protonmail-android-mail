@@ -58,9 +58,7 @@ import ch.protonmail.android.mailcomposer.domain.usecase.OpenExistingDraft
 import ch.protonmail.android.mailcomposer.domain.usecase.ProvideNewDraftId
 import ch.protonmail.android.mailcomposer.domain.usecase.SaveMessageExpirationTime
 import ch.protonmail.android.mailcomposer.domain.usecase.SendMessage
-import ch.protonmail.android.mailcomposer.domain.usecase.StoreAttachments
 import ch.protonmail.android.mailcomposer.domain.usecase.StoreDraftWithAllFields
-import ch.protonmail.android.mailcomposer.domain.usecase.StoreDraftWithAttachmentError
 import ch.protonmail.android.mailcomposer.domain.usecase.StoreDraftWithBody
 import ch.protonmail.android.mailcomposer.domain.usecase.StoreDraftWithBodyError
 import ch.protonmail.android.mailcomposer.domain.usecase.StoreDraftWithRecipients
@@ -150,7 +148,6 @@ class ComposerViewModelTest {
     @get:Rule
     val loggingTestRule = LoggingTestRule()
 
-    private val storeAttachments = mockk<StoreAttachments>()
     private val storeDraftWithAllFields = mockk<StoreDraftWithAllFields>()
     private val storeDraftWithBodyMock = mockk<StoreDraftWithBody>()
     private val storeDraftWithSubjectMock = mockk<StoreDraftWithSubject> {
@@ -208,7 +205,6 @@ class ComposerViewModelTest {
     private val viewModel by lazy {
         ComposerViewModel(
             appInBackgroundState,
-            storeAttachments,
             storeDraftWithBodyMock,
             storeDraftWithSubjectMock,
             storeDraftWithAllFields,
@@ -248,10 +244,10 @@ class ComposerViewModelTest {
     }
 
     @Test
+    @Ignore("Missing rust implementation to store attachments")
     fun `should store attachments when attachments are added to the draft`() {
         // Given
         val uri = mockk<Uri>()
-        val primaryAddress = UserAddressSample.PrimaryAddress
         val expectedUserId = expectedUserId { UserIdSample.Primary }
         val messageId = MessageIdSample.Invoice
         val expectedSubject = Subject("Subject for the message")
@@ -271,7 +267,6 @@ class ComposerViewModelTest {
         )
         expectInputDraftMessageId { messageId }
         expectStoreAllDraftFieldsSucceeds(expectedUserId, messageId, expectedFields)
-        expectStoreAttachmentsSucceeds(expectedUserId, messageId, expectedSenderEmail, listOf(uri))
         expectInitComposerWithExistingDraftSuccess(expectedUserId, messageId) { expectedFields }
         expectStartDraftSync(expectedUserId, messageId)
         expectObservedMessageAttachments(expectedUserId, messageId)
@@ -285,13 +280,12 @@ class ComposerViewModelTest {
         viewModel.submit(ComposerAction.AttachmentsAdded(listOf(uri)))
 
         // Then
-        coVerify { storeAttachments(expectedUserId, messageId, expectedSenderEmail, listOf(uri)) }
+        // ???
     }
 
     @Test
     fun `should store the draft body when the body changes`() {
         // Given
-        val primaryAddress = UserAddressSample.PrimaryAddress
         val expectedMessageId = expectedMessageId { MessageIdSample.EmptyDraft }
         val expectedDraftBody = DraftBody(RawDraftBody)
         val expectedQuotedDraftBody = null
@@ -1855,7 +1849,6 @@ class ComposerViewModelTest {
     @Test
     fun `delete compose action triggers delete attachment use case`() = runTest {
         // Given
-        val primaryAddress = UserAddressSample.PrimaryAddress
         val expectedUserId = expectedUserId { UserIdSample.Primary }
         val messageId = MessageIdSample.Invoice
         val expectedSubject = Subject("Subject for the message")
@@ -1897,7 +1890,6 @@ class ComposerViewModelTest {
     fun `emit state with effect when attachment file size exceeded`() = runTest {
         // Given
         val uri = mockk<Uri>()
-        val primaryAddress = UserAddressSample.PrimaryAddress
         val expectedUserId = expectedUserId { UserIdSample.Primary }
         val messageId = MessageIdSample.Invoice
         val expectedSubject = Subject("Subject for the message")
@@ -1917,13 +1909,6 @@ class ComposerViewModelTest {
         )
         expectInputDraftMessageId { messageId }
         expectStoreAllDraftFieldsSucceeds(expectedUserId, messageId, expectedFields)
-        expectStoreAttachmentsFailed(
-            expectedUserId = expectedUserId,
-            expectedMessageId = messageId,
-            expectedSenderEmail = expectedSenderEmail,
-            expectedUriList = listOf(uri),
-            storeAttachmentError = StoreDraftWithAttachmentError.FileSizeExceedsLimit
-        )
         expectInitComposerWithExistingDraftSuccess(expectedUserId, messageId) { expectedFields }
         expectStartDraftSync(expectedUserId, messageId)
         expectObservedMessageAttachments(expectedUserId, messageId)
@@ -2634,29 +2619,6 @@ class ComposerViewModelTest {
                 expectedFields
             )
         } returns Unit
-    }
-
-    private fun expectStoreAttachmentsSucceeds(
-        expectedUserId: UserId,
-        expectedMessageId: MessageId,
-        expectedSenderEmail: SenderEmail,
-        expectedUriList: List<Uri>
-    ) {
-        coEvery {
-            storeAttachments(expectedUserId, expectedMessageId, expectedSenderEmail, expectedUriList)
-        } returns Unit.right()
-    }
-
-    private fun expectStoreAttachmentsFailed(
-        expectedUserId: UserId,
-        expectedMessageId: MessageId,
-        expectedSenderEmail: SenderEmail,
-        expectedUriList: List<Uri>,
-        storeAttachmentError: StoreDraftWithAttachmentError
-    ) {
-        coEvery {
-            storeAttachments(expectedUserId, expectedMessageId, expectedSenderEmail, expectedUriList)
-        } returns storeAttachmentError.left()
     }
 
     private fun expectContacts(): List<ContactMetadata.Contact> {

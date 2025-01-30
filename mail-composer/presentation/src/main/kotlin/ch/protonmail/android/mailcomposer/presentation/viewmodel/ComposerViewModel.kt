@@ -18,7 +18,6 @@
 
 package ch.protonmail.android.mailcomposer.presentation.viewmodel
 
-import android.net.Uri
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -55,9 +54,7 @@ import ch.protonmail.android.mailcomposer.domain.usecase.OpenExistingDraft
 import ch.protonmail.android.mailcomposer.domain.usecase.ProvideNewDraftId
 import ch.protonmail.android.mailcomposer.domain.usecase.SaveMessageExpirationTime
 import ch.protonmail.android.mailcomposer.domain.usecase.SendMessage
-import ch.protonmail.android.mailcomposer.domain.usecase.StoreAttachments
 import ch.protonmail.android.mailcomposer.domain.usecase.StoreDraftWithAllFields
-import ch.protonmail.android.mailcomposer.domain.usecase.StoreDraftWithAttachmentError
 import ch.protonmail.android.mailcomposer.domain.usecase.StoreDraftWithBody
 import ch.protonmail.android.mailcomposer.domain.usecase.StoreDraftWithRecipients
 import ch.protonmail.android.mailcomposer.domain.usecase.StoreDraftWithSubject
@@ -111,7 +108,6 @@ import kotlin.time.Duration
 @HiltViewModel
 class ComposerViewModel @Inject constructor(
     private val appInBackgroundState: AppInBackgroundState,
-    private val storeAttachments: StoreAttachments,
     private val storeDraftWithBody: StoreDraftWithBody,
     private val storeDraftWithSubject: StoreDraftWithSubject,
     private val storeDraftWithAllFields: StoreDraftWithAllFields,
@@ -196,6 +192,8 @@ class ComposerViewModel @Inject constructor(
         }
     }
 
+    @MissingRustApi
+    // Storing of attachments not implemented
     private fun prefillForShareDraftAction(shareDraftAction: DraftAction.PrefillForShare) {
         val fileShareInfo = shareDraftAction.intentShareInfo.decode()
 
@@ -203,16 +201,8 @@ class ComposerViewModel @Inject constructor(
 
         viewModelScope.launch {
             fileShareInfo.attachmentUris.takeIfNotEmpty()?.let { uris ->
-                storeAttachments(
-                    primaryUserId(),
-                    currentMessageId(),
-                    currentSenderEmail(),
-                    uris.map { Uri.parse(it) }
-                ).onLeft { error ->
-                    if (error is StoreDraftWithAttachmentError.FileSizeExceedsLimit) {
-                        emitNewStateFor(ComposerEvent.ErrorAttachmentsExceedSizeLimit)
-                    }
-                }
+                Timber.w("composer: storing attachment not implemented")
+                emitNewStateFor(ComposerEvent.ErrorAttachmentsExceedSizeLimit)
             }
 
             if (fileShareInfo.hasEmailData()) {
@@ -433,14 +423,11 @@ class ComposerViewModel @Inject constructor(
         }
     }
 
+    @MissingRustApi
+    // Storing of attachments not implemented
     private fun onAttachmentsAdded(action: ComposerAction.AttachmentsAdded) {
-        viewModelScope.launch {
-            storeAttachments(primaryUserId(), currentMessageId(), currentSenderEmail(), action.uriList).onLeft {
-                if (it is StoreDraftWithAttachmentError.FileSizeExceedsLimit) {
-                    emitNewStateFor(ComposerEvent.ErrorAttachmentsExceedSizeLimit)
-                }
-            }
-        }
+        Timber.w("composer: storing attachment not implemented")
+        emitNewStateFor(ComposerEvent.ErrorAttachmentsExceedSizeLimit)
     }
 
     private fun onAttachmentsRemoved(action: ComposerAction.RemoveAttachment) {

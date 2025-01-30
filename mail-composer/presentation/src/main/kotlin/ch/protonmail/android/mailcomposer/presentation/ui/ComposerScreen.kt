@@ -65,7 +65,6 @@ import ch.protonmail.android.mailcommon.presentation.ui.CommonTestTags
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.SenderEmail
 import ch.protonmail.android.mailcomposer.domain.model.Subject
-import ch.protonmail.android.mailcomposer.domain.usecase.StoreAttachments
 import ch.protonmail.android.mailcomposer.presentation.R
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerAction
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerDraftState
@@ -300,7 +299,7 @@ fun ComposerScreen(actions: ComposerScreen.Actions, viewModel: ComposerViewModel
                         id = R.string.composer_attachment_size_exceeded_dialog_message,
                         Formatter.formatShortFileSize(
                             LocalContext.current,
-                            StoreAttachments.MAX_ATTACHMENTS_SIZE
+                            ComposerScreen.MAX_ATTACHMENTS_SIZE
                         )
                     )
                 )
@@ -446,6 +445,8 @@ private fun buildActions(
 )
 
 object ComposerScreen {
+
+    const val MAX_ATTACHMENTS_SIZE = 25 * 1000 * 1000L
 
     const val DraftMessageIdKey = "draft_message_id"
     const val SerializedDraftActionKey = "serialized_draft_action_key"
