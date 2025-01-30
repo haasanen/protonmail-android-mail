@@ -357,7 +357,7 @@ private fun PlanCheckmark(modifier: Modifier = Modifier, isSelected: Boolean) {
     if (isSelected) {
         Box(
             modifier = modifier
-                .size(ProtonDimens.DefaultIconSize)
+                .size(ProtonDimens.IconSize.Default)
                 .background(color = ProtonTheme.colors.interactionBrandDefaultNorm, shape = CircleShape)
                 .padding(ProtonDimens.Spacing.Small)
         ) {
@@ -369,7 +369,7 @@ private fun PlanCheckmark(modifier: Modifier = Modifier, isSelected: Boolean) {
         }
     } else {
         Icon(
-            modifier = modifier.size(ProtonDimens.DefaultIconSize),
+            modifier = modifier.size(ProtonDimens.IconSize.Default),
             painter = painterResource(id = R.drawable.ic_proton_empty_circle),
             contentDescription = NO_CONTENT_DESCRIPTION,
             tint = ProtonTheme.colors.iconDisabled
@@ -497,7 +497,7 @@ private fun MorePlanEntitlements(
         )
         Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Small))
         Icon(
-            modifier = Modifier.size(ProtonDimens.SmallIconSize),
+            modifier = Modifier.size(ProtonDimens.IconSize.Small),
             painter = painterResource(id = R.drawable.ic_proton_chevron_down),
             contentDescription = NO_CONTENT_DESCRIPTION,
             tint = ProtonTheme.colors.iconAccent

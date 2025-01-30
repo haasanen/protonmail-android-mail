@@ -165,7 +165,7 @@ fun MoveToBottomSheetContent(dataState: MoveToBottomSheetState.Data, actions: Mo
                             modifier = Modifier
                                 .testTag(MoveToBottomSheetTestTags.FolderSelectionIcon)
                                 .padding(end = ProtonDimens.Spacing.Standard)
-                                .size(ProtonDimens.SmallIconSize),
+                                .size(ProtonDimens.IconSize.Small),
                             painter = painterResource(id = R.drawable.ic_proton_checkmark),
                             contentDescription = NO_CONTENT_DESCRIPTION,
                             tint = ProtonTheme.colors.interactionBrandDefaultNorm(true)

@@ -126,7 +126,7 @@ private fun SwipeActionsPreferenceContent(
             horizontalArrangement = Arrangement.SpaceAround
         ) {
             Icon(
-                modifier = Modifier.size(ProtonDimens.SmallIconSize),
+                modifier = Modifier.size(ProtonDimens.IconSize.Small),
                 painter = painterResource(id = R.drawable.ic_proton_info_circle),
                 contentDescription = NO_CONTENT_DESCRIPTION,
                 tint = ProtonTheme.colors.iconHint

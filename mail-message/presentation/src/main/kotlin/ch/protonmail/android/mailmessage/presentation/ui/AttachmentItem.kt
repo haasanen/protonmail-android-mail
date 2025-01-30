@@ -175,13 +175,13 @@ fun AttachmentItem(
             if (attachmentUiModel.status == AttachmentWorkerStatus.Running) {
                 CircularProgressIndicator(
                     modifier = Modifier
-                        .size(ProtonDimens.DefaultIconSize)
+                        .size(ProtonDimens.IconSize.Default)
                         .testTag(AttachmentItemTestTags.Loader)
                 )
             } else {
                 Icon(
                     modifier = Modifier
-                        .size(ProtonDimens.SmallIconSize)
+                        .size(ProtonDimens.IconSize.Small)
                         .clickable { onAttachmentItemDeleteClicked(AttachmentId(attachmentUiModel.id.value)) }
                         .testTag(AttachmentItemTestTags.Delete),
                     painter = painterResource(id = R.drawable.ic_proton_cross_small),

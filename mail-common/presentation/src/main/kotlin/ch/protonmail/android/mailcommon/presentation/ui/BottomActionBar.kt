@@ -161,7 +161,7 @@ private fun BottomBarIcon(
     onClick: () -> Unit
 ) {
     IconButton(
-        modifier = modifier.size(ProtonDimens.DefaultIconSize),
+        modifier = modifier.size(ProtonDimens.IconSize.Default),
         onClick = onClick
     ) {
         Icon(

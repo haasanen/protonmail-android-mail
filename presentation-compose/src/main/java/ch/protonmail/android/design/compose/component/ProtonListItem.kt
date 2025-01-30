@@ -155,7 +155,7 @@ fun ProtonListItem(
             if (count != null) {
                 Text(
                     modifier = Modifier
-                        .defaultMinSize(ProtonDimens.CounterIconSize)
+                        .defaultMinSize(ProtonDimens.IconSize.Medium)
                         .background(color = ProtonTheme.colors.interactionBrandDefaultNorm, shape = CircleShape),
                     text = "$count",
                     color = Color.White,

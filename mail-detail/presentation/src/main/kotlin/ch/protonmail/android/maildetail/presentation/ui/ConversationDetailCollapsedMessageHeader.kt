@@ -243,7 +243,7 @@ private fun AttachmentIcon(fontColor: Color, modifier: Modifier) {
     Icon(
         modifier = modifier
             .testTag(ConversationDetailCollapsedMessageHeaderTestTags.AttachmentIcon)
-            .size(ProtonDimens.SmallIconSize),
+            .size(ProtonDimens.IconSize.Small),
         painter = painterResource(id = drawable.ic_proton_paper_clip),
         tint = fontColor,
         contentDescription = NO_CONTENT_DESCRIPTION
@@ -352,7 +352,7 @@ private fun StarIcon(modifier: Modifier) {
     Icon(
         modifier = modifier
             .testTag(ConversationDetailCollapsedMessageHeaderTestTags.StarIcon)
-            .size(ProtonDimens.SmallIconSize),
+            .size(ProtonDimens.IconSize.Small),
         painter = painterResource(id = drawable.ic_proton_star_filled),
         tint = ProtonTheme.colors.starSelected,
         contentDescription = NO_CONTENT_DESCRIPTION

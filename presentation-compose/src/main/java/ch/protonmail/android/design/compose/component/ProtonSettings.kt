@@ -174,7 +174,7 @@ fun ProtonMainSettingsItem(
     ) {
         Box(
             modifier = Modifier
-                .size(ProtonDimens.DefaultIconWithPadding),
+                .size(ProtonDimens.IconSize.MediumLarge),
             contentAlignment = Alignment.Center
         ) {
             icon()

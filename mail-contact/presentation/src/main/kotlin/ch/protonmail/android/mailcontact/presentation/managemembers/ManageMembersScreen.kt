@@ -260,7 +260,7 @@ private fun ManageMembersAvatar(member: ManageMembersUiModel) {
     ) {
         if (member.isSelected) {
             Icon(
-                modifier = Modifier.size(ProtonDimens.SmallIconSize),
+                modifier = Modifier.size(ProtonDimens.IconSize.Small),
                 painter = painterResource(id = R.drawable.ic_proton_users_filled),
                 tint = Color.White,
                 contentDescription = NO_CONTENT_DESCRIPTION

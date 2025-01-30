@@ -222,7 +222,7 @@ fun CustomSingleLineTopAppBar(
                 onClick = onStarIconClick
             ) {
                 Icon(
-                    modifier = Modifier.size(ProtonDimens.DefaultIconSize),
+                    modifier = Modifier.size(ProtonDimens.IconSize.Default),
                     painter = getStarredIcon(isStarred),
                     contentDescription = NO_CONTENT_DESCRIPTION,
                     tint = getStarredIconColor(isStarred)

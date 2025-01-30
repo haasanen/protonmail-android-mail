@@ -141,7 +141,7 @@ fun ColorItem(
                         end.linkTo(parent.end, margin = MailDimens.ColorPicker.SelectedCircleInternalMargin)
                         bottom.linkTo(parent.bottom, margin = MailDimens.ColorPicker.SelectedCircleInternalMargin)
                     }
-                    .size(ProtonDimens.DefaultIconSize)
+                    .size(ProtonDimens.IconSize.Default)
             )
         }
     }

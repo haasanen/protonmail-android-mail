@@ -51,7 +51,7 @@ fun ManageAccountsButton(modifier: Modifier = Modifier, onClick: () -> Unit = {}
     ) {
         Icon(
             contentDescription = null,
-            modifier = Modifier.defaultMinSize(minWidth = ProtonDimens.DefaultIconWithPadding),
+            modifier = Modifier.defaultMinSize(minWidth = ProtonDimens.IconSize.MediumLarge),
             painter = painterResource(CoreR.drawable.ic_proton_cog_wheel)
         )
         Text(

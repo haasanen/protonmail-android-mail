@@ -75,7 +75,7 @@ fun UnreadItemsFilter(
                 },
                 leadingIcon = {
                     Icon(
-                        modifier = Modifier.size(ProtonDimens.SmallIconSize),
+                        modifier = Modifier.size(ProtonDimens.IconSize.Small),
                         painter = painterResource(R.drawable.ic_proton_envelope_dot),
                         contentDescription = null,
                         tint = ProtonTheme.colors.iconNorm

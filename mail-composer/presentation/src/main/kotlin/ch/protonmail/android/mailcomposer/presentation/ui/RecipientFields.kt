@@ -124,7 +124,7 @@ internal fun FocusableFormScope<FocusedFieldType>.RecipientFields(
                             testTag(ComposerTestTags.CollapseExpandArrow)
                         }
                         .rotate(recipientsButtonRotation.value)
-                        .size(ProtonDimens.SmallIconSize),
+                        .size(ProtonDimens.IconSize.Small),
                     imageVector = ImageVector.vectorResource(
                         id = me.proton.core.presentation.R.drawable.ic_proton_chevron_down_filled
                     ),

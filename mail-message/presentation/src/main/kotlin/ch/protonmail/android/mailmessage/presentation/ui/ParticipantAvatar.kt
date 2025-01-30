@@ -119,7 +119,7 @@ fun ParticipantAvatarDraftIcon(avatarSize: Dp) {
         contentAlignment = Alignment.Center
     ) {
         Icon(
-            modifier = Modifier.size(ProtonDimens.SmallIconSize),
+            modifier = Modifier.size(ProtonDimens.IconSize.Small),
             painter = painterResource(id = R.drawable.ic_proton_pencil),
             contentDescription = NO_CONTENT_DESCRIPTION
         )

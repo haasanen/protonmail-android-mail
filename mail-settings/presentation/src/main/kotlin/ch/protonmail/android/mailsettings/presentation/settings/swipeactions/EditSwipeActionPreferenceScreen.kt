@@ -122,7 +122,7 @@ private fun ListItem(item: EditSwipeActionPreferenceItemUiModel, onSwipeActionSe
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
-            modifier = Modifier.size(ProtonDimens.DefaultIconSize),
+            modifier = Modifier.size(ProtonDimens.IconSize.Default),
             painter = painterResource(id = item.imageRes),
             contentDescription = null
         )

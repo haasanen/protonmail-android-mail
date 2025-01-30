@@ -129,7 +129,7 @@ private fun ContactSuggestionGroupEntry(currentText: String, item: ContactSugges
             contentAlignment = Alignment.Center
         ) {
             Icon(
-                modifier = Modifier.size(ProtonDimens.DefaultIconSize),
+                modifier = Modifier.size(ProtonDimens.IconSize.Default),
                 imageVector = ImageVector.vectorResource(R.drawable.ic_proton_users_filled),
                 tint = Color.White,
                 contentDescription = null

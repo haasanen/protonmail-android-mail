@@ -270,7 +270,7 @@ fun ContactGroupFormContent(
                     ) {
                         Icon(
                             modifier = modifier
-                                .size(ProtonDimens.SmallIconSize),
+                                .size(ProtonDimens.IconSize.Small),
                             painter = painterResource(id = R.drawable.ic_proton_users),
                             tint = ProtonTheme.colors.iconWeak,
                             contentDescription = NO_CONTENT_DESCRIPTION

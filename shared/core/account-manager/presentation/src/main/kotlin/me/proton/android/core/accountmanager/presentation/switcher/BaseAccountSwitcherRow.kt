@@ -60,7 +60,7 @@ internal fun BaseAccountSwitcherRow(
         Box(
             modifier = Modifier
                 .background(boxColor, LocalShapes.current.medium)
-                .size(ProtonDimens.DefaultIconSizeLogo)
+                .size(ProtonDimens.IconSize.Large)
         ) {
             Text(
                 text = accountListItem.accountItem.initials ?: "",

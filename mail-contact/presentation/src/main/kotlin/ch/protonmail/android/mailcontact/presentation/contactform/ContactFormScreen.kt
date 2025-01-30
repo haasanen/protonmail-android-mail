@@ -517,7 +517,7 @@ private fun SectionHeader(
     ) {
         Icon(
             painter = painterResource(id = iconResId),
-            modifier = Modifier.size(ProtonDimens.SmallIconSize),
+            modifier = Modifier.size(ProtonDimens.IconSize.Small),
             tint = ProtonTheme.colors.iconWeak,
             contentDescription = NO_CONTENT_DESCRIPTION
         )
@@ -686,7 +686,7 @@ private fun TypePickerField(initialSelectedType: FieldType, onValueSelected: (Te
             tint = ProtonTheme.colors.iconNorm,
             modifier = Modifier
                 .padding(end = ProtonDimens.Spacing.Large)
-                .size(ProtonDimens.SmallIconSize)
+                .size(ProtonDimens.IconSize.Small)
                 .align(Alignment.CenterVertically),
             contentDescription = NO_CONTENT_DESCRIPTION
         )

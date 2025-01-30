@@ -131,7 +131,7 @@ private fun BottomBarButton(
 private fun BottomBarButtonCheckmark(modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
-            .size(ProtonDimens.SmallIconSize)
+            .size(ProtonDimens.IconSize.Small)
             .background(ProtonTheme.colors.interactionBrandDefaultNorm, CircleShape)
             .border(Dp.Hairline, ProtonTheme.colors.backgroundNorm, CircleShape)
             .padding(ProtonDimens.Spacing.Small),

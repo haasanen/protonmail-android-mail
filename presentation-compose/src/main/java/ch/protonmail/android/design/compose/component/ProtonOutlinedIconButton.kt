@@ -45,7 +45,7 @@ import ch.protonmail.android.design.compose.theme.ProtonTheme
 fun ProtonOutlinedIconButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    buttonSize: Dp = ProtonDimens.DefaultIconSizeLogo,
+    buttonSize: Dp = ProtonDimens.IconSize.Large,
     enabled: Boolean = true,
     shape: Shape = IconButtonDefaults.outlinedShape,
     colors: IconButtonColors = IconButtonColors(
@@ -84,11 +84,11 @@ fun ProtonOutlinedIconButton(
 fun ProtonOutlinedIconButtonPreview() {
     ProtonTheme {
         ProtonOutlinedIconButton(
-            buttonSize = ProtonDimens.DefaultIconSizeLogo,
+            buttonSize = ProtonDimens.IconSize.Large,
             onClick = {}
         ) {
             Icon(
-                modifier = Modifier.size(ProtonDimens.CounterIconSize),
+                modifier = Modifier.size(ProtonDimens.IconSize.Medium),
                 painter = painterResource(id = R.drawable.ic_proton_reply),
                 tint = ProtonTheme.colors.iconWeak,
                 contentDescription = ""

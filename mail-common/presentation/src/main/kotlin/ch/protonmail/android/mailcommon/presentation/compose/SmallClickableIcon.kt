@@ -42,7 +42,7 @@ fun SmallClickableIcon(
         modifier = modifier
             .clickable(onClick = onClick)
             .semantics { tintColor = iconColor }
-            .size(ProtonDimens.SmallIconSize),
+            .size(ProtonDimens.IconSize.Small),
         painter = painterResource(id = iconId),
         contentDescription = NO_CONTENT_DESCRIPTION,
         tint = iconColor

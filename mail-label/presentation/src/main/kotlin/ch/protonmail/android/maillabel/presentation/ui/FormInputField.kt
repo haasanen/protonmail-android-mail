@@ -98,7 +98,7 @@ fun FormInputField(
             trailingIcon = {
                 if (textFieldValue.text.isNotBlank()) {
                     IconButton(
-                        modifier = Modifier.size(ProtonDimens.DefaultIconSize),
+                        modifier = Modifier.size(ProtonDimens.IconSize.Default),
                         content = {
                             Icon(
                                 painter = painterResource(id = R.drawable.ic_proton_cross),

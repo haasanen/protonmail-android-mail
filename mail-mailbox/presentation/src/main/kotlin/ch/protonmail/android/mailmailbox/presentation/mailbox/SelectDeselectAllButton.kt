@@ -70,7 +70,7 @@ fun SelectDeselectAllButton(
         },
         leadingIcon = {
             Icon(
-                modifier = Modifier.size(ProtonDimens.SmallIconSize),
+                modifier = Modifier.size(ProtonDimens.IconSize.Small),
                 painter = painterResource(R.drawable.ic_proton_checkmark_circle),
                 contentDescription = null,
                 tint = ProtonTheme.colors.iconNorm
