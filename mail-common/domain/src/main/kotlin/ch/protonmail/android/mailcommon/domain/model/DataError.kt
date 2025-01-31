@@ -50,7 +50,10 @@ sealed interface DataError {
 
         data object UnsupportedOperation : Local
 
-        data object SaveDraftError : Local
+        sealed interface SaveDraftError : Local {
+            data object NoRustDraftAvailable : SaveDraftError
+            data object Unknown : SaveDraftError
+        }
 
         data object OpenDraftError : Local
 

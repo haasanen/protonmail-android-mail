@@ -20,6 +20,7 @@ package ch.protonmail.android.composer.data.wrapper
 
 import uniffi.proton_mail_uniffi.ComposerRecipientList
 import uniffi.proton_mail_uniffi.Draft
+import uniffi.proton_mail_uniffi.VoidDraftSaveSendResult
 
 class DraftWrapper(private val rustDraft: Draft) {
 
@@ -35,4 +36,5 @@ class DraftWrapper(private val rustDraft: Draft) {
 
     fun recipientsBcc(): ComposerRecipientList = rustDraft.bccRecipients()
 
+    suspend fun save(): VoidDraftSaveSendResult = rustDraft.save()
 }

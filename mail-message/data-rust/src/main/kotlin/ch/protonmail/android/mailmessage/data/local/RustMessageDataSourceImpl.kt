@@ -83,7 +83,7 @@ class RustMessageDataSourceImpl @Inject constructor(
         val session = userSessionRepository.getUserSession(userId)
         if (session == null) {
             Timber.e("rust-message: trying to load message with a null session")
-            return DataError.Local.SaveDraftError.left()
+            return DataError.Local.SaveDraftError.Unknown.left()
         }
 
         return createRustMessageAccessor(session, messageId)

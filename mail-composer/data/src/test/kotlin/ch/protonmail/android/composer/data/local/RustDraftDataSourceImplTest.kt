@@ -19,6 +19,9 @@ import io.mockk.mockk
 import junit.framework.TestCase.assertNull
 import kotlinx.coroutines.test.runTest
 import uniffi.proton_mail_uniffi.DraftCreateMode
+import uniffi.proton_mail_uniffi.DraftSaveSendError
+import uniffi.proton_mail_uniffi.DraftSaveSendErrorReason
+import uniffi.proton_mail_uniffi.VoidDraftSaveSendResult
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -160,6 +163,52 @@ class RustDraftDataSourceImplTest {
         // Then
         assertEquals(dataSource.rustDraftWrapper, expectedDraftWrapper)
     }
+
+    @Test
+    fun `save draft returns error when no draft instance exists`() = runTest {
+        // Given
+        val expected = DataError.Local.SaveDraftError.NoRustDraftAvailable
+
+        // When
+        val actual = dataSource.save()
+
+        // Then
+        assertEquals(actual, expected.left())
+    }
+
+    @Test
+    fun `save draft calls rust draft wrapper when draft instance exists`() = runTest {
+        // Given
+        val draft = LocalDraftTestData.JobApplicationDraft
+        val expectedDraftWrapper = expectDraftWrapperReturns(draft.subject, draft.sender, draft.body)
+        dataSource.rustDraftWrapper = expectedDraftWrapper
+        coEvery { expectedDraftWrapper.save() } returns VoidDraftSaveSendResult.Ok
+
+        // When
+        val actual = dataSource.save()
+
+        // Then
+        assertEquals(actual, Unit.right())
+    }
+
+    @Test
+    fun `save draft returns error when rust draft wrapper call fails`() = runTest {
+        // Given
+        val draft = LocalDraftTestData.JobApplicationDraft
+        val expectedDraftWrapper = expectDraftWrapperReturns(draft.subject, draft.sender, draft.body)
+        dataSource.rustDraftWrapper = expectedDraftWrapper
+        coEvery { expectedDraftWrapper.save() } returns VoidDraftSaveSendResult.Error(
+            DraftSaveSendError.Reason(DraftSaveSendErrorReason.MessageIsNotADraft)
+        )
+        val expected = DataError.Local.SaveDraftError.Unknown
+
+        // When
+        val actual = dataSource.save()
+
+        // Then
+        assertEquals(actual, expected.left())
+    }
+
 
     private fun expectDraftWrapperReturns(
         subject: String,

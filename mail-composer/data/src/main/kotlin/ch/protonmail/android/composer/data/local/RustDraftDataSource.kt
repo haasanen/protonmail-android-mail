@@ -30,4 +30,5 @@ interface RustDraftDataSource {
 
     suspend fun create(userId: UserId, action: DraftAction): Either<DataError, LocalDraft>
 
+    suspend fun save(): Either<DataError, Unit>
 }

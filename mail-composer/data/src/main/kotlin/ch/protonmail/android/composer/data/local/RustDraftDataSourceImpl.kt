@@ -21,11 +21,13 @@ package ch.protonmail.android.composer.data.local
 import androidx.annotation.VisibleForTesting
 import arrow.core.Either
 import arrow.core.left
+import arrow.core.right
 import ch.protonmail.android.composer.data.mapper.toDraftCreateMode
 import ch.protonmail.android.composer.data.mapper.toLocalDraft
 import ch.protonmail.android.composer.data.usecase.CreateRustDraft
 import ch.protonmail.android.composer.data.usecase.OpenRustDraft
 import ch.protonmail.android.composer.data.wrapper.DraftWrapper
+import ch.protonmail.android.mailcommon.datarust.mapper.toDataError
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailmessage.data.mapper.toLocalMessageId
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
@@ -33,6 +35,7 @@ import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
+import uniffi.proton_mail_uniffi.VoidDraftSaveSendResult
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -77,4 +80,13 @@ class RustDraftDataSourceImpl @Inject constructor(
             .map { it.toLocalDraft() }
     }
 
+    override suspend fun save(): Either<DataError, Unit> {
+        val rustDraftWrapper: DraftWrapper = rustDraftWrapper
+            ?: return DataError.Local.SaveDraftError.NoRustDraftAvailable.left()
+
+        return when (val result = rustDraftWrapper.save()) {
+            is VoidDraftSaveSendResult.Error -> result.v1.toDataError().left()
+            VoidDraftSaveSendResult.Ok -> Unit.right()
+        }
+    }
 }
