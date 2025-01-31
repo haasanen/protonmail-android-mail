@@ -9,7 +9,6 @@ import ch.protonmail.android.mailcomposer.domain.repository.MessageExpirationTim
 import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
 import ch.protonmail.android.mailmessage.domain.sample.MessageWithBodySample
-import ch.protonmail.android.test.utils.FakeTransactor
 import ch.protonmail.android.testdata.user.UserIdTestData
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -29,10 +28,9 @@ class SaveMessageExpirationTimeTest {
     private val messageExpirationTimeRepository = mockk<MessageExpirationTimeRepository>()
     private val messageRepository = mockk<MessageRepository>()
     private val saveDraft = mockk<SaveDraft>()
-    private val transactor = FakeTransactor()
 
     private val saveMessageExpirationTime = SaveMessageExpirationTime(
-        getLocalDraft, messageExpirationTimeRepository, messageRepository, saveDraft, transactor
+        getLocalDraft, messageExpirationTimeRepository, messageRepository, saveDraft
     )
 
     @Test

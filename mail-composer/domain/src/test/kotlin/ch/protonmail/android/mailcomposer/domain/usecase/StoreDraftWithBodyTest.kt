@@ -33,7 +33,6 @@ import ch.protonmail.android.mailmessage.domain.model.Sender
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
 import ch.protonmail.android.mailmessage.domain.sample.MessageWithBodySample
 import ch.protonmail.android.mailmessage.domain.usecase.ConvertPlainTextIntoHtml
-import ch.protonmail.android.test.utils.FakeTransactor
 import ch.protonmail.android.test.utils.rule.LoggingTestRule
 import io.mockk.called
 import io.mockk.coEvery
@@ -57,15 +56,13 @@ internal class StoreDraftWithBodyTest {
     private val getLocalDraftMock = mockk<GetLocalDraft>()
     private val resolveUserAddressMock = mockk<ResolveUserAddress>()
     private val convertPlainTextIntoHtml = mockk<ConvertPlainTextIntoHtml>()
-    private val fakeTransactor = FakeTransactor()
 
     private val storeDraftWithBody = StoreDraftWithBody(
         getLocalDraftMock,
         encryptDraftBodyMock,
         saveDraftMock,
         resolveUserAddressMock,
-        convertPlainTextIntoHtml,
-        fakeTransactor
+        convertPlainTextIntoHtml
     )
 
     @Test

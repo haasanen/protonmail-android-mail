@@ -21,7 +21,6 @@ package ch.protonmail.android.mailcomposer.domain.usecase
 import arrow.core.Either
 import arrow.core.raise.either
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailcomposer.domain.Transactor
 import ch.protonmail.android.mailcomposer.domain.model.MessageExpirationTime
 import ch.protonmail.android.mailcomposer.domain.model.SenderEmail
 import ch.protonmail.android.mailcomposer.domain.repository.MessageExpirationTimeRepository
@@ -36,8 +35,7 @@ class SaveMessageExpirationTime @Inject constructor(
     private val getLocalDraft: GetLocalDraft,
     private val messageExpirationTimeRepository: MessageExpirationTimeRepository,
     private val messageRepository: MessageRepository,
-    private val saveDraft: SaveDraft,
-    private val transactor: Transactor
+    private val saveDraft: SaveDraft
 ) {
 
     suspend operator fun invoke(
@@ -45,23 +43,21 @@ class SaveMessageExpirationTime @Inject constructor(
         messageId: MessageId,
         senderEmail: SenderEmail,
         expiresIn: Duration
-    ): Either<DataError.Local, Unit> = transactor.performTransaction {
-        either {
-            val draft = getLocalDraft(userId, messageId, senderEmail)
-                .mapLeft { DataError.Local.NoDataCached }
-                .bind()
-            // Verify that draft exists in db, if not create it
-            val messageWithBody = messageRepository.getLocalMessageWithBody(userId, draft.message.messageId).getOrNull()
-            if (messageWithBody == null) {
-                val success = saveDraft(draft, userId)
-                if (!success) {
-                    Timber.d("Failed to save draft")
-                    raise(DataError.Local.Unknown)
-                }
+    ): Either<DataError.Local, Unit> = either {
+        val draft = getLocalDraft(userId, messageId, senderEmail)
+            .mapLeft { DataError.Local.NoDataCached }
+            .bind()
+        // Verify that draft exists in db, if not create it
+        val messageWithBody = messageRepository.getLocalMessageWithBody(userId, draft.message.messageId).getOrNull()
+        if (messageWithBody == null) {
+            val success = saveDraft(draft, userId)
+            if (!success) {
+                Timber.d("Failed to save draft")
+                raise(DataError.Local.Unknown)
             }
-
-            val messageExpirationTime = MessageExpirationTime(userId, draft.message.messageId, expiresIn)
-            messageExpirationTimeRepository.saveMessageExpirationTime(messageExpirationTime).bind()
         }
+
+        val messageExpirationTime = MessageExpirationTime(userId, draft.message.messageId, expiresIn)
+        messageExpirationTimeRepository.saveMessageExpirationTime(messageExpirationTime).bind()
     }
 }

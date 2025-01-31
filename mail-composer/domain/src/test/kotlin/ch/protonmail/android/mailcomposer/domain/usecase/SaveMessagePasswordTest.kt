@@ -27,7 +27,6 @@ import ch.protonmail.android.mailcomposer.domain.repository.MessagePasswordRepos
 import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
 import ch.protonmail.android.mailmessage.domain.sample.MessageWithBodySample
-import ch.protonmail.android.test.utils.FakeTransactor
 import ch.protonmail.android.testdata.user.UserIdTestData
 import io.mockk.coEvery
 import io.mockk.every
@@ -49,15 +48,13 @@ class SaveMessagePasswordTest {
     private val messagePasswordRepository = mockk<MessagePasswordRepository>()
     private val messageRepository = mockk<MessageRepository>()
     private val saveDraft = mockk<SaveDraft>()
-    private val transactor = FakeTransactor()
 
     private val saveMessagePassword = SaveMessagePassword(
         getLocalDraft = getLocalDraft,
         keyStoreCrypto = keyStoreCrypto,
         messagePasswordRepository = messagePasswordRepository,
         messageRepository = messageRepository,
-        saveDraft = saveDraft,
-        transactor = transactor
+        saveDraft = saveDraft
     )
 
     @Test

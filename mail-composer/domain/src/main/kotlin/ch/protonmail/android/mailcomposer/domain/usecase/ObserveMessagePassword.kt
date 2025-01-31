@@ -19,7 +19,6 @@
 package ch.protonmail.android.mailcomposer.domain.usecase
 
 import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
-import ch.protonmail.android.mailcomposer.domain.Transactor
 import ch.protonmail.android.mailcomposer.domain.model.MessagePassword
 import ch.protonmail.android.mailcomposer.domain.repository.MessagePasswordRepository
 import ch.protonmail.android.mailmessage.domain.model.MessageId
@@ -34,8 +33,7 @@ import javax.inject.Inject
 // To be bound to rust or dropped when implementing send
 class ObserveMessagePassword @Inject constructor(
     private val keyStoreCrypto: KeyStoreCrypto,
-    private val messagePasswordRepository: MessagePasswordRepository,
-    private val transactor: Transactor
+    private val messagePasswordRepository: MessagePasswordRepository
 ) {
 
     suspend operator fun invoke(userId: UserId, messageId: MessageId): Flow<MessagePassword?> {

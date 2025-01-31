@@ -18,7 +18,6 @@
 
 package ch.protonmail.android.mailcomposer.dagger
 
-import ch.protonmail.android.composer.data.local.RoomTransactor
 import ch.protonmail.android.composer.data.local.RustDraftDataSource
 import ch.protonmail.android.composer.data.local.RustDraftDataSourceImpl
 import ch.protonmail.android.composer.data.repository.AttachmentRepositoryImpl
@@ -27,7 +26,6 @@ import ch.protonmail.android.composer.data.repository.DraftRepositoryImpl
 import ch.protonmail.android.composer.data.repository.MessageExpirationTimeRepositoryImpl
 import ch.protonmail.android.composer.data.repository.MessagePasswordRepositoryImpl
 import ch.protonmail.android.composer.data.repository.MessageRepositoryImpl
-import ch.protonmail.android.mailcomposer.domain.Transactor
 import ch.protonmail.android.mailcomposer.domain.annotations.NewContactSuggestionsEnabled
 import ch.protonmail.android.mailcomposer.domain.repository.AttachmentRepository
 import ch.protonmail.android.mailcomposer.domain.repository.AttachmentStateRepository
@@ -55,10 +53,6 @@ abstract class MailComposerModule {
     @Binds
     @Reusable
     abstract fun provideMessageRepository(impl: MessageRepositoryImpl): MessageRepository
-
-    @Binds
-    @Reusable
-    abstract fun bindsRoomTransactor(impl: RoomTransactor): Transactor
 
     @Binds
     @Reusable

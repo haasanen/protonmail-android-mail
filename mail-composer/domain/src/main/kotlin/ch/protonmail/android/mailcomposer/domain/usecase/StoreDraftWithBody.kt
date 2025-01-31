@@ -22,7 +22,6 @@ import arrow.core.Either
 import arrow.core.raise.either
 import ch.protonmail.android.mailcommon.domain.usecase.ResolveUserAddress
 import ch.protonmail.android.mailcommon.domain.util.mapFalse
-import ch.protonmail.android.mailcomposer.domain.Transactor
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.OriginalHtmlQuote
 import ch.protonmail.android.mailcomposer.domain.model.SenderEmail
@@ -41,8 +40,7 @@ class StoreDraftWithBody @Inject constructor(
     private val encryptDraftBody: EncryptDraftBody,
     private val saveDraft: SaveDraft,
     private val resolveUserAddress: ResolveUserAddress,
-    private val convertPlainTextIntoHtml: ConvertPlainTextIntoHtml,
-    private val transactor: Transactor
+    private val convertPlainTextIntoHtml: ConvertPlainTextIntoHtml
 ) {
 
     suspend operator fun invoke(
@@ -53,41 +51,40 @@ class StoreDraftWithBody @Inject constructor(
         userId: UserId
     ): Either<StoreDraftWithBodyError, Unit> = either {
 
-        val senderAddress = resolveUserAddress(userId, senderEmail.value)
-            .mapLeft { StoreDraftWithBodyError.DraftResolveUserAddressError }
+        val senderAddress = resolveUserAddress(userId, senderEmail.value).mapLeft {
+            StoreDraftWithBodyError.DraftResolveUserAddressError
+        }
             .bind()
 
-        transactor.performTransaction {
-            val draftWithBody = getLocalDraft(userId, messageId, senderEmail)
-                .mapLeft { StoreDraftWithBodyError.DraftReadError }
-                .bind()
+        val draftWithBody = getLocalDraft(userId, messageId, senderEmail)
+            .mapLeft { StoreDraftWithBodyError.DraftReadError }
+            .bind()
 
-            val isOriginalMimeHtml = draftWithBody.messageBody.mimeType == MimeType.Html
-            val hasQuotedBody = quotedHtmlBody != null
-            val updatedDraftBody = if (isOriginalMimeHtml || hasQuotedBody) {
-                draftBody.convertToHtml()
-            } else {
-                draftBody
-            }
-
-            val encryptedDraftBody = encryptDraftBody(updatedDraftBody.appendQuotedHtml(quotedHtmlBody), senderAddress)
-                .mapLeft {
-                    Timber.e("Encrypt draft $messageId body to store to local DB failed")
-                    StoreDraftWithBodyError.DraftBodyEncryptionError
-                }
-                .bind()
-
-            val updatedDraft = draftWithBody
-                .updateWith(senderAddress, encryptedDraftBody)
-                .updateMimeWhenQuotingHtml(quotedHtmlBody)
-
-            saveDraft(updatedDraft, userId)
-                .mapFalse {
-                    Timber.e("Store draft $messageId body to local DB failed")
-                    StoreDraftWithBodyError.DraftSaveError
-                }
-                .bind()
+        val isOriginalMimeHtml = draftWithBody.messageBody.mimeType == MimeType.Html
+        val hasQuotedBody = quotedHtmlBody != null
+        val updatedDraftBody = if (isOriginalMimeHtml || hasQuotedBody) {
+            draftBody.convertToHtml()
+        } else {
+            draftBody
         }
+
+        val encryptedDraftBody = encryptDraftBody(updatedDraftBody.appendQuotedHtml(quotedHtmlBody), senderAddress)
+            .mapLeft {
+                Timber.e("Encrypt draft $messageId body to store to local DB failed")
+                StoreDraftWithBodyError.DraftBodyEncryptionError
+            }
+            .bind()
+
+        val updatedDraft = draftWithBody
+            .updateWith(senderAddress, encryptedDraftBody)
+            .updateMimeWhenQuotingHtml(quotedHtmlBody)
+
+        saveDraft(updatedDraft, userId)
+            .mapFalse {
+                Timber.e("Store draft $messageId body to local DB failed")
+                StoreDraftWithBodyError.DraftSaveError
+            }
+            .bind()
     }
 
     private fun DraftBody.appendQuotedHtml(quotedHtmlBody: OriginalHtmlQuote?) =
