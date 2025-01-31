@@ -79,7 +79,8 @@ class MessageMapperTest {
             customLabels = emptyList(),
             exclusiveLocation = exclusiveLocation,
             replyTos = emptyList(),
-            snoozeTime = 12345u
+            snoozeTime = 12345u,
+            isDraft = false
         )
 
         // When

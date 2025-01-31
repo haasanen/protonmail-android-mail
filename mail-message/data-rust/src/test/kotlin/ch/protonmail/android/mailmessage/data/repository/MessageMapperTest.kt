@@ -221,7 +221,8 @@ class MessageMapperTest {
             attachmentsMetadata = attachments,
             exclusiveLocation = exclusiveLocation,
             replyTos = replyTo,
-            avatar = avatarInformation
+            avatar = avatarInformation,
+            isDraft = false
         )
 
         // When
@@ -302,7 +303,8 @@ class MessageMapperTest {
             attachmentsMetadata = listOf(attachment1, attachment2),
             exclusiveLocation = null,
             replyTos = emptyList(),
-            avatar = LocalAvatarInformation("S", "blue")
+            avatar = LocalAvatarInformation("S", "blue"),
+            isDraft = false
         )
 
         // When

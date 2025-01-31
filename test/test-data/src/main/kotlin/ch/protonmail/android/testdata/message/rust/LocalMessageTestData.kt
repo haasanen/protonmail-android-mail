@@ -245,6 +245,7 @@ object LocalMessageTestData {
         customLabels = labels,
         exclusiveLocation = null,
         replyTos = emptyList(),
-        avatar = avatarInformation
+        avatar = avatarInformation,
+        isDraft = false
     )
 }

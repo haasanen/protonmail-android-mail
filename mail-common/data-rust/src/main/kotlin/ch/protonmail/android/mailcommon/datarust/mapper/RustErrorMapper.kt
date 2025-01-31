@@ -80,7 +80,8 @@ fun DraftOpenError.toDataError(): DataError = when (this) {
 fun EventError.toDataError(): DataError = when (this) {
     is EventError.Other -> this.v1.toDataError()
     is EventError.Reason -> when (this.v1) {
-        EventErrorReason.PLACEHOLDER -> DataError.Local.Unknown
+        EventErrorReason.REFRESH,
+        EventErrorReason.SUBSCRIBER -> DataError.Local.Unknown
     }
 }
 

@@ -29,8 +29,8 @@ import timber.log.Timber
 import uniffi.proton_mail_common.BodyOutput
 import uniffi.proton_mail_common.TransformOpts
 import uniffi.proton_mail_uniffi.DecryptedMessage
-import uniffi.proton_mail_uniffi.DecryptedMessageGetEmbeddedAttachmentResult
 import uniffi.proton_mail_uniffi.EmbeddedAttachmentInfo
+import uniffi.proton_mail_uniffi.EmbeddedAttachmentInfoResult
 
 class DecryptedMessageWrapper(private val decryptedMessage: DecryptedMessage) {
 
@@ -39,11 +39,11 @@ class DecryptedMessageWrapper(private val decryptedMessage: DecryptedMessage) {
 
     suspend fun getEmbeddedAttachment(contentId: String): Either<DataError, EmbeddedAttachmentInfo> =
         when (val result = decryptedMessage.getEmbeddedAttachment(contentId)) {
-            is DecryptedMessageGetEmbeddedAttachmentResult.Error -> {
+            is EmbeddedAttachmentInfoResult.Error -> {
                 Timber.d("DecryptedMessageWrapper: Failed to load image: $contentId: ${result.v1}")
                 result.v1.toDataError().left()
             }
-            is DecryptedMessageGetEmbeddedAttachmentResult.Ok -> result.v1.right()
+            is EmbeddedAttachmentInfoResult.Ok -> result.v1.right()
         }
 
     fun mimeType(): LocalMimeType = decryptedMessage.mimeType()
