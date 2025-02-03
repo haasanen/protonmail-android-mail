@@ -20,7 +20,7 @@ package ch.protonmail.android.uicomponents.composer.suggestions
 
 import androidx.compose.runtime.Stable
 
-sealed interface ContactSuggestionItem2 {
+sealed interface ContactSuggestionItem {
 
     @Stable
     data class ContactSuggestionItem(
@@ -28,12 +28,12 @@ sealed interface ContactSuggestionItem2 {
         val header: String,
         val subheader: String,
         val email: String
-    ) : ContactSuggestionItem2
+    ) : ch.protonmail.android.uicomponents.composer.suggestions.ContactSuggestionItem
 
     @Stable
     data class ContactGroupSuggestionItem(
         val header: String,
         val subheader: String,
         val emails: List<String>
-    ) : ContactSuggestionItem2
+    ) : ch.protonmail.android.uicomponents.composer.suggestions.ContactSuggestionItem
 }

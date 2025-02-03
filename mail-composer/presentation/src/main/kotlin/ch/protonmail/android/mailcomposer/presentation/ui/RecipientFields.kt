@@ -49,11 +49,11 @@ import ch.protonmail.android.mailcomposer.presentation.model.ContactSuggestionUi
 import ch.protonmail.android.mailcomposer.presentation.model.ContactSuggestionsField
 import ch.protonmail.android.mailcomposer.presentation.model.FocusedFieldType
 import ch.protonmail.android.mailcomposer.presentation.model.RecipientUiModel
-import ch.protonmail.android.uicomponents.chips.ChipsListField2
-import ch.protonmail.android.uicomponents.chips.ContactSuggestionState2
+import ch.protonmail.android.uicomponents.chips.ChipsListField
+import ch.protonmail.android.uicomponents.chips.ContactSuggestionState
 import ch.protonmail.android.uicomponents.chips.item.ChipItem
 import ch.protonmail.android.uicomponents.chips.thenIf
-import ch.protonmail.android.uicomponents.composer.suggestions.ContactSuggestionItem2
+import ch.protonmail.android.uicomponents.composer.suggestions.ContactSuggestionItem
 
 @Composable
 internal fun FocusableFormScope<FocusedFieldType>.RecipientFields2(
@@ -75,7 +75,7 @@ internal fun FocusableFormScope<FocusedFieldType>.RecipientFields2(
     Row(
         modifier = modifier.fillMaxWidth()
     ) {
-        ChipsListField2(
+        ChipsListField(
             label = stringResource(id = R.string.to_prefix),
             value = fields.to.map { it.toChipItem() },
             chipValidator = emailValidator,
@@ -84,7 +84,7 @@ internal fun FocusableFormScope<FocusedFieldType>.RecipientFields2(
                 .testTag(ComposerTestTags.ToRecipient)
                 .retainFieldFocusOnConfigurationChange(FocusedFieldType.TO),
             focusRequester = fieldFocusRequesters[FocusedFieldType.TO],
-            actions = ChipsListField2.Actions(
+            actions = ChipsListField.Actions(
                 onSuggestionTermTyped = {
                     actions.onContactSuggestionTermChanged(it, ContactSuggestionsField.TO)
                 },
@@ -93,7 +93,7 @@ internal fun FocusableFormScope<FocusedFieldType>.RecipientFields2(
                     actions.onToChanged(it.mapNotNull { chipItem -> chipItem.toRecipientUiModel() })
                 }
             ),
-            contactSuggestionState = ContactSuggestionState2(
+            contactSuggestionState = ContactSuggestionState(
                 areSuggestionsExpanded = areContactSuggestionsExpanded[ContactSuggestionsField.TO] ?: false,
                 contactSuggestionItems = contactSuggestions[ContactSuggestionsField.TO]?.map {
                     it.toSuggestionContactItem()
@@ -132,7 +132,7 @@ internal fun FocusableFormScope<FocusedFieldType>.RecipientFields2(
     if (shouldShowCcBcc && !isShowingToSuggestions) {
         Column {
             MailDivider()
-            ChipsListField2(
+            ChipsListField(
                 label = stringResource(id = R.string.cc_prefix),
                 value = fields.cc.map { it.toChipItem() },
                 chipValidator = emailValidator,
@@ -140,7 +140,7 @@ internal fun FocusableFormScope<FocusedFieldType>.RecipientFields2(
                     .testTag(ComposerTestTags.CcRecipient)
                     .retainFieldFocusOnConfigurationChange(FocusedFieldType.CC),
                 focusRequester = fieldFocusRequesters[FocusedFieldType.CC],
-                actions = ChipsListField2.Actions(
+                actions = ChipsListField.Actions(
                     onSuggestionTermTyped = {
                         actions.onContactSuggestionTermChanged(it, ContactSuggestionsField.CC)
                     },
@@ -151,7 +151,7 @@ internal fun FocusableFormScope<FocusedFieldType>.RecipientFields2(
                         actions.onCcChanged(it.mapNotNull { chipItem -> chipItem.toRecipientUiModel() })
                     }
                 ),
-                contactSuggestionState = ContactSuggestionState2(
+                contactSuggestionState = ContactSuggestionState(
                     areSuggestionsExpanded = areContactSuggestionsExpanded[ContactSuggestionsField.CC] ?: false,
                     contactSuggestionItems = contactSuggestions[ContactSuggestionsField.CC]?.map {
                         it.toSuggestionContactItem()
@@ -161,7 +161,7 @@ internal fun FocusableFormScope<FocusedFieldType>.RecipientFields2(
 
             if (!isShowingCcSuggestions) {
                 MailDivider()
-                ChipsListField2(
+                ChipsListField(
                     label = stringResource(id = R.string.bcc_prefix),
                     value = fields.bcc.map { it.toChipItem() },
                     chipValidator = emailValidator,
@@ -169,7 +169,7 @@ internal fun FocusableFormScope<FocusedFieldType>.RecipientFields2(
                         .testTag(ComposerTestTags.BccRecipient)
                         .retainFieldFocusOnConfigurationChange(FocusedFieldType.BCC),
                     focusRequester = fieldFocusRequesters[FocusedFieldType.BCC],
-                    actions = ChipsListField2.Actions(
+                    actions = ChipsListField.Actions(
                         onSuggestionTermTyped = {
                             actions.onContactSuggestionTermChanged(it, ContactSuggestionsField.BCC)
                         },
@@ -180,7 +180,7 @@ internal fun FocusableFormScope<FocusedFieldType>.RecipientFields2(
                             actions.onBccChanged(it.mapNotNull { chipItem -> chipItem.toRecipientUiModel() })
                         }
                     ),
-                    contactSuggestionState = ContactSuggestionState2(
+                    contactSuggestionState = ContactSuggestionState(
                         areSuggestionsExpanded = areContactSuggestionsExpanded[ContactSuggestionsField.BCC] ?: false,
                         contactSuggestionItems = contactSuggestions[ContactSuggestionsField.BCC]?.map {
                             it.toSuggestionContactItem()
@@ -216,15 +216,15 @@ private fun RecipientUiModel.toChipItem(): ChipItem = when (this) {
 }
 
 @Composable
-private fun ContactSuggestionUiModel.toSuggestionContactItem(): ContactSuggestionItem2 = when (this) {
-    is ContactSuggestionUiModel.Contact -> ContactSuggestionItem2.ContactSuggestionItem(
+private fun ContactSuggestionUiModel.toSuggestionContactItem(): ContactSuggestionItem = when (this) {
+    is ContactSuggestionUiModel.Contact -> ContactSuggestionItem.ContactSuggestionItem(
         this.initial,
         this.name,
         this.email,
         this.email
     )
 
-    is ContactSuggestionUiModel.ContactGroup -> ContactSuggestionItem2.ContactGroupSuggestionItem(
+    is ContactSuggestionUiModel.ContactGroup -> ContactSuggestionItem.ContactGroupSuggestionItem(
         this.name,
         TextUiModel.PluralisedText(
             value = R.plurals.composer_recipient_suggestion_contacts,

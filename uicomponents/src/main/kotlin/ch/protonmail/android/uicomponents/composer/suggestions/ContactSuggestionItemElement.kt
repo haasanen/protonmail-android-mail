@@ -49,20 +49,20 @@ import me.proton.core.util.kotlin.takeIfNotBlank
 @Composable
 fun ContactSuggestionItemElement(
     currentText: String,
-    item: ContactSuggestionItem2,
+    item: ContactSuggestionItem,
     onClick: (String) -> Unit
 ) {
     Column(
         modifier = Modifier
             .clickable {
                 when (item) {
-                    is ContactSuggestionItem2.ContactGroupSuggestionItem ->
+                    is ContactSuggestionItem.ContactGroupSuggestionItem ->
                         item.emails
                             .joinToString(separator = "\n")
                             .takeIfNotBlank()
                             ?.let { onClick(it) }
 
-                    is ContactSuggestionItem2.ContactSuggestionItem -> onClick(item.email)
+                    is ContactSuggestionItem.ContactSuggestionItem -> onClick(item.email)
                 }
             }
             .fillMaxSize()
@@ -70,14 +70,14 @@ fun ContactSuggestionItemElement(
             .padding(vertical = ProtonDimens.Spacing.Standard)
     ) {
         when (item) {
-            is ContactSuggestionItem2.ContactGroupSuggestionItem -> ContactSuggestionGroupEntry(currentText, item)
-            is ContactSuggestionItem2.ContactSuggestionItem -> ContactSuggestionEntry(currentText, item)
+            is ContactSuggestionItem.ContactGroupSuggestionItem -> ContactSuggestionGroupEntry(currentText, item)
+            is ContactSuggestionItem.ContactSuggestionItem -> ContactSuggestionEntry(currentText, item)
         }
     }
 }
 
 @Composable
-private fun ContactSuggestionEntry(currentText: String, item: ContactSuggestionItem2.ContactSuggestionItem) {
+private fun ContactSuggestionEntry(currentText: String, item: ContactSuggestionItem.ContactSuggestionItem) {
     Row {
         Box(
             modifier = Modifier
@@ -117,7 +117,7 @@ private fun ContactSuggestionEntry(currentText: String, item: ContactSuggestionI
 }
 
 @Composable
-private fun ContactSuggestionGroupEntry(currentText: String, item: ContactSuggestionItem2.ContactGroupSuggestionItem) {
+private fun ContactSuggestionGroupEntry(currentText: String, item: ContactSuggestionItem.ContactGroupSuggestionItem) {
     Row {
         Box(
             modifier = Modifier

@@ -53,15 +53,15 @@ import kotlinx.coroutines.launch
     ExperimentalFoundationApi::class
 )
 @Composable
-internal fun ChipsListTextField2(
-    state: ChipsListState2,
+internal fun ChipsListTextField(
+    state: ChipsListState,
     textFieldValue: TextFieldValue,
     modifier: Modifier = Modifier,
     focusRequester: FocusRequester? = null,
     cursorColor: Color = ProtonTheme.colors.brandPlus20,
     textStyle: TextStyle = ProtonTheme.typography.bodyLargeNorm,
     animateChipsCreation: Boolean = false,
-    actions: ChipsListTextField2.Actions
+    actions: ChipsListTextField.Actions
 ) {
     val focusManager = LocalFocusManager.current
     val localDensity = LocalDensity.current
@@ -173,7 +173,7 @@ internal fun ChipsListTextField2(
     }
 }
 
-object ChipsListTextField2 {
+object ChipsListTextField {
     data class Actions(
         val onTextChanged: (value: TextFieldValue) -> Unit,
         val onFocusChanged: (focusChange: FocusState) -> Unit,
