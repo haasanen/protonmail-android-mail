@@ -7,6 +7,8 @@ import ch.protonmail.android.composer.data.usecase.OpenRustDraft
 import ch.protonmail.android.composer.data.wrapper.DraftWrapper
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
+import ch.protonmail.android.mailcomposer.domain.model.DraftBody
+import ch.protonmail.android.mailcomposer.domain.model.Subject
 import ch.protonmail.android.mailmessage.data.mapper.toLocalMessageId
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
@@ -209,6 +211,103 @@ class RustDraftDataSourceImplTest {
         assertEquals(actual, expected.left())
     }
 
+    @Test
+    fun `save subject returns error when no draft instance exists`() = runTest {
+        // Given
+        val expected = DataError.Local.SaveDraftError.NoRustDraftAvailable
+        val subject = Subject("saving a draft...")
+
+        // When
+        val actual = dataSource.saveSubject(subject)
+
+        // Then
+        assertEquals(actual, expected.left())
+    }
+
+    @Test
+    fun `save subject calls rust draft wrapper to set subject and save`() = runTest {
+        // Given
+        val draft = LocalDraftTestData.JobApplicationDraft
+        val subject = Subject("saving a draft...")
+        val expectedDraftWrapper = expectDraftWrapperReturns(draft.subject, draft.sender, draft.body)
+        dataSource.rustDraftWrapper = expectedDraftWrapper
+        coEvery { expectedDraftWrapper.setSubject(subject.value) } returns VoidDraftSaveSendResult.Ok
+        coEvery { expectedDraftWrapper.save() } returns VoidDraftSaveSendResult.Ok
+
+        // When
+        val actual = dataSource.saveSubject(subject)
+
+        // Then
+        assertEquals(actual, Unit.right())
+    }
+
+    @Test
+    fun `save subject returns error when rust draft wrapper call fails`() = runTest {
+        // Given
+        val draft = LocalDraftTestData.JobApplicationDraft
+        val expectedDraftWrapper = expectDraftWrapperReturns(draft.subject, draft.sender, draft.body)
+        val subject = Subject("saving a draft...")
+        dataSource.rustDraftWrapper = expectedDraftWrapper
+        coEvery { expectedDraftWrapper.setSubject(subject.value) } returns VoidDraftSaveSendResult.Error(
+            DraftSaveSendError.Reason(DraftSaveSendErrorReason.MessageIsNotADraft)
+        )
+        val expected = DataError.Local.SaveDraftError.Unknown
+
+        // When
+        val actual = dataSource.saveSubject(subject)
+
+        // Then
+        assertEquals(actual, expected.left())
+    }
+
+    @Test
+    fun `save body returns error when no draft instance exists`() = runTest {
+        // Given
+        val expected = DataError.Local.SaveDraftError.NoRustDraftAvailable
+        val body = DraftBody("saving a draft's body...")
+
+        // When
+        val actual = dataSource.saveBody(body)
+
+        // Then
+        assertEquals(actual, expected.left())
+    }
+
+    @Test
+    fun `save body calls rust draft wrapper to set body and save`() = runTest {
+        // Given
+        val draft = LocalDraftTestData.JobApplicationDraft
+        val body = DraftBody("saving a draft's body...")
+        val expectedDraftWrapper = expectDraftWrapperReturns(draft.body, draft.sender, draft.body)
+        dataSource.rustDraftWrapper = expectedDraftWrapper
+        coEvery { expectedDraftWrapper.setBody(body.value) } returns VoidDraftSaveSendResult.Ok
+        coEvery { expectedDraftWrapper.save() } returns VoidDraftSaveSendResult.Ok
+
+        // When
+        val actual = dataSource.saveBody(body)
+
+        // Then
+        assertEquals(actual, Unit.right())
+    }
+
+    @Test
+    fun `save body returns error when rust draft wrapper call fails`() = runTest {
+        // Given
+        val draft = LocalDraftTestData.JobApplicationDraft
+        val body = DraftBody("saving a draft's body...")
+        val expectedDraftWrapper = expectDraftWrapperReturns(draft.body, draft.sender, draft.body)
+        dataSource.rustDraftWrapper = expectedDraftWrapper
+        coEvery { expectedDraftWrapper.setBody(body.value) } returns VoidDraftSaveSendResult.Error(
+            DraftSaveSendError.Reason(DraftSaveSendErrorReason.MessageIsNotADraft)
+        )
+        val expected = DataError.Local.SaveDraftError.Unknown
+
+        // When
+        val actual = dataSource.saveBody(body)
+
+        // Then
+        assertEquals(actual, expected.left())
+    }
 
     private fun expectDraftWrapperReturns(
         subject: String,

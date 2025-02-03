@@ -29,6 +29,8 @@ import ch.protonmail.android.composer.data.usecase.OpenRustDraft
 import ch.protonmail.android.composer.data.wrapper.DraftWrapper
 import ch.protonmail.android.mailcommon.datarust.mapper.toDataError
 import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailcomposer.domain.model.DraftBody
+import ch.protonmail.android.mailcomposer.domain.model.Subject
 import ch.protonmail.android.mailmessage.data.mapper.toLocalMessageId
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.model.MessageId
@@ -87,6 +89,26 @@ class RustDraftDataSourceImpl @Inject constructor(
         return when (val result = rustDraftWrapper.save()) {
             is VoidDraftSaveSendResult.Error -> result.v1.toDataError().left()
             VoidDraftSaveSendResult.Ok -> Unit.right()
+        }
+    }
+
+    override suspend fun saveSubject(subject: Subject): Either<DataError, Unit> {
+        val rustDraftWrapper: DraftWrapper = rustDraftWrapper
+            ?: return DataError.Local.SaveDraftError.NoRustDraftAvailable.left()
+
+        return when (val result = rustDraftWrapper.setSubject(subject.value)) {
+            is VoidDraftSaveSendResult.Error -> result.v1.toDataError().left()
+            VoidDraftSaveSendResult.Ok -> save()
+        }
+    }
+
+    override suspend fun saveBody(body: DraftBody): Either<DataError, Unit> {
+        val rustDraftWrapper: DraftWrapper = rustDraftWrapper
+            ?: return DataError.Local.SaveDraftError.NoRustDraftAvailable.left()
+
+        return when (val result = rustDraftWrapper.setBody(body.value)) {
+            is VoidDraftSaveSendResult.Error -> result.v1.toDataError().left()
+            VoidDraftSaveSendResult.Ok -> save()
         }
     }
 }

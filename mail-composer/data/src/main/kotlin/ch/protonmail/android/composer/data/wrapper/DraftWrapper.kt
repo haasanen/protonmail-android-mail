@@ -37,4 +37,8 @@ class DraftWrapper(private val rustDraft: Draft) {
     fun recipientsBcc(): ComposerRecipientList = rustDraft.bccRecipients()
 
     suspend fun save(): VoidDraftSaveSendResult = rustDraft.save()
+
+    suspend fun setSubject(subject: String): VoidDraftSaveSendResult = rustDraft.setSubject(subject)
+
+    suspend fun setBody(body: String): VoidDraftSaveSendResult = rustDraft.setBody(body)
 }
