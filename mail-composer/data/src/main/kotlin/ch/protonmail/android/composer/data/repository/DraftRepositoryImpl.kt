@@ -22,7 +22,9 @@ import arrow.core.Either
 import ch.protonmail.android.composer.data.local.RustDraftDataSource
 import ch.protonmail.android.composer.data.mapper.toDraftFields
 import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.DraftFields
+import ch.protonmail.android.mailcomposer.domain.model.Subject
 import ch.protonmail.android.mailcomposer.domain.repository.DraftRepository
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.model.MessageId
@@ -40,4 +42,16 @@ class DraftRepositoryImpl @Inject constructor(
         draftDataSource.create(userId, action).map { it.toDraftFields() }
 
     override suspend fun save(userId: UserId, messageId: MessageId): Either<DataError, Unit> = draftDataSource.save()
+
+    override suspend fun saveSubject(
+        userId: UserId,
+        messageId: MessageId,
+        subject: Subject
+    ): Either<DataError, Unit> = draftDataSource.saveSubject(subject)
+
+    override suspend fun saveBody(
+        userId: UserId,
+        messageId: MessageId,
+        body: DraftBody
+    ): Either<DataError, Unit> = draftDataSource.saveBody(body)
 }

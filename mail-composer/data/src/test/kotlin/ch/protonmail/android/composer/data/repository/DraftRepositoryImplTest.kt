@@ -5,6 +5,8 @@ import arrow.core.right
 import ch.protonmail.android.composer.data.local.RustDraftDataSource
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
+import ch.protonmail.android.mailcomposer.domain.model.DraftBody
+import ch.protonmail.android.mailcomposer.domain.model.Subject
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
 import ch.protonmail.android.testdata.composer.DraftFieldsTestData
@@ -107,6 +109,68 @@ class DraftRepositoryImplTest {
 
         // When
         val actual = draftRepository.save(userId, messageId)
+
+        // Then
+        assertEquals(expected.left(), actual)
+    }
+
+    @Test
+    fun `returns success when save draft subject succeeds`() = runTest {
+        // Given
+        val userId = UserIdSample.Primary
+        val messageId = MessageIdSample.PlainTextMessage
+        val subject = Subject("test subject")
+        coEvery { draftDataSource.saveSubject(subject) } returns Unit.right()
+
+        // When
+        val actual = draftRepository.saveSubject(userId, messageId, subject)
+
+        // Then
+        assertEquals(Unit.right(), actual)
+    }
+
+    @Test
+    fun `returns error when save draft subject fails`() = runTest {
+        // Given
+        val userId = UserIdSample.Primary
+        val expected = DataError.Local.SaveDraftError.Unknown
+        val messageId = MessageIdSample.PlainTextMessage
+        val subject = Subject("test subject")
+        coEvery { draftDataSource.saveSubject(subject) } returns expected.left()
+
+        // When
+        val actual = draftRepository.saveSubject(userId, messageId, subject)
+
+        // Then
+        assertEquals(expected.left(), actual)
+    }
+
+    @Test
+    fun `returns success when save draft body succeeds`() = runTest {
+        // Given
+        val userId = UserIdSample.Primary
+        val messageId = MessageIdSample.PlainTextMessage
+        val body = DraftBody("test body")
+        coEvery { draftDataSource.saveBody(body) } returns Unit.right()
+
+        // When
+        val actual = draftRepository.saveBody(userId, messageId, body)
+
+        // Then
+        assertEquals(Unit.right(), actual)
+    }
+
+    @Test
+    fun `returns error when save draft body fails`() = runTest {
+        // Given
+        val userId = UserIdSample.Primary
+        val expected = DataError.Local.SaveDraftError.Unknown
+        val messageId = MessageIdSample.PlainTextMessage
+        val body = DraftBody("test body")
+        coEvery { draftDataSource.saveBody(body) } returns expected.left()
+
+        // When
+        val actual = draftRepository.saveBody(userId, messageId, body)
 
         // Then
         assertEquals(expected.left(), actual)
