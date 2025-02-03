@@ -151,7 +151,7 @@ class ComposerViewModelTest {
     private val storeDraftWithAllFields = mockk<StoreDraftWithAllFields>()
     private val storeDraftWithBodyMock = mockk<StoreDraftWithBody>()
     private val storeDraftWithSubjectMock = mockk<StoreDraftWithSubject> {
-        coEvery { this@mockk.invoke(any(), any(), any(), any()) } returns Unit.right()
+        coEvery { this@mockk.invoke(any(), any(), any()) } returns Unit.right()
     }
     private val storeDraftWithRecipientsMock = mockk<StoreDraftWithRecipients>()
     private val sendMessageMock = mockk<SendMessage>()
@@ -418,11 +418,10 @@ class ComposerViewModelTest {
     fun `should store draft subject when subject changes`() = runTest {
         // Given
         val expectedSubject = Subject("Subject for the message")
-        val expectedSenderEmail = SenderEmail(UserAddressSample.PrimaryAddress.email)
         val expectedMessageId = expectedMessageId { MessageIdSample.EmptyDraft }
         val expectedUserId = expectedUserId { UserIdSample.Primary }
         val action = ComposerAction.SubjectChanged(expectedSubject)
-        expectStoreDraftSubjectSucceeds(expectedMessageId, expectedSenderEmail, expectedUserId, expectedSubject)
+        expectStoreDraftSubjectSucceeds(expectedMessageId, expectedUserId, expectedSubject)
         expectNoInputDraftMessageId()
         expectInputDraftAction { DraftAction.Compose }
         expectStartDraftSync(expectedUserId, MessageIdSample.EmptyDraft)
@@ -441,7 +440,6 @@ class ComposerViewModelTest {
             storeDraftWithSubjectMock(
                 expectedUserId,
                 expectedMessageId,
-                expectedSenderEmail,
                 expectedSubject
             )
         }
@@ -1400,12 +1398,11 @@ class ComposerViewModelTest {
     fun `emits state with saving draft subject error when save draft subject returns error`() = runTest {
         // Given
         val expectedSubject = Subject("Subject for the message")
-        val expectedSenderEmail = SenderEmail(UserAddressSample.PrimaryAddress.email)
         val expectedMessageId = expectedMessageId { MessageIdSample.EmptyDraft }
         val expectedUserId = expectedUserId { UserIdSample.Primary }
         val action = ComposerAction.SubjectChanged(expectedSubject)
-        expectStoreDraftSubjectFails(expectedMessageId, expectedSenderEmail, expectedUserId, expectedSubject) {
-            StoreDraftWithSubject.Error.DraftReadError
+        expectStoreDraftSubjectFails(expectedMessageId, expectedUserId, expectedSubject) {
+            DataError.Local.SaveDraftError.Unknown
         }
         expectNoInputDraftMessageId()
         expectInputDraftAction { DraftAction.Compose }
@@ -1633,10 +1630,7 @@ class ComposerViewModelTest {
             null
         )
         assertEquals(expectedComposerFields, actual.fields)
-        expectStoreDraftSubjectSucceeds(
-            expectedDraftId, expectedSenderEmail,
-            expectedUserId, expectedDraftFields.subject
-        )
+        expectStoreDraftSubjectSucceeds(expectedDraftId, expectedUserId, expectedDraftFields.subject)
     }
 
     @Test
@@ -2535,7 +2529,6 @@ class ComposerViewModelTest {
 
     private fun expectStoreDraftSubjectSucceeds(
         expectedMessageId: MessageId,
-        expectedSenderEmail: SenderEmail,
         expectedUserId: UserId,
         expectedSubject: Subject
     ) {
@@ -2543,7 +2536,6 @@ class ComposerViewModelTest {
             storeDraftWithSubjectMock(
                 expectedUserId,
                 expectedMessageId,
-                expectedSenderEmail,
                 expectedSubject
             )
         } returns Unit.right()
@@ -2551,16 +2543,14 @@ class ComposerViewModelTest {
 
     private fun expectStoreDraftSubjectFails(
         expectedMessageId: MessageId,
-        expectedSenderEmail: SenderEmail,
         expectedUserId: UserId,
         expectedSubject: Subject,
-        error: () -> StoreDraftWithSubject.Error
+        error: () -> DataError
     ) = error().also {
         coEvery {
             storeDraftWithSubjectMock(
                 expectedUserId,
                 expectedMessageId,
-                expectedSenderEmail,
                 expectedSubject
             )
         } returns it.left()

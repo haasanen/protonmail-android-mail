@@ -532,7 +532,7 @@ class ComposerViewModel @Inject constructor(
     )
 
     private suspend fun onSubjectChanged(action: ComposerAction.SubjectChanged): ComposerOperation =
-        storeDraftWithSubject(primaryUserId.first(), currentMessageId(), currentSenderEmail(), action.subject).fold(
+        storeDraftWithSubject(primaryUserId.first(), currentMessageId(), action.subject).fold(
             ifLeft = {
                 Timber.e("Store draft ${currentMessageId()} with new subject ${action.subject} failed")
                 ComposerEvent.ErrorStoringDraftSubject

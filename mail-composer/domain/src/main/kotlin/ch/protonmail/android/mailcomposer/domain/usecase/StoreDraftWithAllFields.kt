@@ -47,7 +47,7 @@ class StoreDraftWithAllFields @Inject constructor(
             fields.sender,
             userId
         ).logError(draftMessageId)
-        storeDraftWithSubject(userId, draftMessageId, fields.sender, fields.subject).logError(draftMessageId)
+        storeDraftWithSubject(userId, draftMessageId, fields.subject).logError(draftMessageId)
         storeDraftWithRecipients(
             userId,
             draftMessageId,

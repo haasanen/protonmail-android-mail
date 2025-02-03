@@ -19,38 +19,20 @@
 package ch.protonmail.android.mailcomposer.domain.usecase
 
 import arrow.core.Either
-import arrow.core.raise.either
-import ch.protonmail.android.mailcommon.domain.util.mapFalse
-import ch.protonmail.android.mailcomposer.domain.model.SenderEmail
+import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcomposer.domain.model.Subject
+import ch.protonmail.android.mailcomposer.domain.repository.DraftRepository
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 
 class StoreDraftWithSubject @Inject constructor(
-    private val getLocalDraft: GetLocalDraft,
-    private val saveDraft: SaveDraft
+    private val draftRepository: DraftRepository
 ) {
     suspend operator fun invoke(
         userId: UserId,
         messageId: MessageId,
-        senderEmail: SenderEmail,
         subject: Subject
-    ): Either<Error, Unit> = either {
-        val draftWithBody = getLocalDraft(userId, messageId, senderEmail)
-            .mapLeft { Error.DraftReadError }
-            .bind()
+    ): Either<DataError, Unit> = draftRepository.saveSubject(userId, messageId, subject)
 
-        val updatedDraft = draftWithBody.copy(
-            message = draftWithBody.message.copy(subject = subject.value)
-        )
-        saveDraft(updatedDraft, userId)
-            .mapFalse { Error.DraftSaveError }
-            .bind()
-    }
-
-    sealed interface Error {
-        object DraftSaveError : Error
-        object DraftReadError : Error
-    }
 }
