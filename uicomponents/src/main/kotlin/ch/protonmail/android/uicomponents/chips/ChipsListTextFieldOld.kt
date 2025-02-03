@@ -82,7 +82,7 @@ import me.proton.core.util.kotlin.takeIfNotBlank
     ExperimentalFoundationApi::class
 )
 @Composable
-fun ChipsListTextField(
+fun ChipsListTextFieldOld(
     value: List<ChipItem>,
     modifier: Modifier = Modifier,
     chipValidator: (String) -> Boolean = { true },
@@ -92,10 +92,10 @@ fun ChipsListTextField(
     cursorColor: Color = ProtonTheme.colors.brandPlus20,
     textStyle: TextStyle = ProtonTheme.typography.bodyMediumNorm,
     animateChipsCreation: Boolean = false,
-    actions: ChipsListTextField.Actions,
-    contactSuggestionState: ContactSuggestionState
+    actions: ChipsListTextFieldOld.Actions,
+    contactSuggestionStateOld: ContactSuggestionStateOld
 ) {
-    val state by remember { mutableStateOf(ChipsListState(chipValidator, onListChanged)) }
+    val state by remember { mutableStateOf(ChipsListStateOld(chipValidator, onListChanged)) }
     var textFieldValue by remember { mutableStateOf(initialTextFieldValue) }
     val textValue by remember { derivedStateOf { textFieldValue.text } }
 
@@ -150,7 +150,7 @@ fun ChipsListTextField(
         }
 
         ExposedDropdownMenuBox(
-            expanded = contactSuggestionState.areSuggestionsExpanded,
+            expanded = contactSuggestionStateOld.areSuggestionsExpanded,
             onExpandedChange = {}
         ) {
             BasicTextField(
@@ -215,13 +215,13 @@ fun ChipsListTextField(
             }
 
             LaunchedEffect(localConfiguration.orientation) {
-                if (contactSuggestionState.areSuggestionsExpanded) {
+                if (contactSuggestionStateOld.areSuggestionsExpanded) {
                     actions.onSuggestionsDismissed()
                 }
             }
 
-            if (contactSuggestionState.contactSuggestionItems.isNotEmpty()) {
-                LaunchedEffect(contactSuggestionState) {
+            if (contactSuggestionStateOld.contactSuggestionItems.isNotEmpty()) {
+                LaunchedEffect(contactSuggestionStateOld) {
                     // auto-scroll to first item on each contact suggestions change
                     //
                     // we do it also when suggestions visibility changes,
@@ -239,7 +239,7 @@ fun ChipsListTextField(
                         .fillMaxWidth(DROP_DOWN_WIDTH_PERCENT)
                         .fillMaxHeight(DROP_DOWN_HEIGHT_PERCENT)
                         .verticalScrollbar(suggestionScrollState),
-                    expanded = contactSuggestionState.areSuggestionsExpanded,
+                    expanded = contactSuggestionStateOld.areSuggestionsExpanded,
                     properties = PopupProperties(
                         focusable = false,
                         dismissOnBackPress = false,
@@ -250,7 +250,7 @@ fun ChipsListTextField(
                     },
                     scrollState = suggestionScrollState
                 ) {
-                    contactSuggestionState.contactSuggestionItems.forEach { selectionOption ->
+                    contactSuggestionStateOld.contactSuggestionItems.forEach { selectionOption ->
                         DropdownMenuItem(
                             text = {
                                 Column(modifier = Modifier.padding(vertical = ProtonDimens.Spacing.Standard)) {
@@ -292,7 +292,7 @@ private const val EMPTY_SPACE = ' '
 private const val DROP_DOWN_HEIGHT_PERCENT = 0.8f
 private const val DROP_DOWN_WIDTH_PERCENT = 0.9f
 
-object ChipsListTextField {
+object ChipsListTextFieldOld {
     data class Actions(
         val onSuggestionTermTyped: (String) -> Unit,
         val onSuggestionsDismissed: () -> Unit

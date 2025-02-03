@@ -29,7 +29,7 @@ import me.proton.core.util.kotlin.endsWith
 import me.proton.core.util.kotlin.takeIfNotBlank
 
 @Stable
-internal class ChipsListState(
+internal class ChipsListStateOld(
     private val isValid: (String) -> Boolean,
     private val onListChanged: (List<ChipItem>) -> Unit
 ) {

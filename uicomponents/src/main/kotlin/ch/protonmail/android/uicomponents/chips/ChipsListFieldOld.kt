@@ -23,7 +23,7 @@ import ch.protonmail.android.design.compose.theme.bodyMediumNorm
     Composable that displays a ChipsListTextField with a label in a row (useful for forms)
  */
 @Composable
-fun ChipsListField(
+fun ChipsListFieldOld(
     label: String,
     value: List<ChipItem>,
     modifier: Modifier = Modifier,
@@ -31,8 +31,8 @@ fun ChipsListField(
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     focusRequester: FocusRequester? = null,
     focusOnClick: Boolean = true,
-    actions: ChipsListField.Actions,
-    contactSuggestionState: ContactSuggestionState
+    actions: ChipsListFieldOld.Actions,
+    contactSuggestionStateOld: ContactSuggestionStateOld
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     Row(
@@ -49,7 +49,7 @@ fun ChipsListField(
             color = ProtonTheme.colors.textWeak,
             style = ProtonTheme.typography.bodyMediumNorm
         )
-        ChipsListTextField(
+        ChipsListTextFieldOld(
             modifier = Modifier
                 .weight(1f)
                 .thenIf(focusOnClick) {
@@ -64,33 +64,25 @@ fun ChipsListField(
             value = value,
             keyboardOptions = keyboardOptions,
             focusRequester = focusRequester,
-            actions = ChipsListTextField.Actions(
+            actions = ChipsListTextFieldOld.Actions(
                 onSuggestionTermTyped = actions.onSuggestionTermTyped,
                 onSuggestionsDismissed = actions.onSuggestionsDismissed
             ),
-            contactSuggestionState = contactSuggestionState
+            contactSuggestionStateOld = contactSuggestionStateOld
         )
     }
 }
 
 @Stable
-data class ContactSuggestionState(
+data class ContactSuggestionStateOld(
     val areSuggestionsExpanded: Boolean,
     val contactSuggestionItems: List<ContactSuggestionItem>
 )
 
-object ChipsListField {
+object ChipsListFieldOld {
     data class Actions(
         val onSuggestionTermTyped: (String) -> Unit,
         val onSuggestionsDismissed: () -> Unit,
         val onListChanged: (List<ChipItem>) -> Unit
     )
-}
-
-fun Modifier.thenIf(condition: Boolean, modifier: Modifier.() -> Modifier): Modifier {
-    return if (condition) {
-        then(modifier())
-    } else {
-        this
-    }
 }

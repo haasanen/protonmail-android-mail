@@ -8,7 +8,7 @@ import java.util.UUID
 import ch.protonmail.android.uicomponents.chips.item.ChipItem
 import ch.protonmail.android.uicomponents.chips.item.ChipItemsList
 
-class ChipsListStateTest {
+class ChipsListStateOldTest {
 
     @Test
     fun `Should not add an item when just typing a space`() {
@@ -189,7 +189,7 @@ class ChipsListStateTest {
         assertThat(itemsListUnfocusedMultiple.counter, equalTo(ChipItem.Counter("+2")))
     }
 
-    private fun buildState(isValid: (String) -> Boolean = { true }) = ChipsListState(
+    private fun buildState(isValid: (String) -> Boolean = { true }) = ChipsListStateOld(
         isValid = isValid,
         onListChanged = {}
     )
