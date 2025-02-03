@@ -20,7 +20,6 @@ package ch.protonmail.android.mailcomposer.domain.usecase
 
 import arrow.core.Either
 import ch.protonmail.android.mailcomposer.domain.model.DraftFields
-import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.withContext
@@ -37,25 +36,20 @@ class StoreDraftWithAllFields @Inject constructor(
     suspend operator fun invoke(
         userId: UserId,
         draftMessageId: MessageId,
-        fields: DraftFields,
-        action: DraftAction = DraftAction.Compose
+        fields: DraftFields
     ) = withContext(NonCancellable) {
-        storeDraftWithBody(
-            draftMessageId,
-            fields.body,
-            fields.originalHtmlQuote,
-            fields.sender,
-            userId
-        ).logError(draftMessageId)
+        storeDraftWithBody(userId, draftMessageId, fields.body).logError(draftMessageId)
         storeDraftWithSubject(userId, draftMessageId, fields.subject).logError(draftMessageId)
-        storeDraftWithRecipients(
-            userId,
-            draftMessageId,
-            fields.sender,
-            fields.recipientsTo.value,
-            fields.recipientsCc.value,
-            fields.recipientsBcc.value
-        ).logError(draftMessageId)
+
+        // Not yet integrated with rust lib
+//        storeDraftWithRecipients(
+//            userId,
+//            draftMessageId,
+//            fields.sender,
+//            fields.recipientsTo.value,
+//            fields.recipientsCc.value,
+//            fields.recipientsBcc.value
+//        ).logError(draftMessageId)
 
         Timber.d("Draft: finished storing draft locally $draftMessageId")
     }

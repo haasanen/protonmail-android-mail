@@ -540,32 +540,18 @@ class ComposerViewModel @Inject constructor(
             ifRight = { action }
         )
 
-    private suspend fun onSenderChanged(action: ComposerAction.SenderChanged): ComposerOperation = storeDraftWithBody(
-        currentMessageId(),
-        currentDraftBody(),
-        currentDraftQuotedHtmlBody(),
-        SenderEmail(action.sender.email),
-        primaryUserId()
-    )
-        .fold(
-            ifLeft = {
-                Timber.e("Store draft ${currentMessageId()} with new sender ${action.sender.email} failed")
-                ComposerEvent.ErrorStoringDraftSenderAddress
-            },
-            ifRight = {
-                action
-            }
-        )
+    private suspend fun onSenderChanged(action: ComposerAction.SenderChanged): ComposerOperation {
+        Timber.w("Composer: Change sender feature not implemented")
+        return action
+    }
 
     private suspend fun onDraftBodyChanged(action: ComposerAction.DraftBodyChanged) {
         emitNewStateFor(ComposerAction.DraftBodyChanged(action.draftBody))
 
         storeDraftWithBody(
+            primaryUserId(),
             currentMessageId(),
-            action.draftBody,
-            currentDraftQuotedHtmlBody(),
-            currentSenderEmail(),
-            primaryUserId()
+            action.draftBody
         ).onLeft { emitNewStateFor(ComposerEvent.ErrorStoringDraftBody) }
     }
 
