@@ -30,4 +30,5 @@ interface DraftRepository {
     suspend fun openDraft(userId: UserId, messageId: MessageId): Either<DataError, DraftFields>
 
     suspend fun createDraft(userId: UserId, action: DraftAction): Either<DataError, DraftFields>
+    suspend fun save(userId: UserId, messageId: MessageId): Either<DataError, Unit>
 }

@@ -5,6 +5,7 @@ import arrow.core.right
 import ch.protonmail.android.composer.data.local.RustDraftDataSource
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
+import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
 import ch.protonmail.android.testdata.composer.DraftFieldsTestData
 import ch.protonmail.android.testdata.composer.LocalDraftTestData
@@ -46,6 +47,66 @@ class DraftRepositoryImplTest {
 
         // When
         val actual = draftRepository.openDraft(userId, messageId)
+
+        // Then
+        assertEquals(expected.left(), actual)
+    }
+
+    @Test
+    fun `returns success when create draft succeeds`() = runTest {
+        // Given
+        val userId = UserIdSample.Primary
+        val localFields = LocalDraftTestData.BasicLocalDraft
+        val action = DraftAction.Compose
+        coEvery { draftDataSource.create(userId, action) } returns localFields.right()
+
+        // When
+        val actual = draftRepository.createDraft(userId, action)
+
+        // Then
+        val expected = DraftFieldsTestData.BasicDraftFields
+        assertEquals(expected.right(), actual)
+    }
+
+    @Test
+    fun `returns error when create draft fails`() = runTest {
+        // Given
+        val userId = UserIdSample.Primary
+        val expected = DataError.Local.Unknown
+        val action = DraftAction.Compose
+        coEvery { draftDataSource.create(userId, action) } returns expected.left()
+
+        // When
+        val actual = draftRepository.createDraft(userId, action)
+
+        // Then
+        assertEquals(expected.left(), actual)
+    }
+
+    @Test
+    fun `returns success when save draft succeeds`() = runTest {
+        // Given
+        val userId = UserIdSample.Primary
+        val messageId = MessageIdSample.PlainTextMessage
+        coEvery { draftDataSource.save() } returns Unit.right()
+
+        // When
+        val actual = draftRepository.save(userId, messageId)
+
+        // Then
+        assertEquals(Unit.right(), actual)
+    }
+
+    @Test
+    fun `returns error when save draft fails`() = runTest {
+        // Given
+        val userId = UserIdSample.Primary
+        val expected = DataError.Local.SaveDraftError.Unknown
+        val messageId = MessageIdSample.PlainTextMessage
+        coEvery { draftDataSource.save() } returns expected.left()
+
+        // When
+        val actual = draftRepository.save(userId, messageId)
 
         // Then
         assertEquals(expected.left(), actual)

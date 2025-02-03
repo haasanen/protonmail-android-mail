@@ -38,4 +38,6 @@ class DraftRepositoryImpl @Inject constructor(
 
     override suspend fun createDraft(userId: UserId, action: DraftAction): Either<DataError, DraftFields> =
         draftDataSource.create(userId, action).map { it.toDraftFields() }
+
+    override suspend fun save(userId: UserId, messageId: MessageId): Either<DataError, Unit> = draftDataSource.save()
 }
