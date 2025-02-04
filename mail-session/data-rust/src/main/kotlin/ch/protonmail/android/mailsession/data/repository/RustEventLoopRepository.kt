@@ -36,6 +36,7 @@ class RustEventLoopRepository @Inject constructor(
         }
 
         Timber.v("rust-event: triggering event loop for $userId...")
+        userSession.executePendingActions()
         userSession.pollEvents()
     }
 
