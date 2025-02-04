@@ -28,6 +28,7 @@ import ch.protonmail.android.mailcomposer.domain.model.Subject
 import ch.protonmail.android.mailcomposer.domain.repository.DraftRepository
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.model.MessageId
+import ch.protonmail.android.mailmessage.domain.model.Recipient
 import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 
@@ -54,4 +55,22 @@ class DraftRepositoryImpl @Inject constructor(
         messageId: MessageId,
         body: DraftBody
     ): Either<DataError, Unit> = draftDataSource.saveBody(body)
+
+    override suspend fun saveToRecipient(
+        userId: UserId,
+        messageId: MessageId,
+        recipient: Recipient
+    ): Either<DataError, Unit> = draftDataSource.saveToRecipient(recipient)
+
+    override suspend fun saveCcRecipient(
+        userId: UserId,
+        messageId: MessageId,
+        recipient: Recipient
+    ): Either<DataError, Unit> = draftDataSource.saveCcRecipient(recipient)
+
+    override suspend fun saveBccRecipient(
+        userId: UserId,
+        messageId: MessageId,
+        recipient: Recipient
+    ): Either<DataError, Unit> = draftDataSource.saveBccRecipient(recipient)
 }

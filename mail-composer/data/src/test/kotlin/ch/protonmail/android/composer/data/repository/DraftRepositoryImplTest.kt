@@ -9,6 +9,7 @@ import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.Subject
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
+import ch.protonmail.android.mailmessage.domain.sample.RecipientSample
 import ch.protonmail.android.testdata.composer.DraftFieldsTestData
 import ch.protonmail.android.testdata.composer.LocalDraftTestData
 import io.mockk.coEvery
@@ -171,6 +172,99 @@ class DraftRepositoryImplTest {
 
         // When
         val actual = draftRepository.saveBody(userId, messageId, body)
+
+        // Then
+        assertEquals(expected.left(), actual)
+    }
+
+    @Test
+    fun `returns success when save draft to recipient succeeds`() = runTest {
+        // Given
+        val userId = UserIdSample.Primary
+        val messageId = MessageIdSample.PlainTextMessage
+        val recipient = RecipientSample.Bob
+        coEvery { draftDataSource.saveToRecipient(recipient) } returns Unit.right()
+
+        // When
+        val actual = draftRepository.saveToRecipient(userId, messageId, recipient)
+
+        // Then
+        assertEquals(Unit.right(), actual)
+    }
+
+    @Test
+    fun `returns error when save draft to recipient fails`() = runTest {
+        // Given
+        val userId = UserIdSample.Primary
+        val expected = DataError.Local.SaveDraftError.Unknown
+        val messageId = MessageIdSample.PlainTextMessage
+        val recipient = RecipientSample.Bob
+        coEvery { draftDataSource.saveToRecipient(recipient) } returns expected.left()
+
+        // When
+        val actual = draftRepository.saveToRecipient(userId, messageId, recipient)
+
+        // Then
+        assertEquals(expected.left(), actual)
+    }
+
+    @Test
+    fun `returns success when save draft cc recipient succeeds`() = runTest {
+        // Given
+        val userId = UserIdSample.Primary
+        val messageId = MessageIdSample.PlainTextMessage
+        val recipient = RecipientSample.Bob
+        coEvery { draftDataSource.saveCcRecipient(recipient) } returns Unit.right()
+
+        // When
+        val actual = draftRepository.saveCcRecipient(userId, messageId, recipient)
+
+        // Then
+        assertEquals(Unit.right(), actual)
+    }
+
+    @Test
+    fun `returns error when save draft cc recipient fails`() = runTest {
+        // Given
+        val userId = UserIdSample.Primary
+        val expected = DataError.Local.SaveDraftError.Unknown
+        val messageId = MessageIdSample.PlainTextMessage
+        val recipient = RecipientSample.Bob
+        coEvery { draftDataSource.saveCcRecipient(recipient) } returns expected.left()
+
+        // When
+        val actual = draftRepository.saveCcRecipient(userId, messageId, recipient)
+
+        // Then
+        assertEquals(expected.left(), actual)
+    }
+
+    @Test
+    fun `returns success when save draft bcc recipient succeeds`() = runTest {
+        // Given
+        val userId = UserIdSample.Primary
+        val messageId = MessageIdSample.PlainTextMessage
+        val recipient = RecipientSample.Bob
+        coEvery { draftDataSource.saveBccRecipient(recipient) } returns Unit.right()
+
+        // When
+        val actual = draftRepository.saveBccRecipient(userId, messageId, recipient)
+
+        // Then
+        assertEquals(Unit.right(), actual)
+    }
+
+    @Test
+    fun `returns error when save draft bcc recipient fails`() = runTest {
+        // Given
+        val userId = UserIdSample.Primary
+        val expected = DataError.Local.SaveDraftError.Unknown
+        val messageId = MessageIdSample.PlainTextMessage
+        val recipient = RecipientSample.Bob
+        coEvery { draftDataSource.saveBccRecipient(recipient) } returns expected.left()
+
+        // When
+        val actual = draftRepository.saveBccRecipient(userId, messageId, recipient)
 
         // Then
         assertEquals(expected.left(), actual)

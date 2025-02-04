@@ -25,6 +25,7 @@ import ch.protonmail.android.mailcomposer.domain.model.DraftFields
 import ch.protonmail.android.mailcomposer.domain.model.Subject
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.model.MessageId
+import ch.protonmail.android.mailmessage.domain.model.Recipient
 import me.proton.core.domain.entity.UserId
 
 interface DraftRepository {
@@ -42,5 +43,22 @@ interface DraftRepository {
         userId: UserId,
         messageId: MessageId,
         body: DraftBody
+    ): Either<DataError, Unit>
+
+    suspend fun saveToRecipient(
+        userId: UserId,
+        messageId: MessageId,
+        recipient: Recipient
+    ): Either<DataError, Unit>
+
+    suspend fun saveCcRecipient(
+        userId: UserId,
+        messageId: MessageId,
+        recipient: Recipient
+    ): Either<DataError, Unit>
+    suspend fun saveBccRecipient(
+        userId: UserId,
+        messageId: MessageId,
+        recipient: Recipient
     ): Either<DataError, Unit>
 }
