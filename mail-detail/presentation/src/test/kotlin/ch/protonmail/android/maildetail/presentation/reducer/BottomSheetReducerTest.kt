@@ -245,11 +245,17 @@ internal class BottomSheetReducerTest(
             TestInput(
                 currentState = BottomSheetState(null, Effect.empty()),
                 operation = MailboxMoreActionsBottomSheetState.MailboxMoreActionsBottomSheetEvent.ActionData(
-                    listOf<ActionUiModel>().toImmutableList()
+                    hiddenActionUiModels = listOf<ActionUiModel>().toImmutableList(),
+                    visibleActionUiModels = listOf<ActionUiModel>().toImmutableList(),
+                    customizeToolbarActionUiModel = ActionUiModelSample.CustomizeToolbar,
+                    selectedCount = 2
                 ),
                 expectedState = BottomSheetState(
                     MailboxMoreActionsBottomSheetState.Data(
-                        listOf<ActionUiModel>().toImmutableList()
+                        listOf<ActionUiModel>().toImmutableList(),
+                        listOf<ActionUiModel>().toImmutableList(),
+                        ActionUiModelSample.Star,
+                        2
                     )
                 ),
                 reducesBottomSheetVisibilityEffects = false,

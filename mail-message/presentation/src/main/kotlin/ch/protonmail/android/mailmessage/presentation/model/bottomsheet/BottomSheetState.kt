@@ -105,12 +105,23 @@ sealed interface LabelAsBottomSheetState : BottomSheetContentState {
 
 sealed interface MailboxMoreActionsBottomSheetState : BottomSheetContentState {
 
-    data class Data(val actionUiModels: ImmutableList<ActionUiModel>) : MailboxMoreActionsBottomSheetState
-    object Loading : MailboxMoreActionsBottomSheetState
+    data class Data(
+        val hiddenActionUiModels: ImmutableList<ActionUiModel>,
+        val visibleActionUiModels: ImmutableList<ActionUiModel>,
+        val customizeToolbarActionUiModel: ActionUiModel,
+        val selectedCount: Int
+    ) : MailboxMoreActionsBottomSheetState
+
+    data object Loading : MailboxMoreActionsBottomSheetState
 
     sealed interface MailboxMoreActionsBottomSheetOperation : BottomSheetOperation
     sealed interface MailboxMoreActionsBottomSheetEvent : MailboxMoreActionsBottomSheetOperation {
-        data class ActionData(val actionUiModels: ImmutableList<ActionUiModel>) : MailboxMoreActionsBottomSheetEvent
+        data class ActionData(
+            val hiddenActionUiModels: ImmutableList<ActionUiModel>,
+            val visibleActionUiModels: ImmutableList<ActionUiModel>,
+            val customizeToolbarActionUiModel: ActionUiModel,
+            val selectedCount: Int
+        ) : MailboxMoreActionsBottomSheetEvent
     }
 }
 

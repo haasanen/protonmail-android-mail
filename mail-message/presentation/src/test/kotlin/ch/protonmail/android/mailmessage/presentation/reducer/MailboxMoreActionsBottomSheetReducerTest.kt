@@ -48,17 +48,29 @@ internal class MailboxMoreActionsBottomSheetReducerTest(
             TestInput(
                 currentState = BottomSheetState(MailboxMoreActionsBottomSheetState.Loading),
                 operation = MailboxMoreActionsBottomSheetState.MailboxMoreActionsBottomSheetEvent.ActionData(
-                    actionUiModels = listOf(
+                    hiddenActionUiModels = listOf(
                         ActionUiModelSample.Archive,
                         ActionUiModelSample.MarkUnread
-                    ).toImmutableList()
+                    ).toImmutableList(),
+                    visibleActionUiModels = listOf(
+                        ActionUiModelSample.Star,
+                        ActionUiModelSample.SavePdf
+                    ).toImmutableList(),
+                    customizeToolbarActionUiModel = ActionUiModelSample.CustomizeToolbar,
+                    selectedCount = 1
                 ),
                 expectedState = BottomSheetState(
                     contentState = MailboxMoreActionsBottomSheetState.Data(
-                        actionUiModels = listOf(
+                        hiddenActionUiModels = listOf(
                             ActionUiModelSample.Archive,
                             ActionUiModelSample.MarkUnread
-                        ).toImmutableList()
+                        ).toImmutableList(),
+                        visibleActionUiModels = listOf(
+                            ActionUiModelSample.Star,
+                            ActionUiModelSample.SavePdf
+                        ).toImmutableList(),
+                        customizeToolbarActionUiModel = ActionUiModelSample.CustomizeToolbar,
+                        selectedCount = 1
                     )
                 )
             )

@@ -33,6 +33,7 @@ import arrow.core.flatMap
 import arrow.core.getOrElse
 import arrow.core.left
 import arrow.core.right
+import ch.protonmail.android.mailcommon.domain.model.Action
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
@@ -930,14 +931,17 @@ class MailboxViewModel @Inject constructor(
                 return
             }
 
-        val allActions = actions.hiddenActions + actions.visibleActions
-
         emitNewStateFrom(
             MailboxEvent.MailboxBottomSheetEvent(
                 MailboxMoreActionsBottomSheetState.MailboxMoreActionsBottomSheetEvent.ActionData(
-                    allActions
+                    hiddenActionUiModels = actions.hiddenActions
                         .map { actionUiModelMapper.toUiModel(it) }
-                        .toImmutableList()
+                        .toImmutableList(),
+                    visibleActionUiModels = actions.visibleActions
+                        .map { actionUiModelMapper.toUiModel(it) }
+                        .toImmutableList(),
+                    customizeToolbarActionUiModel = actionUiModelMapper.toUiModel(Action.CustomizeToolbar),
+                    selectedCount = selectionState.selectedMailboxItems.size
                 )
             )
         )

@@ -2657,7 +2657,10 @@ class MailboxViewModelTest {
         val expectedActions = listOf(Action.Unstar, Action.Archive, Action.Spam)
         val expectedActionItems = expectedActions.map { ActionUiModelSample.build(it) }
         val expectedBottomSheetContent = MailboxMoreActionsBottomSheetState.Data(
-            actionUiModels = expectedActionItems.toImmutableList()
+            hiddenActionUiModels = expectedActionItems.toImmutableList(),
+            visibleActionUiModels = emptyList<ActionUiModel>().toImmutableList(),
+            customizeToolbarActionUiModel = ActionUiModelSample.CustomizeToolbar,
+            selectedCount = 1
         )
         val bottomSheetShownState =
             createMailboxStateWithMoreActionBottomSheet(selectedItemsList, expectedBottomSheetContent)
@@ -2675,7 +2678,9 @@ class MailboxViewModelTest {
         )
         returnExpectedStateForBottomBarEvent(expectedState = intermediateState)
         returnExpectedStateWhenEnterSelectionMode(initialState, item, intermediateState)
-        expectedMoreActionBottomSheetRequestedStateChange(expectedActionItems, bottomSheetShownState)
+        expectedMoreActionBottomSheetRequestedStateChange(
+            expectedActionItems, bottomSheetShownState, selectedItemsList.size
+        )
         expectedStarMessagesSucceeds(userId, selectedItemsList)
         returnExpectedStateWhenStarringSucceeds(intermediateState)
         expectPagerMock()
@@ -2706,7 +2711,10 @@ class MailboxViewModelTest {
         val expectedActions = listOf(Action.Unstar, Action.Archive, Action.Spam)
         val expectedActionItems = expectedActions.map { ActionUiModelSample.build(it) }
         val expectedBottomSheetContent = MailboxMoreActionsBottomSheetState.Data(
-            actionUiModels = expectedActionItems.toImmutableList()
+            hiddenActionUiModels = expectedActionItems.toImmutableList(),
+            visibleActionUiModels = listOf<ActionUiModel>().toImmutableList(),
+            customizeToolbarActionUiModel = ActionUiModelSample.CustomizeToolbar,
+            selectedCount = selectedItemsList.size
         )
         val bottomSheetShownState =
             createMailboxStateWithMoreActionBottomSheet(selectedItemsList, expectedBottomSheetContent)
@@ -2724,7 +2732,9 @@ class MailboxViewModelTest {
         )
         returnExpectedStateForBottomBarEvent(expectedState = intermediateState)
         returnExpectedStateWhenEnterSelectionMode(initialState, item, intermediateState)
-        expectedMoreActionBottomSheetRequestedStateChange(expectedActionItems, bottomSheetShownState)
+        expectedMoreActionBottomSheetRequestedStateChange(
+            expectedActionItems, bottomSheetShownState, selectedItemsList.size
+        )
         expectedUnStarMessagesSucceeds(userId, selectedItemsList)
         returnExpectedStateWhenUnStarringSucceeds(intermediateState)
         expectPagerMock()
@@ -3740,14 +3750,18 @@ class MailboxViewModelTest {
 
     private fun expectedMoreActionBottomSheetRequestedStateChange(
         actionUiModels: List<ActionUiModel>,
-        bottomSheetState: MailboxState
+        bottomSheetState: MailboxState,
+        selectedCount: Int
     ) {
         every {
             mailboxReducer.newStateFrom(
                 currentState = any(),
                 operation = MailboxEvent.MailboxBottomSheetEvent(
                     MailboxMoreActionsBottomSheetState.MailboxMoreActionsBottomSheetEvent.ActionData(
-                        actionUiModels.toImmutableList()
+                        actionUiModels.toImmutableList(),
+                        listOf<ActionUiModel>().toImmutableList(),
+                        ActionUiModelSample.CustomizeToolbar,
+                        selectedCount
                     )
                 )
             )

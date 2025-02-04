@@ -30,7 +30,7 @@ import kotlinx.collections.immutable.toImmutableList
 object MailboxMoreActionBottomSheetPreviewData {
 
     val Data = MailboxMoreActionsBottomSheetState.Data(
-        listOf(
+        hiddenActionUiModels = listOf(
             ActionUiModel(
                 Action.MarkUnread,
                 Action.MarkUnread.iconDrawable(),
@@ -55,7 +55,28 @@ object MailboxMoreActionBottomSheetPreviewData {
                 Action.Move.description(),
                 Action.Move.contentDescription()
             )
-        ).toImmutableList()
+        ).toImmutableList(),
+        visibleActionUiModels = listOf(
+            ActionUiModel(
+                Action.Star,
+                Action.Star.iconDrawable(),
+                Action.Star.description(),
+                Action.Star.contentDescription()
+            ),
+            ActionUiModel(
+                Action.SavePdf,
+                Action.SavePdf.iconDrawable(),
+                Action.SavePdf.description(),
+                Action.SavePdf.contentDescription()
+            )
+        ).toImmutableList(),
+        customizeToolbarActionUiModel = ActionUiModel(
+            Action.CustomizeToolbar,
+            Action.CustomizeToolbar.iconDrawable(),
+            Action.CustomizeToolbar.description(),
+            Action.CustomizeToolbar.contentDescription()
+        ),
+        selectedCount = 2
     )
 }
 
