@@ -21,7 +21,6 @@ package ch.protonmail.android.mailcomposer.presentation.viewmodel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailcomposer.domain.usecase.DeleteMessagePassword
 import ch.protonmail.android.mailcomposer.domain.usecase.ObserveMessagePassword
 import ch.protonmail.android.mailcomposer.domain.usecase.SaveMessagePassword
@@ -30,6 +29,7 @@ import ch.protonmail.android.mailcomposer.presentation.model.MessagePasswordOper
 import ch.protonmail.android.mailcomposer.presentation.model.SetMessagePasswordState
 import ch.protonmail.android.mailcomposer.presentation.reducer.SetMessagePasswordReducer
 import ch.protonmail.android.mailcomposer.presentation.ui.SetMessagePasswordScreen
+import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -91,7 +91,6 @@ class SetMessagePasswordViewModel @Inject constructor(
                 saveMessagePassword(
                     primaryUserId.first(),
                     inputParams.messageId,
-                    inputParams.senderEmail,
                     password,
                     passwordHint
                 )
@@ -106,7 +105,6 @@ class SetMessagePasswordViewModel @Inject constructor(
                 saveMessagePassword(
                     primaryUserId.first(),
                     inputParams.messageId,
-                    inputParams.senderEmail,
                     password,
                     passwordHint,
                     SaveMessagePasswordAction.Update

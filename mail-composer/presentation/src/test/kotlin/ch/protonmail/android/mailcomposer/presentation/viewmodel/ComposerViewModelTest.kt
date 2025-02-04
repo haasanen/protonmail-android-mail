@@ -1821,7 +1821,7 @@ class ComposerViewModelTest {
         expectStartDraftSync(expectedUserId, messageId)
         expectObservedMessageAttachments(expectedUserId, messageId)
         expectNoInputDraftAction()
-        expectAttachmentDeleteSucceeds(expectedUserId, expectedSenderEmail, messageId, expectedAttachmentId)
+        expectAttachmentDeleteSucceeds(expectedUserId, messageId, expectedAttachmentId)
         expectObserveMessageSendingError(expectedUserId, messageId)
         expectMessagePassword(expectedUserId, messageId)
         expectNoFileShareVia()
@@ -1831,7 +1831,7 @@ class ComposerViewModelTest {
         viewModel.submit(ComposerAction.RemoveAttachment(expectedAttachmentId))
 
         // Then
-        coVerify { deleteAttachment(expectedUserId, expectedSenderEmail, messageId, expectedAttachmentId) }
+        coVerify { deleteAttachment(expectedUserId, messageId, expectedAttachmentId) }
     }
 
     @Test
@@ -2016,7 +2016,6 @@ class ComposerViewModelTest {
         // Given
         val userId = expectedUserId { UserIdSample.Primary }
         val messageId = expectedMessageId { MessageIdSample.EmptyDraft }
-        val expectedSenderEmail = SenderEmail(UserAddressSample.PrimaryAddress.email)
         val expirationTime = 1.days
         expectStartDraftSync(userId, messageId)
         expectNoInputDraftMessageId()
@@ -2025,7 +2024,7 @@ class ComposerViewModelTest {
         expectObserveMessageSendingError(userId, messageId)
         expectMessagePassword(userId, messageId)
         expectNoFileShareVia()
-        expectSaveExpirationTimeForDraft(userId, messageId, expectedSenderEmail, expirationTime)
+        expectSaveExpirationTimeForDraft(userId, messageId, expirationTime)
         expectObserveMessageExpirationTime(userId, messageId)
         expectInitComposerWithNewEmptyDraftSucceeds(userId)
 
@@ -2034,7 +2033,7 @@ class ComposerViewModelTest {
 
         // Then
         viewModel.state.test {
-            coVerify { saveMessageExpirationTime(userId, messageId, expectedSenderEmail, expirationTime) }
+            coVerify { saveMessageExpirationTime(userId, messageId, expirationTime) }
             assertEquals(Effect.of(false), awaitItem().changeBottomSheetVisibility)
         }
     }
@@ -2044,7 +2043,6 @@ class ComposerViewModelTest {
         // Given
         val userId = expectedUserId { UserIdSample.Primary }
         val messageId = expectedMessageId { MessageIdSample.EmptyDraft }
-        val expectedSenderEmail = SenderEmail(UserAddressSample.PrimaryAddress.email)
         val expirationTime = 1.days
         expectStartDraftSync(userId, messageId)
         expectNoInputDraftMessageId()
@@ -2055,7 +2053,7 @@ class ComposerViewModelTest {
         expectNoFileShareVia()
         expectObserveMessageExpirationTime(userId, messageId)
         coEvery {
-            saveMessageExpirationTime(userId, messageId, expectedSenderEmail, 1.days)
+            saveMessageExpirationTime(userId, messageId, 1.days)
         } returns DataError.Local.DbWriteFailed.left()
         expectInitComposerWithNewEmptyDraftSucceeds(userId)
 
@@ -2064,7 +2062,7 @@ class ComposerViewModelTest {
 
         // Then
         viewModel.state.test {
-            coVerify { saveMessageExpirationTime(userId, messageId, expectedSenderEmail, expirationTime) }
+            coVerify { saveMessageExpirationTime(userId, messageId, expirationTime) }
             assertEquals(Effect.of(TextUiModel(R.string.composer_error_setting_expiration_time)), awaitItem().error)
         }
     }
@@ -2575,11 +2573,10 @@ class ComposerViewModelTest {
 
     private fun expectAttachmentDeleteSucceeds(
         userId: UserId,
-        senderEmail: SenderEmail,
         messageId: MessageId,
         attachmentId: AttachmentId
     ) {
-        coEvery { deleteAttachment(userId, senderEmail, messageId, attachmentId) } returns Unit.right()
+        coEvery { deleteAttachment(userId, messageId, attachmentId) } returns Unit.right()
     }
 
     private fun expectMessagePassword(userId: UserId, messageId: MessageId) {
@@ -2598,10 +2595,9 @@ class ComposerViewModelTest {
     private fun expectSaveExpirationTimeForDraft(
         userId: UserId,
         messageId: MessageId,
-        senderEmail: SenderEmail,
         expirationTime: Duration
     ) {
-        coEvery { saveMessageExpirationTime(userId, messageId, senderEmail, expirationTime) } returns Unit.right()
+        coEvery { saveMessageExpirationTime(userId, messageId, expirationTime) } returns Unit.right()
     }
 
     private fun expectObserveMessageExpirationTime(userId: UserId, messageId: MessageId) =

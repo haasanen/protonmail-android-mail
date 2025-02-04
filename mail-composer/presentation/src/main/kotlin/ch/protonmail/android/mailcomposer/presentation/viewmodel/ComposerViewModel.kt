@@ -432,14 +432,14 @@ class ComposerViewModel @Inject constructor(
 
     private fun onAttachmentsRemoved(action: ComposerAction.RemoveAttachment) {
         viewModelScope.launch {
-            deleteAttachment(primaryUserId(), currentSenderEmail(), currentMessageId(), action.attachmentId)
+            deleteAttachment(primaryUserId(), currentMessageId(), action.attachmentId)
                 .onLeft { Timber.e("Failed to delete attachment: $it") }
         }
     }
 
     private fun onExpirationTimeSet(action: ComposerAction.ExpirationTimeSet) {
         viewModelScope.launch {
-            saveMessageExpirationTime(primaryUserId(), currentMessageId(), currentSenderEmail(), action.duration).fold(
+            saveMessageExpirationTime(primaryUserId(), currentMessageId(), action.duration).fold(
                 ifLeft = { emitNewStateFor(ComposerEvent.ErrorSettingExpirationTime) },
                 ifRight = { emitNewStateFor(action) }
             )

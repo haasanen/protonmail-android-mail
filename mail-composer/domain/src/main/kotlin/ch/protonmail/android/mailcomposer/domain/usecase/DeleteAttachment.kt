@@ -20,30 +20,26 @@ package ch.protonmail.android.mailcomposer.domain.usecase
 
 import arrow.core.Either
 import arrow.core.raise.either
+import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailcomposer.domain.model.SenderEmail
 import ch.protonmail.android.mailcomposer.domain.repository.AttachmentRepository
 import ch.protonmail.android.mailmessage.domain.model.AttachmentId
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 
+@MissingRustApi
+// Rust not exposing attachments APIs yet
 class DeleteAttachment @Inject constructor(
-    private val localDraft: GetLocalDraft,
     private val attachmentRepository: AttachmentRepository
 ) {
 
     suspend operator fun invoke(
         userId: UserId,
-        senderEmail: SenderEmail,
         messageId: MessageId,
         attachmentId: AttachmentId
     ): Either<AttachmentDeleteError, Unit> = either {
-        val localDraft = localDraft(userId, messageId, senderEmail)
-            .mapLeft { AttachmentDeleteError.DraftNotFound }
-            .bind()
-
-        attachmentRepository.deleteAttachment(userId, localDraft.message.messageId, attachmentId)
+        attachmentRepository.deleteAttachment(userId, messageId, attachmentId)
             .mapLeft {
                 when (it) {
                     DataError.Local.FailedToDeleteFile -> AttachmentDeleteError.FailedToDeleteFile

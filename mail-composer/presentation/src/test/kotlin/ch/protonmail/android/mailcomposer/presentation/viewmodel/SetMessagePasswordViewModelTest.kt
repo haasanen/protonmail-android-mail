@@ -21,7 +21,6 @@ package ch.protonmail.android.mailcomposer.presentation.viewmodel
 import androidx.lifecycle.SavedStateHandle
 import app.cash.turbine.test
 import arrow.core.right
-import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcomposer.domain.model.MessagePassword
 import ch.protonmail.android.mailcomposer.domain.model.SenderEmail
@@ -34,6 +33,7 @@ import ch.protonmail.android.mailcomposer.presentation.model.SetMessagePasswordS
 import ch.protonmail.android.mailcomposer.presentation.reducer.SetMessagePasswordReducer
 import ch.protonmail.android.mailcomposer.presentation.ui.SetMessagePasswordScreen
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
+import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
 import ch.protonmail.android.testdata.user.UserIdTestData
 import io.mockk.coEvery
@@ -256,7 +256,7 @@ class SetMessagePasswordViewModelTest {
         val password = "password"
         val passwordHint = "password hint"
         coEvery { observeMessagePassword(userId, messageId) } returns flowOf(null)
-        coEvery { saveMessagePassword(userId, messageId, senderEmail, password, passwordHint) } returns Unit.right()
+        coEvery { saveMessagePassword(userId, messageId, password, passwordHint) } returns Unit.right()
 
         // When
         setMessagePasswordViewModel.submit(MessagePasswordOperation.Action.ApplyPassword(password, passwordHint))
@@ -265,7 +265,7 @@ class SetMessagePasswordViewModelTest {
         setMessagePasswordViewModel.state.test {
             val item = awaitItem() as SetMessagePasswordState.Data
             assertEquals(Effect.of(Unit), item.exitScreen)
-            coVerify { saveMessagePassword(userId, messageId, senderEmail, password, passwordHint) }
+            coVerify { saveMessagePassword(userId, messageId, password, passwordHint) }
         }
     }
 
@@ -277,7 +277,7 @@ class SetMessagePasswordViewModelTest {
         coEvery { observeMessagePassword(userId, messageId) } returns flowOf(null)
         coEvery {
             saveMessagePassword(
-                userId, messageId, senderEmail, password, passwordHint, SaveMessagePasswordAction.Update
+                userId, messageId, password, passwordHint, SaveMessagePasswordAction.Update
             )
         } returns Unit.right()
 
@@ -290,7 +290,7 @@ class SetMessagePasswordViewModelTest {
             assertEquals(Effect.of(Unit), item.exitScreen)
             coVerify {
                 saveMessagePassword(
-                    userId, messageId, senderEmail, password, passwordHint, SaveMessagePasswordAction.Update
+                    userId, messageId, password, passwordHint, SaveMessagePasswordAction.Update
                 )
             }
         }

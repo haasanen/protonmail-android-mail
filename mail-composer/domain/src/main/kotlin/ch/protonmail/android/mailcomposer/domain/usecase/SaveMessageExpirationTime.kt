@@ -20,44 +20,27 @@ package ch.protonmail.android.mailcomposer.domain.usecase
 
 import arrow.core.Either
 import arrow.core.raise.either
+import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcomposer.domain.model.MessageExpirationTime
-import ch.protonmail.android.mailcomposer.domain.model.SenderEmail
 import ch.protonmail.android.mailcomposer.domain.repository.MessageExpirationTimeRepository
 import ch.protonmail.android.mailmessage.domain.model.MessageId
-import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
 import me.proton.core.domain.entity.UserId
-import timber.log.Timber
 import javax.inject.Inject
 import kotlin.time.Duration
 
+@MissingRustApi
+// Rust not exposing API to save message expiration yet
 class SaveMessageExpirationTime @Inject constructor(
-    private val getLocalDraft: GetLocalDraft,
-    private val messageExpirationTimeRepository: MessageExpirationTimeRepository,
-    private val messageRepository: MessageRepository,
-    private val saveDraft: SaveDraft
+    private val messageExpirationTimeRepository: MessageExpirationTimeRepository
 ) {
 
     suspend operator fun invoke(
         userId: UserId,
         messageId: MessageId,
-        senderEmail: SenderEmail,
         expiresIn: Duration
     ): Either<DataError.Local, Unit> = either {
-        val draft = getLocalDraft(userId, messageId, senderEmail)
-            .mapLeft { DataError.Local.NoDataCached }
-            .bind()
-        // Verify that draft exists in db, if not create it
-        val messageWithBody = messageRepository.getLocalMessageWithBody(userId, draft.message.messageId).getOrNull()
-        if (messageWithBody == null) {
-            val success = saveDraft(draft, userId)
-            if (!success) {
-                Timber.d("Failed to save draft")
-                raise(DataError.Local.Unknown)
-            }
-        }
-
-        val messageExpirationTime = MessageExpirationTime(userId, draft.message.messageId, expiresIn)
+        val messageExpirationTime = MessageExpirationTime(userId, messageId, expiresIn)
         messageExpirationTimeRepository.saveMessageExpirationTime(messageExpirationTime).bind()
     }
 }

@@ -22,11 +22,8 @@ import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcomposer.domain.model.MessagePassword
-import ch.protonmail.android.mailcomposer.domain.model.SenderEmail
 import ch.protonmail.android.mailcomposer.domain.repository.MessagePasswordRepository
-import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
-import ch.protonmail.android.mailmessage.domain.sample.MessageWithBodySample
 import ch.protonmail.android.testdata.user.UserIdTestData
 import io.mockk.coEvery
 import io.mockk.every
@@ -41,35 +38,27 @@ class SaveMessagePasswordTest {
 
     private val userId = UserIdTestData.userId
     private val messageId = MessageIdSample.NewDraftWithSubjectAndBody
-    private val senderEmail = SenderEmail("sender@pm.me")
 
-    private val getLocalDraft = mockk<GetLocalDraft>()
     private val keyStoreCrypto = mockk<KeyStoreCrypto>()
     private val messagePasswordRepository = mockk<MessagePasswordRepository>()
-    private val messageRepository = mockk<MessageRepository>()
-    private val saveDraft = mockk<SaveDraft>()
 
     private val saveMessagePassword = SaveMessagePassword(
-        getLocalDraft = getLocalDraft,
         keyStoreCrypto = keyStoreCrypto,
-        messagePasswordRepository = messagePasswordRepository,
-        messageRepository = messageRepository,
-        saveDraft = saveDraft
+        messagePasswordRepository = messagePasswordRepository
     )
 
     @Test
-    fun `should return unit when draft exists and message password is encrypted and stored successfully`() = runTest {
+    fun `should return unit when message password is encrypted and stored successfully`() = runTest {
         // Given
         val password = "password"
         val passwordHint = "password hint"
         val encryptedPassword = "encryptedPassword"
-        expectDraftAlreadyExists()
         every { keyStoreCrypto.encrypt(password) } returns encryptedPassword
         coEvery {
             messagePasswordRepository.saveMessagePassword(
                 MessagePassword(
                     userId,
-                    MessageWithBodySample.EmptyDraft.message.messageId,
+                    messageId,
                     encryptedPassword,
                     passwordHint
                 )
@@ -77,68 +66,10 @@ class SaveMessagePasswordTest {
         } returns Unit.right()
 
         // When
-        val actual = saveMessagePassword(userId, messageId, senderEmail, password, passwordHint)
+        val actual = saveMessagePassword(userId, messageId, password, passwordHint)
 
         // Then
         assertEquals(Unit.right(), actual)
-    }
-
-    @Test
-    fun `should return unit when draft is saved and message password is encrypted and stored successfully`() = runTest {
-        // Given
-        val password = "password"
-        val passwordHint = "password hint"
-        val encryptedPassword = "encryptedPassword"
-        expectDraftDoesNotExist()
-        coEvery { saveDraft(MessageWithBodySample.EmptyDraft, userId) } returns true
-        every { keyStoreCrypto.encrypt(password) } returns encryptedPassword
-        coEvery {
-            messagePasswordRepository.saveMessagePassword(
-                MessagePassword(
-                    userId,
-                    MessageWithBodySample.EmptyDraft.message.messageId,
-                    encryptedPassword,
-                    passwordHint
-                )
-            )
-        } returns Unit.right()
-
-        // When
-        val actual = saveMessagePassword(userId, messageId, senderEmail, password, passwordHint)
-
-        // Then
-        assertEquals(Unit.right(), actual)
-    }
-
-    @Test
-    fun `should return error when getting the local draft has failed `() = runTest {
-        // Given
-        val password = "password"
-        val passwordHint = "password hint"
-        coEvery {
-            getLocalDraft(userId, messageId, senderEmail)
-        } returns GetLocalDraft.Error.ResolveUserAddressError.left()
-
-        // When
-        val actual = saveMessagePassword(userId, messageId, senderEmail, password, passwordHint)
-
-        // Then
-        assertEquals(DataError.Local.NoDataCached.left(), actual)
-    }
-
-    @Test
-    fun `should return error when saving draft has failed`() = runTest {
-        // Given
-        val password = "password"
-        val passwordHint = "password hint"
-        expectDraftDoesNotExist()
-        coEvery { saveDraft(MessageWithBodySample.EmptyDraft, userId) } returns false
-
-        // When
-        val actual = saveMessagePassword(userId, messageId, senderEmail, password, passwordHint)
-
-        // Then
-        assertEquals(DataError.Local.Unknown.left(), actual)
     }
 
     @Test
@@ -146,11 +77,10 @@ class SaveMessagePasswordTest {
         // Given
         val password = "password"
         val passwordHint = "password hint"
-        expectDraftAlreadyExists()
         every { keyStoreCrypto.encrypt(password) } throws CryptoException()
 
         // When
-        val actual = saveMessagePassword(userId, messageId, senderEmail, password, passwordHint)
+        val actual = saveMessagePassword(userId, messageId, password, passwordHint)
 
         // Then
         assertEquals(DataError.Local.EncryptionError.left(), actual)
@@ -162,13 +92,12 @@ class SaveMessagePasswordTest {
         val password = "password"
         val passwordHint = "password hint"
         val encryptedPassword = "encryptedPassword"
-        expectDraftAlreadyExists()
         every { keyStoreCrypto.encrypt(password) } returns encryptedPassword
         coEvery {
             messagePasswordRepository.saveMessagePassword(
                 MessagePassword(
                     userId,
-                    MessageWithBodySample.EmptyDraft.message.messageId,
+                    messageId,
                     encryptedPassword,
                     passwordHint
                 )
@@ -176,7 +105,7 @@ class SaveMessagePasswordTest {
         } returns DataError.Local.Unknown.left()
 
         // When
-        val actual = saveMessagePassword(userId, messageId, senderEmail, password, passwordHint)
+        val actual = saveMessagePassword(userId, messageId, password, passwordHint)
 
         // Then
         assertEquals(DataError.Local.Unknown.left(), actual)
@@ -188,17 +117,16 @@ class SaveMessagePasswordTest {
         val password = "password"
         val passwordHint = "password hint"
         val encryptedPassword = "encryptedPassword"
-        expectDraftAlreadyExists()
         every { keyStoreCrypto.encrypt(password) } returns encryptedPassword
         coEvery {
             messagePasswordRepository.updateMessagePassword(
-                userId, MessageWithBodySample.EmptyDraft.message.messageId, encryptedPassword, passwordHint
+                userId, messageId, encryptedPassword, passwordHint
             )
         } returns Unit.right()
 
         // When
         val actual = saveMessagePassword(
-            userId, messageId, senderEmail, password, passwordHint, SaveMessagePasswordAction.Update
+            userId, messageId, password, passwordHint, SaveMessagePasswordAction.Update
         )
 
         // Then
@@ -211,34 +139,20 @@ class SaveMessagePasswordTest {
         val password = "password"
         val passwordHint = "password hint"
         val encryptedPassword = "encryptedPassword"
-        expectDraftAlreadyExists()
         every { keyStoreCrypto.encrypt(password) } returns encryptedPassword
         coEvery {
             messagePasswordRepository.updateMessagePassword(
-                userId, MessageWithBodySample.EmptyDraft.message.messageId, encryptedPassword, passwordHint
+                userId, messageId, encryptedPassword, passwordHint
             )
         } returns DataError.Local.Unknown.left()
 
         // When
         val actual = saveMessagePassword(
-            userId, messageId, senderEmail, password, passwordHint, SaveMessagePasswordAction.Update
+            userId, messageId, password, passwordHint, SaveMessagePasswordAction.Update
         )
 
         // Then
         assertEquals(DataError.Local.Unknown.left(), actual)
     }
 
-    private fun expectDraftAlreadyExists() {
-        coEvery { getLocalDraft(userId, messageId, senderEmail) } returns MessageWithBodySample.EmptyDraft.right()
-        coEvery {
-            messageRepository.getLocalMessageWithBody(userId, MessageWithBodySample.EmptyDraft.message.messageId)
-        } returns MessageWithBodySample.EmptyDraft.right()
-    }
-
-    private fun expectDraftDoesNotExist() {
-        coEvery { getLocalDraft(userId, messageId, senderEmail) } returns MessageWithBodySample.EmptyDraft.right()
-        coEvery {
-            messageRepository.getLocalMessageWithBody(userId, MessageWithBodySample.EmptyDraft.message.messageId)
-        } returns DataError.Local.NoDataCached.left()
-    }
 }
