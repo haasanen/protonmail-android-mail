@@ -24,6 +24,9 @@
     <string name="retry">Retry</string>
     <string name="toolbar_back_content_description">Back to previous screen</string>
     <string name="x_error_not_logged_in">Not signed in</string>
+    <string name="action_customize_toolbar">Customize toolbar</string>
+    <string name="action_customize_toolbar_description">Customize toolbar</string>
+    <string name="action_customize_toolbar_content_description">Customize toolbar</string>
     <string name="action_reply">Reply</string>
     <string name="action_reply_all">Reply all</string>
     <string name="action_forward">Forward</string>

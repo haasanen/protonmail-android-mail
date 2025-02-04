@@ -307,7 +307,8 @@ fun MailboxScreen(
                         onTrash = { viewModel.submit(MailboxViewAction.Trash) },
                         onDelete = { viewModel.submit(MailboxViewAction.Delete) },
                         onInbox = { viewModel.submit(MailboxViewAction.MoveToInbox) },
-                        onMoveTo = { viewModel.submit(MailboxViewAction.RequestMoveToBottomSheet) }
+                        onMoveTo = { viewModel.submit(MailboxViewAction.RequestMoveToBottomSheet) },
+                        onCustomizeToolbar = { viewModel.submit(MailboxViewAction.CustomizeToolbar) }
                     )
                 )
 
@@ -445,7 +446,8 @@ fun MailboxScreen(
                     onMarkRead = actions.markAsRead,
                     onMarkUnread = actions.markAsUnread,
                     onStar = { Timber.d("mailbox onStar clicked") },
-                    onUnstar = { Timber.d("mailbox onUnstar clicked") }
+                    onUnstar = { Timber.d("mailbox onUnstar clicked") },
+                    onCustomizeToolbar = { Timber.d("mailbox onCustomizeToolbar clicked") }
                 )
             )
         },

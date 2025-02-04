@@ -60,6 +60,7 @@ fun Action.iconDrawable() = when (this) {
     Action.Inbox -> R.drawable.ic_proton_inbox
     Action.Pin -> R.drawable.ic_pin_angled
     Action.Unpin -> R.drawable.ic_pin_angled_slash
+    Action.CustomizeToolbar -> R.drawable.ic_proton_magic_proton_wand
 }
 
 @get:StringRes
@@ -92,6 +93,7 @@ val Action.contentDescriptionRes: Int
         Action.Inbox -> R.string.action_inbox_content_description
         Action.Pin -> R.string.action_pin_content_description
         Action.Unpin -> R.string.action_unpin_content_description
+        Action.CustomizeToolbar -> R.string.action_customize_toolbar_content_description
     }
 
 @SuppressWarnings("ComplexMethod")
@@ -127,6 +129,7 @@ val Action.descriptionRes: Int
         Action.Inbox -> R.string.action_inbox_description
         Action.Pin -> R.string.action_pin_description
         Action.Unpin -> R.string.action_unpin_description
+        Action.CustomizeToolbar -> R.string.action_customize_toolbar_description
     }
 
 fun Action.description() = TextUiModel.TextRes(descriptionRes)

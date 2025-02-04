@@ -45,5 +45,6 @@ enum class Action {
     SaveAttachments,
     Pin,
     Unpin,
+    CustomizeToolbar,
     More
 }

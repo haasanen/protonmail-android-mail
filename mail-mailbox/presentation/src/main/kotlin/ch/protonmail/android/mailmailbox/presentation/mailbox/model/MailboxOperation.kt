@@ -159,6 +159,7 @@ internal sealed interface MailboxViewAction : MailboxOperation {
     data class ShowRatingBooster(val context: Context) : MailboxViewAction
     data class SelectAll(val allItems: List<MailboxItemUiModel>) : MailboxViewAction
     data object DeselectAll : MailboxViewAction
+    object CustomizeToolbar : MailboxViewAction
 }
 
 internal sealed interface MailboxEvent : MailboxOperation {

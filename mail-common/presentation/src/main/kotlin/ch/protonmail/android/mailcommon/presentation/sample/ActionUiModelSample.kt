@@ -48,6 +48,8 @@ object ActionUiModelSample {
 
     val SavePdf: ActionUiModel = build(Action.SavePdf)
 
+    val CustomizeToolbar: ActionUiModel = build(Action.CustomizeToolbar)
+
     fun ReplyTo(recipient: String): ActionUiModel = Reply.copy(
         description = TextUiModel.TextResWithArgs(R.string.action_reply_to_description, listOf(recipient)),
         contentDescription = TextUiModel.TextResWithArgs(R.string.action_reply_to_description, listOf(recipient))

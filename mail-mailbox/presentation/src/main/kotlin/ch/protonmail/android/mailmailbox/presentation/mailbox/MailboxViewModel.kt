@@ -405,8 +405,13 @@ class MailboxViewModel @Inject constructor(
                 is MailboxViewAction.ShowRatingBooster -> showRatingBooster(viewAction)
                 is MailboxViewAction.SelectAll -> handleSelectAllAction(viewAction)
                 is MailboxViewAction.DeselectAll -> handleDeselectAllAction()
+                is MailboxViewAction.CustomizeToolbar -> handleCustomizeToolbar(viewAction)
             }.exhaustive
         }
+    }
+
+    private fun handleCustomizeToolbar(viewAction: MailboxViewAction) {
+        emitNewStateFrom(viewAction)
     }
 
     private fun handleSelectAllAction(action: MailboxViewAction.SelectAll) {

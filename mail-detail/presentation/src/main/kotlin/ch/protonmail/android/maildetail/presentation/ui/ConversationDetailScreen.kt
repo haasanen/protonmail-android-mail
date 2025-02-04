@@ -577,7 +577,8 @@ fun ConversationDetailScreen(
                     onSavePdf = { Timber.d("conversation onSavePdf clicked") },
                     onSenderEmail = { Timber.d("conversation onSenderEmail clicked") },
                     onSaveAttachments = { Timber.d("conversation onSaveAttachments clicked") },
-                    onMore = actions.onMoreActionsClick
+                    onMore = actions.onMoreActionsClick,
+                    onCustomizeToolbar = { Timber.d("conversation onCustomizeToolbar clicked") }
                 )
             )
         }
