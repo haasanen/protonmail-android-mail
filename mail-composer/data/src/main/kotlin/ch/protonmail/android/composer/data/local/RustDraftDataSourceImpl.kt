@@ -22,6 +22,7 @@ import androidx.annotation.VisibleForTesting
 import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
+import ch.protonmail.android.composer.data.mapper.toSingleRecipientEntry
 import ch.protonmail.android.composer.data.mapper.toDraftCreateMode
 import ch.protonmail.android.composer.data.mapper.toLocalDraft
 import ch.protonmail.android.composer.data.usecase.CreateRustDraft
@@ -34,6 +35,7 @@ import ch.protonmail.android.mailcomposer.domain.model.Subject
 import ch.protonmail.android.mailmessage.data.mapper.toLocalMessageId
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.model.MessageId
+import ch.protonmail.android.mailmessage.domain.model.Recipient
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
@@ -110,5 +112,13 @@ class RustDraftDataSourceImpl @Inject constructor(
             is VoidDraftSaveSendResult.Error -> result.v1.toDataError().left()
             VoidDraftSaveSendResult.Ok -> save()
         }
+    }
+
+    override suspend fun saveToRecipient(recipient: Recipient): Either<DataError, Unit> {
+        val rustDraftWrapper: DraftWrapper = rustDraftWrapper
+            ?: return DataError.Local.SaveDraftError.NoRustDraftAvailable.left()
+
+        val recipientsWrapper = rustDraftWrapper.recipientsTo()
+        return recipientsWrapper.addSingleRecipient(recipient.toSingleRecipientEntry())
     }
 }

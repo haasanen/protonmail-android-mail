@@ -52,6 +52,8 @@ sealed interface DataError {
 
         sealed interface SaveDraftError : Local {
             data object NoRustDraftAvailable : SaveDraftError
+            data object DuplicateRecipient : SaveDraftError
+            data object SaveFailed : SaveDraftError
             data object Unknown : SaveDraftError
         }
 

@@ -33,6 +33,7 @@ import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.model.Recipient
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.DraftCreateMode
+import uniffi.proton_mail_uniffi.SingleRecipientEntry
 
 fun LocalDraft.toDraftFields() = DraftFields(
     sender = SenderEmail(this.sender),
@@ -66,6 +67,17 @@ fun DraftAction.toDraftCreateMode(): DraftCreateMode? = when (this) {
         null
     }
 }
+
+fun Recipient.toSingleRecipientEntry() = SingleRecipientEntry(
+    this.name,
+    this.address
+)
+
+fun SingleRecipientEntry.toRecipient() = Recipient(
+    address = this.email,
+    name = this.name ?: this.email,
+    isProton = false
+)
 
 @MissingRustApi
 // Hardcoded values in the mapping
