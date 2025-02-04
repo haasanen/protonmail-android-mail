@@ -17,6 +17,10 @@
   -->
 
 <resources>
+    <plurals name="selected_count_title">
+        <item quantity="one">%d Selected</item>
+        <item quantity="other">%d Selected</item>
+    </plurals>
     <plurals name="attachment_count_label">
         <item quantity="one">%d attachment</item>
         <item quantity="other">%d attachments</item>

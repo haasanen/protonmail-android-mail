@@ -18,18 +18,35 @@
 
 package ch.protonmail.android.mailmessage.presentation.ui.bottomsheet
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.rememberScrollableState
+import androidx.compose.foundation.gestures.scrollable
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.unit.dp
 import ch.protonmail.android.mailcommon.domain.model.Action
 import ch.protonmail.android.mailcommon.presentation.AdaptivePreviews
 import ch.protonmail.android.mailcommon.presentation.NO_CONTENT_DESCRIPTION
@@ -37,9 +54,14 @@ import ch.protonmail.android.mailcommon.presentation.model.string
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MailboxMoreActionsBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.previewdata.MailboxMoreActionBottomSheetPreviewDataProvider
 import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
-import ch.protonmail.android.design.compose.component.ProtonRawListItem
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
+import ch.protonmail.android.design.compose.theme.bodyLargeWeak
+import ch.protonmail.android.design.compose.theme.titleLargeNorm
+import ch.protonmail.android.mailcommon.presentation.model.ActionUiModel
+import ch.protonmail.android.mailmessage.presentation.R
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 
 @Composable
 fun MailboxMoreActionBottomSheetContent(
@@ -61,31 +83,125 @@ fun MailboxMoreActionBottomSheetContent(
     state: MailboxMoreActionsBottomSheetState.Data,
     actionCallbacks: MoreActionBottomSheetContent.Actions
 ) {
-    LazyColumn(modifier = modifier.padding(vertical = ProtonDimens.Spacing.Large)) {
-        items(state.actionUiModels) { actionItem ->
-            ProtonRawListItem(
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .background(ProtonTheme.colors.backgroundInvertedNorm)
+            .padding(ProtonDimens.Spacing.Large)
+    ) {
+        Column(
+            modifier = modifier
+                .fillMaxWidth()
+                .scrollable(
+                    rememberScrollableState(consumeScrollDelta = { 0f }),
+                    orientation = Orientation.Vertical
+                )
+        ) {
+            Text(
                 modifier = Modifier
-                    .testTag(MoreActionsBottomSheetTestTags.ActionItem)
-                    .clickable { callbackForAction(actionItem.action, actionCallbacks).invoke() }
-                    .padding(vertical = ProtonDimens.Spacing.Large)
-            ) {
-                Icon(
-                    modifier = Modifier
-                        .testTag(MoreActionsBottomSheetTestTags.LabelIcon)
-                        .padding(horizontal = ProtonDimens.Spacing.Large),
-                    painter = painterResource(id = actionItem.icon),
-                    contentDescription = NO_CONTENT_DESCRIPTION
+                    .background(ProtonTheme.colors.backgroundInvertedNorm)
+                    .align(Alignment.CenterHorizontally),
+                text = pluralStringResource(
+                    id = R.plurals.selected_count_title,
+                    state.selectedCount,
+                    state.selectedCount
+                ),
+                textAlign = TextAlign.Center,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                style = ProtonTheme.typography.titleLargeNorm,
+                fontWeight = FontWeight.SemiBold
+            )
+            Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Large))
+            ActionGroup(
+                actionUiModels = state.hiddenActionUiModels,
+                actionCallbacks = actionCallbacks
+            )
+            Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Large))
+            ActionGroup(
+                actionUiModels = state.visibleActionUiModels,
+                actionCallbacks = actionCallbacks
+            )
+            Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Large))
+            ActionGroup(
+                actionUiModels = persistentListOf(state.customizeToolbarActionUiModel),
+                actionCallbacks = actionCallbacks
+            )
+        }
+    }
+}
+
+
+@Composable
+private fun ActionGroup(
+    modifier: Modifier = Modifier,
+    actionUiModels: ImmutableList<ActionUiModel>,
+    actionCallbacks: MoreActionBottomSheetContent.Actions
+) {
+    Card(
+        modifier = modifier
+            .fillMaxWidth(),
+        shape = ProtonTheme.shapes.extraLarge,
+        elevation = CardDefaults.cardElevation(),
+        colors = CardDefaults.cardColors().copy(
+            containerColor = ProtonTheme.colors.backgroundInvertedSecondary
+        )
+    ) {
+        Column(modifier = Modifier.fillMaxWidth()) {
+
+            actionUiModels.forEachIndexed { index, action ->
+                ActionGroupItem(
+                    action = action,
+                    onClick = callbackForAction(action.action, actionCallbacks)
                 )
-                Text(
-                    modifier = Modifier
-                        .testTag(LabelAsBottomSheetTestTags.LabelNameText)
-                        .weight(1f),
-                    text = actionItem.description.string(),
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
+
+                if (index < actionUiModels.lastIndex) {
+                    HorizontalDivider(
+                        modifier = Modifier.padding(0.dp),
+                        thickness = 1.dp,
+                        color = ProtonTheme.colors.separatorNorm
+                    )
+                }
             }
         }
+    }
+}
+
+@Composable
+internal fun ActionGroupItem(
+    modifier: Modifier = Modifier,
+    action: ActionUiModel,
+    onClick: () -> Unit
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .clickable(
+                role = Role.Button,
+                onClick = onClick
+            )
+            .padding(
+                vertical = ProtonDimens.Spacing.Large,
+                horizontal = ProtonDimens.Spacing.Large
+            ),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            modifier = Modifier
+                .testTag(MoreActionsBottomSheetTestTags.ActionItem)
+                .padding(end = ProtonDimens.Spacing.Large),
+            painter = painterResource(id = action.icon),
+            contentDescription = NO_CONTENT_DESCRIPTION
+        )
+        Text(
+            modifier = Modifier
+                .testTag(MoreActionsBottomSheetTestTags.LabelIcon)
+                .weight(1f),
+            text = action.description.string(),
+            style = ProtonTheme.typography.bodyLargeWeak,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+        )
     }
 }
 
@@ -102,6 +218,7 @@ private fun callbackForAction(action: Action, actionCallbacks: MoreActionBottomS
         Action.Delete -> actionCallbacks.onDelete
         Action.Move -> actionCallbacks.onMoveTo
         Action.Inbox -> actionCallbacks.onInbox
+        Action.CustomizeToolbar -> actionCallbacks.onCustomizeToolbar
         else -> {
             {}
         }
@@ -120,7 +237,8 @@ object MoreActionBottomSheetContent {
         val onTrash: () -> Unit,
         val onDelete: () -> Unit,
         val onMoveTo: () -> Unit,
-        val onInbox: () -> Unit
+        val onInbox: () -> Unit,
+        val onCustomizeToolbar: () -> Unit
     ) {
 
         companion object {
@@ -136,7 +254,8 @@ object MoreActionBottomSheetContent {
                 onTrash = {},
                 onDelete = {},
                 onMoveTo = {},
-                onInbox = {}
+                onInbox = {},
+                onCustomizeToolbar = {}
             )
         }
     }

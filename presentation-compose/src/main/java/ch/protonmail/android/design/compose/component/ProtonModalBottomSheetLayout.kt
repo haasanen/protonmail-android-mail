@@ -55,7 +55,7 @@ fun ProtonModalBottomSheetLayout(
                 },
                 sheetState = sheetState,
                 shape = ProtonTheme.shapes.bottomSheet,
-                containerColor = ProtonTheme.colors.backgroundNorm,
+                containerColor = ProtonTheme.colors.backgroundInvertedNorm,
                 contentColor = ProtonTheme.colors.textNorm,
                 content = sheetContent,
                 properties = ModalBottomSheetProperties(shouldDismissOnBackPress = dismissOnBack)
