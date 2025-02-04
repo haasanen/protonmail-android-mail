@@ -49,6 +49,7 @@ class MessageMailboxItemMapper @Inject constructor() : Mapper<Message, MailboxIt
         calendarAttachmentCount = message.attachmentCount.calendar,
         avatarInformation = message.avatarInformation,
         exclusiveLocation = message.exclusiveLocation,
-        attachments = message.attachments.filter { it.isCalendarAttachment().not() }
+        attachments = message.attachments.filter { it.isCalendarAttachment().not() },
+        isDraft = message.isDraft
     )
 }

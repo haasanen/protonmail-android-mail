@@ -98,7 +98,8 @@ object MailboxTestData {
         calendarAttachmentCount = calendarAttachmentCount,
         avatarInformation = AvatarInformationSample.avatarSample,
         exclusiveLocation = exclusiveLocation,
-        attachments = attachments
+        attachments = attachments,
+        isDraft = false
     )
 
     private fun buildMessageMailboxItem(
@@ -133,7 +134,8 @@ object MailboxTestData {
         calendarAttachmentCount = 0,
         avatarInformation = AvatarInformationSample.avatarSample,
         exclusiveLocation = exclusiveLocation,
-        attachments = attachments
+        attachments = attachments,
+        isDraft = false
     )
 
     private fun buildConversationMailboxItem(id: String) = MailboxItem(
@@ -158,7 +160,8 @@ object MailboxTestData {
         calendarAttachmentCount = 0,
         avatarInformation = AvatarInformationSample.avatarSample,
         exclusiveLocation = ExclusiveLocation.System(SystemLabelId.Inbox, LabelId("1")),
-        attachments = emptyList()
+        attachments = emptyList(),
+        isDraft = false
     )
 
 }

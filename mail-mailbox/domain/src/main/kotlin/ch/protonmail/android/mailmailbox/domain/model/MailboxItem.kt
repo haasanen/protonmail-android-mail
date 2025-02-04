@@ -20,8 +20,8 @@ package ch.protonmail.android.mailmailbox.domain.model
 
 import ch.protonmail.android.mailcommon.domain.model.AvatarInformation
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
-import ch.protonmail.android.maillabel.domain.model.Label
 import ch.protonmail.android.maillabel.domain.model.ExclusiveLocation
+import ch.protonmail.android.maillabel.domain.model.Label
 import ch.protonmail.android.mailmessage.domain.model.AttachmentMetadata
 import ch.protonmail.android.mailmessage.domain.model.Recipient
 import ch.protonmail.android.mailmessage.domain.model.Sender
@@ -59,7 +59,8 @@ data class MailboxItem(
     val calendarAttachmentCount: Int,
     val avatarInformation: AvatarInformation,
     val exclusiveLocation: ExclusiveLocation,
-    val attachments: List<AttachmentMetadata>
+    val attachments: List<AttachmentMetadata>,
+    val isDraft: Boolean
 )
 
 fun ViewMode.toMailboxItemType() = when (this) {

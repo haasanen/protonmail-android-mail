@@ -24,10 +24,8 @@ import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.presentation.mapper.ColorMapper
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcommon.presentation.usecase.FormatShortTime
-import ch.protonmail.android.maillabel.domain.model.ExclusiveLocation
 import ch.protonmail.android.maillabel.domain.model.Label
 import ch.protonmail.android.maillabel.domain.model.LabelType
-import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.maillabel.presentation.model.LabelUiModel
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItem
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItemType
@@ -86,15 +84,9 @@ class MailboxItemUiModelMapper @Inject constructor(
             locations = getLocationIconsToDisplay(userId, mailboxItem, folderColorSettings, isShowingSearchResults),
             expiryInformation = expiryInformationUiModelMapper.toUiModel(mailboxItem.expirationTime),
             shouldShowCalendarIcon = hasCalendarAttachment(mailboxItem),
-            shouldOpenInComposer = mailboxItem.exclusiveLocation.isDraft(),
+            shouldOpenInComposer = mailboxItem.isDraft,
             attachments = mailboxItem.attachments.map(attachmentMetadataUiModelMapper::toUiModel).toImmutableList()
         )
-    }
-
-    private fun ExclusiveLocation.isDraft() = when (this) {
-        is ExclusiveLocation.Folder,
-        ExclusiveLocation.NoLocation -> false
-        is ExclusiveLocation.System -> this.systemLabelId == SystemLabelId.Drafts
     }
 
     private suspend fun getLocationIconsToDisplay(
