@@ -219,6 +219,7 @@ object MessageTestData {
         customLabels = customLabels,
         avatarInformation = AvatarInformationSample.avatarSample,
         exclusiveLocation = exclusiveLocation,
-        attachments = attachments
+        attachments = attachments,
+        isDraft = false
     )
 }

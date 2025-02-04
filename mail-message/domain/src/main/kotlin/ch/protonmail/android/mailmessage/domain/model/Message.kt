@@ -59,7 +59,8 @@ data class Message(
     val attachments: List<AttachmentMetadata>,
     val customLabels: List<Label>,
     val avatarInformation: AvatarInformation,
-    val exclusiveLocation: ExclusiveLocation
+    val exclusiveLocation: ExclusiveLocation,
+    val isDraft: Boolean
 ) {
     val allRecipients = toList + ccList + bccList
     val allRecipientsDeduplicated = allRecipients.toSet()
