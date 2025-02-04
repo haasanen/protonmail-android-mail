@@ -20,43 +20,35 @@ package ch.protonmail.android.mailcomposer.domain.usecase
 
 import arrow.core.Either
 import arrow.core.raise.either
-import ch.protonmail.android.mailcommon.domain.util.mapFalse
-import ch.protonmail.android.mailcomposer.domain.model.SenderEmail
+import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailcomposer.domain.repository.DraftRepository
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.Recipient
 import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 
 class StoreDraftWithRecipients @Inject constructor(
-    private val getLocalDraft: GetLocalDraft,
-    private val saveDraft: SaveDraft
+    private val draftRepository: DraftRepository
 ) {
     suspend operator fun invoke(
         userId: UserId,
         messageId: MessageId,
-        senderEmail: SenderEmail,
         to: List<Recipient>? = null,
         cc: List<Recipient>? = null,
         bcc: List<Recipient>? = null
-    ): Either<Error, Unit> = either {
-        val draftWithBody = getLocalDraft(userId, messageId, senderEmail)
-            .mapLeft { Error.DraftReadError }
-            .bind()
-
-        val updatedDraft = draftWithBody.copy(
-            message = draftWithBody.message.copy(
-                toList = to ?: draftWithBody.message.toList,
-                ccList = cc ?: draftWithBody.message.ccList,
-                bccList = bcc ?: draftWithBody.message.bccList
-            )
-        )
-        saveDraft(updatedDraft, userId)
-            .mapFalse { Error.DraftSaveError }
-            .bind()
+    ): Either<DataError, Unit> = either {
+        to?.forEach { toRecipient ->
+            draftRepository.saveToRecipient(userId, messageId, toRecipient)
+                .onLeft { raise(it) }
+        }
+        cc?.forEach { ccRecipient ->
+            draftRepository.saveCcRecipient(userId, messageId, ccRecipient)
+                .onLeft { raise(it) }
+        }
+        bcc?.forEach { bccRecipient ->
+            draftRepository.saveBccRecipient(userId, messageId, bccRecipient)
+                .onLeft { raise(it) }
+        }
     }
 
-    sealed interface Error {
-        object DraftSaveError : Error
-        object DraftReadError : Error
-    }
 }

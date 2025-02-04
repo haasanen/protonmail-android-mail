@@ -40,16 +40,13 @@ class StoreDraftWithAllFields @Inject constructor(
     ) = withContext(NonCancellable) {
         storeDraftWithBody(userId, draftMessageId, fields.body).logError(draftMessageId)
         storeDraftWithSubject(userId, draftMessageId, fields.subject).logError(draftMessageId)
-
-        // Not yet integrated with rust lib
-//        storeDraftWithRecipients(
-//            userId,
-//            draftMessageId,
-//            fields.sender,
-//            fields.recipientsTo.value,
-//            fields.recipientsCc.value,
-//            fields.recipientsBcc.value
-//        ).logError(draftMessageId)
+        storeDraftWithRecipients(
+            userId,
+            draftMessageId,
+            fields.recipientsTo.value,
+            fields.recipientsCc.value,
+            fields.recipientsBcc.value
+        ).logError(draftMessageId)
 
         Timber.d("Draft: finished storing draft locally $draftMessageId")
     }

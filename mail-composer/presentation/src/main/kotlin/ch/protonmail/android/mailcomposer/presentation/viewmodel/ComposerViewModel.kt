@@ -615,7 +615,6 @@ class ComposerViewModel @Inject constructor(
             storeDraftWithRecipients(
                 primaryUserId(),
                 currentMessageId(),
-                currentSenderEmail(),
                 to = validRecipients.map { participantMapper.recipientUiModelToParticipant(it, contacts) }
             ).fold(
                 ifLeft = { ComposerEvent.ErrorStoringDraftRecipients },
@@ -631,7 +630,6 @@ class ComposerViewModel @Inject constructor(
             storeDraftWithRecipients(
                 primaryUserId(),
                 currentMessageId(),
-                currentSenderEmail(),
                 cc = validRecipients.map { participantMapper.recipientUiModelToParticipant(it, contacts) }
             ).fold(
                 ifLeft = { ComposerEvent.ErrorStoringDraftRecipients },
@@ -647,7 +645,6 @@ class ComposerViewModel @Inject constructor(
             storeDraftWithRecipients(
                 primaryUserId(),
                 currentMessageId(),
-                currentSenderEmail(),
                 bcc = validRecipients.map { participantMapper.recipientUiModelToParticipant(it, contacts) }
             ).fold(
                 ifLeft = { ComposerEvent.ErrorStoringDraftRecipients },

@@ -20,159 +20,115 @@ package ch.protonmail.android.mailcomposer.domain.usecase
 
 import arrow.core.left
 import arrow.core.right
-import ch.protonmail.android.mailcommon.domain.sample.UserAddressSample
+import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
-import ch.protonmail.android.mailcomposer.domain.model.SenderEmail
-import ch.protonmail.android.mailmessage.domain.model.MessageId
-import ch.protonmail.android.mailmessage.domain.model.MessageWithBody
+import ch.protonmail.android.mailcomposer.domain.repository.DraftRepository
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
-import ch.protonmail.android.mailmessage.domain.sample.MessageWithBodySample
 import ch.protonmail.android.mailmessage.domain.sample.RecipientSample
-import io.mockk.Called
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import me.proton.core.domain.entity.UserId
 import org.junit.Test
 import kotlin.test.assertEquals
 
 class StoreDraftWithRecipientsTest {
 
-    private val saveDraftMock = mockk<SaveDraft>()
-    private val getLocalDraftMock = mockk<GetLocalDraft>()
-    private val storeDraftWithRecipients = StoreDraftWithRecipients(
-        getLocalDraftMock,
-        saveDraftMock
-    )
+
+    private val draftRepository = mockk<DraftRepository>()
+
+    private val storeDraftWithRecipients = StoreDraftWithRecipients(draftRepository)
 
     @Test
-    fun `save draft with recipients TO`() = runTest {
+    fun `save draft with TO recipient`() = runTest {
         // Given
         val userId = UserIdSample.Primary
-        val draftMessageId = MessageIdSample.build()
-        val senderEmail = SenderEmail(UserAddressSample.PrimaryAddress.email)
-        val to = listOf(RecipientSample.John, RecipientSample.Doe)
-        val draftWithBody = expectedGetLocalDraft(userId, draftMessageId, senderEmail) {
-            MessageWithBodySample.EmptyDraft
-        }
-        val expectedSavedDraft = draftWithBody.copy(message = draftWithBody.message.copy(toList = to))
-        givenSaveDraftSucceeds(expectedSavedDraft, userId)
+        val messageId = MessageIdSample.build()
+        val recipient = RecipientSample.Bob
+        coEvery { draftRepository.saveToRecipient(userId, messageId, recipient) } returns Unit.right()
 
         // When
-        val actualEither = storeDraftWithRecipients(userId, draftMessageId, senderEmail, to = to)
+        val actualEither = storeDraftWithRecipients(userId, messageId, to = listOf(recipient))
 
         // Then
-        coVerify { saveDraftMock(expectedSavedDraft, userId) }
+        coVerify { draftRepository.saveToRecipient(userId, messageId, recipient) }
         assertEquals(Unit.right(), actualEither)
     }
 
     @Test
-    fun `save draft with recipients CC`() = runTest {
+    fun `returns error when save draft with TO recipient fails`() = runTest {
         // Given
         val userId = UserIdSample.Primary
-        val draftMessageId = MessageIdSample.build()
-        val senderEmail = SenderEmail(UserAddressSample.PrimaryAddress.email)
-        val cc = listOf(RecipientSample.John, RecipientSample.Doe)
-        val draftWithBody = expectedGetLocalDraft(userId, draftMessageId, senderEmail) {
-            MessageWithBodySample.EmptyDraft
-        }
-        val expectedSavedDraft = draftWithBody.copy(message = draftWithBody.message.copy(ccList = cc))
-        givenSaveDraftSucceeds(expectedSavedDraft, userId)
-
+        val messageId = MessageIdSample.build()
+        val recipient = RecipientSample.Bob
+        val expected = DataError.Local.SaveDraftError.DuplicateRecipient
+        coEvery { draftRepository.saveToRecipient(userId, messageId, recipient) } returns expected.left()
         // When
-        val actualEither = storeDraftWithRecipients(userId, draftMessageId, senderEmail, cc = cc)
+        val actualEither = storeDraftWithRecipients(userId, messageId, to = listOf(recipient))
 
         // Then
-        coVerify { saveDraftMock(expectedSavedDraft, userId) }
+        assertEquals(expected.left(), actualEither)
+    }
+
+    @Test
+    fun `save draft with CC recipient`() = runTest {
+        // Given
+        val userId = UserIdSample.Primary
+        val messageId = MessageIdSample.build()
+        val recipient = RecipientSample.Alice
+        coEvery { draftRepository.saveCcRecipient(userId, messageId, recipient) } returns Unit.right()
+
+        // When
+        val actualEither = storeDraftWithRecipients(userId, messageId, cc = listOf(recipient))
+
+        // Then
+        coVerify { draftRepository.saveCcRecipient(userId, messageId, recipient) }
         assertEquals(Unit.right(), actualEither)
     }
 
     @Test
-    fun `save draft with recipients BCC`() = runTest {
+    fun `returns error when save draft with CC recipient fails`() = runTest {
         // Given
         val userId = UserIdSample.Primary
-        val draftMessageId = MessageIdSample.build()
-        val senderEmail = SenderEmail(UserAddressSample.PrimaryAddress.email)
-        val bcc = listOf(RecipientSample.John, RecipientSample.Doe)
-        val draftWithBody = expectedGetLocalDraft(userId, draftMessageId, senderEmail) {
-            MessageWithBodySample.EmptyDraft
-        }
-        val expectedSavedDraft = draftWithBody.copy(message = draftWithBody.message.copy(bccList = bcc))
-        givenSaveDraftSucceeds(expectedSavedDraft, userId)
-
+        val messageId = MessageIdSample.build()
+        val recipient = RecipientSample.Alice
+        val expected = DataError.Local.SaveDraftError.SaveFailed
+        coEvery { draftRepository.saveCcRecipient(userId, messageId, recipient) } returns expected.left()
         // When
-        val actualEither = storeDraftWithRecipients(userId, draftMessageId, senderEmail, bcc = bcc)
+        val actualEither = storeDraftWithRecipients(userId, messageId, cc = listOf(recipient))
 
         // Then
-        coVerify { saveDraftMock(expectedSavedDraft, userId) }
+        assertEquals(expected.left(), actualEither)
+    }
+
+    @Test
+    fun `save draft with BCC recipient`() = runTest {
+        // Given
+        val userId = UserIdSample.Primary
+        val messageId = MessageIdSample.build()
+        val recipient = RecipientSample.Doe
+        coEvery { draftRepository.saveBccRecipient(userId, messageId, recipient) } returns Unit.right()
+
+        // When
+        val actualEither = storeDraftWithRecipients(userId, messageId, bcc = listOf(recipient))
+
+        // Then
+        coVerify { draftRepository.saveBccRecipient(userId, messageId, recipient) }
         assertEquals(Unit.right(), actualEither)
     }
 
-
     @Test
-    fun `returns error when get local draft fails`() = runTest {
+    fun `returns error when save draft with BCC recipient fails`() = runTest {
         // Given
         val userId = UserIdSample.Primary
-        val draftMessageId = MessageIdSample.build()
-        val senderEmail = SenderEmail(UserAddressSample.PrimaryAddress.email)
-        val to = listOf(RecipientSample.John, RecipientSample.Doe)
-        expectedGetLocalDraftFails(userId, draftMessageId, senderEmail) {
-            GetLocalDraft.Error.ResolveUserAddressError
-        }
-
+        val messageId = MessageIdSample.build()
+        val recipient = RecipientSample.Doe
+        val expected = DataError.Local.SaveDraftError.SaveFailed
+        coEvery { draftRepository.saveBccRecipient(userId, messageId, recipient) } returns expected.left()
         // When
-        val actualEither = storeDraftWithRecipients(userId, draftMessageId, senderEmail, to = to)
+        val actualEither = storeDraftWithRecipients(userId, messageId, bcc = listOf(recipient))
 
         // Then
-        coVerify { saveDraftMock wasNot Called }
-        assertEquals(StoreDraftWithRecipients.Error.DraftReadError.left(), actualEither)
+        assertEquals(expected.left(), actualEither)
     }
-
-    @Test
-    fun `returns error when save draft fails`() = runTest {
-        // Given
-        val userId = UserIdSample.Primary
-        val draftMessageId = MessageIdSample.build()
-        val senderEmail = SenderEmail(UserAddressSample.PrimaryAddress.email)
-        val to = listOf(RecipientSample.John, RecipientSample.Doe)
-        val draftWithBody = expectedGetLocalDraft(userId, draftMessageId, senderEmail) {
-            MessageWithBodySample.EmptyDraft
-        }
-        val expectedSavedDraft = draftWithBody.copy(message = draftWithBody.message.copy(toList = to))
-        givenSaveDraftFails(expectedSavedDraft, userId)
-
-        // When
-        val actualEither = storeDraftWithRecipients(userId, draftMessageId, senderEmail, to = to)
-
-        // Then
-        assertEquals(StoreDraftWithRecipients.Error.DraftSaveError.left(), actualEither)
-    }
-
-    private fun expectedGetLocalDraft(
-        userId: UserId,
-        messageId: MessageId,
-        senderEmail: SenderEmail,
-        localDraft: () -> MessageWithBody
-    ): MessageWithBody = localDraft().also {
-        coEvery { getLocalDraftMock.invoke(userId, messageId, senderEmail) } returns it.right()
-    }
-
-    private fun expectedGetLocalDraftFails(
-        userId: UserId,
-        messageId: MessageId,
-        senderEmail: SenderEmail,
-        error: () -> GetLocalDraft.Error
-    ): GetLocalDraft.Error = error().also {
-        coEvery { getLocalDraftMock.invoke(userId, messageId, senderEmail) } returns it.left()
-    }
-
-    private fun givenSaveDraftSucceeds(messageWithBody: MessageWithBody, userId: UserId) {
-        coEvery { saveDraftMock(messageWithBody, userId) } returns true
-    }
-
-    private fun givenSaveDraftFails(messageWithBody: MessageWithBody, userId: UserId) {
-        coEvery { saveDraftMock(messageWithBody, userId) } returns false
-    }
-
 }
