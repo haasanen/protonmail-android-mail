@@ -22,9 +22,9 @@ import androidx.annotation.VisibleForTesting
 import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
-import ch.protonmail.android.composer.data.mapper.toSingleRecipientEntry
 import ch.protonmail.android.composer.data.mapper.toDraftCreateMode
 import ch.protonmail.android.composer.data.mapper.toLocalDraft
+import ch.protonmail.android.composer.data.mapper.toSingleRecipientEntry
 import ch.protonmail.android.composer.data.usecase.CreateRustDraft
 import ch.protonmail.android.composer.data.usecase.OpenRustDraft
 import ch.protonmail.android.composer.data.wrapper.DraftWrapper
@@ -84,41 +84,38 @@ class RustDraftDataSourceImpl @Inject constructor(
             .map { it.toLocalDraft() }
     }
 
-    override suspend fun save(): Either<DataError, Unit> {
-        val rustDraftWrapper: DraftWrapper = rustDraftWrapper
-            ?: return DataError.Local.SaveDraftError.NoRustDraftAvailable.left()
-
-        return when (val result = rustDraftWrapper.save()) {
+    override suspend fun save(): Either<DataError, Unit> = withValidRustDraftWrapper {
+        return@withValidRustDraftWrapper when (val result = it.save()) {
             is VoidDraftSaveSendResult.Error -> result.v1.toDataError().left()
             VoidDraftSaveSendResult.Ok -> Unit.right()
         }
     }
 
-    override suspend fun saveSubject(subject: Subject): Either<DataError, Unit> {
-        val rustDraftWrapper: DraftWrapper = rustDraftWrapper
-            ?: return DataError.Local.SaveDraftError.NoRustDraftAvailable.left()
-
-        return when (val result = rustDraftWrapper.setSubject(subject.value)) {
+    override suspend fun saveSubject(subject: Subject): Either<DataError, Unit> = withValidRustDraftWrapper {
+        return@withValidRustDraftWrapper when (val result = it.setSubject(subject.value)) {
             is VoidDraftSaveSendResult.Error -> result.v1.toDataError().left()
             VoidDraftSaveSendResult.Ok -> save()
         }
     }
 
-    override suspend fun saveBody(body: DraftBody): Either<DataError, Unit> {
-        val rustDraftWrapper: DraftWrapper = rustDraftWrapper
-            ?: return DataError.Local.SaveDraftError.NoRustDraftAvailable.left()
-
-        return when (val result = rustDraftWrapper.setBody(body.value)) {
+    override suspend fun saveBody(body: DraftBody): Either<DataError, Unit> = withValidRustDraftWrapper {
+        return@withValidRustDraftWrapper when (val result = it.setBody(body.value)) {
             is VoidDraftSaveSendResult.Error -> result.v1.toDataError().left()
             VoidDraftSaveSendResult.Ok -> save()
         }
     }
 
-    override suspend fun saveToRecipient(recipient: Recipient): Either<DataError, Unit> {
+    override suspend fun saveToRecipient(recipient: Recipient): Either<DataError, Unit> = withValidRustDraftWrapper {
+        val recipientsWrapper = it.recipientsTo()
+        return@withValidRustDraftWrapper recipientsWrapper.addSingleRecipient(recipient.toSingleRecipientEntry())
+    }
+
+    private suspend fun withValidRustDraftWrapper(
+        closure: suspend (DraftWrapper) -> Either<DataError, Unit>
+    ): Either<DataError, Unit> {
         val rustDraftWrapper: DraftWrapper = rustDraftWrapper
             ?: return DataError.Local.SaveDraftError.NoRustDraftAvailable.left()
 
-        val recipientsWrapper = rustDraftWrapper.recipientsTo()
-        return recipientsWrapper.addSingleRecipient(recipient.toSingleRecipientEntry())
+        return closure(rustDraftWrapper)
     }
 }

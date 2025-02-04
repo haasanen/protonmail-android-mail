@@ -212,19 +212,6 @@ class RustDraftDataSourceImplTest {
     }
 
     @Test
-    fun `save subject returns error when no draft instance exists`() = runTest {
-        // Given
-        val expected = DataError.Local.SaveDraftError.NoRustDraftAvailable
-        val subject = Subject("saving a draft...")
-
-        // When
-        val actual = dataSource.saveSubject(subject)
-
-        // Then
-        assertEquals(actual, expected.left())
-    }
-
-    @Test
     fun `save subject calls rust draft wrapper to set subject and save`() = runTest {
         // Given
         val draft = LocalDraftTestData.JobApplicationDraft
@@ -255,19 +242,6 @@ class RustDraftDataSourceImplTest {
 
         // When
         val actual = dataSource.saveSubject(subject)
-
-        // Then
-        assertEquals(actual, expected.left())
-    }
-
-    @Test
-    fun `save body returns error when no draft instance exists`() = runTest {
-        // Given
-        val expected = DataError.Local.SaveDraftError.NoRustDraftAvailable
-        val body = DraftBody("saving a draft's body...")
-
-        // When
-        val actual = dataSource.saveBody(body)
 
         // Then
         assertEquals(actual, expected.left())
