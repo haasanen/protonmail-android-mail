@@ -37,4 +37,6 @@ interface RustDraftDataSource {
     suspend fun saveSubject(subject: Subject): Either<DataError, Unit>
     suspend fun saveBody(body: DraftBody): Either<DataError, Unit>
     suspend fun saveToRecipient(recipient: Recipient): Either<DataError, Unit>
+    suspend fun saveCcRecipient(recipient: Recipient): Either<DataError, Unit>
+    suspend fun saveBccRecipient(recipient: Recipient): Either<DataError, Unit>
 }

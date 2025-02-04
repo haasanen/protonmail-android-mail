@@ -110,6 +110,16 @@ class RustDraftDataSourceImpl @Inject constructor(
         return@withValidRustDraftWrapper recipientsWrapper.addSingleRecipient(recipient.toSingleRecipientEntry())
     }
 
+    override suspend fun saveCcRecipient(recipient: Recipient): Either<DataError, Unit> = withValidRustDraftWrapper {
+        val recipientsWrapper = it.recipientsCc()
+        return@withValidRustDraftWrapper recipientsWrapper.addSingleRecipient(recipient.toSingleRecipientEntry())
+    }
+
+    override suspend fun saveBccRecipient(recipient: Recipient): Either<DataError, Unit> = withValidRustDraftWrapper {
+        val recipientsWrapper = it.recipientsBcc()
+        return@withValidRustDraftWrapper recipientsWrapper.addSingleRecipient(recipient.toSingleRecipientEntry())
+    }
+
     private suspend fun withValidRustDraftWrapper(
         closure: suspend (DraftWrapper) -> Either<DataError, Unit>
     ): Either<DataError, Unit> {
