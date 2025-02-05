@@ -19,48 +19,33 @@
 package ch.protonmail.android.mailmessage.presentation.ui.bottomsheet
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.rememberScrollableState
 import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
-import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewParameter
-import androidx.compose.ui.unit.dp
 import ch.protonmail.android.mailcommon.domain.model.Action
 import ch.protonmail.android.mailcommon.presentation.AdaptivePreviews
-import ch.protonmail.android.mailcommon.presentation.NO_CONTENT_DESCRIPTION
-import ch.protonmail.android.mailcommon.presentation.model.string
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MailboxMoreActionsBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.previewdata.MailboxMoreActionBottomSheetPreviewDataProvider
 import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.bodyLargeWeak
 import ch.protonmail.android.design.compose.theme.titleLargeNorm
-import ch.protonmail.android.mailcommon.presentation.model.ActionUiModel
 import ch.protonmail.android.mailmessage.presentation.R
-import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 
 @Composable
@@ -115,93 +100,25 @@ fun MailboxMoreActionBottomSheetContent(
             Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Large))
             ActionGroup(
                 actionUiModels = state.hiddenActionUiModels,
-                actionCallbacks = actionCallbacks
+                onActionClicked = { action ->
+                    callbackForAction(action.action, actionCallbacks)
+                }
             )
             Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Large))
             ActionGroup(
                 actionUiModels = state.visibleActionUiModels,
-                actionCallbacks = actionCallbacks
+                onActionClicked = { action ->
+                    callbackForAction(action.action, actionCallbacks)
+                }
             )
             Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Large))
             ActionGroup(
                 actionUiModels = persistentListOf(state.customizeToolbarActionUiModel),
-                actionCallbacks = actionCallbacks
-            )
-        }
-    }
-}
-
-
-@Composable
-private fun ActionGroup(
-    modifier: Modifier = Modifier,
-    actionUiModels: ImmutableList<ActionUiModel>,
-    actionCallbacks: MoreActionBottomSheetContent.Actions
-) {
-    Card(
-        modifier = modifier
-            .fillMaxWidth(),
-        shape = ProtonTheme.shapes.extraLarge,
-        elevation = CardDefaults.cardElevation(),
-        colors = CardDefaults.cardColors().copy(
-            containerColor = ProtonTheme.colors.backgroundInvertedSecondary
-        )
-    ) {
-        Column(modifier = Modifier.fillMaxWidth()) {
-
-            actionUiModels.forEachIndexed { index, action ->
-                ActionGroupItem(
-                    action = action,
-                    onClick = callbackForAction(action.action, actionCallbacks)
-                )
-
-                if (index < actionUiModels.lastIndex) {
-                    HorizontalDivider(
-                        modifier = Modifier.padding(0.dp),
-                        thickness = 1.dp,
-                        color = ProtonTheme.colors.separatorNorm
-                    )
+                onActionClicked = { action ->
+                    callbackForAction(action.action, actionCallbacks)
                 }
-            }
-        }
-    }
-}
-
-@Composable
-internal fun ActionGroupItem(
-    modifier: Modifier = Modifier,
-    action: ActionUiModel,
-    onClick: () -> Unit
-) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .clickable(
-                role = Role.Button,
-                onClick = onClick
             )
-            .padding(
-                vertical = ProtonDimens.Spacing.Large,
-                horizontal = ProtonDimens.Spacing.Large
-            ),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Icon(
-            modifier = Modifier
-                .testTag(MoreActionsBottomSheetTestTags.ActionItem)
-                .padding(end = ProtonDimens.Spacing.Large),
-            painter = painterResource(id = action.icon),
-            contentDescription = NO_CONTENT_DESCRIPTION
-        )
-        Text(
-            modifier = Modifier
-                .testTag(MoreActionsBottomSheetTestTags.LabelIcon)
-                .weight(1f),
-            text = action.description.string(),
-            style = ProtonTheme.typography.bodyLargeWeak,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis
-        )
+        }
     }
 }
 
