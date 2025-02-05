@@ -35,6 +35,14 @@ object LocalDraftTestData {
         recipientsCc = emptyList(),
         recipientsBcc = emptyList()
     )
+    val JobApplicationDraftWithRecipients = buildExpectedLocalDraftFields(
+        expectedSubject = "Application for some role",
+        expectedSenderEmail = "anyone@proton.me",
+        expectedDraftBody = "Hello, hire me",
+        recipientsTo = listOf(RecipientSample.Alice.address),
+        recipientsCc = listOf(RecipientSample.Bob.address),
+        recipientsBcc = listOf(RecipientSample.Billing.address, RecipientSample.Doe.address)
+    )
 
     private fun buildExpectedLocalDraftFields(
         expectedSubject: String = "Subject for the message",

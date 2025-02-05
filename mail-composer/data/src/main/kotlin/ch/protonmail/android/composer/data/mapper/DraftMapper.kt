@@ -20,6 +20,7 @@ package ch.protonmail.android.composer.data.mapper
 
 import ch.protonmail.android.composer.data.local.LocalDraft
 import ch.protonmail.android.composer.data.wrapper.DraftWrapper
+import ch.protonmail.android.mailcommon.datarust.mapper.LocalComposerRecipient
 import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.DraftFields
@@ -32,6 +33,7 @@ import ch.protonmail.android.mailmessage.data.mapper.toLocalMessageId
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.model.Recipient
 import timber.log.Timber
+import uniffi.proton_mail_uniffi.ComposerRecipient
 import uniffi.proton_mail_uniffi.DraftCreateMode
 import uniffi.proton_mail_uniffi.SingleRecipientEntry
 
@@ -45,15 +47,13 @@ fun LocalDraft.toDraftFields() = DraftFields(
     originalHtmlQuote = null
 )
 
-@MissingRustApi
-// Recipients (single + groups) to be mapped to objects we own from wrapper, to allow mocking
 fun DraftWrapper.toLocalDraft() = LocalDraft(
     subject = this.subject(),
     sender = this.sender(),
     body = this.body(),
-    recipientsTo = emptyList(),
-    recipientsCc = emptyList(),
-    recipientsBcc = emptyList()
+    recipientsTo = this.recipientsTo().recipients().toComposerRecipients(),
+    recipientsCc = this.recipientsCc().recipients().toComposerRecipients(),
+    recipientsBcc = this.recipientsBcc().recipients().toComposerRecipients()
 )
 
 fun DraftAction.toDraftCreateMode(): DraftCreateMode? = when (this) {
@@ -68,15 +68,16 @@ fun DraftAction.toDraftCreateMode(): DraftCreateMode? = when (this) {
     }
 }
 
+private fun List<LocalComposerRecipient>.toComposerRecipients(): List<String> = this.map { localRecipient ->
+    when (localRecipient) {
+        is ComposerRecipient.Group -> localRecipient.v1.displayName
+        is ComposerRecipient.Single -> localRecipient.v1.address
+    }
+}
+
 fun Recipient.toSingleRecipientEntry() = SingleRecipientEntry(
     this.name,
     this.address
-)
-
-fun SingleRecipientEntry.toRecipient() = Recipient(
-    address = this.email,
-    name = this.name ?: this.email,
-    isProton = false
 )
 
 @MissingRustApi

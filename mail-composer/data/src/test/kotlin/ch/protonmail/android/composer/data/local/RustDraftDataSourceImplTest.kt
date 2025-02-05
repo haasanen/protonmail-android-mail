@@ -17,6 +17,7 @@ import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
 import ch.protonmail.android.mailmessage.domain.sample.RecipientSample
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
+import ch.protonmail.android.testdata.composer.LocalComposerRecipientTestData
 import ch.protonmail.android.testdata.composer.LocalDraftTestData
 import io.mockk.coEvery
 import io.mockk.every
@@ -65,8 +66,23 @@ class RustDraftDataSourceImplTest {
         val userId = UserIdSample.Primary
         val messageId = MessageIdSample.RustJobApplication
         val localMessageId = MessageIdSample.RustJobApplication.toLocalMessageId()
-        val expected = LocalDraftTestData.JobApplicationDraft
-        val expectedDraftWrapper = expectDraftWrapperReturns(expected.subject, expected.sender, expected.body)
+        val expected = LocalDraftTestData.JobApplicationDraftWithRecipients
+        val toRecipientsWrapperMock = mockk<ComposerRecipientListWrapper>()
+        val ccRecipientsWrapperMock = mockk<ComposerRecipientListWrapper>()
+        val bccRecipientsWrapperMock = mockk<ComposerRecipientListWrapper>()
+        val expectedDraftWrapper = expectDraftWrapperReturns(
+            expected.subject,
+            expected.sender,
+            expected.body,
+            toRecipientsWrapperMock,
+            ccRecipientsWrapperMock,
+            bccRecipientsWrapperMock
+        )
+        coEvery { toRecipientsWrapperMock.recipients() } returns listOf(LocalComposerRecipientTestData.Alice)
+        coEvery { ccRecipientsWrapperMock.recipients() } returns listOf(LocalComposerRecipientTestData.Bob)
+        coEvery { bccRecipientsWrapperMock.recipients() } returns listOf(
+            LocalComposerRecipientTestData.Billing, LocalComposerRecipientTestData.Doe
+        )
         coEvery { userSessionRepository.getUserSession(userId) } returns mockUserSession
         coEvery { openRustDraft(mockUserSession, localMessageId) } returns expectedDraftWrapper.right()
 
@@ -84,7 +100,16 @@ class RustDraftDataSourceImplTest {
         val messageId = MessageIdSample.RustJobApplication
         val localMessageId = MessageIdSample.RustJobApplication.toLocalMessageId()
         val expected = LocalDraftTestData.JobApplicationDraft
-        val expectedDraftWrapper = expectDraftWrapperReturns(expected.subject, expected.sender, expected.body)
+        val recipientsWrapperMock = mockk<ComposerRecipientListWrapper>()
+        val expectedDraftWrapper = expectDraftWrapperReturns(
+            expected.subject,
+            expected.sender,
+            expected.body,
+            recipientsWrapperMock,
+            recipientsWrapperMock,
+            recipientsWrapperMock
+        )
+        coEvery { recipientsWrapperMock.recipients() } returns emptyList()
         coEvery { userSessionRepository.getUserSession(userId) } returns mockUserSession
         coEvery { openRustDraft(mockUserSession, localMessageId) } returns expectedDraftWrapper.right()
         assertNull(dataSource.rustDraftWrapper)
@@ -138,7 +163,16 @@ class RustDraftDataSourceImplTest {
         val subject = expected.subject
         val sender = expected.sender
         val body = expected.body
-        val expectedDraftWrapper = expectDraftWrapperReturns(subject, sender, body)
+        val recipientsWrapperMock = mockk<ComposerRecipientListWrapper>()
+        val expectedDraftWrapper = expectDraftWrapperReturns(
+            subject,
+            sender,
+            body,
+            recipientsWrapperMock,
+            recipientsWrapperMock,
+            recipientsWrapperMock
+        )
+        coEvery { recipientsWrapperMock.recipients() } returns emptyList()
         coEvery { userSessionRepository.getUserSession(userId) } returns mockUserSession
         coEvery { createRustDraft(mockUserSession, localDraftCreateMode) } returns expectedDraftWrapper.right()
 
@@ -157,7 +191,16 @@ class RustDraftDataSourceImplTest {
         val action = DraftAction.Forward(messageId)
         val localDraftCreateMode = DraftCreateMode.Forward(messageId.toLocalMessageId())
         val expected = LocalDraftTestData.JobApplicationDraft
-        val expectedDraftWrapper = expectDraftWrapperReturns(expected.subject, expected.sender, expected.body)
+        val recipientsWrapperMock = mockk<ComposerRecipientListWrapper>()
+        val expectedDraftWrapper = expectDraftWrapperReturns(
+            expected.subject,
+            expected.sender,
+            expected.body,
+            recipientsWrapperMock,
+            recipientsWrapperMock,
+            recipientsWrapperMock
+        )
+        coEvery { recipientsWrapperMock.recipients() } returns emptyList()
         coEvery { userSessionRepository.getUserSession(userId) } returns mockUserSession
         coEvery { createRustDraft(mockUserSession, localDraftCreateMode) } returns expectedDraftWrapper.right()
         assertNull(dataSource.rustDraftWrapper)

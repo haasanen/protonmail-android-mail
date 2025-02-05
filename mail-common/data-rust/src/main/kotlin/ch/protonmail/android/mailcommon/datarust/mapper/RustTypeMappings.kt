@@ -23,6 +23,7 @@ import uniffi.proton_mail_uniffi.AttachmentMimeType
 import uniffi.proton_mail_uniffi.AvatarInformation
 import uniffi.proton_mail_uniffi.ComposerDirection
 import uniffi.proton_mail_uniffi.ComposerMode
+import uniffi.proton_mail_uniffi.ComposerRecipient
 import uniffi.proton_mail_uniffi.ContactEmailItem
 import uniffi.proton_mail_uniffi.ContactItemType
 import uniffi.proton_mail_uniffi.Conversation
@@ -84,4 +85,5 @@ typealias LocalContactEmail = ContactEmailItem
 typealias LocalContactItemType = ContactItemType
 typealias LocalContactItemTypeContact = ContactItemType.Contact
 typealias LocalContactItemTypeGroup = ContactItemType.Group
+typealias LocalComposerRecipient = ComposerRecipient
 
