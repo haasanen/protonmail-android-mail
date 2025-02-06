@@ -58,6 +58,7 @@ import ch.protonmail.android.mailcomposer.domain.usecase.StoreDraftWithAllFields
 import ch.protonmail.android.mailcomposer.domain.usecase.StoreDraftWithBody
 import ch.protonmail.android.mailcomposer.domain.usecase.StoreDraftWithRecipients
 import ch.protonmail.android.mailcomposer.domain.usecase.StoreDraftWithSubject
+import ch.protonmail.android.mailcomposer.domain.usecase.UpdateCcRecipients
 import ch.protonmail.android.mailcomposer.domain.usecase.UpdateToRecipients
 import ch.protonmail.android.mailcomposer.presentation.mapper.ParticipantMapper
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerAction
@@ -114,6 +115,7 @@ class ComposerViewModel @Inject constructor(
     private val storeDraftWithAllFields: StoreDraftWithAllFields,
     private val storeDraftWithRecipients: StoreDraftWithRecipients,
     private val updateToRecipients: UpdateToRecipients,
+    private val updateCcRecipients: UpdateCcRecipients,
     private val getContacts: GetContacts,
     private val searchContacts: SearchContacts,
     private val searchDeviceContacts: SearchDeviceContacts,
@@ -630,10 +632,11 @@ class ComposerViewModel @Inject constructor(
     private suspend fun onCcChanged(action: ComposerAction.RecipientsCcChanged): ComposerOperation {
         val contacts = contactsOrEmpty()
         return action.recipients.filterIsInstance<RecipientUiModel.Valid>().takeIfNotEmpty()?.let { validRecipients ->
-            storeDraftWithRecipients(
+            updateCcRecipients(
                 primaryUserId(),
                 currentMessageId(),
-                cc = validRecipients.map { participantMapper.recipientUiModelToParticipant(it, contacts) }
+                currentValidRecipientsCc().value,
+                validRecipients.map { participantMapper.recipientUiModelToParticipant(it, contacts) }
             ).fold(
                 ifLeft = { ComposerEvent.ErrorStoringDraftRecipients },
                 ifRight = { action }
