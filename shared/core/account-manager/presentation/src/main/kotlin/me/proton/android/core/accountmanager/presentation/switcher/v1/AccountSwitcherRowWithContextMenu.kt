@@ -16,7 +16,7 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package me.proton.android.core.accountmanager.presentation.switcher
+package me.proton.android.core.accountmanager.presentation.switcher.v1
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.background
@@ -42,10 +42,11 @@ import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonSidebarTheme
 import me.proton.android.core.account.domain.model.CoreUserId
 import me.proton.android.core.accountmanager.presentation.R
-import me.proton.android.core.accountmanager.presentation.switcher.MenuOption.ManageAccount
-import me.proton.android.core.accountmanager.presentation.switcher.MenuOption.Remove
-import me.proton.android.core.accountmanager.presentation.switcher.MenuOption.SignIn
-import me.proton.android.core.accountmanager.presentation.switcher.MenuOption.SignOut
+import me.proton.android.core.accountmanager.presentation.switcher.BaseAccountSwitcherRow
+import me.proton.android.core.accountmanager.presentation.switcher.v1.MenuOption.ManageAccount
+import me.proton.android.core.accountmanager.presentation.switcher.v1.MenuOption.Remove
+import me.proton.android.core.accountmanager.presentation.switcher.v1.MenuOption.SignIn
+import me.proton.android.core.accountmanager.presentation.switcher.v1.MenuOption.SignOut
 
 /**
  * Displays a row with the given [accountListItem].
@@ -60,10 +61,9 @@ fun AccountSwitcherRowWithContextMenu(
 ) {
     BaseAccountSwitcherRow(
         modifier = modifier
-            .background(LocalColors.current.backgroundNorm)
             .padding(ProtonDimens.Spacing.Standard),
         accountListItem = accountListItem,
-        trailingContent = {
+        trailingRowContent = {
             AccountSwitcherRowContextMenu(
                 accountListItem = accountListItem,
                 modifier = modifier,

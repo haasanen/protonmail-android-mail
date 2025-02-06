@@ -21,7 +21,8 @@ package me.proton.android.core.accountmanager.presentation.manager
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
-import me.proton.android.core.accountmanager.presentation.switcher.AccountSwitchEvent
+import ch.protonmail.android.design.compose.theme.ProtonInvertedTheme
+import me.proton.android.core.accountmanager.presentation.switcher.v1.AccountSwitchEvent
 
 fun NavGraphBuilder.addAccountsManager(
     navController: NavHostController,
@@ -30,9 +31,11 @@ fun NavGraphBuilder.addAccountsManager(
     onEvent: (AccountSwitchEvent) -> Unit
 ) {
     composable(route = route) {
-        AccountsManagerScreen(
-            onCloseClicked = { if (!navController.popBackStack()) onCloseClicked() },
-            onEvent = onEvent
-        )
+        ProtonInvertedTheme {
+            AccountsManagerScreen(
+                onCloseClicked = { if (!navController.popBackStack()) onCloseClicked() },
+                onEvent = onEvent
+            )
+        }
     }
 }

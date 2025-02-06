@@ -16,14 +16,14 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package me.proton.android.core.accountmanager.presentation.manager
+package me.proton.android.core.accountmanager.presentation
 
-import me.proton.android.core.accountmanager.presentation.switcher.v1.AccountListItem
+import androidx.compose.ui.unit.dp
 
-sealed interface AccountsManagerState {
-    data object Loading : AccountsManagerState
-    data class Idle(
-        val signedInAccounts: List<AccountListItem.Ready>,
-        val disabledAccounts: List<AccountListItem.Disabled>
-    ) : AccountsManagerState
+object AccountDimens {
+    val PrimaryAccountAvatarSize = 100.dp
+    val PrimaryAccountAvatarCameraButtonSize = 40.dp
+
+    val AccountCardRadius = 16.dp
+    val AccountCounterSize = 32.dp
 }

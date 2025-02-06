@@ -1,21 +1,22 @@
 /*
- * Copyright (c) 2024 Proton AG
+ * Copyright (c) 2022 Proton Technologies AG
+ * This file is part of Proton Technologies AG and Proton Mail.
  *
- * ProtonCore is free software: you can redistribute it and/or modify
+ * Proton Mail is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * ProtonCore is distributed in the hope that it will be useful,
+ * Proton Mail is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with ProtonCore.  If not, see <https://www.gnu.org/licenses/>.
+ * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package me.proton.android.core.accountmanager.presentation.switcher
+package me.proton.android.core.accountmanager.presentation.switcher.v1
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.background
@@ -35,6 +36,7 @@ import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyMediumNorm
 import me.proton.android.core.account.domain.model.CoreUserId
 import me.proton.android.core.accountmanager.presentation.R
+import me.proton.android.core.accountmanager.presentation.switcher.BaseAccountSwitcherRow
 
 /**
  * Displays a row with the given [accountListItem].
@@ -54,7 +56,7 @@ fun AccountSwitcherRowWithSignIn(
             }
             .padding(ProtonDimens.Spacing.Standard),
         accountListItem = accountListItem,
-        trailingContent = {
+        trailingRowContent = {
             if (accountListItem is AccountListItem.Disabled) {
                 ProtonSecondaryButton(
                     onClick = {

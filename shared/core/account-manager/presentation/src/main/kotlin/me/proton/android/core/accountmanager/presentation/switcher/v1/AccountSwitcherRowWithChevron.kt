@@ -16,7 +16,7 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package me.proton.android.core.accountmanager.presentation.switcher
+package me.proton.android.core.accountmanager.presentation.switcher.v1
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.background
@@ -30,6 +30,7 @@ import ch.protonmail.android.design.compose.theme.LocalColors
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonSidebarTheme
 import me.proton.android.core.account.domain.model.CoreUserId
+import me.proton.android.core.accountmanager.presentation.switcher.BaseAccountSwitcherRow
 import me.proton.core.presentation.R
 
 /**
@@ -40,7 +41,7 @@ fun AccountSwitcherRowWithChevron(accountListItem: AccountListItem, modifier: Mo
     BaseAccountSwitcherRow(
         modifier = modifier.background(LocalColors.current.interactionWeakNorm),
         accountListItem = accountListItem,
-        trailingContent = {
+        trailingRowContent = {
             Icon(
                 contentDescription = null,
                 painter = painterResource(R.drawable.ic_proton_chevron_down),

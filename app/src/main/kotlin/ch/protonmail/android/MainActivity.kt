@@ -29,6 +29,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.mailcommon.domain.system.DeviceCapabilities
 import ch.protonmail.android.mailcommon.presentation.system.LocalDeviceCapabilitiesProvider
 import ch.protonmail.android.maildetail.domain.model.OpenAttachmentIntentValues
@@ -39,7 +40,6 @@ import ch.protonmail.android.navigation.LauncherViewModel
 import ch.protonmail.android.navigation.model.LauncherState
 import ch.protonmail.android.navigation.share.ShareIntentObserver
 import dagger.hilt.android.AndroidEntryPoint
-import ch.protonmail.android.design.compose.theme.ProtonTheme
 import me.proton.core.notification.presentation.deeplink.DeeplinkManager
 import me.proton.core.notification.presentation.deeplink.onActivityCreate
 import me.proton.core.usersettings.presentation.compose.view.SecurityKeysActivity

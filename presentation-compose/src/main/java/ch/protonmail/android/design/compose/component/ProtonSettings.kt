@@ -27,6 +27,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
@@ -95,11 +96,13 @@ fun ProtonSettingsList(modifier: Modifier = Modifier, content: LazyListScope.() 
 fun ProtonSettingsTopBar(
     modifier: Modifier = Modifier,
     title: String,
+    actions: @Composable RowScope.() -> Unit = {},
     onBackClick: () -> Unit
 ) {
     ProtonMediumTopAppBar(
         modifier = modifier.fillMaxWidth(),
         title = { Text(title) },
+        actions = actions,
         navigationIcon = {
             IconButton(onClick = onBackClick) {
                 Icon(Icons.Filled.ArrowBack, contentDescription = stringResource(id = R.string.presentation_back))

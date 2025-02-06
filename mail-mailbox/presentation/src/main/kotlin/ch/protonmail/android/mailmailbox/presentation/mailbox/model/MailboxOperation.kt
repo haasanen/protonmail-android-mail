@@ -114,6 +114,7 @@ internal sealed interface MailboxViewAction : MailboxOperation {
         MailboxViewAction
 
     object RequestMoreActionsBottomSheet : MailboxViewAction, AffectingBottomSheet
+    object RequestManageAccountsBottomSheet : MailboxViewAction, AffectingBottomSheet
     object Star : MailboxViewAction, AffectingMailboxList, AffectingBottomSheet
     object UnStar : MailboxViewAction, AffectingMailboxList, AffectingBottomSheet
     object MoveToArchive :

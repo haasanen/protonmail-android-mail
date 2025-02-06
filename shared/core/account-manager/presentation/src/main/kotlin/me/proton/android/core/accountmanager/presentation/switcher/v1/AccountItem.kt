@@ -15,7 +15,7 @@
  * along with ProtonCore.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package me.proton.android.core.accountmanager.presentation.switcher
+package me.proton.android.core.accountmanager.presentation.switcher.v1
 
 import me.proton.android.core.account.domain.model.CoreUserId
 
@@ -24,5 +24,6 @@ data class AccountItem(
     val name: String,
     val email: String? = null,
     val initials: String? = null,
-    val color: String? = null
+    val color: String? = null,
+    val counter: Int? = null
 )

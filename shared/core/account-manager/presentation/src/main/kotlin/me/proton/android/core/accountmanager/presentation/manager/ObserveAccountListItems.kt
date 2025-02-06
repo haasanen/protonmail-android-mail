@@ -23,8 +23,8 @@ import kotlinx.coroutines.flow.map
 import me.proton.android.core.account.domain.model.CoreAccountState
 import me.proton.android.core.account.domain.usecase.ObserveCoreAccounts
 import me.proton.android.core.accountmanager.domain.usecase.GetAccountAvatarItem
-import me.proton.android.core.accountmanager.presentation.switcher.AccountItem
-import me.proton.android.core.accountmanager.presentation.switcher.AccountListItem
+import me.proton.android.core.accountmanager.presentation.switcher.v1.AccountItem
+import me.proton.android.core.accountmanager.presentation.switcher.v1.AccountListItem
 import me.proton.core.util.kotlin.takeIfNotBlank
 import uniffi.proton_mail_uniffi.MailSession
 import uniffi.proton_mail_uniffi.MailSessionGetPrimaryAccountResult

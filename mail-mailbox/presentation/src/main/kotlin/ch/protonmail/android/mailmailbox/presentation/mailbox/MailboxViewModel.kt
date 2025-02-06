@@ -116,6 +116,7 @@ import ch.protonmail.android.mailmessage.domain.usecase.StarMessages
 import ch.protonmail.android.mailmessage.domain.usecase.UnStarMessages
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.LabelAsBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MailboxMoreActionsBottomSheetState
+import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.ManageAccountSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MoveToBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.UpsellingBottomSheetState
 import ch.protonmail.android.mailsettings.domain.usecase.ObserveFolderColorSettings
@@ -385,6 +386,7 @@ class MailboxViewModel @Inject constructor(
                 is MailboxViewAction.RequestMoveToBottomSheet -> showMoveToBottomSheetAndLoadData(viewAction)
                 is MailboxViewAction.MoveToDestinationSelected -> onMoveToDestinationSelected(viewAction)
                 is MailboxViewAction.RequestMoreActionsBottomSheet -> showMoreBottomSheet(viewAction)
+                is MailboxViewAction.RequestManageAccountsBottomSheet -> showAccountManagerBottomSheet(viewAction)
                 is MailboxViewAction.DismissBottomSheet -> emitNewStateFrom(viewAction)
                 is MailboxViewAction.Star -> handleStarAction(viewAction)
                 is MailboxViewAction.UnStar -> handleUnStarAction(viewAction)
@@ -905,6 +907,15 @@ class MailboxViewModel @Inject constructor(
             ifLeft = { MailboxEvent.ErrorMoving },
             ifRight = { MailboxEvent.MoveToConfirmed }
         ).let { emitNewStateFrom(it) }
+    }
+
+    private fun showAccountManagerBottomSheet(operation: MailboxViewAction) {
+        emitNewStateFrom(operation)
+        emitNewStateFrom(
+            MailboxEvent.MailboxBottomSheetEvent(
+                ManageAccountSheetState.ManageAccountsBottomSheetEvent.Ready
+            )
+        )
     }
 
     private suspend fun showMoreBottomSheet(operation: MailboxViewAction) {

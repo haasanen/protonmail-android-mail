@@ -140,6 +140,7 @@ import ch.protonmail.android.mailmailbox.presentation.paging.search.mapToUiState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.BottomSheetVisibilityEffect
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.LabelAsBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MailboxMoreActionsBottomSheetState
+import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.ManageAccountSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MoveToBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.UpsellingBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.ui.bottomsheet.LabelAsBottomSheetContent
@@ -151,6 +152,8 @@ import ch.protonmail.android.mailupselling.presentation.ui.bottomsheet.Upselling
 import ch.protonmail.android.uicomponents.bottomsheet.bottomSheetHeightConstrainedContent
 import ch.protonmail.android.uicomponents.snackbar.DismissableSnackbarHost
 import kotlinx.coroutines.launch
+import me.proton.android.core.accountmanager.presentation.switcher.v2.AccountsSwitcherBottomSheetScreen
+import me.proton.android.core.accountmanager.presentation.switcher.v1.AccountSwitchEvent
 import timber.log.Timber
 import ch.protonmail.android.mailcommon.presentation.R.string as commonString
 
@@ -159,6 +162,7 @@ import ch.protonmail.android.mailcommon.presentation.R.string as commonString
 fun MailboxScreen(
     modifier: Modifier = Modifier,
     actions: MailboxScreen.Actions,
+    onEvent: (AccountSwitchEvent) -> Unit,
     viewModel: MailboxViewModel = hiltViewModel()
 ) {
     val mailboxState = viewModel.state.collectAsStateWithLifecycle(MailboxViewModel.initialState).value
@@ -198,6 +202,7 @@ fun MailboxScreen(
         onExitSelectionMode = { viewModel.submit(MailboxViewAction.ExitSelectionMode) },
         onOfflineWithData = { viewModel.submit(MailboxViewAction.OnOfflineWithData) },
         onErrorWithData = { viewModel.submit(MailboxViewAction.OnErrorWithData) },
+        onAccountAvatarClicked = { viewModel.submit(MailboxViewAction.RequestManageAccountsBottomSheet) },
         onAvatarClicked = { viewModel.submit(MailboxViewAction.OnItemAvatarClicked(it)) },
         onAvatarImageLoadRequested = { viewModel.submit(MailboxViewAction.OnAvatarImageLoadRequested(it)) },
         onStarClicked = { item ->
@@ -322,6 +327,8 @@ fun MailboxScreen(
                         )
                     )
                 }
+
+                is ManageAccountSheetState -> AccountsSwitcherBottomSheetScreen(onEvent = onEvent)
 
                 else -> Unit
             }

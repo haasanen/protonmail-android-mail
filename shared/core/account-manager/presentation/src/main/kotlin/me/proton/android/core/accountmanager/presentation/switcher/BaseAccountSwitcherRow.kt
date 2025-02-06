@@ -30,63 +30,74 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.res.stringResource
 import androidx.core.graphics.toColorInt
 import ch.protonmail.android.design.compose.theme.LocalShapes
 import ch.protonmail.android.design.compose.theme.LocalTypography
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
+import me.proton.android.core.accountmanager.presentation.R
+import me.proton.android.core.accountmanager.presentation.switcher.v1.AccountListItem
 import me.proton.core.util.kotlin.takeIfNotBlank
 
 /**
- * @param trailingContent The composable content that is displayed at the end of the row.
+ * @param trailingRowContent The composable content that is displayed at the end of the row.
  */
 @Composable
 internal fun BaseAccountSwitcherRow(
     accountListItem: AccountListItem,
     modifier: Modifier = Modifier,
-    trailingContent: @Composable () -> Unit = {}
+    accountInitialsShape: Shape = LocalShapes.current.medium,
+    trailingRowContent: @Composable () -> Unit = {},
+    trailingColumnContent: @Composable () -> Unit = {}
 ) {
-    Row(
-        modifier = modifier.padding(
-            horizontal = ProtonDimens.Spacing.Large,
-            vertical = ProtonDimens.Spacing.Standard
-        ),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(ProtonDimens.Spacing.Large)
-    ) {
-        val boxColor =
-            accountListItem.accountItem.color?.toColorInt()?.let { Color(it) }
-                ?: ProtonTheme.colors.interactionBrandDefaultNorm
-        Box(
-            modifier = Modifier
-                .background(boxColor, LocalShapes.current.medium)
-                .size(ProtonDimens.IconSize.Large)
-        ) {
-            Text(
-                text = accountListItem.accountItem.initials ?: "",
-                color = ProtonTheme.colors.textInverted,
-                style = LocalTypography.current.bodyMedium,
-                modifier = Modifier.align(Alignment.Center)
-            )
-        }
+    Column {
 
-        Column(modifier = Modifier.weight(1f)) {
-            val isDisabled = accountListItem is AccountListItem.Disabled
-            Text(
-                text = accountListItem.accountItem.name,
-                color = if (isDisabled) ProtonTheme.colors.textWeak else ProtonTheme.colors.textNorm,
-                style = LocalTypography.current.bodyMedium
-            )
-            accountListItem.accountItem.email?.takeIfNotBlank()?.let {
+        Row(
+            modifier = modifier.padding(
+                horizontal = ProtonDimens.Spacing.Large,
+                vertical = ProtonDimens.Spacing.Standard
+            ),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(ProtonDimens.Spacing.Large)
+        ) {
+            val boxColor =
+                accountListItem.accountItem.color?.toColorInt()?.let { Color(it) }
+                    ?: ProtonTheme.colors.interactionBrandDefaultNorm
+            Box(
+                modifier = Modifier
+                    .background(boxColor, accountInitialsShape)
+                    .size(ProtonDimens.IconSize.Large)
+            ) {
                 Text(
-                    text = it,
-                    color = if (isDisabled) ProtonTheme.colors.textWeak else ProtonTheme.colors.textWeak,
-                    style = LocalTypography.current.bodySmall,
-                    modifier = Modifier.padding(top = ProtonDimens.Spacing.Tiny)
+                    text = accountListItem.accountItem.initials
+                        ?: stringResource(R.string.account_switcher_no_initials),
+                    color = ProtonTheme.colors.textInverted,
+                    style = LocalTypography.current.bodyMedium,
+                    modifier = Modifier.align(Alignment.Center)
                 )
             }
-        }
 
-        trailingContent()
+            Column(modifier = Modifier.weight(1f)) {
+                val isDisabled = accountListItem is AccountListItem.Disabled
+                Text(
+                    text = accountListItem.accountItem.name,
+                    color = if (isDisabled) ProtonTheme.colors.textWeak else ProtonTheme.colors.textNorm,
+                    style = LocalTypography.current.bodyMedium
+                )
+                accountListItem.accountItem.email?.takeIfNotBlank()?.let {
+                    Text(
+                        text = it,
+                        color = if (isDisabled) ProtonTheme.colors.textWeak else ProtonTheme.colors.textWeak,
+                        style = LocalTypography.current.bodySmall,
+                        modifier = Modifier.padding(top = ProtonDimens.Spacing.Tiny)
+                    )
+                }
+            }
+
+            trailingRowContent()
+        }
+        trailingColumnContent()
     }
 }

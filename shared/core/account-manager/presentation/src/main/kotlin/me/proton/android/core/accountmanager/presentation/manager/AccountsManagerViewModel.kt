@@ -31,7 +31,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
-import me.proton.android.core.accountmanager.presentation.switcher.AccountListItem
+import me.proton.android.core.accountmanager.presentation.switcher.v1.AccountListItem
 import javax.inject.Inject
 
 @HiltViewModel

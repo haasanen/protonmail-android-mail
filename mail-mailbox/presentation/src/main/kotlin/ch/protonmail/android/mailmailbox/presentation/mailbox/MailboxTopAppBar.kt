@@ -46,7 +46,7 @@ import ch.protonmail.android.uicomponents.SearchView
 import ch.protonmail.android.design.compose.component.appbar.ProtonTopAppBar
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import me.proton.android.core.accountmanager.domain.model.CoreAccountAvatarItem
-import me.proton.android.core.accountmanager.presentation.switcher.AccountAvatar
+import me.proton.android.core.accountmanager.presentation.switcher.v1.AccountAvatar
 import me.proton.core.util.kotlin.EMPTY_STRING
 
 @Composable

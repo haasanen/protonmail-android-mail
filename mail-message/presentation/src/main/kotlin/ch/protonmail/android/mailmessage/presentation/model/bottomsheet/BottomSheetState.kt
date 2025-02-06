@@ -162,6 +162,15 @@ sealed interface UpsellingBottomSheetState : BottomSheetContentState {
     }
 }
 
+sealed interface ManageAccountSheetState : BottomSheetContentState {
+    object Requested : ManageAccountSheetState
+
+    sealed interface ManageAccountsBottomSheetOperation : BottomSheetOperation
+    sealed interface ManageAccountsBottomSheetEvent : ManageAccountsBottomSheetOperation {
+        data object Ready : ManageAccountsBottomSheetEvent
+    }
+}
+
 sealed interface ContactActionsBottomSheetState : BottomSheetContentState {
 
     data class Data(

@@ -1,0 +1,404 @@
+/*
+ * Copyright (c) 2022 Proton Technologies AG
+ * This file is part of Proton Technologies AG and Proton Mail.
+ *
+ * Proton Mail is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Proton Mail is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+package me.proton.android.core.accountmanager.presentation.switcher.v2
+
+import android.content.res.Configuration
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.sizeIn
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
+import ch.protonmail.android.design.compose.theme.LocalColors
+import ch.protonmail.android.design.compose.theme.LocalTypography
+import ch.protonmail.android.design.compose.theme.ProtonDimens
+import ch.protonmail.android.design.compose.theme.ProtonTheme
+import ch.protonmail.android.design.compose.theme.bodyLargeWeak
+import me.proton.android.core.account.domain.model.CoreUserId
+import me.proton.android.core.accountmanager.presentation.AccountDimens
+import me.proton.android.core.accountmanager.presentation.ButtonWithIconAndText
+import me.proton.android.core.accountmanager.presentation.R
+import me.proton.android.core.accountmanager.presentation.manager.AccountsManagerState
+import me.proton.android.core.accountmanager.presentation.manager.AccountsManagerViewModel
+import me.proton.android.core.accountmanager.presentation.switcher.v1.AccountItem
+import me.proton.android.core.accountmanager.presentation.switcher.v1.AccountListItem
+import me.proton.android.core.accountmanager.presentation.switcher.v1.AccountSwitchEvent
+import me.proton.core.util.kotlin.takeIfNotBlank
+
+@Composable
+fun AccountsSwitcherBottomSheetScreen(
+    modifier: Modifier = Modifier,
+    onEvent: (AccountSwitchEvent) -> Unit,
+    viewModel: AccountsManagerViewModel = hiltViewModel()
+) {
+    val state by viewModel.state.collectAsStateWithLifecycle()
+    AccountsSwitcherBottomSheetScreen(
+        state = state,
+        modifier = modifier,
+        onEvent = onEvent
+    )
+}
+
+@Composable
+fun AccountsSwitcherBottomSheetScreen(
+    state: AccountsManagerState,
+    modifier: Modifier = Modifier,
+    onEvent: (AccountSwitchEvent) -> Unit = {}
+) {
+    Box(
+        modifier = modifier
+    ) {
+        when (state) {
+            is AccountsManagerState.Loading -> ProtonCenteredProgress()
+            is AccountsManagerState.Idle -> {
+                Column(
+                    modifier = modifier,
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    CurrentAccountSection(
+                        modifier,
+                        state.signedInAccounts.filterIsInstance<AccountListItem.Ready.Primary>().first(),
+                        onEvent
+                    )
+
+                    OtherAccountsSection(
+                        modifier,
+                        state.signedInAccounts.filterNot { it is AccountListItem.Ready.Primary },
+                        state.disabledAccounts,
+                        onEvent
+                    )
+
+                    ManageAccountsOnDeviceButton(modifier = modifier, onEvent = onEvent)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun CurrentAccountSection(
+    modifier: Modifier = Modifier,
+    currentAccount: AccountListItem,
+    onEvent: (AccountSwitchEvent) -> Unit
+) {
+    Column(
+        modifier = modifier
+            .padding(bottom = ProtonDimens.Spacing.Large),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        CurrentAccountAvatar(
+            modifier = modifier,
+            currentAccount = currentAccount,
+            onEvent = onEvent
+        )
+
+        Text(
+            text = currentAccount.accountItem.name,
+            color = ProtonTheme.colors.textNorm,
+            textAlign = TextAlign.Center,
+            style = LocalTypography.current.titleLarge
+        )
+
+        currentAccount.accountItem.email?.takeIfNotBlank()?.let {
+            Text(
+                text = it,
+                color = ProtonTheme.colors.textWeak,
+                style = LocalTypography.current.bodyLargeWeak,
+                modifier = Modifier.padding(top = ProtonDimens.Spacing.Tiny)
+            )
+        }
+    }
+}
+
+@Composable
+private fun CurrentAccountAvatar(
+    modifier: Modifier = Modifier,
+    currentAccount: AccountListItem,
+    onEvent: (AccountSwitchEvent) -> Unit
+) {
+    val cameraVisible by remember { mutableStateOf(false) } // remove when avatar image implemented
+    Box(
+        modifier = modifier.padding(ProtonDimens.Spacing.Large)
+    ) {
+        PrimaryAccountAvatar(
+            modifier = modifier,
+            initials = currentAccount.accountItem.initials ?: stringResource(R.string.account_switcher_no_initials),
+            backgroundColor = currentAccount.accountItem.color
+        )
+
+        if (cameraVisible) {
+            Box(
+                modifier = Modifier.align(Alignment.BottomEnd)
+            ) {
+                Image(
+                    modifier = modifier
+                        .sizeIn(
+                            minWidth = AccountDimens.PrimaryAccountAvatarCameraButtonSize,
+                            minHeight = AccountDimens.PrimaryAccountAvatarCameraButtonSize
+                        )
+                        .clip(shape = CircleShape)
+                        .background(
+                            color = ProtonTheme.colors.backgroundSecondary,
+                            shape = CircleShape
+                        )
+                        .border(
+                            color = ProtonTheme.colors.borderStrong,
+                            width = ProtonDimens.Spacing.Tiny,
+                            shape = CircleShape
+                        )
+                        .padding(ProtonDimens.Spacing.Standard)
+                        .clickable(
+                            enabled = true,
+                            onClick = { onEvent(AccountSwitchEvent.OnSetPrimaryAccountAvatar) }
+                        ),
+                    painter = painterResource(id = R.drawable.ic_proton_camera),
+                    contentDescription = stringResource(id = R.string.primary_account_avatar_camera_content_description)
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun OtherAccountsSection(
+    modifier: Modifier,
+    signedInAccounts: List<AccountListItem>,
+    signedOutAccounts: List<AccountListItem>,
+    onEvent: (AccountSwitchEvent) -> Unit
+) {
+    if (signedInAccounts.isNotEmpty() || signedOutAccounts.isNotEmpty()) {
+        Text(
+            color = LocalColors.current.textWeak,
+            style = LocalTypography.current.bodyLarge,
+            textAlign = TextAlign.Start,
+            text = stringResource(R.string.manage_accounts_switch_to),
+            modifier = Modifier.padding(
+                bottom = ProtonDimens.Spacing.Medium,
+                top = ProtonDimens.Spacing.Standard,
+                start = ProtonDimens.Spacing.Large
+            ).fillMaxWidth()
+        )
+    }
+    Card(
+        shape = RoundedCornerShape(AccountDimens.AccountCardRadius),
+        modifier = modifier
+            .padding(horizontal = ProtonDimens.Spacing.Large)
+            .fillMaxWidth(),
+        elevation = CardDefaults.cardElevation(),
+        colors = CardDefaults.cardColors().copy(
+            containerColor = ProtonTheme.colors.backgroundInvertedSecondary
+        )
+    ) {
+        LazyColumn(modifier = modifier) {
+            if (signedInAccounts.isNotEmpty()) {
+                items(signedInAccounts, { "signed-in-${it.accountItem.userId}" }) { account ->
+                    SignedInAccountRow(
+                        accountListItem = account,
+                        onEvent = onEvent
+                    )
+                }
+            }
+            if (signedOutAccounts.isNotEmpty()) {
+                items(signedOutAccounts, { "signed-out-${it.accountItem.userId}" }) { account ->
+                    SignedOutAccountRow(
+                        accountListItem = account,
+                        onEvent = onEvent
+                    )
+                }
+            }
+            item(key = "add-account-footer") {
+                AddAnotherAccountButton(modifier = modifier, onEvent = onEvent)
+            }
+        }
+    }
+}
+
+@Composable
+private fun SignedInAccountRow(
+    accountListItem: AccountListItem,
+    modifier: Modifier = Modifier,
+    onEvent: (AccountSwitchEvent) -> Unit = {}
+) {
+    RowForSignedInAccountWithCounter(
+        accountListItem = accountListItem,
+        modifier = modifier,
+        onEvent = onEvent
+    )
+    HorizontalDivider(thickness = 1.dp, color = ProtonTheme.colors.separatorNorm)
+}
+
+@Composable
+private fun SignedOutAccountRow(
+    accountListItem: AccountListItem,
+    modifier: Modifier = Modifier,
+    onEvent: (AccountSwitchEvent) -> Unit = {}
+) {
+    RowForSignedOutAccount(
+        modifier = modifier,
+        accountListItem = accountListItem,
+        onEvent = onEvent
+    )
+    HorizontalDivider(thickness = 1.dp, color = ProtonTheme.colors.separatorNorm)
+}
+
+@Composable
+private fun ManageAccountsOnDeviceButton(modifier: Modifier, onEvent: (AccountSwitchEvent) -> Unit) {
+    Card(
+        shape = RoundedCornerShape(AccountDimens.AccountCardRadius),
+        modifier = modifier
+            .padding(ProtonDimens.Spacing.Large)
+            .fillMaxWidth(),
+        elevation = CardDefaults.cardElevation(),
+        colors = CardDefaults.cardColors().copy(containerColor = ProtonTheme.colors.backgroundInvertedSecondary)
+    ) {
+        ButtonWithIconAndText(
+            text = R.string.manage_accounts_on_device,
+            icon = R.drawable.ic_proton_sliders,
+            onClick = { onEvent(AccountSwitchEvent.OnManageAccounts) }
+        )
+    }
+}
+
+@Composable
+private fun AddAnotherAccountButton(modifier: Modifier, onEvent: (AccountSwitchEvent) -> Unit) {
+    ButtonWithIconAndText(
+        modifier = modifier,
+        text = R.string.add_another_account,
+        icon = R.drawable.ic_proton_plus,
+        onClick = { onEvent(AccountSwitchEvent.OnAddAccount) }
+    )
+}
+
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_NO, showBackground = true)
+@Composable
+private fun CurrentAccountPreview() {
+    CurrentAccountSection(
+        currentAccount = AccountListItem.Ready.Primary(
+            AccountItem(CoreUserId("user-1"), "User One", "user.one@example.test", "U1")
+        ),
+        onEvent = {}
+    )
+}
+
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_NO, showBackground = true)
+@Composable
+private fun CurrentAccountAvatarPreview() {
+    CurrentAccountAvatar(
+        currentAccount = AccountListItem.Ready.Primary(
+            AccountItem(CoreUserId("user-1"), "User One", "user.one@example.test", "U1")
+        ),
+        onEvent = {}
+    )
+}
+
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_NO, showBackground = true)
+@Composable
+private fun AccountsSwitcherScreenPreview() {
+    AccountsSwitcherBottomSheetScreen(
+        modifier = Modifier,
+        state = AccountsManagerState.Idle(
+            signedInAccounts = listOf(
+                AccountListItem.Ready.Primary(
+                    AccountItem(CoreUserId("user-1"), "User One", "user.one@example.test", "U1")
+                ),
+                AccountListItem.Ready(
+                    AccountItem(CoreUserId("user-2"), "User Two", "user.two@example.test", "U2")
+                ),
+                AccountListItem.Ready(
+                    AccountItem(CoreUserId("user-3"), "User Three", "user.three@example.test", "U3")
+                )
+            ),
+            disabledAccounts = listOf(
+                AccountListItem.Disabled(
+                    AccountItem(CoreUserId("user-4"), "User Four", "user.four@example.test", "U4")
+                )
+            )
+        ),
+        onEvent = {}
+    )
+}
+
+
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_NO, showBackground = true)
+@Composable
+private fun SignedInAccountPreview() {
+    OtherAccountsSection(
+        modifier = Modifier,
+        signedInAccounts = listOf(
+            AccountListItem.Ready.Primary(
+                AccountItem(CoreUserId("user-1"), "User One", "user.one@example.test", "U1")
+            ),
+            AccountListItem.Ready(
+                AccountItem(CoreUserId("user-2"), "User Two", "user.two@example.test", "U1")
+            )
+        ),
+        signedOutAccounts = listOf(
+            AccountListItem.Disabled(
+                AccountItem(CoreUserId("user-3"), "User Three", "user.three@example.test", "U3")
+            )
+        ),
+        onEvent = {}
+    )
+}
+
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_NO, showBackground = true)
+@Composable
+private fun NoOtherAccountsPreview() {
+    AccountsSwitcherBottomSheetScreen(
+        modifier = Modifier,
+        state = AccountsManagerState.Idle(
+            signedInAccounts = listOf(
+                AccountListItem.Ready.Primary(
+                    AccountItem(CoreUserId("user-1"), "User One", "user.one@example.test", "U1")
+                )
+            ),
+            disabledAccounts = emptyList()
+        ),
+        onEvent = {}
+    )
+}

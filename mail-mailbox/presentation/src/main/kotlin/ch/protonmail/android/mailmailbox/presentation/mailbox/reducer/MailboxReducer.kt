@@ -180,7 +180,8 @@ class MailboxReducer @Inject constructor(
                 is MailboxViewAction.RequestMoreActionsBottomSheet,
                 is MailboxViewAction.RequestMoveToBottomSheet,
                 is MailboxViewAction.RequestLabelAsBottomSheet,
-                is MailboxViewAction.RequestUpsellingBottomSheet -> BottomSheetOperation.Requested
+                is MailboxViewAction.RequestUpsellingBottomSheet,
+                is MailboxViewAction.RequestManageAccountsBottomSheet -> BottomSheetOperation.Requested
 
                 is MailboxViewAction.LabelAsToggleAction -> LabelToggled(operation.label)
                 is MailboxEvent.ErrorRetrievingCustomMailLabels,
@@ -199,7 +200,6 @@ class MailboxReducer @Inject constructor(
                 is MailboxViewAction.MarkAsUnread,
                 is MailboxEvent.Trash,
                 is MailboxViewAction.DismissBottomSheet -> BottomSheetOperation.Dismiss
-
                 is MailboxViewAction.MoveToDestinationSelected -> MoveToDestinationSelected(operation.mailLabelId)
             }
             bottomSheetReducer.newStateFrom(bottomSheetState, bottomSheetOperation)

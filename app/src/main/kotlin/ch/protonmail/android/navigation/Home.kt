@@ -114,7 +114,7 @@ import ch.protonmail.android.uicomponents.snackbar.DismissableSnackbarHost
 import io.sentry.compose.withSentryObservableEffect
 import kotlinx.coroutines.launch
 import me.proton.android.core.accountmanager.presentation.manager.addAccountsManager
-import me.proton.android.core.accountmanager.presentation.switcher.AccountSwitchEvent
+import me.proton.android.core.accountmanager.presentation.switcher.v1.AccountSwitchEvent
 import me.proton.core.network.domain.NetworkStatus
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -283,6 +283,36 @@ fun Home(
         }
     }
 
+    val eventHandler: (AccountSwitchEvent) -> Unit = {
+        when (it) {
+            is AccountSwitchEvent.OnAccountSelected -> {
+                launcherActions.onSwitchToAccount(it.userId.toUserId())
+                navController.popBackStack(Screen.Mailbox.route, inclusive = false)
+            }
+
+            is AccountSwitchEvent.OnAddAccount ->
+                launcherActions.onSignIn(null)
+
+            is AccountSwitchEvent.OnManageAccount ->
+                navController.navigate(Screen.AccountSettings.route)
+
+            is AccountSwitchEvent.OnManageAccounts ->
+                navController.navigate(Screen.AccountsManager.route)
+
+            is AccountSwitchEvent.OnRemoveAccount ->
+                navController.navigate(Dialog.RemoveAccount(it.userId.toUserId()))
+
+            is AccountSwitchEvent.OnSignIn ->
+                launcherActions.onSignIn(it.userId.toUserId())
+
+            is AccountSwitchEvent.OnSignOut ->
+                navController.navigate(Dialog.SignOut(it.userId.toUserId()))
+
+            is AccountSwitchEvent.OnSetPrimaryAccountAvatar ->
+                showErrorSnackbar(featureMissingSnackbarMessage)
+        }
+    }
+
     ProtonModalBottomSheetLayout(
         sheetState = bottomSheetState,
         sheetContent = bottomSheetHeightConstrainedContent {
@@ -412,7 +442,14 @@ fun Home(
                             openDrawerMenu = { scope.launch { drawerState.open() } },
                             showOfflineSnackbar = { showOfflineSnackbar() },
                             showNormalSnackbar = { showNormalSnackbar(it) },
-                            showErrorSnackbar = { showErrorSnackbar(it) }
+                            showErrorSnackbar = { showErrorSnackbar(it) },
+                            onEvent = eventHandler
+                        )
+                        addAccountsManager(
+                            navController,
+                            route = Screen.AccountsManager.route,
+                            onCloseClicked = { navController.navigateBack() },
+                            onEvent = eventHandler
                         )
                         addComposer(
                             navController,
@@ -643,38 +680,6 @@ fun Home(
                         addThemeSettings(navController)
                         addNotificationsSettings(navController)
                         addDeepLinkHandler(navController)
-                        addAccountsManager(
-                            navController,
-                            route = Screen.AccountsManager.route,
-                            onCloseClicked = { navController.navigateBack() },
-                            onEvent = {
-                                when (it) {
-                                    is AccountSwitchEvent.OnAccountSelected -> {
-                                        launcherActions.onSwitchToAccount(it.userId.toUserId())
-                                        navController.popBackStack(Screen.Mailbox.route, inclusive = false)
-                                    }
-
-                                    is AccountSwitchEvent.OnAddAccount ->
-                                        launcherActions.onSignIn(null)
-
-                                    is AccountSwitchEvent.OnManageAccount ->
-                                        navController.navigate(Screen.AccountSettings.route)
-
-                                    is AccountSwitchEvent.OnManageAccounts ->
-                                        navController.navigate(Screen.AccountsManager.route)
-
-                                    is AccountSwitchEvent.OnRemoveAccount ->
-                                        navController.navigate(Dialog.RemoveAccount(it.userId.toUserId()))
-
-                                    is AccountSwitchEvent.OnSignIn ->
-                                        launcherActions.onSignIn(it.userId.toUserId())
-
-                                    is AccountSwitchEvent.OnSignOut ->
-                                        navController.navigate(Dialog.SignOut(it.userId.toUserId()))
-                                }
-                            }
-                        )
-
                     }
                 }
             }

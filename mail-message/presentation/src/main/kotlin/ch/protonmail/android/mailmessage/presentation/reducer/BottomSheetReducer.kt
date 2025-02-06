@@ -26,6 +26,7 @@ import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.ContactA
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.DetailMoreActionsBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.LabelAsBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MailboxMoreActionsBottomSheetState
+import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.ManageAccountSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MoveToBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.UpsellingBottomSheetState
 import javax.inject.Inject
@@ -59,6 +60,11 @@ class BottomSheetReducer @Inject constructor(
             is UpsellingBottomSheetState.UpsellingBottomSheetEvent ->
                 upsellingBottomSheetReducer.newStateFrom(currentState, operation)
 
+            is ManageAccountSheetState.ManageAccountsBottomSheetEvent ->
+                BottomSheetState(
+                    contentState = ManageAccountSheetState.Requested,
+                    bottomSheetVisibilityEffect = currentState?.bottomSheetVisibilityEffect ?: Effect.empty()
+                )
             is BottomSheetOperation.Dismiss -> BottomSheetState(null, Effect.of(BottomSheetVisibilityEffect.Hide))
             is BottomSheetOperation.Requested -> BottomSheetState(null, Effect.of(BottomSheetVisibilityEffect.Show))
         }

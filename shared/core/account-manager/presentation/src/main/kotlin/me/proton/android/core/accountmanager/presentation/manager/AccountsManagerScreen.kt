@@ -21,9 +21,14 @@ package me.proton.android.core.accountmanager.presentation.manager
 import android.content.res.Configuration
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
@@ -37,17 +42,19 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
-import ch.protonmail.android.design.compose.component.appbar.ProtonTopAppBar
+import ch.protonmail.android.design.compose.component.ProtonSettingsTopBar
 import ch.protonmail.android.design.compose.theme.LocalColors
 import ch.protonmail.android.design.compose.theme.LocalTypography
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import me.proton.android.core.account.domain.model.CoreUserId
+import me.proton.android.core.accountmanager.presentation.AccountDimens
 import me.proton.android.core.accountmanager.presentation.R
-import me.proton.android.core.accountmanager.presentation.switcher.AccountItem
-import me.proton.android.core.accountmanager.presentation.switcher.AccountListItem
-import me.proton.android.core.accountmanager.presentation.switcher.AccountSwitchEvent
-import me.proton.android.core.accountmanager.presentation.switcher.AccountSwitcherRowWithContextMenu
+import me.proton.android.core.accountmanager.presentation.switcher.v1.AccountItem
+import me.proton.android.core.accountmanager.presentation.switcher.v1.AccountListItem
+import me.proton.android.core.accountmanager.presentation.switcher.v1.AccountSwitchEvent
+import me.proton.android.core.accountmanager.presentation.switcher.v2.RowForSignedInAccount
+import me.proton.android.core.accountmanager.presentation.switcher.v2.RowForSignedOutAccountWithRemove
 
 @Composable
 fun AccountsManagerScreen(
@@ -69,24 +76,20 @@ fun AccountsManagerScreen(
 fun AccountsManagerScreen(
     state: AccountsManagerState,
     modifier: Modifier = Modifier,
+    cardModifier: Modifier = Modifier,
     onCloseClicked: () -> Unit = {},
     onEvent: (AccountSwitchEvent) -> Unit = {}
 ) {
     Scaffold(
         modifier = modifier,
+        contentWindowInsets = WindowInsets(
+            left = ProtonDimens.Spacing.Large,
+            right = ProtonDimens.Spacing.Large
+        ),
         topBar = {
-            ProtonTopAppBar(
-                title = { Text(text = stringResource(R.string.manage_accounts_title)) },
-                navigationIcon = {
-                    IconButton(onClick = onCloseClicked) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_arrow_back),
-                            contentDescription = stringResource(id = R.string.presentation_back),
-                            tint = ProtonTheme.colors.iconNorm
-                        )
-                    }
-                },
-                backgroundColor = LocalColors.current.backgroundNorm,
+            ProtonSettingsTopBar(
+                title = stringResource(id = R.string.manage_accounts_title),
+                onBackClick = onCloseClicked,
                 actions = {
                     IconButton(
                         onClick = { onEvent(AccountSwitchEvent.OnAddAccount) }
@@ -103,7 +106,13 @@ fun AccountsManagerScreen(
         Box(modifier = Modifier.padding(paddingValues)) {
             when (state) {
                 is AccountsManagerState.Loading -> ProtonCenteredProgress()
-                is AccountsManagerState.Idle -> AccountsList(state.signedInAccounts, state.disabledAccounts, onEvent)
+                is AccountsManagerState.Idle -> AccountsList(
+                    modifier = modifier,
+                    cardModifier = cardModifier,
+                    signedInAccounts = state.signedInAccounts,
+                    signedOutAccounts = state.disabledAccounts,
+                    onEvent = onEvent
+                )
             }
         }
     }
@@ -114,32 +123,43 @@ private fun AccountsList(
     signedInAccounts: List<AccountListItem>,
     signedOutAccounts: List<AccountListItem>,
     onEvent: (AccountSwitchEvent) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    cardModifier: Modifier = Modifier
 ) {
+
     LazyColumn(modifier = modifier) {
         if (signedInAccounts.isNotEmpty()) {
             item(key = "signed-in-header") {
                 Text(
                     color = LocalColors.current.textWeak,
                     style = LocalTypography.current.bodyLarge,
-                    text = stringResource(R.string.manage_accounts_signed_in),
+                    text = stringResource(R.string.manage_accounts_switch_to),
                     modifier = Modifier.padding(
-                        top = ProtonDimens.Spacing.ExtraLarge,
-                        bottom = ProtonDimens.Spacing.Standard,
-                        start = ProtonDimens.Spacing.Large,
-                        end = ProtonDimens.Spacing.Large
+                        bottom = ProtonDimens.Spacing.Medium,
+                        top = ProtonDimens.Spacing.Standard
                     )
                 )
             }
 
             items(signedInAccounts, { "signed-in-${it.accountItem.userId}" }) { account ->
-                AccountSwitcherRowWithContextMenu(
-                    accountListItem = account,
-                    onEvent = onEvent,
-                    modifier = Modifier.clickable {
-                        onEvent(AccountSwitchEvent.OnAccountSelected(account.accountItem.userId))
-                    }
-                )
+                Card(
+                    shape = RoundedCornerShape(AccountDimens.AccountCardRadius),
+                    modifier = cardModifier
+                        .padding(bottom = ProtonDimens.Spacing.Medium)
+                        .fillMaxWidth(),
+                    elevation = CardDefaults.cardElevation(),
+                    colors = CardDefaults.cardColors().copy(
+                        containerColor = ProtonTheme.colors.backgroundInvertedSecondary
+                    )
+                ) {
+                    RowForSignedInAccount(
+                        accountListItem = account,
+                        onEvent = onEvent,
+                        modifier = Modifier.clickable {
+                            onEvent(AccountSwitchEvent.OnAccountSelected(account.accountItem.userId))
+                        }
+                    )
+                }
             }
         }
 
@@ -148,21 +168,30 @@ private fun AccountsList(
                 Text(
                     color = LocalColors.current.textWeak,
                     style = LocalTypography.current.bodyLarge,
-                    text = stringResource(R.string.manage_accounts_signed_out),
+                    text = stringResource(R.string.manage_accounts_switch_to),
                     modifier = Modifier.padding(
-                        top = ProtonDimens.Spacing.ExtraLarge,
-                        bottom = ProtonDimens.Spacing.Standard,
-                        start = ProtonDimens.Spacing.Large,
-                        end = ProtonDimens.Spacing.Large
+                        bottom = ProtonDimens.Spacing.Medium,
+                        top = ProtonDimens.Spacing.Standard
                     )
                 )
             }
 
             items(signedOutAccounts, { "signed-out-${it.accountItem.userId}" }) { account ->
-                AccountSwitcherRowWithContextMenu(
-                    accountListItem = account,
-                    onEvent = onEvent
-                )
+                Card(
+                    shape = RoundedCornerShape(AccountDimens.AccountCardRadius),
+                    modifier = cardModifier
+                        .padding(bottom = ProtonDimens.Spacing.Medium)
+                        .fillMaxWidth(),
+                    elevation = CardDefaults.cardElevation(),
+                    colors = CardDefaults.cardColors().copy(
+                        containerColor = ProtonTheme.colors.backgroundInvertedSecondary
+                    )
+                ) {
+                    RowForSignedOutAccountWithRemove(
+                        accountListItem = account,
+                        onEvent = onEvent
+                    )
+                }
             }
         }
     }

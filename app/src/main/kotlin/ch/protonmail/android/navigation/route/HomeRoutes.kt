@@ -52,6 +52,7 @@ import ch.protonmail.android.mailsettings.presentation.appsettings.AppSettingsSc
 import ch.protonmail.android.mailsettings.presentation.settings.MainSettingsScreen
 import ch.protonmail.android.navigation.model.Destination
 import ch.protonmail.android.navigation.model.SavedStateKey
+import me.proton.android.core.accountmanager.presentation.switcher.v1.AccountSwitchEvent
 import me.proton.core.compose.navigation.get
 import me.proton.core.domain.entity.UserId
 import me.proton.core.util.kotlin.takeIfNotBlank
@@ -66,6 +67,7 @@ internal fun NavGraphBuilder.addConversationDetail(actions: ConversationDetail.A
 internal fun NavGraphBuilder.addMailbox(
     navController: NavHostController,
     openDrawerMenu: () -> Unit,
+    onEvent: (AccountSwitchEvent) -> Unit,
     showOfflineSnackbar: () -> Unit,
     showNormalSnackbar: (message: String) -> Unit,
     showErrorSnackbar: (String) -> Unit
@@ -95,8 +97,11 @@ internal fun NavGraphBuilder.addMailbox(
                 showErrorSnackbar = showErrorSnackbar,
                 onAddLabel = { navController.navigate(Destination.Screen.CreateLabel.route) },
                 onAddFolder = { navController.navigate(Destination.Screen.CreateFolder.route) },
-                onAccountAvatarClicked = { navController.navigate(Destination.Screen.AccountsManager.route) }
-            )
+                onAccountAvatarClicked = {
+                    navController.navigate(Destination.Screen.AccountsManager.route)
+                }
+            ),
+            onEvent = onEvent
         )
     }
 }
