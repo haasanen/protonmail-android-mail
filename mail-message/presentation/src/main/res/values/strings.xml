@@ -55,7 +55,7 @@
     <string name="bottom_sheet_move_to_title">Move to...</string>
     <string name="bottom_sheet_done_action">Done</string>
     <string name="bottom_sheet_archive_action">Also archive?</string>
-    <string name="bottom_sheet_label_as_title">Label as...</string>
+    <string name="bottom_sheet_label_as_title">Label as</string>
     <string name="bottom_sheet_more_header_message_from">Message from %s</string>
     <!-- Message body link actions -->
     <string name="message_link_long_click_copy">Copy link</string>
