@@ -159,7 +159,7 @@ class RustConversationActionRepositoryTest {
             emptyList(),
             listOf(Action.Star),
             listOf(Action.Inbox),
-            emptyList()
+            listOf(Action.Print, Action.ReportPhishing, Action.SavePdf)
         )
         assertEquals(expected.right(), result)
     }

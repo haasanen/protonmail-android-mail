@@ -111,11 +111,11 @@ fun List<GeneralActions>.generalActionsToActions() = this.map { generalAction ->
     when (generalAction) {
         GeneralActions.VIEW_MESSAGE_IN_LIGHT_MODE -> Action.ViewInLightMode
         GeneralActions.VIEW_MESSAGE_IN_DARK_MODE -> Action.ViewInDarkMode
-        GeneralActions.SAVE_AS_PDF,
-        GeneralActions.PRINT,
+        GeneralActions.SAVE_AS_PDF -> Action.SavePdf
+        GeneralActions.PRINT -> Action.Print
+        GeneralActions.REPORT_PHISHING -> Action.ReportPhishing
         GeneralActions.VIEW_HEADERS,
-        GeneralActions.VIEW_HTML,
-        GeneralActions.REPORT_PHISHING -> {
+        GeneralActions.VIEW_HTML -> {
             Timber.i("rust-actions-mapper: Skipping unhandled action mapping generalActions: $generalAction")
             null
         }
