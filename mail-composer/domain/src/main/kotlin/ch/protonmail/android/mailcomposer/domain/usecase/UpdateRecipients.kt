@@ -19,27 +19,47 @@
 package ch.protonmail.android.mailcomposer.domain.usecase
 
 import arrow.core.Either
+import arrow.core.raise.either
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailcomposer.domain.repository.DraftRepository
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.Recipient
 import me.proton.core.domain.entity.UserId
-import javax.inject.Inject
+import timber.log.Timber
 
-class UpdateBccRecipients @Inject constructor(
-    private val draftRepository: DraftRepository
-) : UpdateRecipients() {
+abstract class UpdateRecipients {
 
-    override suspend fun save(
+    suspend operator fun invoke(
+        userId: UserId,
+        messageId: MessageId,
+        currentRecipients: List<Recipient>,
+        updatedRecipients: List<Recipient>
+    ): Either<DataError, Unit> = either {
+        val recipientsToAdd = updatedRecipients.filterNot { it in currentRecipients }
+        val recipientsToRemove = currentRecipients.filterNot { it in updatedRecipients }
+
+        recipientsToAdd.forEach { addRecipient ->
+            Timber.d("draft-recipients (TO): adding $addRecipient")
+            save(userId, messageId, addRecipient)
+                .onLeft { raise(it) }
+        }
+
+        recipientsToRemove.forEach { removeRecipient ->
+            Timber.d("draft-recipients (TO): removing $removeRecipient")
+            remove(userId, messageId, removeRecipient)
+                .onLeft { raise(it) }
+        }
+    }
+
+    internal abstract suspend fun save(
         userId: UserId,
         messageId: MessageId,
         recipient: Recipient
-    ): Either<DataError, Unit> = draftRepository.saveBccRecipient(userId, messageId, recipient)
+    ): Either<DataError, Unit>
 
-    override suspend fun remove(
+    internal abstract suspend fun remove(
         userId: UserId,
         messageId: MessageId,
         recipient: Recipient
-    ): Either<DataError, Unit> = draftRepository.removeBccRecipient(userId, messageId, recipient)
+    ): Either<DataError, Unit>
 
 }

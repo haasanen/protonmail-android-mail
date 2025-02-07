@@ -19,38 +19,27 @@
 package ch.protonmail.android.mailcomposer.domain.usecase
 
 import arrow.core.Either
-import arrow.core.raise.either
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcomposer.domain.repository.DraftRepository
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.Recipient
 import me.proton.core.domain.entity.UserId
-import timber.log.Timber
 import javax.inject.Inject
 
 class UpdateCcRecipients @Inject constructor(
     private val draftRepository: DraftRepository
-) {
-    suspend operator fun invoke(
+) : UpdateRecipients() {
+
+    override suspend fun save(
         userId: UserId,
         messageId: MessageId,
-        currentRecipients: List<Recipient>,
-        updatedRecipients: List<Recipient>
-    ): Either<DataError, Unit> = either {
-        val recipientsToAdd = updatedRecipients.filterNot { it in currentRecipients }
-        val recipientsToRemove = currentRecipients.filterNot { it in updatedRecipients }
+        recipient: Recipient
+    ): Either<DataError, Unit> = draftRepository.saveCcRecipient(userId, messageId, recipient)
 
-
-        recipientsToAdd.forEach { addRecipient ->
-            Timber.d("draft-recipients (CC): adding $addRecipient")
-            draftRepository.saveCcRecipient(userId, messageId, addRecipient)
-                .onLeft { raise(it) }
-        }
-
-        recipientsToRemove.forEach { removeRecipient ->
-            Timber.d("draft-recipients (CC): removing $removeRecipient (NOT YET IMPLEMENTED)")
-        }
-
-    }
+    override suspend fun remove(
+        userId: UserId,
+        messageId: MessageId,
+        recipient: Recipient
+    ): Either<DataError, Unit> = draftRepository.removeCcRecipient(userId, messageId, recipient)
 
 }

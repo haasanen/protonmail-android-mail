@@ -1,8 +1,6 @@
 package ch.protonmail.android.mailcomposer.domain.usecase
 
-import arrow.core.left
 import arrow.core.right
-import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.mailcomposer.domain.repository.DraftRepository
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
@@ -20,23 +18,19 @@ class UpdateCcRecipientsTest {
 
     private val updateCcRecipients = UpdateCcRecipients(draftRepository)
 
-
     @Test
-    fun `saves Cc recipients that were newly added`() = runTest {
+    fun `save implementation calls repository save To Recipients`() = runTest {
         // Given
         val userId = UserIdSample.Primary
         val messageId = MessageIdSample.build()
         val recipientToAdd = RecipientSample.Bob
-        val existingRecipient = RecipientSample.Alice
-        val currentRecipients = listOf(existingRecipient)
         coEvery { draftRepository.saveCcRecipient(userId, messageId, recipientToAdd) } returns Unit.right()
 
         // When
-        val actualEither = updateCcRecipients(
+        val actualEither = updateCcRecipients.save(
             userId,
             messageId,
-            currentRecipients,
-            listOf(existingRecipient, recipientToAdd)
+            recipientToAdd
         )
 
         // Then
@@ -45,18 +39,23 @@ class UpdateCcRecipientsTest {
     }
 
     @Test
-    fun `returns error when saving Cc recipient fails`() = runTest {
+    fun `remove implementation calls repository remove To Recipients`() = runTest {
         // Given
         val userId = UserIdSample.Primary
         val messageId = MessageIdSample.build()
-        val recipient = RecipientSample.Bob
-        val expected = DataError.Local.SaveDraftError.DuplicateRecipient
-        coEvery { draftRepository.saveCcRecipient(userId, messageId, recipient) } returns expected.left()
+        val recipientToRemove = RecipientSample.Bob
+        coEvery { draftRepository.removeCcRecipient(userId, messageId, recipientToRemove) } returns Unit.right()
+
         // When
-        val actualEither = updateCcRecipients(userId, messageId, emptyList(), listOf(recipient))
+        val actualEither = updateCcRecipients.remove(
+            userId,
+            messageId,
+            recipientToRemove
+        )
 
         // Then
-        assertEquals(expected.left(), actualEither)
+        coVerify { draftRepository.removeCcRecipient(userId, messageId, recipientToRemove) }
+        assertEquals(Unit.right(), actualEither)
     }
 
 }
