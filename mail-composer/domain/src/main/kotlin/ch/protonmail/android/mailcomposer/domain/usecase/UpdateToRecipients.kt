@@ -48,7 +48,9 @@ class UpdateToRecipients @Inject constructor(
         }
 
         recipientsToRemove.forEach { removeRecipient ->
-            Timber.d("draft-recipients (TO): removing $removeRecipient (NOT YET IMPLEMENTED)")
+            Timber.d("draft-recipients (TO): removing $removeRecipient")
+            draftRepository.removeToRecipient(userId, messageId, removeRecipient)
+                .onLeft { raise(it) }
         }
 
     }

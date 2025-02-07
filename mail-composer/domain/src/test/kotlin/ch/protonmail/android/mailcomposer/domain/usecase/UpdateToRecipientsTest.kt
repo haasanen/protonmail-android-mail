@@ -59,4 +59,41 @@ class UpdateToRecipientsTest {
         assertEquals(expected.left(), actualEither)
     }
 
+    @Test
+    fun `removes To recipients that were removed`() = runTest {
+        // Given
+        val userId = UserIdSample.Primary
+        val messageId = MessageIdSample.build()
+        val recipientToRemove = RecipientSample.Bob
+        val unchangedRecipient = RecipientSample.Alice
+        coEvery { draftRepository.removeToRecipient(userId, messageId, recipientToRemove) } returns Unit.right()
+
+        // When
+        val actualEither = updateToRecipients(
+            userId = userId,
+            messageId = messageId,
+            currentRecipients = listOf(recipientToRemove, unchangedRecipient),
+            updatedRecipients = listOf(unchangedRecipient)
+        )
+
+        // Then
+        coVerify { draftRepository.removeToRecipient(userId, messageId, recipientToRemove) }
+        assertEquals(Unit.right(), actualEither)
+    }
+
+    @Test
+    fun `returns error when removing To recipient fails`() = runTest {
+        // Given
+        val userId = UserIdSample.Primary
+        val messageId = MessageIdSample.build()
+        val recipient = RecipientSample.Bob
+        val expected = DataError.Local.SaveDraftError.DuplicateRecipient
+        coEvery { draftRepository.removeToRecipient(userId, messageId, recipient) } returns expected.left()
+        // When
+        val actualEither = updateToRecipients(userId, messageId, listOf(recipient), emptyList())
+
+        // Then
+        assertEquals(expected.left(), actualEither)
+    }
+
 }
