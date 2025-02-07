@@ -19,19 +19,14 @@
 package ch.protonmail.android.mailmessage.presentation.mapper
 
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
-import ch.protonmail.android.mailmessage.presentation.R
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.DetailMoreActionsBottomSheetState
 import javax.inject.Inject
 
 class DetailMoreActionsBottomSheetUiMapper @Inject constructor() {
 
-    fun toHeaderUiModel(
-        messageSender: String,
-        messageSubject: String,
-        messageIdInConversation: String?
-    ) = DetailMoreActionsBottomSheetState.DetailDataUiModel(
-        TextUiModel.Text(messageSubject),
-        TextUiModel.TextResWithArgs(R.string.bottom_sheet_more_header_message_from, listOf(messageSender)),
-        messageIdInConversation
-    )
+    fun toHeaderUiModel(messageSubject: String, messageIdInConversation: String?) =
+        DetailMoreActionsBottomSheetState.DetailDataUiModel(
+            TextUiModel.Text(messageSubject),
+            messageIdInConversation
+        )
 }

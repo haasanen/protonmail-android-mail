@@ -148,7 +148,6 @@ sealed interface DetailMoreActionsBottomSheetState : BottomSheetContentState {
 
     data class DetailDataUiModel(
         val headerSubjectText: TextUiModel,
-        val headerDescriptionText: TextUiModel,
         val messageIdInConversation: String?
     )
 }

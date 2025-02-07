@@ -49,7 +49,7 @@ internal class DetailMoreActionsBottomSheetReducerTest(
     @Before
     fun setup() {
         every {
-            mapper.toHeaderUiModel(ExpectedSender, ExpectedSubject, ExpectedMessageId)
+            mapper.toHeaderUiModel(ExpectedSubject, ExpectedMessageId)
         } returns expectedUiModel
     }
 
@@ -75,7 +75,6 @@ internal class DetailMoreActionsBottomSheetReducerTest(
 
         private val expectedUiModel = DetailMoreActionsBottomSheetState.DetailDataUiModel(
             headerSubjectText = TextUiModel(ExpectedSubject),
-            headerDescriptionText = TextUiModel(ExpectedSender),
             messageIdInConversation = ExpectedMessageId
         )
         private val transitionsFromLoadingState = listOf(

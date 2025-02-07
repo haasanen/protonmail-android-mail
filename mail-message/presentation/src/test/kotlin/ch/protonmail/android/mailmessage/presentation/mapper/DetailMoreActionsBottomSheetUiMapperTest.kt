@@ -19,7 +19,6 @@
 package ch.protonmail.android.mailmessage.presentation.mapper
 
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
-import ch.protonmail.android.mailmessage.presentation.R
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.DetailMoreActionsBottomSheetState
 import org.junit.Test
 import kotlin.test.assertEquals
@@ -33,15 +32,11 @@ internal class DetailMoreActionsBottomSheetUiMapperTest {
         // Given
         val expected = DetailMoreActionsBottomSheetState.DetailDataUiModel(
             headerSubjectText = TextUiModel(ExpectedSubject),
-            headerDescriptionText = TextUiModel.TextResWithArgs(
-                R.string.bottom_sheet_more_header_message_from,
-                listOf(ExpectedSender)
-            ),
             messageIdInConversation = ExpectedMessageId
         )
 
         // When
-        val actual = mapper.toHeaderUiModel(ExpectedSender, ExpectedSubject, ExpectedMessageId)
+        val actual = mapper.toHeaderUiModel(ExpectedSubject, ExpectedMessageId)
 
         // Then
         assertEquals(expected, actual)

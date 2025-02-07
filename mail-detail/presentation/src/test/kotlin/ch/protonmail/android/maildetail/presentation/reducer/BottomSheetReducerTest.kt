@@ -279,7 +279,6 @@ internal class BottomSheetReducerTest(
                 expectedState = BottomSheetState(
                     DetailMoreActionsBottomSheetState.Data(
                         DetailMoreActionsBottomSheetState.DetailDataUiModel(
-                            headerDescriptionText = TextUiModel("Sender"),
                             headerSubjectText = TextUiModel("Subject"),
                             messageIdInConversation = "messageId"
                         ),

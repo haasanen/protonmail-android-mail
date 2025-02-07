@@ -43,7 +43,7 @@ class DetailMoreActionsBottomSheetReducer @Inject constructor(
     }
 
     private fun DataLoaded.toNewBottomSheetState(currentState: BottomSheetState?): BottomSheetState {
-        val headerUiModel = mapper.toHeaderUiModel(messageSender, messageSubject, messageIdInConversation)
+        val headerUiModel = mapper.toHeaderUiModel(messageSubject, messageIdInConversation)
         val replyActions = availableActions.replyActions.toActionUiModels()
         val messageActions = availableActions.mailboxItemActions.toActionUiModels()
         val moveActions = availableActions.moveActions.toActionUiModels()
