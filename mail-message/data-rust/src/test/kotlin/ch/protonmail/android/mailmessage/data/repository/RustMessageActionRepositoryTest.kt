@@ -89,7 +89,7 @@ class RustMessageActionRepositoryTest {
 
         // Then
         val expected = AvailableActions(
-            emptyList(),
+            listOf(Action.Reply, Action.Forward),
             listOf(Action.Star, Action.Label),
             listOf(Action.Spam, Action.Archive),
             listOf(Action.ViewInDarkMode, Action.ViewInLightMode)

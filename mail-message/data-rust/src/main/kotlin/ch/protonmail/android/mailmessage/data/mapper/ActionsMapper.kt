@@ -85,12 +85,9 @@ fun MessageAvailableActions.toAvailableActions(): AvailableActions {
 
 fun List<ReplyAction>.replyActionsToActions() = this.map { replyAction ->
     when (replyAction) {
-        ReplyAction.REPLY,
-        ReplyAction.REPLY_ALL,
-        ReplyAction.FORWARD -> {
-            Timber.i("rust-actions-mapper: Skipping unhandled action mapping generalActions: $replyAction")
-            null
-        }
+        ReplyAction.REPLY -> Action.Reply
+        ReplyAction.REPLY_ALL -> Action.ReplyAll
+        ReplyAction.FORWARD -> Action.Forward
     }
 }
 
