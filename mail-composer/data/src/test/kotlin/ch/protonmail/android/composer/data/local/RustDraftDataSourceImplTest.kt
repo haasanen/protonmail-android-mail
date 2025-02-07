@@ -446,6 +446,62 @@ class RustDraftDataSourceImplTest {
         assertEquals(actual, expected.left())
     }
 
+    @Test
+    fun `remove to recipient calls rust recipient wrapper to remove recipient`() = runTest {
+        // Given
+        val recipient = RecipientSample.Alice
+        val singleRecipient = recipient.toSingleRecipientEntry()
+        val toRecipientsWrapperMock = mockk<ComposerRecipientListWrapper>()
+        val expectedDraftWrapper = expectDraftWrapperReturns(
+            toRecipientsWrapper = toRecipientsWrapperMock
+        )
+        dataSource.rustDraftWrapper = expectedDraftWrapper
+        coEvery { toRecipientsWrapperMock.removeSingleRecipient(singleRecipient) } returns Unit.right()
+
+        // When
+        val actual = dataSource.removeToRecipient(recipient)
+
+        // Then
+        assertEquals(actual, Unit.right())
+    }
+
+    @Test
+    fun `remove cc recipient calls rust recipient wrapper to remove recipient`() = runTest {
+        // Given
+        val recipient = RecipientSample.Alice
+        val singleRecipient = recipient.toSingleRecipientEntry()
+        val ccRecipientsWrapperMock = mockk<ComposerRecipientListWrapper>()
+        val expectedDraftWrapper = expectDraftWrapperReturns(
+            ccRecipientsWrapper = ccRecipientsWrapperMock
+        )
+        dataSource.rustDraftWrapper = expectedDraftWrapper
+        coEvery { ccRecipientsWrapperMock.removeSingleRecipient(singleRecipient) } returns Unit.right()
+
+        // When
+        val actual = dataSource.removeCcRecipient(recipient)
+
+        // Then
+        assertEquals(actual, Unit.right())
+    }
+
+    @Test
+    fun `remove Bcc recipient calls rust recipient wrapper to remove recipient`() = runTest {
+        // Given
+        val recipient = RecipientSample.Alice
+        val singleRecipient = recipient.toSingleRecipientEntry()
+        val bccRecipientsWrapperMock = mockk<ComposerRecipientListWrapper>()
+        val expectedDraftWrapper = expectDraftWrapperReturns(
+            bccRecipientsWrapper = bccRecipientsWrapperMock
+        )
+        dataSource.rustDraftWrapper = expectedDraftWrapper
+        coEvery { bccRecipientsWrapperMock.removeSingleRecipient(singleRecipient) } returns Unit.right()
+
+        // When
+        val actual = dataSource.removeBccRecipient(recipient)
+
+        // Then
+        assertEquals(actual, Unit.right())
+    }
 
     private fun expectDraftWrapperReturns(
         subject: String = "",

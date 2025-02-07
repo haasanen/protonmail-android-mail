@@ -37,4 +37,7 @@ class ComposerRecipientListWrapper(private val rustRecipients: ComposerRecipient
             AddSingleRecipientError.DUPLICATE -> DataError.Local.SaveDraftError.DuplicateRecipient.left()
             AddSingleRecipientError.SAVE_FAILED -> DataError.Local.SaveDraftError.SaveFailed.left()
         }
+
+    suspend fun removeSingleRecipient(recipient: SingleRecipientEntry): Either<DataError, Unit> =
+        rustRecipients.removeSingleRecipient(recipient.email).right()
 }
