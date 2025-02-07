@@ -61,4 +61,20 @@ interface DraftRepository {
         messageId: MessageId,
         recipient: Recipient
     ): Either<DataError, Unit>
+
+    suspend fun removeToRecipient(
+        userId: UserId,
+        messageId: MessageId,
+        recipient: Recipient
+    ): Either<DataError, Unit>
+    suspend fun removeCcRecipient(
+        userId: UserId,
+        messageId: MessageId,
+        recipient: Recipient
+    ): Either<DataError, Unit>
+    suspend fun removeBccRecipient(
+        userId: UserId,
+        messageId: MessageId,
+        recipient: Recipient
+    ): Either<DataError, Unit>
 }

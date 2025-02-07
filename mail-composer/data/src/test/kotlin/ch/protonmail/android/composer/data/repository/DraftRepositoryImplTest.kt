@@ -269,4 +269,97 @@ class DraftRepositoryImplTest {
         // Then
         assertEquals(expected.left(), actual)
     }
+
+    @Test
+    fun `returns success when remove draft to recipient succeeds`() = runTest {
+        // Given
+        val userId = UserIdSample.Primary
+        val messageId = MessageIdSample.PlainTextMessage
+        val recipient = RecipientSample.Bob
+        coEvery { draftDataSource.removeToRecipient(recipient) } returns Unit.right()
+
+        // When
+        val actual = draftRepository.removeToRecipient(userId, messageId, recipient)
+
+        // Then
+        assertEquals(Unit.right(), actual)
+    }
+
+    @Test
+    fun `returns error when remove draft to recipient fails`() = runTest {
+        // Given
+        val userId = UserIdSample.Primary
+        val expected = DataError.Local.SaveDraftError.Unknown
+        val messageId = MessageIdSample.PlainTextMessage
+        val recipient = RecipientSample.Bob
+        coEvery { draftDataSource.removeToRecipient(recipient) } returns expected.left()
+
+        // When
+        val actual = draftRepository.removeToRecipient(userId, messageId, recipient)
+
+        // Then
+        assertEquals(expected.left(), actual)
+    }
+
+    @Test
+    fun `returns success when remove draft cc recipient succeeds`() = runTest {
+        // Given
+        val userId = UserIdSample.Primary
+        val messageId = MessageIdSample.PlainTextMessage
+        val recipient = RecipientSample.Bob
+        coEvery { draftDataSource.removeCcRecipient(recipient) } returns Unit.right()
+
+        // When
+        val actual = draftRepository.removeCcRecipient(userId, messageId, recipient)
+
+        // Then
+        assertEquals(Unit.right(), actual)
+    }
+
+    @Test
+    fun `returns error when remove draft cc recipient fails`() = runTest {
+        // Given
+        val userId = UserIdSample.Primary
+        val expected = DataError.Local.SaveDraftError.Unknown
+        val messageId = MessageIdSample.PlainTextMessage
+        val recipient = RecipientSample.Bob
+        coEvery { draftDataSource.removeCcRecipient(recipient) } returns expected.left()
+
+        // When
+        val actual = draftRepository.removeCcRecipient(userId, messageId, recipient)
+
+        // Then
+        assertEquals(expected.left(), actual)
+    }
+
+    @Test
+    fun `returns success when remove draft bcc recipient succeeds`() = runTest {
+        // Given
+        val userId = UserIdSample.Primary
+        val messageId = MessageIdSample.PlainTextMessage
+        val recipient = RecipientSample.Bob
+        coEvery { draftDataSource.removeBccRecipient(recipient) } returns Unit.right()
+
+        // When
+        val actual = draftRepository.removeBccRecipient(userId, messageId, recipient)
+
+        // Then
+        assertEquals(Unit.right(), actual)
+    }
+
+    @Test
+    fun `returns error when remove draft bcc recipient fails`() = runTest {
+        // Given
+        val userId = UserIdSample.Primary
+        val expected = DataError.Local.SaveDraftError.Unknown
+        val messageId = MessageIdSample.PlainTextMessage
+        val recipient = RecipientSample.Bob
+        coEvery { draftDataSource.removeBccRecipient(recipient) } returns expected.left()
+
+        // When
+        val actual = draftRepository.removeBccRecipient(userId, messageId, recipient)
+
+        // Then
+        assertEquals(expected.left(), actual)
+    }
 }
