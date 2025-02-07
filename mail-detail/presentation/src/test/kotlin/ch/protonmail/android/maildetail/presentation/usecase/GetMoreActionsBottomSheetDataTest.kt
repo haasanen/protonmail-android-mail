@@ -2,6 +2,7 @@ package ch.protonmail.android.maildetail.presentation.usecase
 
 import arrow.core.left
 import arrow.core.right
+import ch.protonmail.android.mailcommon.domain.model.Action
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.sample.ConversationIdSample
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
@@ -59,7 +60,8 @@ class GetMoreActionsBottomSheetDataTest {
             messageSender = message.sender.name,
             messageSubject = message.subject,
             messageIdInConversation = message.messageId.id,
-            availableActions = availableActions
+            availableActions = availableActions,
+            customizeToolbarAction = null
         )
         assertEquals(expected, actual)
     }
@@ -104,7 +106,8 @@ class GetMoreActionsBottomSheetDataTest {
             messageSender = conversation.senders.first().name,
             messageSubject = conversation.subject,
             messageIdInConversation = null,
-            availableActions = availableActions
+            availableActions = availableActions,
+            customizeToolbarAction = Action.CustomizeToolbar
         )
         assertEquals(expected, actual)
     }

@@ -274,7 +274,8 @@ internal class BottomSheetReducerTest(
                     messageSender = "Sender",
                     messageSubject = "Subject",
                     messageIdInConversation = "messageId",
-                    availableActions = AvailableActionsTestData.replyActionsOnly
+                    availableActions = AvailableActionsTestData.replyActionsOnly,
+                    customizeToolbarAction = null
                 ),
                 expectedState = BottomSheetState(
                     DetailMoreActionsBottomSheetState.Data(
@@ -285,7 +286,8 @@ internal class BottomSheetReducerTest(
                         persistentListOf(ActionUiModelSample.ReplyAll),
                         persistentListOf(),
                         persistentListOf(),
-                        persistentListOf()
+                        persistentListOf(),
+                        null
                     )
                 ),
                 reducesBottomSheetVisibilityEffects = false,

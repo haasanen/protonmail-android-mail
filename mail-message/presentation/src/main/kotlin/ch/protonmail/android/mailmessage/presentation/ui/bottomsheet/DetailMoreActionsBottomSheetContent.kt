@@ -61,6 +61,7 @@ fun DetailMoreActionsBottomSheetContent(
             messageActions = state.messageActions,
             moveActions = state.moveActions,
             genericActions = state.genericActions,
+            customizeToolbarActionUiModel = state.customizeToolbarActionUiModel,
             actionCallbacks = actions
         )
 
@@ -75,6 +76,7 @@ fun DetailMoreActionsBottomSheetContent(
     messageActions: ImmutableList<ActionUiModel>,
     moveActions: ImmutableList<ActionUiModel>,
     genericActions: ImmutableList<ActionUiModel>,
+    customizeToolbarActionUiModel: ActionUiModel?,
     actionCallbacks: DetailMoreActionsBottomSheetContent.Actions
 ) {
 
@@ -218,6 +220,7 @@ object DetailMoreActionsBottomSheetContent {
         val onUnStarConversation: () -> Unit,
         val onMoveConversation: () -> Unit,
         val onPrintConversation: () -> Unit
+        val onCustomizeToolbar: () -> Unit,
     )
 }
 
@@ -242,6 +245,7 @@ private fun BottomSheetContentPreview() {
                 ),
                 moveActions = persistentListOf(),
                 genericActions = persistentListOf()
+                customizeToolbarActionUiModel = null
             ),
             actions = DetailMoreActionsBottomSheetContent.Actions(
                 onReply = {},
@@ -273,6 +277,7 @@ private fun BottomSheetContentPreview() {
                 onUnStarConversation = {},
                 onStarConversation = {},
                 onPrintConversation = {}
+                onCustomizeToolbar = {},
             )
         )
     }

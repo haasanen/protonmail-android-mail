@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.mailmessage.presentation.reducer
 
+import ch.protonmail.android.mailcommon.domain.model.Action
 import ch.protonmail.android.mailcommon.presentation.mapper.ActionUiModelMapper
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcommon.presentation.sample.ActionUiModelSample
@@ -84,7 +85,8 @@ internal class DetailMoreActionsBottomSheetReducerTest(
                     messageSender = ExpectedSender,
                     messageSubject = ExpectedSubject,
                     messageIdInConversation = ExpectedMessageId,
-                    availableActions = AvailableActionsTestData.replyReportPhishing
+                    availableActions = AvailableActionsTestData.replyReportPhishing,
+                    customizeToolbarAction = null
                 ),
                 expectedState = BottomSheetState(
                     contentState = DetailMoreActionsBottomSheetState.Data(
@@ -92,7 +94,8 @@ internal class DetailMoreActionsBottomSheetReducerTest(
                         replyActions = persistentListOf(ActionUiModelSample.Reply),
                         messageActions = persistentListOf(),
                         moveActions = persistentListOf(),
-                        genericActions = persistentListOf(ActionUiModelSample.ReportPhishing)
+                        genericActions = persistentListOf(ActionUiModelSample.ReportPhishing),
+                        customizeToolbarActionUiModel = null
                     )
                 )
             ),
@@ -102,7 +105,8 @@ internal class DetailMoreActionsBottomSheetReducerTest(
                     messageSender = ExpectedSender,
                     messageSubject = ExpectedSubject,
                     messageIdInConversation = ExpectedMessageId,
-                    availableActions = AvailableActionsTestData.forwardReportPhishingActions
+                    availableActions = AvailableActionsTestData.forwardReportPhishingActions,
+                    customizeToolbarAction = Action.CustomizeToolbar
                 ),
                 expectedState = BottomSheetState(
                     contentState = DetailMoreActionsBottomSheetState.Data(
@@ -110,7 +114,8 @@ internal class DetailMoreActionsBottomSheetReducerTest(
                         replyActions = persistentListOf(ActionUiModelSample.Forward),
                         messageActions = persistentListOf(),
                         moveActions = persistentListOf(),
-                        genericActions = persistentListOf(ActionUiModelSample.ReportPhishing)
+                        genericActions = persistentListOf(ActionUiModelSample.ReportPhishing),
+                        customizeToolbarActionUiModel = ActionUiModelSample.CustomizeToolbar
                     )
                 )
             ),
@@ -120,7 +125,8 @@ internal class DetailMoreActionsBottomSheetReducerTest(
                     messageSender = ExpectedSender,
                     messageSubject = ExpectedSubject,
                     messageIdInConversation = ExpectedMessageId,
-                    availableActions = AvailableActionsTestData.fullAvailableActions
+                    availableActions = AvailableActionsTestData.fullAvailableActions,
+                    customizeToolbarAction = null
                 ),
                 expectedState = BottomSheetState(
                     contentState = DetailMoreActionsBottomSheetState.Data(
@@ -130,7 +136,8 @@ internal class DetailMoreActionsBottomSheetReducerTest(
                         moveActions = persistentListOf(ActionUiModelSample.Archive, ActionUiModelSample.Trash),
                         genericActions = persistentListOf(
                             ActionUiModelSample.ReportPhishing, ActionUiModelSample.SavePdf
-                        )
+                        ),
+                        customizeToolbarActionUiModel = null
                     )
                 )
             )

@@ -48,6 +48,7 @@ class DetailMoreActionsBottomSheetReducer @Inject constructor(
         val messageActions = availableActions.mailboxItemActions.toActionUiModels()
         val moveActions = availableActions.moveActions.toActionUiModels()
         val genericActions = availableActions.genericActions.toActionUiModels()
+        val customizeToolbarActionUiModel = customizeToolbarAction?.let { actionsUiModelMapper.toUiModel(it) }
 
         return BottomSheetState(
             contentState = DetailMoreActionsBottomSheetState.Data(
@@ -55,7 +56,8 @@ class DetailMoreActionsBottomSheetReducer @Inject constructor(
                 replyActions = replyActions,
                 messageActions = messageActions,
                 moveActions = moveActions,
-                genericActions = genericActions
+                genericActions = genericActions,
+                customizeToolbarActionUiModel = customizeToolbarActionUiModel
             ),
             bottomSheetVisibilityEffect = currentState?.bottomSheetVisibilityEffect ?: Effect.empty()
         )

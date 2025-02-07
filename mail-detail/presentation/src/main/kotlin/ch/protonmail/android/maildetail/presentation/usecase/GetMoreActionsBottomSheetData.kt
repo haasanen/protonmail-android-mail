@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.maildetail.presentation.usecase
 
+import ch.protonmail.android.mailcommon.domain.model.Action
 import ch.protonmail.android.mailcommon.domain.model.AvailableActions
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailconversation.domain.usecase.GetConversationAvailableActions
@@ -60,7 +61,8 @@ class GetMoreActionsBottomSheetData @Inject constructor(
                 messageSender = conversation.senders.first().name,
                 messageSubject = conversation.subject,
                 messageIdInConversation = null,
-                availableActions = availableActions
+                availableActions = availableActions,
+                customizeToolbarAction = Action.CustomizeToolbar
             )
         }.getOrNull()
 
@@ -75,7 +77,8 @@ class GetMoreActionsBottomSheetData @Inject constructor(
             messageSender = message.sender.name,
             messageSubject = message.subject,
             messageIdInConversation = message.messageId.id,
-            availableActions = availableActions
+            availableActions = availableActions,
+            customizeToolbarAction = null
         )
     }
 }

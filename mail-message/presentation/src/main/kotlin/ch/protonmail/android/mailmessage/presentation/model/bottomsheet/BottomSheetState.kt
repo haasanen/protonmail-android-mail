@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.mailmessage.presentation.model.bottomsheet
 
+import ch.protonmail.android.mailcommon.domain.model.Action
 import ch.protonmail.android.mailcommon.domain.model.AvailableActions
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.ActionUiModel
@@ -131,7 +132,8 @@ sealed interface DetailMoreActionsBottomSheetState : BottomSheetContentState {
         val replyActions: ImmutableList<ActionUiModel>,
         val messageActions: ImmutableList<ActionUiModel>,
         val moveActions: ImmutableList<ActionUiModel>,
-        val genericActions: ImmutableList<ActionUiModel>
+        val genericActions: ImmutableList<ActionUiModel>,
+        val customizeToolbarActionUiModel: ActionUiModel?
     ) : DetailMoreActionsBottomSheetState
 
     object Loading : DetailMoreActionsBottomSheetState
@@ -142,7 +144,8 @@ sealed interface DetailMoreActionsBottomSheetState : BottomSheetContentState {
             val messageSender: String,
             val messageSubject: String,
             val messageIdInConversation: String?,
-            val availableActions: AvailableActions
+            val availableActions: AvailableActions,
+            val customizeToolbarAction: Action?
         ) : DetailMoreActionsBottomSheetEvent
     }
 

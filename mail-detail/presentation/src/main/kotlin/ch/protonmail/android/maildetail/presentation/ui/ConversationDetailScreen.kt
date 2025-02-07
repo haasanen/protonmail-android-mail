@@ -285,6 +285,10 @@ fun ConversationDetailScreen(
                         onStarConversation = { viewModel.submit(ConversationDetailViewAction.Star) },
                         onUnStarConversation = { viewModel.submit(ConversationDetailViewAction.UnStar) },
                         onPrintConversation = { Timber.d("Print not implemented for conversation") }
+                        onCustomizeToolbar = {
+                            viewModel.submit(ConversationDetailViewAction.DismissBottomSheet)
+                            actions.showFeatureMissingSnackbar()
+                        },
                     )
                 )
 
