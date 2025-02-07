@@ -22,7 +22,6 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import arrow.core.getOrElse
-import ch.protonmail.android.mailcommon.domain.AppInBackgroundState
 import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.domain.model.IntentShareInfo
 import ch.protonmail.android.mailcommon.domain.model.decode
@@ -41,7 +40,6 @@ import ch.protonmail.android.mailcomposer.domain.usecase.ClearMessageSendingErro
 import ch.protonmail.android.mailcomposer.domain.usecase.CreateDraftForAction
 import ch.protonmail.android.mailcomposer.domain.usecase.CreateEmptyDraft
 import ch.protonmail.android.mailcomposer.domain.usecase.DeleteAttachment
-import ch.protonmail.android.mailcomposer.domain.usecase.DraftUploader
 import ch.protonmail.android.mailcomposer.domain.usecase.GetComposerSenderAddresses
 import ch.protonmail.android.mailcomposer.domain.usecase.GetComposerSenderAddresses.Error
 import ch.protonmail.android.mailcomposer.domain.usecase.GetExternalRecipients
@@ -108,7 +106,6 @@ import kotlin.time.Duration
 @Suppress("LongParameterList", "TooManyFunctions", "LargeClass")
 @HiltViewModel
 class ComposerViewModel @Inject constructor(
-    private val appInBackgroundState: AppInBackgroundState,
     private val storeDraftWithBody: StoreDraftWithBody,
     private val storeDraftWithSubject: StoreDraftWithSubject,
     private val updateToRecipients: UpdateToRecipients,
@@ -124,7 +121,6 @@ class ComposerViewModel @Inject constructor(
     private val isValidEmailAddress: IsValidEmailAddress,
     private val getComposerSenderAddresses: GetComposerSenderAddresses,
     private val composerIdlingResource: ComposerIdlingResource,
-    private val draftUploader: DraftUploader,
     private val observeMessageAttachments: ObserveMessageAttachments,
     private val observeMessageSendingError: ObserveMessageSendingError,
     private val clearMessageSendingError: ClearMessageSendingError,
@@ -198,8 +194,6 @@ class ComposerViewModel @Inject constructor(
     // Storing of attachments not implemented
     private fun prefillForShareDraftAction(shareDraftAction: DraftAction.PrefillForShare) {
         val fileShareInfo = shareDraftAction.intentShareInfo.decode()
-
-        uploadDraftContinuouslyWhileInForeground(DraftAction.Compose)
 
         viewModelScope.launch {
             fileShareInfo.attachmentUris.takeIfNotEmpty()?.let { uris ->
@@ -358,20 +352,6 @@ class ComposerViewModel @Inject constructor(
         }
     }
 
-    private fun uploadDraftContinuouslyWhileInForeground(draftAction: DraftAction) {
-        appInBackgroundState.observe().onEach { isAppInBackground ->
-            if (isAppInBackground) {
-                Timber.d("App is in background, stop continuous upload")
-                draftUploader.stopContinuousUpload()
-            } else {
-                Timber.d("App is in foreground, start continuous upload")
-                draftUploader.startContinuousUpload(
-                    primaryUserId(), currentMessageId(), draftAction, this.viewModelScope
-                )
-            }
-        }.launchIn(viewModelScope)
-    }
-
     private fun observeMessageAttachments() {
         primaryUserId
             .flatMapLatest { userId -> observeMessageAttachments(userId, currentMessageId()) }
@@ -459,15 +439,7 @@ class ComposerViewModel @Inject constructor(
         return when {
             draftFields.areBlank() -> action
 
-            else -> {
-                viewModelScope.launch {
-                    withContext(NonCancellable) {
-                        draftUploader.stopContinuousUpload()
-                        draftUploader.upload(primaryUserId(), currentMessageId())
-                    }
-                }
-                ComposerEvent.OnCloseWithDraftSaved
-            }
+            else -> ComposerEvent.OnCloseWithDraftSaved
         }
     }
 
@@ -507,7 +479,6 @@ class ComposerViewModel @Inject constructor(
             else -> {
                 viewModelScope.launch {
                     withContext(NonCancellable) {
-                        draftUploader.stopContinuousUpload()
                         sendMessage(primaryUserId(), currentMessageId())
                     }
                 }
