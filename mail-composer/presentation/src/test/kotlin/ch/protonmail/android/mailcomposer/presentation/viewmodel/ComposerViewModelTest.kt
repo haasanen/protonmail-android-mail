@@ -62,6 +62,9 @@ import ch.protonmail.android.mailcomposer.domain.usecase.StoreDraftWithAllFields
 import ch.protonmail.android.mailcomposer.domain.usecase.StoreDraftWithBody
 import ch.protonmail.android.mailcomposer.domain.usecase.StoreDraftWithRecipients
 import ch.protonmail.android.mailcomposer.domain.usecase.StoreDraftWithSubject
+import ch.protonmail.android.mailcomposer.domain.usecase.UpdateBccRecipients
+import ch.protonmail.android.mailcomposer.domain.usecase.UpdateCcRecipients
+import ch.protonmail.android.mailcomposer.domain.usecase.UpdateToRecipients
 import ch.protonmail.android.mailcomposer.presentation.R
 import ch.protonmail.android.mailcomposer.presentation.mapper.ParticipantMapper
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerAction
@@ -153,6 +156,9 @@ class ComposerViewModelTest {
         coEvery { this@mockk.invoke(any(), any(), any()) } returns Unit.right()
     }
     private val storeDraftWithRecipientsMock = mockk<StoreDraftWithRecipients>()
+    private val updateToRecipients = mockk<UpdateToRecipients>()
+    private val updateCcRecipients = mockk<UpdateCcRecipients>()
+    private val updateBccRecipients = mockk<UpdateBccRecipients>()
     private val sendMessageMock = mockk<SendMessage>()
     private val networkManagerMock = mockk<NetworkManager>()
     private val getContactsMock = mockk<GetContacts>()
@@ -208,6 +214,9 @@ class ComposerViewModelTest {
             storeDraftWithSubjectMock,
             storeDraftWithAllFields,
             storeDraftWithRecipientsMock,
+            updateToRecipients,
+            updateCcRecipients,
+            updateBccRecipients,
             getContactsMock,
             searchContactsMock,
             searchDeviceContactsMock,
@@ -425,10 +434,10 @@ class ComposerViewModelTest {
         val expectedMessageId = expectedMessageId { MessageIdSample.EmptyDraft }
         val expectedUserId = expectedUserId { UserIdSample.Primary }
         val action = ComposerAction.RecipientsToChanged(recipientsUiModels)
-        expectStoreDraftRecipientsSucceeds(
+        expectUpdateToRecipientsSucceeds(
             expectedMessageId,
             expectedUserId,
-            expectedTo = expectedRecipients
+            expectedRecipients
         )
         mockParticipantMapper()
         expectNoInputDraftMessageId()
@@ -446,10 +455,11 @@ class ComposerViewModelTest {
 
         // Then
         coVerify {
-            storeDraftWithRecipientsMock(
+            updateToRecipients(
                 expectedUserId,
                 expectedMessageId,
-                to = expectedRecipients
+                emptyList(),
+                expectedRecipients
             )
         }
     }
@@ -467,10 +477,10 @@ class ComposerViewModelTest {
         val expectedMessageId = expectedMessageId { MessageIdSample.EmptyDraft }
         val expectedUserId = expectedUserId { UserIdSample.Primary }
         val action = ComposerAction.RecipientsCcChanged(recipientsUiModels)
-        expectStoreDraftRecipientsSucceeds(
+        expectUpdateCcRecipientsSucceeds(
             expectedMessageId,
             expectedUserId,
-            expectedCc = expectedRecipients
+            expectedRecipients
         )
         mockParticipantMapper()
         expectNoInputDraftMessageId()
@@ -488,10 +498,11 @@ class ComposerViewModelTest {
 
         // Then
         coVerify {
-            storeDraftWithRecipientsMock(
+            updateCcRecipients(
                 expectedUserId,
                 expectedMessageId,
-                cc = expectedRecipients
+                emptyList(),
+                expectedRecipients
             )
         }
     }
@@ -509,10 +520,10 @@ class ComposerViewModelTest {
         val expectedMessageId = expectedMessageId { MessageIdSample.EmptyDraft }
         val expectedUserId = expectedUserId { UserIdSample.Primary }
         val action = ComposerAction.RecipientsBccChanged(recipientsUiModels)
-        expectStoreDraftRecipientsSucceeds(
+        expectUpdateBccRecipientsSucceeds(
             expectedMessageId,
             expectedUserId,
-            expectedBcc = expectedRecipients
+            expectedRecipients
         )
         mockParticipantMapper()
         expectNoInputDraftMessageId()
@@ -530,10 +541,11 @@ class ComposerViewModelTest {
 
         // Then
         coVerify {
-            storeDraftWithRecipientsMock(
+            updateBccRecipients(
                 expectedUserId,
                 expectedMessageId,
-                bcc = expectedRecipients
+                emptyList(),
+                expectedRecipients
             )
         }
     }
@@ -1396,10 +1408,7 @@ class ComposerViewModelTest {
             RecipientUiModel.Invalid("invalid email")
         )
         val action = ComposerAction.RecipientsToChanged(recipientsUiModels)
-        expectStoreDraftRecipientsFails(
-            expectedMessageId, expectedUserId,
-            expectedTo = expectedRecipients, expectedCc = null, expectedBcc = null
-        ) {
+        expectUpdateDraftToRecipientsFails(expectedMessageId, expectedUserId, expectedRecipients) {
             DataError.Local.SaveDraftError.DuplicateRecipient
         }
         mockParticipantMapper()
@@ -1422,7 +1431,7 @@ class ComposerViewModelTest {
     }
 
     @Test
-    fun `emits state with saving draft subject error when save draft CC returns error`() = runTest {
+    fun `emits state with saving draft recipient error when save draft CC returns error`() = runTest {
         // Given
         val expectedMessageId = expectedMessageId { MessageIdSample.EmptyDraft }
         val expectedUserId = expectedUserId { UserIdSample.Primary }
@@ -1434,10 +1443,7 @@ class ComposerViewModelTest {
             RecipientUiModel.Invalid("invalid email")
         )
         val action = ComposerAction.RecipientsCcChanged(recipientsUiModels)
-        expectStoreDraftRecipientsFails(
-            expectedMessageId, expectedUserId,
-            expectedTo = null, expectedCc = expectedRecipients, expectedBcc = null
-        ) {
+        expectUpdateDraftCcRecipientsFails(expectedMessageId, expectedUserId, expectedRecipients) {
             DataError.Local.SaveDraftError.DuplicateRecipient
         }
         mockParticipantMapper()
@@ -1460,7 +1466,7 @@ class ComposerViewModelTest {
     }
 
     @Test
-    fun `emits state with saving draft subject error when save draft BCC returns error`() = runTest {
+    fun `emits state with saving draft recipients error when save draft BCC returns error`() = runTest {
         // Given
         val expectedMessageId = expectedMessageId { MessageIdSample.EmptyDraft }
         val expectedUserId = expectedUserId { UserIdSample.Primary }
@@ -1472,10 +1478,7 @@ class ComposerViewModelTest {
             RecipientUiModel.Invalid("invalid email")
         )
         val action = ComposerAction.RecipientsBccChanged(recipientsUiModels)
-        expectStoreDraftRecipientsFails(
-            expectedMessageId, expectedUserId,
-            expectedTo = null, expectedCc = null, expectedBcc = expectedRecipients
-        ) {
+        expectUpdateDraftBccRecipientsFails(expectedMessageId, expectedUserId, expectedRecipients) {
             DataError.Local.SaveDraftError.DuplicateRecipient
         }
         mockParticipantMapper()
@@ -1970,7 +1973,7 @@ class ComposerViewModelTest {
         expectContacts()
         mockParticipantMapper()
         expectInputDraftAction { expectedAction }
-        expectStoreDraftRecipientsSucceeds(
+        expectUpdateToRecipientsSucceeds(
             expectedMessageId,
             expectedUserId,
             listOf(expectedRecipient)
@@ -2482,40 +2485,66 @@ class ComposerViewModelTest {
         } returns it.left()
     }
 
-    private fun expectStoreDraftRecipientsSucceeds(
+    private fun expectUpdateBccRecipientsSucceeds(
         expectedMessageId: MessageId,
         expectedUserId: UserId,
-        expectedTo: List<Recipient>? = null,
-        expectedCc: List<Recipient>? = null,
-        expectedBcc: List<Recipient>? = null
+        expectedRecipients: List<Recipient>
     ) {
         coEvery {
-            storeDraftWithRecipientsMock(
-                expectedUserId,
-                expectedMessageId,
-                to = expectedTo,
-                cc = expectedCc,
-                bcc = expectedBcc
-            )
+            updateBccRecipients(expectedUserId, expectedMessageId, emptyList(), expectedRecipients)
         } returns Unit.right()
     }
 
-    private fun expectStoreDraftRecipientsFails(
+    private fun expectUpdateDraftBccRecipientsFails(
         expectedMessageId: MessageId,
         expectedUserId: UserId,
-        expectedTo: List<Recipient>? = emptyList(),
-        expectedCc: List<Recipient>? = emptyList(),
-        expectedBcc: List<Recipient>? = emptyList(),
+        expectedRecipients: List<Recipient>,
         error: () -> DataError
     ) = error().also {
         coEvery {
-            storeDraftWithRecipientsMock(
-                expectedUserId,
-                expectedMessageId,
-                to = expectedTo,
-                cc = expectedCc,
-                bcc = expectedBcc
-            )
+            updateBccRecipients(expectedUserId, expectedMessageId, emptyList(), expectedRecipients)
+        } returns it.left()
+    }
+
+    private fun expectUpdateCcRecipientsSucceeds(
+        expectedMessageId: MessageId,
+        expectedUserId: UserId,
+        expectedRecipients: List<Recipient>
+    ) {
+        coEvery {
+            updateCcRecipients(expectedUserId, expectedMessageId, emptyList(), expectedRecipients)
+        } returns Unit.right()
+    }
+
+    private fun expectUpdateDraftCcRecipientsFails(
+        expectedMessageId: MessageId,
+        expectedUserId: UserId,
+        expectedRecipients: List<Recipient>,
+        error: () -> DataError
+    ) = error().also {
+        coEvery {
+            updateCcRecipients(expectedUserId, expectedMessageId, emptyList(), expectedRecipients)
+        } returns it.left()
+    }
+
+    private fun expectUpdateToRecipientsSucceeds(
+        expectedMessageId: MessageId,
+        expectedUserId: UserId,
+        expectedRecipients: List<Recipient>
+    ) {
+        coEvery {
+            updateToRecipients(expectedUserId, expectedMessageId, emptyList(), expectedRecipients)
+        } returns Unit.right()
+    }
+
+    private fun expectUpdateDraftToRecipientsFails(
+        expectedMessageId: MessageId,
+        expectedUserId: UserId,
+        expectedRecipients: List<Recipient>,
+        error: () -> DataError
+    ) = error().also {
+        coEvery {
+            updateToRecipients(expectedUserId, expectedMessageId, emptyList(), expectedRecipients)
         } returns it.left()
     }
 
