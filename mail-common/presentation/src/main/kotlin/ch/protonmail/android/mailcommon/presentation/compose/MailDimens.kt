@@ -144,4 +144,6 @@ object MailDimens {
         val DetailsTitleWidth = 34.dp
         const val ShadowAlpha = 0.5f
     }
+
+    val DetailsMoreQuickReplyButtonSize = 84.dp
 }

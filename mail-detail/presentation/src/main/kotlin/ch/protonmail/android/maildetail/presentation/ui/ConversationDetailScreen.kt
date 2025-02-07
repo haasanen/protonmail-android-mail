@@ -232,14 +232,17 @@ fun ConversationDetailScreen(
                     state = bottomSheetContentState,
                     actions = DetailMoreActionsBottomSheetContent.Actions(
                         onReply = {
+                            viewModel.submit(ConversationDetailViewAction.DismissBottomSheet)
                             actions.showFeatureMissingSnackbar()
                             // actions.onReply
                         },
                         onReplyAll = {
+                            viewModel.submit(ConversationDetailViewAction.DismissBottomSheet)
                             actions.showFeatureMissingSnackbar()
                             // actions.onReplyAll
                         },
                         onForward = {
+                            viewModel.submit(ConversationDetailViewAction.DismissBottomSheet)
                             actions.showFeatureMissingSnackbar()
                             // actions.onForward
                         },
@@ -247,6 +250,10 @@ fun ConversationDetailScreen(
                         onStarMessage = { viewModel.submit(ConversationDetailViewAction.Star) },
                         onUnStarMessage = { viewModel.submit(ConversationDetailViewAction.UnStar) },
                         onMoveToInbox = { viewModel.submit(ConversationDetailViewAction.MoveMessageToInbox(it)) },
+                        onSaveMessageAsPdf = {
+                            viewModel.submit(ConversationDetailViewAction.DismissBottomSheet)
+                            actions.showFeatureMissingSnackbar()
+                        },
                         onLabel = {
                             viewModel.submit(ConversationDetailViewAction.RequestMessageLabelAsBottomSheet(it))
                         },
@@ -284,11 +291,19 @@ fun ConversationDetailScreen(
                         onMoveToSpamConversation = { viewModel.submit(ConversationDetailViewAction.MoveToSpam) },
                         onStarConversation = { viewModel.submit(ConversationDetailViewAction.Star) },
                         onUnStarConversation = { viewModel.submit(ConversationDetailViewAction.UnStar) },
-                        onPrintConversation = { Timber.d("Print not implemented for conversation") }
+                        onPrintConversation = {
+                            viewModel.submit(ConversationDetailViewAction.DismissBottomSheet)
+                            actions.showFeatureMissingSnackbar()
+                        },
+                        onCloseSheet = { viewModel.submit(ConversationDetailViewAction.DismissBottomSheet) },
                         onCustomizeToolbar = {
                             viewModel.submit(ConversationDetailViewAction.DismissBottomSheet)
                             actions.showFeatureMissingSnackbar()
                         },
+                        onSaveConversationAsPdf = {
+                            viewModel.submit(ConversationDetailViewAction.DismissBottomSheet)
+                            actions.showFeatureMissingSnackbar()
+                        }
                     )
                 )
 

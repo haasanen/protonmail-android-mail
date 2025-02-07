@@ -18,35 +18,48 @@
 
 package ch.protonmail.android.mailmessage.presentation.ui.bottomsheet
 
+import androidx.annotation.DrawableRes
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import ch.protonmail.android.mailcommon.domain.model.Action
-import ch.protonmail.android.mailcommon.presentation.NO_CONTENT_DESCRIPTION
 import ch.protonmail.android.mailcommon.presentation.model.ActionUiModel
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcommon.presentation.model.string
-import ch.protonmail.android.mailcommon.presentation.ui.MailDivider
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.DetailMoreActionsBottomSheetState
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
-import ch.protonmail.android.design.compose.component.ProtonRawListItem
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.titleMediumNorm
 import ch.protonmail.android.design.compose.theme.bodyMediumWeak
+import ch.protonmail.android.design.compose.theme.titleLargeNorm
+import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
+import kotlinx.collections.immutable.toImmutableList
 import timber.log.Timber
 
 @Composable
@@ -80,60 +93,173 @@ fun DetailMoreActionsBottomSheetContent(
     actionCallbacks: DetailMoreActionsBottomSheetContent.Actions
 ) {
 
-    Column {
-        Text(
-            modifier = Modifier
-                .padding(top = ProtonDimens.Spacing.Large)
-                .padding(bottom = ProtonDimens.Spacing.Tiny)
-                .padding(horizontal = ProtonDimens.Spacing.Large),
-            text = uiModel.headerSubjectText.string(),
-            style = ProtonTheme.typography.titleMediumNorm,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis
-        )
-        Text(
-            modifier = Modifier
-                .padding(horizontal = ProtonDimens.Spacing.Large)
-                .padding(bottom = ProtonDimens.Spacing.Standard),
-            text = uiModel.headerDescriptionText.string(),
-            style = ProtonTheme.typography.bodyMediumWeak,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+    ) {
+
+        SheetTitle(
+            modifier = Modifier.fillMaxWidth(),
+            headerSubjectText = uiModel.headerSubjectText,
+            onCloseSheetClicked = actionCallbacks.onCloseSheet
         )
 
-        MailDivider()
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(
+                    horizontal = ProtonDimens.Spacing.Large
+                )
+                .verticalScroll(rememberScrollState())
+        ) {
 
-        LazyColumn {
-            items(replyActions + messageActions + moveActions + genericActions) { actionItem ->
-                if (shouldSkipActionItem(actionItem, isSystemInDarkTheme())) return@items
-
-                ProtonRawListItem(
-                    modifier = Modifier
-                        .clickable {
-                            if (uiModel.messageIdInConversation != null) {
-                                callbackForAction(actionItem.action, actionCallbacks).invoke(
-                                    MessageId(uiModel.messageIdInConversation)
-                                )
-                            } else {
-                                callbackForConversation(actionItem.action, actionCallbacks).invoke()
-                            }
-                        }
-                        .padding(vertical = ProtonDimens.Spacing.Large)
-                ) {
-                    Icon(
-                        modifier = Modifier.padding(horizontal = ProtonDimens.Spacing.Large),
-                        painter = painterResource(id = actionItem.icon),
-                        contentDescription = NO_CONTENT_DESCRIPTION
-                    )
-                    Text(
-                        modifier = Modifier.weight(1f),
-                        text = actionItem.description.string(),
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
+            if (uiModel.messageIdInConversation != null) {
+                QuickReplyRow(replyActions) { actionUiModel ->
+                    callbackForAction(actionUiModel.action, actionCallbacks).invoke(
+                        MessageId(uiModel.messageIdInConversation)
                     )
                 }
             }
+
+            ActionGroup(
+                modifier = Modifier.padding(top = ProtonDimens.Spacing.Large),
+                actionUiModels = messageActions
+            ) { actionUiModel ->
+                if (uiModel.messageIdInConversation != null) {
+                    callbackForAction(actionUiModel.action, actionCallbacks).invoke(
+                        MessageId(uiModel.messageIdInConversation)
+                    )
+                } else {
+                    callbackForConversation(actionUiModel.action, actionCallbacks).invoke()
+                }
+            }
+
+            ActionGroup(
+                modifier = Modifier.padding(top = ProtonDimens.Spacing.Large),
+                actionUiModels = moveActions
+            ) { actionUiModel ->
+                if (uiModel.messageIdInConversation != null) {
+                    callbackForAction(actionUiModel.action, actionCallbacks).invoke(
+                        MessageId(uiModel.messageIdInConversation)
+                    )
+                } else {
+                    callbackForConversation(actionUiModel.action, actionCallbacks).invoke()
+                }
+            }
+
+            ActionGroup(
+                modifier = Modifier.padding(top = ProtonDimens.Spacing.Large),
+                actionUiModels = genericActions
+                    .filter { shouldSkipActionItem(it, isSystemInDarkTheme()).not() }
+                    .toImmutableList()
+            ) { actionUiModel ->
+                if (uiModel.messageIdInConversation != null) {
+                    callbackForAction(actionUiModel.action, actionCallbacks).invoke(
+                        MessageId(uiModel.messageIdInConversation)
+                    )
+                } else {
+                    callbackForConversation(actionUiModel.action, actionCallbacks).invoke()
+                }
+            }
+
+            if (customizeToolbarActionUiModel != null) {
+                ActionGroup(
+                    modifier = Modifier.padding(top = ProtonDimens.Spacing.Large),
+                    actionUiModels = persistentListOf(customizeToolbarActionUiModel),
+                    onActionClicked = { actionUiModel ->
+                        callbackForConversation(actionUiModel.action, actionCallbacks).invoke()
+                    }
+                )
+            }
         }
+    }
+}
+
+@Composable
+private fun SheetTitle(
+    modifier: Modifier,
+    headerSubjectText: TextUiModel,
+    onCloseSheetClicked: () -> Unit
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(
+                horizontal = ProtonDimens.Spacing.Small,
+                vertical = ProtonDimens.Spacing.Large
+            ),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            modifier = Modifier
+                .weight(1f),
+            text = headerSubjectText.string(),
+            style = ProtonTheme.typography.titleLargeNorm,
+            fontWeight = FontWeight.SemiBold,
+            maxLines = 1,
+            textAlign = TextAlign.Center,
+            overflow = TextOverflow.Ellipsis
+        )
+        IconButton(
+            modifier = Modifier.size(ProtonDimens.DefaultButtonMinHeight),
+            onClick = onCloseSheetClicked
+        ) {
+            Icon(
+                imageVector = Icons.Filled.Close,
+                tint = ProtonTheme.colors.iconNorm,
+                contentDescription = null
+            )
+        }
+    }
+}
+
+@Composable
+private fun QuickReplyRow(replyActions: ImmutableList<ActionUiModel>, onActionClicked: (ActionUiModel) -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(ProtonDimens.Spacing.Standard)
+    ) {
+        for (action in replyActions) {
+            QuickActionButton(
+                modifier = Modifier.weight(1f),
+                label = action.description.string(),
+                icon = action.icon,
+                onClick = { onActionClicked(action) }
+            )
+        }
+    }
+}
+
+@Composable
+private fun QuickActionButton(
+    modifier: Modifier = Modifier,
+    label: String,
+    @DrawableRes icon: Int,
+    onClick: () -> Unit
+) {
+    Column(
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = modifier
+            .clickable(onClick = onClick)
+            .height(MailDimens.DetailsMoreQuickReplyButtonSize)
+            .background(
+                color = ProtonTheme.colors.backgroundInvertedSecondary,
+                shape = ProtonTheme.shapes.extraLarge
+            )
+    ) {
+        Icon(
+            painter = painterResource(id = icon),
+            contentDescription = label,
+            tint = ProtonTheme.colors.iconNorm
+        )
+        Spacer(modifier = Modifier.size(ProtonDimens.Spacing.MediumLight))
+        Text(
+            text = label,
+            style = ProtonTheme.typography.bodyMediumWeak,
+            maxLines = 1
+        )
     }
 }
 
@@ -153,11 +279,14 @@ private fun callbackForConversation(
     Action.Spam -> actionCallbacks.onMoveToSpamConversation
     Action.Move -> actionCallbacks.onMoveConversation
     Action.Print -> actionCallbacks.onPrintConversation
+    Action.SavePdf -> actionCallbacks.onSaveConversationAsPdf
+    Action.CustomizeToolbar -> actionCallbacks.onCustomizeToolbar
 
     else -> {
         { Timber.d("Action not handled $action.") }
     }
 }
+
 private fun callbackForAction(
     action: Action,
     actionCallbacks: DetailMoreActionsBottomSheetContent.Actions
@@ -179,6 +308,7 @@ private fun callbackForAction(
     Action.Move -> actionCallbacks.onMove
     Action.Print -> actionCallbacks.onPrint
     Action.ReportPhishing -> actionCallbacks.onReportPhishing
+    Action.SavePdf -> actionCallbacks.onSaveMessageAsPdf
 
     else -> {
         { Timber.d("Action not handled $action.") }
@@ -208,6 +338,7 @@ object DetailMoreActionsBottomSheetContent {
         val onMove: (MessageId) -> Unit,
         val onPrint: (MessageId) -> Unit,
         val onReportPhishing: (MessageId) -> Unit,
+        val onSaveMessageAsPdf: (MessageId) -> Unit,
         val onMarkReadConversation: () -> Unit,
         val onMarkUnreadConversation: () -> Unit,
         val onLabelConversation: () -> Unit,
@@ -219,8 +350,11 @@ object DetailMoreActionsBottomSheetContent {
         val onStarConversation: () -> Unit,
         val onUnStarConversation: () -> Unit,
         val onMoveConversation: () -> Unit,
-        val onPrintConversation: () -> Unit
+        val onPrintConversation: () -> Unit,
+        val onCloseSheet: () -> Unit,
         val onCustomizeToolbar: () -> Unit,
+        val onSaveConversationAsPdf: () -> Unit
+
     )
 }
 
@@ -232,7 +366,6 @@ private fun BottomSheetContentPreview() {
             state = DetailMoreActionsBottomSheetState.Data(
                 detailDataUiModel = DetailMoreActionsBottomSheetState.DetailDataUiModel(
                     TextUiModel("Kudos on a Successful Completion of a Challenging Project!"),
-                    TextUiModel("Message from Antony Hayes"),
                     "123"
                 ),
                 replyActions = persistentListOf(
@@ -241,10 +374,19 @@ private fun BottomSheetContentPreview() {
                     ActionUiModel(Action.Forward)
                 ),
                 messageActions = persistentListOf(
-                    ActionUiModel(Action.ReportPhishing)
+                    ActionUiModel(Action.Delete),
+                    ActionUiModel(Action.Spam),
+                    ActionUiModel(Action.Inbox),
+                    ActionUiModel(Action.Archive)
                 ),
-                moveActions = persistentListOf(),
-                genericActions = persistentListOf()
+                moveActions = persistentListOf(
+                    ActionUiModel(Action.Move),
+                    ActionUiModel(Action.Trash)
+                ),
+                genericActions = persistentListOf(
+                    ActionUiModel(Action.ReportPhishing),
+                    ActionUiModel(Action.Print)
+                ),
                 customizeToolbarActionUiModel = null
             ),
             actions = DetailMoreActionsBottomSheetContent.Actions(
@@ -254,6 +396,7 @@ private fun BottomSheetContentPreview() {
                 onMarkUnread = {},
                 onStarMessage = {},
                 onUnStarMessage = {},
+                onSaveMessageAsPdf = {},
                 onLabel = {},
                 onViewInLightMode = {},
                 onViewInDarkMode = {},
@@ -276,8 +419,10 @@ private fun BottomSheetContentPreview() {
                 onDeleteConversation = {},
                 onUnStarConversation = {},
                 onStarConversation = {},
-                onPrintConversation = {}
+                onPrintConversation = {},
+                onCloseSheet = {},
                 onCustomizeToolbar = {},
+                onSaveConversationAsPdf = {}
             )
         )
     }

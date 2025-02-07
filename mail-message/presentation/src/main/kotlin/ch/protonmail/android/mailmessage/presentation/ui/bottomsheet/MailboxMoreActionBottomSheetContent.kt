@@ -101,21 +101,21 @@ fun MailboxMoreActionBottomSheetContent(
             ActionGroup(
                 actionUiModels = state.hiddenActionUiModels,
                 onActionClicked = { action ->
-                    callbackForAction(action.action, actionCallbacks)
+                    callbackForAction(action.action, actionCallbacks).invoke()
                 }
             )
             Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Large))
             ActionGroup(
                 actionUiModels = state.visibleActionUiModels,
                 onActionClicked = { action ->
-                    callbackForAction(action.action, actionCallbacks)
+                    callbackForAction(action.action, actionCallbacks).invoke()
                 }
             )
             Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Large))
             ActionGroup(
                 actionUiModels = persistentListOf(state.customizeToolbarActionUiModel),
                 onActionClicked = { action ->
-                    callbackForAction(action.action, actionCallbacks)
+                    callbackForAction(action.action, actionCallbacks).invoke()
                 }
             )
         }
