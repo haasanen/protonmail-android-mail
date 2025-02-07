@@ -29,8 +29,7 @@ import javax.inject.Inject
 
 class StoreDraftWithAllFields @Inject constructor(
     private val storeDraftWithSubject: StoreDraftWithSubject,
-    private val storeDraftWithBody: StoreDraftWithBody,
-    private val storeDraftWithRecipients: StoreDraftWithRecipients
+    private val storeDraftWithBody: StoreDraftWithBody
 ) {
 
     suspend operator fun invoke(
@@ -40,13 +39,6 @@ class StoreDraftWithAllFields @Inject constructor(
     ) = withContext(NonCancellable) {
         storeDraftWithBody(userId, draftMessageId, fields.body).logError(draftMessageId)
         storeDraftWithSubject(userId, draftMessageId, fields.subject).logError(draftMessageId)
-        storeDraftWithRecipients(
-            userId,
-            draftMessageId,
-            fields.recipientsTo.value,
-            fields.recipientsCc.value,
-            fields.recipientsBcc.value
-        ).logError(draftMessageId)
 
         Timber.d("Draft: finished storing draft locally $draftMessageId")
     }
