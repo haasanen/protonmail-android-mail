@@ -54,7 +54,6 @@ import ch.protonmail.android.mailcomposer.domain.usecase.OpenExistingDraft
 import ch.protonmail.android.mailcomposer.domain.usecase.ProvideNewDraftId
 import ch.protonmail.android.mailcomposer.domain.usecase.SaveMessageExpirationTime
 import ch.protonmail.android.mailcomposer.domain.usecase.SendMessage
-import ch.protonmail.android.mailcomposer.domain.usecase.StoreDraftWithAllFields
 import ch.protonmail.android.mailcomposer.domain.usecase.StoreDraftWithBody
 import ch.protonmail.android.mailcomposer.domain.usecase.StoreDraftWithSubject
 import ch.protonmail.android.mailcomposer.domain.usecase.UpdateBccRecipients
@@ -112,7 +111,6 @@ class ComposerViewModel @Inject constructor(
     private val appInBackgroundState: AppInBackgroundState,
     private val storeDraftWithBody: StoreDraftWithBody,
     private val storeDraftWithSubject: StoreDraftWithSubject,
-    private val storeDraftWithAllFields: StoreDraftWithAllFields,
     private val updateToRecipients: UpdateToRecipients,
     private val updateCcRecipients: UpdateCcRecipients,
     private val updateBccRecipients: UpdateBccRecipients,
@@ -465,7 +463,6 @@ class ComposerViewModel @Inject constructor(
                 viewModelScope.launch {
                     withContext(NonCancellable) {
                         draftUploader.stopContinuousUpload()
-                        storeDraftWithAllFields(primaryUserId(), currentMessageId(), draftFields)
                         draftUploader.upload(primaryUserId(), currentMessageId())
                     }
                 }
@@ -511,7 +508,6 @@ class ComposerViewModel @Inject constructor(
                 viewModelScope.launch {
                     withContext(NonCancellable) {
                         draftUploader.stopContinuousUpload()
-                        storeDraftWithAllFields(primaryUserId(), currentMessageId(), draftFields)
                         sendMessage(primaryUserId(), currentMessageId())
                     }
                 }
