@@ -41,10 +41,7 @@ import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.VoidDraftSaveSendResult
 import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
-@SuppressWarnings("NotImplementedDeclaration")
 class RustDraftDataSourceImpl @Inject constructor(
     private val userSessionRepository: UserSessionRepository,
     private val createRustDraft: CreateRustDraft,
