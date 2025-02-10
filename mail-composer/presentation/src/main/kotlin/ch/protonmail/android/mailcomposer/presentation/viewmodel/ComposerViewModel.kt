@@ -582,7 +582,7 @@ class ComposerViewModel @Inject constructor(
 
     private suspend fun onToChanged(action: ComposerAction.RecipientsToChanged): ComposerOperation {
         val contacts = contactsOrEmpty()
-        return action.recipients.filterIsInstance<RecipientUiModel.Valid>().takeIfNotEmpty()?.let { validRecipients ->
+        return action.recipients.filterIsInstance<RecipientUiModel.Valid>().let { validRecipients ->
             updateToRecipients(
                 primaryUserId(),
                 currentMessageId(),
@@ -592,13 +592,13 @@ class ComposerViewModel @Inject constructor(
                 ifLeft = { ComposerEvent.ErrorStoringDraftRecipients },
                 ifRight = { action }
             )
-        } ?: action
+        }
     }
 
 
     private suspend fun onCcChanged(action: ComposerAction.RecipientsCcChanged): ComposerOperation {
         val contacts = contactsOrEmpty()
-        return action.recipients.filterIsInstance<RecipientUiModel.Valid>().takeIfNotEmpty()?.let { validRecipients ->
+        return action.recipients.filterIsInstance<RecipientUiModel.Valid>().let { validRecipients ->
             updateCcRecipients(
                 primaryUserId(),
                 currentMessageId(),
@@ -608,13 +608,13 @@ class ComposerViewModel @Inject constructor(
                 ifLeft = { ComposerEvent.ErrorStoringDraftRecipients },
                 ifRight = { action }
             )
-        } ?: action
+        }
     }
 
 
     private suspend fun onBccChanged(action: ComposerAction.RecipientsBccChanged): ComposerOperation {
         val contacts = contactsOrEmpty()
-        return action.recipients.filterIsInstance<RecipientUiModel.Valid>().takeIfNotEmpty()?.let { validRecipients ->
+        return action.recipients.filterIsInstance<RecipientUiModel.Valid>().let { validRecipients ->
             updateBccRecipients(
                 primaryUserId(),
                 currentMessageId(),
@@ -624,7 +624,7 @@ class ComposerViewModel @Inject constructor(
                 ifLeft = { ComposerEvent.ErrorStoringDraftRecipients },
                 ifRight = { action }
             )
-        } ?: action
+        }
     }
 
     private suspend fun onSearchTermChanged(searchTerm: String, suggestionsField: ContactSuggestionsField) {

@@ -56,6 +56,7 @@ interface DraftRepository {
         messageId: MessageId,
         recipient: Recipient
     ): Either<DataError, Unit>
+
     suspend fun saveBccRecipient(
         userId: UserId,
         messageId: MessageId,
@@ -67,11 +68,13 @@ interface DraftRepository {
         messageId: MessageId,
         recipient: Recipient
     ): Either<DataError, Unit>
+
     suspend fun removeCcRecipient(
         userId: UserId,
         messageId: MessageId,
         recipient: Recipient
     ): Either<DataError, Unit>
+
     suspend fun removeBccRecipient(
         userId: UserId,
         messageId: MessageId,

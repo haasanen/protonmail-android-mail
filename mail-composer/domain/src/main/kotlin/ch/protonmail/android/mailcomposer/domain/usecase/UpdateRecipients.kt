@@ -37,14 +37,17 @@ abstract class UpdateRecipients {
         val recipientsToAdd = updatedRecipients.filterNot { it in currentRecipients }
         val recipientsToRemove = currentRecipients.filterNot { it in updatedRecipients }
 
+        Timber.d("draft-recipients: current recipients ${currentRecipients.map { it.address }}")
+        Timber.d("draft-recipients: updated recipients ${updatedRecipients.map { it.address }}")
+
         recipientsToAdd.forEach { addRecipient ->
-            Timber.d("draft-recipients (TO): adding $addRecipient")
+            Timber.d("draft-recipients: adding $addRecipient")
             save(userId, messageId, addRecipient)
                 .onLeft { raise(it) }
         }
 
         recipientsToRemove.forEach { removeRecipient ->
-            Timber.d("draft-recipients (TO): removing $removeRecipient")
+            Timber.d("draft-recipients: removing $removeRecipient")
             remove(userId, messageId, removeRecipient)
                 .onLeft { raise(it) }
         }
