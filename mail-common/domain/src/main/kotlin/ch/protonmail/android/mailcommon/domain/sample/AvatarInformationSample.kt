@@ -26,4 +26,9 @@ object AvatarInformationSample {
         initials = "A",
         color = "#FF0000"
     )
+
+    val contactSuggestion = AvatarInformation(
+        initials = "CS",
+        color = "#FF0000"
+    )
 }

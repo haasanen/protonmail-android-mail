@@ -47,6 +47,14 @@ object ContactTestData {
         avatar = AvatarInformationSample.avatarSample
     )
 
+    val contactSuggestion1 = ContactMetadata.Contact(
+        id = ContactIdTestData.contactSuggestionId,
+        name = "contact being suggested",
+        emails = listOf(ContactEmailSample.contactSuggestionEmail),
+        avatar = AvatarInformationSample.contactSuggestion
+    )
+
+
     val contactGroupSuggestionEmail1 = ContactMetadata.Contact(
         id = ContactId("contactgroup@first.email"),
         avatar = AvatarInformation("", ""),
