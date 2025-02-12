@@ -37,8 +37,11 @@ import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.Recipient
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
+import uniffi.proton_mail_uniffi.ComposerRecipientValidationCallback
 import uniffi.proton_mail_uniffi.VoidDraftSaveSendResult
 import javax.inject.Inject
 
@@ -50,6 +53,12 @@ class RustDraftDataSourceImpl @Inject constructor(
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     var rustDraftWrapper: DraftWrapper? = null
+
+    private val recipientsUpdatedCallback = object : ComposerRecipientValidationCallback {
+        override fun onUpdate() {
+            Timber.d("rust-draft: recipients validation state updated...")
+        }
+    }
 
     override suspend fun open(userId: UserId, messageId: MessageId): Either<DataError, LocalDraft> {
         val session = userSessionRepository.getUserSession(userId)
@@ -104,6 +113,7 @@ class RustDraftDataSourceImpl @Inject constructor(
 
     override suspend fun saveToRecipient(recipient: Recipient): Either<DataError, Unit> = withValidRustDraftWrapper {
         val recipientsWrapper = it.recipientsTo()
+        recipientsWrapper.registerCallback(recipientsUpdatedCallback)
         return@withValidRustDraftWrapper recipientsWrapper.addSingleRecipient(recipient.toSingleRecipientEntry())
     }
 
@@ -132,6 +142,11 @@ class RustDraftDataSourceImpl @Inject constructor(
         return@withValidRustDraftWrapper recipientsWrapper.removeSingleRecipient(recipient.toSingleRecipientEntry())
     }
 
+    override suspend fun observeRecipientsValidation(): Flow<List<RecipientEntityWithValidation>> =
+        // Will emit based on a mutableFlow which is updated by the callback above;
+        // Requests again the data from rust library, maps it to the new entity and exposes to the view
+        // RecipientEntity will probably be used also in LocalDraft to follow (to convey groups + Validation info to UI)
+        flowOf(emptyList())
 
     private suspend fun withValidRustDraftWrapper(
         closure: suspend (DraftWrapper) -> Either<DataError, Unit>

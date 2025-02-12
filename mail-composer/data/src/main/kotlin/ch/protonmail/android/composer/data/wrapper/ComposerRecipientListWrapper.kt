@@ -25,11 +25,14 @@ import ch.protonmail.android.mailcommon.domain.model.DataError
 import uniffi.proton_mail_uniffi.AddSingleRecipientError
 import uniffi.proton_mail_uniffi.ComposerRecipient
 import uniffi.proton_mail_uniffi.ComposerRecipientList
+import uniffi.proton_mail_uniffi.ComposerRecipientValidationCallback
 import uniffi.proton_mail_uniffi.SingleRecipientEntry
 
 class ComposerRecipientListWrapper(private val rustRecipients: ComposerRecipientList) {
 
     fun recipients(): List<ComposerRecipient> = rustRecipients.recipients()
+
+    fun registerCallback(callback: ComposerRecipientValidationCallback) = rustRecipients.setCallback(callback)
 
     suspend fun addSingleRecipient(recipient: SingleRecipientEntry): Either<DataError, Unit> =
         when (rustRecipients.addSingleRecipient(recipient)) {

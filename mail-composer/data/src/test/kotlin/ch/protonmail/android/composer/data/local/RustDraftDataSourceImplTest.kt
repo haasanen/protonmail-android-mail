@@ -340,6 +340,7 @@ class RustDraftDataSourceImplTest {
         )
         dataSource.rustDraftWrapper = expectedDraftWrapper
         coEvery { toRecipientsWrapperMock.addSingleRecipient(singleRecipient) } returns Unit.right()
+        coEvery { toRecipientsWrapperMock.registerCallback(any()) } returns Unit
 
         // When
         val actual = dataSource.saveToRecipient(recipient)
@@ -360,6 +361,7 @@ class RustDraftDataSourceImplTest {
         val expected = DataError.Local.SaveDraftError.DuplicateRecipient
         dataSource.rustDraftWrapper = expectedDraftWrapper
         coEvery { toRecipientsWrapperMock.addSingleRecipient(singleRecipient) } returns expected.left()
+        coEvery { toRecipientsWrapperMock.registerCallback(any()) } returns Unit
 
         // When
         val actual = dataSource.saveToRecipient(recipient)

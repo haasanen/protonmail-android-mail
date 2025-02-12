@@ -25,6 +25,7 @@ import ch.protonmail.android.mailcomposer.domain.model.Subject
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.Recipient
+import kotlinx.coroutines.flow.Flow
 import me.proton.core.domain.entity.UserId
 
 interface RustDraftDataSource {
@@ -42,4 +43,5 @@ interface RustDraftDataSource {
     suspend fun removeToRecipient(recipient: Recipient): Either<DataError, Unit>
     suspend fun removeCcRecipient(recipient: Recipient): Either<DataError, Unit>
     suspend fun removeBccRecipient(recipient: Recipient): Either<DataError, Unit>
+    suspend fun observeRecipientsValidation(): Flow<List<RecipientEntityWithValidation>>
 }
