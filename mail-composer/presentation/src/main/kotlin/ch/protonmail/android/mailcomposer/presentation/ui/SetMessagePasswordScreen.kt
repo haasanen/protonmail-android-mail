@@ -72,7 +72,7 @@ fun SetMessagePasswordScreen(
     modifier: Modifier = Modifier,
     viewModel: SetMessagePasswordViewModel = hiltViewModel()
 ) {
-    val state by viewModel.state.collectAsStateWithLifecycle(SetMessagePasswordState.Loading)
+    val state by viewModel.state.collectAsStateWithLifecycle()
 
     Scaffold(
         modifier = modifier,
