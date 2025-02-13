@@ -144,6 +144,12 @@ sealed interface ConversationDetailEvent : ConversationDetailOperation {
     ) : ConversationDetailEvent, AffectingBottomSheet, AffectingReportPhishingDialog
 
     data class HandleOpenProtonCalendarRequest(val intent: OpenProtonCalendarIntentValues) : ConversationDetailEvent
+
+    data class MoveToDestinationConfirmed(
+        val mailLabelText: String,
+        val messageId: MessageId?
+    ) : ConversationDetailEvent, AffectingBottomSheet
+
 }
 
 sealed interface ConversationDetailViewAction : ConversationDetailOperation {
@@ -162,10 +168,7 @@ sealed interface ConversationDetailViewAction : ConversationDetailOperation {
     object RequestMoveToBottomSheet : ConversationDetailViewAction, AffectingBottomSheet
     object DismissBottomSheet : ConversationDetailViewAction, AffectingBottomSheet
     data class MoveToDestinationSelected(
-        val mailLabelId: MailLabelId
-    ) : ConversationDetailViewAction, AffectingBottomSheet
-
-    data class MoveToDestinationConfirmed(
+        val mailLabelId: MailLabelId,
         val mailLabelText: String,
         val messageId: MessageId?
     ) : ConversationDetailViewAction, AffectingBottomSheet

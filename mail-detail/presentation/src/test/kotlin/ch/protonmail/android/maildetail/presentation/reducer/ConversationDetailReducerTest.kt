@@ -183,19 +183,10 @@ class ConversationDetailReducerTest(
         val actions = listOf(
             ConversationDetailViewAction.MarkRead affects listOf(Exit, BottomSheet),
             ConversationDetailViewAction.MarkUnread affects listOf(Exit, BottomSheet),
-            ConversationDetailViewAction.MoveToDestinationConfirmed("spam", null) affects listOf(
-                BottomSheet,
-                ExitWithResult(
-                    UndoableActionResult(TextUiModel(string.conversation_moved_to_selected_destination, "spam"))
-                )
-            ),
-            ConversationDetailViewAction.MoveToDestinationConfirmed(
-                "spam", MessageId(messageId.id)
-            ) affects BottomSheet,
             ConversationDetailViewAction.RequestMoveToBottomSheet affects BottomSheet,
             ConversationDetailViewAction.DismissBottomSheet affects BottomSheet,
             ConversationDetailViewAction.MoveToDestinationSelected(
-                MailLabelTestData.archiveSystemLabel.id
+                MailLabelTestData.archiveSystemLabel.id, "", null
             ) affects BottomSheet,
             ConversationDetailViewAction.Star affects listOf(Conversation, BottomSheet),
             ConversationDetailViewAction.UnStar affects listOf(Conversation, BottomSheet),

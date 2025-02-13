@@ -2172,7 +2172,6 @@ class ConversationDetailViewModelIntegrationTest {
                         folders = listOf(MailLabelTestData.buildCustomFolder(id = "folder1")),
                         labels = listOf()
                     ).toUiModels().let { it.folders + it.systemLabels }.toImmutableList(),
-                    null,
                     messageId
                 ),
                 bottomSheetContentState
@@ -2220,18 +2219,13 @@ class ConversationDetailViewModelIntegrationTest {
             viewModel.submit(ConversationDetailViewAction.RequestMessageMoreActionsBottomSheet(messageId))
             skipItems(2)
             viewModel.submit(ConversationDetailViewAction.RequestMessageMoveToBottomSheet(messageId))
-            skipItems(2)
-            viewModel.submit(
-                ConversationDetailViewAction.MoveToDestinationSelected(MailLabelTestData.spamSystemLabel.id)
-            )
             skipItems(1)
             viewModel.submit(
-                ConversationDetailViewAction.MoveToDestinationConfirmed(
-                    SystemLabelId.Spam.toString(),
-                    messageId
+                ConversationDetailViewAction.MoveToDestinationSelected(
+                    MailLabelTestData.spamSystemLabel.id, SystemLabelId.Spam.toString(), messageId
                 )
             )
-
+            skipItems(1)
             // Then
             assertEquals(
                 BottomSheetVisibilityEffect.Hide, awaitItem().bottomSheetState?.bottomSheetVisibilityEffect?.consume()

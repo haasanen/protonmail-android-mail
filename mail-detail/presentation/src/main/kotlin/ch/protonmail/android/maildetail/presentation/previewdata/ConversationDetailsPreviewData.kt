@@ -70,7 +70,6 @@ object ConversationDetailsPreviewData {
         bottomSheetState = BottomSheetState(
             MoveToBottomSheetState.Data(
                 moveToDestinations = emptyList<MailLabelUiModel>().toImmutableList(),
-                selected = null,
                 messageIdInConversation = null
             )
         ),
@@ -120,7 +119,6 @@ object ConversationDetailsPreviewData {
         bottomSheetState = BottomSheetState(
             MoveToBottomSheetState.Data(
                 moveToDestinations = emptyList<MailLabelUiModel>().toImmutableList(),
-                selected = null,
                 messageIdInConversation = null
             )
         ),

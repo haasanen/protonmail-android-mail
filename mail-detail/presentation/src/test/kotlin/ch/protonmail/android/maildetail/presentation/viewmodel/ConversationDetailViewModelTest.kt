@@ -126,6 +126,7 @@ import ch.protonmail.android.testdata.avatar.AvatarImageStatesTestData
 import ch.protonmail.android.testdata.contact.ContactSample
 import ch.protonmail.android.testdata.conversation.ConversationTestData
 import ch.protonmail.android.testdata.conversation.ConversationUiModelTestData
+import ch.protonmail.android.testdata.maillabel.MailLabelTestData
 import ch.protonmail.android.testdata.maillabel.MailLabelUiModelTestData
 import io.mockk.Called
 import io.mockk.coEvery
@@ -904,7 +905,9 @@ class ConversationDetailViewModelTest {
     fun `verify move to is called and exit with message is emitted when destination get confirmed`() = runTest {
         // Given
         // In moveTo system labels are already resolved to local ids
+        givenReducerReturnsBottomSheetActions()
         val localSpamLabelId = LabelId("4")
+
         coEvery {
             move(
                 userId = UserIdSample.Primary,
@@ -913,33 +916,27 @@ class ConversationDetailViewModelTest {
             )
         } returns Unit.right()
         val selectedLabel = MailLabelUiModelTestData.spamAndCustomFolder.first()
-        val dataState = ConversationDetailState.Loading.copy(
+
+        coEvery {
+            getConversationMoveToLocations(userId, any(), listOf(conversationId))
+        } returns listOf(MailLabelTestData.spamSystemLabel).right()
+
+        every {
+            reducer.newStateFrom(
+                currentState = any(),
+                operation = ConversationDetailViewAction.RequestMoveToBottomSheet
+            )
+        } returns ConversationDetailState.Loading.copy(
             bottomSheetState = BottomSheetState(
                 MoveToBottomSheetState.Data(
                     moveToDestinations = MailLabelUiModelTestData.spamAndCustomFolder,
-                    selected = null,
                     null
                 )
             )
         )
 
-        coEvery {
-            reducer.newStateFrom(
-                ConversationDetailState.Loading,
-                ConversationDetailViewAction.MoveToDestinationSelected(selectedLabel.id)
-            )
-        } returns dataState.copy(
-            bottomSheetState = BottomSheetState(
-                MoveToBottomSheetState.Data(
-                    MailLabelUiModelTestData.spamAndCustomFolderWithSpamSelected,
-                    MailLabelUiModelTestData.spamAndCustomFolderWithSpamSelected.first(),
-                    null
-                )
-            )
-        )
-
-        coEvery {
-            reducer.newStateFrom(any(), ConversationDetailViewAction.MoveToDestinationConfirmed("selectedLabel", null))
+        every {
+            reducer.newStateFrom(any(), ConversationDetailEvent.MoveToDestinationConfirmed("selectedLabel", null))
         } returns ConversationDetailState.Loading.copy(
             exitScreenWithMessageEffect = Effect.of(
                 ActionResult.UndoableActionResult(
@@ -951,9 +948,13 @@ class ConversationDetailViewModelTest {
         // When
         viewModel.state.test {
             advanceUntilIdle()
-            viewModel.submit(ConversationDetailViewAction.MoveToDestinationSelected(selectedLabel.id))
+            viewModel.submit(ConversationDetailViewAction.RequestMoveToBottomSheet)
             advanceUntilIdle()
-            viewModel.submit(ConversationDetailViewAction.MoveToDestinationConfirmed("selectedLabel", null))
+            viewModel.submit(
+                ConversationDetailViewAction.MoveToDestinationSelected(
+                    selectedLabel.id, "selectedLabel", null
+                )
+            )
             advanceUntilIdle()
 
             // Then
@@ -2024,7 +2025,6 @@ class ConversationDetailViewModelTest {
             bottomSheetState = BottomSheetState(
                 MoveToBottomSheetState.Data(
                     moveToDestinations = MailLabelUiModelTestData.spamAndCustomFolder,
-                    selected = null,
                     null
                 )
             )

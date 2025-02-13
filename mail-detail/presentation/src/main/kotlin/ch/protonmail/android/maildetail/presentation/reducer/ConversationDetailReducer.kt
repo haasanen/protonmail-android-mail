@@ -163,7 +163,7 @@ class ConversationDetailReducer @Inject constructor(
                 is ConversationDetailViewAction.DeleteMessageConfirmed,
                 is ConversationDetailViewAction.StarMessage,
                 is ConversationDetailViewAction.UnStarMessage,
-                is ConversationDetailViewAction.MoveToDestinationConfirmed -> BottomSheetOperation.Dismiss
+                is ConversationDetailEvent.MoveToDestinationConfirmed -> BottomSheetOperation.Dismiss
             }
             bottomSheetReducer.newStateFrom(bottomSheetState, bottomSheetOperation)
         } else {
@@ -216,7 +216,7 @@ class ConversationDetailReducer @Inject constructor(
         is ConversationDetailViewAction.MoveToTrash -> Effect.of(
             UndoableActionResult(TextUiModel(R.string.conversation_moved_to_trash))
         )
-        is ConversationDetailViewAction.MoveToDestinationConfirmed -> when (operation.messageId == null) {
+        is ConversationDetailEvent.MoveToDestinationConfirmed -> when (operation.messageId == null) {
             true -> Effect.of(
                 UndoableActionResult(
                     TextUiModel(R.string.conversation_moved_to_selected_destination, operation.mailLabelText)

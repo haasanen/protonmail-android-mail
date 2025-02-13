@@ -74,7 +74,7 @@ import ch.protonmail.android.maildetail.presentation.model.ConversationDetailVie
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction.LabelAsToggleAction
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction.MarkUnread
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction.MessageBodyLinkClicked
-import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction.MoveToDestinationConfirmed
+import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.MoveToDestinationConfirmed
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction.MoveToDestinationSelected
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction.MoveToTrash
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction.RequestContactActionsBottomSheet
@@ -97,6 +97,7 @@ import ch.protonmail.android.maildetail.presentation.usecase.OnMessageLabelAsCon
 import ch.protonmail.android.maildetail.presentation.usecase.PrintMessage
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabel
+import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabels
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.maillabel.presentation.model.LabelSelectedState
@@ -268,7 +269,9 @@ class ConversationDetailViewModel @Inject constructor(
             is ConversationDetailViewAction.DeleteConfirmed -> handleDeleteConfirmed(action)
             is ConversationDetailViewAction.DeleteMessageConfirmed -> handleDeleteMessageConfirmed(action)
             is RequestMoveToBottomSheet -> showMoveToBottomSheet(action)
-            is MoveToDestinationConfirmed -> onMoveToDestinationConfirmed(action.mailLabelText, action.messageId)
+            is MoveToDestinationSelected -> onMoveToDestinationSelected(
+                action.mailLabelId, action.mailLabelText, action.messageId
+            )
             is ConversationDetailViewAction.MoveToInbox -> moveConversationToInbox()
             is RequestConversationLabelAsBottomSheet -> showConversationLabelAsBottomSheet(action)
             is RequestContactActionsBottomSheet -> showContactActionsBottomSheetAndLoadData(action)
@@ -317,7 +320,6 @@ class ConversationDetailViewModel @Inject constructor(
             is ConversationDetailViewAction.DeleteDialogDismissed,
             is ConversationDetailViewAction.DeleteMessageRequested,
             is DismissBottomSheet,
-            is MoveToDestinationSelected,
             is LabelAsToggleAction,
             is MessageBodyLinkClicked,
             is RequestScrollTo,
@@ -902,26 +904,28 @@ class ConversationDetailViewModel @Inject constructor(
         viewModelScope.launch { emitNewStateFrom(action) }
     }
 
-    private fun onMoveToDestinationConfirmed(mailLabelText: String, messageId: MessageId?) {
+    private fun onMoveToDestinationSelected(
+        mailLabelId: MailLabelId,
+        mailLabelText: String,
+        messageId: MessageId?
+    ) {
         if (messageId == null) {
-            onConversationMoveToDestinationConfirmed(mailLabelText)
+            onConversationMoveToDestinationSelected(mailLabelId, mailLabelText)
         } else {
-            onMessageMoveToDestinationConfirmed(mailLabelText, messageId)
+            onMessageMoveToDestinationSelected(mailLabelId, mailLabelText, messageId)
         }
     }
 
-    private fun onConversationMoveToDestinationConfirmed(mailLabelText: String) {
+    private fun onConversationMoveToDestinationSelected(mailLabelId: MailLabelId, mailLabelText: String) {
         viewModelScope.launch {
-            when (val state = state.value.bottomSheetState?.contentState) {
+            when (state.value.bottomSheetState?.contentState) {
                 is MoveToBottomSheetState.Data -> {
-                    state.selected?.let { mailLabelUiModel ->
-                        performSafeExitAction(
-                            onLeft = ConversationDetailEvent.ErrorMovingConversation,
-                            onRight = MoveToDestinationConfirmed(mailLabelText, null)
-                        ) { userId ->
-                            moveConversation(userId, conversationId, mailLabelUiModel.id.labelId)
-                        }
-                    } ?: emitNewStateFrom(ConversationDetailEvent.ErrorMovingConversation)
+                    performSafeExitAction(
+                        onLeft = ConversationDetailEvent.ErrorMovingConversation,
+                        onRight = MoveToDestinationConfirmed(mailLabelText, null)
+                    ) { userId ->
+                        moveConversation(userId, conversationId, mailLabelId.labelId)
+                    }
                 }
 
                 // Unsupported flow
@@ -930,16 +934,18 @@ class ConversationDetailViewModel @Inject constructor(
         }
     }
 
-    private fun onMessageMoveToDestinationConfirmed(mailLabelText: String, messageId: MessageId) {
+    private fun onMessageMoveToDestinationSelected(
+        mailLabelId: MailLabelId,
+        mailLabelText: String,
+        messageId: MessageId
+    ) {
         primaryUserId.mapLatest { userId ->
             val bottomSheetState = state.value.bottomSheetState?.contentState
             if (bottomSheetState is MoveToBottomSheetState.Data) {
-                bottomSheetState.selected?.let { mailLabelUiModel ->
-                    moveMessage(userId, messageId, mailLabelUiModel.id.labelId).fold(
-                        ifLeft = { ConversationDetailEvent.ErrorMovingMessage },
-                        ifRight = { MoveToDestinationConfirmed(mailLabelText, messageId) }
-                    )
-                } ?: throw IllegalStateException("No destination selected")
+                moveMessage(userId, messageId, mailLabelId.labelId).fold(
+                    ifLeft = { ConversationDetailEvent.ErrorMovingMessage },
+                    ifRight = { MoveToDestinationConfirmed(mailLabelText, messageId) }
+                )
             } else {
                 ConversationDetailEvent.ErrorMovingMessage
             }

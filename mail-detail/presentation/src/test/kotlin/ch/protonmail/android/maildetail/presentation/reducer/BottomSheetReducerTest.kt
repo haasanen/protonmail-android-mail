@@ -155,7 +155,6 @@ internal class BottomSheetReducerTest(
                 currentState = BottomSheetState(
                     MoveToBottomSheetState.Data(
                         listOf<MailLabelUiModel>().toImmutableList(),
-                        null,
                         null
                     )
                 ),
@@ -181,7 +180,6 @@ internal class BottomSheetReducerTest(
                     MoveToBottomSheetState.Data(
                         listOf<MailLabelUiModel>()
                             .toImmutableList(),
-                        null,
                         null
                     )
                 ),

@@ -200,14 +200,10 @@ fun ConversationDetailScreen(
                     state = bottomSheetContentState,
                     actions = MoveToBottomSheetContent.Actions(
                         onAddFolderClick = actions.onAddFolder,
-                        onFolderSelected = {
-                            viewModel.submit(ConversationDetailViewAction.MoveToDestinationSelected(it))
-                        },
-                        onDoneClick = { mailLabelText, messageIdInConversation ->
+                        onFolderSelected = { folderId, folderName, messageIdInConversation ->
                             viewModel.submit(
-                                ConversationDetailViewAction.MoveToDestinationConfirmed(
-                                    mailLabelText,
-                                    messageIdInConversation
+                                ConversationDetailViewAction.MoveToDestinationSelected(
+                                    folderId, folderName, messageIdInConversation
                                 )
                             )
                         },
