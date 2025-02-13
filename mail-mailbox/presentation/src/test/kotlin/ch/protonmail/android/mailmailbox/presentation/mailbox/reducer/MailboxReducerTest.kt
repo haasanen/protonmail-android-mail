@@ -351,11 +351,11 @@ internal class MailboxReducerTest(
                 shouldReduceBottomAppBarState = false,
                 shouldReduceActionMessage = false,
                 shouldReduceDeleteDialog = false,
-                shouldReduceBottomSheetState = true,
+                shouldReduceBottomSheetState = false,
                 shouldReduceStorageLimitState = false
             ),
             TestInput(
-                MailboxViewAction.MoveToConfirmed,
+                MailboxEvent.MoveToConfirmed,
                 shouldReduceMailboxListState = true,
                 shouldReduceTopAppBarState = true,
                 shouldReduceUnreadFilterState = false,

@@ -107,16 +107,11 @@ internal sealed interface MailboxViewAction : MailboxOperation {
     data class StarAction(val itemId: String, val isStarred: Boolean) : MailboxViewAction
 
     object RequestMoveToBottomSheet : MailboxViewAction, AffectingBottomSheet
+
     data class MoveToDestinationSelected(
         val mailLabelId: MailLabelId
-    ) : MailboxViewAction, AffectingBottomSheet
-
-    object MoveToConfirmed :
-        MailboxViewAction,
-        AffectingTopAppBar,
-        AffectingBottomAppBar,
-        AffectingMailboxList,
-        AffectingBottomSheet
+    ) :
+        MailboxViewAction
 
     object RequestMoreActionsBottomSheet : MailboxViewAction, AffectingBottomSheet
     object Star : MailboxViewAction, AffectingMailboxList, AffectingBottomSheet
@@ -163,6 +158,13 @@ internal sealed interface MailboxViewAction : MailboxOperation {
 }
 
 internal sealed interface MailboxEvent : MailboxOperation {
+
+    object MoveToConfirmed :
+        MailboxEvent,
+        AffectingTopAppBar,
+        AffectingBottomAppBar,
+        AffectingMailboxList,
+        AffectingBottomSheet
 
     data class AvatarImageStatesUpdated(
         val avatarImageStates: AvatarImageStates

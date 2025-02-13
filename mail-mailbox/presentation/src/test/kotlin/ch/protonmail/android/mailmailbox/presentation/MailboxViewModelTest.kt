@@ -58,7 +58,6 @@ import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.maillabel.domain.sample.LabelIdSample
 import ch.protonmail.android.maillabel.domain.usecase.FindLocalSystemLabelId
 import ch.protonmail.android.maillabel.domain.usecase.ObserveMailLabels
-import ch.protonmail.android.maillabel.presentation.MailLabelUiModel
 import ch.protonmail.android.maillabel.presentation.model.LabelSelectedState
 import ch.protonmail.android.maillabel.presentation.model.LabelUiModelWithSelectedState
 import ch.protonmail.android.maillabel.presentation.text
@@ -2510,12 +2509,12 @@ class MailboxViewModelTest {
         val localSpamLabelId = LabelId("4")
         val initialState = createMailboxDataState()
         val bottomSheetShownStateWithSelectedItem = createMailboxStateWithMoveToBottomSheet(
-            selectedItemsList,
-            MailLabelUiModelTestData.spamFolder
+            selectedItemsList
         )
         val intermediateState = MailboxStateSampleData.createSelectionMode(
-            listOf(item, secondItem),
-            currentMailLabel = MailLabelTestData.trashSystemLabel
+            selectedMailboxItemUiModels = listOf(item, secondItem),
+            currentMailLabel = MailLabelTestData.trashSystemLabel,
+            bottomSheetState = bottomSheetShownStateWithSelectedItem.bottomSheetState
         )
         expectViewModeForCurrentLocation(NoConversationGrouping)
         expectedSelectedLabelCountStateChange(initialState)
@@ -2527,7 +2526,7 @@ class MailboxViewModelTest {
             selectedItemsList.map { MailboxItemId(it.id) },
             NoConversationGrouping
         )
-        expectedMoveToStateChange(MailLabelTestData.spamSystemLabel.id, bottomSheetShownStateWithSelectedItem)
+
         expectedMoveToConfirmed(initialState)
         expectMoveMessagesSucceeds(userId, selectedItemsList, localSpamLabelId)
         expectPagerMock()
@@ -2539,9 +2538,6 @@ class MailboxViewModelTest {
             mailboxViewModel.submit(MailboxViewAction.OnItemAvatarClicked(item))
             assertEquals(intermediateState, awaitItem())
             mailboxViewModel.submit(MailboxViewAction.MoveToDestinationSelected(MailLabelTestData.spamSystemLabel.id))
-            assertEquals(bottomSheetShownStateWithSelectedItem, awaitItem())
-            mailboxViewModel.submit(MailboxViewAction.MoveToConfirmed)
-
             assertEquals(initialState, awaitItem())
             coVerify(exactly = 1) {
                 moveMessages(userId, selectedItemsList.map { MessageId(it.id) }, localSpamLabelId)
@@ -2563,13 +2559,14 @@ class MailboxViewModelTest {
         val localSpamLabelId = LabelId("4")
         val initialState = createMailboxDataState()
         val bottomSheetShownStateWithSelectedItem = createMailboxStateWithMoveToBottomSheet(
-            selectedItemsList,
-            MailLabelUiModelTestData.spamFolder
+            selectedItemsList
         )
         val intermediateState = MailboxStateSampleData.createSelectionMode(
-            listOf(item, secondItem),
-            currentMailLabel = MailLabelTestData.trashSystemLabel
+            selectedMailboxItemUiModels = listOf(item, secondItem),
+            currentMailLabel = MailLabelTestData.trashSystemLabel,
+            bottomSheetState = bottomSheetShownStateWithSelectedItem.bottomSheetState
         )
+
         expectViewModeForCurrentLocation(ConversationGrouping)
         expectedSelectedLabelCountStateChange(initialState)
         expectGetMoveToActionsSucceeds(
@@ -2592,10 +2589,8 @@ class MailboxViewModelTest {
             mailboxViewModel.submit(MailboxViewAction.OnItemAvatarClicked(item))
             assertEquals(intermediateState, awaitItem())
             mailboxViewModel.submit(MailboxViewAction.MoveToDestinationSelected(MailLabelTestData.spamSystemLabel.id))
-            assertEquals(bottomSheetShownStateWithSelectedItem, awaitItem())
-            mailboxViewModel.submit(MailboxViewAction.MoveToConfirmed)
-
             assertEquals(initialState, awaitItem())
+
             coVerify(exactly = 1) {
                 moveConversations(
                     userId = userId,
@@ -2605,6 +2600,7 @@ class MailboxViewModelTest {
             }
             coVerify { moveMessages wasNot Called }
         }
+
     }
 
     @Test
@@ -2777,7 +2773,7 @@ class MailboxViewModelTest {
         returnExpectedStateForBottomBarEvent(expectedState = intermediateState)
         returnExpectedStateWhenEnterSelectionMode(initialState, item, intermediateState)
         expectMoveMessagesSucceeds(userId, selectedItemsList, SystemLabelId.Archive)
-        expectedReducerResult(MailboxViewAction.MoveToConfirmed, initialState)
+        expectedReducerResult(MailboxEvent.MoveToConfirmed, initialState)
         expectPagerMock()
 
         mailboxViewModel.state.test {
@@ -2817,7 +2813,7 @@ class MailboxViewModelTest {
             ConversationGrouping
         )
         expectMoveConversationsSucceeds(userId, selectedItemsList, SystemLabelId.Archive)
-        expectedReducerResult(MailboxViewAction.MoveToConfirmed, initialState)
+        expectedReducerResult(MailboxEvent.MoveToConfirmed, initialState)
         expectPagerMock()
 
         mailboxViewModel.state.test {
@@ -2859,7 +2855,7 @@ class MailboxViewModelTest {
         returnExpectedStateForBottomBarEvent(expectedState = intermediateState)
         returnExpectedStateWhenEnterSelectionMode(initialState, item, intermediateState)
         expectMoveMessagesSucceeds(userId, selectedItemsList, SystemLabelId.Spam)
-        expectedReducerResult(MailboxViewAction.MoveToConfirmed, initialState)
+        expectedReducerResult(MailboxEvent.MoveToConfirmed, initialState)
         expectPagerMock()
 
         mailboxViewModel.state.test {
@@ -2900,7 +2896,7 @@ class MailboxViewModelTest {
         returnExpectedStateForBottomBarEvent(expectedState = intermediateState)
         returnExpectedStateWhenEnterSelectionMode(initialState, item, intermediateState)
         expectMoveConversationsSucceeds(userId, selectedItemsList, SystemLabelId.Spam)
-        expectedReducerResult(MailboxViewAction.MoveToConfirmed, initialState)
+        expectedReducerResult(MailboxEvent.MoveToConfirmed, initialState)
         expectPagerMock()
 
         mailboxViewModel.state.test {
@@ -3787,7 +3783,7 @@ class MailboxViewModelTest {
     }
 
     private fun expectedMoveToConfirmed(expectedState: MailboxState) {
-        every { mailboxReducer.newStateFrom(any(), MailboxViewAction.MoveToConfirmed) } returns expectedState
+        every { mailboxReducer.newStateFrom(any(), MailboxEvent.MoveToConfirmed) } returns expectedState
     }
 
     private fun returnExpectedStateWhenStarringSucceeds(expectedState: MailboxState) {
@@ -4068,16 +4064,14 @@ class MailboxViewModelTest {
         )
     )
 
-    private fun createMailboxStateWithMoveToBottomSheet(
-        selectedMailboxItems: List<MailboxItemUiModel>,
-        selectedItem: MailLabelUiModel? = null
-    ) = MailboxStateSampleData.createSelectionMode(
-        selectedMailboxItemUiModels = selectedMailboxItems,
-        currentMailLabel = MailLabelTestData.trashSystemLabel,
-        bottomSheetState = BottomSheetState(
-            MoveToBottomSheetState.Data(MailLabelUiModelTestData.customLabelList, selectedItem, null)
+    private fun createMailboxStateWithMoveToBottomSheet(selectedMailboxItems: List<MailboxItemUiModel>) =
+        MailboxStateSampleData.createSelectionMode(
+            selectedMailboxItemUiModels = selectedMailboxItems,
+            currentMailLabel = MailLabelTestData.trashSystemLabel,
+            bottomSheetState = BottomSheetState(
+                MoveToBottomSheetState.Data(MailLabelUiModelTestData.customLabelList, null)
+            )
         )
-    )
 
     private fun createMailboxStateWithMoreActionBottomSheet(
         selectedMailboxItems: List<MailboxItemUiModel>,

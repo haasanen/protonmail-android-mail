@@ -42,7 +42,7 @@ class MailboxTopAppBarReducer @Inject constructor() {
             is MailboxEvent.ItemClicked.ItemRemovedFromSelection -> currentState.toNewStateForItemRemovedFromSelection()
             is ItemsRemovedFromSelection -> currentState.toNewStateForItemsRemovedFromSelection(operation)
             is MailboxEvent.DeleteConfirmed,
-            is MailboxViewAction.MoveToConfirmed,
+            is MailboxEvent.MoveToConfirmed,
             is MailboxViewAction.MoveToArchive,
             is MailboxViewAction.MoveToInbox,
             is MailboxViewAction.MoveToSpam,

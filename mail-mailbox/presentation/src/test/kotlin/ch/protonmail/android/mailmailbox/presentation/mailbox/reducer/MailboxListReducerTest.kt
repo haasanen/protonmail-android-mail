@@ -1087,38 +1087,6 @@ internal class MailboxListReducerTest(
             ),
             TestInput(
                 currentState = MailboxListState.Data.SelectionMode(
-                    currentMailLabel = MailLabelTestData.customLabelOne,
-                    selectedMailboxItems = setOf(
-                        SelectedMailboxItem(
-                            id = MailboxItemUiModelTestData.readMailboxItemUiModel.id,
-                            isRead = false,
-                            isStarred = false
-                        )
-                    ),
-                    swipeActions = null,
-                    searchState = MailboxSearchStateSampleData.NotSearching,
-                    clearState = MailboxListState.Data.ClearState.Hidden,
-                    shouldShowFab = false,
-                    avatarImagesUiModel = AvatarImagesUiModel.Empty,
-                    areAllItemsSelected = false
-                ),
-                operation = MailboxViewAction.MoveToConfirmed,
-                expectedState = MailboxListState.Data.ViewMode(
-                    currentMailLabel = MailLabelTestData.customLabelOne,
-                    openItemEffect = Effect.empty(),
-                    scrollToMailboxTop = Effect.empty(),
-                    offlineEffect = Effect.empty(),
-                    refreshErrorEffect = Effect.empty(),
-                    refreshRequested = false,
-                    swipeActions = null,
-                    searchState = MailboxSearchStateSampleData.NotSearching,
-                    clearState = MailboxListState.Data.ClearState.Hidden,
-                    shouldShowFab = true,
-                    avatarImagesUiModel = AvatarImagesUiModel.Empty
-                )
-            ),
-            TestInput(
-                currentState = MailboxListState.Data.SelectionMode(
                     currentMailLabel = MailLabelTestData.customLabelTwo,
                     selectedMailboxItems = setOf(
                         SelectedMailboxItem(

@@ -277,8 +277,9 @@ fun MailboxScreen(
                     state = bottomSheetContentState,
                     actions = MoveToBottomSheetContent.Actions(
                         onAddFolderClick = actions.onAddFolder,
-                        onFolderSelected = { viewModel.submit(MailboxViewAction.MoveToDestinationSelected(it)) },
-                        onDoneClick = { _, _ -> viewModel.submit(MailboxViewAction.MoveToConfirmed) },
+                        onFolderSelected = { folderId, _, _ ->
+                            viewModel.submit(MailboxViewAction.MoveToDestinationSelected(folderId))
+                        },
                         onDismiss = { viewModel.submit(MailboxViewAction.DismissBottomSheet) }
                     )
                 )

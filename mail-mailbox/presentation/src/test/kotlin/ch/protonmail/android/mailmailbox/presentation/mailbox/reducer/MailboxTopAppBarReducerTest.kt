@@ -259,7 +259,7 @@ internal class MailboxTopAppBarReducerTest(
                     avatarItem,
                     selectedCount = 42
                 ),
-                operation = MailboxViewAction.MoveToConfirmed,
+                operation = MailboxEvent.MoveToConfirmed,
                 expectedState = MailboxTopAppBarState.Data.DefaultMode(inboxLabel.text(), avatarItem)
             ),
             TestInput(

@@ -383,15 +383,13 @@ class MailboxViewModel @Inject constructor(
                 is MailboxViewAction.LabelAsToggleAction -> emitNewStateFrom(viewAction)
                 is MailboxViewAction.LabelAsConfirmed -> onLabelAsConfirmed(viewAction.archiveSelected)
                 is MailboxViewAction.RequestMoveToBottomSheet -> showMoveToBottomSheetAndLoadData(viewAction)
-                is MailboxViewAction.MoveToDestinationSelected -> emitNewStateFrom(viewAction)
-                is MailboxViewAction.MoveToConfirmed -> onMoveToConfirmed()
+                is MailboxViewAction.MoveToDestinationSelected -> onMoveToDestinationSelected(viewAction)
                 is MailboxViewAction.RequestMoreActionsBottomSheet -> showMoreBottomSheet(viewAction)
                 is MailboxViewAction.DismissBottomSheet -> emitNewStateFrom(viewAction)
                 is MailboxViewAction.Star -> handleStarAction(viewAction)
                 is MailboxViewAction.UnStar -> handleUnStarAction(viewAction)
                 is MailboxViewAction.MoveToArchive -> handleMoveToArchiveAction(viewAction)
                 is MailboxViewAction.MoveToSpam -> handleMoveToSpamAction(viewAction)
-
                 is MailboxViewAction.EnterSearchMode -> emitNewStateFrom(viewAction)
                 is MailboxViewAction.ExitSearchMode -> handleExitSearchMode(viewAction)
                 is MailboxViewAction.SearchQuery -> emitNewStateFrom(viewAction)
@@ -889,7 +887,7 @@ class MailboxViewModel @Inject constructor(
         }
     }
 
-    private suspend fun onMoveToConfirmed() {
+    private suspend fun onMoveToDestinationSelected(action: MailboxViewAction.MoveToDestinationSelected) {
         val selectionState = state.value.mailboxListState as? MailboxListState.Data.SelectionMode
         if (selectionState == null) {
             Timber.d("MailboxListState is not in SelectionMode")
@@ -901,14 +899,11 @@ class MailboxViewModel @Inject constructor(
             return
         }
         val userId = primaryUserId.filterNotNull().first()
-        val selectedFolder = bottomSheetState.selected
-        if (selectedFolder == null) {
-            Timber.d("Selected folder is null")
-            return
-        }
-        handleMoveOperation(userId, selectionState, selectedFolder.id.labelId).fold(
+        val selectedFolderId = action.mailLabelId
+
+        handleMoveOperation(userId, selectionState, selectedFolderId.labelId).fold(
             ifLeft = { MailboxEvent.ErrorMoving },
-            ifRight = { MailboxViewAction.MoveToConfirmed }
+            ifRight = { MailboxEvent.MoveToConfirmed }
         ).let { emitNewStateFrom(it) }
     }
 
