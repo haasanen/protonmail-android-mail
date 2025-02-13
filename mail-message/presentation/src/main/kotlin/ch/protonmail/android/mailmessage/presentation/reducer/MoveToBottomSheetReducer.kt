@@ -50,12 +50,12 @@ class MoveToBottomSheetReducer @Inject constructor() {
                 is Data -> BottomSheetState(
                     contentState.copy(
                         moveToDestinations = operation.moveToDestinations
-                    ).let { if (it.selected != null) it.toNewSelectedState(it.selected.id) else it },
+                    ),
                     currentState.bottomSheetVisibilityEffect
                 )
 
                 else -> BottomSheetState(
-                    Data(operation.moveToDestinations, null, operation.messageIdInConversation),
+                    Data(operation.moveToDestinations, operation.messageIdInConversation),
                     currentState?.bottomSheetVisibilityEffect ?: Effect.empty()
                 )
             }
@@ -69,8 +69,7 @@ class MoveToBottomSheetReducer @Inject constructor() {
                 val listWithSelectedLabel = moveToDestinations.map { it.setSelectedIfLabelIdMatch(mailLabelId) }
                     .toImmutableList()
                 this.copy(
-                    moveToDestinations = listWithSelectedLabel,
-                    selected = listWithSelectedLabel.firstOrNull { it.id == mailLabelId }
+                    moveToDestinations = listWithSelectedLabel
                 )
             }
         }

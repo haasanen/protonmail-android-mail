@@ -33,7 +33,7 @@
     <string name="label_title_folders">Folders</string>
     <string name="label_title_parent_folder">Parent folder</string>
     <string name="label_title_labels">Labels</string>
-    <string name="label_title_create_folder">Create folder</string>
+    <string name="label_title_create_folder">Create new folder</string>
     <string name="label_title_create_label">Create label</string>
     <string name="label_title_label_list">Label list</string>
     <string name="label_title_folder_list">Folder list</string>

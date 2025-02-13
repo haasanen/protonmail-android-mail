@@ -59,7 +59,6 @@ sealed interface MoveToBottomSheetState : BottomSheetContentState {
 
     data class Data(
         val moveToDestinations: ImmutableList<MailLabelUiModel>,
-        val selected: MailLabelUiModel?,
         val messageIdInConversation: MessageId?
     ) : MoveToBottomSheetState
 
