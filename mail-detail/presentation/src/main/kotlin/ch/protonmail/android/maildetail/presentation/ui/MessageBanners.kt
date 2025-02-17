@@ -1,107 +1,43 @@
 package ch.protonmail.android.maildetail.presentation.ui
 
 import android.content.res.Configuration
-import androidx.annotation.DrawableRes
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
-import ch.protonmail.android.mailcommon.presentation.NO_CONTENT_DESCRIPTION
-import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
+import ch.protonmail.android.design.compose.component.ProtonBanner
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
-import ch.protonmail.android.mailcommon.presentation.model.string
 import ch.protonmail.android.maildetail.presentation.R
 import ch.protonmail.android.maildetail.presentation.model.MessageBannersUiModel
-import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyMediumInverted
+import ch.protonmail.android.mailcommon.presentation.model.string
 
 @Composable
 fun MessageBanners(messageBannersUiModel: MessageBannersUiModel) {
     Column {
         if (messageBannersUiModel.shouldShowPhishingBanner) {
-            MessageBanner(
+            ProtonBanner(
                 icon = R.drawable.ic_proton_hook,
                 iconTint = ProtonTheme.colors.iconInverted,
-                text = TextUiModel.TextRes(R.string.message_phishing_banner_text),
+                text = TextUiModel.TextRes(R.string.message_phishing_banner_text).string(),
                 textStyle = ProtonTheme.typography.bodyMediumInverted,
                 backgroundColor = ProtonTheme.colors.notificationError,
                 borderColorIsBackgroundColor = true
             )
         }
         if (messageBannersUiModel.expirationBannerText != null) {
-            MessageBanner(
+            ProtonBanner(
                 modifier = Modifier.fillMaxWidth(),
                 icon = R.drawable.ic_proton_hourglass,
                 iconTint = ProtonTheme.colors.iconInverted,
-                text = messageBannersUiModel.expirationBannerText,
+                text = messageBannersUiModel.expirationBannerText.string(),
                 textStyle = ProtonTheme.typography.bodyMediumInverted,
                 backgroundColor = ProtonTheme.colors.notificationError,
                 borderColorIsBackgroundColor = true
             )
         }
-    }
-}
-
-@Composable
-fun MessageBanner(
-    modifier: Modifier = Modifier,
-    @DrawableRes icon: Int,
-    iconTint: Color,
-    text: TextUiModel,
-    textStyle: TextStyle,
-    backgroundColor: Color,
-    borderColorIsBackgroundColor: Boolean = false,
-    content: @Composable () -> Unit = {}
-) {
-    Column(
-        modifier = modifier
-            .testTag(MessageBodyTestTags.MessageBodyBanner)
-            .padding(
-                start = ProtonDimens.Spacing.ModeratelyLarge,
-                end = ProtonDimens.Spacing.ModeratelyLarge,
-                bottom = ProtonDimens.Spacing.ModeratelyLarge
-            )
-            .border(
-                width = MailDimens.DefaultBorder,
-                color = if (borderColorIsBackgroundColor) backgroundColor else ProtonTheme.colors.borderNorm,
-                shape = ProtonTheme.shapes.extraLarge
-            )
-            .background(color = backgroundColor, shape = ProtonTheme.shapes.extraLarge)
-            .padding(ProtonDimens.Spacing.ModeratelyLarge)
-    ) {
-        Row {
-            Icon(
-                modifier = Modifier
-                    .testTag(MessageBodyTestTags.MessageBodyBannerIcon)
-                    .size(MailDimens.MessageBannerIconSize),
-                painter = painterResource(id = icon),
-                contentDescription = NO_CONTENT_DESCRIPTION,
-                tint = iconTint
-            )
-            Spacer(modifier = Modifier.width(ProtonDimens.Spacing.Standard))
-            Text(
-                modifier = Modifier.testTag(MessageBodyTestTags.MessageBodyBannerText),
-                text = text.string(),
-                style = textStyle
-            )
-        }
-
-        content()
     }
 }
 
