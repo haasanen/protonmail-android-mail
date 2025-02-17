@@ -111,18 +111,18 @@ class RustDraftDataSourceImpl @Inject constructor(
         }
     }
 
-    override suspend fun saveToRecipient(recipient: Recipient): Either<DataError, Unit> = withValidRustDraftWrapper {
+    override suspend fun addToRecipient(recipient: Recipient): Either<DataError, Unit> = withValidRustDraftWrapper {
         val recipientsWrapper = it.recipientsTo()
         recipientsWrapper.registerCallback(recipientsUpdatedCallback)
         return@withValidRustDraftWrapper recipientsWrapper.addSingleRecipient(recipient.toSingleRecipientEntry())
     }
 
-    override suspend fun saveCcRecipient(recipient: Recipient): Either<DataError, Unit> = withValidRustDraftWrapper {
+    override suspend fun addCcRecipient(recipient: Recipient): Either<DataError, Unit> = withValidRustDraftWrapper {
         val recipientsWrapper = it.recipientsCc()
         return@withValidRustDraftWrapper recipientsWrapper.addSingleRecipient(recipient.toSingleRecipientEntry())
     }
 
-    override suspend fun saveBccRecipient(recipient: Recipient): Either<DataError, Unit> = withValidRustDraftWrapper {
+    override suspend fun addBccRecipient(recipient: Recipient): Either<DataError, Unit> = withValidRustDraftWrapper {
         val recipientsWrapper = it.recipientsBcc()
         return@withValidRustDraftWrapper recipientsWrapper.addSingleRecipient(recipient.toSingleRecipientEntry())
     }

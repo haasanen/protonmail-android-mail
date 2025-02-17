@@ -45,19 +45,19 @@ interface DraftRepository {
         body: DraftBody
     ): Either<DataError, Unit>
 
-    suspend fun saveToRecipient(
+    suspend fun addToRecipient(
         userId: UserId,
         messageId: MessageId,
         recipient: Recipient
     ): Either<DataError, Unit>
 
-    suspend fun saveCcRecipient(
+    suspend fun addCcRecipient(
         userId: UserId,
         messageId: MessageId,
         recipient: Recipient
     ): Either<DataError, Unit>
 
-    suspend fun saveBccRecipient(
+    suspend fun addBccRecipient(
         userId: UserId,
         messageId: MessageId,
         recipient: Recipient

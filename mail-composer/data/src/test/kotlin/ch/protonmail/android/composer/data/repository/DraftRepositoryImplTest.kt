@@ -183,10 +183,10 @@ class DraftRepositoryImplTest {
         val userId = UserIdSample.Primary
         val messageId = MessageIdSample.PlainTextMessage
         val recipient = RecipientSample.Bob
-        coEvery { draftDataSource.saveToRecipient(recipient) } returns Unit.right()
+        coEvery { draftDataSource.addToRecipient(recipient) } returns Unit.right()
 
         // When
-        val actual = draftRepository.saveToRecipient(userId, messageId, recipient)
+        val actual = draftRepository.addToRecipient(userId, messageId, recipient)
 
         // Then
         assertEquals(Unit.right(), actual)
@@ -199,10 +199,10 @@ class DraftRepositoryImplTest {
         val expected = DataError.Local.SaveDraftError.Unknown
         val messageId = MessageIdSample.PlainTextMessage
         val recipient = RecipientSample.Bob
-        coEvery { draftDataSource.saveToRecipient(recipient) } returns expected.left()
+        coEvery { draftDataSource.addToRecipient(recipient) } returns expected.left()
 
         // When
-        val actual = draftRepository.saveToRecipient(userId, messageId, recipient)
+        val actual = draftRepository.addToRecipient(userId, messageId, recipient)
 
         // Then
         assertEquals(expected.left(), actual)
@@ -214,10 +214,10 @@ class DraftRepositoryImplTest {
         val userId = UserIdSample.Primary
         val messageId = MessageIdSample.PlainTextMessage
         val recipient = RecipientSample.Bob
-        coEvery { draftDataSource.saveCcRecipient(recipient) } returns Unit.right()
+        coEvery { draftDataSource.addCcRecipient(recipient) } returns Unit.right()
 
         // When
-        val actual = draftRepository.saveCcRecipient(userId, messageId, recipient)
+        val actual = draftRepository.addCcRecipient(userId, messageId, recipient)
 
         // Then
         assertEquals(Unit.right(), actual)
@@ -230,10 +230,10 @@ class DraftRepositoryImplTest {
         val expected = DataError.Local.SaveDraftError.Unknown
         val messageId = MessageIdSample.PlainTextMessage
         val recipient = RecipientSample.Bob
-        coEvery { draftDataSource.saveCcRecipient(recipient) } returns expected.left()
+        coEvery { draftDataSource.addCcRecipient(recipient) } returns expected.left()
 
         // When
-        val actual = draftRepository.saveCcRecipient(userId, messageId, recipient)
+        val actual = draftRepository.addCcRecipient(userId, messageId, recipient)
 
         // Then
         assertEquals(expected.left(), actual)
@@ -245,10 +245,10 @@ class DraftRepositoryImplTest {
         val userId = UserIdSample.Primary
         val messageId = MessageIdSample.PlainTextMessage
         val recipient = RecipientSample.Bob
-        coEvery { draftDataSource.saveBccRecipient(recipient) } returns Unit.right()
+        coEvery { draftDataSource.addBccRecipient(recipient) } returns Unit.right()
 
         // When
-        val actual = draftRepository.saveBccRecipient(userId, messageId, recipient)
+        val actual = draftRepository.addBccRecipient(userId, messageId, recipient)
 
         // Then
         assertEquals(Unit.right(), actual)
@@ -261,10 +261,10 @@ class DraftRepositoryImplTest {
         val expected = DataError.Local.SaveDraftError.Unknown
         val messageId = MessageIdSample.PlainTextMessage
         val recipient = RecipientSample.Bob
-        coEvery { draftDataSource.saveBccRecipient(recipient) } returns expected.left()
+        coEvery { draftDataSource.addBccRecipient(recipient) } returns expected.left()
 
         // When
-        val actual = draftRepository.saveBccRecipient(userId, messageId, recipient)
+        val actual = draftRepository.addBccRecipient(userId, messageId, recipient)
 
         // Then
         assertEquals(expected.left(), actual)

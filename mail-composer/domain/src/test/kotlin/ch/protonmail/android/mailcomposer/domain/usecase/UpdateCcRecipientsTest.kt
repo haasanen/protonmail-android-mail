@@ -24,7 +24,7 @@ class UpdateCcRecipientsTest {
         val userId = UserIdSample.Primary
         val messageId = MessageIdSample.build()
         val recipientToAdd = RecipientSample.Bob
-        coEvery { draftRepository.saveCcRecipient(userId, messageId, recipientToAdd) } returns Unit.right()
+        coEvery { draftRepository.addCcRecipient(userId, messageId, recipientToAdd) } returns Unit.right()
 
         // When
         val actualEither = updateCcRecipients.save(
@@ -34,7 +34,7 @@ class UpdateCcRecipientsTest {
         )
 
         // Then
-        coVerify { draftRepository.saveCcRecipient(userId, messageId, recipientToAdd) }
+        coVerify { draftRepository.addCcRecipient(userId, messageId, recipientToAdd) }
         assertEquals(Unit.right(), actualEither)
     }
 

@@ -34,7 +34,7 @@ class UpdateCcRecipients @Inject constructor(
         userId: UserId,
         messageId: MessageId,
         recipient: Recipient
-    ): Either<DataError, Unit> = draftRepository.saveCcRecipient(userId, messageId, recipient)
+    ): Either<DataError, Unit> = draftRepository.addCcRecipient(userId, messageId, recipient)
 
     override suspend fun remove(
         userId: UserId,

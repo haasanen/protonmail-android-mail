@@ -34,7 +34,7 @@ class UpdateToRecipients @Inject constructor(
         userId: UserId,
         messageId: MessageId,
         recipient: Recipient
-    ): Either<DataError, Unit> = draftRepository.saveToRecipient(userId, messageId, recipient)
+    ): Either<DataError, Unit> = draftRepository.addToRecipient(userId, messageId, recipient)
 
     override suspend fun remove(
         userId: UserId,

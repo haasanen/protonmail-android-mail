@@ -343,7 +343,7 @@ class RustDraftDataSourceImplTest {
         coEvery { toRecipientsWrapperMock.registerCallback(any()) } returns Unit
 
         // When
-        val actual = dataSource.saveToRecipient(recipient)
+        val actual = dataSource.addToRecipient(recipient)
 
         // Then
         assertEquals(actual, Unit.right())
@@ -364,7 +364,7 @@ class RustDraftDataSourceImplTest {
         coEvery { toRecipientsWrapperMock.registerCallback(any()) } returns Unit
 
         // When
-        val actual = dataSource.saveToRecipient(recipient)
+        val actual = dataSource.addToRecipient(recipient)
 
         // Then
         assertEquals(actual, expected.left())
@@ -383,7 +383,7 @@ class RustDraftDataSourceImplTest {
         coEvery { toRecipientsWrapperMock.addSingleRecipient(singleRecipient) } returns Unit.right()
 
         // When
-        val actual = dataSource.saveCcRecipient(recipient)
+        val actual = dataSource.addCcRecipient(recipient)
 
         // Then
         assertEquals(actual, Unit.right())
@@ -403,7 +403,7 @@ class RustDraftDataSourceImplTest {
         coEvery { toRecipientsWrapperMock.addSingleRecipient(singleRecipient) } returns expected.left()
 
         // When
-        val actual = dataSource.saveCcRecipient(recipient)
+        val actual = dataSource.addCcRecipient(recipient)
 
         // Then
         assertEquals(actual, expected.left())
@@ -422,7 +422,7 @@ class RustDraftDataSourceImplTest {
         coEvery { toRecipientsWrapperMock.addSingleRecipient(singleRecipient) } returns Unit.right()
 
         // When
-        val actual = dataSource.saveBccRecipient(recipient)
+        val actual = dataSource.addBccRecipient(recipient)
 
         // Then
         assertEquals(actual, Unit.right())
@@ -442,7 +442,7 @@ class RustDraftDataSourceImplTest {
         coEvery { toRecipientsWrapperMock.addSingleRecipient(singleRecipient) } returns expected.left()
 
         // When
-        val actual = dataSource.saveBccRecipient(recipient)
+        val actual = dataSource.addBccRecipient(recipient)
 
         // Then
         assertEquals(actual, expected.left())

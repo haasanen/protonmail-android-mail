@@ -56,23 +56,23 @@ class DraftRepositoryImpl @Inject constructor(
         body: DraftBody
     ): Either<DataError, Unit> = draftDataSource.saveBody(body)
 
-    override suspend fun saveToRecipient(
+    override suspend fun addToRecipient(
         userId: UserId,
         messageId: MessageId,
         recipient: Recipient
-    ): Either<DataError, Unit> = draftDataSource.saveToRecipient(recipient)
+    ): Either<DataError, Unit> = draftDataSource.addToRecipient(recipient)
 
-    override suspend fun saveCcRecipient(
+    override suspend fun addCcRecipient(
         userId: UserId,
         messageId: MessageId,
         recipient: Recipient
-    ): Either<DataError, Unit> = draftDataSource.saveCcRecipient(recipient)
+    ): Either<DataError, Unit> = draftDataSource.addCcRecipient(recipient)
 
-    override suspend fun saveBccRecipient(
+    override suspend fun addBccRecipient(
         userId: UserId,
         messageId: MessageId,
         recipient: Recipient
-    ): Either<DataError, Unit> = draftDataSource.saveBccRecipient(recipient)
+    ): Either<DataError, Unit> = draftDataSource.addBccRecipient(recipient)
 
     override suspend fun removeToRecipient(
         userId: UserId,

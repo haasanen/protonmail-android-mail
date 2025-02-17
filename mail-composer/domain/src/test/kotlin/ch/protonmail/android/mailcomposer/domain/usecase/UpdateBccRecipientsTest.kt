@@ -24,7 +24,7 @@ class UpdateBccRecipientsTest {
         val userId = UserIdSample.Primary
         val messageId = MessageIdSample.build()
         val recipientToAdd = RecipientSample.Bob
-        coEvery { draftRepository.saveBccRecipient(userId, messageId, recipientToAdd) } returns Unit.right()
+        coEvery { draftRepository.addBccRecipient(userId, messageId, recipientToAdd) } returns Unit.right()
 
         // When
         val actualEither = updateBccRecipients.save(
@@ -34,7 +34,7 @@ class UpdateBccRecipientsTest {
         )
 
         // Then
-        coVerify { draftRepository.saveBccRecipient(userId, messageId, recipientToAdd) }
+        coVerify { draftRepository.addBccRecipient(userId, messageId, recipientToAdd) }
         assertEquals(Unit.right(), actualEither)
     }
 
