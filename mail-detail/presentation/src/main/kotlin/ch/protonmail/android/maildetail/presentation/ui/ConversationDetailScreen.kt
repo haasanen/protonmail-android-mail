@@ -227,21 +227,9 @@ fun ConversationDetailScreen(
                 is DetailMoreActionsBottomSheetState -> DetailMoreActionsBottomSheetContent(
                     state = bottomSheetContentState,
                     actions = DetailMoreActionsBottomSheetContent.Actions(
-                        onReply = {
-                            viewModel.submit(ConversationDetailViewAction.DismissBottomSheet)
-                            actions.showFeatureMissingSnackbar()
-                            // actions.onReply
-                        },
-                        onReplyAll = {
-                            viewModel.submit(ConversationDetailViewAction.DismissBottomSheet)
-                            actions.showFeatureMissingSnackbar()
-                            // actions.onReplyAll
-                        },
-                        onForward = {
-                            viewModel.submit(ConversationDetailViewAction.DismissBottomSheet)
-                            actions.showFeatureMissingSnackbar()
-                            // actions.onForward
-                        },
+                        onReply = actions.onReply,
+                        onReplyAll = actions.onReplyAll,
+                        onForward = actions.onForward,
                         onMarkUnread = { viewModel.submit(ConversationDetailViewAction.MarkMessageUnread(it)) },
                         onStarMessage = { viewModel.submit(ConversationDetailViewAction.Star) },
                         onUnStarMessage = { viewModel.submit(ConversationDetailViewAction.UnStar) },
@@ -380,18 +368,9 @@ fun ConversationDetailScreen(
                 handleProtonCalendarRequest = actions.handleProtonCalendarRequest,
                 showFeatureMissingSnackbar = actions.showFeatureMissingSnackbar,
                 loadEmbeddedImage = { messageId, contentId -> viewModel.loadEmbeddedImage(messageId, contentId) },
-                onReply = {
-                    actions.showFeatureMissingSnackbar()
-                    // actions.onReply
-                },
-                onReplyAll = {
-                    actions.showFeatureMissingSnackbar()
-                    // actions.onReplyAll
-                },
-                onForward = {
-                    actions.showFeatureMissingSnackbar()
-                    // actions.onForward
-                },
+                onReply = actions.onReply,
+                onReplyAll = actions.onReplyAll,
+                onForward = actions.onForward,
                 onScrollRequestCompleted = { viewModel.submit(ConversationDetailViewAction.ScrollRequestCompleted) },
                 onDoNotAskLinkConfirmationAgain = {
                     viewModel.submit(ConversationDetailViewAction.DoNotAskLinkConfirmationAgain)
