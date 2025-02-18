@@ -337,6 +337,7 @@ compose-debug = [
 module-presentation = [
     "androidx-annotation",
     "androidx-compose-material3",
+    "androidx-compose-ui-tooling",
     "androidx-compose-ui-tooling-preview",
     "arrow-core",
     "dagger-hilt-android",

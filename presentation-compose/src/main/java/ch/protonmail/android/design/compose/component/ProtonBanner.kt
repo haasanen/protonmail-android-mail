@@ -30,6 +30,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -39,7 +40,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import ch.protonmail.android.design.compose.R
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyMediumNorm
@@ -54,6 +58,7 @@ fun ProtonBanner(
     textStyle: TextStyle,
     backgroundColor: Color,
     borderColorIsBackgroundColor: Boolean = false,
+    contentAlignedWithText: Boolean = false,
     content: @Composable () -> Unit = {}
 ) {
     Column(
@@ -89,7 +94,14 @@ fun ProtonBanner(
             )
         }
 
-        content()
+        if (contentAlignedWithText) {
+            Row {
+                Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Standard))
+                content()
+            }
+        } else {
+            content()
+        }
     }
 }
 
@@ -165,6 +177,97 @@ fun ProtonBannerWithButton(
         }
     }
 }
+
+
+@Composable
+fun ProtonBannerWithLink(
+    bannerText: String,
+    linkText: String,
+    @DrawableRes icon: Int,
+    onLinkClicked: () -> Unit
+) {
+    ProtonBanner(
+        icon = icon,
+        iconTint = ProtonTheme.colors.iconWeak,
+        text = bannerText,
+        textStyle = ProtonTheme.typography.bodyMediumWeak,
+        backgroundColor = ProtonTheme.colors.backgroundNorm,
+        contentAlignedWithText = true
+    ) {
+        Column {
+            ProtonTextButton(
+                modifier = Modifier.wrapContentWidth(),
+                onClick = { onLinkClicked() }
+            ) {
+                Row(
+                    modifier = Modifier.padding(start = ProtonDimens.Spacing.Standard)
+                ) {
+                    Text(
+                        text = linkText,
+                        textAlign = TextAlign.Start,
+                        style = ProtonTheme.typography.bodyMedium,
+                        color = ProtonTheme.colors.textAccent
+                    )
+                }
+
+            }
+        }
+    }
+}
+
+@Preview
+@Composable
+fun ProtonBannerPreview() {
+    ProtonTheme {
+        ProtonBanner(
+            icon = R.drawable.ic_info_circle,
+            iconTint = ProtonTheme.colors.iconWeak,
+            text = "Banner text",
+            textStyle = ProtonTheme.typography.bodyMediumWeak,
+            backgroundColor = ProtonTheme.colors.backgroundNorm
+        )
+    }
+}
+
+@Preview
+@Composable
+fun ProtonBannerNoIconPreview() {
+    ProtonTheme {
+        ProtonBanner(
+            text = "Banner text",
+            textStyle = ProtonTheme.typography.bodyMediumWeak,
+            backgroundColor = ProtonTheme.colors.backgroundNorm
+        )
+    }
+}
+
+@Preview
+@Composable
+fun ProtonBannerWithButtonPreview() {
+    ProtonTheme {
+        ProtonBannerWithButton(
+            bannerText = "Banner text",
+            buttonText = "Button text",
+            icon = R.drawable.ic_info_circle,
+            onButtonClicked = {}
+        )
+    }
+}
+
+@Preview
+@Composable
+fun ProtonBannerWithLinkPreview() {
+    ProtonTheme {
+        ProtonBannerWithLink(
+            bannerText = "Upgrade to automatically delete messages " +
+                "that have been in trash or spam for more than 30 days",
+            linkText = "Learn more",
+            icon = R.drawable.ic_info_circle,
+            onLinkClicked = {}
+        )
+    }
+}
+
 
 object ProtonBannerTestTags {
 
