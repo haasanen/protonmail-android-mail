@@ -28,7 +28,6 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.animation.togetherWith
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -39,12 +38,11 @@ import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
@@ -52,7 +50,6 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FabPosition
@@ -101,15 +98,17 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
-import ch.protonmail.android.design.compose.component.ProtonButton
+import ch.protonmail.android.design.compose.component.ProtonBanner
+import ch.protonmail.android.design.compose.component.ProtonBannerWithButton
+import ch.protonmail.android.design.compose.component.ProtonBannerWithLink
 import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
 import ch.protonmail.android.design.compose.component.ProtonModalBottomSheetLayout
 import ch.protonmail.android.design.compose.component.ProtonSnackbarHostState
 import ch.protonmail.android.design.compose.component.ProtonSnackbarType
-import ch.protonmail.android.design.compose.component.protonOutlinedButtonColors
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyLargeWeak
+import ch.protonmail.android.design.compose.theme.bodyMediumWeak
 import ch.protonmail.android.design.compose.theme.titleLargeNorm
 import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
 import ch.protonmail.android.mailcommon.presentation.ConsumableTextEffect
@@ -118,6 +117,7 @@ import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 import ch.protonmail.android.mailcommon.presentation.compose.UndoableOperationSnackbar
 import ch.protonmail.android.mailcommon.presentation.model.AvatarImageUiModel
 import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
+import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcommon.presentation.model.string
 import ch.protonmail.android.mailcommon.presentation.ui.BottomActionBar
 import ch.protonmail.android.mailcommon.presentation.ui.delete.DeleteDialog
@@ -790,12 +790,16 @@ private fun MailboxItemsList(
             state.clearState.let { it as? MailboxListState.Data.ClearState.Visible }?.let {
                 item {
                     when (it) {
-                        MailboxListState.Data.ClearState.Visible.Banner -> {
-                            ClearBanner()
+                        is MailboxListState.Data.ClearState.Visible.InfoBanner -> {
+                            ClearInfoBanner(it.text)
                         }
 
-                        is MailboxListState.Data.ClearState.Visible.Button -> {
-                            ClearButton(it, actions)
+                        is MailboxListState.Data.ClearState.Visible.ClearBannerWithButton -> {
+                            ClearBannerWithButton(it, actions)
+                        }
+
+                        is MailboxListState.Data.ClearState.Visible.UpsellBannerWithLink -> {
+                            ClearUpsellBannerWithLink(it, actions)
                         }
                     }
                 }
@@ -865,61 +869,45 @@ private fun MailboxItemsList(
 }
 
 @Composable
-private fun ClearBanner() {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .heightIn(min = ButtonDefaults.MinHeight)
-            .padding(
-                start = ProtonDimens.Spacing.Large,
-                top = ProtonDimens.Spacing.Standard,
-                bottom = ProtonDimens.Spacing.Large,
-                end = ProtonDimens.Spacing.Large
-            )
-            .background(
-                color = ProtonTheme.colors.backgroundSecondary,
-                shape = ProtonTheme.shapes.medium
-            )
-            .padding(ProtonDimens.Spacing.Standard),
-        horizontalArrangement = Arrangement.Center
-    ) {
-        Text(
-            color = ProtonTheme.colors.textWeak,
-            fontWeight = FontWeight.Normal,
-            text = stringResource(id = R.string.mailbox_action_clear_operation_scheduled)
-        )
-    }
+private fun ClearInfoBanner(text: TextUiModel) {
+    ProtonBanner(
+        text = text.string(),
+        textStyle = ProtonTheme.typography.bodyMediumWeak,
+        backgroundColor = ProtonTheme.colors.backgroundNorm
+    )
 }
 
 @Composable
-private fun ClearButton(
-    clearButtonState: MailboxListState.Data.ClearState.Visible.Button,
+private fun ClearBannerWithButton(
+    clearBannerState: MailboxListState.Data.ClearState.Visible.ClearBannerWithButton,
     actions: MailboxScreen.Actions
 ) {
-    ProtonButton(
-        onClick = actions.deleteAll,
-        modifier = Modifier
-            .fillMaxWidth()
-            .heightIn(min = ButtonDefaults.MinHeight)
-            .padding(
-                start = ProtonDimens.Spacing.Large,
-                top = ProtonDimens.Spacing.Standard,
-                bottom = ProtonDimens.Spacing.Large,
-                end = ProtonDimens.Spacing.Large
-            ),
-        shape = ProtonTheme.shapes.medium,
-        border = BorderStroke(
-            ProtonDimens.OutlinedBorderSize,
-            ProtonTheme.colors.notificationError
+    ProtonBannerWithButton(
+        bannerText = clearBannerState.bannerText.string(),
+        buttonText = clearBannerState.buttonText.string(),
+        icon = clearBannerState.icon,
+        onButtonClicked = actions.deleteAll
+    )
+}
+
+
+@Composable
+private fun ClearUpsellBannerWithLink(
+    upsellBannerState: MailboxListState.Data.ClearState.Visible.UpsellBannerWithLink,
+    actions: MailboxScreen.Actions
+) {
+    ProtonBannerWithLink(
+        bannerText = upsellBannerState.bannerText.string(),
+        linkText = upsellBannerState.linkText.string(),
+        icon = upsellBannerState.icon,
+        contentPadding = PaddingValues(
+            start = ProtonDimens.Spacing.ModeratelyLarge,
+            end = ProtonDimens.Spacing.ModeratelyLarge,
+            top = ProtonDimens.Spacing.ModeratelyLarge,
+            bottom = 0.dp
         ),
-        elevation = null,
-        colors = ButtonDefaults.protonOutlinedButtonColors(
-            contentColor = ProtonTheme.colors.notificationError
-        ),
-        contentPadding = ButtonDefaults.ContentPadding
-    ) {
-        Text(text = clearButtonState.text.string())
-    }
+        onLinkClicked = actions.onOpenUpsellingPage
+    )
 }
 
 private fun generateSwipeActions(
