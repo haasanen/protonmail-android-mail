@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import ch.protonmail.android.design.compose.component.ProtonBanner
+import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.maildetail.presentation.R
 import ch.protonmail.android.maildetail.presentation.model.MessageBannersUiModel
@@ -21,6 +22,7 @@ fun MessageBanners(messageBannersUiModel: MessageBannersUiModel) {
             ProtonBanner(
                 icon = R.drawable.ic_proton_hook,
                 iconTint = ProtonTheme.colors.iconInverted,
+                iconSize = ProtonDimens.IconSize.Medium,
                 text = TextUiModel.TextRes(R.string.message_phishing_banner_text).string(),
                 textStyle = ProtonTheme.typography.bodyMediumInverted,
                 backgroundColor = ProtonTheme.colors.notificationError,
@@ -32,6 +34,7 @@ fun MessageBanners(messageBannersUiModel: MessageBannersUiModel) {
                 modifier = Modifier.fillMaxWidth(),
                 icon = R.drawable.ic_proton_hourglass,
                 iconTint = ProtonTheme.colors.iconInverted,
+                iconSize = ProtonDimens.IconSize.Medium,
                 text = messageBannersUiModel.expirationBannerText.string(),
                 textStyle = ProtonTheme.typography.bodyMediumInverted,
                 backgroundColor = ProtonTheme.colors.notificationError,

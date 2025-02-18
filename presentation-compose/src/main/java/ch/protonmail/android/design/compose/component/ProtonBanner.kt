@@ -26,6 +26,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -37,11 +39,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import ch.protonmail.android.design.compose.R
 import ch.protonmail.android.design.compose.theme.ProtonDimens
@@ -54,9 +58,11 @@ fun ProtonBanner(
     modifier: Modifier = Modifier,
     @DrawableRes icon: Int,
     iconTint: Color,
+    iconSize: Dp?,
     text: String,
     textStyle: TextStyle,
     backgroundColor: Color,
+    contentPadding: PaddingValues = PaddingValues(ProtonDimens.Spacing.ModeratelyLarge),
     borderColorIsBackgroundColor: Boolean = false,
     contentAlignedWithText: Boolean = false,
     content: @Composable () -> Unit = {}
@@ -65,9 +71,9 @@ fun ProtonBanner(
         modifier = modifier
             .testTag(ProtonBannerTestTags.ProtonBannerRoot)
             .padding(
-                start = ProtonDimens.Spacing.ModeratelyLarge,
-                end = ProtonDimens.Spacing.ModeratelyLarge,
-                bottom = ProtonDimens.Spacing.ModeratelyLarge
+                start = contentPadding.calculateStartPadding(LocalLayoutDirection.current),
+                end = contentPadding.calculateEndPadding(LocalLayoutDirection.current),
+                bottom = contentPadding.calculateBottomPadding()
             )
             .border(
                 width = ProtonDimens.BorderSize.Default,
@@ -75,31 +81,38 @@ fun ProtonBanner(
                 shape = ProtonTheme.shapes.extraLarge
             )
             .background(color = backgroundColor, shape = ProtonTheme.shapes.extraLarge)
-            .padding(ProtonDimens.Spacing.ModeratelyLarge)
+            .padding(contentPadding)
     ) {
         Row {
             Icon(
                 modifier = Modifier
                     .testTag(ProtonBannerTestTags.ProtonBannerIcon)
-                    .size(ProtonDimens.IconSize.Medium),
+                    .size(iconSize ?: Dp.Unspecified),
                 painter = painterResource(id = icon),
                 contentDescription = null,
                 tint = iconTint
             )
             Spacer(modifier = Modifier.width(ProtonDimens.Spacing.Standard))
-            Text(
-                modifier = Modifier.testTag(ProtonBannerTestTags.ProtonBannerText),
-                text = text,
-                style = textStyle
-            )
+            if (contentAlignedWithText) {
+                Column {
+                    Text(
+                        modifier = Modifier.testTag(ProtonBannerTestTags.ProtonBannerText),
+                        text = text,
+                        style = textStyle
+                    )
+                    content()
+                }
+            } else {
+                Text(
+                    modifier = Modifier.testTag(ProtonBannerTestTags.ProtonBannerText),
+                    text = text,
+                    style = textStyle
+                )
+            }
+
         }
 
-        if (contentAlignedWithText) {
-            Row {
-                Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Standard))
-                content()
-            }
-        } else {
+        if (!contentAlignedWithText) {
             content()
         }
     }
@@ -148,6 +161,7 @@ fun ProtonBannerWithButton(
     ProtonBanner(
         icon = icon,
         iconTint = ProtonTheme.colors.iconWeak,
+        iconSize = ProtonDimens.IconSize.Medium,
         text = bannerText,
         textStyle = ProtonTheme.typography.bodyMediumWeak,
         backgroundColor = ProtonTheme.colors.backgroundNorm
@@ -183,33 +197,34 @@ fun ProtonBannerWithButton(
 fun ProtonBannerWithLink(
     bannerText: String,
     linkText: String,
+    iconSize: Dp? = null,
     @DrawableRes icon: Int,
+    contentPadding: PaddingValues = PaddingValues(ProtonDimens.Spacing.ModeratelyLarge),
     onLinkClicked: () -> Unit
 ) {
     ProtonBanner(
         icon = icon,
         iconTint = ProtonTheme.colors.iconWeak,
+        iconSize = iconSize,
         text = bannerText,
         textStyle = ProtonTheme.typography.bodyMediumWeak,
         backgroundColor = ProtonTheme.colors.backgroundNorm,
+        contentPadding = contentPadding,
         contentAlignedWithText = true
     ) {
         Column {
             ProtonTextButton(
                 modifier = Modifier.wrapContentWidth(),
+                contentPadding = PaddingValues(0.dp),
                 onClick = { onLinkClicked() }
             ) {
-                Row(
-                    modifier = Modifier.padding(start = ProtonDimens.Spacing.Standard)
-                ) {
-                    Text(
-                        text = linkText,
-                        textAlign = TextAlign.Start,
-                        style = ProtonTheme.typography.bodyMedium,
-                        color = ProtonTheme.colors.textAccent
-                    )
-                }
 
+                Text(
+                    text = linkText,
+                    textAlign = TextAlign.Start,
+                    style = ProtonTheme.typography.bodyMedium,
+                    color = ProtonTheme.colors.textAccent
+                )
             }
         }
     }
@@ -222,6 +237,7 @@ fun ProtonBannerPreview() {
         ProtonBanner(
             icon = R.drawable.ic_info_circle,
             iconTint = ProtonTheme.colors.iconWeak,
+            iconSize = ProtonDimens.IconSize.Medium,
             text = "Banner text",
             textStyle = ProtonTheme.typography.bodyMediumWeak,
             backgroundColor = ProtonTheme.colors.backgroundNorm

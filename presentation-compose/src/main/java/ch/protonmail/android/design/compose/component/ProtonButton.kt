@@ -169,6 +169,7 @@ fun ProtonTextButton(
     contained: Boolean = true,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     colors: ButtonColors = ButtonDefaults.protonTextButtonColors(loading),
+    contentPadding: PaddingValues = ButtonDefaults.TextButtonContentPadding,
     content: @Composable () -> Unit
 ) {
     ProtonButton(
@@ -182,7 +183,7 @@ fun ProtonTextButton(
         shape = ProtonTheme.shapes.small,
         border = null,
         colors = colors,
-        contentPadding = ButtonDefaults.TextButtonContentPadding,
+        contentPadding = contentPadding,
         content = content
     )
 }
