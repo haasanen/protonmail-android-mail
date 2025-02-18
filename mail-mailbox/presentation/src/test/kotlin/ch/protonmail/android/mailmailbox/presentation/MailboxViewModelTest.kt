@@ -85,6 +85,7 @@ import ch.protonmail.android.mailmailbox.presentation.helper.MailboxAsyncPagingD
 import ch.protonmail.android.mailmailbox.presentation.mailbox.MailboxViewModel
 import ch.protonmail.android.mailmailbox.presentation.mailbox.mapper.MailboxItemUiModelMapper
 import ch.protonmail.android.mailmailbox.presentation.mailbox.mapper.SwipeActionsMapper
+import ch.protonmail.android.mailmailbox.presentation.mailbox.model.ClearAllState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxEvent
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxItemUiModel
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxListState
@@ -123,6 +124,7 @@ import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MoveToBo
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.UpsellingBottomSheetState
 import ch.protonmail.android.mailsettings.domain.model.FolderColorSettings
 import ch.protonmail.android.mailsettings.domain.model.SwipeActionsPreference
+import ch.protonmail.android.mailsettings.domain.usecase.IsAutoDeleteSpamAndTrashEnabled
 import ch.protonmail.android.mailsettings.domain.usecase.ObserveFolderColorSettings
 import ch.protonmail.android.mailsettings.domain.usecase.ObserveSwipeActionsPreference
 import ch.protonmail.android.testdata.avatar.AvatarImageStatesTestData
@@ -292,6 +294,10 @@ class MailboxViewModelTest {
         every { this@mockk() } returns flowOf()
     }
 
+    private val isAutoDeleteTrashAndSpamEnabled = mockk<IsAutoDeleteSpamAndTrashEnabled> {
+        coEvery { this@mockk(userId) } returns true
+    }
+
     private val mailboxViewModel by lazy {
         MailboxViewModel(
             mailboxPagerFactory = pagerFactory,
@@ -338,7 +344,8 @@ class MailboxViewModelTest {
             findLocalSystemLabelId = findLocalSystemLabelId,
             loadAvatarImage = loadAvatarImage,
             observeAvatarImageStates = observeAvatarImageStates,
-            observePrimaryAccountAvatarItem = observePrimaryAccountAvatarItem
+            observePrimaryAccountAvatarItem = observePrimaryAccountAvatarItem,
+            isAutoDeleteTrashAndSpamEnabled = isAutoDeleteTrashAndSpamEnabled
         )
     }
 
@@ -737,7 +744,7 @@ class MailboxViewModelTest {
                 refreshRequested = false,
                 swipeActions = expectedSwipeActions,
                 searchState = MailboxSearchStateSampleData.NotSearching,
-                clearState = MailboxListState.Data.ClearState.Visible.Button(TextUiModel("Clear All")),
+                clearState = MailboxListState.Data.ClearState.Visible.InfoBanner(TextUiModel("Clear Info")),
                 shouldShowFab = true,
                 avatarImagesUiModel = AvatarImagesUiModelTestData.SampleData1
             )
@@ -763,7 +770,12 @@ class MailboxViewModelTest {
             mailboxReducer.newStateFrom(expectedState, MailboxEvent.SwipeActionsChanged(expectedSwipeActions))
         } returns expectedStateWithSwipeGestures
         every {
-            mailboxReducer.newStateFrom(expectedStateWithSwipeGestures, MailboxEvent.ClearAllOperationStatus(false))
+            mailboxReducer.newStateFrom(
+                expectedStateWithSwipeGestures,
+                MailboxEvent.ClearAllOperationStatus(
+                    ClearAllState.ClearAllActionBanner
+                )
+            )
         } returns expectedStateAfterClearAllStatus
 
         mailboxViewModel.state.test {

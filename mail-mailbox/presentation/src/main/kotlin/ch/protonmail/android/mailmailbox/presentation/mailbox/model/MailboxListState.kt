@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.mailmailbox.presentation.mailbox.model
 
+import androidx.annotation.DrawableRes
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.maillabel.domain.model.MailLabel
@@ -33,8 +34,19 @@ sealed interface MailboxListState {
         sealed interface ClearState {
             data object Hidden : ClearState
             sealed interface Visible : ClearState {
-                data class Button(val text: TextUiModel) : Visible
-                data object Banner : Visible
+                data class UpsellBannerWithLink(
+                    val bannerText: TextUiModel,
+                    val linkText: TextUiModel,
+                    @DrawableRes val icon: Int
+                ) : Visible
+
+                data class ClearBannerWithButton(
+                    val bannerText: TextUiModel,
+                    val buttonText: TextUiModel,
+                    @DrawableRes val icon: Int
+                ) : Visible
+
+                data class InfoBanner(val text: TextUiModel) : Visible
             }
         }
 

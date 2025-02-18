@@ -86,6 +86,7 @@ import ch.protonmail.android.mailmailbox.domain.usecase.SaveStorageLimitPreferen
 import ch.protonmail.android.mailmailbox.domain.usecase.ShouldShowRatingBooster
 import ch.protonmail.android.mailmailbox.presentation.mailbox.mapper.MailboxItemUiModelMapper
 import ch.protonmail.android.mailmailbox.presentation.mailbox.mapper.SwipeActionsMapper
+import ch.protonmail.android.mailmailbox.presentation.mailbox.model.ClearAllState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxEvent
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxItemUiModel
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxListState
@@ -119,6 +120,7 @@ import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MailboxM
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.ManageAccountSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MoveToBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.UpsellingBottomSheetState
+import ch.protonmail.android.mailsettings.domain.usecase.IsAutoDeleteSpamAndTrashEnabled
 import ch.protonmail.android.mailsettings.domain.usecase.ObserveFolderColorSettings
 import ch.protonmail.android.mailsettings.domain.usecase.ObserveSwipeActionsPreference
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -197,7 +199,8 @@ class MailboxViewModel @Inject constructor(
     private val findLocalSystemLabelId: FindLocalSystemLabelId,
     private val loadAvatarImage: LoadAvatarImage,
     private val observeAvatarImageStates: ObserveAvatarImageStates,
-    private val observePrimaryAccountAvatarItem: ObservePrimaryAccountAvatarItem
+    private val observePrimaryAccountAvatarItem: ObservePrimaryAccountAvatarItem,
+    private val isAutoDeleteTrashAndSpamEnabled: IsAutoDeleteSpamAndTrashEnabled
 ) : ViewModel() {
 
     private val primaryUserId = observePrimaryUserId()
@@ -343,8 +346,18 @@ class MailboxViewModel @Inject constructor(
             observeClearMessageOperation(userId, currentMailLabel.labelId),
             observeClearConversationOperation(userId, currentMailLabel.labelId)
         ) { messageOperation, conversationOperation ->
-            val clearAllOperation = messageOperation || conversationOperation
-            MailboxEvent.ClearAllOperationStatus(clearAllOperation)
+
+            val clearAllState = when {
+                isAutoDeleteTrashAndSpamEnabled(userId) ->
+                    if (messageOperation || conversationOperation) {
+                        ClearAllState.ClearAllInProgress
+                    } else {
+                        ClearAllState.ClearAllActionBanner
+                    }
+                else -> ClearAllState.UpsellBanner
+            }
+
+            MailboxEvent.ClearAllOperationStatus(clearAllState)
         }.distinctUntilChanged()
     }
 

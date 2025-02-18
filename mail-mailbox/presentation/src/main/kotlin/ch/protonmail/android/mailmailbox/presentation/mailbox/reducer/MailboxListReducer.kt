@@ -27,6 +27,7 @@ import ch.protonmail.android.mailmailbox.domain.model.MailboxItemId
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItemType
 import ch.protonmail.android.mailmailbox.domain.model.OpenMailboxItemRequest
 import ch.protonmail.android.mailmailbox.presentation.R
+import ch.protonmail.android.mailmailbox.presentation.mailbox.model.ClearAllState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxEvent
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxItemUiModel
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxListState
@@ -484,27 +485,40 @@ class MailboxListReducer @Inject constructor(
         else -> currentState
     }
 
-    private fun reduceClearState(operation: MailboxEvent.ClearAllOperationStatus, currentState: MailboxListState) =
-        when (currentState) {
+    private fun reduceClearState(
+        operation: MailboxEvent.ClearAllOperationStatus,
+        currentState: MailboxListState
+    ): MailboxListState {
+        return when (currentState) {
             is MailboxListState.Data.ViewMode -> {
                 if (currentState.currentMailLabel.isClearableLocation()) {
-                    currentState.copy(
-                        clearState = if (operation.isClearing) {
-                            MailboxListState.Data.ClearState.Visible.Banner
-                        } else {
-                            MailboxListState.Data.ClearState.Visible.Button(
-                                if (currentState.currentMailLabel is MailLabel.System) {
-                                    when (currentState.currentMailLabel.systemLabelId) {
+                    val clearState = when (operation.state) {
+                        ClearAllState.ClearAllInProgress -> MailboxListState.Data.ClearState.Visible.InfoBanner(
+                            TextUiModel(R.string.mailbox_action_clear_operation_scheduled)
+                        )
+
+                        ClearAllState.ClearAllActionBanner ->
+                            MailboxListState.Data.ClearState.Visible.ClearBannerWithButton(
+                                bannerText = TextUiModel(R.string.mailbox_action_clear_trash_spam_banner_text),
+                                buttonText = when (currentState.currentMailLabel) {
+                                    is MailLabel.System -> when (currentState.currentMailLabel.systemLabelId) {
                                         SystemLabelId.Trash -> TextUiModel(R.string.mailbox_action_button_clear_trash)
                                         SystemLabelId.Spam -> TextUiModel(R.string.mailbox_action_button_clear_spam)
                                         else -> TextUiModel.Text("")
                                     }
-                                } else {
-                                    TextUiModel.Text("")
-                                }
+                                    else -> TextUiModel.Text("")
+                                },
+                                icon = R.drawable.ic_proton_trash_clock
                             )
-                        }
-                    )
+
+                        ClearAllState.UpsellBanner -> MailboxListState.Data.ClearState.Visible.UpsellBannerWithLink(
+                            bannerText = TextUiModel(R.string.mailbox_action_clear_trash_spam_upsell_banner_text),
+                            linkText = TextUiModel(R.string.mailbox_action_clear_trash_spam_upsell_banner_link_title),
+                            icon = R.drawable.ic_upsell_mail_plus
+                        )
+                    }
+
+                    currentState.copy(clearState = clearState)
                 } else {
                     currentState
                 }
@@ -512,6 +526,7 @@ class MailboxListReducer @Inject constructor(
 
             else -> currentState
         }
+    }
 
     private fun MailLabel.isClearableLocation() = this is MailLabel.System &&
         (this.systemLabelId == SystemLabelId.Trash || this.systemLabelId == SystemLabelId.Spam)

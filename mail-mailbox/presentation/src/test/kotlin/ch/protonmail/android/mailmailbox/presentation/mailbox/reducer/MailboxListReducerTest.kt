@@ -24,6 +24,7 @@ import ch.protonmail.android.maillabel.domain.sample.LabelIdSample
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItemId
 import ch.protonmail.android.mailmailbox.domain.model.OpenMailboxItemRequest
 import ch.protonmail.android.mailmailbox.presentation.R
+import ch.protonmail.android.mailmailbox.presentation.mailbox.model.ClearAllState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxEvent
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxListState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxListState.Data.SelectionMode.SelectedMailboxItem
@@ -319,7 +320,7 @@ internal class MailboxListReducerTest(
                     shouldShowFab = true,
                     avatarImagesUiModel = AvatarImagesUiModel.Empty
                 ),
-                operation = MailboxEvent.ClearAllOperationStatus(false),
+                operation = MailboxEvent.ClearAllOperationStatus(ClearAllState.ClearAllInProgress),
                 expectedState = MailboxListState.Data.ViewMode(
                     currentMailLabel = MailLabelTestData.trashSystemLabel,
                     openItemEffect = Effect.empty(),
@@ -329,8 +330,8 @@ internal class MailboxListReducerTest(
                     refreshRequested = false,
                     swipeActions = null,
                     searchState = MailboxSearchStateSampleData.NotSearching,
-                    clearState = MailboxListState.Data.ClearState.Visible.Button(
-                        text = TextUiModel(R.string.mailbox_action_button_clear_trash)
+                    clearState = MailboxListState.Data.ClearState.Visible.InfoBanner(
+                        text = TextUiModel(R.string.mailbox_action_clear_operation_scheduled)
                     ),
                     shouldShowFab = true,
                     avatarImagesUiModel = AvatarImagesUiModel.Empty
@@ -350,7 +351,7 @@ internal class MailboxListReducerTest(
                     shouldShowFab = true,
                     avatarImagesUiModel = AvatarImagesUiModel.Empty
                 ),
-                operation = MailboxEvent.ClearAllOperationStatus(true),
+                operation = MailboxEvent.ClearAllOperationStatus(ClearAllState.ClearAllActionBanner),
                 expectedState = MailboxListState.Data.ViewMode(
                     currentMailLabel = MailLabelTestData.trashSystemLabel,
                     openItemEffect = Effect.empty(),
@@ -360,14 +361,18 @@ internal class MailboxListReducerTest(
                     refreshRequested = false,
                     swipeActions = null,
                     searchState = MailboxSearchStateSampleData.NotSearching,
-                    clearState = MailboxListState.Data.ClearState.Visible.Banner,
+                    clearState = MailboxListState.Data.ClearState.Visible.ClearBannerWithButton(
+                        bannerText = TextUiModel(R.string.mailbox_action_clear_trash_spam_banner_text),
+                        buttonText = TextUiModel(R.string.mailbox_action_button_clear_trash),
+                        icon = R.drawable.ic_proton_trash_clock
+                    ),
                     shouldShowFab = true,
                     avatarImagesUiModel = AvatarImagesUiModel.Empty
                 )
             ),
             TestInput(
                 currentState = MailboxListState.Data.ViewMode(
-                    currentMailLabel = MailLabelTestData.spamSystemLabel,
+                    currentMailLabel = MailLabelTestData.trashSystemLabel,
                     openItemEffect = Effect.empty(),
                     scrollToMailboxTop = Effect.empty(),
                     offlineEffect = Effect.empty(),
@@ -379,9 +384,9 @@ internal class MailboxListReducerTest(
                     shouldShowFab = true,
                     avatarImagesUiModel = AvatarImagesUiModel.Empty
                 ),
-                operation = MailboxEvent.ClearAllOperationStatus(false),
+                operation = MailboxEvent.ClearAllOperationStatus(ClearAllState.UpsellBanner),
                 expectedState = MailboxListState.Data.ViewMode(
-                    currentMailLabel = MailLabelTestData.spamSystemLabel,
+                    currentMailLabel = MailLabelTestData.trashSystemLabel,
                     openItemEffect = Effect.empty(),
                     scrollToMailboxTop = Effect.empty(),
                     offlineEffect = Effect.empty(),
@@ -389,8 +394,10 @@ internal class MailboxListReducerTest(
                     refreshRequested = false,
                     swipeActions = null,
                     searchState = MailboxSearchStateSampleData.NotSearching,
-                    clearState = MailboxListState.Data.ClearState.Visible.Button(
-                        text = TextUiModel(R.string.mailbox_action_button_clear_spam)
+                    clearState = MailboxListState.Data.ClearState.Visible.UpsellBannerWithLink(
+                        bannerText = TextUiModel(R.string.mailbox_action_clear_trash_spam_upsell_banner_text),
+                        linkText = TextUiModel(R.string.mailbox_action_clear_trash_spam_upsell_banner_link_title),
+                        icon = R.drawable.ic_upsell_mail_plus
                     ),
                     shouldShowFab = true,
                     avatarImagesUiModel = AvatarImagesUiModel.Empty
@@ -410,7 +417,7 @@ internal class MailboxListReducerTest(
                     shouldShowFab = true,
                     avatarImagesUiModel = AvatarImagesUiModel.Empty
                 ),
-                operation = MailboxEvent.ClearAllOperationStatus(true),
+                operation = MailboxEvent.ClearAllOperationStatus(ClearAllState.ClearAllInProgress),
                 expectedState = MailboxListState.Data.ViewMode(
                     currentMailLabel = MailLabelTestData.spamSystemLabel,
                     openItemEffect = Effect.empty(),
@@ -420,7 +427,75 @@ internal class MailboxListReducerTest(
                     refreshRequested = false,
                     swipeActions = null,
                     searchState = MailboxSearchStateSampleData.NotSearching,
-                    clearState = MailboxListState.Data.ClearState.Visible.Banner,
+                    clearState = MailboxListState.Data.ClearState.Visible.InfoBanner(
+                        text = TextUiModel(R.string.mailbox_action_clear_operation_scheduled)
+                    ),
+                    shouldShowFab = true,
+                    avatarImagesUiModel = AvatarImagesUiModel.Empty
+                )
+            ),
+            TestInput(
+                currentState = MailboxListState.Data.ViewMode(
+                    currentMailLabel = MailLabelTestData.spamSystemLabel,
+                    openItemEffect = Effect.empty(),
+                    scrollToMailboxTop = Effect.empty(),
+                    offlineEffect = Effect.empty(),
+                    refreshErrorEffect = Effect.empty(),
+                    refreshRequested = false,
+                    swipeActions = null,
+                    searchState = MailboxSearchStateSampleData.NotSearching,
+                    clearState = MailboxListState.Data.ClearState.Hidden,
+                    shouldShowFab = true,
+                    avatarImagesUiModel = AvatarImagesUiModel.Empty
+                ),
+                operation = MailboxEvent.ClearAllOperationStatus(ClearAllState.ClearAllActionBanner),
+                expectedState = MailboxListState.Data.ViewMode(
+                    currentMailLabel = MailLabelTestData.spamSystemLabel,
+                    openItemEffect = Effect.empty(),
+                    scrollToMailboxTop = Effect.empty(),
+                    offlineEffect = Effect.empty(),
+                    refreshErrorEffect = Effect.empty(),
+                    refreshRequested = false,
+                    swipeActions = null,
+                    searchState = MailboxSearchStateSampleData.NotSearching,
+                    clearState = MailboxListState.Data.ClearState.Visible.ClearBannerWithButton(
+                        bannerText = TextUiModel(R.string.mailbox_action_clear_trash_spam_banner_text),
+                        buttonText = TextUiModel(R.string.mailbox_action_button_clear_spam),
+                        icon = R.drawable.ic_proton_trash_clock
+                    ),
+                    shouldShowFab = true,
+                    avatarImagesUiModel = AvatarImagesUiModel.Empty
+                )
+            ),
+            TestInput(
+                currentState = MailboxListState.Data.ViewMode(
+                    currentMailLabel = MailLabelTestData.spamSystemLabel,
+                    openItemEffect = Effect.empty(),
+                    scrollToMailboxTop = Effect.empty(),
+                    offlineEffect = Effect.empty(),
+                    refreshErrorEffect = Effect.empty(),
+                    refreshRequested = false,
+                    swipeActions = null,
+                    searchState = MailboxSearchStateSampleData.NotSearching,
+                    clearState = MailboxListState.Data.ClearState.Hidden,
+                    shouldShowFab = true,
+                    avatarImagesUiModel = AvatarImagesUiModel.Empty
+                ),
+                operation = MailboxEvent.ClearAllOperationStatus(ClearAllState.UpsellBanner),
+                expectedState = MailboxListState.Data.ViewMode(
+                    currentMailLabel = MailLabelTestData.spamSystemLabel,
+                    openItemEffect = Effect.empty(),
+                    scrollToMailboxTop = Effect.empty(),
+                    offlineEffect = Effect.empty(),
+                    refreshErrorEffect = Effect.empty(),
+                    refreshRequested = false,
+                    swipeActions = null,
+                    searchState = MailboxSearchStateSampleData.NotSearching,
+                    clearState = MailboxListState.Data.ClearState.Visible.UpsellBannerWithLink(
+                        bannerText = TextUiModel(R.string.mailbox_action_clear_trash_spam_upsell_banner_text),
+                        linkText = TextUiModel(R.string.mailbox_action_clear_trash_spam_upsell_banner_link_title),
+                        icon = R.drawable.ic_upsell_mail_plus
+                    ),
                     shouldShowFab = true,
                     avatarImagesUiModel = AvatarImagesUiModel.Empty
                 )
