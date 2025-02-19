@@ -48,7 +48,7 @@ class RustMailCommonInitializer : Initializer<Unit> {
 
         val rustLibConfig = RustLibConfigParams(
             isDebug = BuildConfig.DEBUG,
-            appVersion = "Other", // Rust lib currently only supports "Other"
+            appVersion = "android-mail@${BuildConfig.VERSION_NAME}",
             userAgent = getUserAgent()
         )
         return rustLibConfig
