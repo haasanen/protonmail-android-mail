@@ -25,7 +25,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.AlertDialog
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
@@ -36,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyMediumWeak
+import ch.protonmail.android.design.compose.theme.headlineSmallNorm
 
 @Composable
 fun ProtonAlertDialog(
@@ -45,8 +45,8 @@ fun ProtonAlertDialog(
     modifier: Modifier = Modifier,
     text: @Composable (() -> Unit)? = null,
     dismissButton: @Composable (() -> Unit)? = null,
-    shape: Shape = ProtonTheme.shapes.medium,
-    backgroundColor: Color = ProtonTheme.colors.backgroundNorm,
+    shape: Shape = ProtonTheme.shapes.huge,
+    backgroundColor: Color = ProtonTheme.colors.backgroundInvertedNorm,
     properties: DialogProperties = DialogProperties()
 ) {
     ProtonAlertDialog(
@@ -70,8 +70,8 @@ fun ProtonAlertDialog(
     modifier: Modifier = Modifier,
     dismissButton: @Composable (() -> Unit)? = null,
     text: @Composable (() -> Unit)? = null,
-    shape: Shape = ProtonTheme.shapes.medium,
-    backgroundColor: Color = ProtonTheme.colors.backgroundNorm,
+    shape: Shape = ProtonTheme.shapes.huge,
+    backgroundColor: Color = ProtonTheme.colors.backgroundInvertedNorm,
     properties: DialogProperties = DialogProperties()
 ) {
     ProtonAlertDialog(
@@ -87,7 +87,6 @@ fun ProtonAlertDialog(
     )
 }
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun ProtonAlertDialog(
     onDismissRequest: () -> Unit,
@@ -96,8 +95,8 @@ fun ProtonAlertDialog(
     dismissButton: @Composable (() -> Unit)? = null,
     title: @Composable (() -> Unit)? = null,
     text: @Composable (() -> Unit)? = null,
-    shape: Shape = ProtonTheme.shapes.medium,
-    backgroundColor: Color = ProtonTheme.colors.backgroundNorm,
+    shape: Shape = ProtonTheme.shapes.huge,
+    backgroundColor: Color = ProtonTheme.colors.backgroundInvertedNorm,
     properties: DialogProperties = DialogProperties()
 ) {
     AlertDialog(
@@ -118,7 +117,6 @@ fun ProtonAlertDialog(
     )
 }
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun ProtonAlertDialog(
     onDismissRequest: () -> Unit,
@@ -126,8 +124,8 @@ fun ProtonAlertDialog(
     modifier: Modifier = Modifier,
     title: (@Composable () -> Unit)? = null,
     text: @Composable (() -> Unit)? = null,
-    shape: Shape = ProtonTheme.shapes.medium,
-    backgroundColor: Color = ProtonTheme.colors.backgroundNorm,
+    shape: Shape = ProtonTheme.shapes.huge,
+    backgroundColor: Color = ProtonTheme.colors.backgroundInvertedNorm,
     properties: DialogProperties = DialogProperties()
 ) {
     AlertDialog(
@@ -159,8 +157,7 @@ fun ProtonDialogTitle(@StringRes titleResId: Int, modifier: Modifier = Modifier)
 fun ProtonDialogTitle(title: String, modifier: Modifier = Modifier) {
     Text(
         text = title,
-        style = ProtonTheme.typography.titleLarge,
-        color = ProtonTheme.colors.textNorm,
+        style = ProtonTheme.typography.headlineSmallNorm,
         maxLines = 2,
         overflow = TextOverflow.Ellipsis,
         modifier = modifier
@@ -225,8 +222,8 @@ fun ProtonAlertDialogButton(
     ) {
         Text(
             text = title,
-            style = ProtonTheme.typography.titleMedium,
-            color = ProtonTheme.colors.textAccent,
+            style = ProtonTheme.typography.labelLarge,
+            color = ProtonTheme.colors.interactionBrandDefaultNorm,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
         )
