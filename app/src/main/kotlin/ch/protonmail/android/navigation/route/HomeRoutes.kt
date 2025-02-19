@@ -70,7 +70,8 @@ internal fun NavGraphBuilder.addMailbox(
     onEvent: (AccountSwitchEvent) -> Unit,
     showOfflineSnackbar: () -> Unit,
     showNormalSnackbar: (message: String) -> Unit,
-    showErrorSnackbar: (String) -> Unit
+    showErrorSnackbar: (String) -> Unit,
+    showFeatureMissingSnackbar: () -> Unit
 ) {
     composable(route = Destination.Screen.Mailbox.route) {
         MailboxScreen(
@@ -99,7 +100,8 @@ internal fun NavGraphBuilder.addMailbox(
                 onAddFolder = { navController.navigate(Destination.Screen.CreateFolder.route) },
                 onAccountAvatarClicked = {
                     navController.navigate(Destination.Screen.AccountsManager.route)
-                }
+                },
+                deleteAllConfirmed = { showFeatureMissingSnackbar() }
             ),
             onEvent = onEvent
         )

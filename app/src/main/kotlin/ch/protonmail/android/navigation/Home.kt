@@ -443,7 +443,8 @@ fun Home(
                             showOfflineSnackbar = { showOfflineSnackbar() },
                             showNormalSnackbar = { showNormalSnackbar(it) },
                             showErrorSnackbar = { showErrorSnackbar(it) },
-                            onEvent = eventHandler
+                            onEvent = eventHandler,
+                            showFeatureMissingSnackbar = { showFeatureMissingSnackbar() }
                         )
                         addAccountsManager(
                             navController,

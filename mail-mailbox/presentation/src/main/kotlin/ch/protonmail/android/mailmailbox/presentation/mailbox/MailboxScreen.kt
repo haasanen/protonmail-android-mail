@@ -221,7 +221,12 @@ fun MailboxScreen(
         deleteConfirmed = { viewModel.submit(MailboxViewAction.DeleteConfirmed) },
         deleteDialogDismissed = { viewModel.submit(MailboxViewAction.DeleteDialogDismissed) },
         deleteAll = { viewModel.submit(MailboxViewAction.DeleteAll) },
-        deleteAllConfirmed = { viewModel.submit(MailboxViewAction.DeleteAllConfirmed) },
+        deleteAllConfirmed = {
+            // We will show missing feature snackbar and dissmiss the dialog for now
+            actions.deleteAllConfirmed()
+            viewModel.submit(MailboxViewAction.DeleteAllDialogDismissed)
+            // viewModel.submit(MailboxViewAction.DeleteAllConfirmed)
+        },
         deleteAllDismissed = { viewModel.submit(MailboxViewAction.DeleteAllDialogDismissed) },
         onLabelAsClicked = { viewModel.submit(MailboxViewAction.RequestLabelAsBottomSheet) },
         onMoveToClicked = { viewModel.submit(MailboxViewAction.RequestMoveToBottomSheet) },
