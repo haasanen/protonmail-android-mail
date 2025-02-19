@@ -25,9 +25,11 @@ import io.mockk.mockk
 import junit.framework.TestCase.assertNull
 import kotlinx.coroutines.test.runTest
 import uniffi.proton_mail_uniffi.DraftCreateMode
+import uniffi.proton_mail_uniffi.DraftDoSaveResult
 import uniffi.proton_mail_uniffi.DraftSaveSendError
 import uniffi.proton_mail_uniffi.DraftSaveSendErrorReason
-import uniffi.proton_mail_uniffi.VoidDraftSaveSendResult
+import uniffi.proton_mail_uniffi.DraftSetBodyResult
+import uniffi.proton_mail_uniffi.DraftSetSubjectResult
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -230,7 +232,7 @@ class RustDraftDataSourceImplTest {
         val draft = LocalDraftTestData.JobApplicationDraft
         val expectedDraftWrapper = expectDraftWrapperReturns(draft.subject, draft.sender, draft.body)
         dataSource.rustDraftWrapper = expectedDraftWrapper
-        coEvery { expectedDraftWrapper.save() } returns VoidDraftSaveSendResult.Ok
+        coEvery { expectedDraftWrapper.save() } returns DraftDoSaveResult.Ok
 
         // When
         val actual = dataSource.save()
@@ -245,7 +247,7 @@ class RustDraftDataSourceImplTest {
         val draft = LocalDraftTestData.JobApplicationDraft
         val expectedDraftWrapper = expectDraftWrapperReturns(draft.subject, draft.sender, draft.body)
         dataSource.rustDraftWrapper = expectedDraftWrapper
-        coEvery { expectedDraftWrapper.save() } returns VoidDraftSaveSendResult.Error(
+        coEvery { expectedDraftWrapper.save() } returns DraftDoSaveResult.Error(
             DraftSaveSendError.Reason(DraftSaveSendErrorReason.MessageIsNotADraft)
         )
         val expected = DataError.Local.SaveDraftError.Unknown
@@ -264,8 +266,8 @@ class RustDraftDataSourceImplTest {
         val subject = Subject("saving a draft...")
         val expectedDraftWrapper = expectDraftWrapperReturns(draft.subject, draft.sender, draft.body)
         dataSource.rustDraftWrapper = expectedDraftWrapper
-        coEvery { expectedDraftWrapper.setSubject(subject.value) } returns VoidDraftSaveSendResult.Ok
-        coEvery { expectedDraftWrapper.save() } returns VoidDraftSaveSendResult.Ok
+        coEvery { expectedDraftWrapper.setSubject(subject.value) } returns DraftSetSubjectResult.Ok
+        coEvery { expectedDraftWrapper.save() } returns DraftDoSaveResult.Ok
 
         // When
         val actual = dataSource.saveSubject(subject)
@@ -281,7 +283,7 @@ class RustDraftDataSourceImplTest {
         val expectedDraftWrapper = expectDraftWrapperReturns(draft.subject, draft.sender, draft.body)
         val subject = Subject("saving a draft...")
         dataSource.rustDraftWrapper = expectedDraftWrapper
-        coEvery { expectedDraftWrapper.setSubject(subject.value) } returns VoidDraftSaveSendResult.Error(
+        coEvery { expectedDraftWrapper.setSubject(subject.value) } returns DraftSetSubjectResult.Error(
             DraftSaveSendError.Reason(DraftSaveSendErrorReason.MessageIsNotADraft)
         )
         val expected = DataError.Local.SaveDraftError.Unknown
@@ -300,8 +302,8 @@ class RustDraftDataSourceImplTest {
         val body = DraftBody("saving a draft's body...")
         val expectedDraftWrapper = expectDraftWrapperReturns(draft.body, draft.sender, draft.body)
         dataSource.rustDraftWrapper = expectedDraftWrapper
-        coEvery { expectedDraftWrapper.setBody(body.value) } returns VoidDraftSaveSendResult.Ok
-        coEvery { expectedDraftWrapper.save() } returns VoidDraftSaveSendResult.Ok
+        coEvery { expectedDraftWrapper.setBody(body.value) } returns DraftSetBodyResult.Ok
+        coEvery { expectedDraftWrapper.save() } returns DraftDoSaveResult.Ok
 
         // When
         val actual = dataSource.saveBody(body)
@@ -317,7 +319,7 @@ class RustDraftDataSourceImplTest {
         val body = DraftBody("saving a draft's body...")
         val expectedDraftWrapper = expectDraftWrapperReturns(draft.body, draft.sender, draft.body)
         dataSource.rustDraftWrapper = expectedDraftWrapper
-        coEvery { expectedDraftWrapper.setBody(body.value) } returns VoidDraftSaveSendResult.Error(
+        coEvery { expectedDraftWrapper.setBody(body.value) } returns DraftSetBodyResult.Error(
             DraftSaveSendError.Reason(DraftSaveSendErrorReason.MessageIsNotADraft)
         )
         val expected = DataError.Local.SaveDraftError.Unknown

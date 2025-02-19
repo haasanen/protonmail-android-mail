@@ -42,7 +42,9 @@ import kotlinx.coroutines.flow.flowOf
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.ComposerRecipientValidationCallback
-import uniffi.proton_mail_uniffi.VoidDraftSaveSendResult
+import uniffi.proton_mail_uniffi.DraftDoSaveResult
+import uniffi.proton_mail_uniffi.DraftSetBodyResult
+import uniffi.proton_mail_uniffi.DraftSetSubjectResult
 import javax.inject.Inject
 
 class RustDraftDataSourceImpl @Inject constructor(
@@ -92,22 +94,22 @@ class RustDraftDataSourceImpl @Inject constructor(
 
     override suspend fun save(): Either<DataError, Unit> = withValidRustDraftWrapper {
         return@withValidRustDraftWrapper when (val result = it.save()) {
-            is VoidDraftSaveSendResult.Error -> result.v1.toDataError().left()
-            VoidDraftSaveSendResult.Ok -> Unit.right()
+            is DraftDoSaveResult.Error -> result.v1.toDataError().left()
+            DraftDoSaveResult.Ok -> Unit.right()
         }
     }
 
     override suspend fun saveSubject(subject: Subject): Either<DataError, Unit> = withValidRustDraftWrapper {
         return@withValidRustDraftWrapper when (val result = it.setSubject(subject.value)) {
-            is VoidDraftSaveSendResult.Error -> result.v1.toDataError().left()
-            VoidDraftSaveSendResult.Ok -> save()
+            is DraftSetSubjectResult.Error -> result.v1.toDataError().left()
+            DraftSetSubjectResult.Ok -> save()
         }
     }
 
     override suspend fun saveBody(body: DraftBody): Either<DataError, Unit> = withValidRustDraftWrapper {
         return@withValidRustDraftWrapper when (val result = it.setBody(body.value)) {
-            is VoidDraftSaveSendResult.Error -> result.v1.toDataError().left()
-            VoidDraftSaveSendResult.Ok -> save()
+            is DraftSetBodyResult.Error -> result.v1.toDataError().left()
+            DraftSetBodyResult.Ok -> save()
         }
     }
 

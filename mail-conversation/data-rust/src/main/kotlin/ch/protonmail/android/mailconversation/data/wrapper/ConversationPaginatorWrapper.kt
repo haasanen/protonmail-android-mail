@@ -27,12 +27,16 @@ import uniffi.proton_mail_uniffi.Conversation
 import uniffi.proton_mail_uniffi.ConversationScroller
 import uniffi.proton_mail_uniffi.ConversationScrollerAllItemsResult
 import uniffi.proton_mail_uniffi.ConversationScrollerFetchMoreResult
+import uniffi.proton_mail_uniffi.ConversationScrollerSet
 
 class ConversationPaginatorWrapper(private val rustPaginator: ConversationScroller) {
 
     suspend fun nextPage(): Either<DataError, List<Conversation>> = when (val result = rustPaginator.fetchMore()) {
         is ConversationScrollerFetchMoreResult.Error -> result.v1.toDataError().left()
-        is ConversationScrollerFetchMoreResult.Ok -> result.v1.right()
+        is ConversationScrollerFetchMoreResult.Ok -> when (val fetchResult = result.v1) {
+            is ConversationScrollerSet.Append -> fetchResult.v1.right()
+            is ConversationScrollerSet.Replace -> fetchResult.v1.right()
+        }
     }
 
     suspend fun reload(): Either<DataError, List<Conversation>> = when (val result = rustPaginator.allItems()) {

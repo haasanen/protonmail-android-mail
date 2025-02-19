@@ -47,7 +47,7 @@ import org.junit.Rule
 import uniffi.proton_mail_uniffi.ActionError
 import uniffi.proton_mail_uniffi.ActionErrorReason
 import uniffi.proton_mail_uniffi.ContactsLiveQueryCallback
-import uniffi.proton_mail_uniffi.VoidActionResult
+import uniffi.proton_mail_uniffi.DeleteContactResult
 import uniffi.proton_mail_uniffi.WatchedContactList
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -150,7 +150,7 @@ class RustContactDataSourceImplTest {
         val contactId = LocalContactTestData.contactId1
         val session = mockk<MailUserSessionWrapper>()
         coEvery { userSessionRepository.getUserSession(userId) } returns session
-        coEvery { rustDeleteContact(session, contactId) } returns VoidActionResult.Ok
+        coEvery { rustDeleteContact(session, contactId) } returns DeleteContactResult.Ok
 
         // When
         val result = rustContactDataSource.deleteContact(userId, contactId)
@@ -183,7 +183,7 @@ class RustContactDataSourceImplTest {
         val session = mockk<MailUserSessionWrapper>()
         coEvery { userSessionRepository.getUserSession(userId) } returns session
         coEvery { rustDeleteContact(session, contactId) } returns
-            VoidActionResult.Error(ActionError.Reason(ActionErrorReason.UNKNOWN_MESSAGE))
+            DeleteContactResult.Error(ActionError.Reason(ActionErrorReason.UNKNOWN_MESSAGE))
 
         // When
         val result = rustContactDataSource.deleteContact(userId, contactId)

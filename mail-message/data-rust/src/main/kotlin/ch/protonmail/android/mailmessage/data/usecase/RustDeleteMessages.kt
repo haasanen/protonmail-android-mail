@@ -25,7 +25,7 @@ import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageId
 import ch.protonmail.android.mailcommon.datarust.mapper.toDataError
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailmessage.data.wrapper.MailboxWrapper
-import uniffi.proton_mail_uniffi.VoidActionResult
+import uniffi.proton_mail_uniffi.DeleteMessagesResult
 import uniffi.proton_mail_uniffi.deleteMessages
 import javax.inject.Inject
 
@@ -33,7 +33,7 @@ class RustDeleteMessages @Inject constructor() {
 
     suspend operator fun invoke(mailbox: MailboxWrapper, messageIds: List<LocalMessageId>): Either<DataError, Unit> =
         when (val result = deleteMessages(mailbox.getRustMailbox(), messageIds)) {
-            is VoidActionResult.Error -> result.v1.toDataError().left()
-            VoidActionResult.Ok -> Unit.right()
+            is DeleteMessagesResult.Error -> result.v1.toDataError().left()
+            DeleteMessagesResult.Ok -> Unit.right()
         }
 }

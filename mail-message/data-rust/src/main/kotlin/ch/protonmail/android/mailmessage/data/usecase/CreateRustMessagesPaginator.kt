@@ -29,6 +29,7 @@ import ch.protonmail.android.mailmessage.data.wrapper.MailboxMessagePaginatorWra
 import ch.protonmail.android.mailmessage.data.wrapper.MessagePaginatorWrapper
 import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
 import uniffi.proton_mail_uniffi.LiveQueryCallback
+import uniffi.proton_mail_uniffi.MailUserSessionUserIdResult
 import uniffi.proton_mail_uniffi.ReadFilter
 import uniffi.proton_mail_uniffi.ScrollMessagesForLabelResult
 import uniffi.proton_mail_uniffi.scrollMessagesForLabel
@@ -53,8 +54,13 @@ class CreateRustMessagesPaginator @Inject constructor() {
         ) {
             is ScrollMessagesForLabelResult.Error -> result.v1.toDataError().left()
             is ScrollMessagesForLabelResult.Ok -> {
-                val params = PaginatorParams(session.getRustUserSession().userId(), labelId, unread)
-                MailboxMessagePaginatorWrapper(result.v1, params).right()
+                when (val userIdResult = session.getRustUserSession().userId()) {
+                    is MailUserSessionUserIdResult.Error -> userIdResult.v1.toDataError().left()
+                    is MailUserSessionUserIdResult.Ok -> {
+                        val params = PaginatorParams(userIdResult.v1, labelId, unread)
+                        MailboxMessagePaginatorWrapper(result.v1, params).right()
+                    }
+                }
             }
         }
     }

@@ -25,7 +25,7 @@ import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageId
 import ch.protonmail.android.mailcommon.datarust.mapper.toDataError
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
-import uniffi.proton_mail_uniffi.VoidActionResult
+import uniffi.proton_mail_uniffi.StarMessagesResult
 import uniffi.proton_mail_uniffi.starMessages
 import javax.inject.Inject
 
@@ -35,8 +35,8 @@ class RustStarMessages @Inject constructor() {
         mailUserSession: MailUserSessionWrapper,
         messageIds: List<LocalMessageId>
     ): Either<DataError, Unit> = when (val result = starMessages(mailUserSession.getRustUserSession(), messageIds)) {
-        is VoidActionResult.Error -> result.v1.toDataError().left()
-        VoidActionResult.Ok -> Unit.right()
+        is StarMessagesResult.Error -> result.v1.toDataError().left()
+        StarMessagesResult.Ok -> Unit.right()
     }
 
 }

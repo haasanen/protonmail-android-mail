@@ -49,15 +49,15 @@ import me.proton.core.compose.viewmodel.stopTimeoutMillis
 import me.proton.core.util.kotlin.CoreLogger
 import uniffi.proton_mail_uniffi.LoginError
 import uniffi.proton_mail_uniffi.LoginFlow
-import uniffi.proton_mail_uniffi.MailSession
+import uniffi.proton_mail_uniffi.LoginFlowSubmitTotpResult
 import uniffi.proton_mail_uniffi.LoginFlowToUserContextResult
+import uniffi.proton_mail_uniffi.MailSession
 import uniffi.proton_mail_uniffi.MailSessionGetAccountResult
 import uniffi.proton_mail_uniffi.MailSessionGetAccountSessionsResult
 import uniffi.proton_mail_uniffi.MailSessionResumeLoginFlowResult
 import uniffi.proton_mail_uniffi.MailUserSession
 import uniffi.proton_mail_uniffi.StoredAccount
 import uniffi.proton_mail_uniffi.StoredSession
-import uniffi.proton_mail_uniffi.VoidLoginResult
 import javax.inject.Inject
 
 @HiltViewModel
@@ -111,8 +111,8 @@ class OneTimePasswordInputViewModel @Inject constructor(
             is MailSessionResumeLoginFlowResult.Error -> emitAll(onError(loginFlow.v1))
             is MailSessionResumeLoginFlowResult.Ok -> {
                 when (val submit = loginFlow.v1.submitTotp(action.code)) {
-                    is VoidLoginResult.Error -> emitAll(onError(submit.v1))
-                    is VoidLoginResult.Ok -> emitAll(onSuccess(loginFlow.v1))
+                    is LoginFlowSubmitTotpResult.Error -> emitAll(onError(submit.v1))
+                    is LoginFlowSubmitTotpResult.Ok -> emitAll(onSuccess(loginFlow.v1))
                 }
             }
         }

@@ -29,12 +29,14 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import me.proton.android.core.auth.presentation.session.UserSessionInitializationCallback
 import uniffi.proton_mail_uniffi.LoginError
+import uniffi.proton_mail_uniffi.LoginFlowLoginResult
 import uniffi.proton_mail_uniffi.LoginFlowToUserContextResult
 import uniffi.proton_mail_uniffi.LoginFlowUserIdResult
 import uniffi.proton_mail_uniffi.MailSession
 import uniffi.proton_mail_uniffi.MailSessionNewLoginFlowResult
 import uniffi.proton_mail_uniffi.MailUserSession
-import uniffi.proton_mail_uniffi.VoidLoginResult
+import uniffi.proton_mail_uniffi.MailUserSessionUserIdResult
+import uniffi.proton_mail_uniffi.VoidSessionResult
 import javax.inject.Inject
 
 @HiltViewModel
@@ -67,8 +69,8 @@ class LoginViewModel @Inject constructor(
             else -> {
                 mutableState.emit(LoginViewState.LoggingIn)
                 when (val result = getLoginFlow().login(email = action.username, password = action.password, null)) {
-                    is VoidLoginResult.Error -> onError(result.v1)
-                    VoidLoginResult.Ok -> onSuccess()
+                    is LoginFlowLoginResult.Error -> onError(result.v1)
+                    LoginFlowLoginResult.Ok -> onSuccess()
                 }
             }
         }
@@ -105,15 +107,21 @@ class LoginViewModel @Inject constructor(
     private suspend fun onLoggedIn(): LoginViewState {
         return when (val result = getLoginFlow().toUserContext()) {
             is LoginFlowToUserContextResult.Error -> LoginViewState.Error.LoginFlow("${result.v1}")
-            is LoginFlowToUserContextResult.Ok -> onLoggedInSuccess(result.v1)
+            is LoginFlowToUserContextResult.Ok -> initializeMailUserSession(result.v1)
         }
     }
 
-    private suspend fun onLoggedInSuccess(mailUserSession: MailUserSession): LoginViewState.LoggedIn {
-        mailUserSession.initialize(callback)
-        callback.waitFinished()
-        return LoginViewState.LoggedIn(mailUserSession)
-    }
+    private suspend fun initializeMailUserSession(mailUserSession: MailUserSession): LoginViewState =
+        when (val initResult = mailUserSession.initialize(callback)) {
+            is VoidSessionResult.Error -> LoginViewState.Error.LoginFlow("${initResult.v1}")
+            VoidSessionResult.Ok -> {
+                callback.waitFinished()
+                when (val getUserIdResult = mailUserSession.userId()) {
+                    is MailUserSessionUserIdResult.Error -> LoginViewState.Error.LoginFlow("${getUserIdResult.v1}")
+                    is MailUserSessionUserIdResult.Ok -> LoginViewState.LoggedIn(getUserIdResult.v1)
+                }
+            }
+        }
 
     private suspend fun onClose() {
         getLoginFlow().destroy()

@@ -110,7 +110,7 @@ public fun LoginScreen(
     LaunchedEffect(state) {
         when (state) {
             is LoginViewState.Error.LoginFlow -> onErrorMessage(state.error)
-            is LoginViewState.LoggedIn -> onSuccess(state.session.userId())
+            is LoginViewState.LoggedIn -> onSuccess(state.userId)
             is LoginViewState.Awaiting2fa -> onSuccess(state.userId)
             is LoginViewState.Awaiting2Pass -> onSuccess(state.userId)
             else -> Unit

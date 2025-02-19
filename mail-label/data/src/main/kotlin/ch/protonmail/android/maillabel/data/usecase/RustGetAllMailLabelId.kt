@@ -25,7 +25,7 @@ import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
 import ch.protonmail.android.mailcommon.datarust.mapper.toDataError
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
-import uniffi.proton_mail_uniffi.NewMailboxResult
+import uniffi.proton_mail_uniffi.NewAllMailMailboxResult
 import uniffi.proton_mail_uniffi.newAllMailMailbox
 import javax.inject.Inject
 
@@ -33,7 +33,7 @@ class RustGetAllMailLabelId @Inject constructor() {
 
     suspend operator fun invoke(mailUserSession: MailUserSessionWrapper): Either<DataError, LocalLabelId> =
         when (val result = newAllMailMailbox(mailUserSession.getRustUserSession())) {
-            is NewMailboxResult.Error -> result.v1.toDataError().left()
-            is NewMailboxResult.Ok -> result.v1.labelId().right()
+            is NewAllMailMailboxResult.Error -> result.v1.toDataError().left()
+            is NewAllMailMailboxResult.Ok -> result.v1.labelId().right()
         }
 }
