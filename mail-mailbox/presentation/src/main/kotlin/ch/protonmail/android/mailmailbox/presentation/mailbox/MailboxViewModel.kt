@@ -1120,31 +1120,40 @@ class MailboxViewModel @Inject constructor(
     }
 
     private suspend fun handleClearAllAction() {
-        val currentMailLabel = selectedMailLabelId.flow.value.labelId
-        if (currentMailLabel != SystemLabelId.Trash.labelId && currentMailLabel != SystemLabelId.Spam.labelId) {
+        val currentLabel = observeCurrentMailLabel().first() as? MailLabel.System
+        if (currentLabel?.systemLabelId?.labelId != SystemLabelId.Trash.labelId &&
+            currentLabel?.systemLabelId?.labelId != SystemLabelId.Spam.labelId
+        ) {
             Timber.e("Clear all action is only supported for Trash and Spam")
             return
         }
+
         emitNewStateFrom(
-            MailboxEvent.DeleteAll(getViewModeForCurrentLocation(selectedMailLabelId.flow.value), currentMailLabel)
+            MailboxEvent.DeleteAll(
+                getViewModeForCurrentLocation(selectedMailLabelId.flow.value),
+                currentLabel.systemLabelId.labelId
+            )
         )
     }
 
     private suspend fun handleClearAllConfirmedAction() {
-        val currentMailLabel = selectedMailLabelId.flow.value.labelId
-        if (currentMailLabel != SystemLabelId.Trash.labelId && currentMailLabel != SystemLabelId.Spam.labelId) {
+        val currentLabel = observeCurrentMailLabel().first() as? MailLabel.System
+        if (currentLabel?.systemLabelId?.labelId != SystemLabelId.Trash.labelId &&
+            currentLabel?.systemLabelId?.labelId != SystemLabelId.Spam.labelId
+        ) {
             Timber.e("Clear all action is only supported for Trash and Spam")
             emitNewStateFrom(MailboxViewAction.DeleteAllDialogDismissed)
             return
         }
+
         val userId = primaryUserId.filterNotNull().first()
         val viewMode = getViewModeForCurrentLocation(selectedMailLabelId.flow.value)
 
         emitNewStateFrom(MailboxEvent.DeleteAllConfirmed(viewMode))
 
         when (viewMode) {
-            ViewMode.ConversationGrouping -> deleteConversations(userId, currentMailLabel)
-            ViewMode.NoConversationGrouping -> deleteMessages(userId, currentMailLabel)
+            ViewMode.ConversationGrouping -> deleteConversations(userId, currentLabel.id.labelId)
+            ViewMode.NoConversationGrouping -> deleteMessages(userId, currentLabel.id.labelId)
         }
     }
 
