@@ -42,8 +42,6 @@ import kotlinx.coroutines.flow.flowOf
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.ComposerRecipientValidationCallback
-import uniffi.proton_mail_uniffi.DraftSetBodyResult
-import uniffi.proton_mail_uniffi.DraftSetSubjectResult
 import uniffi.proton_mail_uniffi.VoidDraftSaveSendResult
 import javax.inject.Inject
 
@@ -101,15 +99,15 @@ class RustDraftDataSourceImpl @Inject constructor(
 
     override suspend fun saveSubject(subject: Subject): Either<DataError, Unit> = withValidRustDraftWrapper {
         return@withValidRustDraftWrapper when (val result = it.setSubject(subject.value)) {
-            is DraftSetSubjectResult.Error -> result.v1.toDataError().left()
-            DraftSetSubjectResult.Ok -> save()
+            is VoidDraftSaveSendResult.Error -> result.v1.toDataError().left()
+            VoidDraftSaveSendResult.Ok -> save()
         }
     }
 
     override suspend fun saveBody(body: DraftBody): Either<DataError, Unit> = withValidRustDraftWrapper {
         return@withValidRustDraftWrapper when (val result = it.setBody(body.value)) {
-            is DraftSetBodyResult.Error -> result.v1.toDataError().left()
-            DraftSetBodyResult.Ok -> save()
+            is VoidDraftSaveSendResult.Error -> result.v1.toDataError().left()
+            VoidDraftSaveSendResult.Ok -> save()
         }
     }
 

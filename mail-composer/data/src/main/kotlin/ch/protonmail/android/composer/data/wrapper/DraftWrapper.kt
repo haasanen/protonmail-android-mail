@@ -19,8 +19,6 @@
 package ch.protonmail.android.composer.data.wrapper
 
 import uniffi.proton_mail_uniffi.Draft
-import uniffi.proton_mail_uniffi.DraftSetBodyResult
-import uniffi.proton_mail_uniffi.DraftSetSubjectResult
 import uniffi.proton_mail_uniffi.VoidDraftSaveSendResult
 
 class DraftWrapper(private val rustDraft: Draft) {
@@ -39,7 +37,7 @@ class DraftWrapper(private val rustDraft: Draft) {
 
     suspend fun save(): VoidDraftSaveSendResult = rustDraft.save()
 
-    suspend fun setSubject(subject: String): DraftSetSubjectResult = rustDraft.setSubject(subject)
+    suspend fun setSubject(subject: String): VoidDraftSaveSendResult = rustDraft.setSubject(subject)
 
-    suspend fun setBody(body: String): DraftSetBodyResult = rustDraft.setBody(body)
+    suspend fun setBody(body: String): VoidDraftSaveSendResult = rustDraft.setBody(body)
 }

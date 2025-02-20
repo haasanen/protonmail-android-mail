@@ -28,7 +28,6 @@ import ch.protonmail.android.mailmessage.data.model.PaginatorParams
 import uniffi.proton_mail_uniffi.MessageScroller
 import uniffi.proton_mail_uniffi.MessageScrollerAllItemsResult
 import uniffi.proton_mail_uniffi.MessageScrollerFetchMoreResult
-import uniffi.proton_mail_uniffi.MessageScrollerSet
 
 class MailboxMessagePaginatorWrapper(
     private val rustPaginator: MessageScroller,
@@ -38,10 +37,7 @@ class MailboxMessagePaginatorWrapper(
     override suspend fun nextPage(): Either<DataError, List<LocalMessageMetadata>> =
         when (val result = rustPaginator.fetchMore()) {
             is MessageScrollerFetchMoreResult.Error -> result.v1.toDataError().left()
-            is MessageScrollerFetchMoreResult.Ok -> when (val fetchResult = result.v1) {
-                is MessageScrollerSet.Append -> fetchResult.v1.right()
-                is MessageScrollerSet.Replace -> fetchResult.v1.right()
-            }
+            is MessageScrollerFetchMoreResult.Ok -> result.v1.right()
         }
 
     override suspend fun reload(): Either<DataError, List<LocalMessageMetadata>> =

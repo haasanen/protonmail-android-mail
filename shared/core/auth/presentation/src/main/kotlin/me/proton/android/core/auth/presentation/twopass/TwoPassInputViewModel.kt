@@ -44,7 +44,6 @@ import me.proton.core.presentation.utils.ValidationType
 import me.proton.core.util.kotlin.CoreLogger
 import uniffi.proton_mail_uniffi.LoginError
 import uniffi.proton_mail_uniffi.LoginFlow
-import uniffi.proton_mail_uniffi.LoginFlowSubmitMailboxPasswordResult
 import uniffi.proton_mail_uniffi.LoginFlowToUserContextResult
 import uniffi.proton_mail_uniffi.MailSession
 import uniffi.proton_mail_uniffi.MailSessionGetAccountResult
@@ -53,6 +52,7 @@ import uniffi.proton_mail_uniffi.MailSessionResumeLoginFlowResult
 import uniffi.proton_mail_uniffi.MailUserSession
 import uniffi.proton_mail_uniffi.StoredAccount
 import uniffi.proton_mail_uniffi.StoredSession
+import uniffi.proton_mail_uniffi.VoidLoginResult
 import javax.inject.Inject
 
 @HiltViewModel
@@ -106,8 +106,8 @@ class TwoPassInputViewModel @Inject constructor(
             is MailSessionResumeLoginFlowResult.Error -> emitAll(onError(loginFlow.v1))
             is MailSessionResumeLoginFlowResult.Ok -> {
                 when (val submit = loginFlow.v1.submitMailboxPassword(action.mailboxPassword)) {
-                    is LoginFlowSubmitMailboxPasswordResult.Error -> emitAll(onError(submit.v1))
-                    is LoginFlowSubmitMailboxPasswordResult.Ok -> emitAll(onSuccess(loginFlow.v1))
+                    is VoidLoginResult.Error -> emitAll(onError(submit.v1))
+                    is VoidLoginResult.Ok -> emitAll(onSuccess(loginFlow.v1))
                 }
             }
         }
