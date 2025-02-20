@@ -47,7 +47,7 @@ import kotlinx.coroutines.sync.withLock
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.ContactsLiveQueryCallback
-import uniffi.proton_mail_uniffi.DeleteContactResult
+import uniffi.proton_mail_uniffi.VoidActionResult
 import uniffi.proton_mail_uniffi.WatchedContactList
 import javax.inject.Inject
 
@@ -127,11 +127,11 @@ class RustContactDataSourceImpl @Inject constructor(
         }
 
         return when (rustDeleteContact(session, contactId)) {
-            is DeleteContactResult.Error -> {
+            is VoidActionResult.Error -> {
                 Timber.e("rust-contact: Failed to delete contact")
                 return DataError.Local.Unknown.left()
             }
-            DeleteContactResult.Ok -> Unit.right()
+            VoidActionResult.Ok -> Unit.right()
         }
     }
 
