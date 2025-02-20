@@ -58,6 +58,7 @@ import ch.protonmail.android.maillabel.domain.model.MailLabel
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabels
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
+import ch.protonmail.android.maillabel.domain.model.isTrashOrSpam
 import ch.protonmail.android.maillabel.domain.model.toMailLabelCustom
 import ch.protonmail.android.maillabel.domain.usecase.FindLocalSystemLabelId
 import ch.protonmail.android.maillabel.domain.usecase.ObserveMailLabels
@@ -1121,9 +1122,7 @@ class MailboxViewModel @Inject constructor(
 
     private suspend fun handleClearAllAction() {
         val currentLabel = observeCurrentMailLabel().first() as? MailLabel.System
-        if (currentLabel?.systemLabelId?.labelId != SystemLabelId.Trash.labelId &&
-            currentLabel?.systemLabelId?.labelId != SystemLabelId.Spam.labelId
-        ) {
+        if (currentLabel?.isTrashOrSpam() != true) {
             Timber.e("Clear all action is only supported for Trash and Spam")
             return
         }
@@ -1138,9 +1137,7 @@ class MailboxViewModel @Inject constructor(
 
     private suspend fun handleClearAllConfirmedAction() {
         val currentLabel = observeCurrentMailLabel().first() as? MailLabel.System
-        if (currentLabel?.systemLabelId?.labelId != SystemLabelId.Trash.labelId &&
-            currentLabel?.systemLabelId?.labelId != SystemLabelId.Spam.labelId
-        ) {
+        if (currentLabel?.isTrashOrSpam() != true) {
             Timber.e("Clear all action is only supported for Trash and Spam")
             emitNewStateFrom(MailboxViewAction.DeleteAllDialogDismissed)
             return

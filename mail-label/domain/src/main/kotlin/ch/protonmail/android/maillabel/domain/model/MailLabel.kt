@@ -79,3 +79,8 @@ data class MailLabels(
         )
     }
 }
+
+fun MailLabel.isTrashOrSpam() = when (this) {
+    is MailLabel.System -> systemLabelId == SystemLabelId.Trash || systemLabelId == SystemLabelId.Spam
+    else -> false
+}
