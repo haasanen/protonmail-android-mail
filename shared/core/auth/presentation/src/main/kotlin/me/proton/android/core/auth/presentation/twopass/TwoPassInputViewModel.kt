@@ -53,6 +53,7 @@ import uniffi.proton_mail_uniffi.MailUserSession
 import uniffi.proton_mail_uniffi.StoredAccount
 import uniffi.proton_mail_uniffi.StoredSession
 import uniffi.proton_mail_uniffi.VoidLoginResult
+import uniffi.proton_mail_uniffi.VoidSessionResult
 import javax.inject.Inject
 
 @HiltViewModel
@@ -120,14 +121,18 @@ class TwoPassInputViewModel @Inject constructor(
     private fun onSuccess(loginFlow: LoginFlow): Flow<TwoPassInputState> = flow {
         when (val result = loginFlow.toUserContext()) {
             is LoginFlowToUserContextResult.Error -> emitAll(onError(result.v1))
-            is LoginFlowToUserContextResult.Ok -> onWaitFinished(result.v1)
+            is LoginFlowToUserContextResult.Ok -> emitAll(onWaitFinished(result.v1))
         }
     }
 
     private fun onWaitFinished(mailUserSession: MailUserSession) = flow {
-        mailUserSession.initialize(callback)
-        callback.waitFinished()
-        emit(TwoPassInputState.Success)
+        when (val result = mailUserSession.initialize(callback)) {
+            is VoidSessionResult.Error -> emit(Error.LoginFlow(result.v1.toString()))
+            VoidSessionResult.Ok -> {
+                callback.waitFinished()
+                emit(TwoPassInputState.Success)
+            }
+        }
     }
 
     private suspend fun getSession(account: StoredAccount?): List<StoredSession>? {
