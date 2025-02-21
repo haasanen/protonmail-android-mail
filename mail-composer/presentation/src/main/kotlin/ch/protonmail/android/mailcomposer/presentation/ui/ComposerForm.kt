@@ -128,13 +128,6 @@ internal fun ComposerForm(
                         .testTag(ComposerTestTags.MessageBody)
                         .retainFieldFocusOnConfigurationChange(FocusedFieldType.BODY)
                 )
-                if (fields.quotedBody != null) {
-                    RespondInlineButton(actions.onRespondInline)
-                    BodyHtmlQuote(
-                        value = fields.quotedBody.styled.value,
-                        modifier = maxWidthModifier.testTag(ComposerTestTags.MessageHtmlQuotedBody)
-                    )
-                }
             }
         }
     }
