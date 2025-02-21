@@ -62,6 +62,7 @@ dependencies {
 
     implementation(libs.bundles.module.presentation)
     implementation(libs.accompanist.permissions)
+    implementation(libs.accompanist.webview)
     implementation(libs.proton.core.network)
     implementation(libs.proton.core.user.domain)
     implementation(libs.google.play.review)
