@@ -14,7 +14,6 @@ import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import me.proton.android.core.account.domain.usecase.ObserveStoredAccounts
-import me.proton.core.domain.entity.UserId
 import org.junit.Rule
 import uniffi.proton_mail_uniffi.StoredAccount
 import uniffi.proton_mail_uniffi.StoredSession
@@ -39,7 +38,7 @@ class UserSessionRepositoryImplTest {
         // Given
         val userId = UserIdTestData.userId
         val expectedMailUserSession = mockk<MailUserSessionWrapper>()
-        val mailSession = mailSessionWithUserSessionStored(userId, expectedMailUserSession)
+        val mailSession = mailSessionWithUserSessionStored(expectedMailUserSession)
         coEvery { mailSessionRepository.getMailSession() } returns mailSession
 
         // When
@@ -53,7 +52,7 @@ class UserSessionRepositoryImplTest {
         // Given
         val userId = UserIdTestData.userId
         val expectedMailUserSession = mockk<MailUserSessionWrapper>()
-        val mailSession = mailSessionWithUserSessionStored(userId, expectedMailUserSession)
+        val mailSession = mailSessionWithUserSessionStored(expectedMailUserSession)
         coEvery { mailSessionRepository.getMailSession() } returns mailSession
 
         // When
@@ -87,7 +86,7 @@ class UserSessionRepositoryImplTest {
         val expectedMailUserSession = mockk<MailUserSessionWrapper> {
             coEvery { fork() } returns expectedSessionId.right()
         }
-        val mailSession = mailSessionWithUserSessionStored(userId, expectedMailUserSession)
+        val mailSession = mailSessionWithUserSessionStored(expectedMailUserSession)
         coEvery { mailSessionRepository.getMailSession() } returns mailSession
 
         // When
@@ -121,7 +120,7 @@ class UserSessionRepositoryImplTest {
         val expectedMailUserSession = mockk<MailUserSessionWrapper> {
             coEvery { fork() } returns DataError.Local.NoUserSession.left()
         }
-        val mailSession = mailSessionWithUserSessionStored(userId, expectedMailUserSession)
+        val mailSession = mailSessionWithUserSessionStored(expectedMailUserSession)
         coEvery { mailSessionRepository.getMailSession() } returns mailSession
 
         // When
@@ -137,7 +136,7 @@ class UserSessionRepositoryImplTest {
         // Given
         val userId = UserIdTestData.userId
         val expectedMailUserSession = mockk<MailUserSessionWrapper>()
-        val mailSession = mailSessionWithUserSessionStored(userId, expectedMailUserSession)
+        val mailSession = mailSessionWithUserSessionStored(expectedMailUserSession)
         coEvery { mailSessionRepository.getMailSession() } returns mailSession
 
         // When
@@ -154,16 +153,18 @@ class UserSessionRepositoryImplTest {
         coEvery { getAccounts() } returns emptyList<StoredAccount>().right()
     }
 
-    private fun mailSessionWithUserSessionStored(
-        expectedSessionUserId: UserId,
-        expectedMailUserSession: MailUserSessionWrapper
-    ) = mockk<MailSessionWrapper> {
-        val storedAccount = mockk<StoredAccount>()
-        val storedSession = mockk<StoredSession>()
-        coEvery { userContextFromSession(storedSession) } returns expectedMailUserSession.right()
-        coEvery { getAccount(any()) } returns storedAccount.right()
-        coEvery { getAccounts() } returns listOf(storedAccount).right()
-        coEvery { getAccountSessions(storedAccount) } returns listOf(storedSession).right()
-    }
+    private fun mailSessionWithUserSessionStored(expectedMailUserSession: MailUserSessionWrapper) =
+        mockk<MailSessionWrapper> {
+            val storedAccount = mockk<StoredAccount>()
+            val storedSession = mockk<StoredSession>()
+            coEvery {
+                userContextFromSession(
+                    storedSession
+                )
+            } returns expectedMailUserSession.right()
+            coEvery { getAccount(any()) } returns storedAccount.right()
+            coEvery { getAccounts() } returns listOf(storedAccount).right()
+            coEvery { getAccountSessions(storedAccount) } returns listOf(storedSession).right()
+        }
 
 }

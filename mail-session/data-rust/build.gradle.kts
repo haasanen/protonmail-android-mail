@@ -53,6 +53,7 @@ android {
         implementation(project(":mail-bugreport:domain"))
         implementation(project(":mail-common:domain"))
         implementation(project(":mail-session:domain"))
+        implementation(project(":shared:core:humanverification:domain"))
 
         testImplementation(project(":test:utils"))
         testImplementation(project(":test:test-data"))

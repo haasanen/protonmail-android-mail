@@ -52,7 +52,7 @@ class LoginViewModel @Inject internal constructor(
     private val callback: UserSessionInitializationCallback
 ) : ViewModel() {
 
-    private val loginFlowResult = viewModelScope.async { sessionInterface.newLoginFlow(null) }
+    private val loginFlowResult = viewModelScope.async { sessionInterface.newLoginFlow() }
     private val mutableState: MutableStateFlow<LoginViewState> = MutableStateFlow(LoginViewState.Idle)
 
     val state: StateFlow<LoginViewState> = mutableState.asStateFlow()

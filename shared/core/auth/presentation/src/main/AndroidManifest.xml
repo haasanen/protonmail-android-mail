@@ -44,6 +44,14 @@
         <activity
             android:name=".signup.SignUpActivity"
             android:windowSoftInputMode="adjustResize" />
+
+        <activity
+            android:name=".humanverification.HumanVerificationActivity"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
+            android:name=".humanverification.HumanVerificationHelpActivity"
+            android:windowSoftInputMode="adjustResize" />
     </application>
 
 </manifest>

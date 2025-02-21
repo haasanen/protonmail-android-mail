@@ -27,6 +27,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+import me.proton.android.core.humanverification.presentation.ChallengeInitializer
 
 class MainInitializer : Initializer<Unit> {
 
@@ -58,7 +59,8 @@ class MainInitializer : Initializer<Unit> {
         NotificationHandlersInitializer::class.java,
         AutoLockHandlerInitializer::class.java,
         RustMailCommonInitializer::class.java,
-        EventManagerInitializer::class.java
+        EventManagerInitializer::class.java,
+        ChallengeInitializer::class.java
     )
 
     companion object {

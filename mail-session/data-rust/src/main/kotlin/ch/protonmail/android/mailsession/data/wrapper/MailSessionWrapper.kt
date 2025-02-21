@@ -87,7 +87,7 @@ class MailSessionWrapper(private val mailSession: MailSession) {
     }
 
     suspend fun userContextFromSession(session: StoredSession): Either<DataError, MailUserSessionWrapper> =
-        when (val result = mailSession.userContextFromSession(session, null)) {
+        when (val result = mailSession.userContextFromSession(session)) {
             is MailSessionUserContextFromSessionResult.Error -> result.v1.toDataError().left()
             is MailSessionUserContextFromSessionResult.Ok -> MailUserSessionWrapper(result.v1).right()
         }

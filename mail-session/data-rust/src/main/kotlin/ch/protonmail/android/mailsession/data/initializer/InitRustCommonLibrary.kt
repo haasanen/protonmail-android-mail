@@ -22,15 +22,14 @@ import android.content.Context
 import ch.protonmail.android.mailbugreport.domain.LogsFileHandler
 import ch.protonmail.android.mailbugreport.domain.annotations.RustLogsFileHandler
 import ch.protonmail.android.mailsession.data.keychain.OsKeyChainMock
-import ch.protonmail.android.mailsession.data.model.RustLibConfigParams
 import ch.protonmail.android.mailsession.data.repository.MailSessionRepository
+import ch.protonmail.android.mailsession.domain.model.RustApiConfig
 import dagger.hilt.android.qualifiers.ApplicationContext
+import me.proton.android.core.humanverification.domain.ChallengeNotifierCallback
 import me.proton.core.network.data.di.BaseProtonApiUrl
 import okhttp3.HttpUrl
-import okhttp3.internal.toCanonicalHost
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.ApiConfig
-import uniffi.proton_mail_uniffi.ApiEnvId
 import uniffi.proton_mail_uniffi.CreateMailSessionResult
 import uniffi.proton_mail_uniffi.MailSessionParams
 import uniffi.proton_mail_uniffi.createMailSession
@@ -41,17 +40,18 @@ class InitRustCommonLibrary @Inject constructor(
     private val mailSessionRepository: MailSessionRepository,
     private val initializeRustTlsModule: InitializeRustTlsModule,
     @RustLogsFileHandler private val rustLogsFileHandler: LogsFileHandler,
-    @BaseProtonApiUrl private val baseApiUrl: HttpUrl
+    @BaseProtonApiUrl private val baseApiUrl: HttpUrl,
+    private val challengeNotifierCallback: ChallengeNotifierCallback,
+    private val rustApiConfig: RustApiConfig
 ) {
 
-    fun init(config: RustLibConfigParams) {
+    fun init() {
         Timber.v("rust-session: Let the rust begin...")
 
         initializeRustTlsModule()
 
         val skipSrpProofValidation = isRunningAgainstMockWebserver(baseApiUrl)
         val allowInsecureNetworking = isRunningAgainstMockWebserver(baseApiUrl)
-        val protonHost = baseApiUrl.toApiEnv()
         val sessionParams = MailSessionParams(
             sessionDir = context.filesDir.absolutePath,
             userDir = context.filesDir.absolutePath,
@@ -60,15 +60,15 @@ class InitRustCommonLibrary @Inject constructor(
             logDir = rustLogsFileHandler.getParentPath().absolutePath,
             logDebug = false,
             apiEnvConfig = ApiConfig(
-                appVersion = config.appVersion,
-                userAgent = config.userAgent,
-                envId = protonHost
+                appVersion = rustApiConfig.appVersion,
+                userAgent = rustApiConfig.userAgent,
+                envId = rustApiConfig.envId,
+                proxy = rustApiConfig.proxy
             )
         )
         Timber.d("rust-session: Initializing the Rust Lib with $sessionParams")
 
-
-        when (val result = createMailSession(sessionParams, OsKeyChainMock(context))) {
+        when (val result = createMailSession(sessionParams, OsKeyChainMock(context), challengeNotifierCallback)) {
             is CreateMailSessionResult.Error -> {
                 Timber.e("rust-session: Critical error! Failed creating Mail session. Reason: ${result.v1}")
             }
@@ -79,12 +79,6 @@ class InitRustCommonLibrary @Inject constructor(
                 mailSessionRepository.setMailSession(result.v1)
             }
         }
-    }
-
-    private fun HttpUrl.toApiEnv() = when (this.host.toCanonicalHost()) {
-        "mail-api.proton.me" -> ApiEnvId.Prod
-        "mail-api.proton.black" -> ApiEnvId.Atlas
-        else -> ApiEnvId.Prod
     }
 
     private fun isRunningAgainstMockWebserver(baseApiUrl: HttpUrl) = baseApiUrl.host == "localhost"

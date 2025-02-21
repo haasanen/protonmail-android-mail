@@ -118,6 +118,8 @@ fun LocalSystemLabel.toSystemLabel() = when (this) {
     LocalSystemLabel.CATEGORY_PROMOTIONS,
     LocalSystemLabel.CATERGORY_UPDATES,
     LocalSystemLabel.CATEGORY_FORUMS,
+    LocalSystemLabel.BLOCKED,
+    LocalSystemLabel.PINNED,
     LocalSystemLabel.CATEGORY_DEFAULT -> {
         Timber.w("rust-label: mapping from unknown system label ID $this. Fallback to all mail")
         SystemLabelId.AllMail

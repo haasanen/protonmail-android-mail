@@ -19,10 +19,13 @@
 package ch.protonmail.android.di
 
 import ch.protonmail.android.BuildConfig
+import ch.protonmail.android.api.MailRustApiConfig
 import ch.protonmail.android.di.ApplicationModule.LocalDiskOpCoroutineScope
 import ch.protonmail.android.feature.alternativerouting.HasAlternativeRouting
 import ch.protonmail.android.feature.forceupdate.ForceUpdateHandler
+import ch.protonmail.android.mailsession.domain.model.RustApiConfig
 import ch.protonmail.android.useragent.BuildUserAgent
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -108,4 +111,12 @@ object NetworkConfigModule {
     @Provides
     @BaseProtonApiUrl
     fun provideProtonApiUrl(envConfig: EnvironmentConfiguration): HttpUrl = envConfig.baseUrl.toHttpUrl()
+}
+
+@Module
+@InstallIn(SingletonComponent::class)
+abstract class NetworkBindsModule {
+    @Binds
+    @Singleton
+    abstract fun provideRustApiConfig(mailRustApiConfig: MailRustApiConfig): RustApiConfig
 }

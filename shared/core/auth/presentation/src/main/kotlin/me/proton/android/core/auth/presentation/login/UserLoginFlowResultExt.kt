@@ -23,10 +23,6 @@ import me.proton.android.core.auth.presentation.R
 import me.proton.core.util.kotlin.CoreLogger
 import uniffi.proton_mail_uniffi.LoginError
 import uniffi.proton_mail_uniffi.LoginErrorReason
-import uniffi.proton_mail_uniffi.LoginErrorReason.CantUnlockUserKey
-import uniffi.proton_mail_uniffi.LoginErrorReason.HumanVerificationChallenge
-import uniffi.proton_mail_uniffi.LoginErrorReason.InvalidCredentials
-import uniffi.proton_mail_uniffi.LoginErrorReason.UnsupportedTfa
 import uniffi.proton_mail_uniffi.OtherErrorReason
 import uniffi.proton_mail_uniffi.OtherErrorReason.InvalidParameter
 import uniffi.proton_mail_uniffi.OtherErrorReason.Other
@@ -56,10 +52,9 @@ fun LoginError.getErrorMessage(context: Context) = when (this) {
 
 @Suppress("MaxLineLength")
 fun LoginErrorReason.getErrorMessage(context: Context) = when (this) {
-    is CantUnlockUserKey -> context.getString(R.string.auth_login_error_invalid_action_cannot_unlock_keys)
-    is HumanVerificationChallenge -> context.getString(R.string.auth_login_error_invalid_action_human_verification_challenge)
-    is InvalidCredentials -> context.getString(R.string.auth_login_error_invalid_action_invalid_credentials)
-    is UnsupportedTfa -> context.getString(R.string.auth_login_error_invalid_action_unsupported_tfa)
+    LoginErrorReason.INVALID_CREDENTIALS -> context.getString(R.string.auth_login_error_invalid_action_invalid_credentials)
+    LoginErrorReason.UNSUPPORTED_TFA -> context.getString(R.string.auth_login_error_invalid_action_unsupported_tfa)
+    LoginErrorReason.CANT_UNLOCK_USER_KEY -> context.getString(R.string.auth_login_error_invalid_action_cannot_unlock_keys)
 }
 
 fun UserApiServiceError.getErrorMessage() = when (this) {

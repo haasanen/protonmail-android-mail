@@ -19,6 +19,7 @@ plugins {
     id("com.android.library")
     kotlin("kapt")
     kotlin("android")
+    kotlin("plugin.serialization")
     id("org.jetbrains.kotlin.plugin.compose")
     id("dagger.hilt.android.plugin")
     id("app.cash.paparazzi")
@@ -63,9 +64,12 @@ dependencies {
     implementation(libs.proton.core.presentation)
     implementation(libs.proton.core.presentationCompose)
     implementation(libs.proton.core.utilKotlin)
-    implementation(libs.dagger.hilt.android)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.lottie.compose)
+
+    implementation(project(":design-system"))
+    implementation(project(":mail-session:domain"))
+    implementation(project(":mail-settings:domain"))
 
     debugImplementation(libs.androidx.compose.ui.tooling)
 

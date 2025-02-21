@@ -16,10 +16,12 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailsession.data.model
+package me.proton.android.core.humanverification.presentation
 
-data class RustLibConfigParams(
-    val isDebug: Boolean,
-    val appVersion: String,
-    val userAgent: String
-)
+import me.proton.core.presentation.BuildConfig
+import javax.inject.Inject
+
+class IsWebViewDebuggingEnabled @Inject constructor() {
+
+    operator fun invoke() = BuildConfig.DEBUG
+}

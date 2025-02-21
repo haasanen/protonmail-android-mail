@@ -86,6 +86,10 @@
                 android:value="androidx.startup"
                 tools:node="remove" />
             <meta-data
+                android:name="ch.protonmail.android.initializer.ChallengeInitializer"
+                android:value="androidx.startup"
+                tools:node="remove" />
+            <meta-data
                 android:name="ch.protonmail.android.initializer.LoggerInitializer"
                 android:value="androidx.startup"
                 tools:node="remove" />
