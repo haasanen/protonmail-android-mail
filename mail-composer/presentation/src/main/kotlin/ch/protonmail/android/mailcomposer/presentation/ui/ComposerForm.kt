@@ -121,11 +121,8 @@ internal fun ComposerForm(
                         .retainFieldFocusOnConfigurationChange(FocusedFieldType.SUBJECT)
                 )
                 MailDivider()
-                BodyTextField(
-                    initialValue = fields.body,
-                    shouldRequestFocus = shouldForceBodyTextFocus,
-                    replaceDraftBody = replaceDraftBody,
-                    onBodyChange = actions.onBodyChanged,
+                MessageBodyEditor(
+                    messageBodyUiModel = fields.displayBody,
                     modifier = maxWidthModifier
                         .testTag(ComposerTestTags.MessageBody)
                         .retainFieldFocusOnConfigurationChange(FocusedFieldType.BODY)
