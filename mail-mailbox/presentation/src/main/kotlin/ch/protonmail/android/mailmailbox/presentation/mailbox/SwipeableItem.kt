@@ -179,21 +179,27 @@ fun DismissBackground(dismissState: SwipeToDismissBoxState, swipeActionsUiModel:
 
 
 fun callbackForSwipeAction(action: SwipeAction, swipeActionCallbacks: SwipeActions.Actions) = when (action) {
+    SwipeAction.None -> swipeActionCallbacks.onNone
     SwipeAction.Trash -> swipeActionCallbacks.onTrash
     SwipeAction.Spam -> swipeActionCallbacks.onSpam
     SwipeAction.Star -> swipeActionCallbacks.onStar
     SwipeAction.Archive -> swipeActionCallbacks.onArchive
     SwipeAction.MarkRead -> swipeActionCallbacks.onMarkRead
+    SwipeAction.LabelAs -> swipeActionCallbacks.onLabelAs
+    SwipeAction.MoveTo -> swipeActionCallbacks.onMoveTo
 }
 
 object SwipeActions {
     const val SwipeActionResetTimeout = 500L
 
     data class Actions(
+        val onNone: () -> Unit = {},
         val onTrash: () -> Unit,
         val onSpam: () -> Unit,
         val onStar: () -> Unit,
         val onArchive: () -> Unit,
-        val onMarkRead: () -> Unit
+        val onMarkRead: () -> Unit,
+        val onLabelAs: () -> Unit,
+        val onMoveTo: () -> Unit
     )
 }

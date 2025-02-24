@@ -933,7 +933,9 @@ private fun generateSwipeActions(
             items.itemSnapshotList.items.firstOrNull { it.id == item.id }?.let {
                 actions.onSwipeRead(it.id, it.isRead)
             }
-        }
+        },
+        onMoveTo = { }, // To be implemented with ET-2225
+        onLabelAs = { } // To be implemented with ET-2225
     )
 }
 
