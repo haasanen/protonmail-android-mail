@@ -68,6 +68,7 @@ import ch.protonmail.android.mailcomposer.presentation.model.RecipientUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.SenderUiModel
 import ch.protonmail.android.mailcomposer.presentation.reducer.ComposerReducer
 import ch.protonmail.android.mailcomposer.presentation.ui.ComposerScreen
+import ch.protonmail.android.mailcomposer.presentation.usecase.BuildDraftDisplayBody
 import ch.protonmail.android.mailcomposer.presentation.usecase.ConvertHtmlToPlainText
 import ch.protonmail.android.mailcomposer.presentation.usecase.FormatMessageSendingError
 import ch.protonmail.android.mailcomposer.presentation.usecase.SortContactsForSuggestions
@@ -137,6 +138,7 @@ class ComposerViewModel @Inject constructor(
     private val openExistingDraft: OpenExistingDraft,
     private val createEmptyDraft: CreateEmptyDraft,
     private val createDraftForAction: CreateDraftForAction,
+    private val buildDraftDisplayBody: BuildDraftDisplayBody,
     isDeviceContactsSuggestionsEnabled: IsDeviceContactsSuggestionsEnabled,
     savedStateHandle: SavedStateHandle,
     observePrimaryUserId: ObservePrimaryUserId,
