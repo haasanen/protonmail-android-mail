@@ -23,6 +23,7 @@ import android.content.Context
 import android.content.res.Resources
 import ch.protonmail.android.mailcomposer.presentation.R
 import ch.protonmail.android.mailcomposer.presentation.model.DraftDisplayBodyUiModel
+import ch.protonmail.android.mailcomposer.presentation.ui.JAVASCRIPT_CALLBACK_INTERFACE_NAME
 import ch.protonmail.android.mailmessage.presentation.model.MessageBodyWithType
 import ch.protonmail.android.mailmessage.presentation.usecase.SanitizeHtmlOfDecryptedMessageBody
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -60,18 +61,17 @@ class BuildDraftDisplayBody @Inject constructor(
                     <style>
                         $customCss
                     </style>
-                    <script>
-                        $javascript
-                    </script>
                 </head>
                 <body>
-                    <div id="editor_header">
-                    </div>
+                    <div id="editor_header"></div>
                     <div role="textbox" aria-multiline="true" id="$EDITOR_ID" contentEditable="true" placeholder="" class="placeholder">
                         $bodyContent
                     </div>
-                    <div id="editor_footer">
-                </div>
+                    <div id="editor_footer"></div>
+
+                    <script>
+                        $javascript
+                    </script>
                 </body>
                 </html>
         """.trimIndent()
@@ -79,8 +79,13 @@ class BuildDraftDisplayBody @Inject constructor(
         return DraftDisplayBodyUiModel(html)
     }
 
-    @SuppressWarnings("FunctionOnlyReturningConstant")
-    private fun getJavascript() = "alert(\"foo\")"
+    private fun getJavascript() = """
+        document.getElementById('$EDITOR_ID').addEventListener('input', function(){
+            console.log("composer-js-editor: on body changed event")
+            var body = document.getElementById('$EDITOR_ID').innerHTML
+            $JAVASCRIPT_CALLBACK_INTERFACE_NAME.onBodyUpdated(body)
+        });
+    """.trimIndent()
 
     private fun getCustomCss(context: Context): String = try {
         context.resources.openRawResource(R.raw.css_reset_with_custom_props).use {

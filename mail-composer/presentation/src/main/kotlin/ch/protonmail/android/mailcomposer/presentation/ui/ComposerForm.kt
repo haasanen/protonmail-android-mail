@@ -123,6 +123,7 @@ internal fun ComposerForm(
                 MailDivider()
                 MessageBodyEditor(
                     messageBodyUiModel = fields.displayBody,
+                    onBodyChanged = actions.onBodyChanged,
                     modifier = maxWidthModifier
                         .testTag(ComposerTestTags.MessageBody)
                         .retainFieldFocusOnConfigurationChange(FocusedFieldType.BODY)

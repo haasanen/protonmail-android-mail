@@ -19,6 +19,7 @@
 package ch.protonmail.android.mailcomposer.presentation.ui
 
 import java.io.ByteArrayInputStream
+import android.annotation.SuppressLint
 import android.net.Uri
 import android.webkit.WebResourceRequest
 import android.webkit.WebResourceResponse
@@ -57,6 +58,8 @@ import com.google.accompanist.web.WebView
 import com.google.accompanist.web.rememberWebViewStateWithHTMLData
 import kotlinx.coroutines.delay
 
+// Needed to allow "remember" on javascript interface
+@SuppressLint("JavascriptInterface")
 @Composable
 fun EditableMessageBodyWebView(
     modifier: Modifier = Modifier,
@@ -130,6 +133,8 @@ fun EditableMessageBodyWebView(
         }
     }
 
+    val javascriptCallback = remember { JavascriptCallback(webViewActions.onMessageBodyChanged) }
+
     Column(modifier = modifier) {
         key(client) {
             WebView(
@@ -143,6 +148,7 @@ fun EditableMessageBodyWebView(
                     it.settings.loadWithOverviewMode = true
                     it.settings.useWideViewPort = true
                     configureDarkLightMode(it, isSystemInDarkTheme, viewModePreference)
+                    it.addJavascriptInterface(javascriptCallback, JAVASCRIPT_CALLBACK_INTERFACE_NAME)
                     webView = it
                 },
                 captureBackPresses = false,
@@ -185,7 +191,8 @@ object EditableMessageBodyWebView {
     data class Actions(
         val onMessageBodyLinkClicked: (uri: Uri) -> Unit,
         val onAttachmentClicked: (attachmentId: AttachmentId) -> Unit,
-        val loadEmbeddedImage: (contentId: String) -> EmbeddedImage?
+        val loadEmbeddedImage: (contentId: String) -> EmbeddedImage?,
+        val onMessageBodyChanged: (body: String) -> Unit
     )
 }
 

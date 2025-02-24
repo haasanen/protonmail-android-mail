@@ -5,7 +5,8 @@
  * Proton Mail is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version. *
+ * (at your option) any later version.
+ *
  * Proton Mail is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
@@ -17,24 +18,18 @@
 
 package ch.protonmail.android.mailcomposer.presentation.ui
 
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import ch.protonmail.android.mailcomposer.presentation.model.DraftDisplayBodyUiModel
+import android.webkit.JavascriptInterface
+import timber.log.Timber
 
-@Composable
-internal fun MessageBodyEditor(
-    messageBodyUiModel: DraftDisplayBodyUiModel,
-    onBodyChanged: (body: String) -> Unit,
-    modifier: Modifier = Modifier
+const val JAVASCRIPT_CALLBACK_INTERFACE_NAME = "MessageBodyInterface"
+
+class JavascriptCallback(
+    private val onMessageBodyChanged: (String) -> Unit
 ) {
-    EditableMessageBodyWebView(
-        modifier = modifier,
-        messageBodyUiModel = messageBodyUiModel,
-        webViewActions = EditableMessageBodyWebView.Actions(
-            onMessageBodyLinkClicked = {},
-            onAttachmentClicked = {},
-            loadEmbeddedImage = { _ -> null },
-            onMessageBodyChanged = onBodyChanged
-        )
-    )
+
+    @JavascriptInterface
+    fun onBodyUpdated(body: String) {
+        Timber.d("composer: js interface called as body changed $body")
+        onMessageBodyChanged(body)
+    }
 }
