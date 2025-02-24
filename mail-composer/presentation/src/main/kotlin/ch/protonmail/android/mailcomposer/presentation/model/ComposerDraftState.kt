@@ -76,7 +76,7 @@ data class ComposerDraftState(
                 bcc = bcc,
                 subject = "",
                 body = "",
-                displayBody = DraftDisplayBody("")
+                displayBody = DraftDisplayBodyUiModel("")
             ),
             attachments = AttachmentGroupUiModel(
                 attachments = emptyList()
@@ -117,7 +117,7 @@ data class ComposerFields(
     val cc: List<RecipientUiModel>,
     val bcc: List<RecipientUiModel>,
     val subject: String,
-    val displayBody: DraftDisplayBody,
+    val displayBody: DraftDisplayBodyUiModel,
     val body: String,
     val quotedBody: QuotedHtmlContent? = null
 )

@@ -22,7 +22,7 @@ import java.io.IOException
 import android.content.Context
 import android.content.res.Resources
 import ch.protonmail.android.mailcomposer.presentation.R
-import ch.protonmail.android.mailcomposer.presentation.model.DraftDisplayBody
+import ch.protonmail.android.mailcomposer.presentation.model.DraftDisplayBodyUiModel
 import ch.protonmail.android.mailmessage.presentation.model.MessageBodyWithType
 import ch.protonmail.android.mailmessage.presentation.usecase.SanitizeHtmlOfDecryptedMessageBody
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -36,7 +36,7 @@ class BuildDraftDisplayBody @Inject constructor(
     private val sanitizeHtmlOfDecryptedMessageBody: SanitizeHtmlOfDecryptedMessageBody
 ) {
 
-    operator fun invoke(messageBodyWithType: MessageBodyWithType): DraftDisplayBody {
+    operator fun invoke(messageBodyWithType: MessageBodyWithType): DraftDisplayBodyUiModel {
         val bodyContent: String = sanitizeHtmlOfDecryptedMessageBody(messageBodyWithType)
         val css: String = getCustomCss(context)
         val javascript: String = getJavascript()
@@ -48,7 +48,7 @@ class BuildDraftDisplayBody @Inject constructor(
         bodyContent: String,
         customCss: String,
         javascript: String
-    ): DraftDisplayBody {
+    ): DraftDisplayBodyUiModel {
         val html = """
             <!DOCTYPE html>
                 <html lang="en">
@@ -76,7 +76,7 @@ class BuildDraftDisplayBody @Inject constructor(
                 </html>
         """.trimIndent()
 
-        return DraftDisplayBody(html)
+        return DraftDisplayBodyUiModel(html)
     }
 
     @SuppressWarnings("FunctionOnlyReturningConstant")

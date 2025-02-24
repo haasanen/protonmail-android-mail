@@ -39,7 +39,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.hilt.navigation.compose.hiltViewModel
 import ch.protonmail.android.mailcommon.presentation.compose.pxToDp
-import ch.protonmail.android.mailcomposer.presentation.model.EditableMessageBodyUiModel
+import ch.protonmail.android.mailcomposer.presentation.model.DraftDisplayBodyUiModel
 import ch.protonmail.android.mailmessage.domain.model.AttachmentId
 import ch.protonmail.android.mailmessage.domain.model.EmbeddedImage
 import ch.protonmail.android.mailmessage.domain.model.MimeType
@@ -60,7 +60,7 @@ import kotlinx.coroutines.delay
 @Composable
 fun EditableMessageBodyWebView(
     modifier: Modifier = Modifier,
-    messageBodyUiModel: EditableMessageBodyUiModel,
+    messageBodyUiModel: DraftDisplayBodyUiModel,
     webViewActions: EditableMessageBodyWebView.Actions,
     onMessageBodyLoaded: (height: Int) -> Unit = { _ -> },
     viewModel: MessageBodyWebViewViewModel = hiltViewModel()

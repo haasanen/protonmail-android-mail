@@ -18,4 +18,4 @@
 
 package ch.protonmail.android.mailcomposer.presentation.model
 
-data class EditableMessageBodyUiModel(val value: String)
+data class DraftDisplayBodyUiModel(val value: String)
