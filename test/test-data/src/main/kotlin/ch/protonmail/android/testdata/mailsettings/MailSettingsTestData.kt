@@ -23,6 +23,7 @@ import ch.protonmail.android.testdata.user.UserIdTestData
 import me.proton.core.domain.entity.UserId
 import me.proton.core.domain.type.IntEnum
 import me.proton.core.domain.type.StringEnum
+import me.proton.core.mailsettings.domain.entity.AlmostAllMail
 import me.proton.core.mailsettings.domain.entity.ComposerMode
 import me.proton.core.mailsettings.domain.entity.MailSettings
 import me.proton.core.mailsettings.domain.entity.MessageButtons
@@ -86,6 +87,8 @@ object MailSettingsTestData {
         promptPin = true,
         stickyLabels = true,
         confirmLink = confirmLink,
-        autoDeleteSpamAndTrashDays = null
+        autoDeleteSpamAndTrashDays = null,
+        almostAllMail = IntEnum(0, AlmostAllMail.Disabled),
+        mobileSettings = null
     )
 }

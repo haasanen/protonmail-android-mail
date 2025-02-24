@@ -95,6 +95,7 @@ class LauncherViewModel @Inject constructor(
                 is Action.OpenPasswordManagement -> onOpenPasswordManagement()
                 is Action.OpenRecoveryEmail -> onOpenRecoveryEmail()
                 is Action.OpenReport -> onOpenReport()
+                is Action.OpenSecurityKeys -> onOpenSecurityKeys()
                 is Action.OpenSubscription -> onOpenSubscription()
                 is Action.SignIn -> onSignIn(action.userId)
                 is Action.SwitchToAccount -> onSwitchToAccount(action.userId)
@@ -122,6 +123,10 @@ class LauncherViewModel @Inject constructor(
         TODO("ET - Not yet implemented")
     }
 
+    fun onOpenSecurityKeys() {
+        TODO("ET - Not yet implemented")
+    }
+
     fun onSignIn(userId: UserId?) = viewModelScope.launch {
         val username = userId?.let {
             userSessionRepository.getAccount(it)?.name
@@ -139,6 +144,7 @@ class LauncherViewModel @Inject constructor(
         object OpenPasswordManagement : Action
         object OpenRecoveryEmail : Action
         object OpenReport : Action
+        object OpenSecurityKeys : Action
         object OpenSubscription : Action
         data class SignIn(val userId: UserId?) : Action
         data class SwitchToAccount(val userId: UserId) : Action

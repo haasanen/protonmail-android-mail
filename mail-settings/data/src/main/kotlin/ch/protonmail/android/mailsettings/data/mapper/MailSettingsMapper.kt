@@ -18,11 +18,13 @@
 
 package ch.protonmail.android.mailsettings.data.mapper
 
+import ch.protonmail.android.mailcommon.datarust.mapper.LocalAlmostAllMail
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalComposerDirection
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalComposerMode
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalMailSettings
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageButtons
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalMimeType
+import ch.protonmail.android.mailcommon.datarust.mapper.LocalMobileSettings
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalPgpScheme
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalPmSignature
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalShowImages
@@ -33,18 +35,23 @@ import ch.protonmail.android.mailcommon.datarust.mapper.LocalViewMode
 import ch.protonmail.android.mailcommon.domain.model.DeprecatedId
 import me.proton.core.domain.type.IntEnum
 import me.proton.core.domain.type.StringEnum
+import me.proton.core.mailsettings.domain.entity.ActionsToolbarSetting
+import me.proton.core.mailsettings.domain.entity.AlmostAllMail
 import me.proton.core.mailsettings.domain.entity.ComposerMode
 import me.proton.core.mailsettings.domain.entity.MailSettings
 import me.proton.core.mailsettings.domain.entity.MessageButtons
 import me.proton.core.mailsettings.domain.entity.MimeType
+import me.proton.core.mailsettings.domain.entity.MobileSettings
 import me.proton.core.mailsettings.domain.entity.PMSignature
 import me.proton.core.mailsettings.domain.entity.PackageType
 import me.proton.core.mailsettings.domain.entity.ShowImage
 import me.proton.core.mailsettings.domain.entity.ShowMoved
 import me.proton.core.mailsettings.domain.entity.SwipeAction
+import me.proton.core.mailsettings.domain.entity.ToolbarAction
 import me.proton.core.mailsettings.domain.entity.ViewLayout
 import me.proton.core.mailsettings.domain.entity.ViewMode
 import timber.log.Timber
+import uniffi.proton_mail_uniffi.MobileSetting
 
 object MailSettingsMapper {
 
@@ -77,7 +84,9 @@ object MailSettingsMapper {
             promptPin = promptPin,
             stickyLabels = stickyLabels,
             confirmLink = confirmLink,
-            autoDeleteSpamAndTrashDays = autoDeleteSpamAndTrashDays?.toInt()
+            autoDeleteSpamAndTrashDays = autoDeleteSpamAndTrashDays?.toInt(),
+            almostAllMail = almostAllMail.toAlmostAllMail(),
+            mobileSettings = mobileSettings?.toMobileSettings()
         )
     }
 
@@ -134,5 +143,23 @@ object MailSettingsMapper {
             }
         }
         return MimeType.enumOf(mimeType.value)
+    }
+
+    private fun LocalAlmostAllMail.toAlmostAllMail(): IntEnum<AlmostAllMail>? {
+        val intValue = this.value.toInt()
+        return AlmostAllMail.enumOf(intValue)
+    }
+
+    private fun LocalMobileSettings.toMobileSettings(): MobileSettings {
+        fun MobileSetting.toMobileSetting(): ActionsToolbarSetting {
+            val actions = this.actions.map { ToolbarAction.enumOf(it) }
+            return ActionsToolbarSetting(this.isCustom, actions)
+        }
+
+        return MobileSettings(
+            listToolbar = this.listToolbar.toMobileSetting(),
+            conversationToolbar = this.conversationToolbar.toMobileSetting(),
+            messageToolbar = this.messageToolbar.toMobileSetting()
+        )
     }
 }

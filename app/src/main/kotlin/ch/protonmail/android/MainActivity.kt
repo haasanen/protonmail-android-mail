@@ -42,7 +42,6 @@ import ch.protonmail.android.navigation.share.ShareIntentObserver
 import dagger.hilt.android.AndroidEntryPoint
 import me.proton.core.notification.presentation.deeplink.DeeplinkManager
 import me.proton.core.notification.presentation.deeplink.onActivityCreate
-import me.proton.core.usersettings.presentation.compose.view.SecurityKeysActivity
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -86,7 +85,7 @@ class MainActivity : AppCompatActivity() {
                             openInActivityInNewTask = { openInActivityInNewTask(it) },
                             openIntentChooser = { openIntentChooser(it) },
                             openProtonCalendarIntentValues = { handleProtonCalendarRequest(it) },
-                            openSecurityKeys = { SecurityKeysActivity.start(this) },
+                            openSecurityKeys = { launcherViewModel.submit(LauncherViewModel.Action.OpenSecurityKeys) },
                             finishActivity = { finishAfterTransition() }
                         ),
                         launcherViewModel

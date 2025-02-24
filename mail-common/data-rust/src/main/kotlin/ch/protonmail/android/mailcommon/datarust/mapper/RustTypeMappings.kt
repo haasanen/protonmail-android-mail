@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.mailcommon.datarust.mapper
 
+import uniffi.proton_mail_uniffi.AlmostAllMail
 import uniffi.proton_mail_uniffi.AttachmentMetadata
 import uniffi.proton_mail_uniffi.AttachmentMimeType
 import uniffi.proton_mail_uniffi.AvatarInformation
@@ -38,6 +39,7 @@ import uniffi.proton_mail_uniffi.Message
 import uniffi.proton_mail_uniffi.MessageButtons
 import uniffi.proton_mail_uniffi.MimeType
 import uniffi.proton_mail_uniffi.MimeTypeCategory
+import uniffi.proton_mail_uniffi.MobileSettings
 import uniffi.proton_mail_uniffi.PgpScheme
 import uniffi.proton_mail_uniffi.PmSignature
 import uniffi.proton_mail_uniffi.ShowImages
@@ -54,6 +56,7 @@ typealias LocalLabelId = Id
 typealias LocalViewMode = ViewMode
 typealias LocalMessageId = Id
 typealias LocalMessageMetadata = Message
+typealias LocalAlmostAllMail = AlmostAllMail
 typealias LocalAttachmentMetadata = AttachmentMetadata
 typealias LocalAttachmentId = Id
 typealias LocalAttachmentDisposition = Disposition
@@ -62,6 +65,7 @@ typealias LocalDecryptedAttachment = DecryptedAttachment
 typealias LocalMimeTypeCategory = MimeTypeCategory
 typealias LocalMimeType = MimeType
 typealias LocalMailSettings = MailSettings
+typealias LocalMobileSettings = MobileSettings
 typealias LocalPmSignature = PmSignature
 typealias LocalComposerMode = ComposerMode
 typealias LocalMessageButtons = MessageButtons
