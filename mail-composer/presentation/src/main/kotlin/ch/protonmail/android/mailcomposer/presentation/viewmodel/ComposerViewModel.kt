@@ -80,6 +80,8 @@ import ch.protonmail.android.mailcontact.domain.usecase.SearchDeviceContacts
 import ch.protonmail.android.mailcontact.domain.usecase.featureflags.IsDeviceContactsSuggestionsEnabled
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.model.MessageId
+import ch.protonmail.android.mailmessage.presentation.model.MessageBodyWithType
+import ch.protonmail.android.mailmessage.presentation.model.MimeTypeUiModel
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.test.idlingresources.ComposerIdlingResource
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -186,7 +188,14 @@ class ComposerViewModel @Inject constructor(
         viewModelScope.launch {
             createEmptyDraft(primaryUserId())
                 .onRight { draftFields ->
-                    emitNewStateFor(ComposerEvent.DefaultSenderReceived(SenderUiModel(draftFields.sender.value)))
+                    emitNewStateFor(
+                        ComposerEvent.PrefillDraftDataReceived(
+                            draftUiModel = draftFields.toDraftUiModel(),
+                            isDataRefreshed = true,
+                            isBlockedSendingFromPmAddress = false,
+                            isBlockedSendingFromDisabledAddress = false
+                        )
+                    )
                 }
                 .onLeft { emitNewStateFor(ComposerEvent.ErrorLoadingDefaultSenderAddress) }
         }
@@ -303,10 +312,13 @@ class ComposerViewModel @Inject constructor(
     }
 
     private fun DraftFields.toDraftUiModel(): DraftUiModel {
+        val messageBodyWithType = MessageBodyWithType(this.body.value, MimeTypeUiModel.Html)
+        val draftDisplayBody = buildDraftDisplayBody(messageBodyWithType)
+
         val quotedHtml = this.originalHtmlQuote?.let {
             QuotedHtmlContent(it, styleQuotedHtml(it))
         }
-        return DraftUiModel(this, quotedHtml)
+        return DraftUiModel(this, quotedHtml, draftDisplayBody)
     }
 
     override fun onCleared() {

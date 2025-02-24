@@ -68,10 +68,12 @@ import ch.protonmail.android.mailcomposer.presentation.model.ComposerDraftState
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerFields
 import ch.protonmail.android.mailcomposer.presentation.model.ContactSuggestionUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.ContactSuggestionsField
+import ch.protonmail.android.mailcomposer.presentation.model.DraftDisplayBodyUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.RecipientUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.SenderUiModel
 import ch.protonmail.android.mailcomposer.presentation.reducer.ComposerReducer
 import ch.protonmail.android.mailcomposer.presentation.ui.ComposerScreen
+import ch.protonmail.android.mailcomposer.presentation.usecase.BuildDraftDisplayBody
 import ch.protonmail.android.mailcomposer.presentation.usecase.ConvertHtmlToPlainText
 import ch.protonmail.android.mailcomposer.presentation.usecase.FormatMessageSendingError
 import ch.protonmail.android.mailcomposer.presentation.usecase.SortContactsForSuggestions
@@ -92,6 +94,7 @@ import ch.protonmail.android.mailmessage.domain.sample.AttachmentMetadataSamples
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
 import ch.protonmail.android.mailmessage.domain.sample.RecipientSample
 import ch.protonmail.android.mailmessage.presentation.mapper.AttachmentMetadataUiModelMapper
+import ch.protonmail.android.mailmessage.presentation.model.MessageBodyWithType
 import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentGroupUiModel
 import ch.protonmail.android.mailmessage.presentation.model.attachment.NO_ATTACHMENT_LIMIT
 import ch.protonmail.android.mailmessage.presentation.sample.AttachmentMetadataUiModelSamples
@@ -111,7 +114,7 @@ import io.mockk.coVerifyOrder
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
-import io.mockk.mockkObject
+import io.mockk.slot
 import io.mockk.spyk
 import io.mockk.unmockkObject
 import io.mockk.verify
@@ -190,6 +193,12 @@ class ComposerViewModelTest {
     private val getInitials = mockk<GetInitials> {
         every { this@mockk(any()) } returns BaseInitials
     }
+    private val buildDraftDisplayBody = mockk<BuildDraftDisplayBody> {
+        val bodySlot = slot<MessageBodyWithType>()
+        every { this@mockk.invoke(capture(bodySlot)) } answers {
+            DraftDisplayBodyUiModel("<html> ${bodySlot.captured.messageBody} </html>")
+        }
+    }
     private val attachmentUiModelMapper = AttachmentMetadataUiModelMapper()
     private val sortContactsForSuggestions = SortContactsForSuggestions(getInitials, testDispatcher)
     private val reducer = ComposerReducer(attachmentUiModelMapper)
@@ -227,6 +236,7 @@ class ComposerViewModelTest {
             openExistingDraft,
             createEmptyDraft,
             createDraftForAction,
+            buildDraftDisplayBody,
             isDeviceContactsSuggestionsEnabledMock,
             savedStateHandle,
             observePrimaryUserIdMock,
@@ -318,13 +328,6 @@ class ComposerViewModelTest {
         expectObserveMessageExpirationTime(expectedUserId, expectedMessageId)
         expectInitComposerWithNewEmptyDraftSucceeds(expectedUserId)
 
-        // Change internal state of the View Model to simulate an existing draft body before changing sender
-        expectedViewModelInitialState(
-            messageId = expectedMessageId,
-            draftBody = expectedDraftBody,
-            quotedBody = expectedQuotedDraftBody
-        )
-
         val expectedReplaceDraftBodyTextUiModel = TextUiModel(expectDraftBodyWithSignature().value)
 
         // When
@@ -355,9 +358,6 @@ class ComposerViewModelTest {
         expectNoFileShareVia()
         expectObserveMessageExpirationTime(expectedUserId, expectedMessageId)
         expectInitComposerWithNewEmptyDraftSucceeds(expectedUserId)
-
-        // Change internal state of the View Model to simulate an existing draft body before changing sender
-        expectedViewModelInitialState(messageId = expectedMessageId, draftBody = expectedDraftBody)
 
         // When
         viewModel.submit(action)
@@ -848,16 +848,17 @@ class ComposerViewModelTest {
         expectMessagePassword(expectedUserId, expectedMessageId)
         expectNoFileShareVia()
         expectObserveMessageExpirationTime(expectedUserId, expectedMessageId)
-        expectInitComposerWithNewEmptyDraftSucceeds(expectedUserId)
-
-        // Change internal state of the View Model to simulate the existence of all fields before closing the composer
-        expectedViewModelInitialState(
-            messageId = expectedMessageId,
-            senderEmail = expectedSenderEmail,
-            subject = expectedSubject,
-            draftBody = expectedDraftBody,
-            recipients = Triple(recipientsTo, recipientsCc, recipientsBcc)
-        )
+        expectInitComposerWithNewEmptyDraftSucceeds(expectedUserId) {
+            DraftFields(
+                subject = expectedSubject,
+                sender = expectedSenderEmail,
+                body = expectedDraftBody,
+                recipientsTo = recipientsTo,
+                recipientsCc = recipientsCc,
+                recipientsBcc = recipientsBcc,
+                originalHtmlQuote = null
+            )
+        }
 
         // When
         viewModel.submit(ComposerAction.OnCloseComposer)
@@ -887,16 +888,17 @@ class ComposerViewModelTest {
         expectMessagePassword(expectedUserId, expectedMessageId)
         expectNoFileShareVia()
         expectObserveMessageExpirationTime(expectedUserId, expectedMessageId)
-        expectInitComposerWithNewEmptyDraftSucceeds(expectedUserId)
-
-        // Change internal state of the View Model to simulate the existence of all fields before closing the composer
-        expectedViewModelInitialState(
-            messageId = expectedMessageId,
-            senderEmail = expectedSenderEmail,
-            subject = expectedSubject,
-            draftBody = expectedDraftBody,
-            recipients = Triple(recipientsTo, recipientsCc, recipientsBcc)
-        )
+        expectInitComposerWithNewEmptyDraftSucceeds(expectedUserId) {
+            DraftFields(
+                subject = expectedSubject,
+                sender = expectedSenderEmail,
+                body = expectedDraftBody,
+                recipientsTo = recipientsTo,
+                recipientsCc = recipientsCc,
+                recipientsBcc = recipientsBcc,
+                originalHtmlQuote = null
+            )
+        }
 
         // When
         viewModel.submit(ComposerAction.OnSendMessage)
@@ -929,16 +931,17 @@ class ComposerViewModelTest {
         expectMessagePassword(expectedUserId, expectedMessageId)
         expectNoFileShareVia()
         expectObserveMessageExpirationTime(expectedUserId, expectedMessageId)
-        expectInitComposerWithNewEmptyDraftSucceeds(expectedUserId)
-
-        // Change internal state of the View Model to simulate the existence of all fields before closing the composer
-        expectedViewModelInitialState(
-            messageId = expectedMessageId,
-            senderEmail = expectedSenderEmail,
-            subject = expectedSubject,
-            draftBody = expectedDraftBody,
-            recipients = Triple(recipientsTo, recipientsCc, recipientsBcc)
-        )
+        expectInitComposerWithNewEmptyDraftSucceeds(expectedUserId) {
+            DraftFields(
+                subject = expectedSubject,
+                sender = expectedSenderEmail,
+                body = expectedDraftBody,
+                recipientsTo = recipientsTo,
+                recipientsCc = recipientsCc,
+                recipientsBcc = recipientsBcc,
+                originalHtmlQuote = null
+            )
+        }
 
         // When
         viewModel.submit(ComposerAction.OnSendMessage)
@@ -981,19 +984,12 @@ class ComposerViewModelTest {
         expectNoInputDraftMessageId()
         expectInputDraftAction { DraftAction.Compose }
         expectObservedMessageAttachments(expectedUserId, expectedMessageId)
-        val expectedDraftBody = expectDraftBodyWithSignature()
         expectObserveMessageSendingError(expectedUserId, expectedMessageId)
         expectMessagePassword(expectedUserId, expectedMessageId)
         expectNoFileShareVia()
         expectObserveMessageExpirationTime(expectedUserId, expectedMessageId)
         expectContacts()
         expectInitComposerWithNewEmptyDraftSucceeds(expectedUserId)
-
-        // Change internal state of the View Model to simulate an existing draft body before closing composer
-        expectedViewModelInitialState(
-            messageId = expectedMessageId,
-            draftBody = expectedDraftBody
-        )
 
         // When
         viewModel.submit(ComposerAction.OnCloseComposer)
@@ -1364,6 +1360,7 @@ class ComposerViewModelTest {
             val expectedUserId = expectedUserId { UserIdSample.Primary }
             val expectedDraftId = expectInputDraftMessageId { MessageIdSample.RemoteDraft }
             val expectedDraftFields = existingDraftFields
+            val expectedDisplayBody = DraftDisplayBodyUiModel("<html> ${expectedDraftFields.body.value} </html>")
             expectInitComposerWithExistingDraftSuccess(expectedUserId, expectedDraftId) { existingDraftFields }
             expectObservedMessageAttachments(expectedUserId, expectedDraftId)
             expectNoInputDraftAction()
@@ -1383,6 +1380,7 @@ class ComposerViewModelTest {
                 emptyList(),
                 emptyList(),
                 expectedDraftFields.subject.value,
+                expectedDisplayBody,
                 expectedDraftFields.body.value,
                 null
             )
@@ -1395,6 +1393,7 @@ class ComposerViewModelTest {
         val expectedUserId = expectedUserId { UserIdSample.Primary }
         val expectedDraftId = expectInputDraftMessageId { MessageIdSample.RemoteDraft }
         val expectedDraftFields = existingDraftFields
+        val expectedDisplayBody = DraftDisplayBodyUiModel("<html> ${expectedDraftFields.body.value} </html>")
         expectInitComposerWithExistingDraftSuccess(expectedUserId, expectedDraftId) { existingDraftFields }
         expectObservedMessageAttachments(expectedUserId, expectedDraftId)
         expectInputDraftAction { DraftAction.Compose }
@@ -1414,6 +1413,7 @@ class ComposerViewModelTest {
             emptyList(),
             emptyList(),
             expectedDraftFields.subject.value,
+            expectedDisplayBody,
             expectedDraftFields.body.value,
             null
         )
@@ -1433,6 +1433,7 @@ class ComposerViewModelTest {
             val expectedDraftFields = expectInitComposerForActionSuccess(
                 expectedUserId, expectedAction
             ) { draftFieldsWithQuotedBody }
+            val expectedDisplayBody = DraftDisplayBodyUiModel("<html> ${expectedDraftFields.body.value} </html>")
             expectObservedMessageAttachments(expectedUserId, expectedDraftId)
             val expectedStyledQuote = expectStyleQuotedHtml(expectedDraftFields.originalHtmlQuote) {
                 StyledHtmlQuote("<styled> ${expectedDraftFields.originalHtmlQuote?.value} </styled>")
@@ -1453,6 +1454,7 @@ class ComposerViewModelTest {
                 emptyList(),
                 emptyList(),
                 expectedDraftFields.subject.value,
+                expectedDisplayBody,
                 expectedDraftFields.body.value,
                 QuotedHtmlContent(expectedDraftFields.originalHtmlQuote!!, expectedStyledQuote)
             )
@@ -1719,7 +1721,9 @@ class ComposerViewModelTest {
         expectAddressValidation(expectedRecipient.address, true)
         expectNoFileShareVia()
         expectObserveMessageExpirationTime(expectedUserId, expectedMessageId)
-        expectInitComposerWithNewEmptyDraftSucceeds(expectedUserId) { DraftFieldsTestData.BasicDraftFields }
+        expectInitComposerWithNewEmptyDraftSucceeds(expectedUserId) {
+            DraftFieldsTestData.EmptyDraftWithPrimarySender
+        }
 
         assertEquals(viewModel.state.value.fields.to.first(), RecipientUiModel.Valid(expectedRecipient.address))
     }
@@ -1843,17 +1847,18 @@ class ComposerViewModelTest {
             expectNoMessagePassword(expectedUserId, expectedMessageId)
             expectNoFileShareVia()
             expectObserveMessageExpirationTime(expectedUserId, expectedMessageId)
-            expectInitComposerWithNewEmptyDraftSucceeds(expectedUserId)
+            expectInitComposerWithNewEmptyDraftSucceeds(expectedUserId) {
+                DraftFields(
+                    subject = expectedSubject,
+                    sender = expectedSenderEmail,
+                    body = expectedDraftBody,
+                    recipientsTo = recipientsTo,
+                    recipientsCc = recipientsCc,
+                    recipientsBcc = recipientsBcc,
+                    originalHtmlQuote = null
+                )
+            }
             val externalRecipients = expectExternalRecipients(expectedUserId, recipientsTo, recipientsCc, recipientsBcc)
-
-            // Change internal state of the View Model to simulate the existence of all fields
-            expectedViewModelInitialState(
-                messageId = expectedMessageId,
-                senderEmail = expectedSenderEmail,
-                subject = expectedSubject,
-                draftBody = expectedDraftBody,
-                recipients = Triple(recipientsTo, recipientsCc, recipientsBcc)
-            )
 
             // When
             viewModel.submit(ComposerAction.OnSendMessage)
@@ -1886,16 +1891,17 @@ class ComposerViewModelTest {
         expectNoFileShareVia()
         expectObserveMessageExpirationTime(expectedUserId, expectedMessageId)
         expectExternalRecipients(expectedUserId, recipientsTo, recipientsCc, recipientsBcc)
-        expectInitComposerWithNewEmptyDraftSucceeds(expectedUserId)
-
-        // Change internal state of the View Model to simulate the existence of all fields before closing the composer
-        expectedViewModelInitialState(
-            messageId = expectedMessageId,
-            senderEmail = expectedSenderEmail,
-            subject = expectedSubject,
-            draftBody = expectedDraftBody,
-            recipients = Triple(recipientsTo, recipientsCc, recipientsBcc)
-        )
+        expectInitComposerWithNewEmptyDraftSucceeds(expectedUserId) {
+            DraftFields(
+                subject = expectedSubject,
+                sender = expectedSenderEmail,
+                body = expectedDraftBody,
+                recipientsTo = recipientsTo,
+                recipientsCc = recipientsCc,
+                recipientsBcc = recipientsBcc,
+                originalHtmlQuote = null
+            )
+        }
 
         // When
         viewModel.submit(ComposerAction.SendExpiringMessageToExternalRecipientsConfirmed)
@@ -1907,6 +1913,7 @@ class ComposerViewModelTest {
     }
 
     @Test
+    @Ignore("Reply inline will be dropped due to rich text composer")
     fun `should emit Effect to ReplaceDraftBody when Respond Inline Action`() = runTest {
         // Given
         val expectedDraftBody = DraftBody(RawDraftBody)
@@ -1928,13 +1935,6 @@ class ComposerViewModelTest {
         expectObserveMessageExpirationTime(expectedUserId, expectedMessageId)
         expectConvertHtmlToPlainTextSucceeds(expectedQuotedHtmlContent, expectedQuotedHtmlInPlainText)
         expectInitComposerWithNewEmptyDraftSucceeds(expectedUserId)
-
-        // Change internal state of the View Model to simulate an existing draft body before changing sender
-        expectedViewModelInitialState(
-            messageId = expectedMessageId,
-            draftBody = expectedDraftBody,
-            quotedBody = expectedQuotedHtmlContent
-        )
 
         val expectedReplaceDraftBodyTextUiModel = TextUiModel(
             "${expectedDraftBody.value}$expectedQuotedHtmlInPlainText"
@@ -1971,6 +1971,9 @@ class ComposerViewModelTest {
         coEvery { createDraftForAction(userId, action) } returns it.right()
     }
 
+    // This is both used to mock the result of the "composer init" in the cases where we
+    // create a new draft (eg. Compose, Reply, ComposeTo...)
+    // and also as a hack to initialize the composer's state to an expected one to test
     private fun expectInitComposerWithNewEmptyDraftSucceeds(
         userId: UserId,
         result: () -> DraftFields = { DraftFieldsTestData.EmptyDraftWithPrimarySender }
@@ -2047,59 +2050,6 @@ class ComposerViewModelTest {
 
     private fun expectNetworkManagerIsDisconnected() {
         every { networkManagerMock.isConnectedToNetwork() } returns false
-    }
-
-    private fun expectedViewModelInitialState(
-        messageId: MessageId,
-        senderEmail: SenderEmail = SenderEmail(""),
-        subject: Subject = Subject(""),
-        draftBody: DraftBody = DraftBody(""),
-        quotedBody: QuotedHtmlContent? = null,
-        recipients: Triple<RecipientsTo, RecipientsCc, RecipientsBcc> = Triple(
-            RecipientsTo(emptyList()),
-            RecipientsCc(emptyList()),
-            RecipientsBcc(emptyList())
-        )
-    ) {
-        val expected = ComposerDraftState(
-            fields = ComposerFields(
-                messageId,
-                SenderUiModel(senderEmail.value),
-                recipients.first.value.map { RecipientUiModel.Valid(it.address) },
-                recipients.second.value.map { RecipientUiModel.Valid(it.address) },
-                recipients.third.value.map { RecipientUiModel.Valid(it.address) },
-                subject.value,
-                draftBody.value,
-                quotedBody
-            ),
-            attachments = AttachmentGroupUiModel(attachments = emptyList()),
-            premiumFeatureMessage = Effect.empty(),
-            recipientValidationError = Effect.empty(),
-            error = Effect.empty(),
-            isSubmittable = false,
-            senderAddresses = emptyList(),
-            changeBottomSheetVisibility = Effect.empty(),
-            closeComposer = Effect.empty(),
-            closeComposerWithDraftSaved = Effect.empty(),
-            isLoading = false,
-            closeComposerWithMessageSending = Effect.empty(),
-            closeComposerWithMessageSendingOffline = Effect.empty(),
-            confirmSendingWithoutSubject = Effect.empty(),
-            changeFocusToField = Effect.empty(),
-            attachmentsFileSizeExceeded = Effect.empty(),
-            attachmentsReEncryptionFailed = Effect.empty(),
-            warning = Effect.empty(),
-            replaceDraftBody = Effect.empty(),
-            isMessagePasswordSet = false,
-            messageExpiresIn = Duration.ZERO,
-            confirmSendExpiringMessage = Effect.empty(),
-            isDeviceContactsSuggestionsEnabled = false,
-            isDeviceContactsSuggestionsPromptEnabled = false,
-            openImagePicker = Effect.empty()
-        )
-
-        mockkObject(ComposerDraftState.Companion)
-        every { ComposerDraftState.initial(messageId) } returns expected
     }
 
     private fun expectedMessageId(messageId: () -> MessageId): MessageId = messageId().also {

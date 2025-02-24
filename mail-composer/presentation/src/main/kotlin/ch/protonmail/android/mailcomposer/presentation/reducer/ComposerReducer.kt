@@ -210,6 +210,7 @@ class ComposerReducer @Inject constructor(
                 sender = SenderUiModel(draftUiModel.draftFields.sender.value),
                 subject = draftUiModel.draftFields.subject.value,
                 body = draftUiModel.draftFields.body.value,
+                displayBody = draftUiModel.draftDisplayBody,
                 quotedBody = draftUiModel.quotedHtmlContent,
                 to = validToRecipients,
                 cc = validCcRecipients,

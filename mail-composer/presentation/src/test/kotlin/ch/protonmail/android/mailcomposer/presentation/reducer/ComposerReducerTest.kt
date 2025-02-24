@@ -47,6 +47,7 @@ import ch.protonmail.android.mailcomposer.presentation.model.ComposerFields
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerOperation
 import ch.protonmail.android.mailcomposer.presentation.model.ContactSuggestionUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.ContactSuggestionsField
+import ch.protonmail.android.mailcomposer.presentation.model.DraftDisplayBodyUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.DraftUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.FocusedFieldType
 import ch.protonmail.android.mailcomposer.presentation.model.RecipientUiModel
@@ -113,9 +114,10 @@ class ComposerReducerTest(
             null
         )
 
-        private val draftUiModel = DraftUiModel(draftFields, null)
+        private val draftDisplayBody = DraftDisplayBodyUiModel("<html>draft display body</html>")
+        private val draftUiModel = DraftUiModel(draftFields, null, draftDisplayBody)
 
-        private val draftUiModelWithoutRecipients = DraftUiModel(draftFieldsWithoutRecipients, null)
+        private val draftUiModelWithoutRecipients = DraftUiModel(draftFieldsWithoutRecipients, null, draftDisplayBody)
 
         private val EmptyToSubmittableToField = with("a@b.c") {
             TestTransition(
@@ -539,6 +541,7 @@ class ComposerReducerTest(
                 bcc = draftFieldsWithoutRecipients.recipientsBcc.value.map { Valid(it.address) },
                 subject = draftFieldsWithoutRecipients.subject,
                 draftBody = draftFieldsWithoutRecipients.body.value,
+                draftDisplayBodyUiModel = draftDisplayBody,
                 error = Effect.empty(),
                 isLoading = false
             )
@@ -563,6 +566,7 @@ class ComposerReducerTest(
                 bcc = draftFields.recipientsBcc.value.map { Valid(it.address) },
                 subject = draftFieldsWithoutRecipients.subject,
                 draftBody = draftFieldsWithoutRecipients.body.value,
+                draftDisplayBodyUiModel = draftDisplayBody,
                 error = Effect.empty()
             )
         )
@@ -586,6 +590,7 @@ class ComposerReducerTest(
                 bcc = draftFields.recipientsBcc.value.map { Valid(it.address) },
                 subject = draftFieldsWithoutRecipients.subject,
                 draftBody = draftFieldsWithoutRecipients.body.value,
+                draftDisplayBodyUiModel = draftDisplayBody,
                 warning = Effect.of(TextUiModel(R.string.composer_warning_local_data_shown))
             )
         )
@@ -604,6 +609,7 @@ class ComposerReducerTest(
                 bcc = draftFields.recipientsBcc.value.map { Valid(it.address) },
                 subject = draftFieldsWithoutRecipients.subject,
                 draftBody = draftFieldsWithoutRecipients.body.value,
+                draftDisplayBodyUiModel = draftDisplayBody,
                 warning = Effect.empty()
             )
         )
@@ -626,6 +632,7 @@ class ComposerReducerTest(
                 bcc = draftFieldsWithoutRecipients.recipientsBcc.value.map { Valid(it.address) },
                 subject = draftFieldsWithoutRecipients.subject,
                 draftBody = draftFieldsWithoutRecipients.body.value,
+                draftDisplayBodyUiModel = draftDisplayBody,
                 error = Effect.empty(),
                 isLoading = false,
                 senderChangedNotice = Effect.of(
@@ -961,6 +968,7 @@ class ComposerReducerTest(
             draftBody: String = "",
             subject: Subject = Subject(""),
             quotedHtmlBody: QuotedHtmlContent? = null,
+            draftDisplayBodyUiModel: DraftDisplayBodyUiModel = DraftDisplayBodyUiModel(""),
             recipientValidationError: Effect<TextUiModel> = Effect.empty(),
             error: Effect<TextUiModel> = Effect.empty(),
             closeComposerWithMessageSending: Effect<Unit> = Effect.empty(),
@@ -980,7 +988,8 @@ class ComposerReducerTest(
                 bcc = bcc,
                 subject = subject.value,
                 body = draftBody,
-                quotedBody = quotedHtmlBody
+                quotedBody = quotedHtmlBody,
+                displayBody = draftDisplayBodyUiModel
             ),
             attachments = AttachmentGroupUiModel(attachments = emptyList()),
             premiumFeatureMessage = Effect.empty(),
@@ -1020,6 +1029,7 @@ class ComposerReducerTest(
             senderAddresses: List<SenderUiModel> = emptyList(),
             changeSenderBottomSheetVisibility: Effect<Boolean> = Effect.empty(),
             draftBody: String = "",
+            draftDisplayBodyUiModel: DraftDisplayBodyUiModel = DraftDisplayBodyUiModel(""),
             subject: Subject = Subject(""),
             closeComposer: Effect<Unit> = Effect.empty(),
             closeComposerWithDraftSaved: Effect<Unit> = Effect.empty(),
@@ -1039,7 +1049,8 @@ class ComposerReducerTest(
                 bcc = bcc,
                 subject = subject.value,
                 body = draftBody,
-                quotedBody = null
+                quotedBody = null,
+                displayBody = draftDisplayBodyUiModel
             ),
             attachments = AttachmentGroupUiModel(attachments = emptyList()),
             premiumFeatureMessage = premiumFeatureMessage,
