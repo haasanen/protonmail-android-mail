@@ -101,8 +101,7 @@ class RustConversationDataSourceImplTest {
         rustDeleteConversations,
         rustMarkConversationsAsRead,
         rustMarkConversationsAsUnread,
-        executeWithUserSession,
-        testCoroutineScope
+        executeWithUserSession
     )
 
     @Test

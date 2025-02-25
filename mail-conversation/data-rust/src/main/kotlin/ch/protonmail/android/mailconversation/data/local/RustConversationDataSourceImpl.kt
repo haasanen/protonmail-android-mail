@@ -25,7 +25,6 @@ import ch.protonmail.android.mailcommon.datarust.mapper.LocalConversationId
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
 import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailconversation.data.ConversationRustCoroutineScope
 import ch.protonmail.android.mailconversation.data.usecase.GetRustAllConversationBottomBarActions
 import ch.protonmail.android.mailconversation.data.usecase.GetRustAvailableConversationActions
 import ch.protonmail.android.mailconversation.data.usecase.GetRustConversationLabelAsActions
@@ -37,9 +36,7 @@ import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailsession.data.usecase.ExecuteWithUserSession
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.launch
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.AllBottomBarMessageActions
@@ -64,8 +61,7 @@ class RustConversationDataSourceImpl @Inject constructor(
     private val rustDeleteConversations: RustDeleteConversations,
     private val rustMarkConversationsAsRead: RustMarkConversationsAsRead,
     private val rustMarkConversationsAsUnread: RustMarkConversationsAsUnread,
-    private val executeWithUserSession: ExecuteWithUserSession,
-    @ConversationRustCoroutineScope private val coroutineScope: CoroutineScope
+    private val executeWithUserSession: ExecuteWithUserSession
 ) : RustConversationDataSource {
 
     /**
@@ -252,7 +248,6 @@ class RustConversationDataSourceImpl @Inject constructor(
     ) {
         executeWithUserSession(userId, action)
             .onLeft { Timber.e("rust-conversation: Failed to perform $actionName due to $it") }
-            .onRight { executePendingActions(userId) }
     }
 
     private suspend fun executeMailboxAction(
@@ -274,19 +269,9 @@ class RustConversationDataSourceImpl @Inject constructor(
 
         return Either.catch {
             action(mailbox)
-            executePendingActions(userId)
         }.mapLeft {
             Timber.e("rust-conversation: $actionName failed in rust: $it")
             DataError.Local.Unknown
-        }
-    }
-
-    private fun executePendingActions(userId: UserId) {
-        coroutineScope.launch {
-            userSessionRepository.getUserSession(userId)?.let {
-                it.executePendingActions()
-                Timber.v("rust-conversation: executing pending actions...")
-            }
         }
     }
 }

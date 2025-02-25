@@ -28,7 +28,6 @@ class RustEventLoopRepositoryTest {
         // Given
         val userId = UserIdSample.Primary
         val mailSession = mockk<MailUserSessionWrapper>(relaxUnitFun = true) {
-            coEvery { this@mockk.executePendingActions() } returns Unit.right()
             coEvery { this@mockk.pollEvents() } returns Unit.right()
         }
         coEvery { userSessionRepository.getUserSession(userId) } returns mailSession
@@ -38,22 +37,5 @@ class RustEventLoopRepositoryTest {
 
         // Then
         coVerify { mailSession.pollEvents() }
-    }
-
-    @Test
-    fun `executes pending actions for the given user's session`() = runTest {
-        // Given
-        val userId = UserIdSample.Primary
-        val mailSession = mockk<MailUserSessionWrapper>(relaxUnitFun = true) {
-            coEvery { this@mockk.executePendingActions() } returns Unit.right()
-            coEvery { this@mockk.pollEvents() } returns Unit.right()
-        }
-        coEvery { userSessionRepository.getUserSession(userId) } returns mailSession
-
-        // When
-        eventLoopRepository.trigger(userId)
-
-        // Then
-        coVerify { mailSession.executePendingActions() }
     }
 }

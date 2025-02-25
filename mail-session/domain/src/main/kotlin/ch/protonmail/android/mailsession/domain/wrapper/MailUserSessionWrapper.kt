@@ -25,7 +25,6 @@ import ch.protonmail.android.mailcommon.datarust.mapper.LocalAttachmentId
 import ch.protonmail.android.mailcommon.datarust.mapper.toDataError
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import uniffi.proton_mail_uniffi.MailUserSession
-import uniffi.proton_mail_uniffi.MailUserSessionExecutePendingActionsResult
 import uniffi.proton_mail_uniffi.MailUserSessionForkResult
 import uniffi.proton_mail_uniffi.VoidEventResult
 
@@ -42,12 +41,6 @@ class MailUserSessionWrapper(private val userSession: MailUserSession) {
         is VoidEventResult.Error -> result.v1.toDataError().left()
         VoidEventResult.Ok -> Unit.right()
     }
-
-    suspend fun executePendingActions(): Either<DataError, Unit> =
-        when (val result = userSession.executePendingActions()) {
-            is MailUserSessionExecutePendingActionsResult.Error -> result.v1.toDataError().left()
-            is MailUserSessionExecutePendingActionsResult.Ok -> Unit.right()
-        }
 
     suspend fun imageForSender(address: String, bimi: String?) = userSession.imageForSender(
         address,
