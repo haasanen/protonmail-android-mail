@@ -110,8 +110,7 @@ internal sealed interface MailboxViewAction : MailboxOperation {
 
     data class MoveToDestinationSelected(
         val mailLabelId: MailLabelId
-    ) :
-        MailboxViewAction
+    ) : MailboxViewAction, AffectingBottomSheet
 
     object RequestMoreActionsBottomSheet : MailboxViewAction, AffectingBottomSheet
     object RequestManageAccountsBottomSheet : MailboxViewAction, AffectingBottomSheet
