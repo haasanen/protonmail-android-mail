@@ -44,6 +44,11 @@ include(":benchmark")
 include(":coverage")
 include(":detekt-rules")
 
+include(":mail-bugreport:dagger")
+include(":mail-bugreport:data")
+include(":mail-bugreport:domain")
+include(":mail-bugreport:presentation")
+
 include(":mail-common:dagger")
 include(":mail-common:data")
 include(":mail-common:data-rust")
