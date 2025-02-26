@@ -19,12 +19,17 @@
 package ch.protonmail.android
 
 import android.app.Application
+import androidx.lifecycle.ProcessLifecycleOwner
 import ch.protonmail.android.callbacks.AutoLockLifecycleCallbacks
 import ch.protonmail.android.callbacks.SecureActivityLifecycleCallbacks
 import ch.protonmail.android.initializer.MainInitializer
+import ch.protonmail.android.logging.LogsFileHandlerLifecycleObserver
+import ch.protonmail.android.mailbugreport.domain.LogsExportFeatureSetting
+import ch.protonmail.android.mailbugreport.domain.annotations.LogsExportFeatureSettingValue
 import ch.protonmail.android.mailcommon.domain.benchmark.BenchmarkTracer
 import dagger.hilt.android.HiltAndroidApp
 import javax.inject.Inject
+import javax.inject.Provider
 
 @HiltAndroidApp
 internal class App : Application() {
@@ -38,6 +43,10 @@ internal class App : Application() {
     @Inject
     lateinit var benchmarkTracer: BenchmarkTracer
 
+    @Inject
+    @LogsExportFeatureSettingValue
+    lateinit var logsExportFeatureSetting: Provider<LogsExportFeatureSetting>
+
     override fun onCreate() {
         super.onCreate()
 
@@ -47,6 +56,14 @@ internal class App : Application() {
         registerActivityLifecycleCallbacks(secureActivityLifecycleCallbacks)
         registerActivityLifecycleCallbacks(lockScreenLifecycleCallbacks)
 
+        addLogsFileHandlerObserver()
+
         benchmarkTracer.end()
+    }
+
+    private fun addLogsFileHandlerObserver() {
+        if (logsExportFeatureSetting.get().isEnabled) {
+            ProcessLifecycleOwner.get().lifecycle.addObserver(LogsFileHandlerLifecycleObserver(this))
+        }
     }
 }

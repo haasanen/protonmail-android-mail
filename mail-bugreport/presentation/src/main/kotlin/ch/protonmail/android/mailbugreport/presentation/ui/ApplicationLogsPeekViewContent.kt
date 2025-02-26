@@ -117,7 +117,7 @@ internal fun ApplicationLogsPeekViewContent(
                 ) {
                     // Load in chunks as the file contents could be huge and take a while to render.
                     items(state.uiModel.fileContents) { chunk ->
-                        Text(text = chunk, fontSize = 12.sp)
+                        Text(text = chunk, fontSize = 12.sp, style = ProtonTheme.typography.captionRegular)
                     }
                 }
             }

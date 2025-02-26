@@ -19,6 +19,8 @@
 package ch.protonmail.android.mailsession.data.initializer
 
 import android.content.Context
+import ch.protonmail.android.mailbugreport.domain.LogsFileHandler
+import ch.protonmail.android.mailbugreport.domain.annotations.RustLogsFileHandler
 import ch.protonmail.android.mailsession.data.keychain.OsKeyChainMock
 import ch.protonmail.android.mailsession.data.model.RustLibConfigParams
 import ch.protonmail.android.mailsession.data.repository.MailSessionRepository
@@ -37,6 +39,7 @@ import javax.inject.Inject
 class InitRustCommonLibrary @Inject constructor(
     @ApplicationContext private val context: Context,
     private val mailSessionRepository: MailSessionRepository,
+    @RustLogsFileHandler private val rustLogsFileHandler: LogsFileHandler,
     @BaseProtonApiUrl private val baseApiUrl: HttpUrl
 ) {
 
@@ -51,7 +54,7 @@ class InitRustCommonLibrary @Inject constructor(
             userDir = context.filesDir.absolutePath,
             mailCacheDir = context.cacheDir.absolutePath,
             mailCacheSize = CACHE_SIZE,
-            logDir = context.filesDir.absolutePath,
+            logDir = rustLogsFileHandler.getParentPath().absolutePath,
             logDebug = false,
             apiEnvConfig = ApiConfig(
                 appVersion = config.appVersion,
@@ -73,7 +76,6 @@ class InitRustCommonLibrary @Inject constructor(
                 mailSessionRepository.setMailSession(result.v1)
             }
         }
-
     }
 
     private fun HttpUrl.toApiEnv() = when (this.host.toCanonicalHost()) {

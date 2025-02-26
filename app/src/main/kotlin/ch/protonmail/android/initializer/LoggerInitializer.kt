@@ -21,9 +21,19 @@ package ch.protonmail.android.initializer
 import android.content.Context
 import androidx.startup.Initializer
 import ch.protonmail.android.BuildConfig
+import ch.protonmail.android.mailbugreport.data.FileLoggingTree
+import ch.protonmail.android.mailbugreport.domain.LogsExportFeatureSetting
+import ch.protonmail.android.mailbugreport.domain.LogsFileHandler
+import ch.protonmail.android.mailbugreport.domain.annotations.AppLogsFileHandler
+import ch.protonmail.android.mailbugreport.domain.annotations.LogsExportFeatureSettingValue
+import dagger.hilt.EntryPoint
+import dagger.hilt.InstallIn
+import dagger.hilt.android.EntryPointAccessors
+import dagger.hilt.components.SingletonComponent
 import me.proton.core.util.android.sentry.TimberLogger
 import me.proton.core.util.kotlin.CoreLogger
 import timber.log.Timber
+import javax.inject.Provider
 
 class LoggerInitializer : Initializer<Unit> {
 
@@ -34,8 +44,29 @@ class LoggerInitializer : Initializer<Unit> {
 
         // Forward Core Logs to Timber, using TimberLogger.
         CoreLogger.set(TimberLogger)
+
+        val accessors = EntryPointAccessors.fromApplication(
+            context.applicationContext,
+            LoggerInitializerEntryPoint::class.java
+        )
+
+        val isLoggingEnabled = accessors.logsExportFeatureSetting().get().isEnabled
+        if (isLoggingEnabled.not()) return
+
+        val logsFileHandler = accessors.logsFileHandlerProvider()
+        Timber.plant(FileLoggingTree(logsFileHandler))
     }
 
     override fun dependencies(): List<Class<out Initializer<*>>> = emptyList()
 
+    @EntryPoint
+    @InstallIn(SingletonComponent::class)
+    interface LoggerInitializerEntryPoint {
+
+        @AppLogsFileHandler
+        fun logsFileHandlerProvider(): LogsFileHandler
+
+        @LogsExportFeatureSettingValue
+        fun logsExportFeatureSetting(): Provider<LogsExportFeatureSetting>
+    }
 }
