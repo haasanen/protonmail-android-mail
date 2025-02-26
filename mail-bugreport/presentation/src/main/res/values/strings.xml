@@ -27,6 +27,8 @@
     <string name="application_events_view_logcat" translatable="false">View logcat</string>
 
     <string name="application_events_view_logcat_hint" translatable="false">Display a dump of the logcat events</string>
+    <string name="application_events_view_rust_events" translatable="false">View Rust events</string>
+    <string name="application_events_view_rust_events_hint" translatable="false">Display the proton-mail-uniffi logfile</string>
     <string name="application_events_view_events" translatable="false">View application events</string>
     <string name="application_events_view_events_hint" translatable="false">Display the latest application events</string>
 

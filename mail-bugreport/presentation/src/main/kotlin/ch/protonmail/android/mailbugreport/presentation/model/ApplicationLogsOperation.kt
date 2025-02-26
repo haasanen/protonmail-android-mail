@@ -31,7 +31,8 @@ sealed interface ApplicationLogsOperation {
 
         sealed interface View : ApplicationLogsAction {
             data object ViewLogcat : View
-            data object ViewEvents : View
+            data object ViewAppEvents : View
+            data object ViewRustEvents : View
         }
     }
 
@@ -43,7 +44,8 @@ sealed interface ApplicationLogsOperation {
 
         sealed interface View : ApplicationLogsEvent {
             data object LogcatReady : View
-            data object EventsReady : View
+            data object AppEventsReady : View
+            data object RustEventsReady : View
         }
     }
 }

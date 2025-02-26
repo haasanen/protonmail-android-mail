@@ -112,7 +112,7 @@ class LogsFileHandlerImpl @Inject constructor(
 
     companion object {
 
-        private const val LogsDirName = "logs"
+        private const val LogsDirName = "app_logs"
         private const val MaxFileSizeBytes = 2 * 1024 * 1024 // 2 MB
         private const val MaxLogFiles = 3
     }

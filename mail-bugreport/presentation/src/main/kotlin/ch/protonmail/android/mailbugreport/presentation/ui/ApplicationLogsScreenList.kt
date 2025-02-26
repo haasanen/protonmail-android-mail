@@ -50,9 +50,17 @@ internal fun ApplicationLogsScreenList(modifier: Modifier = Modifier, actions: A
         item { HorizontalDivider(color = ProtonTheme.colors.separatorNorm) }
         item {
             ProtonSettingsItem(
+                name = stringResource(R.string.application_events_view_rust_events),
+                hint = stringResource(R.string.application_events_view_rust_events_hint),
+                onClick = actions.onShowRustEvents
+            )
+        }
+        item { HorizontalDivider(color = ProtonTheme.colors.separatorNorm) }
+        item {
+            ProtonSettingsItem(
                 name = stringResource(R.string.application_events_view_events),
                 hint = stringResource(R.string.application_events_view_events_hint),
-                onClick = actions.onShowEvents
+                onClick = actions.onShowAppEvents
             )
         }
         item { HorizontalDivider(color = ProtonTheme.colors.separatorNorm) }
@@ -79,7 +87,8 @@ object ApplicationLogsScreenList {
     data class Actions(
         val onExport: () -> Unit,
         val onShare: () -> Unit,
-        val onShowEvents: () -> Unit,
+        val onShowAppEvents: () -> Unit,
+        val onShowRustEvents: () -> Unit,
         val onShowLogcat: () -> Unit
     ) {
 
@@ -88,7 +97,8 @@ object ApplicationLogsScreenList {
             val Empty = Actions(
                 onExport = {},
                 onShare = {},
-                onShowEvents = {},
+                onShowAppEvents = {},
+                onShowRustEvents = {},
                 onShowLogcat = {}
             )
         }

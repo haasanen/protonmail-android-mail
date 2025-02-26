@@ -27,29 +27,14 @@ import timber.log.Timber
 
 class FileLoggingTree(private val logsFileHandler: LogsFileHandler) : Timber.Tree() {
 
-    init {
-        initNewSession()
-    }
-
     override fun log(
         priority: Int,
         tag: String?,
         message: String,
         t: Throwable?
     ) {
-        if (tag in ExcludedTags) return
         val logMessage = createLogMessage(priority, tag, message)
         logsFileHandler.writeLog(logMessage)
-    }
-
-    private fun initNewSession() {
-        Timber.tag("FileLoggingTree").i(
-            """
-                |
-                |---------- New Session ----------
-                |
-            """.trimMargin()
-        )
     }
 
     private fun createLogMessage(
@@ -72,12 +57,5 @@ class FileLoggingTree(private val logsFileHandler: LogsFileHandler) : Timber.Tre
             Log.ASSERT -> 'A'
             else -> '?'
         }
-    }
-
-    private companion object {
-
-        val ExcludedTags = listOf(
-            "core.network"
-        )
     }
 }

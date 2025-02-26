@@ -19,10 +19,13 @@
 package ch.protonmail.android.mailbugreport
 
 import ch.protonmail.android.mailbugreport.data.LogsFileHandlerImpl
+import ch.protonmail.android.mailbugreport.data.RustLogsFileHandlerImpl
 import ch.protonmail.android.mailbugreport.data.provider.LogcatProviderImpl
 import ch.protonmail.android.mailbugreport.domain.LogsExportFeatureSetting
 import ch.protonmail.android.mailbugreport.domain.LogsFileHandler
+import ch.protonmail.android.mailbugreport.domain.annotations.AppLogsFileHandler
 import ch.protonmail.android.mailbugreport.domain.annotations.LogsExportFeatureSettingValue
+import ch.protonmail.android.mailbugreport.domain.annotations.RustLogsFileHandler
 import ch.protonmail.android.mailbugreport.domain.provider.LogcatProvider
 import dagger.Binds
 import dagger.Module
@@ -51,6 +54,12 @@ object MailReportModule {
 
         @Binds
         @Singleton
-        fun provideLogsFileHandler(impl: LogsFileHandlerImpl): LogsFileHandler
+        @AppLogsFileHandler
+        fun provideAppLogsFileHandler(impl: LogsFileHandlerImpl): LogsFileHandler
+
+        @Binds
+        @Singleton
+        @RustLogsFileHandler
+        fun provideRustLogsFileHandler(impl: RustLogsFileHandlerImpl): LogsFileHandler
     }
 }

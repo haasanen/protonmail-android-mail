@@ -26,7 +26,9 @@ import java.util.zip.ZipOutputStream
 import android.content.Context
 import ch.protonmail.android.mailbugreport.domain.LogsExportFeatureSetting
 import ch.protonmail.android.mailbugreport.domain.LogsFileHandler
+import ch.protonmail.android.mailbugreport.domain.annotations.AppLogsFileHandler
 import ch.protonmail.android.mailbugreport.domain.annotations.LogsExportFeatureSettingValue
+import ch.protonmail.android.mailbugreport.domain.annotations.RustLogsFileHandler
 import ch.protonmail.android.mailbugreport.domain.provider.LogcatProvider
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
@@ -36,7 +38,8 @@ import javax.inject.Inject
 class GetAggregatedEventsZipFile @Inject constructor(
     @ApplicationContext private val applicationContext: Context,
     private val logcatProvider: LogcatProvider,
-    private val logsFileHandler: LogsFileHandler,
+    @AppLogsFileHandler private val appLogsFileHandler: LogsFileHandler,
+    @RustLogsFileHandler private val rustLogsFileHandler: LogsFileHandler,
     @LogsExportFeatureSettingValue private val logsExportFeatureSetting: LogsExportFeatureSetting
 ) {
 
@@ -84,7 +87,8 @@ class GetAggregatedEventsZipFile @Inject constructor(
                 logcatProvider.getLogcatFile()
                 add(logcatProvider.getParentPath())
             }
-            add(logsFileHandler.getParentPath())
+            add(appLogsFileHandler.getParentPath())
+            add(rustLogsFileHandler.getParentPath())
         }
     }
 

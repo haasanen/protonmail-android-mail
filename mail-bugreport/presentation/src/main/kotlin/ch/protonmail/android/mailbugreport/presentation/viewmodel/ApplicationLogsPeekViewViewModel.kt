@@ -23,6 +23,8 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ch.protonmail.android.mailbugreport.domain.LogsFileHandler
+import ch.protonmail.android.mailbugreport.domain.annotations.AppLogsFileHandler
+import ch.protonmail.android.mailbugreport.domain.annotations.RustLogsFileHandler
 import ch.protonmail.android.mailbugreport.domain.provider.LogcatProvider
 import ch.protonmail.android.mailbugreport.presentation.model.ApplicationLogsFileUiModel
 import ch.protonmail.android.mailbugreport.presentation.model.ApplicationLogsPeekViewOperation
@@ -41,7 +43,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ApplicationLogsPeekViewViewModel @Inject constructor(
-    private val logsFileHandler: LogsFileHandler,
+    @AppLogsFileHandler private val logsFileHandler: LogsFileHandler,
+    @RustLogsFileHandler private val rustLogsFileHandler: LogsFileHandler,
     private val logcatProvider: LogcatProvider,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
@@ -65,11 +68,13 @@ class ApplicationLogsPeekViewViewModel @Inject constructor(
         emitNewStateFromEvent(ApplicationLogsPeekViewOperation.ViewEvent.Loading)
         openMode ?: return emitNewStateFromEvent(ApplicationLogsPeekViewOperation.ViewEvent.InvalidOpenMode)
 
-        val file = when (openMode) {
-            ApplicationLogsViewItemMode.Events -> logsFileHandler.getLastLogFile()
-            ApplicationLogsViewItemMode.Logcat -> logcatProvider.getLogcatFile().getOrNull()
+        val file = withContext(Dispatchers.IO) {
+            when (openMode) {
+                ApplicationLogsViewItemMode.AppEvents -> logsFileHandler.getLastLogFile()
+                ApplicationLogsViewItemMode.RustEvents -> rustLogsFileHandler.getLastLogFile()
+                ApplicationLogsViewItemMode.Logcat -> logcatProvider.getLogcatFile().getOrNull()
+            }?.takeIf { it.exists() }
         }
-            ?.takeIf { withContext(Dispatchers.IO) { it.exists() } }
             ?: return emitNewStateFromEvent(ApplicationLogsPeekViewOperation.ViewEvent.FileContentLoadError)
 
         emitNewStateFromEvent(ApplicationLogsPeekViewOperation.ViewEvent.FileContentLoaded(file))
@@ -98,6 +103,7 @@ class ApplicationLogsPeekViewViewModel @Inject constructor(
     }
 
     private companion object {
+
         const val ChunkLines = 200
     }
 }

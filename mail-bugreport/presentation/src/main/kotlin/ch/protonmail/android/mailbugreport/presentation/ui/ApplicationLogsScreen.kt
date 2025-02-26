@@ -79,11 +79,16 @@ fun ApplicationLogsScreen(
         onExport = { viewModel.submit(Export.ExportLogs) },
         onShare = { viewModel.submit(Export.ShareLogs) },
         onShowLogcat = { viewModel.submit(View.ViewLogcat) },
-        onShowEvents = { viewModel.submit(View.ViewEvents) }
+        onShowRustEvents = { viewModel.submit(View.ViewRustEvents) },
+        onShowAppEvents = { viewModel.submit(View.ViewAppEvents) }
     )
 
     ConsumableLaunchedEffect(state.showApplicationLogs) {
-        onViewItemClick(ApplicationLogsViewItemMode.Events)
+        onViewItemClick(ApplicationLogsViewItemMode.AppEvents)
+    }
+
+    ConsumableLaunchedEffect(state.showRustLogs) {
+        onViewItemClick(ApplicationLogsViewItemMode.RustEvents)
     }
 
     ConsumableLaunchedEffect(state.showLogcat) {

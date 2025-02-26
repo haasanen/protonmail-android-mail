@@ -16,17 +16,9 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailbugreport.presentation.model
+package ch.protonmail.android.mailbugreport.domain.annotations
 
-import java.io.File
-import ch.protonmail.android.mailcommon.presentation.Effect
-import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
+import javax.inject.Qualifier
 
-data class ApplicationLogsState(
-    val error: Effect<TextUiModel>,
-    val showApplicationLogs: Effect<Unit>,
-    val showRustLogs: Effect<Unit>,
-    val showLogcat: Effect<Unit>,
-    val share: Effect<File>,
-    val export: Effect<File>
-)
+@Qualifier
+annotation class AppLogsFileHandler

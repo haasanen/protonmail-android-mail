@@ -39,7 +39,7 @@ internal class LogsFileHandlerImplTest {
         Dispatchers.setMain(testDispatcher)
 
         cacheDir = tempFolder.newFolder()
-        logDir = File(cacheDir, "logs").apply { mkdirs() }
+        logDir = File(cacheDir, "app_logs").apply { mkdirs() }
 
         context = mockk {
             every { cacheDir } returns this@LogsFileHandlerImplTest.cacheDir
@@ -63,7 +63,7 @@ internal class LogsFileHandlerImplTest {
         val parentPath = logsFileHandler.getParentPath()
 
         // Then
-        assertEquals("logs", parentPath.name)
+        assertEquals("app_logs", parentPath.name)
         assertTrue(parentPath.exists())
         assertTrue(parentPath.isDirectory)
     }

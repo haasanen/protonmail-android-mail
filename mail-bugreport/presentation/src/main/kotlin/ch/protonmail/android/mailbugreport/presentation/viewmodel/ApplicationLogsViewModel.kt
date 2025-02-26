@@ -45,6 +45,7 @@ class ApplicationLogsViewModel @Inject constructor(
         ApplicationLogsState(
             error = Effect.empty(),
             showApplicationLogs = Effect.empty(),
+            showRustLogs = Effect.empty(),
             showLogcat = Effect.empty(),
             share = Effect.empty(),
             export = Effect.empty()
@@ -81,8 +82,11 @@ class ApplicationLogsViewModel @Inject constructor(
 
     private fun handleViewAction(action: ApplicationLogsOperation.ApplicationLogsAction.View) {
         when (action) {
-            ApplicationLogsOperation.ApplicationLogsAction.View.ViewEvents ->
-                emitNewStateFromEvent(ApplicationLogsOperation.ApplicationLogsEvent.View.EventsReady)
+            ApplicationLogsOperation.ApplicationLogsAction.View.ViewAppEvents ->
+                emitNewStateFromEvent(ApplicationLogsOperation.ApplicationLogsEvent.View.AppEventsReady)
+
+            ApplicationLogsOperation.ApplicationLogsAction.View.ViewRustEvents ->
+                emitNewStateFromEvent(ApplicationLogsOperation.ApplicationLogsEvent.View.RustEventsReady)
 
             ApplicationLogsOperation.ApplicationLogsAction.View.ViewLogcat ->
                 emitNewStateFromEvent(ApplicationLogsOperation.ApplicationLogsEvent.View.LogcatReady)
@@ -99,8 +103,12 @@ class ApplicationLogsViewModel @Inject constructor(
                 mutableState.update { mutableState.value.copy(export = Effect.of(event.file)) }
             }
 
-            ApplicationLogsOperation.ApplicationLogsEvent.View.EventsReady -> {
+            ApplicationLogsOperation.ApplicationLogsEvent.View.AppEventsReady -> {
                 mutableState.update { mutableState.value.copy(showApplicationLogs = Effect.of(Unit)) }
+            }
+
+            ApplicationLogsOperation.ApplicationLogsEvent.View.RustEventsReady -> {
+                mutableState.update { mutableState.value.copy(showRustLogs = Effect.of(Unit)) }
             }
 
             ApplicationLogsOperation.ApplicationLogsEvent.View.LogcatReady -> {

@@ -27,5 +27,8 @@ sealed interface ApplicationLogsViewItemMode {
     data object Logcat : ApplicationLogsViewItemMode
 
     @Serializable
-    data object Events : ApplicationLogsViewItemMode
+    data object AppEvents : ApplicationLogsViewItemMode
+
+    @Serializable
+    data object RustEvents : ApplicationLogsViewItemMode
 }
