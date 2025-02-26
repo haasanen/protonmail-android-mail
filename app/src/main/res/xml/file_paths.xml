@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <paths>
     <cache-path name="cache" path="." />
+    <cache-path name="logcat_files" path="logcat/" />
+    <cache-path name="app_log_files" path="app_logs/" />
+    <cache-path name="rust_log_files" path="rust_logs/" />
+    <cache-path name="zip_file" path="export_logs/" />
 </paths>

@@ -69,6 +69,7 @@ import ch.protonmail.android.mailonboarding.presentation.viewmodel.OnboardingSte
 import ch.protonmail.android.mailonboarding.presentation.viewmodel.OnboardingStepViewModel
 import ch.protonmail.android.mailsession.data.mapper.toUserId
 import ch.protonmail.android.mailsidebar.presentation.Sidebar
+import ch.protonmail.android.navigation.model.Destination
 import ch.protonmail.android.navigation.model.Destination.Dialog
 import ch.protonmail.android.navigation.model.Destination.Screen
 import ch.protonmail.android.navigation.model.HomeState
@@ -88,6 +89,7 @@ import ch.protonmail.android.navigation.route.addContacts
 import ch.protonmail.android.navigation.route.addConversationDetail
 import ch.protonmail.android.navigation.route.addDeepLinkHandler
 import ch.protonmail.android.navigation.route.addEditSwipeActionsSettings
+import ch.protonmail.android.navigation.route.addExportLogsSettings
 import ch.protonmail.android.navigation.route.addFolderForm
 import ch.protonmail.android.navigation.route.addFolderList
 import ch.protonmail.android.navigation.route.addLabelForm
@@ -344,7 +346,7 @@ fun Home(
                             navController,
                             launcherActions
                         ).copy(
-                            onReportBug = { showFeatureMissingSnackbar() },
+                            onReportBug = { navController.navigate(Destination.Screen.ApplicationLogs.route) },
                             onSubscription = { showFeatureMissingSnackbar() }
                         )
                     )
@@ -680,6 +682,7 @@ fun Home(
                         addSwipeActionsSettings(navController)
                         addThemeSettings(navController)
                         addNotificationsSettings(navController)
+                        addExportLogsSettings(navController)
                         addDeepLinkHandler(navController)
                     }
                 }
