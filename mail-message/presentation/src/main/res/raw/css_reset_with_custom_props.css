@@ -184,10 +184,14 @@ blockquote blockquote blockquote blockquote blockquote blockquote{
 [hidden]{
     display:none
 }
+div[role="textbox"]{
+  outline: none;
+}
+
 
 :root {
 	--background-norm: white;
 	--text-norm: #262a33;
 	padding: 1rem;
 }
- 
+
