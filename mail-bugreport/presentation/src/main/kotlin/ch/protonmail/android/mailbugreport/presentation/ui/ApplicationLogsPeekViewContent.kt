@@ -98,7 +98,7 @@ internal fun ApplicationLogsPeekViewContent(
                     }
                     IconButton(
                         onClick = {
-                            coroutineScope.launch { context.shareLogs(state.uiModel.rawFile) }
+                            coroutineScope.launch { context.shareLogs(state.uiModel.fileUri) }
                         }
                     ) {
                         Icon(Icons.Filled.Share, tint = ProtonTheme.colors.iconNorm, contentDescription = null)

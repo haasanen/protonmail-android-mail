@@ -18,7 +18,7 @@
 
 package ch.protonmail.android.mailbugreport.presentation.model
 
-import java.io.File
+import android.net.Uri
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 
@@ -27,6 +27,6 @@ data class ApplicationLogsState(
     val showApplicationLogs: Effect<Unit>,
     val showRustLogs: Effect<Unit>,
     val showLogcat: Effect<Unit>,
-    val share: Effect<File>,
-    val export: Effect<File>
+    val share: Effect<Uri>,
+    val export: Effect<Uri>
 )

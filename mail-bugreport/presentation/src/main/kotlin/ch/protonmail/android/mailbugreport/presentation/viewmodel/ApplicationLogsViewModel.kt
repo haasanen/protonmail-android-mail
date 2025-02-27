@@ -18,6 +18,9 @@
 
 package ch.protonmail.android.mailbugreport.presentation.viewmodel
 
+import android.content.Context
+import android.net.Uri
+import androidx.core.content.FileProvider
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ch.protonmail.android.mailbugreport.domain.usecase.GetAggregatedEventsZipFile
@@ -27,6 +30,7 @@ import ch.protonmail.android.mailbugreport.presentation.model.ApplicationLogsSta
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -38,6 +42,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ApplicationLogsViewModel @Inject constructor(
+    @ApplicationContext private val context: Context,
     private val getAggregatedEventsZipFile: GetAggregatedEventsZipFile
 ) : ViewModel() {
 
@@ -57,27 +62,44 @@ class ApplicationLogsViewModel @Inject constructor(
     fun submit(action: ApplicationLogsOperation.ApplicationLogsAction) {
         viewModelScope.launch {
             when (action) {
-                is ApplicationLogsOperation.ApplicationLogsAction.Export -> handleExportAction(action)
+                is ApplicationLogsOperation.ApplicationLogsAction.Export.ExportLogs -> exportToUri(action.uri)
+                is ApplicationLogsOperation.ApplicationLogsAction.Export.ShareLogs -> handleShare()
                 is ApplicationLogsOperation.ApplicationLogsAction.View -> handleViewAction(action)
             }
         }
     }
 
-    private suspend fun handleExportAction(action: ApplicationLogsOperation.ApplicationLogsAction.Export) {
-        val zipFile = withContext(Dispatchers.IO) { getAggregatedEventsZipFile() }.getOrElse {
-            mutableState.value = mutableState.value.copy(
-                error = Effect.of(TextUiModel.TextRes(R.string.application_events_export_error))
-            )
-            return
+    private suspend fun handleShare() {
+        val zipFileResult = withContext(Dispatchers.IO) {
+            getAggregatedEventsZipFile()
+                .mapCatching { zipFile ->
+                    FileProvider.getUriForFile(context, "${context.packageName}.provider", zipFile)
+                }
         }
 
-        when (action) {
-            ApplicationLogsOperation.ApplicationLogsAction.Export.ExportLogs ->
-                emitNewStateFromEvent(ApplicationLogsOperation.ApplicationLogsEvent.Export.ExportReady(zipFile))
+        zipFileResult.fold(
+            onSuccess = { uri ->
+                emitNewStateFromEvent(
+                    ApplicationLogsOperation.ApplicationLogsEvent.Export.ShareReady(uri)
+                )
+            },
+            onFailure = {
+                emitNewStateFromEvent(ApplicationLogsOperation.ApplicationLogsEvent.Export.ExportError)
+            }
+        )
+    }
 
-            ApplicationLogsOperation.ApplicationLogsAction.Export.ShareLogs ->
-                emitNewStateFromEvent(ApplicationLogsOperation.ApplicationLogsEvent.Export.ShareReady(zipFile))
+    private suspend fun exportToUri(uri: Uri) {
+        val success = withContext(Dispatchers.IO) {
+            runCatching {
+                val zipFile = getAggregatedEventsZipFile().getOrThrow()
+                context.contentResolver.openOutputStream(uri)?.use { outputStream ->
+                    zipFile.inputStream().use { inputStream -> inputStream.copyTo(outputStream) }
+                }
+            }.isSuccess
         }
+
+        if (!success) emitNewStateFromEvent(ApplicationLogsOperation.ApplicationLogsEvent.Export.ExportError)
     }
 
     private fun handleViewAction(action: ApplicationLogsOperation.ApplicationLogsAction.View) {
@@ -96,11 +118,7 @@ class ApplicationLogsViewModel @Inject constructor(
     private fun emitNewStateFromEvent(event: ApplicationLogsOperation.ApplicationLogsEvent) {
         when (event) {
             is ApplicationLogsOperation.ApplicationLogsEvent.Export.ShareReady -> {
-                mutableState.update { mutableState.value.copy(share = Effect.of(event.file)) }
-            }
-
-            is ApplicationLogsOperation.ApplicationLogsEvent.Export.ExportReady -> {
-                mutableState.update { mutableState.value.copy(export = Effect.of(event.file)) }
+                mutableState.update { mutableState.value.copy(share = Effect.of(event.uri)) }
             }
 
             ApplicationLogsOperation.ApplicationLogsEvent.View.AppEventsReady -> {
@@ -113,6 +131,14 @@ class ApplicationLogsViewModel @Inject constructor(
 
             ApplicationLogsOperation.ApplicationLogsEvent.View.LogcatReady -> {
                 mutableState.update { mutableState.value.copy(showLogcat = Effect.of(Unit)) }
+            }
+
+            ApplicationLogsOperation.ApplicationLogsEvent.Export.ExportError -> {
+                mutableState.update {
+                    mutableState.value.copy(
+                        error = Effect.of(TextUiModel.TextRes(R.string.application_events_export_error))
+                    )
+                }
             }
         }
     }

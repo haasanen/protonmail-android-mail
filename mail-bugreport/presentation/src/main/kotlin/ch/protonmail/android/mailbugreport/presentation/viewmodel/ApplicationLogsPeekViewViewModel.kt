@@ -19,6 +19,8 @@
 package ch.protonmail.android.mailbugreport.presentation.viewmodel
 
 import java.io.File
+import android.content.Context
+import androidx.core.content.FileProvider
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -32,6 +34,7 @@ import ch.protonmail.android.mailbugreport.presentation.model.ApplicationLogsPee
 import ch.protonmail.android.mailbugreport.presentation.model.ApplicationLogsViewItemMode
 import ch.protonmail.android.mailbugreport.presentation.ui.ApplicationLogsPeekView
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -43,6 +46,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ApplicationLogsPeekViewViewModel @Inject constructor(
+    @ApplicationContext private val context: Context,
     @AppLogsFileHandler private val logsFileHandler: LogsFileHandler,
     @RustLogsFileHandler private val rustLogsFileHandler: LogsFileHandler,
     private val logcatProvider: LogcatProvider,
@@ -98,8 +102,9 @@ class ApplicationLogsPeekViewViewModel @Inject constructor(
     }
 
     private suspend fun File.toUiModel() = withContext(Dispatchers.IO) {
+        val fileUri = FileProvider.getUriForFile(context, "${context.packageName}.provider", this@toUiModel)
         val chunkedContents = readLines().chunked(ChunkLines).map { it.joinToString(separator = "\n") }
-        ApplicationLogsFileUiModel(this@toUiModel, name, chunkedContents)
+        ApplicationLogsFileUiModel(fileUri, name, chunkedContents)
     }
 
     private companion object {

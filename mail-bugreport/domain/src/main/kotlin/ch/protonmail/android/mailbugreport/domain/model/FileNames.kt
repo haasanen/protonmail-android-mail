@@ -16,14 +16,9 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailbugreport.presentation.model
+package ch.protonmail.android.mailbugreport.domain.model
 
-import android.net.Uri
-import androidx.compose.runtime.Stable
+object FileNames {
 
-@Stable
-data class ApplicationLogsFileUiModel(
-    val fileUri: Uri,
-    val fileName: String,
-    val fileContents: List<String>
-)
+    const val ZipFile = "protonmail_events.zip"
+}

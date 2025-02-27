@@ -18,26 +18,14 @@
 
 package ch.protonmail.android.mailbugreport.presentation.utils
 
-import java.io.File
 import android.content.ClipData
 import android.content.Context
 import android.content.Intent
-import androidx.core.content.FileProvider
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import android.net.Uri
 
 internal object ApplicationLogsUtils {
-    private const val FileProviderSuffix = ".provider"
 
-    suspend fun Context.shareLogs(file: File) {
-        val fileUri = withContext(Dispatchers.IO) {
-            FileProvider.getUriForFile(
-                this@shareLogs,
-                "$packageName$FileProviderSuffix",
-                file
-            )
-        }
-
+    fun Context.shareLogs(fileUri: Uri) {
         val shareIntent = Intent(Intent.ACTION_SEND).apply {
             type = "application/zip"
             clipData = ClipData.newRawUri("", fileUri)

@@ -18,23 +18,19 @@
 
 package ch.protonmail.android.mailbugreport.presentation.ui
 
-import java.io.File
-import java.io.IOException
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ch.protonmail.android.design.compose.component.ProtonSettingsTopBar
+import ch.protonmail.android.mailbugreport.domain.model.FileNames
 import ch.protonmail.android.mailbugreport.presentation.R
 import ch.protonmail.android.mailbugreport.presentation.model.ApplicationLogsOperation.ApplicationLogsAction.Export
 import ch.protonmail.android.mailbugreport.presentation.model.ApplicationLogsOperation.ApplicationLogsAction.View
@@ -44,7 +40,6 @@ import ch.protonmail.android.mailbugreport.presentation.viewmodel.ApplicationLog
 import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
 import ch.protonmail.android.mailcommon.presentation.ConsumableTextEffect
 import me.proton.core.presentation.utils.showToast
-import timber.log.Timber
 
 @Composable
 fun ApplicationLogsScreen(
@@ -55,26 +50,15 @@ fun ApplicationLogsScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val context = LocalContext.current
-    var file by remember { mutableStateOf(File("")) }
 
     val fileSaveLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.CreateDocument("application/zip")
     ) { uri ->
-        uri?.let {
-            try {
-                context.contentResolver.openOutputStream(uri)?.use { outputStream ->
-                    file.inputStream().use { inputStream ->
-                        inputStream.copyTo(outputStream)
-                    }
-                }
-            } catch (e: IOException) {
-                Timber.e("FileSave", "Error copying file", e)
-            }
-        }
+        uri?.let { viewModel.submit(Export.ExportLogs(uri)) }
     }
 
     val actions = ApplicationLogsScreenList.Actions(
-        onExport = { viewModel.submit(Export.ExportLogs) },
+        onExport = { fileSaveLauncher.launch(FileNames.ZipFile) },
         onShare = { viewModel.submit(Export.ShareLogs) },
         onShowLogcat = { viewModel.submit(View.ViewLogcat) },
         onShowRustEvents = { viewModel.submit(View.ViewRustEvents) },
@@ -95,11 +79,6 @@ fun ApplicationLogsScreen(
 
     ConsumableLaunchedEffect(state.share) {
         context.shareLogs(it)
-    }
-
-    ConsumableLaunchedEffect(state.export) {
-        file = it
-        fileSaveLauncher.launch(it.name)
     }
 
     ConsumableTextEffect(state.error) { message ->

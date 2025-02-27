@@ -18,7 +18,7 @@
 
 package ch.protonmail.android.mailbugreport.presentation.model
 
-import java.io.File
+import android.net.Uri
 
 sealed interface ApplicationLogsOperation {
 
@@ -26,7 +26,7 @@ sealed interface ApplicationLogsOperation {
 
         sealed interface Export : ApplicationLogsAction {
             data object ShareLogs : Export
-            data object ExportLogs : Export
+            data class ExportLogs(val uri: Uri) : Export
         }
 
         sealed interface View : ApplicationLogsAction {
@@ -38,8 +38,8 @@ sealed interface ApplicationLogsOperation {
 
     sealed interface ApplicationLogsEvent : ApplicationLogsOperation {
         sealed interface Export : ApplicationLogsEvent {
-            data class ShareReady(val file: File) : Export
-            data class ExportReady(val file: File) : Export
+            data class ShareReady(val uri: Uri) : Export
+            data object ExportError : Export
         }
 
         sealed interface View : ApplicationLogsEvent {
