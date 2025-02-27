@@ -23,10 +23,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
 import ch.protonmail.android.mailbugreport.presentation.model.ApplicationLogsPeekViewOperation
 import ch.protonmail.android.mailbugreport.presentation.model.ApplicationLogsPeekViewState
 import ch.protonmail.android.mailbugreport.presentation.viewmodel.ApplicationLogsPeekViewViewModel
-import me.proton.core.compose.component.ProtonCenteredProgress
 
 @Composable
 fun ApplicationLogsPeekView(onBack: () -> Unit) {

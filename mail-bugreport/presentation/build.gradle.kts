@@ -58,5 +58,8 @@ dependencies {
     implementation(project(":mail-bugreport:domain"))
     implementation(project(":mail-common:presentation"))
 
+    implementation(project(":design-system"))
+    implementation(project(":presentation-compose"))
+
     testImplementation(libs.bundles.test)
 }

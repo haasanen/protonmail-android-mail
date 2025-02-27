@@ -29,8 +29,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -40,14 +38,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.sp
+import ch.protonmail.android.design.compose.component.appbar.ProtonTopAppBar
+import ch.protonmail.android.design.compose.theme.ProtonDimens
+import ch.protonmail.android.design.compose.theme.ProtonTheme
+import ch.protonmail.android.design.compose.theme.bodySmallNorm
+import ch.protonmail.android.mailbugreport.presentation.R
 import ch.protonmail.android.mailbugreport.presentation.model.ApplicationLogsPeekViewState
 import ch.protonmail.android.mailbugreport.presentation.utils.ApplicationLogsUtils.shareLogs
 import kotlinx.coroutines.launch
-import me.proton.core.compose.component.appbar.ProtonTopAppBar
-import me.proton.core.compose.theme.ProtonDimens
-import me.proton.core.compose.theme.ProtonTheme
 
 @Composable
 internal fun ApplicationLogsPeekViewContent(
@@ -72,6 +72,7 @@ internal fun ApplicationLogsPeekViewContent(
                             coroutineScope.launch { lazyListState.animateScrollToItem(0) }
                         },
                         text = state.uiModel.fileName,
+                        style = ProtonTheme.typography.titleSmall,
                         overflow = TextOverflow.Ellipsis,
                         color = ProtonTheme.colors.textNorm
                     )
@@ -79,7 +80,7 @@ internal fun ApplicationLogsPeekViewContent(
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
                         Icon(
-                            Icons.AutoMirrored.Filled.ArrowBack,
+                            painter = painterResource(id = R.drawable.ic_arrow_back),
                             tint = ProtonTheme.colors.iconNorm,
                             contentDescription = null
                         )
@@ -90,7 +91,7 @@ internal fun ApplicationLogsPeekViewContent(
                         onClick = { coroutineScope.launch { lazyListState.animateScrollToItem(contents.size) } }
                     ) {
                         Icon(
-                            Icons.Filled.KeyboardArrowDown,
+                            painter = painterResource(id = R.drawable.ic_proton_arrow_down),
                             tint = ProtonTheme.colors.iconNorm,
                             contentDescription = null
                         )
@@ -112,12 +113,12 @@ internal fun ApplicationLogsPeekViewContent(
                     state = lazyListState,
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(ProtonDimens.ExtraSmallSpacing)
+                        .padding(ProtonDimens.Spacing.Small)
                         .animateContentSize()
                 ) {
                     // Load in chunks as the file contents could be huge and take a while to render.
                     items(state.uiModel.fileContents) { chunk ->
-                        Text(text = chunk, fontSize = 12.sp, style = ProtonTheme.typography.captionRegular)
+                        Text(text = chunk, style = ProtonTheme.typography.bodySmallNorm)
                     }
                 }
             }

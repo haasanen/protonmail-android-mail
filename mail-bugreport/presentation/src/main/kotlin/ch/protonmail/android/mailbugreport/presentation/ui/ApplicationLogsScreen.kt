@@ -23,8 +23,7 @@ import java.io.IOException
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Scaffold
-import androidx.compose.material.rememberScaffoldState
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -35,6 +34,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import ch.protonmail.android.design.compose.component.ProtonSettingsTopBar
 import ch.protonmail.android.mailbugreport.presentation.R
 import ch.protonmail.android.mailbugreport.presentation.model.ApplicationLogsOperation.ApplicationLogsAction.Export
 import ch.protonmail.android.mailbugreport.presentation.model.ApplicationLogsOperation.ApplicationLogsAction.View
@@ -43,7 +43,6 @@ import ch.protonmail.android.mailbugreport.presentation.utils.ApplicationLogsUti
 import ch.protonmail.android.mailbugreport.presentation.viewmodel.ApplicationLogsViewModel
 import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
 import ch.protonmail.android.mailcommon.presentation.ConsumableTextEffect
-import me.proton.core.compose.component.ProtonSettingsTopBar
 import me.proton.core.presentation.utils.showToast
 import timber.log.Timber
 
@@ -54,7 +53,6 @@ fun ApplicationLogsScreen(
     onViewItemClick: (ApplicationLogsViewItemMode) -> Unit,
     viewModel: ApplicationLogsViewModel = hiltViewModel()
 ) {
-    val scaffoldState = rememberScaffoldState()
     val state by viewModel.state.collectAsStateWithLifecycle()
     val context = LocalContext.current
     var file by remember { mutableStateOf(File("")) }
@@ -110,7 +108,6 @@ fun ApplicationLogsScreen(
 
     Scaffold(
         modifier = modifier,
-        scaffoldState = scaffoldState,
         topBar = {
             ProtonSettingsTopBar(
                 title = stringResource(R.string.application_events_title),
