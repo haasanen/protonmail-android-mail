@@ -25,11 +25,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import ch.protonmail.android.design.compose.component.ProtonSettingsHeader
+import ch.protonmail.android.design.compose.component.ProtonSettingsItem
+import ch.protonmail.android.design.compose.theme.ProtonDimens
+import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.mailbugreport.presentation.R
-import me.proton.core.compose.component.ProtonSettingsHeader
-import me.proton.core.compose.component.ProtonSettingsItem
-import me.proton.core.compose.theme.ProtonDimens
-import me.proton.core.compose.theme.ProtonTheme
 
 @Composable
 internal fun ApplicationLogsScreenList(modifier: Modifier = Modifier, actions: ApplicationLogsScreenList.Actions) {
@@ -37,7 +37,7 @@ internal fun ApplicationLogsScreenList(modifier: Modifier = Modifier, actions: A
         item {
             ProtonSettingsHeader(
                 title = stringResource(R.string.application_events_header_view),
-                modifier = Modifier.padding(bottom = ProtonDimens.SmallSpacing)
+                modifier = Modifier.padding(bottom = ProtonDimens.Spacing.Small)
             )
         }
         item {
@@ -65,7 +65,12 @@ internal fun ApplicationLogsScreenList(modifier: Modifier = Modifier, actions: A
         }
         item { HorizontalDivider(color = ProtonTheme.colors.separatorNorm) }
 
-        item { ProtonSettingsHeader(title = "Export", modifier = Modifier.padding(bottom = ProtonDimens.SmallSpacing)) }
+        item {
+            ProtonSettingsHeader(
+                title = stringResource(R.string.application_events_header_export),
+                modifier = Modifier.padding(bottom = ProtonDimens.Spacing.Small)
+            )
+        }
         item {
             ProtonSettingsItem(
                 name = stringResource(R.string.application_events_share),
