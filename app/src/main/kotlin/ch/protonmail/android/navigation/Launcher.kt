@@ -20,10 +20,10 @@ package ch.protonmail.android.navigation
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ch.protonmail.android.MainActivity
 import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
 import ch.protonmail.android.navigation.model.LauncherState
@@ -31,7 +31,7 @@ import me.proton.core.domain.entity.UserId
 
 @Composable
 fun Launcher(activityActions: MainActivity.Actions, viewModel: LauncherViewModel = hiltViewModel()) {
-    val state by viewModel.state.collectAsState(LauncherState.Processing)
+    val state by viewModel.state.collectAsStateWithLifecycle(LauncherState.Processing)
 
     when (state) {
         LauncherState.AccountNeeded -> viewModel.submit(LauncherViewModel.Action.AddAccount)
