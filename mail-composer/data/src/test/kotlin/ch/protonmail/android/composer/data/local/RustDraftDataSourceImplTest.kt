@@ -2,16 +2,22 @@ package ch.protonmail.android.composer.data.local
 
 import arrow.core.left
 import arrow.core.right
+import ch.protonmail.android.composer.data.local.RustDraftDataSourceImpl.Companion.InitialDelayForSendingStatusWorker
 import ch.protonmail.android.composer.data.mapper.toSingleRecipientEntry
 import ch.protonmail.android.composer.data.usecase.CreateRustDraft
 import ch.protonmail.android.composer.data.usecase.OpenRustDraft
+import ch.protonmail.android.composer.data.usecase.RustDraftUndoSend
 import ch.protonmail.android.composer.data.wrapper.ComposerRecipientListWrapper
 import ch.protonmail.android.composer.data.wrapper.DraftWrapper
+import ch.protonmail.android.mailcommon.data.worker.Enqueuer
+import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageId
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.Subject
+import ch.protonmail.android.mailcomposer.domain.worker.SendingStatusWorker
 import ch.protonmail.android.mailmessage.data.mapper.toLocalMessageId
+import ch.protonmail.android.mailmessage.data.mapper.toMessageId
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
 import ch.protonmail.android.mailmessage.domain.sample.RecipientSample
@@ -19,10 +25,13 @@ import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
 import ch.protonmail.android.testdata.composer.LocalComposerRecipientTestData
 import ch.protonmail.android.testdata.composer.LocalDraftTestData
+import ch.protonmail.android.testdata.message.rust.LocalMessageIdSample
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import junit.framework.TestCase.assertNull
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import uniffi.proton_mail_uniffi.DraftCreateMode
 import uniffi.proton_mail_uniffi.DraftSaveSendError
@@ -38,11 +47,15 @@ class RustDraftDataSourceImplTest {
     private val openRustDraft = mockk<OpenRustDraft>()
 
     private val mockUserSession = mockk<MailUserSessionWrapper>()
+    private val enqueuer = mockk<Enqueuer>()
+    private val rustDraftUndoSend = mockk<RustDraftUndoSend>()
 
     private val dataSource = RustDraftDataSourceImpl(
         userSessionRepository,
         createRustDraft,
-        openRustDraft
+        openRustDraft,
+        rustDraftUndoSend,
+        enqueuer
     )
 
     @Test
@@ -511,7 +524,9 @@ class RustDraftDataSourceImplTest {
         body: String = "",
         toRecipientsWrapper: ComposerRecipientListWrapper = mockk(),
         ccRecipientsWrapper: ComposerRecipientListWrapper = mockk(),
-        bccRecipientsWrapper: ComposerRecipientListWrapper = mockk()
+        bccRecipientsWrapper: ComposerRecipientListWrapper = mockk(),
+        messageId: LocalMessageId = LocalMessageIdSample.AugWeatherForecast,
+        sendResult: VoidDraftSaveSendResult = VoidDraftSaveSendResult.Ok
     ) = mockk<DraftWrapper> {
         every { subject() } returns subject
         every { sender() } returns sender
@@ -519,5 +534,75 @@ class RustDraftDataSourceImplTest {
         every { recipientsTo() } returns toRecipientsWrapper
         every { recipientsCc() } returns ccRecipientsWrapper
         every { recipientsBcc() } returns bccRecipientsWrapper
+        coEvery { send() } returns sendResult
+        coEvery { messageId() } returns messageId
     }
+
+    @Test
+    fun `returns success when send draft succeeds`() = runTest {
+        // Given
+        val userId = UserIdSample.Primary
+        val messageId = LocalMessageIdSample.AugWeatherForecast
+        val expectedDraftWrapper = expectDraftWrapperReturns(
+            messageId = messageId
+        )
+        dataSource.rustDraftWrapper = expectedDraftWrapper
+        coEvery { userSessionRepository.observePrimaryUserId() } returns flowOf(userId)
+        coEvery {
+            enqueuer.enqueueUniqueWork<SendingStatusWorker>(
+                userId = userId,
+                workerId = SendingStatusWorker.id(messageId.toMessageId()),
+                params = SendingStatusWorker.params(userId, messageId.toMessageId()),
+                backoffCriteria = Enqueuer.BackoffCriteria.DefaultLinear,
+                initialDelay = InitialDelayForSendingStatusWorker
+            )
+        } returns Unit
+
+        // When
+        val actual = dataSource.send()
+
+        // Then
+        assertEquals(Unit.right(), actual)
+        coVerify {
+            enqueuer.enqueueUniqueWork<SendingStatusWorker>(
+                userId = userId,
+                workerId = SendingStatusWorker.id(messageId.toMessageId()),
+                params = SendingStatusWorker.params(userId, messageId.toMessageId()),
+                backoffCriteria = Enqueuer.BackoffCriteria.DefaultLinear,
+                initialDelay = InitialDelayForSendingStatusWorker
+            )
+        }
+    }
+
+    @Test
+    fun `returns error when send draft fails`() = runTest {
+        // Given
+        val userId = UserIdSample.Primary
+        val messageId = LocalMessageIdSample.AugWeatherForecast
+        val expectedError = DataError.Local.SaveDraftError.Unknown
+
+        val expectedDraftWrapper = expectDraftWrapperReturns(
+            messageId = messageId,
+            sendResult = VoidDraftSaveSendResult.Error(
+                DraftSaveSendError.Reason(
+                    DraftSaveSendErrorReason.MessageIsNotADraft
+                )
+            )
+        )
+        dataSource.rustDraftWrapper = expectedDraftWrapper
+
+        coEvery { userSessionRepository.observePrimaryUserId() } returns flowOf(userId)
+
+        // When
+        val actual = dataSource.send()
+
+        // Then
+        assertEquals(expectedError.left(), actual)
+        coVerify(exactly = 0) {
+            enqueuer.enqueueUniqueWork<SendingStatusWorker>(
+                any(), any(), any(), any(), any()
+            )
+        }
+    }
+
 }

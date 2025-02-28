@@ -326,4 +326,30 @@ class DraftRepositoryImplTest {
         // Then
         assertEquals(expected.left(), actual)
     }
+
+    @Test
+    fun `returns success when send draft succeeds`() = runTest {
+        // Given
+        coEvery { draftDataSource.send() } returns Unit.right()
+
+        // When
+        val actual = draftRepository.send()
+
+        // Then
+        assertEquals(Unit.right(), actual)
+    }
+
+    @Test
+    fun `returns error when send draft fails`() = runTest {
+        // Given
+        val expected = DataError.Local.Unknown
+        coEvery { draftDataSource.send() } returns expected.left()
+
+        // When
+        val actual = draftRepository.send()
+
+        // Then
+        assertEquals(expected.left(), actual)
+    }
+
 }

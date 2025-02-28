@@ -18,18 +18,35 @@
 
 package ch.protonmail.android.mailcomposer.domain.usecase
 
+import arrow.core.right
+import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.mailcomposer.domain.repository.DraftRepository
 import ch.protonmail.android.mailsession.domain.repository.EventLoopRepository
-import me.proton.core.domain.entity.UserId
-import javax.inject.Inject
+import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.mockk
+import kotlinx.coroutines.test.runTest
+import org.junit.Test
 
-class SendMessage @Inject constructor(
-    private val draftRepository: DraftRepository,
-    private val eventLoopRepository: EventLoopRepository
-) {
+class SendMessageTest {
 
-    suspend operator fun invoke(userId: UserId) {
-        draftRepository.send()
-        eventLoopRepository.trigger(userId)
+    private val draftRepository = mockk<DraftRepository>(relaxed = true)
+    private val eventLoopRepository = mockk<EventLoopRepository>(relaxed = true)
+    private val sendMessage = SendMessage(draftRepository, eventLoopRepository)
+
+    private val userId = UserIdSample.Primary
+
+    @Test
+    fun `send message should call draftRepository send and eventLoopRepository trigger`() = runTest {
+        // Given
+        coEvery { draftRepository.send() } returns Unit.right()
+        coEvery { eventLoopRepository.trigger(userId) } returns Unit
+
+        // When
+        sendMessage(userId)
+
+        // Then
+        coVerify(exactly = 1) { draftRepository.send() }
+        coVerify(exactly = 1) { eventLoopRepository.trigger(userId) }
     }
 }

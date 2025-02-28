@@ -148,6 +148,16 @@ class RustDraftDataSourceImpl @Inject constructor(
         // RecipientEntity will probably be used also in LocalDraft to follow (to convey groups + Validation info to UI)
         flowOf(emptyList())
 
+
+    override suspend fun send(): Either<DataError, Unit> = withValidRustDraftWrapper {
+        Timber.d("rust-draft: Sending draft...")
+        return@withValidRustDraftWrapper when (val result = it.send()) {
+            is VoidDraftSaveSendResult.Error -> result.v1.toDataError().left()
+            VoidDraftSaveSendResult.Ok -> {
+                Unit.right()
+            }
+        }
+    }
     private suspend fun withValidRustDraftWrapper(
         closure: suspend (DraftWrapper) -> Either<DataError, Unit>
     ): Either<DataError, Unit> {

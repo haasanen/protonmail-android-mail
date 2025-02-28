@@ -65,4 +65,7 @@ class DraftRepositoryImpl @Inject constructor(
 
     override suspend fun removeBccRecipient(recipient: Recipient): Either<DataError, Unit> =
         draftDataSource.removeBccRecipient(recipient)
+
+    override suspend fun send(): Either<DataError, Unit> = draftDataSource.send()
+
 }

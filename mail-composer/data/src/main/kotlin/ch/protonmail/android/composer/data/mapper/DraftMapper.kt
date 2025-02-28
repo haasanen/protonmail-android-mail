@@ -21,9 +21,11 @@ package ch.protonmail.android.composer.data.mapper
 import ch.protonmail.android.composer.data.local.LocalDraft
 import ch.protonmail.android.composer.data.wrapper.DraftWrapper
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalComposerRecipient
+import ch.protonmail.android.mailcommon.datarust.mapper.toDataError
 import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.DraftFields
+import ch.protonmail.android.mailcomposer.domain.model.SaveSendErrorReason
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsBcc
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsCc
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsTo
@@ -35,6 +37,8 @@ import ch.protonmail.android.mailmessage.domain.model.Recipient
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.ComposerRecipient
 import uniffi.proton_mail_uniffi.DraftCreateMode
+import uniffi.proton_mail_uniffi.DraftSaveSendError
+import uniffi.proton_mail_uniffi.DraftSaveSendErrorReason
 import uniffi.proton_mail_uniffi.SingleRecipientEntry
 
 fun LocalDraft.toDraftFields() = DraftFields(
@@ -79,6 +83,32 @@ fun Recipient.toSingleRecipientEntry() = SingleRecipientEntry(
     this.name,
     this.address
 )
+
+fun DraftSaveSendErrorReason.toSaveSendErrorReason(): SaveSendErrorReason = when (this) {
+    DraftSaveSendErrorReason.NoRecipients -> SaveSendErrorReason.ErrorNoMessage.NoRecipients
+    DraftSaveSendErrorReason.AlreadySent -> SaveSendErrorReason.ErrorNoMessage.AlreadySent
+    DraftSaveSendErrorReason.MessageDoesNotExist -> SaveSendErrorReason.ErrorNoMessage.MessageDoesNotExist
+    DraftSaveSendErrorReason.MessageIsNotADraft -> SaveSendErrorReason.ErrorNoMessage.MessageIsNotADraft
+    DraftSaveSendErrorReason.MessageAlreadySent -> SaveSendErrorReason.ErrorNoMessage.MessageAlreadySent
+
+    is DraftSaveSendErrorReason.AddressDoesNotHavePrimaryKey ->
+        SaveSendErrorReason.ErrorWithMessage.AddressDoesNotHavePrimaryKey(v1)
+
+    is DraftSaveSendErrorReason.RecipientEmailInvalid ->
+        SaveSendErrorReason.ErrorWithMessage.RecipientEmailInvalid(v1)
+
+    is DraftSaveSendErrorReason.ProtonRecipientDoesNotExist ->
+        SaveSendErrorReason.ErrorWithMessage.ProtonRecipientDoesNotExist(v1)
+
+    is DraftSaveSendErrorReason.UnknownRecipientValidationError ->
+        SaveSendErrorReason.ErrorWithMessage.UnknownRecipientValidationError(v1)
+
+    is DraftSaveSendErrorReason.AddressDisabled ->
+        SaveSendErrorReason.ErrorWithMessage.AddressDisabled(v1)
+
+    is DraftSaveSendErrorReason.PackageError ->
+        SaveSendErrorReason.ErrorWithMessage.PackageError(v1)
+}
 
 @MissingRustApi
 // Hardcoded values in the mapping
