@@ -242,6 +242,8 @@ fun MailboxScreen(
         onSwipeStar = { itemId, isStarred ->
             viewModel.submit(MailboxViewAction.StarAction(itemId, isStarred))
         },
+        onSwipeLabelAs = { itemId -> viewModel.submit(MailboxViewAction.SwipeLabelAsAction(itemId)) },
+        onSwipeMoveTo = { itemId -> viewModel.submit(MailboxViewAction.SwipeMoveToAction(itemId)) },
         onEnterSearchMode = { viewModel.submit(MailboxViewAction.EnterSearchMode) },
         onSearchQuery = { query -> viewModel.submit(MailboxViewAction.SearchQuery(query)) },
         onSearchResult = { viewModel.submit(MailboxViewAction.SearchResult) },
@@ -287,8 +289,8 @@ fun MailboxScreen(
                     state = bottomSheetContentState,
                     actions = MoveToBottomSheetContent.Actions(
                         onAddFolderClick = actions.onAddFolder,
-                        onFolderSelected = { folderId, _, _ ->
-                            viewModel.submit(MailboxViewAction.MoveToDestinationSelected(folderId))
+                        onFolderSelected = { folderId, _, entryPoint ->
+                            viewModel.submit(MailboxViewAction.MoveToDestinationSelected(folderId, entryPoint))
                         },
                         onDismiss = { viewModel.submit(MailboxViewAction.DismissBottomSheet) }
                     )
@@ -299,8 +301,8 @@ fun MailboxScreen(
                     actions = LabelAsBottomSheetContent.Actions(
                         onAddLabelClick = actions.onAddLabel,
                         onLabelAsSelected = { viewModel.submit(MailboxViewAction.LabelAsToggleAction(it)) },
-                        onDoneClick = { archiveSelected, _ ->
-                            viewModel.submit(MailboxViewAction.LabelAsConfirmed(archiveSelected))
+                        onDoneClick = { archiveSelected, entryPoint ->
+                            viewModel.submit(MailboxViewAction.LabelAsConfirmed(archiveSelected, entryPoint))
                         }
                     )
                 )
@@ -757,8 +759,6 @@ private fun MailboxItemsList(
         onStarClicked = actions.onStarClicked
     )
 
-    val swipingEnabled = state is MailboxListState.Data.ViewMode && !state.searchState.isInSearch()
-
     // Detect if user manually scrolled the list
     var mailboxScrolled by rememberSaveable { mutableStateOf(false) }
     var userTapped by remember { mutableStateOf(false) }
@@ -816,9 +816,14 @@ private fun MailboxItemsList(
             contentType = items.itemContentType { MailboxItemUiModel::class }
         ) { index ->
             items[index]?.let { item ->
+                val state = state as MailboxListState.Data
+                val swipeActionsUiModel = state.swipeActions
+                val isSelectionMode = state is MailboxListState.Data.SelectionMode
+                val swipingEnabled = swipeActionsUiModel?.isSwipingEnabled == true && !isSelectionMode
+
                 SwipeableItem(
-                    modifier = Modifier.animateItemPlacement(),
-                    swipeActionsUiModel = (state as MailboxListState.Data).swipeActions,
+                    modifier = Modifier.animateItem(),
+                    swipeActionsUiModel = state.swipeActions,
                     swipingEnabled = swipingEnabled,
                     swipeActionCallbacks = generateSwipeActions(items, actions, item)
                 ) {
@@ -934,8 +939,8 @@ private fun generateSwipeActions(
                 actions.onSwipeRead(it.id, it.isRead)
             }
         },
-        onMoveTo = { }, // To be implemented with ET-2225
-        onLabelAs = { } // To be implemented with ET-2225
+        onLabelAs = { actions.onSwipeLabelAs(item.id) },
+        onMoveTo = { actions.onSwipeMoveTo(item.id) }
     )
 }
 
@@ -1066,6 +1071,7 @@ private fun MailboxEmpty(
                             R.string.mailbox_is_empty_title,
                             R.string.mailbox_is_empty_description
                         )
+
                         SystemLabelId.Spam -> Triple(
                             R.drawable.illustration_empty_mailbox_spam,
                             R.string.mailbox_is_empty_title,
@@ -1085,6 +1091,7 @@ private fun MailboxEmpty(
                         )
                     }
                 }
+
                 else -> Triple(
                     R.drawable.illustration_empty_mailbox_folder,
                     R.string.mailbox_is_empty_title,
@@ -1171,6 +1178,8 @@ object MailboxScreen {
         val onSwipeSpam: (String) -> Unit,
         val onSwipeTrash: (String) -> Unit,
         val onSwipeStar: (String, Boolean) -> Unit,
+        val onSwipeLabelAs: (String) -> Unit,
+        val onSwipeMoveTo: (String) -> Unit,
         val onEnterSearchMode: () -> Unit,
         val onSearchQuery: (String) -> Unit,
         val onSearchResult: () -> Unit,
@@ -1225,6 +1234,8 @@ object MailboxScreen {
                 onSwipeSpam = { _ -> },
                 onSwipeTrash = { _ -> },
                 onSwipeStar = { _, _ -> },
+                onSwipeLabelAs = { _ -> },
+                onSwipeMoveTo = { _ -> },
                 onExitSearchMode = {},
                 onEnterSearchMode = {},
                 onSearchQuery = {},

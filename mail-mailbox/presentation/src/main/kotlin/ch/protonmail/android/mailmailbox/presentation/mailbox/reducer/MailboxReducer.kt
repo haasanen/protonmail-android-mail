@@ -181,6 +181,8 @@ class MailboxReducer @Inject constructor(
                 is MailboxViewAction.RequestMoveToBottomSheet,
                 is MailboxViewAction.RequestLabelAsBottomSheet,
                 is MailboxViewAction.RequestUpsellingBottomSheet,
+                is MailboxViewAction.SwipeLabelAsAction,
+                is MailboxViewAction.SwipeMoveToAction,
                 is MailboxViewAction.RequestManageAccountsBottomSheet -> BottomSheetOperation.Requested
 
                 is MailboxViewAction.LabelAsToggleAction -> LabelToggled(operation.label)

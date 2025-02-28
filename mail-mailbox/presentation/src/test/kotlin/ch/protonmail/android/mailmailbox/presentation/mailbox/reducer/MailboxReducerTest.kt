@@ -41,6 +41,8 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.model.UpgradeStora
 import ch.protonmail.android.mailmailbox.presentation.mailbox.previewdata.MailboxSearchStateSampleData
 import ch.protonmail.android.mailmailbox.presentation.mailbox.previewdata.MailboxStateSampleData
 import ch.protonmail.android.mailmessage.presentation.model.AvatarImagesUiModel
+import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.LabelAsBottomSheetEntryPoint
+import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MoveToBottomSheetEntryPoint
 import ch.protonmail.android.mailmessage.presentation.reducer.BottomSheetReducer
 import ch.protonmail.android.testdata.mailbox.MailboxItemUiModelTestData
 import ch.protonmail.android.testdata.mailbox.UnreadCountersTestData
@@ -300,6 +302,17 @@ internal class MailboxReducerTest(
                 shouldReduceStorageLimitState = false
             ),
             TestInput(
+                MailboxViewAction.SwipeLabelAsAction(itemId = "Item1"),
+                shouldReduceMailboxListState = false,
+                shouldReduceTopAppBarState = false,
+                shouldReduceUnreadFilterState = false,
+                shouldReduceBottomAppBarState = false,
+                shouldReduceActionMessage = false,
+                shouldReduceDeleteDialog = false,
+                shouldReduceBottomSheetState = true,
+                shouldReduceStorageLimitState = false
+            ),
+            TestInput(
                 MailboxViewAction.DismissBottomSheet,
                 shouldReduceMailboxListState = false,
                 shouldReduceTopAppBarState = false,
@@ -322,7 +335,10 @@ internal class MailboxReducerTest(
                 shouldReduceStorageLimitState = false
             ),
             TestInput(
-                MailboxViewAction.LabelAsConfirmed(archiveSelected = true),
+                MailboxViewAction.LabelAsConfirmed(
+                    archiveSelected = true,
+                    entryPoint = LabelAsBottomSheetEntryPoint.SelectionMode
+                ),
                 shouldReduceMailboxListState = false,
                 shouldReduceTopAppBarState = false,
                 shouldReduceUnreadFilterState = false,
@@ -344,7 +360,10 @@ internal class MailboxReducerTest(
                 shouldReduceStorageLimitState = false
             ),
             TestInput(
-                MailboxViewAction.MoveToDestinationSelected(MailLabelTestData.archiveSystemLabel.id),
+                MailboxViewAction.MoveToDestinationSelected(
+                    MailLabelTestData.archiveSystemLabel.id,
+                    entryPoint = MoveToBottomSheetEntryPoint.SelectionMode
+                ),
                 shouldReduceMailboxListState = false,
                 shouldReduceTopAppBarState = false,
                 shouldReduceUnreadFilterState = false,
@@ -360,6 +379,17 @@ internal class MailboxReducerTest(
                 shouldReduceTopAppBarState = true,
                 shouldReduceUnreadFilterState = false,
                 shouldReduceBottomAppBarState = true,
+                shouldReduceActionMessage = false,
+                shouldReduceDeleteDialog = false,
+                shouldReduceBottomSheetState = true,
+                shouldReduceStorageLimitState = false
+            ),
+            TestInput(
+                MailboxViewAction.SwipeMoveToAction(itemId = "Item1"),
+                shouldReduceMailboxListState = false,
+                shouldReduceTopAppBarState = false,
+                shouldReduceUnreadFilterState = false,
+                shouldReduceBottomAppBarState = false,
                 shouldReduceActionMessage = false,
                 shouldReduceDeleteDialog = false,
                 shouldReduceBottomSheetState = true,
