@@ -21,25 +21,17 @@ package ch.protonmail.android.mailcomposer.domain.usecase
 import arrow.core.Either
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcomposer.domain.repository.DraftRepository
-import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.Recipient
-import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 
 class UpdateBccRecipients @Inject constructor(
     private val draftRepository: DraftRepository
 ) : UpdateRecipients() {
 
-    override suspend fun save(
-        userId: UserId,
-        messageId: MessageId,
-        recipient: Recipient
-    ): Either<DataError, Unit> = draftRepository.addBccRecipient(userId, messageId, recipient)
+    override suspend fun save(recipient: Recipient): Either<DataError, Unit> =
+        draftRepository.addBccRecipient(recipient)
 
-    override suspend fun remove(
-        userId: UserId,
-        messageId: MessageId,
-        recipient: Recipient
-    ): Either<DataError, Unit> = draftRepository.removeBccRecipient(userId, messageId, recipient)
+    override suspend fun remove(recipient: Recipient): Either<DataError, Unit> =
+        draftRepository.removeBccRecipient(recipient)
 
 }

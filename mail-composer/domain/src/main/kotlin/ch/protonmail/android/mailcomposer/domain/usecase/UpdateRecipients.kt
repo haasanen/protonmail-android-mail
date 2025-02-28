@@ -21,16 +21,12 @@ package ch.protonmail.android.mailcomposer.domain.usecase
 import arrow.core.Either
 import arrow.core.raise.either
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.Recipient
-import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 
 abstract class UpdateRecipients {
 
     suspend operator fun invoke(
-        userId: UserId,
-        messageId: MessageId,
         currentRecipients: List<Recipient>,
         updatedRecipients: List<Recipient>
     ): Either<DataError, Unit> = either {
@@ -42,27 +38,19 @@ abstract class UpdateRecipients {
 
         recipientsToAdd.forEach { addRecipient ->
             Timber.d("draft-recipients: adding $addRecipient")
-            save(userId, messageId, addRecipient)
+            save(addRecipient)
                 .onLeft { raise(it) }
         }
 
         recipientsToRemove.forEach { removeRecipient ->
             Timber.d("draft-recipients: removing $removeRecipient")
-            remove(userId, messageId, removeRecipient)
+            remove(removeRecipient)
                 .onLeft { raise(it) }
         }
     }
 
-    internal abstract suspend fun save(
-        userId: UserId,
-        messageId: MessageId,
-        recipient: Recipient
-    ): Either<DataError, Unit>
+    internal abstract suspend fun save(recipient: Recipient): Either<DataError, Unit>
 
-    internal abstract suspend fun remove(
-        userId: UserId,
-        messageId: MessageId,
-        recipient: Recipient
-    ): Either<DataError, Unit>
+    internal abstract suspend fun remove(recipient: Recipient): Either<DataError, Unit>
 
 }

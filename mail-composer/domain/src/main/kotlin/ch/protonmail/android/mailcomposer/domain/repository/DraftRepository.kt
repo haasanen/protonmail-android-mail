@@ -31,53 +31,14 @@ import me.proton.core.domain.entity.UserId
 interface DraftRepository {
 
     suspend fun openDraft(userId: UserId, messageId: MessageId): Either<DataError, DraftFields>
-
     suspend fun createDraft(userId: UserId, action: DraftAction): Either<DataError, DraftFields>
-    suspend fun save(userId: UserId, messageId: MessageId): Either<DataError, Unit>
-    suspend fun saveSubject(
-        userId: UserId,
-        messageId: MessageId,
-        subject: Subject
-    ): Either<DataError, Unit>
-    suspend fun saveBody(
-        userId: UserId,
-        messageId: MessageId,
-        body: DraftBody
-    ): Either<DataError, Unit>
-
-    suspend fun addToRecipient(
-        userId: UserId,
-        messageId: MessageId,
-        recipient: Recipient
-    ): Either<DataError, Unit>
-
-    suspend fun addCcRecipient(
-        userId: UserId,
-        messageId: MessageId,
-        recipient: Recipient
-    ): Either<DataError, Unit>
-
-    suspend fun addBccRecipient(
-        userId: UserId,
-        messageId: MessageId,
-        recipient: Recipient
-    ): Either<DataError, Unit>
-
-    suspend fun removeToRecipient(
-        userId: UserId,
-        messageId: MessageId,
-        recipient: Recipient
-    ): Either<DataError, Unit>
-
-    suspend fun removeCcRecipient(
-        userId: UserId,
-        messageId: MessageId,
-        recipient: Recipient
-    ): Either<DataError, Unit>
-
-    suspend fun removeBccRecipient(
-        userId: UserId,
-        messageId: MessageId,
-        recipient: Recipient
-    ): Either<DataError, Unit>
+    suspend fun save(): Either<DataError, Unit>
+    suspend fun saveSubject(subject: Subject): Either<DataError, Unit>
+    suspend fun saveBody(body: DraftBody): Either<DataError, Unit>
+    suspend fun addToRecipient(recipient: Recipient): Either<DataError, Unit>
+    suspend fun addCcRecipient(recipient: Recipient): Either<DataError, Unit>
+    suspend fun addBccRecipient(recipient: Recipient): Either<DataError, Unit>
+    suspend fun removeToRecipient(recipient: Recipient): Either<DataError, Unit>
+    suspend fun removeCcRecipient(recipient: Recipient): Either<DataError, Unit>
+    suspend fun removeBccRecipient(recipient: Recipient): Either<DataError, Unit>
 }

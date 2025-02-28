@@ -42,53 +42,27 @@ class DraftRepositoryImpl @Inject constructor(
     override suspend fun createDraft(userId: UserId, action: DraftAction): Either<DataError, DraftFields> =
         draftDataSource.create(userId, action).map { it.toDraftFields() }
 
-    override suspend fun save(userId: UserId, messageId: MessageId): Either<DataError, Unit> = draftDataSource.save()
+    override suspend fun save(): Either<DataError, Unit> = draftDataSource.save()
 
-    override suspend fun saveSubject(
-        userId: UserId,
-        messageId: MessageId,
-        subject: Subject
-    ): Either<DataError, Unit> = draftDataSource.saveSubject(subject)
+    override suspend fun saveSubject(subject: Subject): Either<DataError, Unit> = draftDataSource.saveSubject(subject)
 
-    override suspend fun saveBody(
-        userId: UserId,
-        messageId: MessageId,
-        body: DraftBody
-    ): Either<DataError, Unit> = draftDataSource.saveBody(body)
+    override suspend fun saveBody(body: DraftBody): Either<DataError, Unit> = draftDataSource.saveBody(body)
 
-    override suspend fun addToRecipient(
-        userId: UserId,
-        messageId: MessageId,
-        recipient: Recipient
-    ): Either<DataError, Unit> = draftDataSource.addToRecipient(recipient)
+    override suspend fun addToRecipient(recipient: Recipient): Either<DataError, Unit> =
+        draftDataSource.addToRecipient(recipient)
 
-    override suspend fun addCcRecipient(
-        userId: UserId,
-        messageId: MessageId,
-        recipient: Recipient
-    ): Either<DataError, Unit> = draftDataSource.addCcRecipient(recipient)
+    override suspend fun addCcRecipient(recipient: Recipient): Either<DataError, Unit> =
+        draftDataSource.addCcRecipient(recipient)
 
-    override suspend fun addBccRecipient(
-        userId: UserId,
-        messageId: MessageId,
-        recipient: Recipient
-    ): Either<DataError, Unit> = draftDataSource.addBccRecipient(recipient)
+    override suspend fun addBccRecipient(recipient: Recipient): Either<DataError, Unit> =
+        draftDataSource.addBccRecipient(recipient)
 
-    override suspend fun removeToRecipient(
-        userId: UserId,
-        messageId: MessageId,
-        recipient: Recipient
-    ): Either<DataError, Unit> = draftDataSource.removeToRecipient(recipient)
+    override suspend fun removeToRecipient(recipient: Recipient): Either<DataError, Unit> =
+        draftDataSource.removeToRecipient(recipient)
 
-    override suspend fun removeCcRecipient(
-        userId: UserId,
-        messageId: MessageId,
-        recipient: Recipient
-    ): Either<DataError, Unit> = draftDataSource.removeCcRecipient(recipient)
+    override suspend fun removeCcRecipient(recipient: Recipient): Either<DataError, Unit> =
+        draftDataSource.removeCcRecipient(recipient)
 
-    override suspend fun removeBccRecipient(
-        userId: UserId,
-        messageId: MessageId,
-        recipient: Recipient
-    ): Either<DataError, Unit> = draftDataSource.removeBccRecipient(recipient)
+    override suspend fun removeBccRecipient(recipient: Recipient): Either<DataError, Unit> =
+        draftDataSource.removeBccRecipient(recipient)
 }

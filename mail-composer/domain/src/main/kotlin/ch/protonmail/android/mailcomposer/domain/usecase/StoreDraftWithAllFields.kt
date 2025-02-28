@@ -23,7 +23,6 @@ import ch.protonmail.android.mailcomposer.domain.model.DraftFields
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.withContext
-import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -32,13 +31,9 @@ class StoreDraftWithAllFields @Inject constructor(
     private val storeDraftWithBody: StoreDraftWithBody
 ) {
 
-    suspend operator fun invoke(
-        userId: UserId,
-        draftMessageId: MessageId,
-        fields: DraftFields
-    ) = withContext(NonCancellable) {
-        storeDraftWithBody(userId, draftMessageId, fields.body).logError(draftMessageId)
-        storeDraftWithSubject(userId, draftMessageId, fields.subject).logError(draftMessageId)
+    suspend operator fun invoke(draftMessageId: MessageId, fields: DraftFields) = withContext(NonCancellable) {
+        storeDraftWithBody(fields.body).logError(draftMessageId)
+        storeDraftWithSubject(fields.subject).logError(draftMessageId)
 
         Timber.d("Draft: finished storing draft locally $draftMessageId")
     }

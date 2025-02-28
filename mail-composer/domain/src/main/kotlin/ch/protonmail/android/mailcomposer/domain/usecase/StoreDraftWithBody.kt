@@ -22,18 +22,12 @@ import arrow.core.Either
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.repository.DraftRepository
-import ch.protonmail.android.mailmessage.domain.model.MessageId
-import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 
 class StoreDraftWithBody @Inject constructor(
     private val draftRepository: DraftRepository
 ) {
 
-    suspend operator fun invoke(
-        userId: UserId,
-        messageId: MessageId,
-        draftBody: DraftBody
-    ): Either<DataError, Unit> = draftRepository.saveBody(userId, messageId, draftBody)
+    suspend operator fun invoke(draftBody: DraftBody): Either<DataError, Unit> = draftRepository.saveBody(draftBody)
 
 }

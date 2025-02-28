@@ -21,16 +21,12 @@ package ch.protonmail.android.mailcomposer.domain.usecase
 import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.repository.DraftRepository
-import ch.protonmail.android.mailmessage.domain.model.MessageId
-import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import me.proton.core.domain.entity.UserId
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -44,48 +40,35 @@ internal class StoreDraftWithBodyTest {
     @Test
     fun `save draft with body`() = runTest {
         // Given
-        val userId = UserIdSample.Primary
-        val messageId = MessageIdSample.build()
         val body = DraftBody("Body of this email")
-        givenSaveDraftSucceeds(userId, messageId, body)
+        givenSaveDraftSucceeds(body)
 
         // When
-        val actualEither = storeDraftWithBody(userId, messageId, body)
+        val actualEither = storeDraftWithBody(body)
 
         // Then
-        coVerify { draftRepository.saveBody(userId, messageId, body) }
+        coVerify { draftRepository.saveBody(body) }
         assertEquals(Unit.right(), actualEither)
     }
 
     @Test
     fun `returns error when save draft body fails`() = runTest {
         // Given
-        val userId = UserIdSample.Primary
-        val messageId = MessageIdSample.build()
         val body = DraftBody("Body of this email")
         val expected = DataError.Local.SaveDraftError.NoRustDraftAvailable
-        givenSaveDraftFails(userId, messageId, body, expected)
+        givenSaveDraftFails(body, expected)
         // When
-        val actualEither = storeDraftWithBody(userId, messageId, body)
+        val actualEither = storeDraftWithBody(body)
 
         // Then
         assertEquals(expected.left(), actualEither)
     }
 
-    private fun givenSaveDraftSucceeds(
-        userId: UserId,
-        messageId: MessageId,
-        body: DraftBody
-    ) {
-        coEvery { draftRepository.saveBody(userId, messageId, body) } returns Unit.right()
+    private fun givenSaveDraftSucceeds(body: DraftBody) {
+        coEvery { draftRepository.saveBody(body) } returns Unit.right()
     }
 
-    private fun givenSaveDraftFails(
-        userId: UserId,
-        messageId: MessageId,
-        body: DraftBody,
-        expected: DataError
-    ) {
-        coEvery { draftRepository.saveBody(userId, messageId, body) } returns expected.left()
+    private fun givenSaveDraftFails(body: DraftBody, expected: DataError) {
+        coEvery { draftRepository.saveBody(body) } returns expected.left()
     }
 }

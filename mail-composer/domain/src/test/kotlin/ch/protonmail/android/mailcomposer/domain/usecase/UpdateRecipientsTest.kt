@@ -3,8 +3,6 @@ package ch.protonmail.android.mailcomposer.domain.usecase
 import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
-import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
 import ch.protonmail.android.mailmessage.domain.sample.RecipientSample
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -20,36 +18,30 @@ class UpdateRecipientsTest {
     @Test
     fun `saves To recipients that were newly added`() = runTest {
         // Given
-        val userId = UserIdSample.Primary
-        val messageId = MessageIdSample.build()
         val recipientToAdd = RecipientSample.Bob
         val existingRecipient = RecipientSample.Alice
         val currentRecipients = listOf(existingRecipient)
-        coEvery { updateRecipients.save(userId, messageId, recipientToAdd) } returns Unit.right()
+        coEvery { updateRecipients.save(recipientToAdd) } returns Unit.right()
 
         // When
         val actualEither = updateRecipients(
-            userId,
-            messageId,
             currentRecipients,
             listOf(existingRecipient, recipientToAdd)
         )
 
         // Then
-        coVerify { updateRecipients.save(userId, messageId, recipientToAdd) }
+        coVerify { updateRecipients.save(recipientToAdd) }
         assertEquals(Unit.right(), actualEither)
     }
 
     @Test
     fun `returns error when saving To recipient fails`() = runTest {
         // Given
-        val userId = UserIdSample.Primary
-        val messageId = MessageIdSample.build()
         val recipient = RecipientSample.Bob
         val expected = DataError.Local.SaveDraftError.DuplicateRecipient
-        coEvery { updateRecipients.save(userId, messageId, recipient) } returns expected.left()
+        coEvery { updateRecipients.save(recipient) } returns expected.left()
         // When
-        val actualEither = updateRecipients(userId, messageId, emptyList(), listOf(recipient))
+        val actualEither = updateRecipients(emptyList(), listOf(recipient))
 
         // Then
         assertEquals(expected.left(), actualEither)
@@ -58,35 +50,29 @@ class UpdateRecipientsTest {
     @Test
     fun `removes To recipients that were removed`() = runTest {
         // Given
-        val userId = UserIdSample.Primary
-        val messageId = MessageIdSample.build()
         val recipientToRemove = RecipientSample.Bob
         val unchangedRecipient = RecipientSample.Alice
-        coEvery { updateRecipients.remove(userId, messageId, recipientToRemove) } returns Unit.right()
+        coEvery { updateRecipients.remove(recipientToRemove) } returns Unit.right()
 
         // When
         val actualEither = updateRecipients(
-            userId = userId,
-            messageId = messageId,
             currentRecipients = listOf(recipientToRemove, unchangedRecipient),
             updatedRecipients = listOf(unchangedRecipient)
         )
 
         // Then
-        coVerify { updateRecipients.remove(userId, messageId, recipientToRemove) }
+        coVerify { updateRecipients.remove(recipientToRemove) }
         assertEquals(Unit.right(), actualEither)
     }
 
     @Test
     fun `returns error when removing To recipient fails`() = runTest {
         // Given
-        val userId = UserIdSample.Primary
-        val messageId = MessageIdSample.build()
         val recipient = RecipientSample.Bob
         val expected = DataError.Local.SaveDraftError.DuplicateRecipient
-        coEvery { updateRecipients.remove(userId, messageId, recipient) } returns expected.left()
+        coEvery { updateRecipients.remove(recipient) } returns expected.left()
         // When
-        val actualEither = updateRecipients(userId, messageId, listOf(recipient), emptyList())
+        val actualEither = updateRecipients(listOf(recipient), emptyList())
 
         // Then
         assertEquals(expected.left(), actualEither)

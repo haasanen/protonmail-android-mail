@@ -21,16 +21,12 @@ package ch.protonmail.android.mailcomposer.domain.usecase
 import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.mailcomposer.domain.model.Subject
 import ch.protonmail.android.mailcomposer.domain.repository.DraftRepository
-import ch.protonmail.android.mailmessage.domain.model.MessageId
-import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import me.proton.core.domain.entity.UserId
 import org.junit.Test
 import kotlin.test.assertEquals
 
@@ -43,49 +39,36 @@ class StoreDraftWithSubjectTest {
     @Test
     fun `save draft with subject`() = runTest {
         // Given
-        val userId = UserIdSample.Primary
-        val messageId = MessageIdSample.build()
         val subject = Subject("Subject of this email")
-        givenSaveDraftSucceeds(userId, messageId, subject)
+        givenSaveDraftSucceeds(subject)
 
         // When
-        val actualEither = storeDraftWithSubject(userId, messageId, subject)
+        val actualEither = storeDraftWithSubject(subject)
 
         // Then
-        coVerify { draftRepository.saveSubject(userId, messageId, subject) }
+        coVerify { draftRepository.saveSubject(subject) }
         assertEquals(Unit.right(), actualEither)
     }
 
     @Test
     fun `returns error when save draft subject fails`() = runTest {
         // Given
-        val userId = UserIdSample.Primary
-        val messageId = MessageIdSample.build()
         val subject = Subject("Subject of this email")
         val expected = DataError.Local.SaveDraftError.NoRustDraftAvailable
-        givenSaveDraftFails(userId, messageId, subject, expected)
+        givenSaveDraftFails(subject, expected)
         // When
-        val actualEither = storeDraftWithSubject(userId, messageId, subject)
+        val actualEither = storeDraftWithSubject(subject)
 
         // Then
         assertEquals(expected.left(), actualEither)
     }
 
-    private fun givenSaveDraftSucceeds(
-        userId: UserId,
-        messageId: MessageId,
-        subject: Subject
-    ) {
-        coEvery { draftRepository.saveSubject(userId, messageId, subject) } returns Unit.right()
+    private fun givenSaveDraftSucceeds(subject: Subject) {
+        coEvery { draftRepository.saveSubject(subject) } returns Unit.right()
     }
 
-    private fun givenSaveDraftFails(
-        userId: UserId,
-        messageId: MessageId,
-        subject: Subject,
-        expected: DataError
-    ) {
-        coEvery { draftRepository.saveSubject(userId, messageId, subject) } returns expected.left()
+    private fun givenSaveDraftFails(subject: Subject, expected: DataError) {
+        coEvery { draftRepository.saveSubject(subject) } returns expected.left()
     }
 
 }

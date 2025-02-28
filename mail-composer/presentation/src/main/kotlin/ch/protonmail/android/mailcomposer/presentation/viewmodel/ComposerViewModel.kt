@@ -479,7 +479,7 @@ class ComposerViewModel @Inject constructor(
             else -> {
                 viewModelScope.launch {
                     withContext(NonCancellable) {
-                        sendMessage(primaryUserId(), currentMessageId())
+                        sendMessage(primaryUserId())
                     }
                 }
 
@@ -503,7 +503,7 @@ class ComposerViewModel @Inject constructor(
     )
 
     private suspend fun onSubjectChanged(action: ComposerAction.SubjectChanged): ComposerOperation =
-        storeDraftWithSubject(primaryUserId.first(), currentMessageId(), action.subject).fold(
+        storeDraftWithSubject(action.subject).fold(
             ifLeft = {
                 Timber.e("Store draft ${currentMessageId()} with new subject ${action.subject} failed")
                 ComposerEvent.ErrorStoringDraftSubject
@@ -520,8 +520,6 @@ class ComposerViewModel @Inject constructor(
         emitNewStateFor(ComposerAction.DraftBodyChanged(action.draftBody))
 
         storeDraftWithBody(
-            primaryUserId(),
-            currentMessageId(),
             action.draftBody
         ).onLeft { emitNewStateFor(ComposerEvent.ErrorStoringDraftBody) }
     }
@@ -584,8 +582,6 @@ class ComposerViewModel @Inject constructor(
         val contacts = contactsOrEmpty()
         return action.recipients.filterIsInstance<RecipientUiModel.Valid>().let { validRecipients ->
             updateToRecipients(
-                primaryUserId(),
-                currentMessageId(),
                 currentValidRecipientsTo().value,
                 validRecipients.map { participantMapper.recipientUiModelToParticipant(it, contacts) }
             ).fold(
@@ -600,8 +596,6 @@ class ComposerViewModel @Inject constructor(
         val contacts = contactsOrEmpty()
         return action.recipients.filterIsInstance<RecipientUiModel.Valid>().let { validRecipients ->
             updateCcRecipients(
-                primaryUserId(),
-                currentMessageId(),
                 currentValidRecipientsCc().value,
                 validRecipients.map { participantMapper.recipientUiModelToParticipant(it, contacts) }
             ).fold(
@@ -616,8 +610,6 @@ class ComposerViewModel @Inject constructor(
         val contacts = contactsOrEmpty()
         return action.recipients.filterIsInstance<RecipientUiModel.Valid>().let { validRecipients ->
             updateBccRecipients(
-                primaryUserId(),
-                currentMessageId(),
                 currentValidRecipientsBcc().value,
                 validRecipients.map { participantMapper.recipientUiModelToParticipant(it, contacts) }
             ).fold(
