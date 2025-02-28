@@ -32,10 +32,9 @@ class ObserveSwipeActionsPreference @Inject constructor(
     operator fun invoke(userId: UserId): Flow<SwipeActionsPreference> =
         observeMailSettings(userId).transform { mailSettings ->
             if (mailSettings != null) {
-                // Fallbacks to be changed with SwipeAction.None once supported.
                 val preference = SwipeActionsPreference(
-                    swipeLeft = mailSettings.swipeLeft?.enum ?: SwipeAction.Archive,
-                    swipeRight = mailSettings.swipeRight?.enum ?: SwipeAction.Archive
+                    swipeLeft = mailSettings.swipeLeft?.enum ?: SwipeAction.None,
+                    swipeRight = mailSettings.swipeRight?.enum ?: SwipeAction.None
                 )
                 emit(preference)
             }

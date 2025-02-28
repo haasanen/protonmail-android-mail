@@ -110,7 +110,7 @@ internal class ObserveSwipeActionsPreferenceTest {
 
             // then
             val expected = SwipeActionsPreference(
-                swipeLeft = SwipeAction.Archive,
+                swipeLeft = SwipeAction.None,
                 swipeRight = SwipeAction.Trash
             )
             assertEquals(expected, awaitItem())
@@ -133,7 +133,7 @@ internal class ObserveSwipeActionsPreferenceTest {
             // then
             val expected = SwipeActionsPreference(
                 swipeLeft = SwipeAction.MarkRead,
-                swipeRight = SwipeAction.Archive
+                swipeRight = SwipeAction.None
             )
             assertEquals(expected, awaitItem())
             awaitComplete()
