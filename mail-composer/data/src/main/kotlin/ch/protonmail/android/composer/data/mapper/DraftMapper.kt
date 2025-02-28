@@ -21,17 +21,20 @@ package ch.protonmail.android.composer.data.mapper
 import ch.protonmail.android.composer.data.local.LocalDraft
 import ch.protonmail.android.composer.data.wrapper.DraftWrapper
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalComposerRecipient
+import ch.protonmail.android.mailcommon.datarust.mapper.LocalDraftSendResult
 import ch.protonmail.android.mailcommon.datarust.mapper.toDataError
 import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.DraftFields
 import ch.protonmail.android.mailcomposer.domain.model.SaveSendErrorReason
+import ch.protonmail.android.mailcomposer.domain.model.MessageSendingStatus
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsBcc
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsCc
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsTo
 import ch.protonmail.android.mailcomposer.domain.model.SenderEmail
 import ch.protonmail.android.mailcomposer.domain.model.Subject
 import ch.protonmail.android.mailmessage.data.mapper.toLocalMessageId
+import ch.protonmail.android.mailmessage.data.mapper.toMessageId
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.model.Recipient
 import timber.log.Timber
@@ -39,6 +42,7 @@ import uniffi.proton_mail_uniffi.ComposerRecipient
 import uniffi.proton_mail_uniffi.DraftCreateMode
 import uniffi.proton_mail_uniffi.DraftSaveSendError
 import uniffi.proton_mail_uniffi.DraftSaveSendErrorReason
+import uniffi.proton_mail_uniffi.DraftSendStatus
 import uniffi.proton_mail_uniffi.SingleRecipientEntry
 
 fun LocalDraft.toDraftFields() = DraftFields(
@@ -83,6 +87,34 @@ fun Recipient.toSingleRecipientEntry() = SingleRecipientEntry(
     this.name,
     this.address
 )
+
+fun LocalDraftSendResult.toMessageSendingStatus(): MessageSendingStatus = when (val status = this.error) {
+    is DraftSendStatus.Success -> this.toMessageSendingStatusForSuccess(status.v1)
+    is DraftSendStatus.Failure -> this.toMessageSendingStatusForFailure(status.v1)
+}
+
+private fun LocalDraftSendResult.toMessageSendingStatusForSuccess(timeRemainingForUndo: ULong): MessageSendingStatus {
+    return if (timeRemainingForUndo > 0u) {
+        MessageSendingStatus.MessageSentUndoable(
+            messageId = this.messageId.toMessageId(),
+            timeRemainingForUndo = timeRemainingForUndo.toLong()
+        )
+    } else {
+        MessageSendingStatus.MessageSentFinal(this.messageId.toMessageId())
+    }
+}
+private fun LocalDraftSendResult.toMessageSendingStatusForFailure(error: DraftSaveSendError): MessageSendingStatus {
+    return when (error) {
+        is DraftSaveSendError.Reason -> MessageSendingStatus.SendMessageError(
+            messageId = this.messageId.toMessageId(),
+            reason = error.v1.toSaveSendErrorReason()
+        )
+        is DraftSaveSendError.Other -> MessageSendingStatus.SendMessageError(
+            messageId = this.messageId.toMessageId(),
+            reason = SaveSendErrorReason.OtherDataError(error.v1.toDataError())
+        )
+    }
+}
 
 fun DraftSaveSendErrorReason.toSaveSendErrorReason(): SaveSendErrorReason = when (this) {
     DraftSaveSendErrorReason.NoRecipients -> SaveSendErrorReason.ErrorNoMessage.NoRecipients

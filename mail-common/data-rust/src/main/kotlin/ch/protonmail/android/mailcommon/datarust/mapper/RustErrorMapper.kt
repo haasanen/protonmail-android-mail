@@ -87,9 +87,9 @@ fun EventError.toDataError(): DataError = when (this) {
 }
 
 fun ProtonError.toDataError(): DataError = when (this) {
-    ProtonError.Network -> DataError.Remote.Http(NetworkError.NoNetwork)
+    is ProtonError.Network -> DataError.Remote.Http(NetworkError.NoNetwork)
     is ProtonError.OtherReason -> DataError.Local.Unknown
     is ProtonError.ServerError -> DataError.Remote.Http(NetworkError.ServerError)
-    ProtonError.SessionExpired -> DataError.Remote.Http(NetworkError.Unauthorized)
+    is ProtonError.SessionExpired -> DataError.Remote.Http(NetworkError.Unauthorized)
     is ProtonError.Unexpected -> DataError.Local.Unknown
 }

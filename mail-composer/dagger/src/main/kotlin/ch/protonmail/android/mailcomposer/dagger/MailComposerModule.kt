@@ -20,12 +20,15 @@ package ch.protonmail.android.mailcomposer.dagger
 
 import ch.protonmail.android.composer.data.local.RustDraftDataSource
 import ch.protonmail.android.composer.data.local.RustDraftDataSourceImpl
+import ch.protonmail.android.composer.data.local.RustSendingStatusDataSource
+import ch.protonmail.android.composer.data.local.RustSendingStatusDataSourceImpl
 import ch.protonmail.android.composer.data.repository.AttachmentRepositoryImpl
 import ch.protonmail.android.composer.data.repository.AttachmentStateRepositoryImpl
 import ch.protonmail.android.composer.data.repository.DraftRepositoryImpl
 import ch.protonmail.android.composer.data.repository.MessageExpirationTimeRepositoryImpl
 import ch.protonmail.android.composer.data.repository.MessagePasswordRepositoryImpl
 import ch.protonmail.android.composer.data.repository.MessageRepositoryImpl
+import ch.protonmail.android.composer.data.repository.SendingStatusRepositoryImpl
 import ch.protonmail.android.mailcomposer.domain.annotations.NewContactSuggestionsEnabled
 import ch.protonmail.android.mailcomposer.domain.repository.AttachmentRepository
 import ch.protonmail.android.mailcomposer.domain.repository.AttachmentStateRepository
@@ -33,6 +36,7 @@ import ch.protonmail.android.mailcomposer.domain.repository.DraftRepository
 import ch.protonmail.android.mailcomposer.domain.repository.MessageExpirationTimeRepository
 import ch.protonmail.android.mailcomposer.domain.repository.MessagePasswordRepository
 import ch.protonmail.android.mailcomposer.domain.repository.MessageRepository
+import ch.protonmail.android.mailcomposer.domain.repository.SendingStatusRepository
 import ch.protonmail.android.mailcomposer.domain.usecase.featureflags.IsNewContactsSuggestionsEnabled
 import dagger.Binds
 import dagger.Module
@@ -87,4 +91,19 @@ object FeatureFlagModule {
     @NewContactSuggestionsEnabled
     @Singleton
     fun provideNewContactsSuggestionsEnabled(isEnabled: IsNewContactsSuggestionsEnabled) = isEnabled(null)
+}
+
+
+@Module
+@InstallIn(SingletonComponent::class)
+abstract class SendingStatusModule {
+
+    @Binds
+    @Singleton
+    abstract fun bindsSendingStatusRepository(impl: SendingStatusRepositoryImpl): SendingStatusRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindsRustSendingStatusDataSource(impl: RustSendingStatusDataSourceImpl): RustSendingStatusDataSource
+
 }

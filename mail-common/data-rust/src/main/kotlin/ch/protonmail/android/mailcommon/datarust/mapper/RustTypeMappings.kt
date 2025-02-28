@@ -30,6 +30,7 @@ import uniffi.proton_mail_uniffi.ContactItemType
 import uniffi.proton_mail_uniffi.Conversation
 import uniffi.proton_mail_uniffi.DecryptedAttachment
 import uniffi.proton_mail_uniffi.Disposition
+import uniffi.proton_mail_uniffi.DraftSendResult
 import uniffi.proton_mail_uniffi.ExclusiveLocation
 import uniffi.proton_mail_uniffi.GroupedContacts
 import uniffi.proton_mail_uniffi.Id
@@ -90,4 +91,6 @@ typealias LocalContactItemType = ContactItemType
 typealias LocalContactItemTypeContact = ContactItemType.Contact
 typealias LocalContactItemTypeGroup = ContactItemType.Group
 typealias LocalComposerRecipient = ComposerRecipient
+typealias LocalDraftSendResult = DraftSendResult
+
 

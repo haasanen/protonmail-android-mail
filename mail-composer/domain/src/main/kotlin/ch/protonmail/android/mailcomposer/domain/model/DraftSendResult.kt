@@ -20,24 +20,8 @@ package ch.protonmail.android.mailcomposer.domain.model
 
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 
-sealed interface MessageSendingStatus {
-    val messageId: MessageId
-
-    data class MessageSentUndoable(
-        override val messageId: MessageId,
-        val timeRemainingForUndo: Long
-    ) : MessageSendingStatus
-
-    data class MessageSentFinal(
-        override val messageId: MessageId
-    ) : MessageSendingStatus
-
-    data class SendMessageError(
-        override val messageId: MessageId,
-        val reason: SaveSendErrorReason
-    ) : MessageSendingStatus
-
-    data class NoStatus(
-        override val messageId: MessageId
-    ) : MessageSendingStatus
-}
+data class DraftSendResult(
+    val messageId: MessageId,
+    val timestamp: Long,
+    val status: MessageSendingStatus
+)

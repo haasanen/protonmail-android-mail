@@ -16,28 +16,13 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailcomposer.domain.model
+package ch.protonmail.android.composer.data.local
 
-import ch.protonmail.android.mailmessage.domain.model.MessageId
+import ch.protonmail.android.mailcomposer.domain.model.MessageSendingStatus
+import kotlinx.coroutines.flow.Flow
+import me.proton.core.domain.entity.UserId
 
-sealed interface MessageSendingStatus {
-    val messageId: MessageId
+interface RustSendingStatusDataSource {
 
-    data class MessageSentUndoable(
-        override val messageId: MessageId,
-        val timeRemainingForUndo: Long
-    ) : MessageSendingStatus
-
-    data class MessageSentFinal(
-        override val messageId: MessageId
-    ) : MessageSendingStatus
-
-    data class SendMessageError(
-        override val messageId: MessageId,
-        val reason: SaveSendErrorReason
-    ) : MessageSendingStatus
-
-    data class NoStatus(
-        override val messageId: MessageId
-    ) : MessageSendingStatus
+    suspend fun observeMessageSendingStatus(userId: UserId): Flow<MessageSendingStatus>
 }

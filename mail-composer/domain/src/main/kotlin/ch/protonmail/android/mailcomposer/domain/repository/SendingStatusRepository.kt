@@ -16,28 +16,18 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailcomposer.domain.model
+package ch.protonmail.android.mailcomposer.domain.repository
 
+import arrow.core.Either
+import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailcomposer.domain.model.MessageSendingStatus
 import ch.protonmail.android.mailmessage.domain.model.MessageId
+import kotlinx.coroutines.flow.Flow
+import me.proton.core.domain.entity.UserId
 
-sealed interface MessageSendingStatus {
-    val messageId: MessageId
-
-    data class MessageSentUndoable(
-        override val messageId: MessageId,
-        val timeRemainingForUndo: Long
-    ) : MessageSendingStatus
-
-    data class MessageSentFinal(
-        override val messageId: MessageId
-    ) : MessageSendingStatus
-
-    data class SendMessageError(
-        override val messageId: MessageId,
-        val reason: SaveSendErrorReason
-    ) : MessageSendingStatus
-
-    data class NoStatus(
-        override val messageId: MessageId
-    ) : MessageSendingStatus
+interface SendingStatusRepository {
+    suspend fun observeMessageSendingStatus(userId: UserId): Flow<MessageSendingStatus>
+    suspend fun queryUnseenMessageSendingStatuses(userId: UserId): Either<DataError, List<MessageSendingStatus>>
+    suspend fun deleteMessageSendingStatuses(userId: UserId, messageIds: List<MessageId>): Either<DataError, Unit>
+    suspend fun markMessageSendingStatusesAsSeen(userId: UserId, messageIds: List<MessageId>): Either<DataError, Unit>
 }
