@@ -26,6 +26,7 @@ import android.webkit.WebResourceResponse
 import android.webkit.WebView
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.runtime.Composable
@@ -135,33 +136,31 @@ fun EditableMessageBodyWebView(
 
     val javascriptCallback = remember { JavascriptCallback(webViewActions.onMessageBodyChanged) }
 
-    Column(modifier = modifier) {
-        key(client) {
-            WebView(
-                onCreated = {
-                    it.settings.builtInZoomControls = true
-                    it.settings.displayZoomControls = false
-                    it.settings.javaScriptEnabled = true
-                    it.settings.safeBrowsingEnabled = true
-                    it.settings.allowContentAccess = false
-                    it.settings.allowFileAccess = false
-                    it.settings.loadWithOverviewMode = true
-                    it.settings.useWideViewPort = true
-                    configureDarkLightMode(it, isSystemInDarkTheme, viewModePreference)
-                    it.addJavascriptInterface(javascriptCallback, JAVASCRIPT_CALLBACK_INTERFACE_NAME)
-                    webView = it
+    key(client) {
+        WebView(
+            onCreated = {
+                it.settings.builtInZoomControls = true
+                it.settings.displayZoomControls = false
+                it.settings.javaScriptEnabled = true
+                it.settings.safeBrowsingEnabled = true
+                it.settings.allowContentAccess = false
+                it.settings.allowFileAccess = false
+                it.settings.loadWithOverviewMode = true
+                it.settings.useWideViewPort = true
+                configureDarkLightMode(it, isSystemInDarkTheme, viewModePreference)
+                it.addJavascriptInterface(javascriptCallback, JAVASCRIPT_CALLBACK_INTERFACE_NAME)
+                webView = it
+            },
+            captureBackPresses = false,
+            state = state,
+            modifier = modifier
+                .fillMaxWidth()
+                .fillMaxHeight()
+                .onSizeChanged { size ->
+                    webViewHeightPx = size.height
                 },
-                captureBackPresses = false,
-                state = state,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .heightIn(max = (WEB_VIEW_FIXED_MAX_HEIGHT - 1).pxToDp())
-                    .onSizeChanged { size ->
-                        webViewHeightPx = size.height
-                    },
-                client = client
-            )
-        }
+            client = client
+        )
     }
 
 }
