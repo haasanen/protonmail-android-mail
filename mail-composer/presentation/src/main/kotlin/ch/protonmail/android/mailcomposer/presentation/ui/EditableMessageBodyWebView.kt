@@ -25,22 +25,14 @@ import android.webkit.WebResourceRequest
 import android.webkit.WebResourceResponse
 import android.webkit.WebView
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.onSizeChanged
-import androidx.hilt.navigation.compose.hiltViewModel
-import ch.protonmail.android.mailcommon.presentation.compose.pxToDp
 import ch.protonmail.android.mailcomposer.presentation.model.DraftDisplayBodyUiModel
 import ch.protonmail.android.mailmessage.domain.model.AttachmentId
 import ch.protonmail.android.mailmessage.domain.model.EmbeddedImage
@@ -52,12 +44,9 @@ import ch.protonmail.android.mailmessage.presentation.extension.isRemoteUnsecure
 import ch.protonmail.android.mailmessage.presentation.model.ViewModePreference
 import ch.protonmail.android.mailmessage.presentation.ui.showInDarkMode
 import ch.protonmail.android.mailmessage.presentation.ui.showInLightMode
-import ch.protonmail.android.mailmessage.presentation.viewmodel.MessageBodyWebViewViewModel
 import com.google.accompanist.web.AccompanistWebViewClient
-import com.google.accompanist.web.LoadingState
 import com.google.accompanist.web.WebView
 import com.google.accompanist.web.rememberWebViewStateWithHTMLData
-import kotlinx.coroutines.delay
 
 // Needed to allow "remember" on javascript interface
 @SuppressLint("JavascriptInterface")
@@ -65,17 +54,12 @@ import kotlinx.coroutines.delay
 fun EditableMessageBodyWebView(
     modifier: Modifier = Modifier,
     messageBodyUiModel: DraftDisplayBodyUiModel,
-    webViewActions: EditableMessageBodyWebView.Actions,
-    onMessageBodyLoaded: (height: Int) -> Unit = { _ -> },
-    viewModel: MessageBodyWebViewViewModel = hiltViewModel()
+    webViewActions: EditableMessageBodyWebView.Actions
 ) {
     val state = rememberWebViewStateWithHTMLData(
         data = messageBodyUiModel.value,
         mimeType = MimeType.Html.value
     )
-
-    val webViewInteractionState = viewModel.state.collectAsState().value
-    val longClickDialogState = remember { mutableStateOf(false) }
 
     val isSystemInDarkTheme = isSystemInDarkTheme()
     val viewModePreference = ViewModePreference.LightMode
@@ -121,19 +105,6 @@ fun EditableMessageBodyWebView(
         }
     }
 
-    var webViewHeightPx by remember { mutableStateOf(0) }
-
-    LaunchedEffect(key1 = state.loadingState, key2 = webViewHeightPx) {
-        if (state.loadingState == LoadingState.Finished && webViewHeightPx > 0) {
-            // The purpose of this delay is to prevent multiple calls to onMessageBodyLoaded. WebView height
-            // may continue to change after the content is loaded, so we wait a bit to make sure the height is stable.
-            // If this block is called again, current coroutine will be cancelled automatically
-            delay(WEB_PAGE_CONTENT_LOAD_TIMEOUT)
-
-            onMessageBodyLoaded(webViewHeightPx)
-        }
-    }
-
     val javascriptCallback = remember { JavascriptCallback(webViewActions.onMessageBodyChanged) }
 
     key(client) {
@@ -153,12 +124,7 @@ fun EditableMessageBodyWebView(
             },
             captureBackPresses = false,
             state = state,
-            modifier = modifier
-                .fillMaxWidth()
-                .fillMaxHeight()
-                .onSizeChanged { size ->
-                    webViewHeightPx = size.height
-                },
+            modifier = modifier,
             client = client
         )
     }
