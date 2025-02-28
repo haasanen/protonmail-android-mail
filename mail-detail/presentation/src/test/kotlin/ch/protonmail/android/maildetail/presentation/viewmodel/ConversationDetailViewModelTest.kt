@@ -116,7 +116,9 @@ import ch.protonmail.android.mailmessage.domain.usecase.UnStarMessages
 import ch.protonmail.android.mailmessage.presentation.model.MessageBodyExpandCollapseMode
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.BottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.ContactActionsBottomSheetState
+import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.LabelAsBottomSheetEntryPoint
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.LabelAsBottomSheetState
+import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MoveToBottomSheetEntryPoint
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MoveToBottomSheetState
 import ch.protonmail.android.mailsettings.domain.model.PrivacySettings
 import ch.protonmail.android.mailsettings.domain.usecase.privacy.ObservePrivacySettings
@@ -907,6 +909,7 @@ class ConversationDetailViewModelTest {
         // In moveTo system labels are already resolved to local ids
         givenReducerReturnsBottomSheetActions()
         val localSpamLabelId = LabelId("4")
+        val moveToEntryPoint = MoveToBottomSheetEntryPoint.Conversation
 
         coEvery {
             move(
@@ -930,7 +933,7 @@ class ConversationDetailViewModelTest {
             bottomSheetState = BottomSheetState(
                 MoveToBottomSheetState.Data(
                     moveToDestinations = MailLabelUiModelTestData.spamAndCustomFolder,
-                    null
+                    moveToEntryPoint
                 )
             )
         )
@@ -952,7 +955,7 @@ class ConversationDetailViewModelTest {
             advanceUntilIdle()
             viewModel.submit(
                 ConversationDetailViewAction.MoveToDestinationSelected(
-                    selectedLabel.id, "selectedLabel", null
+                    selectedLabel.id, "selectedLabel", moveToEntryPoint
                 )
             )
             advanceUntilIdle()
@@ -965,16 +968,18 @@ class ConversationDetailViewModelTest {
     @Test
     fun `verify label conversation is called and exit is not called when labels get confirmed`() = runTest {
         // Given
+        val labelAsEntryPoint = LabelAsBottomSheetEntryPoint.Conversation
         val event = LabelAsBottomSheetState.LabelAsBottomSheetEvent.ActionData(
             customLabelList = MailLabelUiModelTestData.customLabelList,
             selectedLabels = listOf<LabelId>().toImmutableList(),
-            partiallySelectedLabels = listOf<LabelId>().toImmutableList()
+            partiallySelectedLabels = listOf<LabelId>().toImmutableList(),
+            entryPoint = labelAsEntryPoint
         )
 
         val dataState = ConversationDetailState.Loading.copy(
             bottomSheetState = BottomSheetState(
                 LabelAsBottomSheetState.Data(
-                    LabelUiModelWithSelectedStateSample.customLabelListWithoutSelection, null
+                    LabelUiModelWithSelectedStateSample.customLabelListWithoutSelection, labelAsEntryPoint
                 )
             )
         )
@@ -1019,7 +1024,7 @@ class ConversationDetailViewModelTest {
             bottomSheetState = BottomSheetState(
                 LabelAsBottomSheetState.Data(
                     LabelUiModelWithSelectedStateSample.customLabelListWithDocumentSelected,
-                    null
+                    labelAsEntryPoint
                 )
             )
         )
@@ -1029,7 +1034,7 @@ class ConversationDetailViewModelTest {
             advanceUntilIdle()
             viewModel.submit(ConversationDetailViewAction.LabelAsToggleAction(LabelSample.Document.labelId))
             advanceUntilIdle()
-            viewModel.submit(ConversationDetailViewAction.LabelAsConfirmed(archiveSelected, null))
+            viewModel.submit(ConversationDetailViewAction.LabelAsConfirmed(archiveSelected, labelAsEntryPoint))
             advanceUntilIdle()
 
             // Then
@@ -1053,17 +1058,19 @@ class ConversationDetailViewModelTest {
     fun `verify label conversation is called and exit is set when labels get confirmed and should be archived`() =
         runTest {
             // Given
+            val labelAsEntryPoint = LabelAsBottomSheetEntryPoint.Conversation
             val event = LabelAsBottomSheetState.LabelAsBottomSheetEvent.ActionData(
                 customLabelList = MailLabelUiModelTestData.customLabelList,
                 selectedLabels = listOf<LabelId>().toImmutableList(),
-                partiallySelectedLabels = listOf<LabelId>().toImmutableList()
+                partiallySelectedLabels = listOf<LabelId>().toImmutableList(),
+                entryPoint = labelAsEntryPoint
             )
 
             val dataState = ConversationDetailState.Loading.copy(
                 bottomSheetState = BottomSheetState(
                     LabelAsBottomSheetState.Data(
                         LabelUiModelWithSelectedStateSample.customLabelListWithoutSelection,
-                        null
+                        labelAsEntryPoint
                     )
                 )
             )
@@ -1108,13 +1115,16 @@ class ConversationDetailViewModelTest {
                 bottomSheetState = BottomSheetState(
                     LabelAsBottomSheetState.Data(
                         LabelUiModelWithSelectedStateSample.customLabelListWithDocumentSelected,
-                        null
+                        labelAsEntryPoint
                     )
                 )
             )
 
             coEvery {
-                reducer.newStateFrom(any(), ConversationDetailViewAction.LabelAsConfirmed(archiveSelected, null))
+                reducer.newStateFrom(
+                    any(),
+                    ConversationDetailViewAction.LabelAsConfirmed(archiveSelected, labelAsEntryPoint)
+                )
             } returns ConversationDetailState.Loading.copy(
                 exitScreenWithMessageEffect = Effect.of(
                     ActionResult.UndoableActionResult(TextUiModel(string.conversation_moved_to_archive))
@@ -1126,7 +1136,7 @@ class ConversationDetailViewModelTest {
                 advanceUntilIdle()
                 viewModel.submit(ConversationDetailViewAction.LabelAsToggleAction(LabelSample.Document.labelId))
                 advanceUntilIdle()
-                viewModel.submit(ConversationDetailViewAction.LabelAsConfirmed(true, null))
+                viewModel.submit(ConversationDetailViewAction.LabelAsConfirmed(true, labelAsEntryPoint))
                 advanceUntilIdle()
 
                 // Then
@@ -1148,17 +1158,19 @@ class ConversationDetailViewModelTest {
     @Test
     fun `verify label conversation adds previously partially selected label`() = runTest {
         // Given
+        val labelAsEntryPoint = LabelAsBottomSheetEntryPoint.Conversation
         val event = LabelAsBottomSheetState.LabelAsBottomSheetEvent.ActionData(
             customLabelList = MailLabelUiModelTestData.customLabelList,
             selectedLabels = listOf(LabelSample.Document.labelId, LabelSample.Label2021.labelId).toImmutableList(),
-            partiallySelectedLabels = listOf(LabelSample.Label2022.labelId).toImmutableList()
+            partiallySelectedLabels = listOf(LabelSample.Label2022.labelId).toImmutableList(),
+            entryPoint = labelAsEntryPoint
         )
 
         val dataState = ConversationDetailState.Loading.copy(
             bottomSheetState = BottomSheetState(
                 LabelAsBottomSheetState.Data(
                     LabelUiModelWithSelectedStateSample.customLabelListWithVariousStates,
-                    null
+                    labelAsEntryPoint
                 )
             )
         )
@@ -1205,7 +1217,10 @@ class ConversationDetailViewModelTest {
             )
         } returns dataState.copy(
             bottomSheetState = BottomSheetState(
-                LabelAsBottomSheetState.Data(LabelUiModelWithSelectedStateSample.customLabelListAllSelected, null)
+                LabelAsBottomSheetState.Data(
+                    LabelUiModelWithSelectedStateSample.customLabelListAllSelected,
+                    labelAsEntryPoint
+                )
             )
         )
 
@@ -1214,7 +1229,7 @@ class ConversationDetailViewModelTest {
             advanceUntilIdle()
             viewModel.submit(ConversationDetailViewAction.LabelAsToggleAction(LabelSample.Label2022.labelId))
             advanceUntilIdle()
-            viewModel.submit(ConversationDetailViewAction.LabelAsConfirmed(archiveSelected, null))
+            viewModel.submit(ConversationDetailViewAction.LabelAsConfirmed(archiveSelected, labelAsEntryPoint))
             advanceUntilIdle()
 
             // Then
@@ -2025,7 +2040,7 @@ class ConversationDetailViewModelTest {
             bottomSheetState = BottomSheetState(
                 MoveToBottomSheetState.Data(
                     moveToDestinations = MailLabelUiModelTestData.spamAndCustomFolder,
-                    null
+                    entryPoint = MoveToBottomSheetEntryPoint.Conversation
                 )
             )
         )

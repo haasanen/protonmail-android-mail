@@ -167,7 +167,9 @@ import ch.protonmail.android.mailmessage.presentation.model.MessageBodyExpandCol
 import ch.protonmail.android.mailmessage.presentation.model.ViewModePreference
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.BottomSheetVisibilityEffect
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.DetailMoreActionsBottomSheetState
+import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.LabelAsBottomSheetEntryPoint
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.LabelAsBottomSheetState
+import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MoveToBottomSheetEntryPoint
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MoveToBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.reducer.BottomSheetReducer
 import ch.protonmail.android.mailmessage.presentation.reducer.ContactActionsBottomSheetReducer
@@ -1855,6 +1857,7 @@ class ConversationDetailViewModelIntegrationTest {
             messageIdToOpen
         )
         val messageId = MessageSample.Invoice.messageId
+        val labelAsEntryPoint = LabelAsBottomSheetEntryPoint.Message(messageId)
         val labelId = SystemLabelId.Archive.labelId
         coEvery { observeConversationMessages(userId, any(), labelId) } returns flowOf(messages.right())
         coEvery {
@@ -1906,7 +1909,7 @@ class ConversationDetailViewModelIntegrationTest {
             assertEquals(
                 LabelAsBottomSheetState.Data(
                     labelUiModelsWithSelectedState,
-                    messageId
+                    labelAsEntryPoint
                 ),
                 bottomSheetContentState
             )
@@ -1918,6 +1921,7 @@ class ConversationDetailViewModelIntegrationTest {
     @Test
     fun `should relabel and forward should archive when label as is confirmed and archive is selected`() = runTest {
         // Given
+        val labelAsEntryPoint = LabelAsBottomSheetEntryPoint.Message(MessageSample.Invoice.messageId)
         val messages = ConversationMessages(
             nonEmptyListOf(
                 MessageSample.AugWeatherForecast,
@@ -1971,12 +1975,7 @@ class ConversationDetailViewModelIntegrationTest {
             skipItems(1)
             viewModel.submit(ConversationDetailViewAction.LabelAsToggleAction(LabelSample.Label2022.labelId))
             skipItems(1)
-            viewModel.submit(
-                ConversationDetailViewAction.LabelAsConfirmed(
-                    true,
-                    MessageSample.Invoice.messageId
-                )
-            )
+            viewModel.submit(ConversationDetailViewAction.LabelAsConfirmed(true, labelAsEntryPoint))
             skipItems(1)
 
             // Then
@@ -2126,6 +2125,7 @@ class ConversationDetailViewModelIntegrationTest {
     fun `should show message move to bottom sheet and load data when it is requested`() = runTest {
         // Given
         val messageId = MessageSample.Invoice.messageId
+        val moveToEntryPoint = MoveToBottomSheetEntryPoint.Message(messageId)
         val messages = ConversationMessages(
             nonEmptyListOf(
                 MessageSample.AugWeatherForecast,
@@ -2172,7 +2172,7 @@ class ConversationDetailViewModelIntegrationTest {
                         folders = listOf(MailLabelTestData.buildCustomFolder(id = "folder1")),
                         labels = listOf()
                     ).toUiModels().let { it.folders + it.systemLabels }.toImmutableList(),
-                    messageId
+                    moveToEntryPoint
                 ),
                 bottomSheetContentState
             )
@@ -2193,6 +2193,7 @@ class ConversationDetailViewModelIntegrationTest {
             MessageSample.AugWeatherForecast.messageId
         )
         val messageId = MessageSample.Invoice.messageId
+        val moveToEntryPoint = MoveToBottomSheetEntryPoint.Message(messageId)
         val labelId = SystemLabelId.Archive.labelId
         // in moveTo functionality system labels are already resolved to local label id
         val localSpamLabelId = LabelId("4")
@@ -2222,7 +2223,7 @@ class ConversationDetailViewModelIntegrationTest {
             skipItems(1)
             viewModel.submit(
                 ConversationDetailViewAction.MoveToDestinationSelected(
-                    MailLabelTestData.spamSystemLabel.id, SystemLabelId.Spam.toString(), messageId
+                    MailLabelTestData.spamSystemLabel.id, SystemLabelId.Spam.toString(), moveToEntryPoint
                 )
             )
             skipItems(1)

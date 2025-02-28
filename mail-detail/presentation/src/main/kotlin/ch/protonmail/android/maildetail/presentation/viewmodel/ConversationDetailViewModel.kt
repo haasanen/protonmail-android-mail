@@ -123,7 +123,9 @@ import ch.protonmail.android.mailmessage.domain.usecase.UnStarMessages
 import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentListExpandCollapseMode
 import ch.protonmail.android.mailmessage.presentation.model.attachment.isExpandable
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.ContactActionsBottomSheetState
+import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.LabelAsBottomSheetEntryPoint
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.LabelAsBottomSheetState
+import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MoveToBottomSheetEntryPoint
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MoveToBottomSheetState
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailsettings.domain.usecase.privacy.ObservePrivacySettings
@@ -270,16 +272,19 @@ class ConversationDetailViewModel @Inject constructor(
             is ConversationDetailViewAction.DeleteMessageConfirmed -> handleDeleteMessageConfirmed(action)
             is RequestMoveToBottomSheet -> showMoveToBottomSheet(action)
             is MoveToDestinationSelected -> onMoveToDestinationSelected(
-                action.mailLabelId, action.mailLabelText, action.messageId
+                action.mailLabelId, action.mailLabelText, action.entryPoint
             )
+
             is ConversationDetailViewAction.MoveToInbox -> moveConversationToInbox()
             is RequestConversationLabelAsBottomSheet -> showConversationLabelAsBottomSheet(action)
             is RequestContactActionsBottomSheet -> showContactActionsBottomSheetAndLoadData(action)
             is LabelAsConfirmed -> onLabelAsConfirmed(action)
             is ConversationDetailViewAction.RequestMessageMoreActionsBottomSheet ->
                 showMessageMoreActionsBottomSheet(action)
+
             is ConversationDetailViewAction.RequestConversationMoreActionsBottomSheet ->
                 showConversationMoreActionsBottomSheet(action)
+
             is ConversationDetailViewAction.RequestMessageLabelAsBottomSheet -> showMessageLabelAsBottomSheet(action)
             is ConversationDetailViewAction.RequestMessageMoveToBottomSheet -> showMessageMoveToBottomSheet(action)
 
@@ -290,6 +295,7 @@ class ConversationDetailViewModel @Inject constructor(
             is ConversationDetailViewAction.OnAttachmentClicked -> {
                 onOpenAttachmentClicked(action.messageId, action.attachmentId)
             }
+
             is ConversationDetailViewAction.ExpandOrCollapseAttachmentList -> {
                 handleExpandOrCollapseAttachmentList(action.messageId)
             }
@@ -302,15 +308,19 @@ class ConversationDetailViewModel @Inject constructor(
             is ConversationDetailViewAction.TrashMessage -> moveMessageToSystemFolder(
                 action.messageId, SystemLabelId.Trash, action
             )
+
             is ConversationDetailViewAction.ArchiveMessage -> moveMessageToSystemFolder(
                 action.messageId, SystemLabelId.Archive, action
             )
+
             is ConversationDetailViewAction.MoveMessageToSpam -> moveMessageToSystemFolder(
                 action.messageId, SystemLabelId.Spam, action
             )
+
             is ConversationDetailViewAction.MoveMessageToInbox -> moveMessageToSystemFolder(
                 action.messageId, SystemLabelId.Inbox, action
             )
+
             is ConversationDetailViewAction.StarMessage -> handleStarMessage(action.messageId)
             is ConversationDetailViewAction.UnStarMessage -> handleUnStarMessage(action.messageId)
 
@@ -603,12 +613,15 @@ class ConversationDetailViewModel @Inject constructor(
         val customActions = this.filterIsInstance<MailLabel.Custom>()
         val mailLabels = MailLabels(systemActions, customActions, emptyList())
 
+        val entryPoint = messageIdInConversation?.let { MoveToBottomSheetEntryPoint.Message(it) }
+            ?: MoveToBottomSheetEntryPoint.Conversation
+
         return ConversationDetailEvent.ConversationBottomSheetEvent(
             MoveToBottomSheetState.MoveToBottomSheetEvent.ActionData(
                 moveToDestinations = mailLabels.toUiModels().let {
                     it.folders + it.systemLabels
                 }.toImmutableList(),
-                messageIdInConversation = messageIdInConversation
+                entryPoint = entryPoint
             )
         )
     }
@@ -659,10 +672,12 @@ class ConversationDetailViewModel @Inject constructor(
     }
 
     private fun onLabelAsConfirmed(operation: LabelAsConfirmed) {
-        if (operation.messageId != null) {
-            onMessageLabelAsConfirmed(operation.archiveSelected, operation.messageId)
-        } else {
-            onConversationLabelAsConfirmed(operation.archiveSelected)
+        when (operation.entryPoint) {
+            LabelAsBottomSheetEntryPoint.Conversation -> onConversationLabelAsConfirmed(operation.archiveSelected)
+            is LabelAsBottomSheetEntryPoint.Message ->
+                onMessageLabelAsConfirmed(operation.archiveSelected, operation.entryPoint.messageId)
+
+            else -> throw IllegalStateException("Invalid entry point for label as confirmed")
         }
     }
 
@@ -685,7 +700,7 @@ class ConversationDetailViewModel @Inject constructor(
                         Timber.e("Label message failed: $it")
                         ConversationDetailEvent.ErrorLabelingConversation
                     },
-                    ifRight = { LabelAsConfirmed(archiveSelected, messageId) }
+                    ifRight = { LabelAsConfirmed(archiveSelected, LabelAsBottomSheetEntryPoint.Message(messageId)) }
                 )
             emitNewStateFrom(operation)
         }
@@ -708,14 +723,14 @@ class ConversationDetailViewModel @Inject constructor(
             if (archiveSelected) {
                 performSafeExitAction(
                     onLeft = ConversationDetailEvent.ErrorLabelingConversation,
-                    onRight = LabelAsConfirmed(true, null)
+                    onRight = LabelAsConfirmed(true, LabelAsBottomSheetEntryPoint.Conversation)
                 ) {
                     labelAction()
                 }
             } else {
                 val operation = labelAction().fold(
                     ifLeft = { ConversationDetailEvent.ErrorLabelingConversation },
-                    ifRight = { LabelAsConfirmed(false, null) }
+                    ifRight = { LabelAsConfirmed(true, LabelAsBottomSheetEntryPoint.Conversation) }
                 )
                 emitNewStateFrom(operation)
             }
@@ -907,12 +922,19 @@ class ConversationDetailViewModel @Inject constructor(
     private fun onMoveToDestinationSelected(
         mailLabelId: MailLabelId,
         mailLabelText: String,
-        messageId: MessageId?
+        entryPoint: MoveToBottomSheetEntryPoint
     ) {
-        if (messageId == null) {
-            onConversationMoveToDestinationSelected(mailLabelId, mailLabelText)
-        } else {
-            onMessageMoveToDestinationSelected(mailLabelId, mailLabelText, messageId)
+        when (entryPoint) {
+            MoveToBottomSheetEntryPoint.Conversation ->
+                onConversationMoveToDestinationSelected(mailLabelId, mailLabelText)
+
+            is MoveToBottomSheetEntryPoint.Message ->
+                onMessageMoveToDestinationSelected(mailLabelId, mailLabelText, entryPoint.messageId)
+
+            else -> {
+                Timber.d("Unsupported entry point - $entryPoint")
+                return
+            }
         }
     }
 
@@ -1048,6 +1070,7 @@ class ConversationDetailViewModel @Inject constructor(
                         attachmentGroupUiModel.isExpandable().not() -> AttachmentListExpandCollapseMode.NotApplicable
                         attachmentGroupUiModel.expandCollapseMode == AttachmentListExpandCollapseMode.Expanded ->
                             AttachmentListExpandCollapseMode.Collapsed
+
                         else -> AttachmentListExpandCollapseMode.Expanded
                     }
                     val operation = ConversationDetailEvent.AttachmentListExpandCollapseModeChanged(

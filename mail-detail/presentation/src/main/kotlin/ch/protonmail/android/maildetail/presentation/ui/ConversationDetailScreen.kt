@@ -200,10 +200,10 @@ fun ConversationDetailScreen(
                     state = bottomSheetContentState,
                     actions = MoveToBottomSheetContent.Actions(
                         onAddFolderClick = actions.onAddFolder,
-                        onFolderSelected = { folderId, folderName, messageIdInConversation ->
+                        onFolderSelected = { folderId, folderName, entryPoint ->
                             viewModel.submit(
                                 ConversationDetailViewAction.MoveToDestinationSelected(
-                                    folderId, folderName, messageIdInConversation
+                                    folderId, folderName, entryPoint
                                 )
                             )
                         },
@@ -216,9 +216,9 @@ fun ConversationDetailScreen(
                     actions = LabelAsBottomSheetContent.Actions(
                         onAddLabelClick = actions.onAddLabel,
                         onLabelAsSelected = { viewModel.submit(ConversationDetailViewAction.LabelAsToggleAction(it)) },
-                        onDoneClick = { archiveSelected, messageIdInConversation ->
+                        onDoneClick = { archiveSelected, entryPoint ->
                             viewModel.submit(
-                                ConversationDetailViewAction.LabelAsConfirmed(archiveSelected, messageIdInConversation)
+                                ConversationDetailViewAction.LabelAsConfirmed(archiveSelected, entryPoint)
                             )
                         }
                     )

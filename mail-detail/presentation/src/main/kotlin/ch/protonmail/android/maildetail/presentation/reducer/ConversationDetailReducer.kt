@@ -56,6 +56,7 @@ import ch.protonmail.android.maildetail.presentation.model.MessageIdUiModel
 import ch.protonmail.android.maildetail.presentation.model.ReportPhishingDialogState
 import ch.protonmail.android.maildetail.presentation.model.TrashedMessagesBannerState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.BottomSheetOperation
+import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.LabelAsBottomSheetEntryPoint
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.LabelAsBottomSheetState.LabelAsBottomSheetAction.LabelToggled
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MoveToBottomSheetState.MoveToBottomSheetAction.MoveToDestinationSelected
 import ch.protonmail.android.mailmessage.presentation.reducer.BottomSheetReducer
@@ -226,7 +227,10 @@ class ConversationDetailReducer @Inject constructor(
         }
 
         is ConversationDetailViewAction.LabelAsConfirmed ->
-            when (operation.archiveSelected && operation.messageId == null) {
+            when (
+                operation.archiveSelected &&
+                    operation.entryPoint == LabelAsBottomSheetEntryPoint.Conversation
+            ) {
                 true -> Effect.of(DefinitiveActionResult(TextUiModel(R.string.conversation_moved_to_archive)))
                 false -> exitScreenWithMessageEffect
             }

@@ -38,6 +38,7 @@ import ch.protonmail.android.maildetail.presentation.model.TrashedMessagesBanner
 import ch.protonmail.android.maildetail.presentation.sample.ConversationDetailMessageUiModelSample
 import ch.protonmail.android.maillabel.presentation.MailLabelUiModel
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.BottomSheetState
+import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MoveToBottomSheetEntryPoint
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MoveToBottomSheetState
 import kotlinx.collections.immutable.toImmutableList
 
@@ -70,7 +71,7 @@ object ConversationDetailsPreviewData {
         bottomSheetState = BottomSheetState(
             MoveToBottomSheetState.Data(
                 moveToDestinations = emptyList<MailLabelUiModel>().toImmutableList(),
-                messageIdInConversation = null
+                entryPoint = MoveToBottomSheetEntryPoint.Conversation
             )
         ),
         exitScreenEffect = Effect.empty(),
@@ -119,7 +120,7 @@ object ConversationDetailsPreviewData {
         bottomSheetState = BottomSheetState(
             MoveToBottomSheetState.Data(
                 moveToDestinations = emptyList<MailLabelUiModel>().toImmutableList(),
-                messageIdInConversation = null
+                entryPoint = MoveToBottomSheetEntryPoint.Conversation
             )
         ),
         exitScreenEffect = Effect.empty(),
