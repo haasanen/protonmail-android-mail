@@ -29,7 +29,6 @@ import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcomposer.domain.model.MessageSendingStatus
 import ch.protonmail.android.mailcomposer.domain.usecase.DiscardDraft
 import ch.protonmail.android.mailcomposer.domain.usecase.ObserveSendingMessagesStatus
-import ch.protonmail.android.mailcomposer.domain.usecase.ResetSendingMessagesStatus
 import ch.protonmail.android.maillabel.domain.SelectedMailLabelId
 import ch.protonmail.android.mailmailbox.domain.usecase.RecordMailboxScreenView
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
@@ -77,8 +76,6 @@ class HomeViewModelTest {
 
     private val recordMailboxScreenView = mockk<RecordMailboxScreenView>(relaxUnitFun = true)
 
-    private val resetSendingMessageStatus = mockk<ResetSendingMessagesStatus>(relaxUnitFun = true)
-
     private val selectedMailLabelId = mockk<SelectedMailLabelId>(relaxUnitFun = true)
 
     private val shouldPresentPinInsertionScreen = mockk<ShouldPresentPinInsertionScreen> {
@@ -96,7 +93,6 @@ class HomeViewModelTest {
             networkManager,
             observeSendingMessagesStatus,
             recordMailboxScreenView,
-            resetSendingMessageStatus,
             selectedMailLabelId,
             discardDraft,
             observePrimaryUserMock,
@@ -264,7 +260,6 @@ class HomeViewModelTest {
 
                 // Then
                 assertEquals(expectedItem, actualItem)
-                coVerify { resetSendingMessageStatus(user.userId) }
             }
         }
 

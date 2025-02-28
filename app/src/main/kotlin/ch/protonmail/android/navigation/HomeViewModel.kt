@@ -33,7 +33,6 @@ import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcomposer.domain.model.MessageSendingStatus
 import ch.protonmail.android.mailcomposer.domain.usecase.DiscardDraft
 import ch.protonmail.android.mailcomposer.domain.usecase.ObserveSendingMessagesStatus
-import ch.protonmail.android.mailcomposer.domain.usecase.ResetSendingMessagesStatus
 import ch.protonmail.android.maillabel.domain.SelectedMailLabelId
 import ch.protonmail.android.mailmailbox.domain.usecase.RecordMailboxScreenView
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
@@ -64,7 +63,6 @@ class HomeViewModel @Inject constructor(
     private val networkManager: NetworkManager,
     private val observeSendingMessagesStatus: ObserveSendingMessagesStatus,
     private val recordMailboxScreenView: RecordMailboxScreenView,
-    private val resetSendingMessageStatus: ResetSendingMessagesStatus,
     private val selectedMailLabelId: SelectedMailLabelId,
     private val discardDraft: DiscardDraft,
     observePrimaryUser: ObservePrimaryUser,
@@ -91,7 +89,6 @@ class HomeViewModel @Inject constructor(
             observeSendingMessagesStatus(user.userId)
         }.onEach {
             emitNewStateFor(it)
-            resetSendingMessageStatus(primaryUser.first().userId)
         }.launchIn(viewModelScope)
 
         shareIntentObserver()
