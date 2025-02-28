@@ -19,36 +19,37 @@
 package ch.protonmail.android.mailmailbox.presentation.mailbox
 
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.SwipeToDismissBox
+import androidx.compose.material3.SwipeToDismissBoxDefaults
 import androidx.compose.material3.SwipeToDismissBoxState
 import androidx.compose.material3.SwipeToDismissBoxValue
-import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.Density
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.SwipeActionsUiModel
-import ch.protonmail.android.design.compose.theme.ProtonDimens
-import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.mailcommon.presentation.compose.SwipeThreshold
-import ch.protonmail.android.mailmailbox.presentation.mailbox.SwipeActions.SwipeActionResetTimeout
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.flow.filter
 import me.proton.core.mailsettings.domain.entity.SwipeAction
 
 @Composable
@@ -58,140 +59,148 @@ fun SwipeableItem(
     swipeActionCallbacks: SwipeActions.Actions,
     swipingEnabled: Boolean = true,
     content: @Composable () -> Unit
-) {
-    var isActionExecuted by remember { mutableStateOf(false) }
+) = BoxWithConstraints(modifier) {
+    val width = this.maxWidth.value
+    val haptic = LocalHapticFeedback.current
+    val threshold = 0.3f
 
-    val swipeState = rememberSwipeToDismissBoxState(
-        confirmValueChange = { dismissValue ->
-            if (!isActionExecuted) {
-                when (dismissValue) {
+    val dismissState = rememberSwipeToDismissBoxState(
+        confirmValueChange = { dismissBoxValue ->
+            swipeActionsUiModel?.let {
+                when (dismissBoxValue) {
                     SwipeToDismissBoxValue.StartToEnd -> {
-                        swipeActionsUiModel?.start?.swipeAction?.let {
-                            isActionExecuted = true
-                            callbackForSwipeAction(it, swipeActionCallbacks)()
-                        }
+                        callbackForSwipeAction(it.start.swipeAction, swipeActionCallbacks)()
                     }
+
                     SwipeToDismissBoxValue.EndToStart -> {
-                        swipeActionsUiModel?.end?.swipeAction?.let {
-                            isActionExecuted = true
-                            callbackForSwipeAction(it, swipeActionCallbacks)()
-                        }
+                        callbackForSwipeAction(it.end.swipeAction, swipeActionCallbacks)()
                     }
-                    else -> false
+
+                    SwipeToDismissBoxValue.Settled -> Unit
                 }
             }
-            true
+            false
         },
-        positionalThreshold = SwipeThreshold.defaultPositionalThreshold()
+        positionalThreshold = { _ ->
+            width * threshold
+        },
+        enableFling = false
     )
 
-    // Haptic Feedback
-    val haptic = LocalHapticFeedback.current
-    LaunchedEffect(key1 = swipeState.targetValue) {
-        if (swipeState.targetValue != SwipeToDismissBoxValue.Settled) {
-            withContext(Dispatchers.IO) {
-                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+    val progressFlow = remember { snapshotFlow { dismissState.progress } }
+    var hapticTriggered by remember { mutableStateOf(false) }
+    LaunchedEffect(Unit) {
+        progressFlow
+            .filter { it > threshold }
+            .collect {
+                if (it == 1.0f) {
+                    hapticTriggered = false
+                } else if (!hapticTriggered) {
+                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                    hapticTriggered = true
+                }
             }
-        }
-    }
-
-    // Reset the swipe state after actions are performed
-    if (swipeState.currentValue != SwipeToDismissBoxValue.Settled) {
-        LaunchedEffect(swipeState) {
-            swipeState.reset()
-
-            // Reset the action execution flag after the animation completes
-            delay(SwipeActionResetTimeout)
-            isActionExecuted = false
-        }
     }
 
     SwipeToDismissBox(
-        state = swipeState,
         modifier = modifier,
+        state = dismissState,
+        gesturesEnabled = swipingEnabled,
+        enableDismissFromStartToEnd = swipeActionsUiModel?.start?.swipeAction != SwipeAction.None,
+        enableDismissFromEndToStart = swipeActionsUiModel?.end?.swipeAction != SwipeAction.None,
         backgroundContent = {
-            swipeActionsUiModel?.let {
-                DismissBackground(
-                    dismissState = swipeState,
-                    swipeActionsUiModel = swipeActionsUiModel
+            swipeActionsUiModel ?: return@SwipeToDismissBox
+
+            val properties = when (dismissState.dismissDirection) {
+                SwipeToDismissBoxValue.StartToEnd -> SwipeActionProperties(
+                    swipeActionsUiModel.start.getColor(),
+                    Alignment.CenterStart,
+                    swipeActionsUiModel.start.icon,
+                    swipeActionsUiModel.start.descriptionRes
+                )
+
+                SwipeToDismissBoxValue.EndToStart -> SwipeActionProperties(
+                    swipeActionsUiModel.end.getColor(),
+                    Alignment.CenterEnd,
+                    swipeActionsUiModel.end.icon,
+                    swipeActionsUiModel.end.descriptionRes
+                )
+
+                SwipeToDismissBoxValue.Settled -> return@SwipeToDismissBox
+            }
+
+            val scale by animateFloatAsState(
+                targetValue = when (dismissState.targetValue) {
+                    SwipeToDismissBoxValue.Settled -> 0.75f
+                    SwipeToDismissBoxValue.StartToEnd, SwipeToDismissBoxValue.EndToStart -> 1f
+                },
+                animationSpec = tween(durationMillis = 500),
+                label = "swipe_scale"
+            )
+
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(properties.color)
+                    .padding(horizontal = me.proton.core.compose.theme.ProtonDimens.MediumSpacing),
+                contentAlignment = properties.alignment
+            ) {
+                Icon(
+                    modifier = Modifier
+                        .align(properties.alignment)
+                        .scale(scale),
+                    painter = painterResource(id = properties.icon),
+                    contentDescription = stringResource(id = properties.description),
+                    tint = me.proton.core.compose.theme.ProtonTheme.colors.iconInverted
                 )
             }
-        },
-        content = {
-            content()
-        },
-        enableDismissFromStartToEnd = swipingEnabled && swipeActionsUiModel?.start != null,
-        enableDismissFromEndToStart = swipingEnabled && swipeActionsUiModel?.end != null
-    )
-}
-
-@Suppress("ReturnCount")
-@Composable
-fun DismissBackground(dismissState: SwipeToDismissBoxState, swipeActionsUiModel: SwipeActionsUiModel) {
-    val direction = dismissState.dismissDirection
-    if (direction == SwipeToDismissBoxValue.Settled) return
-
-    val color = when (direction) {
-        SwipeToDismissBoxValue.StartToEnd -> swipeActionsUiModel.start.getColor()
-        SwipeToDismissBoxValue.EndToStart -> swipeActionsUiModel.end.getColor()
-        else -> return
-    }
-
-    val alignment = when (direction) {
-        SwipeToDismissBoxValue.StartToEnd -> Alignment.CenterStart
-        SwipeToDismissBoxValue.EndToStart -> Alignment.CenterEnd
-        else -> return
-    }
-
-    val icon = when (direction) {
-        SwipeToDismissBoxValue.StartToEnd -> swipeActionsUiModel.start.icon
-        SwipeToDismissBoxValue.EndToStart -> swipeActionsUiModel.end.icon
-        else -> return
-    }
-
-    val description = when (direction) {
-        SwipeToDismissBoxValue.StartToEnd -> swipeActionsUiModel.start.descriptionRes
-        SwipeToDismissBoxValue.EndToStart -> swipeActionsUiModel.end.descriptionRes
-        else -> return
-    }
-
-    val scale by animateFloatAsState(
-        targetValue = if (dismissState.targetValue == SwipeToDismissBoxValue.Settled) 0.75f else 1f,
-        label = "swipe_scale"
-    )
-
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(color)
-            .padding(horizontal = ProtonDimens.Spacing.ExtraLarge),
-        contentAlignment = alignment
+        }
     ) {
-        Icon(
-            modifier = Modifier
-                .scale(scale),
-            painter = painterResource(id = icon),
-            contentDescription = stringResource(id = description),
-            tint = ProtonTheme.colors.iconInverted
-        )
+        content()
     }
 }
 
+// Same as the one exposed by M3 with the addition of `enableFling`: this is needed as otherwise
+// the default `velocityThreshold` might make users trigger swipe actions by mistake.
+// See https://issuetracker.google.com/issues/252334353
+@Composable
+private fun rememberSwipeToDismissBoxState(
+    initialValue: SwipeToDismissBoxValue = SwipeToDismissBoxValue.Settled,
+    confirmValueChange: (SwipeToDismissBoxValue) -> Boolean = { true },
+    positionalThreshold: (totalDistance: Float) -> Float = SwipeToDismissBoxDefaults.positionalThreshold,
+    enableFling: Boolean = false
+): SwipeToDismissBoxState {
+    val density = if (enableFling) LocalDensity.current else Density(Float.POSITIVE_INFINITY)
+    return rememberSaveable(
+        saver = SwipeToDismissBoxState.Saver(
+            confirmValueChange = confirmValueChange,
+            density = density,
+            positionalThreshold = positionalThreshold
+        )
+    ) {
+        SwipeToDismissBoxState(initialValue, density, confirmValueChange, positionalThreshold)
+    }
+}
 
-fun callbackForSwipeAction(action: SwipeAction, swipeActionCallbacks: SwipeActions.Actions) = when (action) {
+private data class SwipeActionProperties(
+    val color: Color,
+    val alignment: Alignment,
+    val icon: Int,
+    val description: Int
+)
+
+private fun callbackForSwipeAction(action: SwipeAction, swipeActionCallbacks: SwipeActions.Actions) = when (action) {
     SwipeAction.None -> swipeActionCallbacks.onNone
     SwipeAction.Trash -> swipeActionCallbacks.onTrash
     SwipeAction.Spam -> swipeActionCallbacks.onSpam
     SwipeAction.Star -> swipeActionCallbacks.onStar
     SwipeAction.Archive -> swipeActionCallbacks.onArchive
     SwipeAction.MarkRead -> swipeActionCallbacks.onMarkRead
-    SwipeAction.LabelAs -> swipeActionCallbacks.onLabelAs
     SwipeAction.MoveTo -> swipeActionCallbacks.onMoveTo
+    SwipeAction.LabelAs -> swipeActionCallbacks.onLabelAs
 }
 
 object SwipeActions {
-    const val SwipeActionResetTimeout = 500L
-
     data class Actions(
         val onNone: () -> Unit = {},
         val onTrash: () -> Unit,
@@ -199,7 +208,7 @@ object SwipeActions {
         val onStar: () -> Unit,
         val onArchive: () -> Unit,
         val onMarkRead: () -> Unit,
-        val onLabelAs: () -> Unit,
-        val onMoveTo: () -> Unit
+        val onMoveTo: () -> Unit,
+        val onLabelAs: () -> Unit
     )
 }

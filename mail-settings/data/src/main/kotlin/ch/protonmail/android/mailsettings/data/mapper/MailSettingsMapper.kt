@@ -109,9 +109,9 @@ object MailSettingsMapper {
         uniffi.proton_mail_uniffi.SwipeAction.STAR -> IntEnum(SwipeAction.Star.value, SwipeAction.Star)
         uniffi.proton_mail_uniffi.SwipeAction.ARCHIVE -> IntEnum(SwipeAction.Archive.value, SwipeAction.Archive)
         uniffi.proton_mail_uniffi.SwipeAction.MARK_AS_READ -> IntEnum(SwipeAction.MarkRead.value, SwipeAction.MarkRead)
-        uniffi.proton_mail_uniffi.SwipeAction.LABEL_AS,
-        uniffi.proton_mail_uniffi.SwipeAction.MOVE_TO,
-        uniffi.proton_mail_uniffi.SwipeAction.NO_ACTION -> null
+        uniffi.proton_mail_uniffi.SwipeAction.LABEL_AS -> IntEnum(SwipeAction.LabelAs.value, SwipeAction.LabelAs)
+        uniffi.proton_mail_uniffi.SwipeAction.MOVE_TO -> IntEnum(SwipeAction.MoveTo.value, SwipeAction.MoveTo)
+        uniffi.proton_mail_uniffi.SwipeAction.NO_ACTION -> IntEnum(SwipeAction.None.value, SwipeAction.None)
     }
 
     private fun LocalPgpScheme.toPackageType(): IntEnum<PackageType>? = PackageType.enumOf(this.value.toInt())
@@ -120,7 +120,6 @@ object MailSettingsMapper {
         return when (this) {
             LocalComposerDirection.LEFT_TO_RIGHT -> false
             LocalComposerDirection.RIGHT_TO_LEFT -> true
-            else -> null
         }
     }
 

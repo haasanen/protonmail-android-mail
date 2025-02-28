@@ -18,7 +18,13 @@
 
 package ch.protonmail.android.mailmailbox.presentation.mailbox.model
 
+import me.proton.core.mailsettings.domain.entity.SwipeAction
+
 data class SwipeActionsUiModel(
     val start: SwipeUiModel,
     val end: SwipeUiModel
-)
+) {
+
+    val isSwipingEnabled: Boolean
+        get() = !(start.swipeAction == SwipeAction.None && end.swipeAction == SwipeAction.None)
+}

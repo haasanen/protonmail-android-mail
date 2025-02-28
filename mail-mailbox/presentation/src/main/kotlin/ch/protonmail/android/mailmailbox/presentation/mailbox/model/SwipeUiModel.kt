@@ -43,4 +43,13 @@ data class SwipeUiModel(
 
         return true
     }
+
+    override fun hashCode(): Int {
+        var result = icon
+        result = 31 * result + descriptionRes
+        result = 31 * result + staysDismissed.hashCode()
+        result = 31 * result + swipeAction.hashCode()
+        result = 31 * result + getColor.hashCode()
+        return result
+    }
 }

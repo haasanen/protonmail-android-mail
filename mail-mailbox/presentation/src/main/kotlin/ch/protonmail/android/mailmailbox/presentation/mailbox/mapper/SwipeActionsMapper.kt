@@ -40,99 +40,72 @@ class SwipeActionsMapper @Inject constructor() {
         end = toUiModel(currentMailLabel, swipeActionsPreference.swipeLeft)
     )
 
-
-    @Suppress("LongMethod")
     private fun toUiModel(currentMailLabel: LabelId, swipeAction: SwipeAction): SwipeUiModel {
-        return when (swipeAction) {
-            SwipeAction.None -> SwipeUiModel(
-                swipeAction = swipeAction,
-                icon = R.drawable.ic_proton_cross_circle,
-                descriptionRes = R.string.mail_settings_swipe_action_none_description,
-                getColor = getColorForSwipeAction(swipeAction),
-                staysDismissed = dismissible(swipeAction, currentMailLabel)
-            )
-
-            SwipeAction.Trash -> SwipeUiModel(
-                swipeAction = swipeAction,
-                icon = R.drawable.ic_proton_trash,
-                descriptionRes = R.string.mail_settings_swipe_action_trash_description,
-                getColor = getColorForSwipeAction(swipeAction),
-                staysDismissed = dismissible(swipeAction, currentMailLabel)
-            )
-
-            SwipeAction.Spam -> SwipeUiModel(
-                swipeAction = swipeAction,
-                icon = R.drawable.ic_proton_fire,
-                descriptionRes = R.string.mail_settings_swipe_action_spam_description,
-                getColor = getColorForSwipeAction(swipeAction),
-                staysDismissed = dismissible(swipeAction, currentMailLabel)
-            )
-
-            SwipeAction.Star -> SwipeUiModel(
-                swipeAction = swipeAction,
-                icon = R.drawable.ic_proton_star,
-                descriptionRes = R.string.mail_settings_swipe_action_star_description,
-                getColor = getColorForSwipeAction(swipeAction),
-                staysDismissed = dismissible(swipeAction, currentMailLabel)
-            )
-
-            SwipeAction.Archive -> SwipeUiModel(
-                swipeAction = swipeAction,
-                icon = R.drawable.ic_proton_archive_box,
-                descriptionRes = R.string.mail_settings_swipe_action_archive_description,
-                getColor = getColorForSwipeAction(swipeAction),
-                staysDismissed = dismissible(swipeAction, currentMailLabel)
-            )
-
-            SwipeAction.MarkRead -> SwipeUiModel(
-                swipeAction = swipeAction,
-                icon = R.drawable.ic_proton_envelope_dot,
-                descriptionRes = R.string.mail_settings_swipe_action_read_description,
-                getColor = getColorForSwipeAction(swipeAction),
-                staysDismissed = dismissible(swipeAction, currentMailLabel)
-            )
-
-            SwipeAction.LabelAs -> SwipeUiModel(
-                swipeAction = swipeAction,
-                icon = R.drawable.ic_proton_tag,
-                descriptionRes = R.string.mail_settings_swipe_action_label_as_description,
-                getColor = getColorForSwipeAction(swipeAction),
-                staysDismissed = dismissible(swipeAction, currentMailLabel)
-            )
-
-            SwipeAction.MoveTo -> SwipeUiModel(
-                swipeAction = swipeAction,
-                icon = R.drawable.ic_proton_folder_arrow_in,
-                descriptionRes = R.string.mail_settings_swipe_action_move_to_description,
-                getColor = getColorForSwipeAction(swipeAction),
-                staysDismissed = dismissible(swipeAction, currentMailLabel)
-            )
-        }
+        val actionConfig = getActionConfig(swipeAction)
+        return SwipeUiModel(
+            swipeAction = swipeAction,
+            icon = actionConfig.iconRes,
+            descriptionRes = actionConfig.descriptionRes,
+            getColor = { actionConfig.color() },
+            staysDismissed = isDismissible(swipeAction, currentMailLabel)
+        )
     }
 
-    private fun getColorForSwipeAction(swipeAction: SwipeAction): @Composable () -> Color = {
-        when (swipeAction) {
-            SwipeAction.None -> ProtonTheme.colors.notificationNorm
-            SwipeAction.Trash -> ProtonTheme.colors.notificationError
-            SwipeAction.Spam -> ProtonTheme.colors.notificationNorm
-            SwipeAction.Star -> ProtonTheme.colors.notificationWarning
-            SwipeAction.Archive -> ProtonTheme.colors.notificationNorm
-            SwipeAction.MarkRead -> ProtonTheme.colors.brandNorm
-            SwipeAction.LabelAs -> ProtonTheme.colors.notificationNorm
-            SwipeAction.MoveTo -> ProtonTheme.colors.notificationNorm
-        }
+    private fun getActionConfig(swipeAction: SwipeAction): ActionConfig = when (swipeAction) {
+        SwipeAction.None -> ActionConfig(
+            iconRes = R.drawable.ic_proton_cross_circle,
+            descriptionRes = R.string.mail_settings_swipe_action_none_description,
+            color = { ProtonTheme.colors.notificationNorm }
+        )
+        SwipeAction.Trash -> ActionConfig(
+            iconRes = R.drawable.ic_proton_trash,
+            descriptionRes = R.string.mail_settings_swipe_action_trash_description,
+            color = { ProtonTheme.colors.notificationError }
+        )
+        SwipeAction.Spam -> ActionConfig(
+            iconRes = R.drawable.ic_proton_fire,
+            descriptionRes = R.string.mail_settings_swipe_action_spam_description,
+            color = { ProtonTheme.colors.notificationNorm }
+        )
+        SwipeAction.Star -> ActionConfig(
+            iconRes = R.drawable.ic_proton_star,
+            descriptionRes = R.string.mail_settings_swipe_action_star_description,
+            color = { ProtonTheme.colors.notificationWarning }
+        )
+        SwipeAction.Archive -> ActionConfig(
+            iconRes = R.drawable.ic_proton_archive_box,
+            descriptionRes = R.string.mail_settings_swipe_action_archive_description,
+            color = { ProtonTheme.colors.notificationNorm }
+        )
+        SwipeAction.MarkRead -> ActionConfig(
+            iconRes = R.drawable.ic_proton_envelope_dot,
+            descriptionRes = R.string.mail_settings_swipe_action_read_description,
+            color = { ProtonTheme.colors.brandNorm }
+        )
+        SwipeAction.LabelAs -> ActionConfig(
+            iconRes = R.drawable.ic_proton_tag,
+            descriptionRes = R.string.mail_settings_swipe_action_label_as_description,
+            color = { ProtonTheme.colors.notificationNorm }
+        )
+        SwipeAction.MoveTo -> ActionConfig(
+            iconRes = R.drawable.ic_proton_folder_arrow_in,
+            descriptionRes = R.string.mail_settings_swipe_action_move_to_description,
+            color = { ProtonTheme.colors.notificationNorm }
+        )
     }
 
-    private fun dismissible(swipeAction: SwipeAction, labelId: LabelId): Boolean {
-        return when (swipeAction) {
-            SwipeAction.None -> false
-            SwipeAction.Trash -> labelId != SystemLabelId.Trash.labelId
-            SwipeAction.Spam -> labelId != SystemLabelId.Spam.labelId
-            SwipeAction.Star -> false
-            SwipeAction.Archive -> labelId != SystemLabelId.Archive.labelId
-            SwipeAction.MarkRead -> false
-            SwipeAction.LabelAs -> false
-            SwipeAction.MoveTo -> false
-        }
+    private fun isDismissible(swipeAction: SwipeAction, labelId: LabelId): Boolean = when (swipeAction) {
+        SwipeAction.None -> false
+        SwipeAction.Trash -> labelId != SystemLabelId.Trash.labelId
+        SwipeAction.Spam -> labelId != SystemLabelId.Spam.labelId
+        SwipeAction.Star -> false
+        SwipeAction.Archive -> labelId != SystemLabelId.Archive.labelId
+        SwipeAction.MarkRead, SwipeAction.LabelAs, SwipeAction.MoveTo -> false
     }
+
+    private data class ActionConfig(
+        val iconRes: Int,
+        val descriptionRes: Int,
+        val color: @Composable () -> Color
+    )
 }
