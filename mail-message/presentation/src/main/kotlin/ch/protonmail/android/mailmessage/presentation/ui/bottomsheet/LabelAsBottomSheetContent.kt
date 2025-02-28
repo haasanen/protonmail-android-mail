@@ -134,21 +134,21 @@ fun LabelAsBottomSheetContent(
                 labelUiModelsWithSelectedState = labelAsDataState.labelUiModelsWithSelectedState,
                 actions = actions
             )
+
+            Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Large))
+
+            DoneButton(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        start = ProtonDimens.Spacing.Large,
+                        end = ProtonDimens.Spacing.Large,
+                        bottom = ProtonDimens.Spacing.Large,
+                        top = ProtonDimens.Spacing.Standard
+                    ),
+                onClick = { actions.onDoneClick(archiveSelectedState, labelAsDataState.messageIdInConversation) }
+            )
         }
-
-        Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Large))
-
-        DoneButton(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(
-                    start = ProtonDimens.Spacing.Large,
-                    end = ProtonDimens.Spacing.Large,
-                    bottom = ProtonDimens.Spacing.Large,
-                    top = ProtonDimens.Spacing.Standard
-                ),
-            onClick = { actions.onDoneClick(archiveSelectedState, labelAsDataState.messageIdInConversation) }
-        )
     }
 }
 
