@@ -26,6 +26,7 @@ import ch.protonmail.android.maillabel.domain.model.toMailLabelCustom
 import ch.protonmail.android.maillabel.presentation.toCustomUiModel
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.usecase.GetMessageLabelAsActions
+import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.LabelAsBottomSheetEntryPoint
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.LabelAsBottomSheetState
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
@@ -43,9 +44,9 @@ class GetLabelAsBottomSheetData @Inject constructor(
         messageId: MessageId
     ): LabelAsBottomSheetState.LabelAsBottomSheetEvent.ActionData =
         getMessageLabelAsActions(userId, labelId, listOf(messageId)).fold(
-            ifLeft = { emptyBottomSheetData() },
-            ifRight = { buildBottomSheetActionData(it) }
-        ).copy(messageIdInConversation = messageId)
+            ifLeft = { emptyBottomSheetData(LabelAsBottomSheetEntryPoint.Message(messageId)) },
+            ifRight = { buildBottomSheetActionData(it, LabelAsBottomSheetEntryPoint.Message(messageId)) }
+        )
 
     suspend fun forConversation(
         userId: UserId,
@@ -53,23 +54,27 @@ class GetLabelAsBottomSheetData @Inject constructor(
         conversationId: ConversationId
     ): LabelAsBottomSheetState.LabelAsBottomSheetEvent.ActionData =
         getConversationLabelAsActions(userId, labelId, listOf(conversationId)).fold(
-            ifLeft = { emptyBottomSheetData() },
-            ifRight = { buildBottomSheetActionData(it) }
+            ifLeft = { emptyBottomSheetData(LabelAsBottomSheetEntryPoint.Conversation) },
+            ifRight = { buildBottomSheetActionData(it, LabelAsBottomSheetEntryPoint.Conversation) }
         )
 
-    private fun emptyBottomSheetData() = LabelAsBottomSheetState.LabelAsBottomSheetEvent.ActionData(
-        persistentListOf(), persistentListOf(), persistentListOf()
-    )
+    private fun emptyBottomSheetData(entryPoint: LabelAsBottomSheetEntryPoint) =
+        LabelAsBottomSheetState.LabelAsBottomSheetEvent.ActionData(
+            persistentListOf(), persistentListOf(), persistentListOf(),
+            entryPoint = entryPoint
+        )
 
     private fun buildBottomSheetActionData(
-        labelAsContent: LabelAsActions
+        labelAsContent: LabelAsActions,
+        entryPoint: LabelAsBottomSheetEntryPoint
     ): LabelAsBottomSheetState.LabelAsBottomSheetEvent.ActionData {
         val mailLabels = labelAsContent.labels.toMailLabelCustom()
         return LabelAsBottomSheetState.LabelAsBottomSheetEvent.ActionData(
             customLabelList = mailLabels.map { it.toCustomUiModel(emptyMap(), null) }
                 .toImmutableList(),
             selectedLabels = labelAsContent.selected.toImmutableList(),
-            partiallySelectedLabels = labelAsContent.partiallySelected.toImmutableList()
+            partiallySelectedLabels = labelAsContent.partiallySelected.toImmutableList(),
+            entryPoint = entryPoint
         )
     }
 }

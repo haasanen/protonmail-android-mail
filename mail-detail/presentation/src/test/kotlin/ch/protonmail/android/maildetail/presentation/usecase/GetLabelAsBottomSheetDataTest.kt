@@ -12,6 +12,7 @@ import ch.protonmail.android.maillabel.presentation.MailLabelUiModel
 import ch.protonmail.android.maillabel.presentation.toUiModel
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
 import ch.protonmail.android.mailmessage.domain.usecase.GetMessageLabelAsActions
+import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.LabelAsBottomSheetEntryPoint
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.LabelAsBottomSheetState
 import ch.protonmail.android.testdata.label.rust.LabelAsActionsTestData
 import ch.protonmail.android.testdata.maillabel.MailLabelTestData
@@ -73,7 +74,7 @@ class GetLabelAsBottomSheetDataTest {
                 ) as MailLabelUiModel.Custom
             }.toImmutableList(),
             selectedLabels = emptyList<LabelId>().toImmutableList(),
-            messageIdInConversation = messageId
+            entryPoint = LabelAsBottomSheetEntryPoint.Message(messageId)
         )
         assertEquals(expected, actual)
     }
@@ -94,7 +95,7 @@ class GetLabelAsBottomSheetDataTest {
         val expected = LabelAsBottomSheetState.LabelAsBottomSheetEvent.ActionData(
             customLabelList = emptyList<MailLabelUiModel.Custom>().toImmutableList(),
             selectedLabels = emptyList<LabelId>().toImmutableList(),
-            messageIdInConversation = messageId
+            entryPoint = LabelAsBottomSheetEntryPoint.Message(messageId)
         )
         assertEquals(expected, actual)
     }
@@ -121,7 +122,7 @@ class GetLabelAsBottomSheetDataTest {
                 ) as MailLabelUiModel.Custom
             }.toImmutableList(),
             selectedLabels = emptyList<LabelId>().toImmutableList(),
-            messageIdInConversation = null
+            entryPoint = LabelAsBottomSheetEntryPoint.Conversation
         )
         assertEquals(expected, actual)
     }
@@ -142,7 +143,7 @@ class GetLabelAsBottomSheetDataTest {
         val expected = LabelAsBottomSheetState.LabelAsBottomSheetEvent.ActionData(
             customLabelList = emptyList<MailLabelUiModel.Custom>().toImmutableList(),
             selectedLabels = emptyList<LabelId>().toImmutableList(),
-            messageIdInConversation = null
+            entryPoint = LabelAsBottomSheetEntryPoint.Conversation
         )
         assertEquals(expected, actual)
     }
