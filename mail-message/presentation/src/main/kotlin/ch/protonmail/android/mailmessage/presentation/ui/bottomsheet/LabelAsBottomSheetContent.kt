@@ -54,13 +54,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import ch.protonmail.android.mailcommon.presentation.NO_CONTENT_DESCRIPTION
-import ch.protonmail.android.maillabel.presentation.model.LabelSelectedState
-import ch.protonmail.android.maillabel.presentation.sample.LabelUiModelWithSelectedStateSample
-import ch.protonmail.android.mailmessage.domain.model.MessageId
-import ch.protonmail.android.mailmessage.presentation.R
-import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.LabelAsBottomSheetState
-import kotlinx.collections.immutable.toImmutableList
 import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
 import ch.protonmail.android.design.compose.component.ProtonSolidButton
 import ch.protonmail.android.design.compose.theme.ProtonDimens
@@ -68,11 +61,18 @@ import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyLargeNorm
 import ch.protonmail.android.design.compose.theme.bodyLargeWeak
 import ch.protonmail.android.design.compose.theme.titleLargeNorm
+import ch.protonmail.android.mailcommon.presentation.NO_CONTENT_DESCRIPTION
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 import ch.protonmail.android.mailcommon.presentation.model.string
 import ch.protonmail.android.maillabel.domain.model.LabelId
+import ch.protonmail.android.maillabel.presentation.model.LabelSelectedState
 import ch.protonmail.android.maillabel.presentation.model.LabelUiModelWithSelectedState
+import ch.protonmail.android.maillabel.presentation.sample.LabelUiModelWithSelectedStateSample
+import ch.protonmail.android.mailmessage.presentation.R
+import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.LabelAsBottomSheetEntryPoint
+import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.LabelAsBottomSheetState
 import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.toImmutableList
 
 @Composable
 fun LabelAsBottomSheetContent(state: LabelAsBottomSheetState, actions: LabelAsBottomSheetContent.Actions) {
@@ -134,21 +134,21 @@ fun LabelAsBottomSheetContent(
                 labelUiModelsWithSelectedState = labelAsDataState.labelUiModelsWithSelectedState,
                 actions = actions
             )
-
-            Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Large))
-
-            DoneButton(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(
-                        start = ProtonDimens.Spacing.Large,
-                        end = ProtonDimens.Spacing.Large,
-                        bottom = ProtonDimens.Spacing.Large,
-                        top = ProtonDimens.Spacing.Standard
-                    ),
-                onClick = { actions.onDoneClick(archiveSelectedState, labelAsDataState.messageIdInConversation) }
-            )
         }
+
+        Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Large))
+
+        DoneButton(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(
+                    start = ProtonDimens.Spacing.Large,
+                    end = ProtonDimens.Spacing.Large,
+                    bottom = ProtonDimens.Spacing.Large,
+                    top = ProtonDimens.Spacing.Standard
+                ),
+            onClick = { actions.onDoneClick(archiveSelectedState, labelAsDataState.entryPoint) }
+        )
     }
 }
 
@@ -411,7 +411,7 @@ object LabelAsBottomSheetContent {
     data class Actions(
         val onAddLabelClick: () -> Unit,
         val onLabelAsSelected: (LabelId) -> Unit,
-        val onDoneClick: (archiveSelected: Boolean, messageIdInConversation: MessageId?) -> Unit
+        val onDoneClick: (archiveSelected: Boolean, entryPoint: LabelAsBottomSheetEntryPoint) -> Unit
     )
 }
 
@@ -423,7 +423,7 @@ fun LabelAsBottomSheetContentPreview() {
             labelAsDataState = LabelAsBottomSheetState.Data(
                 labelUiModelsWithSelectedState = LabelUiModelWithSelectedStateSample.customLabelListWithSelection
                     .toImmutableList(),
-                messageIdInConversation = null
+                entryPoint = LabelAsBottomSheetEntryPoint.Conversation
             ),
             actions = LabelAsBottomSheetContent.Actions(
                 onAddLabelClick = {},

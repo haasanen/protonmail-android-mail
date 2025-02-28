@@ -25,6 +25,7 @@ import ch.protonmail.android.mailmessage.presentation.reducer.MoveToBottomSheetR
 import ch.protonmail.android.testdata.maillabel.MailLabelTestData
 import ch.protonmail.android.testdata.maillabel.MailLabelUiModelTestData
 import ch.protonmail.android.maillabel.domain.model.LabelId
+import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MoveToBottomSheetEntryPoint
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
@@ -56,39 +57,35 @@ internal class MoveToBottomSheetReducerTest(
         private val transitionsFromLoadingState = listOf(
             TestInput(
                 currentState = BottomSheetState(MoveToBottomSheetState.Loading),
-                operation = MoveToBottomSheetState.MoveToBottomSheetEvent.ActionData(destinations),
-                expectedState = BottomSheetState(MoveToBottomSheetState.Data(destinations, null))
+                operation = MoveToBottomSheetState.MoveToBottomSheetEvent.ActionData(
+                    destinations,
+                    MoveToBottomSheetEntryPoint.SelectionMode
+                ),
+                expectedState = BottomSheetState(
+                    MoveToBottomSheetState.Data(
+                        destinations,
+                        MoveToBottomSheetEntryPoint.SelectionMode
+                    )
+                )
             )
         )
 
         private val transitionsFromDataState = listOf(
             TestInput(
-                currentState = BottomSheetState(MoveToBottomSheetState.Data(destinations, null)),
-                operation = MoveToBottomSheetState.MoveToBottomSheetEvent.ActionData(updatedDestinations),
-                expectedState = BottomSheetState(MoveToBottomSheetState.Data(updatedDestinations, null))
-            ),
-            TestInput(
                 currentState = BottomSheetState(
                     MoveToBottomSheetState.Data(
-                        destinationWithSpamSelected,
-                        null
+                        destinations,
+                        MoveToBottomSheetEntryPoint.SelectionMode
                     )
                 ),
-                operation = MoveToBottomSheetState.MoveToBottomSheetEvent.ActionData(destinationsWithArchive),
-                expectedState = BottomSheetState(MoveToBottomSheetState.Data(destinationsWithArchive, null))
-            )
-        )
-
-        private val transitionFromDataStateToSelected = listOf(
-            TestInput(
-                currentState = BottomSheetState(MoveToBottomSheetState.Data(destinations, null)),
-                operation = MoveToBottomSheetState.MoveToBottomSheetAction.MoveToDestinationSelected(
-                    MailLabelTestData.spamSystemLabel.id
+                operation = MoveToBottomSheetState.MoveToBottomSheetEvent.ActionData(
+                    updatedDestinations,
+                    MoveToBottomSheetEntryPoint.SelectionMode
                 ),
                 expectedState = BottomSheetState(
                     MoveToBottomSheetState.Data(
-                        destinationWithSpamSelected,
-                        null
+                        updatedDestinations,
+                        MoveToBottomSheetEntryPoint.SelectionMode
                     )
                 )
             ),
@@ -96,7 +93,45 @@ internal class MoveToBottomSheetReducerTest(
                 currentState = BottomSheetState(
                     MoveToBottomSheetState.Data(
                         destinationWithSpamSelected,
-                        null
+                        MoveToBottomSheetEntryPoint.SelectionMode
+                    )
+                ),
+                operation = MoveToBottomSheetState.MoveToBottomSheetEvent.ActionData(
+                    destinationsWithArchive,
+                    MoveToBottomSheetEntryPoint.SelectionMode
+                ),
+                expectedState = BottomSheetState(
+                    MoveToBottomSheetState.Data(
+                        destinationsWithArchive,
+                        MoveToBottomSheetEntryPoint.SelectionMode
+                    )
+                )
+            )
+        )
+
+        private val transitionFromDataStateToSelected = listOf(
+            TestInput(
+                currentState = BottomSheetState(
+                    MoveToBottomSheetState.Data(
+                        destinations,
+                        MoveToBottomSheetEntryPoint.SelectionMode
+                    )
+                ),
+                operation = MoveToBottomSheetState.MoveToBottomSheetAction.MoveToDestinationSelected(
+                    MailLabelTestData.spamSystemLabel.id
+                ),
+                expectedState = BottomSheetState(
+                    MoveToBottomSheetState.Data(
+                        destinationWithSpamSelected,
+                        MoveToBottomSheetEntryPoint.SelectionMode
+                    )
+                )
+            ),
+            TestInput(
+                currentState = BottomSheetState(
+                    MoveToBottomSheetState.Data(
+                        destinationWithSpamSelected,
+                        MoveToBottomSheetEntryPoint.SelectionMode
                     )
                 ),
                 operation = MoveToBottomSheetState.MoveToBottomSheetAction.MoveToDestinationSelected(
@@ -105,7 +140,7 @@ internal class MoveToBottomSheetReducerTest(
                 expectedState = BottomSheetState(
                     MoveToBottomSheetState.Data(
                         destinationWithCustomSelected,
-                        null
+                        MoveToBottomSheetEntryPoint.SelectionMode
                     )
                 )
             )

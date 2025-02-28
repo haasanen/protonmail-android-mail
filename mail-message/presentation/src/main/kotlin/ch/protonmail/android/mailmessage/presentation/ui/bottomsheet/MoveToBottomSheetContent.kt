@@ -50,7 +50,6 @@ import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcommon.presentation.model.string
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.presentation.MailLabelUiModel
-import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.presentation.R
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MoveToBottomSheetState
 import kotlinx.collections.immutable.toImmutableList
@@ -64,6 +63,7 @@ import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.maillabel.presentation.iconRes
 import ch.protonmail.android.maillabel.presentation.textRes
+import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MoveToBottomSheetEntryPoint
 
 @Composable
 fun MoveToBottomSheetContent(state: MoveToBottomSheetState, actions: MoveToBottomSheetContent.Actions) {
@@ -77,6 +77,7 @@ fun MoveToBottomSheetContent(state: MoveToBottomSheetState, actions: MoveToBotto
 fun MoveToBottomSheetContent(dataState: MoveToBottomSheetState.Data, actions: MoveToBottomSheetContent.Actions) {
     val customDestinations = dataState.moveToDestinations.filterIsInstance<MailLabelUiModel.Custom>()
     val systemDestinations = dataState.moveToDestinations.filterIsInstance<MailLabelUiModel.System>()
+    val entryPoint = dataState.entryPoint
 
     Column(
         modifier = Modifier
@@ -97,7 +98,7 @@ fun MoveToBottomSheetContent(dataState: MoveToBottomSheetState.Data, actions: Mo
             CustomMoveToGroupWithActionButton(
                 destinations = customDestinations,
                 onFolderSelected = { folderId, folderName ->
-                    actions.onFolderSelected(folderId, folderName, dataState.messageIdInConversation)
+                    actions.onFolderSelected(folderId, folderName, entryPoint)
                 },
                 onAddClick = actions.onAddFolderClick
             )
@@ -107,7 +108,7 @@ fun MoveToBottomSheetContent(dataState: MoveToBottomSheetState.Data, actions: Mo
             MoveToGroup(
                 destinations = systemDestinations,
                 onFolderSelected = { folderId, folderName ->
-                    actions.onFolderSelected(folderId, folderName, dataState.messageIdInConversation)
+                    actions.onFolderSelected(folderId, folderName, entryPoint)
                 }
             )
         }
@@ -214,7 +215,9 @@ internal fun MoveToGroupItem(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .clickable(role = Role.Button, onClick = { onFolderClicked(folderName) })
+            .clickable(role = Role.Button, onClick = {
+                onFolderClicked(folderName)
+            })
             .padding(
                 vertical = ProtonDimens.Spacing.Large,
                 horizontal = ProtonDimens.Spacing.Large
@@ -286,7 +289,7 @@ object MoveToBottomSheetContent {
 
     data class Actions(
         val onAddFolderClick: () -> Unit,
-        val onFolderSelected: (MailLabelId, String, MessageId?) -> Unit,
+        val onFolderSelected: (MailLabelId, String, MoveToBottomSheetEntryPoint) -> Unit,
         val onDismiss: () -> Unit
     )
 }
@@ -374,7 +377,7 @@ fun MoveToBottomSheetContentPreview() {
                     count = null
                 )
             ).toImmutableList(),
-            messageIdInConversation = null
+            entryPoint = MoveToBottomSheetEntryPoint.Conversation
         ),
         actions = MoveToBottomSheetContent.Actions(
             onAddFolderClick = {},

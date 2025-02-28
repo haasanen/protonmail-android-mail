@@ -27,7 +27,6 @@ import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.presentation.MailLabelUiModel
 import ch.protonmail.android.maillabel.presentation.model.LabelUiModelWithSelectedState
-import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.Participant
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
@@ -54,12 +53,11 @@ sealed interface BottomSheetOperation {
     object Dismiss : BottomSheetOperation
 }
 
-
 sealed interface MoveToBottomSheetState : BottomSheetContentState {
 
     data class Data(
         val moveToDestinations: ImmutableList<MailLabelUiModel>,
-        val messageIdInConversation: MessageId?
+        val entryPoint: MoveToBottomSheetEntryPoint
     ) : MoveToBottomSheetState
 
     object Loading : MoveToBottomSheetState
@@ -69,7 +67,7 @@ sealed interface MoveToBottomSheetState : BottomSheetContentState {
     sealed interface MoveToBottomSheetEvent : MoveToBottomSheetOperation {
         data class ActionData(
             val moveToDestinations: ImmutableList<MailLabelUiModel>,
-            val messageIdInConversation: MessageId? = null
+            val entryPoint: MoveToBottomSheetEntryPoint
         ) : MoveToBottomSheetEvent
     }
 
@@ -82,7 +80,7 @@ sealed interface LabelAsBottomSheetState : BottomSheetContentState {
 
     data class Data(
         val labelUiModelsWithSelectedState: ImmutableList<LabelUiModelWithSelectedState>,
-        val messageIdInConversation: MessageId?
+        val entryPoint: LabelAsBottomSheetEntryPoint
     ) : LabelAsBottomSheetState
 
     object Loading : LabelAsBottomSheetState
@@ -94,7 +92,7 @@ sealed interface LabelAsBottomSheetState : BottomSheetContentState {
             val customLabelList: ImmutableList<MailLabelUiModel.Custom>,
             val selectedLabels: ImmutableList<LabelId>,
             val partiallySelectedLabels: ImmutableList<LabelId> = emptyList<LabelId>().toImmutableList(),
-            val messageIdInConversation: MessageId? = null
+            val entryPoint: LabelAsBottomSheetEntryPoint
         ) : LabelAsBottomSheetEvent
     }
 
