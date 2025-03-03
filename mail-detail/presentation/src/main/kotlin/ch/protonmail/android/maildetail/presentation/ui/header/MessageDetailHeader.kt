@@ -25,10 +25,11 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.SizeTransform
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.with
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -44,6 +45,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -60,6 +62,11 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.constraintlayout.compose.Visibility
 import ch.protonmail.android.design.compose.component.ProtonOutlinedIconButton
+import ch.protonmail.android.design.compose.theme.ProtonDimens
+import ch.protonmail.android.design.compose.theme.ProtonTheme
+import ch.protonmail.android.design.compose.theme.bodySmallNorm
+import ch.protonmail.android.design.compose.theme.bodySmallWeak
+import ch.protonmail.android.design.compose.theme.titleMediumNorm
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 import ch.protonmail.android.mailcommon.presentation.compose.OfficialBadge
 import ch.protonmail.android.mailcommon.presentation.compose.SmallNonClickableIcon
@@ -71,18 +78,12 @@ import ch.protonmail.android.maildetail.presentation.model.MessageDetailHeaderUi
 import ch.protonmail.android.maildetail.presentation.model.ParticipantUiModel
 import ch.protonmail.android.maildetail.presentation.previewdata.MessageDetailHeaderPreview
 import ch.protonmail.android.maildetail.presentation.previewdata.MessageDetailHeaderPreviewProvider
+import ch.protonmail.android.maildetail.presentation.ui.common.SingleLineRecipientNames
 import ch.protonmail.android.maillabel.presentation.model.LabelUiModel
 import ch.protonmail.android.maillabel.presentation.ui.LabelsList
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.presentation.ui.ParticipantAvatar
-import ch.protonmail.android.uicomponents.chips.thenIf
 import kotlinx.collections.immutable.ImmutableList
-import ch.protonmail.android.design.compose.theme.ProtonDimens
-import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.bodySmallNorm
-import ch.protonmail.android.design.compose.theme.bodySmallWeak
-import ch.protonmail.android.design.compose.theme.titleMediumNorm
-import ch.protonmail.android.maildetail.presentation.ui.common.SingleLineRecipientNames
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
@@ -103,7 +104,7 @@ fun MessageDetailHeader(
     AnimatedContent(
         targetState = isExpanded.value,
         transitionSpec = {
-            fadeIn() with
+            fadeIn() togetherWith
                 fadeOut() using
                 SizeTransform()
         }
@@ -168,10 +169,7 @@ private fun MessageDetailHeaderLayout(
                 start.linkTo(avatarRef.end, margin = ProtonDimens.Spacing.Large)
                 end.linkTo(iconsRef.start, margin = ProtonDimens.Spacing.Standard)
             },
-            participantUiModel = uiModel.sender,
-            onClick = { participant ->
-                actions.onParticipantClicked(participant, uiModel.avatar)
-            }
+            participantUiModel = uiModel.sender
         )
 
         ParticipantAddress(
@@ -181,10 +179,7 @@ private fun MessageDetailHeaderLayout(
                 start.linkTo(avatarRef.end, margin = ProtonDimens.Spacing.Large)
                 end.linkTo(timeRef.start, margin = ProtonDimens.Spacing.Standard)
             },
-            participantUiModel = uiModel.sender,
-            onClick = { participant ->
-                actions.onParticipantClicked(participant, uiModel.avatar)
-            }
+            participantUiModel = uiModel.sender
         )
 
         Icons(
@@ -261,11 +256,10 @@ private fun MessageDetailHeaderLayout(
 private fun SenderName(
     modifier: Modifier = Modifier,
     participantUiModel: ParticipantUiModel,
-    style: TextStyle = ProtonTheme.typography.titleMediumNorm,
-    onClick: (ParticipantUiModel) -> Unit
+    style: TextStyle = ProtonTheme.typography.titleMediumNorm
 ) {
     Row(
-        modifier = modifier.clickable { onClick(participantUiModel) },
+        modifier = modifier,
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
@@ -287,8 +281,7 @@ private fun SenderName(
 private fun ParticipantAddress(
     modifier: Modifier = Modifier,
     participantUiModel: ParticipantUiModel,
-    textColor: Color = ProtonTheme.colors.textWeak,
-    onClick: (ParticipantUiModel) -> Unit
+    textColor: Color = ProtonTheme.colors.textWeak
 ) {
     Row(
         modifier = modifier,
@@ -297,12 +290,7 @@ private fun ParticipantAddress(
 
         Text(
             text = participantUiModel.participantAddress,
-            modifier = modifier
-                .testTag(MessageDetailHeaderTestTags.ParticipantValue)
-                .clickable(
-                    onClickLabel = participantUiModel.participantAddress,
-                    onClick = { onClick(participantUiModel) }
-                ),
+            modifier = modifier.testTag(MessageDetailHeaderTestTags.ParticipantValue),
             color = textColor,
             style = ProtonTheme.typography.bodySmall
         )
@@ -398,9 +386,7 @@ private fun ParticipantText(
     modifier: Modifier = Modifier,
     participantUiModel: ParticipantUiModel,
     textColor: Color = ProtonTheme.colors.textNorm,
-    clickable: Boolean = true,
-    shouldBreak: Boolean = false,
-    onClick: () -> Unit
+    shouldBreak: Boolean = false
 ) {
 
     val participantMeText = stringResource(id = R.string.recipient_me)
@@ -413,8 +399,7 @@ private fun ParticipantText(
 
     Text(
         text = nameText,
-        modifier = modifier
-            .thenIf(clickable) { clickable(onClickLabel = nameText, onClick = onClick) },
+        modifier = modifier,
         color = textColor,
         style = ProtonTheme.typography.bodySmall,
         maxLines = if (shouldBreak) Int.MAX_VALUE else 1,
@@ -475,7 +460,7 @@ private fun MessageDetailHeaderCard(
                 .padding(ProtonDimens.Spacing.Medium),
             verticalArrangement = Arrangement.spacedBy(ProtonDimens.Spacing.Large)
         ) {
-            SenderDetails(uiModel.sender, actions)
+            SenderDetails(uiModel.sender, uiModel.avatar, actions)
             RecipientsSection(uiModel, actions)
             ExtendedHeaderSection(uiModel)
         }
@@ -483,7 +468,11 @@ private fun MessageDetailHeaderCard(
 }
 
 @Composable
-private fun SenderDetails(senderUiModel: ParticipantUiModel, actions: MessageDetailHeader.Actions) {
+private fun SenderDetails(
+    senderUiModel: ParticipantUiModel,
+    avatarUiModel: AvatarUiModel,
+    actions: MessageDetailHeader.Actions
+) {
     Row(verticalAlignment = Alignment.Top, modifier = Modifier.fillMaxWidth()) {
         Text(
             modifier = Modifier
@@ -492,17 +481,23 @@ private fun SenderDetails(senderUiModel: ParticipantUiModel, actions: MessageDet
             text = stringResource(R.string.message_details_header_from),
             style = ProtonTheme.typography.bodySmallWeak
         )
-        Column {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null,
+                    onClick = { actions.onParticipantClicked(senderUiModel, avatarUiModel) }
+                )
+        ) {
             SenderName(
                 participantUiModel = senderUiModel,
-                style = ProtonTheme.typography.bodySmallNorm,
-                onClick = { actions.onParticipantClicked(senderUiModel, null) }
+                style = ProtonTheme.typography.bodySmallNorm
             )
             Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Small))
             ParticipantAddress(
                 participantUiModel = senderUiModel,
-                textColor = ProtonTheme.colors.textAccent,
-                onClick = { actions.onParticipantClicked(senderUiModel, null) }
+                textColor = ProtonTheme.colors.textAccent
             )
         }
     }
@@ -554,14 +549,12 @@ private fun RecipientsTitleAndList(
                     Column {
                         ParticipantText(
                             participantUiModel = recipient,
-                            textColor = ProtonTheme.colors.textWeak,
-                            onClick = { actions.onParticipantClicked(recipient, null) }
+                            textColor = ProtonTheme.colors.textWeak
                         )
                         Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Tiny))
                         ParticipantAddress(
                             participantUiModel = recipient,
-                            textColor = ProtonTheme.colors.textAccent,
-                            onClick = { actions.onParticipantClicked(recipient, null) }
+                            textColor = ProtonTheme.colors.textAccent
                         )
                     }
                 }
