@@ -28,6 +28,7 @@ import ch.protonmail.android.composer.data.mapper.toLocalDraft
 import ch.protonmail.android.composer.data.mapper.toSingleRecipientEntry
 import ch.protonmail.android.composer.data.usecase.CreateRustDraft
 import ch.protonmail.android.composer.data.usecase.OpenRustDraft
+import ch.protonmail.android.composer.data.usecase.RustDraftUndoSend
 import ch.protonmail.android.composer.data.wrapper.DraftWrapper
 import ch.protonmail.android.mailcommon.data.worker.Enqueuer
 import ch.protonmail.android.mailcommon.datarust.mapper.toDataError
@@ -54,6 +55,7 @@ class RustDraftDataSourceImpl @Inject constructor(
     private val userSessionRepository: UserSessionRepository,
     private val createRustDraft: CreateRustDraft,
     private val openRustDraft: OpenRustDraft,
+    private val rustDraftUndoSend: RustDraftUndoSend,
     private val enqueuer: Enqueuer
 ) : RustDraftDataSource {
 
@@ -164,6 +166,20 @@ class RustDraftDataSourceImpl @Inject constructor(
                 Unit.right()
             }
         }
+    }
+
+    override suspend fun undoSend(userId: UserId, messageId: MessageId): Either<DataError, Unit> {
+        Timber.d("rust-draft: Undo sending draft...")
+        val session = userSessionRepository.getUserSession(userId)
+        if (session == null) {
+            Timber.e("rust-draft: Trying to undo send with null session; Failing.")
+            return DataError.Local.Unknown.left()
+        }
+
+        return rustDraftUndoSend(session, messageId.toLocalMessageId()).onRight {
+            enqueuer.cancelWork(SendingStatusWorker.id(messageId))
+        }
+
     }
 
     private suspend fun startSendingStatusWorker() {

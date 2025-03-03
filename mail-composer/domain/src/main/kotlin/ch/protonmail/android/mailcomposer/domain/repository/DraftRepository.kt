@@ -34,6 +34,7 @@ interface DraftRepository {
     suspend fun createDraft(userId: UserId, action: DraftAction): Either<DataError, DraftFields>
     suspend fun save(): Either<DataError, Unit>
     suspend fun send(): Either<DataError, Unit>
+    suspend fun undoSend(userId: UserId, messageId: MessageId): Either<DataError, Unit>
     suspend fun saveSubject(subject: Subject): Either<DataError, Unit>
     suspend fun saveBody(body: DraftBody): Either<DataError, Unit>
     suspend fun addToRecipient(recipient: Recipient): Either<DataError, Unit>

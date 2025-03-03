@@ -45,4 +45,5 @@ interface RustDraftDataSource {
     suspend fun removeBccRecipient(recipient: Recipient): Either<DataError, Unit>
     suspend fun observeRecipientsValidation(): Flow<List<RecipientEntityWithValidation>>
     suspend fun send(): Either<DataError, Unit>
+    suspend fun undoSend(userId: UserId, messageId: MessageId): Either<DataError, Unit>
 }

@@ -19,6 +19,7 @@ import ch.protonmail.android.mailcomposer.domain.worker.SendingStatusWorker
 import ch.protonmail.android.mailmessage.data.mapper.toLocalMessageId
 import ch.protonmail.android.mailmessage.data.mapper.toMessageId
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
+import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
 import ch.protonmail.android.mailmessage.domain.sample.RecipientSample
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
@@ -26,9 +27,11 @@ import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
 import ch.protonmail.android.testdata.composer.LocalComposerRecipientTestData
 import ch.protonmail.android.testdata.composer.LocalDraftTestData
 import ch.protonmail.android.testdata.message.rust.LocalMessageIdSample
+import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
 import junit.framework.TestCase.assertNull
 import kotlinx.coroutines.flow.flowOf
@@ -603,6 +606,54 @@ class RustDraftDataSourceImplTest {
                 any(), any(), any(), any(), any()
             )
         }
+    }
+
+    @Test
+    fun `undoSend returns error when session is null`() = runTest {
+        // Given
+        val userId = UserIdSample.Primary
+        val messageId = MessageIdSample.LocalDraft
+        val expected = DataError.Local.Unknown
+        coEvery { userSessionRepository.getUserSession(userId) } returns null
+
+        // When
+        val actual = dataSource.undoSend(userId, messageId)
+
+        // Then
+        assertEquals(expected.left(), actual)
+    }
+
+    @Test
+    fun `undoSend returns error when rustDraftUndoSend fails`() = runTest {
+        // Given
+        val userId = UserIdSample.Primary
+        val messageId = MessageId("110")
+        val expectedError = DataError.Local.Unknown
+        coEvery { userSessionRepository.getUserSession(userId) } returns mockUserSession
+        coEvery { rustDraftUndoSend(mockUserSession, messageId.toLocalMessageId()) } returns expectedError.left()
+
+        // When
+        val actual = dataSource.undoSend(userId, messageId)
+
+        // Then
+        assertEquals(expectedError.left(), actual)
+    }
+
+    @Test
+    fun `undoSend cancels sending status worker when successful`() = runTest {
+        // Given
+        val userId = UserIdSample.Primary
+        val messageId = MessageId("110")
+        coEvery { userSessionRepository.getUserSession(userId) } returns mockUserSession
+        coEvery { rustDraftUndoSend(mockUserSession, messageId.toLocalMessageId()) } returns Unit.right()
+        coEvery { enqueuer.cancelWork(SendingStatusWorker.id(messageId)) } just Runs
+
+        // When
+        val actual = dataSource.undoSend(userId, messageId)
+
+        // Then
+        assertEquals(Unit.right(), actual)
+        coVerify { enqueuer.cancelWork(SendingStatusWorker.id(messageId)) }
     }
 
 }

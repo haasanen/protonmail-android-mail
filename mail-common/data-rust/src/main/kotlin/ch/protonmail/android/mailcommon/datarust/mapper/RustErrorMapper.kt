@@ -26,6 +26,8 @@ import uniffi.proton_mail_uniffi.DraftOpenError
 import uniffi.proton_mail_uniffi.DraftOpenErrorReason
 import uniffi.proton_mail_uniffi.DraftSaveSendError
 import uniffi.proton_mail_uniffi.DraftSaveSendErrorReason
+import uniffi.proton_mail_uniffi.DraftUndoSendError
+import uniffi.proton_mail_uniffi.DraftUndoSendErrorReason
 import uniffi.proton_mail_uniffi.EventError
 import uniffi.proton_mail_uniffi.EventErrorReason
 import uniffi.proton_mail_uniffi.ProtonError
@@ -75,6 +77,16 @@ fun DraftOpenError.toDataError(): DataError = when (this) {
         DraftOpenErrorReason.REPLY_OR_FORWARD_DRAFT,
         DraftOpenErrorReason.ADDRESS_NOT_FOUND,
         DraftOpenErrorReason.MESSAGE_BODY_MISSING -> DataError.Local.OpenDraftError
+    }
+}
+
+fun DraftUndoSendError.toDataError(): DataError = when (this) {
+    is DraftUndoSendError.Other -> this.v1.toDataError()
+    is DraftUndoSendError.Reason -> when (this.v1) {
+        DraftUndoSendErrorReason.MESSAGE_DOES_NOT_EXIST,
+        DraftUndoSendErrorReason.MESSAGE_IS_NOT_A_DRAFT,
+        DraftUndoSendErrorReason.MESSAGE_CAN_NOT_BE_UNDO_SENT,
+        DraftUndoSendErrorReason.SEND_CAN_NO_LONGER_BE_UNDONE -> DataError.Local.UndoSendError
     }
 }
 
