@@ -27,7 +27,6 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -58,9 +57,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
-import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.constraintlayout.compose.Dimension
-import androidx.constraintlayout.compose.Visibility
 import ch.protonmail.android.design.compose.component.ProtonOutlinedIconButton
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
@@ -125,128 +121,82 @@ private fun MessageDetailHeaderLayout(
     isExpanded: Boolean,
     actions: MessageDetailHeader.Actions
 ) {
-    ConstraintLayout(
-        modifier = modifier
+    Column(
+        modifier = Modifier
             .fillMaxWidth()
-            .background(ProtonTheme.colors.backgroundNorm)
-            .padding(
-                start = ProtonDimens.Spacing.Large,
-                end = ProtonDimens.Spacing.Large,
-                top = ProtonDimens.Spacing.Large,
-                bottom = ProtonDimens.Spacing.Large
-            )
-            .testTag(MessageDetailHeaderTestTags.RootItem)
+            .padding(ProtonDimens.Spacing.Large)
     ) {
-        val (
-            avatarRef,
-            senderNameRef,
-            senderAddressRef,
-            iconsRef,
-            timeRef,
-            allRecipientsRef,
-            labelsRef,
-            cardRef,
-            headerActionsRef
-        ) = createRefs()
-
-        ParticipantAvatar(
-            modifier = Modifier.constrainAs(avatarRef) {
-                top.linkTo(parent.top)
-                start.linkTo(parent.start)
-            },
-            avatarUiModel = uiModel.avatar,
-            avatarImageUiModel = uiModel.avatarImage,
-            actions = ParticipantAvatar.Actions(
-                onAvatarClicked = { actions.onAvatarClicked(uiModel.sender, uiModel.avatar) },
-                onAvatarImageLoadRequested = { actions.onAvatarImageLoadRequested(it) }
+        Row(modifier = modifier.fillMaxWidth()) {
+            ParticipantAvatar(
+                avatarUiModel = uiModel.avatar,
+                avatarImageUiModel = uiModel.avatarImage,
+                actions = ParticipantAvatar.Actions(
+                    onAvatarClicked = { actions.onAvatarClicked(uiModel.sender, uiModel.avatar) },
+                    onAvatarImageLoadRequested = { actions.onAvatarImageLoadRequested(it) }
+                )
             )
-        )
 
-        SenderName(
-            modifier = Modifier.constrainAs(senderNameRef) {
-                width = Dimension.fillToConstraints
-                top.linkTo(parent.top)
-                start.linkTo(avatarRef.end, margin = ProtonDimens.Spacing.Large)
-                end.linkTo(iconsRef.start, margin = ProtonDimens.Spacing.Standard)
-            },
-            participantUiModel = uiModel.sender
-        )
+            Spacer(modifier = Modifier.width(ProtonDimens.Spacing.Large))
 
-        ParticipantAddress(
-            modifier = Modifier.constrainAs(senderAddressRef) {
-                width = Dimension.fillToConstraints
-                top.linkTo(senderNameRef.bottom, margin = ProtonDimens.Spacing.Small)
-                start.linkTo(avatarRef.end, margin = ProtonDimens.Spacing.Large)
-                end.linkTo(timeRef.start, margin = ProtonDimens.Spacing.Standard)
-            },
-            participantUiModel = uiModel.sender
-        )
+            Column(modifier = Modifier.weight(1f)) {
+                Column(
+                    modifier = Modifier.clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null,
+                        onClick = { actions.onParticipantClicked(uiModel.sender, uiModel.avatar) }
+                    )
+                ) {
+                    SenderName(participantUiModel = uiModel.sender)
+                    Spacer(modifier = modifier.height(ProtonDimens.Spacing.Small))
+                    ParticipantAddress(
+                        participantUiModel = uiModel.sender,
+                        overflow = TextOverflow.Ellipsis,
+                        maxLines = 1
+                    )
+                }
 
-        Icons(
-            modifier = Modifier.constrainAs(iconsRef) {
-                top.linkTo(timeRef.top)
-                bottom.linkTo(timeRef.bottom)
-                end.linkTo(timeRef.start, margin = ProtonDimens.Spacing.Small)
-            },
-            uiModel = uiModel,
-            isExpanded = isExpanded
-        )
+                Spacer(modifier.height(ProtonDimens.Spacing.Standard))
 
-        Time(
-            modifier = Modifier.constrainAs(timeRef) {
-                top.linkTo(parent.top)
-                end.linkTo(parent.end)
-            },
-            time = uiModel.time
-        )
+                AllRecipients(
+                    allRecipients = uiModel.allRecipients,
+                    hasUndisclosedRecipients = uiModel.shouldShowUndisclosedRecipients,
+                    onClick = actions.onClick,
+                    isExpanded = isExpanded
+                )
 
-        MessageDetailHeaderActions(
-            modifier = modifier
-                .testTag(MessageDetailHeaderTestTags.ActionsRootItem)
-                .constrainAs(headerActionsRef) {
-                    top.linkTo(senderAddressRef.top)
-                    end.linkTo(parent.end)
-                },
-            uiModel = uiModel,
-            actions = actions
-        )
+                if (uiModel.labels.isNotEmpty()) {
+                    Spacer(modifier.height(ProtonDimens.Spacing.Standard))
+                    Labels(modifier = Modifier, uiModels = uiModel.labels)
+                }
+            }
 
-        AllRecipients(
-            modifier = Modifier
-                .constrainAs(allRecipientsRef) {
-                    width = Dimension.fillToConstraints
-                    top.linkTo(senderAddressRef.bottom, margin = ProtonDimens.Spacing.Standard)
-                    start.linkTo(avatarRef.end, margin = ProtonDimens.Spacing.Large)
-                    end.linkTo(headerActionsRef.start, margin = ProtonDimens.Spacing.Standard)
-                },
-            allRecipients = uiModel.allRecipients,
-            hasUndisclosedRecipients = uiModel.shouldShowUndisclosedRecipients,
-            onClick = actions.onClick,
-            isExpanded = isExpanded
-        )
+            Spacer(modifier = Modifier.width(ProtonDimens.Spacing.Large))
 
-        Labels(
-            modifier = modifier.constrainAs(labelsRef) {
-                width = Dimension.fillToConstraints
-                top.linkTo(allRecipientsRef.bottom, margin = ProtonDimens.Spacing.Compact)
-                start.linkTo(allRecipientsRef.start)
-                end.linkTo(headerActionsRef.start, margin = ProtonDimens.Spacing.Standard)
-                visibility = visibleWhen(uiModel.labels.isNotEmpty())
-            },
-            uiModels = uiModel.labels
-        )
+            Column(horizontalAlignment = Alignment.End) {
+                Row {
+                    Icons(uiModel = uiModel, isExpanded = isExpanded)
+                    Spacer(modifier.width(ProtonDimens.Spacing.Small))
+                    Time(time = uiModel.time)
+                }
+
+                Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Small))
+
+                Row {
+                    MessageDetailHeaderActions(
+                        modifier = modifier
+                            .testTag(MessageDetailHeaderTestTags.ActionsRootItem),
+                        uiModel = uiModel,
+                        actions = actions
+                    )
+                }
+            }
+        }
 
         if (isExpanded) {
-            val cardTopAnchor = if (uiModel.labels.isNotEmpty()) labelsRef.bottom else allRecipientsRef.bottom
-
+            Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Large))
             MessageDetailHeaderCard(
                 uiModel = uiModel,
-                actions = actions,
-                modifier = Modifier.constrainAs(cardRef) {
-                    top.linkTo(cardTopAnchor, margin = ProtonDimens.Spacing.Large)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                }
+                actions = actions
             )
         }
     }
@@ -281,7 +231,9 @@ private fun SenderName(
 private fun ParticipantAddress(
     modifier: Modifier = Modifier,
     participantUiModel: ParticipantUiModel,
-    textColor: Color = ProtonTheme.colors.textWeak
+    textColor: Color = ProtonTheme.colors.textWeak,
+    maxLines: Int = Int.MAX_VALUE,
+    overflow: TextOverflow = TextOverflow.Visible
 ) {
     Row(
         modifier = modifier,
@@ -291,8 +243,10 @@ private fun ParticipantAddress(
         Text(
             text = participantUiModel.participantAddress,
             modifier = modifier.testTag(MessageDetailHeaderTestTags.ParticipantValue),
+            maxLines = maxLines,
             color = textColor,
-            style = ProtonTheme.typography.bodySmall
+            style = ProtonTheme.typography.bodySmall,
+            overflow = overflow
         )
     }
 }
@@ -339,7 +293,11 @@ private fun AllRecipients(
     onClick: () -> Unit
 ) {
     Row(
-        modifier = modifier.clickable { onClick() },
+        modifier = modifier.clickable(
+            interactionSource = remember { MutableInteractionSource() },
+            indication = null,
+            onClick = onClick
+        ),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
@@ -628,8 +586,6 @@ private fun ExtendedHeaderRow(
         )
     }
 }
-
-private fun visibleWhen(isVisible: Boolean) = if (isVisible) Visibility.Visible else Visibility.Gone
 
 object MessageDetailHeader {
     data class Actions(
