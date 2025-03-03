@@ -56,7 +56,7 @@ class ConversationDetailMessageUiModelMapper @Inject constructor(
     private val avatarImageUiModelMapper: AvatarImageUiModelMapper
 ) {
 
-    suspend fun toUiModel(
+    fun toUiModel(
         message: Message,
         avatarImageState: AvatarImageState,
         primaryUserAddress: String?
@@ -69,7 +69,7 @@ class ConversationDetailMessageUiModelMapper @Inject constructor(
             hasAttachments = message.numAttachments > message.attachmentCount.calendar,
             isStarred = message.isStarred,
             isUnread = message.isUnread,
-            locationIcon = messageLocationUiModelMapper(message.exclusiveLocation, message.customLabels),
+            locationIcon = messageLocationUiModelMapper(message.exclusiveLocation),
             repliedIcon = getRepliedIcon(isReplied = message.isReplied, isRepliedAll = message.isRepliedAll),
             sender = participantUiModelMapper.senderToUiModel(message.sender),
             shortTime = formatShortTime(message.time.seconds),

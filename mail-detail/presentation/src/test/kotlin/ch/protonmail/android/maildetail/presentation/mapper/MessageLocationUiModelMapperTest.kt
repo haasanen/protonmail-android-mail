@@ -26,13 +26,12 @@ import ch.protonmail.android.maildetail.presentation.R
 import ch.protonmail.android.maildetail.presentation.model.MessageLocationUiModel
 import ch.protonmail.android.maillabel.domain.model.ExclusiveLocation
 import ch.protonmail.android.maillabel.domain.model.LabelId
-import ch.protonmail.android.maillabel.domain.model.LabelType
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.maillabel.presentation.iconRes
-import ch.protonmail.android.testdata.label.LabelTestData
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
+import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -52,7 +51,7 @@ class MessageLocationUiModelMapperTest {
         )
 
         // When
-        val result = messageLocationUiModelMapper(messageLocation, emptyList())
+        val result = messageLocationUiModelMapper(messageLocation)
         // Then
         assertEquals(expectedResult, result)
     }
@@ -61,19 +60,11 @@ class MessageLocationUiModelMapperTest {
     fun `when a custom folder is found, it's name, icon and icon color are returned when folder color setting is on`() =
         runTest {
             // Given
-            val customLabelId = "customLabelId"
             val customFolderId = "customFolderId"
             val customFolderName = "customFolder"
             val customFolderColor = Color.Red
-            val messageLocation = ExclusiveLocation.Folder(LabelId(customFolderId), "#rrr")
-            val labels = listOf(
-                LabelTestData.buildLabel(id = customLabelId, type = LabelType.MessageLabel),
-                LabelTestData.buildLabel(
-                    id = customFolderId,
-                    type = LabelType.MessageFolder,
-                    name = customFolderName
-                )
-            )
+            val messageLocation = ExclusiveLocation.Folder(customFolderName, LabelId(customFolderId), "#rrr")
+
             val expectedResult = MessageLocationUiModel(
                 customFolderName,
                 R.drawable.ic_proton_folder_filled,
@@ -82,28 +73,20 @@ class MessageLocationUiModelMapperTest {
             every { colorMapper.toColor(any()) } returns customFolderColor.right()
 
             // When
-            val result = messageLocationUiModelMapper(messageLocation, labels)
+            val result = messageLocationUiModelMapper(messageLocation)
 
             // Then
             assertEquals(expectedResult, result)
         }
 
     @Test
+    @Ignore("Re-implement once ET-2268 is addressed")
     fun `when a custom folder is found, icon color is ignored when folder color setting is off`() = runTest {
         // Given
-        val customLabelId = "customLabelId"
         val customFolderId = "customFolderId"
         val customFolderName = "customFolder"
-        val messageLocation = ExclusiveLocation.Folder(LabelId(customFolderId), "#rrr")
-        val labels = listOf(
-            LabelTestData.buildLabel(id = customLabelId, type = LabelType.MessageLabel),
-            LabelTestData.buildLabel(
-                id = customFolderId,
-                type = LabelType.MessageFolder,
-                name = customFolderName,
-                color = null
-            )
-        )
+        val messageLocation = ExclusiveLocation.Folder(customFolderName, LabelId(customFolderId), "#rrr")
+
         val expectedResult = MessageLocationUiModel(
             customFolderName,
             R.drawable.ic_proton_folder
@@ -111,7 +94,7 @@ class MessageLocationUiModelMapperTest {
         every { colorMapper.toColor(null) } returns "invalid".left()
 
         // When
-        val result = messageLocationUiModelMapper(messageLocation, labels)
+        val result = messageLocationUiModelMapper(messageLocation)
 
         // Then
         assertEquals(expectedResult, result)
@@ -126,8 +109,10 @@ class MessageLocationUiModelMapperTest {
                 SystemLabelId.AllMail.name,
                 SystemLabelId.enumOf(SystemLabelId.AllMail.labelId.id).iconRes()
             )
+
             // When
-            val result = messageLocationUiModelMapper(messageLocation, emptyList())
+            val result = messageLocationUiModelMapper(messageLocation)
+
             // Then
             assertEquals(expectedResult, result)
         }

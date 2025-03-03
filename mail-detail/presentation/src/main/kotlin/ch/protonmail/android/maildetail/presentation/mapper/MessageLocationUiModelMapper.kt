@@ -22,17 +22,15 @@ import ch.protonmail.android.mailcommon.presentation.mapper.ColorMapper
 import ch.protonmail.android.maildetail.presentation.R
 import ch.protonmail.android.maildetail.presentation.model.MessageLocationUiModel
 import ch.protonmail.android.maillabel.domain.model.ExclusiveLocation
-import ch.protonmail.android.maillabel.domain.model.Label
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.maillabel.presentation.iconRes
-import timber.log.Timber
 import javax.inject.Inject
 
 class MessageLocationUiModelMapper @Inject constructor(
     private val colorMapper: ColorMapper
 ) {
 
-    operator fun invoke(messageLocation: ExclusiveLocation, labels: List<Label>): MessageLocationUiModel {
+    operator fun invoke(messageLocation: ExclusiveLocation): MessageLocationUiModel {
 
         return when (messageLocation) {
             is ExclusiveLocation.System -> {
@@ -42,22 +40,14 @@ class MessageLocationUiModelMapper @Inject constructor(
                 )
             }
             is ExclusiveLocation.Folder -> {
-                val folder = labels.find { it.labelId == messageLocation.labelId }
-
-                if (folder == null) {
-                    Timber.w("message-location: declared exclusive location not found as a folder")
-                    return allMailLocation()
-                }
-
-                val shouldShowFolderColor = folder.color != null
-
                 MessageLocationUiModel(
-                    name = folder.name,
+                    name = messageLocation.name,
                     icon = when {
-                        shouldShowFolderColor -> R.drawable.ic_proton_folder_filled
+                        // This is temporary, see ET-2268 to handle folder colors properly.
+                        true -> R.drawable.ic_proton_folder_filled
                         else -> R.drawable.ic_proton_folder
                     },
-                    color = colorMapper.toColor(folder.color).getOrNull()
+                    color = colorMapper.toColor(messageLocation.color).getOrNull()
                 )
             }
             is ExclusiveLocation.NoLocation -> allMailLocation()

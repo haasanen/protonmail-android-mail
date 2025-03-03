@@ -117,7 +117,7 @@ class MessageDetailHeaderUiModelMapperTest {
         every { this@mockk(message.time.seconds) } returns shortTimeTextUiModel
     }
     private val messageLocationUiModelMapper: MessageLocationUiModelMapper = mockk {
-        coEvery { this@mockk(any(), any()) } returns messageLocationUiModel
+        coEvery { this@mockk(any()) } returns messageLocationUiModel
     }
     private val participantUiModelMapper: ParticipantUiModelMapper = mockk {
         every { senderToUiModel(MessageTestData.sender) } returns senderUiModel

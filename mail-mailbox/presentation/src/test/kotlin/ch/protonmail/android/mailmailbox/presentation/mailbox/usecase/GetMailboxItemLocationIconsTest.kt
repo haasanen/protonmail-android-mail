@@ -97,7 +97,7 @@ class GetMailboxItemLocationIconTest {
     fun `should return Icon with custom label and folder color`() = runTest {
         // Given
         val mailboxItem = buildMailboxItem(
-            exclusiveLocation = ExclusiveLocation.Folder(LabelId("1"), "#FF5733")
+            exclusiveLocation = ExclusiveLocation.Folder("Custom folder", LabelId("1"), "#FF5733")
         )
         val folderColorSettings = FolderColorSettings(useFolderColor = true, inheritParentFolderColor = false)
 
@@ -118,7 +118,7 @@ class GetMailboxItemLocationIconTest {
     fun `should return Icon with custom label without folder color`() = runTest {
         // Given
         val mailboxItem = buildMailboxItem(
-            exclusiveLocation = ExclusiveLocation.Folder(LabelId("1"), "#FF5733")
+            exclusiveLocation = ExclusiveLocation.Folder("Custom folder", LabelId("1"), "#FF5733")
         )
         val folderColorSettings = FolderColorSettings(useFolderColor = false, inheritParentFolderColor = false)
         coEvery { shouldShowLocationIndicator(userId, any()) } returns true

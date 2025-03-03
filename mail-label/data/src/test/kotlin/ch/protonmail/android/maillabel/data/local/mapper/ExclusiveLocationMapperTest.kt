@@ -60,6 +60,7 @@ class ExclusiveLocationMapperTest {
             color = LabelColor("#FF5733")
         )
         val expectedCustomLocation = ExclusiveLocation.Folder(
+            name = "Custom Label",
             labelId = LabelId("2"),
             color = "#FF5733"
         )

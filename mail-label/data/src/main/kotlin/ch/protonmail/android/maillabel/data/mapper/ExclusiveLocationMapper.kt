@@ -31,6 +31,7 @@ fun LocalExclusiveLocation?.toExclusiveLocation(): ExclusiveLocation {
         )
 
         is LocalExclusiveLocationCustom -> ExclusiveLocation.Folder(
+            this.name,
             this.id.toLabelId(),
             this.color.value
         )

@@ -25,6 +25,7 @@ sealed interface ExclusiveLocation {
     ) : ExclusiveLocation
 
     data class Folder(
+        val name: String,
         val labelId: LabelId,
         val color: String
     ) : ExclusiveLocation
