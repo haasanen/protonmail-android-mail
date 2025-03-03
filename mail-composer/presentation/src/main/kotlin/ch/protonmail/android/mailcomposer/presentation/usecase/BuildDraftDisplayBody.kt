@@ -81,6 +81,15 @@ class BuildDraftDisplayBody @Inject constructor(
             var body = document.getElementById('$EDITOR_ID').innerHTML
             $JAVASCRIPT_CALLBACK_INTERFACE_NAME.onBodyUpdated(body)
         });
+
+        const observer = new ResizeObserver(entries => {
+        for (const entry of entries) {
+            console.log(entry.contentRect.height)
+            $JAVASCRIPT_CALLBACK_INTERFACE_NAME.onWebViewSizeChanged()
+        }
+        });
+        observer.observe(document.querySelector('body'));
+
     """.trimIndent()
 
 }

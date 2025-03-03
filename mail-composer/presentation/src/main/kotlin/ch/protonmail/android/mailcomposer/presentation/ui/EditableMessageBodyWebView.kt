@@ -105,7 +105,13 @@ fun EditableMessageBodyWebView(
         }
     }
 
-    val javascriptCallback = remember { JavascriptCallback(webViewActions.onMessageBodyChanged) }
+    fun onWebviewResize() {
+        webViewActions.onWebviewSizeChanged(webView?.height ?: 0)
+    }
+
+    val javascriptCallback = remember {
+        JavascriptCallback(webViewActions.onMessageBodyChanged, ::onWebviewResize)
+    }
 
     key(client) {
         WebView(
@@ -157,7 +163,8 @@ object EditableMessageBodyWebView {
         val onMessageBodyLinkClicked: (uri: Uri) -> Unit,
         val onAttachmentClicked: (attachmentId: AttachmentId) -> Unit,
         val loadEmbeddedImage: (contentId: String) -> EmbeddedImage?,
-        val onMessageBodyChanged: (body: String) -> Unit
+        val onMessageBodyChanged: (body: String) -> Unit,
+        val onWebviewSizeChanged: (size: Int) -> Unit
     )
 }
 

@@ -19,17 +19,21 @@
 package ch.protonmail.android.mailcomposer.presentation.ui
 
 import android.webkit.JavascriptInterface
-import timber.log.Timber
 
 const val JAVASCRIPT_CALLBACK_INTERFACE_NAME = "MessageBodyInterface"
 
 class JavascriptCallback(
-    private val onMessageBodyChanged: (String) -> Unit
+    private val onMessageBodyChanged: (String) -> Unit,
+    private val onEditorSizeChanged: () -> Unit
 ) {
 
     @JavascriptInterface
     fun onBodyUpdated(body: String) {
-        Timber.d("composer: js interface called as body changed $body")
         onMessageBodyChanged(body)
+    }
+
+    @JavascriptInterface
+    fun onWebViewSizeChanged() {
+        onEditorSizeChanged()
     }
 }

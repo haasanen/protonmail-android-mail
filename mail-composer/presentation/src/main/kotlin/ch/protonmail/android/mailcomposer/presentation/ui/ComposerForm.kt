@@ -124,6 +124,7 @@ internal fun ComposerForm(
                 MessageBodyEditor(
                     messageBodyUiModel = fields.displayBody,
                     onBodyChanged = actions.onBodyChanged,
+                    onEditorSizeChanged = actions.onEditorSizeChanged,
                     modifier = maxWidthModifier
                         .testTag(ComposerTestTags.MessageBody)
                         .retainFieldFocusOnConfigurationChange(FocusedFieldType.BODY)

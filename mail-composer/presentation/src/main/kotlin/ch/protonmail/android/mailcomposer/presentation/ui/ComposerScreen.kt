@@ -40,6 +40,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -80,6 +81,7 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.google.accompanist.permissions.shouldShowRationale
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import kotlin.time.Duration
 
@@ -219,7 +221,19 @@ fun ComposerScreen(actions: ComposerScreen.Actions, viewModel: ComposerViewModel
                         .alpha(.5f)
                 ) { ProtonCenteredProgress() }
             } else {
+                val coroutineScope = rememberCoroutineScope()
                 val scrollState = rememberScrollState()
+
+                var previousWebviewHeight = remember { 0 }
+                fun onEditorSizeChanged(height: Int) {
+                    coroutineScope.launch {
+                        val sizeDelta = (height - previousWebviewHeight).coerceAtLeast(0)
+                        Timber.d("composer: current scroll ${scrollState.value}")
+                        Timber.d("composer: size delta $sizeDelta")
+                        scrollState.scrollTo(scrollState.value + sizeDelta)
+                        previousWebviewHeight = height
+                    }
+                }
 
                 Column(
                     modifier = Modifier
@@ -241,7 +255,8 @@ fun ComposerScreen(actions: ComposerScreen.Actions, viewModel: ComposerViewModel
                             viewModel,
                             { recipientsOpen = it },
                             { focusedField = it },
-                            { bottomSheetType.value = it }
+                            { bottomSheetType.value = it },
+                            ::onEditorSizeChanged
                         ),
                         contactSuggestions = state.contactSuggestions,
                         areContactSuggestionsExpanded = state.areContactSuggestionsExpanded
@@ -427,7 +442,8 @@ private fun buildActions(
     viewModel: ComposerViewModel,
     onToggleRecipients: (Boolean) -> Unit,
     onFocusChanged: (FocusedFieldType) -> Unit,
-    setBottomSheetType: (BottomSheetType) -> Unit
+    setBottomSheetType: (BottomSheetType) -> Unit,
+    onEditorSizeChanged: (Int) -> Unit
 ): ComposerFormActions = ComposerFormActions(
     onToggleRecipients = onToggleRecipients,
     onFocusChanged = onFocusChanged,
@@ -447,7 +463,8 @@ private fun buildActions(
         setBottomSheetType(BottomSheetType.ChangeSender)
         viewModel.submit(ComposerAction.ChangeSenderRequested)
     },
-    onRespondInline = { viewModel.submit(ComposerAction.RespondInlineRequested) }
+    onRespondInline = { viewModel.submit(ComposerAction.RespondInlineRequested) },
+    onEditorSizeChanged = onEditorSizeChanged
 )
 
 object ComposerScreen {
