@@ -29,6 +29,7 @@ import ch.protonmail.android.mailcommon.datarust.mapper.LocalDraftSendResult
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.mailcomposer.domain.model.MessageSendingStatus
+import ch.protonmail.android.mailmessage.data.mapper.toMessageId
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
@@ -75,6 +76,8 @@ class RustSendingStatusDataSourceImplTest {
     // Mock required objects
     private val draftSendResultWatcher: DraftSendResultWatcher = mockk(relaxed = true)
 
+    private val testLocalMessageId = LocalMessageIdSample.AugWeatherForecast
+    private val testMessageId = testLocalMessageId.toMessageId()
     private val testUserId = UserIdSample.Primary
     private val testSession: MailUserSessionWrapper = mockk()
 
@@ -141,5 +144,130 @@ class RustSendingStatusDataSourceImplTest {
         flowJob.cancel()
     }
 
+    @Test
+    fun `queryUnseenMessageSendingStatuses returns error when session is null`() = runTest {
+        // Given
+        coEvery { userSessionRepository.getUserSession(testUserId) } returns null
+
+        // When
+        val result = dataSource.queryUnseenMessageSendingStatuses(testUserId)
+
+        // Then
+        assertTrue(result.isLeft())
+    }
+
+    @Test
+    fun `queryUnseenMessageSendingStatuses returns error when querying fails`() = runTest {
+        // Given
+        coEvery { userSessionRepository.getUserSession(testUserId) } returns testSession
+        coEvery { rustQueryUnseenDraftSendResults(testSession) } returns DataError.Local.Unknown.left()
+
+        // When
+        val result = dataSource.queryUnseenMessageSendingStatuses(testUserId)
+
+        // Then
+        assertTrue(result.isLeft())
+    }
+
+    @Test
+    fun `queryUnseenMessageSendingStatuses returns unseen message statuses when successful`() = runTest {
+        // Given
+        coEvery { userSessionRepository.getUserSession(testUserId) } returns testSession
+
+        val unseenResults = listOf(
+            LocalDraftSendResult(
+                messageId = testLocalMessageId,
+                timestamp = System.currentTimeMillis(),
+                error = DraftSendStatus.Failure(DraftSaveSendError.Other(LocalProtonError.Network)),
+                origin = DraftSendResultOrigin.SEND
+            )
+        )
+
+        coEvery { rustQueryUnseenDraftSendResults(testSession) } returns unseenResults.right()
+
+        // When
+        val result = dataSource.queryUnseenMessageSendingStatuses(testUserId)
+
+        // Then
+        assertTrue(result.isRight())
+        assertEquals(1, result.getOrNull()?.size)
+        assertEquals(unseenResults.first().toMessageSendingStatus(), result.getOrNull()?.first())
+    }
+
+    @Test
+    fun `deleteMessageSendingStatuses returns error when session is null`() = runTest {
+        // Given
+        coEvery { userSessionRepository.getUserSession(testUserId) } returns null
+
+        // When
+        val result = dataSource.deleteMessageSendingStatuses(testUserId, listOf(testMessageId))
+
+        // Then
+        assertTrue(result.isLeft())
+    }
+
+    @Test
+    fun `deleteMessageSendingStatuses returns error when deletion fails`() = runTest {
+        // Given
+        coEvery { userSessionRepository.getUserSession(testUserId) } returns testSession
+        coEvery { rustDeleteDraftSendResult(testSession, any()) } returns DataError.Local.Unknown.left()
+
+        // When
+        val result = dataSource.deleteMessageSendingStatuses(testUserId, listOf(testMessageId))
+
+        // Then
+        assertTrue(result.isLeft())
+    }
+
+    @Test
+    fun `deleteMessageSendingStatuses returns success when deletion succeeds`() = runTest {
+        // Given
+        coEvery { userSessionRepository.getUserSession(testUserId) } returns testSession
+        coEvery { rustDeleteDraftSendResult(testSession, any()) } returns Unit.right()
+
+        // When
+        val result = dataSource.deleteMessageSendingStatuses(testUserId, listOf(testMessageId))
+
+        // Then
+        assertTrue(result.isRight())
+    }
+
+    @Test
+    fun `markMessageSendingStatusesAsSeen returns error when session is null`() = runTest {
+        // Given
+        coEvery { userSessionRepository.getUserSession(testUserId) } returns null
+
+        // When
+        val result = dataSource.markMessageSendingStatusesAsSeen(testUserId, listOf(testMessageId))
+
+        // Then
+        assertTrue(result.isLeft())
+    }
+
+    @Test
+    fun `markMessageSendingStatusesAsSeen returns error when marking fails`() = runTest {
+        // Given
+        coEvery { userSessionRepository.getUserSession(testUserId) } returns testSession
+        coEvery { rustMarkDraftSendResultAsSeen(testSession, any()) } returns DataError.Local.Unknown.left()
+
+        // When
+        val result = dataSource.markMessageSendingStatusesAsSeen(testUserId, listOf(testMessageId))
+
+        // Then
+        assertTrue(result.isLeft())
+    }
+
+    @Test
+    fun `markMessageSendingStatusesAsSeen returns success when marking succeeds`() = runTest {
+        // Given
+        coEvery { userSessionRepository.getUserSession(testUserId) } returns testSession
+        coEvery { rustMarkDraftSendResultAsSeen(testSession, any()) } returns Unit.right()
+
+        // When
+        val result = dataSource.markMessageSendingStatusesAsSeen(testUserId, listOf(testMessageId))
+
+        // Then
+        assertTrue(result.isRight())
+    }
 }
 

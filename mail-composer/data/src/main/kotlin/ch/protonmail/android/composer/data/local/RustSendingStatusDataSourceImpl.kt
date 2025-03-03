@@ -18,10 +18,19 @@
 
 package ch.protonmail.android.composer.data.local
 
+import arrow.core.Either
+import arrow.core.left
+import arrow.core.right
 import ch.protonmail.android.composer.data.mapper.toMessageSendingStatus
 import ch.protonmail.android.composer.data.usecase.CreateRustDraftSendWatcher
+import ch.protonmail.android.composer.data.usecase.RustDeleteDraftSendResult
+import ch.protonmail.android.composer.data.usecase.RustMarkDraftSendResultAsSeen
+import ch.protonmail.android.composer.data.usecase.RustQueryUnseenDraftSendResults
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalDraftSendResult
+import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcomposer.domain.model.MessageSendingStatus
+import ch.protonmail.android.mailmessage.data.mapper.toLocalMessageId
+import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -34,7 +43,10 @@ import javax.inject.Inject
 
 class RustSendingStatusDataSourceImpl @Inject constructor(
     private val userSessionRepository: UserSessionRepository,
-    private val createRustDraftSendWatcher: CreateRustDraftSendWatcher
+    private val createRustDraftSendWatcher: CreateRustDraftSendWatcher,
+    private val rustQueryUnseenDraftSendResults: RustQueryUnseenDraftSendResults,
+    private val rustDeleteDraftSendResult: RustDeleteDraftSendResult,
+    private val rustMarkDraftSendResultAsSeen: RustMarkDraftSendResultAsSeen
 ) : RustSendingStatusDataSource {
 
     private var draftSendResultWatcher: DraftSendResultWatcher? = null
@@ -70,5 +82,60 @@ class RustSendingStatusDataSourceImpl @Inject constructor(
         }
 
         return sendResultsFlow
+    }
+
+    override suspend fun queryUnseenMessageSendingStatuses(
+        userId: UserId
+    ): Either<DataError, List<MessageSendingStatus>> {
+        val session = userSessionRepository.getUserSession(userId)
+        if (session == null) {
+            Timber.e("rust-draft: Trying to query unseen sending status; Failing.")
+            return DataError.Local.Unknown.left()
+        }
+        return rustQueryUnseenDraftSendResults(session).fold(
+            ifLeft = { error ->
+                Timber.e("rust-draft: Query unseen sending status failed with error: $error")
+                error.left()
+            },
+            ifRight = { results ->
+                results.map { it.toMessageSendingStatus() }.right()
+            }
+        )
+    }
+
+    override suspend fun deleteMessageSendingStatuses(
+        userId: UserId,
+        messageIds: List<MessageId>
+    ): Either<DataError, Unit> {
+        val session = userSessionRepository.getUserSession(userId)
+        if (session == null) {
+            Timber.e("rust-draft: Trying to delete sending status; Failing.")
+            return DataError.Local.Unknown.left()
+        }
+        return rustDeleteDraftSendResult(session, messageIds.map { it.toLocalMessageId() }).fold(
+            ifLeft = { error ->
+                Timber.e("rust-draft: Delete sending status failed with error: $error")
+                error.left()
+            },
+            ifRight = { Unit.right() }
+        )
+    }
+
+    override suspend fun markMessageSendingStatusesAsSeen(
+        userId: UserId,
+        messageIds: List<MessageId>
+    ): Either<DataError, Unit> {
+        val session = userSessionRepository.getUserSession(userId)
+        if (session == null) {
+            Timber.e("rust-draft: Trying to mark sending status as seen; Failing.")
+            return DataError.Local.Unknown.left()
+        }
+        return rustMarkDraftSendResultAsSeen(session, messageIds.map { it.toLocalMessageId() }).fold(
+            ifLeft = { error ->
+                Timber.e("rust-draft: Mark sending status as seen failed with error: $error")
+                error.left()
+            },
+            ifRight = { Unit.right() }
+        )
     }
 }

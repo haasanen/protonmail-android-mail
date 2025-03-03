@@ -18,6 +18,9 @@
 
 package ch.protonmail.android.mailcommon.data.worker
 
+import java.time.Duration
+import java.util.concurrent.TimeUnit
+import androidx.work.BackoffPolicy
 import androidx.work.Constraints
 import androidx.work.ExistingWorkPolicy
 import androidx.work.ListenableWorker
@@ -42,9 +45,14 @@ class Enqueuer @Inject constructor(private val workManager: WorkManager) {
         workerId: String,
         params: Map<String, Any>,
         constraints: Constraints? = buildDefaultConstraints(),
-        existingWorkPolicy: ExistingWorkPolicy = ExistingWorkPolicy.KEEP
+        existingWorkPolicy: ExistingWorkPolicy = ExistingWorkPolicy.KEEP,
+        backoffCriteria: BackoffCriteria = BackoffCriteria.DefaultExponential,
+        initialDelay: Duration = Duration.ZERO
     ) {
-        enqueueUniqueWork(userId, workerId, T::class.java, params, constraints, existingWorkPolicy)
+        enqueueUniqueWork(
+            userId, workerId, T::class.java, params,
+            constraints, existingWorkPolicy, backoffCriteria, initialDelay
+        )
     }
 
     inline fun <reified T : ListenableWorker, reified K : ListenableWorker> enqueueInChain(
@@ -149,6 +157,10 @@ class Enqueuer @Inject constructor(private val workManager: WorkManager) {
         workManager.cancelAllWorkByTag(userId.id)
     }
 
+    fun cancelWork(workerId: String) {
+        workManager.cancelUniqueWork(workerId)
+    }
+
     fun observeWorkStatusIsEnqueuedOrRunning(workerId: String): Flow<Boolean> =
         workManager.getWorkInfosForUniqueWorkFlow(workerId)
             .map { workInfos ->
@@ -165,16 +177,26 @@ class Enqueuer @Inject constructor(private val workManager: WorkManager) {
         worker: Class<out ListenableWorker>,
         params: Map<String, Any>,
         constraints: Constraints?,
-        existingWorkPolicy: ExistingWorkPolicy
+        existingWorkPolicy: ExistingWorkPolicy,
+        backoffCriteria: BackoffCriteria = BackoffCriteria.DefaultExponential,
+        initialDelay: Duration = Duration.ZERO
     ) {
-        workManager.enqueueUniqueWork(workerId, existingWorkPolicy, createRequest(userId, worker, params, constraints))
+        workManager.enqueueUniqueWork(
+            workerId, existingWorkPolicy,
+            createRequest(
+                userId, worker, params, constraints,
+                backoffCriteria, initialDelay
+            )
+        )
     }
 
     private fun createRequest(
         userId: UserId,
         worker: Class<out ListenableWorker>,
         params: Map<String, Any>,
-        constraints: Constraints?
+        constraints: Constraints?,
+        backoffCriteria: BackoffCriteria = BackoffCriteria.DefaultExponential,
+        initialDelay: Duration = Duration.ZERO
     ): OneTimeWorkRequest {
 
         val data = workDataOf(*params.map { Pair(it.key, it.value) }.toTypedArray())
@@ -182,6 +204,12 @@ class Enqueuer @Inject constructor(private val workManager: WorkManager) {
         return OneTimeWorkRequest.Builder(worker).run {
             setInputData(data)
             addTag(userId.id)
+            setBackoffCriteria(
+                backoffCriteria.backoffPolicy,
+                backoffCriteria.delayDuration, backoffCriteria.timeUnit
+            )
+            keepResultsForAtLeast(0, TimeUnit.MILLISECONDS)
+            setInitialDelay(initialDelay)
             if (constraints != null) setConstraints(constraints)
             build()
         }
@@ -192,4 +220,28 @@ class Enqueuer @Inject constructor(private val workManager: WorkManager) {
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .build()
     }
+
+
+    data class BackoffCriteria(
+        val backoffPolicy: BackoffPolicy,
+        val delayDuration: Long,
+        val timeUnit: TimeUnit
+    ) {
+
+        companion object {
+
+            val DefaultExponential = BackoffCriteria(
+                backoffPolicy = BackoffPolicy.EXPONENTIAL,
+                delayDuration = 30L,
+                timeUnit = TimeUnit.SECONDS
+            )
+
+            val DefaultLinear = BackoffCriteria(
+                backoffPolicy = BackoffPolicy.LINEAR,
+                delayDuration = 30L,
+                timeUnit = TimeUnit.SECONDS
+            )
+        }
+    }
+
 }

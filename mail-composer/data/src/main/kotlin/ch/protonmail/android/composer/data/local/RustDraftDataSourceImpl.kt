@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.composer.data.local
 
+import java.time.Duration
 import androidx.annotation.VisibleForTesting
 import arrow.core.Either
 import arrow.core.left
@@ -28,16 +29,20 @@ import ch.protonmail.android.composer.data.mapper.toSingleRecipientEntry
 import ch.protonmail.android.composer.data.usecase.CreateRustDraft
 import ch.protonmail.android.composer.data.usecase.OpenRustDraft
 import ch.protonmail.android.composer.data.wrapper.DraftWrapper
+import ch.protonmail.android.mailcommon.data.worker.Enqueuer
 import ch.protonmail.android.mailcommon.datarust.mapper.toDataError
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.Subject
+import ch.protonmail.android.mailcomposer.domain.worker.SendingStatusWorker
 import ch.protonmail.android.mailmessage.data.mapper.toLocalMessageId
+import ch.protonmail.android.mailmessage.data.mapper.toMessageId
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.Recipient
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flowOf
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
@@ -48,7 +53,8 @@ import javax.inject.Inject
 class RustDraftDataSourceImpl @Inject constructor(
     private val userSessionRepository: UserSessionRepository,
     private val createRustDraft: CreateRustDraft,
-    private val openRustDraft: OpenRustDraft
+    private val openRustDraft: OpenRustDraft,
+    private val enqueuer: Enqueuer
 ) : RustDraftDataSource {
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
@@ -154,10 +160,35 @@ class RustDraftDataSourceImpl @Inject constructor(
         return@withValidRustDraftWrapper when (val result = it.send()) {
             is VoidDraftSaveSendResult.Error -> result.v1.toDataError().left()
             VoidDraftSaveSendResult.Ok -> {
+                startSendingStatusWorker()
                 Unit.right()
             }
         }
     }
+
+    private suspend fun startSendingStatusWorker() {
+        val userId = userSessionRepository.observePrimaryUserId().firstOrNull()
+        if (userId == null) {
+            Timber.e("rust-draft: Trying to start sending status worker with null userId; Failing.")
+            return
+        }
+
+        val messageId = rustDraftWrapper?.messageId()?.toMessageId()
+        if (messageId == null) {
+            Timber.e("rust-draft: Trying to start sending status worker with null messageId; Failing.")
+            return
+        }
+
+        Timber.d("rust-draft: Starting sending status worker...")
+        enqueuer.enqueueUniqueWork<SendingStatusWorker>(
+            userId = userId,
+            workerId = SendingStatusWorker.id(messageId),
+            params = SendingStatusWorker.params(userId, messageId),
+            backoffCriteria = Enqueuer.BackoffCriteria.DefaultLinear,
+            initialDelay = InitialDelayForSendingStatusWorker
+        )
+    }
+
     private suspend fun withValidRustDraftWrapper(
         closure: suspend (DraftWrapper) -> Either<DataError, Unit>
     ): Either<DataError, Unit> {
@@ -165,5 +196,10 @@ class RustDraftDataSourceImpl @Inject constructor(
             ?: return DataError.Local.SaveDraftError.NoRustDraftAvailable.left()
 
         return closure(rustDraftWrapper)
+    }
+
+    companion object {
+
+        val InitialDelayForSendingStatusWorker: Duration = Duration.ofMillis(10_000L)
     }
 }

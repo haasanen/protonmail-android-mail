@@ -51,6 +51,7 @@ dependencies {
     implementation(libs.jsoup)
     implementation(libs.proton.core.user)
     implementation(libs.proton.core.mailSettings)
+    implementation(libs.androidx.hilt.work)
 
     implementation(project(":mail-message:domain"))
     implementation(project(":mail-common:domain"))

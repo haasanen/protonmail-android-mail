@@ -18,21 +18,17 @@
 
 package ch.protonmail.android.mailcomposer.domain.usecase
 
-import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcomposer.domain.model.MessageSendingStatus
+import ch.protonmail.android.mailcomposer.domain.repository.SendingStatusRepository
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOf
 import me.proton.core.domain.entity.UserId
-import timber.log.Timber
 import javax.inject.Inject
 
-@MissingRustApi
-// To be bound to rust or dropped when implementing send
-class ObserveSendingMessagesStatus @Inject constructor() {
+class ObserveSendingMessagesStatus @Inject constructor(
+    private val sendingStatusRepository: SendingStatusRepository
+) {
 
-    operator fun invoke(userId: UserId): Flow<MessageSendingStatus> {
-        Timber.w("ObserveMessageSendingError Not implemented")
-        return flowOf()
-    }
+    suspend operator fun invoke(userId: UserId): Flow<MessageSendingStatus> =
+        sendingStatusRepository.observeMessageSendingStatus(userId)
 
 }

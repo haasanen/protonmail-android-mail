@@ -16,19 +16,16 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.composer.data.local
+package ch.protonmail.android.mailcomposer.domain.usecase
 
-import arrow.core.Either
-import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailcomposer.domain.model.MessageSendingStatus
+import ch.protonmail.android.mailcomposer.domain.repository.SendingStatusRepository
 import ch.protonmail.android.mailmessage.domain.model.MessageId
-import kotlinx.coroutines.flow.Flow
 import me.proton.core.domain.entity.UserId
+import javax.inject.Inject
 
-interface RustSendingStatusDataSource {
-
-    suspend fun observeMessageSendingStatus(userId: UserId): Flow<MessageSendingStatus>
-    suspend fun queryUnseenMessageSendingStatuses(userId: UserId): Either<DataError, List<MessageSendingStatus>>
-    suspend fun deleteMessageSendingStatuses(userId: UserId, messageIds: List<MessageId>): Either<DataError, Unit>
-    suspend fun markMessageSendingStatusesAsSeen(userId: UserId, messageIds: List<MessageId>): Either<DataError, Unit>
+class MarkMessageSendingStatusesAsSeen @Inject constructor(
+    private val sendingStatusRepository: SendingStatusRepository
+) {
+    suspend operator fun invoke(userId: UserId, messageIds: List<MessageId>) =
+        sendingStatusRepository.markMessageSendingStatusesAsSeen(userId, messageIds)
 }

@@ -42,11 +42,14 @@ class WorkManagerInitializer : Initializer<WorkManager> {
         return WorkManager.getInstance(context)
     }
 
-    override fun dependencies(): List<Class<out Initializer<*>?>> = emptyList()
+    override fun dependencies(): List<Class<out Initializer<*>?>> = listOf(
+        RustMailCommonInitializer::class.java
+    )
 
     @EntryPoint
     @InstallIn(SingletonComponent::class)
     interface WorkManagerInitializerEntryPoint {
+
         fun hiltWorkerFactory(): HiltWorkerFactory
     }
 }
