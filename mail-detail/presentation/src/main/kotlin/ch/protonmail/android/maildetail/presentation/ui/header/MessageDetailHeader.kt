@@ -456,8 +456,7 @@ private fun MessageDetailHeaderCard(
         modifier = modifier
     ) {
         Column(
-            modifier = Modifier
-                .padding(ProtonDimens.Spacing.Medium),
+            modifier = Modifier.padding(ProtonDimens.Spacing.Medium),
             verticalArrangement = Arrangement.spacedBy(ProtonDimens.Spacing.Large)
         ) {
             SenderDetails(uiModel.sender, uiModel.avatar, actions)
@@ -546,7 +545,13 @@ private fun RecipientsTitleAndList(
             )
             Column(verticalArrangement = Arrangement.spacedBy(ProtonDimens.Spacing.Standard)) {
                 recipients.forEach { recipient ->
-                    Column {
+                    Column(
+                        modifier = Modifier.clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = null,
+                            onClick = { actions.onParticipantClicked(recipient, null) }
+                        )
+                    ) {
                         ParticipantText(
                             participantUiModel = recipient,
                             textColor = ProtonTheme.colors.textWeak

@@ -946,7 +946,7 @@ object ConversationDetailScreen {
         val onPrint: (MessageId) -> Unit,
         val onAvatarClicked: (ParticipantUiModel, AvatarUiModel) -> Unit,
         val onAvatarImageLoadRequested: (AvatarUiModel) -> Unit,
-        val onParticipantClicked: (ParticipantUiModel, AvatarUiModel) -> Unit,
+        val onParticipantClicked: (ParticipantUiModel, AvatarUiModel?) -> Unit,
         val onTrashedMessagesBannerClick: () -> Unit
     ) {
 

@@ -157,9 +157,7 @@ private fun ConversationDetailExpandedItem(
         onAvatarClicked = actions.onAvatarClicked,
         onAvatarImageLoadRequested = actions.onAvatarImageLoadRequested,
         onParticipantClicked = { participantUiModel, avatarUiModel ->
-            if (avatarUiModel != null) {
-                actions.onParticipantClicked(participantUiModel, avatarUiModel)
-            }
+            actions.onParticipantClicked(participantUiModel, avatarUiModel)
         },
         onShowFeatureMissingSnackbar = actions.showFeatureMissingSnackbar
     )
@@ -234,7 +232,7 @@ object ConversationDetailItem {
         val onPrint: (MessageId) -> Unit,
         val onAvatarClicked: (ParticipantUiModel, AvatarUiModel) -> Unit,
         val onAvatarImageLoadRequested: (AvatarUiModel) -> Unit,
-        val onParticipantClicked: (ParticipantUiModel, AvatarUiModel) -> Unit
+        val onParticipantClicked: (ParticipantUiModel, AvatarUiModel?) -> Unit
     )
 }
 

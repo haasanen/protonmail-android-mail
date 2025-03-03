@@ -19,12 +19,14 @@
 package ch.protonmail.android.maildetail.presentation.model
 
 import androidx.annotation.DrawableRes
+import androidx.compose.runtime.Stable
 import ch.protonmail.android.mailcommon.presentation.model.AvatarImageUiModel
 import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.maillabel.presentation.model.LabelUiModel
 import kotlinx.collections.immutable.ImmutableList
 
+@Stable
 data class MessageDetailHeaderUiModel(
     val avatar: AvatarUiModel,
     val avatarImage: AvatarImageUiModel,

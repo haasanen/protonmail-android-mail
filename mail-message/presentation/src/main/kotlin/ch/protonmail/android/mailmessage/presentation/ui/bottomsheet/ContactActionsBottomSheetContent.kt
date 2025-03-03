@@ -110,23 +110,25 @@ fun ContactActionsBottomSheetContent(
 }
 
 @Composable
-fun ContactActionsBottomSheetHeader(participant: Participant, avatarUiModel: AvatarUiModel) {
+fun ContactActionsBottomSheetHeader(participant: Participant, avatarUiModel: AvatarUiModel?) {
 
     Column(
         modifier = Modifier.fillMaxWidth()
     ) {
-        Avatar(
-            modifier = Modifier
-                .testTag(ContactActionsBottomSheetTestTags.Avatar)
-                .padding(ProtonDimens.Spacing.Large)
-                .align(Alignment.CenterHorizontally),
-            avatarUiModel = avatarUiModel,
-            onClick = { },
-            clickable = false,
-            outerContainerSize = MailDimens.ContactActions.AvatarSize,
-            avatarSize = MailDimens.ContactActions.AvatarSize,
-            backgroundShape = CircleShape
-        )
+        if (avatarUiModel != null) {
+            Avatar(
+                modifier = Modifier
+                    .testTag(ContactActionsBottomSheetTestTags.Avatar)
+                    .padding(ProtonDimens.Spacing.Large)
+                    .align(Alignment.CenterHorizontally),
+                avatarUiModel = avatarUiModel,
+                onClick = { },
+                clickable = false,
+                outerContainerSize = MailDimens.ContactActions.AvatarSize,
+                avatarSize = MailDimens.ContactActions.AvatarSize,
+                backgroundShape = CircleShape
+            )
+        }
         if (participant.name.isNotBlank()) {
             Text(
                 modifier = Modifier

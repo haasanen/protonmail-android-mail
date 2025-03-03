@@ -233,7 +233,7 @@ sealed interface ConversationDetailViewAction : ConversationDetailOperation {
 
     data class RequestContactActionsBottomSheet(
         val participant: ParticipantUiModel,
-        val avatarUiModel: AvatarUiModel
+        val avatarUiModel: AvatarUiModel?
     ) : ConversationDetailViewAction,
         AffectingBottomSheet
 

@@ -175,7 +175,7 @@ sealed interface ContactActionsBottomSheetState : BottomSheetContentState {
 
     data class Data(
         val participant: Participant,
-        val avatarUiModel: AvatarUiModel,
+        val avatarUiModel: AvatarUiModel?,
         val contactId: ContactId?
     ) : ContactActionsBottomSheetState
 
@@ -186,7 +186,7 @@ sealed interface ContactActionsBottomSheetState : BottomSheetContentState {
     sealed interface ContactActionsBottomSheetEvent : ContactActionsBottomSheetOperation {
         data class ActionData(
             val participant: Participant,
-            val avatarUiModel: AvatarUiModel,
+            val avatarUiModel: AvatarUiModel?,
             val contactId: ContactId?
         ) : ContactActionsBottomSheetEvent
     }
