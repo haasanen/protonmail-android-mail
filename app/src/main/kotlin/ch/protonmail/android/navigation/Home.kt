@@ -114,6 +114,7 @@ import ch.protonmail.android.navigation.route.addWebSpamFilterSettings
 import ch.protonmail.android.uicomponents.bottomsheet.bottomSheetHeightConstrainedContent
 import ch.protonmail.android.uicomponents.snackbar.DismissableSnackbarHost
 import io.sentry.compose.withSentryObservableEffect
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import me.proton.android.core.accountmanager.presentation.manager.addAccountsManager
 import me.proton.android.core.accountmanager.presentation.switcher.v1.AccountSwitchEvent
@@ -200,14 +201,35 @@ fun Home(
         snackbarHostNormState.showSnackbar(message = sendingMessageText, type = ProtonSnackbarType.NORM)
     }
 
+    val undoActionText = stringResource(id = R.string.undo_button_label)
+    val messageSentText = stringResource(id = R.string.mailbox_message_sending_success)
+    fun showMessageSentWithUndoSnackbar(messageId: MessageId) = scope.launch {
+        val result = snackbarHostNormState.showSnackbar(
+            type = ProtonSnackbarType.NORM,
+            message = messageSentText,
+            actionLabel = undoActionText,
+            duration = SnackbarDuration.Indefinite
+        )
+        when (result) {
+            SnackbarResult.ActionPerformed -> viewModel.undoSendMessage(messageId)
+            SnackbarResult.Dismissed -> Unit
+        }
+    }
+
+    fun showMessageSentWithoutUndoSnackbar() = scope.launch {
+        snackbarHostNormState.showSnackbar(
+            type = ProtonSnackbarType.NORM,
+            message = messageSentText
+        )
+    }
+
+    fun hideMessageSentSnackbar() = scope.launch {
+        snackbarHostNormState.snackbarHostState.currentSnackbarData?.dismiss()
+    }
+
     val sendingMessageOfflineText = stringResource(id = R.string.mailbox_message_sending_offline)
     fun showMessageSendingOfflineSnackbar() = scope.launch {
         snackbarHostNormState.showSnackbar(message = sendingMessageOfflineText, type = ProtonSnackbarType.NORM)
-    }
-
-    val successSendingMessageText = stringResource(id = R.string.mailbox_message_sending_success)
-    fun showSuccessSendingMessageSnackbar() = scope.launch {
-        snackbarHostSuccessState.showSnackbar(message = successSendingMessageText, type = ProtonSnackbarType.SUCCESS)
     }
 
     val errorSendingMessageText = stringResource(id = R.string.mailbox_message_sending_error)
@@ -268,10 +290,20 @@ fun Home(
 
     ConsumableLaunchedEffect(state.messageSendingStatusEffect) { sendingStatus ->
         when (sendingStatus) {
-            is MessageSendingStatus.MessageSent -> showSuccessSendingMessageSnackbar()
+            is MessageSendingStatus.MessageSentFinal -> {
+                showMessageSentWithoutUndoSnackbar()
+                viewModel.confirmMessageAsSeen(sendingStatus.messageId)
+            }
             is MessageSendingStatus.SendMessageError -> showErrorSendingMessageSnackbar()
-            is MessageSendingStatus.UploadAttachmentsError -> showErrorUploadAttachmentSnackbar()
-            is MessageSendingStatus.None -> {}
+            is MessageSendingStatus.NoStatus -> {}
+            is MessageSendingStatus.MessageSentUndoable -> {
+                showMessageSentWithUndoSnackbar(sendingStatus.messageId)
+
+                delay(sendingStatus.timeRemainingForUndo.secsToMillis())
+                hideMessageSentSnackbar()
+
+                viewModel.confirmMessageAsSeen(sendingStatus.messageId)
+            }
         }
     }
 
@@ -690,6 +722,9 @@ fun Home(
         }
     }
 }
+
+private const val MILLIS_IN_SECOND = 1000L
+private fun Long.secsToMillis() = this * MILLIS_IN_SECOND
 
 private fun buildSidebarActions(navController: NavHostController, launcherActions: Launcher.Actions) =
     Sidebar.NavigationActions(

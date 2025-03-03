@@ -207,7 +207,7 @@ class MailboxViewModel @Inject constructor(
     private val isAutoDeleteTrashAndSpamEnabled: IsAutoDeleteSpamAndTrashEnabled
 ) : ViewModel() {
 
-    private val primaryUserId = observePrimaryUserId()
+    private val primaryUserId = observePrimaryUserId().filterNotNull()
     private val mutableState = MutableStateFlow(initialState)
     private val itemIds = Collections.synchronizedList(mutableListOf<String>())
 

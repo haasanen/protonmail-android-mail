@@ -21,20 +21,29 @@ package ch.protonmail.android.navigation
 import android.content.Intent
 import android.net.Uri
 import app.cash.turbine.test
+import arrow.core.right
 import ch.protonmail.android.mailcommon.data.file.getShareInfo
+import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.model.IntentShareInfo
+import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.mailcommon.domain.sample.UserSample
-import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUser
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcomposer.domain.model.MessageSendingStatus
+import ch.protonmail.android.mailcomposer.domain.model.SaveSendErrorReason
+import ch.protonmail.android.mailcomposer.domain.usecase.DeleteMessageSendingStatuses
 import ch.protonmail.android.mailcomposer.domain.usecase.DiscardDraft
+import ch.protonmail.android.mailcomposer.domain.usecase.MarkMessageSendingStatusesAsSeen
 import ch.protonmail.android.mailcomposer.domain.usecase.ObserveSendingMessagesStatus
+import ch.protonmail.android.mailcomposer.domain.usecase.UndoSendMessage
 import ch.protonmail.android.maillabel.domain.SelectedMailLabelId
 import ch.protonmail.android.mailmailbox.domain.usecase.RecordMailboxScreenView
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
+import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailsettings.domain.usecase.autolock.ShouldPresentPinInsertionScreen
 import ch.protonmail.android.navigation.model.HomeState
 import ch.protonmail.android.navigation.share.ShareIntentObserver
+import ch.protonmail.android.test.utils.rule.MainDispatcherRule
+import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
@@ -42,18 +51,16 @@ import io.mockk.mockkStatic
 import io.mockk.unmockkAll
 import io.mockk.unmockkStatic
 import io.mockk.verify
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
-import kotlinx.coroutines.test.setMain
+import me.proton.core.domain.entity.UserId
 import me.proton.core.network.domain.NetworkManager
 import me.proton.core.network.domain.NetworkStatus
-import me.proton.core.user.domain.entity.User
 import org.junit.Assert.assertNull
+import org.junit.Rule
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -62,16 +69,21 @@ import kotlin.test.assertNotNull
 
 class HomeViewModelTest {
 
+    @get:Rule
+    val mainDispatcherRule = MainDispatcherRule()
+
     private val user = UserSample.Primary
+    private val userId = UserIdSample.Primary
+    private val messageId = MessageIdSample.LocalDraft
 
     private val networkManager = mockk<NetworkManager>()
 
-    private val observePrimaryUserMock = mockk<ObservePrimaryUser> {
-        every { this@mockk() } returns MutableStateFlow<User?>(user)
+    private val observePrimaryUserId = mockk<ObservePrimaryUserId> {
+        every { this@mockk() } returns MutableStateFlow<UserId?>(userId)
     }
 
     private val observeSendingMessagesStatus = mockk<ObserveSendingMessagesStatus> {
-        every { this@mockk.invoke(any()) } returns flowOf(MessageSendingStatus.None)
+        coEvery { this@mockk.invoke(any()) } returns flowOf(MessageSendingStatus.NoStatus(messageId))
     }
 
     private val recordMailboxScreenView = mockk<RecordMailboxScreenView>(relaxUnitFun = true)
@@ -88,6 +100,10 @@ class HomeViewModelTest {
 
     private val discardDraft = mockk<DiscardDraft>(relaxUnitFun = true)
 
+    private val undoSendMessage = mockk<UndoSendMessage>(relaxUnitFun = true)
+    private val markMessageSendingStatusesAsSeen = mockk<MarkMessageSendingStatusesAsSeen>(relaxUnitFun = true)
+    private val deleteMessageSendingStatuses = mockk<DeleteMessageSendingStatuses>(relaxUnitFun = true)
+
     private val homeViewModel by lazy {
         HomeViewModel(
             networkManager,
@@ -95,14 +111,16 @@ class HomeViewModelTest {
             recordMailboxScreenView,
             selectedMailLabelId,
             discardDraft,
-            observePrimaryUserMock,
+            undoSendMessage,
+            markMessageSendingStatusesAsSeen,
+            deleteMessageSendingStatuses,
+            observePrimaryUserId,
             shareIntentObserver
         )
     }
 
     @BeforeTest
     fun setUp() {
-        Dispatchers.setMain(UnconfinedTestDispatcher())
         mockkStatic(Uri::class)
     }
 
@@ -217,22 +235,23 @@ class HomeViewModelTest {
     }
 
     @Test
-    fun `when observe sending message status emits Send and then None then emit only send effect`() = runTest {
+    fun `when sending message status changes, it should update state correctly`() = runTest {
         // Given
-        every { networkManager.observe() } returns flowOf(NetworkStatus.Metered)
-        val sendingMessageStatusFlow = MutableStateFlow<MessageSendingStatus>(MessageSendingStatus.MessageSent)
-        every { observeSendingMessagesStatus(user.userId) } returns sendingMessageStatusFlow
+        every { networkManager.observe() } returns flowOf(NetworkStatus.Unmetered)
+        val sendingMessageStatusFlow = MutableStateFlow<MessageSendingStatus>(
+            MessageSendingStatus.MessageSentUndoable(messageId, 5000L)
+        )
+        coEvery { observeSendingMessagesStatus(userId) } returns sendingMessageStatusFlow
 
         // When
         homeViewModel.state.test {
             val actualItem = awaitItem()
             val expectedItem = HomeState(
-                networkStatusEffect = Effect.of(NetworkStatus.Metered),
-                messageSendingStatusEffect = Effect.of(MessageSendingStatus.MessageSent),
+                networkStatusEffect = Effect.of(NetworkStatus.Unmetered),
+                messageSendingStatusEffect = Effect.of(MessageSendingStatus.MessageSentUndoable(messageId, 5000L)),
                 navigateToEffect = Effect.empty(),
                 startedFromLauncher = false
             )
-            sendingMessageStatusFlow.emit(MessageSendingStatus.None)
 
             // Then
             assertEquals(expectedItem, actualItem)
@@ -240,12 +259,54 @@ class HomeViewModelTest {
     }
 
     @Test
+    fun `when observe sending message status emits Send and then None then emit only send effect`() = runTest {
+        // Given
+        every { networkManager.observe() } returns flowOf(NetworkStatus.Metered)
+        val sendingMessageStatusFlow = MutableStateFlow<MessageSendingStatus>(
+            MessageSendingStatus.MessageSentFinal(messageId)
+        )
+        coEvery { observeSendingMessagesStatus(user.userId) } returns sendingMessageStatusFlow
+
+        // When
+        homeViewModel.state.test {
+            val actualItem = awaitItem()
+            val expectedItem = HomeState(
+                networkStatusEffect = Effect.of(NetworkStatus.Metered),
+                messageSendingStatusEffect = Effect.of(MessageSendingStatus.MessageSentFinal(messageId)),
+                navigateToEffect = Effect.empty(),
+                startedFromLauncher = false
+            )
+            sendingMessageStatusFlow.emit(MessageSendingStatus.NoStatus(messageId))
+
+            // Then
+            assertEquals(expectedItem, actualItem)
+        }
+    }
+
+    @Test
+    fun `should call undo send message use case when undo is triggered`() = runTest {
+        // Given
+        val messageId = MessageIdSample.LocalDraft
+
+        every { networkManager.observe() } returns flowOf()
+        coEvery { undoSendMessage(userId, messageId) } returns Unit.right()
+
+        // When
+        homeViewModel.undoSendMessage(messageId)
+
+        // Then
+        coVerify { undoSendMessage(userId, messageId) }
+    }
+
+    @Test
     fun `when observe sending message status emits error then emit effect and reset sending messages status`() =
         runTest {
             // Given
             every { networkManager.observe() } returns flowOf(NetworkStatus.Metered)
-            every { observeSendingMessagesStatus(user.userId) } returns flowOf(
-                MessageSendingStatus.SendMessageError
+            coEvery { observeSendingMessagesStatus(user.userId) } returns flowOf(
+                MessageSendingStatus.SendMessageError(
+                    messageId, SaveSendErrorReason.OtherDataError(DataError.Local.SaveDraftError.Unknown)
+                )
             )
 
             // When
@@ -253,7 +314,11 @@ class HomeViewModelTest {
                 val actualItem = awaitItem()
                 val expectedItem = HomeState(
                     networkStatusEffect = Effect.of(NetworkStatus.Metered),
-                    messageSendingStatusEffect = Effect.of(MessageSendingStatus.SendMessageError),
+                    messageSendingStatusEffect = Effect.of(
+                        MessageSendingStatus.SendMessageError(
+                            messageId, SaveSendErrorReason.OtherDataError(DataError.Local.SaveDraftError.Unknown)
+                        )
+                    ),
                     navigateToEffect = Effect.empty(),
                     startedFromLauncher = false
                 )
@@ -392,4 +457,36 @@ class HomeViewModelTest {
             every { this@mockk.data } returns data
         }
     }
+
+    @Test
+    fun `confirmMessageAsSeen calls mark as seen and delete send result when user is available`() = runTest {
+        // Given
+        val messageId = MessageIdSample.LocalDraft
+        every { networkManager.observe() } returns flowOf()
+        coEvery { markMessageSendingStatusesAsSeen(userId, listOf(messageId)) } returns Unit.right()
+        coEvery { deleteMessageSendingStatuses(userId, listOf(messageId)) } returns Unit.right()
+
+        // When
+        homeViewModel.confirmMessageAsSeen(messageId)
+
+        // Then
+        coVerify { markMessageSendingStatusesAsSeen(userId, listOf(messageId)) }
+        coVerify { deleteMessageSendingStatuses(userId, listOf(messageId)) }
+    }
+
+    @Test
+    fun `confirmMessageAsSeen fails when primary user is unavailable`() = runTest {
+        // Given
+        every { networkManager.observe() } returns flowOf()
+        coEvery { observePrimaryUserId() } returns MutableStateFlow<UserId?>(null)
+
+        // When
+        homeViewModel.confirmMessageAsSeen(MessageIdSample.LocalDraft)
+
+        // Then
+        coVerify(exactly = 0) { markMessageSendingStatusesAsSeen(any(), any()) }
+        coVerify(exactly = 0) { deleteMessageSendingStatuses(any(), any()) }
+    }
+
+
 }

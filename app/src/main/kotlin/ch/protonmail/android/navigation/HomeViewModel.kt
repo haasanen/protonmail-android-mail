@@ -28,15 +28,18 @@ import ch.protonmail.android.mailcommon.data.file.isStartedFromLauncher
 import ch.protonmail.android.mailcommon.domain.model.IntentShareInfo
 import ch.protonmail.android.mailcommon.domain.model.encode
 import ch.protonmail.android.mailcommon.domain.model.isNotEmpty
-import ch.protonmail.android.mailcommon.domain.usecase.ObservePrimaryUser
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcomposer.domain.model.MessageSendingStatus
+import ch.protonmail.android.mailcomposer.domain.usecase.DeleteMessageSendingStatuses
 import ch.protonmail.android.mailcomposer.domain.usecase.DiscardDraft
+import ch.protonmail.android.mailcomposer.domain.usecase.MarkMessageSendingStatusesAsSeen
 import ch.protonmail.android.mailcomposer.domain.usecase.ObserveSendingMessagesStatus
+import ch.protonmail.android.mailcomposer.domain.usecase.UndoSendMessage
 import ch.protonmail.android.maillabel.domain.SelectedMailLabelId
 import ch.protonmail.android.mailmailbox.domain.usecase.RecordMailboxScreenView
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.model.MessageId
+import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.navigation.model.Destination
 import ch.protonmail.android.navigation.model.HomeState
 import ch.protonmail.android.navigation.model.NavigationEffect
@@ -47,7 +50,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.launchIn
@@ -65,11 +67,14 @@ class HomeViewModel @Inject constructor(
     private val recordMailboxScreenView: RecordMailboxScreenView,
     private val selectedMailLabelId: SelectedMailLabelId,
     private val discardDraft: DiscardDraft,
-    observePrimaryUser: ObservePrimaryUser,
+    private val undoSendMessage: UndoSendMessage,
+    private val markMessageSendingStatusesAsSeen: MarkMessageSendingStatusesAsSeen,
+    private val deleteMessageSendingStatuses: DeleteMessageSendingStatuses,
+    private val observePrimaryUserId: ObservePrimaryUserId,
     shareIntentObserver: ShareIntentObserver
 ) : ViewModel() {
 
-    private val primaryUser = observePrimaryUser().filterNotNull()
+    private val primaryUserId = observePrimaryUserId().filterNotNull()
 
     private val mutableState = MutableStateFlow(HomeState.Initial)
 
@@ -85,8 +90,8 @@ class HomeViewModel @Inject constructor(
             }
         }.launchIn(viewModelScope)
 
-        primaryUser.flatMapLatest { user ->
-            observeSendingMessagesStatus(user.userId)
+        primaryUserId.flatMapLatest { userId ->
+            observeSendingMessagesStatus(userId)
         }.onEach {
             emitNewStateFor(it)
         }.launchIn(viewModelScope)
@@ -133,8 +138,25 @@ class HomeViewModel @Inject constructor(
 
     fun discardDraft(messageId: MessageId) {
         viewModelScope.launch {
-            primaryUser.firstOrNull()?.let {
-                discardDraft(it.userId, messageId)
+            primaryUserId.firstOrNull()?.let {
+                discardDraft(it, messageId)
+            } ?: Timber.e("Primary user is not available!")
+        }
+    }
+
+    fun undoSendMessage(messageId: MessageId) {
+        viewModelScope.launch {
+            primaryUserId.firstOrNull()?.let {
+                undoSendMessage(it, messageId)
+            } ?: Timber.e("Primary user is not available!")
+        }
+    }
+
+    fun confirmMessageAsSeen(messageId: MessageId) {
+        viewModelScope.launch {
+            primaryUserId.firstOrNull()?.let {
+                markMessageSendingStatusesAsSeen(it, listOf(messageId))
+                deleteMessageSendingStatuses(it, listOf(messageId))
             } ?: Timber.e("Primary user is not available!")
         }
     }
@@ -142,7 +164,7 @@ class HomeViewModel @Inject constructor(
     fun recordViewOfMailboxScreen() = recordMailboxScreenView()
 
     private fun emitNewStateFor(messageSendingStatus: MessageSendingStatus) {
-        if (messageSendingStatus == MessageSendingStatus.None) {
+        if (messageSendingStatus is MessageSendingStatus.NoStatus) {
             // Emitting a None status to UI would override the previously emitted effect and cause snack not to show
             return
         }
