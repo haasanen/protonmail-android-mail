@@ -59,6 +59,7 @@ fun DraftSaveSendError.toDataError(): DataError = when (this) {
         DraftSaveSendErrorReason.MessageDoesNotExist,
         DraftSaveSendErrorReason.MessageIsNotADraft,
         DraftSaveSendErrorReason.NoRecipients,
+        DraftSaveSendErrorReason.MissingAttachmentUploads,
         is DraftSaveSendErrorReason.PackageError,
         is DraftSaveSendErrorReason.ProtonRecipientDoesNotExist,
         is DraftSaveSendErrorReason.RecipientEmailInvalid,

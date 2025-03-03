@@ -101,7 +101,7 @@ class TwoPassInputViewModel @Inject constructor(
     private fun onUnlock(action: TwoPassInputAction.Unlock) = flow {
         emit(TwoPassInputState.Loading)
         val session = getSession(getAccount(userId))?.firstOrNull()
-        val loginFlow = session?.let { sessionInterface.resumeLoginFlow(userId, session.sessionId()) }
+        val loginFlow = session?.let { sessionInterface.resumeLoginFlow(userId, session.sessionId(), null) }
         when (loginFlow) {
             null -> emitAll(onClose())
             is MailSessionResumeLoginFlowResult.Error -> emitAll(onError(loginFlow.v1))

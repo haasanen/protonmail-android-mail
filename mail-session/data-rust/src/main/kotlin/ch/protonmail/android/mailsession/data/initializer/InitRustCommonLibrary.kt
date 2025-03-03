@@ -65,7 +65,7 @@ class InitRustCommonLibrary @Inject constructor(
         Timber.d("rust-session: Initializing the Rust Lib with $sessionParams")
 
 
-        when (val result = createMailSession(sessionParams, OsKeyChainMock(context), null)) {
+        when (val result = createMailSession(sessionParams, OsKeyChainMock(context))) {
             is CreateMailSessionResult.Error -> {
                 Timber.e("rust-session: Critical error! Failed creating Mail session. Reason: ${result.v1}")
             }
