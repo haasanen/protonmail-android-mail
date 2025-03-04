@@ -816,20 +816,22 @@ private fun MailboxItemsList(
             contentType = items.itemContentType { MailboxItemUiModel::class }
         ) { index ->
             items[index]?.let { item ->
-                val state = state as MailboxListState.Data
-                val swipeActionsUiModel = state.swipeActions
-                val isSelectionMode = state is MailboxListState.Data.SelectionMode
-                val swipingEnabled = swipeActionsUiModel?.isSwipingEnabled == true && !isSelectionMode
+                val listDataState = state as MailboxListState.Data
+                val swipeActionsUiModel = listDataState.swipeActions
+                val isSelectionMode = listDataState is MailboxListState.Data.SelectionMode
+                val isInSearch = listDataState is MailboxListState.Data.ViewMode &&
+                    listDataState.searchState.isInSearch()
+                val swipingEnabled = swipeActionsUiModel?.isSwipingEnabled == true && !isSelectionMode && !isInSearch
 
                 SwipeableItem(
                     modifier = Modifier.animateItem(),
-                    swipeActionsUiModel = state.swipeActions,
+                    swipeActionsUiModel = listDataState.swipeActions,
                     swipingEnabled = swipingEnabled,
                     swipeActionCallbacks = generateSwipeActions(items, actions, item)
                 ) {
 
                     val avatarImageUiModel = (item.avatar as? AvatarUiModel.ParticipantAvatar)
-                        ?.let { state.avatarImagesUiModel.getStateForAddress(it.address) }
+                        ?.let { listDataState.avatarImagesUiModel.getStateForAddress(it.address) }
                         ?: AvatarImageUiModel.NotLoaded
 
                     MailboxItem(
@@ -839,11 +841,11 @@ private fun MailboxItemsList(
                         item = item,
                         avatarImageUiModel = avatarImageUiModel,
                         actions = itemActions,
-                        selectionMode = state is MailboxListState.Data.SelectionMode,
+                        selectionMode = listDataState is MailboxListState.Data.SelectionMode,
                         // See doc 0014
-                        isSelected = when (state) {
+                        isSelected = when (listDataState) {
                             is MailboxListState.Data.SelectionMode ->
-                                state.selectedMailboxItems.any { it.id == item.id }
+                                listDataState.selectedMailboxItems.any { it.id == item.id }
 
                             else -> false
                         }
