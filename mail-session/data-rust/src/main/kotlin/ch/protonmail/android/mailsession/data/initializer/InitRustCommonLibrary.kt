@@ -39,12 +39,15 @@ import javax.inject.Inject
 class InitRustCommonLibrary @Inject constructor(
     @ApplicationContext private val context: Context,
     private val mailSessionRepository: MailSessionRepository,
+    private val initializeRustTlsModule: InitializeRustTlsModule,
     @RustLogsFileHandler private val rustLogsFileHandler: LogsFileHandler,
     @BaseProtonApiUrl private val baseApiUrl: HttpUrl
 ) {
 
     fun init(config: RustLibConfigParams) {
         Timber.v("rust-session: Let the rust begin...")
+
+        initializeRustTlsModule()
 
         val skipSrpProofValidation = isRunningAgainstMockWebserver(baseApiUrl)
         val allowInsecureNetworking = isRunningAgainstMockWebserver(baseApiUrl)
