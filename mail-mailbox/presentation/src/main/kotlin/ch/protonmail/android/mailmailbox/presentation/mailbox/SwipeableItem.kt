@@ -48,6 +48,9 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Density
+import ch.protonmail.android.design.compose.theme.ProtonDimens
+import ch.protonmail.android.design.compose.theme.ProtonTheme
+import ch.protonmail.android.mailcommon.presentation.compose.SwipeThreshold
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.SwipeActionsUiModel
 import kotlinx.coroutines.flow.filter
 import me.proton.core.mailsettings.domain.entity.SwipeAction
@@ -60,9 +63,9 @@ fun SwipeableItem(
     swipingEnabled: Boolean = true,
     content: @Composable () -> Unit
 ) = BoxWithConstraints(modifier) {
-    val width = this.maxWidth.value
+    val width = constraints.maxWidth.toFloat()
     val haptic = LocalHapticFeedback.current
-    val threshold = 0.3f
+    val threshold = SwipeThreshold.SWIPE_THRESHOLD_PERCENTAGE
 
     val dismissState = rememberSwipeToDismissBoxState(
         confirmValueChange = { dismissBoxValue ->
@@ -142,7 +145,7 @@ fun SwipeableItem(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(properties.color)
-                    .padding(horizontal = me.proton.core.compose.theme.ProtonDimens.MediumSpacing),
+                    .padding(horizontal = ProtonDimens.Spacing.Medium),
                 contentAlignment = properties.alignment
             ) {
                 Icon(
@@ -151,7 +154,7 @@ fun SwipeableItem(
                         .scale(scale),
                     painter = painterResource(id = properties.icon),
                     contentDescription = stringResource(id = properties.description),
-                    tint = me.proton.core.compose.theme.ProtonTheme.colors.iconInverted
+                    tint = ProtonTheme.colors.iconInverted
                 )
             }
         }
