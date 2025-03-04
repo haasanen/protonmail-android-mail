@@ -326,10 +326,15 @@ fun ConversationDetailScreen(
                         },
                         onAddContactClicked = { actions.onAddContact(BasicContactInfo(it.name, it.address)) },
                         onNewMessageClicked = {
+                            viewModel.submit(ConversationDetailViewAction.DismissBottomSheet)
                             actions.showFeatureMissingSnackbar()
                             // actions.onComposeNewMessage(it.address)
                         },
-                        onViewContactDetailsClicked = { actions.onViewContactDetails(it) }
+                        onViewContactDetailsClicked = {
+                            viewModel.submit(ConversationDetailViewAction.DismissBottomSheet)
+                            actions.showFeatureMissingSnackbar()
+//                            actions.onViewContactDetails(it)
+                        }
                     )
                 )
 
