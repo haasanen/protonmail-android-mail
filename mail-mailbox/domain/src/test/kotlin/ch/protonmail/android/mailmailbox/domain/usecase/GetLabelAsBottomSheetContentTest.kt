@@ -7,7 +7,7 @@ import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.mailconversation.domain.usecase.GetConversationLabelAsActions
 import ch.protonmail.android.maillabel.domain.sample.LabelIdSample
-import ch.protonmail.android.mailmailbox.domain.model.MailboxItemId
+import ch.protonmail.android.mailmessage.domain.model.LabelAsItemId
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.usecase.GetMessageLabelAsActions
 import ch.protonmail.android.testdata.label.rust.LabelAsActionsTestData
@@ -33,7 +33,7 @@ class GetLabelAsBottomSheetContentTest {
         // Given
         val userId = UserIdSample.Primary
         val labelId = LabelIdSample.Trash
-        val items = listOf(MailboxItemId("1"))
+        val items = listOf(LabelAsItemId("1"))
         val messageIds = items.map { MessageId(it.value) }
         val viewMode = ViewMode.NoConversationGrouping
         val expected = LabelAsActionsTestData.onlySelectedActions
@@ -51,7 +51,7 @@ class GetLabelAsBottomSheetContentTest {
         // Given
         val userId = UserIdSample.Primary
         val labelId = LabelIdSample.Trash
-        val items = listOf(MailboxItemId("1"))
+        val items = listOf(LabelAsItemId("1"))
         val convoIds = items.map { ConversationId(it.value) }
         val viewMode = ViewMode.ConversationGrouping
         val expected = LabelAsActionsTestData.onlySelectedActions
@@ -69,7 +69,7 @@ class GetLabelAsBottomSheetContentTest {
         // Given
         val userId = UserIdSample.Primary
         val labelId = LabelIdSample.Trash
-        val items = listOf(MailboxItemId("1"))
+        val items = listOf(LabelAsItemId("1"))
         val convoIds = items.map { ConversationId(it.value) }
         val viewMode = ViewMode.ConversationGrouping
         val expected = DataError.Local.Unknown.left()

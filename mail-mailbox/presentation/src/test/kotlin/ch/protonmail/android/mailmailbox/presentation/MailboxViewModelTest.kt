@@ -103,8 +103,10 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.previewdata.SwipeU
 import ch.protonmail.android.mailmailbox.presentation.mailbox.reducer.MailboxReducer
 import ch.protonmail.android.mailmailbox.presentation.mailbox.usecase.ShowRatingBooster
 import ch.protonmail.android.mailmailbox.presentation.paging.MailboxPagerFactory
+import ch.protonmail.android.mailmessage.domain.model.LabelAsItemId
 import ch.protonmail.android.mailmessage.domain.model.LabelSelectionList
 import ch.protonmail.android.mailmessage.domain.model.MessageId
+import ch.protonmail.android.mailmessage.domain.model.MoveToItemId
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
 import ch.protonmail.android.mailmessage.domain.usecase.DeleteMessages
 import ch.protonmail.android.mailmessage.domain.usecase.DeleteSearchResults
@@ -2202,7 +2204,7 @@ class MailboxViewModelTest {
         expectGetLabelAsBottomSheetContentSucceeds(
             expectedCustomLabels,
             selectedMailLabelId.flow.value.labelId,
-            selectedItemsList.map { MailboxItemId(it.id) },
+            selectedItemsList.map { LabelAsItemId(it.id) },
             NoConversationGrouping
         )
         expectedLabelAsBottomSheetDismissed(initialState)
@@ -2260,7 +2262,7 @@ class MailboxViewModelTest {
         expectGetLabelAsBottomSheetContentSucceeds(
             expectedCustomLabels,
             selectedMailLabelId.flow.value.labelId,
-            selectedItemsList.map { MailboxItemId(it.id) },
+            selectedItemsList.map { LabelAsItemId(it.id) },
             NoConversationGrouping
         )
         expectedLabelAsStateChange(selectedItemsList, LabelIdSample.Label2022, labelAsEntryPoint)
@@ -2337,7 +2339,7 @@ class MailboxViewModelTest {
             expectGetLabelAsBottomSheetContentSucceeds(
                 expectedCustomLabels,
                 selectedMailLabelId.flow.value.labelId,
-                selectedItemsList.map { MailboxItemId(it.id) },
+                selectedItemsList.map { LabelAsItemId(it.id) },
                 NoConversationGrouping
             )
             expectedLabelAsStateChange(selectedItemsList, LabelIdSample.Label2022, labelAsEntryPoint)
@@ -2415,7 +2417,7 @@ class MailboxViewModelTest {
         expectGetLabelAsBottomSheetContentSucceeds(
             expectedCustomLabels,
             selectedMailLabelId.flow.value.labelId,
-            selectedItemsList.map { MailboxItemId(it.id) },
+            selectedItemsList.map { LabelAsItemId(it.id) },
             ConversationGrouping
         )
         expectedLabelAsStateChange(selectedItemsList, LabelIdSample.Label2022, labelAsEntryPoint)
@@ -2488,7 +2490,7 @@ class MailboxViewModelTest {
             expectGetLabelAsBottomSheetContentSucceeds(
                 expectedCustomLabels,
                 selectedMailLabelId.flow.value.labelId,
-                selectedItemsList.map { MailboxItemId(it.id) },
+                selectedItemsList.map { LabelAsItemId(it.id) },
                 ConversationGrouping
             )
             expectedLabelAsStateChange(selectedItemsList, LabelIdSample.Label2022, labelAsEntryPoint)
@@ -2560,7 +2562,7 @@ class MailboxViewModelTest {
         expectGetMoveToActionsSucceeds(
             customLabels,
             selectedMailLabelId.flow.value.labelId,
-            selectedItemsList.map { MailboxItemId(it.id) },
+            selectedItemsList.map { MoveToItemId(it.id) },
             NoConversationGrouping
         )
 
@@ -2614,7 +2616,7 @@ class MailboxViewModelTest {
         expectGetMoveToActionsSucceeds(
             customLabels,
             selectedMailLabelId.flow.value.labelId,
-            selectedItemsList.map { MailboxItemId(it.id) },
+            selectedItemsList.map { MoveToItemId(it.id) },
             ConversationGrouping
         )
         returnExpectedStateWhenEnterSelectionMode(initialState, item, intermediateState)
@@ -3892,7 +3894,7 @@ class MailboxViewModelTest {
     private fun expectGetLabelAsBottomSheetContentSucceeds(
         expected: LabelAsActions,
         labelId: LabelId,
-        items: List<MailboxItemId>,
+        items: List<LabelAsItemId>,
         viewMode: ViewMode
     ) {
         coEvery { getLabelAsBottomSheetContent(userId, labelId, items, viewMode) } returns expected.right()
@@ -3901,7 +3903,7 @@ class MailboxViewModelTest {
     private fun expectGetMoveToActionsSucceeds(
         expectedActions: List<MailLabel.Custom>,
         labelId: LabelId,
-        items: List<MailboxItemId>,
+        items: List<MoveToItemId>,
         viewMode: ViewMode
     ) {
         coEvery { getMoveToLocations(userId, labelId, items, viewMode) } returns expectedActions.right()

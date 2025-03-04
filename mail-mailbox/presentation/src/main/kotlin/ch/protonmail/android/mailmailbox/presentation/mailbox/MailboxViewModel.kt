@@ -101,8 +101,10 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.model.UpgradeStora
 import ch.protonmail.android.mailmailbox.presentation.mailbox.reducer.MailboxReducer
 import ch.protonmail.android.mailmailbox.presentation.mailbox.usecase.ShowRatingBooster
 import ch.protonmail.android.mailmailbox.presentation.paging.MailboxPagerFactory
+import ch.protonmail.android.mailmessage.domain.model.LabelAsItemId
 import ch.protonmail.android.mailmessage.domain.model.LabelSelectionList
 import ch.protonmail.android.mailmessage.domain.model.MessageId
+import ch.protonmail.android.mailmessage.domain.model.MoveToItemId
 import ch.protonmail.android.mailmessage.domain.model.UnreadCounter
 import ch.protonmail.android.mailmessage.domain.usecase.DeleteMessages
 import ch.protonmail.android.mailmessage.domain.usecase.DeleteSearchResults
@@ -820,11 +822,11 @@ class MailboxViewModel @Inject constructor(
                     Timber.d("MailboxListState is not in SelectionMode")
                     return
                 }
-                selectionMode.selectedMailboxItems.map { MailboxItemId(it.id) }
+                selectionMode.selectedMailboxItems.map { LabelAsItemId(it.id) }
             }
 
             is MailboxViewAction.SwipeLabelAsAction -> {
-                listOf(MailboxItemId(operation.itemId))
+                listOf(operation.itemId)
             }
 
             else -> return
@@ -876,7 +878,7 @@ class MailboxViewModel @Inject constructor(
                     Timber.d("MailboxListState is not in SelectionMode")
                     return
                 }
-                selectionMode.selectedMailboxItems.map { it.id }
+                selectionMode.selectedMailboxItems.map { LabelAsItemId(it.id) }
             }
             is LabelAsBottomSheetEntryPoint.LabelAsSwipeAction -> {
                 listOf(entryPoint.itemId)
@@ -914,14 +916,14 @@ class MailboxViewModel @Inject constructor(
                 }
                 Pair(
                     MoveToBottomSheetEntryPoint.SelectionMode,
-                    selectionMode.selectedMailboxItems.map { MailboxItemId(it.id) }
+                    selectionMode.selectedMailboxItems.map { MoveToItemId(it.id) }
                 )
             }
 
             is MailboxViewAction.SwipeMoveToAction ->
                 Pair(
                     MoveToBottomSheetEntryPoint.MoveToSwipeAction(operation.itemId),
-                    listOf(MailboxItemId(operation.itemId))
+                    listOf(operation.itemId)
                 )
 
             else -> {
@@ -976,13 +978,13 @@ class MailboxViewModel @Inject constructor(
         ).let { emitNewStateFrom(it) }
     }
 
-    private fun getMoveToItems(entryPoint: MoveToBottomSheetEntryPoint): Set<String>? = when (entryPoint) {
+    private fun getMoveToItems(entryPoint: MoveToBottomSheetEntryPoint) = when (entryPoint) {
         is MoveToBottomSheetEntryPoint.SelectionMode -> {
             val selectionMode = state.value.mailboxListState as? MailboxListState.Data.SelectionMode
             if (selectionMode == null) {
                 Timber.d("MailboxListState is not in SelectionMode")
             }
-            selectionMode?.selectedMailboxItems?.map { it.id }?.toSet()
+            selectionMode?.selectedMailboxItems?.map { MoveToItemId(it.id) }?.toSet()
         }
 
         is MoveToBottomSheetEntryPoint.MoveToSwipeAction -> {
@@ -1043,7 +1045,7 @@ class MailboxViewModel @Inject constructor(
     private suspend fun handleLabelOperation(
         userId: UserId,
         viewMode: ViewMode,
-        selectedItems: Set<String>,
+        selectedItems: Set<LabelAsItemId>,
         updatedSelectionList: LabelSelectionList,
         archiveSelected: Boolean,
         entryPoint: LabelAsBottomSheetEntryPoint
@@ -1051,14 +1053,14 @@ class MailboxViewModel @Inject constructor(
         return when (viewMode) {
             ViewMode.ConversationGrouping -> labelConversations(
                 userId = userId,
-                conversationIds = selectedItems.map { ConversationId(it) },
+                conversationIds = selectedItems.map { ConversationId(it.value) },
                 updatedSelections = updatedSelectionList,
                 archiveSelected
             )
 
             ViewMode.NoConversationGrouping -> labelMessages(
                 userId = userId,
-                messageIds = selectedItems.map { MessageId(it) },
+                messageIds = selectedItems.map { MessageId(it.value) },
                 updatedSelections = updatedSelectionList,
                 shouldArchive = archiveSelected
             )
@@ -1127,20 +1129,20 @@ class MailboxViewModel @Inject constructor(
 
     private suspend fun handleMoveOperation(
         userId: UserId,
-        items: Set<String>,
+        items: Set<MoveToItemId>,
         localLabelId: LabelId
     ): Either<DataError, Unit> {
         val viewMode = getViewModeForCurrentLocation(selectedMailLabelId.flow.value)
         return when (viewMode) {
             ViewMode.ConversationGrouping -> moveConversations(
                 userId = userId,
-                conversationIds = items.map { ConversationId(it) },
+                conversationIds = items.map { ConversationId(it.value) },
                 labelId = localLabelId
             )
 
             ViewMode.NoConversationGrouping -> moveMessages(
                 userId = userId,
-                messageIds = items.map { MessageId(it) },
+                messageIds = items.map { MessageId(it.value) },
                 labelId = localLabelId
             )
         }

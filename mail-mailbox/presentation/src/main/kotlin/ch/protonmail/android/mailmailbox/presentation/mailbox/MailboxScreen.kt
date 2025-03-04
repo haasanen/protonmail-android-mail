@@ -137,6 +137,8 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.previewdata.Mailbo
 import ch.protonmail.android.mailmailbox.presentation.mailbox.previewdata.MailboxStateSampleData
 import ch.protonmail.android.mailmailbox.presentation.paging.mapToUiStates
 import ch.protonmail.android.mailmailbox.presentation.paging.search.mapToUiStatesInSearch
+import ch.protonmail.android.mailmessage.domain.model.LabelAsItemId
+import ch.protonmail.android.mailmessage.domain.model.MoveToItemId
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.BottomSheetVisibilityEffect
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.LabelAsBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MailboxMoreActionsBottomSheetState
@@ -941,8 +943,8 @@ private fun generateSwipeActions(
                 actions.onSwipeRead(it.id, it.isRead)
             }
         },
-        onLabelAs = { actions.onSwipeLabelAs(item.id) },
-        onMoveTo = { actions.onSwipeMoveTo(item.id) }
+        onLabelAs = { actions.onSwipeLabelAs(LabelAsItemId(item.id)) },
+        onMoveTo = { actions.onSwipeMoveTo(MoveToItemId(item.id)) }
     )
 }
 
@@ -1180,8 +1182,8 @@ object MailboxScreen {
         val onSwipeSpam: (String) -> Unit,
         val onSwipeTrash: (String) -> Unit,
         val onSwipeStar: (String, Boolean) -> Unit,
-        val onSwipeLabelAs: (String) -> Unit,
-        val onSwipeMoveTo: (String) -> Unit,
+        val onSwipeLabelAs: (LabelAsItemId) -> Unit,
+        val onSwipeMoveTo: (MoveToItemId) -> Unit,
         val onEnterSearchMode: () -> Unit,
         val onSearchQuery: (String) -> Unit,
         val onSearchResult: () -> Unit,

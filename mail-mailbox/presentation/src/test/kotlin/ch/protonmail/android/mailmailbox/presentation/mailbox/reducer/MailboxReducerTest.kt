@@ -40,6 +40,8 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.model.UnreadFilter
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.UpgradeStorageState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.previewdata.MailboxSearchStateSampleData
 import ch.protonmail.android.mailmailbox.presentation.mailbox.previewdata.MailboxStateSampleData
+import ch.protonmail.android.mailmessage.domain.model.LabelAsItemId
+import ch.protonmail.android.mailmessage.domain.model.MoveToItemId
 import ch.protonmail.android.mailmessage.presentation.model.AvatarImagesUiModel
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.LabelAsBottomSheetEntryPoint
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MoveToBottomSheetEntryPoint
@@ -302,7 +304,7 @@ internal class MailboxReducerTest(
                 shouldReduceStorageLimitState = false
             ),
             TestInput(
-                MailboxViewAction.SwipeLabelAsAction(itemId = "Item1"),
+                MailboxViewAction.SwipeLabelAsAction(itemId = LabelAsItemId("Item1")),
                 shouldReduceMailboxListState = false,
                 shouldReduceTopAppBarState = false,
                 shouldReduceUnreadFilterState = false,
@@ -385,7 +387,7 @@ internal class MailboxReducerTest(
                 shouldReduceStorageLimitState = false
             ),
             TestInput(
-                MailboxViewAction.SwipeMoveToAction(itemId = "Item1"),
+                MailboxViewAction.SwipeMoveToAction(itemId = MoveToItemId("Item1")),
                 shouldReduceMailboxListState = false,
                 shouldReduceTopAppBarState = false,
                 shouldReduceUnreadFilterState = false,

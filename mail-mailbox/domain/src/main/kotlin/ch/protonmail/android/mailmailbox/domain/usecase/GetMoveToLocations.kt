@@ -24,8 +24,8 @@ import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailconversation.domain.usecase.GetConversationMoveToLocations
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabel
-import ch.protonmail.android.mailmailbox.domain.model.MailboxItemId
 import ch.protonmail.android.mailmessage.domain.model.MessageId
+import ch.protonmail.android.mailmessage.domain.model.MoveToItemId
 import ch.protonmail.android.mailmessage.domain.usecase.GetMessageMoveToLocations
 import me.proton.core.domain.entity.UserId
 import me.proton.core.mailsettings.domain.entity.ViewMode
@@ -39,16 +39,16 @@ class GetMoveToLocations @Inject constructor(
     suspend operator fun invoke(
         userId: UserId,
         labelId: LabelId,
-        mailboxItemIds: List<MailboxItemId>,
+        moveToItemIds: List<MoveToItemId>,
         viewMode: ViewMode
     ): Either<DataError, List<MailLabel>> = when (viewMode) {
         ViewMode.ConversationGrouping -> {
-            val conversationIds = mailboxItemIds.map { ConversationId(it.value) }
+            val conversationIds = moveToItemIds.map { ConversationId(it.value) }
             getConversationMoveToLocations(userId, labelId, conversationIds)
         }
 
         ViewMode.NoConversationGrouping -> {
-            val messageIds = mailboxItemIds.map { MessageId(it.value) }
+            val messageIds = moveToItemIds.map { MessageId(it.value) }
             getMessageMoveToLocations(userId, labelId, messageIds)
         }
     }

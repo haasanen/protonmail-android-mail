@@ -38,6 +38,8 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxOpera
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxOperation.AffectingTopAppBar
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxOperation.AffectingUnreadFilter
 import ch.protonmail.android.mailmessage.domain.model.AvatarImageStates
+import ch.protonmail.android.mailmessage.domain.model.LabelAsItemId
+import ch.protonmail.android.mailmessage.domain.model.MoveToItemId
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.BottomSheetOperation
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.LabelAsBottomSheetEntryPoint
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MoveToBottomSheetEntryPoint
@@ -110,8 +112,8 @@ internal sealed interface MailboxViewAction : MailboxOperation {
     data class SwipeSpamAction(val itemId: String) : MailboxViewAction, AffectingActionMessage
     data class SwipeTrashAction(val itemId: String) : MailboxViewAction, AffectingActionMessage
     data class StarAction(val itemId: String, val isStarred: Boolean) : MailboxViewAction
-    data class SwipeLabelAsAction(val itemId: String) : MailboxViewAction, AffectingBottomSheet
-    data class SwipeMoveToAction(val itemId: String) : MailboxViewAction, AffectingBottomSheet
+    data class SwipeLabelAsAction(val itemId: LabelAsItemId) : MailboxViewAction, AffectingBottomSheet
+    data class SwipeMoveToAction(val itemId: MoveToItemId) : MailboxViewAction, AffectingBottomSheet
 
     object RequestMoveToBottomSheet : MailboxViewAction, AffectingBottomSheet
 

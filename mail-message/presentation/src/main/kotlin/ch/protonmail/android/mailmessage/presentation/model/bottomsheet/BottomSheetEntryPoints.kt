@@ -18,18 +18,20 @@
 
 package ch.protonmail.android.mailmessage.presentation.model.bottomsheet
 
+import ch.protonmail.android.mailmessage.domain.model.LabelAsItemId
 import ch.protonmail.android.mailmessage.domain.model.MessageId
+import ch.protonmail.android.mailmessage.domain.model.MoveToItemId
 
 sealed interface LabelAsBottomSheetEntryPoint {
     data object Conversation : LabelAsBottomSheetEntryPoint
     data class Message(val messageId: MessageId) : LabelAsBottomSheetEntryPoint
-    data class LabelAsSwipeAction(val itemId: String) : LabelAsBottomSheetEntryPoint
+    data class LabelAsSwipeAction(val itemId: LabelAsItemId) : LabelAsBottomSheetEntryPoint
     data object SelectionMode : LabelAsBottomSheetEntryPoint
 }
 
 sealed interface MoveToBottomSheetEntryPoint {
     data object Conversation : MoveToBottomSheetEntryPoint
     data class Message(val messageId: MessageId) : MoveToBottomSheetEntryPoint
-    data class MoveToSwipeAction(val itemId: String) : MoveToBottomSheetEntryPoint
+    data class MoveToSwipeAction(val itemId: MoveToItemId) : MoveToBottomSheetEntryPoint
     data object SelectionMode : MoveToBottomSheetEntryPoint
 }

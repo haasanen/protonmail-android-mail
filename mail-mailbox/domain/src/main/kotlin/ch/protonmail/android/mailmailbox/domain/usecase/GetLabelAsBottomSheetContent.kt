@@ -24,7 +24,7 @@ import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailconversation.domain.usecase.GetConversationLabelAsActions
 import ch.protonmail.android.maillabel.domain.model.LabelAsActions
 import ch.protonmail.android.maillabel.domain.model.LabelId
-import ch.protonmail.android.mailmailbox.domain.model.MailboxItemId
+import ch.protonmail.android.mailmessage.domain.model.LabelAsItemId
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.usecase.GetMessageLabelAsActions
 import me.proton.core.domain.entity.UserId
@@ -39,16 +39,16 @@ class GetLabelAsBottomSheetContent @Inject constructor(
     suspend operator fun invoke(
         userId: UserId,
         labelId: LabelId,
-        mailboxItemIds: List<MailboxItemId>,
+        labelAsItemIds: List<LabelAsItemId>,
         viewMode: ViewMode
     ): Either<DataError, LabelAsActions> = when (viewMode) {
         ViewMode.ConversationGrouping -> {
-            val conversationIds = mailboxItemIds.map { ConversationId(it.value) }
+            val conversationIds = labelAsItemIds.map { ConversationId(it.value) }
             getConversationLabelAsActions(userId, labelId, conversationIds)
         }
 
         ViewMode.NoConversationGrouping -> {
-            val messageIds = mailboxItemIds.map { MessageId(it.value) }
+            val messageIds = labelAsItemIds.map { MessageId(it.value) }
             getMessageLabelAsActions(userId, labelId, messageIds)
         }
     }

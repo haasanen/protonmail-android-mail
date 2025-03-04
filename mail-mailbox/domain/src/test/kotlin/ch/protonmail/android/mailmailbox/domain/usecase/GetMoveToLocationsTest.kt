@@ -12,8 +12,8 @@ import ch.protonmail.android.maillabel.domain.model.MailLabel
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.maillabel.domain.sample.LabelIdSample
-import ch.protonmail.android.mailmailbox.domain.model.MailboxItemId
 import ch.protonmail.android.mailmessage.domain.model.MessageId
+import ch.protonmail.android.mailmessage.domain.model.MoveToItemId
 import ch.protonmail.android.mailmessage.domain.usecase.GetMessageMoveToLocations
 import io.mockk.coEvery
 import io.mockk.every
@@ -53,7 +53,7 @@ class GetMoveToLocationsTest {
         // Given
         val userId = UserIdSample.Primary
         val labelId = LabelIdSample.Trash
-        val items = listOf(MailboxItemId("1"))
+        val items = listOf(MoveToItemId("1"))
         val messageIds = items.map { MessageId(it.value) }
         val viewMode = ViewMode.NoConversationGrouping
         val expected = listOf(
@@ -74,7 +74,7 @@ class GetMoveToLocationsTest {
         // Given
         val userId = UserIdSample.Primary
         val labelId = LabelIdSample.Trash
-        val items = listOf(MailboxItemId("1"))
+        val items = listOf(MoveToItemId("1"))
         val convoIds = items.map { ConversationId(it.value) }
         val viewMode = ViewMode.ConversationGrouping
         val expected = listOf(
@@ -98,7 +98,7 @@ class GetMoveToLocationsTest {
         // Given
         val userId = UserIdSample.Primary
         val labelId = LabelIdSample.Trash
-        val items = listOf(MailboxItemId("1"))
+        val items = listOf(MoveToItemId("1"))
         val convoIds = items.map { ConversationId(it.value) }
         val viewMode = ViewMode.ConversationGrouping
         val error = DataError.Local.Unknown.left()
