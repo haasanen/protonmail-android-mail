@@ -554,7 +554,7 @@ class RustDraftDataSourceImplTest {
         coEvery {
             enqueuer.enqueueUniqueWork<SendingStatusWorker>(
                 userId = userId,
-                workerId = SendingStatusWorker.id(messageId.toMessageId()),
+                workerId = SendingStatusWorker.id(userId, messageId.toMessageId()),
                 params = SendingStatusWorker.params(userId, messageId.toMessageId()),
                 backoffCriteria = Enqueuer.BackoffCriteria.DefaultLinear,
                 initialDelay = InitialDelayForSendingStatusWorker
@@ -569,7 +569,7 @@ class RustDraftDataSourceImplTest {
         coVerify {
             enqueuer.enqueueUniqueWork<SendingStatusWorker>(
                 userId = userId,
-                workerId = SendingStatusWorker.id(messageId.toMessageId()),
+                workerId = SendingStatusWorker.id(userId, messageId.toMessageId()),
                 params = SendingStatusWorker.params(userId, messageId.toMessageId()),
                 backoffCriteria = Enqueuer.BackoffCriteria.DefaultLinear,
                 initialDelay = InitialDelayForSendingStatusWorker
@@ -646,14 +646,14 @@ class RustDraftDataSourceImplTest {
         val messageId = MessageId("110")
         coEvery { userSessionRepository.getUserSession(userId) } returns mockUserSession
         coEvery { rustDraftUndoSend(mockUserSession, messageId.toLocalMessageId()) } returns Unit.right()
-        coEvery { enqueuer.cancelWork(SendingStatusWorker.id(messageId)) } just Runs
+        coEvery { enqueuer.cancelWork(SendingStatusWorker.id(userId, messageId)) } just Runs
 
         // When
         val actual = dataSource.undoSend(userId, messageId)
 
         // Then
         assertEquals(Unit.right(), actual)
-        coVerify { enqueuer.cancelWork(SendingStatusWorker.id(messageId)) }
+        coVerify { enqueuer.cancelWork(SendingStatusWorker.id(userId, messageId)) }
     }
 
 }

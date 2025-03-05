@@ -113,6 +113,6 @@ class SendingStatusWorker @AssistedInject constructor(
             RawMessageIdKey to messageId.id
         )
 
-        fun id(messageId: MessageId): String = "SendingStatusWorker-${messageId.id}"
+        fun id(userId: UserId, messageId: MessageId): String = "SendingStatusWorker-${userId.id}-${messageId.id}"
     }
 }

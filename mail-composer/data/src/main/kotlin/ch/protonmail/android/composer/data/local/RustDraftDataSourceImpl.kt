@@ -177,7 +177,7 @@ class RustDraftDataSourceImpl @Inject constructor(
         }
 
         return rustDraftUndoSend(session, messageId.toLocalMessageId()).onRight {
-            enqueuer.cancelWork(SendingStatusWorker.id(messageId))
+            enqueuer.cancelWork(SendingStatusWorker.id(userId, messageId))
         }
 
     }
@@ -198,7 +198,7 @@ class RustDraftDataSourceImpl @Inject constructor(
         Timber.d("rust-draft: Starting sending status worker...")
         enqueuer.enqueueUniqueWork<SendingStatusWorker>(
             userId = userId,
-            workerId = SendingStatusWorker.id(messageId),
+            workerId = SendingStatusWorker.id(userId, messageId),
             params = SendingStatusWorker.params(userId, messageId),
             backoffCriteria = Enqueuer.BackoffCriteria.DefaultLinear,
             initialDelay = InitialDelayForSendingStatusWorker
