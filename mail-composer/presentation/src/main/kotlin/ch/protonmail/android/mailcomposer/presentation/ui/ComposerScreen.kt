@@ -463,7 +463,6 @@ private fun buildActions(
         setBottomSheetType(BottomSheetType.ChangeSender)
         viewModel.submit(ComposerAction.ChangeSenderRequested)
     },
-    onRespondInline = { viewModel.submit(ComposerAction.RespondInlineRequested) },
     onEditorSizeChanged = onEditorSizeChanged
 )
 

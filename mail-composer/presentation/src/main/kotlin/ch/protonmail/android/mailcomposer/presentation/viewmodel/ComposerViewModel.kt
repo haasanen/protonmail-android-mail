@@ -69,7 +69,6 @@ import ch.protonmail.android.mailcomposer.presentation.model.SenderUiModel
 import ch.protonmail.android.mailcomposer.presentation.reducer.ComposerReducer
 import ch.protonmail.android.mailcomposer.presentation.ui.ComposerScreen
 import ch.protonmail.android.mailcomposer.presentation.usecase.BuildDraftDisplayBody
-import ch.protonmail.android.mailcomposer.presentation.usecase.ConvertHtmlToPlainText
 import ch.protonmail.android.mailcomposer.presentation.usecase.FormatMessageSendingError
 import ch.protonmail.android.mailcomposer.presentation.usecase.SortContactsForSuggestions
 import ch.protonmail.android.mailcomposer.presentation.usecase.StyleQuotedHtml
@@ -136,7 +135,6 @@ class ComposerViewModel @Inject constructor(
     private val saveMessageExpirationTime: SaveMessageExpirationTime,
     private val observeMessageExpirationTime: ObserveMessageExpirationTime,
     private val getExternalRecipients: GetExternalRecipients,
-    private val convertHtmlToPlainText: ConvertHtmlToPlainText,
     private val openExistingDraft: OpenExistingDraft,
     private val createEmptyDraft: CreateEmptyDraft,
     private val createDraftForAction: CreateDraftForAction,
@@ -358,8 +356,6 @@ class ComposerViewModel @Inject constructor(
                     is ComposerAction.SendExpiringMessageToExternalRecipientsConfirmed -> emitNewStateFor(
                         onSendMessage(action)
                     )
-
-                    is ComposerAction.RespondInlineRequested -> onRespondInline()
                 }
                 composerIdlingResource.decrement()
             }
@@ -476,13 +472,6 @@ class ComposerViewModel @Inject constructor(
             }
         } else {
             onSendMessage(action)
-        }
-    }
-
-    private fun onRespondInline() {
-        state.value.fields.quotedBody?.let { quotedHtmlContent ->
-            val plainTextQuotedContent = convertHtmlToPlainText(quotedHtmlContent.styled.value)
-            emitNewStateFor(ComposerEvent.RespondInlineContent(plainTextQuotedContent))
         }
     }
 

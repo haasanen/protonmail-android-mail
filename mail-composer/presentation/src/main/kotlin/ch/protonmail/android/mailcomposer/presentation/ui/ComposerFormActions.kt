@@ -34,6 +34,5 @@ internal data class ComposerFormActions(
     val onSubjectChanged: (String) -> Unit,
     val onBodyChanged: (String) -> Unit,
     val onEditorSizeChanged: (Int) -> Unit,
-    val onChangeSender: () -> Unit,
-    val onRespondInline: () -> Unit
+    val onChangeSender: () -> Unit
 )

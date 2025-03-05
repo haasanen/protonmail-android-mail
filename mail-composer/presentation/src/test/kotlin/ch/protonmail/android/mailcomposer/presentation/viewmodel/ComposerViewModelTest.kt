@@ -74,7 +74,6 @@ import ch.protonmail.android.mailcomposer.presentation.model.SenderUiModel
 import ch.protonmail.android.mailcomposer.presentation.reducer.ComposerReducer
 import ch.protonmail.android.mailcomposer.presentation.ui.ComposerScreen
 import ch.protonmail.android.mailcomposer.presentation.usecase.BuildDraftDisplayBody
-import ch.protonmail.android.mailcomposer.presentation.usecase.ConvertHtmlToPlainText
 import ch.protonmail.android.mailcomposer.presentation.usecase.FormatMessageSendingError
 import ch.protonmail.android.mailcomposer.presentation.usecase.SortContactsForSuggestions
 import ch.protonmail.android.mailcomposer.presentation.usecase.StyleQuotedHtml
@@ -127,7 +126,6 @@ import me.proton.core.domain.entity.UserId
 import me.proton.core.network.domain.NetworkManager
 import me.proton.core.user.domain.entity.UserAddress
 import me.proton.core.util.kotlin.serialize
-import org.junit.Assert.assertNull
 import org.junit.Rule
 import kotlin.test.AfterTest
 import kotlin.test.Ignore
@@ -185,7 +183,6 @@ class ComposerViewModelTest {
     private val saveMessageExpirationTime = mockk<SaveMessageExpirationTime>()
     private val observeMessageExpirationTime = mockk<ObserveMessageExpirationTime>()
     private val getExternalRecipients = mockk<GetExternalRecipients>()
-    private val convertHtmlToPlainText = mockk<ConvertHtmlToPlainText>()
     private val createEmptyDraft = mockk<CreateEmptyDraft>()
     private val createDraftForAction = mockk<CreateDraftForAction>()
     private val openExistingDraft = mockk<OpenExistingDraft>()
@@ -232,7 +229,6 @@ class ComposerViewModelTest {
             saveMessageExpirationTime,
             observeMessageExpirationTime,
             getExternalRecipients,
-            convertHtmlToPlainText,
             openExistingDraft,
             createEmptyDraft,
             createDraftForAction,
@@ -313,7 +309,6 @@ class ComposerViewModelTest {
     fun `should emit Effect for ReplaceDraftBody when sender changes`() = runTest {
         // Given
         val expectedDraftBody = DraftBody(RawDraftBody)
-        val expectedQuotedDraftBody = null
         val expectedSenderEmail = SenderEmail(UserAddressSample.AliasAddress.email)
         val expectedMessageId = expectedMessageId { MessageIdSample.EmptyDraft }
         val expectedUserId = expectedUserId { UserIdSample.Primary }
@@ -976,29 +971,6 @@ class ComposerViewModelTest {
     }
 
     @Test
-    @Ignore("such check should move to rust")
-    fun `should not store draft when body contains only signature and composer is closed`() = runTest {
-        // Given
-        val expectedUserId = expectedUserId { UserIdSample.Primary }
-        val expectedMessageId = expectedMessageId { MessageIdSample.EmptyDraft }
-        expectNoInputDraftMessageId()
-        expectInputDraftAction { DraftAction.Compose }
-        expectObservedMessageAttachments(expectedUserId, expectedMessageId)
-        expectObserveMessageSendingError(expectedUserId, expectedMessageId)
-        expectMessagePassword(expectedUserId, expectedMessageId)
-        expectNoFileShareVia()
-        expectObserveMessageExpirationTime(expectedUserId, expectedMessageId)
-        expectContacts()
-        expectInitComposerWithNewEmptyDraftSucceeds(expectedUserId)
-
-        // When
-        viewModel.submit(ComposerAction.OnCloseComposer)
-
-        // Then
-        assertEquals(Effect.of(Unit), viewModel.state.value.closeComposer)
-    }
-
-    @Test
     fun `emits state with primary sender address when available`() = runTest {
         // Given
         val expectedUserId = expectedUserId { UserIdSample.Primary }
@@ -1495,29 +1467,6 @@ class ComposerViewModelTest {
     }
 
     @Test
-    @Ignore("drop with getlocalmessagedecrypted")
-    fun `emits state with error loading parent data when getting parent message draft fields fails`() = runTest {
-        // Given
-        val expectedUserId = expectedUserId { UserIdSample.Primary }
-        val expectedParentId = MessageIdSample.Invoice
-        val expectedAction = expectInputDraftAction { DraftAction.Reply(expectedParentId) }
-        val draftId = expectedMessageId { MessageIdSample.EmptyDraft }
-        expectNoInputDraftMessageId()
-        expectObservedMessageAttachments(expectedUserId, draftId)
-        expectObserveMessageSendingError(expectedUserId, draftId)
-        expectMessagePassword(expectedUserId, draftId)
-        expectNoFileShareVia()
-        expectObserveMessageExpirationTime(expectedUserId, draftId)
-        expectInitComposerForActionSuccess(expectedUserId, expectedAction) { DraftFieldsTestData.BasicDraftFields }
-
-        // When
-        val actual = viewModel.state.value
-
-        // Then
-        assertEquals(TextUiModel(R.string.composer_error_loading_parent_message), actual.error.consume())
-    }
-
-    @Test
     fun `emits state with error loading existing draft when getting decrypted draft fields fails`() = runTest {
         // Given
         val expectedUserId = expectedUserId { UserIdSample.Primary }
@@ -1912,52 +1861,9 @@ class ComposerViewModelTest {
         }
     }
 
-    @Test
-    @Ignore("Reply inline will be dropped due to rich text composer")
-    fun `should emit Effect to ReplaceDraftBody when Respond Inline Action`() = runTest {
-        // Given
-        val expectedDraftBody = DraftBody(RawDraftBody)
-        val expectedQuotedHtmlContent = QuotedHtmlContent(
-            OriginalHtmlQuote("<html>quoted body</html>"),
-            StyledHtmlQuote("<html>STYLED quoted body</html>")
-        )
-        val expectedQuotedHtmlInPlainText = "quoted body"
-        val expectedMessageId = expectedMessageId { MessageIdSample.EmptyDraft }
-        val expectedUserId = expectedUserId { UserIdSample.Primary }
-        val action = ComposerAction.RespondInlineRequested
-        expectStoreDraftBodySucceeds(expectedDraftBody)
-        expectNoInputDraftMessageId()
-        expectNoInputDraftAction()
-        expectObservedMessageAttachments(expectedUserId, expectedMessageId)
-        expectObserveMessageSendingError(expectedUserId, expectedMessageId)
-        expectMessagePassword(expectedUserId, expectedMessageId)
-        expectNoFileShareVia()
-        expectObserveMessageExpirationTime(expectedUserId, expectedMessageId)
-        expectConvertHtmlToPlainTextSucceeds(expectedQuotedHtmlContent, expectedQuotedHtmlInPlainText)
-        expectInitComposerWithNewEmptyDraftSucceeds(expectedUserId)
-
-        val expectedReplaceDraftBodyTextUiModel = TextUiModel(
-            "${expectedDraftBody.value}$expectedQuotedHtmlInPlainText"
-        )
-
-        // When
-        viewModel.submit(action)
-
-        // Then
-        assertEquals(expectedReplaceDraftBodyTextUiModel, viewModel.state.value.replaceDraftBody.consume())
-        assertNull(viewModel.state.value.fields.quotedBody)
-    }
-
     @AfterTest
     fun tearDown() {
         unmockkObject(ComposerDraftState.Companion)
-    }
-
-    private fun expectConvertHtmlToPlainTextSucceeds(
-        expectedQuotedHtmlContent: QuotedHtmlContent,
-        expectedQuotedHtmlInPlainText: String
-    ) {
-        every { convertHtmlToPlainText(expectedQuotedHtmlContent.styled.value) } returns expectedQuotedHtmlInPlainText
     }
 
     private fun expectStyleQuotedHtml(originalHtmlQuote: OriginalHtmlQuote?, styledHtmlQuote: () -> StyledHtmlQuote) =
