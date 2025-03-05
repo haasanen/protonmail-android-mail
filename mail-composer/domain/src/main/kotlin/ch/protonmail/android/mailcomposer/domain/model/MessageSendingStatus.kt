@@ -34,7 +34,7 @@ sealed interface MessageSendingStatus {
 
     data class SendMessageError(
         override val messageId: MessageId,
-        val reason: SaveSendErrorReason
+        val reason: SendErrorReason
     ) : MessageSendingStatus
 
     data class NoStatus(

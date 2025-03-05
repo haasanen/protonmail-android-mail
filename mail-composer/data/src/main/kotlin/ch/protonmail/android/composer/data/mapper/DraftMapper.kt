@@ -26,7 +26,7 @@ import ch.protonmail.android.mailcommon.datarust.mapper.toDataError
 import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.DraftFields
-import ch.protonmail.android.mailcomposer.domain.model.SaveSendErrorReason
+import ch.protonmail.android.mailcomposer.domain.model.SendErrorReason
 import ch.protonmail.android.mailcomposer.domain.model.MessageSendingStatus
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsBcc
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsCc
@@ -111,35 +111,35 @@ private fun LocalDraftSendResult.toMessageSendingStatusForFailure(error: DraftSa
         )
         is DraftSaveSendError.Other -> MessageSendingStatus.SendMessageError(
             messageId = this.messageId.toMessageId(),
-            reason = SaveSendErrorReason.OtherDataError(error.v1.toDataError())
+            reason = SendErrorReason.OtherDataError(error.v1.toDataError())
         )
     }
 }
 
-fun DraftSaveSendErrorReason.toSaveSendErrorReason(): SaveSendErrorReason = when (this) {
-    DraftSaveSendErrorReason.NoRecipients -> SaveSendErrorReason.ErrorNoMessage.NoRecipients
-    DraftSaveSendErrorReason.AlreadySent -> SaveSendErrorReason.ErrorNoMessage.AlreadySent
-    DraftSaveSendErrorReason.MessageDoesNotExist -> SaveSendErrorReason.ErrorNoMessage.MessageDoesNotExist
-    DraftSaveSendErrorReason.MessageIsNotADraft -> SaveSendErrorReason.ErrorNoMessage.MessageIsNotADraft
-    DraftSaveSendErrorReason.MessageAlreadySent -> SaveSendErrorReason.ErrorNoMessage.MessageAlreadySent
+fun DraftSaveSendErrorReason.toSaveSendErrorReason(): SendErrorReason = when (this) {
+    DraftSaveSendErrorReason.NoRecipients -> SendErrorReason.ErrorNoMessage.NoRecipients
+    DraftSaveSendErrorReason.AlreadySent -> SendErrorReason.ErrorNoMessage.AlreadySent
+    DraftSaveSendErrorReason.MessageDoesNotExist -> SendErrorReason.ErrorNoMessage.MessageDoesNotExist
+    DraftSaveSendErrorReason.MessageIsNotADraft -> SendErrorReason.ErrorNoMessage.MessageIsNotADraft
+    DraftSaveSendErrorReason.MessageAlreadySent -> SendErrorReason.ErrorNoMessage.MessageAlreadySent
 
     is DraftSaveSendErrorReason.AddressDoesNotHavePrimaryKey ->
-        SaveSendErrorReason.ErrorWithMessage.AddressDoesNotHavePrimaryKey(v1)
+        SendErrorReason.ErrorWithMessage.AddressDoesNotHavePrimaryKey(v1)
 
     is DraftSaveSendErrorReason.RecipientEmailInvalid ->
-        SaveSendErrorReason.ErrorWithMessage.RecipientEmailInvalid(v1)
+        SendErrorReason.ErrorWithMessage.RecipientEmailInvalid(v1)
 
     is DraftSaveSendErrorReason.ProtonRecipientDoesNotExist ->
-        SaveSendErrorReason.ErrorWithMessage.ProtonRecipientDoesNotExist(v1)
+        SendErrorReason.ErrorWithMessage.ProtonRecipientDoesNotExist(v1)
 
     is DraftSaveSendErrorReason.UnknownRecipientValidationError ->
-        SaveSendErrorReason.ErrorWithMessage.UnknownRecipientValidationError(v1)
+        SendErrorReason.ErrorWithMessage.UnknownRecipientValidationError(v1)
 
     is DraftSaveSendErrorReason.AddressDisabled ->
-        SaveSendErrorReason.ErrorWithMessage.AddressDisabled(v1)
+        SendErrorReason.ErrorWithMessage.AddressDisabled(v1)
 
     is DraftSaveSendErrorReason.PackageError ->
-        SaveSendErrorReason.ErrorWithMessage.PackageError(v1)
+        SendErrorReason.ErrorWithMessage.PackageError(v1)
 }
 
 @MissingRustApi

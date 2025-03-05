@@ -20,17 +20,17 @@ package ch.protonmail.android.mailcomposer.domain.model
 
 import ch.protonmail.android.mailcommon.domain.model.DataError
 
-sealed interface SaveSendErrorReason {
+sealed interface SendErrorReason {
 
-    sealed interface ErrorNoMessage : SaveSendErrorReason {
-        data object NoRecipients : SaveSendErrorReason
-        data object AlreadySent : SaveSendErrorReason
-        data object MessageDoesNotExist : SaveSendErrorReason
-        data object MessageIsNotADraft : SaveSendErrorReason
-        data object MessageAlreadySent : SaveSendErrorReason
+    sealed interface ErrorNoMessage : SendErrorReason {
+        data object NoRecipients : SendErrorReason
+        data object AlreadySent : SendErrorReason
+        data object MessageDoesNotExist : SendErrorReason
+        data object MessageIsNotADraft : SendErrorReason
+        data object MessageAlreadySent : SendErrorReason
     }
 
-    sealed interface ErrorWithMessage : SaveSendErrorReason {
+    sealed interface ErrorWithMessage : SendErrorReason {
         val details: String
 
         data class AddressDoesNotHavePrimaryKey(override val details: String) : ErrorWithMessage
@@ -41,6 +41,6 @@ sealed interface SaveSendErrorReason {
         data class PackageError(override val details: String) : ErrorWithMessage
     }
 
-    data class OtherDataError(val dataError: DataError) : SaveSendErrorReason
+    data class OtherDataError(val dataError: DataError) : SendErrorReason
 
 }

@@ -29,7 +29,7 @@ import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.mailcommon.domain.sample.UserSample
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcomposer.domain.model.MessageSendingStatus
-import ch.protonmail.android.mailcomposer.domain.model.SaveSendErrorReason
+import ch.protonmail.android.mailcomposer.domain.model.SendErrorReason
 import ch.protonmail.android.mailcomposer.domain.usecase.DeleteMessageSendingStatuses
 import ch.protonmail.android.mailcomposer.domain.usecase.DiscardDraft
 import ch.protonmail.android.mailcomposer.domain.usecase.MarkMessageSendingStatusesAsSeen
@@ -305,7 +305,7 @@ class HomeViewModelTest {
             every { networkManager.observe() } returns flowOf(NetworkStatus.Metered)
             coEvery { observeSendingMessagesStatus(user.userId) } returns flowOf(
                 MessageSendingStatus.SendMessageError(
-                    messageId, SaveSendErrorReason.OtherDataError(DataError.Local.SaveDraftError.Unknown)
+                    messageId, SendErrorReason.OtherDataError(DataError.Local.SaveDraftError.Unknown)
                 )
             )
 
@@ -316,7 +316,7 @@ class HomeViewModelTest {
                     networkStatusEffect = Effect.of(NetworkStatus.Metered),
                     messageSendingStatusEffect = Effect.of(
                         MessageSendingStatus.SendMessageError(
-                            messageId, SaveSendErrorReason.OtherDataError(DataError.Local.SaveDraftError.Unknown)
+                            messageId, SendErrorReason.OtherDataError(DataError.Local.SaveDraftError.Unknown)
                         )
                     ),
                     navigateToEffect = Effect.empty(),
