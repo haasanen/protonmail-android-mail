@@ -1,44 +1,38 @@
-/*
- * Copyright (c) 2022 Proton Technologies AG
- * This file is part of Proton Technologies AG and Proton Mail.
- *
- * Proton Mail is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * Proton Mail is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
- */
-
 package ch.protonmail.android.mailcomposer.presentation.usecase
 
-import androidx.annotation.VisibleForTesting
 import ch.protonmail.android.mailcomposer.presentation.model.DraftDisplayBodyUiModel
 import ch.protonmail.android.mailcomposer.presentation.ui.JAVASCRIPT_CALLBACK_INTERFACE_NAME
 import ch.protonmail.android.mailmessage.presentation.model.MessageBodyWithType
+import ch.protonmail.android.mailmessage.presentation.model.MimeTypeUiModel
 import ch.protonmail.android.mailmessage.presentation.usecase.SanitizeHtmlOfDecryptedMessageBody
-import javax.inject.Inject
+import io.mockk.every
+import io.mockk.mockk
+import org.junit.Test
+import kotlin.test.assertEquals
 
-@VisibleForTesting
-internal const val EDITOR_ID = "EditorId"
+class BuildDraftDisplayBodyTest {
 
-class BuildDraftDisplayBody @Inject constructor(
-    private val getCustomCss: GetCustomCss,
-    private val sanitizeHtmlOfDecryptedMessageBody: SanitizeHtmlOfDecryptedMessageBody
-) {
+    private val getCustomCss: GetCustomCss = mockk()
+    private val sanitizeHtmlOfDecryptedMessageBody: SanitizeHtmlOfDecryptedMessageBody = mockk()
 
-    operator fun invoke(messageBodyWithType: MessageBodyWithType): DraftDisplayBodyUiModel {
-        val bodyContent: String = sanitizeHtmlOfDecryptedMessageBody(messageBodyWithType)
-        val css: String = getCustomCss()
-        val javascript: String = getJavascript()
+    private val buildDraftDisplayBody = BuildDraftDisplayBody(
+        getCustomCss,
+        sanitizeHtmlOfDecryptedMessageBody
+    )
 
-        return buildHtmlTemplate(bodyContent, css, javascript)
+    @Test
+    fun `returns html template with injected css and javascript`() {
+        // Given
+        val messageBodyWithType = MessageBodyWithType(rawMessageBody, MimeTypeUiModel.Html)
+        every { sanitizeHtmlOfDecryptedMessageBody(messageBodyWithType) } returns sanitizedMessageBody
+        every { getCustomCss() } returns rawCustomCss
+        val expected = buildHtmlTemplate(sanitizedMessageBody, rawCustomCss, getJavascript())
+
+        // When
+        val actual = buildDraftDisplayBody(messageBodyWithType)
+
+        // Then
+        assertEquals(expected, actual)
     }
 
     private fun buildHtmlTemplate(
@@ -83,4 +77,10 @@ class BuildDraftDisplayBody @Inject constructor(
         });
     """.trimIndent()
 
+    companion object TestData {
+        private const val rawMessageBody = "This is the message body unsanitized <script>...</script>"
+        private const val sanitizedMessageBody = "This is the message body sanitized"
+        private const val rawCustomCss = "<style> ... </style>"
+
+    }
 }
