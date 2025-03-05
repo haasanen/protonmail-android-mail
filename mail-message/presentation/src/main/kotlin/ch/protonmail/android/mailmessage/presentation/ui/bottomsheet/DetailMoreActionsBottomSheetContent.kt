@@ -123,53 +123,66 @@ fun DetailMoreActionsBottomSheetContent(
 
             ActionGroup(
                 modifier = Modifier.padding(top = ProtonDimens.Spacing.Large),
-                actionUiModels = messageActions
-            ) { actionUiModel ->
-                if (uiModel.messageIdInConversation != null) {
-                    callbackForAction(actionUiModel.action, actionCallbacks).invoke(
-                        MessageId(uiModel.messageIdInConversation)
-                    )
-                } else {
-                    callbackForConversation(actionUiModel.action, actionCallbacks).invoke()
+                items = messageActions,
+                onItemClicked = { actionUiModel ->
+                    resolveCallbackForAction(uiModel.messageIdInConversation, actionUiModel.action, actionCallbacks)
                 }
+            ) { action, onClick ->
+                ActionGroupItem(
+                    icon = action.icon,
+                    description = action.description.string(),
+                    contentDescription = action.contentDescription.string(),
+                    onClick = onClick
+                )
             }
 
             ActionGroup(
                 modifier = Modifier.padding(top = ProtonDimens.Spacing.Large),
-                actionUiModels = moveActions
-            ) { actionUiModel ->
-                if (uiModel.messageIdInConversation != null) {
-                    callbackForAction(actionUiModel.action, actionCallbacks).invoke(
-                        MessageId(uiModel.messageIdInConversation)
-                    )
-                } else {
-                    callbackForConversation(actionUiModel.action, actionCallbacks).invoke()
+                items = moveActions,
+                onItemClicked = { actionUiModel ->
+                    resolveCallbackForAction(uiModel.messageIdInConversation, actionUiModel.action, actionCallbacks)
                 }
+            ) { action, onClick ->
+                ActionGroupItem(
+                    icon = action.icon,
+                    description = action.description.string(),
+                    contentDescription = action.contentDescription.string(),
+                    onClick = onClick
+                )
             }
 
             ActionGroup(
                 modifier = Modifier.padding(top = ProtonDimens.Spacing.Large),
-                actionUiModels = genericActions
+                items = genericActions
                     .filter { shouldSkipActionItem(it, isSystemInDarkTheme()).not() }
-                    .toImmutableList()
-            ) { actionUiModel ->
-                if (uiModel.messageIdInConversation != null) {
-                    callbackForAction(actionUiModel.action, actionCallbacks).invoke(
-                        MessageId(uiModel.messageIdInConversation)
-                    )
-                } else {
-                    callbackForConversation(actionUiModel.action, actionCallbacks).invoke()
+                    .toImmutableList(),
+                onItemClicked = { actionUiModel ->
+                    resolveCallbackForAction(uiModel.messageIdInConversation, actionUiModel.action, actionCallbacks)
                 }
+            ) { action, onClick ->
+                ActionGroupItem(
+                    icon = action.icon,
+                    description = action.description.string(),
+                    contentDescription = action.contentDescription.string(),
+                    onClick = onClick
+                )
             }
 
             if (customizeToolbarActionUiModel != null) {
                 ActionGroup(
                     modifier = Modifier.padding(top = ProtonDimens.Spacing.Large),
-                    actionUiModels = persistentListOf(customizeToolbarActionUiModel),
-                    onActionClicked = { actionUiModel ->
+                    items = persistentListOf(customizeToolbarActionUiModel),
+                    onItemClicked = { actionUiModel ->
                         callbackForConversation(actionUiModel.action, actionCallbacks).invoke()
                     }
-                )
+                ) { action, onClick ->
+                    ActionGroupItem(
+                        icon = action.icon,
+                        description = action.description.string(),
+                        contentDescription = action.contentDescription.string(),
+                        onClick = onClick
+                    )
+                }
             }
         }
     }
@@ -260,6 +273,20 @@ private fun QuickActionButton(
             style = ProtonTheme.typography.bodyMediumWeak,
             maxLines = 1
         )
+    }
+}
+
+private fun resolveCallbackForAction(
+    messageIdInconversation: String?,
+    action: Action,
+    actionCallbacks: DetailMoreActionsBottomSheetContent.Actions
+) {
+    if (messageIdInconversation != null) {
+        callbackForAction(action, actionCallbacks).invoke(
+            MessageId(messageIdInconversation)
+        )
+    } else {
+        callbackForConversation(action, actionCallbacks).invoke()
     }
 }
 

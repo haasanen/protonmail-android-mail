@@ -18,7 +18,9 @@
 
 package ch.protonmail.android.mailmessage.presentation.ui.bottomsheet
 
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -29,6 +31,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
@@ -39,21 +42,17 @@ import androidx.compose.ui.unit.dp
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyLargeWeak
-import ch.protonmail.android.mailcommon.presentation.NO_CONTENT_DESCRIPTION
-import ch.protonmail.android.mailcommon.presentation.model.ActionUiModel
-import ch.protonmail.android.mailcommon.presentation.model.string
 import kotlinx.collections.immutable.ImmutableList
 
-
 @Composable
-fun ActionGroup(
+fun <T> ActionGroup(
     modifier: Modifier = Modifier,
-    actionUiModels: ImmutableList<ActionUiModel>,
-    onActionClicked: (ActionUiModel) -> Unit
+    items: ImmutableList<T>,
+    onItemClicked: (T) -> Unit,
+    content: @Composable (item: T, onClick: () -> Unit) -> Unit
 ) {
     Card(
-        modifier = modifier
-            .fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
         shape = ProtonTheme.shapes.extraLarge,
         elevation = CardDefaults.cardElevation(),
         colors = CardDefaults.cardColors().copy(
@@ -61,14 +60,10 @@ fun ActionGroup(
         )
     ) {
         Column(modifier = Modifier.fillMaxWidth()) {
+            items.forEachIndexed { index, item ->
+                content(item) { onItemClicked(item) }
 
-            actionUiModels.forEachIndexed { index, action ->
-                ActionGroupItem(
-                    action = action,
-                    onClick = { onActionClicked(action) }
-                )
-
-                if (index < actionUiModels.lastIndex) {
+                if (index < items.lastIndex) {
                     HorizontalDivider(
                         modifier = Modifier.padding(0.dp),
                         thickness = 1.dp,
@@ -81,15 +76,19 @@ fun ActionGroup(
 }
 
 @Composable
-internal fun ActionGroupItem(
+fun ActionGroupItem(
     modifier: Modifier = Modifier,
-    action: ActionUiModel,
+    @DrawableRes icon: Int,
+    description: String,
+    contentDescription: String,
     onClick: () -> Unit
 ) {
     Row(
         modifier = modifier
             .fillMaxWidth()
             .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null,
                 role = Role.Button,
                 onClick = onClick
             )
@@ -99,21 +98,26 @@ internal fun ActionGroupItem(
             ),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Icon(
-            modifier = Modifier
-                .testTag(MoreActionsBottomSheetTestTags.ActionItem)
-                .padding(end = ProtonDimens.Spacing.Large),
-            painter = painterResource(id = action.icon),
-            contentDescription = NO_CONTENT_DESCRIPTION
-        )
-        Text(
-            modifier = Modifier
-                .testTag(MoreActionsBottomSheetTestTags.LabelIcon)
-                .weight(1f),
-            text = action.description.string(),
-            style = ProtonTheme.typography.bodyLargeWeak,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis
-        )
+        Row(
+            modifier = modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                modifier = Modifier
+                    .testTag(MoreActionsBottomSheetTestTags.ActionItem)
+                    .padding(end = ProtonDimens.Spacing.Large),
+                painter = painterResource(id = icon),
+                contentDescription = contentDescription
+            )
+            Text(
+                modifier = Modifier
+                    .testTag(MoreActionsBottomSheetTestTags.LabelIcon)
+                    .weight(1f),
+                text = description,
+                style = ProtonTheme.typography.bodyLargeWeak,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+        }
     }
 }

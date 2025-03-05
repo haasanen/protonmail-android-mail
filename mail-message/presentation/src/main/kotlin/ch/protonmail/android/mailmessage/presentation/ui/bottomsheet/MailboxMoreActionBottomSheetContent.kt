@@ -45,6 +45,7 @@ import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.titleLargeNorm
+import ch.protonmail.android.mailcommon.presentation.model.string
 import ch.protonmail.android.mailmessage.presentation.R
 import kotlinx.collections.immutable.persistentListOf
 
@@ -99,25 +100,47 @@ fun MailboxMoreActionBottomSheetContent(
             )
             Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Large))
             ActionGroup(
-                actionUiModels = state.hiddenActionUiModels,
-                onActionClicked = { action ->
+                items = state.hiddenActionUiModels,
+                onItemClicked = { action ->
                     callbackForAction(action.action, actionCallbacks).invoke()
                 }
-            )
+            ) { action, onClick ->
+                ActionGroupItem(
+                    icon = action.icon,
+                    description = action.description.string(),
+                    contentDescription = action.contentDescription.string(),
+                    onClick = onClick
+                )
+            }
+
             Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Large))
             ActionGroup(
-                actionUiModels = state.visibleActionUiModels,
-                onActionClicked = { action ->
+                items = state.visibleActionUiModels,
+                onItemClicked = { action ->
                     callbackForAction(action.action, actionCallbacks).invoke()
                 }
-            )
+            ) { action, onClick ->
+                ActionGroupItem(
+                    icon = action.icon,
+                    description = action.description.string(),
+                    contentDescription = action.contentDescription.string(),
+                    onClick = onClick
+                )
+            }
             Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Large))
             ActionGroup(
-                actionUiModels = persistentListOf(state.customizeToolbarActionUiModel),
-                onActionClicked = { action ->
+                items = persistentListOf(state.customizeToolbarActionUiModel),
+                onItemClicked = { action ->
                     callbackForAction(action.action, actionCallbacks).invoke()
                 }
-            )
+            ) { action, onClick ->
+                ActionGroupItem(
+                    icon = action.icon,
+                    description = action.description.string(),
+                    contentDescription = action.contentDescription.string(),
+                    onClick = onClick
+                )
+            }
         }
     }
 }
