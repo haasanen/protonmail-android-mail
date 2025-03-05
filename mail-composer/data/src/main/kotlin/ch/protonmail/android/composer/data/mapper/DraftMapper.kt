@@ -103,12 +103,21 @@ private fun LocalDraftSendResult.toMessageSendingStatusForSuccess(timeRemainingF
         MessageSendingStatus.MessageSentFinal(this.messageId.toMessageId())
     }
 }
+
 private fun LocalDraftSendResult.toMessageSendingStatusForFailure(error: DraftSaveSendError): MessageSendingStatus {
     return when (error) {
-        is DraftSaveSendError.Reason -> MessageSendingStatus.SendMessageError(
-            messageId = this.messageId.toMessageId(),
-            reason = error.v1.toSaveSendErrorReason()
-        )
+        is DraftSaveSendError.Reason -> {
+            // Check if the error reason indicates that the message was already sent.
+            if (error.v1.isAlreadySent()) {
+                // Treat it as a successful send, with no undo time.
+                MessageSendingStatus.MessageSentFinal(this.messageId.toMessageId())
+            } else {
+                MessageSendingStatus.SendMessageError(
+                    messageId = this.messageId.toMessageId(),
+                    reason = error.v1.toSendErrorReason()
+                )
+            }
+        }
         is DraftSaveSendError.Other -> MessageSendingStatus.SendMessageError(
             messageId = this.messageId.toMessageId(),
             reason = SendErrorReason.OtherDataError(error.v1.toDataError())
@@ -116,7 +125,13 @@ private fun LocalDraftSendResult.toMessageSendingStatusForFailure(error: DraftSa
     }
 }
 
-fun DraftSaveSendErrorReason.toSaveSendErrorReason(): SendErrorReason = when (this) {
+fun DraftSaveSendErrorReason.isAlreadySent(): Boolean = when (this) {
+    DraftSaveSendErrorReason.AlreadySent,
+    DraftSaveSendErrorReason.MessageAlreadySent -> true
+    else -> false
+}
+
+fun DraftSaveSendErrorReason.toSendErrorReason(): SendErrorReason = when (this) {
     DraftSaveSendErrorReason.NoRecipients -> SendErrorReason.ErrorNoMessage.NoRecipients
     DraftSaveSendErrorReason.AlreadySent -> SendErrorReason.ErrorNoMessage.AlreadySent
     DraftSaveSendErrorReason.MessageDoesNotExist -> SendErrorReason.ErrorNoMessage.MessageDoesNotExist
