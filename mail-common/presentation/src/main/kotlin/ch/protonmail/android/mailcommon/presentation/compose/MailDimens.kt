@@ -148,4 +148,9 @@ object MailDimens {
     val DetailsMoreQuickReplyButtonSize = 84.dp
 
     val LabelAsDoneButtonHeight = 52.dp
+
+    object Composer {
+
+        val FormFieldsRowHeight = 56.dp
+    }
 }

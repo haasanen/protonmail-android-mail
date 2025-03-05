@@ -44,7 +44,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.bodyLargeNorm
+import ch.protonmail.android.design.compose.theme.bodyMediumNorm
 import ch.protonmail.android.uicomponents.chips.item.ChipItemsList
 import kotlinx.coroutines.launch
 
@@ -58,8 +58,8 @@ internal fun ChipsListTextField(
     textFieldValue: TextFieldValue,
     modifier: Modifier = Modifier,
     focusRequester: FocusRequester? = null,
-    cursorColor: Color = ProtonTheme.colors.brandPlus20,
-    textStyle: TextStyle = ProtonTheme.typography.bodyLargeNorm,
+    cursorColor: Color = ProtonTheme.colors.iconAccent,
+    textStyle: TextStyle = ProtonTheme.typography.bodyMediumNorm,
     animateChipsCreation: Boolean = false,
     actions: ChipsListTextField.Actions
 ) {
@@ -127,7 +127,7 @@ internal fun ChipsListTextField(
                     height(0.dp)
                 }
                 .padding(vertical = ProtonDimens.Spacing.Large)
-                .padding(start = ProtonDimens.Spacing.Small)
+                .padding(start = ProtonDimens.Spacing.Standard)
                 .padding(end = ProtonDimens.Spacing.Large)
                 .onKeyEvent { keyEvent ->
                     if (keyEvent.key == Key.Backspace) {

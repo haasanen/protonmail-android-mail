@@ -41,7 +41,7 @@ import ch.protonmail.android.mailcomposer.presentation.R
 import ch.protonmail.android.uicomponents.text.defaultTextFieldColors
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.bodyLargeNorm
+import ch.protonmail.android.design.compose.theme.bodyMediumNorm
 
 @Composable
 internal fun PrefixedEmailSelector(
@@ -59,14 +59,14 @@ internal fun PrefixedEmailSelector(
                 .align(Alignment.CenterVertically)
                 .weight(1f),
             readOnly = true,
-            textStyle = ProtonTheme.typography.bodyLargeNorm,
+            textStyle = ProtonTheme.typography.bodyMediumNorm,
             prefix = {
                 Row {
                     Text(
                         modifier = Modifier.testTag(ComposerTestTags.FieldPrefix),
                         text = stringResource(prefixStringResource),
                         color = ProtonTheme.colors.textWeak,
-                        style = ProtonTheme.typography.bodyLargeNorm
+                        style = ProtonTheme.typography.bodyMediumNorm
                     )
                     Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Small))
                 }
@@ -91,8 +91,8 @@ private fun ChangeSenderButton(modifier: Modifier = Modifier, onClick: () -> Uni
         onClick = onClick
     ) {
         Icon(
-            painter = painterResource(id = R.drawable.ic_proton_three_dots_vertical),
-            tint = ProtonTheme.colors.iconWeak,
+            painter = painterResource(id = R.drawable.ic_proton_chevron_tiny_down),
+            tint = ProtonTheme.colors.iconHint,
             contentDescription = NO_CONTENT_DESCRIPTION
         )
     }

@@ -22,7 +22,7 @@ import androidx.compose.animation.core.Animatable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
@@ -37,9 +37,9 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
-import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.mailcommon.presentation.compose.FocusableFormScope
+import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcommon.presentation.model.string
 import ch.protonmail.android.mailcommon.presentation.ui.MailDivider
@@ -73,13 +73,16 @@ internal fun FocusableFormScope<FocusedFieldType>.RecipientFields2(
     val shouldShowCcBcc = recipientsOpen || hasCcBccContent
 
     Row(
-        modifier = modifier.fillMaxWidth()
+        modifier = modifier
+            .fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
     ) {
         ChipsListField(
             label = stringResource(id = R.string.to_prefix),
             value = fields.to.map { it.toChipItem() },
             chipValidator = emailValidator,
             modifier = Modifier
+                .heightIn(min = MailDimens.Composer.FormFieldsRowHeight)
                 .weight(1f)
                 .testTag(ComposerTestTags.ToRecipient)
                 .retainFieldFocusOnConfigurationChange(FocusedFieldType.TO),
@@ -103,7 +106,7 @@ internal fun FocusableFormScope<FocusedFieldType>.RecipientFields2(
                 if (!hasCcBccContent) {
                     IconButton(
                         modifier = Modifier
-                            .align(Alignment.Top)
+                            .align(Alignment.CenterVertically)
                             .focusProperties { canFocus = false },
                         onClick = { actions.onToggleRecipients(!recipientsOpen) }
                     ) {
@@ -115,12 +118,11 @@ internal fun FocusableFormScope<FocusedFieldType>.RecipientFields2(
                                 .thenIf(recipientsButtonRotation.value == RecipientsButtonRotationValues2.Open) {
                                     testTag(ComposerTestTags.CollapseExpandArrow)
                                 }
-                                .rotate(recipientsButtonRotation.value)
-                                .size(ProtonDimens.IconSize.Small),
+                                .rotate(recipientsButtonRotation.value),
                             imageVector = ImageVector.vectorResource(
-                                id = me.proton.core.presentation.R.drawable.ic_proton_chevron_down_filled
+                                id = R.drawable.ic_proton_chevron_tiny_down
                             ),
-                            tint = ProtonTheme.colors.textWeak,
+                            tint = ProtonTheme.colors.iconHint,
                             contentDescription = stringResource(id = R.string.composer_expand_recipients_button)
                         )
                     }
@@ -137,6 +139,7 @@ internal fun FocusableFormScope<FocusedFieldType>.RecipientFields2(
                 value = fields.cc.map { it.toChipItem() },
                 chipValidator = emailValidator,
                 modifier = Modifier
+                    .heightIn(min = MailDimens.Composer.FormFieldsRowHeight)
                     .testTag(ComposerTestTags.CcRecipient)
                     .retainFieldFocusOnConfigurationChange(FocusedFieldType.CC),
                 focusRequester = fieldFocusRequesters[FocusedFieldType.CC],
@@ -166,6 +169,7 @@ internal fun FocusableFormScope<FocusedFieldType>.RecipientFields2(
                     value = fields.bcc.map { it.toChipItem() },
                     chipValidator = emailValidator,
                     modifier = Modifier
+                        .heightIn(min = MailDimens.Composer.FormFieldsRowHeight)
                         .testTag(ComposerTestTags.BccRecipient)
                         .retainFieldFocusOnConfigurationChange(FocusedFieldType.BCC),
                     focusRequester = fieldFocusRequesters[FocusedFieldType.BCC],

@@ -25,8 +25,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -61,11 +60,13 @@ internal fun ComposerTopBar(
         title = {},
         navigationIcon = {
             IconButton(
-                modifier = Modifier.testTag(ComposerTestTags.CloseButton),
+                modifier = Modifier
+                    .testTag(ComposerTestTags.CloseButton)
+                    .size(ProtonDimens.IconSize.ExtraLarge),
                 onClick = onCloseComposerClick
             ) {
                 Icon(
-                    imageVector = Icons.Filled.Close,
+                    painter = painterResource(R.drawable.ic_proton_cross_big),
                     tint = ProtonTheme.colors.iconNorm,
                     contentDescription = stringResource(R.string.close_composer_content_description)
                 )
@@ -83,9 +84,9 @@ internal fun ComposerTopBar(
                 Icon(
                     painter = painterResource(id = R.drawable.ic_proton_paper_plane),
                     tint = if (isSendMessageButtonEnabled) {
-                        ProtonTheme.colors.iconNorm
+                        ProtonTheme.colors.interactionBrandDefaultNorm
                     } else {
-                        ProtonTheme.colors.iconDisabled
+                        ProtonTheme.colors.interactionBrandDefaultDisabled
                     },
                     contentDescription = stringResource(R.string.send_message_content_description)
                 )
@@ -109,7 +110,8 @@ private fun AttachmentsButton(
             AttachmentsNumber(attachmentsCount)
         }
         IconButton(
-            modifier = Modifier.testTag(ComposerTestTags.AttachmentsButton),
+            modifier = Modifier
+                .testTag(ComposerTestTags.AttachmentsButton),
             onClick = onClick
         ) {
             Icon(
