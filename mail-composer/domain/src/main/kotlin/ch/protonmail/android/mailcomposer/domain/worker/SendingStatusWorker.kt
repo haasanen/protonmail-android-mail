@@ -26,7 +26,6 @@ import arrow.core.Either
 import ch.protonmail.android.mailcommon.domain.AppInBackgroundState
 import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcomposer.domain.model.MessageSendingStatus
-import ch.protonmail.android.mailcomposer.domain.usecase.DeleteMessageSendingStatuses
 import ch.protonmail.android.mailcomposer.domain.usecase.MarkMessageSendingStatusesAsSeen
 import ch.protonmail.android.mailcomposer.domain.usecase.QueryUnseenMessageSendingStatuses
 import ch.protonmail.android.mailmessage.domain.model.MessageId
@@ -47,7 +46,6 @@ class SendingStatusWorker @AssistedInject constructor(
     @Assisted workerParameters: WorkerParameters,
     private val queryUnseenDraftSendResults: QueryUnseenMessageSendingStatuses,
     private val markMessageSendingStatusesAsSeen: MarkMessageSendingStatusesAsSeen,
-    private val deleteMessageSendingStatuses: DeleteMessageSendingStatuses,
     private val eventLoopRepository: EventLoopRepository,
     private val appInBackgroundState: AppInBackgroundState
 ) : CoroutineWorker(context, workerParameters) {
@@ -99,7 +97,6 @@ class SendingStatusWorker @AssistedInject constructor(
         if (appInBackgroundState.isAppInBackground()) {
             Timber.d("App is in background, marking message as seen.")
             markMessageSendingStatusesAsSeen(userId, listOf(messageStatus.messageId))
-            deleteMessageSendingStatuses(userId, listOf(messageStatus.messageId))
         }
         Timber.d("Stopping worker.")
         return Result.success()

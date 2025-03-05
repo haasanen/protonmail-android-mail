@@ -26,6 +26,8 @@ import javax.inject.Inject
 class MarkMessageSendingStatusesAsSeen @Inject constructor(
     private val sendingStatusRepository: SendingStatusRepository
 ) {
-    suspend operator fun invoke(userId: UserId, messageIds: List<MessageId>) =
+    suspend operator fun invoke(userId: UserId, messageIds: List<MessageId>) {
         sendingStatusRepository.markMessageSendingStatusesAsSeen(userId, messageIds)
+        sendingStatusRepository.deleteMessageSendingStatuses(userId, messageIds)
+    }
 }

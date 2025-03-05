@@ -30,7 +30,6 @@ import ch.protonmail.android.mailcommon.domain.sample.UserSample
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcomposer.domain.model.MessageSendingStatus
 import ch.protonmail.android.mailcomposer.domain.model.SendErrorReason
-import ch.protonmail.android.mailcomposer.domain.usecase.DeleteMessageSendingStatuses
 import ch.protonmail.android.mailcomposer.domain.usecase.DiscardDraft
 import ch.protonmail.android.mailcomposer.domain.usecase.MarkMessageSendingStatusesAsSeen
 import ch.protonmail.android.mailcomposer.domain.usecase.ObserveSendingMessagesStatus
@@ -43,9 +42,11 @@ import ch.protonmail.android.mailsettings.domain.usecase.autolock.ShouldPresentP
 import ch.protonmail.android.navigation.model.HomeState
 import ch.protonmail.android.navigation.share.ShareIntentObserver
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
+import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
 import io.mockk.mockkStatic
 import io.mockk.unmockkAll
@@ -104,7 +105,6 @@ class HomeViewModelTest {
 
     private val undoSendMessage = mockk<UndoSendMessage>(relaxUnitFun = true)
     private val markMessageSendingStatusesAsSeen = mockk<MarkMessageSendingStatusesAsSeen>(relaxUnitFun = true)
-    private val deleteMessageSendingStatuses = mockk<DeleteMessageSendingStatuses>(relaxUnitFun = true)
 
     private val homeViewModel by lazy {
         HomeViewModel(
@@ -115,7 +115,6 @@ class HomeViewModelTest {
             discardDraft,
             undoSendMessage,
             markMessageSendingStatusesAsSeen,
-            deleteMessageSendingStatuses,
             observePrimaryUserId,
             shareIntentObserver
         )
@@ -470,15 +469,13 @@ class HomeViewModelTest {
         // Given
         val messageId = MessageIdSample.LocalDraft
         every { networkManager.observe() } returns flowOf()
-        coEvery { markMessageSendingStatusesAsSeen(userId, listOf(messageId)) } returns Unit.right()
-        coEvery { deleteMessageSendingStatuses(userId, listOf(messageId)) } returns Unit.right()
+        coEvery { markMessageSendingStatusesAsSeen(userId, listOf(messageId)) } just Runs
 
         // When
         homeViewModel.confirmMessageAsSeen(messageId)
 
         // Then
         coVerify { markMessageSendingStatusesAsSeen(userId, listOf(messageId)) }
-        coVerify { deleteMessageSendingStatuses(userId, listOf(messageId)) }
     }
 
     @Test
@@ -492,7 +489,6 @@ class HomeViewModelTest {
 
         // Then
         coVerify(exactly = 0) { markMessageSendingStatusesAsSeen(any(), any()) }
-        coVerify(exactly = 0) { deleteMessageSendingStatuses(any(), any()) }
     }
 
 

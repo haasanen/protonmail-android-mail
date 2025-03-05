@@ -30,7 +30,6 @@ import ch.protonmail.android.mailcommon.domain.model.encode
 import ch.protonmail.android.mailcommon.domain.model.isNotEmpty
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcomposer.domain.model.MessageSendingStatus
-import ch.protonmail.android.mailcomposer.domain.usecase.DeleteMessageSendingStatuses
 import ch.protonmail.android.mailcomposer.domain.usecase.DiscardDraft
 import ch.protonmail.android.mailcomposer.domain.usecase.MarkMessageSendingStatusesAsSeen
 import ch.protonmail.android.mailcomposer.domain.usecase.ObserveSendingMessagesStatus
@@ -69,7 +68,6 @@ class HomeViewModel @Inject constructor(
     private val discardDraft: DiscardDraft,
     private val undoSendMessage: UndoSendMessage,
     private val markMessageSendingStatusesAsSeen: MarkMessageSendingStatusesAsSeen,
-    private val deleteMessageSendingStatuses: DeleteMessageSendingStatuses,
     private val observePrimaryUserId: ObservePrimaryUserId,
     shareIntentObserver: ShareIntentObserver
 ) : ViewModel() {
@@ -156,7 +154,6 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             primaryUserId.firstOrNull()?.let {
                 markMessageSendingStatusesAsSeen(it, listOf(messageId))
-                deleteMessageSendingStatuses(it, listOf(messageId))
             } ?: Timber.e("Primary user is not available!")
         }
     }
