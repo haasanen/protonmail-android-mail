@@ -90,8 +90,7 @@ internal fun NavGraphBuilder.addMailbox(
                     navController.navigate(destination)
                 },
                 navigateToComposer = {
-                    showFeatureMissingSnackbar()
-                    // navController.navigate(Destination.Screen.Composer.route)
+                    navController.navigate(Destination.Screen.Composer.route)
                 },
                 openDrawerMenu = openDrawerMenu,
                 showOfflineSnackbar = showOfflineSnackbar,
