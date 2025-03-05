@@ -52,16 +52,13 @@ class RustSendingStatusDataSourceImpl @Inject constructor(
     private var draftSendResultWatcher: DraftSendResultWatcher? = null
     private val sendResultsFlow = MutableSharedFlow<MessageSendingStatus>(1)
 
-
     private val draftSendResultCallback = object : DraftSendResultCallback {
         override fun onNewSendResult(sendResults: List<LocalDraftSendResult>) {
-            Timber.d("rust-draft: draft send result updated: ${sendResults.get(0).toMessageSendingStatus()}")
             for (result in sendResults) {
                 sendResultsFlow.tryEmit(result.toMessageSendingStatus())
             }
         }
     }
-
 
     override suspend fun observeMessageSendingStatus(userId: UserId): Flow<MessageSendingStatus> {
         Timber.d("rust-draft: Observing message sending status...")
