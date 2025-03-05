@@ -98,6 +98,7 @@ fun ComposerScreen(actions: ComposerScreen.Actions, viewModel: ComposerViewModel
     val snackbarHostState = remember { ProtonSnackbarHostState() }
     val bottomSheetType = rememberSaveable { mutableStateOf(BottomSheetType.ChangeSender) }
     val bottomSheetState = rememberModalBottomSheetState()
+    var showBottomSheet by remember { mutableStateOf(false) }
     val attachmentSizeDialogState = remember { mutableStateOf(false) }
     val sendingErrorDialogState = remember { mutableStateOf<String?>(null) }
     val senderChangedNoticeDialogState = remember { mutableStateOf<String?>(null) }
@@ -155,6 +156,9 @@ fun ComposerScreen(actions: ComposerScreen.Actions, viewModel: ComposerViewModel
     }
 
     ProtonModalBottomSheetLayout(
+        showBottomSheet = showBottomSheet,
+        onDismissed = { showBottomSheet = false },
+        dismissOnBack = true,
         sheetContent = bottomSheetHeightConstrainedContent {
             when (bottomSheetType.value) {
                 BottomSheetType.ChangeSender -> ChangeSenderBottomSheetContent(
@@ -358,6 +362,8 @@ fun ComposerScreen(actions: ComposerScreen.Actions, viewModel: ComposerViewModel
         } else {
             bottomSheetState.hide()
         }
+
+        showBottomSheet = show
     }
 
     ConsumableLaunchedEffect(effect = state.closeComposer) {

@@ -36,6 +36,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.testTag
@@ -148,6 +149,8 @@ fun Home(
             type = ProtonSnackbarType.WARNING
         )
     }
+
+    var showBottomSheet by remember { mutableStateOf(false) }
 
     ConsumableLaunchedEffect(state.networkStatusEffect) {
         if (it == NetworkStatus.Disconnected) {
@@ -314,6 +317,7 @@ fun Home(
     LaunchedEffect(onboardingEligibilityState) {
         if (onboardingEligibilityState == OnboardingEligibilityState.Required) {
             bottomSheetState.show()
+            showBottomSheet = true
         }
     }
 
@@ -348,11 +352,13 @@ fun Home(
     }
 
     ProtonModalBottomSheetLayout(
+        showBottomSheet = showBottomSheet,
         sheetState = bottomSheetState,
         sheetContent = bottomSheetHeightConstrainedContent {
             Onboarding(
                 onExitOnboarding = {
                     onboardingStepViewModel.submit(OnboardingStepAction.MarkOnboardingComplete)
+                    showBottomSheet = false
                     scope.launch { bottomSheetState.hide() }
                 }
             )

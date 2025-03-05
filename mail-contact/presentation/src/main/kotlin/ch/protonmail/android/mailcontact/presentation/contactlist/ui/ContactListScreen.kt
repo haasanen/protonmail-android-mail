@@ -100,9 +100,12 @@ fun ContactListScreen(listActions: ContactListScreen.Actions, viewModel: Contact
     }
 
     ProtonModalBottomSheetLayout(
+        showBottomSheet = showBottomSheet,
         sheetState = bottomSheetState,
+        onDismissed = { showBottomSheet = false },
+        dismissOnBack = true,
         sheetContent = bottomSheetHeightConstrainedContent {
-            if (state is ContactListState.Loaded && showBottomSheet) {
+            if (state is ContactListState.Loaded) {
                 when (state.bottomSheetType) {
                     ContactListState.BottomSheetType.Menu -> {
                         ContactBottomSheetContent(
@@ -126,7 +129,6 @@ fun ContactListScreen(listActions: ContactListScreen.Actions, viewModel: Contact
                     }
                 }
             }
-
         }
     ) {
         Scaffold(

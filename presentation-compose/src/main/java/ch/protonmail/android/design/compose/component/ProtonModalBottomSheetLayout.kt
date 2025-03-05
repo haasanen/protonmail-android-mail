@@ -26,14 +26,13 @@ import androidx.compose.material3.ModalBottomSheetProperties
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProtonModalBottomSheetLayout(
+    showBottomSheet: Boolean,
     sheetContent: @Composable ColumnScope.() -> Unit,
     modifier: Modifier = Modifier,
     sheetState: SheetState = rememberModalBottomSheetState(),
@@ -41,18 +40,13 @@ fun ProtonModalBottomSheetLayout(
     dismissOnBack: Boolean,
     content: @Composable () -> Unit
 ) {
-    val coroutineScope = rememberCoroutineScope()
-
     Box(modifier = modifier.fillMaxSize()) {
 
         content()
 
-        if (sheetState.isVisible) {
+        if (showBottomSheet) {
             ModalBottomSheet(
-                onDismissRequest = {
-                    coroutineScope.launch { sheetState.hide() }
-                    onDismissed()
-                },
+                onDismissRequest = onDismissed,
                 sheetState = sheetState,
                 shape = ProtonTheme.shapes.bottomSheet,
                 containerColor = ProtonTheme.colors.backgroundInvertedNorm,
@@ -63,22 +57,3 @@ fun ProtonModalBottomSheetLayout(
         }
     }
 }
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun ProtonModalBottomSheetLayout(
-    sheetContent: @Composable ColumnScope.() -> Unit,
-    modifier: Modifier = Modifier,
-    sheetState: SheetState = rememberModalBottomSheetState(),
-    content: @Composable () -> Unit
-) {
-    ProtonModalBottomSheetLayout(
-        sheetContent = sheetContent,
-        modifier = modifier,
-        sheetState = sheetState,
-        content = content,
-        dismissOnBack = true,
-        onDismissed = { }
-    )
-}
-

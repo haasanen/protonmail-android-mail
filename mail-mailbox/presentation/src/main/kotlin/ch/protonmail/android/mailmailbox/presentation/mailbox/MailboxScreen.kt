@@ -170,9 +170,10 @@ fun MailboxScreen(
     val mailboxState = viewModel.state.collectAsStateWithLifecycle(MailboxViewModel.initialState).value
 
     val mailboxListItems = viewModel.items.collectAsLazyPagingItems()
-    val bottomSheetState =
-        rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    val scope = rememberCoroutineScope()
+
+    val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    var showBottomSheet by remember { mutableStateOf(false) }
+
     val context = LocalContext.current
 
     BackHandler(mailboxState.mailboxListState is MailboxListState.Data.SelectionMode) {
@@ -261,8 +262,15 @@ fun MailboxScreen(
 
         ConsumableLaunchedEffect(effect = it.bottomSheetVisibilityEffect) { bottomSheetEffect ->
             when (bottomSheetEffect) {
-                BottomSheetVisibilityEffect.Hide -> scope.launch { bottomSheetState.hide() }
-                BottomSheetVisibilityEffect.Show -> scope.launch { bottomSheetState.show() }
+                BottomSheetVisibilityEffect.Hide -> {
+                    bottomSheetState.hide()
+                    showBottomSheet = false
+                }
+
+                BottomSheetVisibilityEffect.Show -> {
+                    bottomSheetState.show()
+                    showBottomSheet = true
+                }
             }
         }
     }
@@ -284,6 +292,9 @@ fun MailboxScreen(
     )
 
     ProtonModalBottomSheetLayout(
+        showBottomSheet = showBottomSheet,
+        onDismissed = { showBottomSheet = false },
+        dismissOnBack = true,
         sheetState = bottomSheetState,
         sheetContent = bottomSheetHeightConstrainedContent {
             when (val bottomSheetContentState = mailboxState.bottomSheetState?.contentState) {

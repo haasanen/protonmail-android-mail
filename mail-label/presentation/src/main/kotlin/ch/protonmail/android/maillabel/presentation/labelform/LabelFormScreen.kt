@@ -150,17 +150,18 @@ fun LabelFormScreen(actions: LabelFormScreen.Actions, viewModel: LabelFormViewMo
     }
 
     ProtonModalBottomSheetLayout(
+        showBottomSheet = showBottomSheet,
         sheetState = bottomSheetState,
+        onDismissed = { showBottomSheet = false },
+        dismissOnBack = true,
         sheetContent = bottomSheetHeightConstrainedContent {
-            if (showBottomSheet) {
-                LabelsUpsellingBottomSheet(
-                    actions = UpsellingBottomSheet.Actions.Empty.copy(
-                        onDismiss = { viewModel.submit(LabelFormViewAction.HideUpselling) },
-                        onUpgrade = { message -> actions.showUpsellingSnackbar(message) },
-                        onError = { message -> actions.showUpsellingErrorSnackbar(message) }
-                    )
+            LabelsUpsellingBottomSheet(
+                actions = UpsellingBottomSheet.Actions.Empty.copy(
+                    onDismiss = { viewModel.submit(LabelFormViewAction.HideUpselling) },
+                    onUpgrade = { message -> actions.showUpsellingSnackbar(message) },
+                    onError = { message -> actions.showUpsellingErrorSnackbar(message) }
                 )
-            }
+            )
         }
     ) {
         Scaffold(

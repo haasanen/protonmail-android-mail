@@ -171,17 +171,18 @@ fun FolderFormScreen(
     }
 
     ProtonModalBottomSheetLayout(
+        showBottomSheet = showBottomSheet,
         sheetState = bottomSheetState,
+        onDismissed = { showBottomSheet = false },
+        dismissOnBack = true,
         sheetContent = bottomSheetHeightConstrainedContent {
-            if (showBottomSheet) {
-                FoldersUpsellingBottomSheet(
-                    actions = UpsellingBottomSheet.Actions.Empty.copy(
-                        onDismiss = { viewModel.submit(FolderFormViewAction.HideUpselling) },
-                        onUpgrade = { message -> actions.showUpsellingSnackbar(message) },
-                        onError = { message -> actions.showUpsellingErrorSnackbar(message) }
-                    )
+            FoldersUpsellingBottomSheet(
+                actions = UpsellingBottomSheet.Actions.Empty.copy(
+                    onDismiss = { viewModel.submit(FolderFormViewAction.HideUpselling) },
+                    onUpgrade = { message -> actions.showUpsellingSnackbar(message) },
+                    onError = { message -> actions.showUpsellingErrorSnackbar(message) }
                 )
-            }
+            )
         }
     ) {
         Scaffold(

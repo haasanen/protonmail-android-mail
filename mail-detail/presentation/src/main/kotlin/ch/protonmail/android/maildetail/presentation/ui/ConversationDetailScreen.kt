@@ -138,14 +138,23 @@ fun ConversationDetailScreen(
     val isSystemBackButtonClickEnabled = remember { mutableStateOf(true) }
     val onBackPressedDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
 
+    var showBottomSheet by remember { mutableStateOf(false) }
+
     state.bottomSheetState?.let {
         // Avoids a "jumping" of the bottom sheet
         if (it.isShowEffectWithoutContent()) return@let
 
         ConsumableLaunchedEffect(effect = it.bottomSheetVisibilityEffect) { bottomSheetEffect ->
             when (bottomSheetEffect) {
-                BottomSheetVisibilityEffect.Hide -> scope.launch { bottomSheetState.hide() }
-                BottomSheetVisibilityEffect.Show -> scope.launch { bottomSheetState.show() }
+                BottomSheetVisibilityEffect.Hide -> {
+                    bottomSheetState.hide()
+                    showBottomSheet = false
+                }
+
+                BottomSheetVisibilityEffect.Show -> {
+                    bottomSheetState.show()
+                    showBottomSheet = true
+                }
             }
         }
     }
@@ -193,7 +202,10 @@ fun ConversationDetailScreen(
     )
 
     ProtonModalBottomSheetLayout(
+        showBottomSheet = showBottomSheet,
         sheetState = bottomSheetState,
+        onDismissed = { showBottomSheet = false },
+        dismissOnBack = true,
         sheetContent = bottomSheetHeightConstrainedContent {
             when (val bottomSheetContentState = state.bottomSheetState?.contentState) {
                 is MoveToBottomSheetState -> MoveToBottomSheetContent(
