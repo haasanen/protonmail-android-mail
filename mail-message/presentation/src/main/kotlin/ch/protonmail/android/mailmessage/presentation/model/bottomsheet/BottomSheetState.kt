@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.mailmessage.presentation.model.bottomsheet
 
+import androidx.compose.runtime.Stable
 import ch.protonmail.android.mailcommon.domain.model.Action
 import ch.protonmail.android.mailcommon.domain.model.AvailableActions
 import ch.protonmail.android.mailcommon.presentation.Effect
@@ -32,6 +33,7 @@ import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 import ch.protonmail.android.mailcontact.domain.model.ContactId
 import ch.protonmail.android.maillabel.domain.model.LabelId
+import ch.protonmail.android.mailmessage.presentation.model.ContactActionUiModel
 
 data class BottomSheetState(
     val contentState: BottomSheetContentState?,
@@ -43,14 +45,14 @@ data class BottomSheetState(
 }
 
 sealed interface BottomSheetVisibilityEffect {
-    object Show : BottomSheetVisibilityEffect
-    object Hide : BottomSheetVisibilityEffect
+    data object Show : BottomSheetVisibilityEffect
+    data object Hide : BottomSheetVisibilityEffect
 }
 
 sealed interface BottomSheetContentState
 sealed interface BottomSheetOperation {
-    object Requested : BottomSheetOperation
-    object Dismiss : BottomSheetOperation
+    data object Requested : BottomSheetOperation
+    data object Dismiss : BottomSheetOperation
 }
 
 sealed interface MoveToBottomSheetState : BottomSheetContentState {
@@ -60,7 +62,7 @@ sealed interface MoveToBottomSheetState : BottomSheetContentState {
         val entryPoint: MoveToBottomSheetEntryPoint
     ) : MoveToBottomSheetState
 
-    object Loading : MoveToBottomSheetState
+    data object Loading : MoveToBottomSheetState
 
     sealed interface MoveToBottomSheetOperation : BottomSheetOperation
 
@@ -83,7 +85,7 @@ sealed interface LabelAsBottomSheetState : BottomSheetContentState {
         val entryPoint: LabelAsBottomSheetEntryPoint
     ) : LabelAsBottomSheetState
 
-    object Loading : LabelAsBottomSheetState
+    data object Loading : LabelAsBottomSheetState
 
     sealed interface LabelAsBottomSheetOperation : BottomSheetOperation
 
@@ -133,7 +135,7 @@ sealed interface DetailMoreActionsBottomSheetState : BottomSheetContentState {
         val customizeToolbarActionUiModel: ActionUiModel?
     ) : DetailMoreActionsBottomSheetState
 
-    object Loading : DetailMoreActionsBottomSheetState
+    data object Loading : DetailMoreActionsBottomSheetState
 
     sealed interface DetailMoreActionsBottomSheetOperation : BottomSheetOperation
     sealed interface DetailMoreActionsBottomSheetEvent : DetailMoreActionsBottomSheetOperation {
@@ -161,7 +163,7 @@ sealed interface UpsellingBottomSheetState : BottomSheetContentState {
 }
 
 sealed interface ManageAccountSheetState : BottomSheetContentState {
-    object Requested : ManageAccountSheetState
+    data object Requested : ManageAccountSheetState
 
     sealed interface ManageAccountsBottomSheetOperation : BottomSheetOperation
     sealed interface ManageAccountsBottomSheetEvent : ManageAccountsBottomSheetOperation {
@@ -171,13 +173,20 @@ sealed interface ManageAccountSheetState : BottomSheetContentState {
 
 sealed interface ContactActionsBottomSheetState : BottomSheetContentState {
 
+    @Stable
+    data class ContactActionsGroups(
+        val firstGroup: ImmutableList<ContactActionUiModel>,
+        val secondGroup: ImmutableList<ContactActionUiModel>,
+        val thirdGroup: ImmutableList<ContactActionUiModel>
+    )
+
     data class Data(
         val participant: Participant,
         val avatarUiModel: AvatarUiModel?,
-        val contactId: ContactId?
+        val actions: ContactActionsGroups
     ) : ContactActionsBottomSheetState
 
-    object Loading : ContactActionsBottomSheetState
+    data object Loading : ContactActionsBottomSheetState
 
     sealed interface ContactActionsBottomSheetOperation : BottomSheetOperation
 

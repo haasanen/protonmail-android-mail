@@ -125,6 +125,7 @@ import ch.protonmail.android.mailsettings.domain.usecase.privacy.ObservePrivacyS
 import ch.protonmail.android.mailsettings.domain.usecase.privacy.UpdateLinkConfirmationSetting
 import ch.protonmail.android.testdata.action.ActionUiModelTestData
 import ch.protonmail.android.testdata.avatar.AvatarImageStatesTestData
+import ch.protonmail.android.testdata.contact.ContactActionsGroupsSample
 import ch.protonmail.android.testdata.contact.ContactSample
 import ch.protonmail.android.testdata.conversation.ConversationTestData
 import ch.protonmail.android.testdata.conversation.ConversationUiModelTestData
@@ -1681,7 +1682,7 @@ class ConversationDetailViewModelTest {
                 ContactActionsBottomSheetState.Data(
                     participant = participant,
                     avatarUiModel = avatar,
-                    contactId = ContactSample.Stefano.id
+                    actions = ContactActionsGroupsSample.defaultForContact(participant)
                 )
             )
         )

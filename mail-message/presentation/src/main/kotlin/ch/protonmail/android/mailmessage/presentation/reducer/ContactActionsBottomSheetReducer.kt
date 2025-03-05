@@ -19,8 +19,10 @@
 package ch.protonmail.android.mailmessage.presentation.reducer
 
 import ch.protonmail.android.mailcommon.presentation.Effect
+import ch.protonmail.android.mailmessage.presentation.model.ContactActionUiModel
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.BottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.ContactActionsBottomSheetState
+import kotlinx.collections.immutable.toImmutableList
 import javax.inject.Inject
 
 class ContactActionsBottomSheetReducer @Inject constructor() {
@@ -28,22 +30,40 @@ class ContactActionsBottomSheetReducer @Inject constructor() {
     fun newStateFrom(
         currentState: BottomSheetState?,
         operation: ContactActionsBottomSheetState.ContactActionsBottomSheetOperation
-    ): BottomSheetState? {
+    ): BottomSheetState {
         return when (operation) {
             is ContactActionsBottomSheetState.ContactActionsBottomSheetEvent.ActionData ->
-                operation.toNewBottomSheetState(
-                    currentState
-                )
-            else -> currentState
+                operation.toNewBottomSheetState(currentState)
         }
     }
 
     private fun ContactActionsBottomSheetState.ContactActionsBottomSheetEvent.ActionData.toNewBottomSheetState(
         currentState: BottomSheetState?
     ): BottomSheetState {
+
+        val firstActionGroup = buildList {
+            add(ContactActionUiModel.NewMessage(participant))
+            if (contactId == null) add(ContactActionUiModel.AddContactUiModel(participant))
+        }.toImmutableList()
+
+        val secondActionGroup = buildList {
+            add(ContactActionUiModel.CopyAddress(participant.address))
+            add(ContactActionUiModel.CopyName(participant.name))
+        }.toImmutableList()
+
+        val thirdActionGroup = buildList {
+            add(ContactActionUiModel.Block(participant))
+        }.toImmutableList()
+
         return BottomSheetState(
             contentState = ContactActionsBottomSheetState.Data(
-                participant = participant, avatarUiModel = avatarUiModel, contactId = contactId
+                participant = participant,
+                avatarUiModel = avatarUiModel,
+                actions = ContactActionsBottomSheetState.ContactActionsGroups(
+                    firstActionGroup,
+                    secondActionGroup,
+                    thirdActionGroup
+                )
             ),
             bottomSheetVisibilityEffect = currentState?.bottomSheetVisibilityEffect ?: Effect.empty()
         )

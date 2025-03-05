@@ -22,6 +22,7 @@ import ch.protonmail.android.mailcommon.presentation.sample.ParticipantAvatarSam
 import ch.protonmail.android.mailmessage.domain.model.Participant
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.BottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.ContactActionsBottomSheetState
+import ch.protonmail.android.testdata.contact.ContactActionsGroupsSample
 import ch.protonmail.android.testdata.contact.ContactSample
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -64,7 +65,7 @@ internal class ContactActionsBottomSheetReducerTest(
                     contentState = ContactActionsBottomSheetState.Data(
                         participant = sampleParticipant,
                         avatarUiModel = sampleAvatar,
-                        contactId = sampleContact.id
+                        actions = ContactActionsGroupsSample.defaultForContact(sampleParticipant)
                     )
                 )
             ),
@@ -79,7 +80,7 @@ internal class ContactActionsBottomSheetReducerTest(
                     contentState = ContactActionsBottomSheetState.Data(
                         participant = sampleParticipant,
                         avatarUiModel = sampleAvatar,
-                        contactId = null
+                        actions = ContactActionsGroupsSample.defaultForNoContact(sampleParticipant)
                     )
                 )
             )

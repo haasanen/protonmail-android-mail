@@ -18,39 +18,34 @@
 
 package ch.protonmail.android.mailmessage.presentation.ui.bottomsheet
 
-import androidx.annotation.DrawableRes
-import androidx.annotation.StringRes
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import ch.protonmail.android.mailcommon.presentation.compose.Avatar
-import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
-import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
-import ch.protonmail.android.mailmessage.domain.model.Participant
-import ch.protonmail.android.mailmessage.presentation.R
-import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.ContactActionsBottomSheetState
 import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
-import ch.protonmail.android.design.compose.component.ProtonRawListItem
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyLargeNorm
 import ch.protonmail.android.design.compose.theme.titleLargeNorm
-import ch.protonmail.android.mailcontact.domain.model.ContactId
+import ch.protonmail.android.mailcommon.presentation.compose.Avatar
+import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
+import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
+import ch.protonmail.android.mailmessage.domain.model.Participant
+import ch.protonmail.android.mailmessage.presentation.model.ContactActionUiModel
+import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.ContactActionsBottomSheetState
+import kotlinx.collections.immutable.toImmutableList
 
 @Composable
 fun ContactActionsBottomSheetContent(
@@ -71,47 +66,66 @@ fun ContactActionsBottomSheetContent(
     dataState: ContactActionsBottomSheetState.Data,
     actions: ContactActionsBottomSheetContent.Actions
 ) {
-    Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+    Column(
+        modifier = Modifier
+            .padding(ProtonDimens.Spacing.Large)
+            .verticalScroll(rememberScrollState())
+    ) {
         ContactActionsBottomSheetHeader(
             dataState.participant, dataState.avatarUiModel
         )
-        ContactActionItem(
-            iconRes = R.drawable.ic_proton_squares,
-            textRes = R.string.contact_actions_copy_address,
-            contentDescriptionRes = R.string.contact_actions_copy_address_description,
-            onClick = { actions.onCopyAddressClicked(dataState.participant) }
-        )
-        ContactActionItem(
-            iconRes = R.drawable.ic_proton_squares,
-            textRes = R.string.contact_actions_copy_name,
-            contentDescriptionRes = R.string.contact_actions_copy_name_description,
-            onClick = { actions.onCopyNameClicked(dataState.participant) }
-        )
-        ContactActionItem(
-            iconRes = R.drawable.ic_proton_pen_square,
-            textRes = R.string.contact_actions_new_message,
-            contentDescriptionRes = R.string.contact_actions_new_message_description,
-            onClick = { actions.onNewMessageClicked(dataState.participant) }
-        )
-        dataState.contactId?.let {
-            ContactActionItem(
-                iconRes = R.drawable.ic_proton_user,
-                textRes = R.string.contact_actions_view_contact_details,
-                contentDescriptionRes = R.string.contact_actions_view_contact_details_description,
-                onClick = { actions.onViewContactDetailsClicked(dataState.contactId) }
+
+        ActionGroup(
+            items = dataState.actions.firstGroup,
+            onItemClicked = { action: ContactActionUiModel -> callbackForActions(action, actions) }
+        ) { item, onClick ->
+            ActionGroupItem(
+                icon = item.iconRes,
+                description = stringResource(item.textRes),
+                contentDescription = stringResource(item.descriptionRes),
+                onClick = onClick
             )
-        } ?: ContactActionItem(
-            iconRes = R.drawable.ic_proton_user_plus,
-            textRes = R.string.contact_actions_add_contact,
-            contentDescriptionRes = R.string.contact_actions_add_contact_description,
-            onClick = { actions.onAddContactClicked(dataState.participant) }
-        )
+        }
+
+        Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Large))
+        ActionGroup(
+            items = dataState.actions.secondGroup,
+            onItemClicked = { action: ContactActionUiModel -> callbackForActions(action, actions) }
+        ) { item, onClick ->
+            ActionGroupItem(
+                icon = item.iconRes,
+                description = stringResource(item.textRes),
+                contentDescription = stringResource(item.descriptionRes),
+                onClick = onClick
+            )
+        }
+
+        Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Large))
+        ActionGroup(
+            items = dataState.actions.thirdGroup,
+            onItemClicked = { action: ContactActionUiModel -> callbackForActions(action, actions) }
+        ) { item, onClick ->
+            ActionGroupItem(
+                icon = item.iconRes,
+                description = stringResource(item.textRes),
+                contentDescription = stringResource(item.descriptionRes),
+                onClick = onClick
+            )
+        }
     }
 }
 
+private fun callbackForActions(action: ContactActionUiModel, actions: ContactActionsBottomSheetContent.Actions) =
+    when (action) {
+        is ContactActionUiModel.AddContactUiModel -> actions.onAddContactClicked(action.participant)
+        is ContactActionUiModel.CopyAddress -> actions.onCopyAddressClicked(action.address)
+        is ContactActionUiModel.CopyName -> actions.onCopyNameClicked(action.name)
+        is ContactActionUiModel.NewMessage -> actions.onNewMessageClicked(action.participant)
+        is ContactActionUiModel.Block -> actions.onBlockClicked(action.participant)
+    }
+
 @Composable
 fun ContactActionsBottomSheetHeader(participant: Participant, avatarUiModel: AvatarUiModel?) {
-
     Column(
         modifier = Modifier.fillMaxWidth()
     ) {
@@ -158,64 +172,46 @@ fun ContactActionsBottomSheetHeader(participant: Participant, avatarUiModel: Ava
     }
 }
 
-@Composable
-private fun ContactActionItem(
-    @DrawableRes iconRes: Int,
-    @StringRes textRes: Int,
-    @StringRes contentDescriptionRes: Int,
-    onClick: () -> Unit = {}
-) {
-    ProtonRawListItem(
-        modifier = Modifier
-            .testTag(ContactActionsBottomSheetTestTags.ContactActionsItem)
-            .clickable { onClick() }
-            .padding(vertical = ProtonDimens.Spacing.Large)
-    ) {
-        Icon(
-            painter = painterResource(iconRes),
-            modifier = Modifier
-                .testTag(ContactActionsBottomSheetTestTags.ActionIcon)
-                .padding(horizontal = ProtonDimens.Spacing.Large),
-            contentDescription = stringResource(id = contentDescriptionRes)
-        )
-        Text(
-            modifier = Modifier
-                .testTag(ContactActionsBottomSheetTestTags.ActionText)
-                .weight(1f),
-            text = stringResource(id = textRes),
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis
-        )
-    }
-}
-
 object ContactActionsBottomSheetContent {
 
     data class Actions(
-        val onCopyAddressClicked: (participant: Participant) -> Unit,
-        val onCopyNameClicked: (participant: Participant) -> Unit,
+        val onCopyAddressClicked: (address: String) -> Unit,
+        val onCopyNameClicked: (name: String) -> Unit,
         val onNewMessageClicked: (participant: Participant) -> Unit,
         val onAddContactClicked: (participant: Participant) -> Unit,
-        val onViewContactDetailsClicked: (contactId: ContactId) -> Unit
+        val onBlockClicked: (participant: Participant) -> Unit
     )
 }
 
 @Preview(showBackground = true)
 @Composable
 fun ContactActionsBottomSheetContentPreview() {
+    val participant = Participant(address = "participant@example.com", name = "Participant")
     ProtonTheme {
         ContactActionsBottomSheetContent(
             state = ContactActionsBottomSheetState.Data(
                 participant = Participant(address = "test@protonmail.com", name = "Test User"),
                 avatarUiModel = AvatarUiModel.ParticipantAvatar("TU", "test@protonmail.com", null),
-                contactId = ContactId(id = "1")
+                actions = ContactActionsBottomSheetState.ContactActionsGroups(
+                    firstGroup = listOf(
+                        ContactActionUiModel.CopyAddress(participant.address),
+                        ContactActionUiModel.CopyName(participant.name)
+                    ).toImmutableList(),
+                    secondGroup = listOf(
+                        ContactActionUiModel.AddContactUiModel(participant),
+                        ContactActionUiModel.NewMessage(participant)
+                    ).toImmutableList(),
+                    thirdGroup = listOf(
+                        ContactActionUiModel.Block(participant)
+                    ).toImmutableList()
+                )
             ),
             actions = ContactActionsBottomSheetContent.Actions(
                 onCopyAddressClicked = {},
                 onCopyNameClicked = {},
                 onNewMessageClicked = {},
                 onAddContactClicked = {},
-                onViewContactDetailsClicked = {}
+                onBlockClicked = {}
             )
         )
     }
@@ -224,7 +220,4 @@ fun ContactActionsBottomSheetContentPreview() {
 object ContactActionsBottomSheetTestTags {
 
     const val Avatar = "Avatar"
-    const val ContactActionsItem = "ContactActionsItem"
-    const val ActionIcon = "ActionIcon"
-    const val ActionText = "ActionText"
 }

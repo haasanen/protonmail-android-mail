@@ -308,19 +308,15 @@ fun ConversationDetailScreen(
                     actions = ContactActionsBottomSheetContent.Actions(
                         onCopyAddressClicked = {
                             val message = context.getString(R.string.contact_actions_copy_address_performed)
-                            context.copyTextToClipboard(
-                                label = message,
-                                text = it.address
-                            )
+                            context.copyTextToClipboard(label = message, text = it)
+
                             viewModel.submit(ConversationDetailViewAction.DismissBottomSheet)
                             actions.showSnackbar(message)
                         },
                         onCopyNameClicked = {
                             val message = context.getString(R.string.contact_actions_copy_name_performed)
-                            context.copyTextToClipboard(
-                                label = message,
-                                text = it.name
-                            )
+                            context.copyTextToClipboard(label = message, text = it)
+
                             viewModel.submit(ConversationDetailViewAction.DismissBottomSheet)
                             actions.showSnackbar(message)
                         },
@@ -330,10 +326,9 @@ fun ConversationDetailScreen(
                             actions.showFeatureMissingSnackbar()
                             // actions.onComposeNewMessage(it.address)
                         },
-                        onViewContactDetailsClicked = {
+                        onBlockClicked = {
                             viewModel.submit(ConversationDetailViewAction.DismissBottomSheet)
                             actions.showFeatureMissingSnackbar()
-//                            actions.onViewContactDetails(it)
                         }
                     )
                 )
