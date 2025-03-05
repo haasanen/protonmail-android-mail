@@ -35,7 +35,7 @@ import ch.protonmail.android.mailcommon.datarust.mapper.toDataError
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.Subject
-import ch.protonmail.android.mailcomposer.domain.worker.SendingStatusWorker
+import ch.protonmail.android.composer.data.worker.SendingStatusWorker
 import ch.protonmail.android.mailmessage.data.mapper.toLocalMessageId
 import ch.protonmail.android.mailmessage.data.mapper.toMessageId
 import ch.protonmail.android.mailmessage.domain.model.DraftAction

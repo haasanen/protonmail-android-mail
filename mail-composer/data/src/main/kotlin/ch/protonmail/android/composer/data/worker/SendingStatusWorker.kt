@@ -16,7 +16,7 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailcomposer.domain.worker
+package ch.protonmail.android.composer.data.worker
 
 import android.content.Context
 import androidx.hilt.work.HiltWorker
