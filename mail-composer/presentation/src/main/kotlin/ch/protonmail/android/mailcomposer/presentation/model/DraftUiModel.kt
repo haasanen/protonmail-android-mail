@@ -19,10 +19,8 @@
 package ch.protonmail.android.mailcomposer.presentation.model
 
 import ch.protonmail.android.mailcomposer.domain.model.DraftFields
-import ch.protonmail.android.mailcomposer.domain.model.QuotedHtmlContent
 
 data class DraftUiModel(
     val draftFields: DraftFields,
-    val quotedHtmlContent: QuotedHtmlContent?,
     val draftDisplayBodyUiModel: DraftDisplayBodyUiModel
 )

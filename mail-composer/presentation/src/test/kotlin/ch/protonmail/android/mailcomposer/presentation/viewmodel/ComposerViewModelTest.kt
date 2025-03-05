@@ -33,13 +33,10 @@ import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.DraftFields
 import ch.protonmail.android.mailcomposer.domain.model.MessageExpirationTime
 import ch.protonmail.android.mailcomposer.domain.model.MessagePassword
-import ch.protonmail.android.mailcomposer.domain.model.OriginalHtmlQuote
-import ch.protonmail.android.mailcomposer.domain.model.QuotedHtmlContent
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsBcc
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsCc
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsTo
 import ch.protonmail.android.mailcomposer.domain.model.SenderEmail
-import ch.protonmail.android.mailcomposer.domain.model.StyledHtmlQuote
 import ch.protonmail.android.mailcomposer.domain.model.Subject
 import ch.protonmail.android.mailcomposer.domain.usecase.ClearMessageSendingError
 import ch.protonmail.android.mailcomposer.domain.usecase.CreateDraftForAction
@@ -76,7 +73,6 @@ import ch.protonmail.android.mailcomposer.presentation.ui.ComposerScreen
 import ch.protonmail.android.mailcomposer.presentation.usecase.BuildDraftDisplayBody
 import ch.protonmail.android.mailcomposer.presentation.usecase.FormatMessageSendingError
 import ch.protonmail.android.mailcomposer.presentation.usecase.SortContactsForSuggestions
-import ch.protonmail.android.mailcomposer.presentation.usecase.StyleQuotedHtml
 import ch.protonmail.android.mailcontact.domain.DeviceContactsSuggestionsPrompt
 import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import ch.protonmail.android.mailcontact.domain.model.DeviceContact
@@ -173,7 +169,6 @@ class ComposerViewModelTest {
         coEvery { this@mockk.invoke() } returns GetComposerSenderAddresses.Error.UpgradeToChangeSender.left()
     }
     private val savedStateHandle = mockk<SavedStateHandle>()
-    private val styleQuotedHtml = mockk<StyleQuotedHtml>()
     private val deleteAttachment = mockk<DeleteAttachment>()
     private val observeMessageAttachments = mockk<ObserveMessageAttachments>()
     private val observeMessageSendingError = mockk<ObserveMessageSendingError>()
@@ -223,7 +218,6 @@ class ComposerViewModelTest {
             formatMessageSendingError,
             sendMessageMock,
             networkManagerMock,
-            styleQuotedHtml,
             deleteAttachment,
             observeMessagePassword,
             saveMessageExpirationTime,
@@ -259,8 +253,7 @@ class ComposerViewModelTest {
             expectedDraftBody,
             recipientsTo,
             recipientsCc,
-            recipientsBcc,
-            null
+            recipientsBcc
         )
         expectInputDraftMessageId { messageId }
         expectInitComposerWithExistingDraftSuccess(expectedUserId, messageId) { expectedFields }
@@ -845,13 +838,12 @@ class ComposerViewModelTest {
         expectObserveMessageExpirationTime(expectedUserId, expectedMessageId)
         expectInitComposerWithNewEmptyDraftSucceeds(expectedUserId) {
             DraftFields(
-                subject = expectedSubject,
                 sender = expectedSenderEmail,
+                subject = expectedSubject,
                 body = expectedDraftBody,
                 recipientsTo = recipientsTo,
                 recipientsCc = recipientsCc,
-                recipientsBcc = recipientsBcc,
-                originalHtmlQuote = null
+                recipientsBcc = recipientsBcc
             )
         }
 
@@ -885,13 +877,12 @@ class ComposerViewModelTest {
         expectObserveMessageExpirationTime(expectedUserId, expectedMessageId)
         expectInitComposerWithNewEmptyDraftSucceeds(expectedUserId) {
             DraftFields(
-                subject = expectedSubject,
                 sender = expectedSenderEmail,
+                subject = expectedSubject,
                 body = expectedDraftBody,
                 recipientsTo = recipientsTo,
                 recipientsCc = recipientsCc,
-                recipientsBcc = recipientsBcc,
-                originalHtmlQuote = null
+                recipientsBcc = recipientsBcc
             )
         }
 
@@ -928,13 +919,12 @@ class ComposerViewModelTest {
         expectObserveMessageExpirationTime(expectedUserId, expectedMessageId)
         expectInitComposerWithNewEmptyDraftSucceeds(expectedUserId) {
             DraftFields(
-                subject = expectedSubject,
                 sender = expectedSenderEmail,
+                subject = expectedSubject,
                 body = expectedDraftBody,
                 recipientsTo = recipientsTo,
                 recipientsCc = recipientsCc,
-                recipientsBcc = recipientsBcc,
-                originalHtmlQuote = null
+                recipientsBcc = recipientsBcc
             )
         }
 
@@ -1353,8 +1343,7 @@ class ComposerViewModelTest {
                 emptyList(),
                 expectedDraftFields.subject.value,
                 expectedDisplayBody,
-                expectedDraftFields.body.value,
-                null
+                expectedDraftFields.body.value
             )
             assertEquals(expectedComposerFields, actual.fields)
         }
@@ -1386,8 +1375,7 @@ class ComposerViewModelTest {
             emptyList(),
             expectedDraftFields.subject.value,
             expectedDisplayBody,
-            expectedDraftFields.body.value,
-            null
+            expectedDraftFields.body.value
         )
         assertEquals(expectedComposerFields, actual.fields)
         expectStoreDraftSubjectSucceeds(expectedDraftFields.subject)
@@ -1407,9 +1395,6 @@ class ComposerViewModelTest {
             ) { draftFieldsWithQuotedBody }
             val expectedDisplayBody = DraftDisplayBodyUiModel("<html> ${expectedDraftFields.body.value} </html>")
             expectObservedMessageAttachments(expectedUserId, expectedDraftId)
-            val expectedStyledQuote = expectStyleQuotedHtml(expectedDraftFields.originalHtmlQuote) {
-                StyledHtmlQuote("<styled> ${expectedDraftFields.originalHtmlQuote?.value} </styled>")
-            }
             expectObserveMessageSendingError(expectedUserId, expectedDraftId)
             expectMessagePassword(expectedUserId, expectedDraftId)
             expectNoFileShareVia()
@@ -1427,8 +1412,7 @@ class ComposerViewModelTest {
                 emptyList(),
                 expectedDraftFields.subject.value,
                 expectedDisplayBody,
-                expectedDraftFields.body.value,
-                QuotedHtmlContent(expectedDraftFields.originalHtmlQuote!!, expectedStyledQuote)
+                expectedDraftFields.body.value
             )
             assertEquals(expectedComposerFields, actual.fields)
         }
@@ -1443,13 +1427,10 @@ class ComposerViewModelTest {
         val expectedAction = expectInputDraftAction { DraftAction.Reply(expectedParentId) }
         expectNoInputDraftMessageId()
         val expectedValidEmail = SenderEmail("valid-to-use-instead@proton.me")
-        val expectedDraftFields = expectInitComposerForActionSuccess(
+        expectInitComposerForActionSuccess(
             expectedUserId, expectedAction
         ) { draftFieldsWithQuotedBody }
         expectObservedMessageAttachments(expectedUserId, expectedDraftId)
-        expectStyleQuotedHtml(expectedDraftFields.originalHtmlQuote) {
-            StyledHtmlQuote("<styled> ${expectedDraftFields.originalHtmlQuote?.value} </styled>")
-        }
         expectObserveMessageSendingError(expectedUserId, expectedDraftId)
         expectMessagePassword(expectedUserId, expectedDraftId)
         expectNoFileShareVia()
@@ -1524,8 +1505,7 @@ class ComposerViewModelTest {
             expectedDraftBody,
             recipientsTo,
             recipientsCc,
-            recipientsBcc,
-            null
+            recipientsBcc
         )
         expectNoInputDraftAction()
         expectInitComposerWithExistingDraftSuccess(expectedUserId, expectedDraftId) { expectedFields }
@@ -1566,8 +1546,7 @@ class ComposerViewModelTest {
             expectedDraftBody,
             recipientsTo,
             recipientsCc,
-            recipientsBcc,
-            null
+            recipientsBcc
         )
         expectInputDraftMessageId { messageId }
         expectInitComposerWithExistingDraftSuccess(expectedUserId, messageId) { expectedFields }
@@ -1604,8 +1583,7 @@ class ComposerViewModelTest {
             expectedDraftBody,
             recipientsTo,
             recipientsCc,
-            recipientsBcc,
-            null
+            recipientsBcc
         )
         expectInputDraftMessageId { messageId }
         expectInitComposerWithExistingDraftSuccess(expectedUserId, messageId) { expectedFields }
@@ -1798,13 +1776,12 @@ class ComposerViewModelTest {
             expectObserveMessageExpirationTime(expectedUserId, expectedMessageId)
             expectInitComposerWithNewEmptyDraftSucceeds(expectedUserId) {
                 DraftFields(
-                    subject = expectedSubject,
                     sender = expectedSenderEmail,
+                    subject = expectedSubject,
                     body = expectedDraftBody,
                     recipientsTo = recipientsTo,
                     recipientsCc = recipientsCc,
-                    recipientsBcc = recipientsBcc,
-                    originalHtmlQuote = null
+                    recipientsBcc = recipientsBcc
                 )
             }
             val externalRecipients = expectExternalRecipients(expectedUserId, recipientsTo, recipientsCc, recipientsBcc)
@@ -1842,13 +1819,12 @@ class ComposerViewModelTest {
         expectExternalRecipients(expectedUserId, recipientsTo, recipientsCc, recipientsBcc)
         expectInitComposerWithNewEmptyDraftSucceeds(expectedUserId) {
             DraftFields(
-                subject = expectedSubject,
                 sender = expectedSenderEmail,
+                subject = expectedSubject,
                 body = expectedDraftBody,
                 recipientsTo = recipientsTo,
                 recipientsCc = recipientsCc,
-                recipientsBcc = recipientsBcc,
-                originalHtmlQuote = null
+                recipientsBcc = recipientsBcc
             )
         }
 
@@ -1865,9 +1841,6 @@ class ComposerViewModelTest {
     fun tearDown() {
         unmockkObject(ComposerDraftState.Companion)
     }
-
-    private fun expectStyleQuotedHtml(originalHtmlQuote: OriginalHtmlQuote?, styledHtmlQuote: () -> StyledHtmlQuote) =
-        styledHtmlQuote().also { coEvery { styleQuotedHtml(originalHtmlQuote!!) } returns it }
 
     private fun expectInitComposerForActionSuccess(
         userId: UserId,
@@ -2158,8 +2131,7 @@ class ComposerViewModelTest {
             DraftBody("Decrypted body of this draft"),
             RecipientsTo(listOf(Recipient("you@proton.ch", "Name"))),
             RecipientsCc(emptyList()),
-            RecipientsBcc(emptyList()),
-            null
+            RecipientsBcc(emptyList())
         )
 
         val draftFieldsWithQuotedBody = DraftFields(
@@ -2168,8 +2140,7 @@ class ComposerViewModelTest {
             DraftBody(""),
             RecipientsTo(listOf(Recipient("you@proton.ch", "Name"))),
             RecipientsCc(emptyList()),
-            RecipientsBcc(emptyList()),
-            OriginalHtmlQuote("<blockquote> Quoted html of the parent message </blockquote>")
+            RecipientsBcc(emptyList())
         )
 
         const val BaseInitials = "AB"

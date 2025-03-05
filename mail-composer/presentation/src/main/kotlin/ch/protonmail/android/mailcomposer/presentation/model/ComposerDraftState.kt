@@ -20,7 +20,6 @@ package ch.protonmail.android.mailcomposer.presentation.model
 
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
-import ch.protonmail.android.mailcomposer.domain.model.QuotedHtmlContent
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.Participant
 import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentGroupUiModel
@@ -75,8 +74,8 @@ data class ComposerDraftState(
                 cc = cc,
                 bcc = bcc,
                 subject = "",
-                body = "",
-                displayBody = DraftDisplayBodyUiModel("")
+                displayBody = DraftDisplayBodyUiModel(""),
+                body = ""
             ),
             attachments = AttachmentGroupUiModel(
                 attachments = emptyList()
@@ -118,8 +117,7 @@ data class ComposerFields(
     val bcc: List<RecipientUiModel>,
     val subject: String,
     val displayBody: DraftDisplayBodyUiModel,
-    val body: String,
-    val quotedBody: QuotedHtmlContent? = null
+    val body: String
 )
 
 enum class ContactSuggestionsField {

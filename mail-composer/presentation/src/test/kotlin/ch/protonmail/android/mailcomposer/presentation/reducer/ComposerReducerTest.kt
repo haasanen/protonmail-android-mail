@@ -27,7 +27,6 @@ import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.DraftFields
 import ch.protonmail.android.mailcomposer.domain.model.MessageExpirationTime
 import ch.protonmail.android.mailcomposer.domain.model.MessagePassword
-import ch.protonmail.android.mailcomposer.domain.model.QuotedHtmlContent
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsBcc
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsCc
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsTo
@@ -98,8 +97,7 @@ class ComposerReducerTest(
             DraftBody("Decrypted body of this draft"),
             RecipientsTo(listOf(Recipient("you@proton.ch", "Name"))),
             RecipientsCc(emptyList()),
-            RecipientsBcc(emptyList()),
-            null
+            RecipientsBcc(emptyList())
         )
 
         private val draftFieldsWithoutRecipients = DraftFields(
@@ -108,14 +106,13 @@ class ComposerReducerTest(
             DraftBody("Decrypted body of this draft"),
             RecipientsTo(emptyList()),
             RecipientsCc(emptyList()),
-            RecipientsBcc(emptyList()),
-            null
+            RecipientsBcc(emptyList())
         )
 
         private val draftDisplayBody = DraftDisplayBodyUiModel("<html>draft display body</html>")
-        private val draftUiModel = DraftUiModel(draftFields, null, draftDisplayBody)
+        private val draftUiModel = DraftUiModel(draftFields, draftDisplayBody)
 
-        private val draftUiModelWithoutRecipients = DraftUiModel(draftFieldsWithoutRecipients, null, draftDisplayBody)
+        private val draftUiModelWithoutRecipients = DraftUiModel(draftFieldsWithoutRecipients, draftDisplayBody)
 
         private val EmptyToSubmittableToField = with("a@b.c") {
             TestTransition(
@@ -937,7 +934,6 @@ class ComposerReducerTest(
             bcc: List<RecipientUiModel> = emptyList(),
             draftBody: String = "",
             subject: Subject = Subject(""),
-            quotedHtmlBody: QuotedHtmlContent? = null,
             draftDisplayBodyUiModel: DraftDisplayBodyUiModel = DraftDisplayBodyUiModel(""),
             recipientValidationError: Effect<TextUiModel> = Effect.empty(),
             error: Effect<TextUiModel> = Effect.empty(),
@@ -957,9 +953,8 @@ class ComposerReducerTest(
                 cc = cc,
                 bcc = bcc,
                 subject = subject.value,
-                body = draftBody,
-                quotedBody = quotedHtmlBody,
-                displayBody = draftDisplayBodyUiModel
+                displayBody = draftDisplayBodyUiModel,
+                body = draftBody
             ),
             attachments = AttachmentGroupUiModel(attachments = emptyList()),
             premiumFeatureMessage = Effect.empty(),
@@ -1018,9 +1013,8 @@ class ComposerReducerTest(
                 cc = cc,
                 bcc = bcc,
                 subject = subject.value,
-                body = draftBody,
-                quotedBody = null,
-                displayBody = draftDisplayBodyUiModel
+                displayBody = draftDisplayBodyUiModel,
+                body = draftBody
             ),
             attachments = AttachmentGroupUiModel(attachments = emptyList()),
             premiumFeatureMessage = premiumFeatureMessage,

@@ -54,8 +54,7 @@ object DraftFieldsTestData {
         DraftBody(expectedDraftBody),
         RecipientsTo(recipientsToAddresses.toRecipient()),
         RecipientsCc(recipientsCcAddresses.toRecipient()),
-        RecipientsBcc(recipientsBccAddresses.toRecipient()),
-        null
+        RecipientsBcc(recipientsBccAddresses.toRecipient())
     )
 
     private fun List<String>.toRecipient() = this.map {

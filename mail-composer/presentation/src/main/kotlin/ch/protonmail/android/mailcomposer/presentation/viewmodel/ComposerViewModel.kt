@@ -29,8 +29,6 @@ import ch.protonmail.android.mailcommon.domain.model.hasEmailData
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.DraftFields
-import ch.protonmail.android.mailcomposer.domain.model.OriginalHtmlQuote
-import ch.protonmail.android.mailcomposer.domain.model.QuotedHtmlContent
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsBcc
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsCc
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsTo
@@ -71,7 +69,6 @@ import ch.protonmail.android.mailcomposer.presentation.ui.ComposerScreen
 import ch.protonmail.android.mailcomposer.presentation.usecase.BuildDraftDisplayBody
 import ch.protonmail.android.mailcomposer.presentation.usecase.FormatMessageSendingError
 import ch.protonmail.android.mailcomposer.presentation.usecase.SortContactsForSuggestions
-import ch.protonmail.android.mailcomposer.presentation.usecase.StyleQuotedHtml
 import ch.protonmail.android.mailcontact.domain.DeviceContactsSuggestionsPrompt
 import ch.protonmail.android.mailcontact.domain.usecase.GetContacts
 import ch.protonmail.android.mailcontact.domain.usecase.SearchContacts
@@ -129,7 +126,6 @@ class ComposerViewModel @Inject constructor(
     private val formatMessageSendingError: FormatMessageSendingError,
     private val sendMessage: SendMessage,
     private val networkManager: NetworkManager,
-    private val styleQuotedHtml: StyleQuotedHtml,
     private val deleteAttachment: DeleteAttachment,
     private val observeMessagePassword: ObserveMessagePassword,
     private val saveMessageExpirationTime: SaveMessageExpirationTime,
@@ -247,8 +243,7 @@ class ComposerViewModel @Inject constructor(
             draftBody,
             recipientsTo,
             recipientsCc,
-            recipientsBcc,
-            null
+            recipientsBcc
         )
     }
 
@@ -313,10 +308,7 @@ class ComposerViewModel @Inject constructor(
         val messageBodyWithType = MessageBodyWithType(this.body.value, MimeTypeUiModel.Html)
         val draftDisplayBody = buildDraftDisplayBody(messageBodyWithType)
 
-        val quotedHtml = this.originalHtmlQuote?.let {
-            QuotedHtmlContent(it, styleQuotedHtml(it))
-        }
-        return DraftUiModel(this, quotedHtml, draftDisplayBody)
+        return DraftUiModel(this, draftDisplayBody)
     }
 
     override fun onCleared() {
@@ -501,8 +493,7 @@ class ComposerViewModel @Inject constructor(
         currentDraftBody(),
         currentValidRecipientsTo(),
         currentValidRecipientsCc(),
-        currentValidRecipientsBcc(),
-        currentDraftQuotedHtmlBody()
+        currentValidRecipientsBcc()
     )
 
     private suspend fun onSubjectChanged(action: ComposerAction.SubjectChanged): ComposerOperation =
@@ -532,8 +523,6 @@ class ComposerViewModel @Inject constructor(
     private fun currentSubject() = Subject(state.value.fields.subject)
 
     private fun currentDraftBody() = DraftBody(state.value.fields.body)
-
-    private fun currentDraftQuotedHtmlBody(): OriginalHtmlQuote? = state.value.fields.quotedBody?.original
 
     private fun currentSenderEmail() = SenderEmail(state.value.fields.sender.email)
 

@@ -24,11 +24,10 @@ data class DraftFields(
     val body: DraftBody,
     val recipientsTo: RecipientsTo,
     val recipientsCc: RecipientsCc,
-    val recipientsBcc: RecipientsBcc,
-    val originalHtmlQuote: OriginalHtmlQuote?
+    val recipientsBcc: RecipientsBcc
 ) {
     /**
-     * Returns true if all of the fields (except sender and quoted html body) are blank.
+     * Returns true if all of the fields are blank.
      * Can be used to infer whether these fields should be used to store or discard a draft.
      */
     fun areBlank() = haveBlankSubject() &&
@@ -36,8 +35,6 @@ data class DraftFields(
         body.value.isBlank()
 
     fun haveBlankSubject() = subject.value.isBlank()
-
-    fun haveBlankBody() = body.value.isBlank()
 
     fun haveBlankRecipients() = recipientsTo.value.isEmpty() &&
         recipientsCc.value.isEmpty() &&

@@ -53,8 +53,7 @@ fun LocalDraft.toDraftFields() = DraftFields(
     body = DraftBody(this.body),
     recipientsTo = RecipientsTo(this.recipientsTo.toRecipients()),
     recipientsCc = RecipientsCc(this.recipientsCc.toRecipients()),
-    recipientsBcc = RecipientsBcc(this.recipientsBcc.toRecipients()),
-    originalHtmlQuote = null
+    recipientsBcc = RecipientsBcc(this.recipientsBcc.toRecipients())
 )
 
 fun DraftWrapper.toLocalDraft() = LocalDraft(
