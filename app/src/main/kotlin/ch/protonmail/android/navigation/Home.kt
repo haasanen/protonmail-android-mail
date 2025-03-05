@@ -299,7 +299,7 @@ fun Home(
             is MessageSendingStatus.MessageSentUndoable -> {
                 showMessageSentWithUndoSnackbar(sendingStatus.messageId)
 
-                delay(sendingStatus.timeRemainingForUndo.secsToMillis())
+                delay(sendingStatus.timeRemainingForUndo.inWholeMilliseconds)
                 hideMessageSentSnackbar()
 
                 viewModel.confirmMessageAsSeen(sendingStatus.messageId)
@@ -722,9 +722,6 @@ fun Home(
         }
     }
 }
-
-private const val MILLIS_IN_SECOND = 1000L
-private fun Long.secsToMillis() = this * MILLIS_IN_SECOND
 
 private fun buildSidebarActions(navController: NavHostController, launcherActions: Launcher.Actions) =
     Sidebar.NavigationActions(

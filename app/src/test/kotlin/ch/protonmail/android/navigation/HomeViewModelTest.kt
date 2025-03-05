@@ -66,6 +66,8 @@ import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
+import kotlin.time.DurationUnit
+import kotlin.time.toDuration
 
 class HomeViewModelTest {
 
@@ -239,7 +241,7 @@ class HomeViewModelTest {
         // Given
         every { networkManager.observe() } returns flowOf(NetworkStatus.Unmetered)
         val sendingMessageStatusFlow = MutableStateFlow<MessageSendingStatus>(
-            MessageSendingStatus.MessageSentUndoable(messageId, 5000L)
+            MessageSendingStatus.MessageSentUndoable(messageId, 5000L.toDuration(DurationUnit.MILLISECONDS))
         )
         coEvery { observeSendingMessagesStatus(userId) } returns sendingMessageStatusFlow
 
@@ -248,7 +250,12 @@ class HomeViewModelTest {
             val actualItem = awaitItem()
             val expectedItem = HomeState(
                 networkStatusEffect = Effect.of(NetworkStatus.Unmetered),
-                messageSendingStatusEffect = Effect.of(MessageSendingStatus.MessageSentUndoable(messageId, 5000L)),
+                messageSendingStatusEffect = Effect.of(
+                    MessageSendingStatus.MessageSentUndoable(
+                        messageId,
+                        5000L.toDuration(DurationUnit.MILLISECONDS)
+                    )
+                ),
                 navigateToEffect = Effect.empty(),
                 startedFromLauncher = false
             )

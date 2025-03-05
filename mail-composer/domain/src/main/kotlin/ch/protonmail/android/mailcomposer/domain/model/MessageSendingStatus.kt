@@ -19,13 +19,14 @@
 package ch.protonmail.android.mailcomposer.domain.model
 
 import ch.protonmail.android.mailmessage.domain.model.MessageId
+import kotlin.time.Duration
 
 sealed interface MessageSendingStatus {
     val messageId: MessageId
 
     data class MessageSentUndoable(
         override val messageId: MessageId,
-        val timeRemainingForUndo: Long
+        val timeRemainingForUndo: Duration
     ) : MessageSendingStatus
 
     data class MessageSentFinal(

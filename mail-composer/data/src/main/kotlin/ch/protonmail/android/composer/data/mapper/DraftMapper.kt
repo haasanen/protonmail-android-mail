@@ -44,6 +44,8 @@ import uniffi.proton_mail_uniffi.DraftSaveSendError
 import uniffi.proton_mail_uniffi.DraftSaveSendErrorReason
 import uniffi.proton_mail_uniffi.DraftSendStatus
 import uniffi.proton_mail_uniffi.SingleRecipientEntry
+import kotlin.time.DurationUnit
+import kotlin.time.toDuration
 
 fun LocalDraft.toDraftFields() = DraftFields(
     sender = SenderEmail(this.sender),
@@ -89,15 +91,15 @@ fun Recipient.toSingleRecipientEntry() = SingleRecipientEntry(
 )
 
 fun LocalDraftSendResult.toMessageSendingStatus(): MessageSendingStatus = when (val status = this.error) {
-    is DraftSendStatus.Success -> this.toMessageSendingStatusForSuccess(status.v1)
+    is DraftSendStatus.Success -> this.toMessageSendingStatusForSuccess(status.v1.toLong())
     is DraftSendStatus.Failure -> this.toMessageSendingStatusForFailure(status.v1)
 }
 
-private fun LocalDraftSendResult.toMessageSendingStatusForSuccess(timeRemainingForUndo: ULong): MessageSendingStatus {
-    return if (timeRemainingForUndo > 0u) {
+private fun LocalDraftSendResult.toMessageSendingStatusForSuccess(timeRemainingForUndo: Long): MessageSendingStatus {
+    return if (timeRemainingForUndo > 0) {
         MessageSendingStatus.MessageSentUndoable(
             messageId = this.messageId.toMessageId(),
-            timeRemainingForUndo = timeRemainingForUndo.toLong()
+            timeRemainingForUndo = timeRemainingForUndo.toDuration(DurationUnit.SECONDS)
         )
     } else {
         MessageSendingStatus.MessageSentFinal(this.messageId.toMessageId())
