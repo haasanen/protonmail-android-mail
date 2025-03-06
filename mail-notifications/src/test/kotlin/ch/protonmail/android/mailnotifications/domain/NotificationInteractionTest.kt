@@ -59,12 +59,6 @@ internal class NotificationInteractionTest(
                 messageId = DummyMessageId,
                 action = null,
                 expectedInteraction = NotificationInteraction.SingleTap(DummyId, DummyMessageId)
-            ),
-            TestInput(
-                userId = DummyId,
-                messageId = DummyMessageId,
-                action = DummyAction,
-                expectedInteraction = NotificationInteraction.ReplyActionTap(DummyId, DummyMessageId)
             )
         )
 

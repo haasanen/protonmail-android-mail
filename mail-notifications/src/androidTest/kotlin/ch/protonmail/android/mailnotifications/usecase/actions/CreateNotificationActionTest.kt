@@ -37,41 +37,33 @@ internal class CreateNotificationActionTest {
     private val context: Context
         get() = InstrumentationRegistry.getInstrumentation().context
 
-    private val notificationsDeepLinkHelper = mockk<NotificationsDeepLinkHelper>()
-    private val createNotificationAction = CreateNotificationAction(context, notificationsDeepLinkHelper)
+    private val createNotificationAction = CreateNotificationAction(context)
 
     @Test
-    fun moveToArchiveNotificationActionRequiresAuthentication() {
+    fun moveToArchiveActionHasCorrectTitle() {
         // When
         val result = createNotificationAction(archivePayloadData)
 
         // Then
         assertEquals("Archive", result.title)
-        assertTrue(result.isAuthenticationRequired)
     }
 
     @Test
-    fun moveToTrashNotificationActionRequiresAuthentication() {
+    fun moveToTrashActionHasCorrectTitle() {
         // When
         val result = createNotificationAction(trashPayloadData)
 
         // Then
         assertEquals("Trash", result.title)
-        assertTrue(result.isAuthenticationRequired)
     }
 
     @Test
-    fun replyNotificationActionRequiresAuthentication() {
-        // Given
-        val mockedIntent = Intent(Intent.ACTION_VIEW, Uri.EMPTY, context, this::class.java)
-        every { notificationsDeepLinkHelper.buildReplyToDeepLinkIntent(any(), any()) } returns mockedIntent
-
+    fun markReadActionHasCorrectTitle() {
         // When
-        val result = createNotificationAction(replyPayloadData)
+        val result = createNotificationAction(markReadPayloadData)
 
         // Then
-        assertEquals("Reply", result.title)
-        assertTrue(result.isAuthenticationRequired)
+        assertEquals("Mark read", result.title)
     }
 
     private companion object {
@@ -84,6 +76,6 @@ internal class CreateNotificationActionTest {
             action = LocalNotificationAction.MoveTo.Archive
         )
         val trashPayloadData = archivePayloadData.copy(action = LocalNotificationAction.MoveTo.Trash)
-        val replyPayloadData = archivePayloadData.copy(action = LocalNotificationAction.Reply)
+        val markReadPayloadData = archivePayloadData.copy(action = LocalNotificationAction.MarkAsRead)
     }
 }
