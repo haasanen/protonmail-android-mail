@@ -19,8 +19,6 @@
 package ch.protonmail.android.composer.data.wrapper
 
 import uniffi.proton_mail_uniffi.Draft
-import uniffi.proton_mail_uniffi.Id
-import uniffi.proton_mail_uniffi.OptIdProtonResult
 import uniffi.proton_mail_uniffi.VoidDraftSaveSendResult
 
 class DraftWrapper(private val rustDraft: Draft) {
@@ -37,12 +35,8 @@ class DraftWrapper(private val rustDraft: Draft) {
 
     fun recipientsBcc(): ComposerRecipientListWrapper = ComposerRecipientListWrapper(rustDraft.bccRecipients())
 
-    suspend fun messageId(): Id? {
-        return when (val id = rustDraft.messageId()) {
-            is OptIdProtonResult.Ok -> id.v1
-            else -> null
-        }
-    }
+    suspend fun messageId() = rustDraft.messageId()
+
     suspend fun save(): VoidDraftSaveSendResult = rustDraft.save()
 
     suspend fun send(): VoidDraftSaveSendResult = rustDraft.send()

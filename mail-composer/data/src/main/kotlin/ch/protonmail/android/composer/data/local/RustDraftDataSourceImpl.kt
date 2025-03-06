@@ -48,6 +48,7 @@ import kotlinx.coroutines.flow.flowOf
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.ComposerRecipientValidationCallback
+import uniffi.proton_mail_uniffi.DraftMessageIdResult
 import uniffi.proton_mail_uniffi.VoidDraftSaveSendResult
 import javax.inject.Inject
 
@@ -189,7 +190,18 @@ class RustDraftDataSourceImpl @Inject constructor(
             return
         }
 
-        val messageId = rustDraftWrapper?.messageId()?.toMessageId()
+        val messageId = when (val messageIdResult = rustDraftWrapper?.messageId()) {
+            is DraftMessageIdResult.Ok -> messageIdResult.v1?.toMessageId()
+            is DraftMessageIdResult.Error -> {
+                Timber.e("rust-draft: Failed to get messageId due to error: ${messageIdResult.v1}")
+                null
+            }
+            null -> {
+                Timber.e("rust-draft: messageId() returned null.")
+                null
+            }
+        }
+
         if (messageId == null) {
             Timber.e("rust-draft: Trying to start sending status worker with null messageId; Failing.")
             return

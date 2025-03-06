@@ -28,6 +28,7 @@ sealed interface SendErrorReason {
         data object MessageDoesNotExist : SendErrorReason
         data object MessageIsNotADraft : SendErrorReason
         data object MessageAlreadySent : SendErrorReason
+        data object MissingAttachmentUploads : SendErrorReason
     }
 
     sealed interface ErrorWithMessage : SendErrorReason {

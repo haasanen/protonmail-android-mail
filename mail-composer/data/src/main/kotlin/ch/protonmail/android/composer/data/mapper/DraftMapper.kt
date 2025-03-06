@@ -139,6 +139,7 @@ fun DraftSaveSendErrorReason.toSendErrorReason(): SendErrorReason = when (this) 
     DraftSaveSendErrorReason.MessageDoesNotExist -> SendErrorReason.ErrorNoMessage.MessageDoesNotExist
     DraftSaveSendErrorReason.MessageIsNotADraft -> SendErrorReason.ErrorNoMessage.MessageIsNotADraft
     DraftSaveSendErrorReason.MessageAlreadySent -> SendErrorReason.ErrorNoMessage.MessageAlreadySent
+    DraftSaveSendErrorReason.MissingAttachmentUploads -> SendErrorReason.ErrorNoMessage.MissingAttachmentUploads
 
     is DraftSaveSendErrorReason.AddressDoesNotHavePrimaryKey ->
         SendErrorReason.ErrorWithMessage.AddressDoesNotHavePrimaryKey(v1)
@@ -157,6 +158,7 @@ fun DraftSaveSendErrorReason.toSendErrorReason(): SendErrorReason = when (this) 
 
     is DraftSaveSendErrorReason.PackageError ->
         SendErrorReason.ErrorWithMessage.PackageError(v1)
+
 }
 
 @MissingRustApi

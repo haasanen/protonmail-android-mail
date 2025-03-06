@@ -26,7 +26,7 @@ import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
 import uniffi.proton_mail_uniffi.DraftSendResultCallback
 import uniffi.proton_mail_uniffi.DraftSendResultWatcher
-import uniffi.proton_mail_uniffi.NewDraftSendResultWatcherResult
+import uniffi.proton_mail_uniffi.NewDraftSendWatcherResult
 import uniffi.proton_mail_uniffi.newDraftSendWatcher
 import javax.inject.Inject
 
@@ -37,8 +37,8 @@ class CreateRustDraftSendWatcher @Inject constructor() {
         callback: DraftSendResultCallback
     ): Either<DataError, DraftSendResultWatcher> {
         return when (val result = newDraftSendWatcher(session.getRustUserSession(), callback)) {
-            is NewDraftSendResultWatcherResult.Error -> result.v1.toDataError().left()
-            is NewDraftSendResultWatcherResult.Ok -> result.v1.right()
+            is NewDraftSendWatcherResult.Error -> result.v1.toDataError().left()
+            is NewDraftSendWatcherResult.Ok -> result.v1.right()
         }
     }
 }
