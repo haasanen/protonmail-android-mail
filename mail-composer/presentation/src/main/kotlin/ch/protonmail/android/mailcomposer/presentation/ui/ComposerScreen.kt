@@ -190,10 +190,6 @@ fun ComposerScreen(actions: ComposerScreen.Actions, viewModel: ComposerViewModel
             modifier = Modifier.testTag(ComposerTestTags.RootItem),
             topBar = {
                 ComposerTopBar(
-                    attachmentsCount = state.attachments.attachments.size,
-                    onAddAttachmentsClick = {
-                        viewModel.submit(ComposerAction.OnAddAttachments)
-                    },
                     onCloseComposerClick = {
                         viewModel.submit(ComposerAction.OnCloseComposer)
                     },
@@ -213,6 +209,10 @@ fun ComposerScreen(actions: ComposerScreen.Actions, viewModel: ComposerViewModel
                     onSetExpirationTimeClick = {
                         bottomSheetType.value = BottomSheetType.SetExpirationTime
                         viewModel.submit(ComposerAction.OnSetExpirationTimeRequested)
+                    },
+                    attachmentsCount = state.attachments.attachments.size,
+                    onAddAttachmentsClick = {
+                        viewModel.submit(ComposerAction.OnAddAttachments)
                     }
                 )
             },
