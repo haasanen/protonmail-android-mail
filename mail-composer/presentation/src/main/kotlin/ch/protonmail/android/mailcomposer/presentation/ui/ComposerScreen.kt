@@ -118,6 +118,15 @@ fun ComposerScreen(actions: ComposerScreen.Actions, viewModel: ComposerViewModel
         mutableStateOf(SendExpiringMessageDialogState(false, emptyList()))
     }
 
+    val bottomBarActions = ComposerBottomBar.Actions(
+        onAddAttachmentsClick = { viewModel.submit(ComposerAction.OnAddAttachments) },
+        onSetMessagePasswordClick = actions.onSetMessagePasswordClick,
+        onSetExpirationTimeClick = {
+            bottomSheetType.value = BottomSheetType.SetExpirationTime
+            viewModel.submit(ComposerAction.OnSetExpirationTimeRequested)
+        }
+    )
+
     val imagePicker = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetMultipleContents(),
         onResult = { uris ->
@@ -205,15 +214,8 @@ fun ComposerScreen(actions: ComposerScreen.Actions, viewModel: ComposerViewModel
                     senderEmail = SenderEmail(state.fields.sender.email),
                     isMessagePasswordSet = state.isMessagePasswordSet,
                     isMessageExpirationTimeSet = state.messageExpiresIn != Duration.ZERO,
-                    onSetMessagePasswordClick = actions.onSetMessagePasswordClick,
-                    onSetExpirationTimeClick = {
-                        bottomSheetType.value = BottomSheetType.SetExpirationTime
-                        viewModel.submit(ComposerAction.OnSetExpirationTimeRequested)
-                    },
                     attachmentsCount = state.attachments.attachments.size,
-                    onAddAttachmentsClick = {
-                        viewModel.submit(ComposerAction.OnAddAttachments)
-                    }
+                    actions = bottomBarActions
                 )
             },
             snackbarHost = {

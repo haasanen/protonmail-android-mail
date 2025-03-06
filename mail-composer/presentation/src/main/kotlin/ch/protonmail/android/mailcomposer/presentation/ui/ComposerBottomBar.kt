@@ -58,10 +58,8 @@ fun ComposerBottomBar(
     senderEmail: SenderEmail,
     isMessagePasswordSet: Boolean,
     isMessageExpirationTimeSet: Boolean,
-    onSetMessagePasswordClick: (MessageId, SenderEmail) -> Unit,
-    onSetExpirationTimeClick: () -> Unit,
     attachmentsCount: Int,
-    onAddAttachmentsClick: () -> Unit,
+    actions: ComposerBottomBar.Actions,
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier.fillMaxWidth()) {
@@ -73,9 +71,9 @@ fun ComposerBottomBar(
                 .padding(horizontal = ProtonDimens.Spacing.Small),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            AttachmentsButton(attachmentsCount = attachmentsCount, onClick = onAddAttachmentsClick)
-            AddPasswordButton(draftId, senderEmail, isMessagePasswordSet, onSetMessagePasswordClick)
-            SetExpirationButton(isMessageExpirationTimeSet, onSetExpirationTimeClick)
+            AttachmentsButton(attachmentsCount = attachmentsCount, onClick = actions.onAddAttachmentsClick)
+            AddPasswordButton(draftId, senderEmail, isMessagePasswordSet, actions.onSetMessagePasswordClick)
+            SetExpirationButton(isMessageExpirationTimeSet, actions.onSetExpirationTimeClick)
         }
     }
 }
@@ -195,5 +193,24 @@ private fun BottomBarButtonCheckmark(modifier: Modifier = Modifier) {
             contentDescription = NO_CONTENT_DESCRIPTION,
             tint = ProtonTheme.colors.iconInverted
         )
+    }
+}
+
+object ComposerBottomBar {
+
+    data class Actions(
+        val onSetMessagePasswordClick: (MessageId, SenderEmail) -> Unit,
+        val onSetExpirationTimeClick: () -> Unit,
+        val onAddAttachmentsClick: () -> Unit
+    ) {
+
+        companion object {
+
+            val Empty = Actions(
+                onSetMessagePasswordClick = { _, _ -> },
+                onSetExpirationTimeClick = {},
+                onAddAttachmentsClick = {}
+            )
+        }
     }
 }
