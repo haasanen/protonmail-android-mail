@@ -221,17 +221,28 @@ fun ComposerScreen(actions: ComposerScreen.Actions, viewModel: ComposerViewModel
                         .alpha(.5f)
                 ) { ProtonCenteredProgress() }
             } else {
+
                 val coroutineScope = rememberCoroutineScope()
                 val scrollState = rememberScrollState()
+                var previousWebViewHeight = remember { 0 }
 
-                var previousWebviewHeight = remember { 0 }
+                @SuppressWarnings("MagicNumber")
                 fun onEditorSizeChanged(height: Int) {
+                    val sizeDelta = (height - previousWebViewHeight).coerceAtLeast(0)
+                    previousWebViewHeight = height
+
+                    Timber.d("composerscroll: current scroll ${scrollState.value}")
+                    Timber.d("composerscroll: size delta $sizeDelta")
+
+                    if (sizeDelta > 100) {
+                        Timber.d("composerscroll: that's too much scrolling. I'd rather stay.")
+                        return
+                    }
+
                     coroutineScope.launch {
-                        val sizeDelta = (height - previousWebviewHeight).coerceAtLeast(0)
-                        Timber.d("composer: current scroll ${scrollState.value}")
-                        Timber.d("composer: size delta $sizeDelta")
-                        scrollState.scrollTo(scrollState.value + sizeDelta)
-                        previousWebviewHeight = height
+                        val value = scrollState.value + sizeDelta
+                        Timber.d("composerscroll: required scroll value $value")
+                        scrollState.scrollTo(value)
                     }
                 }
 

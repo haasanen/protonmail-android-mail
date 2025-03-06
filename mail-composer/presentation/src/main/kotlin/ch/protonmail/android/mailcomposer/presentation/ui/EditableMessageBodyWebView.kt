@@ -35,6 +35,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.onSizeChanged
 import ch.protonmail.android.mailcommon.presentation.compose.pxToDp
 import ch.protonmail.android.mailcomposer.presentation.model.DraftDisplayBodyUiModel
 import ch.protonmail.android.mailmessage.domain.model.AttachmentId
@@ -48,8 +49,10 @@ import ch.protonmail.android.mailmessage.presentation.model.ViewModePreference
 import ch.protonmail.android.mailmessage.presentation.ui.showInDarkMode
 import ch.protonmail.android.mailmessage.presentation.ui.showInLightMode
 import com.google.accompanist.web.AccompanistWebViewClient
+import com.google.accompanist.web.LoadingState
 import com.google.accompanist.web.WebView
 import com.google.accompanist.web.rememberWebViewStateWithHTMLData
+import timber.log.Timber
 
 // Needed to allow "remember" on javascript interface
 @SuppressLint("JavascriptInterface")
@@ -109,7 +112,15 @@ fun EditableMessageBodyWebView(
     }
 
     fun onWebviewResize() {
-        webViewActions.onWebviewSizeChanged(webView?.height ?: 0)
+        if (state.loadingState != LoadingState.Finished) {
+            Timber.d("composerscroll: WebView resized while loading state not finished. Skipping.")
+            return
+        }
+        Timber.d("composerscroll: WebView resized being processed...")
+
+        val size = webView?.height ?: 0
+        Timber.d("composerscroll: Emitting webview size: $size")
+        webViewActions.onWebviewSizeChanged(size)
     }
 
     val javascriptCallback = remember {
@@ -172,8 +183,6 @@ object EditableMessageBodyWebView {
         val onWebviewSizeChanged: (size: Int) -> Unit
     )
 }
-
-private const val WEB_PAGE_CONTENT_LOAD_TIMEOUT = 250L
 
 // Max constraint for WebView height. If the height is greater
 // than this value, we will not fix the height of the WebView or it will crash.
