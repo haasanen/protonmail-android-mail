@@ -124,7 +124,7 @@ private fun OnboardingScreen(
     Column(
         modifier = Modifier
             .testTag(OnboardingScreenTestTags.RootItem)
-            .background(ProtonTheme.colors.backgroundNorm)
+            .background(ProtonTheme.colors.backgroundInvertedNorm)
     ) {
 
         HorizontalPager(

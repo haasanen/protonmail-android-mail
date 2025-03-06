@@ -34,7 +34,7 @@ import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 @Composable
 internal fun OnboardingIndexDots(pagerState: PagerState, viewCount: Int) {
     val highlightedDotColor = ProtonTheme.colors.brandNorm
-    val defaultDotColor = ProtonTheme.colors.shade20
+    val defaultDotColor = ProtonTheme.colors.shade40
 
     Row {
         Canvas(
