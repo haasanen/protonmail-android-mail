@@ -118,13 +118,27 @@ fun ComposerScreen(actions: ComposerScreen.Actions, viewModel: ComposerViewModel
         mutableStateOf(SendExpiringMessageDialogState(false, emptyList()))
     }
 
+    val featureMissingSnackbarMessage = stringResource(id = R.string.feature_coming_soon)
+    val scope = rememberCoroutineScope()
+    fun showFeatureMissingSnackbar() = scope.launch {
+        snackbarHostState.showSnackbar(
+            message = featureMissingSnackbarMessage,
+            type = ProtonSnackbarType.NORM
+        )
+    }
+
     val bottomBarActions = ComposerBottomBar.Actions(
         onAddAttachmentsClick = { viewModel.submit(ComposerAction.OnAddAttachments) },
-        onSetMessagePasswordClick = actions.onSetMessagePasswordClick,
+        onSetMessagePasswordClick = { _, _ ->
+            showFeatureMissingSnackbar()
+            // actions.onSetMessagePasswordClick()
+        },
         onSetExpirationTimeClick = {
-            bottomSheetType.value = BottomSheetType.SetExpirationTime
-            viewModel.submit(ComposerAction.OnSetExpirationTimeRequested)
-        }
+            // bottomSheetType.value = BottomSheetType.SetExpirationTime
+            // viewModel.submit(ComposerAction.OnSetExpirationTimeRequested)
+            showFeatureMissingSnackbar()
+        },
+        onDiscardDraftClicked = { showFeatureMissingSnackbar() }
     )
 
     val imagePicker = rememberLauncherForActivityResult(
@@ -291,7 +305,8 @@ fun ComposerScreen(actions: ComposerScreen.Actions, viewModel: ComposerViewModel
                             onWebViewPositioned = { boundsInWindow ->
                                 val visibleBounds = boundsInWindow.intersect(columnBounds)
                                 visibleWebViewHeight = visibleBounds.height.coerceAtLeast(0f).toDp(localDensity)
-                            }
+                            },
+                            showFeatureMissingSnackbar = { showFeatureMissingSnackbar() }
                         ),
                         contactSuggestions = state.contactSuggestions,
                         areContactSuggestionsExpanded = state.areContactSuggestionsExpanded
@@ -462,6 +477,7 @@ fun ComposerScreen(actions: ComposerScreen.Actions, viewModel: ComposerViewModel
     BackHandler(true) {
         viewModel.submit(ComposerAction.OnCloseComposer)
     }
+
 }
 
 @Composable
@@ -480,7 +496,8 @@ private fun buildActions(
     setBottomSheetType: (BottomSheetType) -> Unit,
     onWebViewMeasuresChanged: (WebViewMeasures) -> Unit,
     onHeaderPositioned: (Rect, Float) -> Unit,
-    onWebViewPositioned: (Rect) -> Unit
+    onWebViewPositioned: (Rect) -> Unit,
+    showFeatureMissingSnackbar: () -> Unit
 ): ComposerFormActions = ComposerFormActions(
     onToggleRecipients = onToggleRecipients,
     onFocusChanged = onFocusChanged,
@@ -497,8 +514,9 @@ private fun buildActions(
         viewModel.submit(ComposerAction.DraftBodyChanged(DraftBody(it)))
     },
     onChangeSender = {
-        setBottomSheetType(BottomSheetType.ChangeSender)
-        viewModel.submit(ComposerAction.ChangeSenderRequested)
+        showFeatureMissingSnackbar()
+        // setBottomSheetType(BottomSheetType.ChangeSender)
+        // viewModel.submit(ComposerAction.ChangeSenderRequested)
     },
     onWebViewMeasuresChanged = onWebViewMeasuresChanged,
     onHeaderPositioned = onHeaderPositioned,

@@ -26,6 +26,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -74,6 +75,8 @@ fun ComposerBottomBar(
             AttachmentsButton(attachmentsCount = attachmentsCount, onClick = actions.onAddAttachmentsClick)
             AddPasswordButton(draftId, senderEmail, isMessagePasswordSet, actions.onSetMessagePasswordClick)
             SetExpirationButton(isMessageExpirationTimeSet, actions.onSetExpirationTimeClick)
+            Spacer(modifier = Modifier.weight(1f))
+            DiscardDraftButton(actions.onDiscardDraftClicked)
         }
     }
 }
@@ -119,6 +122,19 @@ private fun AttachmentsNumber(attachmentsCount: Int, modifier: Modifier = Modifi
         Text(
             text = attachmentsCount.toString(),
             style = ProtonTheme.typography.labelLargeInverted
+        )
+    }
+}
+
+@Composable
+private fun DiscardDraftButton(onDiscardDraftClicked: () -> Unit) {
+    IconButton(
+        onClick = onDiscardDraftClicked
+    ) {
+        Icon(
+            painter = painterResource(id = R.drawable.ic_proton_trash_cross),
+            contentDescription = stringResource(id = R.string.composer_button_discard_draft),
+            tint = ProtonTheme.colors.iconHint
         )
     }
 }
@@ -201,7 +217,8 @@ object ComposerBottomBar {
     data class Actions(
         val onSetMessagePasswordClick: (MessageId, SenderEmail) -> Unit,
         val onSetExpirationTimeClick: () -> Unit,
-        val onAddAttachmentsClick: () -> Unit
+        val onAddAttachmentsClick: () -> Unit,
+        val onDiscardDraftClicked: () -> Unit
     ) {
 
         companion object {
@@ -209,7 +226,8 @@ object ComposerBottomBar {
             val Empty = Actions(
                 onSetMessagePasswordClick = { _, _ -> },
                 onSetExpirationTimeClick = {},
-                onAddAttachmentsClick = {}
+                onAddAttachmentsClick = {},
+                onDiscardDraftClicked = {}
             )
         }
     }
