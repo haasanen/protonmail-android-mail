@@ -51,7 +51,8 @@ class NotificationProvider @Inject constructor(
             context = context,
             channelId = EMAIL_CHANNEL_ID,
             channelName = R.string.email_notification_channel_name,
-            channelDescription = R.string.email_notification_channel_description
+            channelDescription = R.string.email_notification_channel_description,
+            importance = NotificationManager.IMPORTANCE_HIGH
         )
 
         // New logins
