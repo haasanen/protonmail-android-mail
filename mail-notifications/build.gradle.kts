@@ -63,6 +63,7 @@ kapt {
 
 dependencies {
     kapt(libs.bundles.app.annotationProcessors)
+    compileOnly(libs.proton.rust.core)
 
     api(platform(libs.firebase.bom))
     api(libs.firebase.messaging) {
@@ -77,6 +78,7 @@ dependencies {
     implementation(project(":mail-pagination:domain"))
     implementation(project(":mail-message:domain"))
     implementation(project(":mail-settings:domain"))
+    implementation(project(":mail-session:data-rust"))
     implementation(project(":mail-session:domain"))
 
     implementation(libs.androidx.core.ktx)
@@ -90,6 +92,7 @@ dependencies {
 
     testImplementation(project(":test:test-data"))
     testImplementation(libs.bundles.test)
+    testImplementation(libs.proton.rust.core)
     androidTestImplementation(libs.bundles.test.androidTest)
     androidTestImplementation(project(":test:annotations"))
 }
