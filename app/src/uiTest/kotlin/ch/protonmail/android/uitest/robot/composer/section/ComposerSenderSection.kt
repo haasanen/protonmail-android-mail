@@ -23,7 +23,7 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
 import ch.protonmail.android.mailcomposer.presentation.ui.ComposerTestTags
-import ch.protonmail.android.mailcomposer.presentation.ui.PrefixedEmailSelectorTestTags
+import ch.protonmail.android.mailcomposer.presentation.ui.SenderEmailWithSelectorTestTags
 import ch.protonmail.android.test.ksp.annotations.AttachTo
 import ch.protonmail.android.test.ksp.annotations.VerifiesOuter
 import ch.protonmail.android.uitest.robot.ComposeSectionRobot
@@ -40,7 +40,7 @@ internal class ComposerSenderSection : ComposeSectionRobot() {
     private val parent = rootItem.child { hasTestTag(ComposerTestTags.FromSender) }
 
     private val text = parent.child {
-        hasTestTag(PrefixedEmailSelectorTestTags.TextField)
+        hasTestTag(SenderEmailWithSelectorTestTags.TextField)
     }
     private val changeSenderButton = parent.child {
         hasTestTag(ComposerTestTags.ChangeSenderButton)
