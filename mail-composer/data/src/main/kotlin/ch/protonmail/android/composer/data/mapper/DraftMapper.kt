@@ -26,11 +26,11 @@ import ch.protonmail.android.mailcommon.datarust.mapper.toDataError
 import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.DraftFields
-import ch.protonmail.android.mailcomposer.domain.model.SendErrorReason
 import ch.protonmail.android.mailcomposer.domain.model.MessageSendingStatus
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsBcc
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsCc
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsTo
+import ch.protonmail.android.mailcomposer.domain.model.SendErrorReason
 import ch.protonmail.android.mailcomposer.domain.model.SenderEmail
 import ch.protonmail.android.mailcomposer.domain.model.Subject
 import ch.protonmail.android.mailmessage.data.mapper.toLocalMessageId
@@ -140,6 +140,7 @@ fun DraftSaveSendErrorReason.toSendErrorReason(): SendErrorReason = when (this) 
     DraftSaveSendErrorReason.MessageIsNotADraft -> SendErrorReason.ErrorNoMessage.MessageIsNotADraft
     DraftSaveSendErrorReason.MessageAlreadySent -> SendErrorReason.ErrorNoMessage.MessageAlreadySent
     DraftSaveSendErrorReason.MissingAttachmentUploads -> SendErrorReason.ErrorNoMessage.MissingAttachmentUploads
+    DraftSaveSendErrorReason.AttachmentUpload -> SendErrorReason.ErrorNoMessage.AttachmentUpload
 
     is DraftSaveSendErrorReason.AddressDoesNotHavePrimaryKey ->
         SendErrorReason.ErrorWithMessage.AddressDoesNotHavePrimaryKey(v1)
@@ -158,7 +159,6 @@ fun DraftSaveSendErrorReason.toSendErrorReason(): SendErrorReason = when (this) 
 
     is DraftSaveSendErrorReason.PackageError ->
         SendErrorReason.ErrorWithMessage.PackageError(v1)
-
 }
 
 @MissingRustApi
