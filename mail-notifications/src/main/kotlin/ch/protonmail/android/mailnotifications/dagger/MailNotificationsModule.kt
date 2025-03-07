@@ -30,7 +30,6 @@ import ch.protonmail.android.mailnotifications.data.repository.NotificationToken
 import ch.protonmail.android.mailnotifications.data.repository.NotificationTokenRepositoryImpl
 import ch.protonmail.android.mailnotifications.domain.handler.AccountStateAwareNotificationHandler
 import ch.protonmail.android.mailnotifications.domain.handler.NotificationHandler
-import ch.protonmail.android.mailnotifications.domain.handler.SessionAwareNotificationHandler
 import ch.protonmail.android.mailnotifications.domain.proxy.NotificationManagerCompatProxy
 import ch.protonmail.android.mailnotifications.domain.proxy.NotificationManagerCompatProxyImpl
 import ch.protonmail.android.mailnotifications.permissions.NotificationsPermissionsOrchestrator
@@ -109,10 +108,5 @@ object MailNotificationsModule {
         fun bindAccountStateAwareNotificationHandler(
             handlerImpl: AccountStateAwareNotificationHandler
         ): NotificationHandler
-
-        @Binds
-        @Singleton
-        @IntoSet
-        fun bindSessionAwareNotificationHandler(handlerImpl: SessionAwareNotificationHandler): NotificationHandler
     }
 }
