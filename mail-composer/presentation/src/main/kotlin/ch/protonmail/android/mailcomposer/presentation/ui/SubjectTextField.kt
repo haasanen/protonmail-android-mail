@@ -18,26 +18,36 @@
 
 package ch.protonmail.android.mailcomposer.presentation.ui
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.mailcomposer.presentation.R
-import ch.protonmail.android.uicomponents.text.defaultTextFieldColors
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.bodyLargeNorm
+import ch.protonmail.android.design.compose.theme.bodyMediumNorm
+import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 
 @Composable
 internal fun SubjectTextField(
@@ -56,28 +66,49 @@ internal fun SubjectTextField(
         }
     }
 
-    TextField(
-        value = text,
-        onValueChange = {
-            text = it
-            onSubjectChange(it.text)
-            userUpdated = true
-        },
-        modifier = modifier,
-        textStyle = ProtonTheme.typography.bodyLargeNorm,
-        colors = TextFieldDefaults.defaultTextFieldColors(),
-        maxLines = 3,
-        keyboardOptions = KeyboardOptions.Default.copy(
-            capitalization = KeyboardCapitalization.Sentences,
-            imeAction = ImeAction.Next
-        ),
-        placeholder = {
-            Text(
-                modifier = Modifier.testTag(ComposerTestTags.SubjectPlaceholder),
-                text = stringResource(R.string.subject_placeholder),
-                color = ProtonTheme.colors.textHint,
-                style = ProtonTheme.typography.bodyLargeNorm
+    Row(
+        modifier = modifier
+            .height(MailDimens.Composer.FormFieldsRowHeight)
+            .padding(start = ProtonDimens.Spacing.Large)
+            .fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Start
+    ) {
+        Text(
+            text = stringResource(R.string.subject_prefix),
+            modifier = Modifier.wrapContentWidth(),
+            color = ProtonTheme.colors.textHint,
+            style = ProtonTheme.typography.bodyMedium
+        )
+        Spacer(modifier = Modifier.width(ProtonDimens.Spacing.Standard))
+        BasicTextField(
+            value = text,
+            onValueChange = {
+                text = it
+                onSubjectChange(it.text)
+                userUpdated = true
+            },
+            modifier = Modifier
+                .padding(horizontal = 0.dp)
+                .weight(1f),
+            textStyle = ProtonTheme.typography.bodyMediumNorm,
+            maxLines = 3,
+            keyboardOptions = KeyboardOptions.Default.copy(
+                capitalization = KeyboardCapitalization.Sentences,
+                imeAction = ImeAction.Next
             )
-        }
-    )
+        )
+    }
 }
+
+@Preview
+@Composable
+private fun SubjectTextFieldPreview() {
+    ProtonTheme {
+        SubjectTextField(
+            initialValue = "Test subject",
+            onSubjectChange = {}
+        )
+    }
+}
+
