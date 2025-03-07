@@ -21,7 +21,7 @@
   <string name="to_prefix">Za:</string>
   <string name="cc_prefix">Kp:</string>
   <string name="bcc_prefix">Skp:</string>
-  <string name="subject_placeholder">Zadeva</string>
+  <string name="subject_prefix">Zadeva</string>
   <string name="compose_message_placeholder">Sestavi sporočilo</string>
   <string name="close_composer_content_description">Zapri urejevalnik</string>
   <string name="send_message_content_description">Pošlji sporočilo</string>

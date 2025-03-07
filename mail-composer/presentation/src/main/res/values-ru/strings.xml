@@ -21,7 +21,7 @@
   <string name="to_prefix">Кому:</string>
   <string name="cc_prefix">Копия:</string>
   <string name="bcc_prefix">Скрытая копия:</string>
-  <string name="subject_placeholder">Тема</string>
+  <string name="subject_prefix">Тема</string>
   <string name="compose_message_placeholder">Написать письмо</string>
   <string name="close_composer_content_description">Закрыть редактор писем</string>
   <string name="send_message_content_description">Отправить сообщение</string>

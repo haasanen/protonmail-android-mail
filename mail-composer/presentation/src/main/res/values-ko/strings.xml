@@ -21,7 +21,7 @@
   <string name="to_prefix">받는 사람:</string>
   <string name="cc_prefix">참조:</string>
   <string name="bcc_prefix">숨은참조:</string>
-  <string name="subject_placeholder">제목</string>
+  <string name="subject_prefix">제목</string>
   <string name="compose_message_placeholder">이메일 작성</string>
   <string name="close_composer_content_description">작성기 닫기</string>
   <string name="send_message_content_description">메시지 보내기</string>

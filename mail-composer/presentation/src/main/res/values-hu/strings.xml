@@ -21,7 +21,7 @@
   <string name="to_prefix">Címzett:</string>
   <string name="cc_prefix">Másolat:</string>
   <string name="bcc_prefix">Titkos másolat:</string>
-  <string name="subject_placeholder">Tárgy</string>
+  <string name="subject_prefix">Tárgy</string>
   <string name="compose_message_placeholder">E-mail írása</string>
   <string name="close_composer_content_description">Szerkesztő bezárása</string>
   <string name="send_message_content_description">Üzenet küldése</string>
