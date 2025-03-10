@@ -364,7 +364,10 @@ fun Home(
             )
         },
         dismissOnBack = false,
-        onDismissed = { onboardingStepViewModel.submit(OnboardingStepAction.MarkOnboardingComplete) }
+        onDismissed = {
+            showBottomSheet = false
+            onboardingStepViewModel.submit(OnboardingStepAction.MarkOnboardingComplete)
+        }
     ) {
         ModalNavigationDrawer(
             drawerState = drawerState,
