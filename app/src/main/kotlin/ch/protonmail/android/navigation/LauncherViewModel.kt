@@ -128,10 +128,10 @@ class LauncherViewModel @Inject constructor(
     }
 
     fun onSignIn(userId: UserId?) = viewModelScope.launch {
-        val username = userId?.let {
-            userSessionRepository.getAccount(it)?.name
+        val address = userId?.let {
+            userSessionRepository.getAccount(it)?.primaryAddress
         }
-        authOrchestrator.startLoginWorkflow(LoginInput(username = username))
+        authOrchestrator.startLoginWorkflow(LoginInput(username = address))
     }
 
     private fun onSwitchToAccount(userId: UserId) = viewModelScope.launch {
