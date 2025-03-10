@@ -21,14 +21,15 @@ package ch.protonmail.android.mailnotifications.domain.handler
 import ch.protonmail.android.mailcommon.domain.coroutines.AppScope
 import ch.protonmail.android.mailnotifications.data.repository.NotificationTokenRepository
 import ch.protonmail.android.mailnotifications.domain.usecase.DismissEmailNotificationsForUser
+import ch.protonmail.android.mailsession.domain.model.AccountState
+import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
-import me.proton.core.account.domain.entity.AccountState
-import me.proton.core.accountmanager.domain.AccountManager
 import javax.inject.Inject
 
 internal class AccountStateAwareNotificationHandler @Inject constructor(
-    private val accountManager: AccountManager,
+    private val userSessionRepository: UserSessionRepository,
     private val notificationTokenRepository: NotificationTokenRepository,
     private val dismissEmailNotificationsForUser: DismissEmailNotificationsForUser,
     @AppScope private val coroutineScope: CoroutineScope
@@ -36,14 +37,22 @@ internal class AccountStateAwareNotificationHandler @Inject constructor(
 
     override fun handle() {
         coroutineScope.launch {
-            accountManager.onAccountStateChanged(true).collect {
-                when (it.state) {
-                    AccountState.Ready -> notificationTokenRepository.bindTokenToUser(it.userId)
-                    AccountState.Disabled,
-                    AccountState.Removed -> dismissEmailNotificationsForUser(it.userId)
-                    else -> Unit
+            userSessionRepository
+                .observeAccounts()
+                .distinctUntilChanged()
+                .collect { accounts ->
+                    accounts.forEach { account ->
+                        when (account.state) {
+                            AccountState.NotReady,
+                            AccountState.Disabled -> dismissEmailNotificationsForUser(account.userId)
+
+                            AccountState.Ready -> notificationTokenRepository.bindTokenToUser(account.userId)
+
+                            AccountState.TwoPasswordNeeded,
+                            AccountState.TwoFactorNeeded -> Unit
+                        }
+                    }
                 }
-            }
         }
     }
 }
