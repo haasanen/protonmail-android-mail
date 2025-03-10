@@ -30,6 +30,7 @@ import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.transform
 import me.proton.core.domain.entity.UserId
+import me.proton.core.network.domain.session.SessionId
 
 interface UserSessionRepository {
 
@@ -40,6 +41,8 @@ interface UserSessionRepository {
     fun observePrimaryUserId(): Flow<UserId?>
 
     suspend fun getAccount(userId: UserId): Account?
+
+    suspend fun getUserId(sessionId: SessionId): UserId?
 
     suspend fun deleteAccount(userId: UserId)
 

@@ -34,6 +34,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
 import me.proton.android.core.account.domain.usecase.ObserveStoredAccounts
 import me.proton.core.domain.entity.UserId
+import me.proton.core.network.domain.session.SessionId
 import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -70,6 +71,14 @@ class UserSessionRepositoryImpl @Inject constructor(
         .distinctUntilChanged()
 
     override suspend fun getAccount(userId: UserId): Account? = getStoredAccount(userId).getOrNull()?.toAccount()
+
+    override suspend fun getUserId(sessionId: SessionId): UserId? {
+        val session = mailSession.getSessions().getOrNull()?.firstOrNull {
+            it.sessionId() == sessionId.id
+        }
+
+        return session?.let { UserId(it.userId()) }
+    }
 
     override suspend fun deleteAccount(userId: UserId) {
         mailSession.deleteAccount(userId.toLocalUserId())

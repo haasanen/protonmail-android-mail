@@ -31,6 +31,7 @@ import uniffi.proton_mail_uniffi.MailSessionGetAccountResult
 import uniffi.proton_mail_uniffi.MailSessionGetAccountSessionsResult
 import uniffi.proton_mail_uniffi.MailSessionGetAccountsResult
 import uniffi.proton_mail_uniffi.MailSessionGetPrimaryAccountResult
+import uniffi.proton_mail_uniffi.MailSessionGetSessionsResult
 import uniffi.proton_mail_uniffi.MailSessionUserContextFromSessionResult
 import uniffi.proton_mail_uniffi.MailSessionWatchAccountsResult
 import uniffi.proton_mail_uniffi.StoredAccount
@@ -79,6 +80,11 @@ class MailSessionWrapper(private val mailSession: MailSession) {
             is MailSessionGetAccountSessionsResult.Error -> result.v1.toDataError().left()
             is MailSessionGetAccountSessionsResult.Ok -> result.v1.right()
         }
+
+    suspend fun getSessions(): Either<DataError, List<StoredSession>> = when (val result = mailSession.getSessions()) {
+        is MailSessionGetSessionsResult.Error -> result.v1.toDataError().left()
+        is MailSessionGetSessionsResult.Ok -> result.v1.right()
+    }
 
     suspend fun userContextFromSession(session: StoredSession): Either<DataError, MailUserSessionWrapper> =
         when (val result = mailSession.userContextFromSession(session, null)) {
