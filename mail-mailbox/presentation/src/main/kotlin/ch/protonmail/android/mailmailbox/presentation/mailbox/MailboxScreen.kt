@@ -348,7 +348,10 @@ fun MailboxScreen(
                     )
                 }
 
-                is ManageAccountSheetState -> AccountsSwitcherBottomSheetScreen(onEvent = onEvent)
+                is ManageAccountSheetState -> AccountsSwitcherBottomSheetScreen(onEvent = {
+                    onEvent(it)
+                    showBottomSheet = false
+                })
 
                 else -> Unit
             }
