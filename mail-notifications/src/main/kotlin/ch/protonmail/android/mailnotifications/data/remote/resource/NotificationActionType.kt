@@ -16,30 +16,10 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailnotifications.domain.model
+package ch.protonmail.android.mailnotifications.data.remote.resource
 
-internal sealed interface LocalPushNotificationData {
+internal sealed class NotificationActionType(val action: String) {
 
-    data class UserPushData(
-        val userId: String,
-        val userEmail: String
-    )
-
-    data class NewLoginPushData(
-        val sender: PushNotificationSenderData,
-        val content: String,
-        val url: String
-    ) : LocalPushNotificationData
-
-    sealed interface MessagePushData : LocalPushNotificationData {
-        data class NewMessagePushData(
-            val sender: PushNotificationSenderData,
-            val messageId: String,
-            val content: String
-        ) : MessagePushData
-
-        data class MessageReadPushData(
-            val messageId: String
-        ) : MessagePushData
-    }
+    data object Created : NotificationActionType("message_created")
+    data object Touched : NotificationActionType("message_touched")
 }
