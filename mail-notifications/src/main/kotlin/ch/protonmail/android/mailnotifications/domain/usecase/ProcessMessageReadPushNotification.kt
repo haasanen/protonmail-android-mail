@@ -19,7 +19,7 @@
 package ch.protonmail.android.mailnotifications.domain.usecase
 
 import androidx.work.ListenableWorker
-import ch.protonmail.android.mailnotifications.domain.model.LocalPushNotificationData
+import ch.protonmail.android.mailnotifications.domain.model.LocalPushNotification
 import ch.protonmail.android.mailnotifications.domain.proxy.NotificationManagerCompatProxy
 import javax.inject.Inject
 
@@ -27,7 +27,7 @@ internal class ProcessMessageReadPushNotification @Inject constructor(
     private val notificationManagerCompatProxy: NotificationManagerCompatProxy
 ) {
 
-    operator fun invoke(notificationData: LocalPushNotificationData.MessageRead): ListenableWorker.Result {
+    operator fun invoke(notificationData: LocalPushNotification.Message.MessageRead): ListenableWorker.Result {
         val notificationId = notificationData.pushData.messageId.hashCode()
 
         notificationManagerCompatProxy.run {

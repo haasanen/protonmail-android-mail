@@ -20,21 +20,21 @@ package ch.protonmail.android.mailnotifications.domain.usecase.content
 
 import ch.protonmail.android.mailcommon.data.worker.Enqueuer
 import ch.protonmail.android.mailnotifications.data.local.ProcessPushNotificationDataWorker
-import me.proton.core.accountmanager.domain.SessionManager
+import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import me.proton.core.network.domain.session.SessionId
 import javax.inject.Inject
 
 internal class ProcessPushNotificationMessage @Inject constructor(
     private val enqueuer: Enqueuer,
-    private val sessionManager: SessionManager
+    private val userSessionRepository: UserSessionRepository
 ) {
 
     suspend operator fun invoke(sessionId: SessionId, encryptedMessage: String) {
-        val userId = sessionManager.getUserId(sessionId) ?: return
+        val userId = userSessionRepository.getUserId(sessionId) ?: return
 
         enqueuer.enqueue<ProcessPushNotificationDataWorker>(
             userId,
-            ProcessPushNotificationDataWorker.params(sessionId.id, encryptedMessage)
+            ProcessPushNotificationDataWorker.params(userId.id, sessionId.id, encryptedMessage)
         )
     }
 }

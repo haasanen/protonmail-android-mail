@@ -26,9 +26,9 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.work.ListenableWorker
 import ch.protonmail.android.mailcommon.presentation.system.NotificationProvider
 import ch.protonmail.android.mailnotifications.bigText
+import ch.protonmail.android.mailnotifications.domain.model.LocalPushNotification
 import ch.protonmail.android.mailnotifications.domain.model.LocalPushNotificationData
-import ch.protonmail.android.mailnotifications.domain.model.NewLoginPushData
-import ch.protonmail.android.mailnotifications.domain.model.UserPushData
+import ch.protonmail.android.mailnotifications.domain.model.PushNotificationSenderData
 import ch.protonmail.android.mailnotifications.domain.proxy.NotificationManagerCompatProxy
 import ch.protonmail.android.mailnotifications.domain.usecase.ProcessNewLoginPushNotification
 import ch.protonmail.android.mailnotifications.summaryText
@@ -63,9 +63,11 @@ internal class ProcessNewLoginPushNotificationTest {
         notificationManagerCompatProxy
     )
 
-    private val userData = UserPushData(NotificationUserId, NotificationEmail)
-    private val pushData = NewLoginPushData(NotificationSender, NotificationSummary, NotificationUrl)
-    private val data = LocalPushNotificationData.Login(userData, pushData)
+    private val userData = LocalPushNotificationData.UserPushData(NotificationUserId, NotificationEmail)
+    private val sender = PushNotificationSenderData(senderName = "Proton Mail", senderAddress = "", senderGroup = "")
+    private val pushData =
+        LocalPushNotificationData.NewLoginPushData(sender, NotificationSummary, NotificationUrl)
+    private val data = LocalPushNotification.Login(userData, pushData)
 
     @Before
     fun setup() {

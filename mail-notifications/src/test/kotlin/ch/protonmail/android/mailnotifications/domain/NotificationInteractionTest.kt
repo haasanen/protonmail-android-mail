@@ -39,7 +39,6 @@ internal class NotificationInteractionTest(
 
         private const val DummyId = "userId"
         private const val DummyMessageId = "messageId"
-        private const val DummyAction = "action"
 
         private val inputs = listOf(
             TestInput(

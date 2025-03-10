@@ -19,8 +19,8 @@
 package ch.protonmail.android.mailnotifications.domain.usecase
 
 import androidx.work.ListenableWorker
-import ch.protonmail.android.mailnotifications.domain.model.LocalPushNotificationData
-import ch.protonmail.android.mailnotifications.domain.model.MessageReadPushData
+import ch.protonmail.android.mailnotifications.domain.model.LocalPushNotification
+import ch.protonmail.android.mailnotifications.domain.model.LocalPushNotificationData.MessagePushData
 import ch.protonmail.android.mailnotifications.domain.proxy.NotificationManagerCompatProxy
 import io.mockk.confirmVerified
 import io.mockk.every
@@ -82,7 +82,7 @@ internal class ProcessMessageReadPushNotificationTest {
     private companion object {
 
         const val MessageId = "messageId"
-        val NotificationData = LocalPushNotificationData.MessageRead(MessageReadPushData(messageId = MessageId))
+        val NotificationData = LocalPushNotification.Message.MessageRead(MessagePushData.MessageReadPushData(MessageId))
         val NotificationId = MessageId.hashCode()
         const val NotificationGroupKey = "notificationGroupKey"
     }

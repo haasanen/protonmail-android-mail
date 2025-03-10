@@ -21,15 +21,16 @@ package ch.protonmail.android.mailnotifications.data.remote.fcm
 import ch.protonmail.android.mailcommon.domain.coroutines.AppScope
 import ch.protonmail.android.mailnotifications.data.repository.NotificationTokenRepository
 import ch.protonmail.android.mailnotifications.domain.usecase.content.ProcessPushNotificationMessage
+import ch.protonmail.android.mailsession.domain.model.AccountState
+import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import me.proton.core.account.domain.entity.isReady
-import me.proton.core.accountmanager.domain.AccountManager
 import me.proton.core.network.domain.session.SessionId
 import me.proton.core.util.kotlin.CoroutineScopeProvider
 import javax.inject.Inject
@@ -51,7 +52,7 @@ internal class PMFirebaseMessagingService : FirebaseMessagingService() {
     lateinit var appScope: CoroutineScope
 
     @Inject
-    lateinit var accountManager: AccountManager
+    lateinit var userSessionRepository: UserSessionRepository
 
     private var onNewTokenJob: Job? = null
 
@@ -62,11 +63,16 @@ internal class PMFirebaseMessagingService : FirebaseMessagingService() {
         onNewTokenJob = scopeProvider.GlobalDefaultSupervisedScope.launch {
             notificationTokenRepository.storeToken(token)
 
-            accountManager.getAccounts()
-                .first()
-                .filter { it.isReady() }
-                .map { it.userId }
-                .forEach { notificationTokenRepository.bindTokenToUser(it) }
+            userSessionRepository
+                .observeAccounts()
+                .distinctUntilChanged()
+                .map { accounts -> accounts.filter { it.state == AccountState.Ready } }
+                .map { readyAccounts -> readyAccounts.map { it.userId } }
+                .collect { userIds ->
+                    userIds.forEach { userId ->
+                        notificationTokenRepository.bindTokenToUser(userId)
+                    }
+                }
         }
     }
 

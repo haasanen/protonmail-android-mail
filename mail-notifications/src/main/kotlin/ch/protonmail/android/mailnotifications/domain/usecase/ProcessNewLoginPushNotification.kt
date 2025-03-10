@@ -22,12 +22,11 @@ import java.time.Instant
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
+import androidx.core.net.toUri
 import androidx.work.ListenableWorker
 import ch.protonmail.android.mailcommon.presentation.system.NotificationProvider
 import ch.protonmail.android.mailnotifications.R
-import ch.protonmail.android.mailnotifications.data.local.ProcessPushNotificationDataWorkerUtils
-import ch.protonmail.android.mailnotifications.domain.model.LocalPushNotificationData
+import ch.protonmail.android.mailnotifications.domain.model.LocalPushNotification
 import ch.protonmail.android.mailnotifications.domain.proxy.NotificationManagerCompatProxy
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
@@ -38,20 +37,18 @@ internal class ProcessNewLoginPushNotification @Inject constructor(
     private val notificationManagerCompatProxy: NotificationManagerCompatProxy
 ) {
 
-    operator fun invoke(notificationData: LocalPushNotificationData.Login): ListenableWorker.Result {
+    operator fun invoke(notificationData: LocalPushNotification.Login): ListenableWorker.Result {
         val userData = notificationData.userData
         val pushData = notificationData.pushData
 
-        val notificationTitle = pushData.sender
+        val notificationTitle = pushData.sender.senderName
         val notificationUserAddress = userData.userEmail
         val notificationContent = pushData.content
         val notificationUrl = pushData.url
         val notificationGroup = userData.userId
-        val groupNotificationId = ProcessPushNotificationDataWorkerUtils.getNewLoginNotificationGroupForUserId(
-            userData.userId
-        ).hashCode()
+        val groupNotificationId = notificationUrlForUserId(userData.userId).hashCode()
 
-        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(notificationUrl))
+        val intent = Intent(Intent.ACTION_VIEW, notificationUrl.toUri())
 
         val contentPendingIntent = PendingIntent.getActivities(
             context,
@@ -86,4 +83,6 @@ internal class ProcessNewLoginPushNotification @Inject constructor(
 
         return ListenableWorker.Result.success()
     }
+
+    private fun notificationUrlForUserId(userId: String) = "$userId-openurl"
 }

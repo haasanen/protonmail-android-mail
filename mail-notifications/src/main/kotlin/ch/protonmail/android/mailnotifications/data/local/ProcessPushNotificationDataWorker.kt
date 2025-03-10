@@ -23,156 +23,71 @@ import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
-import ch.protonmail.android.mailnotifications.R
-import ch.protonmail.android.mailnotifications.data.local.ProcessPushNotificationDataWorkerUtils.isMessageReadNotification
-import ch.protonmail.android.mailnotifications.data.local.ProcessPushNotificationDataWorkerUtils.isNewLoginNotification
-import ch.protonmail.android.mailnotifications.data.local.ProcessPushNotificationDataWorkerUtils.isNewMessageNotification
-import ch.protonmail.android.mailnotifications.data.remote.resource.PushNotificationData
-import ch.protonmail.android.mailnotifications.data.remote.resource.PushNotificationSender
-import ch.protonmail.android.mailcommon.domain.AppInBackgroundState
-import ch.protonmail.android.mailnotifications.domain.model.LocalPushNotificationData
-import ch.protonmail.android.mailnotifications.domain.model.MessageReadPushData
-import ch.protonmail.android.mailnotifications.domain.model.NewLoginPushData
-import ch.protonmail.android.mailnotifications.domain.model.NewMessagePushData
-import ch.protonmail.android.mailnotifications.domain.model.UserPushData
+import arrow.core.getOrElse
+import ch.protonmail.android.mailnotifications.data.usecase.DecryptPushNotificationContent
+import ch.protonmail.android.mailnotifications.domain.model.LocalPushNotification
 import ch.protonmail.android.mailnotifications.domain.usecase.ProcessMessageReadPushNotification
 import ch.protonmail.android.mailnotifications.domain.usecase.ProcessNewLoginPushNotification
 import ch.protonmail.android.mailnotifications.domain.usecase.ProcessNewMessagePushNotification
-import ch.protonmail.android.mailnotifications.domain.usecase.content.DecryptNotificationContent
-import ch.protonmail.android.mailsettings.domain.usecase.notifications.GetExtendedNotificationsSetting
-import ch.protonmail.android.mailsettings.domain.usecase.privacy.ObserveBackgroundSyncSetting
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
-import kotlinx.coroutines.flow.first
-import me.proton.core.accountmanager.domain.SessionManager
 import me.proton.core.domain.entity.UserId
 import me.proton.core.network.domain.session.SessionId
-import me.proton.core.user.domain.UserManager
-import timber.log.Timber
 
 @HiltWorker
 internal class ProcessPushNotificationDataWorker @AssistedInject constructor(
     @Assisted context: Context,
     @Assisted workerParameters: WorkerParameters,
-    private val sessionManager: SessionManager,
-    private val decryptNotificationContent: DecryptNotificationContent,
-    private val appInBackgroundState: AppInBackgroundState,
-    private val userManager: UserManager,
-    private val getNotificationsExtendedPreference: GetExtendedNotificationsSetting,
-    private val observeBackgroundSyncSetting: ObserveBackgroundSyncSetting,
+    private val decryptPushNotificationContent: DecryptPushNotificationContent,
     private val processNewMessagePushNotification: ProcessNewMessagePushNotification,
     private val processNewLoginPushNotification: ProcessNewLoginPushNotification,
     private val processMessageReadPushNotification: ProcessMessageReadPushNotification
 ) : CoroutineWorker(context, workerParameters) {
 
     override suspend fun doWork(): Result {
+        val userId = inputData.getString(KeyPushNotificationUserId)
         val sessionId = inputData.getString(KeyPushNotificationUid)
         val encryptedNotification = inputData.getString(KeyPushNotificationEncryptedMessage)
 
-        return if (sessionId.isNullOrEmpty() || encryptedNotification.isNullOrEmpty()) {
-            Result.failure(
-                workDataOf(KeyProcessPushNotificationDataError to "Input data is missing")
-            )
+        return if (userId.isNullOrEmpty() || sessionId.isNullOrEmpty() || encryptedNotification.isNullOrEmpty()) {
+            Result.failure(workDataOf(KeyProcessPushNotificationDataError to "Input data is missing"))
         } else {
-            processNotification(applicationContext, SessionId(sessionId), encryptedNotification)
+            processNotification(userId, sessionId, encryptedNotification)
         }
     }
 
     private suspend fun processNotification(
-        context: Context,
-        sessionId: SessionId,
-        encryptedNotification: String
+        notificationUserId: String,
+        notificationSessionId: String,
+        encryptedPayload: String
     ): Result {
-        val notificationUserId = sessionManager.getUserId(sessionId)
-            ?: return Result.failure(
-                workDataOf(KeyProcessPushNotificationDataError to "User is unknown or inactive")
-            )
+        val userId = UserId(notificationUserId)
+        val sessionId = SessionId(notificationSessionId)
 
-        val userId = UserId(notificationUserId.id)
-        val user = userManager.getUser(userId)
-        val decryptedNotification = decryptNotificationContent(userId, encryptedNotification).getOrNull()
-            ?: return Result.failure(
-                workDataOf(KeyProcessPushNotificationDataError to "Unable to decrypt notification content.")
-            )
-
-        val data = decryptedNotification.value.data ?: return Result.failure(
-            workDataOf(KeyProcessPushNotificationDataError to "Push Notification data is null.")
-        )
-
-        Timber.d("Decrypted data: $decryptedNotification")
-
-        val hasBackgroundSyncEnabled = observeBackgroundSyncSetting().first().getOrNull()?.isEnabled ?: true
-
-        return when {
-            isNewMessageNotification(decryptedNotification.value) &&
-                appInBackgroundState.isAppInBackground() &&
-                hasBackgroundSyncEnabled -> {
-                val notificationData = data.toLocalEmailNotificationData(context, userId.id, user.email ?: "")
-                processNewMessagePushNotification(notificationData)
-            }
-
-            isMessageReadNotification(decryptedNotification.value) -> {
-                val notificationData = data.toLocalMessageReadNotificationData()
-                processMessageReadPushNotification(notificationData)
-            }
-
-            isNewLoginNotification(decryptedNotification.value) -> {
-                val notificationData = data.toLocalNewLoginNotificationData(context, userId.id, user.email ?: "")
-                processNewLoginPushNotification(notificationData)
-            }
-
-            else -> Result.success()
-        }
-    }
-
-    private suspend fun PushNotificationData.toLocalEmailNotificationData(
-        context: Context,
-        userId: String,
-        userEmail: String
-    ): LocalPushNotificationData.NewMessage {
-        val userData = UserPushData(userId, userEmail)
-        val sender = getSenderForNewMessage(context, sender)
-        val pushData = NewMessagePushData(sender, messageId, body)
-
-        return LocalPushNotificationData.NewMessage(userData, pushData)
-    }
-
-    private fun PushNotificationData.toLocalMessageReadNotificationData(): LocalPushNotificationData.MessageRead {
-        val pushData = MessageReadPushData(messageId)
-        return LocalPushNotificationData.MessageRead(pushData)
-    }
-
-    private fun PushNotificationData.toLocalNewLoginNotificationData(
-        context: Context,
-        userId: String,
-        userEmail: String
-    ): LocalPushNotificationData.Login {
-        val userData = UserPushData(userId, userEmail)
-        val sender = sender?.senderName?.ifEmpty { sender.senderAddress }
-            ?: context.getString(R.string.notification_title_text_new_login_alerts_fallback)
-        val pushData = NewLoginPushData(sender, body, url)
-
-        return LocalPushNotificationData.Login(userData, pushData)
-    }
-
-    private suspend fun getSenderForNewMessage(context: Context, sender: PushNotificationSender?): String {
-        val hasNotificationsExtended = getNotificationsExtendedPreference().getOrNull()?.enabled ?: true
-
-        if (hasNotificationsExtended) {
-            return sender?.senderName?.ifEmpty { sender.senderAddress }
-                ?: context.getString(R.string.notification_title_text_new_message_fallback)
+        val decryptedNotification = decryptPushNotificationContent(userId, sessionId, encryptedPayload).getOrElse {
+            return Result.failure(workDataOf(KeyProcessPushNotificationDataError to it.message))
         }
 
-        return context.getString(R.string.notification_title_text_new_message_fallback)
+        return when (decryptedNotification) {
+            is LocalPushNotification.Message.NewMessage -> processNewMessagePushNotification(decryptedNotification)
+            is LocalPushNotification.Message.MessageRead -> processMessageReadPushNotification(decryptedNotification)
+            is LocalPushNotification.Login -> processNewLoginPushNotification(decryptedNotification)
+        }
     }
 
     companion object {
 
+        const val KeyPushNotificationUserId = "userId"
         const val KeyPushNotificationUid = "UID"
         const val KeyPushNotificationEncryptedMessage = "encryptedMessage"
         const val KeyProcessPushNotificationDataError = "ProcessPushNotificationDataError"
 
-        fun params(uid: String, encryptedNotification: String) = mapOf(
+        fun params(
+            userId: String,
+            uid: String,
+            encryptedNotification: String
+        ) = mapOf(
+            KeyPushNotificationUserId to userId,
             KeyPushNotificationUid to uid,
             KeyPushNotificationEncryptedMessage to encryptedNotification
         )

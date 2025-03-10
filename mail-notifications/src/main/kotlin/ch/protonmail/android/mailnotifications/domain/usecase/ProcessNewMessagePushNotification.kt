@@ -24,11 +24,13 @@ import ch.protonmail.android.mailcommon.domain.coroutines.AppScope
 import ch.protonmail.android.mailcommon.presentation.system.NotificationProvider
 import ch.protonmail.android.mailnotifications.R
 import ch.protonmail.android.mailnotifications.domain.model.LocalNotificationAction
-import ch.protonmail.android.mailnotifications.domain.model.LocalPushNotificationData
+import ch.protonmail.android.mailnotifications.domain.model.LocalPushNotification
 import ch.protonmail.android.mailnotifications.domain.model.PushNotificationPendingIntentPayloadData
+import ch.protonmail.android.mailnotifications.domain.model.PushNotificationSenderData
 import ch.protonmail.android.mailnotifications.domain.proxy.NotificationManagerCompatProxy
 import ch.protonmail.android.mailnotifications.domain.usecase.actions.CreateNotificationAction
 import ch.protonmail.android.mailnotifications.domain.usecase.intents.CreateNewMessageNavigationIntent
+import ch.protonmail.android.mailsettings.domain.usecase.notifications.GetExtendedNotificationsSetting
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -41,6 +43,7 @@ internal class ProcessNewMessagePushNotification @Inject constructor(
     @ApplicationContext private val context: Context,
     private val notificationProvider: NotificationProvider,
     private val notificationManagerCompatProxy: NotificationManagerCompatProxy,
+    private val getNotificationsExtendedPreference: GetExtendedNotificationsSetting,
     private val createNewMessageNavigationIntent: CreateNewMessageNavigationIntent,
     private val createNotificationAction: CreateNotificationAction,
     private val eventManager: EventManagerProvider,
@@ -48,7 +51,7 @@ internal class ProcessNewMessagePushNotification @Inject constructor(
 ) {
 
     @Suppress("LongMethod")
-    operator fun invoke(notificationData: LocalPushNotificationData.NewMessage): ListenableWorker.Result {
+    suspend operator fun invoke(notificationData: LocalPushNotification.Message.NewMessage): ListenableWorker.Result {
 
         val userData = notificationData.userData
         val pushData = notificationData.pushData
@@ -62,7 +65,7 @@ internal class ProcessNewMessagePushNotification @Inject constructor(
             }
         }
 
-        val notificationTitle = pushData.sender
+        val notificationTitle = resolveNotificationTitle(pushData.sender)
         val notificationUserAddress = userData.userEmail
         val notificationContent = pushData.content
         val notificationGroup = userData.userId
@@ -115,6 +118,19 @@ internal class ProcessNewMessagePushNotification @Inject constructor(
         }
 
         return ListenableWorker.Result.success()
+    }
+
+    private suspend fun resolveNotificationTitle(sender: PushNotificationSenderData): String {
+        val hasNotificationsExtended = getNotificationsExtendedPreference().getOrNull()?.enabled ?: true
+
+        return if (hasNotificationsExtended) {
+            sender.senderName
+                .ifEmpty { sender.senderAddress }
+                .takeIf { it.isNotEmpty() }
+                ?: context.getString(R.string.notification_title_text_new_message_fallback)
+        } else {
+            context.getString(R.string.notification_title_text_new_message_fallback)
+        }
     }
 
     companion object {

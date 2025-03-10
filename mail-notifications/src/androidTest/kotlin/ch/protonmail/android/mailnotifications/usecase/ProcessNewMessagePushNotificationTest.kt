@@ -26,13 +26,12 @@ import android.net.Uri
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.work.ListenableWorker
 import ch.protonmail.android.mailcommon.presentation.system.NotificationProvider
-import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
 import ch.protonmail.android.mailnotifications.domain.NotificationsDeepLinkHelper
 import ch.protonmail.android.mailnotifications.domain.model.LocalNotificationAction
+import ch.protonmail.android.mailnotifications.domain.model.LocalPushNotification
 import ch.protonmail.android.mailnotifications.domain.model.LocalPushNotificationData
-import ch.protonmail.android.mailnotifications.domain.model.NewMessagePushData
 import ch.protonmail.android.mailnotifications.domain.model.PushNotificationPendingIntentPayloadData
-import ch.protonmail.android.mailnotifications.domain.model.UserPushData
+import ch.protonmail.android.mailnotifications.domain.model.PushNotificationSenderData
 import ch.protonmail.android.mailnotifications.domain.proxy.NotificationManagerCompatProxy
 import ch.protonmail.android.mailnotifications.domain.usecase.ProcessNewMessagePushNotification
 import ch.protonmail.android.mailnotifications.domain.usecase.actions.CreateNotificationAction
@@ -40,6 +39,7 @@ import ch.protonmail.android.mailnotifications.domain.usecase.intents.CreateNewM
 import ch.protonmail.android.mailnotifications.subText
 import ch.protonmail.android.mailnotifications.text
 import ch.protonmail.android.mailnotifications.title
+import ch.protonmail.android.mailsettings.domain.usecase.notifications.GetExtendedNotificationsSetting
 import ch.protonmail.android.test.annotations.suite.SmokeTest
 import io.mockk.CapturingSlot
 import io.mockk.coEvery
@@ -67,8 +67,6 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
-import javax.inject.Provider
-
 
 @SmokeTest
 internal class ProcessNewMessagePushNotificationTest {
@@ -79,6 +77,7 @@ internal class ProcessNewMessagePushNotificationTest {
     private val notificationProvider = getNotificationProvider()
     private val notificationManagerCompatProxy = mockk<NotificationManagerCompatProxy>(relaxUnitFun = true)
     private val notificationsDeepLinkHelper = mockk<NotificationsDeepLinkHelper>()
+    private val getNotificationsExtendedPreference = mockk<GetExtendedNotificationsSetting>()
     private val createNotificationAction = spyk(CreateNotificationAction(context))
     private val createNewMessageNavigationIntent = spyk(
         CreateNewMessageNavigationIntent(context, notificationsDeepLinkHelper)
@@ -97,15 +96,25 @@ internal class ProcessNewMessagePushNotificationTest {
             context,
             notificationProvider,
             notificationManagerCompatProxy,
+            getNotificationsExtendedPreference,
             createNewMessageNavigationIntent,
             createNotificationAction,
             eventManagerProvider,
             scope
         )
 
-    private val userData = UserPushData(RawUserId, RawUserEmail)
-    private val pushData = NewMessagePushData(RawSender, RawMessageId, RawContent)
-    private val newMessageData = LocalPushNotificationData.NewMessage(userData, pushData)
+    private val userData = LocalPushNotificationData.UserPushData(RawUserId, RawUserEmail)
+    private val sender = PushNotificationSenderData(
+        senderName = "Proton Mail",
+        senderAddress = "test@proton.me",
+        senderGroup = ""
+    )
+    private val pushData = LocalPushNotificationData.MessagePushData.NewMessagePushData(
+        sender,
+        RawMessageId,
+        RawContent
+    )
+    private val newMessageData = LocalPushNotification.Message.NewMessage(userData, pushData)
 
     @Before
     fun setup() {

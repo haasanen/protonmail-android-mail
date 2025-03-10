@@ -22,27 +22,18 @@ import android.content.Context
 import androidx.work.ListenableWorker
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
-import arrow.core.right
-import ch.protonmail.android.mailcommon.domain.sample.UserSample
-import ch.protonmail.android.mailnotifications.data.remote.resource.PushNotification
-import ch.protonmail.android.mailnotifications.data.remote.resource.PushNotificationData
-import ch.protonmail.android.mailcommon.domain.AppInBackgroundState
+import ch.protonmail.android.mailnotifications.data.local.ProcessPushNotificationDataWorker.Companion.KeyPushNotificationEncryptedMessage
+import ch.protonmail.android.mailnotifications.data.local.ProcessPushNotificationDataWorker.Companion.KeyPushNotificationUid
+import ch.protonmail.android.mailnotifications.data.local.ProcessPushNotificationDataWorker.Companion.KeyPushNotificationUserId
+import ch.protonmail.android.mailnotifications.data.usecase.DecryptPushNotificationContent
 import ch.protonmail.android.mailnotifications.domain.usecase.ProcessMessageReadPushNotification
 import ch.protonmail.android.mailnotifications.domain.usecase.ProcessNewLoginPushNotification
 import ch.protonmail.android.mailnotifications.domain.usecase.ProcessNewMessagePushNotification
-import ch.protonmail.android.mailnotifications.domain.usecase.content.DecryptNotificationContent
-import ch.protonmail.android.mailsettings.domain.model.BackgroundSyncPreference
-import ch.protonmail.android.mailsettings.domain.usecase.notifications.GetExtendedNotificationsSetting
-import ch.protonmail.android.mailsettings.domain.usecase.privacy.ObserveBackgroundSyncSetting
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.unmockkAll
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
-import me.proton.core.accountmanager.domain.SessionManager
-import me.proton.core.network.domain.session.SessionId
-import me.proton.core.user.domain.UserManager
 import org.junit.Before
 import org.junit.Test
 import kotlin.test.assertEquals
@@ -50,40 +41,23 @@ import kotlin.test.assertEquals
 internal class ProcessPushNotificationDataWorkerParsingTest {
 
     private val context = mockk<Context>(relaxUnitFun = true)
-    private val sessionManager = mockk<SessionManager>()
-    private val decryptNotificationContent = mockk<DecryptNotificationContent>()
-    private val appInBackgroundState = mockk<AppInBackgroundState>()
-    private val userManager = mockk<UserManager>()
-    private val getExtendedNotificationsSetting = mockk<GetExtendedNotificationsSetting>()
+    private val decryptNotificationContent = mockk<DecryptPushNotificationContent>()
     private val processNewMessagePushNotification = mockk<ProcessNewMessagePushNotification>()
-    private val observeBackgroundSyncSetting = mockk<ObserveBackgroundSyncSetting>()
     private val processNewLoginPushNotification = mockk<ProcessNewLoginPushNotification>()
     private val processMessageReadPushNotification = mockk<ProcessMessageReadPushNotification>()
 
     private val params: WorkerParameters = mockk {
         every { taskExecutor } returns mockk(relaxed = true)
 
-        every {
-            inputData.getString(ProcessPushNotificationDataWorker.KeyPushNotificationUid)
-        } returns RawSessionId
-
-        every {
-            inputData.getString(ProcessPushNotificationDataWorker.KeyPushNotificationEncryptedMessage)
-        } returns RawNotification
+        every { inputData.getString(KeyPushNotificationUserId) } returns RawUserId
+        every { inputData.getString(KeyPushNotificationUid) } returns RawSessionId
+        every { inputData.getString(KeyPushNotificationEncryptedMessage) } returns RawNotification
     }
 
-    private val sessionId = SessionId(RawSessionId)
-    private val user = UserSample.Primary
-    private val userId = user.userId
     private val worker = ProcessPushNotificationDataWorker(
         context,
         params,
-        sessionManager,
         decryptNotificationContent,
-        appInBackgroundState,
-        userManager,
-        getExtendedNotificationsSetting,
-        observeBackgroundSyncSetting,
         processNewMessagePushNotification,
         processNewLoginPushNotification,
         processMessageReadPushNotification
@@ -97,73 +71,61 @@ internal class ProcessPushNotificationDataWorkerParsingTest {
     @Test
     fun `null user id makes the worker fail`() = runTest {
         // Given
-        coEvery { sessionManager.getUserId(sessionId) } returns null
+        coEvery { params.inputData.getString(KeyPushNotificationUserId) } returns null
 
         // When
         val result = worker.doWork()
 
         // Then
-        assertEquals(FailureResultUnknownUser, result)
+        assertEquals(MissingInputData, result)
+    }
+
+    @Test
+    fun `null session id makes the worker fail`() = runTest {
+        // Given
+        coEvery { params.inputData.getString(KeyPushNotificationUserId) } returns null
+
+        // When
+        val result = worker.doWork()
+
+        // Then
+        assertEquals(MissingInputData, result)
+    }
+
+    @Test
+    fun `null notification data id makes the worker fail`() = runTest {
+        // Given
+        coEvery { params.inputData.getString(KeyPushNotificationUid) } returns null
+
+        // When
+        val result = worker.doWork()
+
+        // Then
+        assertEquals(MissingInputData, result)
     }
 
     @Test
     fun `null decrypted notification content makes the worker fail`() = runTest {
         // Given
-        coEvery { sessionManager.getUserId(sessionId) } returns userId
-        coEvery { decryptNotificationContent(userId, RawNotification).getOrNull() } returns null
-        coEvery { userManager.getUser(userId) } returns UserSample.Primary
+        coEvery { params.inputData.getString(KeyPushNotificationEncryptedMessage) } returns null
 
         // When
         val result = worker.doWork()
 
         // Then
-        assertEquals(FailureResultNullDecryptedContent, result)
-    }
-
-    @Test
-    fun `null push notification data makes the worker fail`() = runTest {
-        // Given
-        coEvery { sessionManager.getUserId(sessionId) } returns userId
-        coEvery {
-            decryptNotificationContent(userId, RawNotification)
-        } returns DecryptNotificationContent.DecryptedNotification(PushNotification("open_url", 2, null)).right()
-        coEvery { userManager.getUser(userId) } returns UserSample.Primary
-
-        // When
-        val result = worker.doWork()
-
-        // Then
-        assertEquals(FailureResultNullPushNotificationData, result)
-    }
-
-    @Test
-    fun `unknown notification type does not create a new notification but returns a success`() = runTest {
-        // Given
-        coEvery { sessionManager.getUserId(sessionId) } returns userId
-        coEvery { observeBackgroundSyncSetting() } returns flowOf(BackgroundSyncPreference(true).right())
-        coEvery {
-            decryptNotificationContent(userId, RawNotification)
-        } returns DecryptNotificationContent.DecryptedNotification(
-            PushNotification(type = "unknown", version = 2, data = mockk<PushNotificationData>())
-        ).right()
-        coEvery { userManager.getUser(userId) } returns UserSample.Primary
-
-        // When
-        val result = worker.doWork()
-
-        // Then
-        assertEquals(ListenableWorker.Result.success(), result)
+        assertEquals(MissingInputData, result)
     }
 
     private companion object {
 
         const val RawNotification = "notification"
         const val RawSessionId = "sessionId"
+        const val RawUserId = "userId"
 
-        val FailureResultUnknownUser = ListenableWorker.Result.failure(
+        val MissingInputData = ListenableWorker.Result.failure(
             workDataOf(
                 ProcessPushNotificationDataWorker.KeyProcessPushNotificationDataError to
-                    "User is unknown or inactive"
+                    "Input data is missing"
             )
         )
 
@@ -171,13 +133,6 @@ internal class ProcessPushNotificationDataWorkerParsingTest {
             workDataOf(
                 ProcessPushNotificationDataWorker.KeyProcessPushNotificationDataError to
                     "Unable to decrypt notification content."
-            )
-        )
-
-        val FailureResultNullPushNotificationData = ListenableWorker.Result.failure(
-            workDataOf(
-                ProcessPushNotificationDataWorker.KeyProcessPushNotificationDataError to
-                    "Push Notification data is null."
             )
         )
     }
