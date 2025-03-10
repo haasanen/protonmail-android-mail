@@ -24,7 +24,7 @@ data class Account(
     val userId: UserId,
     val name: String,
     val state: AccountState,
-    val primaryAddress: String?,
+    val primaryAddress: String,
     val avatarInfo: AccountAvatarInfo? = null
 )
 
