@@ -24,6 +24,7 @@ import me.proton.core.account.domain.entity.AccountState
 import me.proton.core.account.domain.entity.SessionState
 import me.proton.core.network.domain.session.SessionId
 
+@Deprecated("Relying on old core libraries; Use AccountTestSample from test-data module instead.")
 object AccountSample {
 
     val Primary = build()

@@ -54,13 +54,13 @@ dependencies {
     implementation(libs.proton.core.user)
     implementation(libs.proton.core.userSettings)
 
+    implementation(project(":mail-contact"))
     implementation(project(":mail-common"))
+    implementation(project(":mail-composer"))
     implementation(project(":mail-conversation"))
+    implementation(project(":mail-detail"))
     implementation(project(":mail-label"))
     implementation(project(":mail-mailbox"))
     implementation(project(":mail-message"))
-    implementation(project(":mail-detail"))
-    implementation(project(":mail-contact"))
-    implementation(project(":mail-composer"))
-
+    implementation(project(":mail-session"))
 }

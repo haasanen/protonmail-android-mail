@@ -23,65 +23,83 @@ import app.cash.turbine.test
 import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailcommon.domain.sample.AccountSample
-import ch.protonmail.android.mailcommon.domain.sample.UserAddressSample
-import ch.protonmail.android.mailcommon.domain.usecase.GetPrimaryAddress
-import ch.protonmail.android.mailconversation.domain.repository.ConversationRepository
-import ch.protonmail.android.mailconversation.domain.sample.ConversationSample
+import ch.protonmail.android.maillabel.domain.model.ExclusiveLocation
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.maillabel.domain.usecase.FindLocalSystemLabelId
-import ch.protonmail.android.mailmessage.domain.model.MessageId
-import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
+import ch.protonmail.android.mailmessage.domain.model.Message
+import ch.protonmail.android.mailmessage.domain.model.RemoteMessageId
 import ch.protonmail.android.mailmessage.domain.sample.MessageSample.AlphaAppQAReport
-import ch.protonmail.android.mailmessage.domain.sample.MessageSample.MessageWithNoExclusiveLocation
+import ch.protonmail.android.mailmessage.domain.usecase.ObserveMessage
+import ch.protonmail.android.mailsession.data.mapper.toUserId
+import ch.protonmail.android.mailsession.domain.model.Account
+import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
+import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
+import ch.protonmail.android.mailsession.domain.usecase.SetPrimaryAccount
 import ch.protonmail.android.navigation.deeplinks.NotificationsDeepLinksViewModel.State.NavigateToConversation
 import ch.protonmail.android.navigation.deeplinks.NotificationsDeepLinksViewModel.State.NavigateToInbox
+import ch.protonmail.android.testdata.account.AccountTestSample
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
+import io.mockk.runs
+import io.mockk.unmockkAll
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
-import me.proton.core.accountmanager.domain.AccountManager
 import me.proton.core.domain.entity.UserId
-import me.proton.core.domain.type.IntEnum
-import me.proton.core.mailsettings.domain.entity.MailSettings
-import me.proton.core.mailsettings.domain.entity.ViewMode
 import me.proton.core.network.domain.NetworkManager
 import me.proton.core.network.domain.NetworkStatus
-import org.junit.Before
 import org.junit.Test
+import kotlin.test.AfterTest
+import kotlin.test.BeforeTest
 import kotlin.test.assertEquals
 
-class NotificationsDeepLinksViewModelTest {
+internal class NotificationsDeepLinksViewModelTest {
 
     private val networkManager: NetworkManager = mockk {
         coEvery { networkStatus } returns NetworkStatus.Unmetered
     }
-    private val accountManager: AccountManager = mockk(relaxed = true)
-    private val messageRepository: MessageRepository = mockk()
-    private val conversationRepository: ConversationRepository = mockk()
-    private val mailSettings: MailSettings = mockk()
-    private val findLocalSystemLabelId: FindLocalSystemLabelId = mockk()
-    private val getPrimaryAddress: GetPrimaryAddress = mockk()
+    private val observePrimaryUserId = mockk<ObservePrimaryUserId>()
+    private val userSessionRepository = mockk<UserSessionRepository>()
+    private val setPrimaryAccount = mockk<SetPrimaryAccount>()
+    private val observeMessage = mockk<ObserveMessage>()
+    private val findLocalSystemLabelId = mockk<FindLocalSystemLabelId>()
 
-    @Before
-    fun before() {
+    private lateinit var viewModel: NotificationsDeepLinksViewModel
+
+    @BeforeTest
+    fun setup() {
         Dispatchers.setMain(UnconfinedTestDispatcher())
+
+        viewModel = NotificationsDeepLinksViewModel(
+            networkManager = networkManager,
+            observePrimaryUserId = observePrimaryUserId,
+            userSessionRepository = userSessionRepository,
+            observeMessage = observeMessage,
+            setPrimaryAccount = setPrimaryAccount,
+            findLocalSystemLabelId = findLocalSystemLabelId
+        )
+    }
+
+    @AfterTest
+    fun teardown() {
+        unmockkAll()
     }
 
     @Test
-    fun `Should emit navigate to inbox and cancel the group notification`() = runTest {
+    fun `should emit navigate to inbox with active user when provided userId is already the primary`() = runTest {
         // Given
-        val viewModel = buildViewModel()
-        val userId = UUID.randomUUID().toString()
+        val userId = getUserId()
+        expectPrimaryId(userId)
 
         // When
-        viewModel.navigateToInbox(userId)
+        viewModel.navigateToInbox(userId.id)
 
         // Then
         viewModel.state.test {
@@ -90,83 +108,40 @@ class NotificationsDeepLinksViewModelTest {
     }
 
     @Test
-    fun `Should emit navigate to conversation details when conversation mode is enabled`() = runTest {
+    fun `should emit navigate to conversation details when deeplink is resolved and user is online`() = runTest {
         // Given
-        val messageId = UUID.randomUUID().toString()
-        val userId = UUID.randomUUID().toString()
+        val userId = getUserId()
+        val messageId = getRemoteMessageId()
         val labelId = LabelId("1")
-        coEvery { accountManager.getPrimaryUserId() } returns flowOf(UserId(userId))
-        coEvery { mailSettings.viewMode } returns IntEnum(ViewMode.ConversationGrouping.value, null)
-        coEvery { messageRepository.observeMessage(UserId(userId), MessageId(messageId)) } returns flowOf(
-            AlphaAppQAReport.right()
+        val expectedEvent = NavigateToConversation(
+            conversationId = AlphaAppQAReport.conversationId,
+            contextLabelId = labelId,
+            scrollToMessageId = AlphaAppQAReport.messageId
         )
-        coEvery {
-            conversationRepository.observeConversation(
-                UserId(userId),
-                AlphaAppQAReport.conversationId,
-                labelId
-            )
-        } returns flowOf(
-            ConversationSample.AlphaAppFeedback.right()
-        )
-        val viewModel = buildViewModel()
+
+        expectPrimaryId(userId)
+        expectMessage(userId, messageId, AlphaAppQAReport)
 
         // When
-        viewModel.navigateToMessage(messageId, userId)
+        viewModel.navigateToMessage(messageId.id, userId.id)
 
         // Then
         viewModel.state.test {
-            assertEquals(
-                NavigateToConversation(AlphaAppQAReport.conversationId, contextLabelId = labelId),
-                awaitItem()
-            )
+            assertEquals(expectedEvent, awaitItem())
         }
     }
 
     @Test
-    fun `Should emit navigate to conversation details when conversation mode is not enabled`() = runTest {
+    fun `should emit navigate to inbox when the user is offline and taps a message deeplink`() = runTest {
         // Given
-        val messageId = UUID.randomUUID().toString()
-        val userId = UUID.randomUUID().toString()
-        val labelId = LabelId("1")
-        coEvery { accountManager.getPrimaryUserId() } returns flowOf(UserId(userId))
-        coEvery { mailSettings.viewMode } returns IntEnum(ViewMode.NoConversationGrouping.value, null)
-        coEvery { messageRepository.observeMessage(UserId(userId), MessageId(messageId)) } returns flowOf(
-            AlphaAppQAReport.right()
-        )
-        coEvery {
-            conversationRepository.observeConversation(
-                UserId(userId),
-                AlphaAppQAReport.conversationId,
-                labelId
-            )
-        } returns flowOf(
-            ConversationSample.AlphaAppFeedback.right()
-        )
-        val viewModel = buildViewModel()
+        val userId = getUserId()
+        val messageId = getRemoteMessageId()
 
-        // When
-        viewModel.navigateToMessage(messageId, userId)
-
-        // Then
-        viewModel.state.test {
-            assertEquals(
-                NavigateToConversation(AlphaAppQAReport.conversationId, contextLabelId = labelId),
-                awaitItem()
-            )
-        }
-    }
-
-    @Test
-    fun `Should emit navigate to inbox when the user is offline and taps in a message deeplink`() = runTest {
-        // Given
-        val messageId = UUID.randomUUID().toString()
-        val userId = UUID.randomUUID().toString()
         coEvery { networkManager.networkStatus } returns NetworkStatus.Disconnected
-        val viewModel = buildViewModel()
+        expectPrimaryId(userId)
 
         // When
-        viewModel.navigateToMessage(messageId, userId)
+        viewModel.navigateToMessage(messageId.id, userId.id)
 
         // Then
         viewModel.state.test {
@@ -175,18 +150,16 @@ class NotificationsDeepLinksViewModelTest {
     }
 
     @Test
-    fun `Should navigate to the inbox if there is an error retrieving the local messages`() = runTest {
+    fun `should navigate to the inbox if there is an error retrieving the local messages`() = runTest {
         // Given
-        val messageId = UUID.randomUUID().toString()
-        val userId = UUID.randomUUID().toString()
-        coEvery { mailSettings.viewMode } returns IntEnum(ViewMode.NoConversationGrouping.value, null)
-        coEvery { messageRepository.observeMessage(UserId(userId), MessageId(messageId)) } returns flowOf(
-            DataError.Local.Unknown.left()
-        )
-        val viewModel = buildViewModel()
+        val userId = getUserId()
+        val messageId = getRemoteMessageId()
+
+        expectPrimaryId(userId)
+        expectMessageError(userId, messageId)
 
         // When
-        viewModel.navigateToMessage(messageId, userId)
+        viewModel.navigateToMessage(messageId.id, userId.id)
 
         // Then
         viewModel.state.test {
@@ -195,145 +168,110 @@ class NotificationsDeepLinksViewModelTest {
     }
 
     @Test
-    fun `Should navigate to inbox if conversation mode is enabled but the conversation can not be read`() = runTest {
+    fun `should switch account and emit switched for inbox notification to an active non primary account`() = runTest {
         // Given
-        val messageId = UUID.randomUUID().toString()
-        val userId = UUID.randomUUID().toString()
-        val labelId = LabelId("1")
-        coEvery { mailSettings.viewMode } returns IntEnum(ViewMode.ConversationGrouping.value, null)
-        coEvery { messageRepository.observeMessage(UserId(userId), MessageId(messageId)) } returns flowOf(
-            AlphaAppQAReport.right()
-        )
-        coEvery {
-            conversationRepository.observeConversation(
-                UserId(userId),
-                AlphaAppQAReport.conversationId,
-                labelId
-            )
-        } returns flowOf(DataError.Local.Unknown.left())
-        val viewModel = buildViewModel()
+        val activeAccount = AccountTestSample.Primary.copy(primaryAddress = "test@email.com")
+        val notificationUserId = getUserId()
+        val secondaryAccount = AccountTestSample.Primary.copy(userId = notificationUserId)
 
-        // When
-        viewModel.navigateToMessage(messageId, userId)
-
-        // Then
-        viewModel.state.test {
-            assertEquals(NavigateToInbox.ActiveUser, awaitItem())
-        }
-    }
-
-    @Test
-    fun `Should switch account and emit switched for inbox notification to an active non primary account`() = runTest {
-        // Given
-        val activeAccount = AccountSample.Primary.copy(email = "test@email.com")
-        val notificationUserId = UserId(UUID.randomUUID().toString())
-        val secondaryAccount = AccountSample.Primary.copy(userId = notificationUserId)
-        val viewModel = buildViewModel()
-        coEvery { accountManager.getPrimaryUserId() } returns flowOf(activeAccount.userId)
-        coEvery { accountManager.getAccounts() } returns flowOf(listOf(activeAccount, secondaryAccount))
-        coEvery { getPrimaryAddress.invoke(notificationUserId) } returns UserAddressSample.PrimaryAddress.right()
+        expectPrimaryId(activeAccount.userId)
+        expectAccounts(userId = notificationUserId, account = secondaryAccount)
+        coEvery { setPrimaryAccount(notificationUserId) } just runs
 
         // When
         viewModel.navigateToInbox(notificationUserId.id)
 
         // Then
         viewModel.state.test {
-            assertEquals(NavigateToInbox.ActiveUserSwitched(secondaryAccount.email!!), awaitItem())
-            coVerify { accountManager.setAsPrimary(secondaryAccount.userId) }
+            assertEquals(NavigateToInbox.ActiveUserSwitched(secondaryAccount.primaryAddress!!), awaitItem())
+            coVerify { setPrimaryAccount(secondaryAccount.userId) }
         }
     }
 
     @Test
-    fun `Should switch account and emit switched for message notification to active non primary account`() = runTest {
+    fun `should switch account and emit switched for message notification to active non primary account`() = runTest {
         // Given
-        val activeAccount = AccountSample.Primary.copy(email = "test@email.com")
-        val notificationUserId = UserId(UUID.randomUUID().toString())
-        val secondaryAccount = AccountSample.Primary.copy(userId = notificationUserId)
-        val messageId = UUID.randomUUID().toString()
-        val viewModel = buildViewModel()
+        val activeAccount = AccountTestSample.Primary.copy(primaryAddress = "test@email.com")
+        val notificationUserId = getUserId()
+        val secondaryAccount = AccountTestSample.Primary.copy(userId = notificationUserId)
+        val messageId = getRemoteMessageId()
         val labelId = LabelId("1")
-        coEvery { accountManager.getPrimaryUserId() } returns flowOf(activeAccount.userId)
-        coEvery { getPrimaryAddress.invoke(secondaryAccount.userId) } returns UserAddressSample.PrimaryAddress.right()
-        coEvery { accountManager.getAccounts() } returns flowOf(listOf(activeAccount, secondaryAccount))
-        coEvery { mailSettings.viewMode } returns IntEnum(ViewMode.ConversationGrouping.value, null)
-        coEvery {
-            messageRepository.observeMessage(secondaryAccount.userId, any())
-        } returns flowOf(AlphaAppQAReport.right())
-        coEvery {
-            conversationRepository.observeConversation(
-                secondaryAccount.userId,
-                AlphaAppQAReport.conversationId,
-                labelId
-            )
-        } returns flowOf(
-            ConversationSample.AlphaAppFeedback.right()
+
+        val expectedEvent = NavigateToConversation(
+            conversationId = AlphaAppQAReport.conversationId,
+            userSwitchedEmail = AccountTestSample.Primary.primaryAddress,
+            contextLabelId = labelId,
+            scrollToMessageId = AlphaAppQAReport.messageId
         )
 
+        expectPrimaryId(activeAccount.userId)
+        expectAccounts(userId = notificationUserId, account = secondaryAccount)
+        expectMessage(secondaryAccount.userId, messageId, AlphaAppQAReport)
+        coEvery { setPrimaryAccount(notificationUserId) } just runs
+
         // When
-        viewModel.navigateToMessage(messageId, secondaryAccount.userId.id)
+        viewModel.navigateToMessage(messageId.id, secondaryAccount.userId.id)
 
         // Then
         viewModel.state.test {
-            assertEquals(
-                NavigateToConversation(
-                    conversationId = AlphaAppQAReport.conversationId,
-                    userSwitchedEmail = AccountSample.Primary.email,
-                    contextLabelId = labelId
-                ),
-                awaitItem()
-            )
-            coVerify { accountManager.setAsPrimary(secondaryAccount.userId) }
+            assertEquals(expectedEvent, awaitItem())
+            coVerify { setPrimaryAccount(secondaryAccount.userId) }
         }
     }
 
     @Test
-    fun `Should fallback to all mail when message exclusive location can't be resolved`() = runTest {
+    fun `should fallback to all mail when message exclusive location can't be resolved`() = runTest {
         // Given
-        val messageId = UUID.randomUUID().toString()
-        val userId = UUID.randomUUID().toString()
+        val messageId = getRemoteMessageId()
+        val userId = getUserId()
         val labelId = LabelId("resolvedAllMail")
-        coEvery { accountManager.getPrimaryUserId() } returns flowOf(UserId(userId))
-        coEvery { mailSettings.viewMode } returns IntEnum(ViewMode.ConversationGrouping.value, null)
-        coEvery { messageRepository.observeMessage(UserId(userId), MessageId(messageId)) } returns flowOf(
-            MessageWithNoExclusiveLocation.right()
+        val message = AlphaAppQAReport.copy(exclusiveLocation = ExclusiveLocation.NoLocation)
+        val expectedEvent = NavigateToConversation(
+            conversationId = message.conversationId,
+            userSwitchedEmail = null,
+            contextLabelId = labelId,
+            scrollToMessageId = message.messageId
         )
-        coEvery { findLocalSystemLabelId(UserId(userId), SystemLabelId.AllMail) } returns MailLabelId.System(labelId)
-        coEvery {
-            conversationRepository.observeConversation(
-                UserId(userId),
-                MessageWithNoExclusiveLocation.conversationId,
-                labelId
-            )
-        } returns flowOf(
-            ConversationSample.AlphaAppFeedback.right()
-        )
-        val viewModel = buildViewModel()
+
+        expectPrimaryId(userId)
+        expectMessage(userId, messageId, message)
+        coEvery { findLocalSystemLabelId(userId, SystemLabelId.AllMail) } returns MailLabelId.System(labelId)
 
         // When
-        viewModel.navigateToMessage(messageId, userId)
+        viewModel.navigateToMessage(messageId.id, userId.id)
 
         // Then
         viewModel.state.test {
-            assertEquals(
-                NavigateToConversation(AlphaAppQAReport.conversationId, contextLabelId = labelId),
-                awaitItem()
-            )
-            coVerify {
-                conversationRepository.observeConversation(
-                    UserId(userId),
-                    MessageWithNoExclusiveLocation.conversationId,
-                    labelId
-                )
-            }
+            assertEquals(expectedEvent, awaitItem())
         }
     }
 
-    private fun buildViewModel() = NotificationsDeepLinksViewModel(
-        networkManager = networkManager,
-        accountManager = accountManager,
-        getPrimaryAddress = getPrimaryAddress,
-        messageRepository = messageRepository,
-        conversationRepository = conversationRepository,
-        findLocalSystemLabelId = findLocalSystemLabelId
-    )
+    private fun getUserId() = UUID.randomUUID().toString().toUserId()
+    private fun getRemoteMessageId() = RemoteMessageId(UUID.randomUUID().toString())
+
+    private fun expectPrimaryId(userId: UserId) {
+        every { observePrimaryUserId() } returns flowOf(userId)
+    }
+
+    private fun expectAccounts(userId: UserId, account: Account) {
+        coEvery { userSessionRepository.getAccount(userId) } returns account
+    }
+
+    private fun expectMessage(
+        userId: UserId,
+        remoteMessageId: RemoteMessageId,
+        message: Message
+    ) {
+        coEvery {
+            observeMessage(userId, remoteMessageId)
+        } returns flowOf(message.right())
+    }
+
+    private fun expectMessageError(userId: UserId, remoteMessageId: RemoteMessageId) {
+        coEvery {
+            observeMessage(userId, remoteMessageId)
+        } returns flowOf(
+            DataError.Local.Unknown.left()
+        )
+    }
 }

@@ -22,15 +22,18 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailcommon.domain.usecase.GetPrimaryAddress
-import ch.protonmail.android.mailconversation.domain.repository.ConversationRepository
 import ch.protonmail.android.maillabel.domain.model.ExclusiveLocation
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.maillabel.domain.usecase.FindLocalSystemLabelId
 import ch.protonmail.android.mailmessage.domain.model.Message
 import ch.protonmail.android.mailmessage.domain.model.MessageId
-import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
+import ch.protonmail.android.mailmessage.domain.model.RemoteMessageId
+import ch.protonmail.android.mailmessage.domain.usecase.ObserveMessage
+import ch.protonmail.android.mailsession.domain.model.AccountState
+import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
+import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
+import ch.protonmail.android.mailsession.domain.usecase.SetPrimaryAccount
 import ch.protonmail.android.navigation.deeplinks.NotificationsDeepLinksViewModel.State.NavigateToInbox
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -40,10 +43,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import me.proton.core.account.domain.entity.AccountState
-import me.proton.core.accountmanager.domain.AccountManager
-import me.proton.core.accountmanager.domain.getAccounts
 import me.proton.core.domain.entity.UserId
 import me.proton.core.network.domain.NetworkManager
 import me.proton.core.network.domain.NetworkStatus
@@ -54,10 +55,10 @@ import kotlin.coroutines.CoroutineContext
 @HiltViewModel
 class NotificationsDeepLinksViewModel @Inject constructor(
     private val networkManager: NetworkManager,
-    private val accountManager: AccountManager,
-    private val getPrimaryAddress: GetPrimaryAddress,
-    private val messageRepository: MessageRepository,
-    private val conversationRepository: ConversationRepository,
+    private val observePrimaryUserId: ObservePrimaryUserId,
+    private val userSessionRepository: UserSessionRepository,
+    private val setPrimaryAccount: SetPrimaryAccount,
+    private val observeMessage: ObserveMessage,
     private val findLocalSystemLabelId: FindLocalSystemLabelId
 ) : ViewModel() {
 
@@ -70,31 +71,35 @@ class NotificationsDeepLinksViewModel @Inject constructor(
         if (isOffline()) {
             navigateToInbox(userId)
         } else {
-            navigateToMessageOrConversation(messageId, UserId(userId))
+            navigateToMessageOrConversation(RemoteMessageId(messageId), UserId(userId))
         }
     }
 
     fun navigateToInbox(userId: String) {
         viewModelScope.launch {
-            val activeUserId = accountManager.getPrimaryUserId().firstOrNull()
+            val activeUserId = observePrimaryUserId().firstOrNull()
             if (activeUserId != null && activeUserId.id != userId) {
                 switchUserAndNavigateToInbox(userId)
             } else {
-                _state.value = NavigateToInbox.ActiveUser
+                _state.update { NavigateToInbox.ActiveUser }
             }
         }
     }
 
     private suspend fun switchUserAndNavigateToInbox(userId: String) {
         val switchAccountResult = switchActiveUserIfRequiredTo(userId)
-        _state.value = when (switchAccountResult) {
-            AccountSwitchResult.AccountSwitchError -> NavigateToInbox.ActiveUser
-            is AccountSwitchResult.AccountSwitched -> NavigateToInbox.ActiveUserSwitched(switchAccountResult.newEmail)
-            AccountSwitchResult.NotRequired -> NavigateToInbox.ActiveUser
+        _state.update {
+            when (switchAccountResult) {
+                AccountSwitchResult.AccountSwitchError -> NavigateToInbox.ActiveUser
+                is AccountSwitchResult.AccountSwitched ->
+                    NavigateToInbox.ActiveUserSwitched(switchAccountResult.newEmail)
+
+                AccountSwitchResult.NotRequired -> NavigateToInbox.ActiveUser
+            }
         }
     }
 
-    private fun navigateToMessageOrConversation(messageId: String, userId: UserId) {
+    private fun navigateToMessageOrConversation(messageId: RemoteMessageId, userId: UserId) {
         Timber.d("navigateToMessage: $messageId, $userId")
         navigateJob?.cancel()
         navigateJob = viewModelScope.launch {
@@ -118,11 +123,11 @@ class NotificationsDeepLinksViewModel @Inject constructor(
 
     private suspend fun navigateToMessageOrConversation(
         coroutineContext: CoroutineContext,
-        messageId: String,
+        remoteMessageId: RemoteMessageId,
         userId: UserId,
         switchedAccountEmail: String? = null
     ) {
-        messageRepository.observeMessage(userId, MessageId(messageId))
+        observeMessage(userId, remoteMessageId)
             .distinctUntilChanged()
             .collectLatest { messageResult ->
                 messageResult
@@ -136,19 +141,15 @@ class NotificationsDeepLinksViewModel @Inject constructor(
             }
     }
 
-    private suspend fun switchActiveUserIfRequiredTo(userId: String): AccountSwitchResult {
-        return if (accountManager.getPrimaryUserId().firstOrNull()?.id == userId) {
-            AccountSwitchResult.NotRequired
-        } else {
-            val targetAccount = accountManager.getAccounts(AccountState.Ready)
-                .firstOrNull()
-                ?.find { it.userId.id == userId }
-                ?: return AccountSwitchResult.AccountSwitchError
+    private suspend fun switchActiveUserIfRequiredTo(rawUserId: String): AccountSwitchResult {
+        val userId = UserId(rawUserId)
+        val currentPrimaryUserId = observePrimaryUserId().firstOrNull()
+        if (currentPrimaryUserId?.id == userId.id) return AccountSwitchResult.NotRequired
 
-            accountManager.setAsPrimary(UserId(userId))
-            val emailAddress = getPrimaryAddress(UserId(userId)).getOrNull()?.email
-            AccountSwitchResult.AccountSwitched(targetAccount.userId, emailAddress ?: "")
-        }
+        val targetAccount = getAccountReadyForUserId(userId) ?: return AccountSwitchResult.AccountSwitchError
+
+        setPrimaryAccount(targetAccount.userId)
+        return AccountSwitchResult.AccountSwitched(targetAccount.userId, targetAccount.primaryAddress)
     }
 
     private suspend fun navigateToConversation(
@@ -158,24 +159,13 @@ class NotificationsDeepLinksViewModel @Inject constructor(
     ) {
         val labelId = message.exclusiveLocation.getLabelId(userId) ?: return
 
-        conversationRepository.observeConversation(
-            userId,
-            message.conversationId,
-            labelId
-        ).collectLatest { conversationResult ->
-            conversationResult
-                .onLeft {
-                    Timber.d("Conversation not found: $it")
-                    if (it != DataError.Local.NoDataCached) navigateToInbox(userId.id)
-                }
-                .onRight { conversation ->
-                    _state.value =
-                        State.NavigateToConversation(
-                            conversationId = conversation.conversationId,
-                            userSwitchedEmail = switchedAccountEmail,
-                            contextLabelId = labelId
-                        )
-                }
+        _state.update {
+            State.NavigateToConversation(
+                conversationId = message.conversationId,
+                userSwitchedEmail = switchedAccountEmail,
+                contextLabelId = labelId,
+                scrollToMessageId = message.messageId
+            )
         }
     }
 
@@ -186,6 +176,10 @@ class NotificationsDeepLinksViewModel @Inject constructor(
     }
 
     private fun isOffline() = networkManager.networkStatus == NetworkStatus.Disconnected
+
+    private suspend fun getAccountReadyForUserId(userId: UserId) = userSessionRepository
+        .getAccount(userId)
+        ?.takeIf { it.state == AccountState.Ready }
 
     sealed interface State {
         data object Launched : State
