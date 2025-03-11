@@ -30,17 +30,12 @@ class EditorScrollManager(
 
     private var previousWebViewHeight = 0
 
-    fun onEditorParamsChanged(
-        currentScroll: Int,
-        composeScreenParams: ComposeScreenParams,
-        webViewParams: WebViewParams
-    ) {
+    fun onEditorParamsChanged(composeScreenParams: ComposeScreenParams, webViewParams: WebViewParams) {
         val sizeDelta = (webViewParams.height - previousWebViewHeight).coerceAtLeast(0)
         previousWebViewHeight = webViewParams.height
 
         Timber.d("composer-scroll: composer form params: $composeScreenParams")
         Timber.d("composer-scroll: WebView params: $webViewParams")
-        Timber.d("composer-scroll: current scroll $currentScroll")
         Timber.d("composer-scroll: size delta (previous webview height to new webview height: $sizeDelta")
 
         if (sizeDelta > MIN_SCROLL_CHANGE) {
@@ -48,7 +43,7 @@ class EditorScrollManager(
             return
         }
 
-        val value = currentScroll + sizeDelta
+        val value = composeScreenParams.scrollValue + sizeDelta
         Timber.d("composer-scroll: required scroll value $value")
         onUpdateScroll(value)
     }

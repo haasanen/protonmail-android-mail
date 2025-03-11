@@ -25,6 +25,7 @@ import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -48,6 +49,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.LocalView
@@ -233,6 +235,8 @@ fun ComposerScreen(actions: ComposerScreen.Actions, viewModel: ComposerViewModel
                 var visibleHeaderHeight by remember { mutableStateOf(0f) }
                 var headerHeight by remember { mutableStateOf(0f) }
 
+                val screenHeight = LocalConfiguration.current.screenHeightDp
+
                 val scrollManager = remember {
                     EditorScrollManager(
                         onUpdateScroll = { coroutineScope.launch { scrollState.scrollTo(it) } }
@@ -271,11 +275,7 @@ fun ComposerScreen(actions: ComposerScreen.Actions, viewModel: ComposerViewModel
                             { focusedField = it },
                             { bottomSheetType.value = it },
                             { webViewParams ->
-                                scrollManager.onEditorParamsChanged(
-                                    scrollState.value,
-                                    ComposeScreenParams(visibleHeaderHeight),
-                                    webViewParams
-                                )
+                                scrollManager.onEditorParamsChanged(getComposeScreenParams(), webViewParams)
                             },
                             onHeaderPositioned = { headerBounds ->
                                 val visibleBounds = headerBounds.intersect(columnBounds)
