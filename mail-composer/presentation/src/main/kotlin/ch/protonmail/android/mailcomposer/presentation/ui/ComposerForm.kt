@@ -27,6 +27,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.layout.boundsInWindow
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.testTag
 import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
@@ -90,37 +93,52 @@ internal fun ComposerForm(
             }
         }
 
+        var headerBounds by remember { mutableStateOf(Rect.Zero) }
+
         Column(
             modifier = modifier.fillMaxWidth()
         ) {
-            PrefixedEmailSelector(
-                prefixStringResource = R.string.from_prefix,
-                modifier = maxWidthModifier.testTag(ComposerTestTags.FromSender),
-                selectedEmail = fields.sender.email,
-                actions.onChangeSender
-            )
-            MailDivider()
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .onGloballyPositioned { coordinates ->
+                        headerBounds = coordinates.boundsInWindow()
+                        actions.onHeaderPositioned(headerBounds)
+                    }
+            ) {
 
-            RecipientFields2(
-                fields = fields,
-                fieldFocusRequesters = fieldFocusRequesters,
-                recipientsOpen = recipientsOpen,
-                emailValidator = emailValidator,
-                contactSuggestions = contactSuggestions,
-                areContactSuggestionsExpanded = areContactSuggestionsExpanded,
-                actions = actions
-            )
-
-            if (showSubjectAndBody) {
-                MailDivider()
-                SubjectTextField(
-                    initialValue = fields.subject,
-                    onSubjectChange = actions.onSubjectChanged,
-                    modifier = maxWidthModifier
-                        .testTag(ComposerTestTags.Subject)
-                        .retainFieldFocusOnConfigurationChange(FocusedFieldType.SUBJECT)
+                PrefixedEmailSelector(
+                    prefixStringResource = R.string.from_prefix,
+                    modifier = maxWidthModifier.testTag(ComposerTestTags.FromSender),
+                    selectedEmail = fields.sender.email,
+                    actions.onChangeSender
                 )
                 MailDivider()
+
+                RecipientFields2(
+                    fields = fields,
+                    fieldFocusRequesters = fieldFocusRequesters,
+                    recipientsOpen = recipientsOpen,
+                    emailValidator = emailValidator,
+                    contactSuggestions = contactSuggestions,
+                    areContactSuggestionsExpanded = areContactSuggestionsExpanded,
+                    actions = actions
+                )
+
+                if (showSubjectAndBody) {
+                    MailDivider()
+                    SubjectTextField(
+                        initialValue = fields.subject,
+                        onSubjectChange = actions.onSubjectChanged,
+                        modifier = maxWidthModifier
+                            .testTag(ComposerTestTags.Subject)
+                            .retainFieldFocusOnConfigurationChange(FocusedFieldType.SUBJECT)
+                    )
+                    MailDivider()
+                }
+            }
+
+            if (showSubjectAndBody) {
                 MessageBodyEditor(
                     messageBodyUiModel = fields.displayBody,
                     onBodyChanged = actions.onBodyChanged,

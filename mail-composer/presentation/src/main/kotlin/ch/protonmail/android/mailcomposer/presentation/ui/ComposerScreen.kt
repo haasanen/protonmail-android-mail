@@ -45,6 +45,9 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.layout.boundsInWindow
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.LocalView
@@ -67,6 +70,7 @@ import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.SenderEmail
 import ch.protonmail.android.mailcomposer.domain.model.Subject
 import ch.protonmail.android.mailcomposer.presentation.R
+import ch.protonmail.android.mailcomposer.presentation.model.ComposeScreenParams
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerAction
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerDraftState
 import ch.protonmail.android.mailcomposer.presentation.model.FocusedFieldType
@@ -225,33 +229,30 @@ fun ComposerScreen(actions: ComposerScreen.Actions, viewModel: ComposerViewModel
 
                 val coroutineScope = rememberCoroutineScope()
                 val scrollState = rememberScrollState()
-                var previousWebViewHeight = remember { 0 }
+                var columnBounds by remember { mutableStateOf(Rect.Zero) }
+                var visibleHeaderHeight by remember { mutableStateOf(0f) }
+                var headerHeight by remember { mutableStateOf(0f) }
 
-                @SuppressWarnings("MagicNumber")
-                fun onEditorParamsChanged(params: WebViewParams) {
-                    val sizeDelta = (params.height - previousWebViewHeight).coerceAtLeast(0)
-                    previousWebViewHeight = params.height
-
-                    Timber.d("composer-scroll: ALL PARAMS: $params")
-                    Timber.d("composer-scroll: current scroll ${scrollState.value}")
-                    Timber.d("composer-scroll: size delta $sizeDelta")
-
-                    if (sizeDelta > 100) {
-                        Timber.d("composer-scroll: that's too much scrolling. I'd rather stay.")
-                        return
-                    }
-
-                    coroutineScope.launch {
-                        val value = scrollState.value + sizeDelta
-                        Timber.d("composer-scroll: required scroll value $value")
-                        scrollState.scrollTo(value)
-                    }
+                val scrollManager = remember {
+                    EditorScrollManager(
+                        onUpdateScroll = { coroutineScope.launch { scrollState.scrollTo(it) } }
+                    )
                 }
+
+                fun getComposeScreenParams() = ComposeScreenParams(
+                    visibleHeaderHeight,
+                    headerHeight,
+                    screenHeight,
+                    scrollState.value
+                )
 
                 Column(
                     modifier = Modifier
                         .padding(paddingValues)
                         .verticalScroll(scrollState)
+                        .onGloballyPositioned { coordinates ->
+                            columnBounds = coordinates.boundsInWindow()
+                        }
                 ) {
                     // Not showing the form till we're done loading ensure it does receive the
                     // right "initial values" from state when displayed
@@ -269,7 +270,18 @@ fun ComposerScreen(actions: ComposerScreen.Actions, viewModel: ComposerViewModel
                             { recipientsOpen = it },
                             { focusedField = it },
                             { bottomSheetType.value = it },
-                            ::onEditorParamsChanged
+                            { webViewParams ->
+                                scrollManager.onEditorParamsChanged(
+                                    scrollState.value,
+                                    ComposeScreenParams(visibleHeaderHeight),
+                                    webViewParams
+                                )
+                            },
+                            onHeaderPositioned = { headerBounds ->
+                                val visibleBounds = headerBounds.intersect(columnBounds)
+                                visibleHeaderHeight = visibleBounds.height
+                                headerHeight = headerBounds.height
+                            }
                         ),
                         contactSuggestions = state.contactSuggestions,
                         areContactSuggestionsExpanded = state.areContactSuggestionsExpanded
@@ -456,7 +468,8 @@ private fun buildActions(
     onToggleRecipients: (Boolean) -> Unit,
     onFocusChanged: (FocusedFieldType) -> Unit,
     setBottomSheetType: (BottomSheetType) -> Unit,
-    onEditorParamsChanged: (WebViewParams) -> Unit
+    onEditorParamsChanged: (WebViewParams) -> Unit,
+    onHeaderPositioned: (Rect) -> Unit
 ): ComposerFormActions = ComposerFormActions(
     onToggleRecipients = onToggleRecipients,
     onFocusChanged = onFocusChanged,
@@ -476,7 +489,8 @@ private fun buildActions(
         setBottomSheetType(BottomSheetType.ChangeSender)
         viewModel.submit(ComposerAction.ChangeSenderRequested)
     },
-    onEditorParamsChanged = onEditorParamsChanged
+    onEditorParamsChanged = onEditorParamsChanged,
+    onHeaderPositioned = onHeaderPositioned
 )
 
 object ComposerScreen {

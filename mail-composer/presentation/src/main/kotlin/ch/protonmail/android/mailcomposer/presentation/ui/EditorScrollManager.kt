@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.mailcomposer.presentation.ui
 
+import ch.protonmail.android.mailcomposer.presentation.model.ComposeScreenParams
 import ch.protonmail.android.mailcomposer.presentation.model.WebViewParams
 import timber.log.Timber
 
@@ -27,16 +28,20 @@ class EditorScrollManager(
     val onUpdateScroll: (Int) -> Unit
 ) {
 
-
     private var previousWebViewHeight = 0
 
-    fun onEditorParamsChanged(currentScroll: Int, webViewParams: WebViewParams) {
+    fun onEditorParamsChanged(
+        currentScroll: Int,
+        composeScreenParams: ComposeScreenParams,
+        webViewParams: WebViewParams
+    ) {
         val sizeDelta = (webViewParams.height - previousWebViewHeight).coerceAtLeast(0)
         previousWebViewHeight = webViewParams.height
 
-        Timber.d("composer-scroll: ALL PARAMS: $webViewParams")
+        Timber.d("composer-scroll: composer form params: $composeScreenParams")
+        Timber.d("composer-scroll: WebView params: $webViewParams")
         Timber.d("composer-scroll: current scroll $currentScroll")
-        Timber.d("composer-scroll: size delta $sizeDelta")
+        Timber.d("composer-scroll: size delta (previous webview height to new webview height: $sizeDelta")
 
         if (sizeDelta > MIN_SCROLL_CHANGE) {
             Timber.d("composer-scroll: that's too much scrolling. I'd rather stay.")
