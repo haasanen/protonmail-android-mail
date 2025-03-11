@@ -30,6 +30,7 @@ import ch.protonmail.android.mailcommon.datarust.mapper.LocalConversationId
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageId
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageMetadata
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalMimeType
+import ch.protonmail.android.mailcommon.datarust.mapper.RemoteMessageId as RustRemoteMessageId
 import ch.protonmail.android.mailcommon.domain.model.AvatarInformation
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
@@ -44,6 +45,7 @@ import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.MimeType
 import ch.protonmail.android.mailmessage.domain.model.Participant
 import ch.protonmail.android.mailmessage.domain.model.Recipient
+import ch.protonmail.android.mailmessage.domain.model.RemoteMessageId
 import me.proton.core.user.domain.entity.AddressId
 import timber.log.Timber
 import uniffi.proton_mail_common.BodyOutput
@@ -161,3 +163,5 @@ fun LocalConversationMessages.toConversationMessagesWithMessageToOpen(): Either<
     ).right()
 }
 
+fun RemoteMessageId.toRemoteMessageId(): RustRemoteMessageId = RustRemoteMessageId(this.id)
+fun RustRemoteMessageId.toRemoteMessageId(): RemoteMessageId = RemoteMessageId(this.value)

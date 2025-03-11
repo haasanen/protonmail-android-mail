@@ -29,6 +29,7 @@ import ch.protonmail.android.mailmessage.domain.model.MessageAttachment
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.MessageWithBody
 import ch.protonmail.android.mailmessage.domain.model.RefreshedMessageWithBody
+import ch.protonmail.android.mailmessage.domain.model.RemoteMessageId
 import ch.protonmail.android.mailmessage.domain.model.SenderImage
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import kotlinx.coroutines.flow.Flow
@@ -59,6 +60,12 @@ interface MessageRepository {
      * @return either the [Message] or a [DataError.Local]
      */
     fun observeMessage(userId: UserId, messageId: MessageId): Flow<Either<DataError, Message>>
+
+    /**
+     * Gets a [Message] metadata for [userId] from the local storage from a [RemoteMessageId].
+     * @return either the [Message] or a [DataError.Local]
+     */
+    fun observeMessage(userId: UserId, remoteMessageId: RemoteMessageId): Flow<Either<DataError, Message>>
 
     /**
      * Observe the [MessageWithBody] for a given [MessageId], for [userId]

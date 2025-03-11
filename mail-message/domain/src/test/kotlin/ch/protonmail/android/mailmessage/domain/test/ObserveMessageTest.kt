@@ -23,6 +23,7 @@ import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailmessage.domain.model.MessageId
+import ch.protonmail.android.mailmessage.domain.model.RemoteMessageId
 import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
 import ch.protonmail.android.mailmessage.domain.usecase.ObserveMessage
 import ch.protonmail.android.testdata.message.MessageTestData
@@ -34,16 +35,22 @@ import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class ObserveMessageTest {
+internal class ObserveMessageTest {
 
     private val repository = mockk<MessageRepository> {
-        every { this@mockk.observeMessage(userId, any()) } returns flowOf(DataError.Local.NoDataCached.left())
+        every {
+            this@mockk.observeMessage(userId, any<RemoteMessageId>())
+        } returns flowOf(DataError.Local.NoDataCached.left())
+
+        every {
+            this@mockk.observeMessage(userId, any<MessageId>())
+        } returns flowOf(DataError.Local.NoDataCached.left())
     }
 
     private val observeMessage = ObserveMessage(repository)
 
     @Test
-    fun `returns local data error when message does not exist in repository`() = runTest {
+    fun `returns local data error when message does not exist in repository (via messageId)`() = runTest {
         // Given
         val messageId = MessageId(MessageTestData.RAW_MESSAGE_ID)
         val error = DataError.Local.NoDataCached
@@ -58,9 +65,39 @@ class ObserveMessageTest {
     }
 
     @Test
-    fun `returns message when it exists in repository`() = runTest {
+    fun `returns message when it exists in repository (via messageId)`() = runTest {
         // Given
         val messageId = MessageId(MessageTestData.RAW_MESSAGE_ID)
+        val message = MessageTestData.message
+        every { repository.observeMessage(userId, messageId) } returns flowOf(message.right())
+
+        // When
+        observeMessage(userId, messageId).test {
+            // Then
+            assertEquals(message.right(), awaitItem())
+            awaitComplete()
+        }
+    }
+
+    @Test
+    fun `returns local data error when message does not exist in repository (via remoteMessageId)`() = runTest {
+        // Given
+        val messageId = MessageId(MessageTestData.RAW_MESSAGE_ID)
+        val error = DataError.Local.NoDataCached
+        every { repository.observeMessage(userId, messageId) } returns flowOf(error.left())
+
+        // When
+        observeMessage(userId, messageId).test {
+            // Then
+            assertEquals(error.left(), awaitItem())
+            awaitComplete()
+        }
+    }
+
+    @Test
+    fun `returns message when it exists in repository (via remoteMessageId)`() = runTest {
+        // Given
+        val messageId = RemoteMessageId(MessageTestData.RAW_MESSAGE_ID)
         val message = MessageTestData.message
         every { repository.observeMessage(userId, messageId) } returns flowOf(message.right())
 

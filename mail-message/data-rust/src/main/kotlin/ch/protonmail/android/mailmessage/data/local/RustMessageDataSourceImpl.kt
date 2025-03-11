@@ -25,6 +25,7 @@ import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelAsAction
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageId
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageMetadata
+import ch.protonmail.android.mailcommon.datarust.mapper.RemoteMessageId
 import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailmessage.data.mapper.toMessageBody
@@ -88,6 +89,20 @@ class RustMessageDataSourceImpl @Inject constructor(
 
         return createRustMessageAccessor(session, messageId)
             .onLeft { Timber.e("rust-message: Failed to get message $it") }
+    }
+
+    override suspend fun getMessage(
+        userId: UserId,
+        messageId: RemoteMessageId
+    ): Either<DataError, LocalMessageMetadata> {
+        val session = userSessionRepository.getUserSession(userId)
+        if (session == null) {
+            Timber.e("rust-message: trying to fetch remote message with a null session")
+            return DataError.Local.NoUserSession.left()
+        }
+
+        return createRustMessageAccessor(session, messageId)
+            .onLeft { Timber.e("rust-message: Failed to get remote message $it") }
     }
 
     override suspend fun getMessageBody(userId: UserId, messageId: LocalMessageId): Either<DataError, MessageBody> {

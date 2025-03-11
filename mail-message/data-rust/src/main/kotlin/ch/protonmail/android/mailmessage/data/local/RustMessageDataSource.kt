@@ -23,6 +23,7 @@ import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelAsAction
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageId
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageMetadata
+import ch.protonmail.android.mailcommon.datarust.mapper.RemoteMessageId
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailmessage.domain.model.MessageBody
 import ch.protonmail.android.mailpagination.domain.model.PageKey
@@ -35,6 +36,8 @@ import uniffi.proton_mail_uniffi.MoveAction
 interface RustMessageDataSource {
 
     suspend fun getMessage(userId: UserId, messageId: LocalMessageId): Either<DataError, LocalMessageMetadata>
+    suspend fun getMessage(userId: UserId, messageId: RemoteMessageId): Either<DataError, LocalMessageMetadata>
+
     suspend fun getMessageBody(userId: UserId, messageId: LocalMessageId): Either<DataError, MessageBody>
 
     suspend fun getMessages(userId: UserId, pageKey: PageKey): List<LocalMessageMetadata>

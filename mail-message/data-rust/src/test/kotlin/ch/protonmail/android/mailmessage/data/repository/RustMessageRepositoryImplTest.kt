@@ -33,11 +33,13 @@ import ch.protonmail.android.mailmessage.data.mapper.toLocalMessageId
 import ch.protonmail.android.mailmessage.data.mapper.toMessage
 import ch.protonmail.android.mailmessage.data.mapper.toMessageBody
 import ch.protonmail.android.mailmessage.data.mapper.toMessageId
+import ch.protonmail.android.mailmessage.data.mapper.toRemoteMessageId
 import ch.protonmail.android.mailmessage.data.sample.LocalAttachmentMetadataSample
 import ch.protonmail.android.mailmessage.domain.model.SenderImage
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.testdata.message.rust.LocalMessageIdSample
 import ch.protonmail.android.testdata.message.rust.LocalMessageTestData
+import ch.protonmail.android.testdata.message.rust.RemoteMessageIdSample
 import ch.protonmail.android.testdata.user.UserIdTestData
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -106,6 +108,28 @@ class RustMessageRepositoryImplTest {
     }
 
     @Test
+    fun `observe cached message from a remote messageId should return the corresponding local message`() = runTest {
+        // Given
+        val userId = UserIdTestData.userId
+        val messageId = RemoteMessageIdSample.AugWeatherForecast.toRemoteMessageId()
+        val expectedMessage = LocalMessageTestData.AugWeatherForecast.toMessage()
+        coEvery {
+            rustMessageDataSource.getMessage(userId, messageId)
+        } returns LocalMessageTestData.AugWeatherForecast.right()
+
+        // When
+        repository.observeMessage(userId, messageId.toRemoteMessageId()).test {
+            val result = awaitItem().getOrElse { null }
+
+            // Then
+            assertEquals(expectedMessage, result)
+            coVerify { rustMessageDataSource.getMessage(userId, messageId) }
+
+            awaitComplete()
+        }
+    }
+
+    @Test
     fun `observe cached message should return DataError when no message not found`() = runTest {
         // Given
         val userId = UserIdTestData.userId
@@ -120,6 +144,26 @@ class RustMessageRepositoryImplTest {
 
             // Then
             coVerify { rustMessageDataSource.getMessage(userId, messageId.toLocalMessageId()) }
+            assert(result.isLeft())
+            assertEquals(DataError.Local.NoDataCached, result.swap().getOrElse { null })
+            awaitComplete()
+        }
+    }
+
+    @Test
+    fun `observe cached message from a remote messageId should return DataError when no message not found`() = runTest {
+        // Given
+        val userId = UserIdTestData.userId
+        val messageId = RemoteMessageIdSample.AugWeatherForecast
+        coEvery { rustMessageDataSource.getMessage(userId, messageId.toRemoteMessageId()) } returns
+            DataError.Local.NoDataCached.left()
+
+        // When
+        repository.observeMessage(userId, messageId).test {
+            val result = awaitItem()
+
+            // Then
+            coVerify { rustMessageDataSource.getMessage(userId, messageId.toRemoteMessageId()) }
             assert(result.isLeft())
             assertEquals(DataError.Local.NoDataCached, result.swap().getOrElse { null })
             awaitComplete()

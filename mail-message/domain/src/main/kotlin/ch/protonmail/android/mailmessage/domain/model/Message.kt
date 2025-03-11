@@ -30,6 +30,10 @@ import kotlin.time.Duration.Companion.seconds
 @Serializable
 data class MessageId(val id: String)
 
+@Serializable
+@JvmInline
+value class RemoteMessageId(val id: String)
+
 /**
  * @property expirationTime is epoch time in seconds.
  *  0 means no expiration time.

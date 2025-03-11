@@ -29,6 +29,7 @@ import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.mailmessage.data.local.RustMessageDataSource
 import ch.protonmail.android.mailmessage.data.mapper.toLocalMessageId
 import ch.protonmail.android.mailmessage.data.mapper.toMessage
+import ch.protonmail.android.mailmessage.data.mapper.toRemoteMessageId
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.model.EmbeddedImage
 import ch.protonmail.android.mailmessage.domain.model.Message
@@ -36,6 +37,7 @@ import ch.protonmail.android.mailmessage.domain.model.MessageAttachment
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.MessageWithBody
 import ch.protonmail.android.mailmessage.domain.model.RefreshedMessageWithBody
+import ch.protonmail.android.mailmessage.domain.model.RemoteMessageId
 import ch.protonmail.android.mailmessage.domain.model.SenderImage
 import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
 import ch.protonmail.android.mailpagination.domain.model.PageKey
@@ -82,6 +84,16 @@ class RustMessageRepositoryImpl @Inject constructor(
     override fun observeMessage(userId: UserId, messageId: MessageId): Flow<Either<DataError, Message>> =
         flow {
             val message = rustMessageDataSource.getMessage(userId, messageId.toLocalMessageId())
+                .map { it.toMessage() }
+
+            emit(message)
+        }
+
+    @MissingRustApi
+    // Observing is currently faked! This won't reflect changes to the message after the first emission
+    override fun observeMessage(userId: UserId, remoteMessageId: RemoteMessageId): Flow<Either<DataError, Message>> =
+        flow {
+            val message = rustMessageDataSource.getMessage(userId, remoteMessageId.toRemoteMessageId())
                 .map { it.toMessage() }
 
             emit(message)

@@ -43,6 +43,7 @@ import uniffi.proton_mail_uniffi.MimeTypeCategory
 import uniffi.proton_mail_uniffi.MobileSettings
 import uniffi.proton_mail_uniffi.PgpScheme
 import uniffi.proton_mail_uniffi.PmSignature
+import uniffi.proton_mail_uniffi.RemoteId
 import uniffi.proton_mail_uniffi.ShowImages
 import uniffi.proton_mail_uniffi.ShowMoved
 import uniffi.proton_mail_uniffi.SwipeAction
@@ -93,4 +94,4 @@ typealias LocalContactItemTypeGroup = ContactItemType.Group
 typealias LocalComposerRecipient = ComposerRecipient
 typealias LocalDraftSendResult = DraftSendResult
 
-
+typealias RemoteMessageId = RemoteId

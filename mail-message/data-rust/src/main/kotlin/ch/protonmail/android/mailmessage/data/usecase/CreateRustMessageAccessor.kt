@@ -19,15 +19,21 @@
 package ch.protonmail.android.mailmessage.data.usecase
 
 import arrow.core.Either
+import arrow.core.getOrElse
 import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageId
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageMetadata
+import ch.protonmail.android.mailcommon.datarust.mapper.RemoteMessageId
 import ch.protonmail.android.mailcommon.datarust.mapper.toDataError
 import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailmessage.data.mapper.toLocalMessageId
+import ch.protonmail.android.mailmessage.data.mapper.toMessageId
 import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
 import uniffi.proton_mail_uniffi.MessageResult
+import uniffi.proton_mail_uniffi.ResolveMessageIdResult
 import uniffi.proton_mail_uniffi.message
+import uniffi.proton_mail_uniffi.resolveMessageId
 import javax.inject.Inject
 
 class CreateRustMessageAccessor @Inject constructor() {
@@ -40,6 +46,26 @@ class CreateRustMessageAccessor @Inject constructor() {
         is MessageResult.Ok -> when (val message = result.v1) {
             null -> DataError.Local.NoDataCached.left()
             else -> message.right()
+        }
+    }
+
+    suspend operator fun invoke(
+        session: MailUserSessionWrapper,
+        remoteMessageId: RemoteMessageId
+    ): Either<DataError, LocalMessageMetadata> {
+        val messageId = when (val result = resolveMessageId(session.getRustUserSession(), remoteMessageId)) {
+            is ResolveMessageIdResult.Error -> result.v1.toDataError().left()
+            is ResolveMessageIdResult.Ok -> result.v1.toMessageId().right()
+        }.getOrElse {
+            return DataError.Local.NoDataCached.left()
+        }
+
+        return when (val result = message(session.getRustUserSession(), messageId.toLocalMessageId())) {
+            is MessageResult.Error -> result.v1.toDataError().left()
+            is MessageResult.Ok -> when (val message = result.v1) {
+                null -> DataError.Local.NoDataCached.left()
+                else -> message.right()
+            }
         }
     }
 }
