@@ -81,7 +81,7 @@ class BuildDraftDisplayBody @Inject constructor(
 
     private fun caretTrackingJs() = """
         function trackCursorPosition() {
-        console.log("composerscroll tracking cursor position");
+        console.log("composer-scroll tracking cursor position");
             var editor = document.getElementById('$EDITOR_ID');
 
             editor.addEventListener('keyup', updateCaretPosition);

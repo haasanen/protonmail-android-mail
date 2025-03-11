@@ -232,17 +232,17 @@ fun ComposerScreen(actions: ComposerScreen.Actions, viewModel: ComposerViewModel
                     val sizeDelta = (params.height - previousWebViewHeight).coerceAtLeast(0)
                     previousWebViewHeight = params.height
 
-                    Timber.d("composerscroll: current scroll ${scrollState.value}")
-                    Timber.d("composerscroll: size delta $sizeDelta")
+                    Timber.d("composer-scroll: current scroll ${scrollState.value}")
+                    Timber.d("composer-scroll: size delta $sizeDelta")
 
                     if (sizeDelta > 100) {
-                        Timber.d("composerscroll: that's too much scrolling. I'd rather stay.")
+                        Timber.d("composer-scroll: that's too much scrolling. I'd rather stay.")
                         return
                     }
 
                     coroutineScope.launch {
                         val value = scrollState.value + sizeDelta
-                        Timber.d("composerscroll: required scroll value $value")
+                        Timber.d("composer-scroll: required scroll value $value")
                         scrollState.scrollTo(value)
                     }
                 }

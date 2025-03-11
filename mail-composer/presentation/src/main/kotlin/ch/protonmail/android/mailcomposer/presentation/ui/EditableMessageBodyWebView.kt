@@ -115,18 +115,18 @@ fun EditableMessageBodyWebView(
 
     fun onWebViewResize() {
         if (state.loadingState != LoadingState.Finished) {
-            Timber.d("composerscroll: WebView resized while loading state not finished. Skipping.")
+            Timber.d("composer-scroll: WebView resized while loading state not finished. Skipping.")
             return
         }
-        Timber.d("composerscroll: WebView resized being processed...")
+        Timber.d("composer-scroll: WebView resized being processed...")
 
         val height = webView?.height ?: 0
-        Timber.d("composerscroll: Emitting webview size: $height")
+        Timber.d("composer-scroll: Emitting webview size: $height")
         webViewActions.onWebViewParamsChanged(WebViewParams(height, lastCursorPosition))
     }
 
     fun onCursorPositionChanged(position: Float) {
-        Timber.d("composerscroll: cursor position changed, callback value: $position")
+        Timber.d("composer-scroll: cursor position changed, callback value: $position")
         lastCursorPosition = position
     }
 
