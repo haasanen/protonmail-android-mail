@@ -34,6 +34,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 import ch.protonmail.android.mailcommon.presentation.model.string
@@ -115,7 +116,9 @@ fun MailboxTopAppBar(
                             .testTag(MailboxTopAppBarTestTags.LocationLabel)
                             .clickable(onClick = actions.onTitleClick),
                         text = uiModel.title,
-                        style = ProtonTheme.typography.titleLarge
+                        style = ProtonTheme.typography.titleLarge,
+                        overflow = TextOverflow.Ellipsis,
+                        maxLines = 1
                     )
                 },
                 navigationIcon = {
