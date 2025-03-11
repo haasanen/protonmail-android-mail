@@ -24,8 +24,9 @@ import android.content.Intent
 import arrow.core.getOrElse
 import ch.protonmail.android.mailcommon.domain.coroutines.AppScope
 import ch.protonmail.android.maildetail.domain.usecase.MarkMessageAsRead
-import ch.protonmail.android.mailmessage.domain.model.MessageId
-import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
+import ch.protonmail.android.maildetail.domain.usecase.MoveMessage
+import ch.protonmail.android.mailmessage.domain.model.RemoteMessageId
+import ch.protonmail.android.mailmessage.domain.usecase.ObserveMessage
 import ch.protonmail.android.mailnotifications.domain.model.LocalNotificationAction
 import ch.protonmail.android.mailnotifications.domain.model.PushNotificationPendingIntentPayloadData
 import ch.protonmail.android.mailnotifications.domain.proxy.NotificationManagerCompatProxy
@@ -33,6 +34,7 @@ import ch.protonmail.android.mailnotifications.domain.usecase.actions.CreateNoti
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import me.proton.core.domain.entity.UserId
 import me.proton.core.util.kotlin.deserialize
@@ -43,7 +45,10 @@ import javax.inject.Inject
 internal class PushNotificationActionsBroadcastReceiver @Inject constructor() : BroadcastReceiver() {
 
     @Inject
-    lateinit var messageRepository: MessageRepository
+    lateinit var observeMessage: ObserveMessage
+
+    @Inject
+    lateinit var moveMessage: MoveMessage
 
     @Inject
     lateinit var markAsRead: MarkMessageAsRead
@@ -71,33 +76,39 @@ internal class PushNotificationActionsBroadcastReceiver @Inject constructor() : 
 
         coroutineScope.launch {
             val userId = UserId(actionData.userId)
-            val messageId = MessageId(actionData.messageId)
+            val remoteMessageId = RemoteMessageId(actionData.messageId)
+
+            val message = observeMessage(userId, remoteMessageId)
+                .firstOrNull()
+                ?.getOrNull()
+
+            if (message == null) {
+                Timber.e("Error fetching the message for action $rawAction - remoteMessageId '$remoteMessageId'")
+                return@launch
+            }
 
             when (val action = actionData.action) {
                 is LocalNotificationAction.MoveTo -> {
-                    val result = messageRepository.moveTo(
+                    val result = moveMessage.invoke(
                         userId = UserId(actionData.userId),
-                        messageId = MessageId(actionData.messageId),
-                        fromLabel = null,
-                        toLabel = action.destinationLabel
+                        messageId = message.messageId,
+                        systemLabelId = action.destinationLabel
                     )
 
                     result.onLeft {
                         Timber.e("Error moving message from notification action: $it")
                     }.onRight {
-                        Timber.d("Message moved successfully from notification action: $it")
+                        Timber.d("Message moved successfully from notification action: ${message.messageId}")
                     }
                 }
 
                 is LocalNotificationAction.MarkAsRead -> {
-                    markAsRead(userId, messageId).getOrElse {
-                        return@launch Timber.e("Unable to find message with id $messageId.")
+                    markAsRead(userId, message.messageId).getOrElse {
+                        return@launch Timber.e("Unable to find message with id $remoteMessageId.")
                     }
 
-                    Timber.d("Conversation marked as read.")
+                    Timber.d("Message marked as read.")
                 }
-
-                else -> Timber.w("Unsupported action via BroadcastReceiver: $action")
             }
         }
 
