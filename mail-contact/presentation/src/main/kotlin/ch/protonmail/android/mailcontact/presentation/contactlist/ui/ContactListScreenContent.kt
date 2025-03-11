@@ -19,19 +19,22 @@
 package ch.protonmail.android.mailcontact.presentation.contactlist.ui
 
 import android.content.res.Configuration
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ch.protonmail.android.design.compose.theme.ProtonDimens
@@ -50,55 +53,86 @@ internal fun ContactListScreenContent(
 ) {
     LazyColumn(
         modifier = modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.spacedBy(ProtonDimens.Spacing.Large),
         contentPadding = PaddingValues(
             start = ProtonDimens.Spacing.Large,
             end = ProtonDimens.Spacing.Large
         )
     ) {
-        items(state.groupedContacts) { groupedContactsUiModel ->
-            ContactListItemGroup(groupedContactsUiModel, actions)
+        state.groupedContacts.forEachIndexed { groupIndex, groupedContactsUiModel ->
+            val contacts = groupedContactsUiModel.contacts
+            contacts.forEachIndexed { index, contact ->
+                val isFirst = index == 0
+                val isLast = index == contacts.lastIndex
+
+                item {
+                    ContactListItem(
+                        contact = contact,
+                        isFirstInGroup = isFirst,
+                        isLastInGroup = isLast,
+                        showDivider = !isLast,
+                        actions = actions
+                    )
+
+                    if (isLast && groupIndex < state.groupedContacts.lastIndex) {
+                        Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Large))
+                    }
+                }
+            }
         }
     }
 }
 
 @Composable
-private fun ContactListItemGroup(
-    groupedContactsUiModel: GroupedContactListItemsUiModel,
+private fun ContactListItem(
+    contact: ContactListItemUiModel,
+    isFirstInGroup: Boolean,
+    isLastInGroup: Boolean,
+    showDivider: Boolean,
     actions: ContactListScreen.Actions
 ) {
+    // Define the shape based on position in group
+    val shape = when {
+        isFirstInGroup && isLastInGroup -> ProtonTheme.shapes.large
+        isFirstInGroup -> ProtonTheme.shapes.large.copy(
+            bottomStart = CornerSize(0.dp),
+            bottomEnd = CornerSize(0.dp)
+        )
+        isLastInGroup -> ProtonTheme.shapes.large.copy(
+            topStart = CornerSize(0.dp),
+            topEnd = CornerSize(0.dp)
+        )
+        else -> RectangleShape
+    }
+
     Card(
-        modifier = Modifier
-            .fillMaxWidth(),
-        shape = ProtonTheme.shapes.large,
+        modifier = Modifier.fillMaxWidth(),
+        shape = shape,
         elevation = CardDefaults.cardElevation(),
         colors = CardDefaults.cardColors().copy(
             containerColor = ProtonTheme.colors.backgroundNorm
         )
     ) {
-        Column(modifier = Modifier.padding(8.dp)) {
-
-            groupedContactsUiModel.contacts.forEachIndexed { index, contact ->
+        Column(modifier = Modifier.fillMaxWidth()) {
+            Box(modifier = Modifier.padding(ProtonDimens.Spacing.Standard)) {
                 when (contact) {
                     is ContactListItemUiModel.ContactGroup -> ContactListGroupItem(
                         contactGroup = contact,
                         actions = actions
                     )
 
-                    is ContactListItemUiModel.Contact ->
-                        SwipeableContactListItem(
-                            contact = contact,
-                            actions = actions
-                        )
-                }
-
-                if (index < groupedContactsUiModel.contacts.lastIndex) {
-                    HorizontalDivider(
-                        modifier = Modifier.padding(0.dp),
-                        thickness = 1.dp,
-                        color = ProtonTheme.colors.separatorNorm
+                    is ContactListItemUiModel.Contact -> SwipeableContactListItem(
+                        contact = contact,
+                        actions = actions
                     )
                 }
+            }
+
+            if (showDivider) {
+                HorizontalDivider(
+                    modifier = Modifier.fillMaxWidth(),
+                    thickness = ProtonDimens.BorderSize.Default,
+                    color = ProtonTheme.colors.separatorNorm
+                )
             }
         }
     }
@@ -122,19 +156,6 @@ fun ContactListScreenContentPreview() {
 
     ContactListScreenContent(
         state = sampleState,
-        actions = ContactListScreen.Actions.Empty
-    )
-}
-
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_NO, showBackground = true)
-@Composable
-fun ContactListItemGroupPreview() {
-    val sampleGroup = GroupedContactListItemsUiModel(
-        contacts = listOf(contactSampleData, contactSampleData, contactSampleData)
-    )
-
-    ContactListItemGroup(
-        groupedContactsUiModel = sampleGroup,
         actions = ContactListScreen.Actions.Empty
     )
 }
