@@ -37,6 +37,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import ch.protonmail.android.mailcommon.presentation.compose.pxToDp
 import ch.protonmail.android.mailcomposer.presentation.model.DraftDisplayBodyUiModel
+import ch.protonmail.android.mailcomposer.presentation.model.WebViewParams
 import ch.protonmail.android.mailmessage.domain.model.AttachmentId
 import ch.protonmail.android.mailmessage.domain.model.EmbeddedImage
 import ch.protonmail.android.mailmessage.domain.model.MimeType
@@ -110,24 +111,27 @@ fun EditableMessageBodyWebView(
         }
     }
 
-    fun onWebviewResize() {
+    var lastCursorPosition = remember { 0f }
+
+    fun onWebViewResize() {
         if (state.loadingState != LoadingState.Finished) {
             Timber.d("composerscroll: WebView resized while loading state not finished. Skipping.")
             return
         }
         Timber.d("composerscroll: WebView resized being processed...")
 
-        val size = webView?.height ?: 0
-        Timber.d("composerscroll: Emitting webview size: $size")
-        webViewActions.onWebviewSizeChanged(size)
+        val height = webView?.height ?: 0
+        Timber.d("composerscroll: Emitting webview size: $height")
+        webViewActions.onWebViewParamsChanged(WebViewParams(height, lastCursorPosition))
     }
 
     fun onCursorPositionChanged(position: Float) {
         Timber.d("composerscroll: cursor position changed, callback value: $position")
+        lastCursorPosition = position
     }
 
     val javascriptCallback = remember {
-        JavascriptCallback(webViewActions.onMessageBodyChanged, ::onWebviewResize, ::onCursorPositionChanged)
+        JavascriptCallback(webViewActions.onMessageBodyChanged, ::onWebViewResize, ::onCursorPositionChanged)
     }
 
     key(client) {
@@ -183,7 +187,7 @@ object EditableMessageBodyWebView {
         val onAttachmentClicked: (attachmentId: AttachmentId) -> Unit,
         val loadEmbeddedImage: (contentId: String) -> EmbeddedImage?,
         val onMessageBodyChanged: (body: String) -> Unit,
-        val onWebviewSizeChanged: (size: Int) -> Unit
+        val onWebViewParamsChanged: (params: WebViewParams) -> Unit
     )
 }
 

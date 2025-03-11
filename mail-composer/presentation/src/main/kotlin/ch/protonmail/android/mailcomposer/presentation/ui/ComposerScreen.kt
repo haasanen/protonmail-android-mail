@@ -70,6 +70,7 @@ import ch.protonmail.android.mailcomposer.presentation.R
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerAction
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerDraftState
 import ch.protonmail.android.mailcomposer.presentation.model.FocusedFieldType
+import ch.protonmail.android.mailcomposer.presentation.model.WebViewParams
 import ch.protonmail.android.mailcomposer.presentation.viewmodel.ComposerViewModel
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.Participant
@@ -227,9 +228,9 @@ fun ComposerScreen(actions: ComposerScreen.Actions, viewModel: ComposerViewModel
                 var previousWebViewHeight = remember { 0 }
 
                 @SuppressWarnings("MagicNumber")
-                fun onEditorSizeChanged(height: Int) {
-                    val sizeDelta = (height - previousWebViewHeight).coerceAtLeast(0)
-                    previousWebViewHeight = height
+                fun onEditorParamsChanged(params: WebViewParams) {
+                    val sizeDelta = (params.height - previousWebViewHeight).coerceAtLeast(0)
+                    previousWebViewHeight = params.height
 
                     Timber.d("composerscroll: current scroll ${scrollState.value}")
                     Timber.d("composerscroll: size delta $sizeDelta")
@@ -267,7 +268,7 @@ fun ComposerScreen(actions: ComposerScreen.Actions, viewModel: ComposerViewModel
                             { recipientsOpen = it },
                             { focusedField = it },
                             { bottomSheetType.value = it },
-                            ::onEditorSizeChanged
+                            ::onEditorParamsChanged
                         ),
                         contactSuggestions = state.contactSuggestions,
                         areContactSuggestionsExpanded = state.areContactSuggestionsExpanded
@@ -454,7 +455,7 @@ private fun buildActions(
     onToggleRecipients: (Boolean) -> Unit,
     onFocusChanged: (FocusedFieldType) -> Unit,
     setBottomSheetType: (BottomSheetType) -> Unit,
-    onEditorSizeChanged: (Int) -> Unit
+    onEditorParamsChanged: (WebViewParams) -> Unit
 ): ComposerFormActions = ComposerFormActions(
     onToggleRecipients = onToggleRecipients,
     onFocusChanged = onFocusChanged,
@@ -474,7 +475,7 @@ private fun buildActions(
         setBottomSheetType(BottomSheetType.ChangeSender)
         viewModel.submit(ComposerAction.ChangeSenderRequested)
     },
-    onEditorSizeChanged = onEditorSizeChanged
+    onEditorParamsChanged = onEditorParamsChanged
 )
 
 object ComposerScreen {
