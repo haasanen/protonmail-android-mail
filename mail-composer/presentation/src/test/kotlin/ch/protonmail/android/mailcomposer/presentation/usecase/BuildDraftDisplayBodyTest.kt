@@ -26,7 +26,7 @@ class BuildDraftDisplayBodyTest {
         val messageBodyWithType = MessageBodyWithType(rawMessageBody, MimeTypeUiModel.Html)
         every { sanitizeHtmlOfDecryptedMessageBody(messageBodyWithType) } returns sanitizedMessageBody
         every { getCustomCss() } returns rawCustomCss
-        val expected = buildHtmlTemplate(sanitizedMessageBody, rawCustomCss, getJavascript())
+        val expected = buildHtmlTemplate(sanitizedMessageBody, rawCustomCss, getJavascript(), caretTrackingJs())
 
         // When
         val actual = buildDraftDisplayBody(messageBodyWithType)
@@ -38,7 +38,8 @@ class BuildDraftDisplayBodyTest {
     private fun buildHtmlTemplate(
         bodyContent: String,
         customCss: String,
-        javascript: String
+        javascript: String,
+        caretTrackingJs: String
     ): DraftDisplayBodyUiModel {
         val html = """
             <!DOCTYPE html>
@@ -51,6 +52,7 @@ class BuildDraftDisplayBodyTest {
                     <style>
                         $customCss
                     </style>
+
                 </head>
                 <body>
                     <div id="editor_header"></div>
@@ -61,6 +63,7 @@ class BuildDraftDisplayBodyTest {
 
                     <script>
                         $javascript
+                        $caretTrackingJs
                     </script>
                 </body>
                 </html>
@@ -71,19 +74,55 @@ class BuildDraftDisplayBodyTest {
 
     private fun getJavascript() = """
         document.getElementById('$EDITOR_ID').addEventListener('input', function(){
-            console.log("composer-js-editor: on body changed event")
             var body = document.getElementById('$EDITOR_ID').innerHTML
             $JAVASCRIPT_CALLBACK_INTERFACE_NAME.onBodyUpdated(body)
         });
 
         const observer = new ResizeObserver(entries => {
         for (const entry of entries) {
-            console.log(entry.contentRect.height)
             $JAVASCRIPT_CALLBACK_INTERFACE_NAME.onWebViewSizeChanged()
         }
         });
         observer.observe(document.querySelector('body'));
 
+    """.trimIndent()
+
+    private fun caretTrackingJs() = """
+        function trackCursorPosition() {
+            var editor = document.getElementById('$EDITOR_ID');
+
+            editor.addEventListener('keyup', updateCaretPosition);
+            editor.addEventListener('click', updateCaretPosition);
+            editor.addEventListener('touchend', updateCaretPosition);
+
+            function updateCaretPosition() {
+                var selection = window.getSelection();
+                if (selection.rangeCount > 0) {
+                    var range = selection.getRangeAt(0);
+
+                    // Create a temporary span element to measure the caret position
+                    const span = document.createElement('span');
+                    span.textContent = '\u200B'; // Zero-width space character
+                    range.insertNode(span);
+
+                    // Get the bounding client rect of the span
+                    const rect = span.getBoundingClientRect();
+                    // Get the line height of the span
+                    const lineHeight = window.getComputedStyle(span).lineHeight;
+                    const lineHeightValue = lineHeight.replace(/[^\d.]/g, '');
+                    const parsedLineHeight = parseFloat(lineHeightValue) * 1.2;
+
+                    // Remove the temporary span element
+                    range.deleteContents();
+
+                    // Calculate the height of the caret position relative to the inputDiv
+                    const caretPosition = rect.top - editor.getBoundingClientRect().top;
+                    $JAVASCRIPT_CALLBACK_INTERFACE_NAME.onCaretPositionChanged(caretPosition, parsedLineHeight);
+                }
+            }
+        }
+
+        trackCursorPosition();
     """.trimIndent()
 
     companion object TestData {

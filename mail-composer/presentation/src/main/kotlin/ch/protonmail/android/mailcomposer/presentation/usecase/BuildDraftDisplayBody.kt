@@ -37,14 +37,16 @@ class BuildDraftDisplayBody @Inject constructor(
         val bodyContent: String = sanitizeHtmlOfDecryptedMessageBody(messageBodyWithType)
         val css: String = getCustomCss()
         val javascript: String = getJavascript()
+        val caretTrackingJs: String = caretTrackingJs()
 
-        return buildHtmlTemplate(bodyContent, css, javascript)
+        return buildHtmlTemplate(bodyContent, css, javascript, caretTrackingJs)
     }
 
     private fun buildHtmlTemplate(
         bodyContent: String,
         customCss: String,
-        javascript: String
+        javascript: String,
+        caretTrackingJs: String
     ): DraftDisplayBodyUiModel {
         val html = """
             <!DOCTYPE html>
@@ -57,6 +59,7 @@ class BuildDraftDisplayBody @Inject constructor(
                     <style>
                         $customCss
                     </style>
+
                 </head>
                 <body>
                     <div id="editor_header"></div>
@@ -67,6 +70,7 @@ class BuildDraftDisplayBody @Inject constructor(
 
                     <script>
                         $javascript
+                        $caretTrackingJs
                     </script>
                 </body>
                 </html>
@@ -74,6 +78,43 @@ class BuildDraftDisplayBody @Inject constructor(
 
         return DraftDisplayBodyUiModel(html)
     }
+
+    private fun caretTrackingJs() = """
+        function trackCursorPosition() {
+        console.log("composerscroll tracking cursor position");
+            var editor = document.getElementById('$EDITOR_ID');
+
+            editor.addEventListener('keyup', updateCaretPosition);
+            editor.addEventListener('click', updateCaretPosition);
+            editor.addEventListener('touchend', updateCaretPosition);
+
+            function updateCaretPosition() {
+                var selection = window.getSelection();
+                if (selection.rangeCount > 0) {
+                    var range = selection.getRangeAt(0);
+
+                    // Create a temporary span element to measure the caret position
+                    const span = document.createElement('span');
+                    span.textContent = '\u200B'; // Zero-width space character
+                    console.log('composer-scroll: created span ' + span  + ';;;');
+                    range.insertNode(span);
+
+                    // Get the bounding client rect of the span
+                    const rect = span.getBoundingClientRect();
+
+                    // Remove the temporary span element
+                    range.deleteContents();
+
+                    // Calculate the height of the caret position relative to the inputDiv
+                    const caretPosition = rect.top - editor.getBoundingClientRect().top;
+                    console.log("updated caret position: " + caretPosition);
+                    $JAVASCRIPT_CALLBACK_INTERFACE_NAME.onCaretPositionChanged(caretPosition);
+                }
+            }
+        }
+
+        trackCursorPosition();
+    """.trimIndent()
 
     private fun getJavascript() = """
         document.getElementById('$EDITOR_ID').addEventListener('input', function(){

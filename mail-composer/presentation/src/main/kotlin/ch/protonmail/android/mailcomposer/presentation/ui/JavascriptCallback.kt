@@ -24,7 +24,8 @@ const val JAVASCRIPT_CALLBACK_INTERFACE_NAME = "MessageBodyInterface"
 
 class JavascriptCallback(
     private val onMessageBodyChanged: (String) -> Unit,
-    private val onEditorSizeChanged: () -> Unit
+    private val onEditorSizeChanged: () -> Unit,
+    private val onCursorPositionChanged: (Float) -> Unit
 ) {
 
     @JavascriptInterface
@@ -35,5 +36,10 @@ class JavascriptCallback(
     @JavascriptInterface
     fun onWebViewSizeChanged() {
         onEditorSizeChanged()
+    }
+
+    @JavascriptInterface
+    fun onCaretPositionChanged(position: Float) {
+        onCursorPositionChanged(position)
     }
 }

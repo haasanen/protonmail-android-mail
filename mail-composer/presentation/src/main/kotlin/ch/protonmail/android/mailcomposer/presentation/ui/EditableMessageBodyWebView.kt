@@ -35,7 +35,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.onSizeChanged
 import ch.protonmail.android.mailcommon.presentation.compose.pxToDp
 import ch.protonmail.android.mailcomposer.presentation.model.DraftDisplayBodyUiModel
 import ch.protonmail.android.mailmessage.domain.model.AttachmentId
@@ -123,8 +122,12 @@ fun EditableMessageBodyWebView(
         webViewActions.onWebviewSizeChanged(size)
     }
 
+    fun onCursorPositionChanged(position: Float) {
+        Timber.d("composerscroll: cursor position changed, callback value: $position")
+    }
+
     val javascriptCallback = remember {
-        JavascriptCallback(webViewActions.onMessageBodyChanged, ::onWebviewResize)
+        JavascriptCallback(webViewActions.onMessageBodyChanged, ::onWebviewResize, ::onCursorPositionChanged)
     }
 
     key(client) {
