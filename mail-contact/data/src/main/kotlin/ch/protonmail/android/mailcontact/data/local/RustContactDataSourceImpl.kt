@@ -114,7 +114,6 @@ class RustContactDataSourceImpl @Inject constructor(
                     }
                     Timber.d("rust-contact-data-source: contact watcher created")
                 }
-                Timber.d("rust-contact-data-source: contact watcher created")
             }
         }
     }
