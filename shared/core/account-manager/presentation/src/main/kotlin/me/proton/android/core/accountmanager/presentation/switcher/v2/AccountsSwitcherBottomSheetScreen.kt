@@ -127,6 +127,7 @@ private fun CurrentAccountSection(
 ) {
     Column(
         modifier = modifier
+            .padding(horizontal = ProtonDimens.Spacing.Standard)
             .padding(bottom = ProtonDimens.Spacing.Large),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
@@ -148,6 +149,7 @@ private fun CurrentAccountSection(
             Text(
                 text = it,
                 color = ProtonTheme.colors.textWeak,
+                textAlign = TextAlign.Center,
                 style = LocalTypography.current.bodyLargeWeak,
                 modifier = Modifier.padding(top = ProtonDimens.Spacing.Tiny)
             )
