@@ -32,6 +32,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
@@ -70,6 +71,7 @@ fun ParticipantAvatar(
         modifier = modifier
             .testTag(AvatarTestTags.AvatarRootItem)
             .size(outerContainerSize)
+            .clip(backgroundShape)
             .run {
                 if (clickable) {
                     clickable(onClick = actions.onAvatarClicked)
