@@ -1848,6 +1848,59 @@ class ConversationDetailViewModelIntegrationTest {
     }
 
     @Test
+    fun `should exit screen when marking the only message as unread`() = runTest {
+        // Given
+        val messages = ConversationMessages(
+            nonEmptyListOf(
+                MessageSample.Invoice
+            ),
+            MessageSample.Invoice.messageId
+        )
+        val labelId = SystemLabelId.Archive.labelId
+        val messageId = MessageSample.Invoice.messageId
+        coEvery { observeConversationMessages(userId, any(), any()) } returns flowOf(messages.right())
+        coEvery {
+            observeMessage(userId, messageId)
+        } returns flowOf(MessageSample.Invoice.right())
+        coEvery {
+            getMessageAvailableActions(userId, labelId, listOf(messageId))
+        } returns AvailableActionsTestData.replyActionsOnly.right()
+        coEvery {
+            markMessageAsUnread(userId, messageId)
+        } returns Unit.right()
+
+        // When
+        val viewModel = buildConversationDetailViewModel()
+
+        viewModel.submit(
+            ExpandMessage(
+                messageIdUiModelMapper.toUiModel(messageId)
+            )
+        )
+
+        viewModel.state.test {
+            skipItems(4)
+
+            viewModel.submit(
+                ConversationDetailViewAction.RequestMessageMoreActionsBottomSheet(
+                    messageId
+                )
+            )
+            skipItems(2)
+            viewModel.submit(
+                ConversationDetailViewAction.MarkMessageUnread(
+                    messageId
+                )
+            )
+            advanceUntilIdle()
+
+            assertNotNull(lastEmittedItem().exitScreenEffect.consume())
+
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
     fun `should show message label as bottom sheet and load data when it is requested`() = runTest {
         // Given
         val messageIdToOpen = MessageSample.AugWeatherForecast.messageId

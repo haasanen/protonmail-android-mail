@@ -449,6 +449,16 @@ class ConversationDetailViewModel @Inject constructor(
     private fun allCollapsed(viewState: Map<MessageId, InMemoryConversationStateRepository.MessageState>): Boolean =
         viewState.values.all { it == InMemoryConversationStateRepository.MessageState.Collapsed }
 
+    private fun isSingleMessageConversation(): Boolean {
+        return when (val messagesState = state.value.messagesState) {
+            is ConversationDetailsMessagesState.Data -> {
+                messagesState.messages.size == 1
+            }
+
+            else -> false
+        }
+    }
+
     private suspend fun buildMessagesUiModels(
         userId: UserId,
         messages: NonEmptyList<Message>,
@@ -1247,9 +1257,18 @@ class ConversationDetailViewModel @Inject constructor(
 
     private fun handleMarkMessageUnread(action: ConversationDetailViewAction.MarkMessageUnread) {
         viewModelScope.launch {
-            markMessageAsUnread(primaryUserId.first(), action.messageId)
-            onCollapseMessage(MessageIdUiModel(action.messageId.id))
-            emitNewStateFrom(action)
+            if (isSingleMessageConversation()) {
+                performSafeExitAction(
+                    onLeft = ConversationDetailEvent.ErrorMarkingAsUnread,
+                    onRight = ConversationDetailEvent.ExitScreen
+                ) { _ ->
+                    markMessageAsUnread(primaryUserId.first(), action.messageId)
+                }
+            } else {
+                markMessageAsUnread(primaryUserId.first(), action.messageId)
+                onCollapseMessage(MessageIdUiModel(action.messageId.id))
+                emitNewStateFrom(action)
+            }
         }
     }
 
