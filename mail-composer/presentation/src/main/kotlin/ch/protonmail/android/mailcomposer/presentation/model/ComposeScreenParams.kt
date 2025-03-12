@@ -18,9 +18,11 @@
 
 package ch.protonmail.android.mailcomposer.presentation.model
 
+import androidx.compose.ui.unit.Dp
+
 data class ComposeScreenParams(
-    val visibleHeaderHeight: Float,
-    val headerHeight: Float,
-    val screenHeight: Int,
-    val scrollValue: Int
+    val visibleWebViewHeightDp: Dp,
+    val visibleHeaderHeightDp: Dp,
+    val headerHeightDp: Dp,
+    val scrollValueDp: Dp
 )

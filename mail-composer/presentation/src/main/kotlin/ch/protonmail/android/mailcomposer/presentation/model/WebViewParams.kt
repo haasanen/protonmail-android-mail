@@ -18,8 +18,10 @@
 
 package ch.protonmail.android.mailcomposer.presentation.model
 
+import androidx.compose.ui.unit.Dp
+
 data class WebViewParams(
-    val height: Int,
-    val cursorPosition: Float,
-    val lineHeight: Float
+    val heightDp: Dp,
+    val cursorPositionDp: Dp,
+    val lineHeightDp: Dp
 )

@@ -18,34 +18,111 @@
 
 package ch.protonmail.android.mailcomposer.presentation.ui
 
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.coerceAtLeast
+import androidx.compose.ui.unit.dp
 import ch.protonmail.android.mailcomposer.presentation.model.ComposeScreenParams
 import ch.protonmail.android.mailcomposer.presentation.model.WebViewParams
 import timber.log.Timber
 
-private const val MIN_SCROLL_CHANGE = 100
+private val MIN_SCROLL_CHANGE = 100.dp
 
 class EditorScrollManager(
-    val onUpdateScroll: (Int) -> Unit
+    val onUpdateScroll: (Dp) -> Unit
 ) {
 
-    private var previousWebViewHeight = 0
+    private var previousWebViewHeightDp = 0.dp
 
-    fun onEditorParamsChanged(composeScreenParams: ComposeScreenParams, webViewParams: WebViewParams) {
-        val sizeDelta = (webViewParams.height - previousWebViewHeight).coerceAtLeast(0)
-        previousWebViewHeight = webViewParams.height
-
-        Timber.d("composer-scroll: composer form params: $composeScreenParams")
+    fun onEditorParamsChanged(screenParams: ComposeScreenParams, webViewParams: WebViewParams) {
+        Timber.d("composer-scroll: ComposerForm params: $screenParams")
         Timber.d("composer-scroll: WebView params: $webViewParams")
-        Timber.d("composer-scroll: size delta (previous webview height to new webview height: $sizeDelta")
 
-        if (sizeDelta > MIN_SCROLL_CHANGE) {
+        val sizeDeltaDp = calculateWebViewSizeDelta(webViewParams)
+
+        if (sizeDeltaDp > MIN_SCROLL_CHANGE) {
             Timber.d("composer-scroll: that's too much scrolling. I'd rather stay.")
+            Timber.d("composer-scroll: ----------------------------------------------------------------------")
             return
         }
 
-        val value = composeScreenParams.scrollValue + sizeDelta
-        Timber.d("composer-scroll: required scroll value $value")
-        onUpdateScroll(value)
+        if (cursorIsNotInFocus(screenParams, webViewParams)) {
+            val scrollToCursor = webViewParams.cursorPositionDp + screenParams.scrollValueDp
+            Timber.d("composer-scroll: Cursor out of focus scrolling: $scrollToCursor")
+            onUpdateScroll(scrollToCursor)
+            Timber.d("composer-scroll: ----------------------------------------------------------------------")
+            return
+        }
+        Timber.d("composer-scroll: cursor is in focus")
+
+        if (cursorIsAtThenEndOfVisibleWebView(screenParams, webViewParams)) {
+            val oneLineScroll = screenParams.scrollValueDp + sizeDeltaDp
+            Timber.d("composer-scroll: Cursor in last line, scrolling to: $oneLineScroll")
+            onUpdateScroll(oneLineScroll)
+            Timber.d("composer-scroll: ----------------------------------------------------------------------")
+            return
+        }
+
+        Timber.d("composer-scroll: cursor is neither on last line nor out of focus. No scroll.")
+        Timber.d("composer-scroll: ----------------------------------------------------------------------")
+    }
+
+    private fun cursorIsAtThenEndOfVisibleWebView(
+        screenParams: ComposeScreenParams,
+        webViewParams: WebViewParams
+    ): Boolean {
+        // This is calculated in ComposerScreen through rect intersection between webview and column
+        val portionOfWebViewVisible = screenParams.visibleWebViewHeightDp
+
+        // Full line height (including hardcoded interline space) coming through javascript interface
+        val numberOfLinesFittingVisibleWebView = portionOfWebViewVisible / webViewParams.lineHeightDp
+
+        val startOfTheWebViewVisibility = (screenParams.scrollValueDp - screenParams.headerHeightDp).coerceAtLeast(0.dp)
+        val startOfLastLineArea = startOfTheWebViewVisibility + portionOfWebViewVisible - webViewParams.lineHeightDp
+        val endOfLastLineArea = startOfLastLineArea + webViewParams.lineHeightDp
+        val isCursorOnLastVisibleLine = webViewParams.cursorPositionDp in startOfLastLineArea..endOfLastLineArea
+
+        Timber.d(
+            """
+                composer-scroll: is cursor at the end of the webview:
+                | portionOfWebViewVisible : $portionOfWebViewVisible 
+                | numberOfLinesFittingVisibleWebView : $numberOfLinesFittingVisibleWebView 
+                | startOfTheWebViewVisibility : $startOfTheWebViewVisibility 
+                | startOfLastLineArea : $startOfLastLineArea 
+                | endOfLastLineArea : $endOfLastLineArea
+                | iscursorOnLastVisibleLine : $isCursorOnLastVisibleLine 
+            """.trimIndent()
+        )
+
+        return isCursorOnLastVisibleLine
+    }
+
+    // TODO: implement, shadow the logic above
+    @SuppressWarnings("ForbiddenComment", "ExpressionBodySyntax", "FunctionOnlyReturningConstant")
+    private fun cursorIsNotInFocus(screenParams: ComposeScreenParams, webViewParams: WebViewParams): Boolean {
+//        val portionOfWebViewVisible = screenParams.screenHeightDp - screenParams.visibleHeaderHeightDp
+
+//        val startOfTheWebViewVisibility = screenParams.scrollValueDp - screenParams.headerHeightDp
+
+//        val webViewVisibleRange = startOfTheWebViewVisibility..startOfTheWebViewVisibility + portionOfWebViewVisible
+
+//        val isCursorNotInFocus = webViewParams.cursorPositionDp !in webViewVisibleRange
+//        Timber.d("""
+//            | composer-scroll: is cursor out of focus
+//            | portionOfWebViewVisible : $portionOfWebViewVisible
+//            | startOfTheWebViewVisibility : $startOfTheWebViewVisibility
+//            | webViewVisibleRange : $webViewVisibleRange
+//            | isCursorNotInFocus: $isCursorNotInFocus
+//        """.trimIndent())
+
+//        return isCursorNotInFocus
+        return false
+    }
+
+    private fun calculateWebViewSizeDelta(webViewParams: WebViewParams): Dp {
+        val sizeDelta = (webViewParams.heightDp - previousWebViewHeightDp).coerceAtLeast(0.dp)
+        Timber.d("composer-scroll: size delta (previous webview height to new webview height: $sizeDelta")
+        previousWebViewHeightDp = webViewParams.heightDp
+        return sizeDelta
     }
 
 

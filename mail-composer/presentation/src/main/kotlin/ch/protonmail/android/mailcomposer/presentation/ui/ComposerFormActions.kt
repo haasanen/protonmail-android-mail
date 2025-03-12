@@ -37,5 +37,6 @@ internal data class ComposerFormActions(
     val onBodyChanged: (String) -> Unit,
     val onEditorParamsChanged: (WebViewParams) -> Unit,
     val onChangeSender: () -> Unit,
-    val onHeaderPositioned: (bounds: Rect) -> Unit
+    val onHeaderPositioned: (boundsInWindow: Rect, height: Float) -> Unit,
+    val onWebViewPositioned: (boundsInWindow: Rect) -> Unit
 )

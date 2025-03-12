@@ -35,7 +35,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import ch.protonmail.android.mailcommon.presentation.compose.pxToDp
+import ch.protonmail.android.mailcommon.presentation.compose.toDp
 import ch.protonmail.android.mailcomposer.presentation.model.DraftDisplayBodyUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.WebViewParams
 import ch.protonmail.android.mailmessage.domain.model.AttachmentId
@@ -111,25 +115,28 @@ fun EditableMessageBodyWebView(
         }
     }
 
-    var lastCursorPosition = remember { 0f }
-    var lastLineHeight = remember { 0f }
+    var currentCursorPosition = remember { 0.dp }
+    var currentLineHeight = remember { 0.dp }
+
+    val localDensity = LocalDensity.current
 
     fun onWebViewResize() {
         if (state.loadingState != LoadingState.Finished) {
             Timber.d("composer-scroll: WebView resized while loading state not finished. Skipping.")
             return
         }
-        Timber.d("composer-scroll: WebView resized being processed...")
 
         val height = webView?.height ?: 0
-        Timber.d("composer-scroll: Emitting webview size: $height")
-        webViewActions.onWebViewParamsChanged(WebViewParams(height, lastCursorPosition, lastLineHeight))
+        webViewActions.onWebViewParamsChanged(
+            WebViewParams(height.toDp(localDensity), currentCursorPosition, currentLineHeight)
+        )
     }
 
     fun onCursorPositionChanged(position: Float, lineHeight: Float) {
-        Timber.d("composer-scroll: cursor position changed, callback value: $position //// line height: $lineHeight")
-        lastCursorPosition = position
-        lastLineHeight = lineHeight
+        // For unclear reasons, the data exposed we get form the webview (through running custom js)
+        // which one would expect being is px, is actually already in DP. Hence, no conversion here.
+        currentCursorPosition = Dp(position)
+        currentLineHeight = Dp(lineHeight)
     }
 
     val javascriptCallback = remember {

@@ -49,12 +49,13 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import ch.protonmail.android.design.compose.component.ProtonAlertDialog
 import ch.protonmail.android.design.compose.component.ProtonAlertDialogButton
@@ -67,6 +68,8 @@ import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.mailcommon.presentation.AdaptivePreviews
 import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
 import ch.protonmail.android.mailcommon.presentation.ConsumableTextEffect
+import ch.protonmail.android.mailcommon.presentation.compose.toDp
+import ch.protonmail.android.mailcommon.presentation.compose.toPx
 import ch.protonmail.android.mailcommon.presentation.ui.CommonTestTags
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.SenderEmail
@@ -183,6 +186,7 @@ fun ComposerScreen(actions: ComposerScreen.Actions, viewModel: ComposerViewModel
         },
         sheetState = bottomSheetState
     ) {
+
         Scaffold(
             modifier = Modifier.testTag(ComposerTestTags.RootItem),
             topBar = {
@@ -229,25 +233,25 @@ fun ComposerScreen(actions: ComposerScreen.Actions, viewModel: ComposerViewModel
                 ) { ProtonCenteredProgress() }
             } else {
 
+                val localDensity = LocalDensity.current
                 val coroutineScope = rememberCoroutineScope()
                 val scrollState = rememberScrollState()
                 var columnBounds by remember { mutableStateOf(Rect.Zero) }
-                var visibleHeaderHeight by remember { mutableStateOf(0f) }
-                var headerHeight by remember { mutableStateOf(0f) }
-
-                val screenHeight = LocalConfiguration.current.screenHeightDp
+                var visibleHeaderHeight by remember { mutableStateOf(0.dp) }
+                var visibleWebViewHeight by remember { mutableStateOf(0.dp) }
+                var headerHeight by remember { mutableStateOf(0.dp) }
 
                 val scrollManager = remember {
                     EditorScrollManager(
-                        onUpdateScroll = { coroutineScope.launch { scrollState.scrollTo(it) } }
+                        onUpdateScroll = { coroutineScope.launch { scrollState.scrollTo(it.toPx(localDensity)) } }
                     )
                 }
 
                 fun getComposeScreenParams() = ComposeScreenParams(
+                    visibleWebViewHeight,
                     visibleHeaderHeight,
                     headerHeight,
-                    screenHeight,
-                    scrollState.value
+                    scrollState.value.toDp(localDensity)
                 )
 
                 Column(
@@ -275,12 +279,20 @@ fun ComposerScreen(actions: ComposerScreen.Actions, viewModel: ComposerViewModel
                             { focusedField = it },
                             { bottomSheetType.value = it },
                             { webViewParams ->
-                                scrollManager.onEditorParamsChanged(getComposeScreenParams(), webViewParams)
+                                scrollManager.onEditorParamsChanged(
+                                    getComposeScreenParams(),
+                                    webViewParams
+                                )
                             },
-                            onHeaderPositioned = { headerBounds ->
-                                val visibleBounds = headerBounds.intersect(columnBounds)
-                                visibleHeaderHeight = visibleBounds.height
-                                headerHeight = headerBounds.height
+                            onHeaderPositioned = { headerBoundsInWindow, measuredHeight ->
+                                val visibleBounds = headerBoundsInWindow.intersect(columnBounds)
+                                visibleHeaderHeight = visibleBounds.height.coerceAtLeast(0f).toDp(localDensity)
+                                headerHeight = measuredHeight.toDp(localDensity)
+                            },
+                            onWebViewPositioned = { boundsInWindow ->
+                                val visibleBounds = boundsInWindow.intersect(columnBounds)
+                                visibleWebViewHeight = visibleBounds.height.coerceAtLeast(0f).toDp(localDensity)
+                                Timber.d("composer-scroll: webview height by visible bounds: $visibleWebViewHeight")
                             }
                         ),
                         contactSuggestions = state.contactSuggestions,
@@ -469,7 +481,8 @@ private fun buildActions(
     onFocusChanged: (FocusedFieldType) -> Unit,
     setBottomSheetType: (BottomSheetType) -> Unit,
     onEditorParamsChanged: (WebViewParams) -> Unit,
-    onHeaderPositioned: (Rect) -> Unit
+    onHeaderPositioned: (Rect, Float) -> Unit,
+    onWebViewPositioned: (Rect) -> Unit
 ): ComposerFormActions = ComposerFormActions(
     onToggleRecipients = onToggleRecipients,
     onFocusChanged = onFocusChanged,
@@ -490,7 +503,8 @@ private fun buildActions(
         viewModel.submit(ComposerAction.ChangeSenderRequested)
     },
     onEditorParamsChanged = onEditorParamsChanged,
-    onHeaderPositioned = onHeaderPositioned
+    onHeaderPositioned = onHeaderPositioned,
+    onWebViewPositioned = onWebViewPositioned
 )
 
 object ComposerScreen {

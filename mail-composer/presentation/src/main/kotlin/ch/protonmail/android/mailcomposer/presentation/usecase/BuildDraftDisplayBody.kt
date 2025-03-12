@@ -81,7 +81,6 @@ class BuildDraftDisplayBody @Inject constructor(
 
     private fun caretTrackingJs() = """
         function trackCursorPosition() {
-        console.log("composer-scroll tracking cursor position");
             var editor = document.getElementById('$EDITOR_ID');
 
             editor.addEventListener('keyup', updateCaretPosition);
@@ -96,7 +95,6 @@ class BuildDraftDisplayBody @Inject constructor(
                     // Create a temporary span element to measure the caret position
                     const span = document.createElement('span');
                     span.textContent = '\u200B'; // Zero-width space character
-                    console.log('composer-scroll: created span ' + span  + ';;;');
                     range.insertNode(span);
 
                     // Get the bounding client rect of the span
@@ -104,15 +102,13 @@ class BuildDraftDisplayBody @Inject constructor(
                     // Get the line height of the span
                     const lineHeight = window.getComputedStyle(span).lineHeight;
                     const lineHeightValue = lineHeight.replace(/[^\d.]/g, '');
-                    const parsedLineHeight = parseFloat(lineHeightValue);
-                    console.log('composer-scroll: computed line height is ' + lineHeight + ' clean value: ' + parsedLineHeight );
+                    const parsedLineHeight = parseFloat(lineHeightValue) * 1.2;
 
                     // Remove the temporary span element
                     range.deleteContents();
 
                     // Calculate the height of the caret position relative to the inputDiv
                     const caretPosition = rect.top - editor.getBoundingClientRect().top;
-                    console.log("updated caret position: " + caretPosition);
                     $JAVASCRIPT_CALLBACK_INTERFACE_NAME.onCaretPositionChanged(caretPosition, parsedLineHeight);
                 }
             }
@@ -123,14 +119,12 @@ class BuildDraftDisplayBody @Inject constructor(
 
     private fun getJavascript() = """
         document.getElementById('$EDITOR_ID').addEventListener('input', function(){
-            console.log("composer-js-editor: on body changed event")
             var body = document.getElementById('$EDITOR_ID').innerHTML
             $JAVASCRIPT_CALLBACK_INTERFACE_NAME.onBodyUpdated(body)
         });
 
         const observer = new ResizeObserver(entries => {
         for (const entry of entries) {
-            console.log(entry.contentRect.height)
             $JAVASCRIPT_CALLBACK_INTERFACE_NAME.onWebViewSizeChanged()
         }
         });

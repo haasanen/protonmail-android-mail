@@ -27,7 +27,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.layout.boundsInParent
 import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -93,8 +93,6 @@ internal fun ComposerForm(
             }
         }
 
-        var headerBounds by remember { mutableStateOf(Rect.Zero) }
-
         Column(
             modifier = modifier.fillMaxWidth()
         ) {
@@ -102,8 +100,9 @@ internal fun ComposerForm(
                 modifier = Modifier
                     .fillMaxWidth()
                     .onGloballyPositioned { coordinates ->
-                        headerBounds = coordinates.boundsInWindow()
-                        actions.onHeaderPositioned(headerBounds)
+                        val headerBounds = coordinates.boundsInWindow()
+                        val headerHeight = coordinates.boundsInParent().height
+                        actions.onHeaderPositioned(headerBounds, headerHeight)
                     }
             ) {
 
@@ -146,6 +145,10 @@ internal fun ComposerForm(
                     modifier = maxWidthModifier
                         .testTag(ComposerTestTags.MessageBody)
                         .retainFieldFocusOnConfigurationChange(FocusedFieldType.BODY)
+                        .onGloballyPositioned { coordinates ->
+                            val webViewBounds = coordinates.boundsInWindow()
+                            actions.onWebViewPositioned(webViewBounds)
+                        }
                 )
             }
         }

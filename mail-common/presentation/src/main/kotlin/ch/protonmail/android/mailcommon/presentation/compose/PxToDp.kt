@@ -20,9 +20,15 @@ package ch.protonmail.android.mailcommon.presentation.compose
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.Dp
 
 @Composable
 fun Int.pxToDp() = with(LocalDensity.current) { this@pxToDp.toDp() }
 
 @Composable
 fun Float.pxToDp() = with(LocalDensity.current) { this@pxToDp.toDp() }
+
+fun Float.toDp(density: Density): Dp = Dp(this / density.density)
+
+fun Int.toDp(density: Density): Dp = Dp(this / density.density)
