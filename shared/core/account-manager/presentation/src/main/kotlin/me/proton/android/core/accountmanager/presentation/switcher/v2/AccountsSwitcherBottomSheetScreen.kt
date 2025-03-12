@@ -26,13 +26,15 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
@@ -95,7 +97,7 @@ fun AccountsSwitcherBottomSheetScreen(
             is AccountsManagerState.Loading -> ProtonCenteredProgress()
             is AccountsManagerState.Idle -> {
                 Column(
-                    modifier = modifier,
+                    modifier = modifier.verticalScroll(rememberScrollState()),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
@@ -146,12 +148,12 @@ private fun CurrentAccountSection(
         )
 
         currentAccount.accountItem.email?.takeIfNotBlank()?.let {
+            Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Tiny))
             Text(
                 text = it,
                 color = ProtonTheme.colors.textWeak,
                 textAlign = TextAlign.Center,
-                style = LocalTypography.current.bodyLargeWeak,
-                modifier = Modifier.padding(top = ProtonDimens.Spacing.Tiny)
+                style = LocalTypography.current.bodyLargeWeak
             )
         }
     }
@@ -219,11 +221,13 @@ private fun OtherAccountsSection(
             style = LocalTypography.current.bodyLarge,
             textAlign = TextAlign.Start,
             text = stringResource(R.string.manage_accounts_switch_to),
-            modifier = Modifier.padding(
-                bottom = ProtonDimens.Spacing.Medium,
-                top = ProtonDimens.Spacing.Standard,
-                start = ProtonDimens.Spacing.Large
-            ).fillMaxWidth()
+            modifier = Modifier
+                .padding(
+                    bottom = ProtonDimens.Spacing.Medium,
+                    top = ProtonDimens.Spacing.Standard,
+                    start = ProtonDimens.Spacing.Large
+                )
+                .fillMaxWidth()
         )
     }
     Card(
@@ -236,26 +240,20 @@ private fun OtherAccountsSection(
             containerColor = ProtonTheme.colors.backgroundInvertedSecondary
         )
     ) {
-        LazyColumn(modifier = modifier) {
-            if (signedInAccounts.isNotEmpty()) {
-                items(signedInAccounts, { "signed-in-${it.accountItem.userId}" }) { account ->
-                    SignedInAccountRow(
-                        accountListItem = account,
-                        onEvent = onEvent
-                    )
-                }
+        Column(modifier = modifier) {
+            signedInAccounts.forEach { account ->
+                SignedInAccountRow(
+                    accountListItem = account,
+                    onEvent = onEvent
+                )
             }
-            if (signedOutAccounts.isNotEmpty()) {
-                items(signedOutAccounts, { "signed-out-${it.accountItem.userId}" }) { account ->
-                    SignedOutAccountRow(
-                        accountListItem = account,
-                        onEvent = onEvent
-                    )
-                }
+            signedOutAccounts.forEach { account ->
+                SignedOutAccountRow(
+                    accountListItem = account,
+                    onEvent = onEvent
+                )
             }
-            item(key = "add-account-footer") {
-                AddAnotherAccountButton(modifier = modifier, onEvent = onEvent)
-            }
+            AddAnotherAccountButton(modifier = modifier, onEvent = onEvent)
         }
     }
 }
