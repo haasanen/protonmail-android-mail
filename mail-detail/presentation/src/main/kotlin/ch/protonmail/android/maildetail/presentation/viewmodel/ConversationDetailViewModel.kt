@@ -321,8 +321,8 @@ class ConversationDetailViewModel @Inject constructor(
                 action.messageId, SystemLabelId.Inbox, action
             )
 
-            is ConversationDetailViewAction.StarMessage -> handleStarMessage(action.messageId)
-            is ConversationDetailViewAction.UnStarMessage -> handleUnStarMessage(action.messageId)
+            is ConversationDetailViewAction.StarMessage -> handleStarMessage(action)
+            is ConversationDetailViewAction.UnStarMessage -> handleUnStarMessage(action)
 
             is ConversationDetailViewAction.ChangeVisibilityOfMessages -> handleChangeVisibilityOfMessages()
 
@@ -1255,12 +1255,14 @@ class ConversationDetailViewModel @Inject constructor(
         emitNewStateFrom(event)
     }
 
-    private fun handleStarMessage(messageId: MessageId) = viewModelScope.launch {
-        starMessages(primaryUserId.first(), listOf(messageId))
+    private fun handleStarMessage(starAction: ConversationDetailViewAction.StarMessage) = viewModelScope.launch {
+        starMessages(primaryUserId.first(), listOf(starAction.messageId))
+        emitNewStateFrom(starAction)
     }
 
-    private fun handleUnStarMessage(messageId: MessageId) = viewModelScope.launch {
-        unStarMessages(primaryUserId.first(), listOf(messageId))
+    private fun handleUnStarMessage(unStarAction: ConversationDetailViewAction.UnStarMessage) = viewModelScope.launch {
+        unStarMessages(primaryUserId.first(), listOf(unStarAction.messageId))
+        emitNewStateFrom(unStarAction)
     }
 
     private fun handleOnAvatarImageLoadRequested(avatarUiModel: AvatarUiModel) {

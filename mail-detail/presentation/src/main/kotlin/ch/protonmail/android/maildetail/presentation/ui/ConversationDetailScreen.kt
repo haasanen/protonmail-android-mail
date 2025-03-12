@@ -255,8 +255,8 @@ fun ConversationDetailScreen(
                             // actions.onForward
                         },
                         onMarkUnread = { viewModel.submit(ConversationDetailViewAction.MarkMessageUnread(it)) },
-                        onStarMessage = { viewModel.submit(ConversationDetailViewAction.Star) },
-                        onUnStarMessage = { viewModel.submit(ConversationDetailViewAction.UnStar) },
+                        onStarMessage = { viewModel.submit(ConversationDetailViewAction.StarMessage(it)) },
+                        onUnStarMessage = { viewModel.submit(ConversationDetailViewAction.UnStarMessage(it)) },
                         onMoveToInbox = { viewModel.submit(ConversationDetailViewAction.MoveMessageToInbox(it)) },
                         onSaveMessageAsPdf = {
                             viewModel.submit(ConversationDetailViewAction.DismissBottomSheet)
