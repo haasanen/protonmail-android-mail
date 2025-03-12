@@ -82,7 +82,7 @@ class LauncherViewModel @Inject constructor(
             register(context)
             onAddAccountResult { result -> if (!result) context.finish() }
             onLoginResult { result -> if (result != null) onSwitchToAccount(result.userId.toUserId()) }
-            userSessionRepository.observe(context.lifecycle, minActiveState = Lifecycle.State.CREATED)
+            userSessionRepository.observe(context.lifecycle, minActiveState = Lifecycle.State.RESUMED)
                 .onAccountTwoFactorNeeded { startSecondFactorWorkflow(it.userId.toLocalUserId()) }
                 .onAccountTwoPasswordNeeded { startTwoPassModeWorkflow(it.userId.toLocalUserId()) }
         }
