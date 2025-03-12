@@ -23,10 +23,31 @@ import me.proton.android.core.auth.presentation.R
 import me.proton.core.util.kotlin.CoreLogger
 import uniffi.proton_mail_uniffi.LoginError
 import uniffi.proton_mail_uniffi.LoginErrorReason
+import uniffi.proton_mail_uniffi.LoginErrorReason.CantUnlockUserKey
+import uniffi.proton_mail_uniffi.LoginErrorReason.HumanVerificationChallenge
+import uniffi.proton_mail_uniffi.LoginErrorReason.InvalidCredentials
+import uniffi.proton_mail_uniffi.LoginErrorReason.UnsupportedTfa
 import uniffi.proton_mail_uniffi.OtherErrorReason
+import uniffi.proton_mail_uniffi.OtherErrorReason.InvalidParameter
+import uniffi.proton_mail_uniffi.OtherErrorReason.Other
 import uniffi.proton_mail_uniffi.ProtonError
+import uniffi.proton_mail_uniffi.ProtonError.Network
+import uniffi.proton_mail_uniffi.ProtonError.OtherReason
+import uniffi.proton_mail_uniffi.ProtonError.ServerError
+import uniffi.proton_mail_uniffi.ProtonError.SessionExpired
+import uniffi.proton_mail_uniffi.ProtonError.Unexpected
 import uniffi.proton_mail_uniffi.UnexpectedError
 import uniffi.proton_mail_uniffi.UserApiServiceError
+import uniffi.proton_mail_uniffi.UserApiServiceError.BadGateway
+import uniffi.proton_mail_uniffi.UserApiServiceError.BadRequest
+import uniffi.proton_mail_uniffi.UserApiServiceError.InternalServerError
+import uniffi.proton_mail_uniffi.UserApiServiceError.NotFound
+import uniffi.proton_mail_uniffi.UserApiServiceError.NotImplemented
+import uniffi.proton_mail_uniffi.UserApiServiceError.OtherHttpError
+import uniffi.proton_mail_uniffi.UserApiServiceError.ServiceUnavailable
+import uniffi.proton_mail_uniffi.UserApiServiceError.TooManyRequest
+import uniffi.proton_mail_uniffi.UserApiServiceError.Unauthorized
+import uniffi.proton_mail_uniffi.UserApiServiceError.UnprocessableEntity
 
 fun LoginError.getErrorMessage(context: Context) = when (this) {
     is LoginError.Other -> this.v1.getErrorMessage(context)
@@ -35,23 +56,23 @@ fun LoginError.getErrorMessage(context: Context) = when (this) {
 
 @Suppress("MaxLineLength")
 fun LoginErrorReason.getErrorMessage(context: Context) = when (this) {
-    is LoginErrorReason.CantUnlockUserKey -> context.getString(R.string.auth_login_error_invalid_action_cannot_unlock_keys)
-    is LoginErrorReason.HumanVerificationChallenge -> context.getString(R.string.auth_login_error_invalid_action_human_verification_challenge)
-    is LoginErrorReason.InvalidCredentials -> context.getString(R.string.auth_login_error_invalid_action_invalid_credentials)
-    is LoginErrorReason.UnsupportedTfa -> context.getString(R.string.auth_login_error_invalid_action_unsupported_tfa)
+    is CantUnlockUserKey -> context.getString(R.string.auth_login_error_invalid_action_cannot_unlock_keys)
+    is HumanVerificationChallenge -> context.getString(R.string.auth_login_error_invalid_action_human_verification_challenge)
+    is InvalidCredentials -> context.getString(R.string.auth_login_error_invalid_action_invalid_credentials)
+    is UnsupportedTfa -> context.getString(R.string.auth_login_error_invalid_action_unsupported_tfa)
 }
 
-fun UserApiServiceError.getErrorMessage(context: Context) = when (this) {
-    is UserApiServiceError.BadRequest -> v1
-    is UserApiServiceError.OtherHttpError -> v2
-    is UserApiServiceError.BadGateway,
-    is UserApiServiceError.InternalServerError,
-    is UserApiServiceError.NotFound,
-    is UserApiServiceError.NotImplemented,
-    is UserApiServiceError.ServiceUnavailable,
-    is UserApiServiceError.TooManyRequest,
-    is UserApiServiceError.Unauthorized,
-    is UserApiServiceError.UnprocessableEntity -> context.getString(R.string.presentation_general_connection_error)
+fun UserApiServiceError.getErrorMessage() = when (this) {
+    is BadRequest -> v1
+    is OtherHttpError -> v2
+    is BadGateway -> v1
+    is InternalServerError -> v1
+    is NotFound -> v1
+    is NotImplemented -> v1
+    is ServiceUnavailable -> v1
+    is TooManyRequest -> v1
+    is Unauthorized -> v1
+    is UnprocessableEntity -> v1
 }
 
 fun UnexpectedError.getErrorMessage() = when (this) {
@@ -75,14 +96,14 @@ fun UnexpectedError.getErrorMessage() = when (this) {
 }
 
 private fun OtherErrorReason.getErrorMessage(context: Context) = when (this) {
-    OtherErrorReason.InvalidParameter -> context.getString(R.string.auth_login_error_invalid_action_invalid_credentials)
-    is OtherErrorReason.Other -> this.v1
+    is InvalidParameter -> context.getString(R.string.auth_login_error_invalid_action_invalid_credentials)
+    is Other -> this.v1
 }
 
 private fun ProtonError.getErrorMessage(context: Context) = when (this) {
-    is ProtonError.OtherReason -> v1.getErrorMessage(context)
-    is ProtonError.ServerError -> v1.getErrorMessage(context)
-    is ProtonError.Unexpected -> v1.getErrorMessage()
-    ProtonError.Network -> context.getString(R.string.presentation_general_connection_error)
-    ProtonError.SessionExpired -> context.getString(R.string.presentation_error_general)
+    is OtherReason -> v1.getErrorMessage(context)
+    is ServerError -> v1.getErrorMessage()
+    is Unexpected -> v1.getErrorMessage()
+    is Network -> context.getString(R.string.presentation_general_connection_error)
+    is SessionExpired -> context.getString(R.string.presentation_error_general)
 }
