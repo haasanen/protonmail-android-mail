@@ -32,6 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.core.graphics.toColorInt
 import ch.protonmail.android.design.compose.theme.LocalShapes
 import ch.protonmail.android.design.compose.theme.LocalTypography
@@ -84,14 +85,18 @@ internal fun BaseAccountSwitcherRow(
                 Text(
                     text = accountListItem.accountItem.name,
                     color = if (isDisabled) ProtonTheme.colors.textWeak else ProtonTheme.colors.textNorm,
-                    style = LocalTypography.current.bodyMedium
+                    style = LocalTypography.current.bodyMedium,
+                    overflow = TextOverflow.Ellipsis,
+                    maxLines = 1
                 )
                 accountListItem.accountItem.email?.takeIfNotBlank()?.let {
                     Text(
                         text = it,
                         color = if (isDisabled) ProtonTheme.colors.textWeak else ProtonTheme.colors.textWeak,
                         style = LocalTypography.current.bodySmall,
-                        modifier = Modifier.padding(top = ProtonDimens.Spacing.Tiny)
+                        modifier = Modifier.padding(top = ProtonDimens.Spacing.Tiny),
+                        overflow = TextOverflow.Ellipsis,
+                        maxLines = 1
                     )
                 }
             }
