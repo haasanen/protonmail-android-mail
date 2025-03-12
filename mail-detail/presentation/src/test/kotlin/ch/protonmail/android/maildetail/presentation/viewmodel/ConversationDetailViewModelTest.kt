@@ -885,7 +885,7 @@ class ConversationDetailViewModelTest {
         every {
             reducer.newStateFrom(
                 currentState = ConversationDetailState.Loading,
-                operation = ConversationDetailViewAction.MoveToTrash
+                operation = ConversationDetailEvent.ExitScreenWithMessage(ConversationDetailViewAction.MoveToTrash)
             )
         } returns ConversationDetailState.Loading.copy(
             exitScreenWithMessageEffect = Effect.of(
@@ -940,7 +940,14 @@ class ConversationDetailViewModelTest {
         )
 
         every {
-            reducer.newStateFrom(any(), ConversationDetailEvent.MoveToDestinationConfirmed("selectedLabel", null))
+            reducer.newStateFrom(
+                currentState = any(),
+                operation = ConversationDetailEvent.ExitScreenWithMessage(
+                    ConversationDetailEvent.MoveToDestinationConfirmed(
+                        "selectedLabel", null
+                    )
+                )
+            )
         } returns ConversationDetailState.Loading.copy(
             exitScreenWithMessageEffect = Effect.of(
                 ActionResult.UndoableActionResult(
@@ -1124,7 +1131,9 @@ class ConversationDetailViewModelTest {
             coEvery {
                 reducer.newStateFrom(
                     any(),
-                    ConversationDetailViewAction.LabelAsConfirmed(archiveSelected, labelAsEntryPoint)
+                    ConversationDetailEvent.ExitScreenWithMessage(
+                        ConversationDetailViewAction.LabelAsConfirmed(archiveSelected, labelAsEntryPoint)
+                    )
                 )
             } returns ConversationDetailState.Loading.copy(
                 exitScreenWithMessageEffect = Effect.of(
@@ -1278,7 +1287,7 @@ class ConversationDetailViewModelTest {
         every {
             reducer.newStateFrom(
                 currentState = ConversationDetailState.Loading,
-                operation = ConversationDetailViewAction.MarkUnread
+                operation = ConversationDetailEvent.ExitScreen
             )
         } returns ConversationDetailState.Loading.copy(
             exitScreenEffect = Effect.of(Unit)
@@ -1733,7 +1742,7 @@ class ConversationDetailViewModelTest {
         every {
             reducer.newStateFrom(
                 currentState = ConversationDetailState.Loading,
-                operation = ConversationDetailViewAction.MarkRead
+                operation = ConversationDetailEvent.ExitScreen
             )
         } returns ConversationDetailState.Loading.copy(
             exitScreenEffect = Effect.of(Unit)
@@ -1783,7 +1792,9 @@ class ConversationDetailViewModelTest {
         every {
             reducer.newStateFrom(
                 currentState = ConversationDetailState.Loading,
-                operation = ConversationDetailViewAction.MoveToSpam
+                operation = ConversationDetailEvent.ExitScreenWithMessage(
+                    ConversationDetailViewAction.MoveToSpam
+                )
             )
         } returns ConversationDetailState.Loading.copy(
             exitScreenEffect = Effect.of(Unit)
@@ -1831,7 +1842,9 @@ class ConversationDetailViewModelTest {
         every {
             reducer.newStateFrom(
                 currentState = ConversationDetailState.Loading,
-                operation = ConversationDetailViewAction.Archive
+                operation = ConversationDetailEvent.ExitScreenWithMessage(
+                    ConversationDetailViewAction.Archive
+                )
             )
         } returns ConversationDetailState.Loading.copy(
             exitScreenEffect = Effect.of(Unit)

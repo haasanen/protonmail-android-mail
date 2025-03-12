@@ -20,13 +20,12 @@ package ch.protonmail.android.maildetail.presentation.reducer
 
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.ActionResult
-import ch.protonmail.android.mailcommon.presentation.model.ActionResult.DefinitiveActionResult
-import ch.protonmail.android.mailcommon.presentation.model.ActionResult.UndoableActionResult
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcommon.presentation.reducer.BottomBarReducer
 import ch.protonmail.android.maildetail.domain.model.OpenAttachmentIntentValues
 import ch.protonmail.android.maildetail.domain.model.OpenProtonCalendarIntentValues
 import ch.protonmail.android.maildetail.presentation.R
+import ch.protonmail.android.maildetail.presentation.mapper.ActionResultMapper
 import ch.protonmail.android.maildetail.presentation.model.ConversationDeleteState
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.ErrorMovingConversation
@@ -56,7 +55,6 @@ import ch.protonmail.android.maildetail.presentation.model.MessageIdUiModel
 import ch.protonmail.android.maildetail.presentation.model.ReportPhishingDialogState
 import ch.protonmail.android.maildetail.presentation.model.TrashedMessagesBannerState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.BottomSheetOperation
-import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.LabelAsBottomSheetEntryPoint
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.LabelAsBottomSheetState.LabelAsBottomSheetAction.LabelToggled
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MoveToBottomSheetState.MoveToBottomSheetAction.MoveToDestinationSelected
 import ch.protonmail.android.mailmessage.presentation.reducer.BottomSheetReducer
@@ -69,7 +67,8 @@ class ConversationDetailReducer @Inject constructor(
     private val bottomSheetReducer: BottomSheetReducer,
     private val deleteDialogReducer: ConversationDeleteDialogReducer,
     private val reportPhishingDialogReducer: ConversationReportPhishingDialogReducer,
-    private val trashedMessagesBannerReducer: TrashedMessagesBannerReducer
+    private val trashedMessagesBannerReducer: TrashedMessagesBannerReducer,
+    private val actionResultMapper: ActionResultMapper
 ) {
 
     fun newStateFrom(
@@ -200,45 +199,21 @@ class ConversationDetailReducer @Inject constructor(
 
     private fun ConversationDetailState.toExitState(operation: ConversationDetailOperation): Effect<Unit> =
         when (operation) {
-            is ConversationDetailViewAction.MarkRead,
-            is ConversationDetailViewAction.MarkUnread -> Effect.of(Unit)
+            is ConversationDetailEvent.ExitScreen -> Effect.of(Unit)
             else -> exitScreenEffect
         }
 
     private fun ConversationDetailState.toExitWithMessageState(
         operation: ConversationDetailOperation
-    ): Effect<ActionResult> = when (operation) {
-        is ConversationDetailViewAction.Archive -> Effect.of(
-            UndoableActionResult(TextUiModel(R.string.conversation_moved_to_archive))
-        )
-        is ConversationDetailViewAction.MoveToSpam -> Effect.of(
-            UndoableActionResult(TextUiModel(R.string.conversation_moved_to_spam))
-        )
-        is ConversationDetailViewAction.MoveToTrash -> Effect.of(
-            UndoableActionResult(TextUiModel(R.string.conversation_moved_to_trash))
-        )
-        is ConversationDetailEvent.MoveToDestinationConfirmed -> when (operation.messageId == null) {
-            true -> Effect.of(
-                UndoableActionResult(
-                    TextUiModel(R.string.conversation_moved_to_selected_destination, operation.mailLabelText)
-                )
-            )
-            false -> exitScreenWithMessageEffect
-        }
-
-        is ConversationDetailViewAction.LabelAsConfirmed ->
-            when (
-                operation.archiveSelected &&
-                    operation.entryPoint == LabelAsBottomSheetEntryPoint.Conversation
-            ) {
-                true -> Effect.of(DefinitiveActionResult(TextUiModel(R.string.conversation_moved_to_archive)))
-                false -> exitScreenWithMessageEffect
+    ): Effect<ActionResult> = when {
+        operation is ConversationDetailEvent.ExitScreenWithMessage -> {
+            val actionResult = actionResultMapper.toActionResult(operation.operation)
+            if (actionResult != null) {
+                Effect.of(actionResult)
+            } else {
+                exitScreenWithMessageEffect
             }
-
-        is ConversationDetailViewAction.DeleteConfirmed -> Effect.of(
-            DefinitiveActionResult(TextUiModel(R.string.conversation_deleted))
-        )
-
+        }
         else -> exitScreenWithMessageEffect
     }
 

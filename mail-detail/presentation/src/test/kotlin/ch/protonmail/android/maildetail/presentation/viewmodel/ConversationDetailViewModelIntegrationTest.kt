@@ -87,6 +87,7 @@ import ch.protonmail.android.maildetail.domain.usecase.SetMessageViewState
 import ch.protonmail.android.maildetail.domain.usecase.ShouldShowEmbeddedImages
 import ch.protonmail.android.maildetail.domain.usecase.ShouldShowRemoteContent
 import ch.protonmail.android.maildetail.presentation.R
+import ch.protonmail.android.maildetail.presentation.mapper.ActionResultMapper
 import ch.protonmail.android.maildetail.presentation.mapper.ConversationDetailMessageUiModelMapper
 import ch.protonmail.android.maildetail.presentation.mapper.ConversationDetailMetadataUiModelMapper
 import ch.protonmail.android.maildetail.presentation.mapper.DetailAvatarUiModelMapper
@@ -193,7 +194,6 @@ import ch.protonmail.android.testdata.message.MessageAttachmentMetadataTestData
 import io.mockk.Called
 import io.mockk.clearMocks
 import io.mockk.coEvery
-import io.mockk.coJustRun
 import io.mockk.coVerify
 import io.mockk.coVerifyOrder
 import io.mockk.coVerifySequence
@@ -395,6 +395,7 @@ class ConversationDetailViewModelIntegrationTest {
     private val sanitizeHtmlOfDecryptedMessageBody = SanitizeHtmlOfDecryptedMessageBody()
     private val extractMessageBodyWithoutQuote = ExtractMessageBodyWithoutQuote()
     private val avatarImageUiModelMapper = AvatarImageUiModelMapper()
+    private val actionResultMapper = ActionResultMapper()
     private val conversationMessageMapper = ConversationDetailMessageUiModelMapper(
         avatarUiModelMapper = DetailAvatarUiModelMapper(avatarInformationMapper),
         expirationTimeMapper = ExpirationTimeMapper(getCurrentEpochTimeDuration),
@@ -449,7 +450,9 @@ class ConversationDetailViewModelIntegrationTest {
         ),
         deleteDialogReducer = ConversationDeleteDialogReducer(),
         reportPhishingDialogReducer = ConversationReportPhishingDialogReducer(),
-        trashedMessagesBannerReducer = TrashedMessagesBannerReducer()
+        trashedMessagesBannerReducer = TrashedMessagesBannerReducer(),
+        actionResultMapper = ActionResultMapper()
+
     )
 
     private val inMemoryConversationStateRepository = FakeInMemoryConversationStateRepository()
@@ -1293,7 +1296,7 @@ class ConversationDetailViewModelIntegrationTest {
         } returns flowOf(
             ConversationSample.WeatherForecast.right()
         )
-        coJustRun { deleteConversations(userId, listOf(conversationId)) }
+        coEvery { deleteConversations(userId, listOf(conversationId)) } returns Unit.right()
 
         val viewModel = buildConversationDetailViewModel()
 

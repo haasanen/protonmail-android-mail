@@ -29,6 +29,7 @@ import ch.protonmail.android.mailcommon.presentation.model.BottomBarEvent
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcommon.presentation.reducer.BottomBarReducer
 import ch.protonmail.android.maildetail.presentation.R.string
+import ch.protonmail.android.maildetail.presentation.mapper.ActionResultMapper
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMessageUiModel
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailOperation
@@ -62,6 +63,7 @@ class ConversationDetailReducerTest(
     private val testInput: TestInput
 ) {
 
+    private val actionResultMapper = ActionResultMapper()
     private val bottomBarReducer = mockk<BottomBarReducer>(relaxed = true)
     private val messagesReducer = mockk<ConversationDetailMessagesReducer>(relaxed = true)
     private val metadataReducer = mockk<ConversationDetailMetadataReducer>(relaxed = true)
@@ -76,7 +78,9 @@ class ConversationDetailReducerTest(
         bottomSheetReducer = bottomSheetReducer,
         deleteDialogReducer = deleteDialogReducer,
         reportPhishingDialogReducer = reportPhishingDialogReducer,
-        trashedMessagesBannerReducer = trashedMessagesBannerReducer
+        trashedMessagesBannerReducer = trashedMessagesBannerReducer,
+        actionResultMapper = actionResultMapper
+
     )
 
     @Test
@@ -183,8 +187,8 @@ class ConversationDetailReducerTest(
         val avatar = AvatarUiModel.ParticipantAvatar("TU", "test@proton.me", null, Color.Red)
 
         val actions = listOf(
-            ConversationDetailViewAction.MarkRead affects listOf(Exit, BottomSheet),
-            ConversationDetailViewAction.MarkUnread affects listOf(Exit, BottomSheet),
+            ConversationDetailViewAction.MarkRead affects listOf(BottomSheet),
+            ConversationDetailViewAction.MarkUnread affects listOf(BottomSheet),
             ConversationDetailViewAction.RequestMoveToBottomSheet affects BottomSheet,
             ConversationDetailViewAction.DismissBottomSheet affects BottomSheet,
             ConversationDetailViewAction.MoveToDestinationSelected(
@@ -192,18 +196,6 @@ class ConversationDetailReducerTest(
             ) affects BottomSheet,
             ConversationDetailViewAction.Star affects listOf(Conversation, BottomSheet),
             ConversationDetailViewAction.UnStar affects listOf(Conversation, BottomSheet),
-            ConversationDetailViewAction.Archive affects listOf(
-                ExitWithResult(
-                    UndoableActionResult(TextUiModel(string.conversation_moved_to_archive))
-                ),
-                BottomSheet
-            ),
-            ConversationDetailViewAction.MoveToTrash affects listOf(
-                ExitWithResult(
-                    UndoableActionResult(TextUiModel(string.conversation_moved_to_trash))
-                ),
-                BottomSheet
-            ),
             ConversationDetailViewAction.RequestConversationLabelAsBottomSheet affects BottomSheet,
             ConversationDetailViewAction.RequestContactActionsBottomSheet(participant, avatar) affects BottomSheet,
             ConversationDetailViewAction.LabelAsToggleAction(LabelIdSample.Label2022) affects BottomSheet,
@@ -212,12 +204,9 @@ class ConversationDetailReducerTest(
                 LabelAsBottomSheetEntryPoint.Conversation
             ) affects BottomSheet,
             ConversationDetailViewAction.LabelAsConfirmed(
-                true,
+                false,
                 LabelAsBottomSheetEntryPoint.Conversation
-            ) affects listOf(
-                BottomSheet,
-                ExitWithResult(DefinitiveActionResult(TextUiModel(string.conversation_moved_to_archive)))
-            ),
+            ) affects BottomSheet,
             ConversationDetailViewAction.LabelAsConfirmed(
                 true, LabelAsBottomSheetEntryPoint.Message(MessageId(messageId.id))
             ) affects BottomSheet,
@@ -225,7 +214,6 @@ class ConversationDetailReducerTest(
             ConversationDetailViewAction.RequestScrollTo(messageId) affects MessageScroll,
             ConversationDetailViewAction.DeleteConfirmed affects listOf(
                 DeleteDialog,
-                ExitWithResult(DefinitiveActionResult(TextUiModel(string.conversation_deleted))),
                 BottomSheet
             ),
             ConversationDetailViewAction.SwitchViewMode(
@@ -290,7 +278,17 @@ class ConversationDetailReducerTest(
             ) affects listOf(ErrorBar, Messages),
             ConversationDetailEvent.ErrorGettingAttachment affects ErrorBar,
             ConversationDetailEvent.ErrorDeletingConversation affects listOf(ErrorBar, BottomSheet, DeleteDialog),
-            ConversationDetailEvent.ErrorDeletingMessage affects listOf(ErrorBar, BottomSheet, DeleteDialog)
+            ConversationDetailEvent.ErrorDeletingMessage affects listOf(ErrorBar, BottomSheet, DeleteDialog),
+            ConversationDetailEvent.ExitScreen affects Exit,
+            ConversationDetailEvent.ExitScreenWithMessage(
+                ConversationDetailViewAction.MoveToTrash
+            ) affects ExitWithResult(
+                UndoableActionResult(TextUiModel(string.conversation_moved_to_trash))
+            ),
+            ConversationDetailEvent.ExitScreenWithMessage(
+                ConversationDetailViewAction.DeleteConfirmed
+            ) affects
+                ExitWithResult(DefinitiveActionResult(TextUiModel(string.conversation_deleted)))
         )
 
         @JvmStatic

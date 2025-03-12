@@ -723,14 +723,16 @@ class ConversationDetailViewModel @Inject constructor(
             if (archiveSelected) {
                 performSafeExitAction(
                     onLeft = ConversationDetailEvent.ErrorLabelingConversation,
-                    onRight = LabelAsConfirmed(true, LabelAsBottomSheetEntryPoint.Conversation)
+                    onRight = ConversationDetailEvent.ExitScreenWithMessage(
+                        LabelAsConfirmed(true, LabelAsBottomSheetEntryPoint.Conversation)
+                    )
                 ) {
                     labelAction()
                 }
             } else {
                 val operation = labelAction().fold(
                     ifLeft = { ConversationDetailEvent.ErrorLabelingConversation },
-                    ifRight = { LabelAsConfirmed(true, LabelAsBottomSheetEntryPoint.Conversation) }
+                    ifRight = { LabelAsConfirmed(false, LabelAsBottomSheetEntryPoint.Conversation) }
                 )
                 emitNewStateFrom(operation)
             }
@@ -809,7 +811,7 @@ class ConversationDetailViewModel @Inject constructor(
         viewModelScope.launch {
             performSafeExitAction(
                 onLeft = ConversationDetailEvent.ErrorMarkingAsRead,
-                onRight = ConversationDetailViewAction.MarkRead
+                onRight = ConversationDetailEvent.ExitScreen
             ) { userId ->
                 markConversationAsRead(userId, openedFromLocation, conversationId)
             }
@@ -820,7 +822,7 @@ class ConversationDetailViewModel @Inject constructor(
         viewModelScope.launch {
             performSafeExitAction(
                 onLeft = ConversationDetailEvent.ErrorMarkingAsUnread,
-                onRight = MarkUnread
+                onRight = ConversationDetailEvent.ExitScreen
             ) { userId ->
                 markConversationAsUnread(userId, openedFromLocation, conversationId)
             }
@@ -831,7 +833,7 @@ class ConversationDetailViewModel @Inject constructor(
         viewModelScope.launch {
             performSafeExitAction(
                 onLeft = ConversationDetailEvent.ErrorMovingToTrash,
-                onRight = MoveToTrash
+                onRight = ConversationDetailEvent.ExitScreenWithMessage(MoveToTrash)
             ) { userId ->
                 moveConversation(userId, conversationId, SystemLabelId.Trash)
             }
@@ -842,7 +844,7 @@ class ConversationDetailViewModel @Inject constructor(
         viewModelScope.launch {
             performSafeExitAction(
                 onLeft = ConversationDetailEvent.ErrorMovingConversation,
-                onRight = ConversationDetailViewAction.MoveToSpam
+                onRight = ConversationDetailEvent.ExitScreenWithMessage(ConversationDetailViewAction.MoveToSpam)
             ) { userId ->
                 moveConversation(userId, conversationId, SystemLabelId.Spam)
             }
@@ -853,7 +855,9 @@ class ConversationDetailViewModel @Inject constructor(
         viewModelScope.launch {
             performSafeExitAction(
                 onLeft = ConversationDetailEvent.ErrorMovingConversation,
-                onRight = ConversationDetailViewAction.Archive
+                onRight = ConversationDetailEvent.ExitScreenWithMessage(
+                    ConversationDetailViewAction.Archive
+                )
             ) { userId ->
                 moveConversation(userId, conversationId, SystemLabelId.Archive)
             }
@@ -907,11 +911,12 @@ class ConversationDetailViewModel @Inject constructor(
             // We manually cancel the observations since the following deletion calls cause all the observers
             // to emit, which could lead to race conditions as the observers re-insert the conversation and/or
             // the messages in the DB on late changes, making the entry still re-appear in the mailbox list.
-            stopAllJobs()
-
-            emitNewStateFrom(action)
-            deleteConversations(primaryUserId.first(), listOf(conversationId))
-
+            performSafeExitAction(
+                onLeft = ConversationDetailEvent.ErrorDeletingConversation,
+                onRight = ConversationDetailEvent.ExitScreenWithMessage(action)
+            ) { _ ->
+                deleteConversations(primaryUserId.first(), listOf(conversationId))
+            }
         }
     }
 
@@ -944,7 +949,9 @@ class ConversationDetailViewModel @Inject constructor(
                 is MoveToBottomSheetState.Data -> {
                     performSafeExitAction(
                         onLeft = ConversationDetailEvent.ErrorMovingConversation,
-                        onRight = MoveToDestinationConfirmed(mailLabelText, null)
+                        onRight = ConversationDetailEvent.ExitScreenWithMessage(
+                            MoveToDestinationConfirmed(mailLabelText, null)
+                        )
                     ) { userId ->
                         moveConversation(userId, conversationId, mailLabelId.labelId)
                     }
