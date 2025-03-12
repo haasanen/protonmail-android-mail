@@ -152,6 +152,8 @@ sealed interface ConversationDetailEvent : ConversationDetailOperation {
         val messageId: MessageId?
     ) : ConversationDetailEvent, AffectingBottomSheet
 
+    data object ExitScreen : ConversationDetailEvent
+    data class ExitScreenWithMessage(val operation: ConversationDetailOperation) : ConversationDetailEvent
 }
 
 sealed interface ConversationDetailViewAction : ConversationDetailOperation {
