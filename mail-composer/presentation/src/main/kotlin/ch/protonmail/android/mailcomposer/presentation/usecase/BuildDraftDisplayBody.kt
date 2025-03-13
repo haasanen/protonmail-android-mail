@@ -37,16 +37,14 @@ class BuildDraftDisplayBody @Inject constructor(
         val bodyContent: String = sanitizeHtmlOfDecryptedMessageBody(messageBodyWithType)
         val css: String = getCustomCss()
         val javascript: String = getJavascript()
-        val caretTrackingJs: String = caretTrackingJs()
 
-        return buildHtmlTemplate(bodyContent, css, javascript, caretTrackingJs)
+        return buildHtmlTemplate(bodyContent, css, javascript)
     }
 
     private fun buildHtmlTemplate(
         bodyContent: String,
         customCss: String,
-        javascript: String,
-        caretTrackingJs: String
+        javascript: String
     ): DraftDisplayBodyUiModel {
         val html = """
             <!DOCTYPE html>
@@ -70,7 +68,6 @@ class BuildDraftDisplayBody @Inject constructor(
 
                     <script>
                         $javascript
-                        $caretTrackingJs
                     </script>
                 </body>
                 </html>
@@ -79,7 +76,19 @@ class BuildDraftDisplayBody @Inject constructor(
         return DraftDisplayBodyUiModel(html)
     }
 
-    private fun caretTrackingJs() = """
+    private fun getJavascript() = """
+        document.getElementById('$EDITOR_ID').addEventListener('input', function(){
+            var body = document.getElementById('$EDITOR_ID').innerHTML
+            $JAVASCRIPT_CALLBACK_INTERFACE_NAME.onBodyUpdated(body)
+        });
+
+        const observer = new ResizeObserver(entries => {
+        for (const entry of entries) {
+            $JAVASCRIPT_CALLBACK_INTERFACE_NAME.onWebViewSizeChanged()
+        }
+        });
+        observer.observe(document.querySelector('body'));
+
         function trackCursorPosition() {
             var editor = document.getElementById('$EDITOR_ID');
 
@@ -115,21 +124,6 @@ class BuildDraftDisplayBody @Inject constructor(
         }
 
         trackCursorPosition();
-    """.trimIndent()
-
-    private fun getJavascript() = """
-        document.getElementById('$EDITOR_ID').addEventListener('input', function(){
-            var body = document.getElementById('$EDITOR_ID').innerHTML
-            $JAVASCRIPT_CALLBACK_INTERFACE_NAME.onBodyUpdated(body)
-        });
-
-        const observer = new ResizeObserver(entries => {
-        for (const entry of entries) {
-            $JAVASCRIPT_CALLBACK_INTERFACE_NAME.onWebViewSizeChanged()
-        }
-        });
-        observer.observe(document.querySelector('body'));
-
     """.trimIndent()
 
 }

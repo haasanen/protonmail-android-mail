@@ -26,7 +26,7 @@ class BuildDraftDisplayBodyTest {
         val messageBodyWithType = MessageBodyWithType(rawMessageBody, MimeTypeUiModel.Html)
         every { sanitizeHtmlOfDecryptedMessageBody(messageBodyWithType) } returns sanitizedMessageBody
         every { getCustomCss() } returns rawCustomCss
-        val expected = buildHtmlTemplate(sanitizedMessageBody, rawCustomCss, getJavascript(), caretTrackingJs())
+        val expected = buildHtmlTemplate(sanitizedMessageBody, rawCustomCss, getJavascript())
 
         // When
         val actual = buildDraftDisplayBody(messageBodyWithType)
@@ -38,8 +38,7 @@ class BuildDraftDisplayBodyTest {
     private fun buildHtmlTemplate(
         bodyContent: String,
         customCss: String,
-        javascript: String,
-        caretTrackingJs: String
+        javascript: String
     ): DraftDisplayBodyUiModel {
         val html = """
             <!DOCTYPE html>
@@ -63,7 +62,6 @@ class BuildDraftDisplayBodyTest {
 
                     <script>
                         $javascript
-                        $caretTrackingJs
                     </script>
                 </body>
                 </html>
@@ -85,9 +83,6 @@ class BuildDraftDisplayBodyTest {
         });
         observer.observe(document.querySelector('body'));
 
-    """.trimIndent()
-
-    private fun caretTrackingJs() = """
         function trackCursorPosition() {
             var editor = document.getElementById('$EDITOR_ID');
 
