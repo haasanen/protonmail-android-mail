@@ -22,4 +22,5 @@ internal sealed class NotificationActionType(val action: String) {
 
     data object Created : NotificationActionType("message_created")
     data object Touched : NotificationActionType("message_touched")
+    data class Unknown(val rawValue: String) : NotificationActionType(rawValue)
 }

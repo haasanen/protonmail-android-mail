@@ -16,34 +16,17 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailnotifications.domain.model
+package ch.protonmail.android.mailnotifications.data.wrapper
 
 import ch.protonmail.android.mailnotifications.data.remote.resource.NotificationActionType
+import uniffi.proton_mail_uniffi.DecryptedEmailPushNotificationAction
 
-internal sealed interface LocalPushNotificationData {
+internal data class NotificationActionWrapper(private val pushAction: DecryptedEmailPushNotificationAction?) {
 
-    data class UserPushData(
-        val userId: String,
-        val userEmail: String
-    )
-
-    data class NewLoginPushData(
-        val sender: PushNotificationSenderData,
-        val content: String,
-        val url: String
-    ) : LocalPushNotificationData
-
-    sealed interface MessagePushData : LocalPushNotificationData {
-        data class NewMessagePushData(
-            val sender: PushNotificationSenderData,
-            val messageId: String,
-            val content: String
-        ) : MessagePushData
-
-        data class MessageReadPushData(
-            val messageId: String
-        ) : MessagePushData
-
-        data class UnsupportedActionPushData(val action: NotificationActionType?) : MessagePushData
+    val value = when (pushAction) {
+        DecryptedEmailPushNotificationAction.MessageCreated -> NotificationActionType.Created
+        DecryptedEmailPushNotificationAction.MessageTouched -> NotificationActionType.Touched
+        is DecryptedEmailPushNotificationAction.Unexpected -> NotificationActionType.Unknown(pushAction.v1)
+        null -> null // Null on iOS, should never happen on Android side.
     }
 }

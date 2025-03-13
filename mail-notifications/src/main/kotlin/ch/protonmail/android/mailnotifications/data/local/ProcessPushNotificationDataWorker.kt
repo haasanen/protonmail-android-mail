@@ -72,8 +72,15 @@ internal class ProcessPushNotificationDataWorker @AssistedInject constructor(
             is LocalPushNotification.Message.NewMessage -> processNewMessagePushNotification(decryptedNotification)
             is LocalPushNotification.Message.MessageRead -> processMessageReadPushNotification(decryptedNotification)
             is LocalPushNotification.Login -> processNewLoginPushNotification(decryptedNotification)
+            is LocalPushNotification.Message.UnsupportedMessageAction ->
+                processUnsupportedPushNotification(decryptedNotification)
         }
     }
+
+    private fun processUnsupportedPushNotification(value: LocalPushNotification.Message.UnsupportedMessageAction) =
+        Result.failure(
+            workDataOf(KeyProcessPushNotificationDataError to "Unable to process action - ${value.actionType?.action}")
+        )
 
     companion object {
 

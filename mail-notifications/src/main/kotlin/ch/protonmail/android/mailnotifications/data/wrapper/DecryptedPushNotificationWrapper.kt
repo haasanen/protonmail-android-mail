@@ -30,6 +30,7 @@ internal sealed class DecryptedPushNotificationWrapper {
         val sender = NotificationSenderWrapper(decryptedNotification.sender)
         val subject = NotificationContentWrapper(decryptedNotification.subject)
         val messageId = NotificationMessageIdWrapper(decryptedNotification.messageId)
+        val action = NotificationActionWrapper(decryptedNotification.action)
     }
 
     data class OpenUrl(

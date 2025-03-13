@@ -92,4 +92,26 @@ class PushNotificationMapperTest {
         // Then
         assertEquals(expectedLocalPush, actual)
     }
+
+    @Test
+    fun `should handle unknown action data correctly`() {
+        // Given
+        val unknownPushNotification = DecryptedPushNotificationWrapper(
+            DecryptedPushNotification.Email(NotificationTestData.decryptedMessageUnknownPushNotification)
+        )
+
+        val expectedLocalPush = LocalPushNotification(
+            userPushData = NotificationTestData.defaultUserPushData,
+            pushNotificationData = NotificationTestData.defaultMessageUnexpectedData
+        )
+
+        // When
+        val actual = PushNotificationMapper.toLocalPushNotification(
+            NotificationTestData.defaultUserPushData,
+            unknownPushNotification
+        )
+
+        // Then
+        assertEquals(expectedLocalPush, actual)
+    }
 }

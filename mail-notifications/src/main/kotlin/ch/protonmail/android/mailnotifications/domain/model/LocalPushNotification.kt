@@ -18,8 +18,10 @@
 
 package ch.protonmail.android.mailnotifications.domain.model
 
+import ch.protonmail.android.mailnotifications.data.remote.resource.NotificationActionType
 import ch.protonmail.android.mailnotifications.domain.model.LocalPushNotificationData.MessagePushData.MessageReadPushData
 import ch.protonmail.android.mailnotifications.domain.model.LocalPushNotificationData.MessagePushData.NewMessagePushData
+import ch.protonmail.android.mailnotifications.domain.model.LocalPushNotificationData.MessagePushData.UnsupportedActionPushData
 import ch.protonmail.android.mailnotifications.domain.model.LocalPushNotificationData.NewLoginPushData
 import ch.protonmail.android.mailnotifications.domain.model.LocalPushNotificationData.UserPushData
 
@@ -28,12 +30,16 @@ internal sealed class LocalPushNotification {
     sealed class Message : LocalPushNotification() {
         data class MessageRead(
             val pushData: MessageReadPushData
-        ) : LocalPushNotification()
+        ) : Message()
 
         data class NewMessage(
             val userData: UserPushData,
             val pushData: NewMessagePushData
-        ) : LocalPushNotification()
+        ) : Message()
+
+        data class UnsupportedMessageAction(
+            val actionType: NotificationActionType?
+        ) : Message()
     }
 
     data class Login(
@@ -47,6 +53,7 @@ internal sealed class LocalPushNotification {
             when (pushNotificationData) {
                 is MessageReadPushData -> Message.MessageRead(pushNotificationData)
                 is NewMessagePushData -> Message.NewMessage(userPushData, pushNotificationData)
+                is UnsupportedActionPushData -> Message.UnsupportedMessageAction(pushNotificationData.action)
                 is NewLoginPushData -> Login(userPushData, pushNotificationData)
             }
     }

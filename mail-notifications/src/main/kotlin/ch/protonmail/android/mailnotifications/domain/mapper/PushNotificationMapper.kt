@@ -51,26 +51,18 @@ internal object PushNotificationMapper {
         val remoteMessageId = data.messageId.value
         val subject = data.subject.value
 
-        // Temporary until we get the Action exposed by Rust SDK
-        val action = when {
-            senderAddress.isEmpty() &&
-                senderName.isEmpty() &&
-                senderGroup.isEmpty() &&
-                subject.isEmpty() ->
-                NotificationActionType.Touched
-
-            else -> NotificationActionType.Created
-        }
-
-        return when (action) {
-            NotificationActionType.Created -> LocalPushNotificationData.MessagePushData.NewMessagePushData(
-                sender,
-                remoteMessageId,
-                subject
+        return when (val action = data.action.value) {
+            is NotificationActionType.Created -> LocalPushNotificationData.MessagePushData.NewMessagePushData(
+                sender = sender,
+                messageId = remoteMessageId,
+                content = subject
             )
 
             NotificationActionType.Touched ->
                 LocalPushNotificationData.MessagePushData.MessageReadPushData(remoteMessageId)
+
+            // If the action is unhandled, we don't want the app to misbehave it but rather just ignore it.
+            else -> LocalPushNotificationData.MessagePushData.UnsupportedActionPushData(action)
         }
     }
 

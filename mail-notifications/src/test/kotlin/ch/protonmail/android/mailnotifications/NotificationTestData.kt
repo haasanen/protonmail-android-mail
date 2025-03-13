@@ -18,8 +18,10 @@
 
 package ch.protonmail.android.mailnotifications
 
+import ch.protonmail.android.mailnotifications.data.remote.resource.NotificationActionType
 import ch.protonmail.android.mailnotifications.domain.model.LocalPushNotification
 import ch.protonmail.android.mailnotifications.domain.model.LocalPushNotificationData
+import ch.protonmail.android.mailnotifications.domain.model.LocalPushNotificationData.MessagePushData
 import ch.protonmail.android.mailnotifications.domain.model.PushNotificationSenderData
 import me.proton.core.domain.entity.UserId
 import me.proton.core.network.domain.session.SessionId
@@ -38,14 +40,16 @@ internal object NotificationTestData {
 
     const val messageId = "messageId"
     const val content = "content"
+    val unknownAction = NotificationActionType.Unknown("some_action")
 
     val defaultUserPushData = LocalPushNotificationData.UserPushData(userId.id, email)
-    val defaultMessagePushData = LocalPushNotificationData.MessagePushData.NewMessagePushData(
+    val defaultMessagePushData = MessagePushData.NewMessagePushData(
         PushNotificationSenderData(SenderData.name, SenderData.address, SenderData.group),
         messageId,
         content
     )
-    val defaultMessageReadPushData = LocalPushNotificationData.MessagePushData.MessageReadPushData(messageId)
+    val defaultMessageReadPushData = MessagePushData.MessageReadPushData(messageId)
+    val defaultMessageUnexpectedData = MessagePushData.UnsupportedActionPushData(unknownAction)
     val defaultOpenUrlPushData = LocalPushNotificationData.NewLoginPushData(
         PushNotificationSenderData(SenderData.name, SenderData.address, SenderData.group),
         content,
@@ -63,6 +67,9 @@ internal object NotificationTestData {
         sender = NotificationSender(name = "", address = "", group = ""),
         messageId = RemoteId(messageId),
         action = DecryptedEmailPushNotificationAction.MessageTouched
+    )
+    val decryptedMessageUnknownPushNotification = decryptedEmailPushNotification.copy(
+        action = DecryptedEmailPushNotificationAction.Unexpected(unknownAction.action)
     )
 
     val decryptedOpenUrlPushNotification = DecryptedOpenUrlPushNotification(
