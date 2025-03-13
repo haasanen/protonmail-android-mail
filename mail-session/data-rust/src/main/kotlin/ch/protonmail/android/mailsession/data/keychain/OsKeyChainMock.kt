@@ -24,6 +24,8 @@ import timber.log.Timber
 import uniffi.proton_mail_uniffi.OsKeyChain
 import javax.inject.Inject
 import android.content.SharedPreferences
+import uniffi.proton_mail_uniffi.OsKeyChainEntryKind
+import androidx.core.content.edit
 
 class OsKeyChainMock @Inject constructor(
     @ApplicationContext private val context: Context
@@ -33,25 +35,21 @@ class OsKeyChainMock @Inject constructor(
         context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
     }
 
-    override fun store(key: String) {
-        Timber.d("store key: $key")
-        sharedPreferences.edit().putString(KEY_NAME, key).apply()
+    override fun delete(kind: OsKeyChainEntryKind) {
+        sharedPreferences.edit { remove(kind.name) }
     }
 
-    override fun delete() {
-        Timber.d("delete key")
-        sharedPreferences.edit().remove(KEY_NAME).apply()
-    }
-
-    override fun get(): String? {
-        val key = sharedPreferences.getString(KEY_NAME, null)
+    override fun load(kind: OsKeyChainEntryKind): String? {
+        val key = sharedPreferences.getString(kind.name, null)
         Timber.d("get key: $key")
         return key
     }
 
-    companion object {
-        private const val PREFS_NAME = "OsKeyChainPrefs"
-        private const val KEY_NAME = "key"
+    override fun store(kind: OsKeyChainEntryKind, key: String) {
+        sharedPreferences.edit { putString(kind.name, key) }
     }
 
+    companion object {
+        private const val PREFS_NAME = "OsKeyChainPrefs"
+    }
 }

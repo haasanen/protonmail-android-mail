@@ -46,8 +46,8 @@ import junit.framework.TestCase.assertNull
 import kotlinx.coroutines.test.runTest
 import me.proton.core.domain.entity.UserId
 import org.junit.Test
-import uniffi.proton_mail_common.BodyBanners
 import uniffi.proton_mail_common.BodyOutput
+import uniffi.proton_mail_common.MessageBanner
 import uniffi.proton_mail_common.TransformOpts
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
@@ -133,7 +133,7 @@ class RustMessageRepositoryImplTest {
         val messageId = LocalMessageIdSample.AugWeatherForecast.toMessageId()
         val localMessage = LocalMessageTestData.AugWeatherForecast
         val transformOpts = mockk<TransformOpts>()
-        val bodyBanners = mockk<BodyBanners>()
+        val bodyBanners = mockk<List<MessageBanner>>()
         val bodyOutput = BodyOutput(
             "message body",
             false,

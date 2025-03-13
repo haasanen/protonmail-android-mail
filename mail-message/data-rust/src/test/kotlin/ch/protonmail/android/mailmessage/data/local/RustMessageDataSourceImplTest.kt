@@ -54,8 +54,8 @@ import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
-import uniffi.proton_mail_common.BodyBanners
 import uniffi.proton_mail_common.BodyOutput
+import uniffi.proton_mail_common.MessageBanner
 import uniffi.proton_mail_common.TransformOpts
 import uniffi.proton_mail_uniffi.AllBottomBarMessageActions
 import uniffi.proton_mail_uniffi.CustomFolderAction
@@ -156,7 +156,7 @@ class RustMessageDataSourceImplTest {
         val messageId = LocalMessageIdSample.AugWeatherForecast
         val mailbox = mockk<MailboxWrapper>()
         val transformOpts = mockk<TransformOpts>()
-        val bodyBanners = mockk<BodyBanners>()
+        val bodyBanners = mockk<List<MessageBanner>>()
         val bodyOutput = BodyOutput(
             "message body",
             false,
