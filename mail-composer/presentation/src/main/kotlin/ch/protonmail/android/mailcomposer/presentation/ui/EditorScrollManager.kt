@@ -21,7 +21,7 @@ package ch.protonmail.android.mailcomposer.presentation.ui
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.coerceAtLeast
 import androidx.compose.ui.unit.dp
-import ch.protonmail.android.mailcomposer.presentation.model.ComposeScreenParams
+import ch.protonmail.android.mailcomposer.presentation.model.ComposeScreenMeasures
 import ch.protonmail.android.mailcomposer.presentation.model.WebViewMeasures
 import timber.log.Timber
 
@@ -33,9 +33,9 @@ class EditorScrollManager(
 
     private var previousWebViewHeightDp = 0.dp
 
-    fun onEditorParamsChanged(screenParams: ComposeScreenParams, webViewMeasures: WebViewMeasures) {
-        Timber.tag("composer-scroll").d("ComposerForm params: $screenParams")
-        Timber.tag("composer-scroll").d("WebView params: $webViewMeasures")
+    fun onEditorParamsChanged(screenMeasure: ComposeScreenMeasures, webViewMeasures: WebViewMeasures) {
+        Timber.tag("composer-scroll").d("ComposerForm measures: $screenMeasure")
+        Timber.tag("composer-scroll").d("WebView measures: $webViewMeasures")
 
         val sizeDeltaDp = calculateWebViewSizeDelta(webViewMeasures)
 
@@ -45,8 +45,8 @@ class EditorScrollManager(
             return
         }
 
-        if (cursorIsNotInFocus(screenParams, webViewMeasures)) {
-            val scrollToCursor = calculateScrollToCursor(webViewMeasures, screenParams)
+        if (cursorIsNotInFocus(screenMeasure, webViewMeasures)) {
+            val scrollToCursor = calculateScrollToCursor(webViewMeasures, screenMeasure)
             Timber.tag("composer-scroll").d("Cursor out of focus scrolling to: $scrollToCursor")
             onUpdateScroll(scrollToCursor)
             Timber.tag("composer-scroll").d("----------------------------------------------------------------------")
@@ -54,8 +54,8 @@ class EditorScrollManager(
         }
         Timber.tag("composer-scroll").d("cursor is in focus")
 
-        if (cursorIsAtThenEndOfVisibleWebView(screenParams, webViewMeasures)) {
-            val oneLineScroll = screenParams.scrollValueDp + sizeDeltaDp
+        if (cursorIsAtThenEndOfVisibleWebView(screenMeasure, webViewMeasures)) {
+            val oneLineScroll = screenMeasure.scrollValueDp + sizeDeltaDp
             Timber.tag("composer-scroll").d("Cursor in last line, scrolling to: $oneLineScroll")
             onUpdateScroll(oneLineScroll)
             Timber.tag("composer-scroll").d("----------------------------------------------------------------------")
@@ -66,17 +66,18 @@ class EditorScrollManager(
         Timber.tag("composer-scroll").d("----------------------------------------------------------------------")
     }
 
-    private fun calculateScrollToCursor(webViewMeasures: WebViewMeasures, screenParams: ComposeScreenParams) =
-        webViewMeasures.cursorPositionDp + screenParams.headerHeightDp
+    private fun calculateScrollToCursor(webViewMeasures: WebViewMeasures, screenMeasure: ComposeScreenMeasures) =
+        webViewMeasures.cursorPositionDp + screenMeasure.headerHeightDp
 
     private fun cursorIsAtThenEndOfVisibleWebView(
-        screenParams: ComposeScreenParams,
+        screenMeasure: ComposeScreenMeasures,
         webViewMeasures: WebViewMeasures
     ): Boolean {
         // This is calculated in ComposerScreen through rect intersection between webview and column
-        val portionOfWebViewVisible = screenParams.visibleWebViewHeightDp
+        val portionOfWebViewVisible = screenMeasure.visibleWebViewHeightDp
 
-        val startOfTheWebViewVisibility = (screenParams.scrollValueDp - screenParams.headerHeightDp).coerceAtLeast(0.dp)
+        val startOfTheWebViewVisibility = (screenMeasure.scrollValueDp - screenMeasure.headerHeightDp)
+            .coerceAtLeast(0.dp)
         val startOfLastLineArea = startOfTheWebViewVisibility + portionOfWebViewVisible - webViewMeasures.lineHeightDp
         val endOfLastLineArea = startOfLastLineArea + webViewMeasures.lineHeightDp
         val isCursorOnLastVisibleLine = webViewMeasures.cursorPositionDp in startOfLastLineArea..endOfLastLineArea
@@ -95,10 +96,11 @@ class EditorScrollManager(
         return isCursorOnLastVisibleLine
     }
 
-    private fun cursorIsNotInFocus(screenParams: ComposeScreenParams, webViewMeasures: WebViewMeasures): Boolean {
+    private fun cursorIsNotInFocus(screenMeasure: ComposeScreenMeasures, webViewMeasures: WebViewMeasures): Boolean {
         // This is calculated in ComposerScreen through rect intersection between webview and column
-        val portionOfWebViewVisible = screenParams.visibleWebViewHeightDp
-        val startOfTheWebViewVisibility = (screenParams.scrollValueDp - screenParams.headerHeightDp).coerceAtLeast(0.dp)
+        val portionOfWebViewVisible = screenMeasure.visibleWebViewHeightDp
+        val startOfTheWebViewVisibility = (screenMeasure.scrollValueDp - screenMeasure.headerHeightDp)
+            .coerceAtLeast(0.dp)
         val webViewVisibleRange = startOfTheWebViewVisibility..startOfTheWebViewVisibility + portionOfWebViewVisible
         val isCursorNotInFocus = webViewMeasures.cursorPositionDp !in webViewVisibleRange
 

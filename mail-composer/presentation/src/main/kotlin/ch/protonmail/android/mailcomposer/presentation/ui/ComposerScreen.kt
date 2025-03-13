@@ -74,7 +74,7 @@ import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.SenderEmail
 import ch.protonmail.android.mailcomposer.domain.model.Subject
 import ch.protonmail.android.mailcomposer.presentation.R
-import ch.protonmail.android.mailcomposer.presentation.model.ComposeScreenParams
+import ch.protonmail.android.mailcomposer.presentation.model.ComposeScreenMeasures
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerAction
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerDraftState
 import ch.protonmail.android.mailcomposer.presentation.model.FocusedFieldType
@@ -246,7 +246,7 @@ fun ComposerScreen(actions: ComposerScreen.Actions, viewModel: ComposerViewModel
                     )
                 }
 
-                fun getComposeScreenParams() = ComposeScreenParams(
+                fun getComposeScreenParams() = ComposeScreenMeasures(
                     visibleWebViewHeight,
                     visibleHeaderHeight,
                     headerHeight,

@@ -2,7 +2,7 @@ package ch.protonmail.android.mailcomposer.presentation.ui
 
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import ch.protonmail.android.mailcomposer.presentation.model.ComposeScreenParams
+import ch.protonmail.android.mailcomposer.presentation.model.ComposeScreenMeasures
 import ch.protonmail.android.mailcomposer.presentation.model.WebViewMeasures
 import org.junit.Test
 import kotlin.test.assertEquals
@@ -96,7 +96,7 @@ class EditorScrollManagerTest {
         visibleHeaderHeightDp: Int = 0,
         headerHeightDp: Int = 0,
         scrollValueDp: Int = 0
-    ) = ComposeScreenParams(
+    ) = ComposeScreenMeasures(
         visibleWebViewHeightDp.dp,
         visibleHeaderHeightDp.dp,
         headerHeightDp.dp,

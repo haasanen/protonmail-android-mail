@@ -20,7 +20,7 @@ package ch.protonmail.android.mailcomposer.presentation.model
 
 import androidx.compose.ui.unit.Dp
 
-data class ComposeScreenParams(
+data class ComposeScreenMeasures(
     val visibleWebViewHeightDp: Dp,
     val visibleHeaderHeightDp: Dp,
     val headerHeightDp: Dp,
