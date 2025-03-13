@@ -20,5 +20,6 @@ package ch.protonmail.android.mailcomposer.presentation.model
 
 data class WebViewParams(
     val height: Int,
-    val cursorPosition: Float
+    val cursorPosition: Float,
+    val lineHeight: Float
 )

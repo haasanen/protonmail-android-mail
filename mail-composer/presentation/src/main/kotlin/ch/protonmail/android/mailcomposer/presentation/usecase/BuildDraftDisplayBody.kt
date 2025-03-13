@@ -101,6 +101,11 @@ class BuildDraftDisplayBody @Inject constructor(
 
                     // Get the bounding client rect of the span
                     const rect = span.getBoundingClientRect();
+                    // Get the line height of the span
+                    const lineHeight = window.getComputedStyle(span).lineHeight;
+                    const lineHeightValue = lineHeight.replace(/[^\d.]/g, '');
+                    const parsedLineHeight = parseFloat(lineHeightValue);
+                    console.log('composer-scroll: computed line height is ' + lineHeight + ' clean value: ' + parsedLineHeight );
 
                     // Remove the temporary span element
                     range.deleteContents();
@@ -108,7 +113,7 @@ class BuildDraftDisplayBody @Inject constructor(
                     // Calculate the height of the caret position relative to the inputDiv
                     const caretPosition = rect.top - editor.getBoundingClientRect().top;
                     console.log("updated caret position: " + caretPosition);
-                    $JAVASCRIPT_CALLBACK_INTERFACE_NAME.onCaretPositionChanged(caretPosition);
+                    $JAVASCRIPT_CALLBACK_INTERFACE_NAME.onCaretPositionChanged(caretPosition, parsedLineHeight);
                 }
             }
         }

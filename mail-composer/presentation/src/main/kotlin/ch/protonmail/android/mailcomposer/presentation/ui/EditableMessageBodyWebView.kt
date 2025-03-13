@@ -112,6 +112,7 @@ fun EditableMessageBodyWebView(
     }
 
     var lastCursorPosition = remember { 0f }
+    var lastLineHeight = remember { 0f }
 
     fun onWebViewResize() {
         if (state.loadingState != LoadingState.Finished) {
@@ -122,12 +123,13 @@ fun EditableMessageBodyWebView(
 
         val height = webView?.height ?: 0
         Timber.d("composer-scroll: Emitting webview size: $height")
-        webViewActions.onWebViewParamsChanged(WebViewParams(height, lastCursorPosition))
+        webViewActions.onWebViewParamsChanged(WebViewParams(height, lastCursorPosition, lastLineHeight))
     }
 
-    fun onCursorPositionChanged(position: Float) {
-        Timber.d("composer-scroll: cursor position changed, callback value: $position")
+    fun onCursorPositionChanged(position: Float, lineHeight: Float) {
+        Timber.d("composer-scroll: cursor position changed, callback value: $position //// line height: $lineHeight")
         lastCursorPosition = position
+        lastLineHeight = lineHeight
     }
 
     val javascriptCallback = remember {

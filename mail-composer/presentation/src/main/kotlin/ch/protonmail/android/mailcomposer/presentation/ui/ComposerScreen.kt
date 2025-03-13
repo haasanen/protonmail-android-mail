@@ -232,6 +232,7 @@ fun ComposerScreen(actions: ComposerScreen.Actions, viewModel: ComposerViewModel
                     val sizeDelta = (params.height - previousWebViewHeight).coerceAtLeast(0)
                     previousWebViewHeight = params.height
 
+                    Timber.d("composer-scroll: ALL PARAMS: $params")
                     Timber.d("composer-scroll: current scroll ${scrollState.value}")
                     Timber.d("composer-scroll: size delta $sizeDelta")
 
