@@ -35,7 +35,7 @@ internal data class ComposerFormActions(
     val onContactSuggestionTermChanged: (String, ContactSuggestionsField) -> Unit,
     val onSubjectChanged: (String) -> Unit,
     val onBodyChanged: (String) -> Unit,
-    val onEditorParamsChanged: (WebViewMeasures) -> Unit,
+    val onWebViewMeasuresChanged: (WebViewMeasures) -> Unit,
     val onChangeSender: () -> Unit,
     val onHeaderPositioned: (boundsInWindow: Rect, height: Float) -> Unit,
     val onWebViewPositioned: (boundsInWindow: Rect) -> Unit

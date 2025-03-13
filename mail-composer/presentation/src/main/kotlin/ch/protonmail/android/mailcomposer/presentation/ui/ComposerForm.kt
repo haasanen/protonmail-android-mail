@@ -35,7 +35,6 @@ import androidx.compose.ui.platform.testTag
 import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.compose.FocusableForm
-import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcommon.presentation.ui.MailDivider
 import ch.protonmail.android.mailcomposer.presentation.R
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerFields
@@ -52,8 +51,6 @@ internal fun ComposerForm(
     initialFocus: FocusedFieldType,
     changeFocusToField: Effect<FocusedFieldType>,
     fields: ComposerFields,
-    replaceDraftBody: Effect<TextUiModel>,
-    shouldForceBodyTextFocus: Effect<Unit>,
     actions: ComposerFormActions,
     contactSuggestions: Map<ContactSuggestionsField, List<ContactSuggestionUiModel>>,
     areContactSuggestionsExpanded: Map<ContactSuggestionsField, Boolean>,
@@ -141,7 +138,7 @@ internal fun ComposerForm(
                 MessageBodyEditor(
                     messageBodyUiModel = fields.displayBody,
                     onBodyChanged = actions.onBodyChanged,
-                    onEditorParamsChanged = actions.onEditorParamsChanged,
+                    onWebViewMeasuresChanged = actions.onWebViewMeasuresChanged,
                     modifier = maxWidthModifier
                         .testTag(ComposerTestTags.MessageBody)
                         .retainFieldFocusOnConfigurationChange(FocusedFieldType.BODY)

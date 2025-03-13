@@ -270,14 +270,12 @@ fun ComposerScreen(actions: ComposerScreen.Actions, viewModel: ComposerViewModel
                         initialFocus = focusedField,
                         changeFocusToField = state.changeFocusToField,
                         fields = state.fields,
-                        replaceDraftBody = state.replaceDraftBody,
-                        shouldForceBodyTextFocus = state.focusTextBody,
                         actions = buildActions(
-                            viewModel,
-                            { recipientsOpen = it },
-                            { focusedField = it },
-                            { bottomSheetType.value = it },
-                            { webViewParams ->
+                            viewModel = viewModel,
+                            onToggleRecipients = { recipientsOpen = it },
+                            onFocusChanged = { focusedField = it },
+                            setBottomSheetType = { bottomSheetType.value = it },
+                            onWebViewMeasuresChanged = { webViewParams ->
                                 scrollManager.onEditorParamsChanged(
                                     getComposeScreenParams(),
                                     webViewParams
@@ -478,7 +476,7 @@ private fun buildActions(
     onToggleRecipients: (Boolean) -> Unit,
     onFocusChanged: (FocusedFieldType) -> Unit,
     setBottomSheetType: (BottomSheetType) -> Unit,
-    onEditorParamsChanged: (WebViewMeasures) -> Unit,
+    onWebViewMeasuresChanged: (WebViewMeasures) -> Unit,
     onHeaderPositioned: (Rect, Float) -> Unit,
     onWebViewPositioned: (Rect) -> Unit
 ): ComposerFormActions = ComposerFormActions(
@@ -500,7 +498,7 @@ private fun buildActions(
         setBottomSheetType(BottomSheetType.ChangeSender)
         viewModel.submit(ComposerAction.ChangeSenderRequested)
     },
-    onEditorParamsChanged = onEditorParamsChanged,
+    onWebViewMeasuresChanged = onWebViewMeasuresChanged,
     onHeaderPositioned = onHeaderPositioned,
     onWebViewPositioned = onWebViewPositioned
 )
