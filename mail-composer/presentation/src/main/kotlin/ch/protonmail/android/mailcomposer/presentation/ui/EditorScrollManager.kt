@@ -46,8 +46,8 @@ class EditorScrollManager(
         }
 
         if (cursorIsNotInFocus(screenParams, webViewParams)) {
-            val scrollToCursor = webViewParams.cursorPositionDp + screenParams.scrollValueDp
-            Timber.d("composer-scroll: Cursor out of focus scrolling: $scrollToCursor")
+            val scrollToCursor = calculateScrollToCursor(webViewParams, screenParams)
+            Timber.d("composer-scroll: Cursor out of focus scrolling to: $scrollToCursor")
             onUpdateScroll(scrollToCursor)
             Timber.d("composer-scroll: ----------------------------------------------------------------------")
             return
@@ -66,15 +66,15 @@ class EditorScrollManager(
         Timber.d("composer-scroll: ----------------------------------------------------------------------")
     }
 
+    private fun calculateScrollToCursor(webViewParams: WebViewParams, screenParams: ComposeScreenParams) =
+        webViewParams.cursorPositionDp + screenParams.headerHeightDp
+
     private fun cursorIsAtThenEndOfVisibleWebView(
         screenParams: ComposeScreenParams,
         webViewParams: WebViewParams
     ): Boolean {
         // This is calculated in ComposerScreen through rect intersection between webview and column
         val portionOfWebViewVisible = screenParams.visibleWebViewHeightDp
-
-        // Full line height (including hardcoded interline space) coming through javascript interface
-        val numberOfLinesFittingVisibleWebView = portionOfWebViewVisible / webViewParams.lineHeightDp
 
         val startOfTheWebViewVisibility = (screenParams.scrollValueDp - screenParams.headerHeightDp).coerceAtLeast(0.dp)
         val startOfLastLineArea = startOfTheWebViewVisibility + portionOfWebViewVisible - webViewParams.lineHeightDp
@@ -84,38 +84,35 @@ class EditorScrollManager(
         Timber.d(
             """
                 composer-scroll: is cursor at the end of the webview:
-                | portionOfWebViewVisible : $portionOfWebViewVisible 
-                | numberOfLinesFittingVisibleWebView : $numberOfLinesFittingVisibleWebView 
-                | startOfTheWebViewVisibility : $startOfTheWebViewVisibility 
-                | startOfLastLineArea : $startOfLastLineArea 
+                | portionOfWebViewVisible : $portionOfWebViewVisible
+                | startOfTheWebViewVisibility : $startOfTheWebViewVisibility
+                | startOfLastLineArea : $startOfLastLineArea
                 | endOfLastLineArea : $endOfLastLineArea
-                | iscursorOnLastVisibleLine : $isCursorOnLastVisibleLine 
+                | iscursorOnLastVisibleLine : $isCursorOnLastVisibleLine
             """.trimIndent()
         )
 
         return isCursorOnLastVisibleLine
     }
 
-    // TODO: implement, shadow the logic above
-    @SuppressWarnings("ForbiddenComment", "ExpressionBodySyntax", "FunctionOnlyReturningConstant")
     private fun cursorIsNotInFocus(screenParams: ComposeScreenParams, webViewParams: WebViewParams): Boolean {
-//        val portionOfWebViewVisible = screenParams.screenHeightDp - screenParams.visibleHeaderHeightDp
+        // This is calculated in ComposerScreen through rect intersection between webview and column
+        val portionOfWebViewVisible = screenParams.visibleWebViewHeightDp
+        val startOfTheWebViewVisibility = (screenParams.scrollValueDp - screenParams.headerHeightDp).coerceAtLeast(0.dp)
+        val webViewVisibleRange = startOfTheWebViewVisibility..startOfTheWebViewVisibility + portionOfWebViewVisible
+        val isCursorNotInFocus = webViewParams.cursorPositionDp !in webViewVisibleRange
 
-//        val startOfTheWebViewVisibility = screenParams.scrollValueDp - screenParams.headerHeightDp
+        Timber.d(
+            """
+                composer-scroll: is cursor out of focus
+                | portionOfWebViewVisible : $portionOfWebViewVisible
+                | startOfTheWebViewVisibility : $startOfTheWebViewVisibility
+                | webViewVisibleRange : $webViewVisibleRange
+                | isCursorNotInFocus: $isCursorNotInFocus
+            """.trimIndent()
+        )
 
-//        val webViewVisibleRange = startOfTheWebViewVisibility..startOfTheWebViewVisibility + portionOfWebViewVisible
-
-//        val isCursorNotInFocus = webViewParams.cursorPositionDp !in webViewVisibleRange
-//        Timber.d("""
-//            | composer-scroll: is cursor out of focus
-//            | portionOfWebViewVisible : $portionOfWebViewVisible
-//            | startOfTheWebViewVisibility : $startOfTheWebViewVisibility
-//            | webViewVisibleRange : $webViewVisibleRange
-//            | isCursorNotInFocus: $isCursorNotInFocus
-//        """.trimIndent())
-
-//        return isCursorNotInFocus
-        return false
+        return isCursorNotInFocus
     }
 
     private fun calculateWebViewSizeDelta(webViewParams: WebViewParams): Dp {

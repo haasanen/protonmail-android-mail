@@ -25,7 +25,6 @@ import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -292,7 +291,6 @@ fun ComposerScreen(actions: ComposerScreen.Actions, viewModel: ComposerViewModel
                             onWebViewPositioned = { boundsInWindow ->
                                 val visibleBounds = boundsInWindow.intersect(columnBounds)
                                 visibleWebViewHeight = visibleBounds.height.coerceAtLeast(0f).toDp(localDensity)
-                                Timber.d("composer-scroll: webview height by visible bounds: $visibleWebViewHeight")
                             }
                         ),
                         contactSuggestions = state.contactSuggestions,
