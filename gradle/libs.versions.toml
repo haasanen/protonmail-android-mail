@@ -7,6 +7,7 @@ sentry-gradle-plugin = "4.14.1"
 accompanist-webview = "0.30.1"
 accompanist-permissions = "0.37.2"
 desugar-jdk-libs = "2.1.5"
+android-billing = "7.1.1"
 androidx-activity = "1.10.1"
 androidx-annotation = "1.9.1"
 androidx-appcompat = "1.7.0"
@@ -58,6 +59,7 @@ ksp-symbol-processing-api = "2.0.21-1.0.27"
 kotlin = "2.0.21"
 kotlin-compile-testing = "0.6.0"
 kotlinx-coroutines = "1.8.0"
+kotlinx-datetime = "0.6.2"
 kotlinx-immutable-collections = "0.3.5"
 kotlinx-serialization = "1.6.3"
 lottie = "6.1.0"
@@ -93,6 +95,7 @@ paparazzi = { module = "app.cash.paparazzi:paparazzi-gradle-plugin", version.ref
 # Standard dependencies
 accompanist-webview = { module = "com.google.accompanist:accompanist-webview", version.ref = "accompanist-webview" }
 accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanist-permissions" }
+android-billing = { module = "com.android.billingclient:billing-ktx", version.ref = "android-billing" }
 android-tools-desugarJdkLibs = { module = "com.android.tools:desugar_jdk_libs", version.ref = "desugar-jdk-libs" }
 android-material = { module = "com.google.android.material:material", version.ref = "material" }
 androidx-activity-ktx = { module = "androidx.activity:activity", version.ref = "androidx-activity" }
@@ -172,12 +175,13 @@ kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version
 kotlin-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
 kotlin-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinx-coroutines" }
 kotlin-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
+kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinx-datetime" }
+kotlinx-immutableCollections = { module = "org.jetbrains.kotlinx:kotlinx-collections-immutable", version.ref = "kotlinx-immutable-collections" }
 ksp-symbolProcessingApi = { module = "com.google.devtools.ksp:symbol-processing-api", version.ref = "ksp-symbol-processing-api" }
 kotlinpoet-ksp = { module = "com.squareup:kotlinpoet-ksp", version.ref = "kotlinpoet-ksp" }
 leakcanary-android = { module = "com.squareup.leakcanary:leakcanary-android", version.ref = "leakcanary" }
 lottie-compose = { module = "com.airbnb.android:lottie-compose", version.ref = "lottie" }
 timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
-kotlinx-immutableCollections = { module = "org.jetbrains.kotlinx:kotlinx-collections-immutable", version.ref = "kotlinx-immutable-collections" }
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 mockk-android = { module = "io.mockk:mockk-android", version.ref = "mockk" }
 mockwebserver = { module = "com.squareup.okhttp3:mockwebserver", version.ref = "okhttp" }
@@ -235,6 +239,7 @@ proton-core-userRecovery = { module = "me.proton.core:user-recovery", version.re
 proton-core-userRecoveryTest = { module = "me.proton.core:user-recovery-test", version.ref = "proton-core" }
 proton-core-userSettings = { module = "me.proton.core:user-settings", version.ref = "proton-core" }
 proton-core-utilKotlin = { module = "me.proton.core:util-kotlin", version.ref = "proton-core" }
+proton-core-utilAndroidDateTime = { module = "me.proton.core:util-android-datetime", version.ref = "proton-core" }
 proton-core-utilAndroidDagger = { module = "me.proton.core:util-android-dagger", version.ref = "proton-core" }
 proton-core-utilAndroidSentry = { module = "me.proton.core:util-android-sentry", version.ref = "proton-core" }
 proton-core-utilAndroidStrictMode = { module = "me.proton.core:util-android-strict-mode", version.ref = "proton-core" }

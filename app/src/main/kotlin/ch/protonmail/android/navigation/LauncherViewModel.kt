@@ -46,6 +46,8 @@ import me.proton.android.core.auth.presentation.AuthOrchestrator
 import me.proton.android.core.auth.presentation.login.LoginInput
 import me.proton.android.core.auth.presentation.onAddAccountResult
 import me.proton.android.core.auth.presentation.onLoginResult
+import me.proton.android.core.payment.presentation.PaymentOrchestrator
+import me.proton.android.core.payment.presentation.onUpgradeResult
 import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 
@@ -53,6 +55,7 @@ import javax.inject.Inject
 @SuppressWarnings("NotImplementedDeclaration", "UnusedPrivateMember")
 class LauncherViewModel @Inject constructor(
     private val authOrchestrator: AuthOrchestrator,
+    private val paymentOrchestrator: PaymentOrchestrator,
     private val setPrimaryAccount: SetPrimaryAccount,
     private val userSessionRepository: UserSessionRepository,
     private val notificationsPermissionOrchestrator: NotificationsPermissionOrchestrator
@@ -77,6 +80,7 @@ class LauncherViewModel @Inject constructor(
     override fun onCleared() {
         authOrchestrator.unregister()
         notificationsPermissionOrchestrator.unregister()
+        paymentOrchestrator.unregister()
         super.onCleared()
     }
 
@@ -91,6 +95,10 @@ class LauncherViewModel @Inject constructor(
         }
 
         notificationsPermissionOrchestrator.register(context)
+        with(paymentOrchestrator) {
+            register(context)
+            onUpgradeResult { }
+        }
     }
 
     fun submit(action: Action) {
@@ -125,8 +133,8 @@ class LauncherViewModel @Inject constructor(
         TODO("ET - Not yet implemented")
     }
 
-    private fun onOpenSubscription() {
-        TODO("ET - Not yet implemented")
+    private fun onOpenSubscription() = viewModelScope.launch {
+        paymentOrchestrator.startSubscriptionWorkflow()
     }
 
     private fun onOpenSecurityKeys() {

@@ -19,18 +19,20 @@
 package ch.protonmail.android.mailsession.domain.repository
 
 import arrow.core.Either
-import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
 import ch.protonmail.android.mailsession.domain.model.Account
 import ch.protonmail.android.mailsession.domain.model.AccountState
 import ch.protonmail.android.mailsession.domain.model.ForkedSessionId
 import ch.protonmail.android.mailsession.domain.model.SessionError
+import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.transform
 import me.proton.core.domain.entity.UserId
 import me.proton.core.network.domain.session.SessionId
+import uniffi.proton_mail_uniffi.MailUserSession
 
 interface UserSessionRepository {
 
@@ -61,3 +63,9 @@ fun UserSessionRepository.onAccountState(state: AccountState, initialState: Bool
         .filter { it.state == state }
         .drop(if (initialState) 0 else 1)
         .distinctUntilChanged()
+
+suspend fun UserSessionRepository.getPrimarySession(): MailUserSession? {
+    val primaryUserId = observePrimaryUserId().firstOrNull() ?: return null
+    val userSession = getUserSession(primaryUserId) ?: return null
+    return userSession.getRustUserSession()
+}

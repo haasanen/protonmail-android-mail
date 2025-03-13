@@ -390,7 +390,7 @@ fun Home(
                         drawerState = drawerState,
                         navigationActions = buildSidebarActions(navController, launcherActions).copy(
                             onReportBug = { navController.navigate(Destination.Screen.ApplicationLogs.route) },
-                            onSubscription = { showFeatureMissingSnackbar() }
+                            onSubscription = { launcherActions.onSubscription() }
                         )
                     )
                 }

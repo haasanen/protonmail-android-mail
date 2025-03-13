@@ -235,6 +235,10 @@ dependencies {
     implementation(project(":shared:core:humanverification:presentation"))
     implementation(project(":shared:core:auth:dagger"))
     implementation(project(":shared:core:auth:presentation"))
+    implementation(project(":shared:core:payment:dagger"))
+    implementation(project(":shared:core:payment:presentation"))
+    implementation(project(":shared:core:payment-google:dagger"))
+    implementation(project(":shared:core:payment-google:presentation"))
 
     implementation(libs.bundles.appLibs)
     implementation(libs.java.jna) { artifact { type = "aar" } }

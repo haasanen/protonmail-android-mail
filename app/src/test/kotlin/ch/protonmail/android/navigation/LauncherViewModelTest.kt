@@ -33,6 +33,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import me.proton.android.core.auth.presentation.AuthOrchestrator
+import me.proton.android.core.payment.presentation.PaymentOrchestrator
 import org.junit.Rule
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -44,6 +45,7 @@ class LauncherViewModelTest {
     val mainDispatcherRule = MainDispatcherRule()
 
     private val authOrchestrator = mockk<AuthOrchestrator>()
+    private val paymentOrchestrator = mockk<PaymentOrchestrator>()
     private val setPrimaryAccount = mockk<SetPrimaryAccount>()
     private val userSessionRepository = mockk<UserSessionRepository>()
     private val notificationsPermissionOrchestrator = mockk<NotificationsPermissionOrchestrator>(relaxUnitFun = true)
@@ -59,6 +61,7 @@ class LauncherViewModelTest {
             // When
             viewModel = LauncherViewModel(
                 authOrchestrator,
+                paymentOrchestrator,
                 setPrimaryAccount,
                 userSessionRepository,
                 notificationsPermissionOrchestrator
@@ -87,6 +90,7 @@ class LauncherViewModelTest {
         // When
         viewModel = LauncherViewModel(
             authOrchestrator,
+            paymentOrchestrator,
             setPrimaryAccount,
             userSessionRepository,
             notificationsPermissionOrchestrator
