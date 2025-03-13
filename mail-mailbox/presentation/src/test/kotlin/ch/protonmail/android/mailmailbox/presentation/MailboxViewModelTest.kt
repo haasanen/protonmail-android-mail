@@ -146,6 +146,7 @@ import ch.protonmail.android.testdata.mailbox.UnreadCountersTestData.update
 import ch.protonmail.android.testdata.maillabel.MailLabelTestData
 import ch.protonmail.android.testdata.maillabel.MailLabelUiModelTestData
 import ch.protonmail.android.testdata.user.UserIdTestData.userId
+import ch.protonmail.android.testdata.user.UserIdTestData.userId1
 import io.mockk.Called
 import io.mockk.coEvery
 import io.mockk.coJustRun
@@ -211,12 +212,15 @@ class MailboxViewModelTest {
     }
     private val observeSwipeActionsPreference = mockk<ObserveSwipeActionsPreference> {
         every { this@mockk(userId) } returns flowOf(SwipeActionsPreference(SwipeAction.MarkRead, SwipeAction.Archive))
+        every { this@mockk(userId1) } returns flowOf(SwipeActionsPreference(SwipeAction.MarkRead, SwipeAction.Archive))
     }
     private val observeConversationClearOperation = mockk<ObserveClearConversationOperation> {
         every { this@mockk(userId, any()) } returns flowOf(false)
+        every { this@mockk(userId1, any()) } returns flowOf(false)
     }
     private val observeMessageClearOperation = mockk<ObserveClearMessageOperation> {
         every { this@mockk(userId, any()) } returns flowOf(false)
+        every { this@mockk(userId1, any()) } returns flowOf(false)
     }
 
     private val observeCurrentViewMode = mockk<ObserveCurrentViewMode> {
@@ -277,12 +281,19 @@ class MailboxViewModelTest {
     }
     private val shouldShowRatingBooster = mockk<ShouldShowRatingBooster> {
         every { this@mockk(userId) } returns flowOf(false)
+        every { this@mockk(userId1) } returns flowOf(false)
     }
     private val showRatingBooster = mockk<ShowRatingBooster>(relaxUnitFun = true)
     private val recordRatingBoosterTriggered = mockk<RecordRatingBoosterTriggered>(relaxUnitFun = true)
 
     private val observeFolderColorSettings = mockk<ObserveFolderColorSettings> {
         every { this@mockk(userId) } returns flowOf(
+            FolderColorSettings(
+                useFolderColor = true,
+                inheritParentFolderColor = true
+            )
+        )
+        every { this@mockk(userId1) } returns flowOf(
             FolderColorSettings(
                 useFolderColor = true,
                 inheritParentFolderColor = true
@@ -300,6 +311,7 @@ class MailboxViewModelTest {
 
     private val isAutoDeleteTrashAndSpamEnabled = mockk<IsAutoDeleteSpamAndTrashEnabled> {
         coEvery { this@mockk(userId) } returns true
+        coEvery { this@mockk(userId1) } returns true
     }
 
     private val mailboxViewModel by lazy {
@@ -792,8 +804,106 @@ class MailboxViewModelTest {
             assertEquals(expectedState, awaitItem())
             assertEquals(expectedStateWithSwipeGestures, awaitItem())
             assertEquals(expectedStateAfterClearAllStatus, awaitItem())
+        }
+    }
 
+    @Test
+    fun `when userId changes, new state is created and emitted`() = runTest {
+        // Given
+        val initialMailLabel = MailLabelTestData.customLabelOne
+        val expectedState = MailboxStateSampleData.Loading.copy(
+            mailboxListState = MailboxListState.Data.ViewMode(
+                currentMailLabel = initialMailLabel,
+                openItemEffect = Effect.empty(),
+                scrollToMailboxTop = Effect.of(initialMailLabel.id),
+                offlineEffect = Effect.empty(),
+                refreshErrorEffect = Effect.empty(),
+                refreshRequested = false,
+                swipeActions = null,
+                searchState = MailboxSearchStateSampleData.NotSearching,
+                clearState = MailboxListState.Data.ClearState.Hidden,
+                shouldShowFab = true,
+                avatarImagesUiModel = AvatarImagesUiModelTestData.SampleData1
+            )
+        )
+        val expectedSwipeActions = SwipeActionsUiModel(
+            end = SwipeUiModelSampleData.MarkRead,
+            start = SwipeUiModelSampleData.Archive
+        )
+        val expectedStateWithSwipeGestures = expectedState.copy(
+            mailboxListState = MailboxListState.Data.ViewMode(
+                currentMailLabel = initialMailLabel,
+                openItemEffect = Effect.empty(),
+                scrollToMailboxTop = Effect.of(initialMailLabel.id),
+                offlineEffect = Effect.empty(),
+                refreshErrorEffect = Effect.empty(),
+                refreshRequested = false,
+                swipeActions = expectedSwipeActions,
+                searchState = MailboxSearchStateSampleData.NotSearching,
+                clearState = MailboxListState.Data.ClearState.Hidden,
+                shouldShowFab = true,
+                avatarImagesUiModel = AvatarImagesUiModelTestData.SampleData1
+            )
+        )
+        val expectedStateAfterClearAllStatus = expectedStateWithSwipeGestures.copy(
+            mailboxListState = MailboxListState.Data.ViewMode(
+                currentMailLabel = initialMailLabel,
+                openItemEffect = Effect.empty(),
+                scrollToMailboxTop = Effect.of(initialMailLabel.id),
+                offlineEffect = Effect.empty(),
+                refreshErrorEffect = Effect.empty(),
+                refreshRequested = false,
+                swipeActions = expectedSwipeActions,
+                searchState = MailboxSearchStateSampleData.NotSearching,
+                clearState = MailboxListState.Data.ClearState.Visible.InfoBanner(TextUiModel("Clear Info")),
+                shouldShowFab = true,
+                avatarImagesUiModel = AvatarImagesUiModelTestData.SampleData1
+            )
+        )
+        val mailLabelsFlow = MutableStateFlow(
+            MailLabels(
+                system = MailLabelTestData.dynamicSystemLabels,
+                folders = emptyList(),
+                labels = listOf(
+                    MailLabelTestData.customLabelOne,
+                    MailLabelTestData.customLabelTwo
+                )
+            )
+        )
+        val currentLocationFlow = MutableStateFlow<MailLabelId>(initialMailLabel.id)
+        every { observeMailLabels(userId) } returns mailLabelsFlow
+        every { selectedMailLabelId.flow } returns currentLocationFlow
 
+        val currentUserIdFlow = MutableStateFlow(userId)
+        every { observePrimaryUserId() } returns currentUserIdFlow
+
+        every {
+            mailboxReducer.newStateFrom(any(), MailboxEvent.NewLabelSelected(initialMailLabel, null))
+        } returns expectedState
+        every {
+            mailboxReducer.newStateFrom(any(), MailboxEvent.SwipeActionsChanged(expectedSwipeActions))
+        } returns expectedStateWithSwipeGestures
+        every {
+            mailboxReducer.newStateFrom(
+                any(),
+                MailboxEvent.ClearAllOperationStatus(
+                    ClearAllState.ClearAllActionBanner
+                )
+            )
+        } returns expectedStateAfterClearAllStatus
+
+        mailboxViewModel.state.test {
+            awaitItem()
+
+            // When
+            currentUserIdFlow.emit(userId1)
+            advanceUntilIdle()
+
+            // Then
+            assertEquals(MailboxStateSampleData.Loading, awaitItem())
+            assertEquals(expectedState, awaitItem())
+            assertEquals(expectedStateWithSwipeGestures, awaitItem())
+            assertEquals(expectedStateAfterClearAllStatus, awaitItem())
         }
     }
 

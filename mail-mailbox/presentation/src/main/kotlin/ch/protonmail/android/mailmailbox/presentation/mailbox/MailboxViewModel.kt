@@ -237,15 +237,17 @@ class MailboxViewModel @Inject constructor(
         selectedMailLabelId.flow
             .mapToExistingLabel()
             .pairWithCurrentLabelCount()
-            .onEach { (currentMailLabel, currentLabelCount) ->
+            .combine(primaryUserId.filterNotNull()) { labelWithCount, userId ->
+                Triple(labelWithCount.first, labelWithCount.second, userId)
+            }
+            .onEach { (currentMailLabel, currentLabelCount, _) ->
                 itemIds.clear()
                 emitNewStateFrom(MailboxEvent.NewLabelSelected(currentMailLabel, currentLabelCount))
             }
-            .combine(primaryUserId.filterNotNull()) { currentMailLabel, userId -> userId to currentMailLabel }
-            .flatMapLatest {
+            .flatMapLatest { (currentMailLabel, _, userId) ->
                 merge(
-                    handleSwipeActionPreferences(it.first, it.second.first),
-                    observeClearAllOperation(it.first, it.second.first.id)
+                    handleSwipeActionPreferences(userId, currentMailLabel),
+                    observeClearAllOperation(userId, currentMailLabel.id)
                 )
             }
             .onEach {
