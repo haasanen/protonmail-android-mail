@@ -27,6 +27,7 @@ import ch.protonmail.android.mailmessage.data.usecase.CreateRustMessagesPaginato
 import ch.protonmail.android.mailmessage.data.usecase.CreateRustSearchPaginator
 import ch.protonmail.android.mailmessage.data.wrapper.MessagePaginatorWrapper
 import ch.protonmail.android.mailpagination.domain.model.PageKey
+import ch.protonmail.android.mailpagination.domain.model.PageToLoad
 import ch.protonmail.android.mailpagination.domain.model.ReadStatus
 import ch.protonmail.android.mailsession.data.mapper.toLocalUserId
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
@@ -105,7 +106,8 @@ class MessagePaginatorManager @Inject constructor(
             paginator == null ||
                 paginator?.params?.userId != userId.toLocalUserId() ||
                 paginator?.params?.labelId != pageKey.labelId.toLocalLabelId() ||
-                paginator?.params?.unread != unread
+                paginator?.params?.unread != unread ||
+                pageKey.pageToLoad == PageToLoad.First
         }
         is PageKey.PageKeyForSearch -> {
             val keyword = pageKey.keyword
