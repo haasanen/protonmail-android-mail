@@ -41,7 +41,7 @@ import androidx.compose.ui.unit.dp
 import ch.protonmail.android.mailcommon.presentation.compose.pxToDp
 import ch.protonmail.android.mailcommon.presentation.compose.toDp
 import ch.protonmail.android.mailcomposer.presentation.model.DraftDisplayBodyUiModel
-import ch.protonmail.android.mailcomposer.presentation.model.WebViewParams
+import ch.protonmail.android.mailcomposer.presentation.model.WebViewMeasures
 import ch.protonmail.android.mailmessage.domain.model.AttachmentId
 import ch.protonmail.android.mailmessage.domain.model.EmbeddedImage
 import ch.protonmail.android.mailmessage.domain.model.MimeType
@@ -128,7 +128,7 @@ fun EditableMessageBodyWebView(
 
         val height = webView?.height ?: 0
         webViewActions.onWebViewParamsChanged(
-            WebViewParams(height.toDp(localDensity), currentCursorPosition, currentLineHeight)
+            WebViewMeasures(height.toDp(localDensity), currentCursorPosition, currentLineHeight)
         )
     }
 
@@ -196,7 +196,7 @@ object EditableMessageBodyWebView {
         val onAttachmentClicked: (attachmentId: AttachmentId) -> Unit,
         val loadEmbeddedImage: (contentId: String) -> EmbeddedImage?,
         val onMessageBodyChanged: (body: String) -> Unit,
-        val onWebViewParamsChanged: (params: WebViewParams) -> Unit
+        val onWebViewParamsChanged: (params: WebViewMeasures) -> Unit
     )
 }
 

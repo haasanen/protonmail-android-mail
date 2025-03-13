@@ -20,13 +20,13 @@ package ch.protonmail.android.mailcomposer.presentation.ui
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import ch.protonmail.android.mailcomposer.presentation.model.DraftDisplayBodyUiModel
-import ch.protonmail.android.mailcomposer.presentation.model.WebViewParams
+import ch.protonmail.android.mailcomposer.presentation.model.WebViewMeasures
 
 @Composable
 internal fun MessageBodyEditor(
     messageBodyUiModel: DraftDisplayBodyUiModel,
     onBodyChanged: (body: String) -> Unit,
-    onEditorParamsChanged: (WebViewParams) -> Unit,
+    onEditorParamsChanged: (WebViewMeasures) -> Unit,
     modifier: Modifier = Modifier
 ) {
     EditableMessageBodyWebView(

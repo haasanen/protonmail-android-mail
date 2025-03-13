@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.coerceAtLeast
 import androidx.compose.ui.unit.dp
 import ch.protonmail.android.mailcomposer.presentation.model.ComposeScreenParams
-import ch.protonmail.android.mailcomposer.presentation.model.WebViewParams
+import ch.protonmail.android.mailcomposer.presentation.model.WebViewMeasures
 import timber.log.Timber
 
 private val MIN_SCROLL_CHANGE = 100.dp
@@ -33,11 +33,11 @@ class EditorScrollManager(
 
     private var previousWebViewHeightDp = 0.dp
 
-    fun onEditorParamsChanged(screenParams: ComposeScreenParams, webViewParams: WebViewParams) {
+    fun onEditorParamsChanged(screenParams: ComposeScreenParams, webViewMeasures: WebViewMeasures) {
         Timber.tag("composer-scroll").d("ComposerForm params: $screenParams")
-        Timber.tag("composer-scroll").d("WebView params: $webViewParams")
+        Timber.tag("composer-scroll").d("WebView params: $webViewMeasures")
 
-        val sizeDeltaDp = calculateWebViewSizeDelta(webViewParams)
+        val sizeDeltaDp = calculateWebViewSizeDelta(webViewMeasures)
 
         if (sizeDeltaDp > MIN_SCROLL_CHANGE) {
             Timber.tag("composer-scroll").d("that's too much scrolling. I'd rather stay.")
@@ -45,8 +45,8 @@ class EditorScrollManager(
             return
         }
 
-        if (cursorIsNotInFocus(screenParams, webViewParams)) {
-            val scrollToCursor = calculateScrollToCursor(webViewParams, screenParams)
+        if (cursorIsNotInFocus(screenParams, webViewMeasures)) {
+            val scrollToCursor = calculateScrollToCursor(webViewMeasures, screenParams)
             Timber.tag("composer-scroll").d("Cursor out of focus scrolling to: $scrollToCursor")
             onUpdateScroll(scrollToCursor)
             Timber.tag("composer-scroll").d("----------------------------------------------------------------------")
@@ -54,7 +54,7 @@ class EditorScrollManager(
         }
         Timber.tag("composer-scroll").d("cursor is in focus")
 
-        if (cursorIsAtThenEndOfVisibleWebView(screenParams, webViewParams)) {
+        if (cursorIsAtThenEndOfVisibleWebView(screenParams, webViewMeasures)) {
             val oneLineScroll = screenParams.scrollValueDp + sizeDeltaDp
             Timber.tag("composer-scroll").d("Cursor in last line, scrolling to: $oneLineScroll")
             onUpdateScroll(oneLineScroll)
@@ -66,20 +66,20 @@ class EditorScrollManager(
         Timber.tag("composer-scroll").d("----------------------------------------------------------------------")
     }
 
-    private fun calculateScrollToCursor(webViewParams: WebViewParams, screenParams: ComposeScreenParams) =
-        webViewParams.cursorPositionDp + screenParams.headerHeightDp
+    private fun calculateScrollToCursor(webViewMeasures: WebViewMeasures, screenParams: ComposeScreenParams) =
+        webViewMeasures.cursorPositionDp + screenParams.headerHeightDp
 
     private fun cursorIsAtThenEndOfVisibleWebView(
         screenParams: ComposeScreenParams,
-        webViewParams: WebViewParams
+        webViewMeasures: WebViewMeasures
     ): Boolean {
         // This is calculated in ComposerScreen through rect intersection between webview and column
         val portionOfWebViewVisible = screenParams.visibleWebViewHeightDp
 
         val startOfTheWebViewVisibility = (screenParams.scrollValueDp - screenParams.headerHeightDp).coerceAtLeast(0.dp)
-        val startOfLastLineArea = startOfTheWebViewVisibility + portionOfWebViewVisible - webViewParams.lineHeightDp
-        val endOfLastLineArea = startOfLastLineArea + webViewParams.lineHeightDp
-        val isCursorOnLastVisibleLine = webViewParams.cursorPositionDp in startOfLastLineArea..endOfLastLineArea
+        val startOfLastLineArea = startOfTheWebViewVisibility + portionOfWebViewVisible - webViewMeasures.lineHeightDp
+        val endOfLastLineArea = startOfLastLineArea + webViewMeasures.lineHeightDp
+        val isCursorOnLastVisibleLine = webViewMeasures.cursorPositionDp in startOfLastLineArea..endOfLastLineArea
 
         Timber.d(
             """
@@ -88,19 +88,19 @@ class EditorScrollManager(
                 | startOfTheWebViewVisibility : $startOfTheWebViewVisibility
                 | startOfLastLineArea : $startOfLastLineArea
                 | endOfLastLineArea : $endOfLastLineArea
-                | iscursorOnLastVisibleLine : $isCursorOnLastVisibleLine
+                | isCursorOnLastVisibleLine : $isCursorOnLastVisibleLine
             """.trimIndent()
         )
 
         return isCursorOnLastVisibleLine
     }
 
-    private fun cursorIsNotInFocus(screenParams: ComposeScreenParams, webViewParams: WebViewParams): Boolean {
+    private fun cursorIsNotInFocus(screenParams: ComposeScreenParams, webViewMeasures: WebViewMeasures): Boolean {
         // This is calculated in ComposerScreen through rect intersection between webview and column
         val portionOfWebViewVisible = screenParams.visibleWebViewHeightDp
         val startOfTheWebViewVisibility = (screenParams.scrollValueDp - screenParams.headerHeightDp).coerceAtLeast(0.dp)
         val webViewVisibleRange = startOfTheWebViewVisibility..startOfTheWebViewVisibility + portionOfWebViewVisible
-        val isCursorNotInFocus = webViewParams.cursorPositionDp !in webViewVisibleRange
+        val isCursorNotInFocus = webViewMeasures.cursorPositionDp !in webViewVisibleRange
 
         Timber.d(
             """
@@ -115,10 +115,10 @@ class EditorScrollManager(
         return isCursorNotInFocus
     }
 
-    private fun calculateWebViewSizeDelta(webViewParams: WebViewParams): Dp {
-        val sizeDelta = (webViewParams.heightDp - previousWebViewHeightDp).coerceAtLeast(0.dp)
+    private fun calculateWebViewSizeDelta(webViewMeasures: WebViewMeasures): Dp {
+        val sizeDelta = (webViewMeasures.heightDp - previousWebViewHeightDp).coerceAtLeast(0.dp)
         Timber.tag("composer-scroll").d("size delta (previous webview height to new webview height: $sizeDelta")
-        previousWebViewHeightDp = webViewParams.heightDp
+        previousWebViewHeightDp = webViewMeasures.heightDp
         return sizeDelta
     }
 

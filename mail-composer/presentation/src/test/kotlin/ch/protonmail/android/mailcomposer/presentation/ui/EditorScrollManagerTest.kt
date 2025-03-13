@@ -3,7 +3,7 @@ package ch.protonmail.android.mailcomposer.presentation.ui
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import ch.protonmail.android.mailcomposer.presentation.model.ComposeScreenParams
-import ch.protonmail.android.mailcomposer.presentation.model.WebViewParams
+import ch.protonmail.android.mailcomposer.presentation.model.WebViewMeasures
 import org.junit.Test
 import kotlin.test.assertEquals
 
@@ -89,7 +89,7 @@ class EditorScrollManagerTest {
         heightDp: Int = 0,
         cursorPositionDp: Int = 0,
         lineHeightDp: Int = 0
-    ) = WebViewParams(heightDp.dp, cursorPositionDp.dp, lineHeightDp.dp)
+    ) = WebViewMeasures(heightDp.dp, cursorPositionDp.dp, lineHeightDp.dp)
 
     private fun buildComposerScreenParams(
         visibleWebViewHeightDp: Int = 0,

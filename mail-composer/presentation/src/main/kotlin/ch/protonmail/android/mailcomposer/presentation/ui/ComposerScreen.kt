@@ -78,7 +78,7 @@ import ch.protonmail.android.mailcomposer.presentation.model.ComposeScreenParams
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerAction
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerDraftState
 import ch.protonmail.android.mailcomposer.presentation.model.FocusedFieldType
-import ch.protonmail.android.mailcomposer.presentation.model.WebViewParams
+import ch.protonmail.android.mailcomposer.presentation.model.WebViewMeasures
 import ch.protonmail.android.mailcomposer.presentation.viewmodel.ComposerViewModel
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.Participant
@@ -478,7 +478,7 @@ private fun buildActions(
     onToggleRecipients: (Boolean) -> Unit,
     onFocusChanged: (FocusedFieldType) -> Unit,
     setBottomSheetType: (BottomSheetType) -> Unit,
-    onEditorParamsChanged: (WebViewParams) -> Unit,
+    onEditorParamsChanged: (WebViewMeasures) -> Unit,
     onHeaderPositioned: (Rect, Float) -> Unit,
     onWebViewPositioned: (Rect) -> Unit
 ): ComposerFormActions = ComposerFormActions(

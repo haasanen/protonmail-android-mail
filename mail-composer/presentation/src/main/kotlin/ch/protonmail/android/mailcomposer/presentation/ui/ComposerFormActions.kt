@@ -22,7 +22,7 @@ import androidx.compose.ui.geometry.Rect
 import ch.protonmail.android.mailcomposer.presentation.model.ContactSuggestionsField
 import ch.protonmail.android.mailcomposer.presentation.model.FocusedFieldType
 import ch.protonmail.android.mailcomposer.presentation.model.RecipientUiModel
-import ch.protonmail.android.mailcomposer.presentation.model.WebViewParams
+import ch.protonmail.android.mailcomposer.presentation.model.WebViewMeasures
 
 internal data class ComposerFormActions(
     val onToggleRecipients: (Boolean) -> Unit,
@@ -35,7 +35,7 @@ internal data class ComposerFormActions(
     val onContactSuggestionTermChanged: (String, ContactSuggestionsField) -> Unit,
     val onSubjectChanged: (String) -> Unit,
     val onBodyChanged: (String) -> Unit,
-    val onEditorParamsChanged: (WebViewParams) -> Unit,
+    val onEditorParamsChanged: (WebViewMeasures) -> Unit,
     val onChangeSender: () -> Unit,
     val onHeaderPositioned: (boundsInWindow: Rect, height: Float) -> Unit,
     val onWebViewPositioned: (boundsInWindow: Rect) -> Unit

@@ -20,7 +20,7 @@ package ch.protonmail.android.mailcomposer.presentation.model
 
 import androidx.compose.ui.unit.Dp
 
-data class WebViewParams(
+data class WebViewMeasures(
     val heightDp: Dp,
     val cursorPositionDp: Dp,
     val lineHeightDp: Dp
