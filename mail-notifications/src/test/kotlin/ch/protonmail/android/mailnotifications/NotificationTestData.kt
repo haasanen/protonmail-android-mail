@@ -24,6 +24,7 @@ import ch.protonmail.android.mailnotifications.domain.model.PushNotificationSend
 import me.proton.core.domain.entity.UserId
 import me.proton.core.network.domain.session.SessionId
 import uniffi.proton_mail_uniffi.DecryptedEmailPushNotification
+import uniffi.proton_mail_uniffi.DecryptedEmailPushNotificationAction
 import uniffi.proton_mail_uniffi.DecryptedOpenUrlPushNotification
 import uniffi.proton_mail_uniffi.NotificationSender
 import uniffi.proton_mail_uniffi.RemoteId
@@ -54,12 +55,14 @@ internal object NotificationTestData {
     val decryptedEmailPushNotification = DecryptedEmailPushNotification(
         subject = content,
         sender = NotificationSender(name = SenderData.name, address = SenderData.address, group = SenderData.group),
-        messageId = RemoteId(messageId)
+        messageId = RemoteId(messageId),
+        action = DecryptedEmailPushNotificationAction.MessageCreated
     )
     val decryptedMessageReadPushNotification = DecryptedEmailPushNotification(
         subject = "",
         sender = NotificationSender(name = "", address = "", group = ""),
-        messageId = RemoteId(messageId)
+        messageId = RemoteId(messageId),
+        action = DecryptedEmailPushNotificationAction.MessageTouched
     )
 
     val decryptedOpenUrlPushNotification = DecryptedOpenUrlPushNotification(

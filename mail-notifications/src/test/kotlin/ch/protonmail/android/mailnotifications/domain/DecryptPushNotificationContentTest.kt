@@ -25,8 +25,6 @@ import ch.protonmail.android.mailnotifications.data.model.DecryptionError
 import ch.protonmail.android.mailnotifications.data.usecase.DecryptPushNotification
 import ch.protonmail.android.mailnotifications.data.usecase.DecryptPushNotificationContent
 import ch.protonmail.android.mailnotifications.data.wrapper.DecryptedPushNotificationWrapper
-import ch.protonmail.android.mailsession.data.repository.MailSessionRepository
-import ch.protonmail.android.mailsession.data.wrapper.MailSessionWrapper
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
 import io.mockk.coEvery
@@ -37,7 +35,6 @@ import kotlinx.coroutines.test.runTest
 import me.proton.core.domain.entity.UserId
 import org.junit.Test
 import uniffi.proton_mail_uniffi.EncryptedPushNotification
-import uniffi.proton_mail_uniffi.MailSession
 import uniffi.proton_mail_uniffi.MailUserSession
 import uniffi.proton_mail_uniffi.MailUserSessionUserResult
 import kotlin.test.AfterTest
@@ -47,7 +44,6 @@ import kotlin.test.assertEquals
 internal class DecryptPushNotificationContentTest {
 
     private val userSessionRepository = mockk<UserSessionRepository>()
-    private val mailSessionRepository = mockk<MailSessionRepository>()
     private val decryptPushNotification = mockk<DecryptPushNotification>()
 
     private lateinit var decryptPushNotificationContent: DecryptPushNotificationContent
@@ -56,7 +52,6 @@ internal class DecryptPushNotificationContentTest {
     fun setup() {
         decryptPushNotificationContent = DecryptPushNotificationContent(
             userSessionRepository,
-            mailSessionRepository,
             decryptPushNotification
         )
     }
@@ -106,8 +101,7 @@ internal class DecryptPushNotificationContentTest {
         val expectedError = DecryptionError.FailedToDecrypt.left()
 
         expectValidUserSession(NotificationTestData.userId, NotificationTestData.email)
-        expectMailSession()
-        coEvery { decryptPushNotification.invoke(any(), any()) } returns expectedError
+        coEvery { decryptPushNotification.invoke(any()) } returns expectedError
 
         // When
         val result = decryptPushNotificationContent(
@@ -123,10 +117,9 @@ internal class DecryptPushNotificationContentTest {
     fun `should return a wrapped decrypted notification when is able to decrypt the content`() = runTest {
         // Given
         expectValidUserSession(NotificationTestData.userId, NotificationTestData.email)
-        val mailSession = expectMailSession()
 
         val encryptedPushNotification = EncryptedPushNotification(
-            authId = NotificationTestData.sessionId.id,
+            sessionId = NotificationTestData.sessionId.id,
             encryptedMessage = "encryptedMessage"
         )
 
@@ -135,7 +128,7 @@ internal class DecryptPushNotificationContentTest {
         ).right()
 
         coEvery {
-            decryptPushNotification.invoke(mailSession, encryptedPushNotification)
+            decryptPushNotification.invoke(encryptedPushNotification)
         } returns expectedWrapper
 
         // When
@@ -176,16 +169,5 @@ internal class DecryptPushNotificationContentTest {
         coEvery { userSessionRepository.getUserSession(userId) } returns sessionWrapperMock
 
         return mailUserSession
-    }
-
-    private fun expectMailSession(): MailSession {
-        val mailSession = mockk<MailSession>()
-
-        val mailSessionWrapper = mockk<MailSessionWrapper> {
-            every { this@mockk.getRustMailSession() } returns mailSession
-        }
-        every { mailSessionRepository.getMailSession() } returns mailSessionWrapper
-
-        return mailSession
     }
 }

@@ -106,7 +106,7 @@ internal class AccountStateAwareNotificationHandlerTests {
             userId = UserId("user-id"),
             name = "name",
             state = AccountState.Disabled,
-            primaryAddress = null,
+            primaryAddress = "address@proton.me",
             avatarInfo = null
         )
     }

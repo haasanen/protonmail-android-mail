@@ -24,18 +24,15 @@ import ch.protonmail.android.mailnotifications.data.model.DecryptionError
 import ch.protonmail.android.mailnotifications.domain.mapper.PushNotificationMapper
 import ch.protonmail.android.mailnotifications.domain.model.LocalPushNotification
 import ch.protonmail.android.mailnotifications.domain.model.LocalPushNotificationData
-import ch.protonmail.android.mailsession.data.repository.MailSessionRepository
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import me.proton.core.domain.entity.UserId
 import me.proton.core.network.domain.session.SessionId
 import uniffi.proton_mail_uniffi.EncryptedPushNotification
-import uniffi.proton_mail_uniffi.MailSession
 import uniffi.proton_mail_uniffi.MailUserSessionUserResult
 import javax.inject.Inject
 
 internal class DecryptPushNotificationContent @Inject constructor(
     private val userSessionRepository: UserSessionRepository,
-    private val mailSessionRepository: MailSessionRepository,
     private val decryptPushNotification: DecryptPushNotification
 ) {
 
@@ -54,17 +51,15 @@ internal class DecryptPushNotificationContent @Inject constructor(
         }
 
         val userData = LocalPushNotificationData.UserPushData(userId.id, userEmail)
-        val mailSession = mailSessionRepository.getMailSession().getRustMailSession()
 
-        return tryDecrypt(mailSession, userData, encryptedNotification)
+        return tryDecrypt(userData, encryptedNotification)
     }
 
     private suspend fun tryDecrypt(
-        mailSession: MailSession,
         userPushData: LocalPushNotificationData.UserPushData,
         encryptedPushNotification: EncryptedPushNotification
     ) = either {
-        val decryptedData = decryptPushNotification(mailSession, encryptedPushNotification).bind()
+        val decryptedData = decryptPushNotification(encryptedPushNotification).bind()
 
         PushNotificationMapper.toLocalPushNotification(userPushData, decryptedData)
     }

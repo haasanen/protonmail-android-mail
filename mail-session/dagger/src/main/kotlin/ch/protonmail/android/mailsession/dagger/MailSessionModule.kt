@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.mailsession.dagger
 
+import ch.protonmail.android.mailsession.data.keychain.OsKeyChainMock
 import ch.protonmail.android.mailsession.data.repository.InMemoryMailSessionRepository
 import ch.protonmail.android.mailsession.data.repository.MailSessionRepository
 import ch.protonmail.android.mailsession.data.repository.RustEventLoopRepository
@@ -36,6 +37,7 @@ import kotlinx.coroutines.SupervisorJob
 import me.proton.android.core.auth.presentation.session.UserSessionInitializationCallback
 import uniffi.proton_mail_uniffi.MailSession
 import uniffi.proton_mail_uniffi.MailUserSessionInitializationCallback
+import uniffi.proton_mail_uniffi.OsKeyChain
 import javax.inject.Singleton
 
 @Module(includes = [MailSessionModule.BindsModule::class])
@@ -55,6 +57,10 @@ object MailSessionModule {
     @Module
     @InstallIn(SingletonComponent::class)
     interface BindsModule {
+
+        @Binds
+        @Singleton
+        fun bindOsKeyChain(impl: OsKeyChainMock): OsKeyChain
 
         @Binds
         @Singleton
