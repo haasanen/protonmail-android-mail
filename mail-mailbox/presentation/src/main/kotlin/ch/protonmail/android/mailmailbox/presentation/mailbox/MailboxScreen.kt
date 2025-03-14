@@ -18,7 +18,6 @@
 
 package ch.protonmail.android.mailmailbox.presentation.mailbox
 
-import android.annotation.SuppressLint
 import android.content.res.Configuration
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.ReportDrawn
@@ -28,7 +27,6 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.animation.togetherWith
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -73,6 +71,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -154,8 +153,8 @@ import ch.protonmail.android.mailupselling.presentation.ui.bottomsheet.Upselling
 import ch.protonmail.android.uicomponents.bottomsheet.bottomSheetHeightConstrainedContent
 import ch.protonmail.android.uicomponents.snackbar.DismissableSnackbarHost
 import kotlinx.coroutines.launch
-import me.proton.android.core.accountmanager.presentation.switcher.v2.AccountsSwitcherBottomSheetScreen
 import me.proton.android.core.accountmanager.presentation.switcher.v1.AccountSwitchEvent
+import me.proton.android.core.accountmanager.presentation.switcher.v2.AccountsSwitcherBottomSheetScreen
 import timber.log.Timber
 import ch.protonmail.android.mailcommon.presentation.R.string as commonString
 
@@ -757,9 +756,8 @@ private fun MailboxSwipeRefresh(
     }
 }
 
-@SuppressLint("FrequentlyChangedStateReadInComposition")
 @Composable
-@OptIn(ExperimentalFoundationApi::class, ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalComposeUiApi::class)
 private fun MailboxItemsList(
     state: MailboxListState,
     listState: LazyListState,
@@ -775,22 +773,30 @@ private fun MailboxItemsList(
         onStarClicked = actions.onStarClicked
     )
 
-    // Detect if user manually scrolled the list
-    var mailboxScrolled by rememberSaveable { mutableStateOf(false) }
+    var shouldScrollToTop by rememberSaveable { mutableStateOf(true) }
     var userTapped by remember { mutableStateOf(false) }
+
     LaunchedEffect(key1 = listState.isScrollInProgress) {
-        if (!mailboxScrolled && userTapped && listState.isScrollInProgress) {
-            mailboxScrolled = true
+        if (shouldScrollToTop && userTapped && listState.isScrollInProgress) {
+            shouldScrollToTop = false
+        }
+
+        // Update the state only when the scroll action stops.
+        if (!listState.isScrollInProgress && !shouldScrollToTop) {
+            if (listState.firstVisibleItemIndex == 0) {
+                shouldScrollToTop = true
+            }
         }
     }
 
-    // Scroll to the top of the list to make the first item always visible until the user scrolls the list
-    if (!mailboxScrolled) {
-        LaunchedEffect(listState.firstVisibleItemIndex) {
-            if (listState.firstVisibleItemIndex > 0) {
-                listState.scrollToItem(0)
-                mailboxScrolled = true
-            }
+    if (shouldScrollToTop) {
+        LaunchedEffect(Unit) {
+            snapshotFlow { listState.firstVisibleItemIndex }
+                .collect { index ->
+                    if (index > 0) {
+                        listState.scrollToItem(0)
+                    }
+                }
         }
     }
 
