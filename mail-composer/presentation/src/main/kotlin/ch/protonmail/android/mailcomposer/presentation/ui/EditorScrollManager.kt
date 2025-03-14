@@ -34,36 +34,36 @@ class EditorScrollManager(
     private var previousWebViewHeightDp = 0.dp
 
     fun onEditorParamsChanged(screenParams: ComposeScreenParams, webViewParams: WebViewParams) {
-        Timber.d("composer-scroll: ComposerForm params: $screenParams")
-        Timber.d("composer-scroll: WebView params: $webViewParams")
+        Timber.tag("composer-scroll").d("ComposerForm params: $screenParams")
+        Timber.tag("composer-scroll").d("WebView params: $webViewParams")
 
         val sizeDeltaDp = calculateWebViewSizeDelta(webViewParams)
 
         if (sizeDeltaDp > MIN_SCROLL_CHANGE) {
-            Timber.d("composer-scroll: that's too much scrolling. I'd rather stay.")
-            Timber.d("composer-scroll: ----------------------------------------------------------------------")
+            Timber.tag("composer-scroll").d("that's too much scrolling. I'd rather stay.")
+            Timber.tag("composer-scroll").d("----------------------------------------------------------------------")
             return
         }
 
         if (cursorIsNotInFocus(screenParams, webViewParams)) {
             val scrollToCursor = calculateScrollToCursor(webViewParams, screenParams)
-            Timber.d("composer-scroll: Cursor out of focus scrolling to: $scrollToCursor")
+            Timber.tag("composer-scroll").d("Cursor out of focus scrolling to: $scrollToCursor")
             onUpdateScroll(scrollToCursor)
-            Timber.d("composer-scroll: ----------------------------------------------------------------------")
+            Timber.tag("composer-scroll").d("----------------------------------------------------------------------")
             return
         }
-        Timber.d("composer-scroll: cursor is in focus")
+        Timber.tag("composer-scroll").d("cursor is in focus")
 
         if (cursorIsAtThenEndOfVisibleWebView(screenParams, webViewParams)) {
             val oneLineScroll = screenParams.scrollValueDp + sizeDeltaDp
-            Timber.d("composer-scroll: Cursor in last line, scrolling to: $oneLineScroll")
+            Timber.tag("composer-scroll").d("Cursor in last line, scrolling to: $oneLineScroll")
             onUpdateScroll(oneLineScroll)
-            Timber.d("composer-scroll: ----------------------------------------------------------------------")
+            Timber.tag("composer-scroll").d("----------------------------------------------------------------------")
             return
         }
 
-        Timber.d("composer-scroll: cursor is neither on last line nor out of focus. No scroll.")
-        Timber.d("composer-scroll: ----------------------------------------------------------------------")
+        Timber.tag("composer-scroll").d("cursor is neither on last line nor out of focus. No scroll.")
+        Timber.tag("composer-scroll").d("----------------------------------------------------------------------")
     }
 
     private fun calculateScrollToCursor(webViewParams: WebViewParams, screenParams: ComposeScreenParams) =
@@ -117,7 +117,7 @@ class EditorScrollManager(
 
     private fun calculateWebViewSizeDelta(webViewParams: WebViewParams): Dp {
         val sizeDelta = (webViewParams.heightDp - previousWebViewHeightDp).coerceAtLeast(0.dp)
-        Timber.d("composer-scroll: size delta (previous webview height to new webview height: $sizeDelta")
+        Timber.tag("composer-scroll").d("size delta (previous webview height to new webview height: $sizeDelta")
         previousWebViewHeightDp = webViewParams.heightDp
         return sizeDelta
     }

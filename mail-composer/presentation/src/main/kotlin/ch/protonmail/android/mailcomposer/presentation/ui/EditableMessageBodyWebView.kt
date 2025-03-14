@@ -122,7 +122,7 @@ fun EditableMessageBodyWebView(
 
     fun onWebViewResize() {
         if (state.loadingState != LoadingState.Finished) {
-            Timber.d("composer-scroll: WebView resized while loading state not finished. Skipping.")
+            Timber.tag("composer-scroll").d("WebView resized while loading state not finished. Skipping.")
             return
         }
 

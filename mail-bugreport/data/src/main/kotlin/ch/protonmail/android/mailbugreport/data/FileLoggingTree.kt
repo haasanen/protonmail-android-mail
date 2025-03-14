@@ -33,6 +33,9 @@ class FileLoggingTree(private val logsFileHandler: LogsFileHandler) : Timber.Tre
         message: String,
         t: Throwable?
     ) {
+        if (tag in excludedTags()) {
+            return
+        }
         val logMessage = createLogMessage(priority, tag, message)
         logsFileHandler.writeLog(logMessage)
     }
@@ -58,4 +61,8 @@ class FileLoggingTree(private val logsFileHandler: LogsFileHandler) : Timber.Tre
             else -> '?'
         }
     }
+
+    private fun excludedTags() = listOf(
+        "composer-scroll"
+    )
 }
