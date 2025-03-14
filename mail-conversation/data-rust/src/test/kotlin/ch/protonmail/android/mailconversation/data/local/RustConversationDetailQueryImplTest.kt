@@ -42,6 +42,7 @@ import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import uniffi.proton_mail_uniffi.ConversationAndMessages
@@ -211,11 +212,17 @@ class RustConversationDetailQueryImplTest {
             every { conversation } returns expectedConversation1
             every { messages } returns expectedMessages.messages
             every { messageIdToOpen } returns messageToOpen
+            every { handle } returns mockk {
+                every { destroy() } returns Unit
+            }
         }
         val watcherMock2 = mockk<WatchedConversation> {
             every { conversation } returns expectedConversation2
             every { messages } returns expectedMessages.messages
             every { messageIdToOpen } returns messageToOpen
+            every { handle } returns mockk {
+                every { destroy() } returns Unit
+            }
         }
         val localLabelId = LocalLabelId(1uL)
         coEvery { rustMailboxFactory.create(userId, localLabelId) } returns mailbox.right()
@@ -226,14 +233,23 @@ class RustConversationDetailQueryImplTest {
             createRustConversationWatcher(mailbox, conversationId2, capture(callbackSlot))
         } returns watcherMock2.right()
 
-        // When
-        rustConversationQuery.observeConversation(userId, conversationId1, localLabelId).test {
-            assertEquals(expectedConversation1.right(), awaitItem())
+        // When - First conversation
+        val job1 = launch {
+            rustConversationQuery.observeConversation(userId, conversationId1, localLabelId).test {
+                assertEquals(expectedConversation1.right(), awaitItem())
+                cancelAndIgnoreRemainingEvents()
+            }
         }
+        job1.join()
 
-        rustConversationQuery.observeConversation(userId, conversationId2, localLabelId).test {
-            assertEquals(expectedConversation2.right(), awaitItem())
+        // When - Second conversation
+        val job2 = launch {
+            rustConversationQuery.observeConversation(userId, conversationId2, localLabelId).test {
+                assertEquals(expectedConversation2.right(), awaitItem())
+                cancelAndIgnoreRemainingEvents()
+            }
         }
+        job2.join()
 
         // Then
         coVerify(exactly = 1) { createRustConversationWatcher(mailbox, conversationId1, any()) }

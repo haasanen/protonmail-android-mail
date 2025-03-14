@@ -18,7 +18,6 @@
 
 package ch.protonmail.android.mailconversation.data.local
 
-import java.lang.ref.WeakReference
 import arrow.core.Either
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalConversation
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalConversationId
@@ -51,7 +50,7 @@ class RustConversationDetailQueryImpl @Inject constructor(
     @ConversationRustCoroutineScope private val coroutineScope: CoroutineScope
 ) : RustConversationDetailQuery {
 
-    private var conversationWatcher: WeakReference<WatchedConversation>? = null
+    private var conversationWatcher: WatchedConversation? = null
     private var currentConversationId: LocalConversationId? = null
     private var currentUserId: UserId? = null
     private var currentLabelId: LocalLabelId? = null
@@ -131,7 +130,7 @@ class RustConversationDetailQueryImpl @Inject constructor(
     ) {
         coroutineScope.launch {
             mutex.withLock {
-                if (currentConversationId != conversationId || conversationWatcher?.get() == null) {
+                if (currentConversationId != conversationId || conversationWatcher == null) {
                     // If the conversationId is different or there's no active watcher, destroy and create a new one
                     destroy()
 
@@ -148,7 +147,7 @@ class RustConversationDetailQueryImpl @Inject constructor(
                     ).onLeft {
                         Timber.w("rust-conversation-messages: Failed to update conversation messages!")
                     }.onRight {
-                        conversationWatcher = WeakReference(it)
+                        conversationWatcher = it
                     }
 
                     conversationMutableStatusFlow.value = convoWatcherEither.map { it.conversation }
@@ -163,7 +162,8 @@ class RustConversationDetailQueryImpl @Inject constructor(
 
     private fun destroy() {
         Timber.d("rust-conversation-detail-query: destroy watcher for $currentConversationId")
-        conversationWatcher?.clear()
+        conversationWatcher?.handle?.destroy()
+        conversationWatcher = null
         currentConversationId = null
         conversationMessagesMutableStatusFlow.value = null
         conversationMutableStatusFlow.value = null
