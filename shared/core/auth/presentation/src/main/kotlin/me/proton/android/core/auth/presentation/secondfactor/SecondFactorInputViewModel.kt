@@ -58,7 +58,7 @@ class SecondFactorInputViewModel @Inject constructor(
         mutableAction.emit(action)
     }
 
-    private suspend fun onClose(): Flow<SecondFactorInputState> = flow {
+    private fun onClose(): Flow<SecondFactorInputState> = flow {
         sessionInterface.deleteAccount(userId)
         emit(SecondFactorInputState.Close)
     }

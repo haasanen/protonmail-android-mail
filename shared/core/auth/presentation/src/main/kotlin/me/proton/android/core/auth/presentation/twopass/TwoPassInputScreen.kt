@@ -25,6 +25,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Scaffold
@@ -38,6 +40,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -132,6 +136,12 @@ fun TwoPassInputScreen(
                     text = mailboxPassword,
                     onValueChanged = { mailboxPassword = it },
                     singleLine = true,
+                    keyboardOptions = KeyboardOptions(
+                        autoCorrectEnabled = false,
+                        imeAction = ImeAction.Done,
+                        keyboardType = KeyboardType.Password
+                    ),
+                    keyboardActions = KeyboardActions { onUnlock(TwoPassInputAction.Unlock(mailboxPassword)) },
                     label = { Text(text = stringResource(R.string.auth_two_pass_input_label)) },
                     enabled = !isLoading,
                     modifier = Modifier.padding(top = ProtonDimens.MediumSpacing),
@@ -152,11 +162,11 @@ fun TwoPassInputScreen(
                 }
                 ProtonTextButton(
                     onClick = onForgotPassword,
+                    enabled = !isLoading,
                     contained = false,
                     modifier = Modifier
                         .padding(top = ProtonDimens.SmallSpacing)
-                        .height(ProtonDimens.DefaultButtonMinHeight),
-                    loading = isLoading
+                        .height(ProtonDimens.DefaultButtonMinHeight)
                 ) {
                     Text(text = stringResource(R.string.auth_two_pass_forgot_password))
                 }

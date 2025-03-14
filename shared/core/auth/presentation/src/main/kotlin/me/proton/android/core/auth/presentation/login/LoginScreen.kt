@@ -29,6 +29,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Icon
@@ -159,7 +160,10 @@ public fun LoginScaffold(
             ProtonTopAppBar(
                 title = {},
                 navigationIcon = {
-                    IconButton(onClick = onCloseClicked) {
+                    IconButton(
+                        onClick = onCloseClicked,
+                        enabled = !isLoading
+                    ) {
                         Icon(
                             painterResource(id = CoreR.drawable.ic_proton_close),
                             contentDescription = stringResource(id = R.string.auth_login_close)
@@ -168,7 +172,8 @@ public fun LoginScaffold(
                 },
                 actions = {
                     ProtonTextButton(
-                        onClick = onHelpClicked
+                        onClick = onHelpClicked,
+                        enabled = !isLoading
                     ) {
                         Text(
                             text = stringResource(id = R.string.auth_login_help),
@@ -288,6 +293,12 @@ private fun LoginForm(
             enabled = enabled,
             label = { Text(text = stringResource(id = R.string.auth_password)) },
             singleLine = true,
+            keyboardOptions = KeyboardOptions(
+                autoCorrectEnabled = false,
+                imeAction = ImeAction.Done,
+                keyboardType = KeyboardType.Password
+            ),
+            keyboardActions = KeyboardActions { onSubmit() },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = DefaultSpacing)
