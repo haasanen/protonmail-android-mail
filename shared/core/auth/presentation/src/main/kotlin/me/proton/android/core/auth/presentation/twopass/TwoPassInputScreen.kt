@@ -72,11 +72,12 @@ fun TwoPassInputScreen(
     TwoPassInputScreen(
         state = state,
         modifier = modifier,
-        onBackClicked = onClose,
+        onClose = onClose,
         onError = onError,
         onForgotPassword = onForgotPassword,
         onSuccess = onSuccess,
-        onUnlock = { viewModel.submit(it) }
+        onUnlock = { viewModel.submit(it) },
+        onBackClicked = { viewModel.submit(it) }
     )
 }
 
@@ -84,11 +85,12 @@ fun TwoPassInputScreen(
 fun TwoPassInputScreen(
     state: TwoPassInputState,
     modifier: Modifier = Modifier,
-    onBackClicked: () -> Unit = {},
+    onClose: () -> Unit = {},
     onError: (String?) -> Unit = {},
     onForgotPassword: () -> Unit = {},
     onSuccess: () -> Unit = {},
-    onUnlock: (TwoPassInputAction.Unlock) -> Unit = {}
+    onUnlock: (TwoPassInputAction.Unlock) -> Unit = {},
+    onBackClicked: (TwoPassInputAction.Close) -> Unit = {}
 ) {
     val isLoading = state.isLoading
     var mailboxPassword by remember { mutableStateOf("") }
@@ -97,6 +99,7 @@ fun TwoPassInputScreen(
         when (state) {
             is Error.LoginFlow -> onError(state.error)
             is TwoPassInputState.Success -> onSuccess()
+            is TwoPassInputState.Closed -> onClose()
             else -> Unit
         }
     }
@@ -108,7 +111,7 @@ fun TwoPassInputScreen(
                 modifier = Modifier.statusBarsPadding(),
                 title = {},
                 navigationIcon = {
-                    IconButton(onClick = onBackClicked) {
+                    IconButton(onClick = { onBackClicked(TwoPassInputAction.Close) }) {
                         Icon(
                             painterResource(R.drawable.ic_proton_arrow_back),
                             contentDescription = stringResource(id = R.string.presentation_back)
