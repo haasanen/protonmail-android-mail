@@ -21,13 +21,12 @@ package ch.protonmail.android.maillabel.presentation
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
-
 @StringRes
 @Suppress("ComplexMethod")
 fun SystemLabelId.textRes() = when (this) {
     SystemLabelId.Inbox -> R.string.label_title_inbox
-    SystemLabelId.AllDrafts -> R.string.label_title_all_drafts
-    SystemLabelId.AllSent -> R.string.label_title_all_sent
+    SystemLabelId.AllDrafts -> R.string.label_title_drafts
+    SystemLabelId.AllSent -> R.string.label_title_sent
     SystemLabelId.Trash -> R.string.label_title_trash
     SystemLabelId.Spam -> R.string.label_title_spam
     SystemLabelId.AllMail -> R.string.label_title_all_mail
@@ -45,17 +44,17 @@ fun SystemLabelId.textRes() = when (this) {
 @Suppress("ComplexMethod")
 fun SystemLabelId.iconRes() = when (this) {
     SystemLabelId.Inbox -> R.drawable.ic_proton_inbox
-    SystemLabelId.AllDrafts -> R.drawable.ic_proton_inbox
-    SystemLabelId.AllSent -> R.drawable.ic_proton_inbox
+    SystemLabelId.AllDrafts -> R.drawable.ic_proton_file_lines
+    SystemLabelId.AllSent -> R.drawable.ic_proton_paper_plane
     SystemLabelId.Trash -> R.drawable.ic_proton_trash
     SystemLabelId.Spam -> R.drawable.ic_proton_fire
     SystemLabelId.AllMail -> R.drawable.ic_proton_envelopes
     SystemLabelId.Archive -> R.drawable.ic_proton_archive_box
     SystemLabelId.Sent -> R.drawable.ic_proton_paper_plane
     SystemLabelId.Drafts -> R.drawable.ic_proton_file_lines
-    SystemLabelId.Outbox -> R.drawable.ic_proton_inbox
+    SystemLabelId.Outbox -> R.drawable.ic_proton_paper_plane
     SystemLabelId.Starred -> R.drawable.ic_proton_star
     SystemLabelId.AlmostAllMail -> R.drawable.ic_proton_envelopes
-    SystemLabelId.AllScheduled -> R.drawable.ic_proton_inbox
-    SystemLabelId.Snoozed -> R.drawable.ic_proton_inbox
+    SystemLabelId.AllScheduled -> R.drawable.ic_proton_paper_plane_clock
+    SystemLabelId.Snoozed -> R.drawable.ic_proton_clock
 }

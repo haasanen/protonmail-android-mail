@@ -18,21 +18,20 @@
 
 package ch.protonmail.android.maillabel.domain.model
 
-import ch.protonmail.android.maillabel.domain.model.SystemLabelId.Companion.unmodifiableByUserList
-
 enum class SystemLabelId(val labelId: LabelId) {
+
     /** Displayed. */
     Inbox(LabelId("0")),
 
     /**
-     * Not displayed.
+     * Dynamically displayed.
      * All the draft mails have this label.
      * This is necessary because a Draft could have been moved into another folder than `Drafts`.
      */
     AllDrafts(LabelId("1")),
 
     /**
-     * Not displayed.
+     * Dynamically displayed.
      * All the sent mails have this label.
      * This is necessary because a Sent message could have been moved into another folder than `Sent.
      */
@@ -56,35 +55,26 @@ enum class SystemLabelId(val labelId: LabelId) {
     /* Displayed. */
     Drafts(LabelId("8")),
 
-    /* Displayed. */
+    /* Dynamically displayed. */
     Outbox(LabelId("9")),
 
     /* Displayed. */
     Starred(LabelId("10")),
 
-    /* Not Displayed. */
+    /* Dynamically displayed. */
     AllScheduled(LabelId("12")),
 
-    /* Not Displayed. */
+    /* Dynamically displayed. */
     AlmostAllMail(LabelId("15")),
 
-    /* Not Displayed. */
+    /* Dynamically displayed. */
     Snoozed(LabelId("16"));
 
     companion object {
 
         private val map = entries.associateBy { stringOf(it) }
 
-        @Deprecated("Replaced by dynamic system labelIds. Will be removed")
-        val exclusiveList = listOf(Inbox, Archive, Spam, Trash, Drafts, Sent)
-
-        @Deprecated("Replaced by dynamic system labelIds. Will be removed")
-        val unmodifiableByUserList = listOf(AllMail, AlmostAllMail, AllDrafts, AllSent, AllScheduled, Outbox, Snoozed)
-
         private fun stringOf(value: SystemLabelId): String = value.labelId.id
         fun enumOf(value: String?): SystemLabelId = map[value] ?: Inbox
     }
 }
-
-@Deprecated("Replaced by dynamic system labelIds. Will be removed")
-fun List<LabelId>.filterUnmodifiableLabels(): List<LabelId> = this - unmodifiableByUserList.map { it.labelId }.toSet()
