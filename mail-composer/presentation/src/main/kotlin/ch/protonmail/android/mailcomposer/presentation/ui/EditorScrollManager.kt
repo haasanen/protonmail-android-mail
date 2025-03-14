@@ -68,13 +68,8 @@ class EditorScrollManager(
         screenMeasure: ComposeScreenMeasures,
         webViewMeasures: WebViewMeasures
     ): Boolean {
-        // This is calculated in ComposerScreen through rect intersection between webview and column
-        val portionOfWebViewVisible = screenMeasure.visibleWebViewHeightDp
-
-        val startOfTheWebViewVisibility = (screenMeasure.scrollValueDp - screenMeasure.headerHeightDp)
-            .coerceAtLeast(0.dp)
-        val startOfLastLineArea = startOfTheWebViewVisibility + portionOfWebViewVisible - webViewMeasures.lineHeightDp
-        val endOfLastLineArea = startOfLastLineArea + webViewMeasures.lineHeightDp
+        val startOfLastLineArea = getStartOfLastLineArea(screenMeasure, webViewMeasures)
+        val endOfLastLineArea = getEndOfLastLineArea(startOfLastLineArea, webViewMeasures)
         val isCursorOnLastVisibleLine = webViewMeasures.cursorPositionDp in startOfLastLineArea..endOfLastLineArea
 
         return isCursorOnLastVisibleLine
@@ -82,14 +77,30 @@ class EditorScrollManager(
 
     private fun cursorIsNotInFocus(screenMeasure: ComposeScreenMeasures, webViewMeasures: WebViewMeasures): Boolean {
         // This is calculated in ComposerScreen through rect intersection between webview and column
-        val portionOfWebViewVisible = screenMeasure.visibleWebViewHeightDp
-        val startOfTheWebViewVisibility = (screenMeasure.scrollValueDp - screenMeasure.headerHeightDp)
-            .coerceAtLeast(0.dp)
-        val webViewVisibleRange = startOfTheWebViewVisibility..startOfTheWebViewVisibility + portionOfWebViewVisible
+        val portionOfWebViewVisible = getPortionOfVisibleWebView(screenMeasure)
+        val startOfWebViewVisibleArea = getStartOfWebViewVisibleArea(screenMeasure)
+        val webViewVisibleRange = startOfWebViewVisibleArea..startOfWebViewVisibleArea + portionOfWebViewVisible
         val isCursorNotInFocus = webViewMeasures.cursorPositionDp !in webViewVisibleRange
 
         return isCursorNotInFocus
     }
+
+    // The bottom bound of the last "line" where the cursor fits
+    // (which also corresponds with the end of the visible portion of the webview)
+    private fun getEndOfLastLineArea(startOfLastLineArea: Dp, webViewMeasures: WebViewMeasures) =
+        startOfLastLineArea + webViewMeasures.lineHeightDp
+
+    // The top bound of the last "line" where the cursor fits
+    private fun getStartOfLastLineArea(screenMeasure: ComposeScreenMeasures, webViewMeasures: WebViewMeasures) =
+        getStartOfWebViewVisibleArea(screenMeasure) +
+            getPortionOfVisibleWebView(screenMeasure) -
+            webViewMeasures.lineHeightDp
+
+    // This is calculated in ComposerScreen through rect intersection between webview and column
+    private fun getPortionOfVisibleWebView(screenMeasure: ComposeScreenMeasures) = screenMeasure.visibleWebViewHeightDp
+
+    private fun getStartOfWebViewVisibleArea(screenMeasure: ComposeScreenMeasures) =
+        (screenMeasure.scrollValueDp - screenMeasure.headerHeightDp).coerceAtLeast(0.dp)
 
     private fun calculateWebViewSizeDelta(webViewMeasures: WebViewMeasures): Dp {
         val sizeDelta = (webViewMeasures.heightDp - previousWebViewHeightDp).coerceAtLeast(0.dp)
