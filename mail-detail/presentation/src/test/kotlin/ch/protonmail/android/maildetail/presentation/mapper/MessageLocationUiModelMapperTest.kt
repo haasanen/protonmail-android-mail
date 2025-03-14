@@ -22,6 +22,7 @@ import androidx.compose.ui.graphics.Color
 import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.presentation.mapper.ColorMapper
+import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.maildetail.presentation.R
 import ch.protonmail.android.maildetail.presentation.model.MessageLocationUiModel
 import ch.protonmail.android.maillabel.domain.model.ExclusiveLocation
@@ -46,8 +47,8 @@ class MessageLocationUiModelMapperTest {
         // Given
         val messageLocation = ExclusiveLocation.System(SystemLabelId.Archive, SystemLabelId.Archive.labelId)
         val expectedResult = MessageLocationUiModel(
-            SystemLabelId.Archive.name,
-            SystemLabelId.enumOf(SystemLabelId.Archive.labelId.id).iconRes()
+            name = TextUiModel.TextRes(R.string.label_title_archive),
+            icon = SystemLabelId.enumOf(SystemLabelId.Archive.labelId.id).iconRes()
         )
 
         // When
@@ -66,9 +67,9 @@ class MessageLocationUiModelMapperTest {
             val messageLocation = ExclusiveLocation.Folder(customFolderName, LabelId(customFolderId), "#rrr")
 
             val expectedResult = MessageLocationUiModel(
-                customFolderName,
-                R.drawable.ic_proton_folder_filled,
-                customFolderColor
+                name = TextUiModel.Text(customFolderName),
+                icon = R.drawable.ic_proton_folder_filled,
+                color = customFolderColor
             )
             every { colorMapper.toColor(any()) } returns customFolderColor.right()
 
@@ -88,8 +89,8 @@ class MessageLocationUiModelMapperTest {
         val messageLocation = ExclusiveLocation.Folder(customFolderName, LabelId(customFolderId), "#rrr")
 
         val expectedResult = MessageLocationUiModel(
-            customFolderName,
-            R.drawable.ic_proton_folder
+            name = TextUiModel.TextRes(R.string.label_title_archive),
+            icon = R.drawable.ic_proton_folder
         )
         every { colorMapper.toColor(null) } returns "invalid".left()
 
@@ -106,8 +107,8 @@ class MessageLocationUiModelMapperTest {
             // Given
             val messageLocation = ExclusiveLocation.System(SystemLabelId.AllMail, SystemLabelId.AllMail.labelId)
             val expectedResult = MessageLocationUiModel(
-                SystemLabelId.AllMail.name,
-                SystemLabelId.enumOf(SystemLabelId.AllMail.labelId.id).iconRes()
+                name = TextUiModel.TextRes(R.string.label_title_all_mail),
+                icon = SystemLabelId.enumOf(SystemLabelId.AllMail.labelId.id).iconRes()
             )
 
             // When

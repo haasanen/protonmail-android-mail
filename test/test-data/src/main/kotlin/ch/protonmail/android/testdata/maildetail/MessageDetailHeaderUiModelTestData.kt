@@ -61,7 +61,7 @@ object MessageDetailHeaderUiModelTestData {
         shouldShowTrackerProtectionIcon = true,
         shouldShowAttachmentIcon = true,
         shouldShowStar = true,
-        location = MessageLocationUiModel("Archive", R.drawable.ic_proton_archive_box),
+        location = MessageLocationUiModel(TextUiModel.Text("Archive"), R.drawable.ic_proton_archive_box),
         time = TextUiModel.Text("08/11/2022"),
         extendedTime = TextUiModel.Text("08/11/2022, 17:16"),
         shouldShowUndisclosedRecipients = false,

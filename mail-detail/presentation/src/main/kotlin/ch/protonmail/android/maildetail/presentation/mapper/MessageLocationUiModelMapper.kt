@@ -19,11 +19,13 @@
 package ch.protonmail.android.maildetail.presentation.mapper
 
 import ch.protonmail.android.mailcommon.presentation.mapper.ColorMapper
+import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.maildetail.presentation.R
 import ch.protonmail.android.maildetail.presentation.model.MessageLocationUiModel
 import ch.protonmail.android.maillabel.domain.model.ExclusiveLocation
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.maillabel.presentation.iconRes
+import ch.protonmail.android.maillabel.presentation.textRes
 import javax.inject.Inject
 
 class MessageLocationUiModelMapper @Inject constructor(
@@ -35,13 +37,13 @@ class MessageLocationUiModelMapper @Inject constructor(
         return when (messageLocation) {
             is ExclusiveLocation.System -> {
                 MessageLocationUiModel(
-                    messageLocation.systemLabelId.name,
-                    messageLocation.systemLabelId.iconRes()
+                    name = TextUiModel(messageLocation.systemLabelId.textRes()),
+                    icon = messageLocation.systemLabelId.iconRes()
                 )
             }
             is ExclusiveLocation.Folder -> {
                 MessageLocationUiModel(
-                    name = messageLocation.name,
+                    name = TextUiModel.Text(messageLocation.name),
                     icon = when {
                         // This is temporary, see ET-2268 to handle folder colors properly.
                         true -> R.drawable.ic_proton_folder_filled
@@ -55,7 +57,7 @@ class MessageLocationUiModelMapper @Inject constructor(
     }
 
     private fun allMailLocation() = MessageLocationUiModel(
-        SystemLabelId.AllMail.name,
-        SystemLabelId.enumOf(SystemLabelId.AllMail.labelId.id).iconRes()
+        name = TextUiModel(SystemLabelId.AllMail.textRes()),
+        icon = SystemLabelId.enumOf(SystemLabelId.AllMail.labelId.id).iconRes()
     )
 }

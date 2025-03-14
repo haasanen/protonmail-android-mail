@@ -61,7 +61,7 @@ class MessageDetailHeaderUiModelMapperTest {
 
     private val primaryUserAddress = UserAddressSample.PrimaryAddress.email
     private val avatarUiModel = ParticipantAvatarSample.amazon
-    private val messageLocationUiModel = MessageLocationUiModel("Archive", ic_proton_archive_box)
+    private val messageLocationUiModel = MessageLocationUiModel(TextUiModel.Text("Archive"), ic_proton_archive_box)
     private val shortTimeTextUiModel = TextUiModel.Text("08/11/2022")
     private val extendedTimeTestUiModel = TextUiModel.Text("08/11/2022, 17:16")
     private val senderUiModel =

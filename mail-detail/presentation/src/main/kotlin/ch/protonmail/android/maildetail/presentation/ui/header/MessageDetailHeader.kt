@@ -543,7 +543,7 @@ private fun ExtendedHeaderSection(uiModel: MessageDetailHeaderUiModel) {
         ExtendedHeaderRow(
             icon = uiModel.location.icon,
             iconColor = uiModel.location.color,
-            text = uiModel.location.name
+            text = uiModel.location.name.string()
         )
     }
 }
