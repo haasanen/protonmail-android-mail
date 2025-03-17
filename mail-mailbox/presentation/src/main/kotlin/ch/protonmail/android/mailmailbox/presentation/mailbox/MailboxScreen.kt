@@ -836,7 +836,7 @@ private fun MailboxItemsList(
         }
         items(
             count = items.itemCount,
-            key = items.itemKey { it.id.plus(state.stateKey()) },
+            key = items.itemKey { it.id },
             contentType = items.itemContentType { MailboxItemUiModel::class }
         ) { index ->
             items[index]?.let { item ->
@@ -1318,14 +1318,6 @@ private fun MailboxErrorPreview() {
 private fun MailboxAppendErrorPreview() {
     ProtonTheme {
         AppendError(message = stringResource(id = R.string.mailbox_error_message_offline), onClick = {})
-    }
-}
-
-private fun MailboxListState.stateKey(): String {
-    return when (this) {
-        is MailboxListState.Loading -> ""
-        is MailboxListState.Data.ViewMode -> this.searchState.searchMode.name
-        is MailboxListState.Data.SelectionMode -> this.searchState.searchMode.name
     }
 }
 
