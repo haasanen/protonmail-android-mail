@@ -164,7 +164,6 @@ class RustMessageDataSourceImplTest {
             0uL,
             0uL,
             0uL,
-            0uL,
             transformOpts,
             bodyBanners
         )

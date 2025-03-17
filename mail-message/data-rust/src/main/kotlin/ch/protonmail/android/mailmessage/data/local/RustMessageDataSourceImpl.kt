@@ -98,7 +98,7 @@ class RustMessageDataSourceImpl @Inject constructor(
         return createRustMessageBodyAccessor(mailbox, messageId)
             .onLeft { Timber.e("rust-message: Failed to get message body $it") }
             .flatMap { decryptedMessage ->
-                decryptedMessage.body(TransformOpts(false, null, null, null))
+                decryptedMessage.body(TransformOpts(false, null, null))
                     .map { decryptedBody ->
                         decryptedBody.toMessageBody(
                             messageId.toMessageId(), decryptedMessage.mimeType(), decryptedMessage.getAllAttachments()
