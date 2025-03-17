@@ -813,7 +813,7 @@ private fun MailboxItemsList(
                 false // Allow the event to propagate
             }
     ) {
-        if (state is MailboxListState.Data) {
+        if (state is MailboxListState.Data && !state.searchState.isInSearch()) {
             state.clearState.let { it as? MailboxListState.Data.ClearState.Visible }?.let {
                 item {
                     when (it) {
