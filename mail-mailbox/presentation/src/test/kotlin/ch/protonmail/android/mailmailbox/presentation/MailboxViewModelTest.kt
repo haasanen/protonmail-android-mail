@@ -1407,7 +1407,7 @@ class MailboxViewModelTest {
     @Test
     fun `when open item action submitted in message mode, new state is produced and emitted`() = runTest {
         // Given
-        val item = buildMailboxUiModelItem("id", Message)
+        val item = buildMailboxUiModelItem(id = "id", type = Message)
         val intermediateState = createMailboxDataState()
         val labelId = initialLocationMailLabelId.labelId
         val expectedState = createMailboxDataState(
@@ -1438,7 +1438,7 @@ class MailboxViewModelTest {
     @Test
     fun `when item action to open composer submitted in draft, new state is produced and emitted`() = runTest {
         // Given
-        val item = buildMailboxUiModelItem("id", Message, shouldOpenInComposer = true)
+        val item = buildMailboxUiModelItem(id = "id", type = Message, shouldOpenInComposer = true)
         val intermediateState = createMailboxDataState(selectedMailLabelId = MailLabelTestData.draftsSystemLabel.id)
         val labelId = initialLocationMailLabelId.labelId
         val expectedState = createMailboxDataState(
@@ -1570,7 +1570,7 @@ class MailboxViewModelTest {
     @Test
     fun `when open item action submitted in conversation mode, new state is produced and emitted`() = runTest {
         // Given
-        val item = buildMailboxUiModelItem("id", Conversation)
+        val item = buildMailboxUiModelItem(id = "id", type = Conversation)
         val intermediateState = createMailboxDataState()
         val labelId = initialLocationMailLabelId.labelId
         val expectedState = createMailboxDataState(

@@ -31,6 +31,7 @@ import kotlinx.collections.immutable.ImmutableList
 data class MailboxItemUiModel(
     val avatar: AvatarUiModel,
     val type: MailboxItemType,
+    val userId: String,
     val id: String,
     val conversationId: ConversationId,
     val time: TextUiModel,

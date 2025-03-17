@@ -200,6 +200,7 @@ object MailboxItemUiModelTestData {
     )
 
     fun buildMailboxUiModelItem(
+        userId: String = "0",
         id: String = "0",
         type: MailboxItemType = MailboxItemType.Message,
         subject: String = id,
@@ -211,6 +212,7 @@ object MailboxItemUiModelTestData {
     ) = MailboxItemUiModel(
         avatar = ParticipantAvatarSample.amazon,
         type = type,
+        userId = userId,
         id = id,
         conversationId = ConversationId(conversationId),
         time = TextUiModel.Text("10:42"),

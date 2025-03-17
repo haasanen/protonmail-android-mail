@@ -25,13 +25,13 @@ import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.maillabel.presentation.model.LabelUiModel
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItemType
 import ch.protonmail.android.mailmailbox.presentation.R
-import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentIdUiModel
-import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentMetadataUiModel
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.ExpiryInformationUiModel
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxItemLocationUiModel
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxItemUiModel
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.ParticipantUiModel
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.ParticipantsUiModel
+import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentIdUiModel
+import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentMetadataUiModel
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import me.proton.core.domain.entity.UserId
@@ -48,6 +48,7 @@ object MailboxItemUiModelPreviewData {
         val DroidConLondon = MailboxItemUiModel(
             avatar = AvatarUiModel.ParticipantAvatar("D", "test@proton.me", null, Color.Blue),
             type = MailboxItemType.Conversation,
+            userId = "userId",
             id = "DroidConLondon",
             conversationId = ConversationId("DroidConLondon"),
             time = TextUiModel.Text("Aug 20th 2022"),
@@ -72,6 +73,7 @@ object MailboxItemUiModelPreviewData {
         val DroidConLondonWithZeroMessages = MailboxItemUiModel(
             avatar = AvatarUiModel.ParticipantAvatar("D", "test@proton.me", null, Color.Blue),
             type = MailboxItemType.Conversation,
+            userId = "userId",
             id = "DroidConLondon",
             conversationId = ConversationId("DroidConLondon"),
             time = TextUiModel.Text("Aug 20th 2022"),
@@ -96,6 +98,7 @@ object MailboxItemUiModelPreviewData {
         val WeatherForecast = MailboxItemUiModel(
             avatar = AccuWeatherAvatar,
             type = MailboxItemType.Conversation,
+            userId = "userId",
             id = "WeatherForecast",
             conversationId = WeatherForecastConversationId,
             time = Message.WeatherForecastSep.time,
@@ -123,6 +126,7 @@ object MailboxItemUiModelPreviewData {
         val MultipleRecipientWithLabel = MailboxItemUiModel(
             avatar = AvatarUiModel.ParticipantAvatar("D", "test@proton.me", null, Color.Blue),
             type = MailboxItemType.Conversation,
+            userId = "userId",
             id = "DroidConLondon",
             conversationId = ConversationId("DroidConLondon"),
             time = TextUiModel.Text("Aug 20th 2022"),
@@ -174,6 +178,7 @@ object MailboxItemUiModelPreviewData {
         val LongSubjectWithIcons = MailboxItemUiModel(
             avatar = AccuWeatherAvatar,
             type = MailboxItemType.Conversation,
+            userId = "userId",
             id = "WeatherForecast",
             conversationId = WeatherForecastConversationId,
             time = Message.WeatherForecastSep.time,
@@ -201,6 +206,7 @@ object MailboxItemUiModelPreviewData {
         val LongSubjectWithoutIcons = MailboxItemUiModel(
             avatar = AccuWeatherAvatar,
             type = MailboxItemType.Conversation,
+            userId = "userId",
             id = "WeatherForecast",
             conversationId = WeatherForecastConversationId,
             time = Message.WeatherForecastSep.time,
@@ -225,6 +231,7 @@ object MailboxItemUiModelPreviewData {
         val NoParticipant = MailboxItemUiModel(
             avatar = AccuWeatherAvatar,
             type = MailboxItemType.Conversation,
+            userId = "userId",
             id = "WeatherForecast",
             conversationId = WeatherForecastConversationId,
             time = Message.WeatherForecastSep.time,
@@ -250,6 +257,7 @@ object MailboxItemUiModelPreviewData {
         val WeatherForecastAug = MailboxItemUiModel(
             avatar = AccuWeatherAvatar,
             type = MailboxItemType.Message,
+            userId = "userId",
             id = "WeatherForecastAugust2022",
             conversationId = WeatherForecastConversationId,
             time = TextUiModel.Text("Jul 30th 2022"),
@@ -274,6 +282,7 @@ object MailboxItemUiModelPreviewData {
         val WeatherForecastSep = MailboxItemUiModel(
             avatar = AccuWeatherAvatar,
             type = MailboxItemType.Message,
+            userId = "userId",
             id = "WeatherForecastSeptember2022",
             conversationId = WeatherForecastConversationId,
             time = TextUiModel.TextRes(R.string.yesterday),
