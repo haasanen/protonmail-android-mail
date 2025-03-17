@@ -102,7 +102,6 @@ class RustLabelDataSource @Inject constructor(
     }
 
     override fun observeSystemLabels(userId: UserId): Flow<List<SidebarSystemLabel>> {
-        Timber.v("rust-label: observeSystemLabels called")
         if (shouldInitSystemLabelWatcher(userId)) {
             initSystemLabelsWatcher(userId)
         }
@@ -111,7 +110,6 @@ class RustLabelDataSource @Inject constructor(
     }
 
     override fun observeMessageLabels(userId: UserId): Flow<List<SidebarCustomLabel>> {
-        Timber.v("rust-label: observeMessageLabels called")
         if (shouldInitMessageLabelsWatcher(userId)) {
             initMessageLabelsWatcher(userId)
         }
@@ -120,7 +118,6 @@ class RustLabelDataSource @Inject constructor(
     }
 
     override fun observeMessageFolders(userId: UserId): Flow<List<SidebarCustomFolder>> {
-        Timber.v("rust-label: observeMessageFolders called")
         if (shouldInitMessageFoldersWatcher(userId)) {
             initMessageFoldersWatcher(userId)
         }
