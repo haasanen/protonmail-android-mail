@@ -88,6 +88,7 @@ import ch.protonmail.android.maildetail.presentation.sample.ConversationDetailMe
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen
 import ch.protonmail.android.maildetail.presentation.usecase.GetEmbeddedImageAvoidDuplicatedExecution
 import ch.protonmail.android.maildetail.presentation.usecase.GetLabelAsBottomSheetData
+import ch.protonmail.android.maildetail.presentation.usecase.GetMessagesInSameExclusiveLocation
 import ch.protonmail.android.maildetail.presentation.usecase.GetMoreActionsBottomSheetData
 import ch.protonmail.android.maildetail.presentation.usecase.ObservePrimaryUserAddress
 import ch.protonmail.android.maildetail.presentation.usecase.OnMessageLabelAsConfirmed
@@ -96,6 +97,7 @@ import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.maillabel.domain.sample.LabelIdSample
 import ch.protonmail.android.maillabel.domain.sample.LabelSample
+import ch.protonmail.android.maillabel.presentation.model.MailLabelText
 import ch.protonmail.android.maillabel.presentation.sample.LabelUiModelWithSelectedStateSample
 import ch.protonmail.android.mailmessage.domain.model.ConversationMessages
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
@@ -321,6 +323,7 @@ class ConversationDetailViewModelTest {
     private val observeAvatarImageStates = mockk<ObserveAvatarImageStates> {
         every { this@mockk() } returns flowOf(AvatarImageStatesTestData.SampleData1)
     }
+    private val getMessagesInSameExclusiveLocation = mockk<GetMessagesInSameExclusiveLocation>()
 
     private val testDispatcher: TestDispatcher by lazy {
         StandardTestDispatcher().apply { Dispatchers.setMain(this) }
@@ -373,7 +376,8 @@ class ConversationDetailViewModelTest {
             deleteMessages = deleteMessages,
             observePrimaryUserAddress = observePrimaryUserAddress,
             loadAvatarImage = loadAvatarImage,
-            observeAvatarImageStates = observeAvatarImageStates
+            observeAvatarImageStates = observeAvatarImageStates,
+            getMessagesInSameExclusiveLocation = getMessagesInSameExclusiveLocation
         )
     }
 
@@ -888,7 +892,7 @@ class ConversationDetailViewModelTest {
                 operation = ConversationDetailEvent.ExitScreenWithMessage(ConversationDetailViewAction.MoveToTrash)
             )
         } returns ConversationDetailState.Loading.copy(
-            exitScreenWithMessageEffect = Effect.of(
+            exitScreenActionResult = Effect.of(
                 ActionResult.UndoableActionResult(TextUiModel(string.conversation_moved_to_trash))
             )
         )
@@ -899,7 +903,7 @@ class ConversationDetailViewModelTest {
             viewModel.submit(ConversationDetailViewAction.MoveToTrash)
 
             // Then
-            assertNotNull(awaitItem().exitScreenWithMessageEffect.consume())
+            assertNotNull(awaitItem().exitScreenActionResult.consume())
             cancelAndIgnoreRemainingEvents()
         }
     }
@@ -944,12 +948,12 @@ class ConversationDetailViewModelTest {
                 currentState = any(),
                 operation = ConversationDetailEvent.ExitScreenWithMessage(
                     ConversationDetailEvent.MoveToDestinationConfirmed(
-                        "selectedLabel", null
+                        MailLabelText("selectedLabel"), null
                     )
                 )
             )
         } returns ConversationDetailState.Loading.copy(
-            exitScreenWithMessageEffect = Effect.of(
+            exitScreenActionResult = Effect.of(
                 ActionResult.UndoableActionResult(
                     TextUiModel(string.conversation_moved_to_selected_destination, "selectedLabel")
                 )
@@ -963,13 +967,13 @@ class ConversationDetailViewModelTest {
             advanceUntilIdle()
             viewModel.submit(
                 ConversationDetailViewAction.MoveToDestinationSelected(
-                    selectedLabel.id, "selectedLabel", moveToEntryPoint
+                    selectedLabel.id, MailLabelText("selectedLabel"), moveToEntryPoint
                 )
             )
             advanceUntilIdle()
 
             // Then
-            assertNotNull(lastEmittedItem().exitScreenWithMessageEffect.consume())
+            assertNotNull(lastEmittedItem().exitScreenActionResult.consume())
         }
     }
 
@@ -1058,7 +1062,7 @@ class ConversationDetailViewModelTest {
                 )
             }
             verify { move wasNot Called }
-            assertNull(lastEmittedItem().exitScreenWithMessageEffect.consume())
+            assertNull(lastEmittedItem().exitScreenActionResult.consume())
         }
     }
 
@@ -1136,7 +1140,7 @@ class ConversationDetailViewModelTest {
                     )
                 )
             } returns ConversationDetailState.Loading.copy(
-                exitScreenWithMessageEffect = Effect.of(
+                exitScreenActionResult = Effect.of(
                     ActionResult.UndoableActionResult(TextUiModel(string.conversation_moved_to_archive))
                 )
             )
@@ -1161,7 +1165,7 @@ class ConversationDetailViewModelTest {
                         archiveSelected
                     )
                 }
-                assertNotNull(lastEmittedItem().exitScreenWithMessageEffect.consume())
+                assertNotNull(lastEmittedItem().exitScreenActionResult.consume())
             }
         }
 
@@ -1259,7 +1263,7 @@ class ConversationDetailViewModelTest {
                 )
             }
             verify { move wasNot Called }
-            assertNull(lastEmittedItem().exitScreenWithMessageEffect.consume())
+            assertNull(lastEmittedItem().exitScreenActionResult.consume())
         }
     }
 
@@ -1843,7 +1847,7 @@ class ConversationDetailViewModelTest {
             reducer.newStateFrom(
                 currentState = ConversationDetailState.Loading,
                 operation = ConversationDetailEvent.ExitScreenWithMessage(
-                    ConversationDetailViewAction.Archive
+                    ConversationDetailViewAction.MoveToArchive
                 )
             )
         } returns ConversationDetailState.Loading.copy(
@@ -1853,7 +1857,7 @@ class ConversationDetailViewModelTest {
         // when
         viewModel.state.test {
             initialStateEmitted()
-            viewModel.submit(ConversationDetailViewAction.Archive)
+            viewModel.submit(ConversationDetailViewAction.MoveToArchive)
 
             // then
             assertNotNull(awaitItem().exitScreenEffect.consume())
@@ -1879,7 +1883,7 @@ class ConversationDetailViewModelTest {
         // when
         viewModel.state.test {
             initialStateEmitted()
-            viewModel.submit(ConversationDetailViewAction.Archive)
+            viewModel.submit(ConversationDetailViewAction.MoveToArchive)
 
             // then
             assertEquals(TextUiModel(string.error_move_to_archive_failed), awaitItem().error.consume())

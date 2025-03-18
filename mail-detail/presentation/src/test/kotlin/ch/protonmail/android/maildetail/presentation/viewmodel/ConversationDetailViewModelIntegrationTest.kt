@@ -122,15 +122,16 @@ import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen
 import ch.protonmail.android.maildetail.presentation.usecase.ExtractMessageBodyWithoutQuote
 import ch.protonmail.android.maildetail.presentation.usecase.GetEmbeddedImageAvoidDuplicatedExecution
 import ch.protonmail.android.maildetail.presentation.usecase.GetLabelAsBottomSheetData
+import ch.protonmail.android.maildetail.presentation.usecase.GetMessagesInSameExclusiveLocation
 import ch.protonmail.android.maildetail.presentation.usecase.GetMoreActionsBottomSheetData
 import ch.protonmail.android.maildetail.presentation.usecase.ObservePrimaryUserAddress
 import ch.protonmail.android.maildetail.presentation.usecase.OnMessageLabelAsConfirmed
 import ch.protonmail.android.maildetail.presentation.usecase.PrintMessage
-import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabels
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.maillabel.domain.sample.LabelSample
 import ch.protonmail.android.maillabel.presentation.model.LabelSelectedState
+import ch.protonmail.android.maillabel.presentation.model.MailLabelText
 import ch.protonmail.android.maillabel.presentation.sample.LabelUiModelWithSelectedStateSample
 import ch.protonmail.android.maillabel.presentation.toUiModels
 import ch.protonmail.android.mailmessage.domain.model.AttachmentDisposition
@@ -164,6 +165,7 @@ import ch.protonmail.android.mailmessage.presentation.mapper.AttachmentGroupUiMo
 import ch.protonmail.android.mailmessage.presentation.mapper.AttachmentMetadataUiModelMapper
 import ch.protonmail.android.mailmessage.presentation.mapper.AvatarImageUiModelMapper
 import ch.protonmail.android.mailmessage.presentation.mapper.DetailMoreActionsBottomSheetUiMapper
+import ch.protonmail.android.mailmessage.presentation.mapper.MailLabelTextMapper
 import ch.protonmail.android.mailmessage.presentation.model.MessageBodyExpandCollapseMode
 import ch.protonmail.android.mailmessage.presentation.model.ViewModePreference
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.BottomSheetVisibilityEffect
@@ -235,7 +237,6 @@ class ConversationDetailViewModelIntegrationTest {
     private val conversationId = ConversationIdSample.WeatherForecast
     private val filterByLocationLabelId = SystemLabelId.Archive.labelId
 
-
     // region mock observe use cases
     private val observeContacts: ObserveContacts = mockk {
         every { this@mockk(userId = UserIdSample.Primary) } returns flowOf(emptyList<ContactMetadata.Contact>().right())
@@ -280,6 +281,7 @@ class ConversationDetailViewModelIntegrationTest {
     private val observeAvatarImageStates = mockk<ObserveAvatarImageStates> {
         every { this@mockk() } returns flowOf(AvatarImageStatesTestData.SampleData1)
     }
+
     // Privacy settings for link confirmation dialog
     private val observePrivacySettings = mockk<ObservePrivacySettings> {
         coEvery { this@mockk.invoke(any()) } returns flowOf(
@@ -370,6 +372,7 @@ class ConversationDetailViewModelIntegrationTest {
     private val onMessageLabelAsConfirmed = OnMessageLabelAsConfirmed(
         labelMessage
     )
+    private val getMessagesInSameExclusiveLocation = mockk<GetMessagesInSameExclusiveLocation>()
     // endregion
 
     // region mappers
@@ -395,7 +398,15 @@ class ConversationDetailViewModelIntegrationTest {
     private val sanitizeHtmlOfDecryptedMessageBody = SanitizeHtmlOfDecryptedMessageBody()
     private val extractMessageBodyWithoutQuote = ExtractMessageBodyWithoutQuote()
     private val avatarImageUiModelMapper = AvatarImageUiModelMapper()
-    private val actionResultMapper = ActionResultMapper()
+
+    private val mailLabelTextMapper = mockk<MailLabelTextMapper> {
+        every { this@mockk.mapToString(MailLabelText.TextString("Spam")) } returns "Spam"
+        every { this@mockk.mapToString(MailLabelText.TextRes(R.string.label_title_spam)) } returns "Spam"
+        every { this@mockk.mapToString(MailLabelText.TextString("Trash")) } returns "Trash"
+        every { this@mockk.mapToString(MailLabelText.TextRes(R.string.label_title_trash)) } returns "Spam"
+        every { this@mockk.mapToString(MailLabelText.TextRes(R.string.label_title_archive)) } returns "Archive"
+    }
+
     private val conversationMessageMapper = ConversationDetailMessageUiModelMapper(
         avatarUiModelMapper = DetailAvatarUiModelMapper(avatarInformationMapper),
         expirationTimeMapper = ExpirationTimeMapper(getCurrentEpochTimeDuration),
@@ -451,8 +462,7 @@ class ConversationDetailViewModelIntegrationTest {
         deleteDialogReducer = ConversationDeleteDialogReducer(),
         reportPhishingDialogReducer = ConversationReportPhishingDialogReducer(),
         trashedMessagesBannerReducer = TrashedMessagesBannerReducer(),
-        actionResultMapper = ActionResultMapper()
-
+        actionResultMapper = ActionResultMapper(mailLabelTextMapper)
     )
 
     private val inMemoryConversationStateRepository = FakeInMemoryConversationStateRepository()
@@ -1306,7 +1316,7 @@ class ConversationDetailViewModelIntegrationTest {
 
         // Then
         coVerify { deleteConversations(userId, listOf(conversationId)) }
-        assertEquals(expectedMessage, viewModel.state.value.exitScreenWithMessageEffect.consume())
+        assertEquals(expectedMessage, viewModel.state.value.exitScreenActionResult.consume())
     }
 
     @Test
@@ -2059,7 +2069,7 @@ class ConversationDetailViewModelIntegrationTest {
             MessageSample.AugWeatherForecast.messageId
         )
         val labelId = SystemLabelId.Archive.labelId
-        coEvery { observeConversationMessages(userId, any(), labelId) } returns flowOf(messages.right())
+        coEvery { observeConversationMessages(userId, any(), any()) } returns flowOf(messages.right())
         coEvery {
             observeMessage(userId, messageId)
         } returns flowOf(MessageSample.Invoice.right())
@@ -2067,7 +2077,9 @@ class ConversationDetailViewModelIntegrationTest {
         coEvery {
             getMessageAvailableActions(userId, labelId, listOf(messageId))
         } returns AvailableActionsTestData.replyActionsOnly.right()
-
+        coEvery {
+            getMessagesInSameExclusiveLocation(userId, conversationId, messageId, any()) // labelId here is not strict
+        } returns listOf<Message>(mockk(), mockk()).right()
         // When
         val viewModel = buildConversationDetailViewModel()
 
@@ -2078,7 +2090,7 @@ class ConversationDetailViewModelIntegrationTest {
 
             viewModel.submit(ConversationDetailViewAction.RequestMessageMoreActionsBottomSheet(messageId))
             skipItems(2)
-            viewModel.submit(ConversationDetailViewAction.TrashMessage(messageId))
+            viewModel.submit(ConversationDetailViewAction.MoveMessage.System.Trash(messageId))
 
             // then
             assertEquals(
@@ -2110,6 +2122,9 @@ class ConversationDetailViewModelIntegrationTest {
         coEvery {
             getMessageAvailableActions(userId, filterByLocationLabelId, listOf(messageId))
         } returns AvailableActionsTestData.replyActionsOnly.right()
+        coEvery {
+            getMessagesInSameExclusiveLocation(userId, conversationId, messageId, any()) // labelId here is not strict
+        } returns listOf<Message>(mockk(), mockk()).right()
 
         // When
         val viewModel = buildConversationDetailViewModel()
@@ -2121,7 +2136,7 @@ class ConversationDetailViewModelIntegrationTest {
 
             viewModel.submit(ConversationDetailViewAction.RequestMessageMoreActionsBottomSheet(messageId))
             skipItems(2)
-            viewModel.submit(ConversationDetailViewAction.ArchiveMessage(messageId))
+            viewModel.submit(ConversationDetailViewAction.MoveMessage.System.Archive(messageId))
 
             // then
             assertEquals(
@@ -2154,7 +2169,9 @@ class ConversationDetailViewModelIntegrationTest {
         coEvery {
             getMessageAvailableActions(userId, labelId, listOf(messageId))
         } returns AvailableActionsTestData.replyActionsOnly.right()
-
+        coEvery {
+            getMessagesInSameExclusiveLocation(userId, conversationId, messageId, any()) // labelId here is not strict
+        } returns listOf<Message>(mockk(), mockk()).right()
         // When
         val viewModel = buildConversationDetailViewModel()
 
@@ -2165,7 +2182,7 @@ class ConversationDetailViewModelIntegrationTest {
 
             viewModel.submit(ConversationDetailViewAction.RequestMessageMoreActionsBottomSheet(messageId))
             skipItems(2)
-            viewModel.submit(ConversationDetailViewAction.MoveMessageToSpam(messageId))
+            viewModel.submit(ConversationDetailViewAction.MoveMessage.System.Spam(messageId))
 
             // then
             assertEquals(
@@ -2251,13 +2268,11 @@ class ConversationDetailViewModelIntegrationTest {
         val messageId = MessageSample.Invoice.messageId
         val moveToEntryPoint = MoveToBottomSheetEntryPoint.Message(messageId)
         val labelId = SystemLabelId.Archive.labelId
-        // in moveTo functionality system labels are already resolved to local label id
-        val localSpamLabelId = LabelId("4")
-        coEvery { observeConversationMessages(userId, any(), labelId) } returns flowOf(messages.right())
+        coEvery { observeConversationMessages(userId, any(), any()) } returns flowOf(messages.right())
         coEvery {
             observeMessage(userId, messageId)
         } returns flowOf(MessageSample.Invoice.right())
-        coEvery { moveMessage(userId, messageId, localSpamLabelId) } returns Unit.right()
+        coEvery { moveMessage(userId, messageId, SystemLabelId.Spam) } returns Unit.right()
         coEvery { getMessageMoveToLocations(userId, labelId, listOf(messageId)) } returns listOf(
             MailLabelTestData.spamSystemLabel,
             MailLabelTestData.buildCustomFolder(id = "folder1")
@@ -2265,7 +2280,9 @@ class ConversationDetailViewModelIntegrationTest {
         coEvery {
             getMessageAvailableActions(userId, labelId, listOf(messageId))
         } returns AvailableActionsTestData.replyActionsOnly.right()
-
+        coEvery {
+            getMessagesInSameExclusiveLocation(userId, conversationId, messageId, any()) // labelId here is not strict
+        } returns listOf<Message>(mockk(), mockk()).right()
         // When
         val viewModel = buildConversationDetailViewModel()
 
@@ -2279,7 +2296,7 @@ class ConversationDetailViewModelIntegrationTest {
             skipItems(1)
             viewModel.submit(
                 ConversationDetailViewAction.MoveToDestinationSelected(
-                    MailLabelTestData.spamSystemLabel.id, SystemLabelId.Spam.toString(), moveToEntryPoint
+                    MailLabelTestData.spamSystemLabel.id, MailLabelText(SystemLabelId.Spam.toString()), moveToEntryPoint
                 )
             )
             skipItems(1)
@@ -2288,7 +2305,7 @@ class ConversationDetailViewModelIntegrationTest {
                 BottomSheetVisibilityEffect.Hide, awaitItem().bottomSheetState?.bottomSheetVisibilityEffect?.consume()
             )
             coVerify {
-                moveMessage(userId, messageId, SystemLabelId.Spam.labelId)
+                moveMessage(userId, messageId, SystemLabelId.Spam)
             }
 
             cancelAndIgnoreRemainingEvents()
@@ -2350,7 +2367,7 @@ class ConversationDetailViewModelIntegrationTest {
             }
 
             val lastItem = expectMostRecentItem()
-            assertEquals(lastItem.exitScreenWithMessageEffect.consume(), expectedEffect)
+            assertEquals(lastItem.exitScreenActionResult.consume(), expectedEffect)
         }
     }
 
@@ -2407,7 +2424,7 @@ class ConversationDetailViewModelIntegrationTest {
             }
 
             val state = expectMostRecentItem()
-            assertEquals(state.exitScreenWithMessageEffect, Effect.empty())
+            assertEquals(state.exitScreenActionResult, Effect.empty())
             assertEquals(state.exitScreenEffect, Effect.empty())
             assertEquals(state.error.consume(), expectedEffect)
         }
@@ -2491,7 +2508,8 @@ class ConversationDetailViewModelIntegrationTest {
         deleteMessages = deleteMessages,
         observePrimaryUserAddress = observePrimaryUserAddress,
         loadAvatarImage = loadAvatarImg,
-        observeAvatarImageStates = observeAvatarImgStates
+        observeAvatarImageStates = observeAvatarImgStates,
+        getMessagesInSameExclusiveLocation = getMessagesInSameExclusiveLocation
     )
 
     private fun aMessageAttachment(id: String): AttachmentMetadata = AttachmentMetadata(
