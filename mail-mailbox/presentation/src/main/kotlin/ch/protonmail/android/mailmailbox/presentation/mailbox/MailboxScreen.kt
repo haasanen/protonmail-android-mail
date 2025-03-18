@@ -836,7 +836,7 @@ private fun MailboxItemsList(
         }
         items(
             count = items.itemCount,
-            key = items.itemKey { it.id },
+            key = items.itemKey { it.id.plus(it.userId) },
             contentType = items.itemContentType { MailboxItemUiModel::class }
         ) { index ->
             items[index]?.let { item ->
