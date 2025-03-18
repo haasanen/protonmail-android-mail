@@ -28,7 +28,6 @@ import ch.protonmail.android.maildetail.presentation.R
 import ch.protonmail.android.maildetail.presentation.mapper.ActionResultMapper
 import ch.protonmail.android.maildetail.presentation.model.ConversationDeleteState
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent
-import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.ErrorMovingConversation
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.ConversationBottomBarEvent
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.ConversationBottomSheetEvent
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.ErrorAddStar
@@ -41,6 +40,7 @@ import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEve
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.ErrorGettingAttachmentNotEnoughSpace
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.ErrorLabelingConversation
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.ErrorMarkingAsUnread
+import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.ErrorMovingConversation
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.ErrorMovingMessage
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.ErrorMovingToTrash
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.ErrorRemoveStar
@@ -81,8 +81,9 @@ class ConversationDetailReducer @Inject constructor(
             bottomBarState = currentState.toNewBottomBarState(operation),
             bottomSheetState = currentState.toNewBottomSheetStateFrom(operation),
             error = currentState.toErrorState(operation),
+            actionResult = currentState.toActionResult(operation),
             exitScreenEffect = currentState.toExitState(operation),
-            exitScreenWithMessageEffect = currentState.toExitWithMessageState(operation),
+            exitScreenActionResult = currentState.toExitWithMessageState(operation),
             openMessageBodyLinkEffect = currentState.toOpenMessageBodyLinkState(operation),
             openAttachmentEffect = currentState.toNewOpenAttachmentStateFrom(operation),
             openProtonCalendarIntent = currentState.toNewOpenProtonCalendarIntentFrom(operation),
@@ -145,24 +146,23 @@ class ConversationDetailReducer @Inject constructor(
                 is ConversationDetailViewAction.MarkUnread,
                 is ConversationDetailViewAction.Star,
                 is ConversationDetailViewAction.UnStar,
-                is ConversationDetailViewAction.Archive,
-                is ConversationDetailViewAction.MoveToSpam,
-                is ConversationDetailViewAction.MoveToTrash,
                 is ConversationDetailViewAction.LabelAsConfirmed,
                 is ConversationDetailEvent.ReportPhishingRequested,
                 is ConversationDetailViewAction.DismissBottomSheet,
                 is ConversationDetailViewAction.SwitchViewMode,
                 is ConversationDetailViewAction.PrintRequested,
                 is ConversationDetailViewAction.MarkMessageUnread,
-                is ConversationDetailViewAction.TrashMessage,
-                is ConversationDetailViewAction.ArchiveMessage,
-                is ConversationDetailViewAction.MoveMessageToSpam,
-                is ConversationDetailViewAction.MoveMessageToInbox,
-                is ConversationDetailViewAction.MoveToInbox,
                 is ConversationDetailViewAction.DeleteConfirmed,
                 is ConversationDetailViewAction.DeleteMessageConfirmed,
+                is ConversationDetailViewAction.MoveToInbox,
+                is ConversationDetailViewAction.MoveToSpam,
+                is ConversationDetailViewAction.MoveToTrash,
+                is ConversationDetailViewAction.MoveToArchive,
                 is ConversationDetailViewAction.StarMessage,
                 is ConversationDetailViewAction.UnStarMessage,
+                is ConversationDetailViewAction.MoveMessage,
+                is ConversationDetailEvent.MessageMoved,
+                is ConversationDetailEvent.LastMessageMoved,
                 is ConversationDetailEvent.MoveToDestinationConfirmed -> BottomSheetOperation.Dismiss
             }
             bottomSheetReducer.newStateFrom(bottomSheetState, bottomSheetOperation)
@@ -197,6 +197,21 @@ class ConversationDetailReducer @Inject constructor(
         }
     }
 
+    private fun ConversationDetailState.toActionResult(operation: ConversationDetailOperation): Effect<ActionResult> {
+        return when (operation) {
+            is ConversationDetailOperation.AffectingMessageBar -> {
+                val targetActionResult = actionResultMapper.toActionResult(operation)
+                if (targetActionResult != null) {
+                    Effect.of(targetActionResult)
+                } else {
+                    actionResult
+                }
+            }
+
+            else -> actionResult
+        }
+    }
+
     private fun ConversationDetailState.toExitState(operation: ConversationDetailOperation): Effect<Unit> =
         when (operation) {
             is ConversationDetailEvent.ExitScreen -> Effect.of(Unit)
@@ -205,16 +220,26 @@ class ConversationDetailReducer @Inject constructor(
 
     private fun ConversationDetailState.toExitWithMessageState(
         operation: ConversationDetailOperation
-    ): Effect<ActionResult> = when {
-        operation is ConversationDetailEvent.ExitScreenWithMessage -> {
+    ): Effect<ActionResult> = when (operation) {
+        is ConversationDetailEvent.ExitScreenWithMessage -> {
             val actionResult = actionResultMapper.toActionResult(operation.operation)
             if (actionResult != null) {
                 Effect.of(actionResult)
             } else {
-                exitScreenWithMessageEffect
+                exitScreenActionResult
             }
         }
-        else -> exitScreenWithMessageEffect
+
+        is ConversationDetailEvent.LastMessageMoved -> {
+            val actionResult = actionResultMapper.toActionResult(operation)
+            if (actionResult != null) {
+                Effect.of(actionResult)
+            } else {
+                exitScreenActionResult
+            }
+        }
+
+        else -> exitScreenActionResult
     }
 
     private fun ConversationDetailState.toOpenMessageBodyLinkState(

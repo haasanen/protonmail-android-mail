@@ -40,13 +40,16 @@ import ch.protonmail.android.maildetail.presentation.model.ParticipantUiModel
 import ch.protonmail.android.maildetail.presentation.sample.ConversationDetailMessageUiModelSample
 import ch.protonmail.android.maildetail.presentation.sample.ConversationDetailMetadataUiModelSample
 import ch.protonmail.android.maillabel.domain.sample.LabelIdSample
+import ch.protonmail.android.maillabel.presentation.model.MailLabelText
 import ch.protonmail.android.mailmessage.domain.model.MessageId
+import ch.protonmail.android.mailmessage.presentation.mapper.MailLabelTextMapper
 import ch.protonmail.android.mailmessage.presentation.model.ViewModePreference
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.LabelAsBottomSheetEntryPoint
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MoveToBottomSheetEntryPoint
 import ch.protonmail.android.mailmessage.presentation.reducer.BottomSheetReducer
 import ch.protonmail.android.testdata.maillabel.MailLabelTestData
 import io.mockk.Called
+import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.collections.immutable.toImmutableList
@@ -63,7 +66,11 @@ class ConversationDetailReducerTest(
     private val testInput: TestInput
 ) {
 
-    private val actionResultMapper = ActionResultMapper()
+    private val mailLabelTextMapper = mockk<MailLabelTextMapper> {
+        every { this@mockk.mapToString(any()) } returns "String"
+    }
+
+    private val actionResultMapper = ActionResultMapper(mailLabelTextMapper)
     private val bottomBarReducer = mockk<BottomBarReducer>(relaxed = true)
     private val messagesReducer = mockk<ConversationDetailMessagesReducer>(relaxed = true)
     private val metadataReducer = mockk<ConversationDetailMetadataReducer>(relaxed = true)
@@ -80,7 +87,6 @@ class ConversationDetailReducerTest(
         reportPhishingDialogReducer = reportPhishingDialogReducer,
         trashedMessagesBannerReducer = trashedMessagesBannerReducer,
         actionResultMapper = actionResultMapper
-
     )
 
     @Test
@@ -118,6 +124,12 @@ class ConversationDetailReducerTest(
                 assertNull(result.error.consume())
             }
 
+            if (reducesMessageBar) {
+                assertNotNull(result.actionResult.consume())
+            } else {
+                assertNull(result.actionResult.consume())
+            }
+
             if (reducesExit) {
                 assertNotNull(result.exitScreenEffect.consume())
             } else {
@@ -125,7 +137,7 @@ class ConversationDetailReducerTest(
             }
 
             if (expectedExitMessage != null) {
-                assertEquals(expectedExitMessage, result.exitScreenWithMessageEffect.consume())
+                assertEquals(expectedExitMessage, result.exitScreenActionResult.consume())
             }
 
             if (reducesLinkClick) {
@@ -160,6 +172,7 @@ class ConversationDetailReducerTest(
         val reducesMessages: Boolean,
         val reducesBottomBar: Boolean,
         val reducesErrorBar: Boolean,
+        val reducesMessageBar: Boolean,
         val reducesExit: Boolean,
         val expectedExitMessage: ActionResult?,
         val reducesBottomSheet: Boolean,
@@ -192,7 +205,7 @@ class ConversationDetailReducerTest(
             ConversationDetailViewAction.RequestMoveToBottomSheet affects BottomSheet,
             ConversationDetailViewAction.DismissBottomSheet affects BottomSheet,
             ConversationDetailViewAction.MoveToDestinationSelected(
-                MailLabelTestData.archiveSystemLabel.id, "", MoveToBottomSheetEntryPoint.Conversation
+                MailLabelTestData.archiveSystemLabel.id, MailLabelText(""), MoveToBottomSheetEntryPoint.Conversation
             ) affects BottomSheet,
             ConversationDetailViewAction.Star affects listOf(Conversation, BottomSheet),
             ConversationDetailViewAction.UnStar affects listOf(Conversation, BottomSheet),
@@ -222,10 +235,11 @@ class ConversationDetailReducerTest(
             ConversationDetailViewAction.PrintRequested(MessageId(messageId.id)) affects listOf(BottomSheet, Messages),
             ConversationDetailViewAction.MarkMessageUnread(MessageId(messageId.id)) affects listOf(BottomSheet),
             ConversationDetailViewAction.RequestMessageLabelAsBottomSheet(MessageId(messageId.id)) affects BottomSheet,
-            ConversationDetailViewAction.TrashMessage(MessageId(messageId.id)) affects listOf(BottomSheet),
-            ConversationDetailViewAction.ArchiveMessage(MessageId(messageId.id)) affects listOf(BottomSheet),
-            ConversationDetailViewAction.MoveMessageToSpam(MessageId(messageId.id)) affects listOf(BottomSheet),
-            ConversationDetailViewAction.MoveMessageToInbox(MessageId(messageId.id)) affects listOf(BottomSheet),
+            ConversationDetailViewAction.MoveMessage.System.Trash(MessageId(messageId.id)) affects listOf(BottomSheet),
+            ConversationDetailViewAction.MoveMessage.System.Archive(MessageId(messageId.id))
+                affects listOf(BottomSheet),
+            ConversationDetailViewAction.MoveMessage.System.Spam(MessageId(messageId.id)) affects listOf(BottomSheet),
+            ConversationDetailViewAction.MoveMessage.System.Inbox(MessageId(messageId.id)) affects listOf(BottomSheet),
             ConversationDetailViewAction.StarMessage(MessageId(messageId.id)) affects listOf(BottomSheet),
             ConversationDetailViewAction.UnStarMessage(MessageId(messageId.id)) affects listOf(BottomSheet),
             ConversationDetailViewAction.RequestMessageMoveToBottomSheet(
@@ -288,7 +302,15 @@ class ConversationDetailReducerTest(
             ConversationDetailEvent.ExitScreenWithMessage(
                 ConversationDetailViewAction.DeleteConfirmed
             ) affects
-                ExitWithResult(DefinitiveActionResult(TextUiModel(string.conversation_deleted)))
+                ExitWithResult(DefinitiveActionResult(TextUiModel(string.conversation_deleted))),
+            ConversationDetailEvent.LastMessageMoved(MailLabelText("String")) affects listOf(
+                BottomSheet,
+                ExitWithResult(
+                    UndoableActionResult(TextUiModel.TextResWithArgs(string.message_moved_to, listOf("String")))
+                )
+            ),
+            ConversationDetailEvent.MessageMoved(MailLabelText("String")) affects listOf(BottomSheet, MessageBar),
+            ConversationDetailEvent.ErrorMovingMessage affects listOf(BottomSheet, ErrorBar)
         )
 
         @JvmStatic
@@ -308,6 +330,7 @@ private infix fun ConversationDetailOperation.affects(entities: List<Entity>) = 
     reducesBottomBar = entities.contains(BottomBar),
     reducesErrorBar = entities.contains(ErrorBar),
     reducesExit = entities.contains(Exit),
+    reducesMessageBar = entities.contains(MessageBar),
     expectedExitMessage = entities.firstNotNullOfOrNull { (it as? ExitWithResult)?.result },
     reducesBottomSheet = entities.contains(BottomSheet),
     reducesLinkClick = entities.contains(LinkClick),
@@ -319,17 +342,18 @@ private infix fun ConversationDetailOperation.affects(entities: List<Entity>) = 
 private infix fun ConversationDetailOperation.affects(entity: Entity) = this.affects(listOf(entity))
 
 private sealed interface Entity
-private object Messages : Entity
-private object Conversation : Entity
-private object BottomBar : Entity
-private object Exit : Entity
+private data object Messages : Entity
+private data object Conversation : Entity
+private data object BottomBar : Entity
+private data object Exit : Entity
 private data class ExitWithResult(val result: ActionResult) : Entity
-private object ErrorBar : Entity
-private object BottomSheet : Entity
-private object LinkClick : Entity
-private object MessageScroll : Entity
-private object DeleteDialog : Entity
-private object TrashedMessagesBanner : Entity
+private data object MessageBar : Entity
+private data object ErrorBar : Entity
+private data object BottomSheet : Entity
+private data object LinkClick : Entity
+private data object MessageScroll : Entity
+private data object DeleteDialog : Entity
+private data object TrashedMessagesBanner : Entity
 
 private val allMessagesFirstExpanded = listOf(
     ConversationDetailMessageUiModelSample.AugWeatherForecastExpanded,
