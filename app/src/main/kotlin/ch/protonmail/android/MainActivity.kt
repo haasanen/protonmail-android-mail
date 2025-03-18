@@ -70,7 +70,8 @@ class MainActivity : AppCompatActivity() {
         // Register activities for result.
         launcherViewModel.register(this)
 
-        shareIntentObserver.onNewIntent(intent)
+        // Do not handle share intents for Alpha, composer is hidden
+//        shareIntentObserver.onNewIntent(intent)
 
         disableRecentAppsScreenshotPreview()
 
