@@ -39,6 +39,7 @@ import me.proton.android.core.auth.presentation.secondfactor.SecondFactorArg.get
 import me.proton.android.core.auth.presentation.secondfactor.otp.OneTimePasswordInputAction.Authenticate
 import me.proton.android.core.auth.presentation.secondfactor.otp.OneTimePasswordInputAction.Close
 import me.proton.android.core.auth.presentation.secondfactor.otp.OneTimePasswordInputAction.Load
+import me.proton.android.core.auth.presentation.secondfactor.otp.OneTimePasswordInputState.Awaiting2Pass
 import me.proton.android.core.auth.presentation.secondfactor.otp.OneTimePasswordInputState.Closed
 import me.proton.android.core.auth.presentation.secondfactor.otp.OneTimePasswordInputState.Error
 import me.proton.android.core.auth.presentation.secondfactor.otp.OneTimePasswordInputState.Idle
@@ -124,9 +125,12 @@ class OneTimePasswordInputViewModel @Inject constructor(
     }
 
     private fun onSuccess(loginFlow: LoginFlow): Flow<OneTimePasswordInputState> = flow {
-        when (val result = loginFlow.toUserContext()) {
-            is LoginFlowToUserContextResult.Error -> emitAll(onError(result.v1))
-            is LoginFlowToUserContextResult.Ok -> emitAll(onWaitFinished(result.v1))
+        when (loginFlow.isAwaitingMailboxPassword()) {
+            true -> emit(Awaiting2Pass)
+            false -> when (val result = loginFlow.toUserContext()) {
+                is LoginFlowToUserContextResult.Error -> emitAll(onError(result.v1))
+                is LoginFlowToUserContextResult.Ok -> emitAll(onWaitFinished(result.v1))
+            }
         }
     }
 
