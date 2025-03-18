@@ -26,12 +26,15 @@ import ch.protonmail.android.maildetail.presentation.R
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailOperation
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction
+import ch.protonmail.android.mailmessage.presentation.mapper.MailLabelTextMapper
 import javax.inject.Inject
 
-class ActionResultMapper @Inject constructor() {
+class ActionResultMapper @Inject constructor(
+    private val mailLabelTextMapper: MailLabelTextMapper
+) {
 
     fun toActionResult(operation: ConversationDetailOperation): ActionResult? = when (operation) {
-        is ConversationDetailViewAction.Archive ->
+        is ConversationDetailViewAction.MoveToArchive ->
             UndoableActionResult(TextUiModel(R.string.conversation_moved_to_archive))
 
         is ConversationDetailViewAction.MoveToSpam ->
@@ -42,7 +45,10 @@ class ActionResultMapper @Inject constructor() {
 
         is ConversationDetailEvent.MoveToDestinationConfirmed ->
             UndoableActionResult(
-                TextUiModel(R.string.conversation_moved_to_selected_destination, operation.mailLabelText)
+                TextUiModel(
+                    R.string.conversation_moved_to_selected_destination,
+                    mailLabelTextMapper.mapToString(operation.mailLabelText)
+                )
             )
 
         is ConversationDetailViewAction.LabelAsConfirmed ->
@@ -50,6 +56,24 @@ class ActionResultMapper @Inject constructor() {
 
         is ConversationDetailViewAction.DeleteConfirmed ->
             DefinitiveActionResult(TextUiModel(R.string.conversation_deleted))
+
+        is ConversationDetailEvent.MessageMoved -> {
+            val textUiModel = TextUiModel.TextResWithArgs(
+                value = R.string.message_moved_to,
+                formatArgs = listOf(mailLabelTextMapper.mapToString(operation.mailLabelText))
+            )
+
+            UndoableActionResult(textUiModel)
+        }
+
+        is ConversationDetailEvent.LastMessageMoved -> {
+            val textUiModel = TextUiModel.TextResWithArgs(
+                value = R.string.message_moved_to,
+                formatArgs = listOf(mailLabelTextMapper.mapToString(operation.mailLabelText))
+            )
+
+            UndoableActionResult(textUiModel)
+        }
 
         else -> null // No specific ActionResult for other operations
     }

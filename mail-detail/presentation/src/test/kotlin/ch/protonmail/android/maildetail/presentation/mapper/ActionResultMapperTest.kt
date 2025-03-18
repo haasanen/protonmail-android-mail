@@ -26,18 +26,22 @@ import ch.protonmail.android.maildetail.presentation.model.ConversationDetailOpe
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.LabelAsBottomSheetEntryPoint
 import ch.protonmail.android.maildetail.presentation.R
+import ch.protonmail.android.maillabel.presentation.model.MailLabelText
+import ch.protonmail.android.mailmessage.presentation.mapper.MailLabelTextMapper
+import io.mockk.every
 import io.mockk.mockk
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class ActionResultMapperTest {
+internal class ActionResultMapperTest {
 
-    private val actionResultMapper = ActionResultMapper()
+    private val mailLabelTextMapper = mockk<MailLabelTextMapper>()
+    private val actionResultMapper = ActionResultMapper(mailLabelTextMapper)
 
     @Test
     fun `returns undoable result when operation is Archive`() {
         // Given
-        val operation = ConversationDetailViewAction.Archive
+        val operation = ConversationDetailViewAction.MoveToArchive
         val expectedResult = UndoableActionResult(TextUiModel(R.string.conversation_moved_to_archive))
 
         // When
@@ -76,11 +80,12 @@ class ActionResultMapperTest {
     @Test
     fun `returns undoable result with label text when operation is MoveToDestinationConfirmed`() {
         // Given
-        val mailLabelText = "Inbox"
+        val mailLabelText = MailLabelText("Inbox")
         val operation = ConversationDetailEvent.MoveToDestinationConfirmed(mailLabelText, null)
         val expectedResult = UndoableActionResult(
-            TextUiModel(R.string.conversation_moved_to_selected_destination, mailLabelText)
+            TextUiModel(R.string.conversation_moved_to_selected_destination, "Inbox")
         )
+        every { mailLabelTextMapper.mapToString(mailLabelText) } returns "Inbox"
 
         // When
         val result = actionResultMapper.toActionResult(operation)
