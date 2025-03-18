@@ -62,6 +62,7 @@ import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.maillabel.presentation.iconRes
+import ch.protonmail.android.maillabel.presentation.model.MailLabelText
 import ch.protonmail.android.maillabel.presentation.textRes
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MoveToBottomSheetEntryPoint
 
@@ -98,7 +99,7 @@ fun MoveToBottomSheetContent(dataState: MoveToBottomSheetState.Data, actions: Mo
             CustomMoveToGroupWithActionButton(
                 destinations = customDestinations,
                 onFolderSelected = { folderId, folderName ->
-                    actions.onFolderSelected(folderId, folderName, entryPoint)
+                    actions.onFolderSelected(folderId, MailLabelText(folderName), entryPoint)
                 },
                 onAddClick = actions.onAddFolderClick
             )
@@ -108,7 +109,7 @@ fun MoveToBottomSheetContent(dataState: MoveToBottomSheetState.Data, actions: Mo
             MoveToGroup(
                 destinations = systemDestinations,
                 onFolderSelected = { folderId, folderName ->
-                    actions.onFolderSelected(folderId, folderName, entryPoint)
+                    actions.onFolderSelected(folderId, MailLabelText(folderName), entryPoint)
                 }
             )
         }
@@ -289,7 +290,7 @@ object MoveToBottomSheetContent {
 
     data class Actions(
         val onAddFolderClick: () -> Unit,
-        val onFolderSelected: (MailLabelId, String, MoveToBottomSheetEntryPoint) -> Unit,
+        val onFolderSelected: (MailLabelId, MailLabelText, MoveToBottomSheetEntryPoint) -> Unit,
         val onDismiss: () -> Unit
     )
 }

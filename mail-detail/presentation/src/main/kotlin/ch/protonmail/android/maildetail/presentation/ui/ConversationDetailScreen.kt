@@ -257,7 +257,7 @@ fun ConversationDetailScreen(
                         onMarkUnread = { viewModel.submit(ConversationDetailViewAction.MarkMessageUnread(it)) },
                         onStarMessage = { viewModel.submit(ConversationDetailViewAction.StarMessage(it)) },
                         onUnStarMessage = { viewModel.submit(ConversationDetailViewAction.UnStarMessage(it)) },
-                        onMoveToInbox = { viewModel.submit(ConversationDetailViewAction.MoveMessageToInbox(it)) },
+                        onMoveToInbox = { viewModel.submit(ConversationDetailViewAction.MoveMessage.System.Inbox(it)) },
                         onSaveMessageAsPdf = {
                             viewModel.submit(ConversationDetailViewAction.DismissBottomSheet)
                             actions.showFeatureMissingSnackbar()
@@ -275,10 +275,12 @@ fun ConversationDetailScreen(
                                 ConversationDetailViewAction.SwitchViewMode(it, ViewModePreference.DarkMode)
                             )
                         },
-                        onMoveToTrash = { viewModel.submit(ConversationDetailViewAction.TrashMessage(it)) },
-                        onMoveToArchive = { viewModel.submit(ConversationDetailViewAction.ArchiveMessage(it)) },
+                        onMoveToTrash = { viewModel.submit(ConversationDetailViewAction.MoveMessage.System.Trash(it)) },
+                        onMoveToArchive = {
+                            viewModel.submit(ConversationDetailViewAction.MoveMessage.System.Archive(it))
+                        },
                         onDelete = { viewModel.submit(ConversationDetailViewAction.DeleteMessageRequested(it)) },
-                        onMoveToSpam = { viewModel.submit(ConversationDetailViewAction.MoveMessageToSpam(it)) },
+                        onMoveToSpam = { viewModel.submit(ConversationDetailViewAction.MoveMessage.System.Spam(it)) },
                         onMove = { viewModel.submit(ConversationDetailViewAction.RequestMessageMoveToBottomSheet(it)) },
                         onPrint = { viewModel.submit(ConversationDetailViewAction.PrintRequested(it)) },
                         onReportPhishing = { viewModel.submit(ConversationDetailViewAction.ReportPhishing(it)) },
@@ -295,7 +297,7 @@ fun ConversationDetailScreen(
                         onDeleteConversation = { viewModel.submit(ConversationDetailViewAction.DeleteRequested) },
 
                         onMoveToInboxConversation = { viewModel.submit(ConversationDetailViewAction.MoveToInbox) },
-                        onMoveToArchiveConversation = { viewModel.submit(ConversationDetailViewAction.Archive) },
+                        onMoveToArchiveConversation = { viewModel.submit(ConversationDetailViewAction.MoveToArchive) },
                         onMoveToSpamConversation = { viewModel.submit(ConversationDetailViewAction.MoveToSpam) },
                         onStarConversation = { viewModel.submit(ConversationDetailViewAction.Star) },
                         onUnStarConversation = { viewModel.submit(ConversationDetailViewAction.UnStar) },
@@ -357,7 +359,7 @@ fun ConversationDetailScreen(
                 onStarClick = { viewModel.submit(ConversationDetailViewAction.Star) },
                 onTrashClick = { viewModel.submit(ConversationDetailViewAction.MoveToTrash) },
                 onDeleteClick = { viewModel.submit(ConversationDetailViewAction.DeleteRequested) },
-                onArchiveClick = { viewModel.submit(ConversationDetailViewAction.Archive) },
+                onArchiveClick = { viewModel.submit(ConversationDetailViewAction.MoveToArchive) },
                 onSpamClick = { viewModel.submit(ConversationDetailViewAction.MoveToSpam) },
                 onUnStarClick = { viewModel.submit(ConversationDetailViewAction.UnStar) },
                 onReadClick = { viewModel.submit(ConversationDetailViewAction.MarkRead) },
@@ -471,14 +473,21 @@ fun ConversationDetailScreen(
     val snackbarHostState = remember { ProtonSnackbarHostState() }
     val linkConfirmationDialogState = remember { mutableStateOf<Uri?>(null) }
     val phishingLinkConfirmationDialogState = remember { mutableStateOf<Uri?>(null) }
+    val scope = rememberCoroutineScope()
 
     ConsumableLaunchedEffect(state.exitScreenEffect) { actions.onExit(null) }
-    state.exitScreenWithMessageEffect.consume()?.let { actionResult ->
+    state.exitScreenActionResult.consume()?.let { actionResult ->
         actions.onExit(actionResult)
     }
     ConsumableTextEffect(state.error) { string ->
         snackbarHostState.showSnackbar(ProtonSnackbarType.ERROR, message = string)
     }
+
+    state.actionResult.consume()?.let { actionResult ->
+        val message = actionResult.message.string()
+        scope.launch { snackbarHostState.showSnackbar(ProtonSnackbarType.NORM, message = message) }
+    }
+
     ConsumableLaunchedEffect(effect = state.openMessageBodyLinkEffect) { messageBodyLink ->
         val message = when (state.messagesState) {
             is ConversationDetailsMessagesState.Data -> state.messagesState.messages.find {

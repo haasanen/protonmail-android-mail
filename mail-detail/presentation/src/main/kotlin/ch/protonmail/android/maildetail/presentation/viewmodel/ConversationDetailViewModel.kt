@@ -62,6 +62,7 @@ import ch.protonmail.android.maildetail.presentation.mapper.ConversationDetailMe
 import ch.protonmail.android.maildetail.presentation.mapper.ConversationDetailMetadataUiModelMapper
 import ch.protonmail.android.maildetail.presentation.mapper.MessageIdUiModelMapper
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent
+import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.MoveToDestinationConfirmed
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMessageUiModel
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailMetadataState
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailOperation
@@ -75,7 +76,6 @@ import ch.protonmail.android.maildetail.presentation.model.ConversationDetailVie
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction.LabelAsToggleAction
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction.MarkUnread
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction.MessageBodyLinkClicked
-import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent.MoveToDestinationConfirmed
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction.MoveToDestinationSelected
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction.MoveToTrash
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction.RequestContactActionsBottomSheet
@@ -92,6 +92,7 @@ import ch.protonmail.android.maildetail.presentation.reducer.ConversationDetailR
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen
 import ch.protonmail.android.maildetail.presentation.usecase.GetEmbeddedImageAvoidDuplicatedExecution
 import ch.protonmail.android.maildetail.presentation.usecase.GetLabelAsBottomSheetData
+import ch.protonmail.android.maildetail.presentation.usecase.GetMessagesInSameExclusiveLocation
 import ch.protonmail.android.maildetail.presentation.usecase.GetMoreActionsBottomSheetData
 import ch.protonmail.android.maildetail.presentation.usecase.ObservePrimaryUserAddress
 import ch.protonmail.android.maildetail.presentation.usecase.OnMessageLabelAsConfirmed
@@ -102,6 +103,7 @@ import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabels
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.maillabel.presentation.model.LabelSelectedState
+import ch.protonmail.android.maillabel.presentation.model.MailLabelText
 import ch.protonmail.android.maillabel.presentation.toUiModels
 import ch.protonmail.android.mailmessage.domain.model.AttachmentId
 import ch.protonmail.android.mailmessage.domain.model.AttachmentMetadata
@@ -211,7 +213,8 @@ class ConversationDetailViewModel @Inject constructor(
     private val deleteMessages: DeleteMessages,
     private val observePrimaryUserAddress: ObservePrimaryUserAddress,
     private val loadAvatarImage: LoadAvatarImage,
-    private val observeAvatarImageStates: ObserveAvatarImageStates
+    private val observeAvatarImageStates: ObserveAvatarImageStates,
+    private val getMessagesInSameExclusiveLocation: GetMessagesInSameExclusiveLocation
 ) : ViewModel() {
 
     private val primaryUserId = observePrimaryUserId()
@@ -267,8 +270,8 @@ class ConversationDetailViewModel @Inject constructor(
             is ConversationDetailViewAction.MarkRead -> markAsRead()
             is MarkUnread -> markAsUnread()
             is MoveToTrash -> moveConversationToTrash()
-            ConversationDetailViewAction.Archive -> moveConversationToArchive()
-            ConversationDetailViewAction.MoveToSpam -> moveConversationToSpam()
+            is ConversationDetailViewAction.MoveToArchive -> moveConversationToArchive()
+            is ConversationDetailViewAction.MoveToSpam -> moveConversationToSpam()
             is ConversationDetailViewAction.DeleteConfirmed -> handleDeleteConfirmed(action)
             is ConversationDetailViewAction.DeleteMessageConfirmed -> handleDeleteMessageConfirmed(action)
             is RequestMoveToBottomSheet -> showMoveToBottomSheet(action)
@@ -306,21 +309,7 @@ class ConversationDetailViewModel @Inject constructor(
             is ConversationDetailViewAction.OpenInProtonCalendar -> handleOpenInProtonCalendar(action)
             is ConversationDetailViewAction.Print -> handlePrint(action.context, action.messageId)
             is ConversationDetailViewAction.MarkMessageUnread -> handleMarkMessageUnread(action)
-            is ConversationDetailViewAction.TrashMessage -> moveMessageToSystemFolder(
-                action.messageId, SystemLabelId.Trash, action
-            )
-
-            is ConversationDetailViewAction.ArchiveMessage -> moveMessageToSystemFolder(
-                action.messageId, SystemLabelId.Archive, action
-            )
-
-            is ConversationDetailViewAction.MoveMessageToSpam -> moveMessageToSystemFolder(
-                action.messageId, SystemLabelId.Spam, action
-            )
-
-            is ConversationDetailViewAction.MoveMessageToInbox -> moveMessageToSystemFolder(
-                action.messageId, SystemLabelId.Inbox, action
-            )
+            is ConversationDetailViewAction.MoveMessage -> handleMoveMessage(action)
 
             is ConversationDetailViewAction.StarMessage -> handleStarMessage(action)
             is ConversationDetailViewAction.UnStarMessage -> handleUnStarMessage(action)
@@ -867,7 +856,7 @@ class ConversationDetailViewModel @Inject constructor(
             performSafeExitAction(
                 onLeft = ConversationDetailEvent.ErrorMovingConversation,
                 onRight = ConversationDetailEvent.ExitScreenWithMessage(
-                    ConversationDetailViewAction.Archive
+                    ConversationDetailViewAction.MoveToArchive
                 )
             ) { userId ->
                 moveConversation(userId, conversationId, SystemLabelId.Archive)
@@ -937,9 +926,9 @@ class ConversationDetailViewModel @Inject constructor(
 
     private fun onMoveToDestinationSelected(
         mailLabelId: MailLabelId,
-        mailLabelText: String,
+        mailLabelText: MailLabelText,
         entryPoint: MoveToBottomSheetEntryPoint
-    ) {
+    ) = viewModelScope.launch {
         when (entryPoint) {
             MoveToBottomSheetEntryPoint.Conversation ->
                 onConversationMoveToDestinationSelected(mailLabelId, mailLabelText)
@@ -949,12 +938,12 @@ class ConversationDetailViewModel @Inject constructor(
 
             else -> {
                 Timber.d("Unsupported entry point - $entryPoint")
-                return
+                return@launch
             }
         }
     }
 
-    private fun onConversationMoveToDestinationSelected(mailLabelId: MailLabelId, mailLabelText: String) {
+    private fun onConversationMoveToDestinationSelected(mailLabelId: MailLabelId, mailLabelText: MailLabelText) {
         viewModelScope.launch {
             when (state.value.bottomSheetState?.contentState) {
                 is MoveToBottomSheetState.Data -> {
@@ -974,24 +963,17 @@ class ConversationDetailViewModel @Inject constructor(
         }
     }
 
-    private fun onMessageMoveToDestinationSelected(
+    private suspend fun onMessageMoveToDestinationSelected(
         mailLabelId: MailLabelId,
-        mailLabelText: String,
+        mailLabelText: MailLabelText,
         messageId: MessageId
     ) {
-        primaryUserId.mapLatest { userId ->
-            val bottomSheetState = state.value.bottomSheetState?.contentState
-            if (bottomSheetState is MoveToBottomSheetState.Data) {
-                moveMessage(userId, messageId, mailLabelId.labelId).fold(
-                    ifLeft = { ConversationDetailEvent.ErrorMovingMessage },
-                    ifRight = { MoveToDestinationConfirmed(mailLabelText, messageId) }
-                )
-            } else {
-                ConversationDetailEvent.ErrorMovingMessage
-            }
-        }.onEach { event ->
-            emitNewStateFrom(event)
-        }.launchIn(viewModelScope)
+        val bottomSheetState = state.value.bottomSheetState?.contentState
+        if (bottomSheetState is MoveToBottomSheetState.Data) {
+            handleMoveMessage(mailLabelId, mailLabelText, messageId)
+        } else {
+            emitNewStateFrom(ConversationDetailEvent.ErrorMovingMessage)
+        }
     }
 
     private fun onExpandMessage(messageId: MessageIdUiModel) {
@@ -1273,12 +1255,44 @@ class ConversationDetailViewModel @Inject constructor(
         }
     }
 
-    private fun moveMessageToSystemFolder(
-        messageId: MessageId,
-        systemLabelId: SystemLabelId,
-        event: ConversationDetailViewAction
-    ) = viewModelScope.launch {
-        moveMessage(primaryUserId.first(), messageId, systemLabelId)
+    private fun handleMoveMessage(action: ConversationDetailViewAction.MoveMessage) = viewModelScope.launch {
+        val mailLabelId = when (action) {
+            is ConversationDetailViewAction.MoveMessage.CustomFolder -> MailLabelId.Custom.Folder(action.labelId)
+            is ConversationDetailViewAction.MoveMessage.System -> MailLabelId.System(action.labelId.labelId)
+        }
+
+        handleMoveMessage(mailLabelId = mailLabelId, mailLabelText = action.mailLabelText, messageId = action.messageId)
+    }
+
+    private suspend fun handleMoveMessage(
+        mailLabelId: MailLabelId,
+        mailLabelText: MailLabelText,
+        messageId: MessageId
+    ) {
+        val userId = primaryUserId.first()
+
+        val messagesInCurrentLocation = getMessagesInSameExclusiveLocation(
+            userId,
+            conversationId,
+            messageId,
+            mailLabelId.labelId
+        ).getOrElse {
+            Timber.d("Unable to determine the number of messages in the current location - $mailLabelId")
+            return emitNewStateFrom(ConversationDetailEvent.ErrorMovingMessage)
+        }
+
+        if (mailLabelId is MailLabelId.System) {
+            moveMessage(userId, messageId, SystemLabelId.enumOf(mailLabelId.labelId.id)).getOrNull()
+        } else {
+            moveMessage(userId, messageId, mailLabelId.labelId).getOrNull()
+        } ?: return emitNewStateFrom(ConversationDetailEvent.ErrorMovingMessage)
+
+        val event = if (messagesInCurrentLocation.size > 1) {
+            ConversationDetailEvent.MessageMoved(mailLabelText)
+        } else {
+            ConversationDetailEvent.LastMessageMoved(mailLabelText)
+        }
+
         emitNewStateFrom(event)
     }
 

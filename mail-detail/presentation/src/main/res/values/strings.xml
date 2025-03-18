@@ -45,6 +45,8 @@
     <string name="error_star_operation_failed">Add star operation failed. Please retry.</string>
     <string name="error_unstar_operation_failed">Remove star operation failed. Please retry.</string>
     <string name="error_move_to_trash_failed">Move to trash failed. Please retry.</string>
+    <string name="message_moved">Message moved</string>
+    <string name="message_moved_to">Message moved to %s</string>
     <string name="message_moved_to_trash">Message moved to Trash</string>
     <string name="message_moved_to_archive">Message moved to Archive</string>
     <string name="error_move_to_archive_failed">Move to archive failed. Please retry.</string>
