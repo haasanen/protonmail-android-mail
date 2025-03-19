@@ -18,13 +18,11 @@
 
 package ch.protonmail.android.mailmailbox.presentation.mailbox.model
 
-sealed interface UnreadFilterState {
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 
-    data class Data(
-        val numUnread: Int,
-        val isFilterEnabled: Boolean
-    ) : UnreadFilterState
-
-    data object Loading : UnreadFilterState
-}
-
+internal data class MailboxEmptyUiModel(
+    @DrawableRes val image: Int,
+    @StringRes val title: Int,
+    @StringRes val description: Int
+)

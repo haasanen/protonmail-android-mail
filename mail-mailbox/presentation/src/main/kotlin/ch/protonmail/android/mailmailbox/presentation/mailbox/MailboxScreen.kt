@@ -36,6 +36,7 @@ import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -45,8 +46,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
@@ -78,6 +81,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
@@ -109,6 +113,7 @@ import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyLargeWeak
 import ch.protonmail.android.design.compose.theme.bodyMediumWeak
 import ch.protonmail.android.design.compose.theme.titleLargeNorm
+import ch.protonmail.android.mailcommon.presentation.AdaptivePreviews
 import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
 import ch.protonmail.android.mailcommon.presentation.ConsumableTextEffect
 import ch.protonmail.android.mailcommon.presentation.NO_CONTENT_DESCRIPTION
@@ -120,10 +125,9 @@ import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcommon.presentation.model.string
 import ch.protonmail.android.mailcommon.presentation.ui.BottomActionBar
 import ch.protonmail.android.mailcommon.presentation.ui.delete.DeleteDialog
-import ch.protonmail.android.maillabel.domain.model.MailLabel
-import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.mailmailbox.domain.model.OpenMailboxItemRequest
 import ch.protonmail.android.mailmailbox.presentation.R
+import ch.protonmail.android.mailmailbox.presentation.mailbox.mapper.MailboxEmptyUiModelMapper
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxItemUiModel
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxListState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxSearchMode
@@ -720,7 +724,7 @@ private fun MailboxSwipeRefresh(
             is MailboxScreenState.Empty -> MailboxEmpty(
                 viewState,
                 unreadFilterState,
-                modifier.padding(bottom = topBarHeight)
+                topBarHeight
             )
 
             is MailboxScreenState.OfflineWithData -> {
@@ -735,9 +739,7 @@ private fun MailboxSwipeRefresh(
 
             is MailboxScreenState.NewSearch -> {}
 
-            is MailboxScreenState.SearchNoData -> SearchNoResult(
-                modifier = modifier.padding(bottom = topBarHeight)
-            )
+            is MailboxScreenState.SearchNoData -> SearchNoResult(topBarHeight)
 
             is MailboxScreenState.SearchLoading -> ProtonCenteredProgress(
                 modifier = Modifier.testTag(MailboxScreenTestTags.ListProgress)
@@ -876,7 +878,6 @@ private fun MailboxItemsList(
             }
         }
         item {
-
             when (viewState) {
                 is MailboxScreenState.AppendLoading -> ProtonCenteredProgress(
                     modifier = Modifier
@@ -1003,22 +1004,8 @@ private fun AppendError(
 
 
 @Composable
-private fun SearchNoResult(modifier: Modifier = Modifier) {
-
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(
-                ProtonDimens.Spacing.Huge
-            )
-            .scrollable(
-                rememberScrollableState(consumeScrollDelta = { 0f }),
-                orientation = Orientation.Vertical
-            ),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-
+private fun SearchNoResult(topBarHeight: Dp) {
+    MailboxStaticContent(topBarHeight = topBarHeight) {
         Image(
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
@@ -1049,7 +1036,6 @@ private fun SearchNoResult(modifier: Modifier = Modifier) {
             textAlign = TextAlign.Center,
             style = ProtonTheme.typography.bodyLargeWeak
         )
-
     }
 }
 
@@ -1077,63 +1063,15 @@ private fun MailboxError(modifier: Modifier = Modifier, errorMessage: String) {
 private fun MailboxEmpty(
     listState: MailboxListState.Data,
     unreadFilterState: UnreadFilterState,
-    modifier: Modifier = Modifier
+    topBarHeight: Dp
 ) {
-    val (illustration, title, description) =
-        if ((unreadFilterState as? UnreadFilterState.Data)?.isFilterEnabled == true) {
-            Triple(
-                R.drawable.illustration_empty_mailbox_unread,
-                R.string.mailbox_is_empty_no_unread_messages_title,
-                R.string.mailbox_is_empty_description
-            )
-        } else {
-            when (val currentMailLabelId = listState.currentMailLabel) {
-                is MailLabel.System -> {
-                    when (currentMailLabelId.systemLabelId) {
-                        SystemLabelId.Inbox -> Triple(
-                            R.drawable.illustration_empty_mailbox_no_messages,
-                            R.string.mailbox_is_empty_title,
-                            R.string.mailbox_is_empty_description
-                        )
+    val (illustration, title, description) = MailboxEmptyUiModelMapper
+        .toEmptyMailboxUiModel(unreadFilterState, listState)
 
-                        SystemLabelId.Spam -> Triple(
-                            R.drawable.illustration_empty_mailbox_spam,
-                            R.string.mailbox_is_empty_title,
-                            R.string.mailbox_is_empty_spam_description
-                        )
-
-                        SystemLabelId.Trash -> Triple(
-                            R.drawable.illustration_empty_mailbox_trash,
-                            R.string.trash_is_empty_title,
-                            R.string.mailbox_is_empty_trash_description
-                        )
-
-                        else -> Triple(
-                            R.drawable.illustration_empty_mailbox_folder,
-                            R.string.mailbox_is_empty_title,
-                            R.string.mailbox_is_empty_folder_description
-                        )
-                    }
-                }
-
-                else -> Triple(
-                    R.drawable.illustration_empty_mailbox_folder,
-                    R.string.mailbox_is_empty_title,
-                    R.string.mailbox_is_empty_folder_description
-                )
-
-            }
-        }
-    Column(
-        modifier = modifier
-            .testTag(MailboxScreenTestTags.MailboxEmptyRoot)
-            .fillMaxSize()
-            .scrollable(
-                rememberScrollableState(consumeScrollDelta = { 0f }),
-                orientation = Orientation.Vertical
-            ),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+    MailboxStaticContent(
+        modifier = Modifier
+            .testTag(MailboxScreenTestTags.MailboxEmptyRoot),
+        topBarHeight = topBarHeight
     ) {
         Image(
             modifier = Modifier.testTag(MailboxScreenTestTags.MailboxEmptyImage),
@@ -1155,6 +1093,37 @@ private fun MailboxEmpty(
             style = ProtonTheme.typography.bodyLargeWeak,
             textAlign = TextAlign.Center
         )
+    }
+}
+
+@Composable
+private fun MailboxStaticContent(
+    topBarHeight: Dp,
+    modifier: Modifier = Modifier,
+    content: @Composable ColumnScope.() -> Unit
+) {
+    val configuration = LocalConfiguration.current
+
+    val bottomPadding by remember {
+        derivedStateOf {
+            if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) 0.dp else topBarHeight
+        }
+    }
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(bottom = bottomPadding)
+    ) {
+        Column(
+            modifier = modifier
+                .fillMaxWidth()
+                .align(Alignment.Center)
+                .verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            content()
+        }
     }
 }
 
@@ -1296,7 +1265,8 @@ private fun MailboxEmptyTrashPreview() {
     ProtonTheme {
         MailboxEmpty(
             listState = MailboxStateSampleData.Trash.mailboxListState as MailboxListState.Data,
-            unreadFilterState = UnreadFilterState.Data(0, false)
+            unreadFilterState = UnreadFilterState.Data(0, false),
+            topBarHeight = 0.dp
         )
     }
 }
@@ -1307,19 +1277,22 @@ private fun MailboxUnreadFilterEmptyPreview() {
     ProtonTheme {
         MailboxEmpty(
             listState = MailboxStateSampleData.Inbox.mailboxListState as MailboxListState.Data,
-            unreadFilterState = UnreadFilterState.Data(0, true)
+            unreadFilterState = UnreadFilterState.Data(0, true),
+            topBarHeight = 0.dp
         )
     }
 }
 
 
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_NO, showBackground = true)
+@AdaptivePreviews
 @Composable
 private fun MailboxEmptyPreview() {
     ProtonTheme {
         MailboxEmpty(
             listState = MailboxStateSampleData.Inbox.mailboxListState as MailboxListState.Data,
-            unreadFilterState = UnreadFilterState.Data(0, false)
+            unreadFilterState = UnreadFilterState.Data(0, false),
+            topBarHeight = 0.dp
         )
     }
 }
@@ -1328,7 +1301,7 @@ private fun MailboxEmptyPreview() {
 @Composable
 private fun SearchNoResultPreview() {
     ProtonTheme {
-        SearchNoResult(modifier = Modifier.fillMaxSize())
+        SearchNoResult(topBarHeight = 0.dp)
     }
 }
 
