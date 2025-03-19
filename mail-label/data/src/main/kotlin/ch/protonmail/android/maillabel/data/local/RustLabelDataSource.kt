@@ -28,13 +28,10 @@ import ch.protonmail.android.maillabel.data.usecase.RustGetAllMailLabelId
 import ch.protonmail.android.maillabel.data.wrapper.SidebarWrapper
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.LabelType
@@ -52,77 +49,121 @@ class RustLabelDataSource @Inject constructor(
     @MailLabelRustCoroutineScope private val coroutineScope: CoroutineScope
 ) : LabelDataSource {
 
-    private val mutex = Mutex()
+    private suspend fun getRustSidebarInstance(userId: UserId): SidebarWrapper? {
+        val session = userSessionRepository.getUserSession(userId)
+        if (session == null) {
+            Timber.e("rust-label: trying to load labels with a null session")
+            return null
+        }
+        return createRustSidebar(session)
+    }
 
-    private val mutableSystemLabelsFlow = MutableStateFlow<List<SidebarSystemLabel>?>(null)
-    private val systemLabelsFlow: Flow<List<SidebarSystemLabel>> = mutableSystemLabelsFlow
-        .asStateFlow()
-        .filterNotNull()
+    override fun observeSystemLabels(userId: UserId): Flow<List<SidebarSystemLabel>> = callbackFlow {
+        Timber.v("rust-label: initializing system labels live query")
 
-    private val mutableMessageLabelsFlow = MutableStateFlow<List<SidebarCustomLabel>?>(null)
-    private val messageLabelsFlow: Flow<List<SidebarCustomLabel>> = mutableMessageLabelsFlow
-        .asStateFlow()
-        .filterNotNull()
-
-    private val mutableMessageFoldersFlow = MutableStateFlow<List<SidebarCustomFolder>?>(null)
-    private val messageFoldersFlow: Flow<List<SidebarCustomFolder>> = mutableMessageFoldersFlow
-        .asStateFlow()
-        .filterNotNull()
-
-    private var sidebarWithUserId: SidebarWithUserId? = null
-    private var systemLabelsWatchHandle: WatchHandle? = null
-    private var messageLabelsWatchHandle: WatchHandle? = null
-    private var messageFoldersWatchHandle: WatchHandle? = null
-
-    private val customLabelsUpdatedCallback = object : LiveQueryCallback {
-        override fun onUpdate() {
-            coroutineScope.launch {
-                mutableMessageLabelsFlow.value = sidebarWithUserId?.sidebar?.customLabels()?.getOrNull()
-                Timber.v("rust-label: message labels updated: ${mutableMessageLabelsFlow.value}")
+        val sidebar = getRustSidebarInstance(userId) ?: return@callbackFlow
+        var labelsWatchHandle: WatchHandle? = null
+        val labelsUpdatedCallback = object : LiveQueryCallback {
+            override fun onUpdate() {
+                coroutineScope.launch {
+                    sidebar.systemLabels().getOrNull()?.let {
+                        send(it)
+                        Timber.v("rust-label: system labels updated: $it")
+                    }
+                }
             }
         }
+
+        sidebar.watchLabels(LabelType.SYSTEM, labelsUpdatedCallback)
+            .onLeft {
+                close()
+                Timber.e("rust-label: failed to watch system labels! $it")
+            }
+            .onRight {
+                labelsWatchHandle = it
+                sidebar.systemLabels().getOrNull()?.let {
+                    send(it)
+                    Timber.v("rust-label: Setting initial value for system folders $it")
+                }
+            }
+
+        awaitClose {
+            labelsWatchHandle?.disconnect()
+            sidebar.destroy()
+            Timber.d("rust-label: system labels watcher disconnected")
+        }
     }
 
-    private val foldersUpdatedCallback = object : LiveQueryCallback {
-        override fun onUpdate() {
-            coroutineScope.launch {
-                mutableMessageFoldersFlow.value = sidebarWithUserId?.sidebar?.allCustomFolders()?.getOrNull()
-                Timber.v("rust-label: message folders updated: ${mutableMessageFoldersFlow.value}")
+    override fun observeMessageLabels(userId: UserId): Flow<List<SidebarCustomLabel>> = callbackFlow {
+        Timber.v("rust-label: initializing message labels live query")
+
+        val sidebar = getRustSidebarInstance(userId) ?: return@callbackFlow
+        var labelsWatchHandle: WatchHandle? = null
+        val labelsUpdatedCallback = object : LiveQueryCallback {
+            override fun onUpdate() {
+                coroutineScope.launch {
+                    sidebar.customLabels().getOrNull()?.let {
+                        send(it)
+                        Timber.v("rust-label: message labels updated: $it")
+                    }
+                }
             }
         }
+
+        sidebar.watchLabels(LabelType.LABEL, labelsUpdatedCallback)
+            .onLeft {
+                close()
+                Timber.e("rust-label: failed to watch message labels! $it")
+            }
+            .onRight {
+                labelsWatchHandle = it
+                sidebar.customLabels().getOrNull()?.let {
+                    send(it)
+                    Timber.v("rust-label: Setting initial value for message labels $it")
+                }
+            }
+
+        awaitClose {
+            labelsWatchHandle?.disconnect()
+            sidebar.destroy()
+            Timber.d("rust-label: message labels watcher disconnected")
+        }
     }
 
-    private val systemLabelsUpdatedCallback = object : LiveQueryCallback {
-        override fun onUpdate() {
-            coroutineScope.launch {
-                mutableSystemLabelsFlow.value = sidebarWithUserId?.sidebar?.systemLabels()?.getOrNull()
-                Timber.v("rust-label: system labels updated: ${mutableSystemLabelsFlow.value}")
+    override fun observeMessageFolders(userId: UserId): Flow<List<SidebarCustomFolder>> = callbackFlow {
+        Timber.v("rust-label: initializing message folders live query")
+
+        val sidebar = getRustSidebarInstance(userId) ?: return@callbackFlow
+        var labelsWatchHandle: WatchHandle? = null
+        val labelsUpdatedCallback = object : LiveQueryCallback {
+            override fun onUpdate() {
+                coroutineScope.launch {
+                    sidebar.allCustomFolders().getOrNull()?.let {
+                        send(it)
+                        Timber.v("rust-label: message folders updated: $it")
+                    }
+                }
             }
         }
-    }
 
-    override fun observeSystemLabels(userId: UserId): Flow<List<SidebarSystemLabel>> {
-        if (shouldInitSystemLabelWatcher(userId)) {
-            initSystemLabelsWatcher(userId)
+        sidebar.watchLabels(LabelType.FOLDER, labelsUpdatedCallback)
+            .onLeft {
+                close()
+                Timber.e("rust-label: failed to watch message folders! $it")
+            }
+            .onRight {
+                labelsWatchHandle = it
+                sidebar.allCustomFolders().getOrNull()?.let {
+                    send(it)
+                    Timber.v("rust-label: Setting initial value for message folders $it")
+                }
+            }
+
+        awaitClose {
+            labelsWatchHandle?.disconnect()
+            sidebar.destroy()
+            Timber.d("rust-label: message folders watcher disconnected")
         }
-
-        return systemLabelsFlow
-    }
-
-    override fun observeMessageLabels(userId: UserId): Flow<List<SidebarCustomLabel>> {
-        if (shouldInitMessageLabelsWatcher(userId)) {
-            initMessageLabelsWatcher(userId)
-        }
-
-        return messageLabelsFlow
-    }
-
-    override fun observeMessageFolders(userId: UserId): Flow<List<SidebarCustomFolder>> {
-        if (shouldInitMessageFoldersWatcher(userId)) {
-            initMessageFoldersWatcher(userId)
-        }
-
-        return messageFoldersFlow
     }
 
     override suspend fun getAllMailLabelId(userId: UserId): Either<DataError, LocalLabelId> {
@@ -133,112 +174,4 @@ class RustLabelDataSource @Inject constructor(
         }
         return rustGetAllMailLabelId(session)
     }
-
-    private fun shouldInitSystemLabelWatcher(userId: UserId) =
-        systemLabelsWatchHandle == null || sidebarWithUserId?.userId != userId
-
-    private fun shouldInitMessageLabelsWatcher(userId: UserId) =
-        messageLabelsWatchHandle == null || sidebarWithUserId?.userId != userId
-
-    private fun shouldInitMessageFoldersWatcher(userId: UserId) =
-        messageFoldersWatchHandle == null || sidebarWithUserId?.userId != userId
-
-    private fun initMessageLabelsWatcher(userId: UserId) {
-        coroutineScope.launch {
-            Timber.v("rust-label: initializing message labels live query")
-
-            val sidebar = getRustSidebarInstance(userId) ?: return@launch
-
-            sidebar.watchLabels(LabelType.LABEL, customLabelsUpdatedCallback)
-                .onLeft { Timber.e("rust-label: failed to watch labels! $it") }
-                .onRight { messageLabelsWatchHandle = it }
-
-            Timber.v("rust-label: Setting initial value for labels: ${sidebar.customLabels()}")
-            mutableMessageLabelsFlow.value = sidebar.customLabels().getOrNull()
-            Timber.d("rust-label: created message labels live query")
-        }
-    }
-
-    private fun initMessageFoldersWatcher(userId: UserId) {
-        coroutineScope.launch {
-            Timber.v("rust-label: initializing message folders live query")
-
-            val sidebar = getRustSidebarInstance(userId) ?: return@launch
-
-            sidebar.watchLabels(LabelType.FOLDER, foldersUpdatedCallback)
-                .onLeft { Timber.e("rust-label: failed to watch folders! $it") }
-                .onRight { messageFoldersWatchHandle = it }
-
-            Timber.v("rust-label: Setting initial value for folders: ${sidebar.allCustomFolders()}")
-            mutableMessageFoldersFlow.value = sidebar.allCustomFolders().getOrNull()
-            Timber.d("rust-label: created message folders live query")
-        }
-    }
-
-    private fun initSystemLabelsWatcher(userId: UserId) {
-        coroutineScope.launch {
-            Timber.v("rust-label: initializing system labels live query")
-
-            val sidebar = getRustSidebarInstance(userId) ?: return@launch
-
-            sidebar.watchLabels(LabelType.SYSTEM, systemLabelsUpdatedCallback)
-                .onLeft { Timber.e("rust-label: failed to watch system labels! $it") }
-                .onRight { systemLabelsWatchHandle = it }
-
-            Timber.v("rust-label: Setting initial value for system folders ${sidebar.systemLabels()}")
-            mutableSystemLabelsFlow.value = sidebar.systemLabels().getOrNull()
-            Timber.d("rust-label: created systemLabelsLiveQuery")
-        }
-    }
-
-    private suspend fun getRustSidebarInstance(userId: UserId): SidebarWrapper? = mutex.withLock {
-        if (shouldInitialiseSidebar(userId)) {
-            destroySidebarAndWatchers()
-
-            val session = userSessionRepository.getUserSession(userId)
-            if (session == null) {
-                Timber.e("rust-label: trying to load labels with a null session")
-                return null
-            }
-            sidebarWithUserId = createRustSidebar(session).withUserId(userId)
-        }
-
-        return sidebarWithUserId?.sidebar
-    }
-
-    private fun shouldInitialiseSidebar(userId: UserId) =
-        sidebarWithUserId == null || sidebarWithUserId?.userId != userId
-
-    private fun destroySidebarAndWatchers() {
-        sidebarWithUserId?.sidebar?.destroy()
-        sidebarWithUserId = null
-        destroySystemLabelsWatcher()
-        destroyMessageLabelsWatcher()
-        destroyMessageFoldersWatcher()
-    }
-
-    private fun destroySystemLabelsWatcher() {
-        Timber.v("rust-label: destroySystemLabelsLiveQuery")
-        systemLabelsWatchHandle?.destroy()
-        systemLabelsWatchHandle = null
-    }
-
-    private fun destroyMessageLabelsWatcher() {
-        Timber.v("rust-label: label: destroyMessageLabelsLiveQuery")
-        messageLabelsWatchHandle?.destroy()
-        messageLabelsWatchHandle = null
-    }
-
-    private fun destroyMessageFoldersWatcher() {
-        Timber.v("rust-label: label: destroyMessageFoldersLiveQuery")
-        messageFoldersWatchHandle?.destroy()
-        messageFoldersWatchHandle = null
-    }
-
-    private fun SidebarWrapper.withUserId(userId: UserId) = SidebarWithUserId(userId, this)
-
-    private data class SidebarWithUserId(
-        val userId: UserId,
-        val sidebar: SidebarWrapper
-    )
 }

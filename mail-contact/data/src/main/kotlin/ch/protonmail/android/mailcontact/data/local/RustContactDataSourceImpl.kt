@@ -32,23 +32,16 @@ import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import ch.protonmail.android.mailcontact.domain.model.GetContactError
 import ch.protonmail.android.mailcontact.domain.model.GroupedContacts
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
-import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.emitAll
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.transformLatest
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
 import me.proton.core.domain.entity.UserId
 import timber.log.Timber
 import uniffi.proton_mail_uniffi.ContactsLiveQueryCallback
 import uniffi.proton_mail_uniffi.VoidActionResult
-import uniffi.proton_mail_uniffi.WatchedContactList
 import javax.inject.Inject
 
 class RustContactDataSourceImpl @Inject constructor(
@@ -58,23 +51,6 @@ class RustContactDataSourceImpl @Inject constructor(
     private val rustDeleteContact: RustDeleteContact,
     @ContactRustCoroutineScope private val coroutineScope: CoroutineScope
 ) : RustContactDataSource {
-
-    private var contactListWatcher: WatchedContactList? = null
-    private val mutex = Mutex()
-    private val contactListMutableStatusFlow = MutableStateFlow<List<GroupedContacts>>(emptyList())
-    private val contactListStatusFlow: Flow<List<GroupedContacts>> = contactListMutableStatusFlow
-        .asStateFlow()
-
-    private val contactListUpdatedCallback = object : ContactsLiveQueryCallback {
-        override fun onUpdate(contacts: List<LocalGroupedContacts>) {
-            Timber.d("rust-contact-data-source: contact list updated")
-            coroutineScope.launch {
-                mutex.withLock {
-                    contactListMutableStatusFlow.value = contacts.map { groupedContactsMapper.toGroupedContacts(it) }
-                }
-            }
-        }
-    }
 
     override fun observeAllContacts(userId: UserId): Flow<Either<GetContactError, List<ContactMetadata>>> {
         return observeAllGroupedContacts(userId).transformLatest {
@@ -94,29 +70,39 @@ class RustContactDataSourceImpl @Inject constructor(
     }
 
     override fun observeAllGroupedContacts(userId: UserId): Flow<Either<GetContactError, List<GroupedContacts>>> =
-        flow {
+        callbackFlow {
             val session = userSessionRepository.getUserSession(userId)
             if (session == null) {
-                emit(GetContactError.left())
-            } else {
-                initialiseOrUpdateContactListWatcher(session)
-                emitAll(contactListStatusFlow.map { it.right() })
+                Timber.e("rust-contact-data-source: trying to load contacts with a null session")
+                close()
+                return@callbackFlow
             }
-        }
 
-    private suspend fun initialiseOrUpdateContactListWatcher(session: MailUserSessionWrapper) {
-        mutex.withLock {
-            if (contactListWatcher == null) {
-                contactListWatcher = createRustContactWatcher(session, contactListUpdatedCallback).getOrNull()
-                contactListWatcher?.let {
-                    contactListMutableStatusFlow.value = it.contactList.map { groupedContacts ->
-                        groupedContactsMapper.toGroupedContacts(groupedContacts)
+            val contactListUpdatedCallback = object : ContactsLiveQueryCallback {
+                override fun onUpdate(contacts: List<LocalGroupedContacts>) {
+                    coroutineScope.launch {
+                        Timber.d("rust-contact-data-source: contact list updated")
+                        send(contacts.map { groupedContactsMapper.toGroupedContacts(it) }.right())
                     }
-                    Timber.d("rust-contact-data-source: contact watcher created")
                 }
             }
+
+            val contactListWatcher = createRustContactWatcher(session, contactListUpdatedCallback)
+                .onLeft {
+                    close()
+                    Timber.e("rust-contact-data-source: failed creating contact watcher $it")
+                }
+                .onRight {
+                    send(it.contactList.map { groupedContactsMapper.toGroupedContacts(it) }.right())
+                    Timber.d("rust-contact-data-source: contact watcher created")
+                }
+
+            awaitClose {
+                contactListWatcher.getOrNull()?.handle?.disconnect()
+                contactListWatcher.getOrNull()?.destroy()
+                Timber.d("rust-contact-data-source: contact watcher disconnected")
+            }
         }
-    }
 
     override suspend fun deleteContact(userId: UserId, contactId: LocalContactId): Either<DataError.Local, Unit> {
         val session = userSessionRepository.getUserSession(userId)
@@ -130,8 +116,8 @@ class RustContactDataSourceImpl @Inject constructor(
                 Timber.e("rust-contact: Failed to delete contact")
                 return DataError.Local.Unknown.left()
             }
+
             VoidActionResult.Ok -> Unit.right()
         }
     }
-
 }

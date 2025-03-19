@@ -25,15 +25,14 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.shareIn
-import kotlinx.coroutines.launch
 import me.proton.android.core.account.data.qualifier.QueryWatcherCoroutineScope
 import me.proton.android.core.account.domain.usecase.ObserveCoreSessions
 import me.proton.android.core.account.domain.usecase.ObserveStoredAccounts
 import uniffi.proton_mail_uniffi.LiveQueryCallback
 import uniffi.proton_mail_uniffi.MailSession
-import uniffi.proton_mail_uniffi.MailSessionGetAccountsResult
 import uniffi.proton_mail_uniffi.MailSessionWatchAccountsResult
 import uniffi.proton_mail_uniffi.StoredAccount
+import uniffi.proton_mail_uniffi.WatchedAccounts
 import javax.inject.Inject
 
 class ObserveStoredAccountsImpl @Inject constructor(
@@ -56,31 +55,24 @@ class ObserveStoredAccountsImpl @Inject constructor(
     override fun invoke(): Flow<List<StoredAccount>> = storedAccountsWithSessionStateFlow
 
     private fun accountsFlow(): Flow<List<StoredAccount>> = callbackFlow {
-        val watchedStoredAccounts = mailSession.watchAccounts(
-            object : LiveQueryCallback {
-                override fun onUpdate() {
-                    launch {
-                        when (val accountsResult = mailSession.getAccounts()) {
-                            is MailSessionGetAccountsResult.Error -> send(emptyList())
-                            is MailSessionGetAccountsResult.Ok -> send(accountsResult.v1)
-                        }
-
-                    }
-                }
+        var watchedAccounts: WatchedAccounts? = null
+        val callback = object : LiveQueryCallback {
+            override fun onUpdate() {
+                trySend(watchedAccounts?.accounts.orEmpty())
             }
-        )
-
-        when (watchedStoredAccounts) {
+        }
+        when (val watchResult = mailSession.watchAccounts(callback)) {
             is MailSessionWatchAccountsResult.Error -> {
-                send(emptyList())
                 close()
             }
             is MailSessionWatchAccountsResult.Ok -> {
-                send(watchedStoredAccounts.v1.accounts)
+                watchedAccounts = watchResult.v1
+
+                send(watchResult.v1.accounts)
 
                 awaitClose {
-                    watchedStoredAccounts.v1.handle.disconnect()
-                    watchedStoredAccounts.destroy()
+                    watchResult.v1.handle.disconnect()
+                    watchResult.destroy()
                 }
             }
         }
