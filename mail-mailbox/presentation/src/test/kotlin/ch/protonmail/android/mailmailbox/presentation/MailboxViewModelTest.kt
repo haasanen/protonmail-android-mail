@@ -110,6 +110,7 @@ import ch.protonmail.android.mailmessage.domain.model.MoveToItemId
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
 import ch.protonmail.android.mailmessage.domain.usecase.DeleteMessages
 import ch.protonmail.android.mailmessage.domain.usecase.DeleteSearchResults
+import ch.protonmail.android.mailmessage.domain.usecase.HandleAvatarImageLoadingFailure
 import ch.protonmail.android.mailmessage.domain.usecase.LabelMessages
 import ch.protonmail.android.mailmessage.domain.usecase.LoadAvatarImage
 import ch.protonmail.android.mailmessage.domain.usecase.MarkMessagesAsRead
@@ -305,6 +306,10 @@ class MailboxViewModelTest {
         every { this@mockk.invoke(any(), any()) } returns Unit
     }
 
+    private val handleAvatarImageLoadingFailure = mockk<HandleAvatarImageLoadingFailure> {
+        every { this@mockk.invoke(any(), any()) } returns Unit
+    }
+
     private val observeAvatarImageStates = mockk<ObserveAvatarImageStates> {
         every { this@mockk() } returns flowOf()
     }
@@ -359,6 +364,7 @@ class MailboxViewModelTest {
             recordRatingBoosterTriggered = recordRatingBoosterTriggered,
             findLocalSystemLabelId = findLocalSystemLabelId,
             loadAvatarImage = loadAvatarImage,
+            handleAvatarImageLoadingFailure = handleAvatarImageLoadingFailure,
             observeAvatarImageStates = observeAvatarImageStates,
             observePrimaryAccountAvatarItem = observePrimaryAccountAvatarItem,
             isAutoDeleteTrashAndSpamEnabled = isAutoDeleteTrashAndSpamEnabled
@@ -3834,6 +3840,35 @@ class MailboxViewModelTest {
         // Then
         verify {
             loadAvatarImage.invoke(
+                address = address,
+                bimiSelector = bimiSelector
+            )
+        }
+    }
+
+    @Test
+    fun `should handle avatar image loading failure`() = runTest {
+        // Given
+        val address = "user@example.com"
+        val bimiSelector = "selector"
+        val mailboxItem = mockk<MailboxItemUiModel> {
+            every { avatar } returns AvatarUiModel.ParticipantAvatar(
+                address = address,
+                bimiSelector = bimiSelector,
+                initial = "U",
+                color = androidx.compose.ui.graphics.Color.Red,
+                selected = false
+            )
+        }
+
+        val mailboxAction = MailboxViewAction.OnAvatarImageLoadFailed(mailboxItem)
+
+        // When
+        mailboxViewModel.submit(mailboxAction)
+
+        // Then
+        verify {
+            handleAvatarImageLoadingFailure.invoke(
                 address = address,
                 bimiSelector = bimiSelector
             )

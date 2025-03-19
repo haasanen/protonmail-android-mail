@@ -76,6 +76,10 @@ internal sealed interface MailboxViewAction : MailboxOperation {
         val item: MailboxItemUiModel
     ) : MailboxViewAction
 
+    data class OnAvatarImageLoadFailed(
+        val item: MailboxItemUiModel
+    ) : MailboxViewAction
+
     data class MailboxItemsChanged(
         val itemIds: List<String>
     ) : MailboxViewAction

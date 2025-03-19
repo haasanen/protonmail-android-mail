@@ -171,4 +171,62 @@ class InMemoryAvatarImageStateRepositoryImplTest {
         val state = repository.getAvatarImageState(address)
         assertEquals(AvatarImageState.Data(mockFile), state)
     }
+
+    @Test
+    fun `should retry image loading after failure`() = runTest {
+        // Given
+        val address = "user7@example.com"
+        coEvery { getSenderImage(address, null) } returns null
+
+        // When: First attempt fails
+        repository.loadImage(address, null)
+        advanceUntilIdle()
+
+        // Then
+        assertEquals(AvatarImageState.NoImageAvailable, repository.getAvatarImageState(address))
+        coVerify(exactly = 1) { getSenderImage(address, null) }
+
+        // When: Retry with a valid image
+        val mockFile = mockk<File> {
+            every { exists() } returns true
+            every { length() } returns 1024L
+        }
+        val senderImage = mockk<SenderImage> {
+            every { imageFile } returns mockFile
+        }
+        coEvery { getSenderImage(address, null) } returns senderImage
+
+        repository.handleLoadingFailure(address, null)
+        advanceUntilIdle()
+
+        // Then
+        assertEquals(AvatarImageState.Data(mockFile), repository.getAvatarImageState(address))
+        coVerify(exactly = 2) { getSenderImage(address, null) } // Ensures retry happened
+    }
+
+    @Test
+    fun `should update state after removing and reloading`() = runTest {
+        // Given
+        val address = "user11@example.com"
+        val mockFile = mockk<File> {
+            every { exists() } returns true
+            every { length() } returns 1024L
+        }
+        val senderImage = mockk<SenderImage> {
+            every { imageFile } returns mockFile
+        }
+        coEvery { getSenderImage(address, null) } returns senderImage
+
+        // When: Load the image
+        repository.loadImage(address, null)
+        advanceUntilIdle()
+        assertEquals(AvatarImageState.Data(mockFile), repository.getAvatarImageState(address))
+
+        // Remove and reload
+        repository.handleLoadingFailure(address, null)
+        advanceUntilIdle()
+
+        // Then
+        assertEquals(AvatarImageState.Data(mockFile), repository.getAvatarImageState(address))
+    }
 }

@@ -16,15 +16,16 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailmessage.domain.repository
+package ch.protonmail.android.mailmessage.domain.usecase
 
-import ch.protonmail.android.mailmessage.domain.model.AvatarImageState
-import ch.protonmail.android.mailmessage.domain.model.AvatarImageStates
-import kotlinx.coroutines.flow.Flow
+import ch.protonmail.android.mailmessage.domain.repository.InMemoryAvatarImageStateRepository
+import javax.inject.Inject
 
-interface InMemoryAvatarImageStateRepository {
-    fun handleLoadingFailure(address: String, bimiSelector: String?)
-    fun loadImage(address: String, bimiSelector: String?)
-    fun getAvatarImageState(address: String): AvatarImageState
-    fun observeAvatarImageStates(): Flow<AvatarImageStates>
+class HandleAvatarImageLoadingFailure @Inject constructor(
+    private val inMemoryAvatarImageStateRepository: InMemoryAvatarImageStateRepository
+) {
+
+    operator fun invoke(address: String, bimiSelector: String?) {
+        inMemoryAvatarImageStateRepository.handleLoadingFailure(address, bimiSelector)
+    }
 }

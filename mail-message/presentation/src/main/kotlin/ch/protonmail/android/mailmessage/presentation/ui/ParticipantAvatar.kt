@@ -18,7 +18,6 @@
 
 package ch.protonmail.android.mailmessage.presentation.ui
 
-import android.net.Uri
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -144,7 +143,7 @@ fun ParticipantAvatarNotSelected(
     }
 
     when (avatarImageUiModel) {
-        is AvatarImageUiModel.Data -> SenderImageAvatar(avatarImageUiModel.imageFile.toUri(), avatarSize)
+        is AvatarImageUiModel.Data -> SenderImageAvatar(avatarImageUiModel, avatarSize, actions)
         is AvatarImageUiModel.NoImageAvailable -> SenderInitialsAvatar(
             initials = avatarUiModel.initial,
             modifier = Modifier
@@ -191,14 +190,22 @@ fun ParticipantAvatarSelected(
 }
 
 @Composable
-private fun SenderImageAvatar(imageUri: Uri, avatarSize: Dp) {
+private fun SenderImageAvatar(
+    avatarImageUiModel: AvatarImageUiModel.Data,
+    avatarSize: Dp,
+    actions: ParticipantAvatar.Actions
+) {
     val context = LocalContext.current
 
     // If we do not provide our own cache key, Coil will make disk IO to access File to create a cache key
-    val imageRequest = remember(imageUri) {
+    val imageUri = avatarImageUiModel.imageFile.toUri()
+    val imageRequest = remember(avatarImageUiModel) {
         ImageRequest.Builder(context)
             .data(imageUri)
             .memoryCacheKey(imageUri.toString())
+            .listener(
+                onError = { _, _ -> actions.onAvatarImageLoadFailed() }
+            )
             .build()
     }
     AsyncImage(
@@ -231,14 +238,16 @@ private fun SenderInitialsAvatar(initials: String, modifier: Modifier) {
 object ParticipantAvatar {
     data class Actions(
         val onAvatarClicked: () -> Unit,
-        val onAvatarImageLoadRequested: (AvatarUiModel) -> Unit
+        val onAvatarImageLoadRequested: (AvatarUiModel) -> Unit,
+        val onAvatarImageLoadFailed: () -> Unit
     ) {
 
         companion object {
 
             val Empty = Actions(
                 onAvatarClicked = {},
-                onAvatarImageLoadRequested = { }
+                onAvatarImageLoadRequested = {},
+                onAvatarImageLoadFailed = {}
             )
         }
     }

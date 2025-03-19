@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.mailmessage.data.repository
 
+import java.io.File
 import java.util.concurrent.ConcurrentHashMap
 import ch.protonmail.android.mailmessage.domain.model.AvatarImageState
 import ch.protonmail.android.mailmessage.data.ImageLoaderCoroutineScope
@@ -27,6 +28,7 @@ import ch.protonmail.android.mailmessage.domain.usecase.GetSenderImage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -36,11 +38,11 @@ class InMemoryAvatarImageStateRepositoryImpl @Inject constructor(
 ) : InMemoryAvatarImageStateRepository {
 
     private val avatarImageStateMap = ConcurrentHashMap<String, MutableStateFlow<AvatarImageState>>()
-
     private val allStatesFlow = MutableStateFlow(AvatarImageStates(emptyMap()))
 
     override fun loadImage(address: String, bimiSelector: String?) {
-        val stateFlow = avatarImageStateMap.getOrPut(address) {
+
+        val stateFlow = avatarImageStateMap.computeIfAbsent(address) {
             MutableStateFlow(AvatarImageState.NotLoaded)
         }
 
@@ -52,12 +54,10 @@ class InMemoryAvatarImageStateRepositoryImpl @Inject constructor(
         stateFlow.value = AvatarImageState.Loading
 
         coroutineScope.launch {
-            val senderImage = getSenderImage(address, null) // Assuming no bimiSelector for simplicity
 
-            val newState = if (senderImage != null &&
-                senderImage.imageFile.exists() &&
-                senderImage.imageFile.length() > 0
-            ) {
+
+            val senderImage = getSenderImage(address, null)
+            val newState = if (senderImage?.imageFile?.existsWithNonZeroLength() == true) {
                 AvatarImageState.Data(senderImage.imageFile)
             } else {
                 AvatarImageState.NoImageAvailable
@@ -65,9 +65,9 @@ class InMemoryAvatarImageStateRepositoryImpl @Inject constructor(
 
             stateFlow.value = newState
 
-            // Update all states atomically
-            synchronized(allStatesFlow) {
-                updateAllStates()
+            // Atomic update of all states
+            allStatesFlow.update { current ->
+                current.copy(states = avatarImageStateMap.mapValues { it.value.value })
             }
         }
     }
@@ -77,9 +77,17 @@ class InMemoryAvatarImageStateRepositoryImpl @Inject constructor(
 
     override fun observeAvatarImageStates(): Flow<AvatarImageStates> = allStatesFlow
 
-    private fun updateAllStates() {
-        val currentStates = avatarImageStateMap.mapValues { it.value.value }
-        allStatesFlow.value = AvatarImageStates(currentStates)
+    override fun handleLoadingFailure(address: String, bimiSelector: String?) {
+        avatarImageStateMap.remove(address)?.let { state ->
+            allStatesFlow.update { current ->
+                current.copy(states = avatarImageStateMap.mapValues { it.value.value })
+            }
+        }
+
+        // Retry loading the image
+        loadImage(address, bimiSelector)
     }
+
+    private fun File.existsWithNonZeroLength() = exists() && length() > 0
 }
 

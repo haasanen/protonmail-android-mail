@@ -211,6 +211,7 @@ fun MailboxScreen(
         onAccountAvatarClicked = { viewModel.submit(MailboxViewAction.RequestManageAccountsBottomSheet) },
         onAvatarClicked = { viewModel.submit(MailboxViewAction.OnItemAvatarClicked(it)) },
         onAvatarImageLoadRequested = { viewModel.submit(MailboxViewAction.OnAvatarImageLoadRequested(it)) },
+        onAvatarImageLoadFailed = { viewModel.submit(MailboxViewAction.OnAvatarImageLoadFailed(it)) },
         onStarClicked = { item ->
             viewModel.submit(MailboxViewAction.StarAction(item.id, item.isStarred))
         },
@@ -772,6 +773,7 @@ private fun MailboxItemsList(
         onItemLongClicked = actions.onItemLongClicked,
         onAvatarClicked = actions.onAvatarClicked,
         onAvatarImageLoadRequested = actions.onAvatarImageLoadRequested,
+        onAvatarImageLoadFailed = actions.onAvatarImageLoadFailed,
         onStarClicked = actions.onStarClicked
     )
 
@@ -1141,6 +1143,7 @@ object MailboxScreen {
         val onItemLongClicked: (MailboxItemUiModel) -> Unit,
         val onAvatarClicked: (MailboxItemUiModel) -> Unit,
         val onAvatarImageLoadRequested: (MailboxItemUiModel) -> Unit,
+        val onAvatarImageLoadFailed: (MailboxItemUiModel) -> Unit,
         val onStarClicked: (MailboxItemUiModel) -> Unit,
         val onRefreshList: () -> Unit,
         val onRefreshListCompleted: () -> Unit,
@@ -1197,6 +1200,7 @@ object MailboxScreen {
                 onItemLongClicked = {},
                 onAvatarClicked = {},
                 onAvatarImageLoadRequested = {},
+                onAvatarImageLoadFailed = {},
                 onStarClicked = {},
                 onRefreshList = {},
                 onRefreshListCompleted = {},

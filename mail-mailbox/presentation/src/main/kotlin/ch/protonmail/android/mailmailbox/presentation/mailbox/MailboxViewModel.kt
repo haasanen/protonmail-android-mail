@@ -108,6 +108,7 @@ import ch.protonmail.android.mailmessage.domain.model.MoveToItemId
 import ch.protonmail.android.mailmessage.domain.model.UnreadCounter
 import ch.protonmail.android.mailmessage.domain.usecase.DeleteMessages
 import ch.protonmail.android.mailmessage.domain.usecase.DeleteSearchResults
+import ch.protonmail.android.mailmessage.domain.usecase.HandleAvatarImageLoadingFailure
 import ch.protonmail.android.mailmessage.domain.usecase.LoadAvatarImage
 import ch.protonmail.android.mailmessage.domain.usecase.LabelMessages
 import ch.protonmail.android.mailmessage.domain.usecase.MarkMessagesAsRead
@@ -202,6 +203,7 @@ class MailboxViewModel @Inject constructor(
     private val recordRatingBoosterTriggered: RecordRatingBoosterTriggered,
     private val findLocalSystemLabelId: FindLocalSystemLabelId,
     private val loadAvatarImage: LoadAvatarImage,
+    private val handleAvatarImageLoadingFailure: HandleAvatarImageLoadingFailure,
     private val observeAvatarImageStates: ObserveAvatarImageStates,
     private val observePrimaryAccountAvatarItem: ObservePrimaryAccountAvatarItem,
     private val isAutoDeleteTrashAndSpamEnabled: IsAutoDeleteSpamAndTrashEnabled
@@ -381,6 +383,7 @@ class MailboxViewModel @Inject constructor(
                 is MailboxViewAction.MailboxItemsChanged -> handleMailboxItemChanged(viewAction.itemIds)
                 is MailboxViewAction.OnItemAvatarClicked -> handleOnAvatarClicked(viewAction.item)
                 is MailboxViewAction.OnAvatarImageLoadRequested -> handleOnAvatarImageLoadRequested(viewAction.item)
+                is MailboxViewAction.OnAvatarImageLoadFailed -> handleOnAvatarImageLoadFailed(viewAction.item)
                 is MailboxViewAction.OnItemLongClicked -> handleItemLongClick(viewAction.item)
                 is MailboxViewAction.Refresh -> emitNewStateFrom(viewAction)
                 is MailboxViewAction.RefreshCompleted -> emitNewStateFrom(viewAction)
@@ -559,6 +562,14 @@ class MailboxViewModel @Inject constructor(
         (item.avatar as? AvatarUiModel.ParticipantAvatar)?.let { avatar ->
             viewModelScope.launch {
                 loadAvatarImage(avatar.address, avatar.bimiSelector)
+            }
+        }
+    }
+
+    private fun handleOnAvatarImageLoadFailed(item: MailboxItemUiModel) {
+        (item.avatar as? AvatarUiModel.ParticipantAvatar)?.let { avatar ->
+            viewModelScope.launch {
+                handleAvatarImageLoadingFailure(avatar.address, avatar.bimiSelector)
             }
         }
     }

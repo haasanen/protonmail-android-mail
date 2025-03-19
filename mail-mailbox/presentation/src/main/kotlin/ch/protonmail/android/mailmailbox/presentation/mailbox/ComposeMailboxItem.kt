@@ -120,7 +120,8 @@ fun MailboxItem(
             val iconColor = if (item.isRead) ProtonTheme.colors.iconWeak else ProtonTheme.colors.iconNorm
             val avatarActions = ParticipantAvatar.Actions(
                 onAvatarClicked = { actions.onAvatarClicked(item) },
-                onAvatarImageLoadRequested = { actions.onAvatarImageLoadRequested(item) }
+                onAvatarImageLoadRequested = { actions.onAvatarImageLoadRequested(item) },
+                onAvatarImageLoadFailed = { actions.onAvatarImageLoadFailed(item) }
             )
 
             ParticipantAvatar(
@@ -423,6 +424,7 @@ object ComposeMailboxItem {
         val onItemLongClicked: (MailboxItemUiModel) -> Unit,
         val onAvatarClicked: (MailboxItemUiModel) -> Unit,
         val onAvatarImageLoadRequested: (MailboxItemUiModel) -> Unit,
+        val onAvatarImageLoadFailed: (MailboxItemUiModel) -> Unit,
         val onStarClicked: (MailboxItemUiModel) -> Unit
     ) {
 
@@ -431,6 +433,7 @@ object ComposeMailboxItem {
             val Empty = Actions(
                 onAvatarClicked = {},
                 onAvatarImageLoadRequested = {},
+                onAvatarImageLoadFailed = {},
                 onItemLongClicked = {},
                 onItemClicked = {},
                 onStarClicked = {}

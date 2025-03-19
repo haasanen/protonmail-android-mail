@@ -132,7 +132,8 @@ private fun MessageDetailHeaderLayout(
                 avatarImageUiModel = uiModel.avatarImage,
                 actions = ParticipantAvatar.Actions(
                     onAvatarClicked = { actions.onAvatarClicked(uiModel.sender, uiModel.avatar) },
-                    onAvatarImageLoadRequested = { actions.onAvatarImageLoadRequested(it) }
+                    onAvatarImageLoadRequested = { actions.onAvatarImageLoadRequested(it) },
+                    onAvatarImageLoadFailed = { }
                 )
             )
 
@@ -596,6 +597,7 @@ object MessageDetailHeader {
         val onMore: (MessageId) -> Unit,
         val onAvatarClicked: (ParticipantUiModel, AvatarUiModel) -> Unit,
         val onAvatarImageLoadRequested: (AvatarUiModel) -> Unit,
+        val onAvatarImageLoadFailed: () -> Unit,
         val onParticipantClicked: (ParticipantUiModel, AvatarUiModel?) -> Unit
     ) {
 
@@ -609,6 +611,7 @@ object MessageDetailHeader {
                 onMore = {},
                 onAvatarClicked = { _, _ -> },
                 onAvatarImageLoadRequested = { },
+                onAvatarImageLoadFailed = { },
                 onParticipantClicked = { _, _ -> }
             )
         }
