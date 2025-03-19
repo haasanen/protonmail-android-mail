@@ -65,7 +65,7 @@ private fun LazyListScope.sidebarCustomLabelItems(
     items: List<MailLabelUiModel.Custom>,
     onLabelAction: (SidebarLabelAction) -> Unit
 ) {
-    items(items = items.filter { it.isVisible }, key = { it.id.labelId.id }) {
+    items(items = items.filter { it.isVisible }, key = { it.id.labelId.id.plus(type) }) {
         SidebarCustomLabel(it, onLabelAction)
     }
     item {
