@@ -176,7 +176,7 @@ internal class MailboxEmptyUiModelMapperTest {
         )
 
         val expectedEmptyDefaultModel = MailboxEmptyUiModel(
-            R.drawable.illustration_empty_mailbox_folder,
+            R.drawable.illustration_empty_mailbox_no_messages,
             R.string.mailbox_is_empty_title,
             R.string.mailbox_is_empty_folder_description
         )
