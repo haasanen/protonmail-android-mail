@@ -46,7 +46,7 @@ class MailUserSessionWrapper(private val userSession: MailUserSession) {
         address,
         bimi,
         true,
-        null,
+        128u,
         null,
         "png"
     )
