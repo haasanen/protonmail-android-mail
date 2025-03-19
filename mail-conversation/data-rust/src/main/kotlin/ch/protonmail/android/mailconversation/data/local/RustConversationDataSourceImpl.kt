@@ -34,7 +34,6 @@ import ch.protonmail.android.mailmessage.data.model.LocalConversationMessages
 import ch.protonmail.android.mailmessage.data.wrapper.MailboxWrapper
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.mailsession.data.usecase.ExecuteWithUserSession
-import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
 import kotlinx.coroutines.flow.Flow
 import me.proton.core.domain.entity.UserId
@@ -48,7 +47,6 @@ import uniffi.proton_mail_uniffi.starConversations as rustStarConversation
 import uniffi.proton_mail_uniffi.unstarConversations as rustUnstarConversation
 
 class RustConversationDataSourceImpl @Inject constructor(
-    private val userSessionRepository: UserSessionRepository,
     private val rustMailboxFactory: RustMailboxFactory,
     private val rustMoveConversations: RustMoveConversations,
     private val rustLabelConversations: RustLabelConversations,

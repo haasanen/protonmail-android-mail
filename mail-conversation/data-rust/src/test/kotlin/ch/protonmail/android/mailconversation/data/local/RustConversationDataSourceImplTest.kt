@@ -88,7 +88,6 @@ class RustConversationDataSourceImplTest {
 
 
     private val dataSource = RustConversationDataSourceImpl(
-        sessionManager,
         rustMailboxFactory,
         rustMoveConversations,
         rustLabelConversations,
