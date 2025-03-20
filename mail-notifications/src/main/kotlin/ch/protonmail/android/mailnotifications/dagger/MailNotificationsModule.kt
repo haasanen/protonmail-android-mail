@@ -23,17 +23,19 @@ import androidx.core.app.NotificationManagerCompat
 import ch.protonmail.android.mailnotifications.data.local.NotificationTokenLocalDataSource
 import ch.protonmail.android.mailnotifications.data.local.NotificationTokenLocalDataSourceImpl
 import ch.protonmail.android.mailnotifications.data.local.NotificationTokenPreferences
+import ch.protonmail.android.mailnotifications.data.local.NotificationsPermissionLocalDataSource
+import ch.protonmail.android.mailnotifications.data.local.NotificationsPermissionLocalDataSourceImpl
 import ch.protonmail.android.mailnotifications.data.local.fcm.FcmTokenPreferencesImpl
 import ch.protonmail.android.mailnotifications.data.remote.NotificationTokenRemoteDataSource
 import ch.protonmail.android.mailnotifications.data.remote.NotificationTokenRemoteDataSourceImpl
 import ch.protonmail.android.mailnotifications.data.repository.NotificationTokenRepository
 import ch.protonmail.android.mailnotifications.data.repository.NotificationTokenRepositoryImpl
+import ch.protonmail.android.mailnotifications.data.repository.NotificationsPermissionRepository
+import ch.protonmail.android.mailnotifications.data.repository.NotificationsPermissionRepositoryImpl
 import ch.protonmail.android.mailnotifications.domain.handler.AccountStateAwareNotificationHandler
 import ch.protonmail.android.mailnotifications.domain.handler.NotificationHandler
 import ch.protonmail.android.mailnotifications.domain.proxy.NotificationManagerCompatProxy
 import ch.protonmail.android.mailnotifications.domain.proxy.NotificationManagerCompatProxyImpl
-import ch.protonmail.android.mailnotifications.permissions.NotificationsPermissionsOrchestrator
-import ch.protonmail.android.mailnotifications.permissions.NotificationsPermissionsOrchestratorImpl
 import com.google.firebase.messaging.FirebaseMessaging
 import dagger.Binds
 import dagger.Module
@@ -76,9 +78,15 @@ object MailNotificationsModule {
 
         @Binds
         @Reusable
-        fun bindNotificationPermissionsOrchestrator(
-            implementation: NotificationsPermissionsOrchestratorImpl
-        ): NotificationsPermissionsOrchestrator
+        fun bindNotificationPermissionsRepository(
+            implementation: NotificationsPermissionRepositoryImpl
+        ): NotificationsPermissionRepository
+
+        @Binds
+        @Reusable
+        fun bindNotificationPermissionsDataSource(
+            implementation: NotificationsPermissionLocalDataSourceImpl
+        ): NotificationsPermissionLocalDataSource
 
         @Binds
         @Reusable
