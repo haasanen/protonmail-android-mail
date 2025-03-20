@@ -32,6 +32,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
@@ -48,12 +49,13 @@ import ch.protonmail.android.mailcommon.presentation.NO_CONTENT_DESCRIPTION
 import ch.protonmail.android.mailcommon.presentation.R
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
-import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyLargeNorm
+import ch.protonmail.android.mailcommon.presentation.compose.dpToPx
 import ch.protonmail.android.mailcommon.presentation.model.AvatarImageUiModel
+import coil.compose.SubcomposeAsyncImage
 
 @Composable
 fun ParticipantAvatar(
@@ -143,20 +145,12 @@ fun ParticipantAvatarNotSelected(
     }
 
     when (avatarImageUiModel) {
-        is AvatarImageUiModel.Data -> SenderImageAvatar(avatarImageUiModel, avatarSize, actions)
-        is AvatarImageUiModel.NoImageAvailable -> SenderInitialsAvatar(
-            initials = avatarUiModel.initial,
-            modifier = Modifier
-                .sizeIn(
-                    minWidth = avatarSize,
-                    minHeight = avatarSize
-                )
-                .background(
-                    color = avatarUiModel.color,
-                    shape = backgroundShape
-                )
+        is AvatarImageUiModel.Data -> SenderImageAvatar(
+            avatarUiModel, avatarImageUiModel, avatarSize, backgroundShape, actions
         )
-        else -> Unit
+
+        else -> SenderInitialsAvatar(avatarUiModel.initial, avatarSize, avatarUiModel.color, backgroundShape)
+
     }
 }
 
@@ -191,36 +185,55 @@ fun ParticipantAvatarSelected(
 
 @Composable
 private fun SenderImageAvatar(
+    avatarUiModel: AvatarUiModel.ParticipantAvatar,
     avatarImageUiModel: AvatarImageUiModel.Data,
     avatarSize: Dp,
+    backgroundShape: Shape,
     actions: ParticipantAvatar.Actions
 ) {
     val context = LocalContext.current
+    val avatarSizePx = avatarSize.dpToPx()
 
     // If we do not provide our own cache key, Coil will make disk IO to access File to create a cache key
     val imageUri = avatarImageUiModel.imageFile.toUri()
-    val imageRequest = remember(avatarImageUiModel) {
+    val imageRequest = remember(imageUri) {
         ImageRequest.Builder(context)
             .data(imageUri)
             .memoryCacheKey(imageUri.toString())
+            .size(avatarSizePx)
             .listener(
-                onError = { _, _ -> actions.onAvatarImageLoadFailed() }
+                onError = { _, _ ->
+                    actions.onAvatarImageLoadFailed()
+                }
             )
             .build()
     }
-    AsyncImage(
-        modifier = Modifier
-            .size(avatarSize),
+
+    SubcomposeAsyncImage(
+        modifier = Modifier.size(avatarSize),
         model = imageRequest,
         contentDescription = "",
-        contentScale = ContentScale.Fit
+        contentScale = ContentScale.Fit,
+        loading = {
+            SenderInitialsAvatar(avatarUiModel.initial, avatarSize, avatarUiModel.color, backgroundShape)
+        },
+        error = {
+            SenderInitialsAvatar(avatarUiModel.initial, avatarSize, avatarUiModel.color, backgroundShape)
+        }
     )
 }
 
 @Composable
-private fun SenderInitialsAvatar(initials: String, modifier: Modifier) {
+private fun SenderInitialsAvatar(
+    initials: String,
+    avatarSize: Dp,
+    color: Color,
+    shape: Shape
+) {
     Box(
-        modifier = modifier,
+        modifier = Modifier
+            .size(avatarSize)
+            .background(color = color, shape = shape),
         contentAlignment = Alignment.Center
     ) {
         Text(
