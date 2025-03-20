@@ -22,6 +22,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import ch.protonmail.android.mailnotifications.permissions.NotificationsPermissionOrchestrator
 import ch.protonmail.android.mailsession.data.mapper.toLocalUserId
 import ch.protonmail.android.mailsession.data.mapper.toUserId
 import ch.protonmail.android.mailsession.domain.model.AccountState
@@ -53,7 +54,8 @@ import javax.inject.Inject
 class LauncherViewModel @Inject constructor(
     private val authOrchestrator: AuthOrchestrator,
     private val setPrimaryAccount: SetPrimaryAccount,
-    private val userSessionRepository: UserSessionRepository
+    private val userSessionRepository: UserSessionRepository,
+    private val notificationsPermissionOrchestrator: NotificationsPermissionOrchestrator
 ) : ViewModel() {
 
     val state: StateFlow<LauncherState> = userSessionRepository.observeAccounts()
@@ -74,6 +76,7 @@ class LauncherViewModel @Inject constructor(
 
     override fun onCleared() {
         authOrchestrator.unregister()
+        notificationsPermissionOrchestrator.unregister()
         super.onCleared()
     }
 
@@ -86,6 +89,8 @@ class LauncherViewModel @Inject constructor(
                 .onAccountTwoFactorNeeded { startSecondFactorWorkflow(it.userId.toLocalUserId()) }
                 .onAccountTwoPasswordNeeded { startTwoPassModeWorkflow(it.userId.toLocalUserId()) }
         }
+
+        notificationsPermissionOrchestrator.register(context)
     }
 
     fun submit(action: Action) {
@@ -97,37 +102,38 @@ class LauncherViewModel @Inject constructor(
                 is Action.OpenReport -> onOpenReport()
                 is Action.OpenSecurityKeys -> onOpenSecurityKeys()
                 is Action.OpenSubscription -> onOpenSubscription()
+                is Action.RequestNotificationPermission -> onRequestNotificationPermission()
                 is Action.SignIn -> onSignIn(action.userId)
                 is Action.SwitchToAccount -> onSwitchToAccount(action.userId)
             }
         }
     }
 
-    fun onAddAccount() {
+    private fun onAddAccount() {
         authOrchestrator.startAddAccountWorkflow()
     }
 
-    fun onOpenPasswordManagement() {
+    private fun onOpenPasswordManagement() {
         TODO("ET - Not yet implemented")
     }
 
-    fun onOpenRecoveryEmail() {
+    private fun onOpenRecoveryEmail() {
         TODO("ET - Not yet implemented")
     }
 
-    fun onOpenReport() {
+    private fun onOpenReport() {
         TODO("ET - Not yet implemented")
     }
 
-    fun onOpenSubscription() {
+    private fun onOpenSubscription() {
         TODO("ET - Not yet implemented")
     }
 
-    fun onOpenSecurityKeys() {
+    private fun onOpenSecurityKeys() {
         TODO("ET - Not yet implemented")
     }
 
-    fun onSignIn(userId: UserId?) = viewModelScope.launch {
+    private fun onSignIn(userId: UserId?) = viewModelScope.launch {
         val address = userId?.let {
             userSessionRepository.getAccount(it)?.primaryAddress
         }
@@ -138,14 +144,19 @@ class LauncherViewModel @Inject constructor(
         setPrimaryAccount(userId)
     }
 
+    private fun onRequestNotificationPermission() {
+        notificationsPermissionOrchestrator.requestPermissionIfRequired()
+    }
+
     sealed interface Action {
 
-        object AddAccount : Action
-        object OpenPasswordManagement : Action
-        object OpenRecoveryEmail : Action
-        object OpenReport : Action
-        object OpenSecurityKeys : Action
-        object OpenSubscription : Action
+        data object AddAccount : Action
+        data object OpenPasswordManagement : Action
+        data object OpenRecoveryEmail : Action
+        data object OpenReport : Action
+        data object OpenSecurityKeys : Action
+        data object OpenSubscription : Action
+        data object RequestNotificationPermission : Action
         data class SignIn(val userId: UserId?) : Action
         data class SwitchToAccount(val userId: UserId) : Action
     }

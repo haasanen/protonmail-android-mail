@@ -20,6 +20,7 @@ package ch.protonmail.android.navigation
 
 import app.cash.turbine.test
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
+import ch.protonmail.android.mailnotifications.permissions.NotificationsPermissionOrchestrator
 import ch.protonmail.android.mailsession.domain.model.Account
 import ch.protonmail.android.mailsession.domain.model.AccountState
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
@@ -39,13 +40,13 @@ import kotlin.test.assertEquals
 @ExperimentalCoroutinesApi
 class LauncherViewModelTest {
 
-
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
 
-    private val authOrchestrator: AuthOrchestrator = mockk()
-    private val setPrimaryAccount: SetPrimaryAccount = mockk()
-    private val userSessionRepository: UserSessionRepository = mockk()
+    private val authOrchestrator = mockk<AuthOrchestrator>()
+    private val setPrimaryAccount = mockk<SetPrimaryAccount>()
+    private val userSessionRepository = mockk<UserSessionRepository>()
+    private val notificationsPermissionOrchestrator = mockk<NotificationsPermissionOrchestrator>(relaxUnitFun = true)
 
     private lateinit var viewModel: LauncherViewModel
 
@@ -56,7 +57,12 @@ class LauncherViewModelTest {
             every { userSessionRepository.observeAccounts() } returns flowOf(emptyList())
 
             // When
-            viewModel = LauncherViewModel(authOrchestrator, setPrimaryAccount, userSessionRepository)
+            viewModel = LauncherViewModel(
+                authOrchestrator,
+                setPrimaryAccount,
+                userSessionRepository,
+                notificationsPermissionOrchestrator
+            )
 
             // Then
             viewModel.state.test {
@@ -79,12 +85,16 @@ class LauncherViewModelTest {
         )
 
         // When
-        viewModel = LauncherViewModel(authOrchestrator, setPrimaryAccount, userSessionRepository)
+        viewModel = LauncherViewModel(
+            authOrchestrator,
+            setPrimaryAccount,
+            userSessionRepository,
+            notificationsPermissionOrchestrator
+        )
 
         // Then
         viewModel.state.test {
             assertEquals(LauncherState.PrimaryExist, awaitItem())
         }
     }
-
 }

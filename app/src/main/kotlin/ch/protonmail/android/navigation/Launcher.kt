@@ -43,7 +43,10 @@ fun Launcher(activityActions: MainActivity.Actions, viewModel: LauncherViewModel
                 onReportBug = { viewModel.submit(LauncherViewModel.Action.OpenReport) },
                 onSignIn = { viewModel.submit(LauncherViewModel.Action.SignIn(it)) },
                 onSubscription = { viewModel.submit(LauncherViewModel.Action.OpenSubscription) },
-                onSwitchToAccount = { viewModel.submit(LauncherViewModel.Action.SwitchToAccount(it)) }
+                onSwitchToAccount = { viewModel.submit(LauncherViewModel.Action.SwitchToAccount(it)) },
+                onRequestNotificationPermission = {
+                    viewModel.submit(LauncherViewModel.Action.RequestNotificationPermission)
+                }
             )
         )
 
@@ -54,15 +57,13 @@ fun Launcher(activityActions: MainActivity.Actions, viewModel: LauncherViewModel
 
 object Launcher {
 
-    /**
-     * A set of actions that can be executed in the scope of Core's Orchestrators
-     */
     data class Actions(
         val onSignIn: (UserId?) -> Unit,
         val onSubscription: () -> Unit,
         val onReportBug: () -> Unit,
         val onPasswordManagement: () -> Unit,
         val onRecoveryEmail: () -> Unit,
-        val onSwitchToAccount: (UserId) -> Unit
+        val onSwitchToAccount: (UserId) -> Unit,
+        val onRequestNotificationPermission: () -> Unit
     )
 }

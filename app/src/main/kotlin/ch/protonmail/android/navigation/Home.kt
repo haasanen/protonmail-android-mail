@@ -65,6 +65,10 @@ import ch.protonmail.android.mailcomposer.domain.model.MessageSendingStatus
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetail
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.model.MessageId
+import ch.protonmail.android.mailnotifications.presentation.model.NotificationsPermissionState
+import ch.protonmail.android.mailnotifications.presentation.model.NotificationsPermissionStateType
+import ch.protonmail.android.mailnotifications.presentation.viewmodel.NotificationsPermissionViewModel
+import ch.protonmail.android.mailnotifications.ui.NotificationsPermissionBottomSheet
 import ch.protonmail.android.mailsession.data.mapper.toUserId
 import ch.protonmail.android.mailsidebar.presentation.Sidebar
 import ch.protonmail.android.navigation.model.Destination
@@ -128,7 +132,8 @@ fun Home(
     activityActions: MainActivity.Actions,
     launcherActions: Launcher.Actions,
     viewModel: HomeViewModel = hiltViewModel(),
-    onboardingStepViewModel: OnboardingStepViewModel = hiltViewModel()
+    onboardingStepViewModel: OnboardingStepViewModel = hiltViewModel(),
+    notificationsPermissionViewModel: NotificationsPermissionViewModel = hiltViewModel()
 ) {
     val navController = rememberNavController().withSentryObservableEffect()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -141,6 +146,10 @@ fun Home(
     val scope = rememberCoroutineScope()
     val state by viewModel.state.collectAsStateWithLifecycle(HomeState.Initial)
     val onboardingEligibilityState by onboardingStepViewModel.onboardingEligibilityState.collectAsStateWithLifecycle()
+    val notificationsPermissionsState by notificationsPermissionViewModel.state.collectAsStateWithLifecycle()
+
+    var bottomSheetType: BottomSheetType by remember { mutableStateOf(BottomSheetType.Onboarding) }
+    var showBottomSheet by remember { mutableStateOf(false) }
 
     val offlineSnackbarMessage = stringResource(id = R.string.you_are_offline)
     fun showOfflineSnackbar() = scope.launch {
@@ -149,8 +158,6 @@ fun Home(
             type = ProtonSnackbarType.WARNING
         )
     }
-
-    var showBottomSheet by remember { mutableStateOf(false) }
 
     ConsumableLaunchedEffect(state.networkStatusEffect) {
         if (it == NetworkStatus.Disconnected) {
@@ -300,6 +307,7 @@ fun Home(
                 showMessageSentWithoutUndoSnackbar()
                 viewModel.confirmMessageAsSeen(sendingStatus.messageId)
             }
+
             is MessageSendingStatus.SendMessageError -> showErrorSendingMessageSnackbar()
             is MessageSendingStatus.NoStatus -> {}
             is MessageSendingStatus.MessageSentUndoable -> {
@@ -314,13 +322,56 @@ fun Home(
     }
 
     val drawerState = rememberDrawerState(DrawerValue.Closed)
-
     val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
-    LaunchedEffect(onboardingEligibilityState) {
-        if (onboardingEligibilityState == OnboardingEligibilityState.Required) {
-            bottomSheetState.show()
-            showBottomSheet = true
+    val onBottomSheetDismissed: () -> Unit = {
+        scope.launch { bottomSheetState.hide() }
+            .invokeOnCompletion {
+                when (bottomSheetType) {
+                    is BottomSheetType.NotificationsPermissions -> {
+                        notificationsPermissionViewModel.trackPermissionRequested()
+                    }
+                    BottomSheetType.Onboarding -> {
+                        onboardingStepViewModel.submit(OnboardingStepAction.MarkOnboardingComplete)
+                    }
+                }
+
+                if (!bottomSheetState.isVisible) {
+                    showBottomSheet = false
+                }
+            }
+    }
+
+    LaunchedEffect(onboardingEligibilityState, notificationsPermissionsState) {
+        when {
+            onboardingEligibilityState == OnboardingEligibilityState.Required -> {
+                bottomSheetType = BottomSheetType.Onboarding
+                scope.launch {
+                    bottomSheetState.show()
+                }.invokeOnCompletion {
+                    showBottomSheet = true
+                }
+            }
+
+            notificationsPermissionsState is NotificationsPermissionState.RequiresInteraction -> {
+                val type = (notificationsPermissionsState as NotificationsPermissionState.RequiresInteraction).stateType
+                bottomSheetType = BottomSheetType.NotificationsPermissions(type)
+                scope.launch {
+                    bottomSheetState.show()
+                }.invokeOnCompletion {
+                    showBottomSheet = true
+                }
+            }
+
+            else -> {
+                if (showBottomSheet) {
+                    scope.launch {
+                        bottomSheetState.hide()
+                    }.invokeOnCompletion {
+                        showBottomSheet = false
+                    }
+                }
+            }
         }
     }
 
@@ -358,19 +409,18 @@ fun Home(
         showBottomSheet = showBottomSheet,
         sheetState = bottomSheetState,
         sheetContent = bottomSheetHeightConstrainedContent {
-            Onboarding(
-                onExitOnboarding = {
-                    onboardingStepViewModel.submit(OnboardingStepAction.MarkOnboardingComplete)
-                    showBottomSheet = false
-                    scope.launch { bottomSheetState.hide() }
-                }
-            )
+            when (val type = bottomSheetType) {
+                is BottomSheetType.NotificationsPermissions -> NotificationsPermissionBottomSheet(
+                    onRequest = launcherActions.onRequestNotificationPermission,
+                    uiModel = type.permissionsState.uiModel,
+                    onDismiss = onBottomSheetDismissed
+                )
+
+                is BottomSheetType.Onboarding -> Onboarding(onExitOnboarding = onBottomSheetDismissed)
+            }
         },
         dismissOnBack = false,
-        onDismissed = {
-            showBottomSheet = false
-            onboardingStepViewModel.submit(OnboardingStepAction.MarkOnboardingComplete)
-        }
+        onDismissed = onBottomSheetDismissed
     ) {
         ModalNavigationDrawer(
             drawerState = drawerState,
@@ -750,3 +800,8 @@ private fun buildSidebarActions(navController: NavHostController, launcherAction
         onContacts = { navController.navigate(Screen.Contacts.route) },
         onReportBug = launcherActions.onReportBug
     )
+
+sealed interface BottomSheetType {
+    data object Onboarding : BottomSheetType
+    data class NotificationsPermissions(val permissionsState: NotificationsPermissionStateType) : BottomSheetType
+}
