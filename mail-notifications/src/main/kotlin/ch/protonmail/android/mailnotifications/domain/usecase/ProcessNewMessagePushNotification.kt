@@ -20,7 +20,6 @@ package ch.protonmail.android.mailnotifications.domain.usecase
 
 import android.content.Context
 import androidx.work.ListenableWorker
-import ch.protonmail.android.mailcommon.domain.coroutines.AppScope
 import ch.protonmail.android.mailcommon.presentation.system.NotificationProvider
 import ch.protonmail.android.mailnotifications.R
 import ch.protonmail.android.mailnotifications.domain.model.LocalNotificationAction
@@ -32,11 +31,6 @@ import ch.protonmail.android.mailnotifications.domain.usecase.actions.CreateNoti
 import ch.protonmail.android.mailnotifications.domain.usecase.intents.CreateNewMessageNavigationIntent
 import ch.protonmail.android.mailsettings.domain.usecase.notifications.GetExtendedNotificationsSetting
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
-import me.proton.core.domain.entity.UserId
-import me.proton.core.eventmanager.domain.EventManagerConfig
-import me.proton.core.eventmanager.domain.EventManagerProvider
 import javax.inject.Inject
 
 internal class ProcessNewMessagePushNotification @Inject constructor(
@@ -45,9 +39,7 @@ internal class ProcessNewMessagePushNotification @Inject constructor(
     private val notificationManagerCompatProxy: NotificationManagerCompatProxy,
     private val getNotificationsExtendedPreference: GetExtendedNotificationsSetting,
     private val createNewMessageNavigationIntent: CreateNewMessageNavigationIntent,
-    private val createNotificationAction: CreateNotificationAction,
-    private val eventManager: EventManagerProvider,
-    @AppScope private val coroutineScope: CoroutineScope
+    private val createNotificationAction: CreateNotificationAction
 ) {
 
     @Suppress("LongMethod")
@@ -55,15 +47,6 @@ internal class ProcessNewMessagePushNotification @Inject constructor(
 
         val userData = notificationData.userData
         val pushData = notificationData.pushData
-
-        coroutineScope.launch {
-            val currentTime = System.currentTimeMillis()
-            if (currentTime - lastExecutionTime >= DEBOUNCE_INTERVAL_MS) {
-                lastExecutionTime = currentTime
-                val config = EventManagerConfig.Core(UserId(userData.userId))
-                eventManager.get(config).resume()
-            }
-        }
 
         val notificationTitle = resolveNotificationTitle(pushData.sender)
         val notificationUserAddress = userData.userEmail
@@ -131,11 +114,5 @@ internal class ProcessNewMessagePushNotification @Inject constructor(
         } else {
             context.getString(R.string.notification_title_text_new_message_fallback)
         }
-    }
-
-    companion object {
-
-        private var lastExecutionTime: Long = 0
-        private const val DEBOUNCE_INTERVAL_MS = 10_000
     }
 }
