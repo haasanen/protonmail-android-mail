@@ -19,11 +19,12 @@
 package ch.protonmail.android.mailnotifications.domain.model
 
 import ch.protonmail.android.mailnotifications.data.remote.resource.NotificationActionType
+import me.proton.core.domain.entity.UserId
 
 internal sealed interface LocalPushNotificationData {
 
     data class UserPushData(
-        val userId: String,
+        val userId: UserId,
         val userEmail: String
     )
 

@@ -29,6 +29,7 @@ internal sealed class LocalPushNotification {
 
     sealed class Message : LocalPushNotification() {
         data class MessageRead(
+            val userPushData: UserPushData,
             val pushData: MessageReadPushData
         ) : Message()
 
@@ -51,7 +52,7 @@ internal sealed class LocalPushNotification {
 
         operator fun invoke(userPushData: UserPushData, pushNotificationData: LocalPushNotificationData) =
             when (pushNotificationData) {
-                is MessageReadPushData -> Message.MessageRead(pushNotificationData)
+                is MessageReadPushData -> Message.MessageRead(userPushData, pushNotificationData)
                 is NewMessagePushData -> Message.NewMessage(userPushData, pushNotificationData)
                 is UnsupportedActionPushData -> Message.UnsupportedMessageAction(pushNotificationData.action)
                 is NewLoginPushData -> Login(userPushData, pushNotificationData)

@@ -50,7 +50,7 @@ internal class DecryptPushNotificationContent @Inject constructor(
             is MailUserSessionUserResult.Ok -> user.v1.email
         }
 
-        val userData = LocalPushNotificationData.UserPushData(userId.id, userEmail)
+        val userData = LocalPushNotificationData.UserPushData(userId, userEmail)
 
         return tryDecrypt(userData, encryptedNotification)
     }
