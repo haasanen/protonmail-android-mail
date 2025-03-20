@@ -82,12 +82,14 @@ class UserSessionRepositoryImpl @Inject constructor(
 
     override suspend fun deleteAccount(userId: UserId) {
         mailSession.deleteAccount(userId.toLocalUserId())
-        userSessionCache.remove(userId)?.close()
+        // Remove session from cache
+        userSessionCache.remove(userId)
     }
 
     override suspend fun disableAccount(userId: UserId) {
         mailSession.logoutAccount(userId.toLocalUserId())
-        userSessionCache.remove(userId)?.close()
+        // Remove session from cache
+        userSessionCache.remove(userId)
     }
 
     override suspend fun getUserSession(userId: UserId): MailUserSessionWrapper? {

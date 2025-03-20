@@ -24,45 +24,32 @@ import arrow.core.right
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalAttachmentId
 import ch.protonmail.android.mailcommon.datarust.mapper.toDataError
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import me.proton.core.util.kotlin.CoreLogger
 import uniffi.proton_mail_uniffi.MailUserSession
 import uniffi.proton_mail_uniffi.MailUserSessionForkResult
 import uniffi.proton_mail_uniffi.VoidEventResult
 
-class MailUserSessionWrapper(
-    userSession: MailUserSession
-) {
+class MailUserSessionWrapper(private val userSession: MailUserSession) {
 
-    private var session: MailUserSession? = userSession
+    fun getRustUserSession() = userSession
 
-    fun close() {
-        session?.close()
-        session = null
-        CoreLogger.e("rust", "session closed")
-    }
-
-    fun getRustUserSession(): MailUserSession = requireNotNull(session) {
-        "Trying to access a closed/destroyed MailUserSession"
-    }
-
-    suspend fun fork(): Either<DataError, String> = when (val result = getRustUserSession().fork()) {
+    suspend fun fork(): Either<DataError, String> = when (val result = userSession.fork()) {
         is MailUserSessionForkResult.Error -> result.v1.toDataError().left()
         is MailUserSessionForkResult.Ok -> result.v1.right()
     }
 
-    suspend fun pollEvents(): Either<DataError, Unit> = when (val result = getRustUserSession().pollEvents()) {
+    suspend fun pollEvents(): Either<DataError, Unit> = when (val result = userSession.pollEvents()) {
         is VoidEventResult.Error -> result.v1.toDataError().left()
-        is VoidEventResult.Ok -> Unit.right()
+        VoidEventResult.Ok -> Unit.right()
     }
 
-    suspend fun imageForSender(address: String, bimi: String?) = getRustUserSession().imageForSender(
-        address = address,
-        bimiSelector = bimi,
-        displaySenderImage = true,
-        size = 128u,
-        mode = null,
-        format = "png"
+    suspend fun imageForSender(address: String, bimi: String?) = userSession.imageForSender(
+        address,
+        bimi,
+        true,
+        128u,
+        null,
+        "png"
     )
 
-    suspend fun getAttachment(attachmentId: LocalAttachmentId) = getRustUserSession().getAttachment(attachmentId)
+    suspend fun getAttachment(attachmentId: LocalAttachmentId) = userSession.getAttachment(attachmentId)
 }
