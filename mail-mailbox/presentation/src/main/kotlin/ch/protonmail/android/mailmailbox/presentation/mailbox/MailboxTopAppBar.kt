@@ -30,6 +30,8 @@ import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
@@ -161,6 +163,9 @@ private fun TopAppBarInSearchMode(
     actions: MailboxTopAppBar.Actions
 ) {
 
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val focusManager = LocalFocusManager.current
+
     ProtonTopAppBar(
         modifier = modifier.testTag(MailboxTopAppBarTestTags.RootItem),
         title = {
@@ -184,7 +189,11 @@ private fun TopAppBarInSearchMode(
         navigationIcon = {
             NavigationIcon(
                 uiModel = uiModel,
-                onNavigationIconClick = actions.onExitSearchMode
+                onNavigationIconClick = {
+                    focusManager.clearFocus(force = true)
+                    keyboardController?.hide()
+                    actions.onExitSearchMode()
+                }
             )
         },
         actions = {}
