@@ -24,4 +24,12 @@
     <string name="notification_actions_archive_description">Archive</string>
     <string name="notification_actions_trash_description">Trash</string>
     <string name="notification_actions_mark_as_read_description">Mark read</string>
+
+    <!-- Push notification permissions BS -->
+    <string name="notification_permissions_bottomsheet_first_time_title">Don\'t miss an email</string>
+    <string name="notification_permissions_bottomsheet_first_time_subtitle">Notifications help you keep on top of your inbox without checking the app.</string>
+    <string name="notification_permissions_bottomsheet_second_time_title">Want to stay updated?</string>
+    <string name="notification_permissions_bottomsheet_second_time_subtitle">Turn on notifications to know when you get a response to your email.</string>
+    <string name="notification_permissions_bottomsheet_enable">Enable push notifications</string>
+    <string name="notification_permissions_bottomsheet_dismiss">Dismiss</string>
 </resources>

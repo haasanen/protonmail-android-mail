@@ -22,6 +22,7 @@ plugins {
     kotlin("kapt")
     kotlin("plugin.serialization")
     id("dagger.hilt.android.plugin")
+    id("org.jetbrains.kotlin.plugin.compose")
     id("app-config-plugin")
 }
 
@@ -46,6 +47,7 @@ android {
 
     buildFeatures {
         buildConfig = true
+        compose = true
     }
 
     packaging {
@@ -81,7 +83,12 @@ dependencies {
     implementation(project(":mail-settings:domain"))
     implementation(project(":mail-session:data-rust"))
     implementation(project(":mail-session:domain"))
+    implementation(project(":design-system"))
+    implementation(project(":presentation-compose"))
 
+    debugImplementation(libs.bundles.compose.debug)
+    implementation(libs.bundles.compose)
+    implementation(libs.bundles.module.presentation)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.androidx.hilt.work)
