@@ -54,6 +54,5 @@ dependencies {
 
     implementation(project(":mail-common:domain"))
 
-    kapt(libs.bundles.test)
     testImplementation(project(":test:utils"))
 }

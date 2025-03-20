@@ -63,7 +63,6 @@ dependencies {
     implementation(project(":mail-session:domain"))
 
     testImplementation(libs.proton.rust.core)
-    kapt(libs.bundles.test)
     testImplementation(project(":test:utils"))
     testImplementation(project(":test:test-data"))
     testImplementation(libs.bundles.test)

@@ -65,6 +65,4 @@ dependencies {
     testImplementation(project(":test:test-data"))
     testImplementation(libs.bundles.test)
     testImplementation(libs.proton.rust.core)
-    kapt(libs.bundles.test)
-
 }

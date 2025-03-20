@@ -54,6 +54,4 @@ dependencies {
     implementation(project(":mail-common:data-rust"))
     implementation(project(":mail-common:domain"))
     implementation(project(":mail-label:domain"))
-
-    kapt(libs.bundles.test)
 }

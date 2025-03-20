@@ -44,7 +44,6 @@ android {
 
 dependencies {
     kapt(libs.bundles.app.annotationProcessors)
-    kapt(libs.bundles.test)
     compileOnly(libs.proton.rust.core)
 
     implementation(libs.bundles.module.data)

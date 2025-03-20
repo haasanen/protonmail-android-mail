@@ -46,7 +46,6 @@ android {
 dependencies {
     kapt(libs.bundles.app.annotationProcessors)
 
-    kapt(libs.bundles.test)
     implementation(libs.bundles.module.domain)
     implementation(libs.proton.core.accountManager)
     implementation(libs.proton.core.featureFlag)

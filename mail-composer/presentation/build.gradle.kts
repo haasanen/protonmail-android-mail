@@ -86,7 +86,6 @@ dependencies {
 
     debugImplementation(libs.bundles.compose.debug)
 
-    kapt(libs.bundles.test)
     testImplementation(libs.bundles.test)
     testImplementation(project(":test:test-data"))
     testImplementation(project(":test:utils"))
