@@ -137,10 +137,28 @@ include(":test:test-data")
 include(":test:utils")
 
 buildCache {
-    local {
-        if (System.getenv("CI") == "true") {
-            directory = rootDir.resolve("build").resolve("gradle-build-cache")
+    if (System.getenv("CI") != "true") {
+        local {
+            removeUnusedEntriesAfterDays = 5
         }
-        removeUnusedEntriesAfterDays = 3
+    }
+
+    val remoteCacheUrl = providers.environmentVariable("GRADLE_REMOTE_CACHE_URL").orNull
+        ?: providers.gradleProperty("remoteCacheUrl").orNull
+        ?: ""
+
+    if (remoteCacheUrl.isNotEmpty()) {
+        remote<HttpBuildCache> {
+            url = uri(remoteCacheUrl)
+            isPush = providers.environmentVariable("CI_PIPELINE_SOURCE").orNull == "push"
+            credentials {
+                username = providers.environmentVariable("GRADLE_REMOTE_CACHE_USERNAME").orNull
+                    ?: providers.gradleProperty("remoteCacheUsername").orNull
+                        ?: ""
+                password = providers.environmentVariable("GRADLE_REMOTE_CACHE_PASSWORD").orNull
+                    ?: providers.gradleProperty("remoteCachePassword").orNull
+                        ?: ""
+            }
+        }
     }
 }
