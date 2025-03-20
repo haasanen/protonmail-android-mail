@@ -33,9 +33,9 @@ internal data class PushNotificationPendingIntentPayloadData(
 internal sealed class PushNotificationDismissPendingIntentData {
 
     @Serializable
-    data class SingleNotification(val userId: String, val messageId: String) :
+    data class SingleNotification(val userId: String, val notificationId: Int) :
         PushNotificationDismissPendingIntentData()
 
     @Serializable
-    data class GroupNotification(val userId: String) : PushNotificationDismissPendingIntentData()
+    data class GroupNotification(val groupId: String) : PushNotificationDismissPendingIntentData()
 }

@@ -28,9 +28,11 @@ import ch.protonmail.android.maildetail.domain.usecase.MoveMessage
 import ch.protonmail.android.mailmessage.domain.model.RemoteMessageId
 import ch.protonmail.android.mailmessage.domain.usecase.ObserveMessage
 import ch.protonmail.android.mailnotifications.domain.model.LocalNotificationAction
+import ch.protonmail.android.mailnotifications.domain.model.PushNotificationDismissPendingIntentData
 import ch.protonmail.android.mailnotifications.domain.model.PushNotificationPendingIntentPayloadData
-import ch.protonmail.android.mailnotifications.domain.proxy.NotificationManagerCompatProxy
+import ch.protonmail.android.mailnotifications.domain.usecase.DismissEmailNotificationsForUser
 import ch.protonmail.android.mailnotifications.domain.usecase.actions.CreateNotificationAction.Companion.NotificationActionIntentExtraKey
+import ch.protonmail.android.mailnotifications.domain.usecase.actions.CreateNotificationAction.Companion.NotificationDismissalIntentExtraKey
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
@@ -54,7 +56,7 @@ internal class PushNotificationActionsBroadcastReceiver @Inject constructor() : 
     lateinit var markAsRead: MarkMessageAsRead
 
     @Inject
-    lateinit var notificationManagerCompatProxy: NotificationManagerCompatProxy
+    lateinit var dismissEmailNotificationsForUser: DismissEmailNotificationsForUser
 
     @Inject
     @AppScope
@@ -66,31 +68,38 @@ internal class PushNotificationActionsBroadcastReceiver @Inject constructor() : 
 
     override fun onReceive(context: Context?, intent: Intent?) {
         val rawAction = intent?.extras?.getString(NotificationActionIntentExtraKey)
-
-        if (rawAction == null) {
-            Timber.d("Unable to extract action from intent $intent.")
+        if (rawAction != null) {
+            val actionData = rawAction.deserialize<PushNotificationPendingIntentPayloadData>()
+            handleNotificationAction(actionData)
             return
         }
 
-        val actionData = rawAction.deserialize<PushNotificationPendingIntentPayloadData>()
+        val dismissalAction = intent?.extras?.getString(NotificationDismissalIntentExtraKey)
+        if (dismissalAction != null) {
+            val actionData = dismissalAction.deserialize<PushNotificationDismissPendingIntentData>()
+            handleNotificationDismissal(actionData)
+            return
+        }
+    }
+
+    private fun handleNotificationAction(actionData: PushNotificationPendingIntentPayloadData) {
+        val userId = UserId(actionData.userId)
+        val remoteMessageId = RemoteMessageId(actionData.messageId)
 
         coroutineScope.launch {
-            val userId = UserId(actionData.userId)
-            val remoteMessageId = RemoteMessageId(actionData.messageId)
-
             val message = observeMessage(userId, remoteMessageId)
                 .firstOrNull()
                 ?.getOrNull()
 
             if (message == null) {
-                Timber.e("Error fetching the message for action $rawAction - remoteMessageId '$remoteMessageId'")
+                Timber.e("Unable to fetch message for action ${actionData.action} - remoteId '$remoteMessageId'")
                 return@launch
             }
 
             when (val action = actionData.action) {
                 is LocalNotificationAction.MoveTo -> {
                     val result = moveMessage.invoke(
-                        userId = UserId(actionData.userId),
+                        userId = userId,
                         messageId = message.messageId,
                         systemLabelId = action.destinationLabel
                     )
@@ -110,11 +119,26 @@ internal class PushNotificationActionsBroadcastReceiver @Inject constructor() : 
                     Timber.d("Message marked as read.")
                 }
             }
-        }
 
-        notificationManagerCompatProxy.run {
-            dismissNotification(actionData.notificationId)
-            dismissNotificationGroupIfEmpty(actionData.notificationGroup)
+            dismissEmailNotificationsForUser(userId, actionData.notificationId)
+        }
+    }
+
+    private fun handleNotificationDismissal(actionData: PushNotificationDismissPendingIntentData) {
+        when (actionData) {
+            is PushNotificationDismissPendingIntentData.GroupNotification -> {
+                dismissEmailNotificationsForUser(
+                    userId = UserId(actionData.groupId)
+                )
+            }
+
+            is PushNotificationDismissPendingIntentData.SingleNotification -> {
+                dismissEmailNotificationsForUser(
+                    userId = UserId(actionData.userId),
+                    notificationId = actionData.notificationId,
+                    isSilentNotification = false
+                )
+            }
         }
     }
 }

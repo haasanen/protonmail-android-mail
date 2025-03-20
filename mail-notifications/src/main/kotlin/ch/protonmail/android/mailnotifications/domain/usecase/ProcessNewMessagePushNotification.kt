@@ -52,7 +52,7 @@ internal class ProcessNewMessagePushNotification @Inject constructor(
         val notificationTitle = resolveNotificationTitle(pushData.sender)
         val notificationUserAddress = userData.userEmail
         val notificationContent = pushData.content
-        val notificationGroup = userData.userId
+        val notificationGroup = userData.userId.id
         val notificationId = pushData.messageId.hashCode()
         val groupNotificationId = notificationGroup.hashCode()
 
@@ -65,13 +65,13 @@ internal class ProcessNewMessagePushNotification @Inject constructor(
             autoCancel = true
         ).apply {
             setContentIntent(
-                createNewMessageNavigationIntent(notificationId, pushData.messageId, userData.userId)
+                createNewMessageNavigationIntent(notificationId, pushData.messageId, userData.userId.id)
             )
 
             val archiveAction = PushNotificationPendingIntentPayloadData(
                 notificationId,
                 notificationGroup,
-                userData.userId,
+                userData.userId.id,
                 pushData.messageId,
                 LocalNotificationAction.MoveTo.Archive
             )
@@ -84,8 +84,8 @@ internal class ProcessNewMessagePushNotification @Inject constructor(
             addAction(createNotificationAction(markAsReadAction))
 
             val dismissalAction = PushNotificationDismissPendingIntentData.SingleNotification(
-                userData.userId,
-                pushData.messageId
+                userData.userId.id,
+                notificationId
             )
 
             setDeleteIntent(createNotificationAction(dismissalAction))
@@ -100,9 +100,9 @@ internal class ProcessNewMessagePushNotification @Inject constructor(
             isGroupSummary = true,
             autoCancel = true
         ).apply {
-            setContentIntent(createNewMessageNavigationIntent(notificationId, userData.userId))
+            setContentIntent(createNewMessageNavigationIntent(notificationId, userData.userId.id))
 
-            val dismissalAction = PushNotificationDismissPendingIntentData.GroupNotification(userData.userId)
+            val dismissalAction = PushNotificationDismissPendingIntentData.GroupNotification(userData.userId.id)
             setDeleteIntent(createNotificationAction(dismissalAction))
         }.build()
 
