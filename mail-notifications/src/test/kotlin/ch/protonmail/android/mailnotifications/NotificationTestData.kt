@@ -40,9 +40,9 @@ internal object NotificationTestData {
 
     const val messageId = "messageId"
     const val content = "content"
-    val unknownAction = NotificationActionType.Unknown("some_action")
+    private val unknownAction = NotificationActionType.Unknown("some_action")
 
-    val defaultUserPushData = LocalPushNotificationData.UserPushData(userId.id, email)
+    val defaultUserPushData = LocalPushNotificationData.UserPushData(userId, email)
     val defaultMessagePushData = MessagePushData.NewMessagePushData(
         PushNotificationSenderData(SenderData.name, SenderData.address, SenderData.group),
         messageId,

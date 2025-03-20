@@ -26,7 +26,43 @@ internal class DismissEmailNotificationsForUser @Inject constructor(
     private val notificationManagerCompatProxy: NotificationManagerCompatProxy
 ) {
 
+    operator fun invoke(
+        userId: UserId,
+        notificationId: Int,
+        isSilentNotification: Boolean = false
+    ) {
+        val shouldDismissGroup = shouldDismissGroupNotification(
+            userId = userId,
+            notificationId = notificationId,
+            isSilentNotification = isSilentNotification
+        )
+
+        if (shouldDismissGroup) {
+            notificationManagerCompatProxy.dismissNotification(userId.id.hashCode())
+        } else {
+            notificationManagerCompatProxy.dismissNotification(notificationId)
+        }
+    }
+
     operator fun invoke(userId: UserId) {
         notificationManagerCompatProxy.dismissNotification(userId.id.hashCode())
+    }
+
+    private fun shouldDismissGroupNotification(userId: UserId) =
+        notificationManagerCompatProxy.activeNotifications.count { userId.id in it.groupKey } == 1
+
+    private fun shouldDismissGroupNotification(
+        userId: UserId,
+        notificationId: Int,
+        isSilentNotification: Boolean
+    ): Boolean {
+        val isSingleRegularNotification = !isSilentNotification &&
+            shouldDismissGroupNotification(userId)
+
+        val isSingleSilentNotification = isSilentNotification &&
+            notificationManagerCompatProxy.activeNotifications.any { it.id == notificationId } &&
+            shouldDismissGroupNotification(userId)
+
+        return isSingleRegularNotification || isSingleSilentNotification
     }
 }
