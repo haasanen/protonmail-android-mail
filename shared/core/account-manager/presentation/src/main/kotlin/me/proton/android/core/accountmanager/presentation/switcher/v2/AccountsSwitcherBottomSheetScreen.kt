@@ -53,7 +53,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
+import ch.protonmail.android.design.compose.component.ProtonHorizontallyCenteredProgress
 import ch.protonmail.android.design.compose.theme.LocalColors
 import ch.protonmail.android.design.compose.theme.LocalTypography
 import ch.protonmail.android.design.compose.theme.ProtonDimens
@@ -94,7 +94,7 @@ fun AccountsSwitcherBottomSheetScreen(
         modifier = modifier
     ) {
         when (state) {
-            is AccountsManagerState.Loading -> ProtonCenteredProgress()
+            is AccountsManagerState.Loading -> ProtonHorizontallyCenteredProgress()
             is AccountsManagerState.Idle -> {
                 Column(
                     modifier = modifier.verticalScroll(rememberScrollState()),
