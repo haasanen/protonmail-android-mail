@@ -36,12 +36,10 @@ class MainInitializer : Initializer<Unit> {
             // No-op needed
         }
 
-        // Disable sentry initialization till a new Sentry project is created
-        override fun dependencies() = mailDependencies() // + releaseOnlyDependenciesIfNeeded()
+        override fun dependencies() = mailDependencies() + releaseOnlyDependenciesIfNeeded()
 
         private fun mailDependencies(): List<Class<out Initializer<*>?>> = emptyList()
 
-        @SuppressWarnings("UnusedPrivateMember")
         private fun releaseOnlyDependenciesIfNeeded() =
             if (BuildConfig.DEBUG) emptyList() else listOf(SentryInitializer::class.java)
     }
