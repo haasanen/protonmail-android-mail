@@ -36,6 +36,8 @@ import ch.protonmail.android.mailnotifications.domain.handler.AccountStateAwareN
 import ch.protonmail.android.mailnotifications.domain.handler.NotificationHandler
 import ch.protonmail.android.mailnotifications.domain.proxy.NotificationManagerCompatProxy
 import ch.protonmail.android.mailnotifications.domain.proxy.NotificationManagerCompatProxyImpl
+import ch.protonmail.android.mailnotifications.permissions.NotificationsPermissionOrchestrator
+import ch.protonmail.android.mailnotifications.permissions.NotificationsPermissionOrchestratorImpl
 import com.google.firebase.messaging.FirebaseMessaging
 import dagger.Binds
 import dagger.Module
@@ -75,6 +77,12 @@ object MailNotificationsModule {
         @Binds
         @Singleton
         fun bindFcmTokenPreferences(implementation: FcmTokenPreferencesImpl): NotificationTokenPreferences
+
+        @Binds
+        @Singleton
+        fun bindNotificationPermissionsOrchestrator(
+            implementation: NotificationsPermissionOrchestratorImpl
+        ): NotificationsPermissionOrchestrator
 
         @Binds
         @Reusable

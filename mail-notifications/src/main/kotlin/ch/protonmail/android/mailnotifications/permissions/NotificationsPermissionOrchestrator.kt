@@ -22,24 +22,16 @@ import android.Manifest
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import kotlinx.coroutines.flow.Flow
 
-interface NotificationsPermissionsOrchestrator {
-
-    fun permissionResult(): Flow<PermissionResult>
+interface NotificationsPermissionOrchestrator {
 
     fun requestPermissionIfRequired()
 
     fun register(caller: AppCompatActivity)
 
-    companion object {
-        enum class PermissionResult {
-            CHECKING,
-            GRANTED,
-            DENIED,
-            SHOW_RATIONALE
-        }
+    fun unregister()
 
+    companion object {
         @RequiresApi(Build.VERSION_CODES.TIRAMISU)
         internal const val NOTIFICATION_PERMISSION = Manifest.permission.POST_NOTIFICATIONS
     }
