@@ -39,6 +39,7 @@ include(":shared:core:account:data")
 include(":shared:core:account:domain")
 include(":shared:core:auth:presentation")
 
+includeBuild("build-plugin")
 include(":app")
 include(":benchmark")
 include(":coverage")
