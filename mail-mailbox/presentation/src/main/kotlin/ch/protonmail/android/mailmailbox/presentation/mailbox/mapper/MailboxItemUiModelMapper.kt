@@ -20,7 +20,6 @@ package ch.protonmail.android.mailmailbox.presentation.mailbox.mapper
 
 import androidx.compose.ui.graphics.Color
 import arrow.core.getOrElse
-import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.presentation.mapper.ColorMapper
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcommon.presentation.usecase.FormatShortTime
@@ -55,9 +54,6 @@ class MailboxItemUiModelMapper @Inject constructor(
     private val attachmentMetadataUiModelMapper: AttachmentMetadataUiModelMapper
 ) : Mapper<MailboxItem, MailboxItemUiModel> {
 
-    @Suppress("LongParameterList")
-    @MissingRustApi
-    // Rust to expose whether message is a draft (allows setting shouldOpenInComposer)
     suspend fun toUiModel(
         userId: UserId,
         mailboxItem: MailboxItem,

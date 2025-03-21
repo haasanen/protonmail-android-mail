@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.mailmailbox.domain.usecase
 
+import ch.protonmail.android.maillabel.domain.model.LabelWithSystemLabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.maillabel.domain.model.toDynamicSystemMailLabel
@@ -29,6 +30,8 @@ import javax.inject.Inject
 class ShouldShowLocationIndicator @Inject constructor(
     private val labelRepository: LabelRepository
 ) {
+
+    private val systemLabelsCache = mutableMapOf<UserId, List<LabelWithSystemLabelId>?>()
 
     suspend operator fun invoke(userId: UserId, mailLabelId: MailLabelId): Boolean {
         return when (mailLabelId) {
@@ -43,7 +46,11 @@ class ShouldShowLocationIndicator @Inject constructor(
         mailLabelId: MailLabelId,
         labelRepository: LabelRepository
     ): Boolean {
-        val locationList = labelRepository.observeSystemLabels(userId).firstOrNull()?.filter {
+        val systemLabels = systemLabelsCache.getOrPut(userId) {
+            labelRepository.observeSystemLabels(userId).firstOrNull()
+        }
+
+        val locationList = systemLabels?.filter {
             it.systemLabelId.labelId == SystemLabelId.AllMail.labelId ||
                 it.systemLabelId.labelId == SystemLabelId.AlmostAllMail.labelId ||
                 it.systemLabelId.labelId == SystemLabelId.Starred.labelId

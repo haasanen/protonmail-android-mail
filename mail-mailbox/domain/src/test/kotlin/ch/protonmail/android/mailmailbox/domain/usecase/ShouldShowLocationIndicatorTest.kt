@@ -124,4 +124,21 @@ class ShouldShowLocationIndicatorTest {
         assertTrue(result)
     }
 
+    @Test
+    fun `should cache system labels in memory by user`() = runTest {
+        // Given
+        val firstLocation = MailLabelId.System(SystemLabelId.Archive.labelId)
+        val secondLocation = MailLabelId.System(SystemLabelId.Starred.labelId)
+        coEvery { labelRepository.observeSystemLabels(any()) } returns flowOf(systemLabels)
+
+        // When
+        val firstResult = shouldShowLocationIndicator.invoke(userId, firstLocation)
+        val secondResult = shouldShowLocationIndicator.invoke(userId, secondLocation)
+
+        // Then
+        verify(exactly = 1) { labelRepository.observeSystemLabels(any()) }
+        assertFalse(firstResult)
+        assertTrue(secondResult)
+    }
+
 }
