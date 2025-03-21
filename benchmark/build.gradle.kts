@@ -1,4 +1,5 @@
 import java.util.Properties
+import ch.protonmail.android.mail.plugin.ApplicationConfigPlugin
 
 /*
  * Copyright (c) 2022 Proton Technologies AG
@@ -21,6 +22,7 @@ import java.util.Properties
 plugins {
     id("com.android.test")
     id("org.jetbrains.kotlin.android")
+    id("app-config-plugin")
 }
 
 private val benchmarkProperties = Properties().apply {
@@ -37,7 +39,7 @@ private val benchmarkPassword = benchmarkProperties["password"].toString()
 
 android {
     namespace = "ch.protonmail.android.benchmark"
-    compileSdk = Config.compileSdk
+    compileSdk = AppConfiguration.compileSdk.get()
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
@@ -49,8 +51,8 @@ android {
     }
 
     defaultConfig {
-        minSdk = Config.minSdk
-        targetSdk = Config.targetSdk
+        minSdk = AppConfiguration.minSdk.get()
+        targetSdk = AppConfiguration.targetSdk.get()
 
         missingDimensionStrategy("default", "alpha")
 

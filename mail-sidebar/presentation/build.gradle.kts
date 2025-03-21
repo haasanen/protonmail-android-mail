@@ -21,16 +21,16 @@ plugins {
     kotlin("android")
     kotlin("kapt")
     id("org.jetbrains.kotlin.plugin.compose")
+    id("app-config-plugin")
 }
 
 android {
     namespace = "ch.protonmail.android.mailsidebar.presentation"
-    compileSdk = Config.compileSdk
+    compileSdk = AppConfiguration.compileSdk.get()
 
     defaultConfig {
-        minSdk = Config.minSdk
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        testInstrumentationRunnerArguments["clearPackageData"] = "true"
+        minSdk = AppConfiguration.minSdk.get()
+        lint.targetSdk = AppConfiguration.targetSdk.get()
     }
 
     compileOptions {

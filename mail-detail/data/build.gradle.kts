@@ -21,17 +21,17 @@ plugins {
     kotlin("android")
     kotlin("kapt")
     kotlin("plugin.serialization")
+    id("app-config-plugin")
 }
 
 android {
     namespace = "ch.protonmail.android.maildetail.data"
-    compileSdk = Config.compileSdk
+    compileSdk = AppConfiguration.compileSdk.get()
 
     defaultConfig {
-        minSdk = Config.minSdk
-        lint.targetSdk = Config.targetSdk
+        minSdk = AppConfiguration.minSdk.get()
+        lint.targetSdk = AppConfiguration.targetSdk.get()
     }
-
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17

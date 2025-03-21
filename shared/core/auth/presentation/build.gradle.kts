@@ -23,17 +23,17 @@ plugins {
     id("dagger.hilt.android.plugin")
     id("app.cash.paparazzi")
     id("kotlin-parcelize")
+    id("app-config-plugin")
 }
 
 android {
     namespace = "me.proton.android.core.auth.presentation"
 
-    compileSdk = Config.compileSdk
+    compileSdk = AppConfiguration.compileSdk.get()
 
     defaultConfig {
-        minSdk = Config.minSdk
-        lint.targetSdk = Config.targetSdk
-        testInstrumentationRunner = Config.testInstrumentationRunner
+        minSdk = AppConfiguration.minSdk.get()
+        lint.targetSdk = AppConfiguration.targetSdk.get()
     }
 
     compileOptions {

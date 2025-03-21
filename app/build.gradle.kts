@@ -32,6 +32,7 @@ plugins {
     id("org.jetbrains.kotlinx.kover")
     id("me.proton.core.gradle-plugins.environment-config") version libs.versions.proton.core.plugin.get()
     id("org.jetbrains.kotlin.plugin.compose")
+    id("app-config-plugin")
 }
 
 val privateProperties = Properties().apply {
@@ -50,15 +51,16 @@ val proxyToken: String? = privateProperties.getProperty("PROXY_TOKEN")
 
 android {
     namespace = "ch.protonmail.android"
-    compileSdk = Config.compileSdk
+    compileSdk = AppConfiguration.compileSdk.get()
 
     defaultConfig {
-        applicationId = Config.applicationId
-        minSdk = Config.minSdk
-        targetSdk = Config.targetSdk
-        versionCode = Config.versionCode
-        versionName = Config.versionName
-        testInstrumentationRunner = Config.testInstrumentationRunner
+        applicationId = AppConfiguration.applicationId.get()
+        minSdk = AppConfiguration.minSdk.get()
+        targetSdk = AppConfiguration.targetSdk.get()
+        versionCode = AppConfiguration.versionCode.get()
+        versionName = AppConfiguration.versionName.get()
+
+        testInstrumentationRunner = AppConfiguration.testInstrumentationRunner.get()
         testInstrumentationRunnerArguments["clearPackageData"] = "true"
 
         javaCompileOptions {

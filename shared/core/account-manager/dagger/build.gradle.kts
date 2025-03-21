@@ -21,17 +21,17 @@ plugins {
     kotlin("android")
     kotlin("kapt")
     id("dagger.hilt.android.plugin")
+    id("app-config-plugin")
 }
 
 android {
     namespace = "me.proton.android.core.accountmanager.dagger"
 
-    compileSdk = Config.compileSdk
+    compileSdk = AppConfiguration.compileSdk.get()
 
     defaultConfig {
-        minSdk = Config.minSdk
-        lint.targetSdk = Config.targetSdk
-        testInstrumentationRunner = Config.testInstrumentationRunner
+        minSdk = AppConfiguration.minSdk.get()
+        lint.targetSdk = AppConfiguration.targetSdk.get()
     }
 
     compileOptions {

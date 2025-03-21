@@ -22,14 +22,15 @@ plugins {
     kotlin("kapt")
     kotlin("plugin.serialization")
     id("dagger.hilt.android.plugin")
+    id("app-config-plugin")
 }
 
 android {
     namespace = "ch.protonmail.android.mailnotifications"
-    compileSdk = Config.compileSdk
+    compileSdk = AppConfiguration.compileSdk.get()
 
     defaultConfig {
-        minSdk = Config.minSdk
+        minSdk = AppConfiguration.minSdk.get()
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         testInstrumentationRunnerArguments["clearPackageData"] = "true"
     }

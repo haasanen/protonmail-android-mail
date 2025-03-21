@@ -23,15 +23,16 @@ plugins {
     id("kotlin-parcelize")
     id("dagger.hilt.android.plugin")
     id("org.jetbrains.kotlin.plugin.compose")
+    id("app-config-plugin")
 }
 
 android {
     namespace = "ch.protonmail.android.mailmailbox.presentation"
-    compileSdk = Config.compileSdk
+    compileSdk = AppConfiguration.compileSdk.get()
 
     defaultConfig {
-        minSdk = Config.minSdk
-        lint.targetSdk = Config.targetSdk
+        minSdk = AppConfiguration.minSdk.get()
+        lint.targetSdk = AppConfiguration.targetSdk.get()
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 

@@ -23,17 +23,16 @@ plugins {
     kotlin("plugin.serialization")
     id("dagger.hilt.android.plugin")
     id("org.jetbrains.kotlin.plugin.compose")
+    id("app-config-plugin")
 }
 
 android {
     namespace = "ch.protonmail.android.mailcomposer.presentation"
-    compileSdk = Config.compileSdk
+    compileSdk = AppConfiguration.compileSdk.get()
 
     defaultConfig {
-        minSdk = Config.minSdk
-        lint.targetSdk = Config.targetSdk
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        testInstrumentationRunnerArguments["clearPackageData"] = "true"
+        minSdk = AppConfiguration.minSdk.get()
+        lint.targetSdk = AppConfiguration.targetSdk.get()
     }
 
     compileOptions {

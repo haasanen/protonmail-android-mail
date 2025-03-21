@@ -20,14 +20,15 @@ plugins {
     id("com.android.library")
     kotlin("android")
     id("org.jetbrains.kotlin.plugin.compose")
+    id("app-config-plugin")
 }
 
 android {
     namespace = "ch.protonmail.android.design.compose"
-    compileSdk = Config.compileSdk
+    compileSdk = AppConfiguration.compileSdk.get()
 
     defaultConfig {
-        minSdk = Config.minSdk
+        minSdk = AppConfiguration.minSdk.get()
     }
 
     compileOptions {

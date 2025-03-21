@@ -24,7 +24,7 @@ source "$(dirname "${BASH_SOURCE[0]}")/prelude.sh"
 
 printf "Updating versionCode to '%s'...\n" $VERSION_CODE
 
-if ! sed -i.bak '/versionCode = /s~=.*$~='" $VERSION_CODE"'~' "$CONFIG_FILE_PATH"; then
+if ! sed -i.bak '/versionCode=/s~=.*$~='"$VERSION_CODE"'~' "$CONFIG_FILE_PATH"; then
     printf "Unable to update versionCode.\n"
     exit 1
   fi

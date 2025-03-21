@@ -22,15 +22,16 @@ plugins {
     kotlin("kapt")
     kotlin("plugin.serialization")
     id("kotlin-parcelize")
+    id("app-config-plugin")
 }
 
 android {
     namespace = "ch.protonmail.android.mailmailbox.domain"
-    compileSdk = Config.compileSdk
+    compileSdk = AppConfiguration.compileSdk.get()
 
     defaultConfig {
-        minSdk = Config.minSdk
-        lint.targetSdk = Config.targetSdk
+        minSdk = AppConfiguration.minSdk.get()
+        lint.targetSdk = AppConfiguration.targetSdk.get()
     }
 
     compileOptions {
