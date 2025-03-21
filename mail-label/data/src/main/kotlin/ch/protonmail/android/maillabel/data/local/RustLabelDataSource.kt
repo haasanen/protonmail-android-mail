@@ -79,11 +79,11 @@ class RustLabelDataSource @Inject constructor(
                 close()
                 Timber.e("rust-label: failed to watch system labels! $it")
             }
-            .onRight {
-                labelsWatchHandle = it
-                sidebar.systemLabels().getOrNull()?.let {
-                    send(it)
-                    Timber.v("rust-label: Setting initial value for system folders $it")
+            .onRight { watcher ->
+                labelsWatchHandle = watcher
+                sidebar.systemLabels().getOrNull()?.let { systemLabels ->
+                    send(systemLabels)
+                    Timber.v("rust-label: Setting initial value for system folders $systemLabels")
                 }
             }
 
@@ -115,11 +115,11 @@ class RustLabelDataSource @Inject constructor(
                 close()
                 Timber.e("rust-label: failed to watch message labels! $it")
             }
-            .onRight {
-                labelsWatchHandle = it
-                sidebar.customLabels().getOrNull()?.let {
-                    send(it)
-                    Timber.v("rust-label: Setting initial value for message labels $it")
+            .onRight { watcher ->
+                labelsWatchHandle = watcher
+                sidebar.customLabels().getOrNull()?.let { labels ->
+                    send(labels)
+                    Timber.v("rust-label: Setting initial value for message labels $labels")
                 }
             }
 
@@ -151,11 +151,11 @@ class RustLabelDataSource @Inject constructor(
                 close()
                 Timber.e("rust-label: failed to watch message folders! $it")
             }
-            .onRight {
-                labelsWatchHandle = it
-                sidebar.allCustomFolders().getOrNull()?.let {
-                    send(it)
-                    Timber.v("rust-label: Setting initial value for message folders $it")
+            .onRight { watcher ->
+                labelsWatchHandle = watcher
+                sidebar.allCustomFolders().getOrNull()?.let { folders ->
+                    send(folders)
+                    Timber.v("rust-label: Setting initial value for message folders $folders")
                 }
             }
 

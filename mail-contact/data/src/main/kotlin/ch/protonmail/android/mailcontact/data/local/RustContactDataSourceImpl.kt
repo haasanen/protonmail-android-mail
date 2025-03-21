@@ -92,8 +92,12 @@ class RustContactDataSourceImpl @Inject constructor(
                     close()
                     Timber.e("rust-contact-data-source: failed creating contact watcher $it")
                 }
-                .onRight {
-                    send(it.contactList.map { groupedContactsMapper.toGroupedContacts(it) }.right())
+                .onRight { watcher ->
+                    send(
+                        watcher.contactList.map { contacts ->
+                            groupedContactsMapper.toGroupedContacts(contacts)
+                        }.right()
+                    )
                     Timber.d("rust-contact-data-source: contact watcher created")
                 }
 
