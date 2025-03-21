@@ -61,7 +61,11 @@ class RustLabelDataSource @Inject constructor(
     override fun observeSystemLabels(userId: UserId): Flow<List<SidebarSystemLabel>> = callbackFlow {
         Timber.v("rust-label: initializing system labels live query")
 
-        val sidebar = getRustSidebarInstance(userId) ?: return@callbackFlow
+        val sidebar = getRustSidebarInstance(userId)
+        if (sidebar == null) {
+            close()
+            return@callbackFlow
+        }
         var labelsWatchHandle: WatchHandle? = null
         val labelsUpdatedCallback = object : LiveQueryCallback {
             override fun onUpdate() {
@@ -88,16 +92,20 @@ class RustLabelDataSource @Inject constructor(
             }
 
         awaitClose {
-            labelsWatchHandle?.disconnect()
+            labelsWatchHandle?.destroy()
             sidebar.destroy()
-            Timber.d("rust-label: system labels watcher disconnected")
+            Timber.d("rust-label: system labels watcher destroyed")
         }
     }
 
     override fun observeMessageLabels(userId: UserId): Flow<List<SidebarCustomLabel>> = callbackFlow {
         Timber.v("rust-label: initializing message labels live query")
 
-        val sidebar = getRustSidebarInstance(userId) ?: return@callbackFlow
+        val sidebar = getRustSidebarInstance(userId)
+        if (sidebar == null) {
+            close()
+            return@callbackFlow
+        }
         var labelsWatchHandle: WatchHandle? = null
         val labelsUpdatedCallback = object : LiveQueryCallback {
             override fun onUpdate() {
@@ -124,16 +132,20 @@ class RustLabelDataSource @Inject constructor(
             }
 
         awaitClose {
-            labelsWatchHandle?.disconnect()
+            labelsWatchHandle?.destroy()
             sidebar.destroy()
-            Timber.d("rust-label: message labels watcher disconnected")
+            Timber.d("rust-label: message labels watcher destroyed")
         }
     }
 
     override fun observeMessageFolders(userId: UserId): Flow<List<SidebarCustomFolder>> = callbackFlow {
         Timber.v("rust-label: initializing message folders live query")
 
-        val sidebar = getRustSidebarInstance(userId) ?: return@callbackFlow
+        val sidebar = getRustSidebarInstance(userId)
+        if (sidebar == null) {
+            close()
+            return@callbackFlow
+        }
         var labelsWatchHandle: WatchHandle? = null
         val labelsUpdatedCallback = object : LiveQueryCallback {
             override fun onUpdate() {
@@ -160,9 +172,9 @@ class RustLabelDataSource @Inject constructor(
             }
 
         awaitClose {
-            labelsWatchHandle?.disconnect()
+            labelsWatchHandle?.destroy()
             sidebar.destroy()
-            Timber.d("rust-label: message folders watcher disconnected")
+            Timber.d("rust-label: message folders watcher destroyed")
         }
     }
 

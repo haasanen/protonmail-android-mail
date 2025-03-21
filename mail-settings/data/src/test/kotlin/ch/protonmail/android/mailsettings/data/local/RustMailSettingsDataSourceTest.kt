@@ -13,7 +13,6 @@ import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.slot
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import org.junit.Test
@@ -31,12 +30,10 @@ class RustMailSettingsDataSourceTest {
 
     private val userSessionRepository = mockk<UserSessionRepository>()
     private val createRustMailSettings = mockk<CreateRustUserMailSettings>()
-    private val testCoroutineScope = CoroutineScope(mainDispatcherRule.testDispatcher)
 
     private val mailSettingsDataSource = RustMailSettingsDataSource(
         userSessionRepository,
-        createRustMailSettings,
-        testCoroutineScope
+        createRustMailSettings
     )
 
     @Test
@@ -50,7 +47,7 @@ class RustMailSettingsDataSourceTest {
             mailSettingsDataSource.observeMailSettings(userId).test {
                 // Then
                 loggingTestRule.assertErrorLogged("rust-settings: trying to load settings with a null session")
-                expectNoEvents()
+                awaitComplete()
             }
         }
 

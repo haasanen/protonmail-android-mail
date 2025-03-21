@@ -76,12 +76,12 @@ class RustLabelDataSourceTest {
             labelDataSource.observeSystemLabels(userId).test {
                 // Then
                 loggingTestRule.assertErrorLogged("rust-label: trying to load labels with a null session")
-                expectNoEvents()
+                awaitComplete()
             }
         }
 
     @Test
-    fun `observe system labels emits items when returned by the rust library`() = runTest {
+    fun `observe system labels emits initial items when returned by the rust library`() = runTest {
         // Given
         val userId = UserIdTestData.userId
         val expected = listOf(LocalLabelTestData.localSystemLabelWithCount)
@@ -98,42 +98,61 @@ class RustLabelDataSourceTest {
         every { createRustSidebar(userSessionMock) } returns sidebarMock
 
         labelDataSource.observeSystemLabels(userId).test {
-            // When
-            systemCallbackSlot.captured.onUpdate()
-
             // Then
             assertEquals(expected, awaitItem())
         }
     }
 
     @Test
-    fun `re initializes system labels query when userId changes`() = runTest {
+    fun `observe system labels emits items when rust library callback fires`() = runTest {
         // Given
-        val firstUserId = UserIdTestData.userId
-        val secondUserId = UserIdTestData.userId1
+        val userId = UserIdTestData.userId
+        val expected = listOf(LocalLabelTestData.localSystemLabelWithCount)
+        val systemCallbackSlot = slot<LiveQueryCallback>()
+        val userSessionMock = mockk<MailUserSessionWrapper>()
+        val labelsWatcherMock = mockk<WatchHandle>()
+        coEvery { userSessionRepository.getUserSession(userId) } returns userSessionMock
+        val sidebarMock = mockk<SidebarWrapper> {
+            coEvery { this@mockk.systemLabels() } returns expected.right()
+            coEvery {
+                this@mockk.watchLabels(LabelType.SYSTEM, capture(systemCallbackSlot))
+            } returns labelsWatcherMock.right()
+        }
+        every { createRustSidebar(userSessionMock) } returns sidebarMock
+
+        labelDataSource.observeSystemLabels(userId).test {
+            awaitItem() // Skip initial state
+            // When
+            systemCallbackSlot.captured.onUpdate()
+            // Then
+            assertEquals(expected, awaitItem())
+        }
+    }
+
+    @Test
+    fun `observe system labels destroys rust object and callback when not observed anymore`() = runTest {
+        // Given
+        val userId = UserIdTestData.userId
         val expected = listOf(LocalLabelTestData.localSystemLabelWithCount)
         val watcherMock = mockk<WatchHandle> {
             coEvery { this@mockk.destroy() } just Runs
         }
-        val firstUserSessionMock = mockk<MailUserSessionWrapper>()
-        val secondUserSessionMock = mockk<MailUserSessionWrapper>()
+        val userSessionMock = mockk<MailUserSessionWrapper>()
         val sidebarMock = mockk<SidebarWrapper> {
             coEvery { this@mockk.systemLabels() } returns expected.right()
             coEvery { this@mockk.watchLabels(LabelType.SYSTEM, any()) } returns watcherMock.right()
             coEvery { this@mockk.destroy() } just Runs
         }
-        every { createRustSidebar(firstUserSessionMock) } returns sidebarMock
-        every { createRustSidebar(secondUserSessionMock) } returns sidebarMock
-        coEvery { userSessionRepository.getUserSession(firstUserId) } returns firstUserSessionMock
-        coEvery { userSessionRepository.getUserSession(secondUserId) } returns secondUserSessionMock
+        every { createRustSidebar(userSessionMock) } returns sidebarMock
+        coEvery { userSessionRepository.getUserSession(userId) } returns userSessionMock
 
-        labelDataSource.observeSystemLabels(firstUserId)
-        // When
-        labelDataSource.observeSystemLabels(secondUserId)
-        // Then
-        coVerify { sidebarMock.destroy() }
-        coVerify { createRustSidebar(firstUserSessionMock) }
-        coVerify { createRustSidebar(secondUserSessionMock) }
+        labelDataSource.observeSystemLabels(userId).test {
+            // When
+            cancelAndIgnoreRemainingEvents()
+
+            // Then
+            coVerify { sidebarMock.destroy() }
+        }
     }
 
     @Test
@@ -147,7 +166,7 @@ class RustLabelDataSourceTest {
             labelDataSource.observeMessageLabels(userId).test {
                 // Then
                 loggingTestRule.assertErrorLogged("rust-label: trying to load labels with a null session")
-                expectNoEvents()
+                awaitComplete()
             }
         }
 
@@ -173,42 +192,65 @@ class RustLabelDataSourceTest {
 
 
         labelDataSource.observeMessageLabels(userId).test {
-            // When
-            messageLabelsCallbackSlot.captured.onUpdate()
-
             // Then
             assertEquals(expected, awaitItem())
         }
     }
 
     @Test
-    fun `re initializes message custom labels query when userId changes`() = runTest {
+    fun `observe message custom labels emits items when rust library callback fires`() = runTest {
         // Given
-        val firstUserId = UserIdTestData.userId
-        val secondUserId = UserIdTestData.userId1
+        val userId = UserIdTestData.userId
+        val expected = listOf(LocalLabelTestData.localMessageLabelWithCount)
+        val messageLabelsCallbackSlot = slot<LiveQueryCallback>()
+        val userSessionMock = mockk<MailUserSessionWrapper>()
+        val labelsWatcherMock = mockk<WatchHandle>()
+        coEvery { userSessionRepository.getUserSession(userId) } returns userSessionMock
+        val sidebarMock = mockk<SidebarWrapper> {
+            coEvery { this@mockk.customLabels() } returns expected.right()
+            coEvery {
+                this@mockk.watchLabels(
+                    LabelType.LABEL,
+                    capture(messageLabelsCallbackSlot)
+                )
+            } returns labelsWatcherMock.right()
+        }
+        every { createRustSidebar(userSessionMock) } returns sidebarMock
+
+        labelDataSource.observeMessageLabels(userId).test {
+            awaitItem() // Skip initial state
+            // When
+            messageLabelsCallbackSlot.captured.onUpdate()
+            // Then
+            assertEquals(expected, awaitItem())
+        }
+    }
+
+
+    @Test
+    fun `observe custom labels destroys rust object and callback when not observed anymore`() = runTest {
+        // Given
+        val userId = UserIdTestData.userId
         val expected = listOf(LocalLabelTestData.localMessageLabelWithCount)
         val watcherMock = mockk<WatchHandle> {
             coEvery { this@mockk.destroy() } just Runs
         }
-        val firstUserSessionMock = mockk<MailUserSessionWrapper>()
-        val secondUserSessionMock = mockk<MailUserSessionWrapper>()
+        val userSessionMock = mockk<MailUserSessionWrapper>()
         val sidebarMock = mockk<SidebarWrapper> {
             coEvery { this@mockk.customLabels() } returns expected.right()
             coEvery { this@mockk.watchLabels(LabelType.LABEL, any()) } returns watcherMock.right()
             coEvery { this@mockk.destroy() } just Runs
         }
-        every { createRustSidebar(firstUserSessionMock) } returns sidebarMock
-        every { createRustSidebar(secondUserSessionMock) } returns sidebarMock
-        coEvery { userSessionRepository.getUserSession(firstUserId) } returns firstUserSessionMock
-        coEvery { userSessionRepository.getUserSession(secondUserId) } returns secondUserSessionMock
+        every { createRustSidebar(userSessionMock) } returns sidebarMock
+        coEvery { userSessionRepository.getUserSession(userId) } returns userSessionMock
 
-        labelDataSource.observeMessageLabels(firstUserId)
-        // When
-        labelDataSource.observeMessageLabels(secondUserId)
-        // Then
-        coVerify { sidebarMock.destroy() }
-        coVerify { createRustSidebar(firstUserSessionMock) }
-        coVerify { createRustSidebar(secondUserSessionMock) }
+        labelDataSource.observeMessageLabels(userId).test {
+            // When
+            cancelAndIgnoreRemainingEvents()
+
+            // Then
+            coVerify { sidebarMock.destroy() }
+        }
     }
 
     @Test
@@ -222,7 +264,7 @@ class RustLabelDataSourceTest {
             labelDataSource.observeMessageFolders(userId).test {
                 // Then
                 loggingTestRule.assertErrorLogged("rust-label: trying to load labels with a null session")
-                expectNoEvents()
+                awaitComplete()
             }
         }
 
@@ -245,41 +287,61 @@ class RustLabelDataSourceTest {
 
 
         labelDataSource.observeMessageFolders(userId).test {
-            // When
-            messageFoldersCallbackSlot.captured.onUpdate()
-
             // Then
             assertEquals(expected, awaitItem())
         }
     }
 
     @Test
-    fun `re initializes message custom folders query when userId changes`() = runTest {
+    fun `observe message custom folders emits items when rust library callback fires`() = runTest {
         // Given
-        val firstUserId = UserIdTestData.userId
-        val secondUserId = UserIdTestData.userId1
+        val userId = UserIdTestData.userId
+        val expected = listOf(LocalLabelTestData.localMessageFolderWithCount)
+        val messageFoldersCallbackSlot = slot<LiveQueryCallback>()
+        val userSessionMock = mockk<MailUserSessionWrapper>()
+        val watcherMock = mockk<WatchHandle>()
+        coEvery { userSessionRepository.getUserSession(userId) } returns userSessionMock
+        val sidebarMock = mockk<SidebarWrapper> {
+            coEvery { this@mockk.allCustomFolders() } returns expected.right()
+            coEvery {
+                this@mockk.watchLabels(LabelType.FOLDER, capture(messageFoldersCallbackSlot))
+            } returns watcherMock.right()
+        }
+        every { createRustSidebar(userSessionMock) } returns sidebarMock
+
+
+        labelDataSource.observeMessageFolders(userId).test {
+            awaitItem() // Skip initial state
+            // When
+            messageFoldersCallbackSlot.captured.onUpdate()
+            // Then
+            assertEquals(expected, awaitItem())
+        }
+    }
+
+    @Test
+    fun `observe custom folders destroys rust object and callback when not observed anymore`() = runTest {
+        // Given
+        val userId = UserIdTestData.userId
         val expected = listOf(LocalLabelTestData.localMessageFolderWithCount)
         val watcherMock = mockk<WatchHandle> {
             coEvery { this@mockk.destroy() } just Runs
         }
-        val firstUserSessionMock = mockk<MailUserSessionWrapper>()
-        val secondUserSessionMock = mockk<MailUserSessionWrapper>()
+        val userSessionMock = mockk<MailUserSessionWrapper>()
         val sidebarMock = mockk<SidebarWrapper> {
             coEvery { this@mockk.allCustomFolders() } returns expected.right()
             coEvery { this@mockk.watchLabels(LabelType.FOLDER, any()) } returns watcherMock.right()
             coEvery { this@mockk.destroy() } just Runs
         }
-        every { createRustSidebar(firstUserSessionMock) } returns sidebarMock
-        every { createRustSidebar(secondUserSessionMock) } returns sidebarMock
-        coEvery { userSessionRepository.getUserSession(firstUserId) } returns firstUserSessionMock
-        coEvery { userSessionRepository.getUserSession(secondUserId) } returns secondUserSessionMock
+        every { createRustSidebar(userSessionMock) } returns sidebarMock
+        coEvery { userSessionRepository.getUserSession(userId) } returns userSessionMock
 
-        labelDataSource.observeMessageFolders(firstUserId)
-        // When
-        labelDataSource.observeMessageFolders(secondUserId)
-        // Then
-        coVerify { sidebarMock.destroy() }
-        coVerify { createRustSidebar(firstUserSessionMock) }
-        coVerify { createRustSidebar(secondUserSessionMock) }
+        labelDataSource.observeMessageFolders(userId).test {
+            // When
+            cancelAndIgnoreRemainingEvents()
+
+            // Then
+            coVerify { sidebarMock.destroy() }
+        }
     }
 }
