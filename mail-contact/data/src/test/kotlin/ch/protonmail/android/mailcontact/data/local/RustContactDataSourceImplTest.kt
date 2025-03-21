@@ -18,7 +18,7 @@
 
 package ch.protonmail.android.mailcontact.data.local
 
-import arrow.core.getOrElse
+import arrow.core.left
 import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
@@ -28,7 +28,6 @@ import ch.protonmail.android.mailcontact.data.mapper.ContactItemTypeMapper
 import ch.protonmail.android.mailcontact.data.mapper.GroupedContactsMapper
 import ch.protonmail.android.mailcontact.data.usecase.CreateRustContactWatcher
 import ch.protonmail.android.mailcontact.data.usecase.RustDeleteContact
-import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import ch.protonmail.android.mailcontact.domain.model.GetContactError
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
@@ -51,6 +50,7 @@ import uniffi.proton_mail_uniffi.VoidActionResult
 import uniffi.proton_mail_uniffi.WatchedContactList
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNotSame
 
 class RustContactDataSourceImplTest {
 
@@ -114,8 +114,24 @@ class RustContactDataSourceImplTest {
         val result = rustContactDataSource.observeAllContacts(userId).first()
 
         // Then
-        assertTrue(result.isLeft())
-        assertEquals(GetContactError, result.swap().getOrElse { emptyList<ContactMetadata>() })
+        assertEquals(GetContactError.left(), result)
+    }
+
+    @Test
+    fun `observeAllContacts should return error when rust fails to create the contacts watcher`() = runTest {
+        // Given
+        val userId = UserIdSample.Primary
+        val session = mockk<MailUserSessionWrapper>()
+        coEvery { userSessionRepository.getUserSession(userId) } returns session
+        coEvery {
+            createRustContactWatcher(session, capture(contactListUpdatedCallbackSlot))
+        } returns DataError.Local.Unknown.left()
+
+        // When
+        val result = rustContactDataSource.observeAllContacts(userId).first()
+
+        // Then
+        assertEquals(GetContactError.left(), result)
     }
 
     @Test
@@ -176,7 +192,7 @@ class RustContactDataSourceImplTest {
     }
 
     @Test
-    fun `deleteContact should return error when MailSessionException is thrown`() = runTest {
+    fun `deleteContact should return error when rust delete contact fails`() = runTest {
         // Given
         val userId = UserIdSample.Primary
         val contactId = LocalContactTestData.contactId1
@@ -194,7 +210,7 @@ class RustContactDataSourceImplTest {
     }
 
     @Test
-    fun `should create watcher on first invocation`() = runTest {
+    fun `creates a new watcher for each call to observe grouped contacts`() = runTest {
         // Given
         val userId = UserIdSample.Primary
         val session = mockk<MailUserSessionWrapper>()
@@ -202,30 +218,15 @@ class RustContactDataSourceImplTest {
         coEvery { userSessionRepository.getUserSession(userId) } returns session
         coEvery { createRustContactWatcher(session, capture(callbackSlot)) } returns mockWatcher.right()
 
-        // When
-        rustContactDataSource.observeAllGroupedContacts(userId).first()
+        // First call returns one callback flow
+        val firstFlow = rustContactDataSource.observeAllGroupedContacts(userId).first()
+
+        // Second call returns a new callback flow
+        val secondFlow = rustContactDataSource.observeAllGroupedContacts(userId).first()
 
         // Then
-        coVerify(exactly = 1) { createRustContactWatcher(session, any()) }
-    }
-
-    @Test
-    fun `should not recreate watcher if already exists`() = runTest {
-        // Given
-        val userId = UserIdSample.Primary
-        val session = mockk<MailUserSessionWrapper>()
-        val callbackSlot = slot<ContactsLiveQueryCallback>()
-        coEvery { userSessionRepository.getUserSession(userId) } returns session
-        coEvery { createRustContactWatcher(session, capture(callbackSlot)) } returns mockWatcher.right()
-
-        // First call to initialize the watcher
-        rustContactDataSource.observeAllGroupedContacts(userId).first()
-
-        // Second call should not recreate the watcher
-        rustContactDataSource.observeAllGroupedContacts(userId).first()
-
-        // Then
-        coVerify(exactly = 1) { createRustContactWatcher(session, any()) }
+        assertNotSame(firstFlow, secondFlow)
+        coVerify(exactly = 2) { createRustContactWatcher(session, any()) }
     }
 }
 

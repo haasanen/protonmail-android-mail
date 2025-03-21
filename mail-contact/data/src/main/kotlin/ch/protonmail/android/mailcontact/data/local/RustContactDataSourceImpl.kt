@@ -74,6 +74,7 @@ class RustContactDataSourceImpl @Inject constructor(
             val session = userSessionRepository.getUserSession(userId)
             if (session == null) {
                 Timber.e("rust-contact-data-source: trying to load contacts with a null session")
+                send(GetContactError.left())
                 close()
                 return@callbackFlow
             }
@@ -89,6 +90,7 @@ class RustContactDataSourceImpl @Inject constructor(
 
             val contactListWatcher = createRustContactWatcher(session, contactListUpdatedCallback)
                 .onLeft {
+                    send(GetContactError.left())
                     close()
                     Timber.e("rust-contact-data-source: failed creating contact watcher $it")
                 }
