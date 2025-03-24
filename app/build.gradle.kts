@@ -16,7 +16,9 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import java.io.ByteArrayOutputStream
 import java.util.Properties
+import ch.protonmail.android.mail.plugin.GenerateGitHashTask
 import com.android.build.api.dsl.VariantDimension
 import configuration.extensions.protonEnvironment
 import org.gradle.kotlin.dsl.get
@@ -48,6 +50,33 @@ val privateProperties = Properties().apply {
 val accountSentryDSN: String = privateProperties.getProperty("accountSentryDSN") ?: ""
 val sentryDSN: String = privateProperties.getProperty("sentryDSN") ?: ""
 val proxyToken: String? = privateProperties.getProperty("PROXY_TOKEN")
+
+val gitHashFile = File(project.layout.buildDirectory.asFile.get(), "git/git-hash.txt")
+
+val getGitHashTask = tasks.register<GenerateGitHashTask>("getGitHash") {
+    headRefFile.set(File(project.rootDir, ".git/HEAD"))
+    refsDirectory.set(File(project.rootDir, ".git/refs"))
+    outputFile.set(gitHashFile)
+}
+
+fun gitHashProvider(): Provider<String> {
+    return provider {
+        // This will only be evaluated during execution phase, not configuration
+        if (gitHashFile.exists()) gitHashFile.readText().trim() else "unknown"
+    }
+}
+
+afterEvaluate {
+    // Only needed for dev/alpha flavors, we don't use the hash in prod.
+    listOf("dev", "alpha").forEach { flavorName ->
+        val capitalizedName = flavorName.capitalize()
+        tasks.matching {
+            it.name.startsWith("process${capitalizedName}")
+        }.configureEach {
+            dependsOn(getGitHashTask)
+        }
+    }
+}
 
 android {
     namespace = "ch.protonmail.android"
@@ -150,10 +179,9 @@ android {
 
     flavorDimensions.add("default")
     productFlavors {
-        val gitHash = "git rev-parse --short HEAD".runCommand(workingDir = rootDir)
         create("dev") {
             applicationIdSuffix = ".dev"
-            versionNameSuffix = "-dev+$gitHash"
+            versionNameSuffix = "-dev+${gitHashProvider().get()}"
             buildConfigField("Boolean", "USE_DEFAULT_PINS", "false")
 
             val protonHost = "proton.black"
@@ -165,7 +193,7 @@ android {
         }
         create("alpha") {
             applicationIdSuffix = ".alpha"
-            versionNameSuffix = "-alpha+$gitHash"
+            versionNameSuffix = "-alpha+${gitHashProvider().get()}"
             buildConfigField("Boolean", "USE_DEFAULT_PINS", "true")
         }
         create("prod") {
