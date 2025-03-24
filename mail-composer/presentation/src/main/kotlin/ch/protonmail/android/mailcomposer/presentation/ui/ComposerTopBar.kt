@@ -19,8 +19,14 @@
 package ch.protonmail.android.mailcomposer.presentation.ui
 
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
@@ -28,6 +34,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.disabled
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.tooling.preview.Preview
 import ch.protonmail.android.mailcomposer.presentation.R
 import ch.protonmail.android.uicomponents.chips.thenIf
 import ch.protonmail.android.design.compose.component.appbar.ProtonTopAppBar
@@ -59,23 +66,59 @@ internal fun ComposerTopBar(
             }
         },
         actions = {
-            IconButton(
-                modifier = Modifier
-                    .testTag(ComposerTestTags.SendButton)
-                    .thenIf(!isSendMessageButtonEnabled) { semantics { disabled() } },
-                onClick = onSendMessageComposerClick,
-                enabled = isSendMessageButtonEnabled
+            Row(
+                modifier = Modifier.padding(end = ProtonDimens.Spacing.Medium)
             ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_proton_paper_plane),
-                    tint = if (isSendMessageButtonEnabled) {
-                        ProtonTheme.colors.interactionBrandDefaultNorm
-                    } else {
-                        ProtonTheme.colors.interactionBrandDefaultDisabled
-                    },
-                    contentDescription = stringResource(R.string.send_message_content_description)
-                )
+                Button(
+                    onClick = onSendMessageComposerClick,
+                    enabled = isSendMessageButtonEnabled,
+                    modifier = Modifier
+                        .testTag(ComposerTestTags.SendButton)
+                        .thenIf(!isSendMessageButtonEnabled) { semantics { disabled() } },
+                    shape = ProtonTheme.shapes.huge,
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = ProtonTheme.colors.interactionBrandWeakNorm,
+                        disabledContainerColor = ProtonTheme.colors.interactionBrandWeakDisabled,
+                        contentColor = ProtonTheme.colors.textAccent,
+                        disabledContentColor = ProtonTheme.colors.brandMinus20
+                    ),
+                    contentPadding = PaddingValues(
+                        horizontal = ProtonDimens.Spacing.Large,
+                        vertical = ProtonDimens.Spacing.Standard
+                    )
+                ) {
+                    Text(
+                        text = stringResource(R.string.send_button_title),
+                        style = ProtonTheme.typography.titleSmall
+                    )
+                }
             }
         }
     )
 }
+
+@Preview
+@Composable
+private fun ComposerTopBarPreviewSendButtonDisabled() {
+    ProtonTheme {
+        ComposerTopBar(
+            onCloseComposerClick = {},
+            onSendMessageComposerClick = {},
+            isSendMessageButtonEnabled = false
+        )
+    }
+}
+
+
+@Preview
+@Composable
+private fun ComposerTopBarPreviewSendButtonEnabled() {
+    ProtonTheme {
+        ComposerTopBar(
+            onCloseComposerClick = {},
+            onSendMessageComposerClick = {},
+            isSendMessageButtonEnabled = true
+        )
+    }
+}
+
