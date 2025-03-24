@@ -29,6 +29,7 @@ import android.provider.MediaStore
 import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
+import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.domain.coroutines.IODispatcher
 import ch.protonmail.android.mailcommon.domain.system.BuildVersionProvider
 import ch.protonmail.android.mailcommon.domain.system.ContentValuesProvider
@@ -46,6 +47,8 @@ import okio.source
 import timber.log.Timber
 import javax.inject.Inject
 
+@MissingRustApi
+// To be adapted to the new rust API for Attachments
 class PrepareAttachmentForSharing @Inject constructor(
     @ApplicationContext private val context: Context,
     private val messageRepository: MessageRepository,
@@ -66,7 +69,7 @@ class PrepareAttachmentForSharing @Inject constructor(
         val message =
             messageRepository.getLocalMessageWithBody(userId, messageId).getOrNull()
                 ?: return@withContext PrepareAttachmentForSharingError.MessageNotFound.left()
-        val messageAttachment = message.messageBody.attachments.firstOrNull { it.attachmentId == attachmentId }
+        val messageAttachment = message.message.attachments.firstOrNull { it.attachmentId == attachmentId }
             ?: return@withContext PrepareAttachmentForSharingError.AttachmentNotFound.left()
 
         val contentResolver = context.contentResolver

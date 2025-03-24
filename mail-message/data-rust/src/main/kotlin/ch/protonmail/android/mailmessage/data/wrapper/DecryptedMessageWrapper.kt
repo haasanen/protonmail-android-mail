@@ -21,7 +21,6 @@ package ch.protonmail.android.mailmessage.data.wrapper
 import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalAttachmentMetadata
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalMimeType
 import ch.protonmail.android.mailcommon.datarust.mapper.toDataError
 import ch.protonmail.android.mailcommon.domain.model.DataError
@@ -47,6 +46,4 @@ class DecryptedMessageWrapper(private val decryptedMessage: DecryptedMessage) {
         }
 
     fun mimeType(): LocalMimeType = decryptedMessage.mimeType()
-
-    fun getAllAttachments(): List<LocalAttachmentMetadata> = decryptedMessage.getAllAttachments()
 }

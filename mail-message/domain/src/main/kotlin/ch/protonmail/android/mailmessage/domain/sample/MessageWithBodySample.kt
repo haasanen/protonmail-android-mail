@@ -18,13 +18,11 @@
 
 package ch.protonmail.android.mailmessage.domain.sample
 
-import ch.protonmail.android.mailmessage.domain.model.AttachmentMetadata
 import ch.protonmail.android.mailmessage.domain.model.Message
 import ch.protonmail.android.mailmessage.domain.model.MessageBody
 import ch.protonmail.android.mailmessage.domain.model.MessageWithBody
 import ch.protonmail.android.mailmessage.domain.model.MimeType
 import ch.protonmail.android.mailmessage.domain.model.Recipient
-import kotlin.io.encoding.ExperimentalEncodingApi
 
 object MessageWithBodySample {
 
@@ -58,33 +56,8 @@ object MessageWithBodySample {
         message = MessageSample.RemoteDraftWith4RecipientTypes
     )
 
-    val MessageWithAttachments = build(
-        message = MessageSample.MessageWithAttachments,
-        attachments = listOf(
-            AttachmentMetadataSamples.Document,
-            AttachmentMetadataSamples.DocumentWithReallyLongFileName,
-            AttachmentMetadataSamples.EmbeddedImageAttachment
-        )
-    )
-
-    @OptIn(ExperimentalEncodingApi::class)
-    val MessageWithEncryptedAttachments = build(
-        message = MessageSample.MessageWithAttachments,
-        attachments = listOf(
-            AttachmentMetadataSamples.Document,
-            AttachmentMetadataSamples.DocumentWithReallyLongFileName,
-            AttachmentMetadataSamples.EmbeddedImageAttachment
-        )
-    )
-
-    val MessageWithSignedAttachments = build(
-        message = MessageSample.MessageWithAttachments,
-        attachments = listOf(AttachmentMetadataSamples.SignedDocument)
-    )
-
     val MessageWithInvoiceAttachment = build(
         message = MessageSample.MessageWithAttachments,
-        attachments = listOf(AttachmentMetadataSamples.Invoice),
         body = "non-empty-body"
     )
 
@@ -93,32 +66,17 @@ object MessageWithBodySample {
         mimeType = MimeType.MultipartMixed
     )
 
-    val PgpMimeMessageWithAttachment = build(
-        message = MessageSample.PgpMimeMessage,
-        mimeType = MimeType.MultipartMixed,
-        attachments = listOf(AttachmentMetadataSamples.Image)
-    )
-
-    @Suppress("VariableMaxLength")
-    val PgpMimeMessageWithPdfAttachmentWithBinaryContentType = build(
-        message = MessageSample.PgpMimeMessage,
-        mimeType = MimeType.MultipartMixed,
-        attachments = listOf(AttachmentMetadataSamples.InvoiceWithBinaryContentType)
-    )
-
     private fun build(
         message: Message = MessageSample.EmptyDraft,
         replyTo: Recipient = RecipientSample.John,
         body: String = "",
-        mimeType: MimeType = MimeType.PlainText,
-        attachments: List<AttachmentMetadata> = emptyList()
+        mimeType: MimeType = MimeType.PlainText
     ) = MessageWithBody(
         message = message,
         messageBody = MessageBody(
             messageId = message.messageId,
             body = body,
             header = "",
-            attachments = attachments,
             mimeType = mimeType,
             spamScore = "",
             replyTo = replyTo,

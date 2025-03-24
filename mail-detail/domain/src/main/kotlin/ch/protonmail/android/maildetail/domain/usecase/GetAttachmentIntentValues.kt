@@ -20,6 +20,7 @@ package ch.protonmail.android.maildetail.domain.usecase
 
 import arrow.core.Either
 import arrow.core.raise.either
+import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.maildetail.domain.model.OpenAttachmentIntentValues
 import ch.protonmail.android.mailmessage.domain.model.AttachmentId
@@ -29,6 +30,8 @@ import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
 import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 
+@MissingRustApi
+// To be adapted to the new rust API for Attachments
 class GetAttachmentIntentValues @Inject constructor(
     private val attachmentRepository: AttachmentRepository,
     private val messageRepository: MessageRepository
@@ -42,7 +45,7 @@ class GetAttachmentIntentValues @Inject constructor(
         val messageWithBody = messageRepository.getMessageWithBody(userId, messageId).bind()
         val fileUri = attachmentRepository.getAttachment(userId, messageId, attachmentId).bind().fileUri
 
-        val attachment = messageWithBody.messageBody.attachments.firstOrNull { it.attachmentId == attachmentId }
+        val attachment = messageWithBody.message.attachments.firstOrNull { it.attachmentId == attachmentId }
             ?: raise(DataError.Local.NoDataCached)
 
         return@either OpenAttachmentIntentValues(

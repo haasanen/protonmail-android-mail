@@ -34,7 +34,6 @@ import ch.protonmail.android.mailmessage.data.mapper.toMessage
 import ch.protonmail.android.mailmessage.data.mapper.toMessageBody
 import ch.protonmail.android.mailmessage.data.mapper.toMessageId
 import ch.protonmail.android.mailmessage.data.mapper.toRemoteMessageId
-import ch.protonmail.android.mailmessage.data.sample.LocalAttachmentMetadataSample
 import ch.protonmail.android.mailmessage.domain.model.SenderImage
 import ch.protonmail.android.mailpagination.domain.model.PageKey
 import ch.protonmail.android.testdata.message.rust.LocalMessageIdSample
@@ -189,8 +188,7 @@ class RustMessageRepositoryImplTest {
             bodyBanners
         )
         val localMimeType = LocalMimeType.TEXT_PLAIN
-        val attachments = listOf(LocalAttachmentMetadataSample.Pdf)
-        val expectedMessageWithBody = bodyOutput.toMessageBody(messageId, localMimeType, attachments)
+        val expectedMessageWithBody = bodyOutput.toMessageBody(messageId, localMimeType)
         coEvery { rustMessageDataSource.getMessage(userId, messageId.toLocalMessageId()) } returns localMessage.right()
         coEvery {
             rustMessageDataSource.getMessageBody(

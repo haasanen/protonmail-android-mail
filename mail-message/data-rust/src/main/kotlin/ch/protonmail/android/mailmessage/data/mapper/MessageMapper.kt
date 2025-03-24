@@ -24,13 +24,11 @@ import arrow.core.right
 import arrow.core.toNonEmptyListOrNull
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalAddressId
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalAttachmentDisposition
-import ch.protonmail.android.mailcommon.datarust.mapper.LocalAttachmentMetadata
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalAvatarInformation
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalConversationId
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageId
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageMetadata
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalMimeType
-import ch.protonmail.android.mailcommon.datarust.mapper.RemoteMessageId as RustRemoteMessageId
 import ch.protonmail.android.mailcommon.domain.model.AvatarInformation
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
@@ -51,6 +49,7 @@ import timber.log.Timber
 import uniffi.proton_mail_common.BodyOutput
 import uniffi.proton_mail_uniffi.MessageRecipient
 import uniffi.proton_mail_uniffi.MessageSender
+import ch.protonmail.android.mailcommon.datarust.mapper.RemoteMessageId as RustRemoteMessageId
 
 
 fun LocalAvatarInformation.toAvatarInformation(): AvatarInformation {
@@ -135,23 +134,16 @@ fun LocalMimeType.toAndroidMimeType(): MimeType {
     }
 }
 
-fun BodyOutput.toMessageBody(
-    messageId: MessageId,
-    mimeType: LocalMimeType,
-    attachments: List<LocalAttachmentMetadata>
-): MessageBody {
-    return MessageBody(
-        messageId = messageId,
-        body = this.body,
-        header = "",
-        attachments = attachments.map { it.toAttachmentMetadata() },
-        mimeType = mimeType.toAndroidMimeType(),
-        spamScore = "",
-        replyTo = Recipient("", ""),
-        replyTos = emptyList(),
-        unsubscribeMethods = null
-    )
-}
+fun BodyOutput.toMessageBody(messageId: MessageId, mimeType: LocalMimeType) = MessageBody(
+    messageId = messageId,
+    body = this.body,
+    header = "",
+    mimeType = mimeType.toAndroidMimeType(),
+    spamScore = "",
+    replyTo = Recipient("", ""),
+    replyTos = emptyList(),
+    unsubscribeMethods = null
+)
 
 fun LocalConversationMessages.toConversationMessagesWithMessageToOpen(): Either<DataError, ConversationMessages> {
     val messages = messages.toNonEmptyListOrNull()?.map { it.toMessage() }

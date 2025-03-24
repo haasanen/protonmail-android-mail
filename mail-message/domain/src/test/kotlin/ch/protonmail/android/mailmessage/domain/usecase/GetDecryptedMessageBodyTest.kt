@@ -61,7 +61,7 @@ class GetDecryptedMessageBodyTest(
                 messageId,
                 testInput.messageWithBody.messageBody.body,
                 testInput.messageWithBody.messageBody.mimeType,
-                testInput.messageWithBody.messageBody.attachments
+                testInput.messageWithBody.message.attachments
             ).right()
             coEvery {
                 messageRepository.getMessageWithBody(UserIdTestData.userId, messageId)

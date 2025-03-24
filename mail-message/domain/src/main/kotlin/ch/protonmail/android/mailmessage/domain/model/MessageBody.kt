@@ -22,7 +22,6 @@ data class MessageBody(
     val messageId: MessageId,
     val body: String,
     val header: String,
-    val attachments: List<AttachmentMetadata>,
     val mimeType: MimeType,
     val spamScore: String,
     val replyTo: Recipient,

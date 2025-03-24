@@ -23,6 +23,8 @@ import java.time.temporal.ChronoUnit
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.sample.AvatarInformationSample
 import ch.protonmail.android.maillabel.domain.model.ExclusiveLocation
+import ch.protonmail.android.maillabel.domain.model.Label
+import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId.AllDrafts
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId.AllMail
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId.AllScheduled
@@ -31,16 +33,15 @@ import ch.protonmail.android.maillabel.domain.model.SystemLabelId.AlmostAllMail
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId.Outbox
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId.Snoozed
 import ch.protonmail.android.mailmessage.domain.model.AttachmentCount
+import ch.protonmail.android.mailmessage.domain.model.AttachmentMetadata
 import ch.protonmail.android.mailmessage.domain.model.Message
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.Recipient
 import ch.protonmail.android.mailmessage.domain.model.Sender
+import ch.protonmail.android.mailmessage.domain.sample.AttachmentMetadataSamples
 import ch.protonmail.android.testdata.user.UserIdTestData
 import ch.protonmail.android.testdata.user.UserIdTestData.userId
 import me.proton.core.domain.entity.UserId
-import ch.protonmail.android.maillabel.domain.model.Label
-import ch.protonmail.android.maillabel.domain.model.LabelId
-import ch.protonmail.android.mailmessage.domain.model.AttachmentMetadata
 import me.proton.core.user.domain.entity.AddressId
 
 object MessageTestData {
@@ -58,6 +59,14 @@ object MessageTestData {
 
     val message = buildMessage(
         userId = userId, id = RAW_MESSAGE_ID, subject = RAW_SUBJECT
+    )
+
+    val messageWithAttachments = buildMessage(
+        userId = userId,
+        id = RAW_MESSAGE_ID,
+        subject = RAW_SUBJECT,
+        numAttachments = 1,
+        attachments = listOf(AttachmentMetadataSamples.Invoice)
     )
 
     val multipleRecipientsMessage = buildMessage(

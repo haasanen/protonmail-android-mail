@@ -56,8 +56,8 @@ class GetAttachmentIntentValuesTest {
     }
 
     private val messageWithBody = MessageWithBody(
-        message = MessageTestData.message,
-        messageBody = MessageBodyTestData.messageBodyWithAttachment
+        message = MessageTestData.messageWithAttachments,
+        messageBody = MessageBodyTestData.messageBody
     )
 
     private val attachmentRepository = mockk<AttachmentRepository>()

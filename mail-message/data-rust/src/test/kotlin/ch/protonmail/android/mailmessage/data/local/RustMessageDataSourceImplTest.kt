@@ -24,7 +24,6 @@ import ch.protonmail.android.mailcommon.datarust.mapper.LocalLabelId
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalMessageId
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalMimeType
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailmessage.data.sample.LocalAttachmentMetadataSample
 import ch.protonmail.android.mailmessage.data.usecase.CreateRustMessageAccessor
 import ch.protonmail.android.mailmessage.data.usecase.CreateRustMessageBodyAccessor
 import ch.protonmail.android.mailmessage.data.usecase.GetRustAllMessageBottomBarActions
@@ -167,12 +166,10 @@ class RustMessageDataSourceImplTest {
             transformOpts,
             bodyBanners
         )
-        val attachments = listOf(LocalAttachmentMetadataSample.Pdf)
         val localMimeType = LocalMimeType.TEXT_PLAIN
         val decryptedMessageBodyWrapper = mockk<DecryptedMessageWrapper> {
             coEvery { body(any()) } returns bodyOutput.right()
             coEvery { mimeType() } returns localMimeType
-            coEvery { getAllAttachments() } returns attachments
         }
 
         coEvery { userSessionRepository.getUserSession(userId) } returns mailSession

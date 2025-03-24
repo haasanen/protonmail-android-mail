@@ -18,13 +18,11 @@
 
 package ch.protonmail.android.testdata.message
 
-import ch.protonmail.android.mailmessage.domain.model.AttachmentMetadata
 import ch.protonmail.android.mailmessage.domain.model.MessageBody
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.MimeType
 import ch.protonmail.android.mailmessage.domain.model.Recipient
 import ch.protonmail.android.mailmessage.domain.model.UnsubscribeMethods
-import ch.protonmail.android.mailmessage.domain.sample.AttachmentMetadataSamples
 import ch.protonmail.android.mailmessage.domain.sample.RecipientSample
 import ch.protonmail.android.testdata.message.MessageTestData.RAW_MESSAGE_ID
 import ch.protonmail.android.testdata.user.UserIdTestData
@@ -35,12 +33,6 @@ object MessageBodyTestData {
     const val RAW_ENCRYPTED_MESSAGE_BODY = "This is a raw encrypted message body."
 
     val messageBody = buildMessageBody()
-
-    val messageBodyWithAttachment = buildMessageBody(
-        attachments = listOf(
-            AttachmentMetadataSamples.Invoice
-        )
-    )
 
     val htmlMessageBody = buildMessageBody(
         mimeType = MimeType.Html
@@ -55,7 +47,6 @@ object MessageBodyTestData {
         messageId: MessageId = MessageId(RAW_MESSAGE_ID),
         body: String = RAW_ENCRYPTED_MESSAGE_BODY,
         header: String = "",
-        attachments: List<AttachmentMetadata> = emptyList(),
         mimeType: MimeType = MimeType.PlainText,
         spamScore: String = "",
         replyTo: Recipient = RecipientSample.John,
@@ -65,7 +56,6 @@ object MessageBodyTestData {
         messageId = messageId,
         body = body,
         header = header,
-        attachments = attachments,
         mimeType = mimeType,
         spamScore = spamScore,
         replyTo = replyTo,

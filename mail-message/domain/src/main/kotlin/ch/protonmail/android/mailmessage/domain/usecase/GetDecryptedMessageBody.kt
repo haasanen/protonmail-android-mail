@@ -45,7 +45,7 @@ class GetDecryptedMessageBody @Inject constructor(
                     messageId = messageId,
                     value = messageBody.body,
                     mimeType = messageBody.mimeType,
-                    attachments = messageBody.attachments
+                    attachments = messageWithBody.message.attachments
                 ).right()
 
             }
