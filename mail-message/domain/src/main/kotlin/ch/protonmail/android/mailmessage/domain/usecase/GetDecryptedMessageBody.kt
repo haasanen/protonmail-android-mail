@@ -21,11 +21,15 @@ package ch.protonmail.android.mailmessage.domain.usecase
 import arrow.core.Either
 import arrow.core.flatMap
 import arrow.core.right
+import ch.protonmail.android.mailmessage.domain.model.AttachmentMetadata
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.model.GetDecryptedMessageBodyError
 import ch.protonmail.android.mailmessage.domain.model.MessageId
+import ch.protonmail.android.mailmessage.domain.model.MessageWithBody
+import ch.protonmail.android.mailmessage.domain.model.MimeType
 import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
 import me.proton.core.domain.entity.UserId
+import timber.log.Timber
 import javax.inject.Inject
 
 class GetDecryptedMessageBody @Inject constructor(
@@ -41,13 +45,37 @@ class GetDecryptedMessageBody @Inject constructor(
             .flatMap { messageWithBody ->
                 val messageBody = messageWithBody.messageBody
 
+                val attachments = when {
+                    messageBody.mimeType == MimeType.MultipartMixed ->
+                        getDecryptedMimeAttachments(userId, messageId, messageWithBody)
+                    else -> messageWithBody.message.attachments
+                }
+
                 DecryptedMessageBody(
                     messageId = messageId,
                     value = messageBody.body,
                     mimeType = messageBody.mimeType,
-                    attachments = messageWithBody.message.attachments
+                    attachments = attachments
                 ).right()
 
             }
+    }
+
+    private suspend fun getDecryptedMimeAttachments(
+        userId: UserId,
+        messageId: MessageId,
+        messageWithBody: MessageWithBody
+    ): List<AttachmentMetadata> {
+        // After the message body is decrypted (through the first messageWithBody call)
+        // rust will expose the decrypted mime attachments to the message "attachments" field.
+        // This logic is needed to get such up-to-date attachments when opening a MIME message
+        return messageRepository.getMessageWithBody(userId, messageId)
+            .onLeft {
+                Timber.w("decrypted-message-body: Failed getting refreshed MIME attachments")
+            }
+            .getOrNull()
+            ?.message
+            ?.attachments
+            ?: messageWithBody.message.attachments
     }
 }
