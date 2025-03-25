@@ -47,7 +47,7 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.model.Participants
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyLargeNorm
-import ch.protonmail.android.design.compose.theme.bodySmallNorm
+import ch.protonmail.android.design.compose.theme.labelSmallNorm
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 
 @Composable
@@ -253,7 +253,7 @@ private fun Count(
                 .padding(0.dp),
             text = count.toString(),
             overflow = TextOverflow.Ellipsis,
-            style = ProtonTheme.typography.bodySmallNorm.copy(color = fontColor)
+            style = ProtonTheme.typography.labelSmallNorm.copy(color = fontColor)
         )
     }
 }
