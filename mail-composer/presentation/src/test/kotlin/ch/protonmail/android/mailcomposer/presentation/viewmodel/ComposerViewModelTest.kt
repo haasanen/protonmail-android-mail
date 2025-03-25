@@ -869,6 +869,7 @@ class ComposerViewModelTest {
         expectMessagePassword(expectedUserId, expectedMessageId)
         expectNoFileShareVia()
         expectObserveMessageExpirationTime(expectedUserId, expectedMessageId)
+        expectNoExternalRecipients(expectedUserId, recipientsTo, recipientsCc, recipientsBcc)
         expectInitComposerWithNewEmptyDraftSucceeds(expectedUserId) {
             DraftFields(
                 sender = expectedSenderEmail,
@@ -905,6 +906,7 @@ class ComposerViewModelTest {
         expectNetworkManagerIsDisconnected()
         expectNoInputDraftMessageId()
         expectNoInputDraftAction()
+        expectNoExternalRecipients(expectedUserId, recipientsTo, recipientsCc, recipientsBcc)
         expectSendMessageSucceeds(expectedUserId)
         expectObservedMessageAttachments(expectedUserId, expectedMessageId)
         expectObserveMessageSendingError(expectedUserId, expectedMessageId)
@@ -2103,6 +2105,15 @@ class ComposerViewModelTest {
                 any()
             )
         } returns Recipient(RecipientSample.NamelessRecipient.address, "", false)
+    }
+
+    private fun expectNoExternalRecipients(
+        userId: UserId,
+        recipientsTo: RecipientsTo,
+        recipientsCc: RecipientsCc,
+        recipientsBcc: RecipientsBcc
+    ) {
+        coEvery { getExternalRecipients(userId, recipientsTo, recipientsCc, recipientsBcc) } returns emptyList()
     }
 
     private fun expectExternalRecipients(
