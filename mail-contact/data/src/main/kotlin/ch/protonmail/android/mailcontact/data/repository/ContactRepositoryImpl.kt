@@ -23,7 +23,6 @@ import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcontact.data.local.RustContactDataSource
 import ch.protonmail.android.mailcontact.data.mapper.toLocalContactId
 import ch.protonmail.android.mailcontact.domain.model.ContactCard
-import ch.protonmail.android.mailcontact.domain.model.ContactEmail
 import ch.protonmail.android.mailcontact.domain.model.ContactId
 import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import ch.protonmail.android.mailcontact.domain.model.ContactSuggestionQuery
@@ -32,7 +31,6 @@ import ch.protonmail.android.mailcontact.domain.model.GetContactError
 import ch.protonmail.android.mailcontact.domain.model.GroupedContacts
 import ch.protonmail.android.mailcontact.domain.repository.ContactRepository
 import kotlinx.coroutines.flow.Flow
-import me.proton.core.domain.arch.DataResult
 import me.proton.core.domain.entity.UserId
 import javax.inject.Inject
 
@@ -48,18 +46,6 @@ class ContactRepositoryImpl @Inject constructor(
         userId: UserId,
         refresh: Boolean
     ): Flow<Either<GetContactError, List<ContactMetadata>>> = localContactDataSource.observeAllContacts(userId)
-
-    override suspend fun getAllContacts(userId: UserId, refresh: Boolean): List<ContactMetadata> {
-        TODO("Not yet implemented")
-    }
-
-    override fun observeAllContactEmails(userId: UserId, refresh: Boolean): Flow<DataResult<List<ContactEmail>>> {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun getAllContactEmails(userId: UserId, refresh: Boolean): List<ContactEmail> {
-        TODO("Not yet implemented")
-    }
 
     override suspend fun createContact(userId: UserId, contactCards: List<ContactCard>) {
         TODO("Not yet implemented")
