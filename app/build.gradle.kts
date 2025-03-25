@@ -16,7 +16,6 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import java.io.ByteArrayOutputStream
 import java.util.Properties
 import ch.protonmail.android.mail.plugin.GenerateGitHashTask
 import com.android.build.api.dsl.VariantDimension
@@ -264,6 +263,7 @@ dependencies {
     implementation(project(":mail-contact"))
     implementation(project(":mail-conversation"))
     implementation(project(":mail-detail"))
+    implementation(project(":mail-featureflags"))
     implementation(project(":mail-label"))
     implementation(project(":mail-mailbox"))
     implementation(project(":mail-message"))

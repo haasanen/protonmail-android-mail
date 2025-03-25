@@ -86,6 +86,11 @@ include(":mail-detail:data")
 include(":mail-detail:domain")
 include(":mail-detail:presentation")
 
+include(":mail-featureflags:dagger")
+include(":mail-featureflags:data")
+include(":mail-featureflags:domain")
+include(":mail-featureflags:presentation")
+
 include(":mail-label:dagger")
 include(":mail-label:data")
 include(":mail-label:domain")
