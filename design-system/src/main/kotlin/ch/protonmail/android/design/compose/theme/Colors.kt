@@ -166,16 +166,16 @@ class ProtonColors(
     textNorm: Color = shade100,
     textAccent: Color = brandPlus10,
     textWeak: Color = shade80,
-    textHint: Color = shade60,
-    textDisabled: Color = shade50,
+    textHint: Color = shade50,
+    textDisabled: Color = shade40,
     textInverted: Color = shade0,
     textSelected: Color = brandPlus10,
 
     iconNorm: Color = shade100,
     iconAccent: Color = brandPlus10,
     iconWeak: Color = shade80,
-    iconHint: Color = shade60,
-    iconDisabled: Color = shade50,
+    iconHint: Color = shade50,
+    iconDisabled: Color = shade40,
     iconInverted: Color = shade0,
     iconSelected: Color = brandPlus10,
 
@@ -206,9 +206,8 @@ class ProtonColors(
     separatorNorm: Color = shade10,
     separatorStrong: Color = shade20,
 
-    borderLight: Color = shade10,
-    borderNorm: Color = shade20,
-    borderStrong: Color = shade40,
+    borderNorm: Color = shade10,
+    borderStrong: Color = shade20,
 
     blenderNorm: Color,
 
@@ -346,8 +345,6 @@ class ProtonColors(
     var separatorStrong: Color by mutableStateOf(separatorStrong, structuralEqualityPolicy())
         internal set
 
-    var borderLight: Color by mutableStateOf(borderLight, structuralEqualityPolicy())
-        internal set
     var borderNorm: Color by mutableStateOf(borderNorm, structuralEqualityPolicy())
         internal set
     var borderStrong: Color by mutableStateOf(borderStrong, structuralEqualityPolicy())
@@ -478,7 +475,6 @@ class ProtonColors(
         backgroundInvertedBorder: Color = this.backgroundInvertedBorder,
         separatorNorm: Color = this.separatorNorm,
         separatorStrong: Color = this.separatorStrong,
-        borderLight: Color = this.borderLight,
         borderNorm: Color = this.borderNorm,
         borderStrong: Color = this.borderStrong,
         blenderNorm: Color = this.blenderNorm,
@@ -571,7 +567,6 @@ class ProtonColors(
         separatorNorm = separatorNorm,
         separatorStrong = separatorStrong,
 
-        borderLight = borderLight,
         borderNorm = borderNorm,
         borderStrong = borderStrong,
 
@@ -728,7 +723,6 @@ class ProtonColors(
                 backgroundDeep = it.shade45,
                 backgroundAvatar = it.shade100,
                 interactionBrandWeakPressed = it.brandMinus20,
-                borderLight = it.shade40,
                 borderNorm = it.shade45,
                 borderStrong = it.shade50,
                 starDefault = it.shade50,
@@ -863,7 +857,6 @@ fun ProtonColors.updateColorsFrom(other: ProtonColors) {
     separatorNorm = other.separatorNorm
     separatorStrong = other.separatorStrong
 
-    borderLight = other.borderLight
     borderNorm = other.borderNorm
     borderStrong = other.borderStrong
 
