@@ -21,10 +21,13 @@ package ch.protonmail.android.mailmailbox.presentation.mailbox
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import ch.protonmail.android.design.compose.theme.ProtonDimens
+import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxListState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxState
 
@@ -37,11 +40,17 @@ fun MailboxStickyHeader(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = ProtonDimens.Spacing.Large),
+            .padding(
+                start = ProtonDimens.Spacing.Large,
+                end = ProtonDimens.Spacing.Large,
+                bottom = ProtonDimens.Spacing.Standard,
+                top = 0.dp
+            ),
         horizontalArrangement = Arrangement.Start
     ) {
         if (state.mailboxListState is MailboxListState.Data.SelectionMode) {
             SelectDeselectAllButton(
+                modifier = Modifier.height(MailDimens.UnreadFilterChipHeight),
                 areAllItemsSelected = state.mailboxListState.areAllItemsSelected,
                 actions = SelectDeselectAllButton.Actions(
                     onSelectAllClicked = actions.onSelectAllClicked,
@@ -51,7 +60,7 @@ fun MailboxStickyHeader(
 
         } else {
             UnreadItemsFilter(
-                modifier = Modifier,
+                modifier = Modifier.height(MailDimens.UnreadFilterChipHeight),
                 state = state.unreadFilterState,
                 onFilterEnabled = actions.onUnreadFilterEnabled,
                 onFilterDisabled = actions.onUnreadFilterDisabled

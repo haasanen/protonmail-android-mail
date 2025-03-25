@@ -153,4 +153,5 @@ object MailDimens {
 
         val FormFieldsRowHeight = 56.dp
     }
+    val UnreadFilterChipHeight = 36.dp
 }

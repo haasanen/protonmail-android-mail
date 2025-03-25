@@ -35,7 +35,7 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.model.UnreadFilter
 import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.bodySmallWeak
+import ch.protonmail.android.design.compose.theme.bodyMediumWeak
 
 @Composable
 fun UnreadItemsFilter(
@@ -80,7 +80,7 @@ fun UnreadItemsFilter(
                             count = state.numUnread,
                             UnreadCountValueMapper.toCappedValue(state.numUnread)
                         ),
-                        style = ProtonTheme.typography.bodySmallWeak
+                        style = ProtonTheme.typography.bodyMediumWeak
                     )
                 }
             )
