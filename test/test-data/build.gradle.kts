@@ -60,6 +60,7 @@ dependencies {
     implementation(project(":mail-composer"))
     implementation(project(":mail-conversation"))
     implementation(project(":mail-detail"))
+    implementation(project(":mail-featureflags"))
     implementation(project(":mail-label"))
     implementation(project(":mail-mailbox"))
     implementation(project(":mail-message"))
