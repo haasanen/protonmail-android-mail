@@ -19,6 +19,7 @@
 package ch.protonmail.android.testdata.contact
 
 import ch.protonmail.android.mailcontact.domain.model.ContactEmail
+import ch.protonmail.android.mailcontact.domain.model.ContactEmailId
 
 object ContactEmailSample {
 
@@ -62,5 +63,25 @@ object ContactEmailSample {
         "testing@last.used.time -- long time ago",
         false,
         lastUsedTime = 1
+    )
+
+    val contactSuggestionEmail = ContactEmail(
+        ContactIdTestData.contactSuggestionEmailId,
+        "contact suggestion email",
+        false,
+        lastUsedTime = 0
+    )
+
+    val contactGroupSuggestionEmail1 = ContactEmail(
+        ContactEmailId("contactgroup@first.email"),
+        "contactgroup@first.email",
+        false,
+        lastUsedTime = 0
+    )
+    val contactGroupSuggestionEmail2 = ContactEmail(
+        ContactEmailId("contactgroup@second.email"),
+        "contactgroup@second.email",
+        false,
+        lastUsedTime = 0
     )
 }

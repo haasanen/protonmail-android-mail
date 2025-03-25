@@ -22,14 +22,24 @@ import arrow.core.Either
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalContactId
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
+import ch.protonmail.android.mailcontact.domain.model.ContactSuggestionQuery
+import ch.protonmail.android.mailcontact.domain.model.DeviceContact
 import ch.protonmail.android.mailcontact.domain.model.GetContactError
 import ch.protonmail.android.mailcontact.domain.model.GroupedContacts
 import kotlinx.coroutines.flow.Flow
 import me.proton.core.domain.entity.UserId
 
 interface RustContactDataSource {
+
     fun observeAllContacts(userId: UserId): Flow<Either<GetContactError, List<ContactMetadata>>>
+
     fun observeAllGroupedContacts(userId: UserId): Flow<Either<GetContactError, List<GroupedContacts>>>
+
     suspend fun deleteContact(userId: UserId, contactId: LocalContactId): Either<DataError.Local, Unit>
 
+    suspend fun getContactSuggestions(
+        userId: UserId,
+        deviceContacts: List<DeviceContact>,
+        query: ContactSuggestionQuery
+    ): Either<DataError, List<ContactMetadata>>
 }

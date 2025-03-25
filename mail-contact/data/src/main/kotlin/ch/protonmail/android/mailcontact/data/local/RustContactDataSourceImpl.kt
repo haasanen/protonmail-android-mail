@@ -25,10 +25,15 @@ import ch.protonmail.android.mailcommon.datarust.mapper.LocalContactId
 import ch.protonmail.android.mailcommon.datarust.mapper.LocalGroupedContacts
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcontact.data.ContactRustCoroutineScope
+import ch.protonmail.android.mailcontact.data.mapper.ContactSuggestionsMapper
+import ch.protonmail.android.mailcontact.data.mapper.DeviceContactsMapper
 import ch.protonmail.android.mailcontact.data.mapper.GroupedContactsMapper
 import ch.protonmail.android.mailcontact.data.usecase.CreateRustContactWatcher
 import ch.protonmail.android.mailcontact.data.usecase.RustDeleteContact
+import ch.protonmail.android.mailcontact.data.usecase.RustGetContactSuggestions
 import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
+import ch.protonmail.android.mailcontact.domain.model.ContactSuggestionQuery
+import ch.protonmail.android.mailcontact.domain.model.DeviceContact
 import ch.protonmail.android.mailcontact.domain.model.GetContactError
 import ch.protonmail.android.mailcontact.domain.model.GroupedContacts
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
@@ -47,10 +52,29 @@ import javax.inject.Inject
 class RustContactDataSourceImpl @Inject constructor(
     private val userSessionRepository: UserSessionRepository,
     private val groupedContactsMapper: GroupedContactsMapper,
+    private val contactSuggestionMapper: ContactSuggestionsMapper,
+    private val deviceContactsMapper: DeviceContactsMapper,
     private val createRustContactWatcher: CreateRustContactWatcher,
     private val rustDeleteContact: RustDeleteContact,
+    private val rustGetContactSuggestions: RustGetContactSuggestions,
     @ContactRustCoroutineScope private val coroutineScope: CoroutineScope
 ) : RustContactDataSource {
+
+    override suspend fun getContactSuggestions(
+        userId: UserId,
+        deviceContacts: List<DeviceContact>,
+        query: ContactSuggestionQuery
+    ): Either<DataError, List<ContactMetadata>> {
+        val session = userSessionRepository.getUserSession(userId)
+        if (session == null) {
+            Timber.e("rust-contact: trying to get contact suggestions with a null session")
+            return DataError.Local.Unknown.left()
+        }
+
+        val localDeviceContacts = deviceContactsMapper.toLocalDeviceContact(deviceContacts)
+        return rustGetContactSuggestions(session, localDeviceContacts, query.value)
+            .map { contactSuggestionMapper.toContactSuggestions(it) }
+    }
 
     override fun observeAllContacts(userId: UserId): Flow<Either<GetContactError, List<ContactMetadata>>> {
         return observeAllGroupedContacts(userId).transformLatest {

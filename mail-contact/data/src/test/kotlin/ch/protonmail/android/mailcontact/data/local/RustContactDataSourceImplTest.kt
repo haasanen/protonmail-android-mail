@@ -20,18 +20,26 @@ package ch.protonmail.android.mailcontact.data.local
 
 import arrow.core.left
 import arrow.core.right
+import ch.protonmail.android.mailcommon.datarust.mapper.LocalDeviceContact
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
 import ch.protonmail.android.mailcontact.data.mapper.ContactGroupItemMapper
 import ch.protonmail.android.mailcontact.data.mapper.ContactItemMapper
 import ch.protonmail.android.mailcontact.data.mapper.ContactItemTypeMapper
+import ch.protonmail.android.mailcontact.data.mapper.ContactSuggestionsMapper
+import ch.protonmail.android.mailcontact.data.mapper.DeviceContactsMapper
 import ch.protonmail.android.mailcontact.data.mapper.GroupedContactsMapper
 import ch.protonmail.android.mailcontact.data.usecase.CreateRustContactWatcher
 import ch.protonmail.android.mailcontact.data.usecase.RustDeleteContact
+import ch.protonmail.android.mailcontact.data.usecase.RustGetContactSuggestions
+import ch.protonmail.android.mailcontact.domain.model.ContactSuggestionQuery
+import ch.protonmail.android.mailcontact.domain.model.DeviceContact
 import ch.protonmail.android.mailcontact.domain.model.GetContactError
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
+import ch.protonmail.android.testdata.contact.ContactTestData
+import ch.protonmail.android.testdata.contact.rust.LocalContactSuggestionTestData
 import ch.protonmail.android.testdata.contact.rust.LocalContactTestData
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -63,18 +71,24 @@ class RustContactDataSourceImplTest {
     private val userSessionRepository = mockk<UserSessionRepository>()
     private val createRustContactWatcher = mockk<CreateRustContactWatcher>()
     private val rustDeleteContact = mockk<RustDeleteContact>()
+    private val rustGetContactSuggestions = mockk<RustGetContactSuggestions>()
     private val contactListUpdatedCallbackSlot = slot<ContactsLiveQueryCallback>()
 
     private val contactItemMapper = ContactItemMapper()
     private val contactGroupItemMapper = ContactGroupItemMapper()
     private val contactItemTypeMapper = ContactItemTypeMapper(contactItemMapper, contactGroupItemMapper)
     private val groupedContactsMapper = GroupedContactsMapper(contactItemTypeMapper)
+    private val contactSuggestionsMapper = ContactSuggestionsMapper()
+    private val deviceContactsMapper = DeviceContactsMapper()
 
     private val rustContactDataSource = RustContactDataSourceImpl(
         userSessionRepository,
         groupedContactsMapper,
+        contactSuggestionsMapper,
+        deviceContactsMapper,
         createRustContactWatcher,
         rustDeleteContact,
+        rustGetContactSuggestions,
         testCoroutineScope
     )
 
@@ -100,7 +114,6 @@ class RustContactDataSourceImplTest {
         val result = rustContactDataSource.observeAllContacts(userId).first()
 
         // Then
-        assertTrue(result.isRight())
         assertEquals(expectedContacts.right(), result)
     }
 
@@ -155,7 +168,6 @@ class RustContactDataSourceImplTest {
         val result = rustContactDataSource.observeAllGroupedContacts(userId).first()
 
         // Then
-        assertTrue(result.isRight())
         assertEquals(expectedGroupedContactList.right(), result)
     }
 
@@ -187,8 +199,7 @@ class RustContactDataSourceImplTest {
         val result = rustContactDataSource.deleteContact(userId, contactId)
 
         // Then
-        assertTrue(result.isLeft())
-        assertEquals(DataError.Local.Unknown, result.swap().getOrNull())
+        assertEquals(DataError.Local.Unknown.left(), result)
     }
 
     @Test
@@ -205,8 +216,7 @@ class RustContactDataSourceImplTest {
         val result = rustContactDataSource.deleteContact(userId, contactId)
 
         // Then
-        assertTrue(result.isLeft())
-        assertEquals(DataError.Local.Unknown, result.swap().getOrNull())
+        assertEquals(DataError.Local.Unknown.left(), result)
     }
 
     @Test
@@ -227,6 +237,45 @@ class RustContactDataSourceImplTest {
         // Then
         assertNotSame(firstFlow, secondFlow)
         coVerify(exactly = 2) { createRustContactWatcher(session, any()) }
+    }
+
+    @Test
+    fun `get contact suggestions returns suggestions from rustDeleteContact`() = runTest {
+        // Given
+        val userId = UserIdSample.Primary
+        val query = ContactSuggestionQuery("test")
+        val localDeviceContacts = emptyList<LocalDeviceContact>()
+        val deviceContacts = emptyList<DeviceContact>()
+        val session = mockk<MailUserSessionWrapper>()
+        val localContactSuggestions = listOf(
+            LocalContactSuggestionTestData.contactSuggestion,
+            LocalContactSuggestionTestData.contactGroupSuggestion
+        )
+        val expected = listOf(ContactTestData.contactSuggestion, ContactTestData.contactGroupSuggestion)
+        coEvery { userSessionRepository.getUserSession(userId) } returns session
+        coEvery {
+            rustGetContactSuggestions(session, localDeviceContacts, query.value)
+        } returns localContactSuggestions.right()
+
+        // When
+        val result = rustContactDataSource.getContactSuggestions(userId, deviceContacts, query)
+
+        // Then
+        assertEquals(expected.right(), result)
+    }
+
+    @Test
+    fun `get contact suggestions should return error when session is null`() = runTest {
+        // Given
+        val userId = UserIdSample.Primary
+        val query = ContactSuggestionQuery("test")
+        coEvery { userSessionRepository.getUserSession(userId) } returns null
+
+        // When
+        val result = rustContactDataSource.getContactSuggestions(userId, emptyList(), query)
+
+        // Then
+        assertEquals(DataError.Local.Unknown.left(), result)
     }
 }
 

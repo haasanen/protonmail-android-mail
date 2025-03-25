@@ -27,8 +27,11 @@ import uniffi.proton_mail_uniffi.ComposerMode
 import uniffi.proton_mail_uniffi.ComposerRecipient
 import uniffi.proton_mail_uniffi.ContactEmailItem
 import uniffi.proton_mail_uniffi.ContactItemType
+import uniffi.proton_mail_uniffi.ContactSuggestion
+import uniffi.proton_mail_uniffi.ContactSuggestionKind
 import uniffi.proton_mail_uniffi.Conversation
 import uniffi.proton_mail_uniffi.DecryptedAttachment
+import uniffi.proton_mail_uniffi.DeviceContact
 import uniffi.proton_mail_uniffi.Disposition
 import uniffi.proton_mail_uniffi.DraftSendResult
 import uniffi.proton_mail_uniffi.ExclusiveLocation
@@ -93,5 +96,8 @@ typealias LocalContactItemTypeContact = ContactItemType.Contact
 typealias LocalContactItemTypeGroup = ContactItemType.Group
 typealias LocalComposerRecipient = ComposerRecipient
 typealias LocalDraftSendResult = DraftSendResult
+typealias LocalDeviceContact = DeviceContact
+typealias LocalContactSuggestion = ContactSuggestion
+typealias LocalContactSuggestionKind = ContactSuggestionKind
 
 typealias RemoteMessageId = RemoteId

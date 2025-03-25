@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.testdata.contact
 
+import ch.protonmail.android.mailcommon.domain.model.AvatarInformation
 import ch.protonmail.android.mailcommon.domain.sample.AvatarInformationSample
 import ch.protonmail.android.mailcontact.domain.model.ContactEmail
 import ch.protonmail.android.mailcontact.domain.model.ContactEmailId
@@ -38,6 +39,35 @@ object ContactTestData {
         name = "second contact",
         emails = emptyList(),
         avatar = AvatarInformationSample.avatarSample
+    )
+    val contactSuggestion = ContactMetadata.Contact(
+        id = ContactIdTestData.contactSuggestionId,
+        name = "contact being suggested",
+        emails = listOf(ContactEmailSample.contactSuggestionEmail),
+        avatar = AvatarInformationSample.avatarSample
+    )
+
+    val contactGroupSuggestionEmail1 = ContactMetadata.Contact(
+        id = ContactId("contactgroup@first.email"),
+        avatar = AvatarInformation("", ""),
+        name = "contactgroup@first.email",
+        emails = listOf(ContactEmailSample.contactGroupSuggestionEmail1)
+    )
+    val contactGroupSuggestionEmail2 = ContactMetadata.Contact(
+        id = ContactId("contactgroup@second.email"),
+        avatar = AvatarInformation("", ""),
+        name = "contactgroup@second.email",
+        emails = listOf(ContactEmailSample.contactGroupSuggestionEmail2)
+    )
+
+    val contactGroupSuggestion = ContactMetadata.ContactGroup(
+        id = ContactIdTestData.contactGroupSuggestionId,
+        name = "contact group here",
+        color = AvatarInformationSample.avatarSample.color,
+        members = listOf(
+            contactGroupSuggestionEmail1,
+            contactGroupSuggestionEmail2
+        )
     )
 
     val contacts = listOf(
