@@ -32,7 +32,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import ch.protonmail.android.mailmailbox.presentation.R
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.bodySmallWeak
+import ch.protonmail.android.design.compose.theme.bodyMediumWeak
 
 @Composable
 fun SelectDeselectAllButton(
@@ -79,7 +79,7 @@ fun SelectDeselectAllButton(
         label = {
             Text(
                 text = buttonText,
-                style = ProtonTheme.typography.bodySmallWeak
+                style = ProtonTheme.typography.bodyMediumWeak
             )
         }
     )
