@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.mailmailbox.presentation.mailbox
 
+import ch.protonmail.android.mailfeatureflags.domain.annotation.ComposerEnabled
 import java.util.Collections
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -199,7 +200,8 @@ class MailboxViewModel @Inject constructor(
     private val handleAvatarImageLoadingFailure: HandleAvatarImageLoadingFailure,
     private val observeAvatarImageStates: ObserveAvatarImageStates,
     private val observePrimaryAccountAvatarItem: ObservePrimaryAccountAvatarItem,
-    private val isAutoDeleteTrashAndSpamEnabled: IsAutoDeleteSpamAndTrashEnabled
+    private val isAutoDeleteTrashAndSpamEnabled: IsAutoDeleteSpamAndTrashEnabled,
+    @ComposerEnabled val isComposerEnabled: Flow<Boolean>
 ) : ViewModel() {
 
     private val primaryUserId = observePrimaryUserId().filterNotNull()

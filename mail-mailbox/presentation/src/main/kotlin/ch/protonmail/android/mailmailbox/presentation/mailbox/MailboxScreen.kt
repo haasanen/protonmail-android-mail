@@ -172,7 +172,7 @@ fun MailboxScreen(
     val mailboxState = viewModel.state.collectAsStateWithLifecycle(MailboxViewModel.initialState).value
 
     val mailboxListItems = viewModel.items.collectAsLazyPagingItems()
-
+    val isComposerEnabled = viewModel.isComposerEnabled.collectAsStateWithLifecycle(initialValue = false)
     val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var showBottomSheet by remember { mutableStateOf(false) }
 
@@ -196,6 +196,9 @@ fun MailboxScreen(
     Timber.d("BottomState: ${mailboxState.bottomAppBarState}")
 
     val completeActions = actions.copy(
+        navigateToComposer = {
+            if (isComposerEnabled.value) actions.navigateToComposer() else actions.showMissingFeature()
+        },
         onDisableUnreadFilter = { viewModel.submit(MailboxViewAction.DisableUnreadFilter) },
         onEnableUnreadFilter = { viewModel.submit(MailboxViewAction.EnableUnreadFilter) },
         onSelectAllClicked = {
@@ -1124,6 +1127,7 @@ private fun MailboxStaticContent(
 object MailboxScreen {
 
     data class Actions(
+        val showMissingFeature: () -> Unit,
         val navigateToMailboxItem: (OpenMailboxItemRequest) -> Unit,
         val navigateToComposer: () -> Unit,
         val onDisableUnreadFilter: () -> Unit,
@@ -1230,7 +1234,8 @@ object MailboxScreen {
                 onSearchResult = {},
                 onOpenUpsellingPage = {},
                 onCloseUpsellingPage = {},
-                onAccountAvatarClicked = {}
+                onAccountAvatarClicked = {},
+                showMissingFeature = {}
             )
         }
     }

@@ -354,7 +354,8 @@ class MailboxViewModelTest {
             handleAvatarImageLoadingFailure = handleAvatarImageLoadingFailure,
             observeAvatarImageStates = observeAvatarImageStates,
             observePrimaryAccountAvatarItem = observePrimaryAccountAvatarItem,
-            isAutoDeleteTrashAndSpamEnabled = isAutoDeleteTrashAndSpamEnabled
+            isAutoDeleteTrashAndSpamEnabled = isAutoDeleteTrashAndSpamEnabled,
+            isComposerEnabled = flowOf(true)
         )
     }
 

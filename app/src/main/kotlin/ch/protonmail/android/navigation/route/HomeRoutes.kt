@@ -89,10 +89,7 @@ internal fun NavGraphBuilder.addMailbox(
                     }
                     navController.navigate(destination)
                 },
-                navigateToComposer = {
-                    showFeatureMissingSnackbar()
-                    // navController.navigate(Destination.Screen.Composer.route)
-                },
+                navigateToComposer = { navController.navigate(Destination.Screen.Composer.route) },
                 openDrawerMenu = openDrawerMenu,
                 showOfflineSnackbar = showOfflineSnackbar,
                 showNormalSnackbar = showNormalSnackbar,
@@ -102,7 +99,8 @@ internal fun NavGraphBuilder.addMailbox(
                 onAccountAvatarClicked = {
                     navController.navigate(Destination.Screen.AccountsManager.route)
                 },
-                deleteAllConfirmed = { showFeatureMissingSnackbar() }
+                deleteAllConfirmed = { showFeatureMissingSnackbar() },
+                showMissingFeature = showFeatureMissingSnackbar
             ),
             onEvent = onEvent
         )
