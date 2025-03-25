@@ -25,6 +25,7 @@ import me.proton.core.util.kotlin.equalsNoCase
 import me.proton.core.util.kotlin.takeIfNotBlank
 import javax.inject.Inject
 
+@Deprecated("To be dropped once contact suggestions through rust are in place")
 class ParticipantMapper @Inject constructor() {
 
     fun recipientUiModelToParticipant(

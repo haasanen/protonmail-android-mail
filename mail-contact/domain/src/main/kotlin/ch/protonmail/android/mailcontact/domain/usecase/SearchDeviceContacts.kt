@@ -24,6 +24,7 @@ import ch.protonmail.android.mailcontact.domain.model.GetContactError
 import ch.protonmail.android.mailcontact.domain.repository.DeviceContactsRepository
 import javax.inject.Inject
 
+@Deprecated("To be dropped once contact suggestions through rust are in place")
 class SearchDeviceContacts @Inject constructor(
     private val deviceContactsRepository: DeviceContactsRepository
 ) {

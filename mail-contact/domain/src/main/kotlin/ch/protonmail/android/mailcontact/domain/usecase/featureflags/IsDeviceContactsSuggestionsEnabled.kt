@@ -23,6 +23,7 @@ import me.proton.core.featureflag.domain.FeatureFlagManager
 import me.proton.core.featureflag.domain.entity.FeatureId
 import javax.inject.Inject
 
+@Deprecated("To be dropped once contact suggestions through rust are in place")
 class IsDeviceContactsSuggestionsEnabled @Inject constructor(
     private val featureFlagManager: FeatureFlagManager
 ) {

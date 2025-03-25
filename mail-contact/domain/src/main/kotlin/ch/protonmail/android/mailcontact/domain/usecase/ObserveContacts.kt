@@ -21,7 +21,6 @@ package ch.protonmail.android.mailcontact.domain.usecase
 import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
-import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
 import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import ch.protonmail.android.mailcontact.domain.model.GetContactError
 import ch.protonmail.android.mailcontact.domain.repository.ContactRepository
@@ -34,7 +33,6 @@ class ObserveContacts @Inject constructor(
     private val contactRepository: ContactRepository
 ) {
 
-    @MissingRustApi
     operator fun invoke(userId: UserId): Flow<Either<GetContactError, List<ContactMetadata.Contact>>> =
         contactRepository.observeAllContacts(userId).map { contactsEither ->
 

@@ -29,6 +29,7 @@ import kotlinx.coroutines.withContext
 import me.proton.core.util.kotlin.takeIfNotBlank
 import javax.inject.Inject
 
+@Deprecated("To be dropped once contact suggestions through rust are in place")
 class SortContactsForSuggestions @Inject constructor(
     private val getInitials: GetInitials,
     @DefaultDispatcher private val dispatcher: CoroutineDispatcher = Dispatchers.Default
