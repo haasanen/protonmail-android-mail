@@ -2509,7 +2509,8 @@ class ConversationDetailViewModelIntegrationTest {
         observePrimaryUserAddress = observePrimaryUserAddress,
         loadAvatarImage = loadAvatarImg,
         observeAvatarImageStates = observeAvatarImgStates,
-        getMessagesInSameExclusiveLocation = getMessagesInSameExclusiveLocation
+        getMessagesInSameExclusiveLocation = getMessagesInSameExclusiveLocation,
+        isComposerEnabled = flowOf(true)
     )
 
     private fun aMessageAttachment(id: String): AttachmentMetadata = AttachmentMetadata(

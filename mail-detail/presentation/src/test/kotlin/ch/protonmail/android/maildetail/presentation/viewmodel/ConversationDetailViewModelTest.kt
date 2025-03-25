@@ -377,7 +377,8 @@ class ConversationDetailViewModelTest {
             observePrimaryUserAddress = observePrimaryUserAddress,
             loadAvatarImage = loadAvatarImage,
             observeAvatarImageStates = observeAvatarImageStates,
-            getMessagesInSameExclusiveLocation = getMessagesInSameExclusiveLocation
+            getMessagesInSameExclusiveLocation = getMessagesInSameExclusiveLocation,
+            isComposerEnabled = flowOf(true)
         )
     }
 

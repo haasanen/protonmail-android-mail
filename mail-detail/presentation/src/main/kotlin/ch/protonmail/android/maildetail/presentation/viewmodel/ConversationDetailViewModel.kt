@@ -97,6 +97,7 @@ import ch.protonmail.android.maildetail.presentation.usecase.GetMoreActionsBotto
 import ch.protonmail.android.maildetail.presentation.usecase.ObservePrimaryUserAddress
 import ch.protonmail.android.maildetail.presentation.usecase.OnMessageLabelAsConfirmed
 import ch.protonmail.android.maildetail.presentation.usecase.PrintMessage
+import ch.protonmail.android.mailfeatureflags.domain.annotation.ComposerEnabled
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabel
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
@@ -214,7 +215,8 @@ class ConversationDetailViewModel @Inject constructor(
     private val observePrimaryUserAddress: ObservePrimaryUserAddress,
     private val loadAvatarImage: LoadAvatarImage,
     private val observeAvatarImageStates: ObserveAvatarImageStates,
-    private val getMessagesInSameExclusiveLocation: GetMessagesInSameExclusiveLocation
+    private val getMessagesInSameExclusiveLocation: GetMessagesInSameExclusiveLocation,
+    @ComposerEnabled val isComposerEnabled: Flow<Boolean>
 ) : ViewModel() {
 
     private val primaryUserId = observePrimaryUserId()
