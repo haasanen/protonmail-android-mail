@@ -47,6 +47,7 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.model.UpgradeStora
 import ch.protonmail.android.mailupselling.presentation.ui.UpsellingMailButton
 import ch.protonmail.android.uicomponents.SearchView
 import ch.protonmail.android.design.compose.component.appbar.ProtonTopAppBar
+import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import me.proton.android.core.accountmanager.domain.model.CoreAccountAvatarItem
 import me.proton.android.core.accountmanager.presentation.switcher.v1.AccountAvatar
@@ -135,7 +136,9 @@ fun MailboxTopAppBar(
                     if (uiModel.shouldShowActions) {
                         UpsellingMailButton(onClick = actions.onOpenUpsellingPage)
                         IconButton(
-                            modifier = Modifier.testTag(MailboxTopAppBarTestTags.SearchButton),
+                            modifier = Modifier
+                                .size(ProtonDimens.DefaultButtonMinHeight)
+                                .testTag(MailboxTopAppBarTestTags.SearchButton),
                             onClick = actions.onEnterSearchMode
                         ) {
                             Icon(
@@ -203,7 +206,9 @@ private fun TopAppBarInSearchMode(
 @Composable
 private fun NavigationIcon(uiModel: UiModel, onNavigationIconClick: () -> Unit) {
     IconButton(
-        modifier = Modifier.testTag(NavigationButton),
+        modifier = Modifier
+            .testTag(NavigationButton)
+            .size(ProtonDimens.DefaultButtonMinHeight),
         onClick = onNavigationIconClick
     ) {
         BadgedBox(
