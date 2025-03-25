@@ -26,7 +26,6 @@ import ch.protonmail.android.mailcontact.domain.model.ContactCard
 import ch.protonmail.android.mailcontact.domain.model.ContactEmail
 import ch.protonmail.android.mailcontact.domain.model.ContactId
 import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
-import ch.protonmail.android.mailcontact.domain.model.ContactWithCards
 import ch.protonmail.android.mailcontact.domain.model.GetContactError
 import ch.protonmail.android.mailcontact.domain.model.GroupedContacts
 import ch.protonmail.android.mailcontact.domain.repository.ContactRepository
@@ -39,22 +38,6 @@ import javax.inject.Inject
 class ContactRepositoryImpl @Inject constructor(
     private val localContactDataSource: RustContactDataSource
 ) : ContactRepository {
-
-    override fun observeContactWithCards(
-        userId: UserId,
-        contactId: ContactId,
-        refresh: Boolean
-    ): Flow<DataResult<ContactWithCards>> {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun getContactWithCards(
-        userId: UserId,
-        contactId: ContactId,
-        refresh: Boolean
-    ): ContactWithCards {
-        TODO("Not yet implemented")
-    }
 
     override fun observeAllGroupedContacts(userId: UserId): Flow<Either<GetContactError, List<GroupedContacts>>> =
         localContactDataSource.observeAllGroupedContacts(userId)

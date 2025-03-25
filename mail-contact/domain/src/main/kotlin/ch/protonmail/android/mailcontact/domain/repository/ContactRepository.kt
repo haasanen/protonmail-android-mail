@@ -24,7 +24,6 @@ import ch.protonmail.android.mailcontact.domain.model.ContactCard
 import ch.protonmail.android.mailcontact.domain.model.ContactEmail
 import ch.protonmail.android.mailcontact.domain.model.ContactId
 import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
-import ch.protonmail.android.mailcontact.domain.model.ContactWithCards
 import ch.protonmail.android.mailcontact.domain.model.GetContactError
 import ch.protonmail.android.mailcontact.domain.model.GroupedContacts
 import kotlinx.coroutines.flow.Flow
@@ -32,25 +31,6 @@ import me.proton.core.domain.arch.DataResult
 import me.proton.core.domain.entity.UserId
 
 interface ContactRepository {
-
-    /**
-     * Observe [ContactWithCards] from [userId] by [contactId].
-     */
-    fun observeContactWithCards(
-        userId: UserId,
-        contactId: ContactId,
-        refresh: Boolean = false
-    ): Flow<DataResult<ContactWithCards>>
-
-    /**
-     * Get [ContactWithCards] from [userId] by [contactId].
-     */
-    suspend fun getContactWithCards(
-        userId: UserId,
-        contactId: ContactId,
-        refresh: Boolean = false
-    ): ContactWithCards
-
 
     /**
      * Observe all [GroupedContacts] from [userId].

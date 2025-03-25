@@ -163,9 +163,6 @@ class ComposerViewModelTest {
     private val composerIdlingResource = spyk<ComposerIdlingResource>()
     private val isValidEmailAddressMock = mockk<IsValidEmailAddress>()
     private val provideNewDraftIdMock = mockk<ProvideNewDraftId>()
-    private val getComposerSenderAddresses = mockk<GetComposerSenderAddresses> {
-        coEvery { this@mockk.invoke() } returns GetComposerSenderAddresses.Error.UpgradeToChangeSender.left()
-    }
     private val savedStateHandle = mockk<SavedStateHandle>()
     private val deleteAttachment = mockk<DeleteAttachment>()
     private val observeMessageAttachments = mockk<ObserveMessageAttachments>()
