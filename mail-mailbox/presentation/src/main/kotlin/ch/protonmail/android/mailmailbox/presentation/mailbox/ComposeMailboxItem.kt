@@ -158,6 +158,11 @@ fun MailboxItem(
                             .weight(1f)
                     )
 
+                    if (item.shouldShowCalendarIcon) {
+                        SmallNonClickableIcon(iconId = R.drawable.ic_proton_calendar_grid, iconColor = iconColor)
+                        Spacer(Modifier.size(ProtonDimens.Spacing.Small))
+                    }
+
                     val timeFontColor = if (item.isRead) ProtonTheme.colors.textWeak else ProtonTheme.colors.textNorm
                     Time(time = item.time, fontWeight = fontWeight, fontColor = timeFontColor)
                 }
@@ -187,7 +192,6 @@ fun MailboxItem(
                     }
                     Icons(
                         item = item,
-                        iconColor = iconColor,
                         isStarClickable = !selectionMode,
                         onStarClicked = actions.onStarClicked
                     )
@@ -352,7 +356,6 @@ private fun Subject(
 private fun Icons(
     modifier: Modifier = Modifier,
     item: MailboxItemUiModel,
-    iconColor: Color,
     isStarClickable: Boolean,
     onStarClicked: (MailboxItemUiModel) -> Unit
 ) {
@@ -361,10 +364,6 @@ private fun Icons(
         modifier = modifier,
         horizontalArrangement = Arrangement.End
     ) {
-        if (item.shouldShowCalendarIcon) {
-            SmallNonClickableIcon(iconId = R.drawable.ic_proton_calendar_grid, iconColor = iconColor)
-        }
-
         StarIcon(
             isStarred = item.isStarred,
             isClickable = isStarClickable,
