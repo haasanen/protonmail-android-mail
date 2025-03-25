@@ -42,6 +42,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.core.net.toUri
@@ -242,7 +243,8 @@ private fun SenderInitialsAvatar(
             textAlign = TextAlign.Center,
             text = initials,
             style = ProtonTheme.typography.bodyLargeNorm,
-            color = ProtonTheme.colors.textInverted
+            fontWeight = FontWeight.Bold,
+            color = ProtonTheme.colors.textInverted.copy(alpha = 0.9f)
 
         )
     }
