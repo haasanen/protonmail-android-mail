@@ -42,7 +42,6 @@ import ch.protonmail.android.mailcomposer.domain.usecase.ClearMessageSendingErro
 import ch.protonmail.android.mailcomposer.domain.usecase.CreateDraftForAction
 import ch.protonmail.android.mailcomposer.domain.usecase.CreateEmptyDraft
 import ch.protonmail.android.mailcomposer.domain.usecase.DeleteAttachment
-import ch.protonmail.android.mailcomposer.domain.usecase.GetComposerSenderAddresses
 import ch.protonmail.android.mailcomposer.domain.usecase.GetExternalRecipients
 import ch.protonmail.android.mailcomposer.domain.usecase.IsValidEmailAddress
 import ch.protonmail.android.mailcomposer.domain.usecase.ObserveMessageAttachments
@@ -120,7 +119,6 @@ import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import me.proton.core.domain.entity.UserId
 import me.proton.core.network.domain.NetworkManager
-import me.proton.core.user.domain.entity.UserAddress
 import me.proton.core.util.kotlin.serialize
 import org.junit.Rule
 import kotlin.test.AfterTest
@@ -210,7 +208,6 @@ class ComposerViewModelTest {
             participantMapperMock,
             reducer,
             isValidEmailAddressMock,
-            getComposerSenderAddresses,
             composerIdlingResource,
             observeMessageAttachments,
             observeMessageSendingError,
@@ -1003,12 +1000,12 @@ class ComposerViewModelTest {
     }
 
     @Test
+    @Ignore("To be re-enabled when adding back change sender feature")
     fun `emits state with user addresses when sender can be changed`() = runTest {
         // Given
         val expectedUserId = expectedUserId { UserIdSample.Primary }
         val addresses = listOf(UserAddressSample.PrimaryAddress, UserAddressSample.AliasAddress)
         val expectedMessageId = expectedMessageId { MessageIdSample.EmptyDraft }
-        expectedGetComposerSenderAddresses { addresses }
         expectNoInputDraftMessageId()
         expectNoInputDraftAction()
         expectObservedMessageAttachments(expectedUserId, expectedMessageId)
@@ -1028,11 +1025,11 @@ class ComposerViewModelTest {
     }
 
     @Test
+    @Ignore("To be re-enabled when adding back change sender feature")
     fun `emits state with upgrade plan to change sender when user cannot change sender`() = runTest {
         // Given
         val expectedUserId = expectedUserId { UserIdSample.Primary }
         val expectedMessageId = expectedMessageId { MessageIdSample.EmptyDraft }
-        expectedGetComposerSenderAddressesError { GetComposerSenderAddresses.Error.UpgradeToChangeSender }
         expectNoInputDraftMessageId()
         expectNoInputDraftAction()
         expectObservedMessageAttachments(expectedUserId, expectedMessageId)
@@ -1052,11 +1049,11 @@ class ComposerViewModelTest {
     }
 
     @Test
+    @Ignore("To be re-enabled when adding back change sender feature")
     fun `emits state with error when cannot determine if user can change sender`() = runTest {
         // Given
         val expectedUserId = expectedUserId { UserIdSample.Primary }
         val expectedMessageId = expectedMessageId { MessageIdSample.EmptyDraft }
-        expectedGetComposerSenderAddressesError { GetComposerSenderAddresses.Error.FailedDeterminingUserSubscription }
         expectNoInputDraftMessageId()
         expectNoInputDraftAction()
         expectObservedMessageAttachments(expectedUserId, expectedMessageId)
@@ -1076,6 +1073,7 @@ class ComposerViewModelTest {
     }
 
     @Test
+    @Ignore("To be re-enabled when adding back change sender feature")
     fun `emits state with new sender address when sender changed`() = runTest {
         // Given
         val expectedDraftBody = DraftBody("")
@@ -1468,6 +1466,7 @@ class ComposerViewModelTest {
     }
 
     @Test
+    @Ignore("To be re-enabled when adding back attachments feature")
     fun `emits state with an effect to open the file picker when add attachments action is submitted`() = runTest {
         // Given
         val expectedUserId = expectedUserId { UserIdSample.Primary }
@@ -1566,6 +1565,7 @@ class ComposerViewModelTest {
     }
 
     @Test
+    @Ignore("To be re-enabled when adding back attachments feature")
     fun `emit state with effect when attachment file size exceeded`() = runTest {
         // Given
         val uri = mockk<Uri>()
@@ -1656,6 +1656,7 @@ class ComposerViewModelTest {
     }
 
     @Test
+    @Ignore("To be re-enabled when adding back expiration time feature")
     fun `should emit state for showing bottom sheet when action for setting expiration time is submitted`() = runTest {
         // Given
         val userId = expectedUserId { UserIdSample.Primary }
@@ -1679,6 +1680,7 @@ class ComposerViewModelTest {
     }
 
     @Test
+    @Ignore("To be re-enabled when adding back expiration time feature")
     fun `should emit state for hiding bottom sheet when action for saving expiration time is submitted`() = runTest {
         // Given
         val userId = expectedUserId { UserIdSample.Primary }
@@ -1705,6 +1707,7 @@ class ComposerViewModelTest {
     }
 
     @Test
+    @Ignore("To be re-enabled when adding back expiration time feature")
     fun `should emit state for showing an error when saving expiration time has failed`() = runTest {
         // Given
         val userId = expectedUserId { UserIdSample.Primary }
@@ -1943,13 +1946,6 @@ class ComposerViewModelTest {
         dataError().also {
             coEvery { createEmptyDraft(userId) } returns it.left()
         }
-
-    private fun expectedGetComposerSenderAddresses(addresses: () -> List<UserAddress>): List<UserAddress> =
-        addresses().also { coEvery { getComposerSenderAddresses() } returns it.right() }
-
-    private fun expectedGetComposerSenderAddressesError(
-        error: () -> GetComposerSenderAddresses.Error
-    ): GetComposerSenderAddresses.Error = error().also { coEvery { getComposerSenderAddresses() } returns it.left() }
 
     private fun expectStoreDraftBodySucceeds(expectedDraftBody: DraftBody) {
         coEvery {

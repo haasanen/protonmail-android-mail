@@ -91,10 +91,6 @@ class ComposerReducer @Inject constructor(
         )
 
         is ComposerEvent.ErrorFreeUserCannotChangeSender -> updateStateToPaidFeatureMessage(currentState)
-        is ComposerEvent.ErrorStoringDraftSenderAddress -> updateStateForChangeSenderFailed(
-            currentState = currentState,
-            errorMessage = TextUiModel(R.string.composer_error_store_draft_sender_address)
-        )
 
         is ComposerEvent.ErrorStoringDraftBody -> currentState.copy(
             error = Effect.of(TextUiModel(R.string.composer_error_store_draft_body))
@@ -258,9 +254,6 @@ class ComposerReducer @Inject constructor(
 
         return currentState.copy(isLoading = true, focusTextBody = bodyTextFieldEffect)
     }
-
-    private fun updateStateForChangeSenderFailed(currentState: ComposerDraftState, errorMessage: TextUiModel) =
-        currentState.copy(changeBottomSheetVisibility = Effect.of(false), error = Effect.of(errorMessage))
 
     private fun updateStateForSendMessage(currentState: ComposerDraftState) =
         currentState.copy(closeComposerWithMessageSending = Effect.of(Unit))

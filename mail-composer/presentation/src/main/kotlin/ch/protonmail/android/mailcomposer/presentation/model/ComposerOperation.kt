@@ -89,7 +89,6 @@ sealed interface ComposerEvent : ComposerOperation {
     data object ErrorLoadingDefaultSenderAddress : ComposerEvent
     data object ErrorFreeUserCannotChangeSender : ComposerEvent
     data object ErrorVerifyingPermissionsToChangeSender : ComposerEvent
-    data object ErrorStoringDraftSenderAddress : ComposerEvent
     data object ErrorStoringDraftBody : ComposerEvent
     data object ErrorStoringDraftRecipients : ComposerEvent
     data object ErrorStoringDraftSubject : ComposerEvent

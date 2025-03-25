@@ -194,7 +194,10 @@ fun Home(
 
         )
         when (result) {
-            SnackbarResult.ActionPerformed -> viewModel.discardDraft(messageId)
+            SnackbarResult.ActionPerformed -> {
+                showFeatureMissingSnackbar()
+                // viewModel.discardDraft(messageId)
+            }
             SnackbarResult.Dismissed -> Unit
         }
     }

@@ -318,21 +318,6 @@ class ComposerReducerTest(
             )
         )
 
-        private val DefaultSenderToChangeSenderFailed = TestTransition(
-            name = "Should update the state showing an error and preserving the previous sender address",
-            currentState = aNotSubmittableState(
-                draftId = messageId,
-                sender = SenderUiModel("default@pm.me")
-            ),
-            operation = ComposerEvent.ErrorStoringDraftSenderAddress,
-            expectedState = aNotSubmittableState(
-                draftId = messageId,
-                sender = SenderUiModel("default@pm.me"),
-                error = Effect.of(TextUiModel(R.string.composer_error_store_draft_sender_address)),
-                changeSenderBottomSheetVisibility = Effect.of(false)
-            )
-        )
-
         private val DuplicateToToNotDuplicateWithError = with(aMultipleRandomRange().map { "a@b.c" }) {
             TestTransition(
                 name = "Should remove duplicate TO recipients and contain error if there are",
@@ -884,7 +869,6 @@ class ComposerReducerTest(
             EmptyToErrorWhenUserPlanUnknown,
             EmptyToUpdatedSender,
             EmptyToChangeSubjectError,
-            DefaultSenderToChangeSenderFailed,
             DuplicateToToNotDuplicateWithError,
             DuplicateCcToNotDuplicateWithError,
             DuplicateBccToNotDuplicateWithError,

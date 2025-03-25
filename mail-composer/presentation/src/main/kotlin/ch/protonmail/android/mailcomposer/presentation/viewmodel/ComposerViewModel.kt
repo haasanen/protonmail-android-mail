@@ -38,8 +38,6 @@ import ch.protonmail.android.mailcomposer.domain.usecase.ClearMessageSendingErro
 import ch.protonmail.android.mailcomposer.domain.usecase.CreateDraftForAction
 import ch.protonmail.android.mailcomposer.domain.usecase.CreateEmptyDraft
 import ch.protonmail.android.mailcomposer.domain.usecase.DeleteAttachment
-import ch.protonmail.android.mailcomposer.domain.usecase.GetComposerSenderAddresses
-import ch.protonmail.android.mailcomposer.domain.usecase.GetComposerSenderAddresses.Error
 import ch.protonmail.android.mailcomposer.domain.usecase.GetExternalRecipients
 import ch.protonmail.android.mailcomposer.domain.usecase.IsValidEmailAddress
 import ch.protonmail.android.mailcomposer.domain.usecase.ObserveMessageAttachments
@@ -63,7 +61,6 @@ import ch.protonmail.android.mailcomposer.presentation.model.ComposerOperation
 import ch.protonmail.android.mailcomposer.presentation.model.ContactSuggestionsField
 import ch.protonmail.android.mailcomposer.presentation.model.DraftUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.RecipientUiModel
-import ch.protonmail.android.mailcomposer.presentation.model.SenderUiModel
 import ch.protonmail.android.mailcomposer.presentation.reducer.ComposerReducer
 import ch.protonmail.android.mailcomposer.presentation.ui.ComposerScreen
 import ch.protonmail.android.mailcomposer.presentation.usecase.BuildDraftDisplayBody
@@ -102,7 +99,7 @@ import timber.log.Timber
 import javax.inject.Inject
 import kotlin.time.Duration
 
-@Suppress("LongParameterList", "TooManyFunctions", "LargeClass")
+@Suppress("LongParameterList", "TooManyFunctions", "UnusedPrivateMember")
 @HiltViewModel
 class ComposerViewModel @Inject constructor(
     private val storeDraftWithBody: StoreDraftWithBody,
@@ -118,7 +115,6 @@ class ComposerViewModel @Inject constructor(
     private val participantMapper: ParticipantMapper,
     private val reducer: ComposerReducer,
     private val isValidEmailAddress: IsValidEmailAddress,
-    private val getComposerSenderAddresses: GetComposerSenderAddresses,
     private val composerIdlingResource: ComposerIdlingResource,
     private val observeMessageAttachments: ObserveMessageAttachments,
     private val observeMessageSendingError: ObserveMessageSendingError,
@@ -322,11 +318,11 @@ class ComposerViewModel @Inject constructor(
             actionMutex.withLock {
                 composerIdlingResource.increment()
                 when (action) {
-                    is ComposerAction.AttachmentsAdded -> onAttachmentsAdded(action)
+                    is ComposerAction.AttachmentsAdded -> TODO()
                     is ComposerAction.DraftBodyChanged -> onDraftBodyChanged(action)
-                    is ComposerAction.SenderChanged -> emitNewStateFor(onSenderChanged(action))
+                    is ComposerAction.SenderChanged -> TODO()
                     is ComposerAction.SubjectChanged -> emitNewStateFor(onSubjectChanged(action))
-                    is ComposerAction.ChangeSenderRequested -> emitNewStateFor(onChangeSender())
+                    is ComposerAction.ChangeSenderRequested -> TODO()
                     is ComposerAction.RecipientsToChanged -> emitNewStateFor(onToChanged(action))
                     is ComposerAction.RecipientsCcChanged -> emitNewStateFor(onCcChanged(action))
                     is ComposerAction.RecipientsBccChanged -> emitNewStateFor(onBccChanged(action))
@@ -337,14 +333,14 @@ class ComposerViewModel @Inject constructor(
 
                     is ComposerAction.ContactSuggestionsDismissed -> emitNewStateFor(action)
                     is ComposerAction.DeviceContactsPromptDenied -> onDeviceContactsPromptDenied()
-                    is ComposerAction.OnAddAttachments -> emitNewStateFor(action)
+                    is ComposerAction.OnAddAttachments -> TODO()
                     is ComposerAction.OnCloseComposer -> emitNewStateFor(onCloseComposer(action))
                     is ComposerAction.OnSendMessage -> emitNewStateFor(handleOnSendMessage(action))
                     is ComposerAction.ConfirmSendingWithoutSubject -> emitNewStateFor(onSendMessage(action))
                     is ComposerAction.RejectSendingWithoutSubject -> emitNewStateFor(action)
                     is ComposerAction.RemoveAttachment -> onAttachmentsRemoved(action)
-                    is ComposerAction.OnSetExpirationTimeRequested -> emitNewStateFor(action)
-                    is ComposerAction.ExpirationTimeSet -> onExpirationTimeSet(action)
+                    is ComposerAction.OnSetExpirationTimeRequested -> TODO()
+                    is ComposerAction.ExpirationTimeSet -> TODO()
                     is ComposerAction.SendExpiringMessageToExternalRecipientsConfirmed -> emitNewStateFor(
                         onSendMessage(action)
                     )
@@ -407,26 +403,10 @@ class ComposerViewModel @Inject constructor(
         }
     }
 
-    @MissingRustApi
-    // Storing of attachments not implemented
-    private fun onAttachmentsAdded(action: ComposerAction.AttachmentsAdded) {
-        Timber.w("composer: storing attachment not implemented")
-        emitNewStateFor(ComposerEvent.ErrorAttachmentsExceedSizeLimit)
-    }
-
     private fun onAttachmentsRemoved(action: ComposerAction.RemoveAttachment) {
         viewModelScope.launch {
             deleteAttachment(primaryUserId(), currentMessageId(), action.attachmentId)
                 .onLeft { Timber.e("Failed to delete attachment: $it") }
-        }
-    }
-
-    private fun onExpirationTimeSet(action: ComposerAction.ExpirationTimeSet) {
-        viewModelScope.launch {
-            saveMessageExpirationTime(primaryUserId(), currentMessageId(), action.duration).fold(
-                ifLeft = { emitNewStateFor(ComposerEvent.ErrorSettingExpirationTime) },
-                ifRight = { emitNewStateFor(action) }
-            )
         }
     }
 
@@ -505,11 +485,6 @@ class ComposerViewModel @Inject constructor(
             ifRight = { action }
         )
 
-    private suspend fun onSenderChanged(action: ComposerAction.SenderChanged): ComposerOperation {
-        Timber.w("Composer: Change sender feature not implemented")
-        return action
-    }
-
     private suspend fun onDraftBodyChanged(action: ComposerAction.DraftBodyChanged) {
         emitNewStateFor(ComposerAction.DraftBodyChanged(action.draftBody))
 
@@ -557,19 +532,6 @@ class ComposerViewModel @Inject constructor(
 
     private suspend fun contactsOrEmpty() = getContacts(primaryUserId()).getOrElse { emptyList() }
 
-    private suspend fun onChangeSender() = getComposerSenderAddresses().fold(
-        ifLeft = { changeSenderError ->
-            when (changeSenderError) {
-                Error.UpgradeToChangeSender -> ComposerEvent.ErrorFreeUserCannotChangeSender
-                Error.FailedDeterminingUserSubscription,
-                Error.FailedGettingPrimaryUser -> ComposerEvent.ErrorVerifyingPermissionsToChangeSender
-            }
-        },
-        ifRight = { userAddresses ->
-            ComposerEvent.SenderAddressesReceived(userAddresses.map { SenderUiModel(it.email) })
-        }
-    )
-
     private suspend fun onToChanged(action: ComposerAction.RecipientsToChanged): ComposerOperation {
         val contacts = contactsOrEmpty()
         return action.recipients.filterIsInstance<RecipientUiModel.Valid>().let { validRecipients ->
@@ -583,7 +545,6 @@ class ComposerViewModel @Inject constructor(
         }
     }
 
-
     private suspend fun onCcChanged(action: ComposerAction.RecipientsCcChanged): ComposerOperation {
         val contacts = contactsOrEmpty()
         return action.recipients.filterIsInstance<RecipientUiModel.Valid>().let { validRecipients ->
@@ -596,7 +557,6 @@ class ComposerViewModel @Inject constructor(
             )
         }
     }
-
 
     private suspend fun onBccChanged(action: ComposerAction.RecipientsBccChanged): ComposerOperation {
         val contacts = contactsOrEmpty()

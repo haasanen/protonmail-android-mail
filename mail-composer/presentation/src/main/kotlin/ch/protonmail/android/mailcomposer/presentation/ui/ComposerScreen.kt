@@ -128,7 +128,10 @@ fun ComposerScreen(actions: ComposerScreen.Actions, viewModel: ComposerViewModel
     }
 
     val bottomBarActions = ComposerBottomBar.Actions(
-        onAddAttachmentsClick = { viewModel.submit(ComposerAction.OnAddAttachments) },
+        onAddAttachmentsClick = {
+            showFeatureMissingSnackbar()
+//            viewModel.submit(ComposerAction.OnAddAttachments)
+        },
         onSetMessagePasswordClick = { _, _ ->
             showFeatureMissingSnackbar()
             // actions.onSetMessagePasswordClick()
