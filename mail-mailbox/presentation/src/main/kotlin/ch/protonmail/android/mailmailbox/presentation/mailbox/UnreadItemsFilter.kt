@@ -20,13 +20,11 @@ package ch.protonmail.android.mailmailbox.presentation.mailbox
 
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.FilterChip
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.tooling.preview.Preview
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
@@ -73,14 +71,8 @@ fun UnreadItemsFilter(
                         onFilterEnabled()
                     }
                 },
-                leadingIcon = {
-                    Icon(
-                        modifier = Modifier.size(ProtonDimens.IconSize.Small),
-                        painter = painterResource(R.drawable.ic_proton_envelope_dot),
-                        contentDescription = null,
-                        tint = ProtonTheme.colors.iconNorm
-                    )
-                },
+                elevation = null,
+                leadingIcon = {},
                 label = {
                     Text(
                         text = pluralStringResource(
@@ -104,7 +96,7 @@ private fun chipColors() = FilterChipDefaults.filterChipColors(
     labelColor = ProtonTheme.colors.textAccent
 )
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 fun InactiveUnreadFilterButtonPreview() {
     UnreadItemsFilter(
@@ -114,7 +106,7 @@ fun InactiveUnreadFilterButtonPreview() {
     )
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 fun ActiveUnreadFilterButtonPreview() {
     UnreadItemsFilter(
