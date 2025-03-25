@@ -27,6 +27,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.unit.Dp
 import ch.protonmail.android.mailcommon.presentation.NO_CONTENT_DESCRIPTION
 import ch.protonmail.android.mailcommon.presentation.R
 import ch.protonmail.android.mailcommon.presentation.extension.tintColor
@@ -36,12 +37,14 @@ import ch.protonmail.android.design.compose.theme.ProtonDimens
 fun SmallNonClickableIcon(
     @DrawableRes iconId: Int,
     modifier: Modifier = Modifier,
-    tintId: Int = R.color.icon_weak
+    tintId: Int = R.color.icon_weak,
+    iconSize: Dp = ProtonDimens.IconSize.Small
 ) {
     SmallNonClickableIcon(
         modifier = modifier,
         iconId = iconId,
-        iconColor = colorResource(id = tintId)
+        iconColor = colorResource(id = tintId),
+        iconSize = iconSize
     )
 }
 
@@ -49,12 +52,13 @@ fun SmallNonClickableIcon(
 fun SmallNonClickableIcon(
     @DrawableRes iconId: Int,
     iconColor: Color,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    iconSize: Dp = ProtonDimens.IconSize.Small
 ) {
     Icon(
         modifier = modifier
             .semantics { tintColor = iconColor }
-            .size(ProtonDimens.IconSize.Small),
+            .size(iconSize),
         painter = painterResource(id = iconId),
         contentDescription = NO_CONTENT_DESCRIPTION,
         tint = iconColor

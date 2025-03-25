@@ -344,7 +344,7 @@ private fun Subject(
         text = subject,
         overflow = TextOverflow.Ellipsis,
         maxLines = 1,
-        style = ProtonTheme.typography.bodyLargeNorm.copy(fontWeight = fontWeight, color = fontColor)
+        style = ProtonTheme.typography.bodyMedium.copy(fontWeight = fontWeight, color = fontColor)
     )
 }
 
@@ -386,10 +386,15 @@ private fun StarIcon(
         SmallClickableIcon(
             iconId = iconId,
             iconColor = iconColor,
-            onClick = onClick
+            onClick = onClick,
+            iconSize = ProtonDimens.IconSize.Medium
         )
     } else {
-        SmallNonClickableIcon(iconId = iconId, iconColor = iconColor)
+        SmallNonClickableIcon(
+            iconId = iconId,
+            iconColor = iconColor,
+            iconSize = ProtonDimens.IconSize.Medium
+        )
     }
 }
 
