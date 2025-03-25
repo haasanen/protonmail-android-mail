@@ -95,6 +95,7 @@ import ch.protonmail.android.navigation.route.addConversationDetail
 import ch.protonmail.android.navigation.route.addDeepLinkHandler
 import ch.protonmail.android.navigation.route.addEditSwipeActionsSettings
 import ch.protonmail.android.navigation.route.addExportLogsSettings
+import ch.protonmail.android.navigation.route.addFeatureFlagsOverrides
 import ch.protonmail.android.navigation.route.addFolderForm
 import ch.protonmail.android.navigation.route.addFolderList
 import ch.protonmail.android.navigation.route.addLabelForm
@@ -777,6 +778,7 @@ fun Home(
                         addThemeSettings(navController)
                         addNotificationsSettings(navController)
                         addExportLogsSettings(navController)
+                        addFeatureFlagsOverrides(navController)
                         addDeepLinkHandler(navController)
                     }
                 }

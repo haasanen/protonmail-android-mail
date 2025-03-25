@@ -36,4 +36,7 @@
     <string name="application_events_share" translatable="false">Share logs</string>
     <string name="application_events_save_to_disk" translatable="false">Save logs to disk</string>
     <string name="application_events_export_error" translatable="false">An error occurred while exporting the events</string>
+
+    <string name="application_events_feature_flags_title" translatable="false">Feature Flags</string>
+    <string name="application_events_feature_flags_subtitle" translatable="false">Configure feature flags</string>
 </resources>

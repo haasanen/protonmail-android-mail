@@ -139,6 +139,7 @@ sealed class Destination(val route: String) {
             operator fun invoke(item: ApplicationLogsViewItemMode) =
                 route.replace(ApplicationLogsViewMode.wrap(), item.serialize())
         }
+        object FeatureFlagsOverrides : Destination("settings/debug/featureFlags")
         object DeepLinksHandler : Destination("deepLinksHandler")
         object LabelList : Destination("labelList")
         object CreateLabel : Destination("labelForm")

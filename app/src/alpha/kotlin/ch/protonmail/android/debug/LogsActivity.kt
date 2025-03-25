@@ -26,6 +26,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import ch.protonmail.android.design.compose.theme.ProtonTheme
+import ch.protonmail.android.mailfeatureflags.presentation.ui.FeatureFlagOverridesScreen
 import ch.protonmail.android.mailbugreport.presentation.ui.ApplicationLogsPeekView
 import ch.protonmail.android.mailbugreport.presentation.ui.ApplicationLogsScreen
 import ch.protonmail.android.mailbugreport.presentation.ui.LocalAppLogsEntryPointIsStandalone
@@ -51,13 +52,23 @@ internal class LogsActivity : AppCompatActivity() {
                     composable(route = Screen.ApplicationLogs.route) {
                         CompositionLocalProvider(LocalAppLogsEntryPointIsStandalone provides true) {
                             ApplicationLogsScreen(
-                                onNavigationIcon = { finish() },
-                                onViewItemClick = { navController.navigate(Screen.ApplicationLogsView(it)) }
+                                actions = ApplicationLogsScreen.Actions(
+                                    onBackClick = { finish() },
+                                    onViewItemClick = { navController.navigate(Screen.ApplicationLogsView(it)) },
+                                    onFeatureFlagsNavigation = {
+                                        navController.navigate(Screen.FeatureFlagsOverrides.route)
+                                    }
+                                )
                             )
                         }
                     }
                     composable(route = Screen.ApplicationLogsView.route) {
                         ApplicationLogsPeekView(
+                            onBack = { navController.navigateBack() }
+                        )
+                    }
+                    composable(route = Screen.FeatureFlagsOverrides.route) {
+                        FeatureFlagOverridesScreen(
                             onBack = { navController.navigateBack() }
                         )
                     }

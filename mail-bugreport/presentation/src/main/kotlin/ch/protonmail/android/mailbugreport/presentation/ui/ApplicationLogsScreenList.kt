@@ -83,6 +83,20 @@ internal fun ApplicationLogsScreenList(modifier: Modifier = Modifier, actions: A
                 onClick = actions.onExport
             )
         }
+        item { HorizontalDivider(color = ProtonTheme.colors.separatorNorm) }
+
+        item {
+            ProtonSettingsHeader(
+                title = stringResource(R.string.application_events_feature_flags_title),
+                modifier = Modifier.padding(bottom = ProtonDimens.Spacing.Small)
+            )
+        }
+        item {
+            ProtonSettingsItem(
+                name = stringResource(R.string.application_events_feature_flags_subtitle),
+                onClick = actions.onFeatureFlagNavigation
+            )
+        }
     }
 }
 
@@ -92,7 +106,8 @@ object ApplicationLogsScreenList {
         val onShare: () -> Unit,
         val onShowAppEvents: () -> Unit,
         val onShowRustEvents: () -> Unit,
-        val onShowLogcat: () -> Unit
+        val onShowLogcat: () -> Unit,
+        val onFeatureFlagNavigation: () -> Unit
     ) {
 
         companion object {
@@ -102,7 +117,8 @@ object ApplicationLogsScreenList {
                 onShare = {},
                 onShowAppEvents = {},
                 onShowRustEvents = {},
-                onShowLogcat = {}
+                onShowLogcat = {},
+                onFeatureFlagNavigation = {}
             )
         }
     }

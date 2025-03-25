@@ -24,6 +24,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import ch.protonmail.android.LockScreenActivity
 import ch.protonmail.android.design.compose.theme.ProtonInvertedTheme
+import ch.protonmail.android.mailfeatureflags.presentation.ui.FeatureFlagOverridesScreen
 import ch.protonmail.android.mailbugreport.presentation.ui.ApplicationLogsPeekView
 import ch.protonmail.android.mailbugreport.presentation.ui.ApplicationLogsScreen
 import ch.protonmail.android.mailcommon.presentation.extension.navigateBack
@@ -221,12 +222,25 @@ internal fun NavGraphBuilder.addNotificationsSettings(navController: NavHostCont
 internal fun NavGraphBuilder.addExportLogsSettings(navController: NavHostController) {
     composable(route = Screen.ApplicationLogs.route) {
         ApplicationLogsScreen(
-            onNavigationIcon = { navController.navigateBack() },
-            onViewItemClick = { navController.navigate(Screen.ApplicationLogsView(it)) }
+            actions = ApplicationLogsScreen.Actions(
+                onBackClick = { navController.navigateBack() },
+                onViewItemClick = { navController.navigate(Screen.ApplicationLogsView(it)) },
+                onFeatureFlagsNavigation = {
+                    navController.navigate(Screen.FeatureFlagsOverrides.route)
+                }
+            )
         )
     }
     composable(route = Screen.ApplicationLogsView.route) {
         ApplicationLogsPeekView(
+            onBack = { navController.navigateBack() }
+        )
+    }
+}
+
+internal fun NavGraphBuilder.addFeatureFlagsOverrides(navController: NavHostController) {
+    composable(route = Screen.FeatureFlagsOverrides.route) {
+        FeatureFlagOverridesScreen(
             onBack = { navController.navigateBack() }
         )
     }

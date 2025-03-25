@@ -50,8 +50,7 @@ import me.proton.core.presentation.utils.showToast
 @Composable
 fun ApplicationLogsScreen(
     modifier: Modifier = Modifier,
-    onNavigationIcon: () -> Unit,
-    onViewItemClick: (ApplicationLogsViewItemMode) -> Unit,
+    actions: ApplicationLogsScreen.Actions,
     viewModel: ApplicationLogsViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -64,24 +63,25 @@ fun ApplicationLogsScreen(
         uri?.let { viewModel.submit(Export.ExportLogs(uri)) }
     }
 
-    val actions = ApplicationLogsScreenList.Actions(
+    val screenListActions = ApplicationLogsScreenList.Actions(
         onExport = { fileSaveLauncher.launch(FileNames.ZipFile) },
         onShare = { viewModel.submit(Export.ShareLogs) },
         onShowLogcat = { viewModel.submit(View.ViewLogcat) },
         onShowRustEvents = { viewModel.submit(View.ViewRustEvents) },
-        onShowAppEvents = { viewModel.submit(View.ViewAppEvents) }
+        onShowAppEvents = { viewModel.submit(View.ViewAppEvents) },
+        onFeatureFlagNavigation = actions.onFeatureFlagsNavigation
     )
 
     ConsumableLaunchedEffect(state.showApplicationLogs) {
-        onViewItemClick(ApplicationLogsViewItemMode.AppEvents)
+        actions.onViewItemClick(ApplicationLogsViewItemMode.AppEvents)
     }
 
     ConsumableLaunchedEffect(state.showRustLogs) {
-        onViewItemClick(ApplicationLogsViewItemMode.RustEvents)
+        actions.onViewItemClick(ApplicationLogsViewItemMode.RustEvents)
     }
 
     ConsumableLaunchedEffect(state.showLogcat) {
-        onViewItemClick(ApplicationLogsViewItemMode.Logcat)
+        actions.onViewItemClick(ApplicationLogsViewItemMode.Logcat)
     }
 
     ConsumableLaunchedEffect(state.share) {
@@ -98,7 +98,7 @@ fun ApplicationLogsScreen(
             ProtonMediumTopAppBar(
                 title = { Text(text = stringResource(R.string.application_events_title)) },
                 navigationIcon = {
-                    IconButton(onClick = onNavigationIcon) {
+                    IconButton(onClick = actions.onBackClick) {
                         val imageVector = if (isStandalone) Icons.Filled.Close else Icons.AutoMirrored.Filled.ArrowBack
 
                         Icon(
@@ -110,7 +110,15 @@ fun ApplicationLogsScreen(
             )
         },
         content = { paddingValues ->
-            ApplicationLogsScreenList(Modifier.padding(paddingValues), actions)
+            ApplicationLogsScreenList(Modifier.padding(paddingValues), screenListActions)
         }
+    )
+}
+
+object ApplicationLogsScreen {
+    data class Actions(
+        val onBackClick: () -> Unit,
+        val onViewItemClick: (ApplicationLogsViewItemMode) -> Unit,
+        val onFeatureFlagsNavigation: () -> Unit
     )
 }
