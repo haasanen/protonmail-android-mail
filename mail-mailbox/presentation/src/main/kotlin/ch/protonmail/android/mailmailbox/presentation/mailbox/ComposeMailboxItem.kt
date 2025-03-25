@@ -143,7 +143,7 @@ fun MailboxItem(
                 Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                     ActionIcons(
                         item = item,
-                        iconColor = fontColor,
+                        iconColor = iconColor,
                         modifier = Modifier.padding(end = ProtonDimens.Spacing.Small)
                     )
 
@@ -158,7 +158,7 @@ fun MailboxItem(
                             .weight(1f)
                     )
 
-                    val timeFontColor = if (item.isRead) ProtonTheme.colors.textHint else ProtonTheme.colors.textNorm
+                    val timeFontColor = if (item.isRead) ProtonTheme.colors.textWeak else ProtonTheme.colors.textNorm
                     Time(time = item.time, fontWeight = fontWeight, fontColor = timeFontColor)
                 }
                 Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Small))
@@ -168,7 +168,7 @@ fun MailboxItem(
                 ) {
                     LocationIcons(
                         iconResIds = item.locations,
-                        iconColor = fontColor,
+                        iconColor = iconColor,
                         modifier = Modifier.padding(end = ProtonDimens.Spacing.Small)
                     )
                     Row(
@@ -187,7 +187,7 @@ fun MailboxItem(
                     }
                     Icons(
                         item = item,
-                        iconColor = fontColor,
+                        iconColor = iconColor,
                         isStarClickable = !selectionMode,
                         onStarClicked = actions.onStarClicked
                     )
