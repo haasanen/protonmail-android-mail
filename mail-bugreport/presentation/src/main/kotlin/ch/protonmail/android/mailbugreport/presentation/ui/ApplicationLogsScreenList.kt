@@ -18,27 +18,25 @@
 
 package ch.protonmail.android.mailbugreport.presentation.ui
 
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import ch.protonmail.android.design.compose.component.ProtonSettingsHeader
 import ch.protonmail.android.design.compose.component.ProtonSettingsItem
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.mailbugreport.presentation.R
+import ch.protonmail.android.mailcommon.presentation.AdaptivePreviews
 
 @Composable
 internal fun ApplicationLogsScreenList(modifier: Modifier = Modifier, actions: ApplicationLogsScreenList.Actions) {
     LazyColumn(modifier = modifier) {
         item {
-            ProtonSettingsHeader(
-                title = stringResource(R.string.application_events_header_view),
-                modifier = Modifier.padding(bottom = ProtonDimens.Spacing.Small)
-            )
+            ProtonSettingsHeader(title = R.string.application_events_header_view)
         }
         item {
             ProtonSettingsItem(
@@ -63,12 +61,13 @@ internal fun ApplicationLogsScreenList(modifier: Modifier = Modifier, actions: A
                 onClick = actions.onShowAppEvents
             )
         }
-        item { HorizontalDivider(color = ProtonTheme.colors.separatorNorm) }
 
         item {
             ProtonSettingsHeader(
                 title = stringResource(R.string.application_events_header_export),
-                modifier = Modifier.padding(bottom = ProtonDimens.Spacing.Small)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = ProtonDimens.Spacing.Small)
             )
         }
         item {
@@ -84,7 +83,6 @@ internal fun ApplicationLogsScreenList(modifier: Modifier = Modifier, actions: A
                 onClick = actions.onExport
             )
         }
-        item { HorizontalDivider(color = ProtonTheme.colors.separatorNorm) }
     }
 }
 
@@ -110,7 +108,7 @@ object ApplicationLogsScreenList {
     }
 }
 
-@Preview
+@AdaptivePreviews
 @Composable
 private fun ApplicationLogsScreenPreview() {
     ProtonTheme {

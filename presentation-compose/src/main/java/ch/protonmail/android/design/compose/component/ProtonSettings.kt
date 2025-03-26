@@ -39,6 +39,8 @@ import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.toggleable
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.RadioButton
@@ -46,8 +48,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -121,10 +121,7 @@ fun ProtonSettingsHeader(modifier: Modifier = Modifier, @StringRes title: Int) {
 
 @Composable
 fun ProtonSettingsHeader(modifier: Modifier = Modifier, title: String) {
-    ProtonListItem(
-        modifier = modifier,
-        isClickable = false
-    ) {
+    ProtonRawListItem(modifier = modifier.padding(ProtonDimens.Spacing.Large)) {
         Text(
             modifier = Modifier.align(Alignment.CenterVertically),
             text = title,
