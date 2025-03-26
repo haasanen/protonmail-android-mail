@@ -221,7 +221,7 @@ internal fun NavGraphBuilder.addNotificationsSettings(navController: NavHostCont
 internal fun NavGraphBuilder.addExportLogsSettings(navController: NavHostController) {
     composable(route = Screen.ApplicationLogs.route) {
         ApplicationLogsScreen(
-            onBackClick = { navController.navigateBack() },
+            onNavigationIcon = { navController.navigateBack() },
             onViewItemClick = { navController.navigate(Screen.ApplicationLogsView(it)) }
         )
     }

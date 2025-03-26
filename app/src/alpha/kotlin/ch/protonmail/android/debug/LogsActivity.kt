@@ -21,12 +21,14 @@ package ch.protonmail.android.debug
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.mailbugreport.presentation.ui.ApplicationLogsPeekView
 import ch.protonmail.android.mailbugreport.presentation.ui.ApplicationLogsScreen
+import ch.protonmail.android.mailbugreport.presentation.ui.LocalAppLogsEntryPointIsStandalone
 import ch.protonmail.android.mailcommon.presentation.extension.navigateBack
 import ch.protonmail.android.navigation.model.Destination.Screen
 import dagger.hilt.android.AndroidEntryPoint
@@ -47,10 +49,12 @@ internal class LogsActivity : AppCompatActivity() {
                     startDestination = Screen.ApplicationLogs.route
                 ) {
                     composable(route = Screen.ApplicationLogs.route) {
-                        ApplicationLogsScreen(
-                            onBackClick = { finish() },
-                            onViewItemClick = { navController.navigate(Screen.ApplicationLogsView(it)) }
-                        )
+                        CompositionLocalProvider(LocalAppLogsEntryPointIsStandalone provides true) {
+                            ApplicationLogsScreen(
+                                onNavigationIcon = { finish() },
+                                onViewItemClick = { navController.navigate(Screen.ApplicationLogsView(it)) }
+                            )
+                        }
                     }
                     composable(route = Screen.ApplicationLogsView.route) {
                         ApplicationLogsPeekView(

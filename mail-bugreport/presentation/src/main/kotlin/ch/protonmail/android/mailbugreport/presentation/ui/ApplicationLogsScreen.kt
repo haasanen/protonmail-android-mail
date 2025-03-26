@@ -21,7 +21,13 @@ package ch.protonmail.android.mailbugreport.presentation.ui
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -29,7 +35,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import ch.protonmail.android.design.compose.component.ProtonSettingsTopBar
+import ch.protonmail.android.design.compose.component.appbar.ProtonMediumTopAppBar
 import ch.protonmail.android.mailbugreport.domain.model.FileNames
 import ch.protonmail.android.mailbugreport.presentation.R
 import ch.protonmail.android.mailbugreport.presentation.model.ApplicationLogsOperation.ApplicationLogsAction.Export
@@ -44,12 +50,13 @@ import me.proton.core.presentation.utils.showToast
 @Composable
 fun ApplicationLogsScreen(
     modifier: Modifier = Modifier,
-    onBackClick: () -> Unit,
+    onNavigationIcon: () -> Unit,
     onViewItemClick: (ApplicationLogsViewItemMode) -> Unit,
     viewModel: ApplicationLogsViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val context = LocalContext.current
+    val isStandalone = LocalAppLogsEntryPointIsStandalone.current
 
     val fileSaveLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.CreateDocument("application/zip")
@@ -88,9 +95,18 @@ fun ApplicationLogsScreen(
     Scaffold(
         modifier = modifier,
         topBar = {
-            ProtonSettingsTopBar(
-                title = stringResource(R.string.application_events_title),
-                onBackClick = onBackClick
+            ProtonMediumTopAppBar(
+                title = { Text(text = stringResource(R.string.application_events_title)) },
+                navigationIcon = {
+                    IconButton(onClick = onNavigationIcon) {
+                        val imageVector = if (isStandalone) Icons.Filled.Close else Icons.AutoMirrored.Filled.ArrowBack
+
+                        Icon(
+                            imageVector = imageVector,
+                            contentDescription = stringResource(id = R.string.presentation_back)
+                        )
+                    }
+                }
             )
         },
         content = { paddingValues ->
