@@ -74,8 +74,7 @@ object MailboxStateSampleData {
         deleteAllDialogState = DeleteDialogState.Hidden,
         bottomSheetState = null,
         storageLimitState = StorageLimitState.HasEnoughSpace,
-        error = Effect.empty(),
-        showRatingBooster = Effect.empty()
+        error = Effect.empty()
     )
 
     val Inbox = MailboxState(
@@ -112,8 +111,7 @@ object MailboxStateSampleData {
         deleteAllDialogState = DeleteDialogState.Hidden,
         bottomSheetState = null,
         storageLimitState = StorageLimitState.HasEnoughSpace,
-        error = Effect.empty(),
-        showRatingBooster = Effect.empty()
+        error = Effect.empty()
     )
 
     val AllMail = MailboxState(
@@ -150,8 +148,7 @@ object MailboxStateSampleData {
         deleteAllDialogState = DeleteDialogState.Hidden,
         bottomSheetState = null,
         storageLimitState = StorageLimitState.HasEnoughSpace,
-        error = Effect.empty(),
-        showRatingBooster = Effect.empty()
+        error = Effect.empty()
     )
 
     val Trash = Inbox.copy(
@@ -200,7 +197,6 @@ object MailboxStateSampleData {
         deleteAllDialogState = DeleteDialogState.Hidden,
         bottomSheetState = bottomSheetState,
         storageLimitState = StorageLimitState.HasEnoughSpace,
-        error = error,
-        showRatingBooster = Effect.empty()
+        error = error
     )
 }

@@ -64,8 +64,6 @@ dependencies {
     implementation(libs.accompanist.webview)
     implementation(libs.proton.core.network)
     implementation(libs.proton.core.user.domain)
-    implementation(libs.google.play.review)
-    implementation(libs.google.play.reviewKtx)
 
     implementation(project(":mail-common:domain"))
     implementation(project(":mail-common:presentation"))

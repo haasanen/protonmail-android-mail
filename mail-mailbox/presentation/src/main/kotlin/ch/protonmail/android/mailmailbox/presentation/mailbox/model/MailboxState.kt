@@ -38,6 +38,5 @@ data class MailboxState(
     val storageLimitState: StorageLimitState,
     val bottomSheetState: BottomSheetState?,
     val actionResult: Effect<ActionResult>,
-    val error: Effect<TextUiModel>,
-    val showRatingBooster: Effect<Unit>
+    val error: Effect<TextUiModel>
 )

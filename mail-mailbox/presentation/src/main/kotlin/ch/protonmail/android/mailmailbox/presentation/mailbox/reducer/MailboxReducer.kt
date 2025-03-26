@@ -67,8 +67,7 @@ class MailboxReducer @Inject constructor(
             deleteAllDialogState = currentState.toNewDeleteAllActionStateFrom(operation),
             bottomSheetState = currentState.toNewBottomSheetState(operation),
             actionResult = currentState.toNewActionMessageStateFrom(operation),
-            error = currentState.toNewErrorBarState(operation),
-            showRatingBooster = currentState.toNewShowRatingBoosterState(operation)
+            error = currentState.toNewErrorBarState(operation)
         )
 
     private fun MailboxState.toNewMailboxListStateFrom(operation: MailboxOperation): MailboxListState {
@@ -226,14 +225,6 @@ class MailboxReducer @Inject constructor(
             Effect.of(TextUiModel(textResource))
         } else {
             error
-        }
-    }
-
-    private fun MailboxState.toNewShowRatingBoosterState(operation: MailboxOperation): Effect<Unit> {
-        return if (operation is MailboxOperation.AffectingRatingBooster) {
-            Effect.of(Unit)
-        } else {
-            showRatingBooster
         }
     }
 }

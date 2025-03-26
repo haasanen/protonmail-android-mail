@@ -62,7 +62,6 @@ lottie = "6.1.0"
 material = "1.12.0"
 mockk = "1.13.13"
 paparazzi = "1.3.4"
-play-review = "2.0.2"
 proton-core = "30.3.1"
 proton-rust-core = "0.59.1"
 kotlinpoet-ksp = "2.0.0"
@@ -162,8 +161,6 @@ javax-inject = { module = "javax.inject:javax.inject", version.ref = "javax-inje
 java-jna = { module = "net.java.dev.jna:jna", version.ref = "jna" }
 jsoup = { module = "org.jsoup:jsoup", version.ref = "jsoup" }
 googlecode-ezvcard = { module = "com.googlecode.ez-vcard:ez-vcard", version.ref = "googlecode-ezvcard" }
-google-play-review = { module = "com.google.android.play:review", version.ref = "play-review" }
-google-play-reviewKtx = { module = "com.google.android.play:review-ktx", version.ref = "play-review" }
 guava = { module = "com.google.guava:guava", version.ref = "guava" }
 junit = { module = "junit:junit", version.ref = "junit" }
 kotlinCompileTesting = { module = "dev.zacsweers.kctfork:ksp", version.ref = "kotlin-compile-testing" }
@@ -267,8 +264,6 @@ appLibs = [
     "androidx-compose-material3",
     "arrow-core",
     "timber",
-    "google-play-review",
-    "google-play-reviewKtx",
     "kotlinx-immutableCollections",
     "okhttp",
     "plumber",

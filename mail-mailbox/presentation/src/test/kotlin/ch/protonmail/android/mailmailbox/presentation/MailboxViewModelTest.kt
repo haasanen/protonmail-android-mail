@@ -18,7 +18,6 @@
 
 package ch.protonmail.android.mailmailbox.presentation
 
-import android.app.Activity
 import android.graphics.Color
 import android.util.Log
 import androidx.paging.PagingData
@@ -78,9 +77,7 @@ import ch.protonmail.android.mailmailbox.domain.usecase.ObserveCurrentViewMode
 import ch.protonmail.android.mailmailbox.domain.usecase.ObservePrimaryUserAccountStorageStatus
 import ch.protonmail.android.mailmailbox.domain.usecase.ObserveStorageLimitPreference
 import ch.protonmail.android.mailmailbox.domain.usecase.ObserveUnreadCounters
-import ch.protonmail.android.mailmailbox.domain.usecase.RecordRatingBoosterTriggered
 import ch.protonmail.android.mailmailbox.domain.usecase.SaveStorageLimitPreference
-import ch.protonmail.android.mailmailbox.domain.usecase.ShouldShowRatingBooster
 import ch.protonmail.android.mailmailbox.presentation.helper.MailboxAsyncPagingDataDiffer
 import ch.protonmail.android.mailmailbox.presentation.mailbox.MailboxViewModel
 import ch.protonmail.android.mailmailbox.presentation.mailbox.mapper.MailboxItemUiModelMapper
@@ -101,7 +98,6 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.previewdata.Mailbo
 import ch.protonmail.android.mailmailbox.presentation.mailbox.previewdata.MailboxStateSampleData
 import ch.protonmail.android.mailmailbox.presentation.mailbox.previewdata.SwipeUiModelSampleData
 import ch.protonmail.android.mailmailbox.presentation.mailbox.reducer.MailboxReducer
-import ch.protonmail.android.mailmailbox.presentation.mailbox.usecase.ShowRatingBooster
 import ch.protonmail.android.mailmailbox.presentation.paging.MailboxPagerFactory
 import ch.protonmail.android.mailmessage.domain.model.LabelAsItemId
 import ch.protonmail.android.mailmessage.domain.model.LabelSelectionList
@@ -280,12 +276,6 @@ class MailboxViewModelTest {
     private val shouldUpgradeStorage = mockk<ShouldUpgradeStorage> {
         every { this@mockk() } returns flowOf()
     }
-    private val shouldShowRatingBooster = mockk<ShouldShowRatingBooster> {
-        every { this@mockk(userId) } returns flowOf(false)
-        every { this@mockk(userId1) } returns flowOf(false)
-    }
-    private val showRatingBooster = mockk<ShowRatingBooster>(relaxUnitFun = true)
-    private val recordRatingBoosterTriggered = mockk<RecordRatingBoosterTriggered>(relaxUnitFun = true)
 
     private val observeFolderColorSettings = mockk<ObserveFolderColorSettings> {
         every { this@mockk(userId) } returns flowOf(
@@ -359,9 +349,6 @@ class MailboxViewModelTest {
             observeStorageLimitPreference = observeStorageLimitPreference,
             saveStorageLimitPreference = saveStorageLimitPreference,
             shouldUpgradeStorage = shouldUpgradeStorage,
-            shouldShowRatingBooster = shouldShowRatingBooster,
-            showRatingBooster = showRatingBooster,
-            recordRatingBoosterTriggered = recordRatingBoosterTriggered,
             findLocalSystemLabelId = findLocalSystemLabelId,
             loadAvatarImage = loadAvatarImage,
             handleAvatarImageLoadingFailure = handleAvatarImageLoadingFailure,
@@ -407,8 +394,7 @@ class MailboxViewModelTest {
                 storageLimitState = StorageLimitState.None,
                 bottomSheetState = null,
                 actionResult = Effect.empty(),
-                error = Effect.empty(),
-                showRatingBooster = Effect.empty()
+                error = Effect.empty()
             )
 
             assertEquals(expected, actual)
@@ -3786,35 +3772,6 @@ class MailboxViewModelTest {
 
         // Then
         coVerify { selectedMailLabelId.set(MailLabelTestData.inboxSystemLabel.id) }
-    }
-
-    @Test
-    fun `should create new state for showing the rating booster when it should be shown`() = runTest {
-        // Given
-        every { shouldShowRatingBooster(userId) } returns flowOf(true)
-
-        // When
-        mailboxViewModel.state.test {
-            awaitItem()
-
-            // Then
-            verify(exactly = 1) {
-                mailboxReducer.newStateFrom(any(), MailboxEvent.ShowRatingBooster)
-            }
-            coVerify { recordRatingBoosterTriggered(userId) }
-        }
-    }
-
-    @Test
-    fun `should call use case for showing the rating booster when it should be shown`() = runTest {
-        // Given
-        val context = mockk<Activity>()
-
-        // When
-        mailboxViewModel.submit(MailboxViewAction.ShowRatingBooster(context))
-
-        // Then
-        verify { showRatingBooster(context) }
     }
 
     @Test

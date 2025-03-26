@@ -77,8 +77,6 @@ dependencies {
     implementation(libs.proton.core.user.domain)
     implementation(libs.proton.core.key)
     implementation(libs.proton.core.plan)
-    implementation(libs.google.play.review)
-    implementation(libs.google.play.reviewKtx)
 
     implementation(project(":mail-common:domain"))
     implementation(project(":mail-common:presentation"))

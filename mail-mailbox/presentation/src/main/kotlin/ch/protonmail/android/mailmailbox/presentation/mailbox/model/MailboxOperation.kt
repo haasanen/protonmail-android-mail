@@ -18,7 +18,6 @@
 
 package ch.protonmail.android.mailmailbox.presentation.mailbox.model
 
-import android.content.Context
 import ch.protonmail.android.mailcommon.presentation.model.BottomBarEvent
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabel
@@ -33,7 +32,6 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxOpera
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxOperation.AffectingDeleteDialog
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxOperation.AffectingErrorBar
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxOperation.AffectingMailboxList
-import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxOperation.AffectingRatingBooster
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxOperation.AffectingStorageLimit
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxOperation.AffectingTopAppBar
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxOperation.AffectingUnreadFilter
@@ -57,7 +55,6 @@ internal sealed interface MailboxOperation {
     sealed interface AffectingBottomSheet
     sealed interface AffectingErrorBar
     sealed interface AffectingUpgradeStorage
-    sealed interface AffectingRatingBooster
 }
 
 internal sealed interface MailboxViewAction : MailboxOperation {
@@ -165,7 +162,6 @@ internal sealed interface MailboxViewAction : MailboxOperation {
     object DeleteAllDialogDismissed : MailboxViewAction, AffectingClearDialog
     object NavigateToInboxLabel : MailboxViewAction
     object RequestUpsellingBottomSheet : MailboxViewAction, AffectingBottomSheet
-    data class ShowRatingBooster(val context: Context) : MailboxViewAction
     data class SelectAll(val allItems: List<MailboxItemUiModel>) : MailboxViewAction
     data object DeselectAll : MailboxViewAction
     object CustomizeToolbar : MailboxViewAction
@@ -284,7 +280,6 @@ internal sealed interface MailboxEvent : MailboxOperation {
     object ErrorRetrievingFolderColorSettings : MailboxEvent, AffectingErrorBar, AffectingBottomSheet
     object ErrorMoving : MailboxEvent, AffectingErrorBar
     object ErrorRetrievingDestinationMailFolders : MailboxEvent, AffectingErrorBar, AffectingBottomSheet
-    data object ShowRatingBooster : MailboxEvent, AffectingRatingBooster
 }
 
 

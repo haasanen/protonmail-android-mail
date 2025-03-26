@@ -19,7 +19,6 @@
 package ch.protonmail.android.mailmailbox.presentation.mailbox
 
 import java.util.Collections
-import android.app.Activity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.LoadState
@@ -36,7 +35,6 @@ import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.Action
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.mapper.ActionUiModelMapper
 import ch.protonmail.android.mailcommon.presentation.model.ActionUiModel
@@ -82,9 +80,7 @@ import ch.protonmail.android.mailmailbox.domain.usecase.ObserveCurrentViewMode
 import ch.protonmail.android.mailmailbox.domain.usecase.ObservePrimaryUserAccountStorageStatus
 import ch.protonmail.android.mailmailbox.domain.usecase.ObserveStorageLimitPreference
 import ch.protonmail.android.mailmailbox.domain.usecase.ObserveUnreadCounters
-import ch.protonmail.android.mailmailbox.domain.usecase.RecordRatingBoosterTriggered
 import ch.protonmail.android.mailmailbox.domain.usecase.SaveStorageLimitPreference
-import ch.protonmail.android.mailmailbox.domain.usecase.ShouldShowRatingBooster
 import ch.protonmail.android.mailmailbox.presentation.mailbox.mapper.MailboxItemUiModelMapper
 import ch.protonmail.android.mailmailbox.presentation.mailbox.mapper.SwipeActionsMapper
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.ClearAllState
@@ -99,7 +95,6 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.model.StorageLimit
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.UnreadFilterState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.UpgradeStorageState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.reducer.MailboxReducer
-import ch.protonmail.android.mailmailbox.presentation.mailbox.usecase.ShowRatingBooster
 import ch.protonmail.android.mailmailbox.presentation.paging.MailboxPagerFactory
 import ch.protonmail.android.mailmessage.domain.model.LabelAsItemId
 import ch.protonmail.android.mailmessage.domain.model.LabelSelectionList
@@ -109,8 +104,8 @@ import ch.protonmail.android.mailmessage.domain.model.UnreadCounter
 import ch.protonmail.android.mailmessage.domain.usecase.DeleteMessages
 import ch.protonmail.android.mailmessage.domain.usecase.DeleteSearchResults
 import ch.protonmail.android.mailmessage.domain.usecase.HandleAvatarImageLoadingFailure
-import ch.protonmail.android.mailmessage.domain.usecase.LoadAvatarImage
 import ch.protonmail.android.mailmessage.domain.usecase.LabelMessages
+import ch.protonmail.android.mailmessage.domain.usecase.LoadAvatarImage
 import ch.protonmail.android.mailmessage.domain.usecase.MarkMessagesAsRead
 import ch.protonmail.android.mailmessage.domain.usecase.MarkMessagesAsUnread
 import ch.protonmail.android.mailmessage.domain.usecase.MoveMessages
@@ -125,6 +120,7 @@ import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.ManageAc
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MoveToBottomSheetEntryPoint
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MoveToBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.UpsellingBottomSheetState
+import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailsettings.domain.usecase.IsAutoDeleteSpamAndTrashEnabled
 import ch.protonmail.android.mailsettings.domain.usecase.ObserveFolderColorSettings
 import ch.protonmail.android.mailsettings.domain.usecase.ObserveSwipeActionsPreference
@@ -198,9 +194,6 @@ class MailboxViewModel @Inject constructor(
     private val observeStorageLimitPreference: ObserveStorageLimitPreference,
     private val saveStorageLimitPreference: SaveStorageLimitPreference,
     private val shouldUpgradeStorage: ShouldUpgradeStorage,
-    private val shouldShowRatingBooster: ShouldShowRatingBooster,
-    private val showRatingBooster: ShowRatingBooster,
-    private val recordRatingBoosterTriggered: RecordRatingBoosterTriggered,
     private val findLocalSystemLabelId: FindLocalSystemLabelId,
     private val loadAvatarImage: LoadAvatarImage,
     private val handleAvatarImageLoadingFailure: HandleAvatarImageLoadingFailure,
@@ -320,15 +313,6 @@ class MailboxViewModel @Inject constructor(
             }
             .launchIn(viewModelScope)
 
-        primaryUserId.filterNotNull().flatMapLatest { userId ->
-            shouldShowRatingBooster(userId)
-        }.onEach { shouldShowRatingBooster ->
-            if (shouldShowRatingBooster) {
-                recordRatingBoosterTriggered(primaryUserId.filterNotNull().first())
-                emitNewStateFrom(MailboxEvent.ShowRatingBooster)
-            }
-        }.launchIn(viewModelScope)
-
         observeAvatarImageStates()
             .onEach { avatarImageStates ->
                 emitNewStateFrom(MailboxEvent.AvatarImageStatesUpdated(avatarImageStates))
@@ -430,7 +414,6 @@ class MailboxViewModel @Inject constructor(
                 is MailboxViewAction.NavigateToInboxLabel ->
                     selectedMailLabelId.set(MailLabelId.System(SystemLabelId.Inbox.labelId))
 
-                is MailboxViewAction.ShowRatingBooster -> showRatingBooster(viewAction)
                 is MailboxViewAction.SelectAll -> handleSelectAllAction(viewAction)
                 is MailboxViewAction.DeselectAll -> handleDeselectAllAction()
                 is MailboxViewAction.CustomizeToolbar -> handleCustomizeToolbar(viewAction)
@@ -1409,14 +1392,6 @@ class MailboxViewModel @Inject constructor(
         }
     }
 
-    private fun showRatingBooster(operation: MailboxViewAction.ShowRatingBooster) {
-        try {
-            showRatingBooster(operation.context as Activity)
-        } catch (exception: ClassCastException) {
-            Timber.e("Showing the rating booster was unsuccessful", exception)
-        }
-    }
-
     private suspend fun getFromLabelIdSearchAware(): LabelId {
         val currentLabelId = selectedMailLabelId.flow.value.labelId
 
@@ -1443,8 +1418,7 @@ class MailboxViewModel @Inject constructor(
             storageLimitState = StorageLimitState.None,
             bottomSheetState = null,
             actionResult = Effect.empty(),
-            error = Effect.empty(),
-            showRatingBooster = Effect.empty()
+            error = Effect.empty()
         )
     }
 }

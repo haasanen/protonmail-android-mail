@@ -47,9 +47,6 @@ dependencies {
     implementation(project(":mail-common:data"))
     kapt(libs.bundles.app.annotationProcessors)
 
-    implementation(libs.google.play.review)
-    implementation(libs.google.play.reviewKtx)
-
     implementation(project(":mail-mailbox:data"))
     implementation(project(":mail-mailbox:data-rust"))
     implementation(project(":mail-mailbox:domain"))
