@@ -18,42 +18,53 @@
 
 package ch.protonmail.android.uicomponents.chips.item
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.material3.ChipColors
 import androidx.compose.material3.InputChipDefaults
 import androidx.compose.material3.SelectableChipColors
 import androidx.compose.material3.SuggestionChipDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.text.TextStyle
+import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.bodyLargeInverted
-import ch.protonmail.android.design.compose.theme.bodyLargeNorm
+import ch.protonmail.android.design.compose.theme.bodyMediumNorm
 
 @Composable
-internal fun ChipItem.textStyle() = when (this) {
-    is ChipItem.Invalid -> ProtonTheme.typography.bodyLargeInverted
-    else -> ProtonTheme.typography.bodyLargeNorm
+internal fun ChipItem.textStyle(): TextStyle = when (this) {
+    is ChipItem.Invalid -> ProtonTheme.typography.bodyMediumNorm.copy(
+        color = ProtonTheme.colors.notificationError
+    )
+
+    else -> ProtonTheme.typography.bodyMediumNorm
 }
 
 @Composable
-internal fun ChipItem.suggestionsTextStyle() = ProtonTheme.typography.bodyLargeNorm
+internal fun ChipItem.suggestionsTextStyle() = ProtonTheme.typography.bodyMediumNorm
 
 @Composable
-internal fun inputChipColor(chipItem: ChipItem): SelectableChipColors {
-    val containerColor = when (chipItem) {
-        is ChipItem.Invalid -> ProtonTheme.colors.notificationError
-        is ChipItem.Counter,
-        is ChipItem.Valid -> ProtonTheme.colors.shade20
-    }
-
-    return InputChipDefaults.inputChipColors().copy(containerColor = containerColor)
+internal fun inputChipColor(): SelectableChipColors {
+    return InputChipDefaults.inputChipColors()
+        .copy(containerColor = ProtonTheme.colors.backgroundNorm)
 }
 
 @Composable
-internal fun suggestionChipColor(chipItem: ChipItem): ChipColors {
-    val containerColor = when (chipItem) {
+internal fun inputChipBorder(chipItem: ChipItem): BorderStroke {
+    val borderColor = when (chipItem) {
         is ChipItem.Invalid -> ProtonTheme.colors.notificationError
         is ChipItem.Counter,
-        is ChipItem.Valid -> ProtonTheme.colors.shade20
+        is ChipItem.Valid -> ProtonTheme.colors.borderStrong
     }
 
-    return SuggestionChipDefaults.suggestionChipColors().copy(containerColor = containerColor)
+    return BorderStroke(
+        width = ProtonDimens.OutlinedBorderSize,
+        color = borderColor
+    )
+}
+
+@Composable
+internal fun suggestionChipColor(): ChipColors {
+
+    return SuggestionChipDefaults.suggestionChipColors().copy(
+        containerColor = ProtonTheme.colors.backgroundNorm
+    )
 }

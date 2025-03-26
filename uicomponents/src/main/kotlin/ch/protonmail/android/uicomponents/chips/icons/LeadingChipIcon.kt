@@ -18,12 +18,14 @@
 
 package ch.protonmail.android.uicomponents.chips.icons
 
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.vectorResource
+import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.uicomponents.R
 import ch.protonmail.android.uicomponents.chips.ChipsTestTags
 import ch.protonmail.android.uicomponents.chips.item.ChipItem
@@ -35,8 +37,10 @@ internal fun LeadingChipIcon(chipItem: ChipItem) {
         is ChipItem.Invalid -> Icon(
             imageVector = ImageVector.vectorResource(R.drawable.ic_proton_exclamation_circle),
             null,
-            modifier = Modifier.testTag(ChipsTestTags.InputChipLeadingIcon),
-            tint = ProtonTheme.colors.textInverted
+            modifier = Modifier
+                .size(ProtonDimens.IconSize.Small)
+                .testTag(ChipsTestTags.InputChipLeadingIcon),
+            tint = ProtonTheme.colors.notificationError
         )
 
         else -> Unit

@@ -19,10 +19,13 @@
 package ch.protonmail.android.uicomponents.chips
 
 import androidx.compose.animation.core.Animatable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.material3.InputChip
 import androidx.compose.material3.SuggestionChip
@@ -37,12 +40,15 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import ch.protonmail.android.design.compose.theme.ProtonDimens
+import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.uicomponents.chips.icons.LeadingChipIcon
-import ch.protonmail.android.uicomponents.chips.icons.TrailingChipIcon
 import ch.protonmail.android.uicomponents.chips.item.ChipItem
 import ch.protonmail.android.uicomponents.chips.item.inputChipColor
+import ch.protonmail.android.uicomponents.chips.item.inputChipBorder
 import ch.protonmail.android.uicomponents.chips.item.suggestionChipColor
 import ch.protonmail.android.uicomponents.chips.item.suggestionsTextStyle
 import ch.protonmail.android.uicomponents.chips.item.textStyle
@@ -73,16 +79,17 @@ internal fun FocusedChipsList(
                     modifier = Modifier
                         .testTag(ChipsTestTags.InputChipText)
                         .widthIn(max = textMaxWidth - 64.dp)
-                        .padding(vertical = 8.dp),
+                        .padding(vertical = ProtonDimens.Spacing.MediumLight),
                     text = chipItem.value,
                     style = chipItem.textStyle()
                 )
+
             },
-            shape = chipShape,
-            colors = inputChipColor(chipItem),
-            border = null,
-            leadingIcon = { LeadingChipIcon(chipItem) },
-            trailingIcon = { TrailingChipIcon(chipItem) }
+            shape = ProtonTheme.shapes.huge,
+            colors = inputChipColor(),
+            border = inputChipBorder(chipItem),
+            leadingIcon = { LeadingChipIcon(chipItem) }
+
         )
         LaunchedEffect(key1 = index) {
             if (animateChipsCreation) {
@@ -106,43 +113,104 @@ internal fun UnFocusedChipsList(
                 .testTag(ChipsTestTags.BaseSuggestionChip)
                 .semantics { isValidField = itemChip !is ChipItem.Invalid }
                 .weight(1f, fill = false)
-                .padding(horizontal = 4.dp),
+                .padding(horizontal = ProtonDimens.Spacing.Small),
             onClick = onChipClick,
             label = {
                 Text(
-                    modifier = Modifier.testTag(ChipsTestTags.InputChipText),
+                    modifier = Modifier
+                        .testTag(ChipsTestTags.InputChipText)
+                        .padding(vertical = ProtonDimens.Spacing.MediumLight),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     text = itemChip.value,
                     style = itemChip.textStyle()
                 )
             },
-            colors = suggestionChipColor(itemChip),
+            colors = suggestionChipColor(),
             icon = { LeadingChipIcon(itemChip) },
-            shape = chipShape,
-            border = null
+            shape = ProtonTheme.shapes.huge,
+            border = inputChipBorder(itemChip)
         )
         if (counterChip != null) {
             SuggestionChip(
                 modifier = Modifier
                     .testTag(ChipsTestTags.AdditionalSuggestionChip)
                     .semantics { isValidField = itemChip !is ChipItem.Invalid }
-                    .padding(horizontal = 4.dp),
+                    .padding(horizontal = ProtonDimens.Spacing.Small),
                 onClick = onChipClick,
                 label = {
                     Text(
-                        modifier = Modifier.testTag(ChipsTestTags.InputChipText),
+                        modifier = Modifier
+                            .testTag(ChipsTestTags.InputChipText)
+                            .padding(vertical = ProtonDimens.Spacing.MediumLight),
                         maxLines = 1,
                         text = counterChip.value,
                         style = itemChip.suggestionsTextStyle()
                     )
                 },
-                colors = suggestionChipColor(counterChip),
-                shape = chipShape,
-                border = null
+                colors = suggestionChipColor(),
+                shape = ProtonTheme.shapes.huge,
+                border = inputChipBorder(itemChip)
             )
         }
     }
 }
 
-private val chipShape = RoundedCornerShape(16.dp)
+@OptIn(ExperimentalLayoutApi::class)
+@Preview(showBackground = true)
+@Composable
+private fun FocusedChipsListPreview() {
+    ProtonTheme {
+        FlowRow(
+            modifier = Modifier
+                .fillMaxWidth(),
+            verticalArrangement = Arrangement.Center
+        ) {
+            FocusedChipsList(
+                chipItems = listOf(
+                    ChipItem.Valid("john@example.com"),
+                    ChipItem.Invalid("not-an-email"),
+                    ChipItem.Counter("+3")
+                ),
+                animateChipsCreation = false,
+                textMaxWidth = 200.dp,
+                onDeleteItem = {}
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalLayoutApi::class)
+@Preview(showBackground = true)
+@Composable
+private fun UnfocusedValidChipsListPreview() {
+    ProtonTheme {
+        FlowRow(
+            modifier = Modifier
+                .fillMaxWidth(),
+            verticalArrangement = Arrangement.Center
+        ) {
+            UnFocusedChipsList(
+                itemChip = ChipItem.Valid("john@example.com")
+            )
+        }
+    }
+}
+
+
+@OptIn(ExperimentalLayoutApi::class)
+@Preview(showBackground = true)
+@Composable
+private fun UnfocusedInvalidChipsListPreview() {
+    ProtonTheme {
+        FlowRow(
+            modifier = Modifier
+                .fillMaxWidth(),
+            verticalArrangement = Arrangement.Center
+        ) {
+            UnFocusedChipsList(
+                itemChip = ChipItem.Invalid("invalid@email.com")
+            )
+        }
+    }
+}
