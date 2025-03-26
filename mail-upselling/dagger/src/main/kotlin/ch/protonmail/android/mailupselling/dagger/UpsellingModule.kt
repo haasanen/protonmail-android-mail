@@ -30,14 +30,6 @@ import ch.protonmail.android.mailupselling.domain.annotations.UpsellingOnboardin
 import ch.protonmail.android.mailupselling.domain.repository.UpsellingTelemetryRepository
 import ch.protonmail.android.mailupselling.domain.repository.UpsellingTelemetryRepositoryImpl
 import ch.protonmail.android.mailupselling.domain.repository.UpsellingVisibilityRepository
-import ch.protonmail.android.mailupselling.domain.usecase.featureflags.AlwaysShowOneClickUpselling
-import ch.protonmail.android.mailupselling.domain.usecase.featureflags.IsOneClickUpsellingTelemetryEnabled
-import ch.protonmail.android.mailupselling.domain.usecase.featureflags.IsSignupPaidPlanSupportEnabled
-import ch.protonmail.android.mailupselling.domain.usecase.featureflags.IsUpgradePaidPlanSupportEnabled
-import ch.protonmail.android.mailupselling.domain.usecase.featureflags.IsUpsellingAutodeleteEnabled
-import ch.protonmail.android.mailupselling.domain.usecase.featureflags.IsUpsellingMobileSignatureEnabled
-import ch.protonmail.android.mailupselling.domain.usecase.featureflags.IsUpsellingOneClickOverrideEnabled
-import ch.protonmail.android.mailupselling.domain.usecase.featureflags.IsUpsellingPostOnboardingEnabled
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -57,11 +49,11 @@ object UpsellingModule {
 
     @Provides
     @SupportSignupPaidPlans
-    fun provideSupportSignupPaidPlans(isEnabled: IsSignupPaidPlanSupportEnabled) = isEnabled(null)
+    fun provideSupportSignupPaidPlans() = false
 
     @Provides
     @SupportUpgradePaidPlans
-    fun provideSupportUpgradePaidPlans(isEnabled: IsUpgradePaidPlanSupportEnabled) = isEnabled(null)
+    fun provideSupportUpgradePaidPlans() = false
 
     @Provides
     @ProductOnlyPaidPlans
@@ -69,27 +61,27 @@ object UpsellingModule {
 
     @Provides
     @ForceOneClickUpsellingDetailsOverride
-    fun provideOneClickOverrideEnabled(isEnabled: IsUpsellingOneClickOverrideEnabled) = isEnabled(null)
+    fun provideOneClickOverrideEnabled() = false
 
     @Provides
     @OneClickUpsellingTelemetryEnabled
-    fun provideOneClickUpsellingTelemetryEnabled(isEnabled: IsOneClickUpsellingTelemetryEnabled) = isEnabled(null)
+    fun provideOneClickUpsellingTelemetryEnabled() = false
 
     @Provides
     @OneClickUpsellingAlwaysShown
-    fun provideOneClickUpsellingAlwaysShown(isEnabled: AlwaysShowOneClickUpselling) = isEnabled(null)
+    fun provideOneClickUpsellingAlwaysShown() = false
 
     @Provides
     @UpsellingMobileSignatureEnabled
-    fun provideUpsellingMobileSignatureEnabled(isEnabled: IsUpsellingMobileSignatureEnabled) = isEnabled(null)
+    fun provideUpsellingMobileSignatureEnabled() = false
 
     @Provides
     @UpsellingOnboardingEnabled
-    fun provideUpsellingOnboardingEnabled(isEnabled: IsUpsellingPostOnboardingEnabled) = isEnabled(null)
+    fun provideUpsellingOnboardingEnabled() = false
 
     @Provides
     @UpsellingAutodeleteEnabled
-    fun provideUpsellingAutodeleteEnabled(isEnabled: IsUpsellingAutodeleteEnabled) = isEnabled(null)
+    fun provideUpsellingAutodeleteEnabled() = false
 
     @Provides
     fun provideClientPlansFilterPredicate(): ClientPlanFilter? = null
