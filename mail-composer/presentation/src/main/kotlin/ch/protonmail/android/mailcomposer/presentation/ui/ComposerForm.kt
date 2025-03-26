@@ -60,6 +60,7 @@ internal fun ComposerForm(
     val maxWidthModifier = Modifier.fillMaxWidth()
 
     var showSubjectAndBody by remember { mutableStateOf(true) }
+    var isSubjectFocused by remember { mutableStateOf(false) }
 
     // Handle visibility of body and subject here, to avoid issues with focus requesters.
     LaunchedEffect(areContactSuggestionsExpanded) {
@@ -78,6 +79,8 @@ internal fun ComposerForm(
         onFocusedField = {
             Timber.d("Focus changed: onFocusedField: $it")
             actions.onFocusChanged(it)
+
+            isSubjectFocused = it == FocusedFieldType.SUBJECT
         }
     ) { fieldFocusRequesters ->
 
@@ -116,7 +119,8 @@ internal fun ComposerForm(
                     onSubjectChange = actions.onSubjectChanged,
                     modifier = maxWidthModifier
                         .testTag(ComposerTestTags.Subject)
-                        .retainFieldFocusOnConfigurationChange(FocusedFieldType.SUBJECT)
+                        .retainFieldFocusOnConfigurationChange(FocusedFieldType.SUBJECT),
+                    isFocused = isSubjectFocused
                 )
                 MailDivider()
             }

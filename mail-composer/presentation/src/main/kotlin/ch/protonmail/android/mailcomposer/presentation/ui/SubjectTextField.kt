@@ -19,6 +19,7 @@
 package ch.protonmail.android.mailcomposer.presentation.ui
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -41,6 +42,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ch.protonmail.android.design.compose.theme.ProtonDimens
@@ -53,7 +55,8 @@ import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 internal fun SubjectTextField(
     initialValue: String,
     onSubjectChange: (String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    isFocused: Boolean
 ) {
     var text by rememberSaveable(stateSaver = TextFieldValue.Saver) {
         mutableStateOf(TextFieldValue(initialValue))
@@ -69,7 +72,7 @@ internal fun SubjectTextField(
     Row(
         modifier = modifier
             .height(MailDimens.Composer.FormFieldsRowHeight)
-            .padding(start = ProtonDimens.Spacing.Large)
+            .padding(horizontal = ProtonDimens.Spacing.Large)
             .fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start
@@ -81,6 +84,7 @@ internal fun SubjectTextField(
             style = ProtonTheme.typography.bodyMedium
         )
         Spacer(modifier = Modifier.width(ProtonDimens.Spacing.Standard))
+
         BasicTextField(
             value = text,
             onValueChange = {
@@ -92,11 +96,33 @@ internal fun SubjectTextField(
                 .padding(horizontal = 0.dp)
                 .weight(1f),
             textStyle = ProtonTheme.typography.bodyMediumNorm,
-            maxLines = 3,
+            maxLines = 1,
+            singleLine = true,
             keyboardOptions = KeyboardOptions.Default.copy(
                 capitalization = KeyboardCapitalization.Sentences,
                 imeAction = ImeAction.Next
-            )
+            ),
+            decorationBox = { innerTextField ->
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                ) {
+                    if (isFocused) {
+                        innerTextField()
+
+                    } else {
+                        Text(
+                            text = text.text,
+                            style = ProtonTheme.typography.bodyMediumNorm,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 8.dp)
+                        )
+                    }
+                }
+            }
         )
     }
 }
@@ -107,7 +133,8 @@ private fun SubjectTextFieldPreview() {
     ProtonTheme {
         SubjectTextField(
             initialValue = "Test subject",
-            onSubjectChange = {}
+            onSubjectChange = {},
+            isFocused = true
         )
     }
 }
