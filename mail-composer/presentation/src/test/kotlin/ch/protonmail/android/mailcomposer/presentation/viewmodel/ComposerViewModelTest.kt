@@ -1398,6 +1398,7 @@ class ComposerViewModelTest {
     }
 
     @Test
+    @Ignore("To be re-enabled when adding back attachments feature")
     fun `emits state with updated attachments when the attachments change`() = runTest {
         // Given
         val expectedUserId = expectedUserId { UserIdSample.Primary }
@@ -1516,6 +1517,7 @@ class ComposerViewModelTest {
     }
 
     @Test
+    @Ignore("Missing rust implementation for expiring messages")
     fun `should update state with message password info when message password changes`() = runTest {
         // Given
         val userId = expectedUserId { UserIdSample.Primary }
@@ -1646,6 +1648,7 @@ class ComposerViewModelTest {
     }
 
     @Test
+    @Ignore("Missing rust implementation for expiring messages")
     fun `should emit state with message expiration time when the expiration time has changed`() = runTest {
         // Given
         val userId = expectedUserId { UserIdSample.Primary }
@@ -1666,6 +1669,7 @@ class ComposerViewModelTest {
     }
 
     @Test
+    @Ignore("Missing rust implementation for external encryption")
     fun `should emit event to confirm sending expiring message when there are external recipients and no password`() =
         runTest {
             // Given

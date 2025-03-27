@@ -155,11 +155,13 @@ class ComposerViewModel @Inject constructor(
             else -> prefillForNewDraft()
         }
 
-        observeMessageAttachments()
         observeSendingError()
-        observeMessagePassword()
-        observeMessageExpirationTime()
         observeDeviceContactsSuggestionsPromptEnabled()
+
+        // Avoid observing unimplemented features as that causes warnings reports to Sentry.
+//        observeMessageAttachments()
+//        observeMessagePassword()
+//        observeMessageExpirationTime()
     }
 
     private fun prefillForComposeToAction(recipients: List<RecipientUiModel>) {
@@ -344,6 +346,8 @@ class ComposerViewModel @Inject constructor(
         }
     }
 
+    @MissingRustApi
+    // Message attachments not implemented
     private fun observeMessageAttachments() {
         primaryUserId
             .flatMapLatest { userId -> observeMessageAttachments(userId, currentMessageId()) }
@@ -362,6 +366,8 @@ class ComposerViewModel @Inject constructor(
             .launchIn(viewModelScope)
     }
 
+    @MissingRustApi
+    // Message password not implemented
     private fun observeMessagePassword() {
         primaryUserId
             .flatMapLatest { userId -> observeMessagePassword(userId, currentMessageId()) }
@@ -369,6 +375,8 @@ class ComposerViewModel @Inject constructor(
             .launchIn(viewModelScope)
     }
 
+    @MissingRustApi
+    // Message expiration not implemented
     private fun observeMessageExpirationTime() {
         primaryUserId
             .flatMapLatest { userId -> observeMessageExpirationTime(userId, currentMessageId()) }
