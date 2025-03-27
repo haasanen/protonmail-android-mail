@@ -24,6 +24,8 @@ import ch.protonmail.android.mailcontact.domain.model.ContactCard
 import ch.protonmail.android.mailcontact.domain.model.ContactEmail
 import ch.protonmail.android.mailcontact.domain.model.ContactId
 import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
+import ch.protonmail.android.mailcontact.domain.model.ContactSuggestionQuery
+import ch.protonmail.android.mailcontact.domain.model.DeviceContact
 import ch.protonmail.android.mailcontact.domain.model.GetContactError
 import ch.protonmail.android.mailcontact.domain.model.GroupedContacts
 import kotlinx.coroutines.flow.Flow
@@ -78,4 +80,10 @@ interface ContactRepository {
         contactId: ContactId,
         contactCards: List<ContactCard>
     )
+
+    suspend fun getContactSuggestions(
+        userId: UserId,
+        deviceContacts: List<DeviceContact>,
+        query: ContactSuggestionQuery
+    ): Either<DataError, List<ContactMetadata>>
 }

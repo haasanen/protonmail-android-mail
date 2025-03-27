@@ -26,6 +26,8 @@ import ch.protonmail.android.mailcontact.domain.model.ContactCard
 import ch.protonmail.android.mailcontact.domain.model.ContactEmail
 import ch.protonmail.android.mailcontact.domain.model.ContactId
 import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
+import ch.protonmail.android.mailcontact.domain.model.ContactSuggestionQuery
+import ch.protonmail.android.mailcontact.domain.model.DeviceContact
 import ch.protonmail.android.mailcontact.domain.model.GetContactError
 import ch.protonmail.android.mailcontact.domain.model.GroupedContacts
 import ch.protonmail.android.mailcontact.domain.repository.ContactRepository
@@ -73,4 +75,10 @@ class ContactRepositoryImpl @Inject constructor(
     ) {
         TODO("Not yet implemented")
     }
+
+    override suspend fun getContactSuggestions(
+        userId: UserId,
+        deviceContacts: List<DeviceContact>,
+        query: ContactSuggestionQuery
+    ) = localContactDataSource.getContactSuggestions(userId, deviceContacts, query)
 }
