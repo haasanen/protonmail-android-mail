@@ -22,13 +22,11 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import ch.protonmail.android.mailcommon.data.mapper.safeData
 import ch.protonmail.android.mailcommon.data.mapper.safeEdit
 import ch.protonmail.android.mailcontact.domain.DeviceContactsSuggestionsPrompt
-import ch.protonmail.android.mailcontact.domain.usecase.featureflags.IsDeviceContactsSuggestionsEnabled
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class DeviceContactsSuggestionsPromptImpl @Inject constructor(
-    private val isDeviceContactsSuggestionsEnabled: IsDeviceContactsSuggestionsEnabled,
     private val contactDataStoreProvider: ContactDataStoreProvider
 ) : DeviceContactsSuggestionsPrompt {
 
@@ -48,7 +46,7 @@ class DeviceContactsSuggestionsPromptImpl @Inject constructor(
             }
         }.firstOrNull()?.getOrNull() ?: DEFAULT_VALUE
 
-        return isDeviceContactsSuggestionsEnabled() && promptEnabledPreference
+        return promptEnabledPreference
     }
 
     companion object {

@@ -32,7 +32,6 @@ data class ComposerDraftState(
     val recipientValidationError: Effect<TextUiModel>,
     val error: Effect<TextUiModel>,
     val isSubmittable: Boolean,
-    val isDeviceContactsSuggestionsEnabled: Boolean,
     val isDeviceContactsSuggestionsPromptEnabled: Boolean,
     val senderAddresses: List<SenderUiModel>,
     val changeBottomSheetVisibility: Effect<Boolean>,
@@ -102,7 +101,6 @@ data class ComposerDraftState(
             senderChangedNotice = Effect.empty(),
             messageExpiresIn = Duration.ZERO,
             confirmSendExpiringMessage = Effect.empty(),
-            isDeviceContactsSuggestionsEnabled = false,
             isDeviceContactsSuggestionsPromptEnabled = false,
             openImagePicker = Effect.empty()
         )

@@ -76,7 +76,6 @@ sealed interface ComposerEvent : ComposerOperation {
     data class ReplaceDraftBody(val draftBody: DraftBody) : ComposerEvent
     data class OnAttachmentsUpdated(val attachments: List<AttachmentMetadata>) : ComposerEvent
     data class OnSendingError(val sendingError: TextUiModel) : ComposerEvent
-    data class OnIsDeviceContactsSuggestionsEnabled(val enabled: Boolean) : ComposerEvent
     data class OnIsDeviceContactsSuggestionsPromptEnabled(val enabled: Boolean) : ComposerEvent
     data class OnMessagePasswordUpdated(val messagePassword: MessagePassword?) : ComposerEvent
     data class UpdateContactSuggestions(

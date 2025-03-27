@@ -179,7 +179,7 @@ fun ComposerScreen(actions: ComposerScreen.Actions, viewModel: ComposerViewModel
     }
 
     LaunchedEffect(readContactsPermission.status.isGranted) {
-        if (state.isDeviceContactsSuggestionsEnabled && !readContactsPermission.status.isGranted) {
+        if (!readContactsPermission.status.isGranted) {
             if (readContactsPermission.status.shouldShowRationale) {
                 isShowReadContactsPermissionRationale.value = true
             } else {
@@ -487,8 +487,7 @@ fun ComposerScreen(actions: ComposerScreen.Actions, viewModel: ComposerViewModel
 private fun shouldShowPermissionDialog(
     state: ComposerDraftState,
     isShowReadContactsPermissionRationale: MutableState<Boolean>
-) = state.isDeviceContactsSuggestionsEnabled &&
-    state.isDeviceContactsSuggestionsPromptEnabled &&
+) = state.isDeviceContactsSuggestionsPromptEnabled &&
     isShowReadContactsPermissionRationale.value
 
 @Suppress("LongParameterList")

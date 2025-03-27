@@ -81,7 +81,6 @@ import ch.protonmail.android.mailcontact.domain.usecase.GetContactSuggestions
 import ch.protonmail.android.mailcontact.domain.usecase.GetContacts
 import ch.protonmail.android.mailcontact.domain.usecase.SearchContacts
 import ch.protonmail.android.mailcontact.domain.usecase.SearchDeviceContacts
-import ch.protonmail.android.mailcontact.domain.usecase.featureflags.IsDeviceContactsSuggestionsEnabled
 import ch.protonmail.android.mailmessage.domain.model.AttachmentId
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.model.MessageId
@@ -157,9 +156,6 @@ class ComposerViewModelTest {
         coEvery { this@mockk.getPromptEnabled() } returns true
         coEvery { this@mockk.setPromptDisabled() } just Runs
     }
-    private val isDeviceContactsSuggestionsEnabledMock = mockk<IsDeviceContactsSuggestionsEnabled> {
-        every { this@mockk.invoke() } returns false
-    }
     private val participantMapperMock = mockk<ParticipantMapper>()
     private val observePrimaryUserIdMock = mockk<ObservePrimaryUserId>()
     private val composerIdlingResource = spyk<ComposerIdlingResource>()
@@ -227,7 +223,6 @@ class ComposerViewModelTest {
             createEmptyDraft,
             createDraftForAction,
             buildDraftDisplayBody,
-            isDeviceContactsSuggestionsEnabledMock,
             savedStateHandle,
             observePrimaryUserIdMock,
             provideNewDraftIdMock
@@ -552,7 +547,6 @@ class ComposerViewModelTest {
         expectMessagePassword(expectedUserId, expectedMessageId)
         expectNoFileShareVia()
         expectObserveMessageExpirationTime(expectedUserId, expectedMessageId)
-        expectIsDeviceContactsSuggestionsEnabled(true)
         expectInitComposerWithNewEmptyDraftSucceeds(expectedUserId)
 
         // When
@@ -590,7 +584,6 @@ class ComposerViewModelTest {
         expectMessagePassword(expectedUserId, expectedMessageId)
         expectNoFileShareVia()
         expectObserveMessageExpirationTime(expectedUserId, expectedMessageId)
-        expectIsDeviceContactsSuggestionsEnabled(true)
         expectInitComposerWithNewEmptyDraftSucceeds(expectedUserId)
 
         // When
@@ -654,7 +647,6 @@ class ComposerViewModelTest {
         expectMessagePassword(expectedUserId, expectedMessageId)
         expectNoFileShareVia()
         expectObserveMessageExpirationTime(expectedUserId, expectedMessageId)
-        expectIsDeviceContactsSuggestionsEnabled(true)
         expectInitComposerWithNewEmptyDraftSucceeds(expectedUserId)
 
         // When
@@ -1985,10 +1977,6 @@ class ComposerViewModelTest {
             searchDeviceContactsMock.invoke(expectedSearchTerm)
         } returns expectedDeviceContacts.right()
         return expectedDeviceContacts
-    }
-
-    private fun expectIsDeviceContactsSuggestionsEnabled(enabled: Boolean) {
-        every { isDeviceContactsSuggestionsEnabledMock.invoke() } returns enabled
     }
 
     private fun expectObservedMessageAttachments(userId: UserId, messageId: MessageId) {

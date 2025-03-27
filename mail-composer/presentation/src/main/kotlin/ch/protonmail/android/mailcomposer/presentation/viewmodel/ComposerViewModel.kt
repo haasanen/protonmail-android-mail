@@ -73,7 +73,6 @@ import ch.protonmail.android.mailcontact.domain.usecase.GetContactSuggestions
 import ch.protonmail.android.mailcontact.domain.usecase.GetContacts
 import ch.protonmail.android.mailcontact.domain.usecase.SearchContacts
 import ch.protonmail.android.mailcontact.domain.usecase.SearchDeviceContacts
-import ch.protonmail.android.mailcontact.domain.usecase.featureflags.IsDeviceContactsSuggestionsEnabled
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.presentation.model.MessageBodyWithType
@@ -135,7 +134,6 @@ class ComposerViewModel @Inject constructor(
     private val createEmptyDraft: CreateEmptyDraft,
     private val createDraftForAction: CreateDraftForAction,
     private val buildDraftDisplayBody: BuildDraftDisplayBody,
-    isDeviceContactsSuggestionsEnabled: IsDeviceContactsSuggestionsEnabled,
     savedStateHandle: SavedStateHandle,
     observePrimaryUserId: ObservePrimaryUserId,
     provideNewDraftId: ProvideNewDraftId
@@ -168,8 +166,6 @@ class ComposerViewModel @Inject constructor(
         observeMessagePassword()
         observeMessageExpirationTime()
         observeDeviceContactsSuggestionsPromptEnabled()
-
-        emitNewStateFor(ComposerEvent.OnIsDeviceContactsSuggestionsEnabled(isDeviceContactsSuggestionsEnabled()))
     }
 
     private fun prefillForComposeToAction(recipients: List<RecipientUiModel>) {

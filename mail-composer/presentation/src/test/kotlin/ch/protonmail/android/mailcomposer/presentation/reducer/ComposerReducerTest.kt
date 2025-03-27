@@ -807,18 +807,6 @@ class ComposerReducerTest(
             expectedState = ComposerDraftState.initial(messageId).copy(messageExpiresIn = 1.days)
         )
 
-        @Suppress("VariableMaxLength")
-        private val EmptyToOnIsDeviceContactsSuggestionsEnabled = TestTransition(
-            name = "Should update state with a flag when feature flag is fetched",
-            currentState = ComposerDraftState.initial(messageId),
-            operation = ComposerEvent.OnIsDeviceContactsSuggestionsEnabled(
-                true
-            ),
-            expectedState = ComposerDraftState.initial(messageId).copy(
-                isDeviceContactsSuggestionsEnabled = true
-            )
-        )
-
         private val EmptyToDeviceContactsPromptDenied = TestTransition(
             name = "Should update state with a flag when contacts permission is denied from custom dialog",
             currentState = ComposerDraftState.initial(messageId).copy(
@@ -904,7 +892,6 @@ class ComposerReducerTest(
             EmptyToExpirationTimeSet,
             EmptyToErrorSettingExpirationTime,
             EmptyToMessageExpirationTimeUpdated,
-            EmptyToOnIsDeviceContactsSuggestionsEnabled,
             EmptyToDeviceContactsPromptDenied,
             EmptyToOnIsDeviceContactsSuggestionsPromptEnabled,
             EmptyToConfirmSendExpiringMessage
@@ -961,7 +948,6 @@ class ComposerReducerTest(
             isMessagePasswordSet = false,
             messageExpiresIn = Duration.ZERO,
             confirmSendExpiringMessage = Effect.empty(),
-            isDeviceContactsSuggestionsEnabled = false,
             isDeviceContactsSuggestionsPromptEnabled = false,
             openImagePicker = Effect.empty()
         )
@@ -1023,7 +1009,6 @@ class ComposerReducerTest(
             senderChangedNotice = senderChangedNotice,
             messageExpiresIn = Duration.ZERO,
             confirmSendExpiringMessage = Effect.empty(),
-            isDeviceContactsSuggestionsEnabled = false,
             isDeviceContactsSuggestionsPromptEnabled = false,
             openImagePicker = Effect.empty()
         )
