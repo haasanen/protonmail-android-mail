@@ -20,9 +20,9 @@ package ch.protonmail.android.mailcontact.presentation.contactsearch
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailcontact.domain.usecase.SearchContacts
 import ch.protonmail.android.mailcontact.presentation.model.ContactSearchUiModelMapper
+import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -70,8 +70,7 @@ class ContactSearchViewModel @Inject constructor(
         if (action.searchValue.isNotBlank()) {
             searchContactsJob = searchContacts(
                 userId = primaryUserId(),
-                query = action.searchValue,
-                onlyMatchingContactEmails = false
+                query = action.searchValue
             ).map { contacts ->
 
                 // Map the contacts to the required UI model

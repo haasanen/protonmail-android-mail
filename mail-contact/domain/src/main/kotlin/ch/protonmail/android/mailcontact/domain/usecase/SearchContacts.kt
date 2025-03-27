@@ -36,63 +36,45 @@ class SearchContacts @Inject constructor(
     private val observeContacts: ObserveContacts
 ) {
 
-    operator fun invoke(
-        userId: UserId,
-        query: String,
-        onlyMatchingContactEmails: Boolean = true
-    ): Flow<Either<GetContactError, List<ContactMetadata>>> = observeContacts(
-        userId
-    ).distinctUntilChanged().transformLatest {
-        it.onLeft {
-            Timber.e("SearchContacts, error observing contacts: $it")
-            emit(GetContactError.left())
-        }.onRight { contacts ->
-            query.trim().takeIfNotBlank()?.run {
-                val searchResult = search(contacts, query, onlyMatchingContactEmails)
-                emit(searchResult.right())
+    operator fun invoke(userId: UserId, query: String): Flow<Either<GetContactError, List<ContactMetadata>>> =
+        observeContacts(
+            userId
+        ).distinctUntilChanged().transformLatest {
+            it.onLeft {
+                Timber.e("SearchContacts, error observing contacts: $it")
+                emit(GetContactError.left())
+            }.onRight { contacts ->
+                query.trim().takeIfNotBlank()?.run {
+                    val searchResult = search(contacts, query)
+                    emit(searchResult.right())
+                }
+            }
+        }.distinctUntilChanged()
+
+    private fun search(contacts: List<ContactMetadata>, query: String): List<ContactMetadata> =
+        contacts.mapNotNull { contact ->
+            when (contact) {
+                is ContactMetadata.Contact -> searchInContact(contact, query)
+                is ContactMetadata.ContactGroup -> searchInContactGroup(contact, query)
             }
         }
-    }.distinctUntilChanged()
 
-    private fun search(
-        contacts: List<ContactMetadata>,
-        query: String,
-        onlyMatchingContactEmails: Boolean
-    ): List<ContactMetadata> = contacts.mapNotNull { contact ->
-        when (contact) {
-            is ContactMetadata.Contact -> searchInContact(contact, query, onlyMatchingContactEmails)
-            is ContactMetadata.ContactGroup -> searchInContactGroup(contact, query, onlyMatchingContactEmails)
-        }
-    }
-
-    private fun searchInContact(
-        contact: ContactMetadata.Contact,
-        query: String,
-        onlyMatchingContactEmails: Boolean
-    ): ContactMetadata.Contact? {
-        return if (contact.name.containsNoCase(query)) {
-            contact // Return the full contact if name matches
-        } else {
-            if (onlyMatchingContactEmails) {
-                val matchingContactEmails = contact.emails.filter { it.email.containsNoCase(query) }
-                if (matchingContactEmails.isNotEmpty()) {
-                    contact.copy(emails = matchingContactEmails)
-                } else null
-            } else {
-                if (contact.emails.any { it.email.containsNoCase(query) }) {
-                    contact
-                } else null
-            }
+    private fun searchInContact(contact: ContactMetadata.Contact, query: String): ContactMetadata.Contact? {
+        val nameMatches = contact.name.containsNoCase(query)
+        val anyContactEmailMatches = contact.emails.any { it.email.containsNoCase(query) }
+        return when {
+            nameMatches -> contact
+            anyContactEmailMatches -> contact
+            else -> null
         }
     }
 
     private fun searchInContactGroup(
         contactGroup: ContactMetadata.ContactGroup,
-        query: String,
-        onlyMatchingContactEmails: Boolean
+        query: String
     ): ContactMetadata.ContactGroup? {
         val matchingMembers = contactGroup.members.mapNotNull { member ->
-            searchInContact(member, query, onlyMatchingContactEmails)
+            searchInContact(member, query)
         }
 
         return if (contactGroup.name.containsNoCase(query) || matchingMembers.isNotEmpty()) {

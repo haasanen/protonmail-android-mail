@@ -85,88 +85,47 @@ class SearchContactsTest {
     }
 
     @Test
-    fun `when there is contact matched only by ContactEmail, it is emitted with only matching ContactEmails if onlyMatchingContactEmails = true`() =
-        runTest {
-            // Given
-            val query = "mail"
+    fun `when there is contact matched only by ContactEmail, it is emitted with all ContactEmails`() = runTest {
+        // Given
+        val query = "mail"
 
-            val contact = ContactTestData.buildContactWith(
-                name = "important contact display name",
-                contactEmails = listOf(
-                    ContactTestData.buildContactEmailWith(
-                        address = "address1@proton.ch"
-                    ),
-                    ContactTestData.buildContactEmailWith(
-                        address = "address2@protonmail.ch" // <-- match
-                    )
+        val contact = ContactTestData.buildContactWith(
+            name = "important contact display name",
+            contactEmails = listOf(
+                ContactTestData.buildContactEmailWith(
+                    address = "address1@proton.ch"
+                ),
+                ContactTestData.buildContactEmailWith(
+                    address = "address2@protonmail.ch" // <-- match
                 )
             )
-            val contacts = ContactTestData.contacts + contact
-            coEvery { observeContacts(UserIdTestData.userId) } returns flowOf(Either.Right(contacts))
+        )
+        val contacts = ContactTestData.contacts + contact
+        coEvery { observeContacts(UserIdTestData.userId) } returns flowOf(Either.Right(contacts))
 
-            // When
-            searchContacts(UserIdTestData.userId, query, onlyMatchingContactEmails = true).test {
-                // Then
-                val actual = assertIs<Either.Right<List<ContactMetadata.Contact>>>(awaitItem())
-                assertTrue(actual.value.size == 1)
+        // When
+        searchContacts(UserIdTestData.userId, query).test {
+            // Then
+            val actual = assertIs<Either.Right<List<ContactMetadata.Contact>>>(awaitItem())
+            assertTrue(actual.value.size == 1)
 
-                val matchedContact = actual.value.first()
+            val matchedContact = actual.value.first()
 
-                assertEquals(contact.id, matchedContact.id)
-                assertEquals(contact.name, matchedContact.name)
+            assertEquals(contact.id, matchedContact.id)
+            assertEquals(contact.name, matchedContact.name)
 
-                assertTrue(matchedContact.emails.size == 1)
-                assertEquals(
-                    listOf(contact.emails[1]), // return only 2nd ContactEmail
-                    listOf(matchedContact.emails.first())
-                )
-                awaitComplete()
-            }
-        }
-
-    @Test
-    fun `when there is contact matched only by ContactEmail, it is emitted with all ContactEmails if onlyMatchingContactEmails = false`() =
-        runTest {
-            // Given
-            val query = "mail"
-
-            val contact = ContactTestData.buildContactWith(
-                name = "important contact display name",
-                contactEmails = listOf(
-                    ContactTestData.buildContactEmailWith(
-                        address = "address1@proton.ch"
-                    ),
-                    ContactTestData.buildContactEmailWith(
-                        address = "address2@protonmail.ch" // <-- match
-                    )
-                )
+            assertTrue(matchedContact.emails.size == 2)
+            assertEquals(
+                listOf(contact.emails[0]),
+                listOf(matchedContact.emails[0])
             )
-            val contacts = ContactTestData.contacts + contact
-            coEvery { observeContacts(UserIdTestData.userId) } returns flowOf(Either.Right(contacts))
-
-            // When
-            searchContacts(UserIdTestData.userId, query, onlyMatchingContactEmails = false).test {
-                // Then
-                val actual = assertIs<Either.Right<List<ContactMetadata.Contact>>>(awaitItem())
-                assertTrue(actual.value.size == 1)
-
-                val matchedContact = actual.value.first()
-
-                assertEquals(contact.id, matchedContact.id)
-                assertEquals(contact.name, matchedContact.name)
-
-                assertTrue(matchedContact.emails.size == 2)
-                assertEquals(
-                    listOf(contact.emails[0]),
-                    listOf(matchedContact.emails[0])
-                )
-                assertEquals(
-                    listOf(contact.emails[1]),
-                    listOf(matchedContact.emails[1])
-                )
-                awaitComplete()
-            }
+            assertEquals(
+                listOf(contact.emails[1]),
+                listOf(matchedContact.emails[1])
+            )
+            awaitComplete()
         }
+    }
 
     @Test
     fun `when there are no matching contacts, empty list is emitted`() = runTest {

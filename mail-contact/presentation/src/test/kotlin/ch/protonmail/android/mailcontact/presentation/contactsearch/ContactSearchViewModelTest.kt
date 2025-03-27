@@ -21,7 +21,6 @@ package ch.protonmail.android.mailcontact.presentation.contactsearch
 import androidx.compose.ui.graphics.Color
 import app.cash.turbine.test
 import arrow.core.right
-import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
@@ -29,6 +28,7 @@ import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import ch.protonmail.android.mailcontact.domain.usecase.SearchContacts
 import ch.protonmail.android.mailcontact.presentation.model.ContactListItemUiModel
 import ch.protonmail.android.mailcontact.presentation.model.ContactSearchUiModelMapper
+import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.test.utils.rule.MainDispatcherRule
 import ch.protonmail.android.testdata.contact.ContactGroupIdSample
 import ch.protonmail.android.testdata.contact.ContactSample
@@ -186,7 +186,7 @@ class ContactSearchViewModelTest {
         expectedContacts: List<ContactMetadata>
     ): List<ContactMetadata> {
         coEvery {
-            searchContactsMock.invoke(expectedUserId, expectedSearchTerm, false)
+            searchContactsMock.invoke(expectedUserId, expectedSearchTerm)
         } returns flowOf(expectedContacts.right())
         return expectedContacts
     }
