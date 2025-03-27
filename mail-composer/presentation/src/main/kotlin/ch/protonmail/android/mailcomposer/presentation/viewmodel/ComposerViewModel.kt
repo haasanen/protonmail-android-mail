@@ -66,13 +66,10 @@ import ch.protonmail.android.mailcomposer.presentation.reducer.ComposerReducer
 import ch.protonmail.android.mailcomposer.presentation.ui.ComposerScreen
 import ch.protonmail.android.mailcomposer.presentation.usecase.BuildDraftDisplayBody
 import ch.protonmail.android.mailcomposer.presentation.usecase.FormatMessageSendingError
-import ch.protonmail.android.mailcomposer.presentation.usecase.SortContactsForSuggestions
 import ch.protonmail.android.mailcontact.domain.DeviceContactsSuggestionsPrompt
 import ch.protonmail.android.mailcontact.domain.model.ContactSuggestionQuery
 import ch.protonmail.android.mailcontact.domain.usecase.GetContactSuggestions
 import ch.protonmail.android.mailcontact.domain.usecase.GetContacts
-import ch.protonmail.android.mailcontact.domain.usecase.SearchContacts
-import ch.protonmail.android.mailcontact.domain.usecase.SearchDeviceContacts
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.presentation.model.MessageBodyWithType
@@ -110,10 +107,7 @@ class ComposerViewModel @Inject constructor(
     private val updateBccRecipients: UpdateBccRecipients,
     private val getContacts: GetContacts,
     private val getContactSuggestions: GetContactSuggestions,
-    private val searchContacts: SearchContacts,
-    private val searchDeviceContacts: SearchDeviceContacts,
     private val deviceContactsSuggestionsPrompt: DeviceContactsSuggestionsPrompt,
-    private val sortContactsForSuggestions: SortContactsForSuggestions,
     private val participantMapper: ParticipantMapper,
     private val contactSuggestionsMapper: ContactSuggestionsMapper,
     private val reducer: ComposerReducer,
