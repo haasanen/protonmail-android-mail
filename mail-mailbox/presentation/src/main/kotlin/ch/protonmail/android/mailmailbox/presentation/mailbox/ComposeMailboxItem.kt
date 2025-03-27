@@ -163,8 +163,7 @@ fun MailboxItem(
                         Spacer(Modifier.size(ProtonDimens.Spacing.Small))
                     }
 
-                    val timeFontColor = if (item.isRead) ProtonTheme.colors.textWeak else ProtonTheme.colors.textNorm
-                    Time(time = item.time, fontWeight = fontWeight, fontColor = timeFontColor)
+                    Time(time = item.time, fontWeight = fontWeight, fontColor = fontColor)
                 }
                 Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Small))
                 Row(
