@@ -58,6 +58,7 @@ import ch.protonmail.android.mailcomposer.domain.usecase.UpdateBccRecipients
 import ch.protonmail.android.mailcomposer.domain.usecase.UpdateCcRecipients
 import ch.protonmail.android.mailcomposer.domain.usecase.UpdateToRecipients
 import ch.protonmail.android.mailcomposer.presentation.R
+import ch.protonmail.android.mailcomposer.presentation.mapper.ContactSuggestionsMapper
 import ch.protonmail.android.mailcomposer.presentation.mapper.ParticipantMapper
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerAction
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerDraftState
@@ -74,7 +75,9 @@ import ch.protonmail.android.mailcomposer.presentation.usecase.FormatMessageSend
 import ch.protonmail.android.mailcomposer.presentation.usecase.SortContactsForSuggestions
 import ch.protonmail.android.mailcontact.domain.DeviceContactsSuggestionsPrompt
 import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
+import ch.protonmail.android.mailcontact.domain.model.ContactSuggestionQuery
 import ch.protonmail.android.mailcontact.domain.model.DeviceContact
+import ch.protonmail.android.mailcontact.domain.usecase.GetContactSuggestions
 import ch.protonmail.android.mailcontact.domain.usecase.GetContacts
 import ch.protonmail.android.mailcontact.domain.usecase.SearchContacts
 import ch.protonmail.android.mailcontact.domain.usecase.SearchDeviceContacts
@@ -111,7 +114,6 @@ import io.mockk.mockk
 import io.mockk.slot
 import io.mockk.spyk
 import io.mockk.unmockkObject
-import io.mockk.verify
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
@@ -176,6 +178,8 @@ class ComposerViewModelTest {
     private val createEmptyDraft = mockk<CreateEmptyDraft>()
     private val createDraftForAction = mockk<CreateDraftForAction>()
     private val openExistingDraft = mockk<OpenExistingDraft>()
+    private val getContactSuggestions = mockk<GetContactSuggestions>()
+    private val contactSuggestionsMapper = ContactSuggestionsMapper(GetInitials())
 
     private val getInitials = mockk<GetInitials> {
         every { this@mockk(any()) } returns BaseInitials
@@ -198,11 +202,13 @@ class ComposerViewModelTest {
             updateCcRecipients,
             updateBccRecipients,
             getContactsMock,
+            getContactSuggestions,
             searchContactsMock,
             searchDeviceContactsMock,
             deviceContactsSuggestionsPromptMock,
             sortContactsForSuggestions,
             participantMapperMock,
+            contactSuggestionsMapper,
             reducer,
             isValidEmailAddressMock,
             composerIdlingResource,
@@ -508,7 +514,7 @@ class ComposerViewModelTest {
         expectNoInputDraftAction()
         expectObservedMessageAttachments(expectedUserId, expectedMessageId)
         expectObserveMessageSendingError(expectedUserId, expectedMessageId)
-        expectSearchContacts(expectedUserId, expectedSearchTerm, expectedContacts, expectedContactGroups)
+        expectGetContactSuggestions(expectedUserId, expectedSearchTerm, expectedContacts, expectedContactGroups)
         expectSearchDeviceContacts(expectedSearchTerm, expectedDeviceContacts)
         expectMessagePassword(expectedUserId, expectedMessageId)
         expectNoFileShareVia()
@@ -519,9 +525,7 @@ class ComposerViewModelTest {
         viewModel.submit(action)
 
         // Then
-        verify {
-            searchContactsMock(expectedUserId, expectedSearchTerm)
-        }
+        coVerify { getContactSuggestions(expectedUserId, ContactSuggestionQuery(expectedSearchTerm)) }
     }
 
     @Test
@@ -543,7 +547,7 @@ class ComposerViewModelTest {
         expectNoInputDraftAction()
         expectObservedMessageAttachments(expectedUserId, expectedMessageId)
         expectObserveMessageSendingError(expectedUserId, expectedMessageId)
-        expectSearchContacts(expectedUserId, expectedSearchTerm, expectedContacts, expectedContactGroups)
+        expectGetContactSuggestions(expectedUserId, expectedSearchTerm, expectedContacts, expectedContactGroups)
         expectSearchDeviceContacts(expectedSearchTerm, expectedDeviceContacts)
         expectMessagePassword(expectedUserId, expectedMessageId)
         expectNoFileShareVia()
@@ -581,7 +585,7 @@ class ComposerViewModelTest {
         expectNoInputDraftAction()
         expectObservedMessageAttachments(expectedUserId, expectedMessageId)
         expectObserveMessageSendingError(expectedUserId, expectedMessageId)
-        expectSearchContacts(expectedUserId, expectedSearchTerm, expectedContacts, expectedContactGroups)
+        expectGetContactSuggestions(expectedUserId, expectedSearchTerm, expectedContacts, expectedContactGroups)
         expectSearchDeviceContacts(expectedSearchTerm, expectedDeviceContacts)
         expectMessagePassword(expectedUserId, expectedMessageId)
         expectNoFileShareVia()
@@ -645,7 +649,7 @@ class ComposerViewModelTest {
         expectNoInputDraftAction()
         expectObservedMessageAttachments(expectedUserId, expectedMessageId)
         expectObserveMessageSendingError(expectedUserId, expectedMessageId)
-        expectSearchContacts(expectedUserId, expectedSearchTerm, expectedContacts, expectedContactGroups)
+        expectGetContactSuggestions(expectedUserId, expectedSearchTerm, expectedContacts, expectedContactGroups)
         expectSearchDeviceContacts(expectedSearchTerm, expectedDeviceContacts)
         expectMessagePassword(expectedUserId, expectedMessageId)
         expectNoFileShareVia()
@@ -663,76 +667,17 @@ class ComposerViewModelTest {
                 ContactSuggestionsField.BCC to listOf(
                     ContactSuggestionUiModel.Contact(
                         expectedContacts[0].name,
-                        initial = BaseInitials,
+                        initial = expectedContacts[0].name[0].toString(),
                         expectedContacts[0].emails.first().email
                     ),
                     ContactSuggestionUiModel.Contact(
                         expectedContacts[1].name,
-                        initial = BaseInitials,
+                        initial = expectedContacts[1].name[0].toString(),
                         expectedContacts[1].emails.first().email
                     ),
                     ContactSuggestionUiModel.ContactGroup(
                         expectedContactGroups[0].name,
                         expectedContactGroups[0].members.map { it.emails.first().email }
-                    )
-                )
-            ),
-            actual.contactSuggestions
-        )
-        assertEquals(mapOf(ContactSuggestionsField.BCC to true), actual.areContactSuggestionsExpanded)
-    }
-
-    @Test
-    fun `should emit UpdateContactSuggestions when device contact suggestions are found`() = runTest {
-        // Given
-        val expectedMessageId = expectedMessageId { MessageIdSample.EmptyDraft }
-        val expectedUserId = expectedUserId { UserIdSample.Primary }
-        val expectedSearchTerm = "contact"
-        val suggestionField = ContactSuggestionsField.BCC
-
-        val expectedContacts = emptyList<ContactMetadata.Contact>()
-        val expectedContactGroups = emptyList<ContactMetadata.ContactGroup>()
-        val expectedDeviceContacts = listOf(
-            DeviceContact(
-                "device contact 1 name",
-                "device contact 1 email"
-            ),
-            DeviceContact(
-                "device contact 2 name",
-                "device contact 2 email"
-            )
-        )
-        val action = ComposerAction.ContactSuggestionTermChanged(expectedSearchTerm, suggestionField)
-
-        expectNoInputDraftMessageId()
-        expectNoInputDraftAction()
-        expectObservedMessageAttachments(expectedUserId, expectedMessageId)
-        expectObserveMessageSendingError(expectedUserId, expectedMessageId)
-        expectSearchContacts(expectedUserId, expectedSearchTerm, expectedContacts, expectedContactGroups)
-        expectSearchDeviceContacts(expectedSearchTerm, expectedDeviceContacts)
-        expectMessagePassword(expectedUserId, expectedMessageId)
-        expectNoFileShareVia()
-        expectObserveMessageExpirationTime(expectedUserId, expectedMessageId)
-        expectIsDeviceContactsSuggestionsEnabled(true)
-        expectInitComposerWithNewEmptyDraftSucceeds(expectedUserId)
-
-        // When
-        viewModel.submit(action)
-        val actual = viewModel.state.value
-
-        // Then
-        assertEquals(
-            mapOf(
-                ContactSuggestionsField.BCC to listOf(
-                    ContactSuggestionUiModel.Contact(
-                        name = expectedDeviceContacts[0].name,
-                        initial = BaseInitials,
-                        email = expectedDeviceContacts[0].email
-                    ),
-                    ContactSuggestionUiModel.Contact(
-                        name = expectedDeviceContacts[1].name,
-                        initial = BaseInitials,
-                        email = expectedDeviceContacts[1].email
                     )
                 )
             ),
@@ -766,7 +711,9 @@ class ComposerViewModelTest {
         expectNoInputDraftAction()
         expectObservedMessageAttachments(expectedUserId, expectedMessageId)
         expectObserveMessageSendingError(expectedUserId, expectedMessageId)
-        expectSearchContacts(expectedUserId, expectedSearchTerm, expectedContactsExceedingLimit, expectedContactGroups)
+        expectGetContactSuggestions(
+            expectedUserId, expectedSearchTerm, expectedContactsExceedingLimit, expectedContactGroups
+        )
         expectSearchDeviceContacts(expectedSearchTerm, expectedDeviceContacts)
         expectMessagePassword(expectedUserId, expectedMessageId)
         expectNoFileShareVia()
@@ -2019,16 +1966,15 @@ class ComposerViewModelTest {
         return expectedContacts
     }
 
-    private fun expectSearchContacts(
+    private fun expectGetContactSuggestions(
         expectedUserId: UserId,
         expectedSearchTerm: String,
         expectedContacts: List<ContactMetadata.Contact>,
         expectedContactGroups: List<ContactMetadata.ContactGroup>
-    ): List<ContactMetadata> {
+    ) {
         coEvery {
-            searchContactsMock.invoke(expectedUserId, expectedSearchTerm)
-        } returns flowOf((expectedContacts + expectedContactGroups).right())
-        return expectedContacts
+            getContactSuggestions.invoke(expectedUserId, ContactSuggestionQuery(expectedSearchTerm))
+        } returns (expectedContacts + expectedContactGroups).right()
     }
 
     private fun expectSearchDeviceContacts(
