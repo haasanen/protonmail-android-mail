@@ -40,15 +40,18 @@ class DataStoreFeatureFlagValueProvider @Inject constructor(
 
     fun observeAllOverrides(): Flow<Map<FeatureFlagDefinition, Boolean>> {
         return dataStoreProvider.featureFlagOverrides.data.map { preferences ->
-            definitions.associateWith { definition ->
+            val definitionToOverridePairs = definitions.associateWith { definition ->
                 val prefKey = getPreferenceKey(definition.key)
                 val hasOverride = preferences.contains(prefKey)
                 val value = preferences[prefKey] ?: false
 
                 Pair(hasOverride, value)
             }
-                .filterValues { (hasOverride, _) -> hasOverride }
-                .mapValues { (_, pair) -> pair.second }
+
+            val overriddenDefinitionPairs = definitionToOverridePairs.filterValues { (hasOverride, _) -> hasOverride }
+            val overriddenFeatureFlags = overriddenDefinitionPairs.mapValues { (_, pair) -> pair.second }
+
+            overriddenFeatureFlags
         }
     }
 
