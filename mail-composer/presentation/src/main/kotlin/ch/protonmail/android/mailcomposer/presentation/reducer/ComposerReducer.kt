@@ -29,8 +29,7 @@ import ch.protonmail.android.mailcomposer.presentation.model.ComposerAction
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerDraftState
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerEvent
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerOperation
-import ch.protonmail.android.mailcomposer.presentation.model.ContactSuggestionUiModel
-import ch.protonmail.android.mailcomposer.presentation.model.ContactSuggestionsField
+import ch.protonmail.android.mailcomposer.presentation.model.ContactSuggestionState
 import ch.protonmail.android.mailcomposer.presentation.model.DraftUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.FocusedFieldType
 import ch.protonmail.android.mailcomposer.presentation.model.RecipientUiModel
@@ -71,8 +70,7 @@ class ComposerReducer @Inject constructor(
         is ComposerAction.ChangeSenderRequested -> currentState
         is ComposerAction.OnSendMessage -> updateStateForSendMessage(currentState)
         is ComposerAction.ContactSuggestionsDismissed -> updateStateForContactSuggestionsDismissed(
-            currentState,
-            this.suggestionsField
+            currentState
         )
         is ComposerAction.ConfirmSendingWithoutSubject -> updateForConfirmSendWithoutSubject(currentState)
         is ComposerAction.RejectSendingWithoutSubject -> updateForRejectSendWithoutSubject(currentState)
@@ -148,9 +146,7 @@ class ComposerReducer @Inject constructor(
         is ComposerEvent.ErrorAttachmentsReEncryption -> updateStateForDeleteAllAttachment(currentState)
         is ComposerEvent.OnSendingError -> updateSendingErrorState(currentState, sendingError)
         is ComposerEvent.UpdateContactSuggestions -> updateStateForContactSuggestions(
-            currentState,
-            this.contactSuggestions,
-            this.suggestionsField
+            currentState, this
         )
         is ComposerEvent.OnMessagePasswordUpdated -> updateStateForMessagePassword(currentState, this.messagePassword)
         is ComposerEvent.ConfirmEmptySubject -> currentState.copy(
@@ -341,26 +337,21 @@ class ComposerReducer @Inject constructor(
 
     private fun updateStateForContactSuggestions(
         currentState: ComposerDraftState,
-        contactSuggestions: List<ContactSuggestionUiModel>,
-        suggestionsField: ContactSuggestionsField
+        event: ComposerEvent.UpdateContactSuggestions
     ) = currentState.copy(
-        contactSuggestions = currentState.contactSuggestions.toMutableMap().apply {
-            this[suggestionsField] = contactSuggestions
-        },
-        areContactSuggestionsExpanded = currentState.areContactSuggestionsExpanded.toMutableMap().apply {
-            this[suggestionsField] = contactSuggestions.isNotEmpty()
-        }
+        contactSuggestionState = ContactSuggestionState.Data(
+            suggestionsField = event.suggestionsField,
+            contactSuggestionItems = event.contactSuggestions,
+            searchTerm = event.searchTerm
+        )
     )
 
     @Suppress("FunctionMaxLength")
-    private fun updateStateForContactSuggestionsDismissed(
-        currentState: ComposerDraftState,
-        suggestionsField: ContactSuggestionsField
-    ): ComposerDraftState = currentState.copy(
-        areContactSuggestionsExpanded = currentState.areContactSuggestionsExpanded.toMutableMap().apply {
-            this[suggestionsField] = false
-        }
-    )
+    private fun updateStateForContactSuggestionsDismissed(currentState: ComposerDraftState): ComposerDraftState =
+        currentState.copy(
+            contactSuggestionState = ContactSuggestionState.Empty
+        )
+
 
     private fun updateRecipients(
         currentState: ComposerDraftState,

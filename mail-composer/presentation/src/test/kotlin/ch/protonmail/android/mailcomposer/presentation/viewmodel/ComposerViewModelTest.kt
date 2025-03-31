@@ -19,6 +19,7 @@
 package ch.protonmail.android.mailcomposer.presentation.viewmodel
 
 import android.net.Uri
+import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.SavedStateHandle
 import app.cash.turbine.test
 import arrow.core.left
@@ -63,6 +64,7 @@ import ch.protonmail.android.mailcomposer.presentation.mapper.ParticipantMapper
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerAction
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerDraftState
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerFields
+import ch.protonmail.android.mailcomposer.presentation.model.ContactSuggestionState
 import ch.protonmail.android.mailcomposer.presentation.model.ContactSuggestionUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.ContactSuggestionsField
 import ch.protonmail.android.mailcomposer.presentation.model.DraftDisplayBodyUiModel
@@ -106,9 +108,11 @@ import io.mockk.coVerifyOrder
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
+import io.mockk.mockkStatic
 import io.mockk.slot
 import io.mockk.spyk
 import io.mockk.unmockkObject
+import io.mockk.unmockkStatic
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
@@ -117,6 +121,7 @@ import kotlinx.coroutines.test.runTest
 import me.proton.core.domain.entity.UserId
 import me.proton.core.network.domain.NetworkManager
 import me.proton.core.util.kotlin.serialize
+import org.junit.Before
 import org.junit.Rule
 import kotlin.test.AfterTest
 import kotlin.test.Ignore
@@ -535,11 +540,8 @@ class ComposerViewModelTest {
         val actual = viewModel.state.value
 
         // Then
-        assertEquals(
-            emptyMap(),
-            actual.contactSuggestions
-        )
-        assertEquals(mapOf(ContactSuggestionsField.BCC to false), actual.areContactSuggestionsExpanded)
+        assertEquals(ContactSuggestionState.Empty, actual.contactSuggestionState)
+
     }
 
     @Test
@@ -613,6 +615,7 @@ class ComposerViewModelTest {
         )
         val action = ComposerAction.ContactSuggestionTermChanged(expectedSearchTerm, suggestionField)
 
+        every { android.graphics.Color.parseColor("#FF0000") } returns 0xFFFF0000.toInt()
         expectNoInputDraftMessageId()
         expectNoInputDraftAction()
         expectObservedMessageAttachments(expectedUserId, expectedMessageId)
@@ -628,28 +631,30 @@ class ComposerViewModelTest {
         val actual = viewModel.state.value
 
         // Then
-        assertEquals(
-            mapOf(
-                ContactSuggestionsField.BCC to listOf(
-                    ContactSuggestionUiModel.Contact(
-                        expectedContacts[0].name,
-                        initial = expectedContacts[0].name[0].toString(),
-                        expectedContacts[0].emails.first().email
-                    ),
-                    ContactSuggestionUiModel.Contact(
-                        expectedContacts[1].name,
-                        initial = expectedContacts[1].name[0].toString(),
-                        expectedContacts[1].emails.first().email
-                    ),
-                    ContactSuggestionUiModel.ContactGroup(
-                        expectedContactGroups[0].name,
-                        expectedContactGroups[0].members.map { it.emails.first().email }
-                    )
+        val expectedSuggestionState = ContactSuggestionState.Data(
+            searchTerm = expectedSearchTerm,
+            suggestionsField = suggestionField,
+            contactSuggestionItems = listOf(
+                ContactSuggestionUiModel.Contact(
+                    name = expectedContacts[0].name,
+                    initial = "D",
+                    avatarColor = Color.Red,
+                    email = expectedContacts[0].emails.first().email
+                ),
+                ContactSuggestionUiModel.Contact(
+                    name = expectedContacts[1].name,
+                    initial = "D",
+                    avatarColor = Color.Red,
+                    email = expectedContacts[1].emails.first().email
+                ),
+                ContactSuggestionUiModel.ContactGroup(
+                    name = expectedContactGroups[0].name,
+                    emails = expectedContactGroups[0].members.map { it.emails.first().email }
                 )
-            ),
-            actual.contactSuggestions
+            )
         )
-        assertEquals(mapOf(ContactSuggestionsField.BCC to true), actual.areContactSuggestionsExpanded)
+
+        assertEquals(expectedSuggestionState, actual.contactSuggestionState)
     }
 
     @Test
@@ -692,7 +697,7 @@ class ComposerViewModelTest {
         // Then
         assertEquals(
             ComposerViewModel.Companion.maxContactAutocompletionCount,
-            actual.contactSuggestions[ContactSuggestionsField.BCC]!!.size
+            (actual.contactSuggestionState as ContactSuggestionState.Data).contactSuggestionItems.size
         )
     }
 
@@ -719,7 +724,7 @@ class ComposerViewModelTest {
         val actual = viewModel.state.value
 
         // Then
-        assertEquals(mapOf(ContactSuggestionsField.BCC to false), actual.areContactSuggestionsExpanded)
+        assertEquals(ContactSuggestionState.Empty, actual.contactSuggestionState)
     }
 
     @Test
@@ -1754,9 +1759,17 @@ class ComposerViewModelTest {
         }
     }
 
+    @Before
+    fun setUp() {
+        mockkStatic(android.graphics.Color::parseColor)
+        every { android.graphics.Color.parseColor(any()) } returns 0
+    }
+
     @AfterTest
     fun tearDown() {
         unmockkObject(ComposerDraftState.Companion)
+        unmockkStatic(android.graphics.Color::parseColor)
+
     }
 
     private fun expectInitComposerForActionSuccess(
