@@ -18,6 +18,8 @@
 
 package ch.protonmail.android.mailcomposer.presentation.model
 
+import androidx.compose.ui.graphics.Color
+
 sealed class ContactSuggestionUiModel(
     open val name: String
 ) {
@@ -25,7 +27,8 @@ sealed class ContactSuggestionUiModel(
     data class Contact(
         override val name: String,
         val initial: String,
-        val email: String
+        val email: String,
+        val avatarColor: Color = Color.Unspecified
     ) : ContactSuggestionUiModel(name)
 
     data class ContactGroup(
