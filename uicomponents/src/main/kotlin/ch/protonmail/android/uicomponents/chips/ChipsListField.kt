@@ -1,6 +1,5 @@
 package ch.protonmail.android.uicomponents.chips
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -8,10 +7,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -25,8 +22,6 @@ import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.uicomponents.chips.ChipsListState.Companion.ChipsCreationRegex
 import ch.protonmail.android.uicomponents.chips.item.ChipItem
-import ch.protonmail.android.uicomponents.composer.suggestions.ContactSuggestionItem
-import ch.protonmail.android.uicomponents.composer.suggestions.ContactSuggestionItemElement
 
 @Composable
 fun ChipsListField(
@@ -37,7 +32,6 @@ fun ChipsListField(
     focusRequester: FocusRequester? = null,
     focusOnClick: Boolean = true,
     actions: ChipsListField.Actions,
-    contactSuggestionState: ContactSuggestionState,
     chevronIconContent: @Composable () -> Unit = {}
 ) {
     val interactionSource = remember { MutableInteractionSource() }
@@ -71,10 +65,6 @@ fun ChipsListField(
     }
 
     state.updateItems(value)
-
-    BackHandler(contactSuggestionState.areSuggestionsExpanded) {
-        actions.onSuggestionsDismissed()
-    }
 
     Column(
         modifier = modifier.fillMaxWidth(),
@@ -115,30 +105,10 @@ fun ChipsListField(
 
             chevronIconContent()
         }
-
-        if (contactSuggestionState.areSuggestionsExpanded &&
-            contactSuggestionState.contactSuggestionItems.isNotEmpty()
-        ) {
-            HorizontalDivider(modifier = Modifier.padding(bottom = ProtonDimens.Spacing.Large))
-
-            contactSuggestionState.contactSuggestionItems.forEach { selectionOption ->
-                ContactSuggestionItemElement(textFieldValue.text, selectionOption, onClick = {
-                    actions.onSuggestionsDismissed()
-                    state.typeWord(it)
-                    textFieldValue = initialTextFieldValue
-                })
-            }
-        }
     }
 }
 
 private val initialTextFieldValue = TextFieldValue("")
-
-@Stable
-data class ContactSuggestionState(
-    val areSuggestionsExpanded: Boolean,
-    val contactSuggestionItems: List<ContactSuggestionItem>
-)
 
 object ChipsListField {
     data class Actions(

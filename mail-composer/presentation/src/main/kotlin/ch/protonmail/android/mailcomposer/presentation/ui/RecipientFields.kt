@@ -53,7 +53,6 @@ import ch.protonmail.android.uicomponents.chips.ChipsListField
 import ch.protonmail.android.uicomponents.chips.ContactSuggestionState
 import ch.protonmail.android.uicomponents.chips.item.ChipItem
 import ch.protonmail.android.uicomponents.chips.thenIf
-import ch.protonmail.android.uicomponents.composer.suggestions.ContactSuggestionItem
 
 @Composable
 internal fun FocusableFormScope<FocusedFieldType>.RecipientFields2(
@@ -95,12 +94,6 @@ internal fun FocusableFormScope<FocusedFieldType>.RecipientFields2(
                 onListChanged = {
                     actions.onToChanged(it.mapNotNull { chipItem -> chipItem.toRecipientUiModel() })
                 }
-            ),
-            contactSuggestionState = ContactSuggestionState(
-                areSuggestionsExpanded = areContactSuggestionsExpanded[ContactSuggestionsField.TO] ?: false,
-                contactSuggestionItems = contactSuggestions[ContactSuggestionsField.TO]?.map {
-                    it.toSuggestionContactItem()
-                } ?: emptyList()
             ),
             chevronIconContent = {
                 if (!hasCcBccContent) {
@@ -153,12 +146,6 @@ internal fun FocusableFormScope<FocusedFieldType>.RecipientFields2(
                     onListChanged = {
                         actions.onCcChanged(it.mapNotNull { chipItem -> chipItem.toRecipientUiModel() })
                     }
-                ),
-                contactSuggestionState = ContactSuggestionState(
-                    areSuggestionsExpanded = areContactSuggestionsExpanded[ContactSuggestionsField.CC] ?: false,
-                    contactSuggestionItems = contactSuggestions[ContactSuggestionsField.CC]?.map {
-                        it.toSuggestionContactItem()
-                    } ?: emptyList()
                 )
             )
 
@@ -183,12 +170,6 @@ internal fun FocusableFormScope<FocusedFieldType>.RecipientFields2(
                         onListChanged = {
                             actions.onBccChanged(it.mapNotNull { chipItem -> chipItem.toRecipientUiModel() })
                         }
-                    ),
-                    contactSuggestionState = ContactSuggestionState(
-                        areSuggestionsExpanded = areContactSuggestionsExpanded[ContactSuggestionsField.BCC] ?: false,
-                        contactSuggestionItems = contactSuggestions[ContactSuggestionsField.BCC]?.map {
-                            it.toSuggestionContactItem()
-                        } ?: emptyList()
                     )
                 )
             }
@@ -217,23 +198,4 @@ private fun ChipItem.toRecipientUiModel(): RecipientUiModel? = when (this) {
 private fun RecipientUiModel.toChipItem(): ChipItem = when (this) {
     is RecipientUiModel.Invalid -> ChipItem.Invalid(address)
     is RecipientUiModel.Valid -> ChipItem.Valid(address)
-}
-
-@Composable
-private fun ContactSuggestionUiModel.toSuggestionContactItem(): ContactSuggestionItem = when (this) {
-    is ContactSuggestionUiModel.Contact -> ContactSuggestionItem.ContactSuggestionItem(
-        this.initial,
-        this.name,
-        this.email,
-        this.email
-    )
-
-    is ContactSuggestionUiModel.ContactGroup -> ContactSuggestionItem.ContactGroupSuggestionItem(
-        this.name,
-        TextUiModel.PluralisedText(
-            value = R.plurals.composer_recipient_suggestion_contacts,
-            count = this.emails.size
-        ).string(),
-        this.emails
-    )
 }
