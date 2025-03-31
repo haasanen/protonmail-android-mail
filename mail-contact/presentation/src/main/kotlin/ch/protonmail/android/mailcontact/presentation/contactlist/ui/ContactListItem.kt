@@ -21,7 +21,9 @@ package ch.protonmail.android.mailcontact.presentation.contactlist.ui
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -36,7 +38,8 @@ import ch.protonmail.android.mailcontact.presentation.utils.ContactFeatureFlags.
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyLargeNorm
-import ch.protonmail.android.design.compose.theme.bodyMediumNorm
+import ch.protonmail.android.design.compose.theme.bodyMediumWeak
+import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 import ch.protonmail.android.mailcontact.presentation.previewdata.ContactListPreviewData
 
 @Composable
@@ -59,6 +62,7 @@ internal fun ContactListItem(
     ) {
         Avatar(
             avatarUiModel = contact.avatar,
+            outerContainerSize = MailDimens.AvatarSize,
             onClick = { }
         )
         Column(
@@ -71,13 +75,12 @@ internal fun ContactListItem(
         ) {
             Text(
                 text = contact.name,
-                style = ProtonTheme.typography.bodyLargeNorm,
-                color = ProtonTheme.colors.textWeak
+                style = ProtonTheme.typography.bodyLargeNorm
             )
+            Spacer(modifier = Modifier.height(ProtonDimens.Spacing.Tiny))
             Text(
                 text = contact.emailSubtext.string(),
-                style = ProtonTheme.typography.bodyMediumNorm,
-                color = ProtonTheme.colors.textHint
+                style = ProtonTheme.typography.bodyMediumWeak
             )
         }
     }
