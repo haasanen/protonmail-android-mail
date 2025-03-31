@@ -62,6 +62,10 @@ internal sealed interface ComposerAction : ComposerOperation {
 }
 
 sealed interface ComposerEvent : ComposerOperation {
+    data class UpdateToRecipients(val recipients: List<RecipientUiModel>) : ComposerEvent
+    data class UpdateCcRecipients(val recipients: List<RecipientUiModel>) : ComposerEvent
+    data class UpdateBccRecipients(val recipients: List<RecipientUiModel>) : ComposerEvent
+
     data class DefaultSenderReceived(val sender: SenderUiModel) : ComposerEvent
     data class SenderAddressesReceived(val senders: List<SenderUiModel>) : ComposerEvent
     data class OpenExistingDraft(val draftId: MessageId) : ComposerEvent
@@ -79,6 +83,7 @@ sealed interface ComposerEvent : ComposerOperation {
     data class OnIsDeviceContactsSuggestionsPromptEnabled(val enabled: Boolean) : ComposerEvent
     data class OnMessagePasswordUpdated(val messagePassword: MessagePassword?) : ComposerEvent
     data class UpdateContactSuggestions(
+        val searchTerm: String,
         val contactSuggestions: List<ContactSuggestionUiModel>,
         val suggestionsField: ContactSuggestionsField
     ) : ComposerEvent

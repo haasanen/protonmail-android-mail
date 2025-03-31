@@ -166,7 +166,7 @@ class ComposerViewModel @Inject constructor(
 
     private fun prefillForComposeToAction(recipients: List<RecipientUiModel>) {
         viewModelScope.launch {
-            emitNewStateFor(onToChanged(ComposerAction.RecipientsToChanged(recipients)))
+            emitNewStateFor(onToChanged(recipients))
         }
     }
 
@@ -319,9 +319,9 @@ class ComposerViewModel @Inject constructor(
                     is ComposerAction.SenderChanged -> TODO()
                     is ComposerAction.SubjectChanged -> emitNewStateFor(onSubjectChanged(action))
                     is ComposerAction.ChangeSenderRequested -> TODO()
-                    is ComposerAction.RecipientsToChanged -> emitNewStateFor(onToChanged(action))
-                    is ComposerAction.RecipientsCcChanged -> emitNewStateFor(onCcChanged(action))
-                    is ComposerAction.RecipientsBccChanged -> emitNewStateFor(onBccChanged(action))
+                    is ComposerAction.RecipientsToChanged -> emitNewStateFor(onToChanged(action.recipients))
+                    is ComposerAction.RecipientsCcChanged -> emitNewStateFor(onCcChanged(action.recipients))
+                    is ComposerAction.RecipientsBccChanged -> emitNewStateFor(onBccChanged(action.recipients))
                     is ComposerAction.ContactSuggestionTermChanged -> onSearchTermChanged(
                         action.searchTerm,
                         action.suggestionsField
@@ -532,41 +532,41 @@ class ComposerViewModel @Inject constructor(
 
     private suspend fun contactsOrEmpty() = getContacts(primaryUserId()).getOrElse { emptyList() }
 
-    private suspend fun onToChanged(action: ComposerAction.RecipientsToChanged): ComposerOperation {
+    private suspend fun onToChanged(toRecipients: List<RecipientUiModel>): ComposerOperation {
         val contacts = contactsOrEmpty()
-        return action.recipients.filterIsInstance<RecipientUiModel.Valid>().let { validRecipients ->
+        return toRecipients.filterIsInstance<RecipientUiModel.Valid>().let { validRecipients ->
             updateToRecipients(
                 currentValidRecipientsTo().value,
                 validRecipients.map { participantMapper.recipientUiModelToParticipant(it, contacts) }
             ).fold(
                 ifLeft = { ComposerEvent.ErrorStoringDraftRecipients },
-                ifRight = { action }
+                ifRight = { ComposerEvent.UpdateToRecipients(toRecipients) }
             )
         }
     }
 
-    private suspend fun onCcChanged(action: ComposerAction.RecipientsCcChanged): ComposerOperation {
+    private suspend fun onCcChanged(ccRecipients: List<RecipientUiModel>): ComposerOperation {
         val contacts = contactsOrEmpty()
-        return action.recipients.filterIsInstance<RecipientUiModel.Valid>().let { validRecipients ->
+        return ccRecipients.filterIsInstance<RecipientUiModel.Valid>().let { validRecipients ->
             updateCcRecipients(
                 currentValidRecipientsCc().value,
                 validRecipients.map { participantMapper.recipientUiModelToParticipant(it, contacts) }
             ).fold(
                 ifLeft = { ComposerEvent.ErrorStoringDraftRecipients },
-                ifRight = { action }
+                ifRight = { ComposerEvent.UpdateCcRecipients(ccRecipients) }
             )
         }
     }
 
-    private suspend fun onBccChanged(action: ComposerAction.RecipientsBccChanged): ComposerOperation {
+    private suspend fun onBccChanged(bccRecipients: List<RecipientUiModel>): ComposerOperation {
         val contacts = contactsOrEmpty()
-        return action.recipients.filterIsInstance<RecipientUiModel.Valid>().let { validRecipients ->
+        return bccRecipients.filterIsInstance<RecipientUiModel.Valid>().let { validRecipients ->
             updateBccRecipients(
                 currentValidRecipientsBcc().value,
                 validRecipients.map { participantMapper.recipientUiModelToParticipant(it, contacts) }
             ).fold(
                 ifLeft = { ComposerEvent.ErrorStoringDraftRecipients },
-                ifRight = { action }
+                ifRight = { ComposerEvent.UpdateBccRecipients(bccRecipients) }
             )
         }
     }
@@ -583,7 +583,11 @@ class ComposerViewModel @Inject constructor(
                     val contactUiModels = contactSuggestionsMapper.toUiModel(contactsLimited)
 
                     emitNewStateFor(
-                        ComposerEvent.UpdateContactSuggestions(contactUiModels, suggestionsField)
+                        ComposerEvent.UpdateContactSuggestions(
+                            searchTerm = searchTerm,
+                            contactSuggestions = suggestions,
+                            suggestionsField = suggestionsField
+                        )
                     )
                 }
             }

@@ -55,14 +55,14 @@ class ComposerReducer @Inject constructor(
 
     @Suppress("ComplexMethod")
     private fun ComposerAction.newStateForAction(currentState: ComposerDraftState) = when (this) {
+        is ComposerAction.RecipientsBccChanged,
+        is ComposerAction.RecipientsCcChanged,
+        is ComposerAction.RecipientsToChanged,
+        is ComposerAction.ContactSuggestionTermChanged,
         is ComposerAction.AttachmentsAdded,
         is ComposerAction.RemoveAttachment -> currentState
 
         is ComposerAction.SenderChanged -> updateSenderTo(currentState, this.sender)
-        is ComposerAction.RecipientsBccChanged -> updateRecipientsBcc(currentState, this.recipients)
-        is ComposerAction.RecipientsCcChanged -> updateRecipientsCc(currentState, this.recipients)
-        is ComposerAction.RecipientsToChanged -> updateRecipientsTo(currentState, this.recipients)
-        is ComposerAction.ContactSuggestionTermChanged -> currentState
         is ComposerAction.DraftBodyChanged -> updateDraftBodyTo(currentState, this.draftBody)
         is ComposerAction.SubjectChanged -> updateSubjectTo(currentState, this.subject)
         is ComposerAction.OnAddAttachments -> updateForOnAddAttachments(currentState)
@@ -82,6 +82,10 @@ class ComposerReducer @Inject constructor(
 
     @Suppress("ComplexMethod", "LongMethod")
     private fun ComposerEvent.newStateForEvent(currentState: ComposerDraftState) = when (this) {
+        is ComposerEvent.UpdateBccRecipients -> updateRecipientsBcc(currentState, this.recipients)
+        is ComposerEvent.UpdateCcRecipients -> updateRecipientsCc(currentState, this.recipients)
+        is ComposerEvent.UpdateToRecipients -> updateRecipientsTo(currentState, this.recipients)
+
         is ComposerEvent.DefaultSenderReceived -> updateSenderTo(currentState, this.sender)
         is ComposerEvent.ErrorLoadingDefaultSenderAddress -> updateStateToSenderError(currentState)
         is ComposerEvent.ErrorVerifyingPermissionsToChangeSender -> currentState.copy(

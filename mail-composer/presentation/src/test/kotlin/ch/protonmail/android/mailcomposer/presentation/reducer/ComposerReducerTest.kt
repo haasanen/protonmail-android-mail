@@ -20,6 +20,7 @@ package ch.protonmail.android.mailcomposer.presentation.reducer
 
 import java.util.Random
 import java.util.UUID
+import androidx.compose.ui.graphics.Color
 import ch.protonmail.android.mailcommon.domain.sample.UserAddressSample
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
@@ -34,14 +35,12 @@ import ch.protonmail.android.mailcomposer.domain.model.SenderEmail
 import ch.protonmail.android.mailcomposer.domain.model.Subject
 import ch.protonmail.android.mailcomposer.presentation.R
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerAction
-import ch.protonmail.android.mailcomposer.presentation.model.ComposerAction.RecipientsBccChanged
-import ch.protonmail.android.mailcomposer.presentation.model.ComposerAction.RecipientsCcChanged
-import ch.protonmail.android.mailcomposer.presentation.model.ComposerAction.RecipientsToChanged
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerAction.SenderChanged
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerDraftState
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerEvent
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerFields
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerOperation
+import ch.protonmail.android.mailcomposer.presentation.model.ContactSuggestionState
 import ch.protonmail.android.mailcomposer.presentation.model.ContactSuggestionUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.ContactSuggestionsField
 import ch.protonmail.android.mailcomposer.presentation.model.DraftDisplayBodyUiModel
@@ -118,7 +117,7 @@ class ComposerReducerTest(
             TestTransition(
                 name = "Should generate submittable state when adding a new valid email address in the to field",
                 currentState = ComposerDraftState.initial(messageId),
-                operation = RecipientsToChanged(listOf(Valid(this))),
+                operation = ComposerEvent.UpdateToRecipients(listOf(Valid(this))),
                 expectedState = aSubmittableState(messageId, to = listOf(Valid(this)))
             )
         }
@@ -127,7 +126,7 @@ class ComposerReducerTest(
             TestTransition(
                 name = "Should generate not submittable error state when adding invalid email address in the to field",
                 currentState = ComposerDraftState.initial(messageId),
-                operation = RecipientsToChanged(listOf(Invalid(this))),
+                operation = ComposerEvent.UpdateToRecipients(listOf(Invalid(this))),
                 expectedState = aNotSubmittableState(
                     messageId,
                     to = listOf(Invalid(this)),
@@ -144,7 +143,7 @@ class ComposerReducerTest(
                     to = listOf(Valid(this)),
                     isSubmittable = true
                 ),
-                operation = RecipientsToChanged(emptyList()),
+                operation = ComposerEvent.UpdateToRecipients(emptyList()),
                 expectedState = aNotSubmittableState(messageId, to = emptyList(), error = Effect.empty())
             )
         }
@@ -153,7 +152,7 @@ class ComposerReducerTest(
             TestTransition(
                 name = "Should generate submittable state when adding a new valid email address in the cc field",
                 currentState = ComposerDraftState.initial(messageId),
-                operation = RecipientsCcChanged(listOf(Valid(this))),
+                operation = ComposerEvent.UpdateCcRecipients(listOf(Valid(this))),
                 expectedState = aSubmittableState(messageId, cc = listOf(Valid(this)))
             )
         }
@@ -162,7 +161,7 @@ class ComposerReducerTest(
             TestTransition(
                 name = "Should generate not submittable error state when adding invalid email address in the cc field",
                 currentState = ComposerDraftState.initial(messageId),
-                operation = RecipientsCcChanged(listOf(Invalid(this))),
+                operation = ComposerEvent.UpdateCcRecipients(listOf(Invalid(this))),
                 expectedState = aNotSubmittableState(
                     messageId,
                     cc = listOf(Invalid(this)),
@@ -179,7 +178,7 @@ class ComposerReducerTest(
                     cc = listOf(Valid(this)),
                     isSubmittable = true
                 ),
-                operation = RecipientsCcChanged(emptyList()),
+                operation = ComposerEvent.UpdateCcRecipients(emptyList()),
                 expectedState = aNotSubmittableState(messageId, cc = emptyList(), error = Effect.empty())
             )
         }
@@ -188,7 +187,7 @@ class ComposerReducerTest(
             TestTransition(
                 name = "Should generate submittable state when adding a new valid email address in the bcc field",
                 currentState = ComposerDraftState.initial(messageId),
-                operation = RecipientsBccChanged(listOf(Valid(this))),
+                operation = ComposerEvent.UpdateBccRecipients(listOf(Valid(this))),
                 expectedState = aSubmittableState(messageId, bcc = listOf(Valid(this)))
             )
         }
@@ -197,7 +196,7 @@ class ComposerReducerTest(
             TestTransition(
                 name = "Should generate not submittable error state when adding invalid email address in the bcc field",
                 currentState = ComposerDraftState.initial(messageId),
-                operation = RecipientsBccChanged(listOf(Invalid(this))),
+                operation = ComposerEvent.UpdateBccRecipients(listOf(Invalid(this))),
                 expectedState = aNotSubmittableState(
                     messageId,
                     bcc = listOf(Invalid(this)),
@@ -214,7 +213,7 @@ class ComposerReducerTest(
                     bcc = listOf(Valid(this)),
                     isSubmittable = true
                 ),
-                operation = RecipientsBccChanged(emptyList()),
+                operation = ComposerEvent.UpdateBccRecipients(emptyList()),
                 expectedState = aNotSubmittableState(messageId, bcc = emptyList(), error = Effect.empty())
             )
         }
@@ -224,7 +223,7 @@ class ComposerReducerTest(
             TestTransition(
                 name = "Should generate not submittable non error state when adding valid email to current error",
                 currentState = aNotSubmittableState(messageId, to = listOf(Invalid(invalidEmail))),
-                operation = RecipientsToChanged(listOf(Invalid(invalidEmail), Valid(this))),
+                operation = ComposerEvent.UpdateToRecipients(listOf(Invalid(invalidEmail), Valid(this))),
                 expectedState = aNotSubmittableState(
                     draftId = messageId,
                     to = listOf(Invalid(invalidEmail), Valid(this)),
@@ -238,7 +237,7 @@ class ComposerReducerTest(
             TestTransition(
                 name = "Should generate not submittable error state when adding invalid followed by invalid address",
                 currentState = aNotSubmittableState(messageId, to = listOf(Invalid(invalidEmail))),
-                operation = RecipientsToChanged(listOf(Invalid(invalidEmail), Invalid(this))),
+                operation = ComposerEvent.UpdateToRecipients(listOf(Invalid(invalidEmail), Invalid(this))),
                 expectedState = aNotSubmittableState(
                     draftId = messageId,
                     to = listOf(Invalid(invalidEmail), Invalid(this)),
@@ -252,7 +251,7 @@ class ComposerReducerTest(
             TestTransition(
                 name = "Should generate not submittable state without error when removing invalid address",
                 currentState = aNotSubmittableState(messageId, to = listOf(Invalid(invalidEmail), Invalid(this))),
-                operation = RecipientsToChanged(listOf(Invalid(invalidEmail))),
+                operation = ComposerEvent.UpdateToRecipients(listOf(Invalid(invalidEmail))),
                 expectedState = aNotSubmittableState(
                     draftId = messageId,
                     to = listOf(Invalid(invalidEmail)),
@@ -322,7 +321,7 @@ class ComposerReducerTest(
             TestTransition(
                 name = "Should remove duplicate TO recipients and contain error if there are",
                 currentState = ComposerDraftState.initial(messageId),
-                operation = RecipientsToChanged(this.map { Valid(it) }),
+                operation = ComposerEvent.UpdateToRecipients(this.map { Valid(it) }),
                 expectedState = aSubmittableState(
                     draftId = messageId,
                     to = listOf(Valid(this.first())),
@@ -335,7 +334,7 @@ class ComposerReducerTest(
             TestTransition(
                 name = "Should remove duplicate CC recipients and contain error if there are",
                 currentState = ComposerDraftState.initial(messageId),
-                operation = RecipientsCcChanged(this.map { Valid(it) }),
+                operation = ComposerEvent.UpdateCcRecipients(this.map { Valid(it) }),
                 expectedState = aSubmittableState(
                     draftId = messageId,
                     cc = listOf(Valid(this.first())),
@@ -348,7 +347,7 @@ class ComposerReducerTest(
             TestTransition(
                 name = "Should remove duplicate BCC recipients and contain error if there are",
                 currentState = ComposerDraftState.initial(messageId),
-                operation = RecipientsBccChanged(this.map { Valid(it) }),
+                operation = ComposerEvent.UpdateBccRecipients(this.map { Valid(it) }),
                 expectedState = aSubmittableState(
                     draftId = messageId,
                     bcc = listOf(Valid(this.first())),
@@ -364,7 +363,7 @@ class ComposerReducerTest(
             TestTransition(
                 name = "Should remove multiple duplicate To recipients and contain error if there are",
                 currentState = ComposerDraftState.initial(messageId),
-                operation = RecipientsToChanged(this.map { Valid(it) }),
+                operation = ComposerEvent.UpdateToRecipients(this.map { Valid(it) }),
                 expectedState = aSubmittableState(
                     draftId = messageId,
                     to = expected,
@@ -380,7 +379,7 @@ class ComposerReducerTest(
             TestTransition(
                 name = "Should remove multiple duplicate CC recipients and contain error if there are",
                 currentState = ComposerDraftState.initial(messageId),
-                operation = RecipientsCcChanged(this.map { Valid(it) }),
+                operation = ComposerEvent.UpdateCcRecipients(this.map { Valid(it) }),
                 expectedState = aSubmittableState(
                     draftId = messageId,
                     cc = expected,
@@ -396,7 +395,7 @@ class ComposerReducerTest(
             TestTransition(
                 name = "Should remove multiple duplicate BCC recipients and contain error if there are",
                 currentState = ComposerDraftState.initial(messageId),
-                operation = RecipientsBccChanged(this.map { Valid(it) }),
+                operation = ComposerEvent.UpdateBccRecipients(this.map { Valid(it) }),
                 expectedState = aSubmittableState(
                     draftId = messageId,
                     bcc = expected,
@@ -481,13 +480,23 @@ class ComposerReducerTest(
             TestTransition(
                 name = "Should update state with dismissing suggestions after ContactSuggestionsDismissed action",
                 currentState = ComposerDraftState.initial(messageId).copy(
-                    areContactSuggestionsExpanded = mapOf(ContactSuggestionsField.BCC to true)
+                contactSuggestionState = ContactSuggestionState.Data(
+                    searchTerm = "dav",
+                    suggestionsField = ContactSuggestionsField.BCC,
+                    contactSuggestionItems = listOf(
+                        ContactSuggestionUiModel.Contact(
+                            name = "David Green",
+                            initial = "D",
+                            avatarColor = Color(0xFF4682B4), // Steel Blue
+                            email = "david.green@example.com"
+                        )
+                    )
+                )
                 ),
                 operation = ComposerAction.ContactSuggestionsDismissed(ContactSuggestionsField.BCC),
-                expectedState = aNotSubmittableState(
-                    messageId,
+            expectedState = ComposerDraftState.initial(messageId).copy(
                     error = Effect.empty(),
-                    areContactSuggestionsExpanded = mapOf(ContactSuggestionsField.BCC to false)
+                contactSuggestionState = ContactSuggestionState.Empty
                 )
             )
 
@@ -696,19 +705,37 @@ class ComposerReducerTest(
             currentState = ComposerDraftState.initial(messageId),
             operation = ComposerEvent.UpdateContactSuggestions(
                 contactSuggestions = listOf(
-                    ContactSuggestionUiModel.Contact("contact name", "IN", "contact email"),
-                    ContactSuggestionUiModel.ContactGroup("contact group name", listOf("contact@emai.il"))
+                    ContactSuggestionUiModel.Contact(
+                        name = "Alice Smith",
+                        initial = "A",
+                        avatarColor = Color(0xFF6A5ACD), // Slate Blue
+                        email = "alice.smith@example.com"
                 ),
-                suggestionsField = ContactSuggestionsField.BCC
-            ),
-            expectedState = ComposerDraftState.initial(messageId).copy(
-                contactSuggestions = mapOf(
-                    ContactSuggestionsField.BCC to listOf(
-                        ContactSuggestionUiModel.Contact("contact name", "IN", "contact email"),
-                        ContactSuggestionUiModel.ContactGroup("contact group name", listOf("contact@emai.il"))
+                    ContactSuggestionUiModel.ContactGroup(
+                        name = "A Project Team",
+                        emails = listOf("bob.jones@example.com", "carol.lee@example.com")
                     )
                 ),
-                areContactSuggestionsExpanded = mapOf(ContactSuggestionsField.BCC to true)
+                searchTerm = "a",
+                suggestionsField = ContactSuggestionsField.CC
+            ),
+            expectedState = ComposerDraftState.initial(messageId).copy(
+                contactSuggestionState = ContactSuggestionState.Data(
+                    searchTerm = "a",
+                    suggestionsField = ContactSuggestionsField.CC,
+                    contactSuggestionItems = listOf(
+                        ContactSuggestionUiModel.Contact(
+                            name = "Alice Smith",
+                            initial = "A",
+                            avatarColor = Color(0xFF6A5ACD),
+                            email = "alice.smith@example.com"
+                        ),
+                        ContactSuggestionUiModel.ContactGroup(
+                            name = "A Project Team",
+                            emails = listOf("bob.jones@example.com", "carol.lee@example.com")
+                        )
+                    )
+                    )
             )
         )
 
@@ -973,7 +1000,6 @@ class ComposerReducerTest(
             attachmentReEncryptionFailed: Effect<Unit> = Effect.empty(),
             warning: Effect<TextUiModel> = Effect.empty(),
             replaceDraftBody: Effect<TextUiModel> = Effect.empty(),
-            areContactSuggestionsExpanded: Map<ContactSuggestionsField, Boolean> = emptyMap(),
             senderChangedNotice: Effect<TextUiModel> = Effect.empty()
         ) = ComposerDraftState(
             fields = ComposerFields(
@@ -1004,7 +1030,6 @@ class ComposerReducerTest(
             attachmentsReEncryptionFailed = attachmentReEncryptionFailed,
             warning = warning,
             replaceDraftBody = replaceDraftBody,
-            areContactSuggestionsExpanded = areContactSuggestionsExpanded,
             isMessagePasswordSet = false,
             senderChangedNotice = senderChangedNotice,
             messageExpiresIn = Duration.ZERO,
