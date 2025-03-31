@@ -1759,6 +1759,52 @@ class ComposerViewModelTest {
         }
     }
 
+    @Test
+    fun `should update recipients and clear search term when suggestion is selected`() = runTest {
+        // Given
+        val expectedMessageId = expectedMessageId { MessageIdSample.EmptyDraft }
+        val expectedUserId = expectedUserId { UserIdSample.Primary }
+        val suggestionField = ContactSuggestionsField.TO
+
+        val suggestion = ContactSuggestionUiModel.Contact(
+            name = "Valid Email",
+            email = "valid@email.com",
+            initial = "JP",
+            avatarColor = Color.Red
+        )
+
+        val expectedRecipient = Recipient(suggestion.email, suggestion.name, false)
+
+        mockParticipantMapper()
+
+        expectUpdateToRecipientsSucceeds(listOf(expectedRecipient))
+        expectNoInputDraftMessageId()
+        expectInputDraftAction { DraftAction.Compose }
+        expectObservedMessageAttachments(expectedUserId, expectedMessageId)
+        expectObserveMessageSendingError(expectedUserId, expectedMessageId)
+        expectMessagePassword(expectedUserId, expectedMessageId)
+        expectAddressValidation(expectedRecipient.address, true)
+        expectNoFileShareVia()
+        expectObserveMessageExpirationTime(expectedUserId, expectedMessageId)
+        expectInitComposerWithNewEmptyDraftSucceeds(expectedUserId)
+
+        // When
+        viewModel.submit(ComposerAction.ContactSuggestionSelected(suggestion, suggestionField))
+
+        // Then
+        viewModel.state.test {
+            val actual = awaitItem()
+            assertEquals(ContactSuggestionState.Empty, actual.contactSuggestionState)
+            coVerify {
+                updateToRecipients(emptyList(), listOf(expectedRecipient))
+            }
+            assertEquals(
+                listOf(RecipientUiModel.Valid(suggestion.email)),
+                actual.fields.to
+            )
+        }
+    }
+
     @Before
     fun setUp() {
         mockkStatic(android.graphics.Color::parseColor)

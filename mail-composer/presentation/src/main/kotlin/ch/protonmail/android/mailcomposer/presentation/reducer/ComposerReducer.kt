@@ -62,6 +62,9 @@ class ComposerReducer @Inject constructor(
         is ComposerAction.AttachmentsAdded,
         is ComposerAction.RemoveAttachment -> currentState
 
+        is ComposerAction.ContactSuggestionSelected -> updateStateForContactSuggestionSelected(
+            currentState, this
+        )
         is ComposerAction.SenderChanged -> updateSenderTo(currentState, this.sender)
         is ComposerAction.DraftBodyChanged -> updateDraftBodyTo(currentState, this.draftBody)
         is ComposerAction.SubjectChanged -> updateSubjectTo(currentState, this.subject)
@@ -356,6 +359,13 @@ class ComposerReducer @Inject constructor(
             contactSuggestionState = ContactSuggestionState.Empty
         )
 
+    @Suppress("FunctionMaxLength")
+    private fun updateStateForContactSuggestionSelected(
+        currentState: ComposerDraftState,
+        action: ComposerAction.ContactSuggestionSelected
+    ): ComposerDraftState = currentState.copy(
+        clearContactSuggestionTerm = Effect.of(action.suggestionsField)
+    )
 
     private fun updateRecipients(
         currentState: ComposerDraftState,

@@ -59,6 +59,7 @@ import ch.protonmail.android.mailcomposer.presentation.model.ComposerAction
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerDraftState
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerEvent
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerOperation
+import ch.protonmail.android.mailcomposer.presentation.model.ContactSuggestionUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.ContactSuggestionsField
 import ch.protonmail.android.mailcomposer.presentation.model.DraftUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.RecipientUiModel
@@ -327,6 +328,8 @@ class ComposerViewModel @Inject constructor(
                         action.suggestionsField
                     )
 
+                    is ComposerAction.ContactSuggestionSelected -> handleContactSuggestionSelected(action)
+
                     is ComposerAction.ContactSuggestionsDismissed -> emitNewStateFor(action)
                     is ComposerAction.DeviceContactsPromptDenied -> onDeviceContactsPromptDenied()
                     is ComposerAction.OnAddAttachments -> TODO()
@@ -531,6 +534,39 @@ class ComposerViewModel @Inject constructor(
     }
 
     private suspend fun contactsOrEmpty() = getContacts(primaryUserId()).getOrElse { emptyList() }
+
+    private suspend fun handleContactSuggestionSelected(action: ComposerAction.ContactSuggestionSelected) {
+
+        val recipientEmail = when (action.contact) {
+            is ContactSuggestionUiModel.Contact -> action.contact.email
+            is ContactSuggestionUiModel.ContactGroup -> {
+                // ContactGroup suggestions will be handled later. For now, we just take the first email
+                action.contact.emails.first()
+            }
+        }
+
+        val recipient = when {
+            validateEmailAddress(recipientEmail) -> RecipientUiModel.Valid(recipientEmail)
+            else -> RecipientUiModel.Invalid(recipientEmail)
+        }
+
+        val updateEvent = when (action.suggestionsField) {
+            ContactSuggestionsField.TO -> {
+                val updatedToRecipients = state.value.fields.to + listOf(recipient)
+                onToChanged(updatedToRecipients)
+            }
+            ContactSuggestionsField.CC -> {
+                val updatedCcRecipients = state.value.fields.cc + listOf(recipient)
+                onCcChanged(updatedCcRecipients)
+            }
+            ContactSuggestionsField.BCC -> {
+                val updatedBccRecipients = state.value.fields.bcc + listOf(recipient)
+                onBccChanged(updatedBccRecipients)
+            }
+        }
+        emitNewStateFor(updateEvent)
+        emitNewStateFor(action)
+    }
 
     private suspend fun onToChanged(toRecipients: List<RecipientUiModel>): ComposerOperation {
         val contacts = contactsOrEmpty()

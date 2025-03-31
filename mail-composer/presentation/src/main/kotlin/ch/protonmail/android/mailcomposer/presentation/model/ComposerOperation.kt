@@ -44,6 +44,10 @@ internal sealed interface ComposerAction : ComposerOperation {
         val suggestionsField: ContactSuggestionsField
     ) : ComposerAction
     data class ContactSuggestionsDismissed(val suggestionsField: ContactSuggestionsField) : ComposerAction
+    data class ContactSuggestionSelected(
+        val contact: ContactSuggestionUiModel,
+        val suggestionsField: ContactSuggestionsField
+    ) : ComposerAction
     data object DeviceContactsPromptDenied : ComposerAction
     data class ExpirationTimeSet(val duration: Duration) : ComposerAction
 

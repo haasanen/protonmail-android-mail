@@ -480,25 +480,43 @@ class ComposerReducerTest(
             TestTransition(
                 name = "Should update state with dismissing suggestions after ContactSuggestionsDismissed action",
                 currentState = ComposerDraftState.initial(messageId).copy(
-                contactSuggestionState = ContactSuggestionState.Data(
-                    searchTerm = "dav",
-                    suggestionsField = ContactSuggestionsField.BCC,
-                    contactSuggestionItems = listOf(
-                        ContactSuggestionUiModel.Contact(
-                            name = "David Green",
-                            initial = "D",
-                            avatarColor = Color(0xFF4682B4), // Steel Blue
-                            email = "david.green@example.com"
+                    contactSuggestionState = ContactSuggestionState.Data(
+                        searchTerm = "dav",
+                        suggestionsField = ContactSuggestionsField.BCC,
+                        contactSuggestionItems = listOf(
+                            ContactSuggestionUiModel.Contact(
+                                name = "David Green",
+                                initial = "D",
+                                avatarColor = Color(0xFF4682B4), // Steel Blue
+                                email = "david.green@example.com"
+                            )
                         )
                     )
-                )
                 ),
                 operation = ComposerAction.ContactSuggestionsDismissed(ContactSuggestionsField.BCC),
-            expectedState = ComposerDraftState.initial(messageId).copy(
+                expectedState = ComposerDraftState.initial(messageId).copy(
                     error = Effect.empty(),
-                contactSuggestionState = ContactSuggestionState.Empty
+                    contactSuggestionState = ContactSuggestionState.Empty
                 )
             )
+
+        private val ContactSuggestionSelected = TestTransition(
+            name = "Should emit effect to clear contact suggestion term when a suggestion is selected",
+            currentState = ComposerDraftState.initial(messageId),
+            operation = ComposerAction.ContactSuggestionSelected(
+                suggestionsField = ContactSuggestionsField.CC,
+                contact = ContactSuggestionUiModel.Contact(
+                    name = "Alice Blue",
+                    initial = "A",
+                    avatarColor = Color(0xFFADD8E6),
+                    email = "alice.blue@example.com"
+                )
+            ),
+            expectedState = ComposerDraftState.initial(messageId).copy(
+                clearContactSuggestionTerm = Effect.of(ContactSuggestionsField.CC)
+            )
+        )
+
 
         private val EmptyToLoadingWithOpenExistingDraft = TestTransition(
             name = "Should set state to loading when open of existing draft was requested",
@@ -710,7 +728,7 @@ class ComposerReducerTest(
                         initial = "A",
                         avatarColor = Color(0xFF6A5ACD), // Slate Blue
                         email = "alice.smith@example.com"
-                ),
+                    ),
                     ContactSuggestionUiModel.ContactGroup(
                         name = "A Project Team",
                         emails = listOf("bob.jones@example.com", "carol.lee@example.com")
@@ -735,7 +753,7 @@ class ComposerReducerTest(
                             emails = listOf("bob.jones@example.com", "carol.lee@example.com")
                         )
                     )
-                    )
+                )
             )
         )
 
@@ -898,6 +916,7 @@ class ComposerReducerTest(
             SubmittableToSendMessage,
             SubmittableToOnSendMessageOffline,
             ContactsSuggestionExpandedToDismissed,
+            ContactSuggestionSelected,
             EmptyToLoadingWithOpenExistingDraft,
             LoadingToFieldsWhenReceivedDraftDataEmptyRecipients,
             LoadingToFieldsWhenReceivedDraftDataValidRecipients,

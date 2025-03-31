@@ -19,6 +19,7 @@
 package ch.protonmail.android.mailcomposer.presentation.ui
 
 import androidx.compose.ui.geometry.Rect
+import ch.protonmail.android.mailcomposer.presentation.model.ContactSuggestionUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.ContactSuggestionsField
 import ch.protonmail.android.mailcomposer.presentation.model.FocusedFieldType
 import ch.protonmail.android.mailcomposer.presentation.model.RecipientUiModel
@@ -31,6 +32,10 @@ internal data class ComposerFormActions(
     val onCcChanged: (List<RecipientUiModel>) -> Unit,
     val onBccChanged: (List<RecipientUiModel>) -> Unit,
     val onContactSuggestionsDismissed: (ContactSuggestionsField) -> Unit,
+    val onContactSuggestionSelected: (
+        contact: ContactSuggestionUiModel,
+        field: ContactSuggestionsField
+    ) -> Unit,
     val onDeviceContactsPromptDenied: () -> Unit,
     val onContactSuggestionTermChanged: (String, ContactSuggestionsField) -> Unit,
     val onSubjectChanged: (String) -> Unit,
