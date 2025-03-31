@@ -27,6 +27,7 @@ import ch.protonmail.android.uicomponents.chips.item.ChipItem
 fun ChipsListField(
     label: String,
     value: List<ChipItem>,
+    clearCurrentText: Boolean,
     modifier: Modifier = Modifier,
     chipValidator: (String) -> Boolean = { true },
     focusRequester: FocusRequester? = null,
@@ -62,6 +63,11 @@ fun ChipsListField(
                 actions.onSuggestionsDismissed()
             }
         )
+    }
+
+    if (clearCurrentText) {
+        textFieldValue = initialTextFieldValue
+        state.type("")
     }
 
     state.updateItems(value)

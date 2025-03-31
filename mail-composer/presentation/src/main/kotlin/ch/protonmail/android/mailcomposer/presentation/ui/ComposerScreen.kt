@@ -24,6 +24,7 @@ import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -272,57 +273,74 @@ fun ComposerScreen(actions: ComposerScreen.Actions, viewModel: ComposerViewModel
                     scrollState.value.toDp(localDensity)
                 )
 
-                Column(
+                val screenHeight = context.resources.displayMetrics.heightPixels
+                var formHeightPx by remember { mutableStateOf(0f) }
+
+                Box(
                     modifier = Modifier
-                        .padding(paddingValues)
-                        .verticalScroll(scrollState)
+                        .fillMaxSize()
                         .onGloballyPositioned { coordinates ->
-                            columnBounds = coordinates.boundsInWindow()
+                            formHeightPx = coordinates.boundsInWindow().height
+                            val height = coordinates.size.height
+                            Timber.d("_BOUNDS_ height: $height screenHeight: $screenHeight")
+
                         }
                 ) {
-                    // Not showing the form till we're done loading ensure it does receive the
-                    // right "initial values" from state when displayed
-                    ComposerForm(
-                        modifier = Modifier.testTag(ComposerTestTags.ComposerForm),
-                        emailValidator = viewModel::validateEmailAddress,
-                        recipientsOpen = recipientsOpen,
-                        initialFocus = focusedField,
-                        changeFocusToField = state.changeFocusToField,
-                        fields = state.fields,
-                        actions = buildActions(
-                            viewModel = viewModel,
-                            onToggleRecipients = { recipientsOpen = it },
-                            onFocusChanged = { focusedField = it },
-                            setBottomSheetType = { bottomSheetType.value = it },
-                            onWebViewMeasuresChanged = { webViewParams ->
-                                scrollManager.onEditorParamsChanged(
-                                    getComposeScreenParams(),
-                                    webViewParams
-                                )
-                            },
-                            onHeaderPositioned = { headerBoundsInWindow, measuredHeight ->
-                                val visibleBounds = headerBoundsInWindow.intersect(columnBounds)
-                                visibleHeaderHeight = visibleBounds.height.coerceAtLeast(0f).toDp(localDensity)
-                                headerHeight = measuredHeight.toDp(localDensity)
-                            },
-                            onWebViewPositioned = { boundsInWindow ->
-                                val visibleBounds = boundsInWindow.intersect(columnBounds)
-                                visibleWebViewHeight = visibleBounds.height.coerceAtLeast(0f).toDp(localDensity)
-                            },
-                            showFeatureMissingSnackbar = { showFeatureMissingSnackbar() }
-                        ),
-                        contactSuggestions = state.contactSuggestions,
-                        areContactSuggestionsExpanded = state.areContactSuggestionsExpanded
-                    )
-                    if (state.attachments.attachments.isNotEmpty()) {
-                        AttachmentList(
-                            messageAttachmentsUiModel = state.attachments,
-                            actions = AttachmentList.Actions(
-                                onShowAllAttachments = { Timber.d("On show all attachments clicked") },
-                                onAttachmentClicked = { Timber.d("On attachment clicked: $it") },
-                                onAttachmentDeleteClicked = { viewModel.submit(ComposerAction.RemoveAttachment(it)) }
-                            )
+                    Column(
+                        modifier = Modifier
+                            .padding(paddingValues)
+                            .verticalScroll(scrollState)
+                            .onGloballyPositioned { coordinates ->
+                                columnBounds = coordinates.boundsInWindow()
+                            }
+                    ) {
+                        // Not showing the form till we're done loading ensure it does receive the
+                        // right "initial values" from state when displayed
+                        ComposerForm(
+                            modifier = Modifier.testTag(ComposerTestTags.ComposerForm),
+                            emailValidator = viewModel::validateEmailAddress,
+                            formHeightPx = formHeightPx,
+                            recipientsOpen = recipientsOpen,
+                            initialFocus = focusedField,
+                            changeFocusToField = state.changeFocusToField,
+                            fields = state.fields,
+                            actions = buildActions(
+                                viewModel = viewModel,
+                                onToggleRecipients = { recipientsOpen = it },
+                                onFocusChanged = { focusedField = it },
+                                setBottomSheetType = { bottomSheetType.value = it },
+                                onWebViewMeasuresChanged = { webViewParams ->
+                                    scrollManager.onEditorParamsChanged(
+                                        getComposeScreenParams(),
+                                        webViewParams
+                                    )
+                                },
+                                onHeaderPositioned = { headerBoundsInWindow, measuredHeight ->
+                                    val visibleBounds = headerBoundsInWindow.intersect(columnBounds)
+                                    visibleHeaderHeight = visibleBounds.height.coerceAtLeast(0f).toDp(localDensity)
+                                    headerHeight = measuredHeight.toDp(localDensity)
+                                },
+                                onWebViewPositioned = { boundsInWindow ->
+                                    val visibleBounds = boundsInWindow.intersect(columnBounds)
+                                    visibleWebViewHeight = visibleBounds.height.coerceAtLeast(0f).toDp(localDensity)
+                                },
+                                showFeatureMissingSnackbar = { showFeatureMissingSnackbar() }
+                            ),
+                            contactSuggestionState = state.contactSuggestionState,
+                            clearContactSuggestionTerm = state.clearContactSuggestionTerm
                         )
+                        if (state.attachments.attachments.isNotEmpty()) {
+                            AttachmentList(
+                                messageAttachmentsUiModel = state.attachments,
+                                actions = AttachmentList.Actions(
+                                    onShowAllAttachments = { Timber.d("On show all attachments clicked") },
+                                    onAttachmentClicked = { Timber.d("On attachment clicked: $it") },
+                                    onAttachmentDeleteClicked = {
+                                        viewModel.submit(ComposerAction.RemoveAttachment(it))
+                                    }
+                                )
+                            )
+                        }
                     }
                 }
             }
@@ -510,6 +528,9 @@ private fun buildActions(
     onDeviceContactsPromptDenied = { viewModel.submit(ComposerAction.DeviceContactsPromptDenied) },
     onContactSuggestionTermChanged = { searchTerm, suggestionsField ->
         viewModel.submit(ComposerAction.ContactSuggestionTermChanged(searchTerm, suggestionsField))
+    },
+    onContactSuggestionSelected = { contact, suggestionsField ->
+        viewModel.submit(ComposerAction.ContactSuggestionSelected(contact, suggestionsField))
     },
     onSubjectChanged = { viewModel.submit(ComposerAction.SubjectChanged(Subject(it))) },
     onBodyChanged = {

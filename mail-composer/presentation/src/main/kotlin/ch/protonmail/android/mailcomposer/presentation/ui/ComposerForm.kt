@@ -19,9 +19,10 @@
 package ch.protonmail.android.mailcomposer.presentation.ui
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -29,6 +30,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.testTag
 import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
@@ -36,9 +38,10 @@ import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.compose.FocusableForm
 import ch.protonmail.android.mailcommon.presentation.ui.MailDivider
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerFields
-import ch.protonmail.android.mailcomposer.presentation.model.ContactSuggestionUiModel
+import ch.protonmail.android.mailcomposer.presentation.model.ContactSuggestionState
 import ch.protonmail.android.mailcomposer.presentation.model.ContactSuggestionsField
 import ch.protonmail.android.mailcomposer.presentation.model.FocusedFieldType
+import ch.protonmail.android.mailcomposer.presentation.ui.suggestions.ContactSuggestionsList
 import ch.protonmail.android.uicomponents.keyboardVisibilityAsState
 import timber.log.Timber
 
@@ -50,8 +53,9 @@ internal fun ComposerForm(
     changeFocusToField: Effect<FocusedFieldType>,
     fields: ComposerFields,
     actions: ComposerFormActions,
-    contactSuggestions: Map<ContactSuggestionsField, List<ContactSuggestionUiModel>>,
-    areContactSuggestionsExpanded: Map<ContactSuggestionsField, Boolean>,
+    contactSuggestionState: ContactSuggestionState,
+    clearContactSuggestionTerm: Effect<ContactSuggestionsField>,
+    formHeightPx: Float,
     modifier: Modifier = Modifier
 ) {
     val isKeyboardVisible by keyboardVisibilityAsState()
@@ -61,11 +65,6 @@ internal fun ComposerForm(
 
     var showSubjectAndBody by remember { mutableStateOf(true) }
     var isSubjectFocused by remember { mutableStateOf(false) }
-
-    // Handle visibility of body and subject here, to avoid issues with focus requesters.
-    LaunchedEffect(areContactSuggestionsExpanded) {
-        showSubjectAndBody = !areContactSuggestionsExpanded.any { it.value }
-    }
 
     FocusableForm(
         fieldList = listOf(
@@ -94,51 +93,87 @@ internal fun ComposerForm(
         Column(
             modifier = modifier.fillMaxWidth()
         ) {
+            var recipientsContentHeightPx by remember { mutableStateOf(0f) }
+
             RecipientFields2(
+                modifier = Modifier
+                    .onGloballyPositioned { coordinates ->
+                        recipientsContentHeightPx = coordinates.boundsInWindow().height
+                    },
                 fields = fields,
                 fieldFocusRequesters = fieldFocusRequesters,
                 recipientsOpen = recipientsOpen,
                 emailValidator = emailValidator,
-                contactSuggestions = contactSuggestions,
-                areContactSuggestionsExpanded = areContactSuggestionsExpanded,
+                clearContactSuggestionTerm = clearContactSuggestionTerm,
+                contactSuggestionsExpandedField = (
+                    contactSuggestionState as? ContactSuggestionState.Data
+                    )?.suggestionsField,
                 actions = actions
             )
 
-            MailDivider()
-
-            SenderEmailWithSelector(
-                modifier = maxWidthModifier.testTag(ComposerTestTags.FromSender),
-                selectedEmail = fields.sender.email,
-                actions.onChangeSender
-            )
-
-            if (showSubjectAndBody) {
-                MailDivider()
-                SubjectTextField(
-                    initialValue = fields.subject,
-                    onSubjectChange = actions.onSubjectChanged,
-                    modifier = maxWidthModifier
-                        .testTag(ComposerTestTags.Subject)
-                        .retainFieldFocusOnConfigurationChange(FocusedFieldType.SUBJECT),
-                    isFocused = isSubjectFocused
-                )
-                MailDivider()
-            }
-        }
-
-        if (showSubjectAndBody) {
-            MessageBodyEditor(
-                messageBodyUiModel = fields.displayBody,
-                onBodyChanged = actions.onBodyChanged,
-                onWebViewMeasuresChanged = actions.onWebViewMeasuresChanged,
-                modifier = maxWidthModifier
-                    .testTag(ComposerTestTags.MessageBody)
-                    .retainFieldFocusOnConfigurationChange(FocusedFieldType.BODY)
-                    .onGloballyPositioned { coordinates ->
-                        val webViewBounds = coordinates.boundsInWindow()
-                        actions.onWebViewPositioned(webViewBounds)
+            if (contactSuggestionState is ContactSuggestionState.Data) {
+                val suggestionActions = ContactSuggestionsList.Actions(
+                    onContactSuggestionsDismissed = {
+                        actions.onContactSuggestionsDismissed
+                    },
+                    onContactSuggestionSelected = { contact ->
+                        actions.onContactSuggestionSelected(
+                            contact,
+                            contactSuggestionState.suggestionsField
+                        )
+                        actions.onContactSuggestionsDismissed(contactSuggestionState.suggestionsField)
                     }
-            )
+                )
+
+                val suggestionsListHeightPx = (formHeightPx - recipientsContentHeightPx)
+                    .coerceAtLeast(0f)
+
+                val suggestionsListHeightDp = with(LocalDensity.current) { suggestionsListHeightPx.toDp() }
+
+                ContactSuggestionsList(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(suggestionsListHeightDp),
+                    currentText = contactSuggestionState.searchTerm,
+                    contactSuggestionItems = contactSuggestionState.contactSuggestionItems,
+                    actions = suggestionActions
+                )
+            } else {
+                Column(modifier = Modifier.fillMaxSize()) {
+                    MailDivider()
+
+                    SenderEmailWithSelector(
+                        modifier = maxWidthModifier.testTag(ComposerTestTags.FromSender),
+                        selectedEmail = fields.sender.email,
+                        actions.onChangeSender
+                    )
+
+                    if (showSubjectAndBody) {
+                        MailDivider()
+                        SubjectTextField(
+                            initialValue = fields.subject,
+                            onSubjectChange = actions.onSubjectChanged,
+                            modifier = maxWidthModifier
+                                .testTag(ComposerTestTags.Subject)
+                                .retainFieldFocusOnConfigurationChange(FocusedFieldType.SUBJECT),
+                            isFocused = isSubjectFocused
+                        )
+                        MailDivider()
+                        MessageBodyEditor(
+                            messageBodyUiModel = fields.displayBody,
+                            onBodyChanged = actions.onBodyChanged,
+                            onWebViewMeasuresChanged = actions.onWebViewMeasuresChanged,
+                            modifier = maxWidthModifier
+                                .testTag(ComposerTestTags.MessageBody)
+                                .retainFieldFocusOnConfigurationChange(FocusedFieldType.BODY)
+                                .onGloballyPositioned { coordinates ->
+                                    val webViewBounds = coordinates.boundsInWindow()
+                                    actions.onWebViewPositioned(webViewBounds)
+                                }
+                        )
+                    }
+                }
+            }
         }
     }
 }
