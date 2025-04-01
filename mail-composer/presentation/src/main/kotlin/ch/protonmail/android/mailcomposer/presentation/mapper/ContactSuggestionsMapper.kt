@@ -20,14 +20,11 @@ package ch.protonmail.android.mailcomposer.presentation.mapper
 
 import androidx.compose.ui.graphics.Color
 import androidx.core.graphics.toColorInt
-import ch.protonmail.android.mailcommon.presentation.usecase.GetInitials
 import ch.protonmail.android.mailcomposer.presentation.model.ContactSuggestionUiModel
 import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
 import javax.inject.Inject
 
-class ContactSuggestionsMapper @Inject constructor(
-    private val getInitials: GetInitials
-) {
+class ContactSuggestionsMapper @Inject constructor() {
 
     fun toUiModel(contacts: List<ContactMetadata>): List<ContactSuggestionUiModel> = contacts.map { contact ->
         when (contact) {
@@ -39,7 +36,8 @@ class ContactSuggestionsMapper @Inject constructor(
             )
             is ContactMetadata.ContactGroup -> ContactSuggestionUiModel.ContactGroup(
                 name = contact.name,
-                emails = contact.members.map { it.emails.firstOrNull()?.email ?: it.name }
+                emails = contact.members.map { it.emails.firstOrNull()?.email ?: it.name },
+                color = contact.color
             )
         }
     }

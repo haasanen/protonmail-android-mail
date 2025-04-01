@@ -48,11 +48,11 @@ import ch.protonmail.android.uicomponents.chips.ChipsTestTags
 import ch.protonmail.android.uicomponents.chips.ContactSuggestionState
 import ch.protonmail.android.uicomponents.chips.item.ChipItem
 import ch.protonmail.android.uicomponents.composer.suggestions.ContactSuggestionItemElement
-import ch.protonmail.android.uicomponents.thenIf
 import me.proton.core.compose.theme.ProtonDimens
 import me.proton.core.compose.theme.ProtonTheme
 import me.proton.core.compose.theme.defaultNorm
 import me.proton.core.presentation.utils.showToast
+import ch.protonmail.android.uicomponents.thenIf
 
 @Composable
 fun ComposerChipsListField(

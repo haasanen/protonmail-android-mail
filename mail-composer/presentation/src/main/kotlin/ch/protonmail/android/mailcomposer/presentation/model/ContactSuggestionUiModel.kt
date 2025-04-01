@@ -33,7 +33,8 @@ sealed class ContactSuggestionUiModel(
 
     data class ContactGroup(
         override val name: String,
-        val emails: List<String>
+        val emails: List<String>,
+        val color: String
     ) : ContactSuggestionUiModel(name)
 }
 

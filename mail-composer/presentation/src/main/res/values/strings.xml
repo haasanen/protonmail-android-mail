@@ -97,6 +97,7 @@
     <string name="set_message_password_button_save_changes">Save changes</string>
     <string name="set_message_password_button_remove_password">Remove password</string>
     <string name="respondInline">Respond in-line</string>
+    <string name="subject_placeholder">Subject</string>
     <plurals name="composer_recipient_suggestion_contacts">
         <item quantity="one">%d member</item>
         <item quantity="other">%d members</item>

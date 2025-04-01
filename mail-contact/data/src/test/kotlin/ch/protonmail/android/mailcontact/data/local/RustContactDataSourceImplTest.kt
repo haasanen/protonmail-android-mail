@@ -240,7 +240,7 @@ class RustContactDataSourceImplTest {
     }
 
     @Test
-    fun `get contact suggestions returns suggestions from rustDeleteContact`() = runTest {
+    fun `get contact suggestions returns suggestions from rust contact suggestions`() = runTest {
         // Given
         val userId = UserIdSample.Primary
         val query = ContactSuggestionQuery("test")
