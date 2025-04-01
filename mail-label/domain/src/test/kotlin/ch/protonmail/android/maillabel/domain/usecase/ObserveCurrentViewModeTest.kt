@@ -16,21 +16,20 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailmailbox.domain.usecase
+package ch.protonmail.android.maillabel.domain.usecase
 
 import app.cash.turbine.test
+import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
-import ch.protonmail.android.maillabel.domain.usecase.ObserveMessageOnlyLabelIds
 import ch.protonmail.android.mailsettings.domain.usecase.ObserveMailSettings
 import ch.protonmail.android.testdata.maillabel.MailLabelTestData
-import ch.protonmail.android.testdata.user.UserIdTestData.userId
+import ch.protonmail.android.testdata.user.UserIdTestData
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import me.proton.core.domain.type.IntEnum
-import ch.protonmail.android.maillabel.domain.model.LabelId
 import me.proton.core.mailsettings.domain.entity.MailSettings
 import me.proton.core.mailsettings.domain.entity.ViewMode
 import org.junit.runner.RunWith
@@ -46,11 +45,11 @@ internal class ObserveCurrentViewModeTest(
 ) {
 
     private val observeMailSettings: ObserveMailSettings = mockk {
-        every { this@mockk(userId) } returns
+        every { this@mockk(UserIdTestData.userId) } returns
             flowOf(buildMailSettings(isConversationSettingEnabled = input.isConversationSettingEnabled))
     }
     private val observeMessageOnlyLabelIds = mockk<ObserveMessageOnlyLabelIds> {
-        every { this@mockk.invoke(userId) } returns flowOf(
+        every { this@mockk.invoke(UserIdTestData.userId) } returns flowOf(
             listOf(
                 SystemLabelId.Drafts,
                 SystemLabelId.AllDrafts,
@@ -63,7 +62,7 @@ internal class ObserveCurrentViewModeTest(
 
     @Test
     fun test() = runTest {
-        observeCurrentViewMode(userId, input.selectedMailLabelId).test {
+        observeCurrentViewMode(UserIdTestData.userId, input.selectedMailLabelId.labelId).test {
             assertEquals(expected, awaitItem())
             awaitComplete()
         }
@@ -84,7 +83,7 @@ internal class ObserveCurrentViewModeTest(
     private companion object TestData {
 
         fun buildMailSettings(isConversationSettingEnabled: Boolean) = MailSettings(
-            userId = userId,
+            userId = UserIdTestData.userId,
             displayName = null,
             signature = null,
             autoSaveContacts = null,
@@ -298,5 +297,4 @@ internal class ObserveCurrentViewModeTest(
 
         ).map { arrayOf(it.testName, it.input, it.expected) }
     }
-
 }
