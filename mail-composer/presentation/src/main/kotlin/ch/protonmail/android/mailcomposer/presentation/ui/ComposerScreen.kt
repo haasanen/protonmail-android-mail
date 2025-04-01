@@ -24,7 +24,6 @@ import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -68,18 +67,20 @@ import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.mailcommon.presentation.AdaptivePreviews
 import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
 import ch.protonmail.android.mailcommon.presentation.ConsumableTextEffect
+import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.compose.toDp
 import ch.protonmail.android.mailcommon.presentation.compose.toPx
 import ch.protonmail.android.mailcommon.presentation.ui.CommonTestTags
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.SenderEmail
-import ch.protonmail.android.mailcomposer.domain.model.Subject
 import ch.protonmail.android.mailcomposer.presentation.R
 import ch.protonmail.android.mailcomposer.presentation.model.ComposeScreenMeasures
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerAction
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerDraftState
-import ch.protonmail.android.mailcomposer.presentation.model.FocusedFieldType
+import ch.protonmail.android.mailcomposer.presentation.model.RecipientsStateManager
 import ch.protonmail.android.mailcomposer.presentation.model.WebViewMeasures
+import ch.protonmail.android.mailcomposer.presentation.ui.form.ComposerForm
+import ch.protonmail.android.mailcomposer.presentation.ui.form.ComposerForm2
 import ch.protonmail.android.mailcomposer.presentation.viewmodel.ComposerViewModel
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.Participant
@@ -102,10 +103,8 @@ fun ComposerScreen(actions: ComposerScreen.Actions, viewModel: ComposerViewModel
     val view = LocalView.current
     val keyboardController = LocalSoftwareKeyboardController.current
     val state by viewModel.state.collectAsState()
-    var recipientsOpen by rememberSaveable { mutableStateOf(false) }
-    var focusedField by rememberSaveable {
-        mutableStateOf(if (state.fields.to.isEmpty()) FocusedFieldType.TO else FocusedFieldType.BODY)
-    }
+    val recipientsStateManager = remember { RecipientsStateManager() }
+
     val snackbarHostState = remember { ProtonSnackbarHostState() }
     val bottomSheetType = rememberSaveable { mutableStateOf(BottomSheetType.ChangeSender) }
     val bottomSheetState = rememberModalBottomSheetState()
@@ -270,65 +269,44 @@ fun ComposerScreen(actions: ComposerScreen.Actions, viewModel: ComposerViewModel
                     scrollState.value.toDp(localDensity)
                 )
 
-                val screenHeight = context.resources.displayMetrics.heightPixels
-                var formHeightPx by remember { mutableStateOf(0f) }
-
-                Box(
+                Column(
                     modifier = Modifier
-                        .fillMaxSize()
+                        .padding(paddingValues)
+                        .verticalScroll(scrollState)
                         .onGloballyPositioned { coordinates ->
-                            formHeightPx = coordinates.boundsInWindow().height
-                            val height = coordinates.size.height
-                            Timber.d("_BOUNDS_ height: $height screenHeight: $screenHeight")
-
+                            columnBounds = coordinates.boundsInWindow()
                         }
                 ) {
-                    Column(
-                        modifier = Modifier
-                            .padding(paddingValues)
-                            .verticalScroll(scrollState)
-                            .onGloballyPositioned { coordinates ->
-                                columnBounds = coordinates.boundsInWindow()
-                            }
-                    ) {
-
-                        // Not showing the form till we're done loading ensure it does receive the
-                        // right "initial values" from state when displayed
-                        ComposerForm(
-                            modifier = Modifier.testTag(ComposerTestTags.ComposerForm),
-                            emailValidator = viewModel::validateEmailAddress,
-                            formHeightPx = formHeightPx,
-                            recipientsOpen = recipientsOpen,
-                            initialFocus = focusedField,
-                            changeFocusToField = state.changeFocusToField,
-                            fields = state.fields,
-                            attachments = state.attachments,
-                            actions = buildActions(
-                                viewModel = viewModel,
-                                onToggleRecipients = { recipientsOpen = it },
-                                onFocusChanged = { focusedField = it },
-                                setBottomSheetType = { bottomSheetType.value = it },
-                                onWebViewMeasuresChanged = { webViewParams ->
-                                    scrollManager.onEditorParamsChanged(
-                                        getComposeScreenParams(),
-                                        webViewParams
-                                    )
-                                },
-                                onHeaderPositioned = { headerBoundsInWindow, measuredHeight ->
-                                    val visibleBounds = headerBoundsInWindow.intersect(columnBounds)
-                                    visibleHeaderHeight = visibleBounds.height.coerceAtLeast(0f).toDp(localDensity)
-                                    headerHeight = measuredHeight.toDp(localDensity)
-                                },
-                                onWebViewPositioned = { boundsInWindow ->
-                                    val visibleBounds = boundsInWindow.intersect(columnBounds)
-                                    visibleWebViewHeight = visibleBounds.height.coerceAtLeast(0f).toDp(localDensity)
-                                },
-                                showFeatureMissingSnackbar = { showFeatureMissingSnackbar() }
-                            ),
-                            contactSuggestionState = state.contactSuggestionState,
-                            clearContactSuggestionTerm = state.clearContactSuggestionTerm
-                        )
-                    }
+                    // Not showing the form till we're done loading ensure it does receive the
+                    // right "initial values" from state when displayed
+                    ComposerForm(
+                        modifier = Modifier.testTag(ComposerTestTags.ComposerForm),
+                        changeFocusToField = state.changeFocusToField,
+                        actions = buildActions(
+                            viewModel = viewModel,
+                            onWebViewMeasuresChanged = { webViewParams ->
+                                scrollManager.onEditorParamsChanged(
+                                    getComposeScreenParams(),
+                                    webViewParams
+                                )
+                            },
+                            onHeaderPositioned = { headerBoundsInWindow, measuredHeight ->
+                                val visibleBounds = headerBoundsInWindow.intersect(columnBounds)
+                                visibleHeaderHeight = visibleBounds.height.coerceAtLeast(0f).toDp(localDensity)
+                                headerHeight = measuredHeight.toDp(localDensity)
+                            },
+                            onWebViewPositioned = { boundsInWindow ->
+                                val visibleBounds = boundsInWindow.intersect(columnBounds)
+                                visibleWebViewHeight = visibleBounds.height.coerceAtLeast(0f).toDp(localDensity)
+                            },
+                            showFeatureMissingSnackbar = { showFeatureMissingSnackbar() }
+                        ),
+                        senderEmail = state.fields.sender.email,
+                        recipientsStateManager = recipientsStateManager,
+                        subjectTextField = viewModel.subjectTextField,
+                        bodyInitialValue = state.fields.displayBody,
+                        focusTextBody = Effect.empty()
+                    )
                 }
             }
         }
@@ -498,28 +476,11 @@ private fun shouldShowPermissionDialog(
 @Suppress("LongParameterList")
 private fun buildActions(
     viewModel: ComposerViewModel,
-    onToggleRecipients: (Boolean) -> Unit,
-    onFocusChanged: (FocusedFieldType) -> Unit,
-    setBottomSheetType: (BottomSheetType) -> Unit,
     onWebViewMeasuresChanged: (WebViewMeasures) -> Unit,
     onHeaderPositioned: (Rect, Float) -> Unit,
     onWebViewPositioned: (Rect) -> Unit,
     showFeatureMissingSnackbar: () -> Unit
-): ComposerFormActions = ComposerFormActions(
-    onToggleRecipients = onToggleRecipients,
-    onFocusChanged = onFocusChanged,
-    onToChanged = { viewModel.submit(ComposerAction.RecipientsToChanged(it)) },
-    onCcChanged = { viewModel.submit(ComposerAction.RecipientsCcChanged(it)) },
-    onBccChanged = { viewModel.submit(ComposerAction.RecipientsBccChanged(it)) },
-    onContactSuggestionsDismissed = { viewModel.submit(ComposerAction.ContactSuggestionsDismissed(it)) },
-    onDeviceContactsPromptDenied = { viewModel.submit(ComposerAction.DeviceContactsPromptDenied) },
-    onContactSuggestionTermChanged = { searchTerm, suggestionsField ->
-        viewModel.submit(ComposerAction.ContactSuggestionTermChanged(searchTerm, suggestionsField))
-    },
-    onContactSuggestionSelected = { contact, suggestionsField ->
-        viewModel.submit(ComposerAction.ContactSuggestionSelected(contact, suggestionsField))
-    },
-    onSubjectChanged = { viewModel.submit(ComposerAction.SubjectChanged(Subject(it))) },
+): ComposerForm2.Actions = ComposerForm2.Actions(
     onBodyChanged = {
         viewModel.submit(ComposerAction.DraftBodyChanged(DraftBody(it)))
     },

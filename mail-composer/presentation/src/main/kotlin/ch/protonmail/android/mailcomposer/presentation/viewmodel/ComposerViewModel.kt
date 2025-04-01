@@ -18,6 +18,7 @@
 
 package ch.protonmail.android.mailcomposer.presentation.viewmodel
 
+import androidx.compose.foundation.text.input.TextFieldState
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -135,6 +136,9 @@ class ComposerViewModel @Inject constructor(
     observePrimaryUserId: ObservePrimaryUserId,
     provideNewDraftId: ProvideNewDraftId
 ) : ViewModel() {
+
+
+    internal val subjectTextField = TextFieldState()
 
     private val actionMutex = Mutex()
     private val primaryUserId = observePrimaryUserId().filterNotNull()

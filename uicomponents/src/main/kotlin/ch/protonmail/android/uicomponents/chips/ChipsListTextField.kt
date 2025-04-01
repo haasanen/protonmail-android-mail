@@ -8,10 +8,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.relocation.BringIntoViewRequester
-import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
@@ -40,25 +39,21 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyMediumNorm
 import ch.protonmail.android.uicomponents.chips.item.ChipItemsList
-import kotlinx.coroutines.launch
 import ch.protonmail.android.uicomponents.composer.suggestions.ContactSuggestionItem
 import ch.protonmail.android.uicomponents.thenIf
+import kotlinx.coroutines.launch
 
-@OptIn(
-    ExperimentalLayoutApi::class,
-    ExperimentalFoundationApi::class
-)
+@OptIn(ExperimentalLayoutApi::class, ExperimentalFoundationApi::class)
 @Composable
-internal fun ChipsListTextField(
+fun ChipsListTextField(
     state: ChipsListState,
-    textFieldValue: TextFieldValue,
+    textFieldState: TextFieldState,
     modifier: Modifier = Modifier,
     focusRequester: FocusRequester? = null,
     cursorColor: Color = ProtonTheme.colors.iconAccent,
@@ -76,7 +71,9 @@ internal fun ChipsListTextField(
     val coroutineScope = rememberCoroutineScope()
     val keyboardOptions = remember {
         KeyboardOptions.Default.copy(
-            keyboardType = KeyboardType.Email, imeAction = ImeAction.Next, autoCorrectEnabled = false
+            keyboardType = KeyboardType.Email,
+            imeAction = ImeAction.Next,
+            autoCorrectEnabled = false
         )
     }
 
@@ -84,7 +81,7 @@ internal fun ChipsListTextField(
     // that the cursor is always on screen when the user types.
     fun bringRectIntoView(rect: Rect) = coroutineScope.launch { bringIntoViewRequester.bringIntoView(rect) }
 
-    LaunchedEffect(textFieldValue.text) {
+    LaunchedEffect(textFieldState.text) {
         bringRectIntoView(rect)
     }
 
@@ -122,7 +119,6 @@ internal fun ChipsListTextField(
                 .weight(1f)
                 .align(Alignment.CenterVertically)
                 .testTag(ChipsTestTags.BasicTextField)
-                .bringIntoViewRequester(bringIntoViewRequester)
                 .thenIf(focusRequester != null) {
                     focusRequester(focusRequester!!)
                 }
@@ -142,33 +138,14 @@ internal fun ChipsListTextField(
                     }
                 }
                 .onFocusChanged { actions.onFocusChanged(it) },
-            value = textFieldValue,
+            state = textFieldState,
             keyboardOptions = keyboardOptions,
-            keyboardActions = KeyboardActions(
-                onNext = {
-                    // If there's some text, trigger the chip creation and do not move the focus.
-                    if (textFieldValue.text.isNotEmpty()) {
-                        actions.onTriggerChipCreation()
-                    } else {
-                        focusManager.moveFocus(FocusDirection.Next)
-                    }
-                },
-                onDone = {
-                    focusManager.clearFocus()
-                },
-                onPrevious = {
-                    focusManager.moveFocus(FocusDirection.Previous)
+            onKeyboardAction = {
+                if (textFieldState.text.isNotEmpty()) {
+                    actions.onTriggerChipCreation()
+                } else {
+                    focusManager.moveFocus(FocusDirection.Next)
                 }
-            ),
-            onValueChange = {
-                // Triggering the chip creation manually causes the same value to be dispatched again.
-                // This is needed for some custom keyboards such as SwiftKey.
-                if (it.text == textFieldValue.text && it.selection == textFieldValue.selection) return@BasicTextField
-
-                actions.onTextChanged(it)
-            },
-            onTextLayout = {
-                rect = it.getCursorRect(textFieldValue.selection.end)
             },
             cursorBrush = SolidColor(cursorColor),
             textStyle = textStyle
@@ -184,7 +161,6 @@ data class ContactSuggestionState(
 
 object ChipsListTextField {
     data class Actions(
-        val onTextChanged: (value: TextFieldValue) -> Unit,
         val onFocusChanged: (focusChange: FocusState) -> Unit,
         val onItemDeleted: (index: Int?) -> Unit,
         val onTriggerChipCreation: () -> Unit

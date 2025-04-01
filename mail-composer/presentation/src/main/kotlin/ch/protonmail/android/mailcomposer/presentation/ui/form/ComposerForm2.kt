@@ -28,6 +28,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.layout.boundsInWindow
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.testTag
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -35,15 +38,14 @@ import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.compose.FocusableForm
 import ch.protonmail.android.mailcommon.presentation.ui.MailDivider
-import ch.protonmail.android.mailcomposer.domain.model.StyledHtmlQuote
 import ch.protonmail.android.mailcomposer.presentation.R
+import ch.protonmail.android.mailcomposer.presentation.model.DraftDisplayBodyUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.FocusedFieldType
 import ch.protonmail.android.mailcomposer.presentation.model.RecipientsStateManager
-import ch.protonmail.android.mailcomposer.presentation.ui.BodyHtmlQuote
-import ch.protonmail.android.mailcomposer.presentation.ui.BodyTextField2
+import ch.protonmail.android.mailcomposer.presentation.model.WebViewMeasures
 import ch.protonmail.android.mailcomposer.presentation.ui.ComposerTestTags
+import ch.protonmail.android.mailcomposer.presentation.ui.MessageBodyEditor
 import ch.protonmail.android.mailcomposer.presentation.ui.PrefixedEmailSelector
-import ch.protonmail.android.mailcomposer.presentation.ui.RespondInlineButton
 import ch.protonmail.android.mailcomposer.presentation.ui.SubjectTextField2
 import ch.protonmail.android.mailcomposer.presentation.viewmodel.RecipientsViewModel
 import ch.protonmail.android.uicomponents.keyboardVisibilityAsState
@@ -51,13 +53,12 @@ import me.proton.core.compose.theme.ProtonDimens
 import timber.log.Timber
 
 @Composable
-internal fun ComposerForm2(
+internal fun ComposerForm(
     changeFocusToField: Effect<FocusedFieldType>,
     senderEmail: String,
     recipientsStateManager: RecipientsStateManager,
     subjectTextField: TextFieldState,
-    bodyTextField: TextFieldState,
-    quotedHtmlContent: StyledHtmlQuote?,
+    bodyInitialValue: DraftDisplayBodyUiModel,
     focusTextBody: Effect<Unit>,
     actions: ComposerForm2.Actions,
     modifier: Modifier = Modifier
@@ -122,19 +123,19 @@ internal fun ComposerForm2(
                 )
                 MailDivider()
 
-                BodyTextField2(
-                    textFieldState = bodyTextField,
-                    shouldRequestFocus = focusTextBody,
-                    modifier = maxWidthModifier
-                        .testTag(ComposerTestTags.MessageBody)
-                        .retainFieldFocusOnConfigurationChange(FocusedFieldType.BODY)
-                )
 
-                if (quotedHtmlContent != null) {
-                    RespondInlineButton(actions.onRespondInline)
-                    BodyHtmlQuote(
-                        value = quotedHtmlContent.value,
-                        modifier = maxWidthModifier.testTag(ComposerTestTags.MessageHtmlQuotedBody)
+                if (showSubjectAndBody) {
+                    MessageBodyEditor(
+                        messageBodyUiModel = bodyInitialValue,
+                        onBodyChanged = actions.onBodyChanged,
+                        onWebViewMeasuresChanged = actions.onWebViewMeasuresChanged,
+                        modifier = maxWidthModifier
+                            .testTag(ComposerTestTags.MessageBody)
+                            .retainFieldFocusOnConfigurationChange(FocusedFieldType.BODY)
+                            .onGloballyPositioned { coordinates ->
+                                val webViewBounds = coordinates.boundsInWindow()
+                                actions.onWebViewPositioned(webViewBounds)
+                            }
                     )
                 }
             }
@@ -145,6 +146,9 @@ internal fun ComposerForm2(
 internal object ComposerForm2 {
     data class Actions(
         val onChangeSender: () -> Unit,
-        val onRespondInline: () -> Unit
+        val onBodyChanged: (String) -> Unit,
+        val onWebViewMeasuresChanged: (WebViewMeasures) -> Unit,
+        val onHeaderPositioned: (boundsInWindow: Rect, height: Float) -> Unit,
+        val onWebViewPositioned: (boundsInWindow: Rect) -> Unit
     )
 }

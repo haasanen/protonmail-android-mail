@@ -49,7 +49,6 @@ data class ComposerDraftState(
     val isMessagePasswordSet: Boolean,
     val focusTextBody: Effect<Unit> = Effect.empty(),
     val sendingErrorEffect: Effect<TextUiModel> = Effect.empty(),
-    val contactSuggestionState: ContactSuggestionState = ContactSuggestionState.Empty,
     val clearContactSuggestionTerm: Effect<ContactSuggestionsField> = Effect.empty(),
     val senderChangedNotice: Effect<TextUiModel> = Effect.empty(),
     val messageExpiresIn: Duration,

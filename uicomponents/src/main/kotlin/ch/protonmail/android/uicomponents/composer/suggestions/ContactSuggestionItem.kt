@@ -16,18 +16,27 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailcomposer.presentation.model
+package ch.protonmail.android.uicomponents.composer.suggestions
 
 import androidx.compose.runtime.Stable
+import androidx.compose.ui.graphics.Color
 
 @Stable
-sealed interface ContactSuggestionState {
+sealed interface ContactSuggestionItem {
 
-    data class Data(
-        val searchTerm: String,
-        val suggestionsField: ContactSuggestionsField,
-        val contactSuggestionItems: List<ContactSuggestionUiModel>
-    ) : ContactSuggestionState
+    @Stable
+    data class Contact(
+        val initials: String,
+        val header: String,
+        val subheader: String,
+        val email: String
+    ) : ContactSuggestionItem
 
-    data object Empty : ContactSuggestionState
+    @Stable
+    data class Group(
+        val header: String,
+        val subheader: String,
+        val emails: List<String>,
+        val backgroundColor: Color
+    ) : ContactSuggestionItem
 }
