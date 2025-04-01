@@ -45,7 +45,6 @@ import me.proton.android.core.auth.presentation.secondfactor.otp.OneTimePassword
 import me.proton.android.core.auth.presentation.secondfactor.otp.OneTimePasswordInputState.Idle
 import me.proton.android.core.auth.presentation.secondfactor.otp.OneTimePasswordInputState.Loading
 import me.proton.android.core.auth.presentation.secondfactor.otp.OneTimePasswordInputState.LoggedIn
-import me.proton.android.core.auth.presentation.session.UserSessionInitializationCallback
 import me.proton.core.compose.viewmodel.stopTimeoutMillis
 import me.proton.core.util.kotlin.CoreLogger
 import uniffi.proton_mail_uniffi.LoginError
@@ -55,11 +54,9 @@ import uniffi.proton_mail_uniffi.MailSession
 import uniffi.proton_mail_uniffi.MailSessionGetAccountResult
 import uniffi.proton_mail_uniffi.MailSessionGetAccountSessionsResult
 import uniffi.proton_mail_uniffi.MailSessionResumeLoginFlowResult
-import uniffi.proton_mail_uniffi.MailUserSession
 import uniffi.proton_mail_uniffi.StoredAccount
 import uniffi.proton_mail_uniffi.StoredSession
 import uniffi.proton_mail_uniffi.VoidLoginResult
-import uniffi.proton_mail_uniffi.VoidSessionResult
 import javax.inject.Inject
 
 @HiltViewModel
@@ -67,8 +64,7 @@ class OneTimePasswordInputViewModel @Inject constructor(
     @ApplicationContext
     private val context: Context,
     private val savedStateHandle: SavedStateHandle,
-    private val sessionInterface: MailSession,
-    private val callback: UserSessionInitializationCallback
+    private val sessionInterface: MailSession
 ) : ViewModel() {
 
     private val userId by lazy { savedStateHandle.getUserId() }
@@ -130,17 +126,7 @@ class OneTimePasswordInputViewModel @Inject constructor(
             true -> emit(Awaiting2Pass)
             false -> when (val result = loginFlow.toUserContext()) {
                 is LoginFlowToUserContextResult.Error -> emitAll(onError(result.v1))
-                is LoginFlowToUserContextResult.Ok -> emitAll(onWaitFinished(result.v1))
-            }
-        }
-    }
-
-    private fun onWaitFinished(mailUserSession: MailUserSession) = flow {
-        when (val result = mailUserSession.initialize(callback)) {
-            is VoidSessionResult.Error -> Error.LoginFlow(result.v1.toString())
-            VoidSessionResult.Ok -> {
-                callback.waitFinished()
-                emit(LoggedIn)
+                is LoginFlowToUserContextResult.Ok -> emit(LoggedIn)
             }
         }
     }

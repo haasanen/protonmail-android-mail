@@ -35,7 +35,6 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import me.proton.android.core.auth.presentation.LogTag
 import me.proton.android.core.auth.presentation.login.getErrorMessage
-import me.proton.android.core.auth.presentation.session.UserSessionInitializationCallback
 import me.proton.android.core.auth.presentation.twopass.TwoPassArg.getUserId
 import me.proton.android.core.auth.presentation.twopass.TwoPassInputState.Error
 import me.proton.core.compose.viewmodel.stopTimeoutMillis
@@ -49,11 +48,9 @@ import uniffi.proton_mail_uniffi.MailSession
 import uniffi.proton_mail_uniffi.MailSessionGetAccountResult
 import uniffi.proton_mail_uniffi.MailSessionGetAccountSessionsResult
 import uniffi.proton_mail_uniffi.MailSessionResumeLoginFlowResult
-import uniffi.proton_mail_uniffi.MailUserSession
 import uniffi.proton_mail_uniffi.StoredAccount
 import uniffi.proton_mail_uniffi.StoredSession
 import uniffi.proton_mail_uniffi.VoidLoginResult
-import uniffi.proton_mail_uniffi.VoidSessionResult
 import javax.inject.Inject
 
 @HiltViewModel
@@ -61,8 +58,7 @@ class TwoPassInputViewModel @Inject constructor(
     @ApplicationContext
     private val context: Context,
     private val savedStateHandle: SavedStateHandle,
-    private val sessionInterface: MailSession,
-    private val callback: UserSessionInitializationCallback
+    private val sessionInterface: MailSession
 ) : ViewModel() {
 
     private val userId by lazy { savedStateHandle.getUserId() }
@@ -122,17 +118,7 @@ class TwoPassInputViewModel @Inject constructor(
     private fun onSuccess(loginFlow: LoginFlow): Flow<TwoPassInputState> = flow {
         when (val result = loginFlow.toUserContext()) {
             is LoginFlowToUserContextResult.Error -> emitAll(onError(result.v1))
-            is LoginFlowToUserContextResult.Ok -> emitAll(onWaitFinished(result.v1))
-        }
-    }
-
-    private fun onWaitFinished(mailUserSession: MailUserSession) = flow {
-        when (val result = mailUserSession.initialize(callback)) {
-            is VoidSessionResult.Error -> emit(Error.LoginFlow(result.v1.toString()))
-            VoidSessionResult.Ok -> {
-                callback.waitFinished()
-                emit(TwoPassInputState.Success)
-            }
+            is LoginFlowToUserContextResult.Ok -> emit(TwoPassInputState.Success)
         }
     }
 

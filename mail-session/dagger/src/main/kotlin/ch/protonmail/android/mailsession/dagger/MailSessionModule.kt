@@ -34,9 +34,7 @@ import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import me.proton.android.core.auth.presentation.session.UserSessionInitializationCallback
 import uniffi.proton_mail_uniffi.MailSession
-import uniffi.proton_mail_uniffi.MailUserSessionInitializationCallback
 import uniffi.proton_mail_uniffi.OsKeyChain
 import javax.inject.Singleton
 
@@ -69,11 +67,6 @@ object MailSessionModule {
         @Binds
         @Singleton
         fun bindEventLoopRepository(impl: RustEventLoopRepository): EventLoopRepository
-
-
-        @Binds
-        @Singleton
-        fun bindInitializationCallback(impl: UserSessionInitializationCallback): MailUserSessionInitializationCallback
 
         @Binds
         @Singleton
