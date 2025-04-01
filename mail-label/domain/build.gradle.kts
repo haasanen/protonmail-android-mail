@@ -50,9 +50,11 @@ dependencies {
     implementation(libs.bundles.module.domain)
 
     implementation(libs.proton.core.accountManager)
+    implementation(libs.proton.core.mailSettings)
 
     implementation(project(":mail-common:domain"))
     implementation(project(":mail-session:domain"))
+    implementation(project(":mail-settings:domain"))
 
     testImplementation(libs.bundles.test)
     testImplementation(project(":test:test-data"))
