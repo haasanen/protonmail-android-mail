@@ -33,7 +33,6 @@ import ch.protonmail.android.mailcommon.domain.sample.ConversationIdSample
 import ch.protonmail.android.mailcommon.domain.sample.DataErrorSample
 import ch.protonmail.android.mailcommon.domain.sample.UserAddressSample
 import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
-import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.R
 import ch.protonmail.android.mailcommon.presentation.mapper.ActionUiModelMapper
@@ -87,22 +86,17 @@ import ch.protonmail.android.maildetail.presentation.sample.ConversationDetailMe
 import ch.protonmail.android.maildetail.presentation.sample.ConversationDetailMetadataUiModelSample
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen
 import ch.protonmail.android.maildetail.presentation.usecase.GetEmbeddedImageAvoidDuplicatedExecution
-import ch.protonmail.android.maildetail.presentation.usecase.GetLabelAsBottomSheetData
 import ch.protonmail.android.maildetail.presentation.usecase.GetMessagesInSameExclusiveLocation
 import ch.protonmail.android.maildetail.presentation.usecase.GetMoreActionsBottomSheetData
 import ch.protonmail.android.maildetail.presentation.usecase.ObservePrimaryUserAddress
-import ch.protonmail.android.maildetail.presentation.usecase.OnMessageLabelAsConfirmed
 import ch.protonmail.android.maildetail.presentation.usecase.PrintMessage
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.maillabel.domain.sample.LabelIdSample
-import ch.protonmail.android.maillabel.domain.sample.LabelSample
 import ch.protonmail.android.maillabel.presentation.model.MailLabelText
-import ch.protonmail.android.maillabel.presentation.sample.LabelUiModelWithSelectedStateSample
 import ch.protonmail.android.mailmessage.domain.model.ConversationMessages
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.model.GetDecryptedMessageBodyError
-import ch.protonmail.android.mailmessage.domain.model.LabelSelectionList
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.MimeType
 import ch.protonmail.android.mailmessage.domain.model.Participant
@@ -118,10 +112,9 @@ import ch.protonmail.android.mailmessage.domain.usecase.UnStarMessages
 import ch.protonmail.android.mailmessage.presentation.model.MessageBodyExpandCollapseMode
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.BottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.ContactActionsBottomSheetState
-import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.LabelAsBottomSheetEntryPoint
-import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.LabelAsBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MoveToBottomSheetEntryPoint
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MoveToBottomSheetState
+import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailsettings.domain.model.PrivacySettings
 import ch.protonmail.android.mailsettings.domain.usecase.privacy.ObservePrivacySettings
 import ch.protonmail.android.mailsettings.domain.usecase.privacy.UpdateLinkConfirmationSetting
@@ -133,7 +126,6 @@ import ch.protonmail.android.testdata.conversation.ConversationTestData
 import ch.protonmail.android.testdata.conversation.ConversationUiModelTestData
 import ch.protonmail.android.testdata.maillabel.MailLabelTestData
 import ch.protonmail.android.testdata.maillabel.MailLabelUiModelTestData
-import io.mockk.Called
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -158,7 +150,6 @@ import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertIs
 import kotlin.test.assertNotNull
-import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 @Suppress("LargeClass")
@@ -312,9 +303,7 @@ class ConversationDetailViewModelTest {
     private val isProtonCalendarInstalled = mockk<IsProtonCalendarInstalled>()
     private val printMessage = mockk<PrintMessage>()
     private val markMessageAsUnread = mockk<MarkMessageAsUnread>()
-    private val getLabelAsBottomSheetData = mockk<GetLabelAsBottomSheetData>()
     private val getMoreActionsBottomSheetData = mockk<GetMoreActionsBottomSheetData>()
-    private val onMessageLabelAsConfirmed = mockk<OnMessageLabelAsConfirmed>()
     private val moveMessage = mockk<MoveMessage>()
     private val deleteMessages = mockk<DeleteMessages>()
     private val loadAvatarImage = mockk<LoadAvatarImage> {
@@ -340,7 +329,6 @@ class ConversationDetailViewModelTest {
             markConversationAsUnread = markConversationAsUnread,
             moveConversation = move,
             deleteConversations = deleteConversations,
-            labelConversation = labelConversation,
             observeConversation = observeConversation,
             observeConversationMessages = observeConversationMessages,
             observeDetailActions = observeDetailBottomBarActions,
@@ -369,9 +357,7 @@ class ConversationDetailViewModelTest {
             printMessage = printMessage,
             markMessageAsUnread = markMessageAsUnread,
             findContactByEmail = findContactByEmail,
-            getLabelAsBottomSheetData = getLabelAsBottomSheetData,
             getMoreActionsBottomSheetData = getMoreActionsBottomSheetData,
-            onMessageLabelAsConfirmed = onMessageLabelAsConfirmed,
             moveMessage = moveMessage,
             deleteMessages = deleteMessages,
             observePrimaryUserAddress = observePrimaryUserAddress,
@@ -975,296 +961,6 @@ class ConversationDetailViewModelTest {
 
             // Then
             assertNotNull(lastEmittedItem().exitScreenActionResult.consume())
-        }
-    }
-
-    @Test
-    fun `verify label conversation is called and exit is not called when labels get confirmed`() = runTest {
-        // Given
-        val labelAsEntryPoint = LabelAsBottomSheetEntryPoint.Conversation
-        val event = LabelAsBottomSheetState.LabelAsBottomSheetEvent.ActionData(
-            customLabelList = MailLabelUiModelTestData.customLabelList,
-            selectedLabels = listOf<LabelId>().toImmutableList(),
-            partiallySelectedLabels = listOf<LabelId>().toImmutableList(),
-            entryPoint = labelAsEntryPoint
-        )
-
-        val dataState = ConversationDetailState.Loading.copy(
-            bottomSheetState = BottomSheetState(
-                LabelAsBottomSheetState.Data(
-                    LabelUiModelWithSelectedStateSample.customLabelListWithoutSelection, labelAsEntryPoint
-                )
-            )
-        )
-        val archiveSelected = false
-        val labelId = LabelIdSample.AllMail
-        every { savedStateHandle.get<String>(ConversationDetailScreen.OpenedFromLocationKey) } returns labelId.id
-
-        coEvery {
-            labelConversation(
-                userId,
-                conversationId,
-                updatedSelections = LabelSelectionList(
-                    selectedLabels = listOf(LabelSample.Document.labelId),
-                    partiallySelectionLabels = emptyList()
-                ),
-                archiveSelected
-            )
-        } returns Unit.right()
-
-        coEvery { observeConversationMessages(userId, conversationId, labelId) } returns flowOf(
-            ConversationMessages(
-                nonEmptyListOf(
-                    MessageSample.Invoice,
-                    MessageSample.Invoice
-                ),
-                MessageSample.Invoice.messageId
-            ).right()
-        )
-        coEvery {
-            reducer.newStateFrom(
-                any(),
-                ConversationDetailEvent.ConversationBottomSheetEvent(event)
-            )
-        } returns dataState
-
-        coEvery {
-            reducer.newStateFrom(
-                ConversationDetailState.Loading,
-                ConversationDetailViewAction.LabelAsToggleAction(LabelSample.Document.labelId)
-            )
-        } returns dataState.copy(
-            bottomSheetState = BottomSheetState(
-                LabelAsBottomSheetState.Data(
-                    LabelUiModelWithSelectedStateSample.customLabelListWithDocumentSelected,
-                    labelAsEntryPoint
-                )
-            )
-        )
-
-        // When
-        viewModel.state.test {
-            advanceUntilIdle()
-            viewModel.submit(ConversationDetailViewAction.LabelAsToggleAction(LabelSample.Document.labelId))
-            advanceUntilIdle()
-            viewModel.submit(ConversationDetailViewAction.LabelAsConfirmed(archiveSelected, labelAsEntryPoint))
-            advanceUntilIdle()
-
-            // Then
-            coVerify {
-                labelConversation(
-                    userId,
-                    conversationId,
-                    updatedSelections = LabelSelectionList(
-                        selectedLabels = listOf(LabelSample.Document.labelId),
-                        partiallySelectionLabels = emptyList()
-                    ),
-                    archiveSelected
-                )
-            }
-            verify { move wasNot Called }
-            assertNull(lastEmittedItem().exitScreenActionResult.consume())
-        }
-    }
-
-    @Test
-    fun `verify label conversation is called and exit is set when labels get confirmed and should be archived`() =
-        runTest {
-            // Given
-            val labelAsEntryPoint = LabelAsBottomSheetEntryPoint.Conversation
-            val event = LabelAsBottomSheetState.LabelAsBottomSheetEvent.ActionData(
-                customLabelList = MailLabelUiModelTestData.customLabelList,
-                selectedLabels = listOf<LabelId>().toImmutableList(),
-                partiallySelectedLabels = listOf<LabelId>().toImmutableList(),
-                entryPoint = labelAsEntryPoint
-            )
-
-            val dataState = ConversationDetailState.Loading.copy(
-                bottomSheetState = BottomSheetState(
-                    LabelAsBottomSheetState.Data(
-                        LabelUiModelWithSelectedStateSample.customLabelListWithoutSelection,
-                        labelAsEntryPoint
-                    )
-                )
-            )
-            val archiveSelected = true
-            val labelId = LabelIdSample.AllMail
-            every { savedStateHandle.get<String>(ConversationDetailScreen.OpenedFromLocationKey) } returns labelId.id
-
-            coEvery {
-                labelConversation(
-                    userId = userId,
-                    conversationId = conversationId,
-                    updatedSelections = LabelSelectionList(
-                        selectedLabels = listOf(LabelSample.Document.labelId),
-                        partiallySelectionLabels = emptyList()
-                    ),
-                    archiveSelected
-                )
-            } returns Unit.right()
-
-            coEvery { observeConversationMessages(userId, conversationId, labelId) } returns flowOf(
-                ConversationMessages(
-                    nonEmptyListOf(
-                        MessageSample.Invoice,
-                        MessageSample.Invoice
-                    ),
-                    MessageSample.Invoice.messageId
-                ).right()
-            )
-            coEvery {
-                reducer.newStateFrom(
-                    any(),
-                    ConversationDetailEvent.ConversationBottomSheetEvent(event)
-                )
-            } returns dataState
-
-            coEvery {
-                reducer.newStateFrom(
-                    ConversationDetailState.Loading,
-                    ConversationDetailViewAction.LabelAsToggleAction(LabelSample.Document.labelId)
-                )
-            } returns dataState.copy(
-                bottomSheetState = BottomSheetState(
-                    LabelAsBottomSheetState.Data(
-                        LabelUiModelWithSelectedStateSample.customLabelListWithDocumentSelected,
-                        labelAsEntryPoint
-                    )
-                )
-            )
-
-            coEvery {
-                reducer.newStateFrom(
-                    any(),
-                    ConversationDetailEvent.ExitScreenWithMessage(
-                        ConversationDetailViewAction.LabelAsConfirmed(archiveSelected, labelAsEntryPoint)
-                    )
-                )
-            } returns ConversationDetailState.Loading.copy(
-                exitScreenActionResult = Effect.of(
-                    ActionResult.UndoableActionResult(TextUiModel(string.conversation_moved_to_archive))
-                )
-            )
-
-            // When
-            viewModel.state.test {
-                advanceUntilIdle()
-                viewModel.submit(ConversationDetailViewAction.LabelAsToggleAction(LabelSample.Document.labelId))
-                advanceUntilIdle()
-                viewModel.submit(ConversationDetailViewAction.LabelAsConfirmed(true, labelAsEntryPoint))
-                advanceUntilIdle()
-
-                // Then
-                coVerify {
-                    labelConversation(
-                        userId,
-                        conversationId,
-                        updatedSelections = LabelSelectionList(
-                            selectedLabels = listOf(LabelSample.Document.labelId),
-                            partiallySelectionLabels = emptyList()
-                        ),
-                        archiveSelected
-                    )
-                }
-                assertNotNull(lastEmittedItem().exitScreenActionResult.consume())
-            }
-        }
-
-    @Test
-    fun `verify label conversation adds previously partially selected label`() = runTest {
-        // Given
-        val labelAsEntryPoint = LabelAsBottomSheetEntryPoint.Conversation
-        val event = LabelAsBottomSheetState.LabelAsBottomSheetEvent.ActionData(
-            customLabelList = MailLabelUiModelTestData.customLabelList,
-            selectedLabels = listOf(LabelSample.Document.labelId, LabelSample.Label2021.labelId).toImmutableList(),
-            partiallySelectedLabels = listOf(LabelSample.Label2022.labelId).toImmutableList(),
-            entryPoint = labelAsEntryPoint
-        )
-
-        val dataState = ConversationDetailState.Loading.copy(
-            bottomSheetState = BottomSheetState(
-                LabelAsBottomSheetState.Data(
-                    LabelUiModelWithSelectedStateSample.customLabelListWithVariousStates,
-                    labelAsEntryPoint
-                )
-            )
-        )
-        val archiveSelected = false
-        val labelId = LabelIdSample.AllMail
-        every { savedStateHandle.get<String>(ConversationDetailScreen.OpenedFromLocationKey) } returns labelId.id
-
-        coEvery {
-            labelConversation(
-                userId,
-                conversationId,
-                updatedSelections = LabelSelectionList(
-                    selectedLabels = listOf(
-                        LabelSample.Document.labelId,
-                        LabelSample.Label2021.labelId,
-                        LabelSample.Label2022.labelId
-                    ),
-                    partiallySelectionLabels = emptyList()
-                ),
-                archiveSelected
-            )
-        } returns Unit.right()
-
-        coEvery { observeConversationMessages(userId, conversationId, labelId) } returns flowOf(
-            ConversationMessages(
-                nonEmptyListOf(
-                    MessageSample.Invoice,
-                    MessageSample.Invoice
-                ),
-                MessageSample.Invoice.messageId
-            ).right()
-        )
-        coEvery {
-            reducer.newStateFrom(
-                any(),
-                ConversationDetailEvent.ConversationBottomSheetEvent(event)
-            )
-        } returns dataState
-
-        coEvery {
-            reducer.newStateFrom(
-                ConversationDetailState.Loading,
-                ConversationDetailViewAction.LabelAsToggleAction(LabelSample.Label2022.labelId)
-            )
-        } returns dataState.copy(
-            bottomSheetState = BottomSheetState(
-                LabelAsBottomSheetState.Data(
-                    LabelUiModelWithSelectedStateSample.customLabelListAllSelected,
-                    labelAsEntryPoint
-                )
-            )
-        )
-
-        // When
-        viewModel.state.test {
-            advanceUntilIdle()
-            viewModel.submit(ConversationDetailViewAction.LabelAsToggleAction(LabelSample.Label2022.labelId))
-            advanceUntilIdle()
-            viewModel.submit(ConversationDetailViewAction.LabelAsConfirmed(archiveSelected, labelAsEntryPoint))
-            advanceUntilIdle()
-
-            // Then
-            coVerify {
-                labelConversation(
-                    userId,
-                    conversationId,
-                    updatedSelections = LabelSelectionList(
-                        selectedLabels = listOf(
-                            LabelSample.Document.labelId,
-                            LabelSample.Label2021.labelId,
-                            LabelSample.Label2022.labelId
-                        ),
-                        partiallySelectionLabels = emptyList()
-                    ),
-                    archiveSelected
-                )
-            }
-            verify { move wasNot Called }
-            assertNull(lastEmittedItem().exitScreenActionResult.consume())
         }
     }
 

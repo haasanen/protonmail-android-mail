@@ -45,7 +45,6 @@ import ch.protonmail.android.maildetail.domain.repository.InMemoryConversationSt
 import ch.protonmail.android.maildetail.domain.usecase.GetAttachmentIntentValues
 import ch.protonmail.android.maildetail.domain.usecase.GetDownloadingAttachmentsForMessages
 import ch.protonmail.android.maildetail.domain.usecase.IsProtonCalendarInstalled
-import ch.protonmail.android.maildetail.domain.usecase.LabelConversation
 import ch.protonmail.android.maildetail.domain.usecase.MarkConversationAsRead
 import ch.protonmail.android.maildetail.domain.usecase.MarkConversationAsUnread
 import ch.protonmail.android.maildetail.domain.usecase.MarkMessageAsRead
@@ -69,17 +68,12 @@ import ch.protonmail.android.maildetail.presentation.model.ConversationDetailOpe
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailState
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction.CollapseMessage
-import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction.DismissBottomSheet
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction.DoNotAskLinkConfirmationAgain
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction.ExpandMessage
-import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction.LabelAsConfirmed
-import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction.LabelAsToggleAction
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction.MarkUnread
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction.MessageBodyLinkClicked
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction.MoveToDestinationSelected
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction.MoveToTrash
-import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction.RequestContactActionsBottomSheet
-import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction.RequestConversationLabelAsBottomSheet
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction.RequestMoveToBottomSheet
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction.RequestScrollTo
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction.ScrollRequestCompleted
@@ -91,11 +85,9 @@ import ch.protonmail.android.maildetail.presentation.model.MessageIdUiModel
 import ch.protonmail.android.maildetail.presentation.reducer.ConversationDetailReducer
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen
 import ch.protonmail.android.maildetail.presentation.usecase.GetEmbeddedImageAvoidDuplicatedExecution
-import ch.protonmail.android.maildetail.presentation.usecase.GetLabelAsBottomSheetData
 import ch.protonmail.android.maildetail.presentation.usecase.GetMessagesInSameExclusiveLocation
 import ch.protonmail.android.maildetail.presentation.usecase.GetMoreActionsBottomSheetData
 import ch.protonmail.android.maildetail.presentation.usecase.ObservePrimaryUserAddress
-import ch.protonmail.android.maildetail.presentation.usecase.OnMessageLabelAsConfirmed
 import ch.protonmail.android.maildetail.presentation.usecase.PrintMessage
 import ch.protonmail.android.mailfeatureflags.domain.annotation.ComposerEnabled
 import ch.protonmail.android.maillabel.domain.model.LabelId
@@ -103,7 +95,8 @@ import ch.protonmail.android.maillabel.domain.model.MailLabel
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabels
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
-import ch.protonmail.android.maillabel.presentation.model.LabelSelectedState
+import ch.protonmail.android.maillabel.presentation.bottomsheet.LabelAsBottomSheetEntryPoint
+import ch.protonmail.android.maillabel.presentation.bottomsheet.LabelAsItemId
 import ch.protonmail.android.maillabel.presentation.model.MailLabelText
 import ch.protonmail.android.maillabel.presentation.toUiModels
 import ch.protonmail.android.mailmessage.domain.model.AttachmentId
@@ -113,7 +106,6 @@ import ch.protonmail.android.mailmessage.domain.model.AvatarImageStates
 import ch.protonmail.android.mailmessage.domain.model.ConversationMessages
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.model.GetDecryptedMessageBodyError
-import ch.protonmail.android.mailmessage.domain.model.LabelSelectionList
 import ch.protonmail.android.mailmessage.domain.model.Message
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.Participant
@@ -127,7 +119,6 @@ import ch.protonmail.android.mailmessage.domain.usecase.UnStarMessages
 import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentListExpandCollapseMode
 import ch.protonmail.android.mailmessage.presentation.model.attachment.isExpandable
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.ContactActionsBottomSheetState
-import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.LabelAsBottomSheetEntryPoint
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.LabelAsBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MoveToBottomSheetEntryPoint
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MoveToBottomSheetState
@@ -178,7 +169,6 @@ class ConversationDetailViewModel @Inject constructor(
     private val markConversationAsUnread: MarkConversationAsUnread,
     private val moveConversation: MoveConversation,
     private val deleteConversations: DeleteConversations,
-    private val labelConversation: LabelConversation,
     private val observeConversation: ObserveConversation,
     private val observeConversationMessages: ObserveConversationMessages,
     private val observeDetailActions: ObserveDetailBottomBarActions,
@@ -207,9 +197,7 @@ class ConversationDetailViewModel @Inject constructor(
     private val printMessage: PrintMessage,
     private val markMessageAsUnread: MarkMessageAsUnread,
     private val findContactByEmail: FindContactByEmail,
-    private val getLabelAsBottomSheetData: GetLabelAsBottomSheetData,
     private val getMoreActionsBottomSheetData: GetMoreActionsBottomSheetData,
-    private val onMessageLabelAsConfirmed: OnMessageLabelAsConfirmed,
     private val moveMessage: MoveMessage,
     private val deleteMessages: DeleteMessages,
     private val observePrimaryUserAddress: ObservePrimaryUserAddress,
@@ -282,17 +270,25 @@ class ConversationDetailViewModel @Inject constructor(
             )
 
             is ConversationDetailViewAction.MoveToInbox -> moveConversationToInbox()
-            is RequestConversationLabelAsBottomSheet -> showConversationLabelAsBottomSheet(action)
-            is RequestContactActionsBottomSheet -> showContactActionsBottomSheetAndLoadData(action)
-            is LabelAsConfirmed -> onLabelAsConfirmed(action)
+            is ConversationDetailViewAction.RequestConversationLabelAsBottomSheet ->
+                requestConversationLabelAsBottomSheet(action)
+
+            is ConversationDetailViewAction.RequestContactActionsBottomSheet ->
+                showContactActionsBottomSheetAndLoadData(action)
+
             is ConversationDetailViewAction.RequestMessageMoreActionsBottomSheet ->
                 showMessageMoreActionsBottomSheet(action)
 
             is ConversationDetailViewAction.RequestConversationMoreActionsBottomSheet ->
                 showConversationMoreActionsBottomSheet(action)
 
-            is ConversationDetailViewAction.RequestMessageLabelAsBottomSheet -> showMessageLabelAsBottomSheet(action)
+            is ConversationDetailViewAction.RequestMessageLabelAsBottomSheet -> requestMessageLabelAsBottomSheet(
+                action
+            )
+
             is ConversationDetailViewAction.RequestMessageMoveToBottomSheet -> showMessageMoveToBottomSheet(action)
+
+            is ConversationDetailViewAction.LabelAsCompleted -> handleLabelAsCompleted(action)
 
             is ExpandMessage -> onExpandMessage(action.messageId)
             is CollapseMessage -> onCollapseMessage(action.messageId)
@@ -321,8 +317,7 @@ class ConversationDetailViewModel @Inject constructor(
             is ConversationDetailViewAction.DeleteRequested,
             is ConversationDetailViewAction.DeleteDialogDismissed,
             is ConversationDetailViewAction.DeleteMessageRequested,
-            is DismissBottomSheet,
-            is LabelAsToggleAction,
+            is ConversationDetailViewAction.DismissBottomSheet,
             is MessageBodyLinkClicked,
             is RequestScrollTo,
             is ScrollRequestCompleted,
@@ -628,7 +623,9 @@ class ConversationDetailViewModel @Inject constructor(
         )
     }
 
-    private fun showContactActionsBottomSheetAndLoadData(action: RequestContactActionsBottomSheet) {
+    private fun showContactActionsBottomSheetAndLoadData(
+        action: ConversationDetailViewAction.RequestContactActionsBottomSheet
+    ) {
         viewModelScope.launch {
             emitNewStateFrom(action)
 
@@ -649,110 +646,46 @@ class ConversationDetailViewModel @Inject constructor(
         }
     }
 
-    private fun showConversationLabelAsBottomSheet(initialEvent: ConversationDetailViewAction) {
-        viewModelScope.launch {
-            emitNewStateFrom(initialEvent)
-
-            val userId = primaryUserId.first()
-            val labelId = openedFromLocation
-            val labelAsData = getLabelAsBottomSheetData.forConversation(userId, labelId, conversationId)
-            emitNewStateFrom(ConversationDetailEvent.ConversationBottomSheetEvent(labelAsData))
-        }
-    }
-
-    private fun showMessageLabelAsBottomSheet(
-        initialEvent: ConversationDetailViewAction.RequestMessageLabelAsBottomSheet
+    private fun requestConversationLabelAsBottomSheet(
+        operation: ConversationDetailViewAction.RequestConversationLabelAsBottomSheet
     ) {
         viewModelScope.launch {
-            emitNewStateFrom(initialEvent)
-
-            val userId = primaryUserId.first()
-            val labelId = openedFromLocation
-            val labelAsData = getLabelAsBottomSheetData.forMessage(userId, labelId, initialEvent.messageId)
-            emitNewStateFrom(ConversationDetailEvent.MessageBottomSheetEvent(labelAsData))
-        }
-    }
-
-    private fun onLabelAsConfirmed(operation: LabelAsConfirmed) {
-        when (operation.entryPoint) {
-            LabelAsBottomSheetEntryPoint.Conversation -> onConversationLabelAsConfirmed(operation.archiveSelected)
-            is LabelAsBottomSheetEntryPoint.Message ->
-                onMessageLabelAsConfirmed(operation.archiveSelected, operation.entryPoint.messageId)
-
-            else -> throw IllegalStateException("Invalid entry point for label as confirmed")
-        }
-    }
-
-    private fun onMessageLabelAsConfirmed(archiveSelected: Boolean, messageId: MessageId) {
-        viewModelScope.launch {
-            val userId = primaryUserId.first()
-
-            val labelAsData =
-                mutableDetailState.value.bottomSheetState?.contentState as? LabelAsBottomSheetState.Data
-                    ?: throw IllegalStateException("BottomSheetState is not LabelAsBottomSheetState.Data")
-
-            val operation =
-                onMessageLabelAsConfirmed(
-                    userId = userId,
-                    messageId = messageId,
-                    labelUiModelsWithSelectedState = labelAsData.labelUiModelsWithSelectedState,
-                    archiveSelected = archiveSelected
-                ).fold(
-                    ifLeft = {
-                        Timber.e("Label message failed: $it")
-                        ConversationDetailEvent.ErrorLabelingConversation
-                    },
-                    ifRight = { LabelAsConfirmed(archiveSelected, LabelAsBottomSheetEntryPoint.Message(messageId)) }
-                )
             emitNewStateFrom(operation)
+
+            val event = LabelAsBottomSheetState.LabelAsBottomSheetEvent.Ready(
+                userId = primaryUserId.first(),
+                currentLabel = openedFromLocation,
+                itemIds = listOf(LabelAsItemId(conversationId.id)),
+                entryPoint = LabelAsBottomSheetEntryPoint.Conversation
+            )
+
+            emitNewStateFrom(ConversationDetailEvent.ConversationBottomSheetEvent(event))
         }
     }
 
-    private fun onConversationLabelAsConfirmed(archiveSelected: Boolean) {
+    private fun requestMessageLabelAsBottomSheet(
+        operation: ConversationDetailViewAction.RequestMessageLabelAsBottomSheet
+    ) {
         viewModelScope.launch {
-            val labelAsData = mutableDetailState.value.bottomSheetState?.contentState as? LabelAsBottomSheetState.Data
-                ?: throw IllegalStateException("BottomSheetState is not LabelAsBottomSheetState.Data")
+            val event = LabelAsBottomSheetState.LabelAsBottomSheetEvent.Ready(
+                userId = primaryUserId.first(),
+                currentLabel = openedFromLocation,
+                itemIds = listOf(LabelAsItemId(operation.messageId.id)),
+                entryPoint = LabelAsBottomSheetEntryPoint.Message(operation.messageId)
+            )
 
-            val labelAction = suspend {
-                labelConversation(
-                    userId = primaryUserId.first(),
-                    conversationId = conversationId,
-                    updatedSelections = labelAsData.getLabelSelectionState(),
-                    archiveSelected
-                )
-            }
-
-            if (archiveSelected) {
-                performSafeExitAction(
-                    onLeft = ConversationDetailEvent.ErrorLabelingConversation,
-                    onRight = ConversationDetailEvent.ExitScreenWithMessage(
-                        LabelAsConfirmed(true, LabelAsBottomSheetEntryPoint.Conversation)
-                    )
-                ) {
-                    labelAction()
-                }
-            } else {
-                val operation = labelAction().fold(
-                    ifLeft = { ConversationDetailEvent.ErrorLabelingConversation },
-                    ifRight = { LabelAsConfirmed(false, LabelAsBottomSheetEntryPoint.Conversation) }
-                )
-                emitNewStateFrom(operation)
-            }
+            emitNewStateFrom(ConversationDetailEvent.ConversationBottomSheetEvent(event))
         }
     }
 
-    private fun LabelAsBottomSheetState.Data.getLabelSelectionState(): LabelSelectionList {
-        val selectedLabels = this.labelUiModelsWithSelectedState
-            .filter { it.selectedState == LabelSelectedState.Selected }
-            .map { it.labelUiModel.id.labelId }
+    private fun handleLabelAsCompleted(operation: ConversationDetailViewAction.LabelAsCompleted) {
+        val event = if (operation.wasArchived) {
+            ConversationDetailEvent.ExitScreenWithMessage(operation)
+        } else {
+            operation
+        }
 
-        val partiallySelectedLabels = this.labelUiModelsWithSelectedState
-            .filter { it.selectedState == LabelSelectedState.PartiallySelected }
-            .map { it.labelUiModel.id.labelId }
-        return LabelSelectionList(
-            selectedLabels = selectedLabels,
-            partiallySelectionLabels = partiallySelectedLabels
-        )
+        emitNewStateFrom(event)
     }
 
     private fun showMessageMoreActionsBottomSheet(
@@ -785,7 +718,6 @@ class ConversationDetailViewModel @Inject constructor(
             emitNewStateFrom(ConversationDetailEvent.ConversationBottomSheetEvent(moreActions))
         }
     }
-
 
     private fun requireConversationId(): ConversationId {
         val conversationId = savedStateHandle.get<String>(ConversationDetailScreen.ConversationIdKey)

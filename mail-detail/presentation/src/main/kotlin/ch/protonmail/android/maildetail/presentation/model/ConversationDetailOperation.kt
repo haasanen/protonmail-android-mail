@@ -36,6 +36,7 @@ import ch.protonmail.android.maildetail.presentation.model.ConversationDetailOpe
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
+import ch.protonmail.android.maillabel.presentation.bottomsheet.LabelAsBottomSheetEntryPoint
 import ch.protonmail.android.maillabel.presentation.model.MailLabelText
 import ch.protonmail.android.mailmessage.domain.model.AttachmentId
 import ch.protonmail.android.mailmessage.domain.model.AttachmentWorkerStatus
@@ -43,7 +44,6 @@ import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.presentation.model.ViewModePreference
 import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentListExpandCollapseMode
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.BottomSheetOperation
-import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.LabelAsBottomSheetEntryPoint
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MoveToBottomSheetEntryPoint
 import kotlinx.collections.immutable.ImmutableList
 
@@ -166,8 +166,10 @@ sealed interface ConversationDetailEvent : ConversationDetailOperation {
 
     data class LastMessageMoved(val mailLabelText: MailLabelText) : ConversationDetailEvent, AffectingBottomSheet
 
-    data object ExitScreen : ConversationDetailEvent
-    data class ExitScreenWithMessage(val operation: ConversationDetailOperation) : ConversationDetailEvent
+    data object ExitScreen : ConversationDetailEvent, AffectingBottomSheet
+    data class ExitScreenWithMessage(val operation: ConversationDetailOperation) :
+        ConversationDetailEvent,
+        AffectingBottomSheet
 }
 
 sealed interface ConversationDetailViewAction : ConversationDetailOperation {
@@ -193,12 +195,6 @@ sealed interface ConversationDetailViewAction : ConversationDetailOperation {
     ) : ConversationDetailViewAction, AffectingBottomSheet
 
     object RequestConversationLabelAsBottomSheet : ConversationDetailViewAction, AffectingBottomSheet
-    data class LabelAsToggleAction(val labelId: LabelId) : ConversationDetailViewAction, AffectingBottomSheet
-    data class LabelAsConfirmed(
-        val archiveSelected: Boolean,
-        val entryPoint: LabelAsBottomSheetEntryPoint
-    ) : ConversationDetailViewAction, AffectingBottomSheet
-
     data class RequestMessageMoreActionsBottomSheet(val messageId: MessageId) :
         ConversationDetailViewAction, AffectingBottomSheet
 
@@ -259,6 +255,13 @@ sealed interface ConversationDetailViewAction : ConversationDetailOperation {
     data class RequestMessageLabelAsBottomSheet(
         val messageId: MessageId
     ) : ConversationDetailViewAction, AffectingBottomSheet
+
+    data class LabelAsCompleted(
+        val wasArchived: Boolean,
+        val entryPoint: LabelAsBottomSheetEntryPoint
+    ) : ConversationDetailViewAction,
+        AffectingBottomSheet,
+        AffectingMessageBar
 
     data class RequestMessageMoveToBottomSheet(
         val messageId: MessageId

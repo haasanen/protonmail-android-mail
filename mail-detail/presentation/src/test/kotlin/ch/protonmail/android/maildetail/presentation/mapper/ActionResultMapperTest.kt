@@ -18,14 +18,14 @@
 
 package ch.protonmail.android.maildetail.presentation.mapper
 
-import ch.protonmail.android.mailcommon.presentation.model.ActionResult.UndoableActionResult
 import ch.protonmail.android.mailcommon.presentation.model.ActionResult.DefinitiveActionResult
+import ch.protonmail.android.mailcommon.presentation.model.ActionResult.UndoableActionResult
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
+import ch.protonmail.android.maildetail.presentation.R
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailOperation
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction
-import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.LabelAsBottomSheetEntryPoint
-import ch.protonmail.android.maildetail.presentation.R
+import ch.protonmail.android.maillabel.presentation.bottomsheet.LabelAsBottomSheetEntryPoint
 import ch.protonmail.android.maillabel.presentation.model.MailLabelText
 import ch.protonmail.android.mailmessage.presentation.mapper.MailLabelTextMapper
 import io.mockk.every
@@ -95,10 +95,11 @@ internal class ActionResultMapperTest {
     }
 
     @Test
-    fun `returns definitive result when operation is LabelAsConfirmed`() {
+    fun `returns definitive result when operation is LabelAsCompleted`() {
         // Given
-        val operation = ConversationDetailViewAction.LabelAsConfirmed(
-            true, LabelAsBottomSheetEntryPoint.Conversation
+        val operation = ConversationDetailViewAction.LabelAsCompleted(
+            true,
+            entryPoint = LabelAsBottomSheetEntryPoint.Conversation
         )
         val expectedResult = DefinitiveActionResult(TextUiModel(R.string.conversation_moved_to_archive))
 

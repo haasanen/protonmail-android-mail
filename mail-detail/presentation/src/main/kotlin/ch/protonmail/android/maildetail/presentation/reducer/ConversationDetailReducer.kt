@@ -55,7 +55,6 @@ import ch.protonmail.android.maildetail.presentation.model.MessageIdUiModel
 import ch.protonmail.android.maildetail.presentation.model.ReportPhishingDialogState
 import ch.protonmail.android.maildetail.presentation.model.TrashedMessagesBannerState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.BottomSheetOperation
-import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.LabelAsBottomSheetState.LabelAsBottomSheetAction.LabelToggled
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MoveToBottomSheetState.MoveToBottomSheetAction.MoveToDestinationSelected
 import ch.protonmail.android.mailmessage.presentation.reducer.BottomSheetReducer
 import javax.inject.Inject
@@ -123,7 +122,6 @@ class ConversationDetailReducer @Inject constructor(
                 is ConversationDetailViewAction.MoveToDestinationSelected ->
                     MoveToDestinationSelected(operation.mailLabelId)
 
-                is ConversationDetailViewAction.LabelAsToggleAction -> LabelToggled(operation.labelId)
                 is ConversationDetailViewAction.RequestConversationLabelAsBottomSheet,
                 is ConversationDetailViewAction.RequestMessageMoreActionsBottomSheet,
                 is ConversationDetailViewAction.RequestConversationMoreActionsBottomSheet,
@@ -146,7 +144,6 @@ class ConversationDetailReducer @Inject constructor(
                 is ConversationDetailViewAction.MarkUnread,
                 is ConversationDetailViewAction.Star,
                 is ConversationDetailViewAction.UnStar,
-                is ConversationDetailViewAction.LabelAsConfirmed,
                 is ConversationDetailEvent.ReportPhishingRequested,
                 is ConversationDetailViewAction.DismissBottomSheet,
                 is ConversationDetailViewAction.SwitchViewMode,
@@ -161,9 +158,12 @@ class ConversationDetailReducer @Inject constructor(
                 is ConversationDetailViewAction.StarMessage,
                 is ConversationDetailViewAction.UnStarMessage,
                 is ConversationDetailViewAction.MoveMessage,
+                is ConversationDetailViewAction.LabelAsCompleted,
                 is ConversationDetailEvent.MessageMoved,
                 is ConversationDetailEvent.LastMessageMoved,
-                is ConversationDetailEvent.MoveToDestinationConfirmed -> BottomSheetOperation.Dismiss
+                is ConversationDetailEvent.MoveToDestinationConfirmed,
+                is ConversationDetailEvent.ExitScreen,
+                is ConversationDetailEvent.ExitScreenWithMessage -> BottomSheetOperation.Dismiss
             }
             bottomSheetReducer.newStateFrom(bottomSheetState, bottomSheetOperation)
         } else {

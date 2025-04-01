@@ -39,12 +39,11 @@ import ch.protonmail.android.maildetail.presentation.model.MessageIdUiModel
 import ch.protonmail.android.maildetail.presentation.model.ParticipantUiModel
 import ch.protonmail.android.maildetail.presentation.sample.ConversationDetailMessageUiModelSample
 import ch.protonmail.android.maildetail.presentation.sample.ConversationDetailMetadataUiModelSample
-import ch.protonmail.android.maillabel.domain.sample.LabelIdSample
+import ch.protonmail.android.maillabel.presentation.bottomsheet.LabelAsBottomSheetEntryPoint
 import ch.protonmail.android.maillabel.presentation.model.MailLabelText
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.presentation.mapper.MailLabelTextMapper
 import ch.protonmail.android.mailmessage.presentation.model.ViewModePreference
-import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.LabelAsBottomSheetEntryPoint
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MoveToBottomSheetEntryPoint
 import ch.protonmail.android.mailmessage.presentation.reducer.BottomSheetReducer
 import ch.protonmail.android.testdata.maillabel.MailLabelTestData
@@ -211,17 +210,9 @@ class ConversationDetailReducerTest(
             ConversationDetailViewAction.UnStar affects listOf(Conversation, BottomSheet),
             ConversationDetailViewAction.RequestConversationLabelAsBottomSheet affects BottomSheet,
             ConversationDetailViewAction.RequestContactActionsBottomSheet(participant, avatar) affects BottomSheet,
-            ConversationDetailViewAction.LabelAsToggleAction(LabelIdSample.Label2022) affects BottomSheet,
-            ConversationDetailViewAction.LabelAsConfirmed(
-                false,
-                LabelAsBottomSheetEntryPoint.Conversation
-            ) affects BottomSheet,
-            ConversationDetailViewAction.LabelAsConfirmed(
-                false,
-                LabelAsBottomSheetEntryPoint.Conversation
-            ) affects BottomSheet,
-            ConversationDetailViewAction.LabelAsConfirmed(
-                true, LabelAsBottomSheetEntryPoint.Message(MessageId(messageId.id))
+            ConversationDetailViewAction.LabelAsCompleted(
+                wasArchived = false,
+                entryPoint = LabelAsBottomSheetEntryPoint.Conversation
             ) affects BottomSheet,
             ConversationDetailViewAction.MessageBodyLinkClicked(messageId, mockk()) affects LinkClick,
             ConversationDetailViewAction.RequestScrollTo(messageId) affects MessageScroll,
@@ -293,16 +284,21 @@ class ConversationDetailReducerTest(
             ConversationDetailEvent.ErrorGettingAttachment affects ErrorBar,
             ConversationDetailEvent.ErrorDeletingConversation affects listOf(ErrorBar, BottomSheet, DeleteDialog),
             ConversationDetailEvent.ErrorDeletingMessage affects listOf(ErrorBar, BottomSheet, DeleteDialog),
-            ConversationDetailEvent.ExitScreen affects Exit,
+            ConversationDetailEvent.ExitScreen affects listOf(Exit, BottomSheet),
             ConversationDetailEvent.ExitScreenWithMessage(
                 ConversationDetailViewAction.MoveToTrash
-            ) affects ExitWithResult(
-                UndoableActionResult(TextUiModel(string.conversation_moved_to_trash))
+            ) affects listOf(
+                BottomSheet,
+                ExitWithResult(
+                    UndoableActionResult(TextUiModel(string.conversation_moved_to_trash))
+                )
             ),
             ConversationDetailEvent.ExitScreenWithMessage(
                 ConversationDetailViewAction.DeleteConfirmed
-            ) affects
-                ExitWithResult(DefinitiveActionResult(TextUiModel(string.conversation_deleted))),
+            ) affects listOf(
+                BottomSheet,
+                ExitWithResult(DefinitiveActionResult(TextUiModel(string.conversation_deleted)))
+            ),
             ConversationDetailEvent.LastMessageMoved(MailLabelText("String")) affects listOf(
                 BottomSheet,
                 ExitWithResult(

@@ -104,6 +104,8 @@ import ch.protonmail.android.maildetail.presentation.previewdata.ConversationDet
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen.scrollOffsetDp
 import ch.protonmail.android.maildetail.presentation.ui.dialog.ReportPhishingDialog
 import ch.protonmail.android.maildetail.presentation.viewmodel.ConversationDetailViewModel
+import ch.protonmail.android.maillabel.presentation.bottomsheet.LabelAsBottomSheet
+import ch.protonmail.android.maillabel.presentation.bottomsheet.LabelAsBottomSheetScreen
 import ch.protonmail.android.mailmessage.domain.model.AttachmentId
 import ch.protonmail.android.mailmessage.domain.model.EmbeddedImage
 import ch.protonmail.android.mailmessage.domain.model.MessageId
@@ -115,7 +117,6 @@ import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.LabelAsB
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MoveToBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.ui.bottomsheet.ContactActionsBottomSheetContent
 import ch.protonmail.android.mailmessage.presentation.ui.bottomsheet.DetailMoreActionsBottomSheetContent
-import ch.protonmail.android.mailmessage.presentation.ui.bottomsheet.LabelAsBottomSheetContent
 import ch.protonmail.android.mailmessage.presentation.ui.bottomsheet.MoveToBottomSheetContent
 import ch.protonmail.android.uicomponents.bottomsheet.bottomSheetHeightConstrainedContent
 import ch.protonmail.android.uicomponents.snackbar.DismissableSnackbarHost
@@ -224,18 +225,27 @@ fun ConversationDetailScreen(
                     )
                 )
 
-                is LabelAsBottomSheetState -> LabelAsBottomSheetContent(
-                    state = bottomSheetContentState,
-                    actions = LabelAsBottomSheetContent.Actions(
-                        onAddLabelClick = actions.onAddLabel,
-                        onLabelAsSelected = { viewModel.submit(ConversationDetailViewAction.LabelAsToggleAction(it)) },
-                        onDoneClick = { archiveSelected, entryPoint ->
-                            viewModel.submit(
-                                ConversationDetailViewAction.LabelAsConfirmed(archiveSelected, entryPoint)
-                            )
-                        }
+                is LabelAsBottomSheetState.Requested -> {
+                    val initialData = LabelAsBottomSheet.InitialData(
+                        userId = bottomSheetContentState.userId,
+                        labelId = bottomSheetContentState.currentLabel,
+                        items = bottomSheetContentState.itemIds,
+                        entryPoint = bottomSheetContentState.entryPoint
                     )
-                )
+
+                    val actions = LabelAsBottomSheet.Actions(
+                        onAddLabelClick = actions.onAddLabel,
+                        onError = { actions.showSnackbar(it, ProtonSnackbarType.ERROR) },
+                        onLabelAsComplete = { wasArchived, entryPoint ->
+                            viewModel.submit(
+                                ConversationDetailViewAction.LabelAsCompleted(wasArchived, entryPoint)
+                            )
+                        },
+                        onDismiss = { viewModel.submit(ConversationDetailViewAction.DismissBottomSheet) }
+                    )
+
+                    LabelAsBottomSheetScreen(providedData = initialData, actions = actions)
+                }
 
                 is DetailMoreActionsBottomSheetState -> DetailMoreActionsBottomSheetContent(
                     state = bottomSheetContentState,
@@ -323,14 +333,14 @@ fun ConversationDetailScreen(
                             context.copyTextToClipboard(label = message, text = it)
 
                             viewModel.submit(ConversationDetailViewAction.DismissBottomSheet)
-                            actions.showSnackbar(message)
+                            actions.showSnackbar(message, ProtonSnackbarType.NORM)
                         },
                         onCopyNameClicked = {
                             val message = context.getString(R.string.contact_actions_copy_name_performed)
                             context.copyTextToClipboard(label = message, text = it)
 
                             viewModel.submit(ConversationDetailViewAction.DismissBottomSheet)
-                            actions.showSnackbar(message)
+                            actions.showSnackbar(message, ProtonSnackbarType.NORM)
                         },
                         onAddContactClicked = { actions.onAddContact(BasicContactInfo(it.name, it.address)) },
                         onNewMessageClicked = {
@@ -908,7 +918,7 @@ object ConversationDetail {
         val onAddContact: (basicContactInfo: BasicContactInfo) -> Unit,
         val onComposeNewMessage: (recipientAddress: String) -> Unit,
         val openComposerForDraftMessage: (messageId: MessageId) -> Unit,
-        val showSnackbar: (message: String) -> Unit,
+        val showSnackbar: (message: String, type: ProtonSnackbarType) -> Unit,
         val recordMailboxScreenView: () -> Unit
     )
 }

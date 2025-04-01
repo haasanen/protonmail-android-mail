@@ -57,7 +57,6 @@ import ch.protonmail.android.mailcontact.domain.usecase.ObserveContacts
 import ch.protonmail.android.mailconversation.domain.sample.ConversationSample
 import ch.protonmail.android.mailconversation.domain.usecase.DeleteConversations
 import ch.protonmail.android.mailconversation.domain.usecase.GetConversationAvailableActions
-import ch.protonmail.android.mailconversation.domain.usecase.GetConversationLabelAsActions
 import ch.protonmail.android.mailconversation.domain.usecase.GetConversationMoveToLocations
 import ch.protonmail.android.mailconversation.domain.usecase.ObserveConversation
 import ch.protonmail.android.mailconversation.domain.usecase.StarConversations
@@ -121,18 +120,14 @@ import ch.protonmail.android.maildetail.presentation.sample.ConversationDetailMe
 import ch.protonmail.android.maildetail.presentation.ui.ConversationDetailScreen
 import ch.protonmail.android.maildetail.presentation.usecase.ExtractMessageBodyWithoutQuote
 import ch.protonmail.android.maildetail.presentation.usecase.GetEmbeddedImageAvoidDuplicatedExecution
-import ch.protonmail.android.maildetail.presentation.usecase.GetLabelAsBottomSheetData
 import ch.protonmail.android.maildetail.presentation.usecase.GetMessagesInSameExclusiveLocation
 import ch.protonmail.android.maildetail.presentation.usecase.GetMoreActionsBottomSheetData
 import ch.protonmail.android.maildetail.presentation.usecase.ObservePrimaryUserAddress
-import ch.protonmail.android.maildetail.presentation.usecase.OnMessageLabelAsConfirmed
 import ch.protonmail.android.maildetail.presentation.usecase.PrintMessage
 import ch.protonmail.android.maillabel.domain.model.MailLabels
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.maillabel.domain.sample.LabelSample
-import ch.protonmail.android.maillabel.presentation.model.LabelSelectedState
 import ch.protonmail.android.maillabel.presentation.model.MailLabelText
-import ch.protonmail.android.maillabel.presentation.sample.LabelUiModelWithSelectedStateSample
 import ch.protonmail.android.maillabel.presentation.toUiModels
 import ch.protonmail.android.mailmessage.domain.model.AttachmentDisposition
 import ch.protonmail.android.mailmessage.domain.model.AttachmentId
@@ -142,7 +137,6 @@ import ch.protonmail.android.mailmessage.domain.model.ConversationMessages
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
 import ch.protonmail.android.mailmessage.domain.model.EmbeddedImage
 import ch.protonmail.android.mailmessage.domain.model.GetDecryptedMessageBodyError
-import ch.protonmail.android.mailmessage.domain.model.LabelSelectionList
 import ch.protonmail.android.mailmessage.domain.model.Message
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.MimeType
@@ -170,14 +164,11 @@ import ch.protonmail.android.mailmessage.presentation.model.MessageBodyExpandCol
 import ch.protonmail.android.mailmessage.presentation.model.ViewModePreference
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.BottomSheetVisibilityEffect
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.DetailMoreActionsBottomSheetState
-import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.LabelAsBottomSheetEntryPoint
-import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.LabelAsBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MoveToBottomSheetEntryPoint
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MoveToBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.reducer.BottomSheetReducer
 import ch.protonmail.android.mailmessage.presentation.reducer.ContactActionsBottomSheetReducer
 import ch.protonmail.android.mailmessage.presentation.reducer.DetailMoreActionsBottomSheetReducer
-import ch.protonmail.android.mailmessage.presentation.reducer.LabelAsBottomSheetReducer
 import ch.protonmail.android.mailmessage.presentation.reducer.MailboxMoreActionsBottomSheetReducer
 import ch.protonmail.android.mailmessage.presentation.reducer.MoveToBottomSheetReducer
 import ch.protonmail.android.mailmessage.presentation.reducer.UpsellingBottomSheetReducer
@@ -190,7 +181,6 @@ import ch.protonmail.android.mailsettings.domain.usecase.privacy.UpdateLinkConfi
 import ch.protonmail.android.testdata.action.AvailableActionsTestData
 import ch.protonmail.android.testdata.avatar.AvatarImageStatesTestData
 import ch.protonmail.android.testdata.contact.ContactSample
-import ch.protonmail.android.testdata.label.rust.LabelAsActionsTestData
 import ch.protonmail.android.testdata.maillabel.MailLabelTestData
 import ch.protonmail.android.testdata.message.MessageAttachmentMetadataTestData
 import io.mockk.Called
@@ -198,7 +188,6 @@ import io.mockk.clearMocks
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.coVerifyOrder
-import io.mockk.coVerifySequence
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
@@ -272,7 +261,6 @@ class ConversationDetailViewModelIntegrationTest {
     private val getMessageAvailableActions = mockk<GetMessageAvailableActions>()
     private val getConversationMoveToLocations = mockk<GetConversationMoveToLocations>()
     private val getMessageMoveToLocations = mockk<GetMessageMoveToLocations>()
-    private val getConversationLabelAsActions = mockk<GetConversationLabelAsActions>()
     private val getMessageLabelAsActions = mockk<GetMessageLabelAsActions>()
     private val reportPhishingMessage = mockk<ReportPhishingMessage>()
     private val loadAvatarImage = mockk<LoadAvatarImage> {
@@ -362,16 +350,11 @@ class ConversationDetailViewModelIntegrationTest {
     private val attachmentGroupUiModelMapper = AttachmentGroupUiModelMapper(attachmentMetadataUiModelMapper)
     private val doesMessageBodyHaveEmbeddedImages = DoesMessageBodyHaveEmbeddedImages()
     private val doesMessageBodyHaveRemoteContent = DoesMessageBodyHaveRemoteContent()
-    private val getLabelAsBottomSheetData = GetLabelAsBottomSheetData(
-        getMessageLabelAsActions,
-        getConversationLabelAsActions
-    )
+
     private val getMoreActionsBottomSheetData = GetMoreActionsBottomSheetData(
         getMessageAvailableActions, getConversationAvailableActions, observeMessage, observeConversationUseCase
     )
-    private val onMessageLabelAsConfirmed = OnMessageLabelAsConfirmed(
-        labelMessage
-    )
+
     private val getMessagesInSameExclusiveLocation = mockk<GetMessagesInSameExclusiveLocation>()
     // endregion
 
@@ -450,7 +433,6 @@ class ConversationDetailViewModelIntegrationTest {
         messagesReducer = ConversationDetailMessagesReducer(injectCssIntoDecryptedMessageBody),
         bottomSheetReducer = BottomSheetReducer(
             moveToBottomSheetReducer = MoveToBottomSheetReducer(),
-            labelAsBottomSheetReducer = LabelAsBottomSheetReducer(),
             mailboxMoreActionsBottomSheetReducer = MailboxMoreActionsBottomSheetReducer(),
             detailMoreActionsBottomSheetReducer = DetailMoreActionsBottomSheetReducer(
                 DetailMoreActionsBottomSheetUiMapper(),
@@ -1911,152 +1893,6 @@ class ConversationDetailViewModelIntegrationTest {
     }
 
     @Test
-    fun `should show message label as bottom sheet and load data when it is requested`() = runTest {
-        // Given
-        val messageIdToOpen = MessageSample.AugWeatherForecast.messageId
-        val messages = ConversationMessages(
-            nonEmptyListOf(
-                MessageSample.AugWeatherForecast,
-                MessageSample.Invoice,
-                MessageSample.EmptyDraft
-            ),
-            messageIdToOpen
-        )
-        val messageId = MessageSample.Invoice.messageId
-        val labelAsEntryPoint = LabelAsBottomSheetEntryPoint.Message(messageId)
-        val labelId = SystemLabelId.Archive.labelId
-        coEvery { observeConversationMessages(userId, any(), labelId) } returns flowOf(messages.right())
-        coEvery {
-            observeMessage(userId, messageId)
-        } returns flowOf(MessageSample.Invoice.right())
-        coEvery {
-            getMessageLabelAsActions(userId, labelId, listOf(messageId))
-        } returns LabelAsActionsTestData.unselectedActions.right()
-        coEvery {
-            getMessageAvailableActions(userId, labelId, listOf(messageId))
-        } returns AvailableActionsTestData.replyActionsOnly.right()
-
-        // When
-        val viewModel = buildConversationDetailViewModel()
-
-        viewModel.submit(
-            ExpandMessage(
-                messageIdUiModelMapper.toUiModel(messageId)
-            )
-        )
-
-        viewModel.state.test {
-            skipItems(4)
-
-            viewModel.submit(
-                ConversationDetailViewAction.RequestMessageMoreActionsBottomSheet(
-                    messageId
-                )
-            )
-            skipItems(2)
-            viewModel.submit(
-                ConversationDetailViewAction.RequestMessageLabelAsBottomSheet(
-                    messageId
-                )
-            )
-
-            // then
-            assertEquals(
-                BottomSheetVisibilityEffect.Show, awaitItem().bottomSheetState?.bottomSheetVisibilityEffect?.consume()
-            )
-
-            val bottomSheetContentState = awaitItem().bottomSheetState?.contentState as LabelAsBottomSheetState.Data
-
-            // No labels pre-selection till rust exposes the data
-            val labelUiModelsWithSelectedState =
-                LabelUiModelWithSelectedStateSample.customLabelListWithFirstTwoSelected
-                    .map { it.copy(selectedState = LabelSelectedState.NotSelected) }
-                    .toImmutableList()
-            assertEquals(
-                LabelAsBottomSheetState.Data(
-                    labelUiModelsWithSelectedState,
-                    labelAsEntryPoint
-                ),
-                bottomSheetContentState
-            )
-
-            cancelAndIgnoreRemainingEvents()
-        }
-    }
-
-    @Test
-    fun `should relabel and forward should archive when label as is confirmed and archive is selected`() = runTest {
-        // Given
-        val labelAsEntryPoint = LabelAsBottomSheetEntryPoint.Message(MessageSample.Invoice.messageId)
-        val messages = ConversationMessages(
-            nonEmptyListOf(
-                MessageSample.AugWeatherForecast,
-                MessageSample.Invoice,
-                MessageSample.EmptyDraft
-            ),
-            MessageSample.AugWeatherForecast.messageId
-        )
-        val messageId = MessageSample.Invoice.messageId
-        val labelSelection = LabelSelectionList(
-            listOf(LabelSample.Label2022.labelId),
-            emptyList()
-        )
-        coEvery { observeConversationMessages(userId, any(), any()) } returns flowOf(messages.right())
-        coEvery {
-            observeMessage(userId, messageId)
-        } returns flowOf(MessageSample.Invoice.right())
-        coEvery { moveMessage(userId, messageId, filterByLocationLabelId) } returns Unit.right()
-        coEvery {
-            labelMessage(userId, messageId, labelSelection, true)
-        } returns Unit.right()
-        coEvery {
-            getMessageLabelAsActions(userId, filterByLocationLabelId, listOf(messageId))
-        } returns LabelAsActionsTestData.unselectedActions.right()
-        coEvery {
-            getMessageAvailableActions(userId, filterByLocationLabelId, listOf(messageId))
-        } returns AvailableActionsTestData.replyActionsOnly.right()
-
-        // When
-        val viewModel = buildConversationDetailViewModel()
-
-        viewModel.submit(
-            ExpandMessage(
-                messageIdUiModelMapper.toUiModel(MessageSample.Invoice.messageId)
-            )
-        )
-
-        viewModel.state.test {
-            skipItems(4)
-            viewModel.submit(
-                ConversationDetailViewAction.RequestMessageMoreActionsBottomSheet(
-                    MessageSample.Invoice.messageId
-                )
-            )
-            skipItems(2)
-            viewModel.submit(
-                ConversationDetailViewAction.RequestMessageLabelAsBottomSheet(
-                    MessageSample.Invoice.messageId
-                )
-            )
-            skipItems(1)
-            viewModel.submit(ConversationDetailViewAction.LabelAsToggleAction(LabelSample.Label2022.labelId))
-            skipItems(1)
-            viewModel.submit(ConversationDetailViewAction.LabelAsConfirmed(true, labelAsEntryPoint))
-            skipItems(1)
-
-            // Then
-            assertEquals(
-                BottomSheetVisibilityEffect.Hide, awaitItem().bottomSheetState?.bottomSheetVisibilityEffect?.consume()
-            )
-            coVerifySequence {
-                labelMessage(userId, messageId, labelSelection, shouldArchive = true)
-            }
-
-            cancelAndIgnoreRemainingEvents()
-        }
-    }
-
-    @Test
     fun `should close bottom sheet and call use case when moving a message to trash`() = runTest {
         // Given
         val messageId = MessageSample.Invoice.messageId
@@ -2472,7 +2308,6 @@ class ConversationDetailViewModelIntegrationTest {
         markConversationAsUnread = unread,
         moveConversation = moveConversation,
         deleteConversations = delete,
-        labelConversation = relabel,
         observeConversation = observeConversation,
         observeConversationMessages = observeConversationMessages,
         observeDetailActions = observeDetailActions,
@@ -2501,9 +2336,7 @@ class ConversationDetailViewModelIntegrationTest {
         printMessage = printMessage,
         markMessageAsUnread = markMessageAsUnread,
         findContactByEmail = findContactByEmailAddress,
-        getLabelAsBottomSheetData = getLabelAsBottomSheetData,
         getMoreActionsBottomSheetData = getMoreActionsBottomSheetData,
-        onMessageLabelAsConfirmed = onMessageLabelAsConfirmed,
         moveMessage = moveMessage,
         deleteMessages = deleteMessages,
         observePrimaryUserAddress = observePrimaryUserAddress,

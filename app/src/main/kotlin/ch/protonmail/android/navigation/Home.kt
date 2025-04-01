@@ -69,16 +69,16 @@ import ch.protonmail.android.mailnotifications.presentation.model.NotificationsP
 import ch.protonmail.android.mailnotifications.presentation.model.NotificationsPermissionStateType
 import ch.protonmail.android.mailnotifications.presentation.viewmodel.NotificationsPermissionViewModel
 import ch.protonmail.android.mailnotifications.ui.NotificationsPermissionBottomSheet
+import ch.protonmail.android.mailonboarding.domain.model.OnboardingEligibilityState
+import ch.protonmail.android.mailonboarding.presentation.viewmodel.OnboardingStepAction
+import ch.protonmail.android.mailonboarding.presentation.viewmodel.OnboardingStepViewModel
 import ch.protonmail.android.mailsession.data.mapper.toUserId
 import ch.protonmail.android.mailsidebar.presentation.Sidebar
 import ch.protonmail.android.navigation.model.Destination
 import ch.protonmail.android.navigation.model.Destination.Dialog
 import ch.protonmail.android.navigation.model.Destination.Screen
 import ch.protonmail.android.navigation.model.HomeState
-import ch.protonmail.android.mailonboarding.domain.model.OnboardingEligibilityState
 import ch.protonmail.android.navigation.onboarding.Onboarding
-import ch.protonmail.android.mailonboarding.presentation.viewmodel.OnboardingStepAction
-import ch.protonmail.android.mailonboarding.presentation.viewmodel.OnboardingStepViewModel
 import ch.protonmail.android.navigation.route.addAlternativeRoutingSetting
 import ch.protonmail.android.navigation.route.addAppSettings
 import ch.protonmail.android.navigation.route.addAutoLockPinScreen
@@ -523,11 +523,11 @@ fun Home(
                                     )
                                 },
                                 openComposerForDraftMessage = { navController.navigate(Screen.EditDraftComposer(it)) },
-                                showSnackbar = { message ->
+                                showSnackbar = { message, type ->
                                     scope.launch {
                                         snackbarHostNormState.showSnackbar(
                                             message = message,
-                                            type = ProtonSnackbarType.NORM
+                                            type = type
                                         )
                                     }
                                 },
