@@ -25,15 +25,16 @@ import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.ActionUiModel
 import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
-import ch.protonmail.android.maillabel.domain.model.MailLabelId
-import ch.protonmail.android.maillabel.presentation.MailLabelUiModel
-import ch.protonmail.android.maillabel.presentation.model.LabelUiModelWithSelectedState
-import ch.protonmail.android.mailmessage.domain.model.Participant
-import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.toImmutableList
 import ch.protonmail.android.mailcontact.domain.model.ContactId
 import ch.protonmail.android.maillabel.domain.model.LabelId
+import ch.protonmail.android.maillabel.domain.model.MailLabelId
+import ch.protonmail.android.maillabel.presentation.MailLabelUiModel
+import ch.protonmail.android.maillabel.presentation.bottomsheet.LabelAsBottomSheetEntryPoint
+import ch.protonmail.android.maillabel.presentation.bottomsheet.LabelAsItemId
+import ch.protonmail.android.mailmessage.domain.model.Participant
 import ch.protonmail.android.mailmessage.presentation.model.ContactActionUiModel
+import kotlinx.collections.immutable.ImmutableList
+import me.proton.core.domain.entity.UserId
 
 data class BottomSheetState(
     val contentState: BottomSheetContentState?,
@@ -80,26 +81,21 @@ sealed interface MoveToBottomSheetState : BottomSheetContentState {
 
 sealed interface LabelAsBottomSheetState : BottomSheetContentState {
 
-    data class Data(
-        val labelUiModelsWithSelectedState: ImmutableList<LabelUiModelWithSelectedState>,
+    data class Requested(
+        val userId: UserId,
+        val currentLabel: LabelId,
+        val itemIds: List<LabelAsItemId>,
         val entryPoint: LabelAsBottomSheetEntryPoint
     ) : LabelAsBottomSheetState
 
-    data object Loading : LabelAsBottomSheetState
-
     sealed interface LabelAsBottomSheetOperation : BottomSheetOperation
-
     sealed interface LabelAsBottomSheetEvent : LabelAsBottomSheetOperation {
-        data class ActionData(
-            val customLabelList: ImmutableList<MailLabelUiModel.Custom>,
-            val selectedLabels: ImmutableList<LabelId>,
-            val partiallySelectedLabels: ImmutableList<LabelId> = emptyList<LabelId>().toImmutableList(),
+        data class Ready(
+            val userId: UserId,
+            val currentLabel: LabelId,
+            val itemIds: List<LabelAsItemId>,
             val entryPoint: LabelAsBottomSheetEntryPoint
         ) : LabelAsBottomSheetEvent
-    }
-
-    sealed interface LabelAsBottomSheetAction : LabelAsBottomSheetOperation {
-        data class LabelToggled(val labelId: LabelId) : LabelAsBottomSheetAction
     }
 }
 

@@ -22,7 +22,7 @@ import androidx.compose.ui.test.assertIsNotDisplayed
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import ch.protonmail.android.maildetail.presentation.R
-import ch.protonmail.android.mailmessage.presentation.ui.bottomsheet.LabelAsBottomSheetTestTags
+import ch.protonmail.android.maillabel.presentation.bottomsheet.LabelAsBottomSheetTestTags
 import ch.protonmail.android.test.ksp.annotations.AttachTo
 import ch.protonmail.android.test.ksp.annotations.VerifiesOuter
 import ch.protonmail.android.uitest.robot.ComposeSectionRobot

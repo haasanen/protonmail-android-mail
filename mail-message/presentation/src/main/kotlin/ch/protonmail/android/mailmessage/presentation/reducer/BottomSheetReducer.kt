@@ -33,7 +33,6 @@ import javax.inject.Inject
 
 class BottomSheetReducer @Inject constructor(
     private val moveToBottomSheetReducer: MoveToBottomSheetReducer,
-    private val labelAsBottomSheetReducer: LabelAsBottomSheetReducer,
     private val mailboxMoreActionsBottomSheetReducer: MailboxMoreActionsBottomSheetReducer,
     private val detailMoreActionsBottomSheetReducer: DetailMoreActionsBottomSheetReducer,
     private val contactActionsBottomSheetReducer: ContactActionsBottomSheetReducer,
@@ -48,8 +47,16 @@ class BottomSheetReducer @Inject constructor(
             is MoveToBottomSheetState.MoveToBottomSheetOperation ->
                 moveToBottomSheetReducer.newStateFrom(currentState, operation)
 
-            is LabelAsBottomSheetState.LabelAsBottomSheetOperation ->
-                labelAsBottomSheetReducer.newStateFrom(currentState, operation)
+            is LabelAsBottomSheetState.LabelAsBottomSheetEvent.Ready ->
+                BottomSheetState(
+                    contentState = LabelAsBottomSheetState.Requested(
+                        operation.userId,
+                        operation.currentLabel,
+                        operation.itemIds,
+                        operation.entryPoint
+                    ),
+                    bottomSheetVisibilityEffect = currentState?.bottomSheetVisibilityEffect ?: Effect.empty()
+                )
 
             is MailboxMoreActionsBottomSheetState.MailboxMoreActionsBottomSheetOperation ->
                 mailboxMoreActionsBottomSheetReducer.newStateFrom(currentState, operation)
@@ -65,6 +72,7 @@ class BottomSheetReducer @Inject constructor(
                     contentState = ManageAccountSheetState.Requested,
                     bottomSheetVisibilityEffect = currentState?.bottomSheetVisibilityEffect ?: Effect.empty()
                 )
+
             is BottomSheetOperation.Dismiss -> BottomSheetState(null, Effect.of(BottomSheetVisibilityEffect.Hide))
             is BottomSheetOperation.Requested -> BottomSheetState(null, Effect.of(BottomSheetVisibilityEffect.Show))
         }

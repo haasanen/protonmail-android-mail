@@ -16,7 +16,7 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailmessage.presentation.ui.bottomsheet
+package ch.protonmail.android.maillabel.presentation.bottomsheet
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -45,64 +45,51 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
 import ch.protonmail.android.design.compose.component.ProtonSolidButton
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyLargeNorm
 import ch.protonmail.android.design.compose.theme.bodyLargeWeak
 import ch.protonmail.android.design.compose.theme.titleLargeNorm
+import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
+import ch.protonmail.android.mailcommon.presentation.ConsumableTextEffect
 import ch.protonmail.android.mailcommon.presentation.NO_CONTENT_DESCRIPTION
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 import ch.protonmail.android.mailcommon.presentation.model.string
 import ch.protonmail.android.maillabel.domain.model.LabelId
+import ch.protonmail.android.maillabel.presentation.R
 import ch.protonmail.android.maillabel.presentation.model.LabelSelectedState
 import ch.protonmail.android.maillabel.presentation.model.LabelUiModelWithSelectedState
-import ch.protonmail.android.maillabel.presentation.sample.LabelUiModelWithSelectedStateSample
-import ch.protonmail.android.mailmessage.presentation.R
-import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.LabelAsBottomSheetEntryPoint
-import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.LabelAsBottomSheetState
 import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.toImmutableList
 
 @Composable
-fun LabelAsBottomSheetContent(state: LabelAsBottomSheetState, actions: LabelAsBottomSheetContent.Actions) {
-    when (state) {
-        is LabelAsBottomSheetState.Data -> LabelAsBottomSheetContent(
-            labelAsDataState = state,
-            actions = actions
-        )
-
-        else -> ProtonCenteredProgress()
-    }
-}
-
-@Composable
-fun LabelAsBottomSheetContent(
-    labelAsDataState: LabelAsBottomSheetState.Data,
-    actions: LabelAsBottomSheetContent.Actions
+internal fun LabelAsBottomSheetContent(
+    labelAsDataState: LabelAsState.Data,
+    actions: LabelAsBottomSheetContent.Actions,
+    modifier: Modifier = Modifier
 ) {
 
     var archiveSelectedState by remember { mutableStateOf(false) }
 
-    Column(
-        modifier = Modifier
-            .testTag(LabelAsBottomSheetTestTags.RootItem)
-            .fillMaxWidth()
-    ) {
+    ConsumableLaunchedEffect(labelAsDataState.shouldDismissEffect) {
+        actions.onLabelAsComplete(archiveSelectedState, labelAsDataState.entryPoint)
+    }
 
-        LabelAsSheetTitle(
-            modifier = Modifier.fillMaxWidth()
-        )
+    ConsumableTextEffect(labelAsDataState.errorEffect) {
+        actions.onError(it)
+    }
+
+    Column(
+        modifier = modifier.fillMaxWidth()
+    ) {
+        LabelAsSheetTitle(modifier = Modifier.fillMaxWidth())
 
         Box(
             modifier = Modifier
@@ -131,10 +118,9 @@ fun LabelAsBottomSheetContent(
 
             LabelGroupWithActionButton(
                 modifier = Modifier.fillMaxWidth(),
-                labelUiModelsWithSelectedState = labelAsDataState.labelUiModelsWithSelectedState,
+                labelUiModelsWithSelectedState = labelAsDataState.labelUiModels,
                 actions = actions
             )
-
 
             Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Large))
 
@@ -147,7 +133,7 @@ fun LabelAsBottomSheetContent(
                         bottom = ProtonDimens.Spacing.Large,
                         top = ProtonDimens.Spacing.Standard
                     ),
-                onClick = { actions.onDoneClick(archiveSelectedState, labelAsDataState.entryPoint) }
+                onClick = { actions.onDoneClick(archiveSelectedState) }
             )
         }
     }
@@ -156,9 +142,7 @@ fun LabelAsBottomSheetContent(
 @Composable
 private fun DoneButton(modifier: Modifier = Modifier, onClick: () -> Unit) {
     ProtonSolidButton(
-        modifier = modifier
-            .testTag(LabelAsBottomSheetTestTags.DoneButton)
-            .height(MailDimens.LabelAsDoneButtonHeight),
+        modifier = modifier.height(MailDimens.LabelAsDoneButtonHeight),
         shape = ProtonTheme.shapes.huge,
         onClick = onClick
     ) {
@@ -171,7 +155,7 @@ private fun DoneButton(modifier: Modifier = Modifier, onClick: () -> Unit) {
 }
 
 @Composable
-fun LabelGroupWithActionButton(
+private fun LabelGroupWithActionButton(
     modifier: Modifier = Modifier,
     labelUiModelsWithSelectedState: ImmutableList<LabelUiModelWithSelectedState>,
     actions: LabelAsBottomSheetContent.Actions
@@ -187,12 +171,10 @@ fun LabelGroupWithActionButton(
     ) {
         Column(modifier = Modifier.fillMaxWidth()) {
 
-            labelUiModelsWithSelectedState.forEachIndexed { index, labelUiModelWithSelectedState ->
+            labelUiModelsWithSelectedState.forEachIndexed { _, labelUiModelWithSelectedState ->
                 SelectableLabelGroupItem(
-                    modifier = Modifier
-                        .testTag(LabelAsBottomSheetTestTags.LabelItem),
                     labelUiModelWithSelectedState = labelUiModelWithSelectedState,
-                    onClick = { actions.onLabelAsSelected(labelUiModelWithSelectedState.labelUiModel.id.labelId) }
+                    onClick = { actions.onLabelToggled(labelUiModelWithSelectedState.labelUiModel.id.labelId) }
                 )
 
                 HorizontalDivider(
@@ -210,7 +192,7 @@ fun LabelGroupWithActionButton(
 }
 
 @Composable
-internal fun SelectableLabelGroupItem(
+private fun SelectableLabelGroupItem(
     modifier: Modifier = Modifier,
     labelUiModelWithSelectedState: LabelUiModelWithSelectedState,
     onClick: () -> Unit
@@ -237,7 +219,6 @@ internal fun SelectableLabelGroupItem(
     ) {
         Icon(
             modifier = Modifier
-                .testTag(LabelAsBottomSheetTestTags.LabelIcon)
                 .padding(end = ProtonDimens.Spacing.Large),
             painter = painterResource(id = labelUiModelWithSelectedState.labelUiModel.icon),
             tint = labelUiModelWithSelectedState.labelUiModel.iconTint ?: Color.Unspecified,
@@ -245,7 +226,6 @@ internal fun SelectableLabelGroupItem(
         )
         Text(
             modifier = Modifier
-                .testTag(LabelAsBottomSheetTestTags.LabelNameText)
                 .weight(1f),
             text = labelUiModelWithSelectedState.labelUiModel.text.string(),
             style = ProtonTheme.typography.bodyLargeWeak,
@@ -266,16 +246,14 @@ private fun SelectedStateIcon(modifier: Modifier = Modifier, selectedState: Labe
 
     when (selectedState) {
         LabelSelectedState.Selected -> Icon(
-            modifier = modifier
-                .testTag(LabelAsBottomSheetTestTags.LabelSelectionCheckbox),
+            modifier = modifier,
             painter = painterResource(id = R.drawable.ic_proton_checkmark),
             contentDescription = NO_CONTENT_DESCRIPTION,
             tint = ProtonTheme.colors.iconAccent
         )
 
         LabelSelectedState.PartiallySelected -> Icon(
-            modifier = modifier
-                .testTag(LabelAsBottomSheetTestTags.LabelSelectionCheckbox),
+            modifier = modifier,
             painter = painterResource(id = R.drawable.ic_proton_minus),
             contentDescription = NO_CONTENT_DESCRIPTION,
             tint = ProtonTheme.colors.iconAccent
@@ -288,12 +266,10 @@ private fun SelectedStateIcon(modifier: Modifier = Modifier, selectedState: Labe
     }
 }
 
-
 @Composable
 private fun CreateLabelButton(modifier: Modifier = Modifier, onClick: () -> Unit) {
     Row(
         modifier = modifier
-            .testTag(LabelAsBottomSheetTestTags.AddLabelRow)
             .fillMaxWidth()
             .clickable(
                 role = Role.Button,
@@ -306,16 +282,12 @@ private fun CreateLabelButton(modifier: Modifier = Modifier, onClick: () -> Unit
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
-            modifier = Modifier
-                .testTag(LabelAsBottomSheetTestTags.AddLabelIcon)
-                .padding(end = ProtonDimens.Spacing.Large),
+            modifier = Modifier.padding(end = ProtonDimens.Spacing.Large),
             painter = painterResource(id = R.drawable.ic_proton_plus),
             contentDescription = NO_CONTENT_DESCRIPTION
         )
         Text(
-            modifier = Modifier
-                .testTag(LabelAsBottomSheetTestTags.AddLabelText)
-                .weight(1f),
+            modifier = Modifier.weight(1f),
             text = stringResource(id = R.string.label_title_create_label),
             style = ProtonTheme.typography.bodyLargeWeak,
             maxLines = 1,
@@ -354,9 +326,7 @@ private fun AlsoArchiveRow(
                 contentDescription = NO_CONTENT_DESCRIPTION
             )
             Text(
-                modifier = Modifier
-                    .testTag(MoreActionsBottomSheetTestTags.LabelIcon)
-                    .weight(1f),
+                modifier = Modifier.weight(1f),
                 text = stringResource(id = R.string.bottom_sheet_archive_action),
                 style = ProtonTheme.typography.bodyLargeWeak,
                 maxLines = 1,
@@ -364,9 +334,7 @@ private fun AlsoArchiveRow(
             )
 
             Switch(
-                modifier = Modifier
-                    .testTag(LabelAsBottomSheetTestTags.AlsoArchiveToggle)
-                    .height(ProtonDimens.IconSize.Default),
+                modifier = Modifier.height(ProtonDimens.IconSize.Default),
                 colors = SwitchDefaults.colors(
                     checkedTrackColor = ProtonTheme.colors.notificationSuccess,
                     uncheckedTrackColor = ProtonTheme.colors.iconHint,
@@ -394,9 +362,7 @@ private fun LabelAsSheetTitle(modifier: Modifier) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
-            modifier = Modifier
-                .testTag(LabelAsBottomSheetTestTags.LabelAsText)
-                .weight(1f),
+            modifier = Modifier.weight(1f),
             text = stringResource(id = R.string.bottom_sheet_label_as_title),
             style = ProtonTheme.typography.titleLargeNorm,
             fontWeight = FontWeight.SemiBold,
@@ -407,45 +373,29 @@ private fun LabelAsSheetTitle(modifier: Modifier) {
     }
 }
 
-object LabelAsBottomSheetContent {
-
+internal object LabelAsBottomSheetContent {
     data class Actions(
         val onAddLabelClick: () -> Unit,
-        val onLabelAsSelected: (LabelId) -> Unit,
-        val onDoneClick: (archiveSelected: Boolean, entryPoint: LabelAsBottomSheetEntryPoint) -> Unit
-    )
-}
+        val onLabelToggled: (LabelId) -> Unit,
+        val onDoneClick: (archiveSelected: Boolean) -> Unit,
+        val onLabelAsComplete: (archiveSelected: Boolean, entryPoint: LabelAsBottomSheetEntryPoint) -> Unit,
+        val onError: (String) -> Unit
+    ) {
 
-@Preview(showBackground = true)
-@Composable
-fun LabelAsBottomSheetContentPreview() {
-    ProtonTheme {
-        LabelAsBottomSheetContent(
-            labelAsDataState = LabelAsBottomSheetState.Data(
-                labelUiModelsWithSelectedState = LabelUiModelWithSelectedStateSample.customLabelListWithSelection
-                    .toImmutableList(),
-                entryPoint = LabelAsBottomSheetEntryPoint.Conversation
-            ),
-            actions = LabelAsBottomSheetContent.Actions(
+        companion object {
+
+            val Empty = Actions(
+                onLabelToggled = {},
                 onAddLabelClick = {},
-                onLabelAsSelected = {},
-                onDoneClick = { _, _ -> }
+                onDoneClick = {},
+                onLabelAsComplete = { _, _ -> },
+                onError = {}
             )
-        )
+        }
     }
 }
 
 object LabelAsBottomSheetTestTags {
 
     const val RootItem = "LabelAsBottomSheetRootItem"
-    const val LabelAsText = "LabelAsText"
-    const val DoneButton = "DoneButton"
-    const val AlsoArchiveToggle = "AlsoArchiveToggle"
-    const val AddLabelText = "AddLabelText"
-    const val AddLabelIcon = "AddLabelIcon"
-    const val AddLabelRow = "AddLabelRow"
-    const val LabelItem = "LabelItem"
-    const val LabelIcon = "LabelIcon"
-    const val LabelNameText = "LabelNameText"
-    const val LabelSelectionCheckbox = "LabelSelectionCheckbox"
 }

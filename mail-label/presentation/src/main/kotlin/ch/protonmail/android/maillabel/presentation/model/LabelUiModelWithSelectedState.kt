@@ -18,11 +18,20 @@
 
 package ch.protonmail.android.maillabel.presentation.model
 
-import ch.protonmail.android.maillabel.presentation.MailLabelUiModel
+import androidx.compose.ui.graphics.Color
+import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
+import ch.protonmail.android.maillabel.domain.model.MailLabelId
 
 data class LabelUiModelWithSelectedState(
-    val labelUiModel: MailLabelUiModel.Custom,
+    val labelUiModel: LabelAsBottomSheetUiModel,
     val selectedState: LabelSelectedState
+)
+
+data class LabelAsBottomSheetUiModel(
+    val id: MailLabelId.Custom,
+    val text: TextUiModel,
+    val icon: Int,
+    val iconTint: Color?
 )
 
 sealed interface LabelSelectedState {
