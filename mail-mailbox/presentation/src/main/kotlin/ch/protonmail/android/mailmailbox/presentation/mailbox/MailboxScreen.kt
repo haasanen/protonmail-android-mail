@@ -124,6 +124,9 @@ import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcommon.presentation.model.string
 import ch.protonmail.android.mailcommon.presentation.ui.BottomActionBar
 import ch.protonmail.android.mailcommon.presentation.ui.delete.DeleteDialog
+import ch.protonmail.android.maillabel.presentation.bottomsheet.LabelAsBottomSheet
+import ch.protonmail.android.maillabel.presentation.bottomsheet.LabelAsBottomSheetScreen
+import ch.protonmail.android.maillabel.presentation.bottomsheet.LabelAsItemId
 import ch.protonmail.android.mailmailbox.domain.model.OpenMailboxItemRequest
 import ch.protonmail.android.mailmailbox.presentation.R
 import ch.protonmail.android.mailmailbox.presentation.mailbox.mapper.MailboxEmptyUiModelMapper
@@ -139,7 +142,6 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.previewdata.Mailbo
 import ch.protonmail.android.mailmailbox.presentation.mailbox.previewdata.MailboxStateSampleData
 import ch.protonmail.android.mailmailbox.presentation.paging.mapToUiStates
 import ch.protonmail.android.mailmailbox.presentation.paging.search.mapToUiStatesInSearch
-import ch.protonmail.android.mailmessage.domain.model.LabelAsItemId
 import ch.protonmail.android.mailmessage.domain.model.MoveToItemId
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.BottomSheetVisibilityEffect
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.LabelAsBottomSheetState
@@ -147,7 +149,6 @@ import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MailboxM
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.ManageAccountSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MoveToBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.UpsellingBottomSheetState
-import ch.protonmail.android.mailmessage.presentation.ui.bottomsheet.LabelAsBottomSheetContent
 import ch.protonmail.android.mailmessage.presentation.ui.bottomsheet.MailboxMoreActionBottomSheetContent
 import ch.protonmail.android.mailmessage.presentation.ui.bottomsheet.MailboxUpsellingBottomSheet
 import ch.protonmail.android.mailmessage.presentation.ui.bottomsheet.MoreActionBottomSheetContent
@@ -300,9 +301,9 @@ fun MailboxScreen(
         dismissOnBack = true,
         sheetState = bottomSheetState,
         sheetContent = bottomSheetHeightConstrainedContent {
-            when (val bottomSheetContentState = mailboxState.bottomSheetState?.contentState) {
+            when (val contentState = mailboxState.bottomSheetState?.contentState) {
                 is MoveToBottomSheetState -> MoveToBottomSheetContent(
-                    state = bottomSheetContentState,
+                    state = contentState,
                     actions = MoveToBottomSheetContent.Actions(
                         onAddFolderClick = actions.onAddFolder,
                         onFolderSelected = { folderId, _, entryPoint ->
@@ -312,19 +313,26 @@ fun MailboxScreen(
                     )
                 )
 
-                is LabelAsBottomSheetState -> LabelAsBottomSheetContent(
-                    state = bottomSheetContentState,
-                    actions = LabelAsBottomSheetContent.Actions(
-                        onAddLabelClick = actions.onAddLabel,
-                        onLabelAsSelected = { viewModel.submit(MailboxViewAction.LabelAsToggleAction(it)) },
-                        onDoneClick = { archiveSelected, entryPoint ->
-                            viewModel.submit(MailboxViewAction.LabelAsConfirmed(archiveSelected, entryPoint))
-                        }
+                is LabelAsBottomSheetState.Requested -> {
+                    val initialData = LabelAsBottomSheet.InitialData(
+                        contentState.userId,
+                        contentState.currentLabel,
+                        contentState.itemIds,
+                        entryPoint = contentState.entryPoint
                     )
-                )
+
+                    val actions = LabelAsBottomSheet.Actions(
+                        onAddLabelClick = actions.onAddLabel,
+                        onError = { actions.showErrorSnackbar(it) },
+                        onLabelAsComplete = { _, _ -> viewModel.submit(MailboxViewAction.DismissBottomSheet) },
+                        onDismiss = { viewModel.submit(MailboxViewAction.DismissBottomSheet) }
+                    )
+
+                    LabelAsBottomSheetScreen(providedData = initialData, actions = actions)
+                }
 
                 is MailboxMoreActionsBottomSheetState -> MailboxMoreActionBottomSheetContent(
-                    state = bottomSheetContentState,
+                    state = contentState,
                     actionCallbacks = MoreActionBottomSheetContent.Actions(
                         onStar = { viewModel.submit(MailboxViewAction.Star) },
                         onUnStar = { viewModel.submit(MailboxViewAction.UnStar) },

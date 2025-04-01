@@ -22,7 +22,7 @@ import ch.protonmail.android.mailcommon.presentation.model.BottomBarEvent
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabel
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
-import me.proton.android.core.accountmanager.domain.model.CoreAccountAvatarItem
+import ch.protonmail.android.maillabel.presentation.bottomsheet.LabelAsItemId
 import ch.protonmail.android.mailmailbox.domain.model.StorageLimitPreference
 import ch.protonmail.android.mailmailbox.domain.model.UserAccountStorageStatus
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxOperation.AffectingActionMessage
@@ -36,11 +36,10 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxOpera
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxOperation.AffectingTopAppBar
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxOperation.AffectingUnreadFilter
 import ch.protonmail.android.mailmessage.domain.model.AvatarImageStates
-import ch.protonmail.android.mailmessage.domain.model.LabelAsItemId
 import ch.protonmail.android.mailmessage.domain.model.MoveToItemId
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.BottomSheetOperation
-import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.LabelAsBottomSheetEntryPoint
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MoveToBottomSheetEntryPoint
+import me.proton.android.core.accountmanager.domain.model.CoreAccountAvatarItem
 import me.proton.core.mailsettings.domain.entity.ViewMode
 
 internal sealed interface MailboxOperation {
@@ -102,12 +101,6 @@ internal sealed interface MailboxViewAction : MailboxOperation {
     object DeleteConfirmed : MailboxViewAction
     object DeleteDialogDismissed : MailboxViewAction, AffectingDeleteDialog
     object RequestLabelAsBottomSheet : MailboxViewAction, AffectingBottomSheet
-    data class LabelAsToggleAction(val label: LabelId) : MailboxViewAction, AffectingBottomSheet
-    data class LabelAsConfirmed(
-        val archiveSelected: Boolean,
-        val entryPoint: LabelAsBottomSheetEntryPoint
-    ) : MailboxViewAction, AffectingBottomSheet
-
     data class SwipeReadAction(val itemId: String, val isRead: Boolean) : MailboxViewAction
     data class SwipeArchiveAction(val itemId: String) : MailboxViewAction, AffectingActionMessage
     data class SwipeSpamAction(val itemId: String) : MailboxViewAction, AffectingActionMessage

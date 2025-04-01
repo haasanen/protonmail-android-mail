@@ -18,7 +18,6 @@
 
 package ch.protonmail.android.mailmailbox.presentation.mailbox
 
-import ch.protonmail.android.mailfeatureflags.domain.annotation.ComposerEnabled
 import java.util.Collections
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -44,13 +43,13 @@ import ch.protonmail.android.mailcommon.presentation.model.BottomBarEvent
 import ch.protonmail.android.mailcommon.presentation.model.BottomBarState
 import ch.protonmail.android.mailcommon.presentation.ui.delete.DeleteDialogState
 import ch.protonmail.android.mailconversation.domain.usecase.DeleteConversations
-import ch.protonmail.android.mailconversation.domain.usecase.LabelConversations
 import ch.protonmail.android.mailconversation.domain.usecase.MarkConversationsAsRead
 import ch.protonmail.android.mailconversation.domain.usecase.MarkConversationsAsUnread
 import ch.protonmail.android.mailconversation.domain.usecase.MoveConversations
 import ch.protonmail.android.mailconversation.domain.usecase.ObserveClearConversationOperation
 import ch.protonmail.android.mailconversation.domain.usecase.StarConversations
 import ch.protonmail.android.mailconversation.domain.usecase.UnStarConversations
+import ch.protonmail.android.mailfeatureflags.domain.annotation.ComposerEnabled
 import ch.protonmail.android.maillabel.domain.SelectedMailLabelId
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabel
@@ -58,11 +57,11 @@ import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabels
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.maillabel.domain.model.isTrashOrSpam
-import ch.protonmail.android.maillabel.domain.model.toMailLabelCustom
 import ch.protonmail.android.maillabel.domain.usecase.FindLocalSystemLabelId
+import ch.protonmail.android.maillabel.domain.usecase.ObserveCurrentViewMode
 import ch.protonmail.android.maillabel.domain.usecase.ObserveMailLabels
-import ch.protonmail.android.maillabel.presentation.model.LabelSelectedState
-import ch.protonmail.android.maillabel.presentation.toCustomUiModel
+import ch.protonmail.android.maillabel.presentation.bottomsheet.LabelAsBottomSheetEntryPoint
+import ch.protonmail.android.maillabel.presentation.bottomsheet.LabelAsItemId
 import ch.protonmail.android.maillabel.presentation.toUiModels
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItem
 import ch.protonmail.android.mailmailbox.domain.model.MailboxItemId
@@ -75,9 +74,7 @@ import ch.protonmail.android.mailmailbox.domain.model.isBelowSecondLimit
 import ch.protonmail.android.mailmailbox.domain.model.toMailboxItemType
 import ch.protonmail.android.mailmailbox.domain.usecase.GetBottomBarActions
 import ch.protonmail.android.mailmailbox.domain.usecase.GetBottomSheetActions
-import ch.protonmail.android.mailmailbox.domain.usecase.GetLabelAsBottomSheetContent
 import ch.protonmail.android.mailmailbox.domain.usecase.GetMoveToLocations
-import ch.protonmail.android.mailmailbox.domain.usecase.ObserveCurrentViewMode
 import ch.protonmail.android.mailmailbox.domain.usecase.ObservePrimaryUserAccountStorageStatus
 import ch.protonmail.android.mailmailbox.domain.usecase.ObserveStorageLimitPreference
 import ch.protonmail.android.mailmailbox.domain.usecase.ObserveUnreadCounters
@@ -97,15 +94,12 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.model.UnreadFilter
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.UpgradeStorageState
 import ch.protonmail.android.mailmailbox.presentation.mailbox.reducer.MailboxReducer
 import ch.protonmail.android.mailmailbox.presentation.paging.MailboxPagerFactory
-import ch.protonmail.android.mailmessage.domain.model.LabelAsItemId
-import ch.protonmail.android.mailmessage.domain.model.LabelSelectionList
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.MoveToItemId
 import ch.protonmail.android.mailmessage.domain.model.UnreadCounter
 import ch.protonmail.android.mailmessage.domain.usecase.DeleteMessages
 import ch.protonmail.android.mailmessage.domain.usecase.DeleteSearchResults
 import ch.protonmail.android.mailmessage.domain.usecase.HandleAvatarImageLoadingFailure
-import ch.protonmail.android.mailmessage.domain.usecase.LabelMessages
 import ch.protonmail.android.mailmessage.domain.usecase.LoadAvatarImage
 import ch.protonmail.android.mailmessage.domain.usecase.MarkMessagesAsRead
 import ch.protonmail.android.mailmessage.domain.usecase.MarkMessagesAsUnread
@@ -114,7 +108,6 @@ import ch.protonmail.android.mailmessage.domain.usecase.ObserveAvatarImageStates
 import ch.protonmail.android.mailmessage.domain.usecase.ObserveClearMessageOperation
 import ch.protonmail.android.mailmessage.domain.usecase.StarMessages
 import ch.protonmail.android.mailmessage.domain.usecase.UnStarMessages
-import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.LabelAsBottomSheetEntryPoint
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.LabelAsBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MailboxMoreActionsBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.ManageAccountSheetState
@@ -170,7 +163,6 @@ class MailboxViewModel @Inject constructor(
     private val getBottomBarActions: GetBottomBarActions,
     private val getBottomSheetActions: GetBottomSheetActions,
     private val getMoveToLocations: GetMoveToLocations,
-    private val getLabelAsBottomSheetContent: GetLabelAsBottomSheetContent,
     private val actionUiModelMapper: ActionUiModelMapper,
     private val mailboxItemMapper: MailboxItemUiModelMapper,
     private val swipeActionsMapper: SwipeActionsMapper,
@@ -178,8 +170,6 @@ class MailboxViewModel @Inject constructor(
     private val markConversationsAsUnread: MarkConversationsAsUnread,
     private val markMessagesAsRead: MarkMessagesAsRead,
     private val markMessagesAsUnread: MarkMessagesAsUnread,
-    private val labelMessages: LabelMessages,
-    private val labelConversations: LabelConversations,
     private val moveConversations: MoveConversations,
     private val moveMessages: MoveMessages,
     private val deleteConversations: DeleteConversations,
@@ -348,6 +338,7 @@ class MailboxViewModel @Inject constructor(
                     } else {
                         ClearAllState.ClearAllActionBanner
                     }
+
                 else -> ClearAllState.UpsellBanner
             }
 
@@ -383,19 +374,15 @@ class MailboxViewModel @Inject constructor(
                 is MailboxViewAction.SwipeSpamAction -> handleSwipeSpamAction(viewAction)
                 is MailboxViewAction.SwipeTrashAction -> handleSwipeTrashAction(viewAction)
                 is MailboxViewAction.StarAction -> handleSwipeStarAction(viewAction)
-                is MailboxViewAction.SwipeLabelAsAction -> showLabelAsBottomSheetAndLoadData(viewAction)
+                is MailboxViewAction.SwipeLabelAsAction -> requestLabelAsBottomSheet(viewAction)
                 is MailboxViewAction.SwipeMoveToAction -> showMoveToBottomSheetAndLoadData(viewAction)
                 is MailboxViewAction.Trash -> handleTrashAction()
                 is MailboxViewAction.Delete -> handleDeleteAction()
                 is MailboxViewAction.MoveToInbox -> handleMoveToInboxAction(viewAction)
                 is MailboxViewAction.DeleteConfirmed -> handleDeleteConfirmedAction()
                 is MailboxViewAction.DeleteDialogDismissed -> handleDeleteDialogDismissed()
-                is MailboxViewAction.RequestLabelAsBottomSheet -> showLabelAsBottomSheetAndLoadData(viewAction)
-                is MailboxViewAction.LabelAsToggleAction -> emitNewStateFrom(viewAction)
-                is MailboxViewAction.LabelAsConfirmed -> onLabelAsConfirmed(
-                    viewAction.archiveSelected,
-                    viewAction.entryPoint
-                )
+                is MailboxViewAction.RequestLabelAsBottomSheet -> requestLabelAsBottomSheet(viewAction)
+
                 is MailboxViewAction.RequestMoveToBottomSheet -> showMoveToBottomSheetAndLoadData(viewAction)
                 is MailboxViewAction.MoveToDestinationSelected -> onMoveToDestinationSelected(viewAction)
                 is MailboxViewAction.RequestMoreActionsBottomSheet -> showMoreBottomSheet(viewAction)
@@ -812,7 +799,7 @@ class MailboxViewModel @Inject constructor(
         }
     }
 
-    private fun showLabelAsBottomSheetAndLoadData(operation: MailboxViewAction) {
+    private fun requestLabelAsBottomSheet(operation: MailboxViewAction) {
         val items = when (operation) {
             is MailboxViewAction.RequestLabelAsBottomSheet -> {
                 val selectionMode = state.value.mailboxListState as? MailboxListState.Data.SelectionMode
@@ -830,77 +817,28 @@ class MailboxViewModel @Inject constructor(
             else -> return
         }
 
-        val entryPoint = when (operation) {
-            is MailboxViewAction.RequestLabelAsBottomSheet -> LabelAsBottomSheetEntryPoint.SelectionMode
-            is MailboxViewAction.SwipeLabelAsAction -> LabelAsBottomSheetEntryPoint.LabelAsSwipeAction(operation.itemId)
-            else -> {
-                Timber.e("Unsupported operation: $operation")
-                return
-            }
-        }
-
         viewModelScope.launch {
-            emitNewStateFrom(operation)
-
-            val userId = primaryUserId.filterNotNull().first()
-            val currentMailLabel = selectedMailLabelId.flow.value
-            val viewMode = getViewModeForCurrentLocation(currentMailLabel)
-            val contentEither =
-                getLabelAsBottomSheetContent(userId, currentMailLabel.labelId, items, viewMode)
-
-            contentEither.fold(
-                ifLeft = { emitNewStateFrom(MailboxEvent.ErrorRetrievingCustomMailLabels) },
-                ifRight = { labelAsContent ->
-                    val mailLabels = labelAsContent.labels.toMailLabelCustom()
-                    val event = MailboxEvent.MailboxBottomSheetEvent(
-                        LabelAsBottomSheetState.LabelAsBottomSheetEvent.ActionData(
-                            customLabelList = mailLabels.map {
-                                it.toCustomUiModel(emptyMap(), null)
-                            }.toImmutableList(),
-                            selectedLabels = labelAsContent.selected.toImmutableList(),
-                            partiallySelectedLabels = labelAsContent.partiallySelected.toImmutableList(),
-                            entryPoint = entryPoint
-                        )
-                    )
-                    emitNewStateFrom(event)
-                }
-            )
-        }
-    }
-
-    private fun onLabelAsConfirmed(archiveSelected: Boolean, entryPoint: LabelAsBottomSheetEntryPoint) {
-        val items = when (entryPoint) {
-            is LabelAsBottomSheetEntryPoint.SelectionMode -> {
-                val selectionMode = state.value.mailboxListState as? MailboxListState.Data.SelectionMode
-                if (selectionMode == null) {
-                    Timber.d("MailboxListState is not in SelectionMode")
-                    return
-                }
-                selectionMode.selectedMailboxItems.map { LabelAsItemId(it.id) }
-            }
-            is LabelAsBottomSheetEntryPoint.LabelAsSwipeAction -> {
-                listOf(entryPoint.itemId)
-            }
-            else -> return
-        }
-
-        viewModelScope.launch {
-            val userId = primaryUserId.filterNotNull().first()
-            val labelAsData = state.value.bottomSheetState?.contentState as? LabelAsBottomSheetState.Data
-                ?: throw IllegalStateException("BottomSheetState is not LabelAsBottomSheetState.Data")
-
-            val updatedSelection = labelAsData.getLabelSelectionState()
             val viewMode = getViewModeForCurrentLocation(selectedMailLabelId.flow.value)
+            val entryPoint = when (operation) {
+                is MailboxViewAction.RequestLabelAsBottomSheet ->
+                    LabelAsBottomSheetEntryPoint.SelectionMode(viewMode)
 
-            val operation = handleLabelOperation(
-                userId = userId,
-                viewMode = viewMode,
-                selectedItems = items.toSet(),
-                updatedSelectionList = updatedSelection,
-                archiveSelected = archiveSelected,
+                is MailboxViewAction.SwipeLabelAsAction ->
+                    LabelAsBottomSheetEntryPoint.LabelAsSwipeAction(viewMode, operation.itemId)
+
+                else -> {
+                    Timber.e("Unsupported operation: $operation")
+                    return@launch
+                }
+            }
+
+            val event = LabelAsBottomSheetState.LabelAsBottomSheetEvent.Ready(
+                userId = primaryUserId.first(),
+                currentLabel = selectedMailLabelId.flow.value.labelId,
+                itemIds = items,
                 entryPoint = entryPoint
             )
-            emitNewStateFrom(operation)
+            emitNewStateFrom(MailboxEvent.MailboxBottomSheetEvent(event))
         }
     }
 
@@ -1037,34 +975,6 @@ class MailboxViewModel @Inject constructor(
                     selectedCount = selectionState.selectedMailboxItems.size
                 )
             )
-        )
-    }
-
-    private suspend fun handleLabelOperation(
-        userId: UserId,
-        viewMode: ViewMode,
-        selectedItems: Set<LabelAsItemId>,
-        updatedSelectionList: LabelSelectionList,
-        archiveSelected: Boolean,
-        entryPoint: LabelAsBottomSheetEntryPoint
-    ): MailboxOperation {
-        return when (viewMode) {
-            ViewMode.ConversationGrouping -> labelConversations(
-                userId = userId,
-                conversationIds = selectedItems.map { ConversationId(it.value) },
-                updatedSelections = updatedSelectionList,
-                archiveSelected
-            )
-
-            ViewMode.NoConversationGrouping -> labelMessages(
-                userId = userId,
-                messageIds = selectedItems.map { MessageId(it.value) },
-                updatedSelections = updatedSelectionList,
-                shouldArchive = archiveSelected
-            )
-        }.fold(
-            ifLeft = { MailboxEvent.ErrorLabeling },
-            ifRight = { MailboxViewAction.LabelAsConfirmed(archiveSelected, entryPoint) }
         )
     }
 
@@ -1326,7 +1236,7 @@ class MailboxViewModel @Inject constructor(
         return if (userId == null || state.value.isInSearchMode()) {
             ObserveCurrentViewMode.DefaultViewMode
         } else {
-            observeCurrentViewMode(userId, currentMailLabel).first()
+            observeCurrentViewMode(userId, currentMailLabel.labelId).first()
         }
     }
 
@@ -1373,20 +1283,6 @@ class MailboxViewModel @Inject constructor(
         this.map { it.mailboxListState as? MailboxListState.Data.SelectionMode }
             .mapNotNull { it?.selectedMailboxItems }
             .distinctUntilChanged()
-
-    private fun LabelAsBottomSheetState.Data.getLabelSelectionState(): LabelSelectionList {
-        val selectedLabels = this.labelUiModelsWithSelectedState
-            .filter { it.selectedState == LabelSelectedState.Selected }
-            .map { it.labelUiModel.id.labelId }
-
-        val partiallySelectedLabels = this.labelUiModelsWithSelectedState
-            .filter { it.selectedState == LabelSelectedState.PartiallySelected }
-            .map { it.labelUiModel.id.labelId }
-        return LabelSelectionList(
-            selectedLabels = selectedLabels,
-            partiallySelectionLabels = partiallySelectedLabels
-        )
-    }
 
     private fun isActionAllowedForCurrentLabel(labelId: LabelId): Boolean {
         return state.value.mailboxListState.let { usedLabels ->

@@ -38,7 +38,6 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.model.UnreadFilter
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.UpgradeStorageState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.BottomSheetOperation
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.BottomSheetState
-import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.LabelAsBottomSheetState.LabelAsBottomSheetAction.LabelToggled
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MoveToBottomSheetState.MoveToBottomSheetAction.MoveToDestinationSelected
 import ch.protonmail.android.mailmessage.presentation.reducer.BottomSheetReducer
 import javax.inject.Inject
@@ -184,14 +183,12 @@ class MailboxReducer @Inject constructor(
                 is MailboxViewAction.SwipeMoveToAction,
                 is MailboxViewAction.RequestManageAccountsBottomSheet -> BottomSheetOperation.Requested
 
-                is MailboxViewAction.LabelAsToggleAction -> LabelToggled(operation.label)
                 is MailboxEvent.ErrorRetrievingCustomMailLabels,
                 is MailboxEvent.ErrorRetrievingFolderColorSettings,
                 is MailboxEvent.ErrorRetrievingDestinationMailFolders,
                 is MailboxEvent.DeleteConfirmed,
                 is MailboxEvent.ErrorDeleting,
                 is MailboxEvent.MoveToConfirmed,
-                is MailboxViewAction.LabelAsConfirmed,
                 is MailboxViewAction.Star,
                 is MailboxViewAction.UnStar,
                 is MailboxViewAction.MoveToArchive,
