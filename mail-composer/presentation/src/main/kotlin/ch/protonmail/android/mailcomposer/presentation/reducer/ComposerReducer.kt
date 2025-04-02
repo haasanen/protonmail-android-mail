@@ -154,6 +154,9 @@ class ComposerReducer @Inject constructor(
             confirmSendExpiringMessage = Effect.of(this.externalRecipients)
         )
         is ComposerEvent.SubjectChanged -> updateSubjectTo(currentState, this.subject)
+        is ComposerEvent.RecipientsBccChanged -> updateRecipientsBcc(currentState, this.recipients)
+        is ComposerEvent.RecipientsCcChanged -> updateRecipientsCc(currentState, this.recipients)
+        is ComposerEvent.RecipientsToChanged -> updateRecipientsTo(currentState, this.recipients)
     }
 
     private fun updateComposerFieldsState(

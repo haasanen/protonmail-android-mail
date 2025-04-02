@@ -91,12 +91,16 @@ import kotlin.time.Duration
 @OptIn(ExperimentalPermissionsApi::class, ExperimentalMaterial3Api::class)
 @Suppress("UseComposableActions")
 @Composable
-fun ComposerScreen(actions: ComposerScreen.Actions, viewModel: ComposerViewModel = hiltViewModel()) {
+fun ComposerScreen(actions: ComposerScreen.Actions) {
     val context = LocalContext.current
     val view = LocalView.current
     val keyboardController = LocalSoftwareKeyboardController.current
-    val state by viewModel.state.collectAsState()
+
     val recipientsStateManager = remember { RecipientsStateManager() }
+    val viewModel = hiltViewModel<ComposerViewModel, ComposerViewModel.Factory> { factory ->
+        factory.create(recipientsStateManager)
+    }
+    val state by viewModel.state.collectAsState()
 
     val snackbarHostState = remember { ProtonSnackbarHostState() }
     val bottomSheetType = rememberSaveable { mutableStateOf(BottomSheetType.ChangeSender) }

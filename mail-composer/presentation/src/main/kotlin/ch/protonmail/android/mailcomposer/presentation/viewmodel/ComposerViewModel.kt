@@ -65,6 +65,7 @@ import ch.protonmail.android.mailcomposer.presentation.model.ComposerEvent
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerOperation
 import ch.protonmail.android.mailcomposer.presentation.model.DraftUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.RecipientUiModel
+import ch.protonmail.android.mailcomposer.presentation.model.RecipientsStateManager
 import ch.protonmail.android.mailcomposer.presentation.reducer.ComposerReducer
 import ch.protonmail.android.mailcomposer.presentation.ui.ComposerScreen
 import ch.protonmail.android.mailcomposer.presentation.usecase.BuildDraftDisplayBody
@@ -76,6 +77,9 @@ import ch.protonmail.android.mailmessage.presentation.model.MessageBodyWithType
 import ch.protonmail.android.mailmessage.presentation.model.MimeTypeUiModel
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.test.idlingresources.ComposerIdlingResource
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -93,12 +97,11 @@ import me.proton.core.network.domain.NetworkManager
 import me.proton.core.util.kotlin.deserialize
 import me.proton.core.util.kotlin.takeIfNotEmpty
 import timber.log.Timber
-import javax.inject.Inject
 import kotlin.time.Duration
 
 @Suppress("LongParameterList", "TooManyFunctions", "UnusedPrivateMember")
-@HiltViewModel
-class ComposerViewModel @Inject constructor(
+@HiltViewModel(assistedFactory = ComposerViewModel.Factory::class)
+class ComposerViewModel @AssistedInject constructor(
     private val storeDraftWithBody: StoreDraftWithBody,
     private val storeDraftWithSubject: StoreDraftWithSubject,
     private val updateToRecipients: UpdateToRecipients,
@@ -125,6 +128,7 @@ class ComposerViewModel @Inject constructor(
     private val createEmptyDraft: CreateEmptyDraft,
     private val createDraftForAction: CreateDraftForAction,
     private val buildDraftDisplayBody: BuildDraftDisplayBody,
+    @Assisted private val recipientsStateManager: RecipientsStateManager,
     savedStateHandle: SavedStateHandle,
     observePrimaryUserId: ObservePrimaryUserId,
     provideNewDraftId: ProvideNewDraftId
@@ -162,6 +166,17 @@ class ComposerViewModel @Inject constructor(
 //        observeMessagePassword()
 //        observeMessageExpirationTime()
         observeComposerSubject()
+        observeComposerRecipients()
+    }
+
+    private fun observeComposerRecipients() {
+        recipientsStateManager.recipients
+            .onEach { recipients ->
+                emitNewStateFor(onToChanged(recipients.toRecipients))
+                emitNewStateFor(onCcChanged(recipients.ccRecipients))
+                emitNewStateFor(onBccChanged(recipients.bccRecipients))
+            }
+            .launchIn(viewModelScope)
     }
 
     private fun observeComposerSubject() {
@@ -207,6 +222,11 @@ class ComposerViewModel @Inject constructor(
             if (fileShareInfo.hasEmailData()) {
                 val draftFields = prepareDraftFieldsFor(fileShareInfo)
                 subjectTextField.replaceText(draftFields.subject.value)
+                recipientsStateManager.setFromParticipants(
+                    toRecipients = draftFields.recipientsTo.value,
+                    ccRecipients = draftFields.recipientsCc.value,
+                    bccRecipients = draftFields.recipientsBcc.value
+                )
                 emitNewStateFor(
                     ComposerEvent.PrefillDataReceivedViaShare(draftFields.toDraftUiModel())
                 )
@@ -266,6 +286,11 @@ class ComposerViewModel @Inject constructor(
                 createDraftForAction(primaryUserId(), draftAction)
                     .onRight { draftFields ->
                         subjectTextField.replaceText(draftFields.subject.value)
+                        recipientsStateManager.setFromParticipants(
+                            toRecipients = draftFields.recipientsTo.value,
+                            ccRecipients = draftFields.recipientsCc.value,
+                            bccRecipients = draftFields.recipientsBcc.value
+                        )
                         emitNewStateFor(
                             ComposerEvent.PrefillDraftDataReceived(
                                 draftUiModel = draftFields.toDraftUiModel(),
@@ -292,6 +317,11 @@ class ComposerViewModel @Inject constructor(
             openExistingDraft(primaryUserId(), MessageId(inputDraftId))
                 .onRight { draftFields ->
                     subjectTextField.replaceText(draftFields.subject.value)
+                    recipientsStateManager.setFromParticipants(
+                        toRecipients = draftFields.recipientsTo.value,
+                        ccRecipients = draftFields.recipientsCc.value,
+                        bccRecipients = draftFields.recipientsBcc.value
+                    )
                     emitNewStateFor(
                         ComposerEvent.PrefillDraftDataReceived(
                             draftUiModel = draftFields.toDraftUiModel(),
@@ -327,9 +357,6 @@ class ComposerViewModel @Inject constructor(
                     is ComposerAction.DraftBodyChanged -> onDraftBodyChanged(action)
                     is ComposerAction.SenderChanged -> TODO()
                     is ComposerAction.ChangeSenderRequested -> TODO()
-                    is ComposerAction.RecipientsToChanged -> emitNewStateFor(onToChanged(action))
-                    is ComposerAction.RecipientsCcChanged -> emitNewStateFor(onCcChanged(action))
-                    is ComposerAction.RecipientsBccChanged -> emitNewStateFor(onBccChanged(action))
 
                     is ComposerAction.OnAddAttachments -> emitNewStateFor(action)
                     is ComposerAction.OnCloseComposer -> emitNewStateFor(onCloseComposer(action))
@@ -441,6 +468,7 @@ class ComposerViewModel @Inject constructor(
             isClearTextExpiringMessageToExternal -> {
                 ComposerEvent.ConfirmSendExpiringMessageToExternalRecipients(externalRecipients)
             }
+
             else -> onSendMessage(action)
         }
     }
@@ -528,39 +556,6 @@ class ComposerViewModel @Inject constructor(
     }
 
     private suspend fun contactsOrEmpty() = getContacts(primaryUserId()).getOrElse { emptyList() }
-
-    private suspend fun handleContactSuggestionSelected(action: ComposerAction.ContactSuggestionSelected) {
-
-        val recipientEmail = when (action.contact) {
-            is ContactSuggestionUiModel.Contact -> action.contact.email
-            is ContactSuggestionUiModel.ContactGroup -> {
-                action.contact.emails
-                    .joinToString(separator = "\n")
-            }
-        }
-
-        val recipient = when {
-            validateEmailAddress(recipientEmail) -> RecipientUiModel.Valid(recipientEmail)
-            else -> RecipientUiModel.Invalid(recipientEmail)
-        }
-
-        val updateEvent = when (action.suggestionsField) {
-            ContactSuggestionsField.TO -> {
-                val updatedToRecipients = state.value.fields.to + listOf(recipient)
-                onToChanged(updatedToRecipients)
-            }
-            ContactSuggestionsField.CC -> {
-                val updatedCcRecipients = state.value.fields.cc + listOf(recipient)
-                onCcChanged(updatedCcRecipients)
-            }
-            ContactSuggestionsField.BCC -> {
-                val updatedBccRecipients = state.value.fields.bcc + listOf(recipient)
-                onBccChanged(updatedBccRecipients)
-            }
-        }
-        emitNewStateFor(updateEvent)
-        emitNewStateFor(action)
-    }
 
     private suspend fun onToChanged(toRecipients: List<RecipientUiModel>): ComposerOperation {
         val contacts = contactsOrEmpty()
