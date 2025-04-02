@@ -19,6 +19,9 @@
 package ch.protonmail.android.mailcomposer.presentation.viewmodel
 
 import androidx.compose.foundation.text.input.TextFieldState
+import androidx.compose.foundation.text.input.clearText
+import androidx.compose.runtime.snapshotFlow
+import androidx.compose.ui.text.TextRange
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -158,6 +161,13 @@ class ComposerViewModel @Inject constructor(
 //        observeMessageAttachments()
 //        observeMessagePassword()
 //        observeMessageExpirationTime()
+        observeComposerSubject()
+    }
+
+    private fun observeComposerSubject() {
+        snapshotFlow { subjectTextField.text }
+            .onEach { emitNewStateFor(onSubjectChanged(Subject(it.toString().stripNewLines()))) }
+            .launchIn(viewModelScope)
     }
 
     private fun prefillForComposeToAction(recipients: List<RecipientUiModel>) {
@@ -195,10 +205,10 @@ class ComposerViewModel @Inject constructor(
             }
 
             if (fileShareInfo.hasEmailData()) {
+                val draftFields = prepareDraftFieldsFor(fileShareInfo)
+                subjectTextField.replaceText(draftFields.subject.value)
                 emitNewStateFor(
-                    ComposerEvent.PrefillDataReceivedViaShare(
-                        prepareDraftFieldsFor(fileShareInfo).toDraftUiModel()
-                    )
+                    ComposerEvent.PrefillDataReceivedViaShare(draftFields.toDraftUiModel())
                 )
             }
         }
@@ -248,12 +258,14 @@ class ComposerViewModel @Inject constructor(
                 prefillForNewDraft()
                 prefillForComposeToAction(draftAction.extractRecipients())
             }
+
             is DraftAction.Forward,
             is DraftAction.Reply,
             is DraftAction.ReplyAll -> viewModelScope.launch {
                 Timber.d("composer: prefilling for reply / fw action")
                 createDraftForAction(primaryUserId(), draftAction)
                     .onRight { draftFields ->
+                        subjectTextField.replaceText(draftFields.subject.value)
                         emitNewStateFor(
                             ComposerEvent.PrefillDraftDataReceived(
                                 draftUiModel = draftFields.toDraftUiModel(),
@@ -279,6 +291,7 @@ class ComposerViewModel @Inject constructor(
         viewModelScope.launch {
             openExistingDraft(primaryUserId(), MessageId(inputDraftId))
                 .onRight { draftFields ->
+                    subjectTextField.replaceText(draftFields.subject.value)
                     emitNewStateFor(
                         ComposerEvent.PrefillDraftDataReceived(
                             draftUiModel = draftFields.toDraftUiModel(),
@@ -313,7 +326,6 @@ class ComposerViewModel @Inject constructor(
                     is ComposerAction.AttachmentsAdded -> onAttachmentsAdded(action)
                     is ComposerAction.DraftBodyChanged -> onDraftBodyChanged(action)
                     is ComposerAction.SenderChanged -> TODO()
-                    is ComposerAction.SubjectChanged -> emitNewStateFor(onSubjectChanged(action))
                     is ComposerAction.ChangeSenderRequested -> TODO()
                     is ComposerAction.RecipientsToChanged -> emitNewStateFor(onToChanged(action))
                     is ComposerAction.RecipientsCcChanged -> emitNewStateFor(onCcChanged(action))
@@ -462,14 +474,13 @@ class ComposerViewModel @Inject constructor(
         currentValidRecipientsBcc()
     )
 
-    private suspend fun onSubjectChanged(action: ComposerAction.SubjectChanged): ComposerOperation =
-        storeDraftWithSubject(action.subject).fold(
-            ifLeft = {
-                Timber.e("Store draft ${currentMessageId()} with new subject ${action.subject} failed")
-                ComposerEvent.ErrorStoringDraftSubject
-            },
-            ifRight = { action }
-        )
+    private suspend fun onSubjectChanged(subject: Subject): ComposerOperation = storeDraftWithSubject(subject).fold(
+        ifLeft = {
+            Timber.e("Store draft ${currentMessageId()} with new subject $subject failed")
+            ComposerEvent.ErrorStoringDraftSubject
+        },
+        ifRight = { ComposerEvent.SubjectChanged(subject) }
+    )
 
     private suspend fun onDraftBodyChanged(action: ComposerAction.DraftBodyChanged) {
         emitNewStateFor(ComposerAction.DraftBodyChanged(action.draftBody))
@@ -602,6 +613,22 @@ class ComposerViewModel @Inject constructor(
                 else -> RecipientUiModel.Invalid(recipient)
             }
         }
+    }
+
+    private fun String.stripNewLines() = this.replace("[\n\r]".toRegex(), " ")
+
+    private fun TextFieldState.replaceText(text: String, resetRange: Boolean = false) {
+        clearText()
+        edit {
+            append(text)
+            if (resetRange) selection = TextRange.Zero
+        }
+    }
+
+    @AssistedFactory
+    interface Factory {
+
+        fun create(recipientsStateManager: RecipientsStateManager): ComposerViewModel
     }
 
     companion object {

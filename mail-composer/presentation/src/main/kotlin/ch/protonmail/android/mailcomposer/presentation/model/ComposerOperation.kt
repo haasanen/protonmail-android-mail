@@ -41,7 +41,6 @@ internal sealed interface ComposerAction : ComposerOperation {
     data class RecipientsBccChanged(val recipients: List<RecipientUiModel>) : ComposerAction
     data class ExpirationTimeSet(val duration: Duration) : ComposerAction
 
-    data class SubjectChanged(val subject: Subject) : ComposerAction
     data class DraftBodyChanged(val draftBody: DraftBody) : ComposerAction
     data class RemoveAttachment(val attachmentId: AttachmentId) : ComposerAction
 
@@ -77,6 +76,7 @@ sealed interface ComposerEvent : ComposerOperation {
     data class OnMessagePasswordUpdated(val messagePassword: MessagePassword?) : ComposerEvent
     data class OnMessageExpirationTimeUpdated(val messageExpirationTime: MessageExpirationTime?) : ComposerEvent
     data class ConfirmSendExpiringMessageToExternalRecipients(val externalRecipients: List<Recipient>) : ComposerEvent
+    data class SubjectChanged(val subject: Subject) : ComposerEvent
 
     data object ErrorLoadingDefaultSenderAddress : ComposerEvent
     data object ErrorFreeUserCannotChangeSender : ComposerEvent

@@ -59,7 +59,6 @@ class ComposerReducer @Inject constructor(
 
         is ComposerAction.SenderChanged -> updateSenderTo(currentState, this.sender)
         is ComposerAction.DraftBodyChanged -> updateDraftBodyTo(currentState, this.draftBody)
-        is ComposerAction.SubjectChanged -> updateSubjectTo(currentState, this.subject)
         is ComposerAction.OnAddAttachments -> updateForOnAddAttachments(currentState)
         is ComposerAction.OnCloseComposer -> updateCloseComposerState(currentState, false)
         is ComposerAction.ChangeSenderRequested -> currentState
@@ -154,6 +153,7 @@ class ComposerReducer @Inject constructor(
         is ComposerEvent.ConfirmSendExpiringMessageToExternalRecipients -> currentState.copy(
             confirmSendExpiringMessage = Effect.of(this.externalRecipients)
         )
+        is ComposerEvent.SubjectChanged -> updateSubjectTo(currentState, this.subject)
     }
 
     private fun updateComposerFieldsState(
