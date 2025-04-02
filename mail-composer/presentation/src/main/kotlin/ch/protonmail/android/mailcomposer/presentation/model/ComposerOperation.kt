@@ -39,16 +39,6 @@ internal sealed interface ComposerAction : ComposerOperation {
     data class RecipientsToChanged(val recipients: List<RecipientUiModel>) : ComposerAction
     data class RecipientsCcChanged(val recipients: List<RecipientUiModel>) : ComposerAction
     data class RecipientsBccChanged(val recipients: List<RecipientUiModel>) : ComposerAction
-    data class ContactSuggestionTermChanged(
-        val searchTerm: String,
-        val suggestionsField: ContactSuggestionsField
-    ) : ComposerAction
-    data class ContactSuggestionsDismissed(val suggestionsField: ContactSuggestionsField) : ComposerAction
-    data class ContactSuggestionSelected(
-        val contact: ContactSuggestionUiModel,
-        val suggestionsField: ContactSuggestionsField
-    ) : ComposerAction
-    data object DeviceContactsPromptDenied : ComposerAction
     data class ExpirationTimeSet(val duration: Duration) : ComposerAction
 
     data class SubjectChanged(val subject: Subject) : ComposerAction
@@ -84,13 +74,7 @@ sealed interface ComposerEvent : ComposerOperation {
     data class ReplaceDraftBody(val draftBody: DraftBody) : ComposerEvent
     data class OnAttachmentsUpdated(val attachments: List<AttachmentMetadataWithState>) : ComposerEvent
     data class OnSendingError(val sendingError: TextUiModel) : ComposerEvent
-    data class OnIsDeviceContactsSuggestionsPromptEnabled(val enabled: Boolean) : ComposerEvent
     data class OnMessagePasswordUpdated(val messagePassword: MessagePassword?) : ComposerEvent
-    data class UpdateContactSuggestions(
-        val searchTerm: String,
-        val contactSuggestions: List<ContactSuggestionUiModel>,
-        val suggestionsField: ContactSuggestionsField
-    ) : ComposerEvent
     data class OnMessageExpirationTimeUpdated(val messageExpirationTime: MessageExpirationTime?) : ComposerEvent
     data class ConfirmSendExpiringMessageToExternalRecipients(val externalRecipients: List<Recipient>) : ComposerEvent
 

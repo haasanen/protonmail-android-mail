@@ -29,7 +29,6 @@ import ch.protonmail.android.mailcomposer.presentation.model.ComposerAction
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerDraftState
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerEvent
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerOperation
-import ch.protonmail.android.mailcomposer.presentation.model.ContactSuggestionState
 import ch.protonmail.android.mailcomposer.presentation.model.DraftUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.FocusedFieldType
 import ch.protonmail.android.mailcomposer.presentation.model.RecipientUiModel
@@ -55,16 +54,9 @@ class ComposerReducer @Inject constructor(
 
     @Suppress("ComplexMethod")
     private fun ComposerAction.newStateForAction(currentState: ComposerDraftState) = when (this) {
-        is ComposerAction.RecipientsBccChanged,
-        is ComposerAction.RecipientsCcChanged,
-        is ComposerAction.RecipientsToChanged,
-        is ComposerAction.ContactSuggestionTermChanged,
         is ComposerAction.AttachmentsAdded,
         is ComposerAction.RemoveAttachment -> currentState
 
-        is ComposerAction.ContactSuggestionSelected -> updateStateForContactSuggestionSelected(
-            currentState, this
-        )
         is ComposerAction.SenderChanged -> updateSenderTo(currentState, this.sender)
         is ComposerAction.DraftBodyChanged -> updateDraftBodyTo(currentState, this.draftBody)
         is ComposerAction.SubjectChanged -> updateSubjectTo(currentState, this.subject)
@@ -72,15 +64,11 @@ class ComposerReducer @Inject constructor(
         is ComposerAction.OnCloseComposer -> updateCloseComposerState(currentState, false)
         is ComposerAction.ChangeSenderRequested -> currentState
         is ComposerAction.OnSendMessage -> updateStateForSendMessage(currentState)
-        is ComposerAction.ContactSuggestionsDismissed -> updateStateForContactSuggestionsDismissed(
-            currentState
-        )
         is ComposerAction.ConfirmSendingWithoutSubject -> updateForConfirmSendWithoutSubject(currentState)
         is ComposerAction.RejectSendingWithoutSubject -> updateForRejectSendWithoutSubject(currentState)
         is ComposerAction.OnSetExpirationTimeRequested -> updateStateForSetExpirationTimeRequested(currentState)
         is ComposerAction.ExpirationTimeSet -> updateStateForExpirationTimeSet(currentState)
         is ComposerAction.SendExpiringMessageToExternalRecipientsConfirmed -> currentState
-        is ComposerAction.DeviceContactsPromptDenied -> updateStateForDeviceContactsPromptDenied(currentState, false)
     }
 
     @Suppress("ComplexMethod", "LongMethod")
@@ -152,9 +140,6 @@ class ComposerReducer @Inject constructor(
         is ComposerEvent.ErrorAttachmentsExceedSizeLimit -> updateStateForAttachmentsExceedSizeLimit(currentState)
         is ComposerEvent.ErrorAttachmentsReEncryption -> updateStateForDeleteAllAttachment(currentState)
         is ComposerEvent.OnSendingError -> updateSendingErrorState(currentState, sendingError)
-        is ComposerEvent.UpdateContactSuggestions -> updateStateForContactSuggestions(
-            currentState, this
-        )
         is ComposerEvent.OnMessagePasswordUpdated -> updateStateForMessagePassword(currentState, this.messagePassword)
         is ComposerEvent.ConfirmEmptySubject -> currentState.copy(
             confirmSendingWithoutSubject = Effect.of(Unit)
@@ -168,10 +153,6 @@ class ComposerReducer @Inject constructor(
         )
         is ComposerEvent.ConfirmSendExpiringMessageToExternalRecipients -> currentState.copy(
             confirmSendExpiringMessage = Effect.of(this.externalRecipients)
-        )
-
-        is ComposerEvent.OnIsDeviceContactsSuggestionsPromptEnabled -> currentState.copy(
-            isDeviceContactsSuggestionsPromptEnabled = this.enabled
         )
     }
 
@@ -308,9 +289,6 @@ class ComposerReducer @Inject constructor(
     private fun updateStateForExpirationTimeSet(currentState: ComposerDraftState) =
         currentState.copy(changeBottomSheetVisibility = Effect.of(false))
 
-    private fun updateStateForDeviceContactsPromptDenied(currentState: ComposerDraftState, enabled: Boolean) =
-        currentState.copy(isDeviceContactsSuggestionsPromptEnabled = enabled)
-
     private fun updateStateForMessageExpirationTime(
         currentState: ComposerDraftState,
         messageExpirationTime: MessageExpirationTime?
@@ -348,31 +326,6 @@ class ComposerReducer @Inject constructor(
         to = currentState.fields.to,
         cc = currentState.fields.cc,
         bcc = recipients
-    )
-
-    private fun updateStateForContactSuggestions(
-        currentState: ComposerDraftState,
-        event: ComposerEvent.UpdateContactSuggestions
-    ) = currentState.copy(
-        contactSuggestionState = ContactSuggestionState.Data(
-            suggestionsField = event.suggestionsField,
-            contactSuggestionItems = event.contactSuggestions,
-            searchTerm = event.searchTerm
-        )
-    )
-
-    @Suppress("FunctionMaxLength")
-    private fun updateStateForContactSuggestionsDismissed(currentState: ComposerDraftState): ComposerDraftState =
-        currentState.copy(
-            contactSuggestionState = ContactSuggestionState.Empty
-        )
-
-    @Suppress("FunctionMaxLength")
-    private fun updateStateForContactSuggestionSelected(
-        currentState: ComposerDraftState,
-        action: ComposerAction.ContactSuggestionSelected
-    ): ComposerDraftState = currentState.copy(
-        clearContactSuggestionTerm = Effect.of(action.suggestionsField)
     )
 
     private fun updateRecipients(

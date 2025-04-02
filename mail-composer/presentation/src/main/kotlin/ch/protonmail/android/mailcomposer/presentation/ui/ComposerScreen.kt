@@ -18,7 +18,6 @@
 
 package ch.protonmail.android.mailcomposer.presentation.ui
 
-import android.Manifest
 import android.text.format.Formatter
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
@@ -34,8 +33,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -76,7 +73,6 @@ import ch.protonmail.android.mailcomposer.domain.model.SenderEmail
 import ch.protonmail.android.mailcomposer.presentation.R
 import ch.protonmail.android.mailcomposer.presentation.model.ComposeScreenMeasures
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerAction
-import ch.protonmail.android.mailcomposer.presentation.model.ComposerDraftState
 import ch.protonmail.android.mailcomposer.presentation.model.RecipientsStateManager
 import ch.protonmail.android.mailcomposer.presentation.model.WebViewMeasures
 import ch.protonmail.android.mailcomposer.presentation.ui.form.ComposerForm
@@ -88,9 +84,6 @@ import ch.protonmail.android.uicomponents.bottomsheet.bottomSheetHeightConstrain
 import ch.protonmail.android.uicomponents.dismissKeyboard
 import ch.protonmail.android.uicomponents.snackbar.DismissableSnackbarHost
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.isGranted
-import com.google.accompanist.permissions.rememberPermissionState
-import com.google.accompanist.permissions.shouldShowRationale
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import kotlin.time.Duration
@@ -148,43 +141,6 @@ fun ComposerScreen(actions: ComposerScreen.Actions, viewModel: ComposerViewModel
             viewModel.submit(ComposerAction.AttachmentsAdded(uris))
         }
     )
-
-    val readContactsPermission = rememberPermissionState(
-        permission = Manifest.permission.READ_CONTACTS
-    )
-
-    val isShowReadContactsPermissionRationale = remember { mutableStateOf(false) }
-    if (shouldShowPermissionDialog(state, isShowReadContactsPermissionRationale)) {
-        ProtonAlertDialog(
-            title = stringResource(id = R.string.device_contacts_permission_dialog_title),
-            text = { ProtonAlertDialogText(R.string.device_contacts_permission_dialog_message) },
-            dismissButton = {
-                ProtonAlertDialogButton(R.string.device_contacts_permission_dialog_action_button_deny) {
-                    viewModel.submit(ComposerAction.DeviceContactsPromptDenied)
-                    isShowReadContactsPermissionRationale.value = false
-                }
-            },
-            confirmButton = {
-                ProtonAlertDialogButton(R.string.device_contacts_permission_dialog_action_button) {
-                    isShowReadContactsPermissionRationale.value = false
-                    if (readContactsPermission.status.shouldShowRationale) {
-                        readContactsPermission.launchPermissionRequest()
-                    }
-                }
-            },
-            onDismissRequest = { isShowReadContactsPermissionRationale.value = false }
-        )
-    }
-
-    LaunchedEffect(readContactsPermission.status.isGranted) {
-        if (!readContactsPermission.status.isGranted) {
-            if (readContactsPermission.status.shouldShowRationale) {
-                isShowReadContactsPermissionRationale.value = true
-            } else {
-                readContactsPermission.launchPermissionRequest()
-            }
-        }
-    }
 
     ConsumableLaunchedEffect(effect = state.openImagePicker) {
         imagePicker.launch("*/*")
@@ -465,13 +421,6 @@ fun ComposerScreen(actions: ComposerScreen.Actions, viewModel: ComposerViewModel
     }
 
 }
-
-@Composable
-private fun shouldShowPermissionDialog(
-    state: ComposerDraftState,
-    isShowReadContactsPermissionRationale: MutableState<Boolean>
-) = state.isDeviceContactsSuggestionsPromptEnabled &&
-    isShowReadContactsPermissionRationale.value
 
 @Suppress("LongParameterList")
 private fun buildActions(

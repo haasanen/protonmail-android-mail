@@ -55,23 +55,17 @@ import ch.protonmail.android.mailcomposer.domain.usecase.StoreDraftWithSubject
 import ch.protonmail.android.mailcomposer.domain.usecase.UpdateBccRecipients
 import ch.protonmail.android.mailcomposer.domain.usecase.UpdateCcRecipients
 import ch.protonmail.android.mailcomposer.domain.usecase.UpdateToRecipients
-import ch.protonmail.android.mailcomposer.presentation.mapper.ContactSuggestionsMapper
 import ch.protonmail.android.mailcomposer.presentation.mapper.ParticipantMapper
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerAction
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerDraftState
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerEvent
 import ch.protonmail.android.mailcomposer.presentation.model.ComposerOperation
-import ch.protonmail.android.mailcomposer.presentation.model.ContactSuggestionUiModel
-import ch.protonmail.android.mailcomposer.presentation.model.ContactSuggestionsField
 import ch.protonmail.android.mailcomposer.presentation.model.DraftUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.RecipientUiModel
 import ch.protonmail.android.mailcomposer.presentation.reducer.ComposerReducer
 import ch.protonmail.android.mailcomposer.presentation.ui.ComposerScreen
 import ch.protonmail.android.mailcomposer.presentation.usecase.BuildDraftDisplayBody
 import ch.protonmail.android.mailcomposer.presentation.usecase.FormatMessageSendingError
-import ch.protonmail.android.mailcontact.domain.DeviceContactsSuggestionsPrompt
-import ch.protonmail.android.mailcontact.domain.model.ContactSuggestionQuery
-import ch.protonmail.android.mailcontact.domain.usecase.GetContactSuggestions
 import ch.protonmail.android.mailcontact.domain.usecase.GetContacts
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
 import ch.protonmail.android.mailmessage.domain.model.MessageId
@@ -80,7 +74,6 @@ import ch.protonmail.android.mailmessage.presentation.model.MimeTypeUiModel
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.test.idlingresources.ComposerIdlingResource
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -109,10 +102,7 @@ class ComposerViewModel @Inject constructor(
     private val updateCcRecipients: UpdateCcRecipients,
     private val updateBccRecipients: UpdateBccRecipients,
     private val getContacts: GetContacts,
-    private val getContactSuggestions: GetContactSuggestions,
-    private val deviceContactsSuggestionsPrompt: DeviceContactsSuggestionsPrompt,
     private val participantMapper: ParticipantMapper,
-    private val contactSuggestionsMapper: ContactSuggestionsMapper,
     private val reducer: ComposerReducer,
     private val isValidEmailAddress: IsValidEmailAddress,
     private val composerIdlingResource: ComposerIdlingResource,
@@ -143,7 +133,6 @@ class ComposerViewModel @Inject constructor(
     private val actionMutex = Mutex()
     private val primaryUserId = observePrimaryUserId().filterNotNull()
 
-    private val getContactSuggestionsJobs = mutableMapOf<ContactSuggestionsField, Job>()
     private val mutableState = MutableStateFlow(
         ComposerDraftState.initial(
             MessageId(savedStateHandle.get<String>(ComposerScreen.DraftMessageIdKey) ?: provideNewDraftId().id)
@@ -164,7 +153,6 @@ class ComposerViewModel @Inject constructor(
 
         observeAttachments()
         observeSendingError()
-        observeDeviceContactsSuggestionsPromptEnabled()
 
         // Avoid observing unimplemented features as that causes warnings reports to Sentry.
 //        observeMessageAttachments()
@@ -327,18 +315,10 @@ class ComposerViewModel @Inject constructor(
                     is ComposerAction.SenderChanged -> TODO()
                     is ComposerAction.SubjectChanged -> emitNewStateFor(onSubjectChanged(action))
                     is ComposerAction.ChangeSenderRequested -> TODO()
-                    is ComposerAction.RecipientsToChanged -> emitNewStateFor(onToChanged(action.recipients))
-                    is ComposerAction.RecipientsCcChanged -> emitNewStateFor(onCcChanged(action.recipients))
-                    is ComposerAction.RecipientsBccChanged -> emitNewStateFor(onBccChanged(action.recipients))
-                    is ComposerAction.ContactSuggestionTermChanged -> onSearchTermChanged(
-                        action.searchTerm,
-                        action.suggestionsField
-                    )
+                    is ComposerAction.RecipientsToChanged -> emitNewStateFor(onToChanged(action))
+                    is ComposerAction.RecipientsCcChanged -> emitNewStateFor(onCcChanged(action))
+                    is ComposerAction.RecipientsBccChanged -> emitNewStateFor(onBccChanged(action))
 
-                    is ComposerAction.ContactSuggestionSelected -> handleContactSuggestionSelected(action)
-
-                    is ComposerAction.ContactSuggestionsDismissed -> emitNewStateFor(action)
-                    is ComposerAction.DeviceContactsPromptDenied -> onDeviceContactsPromptDenied()
                     is ComposerAction.OnAddAttachments -> emitNewStateFor(action)
                     is ComposerAction.OnCloseComposer -> emitNewStateFor(onCloseComposer(action))
                     is ComposerAction.OnSendMessage -> emitNewStateFor(handleOnSendMessage(action))
@@ -398,18 +378,7 @@ class ComposerViewModel @Inject constructor(
             .launchIn(viewModelScope)
     }
 
-    @Suppress("FunctionMaxLength")
-    private fun observeDeviceContactsSuggestionsPromptEnabled() {
-        viewModelScope.launch {
-            emitNewStateFor(
-                ComposerEvent.OnIsDeviceContactsSuggestionsPromptEnabled(
-                    deviceContactsSuggestionsPrompt.getPromptEnabled()
-                )
-            )
-        }
-    }
-
-    fun validateEmailAddress(emailAddress: String): Boolean = isValidEmailAddress(emailAddress)
+    private fun validateEmailAddress(emailAddress: String): Boolean = isValidEmailAddress(emailAddress)
 
     fun clearSendingError() {
         viewModelScope.launch {
@@ -432,12 +401,6 @@ class ComposerViewModel @Inject constructor(
         viewModelScope.launch {
             deleteAttachment(action.attachmentId)
                 .onLeft { Timber.e("Failed to delete attachment: $it") }
-        }
-    }
-
-    private fun onDeviceContactsPromptDenied() {
-        viewModelScope.launch {
-            deviceContactsSuggestionsPrompt.setPromptDisabled()
         }
     }
 
@@ -596,7 +559,7 @@ class ComposerViewModel @Inject constructor(
                 validRecipients.map { participantMapper.recipientUiModelToParticipant(it, contacts) }
             ).fold(
                 ifLeft = { ComposerEvent.ErrorStoringDraftRecipients },
-                ifRight = { ComposerEvent.UpdateToRecipients(toRecipients) }
+                ifRight = { ComposerEvent.RecipientsToChanged(toRecipients) }
             )
         }
     }
@@ -609,7 +572,7 @@ class ComposerViewModel @Inject constructor(
                 validRecipients.map { participantMapper.recipientUiModelToParticipant(it, contacts) }
             ).fold(
                 ifLeft = { ComposerEvent.ErrorStoringDraftRecipients },
-                ifRight = { ComposerEvent.UpdateCcRecipients(ccRecipients) }
+                ifRight = { ComposerEvent.RecipientsCcChanged(ccRecipients) }
             )
         }
     }
@@ -622,37 +585,9 @@ class ComposerViewModel @Inject constructor(
                 validRecipients.map { participantMapper.recipientUiModelToParticipant(it, contacts) }
             ).fold(
                 ifLeft = { ComposerEvent.ErrorStoringDraftRecipients },
-                ifRight = { ComposerEvent.UpdateBccRecipients(bccRecipients) }
+                ifRight = { ComposerEvent.RecipientsBccChanged(bccRecipients) }
             )
         }
-    }
-
-    private fun onSearchTermChanged(searchTerm: String, suggestionsField: ContactSuggestionsField) {
-
-        // cancel previous search Job for this [suggestionsField] type
-        getContactSuggestionsJobs[suggestionsField]?.cancel()
-
-        if (searchTerm.isNotBlank()) {
-            getContactSuggestionsJobs[suggestionsField] = viewModelScope.launch {
-                getContactSuggestions(primaryUserId(), ContactSuggestionQuery(searchTerm)).map { contacts ->
-                    val contactsLimited = contacts.take(maxContactAutocompletionCount)
-                    val suggestions = contactSuggestionsMapper.toUiModel(contactsLimited)
-
-                    emitNewStateFor(
-                        ComposerEvent.UpdateContactSuggestions(
-                            searchTerm = searchTerm,
-                            contactSuggestions = suggestions,
-                            suggestionsField = suggestionsField
-                        )
-                    )
-                }
-            }
-        } else {
-            emitNewStateFor(
-                ComposerAction.ContactSuggestionsDismissed(suggestionsField)
-            )
-        }
-
     }
 
     private fun emitNewStateFor(operation: ComposerOperation) {
