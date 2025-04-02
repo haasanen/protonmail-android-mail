@@ -162,7 +162,6 @@ firebase-messaging = { module = "com.google.firebase:firebase-messaging-ktx" }
 javax-inject = { module = "javax.inject:javax.inject", version.ref = "javax-inject" }
 java-jna = { module = "net.java.dev.jna:jna", version.ref = "jna" }
 jsoup = { module = "org.jsoup:jsoup", version.ref = "jsoup" }
-googlecode-ezvcard = { module = "com.googlecode.ez-vcard:ez-vcard", version.ref = "googlecode-ezvcard" }
 guava = { module = "com.google.guava:guava", version.ref = "guava" }
 junit = { module = "junit:junit", version.ref = "junit" }
 kotlinCompileTesting = { module = "dev.zacsweers.kctfork:ksp", version.ref = "kotlin-compile-testing" }

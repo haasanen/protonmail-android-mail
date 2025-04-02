@@ -44,7 +44,6 @@ android {
 dependencies {
     implementation(libs.bundles.module.domain)
     implementation(libs.kotlin.serialization.json)
-    implementation(libs.googlecode.ezvcard)
     implementation(libs.proton.core.user.domain)
     implementation(libs.proton.core.featureFlag)
 
