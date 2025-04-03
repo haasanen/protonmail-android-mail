@@ -18,53 +18,91 @@
 
 package ch.protonmail.android.mailcomposer.presentation.ui
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.input.TextFieldLineLimits
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
+import ch.protonmail.android.design.compose.theme.ProtonDimens
+import ch.protonmail.android.design.compose.theme.ProtonTheme
+import ch.protonmail.android.design.compose.theme.bodyMediumNorm
+import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 import ch.protonmail.android.mailcomposer.presentation.R
-import me.proton.core.compose.theme.ProtonTheme
-import me.proton.core.compose.theme.defaultNorm
 
 @Composable
-internal fun SubjectTextField2(textFieldState: TextFieldState, modifier: Modifier = Modifier) {
+internal fun SubjectTextField2(
+    textFieldState: TextFieldState,
+    isFocused: Boolean,
+    modifier: Modifier = Modifier
+) {
 
     val keyboardOptions = remember {
         KeyboardOptions.Default.copy(capitalization = KeyboardCapitalization.Sentences, imeAction = ImeAction.Next)
     }
 
-    BasicTextField(
-        modifier = modifier,
-        state = textFieldState,
-        textStyle = ProtonTheme.typography.defaultNorm,
-        cursorBrush = SolidColor(TextFieldDefaults.colors().cursorColor),
-        lineLimits = TextFieldLineLimits.SingleLine,
-        keyboardOptions = keyboardOptions,
-        decorator = @Composable { innerTextField ->
-            if (textFieldState.text.isEmpty()) {
-                PlaceholderText()
-            }
-            innerTextField()
-        }
-    )
-}
+    Row(
+        modifier = modifier
+            .height(MailDimens.Composer.FormFieldsRowHeight)
+            .padding(horizontal = ProtonDimens.Spacing.Large)
+            .fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Start
+    ) {
+        Text(
+            text = stringResource(R.string.subject_prefix),
+            modifier = Modifier.wrapContentWidth(),
+            color = ProtonTheme.colors.textHint,
+            style = ProtonTheme.typography.bodyMedium
+        )
+        Spacer(modifier = Modifier.width(ProtonDimens.Spacing.Standard))
 
-@Composable
-private fun PlaceholderText() {
-    Text(
-        modifier = Modifier.testTag(ComposerTestTags.SubjectPlaceholder),
-        text = stringResource(R.string.subject_placeholder),
-        color = ProtonTheme.colors.textHint,
-        style = ProtonTheme.typography.defaultNorm
-    )
+        BasicTextField(
+            modifier = Modifier
+                .padding(horizontal = 0.dp)
+                .weight(1f),
+            state = textFieldState,
+            textStyle = ProtonTheme.typography.bodyMediumNorm,
+            lineLimits = TextFieldLineLimits.SingleLine,
+            keyboardOptions = keyboardOptions,
+            decorator = { innerTextField ->
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                ) {
+                    if (isFocused) {
+                        innerTextField()
+
+                    } else {
+                        Text(
+                            text = textFieldState.text.toString(),
+                            style = ProtonTheme.typography.bodyMediumNorm,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 8.dp)
+                        )
+                    }
+                }
+            }
+        )
+    }
 }

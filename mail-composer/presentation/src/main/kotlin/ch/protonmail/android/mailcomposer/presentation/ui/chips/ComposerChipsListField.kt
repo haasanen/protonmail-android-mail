@@ -18,6 +18,8 @@
 
 package ch.protonmail.android.mailcomposer.presentation.ui.chips
 
+import android.view.Gravity
+import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -27,8 +29,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.input.delete
-import androidx.compose.material.Divider
-import androidx.compose.material.Text
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -40,18 +42,16 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import ch.protonmail.android.design.compose.theme.ProtonDimens
+import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
 import ch.protonmail.android.mailcommon.presentation.ConsumableTextEffect
+import ch.protonmail.android.mailcomposer.presentation.ui.suggestions.ContactSuggestionItemElement
 import ch.protonmail.android.mailcomposer.presentation.viewmodel.ComposerChipsListViewModel
 import ch.protonmail.android.uicomponents.chips.ChipsListTextField
 import ch.protonmail.android.uicomponents.chips.ChipsTestTags
 import ch.protonmail.android.uicomponents.chips.ContactSuggestionState
 import ch.protonmail.android.uicomponents.chips.item.ChipItem
-import ch.protonmail.android.uicomponents.composer.suggestions.ContactSuggestionItemElement
-import me.proton.core.compose.theme.ProtonDimens
-import me.proton.core.compose.theme.ProtonTheme
-import me.proton.core.compose.theme.defaultNorm
-import me.proton.core.presentation.utils.showToast
 import ch.protonmail.android.uicomponents.thenIf
 
 @Composable
@@ -104,7 +104,10 @@ fun ComposerChipsListField(
         actions.onSuggestionsDismissed()
     }
 
-    Column(modifier = modifier.fillMaxWidth()) {
+    Column(
+        modifier = modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.Center
+    ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
@@ -115,10 +118,10 @@ fun ComposerChipsListField(
                 modifier = Modifier
                     .testTag(ChipsTestTags.FieldPrefix)
                     .align(Alignment.Top)
-                    .padding(vertical = ProtonDimens.DefaultSpacing)
-                    .padding(start = ProtonDimens.DefaultSpacing),
-                color = ProtonTheme.colors.textWeak,
-                style = ProtonTheme.typography.defaultNorm
+                    .padding(vertical = ProtonDimens.Spacing.Large)
+                    .padding(start = ProtonDimens.Spacing.Large),
+                color = ProtonTheme.colors.textHint,
+                style = ProtonTheme.typography.bodyMedium
             )
 
             ChipsListTextField(
@@ -144,7 +147,7 @@ fun ComposerChipsListField(
         if (contactSuggestionState.areSuggestionsExpanded &&
             contactSuggestionState.contactSuggestionItems.isNotEmpty()
         ) {
-            Divider(modifier = Modifier.padding(bottom = ProtonDimens.DefaultSpacing))
+            HorizontalDivider(modifier = Modifier.padding(bottom = ProtonDimens.Spacing.Large))
 
             contactSuggestionState.contactSuggestionItems.forEach { selectionOption ->
                 ContactSuggestionItemElement(textFieldState.text.toString(), selectionOption, onClick = {
@@ -165,11 +168,15 @@ fun ComposerChipsListField(
     }
 
     ConsumableTextEffect(state.duplicateRemovalWarning) {
-        context.showToast(it)
+        Toast.makeText(context, it, Toast.LENGTH_LONG).apply {
+            setGravity(Gravity.BOTTOM, 0, 0)
+        }.show()
     }
 
     ConsumableTextEffect(state.invalidEntryWarning) {
-        context.showToast(it)
+        Toast.makeText(context, it, Toast.LENGTH_LONG).apply {
+            setGravity(Gravity.BOTTOM, 0, 0)
+        }.show()
     }
 }
 

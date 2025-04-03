@@ -28,7 +28,7 @@ import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
@@ -49,7 +49,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.core.graphics.toColorInt
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import ch.protonmail.android.design.compose.component.ProtonAlertDialog
+import ch.protonmail.android.design.compose.component.ProtonAlertDialogButton
+import ch.protonmail.android.design.compose.component.ProtonAlertDialogText
+import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.mailcommon.presentation.compose.FocusableFormScope
+import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcommon.presentation.model.string
 import ch.protonmail.android.mailcommon.presentation.ui.MailDivider
@@ -70,11 +75,6 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.google.accompanist.permissions.shouldShowRationale
-import me.proton.core.compose.component.ProtonAlertDialog
-import me.proton.core.compose.component.ProtonAlertDialogButton
-import me.proton.core.compose.component.ProtonAlertDialogText
-import me.proton.core.compose.theme.ProtonDimens
-import me.proton.core.compose.theme.ProtonTheme
 import timber.log.Timber
 
 @OptIn(ExperimentalPermissionsApi::class)
@@ -162,12 +162,14 @@ internal fun FocusableFormScope<FocusedFieldType>.RecipientFields2(
     }
 
     Row(
-        modifier = modifier.fillMaxWidth()
+        modifier = modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
     ) {
         ComposerChipsListField(
             label = stringResource(id = R.string.to_prefix),
             chipsList = recipientsTo,
             modifier = Modifier
+                .heightIn(min = MailDimens.Composer.FormFieldsRowHeight)
                 .weight(1f)
                 .testTag(ComposerTestTags.ToRecipient)
                 .retainFieldFocusOnConfigurationChange(FocusedFieldType.TO),
@@ -191,7 +193,7 @@ internal fun FocusableFormScope<FocusedFieldType>.RecipientFields2(
                 if (!hasCcBccContent) {
                     IconButton(
                         modifier = Modifier
-                            .align(Alignment.Top)
+                            .align(Alignment.CenterVertically)
                             .focusProperties { canFocus = false },
                         onClick = {
                             recipientsOpen = !recipientsOpen
@@ -206,12 +208,11 @@ internal fun FocusableFormScope<FocusedFieldType>.RecipientFields2(
                                 .thenIf(recipientsButtonRotation.value == RecipientsButtonRotationValues2.Open) {
                                     testTag(ComposerTestTags.CollapseExpandArrow)
                                 }
-                                .rotate(recipientsButtonRotation.value)
-                                .size(ProtonDimens.SmallIconSize),
+                                .rotate(recipientsButtonRotation.value),
                             imageVector = ImageVector.vectorResource(
-                                id = me.proton.core.presentation.R.drawable.ic_proton_chevron_down_filled
+                                id = R.drawable.ic_proton_chevron_tiny_down
                             ),
-                            tint = ProtonTheme.colors.textWeak,
+                            tint = ProtonTheme.colors.iconHint,
                             contentDescription = stringResource(id = R.string.composer_expand_recipients_button)
                         )
                     }

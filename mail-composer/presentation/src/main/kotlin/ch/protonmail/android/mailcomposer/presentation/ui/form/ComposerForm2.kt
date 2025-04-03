@@ -20,7 +20,6 @@ package ch.protonmail.android.mailcomposer.presentation.ui.form
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -38,18 +37,16 @@ import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
 import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.compose.FocusableForm
 import ch.protonmail.android.mailcommon.presentation.ui.MailDivider
-import ch.protonmail.android.mailcomposer.presentation.R
 import ch.protonmail.android.mailcomposer.presentation.model.DraftDisplayBodyUiModel
 import ch.protonmail.android.mailcomposer.presentation.model.FocusedFieldType
 import ch.protonmail.android.mailcomposer.presentation.model.RecipientsStateManager
 import ch.protonmail.android.mailcomposer.presentation.model.WebViewMeasures
 import ch.protonmail.android.mailcomposer.presentation.ui.ComposerTestTags
 import ch.protonmail.android.mailcomposer.presentation.ui.MessageBodyEditor
-import ch.protonmail.android.mailcomposer.presentation.ui.PrefixedEmailSelector
+import ch.protonmail.android.mailcomposer.presentation.ui.SenderEmailWithSelector
 import ch.protonmail.android.mailcomposer.presentation.ui.SubjectTextField2
 import ch.protonmail.android.mailcomposer.presentation.viewmodel.RecipientsViewModel
 import ch.protonmail.android.uicomponents.keyboardVisibilityAsState
-import me.proton.core.compose.theme.ProtonDimens
 import timber.log.Timber
 
 @Composable
@@ -73,6 +70,7 @@ internal fun ComposerForm(
     val maxWidthModifier = Modifier.fillMaxWidth()
 
     var showSubjectAndBody by remember { mutableStateOf(true) }
+    var isSubjectFocused by remember { mutableStateOf(false) }
 
     FocusableForm(
         fieldList = listOf(
@@ -85,6 +83,8 @@ internal fun ComposerForm(
         initialFocus = FocusedFieldType.TO,
         onFocusedField = {
             Timber.d("Focus changed: onFocusedField: $it")
+
+            isSubjectFocused = it == FocusedFieldType.SUBJECT
         }
     ) { fieldFocusRequesters ->
 
@@ -98,46 +98,44 @@ internal fun ComposerForm(
         Column(
             modifier = modifier.fillMaxWidth()
         ) {
-            PrefixedEmailSelector(
-                prefixStringResource = R.string.from_prefix,
-                modifier = maxWidthModifier.testTag(ComposerTestTags.FromSender),
-                selectedEmail = senderEmail,
-                onChangeSender = actions.onChangeSender
-            )
-            MailDivider()
-
             RecipientFields2(
                 fieldFocusRequesters = fieldFocusRequesters,
                 onToggleSuggestions = { isShown -> showSubjectAndBody = isShown },
                 viewModel = recipientsViewModel
             )
 
+
             if (showSubjectAndBody) {
                 MailDivider()
+
+                SenderEmailWithSelector(
+                    modifier = maxWidthModifier.testTag(ComposerTestTags.FromSender),
+                    selectedEmail = senderEmail,
+                    onChangeSender = actions.onChangeSender
+                )
+                MailDivider()
+
                 SubjectTextField2(
                     textFieldState = subjectTextField,
+                    isFocused = isSubjectFocused,
                     modifier = maxWidthModifier
-                        .padding(ProtonDimens.DefaultSpacing)
                         .testTag(ComposerTestTags.Subject)
                         .retainFieldFocusOnConfigurationChange(FocusedFieldType.SUBJECT)
                 )
                 MailDivider()
 
-
-                if (showSubjectAndBody) {
-                    MessageBodyEditor(
-                        messageBodyUiModel = bodyInitialValue,
-                        onBodyChanged = actions.onBodyChanged,
-                        onWebViewMeasuresChanged = actions.onWebViewMeasuresChanged,
-                        modifier = maxWidthModifier
-                            .testTag(ComposerTestTags.MessageBody)
-                            .retainFieldFocusOnConfigurationChange(FocusedFieldType.BODY)
-                            .onGloballyPositioned { coordinates ->
-                                val webViewBounds = coordinates.boundsInWindow()
-                                actions.onWebViewPositioned(webViewBounds)
-                            }
-                    )
-                }
+                MessageBodyEditor(
+                    messageBodyUiModel = bodyInitialValue,
+                    onBodyChanged = actions.onBodyChanged,
+                    onWebViewMeasuresChanged = actions.onWebViewMeasuresChanged,
+                    modifier = maxWidthModifier
+                        .testTag(ComposerTestTags.MessageBody)
+                        .retainFieldFocusOnConfigurationChange(FocusedFieldType.BODY)
+                        .onGloballyPositioned { coordinates ->
+                            val webViewBounds = coordinates.boundsInWindow()
+                            actions.onWebViewPositioned(webViewBounds)
+                        }
+                )
             }
         }
     }
