@@ -83,7 +83,6 @@ import ch.protonmail.android.mailcomposer.presentation.model.WebViewMeasures
 import ch.protonmail.android.mailcomposer.presentation.viewmodel.ComposerViewModel
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.Participant
-import ch.protonmail.android.mailmessage.presentation.ui.AttachmentList
 import ch.protonmail.android.uicomponents.bottomsheet.bottomSheetHeightConstrainedContent
 import ch.protonmail.android.uicomponents.dismissKeyboard
 import ch.protonmail.android.uicomponents.snackbar.DismissableSnackbarHost
@@ -294,6 +293,7 @@ fun ComposerScreen(actions: ComposerScreen.Actions, viewModel: ComposerViewModel
                                 columnBounds = coordinates.boundsInWindow()
                             }
                     ) {
+
                         // Not showing the form till we're done loading ensure it does receive the
                         // right "initial values" from state when displayed
                         ComposerForm(
@@ -304,6 +304,7 @@ fun ComposerScreen(actions: ComposerScreen.Actions, viewModel: ComposerViewModel
                             initialFocus = focusedField,
                             changeFocusToField = state.changeFocusToField,
                             fields = state.fields,
+                            attachments = state.attachments,
                             actions = buildActions(
                                 viewModel = viewModel,
                                 onToggleRecipients = { recipientsOpen = it },
@@ -329,18 +330,6 @@ fun ComposerScreen(actions: ComposerScreen.Actions, viewModel: ComposerViewModel
                             contactSuggestionState = state.contactSuggestionState,
                             clearContactSuggestionTerm = state.clearContactSuggestionTerm
                         )
-                        if (state.attachments.attachments.isNotEmpty()) {
-                            AttachmentList(
-                                messageAttachmentsUiModel = state.attachments,
-                                actions = AttachmentList.Actions(
-                                    onShowAllAttachments = { Timber.d("On show all attachments clicked") },
-                                    onAttachmentClicked = { Timber.d("On attachment clicked: $it") },
-                                    onAttachmentDeleteClicked = {
-                                        viewModel.submit(ComposerAction.RemoveAttachment(it))
-                                    }
-                                )
-                            )
-                        }
                     }
                 }
             }

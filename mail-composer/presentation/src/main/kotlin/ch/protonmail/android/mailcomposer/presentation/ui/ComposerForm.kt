@@ -42,6 +42,8 @@ import ch.protonmail.android.mailcomposer.presentation.model.ContactSuggestionSt
 import ch.protonmail.android.mailcomposer.presentation.model.ContactSuggestionsField
 import ch.protonmail.android.mailcomposer.presentation.model.FocusedFieldType
 import ch.protonmail.android.mailcomposer.presentation.ui.suggestions.ContactSuggestionsList
+import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentGroupUiModel
+import ch.protonmail.android.mailmessage.presentation.ui.AttachmentList
 import ch.protonmail.android.uicomponents.keyboardVisibilityAsState
 import timber.log.Timber
 
@@ -52,6 +54,7 @@ internal fun ComposerForm(
     initialFocus: FocusedFieldType,
     changeFocusToField: Effect<FocusedFieldType>,
     fields: ComposerFields,
+    attachments: AttachmentGroupUiModel,
     actions: ComposerFormActions,
     contactSuggestionState: ContactSuggestionState,
     clearContactSuggestionTerm: Effect<ContactSuggestionsField>,
@@ -157,6 +160,20 @@ internal fun ComposerForm(
                         isFocused = isSubjectFocused
                     )
                     MailDivider()
+
+                    if (attachments.attachments.isNotEmpty()) {
+                        AttachmentList(
+                            messageAttachmentsUiModel = attachments,
+                            actions = AttachmentList.Actions(
+                                onShowAllAttachments = { Timber.d("On show all attachments clicked") },
+                                onAttachmentClicked = { Timber.d("On attachment clicked: $it") },
+                                onAttachmentDeleteClicked = {
+                                    Timber.d("On attachment clicked: $it")
+                                }
+                            )
+                        )
+                    }
+
                     MessageBodyEditor(
                         messageBodyUiModel = fields.displayBody,
                         onBodyChanged = actions.onBodyChanged,
