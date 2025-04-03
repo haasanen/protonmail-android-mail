@@ -22,6 +22,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import arrow.core.Either
 import arrow.core.getOrElse
+import arrow.core.left
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailconversation.domain.usecase.LabelConversations
@@ -81,12 +82,12 @@ internal class LabelAsViewModel @AssistedInject constructor(
 
     private suspend fun getInitialStateForEntryPoint(
         entryPoint: LabelAsBottomSheetEntryPoint
-    ): Either<DataError, LabelAsActions> {
+    ): Either<GetInitialStateError, LabelAsActions> {
         val userId = initialData.userId
         val labelId = initialData.labelId
-        val items = initialData.items
+        val items = initialData.items.takeIf { it.isNotEmpty() } ?: return GetInitialStateError.NoItemsProvided.left()
 
-        return when (entryPoint) {
+        val result = when (entryPoint) {
             is LabelAsBottomSheetEntryPoint.Conversation -> getLabelAsBottomSheetContent.forConversation(
                 userId = userId,
                 labelId = labelId,
@@ -102,6 +103,10 @@ internal class LabelAsViewModel @AssistedInject constructor(
             is LabelAsBottomSheetEntryPoint.ViewModeAware -> {
                 getLabelAsBottomSheetContent.forMailbox(userId, labelId, items, entryPoint.viewMode)
             }
+        }
+
+        return result.mapLeft { error ->
+            GetInitialStateError.LoadingContentError(error)
         }
     }
 
@@ -190,6 +195,13 @@ internal class LabelAsViewModel @AssistedInject constructor(
         val archiveSelected: Boolean,
         val entryPoint: LabelAsBottomSheetEntryPoint
     )
+
+    sealed interface GetInitialStateError {
+        data object NoItemsProvided : GetInitialStateError
+
+        @JvmInline
+        value class LoadingContentError(val error: DataError) : GetInitialStateError
+    }
 
     @AssistedFactory
     interface Factory {

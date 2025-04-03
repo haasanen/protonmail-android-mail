@@ -80,6 +80,17 @@ internal class LabelAsViewModelTest {
     }
 
     @Test
+    fun `should emit an error when no items are provided`() = runTest {
+        // Given
+        val initialData = defaultInitialData.copy(items = emptyList())
+
+        // When + Then
+        viewModel(initialData).state.test {
+            assertEquals(LabelAsState.Error, awaitItem())
+        }
+    }
+
+    @Test
     fun `should emit data error when data can't be fetched`() = runTest {
         // Given
         val viewMode = ViewMode.NoConversationGrouping
