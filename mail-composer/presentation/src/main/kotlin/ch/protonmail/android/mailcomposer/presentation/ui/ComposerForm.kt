@@ -63,7 +63,6 @@ internal fun ComposerForm(
 
     val maxWidthModifier = Modifier.fillMaxWidth()
 
-    var showSubjectAndBody by remember { mutableStateOf(true) }
     var isSubjectFocused by remember { mutableStateOf(false) }
 
     FocusableForm(
@@ -148,30 +147,28 @@ internal fun ComposerForm(
                         actions.onChangeSender
                     )
 
-                    if (showSubjectAndBody) {
-                        MailDivider()
-                        SubjectTextField(
-                            initialValue = fields.subject,
-                            onSubjectChange = actions.onSubjectChanged,
-                            modifier = maxWidthModifier
-                                .testTag(ComposerTestTags.Subject)
-                                .retainFieldFocusOnConfigurationChange(FocusedFieldType.SUBJECT),
-                            isFocused = isSubjectFocused
-                        )
-                        MailDivider()
-                        MessageBodyEditor(
-                            messageBodyUiModel = fields.displayBody,
-                            onBodyChanged = actions.onBodyChanged,
-                            onWebViewMeasuresChanged = actions.onWebViewMeasuresChanged,
-                            modifier = maxWidthModifier
-                                .testTag(ComposerTestTags.MessageBody)
-                                .retainFieldFocusOnConfigurationChange(FocusedFieldType.BODY)
-                                .onGloballyPositioned { coordinates ->
-                                    val webViewBounds = coordinates.boundsInWindow()
-                                    actions.onWebViewPositioned(webViewBounds)
-                                }
-                        )
-                    }
+                    MailDivider()
+                    SubjectTextField(
+                        initialValue = fields.subject,
+                        onSubjectChange = actions.onSubjectChanged,
+                        modifier = maxWidthModifier
+                            .testTag(ComposerTestTags.Subject)
+                            .retainFieldFocusOnConfigurationChange(FocusedFieldType.SUBJECT),
+                        isFocused = isSubjectFocused
+                    )
+                    MailDivider()
+                    MessageBodyEditor(
+                        messageBodyUiModel = fields.displayBody,
+                        onBodyChanged = actions.onBodyChanged,
+                        onWebViewMeasuresChanged = actions.onWebViewMeasuresChanged,
+                        modifier = maxWidthModifier
+                            .testTag(ComposerTestTags.MessageBody)
+                            .retainFieldFocusOnConfigurationChange(FocusedFieldType.BODY)
+                            .onGloballyPositioned { coordinates ->
+                                val webViewBounds = coordinates.boundsInWindow()
+                                actions.onWebViewPositioned(webViewBounds)
+                            }
+                    )
                 }
             }
         }
