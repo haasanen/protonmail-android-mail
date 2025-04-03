@@ -238,7 +238,10 @@ class RustDraftDataSourceImpl @Inject constructor(
         closure: suspend (DraftWrapper) -> Either<DataError, Unit>
     ): Either<DataError, Unit> {
         val rustDraftWrapper: DraftWrapper = draftWrapperStateFlow.value
-            ?: return DataError.Local.SaveDraftError.NoRustDraftAvailable.left()
+            ?: run {
+                Timber.w("Attempting to access draft operations while not draft object exists")
+                return DataError.Local.SaveDraftError.NoRustDraftAvailable.left()
+            }
 
         return closure(rustDraftWrapper)
     }

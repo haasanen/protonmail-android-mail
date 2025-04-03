@@ -148,6 +148,22 @@ class ComposerViewModel @AssistedInject constructor(
     val state: StateFlow<ComposerDraftState> = mutableState
 
     init {
+        viewModelScope.launch {
+            if (!setupInitialState(savedStateHandle)) return@launch
+
+            observeAttachments()
+            observeSendingError()
+            observeComposerSubject()
+            observeComposerRecipients()
+
+            // Avoid observing unimplemented features as that causes warnings reports to Sentry.
+//        observeMessageAttachments()
+//        observeMessagePassword()
+//        observeMessageExpirationTime()
+        }
+    }
+
+    private suspend fun setupInitialState(savedStateHandle: SavedStateHandle): Boolean {
         val inputDraftId = savedStateHandle.get<String>(ComposerScreen.DraftMessageIdKey)
         val draftAction = savedStateHandle.get<String>(ComposerScreen.SerializedDraftActionKey)
             ?.deserialize<DraftAction>()
@@ -157,16 +173,7 @@ class ComposerViewModel @AssistedInject constructor(
             draftAction != null -> prefillForDraftAction(draftAction)
             else -> prefillForNewDraft()
         }
-
-        observeAttachments()
-        observeSendingError()
-
-        // Avoid observing unimplemented features as that causes warnings reports to Sentry.
-//        observeMessageAttachments()
-//        observeMessagePassword()
-//        observeMessageExpirationTime()
-        observeComposerSubject()
-        observeComposerRecipients()
+        return true
     }
 
     private fun observeComposerRecipients() {
@@ -191,46 +198,42 @@ class ComposerViewModel @AssistedInject constructor(
         }
     }
 
-    private fun prefillForNewDraft() {
-        viewModelScope.launch {
-            createEmptyDraft(primaryUserId())
-                .onRight { draftFields ->
-                    emitNewStateFor(
-                        ComposerEvent.PrefillDraftDataReceived(
-                            draftUiModel = draftFields.toDraftUiModel(),
-                            isDataRefreshed = true,
-                            isBlockedSendingFromPmAddress = false,
-                            isBlockedSendingFromDisabledAddress = false
-                        )
+    private suspend fun prefillForNewDraft() {
+        createEmptyDraft(primaryUserId())
+            .onRight { draftFields ->
+                emitNewStateFor(
+                    ComposerEvent.PrefillDraftDataReceived(
+                        draftUiModel = draftFields.toDraftUiModel(),
+                        isDataRefreshed = true,
+                        isBlockedSendingFromPmAddress = false,
+                        isBlockedSendingFromDisabledAddress = false
                     )
-                }
-                .onLeft { emitNewStateFor(ComposerEvent.ErrorLoadingDefaultSenderAddress) }
-        }
+                )
+            }
+            .onLeft { emitNewStateFor(ComposerEvent.ErrorLoadingDefaultSenderAddress) }
     }
 
     @MissingRustApi
     // Storing of attachments not implemented
-    private fun prefillForShareDraftAction(shareDraftAction: DraftAction.PrefillForShare) {
+    private suspend fun prefillForShareDraftAction(shareDraftAction: DraftAction.PrefillForShare) {
         val fileShareInfo = shareDraftAction.intentShareInfo.decode()
 
-        viewModelScope.launch {
-            fileShareInfo.attachmentUris.takeIfNotEmpty()?.let { uris ->
-                Timber.w("composer: storing attachment not implemented")
-                emitNewStateFor(ComposerEvent.ErrorAttachmentsExceedSizeLimit)
-            }
+        fileShareInfo.attachmentUris.takeIfNotEmpty()?.let { uris ->
+            Timber.w("composer: storing attachment not implemented")
+            emitNewStateFor(ComposerEvent.ErrorAttachmentsExceedSizeLimit)
+        }
 
-            if (fileShareInfo.hasEmailData()) {
-                val draftFields = prepareDraftFieldsFor(fileShareInfo)
-                subjectTextField.replaceText(draftFields.subject.value)
-                recipientsStateManager.setFromParticipants(
-                    toRecipients = draftFields.recipientsTo.value,
-                    ccRecipients = draftFields.recipientsCc.value,
-                    bccRecipients = draftFields.recipientsBcc.value
-                )
-                emitNewStateFor(
-                    ComposerEvent.PrefillDataReceivedViaShare(draftFields.toDraftUiModel())
-                )
-            }
+        if (fileShareInfo.hasEmailData()) {
+            val draftFields = prepareDraftFieldsFor(fileShareInfo)
+            subjectTextField.replaceText(draftFields.subject.value)
+            recipientsStateManager.setFromParticipants(
+                toRecipients = draftFields.recipientsTo.value,
+                ccRecipients = draftFields.recipientsCc.value,
+                bccRecipients = draftFields.recipientsBcc.value
+            )
+            emitNewStateFor(
+                ComposerEvent.PrefillDataReceivedViaShare(draftFields.toDraftUiModel())
+            )
         }
     }
 
@@ -267,7 +270,7 @@ class ComposerViewModel @AssistedInject constructor(
 
     @MissingRustApi
     // hardcoding values for isBlockedSendingFromPmAddress / isBlockedSendingFromDisabledAddress
-    private fun prefillForDraftAction(draftAction: DraftAction) {
+    private suspend fun prefillForDraftAction(draftAction: DraftAction) {
         Timber.d("Opening composer for draft action $draftAction / ${currentMessageId()}")
         emitNewStateFor(ComposerEvent.OpenWithMessageAction(currentMessageId(), draftAction))
 
@@ -281,40 +284,7 @@ class ComposerViewModel @AssistedInject constructor(
 
             is DraftAction.Forward,
             is DraftAction.Reply,
-            is DraftAction.ReplyAll -> viewModelScope.launch {
-                Timber.d("composer: prefilling for reply / fw action")
-                createDraftForAction(primaryUserId(), draftAction)
-                    .onRight { draftFields ->
-                        subjectTextField.replaceText(draftFields.subject.value)
-                        recipientsStateManager.setFromParticipants(
-                            toRecipients = draftFields.recipientsTo.value,
-                            ccRecipients = draftFields.recipientsCc.value,
-                            bccRecipients = draftFields.recipientsBcc.value
-                        )
-                        emitNewStateFor(
-                            ComposerEvent.PrefillDraftDataReceived(
-                                draftUiModel = draftFields.toDraftUiModel(),
-                                isDataRefreshed = true,
-                                isBlockedSendingFromPmAddress = false,
-                                isBlockedSendingFromDisabledAddress = false
-                            )
-                        )
-                    }
-                    .onLeft { emitNewStateFor(ComposerEvent.ErrorLoadingParentMessageData) }
-            }
-
-            is DraftAction.PrefillForShare -> prefillForShareDraftAction(draftAction)
-        }
-    }
-
-    @MissingRustApi
-    // isDataRefresh param of event is hardcoded to true
-    private fun prefillWithExistingDraft(inputDraftId: String) {
-        Timber.d("Opening composer with $inputDraftId / ${currentMessageId()}")
-        emitNewStateFor(ComposerEvent.OpenExistingDraft(currentMessageId()))
-
-        viewModelScope.launch {
-            openExistingDraft(primaryUserId(), MessageId(inputDraftId))
+            is DraftAction.ReplyAll -> createDraftForAction(primaryUserId(), draftAction)
                 .onRight { draftFields ->
                     subjectTextField.replaceText(draftFields.subject.value)
                     recipientsStateManager.setFromParticipants(
@@ -331,8 +301,36 @@ class ComposerViewModel @AssistedInject constructor(
                         )
                     )
                 }
-                .onLeft { emitNewStateFor(ComposerEvent.ErrorLoadingDraftData) }
+                .onLeft { emitNewStateFor(ComposerEvent.ErrorLoadingParentMessageData) }
+
+            is DraftAction.PrefillForShare -> prefillForShareDraftAction(draftAction)
         }
+    }
+
+    @MissingRustApi
+    // isDataRefresh param of event is hardcoded to true
+    private suspend fun prefillWithExistingDraft(inputDraftId: String) {
+        Timber.d("Opening composer with $inputDraftId / ${currentMessageId()}")
+        emitNewStateFor(ComposerEvent.OpenExistingDraft(currentMessageId()))
+
+        openExistingDraft(primaryUserId(), MessageId(inputDraftId))
+            .onRight { draftFields ->
+                subjectTextField.replaceText(draftFields.subject.value)
+                recipientsStateManager.setFromParticipants(
+                    toRecipients = draftFields.recipientsTo.value,
+                    ccRecipients = draftFields.recipientsCc.value,
+                    bccRecipients = draftFields.recipientsBcc.value
+                )
+                emitNewStateFor(
+                    ComposerEvent.PrefillDraftDataReceived(
+                        draftUiModel = draftFields.toDraftUiModel(),
+                        isDataRefreshed = true,
+                        isBlockedSendingFromPmAddress = false,
+                        isBlockedSendingFromDisabledAddress = false
+                    )
+                )
+            }
+            .onLeft { emitNewStateFor(ComposerEvent.ErrorLoadingDraftData) }
     }
 
     private fun DraftFields.toDraftUiModel(): DraftUiModel {
