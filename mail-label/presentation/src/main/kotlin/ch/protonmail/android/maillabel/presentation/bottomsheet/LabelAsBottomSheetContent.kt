@@ -185,7 +185,7 @@ private fun LabelGroupWithActionButton(
             }
 
             CreateLabelButton(
-                onClick = actions.onAddLabelClick
+                onClick = actions.onCreateNewLabelClick
             )
         }
     }
@@ -375,7 +375,7 @@ private fun LabelAsSheetTitle(modifier: Modifier) {
 
 internal object LabelAsBottomSheetContent {
     data class Actions(
-        val onAddLabelClick: () -> Unit,
+        val onCreateNewLabelClick: () -> Unit,
         val onLabelToggled: (LabelId) -> Unit,
         val onDoneClick: (archiveSelected: Boolean) -> Unit,
         val onLabelAsComplete: (archiveSelected: Boolean, entryPoint: LabelAsBottomSheetEntryPoint) -> Unit,
@@ -385,8 +385,8 @@ internal object LabelAsBottomSheetContent {
         companion object {
 
             val Empty = Actions(
+                onCreateNewLabelClick = {},
                 onLabelToggled = {},
-                onAddLabelClick = {},
                 onDoneClick = {},
                 onLabelAsComplete = { _, _ -> },
                 onError = {}

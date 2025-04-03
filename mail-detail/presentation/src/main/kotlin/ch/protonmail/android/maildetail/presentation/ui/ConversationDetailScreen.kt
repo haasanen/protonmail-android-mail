@@ -234,7 +234,7 @@ fun ConversationDetailScreen(
                     )
 
                     val actions = LabelAsBottomSheet.Actions(
-                        onAddLabelClick = actions.onAddLabel,
+                        onCreateNewLabelClick = actions.onAddLabel,
                         onError = { actions.showSnackbar(it, ProtonSnackbarType.ERROR) },
                         onLabelAsComplete = { wasArchived, entryPoint ->
                             viewModel.submit(

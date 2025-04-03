@@ -48,7 +48,7 @@ fun LabelAsBottomSheetScreen(
         onDoneClick = { archiveSelected ->
             viewModel.submit(LabelAsOperation.LabelAsAction.OperationConfirmed(archiveSelected))
         },
-        onAddLabelClick = actions.onAddLabelClick,
+        onCreateNewLabelClick = actions.onCreateNewLabelClick,
         onLabelToggled = { viewModel.submit(LabelAsOperation.LabelAsAction.LabelToggled(it)) },
         onLabelAsComplete = actions.onLabelAsComplete,
         onError = actions.onError
@@ -73,7 +73,7 @@ fun LabelAsBottomSheetScreen(
 object LabelAsBottomSheet {
 
     data class Actions(
-        val onAddLabelClick: () -> Unit,
+        val onCreateNewLabelClick: () -> Unit,
         val onError: (String) -> Unit,
         val onDismiss: () -> Unit,
         val onLabelAsComplete: (shouldExit: Boolean, entryPoint: LabelAsBottomSheetEntryPoint) -> Unit

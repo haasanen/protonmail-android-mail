@@ -322,7 +322,7 @@ fun MailboxScreen(
                     )
 
                     val actions = LabelAsBottomSheet.Actions(
-                        onAddLabelClick = actions.onAddLabel,
+                        onCreateNewLabelClick = actions.onAddLabel,
                         onError = { actions.showErrorSnackbar(it) },
                         onLabelAsComplete = { _, _ -> viewModel.submit(MailboxViewAction.DismissBottomSheet) },
                         onDismiss = { viewModel.submit(MailboxViewAction.DismissBottomSheet) }
