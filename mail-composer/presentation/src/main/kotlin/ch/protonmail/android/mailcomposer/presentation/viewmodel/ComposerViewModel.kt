@@ -540,8 +540,8 @@ class ComposerViewModel @Inject constructor(
         val recipientEmail = when (action.contact) {
             is ContactSuggestionUiModel.Contact -> action.contact.email
             is ContactSuggestionUiModel.ContactGroup -> {
-                // ContactGroup suggestions will be handled later. For now, we just take the first email
-                action.contact.emails.first()
+                action.contact.emails
+                    .joinToString(separator = "\n")
             }
         }
 
