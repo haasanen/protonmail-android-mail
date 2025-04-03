@@ -42,11 +42,12 @@ class DraftRepositoryImpl @Inject constructor(
     override suspend fun createDraft(userId: UserId, action: DraftAction): Either<DataError, DraftFields> =
         draftDataSource.create(userId, action).map { it.toDraftFields() }
 
-    override suspend fun save(): Either<DataError, Unit> = draftDataSource.save()
+    override suspend fun save(): Either<DataError, MessageId?> = draftDataSource.save()
 
-    override suspend fun saveSubject(subject: Subject): Either<DataError, Unit> = draftDataSource.saveSubject(subject)
+    override suspend fun saveSubject(subject: Subject): Either<DataError, MessageId?> =
+        draftDataSource.saveSubject(subject)
 
-    override suspend fun saveBody(body: DraftBody): Either<DataError, Unit> = draftDataSource.saveBody(body)
+    override suspend fun saveBody(body: DraftBody): Either<DataError, MessageId?> = draftDataSource.saveBody(body)
 
     override suspend fun updateToRecipient(recipients: List<Recipient>): Either<DataError, Unit> =
         draftDataSource.updateToRecipients(recipients)

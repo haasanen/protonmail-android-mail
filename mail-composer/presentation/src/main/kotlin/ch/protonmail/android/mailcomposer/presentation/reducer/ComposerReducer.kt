@@ -33,6 +33,7 @@ import ch.protonmail.android.mailcomposer.presentation.model.FocusedFieldType
 import ch.protonmail.android.mailcomposer.presentation.model.SenderUiModel
 import ch.protonmail.android.mailmessage.domain.model.AttachmentMetadataWithState
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
+import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.presentation.mapper.AttachmentMetadataUiModelMapper
 import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentGroupUiModel
 import ch.protonmail.android.mailmessage.presentation.model.attachment.NO_ATTACHMENT_LIMIT
@@ -149,6 +150,7 @@ class ComposerReducer @Inject constructor(
             confirmSendExpiringMessage = Effect.of(this.externalRecipients)
         )
         is ComposerEvent.RecipientsUpdated -> updateRecipients(currentState, hasValidRecipients)
+        is ComposerEvent.MessageIdProvided -> updateStateForMessageId(currentState, this.messageId)
     }
 
     private fun updateComposerFieldsState(
@@ -159,6 +161,7 @@ class ComposerReducer @Inject constructor(
         blockedSendingFromDisabledAddress: Boolean
     ) = currentState.copy(
         fields = currentState.fields.copy(
+            draftId = draftUiModel.draftFields.messageId ?: currentState.fields.draftId,
             sender = SenderUiModel(draftUiModel.draftFields.sender.value),
             body = draftUiModel.draftFields.body.value,
             displayBody = draftUiModel.draftDisplayBodyUiModel
@@ -205,6 +208,12 @@ class ComposerReducer @Inject constructor(
 
     private fun updateDraftBodyTo(currentState: ComposerDraftState, draftBody: DraftBody): ComposerDraftState =
         currentState.copy(fields = currentState.fields.copy(body = draftBody.value))
+
+    private fun updateStateForMessageId(currentState: ComposerDraftState, messageId: MessageId) = currentState.copy(
+        fields = currentState.fields.copy(
+            draftId = messageId
+        )
+    )
 
     private fun updateStateForOpenWithMessageAction(
         currentState: ComposerDraftState,

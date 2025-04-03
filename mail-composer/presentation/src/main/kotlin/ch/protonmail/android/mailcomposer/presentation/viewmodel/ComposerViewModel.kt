@@ -249,6 +249,7 @@ class ComposerViewModel @AssistedInject constructor(
         )
 
         return DraftFields(
+            currentMessageId(),
             currentSenderEmail(),
             subject,
             draftBody,
@@ -472,6 +473,7 @@ class ComposerViewModel @AssistedInject constructor(
     }
 
     private suspend fun buildDraftFields() = DraftFields(
+        currentMessageId(),
         currentSenderEmail(),
         currentSubject(),
         currentDraftBody(),
@@ -480,18 +482,25 @@ class ComposerViewModel @AssistedInject constructor(
         currentValidRecipientsBcc()
     )
 
-    private suspend fun onSubjectChanged(subject: Subject) = storeDraftWithSubject(subject)
-        .onLeft {
+    private suspend fun onSubjectChanged(subject: Subject) = storeDraftWithSubject(subject).fold(
+        ifLeft = {
             Timber.e("Store draft ${currentMessageId()} with new subject $subject failed")
             emitNewStateFor(ComposerEvent.ErrorStoringDraftSubject)
+        },
+        ifRight = {
+            it?.let { emitNewStateFor(ComposerEvent.MessageIdProvided(it)) }
         }
+    )
 
     private suspend fun onDraftBodyChanged(action: ComposerAction.DraftBodyChanged) {
         emitNewStateFor(ComposerAction.DraftBodyChanged(action.draftBody))
 
         storeDraftWithBody(
             action.draftBody
-        ).onLeft { emitNewStateFor(ComposerEvent.ErrorStoringDraftBody) }
+        ).fold(
+            ifLeft = { emitNewStateFor(ComposerEvent.ErrorStoringDraftBody) },
+            ifRight = { it?.let { emitNewStateFor(ComposerEvent.MessageIdProvided(it)) } }
+        )
     }
 
     private suspend fun primaryUserId() = primaryUserId.first()

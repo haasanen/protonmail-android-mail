@@ -26,6 +26,7 @@ import ch.protonmail.android.mailcomposer.domain.model.RecipientsCc
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsTo
 import ch.protonmail.android.mailcomposer.domain.model.SenderEmail
 import ch.protonmail.android.mailcomposer.domain.model.Subject
+import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.Recipient
 import ch.protonmail.android.mailmessage.domain.sample.RecipientSample
 
@@ -42,6 +43,7 @@ object DraftFieldsTestData {
     )
 
     private fun buildExpectedDraftFields(
+        messageId: MessageId = MessageId("messageId"),
         expectedSubject: String = "Subject for the message",
         expectedSenderEmail: String = UserAddressSample.PrimaryAddress.email,
         expectedDraftBody: String = "I am plaintext",
@@ -49,6 +51,7 @@ object DraftFieldsTestData {
         recipientsCcAddresses: List<String> = listOf(RecipientSample.NamelessRecipient.address),
         recipientsBccAddresses: List<String> = listOf(RecipientSample.NamelessRecipient.address)
     ) = DraftFields(
+        messageId,
         SenderEmail(expectedSenderEmail),
         Subject(expectedSubject),
         DraftBody(expectedDraftBody),

@@ -38,7 +38,6 @@ import junit.framework.TestCase.assertNull
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import uniffi.proton_mail_uniffi.DraftCreateMode
-import uniffi.proton_mail_uniffi.DraftMessageIdResult
 import uniffi.proton_mail_uniffi.DraftSaveSendError
 import uniffi.proton_mail_uniffi.DraftSaveSendErrorReason
 import uniffi.proton_mail_uniffi.VoidDraftSaveSendResult
@@ -94,7 +93,8 @@ class RustDraftDataSourceImplTest {
             expected.body,
             toRecipientsWrapperMock,
             ccRecipientsWrapperMock,
-            bccRecipientsWrapperMock
+            bccRecipientsWrapperMock,
+            localMessageId
         )
         coEvery { toRecipientsWrapperMock.recipients() } returns listOf(LocalComposerRecipientTestData.Alice)
         coEvery { ccRecipientsWrapperMock.recipients() } returns listOf(LocalComposerRecipientTestData.Bob)
@@ -188,7 +188,8 @@ class RustDraftDataSourceImplTest {
             body,
             recipientsWrapperMock,
             recipientsWrapperMock,
-            recipientsWrapperMock
+            recipientsWrapperMock,
+            messageId.toLocalMessageId()
         )
         coEvery { recipientsWrapperMock.recipients() } returns emptyList()
         coEvery { userSessionRepository.getUserSession(userId) } returns mockUserSession
@@ -245,8 +246,14 @@ class RustDraftDataSourceImplTest {
     @Test
     fun `save draft calls rust draft wrapper when draft instance exists`() = runTest {
         // Given
+        val messageId = MessageIdSample.RustJobApplication
         val draft = LocalDraftTestData.JobApplicationDraft
-        val expectedDraftWrapper = expectDraftWrapperReturns(draft.subject, draft.sender, draft.body)
+        val expectedDraftWrapper = expectDraftWrapperReturns(
+            draft.subject,
+            draft.sender,
+            draft.body,
+            messageId = messageId.toLocalMessageId()
+        )
         dataSource.draftWrapperMutableStateFlow.value = expectedDraftWrapper
         coEvery { expectedDraftWrapper.save() } returns VoidDraftSaveSendResult.Ok
 
@@ -254,7 +261,7 @@ class RustDraftDataSourceImplTest {
         val actual = dataSource.save()
 
         // Then
-        assertEquals(actual, Unit.right())
+        assertEquals(actual, draft.messageId.right())
     }
 
     @Test
@@ -278,9 +285,15 @@ class RustDraftDataSourceImplTest {
     @Test
     fun `save subject calls rust draft wrapper to set subject and save`() = runTest {
         // Given
+        val messageId = MessageIdSample.RustJobApplication
         val draft = LocalDraftTestData.JobApplicationDraft
         val subject = Subject("saving a draft...")
-        val expectedDraftWrapper = expectDraftWrapperReturns(draft.subject, draft.sender, draft.body)
+        val expectedDraftWrapper = expectDraftWrapperReturns(
+            draft.subject,
+            draft.sender,
+            draft.body,
+            messageId = messageId.toLocalMessageId()
+        )
         dataSource.draftWrapperMutableStateFlow.value = expectedDraftWrapper
         coEvery { expectedDraftWrapper.setSubject(subject.value) } returns VoidDraftSaveSendResult.Ok
         coEvery { expectedDraftWrapper.save() } returns VoidDraftSaveSendResult.Ok
@@ -289,7 +302,7 @@ class RustDraftDataSourceImplTest {
         val actual = dataSource.saveSubject(subject)
 
         // Then
-        assertEquals(actual, Unit.right())
+        assertEquals(actual, draft.messageId.right())
     }
 
     @Test
@@ -314,9 +327,15 @@ class RustDraftDataSourceImplTest {
     @Test
     fun `save body calls rust draft wrapper to set body and save`() = runTest {
         // Given
+        val messageId = MessageIdSample.RustJobApplication
         val draft = LocalDraftTestData.JobApplicationDraft
         val body = DraftBody("saving a draft's body...")
-        val expectedDraftWrapper = expectDraftWrapperReturns(draft.body, draft.sender, draft.body)
+        val expectedDraftWrapper = expectDraftWrapperReturns(
+            draft.body,
+            draft.sender,
+            draft.body,
+            messageId = messageId.toLocalMessageId()
+        )
         dataSource.draftWrapperMutableStateFlow.value = expectedDraftWrapper
         coEvery { expectedDraftWrapper.setBody(body.value) } returns VoidDraftSaveSendResult.Ok
         coEvery { expectedDraftWrapper.save() } returns VoidDraftSaveSendResult.Ok
@@ -325,7 +344,7 @@ class RustDraftDataSourceImplTest {
         val actual = dataSource.saveBody(body)
 
         // Then
-        assertEquals(actual, Unit.right())
+        assertEquals(actual, draft.messageId.right())
     }
 
     @Test
@@ -569,7 +588,7 @@ class RustDraftDataSourceImplTest {
         every { recipientsCc() } returns ccRecipientsWrapper
         every { recipientsBcc() } returns bccRecipientsWrapper
         coEvery { send() } returns sendResult
-        coEvery { messageId() } returns DraftMessageIdResult.Ok(messageId)
+        coEvery { messageId() } returns messageId
     }
 
 }

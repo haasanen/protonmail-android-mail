@@ -85,6 +85,7 @@ class ComposerReducerTest(
         private val addresses = listOf(UserAddressSample.PrimaryAddress, UserAddressSample.AliasAddress)
 
         private val draftFields = DraftFields(
+            messageId,
             SenderEmail("author@proton.me"),
             Subject("Here is the matter"),
             DraftBody("Decrypted body of this draft"),
@@ -94,6 +95,7 @@ class ComposerReducerTest(
         )
 
         private val draftFieldsWithoutRecipients = DraftFields(
+            messageId,
             SenderEmail("author@proton.me"),
             Subject("Here is the matter"),
             DraftBody("Decrypted body of this draft"),

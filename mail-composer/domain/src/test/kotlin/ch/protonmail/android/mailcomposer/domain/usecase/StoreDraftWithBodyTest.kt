@@ -23,6 +23,7 @@ import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.repository.DraftRepository
+import ch.protonmail.android.mailmessage.domain.model.MessageId
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -40,15 +41,16 @@ internal class StoreDraftWithBodyTest {
     @Test
     fun `save draft with body`() = runTest {
         // Given
+        val messageId = MessageId("messageId")
         val body = DraftBody("Body of this email")
-        givenSaveDraftSucceeds(body)
+        givenSaveDraftSucceeds(messageId, body)
 
         // When
         val actualEither = storeDraftWithBody(body)
 
         // Then
         coVerify { draftRepository.saveBody(body) }
-        assertEquals(Unit.right(), actualEither)
+        assertEquals(messageId.right(), actualEither)
     }
 
     @Test
@@ -64,8 +66,8 @@ internal class StoreDraftWithBodyTest {
         assertEquals(expected.left(), actualEither)
     }
 
-    private fun givenSaveDraftSucceeds(body: DraftBody) {
-        coEvery { draftRepository.saveBody(body) } returns Unit.right()
+    private fun givenSaveDraftSucceeds(messageId: MessageId, body: DraftBody) {
+        coEvery { draftRepository.saveBody(body) } returns messageId.right()
     }
 
     private fun givenSaveDraftFails(body: DraftBody, expected: DataError) {

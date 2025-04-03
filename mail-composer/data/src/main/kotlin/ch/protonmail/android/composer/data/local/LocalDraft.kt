@@ -18,7 +18,10 @@
 
 package ch.protonmail.android.composer.data.local
 
+import ch.protonmail.android.mailmessage.domain.model.MessageId
+
 data class LocalDraft(
+    val messageId: MessageId?,
     val sender: String,
     val subject: String,
     val body: String,

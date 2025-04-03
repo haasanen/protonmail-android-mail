@@ -35,9 +35,9 @@ interface RustDraftDataSource {
 
     suspend fun create(userId: UserId, action: DraftAction): Either<DataError, LocalDraft>
 
-    suspend fun save(): Either<DataError, Unit>
-    suspend fun saveSubject(subject: Subject): Either<DataError, Unit>
-    suspend fun saveBody(body: DraftBody): Either<DataError, Unit>
+    suspend fun save(): Either<DataError, MessageId?>
+    suspend fun saveSubject(subject: Subject): Either<DataError, MessageId?>
+    suspend fun saveBody(body: DraftBody): Either<DataError, MessageId?>
     suspend fun observeRecipientsValidation(): Flow<List<RecipientEntityWithValidation>>
     suspend fun send(): Either<DataError, Unit>
     suspend fun undoSend(userId: UserId, messageId: MessageId): Either<DataError, Unit>

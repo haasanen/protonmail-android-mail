@@ -133,9 +133,7 @@ class ComposerViewModelTest {
     val loggingTestRule = LoggingTestRule()
 
     private val storeDraftWithBodyMock = mockk<StoreDraftWithBody>()
-    private val storeDraftWithSubjectMock = mockk<StoreDraftWithSubject> {
-        coEvery { this@mockk.invoke(any()) } returns Unit.right()
-    }
+    private val storeDraftWithSubjectMock = mockk<StoreDraftWithSubject>()
     private val updateRecipients = mockk<UpdateRecipients>()
     private val sendMessageMock = mockk<SendMessage>()
     private val networkManagerMock = mockk<NetworkManager>()
@@ -217,6 +215,7 @@ class ComposerViewModelTest {
         val recipientsCc = RecipientsCc(listOf(RecipientSample.John))
         val recipientsBcc = RecipientsBcc(listOf(RecipientSample.John))
         val expectedFields = DraftFields(
+            messageId,
             expectedSenderEmail,
             expectedSubject,
             expectedDraftBody,
@@ -247,7 +246,8 @@ class ComposerViewModelTest {
         val expectedDraftBody = DraftBody(RawDraftBody)
         val expectedUserId = expectedUserId { UserIdSample.Primary }
         val action = ComposerAction.DraftBodyChanged(expectedDraftBody)
-        expectStoreDraftBodySucceeds(expectedDraftBody)
+        expectStoreDraftSubjectSucceeds(expectedMessageId, Subject(""))
+        expectStoreDraftBodySucceeds(expectedMessageId, expectedDraftBody)
         expectNoInputDraftMessageId()
         expectInputDraftAction { DraftAction.Compose }
         expectObservedMessageAttachments(expectedUserId, expectedMessageId)
@@ -255,7 +255,7 @@ class ComposerViewModelTest {
         expectMessagePassword(expectedUserId, expectedMessageId)
         expectNoFileShareVia()
         expectObserveMessageExpirationTime(expectedUserId, expectedMessageId)
-        expectInitComposerWithNewEmptyDraftSucceeds(expectedUserId)
+        expectInitComposerWithNewEmptyDraftSucceeds(expectedUserId, expectedMessageId)
         ignoreRecipientsUpdates()
 
         // When
@@ -276,7 +276,7 @@ class ComposerViewModelTest {
         val expectedMessageId = expectedMessageId { MessageIdSample.EmptyDraft }
         val expectedUserId = expectedUserId { UserIdSample.Primary }
         val action = ComposerAction.SenderChanged(SenderUiModel(expectedSenderEmail.value))
-        expectStoreDraftBodySucceeds(expectedDraftBody)
+        expectStoreDraftBodySucceeds(expectedMessageId, expectedDraftBody)
         expectNoInputDraftMessageId()
         expectNoInputDraftAction()
         expectObservedMessageAttachments(expectedUserId, expectedMessageId)
@@ -284,7 +284,7 @@ class ComposerViewModelTest {
         expectMessagePassword(expectedUserId, expectedMessageId)
         expectNoFileShareVia()
         expectObserveMessageExpirationTime(expectedUserId, expectedMessageId)
-        expectInitComposerWithNewEmptyDraftSucceeds(expectedUserId)
+        expectInitComposerWithNewEmptyDraftSucceeds(expectedUserId, expectedMessageId)
 
         val expectedReplaceDraftBodyTextUiModel = TextUiModel(expectDraftBodyWithSignature().value)
 
@@ -307,7 +307,7 @@ class ComposerViewModelTest {
         val expectedMessageId = expectedMessageId { MessageIdSample.EmptyDraft }
         val expectedUserId = expectedUserId { UserIdSample.Primary }
         val action = ComposerAction.SenderChanged(SenderUiModel(expectedSenderEmail.value))
-        expectStoreDraftBodySucceeds(expectedDraftBody)
+        expectStoreDraftBodySucceeds(expectedMessageId, expectedDraftBody)
         expectNoInputDraftMessageId()
         expectNoInputDraftAction()
         expectObservedMessageAttachments(expectedUserId, expectedMessageId)
@@ -315,7 +315,7 @@ class ComposerViewModelTest {
         expectMessagePassword(expectedUserId, expectedMessageId)
         expectNoFileShareVia()
         expectObserveMessageExpirationTime(expectedUserId, expectedMessageId)
-        expectInitComposerWithNewEmptyDraftSucceeds(expectedUserId)
+        expectInitComposerWithNewEmptyDraftSucceeds(expectedUserId, expectedMessageId)
 
         // When
         viewModel.submit(action)
@@ -332,7 +332,7 @@ class ComposerViewModelTest {
         val expectedSubject = Subject("Subject for the message")
         val expectedMessageId = expectedMessageId { MessageIdSample.EmptyDraft }
         val expectedUserId = expectedUserId { UserIdSample.Primary }
-        expectStoreDraftSubjectSucceeds(expectedSubject)
+        expectStoreDraftSubjectSucceeds(expectedMessageId, expectedSubject)
         expectNoInputDraftMessageId()
         expectInputDraftAction { DraftAction.Compose }
         expectObservedMessageAttachments(expectedUserId, expectedMessageId)
@@ -340,7 +340,7 @@ class ComposerViewModelTest {
         expectMessagePassword(expectedUserId, expectedMessageId)
         expectNoFileShareVia()
         expectObserveMessageExpirationTime(expectedUserId, expectedMessageId)
-        expectInitComposerWithNewEmptyDraftSucceeds(expectedUserId)
+        expectInitComposerWithNewEmptyDraftSucceeds(expectedUserId, expectedMessageId)
         ignoreRecipientsUpdates()
 
         // When
@@ -364,6 +364,7 @@ class ComposerViewModelTest {
         )
         val expectedMessageId = expectedMessageId { MessageIdSample.EmptyDraft }
         val expectedUserId = expectedUserId { UserIdSample.Primary }
+        expectStoreDraftSubjectSucceeds(expectedMessageId, Subject(""))
         expectUpdateRecipientsSucceeds(expectedTo, expectedCc, expectedBcc)
         mockParticipantMapper()
         expectNoInputDraftMessageId()
@@ -373,7 +374,7 @@ class ComposerViewModelTest {
         expectMessagePassword(expectedUserId, expectedMessageId)
         expectNoFileShareVia()
         expectObserveMessageExpirationTime(expectedUserId, expectedMessageId)
-        expectInitComposerWithNewEmptyDraftSucceeds(expectedUserId)
+        expectInitComposerWithNewEmptyDraftSucceeds(expectedUserId, expectedMessageId)
 
         // When
         recipientsStateManager.setFromParticipants(expectedTo, expectedCc, expectedBcc)
@@ -396,6 +397,7 @@ class ComposerViewModelTest {
         val recipientsTo = RecipientsTo(listOf(RecipientSample.John))
         val recipientsCc = RecipientsCc(listOf(RecipientSample.John))
         val recipientsBcc = RecipientsBcc(listOf(RecipientSample.John))
+        expectStoreDraftSubjectSucceeds(expectedMessageId, Subject(""))
         mockParticipantMapper()
         expectNoInputDraftMessageId()
         expectNoInputDraftAction()
@@ -404,8 +406,9 @@ class ComposerViewModelTest {
         expectMessagePassword(expectedUserId, expectedMessageId)
         expectNoFileShareVia()
         expectObserveMessageExpirationTime(expectedUserId, expectedMessageId)
-        expectInitComposerWithNewEmptyDraftSucceeds(expectedUserId) {
+        expectInitComposerWithNewEmptyDraftSucceeds(expectedUserId, expectedMessageId) {
             DraftFields(
+                messageId = expectedMessageId,
                 sender = expectedSenderEmail,
                 subject = expectedSubject,
                 body = expectedDraftBody,
@@ -437,6 +440,7 @@ class ComposerViewModelTest {
         mockParticipantMapper()
         expectNetworkManagerIsConnected()
         expectNoInputDraftAction()
+        expectStoreDraftSubjectSucceeds(expectedMessageId, expectedSubject)
         expectSendMessageSucceeds(expectedUserId)
         expectObservedMessageAttachments(expectedUserId, expectedMessageId)
         expectObserveMessageSendingError(expectedUserId, expectedMessageId)
@@ -446,6 +450,7 @@ class ComposerViewModelTest {
         expectNoExternalRecipients(expectedUserId, recipientsTo, recipientsCc, recipientsBcc)
         expectInitComposerWithExistingDraftSuccess(expectedUserId, expectedMessageId) {
             DraftFields(
+                messageId = expectedMessageId,
                 sender = expectedSenderEmail,
                 subject = expectedSubject,
                 body = expectedDraftBody,
@@ -480,6 +485,7 @@ class ComposerViewModelTest {
         mockParticipantMapper()
         expectNetworkManagerIsDisconnected()
         expectNoInputDraftAction()
+        expectStoreDraftSubjectSucceeds(expectedMessageId, expectedSubject)
         expectUpdateRecipientsSucceeds(recipientsTo.value, recipientsCc.value, recipientsBcc.value)
         expectNoExternalRecipients(expectedUserId, recipientsTo, recipientsCc, recipientsBcc)
         expectSendMessageSucceeds(expectedUserId)
@@ -490,6 +496,7 @@ class ComposerViewModelTest {
         expectObserveMessageExpirationTime(expectedUserId, expectedMessageId)
         expectInitComposerWithExistingDraftSuccess(expectedUserId, expectedMessageId) {
             DraftFields(
+                messageId = expectedMessageId,
                 sender = expectedSenderEmail,
                 subject = expectedSubject,
                 body = expectedDraftBody,
@@ -516,13 +523,14 @@ class ComposerViewModelTest {
         val expectedMessageId = expectedMessageId { MessageIdSample.EmptyDraft }
         expectNoInputDraftMessageId()
         expectNoInputDraftAction()
+        expectStoreDraftSubjectSucceeds(expectedMessageId, Subject(""))
         expectObservedMessageAttachments(expectedUserId, expectedMessageId)
         expectObserveMessageSendingError(expectedUserId, expectedMessageId)
         expectMessagePassword(expectedUserId, expectedMessageId)
         expectNoFileShareVia()
         expectObserveMessageExpirationTime(expectedUserId, expectedMessageId)
         expectContacts()
-        expectInitComposerWithNewEmptyDraftSucceeds(expectedUserId)
+        expectInitComposerWithNewEmptyDraftSucceeds(expectedUserId, expectedMessageId)
         ignoreRecipientsUpdates()
 
         // When
@@ -539,12 +547,13 @@ class ComposerViewModelTest {
         val expectedMessageId = expectedMessageId { MessageIdSample.EmptyDraft }
         expectNoInputDraftMessageId()
         expectInputDraftAction { DraftAction.Compose }
+        expectStoreDraftSubjectSucceeds(expectedMessageId, Subject(""))
         expectObservedMessageAttachments(expectedUserId, expectedMessageId)
         expectObserveMessageSendingError(expectedUserId, expectedMessageId)
         expectMessagePassword(expectedUserId, expectedMessageId)
         expectNoFileShareVia()
         expectObserveMessageExpirationTime(expectedUserId, expectedMessageId)
-        val expectedDraftFields = expectInitComposerWithNewEmptyDraftSucceeds(expectedUserId)
+        val expectedDraftFields = expectInitComposerWithNewEmptyDraftSucceeds(expectedUserId, expectedMessageId)
         ignoreRecipientsUpdates()
 
         // When
@@ -562,6 +571,7 @@ class ComposerViewModelTest {
         ignoreRecipientsUpdates()
         expectNoInputDraftMessageId()
         expectInputDraftAction { DraftAction.Compose }
+        expectStoreDraftSubjectSucceeds(expectedMessageId, Subject(""))
         expectObservedMessageAttachments(expectedUserId, expectedMessageId)
         expectObserveMessageSendingError(expectedUserId, expectedMessageId)
         expectMessagePassword(expectedUserId, expectedMessageId)
@@ -590,7 +600,7 @@ class ComposerViewModelTest {
         expectMessagePassword(expectedUserId, expectedMessageId)
         expectNoFileShareVia()
         expectObserveMessageExpirationTime(expectedUserId, expectedMessageId)
-        expectInitComposerWithNewEmptyDraftSucceeds(expectedUserId)
+        expectInitComposerWithNewEmptyDraftSucceeds(expectedUserId, expectedMessageId)
 
         // When
         viewModel.submit(ComposerAction.ChangeSenderRequested)
@@ -614,7 +624,7 @@ class ComposerViewModelTest {
         expectMessagePassword(expectedUserId, expectedMessageId)
         expectNoFileShareVia()
         expectObserveMessageExpirationTime(expectedUserId, expectedMessageId)
-        expectInitComposerWithNewEmptyDraftSucceeds(expectedUserId)
+        expectInitComposerWithNewEmptyDraftSucceeds(expectedUserId, expectedMessageId)
 
         // When
         viewModel.submit(ComposerAction.ChangeSenderRequested)
@@ -638,7 +648,7 @@ class ComposerViewModelTest {
         expectMessagePassword(expectedUserId, expectedMessageId)
         expectNoFileShareVia()
         expectObserveMessageExpirationTime(expectedUserId, expectedMessageId)
-        expectInitComposerWithNewEmptyDraftSucceeds(expectedUserId)
+        expectInitComposerWithNewEmptyDraftSucceeds(expectedUserId, expectedMessageId)
 
         // When
         viewModel.submit(ComposerAction.ChangeSenderRequested)
@@ -658,7 +668,7 @@ class ComposerViewModelTest {
         val expectedMessageId = expectedMessageId { MessageIdSample.EmptyDraft }
         val expectedUserId = expectedUserId { UserIdSample.Primary }
         val action = ComposerAction.SenderChanged(SenderUiModel(expectedSenderEmail.value))
-        expectStoreDraftBodySucceeds(expectedDraftBody)
+        expectStoreDraftBodySucceeds(expectedMessageId, expectedDraftBody)
         expectNoInputDraftMessageId()
         expectInputDraftAction { DraftAction.Compose }
         expectObservedMessageAttachments(expectedUserId, expectedMessageId)
@@ -666,7 +676,7 @@ class ComposerViewModelTest {
         expectMessagePassword(expectedUserId, expectedMessageId)
         expectNoFileShareVia()
         expectObserveMessageExpirationTime(expectedUserId, expectedMessageId)
-        expectInitComposerWithNewEmptyDraftSucceeds(expectedUserId)
+        expectInitComposerWithNewEmptyDraftSucceeds(expectedUserId, expectedMessageId)
 
         // When
         viewModel.submit(action)
@@ -695,7 +705,7 @@ class ComposerViewModelTest {
         expectMessagePassword(expectedUserId, expectedMessageId)
         expectNoFileShareVia()
         expectObserveMessageExpirationTime(expectedUserId, expectedMessageId)
-        expectInitComposerWithNewEmptyDraftSucceeds(expectedUserId)
+        expectInitComposerWithNewEmptyDraftSucceeds(expectedUserId, expectedMessageId)
 
         // When
         viewModel.submit(action)
@@ -715,6 +725,7 @@ class ComposerViewModelTest {
         val expectedDraftBody = DraftBody("updated-draft")
         val action = ComposerAction.DraftBodyChanged(expectedDraftBody)
         val expectedMessageId = expectedMessageId { MessageIdSample.EmptyDraft }
+        expectStoreDraftSubjectSucceeds(expectedMessageId, Subject(""))
         expectStoreDraftBodyFails(expectedDraftBody) {
             DataError.Local.SaveDraftError.SaveFailed
         }
@@ -725,7 +736,7 @@ class ComposerViewModelTest {
         expectMessagePassword(expectedUserId, expectedMessageId)
         expectNoFileShareVia()
         expectObserveMessageExpirationTime(expectedUserId, expectedMessageId)
-        expectInitComposerWithNewEmptyDraftSucceeds(expectedUserId)
+        expectInitComposerWithNewEmptyDraftSucceeds(expectedUserId, expectedMessageId)
         ignoreRecipientsUpdates()
 
         // When
@@ -752,7 +763,7 @@ class ComposerViewModelTest {
         expectMessagePassword(expectedUserId, expectedMessageId)
         expectNoFileShareVia()
         expectObserveMessageExpirationTime(expectedUserId, expectedMessageId)
-        expectInitComposerWithNewEmptyDraftSucceeds(expectedUserId)
+        expectInitComposerWithNewEmptyDraftSucceeds(expectedUserId, expectedMessageId)
         ignoreRecipientsUpdates()
 
         // When
@@ -780,6 +791,7 @@ class ComposerViewModelTest {
             RecipientUiModel.Valid("valid@email.com"),
             RecipientUiModel.Invalid("invalid email")
         )
+        expectStoreDraftSubjectSucceeds(expectedMessageId, Subject(""))
         ignoreRecipientsUpdates() // Ignore first emission due to RecipientsStateManager init
         expectUpdateRecipientsFails(toRecipients, emptyList(), emptyList()) {
             DataError.Local.SaveDraftError.SaveFailed
@@ -792,7 +804,7 @@ class ComposerViewModelTest {
         expectMessagePassword(expectedUserId, expectedMessageId)
         expectNoFileShareVia()
         expectObserveMessageExpirationTime(expectedUserId, expectedMessageId)
-        expectInitComposerWithNewEmptyDraftSucceeds(expectedUserId)
+        expectInitComposerWithNewEmptyDraftSucceeds(expectedUserId, expectedMessageId)
 
         viewModel.state.test {
             // When
@@ -813,6 +825,7 @@ class ComposerViewModelTest {
         val draftFields = existingDraftFields
         // Simulate a small delay in getDecryptedDraftFields to ensure the "loading" state was emitted
         expectInitComposerWithExistingDraftSuccess(expectedUserId, expectedDraftId, 100) { draftFields }
+        expectStoreDraftSubjectSucceeds(expectedDraftId, existingDraftFields.subject)
         expectObservedMessageAttachments(expectedUserId, expectedDraftId)
         expectNoInputDraftAction()
         expectObserveMessageSendingError(expectedUserId, expectedDraftId)
@@ -845,6 +858,7 @@ class ComposerViewModelTest {
         expectInitComposerWithExistingDraftSuccess(expectedUserId, expectedDraftId) { existingDraftFields }
         expectObservedMessageAttachments(expectedUserId, expectedDraftId)
         expectNoInputDraftAction()
+        expectStoreDraftSubjectSucceeds(expectedDraftId, existingDraftFields.subject)
         expectObserveMessageSendingError(expectedUserId, expectedDraftId)
         expectMessagePassword(expectedUserId, expectedDraftId)
         expectNoFileShareVia()
@@ -871,6 +885,7 @@ class ComposerViewModelTest {
         val expectedDraftFields = existingDraftFields
         val expectedDisplayBody = DraftDisplayBodyUiModel("<html> ${expectedDraftFields.body.value} </html>")
         expectInitComposerWithExistingDraftSuccess(expectedUserId, expectedDraftId) { existingDraftFields }
+        expectStoreDraftSubjectSucceeds(expectedDraftId, expectedDraftFields.subject)
         expectObservedMessageAttachments(expectedUserId, expectedDraftId)
         expectInputDraftAction { DraftAction.Compose }
         expectObserveMessageSendingError(expectedUserId, expectedDraftId)
@@ -890,7 +905,7 @@ class ComposerViewModelTest {
             expectedDraftFields.body.value
         )
         assertEquals(expectedComposerFields, actual.fields)
-        expectStoreDraftSubjectSucceeds(expectedDraftFields.subject)
+        expectStoreDraftSubjectSucceeds(expectedDraftId, expectedDraftFields.subject)
     }
 
     @Test
@@ -929,6 +944,7 @@ class ComposerViewModelTest {
         val expectedUserId = expectedUserId { UserIdSample.Primary }
         val expectedDraftId = expectInputDraftMessageId { MessageIdSample.RemoteDraft }
         expectInitComposerWithExistingDraftError(expectedUserId, expectedDraftId) { DataError.Local.NoDataCached }
+        expectStoreDraftSubjectSucceeds(expectedDraftId, Subject(""))
         expectObservedMessageAttachments(expectedUserId, expectedDraftId)
         expectNoInputDraftAction()
         expectObserveMessageSendingError(expectedUserId, expectedDraftId)
@@ -979,6 +995,7 @@ class ComposerViewModelTest {
         val recipientsCc = RecipientsCc(listOf(RecipientSample.John))
         val recipientsBcc = RecipientsBcc(listOf(RecipientSample.John))
         val expectedFields = DraftFields(
+            expectedDraftId,
             expectedSenderEmail,
             expectedSubject,
             expectedDraftBody,
@@ -1020,6 +1037,7 @@ class ComposerViewModelTest {
         val recipientsCc = RecipientsCc(listOf(RecipientSample.John))
         val recipientsBcc = RecipientsBcc(listOf(RecipientSample.John))
         val expectedFields = DraftFields(
+            messageId,
             expectedSenderEmail,
             expectedSubject,
             expectedDraftBody,
@@ -1029,6 +1047,7 @@ class ComposerViewModelTest {
         )
         expectInputDraftMessageId { messageId }
         expectInitComposerWithExistingDraftSuccess(expectedUserId, messageId) { expectedFields }
+        expectStoreDraftSubjectSucceeds(messageId, expectedSubject)
         expectObservedMessageAttachments(expectedUserId, messageId)
         expectNoInputDraftAction()
         expectAttachmentDeleteSucceeds(expectedAttachmentId)
@@ -1060,6 +1079,7 @@ class ComposerViewModelTest {
         val recipientsCc = RecipientsCc(listOf(RecipientSample.John))
         val recipientsBcc = RecipientsBcc(listOf(RecipientSample.John))
         val expectedFields = DraftFields(
+            messageId,
             expectedSenderEmail,
             expectedSubject,
             expectedDraftBody,
@@ -1100,7 +1120,7 @@ class ComposerViewModelTest {
         expectMessagePassword(userId, messageId)
         expectNoFileShareVia()
         expectObserveMessageExpirationTime(userId, messageId)
-        expectInitComposerWithNewEmptyDraftSucceeds(userId)
+        expectInitComposerWithNewEmptyDraftSucceeds(userId, messageId)
 
         // When
         viewModel.state.test {
@@ -1122,6 +1142,7 @@ class ComposerViewModelTest {
         expectContacts()
         mockParticipantMapper()
         expectInputDraftAction { expectedAction }
+        expectStoreDraftSubjectSucceeds(expectedMessageId, Subject(""))
         expectUpdateRecipientsSucceeds(listOf(expectedRecipient), emptyList(), emptyList())
         expectObservedMessageAttachments(expectedUserId, expectedMessageId)
         expectObserveMessageSendingError(expectedUserId, expectedMessageId)
@@ -1129,7 +1150,7 @@ class ComposerViewModelTest {
         expectAddressValidation(expectedRecipient.address, true)
         expectNoFileShareVia()
         expectObserveMessageExpirationTime(expectedUserId, expectedMessageId)
-        expectInitComposerWithNewEmptyDraftSucceeds(expectedUserId) {
+        expectInitComposerWithNewEmptyDraftSucceeds(expectedUserId, expectedMessageId) {
             DraftFieldsTestData.EmptyDraftWithPrimarySender
         }
 
@@ -1157,7 +1178,7 @@ class ComposerViewModelTest {
         expectMessagePassword(userId, messageId)
         expectNoFileShareVia()
         expectObserveMessageExpirationTime(userId, messageId)
-        expectInitComposerWithNewEmptyDraftSucceeds(userId)
+        expectInitComposerWithNewEmptyDraftSucceeds(userId, messageId)
 
         // When
         viewModel.submit(ComposerAction.OnSetExpirationTimeRequested)
@@ -1183,7 +1204,7 @@ class ComposerViewModelTest {
         expectNoFileShareVia()
         expectSaveExpirationTimeForDraft(userId, messageId, expirationTime)
         expectObserveMessageExpirationTime(userId, messageId)
-        expectInitComposerWithNewEmptyDraftSucceeds(userId)
+        expectInitComposerWithNewEmptyDraftSucceeds(userId, messageId)
 
         // When
         viewModel.submit(ComposerAction.ExpirationTimeSet(duration = expirationTime))
@@ -1212,7 +1233,7 @@ class ComposerViewModelTest {
         coEvery {
             saveMessageExpirationTime(userId, messageId, 1.days)
         } returns DataError.Local.DbWriteFailed.left()
-        expectInitComposerWithNewEmptyDraftSucceeds(userId)
+        expectInitComposerWithNewEmptyDraftSucceeds(userId, messageId)
 
         // When
         viewModel.submit(ComposerAction.ExpirationTimeSet(duration = expirationTime))
@@ -1236,7 +1257,7 @@ class ComposerViewModelTest {
         expectObserveMessageSendingError(userId, messageId)
         expectMessagePassword(userId, messageId)
         expectNoFileShareVia()
-        expectInitComposerWithNewEmptyDraftSucceeds(userId)
+        expectInitComposerWithNewEmptyDraftSucceeds(userId, messageId)
         val messageExpirationTime = expectObserveMessageExpirationTime(userId, messageId)
 
         // Then
@@ -1268,8 +1289,9 @@ class ComposerViewModelTest {
             expectNoMessagePassword(expectedUserId, expectedMessageId)
             expectNoFileShareVia()
             expectObserveMessageExpirationTime(expectedUserId, expectedMessageId)
-            expectInitComposerWithNewEmptyDraftSucceeds(expectedUserId) {
+            expectInitComposerWithNewEmptyDraftSucceeds(expectedUserId, expectedMessageId) {
                 DraftFields(
+                    messageId = expectedMessageId,
                     sender = expectedSenderEmail,
                     subject = expectedSubject,
                     body = expectedDraftBody,
@@ -1300,6 +1322,7 @@ class ComposerViewModelTest {
         val recipientsTo = RecipientsTo(listOf(RecipientSample.John))
         val recipientsCc = RecipientsCc(listOf(RecipientSample.John))
         val recipientsBcc = RecipientsBcc(listOf(RecipientSample.John))
+        expectStoreDraftSubjectSucceeds(expectedMessageId, Subject(""))
         mockParticipantMapper()
         expectNetworkManagerIsDisconnected()
         expectNoInputDraftMessageId()
@@ -1312,8 +1335,9 @@ class ComposerViewModelTest {
         expectObserveMessageExpirationTime(expectedUserId, expectedMessageId)
         expectExternalRecipients(expectedUserId, recipientsTo, recipientsCc, recipientsBcc)
         ignoreRecipientsUpdates()
-        expectInitComposerWithNewEmptyDraftSucceeds(expectedUserId) {
+        expectInitComposerWithNewEmptyDraftSucceeds(expectedUserId, expectedMessageId) {
             DraftFields(
+                messageId = expectedMessageId,
                 sender = expectedSenderEmail,
                 subject = expectedSubject,
                 body = expectedDraftBody,
@@ -1360,7 +1384,8 @@ class ComposerViewModelTest {
     // and also as a hack to initialize the composer's state to an expected one to test
     private fun expectInitComposerWithNewEmptyDraftSucceeds(
         userId: UserId,
-        result: () -> DraftFields = { DraftFieldsTestData.EmptyDraftWithPrimarySender }
+        messageId: MessageId,
+        result: () -> DraftFields = { DraftFieldsTestData.EmptyDraftWithPrimarySender.copy(messageId = messageId) }
     ) = result().also { draftFields ->
         coEvery { createEmptyDraft(userId) } coAnswers { draftFields.right() }
     }
@@ -1449,10 +1474,10 @@ class ComposerViewModelTest {
             coEvery { createEmptyDraft(userId) } returns it.left()
         }
 
-    private fun expectStoreDraftBodySucceeds(expectedDraftBody: DraftBody) {
+    private fun expectStoreDraftBodySucceeds(messageId: MessageId, expectedDraftBody: DraftBody) {
         coEvery {
             storeDraftWithBodyMock(expectedDraftBody)
-        } returns Unit.right()
+        } returns messageId.right()
     }
 
     private fun expectStoreDraftBodyFails(expectedDraftBody: DraftBody, error: () -> DataError) = error().also {
@@ -1461,12 +1486,12 @@ class ComposerViewModelTest {
         } returns it.left()
     }
 
-    private fun expectStoreDraftSubjectSucceeds(expectedSubject: Subject) {
+    private fun expectStoreDraftSubjectSucceeds(messageId: MessageId, expectedSubject: Subject) {
         coEvery {
             storeDraftWithSubjectMock(
                 expectedSubject
             )
-        } returns Unit.right()
+        } returns messageId.right()
     }
 
     private fun expectStoreDraftSubjectFails(expectedSubject: Subject, error: () -> DataError) = error().also {
@@ -1613,6 +1638,7 @@ class ComposerViewModelTest {
         const val RawDraftBody = "I'm a message body"
 
         val existingDraftFields = DraftFields(
+            null,
             SenderEmail("author@proton.me"),
             Subject("Here is the matter"),
             DraftBody("Decrypted body of this draft"),
@@ -1622,6 +1648,7 @@ class ComposerViewModelTest {
         )
 
         val draftFieldsWithQuotedBody = DraftFields(
+            null,
             SenderEmail("author@proton.me"),
             Subject("Here is the matter"),
             DraftBody(""),

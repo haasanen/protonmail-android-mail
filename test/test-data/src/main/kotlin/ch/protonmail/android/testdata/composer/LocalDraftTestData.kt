@@ -20,6 +20,8 @@ package ch.protonmail.android.testdata.composer
 
 import ch.protonmail.android.composer.data.local.LocalDraft
 import ch.protonmail.android.mailcommon.domain.sample.UserAddressSample
+import ch.protonmail.android.mailmessage.domain.model.MessageId
+import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
 import ch.protonmail.android.mailmessage.domain.sample.RecipientSample
 
 object LocalDraftTestData {
@@ -28,6 +30,7 @@ object LocalDraftTestData {
         expectedSenderEmail = UserAddressSample.PrimaryAddress.email
     )
     val JobApplicationDraft = buildExpectedLocalDraftFields(
+        messageId = MessageIdSample.RustJobApplication,
         expectedSubject = "Application for some role",
         expectedSenderEmail = "anyone@proton.me",
         expectedDraftBody = "Hello, hire me",
@@ -36,6 +39,7 @@ object LocalDraftTestData {
         recipientsBcc = emptyList()
     )
     val JobApplicationDraftWithRecipients = buildExpectedLocalDraftFields(
+        messageId = MessageIdSample.RustJobApplication,
         expectedSubject = "Application for some role",
         expectedSenderEmail = "anyone@proton.me",
         expectedDraftBody = "Hello, hire me",
@@ -45,6 +49,7 @@ object LocalDraftTestData {
     )
 
     private fun buildExpectedLocalDraftFields(
+        messageId: MessageId = MessageId("messageId"),
         expectedSubject: String = "Subject for the message",
         expectedSenderEmail: String = "drafts@proton.me",
         expectedDraftBody: String = "I am plaintext",
@@ -52,6 +57,7 @@ object LocalDraftTestData {
         recipientsCc: List<String> = listOf(RecipientSample.NamelessRecipient.address),
         recipientsBcc: List<String> = listOf(RecipientSample.NamelessRecipient.address)
     ) = LocalDraft(
+        messageId,
         expectedSenderEmail,
         expectedSubject,
         expectedDraftBody,

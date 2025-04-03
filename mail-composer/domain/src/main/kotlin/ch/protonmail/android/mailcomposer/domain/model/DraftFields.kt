@@ -18,7 +18,10 @@
 
 package ch.protonmail.android.mailcomposer.domain.model
 
+import ch.protonmail.android.mailmessage.domain.model.MessageId
+
 data class DraftFields(
+    val messageId: MessageId?,
     val sender: SenderEmail,
     val subject: Subject,
     val body: DraftBody,

@@ -32,11 +32,11 @@ interface DraftRepository {
 
     suspend fun openDraft(userId: UserId, messageId: MessageId): Either<DataError, DraftFields>
     suspend fun createDraft(userId: UserId, action: DraftAction): Either<DataError, DraftFields>
-    suspend fun save(): Either<DataError, Unit>
+    suspend fun save(): Either<DataError, MessageId?>
     suspend fun send(): Either<DataError, Unit>
     suspend fun undoSend(userId: UserId, messageId: MessageId): Either<DataError, Unit>
-    suspend fun saveSubject(subject: Subject): Either<DataError, Unit>
-    suspend fun saveBody(body: DraftBody): Either<DataError, Unit>
+    suspend fun saveSubject(subject: Subject): Either<DataError, MessageId?>
+    suspend fun saveBody(body: DraftBody): Either<DataError, MessageId?>
     suspend fun updateToRecipient(recipients: List<Recipient>): Either<DataError, Unit>
     suspend fun updateCcRecipient(recipients: List<Recipient>): Either<DataError, Unit>
     suspend fun updateBccRecipient(recipients: List<Recipient>): Either<DataError, Unit>
