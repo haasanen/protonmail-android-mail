@@ -225,12 +225,7 @@ class ComposerViewModel @AssistedInject constructor(
 
         if (fileShareInfo.hasEmailData()) {
             val draftFields = prepareDraftFieldsFor(fileShareInfo)
-            subjectTextField.replaceText(draftFields.subject.value)
-            recipientsStateManager.setFromParticipants(
-                toRecipients = draftFields.recipientsTo.value,
-                ccRecipients = draftFields.recipientsCc.value,
-                bccRecipients = draftFields.recipientsBcc.value
-            )
+            initComposerFields(draftFields)
             emitNewStateFor(
                 ComposerEvent.PrefillDataReceivedViaShare(draftFields.toDraftUiModel())
             )
@@ -286,12 +281,7 @@ class ComposerViewModel @AssistedInject constructor(
             is DraftAction.Reply,
             is DraftAction.ReplyAll -> createDraftForAction(primaryUserId(), draftAction)
                 .onRight { draftFields ->
-                    subjectTextField.replaceText(draftFields.subject.value)
-                    recipientsStateManager.setFromParticipants(
-                        toRecipients = draftFields.recipientsTo.value,
-                        ccRecipients = draftFields.recipientsCc.value,
-                        bccRecipients = draftFields.recipientsBcc.value
-                    )
+                    initComposerFields(draftFields)
                     emitNewStateFor(
                         ComposerEvent.PrefillDraftDataReceived(
                             draftUiModel = draftFields.toDraftUiModel(),
@@ -315,12 +305,7 @@ class ComposerViewModel @AssistedInject constructor(
 
         openExistingDraft(primaryUserId(), MessageId(inputDraftId))
             .onRight { draftFields ->
-                subjectTextField.replaceText(draftFields.subject.value)
-                recipientsStateManager.setFromParticipants(
-                    toRecipients = draftFields.recipientsTo.value,
-                    ccRecipients = draftFields.recipientsCc.value,
-                    bccRecipients = draftFields.recipientsBcc.value
-                )
+                initComposerFields(draftFields)
                 emitNewStateFor(
                     ComposerEvent.PrefillDraftDataReceived(
                         draftUiModel = draftFields.toDraftUiModel(),
@@ -592,6 +577,15 @@ class ComposerViewModel @AssistedInject constructor(
                 ifRight = { ComposerEvent.RecipientsBccChanged(bccRecipients) }
             )
         }
+    }
+
+    private fun initComposerFields(draftFields: DraftFields) {
+        subjectTextField.replaceText(draftFields.subject.value)
+        recipientsStateManager.setFromParticipants(
+            toRecipients = draftFields.recipientsTo.value,
+            ccRecipients = draftFields.recipientsCc.value,
+            bccRecipients = draftFields.recipientsBcc.value
+        )
     }
 
     private fun emitNewStateFor(operation: ComposerOperation) {
