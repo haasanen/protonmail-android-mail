@@ -16,34 +16,13 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailcomposer.domain.repository
+package ch.protonmail.android.composer.data.local
 
 import arrow.core.Either
 import ch.protonmail.android.mailcommon.domain.model.DataError
-import ch.protonmail.android.mailmessage.domain.model.AttachmentId
 import ch.protonmail.android.mailmessage.domain.model.AttachmentMetadata
-import ch.protonmail.android.mailmessage.domain.model.MessageId
 import kotlinx.coroutines.flow.Flow
-import me.proton.core.domain.entity.UserId
 
-interface AttachmentRepository {
-
+interface RustAttachmentDataSource {
     suspend fun observeAttachments(): Flow<Either<DataError, List<AttachmentMetadata>>>
-
-    suspend fun deleteAttachment(
-        userId: UserId,
-        messageId: MessageId,
-        attachmentId: AttachmentId
-    ): Either<DataError, Unit>
-
-    @Suppress("LongParameterList")
-    suspend fun createAttachment(
-        userId: UserId,
-        messageId: MessageId,
-        attachmentId: AttachmentId,
-        fileName: String,
-        mimeType: String,
-        content: ByteArray
-    ): Either<DataError, Unit>
-
 }

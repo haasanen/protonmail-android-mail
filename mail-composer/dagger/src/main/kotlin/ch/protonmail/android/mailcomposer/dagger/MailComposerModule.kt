@@ -18,6 +18,8 @@
 
 package ch.protonmail.android.mailcomposer.dagger
 
+import ch.protonmail.android.composer.data.local.RustAttachmentDataSource
+import ch.protonmail.android.composer.data.local.RustAttachmentDataSourceImpl
 import ch.protonmail.android.composer.data.local.RustDraftDataSource
 import ch.protonmail.android.composer.data.local.RustDraftDataSourceImpl
 import ch.protonmail.android.composer.data.local.RustSendingStatusDataSource
@@ -81,6 +83,11 @@ abstract class MailComposerModule {
     @Binds
     @ViewModelScoped
     abstract fun bindsRustDraftDataSource(impl: RustDraftDataSourceImpl): RustDraftDataSource
+
+    @Binds
+    @ViewModelScoped
+    abstract fun bindsRustAttachmentDataSource(impl: RustAttachmentDataSourceImpl): RustAttachmentDataSource
+
 }
 
 @Module
