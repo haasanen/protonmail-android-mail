@@ -18,25 +18,18 @@
 
 package ch.protonmail.android.mailcomposer.domain.usecase
 
-import ch.protonmail.android.mailcommon.domain.annotation.MissingRustApi
+import arrow.core.Either
+import ch.protonmail.android.mailcommon.domain.model.DataError
+import ch.protonmail.android.mailcomposer.domain.repository.AttachmentRepository
 import ch.protonmail.android.mailmessage.domain.model.AttachmentMetadata
-import ch.protonmail.android.mailmessage.domain.model.MessageId
-import ch.protonmail.android.mailmessage.domain.repository.MessageRepository
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOf
-import me.proton.core.domain.entity.UserId
-import timber.log.Timber
 import javax.inject.Inject
 
-@MissingRustApi
-// To be bound to rust or dropped when implementing send
 class ObserveMessageAttachments @Inject constructor(
-    private val messageRepository: MessageRepository
+    private val attachmentRepository: AttachmentRepository
 ) {
 
-    operator fun invoke(userId: UserId, messageId: MessageId): Flow<List<AttachmentMetadata>> {
-        Timber.w("ObserveMessageAttachments Not implemented")
-        return flowOf()
-    }
+    suspend operator fun invoke(): Flow<Either<DataError, List<AttachmentMetadata>>> =
+        attachmentRepository.observeAttachments()
 
 }

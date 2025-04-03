@@ -2005,9 +2005,9 @@ class ComposerViewModelTest {
     }
 
     private fun expectObservedMessageAttachments(userId: UserId, messageId: MessageId) {
-        every {
-            observeMessageAttachments(userId, messageId)
-        } returns flowOf(listOf(AttachmentMetadataSamples.Invoice))
+        coEvery {
+            observeMessageAttachments()
+        } returns flowOf(listOf(AttachmentMetadataSamples.Invoice).right())
     }
 
     private fun expectAttachmentDeleteSucceeds(

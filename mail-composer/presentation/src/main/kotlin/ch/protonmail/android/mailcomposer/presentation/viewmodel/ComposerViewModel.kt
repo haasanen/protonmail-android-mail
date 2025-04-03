@@ -156,6 +156,7 @@ class ComposerViewModel @Inject constructor(
             else -> prefillForNewDraft()
         }
 
+        observeAttachments()
         observeSendingError()
         observeDeviceContactsSuggestionsPromptEnabled()
 
@@ -349,13 +350,17 @@ class ComposerViewModel @Inject constructor(
         }
     }
 
-    @MissingRustApi
-    // Message attachments not implemented
-    private fun observeMessageAttachments() {
-        primaryUserId
-            .flatMapLatest { userId -> observeMessageAttachments(userId, currentMessageId()) }
-            .onEach { emitNewStateFor(ComposerEvent.OnAttachmentsUpdated(it)) }
-            .launchIn(viewModelScope)
+    private fun observeAttachments() {
+        viewModelScope.launch {
+            observeMessageAttachments().onEach { result ->
+                result.onLeft {
+                    Timber.e("Failed to observe message attachments: $it")
+                    emitNewStateFor(ComposerEvent.ErrorLoadingDraftData)
+                }.onRight { attachments ->
+                    emitNewStateFor(ComposerEvent.OnAttachmentsUpdated(attachments))
+                }
+            }.launchIn(this)
+        }
     }
 
     private fun observeSendingError() {
