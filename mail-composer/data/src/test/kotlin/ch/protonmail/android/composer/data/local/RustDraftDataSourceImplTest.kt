@@ -129,13 +129,13 @@ class RustDraftDataSourceImplTest {
         coEvery { recipientsWrapperMock.recipients() } returns emptyList()
         coEvery { userSessionRepository.getUserSession(userId) } returns mockUserSession
         coEvery { openRustDraft(mockUserSession, localMessageId) } returns expectedDraftWrapper.right()
-        assertNull(dataSource.rustDraftWrapper)
+        assertNull(dataSource.draftWrapperMutableStateFlow.value)
 
         // When
         dataSource.open(userId, messageId)
 
         // Then
-        assertEquals(dataSource.rustDraftWrapper, expectedDraftWrapper)
+        assertEquals(dataSource.draftWrapperMutableStateFlow.value, expectedDraftWrapper)
     }
 
     @Test
@@ -220,13 +220,13 @@ class RustDraftDataSourceImplTest {
         coEvery { recipientsWrapperMock.recipients() } returns emptyList()
         coEvery { userSessionRepository.getUserSession(userId) } returns mockUserSession
         coEvery { createRustDraft(mockUserSession, localDraftCreateMode) } returns expectedDraftWrapper.right()
-        assertNull(dataSource.rustDraftWrapper)
+        assertNull(dataSource.draftWrapperMutableStateFlow.value)
 
         // When
         dataSource.create(userId, action)
 
         // Then
-        assertEquals(dataSource.rustDraftWrapper, expectedDraftWrapper)
+        assertEquals(dataSource.draftWrapperMutableStateFlow.value, expectedDraftWrapper)
     }
 
     @Test
@@ -246,7 +246,7 @@ class RustDraftDataSourceImplTest {
         // Given
         val draft = LocalDraftTestData.JobApplicationDraft
         val expectedDraftWrapper = expectDraftWrapperReturns(draft.subject, draft.sender, draft.body)
-        dataSource.rustDraftWrapper = expectedDraftWrapper
+        dataSource.draftWrapperMutableStateFlow.value = expectedDraftWrapper
         coEvery { expectedDraftWrapper.save() } returns VoidDraftSaveSendResult.Ok
 
         // When
@@ -261,7 +261,7 @@ class RustDraftDataSourceImplTest {
         // Given
         val draft = LocalDraftTestData.JobApplicationDraft
         val expectedDraftWrapper = expectDraftWrapperReturns(draft.subject, draft.sender, draft.body)
-        dataSource.rustDraftWrapper = expectedDraftWrapper
+        dataSource.draftWrapperMutableStateFlow.value = expectedDraftWrapper
         coEvery { expectedDraftWrapper.save() } returns VoidDraftSaveSendResult.Error(
             DraftSaveSendError.Reason(DraftSaveSendErrorReason.MessageIsNotADraft)
         )
@@ -280,7 +280,7 @@ class RustDraftDataSourceImplTest {
         val draft = LocalDraftTestData.JobApplicationDraft
         val subject = Subject("saving a draft...")
         val expectedDraftWrapper = expectDraftWrapperReturns(draft.subject, draft.sender, draft.body)
-        dataSource.rustDraftWrapper = expectedDraftWrapper
+        dataSource.draftWrapperMutableStateFlow.value = expectedDraftWrapper
         coEvery { expectedDraftWrapper.setSubject(subject.value) } returns VoidDraftSaveSendResult.Ok
         coEvery { expectedDraftWrapper.save() } returns VoidDraftSaveSendResult.Ok
 
@@ -297,7 +297,7 @@ class RustDraftDataSourceImplTest {
         val draft = LocalDraftTestData.JobApplicationDraft
         val expectedDraftWrapper = expectDraftWrapperReturns(draft.subject, draft.sender, draft.body)
         val subject = Subject("saving a draft...")
-        dataSource.rustDraftWrapper = expectedDraftWrapper
+        dataSource.draftWrapperMutableStateFlow.value = expectedDraftWrapper
         coEvery { expectedDraftWrapper.setSubject(subject.value) } returns VoidDraftSaveSendResult.Error(
             DraftSaveSendError.Reason(DraftSaveSendErrorReason.MessageIsNotADraft)
         )
@@ -316,7 +316,7 @@ class RustDraftDataSourceImplTest {
         val draft = LocalDraftTestData.JobApplicationDraft
         val body = DraftBody("saving a draft's body...")
         val expectedDraftWrapper = expectDraftWrapperReturns(draft.body, draft.sender, draft.body)
-        dataSource.rustDraftWrapper = expectedDraftWrapper
+        dataSource.draftWrapperMutableStateFlow.value = expectedDraftWrapper
         coEvery { expectedDraftWrapper.setBody(body.value) } returns VoidDraftSaveSendResult.Ok
         coEvery { expectedDraftWrapper.save() } returns VoidDraftSaveSendResult.Ok
 
@@ -333,7 +333,7 @@ class RustDraftDataSourceImplTest {
         val draft = LocalDraftTestData.JobApplicationDraft
         val body = DraftBody("saving a draft's body...")
         val expectedDraftWrapper = expectDraftWrapperReturns(draft.body, draft.sender, draft.body)
-        dataSource.rustDraftWrapper = expectedDraftWrapper
+        dataSource.draftWrapperMutableStateFlow.value = expectedDraftWrapper
         coEvery { expectedDraftWrapper.setBody(body.value) } returns VoidDraftSaveSendResult.Error(
             DraftSaveSendError.Reason(DraftSaveSendErrorReason.MessageIsNotADraft)
         )
@@ -355,7 +355,7 @@ class RustDraftDataSourceImplTest {
         val expectedDraftWrapper = expectDraftWrapperReturns(
             toRecipientsWrapper = toRecipientsWrapperMock
         )
-        dataSource.rustDraftWrapper = expectedDraftWrapper
+        dataSource.draftWrapperMutableStateFlow.value = expectedDraftWrapper
         coEvery { toRecipientsWrapperMock.addSingleRecipient(singleRecipient) } returns Unit.right()
         coEvery { toRecipientsWrapperMock.registerCallback(any()) } returns Unit
 
@@ -376,7 +376,7 @@ class RustDraftDataSourceImplTest {
             toRecipientsWrapper = toRecipientsWrapperMock
         )
         val expected = DataError.Local.SaveDraftError.DuplicateRecipient
-        dataSource.rustDraftWrapper = expectedDraftWrapper
+        dataSource.draftWrapperMutableStateFlow.value = expectedDraftWrapper
         coEvery { toRecipientsWrapperMock.addSingleRecipient(singleRecipient) } returns expected.left()
         coEvery { toRecipientsWrapperMock.registerCallback(any()) } returns Unit
 
@@ -396,7 +396,7 @@ class RustDraftDataSourceImplTest {
         val expectedDraftWrapper = expectDraftWrapperReturns(
             ccRecipientsWrapper = toRecipientsWrapperMock
         )
-        dataSource.rustDraftWrapper = expectedDraftWrapper
+        dataSource.draftWrapperMutableStateFlow.value = expectedDraftWrapper
         coEvery { toRecipientsWrapperMock.addSingleRecipient(singleRecipient) } returns Unit.right()
 
         // When
@@ -416,7 +416,7 @@ class RustDraftDataSourceImplTest {
             ccRecipientsWrapper = toRecipientsWrapperMock
         )
         val expected = DataError.Local.SaveDraftError.DuplicateRecipient
-        dataSource.rustDraftWrapper = expectedDraftWrapper
+        dataSource.draftWrapperMutableStateFlow.value = expectedDraftWrapper
         coEvery { toRecipientsWrapperMock.addSingleRecipient(singleRecipient) } returns expected.left()
 
         // When
@@ -435,7 +435,7 @@ class RustDraftDataSourceImplTest {
         val expectedDraftWrapper = expectDraftWrapperReturns(
             bccRecipientsWrapper = toRecipientsWrapperMock
         )
-        dataSource.rustDraftWrapper = expectedDraftWrapper
+        dataSource.draftWrapperMutableStateFlow.value = expectedDraftWrapper
         coEvery { toRecipientsWrapperMock.addSingleRecipient(singleRecipient) } returns Unit.right()
 
         // When
@@ -455,7 +455,7 @@ class RustDraftDataSourceImplTest {
             bccRecipientsWrapper = toRecipientsWrapperMock
         )
         val expected = DataError.Local.SaveDraftError.DuplicateRecipient
-        dataSource.rustDraftWrapper = expectedDraftWrapper
+        dataSource.draftWrapperMutableStateFlow.value = expectedDraftWrapper
         coEvery { toRecipientsWrapperMock.addSingleRecipient(singleRecipient) } returns expected.left()
 
         // When
@@ -474,7 +474,7 @@ class RustDraftDataSourceImplTest {
         val expectedDraftWrapper = expectDraftWrapperReturns(
             toRecipientsWrapper = toRecipientsWrapperMock
         )
-        dataSource.rustDraftWrapper = expectedDraftWrapper
+        dataSource.draftWrapperMutableStateFlow.value = expectedDraftWrapper
         coEvery { toRecipientsWrapperMock.removeSingleRecipient(singleRecipient) } returns Unit.right()
 
         // When
@@ -493,7 +493,7 @@ class RustDraftDataSourceImplTest {
         val expectedDraftWrapper = expectDraftWrapperReturns(
             ccRecipientsWrapper = ccRecipientsWrapperMock
         )
-        dataSource.rustDraftWrapper = expectedDraftWrapper
+        dataSource.draftWrapperMutableStateFlow.value = expectedDraftWrapper
         coEvery { ccRecipientsWrapperMock.removeSingleRecipient(singleRecipient) } returns Unit.right()
 
         // When
@@ -512,7 +512,7 @@ class RustDraftDataSourceImplTest {
         val expectedDraftWrapper = expectDraftWrapperReturns(
             bccRecipientsWrapper = bccRecipientsWrapperMock
         )
-        dataSource.rustDraftWrapper = expectedDraftWrapper
+        dataSource.draftWrapperMutableStateFlow.value = expectedDraftWrapper
         coEvery { bccRecipientsWrapperMock.removeSingleRecipient(singleRecipient) } returns Unit.right()
 
         // When
@@ -550,7 +550,7 @@ class RustDraftDataSourceImplTest {
         val expectedDraftWrapper = expectDraftWrapperReturns(
             messageId = messageId
         )
-        dataSource.rustDraftWrapper = expectedDraftWrapper
+        dataSource.draftWrapperMutableStateFlow.value = expectedDraftWrapper
         coEvery { userSessionRepository.observePrimaryUserId() } returns flowOf(userId)
         coEvery {
             enqueuer.enqueueUniqueWork<SendingStatusWorker>(
@@ -593,7 +593,7 @@ class RustDraftDataSourceImplTest {
                 )
             )
         )
-        dataSource.rustDraftWrapper = expectedDraftWrapper
+        dataSource.draftWrapperMutableStateFlow.value = expectedDraftWrapper
 
         coEvery { userSessionRepository.observePrimaryUserId() } returns flowOf(userId)
 

@@ -19,6 +19,7 @@
 package ch.protonmail.android.composer.data.local
 
 import arrow.core.Either
+import ch.protonmail.android.composer.data.wrapper.AttachmentListWrapper
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.Subject
@@ -46,4 +47,5 @@ interface RustDraftDataSource {
     suspend fun observeRecipientsValidation(): Flow<List<RecipientEntityWithValidation>>
     suspend fun send(): Either<DataError, Unit>
     suspend fun undoSend(userId: UserId, messageId: MessageId): Either<DataError, Unit>
+    suspend fun attachmentList(): Either<DataError, AttachmentListWrapper>
 }

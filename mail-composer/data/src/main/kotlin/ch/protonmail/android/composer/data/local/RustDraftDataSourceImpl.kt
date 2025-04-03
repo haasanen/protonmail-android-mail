@@ -36,6 +36,7 @@ import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcomposer.domain.model.DraftBody
 import ch.protonmail.android.mailcomposer.domain.model.Subject
 import ch.protonmail.android.composer.data.worker.SendingStatusWorker
+import ch.protonmail.android.composer.data.wrapper.AttachmentListWrapper
 import ch.protonmail.android.mailmessage.data.mapper.toLocalMessageId
 import ch.protonmail.android.mailmessage.data.mapper.toMessageId
 import ch.protonmail.android.mailmessage.domain.model.DraftAction
@@ -43,6 +44,11 @@ import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.Recipient
 import ch.protonmail.android.mailsession.domain.repository.UserSessionRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flowOf
 import me.proton.core.domain.entity.UserId
@@ -61,7 +67,9 @@ class RustDraftDataSourceImpl @Inject constructor(
 ) : RustDraftDataSource {
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-    var rustDraftWrapper: DraftWrapper? = null
+    val draftWrapperMutableStateFlow = MutableStateFlow<DraftWrapper?>(null)
+
+    private val draftWrapperStateFlow: StateFlow<DraftWrapper?> = draftWrapperMutableStateFlow.asStateFlow()
 
     private val recipientsUpdatedCallback = object : ComposerRecipientValidationCallback {
         override fun onUpdate() {
@@ -76,8 +84,12 @@ class RustDraftDataSourceImpl @Inject constructor(
             return DataError.Local.Unknown.left()
         }
 
+        Timber.d("rust-draft: Opening draft...")
         return openRustDraft(session, messageId.toLocalMessageId())
-            .onRight { rustDraftWrapper = it }
+            .onRight {
+                Timber.d("rust-draft: Draft opened successfully.")
+                draftWrapperMutableStateFlow.value = it
+            }
             .map { it.toLocalDraft() }
     }
 
@@ -95,7 +107,7 @@ class RustDraftDataSourceImpl @Inject constructor(
         }
 
         return createRustDraft(session, draftCreateMode)
-            .onRight { rustDraftWrapper = it }
+            .onRight { draftWrapperMutableStateFlow.value = it }
             .map { it.toLocalDraft() }
     }
 
@@ -183,6 +195,11 @@ class RustDraftDataSourceImpl @Inject constructor(
 
     }
 
+    override suspend fun attachmentList(): Either<DataError, AttachmentListWrapper> {
+        val wrapper = draftWrapperStateFlow.filterNotNull().first()
+        return wrapper.attachmentList().right()
+    }
+
     private suspend fun startSendingStatusWorker() {
         val userId = userSessionRepository.observePrimaryUserId().firstOrNull()
         if (userId == null) {
@@ -190,7 +207,7 @@ class RustDraftDataSourceImpl @Inject constructor(
             return
         }
 
-        val messageId = when (val messageIdResult = rustDraftWrapper?.messageId()) {
+        val messageId = when (val messageIdResult = draftWrapperMutableStateFlow.value?.messageId()) {
             is DraftMessageIdResult.Ok -> messageIdResult.v1?.toMessageId()
             is DraftMessageIdResult.Error -> {
                 Timber.e("rust-draft: Failed to get messageId due to error: ${messageIdResult.v1}")
@@ -220,7 +237,7 @@ class RustDraftDataSourceImpl @Inject constructor(
     private suspend fun withValidRustDraftWrapper(
         closure: suspend (DraftWrapper) -> Either<DataError, Unit>
     ): Either<DataError, Unit> {
-        val rustDraftWrapper: DraftWrapper = rustDraftWrapper
+        val rustDraftWrapper: DraftWrapper = draftWrapperStateFlow.value
             ?: return DataError.Local.SaveDraftError.NoRustDraftAvailable.left()
 
         return closure(rustDraftWrapper)
