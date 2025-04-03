@@ -616,7 +616,7 @@ class ComposerViewModel @Inject constructor(
             getContactSuggestionsJobs[suggestionsField] = viewModelScope.launch {
                 getContactSuggestions(primaryUserId(), ContactSuggestionQuery(searchTerm)).map { contacts ->
                     val contactsLimited = contacts.take(maxContactAutocompletionCount)
-                    val contactUiModels = contactSuggestionsMapper.toUiModel(contactsLimited)
+                    val suggestions = contactSuggestionsMapper.toUiModel(contactsLimited)
 
                     emitNewStateFor(
                         ComposerEvent.UpdateContactSuggestions(

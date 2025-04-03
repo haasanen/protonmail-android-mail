@@ -637,13 +637,13 @@ class ComposerViewModelTest {
             contactSuggestionItems = listOf(
                 ContactSuggestionUiModel.Contact(
                     name = expectedContacts[0].name,
-                    initial = "D",
+                    initial = "A",
                     avatarColor = Color.Red,
                     email = expectedContacts[0].emails.first().email
                 ),
                 ContactSuggestionUiModel.Contact(
                     name = expectedContacts[1].name,
-                    initial = "D",
+                    initial = "A",
                     avatarColor = Color.Red,
                     email = expectedContacts[1].emails.first().email
                 ),

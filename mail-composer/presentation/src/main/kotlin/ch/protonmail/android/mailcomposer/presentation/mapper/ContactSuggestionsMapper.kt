@@ -18,6 +18,8 @@
 
 package ch.protonmail.android.mailcomposer.presentation.mapper
 
+import androidx.compose.ui.graphics.Color
+import androidx.core.graphics.toColorInt
 import ch.protonmail.android.mailcommon.presentation.usecase.GetInitials
 import ch.protonmail.android.mailcomposer.presentation.model.ContactSuggestionUiModel
 import ch.protonmail.android.mailcontact.domain.model.ContactMetadata
@@ -31,8 +33,9 @@ class ContactSuggestionsMapper @Inject constructor(
         when (contact) {
             is ContactMetadata.Contact -> ContactSuggestionUiModel.Contact(
                 name = contact.name,
-                initial = getInitials(contact.name),
-                email = contact.emails.firstOrNull()?.email ?: contact.name
+                initial = contact.avatar.initials,
+                email = contact.emails.firstOrNull()?.email ?: contact.name,
+                avatarColor = Color(contact.avatar.color.toColorInt())
             )
             is ContactMetadata.ContactGroup -> ContactSuggestionUiModel.ContactGroup(
                 name = contact.name,
