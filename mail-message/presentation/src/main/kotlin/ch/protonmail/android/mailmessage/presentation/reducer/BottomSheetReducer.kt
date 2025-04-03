@@ -55,7 +55,7 @@ class BottomSheetReducer @Inject constructor(
                         operation.itemIds,
                         operation.entryPoint
                     ),
-                    bottomSheetVisibilityEffect = currentState?.bottomSheetVisibilityEffect ?: Effect.empty()
+                    bottomSheetVisibilityEffect = Effect.of(BottomSheetVisibilityEffect.Show)
                 )
 
             is MailboxMoreActionsBottomSheetState.MailboxMoreActionsBottomSheetOperation ->
