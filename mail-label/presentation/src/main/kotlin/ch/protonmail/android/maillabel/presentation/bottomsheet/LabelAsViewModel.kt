@@ -84,7 +84,7 @@ internal class LabelAsViewModel @AssistedInject constructor(
         entryPoint: LabelAsBottomSheetEntryPoint
     ): Either<GetInitialStateError, LabelAsActions> {
         val userId = initialData.userId
-        val labelId = initialData.labelId
+        val labelId = initialData.currentLocationLabelId
         val items = initialData.items.takeIf { it.isNotEmpty() } ?: return GetInitialStateError.NoItemsProvided.left()
 
         val result = when (entryPoint) {

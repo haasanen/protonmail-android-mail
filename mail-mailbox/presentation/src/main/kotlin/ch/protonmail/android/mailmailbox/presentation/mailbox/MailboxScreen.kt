@@ -316,7 +316,7 @@ fun MailboxScreen(
                 is LabelAsBottomSheetState.Requested -> {
                     val initialData = LabelAsBottomSheet.InitialData(
                         contentState.userId,
-                        contentState.currentLabel,
+                        contentState.currentLocationLabelId,
                         contentState.itemIds,
                         entryPoint = contentState.entryPoint
                     )

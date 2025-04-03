@@ -453,7 +453,7 @@ internal class LabelAsViewModelTest {
         val defaultDataState = mockk<LabelAsState.Data>()
         val defaultInitialData = LabelAsBottomSheet.InitialData(
             userId = userId,
-            labelId = labelId,
+            currentLocationLabelId = labelId,
             items = items,
             entryPoint = LabelAsBottomSheetEntryPoint.Conversation
         )

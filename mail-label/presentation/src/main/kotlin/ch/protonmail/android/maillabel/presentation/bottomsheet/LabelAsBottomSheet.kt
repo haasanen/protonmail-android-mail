@@ -81,7 +81,7 @@ object LabelAsBottomSheet {
 
     data class InitialData(
         val userId: UserId,
-        val labelId: LabelId,
+        val currentLocationLabelId: LabelId,
         val items: List<LabelAsItemId>,
         val entryPoint: LabelAsBottomSheetEntryPoint
     ) {

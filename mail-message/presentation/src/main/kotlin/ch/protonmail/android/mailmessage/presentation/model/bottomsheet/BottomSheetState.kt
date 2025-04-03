@@ -83,7 +83,7 @@ sealed interface LabelAsBottomSheetState : BottomSheetContentState {
 
     data class Requested(
         val userId: UserId,
-        val currentLabel: LabelId,
+        val currentLocationLabelId: LabelId,
         val itemIds: List<LabelAsItemId>,
         val entryPoint: LabelAsBottomSheetEntryPoint
     ) : LabelAsBottomSheetState

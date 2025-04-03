@@ -228,7 +228,7 @@ fun ConversationDetailScreen(
                 is LabelAsBottomSheetState.Requested -> {
                     val initialData = LabelAsBottomSheet.InitialData(
                         userId = bottomSheetContentState.userId,
-                        labelId = bottomSheetContentState.currentLabel,
+                        currentLocationLabelId = bottomSheetContentState.currentLocationLabelId,
                         items = bottomSheetContentState.itemIds,
                         entryPoint = bottomSheetContentState.entryPoint
                     )
