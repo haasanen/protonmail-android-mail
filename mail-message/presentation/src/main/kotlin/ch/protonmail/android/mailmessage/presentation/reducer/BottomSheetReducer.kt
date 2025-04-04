@@ -32,7 +32,6 @@ import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.Upsellin
 import javax.inject.Inject
 
 class BottomSheetReducer @Inject constructor(
-    private val moveToBottomSheetReducer: MoveToBottomSheetReducer,
     private val mailboxMoreActionsBottomSheetReducer: MailboxMoreActionsBottomSheetReducer,
     private val detailMoreActionsBottomSheetReducer: DetailMoreActionsBottomSheetReducer,
     private val contactActionsBottomSheetReducer: ContactActionsBottomSheetReducer,
@@ -44,8 +43,16 @@ class BottomSheetReducer @Inject constructor(
             is ContactActionsBottomSheetState.ContactActionsBottomSheetOperation ->
                 contactActionsBottomSheetReducer.newStateFrom(currentState, operation)
 
-            is MoveToBottomSheetState.MoveToBottomSheetOperation ->
-                moveToBottomSheetReducer.newStateFrom(currentState, operation)
+            is MoveToBottomSheetState.MoveToBottomSheetEvent.Ready ->
+                BottomSheetState(
+                    contentState = MoveToBottomSheetState.Requested(
+                        operation.userId,
+                        operation.currentLabel,
+                        operation.itemIds,
+                        operation.entryPoint
+                    ),
+                    bottomSheetVisibilityEffect = Effect.of(BottomSheetVisibilityEffect.Show)
+                )
 
             is LabelAsBottomSheetState.LabelAsBottomSheetEvent.Ready ->
                 BottomSheetState(

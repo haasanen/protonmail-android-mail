@@ -22,20 +22,16 @@ import ch.protonmail.android.mailcommon.presentation.Effect
 import ch.protonmail.android.mailcommon.presentation.model.ActionUiModel
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcommon.presentation.sample.ActionUiModelSample
-import ch.protonmail.android.maillabel.presentation.MailLabelUiModel
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.BottomSheetOperation
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.BottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.BottomSheetVisibilityEffect
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.DetailMoreActionsBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MailboxMoreActionsBottomSheetState
-import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MoveToBottomSheetEntryPoint
-import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MoveToBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.UpsellingBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.reducer.BottomSheetReducer
 import ch.protonmail.android.mailmessage.presentation.reducer.ContactActionsBottomSheetReducer
 import ch.protonmail.android.mailmessage.presentation.reducer.DetailMoreActionsBottomSheetReducer
 import ch.protonmail.android.mailmessage.presentation.reducer.MailboxMoreActionsBottomSheetReducer
-import ch.protonmail.android.mailmessage.presentation.reducer.MoveToBottomSheetReducer
 import ch.protonmail.android.mailmessage.presentation.reducer.UpsellingBottomSheetReducer
 import ch.protonmail.android.testdata.action.AvailableActionsTestData
 import io.mockk.Called
@@ -54,13 +50,11 @@ internal class BottomSheetReducerTest(
     private val testInput: TestInput
 ) {
 
-    private val moveToBottomSheetReducer: MoveToBottomSheetReducer = mockk(relaxed = true)
     private val mailboxMoreActionsBottomSheetReducer: MailboxMoreActionsBottomSheetReducer = mockk(relaxed = true)
     private val detailMoreActionsBottomSheetReducer: DetailMoreActionsBottomSheetReducer = mockk(relaxed = true)
     private val upsellingBottomSheetReducer: UpsellingBottomSheetReducer = mockk(relaxed = true)
     private val contactActionsBottomSheetReducer: ContactActionsBottomSheetReducer = mockk(relaxed = true)
     private val reducer = BottomSheetReducer(
-        moveToBottomSheetReducer,
         mailboxMoreActionsBottomSheetReducer,
         detailMoreActionsBottomSheetReducer,
         contactActionsBottomSheetReducer,
@@ -73,17 +67,6 @@ internal class BottomSheetReducerTest(
 
         if (reducesBottomSheetVisibilityEffects) {
             assertEquals(expectedState, actualState, testName)
-        }
-
-        if (reducesMoveTo) {
-            verify {
-                moveToBottomSheetReducer.newStateFrom(
-                    currentState,
-                    testInput.operation as MoveToBottomSheetState.MoveToBottomSheetOperation
-                )
-            }
-        } else {
-            verify { moveToBottomSheetReducer wasNot Called }
         }
 
         if (reducesMailboxMoreActions) {
@@ -129,45 +112,22 @@ internal class BottomSheetReducerTest(
                 operation = BottomSheetOperation.Requested,
                 expectedState = BottomSheetState(null, Effect.of(BottomSheetVisibilityEffect.Show)),
                 reducesBottomSheetVisibilityEffects = true,
-                reducesMoveTo = false,
                 reducesMailboxMoreActions = false,
                 reducesDetailMoreActions = false,
                 reducesUpselling = false
             ),
             TestInput(
                 currentState = BottomSheetState(
-                    MoveToBottomSheetState.Data(
-                        listOf<MailLabelUiModel>().toImmutableList(),
-                        MoveToBottomSheetEntryPoint.SelectionMode
+                    MailboxMoreActionsBottomSheetState.Data(
+                        listOf<ActionUiModel>().toImmutableList(),
+                        listOf<ActionUiModel>().toImmutableList(),
+                        ActionUiModelSample.Star,
+                        2
                     )
                 ),
                 operation = BottomSheetOperation.Dismiss,
                 expectedState = BottomSheetState(null, Effect.of(BottomSheetVisibilityEffect.Hide)),
                 reducesBottomSheetVisibilityEffects = true,
-                reducesMoveTo = false,
-                reducesMailboxMoreActions = false,
-                reducesDetailMoreActions = false,
-                reducesUpselling = false
-            )
-        )
-
-        private val moveToBottomSheetOperation = listOf(
-            TestInput(
-                currentState = BottomSheetState(null, Effect.empty()),
-                operation = MoveToBottomSheetState.MoveToBottomSheetEvent.ActionData(
-                    listOf<MailLabelUiModel>()
-                        .toImmutableList(),
-                    entryPoint = MoveToBottomSheetEntryPoint.SelectionMode
-                ),
-                expectedState = BottomSheetState(
-                    MoveToBottomSheetState.Data(
-                        listOf<MailLabelUiModel>()
-                            .toImmutableList(),
-                        MoveToBottomSheetEntryPoint.SelectionMode
-                    )
-                ),
-                reducesBottomSheetVisibilityEffects = false,
-                reducesMoveTo = true,
                 reducesMailboxMoreActions = false,
                 reducesDetailMoreActions = false,
                 reducesUpselling = false
@@ -192,7 +152,6 @@ internal class BottomSheetReducerTest(
                     )
                 ),
                 reducesBottomSheetVisibilityEffects = false,
-                reducesMoveTo = false,
                 reducesMailboxMoreActions = true,
                 reducesDetailMoreActions = false,
                 reducesUpselling = false
@@ -223,7 +182,6 @@ internal class BottomSheetReducerTest(
                     )
                 ),
                 reducesBottomSheetVisibilityEffects = false,
-                reducesMoveTo = false,
                 reducesMailboxMoreActions = false,
                 reducesDetailMoreActions = true,
                 reducesUpselling = false
@@ -236,7 +194,6 @@ internal class BottomSheetReducerTest(
                 operation = UpsellingBottomSheetState.UpsellingBottomSheetEvent.Ready,
                 expectedState = BottomSheetState(UpsellingBottomSheetState.Requested),
                 reducesBottomSheetVisibilityEffects = false,
-                reducesMoveTo = false,
                 reducesMailboxMoreActions = false,
                 reducesDetailMoreActions = false,
                 reducesUpselling = true
@@ -247,7 +204,6 @@ internal class BottomSheetReducerTest(
         @Parameterized.Parameters(name = "{0}")
         fun data() = (
             bottomSheetVisibilityOperations +
-                moveToBottomSheetOperation +
                 mailboxMoreActionsBottomSheetOperation +
                 detailMoreActionsBottomSheetOperation +
                 upsellingBottomSheetOperation
@@ -268,7 +224,6 @@ internal class BottomSheetReducerTest(
         val operation: BottomSheetOperation,
         val expectedState: BottomSheetState?,
         val reducesBottomSheetVisibilityEffects: Boolean,
-        val reducesMoveTo: Boolean,
         val reducesMailboxMoreActions: Boolean,
         val reducesDetailMoreActions: Boolean,
         val reducesUpselling: Boolean

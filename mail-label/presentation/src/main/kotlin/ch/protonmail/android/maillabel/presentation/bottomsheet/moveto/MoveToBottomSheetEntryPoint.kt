@@ -16,14 +16,18 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailmessage.presentation.model.bottomsheet
+package ch.protonmail.android.maillabel.presentation.bottomsheet.moveto
 
 import ch.protonmail.android.mailmessage.domain.model.MessageId
-import ch.protonmail.android.mailmessage.domain.model.MoveToItemId
+import me.proton.core.mailsettings.domain.entity.ViewMode
 
 sealed interface MoveToBottomSheetEntryPoint {
     data object Conversation : MoveToBottomSheetEntryPoint
-    data class Message(val messageId: MessageId) : MoveToBottomSheetEntryPoint
-    data class MoveToSwipeAction(val itemId: MoveToItemId) : MoveToBottomSheetEntryPoint
-    data object SelectionMode : MoveToBottomSheetEntryPoint
+    data class Message(val messageId: MessageId, val isLastInCurrentLocation: Boolean) : MoveToBottomSheetEntryPoint
+
+    sealed class Mailbox(val viewMode: ViewMode) : MoveToBottomSheetEntryPoint {
+        class MoveToSwipeAction(viewMode: ViewMode, val itemId: MoveToItemId) : Mailbox(viewMode)
+        class SelectionMode(viewMode: ViewMode) : Mailbox(viewMode)
+    }
 }
+

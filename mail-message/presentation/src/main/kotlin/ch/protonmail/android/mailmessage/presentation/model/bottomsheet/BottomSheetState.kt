@@ -27,10 +27,10 @@ import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.mailcontact.domain.model.ContactId
 import ch.protonmail.android.maillabel.domain.model.LabelId
-import ch.protonmail.android.maillabel.domain.model.MailLabelId
-import ch.protonmail.android.maillabel.presentation.MailLabelUiModel
 import ch.protonmail.android.maillabel.presentation.bottomsheet.LabelAsBottomSheetEntryPoint
 import ch.protonmail.android.maillabel.presentation.bottomsheet.LabelAsItemId
+import ch.protonmail.android.maillabel.presentation.bottomsheet.moveto.MoveToBottomSheetEntryPoint
+import ch.protonmail.android.maillabel.presentation.bottomsheet.moveto.MoveToItemId
 import ch.protonmail.android.mailmessage.domain.model.Participant
 import ch.protonmail.android.mailmessage.presentation.model.ContactActionUiModel
 import kotlinx.collections.immutable.ImmutableList
@@ -58,24 +58,21 @@ sealed interface BottomSheetOperation {
 
 sealed interface MoveToBottomSheetState : BottomSheetContentState {
 
-    data class Data(
-        val moveToDestinations: ImmutableList<MailLabelUiModel>,
+    data class Requested(
+        val userId: UserId,
+        val currentLabel: LabelId,
+        val itemIds: List<MoveToItemId>,
         val entryPoint: MoveToBottomSheetEntryPoint
     ) : MoveToBottomSheetState
 
-    data object Loading : MoveToBottomSheetState
-
     sealed interface MoveToBottomSheetOperation : BottomSheetOperation
-
     sealed interface MoveToBottomSheetEvent : MoveToBottomSheetOperation {
-        data class ActionData(
-            val moveToDestinations: ImmutableList<MailLabelUiModel>,
+        data class Ready(
+            val userId: UserId,
+            val currentLabel: LabelId,
+            val itemIds: List<MoveToItemId>,
             val entryPoint: MoveToBottomSheetEntryPoint
         ) : MoveToBottomSheetEvent
-    }
-
-    sealed interface MoveToBottomSheetAction : MoveToBottomSheetOperation {
-        data class MoveToDestinationSelected(val mailLabelId: MailLabelId) : MoveToBottomSheetAction
     }
 }
 
