@@ -52,7 +52,7 @@ fun SettingWebView(modifier: Modifier = Modifier, state: WebSettingsState.Data) 
             }
 
             override fun onReceivedError(
-                view: WebView,
+                view: WebView?,
                 request: WebResourceRequest?,
                 error: WebResourceError?
             ) {
@@ -75,7 +75,7 @@ fun SettingWebView(modifier: Modifier = Modifier, state: WebSettingsState.Data) 
 
     val chromeClient = remember {
         object : AccompanistWebChromeClient() {
-            override fun onProgressChanged(view: WebView, newProgress: Int) {
+            override fun onProgressChanged(view: WebView?, newProgress: Int) {
                 Timber.d("web-settings: onProgressChanged: $newProgress")
                 super.onProgressChanged(view, newProgress)
             }
