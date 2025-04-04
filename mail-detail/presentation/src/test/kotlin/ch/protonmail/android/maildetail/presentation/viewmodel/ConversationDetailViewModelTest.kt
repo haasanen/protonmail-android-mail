@@ -246,7 +246,7 @@ class ConversationDetailViewModelTest {
     private val getAttachmentDownloadStatus = mockk<GetDownloadingAttachmentsForMessages>()
     private val getEmbeddedImageAvoidDuplicatedExecution = mockk<GetEmbeddedImageAvoidDuplicatedExecution>()
     private val reducer: ConversationDetailReducer = mockk {
-        every { newStateFrom(currentState = any(), operation = any()) } returns ConversationDetailState.Loading
+        coEvery { newStateFrom(currentState = any(), operation = any()) } returns ConversationDetailState.Loading
     }
     private val savedStateHandle: SavedStateHandle = mockk {
         every { get<String>(ConversationDetailScreen.ConversationIdKey) } returns conversationId.id
@@ -406,7 +406,7 @@ class ConversationDetailViewModelTest {
         val expectedState = initialState.copy(
             conversationState = ConversationDetailMetadataState.Data(conversationUiModel)
         )
-        every {
+        coEvery {
             reducer.newStateFrom(
                 currentState = initialState,
                 operation = ofType<ConversationDetailEvent.ConversationData>()
@@ -437,7 +437,7 @@ class ConversationDetailViewModelTest {
             observeConversation(UserIdSample.Primary, ConversationIdSample.WeatherForecast, labelId)
         } returns
             flowOf(DataError.Local.NoDataCached.left())
-        every {
+        coEvery {
             reducer.newStateFrom(
                 currentState = initialState,
                 operation = ConversationDetailEvent.ErrorLoadingConversation
@@ -471,7 +471,7 @@ class ConversationDetailViewModelTest {
             emit(ConversationSample.WeatherForecast.right())
             emit(DataError.Remote.Http(NetworkError.NoNetwork).left())
         }
-        every {
+        coEvery {
             reducer.newStateFrom(
                 currentState = initialState,
                 operation = ofType<ConversationDetailEvent.ConversationData>()
@@ -484,7 +484,7 @@ class ConversationDetailViewModelTest {
             assertEquals(dataState, awaitItem())
             cancelAndIgnoreRemainingEvents()
         }
-        verify { reducer.newStateFrom(currentState = dataState, operation = ConversationDetailEvent.NoNetworkError) }
+        coVerify { reducer.newStateFrom(currentState = dataState, operation = ConversationDetailEvent.NoNetworkError) }
     }
 
     @Test
@@ -497,7 +497,7 @@ class ConversationDetailViewModelTest {
         val expectedState = initialState.copy(
             messagesState = ConversationDetailsMessagesState.Data(messagesUiModels)
         )
-        every {
+        coEvery {
             reducer.newStateFrom(
                 currentState = initialState,
                 operation = ofType<ConversationDetailEvent.MessagesData>()
@@ -534,7 +534,7 @@ class ConversationDetailViewModelTest {
             messagesState = ConversationDetailsMessagesState.Data(messagesUiModels)
         )
         every { observeContacts(UserIdSample.Primary) } returns flowOf(GetContactError.left())
-        every {
+        coEvery {
             reducer.newStateFrom(
                 currentState = initialState,
                 operation = ofType<ConversationDetailEvent.MessagesData>()
@@ -564,7 +564,7 @@ class ConversationDetailViewModelTest {
         every {
             observeConversationMessages(UserIdSample.Primary, ConversationIdSample.WeatherForecast, labelId)
         } returns flowOf(DataError.Remote.Http(NetworkError.ServerError).left())
-        every {
+        coEvery {
             reducer.newStateFrom(
                 currentState = initialState,
                 operation = ConversationDetailEvent.ErrorLoadingMessages
@@ -590,7 +590,7 @@ class ConversationDetailViewModelTest {
         every {
             observeConversationMessages(UserIdSample.Primary, ConversationIdSample.WeatherForecast, labelId)
         } returns flowOf(DataError.Remote.Http(NetworkError.NoNetwork).left())
-        every {
+        coEvery {
             reducer.newStateFrom(
                 currentState = initialState,
                 operation = ConversationDetailEvent.NoNetworkError
@@ -615,7 +615,7 @@ class ConversationDetailViewModelTest {
         every {
             observeConversationMessages(UserIdSample.Primary, ConversationIdSample.WeatherForecast, labelId)
         } returns flowOf(DataError.Local.NoDataCached.left())
-        every {
+        coEvery {
             reducer.newStateFrom(
                 currentState = initialState,
                 operation = ConversationDetailEvent.ErrorLoadingMessages
@@ -652,7 +652,7 @@ class ConversationDetailViewModelTest {
         every {
             observeDetailBottomBarActions(UserIdSample.Primary, labelId, ConversationIdSample.WeatherForecast)
         } returns flowOf(actions.right())
-        every {
+        coEvery {
             reducer.newStateFrom(
                 currentState = initialState,
                 operation = ofType<ConversationDetailEvent.ConversationBottomBarEvent>()
@@ -688,7 +688,7 @@ class ConversationDetailViewModelTest {
         every {
             observeDetailBottomBarActions(UserIdSample.Primary, labelId, ConversationIdSample.WeatherForecast)
         } returns flowOf(DataError.Local.NoDataCached.left())
-        every {
+        coEvery {
             reducer.newStateFrom(
                 currentState = initialState,
                 operation = ofType<ConversationDetailEvent.ConversationBottomBarEvent>()
@@ -758,7 +758,7 @@ class ConversationDetailViewModelTest {
     fun `error starring conversation is emitted when star action fails`() = runTest {
         // Given
         coEvery { starConversations.invoke(UserIdSample.Primary, any()) } returns DataError.Local.NoDataCached.left()
-        every {
+        coEvery {
             reducer.newStateFrom(
                 currentState = ConversationDetailState.Loading,
                 operation = ConversationDetailEvent.ErrorAddStar
@@ -776,7 +776,7 @@ class ConversationDetailViewModelTest {
 
             // Then
             assertEquals(TextUiModel(string.error_star_operation_failed), awaitItem().error.consume())
-            verify(exactly = 1) { reducer.newStateFrom(any(), ConversationDetailEvent.ErrorAddStar) }
+            coVerify(exactly = 1) { reducer.newStateFrom(any(), ConversationDetailEvent.ErrorAddStar) }
             cancelAndIgnoreRemainingEvents()
         }
     }
@@ -784,7 +784,7 @@ class ConversationDetailViewModelTest {
     @Test
     fun `unStarred conversation metadata is emitted when unStar action is successful`() = runTest {
         // given
-        every {
+        coEvery {
             reducer.newStateFrom(
                 currentState = ConversationDetailState.Loading,
                 operation = ConversationDetailViewAction.UnStar
@@ -811,7 +811,7 @@ class ConversationDetailViewModelTest {
     fun `error unStarring conversation is emitted when unStar action fails`() = runTest {
         // Given
         coEvery { unStarConversations.invoke(UserIdSample.Primary, any()) } returns DataError.Local.NoDataCached.left()
-        every {
+        coEvery {
             reducer.newStateFrom(
                 currentState = ConversationDetailState.Loading,
                 operation = ConversationDetailEvent.ErrorRemoveStar
@@ -843,7 +843,7 @@ class ConversationDetailViewModelTest {
                 SystemLabelId.Trash
             )
         } returns DataError.Local.NoDataCached.left()
-        every {
+        coEvery {
             reducer.newStateFrom(
                 currentState = ConversationDetailState.Loading,
                 operation = ConversationDetailEvent.ErrorMovingToTrash
@@ -873,7 +873,7 @@ class ConversationDetailViewModelTest {
                 SystemLabelId.Trash
             )
         } returns Unit.right()
-        every {
+        coEvery {
             reducer.newStateFrom(
                 currentState = ConversationDetailState.Loading,
                 operation = ConversationDetailEvent.ExitScreenWithMessage(ConversationDetailViewAction.MoveToTrash)
@@ -916,7 +916,7 @@ class ConversationDetailViewModelTest {
             getConversationMoveToLocations(userId, any(), listOf(conversationId))
         } returns listOf(MailLabelTestData.spamSystemLabel).right()
 
-        every {
+        coEvery {
             reducer.newStateFrom(
                 currentState = any(),
                 operation = ConversationDetailViewAction.RequestMoveToBottomSheet
@@ -930,7 +930,7 @@ class ConversationDetailViewModelTest {
             )
         )
 
-        every {
+        coEvery {
             reducer.newStateFrom(
                 currentState = any(),
                 operation = ConversationDetailEvent.ExitScreenWithMessage(
@@ -985,7 +985,7 @@ class ConversationDetailViewModelTest {
         val labelId = LabelIdSample.AllMail
         every { savedStateHandle.get<String>(ConversationDetailScreen.OpenedFromLocationKey) } returns labelId.id
         coEvery { markConversationAsUnread(userId, labelId, conversationId) } returns Unit.right()
-        every {
+        coEvery {
             reducer.newStateFrom(
                 currentState = ConversationDetailState.Loading,
                 operation = ConversationDetailEvent.ExitScreen
@@ -1013,7 +1013,7 @@ class ConversationDetailViewModelTest {
         coEvery {
             markConversationAsUnread(userId, labelId, conversationId)
         } returns DataError.Local.NoDataCached.left()
-        every {
+        coEvery {
             reducer.newStateFrom(
                 currentState = ConversationDetailState.Loading,
                 operation = ConversationDetailEvent.ErrorMarkingAsUnread
@@ -1183,7 +1183,7 @@ class ConversationDetailViewModelTest {
                 decryptedMessageBody = any()
             )
         } returns messages.first()
-        every {
+        coEvery {
             reducer.newStateFrom(
                 currentState = any(),
                 operation = any()
@@ -1228,7 +1228,7 @@ class ConversationDetailViewModelTest {
                     decryptedMessageBody = any()
                 )
             } returns expectedUiModel
-            every {
+            coEvery {
                 reducer.newStateFrom(
                     currentState = any(),
                     operation = any()
@@ -1280,7 +1280,7 @@ class ConversationDetailViewModelTest {
                 decryptedMessageBody = any()
             )
         } returns expectedUiModel
-        every {
+        coEvery {
             reducer.newStateFrom(
                 currentState = any(),
                 operation = any()
@@ -1288,7 +1288,7 @@ class ConversationDetailViewModelTest {
         } returns ConversationDetailState.Loading.copy(
             messagesState = ConversationDetailsMessagesState.Data(messagesBodyCollapsed)
         )
-        every {
+        coEvery {
             reducer.newStateFrom(
                 currentState = any(),
                 operation = ofType<ConversationDetailViewAction.ExpandOrCollapseMessageBody>()
@@ -1440,7 +1440,7 @@ class ConversationDetailViewModelTest {
         val labelId = LabelIdSample.AllMail
         every { savedStateHandle.get<String>(ConversationDetailScreen.OpenedFromLocationKey) } returns labelId.id
         coEvery { markConversationAsRead(userId, labelId, conversationId) } returns Unit.right()
-        every {
+        coEvery {
             reducer.newStateFrom(
                 currentState = ConversationDetailState.Loading,
                 operation = ConversationDetailEvent.ExitScreen
@@ -1466,7 +1466,7 @@ class ConversationDetailViewModelTest {
         val labelId = LabelIdSample.AllMail
         every { savedStateHandle.get<String>(ConversationDetailScreen.OpenedFromLocationKey) } returns labelId.id
         coEvery { markConversationAsRead(userId, labelId, conversationId) } returns DataError.Local.NoDataCached.left()
-        every {
+        coEvery {
             reducer.newStateFrom(
                 currentState = ConversationDetailState.Loading,
                 operation = ConversationDetailEvent.ErrorMarkingAsRead
@@ -1490,7 +1490,7 @@ class ConversationDetailViewModelTest {
     fun `exit state is emitted when move to spam successfully`() = runTest {
         // given
         coEvery { move(userId, conversationId, SystemLabelId.Spam) } returns Unit.right()
-        every {
+        coEvery {
             reducer.newStateFrom(
                 currentState = ConversationDetailState.Loading,
                 operation = ConversationDetailEvent.ExitScreenWithMessage(
@@ -1516,7 +1516,7 @@ class ConversationDetailViewModelTest {
     fun `error message is emitted when move to spam fails`() = runTest {
         // given
         coEvery { move(userId, conversationId, SystemLabelId.Spam) } returns DataError.Local.NoDataCached.left()
-        every {
+        coEvery {
             reducer.newStateFrom(
                 currentState = ConversationDetailState.Loading,
                 operation = ConversationDetailEvent.ErrorMovingConversation
@@ -1540,7 +1540,7 @@ class ConversationDetailViewModelTest {
     fun `exit state is emitted when move to archive successfully`() = runTest {
         // given
         coEvery { move(userId, conversationId, SystemLabelId.Archive) } returns Unit.right()
-        every {
+        coEvery {
             reducer.newStateFrom(
                 currentState = ConversationDetailState.Loading,
                 operation = ConversationDetailEvent.ExitScreenWithMessage(
@@ -1568,7 +1568,7 @@ class ConversationDetailViewModelTest {
         coEvery {
             move(userId, conversationId, SystemLabelId.Archive)
         } returns DataError.Local.NoDataCached.left()
-        every {
+        coEvery {
             reducer.newStateFrom(
                 currentState = ConversationDetailState.Loading,
                 operation = ConversationDetailEvent.ErrorMovingConversation
@@ -1629,7 +1629,7 @@ class ConversationDetailViewModelTest {
         )
 
         // This is no bueno, the order of the mocks here is important
-        every {
+        coEvery {
             reducer.newStateFrom(
                 currentState = any(),
                 operation = any()
@@ -1637,7 +1637,7 @@ class ConversationDetailViewModelTest {
         } returns ConversationDetailState.Loading.copy(
             messagesState = ConversationDetailsMessagesState.Data(allCollapsed)
         )
-        every {
+        coEvery {
             reducer.newStateFrom(
                 currentState = any(),
                 operation = ofType<ConversationDetailEvent.ExpandDecryptedMessage>()
@@ -1645,7 +1645,7 @@ class ConversationDetailViewModelTest {
         } returns ConversationDetailState.Loading.copy(
             messagesState = ConversationDetailsMessagesState.Data(firstExpanded)
         )
-        every {
+        coEvery {
             reducer.newStateFrom(
                 currentState = any(),
                 operation = ofType<ConversationDetailEvent.ErrorExpandingDecryptMessageError>()
@@ -1654,7 +1654,7 @@ class ConversationDetailViewModelTest {
             messagesState = ConversationDetailsMessagesState.Data(allCollapsed),
             error = Effect.of(TextUiModel(string.decryption_error))
         )
-        every {
+        coEvery {
             reducer.newStateFrom(
                 currentState = any(),
                 operation = ofType<ConversationDetailEvent.ErrorExpandingRetrieveMessageError>()
@@ -1663,7 +1663,7 @@ class ConversationDetailViewModelTest {
             messagesState = ConversationDetailsMessagesState.Data(allCollapsed),
             error = Effect.of(TextUiModel(string.detail_error_retrieving_message_body))
         )
-        every {
+        coEvery {
             reducer.newStateFrom(
                 currentState = any(),
                 operation = ofType<ConversationDetailEvent.ErrorExpandingRetrievingMessageOffline>()
@@ -1672,7 +1672,7 @@ class ConversationDetailViewModelTest {
             messagesState = ConversationDetailsMessagesState.Data(allCollapsed),
             error = Effect.of(TextUiModel(string.error_offline_loading_message))
         )
-        every {
+        coEvery {
             reducer.newStateFrom(
                 currentState = any(),
                 operation = ofType<ConversationDetailViewAction.RequestScrollTo>()
@@ -1680,7 +1680,7 @@ class ConversationDetailViewModelTest {
         } returns ConversationDetailState.Loading.copy(
             scrollToMessage = MessageIdUiModel(allCollapsed.first().messageId.id)
         )
-        every {
+        coEvery {
             reducer.newStateFrom(
                 currentState = any(),
                 operation = ofType<ConversationDetailEvent.ExpandingMessage>()
@@ -1707,7 +1707,7 @@ class ConversationDetailViewModelTest {
     }
 
     private fun setupLinkClickState(messageId: MessageIdUiModel, link: Uri) {
-        every {
+        coEvery {
             reducer.newStateFrom(
                 currentState = any(),
                 operation = any()
@@ -1722,7 +1722,7 @@ class ConversationDetailViewModelTest {
             ActionUiModelTestData.archive,
             ActionUiModelTestData.markUnread
         ).toImmutableList()
-        every {
+        coEvery {
             reducer.newStateFrom(
                 currentState = any(),
                 operation = ofType<ConversationDetailEvent.ConversationBottomBarEvent>()
@@ -1733,7 +1733,7 @@ class ConversationDetailViewModelTest {
     }
 
     private fun givenReducerReturnsStarredUiModel() {
-        every {
+        coEvery {
             reducer.newStateFrom(
                 currentState = any(),
                 operation = ConversationDetailViewAction.Star
@@ -1746,7 +1746,7 @@ class ConversationDetailViewModelTest {
     }
 
     private fun givenReducerReturnsBottomSheetActions() {
-        every {
+        coEvery {
             reducer.newStateFrom(
                 currentState = any(),
                 operation = ofType<ConversationDetailEvent.ConversationBottomSheetEvent>()

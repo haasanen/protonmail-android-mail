@@ -48,10 +48,12 @@ import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MoveToBo
 import ch.protonmail.android.mailmessage.presentation.reducer.BottomSheetReducer
 import ch.protonmail.android.testdata.maillabel.MailLabelTestData
 import io.mockk.Called
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.collections.immutable.toImmutableList
+import kotlinx.coroutines.test.runTest
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 import kotlin.test.Test
@@ -89,12 +91,12 @@ class ConversationDetailReducerTest(
     )
 
     @Test
-    fun `does call the correct sub-reducers`() {
+    fun `does call the correct sub-reducers`() = runTest {
         with(testInput) {
             val result = reducer.newStateFrom(ConversationDetailState.Loading, operation)
 
             if (reducesMessages) {
-                verify { messagesReducer.newStateFrom(any(), operationAffectingMessages()) }
+                coVerify { messagesReducer.newStateFrom(any(), operationAffectingMessages()) }
             } else {
                 verify { messagesReducer wasNot Called }
             }

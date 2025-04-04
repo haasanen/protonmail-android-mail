@@ -70,7 +70,7 @@ class ConversationDetailReducer @Inject constructor(
     private val actionResultMapper: ActionResultMapper
 ) {
 
-    fun newStateFrom(
+    suspend fun newStateFrom(
         currentState: ConversationDetailState,
         operation: ConversationDetailOperation
     ): ConversationDetailState {
@@ -100,7 +100,7 @@ class ConversationDetailReducer @Inject constructor(
             conversationState
         }
 
-    private fun ConversationDetailState.toNewMessageState(operation: ConversationDetailOperation) =
+    private suspend fun ConversationDetailState.toNewMessageState(operation: ConversationDetailOperation) =
         if (operation is ConversationDetailOperation.AffectingMessages) {
             messagesReducer.newStateFrom(messagesState, operation)
         } else {

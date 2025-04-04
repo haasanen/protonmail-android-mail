@@ -41,7 +41,6 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
@@ -56,6 +55,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import ch.protonmail.android.design.compose.theme.ProtonDimens
+import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
 import ch.protonmail.android.mailcommon.presentation.NO_CONTENT_DESCRIPTION
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
@@ -63,6 +65,7 @@ import ch.protonmail.android.mailcommon.presentation.compose.pxToDp
 import ch.protonmail.android.mailcommon.presentation.extension.copyTextToClipboard
 import ch.protonmail.android.mailcommon.presentation.extension.openShareIntentForUri
 import ch.protonmail.android.mailmessage.domain.model.AttachmentId
+import ch.protonmail.android.mailmessage.domain.model.EmbeddedImage
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.domain.model.MimeType
 import ch.protonmail.android.mailmessage.presentation.R
@@ -80,9 +83,6 @@ import com.google.accompanist.web.LoadingState
 import com.google.accompanist.web.WebView
 import com.google.accompanist.web.rememberWebViewStateWithHTMLData
 import kotlinx.coroutines.delay
-import ch.protonmail.android.design.compose.theme.ProtonDimens
-import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.mailmessage.domain.model.EmbeddedImage
 
 @Composable
 fun MessageBodyWebView(
@@ -104,7 +104,8 @@ fun MessageBodyWebView(
         mimeType = MimeType.Html.value
     )
 
-    val webViewInteractionState = viewModel.state.collectAsState().value
+    val webViewInteractionState = viewModel.state.collectAsStateWithLifecycle().value
+    val isUsingV6CssInjection = viewModel.isUsingV6CssInjection.collectAsStateWithLifecycle(false).value
     val longClickDialogState = remember { mutableStateOf(false) }
 
     val actions = webViewActions.copy(
@@ -212,7 +213,7 @@ fun MessageBodyWebView(
                     it.settings.allowContentAccess = false
                     it.settings.allowFileAccess = false
                     it.settings.loadWithOverviewMode = true
-                    it.settings.useWideViewPort = true
+                    it.settings.useWideViewPort = isUsingV6CssInjection
                     configureDarkLightMode(it, isSystemInDarkTheme, messageBodyUiModel.viewModePreference)
                     configureLongClick(it, actions.onMessageBodyLinkLongClicked)
                     webView = it

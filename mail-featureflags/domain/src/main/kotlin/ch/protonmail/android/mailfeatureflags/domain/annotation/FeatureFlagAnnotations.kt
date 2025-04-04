@@ -26,4 +26,4 @@ annotation class ComposerEnabled
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
-annotation class UseV6CssInjection
+annotation class V6CssInjectionEnabled

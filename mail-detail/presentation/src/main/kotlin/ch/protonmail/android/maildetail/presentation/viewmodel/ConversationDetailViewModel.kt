@@ -679,13 +679,15 @@ class ConversationDetailViewModel @Inject constructor(
     }
 
     private fun handleLabelAsCompleted(operation: ConversationDetailViewAction.LabelAsCompleted) {
-        val event = if (operation.wasArchived) {
-            ConversationDetailEvent.ExitScreenWithMessage(operation)
-        } else {
-            operation
-        }
+        viewModelScope.launch {
+            val event = if (operation.wasArchived) {
+                ConversationDetailEvent.ExitScreenWithMessage(operation)
+            } else {
+                operation
+            }
 
-        emitNewStateFrom(event)
+            emitNewStateFrom(event)
+        }
     }
 
     private fun showMessageMoreActionsBottomSheet(
@@ -736,7 +738,7 @@ class ConversationDetailViewModel @Inject constructor(
         return LabelId(labelId)
     }
 
-    private fun emitNewStateFrom(event: ConversationDetailOperation) {
+    private suspend fun emitNewStateFrom(event: ConversationDetailOperation) {
         val newState = reducer.newStateFrom(state.value, event)
         mutableDetailState.update { newState }
     }
@@ -948,7 +950,7 @@ class ConversationDetailViewModel @Inject constructor(
         viewModelScope.launch { updateLinkConfirmationSetting(false) }
     }
 
-    private fun emitMessageBodyDecryptError(error: GetDecryptedMessageBodyError, messageId: MessageIdUiModel) {
+    private suspend fun emitMessageBodyDecryptError(error: GetDecryptedMessageBodyError, messageId: MessageIdUiModel) {
         val errorState = when (error) {
             is GetDecryptedMessageBodyError.Data -> if (error.dataError.isOfflineError()) {
                 ConversationDetailEvent.ErrorExpandingRetrievingMessageOffline(messageId)

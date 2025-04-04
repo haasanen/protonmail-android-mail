@@ -293,7 +293,7 @@ class MessageBodyUiModelMapperTest {
         // Given
         val decryptedMessageBodyWithType = MessageBodyWithType(decryptedMessageBody, MimeTypeUiModel.Html)
 
-        every {
+        coEvery {
             injectCssIntoDecryptedMessageBody(decryptedMessageBodyWithType)
         } returns decryptedMessageBodyWithCss
         val messageId = MessageIdSample.build()

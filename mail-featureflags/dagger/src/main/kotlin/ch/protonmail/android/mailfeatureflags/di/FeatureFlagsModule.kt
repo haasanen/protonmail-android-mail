@@ -23,7 +23,9 @@ import ch.protonmail.android.mailfeatureflags.data.local.DefaultFeatureFlagValue
 import ch.protonmail.android.mailfeatureflags.domain.ComposerEnabledDefinition
 import ch.protonmail.android.mailfeatureflags.domain.FeatureFlagResolver
 import ch.protonmail.android.mailfeatureflags.domain.FeatureFlagValueProvider
+import ch.protonmail.android.mailfeatureflags.domain.UseV6CssInjectionDefinition
 import ch.protonmail.android.mailfeatureflags.domain.annotation.ComposerEnabled
+import ch.protonmail.android.mailfeatureflags.domain.annotation.V6CssInjectionEnabled
 import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlagDefinition
 import dagger.Module
 import dagger.Provides
@@ -55,7 +57,7 @@ object FeatureFlagsModule {
 
     @Provides
     @Singleton
-    @UseV6CssInjection
+    @V6CssInjectionEnabled
     fun provideUseV6CssInjection(resolver: FeatureFlagResolver) =
         resolver.observeFeatureFlag(UseV6CssInjectionDefinition.key)
 

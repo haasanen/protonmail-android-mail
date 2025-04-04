@@ -43,7 +43,7 @@ class ConversationDetailMessagesReducer @Inject constructor(
 ) {
 
     @Suppress("LongMethod")
-    fun newStateFrom(
+    suspend fun newStateFrom(
         currentState: ConversationDetailsMessagesState,
         operation: ConversationDetailOperation.AffectingMessages
     ): ConversationDetailsMessagesState = when (operation) {
@@ -350,7 +350,7 @@ class ConversationDetailMessagesReducer @Inject constructor(
         )
     }
 
-    private fun ConversationDetailsMessagesState.toNewStateForSwitchViewMode(
+    private suspend fun ConversationDetailsMessagesState.toNewStateForSwitchViewMode(
         messageId: MessageId,
         viewModePreference: ViewModePreference
     ): ConversationDetailsMessagesState {

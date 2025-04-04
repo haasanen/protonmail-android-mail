@@ -22,24 +22,30 @@ import java.io.IOException
 import android.content.Context
 import android.content.res.Resources.NotFoundException
 import androidx.annotation.RawRes
+import ch.protonmail.android.mailfeatureflags.domain.annotation.V6CssInjectionEnabled
 import ch.protonmail.android.mailmessage.presentation.R
 import ch.protonmail.android.mailmessage.presentation.model.MessageBodyWithType
 import ch.protonmail.android.mailmessage.presentation.model.ViewModePreference
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.firstOrNull
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
 import timber.log.Timber
 import javax.inject.Inject
 
 class InjectCssIntoDecryptedMessageBody @Inject constructor(
-    @ApplicationContext
-    private val context: Context
+    @ApplicationContext private val context: Context,
+    @V6CssInjectionEnabled private val isUsingV6CssInjection: Flow<Boolean>
 ) {
 
-    operator fun invoke(
+    suspend operator fun invoke(
         messageBodyWithType: MessageBodyWithType,
         viewModePreference: ViewModePreference = ViewModePreference.ThemeDefault
     ): String {
+        val isUsingV6CssInjection = isUsingV6CssInjection.firstOrNull() ?: false
+        if (!isUsingV6CssInjection) return messageBodyWithType.messageBody
+
         val messageBodyDocument = Jsoup.parse(messageBodyWithType.messageBody)
         val messageBodyHead = messageBodyDocument.head()
 

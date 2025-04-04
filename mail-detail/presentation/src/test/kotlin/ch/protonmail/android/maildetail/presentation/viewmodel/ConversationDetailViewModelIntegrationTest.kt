@@ -376,7 +376,7 @@ class ConversationDetailViewModelIntegrationTest {
             } returns ByteArrayInputStream("".toByteArray())
         }
     }
-    private val injectCssIntoDecryptedMessageBody = InjectCssIntoDecryptedMessageBody(context)
+    private val injectCssIntoDecryptedMessageBody = InjectCssIntoDecryptedMessageBody(context, flowOf(false))
     private val extractMessageBodyWithoutQuote = ExtractMessageBodyWithoutQuote()
     private val avatarImageUiModelMapper = AvatarImageUiModelMapper()
 
