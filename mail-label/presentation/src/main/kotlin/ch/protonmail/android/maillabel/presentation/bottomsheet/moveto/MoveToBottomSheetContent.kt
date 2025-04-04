@@ -79,6 +79,7 @@ internal fun MoveToBottomSheetContent(
 
     ConsumableTextEffect(dataState.errorEffect) {
         actions.onError(it)
+        actions.onDismiss()
     }
 
     Column(

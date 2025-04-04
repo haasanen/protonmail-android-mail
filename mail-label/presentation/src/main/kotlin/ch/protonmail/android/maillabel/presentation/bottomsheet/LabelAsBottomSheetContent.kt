@@ -84,6 +84,7 @@ internal fun LabelAsBottomSheetContent(
 
     ConsumableTextEffect(labelAsDataState.errorEffect) {
         actions.onError(it)
+        actions.onDismiss()
     }
 
     Column(
@@ -379,7 +380,8 @@ internal object LabelAsBottomSheetContent {
         val onLabelToggled: (LabelId) -> Unit,
         val onDoneClick: (archiveSelected: Boolean) -> Unit,
         val onLabelAsComplete: (archiveSelected: Boolean, entryPoint: LabelAsBottomSheetEntryPoint) -> Unit,
-        val onError: (String) -> Unit
+        val onError: (String) -> Unit,
+        val onDismiss: () -> Unit
     ) {
 
         companion object {
@@ -389,7 +391,8 @@ internal object LabelAsBottomSheetContent {
                 onLabelToggled = {},
                 onDoneClick = {},
                 onLabelAsComplete = { _, _ -> },
-                onError = {}
+                onError = {},
+                onDismiss = {}
             )
         }
     }

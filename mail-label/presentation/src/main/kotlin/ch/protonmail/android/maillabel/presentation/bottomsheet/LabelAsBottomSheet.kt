@@ -51,7 +51,8 @@ fun LabelAsBottomSheetScreen(
         onCreateNewLabelClick = actions.onCreateNewLabelClick,
         onLabelToggled = { viewModel.submit(LabelAsOperation.LabelAsAction.LabelToggled(it)) },
         onLabelAsComplete = actions.onLabelAsComplete,
-        onError = actions.onError
+        onError = actions.onError,
+        onDismiss = actions.onDismiss
     )
 
     when (val currentState = state) {
