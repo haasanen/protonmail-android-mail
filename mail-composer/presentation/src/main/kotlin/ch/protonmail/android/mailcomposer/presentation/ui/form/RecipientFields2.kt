@@ -47,6 +47,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.core.graphics.toColorInt
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ch.protonmail.android.mailcommon.presentation.compose.FocusableFormScope
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
@@ -61,7 +62,6 @@ import ch.protonmail.android.mailcomposer.presentation.model.toImmutableChipList
 import ch.protonmail.android.mailcomposer.presentation.ui.ComposerTestTags
 import ch.protonmail.android.mailcomposer.presentation.ui.chips.ComposerChipsListField
 import ch.protonmail.android.mailcomposer.presentation.viewmodel.RecipientsViewModel
-import ch.protonmail.android.uicomponents.chips.ChipsListField
 import ch.protonmail.android.uicomponents.chips.ContactSuggestionState
 import ch.protonmail.android.uicomponents.chips.item.ChipItem
 import ch.protonmail.android.uicomponents.composer.suggestions.ContactSuggestionItem
@@ -172,7 +172,7 @@ internal fun FocusableFormScope<FocusedFieldType>.RecipientFields2(
                 .testTag(ComposerTestTags.ToRecipient)
                 .retainFieldFocusOnConfigurationChange(FocusedFieldType.TO),
             focusRequester = fieldFocusRequesters[FocusedFieldType.TO],
-            actions = ChipsListField.Actions(
+            actions = ComposerChipsListField.Actions(
                 onSuggestionTermTyped = {
                     viewModel.updateSearchTerm(it, ContactSuggestionsField.TO)
                 },
@@ -234,7 +234,7 @@ internal fun FocusableFormScope<FocusedFieldType>.RecipientFields2(
                     .testTag(ComposerTestTags.CcRecipient)
                     .retainFieldFocusOnConfigurationChange(FocusedFieldType.CC),
                 focusRequester = fieldFocusRequesters[FocusedFieldType.CC],
-                actions = ChipsListField.Actions(
+                actions = ComposerChipsListField.Actions(
                     onSuggestionTermTyped = {
                         viewModel.updateSearchTerm(it, ContactSuggestionsField.CC)
                     },
@@ -260,7 +260,7 @@ internal fun FocusableFormScope<FocusedFieldType>.RecipientFields2(
                         .testTag(ComposerTestTags.BccRecipient)
                         .retainFieldFocusOnConfigurationChange(FocusedFieldType.BCC),
                     focusRequester = fieldFocusRequesters[FocusedFieldType.BCC],
-                    actions = ChipsListField.Actions(
+                    actions = ComposerChipsListField.Actions(
                         onSuggestionTermTyped = {
                             viewModel.updateSearchTerm(it, ContactSuggestionsField.BCC)
                         },
@@ -312,7 +312,7 @@ private fun ContactSuggestionUiModel.toSuggestionContactItem2(): ContactSuggesti
     )
 
     is ContactSuggestionUiModel.ContactGroup -> {
-        val backgroundColor = runCatching { Color(android.graphics.Color.parseColor(this.color)) }.getOrElse {
+        val backgroundColor = runCatching { Color(this.color.toColorInt()) }.getOrElse {
             Timber.tag("getContactGroupColor").w("Failed to convert raw string color from $color")
             ProtonTheme.colors.backgroundSecondary
         }

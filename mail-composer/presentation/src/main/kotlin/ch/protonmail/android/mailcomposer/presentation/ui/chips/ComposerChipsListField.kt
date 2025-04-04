@@ -43,7 +43,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
 import ch.protonmail.android.mailcommon.presentation.ConsumableTextEffect
 import ch.protonmail.android.mailcomposer.presentation.viewmodel.ComposerChipsListViewModel
-import ch.protonmail.android.uicomponents.chips.ChipsListField
 import ch.protonmail.android.uicomponents.chips.ChipsListTextField
 import ch.protonmail.android.uicomponents.chips.ChipsTestTags
 import ch.protonmail.android.uicomponents.chips.ContactSuggestionState
@@ -62,7 +61,7 @@ fun ComposerChipsListField(
     modifier: Modifier = Modifier,
     focusRequester: FocusRequester? = null,
     focusOnClick: Boolean = true,
-    actions: ChipsListField.Actions,
+    actions: ComposerChipsListField.Actions,
     contactSuggestionState: ContactSuggestionState,
     chevronIconContent: @Composable () -> Unit = {}
 ) {
@@ -172,4 +171,12 @@ fun ComposerChipsListField(
     ConsumableTextEffect(state.invalidEntryWarning) {
         context.showToast(it)
     }
+}
+
+object ComposerChipsListField {
+    data class Actions(
+        val onSuggestionTermTyped: (String) -> Unit,
+        val onSuggestionsDismissed: () -> Unit,
+        val onListChanged: (List<ChipItem>) -> Unit
+    )
 }
