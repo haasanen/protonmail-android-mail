@@ -22,6 +22,7 @@ import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.uicomponents.chips.ChipsListState.Companion.ChipsCreationRegex
 import ch.protonmail.android.uicomponents.chips.item.ChipItem
+import ch.protonmail.android.uicomponents.thenIf
 
 @Composable
 fun ChipsListField(
@@ -122,12 +123,4 @@ object ChipsListField {
         val onSuggestionsDismissed: () -> Unit,
         val onListChanged: (List<ChipItem>) -> Unit
     )
-}
-
-fun Modifier.thenIf(condition: Boolean, modifier: Modifier.() -> Modifier): Modifier {
-    return if (condition) {
-        then(modifier())
-    } else {
-        this
-    }
 }

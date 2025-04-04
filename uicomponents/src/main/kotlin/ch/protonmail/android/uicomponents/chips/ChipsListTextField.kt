@@ -47,6 +47,7 @@ import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyMediumNorm
 import ch.protonmail.android.uicomponents.chips.item.ChipItemsList
 import kotlinx.coroutines.launch
+import ch.protonmail.android.uicomponents.thenIf
 
 @OptIn(
     ExperimentalLayoutApi::class,

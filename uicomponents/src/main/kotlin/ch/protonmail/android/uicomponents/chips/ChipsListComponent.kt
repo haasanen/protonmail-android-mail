@@ -52,6 +52,7 @@ import ch.protonmail.android.uicomponents.chips.item.inputChipBorder
 import ch.protonmail.android.uicomponents.chips.item.suggestionChipColor
 import ch.protonmail.android.uicomponents.chips.item.suggestionsTextStyle
 import ch.protonmail.android.uicomponents.chips.item.textStyle
+import ch.protonmail.android.uicomponents.thenIf
 
 @Composable
 internal fun FocusedChipsList(
