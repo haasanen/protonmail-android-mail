@@ -55,7 +55,6 @@ import ch.protonmail.android.maildetail.presentation.model.MessageIdUiModel
 import ch.protonmail.android.maildetail.presentation.model.ReportPhishingDialogState
 import ch.protonmail.android.maildetail.presentation.model.TrashedMessagesBannerState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.BottomSheetOperation
-import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MoveToBottomSheetState.MoveToBottomSheetAction.MoveToDestinationSelected
 import ch.protonmail.android.mailmessage.presentation.reducer.BottomSheetReducer
 import javax.inject.Inject
 
@@ -119,15 +118,12 @@ class ConversationDetailReducer @Inject constructor(
             val bottomSheetOperation = when (operation) {
                 is ConversationBottomSheetEvent -> operation.bottomSheetOperation
                 is ConversationDetailEvent.MessageBottomSheetEvent -> operation.bottomSheetOperation
-                is ConversationDetailViewAction.MoveToDestinationSelected ->
-                    MoveToDestinationSelected(operation.mailLabelId)
-
-                is ConversationDetailViewAction.RequestConversationLabelAsBottomSheet,
-                is ConversationDetailViewAction.RequestMessageMoreActionsBottomSheet,
-                is ConversationDetailViewAction.RequestConversationMoreActionsBottomSheet,
                 is ConversationDetailViewAction.RequestContactActionsBottomSheet,
-                is ConversationDetailViewAction.RequestMoveToBottomSheet,
+                is ConversationDetailViewAction.RequestConversationMoreActionsBottomSheet,
+                is ConversationDetailViewAction.RequestMessageMoreActionsBottomSheet,
+                is ConversationDetailViewAction.RequestConversationLabelAsBottomSheet,
                 is ConversationDetailViewAction.RequestMessageLabelAsBottomSheet,
+                is ConversationDetailViewAction.RequestConversationMoveToBottomSheet,
                 is ConversationDetailViewAction.RequestMessageMoveToBottomSheet -> BottomSheetOperation.Requested
 
                 is ErrorMovingConversation,
@@ -159,9 +155,9 @@ class ConversationDetailReducer @Inject constructor(
                 is ConversationDetailViewAction.UnStarMessage,
                 is ConversationDetailViewAction.MoveMessage,
                 is ConversationDetailViewAction.LabelAsCompleted,
+                is ConversationDetailViewAction.MoveToCompleted,
                 is ConversationDetailEvent.MessageMoved,
                 is ConversationDetailEvent.LastMessageMoved,
-                is ConversationDetailEvent.MoveToDestinationConfirmed,
                 is ConversationDetailEvent.ExitScreen,
                 is ConversationDetailEvent.ExitScreenWithMessage -> BottomSheetOperation.Dismiss
             }

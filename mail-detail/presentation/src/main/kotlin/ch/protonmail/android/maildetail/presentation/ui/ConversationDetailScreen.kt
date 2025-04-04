@@ -106,6 +106,8 @@ import ch.protonmail.android.maildetail.presentation.ui.dialog.ReportPhishingDia
 import ch.protonmail.android.maildetail.presentation.viewmodel.ConversationDetailViewModel
 import ch.protonmail.android.maillabel.presentation.bottomsheet.LabelAsBottomSheet
 import ch.protonmail.android.maillabel.presentation.bottomsheet.LabelAsBottomSheetScreen
+import ch.protonmail.android.maillabel.presentation.bottomsheet.moveto.MoveToBottomSheet
+import ch.protonmail.android.maillabel.presentation.bottomsheet.moveto.MoveToBottomSheetScreen
 import ch.protonmail.android.mailmessage.domain.model.AttachmentId
 import ch.protonmail.android.mailmessage.domain.model.EmbeddedImage
 import ch.protonmail.android.mailmessage.domain.model.MessageId
@@ -117,7 +119,6 @@ import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.LabelAsB
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MoveToBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.ui.bottomsheet.ContactActionsBottomSheetContent
 import ch.protonmail.android.mailmessage.presentation.ui.bottomsheet.DetailMoreActionsBottomSheetContent
-import ch.protonmail.android.mailmessage.presentation.ui.bottomsheet.MoveToBottomSheetContent
 import ch.protonmail.android.uicomponents.bottomsheet.bottomSheetHeightConstrainedContent
 import ch.protonmail.android.uicomponents.snackbar.DismissableSnackbarHost
 import kotlinx.collections.immutable.ImmutableList
@@ -210,20 +211,26 @@ fun ConversationDetailScreen(
         dismissOnBack = true,
         sheetContent = bottomSheetHeightConstrainedContent {
             when (val bottomSheetContentState = state.bottomSheetState?.contentState) {
-                is MoveToBottomSheetState -> MoveToBottomSheetContent(
-                    state = bottomSheetContentState,
-                    actions = MoveToBottomSheetContent.Actions(
-                        onAddFolderClick = actions.onAddFolder,
-                        onFolderSelected = { folderId, folderName, entryPoint ->
-                            viewModel.submit(
-                                ConversationDetailViewAction.MoveToDestinationSelected(
-                                    folderId, folderName, entryPoint
-                                )
-                            )
+                is MoveToBottomSheetState.Requested -> {
+                    val initialData = MoveToBottomSheet.InitialData(
+                        userId = bottomSheetContentState.userId,
+                        currentLocationLabelId = bottomSheetContentState.currentLabel,
+                        items = bottomSheetContentState.itemIds,
+                        entryPoint = bottomSheetContentState.entryPoint
+                    )
+
+                    val actions = MoveToBottomSheet.Actions(
+                        onCreateNewFolderClick = actions.onAddLabel,
+                        onError = { actions.showSnackbar(it, ProtonSnackbarType.ERROR) },
+                        onMoveToComplete = { mailLabelText, entryPoint ->
+                            val action = ConversationDetailViewAction.MoveToCompleted(mailLabelText, entryPoint)
+                            viewModel.submit(action)
                         },
                         onDismiss = { viewModel.submit(ConversationDetailViewAction.DismissBottomSheet) }
                     )
-                )
+
+                    MoveToBottomSheetScreen(providedData = initialData, actions = actions)
+                }
 
                 is LabelAsBottomSheetState.Requested -> {
                     val initialData = LabelAsBottomSheet.InitialData(
@@ -300,7 +307,7 @@ fun ConversationDetailScreen(
                         },
                         onMoveToTrashConversation = { viewModel.submit(ConversationDetailViewAction.MoveToTrash) },
                         onMoveConversation = {
-                            viewModel.submit(ConversationDetailViewAction.RequestMoveToBottomSheet)
+                            viewModel.submit(ConversationDetailViewAction.RequestConversationMoveToBottomSheet)
                         },
                         onDeleteConversation = { viewModel.submit(ConversationDetailViewAction.DeleteRequested) },
 
@@ -372,7 +379,7 @@ fun ConversationDetailScreen(
                 onUnStarClick = { viewModel.submit(ConversationDetailViewAction.UnStar) },
                 onReadClick = { viewModel.submit(ConversationDetailViewAction.MarkRead) },
                 onUnreadClick = { viewModel.submit(ConversationDetailViewAction.MarkUnread) },
-                onMoveToClick = { viewModel.submit(ConversationDetailViewAction.RequestMoveToBottomSheet) },
+                onMoveToClick = { viewModel.submit(ConversationDetailViewAction.RequestConversationMoveToBottomSheet) },
                 onMoveToInboxClick = { viewModel.submit(ConversationDetailViewAction.MoveToInbox) },
                 onLabelAsClick = {
                     viewModel.submit(ConversationDetailViewAction.RequestConversationLabelAsBottomSheet)

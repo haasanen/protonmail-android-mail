@@ -46,14 +46,12 @@ import ch.protonmail.android.mailcontact.domain.usecase.FindContactByEmail
 import ch.protonmail.android.mailcontact.domain.usecase.ObserveContacts
 import ch.protonmail.android.mailconversation.domain.sample.ConversationSample
 import ch.protonmail.android.mailconversation.domain.usecase.DeleteConversations
-import ch.protonmail.android.mailconversation.domain.usecase.GetConversationMoveToLocations
 import ch.protonmail.android.mailconversation.domain.usecase.ObserveConversation
 import ch.protonmail.android.mailconversation.domain.usecase.StarConversations
 import ch.protonmail.android.mailconversation.domain.usecase.UnStarConversations
 import ch.protonmail.android.maildetail.domain.usecase.GetAttachmentIntentValues
 import ch.protonmail.android.maildetail.domain.usecase.GetDownloadingAttachmentsForMessages
 import ch.protonmail.android.maildetail.domain.usecase.IsProtonCalendarInstalled
-import ch.protonmail.android.maildetail.domain.usecase.LabelConversation
 import ch.protonmail.android.maildetail.domain.usecase.MarkConversationAsRead
 import ch.protonmail.android.maildetail.domain.usecase.MarkConversationAsUnread
 import ch.protonmail.android.maildetail.domain.usecase.MarkMessageAsRead
@@ -89,9 +87,9 @@ import ch.protonmail.android.maildetail.presentation.usecase.GetMessagesInSameEx
 import ch.protonmail.android.maildetail.presentation.usecase.GetMoreActionsBottomSheetData
 import ch.protonmail.android.maildetail.presentation.usecase.ObservePrimaryUserAddress
 import ch.protonmail.android.maildetail.presentation.usecase.PrintMessage
-import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.maillabel.domain.sample.LabelIdSample
+import ch.protonmail.android.maillabel.presentation.bottomsheet.moveto.MoveToBottomSheetEntryPoint
 import ch.protonmail.android.maillabel.presentation.model.MailLabelText
 import ch.protonmail.android.mailmessage.domain.model.ConversationMessages
 import ch.protonmail.android.mailmessage.domain.model.DecryptedMessageBody
@@ -103,7 +101,6 @@ import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
 import ch.protonmail.android.mailmessage.domain.sample.MessageSample
 import ch.protonmail.android.mailmessage.domain.usecase.DeleteMessages
 import ch.protonmail.android.mailmessage.domain.usecase.GetDecryptedMessageBody
-import ch.protonmail.android.mailmessage.domain.usecase.GetMessageMoveToLocations
 import ch.protonmail.android.mailmessage.domain.usecase.LoadAvatarImage
 import ch.protonmail.android.mailmessage.domain.usecase.ObserveAvatarImageStates
 import ch.protonmail.android.mailmessage.domain.usecase.StarMessages
@@ -111,8 +108,6 @@ import ch.protonmail.android.mailmessage.domain.usecase.UnStarMessages
 import ch.protonmail.android.mailmessage.presentation.model.MessageBodyExpandCollapseMode
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.BottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.ContactActionsBottomSheetState
-import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MoveToBottomSheetEntryPoint
-import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MoveToBottomSheetState
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailsettings.domain.model.PrivacySettings
 import ch.protonmail.android.mailsettings.domain.usecase.privacy.ObservePrivacySettings
@@ -123,8 +118,6 @@ import ch.protonmail.android.testdata.contact.ContactActionsGroupsSample
 import ch.protonmail.android.testdata.contact.ContactSample
 import ch.protonmail.android.testdata.conversation.ConversationTestData
 import ch.protonmail.android.testdata.conversation.ConversationUiModelTestData
-import ch.protonmail.android.testdata.maillabel.MailLabelTestData
-import ch.protonmail.android.testdata.maillabel.MailLabelUiModelTestData
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -208,7 +201,6 @@ class ConversationDetailViewModelTest {
     private val markConversationAsRead: MarkConversationAsRead = mockk()
     private val markConversationAsUnread: MarkConversationAsUnread = mockk()
     private val move: MoveConversation = mockk()
-    private val labelConversation: LabelConversation = mockk()
     private val deleteConversations: DeleteConversations = mockk()
     private val observeContacts: ObserveContacts = mockk {
         every { this@mockk(userId = UserIdSample.Primary) } returns flowOf(emptyList<ContactMetadata.Contact>().right())
@@ -238,8 +230,6 @@ class ConversationDetailViewModelTest {
     private val observePrimaryUserId: ObservePrimaryUserId = mockk {
         every { this@mockk() } returns flowOf(UserIdSample.Primary)
     }
-    private val getConversationMoveToLocations = mockk<GetConversationMoveToLocations>()
-    private val getMessageMoveToLocations = mockk<GetMessageMoveToLocations>()
     private val getAttachmentIntentValues = mockk<GetAttachmentIntentValues>()
     private val getAttachmentDownloadStatus = mockk<GetDownloadingAttachmentsForMessages>()
     private val getEmbeddedImageAvoidDuplicatedExecution = mockk<GetEmbeddedImageAvoidDuplicatedExecution>()
@@ -330,8 +320,6 @@ class ConversationDetailViewModelTest {
             observeConversation = observeConversation,
             observeConversationMessages = observeConversationMessages,
             observeDetailActions = observeDetailBottomBarActions,
-            getConversationMoveToLocations = getConversationMoveToLocations,
-            getMessageMoveToLocations = getMessageMoveToLocations,
             getDownloadingAttachmentsForMessages = getAttachmentDownloadStatus,
             reducer = reducer,
             starConversations = starConversations,
@@ -731,7 +719,6 @@ class ConversationDetailViewModelTest {
         ).toImmutableList()
         givenReducerReturnsStarredUiModel()
         givenReducerReturnsBottomActions()
-        givenReducerReturnsBottomSheetActions()
 
         // When
         viewModel.state.test {
@@ -893,46 +880,17 @@ class ConversationDetailViewModelTest {
     }
 
     @Test
-    fun `verify move to is called and exit with message is emitted when destination get confirmed`() = runTest {
+    fun `verify exit with message is emitted when destination get confirmed (conversation)`() = runTest {
         // Given
-        // In moveTo system labels are already resolved to local ids
-        givenReducerReturnsBottomSheetActions()
-        val localSpamLabelId = LabelId("4")
         val moveToEntryPoint = MoveToBottomSheetEntryPoint.Conversation
-
-        coEvery {
-            move(
-                userId = UserIdSample.Primary,
-                conversationId = conversationId,
-                labelId = localSpamLabelId
-            )
-        } returns Unit.right()
-        val selectedLabel = MailLabelUiModelTestData.spamAndCustomFolder.first()
-
-        coEvery {
-            getConversationMoveToLocations(userId, any(), listOf(conversationId))
-        } returns listOf(MailLabelTestData.spamSystemLabel).right()
-
-        coEvery {
-            reducer.newStateFrom(
-                currentState = any(),
-                operation = ConversationDetailViewAction.RequestMoveToBottomSheet
-            )
-        } returns ConversationDetailState.Loading.copy(
-            bottomSheetState = BottomSheetState(
-                MoveToBottomSheetState.Data(
-                    moveToDestinations = MailLabelUiModelTestData.spamAndCustomFolder,
-                    moveToEntryPoint
-                )
-            )
-        )
+        val labelText = MailLabelText("selectedLabel")
 
         coEvery {
             reducer.newStateFrom(
                 currentState = any(),
                 operation = ConversationDetailEvent.ExitScreenWithMessage(
-                    ConversationDetailEvent.MoveToDestinationConfirmed(
-                        MailLabelText("selectedLabel"), null
+                    ConversationDetailViewAction.MoveToCompleted(
+                        labelText, moveToEntryPoint
                     )
                 )
             )
@@ -946,18 +904,14 @@ class ConversationDetailViewModelTest {
 
         // When
         viewModel.state.test {
-            advanceUntilIdle()
-            viewModel.submit(ConversationDetailViewAction.RequestMoveToBottomSheet)
-            advanceUntilIdle()
-            viewModel.submit(
-                ConversationDetailViewAction.MoveToDestinationSelected(
-                    selectedLabel.id, MailLabelText("selectedLabel"), moveToEntryPoint
-                )
-            )
+            initialStateEmitted()
+
+            viewModel.submit(ConversationDetailViewAction.MoveToCompleted(labelText, moveToEntryPoint))
             advanceUntilIdle()
 
             // Then
-            assertNotNull(lastEmittedItem().exitScreenActionResult.consume())
+            assertNotNull(awaitItem().exitScreenActionResult.consume())
+            cancelAndIgnoreRemainingEvents()
         }
     }
 
@@ -1738,22 +1692,6 @@ class ConversationDetailViewModelTest {
         } returns ConversationDetailState.Loading.copy(
             conversationState = ConversationDetailMetadataState.Data(
                 ConversationUiModelTestData.conversationUiModelStarred
-            )
-        )
-    }
-
-    private fun givenReducerReturnsBottomSheetActions() {
-        coEvery {
-            reducer.newStateFrom(
-                currentState = any(),
-                operation = ofType<ConversationDetailEvent.ConversationBottomSheetEvent>()
-            )
-        } returns ConversationDetailState.Loading.copy(
-            bottomSheetState = BottomSheetState(
-                MoveToBottomSheetState.Data(
-                    moveToDestinations = MailLabelUiModelTestData.spamAndCustomFolder,
-                    entryPoint = MoveToBottomSheetEntryPoint.Conversation
-                )
             )
         )
     }

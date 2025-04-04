@@ -40,13 +40,12 @@ import ch.protonmail.android.maildetail.presentation.model.ParticipantUiModel
 import ch.protonmail.android.maildetail.presentation.sample.ConversationDetailMessageUiModelSample
 import ch.protonmail.android.maildetail.presentation.sample.ConversationDetailMetadataUiModelSample
 import ch.protonmail.android.maillabel.presentation.bottomsheet.LabelAsBottomSheetEntryPoint
+import ch.protonmail.android.maillabel.presentation.bottomsheet.moveto.MoveToBottomSheetEntryPoint
 import ch.protonmail.android.maillabel.presentation.model.MailLabelText
 import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.presentation.mapper.MailLabelTextMapper
 import ch.protonmail.android.mailmessage.presentation.model.ViewModePreference
-import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MoveToBottomSheetEntryPoint
 import ch.protonmail.android.mailmessage.presentation.reducer.BottomSheetReducer
-import ch.protonmail.android.testdata.maillabel.MailLabelTestData
 import io.mockk.Called
 import io.mockk.coVerify
 import io.mockk.every
@@ -203,11 +202,11 @@ class ConversationDetailReducerTest(
         val actions = listOf(
             ConversationDetailViewAction.MarkRead affects listOf(BottomSheet),
             ConversationDetailViewAction.MarkUnread affects listOf(BottomSheet),
-            ConversationDetailViewAction.RequestMoveToBottomSheet affects BottomSheet,
+            ConversationDetailViewAction.RequestConversationMoveToBottomSheet affects BottomSheet,
             ConversationDetailViewAction.DismissBottomSheet affects BottomSheet,
-            ConversationDetailViewAction.MoveToDestinationSelected(
-                MailLabelTestData.archiveSystemLabel.id, MailLabelText(""), MoveToBottomSheetEntryPoint.Conversation
-            ) affects BottomSheet,
+            ConversationDetailViewAction.MoveToCompleted(
+                MailLabelText(""), MoveToBottomSheetEntryPoint.Conversation
+            ) affects listOf(BottomSheet, MessageBar),
             ConversationDetailViewAction.Star affects listOf(Conversation, BottomSheet),
             ConversationDetailViewAction.UnStar affects listOf(Conversation, BottomSheet),
             ConversationDetailViewAction.RequestConversationLabelAsBottomSheet affects BottomSheet,

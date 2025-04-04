@@ -36,11 +36,13 @@ import ch.protonmail.android.maildetail.presentation.model.MessageIdUiModel
 import ch.protonmail.android.maildetail.presentation.model.ReportPhishingDialogState
 import ch.protonmail.android.maildetail.presentation.model.TrashedMessagesBannerState
 import ch.protonmail.android.maildetail.presentation.sample.ConversationDetailMessageUiModelSample
-import ch.protonmail.android.maillabel.presentation.MailLabelUiModel
+import ch.protonmail.android.maillabel.domain.model.LabelId
+import ch.protonmail.android.maillabel.presentation.bottomsheet.moveto.MoveToBottomSheetEntryPoint
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.BottomSheetState
-import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MoveToBottomSheetEntryPoint
+import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MailboxMoreActionsBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MoveToBottomSheetState
 import kotlinx.collections.immutable.toImmutableList
+import me.proton.core.domain.entity.UserId
 
 object ConversationDetailsPreviewData {
 
@@ -69,9 +71,11 @@ object ConversationDetailsPreviewData {
             ).toImmutableList()
         ),
         bottomSheetState = BottomSheetState(
-            MoveToBottomSheetState.Data(
-                moveToDestinations = emptyList<MailLabelUiModel>().toImmutableList(),
-                entryPoint = MoveToBottomSheetEntryPoint.Conversation
+            MoveToBottomSheetState.Requested(
+                userId = UserId("user-id"),
+                itemIds = emptyList(),
+                entryPoint = MoveToBottomSheetEntryPoint.Conversation,
+                currentLabel = LabelId("")
             )
         ),
         exitScreenEffect = Effect.empty(),
@@ -119,9 +123,11 @@ object ConversationDetailsPreviewData {
             ).toImmutableList()
         ),
         bottomSheetState = BottomSheetState(
-            MoveToBottomSheetState.Data(
-                moveToDestinations = emptyList<MailLabelUiModel>().toImmutableList(),
-                entryPoint = MoveToBottomSheetEntryPoint.Conversation
+            MoveToBottomSheetState.Requested(
+                userId = UserId("user-id"),
+                itemIds = emptyList(),
+                entryPoint = MoveToBottomSheetEntryPoint.Conversation,
+                currentLabel = LabelId("")
             )
         ),
         exitScreenEffect = Effect.empty(),
@@ -146,7 +152,7 @@ object ConversationDetailsPreviewData {
         exitScreenActionResult = Effect.empty(),
         error = Effect.empty(),
         actionResult = Effect.empty(),
-        bottomSheetState = BottomSheetState(MoveToBottomSheetState.Loading),
+        bottomSheetState = BottomSheetState(MailboxMoreActionsBottomSheetState.Loading),
         openMessageBodyLinkEffect = Effect.empty(),
         openAttachmentEffect = Effect.empty(),
         openProtonCalendarIntent = Effect.empty(),
@@ -165,7 +171,7 @@ object ConversationDetailsPreviewData {
         exitScreenActionResult = Effect.empty(),
         error = Effect.empty(),
         actionResult = Effect.empty(),
-        bottomSheetState = BottomSheetState(MoveToBottomSheetState.Loading),
+        bottomSheetState = BottomSheetState(MailboxMoreActionsBottomSheetState.Loading),
         openMessageBodyLinkEffect = Effect.empty(),
         openAttachmentEffect = Effect.empty(),
         openProtonCalendarIntent = Effect.empty(),
@@ -184,7 +190,7 @@ object ConversationDetailsPreviewData {
         exitScreenActionResult = Effect.empty(),
         error = Effect.empty(),
         actionResult = Effect.empty(),
-        bottomSheetState = BottomSheetState(MoveToBottomSheetState.Loading),
+        bottomSheetState = BottomSheetState(MailboxMoreActionsBottomSheetState.Loading),
         openMessageBodyLinkEffect = Effect.empty(),
         openAttachmentEffect = Effect.empty(),
         openProtonCalendarIntent = Effect.empty(),
@@ -203,7 +209,7 @@ object ConversationDetailsPreviewData {
         exitScreenActionResult = Effect.empty(),
         error = Effect.empty(),
         actionResult = Effect.empty(),
-        bottomSheetState = BottomSheetState(MoveToBottomSheetState.Loading),
+        bottomSheetState = BottomSheetState(MailboxMoreActionsBottomSheetState.Loading),
         openMessageBodyLinkEffect = Effect.empty(),
         openAttachmentEffect = Effect.empty(),
         openProtonCalendarIntent = Effect.empty(),
@@ -222,7 +228,7 @@ object ConversationDetailsPreviewData {
         exitScreenActionResult = Effect.empty(),
         error = Effect.empty(),
         actionResult = Effect.empty(),
-        bottomSheetState = BottomSheetState(MoveToBottomSheetState.Loading),
+        bottomSheetState = BottomSheetState(MailboxMoreActionsBottomSheetState.Loading),
         openMessageBodyLinkEffect = Effect.empty(),
         openAttachmentEffect = Effect.empty(),
         openProtonCalendarIntent = Effect.empty(),

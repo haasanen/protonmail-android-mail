@@ -22,7 +22,6 @@ import ch.protonmail.android.mailcommon.presentation.model.ActionResult.Definiti
 import ch.protonmail.android.mailcommon.presentation.model.ActionResult.UndoableActionResult
 import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.maildetail.presentation.R
-import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEvent
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailOperation
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction
 import ch.protonmail.android.maillabel.presentation.bottomsheet.LabelAsBottomSheetEntryPoint
@@ -81,7 +80,7 @@ internal class ActionResultMapperTest {
     fun `returns undoable result with label text when operation is MoveToDestinationConfirmed`() {
         // Given
         val mailLabelText = MailLabelText("Inbox")
-        val operation = ConversationDetailEvent.MoveToDestinationConfirmed(mailLabelText, null)
+        val operation = ConversationDetailViewAction.MoveToCompleted(mailLabelText, mockk())
         val expectedResult = UndoableActionResult(
             TextUiModel(R.string.conversation_moved_to_selected_destination, "Inbox")
         )

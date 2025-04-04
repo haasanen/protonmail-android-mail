@@ -27,6 +27,7 @@ import ch.protonmail.android.maildetail.presentation.model.ConversationDetailEve
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailOperation
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailViewAction
 import ch.protonmail.android.maillabel.presentation.bottomsheet.LabelAsBottomSheetEntryPoint
+import ch.protonmail.android.maillabel.presentation.bottomsheet.moveto.MoveToBottomSheetEntryPoint
 import ch.protonmail.android.mailmessage.presentation.mapper.MailLabelTextMapper
 import javax.inject.Inject
 
@@ -44,17 +45,26 @@ class ActionResultMapper @Inject constructor(
         is ConversationDetailViewAction.MoveToTrash ->
             UndoableActionResult(TextUiModel(R.string.conversation_moved_to_trash))
 
-        is ConversationDetailEvent.MoveToDestinationConfirmed ->
-            UndoableActionResult(
-                TextUiModel(
-                    R.string.conversation_moved_to_selected_destination,
-                    mailLabelTextMapper.mapToString(operation.mailLabelText)
+        is ConversationDetailViewAction.MoveToCompleted -> {
+            val textRes = when (operation.entryPoint) {
+                is MoveToBottomSheetEntryPoint.Conversation -> R.string.conversation_moved_to_selected_destination
+                is MoveToBottomSheetEntryPoint.Message -> R.string.message_moved_to_selected_destination
+                else -> null
+            }
+
+            textRes?.let {
+                UndoableActionResult(
+                    message = TextUiModel.TextResWithArgs(
+                        value = it,
+                        formatArgs = listOf(mailLabelTextMapper.mapToString(operation.mailLabelText))
+                    )
                 )
-            )
+            }
+        }
 
         is ConversationDetailViewAction.LabelAsCompleted -> if (operation.wasArchived) {
             val textRes = when (operation.entryPoint) {
-                LabelAsBottomSheetEntryPoint.Conversation -> R.string.conversation_moved_to_archive
+                is LabelAsBottomSheetEntryPoint.Conversation -> R.string.conversation_moved_to_archive
                 is LabelAsBottomSheetEntryPoint.Message -> R.string.message_moved_to_archive
                 else -> null
             }

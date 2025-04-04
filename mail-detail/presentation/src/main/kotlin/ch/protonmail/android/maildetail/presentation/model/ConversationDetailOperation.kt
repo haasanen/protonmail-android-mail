@@ -34,9 +34,9 @@ import ch.protonmail.android.maildetail.presentation.model.ConversationDetailOpe
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailOperation.AffectingReportPhishingDialog
 import ch.protonmail.android.maildetail.presentation.model.ConversationDetailOperation.AffectingTrashedMessagesBanner
 import ch.protonmail.android.maillabel.domain.model.LabelId
-import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
 import ch.protonmail.android.maillabel.presentation.bottomsheet.LabelAsBottomSheetEntryPoint
+import ch.protonmail.android.maillabel.presentation.bottomsheet.moveto.MoveToBottomSheetEntryPoint
 import ch.protonmail.android.maillabel.presentation.model.MailLabelText
 import ch.protonmail.android.mailmessage.domain.model.AttachmentId
 import ch.protonmail.android.mailmessage.domain.model.AttachmentState
@@ -44,7 +44,6 @@ import ch.protonmail.android.mailmessage.domain.model.MessageId
 import ch.protonmail.android.mailmessage.presentation.model.ViewModePreference
 import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentListExpandCollapseMode
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.BottomSheetOperation
-import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MoveToBottomSheetEntryPoint
 import kotlinx.collections.immutable.ImmutableList
 
 sealed interface ConversationDetailOperation {
@@ -155,11 +154,6 @@ sealed interface ConversationDetailEvent : ConversationDetailOperation {
 
     data class HandleOpenProtonCalendarRequest(val intent: OpenProtonCalendarIntentValues) : ConversationDetailEvent
 
-    data class MoveToDestinationConfirmed(
-        val mailLabelText: MailLabelText,
-        val messageId: MessageId?
-    ) : ConversationDetailEvent, AffectingBottomSheet
-
     data class MessageMoved(
         val mailLabelText: MailLabelText
     ) : ConversationDetailEvent, AffectingBottomSheet, AffectingMessageBar
@@ -185,14 +179,8 @@ sealed interface ConversationDetailViewAction : ConversationDetailOperation {
     object DeleteRequested : ConversationDetailViewAction, AffectingDeleteDialog
     object DeleteDialogDismissed : ConversationDetailViewAction, AffectingDeleteDialog
     object DeleteConfirmed : ConversationDetailViewAction, AffectingDeleteDialog, AffectingBottomSheet
-    object RequestMoveToBottomSheet : ConversationDetailViewAction, AffectingBottomSheet
+    object RequestConversationMoveToBottomSheet : ConversationDetailViewAction, AffectingBottomSheet
     object DismissBottomSheet : ConversationDetailViewAction, AffectingBottomSheet
-
-    data class MoveToDestinationSelected(
-        val mailLabelId: MailLabelId,
-        val mailLabelText: MailLabelText,
-        val entryPoint: MoveToBottomSheetEntryPoint
-    ) : ConversationDetailViewAction, AffectingBottomSheet
 
     object RequestConversationLabelAsBottomSheet : ConversationDetailViewAction, AffectingBottomSheet
     data class RequestMessageMoreActionsBottomSheet(val messageId: MessageId) :
@@ -266,6 +254,13 @@ sealed interface ConversationDetailViewAction : ConversationDetailOperation {
     data class RequestMessageMoveToBottomSheet(
         val messageId: MessageId
     ) : ConversationDetailViewAction, AffectingBottomSheet
+
+    data class MoveToCompleted(
+        val mailLabelText: MailLabelText,
+        val entryPoint: MoveToBottomSheetEntryPoint
+    ) : ConversationDetailViewAction,
+        AffectingBottomSheet,
+        AffectingMessageBar
 
     data class DeleteMessageRequested(
         val messageId: MessageId
