@@ -16,7 +16,7 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailmailbox.domain.usecase
+package ch.protonmail.android.maillabel.presentation.bottomsheet.moveto
 
 import arrow.core.Either
 import ch.protonmail.android.mailcommon.domain.model.ConversationId
@@ -25,7 +25,6 @@ import ch.protonmail.android.mailconversation.domain.usecase.GetConversationMove
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabel
 import ch.protonmail.android.mailmessage.domain.model.MessageId
-import ch.protonmail.android.mailmessage.domain.model.MoveToItemId
 import ch.protonmail.android.mailmessage.domain.usecase.GetMessageMoveToLocations
 import me.proton.core.domain.entity.UserId
 import me.proton.core.mailsettings.domain.entity.ViewMode
@@ -36,7 +35,7 @@ class GetMoveToLocations @Inject constructor(
     private val getConversationMoveToLocations: GetConversationMoveToLocations
 ) {
 
-    suspend operator fun invoke(
+    suspend fun forMailbox(
         userId: UserId,
         labelId: LabelId,
         moveToItemIds: List<MoveToItemId>,
@@ -53,4 +52,15 @@ class GetMoveToLocations @Inject constructor(
         }
     }
 
+    suspend fun forMessage(
+        userId: UserId,
+        labelId: LabelId,
+        messageId: MessageId
+    ) = getMessageMoveToLocations(userId, labelId, listOf(messageId))
+
+    suspend fun forConversation(
+        userId: UserId,
+        labelId: LabelId,
+        conversationId: ConversationId
+    ) = getConversationMoveToLocations(userId, labelId, listOf(conversationId))
 }
