@@ -173,7 +173,6 @@ import ch.protonmail.android.mailmessage.presentation.reducer.MailboxMoreActions
 import ch.protonmail.android.mailmessage.presentation.reducer.MoveToBottomSheetReducer
 import ch.protonmail.android.mailmessage.presentation.reducer.UpsellingBottomSheetReducer
 import ch.protonmail.android.mailmessage.presentation.usecase.InjectCssIntoDecryptedMessageBody
-import ch.protonmail.android.mailmessage.presentation.usecase.SanitizeHtmlOfDecryptedMessageBody
 import ch.protonmail.android.mailsession.domain.usecase.ObservePrimaryUserId
 import ch.protonmail.android.mailsettings.domain.model.PrivacySettings
 import ch.protonmail.android.mailsettings.domain.usecase.privacy.ObservePrivacySettings
@@ -378,7 +377,6 @@ class ConversationDetailViewModelIntegrationTest {
         }
     }
     private val injectCssIntoDecryptedMessageBody = InjectCssIntoDecryptedMessageBody(context)
-    private val sanitizeHtmlOfDecryptedMessageBody = SanitizeHtmlOfDecryptedMessageBody()
     private val extractMessageBodyWithoutQuote = ExtractMessageBodyWithoutQuote()
     private val avatarImageUiModelMapper = AvatarImageUiModelMapper()
 
@@ -414,7 +412,6 @@ class ConversationDetailViewModelIntegrationTest {
             doesMessageBodyHaveEmbeddedImages = doesMessageBodyHaveEmbeddedImages,
             doesMessageBodyHaveRemoteContent = doesMessageBodyHaveRemoteContent,
             injectCssIntoDecryptedMessageBody = injectCssIntoDecryptedMessageBody,
-            sanitizeHtmlOfDecryptedMessageBody = sanitizeHtmlOfDecryptedMessageBody,
             shouldShowEmbeddedImages = shouldShowEmbeddedImages,
             shouldShowRemoteContent = shouldShowRemoteContent,
             extractMessageBodyWithoutQuote = extractMessageBodyWithoutQuote

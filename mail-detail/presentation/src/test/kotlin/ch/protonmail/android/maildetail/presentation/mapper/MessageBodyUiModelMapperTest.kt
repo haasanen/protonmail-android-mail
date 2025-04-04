@@ -32,14 +32,13 @@ import ch.protonmail.android.mailmessage.domain.model.MimeType
 import ch.protonmail.android.mailmessage.domain.sample.AttachmentMetadataSamples
 import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
 import ch.protonmail.android.mailmessage.presentation.mapper.AttachmentGroupUiModelMapper
-import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentGroupUiModel
 import ch.protonmail.android.mailmessage.presentation.model.MessageBodyUiModel
 import ch.protonmail.android.mailmessage.presentation.model.MessageBodyWithType
 import ch.protonmail.android.mailmessage.presentation.model.MimeTypeUiModel
 import ch.protonmail.android.mailmessage.presentation.model.ViewModePreference
+import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentGroupUiModel
 import ch.protonmail.android.mailmessage.presentation.sample.AttachmentMetadataUiModelSamples
 import ch.protonmail.android.mailmessage.presentation.usecase.InjectCssIntoDecryptedMessageBody
-import ch.protonmail.android.mailmessage.presentation.usecase.SanitizeHtmlOfDecryptedMessageBody
 import ch.protonmail.android.testdata.message.MessageBodyTestData
 import ch.protonmail.android.testdata.user.UserIdTestData
 import io.mockk.coEvery
@@ -52,8 +51,7 @@ import kotlin.test.assertEquals
 class MessageBodyUiModelMapperTest {
 
     private val decryptedMessageBody = "Decrypted message body."
-    private val sanitizedDecryptedMessageBody = "Sanitized decrypted message body."
-    private val sanitizedDecryptedMessageBodyWithCss = "Sanitized decrypted message body with CSS."
+    private val decryptedMessageBodyWithCss = "Decrypted message body with CSS."
 
     private val attachmentGroupUiModelMapper = mockk<AttachmentGroupUiModelMapper> {
         every { this@mockk.toUiModel(listOf(AttachmentMetadataSamples.Invoice)) } returns AttachmentGroupUiModel(
@@ -96,9 +94,6 @@ class MessageBodyUiModelMapperTest {
     private val doesMessageBodyHaveRemoteContent = mockk<DoesMessageBodyHaveRemoteContent> {
         every { this@mockk.invoke(any()) } returns false
     }
-    private val sanitizeHtmlOfDecryptedMessageBody = mockk<SanitizeHtmlOfDecryptedMessageBody> {
-        every { this@mockk.invoke(any()) } returns decryptedMessageBody
-    }
     private val shouldShowEmbeddedImages = mockk<ShouldShowEmbeddedImages> {
         coEvery { this@mockk.invoke(UserIdTestData.userId) } returns false
     }
@@ -118,7 +113,6 @@ class MessageBodyUiModelMapperTest {
         doesMessageBodyHaveEmbeddedImages = doesMessageBodyHaveEmbeddedImages,
         doesMessageBodyHaveRemoteContent = doesMessageBodyHaveRemoteContent,
         injectCssIntoDecryptedMessageBody = injectCssIntoDecryptedMessageBody,
-        sanitizeHtmlOfDecryptedMessageBody = sanitizeHtmlOfDecryptedMessageBody,
         shouldShowEmbeddedImages = shouldShowEmbeddedImages,
         shouldShowRemoteContent = shouldShowRemoteContent,
         extractMessageBodyWithoutQuote = extractMessageBodyWithoutQuote
@@ -298,13 +292,10 @@ class MessageBodyUiModelMapperTest {
     fun `HTML message body is correctly mapped to a message body ui model`() = runTest {
         // Given
         val decryptedMessageBodyWithType = MessageBodyWithType(decryptedMessageBody, MimeTypeUiModel.Html)
-        val sanitizedMessageBodyWithType = MessageBodyWithType(sanitizedDecryptedMessageBody, MimeTypeUiModel.Html)
+
         every {
-            sanitizeHtmlOfDecryptedMessageBody(decryptedMessageBodyWithType)
-        } returns sanitizedDecryptedMessageBody
-        every {
-            injectCssIntoDecryptedMessageBody(sanitizedMessageBodyWithType)
-        } returns sanitizedDecryptedMessageBodyWithCss
+            injectCssIntoDecryptedMessageBody(decryptedMessageBodyWithType)
+        } returns decryptedMessageBodyWithCss
         val messageId = MessageIdSample.build()
         val messageBody = DecryptedMessageBody(
             messageId,
@@ -313,8 +304,8 @@ class MessageBodyUiModelMapperTest {
         )
         val expected = MessageBodyUiModel(
             messageId = messageId,
-            messageBody = sanitizedDecryptedMessageBodyWithCss,
-            messageBodyWithoutQuote = sanitizedDecryptedMessageBodyWithCss,
+            messageBody = decryptedMessageBodyWithCss,
+            messageBodyWithoutQuote = decryptedMessageBodyWithCss,
             mimeType = MimeTypeUiModel.Html,
             shouldShowEmbeddedImages = false,
             shouldShowRemoteContent = false,
@@ -575,5 +566,4 @@ class MessageBodyUiModelMapperTest {
         assertEquals(existingState.shouldShowRemoteContent, actual.shouldShowRemoteContent)
         assertEquals(existingState.viewModePreference, actual.viewModePreference)
     }
-
 }

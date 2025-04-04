@@ -22,19 +22,15 @@ import androidx.annotation.VisibleForTesting
 import ch.protonmail.android.mailcomposer.presentation.model.DraftDisplayBodyUiModel
 import ch.protonmail.android.mailcomposer.presentation.ui.JAVASCRIPT_CALLBACK_INTERFACE_NAME
 import ch.protonmail.android.mailmessage.presentation.model.MessageBodyWithType
-import ch.protonmail.android.mailmessage.presentation.usecase.SanitizeHtmlOfDecryptedMessageBody
 import javax.inject.Inject
 
 @VisibleForTesting
 internal const val EDITOR_ID = "EditorId"
 
-class BuildDraftDisplayBody @Inject constructor(
-    private val getCustomCss: GetCustomCss,
-    private val sanitizeHtmlOfDecryptedMessageBody: SanitizeHtmlOfDecryptedMessageBody
-) {
+class BuildDraftDisplayBody @Inject constructor(private val getCustomCss: GetCustomCss) {
 
     operator fun invoke(messageBodyWithType: MessageBodyWithType): DraftDisplayBodyUiModel {
-        val bodyContent: String = sanitizeHtmlOfDecryptedMessageBody(messageBodyWithType)
+        val bodyContent = messageBodyWithType.messageBody
         val css: String = getCustomCss()
         val javascript: String = getJavascript()
 

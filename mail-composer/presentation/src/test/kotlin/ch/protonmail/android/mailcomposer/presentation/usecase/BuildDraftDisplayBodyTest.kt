@@ -4,7 +4,6 @@ import ch.protonmail.android.mailcomposer.presentation.model.DraftDisplayBodyUiM
 import ch.protonmail.android.mailcomposer.presentation.ui.JAVASCRIPT_CALLBACK_INTERFACE_NAME
 import ch.protonmail.android.mailmessage.presentation.model.MessageBodyWithType
 import ch.protonmail.android.mailmessage.presentation.model.MimeTypeUiModel
-import ch.protonmail.android.mailmessage.presentation.usecase.SanitizeHtmlOfDecryptedMessageBody
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.Test
@@ -13,20 +12,15 @@ import kotlin.test.assertEquals
 class BuildDraftDisplayBodyTest {
 
     private val getCustomCss: GetCustomCss = mockk()
-    private val sanitizeHtmlOfDecryptedMessageBody: SanitizeHtmlOfDecryptedMessageBody = mockk()
 
-    private val buildDraftDisplayBody = BuildDraftDisplayBody(
-        getCustomCss,
-        sanitizeHtmlOfDecryptedMessageBody
-    )
+    private val buildDraftDisplayBody = BuildDraftDisplayBody(getCustomCss)
 
     @Test
     fun `returns html template with injected css and javascript`() {
         // Given
-        val messageBodyWithType = MessageBodyWithType(rawMessageBody, MimeTypeUiModel.Html)
-        every { sanitizeHtmlOfDecryptedMessageBody(messageBodyWithType) } returns sanitizedMessageBody
+        val messageBodyWithType = MessageBodyWithType(messageBody, MimeTypeUiModel.Html)
         every { getCustomCss() } returns rawCustomCss
-        val expected = buildHtmlTemplate(sanitizedMessageBody, rawCustomCss, getJavascript())
+        val expected = buildHtmlTemplate(messageBody, rawCustomCss, getJavascript())
 
         // When
         val actual = buildDraftDisplayBody(messageBodyWithType)
@@ -121,8 +115,8 @@ class BuildDraftDisplayBodyTest {
     """.trimIndent()
 
     companion object TestData {
-        private const val rawMessageBody = "This is the message body unsanitized <script>...</script>"
-        private const val sanitizedMessageBody = "This is the message body sanitized"
+
+        private const val messageBody = "This is the message body sanitized"
         private const val rawCustomCss = "<style> ... </style>"
 
     }
