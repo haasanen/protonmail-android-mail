@@ -100,7 +100,7 @@ internal class LabelAsViewModel @AssistedInject constructor(
                 messageId = MessageId(items.first().value)
             )
 
-            is LabelAsBottomSheetEntryPoint.ViewModeAware -> {
+            is LabelAsBottomSheetEntryPoint.Mailbox -> {
                 getLabelAsBottomSheetContent.forMailbox(userId, labelId, items, entryPoint.viewMode)
             }
         }
@@ -163,7 +163,7 @@ internal class LabelAsViewModel @AssistedInject constructor(
                 shouldArchive = alsoArchive
             )
 
-            is LabelAsBottomSheetEntryPoint.ViewModeAware -> when (entryPoint.viewMode) {
+            is LabelAsBottomSheetEntryPoint.Mailbox -> when (entryPoint.viewMode) {
                 ViewMode.ConversationGrouping -> labelConversations(
                     userId = data.userId,
                     conversationIds = selectedItems.map { ConversationId(it.value) },

@@ -25,7 +25,8 @@ sealed interface LabelAsBottomSheetEntryPoint {
     data object Conversation : LabelAsBottomSheetEntryPoint
     data class Message(val messageId: MessageId) : LabelAsBottomSheetEntryPoint
 
-    sealed class ViewModeAware(val viewMode: ViewMode) : LabelAsBottomSheetEntryPoint
-    class LabelAsSwipeAction(viewMode: ViewMode, val itemId: LabelAsItemId) : ViewModeAware(viewMode)
-    class SelectionMode(viewMode: ViewMode) : ViewModeAware(viewMode)
+    sealed class Mailbox(val viewMode: ViewMode) : LabelAsBottomSheetEntryPoint {
+        class LabelAsSwipeAction(viewMode: ViewMode, val itemId: LabelAsItemId) : Mailbox(viewMode)
+        class SelectionMode(viewMode: ViewMode) : Mailbox(viewMode)
+    }
 }

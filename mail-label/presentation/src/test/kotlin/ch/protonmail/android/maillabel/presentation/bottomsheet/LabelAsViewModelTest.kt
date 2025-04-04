@@ -94,7 +94,8 @@ internal class LabelAsViewModelTest {
     fun `should emit data error when data can't be fetched`() = runTest {
         // Given
         val viewMode = ViewMode.NoConversationGrouping
-        val initialData = defaultInitialData.copy(entryPoint = LabelAsBottomSheetEntryPoint.SelectionMode(viewMode))
+        val initialData =
+            defaultInitialData.copy(entryPoint = LabelAsBottomSheetEntryPoint.Mailbox.SelectionMode(viewMode))
 
         coEvery {
             getLabelAsBottomSheetContent.forMailbox(userId, labelId, items, viewMode)
@@ -136,7 +137,7 @@ internal class LabelAsViewModelTest {
     fun `should emit data loaded for selection mode`() = runTest {
         // Given
         val messageId = MessageId("item1")
-        val entryPoint = LabelAsBottomSheetEntryPoint.SelectionMode(ViewMode.NoConversationGrouping)
+        val entryPoint = LabelAsBottomSheetEntryPoint.Mailbox.SelectionMode(ViewMode.NoConversationGrouping)
         val initialData = defaultInitialData.copy(entryPoint = entryPoint)
         val labelAsItemId = LabelAsItemId(messageId.id)
         expectLoadedDataForMailbox(entryPoint, listOf(labelAsItemId))
@@ -153,11 +154,14 @@ internal class LabelAsViewModelTest {
         val messageId = MessageId("item1")
         val labelAsItemId = LabelAsItemId(messageId.id)
         val initialData = defaultInitialData.copy(
-            entryPoint = LabelAsBottomSheetEntryPoint.LabelAsSwipeAction(ViewMode.ConversationGrouping, labelAsItemId)
+            entryPoint = LabelAsBottomSheetEntryPoint.Mailbox.LabelAsSwipeAction(
+                ViewMode.ConversationGrouping,
+                labelAsItemId
+            )
         )
 
         expectLoadedDataForMailbox(
-            initialData.entryPoint as LabelAsBottomSheetEntryPoint.ViewModeAware,
+            initialData.entryPoint as LabelAsBottomSheetEntryPoint.Mailbox,
             listOf(labelAsItemId)
         )
 
@@ -250,7 +254,8 @@ internal class LabelAsViewModelTest {
         val unselectedUiModel = LabelUiModelWithSelectedState(uiModel, selectedState = LabelSelectedState.NotSelected)
         val items = listOf(LabelAsItemId(messageId.id))
 
-        val entryPoint = LabelAsBottomSheetEntryPoint.LabelAsSwipeAction(ViewMode.NoConversationGrouping, items.first())
+        val entryPoint =
+            LabelAsBottomSheetEntryPoint.Mailbox.LabelAsSwipeAction(ViewMode.NoConversationGrouping, items.first())
         val initialData = defaultInitialData.copy(entryPoint = entryPoint)
 
         val initialState = LabelAsState.Data(
@@ -280,7 +285,8 @@ internal class LabelAsViewModelTest {
         val unselectedUiModel = LabelUiModelWithSelectedState(uiModel, selectedState = LabelSelectedState.NotSelected)
         val items = listOf(LabelAsItemId(conversationId.id))
 
-        val entryPoint = LabelAsBottomSheetEntryPoint.LabelAsSwipeAction(ViewMode.ConversationGrouping, items.first())
+        val entryPoint =
+            LabelAsBottomSheetEntryPoint.Mailbox.LabelAsSwipeAction(ViewMode.ConversationGrouping, items.first())
         val initialData = defaultInitialData.copy(entryPoint = entryPoint)
 
         val initialState = LabelAsState.Data(
@@ -307,11 +313,11 @@ internal class LabelAsViewModelTest {
         val conversationId = ConversationId("item1")
         val labelId = MailLabelId.Custom.Label(labelId)
         val uiModel = LabelAsBottomSheetUiModel(id = labelId, text = TextUiModel("Text"), icon = 1, iconTint = null)
-        val unselectedUimodel = LabelUiModelWithSelectedState(uiModel, selectedState = LabelSelectedState.NotSelected)
+        val unselectedUiModel = LabelUiModelWithSelectedState(uiModel, selectedState = LabelSelectedState.NotSelected)
 
         val initialState = LabelAsState.Data(
             entryPoint = defaultInitialData.entryPoint,
-            labelUiModels = listOf(unselectedUimodel).toImmutableList(),
+            labelUiModels = listOf(unselectedUiModel).toImmutableList(),
             shouldDismissEffect = Effect.empty(),
             errorEffect = Effect.empty()
         )
@@ -419,7 +425,7 @@ internal class LabelAsViewModelTest {
     }
 
     private fun expectLoadedDataForMailbox(
-        entryPoint: LabelAsBottomSheetEntryPoint.ViewModeAware,
+        entryPoint: LabelAsBottomSheetEntryPoint.Mailbox,
         items: List<LabelAsItemId>,
         initialState: LabelAsState = defaultDataState
     ) {
