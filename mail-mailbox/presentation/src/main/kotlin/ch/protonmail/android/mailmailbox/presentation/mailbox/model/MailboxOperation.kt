@@ -21,8 +21,8 @@ package ch.protonmail.android.mailmailbox.presentation.mailbox.model
 import ch.protonmail.android.mailcommon.presentation.model.BottomBarEvent
 import ch.protonmail.android.maillabel.domain.model.LabelId
 import ch.protonmail.android.maillabel.domain.model.MailLabel
-import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.presentation.bottomsheet.LabelAsItemId
+import ch.protonmail.android.maillabel.presentation.bottomsheet.moveto.MoveToItemId
 import ch.protonmail.android.mailmailbox.domain.model.StorageLimitPreference
 import ch.protonmail.android.mailmailbox.domain.model.UserAccountStorageStatus
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxOperation.AffectingActionMessage
@@ -36,9 +36,7 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxOpera
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxOperation.AffectingTopAppBar
 import ch.protonmail.android.mailmailbox.presentation.mailbox.model.MailboxOperation.AffectingUnreadFilter
 import ch.protonmail.android.mailmessage.domain.model.AvatarImageStates
-import ch.protonmail.android.mailmessage.domain.model.MoveToItemId
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.BottomSheetOperation
-import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MoveToBottomSheetEntryPoint
 import me.proton.android.core.accountmanager.domain.model.CoreAccountAvatarItem
 import me.proton.core.mailsettings.domain.entity.ViewMode
 
@@ -110,11 +108,6 @@ internal sealed interface MailboxViewAction : MailboxOperation {
     data class SwipeMoveToAction(val itemId: MoveToItemId) : MailboxViewAction, AffectingBottomSheet
 
     object RequestMoveToBottomSheet : MailboxViewAction, AffectingBottomSheet
-
-    data class MoveToDestinationSelected(
-        val mailLabelId: MailLabelId,
-        val entryPoint: MoveToBottomSheetEntryPoint
-    ) : MailboxViewAction, AffectingBottomSheet
 
     object RequestMoreActionsBottomSheet : MailboxViewAction, AffectingBottomSheet
     object RequestManageAccountsBottomSheet : MailboxViewAction, AffectingBottomSheet

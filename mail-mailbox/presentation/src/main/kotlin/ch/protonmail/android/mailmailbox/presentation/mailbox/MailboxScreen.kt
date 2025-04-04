@@ -127,6 +127,9 @@ import ch.protonmail.android.mailcommon.presentation.ui.delete.DeleteDialog
 import ch.protonmail.android.maillabel.presentation.bottomsheet.LabelAsBottomSheet
 import ch.protonmail.android.maillabel.presentation.bottomsheet.LabelAsBottomSheetScreen
 import ch.protonmail.android.maillabel.presentation.bottomsheet.LabelAsItemId
+import ch.protonmail.android.maillabel.presentation.bottomsheet.moveto.MoveToBottomSheet
+import ch.protonmail.android.maillabel.presentation.bottomsheet.moveto.MoveToBottomSheetScreen
+import ch.protonmail.android.maillabel.presentation.bottomsheet.moveto.MoveToItemId
 import ch.protonmail.android.mailmailbox.domain.model.OpenMailboxItemRequest
 import ch.protonmail.android.mailmailbox.presentation.R
 import ch.protonmail.android.mailmailbox.presentation.mailbox.mapper.MailboxEmptyUiModelMapper
@@ -142,7 +145,6 @@ import ch.protonmail.android.mailmailbox.presentation.mailbox.previewdata.Mailbo
 import ch.protonmail.android.mailmailbox.presentation.mailbox.previewdata.MailboxStateSampleData
 import ch.protonmail.android.mailmailbox.presentation.paging.mapToUiStates
 import ch.protonmail.android.mailmailbox.presentation.paging.search.mapToUiStatesInSearch
-import ch.protonmail.android.mailmessage.domain.model.MoveToItemId
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.BottomSheetVisibilityEffect
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.LabelAsBottomSheetState
 import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MailboxMoreActionsBottomSheetState
@@ -152,7 +154,6 @@ import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.Upsellin
 import ch.protonmail.android.mailmessage.presentation.ui.bottomsheet.MailboxMoreActionBottomSheetContent
 import ch.protonmail.android.mailmessage.presentation.ui.bottomsheet.MailboxUpsellingBottomSheet
 import ch.protonmail.android.mailmessage.presentation.ui.bottomsheet.MoreActionBottomSheetContent
-import ch.protonmail.android.mailmessage.presentation.ui.bottomsheet.MoveToBottomSheetContent
 import ch.protonmail.android.mailupselling.presentation.ui.bottomsheet.UpsellingBottomSheet
 import ch.protonmail.android.uicomponents.bottomsheet.bottomSheetHeightConstrainedContent
 import ch.protonmail.android.uicomponents.snackbar.DismissableSnackbarHost
@@ -302,16 +303,23 @@ fun MailboxScreen(
         sheetState = bottomSheetState,
         sheetContent = bottomSheetHeightConstrainedContent {
             when (val contentState = mailboxState.bottomSheetState?.contentState) {
-                is MoveToBottomSheetState -> MoveToBottomSheetContent(
-                    state = contentState,
-                    actions = MoveToBottomSheetContent.Actions(
-                        onAddFolderClick = actions.onAddFolder,
-                        onFolderSelected = { folderId, _, entryPoint ->
-                            viewModel.submit(MailboxViewAction.MoveToDestinationSelected(folderId, entryPoint))
-                        },
+                is MoveToBottomSheetState.Requested -> {
+
+                    val initialData = MoveToBottomSheet.InitialData(
+                        contentState.userId,
+                        contentState.currentLabel,
+                        contentState.itemIds,
+                        entryPoint = contentState.entryPoint
+                    )
+                    val actions = MoveToBottomSheet.Actions(
+                        onCreateNewFolderClick = actions.onAddFolder,
+                        onError = { actions.showErrorSnackbar(it) },
+                        onMoveToComplete = { _, _ -> viewModel.submit(MailboxViewAction.DismissBottomSheet) },
                         onDismiss = { viewModel.submit(MailboxViewAction.DismissBottomSheet) }
                     )
-                )
+
+                    MoveToBottomSheetScreen(providedData = initialData, actions = actions)
+                }
 
                 is LabelAsBottomSheetState.Requested -> {
                     val initialData = LabelAsBottomSheet.InitialData(
