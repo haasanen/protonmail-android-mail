@@ -79,6 +79,7 @@ scripts/uitests/AssetsFile.lock.bak
 .idea/deploymentTargetSelector.xml
 .idea/other.xml
 .idea/caches/deviceStreaming.xml
+.idea/AndroidProjectSystem.xml
 
 # Generated files
 .idea/**/contentModel.xml
