@@ -113,10 +113,15 @@ class RustMessageDataSourceImpl @Inject constructor(
         return createRustMessageBodyAccessor(mailbox, messageId)
             .onLeft { Timber.e("rust-message: Failed to get message body $it") }
             .flatMap { decryptedMessage ->
-                decryptedMessage.body(TransformOpts(false, null, null))
-                    .map { decryptedBody ->
-                        decryptedBody.toMessageBody(messageId.toMessageId(), decryptedMessage.mimeType())
-                    }
+                val transformOptions = TransformOpts(
+                    showBlockQuote = true,
+                    hideRemoteImages = null,
+                    hideEmbeddedImages = null
+                )
+
+                decryptedMessage.body(transformOptions).map { decryptedBody ->
+                    decryptedBody.toMessageBody(messageId.toMessageId(), decryptedMessage.mimeType())
+                }
             }
     }
 
