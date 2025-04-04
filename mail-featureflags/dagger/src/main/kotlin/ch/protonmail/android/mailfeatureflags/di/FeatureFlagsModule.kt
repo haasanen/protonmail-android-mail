@@ -47,6 +47,18 @@ object FeatureFlagsModule {
     fun provideComposerEnabled(resolver: FeatureFlagResolver) =
         resolver.observeFeatureFlag(ComposerEnabledDefinition.key)
 
+
+    @Provides
+    @IntoSet
+    @Singleton
+    fun provideV6CssInjectionEnabledDefinition(): FeatureFlagDefinition = UseV6CssInjectionDefinition
+
+    @Provides
+    @Singleton
+    @UseV6CssInjection
+    fun provideUseV6CssInjection(resolver: FeatureFlagResolver) =
+        resolver.observeFeatureFlag(UseV6CssInjectionDefinition.key)
+
     @Provides
     @IntoSet
     @Singleton

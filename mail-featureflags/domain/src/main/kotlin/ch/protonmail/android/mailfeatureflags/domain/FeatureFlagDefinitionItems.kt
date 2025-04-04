@@ -28,3 +28,11 @@ data object ComposerEnabledDefinition : FeatureFlagDefinition(
     description = "Grants access to Composer.",
     defaultValue = false
 )
+
+data object UseV6CssInjectionDefinition : FeatureFlagDefinition(
+    key = "v6_css_injection",
+    name = "Enforce V6 CSS injection",
+    category = FeatureFlagCategory.Details,
+    description = "Applies V6 CSS injection on the Rust-provided message body.",
+    defaultValue = true
+)
