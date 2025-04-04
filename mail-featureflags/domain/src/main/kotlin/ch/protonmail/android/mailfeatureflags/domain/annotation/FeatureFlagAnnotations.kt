@@ -22,8 +22,4 @@ import javax.inject.Qualifier
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
-annotation class NotificationsFlowEnabled
-
-@Qualifier
-@Retention(AnnotationRetention.BINARY)
 annotation class ComposerEnabled

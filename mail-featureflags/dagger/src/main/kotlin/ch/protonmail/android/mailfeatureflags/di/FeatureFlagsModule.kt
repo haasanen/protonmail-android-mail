@@ -19,13 +19,11 @@
 package ch.protonmail.android.mailfeatureflags.di
 
 import ch.protonmail.android.mailfeatureflags.data.local.DataStoreFeatureFlagValueProvider
-import ch.protonmail.android.mailfeatureflags.domain.ComposerEnabledDefinition
 import ch.protonmail.android.mailfeatureflags.data.local.DefaultFeatureFlagValueProvider
+import ch.protonmail.android.mailfeatureflags.domain.ComposerEnabledDefinition
 import ch.protonmail.android.mailfeatureflags.domain.FeatureFlagResolver
 import ch.protonmail.android.mailfeatureflags.domain.FeatureFlagValueProvider
-import ch.protonmail.android.mailfeatureflags.domain.NotificationsEnabledDefinition
 import ch.protonmail.android.mailfeatureflags.domain.annotation.ComposerEnabled
-import ch.protonmail.android.mailfeatureflags.domain.annotation.NotificationsFlowEnabled
 import ch.protonmail.android.mailfeatureflags.domain.model.FeatureFlagDefinition
 import dagger.Module
 import dagger.Provides
@@ -37,17 +35,6 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object FeatureFlagsModule {
-
-    @Provides
-    @IntoSet
-    @Singleton
-    fun provideNotificationsEnabledDefinition(): FeatureFlagDefinition = NotificationsEnabledDefinition
-
-    @Provides
-    @Singleton
-    @NotificationsFlowEnabled
-    fun provideNotificationsFlowEnabled(resolver: FeatureFlagResolver) =
-        resolver.observeFeatureFlag(NotificationsEnabledDefinition.key)
 
     @Provides
     @IntoSet
