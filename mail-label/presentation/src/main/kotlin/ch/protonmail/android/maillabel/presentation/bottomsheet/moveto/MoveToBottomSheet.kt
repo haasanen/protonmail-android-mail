@@ -1,0 +1,95 @@
+/*
+ * Copyright (c) 2022 Proton Technologies AG
+ * This file is part of Proton Technologies AG and Proton Mail.
+ *
+ * Proton Mail is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Proton Mail is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+package ch.protonmail.android.maillabel.presentation.bottomsheet.moveto
+
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import ch.protonmail.android.design.compose.component.ProtonHorizontallyCenteredProgress
+import ch.protonmail.android.maillabel.domain.model.LabelId
+import ch.protonmail.android.maillabel.presentation.R
+import ch.protonmail.android.maillabel.presentation.model.MailLabelText
+import me.proton.core.domain.entity.UserId
+
+@Composable
+fun MoveToBottomSheetScreen(
+    providedData: MoveToBottomSheet.InitialData,
+    actions: MoveToBottomSheet.Actions,
+    modifier: Modifier = Modifier
+) {
+
+    val viewModel = hiltViewModel<MoveToViewModel, MoveToViewModel.Factory>(
+        key = providedData.identifier()
+    ) { factory ->
+        factory.create(providedData)
+    }
+
+    val state by viewModel.state.collectAsStateWithLifecycle()
+
+    val contentActions = MoveToBottomSheetContent.Actions(
+        onFolderSelected = { id, text, entryPoint ->
+            viewModel.submit(MoveToOperation.MoveToAction.MoveToDestinationSelected(id, text))
+        },
+        onCreateNewFolderClick = actions.onCreateNewFolderClick,
+        onDismiss = actions.onDismiss,
+        onError = actions.onError,
+        onMoveToComplete = actions.onMoveToComplete
+    )
+
+    when (val currentState = state) {
+        is MoveToState.Data -> MoveToBottomSheetContent(
+            dataState = currentState,
+            actions = contentActions,
+            modifier = modifier
+        )
+
+        is MoveToState.Loading -> ProtonHorizontallyCenteredProgress()
+
+        is MoveToState.Error -> {
+            actions.onError(stringResource(R.string.bottom_sheet_label_as_error_fetch))
+            actions.onDismiss()
+        }
+    }
+}
+
+object MoveToBottomSheet {
+
+    data class Actions(
+        val onCreateNewFolderClick: () -> Unit,
+        val onError: (String) -> Unit,
+        val onDismiss: () -> Unit,
+        val onMoveToComplete: (
+            mailLabelText: MailLabelText,
+            entryPoint: MoveToBottomSheetEntryPoint
+        ) -> Unit
+    )
+
+    data class InitialData(
+        val userId: UserId,
+        val currentLocationLabelId: LabelId,
+        val items: List<MoveToItemId>,
+        val entryPoint: MoveToBottomSheetEntryPoint
+    ) {
+
+        fun identifier() = "${this.hashCode()}"
+    }
+}

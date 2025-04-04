@@ -16,7 +16,7 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailmessage.domain.model
+package ch.protonmail.android.maillabel.presentation.bottomsheet.moveto
 
 @JvmInline
 value class MoveToItemId(val value: String)

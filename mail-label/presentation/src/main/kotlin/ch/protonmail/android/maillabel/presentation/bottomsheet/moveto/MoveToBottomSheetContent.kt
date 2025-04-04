@@ -16,7 +16,7 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailmessage.presentation.ui.bottomsheet
+package ch.protonmail.android.maillabel.presentation.bottomsheet.moveto
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -45,43 +45,44 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import ch.protonmail.android.mailcommon.presentation.NO_CONTENT_DESCRIPTION
-import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
-import ch.protonmail.android.mailcommon.presentation.model.string
-import ch.protonmail.android.maillabel.domain.model.MailLabelId
-import ch.protonmail.android.maillabel.presentation.MailLabelUiModel
-import ch.protonmail.android.mailmessage.presentation.R
-import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MoveToBottomSheetState
-import kotlinx.collections.immutable.toImmutableList
-import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyLargeWeak
 import ch.protonmail.android.design.compose.theme.titleLargeNorm
+import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
+import ch.protonmail.android.mailcommon.presentation.ConsumableTextEffect
+import ch.protonmail.android.mailcommon.presentation.Effect
+import ch.protonmail.android.mailcommon.presentation.NO_CONTENT_DESCRIPTION
 import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
+import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
+import ch.protonmail.android.mailcommon.presentation.model.string
 import ch.protonmail.android.maillabel.domain.model.LabelId
+import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
+import ch.protonmail.android.maillabel.presentation.R
 import ch.protonmail.android.maillabel.presentation.iconRes
 import ch.protonmail.android.maillabel.presentation.model.MailLabelText
 import ch.protonmail.android.maillabel.presentation.textRes
-import ch.protonmail.android.mailmessage.presentation.model.bottomsheet.MoveToBottomSheetEntryPoint
+import kotlinx.collections.immutable.toImmutableList
 
 @Composable
-fun MoveToBottomSheetContent(state: MoveToBottomSheetState, actions: MoveToBottomSheetContent.Actions) {
-    when (state) {
-        is MoveToBottomSheetState.Data -> MoveToBottomSheetContent(state, actions)
-        else -> ProtonCenteredProgress()
-    }
-}
-
-@Composable
-fun MoveToBottomSheetContent(dataState: MoveToBottomSheetState.Data, actions: MoveToBottomSheetContent.Actions) {
-    val customDestinations = dataState.moveToDestinations.filterIsInstance<MailLabelUiModel.Custom>()
-    val systemDestinations = dataState.moveToDestinations.filterIsInstance<MailLabelUiModel.System>()
+internal fun MoveToBottomSheetContent(
+    dataState: MoveToState.Data,
+    actions: MoveToBottomSheetContent.Actions,
+    modifier: Modifier = Modifier
+) {
     val entryPoint = dataState.entryPoint
 
+    ConsumableLaunchedEffect(dataState.shouldDismissEffect) { dismissData ->
+        actions.onMoveToComplete(dismissData.mailLabelText, entryPoint)
+    }
+
+    ConsumableTextEffect(dataState.errorEffect) {
+        actions.onError(it)
+    }
+
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .testTag(MoveToBottomSheetTestTags.RootItem)
     ) {
@@ -97,17 +98,17 @@ fun MoveToBottomSheetContent(dataState: MoveToBottomSheetState.Data, actions: Mo
                 .verticalScroll(rememberScrollState())
         ) {
             CustomMoveToGroupWithActionButton(
-                destinations = customDestinations,
+                destinations = dataState.customDestinations,
                 onFolderSelected = { folderId, folderName ->
                     actions.onFolderSelected(folderId, MailLabelText(folderName), entryPoint)
                 },
-                onAddClick = actions.onAddFolderClick
+                onAddClick = actions.onCreateNewFolderClick
             )
 
             Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Large))
 
             MoveToGroup(
-                destinations = systemDestinations,
+                destinations = dataState.systemDestinations,
                 onFolderSelected = { folderId, folderName ->
                     actions.onFolderSelected(folderId, MailLabelText(folderName), entryPoint)
                 }
@@ -144,7 +145,7 @@ private fun MoveToSheetTitle() {
 @Composable
 fun MoveToGroup(
     modifier: Modifier = Modifier,
-    destinations: List<MailLabelUiModel>,
+    destinations: List<MoveToBottomSheetDestinationUiModel>,
     onFolderSelected: (MailLabelId, String) -> Unit
 ) {
     Card(
@@ -175,7 +176,7 @@ fun MoveToGroup(
 @Composable
 fun CustomMoveToGroupWithActionButton(
     modifier: Modifier = Modifier,
-    destinations: List<MailLabelUiModel.Custom>,
+    destinations: List<MoveToBottomSheetDestinationUiModel.Custom>,
     onFolderSelected: (MailLabelId, String) -> Unit,
     onAddClick: () -> Unit
 ) {
@@ -206,12 +207,12 @@ fun CustomMoveToGroupWithActionButton(
 }
 
 @Composable
-internal fun MoveToGroupItem(
+private fun MoveToGroupItem(
     modifier: Modifier = Modifier,
-    label: MailLabelUiModel,
+    label: MoveToBottomSheetDestinationUiModel,
     onFolderClicked: (String) -> Unit
 ) {
-    val iconPaddingStart = (label as? MailLabelUiModel.Custom)?.iconPaddingStart ?: 0.dp
+    val iconPaddingStart = (label as? MoveToBottomSheetDestinationUiModel.Custom)?.iconPaddingStart ?: 0.dp
     val folderName = label.text.string()
     Row(
         modifier = modifier
@@ -242,14 +243,6 @@ internal fun MoveToGroupItem(
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
         )
-        if (label.isSelected) {
-            Spacer(modifier = Modifier.size(ProtonDimens.Spacing.Large))
-            Icon(
-                painter = painterResource(id = R.drawable.ic_proton_checkmark),
-                contentDescription = NO_CONTENT_DESCRIPTION,
-                tint = ProtonTheme.colors.iconAccent
-            )
-        }
     }
 }
 
@@ -289,101 +282,85 @@ private fun CreateFolderButton(modifier: Modifier = Modifier, onClick: () -> Uni
 object MoveToBottomSheetContent {
 
     data class Actions(
-        val onAddFolderClick: () -> Unit,
+        val onCreateNewFolderClick: () -> Unit,
         val onFolderSelected: (MailLabelId, MailLabelText, MoveToBottomSheetEntryPoint) -> Unit,
-        val onDismiss: () -> Unit
+        val onDismiss: () -> Unit,
+        val onError: (String) -> Unit,
+        val onMoveToComplete: (labelText: MailLabelText, entryPoint: MoveToBottomSheetEntryPoint) -> Unit
     )
 }
 
 @Preview(showBackground = true)
 @Composable
-fun MoveToBottomSheetContentPreview() {
+private fun MoveToBottomSheetContentPreview() {
     MoveToBottomSheetContent(
-        dataState = MoveToBottomSheetState.Data(
-            moveToDestinations = listOf(
-                MailLabelUiModel.Custom(
+        dataState = MoveToState.Data(
+            customDestinations = listOf(
+                MoveToBottomSheetDestinationUiModel.Custom(
                     id = MailLabelId.Custom.Folder(LabelId("folder1")),
                     text = TextUiModel.Text("Folder1"),
                     icon = R.drawable.ic_proton_folders_filled,
-                    iconTint = Color.Blue,
-                    isSelected = false,
-                    count = 1,
-                    isVisible = true,
-                    isExpanded = true,
+                    iconTint = Color.Red,
                     iconPaddingStart = 0.dp
                 ),
-                MailLabelUiModel.Custom(
+                MoveToBottomSheetDestinationUiModel.Custom(
                     id = MailLabelId.Custom.Folder(LabelId("folder2")),
                     text = TextUiModel.Text("Folder2"),
                     icon = R.drawable.ic_proton_folder_filled,
                     iconTint = Color.Red,
-                    isSelected = true,
-                    count = 2,
-                    isVisible = true,
-                    isExpanded = true,
                     iconPaddingStart = ProtonDimens.Spacing.Large * 1
                 ),
-                MailLabelUiModel.Custom(
+                MoveToBottomSheetDestinationUiModel.Custom(
                     id = MailLabelId.Custom.Folder(LabelId("folder3")),
                     text = TextUiModel.Text("Folder3"),
                     icon = R.drawable.ic_proton_folder_filled,
                     iconTint = Color.Yellow,
-                    isSelected = false,
-                    count = null,
-                    isVisible = true,
-                    isExpanded = true,
                     iconPaddingStart = ProtonDimens.Spacing.Large * 2
                 ),
-                MailLabelUiModel.Custom(
+                MoveToBottomSheetDestinationUiModel.Custom(
                     id = MailLabelId.Custom.Folder(LabelId("really long folder name")),
-                    text = TextUiModel.Text("THis folder is really long so that truncation can be tested"),
+                    text = TextUiModel.Text("This folder is really long so that truncation can be tested"),
                     icon = R.drawable.ic_proton_folders_filled,
                     iconTint = Color.Blue,
-                    isSelected = true,
-                    count = 1,
-                    isVisible = true,
-                    isExpanded = true,
                     iconPaddingStart = 0.dp
-                ),
-                MailLabelUiModel.System(
+                )
+            ).toImmutableList(),
+            systemDestinations = listOf(
+                MoveToBottomSheetDestinationUiModel.System(
                     id = MailLabelId.System(LabelId("inbox")),
                     text = TextUiModel.TextRes(SystemLabelId.Inbox.textRes()),
                     icon = SystemLabelId.Inbox.iconRes(),
-                    iconTint = null,
-                    isSelected = false,
-                    count = null
+                    iconTint = null
                 ),
-                MailLabelUiModel.System(
+                MoveToBottomSheetDestinationUiModel.System(
                     id = MailLabelId.System(LabelId("spam")),
                     text = TextUiModel.TextRes(SystemLabelId.Spam.textRes()),
                     icon = SystemLabelId.Spam.iconRes(),
-                    iconTint = null,
-                    isSelected = false,
-                    count = null
+                    iconTint = null
                 ),
-                MailLabelUiModel.System(
+                MoveToBottomSheetDestinationUiModel.System(
                     id = MailLabelId.System(LabelId("trash")),
                     text = TextUiModel.TextRes(SystemLabelId.Trash.textRes()),
                     icon = SystemLabelId.Trash.iconRes(),
-                    iconTint = null,
-                    isSelected = false,
-                    count = null
+                    iconTint = null
                 ),
-                MailLabelUiModel.System(
+                MoveToBottomSheetDestinationUiModel.System(
                     id = MailLabelId.System(LabelId("archive")),
                     text = TextUiModel.TextRes(SystemLabelId.Archive.textRes()),
                     icon = SystemLabelId.Archive.iconRes(),
-                    iconTint = null,
-                    isSelected = false,
-                    count = null
+                    iconTint = null
                 )
             ).toImmutableList(),
-            entryPoint = MoveToBottomSheetEntryPoint.Conversation
+            entryPoint = MoveToBottomSheetEntryPoint.Conversation,
+            shouldDismissEffect = Effect.empty(),
+            errorEffect = Effect.empty()
         ),
         actions = MoveToBottomSheetContent.Actions(
-            onAddFolderClick = {},
+            onCreateNewFolderClick = {},
             onFolderSelected = { _, _, _ -> },
-            onDismiss = {}
+            onDismiss = {},
+            onError = { _ -> },
+            onMoveToComplete = { _, _ -> }
         )
     )
 }
