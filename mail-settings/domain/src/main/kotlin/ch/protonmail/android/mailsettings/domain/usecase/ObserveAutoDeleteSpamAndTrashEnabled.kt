@@ -16,11 +16,20 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailmailbox.presentation.mailbox.model
+package ch.protonmail.android.mailsettings.domain.usecase
 
-sealed interface ClearAllState {
-    data object UpsellBanner : ClearAllState
-    data object ClearAllActionBanner : ClearAllState
-    data object ClearAllInProgress : ClearAllState
-    data object Hidden : ClearAllState
+import ch.protonmail.android.mailsettings.domain.repository.MailSettingsRepository
+import kotlinx.coroutines.flow.map
+import me.proton.core.domain.arch.mapSuccessValueOrNull
+import me.proton.core.domain.entity.UserId
+import javax.inject.Inject
+
+class ObserveAutoDeleteSpamAndTrashEnabled @Inject constructor(
+    private val mailSettingsRepository: MailSettingsRepository
+) {
+
+    operator fun invoke(userId: UserId) = mailSettingsRepository
+        .getMailSettingsFlow(userId)
+        .mapSuccessValueOrNull()
+        .map { it?.autoDeleteSpamAndTrashDays?.let { days -> days > 0 } ?: false }
 }

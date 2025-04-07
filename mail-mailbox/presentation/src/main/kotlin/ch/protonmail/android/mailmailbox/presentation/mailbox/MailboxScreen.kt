@@ -37,7 +37,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -100,9 +99,6 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
-import ch.protonmail.android.design.compose.component.ProtonBanner
-import ch.protonmail.android.design.compose.component.ProtonBannerWithButton
-import ch.protonmail.android.design.compose.component.ProtonBannerWithLink
 import ch.protonmail.android.design.compose.component.ProtonCenteredProgress
 import ch.protonmail.android.design.compose.component.ProtonModalBottomSheetLayout
 import ch.protonmail.android.design.compose.component.ProtonSnackbarHostState
@@ -110,7 +106,6 @@ import ch.protonmail.android.design.compose.component.ProtonSnackbarType
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
 import ch.protonmail.android.design.compose.theme.bodyLargeWeak
-import ch.protonmail.android.design.compose.theme.bodyMediumWeak
 import ch.protonmail.android.design.compose.theme.titleLargeNorm
 import ch.protonmail.android.mailcommon.presentation.AdaptivePreviews
 import ch.protonmail.android.mailcommon.presentation.ConsumableLaunchedEffect
@@ -120,8 +115,6 @@ import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 import ch.protonmail.android.mailcommon.presentation.compose.UndoableOperationSnackbar
 import ch.protonmail.android.mailcommon.presentation.model.AvatarImageUiModel
 import ch.protonmail.android.mailcommon.presentation.model.AvatarUiModel
-import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
-import ch.protonmail.android.mailcommon.presentation.model.string
 import ch.protonmail.android.mailcommon.presentation.ui.BottomActionBar
 import ch.protonmail.android.mailcommon.presentation.ui.delete.DeleteDialog
 import ch.protonmail.android.maillabel.presentation.bottomsheet.LabelAsBottomSheet
@@ -810,25 +803,11 @@ private fun MailboxItemsList(
                 false // Allow the event to propagate
             }
     ) {
-        if (state is MailboxListState.Data && !state.searchState.isInSearch()) {
-            state.clearState.let { it as? MailboxListState.Data.ClearState.Visible }?.let {
-                item {
-                    when (it) {
-                        is MailboxListState.Data.ClearState.Visible.InfoBanner -> {
-                            ClearInfoBanner(it.text)
-                        }
 
-                        is MailboxListState.Data.ClearState.Visible.ClearBannerWithButton -> {
-                            ClearBannerWithButton(it, actions)
-                        }
-
-                        is MailboxListState.Data.ClearState.Visible.UpsellBannerWithLink -> {
-                            ClearUpsellBannerWithLink(it, actions)
-                        }
-                    }
-                }
-            }
+        if (state is MailboxListState.Data.ViewMode && !state.searchState.isInSearch()) {
+            item { ClearAllOperationBanner(showMissingFeatureSnackbar = actions.showMissingFeature) }
         }
+
         items(
             count = items.itemCount,
             key = items.itemKey { it.id.plus(it.userId) },
@@ -896,48 +875,6 @@ private fun MailboxItemsList(
             }
         }
     }
-}
-
-@Composable
-private fun ClearInfoBanner(text: TextUiModel) {
-    ProtonBanner(
-        text = text.string(),
-        textStyle = ProtonTheme.typography.bodyMediumWeak,
-        backgroundColor = ProtonTheme.colors.backgroundNorm
-    )
-}
-
-@Composable
-private fun ClearBannerWithButton(
-    clearBannerState: MailboxListState.Data.ClearState.Visible.ClearBannerWithButton,
-    actions: MailboxScreen.Actions
-) {
-    ProtonBannerWithButton(
-        bannerText = clearBannerState.bannerText.string(),
-        buttonText = clearBannerState.buttonText.string(),
-        icon = clearBannerState.icon,
-        onButtonClicked = {}
-    )
-}
-
-
-@Composable
-private fun ClearUpsellBannerWithLink(
-    upsellBannerState: MailboxListState.Data.ClearState.Visible.UpsellBannerWithLink,
-    actions: MailboxScreen.Actions
-) {
-    ProtonBannerWithLink(
-        bannerText = upsellBannerState.bannerText.string(),
-        linkText = upsellBannerState.linkText.string(),
-        icon = upsellBannerState.icon,
-        contentPadding = PaddingValues(
-            start = ProtonDimens.Spacing.ModeratelyLarge,
-            end = ProtonDimens.Spacing.ModeratelyLarge,
-            top = ProtonDimens.Spacing.ModeratelyLarge,
-            bottom = 0.dp
-        ),
-        onLinkClicked = actions.onOpenUpsellingPage
-    )
 }
 
 private fun generateSwipeActions(

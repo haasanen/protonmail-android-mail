@@ -193,19 +193,16 @@ class MailboxListReducer @Inject constructor(
                 refreshRequested = false,
                 swipeActions = null,
                 searchState = MailboxSearchState.NotSearching,
-                clearState = MailboxListState.Data.ClearState.Hidden,
                 shouldShowFab = true,
                 avatarImagesUiModel = AvatarImagesUiModel.Empty
             )
 
             is MailboxListState.Data.SelectionMode -> currentState.copy(
-                currentMailLabel = currentMailLabel,
-                clearState = MailboxListState.Data.ClearState.Hidden
+                currentMailLabel = currentMailLabel
             )
 
             is MailboxListState.Data.ViewMode -> currentState.copy(
-                currentMailLabel = currentMailLabel,
-                clearState = MailboxListState.Data.ClearState.Hidden
+                currentMailLabel = currentMailLabel
             )
         }
     }
@@ -225,15 +222,13 @@ class MailboxListReducer @Inject constructor(
                 refreshRequested = false,
                 swipeActions = null,
                 searchState = MailboxSearchState.NotSearching,
-                clearState = MailboxListState.Data.ClearState.Hidden,
                 shouldShowFab = true,
                 avatarImagesUiModel = AvatarImagesUiModel.Empty
             )
 
             is MailboxListState.Data.ViewMode -> currentState.copy(
                 currentMailLabel = currentMailLabel,
-                scrollToMailboxTop = Effect.of(currentMailLabel.id),
-                clearState = MailboxListState.Data.ClearState.Hidden
+                scrollToMailboxTop = Effect.of(currentMailLabel.id)
             )
 
             is MailboxListState.Data.SelectionMode -> currentState.copy(
@@ -325,7 +320,6 @@ class MailboxListReducer @Inject constructor(
                 currentMailLabel = currentState.currentMailLabel,
                 selectedMailboxItems = setOf(SelectedMailboxItem(item.id, item.isRead, item.isStarred)),
                 swipeActions = currentState.swipeActions,
-                clearState = currentState.clearState,
                 searchState = currentState.searchState,
                 avatarImagesUiModel = currentState.avatarImagesUiModel,
                 shouldShowFab = false,
@@ -345,7 +339,6 @@ class MailboxListReducer @Inject constructor(
             refreshRequested = false,
             swipeActions = currentState.swipeActions,
             searchState = currentState.searchState,
-            clearState = currentState.clearState,
             shouldShowFab = !currentState.searchState.isInSearch(),
             avatarImagesUiModel = currentState.avatarImagesUiModel
         )

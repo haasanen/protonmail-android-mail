@@ -16,16 +16,26 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailsettings.domain.usecase
+package ch.protonmail.android.mailmailbox.presentation.mailbox.model
 
-import ch.protonmail.android.mailsettings.domain.repository.MailSettingsRepository
-import me.proton.core.domain.entity.UserId
-import javax.inject.Inject
+import androidx.annotation.DrawableRes
+import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 
-class IsAutoDeleteSpamAndTrashEnabled @Inject constructor(
-    private val mailSettingsRepository: MailSettingsRepository
-) {
-    suspend operator fun invoke(userId: UserId): Boolean =
-        mailSettingsRepository.getMailSettings(userId).autoDeleteSpamAndTrashDays?.let { it > 0 } ?: false
+sealed interface ClearAllStateUiModel {
+    data object Hidden : ClearAllStateUiModel
+    sealed interface Visible : ClearAllStateUiModel {
+        data class UpsellBannerWithLink(
+            val bannerText: TextUiModel,
+            val linkText: TextUiModel,
+            @DrawableRes val icon: Int
+        ) : Visible
 
+        data class ClearAllBannerWithButton(
+            val bannerText: TextUiModel,
+            val buttonText: TextUiModel,
+            @DrawableRes val icon: Int
+        ) : Visible
+
+        data class InfoBanner(val text: TextUiModel) : Visible
+    }
 }

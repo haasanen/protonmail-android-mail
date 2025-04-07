@@ -107,6 +107,7 @@ dependencies {
     testImplementation(libs.bundles.test)
     testImplementation(libs.androidx.paging.testing)
     testImplementation(project(":test:test-data"))
+    testImplementation(project(":test:utils"))
 
     androidTestImplementation(libs.bundles.test.androidTest)
     androidTestImplementation(project(":test:annotations"))

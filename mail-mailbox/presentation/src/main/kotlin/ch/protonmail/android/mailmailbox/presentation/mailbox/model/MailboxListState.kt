@@ -18,9 +18,7 @@
 
 package ch.protonmail.android.mailmailbox.presentation.mailbox.model
 
-import androidx.annotation.DrawableRes
 import ch.protonmail.android.mailcommon.presentation.Effect
-import ch.protonmail.android.mailcommon.presentation.model.TextUiModel
 import ch.protonmail.android.maillabel.domain.model.MailLabel
 import ch.protonmail.android.maillabel.domain.model.MailLabelId
 import ch.protonmail.android.maillabel.domain.model.SystemLabelId
@@ -31,35 +29,14 @@ sealed interface MailboxListState {
 
     sealed interface Data : MailboxListState {
 
-        sealed interface ClearState {
-            data object Hidden : ClearState
-            sealed interface Visible : ClearState {
-                data class UpsellBannerWithLink(
-                    val bannerText: TextUiModel,
-                    val linkText: TextUiModel,
-                    @DrawableRes val icon: Int
-                ) : Visible
-
-                data class ClearBannerWithButton(
-                    val bannerText: TextUiModel,
-                    val buttonText: TextUiModel,
-                    @DrawableRes val icon: Int
-                ) : Visible
-
-                data class InfoBanner(val text: TextUiModel) : Visible
-            }
-        }
-
         val currentMailLabel: MailLabel
         val swipeActions: SwipeActionsUiModel?
-        val clearState: ClearState
         val searchState: MailboxSearchState
         val shouldShowFab: Boolean
         val avatarImagesUiModel: AvatarImagesUiModel
         data class ViewMode(
             override val currentMailLabel: MailLabel,
             override val swipeActions: SwipeActionsUiModel?,
-            override val clearState: ClearState,
             override val searchState: MailboxSearchState,
             override val shouldShowFab: Boolean,
             override val avatarImagesUiModel: AvatarImagesUiModel,
@@ -76,7 +53,6 @@ sealed interface MailboxListState {
         data class SelectionMode(
             override val currentMailLabel: MailLabel,
             override val swipeActions: SwipeActionsUiModel?,
-            override val clearState: ClearState,
             override val searchState: MailboxSearchState,
             override val shouldShowFab: Boolean,
             override val avatarImagesUiModel: AvatarImagesUiModel,

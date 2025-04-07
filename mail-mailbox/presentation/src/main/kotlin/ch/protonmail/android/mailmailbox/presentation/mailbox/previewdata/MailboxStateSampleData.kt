@@ -85,7 +85,6 @@ object MailboxStateSampleData {
                 end = SwipeUiModelSampleData.Archive
             ),
             searchState = MailboxSearchStateSampleData.NotSearching,
-            clearState = MailboxListState.Data.ClearState.Hidden,
             shouldShowFab = true,
             avatarImagesUiModel = AvatarImagesUiModel.Empty
         ),
@@ -119,7 +118,6 @@ object MailboxStateSampleData {
                 end = SwipeUiModelSampleData.Archive
             ),
             searchState = MailboxSearchStateSampleData.NotSearching,
-            clearState = MailboxListState.Data.ClearState.Hidden,
             shouldShowFab = true,
             avatarImagesUiModel = AvatarImagesUiModel.Empty
         ),
@@ -163,7 +161,6 @@ object MailboxStateSampleData {
                 end = SwipeUiModelSampleData.Archive
             ),
             searchState = MailboxSearchState.NotSearching,
-            clearState = MailboxListState.Data.ClearState.Hidden,
             shouldShowFab = false,
             avatarImagesUiModel = AvatarImagesUiModel.Empty,
             areAllItemsSelected = false
