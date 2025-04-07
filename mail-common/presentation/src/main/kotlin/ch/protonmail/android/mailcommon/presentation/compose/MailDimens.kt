@@ -153,5 +153,11 @@ object MailDimens {
 
         val FormFieldsRowHeight = 56.dp
     }
+
+    object Attachment {
+        val ItemRowHeight = 48.dp
+        val UploadingSpinnerSize = 28.dp
+    }
+
     val UnreadFilterChipHeight = 36.dp
 }

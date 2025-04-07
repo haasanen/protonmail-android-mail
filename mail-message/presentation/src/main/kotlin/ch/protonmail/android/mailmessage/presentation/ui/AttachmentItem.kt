@@ -28,7 +28,9 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -56,7 +58,7 @@ import ch.protonmail.android.design.compose.component.ProtonAlertDialogButton
 import ch.protonmail.android.design.compose.component.ProtonAlertDialogText
 import ch.protonmail.android.design.compose.theme.ProtonDimens
 import ch.protonmail.android.design.compose.theme.ProtonTheme
-import ch.protonmail.android.design.compose.theme.bodyMediumWeak
+import ch.protonmail.android.mailcommon.presentation.compose.MailDimens
 import ch.protonmail.android.mailcommon.presentation.model.string
 import ch.protonmail.android.mailmessage.domain.model.AttachmentState
 import ch.protonmail.android.mailmessage.presentation.model.attachment.AttachmentMetadataUiModel
@@ -72,6 +74,8 @@ fun AttachmentItem(
 ) {
     val context = LocalContext.current
     val shouldShowPermissionDialog = remember { mutableStateOf(false) }
+    val nameTextColor = if (attachmentUiModel.status == AttachmentState.Uploading) ProtonTheme.colors.textHint else
+        ProtonTheme.colors.textWeak
 
     // Use a conditional to skip permission logic in preview mode
     val externalStoragePermission =
@@ -113,6 +117,7 @@ fun AttachmentItem(
     Row(
         modifier = modifier
             .fillMaxWidth()
+            .height(MailDimens.Attachment.ItemRowHeight)
             .background(
                 color = ProtonTheme.colors.interactionWeakNorm,
                 shape = ProtonTheme.shapes.huge
@@ -127,8 +132,8 @@ fun AttachmentItem(
                 }
             }
             .padding(
-                top = ProtonDimens.Spacing.MediumLight,
-                bottom = ProtonDimens.Spacing.MediumLight,
+                // top = ProtonDimens.Spacing.MediumLight,
+                // bottom = ProtonDimens.Spacing.MediumLight,
                 start = ProtonDimens.Spacing.Medium,
                 end = ProtonDimens.Spacing.Large
             ),
@@ -156,7 +161,8 @@ fun AttachmentItem(
                     .weight(1f)
                     .testTag(AttachmentItemTestTags.Name),
                 text = attachmentUiModel.name.string(),
-                style = ProtonTheme.typography.bodyMediumWeak,
+                style = ProtonTheme.typography.bodyMedium,
+                color = nameTextColor,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
@@ -171,23 +177,33 @@ fun AttachmentItem(
         }
 
         if (attachmentUiModel.deletable) {
-            Spacer(modifier = Modifier.width(ProtonDimens.Spacing.Small))
-            if (attachmentUiModel.status == AttachmentState.Uploading) {
-                CircularProgressIndicator(
-                    modifier = Modifier
-                        .size(ProtonDimens.IconSize.Default)
-                        .testTag(AttachmentItemTestTags.Loader)
-                )
-            } else {
+            Spacer(modifier = Modifier.width(ProtonDimens.Spacing.Large))
+            Box(
+                modifier = Modifier
+                    .size(MailDimens.Attachment.UploadingSpinnerSize),
+                contentAlignment = Alignment.Center
+            ) {
+                if (attachmentUiModel.status == AttachmentState.Uploading) {
+                    CircularProgressIndicator(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .testTag(AttachmentItemTestTags.Loader),
+                        trackColor = ProtonTheme.colors.brandMinus20,
+                        color = ProtonTheme.colors.brandNorm,
+                        strokeWidth = ProtonDimens.BorderSize.Medium
+                    )
+                }
+
                 Icon(
                     modifier = Modifier
-                        .size(ProtonDimens.IconSize.Small)
+                        .size(ProtonDimens.IconSize.Medium)
                         .clickable { onAttachmentItemDeleteClicked(AttachmentId(attachmentUiModel.id.value)) }
                         .testTag(AttachmentItemTestTags.Delete),
                     painter = painterResource(id = R.drawable.ic_proton_cross_small),
                     contentDescription = null
                 )
             }
+
         }
     }
 }
@@ -201,6 +217,44 @@ fun AttachmentItemPreview() {
             onAttachmentItemClicked = {},
             onAttachmentItemDeleteClicked = {}
         )
+    }
+}
+
+@Composable
+@Preview(showBackground = true)
+fun DeletableAttachmentItemPreview() {
+    ProtonTheme {
+        Box(
+            modifier = Modifier
+                .background(ProtonTheme.colors.backgroundNorm)
+                .padding(ProtonDimens.Spacing.Large)
+        ) {
+            AttachmentItem(
+                attachmentUiModel = AttachmentMetadataUiModelSamples.DeletableInvoice,
+                onAttachmentItemClicked = {},
+                onAttachmentItemDeleteClicked = {}
+            )
+        }
+    }
+}
+
+@Composable
+@Preview(showBackground = true)
+fun AttachmentItemUploadingStatePreview() {
+    ProtonTheme {
+        Box(
+            modifier = Modifier
+                .background(ProtonTheme.colors.backgroundNorm)
+                .padding(ProtonDimens.Spacing.Large)
+        ) {
+            AttachmentItem(
+                attachmentUiModel = AttachmentMetadataUiModelSamples.DeletableInvoice.copy(
+                    status = AttachmentState.Uploading
+                ),
+                onAttachmentItemClicked = {},
+                onAttachmentItemDeleteClicked = {}
+            )
+        }
     }
 }
 
