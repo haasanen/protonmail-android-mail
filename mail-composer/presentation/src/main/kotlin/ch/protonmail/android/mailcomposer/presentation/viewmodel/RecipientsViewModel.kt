@@ -34,13 +34,11 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
@@ -88,7 +86,6 @@ internal class RecipientsViewModel @AssistedInject constructor(
         mutableContactSuggestionsFieldFlow.update { null }
     }
 
-    @OptIn(FlowPreview::class)
     private fun observeContactsSuggestions(): Flow<List<ContactSuggestionUiModel>> = combine(
         primaryUserId(),
         searchTerm
@@ -105,7 +102,7 @@ internal class RecipientsViewModel @AssistedInject constructor(
                 return@fold contactSuggestionsMapper.toUiModel(contactsLimited)
             }
         )
-    }.debounce(SuggestionsDebounce)
+    }
 
     private fun primaryUserId() = observePrimaryUserId.invoke().filterNotNull()
 
