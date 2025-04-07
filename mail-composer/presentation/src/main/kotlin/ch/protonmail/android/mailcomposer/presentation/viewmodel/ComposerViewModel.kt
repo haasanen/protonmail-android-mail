@@ -426,7 +426,7 @@ class ComposerViewModel @Inject constructor(
 
     private fun onAttachmentsRemoved(action: ComposerAction.RemoveAttachment) {
         viewModelScope.launch {
-            deleteAttachment(primaryUserId(), currentMessageId(), action.attachmentId)
+            deleteAttachment(action.attachmentId)
                 .onLeft { Timber.e("Failed to delete attachment: $it") }
         }
     }

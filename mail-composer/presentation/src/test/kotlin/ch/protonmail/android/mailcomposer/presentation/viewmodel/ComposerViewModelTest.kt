@@ -1472,7 +1472,7 @@ class ComposerViewModelTest {
         expectInitComposerWithExistingDraftSuccess(expectedUserId, messageId) { expectedFields }
         expectObservedMessageAttachments(expectedUserId, messageId)
         expectNoInputDraftAction()
-        expectAttachmentDeleteSucceeds(expectedUserId, messageId, expectedAttachmentId)
+        expectAttachmentDeleteSucceeds(expectedAttachmentId)
         expectObserveMessageSendingError(expectedUserId, messageId)
         expectMessagePassword(expectedUserId, messageId)
         expectNoFileShareVia()
@@ -1482,7 +1482,7 @@ class ComposerViewModelTest {
         viewModel.submit(ComposerAction.RemoveAttachment(expectedAttachmentId))
 
         // Then
-        coVerify { deleteAttachment(expectedUserId, messageId, expectedAttachmentId) }
+        coVerify { deleteAttachment(expectedAttachmentId) }
     }
 
     @Test
@@ -2022,12 +2022,8 @@ class ComposerViewModelTest {
         )
     }
 
-    private fun expectAttachmentDeleteSucceeds(
-        userId: UserId,
-        messageId: MessageId,
-        attachmentId: AttachmentId
-    ) {
-        coEvery { deleteAttachment(userId, messageId, attachmentId) } returns Unit.right()
+    private fun expectAttachmentDeleteSucceeds(attachmentId: AttachmentId) {
+        coEvery { deleteAttachment(attachmentId) } returns Unit.right()
     }
 
     private fun expectMessagePassword(userId: UserId, messageId: MessageId) {

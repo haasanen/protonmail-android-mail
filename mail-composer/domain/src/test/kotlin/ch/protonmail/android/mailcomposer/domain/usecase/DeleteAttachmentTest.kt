@@ -6,19 +6,15 @@ import arrow.core.right
 import ch.protonmail.android.mailcommon.domain.model.DataError
 import ch.protonmail.android.mailcomposer.domain.repository.AttachmentRepository
 import ch.protonmail.android.mailmessage.domain.model.AttachmentId
-import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
 import io.mockk.coEvery
 import io.mockk.coVerifyOrder
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import me.proton.core.domain.entity.UserId
 import org.junit.Test
 import kotlin.test.assertEquals
 
 class DeleteAttachmentTest {
 
-    private val userId = UserId("userId")
-    private val messageId = MessageIdSample.MessageWithAttachments
     private val attachmentId = AttachmentId("attachmentId")
 
     private val attachmentRepository: AttachmentRepository = mockk()
@@ -31,11 +27,11 @@ class DeleteAttachmentTest {
         expectComposerDeleteAttachmentSucceeds()
 
         // When
-        deleteAttachment(userId, messageId, attachmentId)
+        deleteAttachment(attachmentId)
 
         // Then
         coVerifyOrder {
-            attachmentRepository.deleteAttachment(userId, messageId, attachmentId)
+            attachmentRepository.deleteAttachment(attachmentId)
         }
     }
 
@@ -46,7 +42,7 @@ class DeleteAttachmentTest {
         expectComposerAttachmentDeleteFails(DataError.Local.FailedToDeleteFile.left())
 
         // When
-        val actual = deleteAttachment(userId, messageId, attachmentId)
+        val actual = deleteAttachment(attachmentId)
 
         // Then
         assertEquals(expected, actual)
@@ -59,17 +55,17 @@ class DeleteAttachmentTest {
         expectComposerAttachmentDeleteFails(DataError.Local.Unknown.left())
 
         // When
-        val actual = deleteAttachment(userId, messageId, attachmentId)
+        val actual = deleteAttachment(attachmentId)
 
         // Then
         assertEquals(expected, actual)
     }
 
     private fun expectComposerDeleteAttachmentSucceeds() {
-        coEvery { attachmentRepository.deleteAttachment(userId, messageId, attachmentId) } returns Unit.right()
+        coEvery { attachmentRepository.deleteAttachment(attachmentId) } returns Unit.right()
     }
 
     private fun expectComposerAttachmentDeleteFails(error: Either<DataError.Local, Nothing>) {
-        coEvery { attachmentRepository.deleteAttachment(userId, messageId, attachmentId) } returns error
+        coEvery { attachmentRepository.deleteAttachment(attachmentId) } returns error
     }
 }
