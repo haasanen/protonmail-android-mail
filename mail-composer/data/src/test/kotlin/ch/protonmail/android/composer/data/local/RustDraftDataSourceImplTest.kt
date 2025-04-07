@@ -5,6 +5,7 @@ import arrow.core.right
 import ch.protonmail.android.composer.data.local.RustDraftDataSourceImpl.Companion.InitialDelayForSendingStatusWorker
 import ch.protonmail.android.composer.data.mapper.toSingleRecipientEntry
 import ch.protonmail.android.composer.data.usecase.CreateRustDraft
+import ch.protonmail.android.composer.data.usecase.DiscardRustDraft
 import ch.protonmail.android.composer.data.usecase.OpenRustDraft
 import ch.protonmail.android.composer.data.usecase.RustDraftUndoSend
 import ch.protonmail.android.composer.data.worker.SendingStatusWorker
@@ -49,6 +50,7 @@ class RustDraftDataSourceImplTest {
     private val userSessionRepository = mockk<UserSessionRepository>()
     private val createRustDraft = mockk<CreateRustDraft>()
     private val openRustDraft = mockk<OpenRustDraft>()
+    private val discardRustDraft = mockk<DiscardRustDraft>()
 
     private val mockUserSession = mockk<MailUserSessionWrapper>()
     private val enqueuer = mockk<Enqueuer>()
@@ -58,6 +60,7 @@ class RustDraftDataSourceImplTest {
         userSessionRepository,
         createRustDraft,
         openRustDraft,
+        discardRustDraft,
         rustDraftUndoSend,
         enqueuer
     )
@@ -229,6 +232,53 @@ class RustDraftDataSourceImplTest {
 
         // Then
         assertEquals(dataSource.draftWrapperMutableStateFlow.value, expectedDraftWrapper)
+    }
+
+    @Test
+    fun `discard draft returns error when there is no user session`() = runTest {
+        // Given
+        val userId = UserIdSample.Primary
+        val messageId = MessageIdSample.PlainTextMessage
+        val expected = DataError.Local.Unknown
+        coEvery { userSessionRepository.getUserSession(userId) } returns null
+
+        // When
+        val actual = dataSource.discard(userId, messageId)
+
+        // Then
+        assertEquals(actual, expected.left())
+    }
+
+    @Test
+    fun `discard draft returns Unit when discarding successfully`() = runTest {
+        // Given
+        val userId = UserIdSample.Primary
+        val messageId = MessageIdSample.RustJobApplication
+        coEvery { userSessionRepository.getUserSession(userId) } returns mockUserSession
+        coEvery { discardRustDraft(mockUserSession, messageId.toLocalMessageId()) } returns Unit.right()
+
+        // When
+        val actual = dataSource.discard(userId, messageId)
+
+        // Then
+        assertEquals(actual, Unit.right())
+    }
+
+    @Test
+    fun `discard draft returns DataError when discarding unsuccessfully`() = runTest {
+        // Given
+        val userId = UserIdSample.Primary
+        val messageId = MessageIdSample.RustJobApplication
+        coEvery { userSessionRepository.getUserSession(userId) } returns mockUserSession
+        coEvery {
+            discardRustDraft(mockUserSession, messageId.toLocalMessageId())
+        } returns DataError.Local.Unknown.left()
+
+        // When
+        val actual = dataSource.discard(userId, messageId)
+
+        // Then
+        assertEquals(actual, DataError.Local.Unknown.left())
     }
 
     @Test

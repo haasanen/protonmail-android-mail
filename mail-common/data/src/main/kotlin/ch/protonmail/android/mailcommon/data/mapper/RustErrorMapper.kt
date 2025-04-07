@@ -24,6 +24,8 @@ import uniffi.proton_mail_uniffi.ActionError
 import uniffi.proton_mail_uniffi.ActionErrorReason
 import uniffi.proton_mail_uniffi.DraftAttachmentError
 import uniffi.proton_mail_uniffi.DraftAttachmentErrorReason
+import uniffi.proton_mail_uniffi.DraftDiscardError
+import uniffi.proton_mail_uniffi.DraftDiscardErrorReason
 import uniffi.proton_mail_uniffi.DraftOpenError
 import uniffi.proton_mail_uniffi.DraftOpenErrorReason
 import uniffi.proton_mail_uniffi.DraftSaveSendError
@@ -80,6 +82,14 @@ fun DraftOpenError.toDataError(): DataError = when (this) {
         DraftOpenErrorReason.REPLY_OR_FORWARD_DRAFT,
         DraftOpenErrorReason.ADDRESS_NOT_FOUND,
         DraftOpenErrorReason.MESSAGE_BODY_MISSING -> DataError.Local.OpenDraftError
+    }
+}
+
+fun DraftDiscardError.toDataError(): DataError = when (this) {
+    is DraftDiscardError.Other -> this.v1.toDataError()
+    is DraftDiscardError.Reason -> when (this.v1) {
+        DraftDiscardErrorReason.MESSAGE_DOES_NOT_EXIST,
+        DraftDiscardErrorReason.DELETE_FAILED -> DataError.Local.DiscardDraftError
     }
 }
 

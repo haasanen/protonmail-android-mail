@@ -133,7 +133,7 @@ fun ComposerScreen(actions: ComposerScreen.Actions) {
             // viewModel.submit(ComposerAction.OnSetExpirationTimeRequested)
             showFeatureMissingSnackbar()
         },
-        onDiscardDraftClicked = { showFeatureMissingSnackbar() }
+        onDiscardDraftClicked = { viewModel.submit(ComposerAction.DiscardDraft) }
     )
 
     val imagePicker = rememberLauncherForActivityResult(

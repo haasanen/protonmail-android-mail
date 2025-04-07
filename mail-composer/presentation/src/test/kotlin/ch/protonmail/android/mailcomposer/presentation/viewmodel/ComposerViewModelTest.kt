@@ -42,6 +42,7 @@ import ch.protonmail.android.mailcomposer.domain.usecase.ClearMessageSendingErro
 import ch.protonmail.android.mailcomposer.domain.usecase.CreateDraftForAction
 import ch.protonmail.android.mailcomposer.domain.usecase.CreateEmptyDraft
 import ch.protonmail.android.mailcomposer.domain.usecase.DeleteAttachment
+import ch.protonmail.android.mailcomposer.domain.usecase.DiscardDraft
 import ch.protonmail.android.mailcomposer.domain.usecase.GetExternalRecipients
 import ch.protonmail.android.mailcomposer.domain.usecase.IsValidEmailAddress
 import ch.protonmail.android.mailcomposer.domain.usecase.ObserveMessageAttachments
@@ -158,6 +159,7 @@ class ComposerViewModelTest {
     private val createDraftForAction = mockk<CreateDraftForAction>()
     private val openExistingDraft = mockk<OpenExistingDraft>()
     private val recipientsStateManager = spyk<RecipientsStateManager>()
+    private val discardDraft = mockk<DiscardDraft>()
 
     private val buildDraftDisplayBody = mockk<BuildDraftDisplayBody> {
         val bodySlot = slot<MessageBodyWithType>()
@@ -195,6 +197,7 @@ class ComposerViewModelTest {
             createDraftForAction,
             buildDraftDisplayBody,
             recipientsStateManager,
+            discardDraft,
             savedStateHandle,
             observePrimaryUserIdMock,
             provideNewDraftIdMock

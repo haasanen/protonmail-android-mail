@@ -42,6 +42,8 @@ class DraftRepositoryImpl @Inject constructor(
     override suspend fun createDraft(userId: UserId, action: DraftAction): Either<DataError, DraftFields> =
         draftDataSource.create(userId, action).map { it.toDraftFields() }
 
+    override suspend fun discardDraft(userId: UserId, messageId: MessageId) = draftDataSource.discard(userId, messageId)
+
     override suspend fun save(): Either<DataError, MessageId?> = draftDataSource.save()
 
     override suspend fun saveSubject(subject: Subject): Either<DataError, MessageId?> =

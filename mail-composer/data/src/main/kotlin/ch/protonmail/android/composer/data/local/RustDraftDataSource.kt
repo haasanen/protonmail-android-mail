@@ -35,6 +35,8 @@ interface RustDraftDataSource {
 
     suspend fun create(userId: UserId, action: DraftAction): Either<DataError, LocalDraft>
 
+    suspend fun discard(userId: UserId, messageId: MessageId): Either<DataError, Unit>
+
     suspend fun save(): Either<DataError, MessageId?>
     suspend fun saveSubject(subject: Subject): Either<DataError, MessageId?>
     suspend fun saveBody(body: DraftBody): Either<DataError, MessageId?>

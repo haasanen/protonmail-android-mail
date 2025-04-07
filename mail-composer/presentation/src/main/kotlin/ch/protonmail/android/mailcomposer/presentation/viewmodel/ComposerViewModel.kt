@@ -43,6 +43,7 @@ import ch.protonmail.android.mailcomposer.domain.usecase.ClearMessageSendingErro
 import ch.protonmail.android.mailcomposer.domain.usecase.CreateDraftForAction
 import ch.protonmail.android.mailcomposer.domain.usecase.CreateEmptyDraft
 import ch.protonmail.android.mailcomposer.domain.usecase.DeleteAttachment
+import ch.protonmail.android.mailcomposer.domain.usecase.DiscardDraft
 import ch.protonmail.android.mailcomposer.domain.usecase.GetExternalRecipients
 import ch.protonmail.android.mailcomposer.domain.usecase.IsValidEmailAddress
 import ch.protonmail.android.mailcomposer.domain.usecase.ObserveMessageAttachments
@@ -100,7 +101,7 @@ import me.proton.core.util.kotlin.takeIfNotEmpty
 import timber.log.Timber
 import kotlin.time.Duration
 
-@Suppress("LongParameterList", "TooManyFunctions", "UnusedPrivateMember")
+@Suppress("LargeClass", "LongParameterList", "TooManyFunctions", "UnusedPrivateMember")
 @HiltViewModel(assistedFactory = ComposerViewModel.Factory::class)
 class ComposerViewModel @AssistedInject constructor(
     private val storeDraftWithBody: StoreDraftWithBody,
@@ -128,6 +129,7 @@ class ComposerViewModel @AssistedInject constructor(
     private val createDraftForAction: CreateDraftForAction,
     private val buildDraftDisplayBody: BuildDraftDisplayBody,
     @Assisted private val recipientsStateManager: RecipientsStateManager,
+    private val discardDraft: DiscardDraft,
     savedStateHandle: SavedStateHandle,
     observePrimaryUserId: ObservePrimaryUserId,
     provideNewDraftId: ProvideNewDraftId
@@ -348,6 +350,7 @@ class ComposerViewModel @AssistedInject constructor(
                     is ComposerAction.SendExpiringMessageToExternalRecipientsConfirmed -> emitNewStateFor(
                         onSendMessage(action)
                     )
+                    is ComposerAction.DiscardDraft -> onDiscardDraft(action)
                 }
                 composerIdlingResource.decrement()
             }
@@ -469,6 +472,13 @@ class ComposerViewModel @AssistedInject constructor(
                     ComposerEvent.OnSendMessageOffline
                 }
             }
+        }
+    }
+
+    private fun onDiscardDraft(action: ComposerAction.DiscardDraft) {
+        viewModelScope.launch {
+            discardDraft(primaryUserId(), currentMessageId())
+            emitNewStateFor(action)
         }
     }
 

@@ -29,6 +29,7 @@ import ch.protonmail.android.composer.data.mapper.toLocalDraft
 import ch.protonmail.android.composer.data.mapper.toSingleRecipientEntry
 import ch.protonmail.android.composer.data.mapper.toSingleRecipients
 import ch.protonmail.android.composer.data.usecase.CreateRustDraft
+import ch.protonmail.android.composer.data.usecase.DiscardRustDraft
 import ch.protonmail.android.composer.data.usecase.OpenRustDraft
 import ch.protonmail.android.composer.data.usecase.RustDraftUndoSend
 import ch.protonmail.android.composer.data.worker.SendingStatusWorker
@@ -64,6 +65,7 @@ class RustDraftDataSourceImpl @Inject constructor(
     private val userSessionRepository: UserSessionRepository,
     private val createRustDraft: CreateRustDraft,
     private val openRustDraft: OpenRustDraft,
+    private val discardRustDraft: DiscardRustDraft,
     private val rustDraftUndoSend: RustDraftUndoSend,
     private val enqueuer: Enqueuer
 ) : RustDraftDataSource {
@@ -111,6 +113,16 @@ class RustDraftDataSourceImpl @Inject constructor(
         return createRustDraft(session, draftCreateMode)
             .onRight { draftWrapperMutableStateFlow.value = it }
             .map { it.toLocalDraft() }
+    }
+
+    override suspend fun discard(userId: UserId, messageId: MessageId): Either<DataError, Unit> {
+        val session = userSessionRepository.getUserSession(userId)
+        if (session == null) {
+            Timber.e("rust-draft: Trying to discard draft with null session; Failing.")
+            return DataError.Local.Unknown.left()
+        }
+
+        return discardRustDraft(session, messageId.toLocalMessageId())
     }
 
     override suspend fun save(): Either<DataError, MessageId?> = withValidRustDraftWrapper {

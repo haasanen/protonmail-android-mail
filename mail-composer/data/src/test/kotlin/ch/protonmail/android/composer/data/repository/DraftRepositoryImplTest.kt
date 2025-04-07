@@ -86,6 +86,34 @@ class DraftRepositoryImplTest {
     }
 
     @Test
+    fun `returns success when discard draft succeeds`() = runTest {
+        // Given
+        val userId = UserIdSample.Primary
+        val messageId = MessageIdSample.PlainTextMessage
+        coEvery { draftDataSource.discard(userId, messageId) } returns Unit.right()
+
+        // When
+        val actual = draftRepository.discardDraft(userId, messageId)
+
+        // Then
+        assertEquals(Unit.right(), actual)
+    }
+
+    @Test
+    fun `returns error when discard draft fails`() = runTest {
+        // Given
+        val userId = UserIdSample.Primary
+        val messageId = MessageIdSample.PlainTextMessage
+        coEvery { draftDataSource.discard(userId, messageId) } returns DataError.Local.Unknown.left()
+
+        // When
+        val actual = draftRepository.discardDraft(userId, messageId)
+
+        // Then
+        assertEquals(DataError.Local.Unknown.left(), actual)
+    }
+
+    @Test
     fun `returns success when save draft succeeds`() = runTest {
         // Given
         val messageId = MessageIdSample.PlainTextMessage

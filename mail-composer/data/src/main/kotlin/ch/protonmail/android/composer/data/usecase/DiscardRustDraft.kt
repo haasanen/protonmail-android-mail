@@ -16,16 +16,22 @@
  * along with Proton Mail. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.protonmail.android.mailcomposer.domain.usecase
+package ch.protonmail.android.composer.data.usecase
 
-import ch.protonmail.android.mailcomposer.domain.repository.DraftRepository
-import ch.protonmail.android.mailmessage.domain.model.MessageId
-import me.proton.core.domain.entity.UserId
+import arrow.core.left
+import arrow.core.right
+import ch.protonmail.android.mailcommon.data.mapper.LocalMessageId
+import ch.protonmail.android.mailcommon.data.mapper.toDataError
+import ch.protonmail.android.mailsession.domain.wrapper.MailUserSessionWrapper
+import uniffi.proton_mail_uniffi.VoidDraftDiscardResult
+import uniffi.proton_mail_uniffi.draftDiscard
 import javax.inject.Inject
 
-class DiscardDraft @Inject constructor(
-    private val draftRepository: DraftRepository
-) {
+class DiscardRustDraft @Inject constructor() {
 
-    suspend operator fun invoke(userId: UserId, messageId: MessageId) = draftRepository.discardDraft(userId, messageId)
+    suspend operator fun invoke(mailSession: MailUserSessionWrapper, messageId: LocalMessageId) =
+        when (val result = draftDiscard(mailSession.getRustUserSession(), messageId)) {
+            is VoidDraftDiscardResult.Error -> result.v1.toDataError().left()
+            is VoidDraftDiscardResult.Ok -> Unit.right()
+        }
 }

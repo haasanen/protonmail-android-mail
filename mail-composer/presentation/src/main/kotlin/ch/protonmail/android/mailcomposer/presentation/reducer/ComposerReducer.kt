@@ -67,6 +67,7 @@ class ComposerReducer @Inject constructor(
         is ComposerAction.OnSetExpirationTimeRequested -> updateStateForSetExpirationTimeRequested(currentState)
         is ComposerAction.ExpirationTimeSet -> updateStateForExpirationTimeSet(currentState)
         is ComposerAction.SendExpiringMessageToExternalRecipientsConfirmed -> currentState
+        is ComposerAction.DiscardDraft -> updateStateForDiscardDraft(currentState)
     }
 
     @Suppress("ComplexMethod", "LongMethod")
@@ -285,6 +286,10 @@ class ComposerReducer @Inject constructor(
 
     private fun updateForOnAddAttachments(currentState: ComposerDraftState) = currentState.copy(
         openImagePicker = Effect.of(Unit)
+    )
+
+    private fun updateStateForDiscardDraft(currentState: ComposerDraftState) = currentState.copy(
+        closeComposer = Effect.of(Unit)
     )
 
     private fun updateRecipients(currentState: ComposerDraftState, hasValidRecipients: Boolean) =

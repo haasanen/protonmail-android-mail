@@ -513,6 +513,13 @@ class ComposerReducerTest(
             )
         )
 
+        private val SubmittableToDiscardDraft = TestTransition(
+            name = "Should update state with an effect to close composer when discarding a draft",
+            currentState = aSubmittableState(draftId = messageId),
+            operation = ComposerAction.DiscardDraft,
+            expectedState = aSubmittableState(draftId = messageId).copy(closeComposer = Effect.of(Unit))
+        )
+
         private val transitions = listOf(
             EmptyToSubmittableToField,
             EmptyToNotSubmittableToField,
@@ -547,7 +554,8 @@ class ComposerReducerTest(
             EmptyToExpirationTimeSet,
             EmptyToErrorSettingExpirationTime,
             EmptyToMessageExpirationTimeUpdated,
-            EmptyToConfirmSendExpiringMessage
+            EmptyToConfirmSendExpiringMessage,
+            SubmittableToDiscardDraft
         )
 
         private fun aSubmittableState(

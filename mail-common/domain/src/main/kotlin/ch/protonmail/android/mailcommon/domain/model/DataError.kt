@@ -60,6 +60,8 @@ sealed interface DataError {
 
         data object OpenDraftError : Local
 
+        data object DiscardDraftError : Local
+
         data object UndoSendError : Local
 
         /**

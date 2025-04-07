@@ -18,8 +18,35 @@
 
 package ch.protonmail.android.mailcomposer.domain.usecase
 
+import arrow.core.right
+import ch.protonmail.android.mailcommon.domain.sample.UserIdSample
+import ch.protonmail.android.mailcomposer.domain.repository.DraftRepository
+import ch.protonmail.android.mailmessage.domain.sample.MessageIdSample
+import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.mockk
+import kotlinx.coroutines.test.runTest
+import kotlin.test.Test
+import kotlin.test.assertEquals
+
 class DiscardDraftTest {
 
-    private val discardDraft = DiscardDraft()
+    private val draftRepository = mockk<DraftRepository>()
 
+    private val discardDraft = DiscardDraft(draftRepository)
+
+    @Test
+    fun `should call a repository method when use case is called`() = runTest {
+        // Given
+        val userId = UserIdSample.Primary
+        val messageId = MessageIdSample.PlainTextMessage
+        coEvery { draftRepository.discardDraft(userId, messageId) } returns Unit.right()
+
+        // When
+        val result = discardDraft(userId, messageId)
+
+        // Then
+        coVerify { draftRepository.discardDraft(userId, messageId) }
+        assertEquals(Unit.right(), result)
+    }
 }

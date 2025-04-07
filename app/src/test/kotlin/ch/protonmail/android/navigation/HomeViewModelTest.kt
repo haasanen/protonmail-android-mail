@@ -436,6 +436,7 @@ class HomeViewModelTest {
         val messageId = MessageIdSample.LocalDraft
 
         every { networkManager.observe() } returns flowOf()
+        coEvery { discardDraft(user.userId, messageId) } returns Unit.right()
 
         // When
         homeViewModel.discardDraft(messageId)
