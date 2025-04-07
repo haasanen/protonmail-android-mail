@@ -1,6 +1,3 @@
-import java.io.FileNotFoundException
-import java.util.Properties
-
 /*
  * Copyright (c) 2022 Proton Technologies AG
  * This file is part of Proton Technologies AG and Proton Mail.
@@ -20,15 +17,6 @@ import java.util.Properties
  */
 
 rootProject.name = "ProtonMail"
-
-plugins {
-    id("me.proton.core.gradle-plugins.include-core-build") version "1.3.0"
-}
-
-includeCoreBuild {
-    branch.set("main")
-    includeBuild("gopenpgp")
-}
 
 include(":shared:core:account-manager:dagger")
 include(":shared:core:account-manager:data")
