@@ -34,6 +34,7 @@ import ch.protonmail.android.mailcomposer.domain.model.RecipientsCc
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsTo
 import ch.protonmail.android.mailcomposer.domain.model.SenderEmail
 import ch.protonmail.android.mailcomposer.domain.model.Subject
+import ch.protonmail.android.mailcomposer.domain.usecase.AddAttachment
 import ch.protonmail.android.mailcomposer.domain.usecase.ClearMessageSendingError
 import ch.protonmail.android.mailcomposer.domain.usecase.CreateDraftForAction
 import ch.protonmail.android.mailcomposer.domain.usecase.CreateEmptyDraft
@@ -120,6 +121,7 @@ class ComposerViewModel @Inject constructor(
     private val formatMessageSendingError: FormatMessageSendingError,
     private val sendMessage: SendMessage,
     private val networkManager: NetworkManager,
+    private val addAttachment: AddAttachment,
     private val deleteAttachment: DeleteAttachment,
     private val observeMessagePassword: ObserveMessagePassword,
     private val saveMessageExpirationTime: SaveMessageExpirationTime,
@@ -316,7 +318,7 @@ class ComposerViewModel @Inject constructor(
             actionMutex.withLock {
                 composerIdlingResource.increment()
                 when (action) {
-                    is ComposerAction.AttachmentsAdded -> TODO()
+                    is ComposerAction.AttachmentsAdded -> onAttachmentsAdded(action)
                     is ComposerAction.DraftBodyChanged -> onDraftBodyChanged(action)
                     is ComposerAction.SenderChanged -> TODO()
                     is ComposerAction.SubjectChanged -> emitNewStateFor(onSubjectChanged(action))
@@ -333,7 +335,7 @@ class ComposerViewModel @Inject constructor(
 
                     is ComposerAction.ContactSuggestionsDismissed -> emitNewStateFor(action)
                     is ComposerAction.DeviceContactsPromptDenied -> onDeviceContactsPromptDenied()
-                    is ComposerAction.OnAddAttachments -> TODO()
+                    is ComposerAction.OnAddAttachments -> emitNewStateFor(action)
                     is ComposerAction.OnCloseComposer -> emitNewStateFor(onCloseComposer(action))
                     is ComposerAction.OnSendMessage -> emitNewStateFor(handleOnSendMessage(action))
                     is ComposerAction.ConfirmSendingWithoutSubject -> emitNewStateFor(onSendMessage(action))
@@ -409,6 +411,15 @@ class ComposerViewModel @Inject constructor(
         viewModelScope.launch {
             clearMessageSendingError(primaryUserId(), currentMessageId()).onLeft {
                 Timber.e("Failed to clear SendingError: $it")
+            }
+        }
+    }
+
+    private fun onAttachmentsAdded(action: ComposerAction.AttachmentsAdded) {
+        viewModelScope.launch {
+            action.uriList.forEach {
+                addAttachment(it)
+                    .onLeft { Timber.e("Failed to add attachment: $it") }
             }
         }
     }

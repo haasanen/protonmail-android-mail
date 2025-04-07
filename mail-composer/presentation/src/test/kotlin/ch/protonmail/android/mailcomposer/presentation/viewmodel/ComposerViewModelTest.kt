@@ -39,6 +39,7 @@ import ch.protonmail.android.mailcomposer.domain.model.RecipientsCc
 import ch.protonmail.android.mailcomposer.domain.model.RecipientsTo
 import ch.protonmail.android.mailcomposer.domain.model.SenderEmail
 import ch.protonmail.android.mailcomposer.domain.model.Subject
+import ch.protonmail.android.mailcomposer.domain.usecase.AddAttachment
 import ch.protonmail.android.mailcomposer.domain.usecase.ClearMessageSendingError
 import ch.protonmail.android.mailcomposer.domain.usecase.CreateDraftForAction
 import ch.protonmail.android.mailcomposer.domain.usecase.CreateEmptyDraft
@@ -162,6 +163,7 @@ class ComposerViewModelTest {
     private val provideNewDraftIdMock = mockk<ProvideNewDraftId>()
     private val savedStateHandle = mockk<SavedStateHandle>()
     private val deleteAttachment = mockk<DeleteAttachment>()
+    private val addAttachment = mockk<AddAttachment>()
     private val observeMessageAttachments = mockk<ObserveMessageAttachments>()
     private val observeMessageSendingError = mockk<ObserveMessageSendingError>()
     private val clearMessageSendingError = mockk<ClearMessageSendingError>()
@@ -206,6 +208,7 @@ class ComposerViewModelTest {
             formatMessageSendingError,
             sendMessageMock,
             networkManagerMock,
+            addAttachment,
             deleteAttachment,
             observeMessagePassword,
             saveMessageExpirationTime,
